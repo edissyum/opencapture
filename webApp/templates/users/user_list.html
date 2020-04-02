@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block title %}{{ gettext('USER_LIST') }}{% endblock %}
+
+{% block content %}
+    {{ pagination.info }}
+    {{ pagination.links }}
+    <hr>
+    <div class="container-fluid" id="main">
+        <div class="table-wrapper user_list">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>{{ gettext('USERNAME') }}</th>
+                        <th>{{ gettext('CREATION_DATE') }}</th>
+                        <th>{{ gettext('STATUS') }}</th>
+                        <th>{{ gettext('ACTION') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                        <tr>
+                            <td class="user_id">
+                                <a href="#">
+                                    {{ user['id'] }}
+                                </a>
+                            </td>
+                            <td class="user_name">
+                                <a href="#">
+                                    {{ user['username'] }}
+                                </a>
+                            </td>
+                            <td class="creation_date">
+                                <a href="#">
+                                    {{ user['creation_date'] }}
+                                </a>
+                            </td>
+                            <td class="status-td">
+                                <a href="#">
+                                    {% if user['enabled'] == 1 %}
+                                        <span class="status text-success">&bull;</span> {{ gettext('ACTIVE') }}
+                                    {% else %}
+                                        <span class="status text-danger">&bull;</span> {{ gettext('INACTIVE') }}
+                                    {% endif %}
+                                </a>
+                            </td>
+                            <td class="actions">
+                                {% if user['username'] != 'admin' %}
+                                    <a href="{{ url_for('user.profile', user_id=user['id']) }}">
+                                        <i class="fas fa-cog" data-toggle="tooltip" title="{{ gettext('PROFILE_USER') }}"></i>
+                                    </a>
+                                    {% if user['enabled'] == 1 %}
+                                        <a href="{{ url_for('user.disable', user_id=user['id']) }}" class="ml-2" data-toggle="tooltip" title="{{ gettext('DISABLE_USER') }}">
+                                            <i class="fas fa-pause"></i>
+                                        </a>
+                                    {% else %}
+                                        <a href="{{ url_for('user.enable', user_id=user['id']) }}" class="ml-2" data-toggle="tooltip" title="{{ gettext('ENABLE_USER') }}">
+                                            <i class="fas fa-play"></i>
+                                        </a>
+                                    {% endif %}
+                                    <a href="{{ url_for('user.delete', user_id=user['id'], fallback=request.args.get('page')) }}" class="ml-2" data-toggle="tooltip" title="{{ gettext('DELETE_USER') }}">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <hr>
+    {{ pagination.links }}
+
+    {% block javascript %}
+        <script src="{{ url_for('static', filename='js/jqueryLib/jquery.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/otherLib/bootstrap.bundle.min.js') }}"></script>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+        </script>
+
+    {% endblock %}
+{% endblock %}

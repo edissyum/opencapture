@@ -1,0 +1,110 @@
+[GLOBAL]
+# Use ${GLOBAL:projectPath} to specify once for all the path of the project
+nbthreads                   = 5
+resolution                  = 300
+compressionquality          = 100
+# Used to fix potential OCR error into mail detection
+sanitizestr                 = {}\[\]()!?§&é~èàç
+projectpath                 = /opt/OpenCaptureForInvoices/
+tmppath                     = ${GLOBAL:projectPath}/bin/data/tmp/
+docserverPath               = /var/docservers/OpenCapture/
+thumbpath                   = ${GLOBAL:docserverPath}/images/thumbs/
+fullpath                    = ${GLOBAL:docserverPath}/images/full/
+exportAccountingFolder      = ${GLOBAL:docserverPath}/xml/
+exportAccountingFileParser  = ${GLOBAL:projectPath}/instance/config/exported_filename.xml
+errorpath                   = ${GLOBAL:projectPath}/bin/data/error/
+logfile                     = ${GLOBAL:projectPath}/bin/data/log/OCforInvoices.log
+ocrerrorpath                = ${GLOBAL:projectPath}/instance/config/OCR_ERRORS.xml
+allowduplicate              = False
+allowAutomaticValidation    = False
+defaultPassword             = Open-CaptureForInvoices
+
+[SEPARATOR]
+separatorPath = /var/docservers/OpenCapture_Separator/
+tmpBatchPath = ${SEPARATOR:separatorPath}/batches/
+pdfOutputPath = ${SEPARATOR:separatorPath}/separated_pdf/
+pdfOriginPath = ${GLOBAL:projectPath}/bin/data/OC_Separator/pdf_sources/
+allowedExtensions  = {'pdf'}
+
+[DATABASE]
+databasefile                = ${GLOBAL:projectPath}/instance/flaskr.sqlite
+
+[LOCALE]
+# fr_FR or en_EN by default
+locale                   = fr_FR
+# fra or eng by default
+localeocr                = fra
+localepath               = ${GLOBAL:projectPath}/webApp/static/locale/
+
+[REFERENCIAL]
+referencialfinancial            = ${GLOBAL:projectPath}/bin/src/referencial/plan_comptable.xlsx
+# ODS or XLSX supported
+referencialsupplierdocumentpath = ${GLOBAL:projectPath}/bin/src/referencial/default_referentiel_supplier.ods
+referencialsupplierindexpath    = ${GLOBAL:projectPath}/bin/src/referencial/default_referencial_supplier_index.json
+
+[REGEX]
+urlpattern          = fr|com|net|org|gouv
+
+[SEPARATORQR]
+# True or False, python way
+enabled             = False
+# True or False, python way
+exportpdfa          = False
+outputpdfpath       = ${GLOBAL:projectPath}/data/exported_pdf/
+outputpdfapath      = ${GLOBAL:projectPath}/data/exported_pdfa/
+tmppath             = /tmp/
+# _ or - for exemple
+divider             = _
+
+# VIDEOCODAGE settings
+
+[GENERAL]
+siret-consumer      =
+siret-secret        =
+siret-url-token     = https://api.insee.fr/token
+siret-url           = https://api.insee.fr/entreprises/sirene/V3/siret/
+siren-url           = https://api.insee.fr/entreprises/sirene/V3/siren/
+tva-url             = https://ec.europa.eu/taxation_customs/vies/checkVatService.wsdl
+ban-url             = https://api-adresse.data.gouv.fr/search/?q=
+
+[CONTACT]
+green-ratio         = 95
+orange-ratio        = 50
+total-ratio         = 95
+
+[GED]
+# True or False, python way
+enabled             = False
+# Dont forget to add the WS link. By default for maarch : '/rest'
+host                = http://localhost/cs_maarch/rest/
+user                =
+password            =
+# Split different process with comma
+availableProcess    = OCForMaarch-invoice
+defaultProcess      = OCForMaarch-invoice
+usergroupid         = COURRIER
+# Delta between date found and today date, in days
+# -1 to disable
+timeDelta           = -1
+
+# Use - and not _
+[OCForMaarch-invoice]
+status               = INIT
+statusEnd            = END
+typeid               = 1202
+typist               = invoice
+priority             = poiuytre1357nbvc
+format               = pdf
+categoryId           = incoming
+defaultDestination   = COU
+defaultDestUser      = bblier
+customInvoiceNumber  = custom_t1
+customVatNumber      = custom_t2
+customOutcome        = custom_t3
+customBudget         = custom_t4
+customHT             = custom_f1
+customTTC            = custom_f2
+customOrderNumber    = custom_t5
+customDeliveryNumber = custom_t6
+contactType          = 100
+contactPurposeId     = 3

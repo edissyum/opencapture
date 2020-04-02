@@ -1,0 +1,86 @@
+/********** SETTINGS FOR TABS **********/
+
+.navbar{
+    z-index: 100;
+}
+
+.sidebar{
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    padding: 64px 0 0;
+    z-index: 99;
+}
+
+.sidebar-dashboard{
+    padding-left: 0!important;
+}
+
+.sidebar-sticky{
+    height: calc(100vh - 48px);
+    padding-top: .5rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+    top: 0;
+}
+
+.nav-link {
+    font-weight: 500;
+    color: #333;
+    display: block;
+    padding: .5rem 1rem;
+}
+
+.nav-link:hover,
+.nav-link.active{
+    color: #76B442;
+}
+
+.nav-link > .fas,
+.nav-link > .far{
+    border-right: 1px grey solid;
+    padding-right: 10px;
+    margin-right: 5px;
+    font-size: 15px;
+}
+
+.lad_info > .nav,
+.ged_info > .nav{
+    border-bottom: 1px lightgrey solid;
+    margin-bottom: 20px;
+    padding-bottom: 5px;
+}
+
+
+/********** GENERAL SETTINGS FORMS **********/
+
+#general-settings-form h3,
+#advanced-settings-form h3,
+#lad-settings-form h3{
+    text-align: center;
+}
+
+.custom-control-label:before{
+    background-color:#fff;
+    box-shadow: none !important;
+}
+.custom-control-input:checked ~ .custom-control-label:before{
+    background-color:#76B442!important;
+    border-color: transparent;
+}
+
+/***** OVERWRITE CHOSEN CSS *****/
+
+.chosen-single{
+    min-height: 28px!important;
+    line-height: 1.8 !important;
+}
+.chosen-container-active.chosen-with-drop .chosen-single div b {
+    background-position: -18px 8px!important;
+}
+.chosen-container-single .chosen-single div b {
+    background: url(../otherLib/chosen-sprite.png) no-repeat 0 4px!important;
+}
+
+/***** END OVERWRITE CHOSEN CSS *****/

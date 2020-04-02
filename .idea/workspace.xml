@@ -1,0 +1,985 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="74e85ddb-aa6a-4883-97b8-50d762dfed72" name="Default Changelist" comment="Fix routes">
+      <change beforePath="$PROJECT_DIR$/bin/src/referencial/Echantillon_facture_Edissyum.ods" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/src/referencial/referentiel_supplier.xlsx" beforeDir="false" />
+    </list>
+    <list id="468a89ad-0557-4077-b6f3-2c7a60cdc335" name="Revert &quot;Fix when there is not VAT supplied and start the process to handle pdf with multi page&quot;" comment="Revert &quot;Fix when there is not VAT supplied and start the process to handle pdf with multi page&quot;&#10;&#10;This reverts commit 9a49297d" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager">
+    <option name="groupingKeys">
+      <option value="directory" />
+    </option>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="package.json" />
+        <option value="JavaScript File" />
+        <option value="Python Script" />
+        <option value="HTML File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1MoEo6gdhxJKSvpvEblhhlZY4QZ" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="HTML&#10;JSON&#10;Python" />
+    <property name="database.console.LAST_STATE" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/bin/install/Maarch/src/app/contact/models" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="run.code.analysis.last.selected.profile" value="aDefault" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/bin/install/Maarch/src/app/contact/models" />
+      <recent name="$PROJECT_DIR$/bin/install/Maarch/src/app/contact/controllers" />
+      <recent name="$PROJECT_DIR$/bin/install/Maarch/src/app/user/controllers" />
+      <recent name="$PROJECT_DIR$/bin/scripts" />
+      <recent name="$PROJECT_DIR$/webApp" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/webApp/static" />
+      <recent name="$PROJECT_DIR$/webApp" />
+      <recent name="$PROJECT_DIR$/webApp/templates/users" />
+      <recent name="$PROJECT_DIR$/webApp/static/css/otherLib" />
+      <recent name="$PROJECT_DIR$/webApp/static/imgs" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.wsgi">
+    <configuration name="index.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/oc_invoices_flask/invoices/templates/dashboard/index.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <configuration name="pdf" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="oc_invoices_bis" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/invoices" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/invoices/pdf.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="scratch" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="oc_invoices_bis" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$APPLICATION_CONFIG_DIR$/scratches" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$APPLICATION_CONFIG_DIR$/scratches/scratch.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="scratch_4" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="oc_invoices_bis" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$APPLICATION_CONFIG_DIR$/scratches" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$APPLICATION_CONFIG_DIR$/scratches/scratch_4.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="wsgi" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="oc_invoices_bis" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/wsgi.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.wsgi" />
+        <item itemvalue="Python.scratch" />
+        <item itemvalue="Python.scratch_4" />
+        <item itemvalue="JavaScript Debug.index.html" />
+        <item itemvalue="Python.pdf" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="74e85ddb-aa6a-4883-97b8-50d762dfed72" name="Default Changelist" comment="" />
+      <created>1559118982491</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1559118982491</updated>
+      <workItem from="1559118984865" duration="5664000" />
+      <workItem from="1559136950661" duration="7920000" />
+      <workItem from="1559547124024" duration="2598000" />
+      <workItem from="1559549987172" duration="1474000" />
+      <workItem from="1559551506975" duration="10952000" />
+      <workItem from="1559568706991" duration="8400000" />
+      <workItem from="1559634439323" duration="2111000" />
+      <workItem from="1559639268998" duration="13639000" />
+      <workItem from="1559691160806" duration="5011000" />
+      <workItem from="1559720039934" duration="15653000" />
+      <workItem from="1559805897763" duration="20599000" />
+      <workItem from="1559891270771" duration="17837000" />
+      <workItem from="1560036972497" duration="347000" />
+      <workItem from="1560156192325" duration="1567000" />
+      <workItem from="1560169903409" duration="1909000" />
+      <workItem from="1560178167157" duration="4315000" />
+      <workItem from="1560238226276" duration="19046000" />
+      <workItem from="1560412614966" duration="17238000" />
+      <workItem from="1560517295520" duration="8214000" />
+      <workItem from="1560773286121" duration="13213000" />
+      <workItem from="1560801119812" duration="641000" />
+      <workItem from="1560842740491" duration="22271000" />
+      <workItem from="1560929807060" duration="2315000" />
+      <workItem from="1560934868987" duration="5784000" />
+      <workItem from="1560949312170" duration="9476000" />
+      <workItem from="1561024782284" duration="599000" />
+      <workItem from="1561032514956" duration="657000" />
+      <workItem from="1561033702307" duration="9149000" />
+      <workItem from="1561042906419" duration="3728000" />
+      <workItem from="1561109075679" duration="15272000" />
+      <workItem from="1561365967170" duration="958000" />
+      <workItem from="1561366959357" duration="17018000" />
+      <workItem from="1561468141247" duration="6966000" />
+      <workItem from="1561534776877" duration="8725000" />
+      <workItem from="1561583745573" duration="754000" />
+      <workItem from="1561621222347" duration="17487000" />
+      <workItem from="1561707690514" duration="21470000" />
+      <workItem from="1562052264771" duration="2820000" />
+      <workItem from="1562078384363" duration="4848000" />
+      <workItem from="1562138630507" duration="19865000" />
+      <workItem from="1562225105267" duration="20704000" />
+      <workItem from="1562311772210" duration="2891000" />
+      <workItem from="1562574676822" duration="11000" />
+      <workItem from="1562574795030" duration="604000" />
+      <workItem from="1562595462039" duration="604000" />
+      <workItem from="1562681525009" duration="658000" />
+      <workItem from="1562747600396" duration="219000" />
+      <workItem from="1562748538538" duration="17225000" />
+      <workItem from="1562829577477" duration="18853000" />
+      <workItem from="1562917158212" duration="1185000" />
+      <workItem from="1562918450351" duration="18426000" />
+      <workItem from="1563180821580" duration="14176000" />
+      <workItem from="1563262823019" duration="21725000" />
+      <workItem from="1563350285557" duration="17455000" />
+      <workItem from="1563785230489" duration="55000" />
+      <workItem from="1563803344895" duration="7814000" />
+      <workItem from="1563867124511" duration="8000" />
+      <workItem from="1563884396166" duration="9127000" />
+      <workItem from="1563951662632" duration="19872000" />
+      <workItem from="1564040161665" duration="20733000" />
+      <workItem from="1564084366429" duration="2444000" />
+      <workItem from="1564126289696" duration="3844000" />
+      <workItem from="1564384360296" duration="8104000" />
+      <workItem from="1564473607049" duration="696000" />
+      <workItem from="1564574760279" duration="137000" />
+      <workItem from="1564989559898" duration="19418000" />
+      <workItem from="1565077781695" duration="18835000" />
+      <workItem from="1565181973940" duration="3243000" />
+      <workItem from="1565248299377" duration="867000" />
+      <workItem from="1565249204222" duration="385000" />
+      <workItem from="1565249632927" duration="70000" />
+      <workItem from="1565249745152" duration="61000" />
+      <workItem from="1565249846296" duration="88000" />
+      <workItem from="1565250051141" duration="58000" />
+      <workItem from="1565250145524" duration="143000" />
+      <workItem from="1565250323533" duration="19775000" />
+      <workItem from="1565335709637" duration="17538000" />
+      <workItem from="1565695008293" duration="456000" />
+      <workItem from="1565700716388" duration="8293000" />
+      <workItem from="1565768025496" duration="4368000" />
+      <workItem from="1565772942836" duration="2854000" />
+      <workItem from="1566200779720" duration="16702000" />
+      <workItem from="1566226500583" duration="67000" />
+      <workItem from="1566226678592" duration="132000" />
+      <workItem from="1566226858283" duration="3598000" />
+      <workItem from="1566287091387" duration="21799000" />
+      <workItem from="1566462665236" duration="1864000" />
+      <workItem from="1566487878127" duration="30000" />
+      <workItem from="1566546251486" duration="58000" />
+      <workItem from="1566546345435" duration="203000" />
+      <workItem from="1566546589254" duration="100000" />
+      <workItem from="1566546717649" duration="6856000" />
+      <workItem from="1566563000167" duration="8114000" />
+      <workItem from="1566805068208" duration="19090000" />
+      <workItem from="1566890453550" duration="1255000" />
+      <workItem from="1566995695639" duration="50000" />
+      <workItem from="1566995910927" duration="576000" />
+      <workItem from="1566999437288" duration="6416000" />
+      <workItem from="1567062958723" duration="675000" />
+      <workItem from="1567085152237" duration="7945000" />
+      <workItem from="1567169302817" duration="7578000" />
+      <workItem from="1567429650316" duration="8144000" />
+      <workItem from="1567500206385" duration="8709000" />
+      <workItem from="1567521023325" duration="3104000" />
+      <workItem from="1567524209913" duration="2573000" />
+      <workItem from="1567582496628" duration="14917000" />
+      <workItem from="1567668128262" duration="18143000" />
+      <workItem from="1567754870862" duration="3256000" />
+      <workItem from="1567758188791" duration="17197000" />
+      <workItem from="1568017386635" duration="10984000" />
+      <workItem from="1568101326127" duration="21294000" />
+      <workItem from="1568185899648" duration="7916000" />
+      <workItem from="1568273893420" duration="18844000" />
+      <workItem from="1568359268353" duration="612000" />
+      <workItem from="1568359905592" duration="433000" />
+      <workItem from="1568360362226" duration="17458000" />
+      <workItem from="1569225481102" duration="339000" />
+      <workItem from="1569249301291" duration="3123000" />
+      <workItem from="1569310213672" duration="14186000" />
+      <workItem from="1569397904016" duration="12776000" />
+      <workItem from="1569486899468" duration="10911000" />
+      <workItem from="1569570435020" duration="8731000" />
+      <workItem from="1569830050178" duration="15463000" />
+      <workItem from="1569921489977" duration="2480000" />
+      <workItem from="1570002185971" duration="10000" />
+      <workItem from="1570106856499" duration="9959000" />
+      <workItem from="1570173786340" duration="11223000" />
+      <workItem from="1570609310266" duration="2994000" />
+      <workItem from="1570623987373" duration="9962000" />
+      <workItem from="1571046366705" duration="4462000" />
+      <workItem from="1571059224172" duration="3263000" />
+      <workItem from="1571123232906" duration="8635000" />
+      <workItem from="1571211705332" duration="7122000" />
+      <workItem from="1571219252442" duration="4266000" />
+      <workItem from="1571231801491" duration="8546000" />
+      <workItem from="1571297887874" duration="15570000" />
+      <workItem from="1571384200763" duration="6664000" />
+      <workItem from="1571645524240" duration="667000" />
+      <workItem from="1571646617908" duration="772000" />
+      <workItem from="1571663419506" duration="4809000" />
+      <workItem from="1571818533968" duration="1198000" />
+      <workItem from="1571820680668" duration="15969000" />
+      <workItem from="1571902158033" duration="16199000" />
+      <workItem from="1571988399613" duration="280000" />
+      <workItem from="1571989230982" duration="28000" />
+      <workItem from="1571989321615" duration="11472000" />
+      <workItem from="1572208248089" duration="760000" />
+      <workItem from="1572250302397" duration="16077000" />
+      <workItem from="1572337124181" duration="15599000" />
+      <workItem from="1572368285563" duration="42000" />
+      <workItem from="1572423771883" duration="2581000" />
+      <workItem from="1572448888341" duration="1948000" />
+      <workItem from="1572514196393" duration="4334000" />
+      <workItem from="1572860319994" duration="15446000" />
+      <workItem from="1572942287800" duration="14694000" />
+      <workItem from="1573056810002" duration="1287000" />
+      <workItem from="1573058134330" duration="1260000" />
+      <workItem from="1573120155887" duration="4030000" />
+      <workItem from="1573218190476" duration="5838000" />
+      <workItem from="1574671637990" duration="5112000" />
+      <workItem from="1574689803211" duration="3187000" />
+      <workItem from="1574756423102" duration="2895000" />
+      <workItem from="1574759353305" duration="4645000" />
+      <workItem from="1574780638277" duration="5477000" />
+      <workItem from="1574843582100" duration="12781000" />
+      <workItem from="1574931579005" duration="18762000" />
+      <workItem from="1575018036802" duration="12232000" />
+      <workItem from="1575275321502" duration="18188000" />
+      <workItem from="1575361537304" duration="884000" />
+      <workItem from="1575363907583" duration="11806000" />
+      <workItem from="1575449108042" duration="20695000" />
+      <workItem from="1575533682415" duration="211000" />
+      <workItem from="1575533925126" duration="18607000" />
+      <workItem from="1575620655769" duration="18111000" />
+      <workItem from="1575879665172" duration="4974000" />
+      <workItem from="1575920164394" duration="522000" />
+      <workItem from="1575920758537" duration="35000" />
+      <workItem from="1576145104162" duration="272000" />
+      <workItem from="1576486645431" duration="4281000" />
+      <workItem from="1576506719321" duration="124000" />
+      <workItem from="1576572589397" duration="7476000" />
+      <workItem from="1576657041496" duration="826000" />
+      <workItem from="1576658177301" duration="5815000" />
+      <workItem from="1576743807879" duration="22000" />
+      <workItem from="1577781392356" duration="368000" />
+      <workItem from="1577799896128" duration="106000" />
+      <workItem from="1578304291585" duration="15895000" />
+      <workItem from="1578385336605" duration="11594000" />
+      <workItem from="1578472290598" duration="14104000" />
+      <workItem from="1578501436169" duration="50000" />
+      <workItem from="1578579209907" duration="5000" />
+      <workItem from="1579168421511" duration="2884000" />
+      <workItem from="1579248713282" duration="136000" />
+      <workItem from="1579533152824" duration="577000" />
+      <workItem from="1579533763481" duration="20000" />
+      <workItem from="1579601288390" duration="3611000" />
+      <workItem from="1579612811527" duration="5704000" />
+      <workItem from="1579683220187" duration="19930000" />
+      <workItem from="1579767379811" duration="11015000" />
+      <workItem from="1579855946248" duration="7781000" />
+      <workItem from="1580115413291" duration="1262000" />
+      <workItem from="1580201859432" duration="20017000" />
+      <workItem from="1580287867935" duration="857000" />
+      <workItem from="1581085438649" duration="1477000" />
+      <workItem from="1581322270359" duration="120000" />
+      <workItem from="1581322449882" duration="367000" />
+      <workItem from="1581341051809" duration="490000" />
+      <workItem from="1581345586843" duration="3901000" />
+      <workItem from="1581408870905" duration="26000" />
+      <workItem from="1581410680971" duration="2891000" />
+      <workItem from="1581427794501" duration="181000" />
+      <workItem from="1581429040482" duration="9591000" />
+      <workItem from="1581496646026" duration="1124000" />
+      <workItem from="1581498592839" duration="13772000" />
+      <workItem from="1581583404676" duration="12757000" />
+      <workItem from="1581671442749" duration="2000" />
+      <workItem from="1581671662049" duration="939000" />
+      <workItem from="1581927838301" duration="122000" />
+      <workItem from="1581928003586" duration="120000" />
+      <workItem from="1581928155830" duration="529000" />
+      <workItem from="1581947317779" duration="1923000" />
+      <workItem from="1581958417614" duration="10000" />
+      <workItem from="1582536971792" duration="1625000" />
+      <workItem from="1582560030156" duration="506000" />
+      <workItem from="1582636384901" duration="609000" />
+      <workItem from="1582705288599" duration="643000" />
+      <workItem from="1583501459230" duration="6001000" />
+      <workItem from="1583742735061" duration="13785000" />
+      <workItem from="1583828117009" duration="140000" />
+      <workItem from="1584005866903" duration="2450000" />
+      <workItem from="1584008781592" duration="2040000" />
+      <workItem from="1584021669044" duration="3739000" />
+      <workItem from="1584030464292" duration="1583000" />
+      <workItem from="1584087548071" duration="1805000" />
+      <workItem from="1584096453362" duration="9292000" />
+      <workItem from="1584347184276" duration="15490000" />
+      <workItem from="1584435386873" duration="1400000" />
+      <workItem from="1584452733150" duration="9473000" />
+      <workItem from="1584519301085" duration="9957000" />
+      <workItem from="1584536567572" duration="11622000" />
+      <workItem from="1584605630696" duration="17020000" />
+      <workItem from="1584692033694" duration="8759000" />
+      <workItem from="1584701675790" duration="9004000" />
+      <workItem from="1584950931001" duration="15894000" />
+      <workItem from="1585142905288" duration="1923000" />
+      <workItem from="1585319993994" duration="3001000" />
+      <workItem from="1585501772310" duration="30000" />
+      <workItem from="1585554188124" duration="600000" />
+      <workItem from="1585572648292" duration="7367000" />
+      <workItem from="1585638285560" duration="24046000" />
+      <workItem from="1585726204316" duration="9967000" />
+      <workItem from="1585746114737" duration="140000" />
+      <workItem from="1585811541467" duration="8382000" />
+    </task>
+    <task id="LOCAL-00236" summary="default config fix and improvments">
+      <created>1581590997076</created>
+      <option name="number" value="00236" />
+      <option name="presentableId" value="LOCAL-00236" />
+      <option name="project" value="LOCAL" />
+      <updated>1581590997076</updated>
+    </task>
+    <task id="LOCAL-00237" summary="Improve date detection">
+      <created>1581611080338</created>
+      <option name="number" value="00237" />
+      <option name="presentableId" value="LOCAL-00237" />
+      <option name="project" value="LOCAL" />
+      <updated>1581611080339</updated>
+    </task>
+    <task id="LOCAL-00238" summary="Improve MakeFile">
+      <created>1581612528916</created>
+      <option name="number" value="00238" />
+      <option name="presentableId" value="LOCAL-00238" />
+      <option name="project" value="LOCAL" />
+      <updated>1581612528916</updated>
+    </task>
+    <task id="LOCAL-00239" summary="Improve MakeFile">
+      <created>1581613131185</created>
+      <option name="number" value="00239" />
+      <option name="presentableId" value="LOCAL-00239" />
+      <option name="project" value="LOCAL" />
+      <updated>1581613131185</updated>
+    </task>
+    <task id="LOCAL-00240" summary="PEP8 improvment">
+      <created>1581947377513</created>
+      <option name="number" value="00240" />
+      <option name="presentableId" value="LOCAL-00240" />
+      <option name="project" value="LOCAL" />
+      <updated>1581947377513</updated>
+    </task>
+    <task id="LOCAL-00241" summary="Fix routes">
+      <created>1582537745802</created>
+      <option name="number" value="00241" />
+      <option name="presentableId" value="LOCAL-00241" />
+      <option name="project" value="LOCAL" />
+      <updated>1582537745803</updated>
+    </task>
+    <task id="LOCAL-00242" summary="Add preloader to the form">
+      <created>1584006022323</created>
+      <option name="number" value="00242" />
+      <option name="presentableId" value="LOCAL-00242" />
+      <option name="project" value="LOCAL" />
+      <updated>1584006022327</updated>
+    </task>
+    <task id="LOCAL-00243" summary="Various fixes and add WS to check VAT">
+      <created>1584006076619</created>
+      <option name="number" value="00243" />
+      <option name="presentableId" value="LOCAL-00243" />
+      <option name="project" value="LOCAL" />
+      <updated>1584006076619</updated>
+    </task>
+    <task id="LOCAL-00244" summary="Add zeep">
+      <created>1584006107834</created>
+      <option name="number" value="00244" />
+      <option name="presentableId" value="LOCAL-00244" />
+      <option name="project" value="LOCAL" />
+      <updated>1584006107834</updated>
+    </task>
+    <task id="LOCAL-00245" summary="Improve auto validation">
+      <created>1584027414613</created>
+      <option name="number" value="00245" />
+      <option name="presentableId" value="LOCAL-00245" />
+      <option name="project" value="LOCAL" />
+      <updated>1584027414613</updated>
+    </task>
+    <task id="LOCAL-00246" summary="Remove invoice referencial">
+      <created>1584027473511</created>
+      <option name="number" value="00246" />
+      <option name="presentableId" value="LOCAL-00246" />
+      <option name="project" value="LOCAL" />
+      <updated>1584027473511</updated>
+    </task>
+    <task id="LOCAL-00247" summary="Fix for multiple invoices shown">
+      <created>1584109357646</created>
+      <option name="number" value="00247" />
+      <option name="presentableId" value="LOCAL-00247" />
+      <option name="project" value="LOCAL" />
+      <updated>1584109357647</updated>
+    </task>
+    <task id="LOCAL-00248" summary="Fix for ocr_on_fly function">
+      <created>1584114946581</created>
+      <option name="number" value="00248" />
+      <option name="presentableId" value="LOCAL-00248" />
+      <option name="project" value="LOCAL" />
+      <updated>1584114946582</updated>
+    </task>
+    <task id="LOCAL-00249" summary="update">
+      <created>1584347765740</created>
+      <option name="number" value="00249" />
+      <option name="presentableId" value="LOCAL-00249" />
+      <option name="project" value="LOCAL" />
+      <updated>1584347765742</updated>
+    </task>
+    <task id="LOCAL-00250" summary="Fix routes">
+      <created>1584365099236</created>
+      <option name="number" value="00250" />
+      <option name="presentableId" value="LOCAL-00250" />
+      <option name="project" value="LOCAL" />
+      <updated>1584365099236</updated>
+    </task>
+    <task id="LOCAL-00251" summary="Add missing locale">
+      <created>1584366163187</created>
+      <option name="number" value="00251" />
+      <option name="presentableId" value="LOCAL-00251" />
+      <option name="project" value="LOCAL" />
+      <updated>1584366163187</updated>
+    </task>
+    <task id="LOCAL-00252" summary="update default route">
+      <created>1584368039075</created>
+      <option name="number" value="00252" />
+      <option name="presentableId" value="LOCAL-00252" />
+      <option name="project" value="LOCAL" />
+      <updated>1584368039075</updated>
+    </task>
+    <task id="LOCAL-00253" summary="update default route">
+      <created>1584369650946</created>
+      <option name="number" value="00253" />
+      <option name="presentableId" value="LOCAL-00253" />
+      <option name="project" value="LOCAL" />
+      <updated>1584369650946</updated>
+    </task>
+    <task id="LOCAL-00254" summary="Improve Makefile">
+      <created>1584370164442</created>
+      <option name="number" value="00254" />
+      <option name="presentableId" value="LOCAL-00254" />
+      <option name="project" value="LOCAL" />
+      <updated>1584370164442</updated>
+    </task>
+    <task id="LOCAL-00255" summary="Improve Makefile">
+      <created>1584371035091</created>
+      <option name="number" value="00255" />
+      <option name="presentableId" value="LOCAL-00255" />
+      <option name="project" value="LOCAL" />
+      <updated>1584371035091</updated>
+    </task>
+    <task id="LOCAL-00256" summary="Improve Makefile">
+      <created>1584371238288</created>
+      <option name="number" value="00256" />
+      <option name="presentableId" value="LOCAL-00256" />
+      <option name="project" value="LOCAL" />
+      <updated>1584371238288</updated>
+    </task>
+    <task id="LOCAL-00257" summary="Fix routes">
+      <created>1584548975082</created>
+      <option name="number" value="00257" />
+      <option name="presentableId" value="LOCAL-00257" />
+      <option name="project" value="LOCAL" />
+      <updated>1584548975083</updated>
+    </task>
+    <task id="LOCAL-00258" summary="update">
+      <created>1584549426911</created>
+      <option name="number" value="00258" />
+      <option name="presentableId" value="LOCAL-00258" />
+      <option name="project" value="LOCAL" />
+      <updated>1584549426911</updated>
+    </task>
+    <task id="LOCAL-00259" summary="Fix routes">
+      <created>1584624882341</created>
+      <option name="number" value="00259" />
+      <option name="presentableId" value="LOCAL-00259" />
+      <option name="project" value="LOCAL" />
+      <updated>1584624882342</updated>
+    </task>
+    <task id="LOCAL-00260" summary="Fix remove secret key">
+      <created>1584625913387</created>
+      <option name="number" value="00260" />
+      <option name="presentableId" value="LOCAL-00260" />
+      <option name="project" value="LOCAL" />
+      <updated>1584625913387</updated>
+    </task>
+    <task id="LOCAL-00261" summary="remove dev ENV">
+      <created>1584625979232</created>
+      <option name="number" value="00261" />
+      <option name="presentableId" value="LOCAL-00261" />
+      <option name="project" value="LOCAL" />
+      <updated>1584625979232</updated>
+    </task>
+    <task id="LOCAL-00262" summary="Fix routes">
+      <created>1584626313577</created>
+      <option name="number" value="00262" />
+      <option name="presentableId" value="LOCAL-00262" />
+      <option name="project" value="LOCAL" />
+      <updated>1584626313577</updated>
+    </task>
+    <task id="LOCAL-00263" summary="Fix routes">
+      <created>1584626645939</created>
+      <option name="number" value="00263" />
+      <option name="presentableId" value="LOCAL-00263" />
+      <option name="project" value="LOCAL" />
+      <updated>1584626645939</updated>
+    </task>
+    <task id="LOCAL-00264" summary="Fix routes">
+      <created>1584626752155</created>
+      <option name="number" value="00264" />
+      <option name="presentableId" value="LOCAL-00264" />
+      <option name="project" value="LOCAL" />
+      <updated>1584626752156</updated>
+    </task>
+    <task id="LOCAL-00265" summary="Fix routes">
+      <created>1584627028531</created>
+      <option name="number" value="00265" />
+      <option name="presentableId" value="LOCAL-00265" />
+      <option name="project" value="LOCAL" />
+      <updated>1584627028532</updated>
+    </task>
+    <task id="LOCAL-00266" summary="Fix routes">
+      <created>1584627544637</created>
+      <option name="number" value="00266" />
+      <option name="presentableId" value="LOCAL-00266" />
+      <option name="project" value="LOCAL" />
+      <updated>1584627544637</updated>
+    </task>
+    <task id="LOCAL-00267" summary="Fix routes">
+      <created>1584633964612</created>
+      <option name="number" value="00267" />
+      <option name="presentableId" value="LOCAL-00267" />
+      <option name="project" value="LOCAL" />
+      <updated>1584633964613</updated>
+    </task>
+    <task id="LOCAL-00268" summary="Fix routes">
+      <created>1584634202250</created>
+      <option name="number" value="00268" />
+      <option name="presentableId" value="LOCAL-00268" />
+      <option name="project" value="LOCAL" />
+      <updated>1584634202251</updated>
+    </task>
+    <task id="LOCAL-00269" summary="Update VAT route">
+      <created>1584636802507</created>
+      <option name="number" value="00269" />
+      <option name="presentableId" value="LOCAL-00269" />
+      <option name="project" value="LOCAL" />
+      <updated>1584636802507</updated>
+    </task>
+    <task id="LOCAL-00270" summary="Fix routes">
+      <created>1584692704545</created>
+      <option name="number" value="00270" />
+      <option name="presentableId" value="LOCAL-00270" />
+      <option name="project" value="LOCAL" />
+      <updated>1584692704547</updated>
+    </task>
+    <task id="LOCAL-00271" summary="Fix routes">
+      <created>1584718334724</created>
+      <option name="number" value="00271" />
+      <option name="presentableId" value="LOCAL-00271" />
+      <option name="project" value="LOCAL" />
+      <updated>1584718334725</updated>
+    </task>
+    <task id="LOCAL-00272" summary="Fix routes">
+      <created>1584718392643</created>
+      <option name="number" value="00272" />
+      <option name="presentableId" value="LOCAL-00272" />
+      <option name="project" value="LOCAL" />
+      <updated>1584718392643</updated>
+    </task>
+    <task id="LOCAL-00273" summary="Fix routes">
+      <created>1584969532648</created>
+      <option name="number" value="00273" />
+      <option name="presentableId" value="LOCAL-00273" />
+      <option name="project" value="LOCAL" />
+      <updated>1584969532652</updated>
+    </task>
+    <task id="LOCAL-00274" summary="Fix routes">
+      <created>1584969679140</created>
+      <option name="number" value="00274" />
+      <option name="presentableId" value="LOCAL-00274" />
+      <option name="project" value="LOCAL" />
+      <updated>1584969679140</updated>
+    </task>
+    <task id="LOCAL-00275" summary="Fix routes">
+      <created>1584974661091</created>
+      <option name="number" value="00275" />
+      <option name="presentableId" value="LOCAL-00275" />
+      <option name="project" value="LOCAL" />
+      <updated>1584974661091</updated>
+    </task>
+    <task id="LOCAL-00276" summary="Fix routes">
+      <created>1585322469536</created>
+      <option name="number" value="00276" />
+      <option name="presentableId" value="LOCAL-00276" />
+      <option name="project" value="LOCAL" />
+      <updated>1585322469538</updated>
+    </task>
+    <task id="LOCAL-00277" summary="Fix routes">
+      <created>1585664280083</created>
+      <option name="number" value="00277" />
+      <option name="presentableId" value="LOCAL-00277" />
+      <option name="project" value="LOCAL" />
+      <updated>1585664280084</updated>
+    </task>
+    <task id="LOCAL-00278" summary="Fix routes">
+      <created>1585666283132</created>
+      <option name="number" value="00278" />
+      <option name="presentableId" value="LOCAL-00278" />
+      <option name="project" value="LOCAL" />
+      <updated>1585666283132</updated>
+    </task>
+    <task id="LOCAL-00279" summary="Fix routes">
+      <created>1585666712960</created>
+      <option name="number" value="00279" />
+      <option name="presentableId" value="LOCAL-00279" />
+      <option name="project" value="LOCAL" />
+      <updated>1585666712961</updated>
+    </task>
+    <task id="LOCAL-00280" summary="Fix routes">
+      <created>1585669881208</created>
+      <option name="number" value="00280" />
+      <option name="presentableId" value="LOCAL-00280" />
+      <option name="project" value="LOCAL" />
+      <updated>1585669881208</updated>
+    </task>
+    <task id="LOCAL-00281" summary="Fix routes">
+      <created>1585726635917</created>
+      <option name="number" value="00281" />
+      <option name="presentableId" value="LOCAL-00281" />
+      <option name="project" value="LOCAL" />
+      <updated>1585726635917</updated>
+    </task>
+    <task id="LOCAL-00282" summary="Fix routes">
+      <created>1585732749727</created>
+      <option name="number" value="00282" />
+      <option name="presentableId" value="LOCAL-00282" />
+      <option name="project" value="LOCAL" />
+      <updated>1585732749727</updated>
+    </task>
+    <task id="LOCAL-00283" summary="Fix routes">
+      <created>1585814556774</created>
+      <option name="number" value="00283" />
+      <option name="presentableId" value="LOCAL-00283" />
+      <option name="project" value="LOCAL" />
+      <updated>1585814556776</updated>
+    </task>
+    <task id="LOCAL-00284" summary="Fix routes">
+      <created>1585818178718</created>
+      <option name="number" value="00284" />
+      <option name="presentableId" value="LOCAL-00284" />
+      <option name="project" value="LOCAL" />
+      <updated>1585818178718</updated>
+    </task>
+    <option name="localTasksCounter" value="285" />
+    <servers />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.md" />
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ORDER">
+      <list>
+        <option value="0" />
+        <option value="2" />
+        <option value="3" />
+        <option value="1" />
+      </list>
+    </option>
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Improve design" />
+    <MESSAGE value="Improve docservers" />
+    <MESSAGE value="Improve log" />
+    <MESSAGE value="Improve xml creation" />
+    <MESSAGE value="Add possibility to modify rectangle size on ocronfly function" />
+    <MESSAGE value="wsgi" />
+    <MESSAGE value="default config fix and improvments" />
+    <MESSAGE value="Improve date detection" />
+    <MESSAGE value="Improve MakeFile" />
+    <MESSAGE value="PEP8 improvment" />
+    <MESSAGE value="Add preloader to the form" />
+    <MESSAGE value="Various fixes and add WS to check VAT" />
+    <MESSAGE value="Add zeep" />
+    <MESSAGE value="Improve auto validation" />
+    <MESSAGE value="Remove invoice referencial" />
+    <MESSAGE value="Fix for multiple invoices shown" />
+    <MESSAGE value="Fix for ocr_on_fly function" />
+    <MESSAGE value="Add missing locale" />
+    <MESSAGE value="update default route" />
+    <MESSAGE value="Improve Makefile" />
+    <MESSAGE value="update" />
+    <MESSAGE value="Fix remove secret key" />
+    <MESSAGE value="remove dev ENV" />
+    <MESSAGE value="Update VAT route" />
+    <MESSAGE value="Fix routes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix routes" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="2154" y="179" width="802" height="674" key="#Inspections" timestamp="1581672666945">
+      <screen x="1600" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2154" y="179" width="802" height="674" key="#Inspections/0.180.1600.900/1600.0.1920.1080@1600.0.1920.1080" timestamp="1581672666945" />
+    <state x="2151" y="150" width="800" height="707" key="#Plugins" timestamp="1581927930044">
+      <screen x="1600" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2151" y="150" width="800" height="707" key="#Plugins/0.180.1600.900/1600.0.1920.1080@1600.0.1920.1080" timestamp="1581927930044" />
+    <state x="2154" y="179" width="802" height="674" key="#SQL_Dialects" timestamp="1581672632291">
+      <screen x="1600" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2154" y="179" width="802" height="674" key="#SQL_Dialects/0.180.1600.900/1600.0.1920.1080@1600.0.1920.1080" timestamp="1581672632291" />
+    <state x="2242" y="249" width="836" height="535" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1579711216748">
+      <screen x="1600" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2242" y="249" width="836" height="535" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.180.1600.900/1600.0.1920.1080@1600.0.1920.1080" timestamp="1579711216748" />
+    <state x="2301" y="372" width="507" height="289" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1585731959098">
+      <screen x="1600" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2301" y="372" width="507" height="289" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.180.1600.900/1600.0.1920.1080@1600.0.1920.1080" timestamp="1585731959098" />
+    <state x="2363" y="152" width="876" height="861" key="CommitChangelistDialog2" timestamp="1585814519441">
+      <screen x="1600" y="0" width="1920" height="1080" />
+    </state>
+    <state x="714" y="180" width="876" height="861" key="CommitChangelistDialog2/0.180.1600.900/1600.0.1920.1080@0.180.1600.900" timestamp="1579625464578" />
+    <state x="2363" y="152" width="871" height="802" key="CommitChangelistDialog2/0.180.1600.900/1600.0.1920.1080@1600.0.1920.1080" timestamp="1585814519441" />
+    <state x="1910" y="142" width="1280" height="745" key="DiffContextDialog" timestamp="1585815930886">
+      <screen x="1600" y="0" width="1920" height="1080" />
+    </state>
+    <state x="1910" y="142" width="1280" height="745" key="DiffContextDialog/0.180.1600.900/1600.0.1920.1080@1600.0.1920.1080" timestamp="1585815930886" />
+    <state x="2343" y="277" width="424" height="479" key="FileChooserDialogImpl" timestamp="1585572657476">
+      <screen x="1600" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2343" y="277" width="424" height="479" key="FileChooserDialogImpl/0.180.1600.900/1600.0.1920.1080@1600.0.1920.1080" timestamp="1585572657476" />
+    <state width="1876" height="249" key="GridCell.Tab.0.bottom" timestamp="1581587469152">
+      <screen x="1600" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1876" height="249" key="GridCell.Tab.0.bottom/0.180.1600.900/1600.0.1920.1080@1600.0.1920.1080" timestamp="1581587469152" />
+    <state width="1876" height="249" key="GridCell.Tab.0.center" timestamp="1581587469151">
+      <screen x="1600" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1876" height="249" key="GridCell.Tab.0.center/0.180.1600.900/1600.0.1920.1080@1600.0.1920.1080" timestamp="1581587469151" />
+    <state width="1876" height="249" key="GridCell.Tab.0.left" timestamp="1581587469151">
+      <screen x="1600" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1876" height="249" key="GridCell.Tab.0.left/0.180.1600.900/1600.0.1920.1080@1600.0.1920.1080" timestamp="1581587469151" />
+    <state width="1876" height="249" key="GridCell.Tab.0.right" timestamp="1581587469152">
+      <screen x="1600" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1876" height="249" key="GridCell.Tab.0.right/0.180.1600.900/1600.0.1920.1080@1600.0.1920.1080" timestamp="1581587469152" />
+    <state x="2143" y="265" width="704" height="503" key="IDE.errors.dialog" timestamp="1584971686141">
+      <screen x="1600" y="0" width="1920" height="1080" />
+    </state>
+    <state x="453" y="401" width="704" height="503" key="IDE.errors.dialog/0.180.1600.900/1600.0.1920.1080@0.180.1600.900" timestamp="1584007664932" />
+    <state x="2143" y="265" width="824" height="503" key="IDE.errors.dialog/0.180.1600.900/1600.0.1920.1080@1600.0.1920.1080" timestamp="1584971686141" />
+    <state x="2096" y="169" width="1284" height="783" key="SettingsEditor" timestamp="1583761078833">
+      <screen x="1600" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2096" y="169" key="SettingsEditor/0.180.1600.900/1600.0.1920.1080@1600.0.1920.1080" timestamp="1583761078833" />
+    <state width="498" height="445" key="SwitcherDM" timestamp="1584371206784">
+      <screen x="1600" y="0" width="1920" height="1080" />
+    </state>
+    <state width="498" height="445" key="SwitcherDM/0.180.1600.900/1600.0.1920.1080@1600.0.1920.1080" timestamp="1584371206784" />
+    <state x="2154" y="255" width="802" height="523" key="Vcs.Push.Dialog.v2" timestamp="1585818202850">
+      <screen x="1600" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2154" y="255" key="Vcs.Push.Dialog.v2/0.180.1600.900/1600.0.1920.1080@0.180.1600.900" timestamp="1584718398775" />
+    <state x="2154" y="255" width="802" height="523" key="Vcs.Push.Dialog.v2/0.180.1600.900/1600.0.1920.1080@1600.0.1920.1080" timestamp="1585818202850" />
+    <state x="2318" y="366" width="474" height="300" key="cloudConfig.SelfSettingsDialog" timestamp="1581928465487">
+      <screen x="1600" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2318" y="366" width="474" height="300" key="cloudConfig.SelfSettingsDialog/0.180.1600.900/1600.0.1920.1080@1600.0.1920.1080" timestamp="1581928465487" />
+    <state x="2382" y="277" width="677" height="479" key="com.intellij.database.view.ui.AbstractDbRefactoringDialog" timestamp="1585642131342">
+      <screen x="1600" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2382" y="277" width="677" height="479" key="com.intellij.database.view.ui.AbstractDbRefactoringDialog/0.180.1600.900/1600.0.1920.1080@1600.0.1920.1080" timestamp="1585642131342" />
+    <state x="2352" y="209" width="450" height="614" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1585727737329">
+      <screen x="1600" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2352" y="209" width="450" height="614" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.180.1600.900/1600.0.1920.1080@1600.0.1920.1080" timestamp="1585727737329" />
+    <state x="2356" y="438" width="407" height="162" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1579863004869">
+      <screen x="1600" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2356" y="438" width="407" height="162" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.180.1600.900/1600.0.1920.1080@1600.0.1920.1080" timestamp="1579863004869" />
+    <state x="2038" y="195" width="878" height="700" key="find.popup" timestamp="1585817732790">
+      <screen x="1600" y="0" width="1920" height="1080" />
+    </state>
+    <state x="856" y="277" width="660" height="584" key="find.popup/0.180.1600.900/1600.0.1920.1080@0.180.1600.900" timestamp="1584008603561" />
+    <state x="2038" y="195" width="878" height="700" key="find.popup/0.180.1600.900/1600.0.1920.1080@1600.0.1920.1080" timestamp="1585817732790" />
+    <state x="2248" y="259" width="672" height="160" key="search.everywhere.popup" timestamp="1585670708001">
+      <screen x="1600" y="0" width="1920" height="1080" />
+    </state>
+    <state x="540" y="396" width="672" height="160" key="search.everywhere.popup/0.180.1600.900/1600.0.1920.1080@0.180.1600.900" timestamp="1578494865914" />
+    <state x="2248" y="259" width="672" height="160" key="search.everywhere.popup/0.180.1600.900/1600.0.1920.1080@1600.0.1920.1080" timestamp="1585670708001" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/webApp/auth.py</url>
+          <line>46</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/oc_invoices_flask$pdf.coverage" NAME="pdf Coverage Results" MODIFIED="1562751993821" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/invoices" />
+    <SUITE FILE_PATH="coverage/oc_invoices_flask$scratch_4.coverage" NAME="scratch_4 Coverage Results" MODIFIED="1575452797846" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
+    <SUITE FILE_PATH="coverage/oc_invoices_flask$scratch.coverage" NAME="scratch Coverage Results" MODIFIED="1575647050937" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
+    <SUITE FILE_PATH="coverage/oc_invoices_bis$scratch_1.coverage" NAME="scratch_1 Coverage Results" MODIFIED="1559572150187" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
+    <SUITE FILE_PATH="coverage/oc_invoices_bis$pdf.coverage" NAME="pdf Coverage Results" MODIFIED="1559551031263" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/invoices" />
+    <SUITE FILE_PATH="coverage/oc_invoices_flask$wsgi.coverage" NAME="wsgi Coverage Results" MODIFIED="1581585719367" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+  </component>
+</project>

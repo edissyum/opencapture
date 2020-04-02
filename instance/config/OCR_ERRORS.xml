@@ -1,0 +1,12 @@
+<ROOT>
+    <NUMBERS>
+        <ELEMENT>
+            <FIX>0</FIX>
+            <MISREAD_CHARS>O</MISREAD_CHARS>
+        </ELEMENT>
+        <ELEMENT>
+            <FIX>1</FIX>
+            <MISREAD_CHARS>liI</MISREAD_CHARS>
+        </ELEMENT>
+    </NUMBERS>
+</ROOT>

@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% block title %} {{ gettext('INVOICES') }} {% endblock %}
+{% block css %}
+    <script type="text/javascript" src={{ url_for('static', filename='js/otherLib/Gettext.js') }}></script>
+    <link rel="gettext" type="application/x-po" href="{{ url_for('static', filename='babel/translations/' + session["lang"] + '/LC_MESSAGES/messages.po') }}">
+    <script>
+        var gt = new Gettext();
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div id="lot">
+        <ul class="list-group list-group-horizontal">
+            <li class="list-group-item d-flex justify-content-between align-items-center {% if 'TODAY' in request.path or ('YESTERDAY' not in request.path and 'OLDER' not in request.path) %} active {% endif %} " onclick="window.location.href='/list/lot/TODAY/NEW'">
+                {{ gettext('TODAY_LOT') }} &nbsp;
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center {% if 'YESTERDAY' in request.path %} active {% endif %}" onclick="window.location.href='/list/lot/YESTERDAY/NEW'">
+                {{ gettext('YESTERDAY_LOT') }} &nbsp;
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center {% if 'OLDER' in request.path %} active {% endif %}" onclick="window.location.href='/list/lot/OLDER/NEW'">
+                {{ gettext('OLD_LOT') }} &nbsp;
+            </li>
+        </ul>
+
+        <form class="form-inline" onsubmit="submitForm()">
+            <div class="form-group mb-2">
+                <label for="search" class="sr-only">{{ gettext('_SEARCH_PLACEHOLDER')}}</label>
+                <input type="text" class="form-control" id="search" placeholder="{{ gettext('_SEARCH_PLACEHOLDER')}}" value={% if request.args.get('search') %} {{ request.args.get('search') }} {% endif %}>
+            </div>
+            <button type="submit" class="btn btn-primary mx-sm-2 mb-2">
+                <i class="fas fa-search"></i>
+            </button>
+        </form>
+    </div>
+
+    <div class="input-group pick_status">
+        {% set statusSelected = request.path.split('/')  %}
+        <select id="pickStatus">
+            <option value='*' selected>{{ gettext('NO_FILTER') }}</option>
+            {% for status in status_list %}
+                {% if status['id'] != 'DEL' %}
+                    <option {% if statusSelected[4] == status['id'] or statusSelected[4] == '' and status['id'] == 'NEW'  %} selected {% endif %}  value="{{ status['id'] }}">{{ gettext(status['id']) }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+        <div class="input-group-append">
+            <button onclick="loadPageFiltered(document.getElementById('pickStatus').options[document.getElementById('pickStatus').selectedIndex].value)" class="btn btn-outline-secondary" type="button">{{ gettext('FILTER') }}</button>
+        </div>
+    </div>
+
+    {{ pagination.info }}
+    {{ pagination.links }}
+    <div class="container-fluid" id="main">
+        {% for pdf_group in pdfs|batch(4) %}
+            <div class="row pdf_list">
+                {% for pdf in pdf_group %}
+                    <div class="col-sm-3">
+                        <div class="card">
+                            <a href="
+                                    {% if pdf['status'] == 'END' %} #end
+                                        {% elif not pdf['locked'] or (pdf ['locked'] and pdf['locked_by'] == g.user['username']) %} {{ url_for('pdf.view', id=pdf['rowid']) }}
+                                        {% else %} #locked
+                                    {% endif %}"
+
+                                    {% set invoice_locked = gettext('INVOICE_LOCKED_BY') %}
+
+                                    {% if pdf['locked'] and pdf['locked_by'] != g.user['username'] %}
+                                        onclick="alert(' {{ invoice_locked }} : {{ pdf['locked_by'] }}')"
+                                    {% endif %}
+
+                                    {% set invoice_closed = gettext('INVOICE_CLOSED') %}
+
+                                    {% if pdf['status'] == 'END' %}
+                                        onclick="alert('{{ invoice_closed }}')"
+                                    {% endif %}
+                            >
+                                <img class="card-img-top lazy"
+                                     data-original="{{ url_for('pdf.static', typeofFile='thumbs', filename=pdf['thumbFilename']) }}"
+                                     alt="Thumbnail">
+                            </a>
+                            <div class="card-body">
+                                <div class="row pb-0 pl-3">
+                                    <h5 class="card-title">
+                                        <a href="{{ url_for('pdf.view', id=pdf['rowid']) }}">
+                                            {{ pdf['supplierName'] }}
+                                        </a>
+                                    </h5>
+                                    <span class="position-absolute badge badge-secondary badge-pill">{{ pdf['nbPages'] }} <i class="far fa-file-alt"></i></span>
+                                </div>
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        {{ gettext('INVOICE_NUMBER')}} : {{ pdf['invoiceNumber'] }}
+                                    </small>
+                                    <br>
+                                    <small class="text-muted">
+                                        {{ gettext('SAVED_THE') }} : {{ pdf['date'] }}
+                                    </small>
+                                    <span id="trash" class="float-right">
+                                        <button onclick="deleteInvoice({{ pdf['rowid'] }})" class="text-danger text-decoration-none">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </span>
+                                </p>
+                            </div>
+                            <div class="ribbon ribbon-top-right {{ pdf['id'] }}">
+                                <span data-toggle="tooltip" data-placement="left" title="{{ gettext(pdf['id'] + '_LONG') }}">{{ gettext(pdf['id']) }}{% if pdf['locked'] %} &nbsp;  <i class="fas fa-lock"></i> {% endif %}</span>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+    {% if pagination.total != 0 %}
+        {{ pagination.info }}
+        {{ pagination.links }}
+    {% endif %}
+
+    {% block javascript %}
+        <script src="{{ url_for('static', filename='js/jqueryLib/jquery.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/otherLib/bootstrap.bundle.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/jqueryLib/jquery.lazyload.min.js') }}"></script>
+        <script>
+            $(document).ready(function(){
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+            $('#main .lazy').lazyload({});
+        </script>
+    {% endblock %}
+{% endblock %}

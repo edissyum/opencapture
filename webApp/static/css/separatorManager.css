@@ -1,0 +1,171 @@
+.search-batch{
+    position: absolute;
+    /*width: 400px;*/
+    right: 20px;
+    top: 80px;
+}
+
+.btn-add-batch{
+    top: 10px;
+    width: 180px;
+    position: relative;
+}
+
+.upload-file-card{
+    border-top-style: solid;
+    border-left-style: dotted;
+    border-bottom-style: dashed;
+    border-right-style: double;
+    padding:5px;
+}
+
+@keyframes placeHolderShimmer{
+    0%{
+        background-position: -468px 0
+    }
+    100%{
+        background-position: 468px 0
+    }
+}
+
+.animated-background {
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+    animation-name: placeHolderShimmer;
+    animation-timing-function: linear;
+    background: #f6f7f8;
+    background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
+    background-size: 800px 104px;
+    height: 96px;
+    position: relative;
+}
+.drop-zone-li{
+    margin-top: -10px;
+
+}
+.force-margin-top{
+
+vertical-align: top;
+}
+
+.drop-zone-body {
+    background: rgb(243, 244, 245);
+    color: rgb(100, 108, 127);
+    line-height: 1.4rem;
+    font-family: Roboto, "Open Sans", sans-serif;
+    font-size: 20px;
+    font-weight: 300;
+    text-rendering: optimizeLegibility;
+}
+
+.batch-infos{
+    width: 100%;
+    margin: -16px;
+    height: 30%;
+    position: absolute;
+    overflow: hidden;
+    padding: 0px!important;
+}
+
+.btn-separator-access{
+    width: 100%;
+    height: 50px;
+}
+
+h1 { text-align: center; }
+
+#myDropzone{
+    top:0px;
+    height:420px;
+    background: white;
+    border-radius: 5px;
+    border: 2px dashed;
+    border-color: rgb(192,192,192);
+    border-image: none;
+    width: 270px;
+}
+
+.invoice-first-images{
+    clip: rect(0, 0, 80px, 0)
+}
+
+.dropzone > img{
+    width: 70px;
+    height: 70px;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    opacity: 0.5;
+}
+
+.manager-list-invoice{
+    margin-top: 60px;
+    padding: 50px;
+}
+
+.manager-list-invoice > li {
+    padding: 10px;
+}
+
+/*
+* drop down menu
+*/
+.btn-option{
+    /*position: absolute;*/
+    /*top: 380px;*/
+    /*right: 10px;*/
+}
+
+.dropdown-toggle::after {
+    display: none;
+}
+
+/*
+* End drop down menu
+*/
+
+/*
+* Status badge
+*/
+/* The ribbons */
+.corner-ribbon{
+  width: 200px;
+  background: #e43;
+  position: absolute;
+  top: 10px;
+  left: -60px;
+  text-align: center;
+  line-height: 30px;
+  letter-spacing: 1px;
+  color: #f0f0f0;
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+}
+
+/* Custom styles */
+
+.corner-ribbon.sticky{
+  /*position: fixed;*/
+}
+
+.corner-ribbon.shadow{
+  box-shadow: 0 0 3px rgba(0,0,0,.3);
+}
+
+/* Different positions */
+
+.corner-ribbon.top-left{
+  top: 25px;
+  left: -50px;
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+}
+
+
+/* Colors */
+
+.corner-ribbon.white{background: #f0f0f0; color: #555;}
+
+.corner-ribbon.green{background: #2c7;}
+/*End*/

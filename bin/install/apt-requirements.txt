@@ -1,0 +1,12 @@
+nginx
+incron
+python3
+zbar-tools
+pkg-config
+imagemagick
+python3-pip
+poppler-utils
+rabbitmq-server
+libtesseract-dev
+libleptonica-dev
+libmagickwand-dev

@@ -1,0 +1,33 @@
+/************  PRELOADER ************/
+#preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #fff;
+    z-index: 120;
+}
+
+#preloader_form {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #fff;
+    z-index: 110;
+}
+
+#status,
+#status_form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 0;
+    position: absolute;
+    top: 50%;
+}
+
+/************  END PRELOADER ************/

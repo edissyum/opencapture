@@ -1,0 +1,123 @@
+{% extends 'base_separator.html' %}
+{% block title %} {{ gettext('SEPARATOR_PROCESS') }} {% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/separator.css') }}" type="text/css" media="screen" />
+{% endblock %}
+
+{% block content %}
+    <div class="separator-control-menu shadow p-8 mb-5 bg-white rounded align-items-center">
+        <div class="delete-control-menu">
+            <a href="#" class="btn-delete-selected border-right border-dark">
+                <i class="fas fa-trash-alt fa-2x"></i>
+            </a>
+        </div>
+        <div class="btn-separator-check">
+            <a href="#" class="btn-select-all border-right border-dark" onclick="checkAllCheckBox()"><i class="fas fa-check-circle fa-2x"></i></a>
+        </div>
+        <div class="btn-uncheck-separator-help ">
+            <a href="#" class="btn-separator-help border-right border-dark" onclick="unCheckAllCheckBox()"><i class="fas fa-ban fa-2x"></i></a>
+        </div>
+        <div class="btn-separator-undo " onclick="refresh()">
+            <a href="#" class="btn-separator-help border-right border-dark"><i class="fas fa-undo fa-2x"></i></a>
+        </div>
+        <div class="btn-separator-add-invoice " onclick="add_invoice()">
+            <a href="#" class="btn-separator-help border-right border-dark"><i class="fas fa-plus-circle fa-2x"></i></a>
+        </div>
+        <div class="align-items-center ml-3">
+             <span class="mr-2">{{ gettext('SEND_TO') }}</span>
+            <select id="input-send-invoice">
+                {% for pages_path in invoices %}
+                     <option id="option_invoice_{{loop.index}}">{{ gettext('INVOICE')}} {{loop.index}}</option>
+                {% endfor %}
+            </select>
+            <a href="#" class="btn-send-selected border-right border-dark">
+                <i class="fa fa-paper-plane fa-lg align-items-center"></i>
+            </a>
+        </div>
+        <div onclick="submitSeparate()">
+            <a href="#" id="save-invoices">
+                <i class="fas fa-save"></i>
+            </a>
+        </div>
+{#        <div class="btn-separator-help border-left ">#}
+{#            <a href="#" class="btn-separator-help" data-toggle="modal" data-target="#exampleModal"><i class="fas fa-question-circle fa-2x"></i></a>#}
+{#        </div>#}
+    </div>
+    <div class="p-3 mb-5 bg-white rounded align-content-center" id="zoom">
+        <span class="border">
+            <img class="zoom-image" id="zoom-image" alt="zoom image"/>
+        </span>
+    </div>
+    <!-- Modal Help -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">{{ gettext('USER_HELP') }}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            {{ gettext('USER_HELP') }}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ gettext('CANCEL') }}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Modal Help -->
+    <div id="invoices-list" class="container-fluid">
+             {% for pages_path in invoices %}
+                <div class="row delete-if-empty" id="row_{{loop.index}}">
+                    <div class="col-xl">
+                         <div class="card">
+                            <div class="card-header">
+                                <label>{{ gettext('INVOICE')}} {{ loop.index }}</label>
+                                <a id="delete-invoice" href="#" rel="{{loop.index}}">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                            <div class="card-body">
+                                {{first_event}} {{second_event}}
+                                <div id="list_{{loop.index}}" class="row facet-list remove-if-empty">
+                                    {% for image_path in pages_path %}
+                                         <div class="col-md-2 parent invoice-page" id="{{image_path}}">
+                                            <div class="invoice-images">
+                                                <input type="checkbox" class="checkbox-page-invoice">
+                                                <a id="image-invoice-zoom" href="#" rel="{{ url_for('pdf.static', typeofFile='separator', filename=image_path) }}">
+                                                    <i class="fas fa-search-plus fa-4x"></i>
+                                                </a>
+                                                <img class="image-page-invoice" src="{{ url_for('pdf.static', typeofFile='separator', filename=image_path) }}" alt="{{image_path}}"/>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+    </div>
+    <button type="button" class="btn btn-default border btn-control" id="btn-invoice-add" onclick="add_invoice()">
+        <i class="fas fa-plus"> {{gettext('ADD')}}</i>
+    </button>
+    <button class="btn btn-default btn-control border" id="save-invoices" onclick="submitSeparate()">
+         <i class="fas fa-save"> {{gettext('VALIDATE')}}</i>
+    </button>
+    <div style="height: 50px"></div>
+    <div id="history" class="bg-light position-fixed">
+        <button type="button" class="btn btn-default" id="show-hide-hist" onclick="show_hide_history()">
+             <i class="fas fa-history"></i>
+        </button>
+        <div class="row facet-list" id="invoices-history-list">
+        </div>
+    </div>
+    {% block javascript %}
+        <script src="{{ url_for('static', filename='js/jqueryLib/jquery.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/jqueryLib/jquery-ui.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/separator_jquery_script.js') }}"></script>
+    {% endblock %}
+{% endblock %}

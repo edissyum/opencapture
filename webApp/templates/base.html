@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<head>
+    <title>{% block title %}{% endblock %} - Open-Cature For Invoices</title>
+    <meta name="author" content="Nathan Cheval">
+    <meta name="description" content="Open-Capture for invoices">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="icon"        href="{{ url_for('static', filename='css/favicon.ico') }}"/>
+    <link rel="stylesheet"  href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet"  href="{{ url_for('static', filename='css/preloader.css') }}">
+    <link rel="stylesheet"  href="{{ url_for('static', filename='css/jqueryLib/imgareaselect-default.css') }}">
+    <link rel="stylesheet"  href="{{ url_for('static', filename='css/jqueryLib/jquery.autocomplete.css') }}">
+    <link rel="stylesheet"  href="{{ url_for('static', filename='css/jqueryLib/chosen.min.css') }}">
+    <link rel="stylesheet"  href="{{ url_for('static', filename='css/jqueryLib/chosenImage.css') }}">
+    <link rel="stylesheet"  href="{{ url_for('static', filename='css/otherLib/bootstrap.min.css') }}">
+    <link rel="stylesheet"  href="{{ url_for('static', filename='css/otherLib/fontawesome/css/all.css') }}">
+
+    {% block css %}
+    {% endblock %}
+
+    {% block javascript %}
+    {% endblock %}
+
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jqueryLib/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/otherLib/bootstrap.bundle.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jqueryLib/chosen.jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jqueryLib/chosenImage.jquery.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>
+</head>
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div id="status">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 74.4 81.9" width="300"
+                 height="300" xml:space="preserve">
+                <linearGradient id="fill" x1="0.5" y1="1" x2="0.5" y2="0">
+                    <stop offset="0%" stop-color="#76B442">
+                        <animate attributeName="stop-color" values="#76B442; #A7A8AA; #76B442" dur="1s"
+                                 repeatCount="indefinite"></animate>
+                    </stop>
+
+                    <stop offset="100%" stop-color="#A7A8AA">
+                        <animate attributeName="stop-color" values="#A7A8AA; #76B442; #A7A8AA" dur="1s"
+                                 repeatCount="indefinite"></animate>
+                    </stop>
+                </linearGradient>
+                <path fill="url(#fill)" d="M1.9,79.4c-1.5-1.5,0.3-4.7,8.2-14.2c4.8-5.7,10.1-12.3,11.9-14.6l3.3-4.1l-1.6-1.7
+                        c-7.2-7.4-8.6-20.6-3-29.7C27.9,3.4,43.8-1.4,56.8,4.2c6,2.6,11.8,8,14.4,13.5c2.7,5.6,2.5,15.4-0.4,21.1
+                        c-6.6,13-22.8,18.9-36.3,13.3c-2.2-1-4.1-1.3-4.4-1c-0.3,0.4-5.8,7-12.2,14.8C8.8,76.8,5.7,80,4.3,80C3.3,80,2.1,79.7,1.9,79.4
+                        L1.9,79.4z M53.5,48.8c5.7-2,10.7-6.3,13.4-11.3c2.8-5.2,2.9-13.8,0.1-18.9c-4.5-8.4-12-12.8-21.9-12.8c-26.3,0-33.2,33.2-9,42.7
+                        C42.2,50.9,47.3,51,53.5,48.8L53.5,48.8z"></path>
+            </svg>
+        </div>
+    </div>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <a class="navbar-brand" href="#">
+            <img src="{{ url_for('static', filename='imgs/logo.png') }}" class="d-inline-block align-top" alt="Logo Open-Capture" width="200">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                {% if g.user %}
+                    <a class="nav-item nav-link " href="{{ url_for('pdf.home') }}">{{ gettext('HOME') }}</a>
+                    <a class="nav-item nav-link {% if '/list/' in request.path %}active{% endif %}" href="{{ url_for('pdf.index', time='TODAY', status='NEW') }}">{{ gettext('LIST') }}</a>
+                    <a class="nav-item nav-link {% if request.path == '/upload' %}active{% endif %}" href="{{ url_for('pdf.upload') }}">{{ gettext('UPLOAD') }}</a>
+                    <a class="nav-item nav-link {% if request.path == '/user/profile' %}active{% endif %}" href={{ url_for('user.profile') }}>{{ gettext('MY_PROFILE') }}</a>
+                    <a class="nav-item nav-link" href="{{ url_for('auth.logout') }}">{{ gettext('LOG_OUT') }}</a>
+                    {% if g.user[1] == 'admin' %}
+                        <a class="nav-item nav-link user {% if request.path == '/dashboard' %}active{% endif %}" href="{{ url_for('dashboard.index') }}">{{ gettext('DASHBOARD') }}</a>
+                        <a class="nav-item nav-link {% if request.path == '/user/list' %}active{% endif %}" href="{{ url_for('user.user_list') }}">{{ gettext('USER_LIST') }}</a>
+                        <a class="nav-item nav-link {% if request.path == '/user/create' %}active{% endif %}" href="{{ url_for('user.create') }}">{{ gettext('CREATE_USER') }}</a>
+                    {% endif %}
+                {% else %}
+                    <a class="nav-item nav-link" href="{{ url_for('auth.login') }}">{{ gettext('SIGN_IN') }}</a>
+                {% endif %}
+            </div>
+        </div>
+        {% if g.user %}
+            <span class="navbar-text">
+                {{ g.user['username'] }}
+            </span>
+        {% endif %}
+
+
+
+        <!-- Change language -->
+        <div class="locale">
+            <label for="change_language"></label>
+            <select name="changeLanguage" id="change_language">
+                {% for locale in config['LANGUAGES'] %}
+                    <option data-img-src={{ url_for('static', filename="imgs/babel/" ~  locale  ~ ".png") }} value="{{ locale }}" {% if session['lang'] == locale %} selected {% endif %}>
+                        {{ config['LANGUAGES'][locale][0] }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <script>
+            $("#change_language").chosenImage({
+                disable_search_threshold: 10,
+                width: 120,
+            });
+
+            // Add onclick event because Chosen didn't handleonclick
+            $( ".chosen-results" ).on("click","li.active-result", function(event) {
+                let optionsChose    = event['target']['attributes']['data-option-array-index'].value;
+                let lang            = document.getElementById("change_language").options[optionsChose].value;
+                changeLanguage(lang);
+            });
+        </script>
+    </nav>
+    <section class="content">
+        {% for message in get_flashed_messages() %}
+            <div class="flash" onclick="$('.flash').fadeOut()"><script>$('.flash').delay(4000).fadeOut()</script>{{ message }}</div>
+        {% endfor %}
+        {% block content %}{% endblock %}
+    </section>
+</body>

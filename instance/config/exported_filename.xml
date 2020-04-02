@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ROOT>
+    <!-- 'column' for database data  (table name '.' column name) || 'text' for brut text || 'date' with year/month/day/full_date as filter -->
+    <NAME>
+        <ELEMENT>
+            <type>column</type>
+            <value>suppliers.name</value>
+            <filter/>
+        </ELEMENT>
+        <ELEMENT>
+            <type>column</type>
+            <value>invoices.invoiceNumber</value>
+            <filter/>
+        </ELEMENT>
+        <ELEMENT>
+            <type>text</type>
+            <value>F</value>
+            <filter/>
+        </ELEMENT>
+        <ELEMENT>
+            <type>column</type>
+            <value>invoices.registerDate</value>
+            <filter>full_date</filter>
+        </ELEMENT>
+    </NAME>
+    <!-- Separator, used to separate all the elements between them -->
+    <SEPARATOR>
+        <value>_</value>
+    </SEPARATOR>
+</ROOT>
