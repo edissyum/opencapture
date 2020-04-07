@@ -85,7 +85,7 @@ If your supplier referencial had different column name, the .json file is here f
 
 Then, just launch :
 
-    $ python3 /opt/OpenCaptureForInvoices/loadReferencial.py -c instance/config.ini
+    $ python3 /opt/OpenCaptureForInvoices/loadReferencial.py -c /opt/OpenCaptureForInvoices/instance/config.ini
     
 It will fill the database with the suppliers informations.
 
