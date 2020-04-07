@@ -33,7 +33,7 @@ Tested with :
 
     $ sudo mkdir /opt/OpenCaptureForInvoices/ && sudo chmod -R 775 /opt/OpenCaptureForInvoices/ && sudo chown -R edissyum:edissyum /opt/OpenCaptureForInvoices/  
     $ sudo apt install git
-    $ git clone -b 0.1 https://gitlab.com/edissyum/opencapture/opencaptureforinvoices /opt/OpenCaptureForInvoices/  
+    $ git clone -b 0.1.1 https://gitlab.com/edissyum/opencapture/opencaptureforinvoices /opt/OpenCaptureForInvoices/  
     $ cd /opt/OpenCaptureForInvoices/
   
 Before lauching the Makefile. You have to do the following : 
@@ -54,7 +54,7 @@ Copy the generated text and go to <code>webApp/\_\_init\_\_.py</code>. Find the 
 The ./Makefile command create the service, but you may want to change the User and Group so just open the ./Makefile and change lines **47**,**48**, **65**, **66**, **85**, **86**, **100**  and **133**  
   
     $ cd bin/install/
-    $ sudo chmod u+x Makefile
+    $ chmod u+x Makefile
     $ sudo ./Makefile
         # Go grab a coffee ;)
    

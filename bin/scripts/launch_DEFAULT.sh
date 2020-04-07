@@ -38,7 +38,7 @@ then
 
     mv "$filepath" "$tmpFilepath"
 
-    python3 "$OCPath"/launch_worker.py -c "$OCPath"/src/config/config.ini -f "$tmpFilepath"/"$filename" --read-destination-from-filename -process incoming
+    python3 "$OCPath"/launch_worker.py -c "$OCPath"/instance/config.ini -f "$tmpFilepath"/"$filename"
 
     rm -f $PID
 
