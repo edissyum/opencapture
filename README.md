@@ -21,8 +21,6 @@ The functionnalities of Open-Capture for Invoices are :
 ## Linux Distributions
 
 Tested with :
-- Ubuntu 18.10 with Python 3.7.1 & Tesseract v4.0.0 & nginx as web server
-- Ubuntu Server 18.10 with Python 3.7.1 or Python 3.6.7 & Tesseract v4.0.0 & nginx as web server
 - Debian 9.8 with Python 3.5.3 & Tesseract v3.04.01 or Tesseract V4.0.0 (stretch-backports) & nginx as web server
 - Debian 9.6 with Python 3.5.3 & Tesseract v3.04.01 or Tesseract V4.0.0 (stretch-backports) & nginx as web server
 - Debian 10 with Python 3.7.3 Tesseract V4.0.0 & nginx as web server
