@@ -320,7 +320,7 @@ msgstr "Connexion"
 
 #: webApp/templates/home.html:19
 msgid "SEPARATOR_OC"
-msgstr "Open-Capture séparateur"
+msgstr "Open-Capture splitter"
 
 #: webApp/templates/home.html:29
 msgid "VERIFIER_OC"

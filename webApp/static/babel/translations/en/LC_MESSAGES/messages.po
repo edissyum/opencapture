@@ -318,7 +318,7 @@ msgstr "Sign in"
 
 #: webApp/templates/home.html:19
 msgid "SEPARATOR_OC"
-msgstr "Open-Capture separator"
+msgstr "Open-Capture splitter"
 
 #: webApp/templates/home.html:29
 msgid "VERIFIER_OC"

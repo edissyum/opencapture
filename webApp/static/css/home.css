@@ -25,12 +25,12 @@ body {
 }
 
 .cards {
-    width: 100%;
+    width: 110%;
     display: flex;
     display: -webkit-flex;
     justify-content: center;
     -webkit-justify-content: center;
-    max-width: 820px;
+    max-width: 940px;
 }
 
 .card_link{
@@ -39,10 +39,13 @@ body {
 
 .card--1 .card__img, .card--1 .card__img--hover {
     background-image: url('../imgs/loupeSeule.svg');
+    background-size: 60%;
+    background-position: bottom;
 }
 
 .card--2 .card__img, .card--2 .card__img--hover {
-    background-image: url('../imgs/loupeSeule.svg');
+    background-image: url('../imgs/Open-Capture_Splitter.svg');
+    background-position: center;
 }
 
 .card__img {
@@ -118,7 +121,6 @@ body {
 }
 
 .card:hover .card__img--hover {
-    height: 100%;
     opacity: 0.3;
 }
 
