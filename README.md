@@ -31,7 +31,7 @@ Tested with :
 
     $ sudo mkdir /opt/OpenCaptureForInvoices/ && sudo chmod -R 775 /opt/OpenCaptureForInvoices/ && sudo chown -R edissyum:edissyum /opt/OpenCaptureForInvoices/  
     $ sudo apt install git
-    $ git clone -b 0.1.1 https://gitlab.com/edissyum/opencapture/opencaptureforinvoices /opt/OpenCaptureForInvoices/  
+    $ git clone -b 0.1.2 https://gitlab.com/edissyum/opencapture/opencaptureforinvoices /opt/OpenCaptureForInvoices/  
     $ cd /opt/OpenCaptureForInvoices/
   
 Before lauching the Makefile. You have to do the following : 
