@@ -105,7 +105,8 @@ We use worker and jobs to enqueue process. The worker is encapsulated into a ser
 
    And add
 
-    @reboot systemctl start service_workerOC
+    @reboot systemctl start OCForInvoices-worker.service
+    @reboot systemctl start OCForInvoices-web.service
     
 ## WebServices for Maarch 19.04
 
@@ -148,7 +149,7 @@ We use worker and jobs to enqueue process. The worker is encapsulated into a ser
 
    And add
 
-    @reboot systemctl start service_workerOC_separator
+    @reboot systemctl start OCForInvoices_Sep-worker.service
 
 Obviously you could launch the separation by the web using the "Download" page. But you also could launch separation using bash script combined with incron.
 Here is an example of incrontab : 
