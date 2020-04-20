@@ -50,7 +50,7 @@ Finally you have to generate a secret key for the flask web server. First, gener
     
 Copy the generated text and go to <code>webApp/\_\_init\_\_.py</code>. Find the line with <code>SECRET_KEY</code> and paste between ""   
   
-The ./Makefile command create the service, but you may want to change the User and Group so just open the ./Makefile and change lines **47**,**48**, **65**, **66**, **85**, **86**, **100**  and **133**  
+The ./Makefile command create the service, but you may want to change the User and Group so just open the ./Makefile and change lines **6** & **7**
   
     $ cd bin/install/
     $ chmod u+x Makefile

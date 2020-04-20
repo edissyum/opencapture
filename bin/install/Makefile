@@ -3,7 +3,8 @@
 OS=$(lsb_release -si)
 VER=$(lsb_release -r)
 defaultPath=/opt/OpenCaptureForInvoices/
-
+user=edissyum
+group=www-data
 ####################
 # Install packages
 if [[ "$OS" = 'Debian' && "$VER" == *'9'* ]]
@@ -44,8 +45,8 @@ Description=Gunicorn instance to Open-Capture For Invoices
 After=network.target
 
 [Service]
-User=edissyum
-Group=www-data
+User=$user
+Group=$group
 WorkingDirectory=$defaultPath/
 ExecStart=gunicorn --timeout 300000 --workers 3 --bind unix:OCForInvoices.sock -m 007 wsgi:appwsgi
 
@@ -62,8 +63,8 @@ Description=Daemon for Open-Capture for Invoices
 [Service]
 Type=simple
 
-User=edissyum
-Group=edissyum
+User=$user
+Group=$user
 UMask=0022
 
 ExecStart=$defaultPath/bin/scripts/service_workerOC.sh
@@ -82,8 +83,8 @@ Description=Separator Daemon for Open-Capture for Invoices
 [Service]
 Type=simple
 
-User=edissyum
-Group=edissyum
+User=$user
+Group=$user
 UMask=0022
 
 ExecStart=$defaultPath/bin/scripts/service_workerOC_separator.sh
@@ -97,7 +98,7 @@ EOF"
 ####################
 # Create a custom temp directory to cron the delete of the ImageMagick temp content
 mkdir /tmp/OpenCaptureForInvoices/
-chown -R edissyum:edissyum /tmp/OpenCaptureForInvoices
+chown -R $user:$user /tmp/OpenCaptureForInvoices
 
 ####################
 # Initialize flask database
@@ -130,7 +131,7 @@ systemctl restart nginx
 ####################
 # Fix the rights after root launch to avoid permissions issues
 chmod -R 775 $defaultPath
-chown -R edissyum:edissyum $defaultPath
+chown -R $user:$user $defaultPath
 
 ####################
 # Start all the services
