@@ -133,7 +133,7 @@ chmod -R 775 $defaultPath
 chown -R edissyum:edissyum $defaultPath
 
 ####################
-# Start both of the service
+# Start all the services
 sleep 10
 systemctl daemon-reload && systemctl start OCForInvoices-web.service
 sleep 5

@@ -41,7 +41,8 @@ Using the following command, you have to retrieve the name of your network inter
     $ ip a
     
 Then go to <code>bin/scripts/service_flaskOC.sh</code> and change the default one <code>enp0s3</code> by your interface name. This is the interface needed to run the web server. 
-It gives you the IP address where the web server will run
+
+**It gives you the IP address where the web server will run**
 
 Finally you have to generate a secret key for the flask web server. First, generate a random key using, for example : 
     
@@ -123,7 +124,7 @@ Just report the modifications onto you Maarch installation
 By default, there is ony one superadmin account. Login is 'admin' and password is 'admin'. You could change it after using the 'My Profile' menu
 
 
-# README OPEN CAPTURE FOR INVOICES - SEPARATOR
+# Installation Separator module
 
 Separator is a part from OC for invoice project, the goal is to separate invoices automatically.
 
