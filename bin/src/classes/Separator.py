@@ -203,8 +203,8 @@ class Separator:
 
     # save result after user separate in pdf (pdf for every invoice)
     def save_pdf_result_after_separate(self, pages_list, pdf_path_input, pdf_path_output):
-        pdf_writer = PdfFileWriter()
-        pdf_reader = PdfFileReader(self.Config.cfg['SEPARATOR']['pdforiginpath'] + pdf_path_input)
+        pdf_writer = PyPDF4.PdfFileWriter()
+        pdf_reader = PyPDF4.PdfFileReader(self.Config.cfg['SEPARATOR']['pdforiginpath'] + pdf_path_input)
         lot_name = self.get_lot_name()
         for invoice_index, pages in enumerate(pages_list):
             for page in pages:
@@ -212,7 +212,7 @@ class Separator:
             with open(pdf_path_output + '/invoice' + str(invoice_index + 1) + '_' + lot_name + '.pdf', 'wb') as fh:
                 pdf_writer.write(fh)
             # init writer
-            pdf_writer = PdfFileWriter()
+            pdf_writer = PyPDF4.PdfFileWriter()
 
     def get_lot_name(self):
         random_number = uuid.uuid4().hex
