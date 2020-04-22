@@ -141,3 +141,11 @@ sleep 5
 systemctl daemon-reload && systemctl start OCForInvoices-worker.service
 sleep 5
 systemctl daemon-reload && systemctl start OCForInvoices_Sep-worker.service
+
+####################
+# Enable all the services
+systemctl enable OCForInvoices-web.service
+sleep 2
+systemctl enable OCForInvoices-worker.service
+sleep 2
+systemctl enable OCForInvoices_Sep-worker.service

@@ -99,16 +99,7 @@ First, add your user into the following file :
 Then use <code>incrontab -e</code> and put the following line :
 
     /path/to/capture/ IN_CLOSE_WRITE,IN_MOVED_TO /opt/OpenCaptureForInvoices/scripts/launch_DEFAULT.sh $@/$#
-    
-We use worker and jobs to enqueue process. The worker is encapsulated into a service who needs to be started in order to run the process. It's needed to cron the boot of the service at every restart, by the root user :
 
-    $ sudo crontab -e
-
-   And add
-
-    @reboot systemctl start OCForInvoices-worker.service
-    @reboot systemctl start OCForInvoices-web.service
-    
 ## WebServices for Maarch 19.04
 
 The list of files needed to be modify is in install/Maarch with the correct structure. Each modifications on files are between the following tags :
@@ -143,14 +134,6 @@ In the default <code>config_DEFAULT.ini</code> file there is a SEPARATOR part :
     - allowedExtensions : Files extensions allowed, JSON format  
     
 ## Launch manually
-
-We use worker and jobs to enqueue process. The worker is encapsulated into a service who needs to be started in order to run the process. It's needed to cron the boot of the service at every restart, by the root user :
-
-    $ sudo crontab -e
-
-   And add
-
-    @reboot systemctl start OCForInvoices_Sep-worker.service
 
 Obviously you could launch the separation by the web using the "Download" page. But you also could launch separation using bash script combined with incron.
 Here is an example of incrontab : 
