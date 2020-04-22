@@ -75,10 +75,10 @@ Restart=on-failure
 WantedBy=multi-user.target
 EOF"
 
-touch /etc/systemd/system/OCForInvoices_Sep-worker.service
-su -c "cat > /etc/systemd/system/OCForInvoices_Sep-worker.service << EOF
+touch /etc/systemd/system/OCForInvoices_Split-worker.service
+su -c "cat > /etc/systemd/system/OCForInvoices_Split-worker.service << EOF
 [Unit]
-Description=Separator Daemon for Open-Capture for Invoices
+Description=Splitter Daemon for Open-Capture for Invoices
 
 [Service]
 Type=simple
@@ -87,7 +87,7 @@ User=$user
 Group=$user
 UMask=0022
 
-ExecStart=$defaultPath/bin/scripts/service_workerOC_separator.sh
+ExecStart=$defaultPath/bin/scripts/service_workerOC_splitter.sh
 
 Restart=on-failure
 
@@ -140,7 +140,7 @@ systemctl daemon-reload && systemctl start OCForInvoices-web.service
 sleep 5
 systemctl daemon-reload && systemctl start OCForInvoices-worker.service
 sleep 5
-systemctl daemon-reload && systemctl start OCForInvoices_Sep-worker.service
+systemctl daemon-reload && systemctl start OCForInvoices_Split-worker.service
 
 ####################
 # Enable all the services
@@ -148,4 +148,4 @@ systemctl enable OCForInvoices-web.service
 sleep 2
 systemctl enable OCForInvoices-worker.service
 sleep 2
-systemctl enable OCForInvoices_Sep-worker.service
+systemctl enable OCForInvoices_Split-worker.service

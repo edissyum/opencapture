@@ -5,7 +5,7 @@ from flask import (
 import os
 import shutil
 import json
-import worker_separator_from_python
+import worker_splitter_from_python
 from flask import render_template, url_for, redirect, request
 from werkzeug.utils import secure_filename
 from bin.src.classes.WebServices import WebServices
@@ -18,10 +18,10 @@ from bin.src.classes.Database import Database
 from bin.src.classes.Locale import Locale as lc
 from bin.src.classes.Config import Config as cfg
 from bin.src.classes.PyTesseract import PyTesseract
-from bin.src.classes.Separator import Separator
+from bin.src.classes.Splitter import Splitter
 from flask_paginate import Pagination, get_page_args
 
-bp = Blueprint('ws_separator', __name__)
+bp = Blueprint('ws_splitter', __name__)
 
 def init():
     configName  = cfg(current_app.config['CONFIG_FILE'])
@@ -39,7 +39,7 @@ def init():
     Locale      = lc(Config)
     Ocr         = PyTesseract(Locale.localeOCR, Log, Config)
     ws          = ''
-    separator   = Separator(Config, db, Locale)
+    splitter    = Splitter(Config, db, Locale)
     if Config.cfg['GED']['enabled'] == 'True':
         ws      = WebServices(
             Config.cfg['GED']['host'],
@@ -48,34 +48,34 @@ def init():
             Log,
             Config
         )
-    return db, Config, Locale, separator, ws, Xml, Files, Ocr
+    return db, Config, Locale, splitter, ws, Xml, Files, Ocr
 
 
-@bp.route('/separator/upload', methods=['GET', 'POST'])
+@bp.route('/splitter/upload', methods=['GET', 'POST'])
 def upload_file():
     vars = init()
     _db = vars[0]
     _cfg = vars[1]
     _Files = vars[5]
-    _Separator = vars[3]
+    _Splitter = vars[3]
     if request.method == 'POST':
         for file in request.files:
             f                   = request.files[file]
             # The next 2 lines lower the extensions because an UPPER extension will throw silent error
             filename, file_ext  = os.path.splitext(f.filename)
             file                = filename.replace(' ', '_') + file_ext.lower()
-            f.save(os.path.join(_cfg.cfg['SEPARATOR']['pdforiginpath'],  secure_filename(file)))
+            f.save(os.path.join(_cfg.cfg['SPLITTER']['pdforiginpath'],  secure_filename(file)))
 
-            worker_separator_from_python.main({
-                'file': _cfg.cfg['SEPARATOR']['pdforiginpath'] + file,
+            worker_splitter_from_python.main({
+                'file': _cfg.cfg['SPLITTER']['pdforiginpath'] + file,
                 'config': current_app.config['CONFIG_FILE']
             })
     flash(gettext('FILE_UPLOAD_SUCCESS'))
-    return url_for('pdf.upload', separator='True')
+    return url_for('pdf.upload', splitter='True')
 
-# Separator manager web services
-@bp.route('/separatorManager', methods=('GET', 'POST'))
-def separator_manager():
+# Splitter manager web services
+@bp.route('/splitterManager', methods=('GET', 'POST'))
+def splitter_manager():
     vars = init()
     _db = vars[0]
     _cfg = vars[1]
@@ -118,10 +118,10 @@ def separator_manager():
                             total=total,
                             display_msg=msg)
     files_path = []
-    for index_directory, directoryname in enumerate(os.listdir(_cfg.cfg['SEPARATOR']['pdfoutputpath'])):
+    for index_directory, directoryname in enumerate(os.listdir(_cfg.cfg['SPLITTER']['pdfoutputpath'])):
         files_path.append(index_directory)
 
-    return render_template('separator/separator_manager.html',
+    return render_template('splitter/splitter_manager.html',
                             batch_list=list_batch,
                             page = page,
                             per_page = per_page,
@@ -129,7 +129,7 @@ def separator_manager():
                             cfg = _cfg)
 
 
-@bp.route('/ws_separator/delete', methods=('GET', 'POST'))
+@bp.route('/ws_splitter/delete', methods=('GET', 'POST'))
 @login_required
 def delete_batch():
     _vars = init()
@@ -143,7 +143,7 @@ def delete_batch():
         'data' : [str(batch_dir_name)]
     }
     _db.update(args)
-    return redirect(url_for('ws_separator.separator_manager'))
+    return redirect(url_for('ws_splitter.splitter_manager'))
 
 @bp.route('/deletePage/<path:path>', methods=('GET', 'POST'))
 def delete_page(path):
@@ -155,17 +155,17 @@ def delete_invoice():
     _vars = init()
     _cfg = _vars[1].cfg
     data = request.get_json()
-    shutil.rmtree(_cfg.cfg['SEPARATOR']['invoicespath'] + '/invoice' + str(data['index']), ignore_errors=True)
+    shutil.rmtree(_cfg.cfg['SPLITTER']['invoicespath'] + '/invoice' + str(data['index']), ignore_errors=True)
     return redirect(url_for('separate'))
 
-@bp.route('/submitSeparate', methods=('GET', 'POST'))
-def submitSeparate():
+@bp.route('/submitSplit', methods=('GET', 'POST'))
+def submitSplit():
     _vars = init()
     _db = _vars[0]
     _cfg = _vars[1]
-    _Separator = _vars[3]
+    _Splitter = _vars[3]
     data = request.get_json()
-    print(data['ids'][0][0].split("/")[0])
+
     # Get origin file name from database to split files us it as a reference
     batch = _db.select({
         'select': ['*'],
@@ -176,9 +176,9 @@ def submitSeparate():
 
 
     # merging invoices pages by or creation_date
-    _Separator.get_page_order_after_user_change(data['ids'],
+    _Splitter.get_page_order_after_user_change(data['ids'],
                                               str(batch['dir_name']),
-                                               _cfg.cfg['SEPARATOR']['pdfoutputpath'])
+                                               _cfg.cfg['SPLITTER']['pdfoutputpath'])
 
     # delete batch after validate
     args = {
@@ -196,7 +196,7 @@ def submitSeparate():
     }
     _db.update(args)
 
-    shutil.rmtree(_cfg.cfg['SEPARATOR']['tmpbatchpath'] + batch['image_folder_name'])
+    shutil.rmtree(_cfg.cfg['SPLITTER']['tmpbatchpath'] + batch['image_folder_name'])
 
     return json.dumps({'text': 'res', 'code': 200, 'ok': 'true'})
 
@@ -205,12 +205,12 @@ def allowed_file(filename):
     _vars = init()
     _cfg = _vars[1]
     return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in _cfg.cfg['SEPARATOR']['allowedextensions']
+           filename.rsplit('.', 1)[1].lower() in _cfg.cfg['SPLITTER']['allowedextensions']
 
 
-# Separator web services
-@bp.route('/ws_separator', methods=('GET', 'POST'))
-@bp.route('/ws_separator/<batch_dir_name>', methods=('GET', 'POST'))
+# Splitter web services
+@bp.route('/ws_splitter', methods=('GET', 'POST'))
+@bp.route('/ws_splitter/<batch_dir_name>', methods=('GET', 'POST'))
 @login_required
 def separate(batch_dir_name):
     _vars = init()
@@ -219,7 +219,7 @@ def separate(batch_dir_name):
     _files = _vars[6]
     images_invoices_path = []
     # Add full path to batch name
-    batch_dir_name = _cfg.cfg['SEPARATOR']['tmpbatchpath'] + batch_dir_name
+    batch_dir_name = _cfg.cfg['SPLITTER']['tmpbatchpath'] + batch_dir_name
     batch_name = os.path.basename(os.path.normpath(batch_dir_name))
     for index_invoice, invoice in enumerate(sorted(os.listdir( batch_dir_name)), start=0):
         invoices_pages_folder = os.listdir(batch_dir_name + '/' + str(invoice))
@@ -229,4 +229,4 @@ def separate(batch_dir_name):
             page_image_path = batch_name + '/invoice_' + str(index_invoice) + '/' + str(invoice_image)
             images_invoices_path[index_invoice].append(page_image_path)
 
-    return render_template('separator/separate_process.html', invoices=images_invoices_path)
+    return render_template('splitter/splitter_process.html', invoices=images_invoices_path)

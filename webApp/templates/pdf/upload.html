@@ -1,5 +1,5 @@
-{% if 'separator' in request.url %}
-    {% extends 'base_separator.html' %}
+{% if 'splitter' in request.url %}
+    {% extends 'base_splitter.html' %}
 {% else %}
     {% extends 'base.html' %}
 {% endif %}
@@ -15,8 +15,8 @@
     <script>
         var gt = new Gettext();
         currentUrl = window.location.href
-        if (currentUrl.includes('separator')){
-            wsUrl = '/separator/upload'
+        if (currentUrl.includes('splitter')){
+            wsUrl = '/splitter/upload'
         }else{
             wsUrl = '/ws/invoice/upload'
         }

@@ -31,7 +31,7 @@ Tested with :
 
     $ sudo mkdir /opt/OpenCaptureForInvoices/ && sudo chmod -R 775 /opt/OpenCaptureForInvoices/ && sudo chown -R edissyum:edissyum /opt/OpenCaptureForInvoices/  
     $ sudo apt install git
-    $ git clone -b 0.1.2 https://gitlab.com/edissyum/opencapture/opencaptureforinvoices /opt/OpenCaptureForInvoices/  
+    $ git clone -b 0.1.3 https://gitlab.com/edissyum/opencapture/opencaptureforinvoices /opt/OpenCaptureForInvoices/  
     $ cd /opt/OpenCaptureForInvoices/
   
 Before lauching the Makefile. You have to do the following : 
@@ -65,12 +65,12 @@ Here is a list of all available languages code : https://www.macports.org/ports.
 
 Don't forget to create all the needed path (Modify the user and group if needed) :
 
-    $ sudo mkdir -p /var/docservers/{OpenCapture,OpenCapture_Separator} 
+    $ sudo mkdir -p /var/docservers/{OpenCapture,OpenCapture_Splitter} 
     $ sudo mkdir -p /var/docservers/OpenCapture/images/{thumbs,full}
-    $ sudo mkdir -p /var/docservers/OpenCapture_Separator/{batches,separated_pdf}
+    $ sudo mkdir -p /var/docservers/OpenCapture_Splitter/{batches,separated_pdf}
     $ sudo mkdir -p /var/docservers/OpenCapture/xml/
-    $ sudo chmod -R 775 /var/docservers/{OpenCapture,OpenCapture_Separator}/
-    $ sudo chown -R edissyum:www-data /var/docservers/{OpenCapture,OpenCapture_Separator}/
+    $ sudo chmod -R 775 /var/docservers/{OpenCapture,OpenCapture_Splitter}/
+    $ sudo chown -R edissyum:www-data /var/docservers/{OpenCapture,OpenCapture_Splitter}/
     
 ## API for SIRET/SIREN
 
@@ -115,9 +115,9 @@ Just report the modifications onto you Maarch installation
 By default, there is ony one superadmin account. Login is 'admin' and password is 'admin'. You could change it after using the 'My Profile' menu
 
 
-# Installation Separator module
+# Installation Splitter module
 
-Separator is a part from OC for invoice project, the goal is to separate invoices automatically.
+Splitter module is a part from OC for invoice project, the goal is to separate invoices automatically.
 
 It will use a lot of metadata to be able to separate invoices without physical separator : 
     - Invoice number
@@ -126,8 +126,8 @@ It will use a lot of metadata to be able to separate invoices without physical s
     
 When the separation is done, you could access to a web interface to control the separation and modify it if needed. After separate invoices, Open-Capture for Invocies will process them normally
 
-In the default <code>config_DEFAULT.ini</code> file there is a SEPARATOR part : 
-    - separatorpath : Path to the specific docserver of separation
+In the default <code>config_DEFAULT.ini</code> file there is a SPLITTER part : 
+    - splitterpath : Path to the specific docserver of separation
     - tmpBatchPath : Path to the currently running batches
     - pdfOutputPath : Path for the separated PDF. Need to be a folder currently watching by Open-Capture For Invoices 
     - pdfOriginPath : Path to keep the original PDF files (without any separation)
@@ -138,7 +138,7 @@ In the default <code>config_DEFAULT.ini</code> file there is a SEPARATOR part :
 Obviously you could launch the separation by the web using the "Download" page. But you also could launch separation using bash script combined with incron.
 Here is an example of incrontab : 
 
-    /path/to/capture/ IN_CLOSE_WRITE,IN_MOVED_TO /opt/OpenCaptureForInvoices/scripts/launch_SEPARATOR.sh $@/$#
+    /path/to/capture/ IN_CLOSE_WRITE,IN_MOVED_TO /opt/OpenCaptureForInvoices/scripts/launch_SPLITTER.sh $@/$#
     
     
 # LICENSE

@@ -84,7 +84,7 @@ $('.image-page-invoice').click(function(e) {
 });
 
 // save new order of invoices
-function submitSeparate(){
+function submitSplit(){
      // disable scroll up when click
     let count_id_len = $("#invoices-list").find('[id^=row_]').length;
     let list_ids = JSON.parse('[]');
@@ -99,7 +99,7 @@ function submitSeparate(){
     }
 
     console.log(list_ids)
-    fetch('/submitSeparate', {
+    fetch('/submitSplit', {
         method  : 'POST',
         headers : {
             'Content-Type': 'application/json'
@@ -110,7 +110,7 @@ function submitSeparate(){
     }).then(function(response) {
         response.json().then(function(res){
             if (JSON.parse(res.ok)) {
-                window.location = "/separatorManager";
+                window.location = "/splitterManager";
             }else {
             }
         });

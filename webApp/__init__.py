@@ -5,7 +5,7 @@ from . import pdf
 from . import auth
 from . import user
 from . import dashboard
-from . import ws_separator
+from . import ws_splitter
 from flask_cors import CORS
 from flask_babel import Babel
 from flask import Flask, redirect, url_for, request, session
@@ -17,7 +17,7 @@ def create_app(test_config=None):
     CORS(app, supports_credentials=True)
 
     app.config.from_mapping(
-        SECRET_KEY                      = 'dev',
+        SECRET_KEY                      = '',
         DATABASE                        = os.path.join(app.instance_path, 'flaskr.sqlite'),
         CONFIG_FILE                     = os.path.join(app.instance_path, 'config.ini'),
         CONFIG_FOLDER                   = os.path.join(app.instance_path, 'config/'),
@@ -39,7 +39,7 @@ def create_app(test_config=None):
     app.register_blueprint(auth.bp)
     app.register_blueprint(user.bp)
     app.register_blueprint(dashboard.bp)
-    app.register_blueprint(ws_separator.bp)
+    app.register_blueprint(ws_splitter.bp)
     app.add_url_rule('/', endpoint='index')
 
     db.init_app(app)

@@ -16,11 +16,11 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-name="SEPARATOR"
+name="SPLITTER"
 OCPath="/opt/OpenCaptureForInvoices/"
 logFile="$OCPath"bin/data/log/OCforInvoices.log
 errFilepath="$OCPath/bin/data/error/"
-tmpFilepath="$OCPath/bin/data/OC_Separator/pdf_sources/"
+tmpFilepath="$OCPath/bin/data/OC_Splitter/pdf_sources/"
 PID=/tmp/securite-$name-$$.pid
 
 echo "[$name.sh      ] $(date +"%d-%m-%Y %T") INFO Launching $name.sh script" >> "$logFile"
@@ -38,7 +38,7 @@ then
 
     cp "$filepath" "$tmpFilepath"
 
-    python3 "$OCPath"/launch_worker_separator.py -c "$OCPath"/instance/config.ini -f "$tmpFilepath"/"$filename"
+    python3 "$OCPath"/launch_worker_splitter.py -c "$OCPath"/instance/config.ini -f "$tmpFilepath"/"$filename"
 
     rm -f $PID
 

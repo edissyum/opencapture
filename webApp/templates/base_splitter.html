@@ -65,8 +65,8 @@
             <div class="navbar-nav">
                 {% if g.user %}
                     <a class="nav-item nav-link " href="{{ url_for('pdf.home') }}">{{ gettext('HOME') }}</a>
-                    <a class="nav-item nav-link {% if '/separatorManager' in request.path %}active{% endif %}" href="{{ url_for('ws_separator.separator_manager') }}">{{ gettext('LIST') }}</a>
-                    <a class="nav-item nav-link {% if request.path == '/upload' %}active{% endif %}" href="{{ url_for('pdf.upload', separator='True') }}">{{ gettext('UPLOAD') }}</a>
+                    <a class="nav-item nav-link {% if '/splitterManager' in request.path %}active{% endif %}" href="{{ url_for('ws_splitter.splitter_manager') }}">{{ gettext('LIST') }}</a>
+                    <a class="nav-item nav-link {% if request.path == '/upload' %}active{% endif %}" href="{{ url_for('pdf.upload', splitter='True') }}">{{ gettext('UPLOAD') }}</a>
                     <a class="nav-item nav-link" href="{{ url_for('auth.logout') }}">{{ gettext('LOG_OUT') }}</a>
                 {% else %}
                     <a class="nav-item nav-link" href="{{ url_for('auth.login') }}">{{ gettext('SIGN_IN') }}</a>

@@ -32,8 +32,8 @@ import bin.src.classes.Config as configClass
 import bin.src.classes.Locale as localeClass
 import bin.src.classes.PyTesseract as ocrClass
 import bin.src.classes.Database as databaseClass
-from bin.src.process.OCForInvoices_separator import process
-import bin.src.classes.Separator as separator
+from bin.src.process.OCForInvoices_splitter import process
+import bin.src.classes.Splitter as splitter
 
 OCforInvoices_Sep = Kuyruk()
 
@@ -78,14 +78,14 @@ def launch(args):
 
     Config      = configClass.Config(configName.cfg['PROFILE']['cfgpath'] + '/config_' + configName.cfg['PROFILE']['id'] + '.ini')
 
-    tmpFolder   = tempfile.mkdtemp(dir=Config.cfg['SEPARATOR']['tmpbatchpath']) + '/'
+    tmpFolder   = tempfile.mkdtemp(dir=Config.cfg['SPLITTER']['tmpbatchpath']) + '/'
     fileName    = tempfile.NamedTemporaryFile(dir=tmpFolder).name
 
     Locale      = localeClass.Locale(Config)
     Log         = logClass.Log(Config.cfg['GLOBAL']['logfile'])
     Ocr         = ocrClass.PyTesseract(Locale.localeOCR, Log, Config)
     Database    = databaseClass.Database(Log, Config.cfg['DATABASE']['databasefile'])
-    Separator   = separator.Separator(Config, Database, Locale)
+    Splitter    = splitter.Splitter(Config, Database, Locale)
     Xml         = xml.Xml(Config, Database)
     Files       = filesClass.Files(
         fileName,
@@ -98,7 +98,13 @@ def launch(args):
     Database.connect()
 
     # Start process
-    if args['path'] is not None:
+    if args['file'] is not None:
+        path = args['file']
+        if check_file(Files, path, Config, Log) is not False:
+            # Process the file and send it to Maarch
+            process(args, path, Log, Splitter, Config, Files, Ocr, Locale, Database, tmpFolder)
+
+    elif args['path'] is not None:
         path = args['path']
         for file in os.listdir(path):
             if check_file(Files, path + file, Config, Log) is not False:
@@ -106,16 +112,10 @@ def launch(args):
                 q = queue.Queue()
 
                 # Find file in the wanted folder (default or exported pdf after qrcode separation)
-                q = process(args, path + file, Log, Separator, Config, Files, Ocr, Locale, Database, tmpFolder, q)
+                q = process(args, path + file, Log, Splitter, Config, Files, Ocr, Locale, Database, tmpFolder, q)
 
                 if not q:
                     continue
-
-    elif args['file'] is not None:
-        path = args['file']
-        if check_file(Files, path, Config, Log) is not False:
-            # Process the file and send it to Maarch
-            process(args, path, Log, Separator, Config, Files, Ocr, Locale, Database, tmpFolder)
 
     # Empty the tmp dir to avoid residual file
     # recursive_delete(tmpFolder, Log)

@@ -18,7 +18,7 @@
                             <i class="fas fa-cog"></i>
                             {{ gettext('ADVANCED SETTINGS') }}
                         </a>
-                        <a class="nav-link" data-toggle="pill" href="#separatorSettings" role="tab" aria-controls="separatorSettings" aria-selected="false">
+                        <a class="nav-link" data-toggle="pill" href="#splitterSettings" role="tab" aria-controls="splitterSettings" aria-selected="false">
                             <i class="fas fa-cog"></i>
                             {{ gettext('SEPARATOR_SETTINGS') }}
                         </a>
@@ -249,12 +249,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="separatorSettings" role="tabpanel" aria-labelledby="separatorSettings">
+                        <div class="tab-pane fade" id="splitterSettings" role="tabpanel" aria-labelledby="splitterSettings">
                             <div class="form-row">
                                 <div class="form-group col-md-4">
-                                    <label for="separatorpath">{{ gettext('SEPARATOR_PATH') }}</label>
+                                    <label for="splitterpath">{{ gettext('SEPARATOR_PATH') }}</label>
                                     <div class="input-group mb-2">
-                                        <input type="text" class="form-control" id="separatorpath" name="SEPARATOR_separatorpath" value="{{ configDashboard['SEPARATOR']['separatorpath'] }}">
+                                        <input type="text" class="form-control" id="splitterpath" name="SPLITTER_splitterpath" value="{{ configDashboard['SPLITTER']['splitterpath'] }}">
                                         <div class="input-group-prepend">
                                             <div class="input-group-text">
                                                 <i class="fas fa-object-ungroup"></i>
@@ -265,7 +265,7 @@
                                 <div class="form-group col-md-4">
                                     <label for="tmpbatchpath">{{ gettext('TMP_BATCH_PATH') }}</label>
                                     <div class="input-group mb-2">
-                                        <input type="text" class="form-control" id="tmpbatchpath" name="SEPARATOR_tmpbatchpath" value="{{ configDashboard['SEPARATOR']['tmpbatchpath'] }}">
+                                        <input type="text" class="form-control" id="tmpbatchpath" name="SPLITTER_tmpbatchpath" value="{{ configDashboard['SPLITTER']['tmpbatchpath'] }}">
                                         <div class="input-group-prepend">
                                             <div class="input-group-text">
                                                 <i class="fas fa-file-pdf"></i>
@@ -276,7 +276,7 @@
                                 <div class="form-group col-md-4">
                                     <label for="pdfoutputpath">{{ gettext('PDF_OUTPUT_PATH') }}</label>
                                     <div class="input-group mb-2">
-                                        <input type="text" class="form-control" id="pdfoutputpath" name="SEPARATOR_pdfoutputpath" value="{{ configDashboard['SEPARATOR']['pdfoutputpath'] }}">
+                                        <input type="text" class="form-control" id="pdfoutputpath" name="SPLITTER_pdfoutputpath" value="{{ configDashboard['SPLITTER']['pdfoutputpath'] }}">
                                         <div class="input-group-prepend">
                                             <div class="input-group-text">
                                                 <i class="fas fa-file-pdf"></i>
@@ -289,7 +289,7 @@
                                 <div class="form-group col-md-4 offset-md-2">
                                     <label for="pdforiginpath">{{ gettext('PDF_ORIGIN_PATH') }}</label>
                                     <div class="input-group mb-2">
-                                        <input type="text" class="form-control" id="pdforiginpath" name="SEPARATOR_pdforiginpath" value="{{ configDashboard['SEPARATOR']['pdforiginpath'] }}">
+                                        <input type="text" class="form-control" id="pdforiginpath" name="SPLITTER_pdforiginpath" value="{{ configDashboard['SPLITTER']['pdforiginpath'] }}">
                                         <div class="input-group-prepend">
                                             <div class="input-group-text">
                                                 <i class="fas fa-file-pdf"></i>
@@ -300,7 +300,7 @@
                                 <div class="form-group col-md-4">
                                     <label for="allowedextensions">{{ gettext('ALLOWED_EXTENSIONS') }}</label>
                                     <div class="input-group mb-2">
-                                        <input type="text" class="form-control" id="allowedextensions" name="SEPARATOR_allowedextensions" value="{{ configDashboard['SEPARATOR']['allowedextensions'] }}">
+                                        <input type="text" class="form-control" id="allowedextensions" name="SPLITTER_allowedextensions" value="{{ configDashboard['SPLITTER']['allowedextensions'] }}">
                                         <div class="input-group-prepend">
                                             <div class="input-group-text">
                                                 <i class="fas fa-check"></i>

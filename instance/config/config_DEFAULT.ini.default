@@ -19,11 +19,11 @@ allowduplicate              = False
 allowAutomaticValidation    = False
 defaultPassword             = Open-CaptureForInvoices
 
-[SEPARATOR]
-separatorPath = /var/docservers/OpenCapture_Separator/
-tmpBatchPath = ${SEPARATOR:separatorPath}/batches/
-pdfOutputPath = ${SEPARATOR:separatorPath}/separated_pdf/
-pdfOriginPath = ${GLOBAL:projectPath}/bin/data/OC_Separator/pdf_sources/
+[SPLITTER]
+splitterpath = /var/docservers/OpenCapture_Splitter/
+tmpBatchPath = ${SPLITTER:splitterpath}/batches/
+pdfOutputPath = ${SPLITTER:splitterpath}/separated_pdf/
+pdfOriginPath = ${GLOBAL:projectPath}/bin/data/OC_Splitter/pdf_sources/
 allowedExtensions  = {'pdf'}
 
 [DATABASE]

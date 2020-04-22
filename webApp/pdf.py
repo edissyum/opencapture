@@ -282,7 +282,7 @@ def delete(id, url):
     return redirect(url)
 
 @bp.route('/upload')
-@bp.route('/upload?separator=<string:issep>')
+@bp.route('/upload?splitter=<string:issep>')
 @login_required
 def upload():
     return render_template('pdf/upload.html')
@@ -435,12 +435,12 @@ def static(typeofFile, filename):
     _vars       = init()
     _cfg        = _vars[1].cfg
 
-    if typeofFile == 'separator':
-        docservers = _cfg['SEPARATOR']['tmpbatchpath']
+    if typeofFile == 'splitter':
+        docservers = _cfg['SPLITTER']['tmpbatchpath']
         mimetype = 'image/jpeg'
 
     elif typeofFile == 'originFile':
-        docservers = _cfg['SEPARATOR']['pdforiginpath']
+        docservers = _cfg['SPLITTER']['pdforiginpath']
         mimetype = 'application/pdf'
 
     elif typeofFile == 'thumbs':

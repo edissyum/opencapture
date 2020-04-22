@@ -15,7 +15,21 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from bin.src.main_separator import launch
+def process(args, file, Log, Splitter, Config, Files, Ocr, Locale, Database, tmpFolder, q = None,):
+    Log.info('Processing file for separation : ' + file)
 
-def main(args):
-    launch(args)
+    # Get the OCR of the file as a list of line content and position
+    Files.pdf_to_jpg(file, False)
+
+    files = Files.sorted_file(tmpFolder, 'jpg')
+
+    text_extracted = []
+    for f in files:
+        img = Files.open_image_return(f[1])
+        text = Ocr.text_builder(img)
+        text = text.replace('-\n', '')
+        text_extracted.append(text)
+    invoices_separated = Splitter.get_page_separate_order(text_extracted)
+
+    Splitter.save_image_from_pdf(files ,invoices_separated, tmpFolder, file)
+

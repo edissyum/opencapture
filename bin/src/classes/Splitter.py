@@ -26,7 +26,7 @@ import shutil
 from datetime import date, datetime
 from bin.src.classes.Files import Files
 
-class Separator:
+class Splitter:
     def __init__(self, Config, Database, Locale):
         self.Config = Config
         self.db = Database
@@ -167,7 +167,7 @@ class Separator:
         }
         self.db.insert(args)
         self.db.conn.commit()
-        self.delete_not_necessary_file(self.Config.cfg['SEPARATOR']['tmpbatchpath'] + batch_name)
+        self.delete_not_necessary_file(self.Config.cfg['SPLITTER']['tmpbatchpath'] + batch_name)
         return batch_folder
 
     @staticmethod
@@ -204,7 +204,7 @@ class Separator:
     # save result after user separate in pdf (pdf for every invoice)
     def save_pdf_result_after_separate(self, pages_list, pdf_path_input, pdf_path_output):
         pdf_writer = PyPDF4.PdfFileWriter()
-        pdf_reader = PyPDF4.PdfFileReader(self.Config.cfg['SEPARATOR']['pdforiginpath'] + pdf_path_input)
+        pdf_reader = PyPDF4.PdfFileReader(self.Config.cfg['SPLITTER']['pdforiginpath'] + pdf_path_input)
         lot_name = self.get_lot_name()
         for invoice_index, pages in enumerate(pages_list):
             for page in pages:

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2020-04-07 11:15+0200\n"
+"POT-Creation-Date: 2020-04-22 11:38+0200\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: en\n"
@@ -51,16 +51,16 @@ msgid "USER_DISABLED"
 msgstr "User disabled"
 
 #: webApp/pdf.py:172 webApp/static/js/videoCodage.js:59
-#: webApp/ws_separator.py:111
+#: webApp/ws_splitter.py:111
 msgid "NO_RESULTS"
 msgstr "No results"
 
-#: webApp/pdf.py:174 webApp/user.py:150 webApp/ws_separator.py:113
+#: webApp/pdf.py:174 webApp/user.py:150 webApp/ws_splitter.py:113
 msgid "SHOW"
 msgstr "Show"
 
 #: webApp/pdf.py:174 webApp/templates/pdf/view.html:16 webApp/user.py:150
-#: webApp/ws_separator.py:114
+#: webApp/ws_splitter.py:114
 msgid "OF"
 msgstr "of"
 
@@ -128,7 +128,7 @@ msgstr "Configuration file updated with success"
 msgid "ERROR_UPDATE_CONFIG_FILE"
 msgstr "Error while updating configuration file"
 
-#: webApp/ws_separator.py:73
+#: webApp/ws_splitter.py:73
 msgid "FILE_UPLOAD_SUCCESS"
 msgstr "File(s) upload with success"
 
@@ -279,16 +279,16 @@ msgstr "National address base value"
 msgid "INVALID"
 msgstr "Invalid"
 
-#: webApp/templates/base.html:67 webApp/templates/base_separator.html:67
+#: webApp/templates/base.html:67 webApp/templates/base_splitter.html:67
 #: webApp/templates/home.html:2
 msgid "HOME"
 msgstr "Home"
 
-#: webApp/templates/base.html:68 webApp/templates/base_separator.html:68
+#: webApp/templates/base.html:68 webApp/templates/base_splitter.html:68
 msgid "LIST"
 msgstr "Batch"
 
-#: webApp/templates/base.html:69 webApp/templates/base_separator.html:69
+#: webApp/templates/base.html:69 webApp/templates/base_splitter.html:69
 msgid "UPLOAD"
 msgstr "Upload"
 
@@ -296,7 +296,7 @@ msgstr "Upload"
 msgid "MY_PROFILE"
 msgstr "My profile"
 
-#: webApp/templates/base.html:71 webApp/templates/base_separator.html:70
+#: webApp/templates/base.html:71 webApp/templates/base_splitter.html:70
 msgid "LOG_OUT"
 msgstr "Log out"
 
@@ -312,7 +312,7 @@ msgstr "User list"
 msgid "CREATE_USER"
 msgstr "Create user"
 
-#: webApp/templates/base.html:78 webApp/templates/base_separator.html:72
+#: webApp/templates/base.html:78 webApp/templates/base_splitter.html:72
 msgid "SIGN_IN"
 msgstr "Sign in"
 
@@ -783,8 +783,8 @@ msgid "OLD_LOT"
 msgstr "Older batch"
 
 #: webApp/templates/pdf/list.html:27 webApp/templates/pdf/list.html:28
-#: webApp/templates/separator/separator_manager.html:20
-#: webApp/templates/separator/separator_manager.html:21
+#: webApp/templates/splitter/splitter_manager.html:20
+#: webApp/templates/splitter/splitter_manager.html:21
 msgid "_SEARCH_PLACEHOLDER"
 msgstr "Search for invoice"
 
@@ -805,7 +805,7 @@ msgid "INVOICE_CLOSED"
 msgstr "Invoice is closed and cannot be modified"
 
 #: webApp/templates/pdf/list.html:96
-#: webApp/templates/separator/separator_manager.html:53
+#: webApp/templates/splitter/splitter_manager.html:53
 msgid "SAVED_THE"
 msgstr "Saved the"
 
@@ -937,47 +937,47 @@ msgstr "Form validation"
 msgid "BACK_TO_VALIDATION"
 msgstr "Back to validation"
 
-#: webApp/templates/separator/separate_process.html:2
-msgid "SEPARATOR_PROCESS"
-msgstr "Separation process"
-
-#: webApp/templates/separator/separate_process.html:28
-msgid "SEND_TO"
-msgstr "Send to "
-
-#: webApp/templates/separator/separate_process.html:31
-#: webApp/templates/separator/separate_process.html:78
-msgid "INVOICE"
-msgstr "Invoice"
-
-#: webApp/templates/separator/separate_process.html:57
-#: webApp/templates/separator/separate_process.html:63
-msgid "USER_HELP"
-msgstr ""
-
-#: webApp/templates/separator/separate_process.html:66
-msgid "CANCEL"
-msgstr "Cancel"
-
-#: webApp/templates/separator/separate_process.html:105
-msgid "ADD"
-msgstr "Add"
-
-#: webApp/templates/separator/separate_process.html:108
-msgid "VALIDATE"
-msgstr "Validate"
-
-#: webApp/templates/separator/separator_manager.html:59
+#: webApp/templates/splitter/splitter_manager.html:59
 msgid "SEPARATOR"
 msgstr "Separator"
 
-#: webApp/templates/separator/separator_manager.html:60
+#: webApp/templates/splitter/splitter_manager.html:60
 msgid "ORIGIN_DOCUMENT"
 msgstr "Origin document"
 
-#: webApp/templates/separator/separator_manager.html:62
+#: webApp/templates/splitter/splitter_manager.html:62
 msgid "DELETE"
 msgstr "Delete"
+
+#: webApp/templates/splitter/splitter_process.html:2
+msgid "SEPARATOR_PROCESS"
+msgstr "Separation process"
+
+#: webApp/templates/splitter/splitter_process.html:28
+msgid "SEND_TO"
+msgstr "Send to "
+
+#: webApp/templates/splitter/splitter_process.html:31
+#: webApp/templates/splitter/splitter_process.html:78
+msgid "INVOICE"
+msgstr "Invoice"
+
+#: webApp/templates/splitter/splitter_process.html:57
+#: webApp/templates/splitter/splitter_process.html:63
+msgid "USER_HELP"
+msgstr ""
+
+#: webApp/templates/splitter/splitter_process.html:66
+msgid "CANCEL"
+msgstr "Cancel"
+
+#: webApp/templates/splitter/splitter_process.html:105
+msgid "ADD"
+msgstr "Add"
+
+#: webApp/templates/splitter/splitter_process.html:108
+msgid "VALIDATE"
+msgstr "Validate"
 
 #: webApp/templates/users/user_list.html:15
 msgid "CREATION_DATE"
