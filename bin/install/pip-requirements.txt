@@ -3,6 +3,7 @@ wand
 flask
 zeep
 pyocr
+pyPdf2
 pyPdf4
 pandas
 pillow
