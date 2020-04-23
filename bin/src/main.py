@@ -66,7 +66,7 @@ def recursive_delete(folder, Log):
         Log.error('Unable to delete ' + folder + ' on temp folder: ' + str(e))
 
 # If needed just run "kuyruk --app bin.src.main.OCforInvoices manager" to have web dashboard of current running worker
-@OCforInvoices.task()
+@OCforInvoices.task(queue='invoices')
 def launch(args):
     start = time.time()
 

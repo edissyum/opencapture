@@ -35,13 +35,13 @@ import bin.src.classes.Database as databaseClass
 from bin.src.process.OCForInvoices_splitter import process
 import bin.src.classes.Splitter as splitter
 
-OCforInvoices_Sep = Kuyruk()
+OCforInvoices = Kuyruk()
 
-OCforInvoices_Sep.config.MANAGER_HOST         = "127.0.0.1"
-OCforInvoices_Sep.config.MANAGER_PORT         = 16502
-OCforInvoices_Sep.config.MANAGER_HTTP_PORT    = 16503
+OCforInvoices.config.MANAGER_HOST         = "127.0.0.1"
+OCforInvoices.config.MANAGER_PORT         = 16502
+OCforInvoices.config.MANAGER_HTTP_PORT    = 16503
 
-m = Manager(OCforInvoices_Sep)
+m = Manager(OCforInvoices)
 
 def check_file(Files, path, Config, Log):
     if not Files.check_file_integrity(path, Config):
@@ -64,8 +64,8 @@ def recursive_delete(folder, Log):
     except FileNotFoundError as e:
         Log.error('Unable to delete ' + folder + ' on temp folder: ' + str(e))
 
-# If needed just run "kuyruk --app bin.src.main.OCforInvoices manager" to have web dashboard of current running worker
-@OCforInvoices_Sep.task()
+# If needed just run "kuyruk --app bin.src.main_splitter.OCforInvoices_Sep manager" to have web dashboard of current running worker
+@OCforInvoices.task(queue='splitter')
 def launch(args):
     start = time.time()
 
