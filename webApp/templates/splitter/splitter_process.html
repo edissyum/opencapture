@@ -7,22 +7,22 @@
 
 {% block content %}
     <div class="splitter-control-menu shadow p-8 mb-5 bg-white rounded align-items-center">
-        <div class="delete-control-menu">
-            <a href="#" class="btn-delete-selected border-right border-dark">
+        <div class="delete-control-menu" data-toggle="tooltip" data-placement="bottom" title="{{ gettext('DELETE_SELECTION') }}">
+            <a href="javascript:void(0);" class="btn-delete-selected border-right border-dark">
                 <i class="fas fa-trash-alt fa-2x"></i>
             </a>
         </div>
-        <div class="btn-splitter-check">
-            <a href="#" class="btn-select-all border-right border-dark" onclick="checkAllCheckBox()"><i class="fas fa-check-circle fa-2x"></i></a>
+        <div class="btn-splitter-check" data-toggle="tooltip" data-placement="bottom" title="{{ gettext('CHECK_ALL') }}">
+            <a href="javascript:void(0);" class="btn-select-all border-right border-dark" onclick="checkAllCheckBox()"><i class="fas fa-check-circle fa-2x"></i></a>
         </div>
-        <div class="btn-uncheck-splitter-help ">
-            <a href="#" class="btn-splitter-help border-right border-dark" onclick="unCheckAllCheckBox()"><i class="fas fa-ban fa-2x"></i></a>
+        <div class="btn-uncheck-splitter-help " data-toggle="tooltip" data-placement="bottom" title="{{ gettext('UNCHECK_ALL') }}">
+            <a href="javascript:void(0);" class="btn-splitter-help border-right border-dark" onclick="unCheckAllCheckBox()"><i class="fas fa-ban fa-2x"></i></a>
         </div>
-        <div class="btn-splitter-undo " onclick="refresh()">
-            <a href="#" class="btn-splitter-help border-right border-dark"><i class="fas fa-undo fa-2x"></i></a>
+        <div class="btn-splitter-undo " onclick="refresh()" data-toggle="tooltip" data-placement="bottom" title="{{ gettext('RESET') }}">
+            <a href="javascript:void(0);" class="btn-splitter-help border-right border-dark"><i class="fas fa-undo fa-2x"></i></a>
         </div>
-        <div class="btn-splitter-add-invoice " onclick="add_invoice()">
-            <a href="#" class="btn-splitter-help border-right border-dark"><i class="fas fa-plus-circle fa-2x"></i></a>
+        <div class="btn-splitter-add-invoice " onclick="add_invoice(this)" data-toggle="tooltip" data-placement="bottom" title="{{ gettext('ADD') }} {{ gettext('INVOICE') }}">
+            <a href="javascript:void(0);" class="btn-splitter-help border-right border-dark"><i class="fas fa-plus-circle fa-2x"></i></a>
         </div>
         <div class="align-items-center ml-3">
              <span class="mr-2">{{ gettext('SEND_TO') }}</span>
@@ -31,58 +31,35 @@
                      <option id="option_invoice_{{loop.index}}">{{ gettext('INVOICE')}} {{loop.index}}</option>
                 {% endfor %}
             </select>
-            <a href="#" class="btn-send-selected border-right border-dark">
+            <a href="javascript:void(0);" class="btn-send-selected border-right border-dark" data-toggle="tooltip" data-placement="bottom" title="{{ gettext('SEND') }}">
                 <i class="fa fa-paper-plane fa-lg align-items-center"></i>
             </a>
         </div>
-        <div onclick="submitSplit()">
-            <a href="#" id="save-invoices">
+        <div onclick="submitSplit()" data-toggle="tooltip" data-placement="bottom" title="{{ gettext('VALIDATE') }}">
+            <a href="javascript:void(0);" id="save-invoices">
                 <i class="fas fa-save"></i>
             </a>
         </div>
-{#        <div class="btn-splitter-help border-left ">#}
-{#            <a href="#" class="btn-splitter-help" data-toggle="modal" data-target="#exampleModal"><i class="fas fa-question-circle fa-2x"></i></a>#}
-{#        </div>#}
     </div>
     <div class="p-3 mb-5 bg-white rounded align-content-center" id="zoom">
         <span class="border">
             <img class="zoom-image" id="zoom-image" alt="zoom image"/>
         </span>
     </div>
-    <!-- Modal Help -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">{{ gettext('USER_HELP') }}</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            {{ gettext('USER_HELP') }}
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ gettext('CANCEL') }}</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- End Modal Help -->
     <div id="invoices-list" class="container-fluid">
              {% for pages_path in invoices %}
-                <div class="row delete-if-empty" id="row_{{loop.index}}">
+                <div class="row delete-if-empty change-row-id-on-invoice-add" id="row_{{loop.index}}">
                     <div class="col-xl">
                          <div class="card">
                             <div class="card-header">
                                 <label>{{ gettext('INVOICE')}} {{ loop.index }}</label>
-                                <a id="delete-invoice" href="#" rel="{{loop.index}}">
+                                <a id="delete-invoice" href="#" rel="{{loop.index}}" data-toggle="tooltip" data-placement="bottom" title="{{ gettext('DELETE') }} {{ gettext('INVOICE') }}">
                                     <i class="fas fa-trash"></i>
                                 </a>
                             </div>
                             <div class="card-body">
                                 {{first_event}} {{second_event}}
-                                <div id="list_{{loop.index}}" class="row facet-list remove-if-empty">
+                                <div id="list_{{loop.index}}" class="row facet-list remove-if-empty change-list-id-on-invoice-add">
                                     {% for image_path in pages_path %}
                                          <div class="col-md-2 parent invoice-page" id="{{image_path}}">
                                             <div class="invoice-images">
@@ -108,7 +85,7 @@
          <i class="fas fa-save"> {{gettext('VALIDATE')}}</i>
     </button>
     <div style="height: 50px"></div>
-    <div id="history" class="bg-light position-fixed">
+    <div id="history" class="bg-light position-fixed" data-toggle="tooltip" data-placement="bottom" title="{{ gettext('HISTORY') }}">
         <button type="button" class="btn btn-default" id="show-hide-hist" onclick="show_hide_history()">
              <i class="fas fa-history"></i>
         </button>
