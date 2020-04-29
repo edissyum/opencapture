@@ -25,8 +25,7 @@ if __name__ == '__main__':
 
     #TODO
         # Add the MIME type into a config file
-        # The invoiceReferential are really needed ?
-    mime  = mimetypes.guess_type(Spreadsheet.referencialSuppplierSpreadsheet)[0]
+    mime = mimetypes.guess_type(Spreadsheet.referencialSuppplierSpreadsheet)[0]
     if mime in ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']:
         contentSupplierSheet    = Spreadsheet.read_excel_sheet(Spreadsheet.referencialSuppplierSpreadsheet)
     else:
@@ -48,14 +47,14 @@ if __name__ == '__main__':
             args = {
                 'table': 'suppliers',
                 'columns': {
-                    'vatNumber'     : str(taxeNumber),
-                    'name'          : str(Spreadsheet.referencialSupplierData[taxeNumber][0][Spreadsheet.referencialSupplierArray['name']]),
-                    'SIREN'         : str(Spreadsheet.referencialSupplierData[taxeNumber][0][Spreadsheet.referencialSupplierArray['SIREN']]),
-                    'SIRET'         : str(Spreadsheet.referencialSupplierData[taxeNumber][0][Spreadsheet.referencialSupplierArray['SIRET']]),
-                    'adress1'       : str(Spreadsheet.referencialSupplierData[taxeNumber][0][Spreadsheet.referencialSupplierArray['adress1']]),
-                    'adress2'       : str(Spreadsheet.referencialSupplierData[taxeNumber][0][Spreadsheet.referencialSupplierArray['adress2']]),
-                    'postal_code'   : str(Spreadsheet.referencialSupplierData[taxeNumber][0][Spreadsheet.referencialSupplierArray['adressPostalCode']]),
-                    'city'          : str(Spreadsheet.referencialSupplierData[taxeNumber][0][Spreadsheet.referencialSupplierArray['adressTown']]),
+                    'vatNumber': str(taxeNumber),
+                    'name': str(Spreadsheet.referencialSupplierData[taxeNumber][0][Spreadsheet.referencialSupplierArray['name']]),
+                    'SIREN': str(Spreadsheet.referencialSupplierData[taxeNumber][0][Spreadsheet.referencialSupplierArray['SIREN']]),
+                    'SIRET': str(Spreadsheet.referencialSupplierData[taxeNumber][0][Spreadsheet.referencialSupplierArray['SIRET']]),
+                    'adress1': str(Spreadsheet.referencialSupplierData[taxeNumber][0][Spreadsheet.referencialSupplierArray['adress1']]),
+                    'adress2': str(Spreadsheet.referencialSupplierData[taxeNumber][0][Spreadsheet.referencialSupplierArray['adress2']]),
+                    'postal_code': str(Spreadsheet.referencialSupplierData[taxeNumber][0][Spreadsheet.referencialSupplierArray['adressPostalCode']]),
+                    'city': str(Spreadsheet.referencialSupplierData[taxeNumber][0][Spreadsheet.referencialSupplierArray['adressTown']]),
                 }
             }
             res = Database.insert(args)
@@ -64,6 +63,28 @@ if __name__ == '__main__':
                             str(Spreadsheet.referencialSupplierData[taxeNumber][0][Spreadsheet.referencialSupplierArray['name']]))
             else:
                 Log.error('While adding supplier : ' +
+                            str(Spreadsheet.referencialSupplierData[taxeNumber][0][Spreadsheet.referencialSupplierArray['name']]))
+        else:
+            args = {
+                'table': ['suppliers'],
+                'set': {
+                    'name': str(Spreadsheet.referencialSupplierData[taxeNumber][0][Spreadsheet.referencialSupplierArray['name']]),
+                    'SIREN': str(Spreadsheet.referencialSupplierData[taxeNumber][0][Spreadsheet.referencialSupplierArray['SIREN']]),
+                    'SIRET': str(Spreadsheet.referencialSupplierData[taxeNumber][0][Spreadsheet.referencialSupplierArray['SIRET']]),
+                    'adress1': str(Spreadsheet.referencialSupplierData[taxeNumber][0][Spreadsheet.referencialSupplierArray['adress1']]),
+                    'adress2': str(Spreadsheet.referencialSupplierData[taxeNumber][0][Spreadsheet.referencialSupplierArray['adress2']]),
+                    'postal_code': str(Spreadsheet.referencialSupplierData[taxeNumber][0][Spreadsheet.referencialSupplierArray['adressPostalCode']]),
+                    'city': str(Spreadsheet.referencialSupplierData[taxeNumber][0][Spreadsheet.referencialSupplierArray['adressTown']]),
+                },
+                'where' : ['vatNumber = ?'],
+                'data' : [taxeNumber]
+            }
+            res = Database.update(args)
+            if res[0]:
+                Log.info('The following supplier was successfully updated into database : ' +
+                            str(Spreadsheet.referencialSupplierData[taxeNumber][0][Spreadsheet.referencialSupplierArray['name']]))
+            else:
+                Log.error('While updating supplier : ' +
                             str(Spreadsheet.referencialSupplierData[taxeNumber][0][Spreadsheet.referencialSupplierArray['name']]))
 
     # Commit and close database connection
