@@ -21,7 +21,7 @@ import fast_luhn as fl
 class FindSupplier:
     def __init__(self, Ocr, Log, Locale, Database, Files, _file):
         self.Ocr            = Ocr
-        self.text           = Ocr.footer_text
+        self.text           = Ocr.header_text
         self.Log            = Log
         self.fileToProcess  = _file
         self.Files          = Files
@@ -50,7 +50,7 @@ class FindSupplier:
         self.Files.open_img(self.Files.jpgName_header)
         self.Ocr.line_box_builder(self.Files.img)
 
-    def run(self, retry = False, regenerateOcr = False, target='footer'):
+    def run(self, retry = False, regenerateOcr = False, target=False):
         found_first     = True
         found_second    = True
         vatFound        = False
@@ -90,6 +90,8 @@ class FindSupplier:
                             self.regenerateOcr()
                             self.Log.info('SIRET found : ' + _siret)
                             return existingSupplier[0]['vatNumber'], (('',''),('','')), existingSupplier[0]
+                        else:
+                            self.Log.info('SIRET found : ' + _siret + ' but no supplier found in database using this SIRET')
                     else:
                         self.Log.info("SIRET doesn't meet the Luhn's algorithm : " + _siret)
 
