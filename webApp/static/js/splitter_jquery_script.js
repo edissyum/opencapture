@@ -42,8 +42,7 @@ $(document).on('click','.btn-delete-selected',function(e) {
                $('#invoices-history-list').append($(this).parent().parent().closest('div'))
            }
       });
-    deleteInvoicesIfEmpty()
-
+    deleteInvoicesIfEmpty();
 });
 
 $(document).on('click','.btn-send-selected',function(e) {
@@ -94,8 +93,6 @@ function submitSplit(){
         console.log(ids)
         if (typeof ids !== 'undefined' && ids.length > 0)
             list_ids.push(ids);
-        else
-            count_id_len++;
     }
 
     console.log(list_ids)
@@ -123,7 +120,7 @@ $(document).mouseup(function (e){
   if (!container.is(e.target) // if the target of the click isn't the container...
       && container.has(e.target).length === 0) // ... nor a descendant of the container
   {
-    $('#zoom-image').attr('src','')
+    $('#zoom-image').attr('src','');
     $("#zoom-image").css({
         "visibility":"hidden"
     })
@@ -132,30 +129,54 @@ $(document).mouseup(function (e){
 
 // add new invoice list
 function add_invoice(){
-    // disable scroll up when click
-    let count_id_len = ($("#invoices-list").find('[id^=row_]').length)  + 1
-    $("#invoices-list").append(
-        '\t\t\t<div class="row delete-if-empty" id="row_'+ count_id_len + '">\n' +
-        '\t\t\t\t<div class="col-xl">\n' +
-        '\t\t\t\t\t <div class="card">\n' +
-        '\t\t\t\t\t\t<div class="card-header">\n' +
-        '\t\t\t\t\t\t\t<label>Facture ' + count_id_len + '</label>\n' +
-        '\t\t\t\t\t\t\t<a id="delete-invoice" href="#" rel="' + count_id_len + '">\n' +
-        '\t\t\t\t\t\t\t\t<i class="fas fa-trash"></i>\n' +
-        '\t\t\t\t\t\t\t</a>' +
-        '\t\t\t\t\t\t</div>\n' +
-        '\t\t\t\t\t\t <div class="card-body">\n' +
-        '\t\t\t\t\t\t\t<div id="list_' + count_id_len + '" class="row facet-list ui-sortable">\n' +
-        '\t\t\t\t\t\t\t</div>\n' +
-        '\t\t\t\t\t\t </div>\n' +
-        '\t\t\t\t\t </div>\n' +
-        '\t\t\t\t</div>\n' +
-        '\t\t\t</div>');
-    $('#row_' + count_id_len).hide().slideDown();
+    // get the new invoice index
+    let invoices_ids = $("#invoices-list").find('[id^=row_]');
+    let count_id_len = invoices_ids.length + 1;
+    let invoice_in_view;
+    let isElementInView100;
+    let isElementInView200;
+    let $element;
+    let $append_invoice_in;
+    let new_invoice = '\t\t\t<div class="row delete-if-empty change-row-id-on-invoice-add" id="row_'+ count_id_len + '">\n' +
+                        '\t\t\t\t<div class="col-xl">\n' +
+                        '\t\t\t\t\t <div class="card">\n' +
+                        '\t\t\t\t\t\t<div class="card-header">\n' +
+                        '\t\t\t\t\t\t\t<label>Facture ' + count_id_len + '</label>\n' +
+                        '\t\t\t\t\t\t\t<a id="delete-invoice" href="#" rel="' + count_id_len + '">\n' +
+                        '\t\t\t\t\t\t\t\t<i class="fas fa-trash"></i>\n' +
+                        '\t\t\t\t\t\t\t</a>' +
+                        '\t\t\t\t\t\t</div>\n' +
+                        '\t\t\t\t\t\t <div class="card-body">\n' +
+                        '\t\t\t\t\t\t\t<div id="list_' + count_id_len + '" class="row facet-list ui-sortable change-list-id-on-invoice-add">\n' +
+                        '\t\t\t\t\t\t\t</div>\n' +
+                        '\t\t\t\t\t\t </div>\n' +
+                        '\t\t\t\t\t </div>\n' +
+                        '\t\t\t\t</div>\n' +
+                        '\t\t\t</div>';
 
+    // append in the current scroll position
+    for(let invoice of invoices_ids){
+        $element = $('#' + invoice.id);
+        isElementInView100 = isScrolledIntoView($element, 100);
+        isElementInView200 = isScrolledIntoView($element, 200);
+        if (isElementInView100 || isElementInView200) {
+            invoice_in_view = invoice;
+        }
+    }
+    if(invoice_in_view !== undefined) {
+        $('#' + invoice_in_view.id).after(new_invoice);
+    }
+    else {
+        // if all invoices were deleted
+        $('.container-fluid').append(new_invoice);
+    }
+
+    $('#row_' + count_id_len).hide().slideDown();
+    orderInvoiceIds();
     $('#input-send-invoice').append(
         '<option id=\"option_invoice_' + count_id_len + '\"> Facture ' + count_id_len + '</option>'
     );
+
     // delete invoice
     // add new list to sortable
     $(".facet-list").sortable({
@@ -164,8 +185,9 @@ function add_invoice(){
       delay: 150
     })
     .disableSelection();
-    // scroll to bottom
-$('html, body').animate({scrollTop:$(document).height()}, 'slow');}
+
+    return false;
+}
 
 // delete invoice
 $(document).on('click','#delete-invoice',function(e) {
@@ -173,6 +195,7 @@ $(document).on('click','#delete-invoice',function(e) {
     e.preventDefault();
     let invoice_index = $(this).prop('rel');
     removeInvoice(invoice_index);
+    orderInvoiceIds()
 });
 
 // pages delete hist
@@ -205,16 +228,41 @@ function removeInvoice(index) {
         $('#row_' + index).slideUp("normal", function() { $(this).remove(); } );
         // delete invoice from control menu option
         $('#input-send-invoice > #option_invoice_' + index).remove();
+        // set new invoices order
+        orderInvoiceIds();
 }
 
 // remove invoice if empty
 function deleteInvoicesIfEmpty() {
     let invoices_list_index = 1; /* used to get the div to be removed */
     $('.remove-if-empty').each(function () {
-        if ($(this).children().length == 0){
+        if ($(this).children().length === 0){
             removeInvoice(invoices_list_index);
         }
         invoices_list_index++;
     });
+    orderInvoiceIds();
 }
 
+// check if invoice is displayed
+function isScrolledIntoView(elem, correct_scrolling){
+    let docViewTop = $(window).scrollTop() - correct_scrolling;
+    let docViewBottom = docViewTop + $(window).height();
+
+    let elemTop = $(elem).offset().top;
+    let elemBottom = elemTop + $(elem).height();
+
+    return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop));
+}
+
+// order invoices ids
+function orderInvoiceIds(){
+    $( ".change-row-id-on-invoice-add" ).each(function( index ) {
+        index ++;
+        $(this).attr("id", "row_" + index);
+        $(this).find('label').text("Facture " + index);
+        $(this).find('.change-list-id-on-invoice-add').attr("id", "list_" + index);
+        //change delete index rel attribute
+        $(this).find('#delete-invoice').attr("rel", index);
+    });
+}
