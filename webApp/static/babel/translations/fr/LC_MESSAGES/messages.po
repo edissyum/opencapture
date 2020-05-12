@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2020-04-22 11:38+0200\n"
+"POT-Creation-Date: 2020-05-12 14:04+0200\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: fr\n"
@@ -112,19 +112,23 @@ msgstr "Utilisateur supprimé avec succès"
 msgid "USER_DELETED_ERROR"
 msgstr "Erreur lors de la suppression de l'utilisateur"
 
-#: webApp/ws.py:40
+#: webApp/ws.py:33
+msgid "VAT_NOT_VALID"
+msgstr "Numéro de TVA invalide"
+
+#: webApp/ws.py:44
 msgid "PROFILE_UPDATED"
 msgstr "Profil modifié avec succès"
 
-#: webApp/ws.py:43 webApp/ws.py:44
+#: webApp/ws.py:47 webApp/ws.py:48
 msgid "PROFILE_UPDATE_ERROR"
 msgstr "Erreur lors du changement de profil"
 
-#: webApp/ws.py:50
+#: webApp/ws.py:54
 msgid "CONFIG_FILE_UPDATED"
 msgstr "Fichier de configuration modifié avec succès"
 
-#: webApp/ws.py:52
+#: webApp/ws.py:56
 msgid "ERROR_UPDATE_CONFIG_FILE"
 msgstr "Erreur lors de la modification du fichier de configuration"
 
@@ -816,6 +820,7 @@ msgid "UPLOAD_PDF"
 msgstr "Enregistrement d'un PDF"
 
 #: webApp/templates/pdf/upload.html:66
+#: webApp/templates/splitter/splitter_process.html:34
 msgid "SEND"
 msgstr "Envoyer"
 
@@ -948,6 +953,7 @@ msgid "ORIGIN_DOCUMENT"
 msgstr "Document original"
 
 #: webApp/templates/splitter/splitter_manager.html:62
+#: webApp/templates/splitter/splitter_process.html:56
 msgid "DELETE"
 msgstr "Supprimer"
 
@@ -955,31 +961,46 @@ msgstr "Supprimer"
 msgid "SEPARATOR_PROCESS"
 msgstr "Processus de séparation"
 
+#: webApp/templates/splitter/splitter_process.html:10
+msgid "DELETE_SELECTION"
+msgstr ""
+
+#: webApp/templates/splitter/splitter_process.html:15
+msgid "CHECK_ALL"
+msgstr ""
+
+#: webApp/templates/splitter/splitter_process.html:18
+msgid "UNCHECK_ALL"
+msgstr ""
+
+#: webApp/templates/splitter/splitter_process.html:21
+msgid "RESET"
+msgstr ""
+
+#: webApp/templates/splitter/splitter_process.html:24
+#: webApp/templates/splitter/splitter_process.html:82
+msgid "ADD"
+msgstr "Ajouter"
+
+#: webApp/templates/splitter/splitter_process.html:24
+#: webApp/templates/splitter/splitter_process.html:31
+#: webApp/templates/splitter/splitter_process.html:55
+#: webApp/templates/splitter/splitter_process.html:56
+msgid "INVOICE"
+msgstr "Facture"
+
 #: webApp/templates/splitter/splitter_process.html:28
 msgid "SEND_TO"
 msgstr "Envoyer à "
 
-#: webApp/templates/splitter/splitter_process.html:31
-#: webApp/templates/splitter/splitter_process.html:78
-msgid "INVOICE"
-msgstr "Facture"
-
-#: webApp/templates/splitter/splitter_process.html:57
-#: webApp/templates/splitter/splitter_process.html:63
-msgid "USER_HELP"
-msgstr ""
-
-#: webApp/templates/splitter/splitter_process.html:66
-msgid "CANCEL"
-msgstr "Annuler"
-
-#: webApp/templates/splitter/splitter_process.html:105
-msgid "ADD"
-msgstr "Ajouter"
-
-#: webApp/templates/splitter/splitter_process.html:108
+#: webApp/templates/splitter/splitter_process.html:38
+#: webApp/templates/splitter/splitter_process.html:85
 msgid "VALIDATE"
 msgstr "Valider"
+
+#: webApp/templates/splitter/splitter_process.html:88
+msgid "HISTORY"
+msgstr ""
 
 #: webApp/templates/users/user_list.html:15
 msgid "CREATION_DATE"
@@ -1079,4 +1100,10 @@ msgstr "Erreurs lors du téléchargement du/des fichier(s)"
 
 msgid "CHOOSE_VAT_RATE"
 msgstr "Selectionnez un taux de TVA"
+
+#~ msgid "USER_HELP"
+#~ msgstr ""
+
+#~ msgid "CANCEL"
+#~ msgstr "Annuler"
 

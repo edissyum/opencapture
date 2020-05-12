@@ -28,7 +28,11 @@ def checkVAT(vatId):
     try:
         client = Client(URL)
         res = client.service.checkVat(countryCode, vatNumber)
-        return json.dumps({'text': res['valid'], 'code': 200, 'ok': res['valid']})
+        text = res['valid']
+        if res['valid'] is False:
+            text = gettext('VAT_NOT_VALID')
+
+        return json.dumps({'text': text, 'code': 200, 'ok': res['valid']})
     except requests.exceptions.RequestException as e:
         return json.dumps({'text': str(e), 'code': 200, 'ok' : 'false'})
 

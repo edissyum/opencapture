@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2020-04-22 11:38+0200\n"
+"POT-Creation-Date: 2020-05-12 14:04+0200\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: en\n"
@@ -112,19 +112,23 @@ msgstr "User deleted with succes"
 msgid "USER_DELETED_ERROR"
 msgstr "Error while attempting to delete user"
 
-#: webApp/ws.py:40
+#: webApp/ws.py:33
+msgid "VAT_NOT_VALID"
+msgstr "Invalid VAT number"
+
+#: webApp/ws.py:44
 msgid "PROFILE_UPDATED"
 msgstr "Profile updated"
 
-#: webApp/ws.py:43 webApp/ws.py:44
+#: webApp/ws.py:47 webApp/ws.py:48
 msgid "PROFILE_UPDATE_ERROR"
 msgstr "Error while updating profile"
 
-#: webApp/ws.py:50
+#: webApp/ws.py:54
 msgid "CONFIG_FILE_UPDATED"
 msgstr "Configuration file updated with success"
 
-#: webApp/ws.py:52
+#: webApp/ws.py:56
 msgid "ERROR_UPDATE_CONFIG_FILE"
 msgstr "Error while updating configuration file"
 
@@ -814,6 +818,7 @@ msgid "UPLOAD_PDF"
 msgstr "Upload PDF"
 
 #: webApp/templates/pdf/upload.html:66
+#: webApp/templates/splitter/splitter_process.html:34
 msgid "SEND"
 msgstr "Send"
 
@@ -946,6 +951,7 @@ msgid "ORIGIN_DOCUMENT"
 msgstr "Origin document"
 
 #: webApp/templates/splitter/splitter_manager.html:62
+#: webApp/templates/splitter/splitter_process.html:56
 msgid "DELETE"
 msgstr "Delete"
 
@@ -953,31 +959,46 @@ msgstr "Delete"
 msgid "SEPARATOR_PROCESS"
 msgstr "Separation process"
 
+#: webApp/templates/splitter/splitter_process.html:10
+msgid "DELETE_SELECTION"
+msgstr ""
+
+#: webApp/templates/splitter/splitter_process.html:15
+msgid "CHECK_ALL"
+msgstr ""
+
+#: webApp/templates/splitter/splitter_process.html:18
+msgid "UNCHECK_ALL"
+msgstr ""
+
+#: webApp/templates/splitter/splitter_process.html:21
+msgid "RESET"
+msgstr ""
+
+#: webApp/templates/splitter/splitter_process.html:24
+#: webApp/templates/splitter/splitter_process.html:82
+msgid "ADD"
+msgstr "Add"
+
+#: webApp/templates/splitter/splitter_process.html:24
+#: webApp/templates/splitter/splitter_process.html:31
+#: webApp/templates/splitter/splitter_process.html:55
+#: webApp/templates/splitter/splitter_process.html:56
+msgid "INVOICE"
+msgstr "Invoice"
+
 #: webApp/templates/splitter/splitter_process.html:28
 msgid "SEND_TO"
 msgstr "Send to "
 
-#: webApp/templates/splitter/splitter_process.html:31
-#: webApp/templates/splitter/splitter_process.html:78
-msgid "INVOICE"
-msgstr "Invoice"
-
-#: webApp/templates/splitter/splitter_process.html:57
-#: webApp/templates/splitter/splitter_process.html:63
-msgid "USER_HELP"
-msgstr ""
-
-#: webApp/templates/splitter/splitter_process.html:66
-msgid "CANCEL"
-msgstr "Cancel"
-
-#: webApp/templates/splitter/splitter_process.html:105
-msgid "ADD"
-msgstr "Add"
-
-#: webApp/templates/splitter/splitter_process.html:108
+#: webApp/templates/splitter/splitter_process.html:38
+#: webApp/templates/splitter/splitter_process.html:85
 msgid "VALIDATE"
 msgstr "Validate"
+
+#: webApp/templates/splitter/splitter_process.html:88
+msgid "HISTORY"
+msgstr ""
 
 #: webApp/templates/users/user_list.html:15
 msgid "CREATION_DATE"
@@ -1077,4 +1098,10 @@ msgstr "Error while uploading file(s)"
 
 msgid "CHOOSE_VAT_RATE"
 msgstr "Choose VAT rate"
+
+#~ msgid "USER_HELP"
+#~ msgstr ""
+
+#~ msgid "CANCEL"
+#~ msgstr "Cancel"
 
