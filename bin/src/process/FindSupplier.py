@@ -50,7 +50,7 @@ class FindSupplier:
         self.Files.open_img(self.Files.jpgName_header)
         self.Ocr.line_box_builder(self.Files.img)
 
-    def run(self, retry = False, regenerateOcr = False, target=False):
+    def run(self, retry = False, regenerateOcr = False, target=None):
         found_first     = True
         found_second    = True
         vatFound        = False
@@ -150,7 +150,7 @@ class FindSupplier:
             self.Files.improve_image_detection(self.Files.jpgName_header)
             self.Files.open_img(self.Files.jpgName_header)
             self.text = self.Ocr.line_box_builder(self.Files.img)
-            return self.run(retry=True, target='False')
+            return self.run(retry=True, target=None)
 
         # If, even with improved image, nothing was found, check the footer
         if not found_second:
