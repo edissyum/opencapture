@@ -90,12 +90,10 @@ function submitSplit(){
 
     for (let i = 1; i <= count_id_len; i++) {
         let ids = $('#list_' + i + ' .invoice-page').map(function() { return this.id; }).get();
-        console.log(ids)
         if (typeof ids !== 'undefined' && ids.length > 0)
             list_ids.push(ids);
     }
 
-    console.log(list_ids)
     fetch('/submitSplit', {
         method  : 'POST',
         headers : {
@@ -174,7 +172,7 @@ function add_invoice(){
     $('#row_' + count_id_len).hide().slideDown();
     orderInvoiceIds();
     $('#input-send-invoice').append(
-        '<option id=\"option_invoice_' + count_id_len + '\"> Facture ' + count_id_len + '</option>'
+        '<option class="invoice-number-option" id=\"option_invoice_' + count_id_len + '\"> Facture ' + count_id_len + '</option>'
     );
 
     // delete invoice
@@ -195,7 +193,6 @@ $(document).on('click','#delete-invoice',function(e) {
     e.preventDefault();
     let invoice_index = $(this).prop('rel');
     removeInvoice(invoice_index);
-    orderInvoiceIds()
 });
 
 // pages delete hist
@@ -228,20 +225,15 @@ function removeInvoice(index) {
         $('#row_' + index).slideUp("normal", function() { $(this).remove(); } );
         // delete invoice from control menu option
         $('#input-send-invoice > #option_invoice_' + index).remove();
-        // set new invoices order
-        orderInvoiceIds();
 }
 
 // remove invoice if empty
 function deleteInvoicesIfEmpty() {
-    let invoices_list_index = 1; /* used to get the div to be removed */
     $('.remove-if-empty').each(function () {
         if ($(this).children().length === 0){
-            removeInvoice(invoices_list_index);
+            removeInvoice(parseInt($(this).attr("id").split('_')[1]));
         }
-        invoices_list_index++;
     });
-    orderInvoiceIds();
 }
 
 // check if invoice is displayed
@@ -264,5 +256,10 @@ function orderInvoiceIds(){
         $(this).find('.change-list-id-on-invoice-add').attr("id", "list_" + index);
         //change delete index rel attribute
         $(this).find('#delete-invoice').attr("rel", index);
+    });
+    $( "#input-send-invoice > option" ).each(function( index ) {
+        index ++;
+        $(this).text("Facture " + index);
+        $(this).attr("id", "option_invoice_" + index);
     });
 }
