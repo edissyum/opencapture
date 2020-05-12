@@ -90,9 +90,9 @@ function searchSupplier(){
             let adress1     = data['adress1'];
             let adress2     = data['adress2'];
 
-            if(adress1 !== 'nan' && adress2 !== 'nan' && (inputAdress.val() === '' || inputAdress.val() !== adress1 + ' ' + adress2)){
+            if(adress1 !== null && adress2 !== null && (inputAdress.val() === '' || inputAdress.val() !== adress1 + ' ' + adress2)){
                 inputAdress.val(adress1.trim() + ' ' + adress2.trim()).prev().fadeOut();
-            }else if(adress1 !== 'nan' && adress2 === 'nan' && (inputAdress.val() === '' || inputAdress.val() !== adress1)){
+            }else if(adress1 !== null && adress2 === null && (inputAdress.val() === '' || inputAdress.val() !== adress1)){
                 inputAdress.val(adress1.trim()).prev().fadeOut();
             } else if(adress1 === 'nan'){
                 inputAdress.val('').prev().fadeOut();
