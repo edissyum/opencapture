@@ -46,7 +46,6 @@ CREATE TABLE if NOT EXISTS invoices(
     filename                TEXT NOT NULL,
     path                    TEXT NOT NULL,
     thumbPath               TEXT NOT NULL,
-    thumbFilename           TEXT NOT NULL,
     status                  VARCHAR DEFAULT 'NEW' NOT NULL,
     fullJpgPath             TEXT,
     fullJpgFilename         TEXT,

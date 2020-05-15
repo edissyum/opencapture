@@ -183,6 +183,22 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="allowAutomaticValidation">
+                                <h3>{{ gettext('CONVERT_PDF_TO_TIFF') }}</h3>
+                                <hr>
+                                <div class="col-md-4 offset-md-4">
+                                    <div class="form-row">
+                                         <div class="form-group col-md-4 offset-md-6">
+                                            {% if configDashboard['GLOBAL']['convertpdftotiff'] == 'True' %}
+                                                <input type="checkbox" class="custom-control-input" name="GLOBAL_convertpdftotiff"  id="convertpdftotiff" checked>
+                                            {% else %}
+                                                <input type="checkbox" class="custom-control-input" name="GLOBAL_convertpdftotiff" id="convertpdftotiff">
+                                            {% endif %}
+                                            <label class="custom-control-label" for="convertpdftotiff">{{ gettext('ENABLED') }}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="defaultPassword">
                                 <h3>{{ gettext('DEFAULT_PASSWORD') }}</h3>
                                 <hr>
@@ -380,6 +396,17 @@
                                                 </div>
                                             </div>
                                             <div class="form-group col-md-4">
+                                                <label for="tiffPath">{{ gettext('TIFF_PATH') }}</label>
+                                                <div class="input-group mb-2">
+                                                    <div class="input-group-prepend">
+                                                        <div class="input-group-text">
+                                                            <i class="fas fa-file-image"></i>
+                                                        </div>
+                                                    </div>
+                                                    <input type="text" class="form-control" id="tiffPath" name="GLOBAL_tiffpath" value="{{ configDashboard['GLOBAL']['tiffpath'] }}">
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-md-4">
                                                 <label for="errorPath">{{ gettext('ERROR_PATH') }}</label>
                                                 <div class="input-group mb-2">
                                                     <div class="input-group-prepend">
@@ -390,6 +417,9 @@
                                                     <input type="text" class="form-control" id="errorPath" name="GLOBAL_errorpath" value="{{ configDashboard['GLOBAL']['errorpath'] }}">
                                                 </div>
                                             </div>
+                                        </div>
+                                        <hr>
+                                        <div class="form-row">
                                             <div class="form-group col-md-4">
                                                 <label for="logFile">{{ gettext('LOGS_FILE') }}</label>
                                                 <div class="input-group mb-2">
@@ -401,9 +431,6 @@
                                                     <input type="text" class="form-control" id="logFile" name="GLOBAL_logfile" value="{{ configDashboard['GLOBAL']['logfile'] }}">
                                                 </div>
                                             </div>
-                                        </div>
-                                        <hr>
-                                        <div class="form-row">
                                             <div class="form-group col-md-4">
                                                 <label for="docserverpath">{{ gettext('DOCSERVER_PATH') }}</label>
                                                 <div class="input-group mb-2">
@@ -426,6 +453,9 @@
                                                     <input type="text" class="form-control" id="exportaccountingfolder" name="GLOBAL_exportaccountingfolder" value="{{ configDashboard['GLOBAL']['exportaccountingfolder'] }}">
                                                 </div>
                                             </div>
+                                        </div>
+                                        <hr>
+                                        <div class="form-row">
                                             <div class="form-group col-md-4">
                                                 <label for="exportaccountingfileparser">{{ gettext('EXPORT_ACCOUNTING_FILE_PARSER') }}</label>
                                                 <div class="input-group mb-2">
@@ -437,9 +467,6 @@
                                                     <input type="text" class="form-control" id="exportaccountingfileparser" name="GLOBAL_exportaccountingfileparser" value="{{ configDashboard['GLOBAL']['exportaccountingfileparser'] }}">
                                                 </div>
                                             </div>
-                                        </div>
-                                        <hr>
-                                        <div class="form-row">
                                             <div class="form-group col-md-4">
                                                 <label for="databaseFile">{{ gettext('DATABASE_FILE') }}</label>
                                                 <div class="input-group mb-2">
@@ -462,6 +489,9 @@
                                                     <input type="text" class="form-control" id="nbThreads" name="GLOBAL_nbthreads" value="{{ configDashboard['GLOBAL']['nbthreads'] }}">
                                                 </div>
                                             </div>
+                                        </div>
+                                        <hr>
+                                        <div class="form-row">
                                             <div class="form-group col-md-4">
                                                 <label for="resolution">{{ gettext('OCR_RESOLUTION_DPI') }}</label>
                                                 <div class="input-group mb-2">
@@ -473,9 +503,6 @@
                                                     <input type="text" class="form-control" id="resolution" name="GLOBAL_resolution" value="{{ configDashboard['GLOBAL']['resolution'] }}">
                                                 </div>
                                             </div>
-                                        </div>
-                                        <hr>
-                                        <div class="form-row">
                                             <div class="form-group col-md-4">
                                                 <label for="compressionQuality">{{ gettext('IMAGE_COMPRESSION_QUALITY') }}</label>
                                                 <div class="input-group mb-2">
@@ -501,6 +528,8 @@
                                                     <input type="text" class="form-control" id="sanitizeStr" name="GLOBAL_sanitizestr" value="{{ configDashboard['GLOBAL']['sanitizestr'] }}">
                                                 </div>
                                             </div>
+                                        </div>
+                                        <div class="form-row">
                                             <div class="form-group col-md-4">
                                                 <label for="ocrErrorPath">{{ gettext('OCR_ERROR_PATH') }}</label>
                                                 <div class="input-group mb-2">
