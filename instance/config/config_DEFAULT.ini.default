@@ -4,20 +4,24 @@ nbthreads                   = 5
 resolution                  = 300
 compressionquality          = 100
 # Used to fix potential OCR error into mail detection
-sanitizestr                 = {}\[\]()!?§&é~èàç
-projectpath                 = /opt/OpenCaptureForInvoices/
-tmppath                     = ${GLOBAL:projectPath}/bin/data/tmp/
+sanitizeStr                 = {}\[\]()!?§&é~èàç
+projectPath                 = /opt/OpenCaptureForInvoices/
+tmpPath                     = ${GLOBAL:projectPath}/bin/data/tmp/
 docserverPath               = /var/docservers/OpenCapture/
-thumbpath                   = ${GLOBAL:docserverPath}/images/thumbs/
-fullpath                    = ${GLOBAL:docserverPath}/images/full/
+fullPath                    = ${GLOBAL:docserverPath}/images/full/
+tiffPath                    = ${GLOBAL:docserverPath}/images/tiff/
 exportAccountingFolder      = ${GLOBAL:docserverPath}/xml/
 exportAccountingFileParser  = ${GLOBAL:projectPath}/instance/config/exported_filename.xml
-errorpath                   = ${GLOBAL:projectPath}/bin/data/error/
-logfile                     = ${GLOBAL:projectPath}/bin/data/log/OCforInvoices.log
-ocrerrorpath                = ${GLOBAL:projectPath}/instance/config/OCR_ERRORS.xml
-allowduplicate              = False
+errorPath                   = ${GLOBAL:projectPath}/bin/data/error/
+logFile                     = ${GLOBAL:projectPath}/bin/data/log/OCforInvoices.log
+ocrErrorPath                = ${GLOBAL:projectPath}/instance/config/OCR_ERRORS.xml
+# True or False, python way
+allowDuplicate              = False
+# True or False, python way
 allowAutomaticValidation    = False
 defaultPassword             = Open-CaptureForInvoices
+# True or False, python way
+convertPdfToTiff            = True
 
 [SPLITTER]
 splitterpath = /var/docservers/OpenCapture_Splitter/

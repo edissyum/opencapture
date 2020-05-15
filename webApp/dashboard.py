@@ -84,6 +84,7 @@ def modify_config(data):
     separatorQRExportPdfa   = data.get('SEPARATORQR_exportpdfa')
     allowDuplicate          = data.get('GLOBAL_allowduplicate')
     allowAutomaticValidation= data.get('GLOBAL_allowautomaticvalidation')
+    convertPdfToTiff         = data.get('GLOBAL_convertpdftotiff')
     gedEnabled              = data.get('GED_enabled')
 
     if separatorQREnabled is not None:
@@ -106,6 +107,11 @@ def modify_config(data):
     else:
         parser.set('GLOBAL', 'allowautomaticvalidation', 'False')
 
+    if convertPdfToTiff is not None:
+        parser.set('GLOBAL', 'convertpdftotiff', 'True')
+    else:
+        parser.set('GLOBAL', 'convertpdftotiff', 'False')
+
     if gedEnabled is not None:
         parser.set('GED', 'enabled', 'True')
     else:
@@ -118,7 +124,7 @@ def modify_config(data):
 
         # Don't process REGEX param here, because it's another file except for urlpattern
         if 'REGEX' not in section or 'REGEX' in section and 'urlpattern' in field:
-            if field not in ['exportpdfa', 'enabled', 'allowduplicate', 'allowautomaticvalidation']:
+            if field not in ['exportpdfa', 'enabled', 'allowduplicate', 'allowautomaticvalidation', 'convertpdftotiff']:
                 parser.set(section, field, data[info])
         else:
             with open(localepath + locale + '.json', 'r') as file:

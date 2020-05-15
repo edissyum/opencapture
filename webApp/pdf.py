@@ -442,10 +442,6 @@ def static(typeofFile, filename):
     elif typeofFile == 'originFile':
         docservers = _cfg['SPLITTER']['pdforiginpath']
         mimetype = 'application/pdf'
-
-    elif typeofFile == 'thumbs':
-        docservers = _cfg['GLOBAL']['thumbpath']
-        mimetype   = 'image/jpeg'
     elif typeofFile == 'full':
         docservers = _cfg['GLOBAL']['fullpath']
         mimetype   = 'image/jpeg'

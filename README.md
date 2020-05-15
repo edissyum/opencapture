@@ -2,7 +2,7 @@
 
 # Open-Capture for Invoices by Edissyum
  
-Version 0.1.5 
+Version 0.2.0
   
 Open-Capture is a **free and Open Source** software under **GNU General Public License v3.0**.
   
@@ -18,6 +18,7 @@ The functionnalities of Open-Capture for Invoices are :
    - Multiple ADR (LAD) profile, using INI file
    - SIRET/SIREN & Adress verification (Only FR for now)
    - Complex locale REGEX used. Easy to improve and modify
+   - You have the choice to convert PDF to TIFF or JPG. With the TIFF format the results are better but the size of files are much much bigger
   
 # Installation
 ## Linux Distributions
@@ -33,7 +34,7 @@ Tested with :
 
     $ sudo mkdir /opt/OpenCaptureForInvoices/ && sudo chmod -R 775 /opt/OpenCaptureForInvoices/ && sudo chown -R edissyum:edissyum /opt/OpenCaptureForInvoices/  
     $ sudo apt install git
-    $ git clone -b 0.1.5 https://gitlab.com/edissyum/opencapture/opencaptureforinvoices /opt/OpenCaptureForInvoices/  
+    $ git clone -b 0.2.0 https://gitlab.com/edissyum/opencapture/opencaptureforinvoices /opt/OpenCaptureForInvoices/  
     $ cd /opt/OpenCaptureForInvoices/
   
 Before lauching the Makefile. You have to do the following : 
@@ -68,7 +69,7 @@ Here is a list of all available languages code : https://www.macports.org/ports.
 Don't forget to create all the needed path (Modify the user and group if needed) :
 
     $ sudo mkdir -p /var/docservers/{OpenCapture,OpenCapture_Splitter} 
-    $ sudo mkdir -p /var/docservers/OpenCapture/images/{thumbs,full}
+    $ sudo mkdir -p /var/docservers/OpenCapture/images/{tiff,full}
     $ sudo mkdir -p /var/docservers/OpenCapture_Splitter/{batches,separated_pdf}
     $ sudo mkdir -p /var/docservers/OpenCapture/xml/
     $ sudo chmod -R 775 /var/docservers/{OpenCapture,OpenCapture_Splitter}/
@@ -115,7 +116,6 @@ Just report the modifications onto you Maarch installation
 ## Connexion to web client
 
 By default, there is ony one superadmin account. Login is 'admin' and password is 'admin'. You could change it after using the 'My Profile' menu
-
 
 # Installation Splitter module
 
