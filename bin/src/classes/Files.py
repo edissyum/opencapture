@@ -189,13 +189,14 @@ class Files:
         y2          = selection['y2'] * ratio
         cropRatio   = (x1, y1, x2, y2)
 
+        extension = os.path.splitext(img)[1]
         with Image.open(img) as im2:
             croppedImage = im2.crop(cropRatio)
-            croppedImage.save('/tmp/cropped.jpg', 'JPEG')
+            croppedImage.save('/tmp/cropped' + extension)
 
         text = Ocr.text_builder(croppedImage)
 
-        os.remove('/tmp/cropped.jpg')
+        os.remove('/tmp/cropped' + extension)
         return text
 
     @staticmethod
