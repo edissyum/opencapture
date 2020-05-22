@@ -16,6 +16,8 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import os
+import subprocess
+
 import cv2
 import time
 import uuid
@@ -23,16 +25,22 @@ import shutil
 import PyPDF4
 import datetime
 from PIL import Image
+from PyPDF4 import utils
 from xml.dom import minidom
 from wand.color import Color
+from wand.api import library
 import xml.etree.ElementTree as ET
 from wand.image import Image as Img
 
 class Files:
-    def __init__(self, jpgName, res, quality, Xml):
+    def __init__(self, jpgName, res, quality, Xml, isTiff):
+        self.isTiff                 = isTiff
         self.jpgName                = jpgName + '.jpg'
         self.jpgName_header         = jpgName + '_header.jpg'
         self.jpgName_footer         = jpgName + '_footer.jpg'
+        self.jpgName_tiff           = jpgName + '.tiff'
+        self.jpgName_tiff_header    = jpgName + '_header.tiff'
+        self.jpgName_tiff_footer    = jpgName + '_footer.tiff'
         self.resolution             = res
         self.compressionQuality     = quality
         self.img                    = None
@@ -55,6 +63,44 @@ class Files:
             if openImg:
                 self.img = Image.open(self.jpgName)
 
+    def pdf_to_tiff(self, pdfName, openImg=True, crop=False, zoneToCrop=False):
+        # Convert firstly the PDF to full tiff file
+        # It will be used to crop header and footer later
+        if not os.path.isfile(self.jpgName_tiff):
+            args = [
+                "gs", "-q", "-dNOPAUSE", "-dBATCH",
+                "-r" + str(self.resolution), "-sCompression=lzw",
+                "-dDownScaleFactor=1",
+                "-sDEVICE=tiff32nc", "-dFirstPage=1", "-dLastPage=1",
+                "-sOutputFile=" + self.jpgName_tiff,
+                pdfName
+            ]
+            subprocess.call(args)
+
+        if crop:
+            if zoneToCrop == 'header':
+                self.crop_image_header(pdfName, True)
+            elif zoneToCrop == 'footer':
+                self.crop_image_footer(pdfName, True)
+
+        if openImg:
+            if zoneToCrop == 'header':
+                self.img = Image.open(self.jpgName_tiff_header)
+            elif zoneToCrop == 'footer':
+                self.img = Image.open(self.jpgName_tiff_footer)
+            else:
+                self.img = Image.open(self.jpgName_tiff)
+
+    def save_pdf_to_tiff_in_docserver(self, pdfName, output):
+        args = [
+            "gs", "-q", "-dNOPAUSE", "-dBATCH",
+            "-r" + str(self.resolution), "-sCompression=lzw",
+            "-sDEVICE=tiff32nc",
+            "-sOutputFile=" + output,
+            " -f" + pdfName
+        ]
+        subprocess.call(args)
+
     # Simply open an image
     def open_img(self, img):
         self.img = Image.open(img)
@@ -66,9 +112,11 @@ class Files:
     # Save pdf with one or more pages into JPG file
     def save_img_with_wand(self, pdfName, output):
         with Img(filename=pdfName, resolution=self.resolution) as pic:
+            library.MagickResetIterator(pic.wand)
+            pic.scene = 1 # Start cpt of filename at 1 instead of 0
             pic.compression_quality = self.compressionQuality
-            pic.background_color    = Color("white")
-            pic.alpha_channel       = 'remove'
+            pic.background_color = Color("white")
+            pic.alpha_channel = 'remove'
             pic.save(filename=output)
 
     @staticmethod
@@ -115,7 +163,7 @@ class Files:
                             return False
                         else:
                             return True
-                    elif file.endswith('.jpg'):
+                    elif file.endswith(tuple(['.jpg', '.tiff'])):
                         try:
                             Image.open(file)
                         except OSError:
@@ -128,27 +176,17 @@ class Files:
                     continue
 
     @staticmethod
-    def pdf_to_thumb(pdfName, outputName, resolution, compressionQuality):
-        with Img(filename=pdfName, resolution=resolution) as pic:
-            pic.compression_quality = compressionQuality
-            pic.background_color = Color("white")
-            pic.alpha_channel = 'remove'
-            pic.save(filename=outputName)
-
-    @staticmethod
-    def ocr_on_fly(img, selection, Ocr, thumbSize = None,):
-        with Image.open(img) as im:
-            im.save('/tmp/no_cropped.jpg', 'JPEG')
-
+    def ocr_on_fly(img, selection, Ocr, thumbSize = None):
         if thumbSize is not None:
-            ratio       = im.size[0]/thumbSize['width']
+            with Image.open(img) as im:
+                ratio       = im.size[0]/thumbSize['width']
         else:
             ratio       = 1
+
         x1          = selection['x1'] * ratio
         y1          = selection['y1'] * ratio
         x2          = selection['x2'] * ratio
         y2          = selection['y2'] * ratio
-
         cropRatio   = (x1, y1, x2, y2)
 
         with Image.open(img) as im2:
@@ -158,36 +196,52 @@ class Files:
         text = Ocr.text_builder(croppedImage)
 
         os.remove('/tmp/cropped.jpg')
-        os.remove('/tmp/no_cropped.jpg')
         return text
 
     @staticmethod
     def get_size(img):
         im = Image.open(img)
-
         return im.size[0]
 
     # Crop the file to get the header
     # 1/3 + 10% is the ratio we used
-    def crop_image_header(self, img):
-        with Img(filename=img, resolution=300) as pic:
-            pic.compression_quality = 100
-            pic.background_color    = Color("white")
-            pic.alpha_channel       = 'remove'
-            self.heightRatio        = int(pic.height / 3 + pic.height * 0.1)
-            pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='north')
-            pic.save(filename=self.jpgName_header)
+    def crop_image_header(self, pdfName, isTiff=False):
+        if not isTiff:
+            with Img(filename=pdfName, resolution=self.resolution) as pic:
+                pic.compression_quality = self.compressionQuality
+                pic.background_color    = Color("white")
+                pic.alpha_channel       = 'remove'
+                self.heightRatio        = int(pic.height / 3 + pic.height * 0.1)
+                pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='north')
+                pic.save(filename=self.jpgName_header)
+        else:
+            with Img(filename=self.jpgName_tiff, resolution=self.resolution) as pic:
+                pic.compression_quality = self.compressionQuality
+                pic.background_color    = Color("white")
+                pic.alpha_channel       = 'remove'
+                self.heightRatio        = int(pic.height / 3 + pic.height * 0.1)
+                pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='north')
+                pic.save(filename=self.jpgName_tiff_header)
 
     # Crop the file to get the footer
     # 1/3 + 10% is the ratio we used
-    def crop_image_footer(self, img):
-        with Img(filename=img, resolution=300) as pic:
-            pic.compression_quality = 100
-            pic.background_color    = Color("white")
-            pic.alpha_channel       = 'remove'
-            self.heightRatio        = int(pic.height / 3 + pic.height * 0.1)
-            pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='south')
-            pic.save(filename=self.jpgName_footer)
+    def crop_image_footer(self, img, isTiff=False):
+        if not isTiff:
+            with Img(filename=img, resolution=self.resolution) as pic:
+                pic.compression_quality = self.compressionQuality
+                pic.background_color    = Color("white")
+                pic.alpha_channel       = 'remove'
+                self.heightRatio        = int(pic.height / 3 + pic.height * 0.1)
+                pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='south')
+                pic.save(filename=self.jpgName_footer)
+        else:
+            with Img(filename=self.jpgName_tiff, resolution=self.resolution) as pic:
+                pic.compression_quality = self.compressionQuality
+                pic.background_color = Color("white")
+                pic.alpha_channel = 'remove'
+                self.heightRatio = int(pic.height / 3 + pic.height * 0.1)
+                pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='south')
+                pic.save(filename=self.jpgName_tiff_footer)
 
     @staticmethod
     def improve_image_detection(img):
@@ -254,7 +308,7 @@ class Files:
             for child in parent[parentElement]:
                 for childElement in child:
                     cleanChild = childElement.replace(parentElement + '_', '')
-                    if cleanChild not in ['noDelivery', 'noCommands']:
+                    if cleanChild not in ['noDelivery', 'noCommands'] and '_position' not in cleanChild:
                         if fillPosition is not False and db is not False:
                             cleanChildPosition = child[childElement]['position']
                             # Add position in supplier database

@@ -47,7 +47,11 @@ class FindSupplier:
             return False
 
     def regenerateOcr(self):
-        self.Files.open_img(self.Files.jpgName_header)
+        if self.Files.isTiff == 'True':
+            self.Files.open_img(self.Files.jpgName_tiff_header)
+        else:
+            self.Files.open_img(self.Files.jpgName_header)
+
         self.Ocr.line_box_builder(self.Files.img)
 
     def run(self, retry = False, regenerateOcr = False, target=None):
@@ -147,15 +151,25 @@ class FindSupplier:
         # If NO supplier identification are found in the header (default behavior),
         # First apply image correction
         if not found_first:
-            self.Files.improve_image_detection(self.Files.jpgName_header)
-            self.Files.open_img(self.Files.jpgName_header)
+            if self.Files.isTiff == 'True':
+                self.Files.improve_image_detection(self.Files.jpgName_tiff_header)
+                self.Files.open_img(self.Files.jpgName_tiff_header)
+            else:
+                self.Files.improve_image_detection(self.Files.jpgName_header)
+                self.Files.open_img(self.Files.jpgName_header)
+
             self.text = self.Ocr.line_box_builder(self.Files.img)
             return self.run(retry=True, target=None)
 
         # If, even with improved image, nothing was found, check the footer
         if not found_second:
-            self.Files.improve_image_detection(self.Files.jpgName_footer)
-            self.Files.open_img(self.Files.jpgName_footer)
+            if self.Files.isTiff == 'True':
+                self.Files.improve_image_detection(self.Files.jpgName_tiff_footer)
+                self.Files.open_img(self.Files.jpgName_tiff_footer)
+            else:
+                self.Files.improve_image_detection(self.Files.jpgName_footer)
+                self.Files.open_img(self.Files.jpgName_footer)
+
             self.text = self.Ocr.line_box_builder(self.Files.img)
             return self.run(retry=True, regenerateOcr=True, target='footer')
 

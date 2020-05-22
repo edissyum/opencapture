@@ -69,7 +69,10 @@ class FindFooter:
 
         if position:
             positionArray   = self.Ocr.prepare_ocr_on_fly(position)
-            text            = self.Files.ocr_on_fly(self.Files.jpgName, positionArray, self.Ocr)
+            if self.Files.isTiff == 'True':
+                text            = self.Files.ocr_on_fly(self.Files.jpgName_tiff, positionArray, self.Ocr)
+            else:
+                text            = self.Files.ocr_on_fly(self.Files.jpgName, positionArray, self.Ocr)
 
             # Filter the result to get only the digits
             text = re.finditer(r'[-+]?\d*[.,\s]+\d+|\d+', text)

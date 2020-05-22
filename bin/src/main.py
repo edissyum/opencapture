@@ -92,7 +92,8 @@ def launch(args):
         fileName,
         int(Config.cfg['GLOBAL']['resolution']),
         int(Config.cfg['GLOBAL']['compressionquality']),
-        Xml
+        Xml,
+        Config.cfg['GLOBAL']['convertpdftotiff']
     )
 
     if Config.cfg['GED']['enabled'] != 'False':

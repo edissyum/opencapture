@@ -26,7 +26,12 @@ from .FindFooter import FindFooter
 from .FindSupplier import FindSupplier
 from .FindInvoiceNumber import FindInvoiceNumber
 
-def insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, footer, nbPages, thumbFilename, fullJpgFilename, status):
+def insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, footer, nbPages, fullJpgFilename, tiffFilename, status):
+    if Files.isTiff == 'True':
+        path = Config.cfg['GLOBAL']['tiffpath'] + '/' + tiffFilename.replace('-%03d', '-001')
+    else:
+        path = Config.cfg['GLOBAL']['fullpath'] + '/' + fullJpgFilename.replace('-%03d', '-001')
+
     res = Database.insert({
         'table': 'invoices',
         'columns': {
@@ -42,11 +47,9 @@ def insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, fo
             'VATRate1_position'     : str(footer[2][1]) if footer is not False else '',
             'filename'              : os.path.basename(file),
             'path'                  : os.path.dirname(file),
-            'imgWidth'              : str(Files.get_size(Config.cfg['GLOBAL']['fullpath'] + '/' + fullJpgFilename)),
-            'thumbPath'             : Config.cfg['GLOBAL']['thumbpath'],
-            'thumbFilename'         : thumbFilename,
-            'fullJpgPath'           : Config.cfg['GLOBAL']['fullpath'],
-            'fullJpgFilename'       : fullJpgFilename,
+            'imgWidth'              : str(Files.get_size(path)),
+            'fullJpgFilename'       : fullJpgFilename.replace('-%03d', '-001'),
+            'tiffFilename'          : tiffFilename.replace('-%03d', '-001'),
             'status'                : status,
             'nbPages'               : str(nbPages),
         }
@@ -60,12 +63,15 @@ def insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, fo
             os.remove(Files.jpgName_footer)
             os.remove(Files.jpgName_header)
             os.remove(Files.jpgName)
+            os.remove(Files.jpgName_tiff_footer)
+            os.remove(Files.jpgName_tiff_header)
+            os.remove(Files.jpgName_tiff)
         except FileNotFoundError:
             pass
     else:
         Log.error('Error while inserting')
 
-def process(args, file, Log, Separator, Config, Files, Ocr, Locale, Database, WebServices, q = None,):
+def process(args, file, Log, Separator, Config, Files, Ocr, Locale, Database, WebServices, q = None):
     Log.info('Processing file : ' + file)
 
     # Open the pdf and convert it to JPG
@@ -84,13 +90,20 @@ def process(args, file, Log, Separator, Config, Files, Ocr, Locale, Database, We
         Files.open_img(file)
         isOcr = False
 
-    # Get the OCR of the file as a list of line content and position
-    Files.pdf_to_jpg(file + '[0]', True, True, 'header')
-    Ocr.header_text = Ocr.line_box_builder(Files.img)
-    Files.pdf_to_jpg(file + '[0]', True, True, 'footer')
-    Ocr.footer_text = Ocr.line_box_builder(Files.img)
-    Files.pdf_to_jpg(file + '[0]')
-    Ocr.text = Ocr.line_box_builder(Files.img)
+    if Config.cfg['GLOBAL']['convertpdftotiff'] == 'True':
+        Files.pdf_to_tiff(file, True, True, 'header')
+        Ocr.header_text = Ocr.line_box_builder(Files.img)
+        Files.pdf_to_tiff(file, True, True, 'footer')
+        Ocr.footer_text = Ocr.line_box_builder(Files.img)
+        Files.pdf_to_tiff(file)
+        Ocr.text = Ocr.line_box_builder(Files.img)
+    else:
+        Files.pdf_to_jpg(file + '[0]', True, True, 'header')
+        Ocr.header_text = Ocr.line_box_builder(Files.img)
+        Files.pdf_to_jpg(file + '[0]', True, True, 'footer')
+        Ocr.footer_text = Ocr.line_box_builder(Files.img)
+        Files.pdf_to_jpg(file + '[0]')
+        Ocr.text = Ocr.line_box_builder(Files.img)
 
     # Find supplier in document
     supplier        = FindSupplier(Ocr, Log, Locale, Database, Files, file + '[0]').run()
@@ -104,12 +117,9 @@ def process(args, file, Log, Separator, Config, Files, Ocr, Locale, Database, We
     # Find footer informations (total amount, no rate amount etc..)
     footer          = FindFooter(Ocr, Log, Locale, Config, Files, Database, supplier, file+ '[0]').run()
 
-    fileName        = str(uuid.uuid4()) + '.jpg'
-    thumbFilename   = 'thumb_' + fileName
-    fullJpgFilename = 'full_' + fileName
-
-    Files.pdf_to_thumb(file, Config.cfg['GLOBAL']['thumbpath'] + '/' + thumbFilename, 100, 70)
-    Files.pdf_to_thumb(file, Config.cfg['GLOBAL']['fullpath'] + '/' + fullJpgFilename, 300, 100)
+    fileName        = str(uuid.uuid4())
+    fullJpgFilename = 'full_' + fileName + '-%03d.jpg'
+    tiffFilename    = 'tiff_' + fileName + '-%03d.tiff'
 
     # get the number of pages into the PDF documents
     with open(file, 'rb') as doc:
@@ -121,18 +131,11 @@ def process(args, file, Log, Separator, Config, Files, Ocr, Locale, Database, We
             shutil.move(file, Config.cfg['GLOBAL']['errorpath'] + os.path.basename(file))
             return False
 
-    # If more than one page, upload only the thumb of the first page on the database
-    if nbPages > 1:
-        tmp             = os.path.splitext(fullJpgFilename)
-        tmpThumb        = os.path.splitext(thumbFilename)
-        fullJpgFilename = tmp[0] + '-0' + tmp[1]
-        thumbFilename   = tmpThumb[0] + '-0' + tmpThumb[1]
-
     file = Files.move_to_docservers(Config.cfg, file)
 
     # If all informations are found, do not send it to GED
     if supplier and date and invoiceNumber and footer and Config.cfg['GLOBAL']['allowautomaticvalidation'] == 'True':
-        insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, footer, nbPages, thumbFilename, fullJpgFilename, 'DEL')
+        insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, footer, nbPages, fullJpgFilename, tiffFilename, 'DEL')
         Log.info('All the usefull informations are found. Export the XML and end process')
         now = datetime.datetime.now()
         parent = {
@@ -218,6 +221,12 @@ def process(args, file, Log, Separator, Config, Files, Ocr, Locale, Database, We
                 shutil.move(file, Config.cfg['GLOBAL']['errorpath'] + os.path.basename(file))
                 return False
     else:
-        insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, footer, nbPages, thumbFilename, fullJpgFilename, 'NEW')
+        # Convert all the pages to JPG (used to full web interface)
+        Files.save_img_with_wand(file, Config.cfg['GLOBAL']['fullpath'] + '/' + fullJpgFilename)
+        # If tiff support enabled, save all the pages to TIFF (used for OCR ON FLY)
+        if Files.isTiff == 'True':
+            Files.save_pdf_to_tiff_in_docserver(file, Config.cfg['GLOBAL']['tiffpath'] + '/' + tiffFilename)
+
+        insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, footer, nbPages, fullJpgFilename, tiffFilename, 'NEW')
 
     return True
