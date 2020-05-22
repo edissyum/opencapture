@@ -1,3 +1,5 @@
+import os
+
 from flask import (
     current_app, Blueprint, flash, redirect, render_template, request, url_for, session, Response
 )
@@ -35,7 +37,8 @@ def init():
         fileName,
         int(Config.cfg['GLOBAL']['resolution']),
         int(Config.cfg['GLOBAL']['compressionquality']),
-        Xml
+        Xml,
+        Config.cfg['GLOBAL']['convertpdftotiff']
     )
     Locale      = lc(Config)
     Ocr         = PyTesseract(Locale.localeOCR, Log, Config)
@@ -316,40 +319,39 @@ def validate_form():
                 ged['status']   = _cfg.cfg[defaultProcess]['statusend']
             else:
                 ged['status']   = _cfg.cfg[defaultProcess]['status']
-
             # Create the data list of arguments
             ged['fileContent']                                      = open(request.form['fileInfo_path'], 'rb').read()
-            ged['creationDate']                                     = request.form['pdfCreationDate'].split('¤¤¤')[0]
-            ged['date']                                             = request.form['facturationInfo_date'].split('¤¤¤')[0]
-            ged['dest_user']                                        = request.form['ged_users'].split('#')[0]
-            ged['vatNumber']                                        = request.form['supplierInfo_vatNumber'].split('¤¤¤')[0]
-            ged[_cfg.cfg[defaultProcess]['customvatnumber']]        = request.form['supplierInfo_vatNumber'].split('¤¤¤')[0]
-            ged[_cfg.cfg[defaultProcess]['customht']]               = request.form['facturationInfo_totalHT'].split('¤¤¤')[0]
-            ged[_cfg.cfg[defaultProcess]['customttc']]              = request.form['facturationInfo_totalTTC'].split('¤¤¤')[0]
-            ged[_cfg.cfg[defaultProcess]['custominvoicenumber']]    = request.form['facturationInfo_invoiceNumber'].split('¤¤¤')[0]
+            ged['creationDate']                                     = request.form['pdfCreationDate']
+            ged['date']                                             = request.form['facturationInfo_date']
+            ged['dest_user']                                        = request.form['ged_users']
+            ged['vatNumber']                                        = request.form['supplierInfo_vatNumber']
+            ged[_cfg.cfg[defaultProcess]['customvatnumber']]        = request.form['supplierInfo_vatNumber']
+            ged[_cfg.cfg[defaultProcess]['customht']]               = request.form['facturationInfo_totalHT']
+            ged[_cfg.cfg[defaultProcess]['customttc']]              = request.form['facturationInfo_totalTTC']
+            ged[_cfg.cfg[defaultProcess]['custominvoicenumber']]    = request.form['facturationInfo_invoiceNumber']
             ged[_cfg.cfg[defaultProcess]['custombudget']]           = request.form['analyticsInfo_budgetSelection_1']
             ged[_cfg.cfg[defaultProcess]['customoutcome']]          = request.form['analyticsInfo_structureSelection_1']
-            ged['subject']                                          = 'Facture N°' + request.form['facturationInfo_invoiceNumber'].split('¤¤¤')[0]
+            ged['subject']                                          = 'Facture N°' + request.form['facturationInfo_invoiceNumber']
             ged['destination']                                      = request.form['ged_users'].split('#')[1] if request.form['ged_users'] else _cfg.cfg[defaultProcess]['defaultdestination']
 
             if 'facturationInfo_NumberOfDeliveryNumber' in request.form:
                 numberOfDeliveryNumber  = int(request.form['facturationInfo_NumberOfDeliveryNumber'])
                 if numberOfDeliveryNumber == 1:
-                    ged[_cfg.cfg[defaultProcess]['customdeliverynumber']] = request.form['facturationInfo_deliveryNumber_1'].split('¤¤¤')[0]
+                    ged[_cfg.cfg[defaultProcess]['customdeliverynumber']] = request.form['facturationInfo_deliveryNumber_1']
                 elif numberOfDeliveryNumber > 1:
                     tmpDelivery = ''
                     for i in range(1, numberOfDeliveryNumber + 1):
-                        tmpDelivery += request.form['facturationInfo_deliveryNumber_' + str(i)].split('¤¤¤')[0] + ';'
+                        tmpDelivery += request.form['facturationInfo_deliveryNumber_' + str(i)] + ';'
                     ged[_cfg.cfg[defaultProcess]['customdeliverynumber']] = tmpDelivery[:-1]
 
             if 'facturationInfo_NumberOfOrderNumber' in request.form:
-                numberOfOrderNumber     = int(request.form['facturationInfo_NumberOfOrderNumber'].split('¤¤¤')[0])
+                numberOfOrderNumber     = int(request.form['facturationInfo_NumberOfOrderNumber'])
                 if numberOfOrderNumber and numberOfOrderNumber == 1:
-                    ged[_cfg.cfg[defaultProcess]['customordernumber']] = request.form['facturationInfo_orderNumber_1'].split('¤¤¤')[0]
+                    ged[_cfg.cfg[defaultProcess]['customordernumber']] = request.form['facturationInfo_orderNumber_1']
                 elif numberOfOrderNumber > 1:
                     tmpOrder = ''
                     for i in range(1, numberOfOrderNumber + 1):
-                        tmpOrder += request.form['facturationInfo_orderNumber_' + str(i)].split('¤¤¤')[0] + ';'
+                        tmpOrder += request.form['facturationInfo_orderNumber_' + str(i)] + ';'
                     ged[_cfg.cfg[defaultProcess]['customordernumber']] = tmpOrder[:-1]
 
             # Looking for an existing user in the GED, using VAT number as primary key
@@ -363,13 +365,13 @@ def validate_form():
                 contact['firstname']            = ''
                 contact['contactType']          = _cfg.cfg[defaultProcess]['contacttype']
                 contact['contactPurposeId']     = _cfg.cfg[defaultProcess]['contactpurposeid']
-                contact['society']              = request.form['supplierInfo_name'].split('¤¤¤')[0]
-                contact['addressTown']          = request.form['supplierInfo_city'].split('¤¤¤')[0]
-                contact['societyShort']         = request.form['supplierInfo_name'].split('¤¤¤')[0]
-                contact['addressStreet']        = request.form['supplierInfo_address'].split('¤¤¤')[0]
-                contact['otherData']            = request.form['supplierInfo_vatNumber'].split('¤¤¤')[0]
-                contact['addressZip']           = request.form['supplierInfo_postal_code'].split('¤¤¤')[0]
-                contact['email']                = 'À renseigner ' + request.form['supplierInfo_name'].split('¤¤¤')[0] + ' - ' + contact['otherData']
+                contact['society']              = request.form['supplierInfo_name']
+                contact['addressTown']          = request.form['supplierInfo_city']
+                contact['societyShort']         = request.form['supplierInfo_name']
+                contact['addressStreet']        = request.form['supplierInfo_address']
+                contact['otherData']            = request.form['supplierInfo_vatNumber']
+                contact['addressZip']           = request.form['supplierInfo_postal_code']
+                contact['email']                = 'À renseigner ' + request.form['supplierInfo_name'] + ' - ' + contact['otherData']
 
                 contact                         = _ws.create_contact(contact)
                 if contact is not False:
@@ -382,33 +384,32 @@ def validate_form():
         for value in parent:
             for field in request.form:
                 if field.split('_')[0] == value:
-                    fieldInfo = request.form[field].split('¤¤¤')
-                    vatNumber = request.form['supplierInfo_vatNumber'].split('¤¤¤')[0]
+                    vatNumber = request.form['supplierInfo_vatNumber']
 
                     # If a position is associated
-                    if len(fieldInfo) == 2:
+                    if field + '_position' in request.form:
                         parent[value].append({
-                            field : {  'field' : request.form[field].split('¤¤¤')[0], 'position' : request.form[field].split('¤¤¤')[1] }
+                            field : {'field' : request.form[field], 'position' : request.form[field + '_position']}
                         })
                     else:
                         parent[value].append({
-                            field : { 'field' : request.form[field].split('¤¤¤')[0], 'position' : None }
+                            field : {'field' : request.form[field], 'position' : None}
                         })
         _db.update({
             'table' : ['invoices'],
             'set'   : {
-                'invoiceNumber'         : request.form['facturationInfo_invoiceNumber'].split('¤¤¤')[0],
-                'HTAmount1'             : request.form['facturationInfo_noTaxes_1'].split('¤¤¤')[0],
-                'HTAmount1_position'    : request.form['facturationInfo_noTaxes_1'].split('¤¤¤')[1] if len(request.form['facturationInfo_noTaxes_1'].split('¤¤¤')) > 1 else '' ,
-                'VATRate1'              : request.form['facturationInfo_VAT_1'].split('¤¤¤')[0],
-                'VATRate1_position'     : request.form['facturationInfo_VAT_1'].split('¤¤¤')[1] if len(request.form['facturationInfo_VAT_1'].split('¤¤¤')) > 1 else '',
-                'invoiceDate'           : request.form['facturationInfo_date'].split('¤¤¤')[0],
+                'invoiceNumber'         : request.form['facturationInfo_invoiceNumber'],
+                'HTAmount1'             : request.form['facturationInfo_noTaxes_1'],
+                'HTAmount1_position'    : request.form['facturationInfo_noTaxes_1_position'] if 'facturationInfo_noTaxes_1_position' in request.form else '' ,
+                'VATRate1'              : request.form['facturationInfo_VAT_1'],
+                'VATRate1_position'     : request.form['facturationInfo_VAT_1_position'] if 'facturationInfo_VAT_1_position' in request.form else '',
+                'invoiceDate'           : request.form['facturationInfo_date'],
             },
             'where' : ['rowid = ?'],
             'data'  : [pdfId]
         })
 
-        _Files.exportXml(_cfg, request.form['facturationInfo_invoiceNumber'].split('¤¤¤')[0], parent, True, _db, vatNumber)
+        _Files.exportXml(_cfg, request.form['facturationInfo_invoiceNumber'], parent, True, _db, vatNumber)
 
         # Unlock pdf and makes it processed
         _db.update({
@@ -438,7 +439,6 @@ def static(typeofFile, filename):
     if typeofFile == 'splitter':
         docservers = _cfg['SPLITTER']['tmpbatchpath']
         mimetype = 'image/jpeg'
-
     elif typeofFile == 'originFile':
         docservers = _cfg['SPLITTER']['pdforiginpath']
         mimetype = 'application/pdf'
@@ -490,8 +490,14 @@ def ocr_on_the_fly(fileName, selection, thumbSize):
     _Files  = _vars[5]
     _Ocr    = _vars[6]
 
-    text = _Files.ocr_on_fly(_cfg['GLOBAL']['fullpath'] + fileName, selection, _Ocr, thumbSize)
+    if _Files.isTiff == 'True':
+        path = _cfg['GLOBAL']['tiffpath'] + (os.path.splitext(fileName)[0]).replace('full_', 'tiff_') + '.tiff'
+        if not os.path.isfile(path):
+            path = _cfg['GLOBAL']['fullpath'] + fileName
+    else:
+        path = _cfg['GLOBAL']['fullpath'] + fileName
 
+    text = _Files.ocr_on_fly(path, selection, _Ocr, thumbSize)
     return text
 
 def retrieve_supplier(data):

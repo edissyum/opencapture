@@ -29,8 +29,6 @@ var loaded              = false;
 // noinspection ES6ConvertVarToLetConst
 var isDuplicate         = false;
 // noinspection ES6ConvertVarToLetConst
-var divider             = '¤¤¤';
-// noinspection ES6ConvertVarToLetConst
 var config              = '';
 // noinspection ES6ConvertVarToLetConst
 var banApiError         = false;
@@ -230,6 +228,14 @@ function ocrOnFly(isRemoved, inputId, removeWhiteSpace = false, needToBeNumber =
                                 input.setAttribute('y2', isNotZoomed ? selection.y2 : selection.y2 / ratioImg);
                                 input.setAttribute('page', currentPage === undefined ? 1 : currentPage.text());
 
+                                let x1 = isNotZoomed ? selection.x1 : selection.x1 / ratioImg;
+                                let y1 = isNotZoomed ? selection.y1 : selection.y1 / ratioImg;
+                                let x2 = isNotZoomed ? selection.x2 : selection.x2 / ratioImg;
+                                let y2 = isNotZoomed ? selection.y2 : selection.y2 / ratioImg;
+
+                                $('#' + input.id).parent().append('<input type="hidden" id="' + input.name + '_position" name="' + input.name + '_position"/>')
+                                $('#' + input.name + '_position').val('((' + x1 + ',' + y1 + '),(' + x2 + ',' + y2 + '))');
+
                                 // Show the eyes, on click on it, it will show the rectangle on the image
                                 // .prev() allow us to display the input-group-text class, containing the eye
                                 $('#' + inputId.id).prev().fadeIn();
@@ -255,17 +261,6 @@ $(document).ready(function() {
         // Get the config
         readConfig().then((res) => {    // Put the rest of code into the 'then' to make synchronous API call
             config = res;
-            // Fix to avoid input value with "¤¤¤" after a refresh
-            $('#invoice_info *').filter(':input')
-            .not(':button')
-            .filter(function(){
-                if ($(this).val().indexOf(divider) !== -1){
-                    return $(this).attr('id')
-                }
-            }).each(function () {
-                let realVal = $(this).val().split(divider)[0];
-                $(this).val(realVal);
-            });
 
             generateTokenInsee(config.GENERAL['siret-consumer'], config.GENERAL['siret-secret'])
             .then(function(res) {
@@ -400,8 +395,7 @@ function changeImage(pageToShow){
     let fileNameArray   = filename.split('.');
     let onlySrc         = currentSrc.substr(0, currentSrc.length - filename.length);
 
-    // Using newCurrentPage minus 1 because the filenames start with index 0
-    let newFileName    = onlySrc + fileNameArray[0].substr(0, fileNameArray[0].length - 1) + (pageToShow - 1).toString() + '.' + fileNameArray[1];
+    let newFileName    = onlySrc + fileNameArray[0].substr(0, fileNameArray[0].length - 1) + (pageToShow).toString() + '.' + fileNameArray[1];
 
     image.attr('src', newFileName);
     currentPage.text(pageToShow);
@@ -1093,36 +1087,8 @@ $('#returnToValidate, #closeModal').on('click', function(){
 
 // Validate form even if there is some problems (The button is in the modal)
 $('#submitForm').on('click', function(){
-    concatenateValueAndPosition();
     $('#invoice_info').submit();
 });
-
-// Retrieve value and position into value to get it into Flask
-function concatenateValueAndPosition(){
-    // Filter input with a name (those who were send to Flask) and where position info are specified and if we didn't concatenate already
-    $('#invoice_info *').filter(':input')
-    .not(':button')
-    .filter(function(){
-        if ($(this).attr('name') !== undefined
-            && $(this).attr('x1') !== undefined
-            && $(this).attr('x1') !== ''
-            && $(this).val().indexOf(divider) === -1){
-                return $(this).attr('id')
-        }
-    }).each(function (){
-        let input   = $(this)[0];
-        let oldVal  = input.value;
-        let ratio   = originalWidth / $('#my-image').width();
-
-        let x1      = parseInt(input.getAttribute('x1') * ratio);
-        let x2      = parseInt(input.getAttribute('x2') * ratio);
-        let y1      = parseInt(input.getAttribute('y1') * ratio);
-        let y2      = parseInt(input.getAttribute('y2') * ratio);
-
-        input.value = oldVal + divider + '((' + x1 + ',' + y1 + '),(' + x2 + ',' + y2 + '))';
-    })
-
-}
 
 function changeStatus(idPdf, status){
     fetch('/ws/database/updateStatus', {
@@ -1139,7 +1105,6 @@ function changeStatus(idPdf, status){
             if (!JSON.parse(res.ok)) {
                 return false;
             }else {
-                concatenateValueAndPosition();
                 $("#invoice_info").submit();
                 return true;
             }
