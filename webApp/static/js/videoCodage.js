@@ -998,18 +998,12 @@ $('#validateForm').on('click', function(){
         let val = $('.' + className + '_' + i).find('input').val();
         totalStructure += parseFloat(val)
     }
-
     if(!form[0].checkValidity()){
         form.find(':submit').click();
-        modalBack.toggle();
-        modalBody.html('<span id="modalError">' +
-            gt.gettext('FORM_ERROR_OR_EMPTY_FIELD') +
-            '</span>');
-
-        $('#validateModal').modal({
-            backdrop: false,
-            keyboard: false
-        });
+        modalBody.html(
+                '<span id="modalError">' +
+                    gt.gettext('FORM_ERROR_OR_EMPTY_FIELD') +
+                '</span>');
     }else if(form[0].checkValidity() && (ratioTotal.val() <= (config.CONTACT['total-ratio'] / 100) && banApiError === false)){ // the banApiError is used to do not block form in case the API isn't working
         modalBody.html('<span id="waitForAdress">' +
             gt.gettext('INCORRECT_BAN_ADDRESS') +
@@ -1020,17 +1014,13 @@ $('#validateForm').on('click', function(){
                 gt.gettext('PUT_ON_HOLD') +
                 '</button>').insertAfter($('#returnToValidate'));
         }
-        modalBack.toggle();
-        $('#validateModal').modal({
-            backdrop: false,
-            keyboard: false
-        });
     }else if(form[0].checkValidity() && $('#vatNumber').hasClass('is-invalid')){
-        $(
+        modalBody.html(
             '<span id="tvaError">' +
                 '<br>' + gt.gettext('INVALID_VAT_NUMBER') +
             '</span>'
-        ).insertBefore($('#returnToValidate'));
+        );
+
     }else if(form[0].checkValidity() && totalStructure !== totalHT){
         modalBody.html(
             '<span id="analyticsAmountError">' +
@@ -1042,12 +1032,6 @@ $('#validateForm').on('click', function(){
                 gt.gettext('YES') +
                 '</button>').insertAfter($('#returnToValidate'));
         }
-
-        modalBack.toggle();
-        $('#validateModal').modal({
-            backdrop: false,
-            keyboard: false
-        });
     }else if(form[0].checkValidity() && isDuplicate && config.GLOBAL['allowduplicate'] === 'False'){
         modalBody.html(
             '<span id="analyticsAmountError">' +
@@ -1060,14 +1044,15 @@ $('#validateForm').on('click', function(){
                 gt.gettext('YES') +
                 '</button>').insertAfter($('#returnToValidate'));
         }
-        modalBack.toggle();
-        $('#validateModal').modal({
-            backdrop: false,
-            keyboard: false
-        });
     }else{
         changeStatus($("#pdfId").val(), "END");
     }
+
+    modalBack.toggle();
+    $('#validateModal').modal({
+        backdrop: false,
+        keyboard: false
+    });
 });
 
 // Replace commas with point because commas are'nt valid to operation
