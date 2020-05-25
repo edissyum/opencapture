@@ -90,7 +90,7 @@ def process(args, file, Log, Separator, Config, Files, Ocr, Locale, Database, We
         Files.open_img(file)
         isOcr = False
 
-    if Config.cfg['GLOBAL']['convertpdftotiff'] == 'True':
+    if Files.isTiff == 'True':
         Files.pdf_to_tiff(file, True, True, True, 'header')
         Ocr.header_text = Ocr.line_box_builder(Files.img)
         Files.pdf_to_tiff(file, True, True, True, 'footer')
