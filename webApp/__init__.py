@@ -4,6 +4,7 @@ from . import ws
 from . import pdf
 from . import auth
 from . import user
+from . import supplier
 from . import dashboard
 from . import ws_splitter
 from flask_cors import CORS
@@ -38,6 +39,7 @@ def create_app(test_config=None):
     app.register_blueprint(pdf.bp)
     app.register_blueprint(auth.bp)
     app.register_blueprint(user.bp)
+    app.register_blueprint(supplier.bp)
     app.register_blueprint(dashboard.bp)
     app.register_blueprint(ws_splitter.bp)
     app.add_url_rule('/', endpoint='index')
