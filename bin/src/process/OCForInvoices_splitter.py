@@ -15,13 +15,18 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-def process(args, file, Log, Splitter, Config, Files, Ocr, Locale, Database, tmpFolder, q = None,):
+def process(file, Log, Splitter, Files, Ocr, tmpFolder):
     Log.info('Processing file for separation : ' + file)
 
     # Get the OCR of the file as a list of line content and position
-    Files.pdf_to_jpg(file, False)
+    if Files.isTiff == "False":
+        Files.pdf_to_jpg(file, False)
+        extension = 'jpg'
+    else:
+        Files.pdf_to_tiff(file, False, False)
+        extension = 'tiff'
 
-    files = Files.sorted_file(tmpFolder, 'jpg')
+    files = Files.sorted_file(tmpFolder, extension)
 
     text_extracted = []
     for f in files:

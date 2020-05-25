@@ -91,7 +91,8 @@ def launch(args):
         fileName,
         int(Config.cfg['GLOBAL']['resolution']),
         int(Config.cfg['GLOBAL']['compressionquality']),
-        Xml
+        Xml,
+        Config.cfg['GLOBAL']['convertpdftotiff']
     )
 
     # Connect to database
@@ -102,7 +103,7 @@ def launch(args):
         path = args['file']
         if check_file(Files, path, Config, Log) is not False:
             # Process the file and send it to Maarch
-            process(args, path, Log, Splitter, Config, Files, Ocr, Locale, Database, tmpFolder)
+            process(path, Log, Splitter, Files, Ocr, tmpFolder)
 
     elif args['path'] is not None:
         path = args['path']
@@ -112,7 +113,7 @@ def launch(args):
                 q = queue.Queue()
 
                 # Find file in the wanted folder (default or exported pdf after qrcode separation)
-                q = process(args, path + file, Log, Splitter, Config, Files, Ocr, Locale, Database, tmpFolder, q)
+                q = process(path + file, Log, Splitter, Files, Ocr, tmpFolder)
 
                 if not q:
                     continue
