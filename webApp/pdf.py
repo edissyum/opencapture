@@ -498,7 +498,13 @@ def ocr_on_the_fly(fileName, selection, thumbSize):
         path = _cfg['GLOBAL']['fullpath'] + fileName
 
     text = _Files.ocr_on_fly(path, selection, _Ocr, thumbSize)
-    return text
+
+    if text:
+        return text
+    else:
+        _Files.improve_image_detection(path)
+        text = _Files.ocr_on_fly(path, selection, _Ocr, thumbSize)
+        return text
 
 def retrieve_supplier(data):
     _vars   = init()
