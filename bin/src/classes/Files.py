@@ -63,7 +63,7 @@ class Files:
             if openImg:
                 self.img = Image.open(self.jpgName)
 
-    def pdf_to_tiff(self, pdfName, openImg=True, crop=False, zoneToCrop=False):
+    def pdf_to_tiff(self, pdfName, convertOnlyFirstPage=False, openImg=True, crop=False, zoneToCrop=False):
         # Convert firstly the PDF to full tiff file
         # It will be used to crop header and footer later
         if not os.path.isfile(self.jpgName_tiff):
@@ -71,10 +71,14 @@ class Files:
                 "gs", "-q", "-dNOPAUSE", "-dBATCH",
                 "-r" + str(self.resolution), "-sCompression=lzw",
                 "-dDownScaleFactor=1",
-                "-sDEVICE=tiff32nc", "-dFirstPage=1", "-dLastPage=1",
+                "-sDEVICE=tiff32nc",
                 "-sOutputFile=" + self.jpgName_tiff,
-                pdfName
             ]
+
+            if convertOnlyFirstPage:
+                args.extend(["-dFirstPage=1", "-dLastPage=1"])
+            args.extend([pdfName])
+
             subprocess.call(args)
 
         if crop:

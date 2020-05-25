@@ -91,11 +91,11 @@ def process(args, file, Log, Separator, Config, Files, Ocr, Locale, Database, We
         isOcr = False
 
     if Config.cfg['GLOBAL']['convertpdftotiff'] == 'True':
-        Files.pdf_to_tiff(file, True, True, 'header')
+        Files.pdf_to_tiff(file, True, True, True, 'header')
         Ocr.header_text = Ocr.line_box_builder(Files.img)
-        Files.pdf_to_tiff(file, True, True, 'footer')
+        Files.pdf_to_tiff(file, True, True, True, 'footer')
         Ocr.footer_text = Ocr.line_box_builder(Files.img)
-        Files.pdf_to_tiff(file)
+        Files.pdf_to_tiff(file, True)
         Ocr.text = Ocr.line_box_builder(Files.img)
     else:
         Files.pdf_to_jpg(file + '[0]', True, True, 'header')
