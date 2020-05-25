@@ -24,6 +24,7 @@ import uuid
 import shutil
 import PyPDF4
 import datetime
+import numpy as np
 from PIL import Image
 from PyPDF4 import utils
 from xml.dom import minidom
@@ -251,7 +252,20 @@ class Files:
     @staticmethod
     def improve_image_detection(img):
         src     = cv2.imread(img, cv2.IMREAD_GRAYSCALE)
-        dst     = cv2.adaptiveThreshold(src, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY,11, 2)
+        _, blackAndWhite = cv2.threshold(src, 127, 255, cv2.THRESH_BINARY_INV)
+        nlabels, labels, stats, centroids = cv2.connectedComponentsWithStats(blackAndWhite, None, None, None, 8, cv2.CV_32S)
+
+        # get CC_STAT_AREA component
+        sizes = stats[1:, -1]
+        img2 = np.zeros(labels.shape, np.uint8)
+
+        for i in range(0, nlabels - 1):
+            # Filter small dotted regions
+            if sizes[i] >= 50:
+                img2[labels == i + 1] = 255
+
+        dst = cv2.bitwise_not(img2)
+
         cv2.imwrite(img, dst)
 
     @staticmethod
