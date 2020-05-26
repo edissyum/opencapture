@@ -568,46 +568,41 @@ hr {
 
 /************ END view.html ************/
 
-/***** USER LIST *****/
+/***** USER AND SUPPLIER LIST *****/
 
-.user_list table tbody,
-.user_list table tbody .user_id a,
-.user_list table tbody .actions a,
-.user_list table tbody .user_name a,
-.user_list table tbody .status-td a,
-.user_list table tbody .creation_date a{
+.user_list table tbody a,
+.supplier_list table tbody a{
     color: #4C4C4E;
     transition: all .5s;
 }
 
-.user_list table tbody .user_id a,
-.user_list table tbody .user_name a,
-.user_list table tbody .status-td a,
-.user_list table tbody .creation_date a{
-    display: block;
+.user_list table tbody > tr > td:not(.actions) > a,
+.supplier_list table tbody > tr > td:not(.actions) > a{
+ display: block;
 }
 
-.user_list table tbody tr{
+.user_list table tbody tr,
+.supplier_list table tbody tr{
     -webkit-box-shadow: 0 0 0 0 rgba(0,0,0,0.75);
     -moz-box-shadow: 0 0 0 0 rgba(0,0,0,0.75);
     box-shadow: 0 0 0 0 rgba(0,0,0,0.75);
     transition: all .5s;
 }
 
-.user_list table tbody tr:hover{
+.user_list table tbody tr:hover,
+.supplier_list table tbody tr:hover{
     -webkit-box-shadow: 0 0 12px 4px rgba(0,0,0,0.75);
     -moz-box-shadow: 0 0 12px 4px rgba(0,0,0,0.75);
     box-shadow: 0 0 12px 4px rgba(0,0,0,0.75);
 }
 
-.user_list table tbody tr:hover > .user_id a,
-.user_list table tbody tr:hover > .actions a,
-.user_list table tbody tr:hover > .user_name a,
-.user_list table tbody tr:hover > .status-td a,
-.user_list table tbody tr:hover > .creation_date a {
+.user_list table tbody tr:hover > td > a,
+.supplier_list table tbody tr:hover > td > a{
     color: #76B442;
 }
-.user_list table tbody .status-td span{
+
+.user_list table tbody .status-td span,
+.supplier_list table tbody .status-td span{
     font-size: 30px;
     line-height: 10px;
     padding-top: 20px;
@@ -629,7 +624,7 @@ hr {
     background-color: #4C4C4E !important;
 }
 
-/************ END user_list ************/
+/************ END USER AND SUPPLIER LIST ************/
 
 /***** Splitter MANAGER *****/
 
