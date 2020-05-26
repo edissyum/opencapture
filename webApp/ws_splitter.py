@@ -34,7 +34,8 @@ def init():
         fileName,
         int(Config.cfg['GLOBAL']['resolution']),
         int(Config.cfg['GLOBAL']['compressionquality']),
-        Xml
+        Xml,
+        Config.cfg['GLOBAL']['convertpdftotiff']
     )
     Locale      = lc(Config)
     Ocr         = PyTesseract(Locale.localeOCR, Log, Config)
