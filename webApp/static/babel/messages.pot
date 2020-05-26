@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-05-15 13:44+0200\n"
+"POT-Creation-Date: 2020-05-26 14:37+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.7.0\n"
+"Generated-By: Babel 2.8.0\n"
 
 #: bin/src/classes/WebServices.py:43
 msgid "CONNECTION_ERROR"
@@ -49,25 +49,26 @@ msgstr ""
 msgid "USER_DISABLED"
 msgstr ""
 
-#: webApp/pdf.py:172 webApp/static/js/videoCodage.js:59
-#: webApp/ws_splitter.py:111
+#: webApp/pdf.py:175 webApp/static/js/videoCodage.js:57
+#: webApp/ws_splitter.py:112
 msgid "NO_RESULTS"
 msgstr ""
 
-#: webApp/pdf.py:174 webApp/user.py:150 webApp/ws_splitter.py:113
+#: webApp/pdf.py:177 webApp/supplier.py:48 webApp/user.py:150
+#: webApp/ws_splitter.py:114
 msgid "SHOW"
 msgstr ""
 
-#: webApp/pdf.py:174 webApp/templates/pdf/view.html:16 webApp/user.py:150
-#: webApp/ws_splitter.py:114
+#: webApp/pdf.py:177 webApp/supplier.py:48 webApp/templates/pdf/view.html:16
+#: webApp/user.py:150 webApp/ws_splitter.py:115
 msgid "OF"
 msgstr ""
 
-#: webApp/pdf.py:426
+#: webApp/pdf.py:427
 msgid "END_LONG"
 msgstr ""
 
-#: webApp/pdf.py:428
+#: webApp/pdf.py:429
 msgid "ERROR_WHILE_INSERTING_IN_GED"
 msgstr ""
 
@@ -131,7 +132,7 @@ msgstr ""
 msgid "ERROR_UPDATE_CONFIG_FILE"
 msgstr ""
 
-#: webApp/ws_splitter.py:73
+#: webApp/ws_splitter.py:74
 msgid "FILE_UPLOAD_SUCCESS"
 msgstr ""
 
@@ -139,137 +140,137 @@ msgstr ""
 msgid "_CONFIRM_DELETE"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:187
+#: webApp/static/js/videoCodage.js:185
 msgid "WAIT_OCR_END"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:275
+#: webApp/static/js/videoCodage.js:270
 msgid "SIRET_CONNECTION_ERROR"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:309
+#: webApp/static/js/videoCodage.js:304
 msgid "ERROR_WHILE_READING_CONFIGURATION_FILE"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:425
+#: webApp/static/js/videoCodage.js:419
 #: webApp/templates/dashboard/index.html:753 webApp/templates/pdf/view.html:201
 msgid "VAT_RATE"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:434 webApp/static/js/videoCodage.js:535
+#: webApp/static/js/videoCodage.js:428 webApp/static/js/videoCodage.js:529
 #: webApp/templates/dashboard/index.html:731 webApp/templates/pdf/view.html:210
 #: webApp/templates/pdf/view.html:284
 msgid "NO_RATE_AMOUNT"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:443 webApp/templates/pdf/view.html:219
+#: webApp/static/js/videoCodage.js:437 webApp/templates/pdf/view.html:219
 msgid "LOAD_ACCOUNT"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:445 webApp/templates/pdf/view.html:221
+#: webApp/static/js/videoCodage.js:439 webApp/templates/pdf/view.html:221
 msgid "SELECT_LOAD_ACCOUNT"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:463 webApp/templates/pdf/view.html:260
+#: webApp/static/js/videoCodage.js:457 webApp/templates/pdf/view.html:260
 msgid "VAT_AMOUNT"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:541 webApp/templates/pdf/view.html:290
+#: webApp/static/js/videoCodage.js:535 webApp/templates/pdf/view.html:290
 msgid "BUDGET"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:543 webApp/templates/pdf/view.html:292
+#: webApp/static/js/videoCodage.js:537 webApp/templates/pdf/view.html:292
 msgid "SELECT_STRUCTURE"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:549 webApp/templates/pdf/view.html:338
+#: webApp/static/js/videoCodage.js:543 webApp/templates/pdf/view.html:338
 msgid "OUTCOME"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:551 webApp/templates/pdf/view.html:340
+#: webApp/static/js/videoCodage.js:545 webApp/templates/pdf/view.html:340
 msgid "SELECT_BUDGET"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:588 webApp/static/js/videoCodage.js:626
+#: webApp/static/js/videoCodage.js:582 webApp/static/js/videoCodage.js:620
 msgid "ORDER_NUMBER"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:635
+#: webApp/static/js/videoCodage.js:629
 msgid "ADD_ORDER_NUMBER"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:654 webApp/static/js/videoCodage.js:680
+#: webApp/static/js/videoCodage.js:648 webApp/static/js/videoCodage.js:674
 msgid "DELIVERY_FORM_NUMBER"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:689
+#: webApp/static/js/videoCodage.js:683
 msgid "ADD_DELIVERY_FORM_NUMBER"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:814 webApp/static/js/videoCodage.js:830
-#: webApp/static/js/videoCodage.js:867 webApp/static/js/videoCodage.js:877
-#: webApp/static/js/videoCodage.js:908
+#: webApp/static/js/videoCodage.js:808 webApp/static/js/videoCodage.js:824
+#: webApp/static/js/videoCodage.js:861 webApp/static/js/videoCodage.js:871
+#: webApp/static/js/videoCodage.js:902
 msgid "ERROR_OCCURED"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:830
+#: webApp/static/js/videoCodage.js:824
 msgid "WRONG_SIRET_FORMAT"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:877
+#: webApp/static/js/videoCodage.js:871
 msgid "WRONG_SIREN_FORMAT"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:963
+#: webApp/static/js/videoCodage.js:957
 msgid "BAN_API_ERROR"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:977
+#: webApp/static/js/videoCodage.js:971
 msgid "REFUSE_CONFIRMATION"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:981 webApp/static/js/videoCodage.js:1048
-#: webApp/static/js/videoCodage.js:1066
+#: webApp/static/js/videoCodage.js:975 webApp/static/js/videoCodage.js:1032
+#: webApp/static/js/videoCodage.js:1044
 msgid "YES"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1012
+#: webApp/static/js/videoCodage.js:1005
 msgid "FORM_ERROR_OR_EMPTY_FIELD"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1021
+#: webApp/static/js/videoCodage.js:1009
 msgid "INCORRECT_BAN_ADDRESS"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1022
+#: webApp/static/js/videoCodage.js:1010
 msgid "PUT_FORM_TO_SUPPLIER_WAIT"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1026
+#: webApp/static/js/videoCodage.js:1014
 msgid "PUT_ON_HOLD"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1037
+#: webApp/static/js/videoCodage.js:1020
 msgid "INVALID_VAT_NUMBER"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1043
+#: webApp/static/js/videoCodage.js:1027
 msgid "CALCUL_NOT_EQUAL_WOULD_YOU_VALIDATE"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1060
+#: webApp/static/js/videoCodage.js:1038
 msgid "INVOICE_ALREADY_EXIST"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1223
+#: webApp/static/js/videoCodage.js:1173
 msgid "FIELD_TO_CHECK"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1224 webApp/static/js/videoCodage.js:1229
+#: webApp/static/js/videoCodage.js:1174 webApp/static/js/videoCodage.js:1179
 msgid "BAN_VALUE"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1228
+#: webApp/static/js/videoCodage.js:1178
 msgid "INVALID"
 msgstr ""
 
@@ -298,7 +299,9 @@ msgstr ""
 msgid "DASHBOARD"
 msgstr ""
 
-#: webApp/templates/base.html:74 webApp/templates/users/user_list.html:2
+#: webApp/templates/base.html:74
+#: webApp/templates/suppliers/suppliers_list.html:2
+#: webApp/templates/users/user_list.html:2
 msgid "USER_LIST"
 msgstr ""
 
@@ -306,7 +309,11 @@ msgstr ""
 msgid "CREATE_USER"
 msgstr ""
 
-#: webApp/templates/base.html:78 webApp/templates/base_splitter.html:72
+#: webApp/templates/base.html:76
+msgid "SUPPLIER_LIST"
+msgstr ""
+
+#: webApp/templates/base.html:79 webApp/templates/base_splitter.html:72
 msgid "SIGN_IN"
 msgstr ""
 
@@ -503,8 +510,12 @@ msgstr ""
 msgid "TEMP_PATH"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:388
+#: webApp/templates/dashboard/index.html:374
 msgid "IMAGES_PATH"
+msgstr ""
+
+#: webApp/templates/dashboard/index.html:388
+msgid "TIFF_PATH"
 msgstr ""
 
 #: webApp/templates/dashboard/index.html:399
@@ -617,10 +628,12 @@ msgid "URL"
 msgstr ""
 
 #: webApp/templates/dashboard/index.html:706 webApp/templates/pdf/view.html:140
+#: webApp/templates/suppliers/suppliers_list.html:15
 msgid "SIRET_NUMBER"
 msgstr ""
 
 #: webApp/templates/dashboard/index.html:717 webApp/templates/pdf/view.html:149
+#: webApp/templates/suppliers/suppliers_list.html:16
 msgid "SIREN_NUMBER"
 msgstr ""
 
@@ -778,8 +791,8 @@ msgid "OLD_LOT"
 msgstr ""
 
 #: webApp/templates/pdf/list.html:27 webApp/templates/pdf/list.html:28
-#: webApp/templates/splitter/splitter_manager.html:20
-#: webApp/templates/splitter/splitter_manager.html:21
+#: webApp/templates/splitter/splitter_manager.html:17
+#: webApp/templates/splitter/splitter_manager.html:18
 msgid "_SEARCH_PLACEHOLDER"
 msgstr ""
 
@@ -800,7 +813,7 @@ msgid "INVOICE_CLOSED"
 msgstr ""
 
 #: webApp/templates/pdf/list.html:96
-#: webApp/templates/splitter/splitter_manager.html:53
+#: webApp/templates/splitter/splitter_manager.html:50
 msgid "SAVED_THE"
 msgstr ""
 
@@ -834,6 +847,7 @@ msgid "HIDE_SUPPLIER_INFO"
 msgstr ""
 
 #: webApp/templates/pdf/view.html:70
+#: webApp/templates/suppliers/suppliers_list.html:14
 msgid "SUPPLIER"
 msgstr ""
 
@@ -842,14 +856,18 @@ msgid "NAME"
 msgstr ""
 
 #: webApp/templates/pdf/view.html:86
+#: webApp/templates/suppliers/suppliers_list.html:17
+#: webApp/templates/suppliers/suppliers_list.html:18
 msgid "Address"
 msgstr ""
 
 #: webApp/templates/pdf/view.html:101
+#: webApp/templates/suppliers/suppliers_list.html:19
 msgid "ZIP_CODE"
 msgstr ""
 
 #: webApp/templates/pdf/view.html:114
+#: webApp/templates/suppliers/suppliers_list.html:20
 msgid "CITY"
 msgstr ""
 
@@ -933,15 +951,15 @@ msgstr ""
 msgid "BACK_TO_VALIDATION"
 msgstr ""
 
-#: webApp/templates/splitter/splitter_manager.html:59
+#: webApp/templates/splitter/splitter_manager.html:56
 msgid "SEPARATOR"
 msgstr ""
 
-#: webApp/templates/splitter/splitter_manager.html:60
+#: webApp/templates/splitter/splitter_manager.html:57
 msgid "ORIGIN_DOCUMENT"
 msgstr ""
 
-#: webApp/templates/splitter/splitter_manager.html:62
+#: webApp/templates/splitter/splitter_manager.html:59
 #: webApp/templates/splitter/splitter_process.html:56
 msgid "DELETE"
 msgstr ""
