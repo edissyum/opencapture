@@ -15,6 +15,8 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
+import os
+
 def process(file, Log, Splitter, Files, Ocr, tmpFolder):
     Log.info('Processing file for separation : ' + file)
 
@@ -23,7 +25,8 @@ def process(file, Log, Splitter, Files, Ocr, tmpFolder):
         Files.pdf_to_jpg(file, False)
         extension = 'jpg'
     else:
-        Files.pdf_to_tiff(file, False, False)
+        tiffFilename = Files.jpgName.replace('.jpg', '') + '-%03d.tiff'
+        Files.save_pdf_to_tiff_in_docserver(file, tiffFilename)
         extension = 'tiff'
 
     files = Files.sorted_file(tmpFolder, extension)
@@ -34,7 +37,20 @@ def process(file, Log, Splitter, Files, Ocr, tmpFolder):
         text = Ocr.text_builder(img)
         text = text.replace('-\n', '')
         text_extracted.append(text)
+        # Remove temporary files
+        if Files.isTiff == "True":
+            try:
+                os.remove(f[1])
+            except OSError:
+                pass
+
     invoices_separated = Splitter.get_page_separate_order(text_extracted)
+
+    # get jpg format which is used to display images
+    if Files.isTiff == "True":
+        extension = 'jpg'
+        Files.pdf_to_jpg(file, False)
+        files = Files.sorted_file(tmpFolder, extension)
 
     Splitter.save_image_from_pdf(files ,invoices_separated, tmpFolder, file)
 
