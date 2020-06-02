@@ -971,7 +971,7 @@ $('#refuseForm').on('click', function(){
             gt.gettext('REFUSE_CONFIRMATION') +
         '</span>');
 
-    $('<button type="button" class="btn btn-danger" onclick=\'changeStatus($("#pdfId").val(), "ERR");\'>' +
+    $('<button type="button" class="btn btn-danger" onclick=\'changeStatus($("#pdfId").val(), "ERR", false);\'>' +
                 gt.gettext('YES') +
     '</button>').insertAfter($('#returnToValidate'));
 
@@ -1006,14 +1006,21 @@ $('#validateForm').on('click', function(){
                 '</span>');
     }else if(form[0].checkValidity() && (ratioTotal.val() <= (config.CONTACT['total-ratio'] / 100) && banApiError === false)){ // the banApiError is used to do not block form in case the API isn't working
         modalBody.html('<span id="waitForAdress">' +
-            gt.gettext('INCORRECT_BAN_ADDRESS') +
+            gt.gettext('INCORRECT_BAN_ADDRESS') + ' ' +
             gt.gettext('PUT_FORM_TO_SUPPLIER_WAIT') +
             '</span>');
         if ($('#awaitAdress').length === 0) {
-            $('<button type="button" class="btn btn-warning" onclick=\'changeStatus($("#pdfId").val(), "WAIT_SUP");\' id="awaitAdress">' +
-                gt.gettext('PUT_ON_HOLD') +
-                '</button>').insertAfter($('#returnToValidate'));
+            $('<button type="button" class="btn btn-warning" onclick=\'changeStatus($("#pdfId").val(), "WAIT_SUP", false);\' id="awaitAdress">' +
+                    gt.gettext('PUT_ON_HOLD') +
+            '</button>').insertAfter($('#returnToValidate'));
         }
+
+        if ($('#bypassBan').length === 0 && config.GLOBAL['allowbypasssuppliebanverif'] === 'True') {
+            $('<button type="button" class="btn btn-danger" onclick=\'changeStatus($("#pdfId").val(), "END");\' id="bypassBan">' +
+                    gt.gettext('_VALID_WIHTOUT_BAN_VERIFICATION') +
+            '</button>').insertAfter($('#awaitAdress'));
+        }
+
     }else if(form[0].checkValidity() && $('#vatNumber').hasClass('is-invalid')){
         modalBody.html(
             '<span id="tvaError">' +
@@ -1075,7 +1082,7 @@ $('#submitForm').on('click', function(){
     $('#invoice_info').submit();
 });
 
-function changeStatus(idPdf, status){
+function changeStatus(idPdf, status, submitForm = true){
     fetch('/ws/database/updateStatus', {
         method  : 'POST',
         headers : {
@@ -1090,7 +1097,12 @@ function changeStatus(idPdf, status){
             if (!JSON.parse(res.ok)) {
                 return false;
             }else {
-                $("#invoice_info").submit();
+                if (submitForm)
+                    $("#invoice_info").submit();
+                else {
+                    window.history.back();
+                    window.location.reload();
+                }
                 return true;
             }
         });

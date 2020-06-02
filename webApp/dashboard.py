@@ -80,12 +80,13 @@ def modify_config(data):
     parser = configparser.ConfigParser()
     parser.read(configFile)
 
-    separatorQREnabled      = data.get('SEPARATORQR_enabled')
-    separatorQRExportPdfa   = data.get('SEPARATORQR_exportpdfa')
-    allowDuplicate          = data.get('GLOBAL_allowduplicate')
-    allowAutomaticValidation= data.get('GLOBAL_allowautomaticvalidation')
+    separatorQREnabled       = data.get('SEPARATORQR_enabled')
+    separatorQRExportPdfa    = data.get('SEPARATORQR_exportpdfa')
+    allowDuplicate           = data.get('GLOBAL_allowduplicate')
+    allowAutomaticValidation = data.get('GLOBAL_allowautomaticvalidation')
     convertPdfToTiff         = data.get('GLOBAL_convertpdftotiff')
-    gedEnabled              = data.get('GED_enabled')
+    allowByPassSupplier      = data.get('GLOBAL_allowbypasssuppliebanverif')
+    gedEnabled               = data.get('GED_enabled')
 
     if separatorQREnabled is not None:
         parser.set('SEPARATORQR', 'enabled', 'True')
@@ -117,6 +118,11 @@ def modify_config(data):
     else:
         parser.set('GED', 'enabled', 'False')
 
+    if allowByPassSupplier is not None:
+        parser.set('GLOBAL', 'allowbypasssuppliebanverif', 'True')
+    else:
+        parser.set('GLOBAL', 'allowbypasssuppliebanverif', 'False')
+
     for info in data:
         splittedInfo    = info.split('_')
         section         = splittedInfo[0]
@@ -124,7 +130,7 @@ def modify_config(data):
 
         # Don't process REGEX param here, because it's another file except for urlpattern
         if 'REGEX' not in section or 'REGEX' in section and 'urlpattern' in field:
-            if field not in ['exportpdfa', 'enabled', 'allowduplicate', 'allowautomaticvalidation', 'convertpdftotiff']:
+            if field not in ['exportpdfa', 'enabled', 'allowduplicate', 'allowautomaticvalidation', 'convertpdftotiff', 'allowbypasssuppliebanverif']:
                 parser.set(section, field, data[info])
         else:
             with open(localepath + locale + '.json', 'r') as file:
