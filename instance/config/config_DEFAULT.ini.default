@@ -22,6 +22,8 @@ allowAutomaticValidation    = False
 defaultPassword             = Open-CaptureForInvoices
 # True or False, python way
 convertPdfToTiff            = True
+# True or False, python way
+allowBypassSupplieBanVerif  = True
 
 [SPLITTER]
 splitterpath = /var/docservers/OpenCapture_Splitter/

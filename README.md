@@ -2,7 +2,7 @@
 
 # Open-Capture for Invoices by Edissyum
  
-Version 0.2.0
+Version 0.2.1
   
 Open-Capture is a **free and Open Source** software under **GNU General Public License v3.0**.
   
@@ -16,7 +16,7 @@ The functionnalities of Open-Capture for Invoices are :
    - Wrote fully in Python for the backend, using Flask micro framework. JS/jQuery/JINJA2/CSS for the front
    - Already set to use **fr_FR** or **en_EN** locales. Other locales could be added easily using simple json file
    - Multiple ADR (LAD) profile, using INI file
-   - SIRET/SIREN & Adress verification (Only FR for now)
+   - SIRET/SIREN & Adress verification (Only FR for now, could be disabled in settings)
    - Complex locale REGEX used. Easy to improve and modify
    - You have the choice to convert PDF to TIFF or JPG. With the TIFF format the results are better but the size of files are much much bigger
   
@@ -34,7 +34,7 @@ Tested with :
 
     $ sudo mkdir /opt/OpenCaptureForInvoices/ && sudo chmod -R 775 /opt/OpenCaptureForInvoices/ && sudo chown -R edissyum:edissyum /opt/OpenCaptureForInvoices/  
     $ sudo apt install git
-    $ git clone -b 0.2.0 https://gitlab.com/edissyum/opencapture/opencaptureforinvoices /opt/OpenCaptureForInvoices/  
+    $ git clone -b 0.2.1 https://gitlab.com/edissyum/opencapture/opencaptureforinvoices /opt/OpenCaptureForInvoices/
     $ cd /opt/OpenCaptureForInvoices/
   
 Before lauching the Makefile. You have to do the following : 

@@ -183,7 +183,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="allowAutomaticValidation">
+                            <div class="convertpdftotiff">
                                 <h3>{{ gettext('CONVERT_PDF_TO_TIFF') }}</h3>
                                 <hr>
                                 <div class="col-md-4 offset-md-4">
@@ -195,6 +195,22 @@
                                                 <input type="checkbox" class="custom-control-input" name="GLOBAL_convertpdftotiff" id="convertpdftotiff">
                                             {% endif %}
                                             <label class="custom-control-label" for="convertpdftotiff">{{ gettext('ENABLED') }}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="allowbypasssuppliebanverif">
+                                <h3>{{ gettext('ALLOW_BYPASS_SUPPLIER_VERIF') }}</h3>
+                                <hr>
+                                <div class="col-md-4 offset-md-4">
+                                    <div class="form-row">
+                                         <div class="form-group col-md-4 offset-md-6">
+                                            {% if configDashboard['GLOBAL']['allowbypasssuppliebanverif'] == 'True' %}
+                                                <input type="checkbox" class="custom-control-input" name="GLOBAL_allowbypasssuppliebanverif"  id="allowbypasssuppliebanverif" checked>
+                                            {% else %}
+                                                <input type="checkbox" class="custom-control-input" name="GLOBAL_allowbypasssuppliebanverif" id="allowbypasssuppliebanverif">
+                                            {% endif %}
+                                            <label class="custom-control-label" for="allowbypasssuppliebanverif">{{ gettext('ENABLED') }}</label>
                                         </div>
                                     </div>
                                 </div>
