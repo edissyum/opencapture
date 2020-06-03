@@ -77,6 +77,7 @@
                     {% endif %}
                 {% else %}
                     <a class="nav-item nav-link" href="{{ url_for('auth.login') }}">{{ gettext('SIGN_IN') }}</a>
+                    <a class="nav-item nav-link" href="{{ url_for('auth.register') }}">{{ gettext('SIGN_UP') }}</a>
                 {% endif %}
             </div>
         </div>
