@@ -165,7 +165,6 @@ def ocrOnFly():
     return json.dumps({'text': result, 'code': 200, 'ok': 'true'})
 
 @bp.route('/ws/changeLanguage/<string:lang>', methods=['GET'])
-@login_required
 def changeLanguage(lang):
     session['lang'] = lang
     change_locale_in_config(lang)
