@@ -13,7 +13,7 @@
                     <input name="password" type="password" class="form-control" placeholder="{{ gettext('PASSWORD') }}" required="required">
                 </div>
                 <div class="form-group">
-                    <input type="submit" class="btn btn-primary btn-block" value="Créer un compte"/>
+                    <input type="submit" class="btn btn-primary btn-block" value="{{ gettext('VALIDATE') }}"/>
                 </div>
             </form>
             {% if request.path == '/auth/register' %}
