@@ -1,64 +1,87 @@
+from flask_babel import gettext
+from flask_paginate import Pagination, get_page_args
+from flask import current_app, Blueprint, flash, redirect, render_template, request, url_for, session, Response
+
 import os
-
-from flask import (
-    current_app, Blueprint, flash, redirect, render_template, request, url_for, session, Response
-)
-
 import pandas as pd
 from datetime import datetime
 from datetime import timedelta
 
 from webApp.db import get_db
-
-from flask_paginate import Pagination, get_page_args
-from flask_babel import gettext
-
 from webApp.auth import login_required
-from bin.src.classes.Xml import Xml as xml
-from bin.src.classes.Log import Log as lg
-from bin.src.classes.Files import Files as file
-from bin.src.classes.Database import Database
-from bin.src.classes.Locale import Locale as lc
-from bin.src.classes.Config import Config as cfg
-from bin.src.classes.WebServices import WebServices
-from bin.src.classes.Spreadsheet import Spreadsheet
-from bin.src.classes.PyTesseract import PyTesseract
+from webApp.functions import get_custom_id, check_python_customized_files
+
+custom_id = get_custom_id()
+custom_array = {}
+if custom_id:
+    custom_array = check_python_customized_files(custom_id[1])
+
+if 'Config' not in custom_array: from bin.src.classes.Config import Config as _Config
+else: _Config = getattr(__import__(custom_array['Config']['path'] + '.' + custom_array['Config']['module'], fromlist=[custom_array['Config']['module']]), custom_array['Config']['module'])
+
+if 'Log' not in custom_array: from bin.src.classes.Log import Log as _Log
+else: _Log = getattr(__import__(custom_array['Log']['path'] + '.' + custom_array['Log']['module'], fromlist=[custom_array['Log']['module']]), custom_array['Log']['module'])
+
+if 'Files' not in custom_array: from bin.src.classes.Files import Files as _Files
+else: _Files = getattr(__import__(custom_array['Files']['path'] + '.' + custom_array['Files']['module'], fromlist=[custom_array['Files']['module']]), custom_array['Files']['module'])
+
+if 'Xml' not in custom_array: from bin.src.classes.Xml import Xml as _Xml
+else: _Xml = getattr(__import__(custom_array['Xml']['path'] + '.' + custom_array['Xml']['module'], fromlist=[custom_array['Xml']['module']]), custom_array['Xml']['module'])
+
+if 'WebServices' not in custom_array: from bin.src.classes.WebServices import WebServices as _WebServices
+else: _WebServices = getattr(__import__(custom_array['WebServices']['path'] + '.' + custom_array['WebServices']['module'], fromlist=[custom_array['WebServices']['module']]), custom_array['WebServices']['module'])
+
+if 'Locale' not in custom_array: from bin.src.classes.Locale import Locale as _Locale
+else: _Locale = getattr(__import__(custom_array['Locale']['path'] + '.' + custom_array['Locale']['module'], fromlist=[custom_array['Locale']['module']]), custom_array['Locale']['module'])
+
+if 'PyTesseract' not in custom_array: from bin.src.classes.PyTesseract import PyTesseract as _PyTesseract
+else: _PyTesseract = getattr(__import__(custom_array['PyTesseract']['path'] + '.' + custom_array['PyTesseract']['module'], fromlist=[custom_array['PyTesseract']['module']]), custom_array['PyTesseract']['module'])
+
+if 'Database' not in custom_array: from bin.src.classes.Database import Database as _Database
+else: _Database = getattr(__import__(custom_array['Database']['path'] + '.' + custom_array['Database']['module'], fromlist=[custom_array['Database']['module']]), custom_array['Database']['module'])
+
+if 'Spreadsheet' not in custom_array: from bin.src.classes.Spreadsheet import Spreadsheet as _Spreadsheet
+else: _Spreadsheet = getattr(__import__(custom_array['Spreadsheet']['path'] + '.' + custom_array['Spreadsheet']['module'], fromlist=[custom_array['Spreadsheet']['module']]), custom_array['Spreadsheet']['module'])
+
+if 'Splitter' not in custom_array: from bin.src.classes.Splitter import Splitter as _Splitter
+else: _Splitter = getattr(__import__(custom_array['Splitter']['path'] + '.' + custom_array['Splitter']['module'], fromlist=[custom_array['Splitter']['module']]), custom_array['Splitter']['module'])
 
 bp = Blueprint('pdf', __name__)
 
 def init():
-    configName  = cfg(current_app.config['CONFIG_FILE'])
-    Config      = cfg(current_app.config['CONFIG_FOLDER'] + '/config_' + configName.cfg['PROFILE']['id'] + '.ini')
-    fileName    = Config.cfg['GLOBAL']['tmppath'] + 'tmp'
-    Log         = lg(Config.cfg['GLOBAL']['logfile'])
-    db          = Database(Log, None, get_db())
-    Xml         = xml(Config, db)
-    Files       = file(
+    configName  = _Config(current_app.config['CONFIG_FILE'])
+    Cfg         = _Config(current_app.config['CONFIG_FOLDER'] + '/config_' + configName.cfg['PROFILE']['id'] + '.ini')
+    Log         = _Log(Cfg.cfg['GLOBAL']['logfile'])
+    db          = _Database(Log, None, get_db())
+    Xml         = _Xml(Cfg, db)
+    fileName    = Cfg.cfg['GLOBAL']['tmppath'] + 'tmp'
+    Files       = _Files(
         fileName,
-        int(Config.cfg['GLOBAL']['resolution']),
-        int(Config.cfg['GLOBAL']['compressionquality']),
+        int(Cfg.cfg['GLOBAL']['resolution']),
+        int(Cfg.cfg['GLOBAL']['compressionquality']),
         Xml,
-        Config.cfg['GLOBAL']['convertpdftotiff']
+        Cfg.cfg['GLOBAL']['convertpdftotiff']
     )
-    Locale      = lc(Config)
-    Ocr         = PyTesseract(Locale.localeOCR, Log, Config)
+    Locale      = _Locale(Cfg)
+    Ocr         = _PyTesseract(Locale.localeOCR, Log, Cfg)
+    splitter    = _Splitter(Cfg, db, Locale)
     ws          = ''
 
-    if Config.cfg['GED']['enabled'] == 'True':
-        ws      = WebServices(
-            Config.cfg['GED']['host'],
-            Config.cfg['GED']['user'],
-            Config.cfg['GED']['password'],
+    if Cfg.cfg['GED']['enabled'] == 'True':
+        ws      = _WebServices(
+            Cfg.cfg['GED']['host'],
+            Cfg.cfg['GED']['user'],
+            Cfg.cfg['GED']['password'],
             Log,
-            Config
+            Cfg
         )
 
-    return db, Config, Locale, ws, Xml, Files, Ocr
+    return db, Cfg, Locale, ws, Xml, Files, Ocr, splitter
 
 @bp.route('/')
 @login_required
 def home():
-    return render_template('home.html')
+    return render_template('templates/home.html')
 
 @bp.route('/list/',  defaults={'status': None, 'time': None, 'search': None})
 @bp.route('/list/lot/', defaults={'status': None, 'search': None, 'time': None})
@@ -181,7 +204,7 @@ def index(status, time, search):
                             total=total,
                             display_msg=msg)
 
-    return render_template('pdf/list.html',
+    return render_template('templates/pdf/list.html',
                            pdfs=returnPdf,
                            status_list=status_list,
                            page=page,
@@ -253,9 +276,7 @@ def view(id):
         'data'  : [id]
     })
 
-
-
-    return render_template('pdf/view.html',
+    return render_template("templates/pdf/view.html",
                            pdf=pdf_info,
                            position=positionDict,
                            width=original_width,
@@ -265,10 +286,10 @@ def view(id):
     )
 
 
-@bp.route('/list/delete/<int:id>', methods=['GET', 'POST'], defaults={'url': ''})
-@bp.route('/list/delete/<int:id>/returnpath=<string:url>', methods=['GET', 'POST'])
+@bp.route('/list/delete/<int:rowid>', methods=['GET', 'POST'], defaults={'url': ''})
+@bp.route('/list/delete/<int:rowid>/returnpath=<string:url>', methods=['GET', 'POST'])
 @login_required
-def delete(id, url):
+def delete(rowid, url):
     _vars   = init()
     _db     = _vars[0]
     url     = url.replace('%', '/')
@@ -279,7 +300,7 @@ def delete(id, url):
             'status': 'DEL'
         },
         'where' : ['rowid = ?'],
-        'data'  : [id]
+        'data'  : [rowid]
     })
 
     return redirect(url)
@@ -288,7 +309,7 @@ def delete(id, url):
 @bp.route('/upload?splitter=<string:issep>')
 @login_required
 def upload():
-    return render_template('pdf/upload.html')
+    return render_template("templates/pdf/upload.html")
 
 @bp.route('/validate', methods=['POST'])
 def validate_form():
@@ -296,8 +317,7 @@ def validate_form():
     _db     = _vars[0]
     _cfg    = _vars[1]
     _ws     = _vars[3]
-    _Xml    = _vars[4]
-    _Files  = _vars[5]
+    _files  = _vars[5]
 
     parent  = {}
     ged     = {}
@@ -409,7 +429,7 @@ def validate_form():
             'data'  : [pdfId]
         })
 
-        _Files.exportXml(_cfg, request.form['facturationInfo_invoiceNumber'], parent, True, _db, vatNumber)
+        _files.exportXml(_cfg, request.form['facturationInfo_invoiceNumber'], parent, True, _db, vatNumber)
 
         # Unlock pdf and makes it processed
         _db.update({
@@ -455,7 +475,7 @@ def static(typeofFile, filename):
     return Response(content, mimetype=mimetype)
 
 
-def change_status(id, status):
+def change_status(rowid, status):
     _vars   = init()
     _db     = _vars[0]
     _cfg    = _vars[1].cfg
@@ -466,7 +486,7 @@ def change_status(id, status):
             'status'    :   status,
         },
         'where' : ['rowid = ?'],
-        'data'  : [id],
+        'data'  : [rowid],
     })
 
     return res
@@ -477,7 +497,7 @@ def get_financial():
     _cfg = _vars[1].cfg
     array = {}
 
-    content     = pd.DataFrame(Spreadsheet.read_excel_sheet(_cfg['REFERENCIAL']['referencialfinancial']))
+    content     = pd.DataFrame(_Spreadsheet.read_excel_sheet(_cfg['REFERENCIAL']['referencialfinancial']))
     for line in content.to_dict(orient='records'):
         if len(str(line['ID'])) >= 3:
             array[str(line['ID']).rstrip()] = line['LABEL']
@@ -487,36 +507,21 @@ def get_financial():
 def ocr_on_the_fly(fileName, selection, thumbSize):
     _vars   = init()
     _cfg    = _vars[1].cfg
-    _Files  = _vars[5]
+    _files  = _vars[5]
     _Ocr    = _vars[6]
 
-    if _Files.isTiff == 'True':
+    if _files.isTiff == 'True':
         path = _cfg['GLOBAL']['tiffpath'] + (os.path.splitext(fileName)[0]).replace('full_', 'tiff_') + '.tiff'
         if not os.path.isfile(path):
             path = _cfg['GLOBAL']['fullpath'] + fileName
     else:
         path = _cfg['GLOBAL']['fullpath'] + fileName
 
-    text = _Files.ocr_on_fly(path, selection, _Ocr, thumbSize)
+    text = _files.ocr_on_fly(path, selection, _Ocr, thumbSize)
 
     if text:
         return text
     else:
-        _Files.improve_image_detection(path)
-        text = _Files.ocr_on_fly(path, selection, _Ocr, thumbSize)
+        _files.improve_image_detection(path)
+        text = _files.ocr_on_fly(path, selection, _Ocr, thumbSize)
         return text
-
-def retrieve_supplier(data):
-    _vars   = init()
-    _db     = _vars[0]
-
-    # Retrieve supplier info
-    supplier_info = _db.select({
-        'select': ['*'],
-        'table' : ['suppliers'],
-        'where' : ["name LIKE ?"],
-        'data'  : ['%' + data + '%'],
-        'limit' : '10'
-    })
-
-    return supplier_info

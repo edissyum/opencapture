@@ -20,3 +20,4 @@ configparser
 opencv-python
 kuyruk_manager
 flask_paginate
+flask_multistatic

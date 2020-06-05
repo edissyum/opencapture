@@ -1,64 +1,33 @@
-from flask_babel import gettext
-from flask import (
-    current_app, Blueprint, flash
-)
 import os
-import shutil
 import json
-import worker_splitter_from_python
-from flask import render_template, url_for, redirect, request
-from werkzeug.utils import secure_filename
-from bin.src.classes.WebServices import WebServices
-from webApp.db import get_db
-from webApp.auth import login_required
-from bin.src.classes.Xml import Xml as xml
-from bin.src.classes.Log import Log as lg
-from bin.src.classes.Files import Files as file
-from bin.src.classes.Database import Database
-from bin.src.classes.Locale import Locale as lc
-from bin.src.classes.Config import Config as cfg
-from bin.src.classes.PyTesseract import PyTesseract
-from bin.src.classes.Splitter import Splitter
+import shutil
+
+from flask_babel import gettext
 from flask_paginate import Pagination, get_page_args
+from flask import current_app, Blueprint, flash, render_template, url_for, redirect, request
+
+import worker_splitter_from_python
+from webApp.auth import login_required
+from werkzeug.utils import secure_filename
+
+from .functions import get_custom_id, check_python_customized_files
+custom_id = get_custom_id()
+custom_array = {}
+if custom_id:
+    custom_array = check_python_customized_files(custom_id[1])
+
+if 'pdf' not in custom_array: from . import pdf
+else: pdf = getattr(__import__(custom_array['pdf']['path'], fromlist=[custom_array['pdf']['module']]), custom_array['pdf']['module'])
 
 bp = Blueprint('ws_splitter', __name__)
 
-def init():
-    configName  = cfg(current_app.config['CONFIG_FILE'])
-    Config      = cfg(current_app.config['CONFIG_FOLDER'] + '/config_' + configName.cfg['PROFILE']['id'] + '.ini')
-    fileName    = Config.cfg['GLOBAL']['tmppath'] + 'tmp'
-    Log         = lg(Config.cfg['GLOBAL']['logfile'])
-    db          = Database(Log, None, get_db())
-    Xml         = xml(Config, db)
-    Files       = file(
-        fileName,
-        int(Config.cfg['GLOBAL']['resolution']),
-        int(Config.cfg['GLOBAL']['compressionquality']),
-        Xml,
-        Config.cfg['GLOBAL']['convertpdftotiff']
-    )
-    Locale      = lc(Config)
-    Ocr         = PyTesseract(Locale.localeOCR, Log, Config)
-    ws          = ''
-    splitter    = Splitter(Config, db, Locale)
-    if Config.cfg['GED']['enabled'] == 'True':
-        ws      = WebServices(
-            Config.cfg['GED']['host'],
-            Config.cfg['GED']['user'],
-            Config.cfg['GED']['password'],
-            Log,
-            Config
-        )
-    return db, Config, Locale, splitter, ws, Xml, Files, Ocr
-
-
 @bp.route('/splitter/upload', methods=['GET', 'POST'])
 def upload_file():
-    vars = init()
-    _db = vars[0]
-    _cfg = vars[1]
-    _Files = vars[5]
-    _Splitter = vars[3]
+    _vars = pdf.init()
+    _db = _vars[0]
+    _cfg = _vars[1]
+    _Files = _vars[5]
+    _Splitter = _vars[7]
     if request.method == 'POST':
         for file in request.files:
             f                   = request.files[file]
@@ -77,9 +46,9 @@ def upload_file():
 # Splitter manager web services
 @bp.route('/splitterManager', methods=('GET', 'POST'))
 def splitter_manager():
-    vars = init()
-    _db = vars[0]
-    _cfg = vars[1]
+    _vars = pdf.init()
+    _db = _vars[0]
+    _cfg = _vars[1]
     page, per_page, offset = get_page_args(page_parameter='page',
                                            per_page_parameter='per_page')
     if request.method == 'POST':
@@ -122,7 +91,7 @@ def splitter_manager():
     for index_directory, directoryname in enumerate(os.listdir(_cfg.cfg['SPLITTER']['pdfoutputpath'])):
         files_path.append(index_directory)
 
-    return render_template('splitter/splitter_manager.html',
+    return render_template('templates/splitter/splitter_manager.html',
                             batch_list=list_batch,
                             page = page,
                             per_page = per_page,
@@ -133,7 +102,7 @@ def splitter_manager():
 @bp.route('/ws_splitter/delete', methods=('GET', 'POST'))
 @login_required
 def delete_batch():
-    _vars = init()
+    _vars = pdf.init()
     _db = _vars[0]
     _cfg = _vars[1].cfg
     batch_dir_name = request.args.get('batch_name')
@@ -153,7 +122,7 @@ def delete_page(path):
 
 @bp.route('/deleteInvoice', methods=('GET', 'POST'))
 def delete_invoice():
-    _vars = init()
+    _vars = pdf.init()
     _cfg = _vars[1].cfg
     data = request.get_json()
     shutil.rmtree(_cfg.cfg['SPLITTER']['invoicespath'] + '/invoice' + str(data['index']), ignore_errors=True)
@@ -161,10 +130,10 @@ def delete_invoice():
 
 @bp.route('/submitSplit', methods=('GET', 'POST'))
 def submitSplit():
-    _vars = init()
+    _vars = pdf.init()
     _db = _vars[0]
     _cfg = _vars[1]
-    _Splitter = _vars[3]
+    _Splitter = _vars[7]
     data = request.get_json()
 
     # Get origin file name from database to split files us it as a reference
@@ -203,21 +172,19 @@ def submitSplit():
 
 # import only allowed files
 def allowed_file(filename):
-    _vars = init()
+    _vars = pdf.init()
     _cfg = _vars[1]
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in _cfg.cfg['SPLITTER']['allowedextensions']
-
 
 # Splitter web services
 @bp.route('/ws_splitter', methods=('GET', 'POST'))
 @bp.route('/ws_splitter/<batch_dir_name>', methods=('GET', 'POST'))
 @login_required
 def separate(batch_dir_name):
-    _vars = init()
+    _vars = pdf.init()
     _db = _vars[0]
     _cfg = _vars[1]
-    _files = _vars[6]
     images_invoices_path = []
     # Add full path to batch name
     batch_dir_name = _cfg.cfg['SPLITTER']['tmpbatchpath'] + batch_dir_name
@@ -229,5 +196,4 @@ def separate(batch_dir_name):
         for index_page, invoice_image in enumerate(sorted(invoices_pages_folder), 0):
             page_image_path = batch_name + '/invoice_' + str(index_invoice) + '/' + str(invoice_image)
             images_invoices_path[index_invoice].append(page_image_path)
-
-    return render_template('splitter/splitter_process.html', invoices=images_invoices_path)
+    return render_template('templates/splitter/splitter_process.html', invoices=images_invoices_path)

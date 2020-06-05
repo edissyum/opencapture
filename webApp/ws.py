@@ -1,26 +1,35 @@
-from flask_babel import gettext
-from werkzeug.utils import secure_filename
-from flask import current_app, Blueprint, flash, redirect, request, url_for, session
-
 import os
 import json
 import requests
 from zeep import Client
-from .pdf import init, retrieve_supplier, change_status, ocr_on_the_fly
-
 import worker_from_python
-from webApp.auth import login_required
-from .dashboard import modify_profile, modify_config, change_locale_in_config
+
+from flask_babel import gettext
+from .auth import login_required
+from werkzeug.utils import secure_filename
+from flask import current_app, Blueprint, flash, redirect, request, url_for, session
+
+from .functions import get_custom_id, check_python_customized_files
+custom_id = get_custom_id()
+custom_array = {}
+if custom_id:
+    custom_array = check_python_customized_files(custom_id[1])
+
+if 'pdf' not in custom_array: from . import pdf
+else: pdf = getattr(__import__(custom_array['pdf']['path'], fromlist=[custom_array['pdf']['module']]), custom_array['pdf']['module'])
+
+if 'dashboard' not in custom_array: from . import dashboard
+else: dashboard = getattr(__import__(custom_array['dashboard']['path'], fromlist=[custom_array['dashboard']['module']]), custom_array['dashboard']['module'])
+
 
 bp = Blueprint('ws', __name__)
 
 @bp.route('/ws/VAT/<string:vatId>',  methods=['GET'])
 @login_required
 def checkVAT(vatId):
-    _vars   = init()
+    _vars   = pdf.init()
     _cfg    = _vars[1].cfg
     URL     = _cfg['GENERAL']['tva-url']
-
 
     countryCode = vatId[:2]
     vatNumber = vatId[2:]
@@ -40,7 +49,7 @@ def checkVAT(vatId):
 @bp.route('/ws/cfg/<string:cfgName>',  methods=['GET'])
 @login_required
 def modifyProfile(cfgName):
-    if modify_profile(cfgName):
+    if dashboard.modify_profile(cfgName):
         flash(gettext('PROFILE_UPDATED'))
         return json.dumps({'text': 'OK', 'code': 200, 'ok' : 'true'})
     else:
@@ -50,7 +59,7 @@ def modifyProfile(cfgName):
 @bp.route('/ws/cfg/update/', methods=['POST'])
 @login_required
 def updateConfig():
-    if modify_config(request.form):
+    if dashboard.modify_config(request.form):
         flash(gettext('CONFIG_FILE_UPDATED'))
     else:
         flash(gettext('ERROR_UPDATE_CONFIG_FILE'))
@@ -65,7 +74,7 @@ def isDuplicate():
         vatNumber       = data['vatNumber']
         invoiceId       = data['id']
 
-        _vars   = init()
+        _vars   = pdf.init()
         _db     = _vars[0]
         _cfg    = _vars[1].cfg
 
@@ -106,7 +115,7 @@ def upload():
 @login_required
 def readConfig():
     if request.method == 'GET':
-        _vars = init()
+        _vars = pdf.init()
         return json.dumps({'text' : _vars[1].cfg, 'code' : 200, 'ok' : 'true'})
 
 @bp.route('/ws/insee/getToken', methods=['POST'])
@@ -123,8 +132,17 @@ def getTokenINSEE():
 @bp.route('/ws/supplier/retrieve', methods=['GET'])
 @login_required
 def retrieveSupplier():
+    _vars = pdf.init()
+    _db = _vars[0]
     data = request.args
-    res = retrieve_supplier(data['query'])
+    res = _db.select({
+        'select': ['*'],
+        'table': ['suppliers'],
+        'where': ["name LIKE ?"],
+        'data': ['%' + data['query'] + '%'],
+        'limit': '10'
+    })
+
     arrayReturn     = {}
     arraySupplier   = {}
     arrayReturn['suggestions'] = []
@@ -152,7 +170,7 @@ def retrieveSupplier():
 @login_required
 def updateStatus():
     data    = request.get_json()
-    res     = change_status(data['id'], data['status'])
+    res     = pdf.change_status(data['id'], data['status'])
 
     return json.dumps({'text': res[0], 'code': 200, 'ok': 'true'})
 
@@ -160,12 +178,12 @@ def updateStatus():
 @login_required
 def ocrOnFly():
     data    = request.get_json()
-    result  = ocr_on_the_fly(data['fileName'], data['selection'], data['thumbSize'])
+    result  = pdf.ocr_on_the_fly(data['fileName'], data['selection'], data['thumbSize'])
 
     return json.dumps({'text': result, 'code': 200, 'ok': 'true'})
 
 @bp.route('/ws/changeLanguage/<string:lang>', methods=['GET'])
 def changeLanguage(lang):
     session['lang'] = lang
-    change_locale_in_config(lang)
+    dashboard.change_locale_in_config(lang)
     return json.dumps({'text': 'OK', 'code': 200, 'ok': 'true'})

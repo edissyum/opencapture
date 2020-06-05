@@ -2,7 +2,7 @@
 
 # Open-Capture for Invoices by Edissyum
  
-Version 0.2.1
+Version 0.3.0
   
 Open-Capture is a **free and Open Source** software under **GNU General Public License v3.0**.
   
@@ -18,7 +18,7 @@ The functionnalities of Open-Capture for Invoices are :
    - Multiple ADR (LAD) profile, using INI file
    - SIRET/SIREN & Adress verification (Only FR for now, could be disabled in settings)
    - Complex locale REGEX used. Easy to improve and modify
-   - You have the choice to convert PDF to TIFF or JPG. With the TIFF format the results are better but the size of files are much much bigger
+   - You have the choice to convert PDF to TIFF or JPG. With the TIFF format the results are better but the size of files are much bigger
   
 # Installation
 ## Linux Distributions
@@ -34,7 +34,7 @@ Tested with :
 
     $ sudo mkdir /opt/OpenCaptureForInvoices/ && sudo chmod -R 775 /opt/OpenCaptureForInvoices/ && sudo chown -R edissyum:edissyum /opt/OpenCaptureForInvoices/  
     $ sudo apt install git
-    $ git clone -b 0.2.1 https://gitlab.com/edissyum/opencapture/opencaptureforinvoices /opt/OpenCaptureForInvoices/
+    $ git clone -b 0.3.0 https://gitlab.com/edissyum/opencapture/opencaptureforinvoices /opt/OpenCaptureForInvoices/
     $ cd /opt/OpenCaptureForInvoices/
   
 Before lauching the Makefile. You have to do the following : 
@@ -102,6 +102,17 @@ First, add your user into the following file :
 Then use <code>incrontab -e</code> and put the following line :
 
     /path/to/capture/ IN_CLOSE_WRITE,IN_MOVED_TO /opt/OpenCaptureForInvoices/scripts/launch_DEFAULT.sh $@/$#
+
+## Custom development
+You can modify a lot of files if needed, without loose everything at every update. For that, you have to modify the <code>custom/custom.ini</code> file to add the id (between the brackets)
+of your custom and the path. By default for the path it's <code>custom/YOUR_CUSTOM_ID/</code> and if it's enabled or not. You can put multiple custom. Then you just have to recreate the
+tree of files into the <code>custom/YOUR_CUSTOM_ID/</code> folder. Though, be careful with the import that maybe needed to be modified because the path is modified
+
+Your could custom python files, templates files and static files (js, css, imgs, babel locales)
+
+For now (and for somes files like babel's or webApp/*.py files) it is recommended to restart Flask service in order to see the changes :
+
+    $ systemctl restart OCForInvoices-web.service
 
 ## WebServices for Maarch 19.04
 
