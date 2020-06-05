@@ -1,25 +1,34 @@
-import datetime
 from flask import (
-    current_app, Blueprint, flash, g, redirect, render_template, request, url_for
+    current_app, Blueprint, render_template,
 )
 
 from flask_babel import gettext
 from flask_paginate import Pagination, get_page_args
-from werkzeug.security import check_password_hash, generate_password_hash
-
 from webApp.db import get_db
-from webApp.auth import login_required, register
-from bin.src.classes.Log import Log as lg
-from bin.src.classes.Database import Database
-from bin.src.classes.Config import Config as cfg
+from webApp.auth import login_required
+from webApp.functions import get_custom_id, check_python_customized_files
+
+custom_id = get_custom_id()
+custom_array = {}
+if custom_id:
+    custom_array = check_python_customized_files(custom_id[1])
+
+if 'Config' not in custom_array: from bin.src.classes.Config import Config as _Config
+else: _Config = getattr(__import__(custom_array['Config']['path'] + '.' + custom_array['Config']['module'], fromlist=[custom_array['Config']['module']]), custom_array['Config']['module'])
+
+if 'Log' not in custom_array: from bin.src.classes.Log import Log as _Log
+else: _Log = getattr(__import__(custom_array['Log']['path'] + '.' + custom_array['Log']['module'], fromlist=[custom_array['Log']['module']]), custom_array['Log']['module'])
+
+if 'Database' not in custom_array: from bin.src.classes.Database import Database as _Database
+else: _Database = getattr(__import__(custom_array['Database']['path'] + '.' + custom_array['Database']['module'], fromlist=[custom_array['Database']['module']]), custom_array['Database']['module'])
 
 bp = Blueprint('supplier', __name__, url_prefix='/supplier')
 
 def init():
-    configName  = cfg(current_app.config['CONFIG_FILE'])
-    Config      = cfg(current_app.config['CONFIG_FOLDER'] + '/config_' + configName.cfg['PROFILE']['id'] + '.ini')
-    Log         = lg(Config.cfg['GLOBAL']['logfile'])
-    db          = Database(Log, None, get_db())
+    configName  = _Config(current_app.config['CONFIG_FILE'])
+    Config      = _Config(current_app.config['CONFIG_FOLDER'] + '/config_' + configName.cfg['PROFILE']['id'] + '.ini')
+    Log         = _Log(Config.cfg['GLOBAL']['logfile'])
+    db          = _Database(Log, None, get_db())
 
     return db, Config
 
@@ -52,7 +61,7 @@ def supplier_list():
                             total=total,
                             display_msg=msg)
 
-    return render_template('suppliers/suppliers_list.html',
+    return render_template('templates/suppliers/suppliers_list.html',
                            suppliers=result,
                            page=page,
                            per_page=per_page,

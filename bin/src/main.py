@@ -25,24 +25,50 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from kuyruk import Kuyruk
 from kuyruk_manager import Manager
-import bin.src.classes.Log as logClass
-import bin.src.classes.Files as filesClass
-import bin.src.classes.Xml as xml
-import bin.src.classes.WebServices as ws
-import bin.src.classes.Config as configClass
-import bin.src.classes.Locale as localeClass
-import bin.src.classes.PyTesseract as ocrClass
-import bin.src.classes.Database as databaseClass
-from bin.src.process.OCForInvoices import process
-import bin.src.classes.SeparatorQR as separatorQRClass
+from webApp.functions import get_custom_id, check_python_customized_files
 
-OCforInvoices = Kuyruk()
+custom_id = get_custom_id()
+custom_array = {}
+if custom_id:
+    custom_array = check_python_customized_files(custom_id[1])
 
-OCforInvoices.config.MANAGER_HOST         = "127.0.0.1"
-OCforInvoices.config.MANAGER_PORT         = 16501
-OCforInvoices.config.MANAGER_HTTP_PORT    = 16500
+if 'Config' not in custom_array: from bin.src.classes.Config import Config as _Config
+else: _Config = getattr(__import__(custom_array['Config']['path'] + '.' + custom_array['Config']['module'], fromlist=[custom_array['Config']['module']]), custom_array['Config']['module'])
 
-m = Manager(OCforInvoices)
+if 'Log' not in custom_array: from bin.src.classes.Log import Log as _Log
+else: _Log = getattr(__import__(custom_array['Log']['path'] + '.' + custom_array['Log']['module'], fromlist=[custom_array['Log']['module']]), custom_array['Log']['module'])
+
+if 'Files' not in custom_array: from bin.src.classes.Files import Files as _Files
+else: _Files = getattr(__import__(custom_array['Files']['path'] + '.' + custom_array['Files']['module'], fromlist=[custom_array['Files']['module']]), custom_array['Files']['module'])
+
+if 'Xml' not in custom_array: from bin.src.classes.Xml import Xml as _Xml
+else: _Xml = getattr(__import__(custom_array['Xml']['path'] + '.' + custom_array['Xml']['module'], fromlist=[custom_array['Xml']['module']]), custom_array['Xml']['module'])
+
+if 'WebServices' not in custom_array: from bin.src.classes.WebServices import WebServices as _WebServices
+else: _WebServices = getattr(__import__(custom_array['WebServices']['path'] + '.' + custom_array['WebServices']['module'], fromlist=[custom_array['WebServices']['module']]), custom_array['WebServices']['module'])
+
+if 'Locale' not in custom_array: from bin.src.classes.Locale import Locale as _Locale
+else: _Locale = getattr(__import__(custom_array['Locale']['path'] + '.' + custom_array['Locale']['module'], fromlist=[custom_array['Locale']['module']]), custom_array['Locale']['module'])
+
+if 'PyTesseract' not in custom_array: from bin.src.classes.PyTesseract import PyTesseract as _PyTesseract
+else: _PyTesseract = getattr(__import__(custom_array['PyTesseract']['path'] + '.' + custom_array['PyTesseract']['module'], fromlist=[custom_array['PyTesseract']['module']]), custom_array['PyTesseract']['module'])
+
+if 'Database' not in custom_array: from bin.src.classes.Database import Database as _Database
+else: _Database = getattr(__import__(custom_array['Database']['path'] + '.' + custom_array['Database']['module'], fromlist=[custom_array['Database']['module']]), custom_array['Database']['module'])
+
+if 'SeparatorQR' not in custom_array: from bin.src.classes.SeparatorQR import SeparatorQR as _SeparatorQR
+else: _SeparatorQR = getattr(__import__(custom_array['SeparatorQR']['path'] + '.' + custom_array['SeparatorQR']['module'], fromlist=[custom_array['SeparatorQR']['module']]), custom_array['SeparatorQR']['module'])
+
+if 'OCForInvoices' not in custom_array: from bin.src.process import OCForInvoices
+else: OCForInvoices = getattr(__import__(custom_array['OCForInvoices']['path'] , fromlist=[custom_array['OCForInvoices']['module']]), custom_array['OCForInvoices']['module'])
+
+OCforInvoices_worker = Kuyruk()
+
+OCforInvoices_worker.config.MANAGER_HOST         = "127.0.0.1"
+OCforInvoices_worker.config.MANAGER_PORT         = 16501
+OCforInvoices_worker.config.MANAGER_HTTP_PORT    = 16500
+
+m = Manager(OCforInvoices_worker)
 
 def check_file(Files, path, Config, Log):
     if not Files.check_file_integrity(path, Config):
@@ -66,29 +92,29 @@ def recursive_delete(folder, Log):
         Log.error('Unable to delete ' + folder + ' on temp folder: ' + str(e))
 
 # If needed just run "kuyruk --app bin.src.main.OCforInvoices manager" to have web dashboard of current running worker
-@OCforInvoices.task(queue='invoices')
+@OCforInvoices_worker.task(queue='invoices')
 def launch(args):
     start = time.time()
 
     # Init all the necessary classes
-    configName  = configClass.Config(args['config'])
+    configName  = _Config(args['config'])
     cfgName     = configName.cfg['PROFILE']['cfgpath'] + '/config_' + configName.cfg['PROFILE']['id'] + '.ini'
 
     if not os.path.exists(cfgName):
         sys.exit('Config file couldn\'t be found')
 
-    Config      = configClass.Config(configName.cfg['PROFILE']['cfgpath'] + '/config_' + configName.cfg['PROFILE']['id'] + '.ini')
+    Config      = _Config(configName.cfg['PROFILE']['cfgpath'] + '/config_' + configName.cfg['PROFILE']['id'] + '.ini')
+    Locale      = _Locale(Config)
+    Log         = _Log(Config.cfg['GLOBAL']['logfile'])
+    Ocr         = _PyTesseract(Locale.localeOCR, Log, Config)
+    Separator   = _SeparatorQR(Log, Config)
+    Database    = _Database(Log, Config.cfg['DATABASE']['databasefile'])
+    Xml         = _Xml(Config, Database)
 
     tmpFolder   = tempfile.mkdtemp(dir=Config.cfg['GLOBAL']['tmppath'])
     fileName    = tempfile.NamedTemporaryFile(dir=tmpFolder).name
 
-    Locale      = localeClass.Locale(Config)
-    Log         = logClass.Log(Config.cfg['GLOBAL']['logfile'])
-    Ocr         = ocrClass.PyTesseract(Locale.localeOCR, Log, Config)
-    Separator   = separatorQRClass.SeparatorQR(Log, Config)
-    Database    = databaseClass.Database(Log, Config.cfg['DATABASE']['databasefile'])
-    Xml         = xml.Xml(Config, Database)
-    Files       = filesClass.Files(
+    Files       = _Files(
         fileName,
         int(Config.cfg['GLOBAL']['resolution']),
         int(Config.cfg['GLOBAL']['compressionquality']),
@@ -97,7 +123,7 @@ def launch(args):
     )
 
     if Config.cfg['GED']['enabled'] != 'False':
-        WebServices = ws.WebServices(
+        WebServices = _WebServices(
             Config.cfg['GED']['host'],
             Config.cfg['GED']['user'],
             Config.cfg['GED']['password'],
@@ -119,7 +145,7 @@ def launch(args):
                 q = queue.Queue()
 
                 # Find file in the wanted folder (default or exported pdf after qrcode separation)
-                q = process(args, path + file, Log, Separator, Config, Files, Ocr, Locale, Database, WebServices, q)
+                q = OCForInvoices.process(args, path + file, Log, Separator, Config, Files, Ocr, Locale, Database, WebServices, q)
 
                 if not q:
                     continue
@@ -128,7 +154,7 @@ def launch(args):
         path = args['file']
         if check_file(Files, path, Config, Log) is not False:
             # Process the file and send it to Maarch
-            process(args, path, Log, Separator, Config, Files, Ocr, Locale, Database, WebServices)
+            OCForInvoices.process(args, path, Log, Separator, Config, Files, Ocr, Locale, Database, WebServices)
 
     # Empty the tmp dir to avoid residual file
     recursive_delete(tmpFolder, Log)

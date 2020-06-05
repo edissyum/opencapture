@@ -1,13 +1,11 @@
 import functools
-from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
-)
 from flask_babel import gettext
 from werkzeug.security import check_password_hash, generate_password_hash
+from flask import Blueprint, flash, g, redirect, render_template, request, session, url_for
+
 from webApp.db import get_db
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
-
 
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
@@ -37,7 +35,7 @@ def register():
 
         flash(error)
 
-    return render_template('auth/register.html')
+    return render_template('templates/auth/register.html')
 
 
 @bp.route('/login', defaults={'fallback': None}, methods=['GET', 'POST'])
@@ -67,15 +65,16 @@ def login(fallback):
             error = gettext('USER_DISABLED')
 
         if error is None:
+            lang = session['lang']
             session.clear()
             session['user_id'] = user['id']
             session['user_name'] = user['username']
+            session['lang'] = lang
             return redirect(fallback)
 
         flash(error)
 
-    return render_template('auth/login.html')
-
+    return render_template('templates/auth/login.html')
 
 @bp.before_app_request
 def load_logged_in_user():
@@ -87,7 +86,6 @@ def load_logged_in_user():
         g.user = get_db().execute(
             'SELECT * FROM user WHERE id = ?', (user_id,)
         ).fetchone()
-
 
 @bp.route('/logout')
 def logout():
@@ -104,16 +102,12 @@ def login_required(view):
 
     return wrapped_view
 
-
 def admin_login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.user is None:
             return redirect(url_for('auth.login'))
         elif g.user[1] != 'admin':
-            return render_template('error/403.html'), 403
-
+            return render_template('templates/error/403.html'), 403
         return view(**kwargs)
-
     return wrapped_view
-
