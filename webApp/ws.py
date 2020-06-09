@@ -124,7 +124,11 @@ def getTokenINSEE():
     data = request.get_json()
     try:
         res = requests.post(data['url'], data={'grant_type': 'client_credentials'}, headers={"Authorization": "Basic %s" % data['credentials']})
-        return json.dumps({'text': res.text, 'code': 200, 'ok': 'true'})
+        if 'Maintenance - INSEE' in res.text:
+            text = 'error'
+        else:
+            text = res.text
+        return json.dumps({'text': text, 'code': 200, 'ok': 'true'})
     except requests.exceptions.RequestException as e:
         return json.dumps({'text': str(e), 'code': 500, 'ok': 'false'})
 

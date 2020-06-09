@@ -129,7 +129,7 @@ def process(args, file, Log, Separator, Config, Files, Ocr, Locale, Database, We
     date            = FindDate(Ocr.text, Log, Locale, Config).run()
 
     # Find footer informations (total amount, no rate amount etc..)
-    footer          = FindFooter(Ocr, Log, Locale, Config, Files, Database, supplier, file+ '[0]').run()
+    footer          = FindFooter(Ocr, Log, Locale, Config, Files, Database, supplier, file + '[0]').run()
 
     fileName        = str(uuid.uuid4())
     fullJpgFilename = 'full_' + fileName + '-%03d.jpg'
