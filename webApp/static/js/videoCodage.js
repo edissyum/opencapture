@@ -271,7 +271,9 @@ $(document).ready(function() {
                         '</div>'
                     ).insertAfter($('#siretNumber')).slideDown();
                 } else {
-                    if (JSON.parse(res.text)) {
+                    if (res.text === 'error') {
+                        console.log('error')
+                    }else{
                         let result = JSON.parse(res.text);
                         token = result['access_token'];
                     }
@@ -1027,6 +1029,11 @@ $('#validateForm').on('click', function(){
                 '<br>' + gt.gettext('INVALID_VAT_NUMBER') +
             '</span>'
         );
+        if ($('#bypassVat').length === 0 ) {
+            $('<button type="button" class="btn btn-danger" onclick=\'changeStatus($("#pdfId").val(), "END");\' id="bypassVat">' +
+                    gt.gettext('_VALID_WIHTOUT_VAT_VERIFICATION') +
+            '</button>').insertAfter($('#returnToValidate'));
+        }
 
     }else if(form[0].checkValidity() && totalStructure !== totalHT){
         modalBody.html(

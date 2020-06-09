@@ -39,7 +39,6 @@ class FindInvoiceNumber:
                 else:
                     found = False
         if not found and self.supplier:
-            # TODO Search position of invoice number in supplier's database
             self.Log.info('Invoice number not found. Searching invoice number using position in database')
             position = self.Database.select({
                 'select': ['invoiceNumber_position'],

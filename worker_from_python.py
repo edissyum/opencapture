@@ -15,7 +15,5 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from bin.src.main import launch
-
 def main(args):
     launch(args)
