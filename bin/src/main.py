@@ -59,8 +59,8 @@ else: _Database = getattr(__import__(custom_array['Database']['path'] + '.' + cu
 if 'SeparatorQR' not in custom_array: from bin.src.classes.SeparatorQR import SeparatorQR as _SeparatorQR
 else: _SeparatorQR = getattr(__import__(custom_array['SeparatorQR']['path'] + '.' + custom_array['SeparatorQR']['module'], fromlist=[custom_array['SeparatorQR']['module']]), custom_array['SeparatorQR']['module'])
 
-if 'OCForInvoices' not in custom_array: from bin.src.process import OCForInvoices
-else: OCForInvoices = getattr(__import__(custom_array['OCForInvoices']['path'] , fromlist=[custom_array['OCForInvoices']['module']]), custom_array['OCForInvoices']['module'])
+if 'OCForInvoices' not in custom_array: from bin.src.process import OCForInvoices as OCForInvoices_process
+else: OCForInvoices_process = getattr(__import__(custom_array['OCForInvoices']['path'] , fromlist=[custom_array['OCForInvoices']['module']]), custom_array['OCForInvoices']['module'])
 
 OCforInvoices_worker = Kuyruk()
 
@@ -145,7 +145,7 @@ def launch(args):
                 q = queue.Queue()
 
                 # Find file in the wanted folder (default or exported pdf after qrcode separation)
-                q = OCForInvoices.process(args, path + file, Log, Separator, Config, Files, Ocr, Locale, Database, WebServices, q)
+                q = OCForInvoices_process.process(args, path + file, Log, Separator, Config, Files, Ocr, Locale, Database, WebServices, q)
 
                 if not q:
                     continue
@@ -154,7 +154,7 @@ def launch(args):
         path = args['file']
         if check_file(Files, path, Config, Log) is not False:
             # Process the file and send it to Maarch
-            OCForInvoices.process(args, path, Log, Separator, Config, Files, Ocr, Locale, Database, WebServices)
+            OCForInvoices_process.process(args, path, Log, Separator, Config, Files, Ocr, Locale, Database, WebServices)
 
     # Empty the tmp dir to avoid residual file
     recursive_delete(tmpFolder, Log)
