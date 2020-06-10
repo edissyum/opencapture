@@ -43,7 +43,12 @@ function changeLanguage(value) {
 function deleteInvoice(id){
     let res = confirm(gt.gettext('_CONFIRM_DELETE'));
     if (res === true){
-        window.location.href = '/list/delete/' + id + '/returnpath=' + (window.location.pathname).replace(/\//g, '%');
+        fetch('/ws/deleteInvoice/' + id, {
+            method  : 'GET',
+        }).then(function () {
+            window.location.reload();
+        });
+        // window.location.href = '/list/delete/' + id + '/fallback=' + (window.location.pathname).replace(/\//g, '%');
     }
 }
 

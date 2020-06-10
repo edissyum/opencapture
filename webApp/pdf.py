@@ -285,26 +285,6 @@ def view(id):
                            list_users=ged_users['users'],
     )
 
-
-@bp.route('/list/delete/<int:rowid>', methods=['GET', 'POST'], defaults={'url': ''})
-@bp.route('/list/delete/<int:rowid>/returnpath=<string:url>', methods=['GET', 'POST'])
-@login_required
-def delete(rowid, url):
-    _vars   = init()
-    _db     = _vars[0]
-    url     = url.replace('%', '/')
-
-    _db.update({
-        'table' : ['invoices'],
-        'set'   : {
-            'status': 'DEL'
-        },
-        'where' : ['rowid = ?'],
-        'data'  : [rowid]
-    })
-
-    return redirect(url)
-
 @bp.route('/upload')
 @bp.route('/upload?splitter=<string:issep>')
 @login_required
