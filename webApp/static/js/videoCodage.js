@@ -138,14 +138,14 @@ function ocrOnFly(isRemoved, inputId, removeWhiteSpace = false, needToBeNumber =
     let myImage     = $('#my-image');
     let zoomImg     = $('.zoomImg');
     // ratioImg is used to recalculate the (x,y) position when the ocr is done on the zoomed image
-    let ratioImg   = '1';
+    let ratioImg   = originalWidth / myImage.width();
     let isNotZoomed    = (zoomImg.length === 0 || zoomImg.css('opacity') === '0');
     if (isNotZoomed){
         zoomImg.css({
             'z-index' : -99
         });
     }else {
-        ratioImg = zoomImg.width() / myImage.width();
+        ratioImg = originalWidth / zoomImg.width();
         myImage = zoomImg;
     }
 
@@ -218,20 +218,21 @@ function ocrOnFly(isRemoved, inputId, removeWhiteSpace = false, needToBeNumber =
 
                                 // Add the coordonates of selection to draw rectangle later
                                 // Remove the _original because of the ratio issues
+
+                                let x1 = selection.x1 * ratioImg;
+                                let y1 = selection.y1 * ratioImg;
+                                let x2 = selection.x2 * ratioImg;
+                                let y2 = selection.y2 * ratioImg;
+
                                 input.setAttribute('x1_original', '');
                                 input.setAttribute('y1_original', '');
                                 input.setAttribute('x2_original', '');
                                 input.setAttribute('y2_original', '');
-                                input.setAttribute('x1', isNotZoomed ? selection.x1 : selection.x1 / ratioImg);
-                                input.setAttribute('y1', isNotZoomed ? selection.y1 : selection.y1 / ratioImg);
-                                input.setAttribute('x2', isNotZoomed ? selection.x2 : selection.x2 / ratioImg);
-                                input.setAttribute('y2', isNotZoomed ? selection.y2 : selection.y2 / ratioImg);
+                                input.setAttribute('x1', x1.toString());
+                                input.setAttribute('y1', y1.toString());
+                                input.setAttribute('x2', x2.toString());
+                                input.setAttribute('y2', y2.toString());
                                 input.setAttribute('page', currentPage === undefined ? 1 : currentPage.text());
-
-                                let x1 = isNotZoomed ? selection.x1 : selection.x1 / ratioImg;
-                                let y1 = isNotZoomed ? selection.y1 : selection.y1 / ratioImg;
-                                let x2 = isNotZoomed ? selection.x2 : selection.x2 / ratioImg;
-                                let y2 = isNotZoomed ? selection.y2 : selection.y2 / ratioImg;
 
                                 $('#' + input.id).parent().append('<input type="hidden" id="' + input.name + '_position" name="' + input.name + '_position"/>')
                                 $('#' + input.name + '_position').val('((' + x1 + ',' + y1 + '),(' + x2 + ',' + y2 + '))');
