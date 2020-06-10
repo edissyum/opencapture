@@ -15,7 +15,6 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from bin.src.main_splitter import launch
-
 def main(args):
+    from bin.src.main_splitter import launch
     launch(args)
