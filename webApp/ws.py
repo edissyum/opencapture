@@ -191,3 +191,18 @@ def changeLanguage(lang):
     session['lang'] = lang
     dashboard.change_locale_in_config(lang)
     return json.dumps({'text': 'OK', 'code': 200, 'ok': 'true'})
+
+@bp.route('/ws/deleteInvoice/<int:rowid>', methods=['GET'])
+def deleteInvoice(rowid):
+    _vars = pdf.init()
+    _db = _vars[0]
+    _db.update({
+        'table': ['invoices'],
+        'set': {
+            'status': 'DEL'
+        },
+        'where': ['rowid = ?'],
+        'data': [rowid]
+    })
+    flash(gettext('INVOICE_DELETED'))
+    return json.dumps({'text': 'OK', 'code': 200, 'ok': 'true'})
