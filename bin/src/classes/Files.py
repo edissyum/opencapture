@@ -32,9 +32,10 @@ from wand.color import Color
 from wand.api import library
 import xml.etree.ElementTree as ET
 from wand.image import Image as Img
+from wand.exceptions import PolicyError
 
 class Files:
-    def __init__(self, jpgName, res, quality, Xml, isTiff):
+    def __init__(self, jpgName, res, quality, Xml, Log, isTiff):
         self.isTiff                 = isTiff
         self.jpgName                = jpgName + '.jpg'
         self.jpgName_header         = jpgName + '_header.jpg'
@@ -47,6 +48,7 @@ class Files:
         self.img                    = None
         self.heightRatio            = ''
         self.Xml                    = Xml
+        self.Log                    = Log
 
     # Convert the first page of PDF to JPG and open the image
     def pdf_to_jpg(self, pdfName, openImg=True, crop=False, zoneToCrop=False):
@@ -116,13 +118,16 @@ class Files:
 
     # Save pdf with one or more pages into JPG file
     def save_img_with_wand(self, pdfName, output):
-        with Img(filename=pdfName, resolution=self.resolution) as pic:
-            library.MagickResetIterator(pic.wand)
-            pic.scene = 1 # Start cpt of filename at 1 instead of 0
-            pic.compression_quality = self.compressionQuality
-            pic.background_color = Color("white")
-            pic.alpha_channel = 'remove'
-            pic.save(filename=output)
+        try:
+            with Img(filename=pdfName, resolution=self.resolution) as pic:
+                library.MagickResetIterator(pic.wand)
+                pic.scene = 1 # Start cpt of filename at 1 instead of 0
+                pic.compression_quality = self.compressionQuality
+                pic.background_color = Color("white")
+                pic.alpha_channel = 'remove'
+                pic.save(filename=output)
+        except PolicyError as e:
+            self.Log.error('Error during WAND conversion : ' + str(e))
 
     @staticmethod
     def sorted_file(path, extension):
