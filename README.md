@@ -34,6 +34,9 @@ First of all, in most cases you had to modify the <code>/etc/ImageMagick-6/polic
 
     <policy domain="coder" rights="none" pattern="PDF" />
 
+If you plan to upload invoices from the interface, using the upload form, you had to modify NGINX settings to increase the max size of upload.OCForInvoices.
+Go to file <code>/etc/nginx/nginx.conf</code> and add <code>client_max_body_size 100M;</code> into the <code>http</code> bloc
+
 (Modify the user and group if needed)
 
     $ sudo mkdir /opt/OpenCaptureForInvoices/ && sudo chmod -R 775 /opt/OpenCaptureForInvoices/ && sudo chown -R edissyum:edissyum /opt/OpenCaptureForInvoices/  
@@ -157,7 +160,6 @@ Obviously you could launch the separation by the web using the "Download" page. 
 Here is an example of incrontab : 
 
     /path/to/capture/ IN_CLOSE_WRITE,IN_MOVED_TO /opt/OpenCaptureForInvoices/scripts/launch_SPLITTER.sh $@/$#
-    
     
 # LICENSE
 Open-Capture for Maarch is released under the GPL v3.
