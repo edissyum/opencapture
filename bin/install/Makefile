@@ -130,7 +130,9 @@ systemctl restart nginx
 
 ####################
 # Fix the rights after root launch to avoid permissions issues
+touch $defaultPath/OCForInvoices.sock
 chmod -R 775 $defaultPath
+chmod -R g+s $defaultPath
 chown -R $user:$user $defaultPath
 
 ####################
