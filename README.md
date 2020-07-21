@@ -34,9 +34,6 @@ First of all, in most cases you had to modify the <code>/etc/ImageMagick-6/polic
 
     <policy domain="coder" rights="none" pattern="PDF" />
 
-If you plan to upload invoices from the interface, using the upload form, you had to modify NGINX settings to increase the max size of upload.OCForInvoices.
-Go to file <code>/etc/nginx/nginx.conf</code> and add <code>client_max_body_size 100M;</code> into the <code>http</code> bloc
-
 (Modify the user and group if needed)
 
     $ sudo mkdir /opt/OpenCaptureForInvoices/ && sudo chmod -R 775 /opt/OpenCaptureForInvoices/ && sudo chown -R edissyum:edissyum /opt/OpenCaptureForInvoices/  
@@ -66,12 +63,18 @@ The ./Makefile command create the service, but you may want to change the User a
     $ chmod u+x Makefile
     $ sudo ./Makefile
         # Go grab a coffee ;)
-   
+
 It will install all the needed dependencies and install Tesseract V4.0.0 with french and english locale. If you need more locales, just do :
   
     $ sudo apt install tesseract-ocr-langcode
 
 Here is a list of all available languages code : https://www.macports.org/ports.php?by=name&substr=tesseract-
+
+If you plan to upload invoices from the interface, using the upload form, you had to modify NGINX settings to increase the max size of upload.OCForInvoices.
+Go to file <code>/etc/nginx/nginx.conf</code> and add <code>client_max_body_size 100M;</code> into the <code>http</code> bloc
+Then restart the nginx service
+
+    $ sudo systemctl restart nginx
 
 Don't forget to create all the needed path (Modify the user and group if needed) :
 
