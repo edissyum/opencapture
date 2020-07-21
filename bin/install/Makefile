@@ -133,7 +133,7 @@ systemctl restart nginx
 touch $defaultPath/OCForInvoices.sock
 chmod -R 775 $defaultPath
 chmod -R g+s $defaultPath
-chown -R $user:$user $defaultPath
+chown -R $user:$group $defaultPath
 
 ####################
 # Start all the services
