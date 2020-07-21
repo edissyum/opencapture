@@ -2,7 +2,7 @@
 
 # Open-Capture for Invoices by Edissyum
  
-Version 0.3.1
+Version 0.3.2
   
 Open-Capture is a **free and Open Source** software under **GNU General Public License v3.0**.
   
@@ -29,12 +29,16 @@ Tested with :
 - Debian 10 with Python 3.7.3 Tesseract V4.0.0 & nginx as web server
   
 ## Install Open-Capture for Invoices
-  
+
+First of all, in most cases you had to modify the <code>/etc/ImageMagick-6/policy.xml</code> file to comment the following line (~ line 94) and then restart the OCForInvoices-worker service:
+
+    <policy domain="coder" rights="none" pattern="PDF" />
+
 (Modify the user and group if needed)
 
     $ sudo mkdir /opt/OpenCaptureForInvoices/ && sudo chmod -R 775 /opt/OpenCaptureForInvoices/ && sudo chown -R edissyum:edissyum /opt/OpenCaptureForInvoices/  
     $ sudo apt install git
-    $ git clone -b 0.3.1 https://gitlab.com/edissyum/opencapture/opencaptureforinvoices /opt/OpenCaptureForInvoices/
+    $ git clone -b 0.3.2 https://gitlab.com/edissyum/opencapture/opencaptureforinvoices /opt/OpenCaptureForInvoices/
     $ cd /opt/OpenCaptureForInvoices/
   
 Before lauching the Makefile. You have to do the following : 
@@ -68,7 +72,7 @@ Here is a list of all available languages code : https://www.macports.org/ports.
 
 Don't forget to create all the needed path (Modify the user and group if needed) :
 
-    $ sudo mkdir -p /var/docservers/{OpenCapture,OpenCapture_Splitter} 
+    $ sudo mkdir -p /var/docservers/{OpenCapture,OpenCapture_Splitter}
     $ sudo mkdir -p /var/docservers/OpenCapture/images/{tiff,full}
     $ sudo mkdir -p /var/docservers/OpenCapture_Splitter/{batches,separated_pdf}
     $ sudo mkdir -p /var/docservers/OpenCapture/xml/

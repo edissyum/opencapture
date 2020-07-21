@@ -67,13 +67,13 @@
     },
     "dateRegex": "(\\d{1,2}|\\d{1}\\w{2})\\s?([JFMASONDjfmasond][a-zA-Z_À-ÿ\\.,-]{2,9}|[/,-\\.]\\d{2}[/,-\\.])\\s?((1|2|3){1}\\d{1,3}|(1|2|3))",
     "VATNumberRegex": "(FR)[0-9A-Z]{2}[0-9]{9}",
-    "invoiceRegex": "(((?P<r1>NUMERO|N(O|°)?)?\\s*(DE)?\\s*(FACTURE)(\\s*:)?\\s*(?(r1)()|(NUMERO|N(O|°)?))(\\s*:)?)|(FACTURE)\\s*:{1}).*",
+    "invoiceRegex": "(((?P<r1>NUMERO|N(O|°)?)?\\s*(DE)?\\s*(FACTURE)(\\s*:)?\\s*(?(r1)()|(NUMERO|N(O|°)?))(\\s*:)?)|(FACTURE)\\s*(:|#){1}).*",
     "invoiceSizeMin": "6",
     "dateTimeFormat": "%d %m %Y",
     "formatDate": "%Y-%m-%d",
     "SIRETRegex": "[0-9]{14}",
     "SIRENRegex": "[0-9]{9}",
     "noRatesRegex": "(?P<r1>MONTANT|(SOUS(-|\\s+)?)TOTAL)?\\s*(:\\s*)?€?\\s*(?(r1)()|H(\\.)?T(\\.)?){1}\\s*€?\\s*([0-9]*(\\.?\\,?\\s?)[0-9]+((\\.?\\,?\\s?)[0-9])+|[0-9]+)\\s*(€|EUROS|EUR)?",
-    "allRatesRegex": "(?P<r1>MONTANT|TOTAL)?\\s*(:\\s*)?€?\\s*(?(r1)()|TTC){1}\\s*€?\\s*([0-9]*(\\.?\\,?\\|?\\s?)[0-9]+((\\.?\\,?\\s?)[0-9])+|[0-9]+)\\s*(€|EUROS|EUR)?",
+    "allRatesRegex": "(?P<r1>MONTANT|TOTAL)?\\s*(:\\s*)?€?\\s*(?(r1)()|T(.)?T(.)?C){1}\\s*€?\\s*([0-9]*(\\.?\\,?\\|?\\s?)[0-9]+((\\.?\\,?\\s?)[0-9])+|[0-9]+)\\s*(€|EUROS|EUR)?",
     "vatRateRegex": "(10((,|.)0{1,2})?|20((,|.)0{1,2})?|19(\\.|,)6|0|2(\\.|,)1|5(\\.|,)5)\\s*\\%"
 }
