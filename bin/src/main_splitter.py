@@ -117,6 +117,7 @@ def launch(args):
         int(Config.cfg['GLOBAL']['resolution']),
         int(Config.cfg['GLOBAL']['compressionquality']),
         Xml,
+        Log,
         Config.cfg['GLOBAL']['convertpdftotiff']
     )
 

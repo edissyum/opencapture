@@ -60,6 +60,7 @@ def init():
         int(Cfg.cfg['GLOBAL']['resolution']),
         int(Cfg.cfg['GLOBAL']['compressionquality']),
         Xml,
+        Log,
         Cfg.cfg['GLOBAL']['convertpdftotiff']
     )
     Locale      = _Locale(Cfg)

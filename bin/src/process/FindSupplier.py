@@ -28,6 +28,9 @@ class FindSupplier:
         self.Database       = Database
         self.Locale         = Locale
         self.OCRErrorsTable = Ocr.OCRErrorsTable
+        self.found_first    = True
+        self.found_second   = True
+        self.found_third    = True
 
     def process(self, regex):
         arrayOfData = {}
@@ -55,8 +58,6 @@ class FindSupplier:
         self.Ocr.line_box_builder(self.Files.img)
 
     def run(self, retry = False, regenerateOcr = False, target=None):
-        found_first     = True
-        found_second    = True
         vatFound        = False
         siretFound      = False
 
@@ -138,9 +139,11 @@ class FindSupplier:
                         self.Log.info("SIREN doesn't meet the Luhn's algorithm : " + _siren)
 
             if not retry:
-                found_first = False
-            else:
-                found_second = False
+                self.found_first = False
+            elif retry and self.found_second:
+                self.found_second = False
+            elif retry and not self.found_second:
+                self.found_third = False
 
             # If we had to change footer to header
             # Regenerator OCR with the full image content
@@ -150,7 +153,7 @@ class FindSupplier:
 
         # If NO supplier identification are found in the header (default behavior),
         # First apply image correction
-        if not found_first:
+        if not retry and not self.found_first:
             if self.Files.isTiff == 'True':
                 self.Files.improve_image_detection(self.Files.jpgName_tiff_header)
                 self.Files.open_img(self.Files.jpgName_tiff_header)
@@ -162,14 +165,23 @@ class FindSupplier:
             return self.run(retry=True, target=None)
 
         # If, even with improved image, nothing was found, check the footer
-        if not found_second:
+        if retry and not self.found_second and self.found_third:
+            if self.Files.isTiff == 'True':
+                self.Files.open_img(self.Files.jpgName_tiff_footer)
+            else:
+                self.Files.open_img(self.Files.jpgName_footer)
+
+            self.text = self.Ocr.line_box_builder(self.Files.img)
+            return self.run(retry=True, target='footer')
+
+        # If, even with improved image, nothing was found, check the footer
+        if retry and not self.found_third:
             if self.Files.isTiff == 'True':
                 self.Files.improve_image_detection(self.Files.jpgName_tiff_footer)
                 self.Files.open_img(self.Files.jpgName_tiff_footer)
             else:
                 self.Files.improve_image_detection(self.Files.jpgName_footer)
                 self.Files.open_img(self.Files.jpgName_footer)
-
             self.text = self.Ocr.line_box_builder(self.Files.img)
             return self.run(retry=True, regenerateOcr=True, target='footer')
 
