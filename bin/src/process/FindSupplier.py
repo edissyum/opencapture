@@ -186,4 +186,5 @@ class FindSupplier:
             self.text = self.Ocr.line_box_builder(self.Files.img)
             return self.run(retry=True, regenerateOcr=True, target='footer')
 
+        self.Log.error('No supplier found...')
         return False
