@@ -97,10 +97,8 @@ class FindSupplier:
                             return existingSupplier[0]['vatNumber'], (('',''),('','')), existingSupplier[0]
                         else:
                             self.Log.info('SIRET found : ' + _siret + ' but no supplier found in database using this SIRET')
-                    else:
-                        self.Log.info("SIRET doesn't meet the Luhn's algorithm : " + _siret)
-
         if not siretFound:
+            self.Log.info("SIRET not found or doesn't meet the Luhn's algorithm")
             sirenNumber = self.process(self.Locale.SIRENRegex)
             if sirenNumber:
                 for _siren in sirenNumber:
@@ -135,9 +133,8 @@ class FindSupplier:
                                             self.regenerateOcr()
                                             self.Log.info('SIREN found using SIRET base : ' + _siret)
                                             return existingSupplier[0]['vatNumber'], (('', ''), ('', '')), existingSupplier[0]
-                    else:
-                        self.Log.info("SIREN doesn't meet the Luhn's algorithm : " + _siren)
 
+                self.Log.info("SIREN not found or doesn't meet the Luhn's algorithm")
             if not retry:
                 self.found_first = False
             elif retry and self.found_second:
