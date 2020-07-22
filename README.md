@@ -83,7 +83,7 @@ Don't forget to create all the needed path (Modify the user and group if needed)
     $ sudo mkdir -p /var/docservers/OpenCapture_Splitter/{batches,separated_pdf}
     $ sudo mkdir -p /var/docservers/OpenCapture/xml/
     $ sudo chmod -R 775 /var/docservers/{OpenCapture,OpenCapture_Splitter}/
-    $ sudo chown -R edissyum:www-data /var/docservers/{OpenCapture,OpenCapture_Splitter}/
+    $ sudo chown -R your_user:www-data /var/docservers/{OpenCapture,OpenCapture_Splitter}/
     
 ## API for SIRET/SIREN
 
@@ -112,7 +112,7 @@ First, add your user into the following file :
 
 Then use <code>incrontab -e</code> and put the following line :
 
-    /path/to/capture/ IN_CLOSE_WRITE,IN_MOVED_TO /opt/OpenCaptureForInvoices/scripts/launch_DEFAULT.sh $@/$#
+    /path/to/capture/ IN_CLOSE_WRITE,IN_MOVED_TO /opt/OpenCaptureForInvoices/bin/scripts/launch_DEFAULT.sh $@/$#
 
 ## Custom development
 You can modify a lot of files if needed, without loose everything at every update. For that, you have to modify the <code>custom/custom.ini</code> file to add the id (between the brackets)
