@@ -151,6 +151,7 @@ class FindSupplier:
         # If NO supplier identification are found in the header (default behavior),
         # First apply image correction
         if not retry and not self.found_first:
+            self.Log.info('No supplier informations found in the header, improve image and retry...')
             if self.Files.isTiff == 'True':
                 self.Files.improve_image_detection(self.Files.jpgName_tiff_header)
                 self.Files.open_img(self.Files.jpgName_tiff_header)
@@ -163,6 +164,7 @@ class FindSupplier:
 
         # If, even with improved image, nothing was found, check the footer
         if retry and not self.found_second and self.found_third:
+            self.Log.info('No supplier informations found with improved image, try with footer...')
             if self.Files.isTiff == 'True':
                 self.Files.open_img(self.Files.jpgName_tiff_footer)
             else:
@@ -171,8 +173,10 @@ class FindSupplier:
             self.text = self.Ocr.line_box_builder(self.Files.img)
             return self.run(retry=True, target='footer')
 
-        # If, even with improved image, nothing was found, check the footer
+        # If NO supplier identification are found in the footer,
+        # Apply image improvment
         if retry and not self.found_third:
+            self.Log.info('No supplier informations found in the footer, improve image and retry...')
             if self.Files.isTiff == 'True':
                 self.Files.improve_image_detection(self.Files.jpgName_tiff_footer)
                 self.Files.open_img(self.Files.jpgName_tiff_footer)
