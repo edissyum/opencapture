@@ -43,7 +43,7 @@ if __name__ == '__main__':
 
     # Insert into database all the supplier not existing into the database
     for taxeNumber in Spreadsheet.referencialSupplierData:
-        if not any(taxeNumber in value for value in listOfExistingSupplier):
+        if not any(str(taxeNumber) in value['vatNumber'] for value in listOfExistingSupplier):
             args = {
                 'table': 'suppliers',
                 'columns': {
