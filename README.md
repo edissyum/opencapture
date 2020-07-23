@@ -36,7 +36,7 @@ First of all, in most cases you had to modify the <code>/etc/ImageMagick-6/polic
 
 (Modify the user and group if needed)
 
-    $ sudo mkdir /opt/OpenCaptureForInvoices/ && sudo chmod -R 775 /opt/OpenCaptureForInvoices/ && sudo chown -R edissyum:edissyum /opt/OpenCaptureForInvoices/  
+    $ sudo mkdir /opt/OpenCaptureForInvoices/ && sudo chmod -R 775 /opt/OpenCaptureForInvoices/ && sudo chown -R your_user:your_group /opt/OpenCaptureForInvoices/
     $ sudo apt install git
     $ git clone -b 0.3.2 https://gitlab.com/edissyum/opencapture/opencaptureforinvoices /opt/OpenCaptureForInvoices/
     $ cd /opt/OpenCaptureForInvoices/
