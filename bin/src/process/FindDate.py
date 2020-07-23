@@ -56,9 +56,9 @@ class FindDate:
                 docDate = datetime.strptime(self.date, self.Locale.formatDate)
                 timedelta = today - docDate
 
-                if int(self.Config.cfg['GED']['timedelta']) != -1:
-                    if timedelta.days > int(self.Config.cfg['GED']['timedelta']) or timedelta.days < 0:
-                        self.Log.info("Date is older than 2 month or in the future : " + self.date)
+                if int(self.Config.cfg['GLOBAL']['timedelta']) != -1:
+                    if timedelta.days > int(self.Config.cfg['GLOBAL']['timedelta']) or timedelta.days < 0:
+                        self.Log.info("Date is older than " + str(self.Config.cfg['GLOBAL']['timedelta']) + " days or in the future : " + self.date)
                         self.date = ''
                         continue
                 self.Log.info("Date found : " + self.date)
