@@ -24,6 +24,9 @@ defaultPassword             = Open-CaptureForInvoices
 convertPdfToTiff            = True
 # True or False, python way
 allowBypassSupplieBanVerif  = True
+# Delta between date found and today date, in days
+# -1 to disable
+timeDelta           = -1
 
 [SPLITTER]
 splitterpath = /var/docservers/OpenCapture_Splitter/
@@ -89,9 +92,6 @@ password            =
 availableProcess    = OCForMaarch-invoice
 defaultProcess      = OCForMaarch-invoice
 usergroupid         = COURRIER
-# Delta between date found and today date, in days
-# -1 to disable
-timeDelta           = -1
 
 # Use - and not _
 [OCForMaarch-invoice]

@@ -216,10 +216,9 @@
                                 </div>
                             </div>
                             <div class="defaultPassword">
-                                <h3>{{ gettext('DEFAULT_PASSWORD') }}</h3>
                                 <hr>
-                                <div class="col-md-4 offset-md-4">
-                                    <div class="form-row">
+                                <div class="form-row">
+                                    <div class="col-md-4 offset-md-2">
                                         <label for="defaultpassword">{{ gettext('DEFAULT_PASSWORD') }}</label>
                                         <div class="input-group mb-2">
                                             <input type="text" class="form-control" id="defaultpassword" name="GLOBAL_defaultpassword" value="{{ configDashboard['GLOBAL']['defaultpassword'] }}">
@@ -229,6 +228,20 @@
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="timedelta">{{ gettext('TIME_DELTA') }}</label>
+                                        <div class="input-group mb-2">
+                                            <input type="text" class="form-control" id="timedelta" name="GLOBAL_timedelta" value="{{ configDashboard['GLOBAL']['timedelta'] }}">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">
+                                                    <i class="fas fa-key"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <small id="timedeltaHelp" class="form-text text-muted">
+                                            {{ gettext('TIME_DELTA_HELP') }}
+                                        </small>
                                     </div>
                                 </div>
                             </div>
