@@ -93,7 +93,7 @@ class FindSupplier:
                         existingSupplier = self.Database.select(args)
                         if existingSupplier:
                             self.regenerateOcr()
-                            self.Log.info('SIRET found : ' + _siret)
+                            self.Log.info('Supplier found : ' + existingSupplier[0]['name'] + ' using SIRET : ' + _siret)
                             return existingSupplier[0]['vatNumber'], (('',''),('','')), existingSupplier[0]
                         else:
                             self.Log.info('SIRET found : ' + _siret + ' but no supplier found in database using this SIRET')
@@ -112,7 +112,7 @@ class FindSupplier:
                         existingSupplier = self.Database.select(args)
                         if existingSupplier:
                             self.regenerateOcr()
-                            self.Log.info('SIREN found : ' + _siren)
+                            self.Log.info('Supplier found : ' + existingSupplier[0]['name'] + ' using SIREN : ' + _siren)
 
                             return existingSupplier[0]['vatNumber'], (('', ''), ('', '')), existingSupplier[0]
                         else:
@@ -131,7 +131,7 @@ class FindSupplier:
                                         existingSupplier = self.Database.select(args)
                                         if existingSupplier:
                                             self.regenerateOcr()
-                                            self.Log.info('SIREN found using SIRET base : ' + _siret)
+                                            self.Log.info('Supplier found : ' + existingSupplier[0]['name'] + ' using SIREN from SIRET base : ' + _siret)
                                             return existingSupplier[0]['vatNumber'], (('', ''), ('', '')), existingSupplier[0]
 
                 self.Log.info("SIREN not found or doesn't meet the Luhn's algorithm")
