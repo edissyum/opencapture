@@ -63,12 +63,18 @@ The ./Makefile command create the service, but you may want to change the User a
     $ chmod u+x Makefile
     $ sudo ./Makefile
         # Go grab a coffee ;)
-   
+
 It will install all the needed dependencies and install Tesseract V4.0.0 with french and english locale. If you need more locales, just do :
   
     $ sudo apt install tesseract-ocr-langcode
 
 Here is a list of all available languages code : https://www.macports.org/ports.php?by=name&substr=tesseract-
+
+If you plan to upload invoices from the interface, using the upload form, you had to modify NGINX settings to increase the max size of upload.OCForInvoices.
+Go to file <code>/etc/nginx/nginx.conf</code> and add <code>client_max_body_size 100M;</code> into the <code>http</code> bloc
+Then restart the nginx service
+
+    $ sudo systemctl restart nginx
 
 Don't forget to create all the needed path (Modify the user and group if needed) :
 
@@ -77,7 +83,7 @@ Don't forget to create all the needed path (Modify the user and group if needed)
     $ sudo mkdir -p /var/docservers/OpenCapture_Splitter/{batches,separated_pdf}
     $ sudo mkdir -p /var/docservers/OpenCapture/xml/
     $ sudo chmod -R 775 /var/docservers/{OpenCapture,OpenCapture_Splitter}/
-    $ sudo chown -R edissyum:www-data /var/docservers/{OpenCapture,OpenCapture_Splitter}/
+    $ sudo chown -R your_user:www-data /var/docservers/{OpenCapture,OpenCapture_Splitter}/
     
 ## API for SIRET/SIREN
 
@@ -106,7 +112,7 @@ First, add your user into the following file :
 
 Then use <code>incrontab -e</code> and put the following line :
 
-    /path/to/capture/ IN_CLOSE_WRITE,IN_MOVED_TO /opt/OpenCaptureForInvoices/scripts/launch_DEFAULT.sh $@/$#
+    /path/to/capture/ IN_CLOSE_WRITE,IN_MOVED_TO /opt/OpenCaptureForInvoices/bin/scripts/launch_DEFAULT.sh $@/$#
 
 ## Custom development
 You can modify a lot of files if needed, without loose everything at every update. For that, you have to modify the <code>custom/custom.ini</code> file to add the id (between the brackets)
@@ -157,7 +163,6 @@ Obviously you could launch the separation by the web using the "Download" page. 
 Here is an example of incrontab : 
 
     /path/to/capture/ IN_CLOSE_WRITE,IN_MOVED_TO /opt/OpenCaptureForInvoices/scripts/launch_SPLITTER.sh $@/$#
-    
     
 # LICENSE
 Open-Capture for Maarch is released under the GPL v3.

@@ -97,10 +97,8 @@ class FindSupplier:
                             return existingSupplier[0]['vatNumber'], (('',''),('','')), existingSupplier[0]
                         else:
                             self.Log.info('SIRET found : ' + _siret + ' but no supplier found in database using this SIRET')
-                    else:
-                        self.Log.info("SIRET doesn't meet the Luhn's algorithm : " + _siret)
-
         if not siretFound:
+            self.Log.info("SIRET not found or doesn't meet the Luhn's algorithm")
             sirenNumber = self.process(self.Locale.SIRENRegex)
             if sirenNumber:
                 for _siren in sirenNumber:
@@ -135,9 +133,8 @@ class FindSupplier:
                                             self.regenerateOcr()
                                             self.Log.info('SIREN found using SIRET base : ' + _siret)
                                             return existingSupplier[0]['vatNumber'], (('', ''), ('', '')), existingSupplier[0]
-                    else:
-                        self.Log.info("SIREN doesn't meet the Luhn's algorithm : " + _siren)
 
+                self.Log.info("SIREN not found or doesn't meet the Luhn's algorithm")
             if not retry:
                 self.found_first = False
             elif retry and self.found_second:
@@ -154,6 +151,7 @@ class FindSupplier:
         # If NO supplier identification are found in the header (default behavior),
         # First apply image correction
         if not retry and not self.found_first:
+            self.Log.info('No supplier informations found in the header, improve image and retry...')
             if self.Files.isTiff == 'True':
                 self.Files.improve_image_detection(self.Files.jpgName_tiff_header)
                 self.Files.open_img(self.Files.jpgName_tiff_header)
@@ -166,6 +164,7 @@ class FindSupplier:
 
         # If, even with improved image, nothing was found, check the footer
         if retry and not self.found_second and self.found_third:
+            self.Log.info('No supplier informations found with improved image, try with footer...')
             if self.Files.isTiff == 'True':
                 self.Files.open_img(self.Files.jpgName_tiff_footer)
             else:
@@ -174,8 +173,10 @@ class FindSupplier:
             self.text = self.Ocr.line_box_builder(self.Files.img)
             return self.run(retry=True, target='footer')
 
-        # If, even with improved image, nothing was found, check the footer
+        # If NO supplier identification are found in the footer,
+        # Apply image improvment
         if retry and not self.found_third:
+            self.Log.info('No supplier informations found in the footer, improve image and retry...')
             if self.Files.isTiff == 'True':
                 self.Files.improve_image_detection(self.Files.jpgName_tiff_footer)
                 self.Files.open_img(self.Files.jpgName_tiff_footer)
@@ -185,4 +186,5 @@ class FindSupplier:
             self.text = self.Ocr.line_box_builder(self.Files.img)
             return self.run(retry=True, regenerateOcr=True, target='footer')
 
+        self.Log.error('No supplier found...')
         return False
