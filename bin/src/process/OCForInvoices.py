@@ -40,32 +40,32 @@ else: FindSupplier = getattr(__import__(custom_array['FindSupplier']['path'] + '
 if 'FindInvoiceNumber' not in custom_array: from .FindInvoiceNumber import FindInvoiceNumber
 else: FindInvoiceNumber = getattr(__import__(custom_array['FindInvoiceNumber']['path'] + '.' + custom_array['FindInvoiceNumber']['module'], fromlist=[custom_array['FindInvoiceNumber']['module']]), custom_array['FindInvoiceNumber']['module'])
 
-def insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, footer, nbPages, fullJpgFilename, tiffFilename, status):
+def insert(Database, Log, Files, Config, supplier, file, invoice_number, date, footer, nb_pages, full_jpg_filename, tiff_filename, status):
     if Files.isTiff == 'True':
-        path = Config.cfg['GLOBAL']['tiffpath'] + '/' + tiffFilename.replace('-%03d', '-001')
+        path = Config.cfg['GLOBAL']['tiffpath'] + '/' + tiff_filename.replace('-%03d', '-001')
     else:
-        path = Config.cfg['GLOBAL']['fullpath'] + '/' + fullJpgFilename.replace('-%03d', '-001')
+        path = Config.cfg['GLOBAL']['fullpath'] + '/' + full_jpg_filename.replace('-%03d', '-001')
 
     res = Database.insert({
         'table': 'invoices',
         'columns': {
-            'vatNumber'             : supplier[0] if supplier else '',
-            'vatNumber_position'    : str(supplier[1]) if supplier else '',
-            'invoiceDate'           : date[0] if date else '',
-            'invoiceDate_position'  : str(date[1]) if date else '',
-            'invoiceNumber'         : invoiceNumber[0] if invoiceNumber is not False else '',
-            'invoiceNumber_position': str(invoiceNumber[1]) if invoiceNumber is not False else '',
-            'HTAmount1'             : str(footer[0][0]) if footer is not False else '',
-            'HTAmount1_position'    : str(footer[0][1]) if footer is not False else '',
-            'VATRate1'              : str(footer[2][0]) if footer is not False else '',
-            'VATRate1_position'     : str(footer[2][1]) if footer is not False else '',
-            'filename'              : os.path.basename(file),
-            'path'                  : os.path.dirname(file),
-            'imgWidth'              : str(Files.get_size(path)),
-            'fullJpgFilename'       : fullJpgFilename.replace('-%03d', '-001'),
-            'tiffFilename'          : tiffFilename.replace('-%03d', '-001'),
-            'status'                : status,
-            'nbPages'               : str(nbPages),
+            'vat_number'             : supplier[0] if supplier else '',
+            'vat_number_position'    : str(supplier[1]) if supplier else '',
+            'invoice_date'           : date[0] if date else '',
+            'invoice_date_position'  : str(date[1]) if date else '',
+            'invoice_number'         : invoice_number[0] if invoice_number is not False else '',
+            'invoice_number_position': str(invoice_number[1]) if invoice_number is not False else '',
+            'ht_amount1'             : str(footer[0][0]) if footer is not False else '',
+            'ht_amount1_position'    : str(footer[0][1]) if footer is not False else '',
+            'vat_rate1'              : str(footer[2][0]) if footer is not False else '',
+            'vat_rate1_position'     : str(footer[2][1]) if footer is not False else '',
+            'filename'               : os.path.basename(file),
+            'path'                   : os.path.dirname(file),
+            'img_width'              : str(Files.get_size(path)),
+            'full_jpg_filename'      : full_jpg_filename.replace('-%03d', '-001'),
+            'tiff_filename'          : tiff_filename.replace('-%03d', '-001'),
+            'status'                 : status,
+            'nb_pages'               : str(nb_pages),
         }
     })
 
@@ -132,14 +132,14 @@ def process(args, file, Log, Separator, Config, Files, Ocr, Locale, Database, We
     footer          = FindFooter(Ocr, Log, Locale, Config, Files, Database, supplier, file + '[0]').run()
 
     fileName        = str(uuid.uuid4())
-    fullJpgFilename = 'full_' + fileName + '-%03d.jpg'
-    tiffFilename    = 'tiff_' + fileName + '-%03d.tiff'
+    full_jpg_filename = 'full_' + fileName + '-%03d.jpg'
+    tiff_filename    = 'tiff_' + fileName + '-%03d.tiff'
 
     # get the number of pages into the PDF documents
     with open(file, 'rb') as doc:
         pdf = PyPDF4.PdfFileReader(doc)
         try:
-            nbPages = pdf.getNumPages()
+            nb_pages = pdf.getNumPages()
         except ValueError as e:
             Log.error(e)
             shutil.move(file, Config.cfg['GLOBAL']['errorpath'] + os.path.basename(file))
@@ -149,7 +149,7 @@ def process(args, file, Log, Separator, Config, Files, Ocr, Locale, Database, We
 
     # If all informations are found, do not send it to GED
     if supplier and date and invoiceNumber and footer and Config.cfg['GLOBAL']['allowautomaticvalidation'] == 'True':
-        insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, footer, nbPages, fullJpgFilename, tiffFilename, 'DEL')
+        insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, footer, nb_pages, full_jpg_filename, tiff_filename, 'DEL')
         Log.info('All the usefull informations are found. Export the XML and end process')
         now = datetime.datetime.now()
         parent = {
@@ -158,10 +158,10 @@ def process(args, file, Log, Separator, Config, Files, Ocr, Locale, Database, We
             'supplierInfo'      : [{
                 'supplierInfo_name'         : {'field': supplier[2]['name']},
                 'supplierInfo_city'         : {'field': supplier[2]['city']},
-                'supplierInfo_siretNumber'  : {'field': supplier[2]['SIRET']},
-                'supplierInfo_sirenNumber'  : {'field': supplier[2]['SIREN']},
+                'supplierInfo_siretNumber'  : {'field': supplier[2]['siret']},
+                'supplierInfo_sirenNumber'  : {'field': supplier[2]['siren']},
                 'supplierInfo_address'      : {'field': supplier[2]['adress1']},
-                'supplierInfo_vatNumber'    : {'field': supplier[2]['vatNumber']},
+                'supplierInfo_vatNumber'    : {'field': supplier[2]['vat_number']},
                 'supplierInfo_postal_code'  : {'field': str(supplier[2]['postal_code'])},
             }],
             'facturationInfo'   : [{
@@ -185,7 +185,7 @@ def process(args, file, Log, Separator, Config, Files, Ocr, Locale, Database, We
                 'data'      : [invoiceNumber[0]]
             })
 
-            contact = WebServices.retrieve_contact_by_VATNumber(supplier[2]['vatNumber'])
+            contact = WebServices.retrieve_contact_by_VATNumber(supplier[2]['vat_number'])
             if not contact:
                 contact = {
                     'isCorporatePerson': 'Y',
@@ -198,7 +198,7 @@ def process(args, file, Log, Separator, Config, Files, Ocr, Locale, Database, We
                     'addressTown': parent['supplierInfo'][0]['supplierInfo_city']['field'],
                     'societyShort': parent['supplierInfo'][0]['supplierInfo_name']['field'],
                     'addressStreet': parent['supplierInfo'][0]['supplierInfo_address']['field'],
-                    'otherData': parent['supplierInfo'][0]['supplierInfo_vatNumber']['field'],
+                    'otherData': parent['supplierInfo'][0]['supplierInfo_vat_number']['field'],
                     'addressZip': parent['supplierInfo'][0]['supplierInfo_postal_code']['field']
                 }
                 contact['email'] = 'À renseigner ' + parent['supplierInfo'][0]['supplierInfo_name']['field'] + ' - ' + contact['otherData']
@@ -209,13 +209,13 @@ def process(args, file, Log, Separator, Config, Files, Ocr, Locale, Database, We
 
             data = {
                 'date'          : date[0],
-                'vatNumber'     : supplier[2]['vatNumber'],
-                'creationDate'  : invoiceInfo[0]['registerDate'],
+                'vatNumber'     : supplier[2]['vat_number'],
+                'creationDate'  : invoiceInfo[0]['register_date'],
                 'subject'       : 'Facture N°' + invoiceNumber[0],
                 'status'        : Config.cfg[defaultProcess]['status'],
                 'destination'   : Config.cfg[defaultProcess]['defaultdestination'],
                 'fileContent'   : open(parent['fileInfo'][0]['fileInfoPath']['field'], 'rb').read(),
-                Config.cfg[defaultProcess]['customvatnumber']       : supplier[2]['vatNumber'],
+                Config.cfg[defaultProcess]['customvatnumber']       : supplier[2]['vat_number'],
                 Config.cfg[defaultProcess]['customht']              : parent['facturationInfo'][0]['facturationInfo_totalHT']['field'],
                 Config.cfg[defaultProcess]['customttc']             : parent['facturationInfo'][0]['facturationInfo_totalTTC']['field'],
                 Config.cfg[defaultProcess]['custominvoicenumber']   : invoiceNumber[0],
@@ -236,11 +236,11 @@ def process(args, file, Log, Separator, Config, Files, Ocr, Locale, Database, We
                 return False
     else:
         # Convert all the pages to JPG (used to full web interface)
-        Files.save_img_with_wand(file, Config.cfg['GLOBAL']['fullpath'] + '/' + fullJpgFilename)
+        Files.save_img_with_wand(file, Config.cfg['GLOBAL']['fullpath'] + '/' + full_jpg_filename)
         # If tiff support enabled, save all the pages to TIFF (used for OCR ON FLY)
         if Files.isTiff == 'True':
-            Files.save_pdf_to_tiff_in_docserver(file, Config.cfg['GLOBAL']['tiffpath'] + '/' + tiffFilename)
+            Files.save_pdf_to_tiff_in_docserver(file, Config.cfg['GLOBAL']['tiffpath'] + '/' + tiff_filename)
 
-        insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, footer, nbPages, fullJpgFilename, tiffFilename, 'NEW')
+        insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, footer, nb_pages, full_jpg_filename, tiff_filename, 'NEW')
 
     return True

@@ -436,12 +436,12 @@ hr {
     box-shadow: 0 0 12px 7px #76B442;
 }
 
-.nbPages > i,
+.nb_pages > i,
 .input-group-prepend {
     cursor: pointer;
 }
 
-.nbPages {
+.nb_pages {
     margin-top: -20px;
     position: absolute;
     z-index: 999;
