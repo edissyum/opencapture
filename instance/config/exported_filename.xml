@@ -9,7 +9,7 @@
         </ELEMENT>
         <ELEMENT>
             <type>column</type>
-            <value>invoices.invoiceNumber</value>
+            <value>invoices.invoice_number</value>
             <filter/>
         </ELEMENT>
         <ELEMENT>
@@ -19,7 +19,7 @@
         </ELEMENT>
         <ELEMENT>
             <type>column</type>
-            <value>invoices.registerDate</value>
+            <value>invoices.register_date</value>
             <filter>full_date</filter>
         </ELEMENT>
     </NAME>

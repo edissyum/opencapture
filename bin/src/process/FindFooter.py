@@ -63,9 +63,9 @@ class FindFooter:
         position = self.Database.select({
             'select': [select],
             'table' : ['suppliers'],
-            'where' : ['vatNumber = ?'],
+            'where' : ['vat_number = ?'],
             'data'  : [self.supplier[0]]
-        })[0][0]
+        })[0][select]
 
         if position:
             positionArray   = self.Ocr.prepare_ocr_on_fly(position)
@@ -99,12 +99,12 @@ class FindFooter:
                 if self.supplier is not False:
                     self.Log.info('No amount or percentage found in footer, start searching with supplier position')
                     if noRateAmount is False:
-                        noRateAmount    = self.process_with_position('noTaxes_1_position')
+                        noRateAmount    = self.process_with_position('no_taxes_1_position')
                         if noRateAmount:
                             self.Log.info('noRateAmount found with position')
 
                     if ratePercentage is False:
-                        ratePercentage  = self.process_with_position('VAT_1_position')
+                        ratePercentage  = self.process_with_position('vat_1_position')
                         if ratePercentage:
                             self.Log.info('ratePercentage found with position')
 

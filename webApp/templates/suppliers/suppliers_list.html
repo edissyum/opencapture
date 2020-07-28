@@ -25,7 +25,7 @@
                         <tr>
                             <td>
                                 <a href="#">
-                                    {{ supplier['vatNumber'] }}
+                                    {{ supplier['vat_number'] }}
                                 </a>
                             </td>
                             <td>
@@ -35,19 +35,19 @@
                             </td>
                             <td>
                                 <a href="#">
-                                    {% if supplier['SIRET'] == 'nan' %}
+                                    {% if supplier['siret'] == 'nan' %}
                                         N/A
                                     {% else %}
-                                        {{ supplier['SIRET'] }}
+                                        {{ supplier['siret'] }}
                                     {% endif %}
                                 </a>
                             </td>
                             <td>
                                 <a href="#">
-                                    {% if supplier['SIREN'] == 'nan' %}
+                                    {% if supplier['siren'] == 'nan' %}
                                         N/A
                                     {% else %}
-                                        {{ supplier['SIREN'] }}
+                                        {{ supplier['siren'] }}
                                     {% endif %}
                                 </a>
                             </td>

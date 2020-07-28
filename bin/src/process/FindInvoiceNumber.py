@@ -41,11 +41,11 @@ class FindInvoiceNumber:
         if not found and self.supplier:
             self.Log.info('Invoice number not found. Searching invoice number using position in database')
             position = self.Database.select({
-                'select': ['invoiceNumber_position'],
+                'select': ['invoice_number_position'],
                 'table' : ['suppliers'],
-                'where' : ['vatNumber = ?'],
+                'where' : ['vat_number = ?'],
                 'data'  : [self.supplier[0]]
-            })[0][0]
+            })[0]['invoice_number_position']
 
             if position :
                 positionArray   = self.Ocr.prepare_ocr_on_fly(position)

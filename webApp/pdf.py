@@ -52,7 +52,8 @@ def init():
     configName  = _Config(current_app.config['CONFIG_FILE'])
     Cfg         = _Config(current_app.config['CONFIG_FOLDER'] + '/config_' + configName.cfg['PROFILE']['id'] + '.ini')
     Log         = _Log(Cfg.cfg['GLOBAL']['logfile'])
-    db          = _Database(Log, None, get_db())
+    dbType      = Cfg.cfg['DATABASE']['databasetype']
+    db          = _Database(Log, dbType, conn=get_db().conn)
     Xml         = _Xml(Cfg, db)
     fileName    = Cfg.cfg['GLOBAL']['tmppath'] + 'tmp'
     Files       = _Files(
@@ -111,68 +112,71 @@ def index(status, time, search):
         'where' : ['locked_by = ?'],
         'data'  : [session['user_name']]
     })
-
+    where = []
     if time:
         if time == 'TODAY':
-            where   = "strftime('%Y-%m-%d',registerDate) = ?"
+            where.append("strftime('%Y-%m-%d', register_date) = ?")
             day     = datetime.today().strftime('%Y-%m-%d')
 
         elif time == 'YESTERDAY':
-            where   = "strftime('%Y-%m-%d',registerDate) = ?"
+            where.append("strftime('%Y-%m-%d', register_date) = ?")
             day     = (datetime.today() - timedelta(days=1)).strftime('%Y-%m-%d')
 
         else : # OLDER
-            where   = "strftime('%Y-%m-%d',registerDate) < ?"
+            where.append("strftime('%Y-%m-%d', register_date) < ?")
             day     = (datetime.today() - timedelta(days=1)).strftime('%Y-%m-%d')
 
         if status and status != '*':
-            where += " AND invoices.status = '" + status + "'"
+            where.append("invoices.status = '" + status + "'")
         else:
-            where += " AND invoices.status <> 'DEL'"
+            where.append("invoices.status <> 'DEL'")
 
         if search:
-            where += " AND (invoices.invoiceNumber LIKE '%" + search + "%'" \
-                     " OR suppliers.name LIKE '%" + search + "%')"
+            where.append("(invoices.invoiceNumber LIKE '%" + search + "%'" \
+                     " OR suppliers.name LIKE '%" + search + "%')")
 
         total = _db.select({
-            'select'    : ['count(DISTINCT(invoices.oid)) as total'],
+            'select'    : ['count(DISTINCT(invoices.id)) as total'],
             'table'     : ['invoices', 'status', 'suppliers'],
-            'left_join' : ['invoices.status = status.id', 'invoices.vatNumber = suppliers.vatNumber'],
-            'where'     : [where],
+            'left_join' : ['invoices.status = status.id', 'invoices.vat_number = suppliers.vat_number'],
+            'where'     : where,
             'data'      : [day]
         })[0]['total']
 
         pdf_list = _db.select({
             'select'    : [
-                "DISTINCT(invoices.oid)",
-                "strftime('%d-%m-%Y à %H:%M', registerDate) as date",
+                "DISTINCT(invoices.id) as invoice_id",
+                "status.id as status_id",
+                "strftime('%d-%m-%Y à %H:%M', register_date) as date",
                 "*"
             ],
             'table'     : ['invoices', 'status', 'suppliers'],
-            'left_join' : ['invoices.status = status.id', 'invoices.vatNumber = suppliers.vatNumber'],
-            'where'     : [where],
+            'left_join' : ['invoices.status = status.id', 'invoices.vat_number = suppliers.vat_number'],
+            'where'     : where,
             'data'      : [day],
-            'limit'     : str(offset) + ',' + str(per_page),
+            'limit'     : str(per_page),
+            'offset'    : str(offset),
             'order_by'  : ['date DESC']
         })
 
     else:
         total = _db.select({
-            'select': ['count(DISTINCT(invoices.oid)) as total'],
+            'select': ['count(DISTINCT(invoices.id)) as total'],
             'table' : ['invoices'],
-            'where' : ["status NOT IN ('END', 'DEL')", "strftime('%Y-%m-%d',registerDate) = ?"],
+            'where' : ["status NOT IN ('END', 'DEL')", "strftime('%Y-%m-%d',register_date) = ?"],
             'data'  : [datetime.today().strftime('%Y-%m-%d')],
         })[0]['total']
 
         pdf_list = _db.select({
             'select'    : [
-                "DISTINCT(invoices.oid)",
-                "strftime('%d-%m-%Y à %H:%M', registerDate) as date",
+                "DISTINCT(invoices.id) as invoice_id",
+                "status.id as status_id",
+                "strftime('%d-%m-%Y à %H:%M', register_date) as date",
                 "*"
             ],
             'table'     : ['invoices', 'status'],
             'left_join' : ['invoices.status = status.id'],
-            'where'     : ["status NOT IN ('END', 'DEL')", "strftime('%Y-%m-%d',registerDate) = ?"],
+            'where'     : ["status NOT IN ('END', 'DEL')", "strftime('%Y-%m-%d',register_date) = ?"],
             'data'      : [datetime.today().strftime('%Y-%m-%d')],
             'limit'     : str(offset) + ',' + str(per_page),
             'order_by'  : ['date DESC']
@@ -185,12 +189,12 @@ def index(status, time, search):
         supplier = _db.select({
             'select'    : ['*'],
             'table'     : ['suppliers'],
-            'where'     : ['vatNumber = ?'],
-            'data'      : [pdf['vatNumber']]
+            'where'     : ['vat_number = ?'],
+            'data'      : [pdf['vat_number']]
         })
 
         if supplier:
-            pdf['supplierName'] = supplier[0]['name']
+            pdf['supplier_name'] = supplier[0]['name']
 
         returnPdf.append(pdf)
 
@@ -235,9 +239,9 @@ def view(id):
     positionDict = {}
 
     pdf_info = _db.select({
-        'select': ['oid, *'],
+        'select': ['id, *'],
         'table' : ['invoices'],
-        'where' : ['status <> ?', 'rowid = ?'],
+        'where' : ['status <> ?', 'id = ?'],
         'data'  : ['DEL', id],
         'limit' : '1'
     })[0]
@@ -246,8 +250,8 @@ def view(id):
     supplier_info   = _db.select({
         'select': ['*'],
         'table' : ['suppliers'],
-        'where' : ['vatNumber = ?'],
-        'data'  : [pdf_info['vatNumber']],
+        'where' : ['vat_number = ?'],
+        'data'  : [pdf_info['vat_number']],
         'limit' : '1'
     })
 
@@ -259,7 +263,7 @@ def view(id):
             else:
                 positionDict[key] = (('',''),('',''))
 
-    original_width  = eval(pdf_info['imgWidth'])
+    original_width  = eval(pdf_info['img_width'])
 
     if supplier_info:
         supplier_info = supplier_info[0]
@@ -273,7 +277,7 @@ def view(id):
             'locked' : 1,
             'locked_by': session['user_name']
         },
-        'where' : ['rowid = ?'],
+        'where' : ['id = ?'],
         'data'  : [id]
     })
 
@@ -325,14 +329,14 @@ def validate_form():
             ged['creationDate']                                     = request.form['pdfCreationDate']
             ged['date']                                             = request.form['facturationInfo_date']
             ged['dest_user']                                        = request.form['ged_users']
-            ged['vatNumber']                                        = request.form['supplierInfo_vatNumber']
-            ged[_cfg.cfg[defaultProcess]['customvatnumber']]        = request.form['supplierInfo_vatNumber']
+            ged['vatNumber']                                        = request.form['supplierInfo_vat_number']
+            ged[_cfg.cfg[defaultProcess]['customvatnumber']]        = request.form['supplierInfo_vat_number']
             ged[_cfg.cfg[defaultProcess]['customht']]               = request.form['facturationInfo_totalHT']
             ged[_cfg.cfg[defaultProcess]['customttc']]              = request.form['facturationInfo_totalTTC']
-            ged[_cfg.cfg[defaultProcess]['custominvoicenumber']]    = request.form['facturationInfo_invoiceNumber']
+            ged[_cfg.cfg[defaultProcess]['custominvoicenumber']]    = request.form['facturationInfo_invoice_number']
             ged[_cfg.cfg[defaultProcess]['custombudget']]           = request.form['analyticsInfo_budgetSelection_1']
             ged[_cfg.cfg[defaultProcess]['customoutcome']]          = request.form['analyticsInfo_structureSelection_1']
-            ged['subject']                                          = 'Facture N°' + request.form['facturationInfo_invoiceNumber']
+            ged['subject']                                          = 'Facture N°' + request.form['facturationInfo_invoice_number']
             ged['destination']                                      = request.form['ged_users'].split('#')[1] if request.form['ged_users'] else _cfg.cfg[defaultProcess]['defaultdestination']
 
             if 'facturationInfo_NumberOfDeliveryNumber' in request.form:
@@ -385,7 +389,7 @@ def validate_form():
         for value in parent:
             for field in request.form:
                 if field.split('_')[0] == value:
-                    vatNumber = request.form['supplierInfo_vatNumber']
+                    vatNumber = request.form['supplierInfo_vat_number']
 
                     # If a position is associated
                     if field + '_position' in request.form:
@@ -399,18 +403,18 @@ def validate_form():
         _db.update({
             'table' : ['invoices'],
             'set'   : {
-                'invoiceNumber'         : request.form['facturationInfo_invoiceNumber'],
-                'HTAmount1'             : request.form['facturationInfo_noTaxes_1'],
-                'HTAmount1_position'    : request.form['facturationInfo_noTaxes_1_position'] if 'facturationInfo_noTaxes_1_position' in request.form else '' ,
-                'VATRate1'              : request.form['facturationInfo_VAT_1'],
-                'VATRate1_position'     : request.form['facturationInfo_VAT_1_position'] if 'facturationInfo_VAT_1_position' in request.form else '',
-                'invoiceDate'           : request.form['facturationInfo_date'],
+                'invoice_number'         : request.form['facturationInfo_invoice_number'],
+                'ht_amount1'             : request.form['facturationInfo_no_taxes_1'],
+                'ht_amount1_position'    : request.form['facturationInfo_no_taxes_1_position'] if 'facturationInfo_no_taxes_1_position' in request.form else '' ,
+                'vat_rate1'              : request.form['facturationInfo_vat_1'],
+                'vat_rate1_position'     : request.form['facturationInfo_vat_1_position'] if 'facturationInfo_vat_1_position' in request.form else '',
+                'invoice_date'           : request.form['facturationInfo_invoice_date'],
             },
-            'where' : ['rowid = ?'],
+            'where' : ['id = ?'],
             'data'  : [pdfId]
         })
 
-        _files.exportXml(_cfg, request.form['facturationInfo_invoiceNumber'], parent, True, _db, vatNumber)
+        _files.exportXml(_cfg, request.form['facturationInfo_invoice_number'], parent, True, _db, vatNumber)
 
         # Unlock pdf and makes it processed
         _db.update({
@@ -420,7 +424,7 @@ def validate_form():
                 'locked_by' : 'NULL',
                 'processed' : 1
             },
-            'where': ['locked_by = ?, rowid = ?'],
+            'where': ['locked_by = ?, id = ?'],
             'data': [session['user_name'], pdfId]
         })
 
@@ -466,7 +470,7 @@ def change_status(rowid, status):
         'set'   : {
             'status'    :   status,
         },
-        'where' : ['rowid = ?'],
+        'where' : ['id = ?'],
         'data'  : [rowid],
     })
 

@@ -1,10 +1,10 @@
-CREATE TABLE if NOT EXISTS users(
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  username TEXT UNIQUE NOT NULL,
-  password TEXT NOT NULL,
-  creation_date DATETIME DATETIME DEFAULT (datetime('now', 'localtime')),
+CREATE TABLE if NOT EXISTS users (
+  id SERIAL PRIMARY KEY,
+  username VARCHAR UNIQUE NOT NULL,
+  password VARCHAR NOT NULL,
+  creation_date TIMESTAMP DEFAULT NOW(),
   enabled INTEGER DEFAULT 1,
-  status TEXT DEFAULT 'OK'
+  status VARCHAR DEFAULT 'OK'
 );
 
 CREATE TABLE if NOT EXISTS suppliers(
@@ -36,7 +36,7 @@ CREATE TABLE if NOT EXISTS suppliers(
 );
 
 CREATE TABLE if NOT EXISTS invoices(
-    id                       INTEGER PRIMARY KEY AUTOINCREMENT,
+    id                       SERIAL PRIMARY KEY,
     vat_number               VARCHAR DEFAULT NULL,
     vat_number_position      VARCHAR,
     invoice_number           VARCHAR,
@@ -52,7 +52,7 @@ CREATE TABLE if NOT EXISTS invoices(
     tiff_filename            VARCHAR,
     img_width                VARCHAR,
     nb_pages                 INTEGER     DEFAULT 1,
-    register_date            DATETIME DEFAULT (datetime('now', 'localtime')),
+    register_date            TIMESTAMP   DEFAULT NOW(),
     ht_amount1               VARCHAR,
     ht_amount1_position      VARCHAR,
     vat_rate1                VARCHAR,
@@ -69,17 +69,17 @@ CREATE TABLE IF NOT EXISTS "status" (
 );
 
 CREATE TABLE IF NOT EXISTS invoices_batch_(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id SERIAL PRIMARY KEY,
     dir_name VARCHAR,
     first_page VARCHAR,
     image_folder_name VARCHAR,
-    ceation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ceation_date TIMESTAMP DEFAULT NOW(),
     status VARCHAR DEFAULT 'NEW',
     page_number INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS image_page_number(
-    id INTEGER PRIMARY KEY AUTOINCREMENT ,
+    id SERIAL PRIMARY KEY,
     batch_name VARCHAR,
     image_path VARCHAR,
     image_number INTEGER,
@@ -94,3 +94,4 @@ INSERT INTO "status" ("id","label","label_long") VALUES ('WAIT_SUP','En attente'
 INSERT INTO "status" ("id","label","label_long") VALUES ('DEL','Supprimée','Supprimée');
 
 INSERT INTO "users" ("id","username","password") VALUES (1,'admin','pbkdf2:sha256:150000$7c8waI7f$c0891ac8e18990db0786d4a49aea8bf7c1ad82796dccd8ae35c12ace7d8ee403');
+ALTER SEQUENCE users_id_seq RESTART WITH 2;
