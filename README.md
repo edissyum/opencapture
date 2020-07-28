@@ -2,7 +2,7 @@
 
 # Open-Capture for Invoices by Edissyum
  
-Version 0.3.2
+Version 0.4.0
   
 Open-Capture is a **free and Open Source** software under **GNU General Public License v3.0**.
   
@@ -19,6 +19,7 @@ The functionnalities of Open-Capture for Invoices are :
    - SIRET/SIREN & Adress verification (Only FR for now, could be disabled in settings)
    - Complex locale REGEX used. Easy to improve and modify
    - You have the choice to convert PDF to TIFF or JPG. With the TIFF format the results are better but the size of files are much bigger
+   - SQLITE OR POSTGRESQL database support
   
 # Installation
 ## Linux Distributions
@@ -26,7 +27,8 @@ The functionnalities of Open-Capture for Invoices are :
 Tested with :
 - Debian 9.8 with Python 3.5.3 & Tesseract v3.04.01 or Tesseract V4.0.0 (stretch-backports) & nginx as web server
 - Debian 9.6 with Python 3.5.3 & Tesseract v3.04.01 or Tesseract V4.0.0 (stretch-backports) & nginx as web server
-- Debian 10 with Python 3.7.3 Tesseract V4.0.0 & nginx as web server
+- Debian 10 with Python 3.7.3 & Tesseract V4.0.0 & nginx as web server
+- Ubuntu 20.04 LTS with Python 3.7.7 & Tesseract V4.1.1 & nginx as web server
   
 ## Install Open-Capture for Invoices
 
@@ -38,7 +40,7 @@ First of all, in most cases you had to modify the <code>/etc/ImageMagick-6/polic
 
     $ sudo mkdir /opt/OpenCaptureForInvoices/ && sudo chmod -R 775 /opt/OpenCaptureForInvoices/ && sudo chown -R your_user:your_group /opt/OpenCaptureForInvoices/
     $ sudo apt install git
-    $ git clone -b 0.3.2 https://gitlab.com/edissyum/opencapture/opencaptureforinvoices /opt/OpenCaptureForInvoices/
+    $ git clone -b 0.4.0 https://gitlab.com/edissyum/opencapture/opencaptureforinvoices /opt/OpenCaptureForInvoices/
     $ cd /opt/OpenCaptureForInvoices/
   
 Before lauching the Makefile. You have to do the following : 
@@ -84,7 +86,7 @@ Don't forget to create all the needed path (Modify the user and group if needed)
     $ sudo mkdir -p /var/docservers/OpenCapture/xml/
     $ sudo chmod -R 775 /var/docservers/{OpenCapture,OpenCapture_Splitter}/
     $ sudo chown -R your_user:www-data /var/docservers/{OpenCapture,OpenCapture_Splitter}/
-    
+
 ## API for SIRET/SIREN
 
 In order to user the online verification of SIRET and SIREN you need to create a WS account on the INSEE website : https://api.insee.fr/catalogue/site/themes/wso2/subthemes/insee/pages/item-info.jag?name=Sirene&version=V3&provider=insee
@@ -105,6 +107,7 @@ Then, just launch :
 It will fill the database with the suppliers informations.
 
 ## Set up the incron & the cron to start the service
+
 We want to automatise the capture of document. For that, we'll use incrontab.
 First, add your user into the following file :
 
