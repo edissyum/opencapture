@@ -11,6 +11,7 @@ kuyruk
 werkzeug
 requests
 gunicorn
+psycopg2
 fast_luhn
 flask_cors
 Flask-Babel

@@ -26,7 +26,7 @@ convertPdfToTiff            = True
 allowBypassSupplieBanVerif  = True
 # Delta between date found and today date, in days
 # -1 to disable
-timeDelta           = -1
+timeDelta                   = -1
 
 [SPLITTER]
 splitterpath = /var/docservers/OpenCapture_Splitter/
@@ -36,7 +36,14 @@ pdfOriginPath = ${GLOBAL:projectPath}/bin/data/OC_Splitter/pdf_sources/
 allowedExtensions  = {'pdf'}
 
 [DATABASE]
-databasefile                = ${GLOBAL:projectPath}/instance/flaskr.sqlite
+databasefile = ${GLOBAL:projectPath}/instance/flaskr.sqlite
+# sqlite or pgsql
+databaseType = sqlite
+postgresHost = localhost
+postgresPort = 5432
+postgresDatabase = opencapture
+postgresUser =
+postgresPassword =
 
 [LOCALE]
 # fr_FR or en_EN by default
@@ -50,7 +57,7 @@ referencialfinancial            = ${GLOBAL:projectPath}/bin/src/referencial/plan
 # ODS or XLSX supported
 referencialsupplierdocumentpath = ${GLOBAL:projectPath}/bin/src/referencial/default_referencial_supplier.ods
 referencialsupplierindexpath    = ${GLOBAL:projectPath}/bin/src/referencial/default_referencial_supplier_index.json
-
+referencialPosition             = ${GLOBAL:projectPath}/bin/src/referencial/positions/
 [REGEX]
 urlpattern          = fr|com|net|org|gouv
 

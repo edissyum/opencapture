@@ -1,6 +1,7 @@
 nginx
 incron
 python3
+libpq-dev
 zbar-tools
 pkg-config
 imagemagick

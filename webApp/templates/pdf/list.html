@@ -58,7 +58,7 @@
                         <div class="card">
                             <a href="
                                     {% if pdf['status'] == 'END' %} #end
-                                        {% elif not pdf['locked'] or (pdf ['locked'] and pdf['locked_by'] == g.user['username']) %} {{ url_for('pdf.view', id=pdf['rowid']) }}
+                                        {% elif not pdf['locked'] or (pdf ['locked'] and pdf['locked_by'] == g.user['username']) %} {{ url_for('pdf.view', id=pdf['invoice_id']) }}
                                         {% else %} #locked
                                     {% endif %}"
 
@@ -75,36 +75,36 @@
                                     {% endif %}
                             >
                                 <img class="card-img-top lazy"
-                                     data-original="{{ url_for('pdf.static', typeofFile='full', filename=pdf['fullJpgFilename']) }}"
+                                     data-original="{{ url_for('pdf.static', typeofFile='full', filename=pdf['full_jpg_filename']) }}"
                                      alt="Thumbnail">
                             </a>
                             <div class="card-body">
                                 <div class="row pb-0 pl-3">
                                     <h5 class="card-title">
-                                        <a href="{{ url_for('pdf.view', id=pdf['rowid']) }}">
-                                            {{ pdf['supplierName'] }}
+                                        <a href="{{ url_for('pdf.view', id=pdf['invoice_id']) }}">
+                                            {{ pdf['supplier_name'] }}
                                         </a>
                                     </h5>
-                                    <span class="position-absolute badge badge-secondary badge-pill">{{ pdf['nbPages'] }} <i class="far fa-file-alt"></i></span>
+                                    <span class="position-absolute badge badge-secondary badge-pill">{{ pdf['nb_pages'] }} <i class="far fa-file-alt"></i></span>
                                 </div>
                                 <p class="card-text">
                                     <small class="text-muted">
-                                        {{ gettext('INVOICE_NUMBER')}} : {{ pdf['invoiceNumber'] }}<br>
-                                        {{ gettext('INVOICE_DATE')}} : {{ pdf['invoiceDate'] }}
+                                        {{ gettext('INVOICE_NUMBER')}} : {{ pdf['invoice_number'] }}<br>
+                                        {{ gettext('INVOICE_DATE')}} : {{ pdf['invoice_date'] }}
                                     </small>
                                     <br>
                                     <small class="text-muted">
                                         {{ gettext('SAVED_THE') }} : {{ pdf['date'] }}
                                     </small>
                                     <span id="trash" class="float-right">
-                                        <button onclick="deleteInvoice({{ pdf['rowid'] }})" class="text-danger text-decoration-none">
+                                        <button onclick="deleteInvoice({{ pdf['invoice_id'] }})" class="text-danger text-decoration-none">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </span>
                                 </p>
                             </div>
-                            <div class="ribbon ribbon-top-right {{ pdf['id'] }}">
-                                <span data-toggle="tooltip" data-placement="left" title="{{ gettext(pdf['id'] + '_LONG') }}">{{ gettext(pdf['id']) }}{% if pdf['locked'] %} &nbsp;  <i class="fas fa-lock"></i> {% endif %}</span>
+                            <div class="ribbon ribbon-top-right {{ pdf['status_id'] }}">
+                                <span data-toggle="tooltip" data-placement="left" title="{{ gettext(pdf['status_id'] + '_LONG') }}">{{ gettext(pdf['status_id']) }}{% if pdf['locked'] %} &nbsp;  <i class="fas fa-lock"></i> {% endif %}</span>
                             </div>
                         </div>
                     </div>

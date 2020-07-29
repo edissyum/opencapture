@@ -70,8 +70,8 @@ def updateConfig():
 def isDuplicate():
     if request.method == 'POST':
         data            = request.get_json()
-        invoiceNumber   = data['invoiceNumber']
-        vatNumber       = data['vatNumber']
+        invoiceNumber   = data['invoice_number']
+        vatNumber       = data['vat_number']
         invoiceId       = data['id']
 
         _vars   = pdf.init()
@@ -80,16 +80,20 @@ def isDuplicate():
 
         # Check if there is already an invoice with the same vat_number and invoice number. If so, verify the rowid to avoid detection of the facture currently processing
         res = _db.select({
-            'select'    : ['rowid, count(*) as nbInvoice'],
+            'select'    : ['id, count(*) as nbInvoice'],
             'table'     : ['invoices'],
-            'where'     : ['vatNumber = ?', 'invoiceNumber = ?', 'processed = ?'],
-            'data'      : [vatNumber, invoiceNumber, 1]
-        })[0]
+            'where'     : ['vat_number = ?', 'invoice_number = ?', 'processed = ?'],
+            'data'      : [vatNumber, invoiceNumber, 1],
+            'group_by'  : 'id'
+        })
 
-        if res['nbInvoice'] == 1 and res['rowid'] != invoiceId or res['nbInvoice'] > 1   :
-            return json.dumps({'text' : 'true', 'code' : 200, 'ok' : 'true'})
+        if res:
+            if res[0]['nbInvoice'] == 1 and res[0]['id'] != invoiceId or res[0]['nbInvoice'] > 1   :
+                return json.dumps({'text' : 'true', 'code' : 200, 'ok' : 'true'})
+            else:
+                return json.dumps({'text' : 'false', 'code' : 200, 'ok' : 'true'})
         else:
-            return json.dumps({'text' : 'false', 'code' : 200, 'ok' : 'true'})
+            return json.dumps({'text': 'false', 'code': 200, 'ok': 'true'})
 
 
 @bp.route('/ws/invoice/upload', methods=['POST'])
@@ -154,9 +158,9 @@ def retrieveSupplier():
         arraySupplier[supplier['name']] = []
         arraySupplier[supplier['name']].append({
             'name'      : supplier['name'],
-            'VAT'       : supplier['vatNumber'],
-            'SIRET'     : supplier['SIRET'],
-            'SIREN'     : supplier['SIREN'],
+            'VAT'       : supplier['vat_number'],
+            'siret'     : supplier['siret'],
+            'siren'     : supplier['siren'],
             'adress1'   : supplier['adress1'],
             'adress2'   : supplier['adress2'],
             'zipCode'   : supplier['postal_code'],
@@ -201,7 +205,7 @@ def deleteInvoice(rowid):
         'set': {
             'status': 'DEL'
         },
-        'where': ['rowid = ?'],
+        'where': ['id = ?'],
         'data': [rowid]
     })
     flash(gettext('INVOICE_DELETED'))

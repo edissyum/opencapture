@@ -16,6 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import os
+import re
 import subprocess
 
 import cv2
@@ -186,7 +187,7 @@ class Files:
                     continue
 
     @staticmethod
-    def ocr_on_fly(img, selection, Ocr, thumbSize = None):
+    def ocr_on_fly(img, selection, Ocr, thumbSize = None, regex = None):
         if thumbSize is not None:
             with Image.open(img) as im:
                 ratio       = im.size[0]/thumbSize['width']
@@ -206,7 +207,12 @@ class Files:
 
         text = Ocr.text_builder(croppedImage)
 
-        os.remove('/tmp/cropped' + extension)
+        if regex:
+            for res in re.finditer(r"" + regex, text):
+                os.remove('/tmp/cropped' + extension)
+                return res.group()
+
+        # os.remove('/tmp/cropped' + extension)
         return text
 
     @staticmethod
@@ -342,7 +348,7 @@ class Files:
                                     'set': {
                                         cleanChild + '_position': cleanChildPosition
                                     },
-                                    'where': ['vatNumber = ?'],
+                                    'where': ['vat_number = ?'],
                                     'data': [vatNumber]
                                 })
                                 db.conn.commit()
