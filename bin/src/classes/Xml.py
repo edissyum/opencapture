@@ -51,20 +51,22 @@ class Xml:
             tmpFilename[cpt] = []
             if element['type'] == 'column':
                 if element['filter'] is not None and element['filter'] in dateFilter:
-                    field = "strftime('" + dateFilter[element['filter']] + "', registerDate) as date"
+                    field = "strftime('" + dateFilter[element['filter']] + "', register_date) as date"
+                    labelField = 'date'
                 else:
                     field = element['value']
+                    labelField = field.split('.')[1]
 
                 res = self.db.select({
                     'select'    : [field],
                     'table'     : ['suppliers', 'invoices'],
-                    'left_join' : ['suppliers.vatNumber = invoices.vatNumber'],
-                    'where'     : ['invoiceNumber = ?'],
+                    'left_join' : ['suppliers.vat_number = invoices.vat_number'],
+                    'where'     : ['invoice_number = ?'],
                     'data'      : [invoiceNumber],
                     'limit'     : 1
                 })
 
-                tmpFilename[cpt] = res[0][0].replace(' ', '_')
+                tmpFilename[cpt] = res[0][labelField].replace(' ', '_')
 
             elif element['type'] == 'text':
                 tmpFilename[cpt] = element['value']

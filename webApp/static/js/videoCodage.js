@@ -44,9 +44,9 @@ function readConfig() {
 }
 
 function searchSupplier(){
-    let inputVAT    = $('#vatNumber');
-    let inputSIRET  = $('#siretNumber');
-    let inputSIREN  = $('#sirenNumber');
+    let inputVAT    = $('#vat_number');
+    let inputSIRET  = $('#siret_number');
+    let inputSIREN  = $('#siren_number');
     let inputCity   = $('#supplier_city');
     let inputAdress = $('#supplier_address');
     let inputZip    = $('#supplier_postal_code');
@@ -83,8 +83,8 @@ function searchSupplier(){
             let zip         = data['zipCode'];
             let VAT         = data['VAT'];
             let city        = data['city'];
-            let SIRET       = data['SIRET'];
-            let SIREN       = data['SIREN'];
+            let SIRET       = data['siret'];
+            let SIREN       = data['siren'];
             let adress1     = data['adress1'];
             let adress2     = data['adress2'];
 
@@ -270,7 +270,7 @@ $(document).ready(function() {
                     $('<div class="invalid-feedback invalidSIRET">' +
                         gt.gettext('SIRET_CONNECTION_ERROR') +
                         '</div>'
-                    ).insertAfter($('#siretNumber')).slideDown();
+                    ).insertAfter($('#siret_number')).slideDown();
                 } else {
                     if (res.text === 'error') {
                         console.log('error')
@@ -339,11 +339,11 @@ function isKeyPressed(event) {
     if (event.ctrlKey && zoom === false) {
         toggleZoom();
         zoom = true;
-        $('.nbPages').slideUp();
+        $('.nb_pages').slideUp();
     }else{
         removeZoom();
         zoom = false;
-        $('.nbPages').slideDown();
+        $('.nb_pages').slideDown();
     }
 }
 
@@ -410,8 +410,8 @@ function changeImage(pageToShow){
 function addVAT(input){
     let lastVAT             = $('#' + input.id).prev()[0];
     let cptVAT              = parseInt(lastVAT.className.split('_')[2]);
-    let newClassName        = 'VAT_' + (cptVAT + 1);
-    let lastVATAmount       = $('.AMOUNT_VAT_' + cptVAT);
+    let newClassName        = 'vat_' + (cptVAT + 1);
+    let lastVATAmount       = $('.AMOUNT_vat_' + cptVAT);
     let optionsFinancial    = document.getElementById('financialAccount_1').innerHTML;
 
     if(cptVAT < 5){
@@ -419,7 +419,7 @@ function addVAT(input){
         '   <div class="MAIN_' + newClassName + '" style="display: none">' +
         '       <div class="form-row">' +
         '           <div class="form-group col-md-4">' +
-        '               <label for="' + newClassName + '">' + gt.gettext('VAT_RATE') + ' ' + (cptVAT + 1) + ' <a href="#removeVAT" class="VAT_' + (cptVAT + 1) + '" onclick="removeVAT(this)"><i class="fa fa-minus-square" aria-hidden="true"></i></a></label>' +
+        '               <label for="' + newClassName + '">' + gt.gettext('VAT_RATE') + ' ' + (cptVAT + 1) + ' <a href="#removeVAT" class="vat_' + (cptVAT + 1) + '" onclick="removeVAT(this)"><i class="fa fa-minus-square" aria-hidden="true"></i></a></label>' +
         '               <div class="input-group mb-2">' +
         '                   <div onclick="drawRectangle(document.getElementById(\'' + newClassName + '\'))" class="input-group-prepend" style="display:none;">' +
         '                        <div class="input-group-text"><i class="fas fa-eye" aria-hidden="true"></i></div>' +
@@ -428,12 +428,12 @@ function addVAT(input){
         '               </div>' +
         '           </div>' +
         '           <div class="form-group col-md-4">' +
-        '               <label for="noTaxes_' + (cptVAT + 1) + '">' + gt.gettext('NO_RATE_AMOUNT') + ' ' + (cptVAT + 1) + '</label>' +
+        '               <label for="no_taxes_' + (cptVAT + 1) + '">' + gt.gettext('NO_RATE_AMOUNT') + ' ' + (cptVAT + 1) + '</label>' +
         '               <div class="input-group mb-2">' +
-        '                   <div onclick="drawRectangle(document.getElementById(\'noTaxes_' + (cptVAT + 1) +'\'))" class="input-group-prepend" style="display:none;">' +
+        '                   <div onclick="drawRectangle(document.getElementById(\'no_taxes_' + (cptVAT + 1) +'\'))" class="input-group-prepend" style="display:none;">' +
         '                       <div class="input-group-text"><i class="fas fa-eye" aria-hidden="true"></i></div>' +
         '                   </div>' +
-        '                   <input autocomplete="off" required name="facturationInfo_noTaxes_' + (cptVAT + 1) +'" onfocusout="ocrOnFly(true, this, false, true); removeRectangle()" onfocusin="ocrOnFly(false, this, false, true)" type="text" step="0.01" class="form-control" id="noTaxes_' + (cptVAT + 1) + '" x1="" y1="" x2="" y2="" value="">' +
+        '                   <input autocomplete="off" required name="facturationInfo_no_taxes_' + (cptVAT + 1) +'" onfocusout="ocrOnFly(true, this, false, true); removeRectangle()" onfocusin="ocrOnFly(false, this, false, true)" type="text" step="0.01" class="form-control" id="no_taxes_' + (cptVAT + 1) + '" x1="" y1="" x2="" y2="" value="">' +
         '               </div>' +
         '           </div>' +
         '           <div class="form-group col-md-4">' +
@@ -456,10 +456,10 @@ function addVAT(input){
         });
 
         $(
-        '   <div class="form-group col-md-3 text-center AMOUNT_VAT_' + (cptVAT + 1) + '" style="display: none">' +
-        '       <label for="TOTAL_TVA_' + (cptVAT + 1) + '">' + gt.gettext('VAT_AMOUNT') + ' ' + (cptVAT + 1) + '</label>' +
+        '   <div class="form-group col-md-3 text-center AMOUNT_vat_' + (cptVAT + 1) + '" style="display: none">' +
+        '       <label for="TOTAL_vat_' + (cptVAT + 1) + '">' + gt.gettext('VAT_AMOUNT') + ' ' + (cptVAT + 1) + '</label>' +
         '       <div class="input-group mb-2">' +
-        '           <input autocomplete="off" name="facturationInfo_TOTAL_TVA_' + (cptVAT + 1) + '" type="text" id="TOTAL_TVA_' + (cptVAT + 1) + '" class="form-control">' +
+        '           <input autocomplete="off" name="facturationInfo_TOTAL_TVA_' + (cptVAT + 1) + '" type="text" id="TOTAL_vat_' + (cptVAT + 1) + '" class="form-control">' +
         '           <div class="input-group-prepend">' +
         '               <div class="input-group-text"><i class="fas fa-euro-sign" aria-hidden="true"></i></div>' +
         '           </div>' +
@@ -473,6 +473,8 @@ function addVAT(input){
 function removeVAT(input){
     let VATToRemove         = $('.MAIN_' + input.className);
     let VATAmountToRemove   = $('.AMOUNT_' + input.className);
+    console.log(input.className)
+    console.log(VATAmountToRemove)
     let currentCptVAT       = parseInt(VATToRemove[0].className.split('_')[2]);
 
     // Avoid deletion of VAT rate if there is just one
@@ -783,8 +785,8 @@ function checkAll(){
 function checkSIRET(){
     let sizeSIRET       = 14;
     let apiUrl          = config.GENERAL['siret-url'];
-    let siretId         = $('#siretNumber');
-    let sirenId         = $('#sirenNumber');
+    let siretId         = $('#siret_number');
+    let sirenId         = $('#siren_number');
 
     if(!isSIRETRunning && siretId[0].value !== ''){
         if(verify(siretId[0].value, sizeSIRET)) {
@@ -840,7 +842,7 @@ function checkSIRET(){
 function checkSIREN(){
     let sizeSIREN       = 9;
     let apiUrl          = config.GENERAL['siren-url'];
-    let sirenId         = $('#sirenNumber');
+    let sirenId         = $('#siren_number');
 
     if(!isSIRENRunning && sirenId[0].value !== '') {
         if (verify(sirenId[0].value, sizeSIREN)) {
@@ -885,7 +887,7 @@ function checkSIREN(){
 
 function checkVAT(){
     let sizeVAT         = 13;
-    let VATId           = $('#vatNumber');
+    let VATId           = $('#vat_number');
 
     if(!isVATRunning){
         if(verify(VATId[0].value, sizeVAT, true)) {
@@ -1024,7 +1026,7 @@ $('#validateForm').on('click', function(){
             '</button>').insertAfter($('#awaitAdress'));
         }
 
-    }else if(form[0].checkValidity() && $('#vatNumber').hasClass('is-invalid')){
+    }else if(form[0].checkValidity() && $('#vat_number').hasClass('is-invalid')){
         modalBody.html(
             '<span id="tvaError">' +
                 '<br>' + gt.gettext('INVALID_VAT_NUMBER') +
@@ -1128,16 +1130,16 @@ function calculTotal(){
     let ht              = 0;
 
     for (let i = 1; i <= lastVATCpt; i++){
-        let vatRate = $('#VAT_' + i)[0].value / 100;
+        let vatRate = $('#vat_' + i)[0].value / 100;
 
-        let noTaxe  = $('#noTaxes_' + i)[0].value;
+        let noTaxe  = $('#no_taxes_' + i)[0].value;
 
         // Check if it's a real number (because a float with point instead of comma, it's not recognized as a float)
         if (noTaxe !== '' && vatRate !== ''){
             ht              += parseFloat(noTaxe);
             ttc             += parseFloat(noTaxe) + (parseFloat(noTaxe) * parseFloat(vatRate));
             let vatAmount   = parseFloat(noTaxe) * parseFloat(vatRate);
-            $('#TOTAL_TVA_' + i).val(vatAmount.toFixed(2));
+            $('#TOTAL_vat_' + i).val(vatAmount.toFixed(2));
             $('#total').val(ttc.toFixed(2));
             $('#totalHT').val(ht.toFixed(2));
             structureHT.val(ht.toFixed(2));
@@ -1172,7 +1174,7 @@ function verify(number, size, isVAT = false){
 }
 
 function calculateSCore(s1, s2){
-    return parseInt(((new difflib.SequenceMatcher(null, s1.toUpperCase(), s2.toUpperCase())).ratio() * 100).toString())
+    return parseInt(((new difflib.SequenceMatcher(null, s1.toUpperCase(), s2.toUpperCase())).ratio() * 100).toString());
 }
 
 function processRatio(percent, input, ratioClass, banInfo, invalidClass){
@@ -1211,7 +1213,7 @@ function verifyTotalAnalytics() {
 
     for (let i = 1; i <= lastCPTStructure; i++){
         let val = $('.' + className + '_' + i).find('input').val();
-        totalStructure += parseFloat(val)
+        totalStructure += parseFloat(val);
     }
 
     if (totalStructure > totalHT){
@@ -1232,14 +1234,14 @@ function checkIsDuplicate(){
             'Content-Type': 'application/json'
         },
         body    : JSON.stringify({
-            'invoiceNumber' : $('#invoiceNumber').val(),
-            'vatNumber'     : $('#vatNumber').val(),
+            'invoice_number' : $('#invoice_number').val(),
+            'vat_number'     : $('#vat_number').val(),
             'id'            : $('#pdfId').val()
         })
     }).then(function(response) {
         response.json().then(function(res){
             if (!JSON.parse(res.ok)) {
-                alert(response.statusText)
+                alert(response.statusText);
             }else{
                 if(JSON.parse(res.text))
                     isDuplicate = true;
