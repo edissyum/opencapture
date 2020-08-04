@@ -9,7 +9,7 @@ Open-Capture is a **free and Open Source** software under **GNU General Public L
 The functionnalities of Open-Capture for Invoices are :
    - Fully web interface for videocoding : No installation needed on user's workstation
    - OCR On Fly. Draw a rectangle on the image, get the text directly in your input
-   - The core works on Linux (Ubuntu or Debian)
+   - The core works on Linux (tested on Ubuntu and Debian) and might be working on Windows (not tested yet)
    - Complex machine learning algorithms used to predict informations locations from one invoice to another
    - Find suppliers into an invoices using VAT Number, SIRET or SIREN
    - Find VAT Rate, no taxes amount and total taxes amount using powerful algorithm.
