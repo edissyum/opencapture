@@ -31,14 +31,24 @@ class FindSupplier:
         self.found_first    = True
         self.found_second   = True
         self.found_third    = True
+        self.found_fourth   = True
+        self.splitted       = False
 
-    def process(self, regex):
+    def process(self, regex, textAsString):
         arrayOfData = {}
+        if textAsString and not self.splitted:
+            self.text = self.text.split('\n')
+            self.splitted = True
+
         for line in self.text:
             correctedLine = ''
             for item in self.OCRErrorsTable['NUMBERS']:
                 pattern = r'[%s]' % self.OCRErrorsTable['NUMBERS'][item]
-                correctedLine = re.sub(pattern, item, line.content)
+                if textAsString:
+                    content = line
+                else:
+                    content = line.content
+                correctedLine = re.sub(pattern, item, content)
 
             for _data in re.finditer(r"" + regex + "", correctedLine.replace(' ', '')):
                 arrayOfData.update({_data.group(): line})
@@ -54,14 +64,13 @@ class FindSupplier:
             self.Files.open_img(self.Files.jpgName_tiff_header)
         else:
             self.Files.open_img(self.Files.jpgName_header)
-
         self.Ocr.line_box_builder(self.Files.img)
 
-    def run(self, retry = False, regenerateOcr = False, target=None):
+    def run(self, retry = False, regenerateOcr = False, target = None, textAsString = False):
         vatFound        = False
         siretFound      = False
 
-        vatNumber = self.process(self.Locale.VATNumberRegex)
+        vatNumber = self.process(self.Locale.VATNumberRegex, textAsString)
 
         if vatNumber:
             for _vat in vatNumber:
@@ -76,11 +85,14 @@ class FindSupplier:
                     self.regenerateOcr()
                     self.Log.info('Supplier found : ' + existingSupplier[0]['name'] + ' using VAT Number : ' + _vat)
                     line     = vatNumber[_vat]
-                    position = self.Files.returnPositionWithRatio(line, target)
+                    if textAsString:
+                        position = (('',''),('',''))
+                    else:
+                        position = self.Files.returnPositionWithRatio(line, target)
                     return existingSupplier[0]['vat_number'], position, existingSupplier[0]
 
         if not vatFound:
-            siretNumber = self.process(self.Locale.SIRETRegex)
+            siretNumber = self.process(self.Locale.SIRETRegex, textAsString)
             if siretNumber:
                 for _siret in siretNumber:
                     if fl.validate(_siret):
@@ -93,13 +105,13 @@ class FindSupplier:
                         existingSupplier = self.Database.select(args)
                         if existingSupplier:
                             self.regenerateOcr()
-                            self.Log.info('Supplier found : ' + existingSupplier[0]['name'] + ' using SIRET : ' + _siret)
+                            self.Log.info('SIRET found : ' + _siret)
                             return existingSupplier[0]['vat_number'], (('',''),('','')), existingSupplier[0]
                         else:
                             self.Log.info('SIRET found : ' + _siret + ' but no supplier found in database using this SIRET')
         if not siretFound:
             self.Log.info("SIRET not found or doesn't meet the Luhn's algorithm")
-            sirenNumber = self.process(self.Locale.SIRENRegex)
+            sirenNumber = self.process(self.Locale.SIRENRegex, textAsString)
             if sirenNumber:
                 for _siren in sirenNumber:
                     if fl.validate(_siren):
@@ -112,7 +124,7 @@ class FindSupplier:
                         existingSupplier = self.Database.select(args)
                         if existingSupplier:
                             self.regenerateOcr()
-                            self.Log.info('Supplier found : ' + existingSupplier[0]['name'] + ' using SIREN : ' + _siren)
+                            self.Log.info('SIREN found : ' + _siren)
 
                             return existingSupplier[0]['vat_number'], (('', ''), ('', '')), existingSupplier[0]
                         else:
@@ -131,7 +143,7 @@ class FindSupplier:
                                         existingSupplier = self.Database.select(args)
                                         if existingSupplier:
                                             self.regenerateOcr()
-                                            self.Log.info('Supplier found : ' + existingSupplier[0]['name'] + ' using SIREN from SIRET base : ' + _siret)
+                                            self.Log.info('SIREN found using SIRET base : ' + _siret)
                                             return existingSupplier[0]['vat_number'], (('', ''), ('', '')), existingSupplier[0]
 
                 self.Log.info("SIREN not found or doesn't meet the Luhn's algorithm")
@@ -139,8 +151,10 @@ class FindSupplier:
                 self.found_first = False
             elif retry and self.found_second:
                 self.found_second = False
-            elif retry and not self.found_second:
+            elif retry and not self.found_second and self.found_third:
                 self.found_third = False
+            elif retry and not self.found_third:
+                self.found_fourth = False
 
             # If we had to change footer to header
             # Regenerator OCR with the full image content
@@ -175,7 +189,7 @@ class FindSupplier:
 
         # If NO supplier identification are found in the footer,
         # Apply image improvment
-        if retry and not self.found_third:
+        if retry and not self.found_third and self.found_fourth:
             self.Log.info('No supplier informations found in the footer, improve image and retry...')
             if self.Files.isTiff == 'True':
                 self.Files.improve_image_detection(self.Files.jpgName_tiff_footer)
@@ -184,7 +198,20 @@ class FindSupplier:
                 self.Files.improve_image_detection(self.Files.jpgName_footer)
                 self.Files.open_img(self.Files.jpgName_footer)
             self.text = self.Ocr.line_box_builder(self.Files.img)
-            return self.run(retry=True, regenerateOcr=True, target='footer')
+            return self.run(retry=True, target='footer')
+
+        # If NO supplier identification are found in the improved footer,
+        # Try using another tesseract function to extract text
+        if retry and not self.found_fourth:
+            self.Log.info('No supplier informations found in the footer, change Tesseract function to retrieve text and retry...')
+            if self.Files.isTiff == 'True':
+                self.Files.improve_image_detection(self.Files.jpgName_tiff_header)
+                self.Files.open_img(self.Files.jpgName_tiff_header)
+            else:
+                self.Files.improve_image_detection(self.Files.jpgName_header)
+                self.Files.open_img(self.Files.jpgName_header)
+            self.text = self.Ocr.text_builder(self.Files.img)
+            return self.run(retry=True, regenerateOcr=True, target='header', textAsString=True)
 
         self.Log.error('No supplier found...')
         return False

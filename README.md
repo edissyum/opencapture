@@ -9,7 +9,7 @@ Open-Capture is a **free and Open Source** software under **GNU General Public L
 The functionnalities of Open-Capture for Invoices are :
    - Fully web interface for videocoding : No installation needed on user's workstation
    - OCR On Fly. Draw a rectangle on the image, get the text directly in your input
-   - The core works on Linux (Ubuntu or Debian)
+   - The core works on Linux (tested on Ubuntu and Debian) and might be working on Windows (not tested yet)
    - Complex machine learning algorithms used to predict informations locations from one invoice to another
    - Find suppliers into an invoices using VAT Number, SIRET or SIREN
    - Find VAT Rate, no taxes amount and total taxes amount using powerful algorithm.
@@ -31,10 +31,6 @@ Tested with :
 - Ubuntu 20.04 LTS with Python 3.7.7 & Tesseract V4.1.1 & nginx as web server
   
 ## Install Open-Capture for Invoices
-
-First of all, in most cases you had to modify the <code>/etc/ImageMagick-6/policy.xml</code> file to comment the following line (~ line 94) and then restart the OCForInvoices-worker service:
-
-    <policy domain="coder" rights="none" pattern="PDF" />
 
 (Modify the user and group if needed)
 
@@ -62,6 +58,7 @@ Copy the generated text and go to <code>webApp/\_\_init\_\_.py</code>. Find the 
 The ./Makefile command create the service, but you may want to change the User and Group so just open the ./Makefile and change lines **6** & **7**
   
     $ cd bin/install/
+    $ nano +6 Makefile
     $ chmod u+x Makefile
     $ sudo ./Makefile
         # Go grab a coffee ;)
@@ -71,6 +68,12 @@ It will install all the needed dependencies and install Tesseract V4.0.0 with fr
     $ sudo apt install tesseract-ocr-langcode
 
 Here is a list of all available languages code : https://www.macports.org/ports.php?by=name&substr=tesseract-
+
+In most cases you had to modify the <code>/etc/ImageMagick-6/policy.xml</code> file to comment the following line (~ line 94) and then restart the OCForInvoices-worker service:
+
+    <policy domain="coder" rights="none" pattern="PDF" />
+
+    $ sudo systemctl restart OCForInvoices-worker
 
 If you plan to upload invoices from the interface, using the upload form, you had to modify NGINX settings to increase the max size of upload.OCForInvoices.
 Go to file <code>/etc/nginx/nginx.conf</code> and add <code>client_max_body_size 100M;</code> into the <code>http</code> bloc
