@@ -32,11 +32,13 @@ class FindSupplier:
         self.found_second   = True
         self.found_third    = True
         self.found_fourth   = True
+        self.splitted       = False
 
     def process(self, regex, textAsString):
         arrayOfData = {}
-        if textAsString:
+        if textAsString and not self.splitted:
             self.text = self.text.split('\n')
+            self.splitted = True
 
         for line in self.text:
             correctedLine = ''

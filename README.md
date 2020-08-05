@@ -32,10 +32,6 @@ Tested with :
   
 ## Install Open-Capture for Invoices
 
-First of all, in most cases you had to modify the <code>/etc/ImageMagick-6/policy.xml</code> file to comment the following line (~ line 94) and then restart the OCForInvoices-worker service:
-
-    <policy domain="coder" rights="none" pattern="PDF" />
-
 (Modify the user and group if needed)
 
     $ sudo mkdir /opt/OpenCaptureForInvoices/ && sudo chmod -R 775 /opt/OpenCaptureForInvoices/ && sudo chown -R your_user:your_group /opt/OpenCaptureForInvoices/
@@ -62,6 +58,7 @@ Copy the generated text and go to <code>webApp/\_\_init\_\_.py</code>. Find the 
 The ./Makefile command create the service, but you may want to change the User and Group so just open the ./Makefile and change lines **6** & **7**
   
     $ cd bin/install/
+    $ nano +6 Makefile
     $ chmod u+x Makefile
     $ sudo ./Makefile
         # Go grab a coffee ;)
@@ -71,6 +68,12 @@ It will install all the needed dependencies and install Tesseract V4.0.0 with fr
     $ sudo apt install tesseract-ocr-langcode
 
 Here is a list of all available languages code : https://www.macports.org/ports.php?by=name&substr=tesseract-
+
+In most cases you had to modify the <code>/etc/ImageMagick-6/policy.xml</code> file to comment the following line (~ line 94) and then restart the OCForInvoices-worker service:
+
+    <policy domain="coder" rights="none" pattern="PDF" />
+
+    $ sudo systemctl restart OCForInvoices-worker
 
 If you plan to upload invoices from the interface, using the upload form, you had to modify NGINX settings to increase the max size of upload.OCForInvoices.
 Go to file <code>/etc/nginx/nginx.conf</code> and add <code>client_max_body_size 100M;</code> into the <code>http</code> bloc
