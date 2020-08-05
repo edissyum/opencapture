@@ -33,7 +33,7 @@ from wand.color import Color
 from wand.api import library
 import xml.etree.ElementTree as ET
 from wand.image import Image as Img
-from wand.exceptions import PolicyError
+from wand.exceptions import PolicyError, CacheError
 
 class Files:
     def __init__(self, jpgName, res, quality, Xml, Log, isTiff):
@@ -127,7 +127,7 @@ class Files:
                 pic.background_color = Color("white")
                 pic.alpha_channel = 'remove'
                 pic.save(filename=output)
-        except PolicyError as e:
+        except (PolicyError, CacheError) as e:
             self.Log.error('Error during WAND conversion : ' + str(e))
 
     @staticmethod
@@ -211,6 +211,7 @@ class Files:
             for res in re.finditer(r"" + regex, text):
                 os.remove('/tmp/cropped' + extension)
                 return res.group()
+            return False
 
         # os.remove('/tmp/cropped' + extension)
         return text
@@ -223,42 +224,48 @@ class Files:
     # Crop the file to get the header
     # 1/3 + 10% is the ratio we used
     def crop_image_header(self, pdfName, isTiff=False):
-        if not isTiff:
-            with Img(filename=pdfName, resolution=self.resolution) as pic:
-                pic.compression_quality = self.compressionQuality
-                pic.background_color    = Color("white")
-                pic.alpha_channel       = 'remove'
-                self.heightRatio        = int(pic.height / 3 + pic.height * 0.1)
-                pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='north')
-                pic.save(filename=self.jpgName_header)
-        else:
-            with Img(filename=self.jpgName_tiff, resolution=self.resolution) as pic:
-                pic.compression_quality = self.compressionQuality
-                pic.background_color    = Color("white")
-                pic.alpha_channel       = 'remove'
-                self.heightRatio        = int(pic.height / 3 + pic.height * 0.1)
-                pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='north')
-                pic.save(filename=self.jpgName_tiff_header)
+        try :
+            if not isTiff:
+                with Img(filename=pdfName, resolution=self.resolution) as pic:
+                    pic.compression_quality = self.compressionQuality
+                    pic.background_color    = Color("white")
+                    pic.alpha_channel       = 'remove'
+                    self.heightRatio        = int(pic.height / 3 + pic.height * 0.1)
+                    pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='north')
+                    pic.save(filename=self.jpgName_header)
+            else:
+                with Img(filename=self.jpgName_tiff, resolution=self.resolution) as pic:
+                    pic.compression_quality = self.compressionQuality
+                    pic.background_color    = Color("white")
+                    pic.alpha_channel       = 'remove'
+                    self.heightRatio        = int(pic.height / 3 + pic.height * 0.1)
+                    pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='north')
+                    pic.save(filename=self.jpgName_tiff_header)
+        except (PolicyError, CacheError) as e:
+            self.Log.error('Error during WAND conversion : ' + str(e))
 
     # Crop the file to get the footer
     # 1/3 + 10% is the ratio we used
     def crop_image_footer(self, img, isTiff=False):
-        if not isTiff:
-            with Img(filename=img, resolution=self.resolution) as pic:
-                pic.compression_quality = self.compressionQuality
-                pic.background_color    = Color("white")
-                pic.alpha_channel       = 'remove'
-                self.heightRatio        = int(pic.height / 3 + pic.height * 0.1)
-                pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='south')
-                pic.save(filename=self.jpgName_footer)
-        else:
-            with Img(filename=self.jpgName_tiff, resolution=self.resolution) as pic:
-                pic.compression_quality = self.compressionQuality
-                pic.background_color = Color("white")
-                pic.alpha_channel = 'remove'
-                self.heightRatio = int(pic.height / 3 + pic.height * 0.1)
-                pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='south')
-                pic.save(filename=self.jpgName_tiff_footer)
+        try:
+            if not isTiff:
+                with Img(filename=img, resolution=self.resolution) as pic:
+                    pic.compression_quality = self.compressionQuality
+                    pic.background_color    = Color("white")
+                    pic.alpha_channel       = 'remove'
+                    self.heightRatio        = int(pic.height / 3 + pic.height * 0.1)
+                    pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='south')
+                    pic.save(filename=self.jpgName_footer)
+            else:
+                with Img(filename=self.jpgName_tiff, resolution=self.resolution) as pic:
+                    pic.compression_quality = self.compressionQuality
+                    pic.background_color = Color("white")
+                    pic.alpha_channel = 'remove'
+                    self.heightRatio = int(pic.height / 3 + pic.height * 0.1)
+                    pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='south')
+                    pic.save(filename=self.jpgName_tiff_footer)
+        except (PolicyError, CacheError) as e:
+            self.Log.error('Error during WAND conversion : ' + str(e))
 
     @staticmethod
     def improve_image_detection(img):
@@ -272,10 +279,14 @@ class Files:
 
         for i in range(0, nlabels - 1):
             # Filter small dotted regions
-            if sizes[i] >= 50:
+            if sizes[i] >= 20:
                 img2[labels == i + 1] = 255
 
         dst = cv2.bitwise_not(img2)
+
+        kernel = np.ones((1,2),np.uint8)
+        src = cv2.adaptiveThreshold(dst, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY,11,2)
+        dst = cv2.erode(src, kernel)
 
         cv2.imwrite(img, dst)
 
