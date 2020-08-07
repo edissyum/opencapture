@@ -30,8 +30,6 @@ if __name__ == '__main__':
     dbhost              = Config.cfg['DATABASE']['postgreshost']
     dbport              = Config.cfg['DATABASE']['postgresport']
     Database            = databaseClass.Database(Log, dbType, dbname, dbUser, dbPwd, dbhost, dbport, Config.cfg['DATABASE']['databasefile'])
-    # Connect to database
-    Database.connect()
 
     # Load the referencials into array before inject it into database
     # Read MIME type from file
@@ -67,6 +65,7 @@ if __name__ == '__main__':
                     'adress2': str(Spreadsheet.referencialSupplierData[taxeNumber][0][Spreadsheet.referencialSupplierArray['adress2']]),
                     'postal_code': str(Spreadsheet.referencialSupplierData[taxeNumber][0][Spreadsheet.referencialSupplierArray['adressPostalCode']]),
                     'city': str(Spreadsheet.referencialSupplierData[taxeNumber][0][Spreadsheet.referencialSupplierArray['adressTown']]),
+                    'typology': str(Spreadsheet.referencialSupplierData[taxeNumber][0][Spreadsheet.referencialSupplierArray['typology']])
                 }
             }
             res = Database.insert(args)
@@ -87,6 +86,7 @@ if __name__ == '__main__':
                     'adress2': str(Spreadsheet.referencialSupplierData[taxeNumber][0][Spreadsheet.referencialSupplierArray['adress2']]),
                     'postal_code': str(Spreadsheet.referencialSupplierData[taxeNumber][0][Spreadsheet.referencialSupplierArray['adressPostalCode']]),
                     'city': str(Spreadsheet.referencialSupplierData[taxeNumber][0][Spreadsheet.referencialSupplierArray['adressTown']]),
+                    'typology': str(Spreadsheet.referencialSupplierData[taxeNumber][0][Spreadsheet.referencialSupplierArray['typology']])
                 },
                 'where' : ['vat_number = ?'],
                 'data' : [taxeNumber]
