@@ -2,7 +2,7 @@
 
 # Open-Capture for Invoices by Edissyum
  
-Version 0.4.0
+Version 0.5.0
   
 Open-Capture is a **free and Open Source** software under **GNU General Public License v3.0**.
   
@@ -36,7 +36,7 @@ Tested with :
 
     $ sudo mkdir /opt/OpenCaptureForInvoices/ && sudo chmod -R 775 /opt/OpenCaptureForInvoices/ && sudo chown -R your_user:your_group /opt/OpenCaptureForInvoices/
     $ sudo apt install git
-    $ git clone -b 0.4.0 https://gitlab.com/edissyum/opencapture/opencaptureforinvoices /opt/OpenCaptureForInvoices/
+    $ git clone -b 0.5.0 https://gitlab.com/edissyum/opencapture/opencaptureforinvoices /opt/OpenCaptureForInvoices/
     $ cd /opt/OpenCaptureForInvoices/
   
 Before lauching the Makefile. You have to do the following : 
@@ -130,6 +130,17 @@ Your could custom python files, templates files and static files (js, css, imgs,
 For now (and for somes files like babel's or webApp/*.py files) it is recommended to restart Flask service in order to see the changes :
 
     $ systemctl restart OCForInvoices-web.service
+
+## Positioning mask
+It is possible to use file filled with positions and some stuff to retrieve some informations hard to find with REGEX only.
+In this file you'll find to type of metadata, the default one and the custom one. Normmally you don't have to touch the default one except the <code>position</code>.
+For the custom ones, you'll have some settings to fill :
+    - regex : use regex present in the JSON file (use the index name. exemple : <code>dateRegex</code>) or create a new one into this file (you need to modifiy the Locale file in order to get this working)
+    - onlyNumber : If true, it could replace some letters by number to avoid error (O will became 0 for exemple) using <code>OCR_ERRORS.xml</code> file
+    - column : Column in database, don't forget to add two column (one for name and one for position like 'example' and 'example_position')
+    - target : part of file to search into. It could be header, footer or full
+
+The positioning mask is named only with the typology number : <code>eg : 1.ini</code>. The typology number has to be mentionned in the default_referencial_supplier for each supplier
 
 ## WebServices for Maarch 19.04
 
