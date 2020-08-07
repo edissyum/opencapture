@@ -16,19 +16,24 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import re
+from webApp.functions import search_by_positions
 
 class FindInvoiceNumber:
-    def __init__(self, Ocr, Files, Log, Locale, Database, supplier):
+    def __init__(self, Ocr, Files, Log, Locale, Config, Database, supplier):
         self.vatNumber      = ''
         self.Ocr            = Ocr
         self.Log            = Log
         self.Files          = Files
         self.Locale         = Locale
+        self.Config         = Config
         self.supplier       = supplier
         self.Database       = Database
 
     def run(self):
         found = False
+        invoiceNumber = search_by_positions(self.supplier, 'invoice', self.Config, self.Locale, self.Ocr, self.Files, self.Files.jpgName_header)
+        if invoiceNumber[0]:
+            return invoiceNumber
         for line in self.Ocr.header_text:
             for _invoice in re.finditer(r"" + self.Locale.invoiceRegex + "", line.content.upper()):
                 tmpInvoiceNumber    = re.sub(r"" + self.Locale.invoiceRegex[:-2] + "", '', _invoice.group()) # Delete the invoice keyword
@@ -38,6 +43,7 @@ class FindInvoiceNumber:
                     return invoiceNumber, line.position
                 else:
                     found = False
+                    
         if not found and self.supplier:
             self.Log.info('Invoice number not found. Searching invoice number using position in database')
             position = self.Database.select({
@@ -58,7 +64,7 @@ class FindInvoiceNumber:
                     self.Log.info('Invoice number found with position : ' + text)
                     return text, position
                 else:
-                    return False
+                    return False, False
             else:
-                return False
-        return False
+                return False, False
+        return False, False

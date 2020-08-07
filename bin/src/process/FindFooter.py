@@ -17,6 +17,7 @@
 
 import re
 import operator
+from webApp.functions import search_by_positions
 
 class FindFooter:
     def __init__(self, Ocr, Log, Locale, Config, Files, Database, supplier, file):
@@ -94,36 +95,59 @@ class FindFooter:
             return False
 
     def test_amount(self, noRateAmount, allRateAmount, ratePercentage):
-        if noRateAmount     is False or \
-           ratePercentage   is False:
-                if self.supplier is not False:
-                    self.Log.info('No amount or percentage found in footer, start searching with supplier position')
-                    if noRateAmount is False:
-                        noRateAmount    = self.process_with_position('no_taxes_1_position')
-                        if noRateAmount:
-                            self.Log.info('noRateAmount found with position')
+        if noRateAmount in [False, None] or ratePercentage in [False, None]:
+            if self.supplier is not False:
+                self.Log.info('No amount or percentage found in footer, start searching with supplier position')
+                if noRateAmount in [False, None]:
+                    noRateAmount    = self.process_with_position('no_taxes_1_position')
+                    if noRateAmount:
+                        self.Log.info('noRateAmount found with position')
 
-                    if ratePercentage is False:
-                        ratePercentage  = self.process_with_position('vat_1_position')
-                        if ratePercentage:
-                            self.Log.info('ratePercentage found with position')
+                if ratePercentage in [False, None]:
+                    ratePercentage  = self.process_with_position('vat_1_position')
+                    if ratePercentage:
+                        self.Log.info('ratePercentage found with position')
 
-                if noRateAmount and ratePercentage:
-                    self.noRateAmount   = noRateAmount
-                    self.ratePercentage = ratePercentage
-                    return True
+            if noRateAmount and ratePercentage:
+                self.noRateAmount   = noRateAmount
+                self.ratePercentage = ratePercentage
+                return True
 
-                elif noRateAmount is False or ratePercentage is False:
-                    return False
+            elif noRateAmount in [False, None] or ratePercentage in [False, None]:
+                return False
 
         self.noRateAmount   = noRateAmount
         self.allRateAmount  = allRateAmount
         self.ratePercentage = ratePercentage
 
     def run(self):
-        noRateAmount    = self.process(self.Locale.noRatesRegex)
-        ratePercentage  = self.process(self.Locale.vatRateRegex)
-        allRateAmount   = self.process(self.Locale.allRatesRegex)
+        allRate  = search_by_positions(self.supplier, 'total_amount', self.Config, self.Locale, self.Ocr, self.Files, self.Files.jpgName)
+        allRateAmount = {}
+        if allRate and allRate[0]:
+            allRateAmount = {
+                0: re.sub(r"[^0-9\.]|\.(?!\d)", "", allRate[0].replace(',', '.')),
+                1: allRate[1]
+            }
+        noRate   = search_by_positions(self.supplier, 'ht_amount', self.Config, self.Locale, self.Ocr, self.Files, self.Files.jpgName)
+        noRateAmount = {}
+        if noRate and noRate[0]:
+            noRateAmount = {
+                0: re.sub(r"[^0-9\.]|\.(?!\d)", "", noRate[0].replace(',', '.')),
+                1: allRate[1]
+            }
+        percentage = search_by_positions(self.supplier, 'rate_percentage', self.Config, self.Locale, self.Ocr, self.Files, self.Files.jpgName)
+        ratePercentage = {}
+        if percentage and percentage[0]:
+            ratePercentage = {
+                0: re.sub(r"[^0-9\.]|\.(?!\d)", "", percentage[0].replace(',', '.')),
+                1: allRate[1]
+            }
+
+        if not self.test_amount(noRateAmount, allRateAmount, ratePercentage):
+            noRateAmount    = self.process(self.Locale.noRatesRegex)
+            ratePercentage  = self.process(self.Locale.vatRateRegex)
+            allRateAmount   = self.process(self.Locale.allRatesRegex)
+
         # Test all amounts. If some are false, try to search them with position. If not, pass
         if self.test_amount(noRateAmount, allRateAmount, ratePercentage) is not False:
             # First args is amount, second is position
