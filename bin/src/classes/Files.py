@@ -37,19 +37,19 @@ from wand.exceptions import PolicyError, CacheError
 
 class Files:
     def __init__(self, jpgName, res, quality, Xml, Log, isTiff):
-        self.isTiff                 = isTiff
-        self.jpgName                = jpgName + '.jpg'
-        self.jpgName_header         = jpgName + '_header.jpg'
-        self.jpgName_footer         = jpgName + '_footer.jpg'
-        self.jpgName_tiff           = jpgName + '.tiff'
-        self.jpgName_tiff_header    = jpgName + '_header.tiff'
-        self.jpgName_tiff_footer    = jpgName + '_footer.tiff'
-        self.resolution             = res
-        self.compressionQuality     = quality
-        self.img                    = None
-        self.heightRatio            = ''
-        self.Xml                    = Xml
-        self.Log                    = Log
+        self.isTiff                = isTiff
+        self.jpgName               = jpgName + '.jpg'
+        self.jpgName_header        = jpgName + '_header.jpg'
+        self.jpgName_footer        = jpgName + '_footer.jpg'
+        self.jpgName_tiff          = jpgName + '.tiff'
+        self.jpgName_tiff_header   = jpgName + '_header.tiff'
+        self.jpgName_tiff_footer   = jpgName + '_footer.tiff'
+        self.resolution            = res
+        self.compressionQuality    = quality
+        self.img                   = None
+        self.heightRatio           = ''
+        self.Xml                   = Xml
+        self.Log                   = Log
 
     # Convert the first page of PDF to JPG and open the image
     def pdf_to_jpg(self, pdfName, openImg=True, crop=False, zoneToCrop=False):
@@ -187,7 +187,7 @@ class Files:
                     continue
 
     @staticmethod
-    def ocr_on_fly(img, selection, Ocr, thumbSize = None, regex = None):
+    def ocr_on_fly(img, selection, Ocr, thumbSize = None, regex = None, removeLines = False):
         if thumbSize is not None:
             with Image.open(img) as im:
                 ratio       = im.size[0]/thumbSize['width']
@@ -204,6 +204,21 @@ class Files:
         with Image.open(img) as im2:
             croppedImage = im2.crop(cropRatio)
             croppedImage.save('/tmp/cropped' + extension)
+
+        if removeLines:
+            image = cv2.imread('/tmp/cropped' + extension)
+            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
+            horizontal_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (20, 1))
+            detected_lines = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, horizontal_kernel, iterations=2)
+            cnts = cv2.findContours(detected_lines, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            cnts = cnts[0] if len(cnts) == 2 else cnts[1]
+            for c in cnts:
+                cv2.drawContours(image, [c], -1, (255, 255, 255), 3)
+            repair_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+            result = 255 - cv2.morphologyEx(255 - image, cv2.MORPH_CLOSE, repair_kernel, iterations=1)
+            cv2.imwrite('/tmp/cropped' + extension, result)
+            croppedImage = Image.open('/tmp/cropped' + extension)
 
         text = Ocr.text_builder(croppedImage)
 
@@ -269,26 +284,31 @@ class Files:
 
     @staticmethod
     def improve_image_detection(img):
-        src     = cv2.imread(img, cv2.IMREAD_GRAYSCALE)
-        _, blackAndWhite = cv2.threshold(src, 127, 255, cv2.THRESH_BINARY_INV)
-        nlabels, labels, stats, centroids = cv2.connectedComponentsWithStats(blackAndWhite, None, None, None, 8, cv2.CV_32S)
+        filename = os.path.splitext(img)
+        improved_img = filename[0] + '_improved' + filename[1]
+        if not os.path.isfile(improved_img):
+            src     = cv2.imread(img)
+            gray    = cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)
+            _, blackAndWhite = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY_INV)
+            nlabels, labels, stats, centroids = cv2.connectedComponentsWithStats(blackAndWhite, None, None, None, 8, cv2.CV_32S)
 
-        # get CC_STAT_AREA component
-        sizes = stats[1:, -1]
-        img2 = np.zeros(labels.shape, np.uint8)
+            # get CC_STAT_AREA component
+            sizes = stats[1:, -1]
+            img2 = np.zeros(labels.shape, np.uint8)
 
-        for i in range(0, nlabels - 1):
-            # Filter small dotted regions
-            if sizes[i] >= 20:
-                img2[labels == i + 1] = 255
+            for i in range(0, nlabels - 1):
+                # Filter small dotted regions
+                if sizes[i] >= 20:
+                    img2[labels == i + 1] = 255
 
-        dst = cv2.bitwise_not(img2)
+            dst = cv2.bitwise_not(img2)
 
-        kernel = np.ones((1,2),np.uint8)
-        src = cv2.adaptiveThreshold(dst, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY,11,2)
-        dst = cv2.erode(src, kernel)
+            kernel = np.ones((1,2),np.uint8)
+            src = cv2.adaptiveThreshold(dst, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY,11,2)
+            dst = cv2.erode(src, kernel)
+            cv2.imwrite(improved_img, dst)
 
-        cv2.imwrite(img, dst)
+        return improved_img
 
     @staticmethod
     def move_to_docservers(cfg, file):
