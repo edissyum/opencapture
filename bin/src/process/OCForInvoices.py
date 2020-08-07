@@ -37,36 +37,46 @@ else: FindFooter = getattr(__import__(custom_array['FindFooter']['path'] + '.' +
 if 'FindSupplier' not in custom_array: from .FindSupplier import FindSupplier
 else: FindSupplier = getattr(__import__(custom_array['FindSupplier']['path'] + '.' + custom_array['FindSupplier']['module'], fromlist=[custom_array['FindSupplier']['module']]), custom_array['FindSupplier']['module'])
 
+if 'FindCustom' not in custom_array: from .FindCustom import FindCustom
+else: FindSupplier = getattr(__import__(custom_array['FindCustom']['path'] + '.' + custom_array['FindCustom']['module'], fromlist=[custom_array['FindCustom']['module']]), custom_array['FindCustom']['module'])
+
 if 'FindInvoiceNumber' not in custom_array: from .FindInvoiceNumber import FindInvoiceNumber
 else: FindInvoiceNumber = getattr(__import__(custom_array['FindInvoiceNumber']['path'] + '.' + custom_array['FindInvoiceNumber']['module'], fromlist=[custom_array['FindInvoiceNumber']['module']]), custom_array['FindInvoiceNumber']['module'])
 
-def insert(Database, Log, Files, Config, supplier, file, invoice_number, date, footer, nb_pages, full_jpg_filename, tiff_filename, status):
+def insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, footer, nb_pages, full_jpg_filename, tiff_filename, status, custom_columns):
     if Files.isTiff == 'True':
         path = Config.cfg['GLOBAL']['tiffpath'] + '/' + tiff_filename.replace('-%03d', '-001')
     else:
         path = Config.cfg['GLOBAL']['fullpath'] + '/' + full_jpg_filename.replace('-%03d', '-001')
 
+    columns = {
+        'vat_number': supplier[0] if supplier else '',
+        'vat_number_position': str(supplier[1]) if supplier else '',
+        'invoice_date': date[0] if date else '',
+        'invoice_date_position': str(date[1]) if date else '',
+        'invoice_number': invoiceNumber[0] if invoiceNumber is not False else '',
+        'invoice_number_position': str(invoiceNumber[1]) if invoiceNumber is not False else '',
+        'total_amount': str(footer[1][0]) if footer is not False and footer[1] is not False else '',
+        'total_amount_position': str(footer[1][1]) if footer is not False and footer[1] is not False else '',
+        'ht_amount1': str(footer[0][0]) if footer is not False and footer[0] is not False else '',
+        'ht_amount1_position': str(footer[0][1]) if footer is not False and footer[0] is not False else '',
+        'vat_rate1': str(footer[2][0]) if footer is not False and footer[2] is not False else '',
+        'vat_rate1_position': str(footer[2][1]) if footer is not False and footer[2] is not False else '',
+        'filename': os.path.basename(file),
+        'path': os.path.dirname(file),
+        'img_width': str(Files.get_size(path)),
+        'full_jpg_filename': full_jpg_filename.replace('-%03d', '-001'),
+        'tiff_filename': tiff_filename.replace('-%03d', '-001'),
+        'status': status,
+        'nb_pages': str(nb_pages),
+    }
+
+    if custom_columns:
+        columns.update(custom_columns)
+
     res = Database.insert({
         'table': 'invoices',
-        'columns': {
-            'vat_number'             : supplier[0] if supplier else '',
-            'vat_number_position'    : str(supplier[1]) if supplier else '',
-            'invoice_date'           : date[0] if date else '',
-            'invoice_date_position'  : str(date[1]) if date else '',
-            'invoice_number'         : invoice_number[0] if invoice_number is not False else '',
-            'invoice_number_position': str(invoice_number[1]) if invoice_number is not False else '',
-            'ht_amount1'             : str(footer[0][0]) if footer is not False else '',
-            'ht_amount1_position'    : str(footer[0][1]) if footer is not False else '',
-            'vat_rate1'              : str(footer[2][0]) if footer is not False else '',
-            'vat_rate1_position'     : str(footer[2][1]) if footer is not False else '',
-            'filename'               : os.path.basename(file),
-            'path'                   : os.path.dirname(file),
-            'img_width'              : str(Files.get_size(path)),
-            'full_jpg_filename'      : full_jpg_filename.replace('-%03d', '-001'),
-            'tiff_filename'          : tiff_filename.replace('-%03d', '-001'),
-            'status'                 : status,
-            'nb_pages'               : str(nb_pages),
-        }
+        'columns': columns
     })
 
     # Commit database connection
@@ -122,11 +132,23 @@ def process(args, file, Log, Separator, Config, Files, Ocr, Locale, Database, We
     # Find supplier in document
     supplier        = FindSupplier(Ocr, Log, Locale, Database, Files, file + '[0]').run()
 
+    # Find custom informations using mask
+    customFields    = FindCustom(Ocr.header_text, Log, Locale, Config, Ocr, Files, supplier).run()
+    columns = {}
+    if customFields:
+        for field in customFields:
+            field_name = field.split('-')[1]
+            field_name_position = field_name + '_position'
+            columns.update({
+                field_name: customFields[field][0],
+                field_name_position: customFields[field][1]
+            })
+
     # Find invoice number
-    invoiceNumber   = FindInvoiceNumber(Ocr, Files, Log, Locale, Database, supplier).run()
+    invoiceNumber   = FindInvoiceNumber(Ocr, Files, Log, Locale, Config, Database, supplier).run()
 
     # Find invoice date number
-    date            = FindDate(Ocr.text, Log, Locale, Config).run()
+    date            = FindDate(Ocr.text, Log, Locale, Config, Files, Ocr, supplier).run()
 
     # Find footer informations (total amount, no rate amount etc..)
     footer          = FindFooter(Ocr, Log, Locale, Config, Files, Database, supplier, file + '[0]').run()
@@ -181,7 +203,7 @@ def process(args, file, Log, Separator, Config, Files, Ocr, Locale, Database, We
             invoiceInfo     = Database.select({
                 'select'    : ['*'],
                 'table'     : ['invoices'],
-                'where'     : ['invoiceNumber = ?'],
+                'where'     : ['invoice_number = ?'],
                 'data'      : [invoiceNumber[0]]
             })
 
@@ -241,6 +263,6 @@ def process(args, file, Log, Separator, Config, Files, Ocr, Locale, Database, We
         if Files.isTiff == 'True':
             Files.save_pdf_to_tiff_in_docserver(file, Config.cfg['GLOBAL']['tiffpath'] + '/' + tiff_filename)
 
-        insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, footer, nb_pages, full_jpg_filename, tiff_filename, 'NEW')
+        insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, footer, nb_pages, full_jpg_filename, tiff_filename, 'NEW', columns)
 
     return True
