@@ -37,6 +37,7 @@ class Spreadsheet:
             self.referencialSupplierArray['adress2']            = fp['adress2']
             self.referencialSupplierArray['adressTown']         = fp['adressTown']
             self.referencialSupplierArray['adressPostalCode']   = fp['adressPostalCode']
+            self.referencialSupplierArray['typology']           = fp['typology']
 
     @staticmethod
     def read_excel_sheet(referencialSpreadsheet):
@@ -54,7 +55,8 @@ class Spreadsheet:
             self.referencialSupplierArray['adress1'],
             self.referencialSupplierArray['adress2'],
             self.referencialSupplierArray['adressPostalCode'],
-            self.referencialSupplierArray['adressTown']
+            self.referencialSupplierArray['adressTown'],
+            self.referencialSupplierArray['typology']
         ])
         # Drop row 0 because it contains the indexes columns
         contentSheet = contentSheet.drop(0)

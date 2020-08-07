@@ -55,9 +55,10 @@ localepath               = ${GLOBAL:projectPath}/webApp/static/locale/
 [REFERENCIAL]
 referencialfinancial            = ${GLOBAL:projectPath}/bin/src/referencial/plan_comptable.xlsx
 # ODS or XLSX supported
-referencialsupplierdocumentpath = ${GLOBAL:projectPath}/bin/src/referencial/default_referencial_supplier.ods
-referencialsupplierindexpath    = ${GLOBAL:projectPath}/bin/src/referencial/default_referencial_supplier_index.json
+referencialSupplierDocumentPath = ${GLOBAL:projectPath}/bin/src/referencial/default_referencial_supplier.ods
+referencialSupplierIndexpath    = ${GLOBAL:projectPath}/bin/src/referencial/default_referencial_supplier_index.json
 referencialPosition             = ${GLOBAL:projectPath}/bin/src/referencial/positions/
+
 [REGEX]
 urlpattern          = fr|com|net|org|gouv
 

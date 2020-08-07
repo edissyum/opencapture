@@ -167,12 +167,10 @@ class FindSupplier:
         if not retry and not self.found_first:
             self.Log.info('No supplier informations found in the header, improve image and retry...')
             if self.Files.isTiff == 'True':
-                self.Files.improve_image_detection(self.Files.jpgName_tiff_header)
-                self.Files.open_img(self.Files.jpgName_tiff_header)
+                improved_image = self.Files.improve_image_detection(self.Files.jpgName_tiff_header)
             else:
-                self.Files.improve_image_detection(self.Files.jpgName_header)
-                self.Files.open_img(self.Files.jpgName_header)
-
+                improved_image = self.Files.improve_image_detection(self.Files.jpgName_header)
+            self.Files.open_img(improved_image)
             self.text = self.Ocr.line_box_builder(self.Files.img)
             return self.run(retry=True, target=None)
 
@@ -192,11 +190,10 @@ class FindSupplier:
         if retry and not self.found_third and self.found_fourth:
             self.Log.info('No supplier informations found in the footer, improve image and retry...')
             if self.Files.isTiff == 'True':
-                self.Files.improve_image_detection(self.Files.jpgName_tiff_footer)
-                self.Files.open_img(self.Files.jpgName_tiff_footer)
+                improved_image = self.Files.improve_image_detection(self.Files.jpgName_tiff_header)
             else:
-                self.Files.improve_image_detection(self.Files.jpgName_footer)
-                self.Files.open_img(self.Files.jpgName_footer)
+                improved_image = self.Files.improve_image_detection(self.Files.jpgName_footer)
+            self.Files.open_img(improved_image)
             self.text = self.Ocr.line_box_builder(self.Files.img)
             return self.run(retry=True, target='footer')
 
@@ -205,11 +202,10 @@ class FindSupplier:
         if retry and not self.found_fourth:
             self.Log.info('No supplier informations found in the footer, change Tesseract function to retrieve text and retry...')
             if self.Files.isTiff == 'True':
-                self.Files.improve_image_detection(self.Files.jpgName_tiff_header)
-                self.Files.open_img(self.Files.jpgName_tiff_header)
+                improved_image = self.Files.improve_image_detection(self.Files.jpgName_tiff_header)
             else:
-                self.Files.improve_image_detection(self.Files.jpgName_header)
-                self.Files.open_img(self.Files.jpgName_header)
+                improved_image = self.Files.improve_image_detection(self.Files.jpgName_header)
+            self.Files.open_img(improved_image)
             self.text = self.Ocr.text_builder(self.Files.img)
             return self.run(retry=True, regenerateOcr=True, target='header', textAsString=True)
 

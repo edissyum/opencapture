@@ -56,7 +56,7 @@
                 {% for pdf in pdf_group %}
                     <div class="col-sm-3">
                         <div class="card">
-                            <a href="
+                            <a style="height: 400px;" href="
                                     {% if pdf['status'] == 'END' %} #end
                                         {% elif not pdf['locked'] or (pdf ['locked'] and pdf['locked_by'] == g.user['username']) %} {{ url_for('pdf.view', id=pdf['invoice_id']) }}
                                         {% else %} #locked
