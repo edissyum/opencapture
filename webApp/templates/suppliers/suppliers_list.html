@@ -18,6 +18,7 @@
                         <th>{{ gettext('Address') }} 2</th>
                         <th>{{ gettext('ZIP_CODE') }}</th>
                         <th>{{ gettext('CITY') }}</th>
+                        <th>{{ gettext('TYPOLOGY') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -84,6 +85,15 @@
                                         N/A
                                     {% else %}
                                         {{ supplier['city'] }}
+                                    {% endif %}
+                                </a>
+                            </td>
+                            <td>
+                                <a href="#">
+                                    {% if supplier['typology'] == 'nan' %}
+                                        N/A
+                                    {% else %}
+                                        {{ supplier['typology'] }}
                                     {% endif %}
                                 </a>
                             </td>
