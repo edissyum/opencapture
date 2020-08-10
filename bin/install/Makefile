@@ -12,6 +12,34 @@ then
 fi
 
 ####################
+# User choice
+echo "Do you want to use supervisor (1) or systemd (2) ? (default : 2) "
+echo "If you plan to handle a lot of files and need a reduced time of process, use supervisor"
+echo "WARNING : A lot of Tesseract processes will run in parallel and it can be very resource intensive"
+printf "Enter your choice [1/%s] : " "${bold}2${normal}"
+read -r choice
+
+if [[ "$choice" == "" || ("$choice" != 1 && "$choice" != 2) ]]; then
+  finalChoice=2
+else
+  finalChoice="$choice"
+fi
+
+if [ "$finalChoice" == 1 ]; then
+  echo 'You choose supervisor, how many processes you want to be run simultaneously ? (default : 10)'
+  printf "Enter your choice [%s] : " "${bold}10${normal}"
+  read -r choice
+  if [ "$choice" == "" ]; then
+    nbProcess=3
+  elif ! [[ "$choice" =~ ^[0-9]+$ ]]; then
+    echo 'The input is not an integer, select default value (10)'
+    nbProcess=3
+  else
+    nbProcess="$choice"
+  fi
+fi
+
+####################
 # Install packages
 if [[ "$OS" = 'Debian' && "$VER" == *'9'* ]]
 then
@@ -42,8 +70,7 @@ find . -name ".gitkeep" -delete
 chmod u+x $defaultPath/bin/scripts/*.sh
 
 ####################
-# Create the services
-
+# Create the service systemd or supervisor
 touch /etc/systemd/system/OCForInvoices-web.service
 su -c "cat > /etc/systemd/system/OCForInvoices-web.service << EOF
 [Unit]
@@ -61,8 +88,9 @@ WantedBy=multi-user.target
 
 EOF"
 
-touch /etc/systemd/system/OCForInvoices-worker.service
-su -c "cat > /etc/systemd/system/OCForInvoices-worker.service << EOF
+if [ "$finalChoice" == 2 ]; then
+  touch /etc/systemd/system/OCForInvoices-worker.service
+  su -c "cat > /etc/systemd/system/OCForInvoices-worker.service << EOF
 [Unit]
 Description=Daemon for Open-Capture for Invoices
 
@@ -81,8 +109,8 @@ Restart=on-failure
 WantedBy=multi-user.target
 EOF"
 
-touch /etc/systemd/system/OCForInvoices_Split-worker.service
-su -c "cat > /etc/systemd/system/OCForInvoices_Split-worker.service << EOF
+  touch /etc/systemd/system/OCForInvoices_Split-worker.service
+  su -c "cat > /etc/systemd/system/OCForInvoices_Split-worker.service << EOF
 [Unit]
 Description=Splitter Daemon for Open-Capture for Invoices
 
@@ -101,20 +129,42 @@ Restart=on-failure
 WantedBy=multi-user.target
 EOF"
 
+  systemctl daemon-reload && systemctl start OCForInvoices-worker.service
+  systemctl daemon-reload && systemctl start OCForInvoices_Split-worker.service
+  systemctl enable OCForInvoices-worker.service
+  systemctl enable OCForInvoices_Split-worker.service
+else
+  apt install -y supervisor
+  mkdir /tmp/Opencapture/
+  touch /etc/supervisor/conf.d/OCForInvoices-worker.conf
+  su -c "cat > /etc/supervisor/conf.d/OCForInvoices-worker.conf << EOF
+[program:OCWorker]
+command=$defaultPath/bin/scripts/service_workerOC.sh
+process_name=%(program_name)s_%(process_num)02d
+numprocs=$nbProcess
+stderr_logfile=/tmp/Opencapture/OCForInvoices_worker_%(process_num)02d_error.log
+EOF"
+
+  chmod 755 /etc/supervisor/conf.d/OCForInvoices-worker.conf
+  chmod 755 /etc/supervisor/conf.d/OCForInvoices_Split-worker.conf
+
+  systemctl restart supervisor
+  systemctl enable supervisor
+fi
 ####################
 # Create a custom temp directory to cron the delete of the ImageMagick temp content
 mkdir /tmp/OpenCaptureForInvoices/
 chown -R $user:$user /tmp/OpenCaptureForInvoices
 
 ####################
-# Modify default config
-cp $defaultPath/instance/config.ini.default $defaultPath/instance/config.ini
-cp $defaultPath/instance/config/config_DEFAULT.ini.default $defaultPath/instance/config/config_DEFAULT.ini
-
-####################
 # Initialize flask database
 export FLASK_APP="$defaultPath"/webApp
 flask init-db
+
+####################
+# Modify default config
+cp $defaultPath/instance/config.ini.default $defaultPath/instance/config.ini
+cp $defaultPath/instance/config/config_DEFAULT.ini.default $defaultPath/instance/config/config_DEFAULT.ini
 
 ####################
 # Nginx setup
@@ -135,21 +185,9 @@ rm /etc/nginx/sites-enabled/default
 systemctl restart nginx
 
 ####################
-# Start all the services
-sleep 10
+# Start and enable the web service
+sleep 5
 systemctl daemon-reload && systemctl start OCForInvoices-web.service
-sleep 5
-systemctl daemon-reload && systemctl start OCForInvoices-worker.service
-sleep 5
-systemctl daemon-reload && systemctl start OCForInvoices_Split-worker.service
-
-####################
-# Enable all the services
-systemctl enable OCForInvoices-web.service
-sleep 2
-systemctl enable OCForInvoices-worker.service
-sleep 2
-systemctl enable OCForInvoices_Split-worker.service
 
 ####################
 # Fix the rights after root launch to avoid permissions issues
