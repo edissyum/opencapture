@@ -88,7 +88,7 @@ def isDuplicate():
         })
 
         if res:
-            if res[0]['nbInvoice'] == 1 and res[0]['id'] != invoiceId or res[0]['nbInvoice'] > 1   :
+            if res[0]['nbinvoice'] == 1 and res[0]['id'] != invoiceId or res[0]['nbinvoice'] > 1:
                 return json.dumps({'text' : 'true', 'code' : 200, 'ok' : 'true'})
             else:
                 return json.dumps({'text' : 'false', 'code' : 200, 'ok' : 'true'})

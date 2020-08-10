@@ -373,16 +373,17 @@ class Files:
                         if fillPosition is not False and db is not False:
                             cleanChildPosition = child[childElement]['position']
                             # Add position in supplier database
-                            if cleanChildPosition is not None:
-                                db.update({
-                                    'table': ['suppliers'],
-                                    'set': {
-                                        cleanChild + '_position': cleanChildPosition
-                                    },
-                                    'where': ['vat_number = ?'],
-                                    'data': [vatNumber]
-                                })
-                                db.conn.commit()
+                            if cleanChildPosition is not None :
+                                if 'no_taxes' in cleanChild or 'invoice_number' in cleanChild or 'order_number' in cleanChild or 'delivery_number' in cleanChild or 'vat' in cleanChild:
+                                    db.update({
+                                        'table': ['suppliers'],
+                                        'set': {
+                                            cleanChild + '_position': cleanChildPosition
+                                        },
+                                        'where': ['vat_number = ?'],
+                                        'data': [vatNumber]
+                                    })
+                                    db.conn.commit()
                         # Then create the XML
                         newField = ET.SubElement(element, cleanChild)
                         newField.text = child[childElement]['field']

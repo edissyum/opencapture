@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2020-08-06 16:32+0200\n"
+"POT-Creation-Date: 2020-08-10 14:06+0200\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: en\n"
@@ -21,6 +21,259 @@ msgstr ""
 #: bin/src/classes/WebServices.py:43
 msgid "CONNECTION_ERROR"
 msgstr "Error while connecting GED"
+
+#: custom/oc_invoices_1/webApp/pdf.py:203 webApp/pdf.py:203
+#: webApp/static/js/videoCodage.js:57 webApp/ws_splitter.py:81
+msgid "NO_RESULTS"
+msgstr "No results"
+
+#: custom/oc_invoices_1/webApp/pdf.py:205 webApp/pdf.py:205
+#: webApp/supplier.py:40 webApp/user.py:156 webApp/ws_splitter.py:83
+msgid "SHOW"
+msgstr "Show"
+
+#: custom/oc_invoices_1/webApp/pdf.py:205
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:16 webApp/pdf.py:205
+#: webApp/supplier.py:40 webApp/templates/pdf/view.html:16 webApp/user.py:156
+#: webApp/ws_splitter.py:84
+msgid "OF"
+msgstr "of"
+
+#: custom/oc_invoices_1/webApp/pdf.py:436 webApp/pdf.py:432
+msgid "END_LONG"
+msgstr "Invoice validated and closed"
+
+#: custom/oc_invoices_1/webApp/pdf.py:438 webApp/pdf.py:434
+msgid "ERROR_WHILE_INSERTING_IN_GED"
+msgstr "Error while inserting invoice in GED"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:2
+#: webApp/templates/pdf/view.html:2
+msgid "PDF_VIEW"
+msgstr "View PDF"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:16
+#: webApp/templates/pdf/view.html:16
+msgid "PAGE"
+msgstr "Page"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:57
+#: webApp/templates/pdf/view.html:57
+msgid "SUBSCRIPTION"
+msgstr "Subscription (end)"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:61
+#: webApp/templates/pdf/view.html:61
+msgid "ASSET"
+msgstr "Asset"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:66
+#: webApp/templates/pdf/view.html:66
+msgid "HIDE_SUPPLIER_INFO"
+msgstr "Hide supplier informations"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:70
+#: webApp/templates/pdf/view.html:70
+#: webApp/templates/suppliers/suppliers_list.html:14
+msgid "SUPPLIER"
+msgstr "Supplier"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:75
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:172
+#: webApp/templates/pdf/view.html:75
+msgid "NAME"
+msgstr "Name"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:86
+#: webApp/templates/pdf/view.html:86
+#: webApp/templates/suppliers/suppliers_list.html:17
+#: webApp/templates/suppliers/suppliers_list.html:18
+msgid "Address"
+msgstr "Address"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:101
+#: webApp/templates/pdf/view.html:101
+#: webApp/templates/suppliers/suppliers_list.html:19
+msgid "ZIP_CODE"
+msgstr "Zip code"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:114
+#: webApp/templates/pdf/view.html:114
+#: webApp/templates/suppliers/suppliers_list.html:20
+msgid "CITY"
+msgstr "City"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:140
+#: webApp/templates/dashboard/index.html:748 webApp/templates/pdf/view.html:140
+#: webApp/templates/suppliers/suppliers_list.html:15
+msgid "SIRET_NUMBER"
+msgstr "SIRET Number"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:149
+#: webApp/templates/dashboard/index.html:759 webApp/templates/pdf/view.html:149
+#: webApp/templates/suppliers/suppliers_list.html:16
+msgid "SIREN_NUMBER"
+msgstr "SIREN Number"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:208
+#: webApp/templates/pdf/view.html:162
+msgid "HIDE_FACTURATION_INFO"
+msgstr "Hide facturation informations"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:212
+#: webApp/templates/pdf/view.html:166
+msgid "BILLING"
+msgstr "Billing"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:217
+#: webApp/templates/pdf/view.html:171
+msgid "INVOICE_WITHOUT_ORDER"
+msgstr "Invoice without order"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:221
+#: webApp/templates/pdf/view.html:175
+msgid "INVOICE_WITHOUT_DELIVERY_FORM"
+msgstr "Invoice without delivery form"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:226
+#: webApp/templates/dashboard/index.html:687 webApp/templates/pdf/list.html:92
+#: webApp/templates/pdf/view.html:180
+msgid "INVOICE_NUMBER"
+msgstr "Invoice number"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:235
+#: webApp/templates/pdf/list.html:93 webApp/templates/pdf/view.html:189
+msgid "INVOICE_DATE"
+msgstr "Invoice date"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:247
+#: webApp/static/js/videoCodage.js:422
+#: webApp/templates/dashboard/index.html:795 webApp/templates/pdf/view.html:201
+msgid "VAT_RATE"
+msgstr "VAT rate"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:256
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:330
+#: webApp/static/js/videoCodage.js:431 webApp/static/js/videoCodage.js:534
+#: webApp/templates/dashboard/index.html:773 webApp/templates/pdf/view.html:210
+#: webApp/templates/pdf/view.html:284
+msgid "NO_RATE_AMOUNT"
+msgstr "No rate amount"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:265
+#: webApp/static/js/videoCodage.js:440 webApp/templates/pdf/view.html:219
+msgid "LOAD_ACCOUNT"
+msgstr "Load account"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:267
+#: webApp/static/js/videoCodage.js:442 webApp/templates/pdf/view.html:221
+msgid "SELECT_LOAD_ACCOUNT"
+msgstr "Select a load account"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:277
+#: webApp/templates/pdf/view.html:231
+msgid "ADD_VAT_RATE"
+msgstr "Add a VAT rate"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:282
+#: webApp/templates/pdf/view.html:236
+msgid "CALCULATE_TOTAL_AMOUNT"
+msgstr "Calcultate the total amount"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:288
+#: webApp/templates/pdf/view.html:242
+msgid "TOTAL_NO_RATE"
+msgstr "Total without rate"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:297
+#: webApp/templates/dashboard/index.html:784 webApp/templates/pdf/view.html:251
+msgid "TOTAL_TTC"
+msgstr "Total including taxes"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:306
+#: webApp/static/js/videoCodage.js:460 webApp/templates/pdf/view.html:260
+msgid "VAT_AMOUNT"
+msgstr "VAT amount"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:319
+#: webApp/templates/pdf/view.html:273
+msgid "HIDE_ANALYTIC_INFO"
+msgstr "Hide analytic informations"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:323
+#: webApp/templates/pdf/view.html:277
+msgid "ANALYTIC"
+msgstr "Analytic"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:336
+#: webApp/static/js/videoCodage.js:540 webApp/templates/pdf/view.html:290
+msgid "BUDGET"
+msgstr "Budget"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:338
+#: webApp/static/js/videoCodage.js:542 webApp/templates/pdf/view.html:292
+msgid "SELECT_STRUCTURE"
+msgstr "Select a structure"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:384
+#: webApp/static/js/videoCodage.js:548 webApp/templates/pdf/view.html:338
+msgid "OUTCOME"
+msgstr "Outcome"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:386
+#: webApp/static/js/videoCodage.js:550 webApp/templates/pdf/view.html:340
+msgid "SELECT_BUDGET"
+msgstr "Select a budget"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:387
+#: webApp/templates/pdf/view.html:341
+msgid "INVESTMENT"
+msgstr "Investment"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:388
+#: webApp/templates/pdf/view.html:342
+msgid "OPERATION"
+msgstr "Operation"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:394
+#: webApp/templates/pdf/view.html:348
+msgid "ADD_NEW_LINE"
+msgstr "Add a new line"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:398
+#: webApp/templates/pdf/view.html:352
+msgid "TOTAL_NO_RATE_AMOUNT"
+msgstr "Total no rate amount"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:405
+#: webApp/templates/pdf/view.html:359
+msgid "USER_IN_CHARGE"
+msgstr "User in charge"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:407
+#: webApp/templates/pdf/view.html:361
+msgid "SELECT_USER"
+msgstr "Select user.."
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:418
+#: webApp/templates/pdf/view.html:372
+msgid "VALIDATE_INVOICE"
+msgstr "Validate invoice"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:419
+#: webApp/templates/pdf/view.html:373
+msgid "REFUSE_INVOICE"
+msgstr "Refuse invoice"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:431
+#: webApp/templates/pdf/view.html:385
+msgid "FORM_VALIDATION"
+msgstr "Form validation"
+
+#: custom/oc_invoices_1/webApp/templates/pdf/view.html:439
+#: webApp/templates/pdf/view.html:393
+msgid "BACK_TO_VALIDATION"
+msgstr "Back to validation"
 
 #: webApp/auth.py:25 webApp/auth.py:67
 msgid "USERNAME_REQUIRED"
@@ -49,29 +302,6 @@ msgstr "User deleted"
 #: webApp/auth.py:73
 msgid "USER_DISABLED"
 msgstr "User disabled"
-
-#: webApp/pdf.py:203 webApp/static/js/videoCodage.js:57
-#: webApp/ws_splitter.py:81
-msgid "NO_RESULTS"
-msgstr "No results"
-
-#: webApp/pdf.py:205 webApp/supplier.py:40 webApp/user.py:156
-#: webApp/ws_splitter.py:83
-msgid "SHOW"
-msgstr "Show"
-
-#: webApp/pdf.py:205 webApp/supplier.py:40 webApp/templates/pdf/view.html:16
-#: webApp/user.py:156 webApp/ws_splitter.py:84
-msgid "OF"
-msgstr "of"
-
-#: webApp/pdf.py:432
-msgid "END_LONG"
-msgstr "Invoice validated and closed"
-
-#: webApp/pdf.py:434
-msgid "ERROR_WHILE_INSERTING_IN_GED"
-msgstr "Error while inserting invoice in GED"
 
 #: webApp/user.py:53 webApp/user.py:87 webApp/user.py:117
 msgid "ERROR_WHILE_RETRIEVING_USER"
@@ -158,45 +388,6 @@ msgstr ""
 #: webApp/static/js/videoCodage.js:307
 msgid "ERROR_WHILE_READING_CONFIGURATION_FILE"
 msgstr "Erreur lors de la lecture du fichier de configuration"
-
-#: webApp/static/js/videoCodage.js:422
-#: webApp/templates/dashboard/index.html:795 webApp/templates/pdf/view.html:201
-msgid "VAT_RATE"
-msgstr "VAT rate"
-
-#: webApp/static/js/videoCodage.js:431 webApp/static/js/videoCodage.js:534
-#: webApp/templates/dashboard/index.html:773 webApp/templates/pdf/view.html:210
-#: webApp/templates/pdf/view.html:284
-msgid "NO_RATE_AMOUNT"
-msgstr "No rate amount"
-
-#: webApp/static/js/videoCodage.js:440 webApp/templates/pdf/view.html:219
-msgid "LOAD_ACCOUNT"
-msgstr "Load account"
-
-#: webApp/static/js/videoCodage.js:442 webApp/templates/pdf/view.html:221
-msgid "SELECT_LOAD_ACCOUNT"
-msgstr "Select a load account"
-
-#: webApp/static/js/videoCodage.js:460 webApp/templates/pdf/view.html:260
-msgid "VAT_AMOUNT"
-msgstr "VAT amount"
-
-#: webApp/static/js/videoCodage.js:540 webApp/templates/pdf/view.html:290
-msgid "BUDGET"
-msgstr "Budget"
-
-#: webApp/static/js/videoCodage.js:542 webApp/templates/pdf/view.html:292
-msgid "SELECT_STRUCTURE"
-msgstr "Select a structure"
-
-#: webApp/static/js/videoCodage.js:548 webApp/templates/pdf/view.html:338
-msgid "OUTCOME"
-msgstr "Outcome"
-
-#: webApp/static/js/videoCodage.js:550 webApp/templates/pdf/view.html:340
-msgid "SELECT_BUDGET"
-msgstr "Select a budget"
 
 #: webApp/static/js/videoCodage.js:587 webApp/static/js/videoCodage.js:625
 msgid "ORDER_NUMBER"
@@ -649,11 +840,6 @@ msgstr "Date"
 msgid "VAT_NUMBER"
 msgstr "VAT number"
 
-#: webApp/templates/dashboard/index.html:687 webApp/templates/pdf/list.html:92
-#: webApp/templates/pdf/view.html:180
-msgid "INVOICE_NUMBER"
-msgstr "Invoice number"
-
 #: webApp/templates/dashboard/index.html:701
 msgid "INVOICE_NUMBER_SIZE"
 msgstr "Invoice number minimal size"
@@ -669,20 +855,6 @@ msgstr "Output format date"
 #: webApp/templates/dashboard/index.html:737
 msgid "URL"
 msgstr "URL"
-
-#: webApp/templates/dashboard/index.html:748 webApp/templates/pdf/view.html:140
-#: webApp/templates/suppliers/suppliers_list.html:15
-msgid "SIRET_NUMBER"
-msgstr "SIRET Number"
-
-#: webApp/templates/dashboard/index.html:759 webApp/templates/pdf/view.html:149
-#: webApp/templates/suppliers/suppliers_list.html:16
-msgid "SIREN_NUMBER"
-msgstr "SIREN Number"
-
-#: webApp/templates/dashboard/index.html:784 webApp/templates/pdf/view.html:251
-msgid "TOTAL_TTC"
-msgstr "Total including taxes"
 
 #: webApp/templates/dashboard/index.html:822
 msgid "PDFA_EXPORT"
@@ -855,10 +1027,6 @@ msgstr "Invoice locked by"
 msgid "INVOICE_CLOSED"
 msgstr "Invoice is closed and cannot be modified"
 
-#: webApp/templates/pdf/list.html:93 webApp/templates/pdf/view.html:189
-msgid "INVOICE_DATE"
-msgstr "Invoice date"
-
 #: webApp/templates/pdf/list.html:97
 #: webApp/templates/splitter/splitter_manager.html:50
 msgid "SAVED_THE"
@@ -872,127 +1040,6 @@ msgstr "Upload PDF"
 #: webApp/templates/splitter/splitter_process.html:34
 msgid "SEND"
 msgstr "Send"
-
-#: webApp/templates/pdf/view.html:2
-msgid "PDF_VIEW"
-msgstr "View PDF"
-
-#: webApp/templates/pdf/view.html:16
-msgid "PAGE"
-msgstr "Page"
-
-#: webApp/templates/pdf/view.html:57
-msgid "SUBSCRIPTION"
-msgstr "Subscription (end)"
-
-#: webApp/templates/pdf/view.html:61
-msgid "ASSET"
-msgstr "Asset"
-
-#: webApp/templates/pdf/view.html:66
-msgid "HIDE_SUPPLIER_INFO"
-msgstr "Hide supplier informations"
-
-#: webApp/templates/pdf/view.html:70
-#: webApp/templates/suppliers/suppliers_list.html:14
-msgid "SUPPLIER"
-msgstr "Supplier"
-
-#: webApp/templates/pdf/view.html:75
-msgid "NAME"
-msgstr "Name"
-
-#: webApp/templates/pdf/view.html:86
-#: webApp/templates/suppliers/suppliers_list.html:17
-#: webApp/templates/suppliers/suppliers_list.html:18
-msgid "Address"
-msgstr "Address"
-
-#: webApp/templates/pdf/view.html:101
-#: webApp/templates/suppliers/suppliers_list.html:19
-msgid "ZIP_CODE"
-msgstr "Zip code"
-
-#: webApp/templates/pdf/view.html:114
-#: webApp/templates/suppliers/suppliers_list.html:20
-msgid "CITY"
-msgstr "City"
-
-#: webApp/templates/pdf/view.html:162
-msgid "HIDE_FACTURATION_INFO"
-msgstr "Hide facturation informations"
-
-#: webApp/templates/pdf/view.html:166
-msgid "BILLING"
-msgstr "Billing"
-
-#: webApp/templates/pdf/view.html:171
-msgid "INVOICE_WITHOUT_ORDER"
-msgstr "Invoice without order"
-
-#: webApp/templates/pdf/view.html:175
-msgid "INVOICE_WITHOUT_DELIVERY_FORM"
-msgstr "Invoice without delivery form"
-
-#: webApp/templates/pdf/view.html:231
-msgid "ADD_VAT_RATE"
-msgstr "Add a VAT rate"
-
-#: webApp/templates/pdf/view.html:236
-msgid "CALCULATE_TOTAL_AMOUNT"
-msgstr "Calcultate the total amount"
-
-#: webApp/templates/pdf/view.html:242
-msgid "TOTAL_NO_RATE"
-msgstr "Total without rate"
-
-#: webApp/templates/pdf/view.html:273
-msgid "HIDE_ANALYTIC_INFO"
-msgstr "Hide analytic informations"
-
-#: webApp/templates/pdf/view.html:277
-msgid "ANALYTIC"
-msgstr "Analytic"
-
-#: webApp/templates/pdf/view.html:341
-msgid "INVESTMENT"
-msgstr "Investment"
-
-#: webApp/templates/pdf/view.html:342
-msgid "OPERATION"
-msgstr "Operation"
-
-#: webApp/templates/pdf/view.html:348
-msgid "ADD_NEW_LINE"
-msgstr "Add a new line"
-
-#: webApp/templates/pdf/view.html:352
-msgid "TOTAL_NO_RATE_AMOUNT"
-msgstr "Total no rate amount"
-
-#: webApp/templates/pdf/view.html:359
-msgid "USER_IN_CHARGE"
-msgstr "User in charge"
-
-#: webApp/templates/pdf/view.html:361
-msgid "SELECT_USER"
-msgstr "Select user.."
-
-#: webApp/templates/pdf/view.html:372
-msgid "VALIDATE_INVOICE"
-msgstr "Validate invoice"
-
-#: webApp/templates/pdf/view.html:373
-msgid "REFUSE_INVOICE"
-msgstr "Refuse invoice"
-
-#: webApp/templates/pdf/view.html:385
-msgid "FORM_VALIDATION"
-msgstr "Form validation"
-
-#: webApp/templates/pdf/view.html:393
-msgid "BACK_TO_VALIDATION"
-msgstr "Back to validation"
 
 #: webApp/templates/splitter/splitter_manager.html:56
 msgid "SEPARATOR"
@@ -1046,6 +1093,10 @@ msgstr "Send to "
 #: webApp/templates/splitter/splitter_process.html:88
 msgid "HISTORY"
 msgstr "History"
+
+#: webApp/templates/suppliers/suppliers_list.html:21
+msgid "TYPOLOGY"
+msgstr "Typology"
 
 #: webApp/templates/users/user_list.html:15
 msgid "CREATION_DATE"
@@ -1145,31 +1196,3 @@ msgstr "Error while uploading file(s)"
 
 msgid "CHOOSE_VAT_RATE"
 msgstr "Choose VAT rate"
-
-#~ msgid "HIDE_CUSTOMER_INFO"
-#~ msgstr "Hide customer informations"
-
-#~ msgid "CUSTOMER"
-#~ msgstr "Customer"
-
-#~ msgid "LASTNAME"
-#~ msgstr "Lastname"
-
-#~ msgid "FIRSTNAME"
-#~ msgstr "Firstname"
-
-#~ msgid "BIRTH_DATE"
-#~ msgstr "Birth date"
-
-#~ msgid "ENTRANCE_DATE"
-#~ msgstr "Entrance date"
-
-#~ msgid "ENTRANCE_DATE_HOUR"
-#~ msgstr "Entrance date hour"
-
-#~ msgid "DEPARTURE_DATE"
-#~ msgstr "Departure date"
-
-#~ msgid "DEPARTURE_DATE_HOUR"
-#~ msgstr "Departure date hour"
-
