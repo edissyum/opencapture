@@ -51,12 +51,12 @@ class FindCustom:
                 if not data and list_of_fields[index]['regex'] is not False:
                     dataToReturn[index] = [self.process(list_of_fields[index]), position, list_of_fields[index]['column']]
                     if index == 'custom-birth_date':
-                        if dataToReturn[index]:
+                        if index in dataToReturn and dataToReturn[index][0]:
                             for date in re.finditer(r"" + self.Locale.dateRegex, dataToReturn[index][0]):
                                 dataToReturn[index] = [date.group(), position, list_of_fields[index]['column']]
                 else:
                     if index == 'custom-birth_date':
-                        if index in dataToReturn:
+                        if index in dataToReturn and dataToReturn[index][0]:
                             for date in re.finditer(r"" + self.Locale.dateRegex, dataToReturn[index][0]):
                                 dataToReturn[index] = [date.group(), position, list_of_fields[index]['column']]
                     dataToReturn[index] = [data, position, list_of_fields[index]['column']]
