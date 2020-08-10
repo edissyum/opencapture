@@ -124,7 +124,7 @@ class Database:
                 args['data'] = []
 
             query = "SELECT " + select + " FROM " + args['table'] + where + order_by + limit + offset + group_by
-            print(query)
+
             if self.type == 'sqlite':
                 c = self.conn.cursor()
             else:
