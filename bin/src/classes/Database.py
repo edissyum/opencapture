@@ -14,7 +14,7 @@
 # along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
-
+import re
 import sqlite3
 import psycopg2
 import psycopg2.extras
@@ -69,11 +69,17 @@ class Database:
 
             if self.type != 'sqlite':
                 if 'where' in args:
+                    char_found = False
                     for cpt, value in enumerate(args['where']):
                         if 'strftime' in value:
                             columnName = value.split("'")[2].split(')')[0].replace(',', '').strip()
                             dateFormat = value.split("'")[1].replace('%Y', 'YYYY').replace('%m', 'mm').replace('%d', 'dd')
-                            value = "to_char(" + columnName + ", '" + dateFormat + "') = ?"
+                            for char in re.finditer(r"(=|<|>)?", value):
+                                if char.group():
+                                    value = "to_char(" + columnName + ", '" + dateFormat + "') " + char.group() + " ?"
+                                    char_found = True
+                            if not char_found:
+                                value = "to_char(" + columnName + ", '" + dateFormat + "') = ?"
                             args['where'][cpt] = value
 
                 for cpt, value in enumerate(args['select']):
@@ -118,7 +124,7 @@ class Database:
                 args['data'] = []
 
             query = "SELECT " + select + " FROM " + args['table'] + where + order_by + limit + offset + group_by
-
+            print(query)
             if self.type == 'sqlite':
                 c = self.conn.cursor()
             else:
