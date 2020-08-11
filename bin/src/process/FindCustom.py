@@ -46,18 +46,19 @@ class FindCustom:
         dataToReturn = {}
         if self.supplier:
             list_of_fields = retrieve_custom_positions(self.supplier[2]['typology'], self.Config)
-            for index in list_of_fields:
-                data, position = search_custom_positions(list_of_fields[index], self.Ocr, self.Files, self.Locale)
-                if not data and list_of_fields[index]['regex'] is not False:
-                    dataToReturn[index] = [self.process(list_of_fields[index]), position, list_of_fields[index]['column']]
-                    if list_of_fields[index]['type'] == 'date':
-                        if index in dataToReturn and dataToReturn[index][0]:
-                            for date in re.finditer(r"" + self.Locale.dateRegex, dataToReturn[index][0]):
-                                dataToReturn[index] = [date.group(), position, list_of_fields[index]['column']]
-                else:
-                    if list_of_fields[index]['type'] == 'date':
-                        if index in dataToReturn and dataToReturn[index][0]:
-                            for date in re.finditer(r"" + self.Locale.dateRegex, dataToReturn[index][0]):
-                                dataToReturn[index] = [date.group(), position, list_of_fields[index]['column']]
-                    dataToReturn[index] = [data, position, list_of_fields[index]['column']]
+            if list_of_fields:
+                for index in list_of_fields:
+                    data, position = search_custom_positions(list_of_fields[index], self.Ocr, self.Files, self.Locale)
+                    if not data and list_of_fields[index]['regex'] is not False:
+                        dataToReturn[index] = [self.process(list_of_fields[index]), position, list_of_fields[index]['column']]
+                        if list_of_fields[index]['type'] == 'date':
+                            if index in dataToReturn and dataToReturn[index][0]:
+                                for date in re.finditer(r"" + self.Locale.dateRegex, dataToReturn[index][0]):
+                                    dataToReturn[index] = [date.group(), position, list_of_fields[index]['column']]
+                    else:
+                        if list_of_fields[index]['type'] == 'date':
+                            if index in dataToReturn and dataToReturn[index][0]:
+                                for date in re.finditer(r"" + self.Locale.dateRegex, dataToReturn[index][0]):
+                                    dataToReturn[index] = [date.group(), position, list_of_fields[index]['column']]
+                        dataToReturn[index] = [data, position, list_of_fields[index]['column']]
             return dataToReturn
