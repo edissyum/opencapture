@@ -175,7 +175,7 @@ def process(args, file, Log, Separator, Config, Files, Ocr, Locale, Database, We
         Files.save_pdf_to_tiff_in_docserver(file, Config.cfg['GLOBAL']['tiffpath'] + '/' + tiff_filename)
 
     # If all informations are found, do not send it to GED
-    if supplier and date and invoiceNumber and footer and Config.cfg['GLOBAL']['allowautomaticvalidation'] == 'True':
+    if supplier and date and invoiceNumber and footer[0] and footer[1] and footer[2] and Config.cfg['GLOBAL']['allowautomaticvalidation'] == 'True':
         insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, footer, nb_pages, full_jpg_filename, tiff_filename, 'DEL', False)
         Log.info('All the usefull informations are found. Export the XML and end process')
         now = datetime.datetime.now()
