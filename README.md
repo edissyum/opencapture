@@ -2,7 +2,7 @@
 
 # Open-Capture for Invoices by Edissyum
  
-Version 0.5.1
+Version 0.6.0
   
 Open-Capture is a **free and Open Source** software under **GNU General Public License v3.0**.
   
@@ -36,7 +36,7 @@ Tested with :
 
     $ sudo mkdir /opt/OpenCaptureForInvoices/ && sudo chmod -R 775 /opt/OpenCaptureForInvoices/ && sudo chown -R your_user:your_group /opt/OpenCaptureForInvoices/
     $ sudo apt install git
-    $ git clone -b 0.5.1 https://gitlab.com/edissyum/opencapture/opencaptureforinvoices /opt/OpenCaptureForInvoices/
+    $ git clone -b 0.6.0 https://gitlab.com/edissyum/opencapture/opencaptureforinvoices /opt/OpenCaptureForInvoices/
     $ cd /opt/OpenCaptureForInvoices/
   
 Before lauching the Makefile. You have to do the following : 
@@ -55,8 +55,11 @@ Finally you have to generate a secret key for the flask web server. First, gener
     
 Copy the generated text and go to <code>webApp/\_\_init\_\_.py</code>. Find the line with <code>SECRET_KEY</code> and paste between ""   
   
-The ./Makefile command create the service, but you may want to change the User and Group so just open the ./Makefile and change lines **6** & **7**
-  
+The ./Makefile command create the service, but you may want to change the User and Group so just open the ./Makefile and change lines **6** & **7**. The line 6 is empty by default and it's mandatory to fill it
+You have the choice between using supervisor or basic systemd
+Supervisor is useful if you need to run multiple instance of Open-Capture in parallel but it will be very greedy
+Systemd is perfect for one instance
+
     $ cd bin/install/
     $ nano +6 Makefile
     $ chmod u+x Makefile
