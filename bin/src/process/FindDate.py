@@ -106,7 +106,7 @@ class FindDate:
 
     def run(self):
         date = search_by_positions(self.supplier, 'date', self.Config, self.Locale, self.Ocr, self.Files, self.Files.jpgName_header)
-        if date[0]:
+        if date and date[0]:
             res = self.formatDate(date[0], date[1])
             if res:
                 self.date = res[0]
