@@ -188,6 +188,7 @@ class Files:
 
     @staticmethod
     def ocr_on_fly(img, selection, Ocr, thumbSize = None, regex = None, removeLines = False):
+        rand = str(uuid.uuid4())
         if thumbSize is not None:
             with Image.open(img) as im:
                 ratio       = im.size[0]/thumbSize['width']
@@ -203,10 +204,10 @@ class Files:
         extension = os.path.splitext(img)[1]
         with Image.open(img) as im2:
             croppedImage = im2.crop(cropRatio)
-            croppedImage.save('/tmp/cropped' + extension)
+            croppedImage.save('/tmp/cropped_' + rand + extension)
 
         if removeLines:
-            image = cv2.imread('/tmp/cropped' + extension)
+            image = cv2.imread('/tmp/cropped_' + rand + extension)
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
             horizontal_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (20, 1))
@@ -217,18 +218,18 @@ class Files:
                 cv2.drawContours(image, [c], -1, (255, 255, 255), 3)
             repair_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
             result = 255 - cv2.morphologyEx(255 - image, cv2.MORPH_CLOSE, repair_kernel, iterations=1)
-            cv2.imwrite('/tmp/cropped' + extension, result)
-            croppedImage = Image.open('/tmp/cropped' + extension)
+            cv2.imwrite('/tmp/cropped_' + rand + extension, result)
+            croppedImage = Image.open('/tmp/cropped_' + rand + extension)
 
         text = Ocr.text_builder(croppedImage)
 
         if regex:
             for res in re.finditer(r"" + regex, text):
-                os.remove('/tmp/cropped' + extension)
+                os.remove('/tmp/cropped_' + rand + extension)
                 return res.group()
             return False
 
-        # os.remove('/tmp/cropped' + extension)
+        os.remove('/tmp/cropped_' + rand + extension)
         return text
 
     @staticmethod
@@ -373,7 +374,7 @@ class Files:
                         if fillPosition is not False and db is not False:
                             cleanChildPosition = child[childElement]['position']
                             # Add position in supplier database
-                            if cleanChildPosition is not None :
+                            if cleanChildPosition is not None:
                                 if 'no_taxes' in cleanChild or 'invoice_number' in cleanChild or 'order_number' in cleanChild or 'delivery_number' in cleanChild or 'vat' in cleanChild:
                                     db.update({
                                         'table': ['suppliers'],
