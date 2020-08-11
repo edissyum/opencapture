@@ -48,7 +48,7 @@ class Database:
                     " host      =" + self.host      +
                     " port      =" + self.port)
                 self.conn.autocommit = True
-            except psycopg2.OperationalError as e:
+            except (psycopg2.OperationalError, psycopg2.ProgrammingError) as e:
                 self.Log.error('PGSQL connection error: ' + str(e))
 
 

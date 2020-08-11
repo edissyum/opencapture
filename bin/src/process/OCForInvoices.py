@@ -43,7 +43,7 @@ else: FindSupplier = getattr(__import__(custom_array['FindCustom']['path'] + '.'
 if 'FindInvoiceNumber' not in custom_array: from .FindInvoiceNumber import FindInvoiceNumber
 else: FindInvoiceNumber = getattr(__import__(custom_array['FindInvoiceNumber']['path'] + '.' + custom_array['FindInvoiceNumber']['module'], fromlist=[custom_array['FindInvoiceNumber']['module']]), custom_array['FindInvoiceNumber']['module'])
 
-def insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, footer, nb_pages, full_jpg_filename, tiff_filename, status, custom_columns = False):
+def insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, footer, nb_pages, full_jpg_filename, tiff_filename, status, custom_columns):
     if Files.isTiff == 'True':
         path = Config.cfg['GLOBAL']['tiffpath'] + '/' + tiff_filename.replace('-%03d', '-001')
     else:
@@ -141,7 +141,7 @@ def process(args, file, Log, Separator, Config, Files, Ocr, Locale, Database, We
             field_name_position = field_name + '_position'
             columns.update({
                 field_name: customFields[field][0],
-                field_name_position: customFields[field][1]
+                field_name_position: str(customFields[field][1])
             })
 
     # Find invoice number
@@ -168,13 +168,26 @@ def process(args, file, Log, Separator, Config, Files, Ocr, Locale, Database, We
             return False
 
     file = Files.move_to_docservers(Config.cfg, file)
+    # Convert all the pages to JPG (used to full web interface)
+    Files.save_img_with_wand(file, Config.cfg['GLOBAL']['fullpath'] + '/' + full_jpg_filename)
+    # If tiff support enabled, save all the pages to TIFF (used for OCR ON FLY)
+    if Files.isTiff == 'True':
+        Files.save_pdf_to_tiff_in_docserver(file, Config.cfg['GLOBAL']['tiffpath'] + '/' + tiff_filename)
 
     # If all informations are found, do not send it to GED
     if supplier and date and invoiceNumber and footer and Config.cfg['GLOBAL']['allowautomaticvalidation'] == 'True':
-        insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, footer, nb_pages, full_jpg_filename, tiff_filename, 'DEL')
+        insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, footer, nb_pages, full_jpg_filename, tiff_filename, 'DEL', False)
         Log.info('All the usefull informations are found. Export the XML and end process')
         now = datetime.datetime.now()
-        print(customFields)
+        xmlCustom = {}
+        for custom in customFields:
+            field_name = custom.split('-')[1]
+            field_name_position = field_name + '_position'
+            xmlCustom.update({
+                field_name : {'field' : customFields[custom][0]},
+                field_name_position : {'field' : customFields[custom][1]}
+            })
+
         parent = {
             'pdfCreationDate'   : [{'pdfCreationDate'   : {'field'  : str(now.year) + '-' + str('%02d' % now.month) + '-'+ str(now.day)}}],
             'fileInfo'          : [{'fileInfoPath'      : {'field'  : os.path.dirname(file) + '/' + os.path.basename(file)}}],
@@ -196,7 +209,8 @@ def process(args, file, Log, Separator, Config, Files, Ocr, Locale, Database, We
                 'facturationInfo_TOTAL_TVA_1'           : {'field': str("%.2f" % (footer[0][0] * (footer[2][0] / 100)))},
                 'facturationInfo_totalHT'               : {'field': str("%.2f" % (footer[0][0]))},
                 'facturationInfo_totalTTC'              : {'field': str("%.2f" % (footer[0][0] * (footer[2][0] / 100) + footer[0][0]))},
-            }]
+            }],
+            'customInfo': [xmlCustom]
         }
         Files.exportXml(Config, invoiceNumber[0], parent)
         if Config.cfg['GED']['enabled'] == 'True':
@@ -258,12 +272,6 @@ def process(args, file, Log, Separator, Config, Files, Ocr, Locale, Database, We
                 shutil.move(file, Config.cfg['GLOBAL']['errorpath'] + os.path.basename(file))
                 return False
     else:
-        # Convert all the pages to JPG (used to full web interface)
-        Files.save_img_with_wand(file, Config.cfg['GLOBAL']['fullpath'] + '/' + full_jpg_filename)
-        # If tiff support enabled, save all the pages to TIFF (used for OCR ON FLY)
-        if Files.isTiff == 'True':
-            Files.save_pdf_to_tiff_in_docserver(file, Config.cfg['GLOBAL']['tiffpath'] + '/' + tiff_filename)
-
         insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, footer, nb_pages, full_jpg_filename, tiff_filename, 'NEW', columns)
 
     return True
