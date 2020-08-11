@@ -32,7 +32,7 @@ class FindInvoiceNumber:
     def run(self):
         found = False
         invoiceNumber = search_by_positions(self.supplier, 'invoice', self.Config, self.Locale, self.Ocr, self.Files, self.Files.jpgName_header)
-        if invoiceNumber[0]:
+        if invoiceNumber and invoiceNumber[0]:
             return invoiceNumber
         for line in self.Ocr.header_text:
             for _invoice in re.finditer(r"" + self.Locale.invoiceRegex + "", line.content.upper()):
