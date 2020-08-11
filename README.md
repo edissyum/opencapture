@@ -56,6 +56,7 @@ Finally you have to generate a secret key for the flask web server. First, gener
 Copy the generated text and go to <code>webApp/\_\_init\_\_.py</code>. Find the line with <code>SECRET_KEY</code> and paste between ""   
   
 The ./Makefile command create the service, but you may want to change the User and Group so just open the ./Makefile and change lines **6** & **7**. The line 6 is empty by default and it's mandatory to fill it
+
 You have the choice between using supervisor or basic systemd
 Supervisor is useful if you need to run multiple instance of Open-Capture in parallel but it will be very greedy
 Systemd is perfect for one instance
@@ -66,9 +67,9 @@ Systemd is perfect for one instance
     $ sudo ./Makefile
         # Go grab a coffee ;)
 
-It will install all the needed dependencies and install Tesseract V4.0.0 with french and english locale. If you need more locales, just do :
+It will install all the needed dependencies and install Tesseract V4.X.X with french and english locale. If you need more locales, just do :
   
-    $ sudo apt install tesseract-ocr-langcode
+    $ sudo apt install tesseract-ocr-<langcode>
 
 Here is a list of all available languages code : https://www.macports.org/ports.php?by=name&substr=tesseract-
 
@@ -138,10 +139,10 @@ For now (and for somes files like babel's or webApp/*.py files) it is recommende
 It is possible to use file filled with positions and some stuff to retrieve some informations hard to find with REGEX only.
 In this file you'll find to type of metadata, the default one and the custom one. Normmally you don't have to touch the default one except the <code>position</code>.
 For the custom ones, you'll have some settings to fill :
-    - regex : use regex present in the JSON file (use the index name. exemple : <code>dateRegex</code>) or create a new one into this file (you need to modifiy the Locale file in order to get this working)
-    - onlyNumber : If true, it could replace some letters by number to avoid error (O will became 0 for exemple) using <code>OCR_ERRORS.xml</code> file
+    - regex  : Use regex present in the JSON file (use the index name. exemple : <code>dateRegex</code>) or create a new one into this file (you need to modifiy the Locale file in order to get this working)
+    - type   : string, number or date. If number, it could replace some letters by number to avoid error (O will became 0 for exemple)  <code>OCR_ERRORS.xml</code> file. If it's date, it will be formatted
     - column : Column in database, don't forget to add two column (one for name and one for position like 'example' and 'example_position')
-    - target : part of file to search into. It could be header, footer or full
+    - target : Part of file to search into. It could be <code>header</code>, <code>footer</code> or <code>full</code>
 
 The positioning mask is named only with the typology number : <code>eg : 1.ini</code>. The typology number has to be mentionned in the default_referencial_supplier for each supplier
 
