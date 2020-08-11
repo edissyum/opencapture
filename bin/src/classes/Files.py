@@ -370,7 +370,7 @@ class Files:
             for child in parent[parentElement]:
                 for childElement in child:
                     cleanChild = childElement.replace(parentElement + '_', '')
-                    if cleanChild not in ['noDelivery', 'noCommands'] and '_position' not in cleanChild:
+                    if cleanChild not in ['noDelivery', 'noCommands']:
                         if fillPosition is not False and db is not False:
                             cleanChildPosition = child[childElement]['position']
                             # Add position in supplier database
