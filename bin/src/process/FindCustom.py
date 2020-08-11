@@ -32,7 +32,7 @@ class FindCustom:
     def process(self, data):
         for line in self.text:
             line = line.content
-            if data['onlynumber']:
+            if data['type'] == 'number':
                 for item in self.OCRErrorsTable['NUMBERS']:
                     pattern = r'[%s]' % self.OCRErrorsTable['NUMBERS'][item]
                     line = re.sub(pattern, item, line)
@@ -50,13 +50,13 @@ class FindCustom:
                 data, position = search_custom_positions(list_of_fields[index], self.Ocr, self.Files, self.Locale)
                 if not data and list_of_fields[index]['regex'] is not False:
                     dataToReturn[index] = [self.process(list_of_fields[index]), position, list_of_fields[index]['column']]
-                    if index == 'custom-birth_date':
-                        if dataToReturn[index]:
+                    if list_of_fields[index]['type'] == 'date':
+                        if index in dataToReturn and dataToReturn[index][0]:
                             for date in re.finditer(r"" + self.Locale.dateRegex, dataToReturn[index][0]):
                                 dataToReturn[index] = [date.group(), position, list_of_fields[index]['column']]
                 else:
-                    if index == 'custom-birth_date':
-                        if index in dataToReturn:
+                    if list_of_fields[index]['type'] == 'date':
+                        if index in dataToReturn and dataToReturn[index][0]:
                             for date in re.finditer(r"" + self.Locale.dateRegex, dataToReturn[index][0]):
                                 dataToReturn[index] = [date.group(), position, list_of_fields[index]['column']]
                     dataToReturn[index] = [data, position, list_of_fields[index]['column']]
