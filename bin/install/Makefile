@@ -157,14 +157,14 @@ mkdir /tmp/OpenCaptureForInvoices/
 chown -R $user:$user /tmp/OpenCaptureForInvoices
 
 ####################
-# Initialize flask database
-export FLASK_APP="$defaultPath"/webApp
-flask init-db
-
-####################
 # Modify default config
 cp $defaultPath/instance/config.ini.default $defaultPath/instance/config.ini
 cp $defaultPath/instance/config/config_DEFAULT.ini.default $defaultPath/instance/config/config_DEFAULT.ini
+
+####################
+# Initialize flask database
+export FLASK_APP="$defaultPath"/webApp
+flask init-db
 
 ####################
 # Nginx setup
