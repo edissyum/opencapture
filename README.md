@@ -2,7 +2,7 @@
 
 # Open-Capture for Invoices by Edissyum
  
-Version 0.6.0
+Version 0.6.1
   
 Open-Capture is a **free and Open Source** software under **GNU General Public License v3.0**.
   
@@ -36,7 +36,7 @@ Tested with :
 
     $ sudo mkdir /opt/OpenCaptureForInvoices/ && sudo chmod -R 775 /opt/OpenCaptureForInvoices/ && sudo chown -R your_user:your_group /opt/OpenCaptureForInvoices/
     $ sudo apt install git
-    $ git clone -b 0.6.0 https://gitlab.com/edissyum/opencapture/opencaptureforinvoices /opt/OpenCaptureForInvoices/
+    $ git clone -b 0.6.1 https://gitlab.com/edissyum/opencapture/opencaptureforinvoices /opt/OpenCaptureForInvoices/
     $ cd /opt/OpenCaptureForInvoices/
   
 Before lauching the Makefile. You have to do the following : 
