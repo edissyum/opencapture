@@ -8,6 +8,8 @@ imagemagick
 python3-pip
 poppler-utils
 rabbitmq-server
+libgl1-mesa-glx
 libtesseract-dev
 libleptonica-dev
 libmagickwand-dev
+
