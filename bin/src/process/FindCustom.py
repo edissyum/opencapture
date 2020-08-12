@@ -55,10 +55,14 @@ class FindCustom:
                             if index in dataToReturn and dataToReturn[index][0]:
                                 for date in re.finditer(r"" + self.Locale.dateRegex, dataToReturn[index][0]):
                                     dataToReturn[index] = [date.group(), position, list_of_fields[index]['column']]
+                            elif list_of_fields[index]['type'] == 'number':
+                                if index in dataToReturn and dataToReturn[index][0]:
+                                    dataToReturn[index] = [data, position, list_of_fields[index]['column']]
                     else:
                         if list_of_fields[index]['type'] == 'date':
-                            if index in dataToReturn and dataToReturn[index][0]:
-                                for date in re.finditer(r"" + self.Locale.dateRegex, dataToReturn[index][0]):
-                                    dataToReturn[index] = [date.group(), position, list_of_fields[index]['column']]
+                            for date in re.finditer(r"" + self.Locale.dateRegex, data):
+                                data = date.group()
+                        elif list_of_fields[index]['type'] == 'number':
+                            data = re.sub('[^0-9]', '', data)
                         dataToReturn[index] = [data, position, list_of_fields[index]['column']]
             return dataToReturn

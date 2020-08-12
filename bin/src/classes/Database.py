@@ -147,7 +147,7 @@ class Database:
             for column in args['columns']:
                 if args['columns'][column] is not None:
                     columnsList.append(column)
-                    valuesList.append(args['columns'][column].replace("'","''"))
+                    valuesList.append(args['columns'][column].replace("'","''").replace('\x0c', ''))
 
             columns = ", ".join(columnsList)
             values  = "'" + "', '".join(valuesList) + "'"
