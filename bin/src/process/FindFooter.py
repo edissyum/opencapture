@@ -121,21 +121,25 @@ class FindFooter:
         self.ratePercentage = ratePercentage
 
     def run(self):
-        allRate  = search_by_positions(self.supplier, 'total_amount', self.Config, self.Locale, self.Ocr, self.Files, self.Files.jpgName)
+        if self.Files.isTiff == 'True':
+            target = self.Files.jpgName_tiff
+        else :
+            target = self.Files.jpgName
+        allRate  = search_by_positions(self.supplier, 'total_amount', self.Config, self.Locale, self.Ocr, self.Files, target)
         allRateAmount = {}
         if allRate and allRate[0]:
             allRateAmount = {
                 0: re.sub(r"[^0-9\.]|\.(?!\d)", "", allRate[0].replace(',', '.')),
                 1: allRate[1]
             }
-        noRate   = search_by_positions(self.supplier, 'ht_amount', self.Config, self.Locale, self.Ocr, self.Files, self.Files.jpgName)
+        noRate   = search_by_positions(self.supplier, 'ht_amount', self.Config, self.Locale, self.Ocr, self.Files, target)
         noRateAmount = {}
         if noRate and noRate[0]:
             noRateAmount = {
                 0: re.sub(r"[^0-9\.]|\.(?!\d)", "", noRate[0].replace(',', '.')),
                 1: allRate[1]
             }
-        percentage = search_by_positions(self.supplier, 'rate_percentage', self.Config, self.Locale, self.Ocr, self.Files, self.Files.jpgName)
+        percentage = search_by_positions(self.supplier, 'rate_percentage', self.Config, self.Locale, self.Ocr, self.Files, target)
         ratePercentage = {}
         if percentage and percentage[0]:
             ratePercentage = {
