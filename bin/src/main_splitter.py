@@ -109,7 +109,13 @@ def launch(args):
     Locale      = _Locale(Config)
     Log         = _Log(Config.cfg['GLOBAL']['logfile'])
     Ocr         = _PyTesseract(Locale.localeOCR, Log, Config)
-    Database    = _Database(Log, Config.cfg['DATABASE']['databasefile'])
+    dbType      = Config.cfg['DATABASE']['databasetype']
+    dbUser      = Config.cfg['DATABASE']['postgresuser']
+    dbPwd       = Config.cfg['DATABASE']['postgrespassword']
+    dbName      = Config.cfg['DATABASE']['postgresdatabase']
+    dbHost      = Config.cfg['DATABASE']['postgreshost']
+    dbPort      = Config.cfg['DATABASE']['postgresport']
+    Database    = _Database(Log, dbType, dbName, dbUser, dbPwd, dbHost, dbPort, Config.cfg['DATABASE']['databasefile'])
     Splitter    = _Splitter(Config, Database, Locale)
     Xml         = _Xml(Config, Database)
     Files       = _Files(

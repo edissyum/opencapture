@@ -64,17 +64,18 @@ def splitter_manager():
     else:
         list_batch = _db.select({
             'select': ['*'],
-            'table': ['invoices_batch_'],
-            'where': ['status not in (?, ?)'],
-            'data' : ['END', 'DEL'],
-            'limit'     : str(offset) + ',' + str(per_page),
+            'table' : ['invoices_batch_'],
+            'where' : ['status not in (?, ?)'],
+            'data'  : ['END', 'DEL'],
+            'limit' : str(per_page),
+            'offset': str(offset),
         })
 
     total = _db.select({
-        'select': ['count(*) as total'],
-        'table' : ['invoices_batch_'],
-        'where': ['status not in (?, ?)'],
-        'data': ['END', 'DEL'],
+        'select' : ['count(*) as total'],
+        'table'  : ['invoices_batch_'],
+        'where'  : ['status not in (?, ?)'],
+        'data'   : ['END', 'DEL'],
     })[0]['total']
 
     if total == 0:
