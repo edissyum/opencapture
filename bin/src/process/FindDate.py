@@ -105,7 +105,11 @@ class FindDate:
         return False
 
     def run(self):
-        date = search_by_positions(self.supplier, 'date', self.Config, self.Locale, self.Ocr, self.Files, self.Files.jpgName_header)
+        if self.Files.isTiff == 'True':
+            target = self.Files.jpgName_tiff_header
+        else :
+            target = self.Files.jpgName_header
+        date = search_by_positions(self.supplier, 'date', self.Config, self.Locale, self.Ocr, self.Files, target)
         if date and date[0]:
             res = self.formatDate(date[0], date[1])
             if res:

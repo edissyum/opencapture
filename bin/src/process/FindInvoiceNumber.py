@@ -31,7 +31,11 @@ class FindInvoiceNumber:
 
     def run(self):
         found = False
-        invoiceNumber = search_by_positions(self.supplier, 'invoice', self.Config, self.Locale, self.Ocr, self.Files, self.Files.jpgName_header)
+        if self.Files.isTiff == 'True':
+            target = self.Files.jpgName_tiff_header
+        else :
+            target = self.Files.jpgName_header
+        invoiceNumber = search_by_positions(self.supplier, 'invoice', self.Config, self.Locale, self.Ocr, self.Files, target)
         if invoiceNumber and invoiceNumber[0]:
             return invoiceNumber
         for line in self.Ocr.header_text:

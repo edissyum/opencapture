@@ -50,12 +50,12 @@ def insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, fo
         path = Config.cfg['GLOBAL']['fullpath'] + '/' + full_jpg_filename.replace('-%03d', '-001')
 
     columns = {
-        'vat_number': supplier[0] if supplier else '',
-        'vat_number_position': str(supplier[1]) if supplier else '',
-        'invoice_date': date[0] if date else '',
-        'invoice_date_position': str(date[1]) if date else '',
-        'invoice_number': invoiceNumber[0] if invoiceNumber is not False else '',
-        'invoice_number_position': str(invoiceNumber[1]) if invoiceNumber is not False else '',
+        'vat_number': supplier[0] if supplier is not False and supplier[0] is not False else '',
+        'vat_number_position': str(supplier[1]) if supplier is not False and supplier[1] is not False  else '',
+        'invoice_date': date[0] if date is not False and date[0] is not False else '',
+        'invoice_date_position': str(date[1]) if date is not False and date[1] is not False else '',
+        'invoice_number': invoiceNumber[0] if invoiceNumber is not False and invoiceNumber[0] is not False else '',
+        'invoice_number_position': str(invoiceNumber[1]) if invoiceNumber is not False and invoiceNumber[1] is not False else '',
         'total_amount': str(footer[1][0]) if footer is not False and footer[1] is not False else '',
         'total_amount_position': str(footer[1][1]) if footer is not False and footer[1] is not False else '',
         'ht_amount1': str(footer[0][0]) if footer is not False and footer[0] is not False else '',
@@ -175,7 +175,7 @@ def process(args, file, Log, Separator, Config, Files, Ocr, Locale, Database, We
         Files.save_pdf_to_tiff_in_docserver(file, Config.cfg['GLOBAL']['tiffpath'] + '/' + tiff_filename)
 
     # If all informations are found, do not send it to GED
-    if supplier and date and invoiceNumber and footer[0] and footer[1] and footer[2] and Config.cfg['GLOBAL']['allowautomaticvalidation'] == 'True':
+    if supplier and date and invoiceNumber and footer and Config.cfg['GLOBAL']['allowautomaticvalidation'] == 'True':
         insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, footer, nb_pages, full_jpg_filename, tiff_filename, 'DEL', False)
         Log.info('All the usefull informations are found. Export the XML and end process')
         now = datetime.datetime.now()
