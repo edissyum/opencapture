@@ -219,8 +219,8 @@ class Files:
             repair_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
             result = 255 - cv2.morphologyEx(255 - image, cv2.MORPH_CLOSE, repair_kernel, iterations=1)
             cv2.imwrite('/tmp/cropped_' + rand + extension, result)
-            croppedImage = Image.open('/tmp/cropped_' + rand + extension)
 
+        croppedImage = Image.open('/tmp/cropped_' + rand + extension)
         text = Ocr.text_builder(croppedImage)
 
         if regex:
