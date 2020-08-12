@@ -141,7 +141,7 @@ In this file you'll find to type of metadata, the default one and the custom one
 For the custom ones, you'll have some settings to fill :
     - regex  : Use regex present in the JSON file (use the index name. exemple : <code>dateRegex</code>) or create a new one into this file (you need to modifiy the Locale file in order to get this working)
     - type   : string, number or date. If number, it could replace some letters by number to avoid error (O will became 0 for exemple)  <code>OCR_ERRORS.xml</code> file. If it's date, it will be formatted
-    - column : Column in database, don't forget to add two column (one for name and one for position like 'example' and 'example_position')
+    - column : Column in database, don't forget to add two column (one for name and one for position like 'example' and 'example_position'). Both of the column need to be VARCHAR
     - target : Part of file to search into. It could be <code>header</code>, <code>footer</code> or <code>full</code>
 
 The positioning mask is named only with the typology number : <code>eg : 1.ini</code>. The typology number has to be mentionned in the default_referencial_supplier for each supplier
