@@ -91,7 +91,7 @@ def recursive_delete(folder, Log):
     except FileNotFoundError as e:
         Log.error('Unable to delete ' + folder + ' on temp folder: ' + str(e))
 
-# If needed just run "kuyruk --app bin.src.main.OCforInvoices manager" to have web dashboard of current running worker
+# If needed just run "kuyruk --app bin.src.main.OCforInvoices_worker manager" to have web dashboard of current running worker
 @OCforInvoices_worker.task(queue='invoices')
 def launch(args):
     start = time.time()
@@ -144,11 +144,13 @@ def launch(args):
     Database.connect()
 
     # Start process
-    if args['path'] is not None:
+    if 'path' in args and args['path'] is not None:
         path = args['path']
         for file in os.listdir(path):
-            if check_file(Files, path + file, Config, Log) is not False:
+            if check_file(Files, path + file, Config, Log) is not False and not os.path.isfile(path + file + '.lock'):
                 # Create the Queue to store files
+                os.mknod(path + file + '.lock')
+                Log.info('Lock file created : ' + path + file + '.lock')
                 q = queue.Queue()
 
                 # Find file in the wanted folder (default or exported pdf after qrcode separation)
@@ -157,7 +159,13 @@ def launch(args):
                 if not q:
                     continue
 
-    elif args['file'] is not None:
+                try:
+                    os.remove(path + file + '.lock')
+                    Log.info('Lock file removed : ' + path + file + '.lock')
+                except FileNotFoundError:
+                    pass
+
+    elif 'file' in args and args['file'] is not None:
         path = args['file']
         if check_file(Files, path, Config, Log) is not False:
             # Process the file and send it to Maarch
