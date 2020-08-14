@@ -2,7 +2,7 @@
 
 # Open-Capture for Invoices by Edissyum
  
-Version 0.6.1
+Version 0.6.2
   
 Open-Capture is a **free and Open Source** software under **GNU General Public License v3.0**.
   
@@ -36,7 +36,7 @@ Tested with :
 
     $ sudo mkdir /opt/OpenCaptureForInvoices/ && sudo chmod -R 775 /opt/OpenCaptureForInvoices/ && sudo chown -R your_user:your_group /opt/OpenCaptureForInvoices/
     $ sudo apt install git
-    $ git clone -b 0.6.1 https://gitlab.com/edissyum/opencapture/opencaptureforinvoices /opt/OpenCaptureForInvoices/
+    $ git clone -b 0.6.2 https://gitlab.com/edissyum/opencapture/opencaptureforinvoices /opt/OpenCaptureForInvoices/
     $ cd /opt/OpenCaptureForInvoices/
   
 Before lauching the Makefile. You have to do the following : 
@@ -77,7 +77,10 @@ In most cases you had to modify the <code>/etc/ImageMagick-6/policy.xml</code> f
 
     <policy domain="coder" rights="none" pattern="PDF" />
 
-    $ sudo systemctl restart OCForInvoices-worker
+    $ sudo systemctl restart OCForInvoices-worker (systemd version)
+    $ sudo supervisorctl reload (supervisor version)
+
+If you need more informations about the usefull commands for supervisor : http://supervisord.org/running.html#running-supervisorctl
 
 If you plan to upload invoices from the interface, using the upload form, you had to modify NGINX settings to increase the max size of upload.OCForInvoices.
 Go to file <code>/etc/nginx/nginx.conf</code> and add <code>client_max_body_size 100M;</code> into the <code>http</code> bloc

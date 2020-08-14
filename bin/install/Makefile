@@ -26,13 +26,13 @@ else
 fi
 
 if [ "$finalChoice" == 1 ]; then
-  echo 'You choose supervisor, how many processes you want to be run simultaneously ? (default : 10)'
-  printf "Enter your choice [%s] : " "${bold}10${normal}"
+  echo 'You choose supervisor, how many processes you want to be run simultaneously ? (default : 3)'
+  printf "Enter your choice [%s] : " "${bold}3${normal}"
   read -r choice
   if [ "$choice" == "" ]; then
     nbProcess=3
   elif ! [[ "$choice" =~ ^[0-9]+$ ]]; then
-    echo 'The input is not an integer, select default value (10)'
+    echo 'The input is not an integer, default value selected (3)'
     nbProcess=3
   else
     nbProcess="$choice"
@@ -122,7 +122,7 @@ Group=$user
 UMask=0022
 
 ExecStart=$defaultPath/bin/scripts/service_workerOC_splitter.sh
-
+KillSignal=SIGQUIT
 Restart=on-failure
 
 [Install]
@@ -135,22 +135,26 @@ EOF"
   systemctl enable OCForInvoices_Split-worker.service
 else
   apt install -y supervisor
-  mkdir /tmp/Opencapture/
+  mkdir "$defaultPath"/bin/data/log/Supervisor/
   touch /etc/supervisor/conf.d/OCForInvoices-worker.conf
   su -c "cat > /etc/supervisor/conf.d/OCForInvoices-worker.conf << EOF
 [program:OCWorker]
 command=$defaultPath/bin/scripts/service_workerOC.sh
 process_name=%(program_name)s_%(process_num)02d
 numprocs=$nbProcess
-stderr_logfile=/tmp/Opencapture/OCForInvoices_worker_%(process_num)02d_error.log
+stderr_logfile=$defaultPath/bin/data/log/Supervisor/OCForInvoices_worker_%(process_num)02d_error.log
 EOF"
 
   chmod 755 /etc/supervisor/conf.d/OCForInvoices-worker.conf
-  chmod 755 /etc/supervisor/conf.d/OCForInvoices_Split-worker.conf
 
   systemctl restart supervisor
   systemctl enable supervisor
 fi
+
+####################
+# Start and enable web service
+systemctl daemon-reload && systemctl start OCForInvoices-web.service
+systemctl enable OCForInvoices-web.service
 ####################
 # Create a custom temp directory to cron the delete of the ImageMagick temp content
 mkdir /tmp/OpenCaptureForInvoices/
