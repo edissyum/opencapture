@@ -109,7 +109,7 @@ def upload():
             f.save(os.path.join(current_app.config['UPLOAD_FOLDER'], secure_filename(file)))
 
             worker_from_python.main({
-                'path'  : current_app.config['UPLOAD_FOLDER'],
+                'file'  : os.path.join(current_app.config['UPLOAD_FOLDER'], secure_filename(file)),
                 'config': current_app.config['CONFIG_FILE']
             })
 
