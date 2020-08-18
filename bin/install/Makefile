@@ -142,6 +142,12 @@ else
 command=$defaultPath/bin/scripts/service_workerOC.sh
 process_name=%(program_name)s_%(process_num)02d
 numprocs=$nbProcess
+socket_owner=$user
+stopsignal=QUIT
+stopasgroup=true
+killasgroup=true
+stopwaitsecs=10
+
 stderr_logfile=$defaultPath/bin/data/log/Supervisor/OCForInvoices_worker_%(process_num)02d_error.log
 EOF"
 
