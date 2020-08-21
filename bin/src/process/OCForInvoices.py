@@ -212,7 +212,7 @@ def process(args, file, Log, Separator, Config, Files, Ocr, Locale, Database, We
             }],
             'customInfo': [xmlCustom]
         }
-        Files.exportXml(Config, invoiceNumber[0], parent)
+        Files.exportXml(Config, invoiceNumber[0], parent, supplier[2]['vat_number'])
         if Config.cfg['GED']['enabled'] == 'True':
             defaultProcess  = Config.cfg['GED']['defaultprocess']
             invoiceInfo     = Database.select({
