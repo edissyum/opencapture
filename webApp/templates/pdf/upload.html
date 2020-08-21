@@ -13,7 +13,7 @@
     <link rel="gettext" type="application/x-po" href="{{ url_for('static', filename='babel/translations/' + session["lang"] + '/LC_MESSAGES/messages.po') }}">
 
     <script>
-        var gt = new Gettext();
+        let gt = new Gettext();
         currentUrl = window.location.href
         if (currentUrl.includes('splitter')){
             wsUrl = '/splitter/upload'
