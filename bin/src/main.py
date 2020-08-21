@@ -17,7 +17,6 @@
 import os
 import sys
 import time
-import queue
 import tempfile
 
 # useful to use the worker and avoid ModuleNotFoundError
@@ -55,9 +54,6 @@ else: _PyTesseract = getattr(__import__(custom_array['PyTesseract']['path'] + '.
 
 if 'Database' not in custom_array: from bin.src.classes.Database import Database as _Database
 else: _Database = getattr(__import__(custom_array['Database']['path'] + '.' + custom_array['Database']['module'], fromlist=[custom_array['Database']['module']]), custom_array['Database']['module'])
-
-if 'SeparatorQR' not in custom_array: from bin.src.classes.SeparatorQR import SeparatorQR as _SeparatorQR
-else: _SeparatorQR = getattr(__import__(custom_array['SeparatorQR']['path'] + '.' + custom_array['SeparatorQR']['module'], fromlist=[custom_array['SeparatorQR']['module']]), custom_array['SeparatorQR']['module'])
 
 if 'OCForInvoices' not in custom_array: from bin.src.process import OCForInvoices as OCForInvoices_process
 else: OCForInvoices_process = getattr(__import__(custom_array['OCForInvoices']['path'] , fromlist=[custom_array['OCForInvoices']['module']]), custom_array['OCForInvoices']['module'])
@@ -107,7 +103,6 @@ def launch(args):
     Locale      = _Locale(Config)
     Log         = _Log(Config.cfg['GLOBAL']['logfile'])
     Ocr         = _PyTesseract(Locale.localeOCR, Log, Config)
-    Separator   = _SeparatorQR(Log, Config)
     dbType      = Config.cfg['DATABASE']['databasetype']
     dbUser      = Config.cfg['DATABASE']['postgresuser']
     dbPwd       = Config.cfg['DATABASE']['postgrespassword']
@@ -151,13 +146,9 @@ def launch(args):
                 # Create the Queue to store files
                 os.mknod(path + file + '.lock')
                 Log.info('Lock file created : ' + path + file + '.lock')
-                q = queue.Queue()
 
                 # Find file in the wanted folder (default or exported pdf after qrcode separation)
-                q = OCForInvoices_process.process(args, path + file, Log, Separator, Config, Files, Ocr, Locale, Database, WebServices, q)
-
-                if not q:
-                    continue
+                OCForInvoices_process.process(path + file, Log, Config, Files, Ocr, Locale, Database, WebServices)
 
                 try:
                     os.remove(path + file + '.lock')
@@ -169,7 +160,7 @@ def launch(args):
         path = args['file']
         if check_file(Files, path, Config, Log) is not False:
             # Process the file and send it to Maarch
-            OCForInvoices_process.process(args, path, Log, Separator, Config, Files, Ocr, Locale, Database, WebServices)
+            OCForInvoices_process.process(path, Log, Config, Files, Ocr, Locale, Database, WebServices)
 
     # Empty the tmp dir to avoid residual file
     recursive_delete(tmpFolder, Log)

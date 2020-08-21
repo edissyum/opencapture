@@ -95,7 +95,7 @@ def insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, fo
     else:
         Log.error('Error while inserting')
 
-def process(args, file, Log, Separator, Config, Files, Ocr, Locale, Database, WebServices, q = None):
+def process(file, Log, Config, Files, Ocr, Locale, Database, WebServices):
     Log.info('Processing file : ' + file)
 
     # Open the pdf and convert it to JPG
