@@ -404,11 +404,13 @@ def validate_form():
             'table' : ['invoices'],
             'set'   : {
                 'invoice_number'         : request.form['facturationInfo_invoice_number'],
+                'invoice_number_position': request.form['facturationInfo_invoice_number_position'] if 'facturationInfo_invoice_number_position' in request.form else '' ,
                 'ht_amount1'             : request.form['facturationInfo_no_taxes_1'],
                 'ht_amount1_position'    : request.form['facturationInfo_no_taxes_1_position'] if 'facturationInfo_no_taxes_1_position' in request.form else '' ,
                 'vat_rate1'              : request.form['facturationInfo_vat_1'],
                 'vat_rate1_position'     : request.form['facturationInfo_vat_1_position'] if 'facturationInfo_vat_1_position' in request.form else '',
                 'invoice_date'           : request.form['facturationInfo_invoice_date'],
+                'invoice_date_position'  : request.form['facturationInfo_invoice_date_position'] if 'facturationInfo_invoice_date_position' in request.form else '',
             },
             'where' : ['id = ?'],
             'data'  : [pdfId]
