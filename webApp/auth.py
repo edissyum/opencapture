@@ -29,7 +29,7 @@ def register():
             error = gettext('USER') + ' ' + username + ' ' + gettext('ALREADY_REGISTERED')
 
         if error is None:
-            test = db.insert({
+            db.insert({
                 'table': 'users',
                 'columns': {
                     'username': username,

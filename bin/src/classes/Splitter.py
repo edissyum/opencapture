@@ -26,6 +26,15 @@ import shutil
 from datetime import date, datetime
 from bin.src.classes.Files import Files
 
+
+def get_lot_name():
+    random_number = uuid.uuid4().hex
+    # date object of today's date
+    today = date.today()
+    lot_name = str(today.year) + str(today.month) + str(today.day) + str(random_number)
+    return lot_name
+
+
 class Splitter:
     def __init__(self, Config, Database, Locale):
         self.Config = Config
@@ -205,7 +214,7 @@ class Splitter:
     def save_pdf_result_after_separate(self, pages_list, pdf_path_input, pdf_path_output):
         pdf_writer = PyPDF2.PdfFileWriter()
         pdf_reader = PyPDF2.PdfFileReader(self.Config.cfg['SPLITTER']['pdforiginpath'] + pdf_path_input)
-        lot_name = self.get_lot_name()
+        lot_name = get_lot_name()
         for invoice_index, pages in enumerate(pages_list):
             for page in pages:
                 pdf_writer.addPage(pdf_reader.getPage(page))
@@ -213,10 +222,3 @@ class Splitter:
                 pdf_writer.write(fh)
             # init writer
             pdf_writer = PyPDF2.PdfFileWriter()
-
-    def get_lot_name(self):
-        random_number = uuid.uuid4().hex
-        # date object of today's date
-        today = date.today()
-        lot_name = str(today.year) + str(today.month) + str(today.day) + str(random_number)
-        return lot_name

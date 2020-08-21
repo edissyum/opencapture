@@ -5,15 +5,6 @@ import bin.src.classes.Config as configClass
 import bin.src.classes.Database as databaseClass
 import bin.src.classes.Spreadsheet as spreadsheetClass
 
-from webApp.functions import get_custom_id, check_python_customized_files
-custom_id = get_custom_id()
-custom_array = {}
-if custom_id:
-    custom_array = check_python_customized_files(custom_id[1])
-
-if 'pdf' not in custom_array: from webApp import pdf
-else: pdf = getattr(__import__(custom_array['pdf']['path'], fromlist=[custom_array['pdf']['module']]), custom_array['pdf']['module'])
-
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument("-c", "--config", required=False, help="path to config file")
