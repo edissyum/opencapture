@@ -32,7 +32,7 @@ class FindInvoiceNumber:
     def run(self):
         found = False
         if self.Files.isTiff == 'True':
-            target = self.Files.jpgName_tiff_header
+            target = self.Files.tiffName_header
         else :
             target = self.Files.jpgName_header
         invoiceNumber = search_by_positions(self.supplier, 'invoice', self.Config, self.Locale, self.Ocr, self.Files, target)
@@ -60,7 +60,7 @@ class FindInvoiceNumber:
             if position :
                 positionArray   = self.Ocr.prepare_ocr_on_fly(position)
                 if self.Files.isTiff == 'True':
-                    text = self.Files.ocr_on_fly(self.Files.jpgName_tiff, positionArray, self.Ocr)
+                    text = self.Files.ocr_on_fly(self.Files.tiffName, positionArray, self.Ocr)
                 else:
                     text = self.Files.ocr_on_fly(self.Files.jpgName, positionArray, self.Ocr)
 

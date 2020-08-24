@@ -38,14 +38,14 @@ from webApp.functions import retrieve_custom_positions
 from xml.sax.saxutils import escape
 
 class Files:
-    def __init__(self, jpgName, res, quality, Xml, Log, isTiff):
+    def __init__(self, imgName, res, quality, Xml, Log, isTiff):
         self.isTiff                = isTiff
-        self.jpgName               = jpgName + '.jpg'
-        self.jpgName_header        = jpgName + '_header.jpg'
-        self.jpgName_footer        = jpgName + '_footer.jpg'
-        self.jpgName_tiff          = jpgName + '.tiff'
-        self.jpgName_tiff_header   = jpgName + '_header.tiff'
-        self.jpgName_tiff_footer   = jpgName + '_footer.tiff'
+        self.jpgName               = imgName + '.jpg'
+        self.jpgName_header        = imgName + '_header.jpg'
+        self.jpgName_footer        = imgName + '_footer.jpg'
+        self.tiffName              = imgName + '.tiff'
+        self.tiffName_header       = imgName + '_header.tiff'
+        self.tiffName_footer       = imgName + '_footer.tiff'
         self.resolution            = res
         self.compressionQuality    = quality
         self.img                   = None
@@ -72,13 +72,13 @@ class Files:
     def pdf_to_tiff(self, pdfName, convertOnlyFirstPage=False, openImg=True, crop=False, zoneToCrop=False):
         # Convert firstly the PDF to full tiff file
         # It will be used to crop header and footer later
-        if not os.path.isfile(self.jpgName_tiff):
+        if not os.path.isfile(self.tiffName):
             args = [
                 "gs", "-q", "-dNOPAUSE", "-dBATCH",
                 "-r" + str(self.resolution), "-sCompression=lzw",
                 "-dDownScaleFactor=1",
                 "-sDEVICE=tiff32nc",
-                "-sOutputFile=" + self.jpgName_tiff,
+                "-sOutputFile=" + self.tiffName,
             ]
 
             if convertOnlyFirstPage:
@@ -95,11 +95,11 @@ class Files:
 
         if openImg:
             if zoneToCrop == 'header':
-                self.img = Image.open(self.jpgName_tiff_header)
+                self.img = Image.open(self.tiffName_header)
             elif zoneToCrop == 'footer':
-                self.img = Image.open(self.jpgName_tiff_footer)
+                self.img = Image.open(self.tiffName_footer)
             else:
-                self.img = Image.open(self.jpgName_tiff)
+                self.img = Image.open(self.tiffName)
 
     def save_pdf_to_tiff_in_docserver(self, pdfName, output):
         args = [
@@ -252,13 +252,13 @@ class Files:
                     pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='north')
                     pic.save(filename=self.jpgName_header)
             else:
-                with Img(filename=self.jpgName_tiff, resolution=self.resolution) as pic:
+                with Img(filename=self.tiffName, resolution=self.resolution) as pic:
                     pic.compression_quality = self.compressionQuality
                     pic.background_color    = Color("white")
                     pic.alpha_channel       = 'remove'
                     self.heightRatio        = int(pic.height / 3 + pic.height * 0.1)
                     pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='north')
-                    pic.save(filename=self.jpgName_tiff_header)
+                    pic.save(filename=self.tiffName_header)
         except (PolicyError, CacheError) as e:
             self.Log.error('Error during WAND conversion : ' + str(e))
 
@@ -275,13 +275,13 @@ class Files:
                     pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='south')
                     pic.save(filename=self.jpgName_footer)
             else:
-                with Img(filename=self.jpgName_tiff, resolution=self.resolution) as pic:
+                with Img(filename=self.tiffName, resolution=self.resolution) as pic:
                     pic.compression_quality = self.compressionQuality
                     pic.background_color = Color("white")
                     pic.alpha_channel = 'remove'
                     self.heightRatio = int(pic.height / 3 + pic.height * 0.1)
                     pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='south')
-                    pic.save(filename=self.jpgName_tiff_footer)
+                    pic.save(filename=self.tiffName_footer)
         except (PolicyError, CacheError) as e:
             self.Log.error('Error during WAND conversion : ' + str(e))
 
@@ -444,6 +444,15 @@ class Files:
                     file.write(string_without_empty_lines)
                     file.close()
 
+    def getPages(self, file):
+        with open(file, 'rb') as doc:
+            pdf = PyPDF4.PdfFileReader(doc)
+            try:
+                return pdf.getNumPages()
+            except ValueError as e:
+                self.Log.error(e)
+                shutil.move(file, self.Config.cfg['GLOBAL']['errorpath'] + os.path.basename(file))
+                return 1
     # OBR01
     @staticmethod
     def create_directory(path):
