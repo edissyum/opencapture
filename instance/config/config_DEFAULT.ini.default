@@ -27,6 +27,9 @@ allowBypassSupplieBanVerif  = True
 # Delta between date found and today date, in days
 # -1 to disable
 timeDelta                   = -1
+# Number of files uploaded simultaneously
+uploadMaxFiles              = 3
+
 
 [SPLITTER]
 splitterpath = /var/docservers/OpenCapture_Splitter/

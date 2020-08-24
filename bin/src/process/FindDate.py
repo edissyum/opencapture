@@ -106,7 +106,7 @@ class FindDate:
 
     def run(self):
         if self.Files.isTiff == 'True':
-            target = self.Files.jpgName_tiff_header
+            target = self.Files.tiffName_header
         else :
             target = self.Files.jpgName_header
         date = search_by_positions(self.supplier, 'date', self.Config, self.Locale, self.Ocr, self.Files, target)
