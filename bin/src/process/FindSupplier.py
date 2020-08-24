@@ -61,7 +61,7 @@ class FindSupplier:
 
     def regenerateOcr(self):
         if self.Files.isTiff == 'True':
-            self.Files.open_img(self.Files.jpgName_tiff_header)
+            self.Files.open_img(self.Files.tiffName_header)
         else:
             self.Files.open_img(self.Files.jpgName_header)
         self.Ocr.line_box_builder(self.Files.img)
@@ -167,7 +167,7 @@ class FindSupplier:
         if not retry and not self.found_first:
             self.Log.info('No supplier informations found in the header, improve image and retry...')
             if self.Files.isTiff == 'True':
-                improved_image = self.Files.improve_image_detection(self.Files.jpgName_tiff_header)
+                improved_image = self.Files.improve_image_detection(self.Files.tiffName_header)
             else:
                 improved_image = self.Files.improve_image_detection(self.Files.jpgName_header)
             self.Files.open_img(improved_image)
@@ -178,7 +178,7 @@ class FindSupplier:
         if retry and not self.found_second and self.found_third:
             self.Log.info('No supplier informations found with improved image, try with footer...')
             if self.Files.isTiff == 'True':
-                self.Files.open_img(self.Files.jpgName_tiff_footer)
+                self.Files.open_img(self.Files.tiffName_footer)
             else:
                 self.Files.open_img(self.Files.jpgName_footer)
 
@@ -190,7 +190,7 @@ class FindSupplier:
         if retry and not self.found_third and self.found_fourth:
             self.Log.info('No supplier informations found in the footer, improve image and retry...')
             if self.Files.isTiff == 'True':
-                improved_image = self.Files.improve_image_detection(self.Files.jpgName_tiff_header)
+                improved_image = self.Files.improve_image_detection(self.Files.tiffName_header)
             else:
                 improved_image = self.Files.improve_image_detection(self.Files.jpgName_footer)
             self.Files.open_img(improved_image)
@@ -202,7 +202,7 @@ class FindSupplier:
         if retry and not self.found_fourth:
             self.Log.info('No supplier informations found in the footer, change Tesseract function to retrieve text and retry...')
             if self.Files.isTiff == 'True':
-                improved_image = self.Files.improve_image_detection(self.Files.jpgName_tiff_header)
+                improved_image = self.Files.improve_image_detection(self.Files.tiffName_header)
             else:
                 improved_image = self.Files.improve_image_detection(self.Files.jpgName_header)
             self.Files.open_img(improved_image)

@@ -71,7 +71,7 @@ class FindFooter:
         if position:
             positionArray   = self.Ocr.prepare_ocr_on_fly(position)
             if self.Files.isTiff == 'True':
-                text            = self.Files.ocr_on_fly(self.Files.jpgName_tiff, positionArray, self.Ocr)
+                text            = self.Files.ocr_on_fly(self.Files.tiffName, positionArray, self.Ocr)
             else:
                 text            = self.Files.ocr_on_fly(self.Files.jpgName, positionArray, self.Ocr)
 
@@ -122,7 +122,7 @@ class FindFooter:
 
     def run(self):
         if self.Files.isTiff == 'True':
-            target = self.Files.jpgName_tiff
+            target = self.Files.tiffName
         else :
             target = self.Files.jpgName
         allRate  = search_by_positions(self.supplier, 'total_amount', self.Config, self.Locale, self.Ocr, self.Files, target)
