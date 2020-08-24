@@ -34,6 +34,8 @@ from wand.api import library
 import xml.etree.ElementTree as ET
 from wand.image import Image as Img
 from wand.exceptions import PolicyError, CacheError
+from webApp.functions import retrieve_custom_positions
+from xml.sax.saxutils import escape
 
 class Files:
     def __init__(self, jpgName, res, quality, Xml, Log, isTiff):
@@ -361,7 +363,7 @@ class Files:
         return position
 
     def exportXml(self, cfg, invoiceNumber, parent, fillPosition = False, db = None, vatNumber = False):
-        self.Xml.construct_filename(invoiceNumber)
+        self.Xml.construct_filename(invoiceNumber, vatNumber)
         filename    = cfg.cfg['GLOBAL']['exportaccountingfolder'] + '/' + self.Xml.filename
         root        = ET.Element("ROOT")
 
@@ -386,12 +388,61 @@ class Files:
                                     })
                                     db.conn.commit()
                         # Then create the XML
-                        newField = ET.SubElement(element, cleanChild)
+                        newField = ET.SubElement(element, escape(cleanChild))
                         newField.text = child[childElement]['field']
-
         xmlRoot = minidom.parseString(ET.tostring(root, encoding="unicode")).toprettyxml()
-        filename = open(filename, 'w')
-        filename.write(xmlRoot)
+        file = open(filename, 'w')
+        file.write(xmlRoot)
+        file.close()
+
+        res = db.select({
+            'select': ['typology'],
+            'table': ['suppliers'],
+            'where': ['vat_number = ?'],
+            'data': [vatNumber]
+        })
+        if res:
+            root = ET.parse(filename).getroot()
+            typo = res[0]['typology']
+            list_of_fields = retrieve_custom_positions(typo, cfg)
+            select = []
+            for index in list_of_fields:
+                field = index.split('-')[1]
+                field_position = field + '_position'
+                select.append(field_position)
+
+            if select:
+                res = db.select({
+                    'select': select,
+                    'table': ['invoices'],
+                    'where': ['invoice_number = ?'],
+                    'data': [invoiceNumber]
+                })
+                if res:
+                    for title in root:
+                        for element in title:
+                            for position in select:
+                                if element.tag == position.split('_position')[0] and title.tag not in ['supplierInfo']:
+                                    subElementToAppend = root.find(title.tag)
+                                    newField = ET.SubElement(subElementToAppend, position)
+                                    newField.text = res[0][position]
+                    xmlRoot = minidom.parseString(ET.tostring(root, encoding="unicode")).toprettyxml().replace('\n\n', '\n')
+                    file = open(filename, 'w')
+                    file.write(xmlRoot)
+                    file.close()
+
+                    # remove empty lines created by the append of subelement
+                    tmp = open(filename, 'r')
+                    lines = tmp.read().split("\n")
+                    tmp.close()
+                    non_empty_lines = [line for line in lines if line.strip() != ""]
+
+                    file = open(filename, 'w')
+                    string_without_empty_lines = ""
+                    for line in non_empty_lines:
+                        string_without_empty_lines += line + "\n"
+                    file.write(string_without_empty_lines)
+                    file.close()
 
     # OBR01
     @staticmethod

@@ -2,7 +2,7 @@
 
 # Open-Capture for Invoices by Edissyum
  
-Version 0.6.2
+Version 0.6.3
   
 Open-Capture is a **free and Open Source** software under **GNU General Public License v3.0**.
   
@@ -36,7 +36,7 @@ Tested with :
 
     $ sudo mkdir /opt/OpenCaptureForInvoices/ && sudo chmod -R 775 /opt/OpenCaptureForInvoices/ && sudo chown -R your_user:your_group /opt/OpenCaptureForInvoices/
     $ sudo apt install git
-    $ git clone -b 0.6.2 https://gitlab.com/edissyum/opencapture/opencaptureforinvoices /opt/OpenCaptureForInvoices/
+    $ git clone -b 0.6.3 https://gitlab.com/edissyum/opencapture/opencaptureforinvoices /opt/OpenCaptureForInvoices/
     $ cd /opt/OpenCaptureForInvoices/
   
 Before lauching the Makefile. You have to do the following : 
@@ -55,7 +55,7 @@ Finally you have to generate a secret key for the flask web server. First, gener
     
 Copy the generated text and go to <code>webApp/\_\_init\_\_.py</code>. Find the line with <code>SECRET_KEY</code> and paste between ""   
   
-The ./Makefile command create the service, but you may want to change the User and Group so just open the ./Makefile and change lines **6** & **7**. The line 6 is empty by default and it's mandatory to fill it
+The ./Makefile command create the service, but you may want to change the User and Group so just open the ./Makefile and change lines **13** & **14**. The line **13* is empty by default and it's mandatory to fill it
 
 You have the choice between using supervisor or basic systemd
 Supervisor is useful if you need to run multiple instance of Open-Capture in parallel but it will be very greedy
@@ -78,7 +78,7 @@ In most cases you had to modify the <code>/etc/ImageMagick-6/policy.xml</code> f
     <policy domain="coder" rights="none" pattern="PDF" />
 
     $ sudo systemctl restart OCForInvoices-worker (systemd version)
-    $ sudo supervisorctl reload (supervisor version)
+    $ sudo supervisorctl restart all (supervisor version)
 
 If you need more informations about the usefull commands for supervisor : http://supervisord.org/running.html#running-supervisorctl
 

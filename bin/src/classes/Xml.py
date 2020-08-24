@@ -24,7 +24,7 @@ class Xml:
         self.Config         = Config
         self.db             = Database
 
-    def construct_filename(self, invoiceNumber):
+    def construct_filename(self, invoiceNumber, vatNumber):
         root        = etree.parse(self.Config.cfg['GLOBAL']['exportaccountingfileparser'])
         array       = []
         tmpFilename = {}
@@ -55,18 +55,28 @@ class Xml:
                     labelField = 'date'
                 else:
                     field = element['value']
-                    labelField = field.split('.')[1]
+                    labelField = field
+
+                table = element['table']
+                where = ''
+                data = ''
+                if table == 'suppliers':
+                    where = 'vat_number = ?'
+                    data = vatNumber
+                elif table == 'invoices':
+                    where = 'invoice_number = ?'
+                    data = invoiceNumber
 
                 res = self.db.select({
                     'select'    : [field],
-                    'table'     : ['suppliers', 'invoices'],
+                    'table'     : [table],
                     'left_join' : ['suppliers.vat_number = invoices.vat_number'],
-                    'where'     : ['invoice_number = ?'],
-                    'data'      : [invoiceNumber],
+                    'where'     : [where],
+                    'data'      : [data],
                     'limit'     : 1
                 })
-
-                tmpFilename[cpt] = res[0][labelField].replace(' ', '_')
+                if res:
+                    tmpFilename[cpt] = res[0][labelField].replace(' ', '_')
 
             elif element['type'] == 'text':
                 tmpFilename[cpt] = element['value']

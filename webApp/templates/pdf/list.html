@@ -4,7 +4,7 @@
     <script type="text/javascript" src={{ url_for('static', filename='js/otherLib/Gettext.js') }}></script>
     <link rel="gettext" type="application/x-po" href="{{ url_for('static', filename='babel/translations/' + session["lang"] + '/LC_MESSAGES/messages.po') }}">
     <script>
-        var gt = new Gettext();
+        let gt = new Gettext();
     </script>
 {% endblock %}
 

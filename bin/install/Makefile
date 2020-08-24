@@ -1,5 +1,12 @@
 #!/bin/bash
 
+if [ "$EUID" -ne 0 ]
+  then echo "Makefile needed to be launch by user with root privileges"
+  exit 1
+fi
+
+bold=$(tput bold)
+normal=$(tput sgr0)
 OS=$(lsb_release -si)
 VER=$(lsb_release -r)
 defaultPath=/opt/OpenCaptureForInvoices/
