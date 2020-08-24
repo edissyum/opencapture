@@ -67,9 +67,9 @@ def login(fallback):
             error = gettext('USERNAME_REQUIRED')
         elif not check_password_hash(user[0]['password'], password):
             error = gettext('PASSWORD_REQUIRED')
-        elif user['status'] == 'DEL':
+        elif user[0]['status'] == 'DEL':
             error = gettext('USER_DELETED')
-        elif user['enabled'] == 0:
+        elif user[0]['enabled'] == 0:
             error = gettext('USER_DISABLED')
 
         if error is None:
