@@ -78,7 +78,7 @@ In most cases you had to modify the <code>/etc/ImageMagick-6/policy.xml</code> f
     <policy domain="coder" rights="none" pattern="PDF" />
 
     $ sudo systemctl restart OCForInvoices-worker (systemd version)
-    $ sudo supervisorctl reload (supervisor version)
+    $ sudo supervisorctl restart all (supervisor version)
 
 If you need more informations about the usefull commands for supervisor : http://supervisord.org/running.html#running-supervisorctl
 
