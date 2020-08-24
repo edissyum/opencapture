@@ -294,7 +294,10 @@ def view(id):
 @bp.route('/upload?splitter=<string:issep>')
 @login_required
 def upload():
-    return render_template("templates/pdf/upload.html")
+    _vars           = init()
+    _cfg            = _vars[1].cfg
+
+    return render_template("templates/pdf/upload.html", cfg=_cfg)
 
 @bp.route('/validate', methods=['POST'])
 def validate_form():
