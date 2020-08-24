@@ -50,18 +50,18 @@ def insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, fo
         path = Config.cfg['GLOBAL']['fullpath'] + '/' + full_jpg_filename.replace('-%03d', '-001')
 
     columns = {
-        'vat_number': supplier[0] if supplier is not False and supplier[0] is not False else '',
-        'vat_number_position': str(supplier[1]) if supplier is not False and supplier[1] is not False  else '',
-        'invoice_date': date[0] if date is not False and date[0] is not False else '',
-        'invoice_date_position': str(date[1]) if date is not False and date[1] is not False else '',
-        'invoice_number': invoiceNumber[0] if invoiceNumber is not False and invoiceNumber[0] is not False else '',
-        'invoice_number_position': str(invoiceNumber[1]) if invoiceNumber is not False and invoiceNumber[1] is not False else '',
-        'total_amount': str(footer[1][0]) if footer is not False and footer[1] is not False else '',
-        'total_amount_position': str(footer[1][1]) if footer is not False and footer[1] is not False else '',
-        'ht_amount1': str(footer[0][0]) if footer is not False and footer[0] is not False else '',
-        'ht_amount1_position': str(footer[0][1]) if footer is not False and footer[0] is not False else '',
-        'vat_rate1': str(footer[2][0]) if footer is not False and footer[2] is not False else '',
-        'vat_rate1_position': str(footer[2][1]) if footer is not False and footer[2] is not False else '',
+        'vat_number': supplier[0] if supplier and supplier[0] else '',
+        'vat_number_position': str(supplier[1]) if supplier and supplier[1] else '',
+        'invoice_date': date[0] if date and date[0] else '',
+        'invoice_date_position': str(date[1]) if date and date[1]  else '',
+        'invoice_number': invoiceNumber[0] if invoiceNumber and invoiceNumber[0] else '',
+        'invoice_number_position': str(invoiceNumber[1]) if invoiceNumber and invoiceNumber[1] else '',
+        'total_amount': str(footer[1][0]) if footer and footer[1] else '',
+        'total_amount_position': str(footer[1][1]) if footer and footer[1] else '',
+        'ht_amount1': str(footer[0][0]) if footer and footer[0] else '',
+        'ht_amount1_position': str(footer[0][1]) if footer and footer[0] else '',
+        'vat_rate1': str(footer[2][0]) if footer and footer[2] else '',
+        'vat_rate1_position': str(footer[2][1]) if footer and footer[2] else '',
         'filename': os.path.basename(file),
         'path': os.path.dirname(file),
         'img_width': str(Files.get_size(path)),
@@ -87,9 +87,9 @@ def insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, fo
             os.remove(Files.jpgName_footer)
             os.remove(Files.jpgName_header)
             os.remove(Files.jpgName)
-            os.remove(Files.jpgName_tiff_footer)
-            os.remove(Files.jpgName_tiff_header)
-            os.remove(Files.jpgName_tiff)
+            os.remove(Files.tiffName_footer)
+            os.remove(Files.tiffName_header)
+            os.remove(Files.tiffName)
         except FileNotFoundError:
             pass
     else:
@@ -98,21 +98,8 @@ def insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, fo
 def process(file, Log, Config, Files, Ocr, Locale, Database, WebServices):
     Log.info('Processing file : ' + file)
 
-    # Open the pdf and convert it to JPG
-    if os.path.splitext(file)[1] == '.pdf':
-        # Check if pdf is already OCR and searchable
-        checkOcr = os.popen('pdffonts ' + file, 'r')
-        tmp = ''
-        for line in checkOcr:
-            tmp += line
-
-        if len(tmp.split('\n')) > 3:
-            isOcr = True
-        else:
-            isOcr = False
-    else:  # Open the picture
-        Files.open_img(file)
-        isOcr = False
+    # get the number of pages into the PDF documents
+    nb_pages = Files.getPages(file)
 
     if Files.isTiff == 'True':
         Files.pdf_to_tiff(file, True, True, True, 'header')
@@ -156,16 +143,6 @@ def process(file, Log, Config, Files, Ocr, Locale, Database, WebServices):
     fileName        = str(uuid.uuid4())
     full_jpg_filename = 'full_' + fileName + '-%03d.jpg'
     tiff_filename    = 'tiff_' + fileName + '-%03d.tiff'
-
-    # get the number of pages into the PDF documents
-    with open(file, 'rb') as doc:
-        pdf = PyPDF4.PdfFileReader(doc)
-        try:
-            nb_pages = pdf.getNumPages()
-        except ValueError as e:
-            Log.error(e)
-            shutil.move(file, Config.cfg['GLOBAL']['errorpath'] + os.path.basename(file))
-            return False
 
     file = Files.move_to_docservers(Config.cfg, file)
     # Convert all the pages to JPG (used to full web interface)

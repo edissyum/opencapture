@@ -40,11 +40,11 @@ def search_custom_positions(data, Ocr, Files, Locale):
     if position:
         if Files.isTiff == 'True':
             if target == 'footer':
-                target_file = Files.jpgName_tiff__footer
+                target_file = Files.tiffName__footer
             elif target == 'header':
-                target_file = Files.jpgName_tiff_header
+                target_file = Files.tiffName_header
             else:
-                target_file = Files.jpgName_tiff
+                target_file = Files.tiffName
         else:
             if target == 'footer':
                 target_file = Files.jpgName_footer
