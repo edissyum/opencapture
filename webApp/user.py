@@ -16,16 +16,6 @@ if custom_id:
 if 'pdf' not in custom_array: from . import pdf
 else: pdf = getattr(__import__(custom_array['pdf']['path'], fromlist=[custom_array['pdf']['module']]), custom_array['pdf']['module'])
 
-if 'Config' not in custom_array: from bin.src.classes.Config import Config as _Config
-else: _Config = getattr(__import__(custom_array['Config']['path'] + '.' + custom_array['Config']['module'], fromlist=[custom_array['Config']['module']]), custom_array['Config']['module'])
-
-if 'Log' not in custom_array: from bin.src.classes.Log import Log as _Log
-else: _Log = getattr(__import__(custom_array['Log']['path'] + '.' + custom_array['Log']['module'], fromlist=[custom_array['Log']['module']]), custom_array['Log']['module'])
-
-if 'Database' not in custom_array: from bin.src.classes.Database import Database as _Database
-else: _Database = getattr(__import__(custom_array['Database']['path'] + '.' + custom_array['Database']['module'], fromlist=[custom_array['Database']['module']]), custom_array['Database']['module'])
-
-
 bp = Blueprint('user', __name__, url_prefix='/user')
 
 def check_user(user_id):

@@ -709,7 +709,7 @@ function drawRectangle(input){
         if(maxPages > 1)
             changeImage(inputInfo.attr('page'));
         if(zoomImg.length === 0 || zoomImg.css('opacity') === '0') {
-            let ratio   = inputInfo.attr('x1_original') !== '' ? originalWidth / myImage.width() : imgSizeOnOCR / windowsWidth;
+            let ratio   = originalWidth / myImage.width()
 
             let _x1     = inputInfo.attr('x1_original') !== '' ? inputInfo.attr('x1_original') / ratio : inputInfo.attr('x1') / ratio;
             let _y1     = inputInfo.attr('y1_original') !== '' ? inputInfo.attr('y1_original') / ratio : inputInfo.attr('y1') / ratio;
