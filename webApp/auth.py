@@ -61,11 +61,11 @@ def login(fallback):
             'table': ['users'],
             'where': ['username = ?'],
             'data': [username]
-        })[0]
+        })
 
-        if user is None:
+        if not user:
             error = gettext('USERNAME_REQUIRED')
-        elif not check_password_hash(user['password'], password):
+        elif not check_password_hash(user[0]['password'], password):
             error = gettext('PASSWORD_REQUIRED')
         elif user['status'] == 'DEL':
             error = gettext('USER_DELETED')
@@ -75,8 +75,8 @@ def login(fallback):
         if error is None:
             lang = session['lang']
             session.clear()
-            session['user_id'] = user['id']
-            session['user_name'] = user['username']
+            session['user_id'] = user[0]['id']
+            session['user_name'] = user[0]['username']
             session['lang'] = lang
 
             return redirect(fallback)
