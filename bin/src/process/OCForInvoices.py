@@ -100,14 +100,20 @@ def process(file, Log, Config, Files, Ocr, Locale, Database, WebServices):
 
     # get the number of pages into the PDF documents
     nb_pages = Files.getPages(file)
-
     if Files.isTiff == 'True':
-        Files.pdf_to_tiff(file, True, True, True, 'header')
+        Files.pdf_to_tiff(file, Files.tiffName, True, True, True, 'header')
         Ocr.header_text = Ocr.line_box_builder(Files.img)
-        Files.pdf_to_tiff(file, True, True, True, 'footer')
+        Files.pdf_to_tiff(file, Files.tiffName, True, True, True, 'footer')
         Ocr.footer_text = Ocr.line_box_builder(Files.img)
-        Files.pdf_to_tiff(file, True)
+        Files.pdf_to_tiff(file, Files.tiffName, True)
         Ocr.text = Ocr.line_box_builder(Files.img)
+        if nb_pages > 1 :
+            Files.pdf_to_tiff(file, Files.tiffName_last, False, True, True, 'header', nb_pages)
+            Ocr.header_last_text = Ocr.line_box_builder(Files.img)
+            Files.pdf_to_tiff(file, Files.tiffName_last, False, True, True, 'footer', nb_pages)
+            Ocr.footer_last_text = Ocr.line_box_builder(Files.img)
+            Files.pdf_to_tiff(file, Files.tiffName_last, lastPage=nb_pages)
+            Ocr.last_text = Ocr.line_box_builder(Files.img)
     else:
         Files.pdf_to_jpg(file + '[0]', True, True, 'header')
         Ocr.header_text = Ocr.line_box_builder(Files.img)
@@ -115,10 +121,19 @@ def process(file, Log, Config, Files, Ocr, Locale, Database, WebServices):
         Ocr.footer_text = Ocr.line_box_builder(Files.img)
         Files.pdf_to_jpg(file + '[0]')
         Ocr.text = Ocr.line_box_builder(Files.img)
+        if nb_pages > 1 :
+            cpt = str(nb_pages - 1)
+            Files.pdf_to_jpg(file + '[' + cpt + ']', True, True, 'header', True)
+            Ocr.header_last_text = Ocr.line_box_builder(Files.img)
+            Files.pdf_to_jpg(file + '[' + cpt + ']', True, True, 'footer', True)
+            Ocr.footer_last_text = Ocr.line_box_builder(Files.img)
+            Files.pdf_to_jpg(file + '[' + cpt + ']', lastImage=True)
+            Ocr.last_text = Ocr.line_box_builder(Files.img)
 
     # Find supplier in document
-    supplier        = FindSupplier(Ocr, Log, Locale, Database, Files, file + '[0]').run()
-
+    supplier        = FindSupplier(Ocr, Log, Locale, Database, Files).run()
+    print(supplier)
+    exit()
     # Find custom informations using mask
     customFields    = FindCustom(Ocr.header_text, Log, Locale, Config, Ocr, Files, supplier).run()
     columns = {}
@@ -140,9 +155,9 @@ def process(file, Log, Config, Files, Ocr, Locale, Database, WebServices):
     # Find footer informations (total amount, no rate amount etc..)
     footer          = FindFooter(Ocr, Log, Locale, Config, Files, Database, supplier, file + '[0]').run()
 
-    fileName        = str(uuid.uuid4())
+    fileName          = str(uuid.uuid4())
     full_jpg_filename = 'full_' + fileName + '-%03d.jpg'
-    tiff_filename    = 'tiff_' + fileName + '-%03d.tiff'
+    tiff_filename     = 'tiff_' + fileName + '-%03d.tiff'
 
     file = Files.move_to_docservers(Config.cfg, file)
     # Convert all the pages to JPG (used to full web interface)
@@ -154,7 +169,7 @@ def process(file, Log, Config, Files, Ocr, Locale, Database, WebServices):
     # If all informations are found, do not send it to GED
     if supplier and date and invoiceNumber and footer and Config.cfg['GLOBAL']['allowautomaticvalidation'] == 'True':
         insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, footer, nb_pages, full_jpg_filename, tiff_filename, 'DEL', False)
-        Log.info('All the usefull informations are found. Export the XML and end process')
+        Log.info('All the usefull informations are found. Export the XML and  endprocess')
         now = datetime.datetime.now()
         xmlCustom = {}
         for custom in customFields:

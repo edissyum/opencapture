@@ -27,6 +27,9 @@ class PyTesseract:
         self.text               = ''
         self.footer_text        = ''
         self.header_text        = ''
+        self.last_text          = ''
+        self.footer_last_text   = ''
+        self.header_last_text   = ''
         self.tool               = ''
         self.lang               = locale
         self.Config             = Config

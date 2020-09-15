@@ -16,23 +16,27 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import re
-import fast_luhn as fl
 
 class FindSupplier:
-    def __init__(self, Ocr, Log, Locale, Database, Files, _file):
-        self.Ocr            = Ocr
-        self.text           = Ocr.header_text
-        self.Log            = Log
-        self.fileToProcess  = _file
-        self.Files          = Files
-        self.Database       = Database
-        self.Locale         = Locale
-        self.OCRErrorsTable = Ocr.OCRErrorsTable
-        self.found_first    = True
-        self.found_second   = True
-        self.found_third    = True
-        self.found_fourth   = True
-        self.splitted       = False
+    def __init__(self, Ocr, Log, Locale, Database, Files):
+        self.Ocr                = Ocr
+        self.text               = Ocr.header_text
+        self.Log                = Log
+        self.Files              = Files
+        self.Database           = Database
+        self.Locale             = Locale
+        self.OCRErrorsTable     = Ocr.OCRErrorsTable
+        self.found_first        = True
+        self.found_second       = True
+        self.found_third        = True
+        self.found_fourth       = True
+        self.found_last_first   = True
+        self.splitted           = False
+
+    @staticmethod
+    def validate_luhn(n):
+        r = [int(ch) for ch in str(n)][::-1]
+        return (sum(r[0::2]) + sum(sum(divmod(d * 2, 10)) for d in r[1::2])) % 10 == 0
 
     def process(self, regex, textAsString):
         arrayOfData = {}
@@ -95,7 +99,7 @@ class FindSupplier:
             siretNumber = self.process(self.Locale.SIRETRegex, textAsString)
             if siretNumber:
                 for _siret in siretNumber:
-                    if fl.validate(_siret):
+                    if self.validate_luhn(_siret):
                         args = {
                             'select': ['*'],
                             'table' : ['suppliers'],
@@ -114,7 +118,7 @@ class FindSupplier:
             sirenNumber = self.process(self.Locale.SIRENRegex, textAsString)
             if sirenNumber:
                 for _siren in sirenNumber:
-                    if fl.validate(_siren):
+                    if self.validate_luhn(_siren):
                         args = {
                             'select': ['*'],
                             'table': ['suppliers'],
@@ -130,7 +134,7 @@ class FindSupplier:
                         else:
                             if siretNumber:
                                 for _siret in siretNumber:
-                                    if fl.validate(_siret):
+                                    if self.validate_luhn(_siret):
                                         SIRENRegex  = self.Locale.SIRENRegex
                                         SIRENSize   = SIRENRegex[SIRENRegex.find('{') + 1:SIRENRegex.find("}")]
                                         SIREN       = _siret[:int(SIRENSize)]
@@ -153,8 +157,10 @@ class FindSupplier:
                 self.found_second = False
             elif retry and not self.found_second and self.found_third:
                 self.found_third = False
-            elif retry and not self.found_third:
+            elif retry and not self.found_third and self.found_fourth:
                 self.found_fourth = False
+            elif retry and not self.found_fourth and self.found_last_first:
+                self.found_last_first = False
 
             # If we had to change footer to header
             # Regenerator OCR with the full image content
@@ -177,12 +183,7 @@ class FindSupplier:
         # If, even with improved image, nothing was found, check the footer
         if retry and not self.found_second and self.found_third:
             self.Log.info('No supplier informations found with improved image, try with footer...')
-            if self.Files.isTiff == 'True':
-                self.Files.open_img(self.Files.tiffName_footer)
-            else:
-                self.Files.open_img(self.Files.jpgName_footer)
-
-            self.text = self.Ocr.line_box_builder(self.Files.img)
+            self.text = self.Ocr.footer_text
             return self.run(retry=True, target='footer')
 
         # If NO supplier identification are found in the footer,
@@ -199,7 +200,7 @@ class FindSupplier:
 
         # If NO supplier identification are found in the improved footer,
         # Try using another tesseract function to extract text
-        if retry and not self.found_fourth:
+        if retry and not self.found_fourth and self.found_last_first:
             self.Log.info('No supplier informations found in the footer, change Tesseract function to retrieve text and retry...')
             if self.Files.isTiff == 'True':
                 improved_image = self.Files.improve_image_detection(self.Files.tiffName_header)
@@ -207,7 +208,13 @@ class FindSupplier:
                 improved_image = self.Files.improve_image_detection(self.Files.jpgName_header)
             self.Files.open_img(improved_image)
             self.text = self.Ocr.text_builder(self.Files.img)
-            return self.run(retry=True, regenerateOcr=True, target='header', textAsString=True)
+            return self.run(retry=True, target='header', textAsString=True)
+
+        # Try now with the last page
+        if retry and not self.found_last_first:
+            self.Log.info('No supplier informations found in the first page, try with the last page header')
+            self.text = self.Ocr.header_last_text
+            return self.run(retry=True, regenerateOcr = True, target = 'header')
 
         self.Log.error('No supplier found...')
         return False
