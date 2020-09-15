@@ -16,7 +16,6 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import re
-import fast_luhn as fl
 
 class FindSupplier:
     def __init__(self, Ocr, Log, Locale, Database, Files, _file):
@@ -28,6 +27,11 @@ class FindSupplier:
         self.Database       = Database
         self.Locale         = Locale
         self.OCRErrorsTable = Ocr.OCRErrorsTable
+
+    @staticmethod
+    def validate_luhn(n):
+        r = [int(ch) for ch in str(n)][::-1]
+        return (sum(r[0::2]) + sum(sum(divmod(d * 2, 10)) for d in r[1::2])) % 10 == 0
 
     def process(self, regex):
         arrayOfData = {}
@@ -82,7 +86,7 @@ class FindSupplier:
             siretNumber = self.process(self.Locale.SIRETRegex)
             if siretNumber:
                 for _siret in siretNumber:
-                    if fl.validate(_siret):
+                    if self.validate_luhn(_siret):
                         args = {
                             'select': ['*'],
                             'table' : ['suppliers'],
@@ -103,7 +107,7 @@ class FindSupplier:
             sirenNumber = self.process(self.Locale.SIRENRegex)
             if sirenNumber:
                 for _siren in sirenNumber:
-                    if fl.validate(_siren):
+                    if self.validate_luhn(_siren):
                         args = {
                             'select': ['*'],
                             'table': ['suppliers'],
@@ -119,7 +123,7 @@ class FindSupplier:
                         else:
                             if siretNumber:
                                 for _siret in siretNumber:
-                                    if fl.validate(_siret):
+                                    if self.validate_luhn(_siret):
                                         SIRENRegex  = self.Locale.SIRENRegex
                                         SIRENSize   = SIRENRegex[SIRENRegex.find('{') + 1:SIRENRegex.find("}")]
                                         SIREN       = _siret[:int(SIRENSize)]
