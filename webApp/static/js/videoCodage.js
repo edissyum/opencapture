@@ -254,6 +254,22 @@ function ocrOnFly(isRemoved, inputId, removeWhiteSpace = false, needToBeNumber =
 
 /******** ONLOAD ********/
 
+function getCookie(cname) {
+  let name = cname + "=";
+  let decodedCookie = decodeURIComponent(document.cookie);
+  let ca = decodedCookie.split(';');
+  for(let i = 0; i <ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) === ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) === 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
 // On load, reload Insee token for SIRET/SIREN validation
 // Also, do all the validation if the input aren't empty
 $(document).ready(function() {
@@ -262,45 +278,48 @@ $(document).ready(function() {
         // Get the config
         readConfig().then((res) => {    // Put the rest of code into the 'then' to make synchronous API call
             config = res;
-
-            generateTokenInsee(config.GENERAL['siret-consumer'], config.GENERAL['siret-secret'])
-            .then(function(res) {
-                if (!JSON.parse(res.ok)) {
-                    loaded = false;
-                    $('<div class="invalid-feedback invalidSIRET">' +
-                        gt.gettext('SIRET_CONNECTION_ERROR') +
-                        '</div>'
-                    ).insertAfter($('#siret_number')).slideDown();
-                } else {
-                    if (res.text === 'error') {
-                        console.log('error')
-                    }else{
-                        let result = JSON.parse(res.text);
-                        token = result['access_token'];
+            token = getCookie('access_token');
+            if(token === ''){
+                generateTokenInsee(config.GENERAL['siret-consumer'], config.GENERAL['siret-secret'])
+                .then(function(res) {
+                    if (!JSON.parse(res.ok)) {
+                        loaded = false;
+                        $('<div class="invalid-feedback invalidSIRET">' +
+                            gt.gettext('SIRET_CONNECTION_ERROR') +
+                            '</div>'
+                        ).insertAfter($('#siret_number')).slideDown();
+                    } else {
+                        if (res.text === 'error') {
+                            console.log('error')
+                        }else{
+                            let result = JSON.parse(res.text);
+                            document.cookie = "access_token=" + result['access_token'];
+                            token = getCookie('access_token');
+                        }
                     }
-                }
-
-                $('.chosen-select').chosen({
-                    max_shown_results: 200,
-                    search_contains: true,
-                    width: "100%"
                 });
+            }
 
-                // Focus supplier field to reload info thanks to VATNumber
-                // Avoid the need to prefill all the field about supplier into HTML
-                $('#supplier').focus();
-
-                checkAll();
-
-                // If there is a VAT rate and a notaxes amount, calcul the total
-                $('#calculTotal').click();
-
-                // Check if duplicate, to display a message after validation if duplicate
-                checkIsDuplicate();
-
-                $('#status_form').delay(1000).fadeOut('slow'); // will first fade out the loading animation
-                $('#preloader_form').delay(500).fadeOut('slow'); // will fade out the white DIV that covers the website.
+            $('.chosen-select').chosen({
+                max_shown_results: 200,
+                search_contains: true,
+                width: "100%"
             });
+
+            // Focus supplier field to reload info thanks to VATNumber
+            // Avoid the need to prefill all the field about supplier into HTML
+            $('#supplier').focus();
+
+            checkAll();
+
+            // If there is a VAT rate and a notaxes amount, calcul the total
+            $('#calculTotal').click();
+
+            // Check if duplicate, to display a message after validation if duplicate
+            checkIsDuplicate();
+
+            $('#status_form').delay(1000).fadeOut('slow'); // will first fade out the loading animation
+            $('#preloader_form').delay(500).fadeOut('slow'); // will fade out the white DIV that covers the website.
         })
         .catch(function() {
             loaded = false;
