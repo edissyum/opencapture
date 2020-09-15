@@ -2,7 +2,7 @@
 
 # Open-Capture for Invoices by Edissyum
  
-Version 0.6.3
+Version 0.7.0
   
 Open-Capture is a **free and Open Source** software under **GNU General Public License v3.0**.
   
@@ -29,14 +29,15 @@ Tested with :
 - Debian 9.6 with Python 3.5.3 & Tesseract v3.04.01 or Tesseract V4.0.0 (stretch-backports) & nginx as web server
 - Debian 10 with Python 3.7.3 & Tesseract V4.0.0 & nginx as web server
 - Ubuntu 20.04 LTS with Python 3.7.7 & Tesseract V4.1.1 & nginx as web server
-  
+- Ubuntu 20.04 LTS with Python 3.8.5 & Tesseract V4.1.1 & nginx as web server
+
 ## Install Open-Capture for Invoices
 
 (Modify the user and group if needed)
 
     $ sudo mkdir /opt/OpenCaptureForInvoices/ && sudo chmod -R 775 /opt/OpenCaptureForInvoices/ && sudo chown -R your_user:your_group /opt/OpenCaptureForInvoices/
     $ sudo apt install git
-    $ git clone -b 0.6.3 https://gitlab.com/edissyum/opencapture/opencaptureforinvoices /opt/OpenCaptureForInvoices/
+    $ git clone -b 0.7.0 https://gitlab.com/edissyum/opencapture/opencaptureforinvoices /opt/OpenCaptureForInvoices/
     $ cd /opt/OpenCaptureForInvoices/
   
 Before lauching the Makefile. You have to do the following : 
