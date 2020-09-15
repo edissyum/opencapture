@@ -132,8 +132,7 @@ def process(file, Log, Config, Files, Ocr, Locale, Database, WebServices):
 
     # Find supplier in document
     supplier        = FindSupplier(Ocr, Log, Locale, Database, Files).run()
-    print(supplier)
-    exit()
+    # exit()
     # Find custom informations using mask
     customFields    = FindCustom(Ocr.header_text, Log, Locale, Config, Ocr, Files, supplier).run()
     columns = {}
@@ -153,8 +152,12 @@ def process(file, Log, Config, Files, Ocr, Locale, Database, WebServices):
     date            = FindDate(Ocr.text, Log, Locale, Config, Files, Ocr, supplier).run()
 
     # Find footer informations (total amount, no rate amount etc..)
-    footer          = FindFooter(Ocr, Log, Locale, Config, Files, Database, supplier, file + '[0]').run()
-
+    footer          = FindFooter(Ocr, Log, Locale, Config, Files, Database, supplier, file + '[0]', Ocr.footer_text).run()
+    print(footer)
+    if not footer:
+        print('last page')
+        footer = FindFooter(Ocr, Log, Locale, Config, Files, Database, supplier, file + '[0]', Ocr.footer_last_text).run()
+    # exit()
     fileName          = str(uuid.uuid4())
     full_jpg_filename = 'full_' + fileName + '-%03d.jpg'
     tiff_filename     = 'tiff_' + fileName + '-%03d.tiff'

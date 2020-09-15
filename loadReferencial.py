@@ -29,7 +29,7 @@ if __name__ == '__main__':
         # Add the MIME type into a config file
     mime = mimetypes.guess_type(Spreadsheet.referencialSuppplierSpreadsheet)[0]
     if mime in ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']:
-        contentSupplierSheet    = Spreadsheet.read_excel_sheet(Spreadsheet.referencialSuppplierSpreadsheet)
+        contentSupplierSheet = Spreadsheet.read_excel_sheet(Spreadsheet.referencialSuppplierSpreadsheet)
     else:
         contentSupplierSheet = Spreadsheet.read_ods_sheet(Spreadsheet.referencialSuppplierSpreadsheet)
 
@@ -41,10 +41,10 @@ if __name__ == '__main__':
         'table'     : ['suppliers'],
     }
     listOfExistingSupplier = Database.select(args)
-
     # Insert into database all the supplier not existing into the database
     for taxeNumber in Spreadsheet.referencialSupplierData:
         if not any(str(taxeNumber) in value['vat_number'] for value in listOfExistingSupplier):
+
             args = {
                 'table': 'suppliers',
                 'columns': {
