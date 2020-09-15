@@ -20,9 +20,10 @@ import operator
 from webApp.functions import search_by_positions
 
 class FindFooter:
-    def __init__(self, Ocr, Log, Locale, Config, Files, Database, supplier, file):
+    def __init__(self, Ocr, Log, Locale, Config, Files, Database, supplier, file, text):
         self.date           = ''
         self.Ocr            = Ocr
+        self.text           = text
         self.Log            = Log
         self.Locale         = Locale
         self.Config         = Config
@@ -36,8 +37,9 @@ class FindFooter:
 
     def process(self, regex):
         arrayOfData = {}
-        for line in self.Ocr.footer_text:
+        for line in self.text:
             for res in re.finditer(r"" + regex + "", line.content.upper()):
+
                 # Retrieve only the number and add it in array
                 # In case of multiple no rates amount found, take the higher
                 tmp     = re.finditer(r'[-+]?\d*[.,]+\d+|\d+', res.group())
@@ -81,7 +83,7 @@ class FindFooter:
             for t in text:
                 result += re.sub('\s*', '', t.group())
 
-            if result is not '':
+            if result != '':
                 result      = float(result.replace(',', '.'))
                 position    = {
                     0 : {0 : positionArray['x1'], 1 : positionArray['y1']},
@@ -113,7 +115,7 @@ class FindFooter:
                 self.ratePercentage = ratePercentage
                 return True
 
-            elif noRateAmount in [False, None] or ratePercentage in [False, None]:
+            elif noRateAmount in [False, None] and ratePercentage in [False, None]:
                 return False
 
         self.noRateAmount   = noRateAmount
@@ -152,6 +154,10 @@ class FindFooter:
             ratePercentage  = self.process(self.Locale.vatRateRegex)
             allRateAmount   = self.process(self.Locale.allRatesRegex)
 
+        print(noRateAmount)
+        print(allRateAmount)
+        print(ratePercentage)
+
         # Test all amounts. If some are false, try to search them with position. If not, pass
         if self.test_amount(noRateAmount, allRateAmount, ratePercentage) is not False:
             # First args is amount, second is position
@@ -160,19 +166,31 @@ class FindFooter:
             ratePercentage  = self.return_max(self.ratePercentage)
 
             if noRateAmount is False and allRateAmount and ratePercentage:
-                noRateAmount    = [float("%.2f" % (float(allRateAmount[0]) / (1 + float(ratePercentage[0]))))]
+                noRateAmount    = [float("%.2f" % (float(allRateAmount[0]) / (1 + float(ratePercentage[0] / 100)))), (('',''),('',''))]
             elif allRateAmount is False and noRateAmount and ratePercentage:
-                allRateAmount   = [float("%.2f" % (float(noRateAmount[0]) + (float(noRateAmount[0]) * float(ratePercentage[0] / 100))))]
+                allRateAmount   = [float("%.2f" % (float(noRateAmount[0]) + (float(noRateAmount[0]) * float(ratePercentage[0] / 100)))), (('',''),('',''))]
             elif ratePercentage is False and noRateAmount and allRateAmount:
                 vatAmount       = float("%.2f" % (float(allRateAmount[0]) - float(noRateAmount[0])))
-                ratePercentage  = [float(vatAmount) / float(noRateAmount[0])]
+                ratePercentage  = [float("%.2f" % (float(vatAmount) / float(noRateAmount[0]) * 100)), (('',''),('',''))]
+                print('vatAmount : ' + str(vatAmount))
+
+
+            try:
+                print('noRateAmount : ' + str(noRateAmount[0]))
+                print('allRateAmount : ' + str(allRateAmount[0]))
+                print('ratePercentage : ' + str(ratePercentage[0] / 100))
+            except TypeError:
+                pass
 
             # Test if the three var's are good by simple math operation
             # Round up value with 2 decimals
-            total    = "%.2f" % (float(noRateAmount[0]) + (float(noRateAmount[0]) * float(ratePercentage[0]) / 100))
+            try:
+                total    = "%.2f" % (float(noRateAmount[0]) + (float(noRateAmount[0]) * float(ratePercentage[0]) / 100))
+            except TypeError:
+                return False
 
             if float(total) == float(allRateAmount[0]):
-                self.Log.info('Footer informations found : [TOTAL : ' + str(total) + ' ] - [HT : ' + str(noRateAmount) + ' ] - [VATRATE : ' + str(ratePercentage[0] / 100) + ' ]')
+                self.Log.info('Footer informations found : [TOTAL : ' + str(total) + ' ] - [HT : ' + str(noRateAmount[0]) + ' ] - [VATRATE : ' + str(ratePercentage[0] / 100) + ' ]')
                 return noRateAmount, allRateAmount, ratePercentage
             else:
                 return False
