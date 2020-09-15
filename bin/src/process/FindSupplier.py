@@ -30,6 +30,7 @@ class FindSupplier:
         self.found_second       = True
         self.found_third        = True
         self.found_fourth       = True
+        self.found_fifth        = True
         self.found_last_first   = True
         self.splitted           = False
 
@@ -159,7 +160,9 @@ class FindSupplier:
                 self.found_third = False
             elif retry and not self.found_third and self.found_fourth:
                 self.found_fourth = False
-            elif retry and not self.found_fourth and self.found_last_first:
+            elif retry and not self.found_fourth and self.found_fifth:
+                self.found_fifth = False
+            elif retry and not self.found_fifth and self.found_last_first:
                 self.found_last_first = False
 
             # If we had to change footer to header
@@ -199,9 +202,9 @@ class FindSupplier:
             return self.run(retry=True, target='footer')
 
         # If NO supplier identification are found in the improved footer,
-        # Try using another tesseract function to extract text
-        if retry and not self.found_fourth and self.found_last_first:
-            self.Log.info('No supplier informations found in the footer, change Tesseract function to retrieve text and retry...')
+        # Try using another tesseract function to extract text on the header
+        if retry and not self.found_fourth and self.found_fifth:
+            self.Log.info('No supplier informations found in the footer, change Tesseract function to retrieve text and retry on header...')
             if self.Files.isTiff == 'True':
                 improved_image = self.Files.improve_image_detection(self.Files.tiffName_header)
             else:
@@ -209,6 +212,18 @@ class FindSupplier:
             self.Files.open_img(improved_image)
             self.text = self.Ocr.text_builder(self.Files.img)
             return self.run(retry=True, target='header', textAsString=True)
+
+        if retry and not self.found_fifth and self.found_last_first:
+            self.splitted = False
+            self.Log.info('No supplier informations found in the header as string, change Tesseract function to retrieve text and retry on footer...')
+            if self.Files.isTiff == 'True':
+                improved_image = self.Files.improve_image_detection(self.Files.tiffName_footer)
+            else:
+                improved_image = self.Files.improve_image_detection(self.Files.jpgName_footer)
+            self.Files.open_img(improved_image)
+            self.text = self.Ocr.text_builder(self.Files.img)
+
+            return self.run(retry=True, target='footer', textAsString=True)
 
         # Try now with the last page
         if retry and not self.found_last_first:
