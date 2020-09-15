@@ -64,7 +64,7 @@ class FindInvoiceNumber:
                 else:
                     text = self.Files.ocr_on_fly(self.Files.jpgName, positionArray, self.Ocr)
 
-                if text is not '':
+                if text !='':
                     self.Log.info('Invoice number found with position : ' + text)
                     return text, position
                 else:
