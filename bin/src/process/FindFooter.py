@@ -20,7 +20,7 @@ import operator
 from webApp.functions import search_by_positions
 
 class FindFooter:
-    def __init__(self, Ocr, Log, Locale, Config, Files, Database, supplier, file, text):
+    def __init__(self, Ocr, Log, Locale, Config, Files, Database, supplier, file, text, typo):
         self.date           = ''
         self.Ocr            = Ocr
         self.text           = text
@@ -34,6 +34,7 @@ class FindFooter:
         self.noRateAmount   = {}
         self.allRateAmount  = {}
         self.ratePercentage = {}
+        self.typo           = typo
 
     def process(self, regex):
         arrayOfData = {}
@@ -127,21 +128,21 @@ class FindFooter:
             target = self.Files.tiffName
         else :
             target = self.Files.jpgName
-        allRate  = search_by_positions(self.supplier, 'total_amount', self.Config, self.Locale, self.Ocr, self.Files, target)
+        allRate  = search_by_positions(self.supplier, 'total_amount', self.Config, self.Locale, self.Ocr, self.Files, target, self.typo)
         allRateAmount = {}
         if allRate and allRate[0]:
             allRateAmount = {
                 0: re.sub(r"[^0-9\.]|\.(?!\d)", "", allRate[0].replace(',', '.')),
                 1: allRate[1]
             }
-        noRate   = search_by_positions(self.supplier, 'ht_amount', self.Config, self.Locale, self.Ocr, self.Files, target)
+        noRate   = search_by_positions(self.supplier, 'ht_amount', self.Config, self.Locale, self.Ocr, self.Files, target, self.typo)
         noRateAmount = {}
         if noRate and noRate[0]:
             noRateAmount = {
                 0: re.sub(r"[^0-9\.]|\.(?!\d)", "", noRate[0].replace(',', '.')),
                 1: allRate[1]
             }
-        percentage = search_by_positions(self.supplier, 'rate_percentage', self.Config, self.Locale, self.Ocr, self.Files, target)
+        percentage = search_by_positions(self.supplier, 'rate_percentage', self.Config, self.Locale, self.Ocr, self.Files, target, self.typo)
         ratePercentage = {}
         if percentage and percentage[0]:
             ratePercentage = {
@@ -153,10 +154,6 @@ class FindFooter:
             noRateAmount    = self.process(self.Locale.noRatesRegex)
             ratePercentage  = self.process(self.Locale.vatRateRegex)
             allRateAmount   = self.process(self.Locale.allRatesRegex)
-
-        print(noRateAmount)
-        print(allRateAmount)
-        print(ratePercentage)
 
         # Test all amounts. If some are false, try to search them with position. If not, pass
         if self.test_amount(noRateAmount, allRateAmount, ratePercentage) is not False:
@@ -172,15 +169,6 @@ class FindFooter:
             elif ratePercentage is False and noRateAmount and allRateAmount:
                 vatAmount       = float("%.2f" % (float(allRateAmount[0]) - float(noRateAmount[0])))
                 ratePercentage  = [float("%.2f" % (float(vatAmount) / float(noRateAmount[0]) * 100)), (('',''),('',''))]
-                print('vatAmount : ' + str(vatAmount))
-
-
-            try:
-                print('noRateAmount : ' + str(noRateAmount[0]))
-                print('allRateAmount : ' + str(allRateAmount[0]))
-                print('ratePercentage : ' + str(ratePercentage[0] / 100))
-            except TypeError:
-                pass
 
             # Test if the three var's are good by simple math operation
             # Round up value with 2 decimals

@@ -19,7 +19,7 @@ import re
 from webApp.functions import search_by_positions
 
 class FindInvoiceNumber:
-    def __init__(self, Ocr, Files, Log, Locale, Config, Database, supplier):
+    def __init__(self, Ocr, Files, Log, Locale, Config, Database, supplier, typo):
         self.vatNumber      = ''
         self.Ocr            = Ocr
         self.Log            = Log
@@ -28,14 +28,15 @@ class FindInvoiceNumber:
         self.Config         = Config
         self.supplier       = supplier
         self.Database       = Database
+        self.typo           = typo
 
     def run(self):
         found = False
         if self.Files.isTiff == 'True':
             target = self.Files.tiffName_header
-        else :
+        else:
             target = self.Files.jpgName_header
-        invoiceNumber = search_by_positions(self.supplier, 'invoice', self.Config, self.Locale, self.Ocr, self.Files, target)
+        invoiceNumber = search_by_positions(self.supplier, 'invoice', self.Config, self.Locale, self.Ocr, self.Files, target, self.typo)
         if invoiceNumber and invoiceNumber[0]:
             return invoiceNumber
         for line in self.Ocr.header_text:

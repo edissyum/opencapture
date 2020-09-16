@@ -12,6 +12,8 @@ werkzeug
 requests
 gunicorn
 psycopg2
+pdf2image
+tensorflow
 flask_cors
 Flask-Babel
 pytesseract

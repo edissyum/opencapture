@@ -58,6 +58,9 @@ else: _Database = getattr(__import__(custom_array['Database']['path'] + '.' + cu
 if 'OCForInvoices' not in custom_array: from bin.src.process import OCForInvoices as OCForInvoices_process
 else: OCForInvoices_process = getattr(__import__(custom_array['OCForInvoices']['path'] , fromlist=[custom_array['OCForInvoices']['module']]), custom_array['OCForInvoices']['module'])
 
+if 'invoice_classification' not in custom_array: from bin.src.invoice_classification import invoice_classification
+else: OCForInvoices_process = getattr(__import__(custom_array['invoice_classification']['path'] , fromlist=[custom_array['invoice_classification']['module']]), custom_array['invoice_classification']['module'])
+
 OCforInvoices_worker = Kuyruk()
 
 OCforInvoices_worker.config.MANAGER_HOST         = "127.0.0.1"
@@ -148,7 +151,15 @@ def launch(args):
                 Log.info('Lock file created : ' + path + file + '.lock')
 
                 # Find file in the wanted folder (default or exported pdf after qrcode separation)
-                OCForInvoices_process.process(path + file, Log, Config, Files, Ocr, Locale, Database, WebServices)
+                typo = ''
+                if Config.cfg['IA_CLASSIFICATION']['enabled'] == 'True':
+                    invoice_classification.MODEL_PATH = Config.cfg['IA_CLASSIFICATION']['modelpath']
+                    invoice_classification.PREDICT_IMAGES_PATH = Config.cfg['IA_CLASSIFICATION']['trainimagepath']
+                    invoice_classification.TRAIN_IMAGES_PATH = Config.cfg['IA_CLASSIFICATION']['predictimagepath']
+                    typo = invoice_classification.predict_typo(path + file)
+                    Log.info('Typology found using AI : ' + typo)
+
+                OCForInvoices_process.process(path + file, Log, Config, Files, Ocr, Locale, Database, WebServices, typo)
 
                 try:
                     os.remove(path + file + '.lock')
@@ -158,9 +169,17 @@ def launch(args):
 
     elif 'file' in args and args['file'] is not None:
         path = args['file']
+        typo = ''
+        if Config.cfg['IA_CLASSIFICATION']['enabled'] == 'True':
+            invoice_classification.MODEL_PATH = Config.cfg['IA_CLASSIFICATION']['modelpath']
+            invoice_classification.PREDICT_IMAGES_PATH = Config.cfg['IA_CLASSIFICATION']['trainimagepath']
+            invoice_classification.TRAIN_IMAGES_PATH = Config.cfg['IA_CLASSIFICATION']['predictimagepath']
+            typo = invoice_classification.predict_typo(path)
+            Log.info('Typology found using AI : ' + typo)
+
         if check_file(Files, path, Config, Log) is not False:
             # Process the file and send it to Maarch
-            OCForInvoices_process.process(path, Log, Config, Files, Ocr, Locale, Database, WebServices)
+            OCForInvoices_process.process(path, Log, Config, Files, Ocr, Locale, Database, WebServices, typo)
 
     # Empty the tmp dir to avoid residual file
     recursive_delete(tmpFolder, Log)
@@ -168,4 +187,4 @@ def launch(args):
     Database.conn.close()
 
     end = time.time()
-    Log.info('Process end after ' + timer(start,end) + '')
+    Log.info('Process end after ' + timer(start, end) + '')

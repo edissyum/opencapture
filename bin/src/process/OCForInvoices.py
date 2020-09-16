@@ -95,7 +95,7 @@ def insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, fo
     else:
         Log.error('Error while inserting')
 
-def process(file, Log, Config, Files, Ocr, Locale, Database, WebServices):
+def process(file, Log, Config, Files, Ocr, Locale, Database, WebServices, typo):
     Log.info('Processing file : ' + file)
 
     # get the number of pages into the PDF documents
@@ -134,7 +134,7 @@ def process(file, Log, Config, Files, Ocr, Locale, Database, WebServices):
     supplier        = FindSupplier(Ocr, Log, Locale, Database, Files).run()
     # exit()
     # Find custom informations using mask
-    customFields    = FindCustom(Ocr.header_text, Log, Locale, Config, Ocr, Files, supplier).run()
+    customFields    = FindCustom(Ocr.header_text, Log, Locale, Config, Ocr, Files, supplier, typo).run()
     columns = {}
     if customFields:
         for field in customFields:
@@ -146,17 +146,17 @@ def process(file, Log, Config, Files, Ocr, Locale, Database, WebServices):
             })
 
     # Find invoice number
-    invoiceNumber   = FindInvoiceNumber(Ocr, Files, Log, Locale, Config, Database, supplier).run()
+    invoiceNumber   = FindInvoiceNumber(Ocr, Files, Log, Locale, Config, Database, supplier, typo).run()
 
     # Find invoice date number
-    date            = FindDate(Ocr.text, Log, Locale, Config, Files, Ocr, supplier).run()
+    date            = FindDate(Ocr.text, Log, Locale, Config, Files, Ocr, supplier, typo).run()
 
     # Find footer informations (total amount, no rate amount etc..)
-    footer          = FindFooter(Ocr, Log, Locale, Config, Files, Database, supplier, file + '[0]', Ocr.footer_text).run()
-    print(footer)
+    footer          = FindFooter(Ocr, Log, Locale, Config, Files, Database, supplier, file + '[0]', Ocr.footer_text, typo).run()
+
     if not footer:
         print('last page')
-        footer = FindFooter(Ocr, Log, Locale, Config, Files, Database, supplier, file + '[0]', Ocr.footer_last_text).run()
+        footer = FindFooter(Ocr, Log, Locale, Config, Files, Database, supplier, file + '[0]', Ocr.footer_last_text, typo).run()
     # exit()
     fileName          = str(uuid.uuid4())
     full_jpg_filename = 'full_' + fileName + '-%03d.jpg'

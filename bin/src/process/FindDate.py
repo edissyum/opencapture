@@ -20,7 +20,7 @@ from datetime import datetime
 from webApp.functions import search_by_positions
 
 class FindDate:
-    def __init__(self, text, Log, Locale, Config, Files, Ocr, supplier):
+    def __init__(self, text, Log, Locale, Config, Files, Ocr, supplier, typo):
         self.date       = ''
         self.text       = text
         self.Log        = Log
@@ -29,6 +29,7 @@ class FindDate:
         self.Files      = Files
         self.Ocr        = Ocr
         self.supplier   = supplier
+        self.typo       = typo
 
     def formatDate(self, date, position):
         date = date.replace('1er', '01')  # Replace some possible inconvenient char
@@ -109,7 +110,7 @@ class FindDate:
             target = self.Files.tiffName_header
         else :
             target = self.Files.jpgName_header
-        date = search_by_positions(self.supplier, 'date', self.Config, self.Locale, self.Ocr, self.Files, target)
+        date = search_by_positions(self.supplier, 'date', self.Config, self.Locale, self.Ocr, self.Files, target, self.typo)
         if date and date[0]:
             res = self.formatDate(date[0], date[1])
             if res:
