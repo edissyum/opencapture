@@ -18,7 +18,7 @@
 import re
 
 class FindSupplier:
-    def __init__(self, Ocr, Log, Locale, Database, Files):
+    def __init__(self, Ocr, Log, Locale, Database, Files, nb_pages):
         self.Ocr                = Ocr
         self.text               = Ocr.header_text
         self.Log                = Log
@@ -33,6 +33,7 @@ class FindSupplier:
         self.found_fifth        = True
         self.found_last_first   = True
         self.splitted           = False
+        self.nbPages            = nb_pages
 
     @staticmethod
     def validate_luhn(n):
@@ -94,7 +95,10 @@ class FindSupplier:
                         position = (('',''),('',''))
                     else:
                         position = self.Files.returnPositionWithRatio(line, target)
-                    return existingSupplier[0]['vat_number'], position, existingSupplier[0]
+                    data = [existingSupplier[0]['vat_number'], position, existingSupplier[0]]
+                    if not self.found_last_first:
+                        data.append(self.nbPages)
+                    return data
 
         if not vatFound:
             siretNumber = self.process(self.Locale.SIRETRegex, textAsString)
@@ -111,7 +115,10 @@ class FindSupplier:
                         if existingSupplier:
                             self.regenerateOcr()
                             self.Log.info('SIRET found : ' + _siret)
-                            return existingSupplier[0]['vat_number'], (('',''),('','')), existingSupplier[0]
+                            data = [existingSupplier[0]['vat_number'], (('', ''), ('', '')), existingSupplier[0]]
+                            if not self.found_last_first:
+                                data.append(self.nbPages)
+                            return data
                         else:
                             self.Log.info('SIRET found : ' + _siret + ' but no supplier found in database using this SIRET')
         if not siretFound:
@@ -130,8 +137,10 @@ class FindSupplier:
                         if existingSupplier:
                             self.regenerateOcr()
                             self.Log.info('SIREN found : ' + _siren)
-
-                            return existingSupplier[0]['vat_number'], (('', ''), ('', '')), existingSupplier[0]
+                            data = [existingSupplier[0]['vat_number'], (('', ''), ('', '')), existingSupplier[0]]
+                            if not self.found_last_first:
+                                data.append(self.nbPages)
+                            return data
                         else:
                             if siretNumber:
                                 for _siret in siretNumber:
@@ -149,7 +158,10 @@ class FindSupplier:
                                         if existingSupplier:
                                             self.regenerateOcr()
                                             self.Log.info('SIREN found using SIRET base : ' + _siret)
-                                            return existingSupplier[0]['vat_number'], (('', ''), ('', '')), existingSupplier[0]
+                                            data = [existingSupplier[0]['vat_number'], (('', ''), ('', '')), existingSupplier[0]]
+                                            if not self.found_last_first:
+                                                data.append(self.nbPages)
+                                            return data
 
                 self.Log.info("SIREN not found or doesn't meet the Luhn's algorithm")
             if not retry:
@@ -222,7 +234,6 @@ class FindSupplier:
                 improved_image = self.Files.improve_image_detection(self.Files.jpgName_footer)
             self.Files.open_img(improved_image)
             self.text = self.Ocr.text_builder(self.Files.img)
-
             return self.run(retry=True, target='footer', textAsString=True)
 
         # Try now with the last page
