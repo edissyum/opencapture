@@ -60,6 +60,8 @@ CREATE TABLE if NOT EXISTS invoices(
     ht_amount1_position      VARCHAR,
     vat_rate1                VARCHAR,
     vat_rate1_position       VARCHAR,
+    footer_page              VARCHAR,
+    supplier_page            VARCHAR,
     locked                   INTEGER DEFAULT 0 NOT NULL,
     locked_by                VARCHAR(20),
     processed                INTEGER DEFAULT 0

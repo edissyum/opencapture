@@ -18,7 +18,6 @@
 import os
 import uuid
 import shutil
-import PyPDF4
 import datetime
 
 from webApp.functions import get_custom_id, check_python_customized_files
@@ -52,6 +51,7 @@ def insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, fo
     columns = {
         'vat_number': supplier[0] if supplier and supplier[0] else '',
         'vat_number_position': str(supplier[1]) if supplier and supplier[1] else '',
+        'supplier_page': str(supplier[3]) if supplier and supplier[3] else '1',
         'invoice_date': date[0] if date and date[0] else '',
         'invoice_date_position': str(date[1]) if date and date[1]  else '',
         'invoice_number': invoiceNumber[0] if invoiceNumber and invoiceNumber[0] else '',
@@ -62,6 +62,7 @@ def insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, fo
         'ht_amount1_position': str(footer[0][1]) if footer and footer[0] else '',
         'vat_rate1': str(footer[2][0]) if footer and footer[2] else '',
         'vat_rate1_position': str(footer[2][1]) if footer and footer[2] else '',
+        'footer_page' : str(footer[3]) if footer and footer[3] else '1',
         'filename': os.path.basename(file),
         'path': os.path.dirname(file),
         'img_width': str(Files.get_size(path)),
@@ -100,6 +101,7 @@ def process(file, Log, Config, Files, Ocr, Locale, Database, WebServices, typo):
 
     # get the number of pages into the PDF documents
     nb_pages = Files.getPages(file)
+
     if Files.isTiff == 'True':
         Files.pdf_to_tiff(file, Files.tiffName, True, True, True, 'header')
         Ocr.header_text = Ocr.line_box_builder(Files.img)
@@ -122,17 +124,16 @@ def process(file, Log, Config, Files, Ocr, Locale, Database, WebServices, typo):
         Files.pdf_to_jpg(file + '[0]')
         Ocr.text = Ocr.line_box_builder(Files.img)
         if nb_pages > 1 :
-            cpt = str(nb_pages - 1)
-            Files.pdf_to_jpg(file + '[' + cpt + ']', True, True, 'header', True)
+            Files.pdf_to_jpg(file + '[' + str(nb_pages - 1) + ']', True, True, 'header', True)
             Ocr.header_last_text = Ocr.line_box_builder(Files.img)
-            Files.pdf_to_jpg(file + '[' + cpt + ']', True, True, 'footer', True)
+            Files.pdf_to_jpg(file + '[' + str(nb_pages - 1) + ']', True, True, 'footer', True)
             Ocr.footer_last_text = Ocr.line_box_builder(Files.img)
-            Files.pdf_to_jpg(file + '[' + cpt + ']', lastImage=True)
+            Files.pdf_to_jpg(file + '[' + str(nb_pages - 1) + ']', lastImage=True)
             Ocr.last_text = Ocr.line_box_builder(Files.img)
 
     # Find supplier in document
-    supplier        = FindSupplier(Ocr, Log, Locale, Database, Files).run()
-    # exit()
+    supplier        = FindSupplier(Ocr, Log, Locale, Database, Files, nb_pages).run()
+
     # Find custom informations using mask
     customFields    = FindCustom(Ocr.header_text, Log, Locale, Config, Ocr, Files, supplier, typo).run()
     columns = {}
@@ -155,9 +156,10 @@ def process(file, Log, Config, Files, Ocr, Locale, Database, WebServices, typo):
     footer          = FindFooter(Ocr, Log, Locale, Config, Files, Database, supplier, file + '[0]', Ocr.footer_text, typo).run()
 
     if not footer:
-        print('last page')
         footer = FindFooter(Ocr, Log, Locale, Config, Files, Database, supplier, file + '[0]', Ocr.footer_last_text, typo).run()
-    # exit()
+        if footer:
+            footer.append(nb_pages)
+
     fileName          = str(uuid.uuid4())
     full_jpg_filename = 'full_' + fileName + '-%03d.jpg'
     tiff_filename     = 'tiff_' + fileName + '-%03d.tiff'
