@@ -29,8 +29,9 @@ def check_python_customized_files(path):
 def retrieve_custom_positions(typology, Config):
     if typology:
         file = Config.cfg['REFERENCIAL']['referencialposition'] + typology + '.ini'
-        positions = Config.read_custom_position(file)
-        return positions
+        if os.path.isfile(file):
+            positions = Config.read_custom_position(file)
+            return positions
     return False
 
 def search_custom_positions(data, Ocr, Files, Locale):
@@ -57,13 +58,17 @@ def search_custom_positions(data, Ocr, Files, Locale):
             regex = localeList[regex]
         return search(position, regex, Files, Ocr, target_file)
 
-def search_by_positions(supplier, index, Config, Locale, Ocr, Files, target_file):
-    if supplier:
-        positions = Config.read_position(supplier[2]['typology'], index, Locale)
-        if positions:
-            return search(positions['position'], positions['regex'], Files, Ocr, target_file)
+def search_by_positions(supplier, index, Config, Locale, Ocr, Files, target_file, typo):
+    if typo:
+       typology = typo
+    elif supplier and supplier[2]['typology']:
+        typology = supplier[2]['typology']
     else:
         return False, (('', ''), ('', ''))
+
+    positions = Config.read_position(typology, index, Locale)
+    if positions:
+        return search(positions['position'], positions['regex'], Files, Ocr, target_file)
 
 def search(position, regex, Files, Ocr, target_file):
     positionArray = Ocr.prepare_ocr_on_fly(position)

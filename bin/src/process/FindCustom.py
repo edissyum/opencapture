@@ -19,7 +19,7 @@ import re
 from webApp.functions import search_custom_positions, retrieve_custom_positions
 
 class FindCustom:
-    def __init__(self, text, Log, Locale, Config, Ocr, Files, supplier):
+    def __init__(self, text, Log, Locale, Config, Ocr, Files, supplier, typo):
         self.text = text
         self.Ocr = Ocr
         self.Log = Log
@@ -28,6 +28,7 @@ class FindCustom:
         self.Files = Files
         self.OCRErrorsTable = Ocr.OCRErrorsTable
         self.supplier = supplier
+        self.typo = typo
 
     def process(self, data):
         for line in self.text:
@@ -44,25 +45,29 @@ class FindCustom:
 
     def run(self):
         dataToReturn = {}
-        if self.supplier:
+        list_of_fields = {}
+        if self.typo:
+            list_of_fields = retrieve_custom_positions(self.typo, self.Config)
+        elif self.supplier and self.supplier[2]['typology']:
             list_of_fields = retrieve_custom_positions(self.supplier[2]['typology'], self.Config)
-            if list_of_fields:
-                for index in list_of_fields:
-                    data, position = search_custom_positions(list_of_fields[index], self.Ocr, self.Files, self.Locale)
-                    if not data and list_of_fields[index]['regex'] is not False:
-                        dataToReturn[index] = [self.process(list_of_fields[index]), position, list_of_fields[index]['column']]
-                        if list_of_fields[index]['type'] == 'date':
-                            if index in dataToReturn and dataToReturn[index][0]:
-                                for date in re.finditer(r"" + self.Locale.dateRegex, dataToReturn[index][0]):
-                                    dataToReturn[index] = [date.group(), position, list_of_fields[index]['column']]
-                            elif list_of_fields[index]['type'] == 'number':
-                                if index in dataToReturn and dataToReturn[index][0]:
-                                    dataToReturn[index] = [data, position, list_of_fields[index]['column']]
-                    else:
-                        if list_of_fields[index]['type'] == 'date':
-                            for date in re.finditer(r"" + self.Locale.dateRegex, data):
-                                data = date.group()
+
+        if list_of_fields:
+            for index in list_of_fields:
+                data, position = search_custom_positions(list_of_fields[index], self.Ocr, self.Files, self.Locale)
+                if not data and list_of_fields[index]['regex'] is not False:
+                    dataToReturn[index] = [self.process(list_of_fields[index]), position, list_of_fields[index]['column']]
+                    if list_of_fields[index]['type'] == 'date':
+                        if index in dataToReturn and dataToReturn[index][0]:
+                            for date in re.finditer(r"" + self.Locale.dateRegex, dataToReturn[index][0]):
+                                dataToReturn[index] = [date.group(), position, list_of_fields[index]['column']]
                         elif list_of_fields[index]['type'] == 'number':
-                            data = re.sub('[^0-9]', '', data)
-                        dataToReturn[index] = [data, position, list_of_fields[index]['column']]
-            return dataToReturn
+                            if index in dataToReturn and dataToReturn[index][0]:
+                                dataToReturn[index] = [data, position, list_of_fields[index]['column']]
+                else:
+                    if list_of_fields[index]['type'] == 'date':
+                        for date in re.finditer(r"" + self.Locale.dateRegex, data):
+                            data = date.group()
+                    elif list_of_fields[index]['type'] == 'number':
+                        data = re.sub('[^0-9]', '', data)
+                    dataToReturn[index] = [data, position, list_of_fields[index]['column']]
+        return dataToReturn
