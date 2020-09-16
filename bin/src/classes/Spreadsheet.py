@@ -61,7 +61,7 @@ class Spreadsheet:
         # Drop row 0 because it contains the indexes columns
         contentSheet = contentSheet.drop(0)
         # Drop empty rows
-        contentSheet = contentSheet.dropna(axis=0, how='any', thresh=None, subset=None)
+        contentSheet = contentSheet.dropna(axis=0, how='all', thresh=None, subset=None)
 
         return contentSheet
 
