@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS invoices_batch_(
     dir_name VARCHAR,
     first_page VARCHAR,
     image_folder_name VARCHAR,
-    ceation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status VARCHAR DEFAULT 'NEW',
     page_number INTEGER
 );
