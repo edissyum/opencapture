@@ -187,7 +187,7 @@ In the default <code>config_DEFAULT.ini</code> file there is a SPLITTER part :
 Obviously you could launch the separation by the web using the "Download" page. But you also could launch separation using bash script combined with incron.
 Here is an example of incrontab : 
 
-    /path/to/capture/ IN_CLOSE_WRITE,IN_MOVED_TO /opt/OpenCaptureForInvoices/scripts/launch_SPLITTER.sh $@/$#
+    /path/to/capture/ IN_CLOSE_WRITE,IN_MOVED_TO /opt/OpenCaptureForInvoices/bin/scripts/launch_SPLITTER.sh $@/$#
     
 # LICENSE
 Open-Capture for Maarch is released under the GPL v3.
