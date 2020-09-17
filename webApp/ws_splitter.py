@@ -1,6 +1,7 @@
 import os
 import json
 import shutil
+from datetime import datetime
 
 from flask_babel import gettext
 from flask_paginate import Pagination, get_page_args
@@ -92,8 +93,17 @@ def splitter_manager():
     for index_directory, directoryname in enumerate(os.listdir(_cfg.cfg['SPLITTER']['pdfoutputpath'])):
         files_path.append(index_directory)
 
+    result = [dict(pdf) for pdf in list_batch]
+    for line in result:
+        if _cfg.cfg['DATABASE']['databasetype'] == 'pgsql':
+            pattern = "%Y-%m-%d %H:%M:%S.%f"
+        else:
+            pattern = "%Y-%m-%d %H:%M:%S"
+
+        line['creation_date'] = datetime.strptime(str(line['creation_date']), pattern).strftime('%d-%m-%Y à %H:%M')
+
     return render_template('templates/splitter/splitter_manager.html',
-                            batch_list=list_batch,
+                            batch_list=result,
                             page = page,
                             per_page = per_page,
                             pagination=pagination,

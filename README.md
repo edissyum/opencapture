@@ -63,7 +63,7 @@ Supervisor is useful if you need to run multiple instance of Open-Capture in par
 Systemd is perfect for one instance
 
     $ cd bin/install/
-    $ nano +6 Makefile
+    $ nano +13 Makefile
     $ chmod u+x Makefile
     $ sudo ./Makefile
         # Go grab a coffee ;)
