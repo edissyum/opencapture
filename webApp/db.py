@@ -1,6 +1,5 @@
 import click
-import sqlite3
-import psycopg2
+
 from flask import current_app, g
 from flask.cli import with_appcontext
 from webApp.functions import get_custom_id, check_python_customized_files
