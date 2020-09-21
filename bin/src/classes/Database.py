@@ -63,6 +63,7 @@ class Database:
             if 'left_join' in args:
                 if (len(tmpTable) - 1) != len(args['left_join']):
                     self.Log.error("Number of tables doesn't match with number of joins")
+                    self.Log.error(str(args))
                 else:
                     cpt = 1
                     for joins in args['left_join']:
@@ -136,7 +137,7 @@ class Database:
                 c.execute(query, args['data'])
                 return c.fetchall()
             except sqlite3.OperationalError as e:
-                self.Log.error(e)
+                self.Log.error('Error while querying SELECT : ' + str(e))
                 return False
 
     def insert(self, args):
@@ -160,7 +161,7 @@ class Database:
                 c.execute(query)
                 return True
             except sqlite3.OperationalError as e:
-                self.Log.error(e)
+                self.Log.error('Error while querying INSERT : ' + str(e))
                 return False
 
     def update(self, args):
@@ -189,5 +190,5 @@ class Database:
                 self.conn.commit()
                 return True, ''
             except sqlite3.OperationalError as e:
-                self.Log.error(e)
+                self.Log.error('Error while querying UPDATE : ' + str(e))
                 return False, e

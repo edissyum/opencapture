@@ -70,7 +70,6 @@ class Xml:
                 res = self.db.select({
                     'select'    : [field],
                     'table'     : [table],
-                    'left_join' : ['suppliers.vat_number = invoices.vat_number'],
                     'where'     : [where],
                     'data'      : [data],
                     'limit'     : 1
