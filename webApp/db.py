@@ -39,7 +39,6 @@ def get_db():
         g.db = init()['db']
     return g.db
 
-
 def close_db(e=None):
     db = g.pop('db', None)
 
