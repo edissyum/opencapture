@@ -121,6 +121,6 @@ def admin_login_required(view):
         if g.user is None:
             return redirect(url_for('auth.login'))
         elif g.user['username'] != 'admin':
-            return render_template('templates/error/403.html'), 403
+            return render_template('templates/error/403.html')
         return view(**kwargs)
     return wrapped_view
