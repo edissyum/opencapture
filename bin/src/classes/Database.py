@@ -39,6 +39,8 @@ class Database:
                 self.conn.row_factory = sqlite3.Row
             except sqlite3.Error as e:
                 self.Log.error('SQLITE connection error: ' + str(e))
+                exit()
+
         elif self.type == 'pgsql' and self.conn is None:
             try:
                 self.conn = psycopg2.connect(
@@ -49,8 +51,8 @@ class Database:
                     " port      =" + self.port)
                 self.conn.autocommit = True
             except (psycopg2.OperationalError, psycopg2.ProgrammingError) as e:
-                self.Log.error('PGSQL connection error: ' + str(e))
-
+                self.Log.error('PGSQL connection error : ' + str(e))
+                exit()
 
     def select(self, args):
         if 'table' not in args or 'select' not in args:
@@ -136,7 +138,6 @@ class Database:
             except sqlite3.OperationalError as e:
                 self.Log.error(e)
                 return False
-
 
     def insert(self, args):
         if 'table' not in args:

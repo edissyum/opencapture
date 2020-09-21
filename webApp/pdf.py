@@ -464,7 +464,6 @@ def static(typeofFile, filename):
 
     return Response(content, mimetype=mimetype)
 
-
 def change_status(rowid, status):
     _vars   = init()
     _db     = _vars[0]
