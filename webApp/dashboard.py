@@ -100,7 +100,7 @@ def modify_config(data):
     convertPdfToTiff         = data.get('GLOBAL_convertpdftotiff')
     allowByPassSupplier      = data.get('GLOBAL_allowbypasssuppliebanverif')
     gedEnabled               = data.get('GED_enabled')
-    aiEnabled                = data.get('IA-CLASSIFICATION_enabled')
+    aiEnabled                = data.get('AI-CLASSIFICATION_enabled')
 
     if separatorQREnabled is not None:
         parser.set('SEPARATORQR', 'enabled', 'True')
@@ -133,9 +133,9 @@ def modify_config(data):
         parser.set('GED', 'enabled', 'False')
 
     if aiEnabled is not None:
-        parser.set('IA-CLASSIFICATION', 'enabled', 'True')
+        parser.set('AI-CLASSIFICATION', 'enabled', 'True')
     else:
-        parser.set('IA-CLASSIFICATION', 'enabled', 'False')
+        parser.set('AI-CLASSIFICATION', 'enabled', 'False')
 
     if allowByPassSupplier is not None:
         parser.set('GLOBAL', 'allowbypasssuppliebanverif', 'True')
