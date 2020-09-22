@@ -228,14 +228,14 @@ function ocrOnFly(isRemoved, inputId, removeWhiteSpace = false, needToBeNumber =
                                 input.setAttribute('y1_original', '');
                                 input.setAttribute('x2_original', '');
                                 input.setAttribute('y2_original', '');
-                                input.setAttribute('x1', x1.toString());
-                                input.setAttribute('y1', y1.toString());
-                                input.setAttribute('x2', x2.toString());
-                                input.setAttribute('y2', y2.toString());
+                                input.setAttribute('x1', x1.toFixed(2).toString());
+                                input.setAttribute('y1', y1.toFixed(2).toString());
+                                input.setAttribute('x2', x2.toFixed(2).toString());
+                                input.setAttribute('y2', y2.toFixed(2).toString());
                                 input.setAttribute('page', currentPage === undefined ? 1 : currentPage.text());
 
                                 $('#' + input.id).parent().append('<input type="hidden" id="' + input.name + '_position" name="' + input.name + '_position"/>')
-                                $('#' + input.name + '_position').val('((' + x1 + ',' + y1 + '),(' + x2 + ',' + y2 + '))');
+                                $('#' + input.name + '_position').val('((' + x1.toFixed(2) + ',' + y1.toFixed(2) + '),(' + x2.toFixed(2) + ',' + y2.toFixed(2) + '))');
 
                                 // Show the eyes, on click on it, it will show the rectangle on the image
                                 // .prev() allow us to display the input-group-text class, containing the eye
@@ -293,7 +293,7 @@ $(document).ready(function() {
                             console.log('error')
                         }else{
                             let result = JSON.parse(res.text);
-                            document.cookie = "access_token=" + result['access_token'];
+                            document.cookie = "access_token=" + result['access_token'] + ";max-age=604800";
                             token = getCookie('access_token');
                         }
                     }
