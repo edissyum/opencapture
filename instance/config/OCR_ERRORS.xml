@@ -2,7 +2,7 @@
     <NUMBERS>
         <ELEMENT>
             <FIX>0</FIX>
-            <MISREAD_CHARS>oO</MISREAD_CHARS>
+            <MISREAD_CHARS>oOC</MISREAD_CHARS>
         </ELEMENT>
         <ELEMENT>
             <FIX>1</FIX>
