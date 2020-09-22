@@ -1187,10 +1187,10 @@
                         </div>
                         <div class="tab-pane fade" id="aiSettings" role="tabpanel" aria-labelledby="aiSettings">
                             <div class="form-group col-md-4 offset-md-6">
-                                {% if configDashboard['IA-CLASSIFICATION']['enabled'] == 'True' %}
-                                    <input type="checkbox" class="custom-control-input" name="IA-CLASSIFICATION_enabled"  id="classification" checked>
+                                {% if configDashboard['AI-CLASSIFICATION']['enabled'] == 'True' %}
+                                    <input type="checkbox" class="custom-control-input" name="AI-CLASSIFICATION_enabled"  id="classification" checked>
                                 {% else %}
-                                    <input type="checkbox" class="custom-control-input" name="IA-CLASSIFICATION_enabled" id="classification">
+                                    <input type="checkbox" class="custom-control-input" name="AI-CLASSIFICATION_enabled" id="classification">
                                 {% endif %}
                                 <label class="custom-control-label" for="ia-classificationenabled">{{ gettext('ENABLED') }}</label>
                             </div>
@@ -1203,7 +1203,7 @@
                                                 <i class="fas fa-project-diagram"></i>
                                             </div>
                                         </div>
-                                        <input type="text" class="form-control" id="iapath" name="IA-CLASSIFICATION_iapath" value="{{ configDashboard['IA-CLASSIFICATION']['iapath'] }}">
+                                        <input type="text" class="form-control" id="iapath" name="AI-CLASSIFICATION_iapath" value="{{ configDashboard['AI-CLASSIFICATION']['iapath'] }}">
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6">
@@ -1214,7 +1214,7 @@
                                                 <i class="fas fa-map-signs"></i>
                                             </div>
                                         </div>
-                                        <input type="text" class="form-control" id="modelpath" name="IA-CLASSIFICATION_modelpath" value="{{ configDashboard['IA-CLASSIFICATION']['modelpath'] }}">
+                                        <input type="text" class="form-control" id="modelpath" name="AI-CLASSIFICATION_modelpath" value="{{ configDashboard['AI-CLASSIFICATION']['modelpath'] }}">
                                     </div>
                                 </div>
                             </div>
@@ -1227,7 +1227,7 @@
                                                 <i class="fas fa-project-diagram"></i>
                                             </div>
                                         </div>
-                                        <input type="text" class="form-control" id="trainimagepath" name="IA-CLASSIFICATION_trainimagepath" value="{{ configDashboard['IA-CLASSIFICATION']['trainimagepath'] }}">
+                                        <input type="text" class="form-control" id="trainimagepath" name="AI-CLASSIFICATION_trainimagepath" value="{{ configDashboard['AI-CLASSIFICATION']['trainimagepath'] }}">
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6">
@@ -1238,7 +1238,20 @@
                                                 <i class="fas fa-map-signs"></i>
                                             </div>
                                         </div>
-                                        <input type="text" class="form-control" id="predictimagepath" name="IA-CLASSIFICATION_predictimagepath" value="{{ configDashboard['IA-CLASSIFICATION']['predictimagepath'] }}">
+                                        <input type="text" class="form-control" id="predictimagepath" name="AI-CLASSIFICATION_predictimagepath" value="{{ configDashboard['AI-CLASSIFICATION']['predictimagepath'] }}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <label for="confidenceMin">{{ gettext('AI_CONFIDENCE_MIN') }}</label>
+                                    <div class="input-group mb-2">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">
+                                                <i class="fas fa-database"></i>
+                                            </div>
+                                        </div>
+                                        <input type="text" class="form-control" id="confidenceMin" name="AI-CLASSIFICATION_confidencemin" value="{{ configDashboard['AI-CLASSIFICATION']['confidencemin'] }}">
                                     </div>
                                 </div>
                             </div>
@@ -1317,7 +1330,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group col-md-4">
-                                    <label for="postgrespassword">{{ gettext('POSTGRES_USER') }}</label>
+                                    <label for="postgrespassword">{{ gettext('POSTGRES_PASSWORD') }}</label>
                                     <div class="input-group mb-2">
                                         <div class="input-group-prepend">
                                             <div class="input-group-text">
