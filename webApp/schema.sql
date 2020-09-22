@@ -33,7 +33,9 @@ CREATE TABLE if NOT EXISTS suppliers(
     vat_1_position             VARCHAR,
     vat_2_position             VARCHAR,
     vat_3_position             VARCHAR,
-    vat_4_position             VARCHAR
+    vat_4_position             VARCHAR,
+    footer_page                VARCHAR,
+    supplier_page              VARCHAR,
 );
 
 CREATE TABLE if NOT EXISTS invoices(
