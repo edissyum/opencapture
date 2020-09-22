@@ -234,8 +234,14 @@ function ocrOnFly(isRemoved, inputId, removeWhiteSpace = false, needToBeNumber =
                                 input.setAttribute('y2', y2.toFixed(2).toString());
                                 input.setAttribute('page', currentPage === undefined ? 1 : currentPage.text());
 
-                                $('#' + input.id).parent().append('<input type="hidden" id="' + input.name + '_position" name="' + input.name + '_position"/>')
+                                if (!$('#' + input.name + '_position').length)
+                                    $('#' + input.id).parent().append('<input type="hidden" id="' + input.name + '_position" name="' + input.name + '_position"/>')
+
+                                if (!$('#' + input.name + '_page').length)
+                                    $('#' + input.id).parent().append('<input type="hidden" id="' + input.name + '_page" name="' + input.name + '_page"/>')
+
                                 $('#' + input.name + '_position').val('((' + x1.toFixed(2) + ',' + y1.toFixed(2) + '),(' + x2.toFixed(2) + ',' + y2.toFixed(2) + '))');
+                                $('#' + input.name + '_page').val(currentPage === undefined ? 1 : currentPage.text());
 
                                 // Show the eyes, on click on it, it will show the rectangle on the image
                                 // .prev() allow us to display the input-group-text class, containing the eye
