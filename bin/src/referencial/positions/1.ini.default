@@ -5,26 +5,31 @@
 position    = ((x1, y1), (x2, y2))
 regex       =
 type        = string
+page        = 1
 
 [date]
 position    = ((x1, y1), (x2, y2))
 regex       = dateRegex
 type        = date
+page        = 1
 
 [total_amount]
 position    = ((x1, y1), (x2, y2))
 regex       =
 type        = string
+page        = 1
 
 [ht_amount]
 position    = ((x1, y1), (x2, y2))
 regex       =
 type        = string
+page        = 1
 
 [rate_percentage]
 position    = ((x1, y1), (x2, y2))
 regex       =
 type        = string
+page        = 1
 
 ######
 # Custom metadata
@@ -39,3 +44,5 @@ type        = string
 column      = example
 # Target could be header, footer or full
 target      = header
+# Page where we could find the metadata
+page        = 1
