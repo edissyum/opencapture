@@ -47,7 +47,6 @@
             <button onclick="loadPageFiltered(document.getElementById('pickStatus').options[document.getElementById('pickStatus').selectedIndex].value)" class="btn btn-outline-secondary" type="button">{{ gettext('FILTER') }}</button>
         </div>
     </div>
-
     {{ pagination.info }}
     {{ pagination.links }}
     <div class="container-fluid" id="main">
@@ -72,8 +71,7 @@
 
                                     {% if pdf['status'] == 'END' %}
                                         onclick="alert('{{ invoice_closed }}')"
-                                    {% endif %}
-                            >
+                                    {% endif %}>
                                 <img class="card-img-top lazy"
                                      data-original="{{ url_for('pdf.static', typeofFile='full', filename=pdf['full_jpg_filename']) }}"
                                      alt="Thumbnail">
@@ -102,6 +100,9 @@
                                         </button>
                                     </span>
                                 </p>
+                            </div>
+                            <div class="top-left">
+                                <input id="{{ pdf['invoice_id'] }}_checkbox" class="checkBox_list" type="checkbox"/>
                             </div>
                             <div class="ribbon ribbon-top-right {{ pdf['status_id'] }}">
                                 <span data-toggle="tooltip" data-placement="left" title="{{ gettext(pdf['status_id'] + '_LONG') }}">{{ gettext(pdf['status_id']) }}{% if pdf['locked'] %} &nbsp;  <i class="fas fa-lock"></i> {% endif %}</span>

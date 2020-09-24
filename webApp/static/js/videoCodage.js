@@ -138,8 +138,9 @@ function ocrOnFly(isRemoved, inputId, removeWhiteSpace = false, needToBeNumber =
     let myImage     = $('#my-image');
     let zoomImg     = $('.zoomImg');
     // ratioImg is used to recalculate the (x,y) position when the ocr is done on the zoomed image
-    let ratioImg   = originalWidth / myImage.width();
-    let isNotZoomed    = (zoomImg.length === 0 || zoomImg.css('opacity') === '0');
+    let ratioImg    = originalWidth / myImage.width();
+
+    let isNotZoomed = (zoomImg.length === 0 || zoomImg.css('opacity') === '0');
     if (isNotZoomed){
         zoomImg.css({
             'z-index' : -99
@@ -218,7 +219,6 @@ function ocrOnFly(isRemoved, inputId, removeWhiteSpace = false, needToBeNumber =
 
                                 // Add the coordonates of selection to draw rectangle later
                                 // Remove the _original because of the ratio issues
-
                                 let x1 = selection.x1 * ratioImg;
                                 let y1 = selection.y1 * ratioImg;
                                 let x2 = selection.x2 * ratioImg;
@@ -333,7 +333,6 @@ $(document).ready(function() {
         });
 
     }
-
     // Reload image width if user zoom in the page
     $(window).resize(function(){
         windowsWidth = $('#my-image').width();
@@ -498,8 +497,6 @@ function addVAT(input){
 function removeVAT(input){
     let VATToRemove         = $('.MAIN_' + input.className);
     let VATAmountToRemove   = $('.AMOUNT_' + input.className);
-    console.log(input.className)
-    console.log(VATAmountToRemove)
     let currentCptVAT       = parseInt(VATToRemove[0].className.split('_')[2]);
 
     // Avoid deletion of VAT rate if there is just one
@@ -773,7 +770,6 @@ function hideOrDisplay(input){
         }
     });
 }
-
 
 /******** CHECK FUNCTION ********/
 
