@@ -1,3 +1,4 @@
+import logging
 import os
 import json
 import requests
@@ -35,6 +36,7 @@ def checkVAT(vatId):
     vatNumber = vatId[2:]
 
     try:
+        logging.getLogger('zeep').setLevel(logging.ERROR)
         client = Client(URL)
         res = client.service.checkVat(countryCode, vatNumber)
         text = res['valid']
