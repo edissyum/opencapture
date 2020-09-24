@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-09-22 16:38+0200\n"
+"POT-Creation-Date: 2020-09-24 14:46+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -64,11 +64,11 @@ msgstr ""
 msgid "OF"
 msgstr ""
 
-#: webApp/pdf.py:437
+#: webApp/pdf.py:456
 msgid "END_LONG"
 msgstr ""
 
-#: webApp/pdf.py:439
+#: webApp/pdf.py:458
 msgid "ERROR_WHILE_INSERTING_IN_GED"
 msgstr ""
 
@@ -132,7 +132,7 @@ msgstr ""
 msgid "ERROR_UPDATE_CONFIG_FILE"
 msgstr ""
 
-#: webApp/ws.py:211
+#: webApp/ws.py:212
 msgid "INVOICE_DELETED"
 msgstr ""
 
@@ -140,149 +140,162 @@ msgstr ""
 msgid "FILE_UPLOAD_SUCCESS"
 msgstr ""
 
-#: webApp/static/js/script.js:44
+#: webApp/static/js/script.js:45
 msgid "_CONFIRM_DELETE"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:185
+#: webApp/static/js/script.js:74 webApp/static/js/script.js:81
+#: webApp/static/js/script.js:89
+msgid "SELECT_ALL"
+msgstr ""
+
+#: webApp/static/js/script.js:83
+msgid "UNSELECT_ALL"
+msgstr ""
+
+#: webApp/static/js/script.js:99
+msgid "_CONFIRM_DELETE_BATCH"
+msgstr ""
+
+#: webApp/static/js/videoCodage.js:186
 msgid "WAIT_OCR_END"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:288
+#: webApp/static/js/videoCodage.js:294
 msgid "SIRET_CONNECTION_ERROR"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:326
+#: webApp/static/js/videoCodage.js:332
 msgid "ERROR_WHILE_READING_CONFIGURATION_FILE"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:441
+#: webApp/static/js/videoCodage.js:446
 #: webApp/templates/dashboard/index.html:803 webApp/templates/pdf/view.html:201
 msgid "VAT_RATE"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:450 webApp/static/js/videoCodage.js:553
+#: webApp/static/js/videoCodage.js:455 webApp/static/js/videoCodage.js:556
 #: webApp/templates/dashboard/index.html:781 webApp/templates/pdf/view.html:210
 #: webApp/templates/pdf/view.html:284
 msgid "NO_RATE_AMOUNT"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:459 webApp/templates/pdf/view.html:219
+#: webApp/static/js/videoCodage.js:464 webApp/templates/pdf/view.html:219
 msgid "LOAD_ACCOUNT"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:461 webApp/templates/pdf/view.html:221
+#: webApp/static/js/videoCodage.js:466 webApp/templates/pdf/view.html:221
 msgid "SELECT_LOAD_ACCOUNT"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:479 webApp/templates/pdf/view.html:260
+#: webApp/static/js/videoCodage.js:484 webApp/templates/pdf/view.html:260
 msgid "VAT_AMOUNT"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:559 webApp/templates/pdf/view.html:290
+#: webApp/static/js/videoCodage.js:562 webApp/templates/pdf/view.html:290
 msgid "BUDGET"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:561 webApp/templates/pdf/view.html:292
+#: webApp/static/js/videoCodage.js:564 webApp/templates/pdf/view.html:292
 msgid "SELECT_STRUCTURE"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:567 webApp/templates/pdf/view.html:338
+#: webApp/static/js/videoCodage.js:570 webApp/templates/pdf/view.html:338
 msgid "OUTCOME"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:569 webApp/templates/pdf/view.html:340
+#: webApp/static/js/videoCodage.js:572 webApp/templates/pdf/view.html:340
 msgid "SELECT_BUDGET"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:606 webApp/static/js/videoCodage.js:644
+#: webApp/static/js/videoCodage.js:609 webApp/static/js/videoCodage.js:647
 msgid "ORDER_NUMBER"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:653
+#: webApp/static/js/videoCodage.js:656
 msgid "ADD_ORDER_NUMBER"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:672 webApp/static/js/videoCodage.js:698
+#: webApp/static/js/videoCodage.js:675 webApp/static/js/videoCodage.js:701
 msgid "DELIVERY_FORM_NUMBER"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:707
+#: webApp/static/js/videoCodage.js:710
 msgid "ADD_DELIVERY_FORM_NUMBER"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:832 webApp/static/js/videoCodage.js:848
-#: webApp/static/js/videoCodage.js:885 webApp/static/js/videoCodage.js:895
-#: webApp/static/js/videoCodage.js:926
+#: webApp/static/js/videoCodage.js:834 webApp/static/js/videoCodage.js:850
+#: webApp/static/js/videoCodage.js:887 webApp/static/js/videoCodage.js:897
+#: webApp/static/js/videoCodage.js:928
 msgid "ERROR_OCCURED"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:848
+#: webApp/static/js/videoCodage.js:850
 msgid "WRONG_SIRET_FORMAT"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:895
+#: webApp/static/js/videoCodage.js:897
 msgid "WRONG_SIREN_FORMAT"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:981
+#: webApp/static/js/videoCodage.js:983
 msgid "BAN_API_ERROR"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:995
+#: webApp/static/js/videoCodage.js:997
 msgid "REFUSE_CONFIRMATION"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:999 webApp/static/js/videoCodage.js:1068
-#: webApp/static/js/videoCodage.js:1080
+#: webApp/static/js/videoCodage.js:1001 webApp/static/js/videoCodage.js:1070
+#: webApp/static/js/videoCodage.js:1082
 msgid "YES"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1029
+#: webApp/static/js/videoCodage.js:1031
 msgid "FORM_ERROR_OR_EMPTY_FIELD"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1033
+#: webApp/static/js/videoCodage.js:1035
 msgid "INCORRECT_BAN_ADDRESS"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1034
+#: webApp/static/js/videoCodage.js:1036
 msgid "PUT_FORM_TO_SUPPLIER_WAIT"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1038
+#: webApp/static/js/videoCodage.js:1040
 msgid "PUT_ON_HOLD"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1044
+#: webApp/static/js/videoCodage.js:1046
 msgid "_VALID_WIHTOUT_BAN_VERIFICATION"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1051
+#: webApp/static/js/videoCodage.js:1053
 msgid "INVALID_VAT_NUMBER"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1056
+#: webApp/static/js/videoCodage.js:1058
 msgid "_VALID_WIHTOUT_VAT_VERIFICATION"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1063
+#: webApp/static/js/videoCodage.js:1065
 msgid "CALCUL_NOT_EQUAL_WOULD_YOU_VALIDATE"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1074
+#: webApp/static/js/videoCodage.js:1076
 msgid "INVOICE_ALREADY_EXIST"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1214
+#: webApp/static/js/videoCodage.js:1216
 msgid "FIELD_TO_CHECK"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1215 webApp/static/js/videoCodage.js:1220
+#: webApp/static/js/videoCodage.js:1217 webApp/static/js/videoCodage.js:1222
 msgid "BAN_VALUE"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1219
+#: webApp/static/js/videoCodage.js:1221
 msgid "INVALID"
 msgstr ""
 
@@ -648,7 +661,7 @@ msgstr ""
 msgid "VAT_NUMBER"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:695 webApp/templates/pdf/list.html:92
+#: webApp/templates/dashboard/index.html:695 webApp/templates/pdf/list.html:90
 #: webApp/templates/pdf/view.html:180
 msgid "INVOICE_NUMBER"
 msgstr ""
@@ -895,19 +908,19 @@ msgstr ""
 msgid "FILTER"
 msgstr ""
 
-#: webApp/templates/pdf/list.html:65
+#: webApp/templates/pdf/list.html:64
 msgid "INVOICE_LOCKED_BY"
 msgstr ""
 
-#: webApp/templates/pdf/list.html:71
+#: webApp/templates/pdf/list.html:70
 msgid "INVOICE_CLOSED"
 msgstr ""
 
-#: webApp/templates/pdf/list.html:93 webApp/templates/pdf/view.html:189
+#: webApp/templates/pdf/list.html:91 webApp/templates/pdf/view.html:189
 msgid "INVOICE_DATE"
 msgstr ""
 
-#: webApp/templates/pdf/list.html:97
+#: webApp/templates/pdf/list.html:95
 #: webApp/templates/splitter/splitter_manager.html:50
 msgid "SAVED_THE"
 msgstr ""

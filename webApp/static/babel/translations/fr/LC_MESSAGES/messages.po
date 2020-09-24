@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2020-09-22 16:38+0200\n"
+"POT-Creation-Date: 2020-09-24 14:46+0200\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: fr\n"
@@ -65,11 +65,11 @@ msgstr "Affichage de"
 msgid "OF"
 msgstr "sur"
 
-#: webApp/pdf.py:437
+#: webApp/pdf.py:456
 msgid "END_LONG"
 msgstr "Facture validée et cloturée"
 
-#: webApp/pdf.py:439
+#: webApp/pdf.py:458
 msgid "ERROR_WHILE_INSERTING_IN_GED"
 msgstr "Erreur lors de l'insertion de la facture dans la GED"
 
@@ -133,7 +133,7 @@ msgstr "Fichier de configuration modifié avec succès"
 msgid "ERROR_UPDATE_CONFIG_FILE"
 msgstr "Erreur lors de la modification du fichier de configuration"
 
-#: webApp/ws.py:211
+#: webApp/ws.py:212
 msgid "INVOICE_DELETED"
 msgstr "Facture supprimée"
 
@@ -141,160 +141,173 @@ msgstr "Facture supprimée"
 msgid "FILE_UPLOAD_SUCCESS"
 msgstr "Fichier(s) téléchargé(s) avec succès"
 
-#: webApp/static/js/script.js:44
+#: webApp/static/js/script.js:45
 msgid "_CONFIRM_DELETE"
 msgstr "Voulez-vous vraiment supprimer cette facture ?"
 
-#: webApp/static/js/videoCodage.js:185
+#: webApp/static/js/script.js:74 webApp/static/js/script.js:81
+#: webApp/static/js/script.js:89
+msgid "SELECT_ALL"
+msgstr "Tout sélectionner"
+
+#: webApp/static/js/script.js:83
+msgid "UNSELECT_ALL"
+msgstr "Tout désélectionner"
+
+#: webApp/static/js/script.js:99
+msgid "_CONFIRM_DELETE_BATCH"
+msgstr "Voulez vous vraiment supprimer ce lot de factures ?"
+
+#: webApp/static/js/videoCodage.js:186
 msgid "WAIT_OCR_END"
 msgstr "Merci d'attendre la fin du processus d'OCR"
 
-#: webApp/static/js/videoCodage.js:288
+#: webApp/static/js/videoCodage.js:294
 msgid "SIRET_CONNECTION_ERROR"
 msgstr ""
 "Erreur lors de la connexion au service de vérification du numéro de "
 "SIRET. Les numéros de SIRET/SIREN ne peuvent donc pas être validé"
 
-#: webApp/static/js/videoCodage.js:326
+#: webApp/static/js/videoCodage.js:332
 msgid "ERROR_WHILE_READING_CONFIGURATION_FILE"
 msgstr "Erreur lors de la lecture du fichier de configuration"
 
-#: webApp/static/js/videoCodage.js:441
+#: webApp/static/js/videoCodage.js:446
 #: webApp/templates/dashboard/index.html:803 webApp/templates/pdf/view.html:201
 msgid "VAT_RATE"
 msgstr "Taux de TVA"
 
-#: webApp/static/js/videoCodage.js:450 webApp/static/js/videoCodage.js:553
+#: webApp/static/js/videoCodage.js:455 webApp/static/js/videoCodage.js:556
 #: webApp/templates/dashboard/index.html:781 webApp/templates/pdf/view.html:210
 #: webApp/templates/pdf/view.html:284
 msgid "NO_RATE_AMOUNT"
 msgstr "Montant HT"
 
-#: webApp/static/js/videoCodage.js:459 webApp/templates/pdf/view.html:219
+#: webApp/static/js/videoCodage.js:464 webApp/templates/pdf/view.html:219
 msgid "LOAD_ACCOUNT"
 msgstr "Compte de charge"
 
-#: webApp/static/js/videoCodage.js:461 webApp/templates/pdf/view.html:221
+#: webApp/static/js/videoCodage.js:466 webApp/templates/pdf/view.html:221
 msgid "SELECT_LOAD_ACCOUNT"
 msgstr "Selectionnez un compte de charge"
 
-#: webApp/static/js/videoCodage.js:479 webApp/templates/pdf/view.html:260
+#: webApp/static/js/videoCodage.js:484 webApp/templates/pdf/view.html:260
 msgid "VAT_AMOUNT"
 msgstr "Montant TVA"
 
-#: webApp/static/js/videoCodage.js:559 webApp/templates/pdf/view.html:290
+#: webApp/static/js/videoCodage.js:562 webApp/templates/pdf/view.html:290
 msgid "BUDGET"
 msgstr "Budget"
 
-#: webApp/static/js/videoCodage.js:561 webApp/templates/pdf/view.html:292
+#: webApp/static/js/videoCodage.js:564 webApp/templates/pdf/view.html:292
 msgid "SELECT_STRUCTURE"
 msgstr "Selectionnez une structure"
 
-#: webApp/static/js/videoCodage.js:567 webApp/templates/pdf/view.html:338
+#: webApp/static/js/videoCodage.js:570 webApp/templates/pdf/view.html:338
 msgid "OUTCOME"
 msgstr "Dépenses"
 
-#: webApp/static/js/videoCodage.js:569 webApp/templates/pdf/view.html:340
+#: webApp/static/js/videoCodage.js:572 webApp/templates/pdf/view.html:340
 msgid "SELECT_BUDGET"
 msgstr "Selectionnez un budget"
 
-#: webApp/static/js/videoCodage.js:606 webApp/static/js/videoCodage.js:644
+#: webApp/static/js/videoCodage.js:609 webApp/static/js/videoCodage.js:647
 msgid "ORDER_NUMBER"
 msgstr "Numéro de commande"
 
-#: webApp/static/js/videoCodage.js:653
+#: webApp/static/js/videoCodage.js:656
 msgid "ADD_ORDER_NUMBER"
 msgstr "Ajouter un numéro de commande"
 
-#: webApp/static/js/videoCodage.js:672 webApp/static/js/videoCodage.js:698
+#: webApp/static/js/videoCodage.js:675 webApp/static/js/videoCodage.js:701
 msgid "DELIVERY_FORM_NUMBER"
 msgstr "Numéro de bon de livraison"
 
-#: webApp/static/js/videoCodage.js:707
+#: webApp/static/js/videoCodage.js:710
 msgid "ADD_DELIVERY_FORM_NUMBER"
 msgstr "Ajouter un numéro de bon de livraison"
 
-#: webApp/static/js/videoCodage.js:832 webApp/static/js/videoCodage.js:848
-#: webApp/static/js/videoCodage.js:885 webApp/static/js/videoCodage.js:895
-#: webApp/static/js/videoCodage.js:926
+#: webApp/static/js/videoCodage.js:834 webApp/static/js/videoCodage.js:850
+#: webApp/static/js/videoCodage.js:887 webApp/static/js/videoCodage.js:897
+#: webApp/static/js/videoCodage.js:928
 msgid "ERROR_OCCURED"
 msgstr "Une erreur est arrivée"
 
-#: webApp/static/js/videoCodage.js:848
+#: webApp/static/js/videoCodage.js:850
 msgid "WRONG_SIRET_FORMAT"
 msgstr "Le format du SIRET n'est pas bon"
 
-#: webApp/static/js/videoCodage.js:895
+#: webApp/static/js/videoCodage.js:897
 msgid "WRONG_SIREN_FORMAT"
 msgstr "Le format du SIREN n'est pas bon"
 
-#: webApp/static/js/videoCodage.js:981
+#: webApp/static/js/videoCodage.js:983
 msgid "BAN_API_ERROR"
 msgstr "Erreur lors de la connexion à l'API de vérification de la BAN"
 
-#: webApp/static/js/videoCodage.js:995
+#: webApp/static/js/videoCodage.js:997
 msgid "REFUSE_CONFIRMATION"
 msgstr "Voulez vous vraiment refuser cette facture ?"
 
-#: webApp/static/js/videoCodage.js:999 webApp/static/js/videoCodage.js:1068
-#: webApp/static/js/videoCodage.js:1080
+#: webApp/static/js/videoCodage.js:1001 webApp/static/js/videoCodage.js:1070
+#: webApp/static/js/videoCodage.js:1082
 msgid "YES"
 msgstr "Oui"
 
-#: webApp/static/js/videoCodage.js:1029
+#: webApp/static/js/videoCodage.js:1031
 msgid "FORM_ERROR_OR_EMPTY_FIELD"
 msgstr ""
 "Le formulaire présente des erreurs ou des champs vides. Merci de les "
 "corriger avant de valider"
 
-#: webApp/static/js/videoCodage.js:1033
+#: webApp/static/js/videoCodage.js:1035
 msgid "INCORRECT_BAN_ADDRESS"
 msgstr "L'adresse ne corresponds pas parfaitement au référentiel national."
 
-#: webApp/static/js/videoCodage.js:1034
+#: webApp/static/js/videoCodage.js:1036
 msgid "PUT_FORM_TO_SUPPLIER_WAIT"
 msgstr ""
 "Nous vous conseillons de mettre la facture en attente en attendant de "
 "mettre à jour le fournisseur"
 
-#: webApp/static/js/videoCodage.js:1038
+#: webApp/static/js/videoCodage.js:1040
 msgid "PUT_ON_HOLD"
 msgstr "Mettre en attente"
 
-#: webApp/static/js/videoCodage.js:1044
+#: webApp/static/js/videoCodage.js:1046
 msgid "_VALID_WIHTOUT_BAN_VERIFICATION"
 msgstr "Valider sans la vérification de la BAN"
 
-#: webApp/static/js/videoCodage.js:1051
+#: webApp/static/js/videoCodage.js:1053
 msgid "INVALID_VAT_NUMBER"
 msgstr "Le numéro de TVA n'est pas valide."
 
-#: webApp/static/js/videoCodage.js:1056
+#: webApp/static/js/videoCodage.js:1058
 msgid "_VALID_WIHTOUT_VAT_VERIFICATION"
 msgstr "Valider sans vérifier du numéro de TVA ?"
 
-#: webApp/static/js/videoCodage.js:1063
+#: webApp/static/js/videoCodage.js:1065
 msgid "CALCUL_NOT_EQUAL_WOULD_YOU_VALIDATE"
 msgstr ""
 "La somme des montants alloués à l'analytique est différente du montant "
 "total HT. Voulez-vous malgré tout valider la facture ?"
 
-#: webApp/static/js/videoCodage.js:1074
+#: webApp/static/js/videoCodage.js:1076
 msgid "INVOICE_ALREADY_EXIST"
 msgstr ""
 "Une facture reliée au même fournisseur et ayant le même numéro de facture"
 " apparait déjà en base de données. Voulez-vous quand même valider la "
 "facture ?"
 
-#: webApp/static/js/videoCodage.js:1214
+#: webApp/static/js/videoCodage.js:1216
 msgid "FIELD_TO_CHECK"
 msgstr "Champ à vérifier"
 
-#: webApp/static/js/videoCodage.js:1215 webApp/static/js/videoCodage.js:1220
+#: webApp/static/js/videoCodage.js:1217 webApp/static/js/videoCodage.js:1222
 msgid "BAN_VALUE"
 msgstr "Valeur BAN"
 
-#: webApp/static/js/videoCodage.js:1219
+#: webApp/static/js/videoCodage.js:1221
 msgid "INVALID"
 msgstr "Invalide"
 
@@ -660,7 +673,7 @@ msgstr "Date"
 msgid "VAT_NUMBER"
 msgstr "Numéro de TVA"
 
-#: webApp/templates/dashboard/index.html:695 webApp/templates/pdf/list.html:92
+#: webApp/templates/dashboard/index.html:695 webApp/templates/pdf/list.html:90
 #: webApp/templates/pdf/view.html:180
 msgid "INVOICE_NUMBER"
 msgstr "Numéro de facture"
@@ -907,19 +920,19 @@ msgstr "Aucun filtre"
 msgid "FILTER"
 msgstr "Filtrer"
 
-#: webApp/templates/pdf/list.html:65
+#: webApp/templates/pdf/list.html:64
 msgid "INVOICE_LOCKED_BY"
 msgstr "Facture verrouillée par"
 
-#: webApp/templates/pdf/list.html:71
+#: webApp/templates/pdf/list.html:70
 msgid "INVOICE_CLOSED"
 msgstr "La facture est cloturée et ne peux etre modifiée"
 
-#: webApp/templates/pdf/list.html:93 webApp/templates/pdf/view.html:189
+#: webApp/templates/pdf/list.html:91 webApp/templates/pdf/view.html:189
 msgid "INVOICE_DATE"
 msgstr "Date de la facture"
 
-#: webApp/templates/pdf/list.html:97
+#: webApp/templates/pdf/list.html:95
 #: webApp/templates/splitter/splitter_manager.html:50
 msgid "SAVED_THE"
 msgstr "Enregistré le"
@@ -1209,3 +1222,4 @@ msgstr "Erreurs lors du téléchargement du/des fichier(s)"
 
 msgid "CHOOSE_VAT_RATE"
 msgstr "Selectionnez un taux de TVA"
+

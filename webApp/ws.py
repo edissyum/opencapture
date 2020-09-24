@@ -208,5 +208,6 @@ def deleteInvoice(rowid):
         'where': ['id = ?'],
         'data': [rowid]
     })
+
     flash(gettext('INVOICE_DELETED'))
     return json.dumps({'text': 'OK', 'code': 200, 'ok': 'true'})

@@ -224,6 +224,12 @@ hr {
     top: 20px;
 }
 
+.top-left{
+    position: absolute;
+    top: 5px;
+    left: 5px;
+}
+
 .bs-tooltip-left{
     top: -2rem!important;
     left: 2rem!important;
