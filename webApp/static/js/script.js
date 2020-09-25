@@ -70,7 +70,7 @@ $(document).ready(function() {
     });
 
     if(!$('#checkAll').length && $('.pdf_list').length){
-        $('.pagination-page-info').prepend('<i id="trashAll" class="position-absolute fas fa-trash" style="display: none; cursor: pointer; left: 170px; margin-top: 4px;"></i>')
+        $('.pagination-page-info').prepend('<i id="trashAll" class="position-absolute fas fa-trash" style="display: none; cursor: pointer; left: 200px; margin-top: 4px;"></i>')
         $('.pagination-page-info').prepend('<p id="checkAll" class="checkAll position-absolute " style="cursor: pointer">' + gt.gettext("SELECT_ALL") + '</p>')
     }
     if ($('.checkAll').length == 2)
@@ -80,7 +80,8 @@ $(document).ready(function() {
         let label = $('#checkAll')[0].innerHTML
         if (label === gt.gettext('SELECT_ALL')) {
             $(".checkBox_list").each(function() {
-                $('#checkAll')[0].innerHTML = gt.gettext('UNSELECT_ALL')
+                $('#checkAll')[0].innerHTML = gt.gettext('UNSELECT_ALL') + ' (<span id="cptTrash">' + parseInt($('input[class=checkBox_list]:checked').length + 1) + '</span>)';
+
                 $('#trashAll').fadeIn(500)
                 this.checked=true;
             });
@@ -123,8 +124,10 @@ $(document).ready(function() {
        }else{
            let totalChecked = $('input[class=checkBox_list]:checked').length;
            if(totalChecked == 0){
-              $('#trashAll').fadeOut(500)
+               $('#trashAll').fadeOut(500)
                $('#checkAll')[0].innerHTML = gt.gettext('SELECT_ALL')
+           }else{
+               $('#cptTrash')[0].innerHTML = totalChecked
            }
        }
     });
