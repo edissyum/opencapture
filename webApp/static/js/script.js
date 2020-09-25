@@ -70,7 +70,7 @@ $(document).ready(function() {
     });
 
     if(!$('#checkAll').length && $('.pdf_list').length){
-        $('.pagination-page-info').prepend('<i id="trashAll" class="position-absolute fas fa-trash" style="display: none; cursor: pointer; left: 200px; margin-top: 4px;"></i>')
+        $('.pagination-page-info').prepend('<i id="trashAll" class="position-absolute fas fa-trash" style="display: none; cursor: pointer; left: 190px; margin-top: 4px;"></i>')
         $('.pagination-page-info').prepend('<p id="checkAll" class="checkAll position-absolute " style="cursor: pointer">' + gt.gettext("SELECT_ALL") + '</p>')
     }
     if ($('.checkAll').length == 2)
@@ -96,6 +96,8 @@ $(document).ready(function() {
 
     $("#trashAll").click(function() {
         if($(".checkBox_list").length){
+            $('#status').delay(200).fadeIn('slow'); // will first fade out the loading animation
+            $('#preloader').fadeIn('slow'); // will fade out the white DIV that covers the website.
             let cpt = 1
             let totalChecked = $('input[class=checkBox_list]:checked').length;
 
@@ -105,7 +107,7 @@ $(document).ready(function() {
                     if (this.checked){
                         let invoice_id = parseInt(this.id.split('_')[0])
                         deleteInvoice(invoice_id, false, res)
-                        if (cpt == totalChecked){
+                        if (cpt === totalChecked){
                              setTimeout(function(){ window.location.reload() }, 800);
                         }
                         cpt += 1
