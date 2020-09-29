@@ -1,5 +1,8 @@
 import mimetypes
 import argparse
+import os
+import sys
+
 import bin.src.classes.Log as logClass
 import bin.src.classes.Config as configClass
 import bin.src.classes.Database as databaseClass
@@ -7,8 +10,11 @@ import bin.src.classes.Spreadsheet as spreadsheetClass
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
-    ap.add_argument("-c", "--config", required=False, help="path to config file")
+    ap.add_argument("-c", "--config", required=True, help="path to config file")
     args = vars(ap.parse_args())
+
+    if not os.path.exists(args['config']):
+        sys.exit('Config file couldn\'t be found')
 
     configName          = configClass.Config(args['config'])
     Config              = configClass.Config(configName.cfg['PROFILE']['cfgpath'] + '/config_' + configName.cfg['PROFILE']['id'] + '.ini')
