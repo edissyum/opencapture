@@ -16,7 +16,7 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-export FLASK_APP=/opt/maarch/OpenCaptureForInvoices/webApp.py
+export FLASK_APP=/opt/OpenCaptureForInvoices/webApp.py
 
 interface=enp0s3
 ip=$(/sbin/ip -o -4 addr list "$interface" | awk '{print $4}' | cut -d/ -f1)
