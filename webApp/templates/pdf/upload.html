@@ -44,11 +44,9 @@
                 });
                 this.on("successmultiple", function(files) {
                     let topPx = 0;
-                    for (let i = 0; i <= files.length; i++) {
-
+                    for (let i = 0; i <= files.length - 1; i++) {
                         if (i > 0) { topPx = 80 * i }
-
-                        $("<div style='top: " + topPx + "px;' class='flash' onclick=\"$('.flash').fadeOut()\">" + gt.gettext('FILE_UPLOAD_SUCCESS') + " : "  + files[i]['name'] + "</div>").insertAfter($('.content'));
+                        $("<div style='top: " + topPx + "px;' class='flash' id='flash_" + i + "' onclick=\"$('.flash').fadeOut()\">" + gt.gettext('FILE_UPLOAD_SUCCESS') + " : "  + files[i]['name'] + "</div>").insertAfter($('.content'));
                     }
                 });
                 this.on("error", function(file, response) {
