@@ -10,8 +10,10 @@ normal=$(tput sgr0)
 OS=$(lsb_release -si)
 VER=$(lsb_release -r)
 defaultPath=/opt/OpenCaptureForInvoices/
+
 user=
 group=www-data
+
 if [ -z "$user" ]
 then
  echo "The user variable is empty. Please fill it with your current user before run Makefile"
@@ -182,6 +184,11 @@ cp $defaultPath/instance/config/config_DEFAULT.ini.default $defaultPath/instance
 # Initialize flask database
 export FLASK_APP="$defaultPath"/webApp
 flask init-db
+
+####################
+# Generate secret key for Flask and replace it in webbAp/__init.py file
+secret=$(python3 -c 'import secrets; print(secrets.token_hex(16))')
+sed -i "s#§§SECRET§§#$secret#g" "$defaultPath"/webApp/__init__.py
 
 ####################
 # Nginx setup
