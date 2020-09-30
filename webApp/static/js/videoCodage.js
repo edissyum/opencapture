@@ -318,6 +318,9 @@ $(document).ready(function() {
 
             checkAll();
 
+            // Remove focus to avoid multiple call to the API
+            $('#supplier').blur();
+
             // If there is a VAT rate and a notaxes amount, calcul the total
             $('#calculTotal').click();
 
