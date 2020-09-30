@@ -88,9 +88,9 @@ class Database:
                 for cpt, value in enumerate(args['select']):
                     if 'strftime' in value:
                         columnName = value.split("'")[2].split(')')[0].replace(',', '').strip()
-                        dateFormat = value.split("'")[1].replace('%Y', 'YYYY').replace('%m', 'mm').replace('%d', 'dd').replace('%H', 'HH24').replace('%M', 'MI')
+                        dateFormat = value.split("'")[1].replace('%Y', 'YYYY').replace('%m', 'mm').replace('%d', 'dd').replace('%H', 'HH24').replace('%M', 'MI').replace('%S', 'SS')
                         label      = value.split("as")[1].strip()
-                        value = "to_char(" + columnName + ", '" + dateFormat + "') as " + label
+                        value      = "to_char(" + columnName + ", '" + dateFormat + "') as " + label
 
                         args['select'][cpt] = value
 
