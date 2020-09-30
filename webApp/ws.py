@@ -3,6 +3,7 @@ import os
 import json
 import requests
 from zeep import Client
+from zeep import exceptions
 import worker_from_python
 
 from flask_babel import gettext
@@ -38,15 +39,19 @@ def checkVAT(vatId):
     try:
         logging.getLogger('zeep').setLevel(logging.ERROR)
         client = Client(URL)
-        res = client.service.checkVat(countryCode, vatNumber)
-        text = res['valid']
-        if res['valid'] is False:
-            text = gettext('VAT_NOT_VALID')
+        print(client)
+
+        try:
+            res = client.service.checkVat(countryCode, vatNumber)
+            text = res['valid']
+            if res['valid'] is False:
+                text = gettext('VAT_NOT_VALID')
+        except exceptions.Fault:
+            text = gettext('VAT_API_ERROR')
 
         return json.dumps({'text': text, 'code': 200, 'ok': res['valid']})
     except requests.exceptions.RequestException as e:
         return json.dumps({'text': str(e), 'code': 200, 'ok' : 'false'})
-
 
 @bp.route('/ws/cfg/<string:cfgName>',  methods=['GET'])
 @login_required
