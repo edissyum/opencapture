@@ -70,7 +70,7 @@ $(document).ready(function() {
     });
 
     if(!$('#checkAll').length && $('.pdf_list').length){
-        $('.pagination-page-info').prepend('<i id="trashAll" class="position-absolute fas fa-trash" style="display: none; cursor: pointer; left: 190px; margin-top: 4px;"></i>')
+        $('.pagination-page-info').prepend('<i id="trashAll" class="position-absolute fas fa-trash" style="display: none; cursor: pointer; left: 195px; margin-top: 4px;"></i>')
         $('.pagination-page-info').prepend('<p id="checkAll" class="checkAll position-absolute " style="cursor: pointer">' + gt.gettext("SELECT_ALL") + '</p>')
     }
     if ($('.checkAll').length == 2)
@@ -118,19 +118,20 @@ $(document).ready(function() {
     });
 
     $('.checkBox_list').click(function(){
-       if (this.checked){
-           if($('#trashAll')[0].style.display == 'none'){
-               $('#trashAll').fadeIn(500)
-               $('#checkAll')[0].innerHTML = gt.gettext('UNSELECT_ALL')
-           }
-       }else{
-           let totalChecked = $('input[class=checkBox_list]:checked').length;
-           if(totalChecked == 0){
-               $('#trashAll').fadeOut(500)
-               $('#checkAll')[0].innerHTML = gt.gettext('SELECT_ALL')
-           }else{
-               $('#cptTrash')[0].innerHTML = totalChecked
-           }
-       }
+        let totalChecked = $('input[class=checkBox_list]:checked').length;
+        if (this.checked){
+            if($('#trashAll')[0].style.display === 'none'){
+                $('#trashAll').fadeIn(500)
+                $('#checkAll')[0].innerHTML = gt.gettext('UNSELECT_ALL') + ' (<span id="cptTrash">' + parseInt(totalChecked) + '</span>)';
+            }
+            $('#cptTrash')[0].innerHTML = totalChecked
+        }else{
+            if(totalChecked === 0){
+                $('#trashAll').fadeOut(500)
+                $('#checkAll')[0].innerHTML = gt.gettext('SELECT_ALL')
+            }else{
+                $('#cptTrash')[0].innerHTML = totalChecked
+            }
+        }
     });
 });
