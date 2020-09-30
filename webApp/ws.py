@@ -45,12 +45,14 @@ def checkVAT(vatId):
             text = res['valid']
             if res['valid'] is False:
                 text = gettext('VAT_NOT_VALID')
-        except exceptions.Fault:
-            text = gettext('VAT_API_ERROR')
+        except exceptions.Fault as e:
+            text = gettext('VAT_API_ERROR') + ' : ' + str(e)
+            return json.dumps({'text': text, 'code': 200, 'ok': 'false'})
 
         return json.dumps({'text': text, 'code': 200, 'ok': res['valid']})
     except requests.exceptions.RequestException as e:
-        return json.dumps({'text': str(e), 'code': 200, 'ok' : 'false'})
+        text = gettext('VAT_API_ERROR') + ' : ' + str(e)
+        return json.dumps({'text': text, 'code': 200, 'ok' : 'false'})
 
 @bp.route('/ws/cfg/<string:cfgName>',  methods=['GET'])
 @login_required
