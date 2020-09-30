@@ -63,11 +63,6 @@ def train(images_data_path):
         image_size=(IMG_HEIGHT, IMG_WIDTH),
         batch_size=32)
 
-    normalization_layer = tf.keras.layers.experimental.preprocessing.Rescaling(1. / 255)
-
-    normalized_ds = train_ds.map(lambda x, y: (normalization_layer(x), y))
-    image_batch, labels_batch = next(iter(normalized_ds))
-
     AUTOTUNE = tf.data.experimental.AUTOTUNE
 
     train_ds = train_ds.cache().prefetch(buffer_size=AUTOTUNE)
@@ -113,37 +108,39 @@ def predict(path_image_test):
     img_array = tf.expand_dims(img_array, 0)
 
     # Use Tensorflow model to get predoct list
-    digit_model = tf.keras.models.load_model(MODEL_PATH)
-    pred_probab = digit_model.predict(img_array)[0]
-
-    return pred_probab
+    if os.path.exists(MODEL_PATH):
+        try:
+            digit_model = tf.keras.models.load_model(MODEL_PATH)
+            pred_probab = digit_model.predict(img_array)[0]
+        except IndexError:
+            return None
+        return pred_probab
+    else:
+        return None
 
 def predict_typo(pdf_path):
     image_path = get_pdf_first_page(pdf_path)
     pred_probab = predict(image_path)
-    pred_index = list(pred_probab).index(max(pred_probab))
-    typo = LABELS_ORDERED_LIST[pred_index]
-    return typo
 
-# Example of using the previous functions
-def main():
-    # -- Train model
-    # convert_pdf_dir_to_images(MONO_FACTURE_PATH)
-    # train(TRAIN_IMAGES_PATH)
+    file_name = pdf_path.split("/")[-1].replace('pdf', 'jpg')
+    image_path = PREDICT_IMAGES_PATH + file_name
 
-    # -- Predict invoice type
-    test_pdf = input("Insert  pdf path : ")
-    image_path = get_pdf_first_page(test_pdf)
-    pred_probab = predict(image_path)
+    if pred_probab is not None:
+        pred_index = list(pred_probab).index(max(pred_probab))
+        typo = LABELS_ORDERED_LIST[pred_index]
+        predict_op = tf.nn.softmax(pred_probab)
+        pred_index = list(predict_op).index(max(predict_op))
+        predictionPercentage = str(float('%2f' % int(predict_op[pred_index].numpy() * 100)))
 
-    pred_index = list(pred_probab).index(max(pred_probab))
+        try:
+            os.remove(image_path)
+        except FileNotFoundError:
+            pass
 
-    print("----------------------RESULT----------------------")
-    print("PREDICT LIST : " + str(pred_probab))
-    print("MAX VALUE : " + str(pred_probab[pred_index]))
-    print("INVOICE TYPE : " + LABELS_ORDERED_LIST[pred_index])
-    print("--------------------------------------------------")
-
-# -- main -- #
-if __name__ == '__main__':
-    main()
+        return typo, predictionPercentage
+    else:
+        try:
+            os.remove(image_path)
+        except FileNotFoundError:
+            pass
+        return False, False
