@@ -16,8 +16,6 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import json
-from collections import OrderedDict
-
 import pandas as pd
 from pyexcel_ods3 import get_data, save_data
 
@@ -97,7 +95,14 @@ class Spreadsheet:
         # Then go through the Excel document and fill our final array with all infos about the provider and the bill
         tmpExcelContent = pd.DataFrame(contentSheet)
         for line in tmpExcelContent.to_dict(orient='records'):
-            if line[self.referencialSupplierArray['typology']] == line[self.referencialSupplierArray['typology']]:
+            if line[self.referencialSupplierArray['typology']] == line[self.referencialSupplierArray['typology']] and line[self.referencialSupplierArray['typology']]:
                 line[self.referencialSupplierArray['typology']] = int(line[self.referencialSupplierArray['typology']])
+
+            if line[self.referencialSupplierArray['SIRET']] == line[self.referencialSupplierArray['SIRET']] and line[self.referencialSupplierArray['SIRET']]:
+                line[self.referencialSupplierArray['SIRET']] = int(line[self.referencialSupplierArray['SIRET']]
+                                                                   )
+            if line[self.referencialSupplierArray['SIREN']] == line[self.referencialSupplierArray['SIREN']] and line[self.referencialSupplierArray['SIREN']]:
+                line[self.referencialSupplierArray['SIREN']] = int(line[self.referencialSupplierArray['SIREN']])
+
             self.referencialSupplierData[line[self.referencialSupplierArray['VATNumber']]].append(line)
 
