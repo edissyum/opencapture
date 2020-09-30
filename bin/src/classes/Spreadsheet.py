@@ -16,8 +16,10 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import json
+from collections import OrderedDict
+
 import pandas as pd
-from pyexcel_ods3 import get_data
+from pyexcel_ods3 import get_data, save_data
 
 class Spreadsheet:
     def __init__(self, Log, Config):
@@ -38,6 +40,27 @@ class Spreadsheet:
             self.referencialSupplierArray['adressTown']         = fp['adressTown']
             self.referencialSupplierArray['adressPostalCode']   = fp['adressPostalCode']
             self.referencialSupplierArray['typology']           = fp['typology']
+
+    def write_typo_ods_sheet(self, vat_number, typo):
+        contentSheet = get_data(self.referencialSuppplierSpreadsheet)
+        for line in contentSheet['Fournisseur']:
+            if line and line[1] == vat_number:
+                line.append(typo)
+        save_data(self.referencialSuppplierSpreadsheet, contentSheet)
+
+    def write_typo_excel_sheet(self, vat_number, typo):
+        contentSheet = pd.read_excel(self.referencialSuppplierSpreadsheet)
+        sheetName = pd.ExcelFile(self.referencialSuppplierSpreadsheet).sheet_names
+        contentSheet = contentSheet.to_dict(orient='records')
+
+        for line in contentSheet:
+            if line[self.referencialSupplierArray['VATNumber']] == vat_number:
+                line[self.referencialSupplierArray['typology']] = typo
+
+        contentSheet = pd.DataFrame(contentSheet)
+        writer = pd.ExcelWriter(self.referencialSuppplierSpreadsheet, engine='xlsxwriter')
+        contentSheet.to_excel(writer, sheet_name=sheetName[0])
+        writer.save()
 
     @staticmethod
     def read_excel_sheet(referencialSpreadsheet):
@@ -74,4 +97,7 @@ class Spreadsheet:
         # Then go through the Excel document and fill our final array with all infos about the provider and the bill
         tmpExcelContent = pd.DataFrame(contentSheet)
         for line in tmpExcelContent.to_dict(orient='records'):
+            if line[self.referencialSupplierArray['typology']] == line[self.referencialSupplierArray['typology']]:
+                line[self.referencialSupplierArray['typology']] = int(line[self.referencialSupplierArray['typology']])
             self.referencialSupplierData[line[self.referencialSupplierArray['VATNumber']]].append(line)
+
