@@ -39,7 +39,6 @@ def checkVAT(vatId):
     try:
         logging.getLogger('zeep').setLevel(logging.ERROR)
         client = Client(URL)
-        print(client)
 
         try:
             res = client.service.checkVat(countryCode, vatNumber)
