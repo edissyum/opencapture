@@ -36,6 +36,8 @@ CREATE TABLE if NOT EXISTS suppliers(
     vat_4_position             VARCHAR,
     footer_page                VARCHAR,
     supplier_page              VARCHAR,
+    invoice_number_page        VARCHAR,
+    invoice_date_page          VARCHAR,
 );
 
 CREATE TABLE if NOT EXISTS invoices(
@@ -64,6 +66,8 @@ CREATE TABLE if NOT EXISTS invoices(
     vat_rate1_position       VARCHAR,
     footer_page              VARCHAR,
     supplier_page            VARCHAR,
+    invoice_number_page      VARCHAR,
+    invoice_date_page        VARCHAR,
     locked                   INTEGER DEFAULT 0 NOT NULL,
     locked_by                VARCHAR(20),
     processed                INTEGER DEFAULT 0

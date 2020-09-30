@@ -36,6 +36,8 @@ CREATE TABLE if NOT EXISTS suppliers(
     vat_4_position             VARCHAR,
     footer_page                VARCHAR,
     supplier_page              VARCHAR,
+    invoice_number_page        VARCHAR,
+    invoice_date_page          VARCHAR
 );
 
 CREATE TABLE if NOT EXISTS invoices(
@@ -64,6 +66,8 @@ CREATE TABLE if NOT EXISTS invoices(
     vat_rate1_position       VARCHAR,
     footer_page              VARCHAR,
     supplier_page            VARCHAR,
+    invoice_number_page      VARCHAR,
+    invoice_date_page        VARCHAR,
     locked                   INTEGER DEFAULT 0 NOT NULL,
     locked_by                VARCHAR(20),
     processed                INTEGER DEFAULT 0
@@ -99,5 +103,4 @@ INSERT INTO "status" ("id","label","label_long") VALUES ('ERR','Erreur','Erreur 
 INSERT INTO "status" ("id","label","label_long") VALUES ('ERR_GED','Erreur','Erreur lors de l''envoi à Maarch');
 INSERT INTO "status" ("id","label","label_long") VALUES ('WAIT_SUP','En attente','En attente validation fournisseur');
 INSERT INTO "status" ("id","label","label_long") VALUES ('DEL','Supprimée','Supprimée');
-
 INSERT INTO "users" ("id","username","password") VALUES (1,'admin','pbkdf2:sha256:150000$7c8waI7f$c0891ac8e18990db0786d4a49aea8bf7c1ad82796dccd8ae35c12ace7d8ee403');
