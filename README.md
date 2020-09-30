@@ -18,15 +18,13 @@ The functionnalities of Open-Capture for Invoices are :
    - Multiple ADR (LAD) profile, using INI file
    - SIRET/SIREN & Adress verification (Only FR for now, could be disabled in settings)
    - Complex locale REGEX used. Easy to improve and modify
-   - You have the choice to convert PDF to TIFF or JPG. With the TIFF format the results are better but the size of files are much bigger
+   - You have the choice to convert PDF to TIFF or JPG.
    - SQLITE OR POSTGRESQL database support
   
 # Installation
 ## Linux Distributions
 
 Tested with :
-- Debian 9.8 with Python 3.5.3 & Tesseract v3.04.01 or Tesseract V4.0.0 (stretch-backports) & nginx as web server
-- Debian 9.6 with Python 3.5.3 & Tesseract v3.04.01 or Tesseract V4.0.0 (stretch-backports) & nginx as web server
 - Debian 10 with Python 3.7.3 & Tesseract V4.0.0 & nginx as web server
 - Ubuntu 20.04 LTS with Python 3.7.7 & Tesseract V4.1.1 & nginx as web server
 - Ubuntu 20.04 LTS with Python 3.8.5 & Tesseract V4.1.1 & nginx as web server
@@ -50,20 +48,14 @@ Then go to <code>bin/scripts/service_flaskOC.sh</code> and change the default on
 
 **It gives you the IP address where the web server will run**
 
-Finally you have to generate a secret key for the flask web server. First, generate a random key using, for example : 
-    
-    $ python3 -c 'import secrets; print(secrets.token_hex(16))'
-    
-Copy the generated text and go to <code>webApp/\_\_init\_\_.py</code>. Find the line with <code>SECRET_KEY</code> and paste between ""   
-  
-The ./Makefile command create the service, but you may want to change the User and Group so just open the ./Makefile and change lines **13** & **14**. The line **13* is empty by default and it's mandatory to fill it
+The ./Makefile command create the service, but you may want to change the User and Group so just open the ./Makefile and change lines **14** & **15**. The line **14* is empty by default and it's mandatory to fill it
 
 You have the choice between using supervisor or basic systemd
 Supervisor is useful if you need to run multiple instance of Open-Capture in parallel but it will be very greedy
 Systemd is perfect for one instance
 
     $ cd bin/install/
-    $ nano +13 Makefile
+    $ nano +14 Makefile
     $ chmod u+x Makefile
     $ sudo ./Makefile
         # Go grab a coffee ;)
@@ -91,12 +83,12 @@ Then restart the nginx service
 
 Don't forget to create all the needed path (Modify the user and group if needed) :
 
-    $ sudo mkdir -p /var/docservers/{OpenCapture,OpenCapture_Splitter}
-    $ sudo mkdir -p /var/docservers/OpenCapture/images/{tiff,full}
-    $ sudo mkdir -p /var/docservers/OpenCapture_Splitter/{batches,separated_pdf}
-    $ sudo mkdir -p /var/docservers/OpenCapture/xml/
-    $ sudo chmod -R 775 /var/docservers/{OpenCapture,OpenCapture_Splitter}/
-    $ sudo chown -R your_user:www-data /var/docservers/{OpenCapture,OpenCapture_Splitter}/
+    sudo mkdir -p /var/docservers/{OpenCapture,OpenCapture_Splitter}
+    sudo mkdir -p /var/docservers/OpenCapture/images/{tiff,full}
+    sudo mkdir -p /var/docservers/OpenCapture_Splitter/{batches,separated_pdf}
+    sudo mkdir -p /var/docservers/OpenCapture/xml/
+    sudo chmod -R 775 /var/docservers/{OpenCapture,OpenCapture_Splitter}/
+    sudo chown -R your_user:www-data /var/docservers/{OpenCapture,OpenCapture_Splitter}/
 
 ## API for SIRET/SIREN
 
@@ -108,7 +100,7 @@ This is the consumer key and the consumer secret. You could find help on the INS
 ## Supplier's referencial
 
 Before starting using Open-Capture you need to create a spreadsheet of your suppliers. You could find a demo located here : <code>bin/src/referencial/default_referencial_supplier.ods</code> (works with .ods or .xlsx). 
-You just have to fill the supplier name, siret, siren, vat number and adress informations. This .ods is bundled with <code>bin/src/referencial/default_referencial_supplier_index.json</code>.
+You just have to fill the supplier name, siret, siren, vat number and address informations. This .ods is bundled with <code>bin/src/referencial/default_referencial_supplier_index.json</code>.
 If your supplier referencial had different column name, the .json file is here for that. You just have to replace the right side of the array with the new column name.
 
 Then, just launch :
