@@ -3,10 +3,24 @@ import argparse
 import os
 import sys
 
-import bin.src.classes.Log as logClass
-import bin.src.classes.Config as configClass
-import bin.src.classes.Database as databaseClass
-import bin.src.classes.Spreadsheet as spreadsheetClass
+from webApp.functions import get_custom_id, check_python_customized_files
+
+custom_id = get_custom_id()
+custom_array = {}
+if custom_id:
+    custom_array = check_python_customized_files(custom_id[1])
+
+if 'Config' not in custom_array: from bin.src.classes.Config import Config as _Config
+else: _Config = getattr(__import__(custom_array['Config']['path'] + '.' + custom_array['Config']['module'], fromlist=[custom_array['Config']['module']]), custom_array['Config']['module'])
+
+if 'Log' not in custom_array: from bin.src.classes.Log import Log as _Log
+else: _Log = getattr(__import__(custom_array['Log']['path'] + '.' + custom_array['Log']['module'], fromlist=[custom_array['Log']['module']]), custom_array['Log']['module'])
+
+if 'Database' not in custom_array: from bin.src.classes.Database import Database as _Database
+else: _Database = getattr(__import__(custom_array['Database']['path'] + '.' + custom_array['Database']['module'], fromlist=[custom_array['Database']['module']]), custom_array['Database']['module'])
+
+if 'Spreadsheet' not in custom_array: from bin.src.classes.Spreadsheet import Spreadsheet as _Spreadsheet
+else: _Spreadsheet = getattr(__import__(custom_array['Spreadsheet']['path'] + '.' + custom_array['Spreadsheet']['module'], fromlist=[custom_array['Spreadsheet']['module']]), custom_array['Spreadsheet']['module'])
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
@@ -16,17 +30,17 @@ if __name__ == '__main__':
     if not os.path.exists(args['config']):
         sys.exit('Config file couldn\'t be found')
 
-    configName          = configClass.Config(args['config'])
-    Config              = configClass.Config(configName.cfg['PROFILE']['cfgpath'] + '/config_' + configName.cfg['PROFILE']['id'] + '.ini')
-    Log                 = logClass.Log(Config.cfg['GLOBAL']['logfile'])
-    Spreadsheet         = spreadsheetClass.Spreadsheet(Log, Config)
+    configName          = _Config(args['config'])
+    Config              = _Config(configName.cfg['PROFILE']['cfgpath'] + '/config_' + configName.cfg['PROFILE']['id'] + '.ini')
+    Log                 = _Log(Config.cfg['GLOBAL']['logfile'])
+    Spreadsheet         = _Spreadsheet(Log, Config)
     dbType              = Config.cfg['DATABASE']['databasetype']
     dbUser              = Config.cfg['DATABASE']['postgresuser']
     dbPwd               = Config.cfg['DATABASE']['postgrespassword']
     dbname              = Config.cfg['DATABASE']['postgresdatabase']
     dbhost              = Config.cfg['DATABASE']['postgreshost']
     dbport              = Config.cfg['DATABASE']['postgresport']
-    Database            = databaseClass.Database(Log, dbType, dbname, dbUser, dbPwd, dbhost, dbport, Config.cfg['DATABASE']['databasefile'])
+    Database            = _Database(Log, dbType, dbname, dbUser, dbPwd, dbhost, dbport, Config.cfg['DATABASE']['databasefile'])
 
     # Load the referencials into array before inject it into database
     # Read MIME type from file
