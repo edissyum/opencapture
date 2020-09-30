@@ -14,7 +14,7 @@
 # along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
-
+import mimetypes
 import os
 import uuid
 import shutil
@@ -42,10 +42,28 @@ else: FindSupplier = getattr(__import__(custom_array['FindCustom']['path'] + '.'
 if 'FindInvoiceNumber' not in custom_array: from .FindInvoiceNumber import FindInvoiceNumber
 else: FindInvoiceNumber = getattr(__import__(custom_array['FindInvoiceNumber']['path'] + '.' + custom_array['FindInvoiceNumber']['module'], fromlist=[custom_array['FindInvoiceNumber']['module']]), custom_array['FindInvoiceNumber']['module'])
 
+if 'Spreadsheet' not in custom_array: from bin.src.classes.Spreadsheet import Spreadsheet as _Spreadsheet
+else: _Spreadsheet = getattr(__import__(custom_array['Spreadsheet']['path'] + '.' + custom_array['Spreadsheet']['module'], fromlist=[custom_array['Spreadsheet']['module']]), custom_array['Spreadsheet']['module'])
+
+
 def insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, footer, nb_pages, full_jpg_filename, tiff_filename, status, custom_columns):
     if Files.isTiff == 'True':
+        try:
+            filename = os.path.splitext(Files.custom_fileName_tiff)
+            improved_img = filename[0] + '_improved' + filename[1]
+            os.remove(Files.custom_fileName_tiff)
+            os.remove(improved_img)
+        except FileNotFoundError:
+            pass
         path = Config.cfg['GLOBAL']['tiffpath'] + '/' + tiff_filename.replace('-%03d', '-001')
     else:
+        try:
+            filename = os.path.splitext(Files.custom_fileName)
+            improved_img = filename[0] + '_improved' + filename[1]
+            os.remove(Files.custom_fileName)
+            os.remove(improved_img)
+        except FileNotFoundError:
+            pass
         path = Config.cfg['GLOBAL']['fullpath'] + '/' + full_jpg_filename.replace('-%03d', '-001')
 
     columns = {
@@ -54,8 +72,10 @@ def insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, fo
         'supplier_page': str(supplier[3]) if supplier and supplier[3] else '1',
         'invoice_date': date[0] if date and date[0] else '',
         'invoice_date_position': str(date[1]) if date and date[1]  else '',
+        'invoice_date_page': str(date[2]) if date and date[2]  else '1',
         'invoice_number': invoiceNumber[0] if invoiceNumber and invoiceNumber[0] else '',
         'invoice_number_position': str(invoiceNumber[1]) if invoiceNumber and invoiceNumber[1] else '',
+        'invoice_number_page': str(invoiceNumber[2]) if invoiceNumber and invoiceNumber[2] else '1',
         'total_amount': str(footer[1][0]) if footer and footer[1] else '',
         'total_amount_position': str(footer[1][1]) if footer and footer[1] else '',
         'ht_amount1': str(footer[0][0]) if footer and footer[0] else '',
@@ -96,46 +116,99 @@ def insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, fo
     else:
         Log.error('Error while inserting')
 
+def convert(file, Files, Ocr, nb_pages, custom_pages = False):
+    if custom_pages:
+        if Files.isTiff == 'True':
+            try:
+                filename = os.path.splitext(Files.custom_fileName_tiff)
+                improved_img = filename[0] + '_improved' + filename[1]
+                os.remove(Files.custom_fileName_tiff)
+                os.remove(improved_img)
+            except FileNotFoundError:
+                pass
+            Files.pdf_to_tiff(file, Files.custom_fileName_tiff, False, False, True, 'full', nb_pages)
+        else:
+            try:
+                filename = os.path.splitext(Files.custom_fileName)
+                improved_img = filename[0] + '_improved' + filename[1]
+                os.remove(Files.custom_fileName)
+                os.remove(improved_img)
+            except FileNotFoundError:
+                pass
+            Files.pdf_to_jpg(file + '[' + str(int(nb_pages - 1)) + ']', False, True, 'full', False, True)
+    else:
+        if Files.isTiff == 'True':
+            Files.pdf_to_tiff(file, Files.tiffName, True, True, True, 'header')
+            Ocr.header_text = Ocr.line_box_builder(Files.img)
+            Files.pdf_to_tiff(file, Files.tiffName, True, True, True, 'footer')
+            Ocr.footer_text = Ocr.line_box_builder(Files.img)
+            Files.pdf_to_tiff(file, Files.tiffName, True)
+            Ocr.text = Ocr.line_box_builder(Files.img)
+            if nb_pages > 1 :
+                Files.pdf_to_tiff(file, Files.tiffName_last, False, True, True, 'header', nb_pages)
+                Ocr.header_last_text = Ocr.line_box_builder(Files.img)
+                Files.pdf_to_tiff(file, Files.tiffName_last, False, True, True, 'footer', nb_pages)
+                Ocr.footer_last_text = Ocr.line_box_builder(Files.img)
+                Files.pdf_to_tiff(file, Files.tiffName_last, lastPage=nb_pages)
+                Ocr.last_text = Ocr.line_box_builder(Files.img)
+        else:
+            Files.pdf_to_jpg(file + '[0]', True, True, 'header')
+            Ocr.header_text = Ocr.line_box_builder(Files.img)
+            Files.pdf_to_jpg(file + '[0]', True, True, 'footer')
+            Ocr.footer_text = Ocr.line_box_builder(Files.img)
+            Files.pdf_to_jpg(file + '[0]')
+            Ocr.text = Ocr.line_box_builder(Files.img)
+            if nb_pages > 1 :
+                Files.pdf_to_jpg(file + '[' + str(nb_pages - 1) + ']', True, True, 'header', True)
+                Ocr.header_last_text = Ocr.line_box_builder(Files.img)
+                Files.pdf_to_jpg(file + '[' + str(nb_pages - 1) + ']', True, True, 'footer', True)
+                Ocr.footer_last_text = Ocr.line_box_builder(Files.img)
+                Files.pdf_to_jpg(file + '[' + str(nb_pages - 1) + ']', lastImage=True)
+                Ocr.last_text = Ocr.line_box_builder(Files.img)
+
+def update_typo_database(Database, vat_number, typo, Log, Config):
+    Spreadsheet = _Spreadsheet(Log, Config)
+    mime = mimetypes.guess_type(Spreadsheet.referencialSuppplierSpreadsheet)[0]
+    if mime in ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']:
+        Spreadsheet.write_typo_excel_sheet(vat_number, typo)
+    else:
+        Spreadsheet.write_typo_ods_sheet(vat_number, typo)
+
+    Database.update({
+        'table' : ['suppliers'],
+        'set'   : {
+            'typology' : typo,
+        },
+        'where' : ['vat_number = ?'],
+        'data'  : [vat_number]
+    })
+
 def process(file, Log, Config, Files, Ocr, Locale, Database, WebServices, typo):
     Log.info('Processing file : ' + file)
 
     # get the number of pages into the PDF documents
-    nb_pages = Files.getPages(file)
+    nb_pages = Files.getPages(file, Config)
 
-    if Files.isTiff == 'True':
-        Files.pdf_to_tiff(file, Files.tiffName, True, True, True, 'header')
-        Ocr.header_text = Ocr.line_box_builder(Files.img)
-        Files.pdf_to_tiff(file, Files.tiffName, True, True, True, 'footer')
-        Ocr.footer_text = Ocr.line_box_builder(Files.img)
-        Files.pdf_to_tiff(file, Files.tiffName, True)
-        Ocr.text = Ocr.line_box_builder(Files.img)
-        if nb_pages > 1 :
-            Files.pdf_to_tiff(file, Files.tiffName_last, False, True, True, 'header', nb_pages)
-            Ocr.header_last_text = Ocr.line_box_builder(Files.img)
-            Files.pdf_to_tiff(file, Files.tiffName_last, False, True, True, 'footer', nb_pages)
-            Ocr.footer_last_text = Ocr.line_box_builder(Files.img)
-            Files.pdf_to_tiff(file, Files.tiffName_last, lastPage=nb_pages)
-            Ocr.last_text = Ocr.line_box_builder(Files.img)
-    else:
-        Files.pdf_to_jpg(file + '[0]', True, True, 'header')
-        Ocr.header_text = Ocr.line_box_builder(Files.img)
-        Files.pdf_to_jpg(file + '[0]', True, True, 'footer')
-        Ocr.footer_text = Ocr.line_box_builder(Files.img)
-        Files.pdf_to_jpg(file + '[0]')
-        Ocr.text = Ocr.line_box_builder(Files.img)
-        if nb_pages > 1 :
-            Files.pdf_to_jpg(file + '[' + str(nb_pages - 1) + ']', True, True, 'header', True)
-            Ocr.header_last_text = Ocr.line_box_builder(Files.img)
-            Files.pdf_to_jpg(file + '[' + str(nb_pages - 1) + ']', True, True, 'footer', True)
-            Ocr.footer_last_text = Ocr.line_box_builder(Files.img)
-            Files.pdf_to_jpg(file + '[' + str(nb_pages - 1) + ']', lastImage=True)
-            Ocr.last_text = Ocr.line_box_builder(Files.img)
+    # Convert files to JPG or TIFF
+    convert(file, Files, Ocr, nb_pages)
 
     # Find supplier in document
-    supplier        = FindSupplier(Ocr, Log, Locale, Database, Files, nb_pages).run()
+    supplier = FindSupplier(Ocr, Log, Locale, Database, Files, nb_pages, False).run()
+    i = 0
+    tmp_nbPages = nb_pages
+    while not supplier:
+        tmp_nbPages = tmp_nbPages - 1
+        if i == 3 or int(tmp_nbPages) - 1 == 0 or nb_pages == 1:
+            break
+        convert(file, Files, Ocr, tmp_nbPages, True)
+        supplier = FindSupplier(Ocr, Log, Locale, Database, Files, tmp_nbPages, True).run()
+        i += 1
+
+    if typo:
+        update_typo_database(Database, supplier[0], typo, Log, Config)
 
     # Find custom informations using mask
-    customFields    = FindCustom(Ocr.header_text, Log, Locale, Config, Ocr, Files, supplier, typo).run()
+    customFields = FindCustom(Ocr.header_text, Log, Locale, Config, Ocr, Files, supplier, typo, file).run()
     columns = {}
     if customFields:
         for field in customFields:
@@ -147,22 +220,61 @@ def process(file, Log, Config, Files, Ocr, Locale, Database, WebServices, typo):
             })
 
     # Find invoice number
-    invoiceNumber   = FindInvoiceNumber(Ocr, Files, Log, Locale, Config, Database, supplier, typo).run()
+    invoiceNumber = FindInvoiceNumber(Ocr, Files, Log, Locale, Config, Database, supplier, file, typo, Ocr.header_text, 1, False).run()
+    if not invoiceNumber:
+        invoiceNumber = FindInvoiceNumber(Ocr, Files, Log, Locale, Config, Database, supplier, file, typo, Ocr.header_last_text, nb_pages, True).run()
+        if invoiceNumber:
+            invoiceNumber.append(nb_pages)
+
+    j = 0
+    tmp_nbPages = nb_pages
+    invoiceFoundOnFirtOrLastPage = False
+    while not invoiceNumber:
+        tmp_nbPages = tmp_nbPages - 1
+        if j == 3 or int(tmp_nbPages) - 1 == 0 or nb_pages == 1:
+            break
+        convert(file, Files, Ocr, tmp_nbPages, True)
+        invoiceNumberClass = FindInvoiceNumber(Ocr, Files, Log, Locale, Config, Database, supplier, file, typo, Ocr.header_last_text, tmp_nbPages, True)
+        if Files.isTiff == 'True':
+            _file = Files.custom_fileName_tiff
+        else:
+            _file = Files.custom_fileName
+
+        image = Files.open_image_return(_file)
+        invoiceNumberClass.text = Ocr.line_box_builder(image)
+        invoiceNumber = invoiceNumberClass.run()
+        if invoiceNumber:
+            invoiceFoundOnFirtOrLastPage = True
+        j += 1
 
     # Find invoice date number
-    date            = FindDate(Ocr.text, Log, Locale, Config, Files, Ocr, supplier, typo).run()
+    if invoiceFoundOnFirtOrLastPage:
+        Log.info("Search invoice date using the same page as invoice number")
+        text_custom = invoiceNumberClass.text
+        page_for_date = tmp_nbPages
+    else:
+        text_custom = Ocr.text
+        page_for_date = 1
+
+    date = FindDate(text_custom, Log, Locale, Config, Files, Ocr, supplier, typo, page_for_date).run()
+    k = 0
+    tmp_nbPages = nb_pages
+    while not date:
+        tmp_nbPages = tmp_nbPages - 1
+        if k == 3 or int(tmp_nbPages) - 1 == 0 or nb_pages == 1:
+            break
 
     # Find footer informations (total amount, no rate amount etc..)
-    footer          = FindFooter(Ocr, Log, Locale, Config, Files, Database, supplier, file + '[0]', Ocr.footer_text, typo).run()
+    footer = FindFooter(Ocr, Log, Locale, Config, Files, Database, supplier, file, Ocr.footer_text, typo).run()
 
     if not footer:
-        footer = FindFooter(Ocr, Log, Locale, Config, Files, Database, supplier, file + '[0]', Ocr.footer_last_text, typo).run()
+        footer = FindFooter(Ocr, Log, Locale, Config, Files, Database, supplier, file, Ocr.footer_last_text, typo).run()
         if footer:
             footer.append(nb_pages)
 
-    fileName          = str(uuid.uuid4())
+    fileName = str(uuid.uuid4())
     full_jpg_filename = 'full_' + fileName + '-%03d.jpg'
-    tiff_filename     = 'tiff_' + fileName + '-%03d.tiff'
+    tiff_filename = 'tiff_' + fileName + '-%03d.tiff'
 
     file = Files.move_to_docservers(Config.cfg, file)
     # Convert all the pages to JPG (used to full web interface)

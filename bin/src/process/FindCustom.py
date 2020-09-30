@@ -19,7 +19,7 @@ import re
 from webApp.functions import search_custom_positions, retrieve_custom_positions
 
 class FindCustom:
-    def __init__(self, text, Log, Locale, Config, Ocr, Files, supplier, typo):
+    def __init__(self, text, Log, Locale, Config, Ocr, Files, supplier, typo, file):
         self.text = text
         self.Ocr = Ocr
         self.Log = Log
@@ -29,6 +29,7 @@ class FindCustom:
         self.OCRErrorsTable = Ocr.OCRErrorsTable
         self.supplier = supplier
         self.typo = typo
+        self.file = file
 
     def process(self, data):
         for line in self.text:
@@ -53,7 +54,7 @@ class FindCustom:
 
         if list_of_fields:
             for index in list_of_fields:
-                data, position = search_custom_positions(list_of_fields[index], self.Ocr, self.Files, self.Locale)
+                data, position = search_custom_positions(list_of_fields[index], self.Ocr, self.Files, self.Locale, self.file, self.Config)
                 if not data and list_of_fields[index]['regex'] is not False:
                     dataToReturn[index] = [self.process(list_of_fields[index]), position, list_of_fields[index]['column']]
                     if list_of_fields[index]['type'] == 'date':

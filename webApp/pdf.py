@@ -147,7 +147,7 @@ def index(status, time, search):
             'select'    : [
                 "DISTINCT(invoices.id) as invoice_id",
                 "status.id as status_id",
-                "strftime('%d-%m-%Y à %H:%M', register_date) as date",
+                "strftime('%d-%m-%Y à %H:%M:%S', register_date) as date",
                 "*"
             ],
             'table'     : ['invoices', 'status', 'suppliers'],
@@ -312,6 +312,9 @@ def validate_form():
     contact = {}
     pdfId   = request.args['id']
     res     = True
+    footer_page = 1
+    invoice_number_page = 1
+    invoice_date_page = 1
 
     if request.method == 'POST':
         # Create an array containing the parent element, used to structure the XML
@@ -330,8 +333,8 @@ def validate_form():
             # Create the data list of arguments
             ged['fileContent']                                      = open(request.form['fileInfo_path'], 'rb').read()
             ged['creationDate']                                     = request.form['pdfCreationDate']
-            ged['date']                                             = request.form['facturationInfo_date']
-            ged['dest_user']                                        = request.form['ged_users']
+            ged['date']                                             = request.form['facturationInfo_invoice_date']
+            ged['dest_user']                                        = request.form['ged_users'].split('#')[0]
             ged['vatNumber']                                        = request.form['supplierInfo_vat_number']
             ged[_cfg.cfg[defaultProcess]['customvatnumber']]        = request.form['supplierInfo_vat_number']
             ged[_cfg.cfg[defaultProcess]['customht']]               = request.form['facturationInfo_totalHT']
@@ -363,7 +366,7 @@ def validate_form():
                     ged[_cfg.cfg[defaultProcess]['customordernumber']] = tmpOrder[:-1]
 
             # Looking for an existing user in the GED, using VAT number as primary key
-            ged['contact']      = _ws.retrieve_contact_by_VATNumber(ged['vatNumber'])
+            ged['contact'] = _ws.retrieve_contact_by_VATNumber(ged['vatNumber'])
 
             # If no contact found, create it
             if not ged['contact']:
@@ -391,6 +394,14 @@ def validate_form():
         # Fill the parent array with all the child infos
         for value in parent:
             for field in request.form:
+                if any(x in field for x in ['facturationInfo_no_taxes', 'facturationInfo_vat_']):
+                    if '_page' in field:
+                        footer_page = request.form[field]
+                if field == 'facturationInfo_invoice_number_page':
+                    invoice_number_page = request.form['facturationInfo_invoice_number_page']
+                if field == 'facturationInfo_invoice_date_page':
+                    invoice_date_page = request.form['facturationInfo_date_number_page']
+
                 if field.split('_')[0] == value:
                     vatNumber = request.form['supplierInfo_vat_number']
 
@@ -403,6 +414,7 @@ def validate_form():
                         parent[value].append({
                             field : {'field' : request.form[field], 'position' : None}
                         })
+
         _db.update({
             'table' : ['invoices'],
             'set'   : {
@@ -417,6 +429,17 @@ def validate_form():
             },
             'where' : ['id = ?'],
             'data'  : [pdfId]
+        })
+
+        _db.update({
+            'table': ['suppliers'],
+            'set': {
+                'footer_page': footer_page,
+                'invoice_number_page': invoice_number_page,
+                'invoice_date_page' : invoice_date_page
+            },
+            'where': ['vat_number = ?'],
+            'data': [vatNumber]
         })
 
         _files.exportXml(_cfg, request.form['facturationInfo_invoice_number'], parent, True, _db, vatNumber)

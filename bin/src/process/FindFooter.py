@@ -17,7 +17,7 @@
 
 import re
 import operator
-from webApp.functions import search_by_positions
+from webApp.functions import search_by_positions, search_custom_positions
 
 class FindFooter:
     def __init__(self, Ocr, Log, Locale, Config, Files, Database, supplier, file, text, typo):
@@ -65,33 +65,27 @@ class FindFooter:
 
     def process_with_position(self, select):
         position = self.Database.select({
-            'select': [select],
+            'select': select,
             'table' : ['suppliers'],
             'where' : ['vat_number = ?'],
             'data'  : [self.supplier[0]]
-        })[0][select]
+        })[0]
 
-        if position:
-            positionArray   = self.Ocr.prepare_ocr_on_fly(position)
-            if self.Files.isTiff == 'True':
-                text            = self.Files.ocr_on_fly(self.Files.tiffName, positionArray, self.Ocr)
-            else:
-                text            = self.Files.ocr_on_fly(self.Files.jpgName, positionArray, self.Ocr)
+        if position and position[select[0]]:
+            data = {'position' : position[select[0]], 'regex': None, 'target' : 'full', 'page' : position[select[1]]}
+            text, position = search_custom_positions(data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
+            if text:
+                # Filter the result to get only the digits
+                text = re.finditer(r'[-+]?\d*[.,\s]+\d+|\d+', text)
+                result = ''
+                for t in text:
+                    result += re.sub('\s*', '', t.group())
 
-            # Filter the result to get only the digits
-            text = re.finditer(r'[-+]?\d*[.,\s]+\d+|\d+', text)
-            result = ''
-            for t in text:
-                result += re.sub('\s*', '', t.group())
-
-            if result != '':
-                result      = float(result.replace(',', '.'))
-                position    = {
-                    0 : {0 : positionArray['x1'], 1 : positionArray['y1']},
-                    1 : {0 : positionArray['x2'], 1 : positionArray['y2']}
-                }
-                return result, position
-
+                if result != '':
+                    result      = float(result.replace(',', '.'))
+                    return [result, position, data['page']]
+                else:
+                    return False
             else:
                 return False
         else:
@@ -102,12 +96,12 @@ class FindFooter:
             if self.supplier is not False:
                 self.Log.info('No amount or percentage found in footer, start searching with supplier position')
                 if noRateAmount in [False, None]:
-                    noRateAmount    = self.process_with_position('no_taxes_1_position')
+                    noRateAmount    = self.process_with_position(['no_taxes_1_position', 'footer_page'])
                     if noRateAmount:
                         self.Log.info('noRateAmount found with position')
 
                 if ratePercentage in [False, None]:
-                    ratePercentage  = self.process_with_position('vat_1_position')
+                    ratePercentage  = self.process_with_position(['vat_1_position', 'footer_page'])
                     if ratePercentage:
                         self.Log.info('ratePercentage found with position')
 
@@ -179,7 +173,7 @@ class FindFooter:
 
             if float(total) == float(allRateAmount[0]):
                 self.Log.info('Footer informations found : [TOTAL : ' + str(total) + ' ] - [HT : ' + str(noRateAmount[0]) + ' ] - [VATRATE : ' + str(ratePercentage[0]) + ' ]')
-                return [noRateAmount, allRateAmount, ratePercentage]
+                return [noRateAmount, allRateAmount, ratePercentage, 1]
             else:
                 return False
         else:
