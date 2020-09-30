@@ -15,6 +15,7 @@ psycopg2
 pdf2image
 tensorflow
 flask_cors
+xlsxwriter
 Flask-Babel
 pytesseract
 pyexcel_ods3
