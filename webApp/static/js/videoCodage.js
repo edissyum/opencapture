@@ -298,7 +298,7 @@ $(document).ready(function() {
                             '</div>'
                         ).insertAfter($('#siret_number')).slideDown();
                     } else {
-                        if (res.text === 'error') {
+                        if (res.text.toString() === 'error') {
                             console.log('error')
                         }else{
                             let result = JSON.parse(res.text);
