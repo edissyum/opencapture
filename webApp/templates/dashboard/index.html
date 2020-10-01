@@ -30,6 +30,14 @@
                             <i class="fas fa-cog"></i>
                             {{ gettext('GED SETTINGS') }}
                         </a>
+                        <a class="nav-link" data-toggle="pill" href="#aiSettings" role="tab" aria-controls="gedSettings" aria-selected="false">
+                            <i class="fas fa-cog"></i>
+                            {{ gettext('AI_SETTINGS') }}
+                        </a>
+                        <a class="nav-link" data-toggle="pill" href="#databaseSettings" role="tab" aria-controls="databaseSettings" aria-selected="false">
+                            <i class="fas fa-cog"></i>
+                            {{ gettext('DATABASE_SETTINGS') }}
+                        </a>
                     </nav>
                     <br>
                     <hr>
@@ -218,7 +226,7 @@
                             <div class="defaultPassword">
                                 <hr>
                                 <div class="form-row">
-                                    <div class="col-md-4 offset-md-2">
+                                    <div class="col-md-4">
                                         <label for="defaultpassword">{{ gettext('DEFAULT_PASSWORD') }}</label>
                                         <div class="input-group mb-2">
                                             <input type="text" class="form-control" id="defaultpassword" name="GLOBAL_defaultpassword" value="{{ configDashboard['GLOBAL']['defaultpassword'] }}">
@@ -242,6 +250,17 @@
                                         <small id="timedeltaHelp" class="form-text text-muted">
                                             {{ gettext('TIME_DELTA_HELP') }}
                                         </small>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="uploadmaxfiles">{{ gettext('UPLOAD_MAX_FILES') }}</label>
+                                        <div class="input-group mb-2">
+                                            <input type="text" class="form-control" id="uploadmaxfiles" name="GLOBAL_uploadmaxfiles" value="{{ configDashboard['GLOBAL']['uploadmaxfiles'] }}">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">
+                                                    <i class="fas fa-file-pdf"></i>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -485,17 +504,6 @@
                                         </div>
                                         <hr>
                                         <div class="form-row">
-                                            <div class="form-group col-md-4">
-                                                <label for="databaseFile">{{ gettext('DATABASE_FILE') }}</label>
-                                                <div class="input-group mb-2">
-                                                    <div class="input-group-prepend">
-                                                        <div class="input-group-text">
-                                                            <i class="fas fa-database"></i>
-                                                        </div>
-                                                    </div>
-                                                    <input type="text" class="form-control" id="databaseFile" name="DATABASE_databasefile" value="{{ configDashboard['DATABASE']['databasefile'] }}">
-                                                </div>
-                                            </div>
                                             <div class="form-group col-md-4">
                                                 <label for="nbThreads">{{ gettext('THREADS_NUMBER') }}</label>
                                                 <div class="input-group mb-2">
@@ -1177,12 +1185,168 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="tab-pane fade" id="aiSettings" role="tabpanel" aria-labelledby="aiSettings">
+                            <div class="form-group col-md-4 offset-md-6">
+                                {% if configDashboard['AI-CLASSIFICATION']['enabled'] == 'True' %}
+                                    <input type="checkbox" class="custom-control-input" name="AI-CLASSIFICATION_enabled"  id="classification" checked>
+                                {% else %}
+                                    <input type="checkbox" class="custom-control-input" name="AI-CLASSIFICATION_enabled" id="classification">
+                                {% endif %}
+                                <label class="custom-control-label" for="ia-classificationenabled">{{ gettext('ENABLED') }}</label>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="iapath">{{ gettext('AI_PATH') }}</label>
+                                    <div class="input-group mb-2">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">
+                                                <i class="fas fa-project-diagram"></i>
+                                            </div>
+                                        </div>
+                                        <input type="text" class="form-control" id="iapath" name="AI-CLASSIFICATION_iapath" value="{{ configDashboard['AI-CLASSIFICATION']['iapath'] }}">
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="modelpath">{{ gettext('AI_MODEL_PATH') }}</label>
+                                    <div class="input-group mb-2">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">
+                                                <i class="fas fa-map-signs"></i>
+                                            </div>
+                                        </div>
+                                        <input type="text" class="form-control" id="modelpath" name="AI-CLASSIFICATION_modelpath" value="{{ configDashboard['AI-CLASSIFICATION']['modelpath'] }}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="trainimagepath">{{ gettext('AI_TRAIN_IMAGE_PATH') }}</label>
+                                    <div class="input-group mb-2">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">
+                                                <i class="fas fa-project-diagram"></i>
+                                            </div>
+                                        </div>
+                                        <input type="text" class="form-control" id="trainimagepath" name="AI-CLASSIFICATION_trainimagepath" value="{{ configDashboard['AI-CLASSIFICATION']['trainimagepath'] }}">
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="predictimagepath">{{ gettext('AI_TRAIN_IMAGE_PATH') }}</label>
+                                    <div class="input-group mb-2">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">
+                                                <i class="fas fa-map-signs"></i>
+                                            </div>
+                                        </div>
+                                        <input type="text" class="form-control" id="predictimagepath" name="AI-CLASSIFICATION_predictimagepath" value="{{ configDashboard['AI-CLASSIFICATION']['predictimagepath'] }}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <label for="confidenceMin">{{ gettext('AI_CONFIDENCE_MIN') }}</label>
+                                    <div class="input-group mb-2">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">
+                                                <i class="fas fa-database"></i>
+                                            </div>
+                                        </div>
+                                        <input type="text" class="form-control" id="confidenceMin" name="AI-CLASSIFICATION_confidencemin" value="{{ configDashboard['AI-CLASSIFICATION']['confidencemin'] }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="databaseSettings" role="tabpanel" aria-labelledby="databaseSettings">
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="databaseFile">{{ gettext('DATABASE_FILE') }}</label>
+                                    <div class="input-group mb-2">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">
+                                                <i class="fas fa-database"></i>
+                                            </div>
+                                        </div>
+                                        <input type="text" class="form-control" id="databaseFile" name="DATABASE_databasefile" value="{{ configDashboard['DATABASE']['databasefile'] }}">
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-2">
+                                    <label for="databasetype">{{ gettext('DATABASE_TYPE') }}</label>
+                                    <div class="input-group mb-2">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">
+                                                <i class="fas fa-database"></i>
+                                            </div>
+                                        </div>
+                                        <input type="text" class="form-control" id="databasetype" name="DATABASE_databasetype" value="{{ configDashboard['DATABASE']['databasetype'] }}">
+                                    </div>
+                                    <small id="timedeltaHelp" class="form-text text-muted">
+                                        {{ gettext('DATABASE_TYPE_HELP') }}
+                                    </small>
+                                </div>
+                                <div class="form-group col-md-2">
+                                    <label for="postgreshost">{{ gettext('POSTGRES_HOST') }}</label>
+                                    <div class="input-group mb-2">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">
+                                                <i class="fas fa-database"></i>
+                                            </div>
+                                        </div>
+                                        <input type="text" class="form-control" id="postgreshost" name="DATABASE_postgreshost" value="{{ configDashboard['DATABASE']['postgreshost'] }}">
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-2">
+                                    <label for="postgresport">{{ gettext('POSTGRES_PORT') }}</label>
+                                    <div class="input-group mb-2">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">
+                                                <i class="fas fa-database"></i>
+                                            </div>
+                                        </div>
+                                        <input type="text" class="form-control" id="postgresport" name="DATABASE_postgresport" value="{{ configDashboard['DATABASE']['postgresport'] }}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
+                                    <label for="postgresdatabase">{{ gettext('POSTGRES_DATABASE') }}</label>
+                                    <div class="input-group mb-2">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">
+                                                <i class="fas fa-database"></i>
+                                            </div>
+                                        </div>
+                                        <input type="text" class="form-control" id="postgresdatabase" name="DATABASE_postgresdatabase" value="{{ configDashboard['DATABASE']['postgresdatabase'] }}">
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="postgresuser">{{ gettext('POSTGRES_USER') }}</label>
+                                    <div class="input-group mb-2">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">
+                                                <i class="fas fa-database"></i>
+                                            </div>
+                                        </div>
+                                        <input type="text" class="form-control" id="postgresuser" name="DATABASE_postgresuser" value="{{ configDashboard['DATABASE']['postgresuser'] }}">
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="postgrespassword">{{ gettext('POSTGRES_PASSWORD') }}</label>
+                                    <div class="input-group mb-2">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">
+                                                <i class="fas fa-database"></i>
+                                            </div>
+                                        </div>
+                                        <input type="text" class="form-control" id="postgrespassword" name="DATABASE_postgrespassword" value="{{ configDashboard['DATABASE']['postgrespassword'] }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     <input type="submit" value="{{ gettext('MODIFY_CONFIGURATION') }}" class="btn btn-outline-dark btn-lg btn-block w-25 m-auto">
                 </form>
             </div>
         </div>
     </div>
-
 
     {% block javascript %}
         <script type="text/javascript" src="{{ url_for('static', filename='js/jqueryLib/jquery.min.js') }}"></script>

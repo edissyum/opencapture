@@ -29,8 +29,8 @@ class Config:
             for info in parser[section]:
                 self.cfg[section][info] = parser[section][info]
 
-    def read_position(self, supplier, key, Locale):
-        file = self.cfg['REFERENCIAL']['referencialposition'] + supplier + '.ini'
+    def read_position(self, typology, key, Locale):
+        file = self.cfg['REFERENCIAL']['referencialposition'] + str(typology) + '.ini'
         res  = {}
         if os.path.isfile(file):
             parser = ConfigParser(interpolation=ExtendedInterpolation())

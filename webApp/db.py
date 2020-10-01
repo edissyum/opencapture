@@ -1,9 +1,9 @@
 import click
-import sqlite3
-import psycopg2
+
 from flask import current_app, g
 from flask.cli import with_appcontext
 from webApp.functions import get_custom_id, check_python_customized_files
+from psycopg2 import ProgrammingError
 
 custom_id = get_custom_id()
 custom_array = {}
@@ -33,13 +33,12 @@ def init():
     Log = _Log(Config.cfg['GLOBAL']['logfile'])
     db = _Database(Log, dbType, dbName, dbUser, dbPwd, dbHost, dbPort, Config.cfg['DATABASE']['databasefile'])
 
-    return {'db' : db, 'type': dbType}
+    return {'db' : db, 'type': dbType, 'log' : Log}
 
 def get_db():
     if 'db' not in g:
         g.db = init()['db']
     return g.db
-
 
 def close_db(e=None):
     db = g.pop('db', None)
@@ -50,6 +49,7 @@ def close_db(e=None):
 def init_db():
     info_db = init()
     db = info_db['db']
+    log = info_db['log']
     if info_db['type'] != 'pgsql':
         with current_app.open_resource('schema.sql') as f:
             cursor = db.conn.cursor()
@@ -57,7 +57,11 @@ def init_db():
     else:
         with current_app.open_resource('schema.psql') as f:
             cursor = db.conn.cursor()
-            cursor.execute(f.read().decode('utf-8'))
+            try:
+                cursor.execute(f.read().decode('utf-8'))
+            except ProgrammingError as e:
+                log.error('Error while inserting in database : ' + str(e))
+                log.error(f.read().decode('utf-8'))
 
 @click.command('init-db')
 @with_appcontext

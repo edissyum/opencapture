@@ -138,8 +138,9 @@ function ocrOnFly(isRemoved, inputId, removeWhiteSpace = false, needToBeNumber =
     let myImage     = $('#my-image');
     let zoomImg     = $('.zoomImg');
     // ratioImg is used to recalculate the (x,y) position when the ocr is done on the zoomed image
-    let ratioImg   = originalWidth / myImage.width();
-    let isNotZoomed    = (zoomImg.length === 0 || zoomImg.css('opacity') === '0');
+    let ratioImg    = originalWidth / myImage.width();
+
+    let isNotZoomed = (zoomImg.length === 0 || zoomImg.css('opacity') === '0');
     if (isNotZoomed){
         zoomImg.css({
             'z-index' : -99
@@ -218,7 +219,6 @@ function ocrOnFly(isRemoved, inputId, removeWhiteSpace = false, needToBeNumber =
 
                                 // Add the coordonates of selection to draw rectangle later
                                 // Remove the _original because of the ratio issues
-
                                 let x1 = selection.x1 * ratioImg;
                                 let y1 = selection.y1 * ratioImg;
                                 let x2 = selection.x2 * ratioImg;
@@ -228,14 +228,23 @@ function ocrOnFly(isRemoved, inputId, removeWhiteSpace = false, needToBeNumber =
                                 input.setAttribute('y1_original', '');
                                 input.setAttribute('x2_original', '');
                                 input.setAttribute('y2_original', '');
-                                input.setAttribute('x1', x1.toString());
-                                input.setAttribute('y1', y1.toString());
-                                input.setAttribute('x2', x2.toString());
-                                input.setAttribute('y2', y2.toString());
+                                input.setAttribute('x1', x1.toFixed(2).toString());
+                                input.setAttribute('y1', y1.toFixed(2).toString());
+                                input.setAttribute('x2', x2.toFixed(2).toString());
+                                input.setAttribute('y2', y2.toFixed(2).toString());
                                 input.setAttribute('page', currentPage === undefined ? 1 : currentPage.text());
 
-                                $('#' + input.id).parent().append('<input type="hidden" id="' + input.name + '_position" name="' + input.name + '_position"/>')
-                                $('#' + input.name + '_position').val('((' + x1 + ',' + y1 + '),(' + x2 + ',' + y2 + '))');
+                                let inputPosition = $('#' + input.name + '_position')
+                                let inputPage = $('#' + input.name + '_page')
+
+                                if (!inputPosition.length)
+                                    $('#' + input.id).parent().append('<input type="hidden" id="' + input.name + '_position" name="' + input.name + '_position"/>')
+
+                                if (!inputPage.length)
+                                    $('#' + input.id).parent().append('<input type="hidden" id="' + input.name + '_page" name="' + input.name + '_page"/>')
+
+                                inputPosition.val('((' + x1.toFixed(2) + ',' + y1.toFixed(2) + '),(' + x2.toFixed(2) + ',' + y2.toFixed(2) + '))');
+                                inputPage.val(currentPage === undefined ? 1 : currentPage.text());
 
                                 // Show the eyes, on click on it, it will show the rectangle on the image
                                 // .prev() allow us to display the input-group-text class, containing the eye
@@ -254,6 +263,22 @@ function ocrOnFly(isRemoved, inputId, removeWhiteSpace = false, needToBeNumber =
 
 /******** ONLOAD ********/
 
+function getCookie(cname) {
+  let name = cname + "=";
+  let decodedCookie = decodeURIComponent(document.cookie);
+  let ca = decodedCookie.split(';');
+  for(let i = 0; i <ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) === ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) === 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
 // On load, reload Insee token for SIRET/SIREN validation
 // Also, do all the validation if the input aren't empty
 $(document).ready(function() {
@@ -262,45 +287,52 @@ $(document).ready(function() {
         // Get the config
         readConfig().then((res) => {    // Put the rest of code into the 'then' to make synchronous API call
             config = res;
-
-            generateTokenInsee(config.GENERAL['siret-consumer'], config.GENERAL['siret-secret'])
-            .then(function(res) {
-                if (!JSON.parse(res.ok)) {
-                    loaded = false;
-                    $('<div class="invalid-feedback invalidSIRET">' +
-                        gt.gettext('SIRET_CONNECTION_ERROR') +
-                        '</div>'
-                    ).insertAfter($('#siret_number')).slideDown();
-                } else {
-                    if (res.text === 'error') {
-                        console.log('error')
-                    }else{
-                        let result = JSON.parse(res.text);
-                        token = result['access_token'];
+            token = getCookie('access_token');
+            if(token === ''){
+                generateTokenInsee(config.GENERAL['siret-consumer'], config.GENERAL['siret-secret'])
+                .then(function(res) {
+                    if (!JSON.parse(res.ok)) {
+                        loaded = false;
+                        $('<div class="invalid-feedback invalidSIRET">' +
+                            gt.gettext('SIRET_CONNECTION_ERROR') +
+                            '</div>'
+                        ).insertAfter($('#siret_number')).slideDown();
+                    } else {
+                        if (res.text.toString() === 'error') {
+                            console.log('error')
+                        }else{
+                            let result = JSON.parse(res.text);
+                            document.cookie = "access_token=" + result['access_token'] + ";max-age=604800";
+                            token = getCookie('access_token');
+                        }
                     }
-                }
-
-                $('.chosen-select').chosen({
-                    max_shown_results: 200,
-                    search_contains: true,
-                    width: "100%"
                 });
+            }
 
-                // Focus supplier field to reload info thanks to VATNumber
-                // Avoid the need to prefill all the field about supplier into HTML
-                $('#supplier').focus();
-
-                checkAll();
-
-                // If there is a VAT rate and a notaxes amount, calcul the total
-                $('#calculTotal').click();
-
-                // Check if duplicate, to display a message after validation if duplicate
-                checkIsDuplicate();
-
-                $('#status_form').delay(1000).fadeOut('slow'); // will first fade out the loading animation
-                $('#preloader_form').delay(500).fadeOut('slow'); // will fade out the white DIV that covers the website.
+            $('.chosen-select').chosen({
+                max_shown_results: 200,
+                search_contains: true,
+                width: "100%"
             });
+
+            // Focus supplier field to reload info thanks to VATNumber
+            // Avoid the need to prefill all the field about supplier into HTML
+            let supplier = $('#supplier')
+            supplier.focus();
+
+            checkAll();
+
+            // Remove focus to avoid multiple call to the API
+            supplier.delay(500).blur();
+
+            // If there is a VAT rate and a notaxes amount, calcul the total
+            $('#calculTotal').click();
+
+            // Check if duplicate, to display a message after validation if duplicate
+            checkIsDuplicate();
+
+            $('#status_form').delay(1000).fadeOut('slow'); // will first fade out the loading animation
+            $('#preloader_form').delay(500).fadeOut('slow'); // will fade out the white DIV that covers the website.
         })
         .catch(function() {
             loaded = false;
@@ -308,7 +340,6 @@ $(document).ready(function() {
         });
 
     }
-
     // Reload image width if user zoom in the page
     $(window).resize(function(){
         windowsWidth = $('#my-image').width();
@@ -473,8 +504,6 @@ function addVAT(input){
 function removeVAT(input){
     let VATToRemove         = $('.MAIN_' + input.className);
     let VATAmountToRemove   = $('.AMOUNT_' + input.className);
-    console.log(input.className)
-    console.log(VATAmountToRemove)
     let currentCptVAT       = parseInt(VATToRemove[0].className.split('_')[2]);
 
     // Avoid deletion of VAT rate if there is just one
@@ -634,12 +663,13 @@ function removeAllOrderNumber(radioButton){
             '<a id="addOrderNumber" href="#addOrder" onclick="addOrderNumber(this)" data-toggle="tooltip" title="' + gt.gettext('ADD_ORDER_NUMBER') + '" style="display: none">' +
                 '<i class="fa fa-plus-square" aria-hidden="true"></i>' +
             '</a>'
-        ).insertBefore($('.MAIN_TVA_1')).slideToggle();
+        ).insertBefore($('.MAIN_vat_1')).slideToggle();
 
-          if($('#NumberOfOrderNumber').length === 0)
+        let numberOfOrderNumber = $('#NumberOfOrderNumber')
+        if(numberOfOrderNumber.length === 0)
             $('<input name="facturationInfo_NumberOfOrderNumber" id="NumberOfOrderNumber" type="hidden" value="1">').insertBefore($('#NumberOfVAT'));
         else
-            $('#NumberOfOrderNumber').val(1);
+            numberOfOrderNumber.val(1);
     }
 }
 
@@ -688,11 +718,12 @@ function removeAllDeliveryNumber(radioButton){
             '<a id="addDeliveryNumber" href="#addDelivery" onclick="addDeliveryNumber(this)" data-toggle="tooltip" title="' + gt.gettext('ADD_DELIVERY_FORM_NUMBER') + '" style="display: none">' +
                 '<i class="fa fa-plus-square" aria-hidden="true"></i>' +
             '</a>'
-        ).insertBefore($('.MAIN_TVA_1')).slideToggle();
-        if($('#NumberOfDeliveryNumber').length === 0)
+        ).insertBefore($('.MAIN_vat_1')).slideToggle();
+        let numberOfDeliveryNumber = $('#NumberOfDeliveryNumber')
+        if(numberOfDeliveryNumber.length === 0)
             $('<input name="facturationInfo_NumberOfDeliveryNumber" id="NumberOfDeliveryNumber" type="hidden" value="1">').insertBefore($('#NumberOfVAT'));
         else
-            $('#NumberOfDeliveryNumber').val(1);
+            numberOfDeliveryNumber.val(1);
     }
 }
 
@@ -748,7 +779,6 @@ function hideOrDisplay(input){
         }
     });
 }
-
 
 /******** CHECK FUNCTION ********/
 
@@ -957,7 +987,7 @@ function checkAdress(){
                 processRatio(ratioPostal, postalCode, postalRatio, infos['postcode'], 'supplier_postal_code');
             }
         })
-        .fail(function(data){
+        .fail(function(){
             banApiError = true;
             $('.supplier_address').html(gt.gettext('BAN_API_ERROR')).slideDown();
         });
@@ -1014,7 +1044,9 @@ $('#validateForm').on('click', function(){
             gt.gettext('INCORRECT_BAN_ADDRESS') + ' ' +
             gt.gettext('PUT_FORM_TO_SUPPLIER_WAIT') +
             '</span>');
-        if ($('#awaitAdress').length === 0) {
+        let awaitAdress = $('#awaitAdress')
+
+        if (awaitAdress.length === 0) {
             $('<button type="button" class="btn btn-warning" onclick=\'changeStatus($("#pdfId").val(), "WAIT_SUP", false);\' id="awaitAdress">' +
                     gt.gettext('PUT_ON_HOLD') +
             '</button>').insertAfter($('#returnToValidate'));
@@ -1023,7 +1055,7 @@ $('#validateForm').on('click', function(){
         if ($('#bypassBan').length === 0 && config.GLOBAL['allowbypasssuppliebanverif'] === 'True') {
             $('<button type="button" class="btn btn-danger" onclick=\'changeStatus($("#pdfId").val(), "END");\' id="bypassBan">' +
                     gt.gettext('_VALID_WIHTOUT_BAN_VERIFICATION') +
-            '</button>').insertAfter($('#awaitAdress'));
+            '</button>').insertAfter(awaitAdress);
         }
 
     }else if(form[0].checkValidity() && $('#vat_number').hasClass('is-invalid')){
@@ -1178,7 +1210,6 @@ function calculateSCore(s1, s2){
 }
 
 function processRatio(percent, input, ratioClass, banInfo, invalidClass){
-    let ratioClassId    = $('.' + ratioClass[0].id);
     let invalidFeed     = $('.' + invalidClass);
 
     invalidFeed.removeClass('redRatio red_' + input[0].id);

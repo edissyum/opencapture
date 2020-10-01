@@ -115,7 +115,7 @@
     </nav>
     <section class="content">
         {% for message in get_flashed_messages() %}
-            <div class="flash" onclick="$('.flash').fadeOut()"><script>$('.flash').delay(4000).fadeOut()</script>{{ message }}</div>
+            <div class="flash" onclick="$('.flash').fadeOut()"><script>$('.flash').fadeOut(10000)</script>{{ message }}</div>
         {% endfor %}
         {% block content %}{% endblock %}
     </section>

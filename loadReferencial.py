@@ -1,26 +1,46 @@
 import mimetypes
 import argparse
-import bin.src.classes.Log as logClass
-import bin.src.classes.Config as configClass
-import bin.src.classes.Database as databaseClass
-import bin.src.classes.Spreadsheet as spreadsheetClass
+import os
+import sys
+
+from webApp.functions import get_custom_id, check_python_customized_files
+
+custom_id = get_custom_id()
+custom_array = {}
+if custom_id:
+    custom_array = check_python_customized_files(custom_id[1])
+
+if 'Config' not in custom_array: from bin.src.classes.Config import Config as _Config
+else: _Config = getattr(__import__(custom_array['Config']['path'] + '.' + custom_array['Config']['module'], fromlist=[custom_array['Config']['module']]), custom_array['Config']['module'])
+
+if 'Log' not in custom_array: from bin.src.classes.Log import Log as _Log
+else: _Log = getattr(__import__(custom_array['Log']['path'] + '.' + custom_array['Log']['module'], fromlist=[custom_array['Log']['module']]), custom_array['Log']['module'])
+
+if 'Database' not in custom_array: from bin.src.classes.Database import Database as _Database
+else: _Database = getattr(__import__(custom_array['Database']['path'] + '.' + custom_array['Database']['module'], fromlist=[custom_array['Database']['module']]), custom_array['Database']['module'])
+
+if 'Spreadsheet' not in custom_array: from bin.src.classes.Spreadsheet import Spreadsheet as _Spreadsheet
+else: _Spreadsheet = getattr(__import__(custom_array['Spreadsheet']['path'] + '.' + custom_array['Spreadsheet']['module'], fromlist=[custom_array['Spreadsheet']['module']]), custom_array['Spreadsheet']['module'])
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
-    ap.add_argument("-c", "--config", required=False, help="path to config file")
+    ap.add_argument("-c", "--config", required=True, help="path to config file")
     args = vars(ap.parse_args())
 
-    configName          = configClass.Config(args['config'])
-    Config              = configClass.Config(configName.cfg['PROFILE']['cfgpath'] + '/config_' + configName.cfg['PROFILE']['id'] + '.ini')
-    Log                 = logClass.Log(Config.cfg['GLOBAL']['logfile'])
-    Spreadsheet         = spreadsheetClass.Spreadsheet(Log, Config)
+    if not os.path.exists(args['config']):
+        sys.exit('Config file couldn\'t be found')
+
+    configName          = _Config(args['config'])
+    Config              = _Config(configName.cfg['PROFILE']['cfgpath'] + '/config_' + configName.cfg['PROFILE']['id'] + '.ini')
+    Log                 = _Log(Config.cfg['GLOBAL']['logfile'])
+    Spreadsheet         = _Spreadsheet(Log, Config)
     dbType              = Config.cfg['DATABASE']['databasetype']
     dbUser              = Config.cfg['DATABASE']['postgresuser']
     dbPwd               = Config.cfg['DATABASE']['postgrespassword']
     dbname              = Config.cfg['DATABASE']['postgresdatabase']
     dbhost              = Config.cfg['DATABASE']['postgreshost']
     dbport              = Config.cfg['DATABASE']['postgresport']
-    Database            = databaseClass.Database(Log, dbType, dbname, dbUser, dbPwd, dbhost, dbport, Config.cfg['DATABASE']['databasefile'])
+    Database            = _Database(Log, dbType, dbname, dbUser, dbPwd, dbhost, dbport, Config.cfg['DATABASE']['databasefile'])
 
     # Load the referencials into array before inject it into database
     # Read MIME type from file
@@ -29,7 +49,7 @@ if __name__ == '__main__':
         # Add the MIME type into a config file
     mime = mimetypes.guess_type(Spreadsheet.referencialSuppplierSpreadsheet)[0]
     if mime in ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']:
-        contentSupplierSheet    = Spreadsheet.read_excel_sheet(Spreadsheet.referencialSuppplierSpreadsheet)
+        contentSupplierSheet = Spreadsheet.read_excel_sheet(Spreadsheet.referencialSuppplierSpreadsheet)
     else:
         contentSupplierSheet = Spreadsheet.read_ods_sheet(Spreadsheet.referencialSuppplierSpreadsheet)
 
@@ -41,7 +61,6 @@ if __name__ == '__main__':
         'table'     : ['suppliers'],
     }
     listOfExistingSupplier = Database.select(args)
-
     # Insert into database all the supplier not existing into the database
     for taxeNumber in Spreadsheet.referencialSupplierData:
         if not any(str(taxeNumber) in value['vat_number'] for value in listOfExistingSupplier):
