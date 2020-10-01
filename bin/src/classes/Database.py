@@ -39,6 +39,8 @@ class Database:
                 self.conn.row_factory = sqlite3.Row
             except sqlite3.Error as e:
                 self.Log.error('SQLITE connection error: ' + str(e))
+                exit()
+
         elif self.type == 'pgsql' and self.conn is None:
             try:
                 self.conn = psycopg2.connect(
@@ -49,8 +51,8 @@ class Database:
                     " port      =" + self.port)
                 self.conn.autocommit = True
             except (psycopg2.OperationalError, psycopg2.ProgrammingError) as e:
-                self.Log.error('PGSQL connection error: ' + str(e))
-
+                self.Log.error('PGSQL connection error : ' + str(e))
+                exit()
 
     def select(self, args):
         if 'table' not in args or 'select' not in args:
@@ -61,6 +63,7 @@ class Database:
             if 'left_join' in args:
                 if (len(tmpTable) - 1) != len(args['left_join']):
                     self.Log.error("Number of tables doesn't match with number of joins")
+                    self.Log.error(str(args))
                 else:
                     cpt = 1
                     for joins in args['left_join']:
@@ -85,9 +88,10 @@ class Database:
                 for cpt, value in enumerate(args['select']):
                     if 'strftime' in value:
                         columnName = value.split("'")[2].split(')')[0].replace(',', '').strip()
-                        dateFormat = value.split("'")[1].replace('%Y', 'YYYY').replace('%m', 'mm').replace('%d', 'dd').replace('%H', 'HH').replace('%M', 'MI')
+                        dateFormat = value.split("'")[1].replace('%Y', 'YYYY').replace('%m', 'mm').replace('%d', 'dd').replace('%H', 'HH24').replace('%M', 'MI').replace('%S', 'SS')
                         label      = value.split("as")[1].strip()
-                        value = "to_char(" + columnName + ", '" + dateFormat + "') as " + label
+                        value      = "to_char(" + columnName + ", '" + dateFormat + "') as " + label
+
                         args['select'][cpt] = value
 
             select = ', '.join(args['select'])
@@ -134,9 +138,8 @@ class Database:
                 c.execute(query, args['data'])
                 return c.fetchall()
             except sqlite3.OperationalError as e:
-                self.Log.error(e)
+                self.Log.error('Error while querying SELECT : ' + str(e))
                 return False
-
 
     def insert(self, args):
         if 'table' not in args:
@@ -159,7 +162,7 @@ class Database:
                 c.execute(query)
                 return True
             except sqlite3.OperationalError as e:
-                self.Log.error(e)
+                self.Log.error('Error while querying INSERT : ' + str(e))
                 return False
 
     def update(self, args):
@@ -188,5 +191,5 @@ class Database:
                 self.conn.commit()
                 return True, ''
             except sqlite3.OperationalError as e:
-                self.Log.error(e)
+                self.Log.error('Error while querying UPDATE : ' + str(e))
                 return False, e

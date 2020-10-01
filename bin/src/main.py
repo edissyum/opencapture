@@ -58,6 +58,9 @@ else: _Database = getattr(__import__(custom_array['Database']['path'] + '.' + cu
 if 'OCForInvoices' not in custom_array: from bin.src.process import OCForInvoices as OCForInvoices_process
 else: OCForInvoices_process = getattr(__import__(custom_array['OCForInvoices']['path'] , fromlist=[custom_array['OCForInvoices']['module']]), custom_array['OCForInvoices']['module'])
 
+if 'invoice_classification' not in custom_array: from bin.src.invoice_classification import invoice_classification
+else: OCForInvoices_process = getattr(__import__(custom_array['invoice_classification']['path'] , fromlist=[custom_array['invoice_classification']['module']]), custom_array['invoice_classification']['module'])
+
 OCforInvoices_worker = Kuyruk()
 
 OCforInvoices_worker.config.MANAGER_HOST         = "127.0.0.1"
@@ -86,6 +89,23 @@ def recursive_delete(folder, Log):
         os.rmdir(folder)
     except FileNotFoundError as e:
         Log.error('Unable to delete ' + folder + ' on temp folder: ' + str(e))
+
+def get_typo(Config, path, Log):
+    invoice_classification.MODEL_PATH = Config.cfg['AI-CLASSIFICATION']['modelpath']
+    invoice_classification.PREDICT_IMAGES_PATH = Config.cfg['AI-CLASSIFICATION']['trainimagepath']
+    invoice_classification.TRAIN_IMAGES_PATH = Config.cfg['AI-CLASSIFICATION']['predictimagepath']
+    typo, confidence = invoice_classification.predict_typo(path)
+
+    if typo:
+        if confidence >= Config.cfg['AI-CLASSIFICATION']['confidencemin']:
+            Log.info('Typology n°' + typo + ' found using AI with a confidence of ' + confidence + '%')
+            return typo
+        else:
+            Log.info('Typology can\'t be found using AI, the confidence is too low : Typo n°' + typo + ', confidence : ' + confidence + '%' )
+            return False
+    else:
+        Log.info('Typology can\'t be found using AI')
+        return False
 
 # If needed just run "kuyruk --app bin.src.main.OCforInvoices_worker manager" to have web dashboard of current running worker
 @OCforInvoices_worker.task(queue='invoices')
@@ -143,12 +163,15 @@ def launch(args):
         path = args['path']
         for file in os.listdir(path):
             if check_file(Files, path + file, Config, Log) is not False and not os.path.isfile(path + file + '.lock'):
-                # Create the Queue to store files
                 os.mknod(path + file + '.lock')
                 Log.info('Lock file created : ' + path + file + '.lock')
 
                 # Find file in the wanted folder (default or exported pdf after qrcode separation)
-                OCForInvoices_process.process(path + file, Log, Config, Files, Ocr, Locale, Database, WebServices)
+                typo = ''
+                if Config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
+                    typo = get_typo(Config, path + file, Log)
+
+                OCForInvoices_process.process(path + file, Log, Config, Files, Ocr, Locale, Database, WebServices, typo)
 
                 try:
                     os.remove(path + file + '.lock')
@@ -158,9 +181,13 @@ def launch(args):
 
     elif 'file' in args and args['file'] is not None:
         path = args['file']
+        typo = ''
+        if Config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
+            typo = get_typo(Config, path, Log)
+
         if check_file(Files, path, Config, Log) is not False:
             # Process the file and send it to Maarch
-            OCForInvoices_process.process(path, Log, Config, Files, Ocr, Locale, Database, WebServices)
+            OCForInvoices_process.process(path, Log, Config, Files, Ocr, Locale, Database, WebServices, typo)
 
     # Empty the tmp dir to avoid residual file
     recursive_delete(tmpFolder, Log)
@@ -168,4 +195,4 @@ def launch(args):
     Database.conn.close()
 
     end = time.time()
-    Log.info('Process end after ' + timer(start,end) + '')
+    Log.info('Process end after ' + timer(start, end) + '')

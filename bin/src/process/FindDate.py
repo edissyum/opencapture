@@ -20,7 +20,7 @@ from datetime import datetime
 from webApp.functions import search_by_positions
 
 class FindDate:
-    def __init__(self, text, Log, Locale, Config, Files, Ocr, supplier):
+    def __init__(self, text, Log, Locale, Config, Files, Ocr, supplier, typo, nb_pages):
         self.date       = ''
         self.text       = text
         self.Log        = Log
@@ -29,6 +29,8 @@ class FindDate:
         self.Files      = Files
         self.Ocr        = Ocr
         self.supplier   = supplier
+        self.typo       = typo
+        self.nbPages    = nb_pages
 
     def formatDate(self, date, position):
         date = date.replace('1er', '01')  # Replace some possible inconvenient char
@@ -98,7 +100,7 @@ class FindDate:
                         continue
                 self.Log.info("Date found : " + self.date)
                 return self.date, position
-            except ValueError:
+            except (ValueError, TypeError, IndexError):
                 self.Log.info("Date wasn't in a good format : " + self.date)
                 self.date = ''
                 continue
@@ -109,19 +111,23 @@ class FindDate:
             target = self.Files.tiffName_header
         else :
             target = self.Files.jpgName_header
-        date = search_by_positions(self.supplier, 'date', self.Config, self.Locale, self.Ocr, self.Files, target)
+        date = search_by_positions(self.supplier, 'date', self.Config, self.Locale, self.Ocr, self.Files, target, self.typo)
         if date and date[0]:
             res = self.formatDate(date[0], date[1])
             if res:
                 self.date = res[0]
                 self.Log.info('Date found using mask position : ' + str(res[0]))
-                return res[0], res[1]
+
+                if len(date) == 3:
+                    return [res[0], res[1], date[2]]
+                else:
+                    return [res[0], res[1], '']
 
         for line in self.text:
             res = self.process(re.sub(r'(\d)\s+(\d)', r'\1\2', line.content), line.position)
             if not res :
                 res = self.process(line.content, line.position)
                 if res:
-                    return res[0], res[1]
+                    return [res[0], res[1], self.nbPages]
             else:
-                return res[0], res[1]
+                return [res[0], res[1], self.nbPages]

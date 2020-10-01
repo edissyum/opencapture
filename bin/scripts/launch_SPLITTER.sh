@@ -36,7 +36,7 @@ then
     echo $$ > $PID
     echo "[$name.sh      ] $(date +"%d-%m-%Y %T") INFO $filepath is a valid file and PID file created" >> "$logFile"
 
-    cp "$filepath" "$tmpFilepath"
+    mv "$filepath" "$tmpFilepath"
 
     python3 "$OCPath"/launch_worker_splitter.py -c "$OCPath"/instance/config.ini -f "$tmpFilepath"/"$filename"
 

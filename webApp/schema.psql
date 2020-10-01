@@ -33,7 +33,11 @@ CREATE TABLE if NOT EXISTS suppliers(
     vat_1_position             VARCHAR,
     vat_2_position             VARCHAR,
     vat_3_position             VARCHAR,
-    vat_4_position             VARCHAR
+    vat_4_position             VARCHAR,
+    footer_page                VARCHAR,
+    supplier_page              VARCHAR,
+    invoice_number_page        VARCHAR,
+    invoice_date_page          VARCHAR,
 );
 
 CREATE TABLE if NOT EXISTS invoices(
@@ -60,6 +64,10 @@ CREATE TABLE if NOT EXISTS invoices(
     ht_amount1_position      VARCHAR,
     vat_rate1                VARCHAR,
     vat_rate1_position       VARCHAR,
+    footer_page              VARCHAR,
+    supplier_page            VARCHAR,
+    invoice_number_page      VARCHAR,
+    invoice_date_page        VARCHAR,
     locked                   INTEGER DEFAULT 0 NOT NULL,
     locked_by                VARCHAR(20),
     processed                INTEGER DEFAULT 0
@@ -76,7 +84,7 @@ CREATE TABLE IF NOT EXISTS invoices_batch_(
     dir_name VARCHAR,
     first_page VARCHAR,
     image_folder_name VARCHAR,
-    ceation_date TIMESTAMP DEFAULT NOW(),
+    creation_date TIMESTAMP DEFAULT NOW(),
     status VARCHAR DEFAULT 'NEW',
     page_number INTEGER
 );

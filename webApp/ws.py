@@ -1,7 +1,9 @@
+import logging
 import os
 import json
 import requests
 from zeep import Client
+from zeep import exceptions
 import worker_from_python
 
 from flask_babel import gettext
@@ -35,16 +37,22 @@ def checkVAT(vatId):
     vatNumber = vatId[2:]
 
     try:
+        logging.getLogger('zeep').setLevel(logging.ERROR)
         client = Client(URL)
-        res = client.service.checkVat(countryCode, vatNumber)
-        text = res['valid']
-        if res['valid'] is False:
-            text = gettext('VAT_NOT_VALID')
+
+        try:
+            res = client.service.checkVat(countryCode, vatNumber)
+            text = res['valid']
+            if res['valid'] is False:
+                text = gettext('VAT_NOT_VALID')
+        except exceptions.Fault as e:
+            text = gettext('VAT_API_ERROR') + ' : ' + str(e)
+            return json.dumps({'text': text, 'code': 200, 'ok': 'false'})
 
         return json.dumps({'text': text, 'code': 200, 'ok': res['valid']})
     except requests.exceptions.RequestException as e:
-        return json.dumps({'text': str(e), 'code': 200, 'ok' : 'false'})
-
+        text = gettext('VAT_API_ERROR') + ' : ' + str(e)
+        return json.dumps({'text': text, 'code': 200, 'ok' : 'false'})
 
 @bp.route('/ws/cfg/<string:cfgName>',  methods=['GET'])
 @login_required
@@ -146,8 +154,8 @@ def retrieveSupplier():
     res = _db.select({
         'select': ['*'],
         'table': ['suppliers'],
-        'where': ["name LIKE ?"],
-        'data': ['%' + data['query'] + '%'],
+        'where': ["LOWER(name) LIKE ?"],
+        'data': ['%' + data['query'].lower() + '%'],
         'limit': '10'
     })
 
@@ -208,5 +216,6 @@ def deleteInvoice(rowid):
         'where': ['id = ?'],
         'data': [rowid]
     })
+
     flash(gettext('INVOICE_DELETED'))
     return json.dumps({'text': 'OK', 'code': 200, 'ok': 'true'})
