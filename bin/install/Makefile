@@ -68,8 +68,8 @@ then
 fi
 
 xargs -a apt-requirements.txt apt install -y
-pip3 install --upgrade pip
-pip3 install -r pip-requirements.txt
+python3 -m pip install --upgrade pip
+python3 -m pip install -r pip-requirements.txt
 
 cd $defaultPath || exit 1
 find . -name ".gitkeep" -delete

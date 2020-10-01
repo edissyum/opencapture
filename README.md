@@ -25,7 +25,7 @@ The functionnalities of Open-Capture for Invoices are :
 ## Linux Distributions
 
 Tested with :
-- Debian 10 with Python 3.7.3 & Tesseract V4.0.0 & nginx as web server
+- Debian 10.X with Python 3.7.3 & Tesseract V4.0.0 & nginx as web server
 - Ubuntu 20.04 LTS with Python 3.7.7 & Tesseract V4.1.1 & nginx as web server
 - Ubuntu 20.04 LTS with Python 3.8.5 & Tesseract V4.1.1 & nginx as web server
 
@@ -43,12 +43,14 @@ Before lauching the Makefile. You have to do the following :
 Using the following command, you have to retrieve the name of your network interface : 
     
     $ ip a
-    
+
+![Screenshot](https://edissyum.com/wp-content/uploads/2020/10/screen_ipa.png)
+
 Then go to <code>bin/scripts/service_flaskOC.sh</code> and change the default one <code>enp0s3</code> by your interface name. This is the interface needed to run the web server. 
 
 **It gives you the IP address where the web server will run**
 
-The ./Makefile command create the service, but you may want to change the User and Group so just open the ./Makefile and change lines **14** & **15**. The line **14* is empty by default and it's mandatory to fill it
+The `./Makefile` command create the service, but you may want to change the User and Group so just open the `./Makefile` and change lines **14** & **15**. The line **14* is empty by default and it's mandatory to fill it
 
 You have the choice between using supervisor or basic systemd
 Supervisor is useful if you need to run multiple instance of Open-Capture in parallel but it will be very greedy
