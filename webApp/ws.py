@@ -154,8 +154,8 @@ def retrieveSupplier():
     res = _db.select({
         'select': ['*'],
         'table': ['suppliers'],
-        'where': ["name ILIKE ?"],
-        'data': ['%' + data['query'] + '%'],
+        'where': ["LOWER(name) LIKE ?"],
+        'data': ['%' + data['query'].lower() + '%'],
         'limit': '10'
     })
 

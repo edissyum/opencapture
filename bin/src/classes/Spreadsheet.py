@@ -43,7 +43,10 @@ class Spreadsheet:
         contentSheet = get_data(self.referencialSuppplierSpreadsheet)
         for line in contentSheet['Fournisseur']:
             if line and line[1] == vat_number:
-                line.append(typo)
+                try:
+                    line[8] = typo
+                except IndexError:
+                    line.append(typo)
         save_data(self.referencialSuppplierSpreadsheet, contentSheet)
 
     def write_typo_excel_sheet(self, vat_number, typo):
