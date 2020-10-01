@@ -10,14 +10,20 @@ normal=$(tput sgr0)
 OS=$(lsb_release -si)
 VER=$(lsb_release -r)
 defaultPath=/opt/OpenCaptureForInvoices/
+docserverPath=/var/docservers/
 
-user=
+user=$(who am i | awk '{print $1}')
 group=www-data
 
 if [ -z "$user" ]
 then
- echo "The user variable is empty. Please fill it with your current user before run Makefile"
- exit
+ printf "The user variable is empty. Please fill it with your desired user : "
+ read -r user
+ if [ -z "$user" ]
+ then
+   echo 'User remain empty, exiting...'
+   exit
+ fi
 fi
 
 ####################
@@ -111,6 +117,7 @@ Group=$user
 UMask=0022
 
 ExecStart=$defaultPath/bin/scripts/service_workerOC.sh
+KillSignal=SIGQUIT
 
 Restart=on-failure
 
@@ -173,7 +180,7 @@ systemctl enable OCForInvoices-web.service
 ####################
 # Create a custom temp directory to cron the delete of the ImageMagick temp content
 mkdir /tmp/OpenCaptureForInvoices/
-chown -R $user:$user /tmp/OpenCaptureForInvoices
+chown -R "$user":"$user" /tmp/OpenCaptureForInvoices
 
 ####################
 # Modify default config
@@ -217,4 +224,14 @@ systemctl daemon-reload && systemctl start OCForInvoices-web.service
 # Fix the rights after root launch to avoid permissions issues
 chmod -R 775 $defaultPath
 chmod -R g+s $defaultPath
-chown -R $user:$group $defaultPath
+chown -R "$user":"$group" $defaultPath
+
+####################
+# Create docservers
+mkdir -p $docserverPath/{OpenCapture,OpenCapture_Splitter}
+mkdir -p $docserverPath/OpenCapture/images/{tiff,full}
+mkdir -p $docserverPath/OpenCapture_Splitter/{batches,separated_pdf}
+mkdir -p $docserverPath/OpenCapture/xml/
+chmod -R 775 $docserverPath/{OpenCapture,OpenCapture_Splitter}/
+chmod -R g+s $docserverPath/{OpenCapture,OpenCapture_Splitter}/
+chown -R "$user":"$group" $docserverPath/{OpenCapture,OpenCapture_Splitter}/
