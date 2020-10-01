@@ -31,11 +31,12 @@ Tested with :
 
 ## Install Open-Capture for Invoices
 
-(Modify the user and group if needed)
+Please, do not run the following command as root and create a specific user for Open-Capture For Invoices.
 
-    $ sudo mkdir /opt/OpenCaptureForInvoices/ && sudo chmod -R 775 /opt/OpenCaptureForInvoices/ && sudo chown -R your_user:your_group /opt/OpenCaptureForInvoices/
+    $ sudo mkdir /opt/OpenCaptureForInvoices/ && sudo chmod -R 775 /opt/OpenCaptureForInvoices/ && sudo chown -R $(whoami):$(whoami) /opt/OpenCaptureForInvoices/
     $ sudo apt install git
-    $ git clone -b 0.7.0 https://gitlab.com/edissyum/opencapture/opencaptureforinvoices /opt/OpenCaptureForInvoices/
+    $ latest_tag=$(git ls-remote --tags --sort="v:refname" https://gitlab.com/edissyum/opencapture/opencaptureforinvoices.git | tail -n1 |  sed 's/.*\///; s/\^{}//')
+    $ git clone -b $latest_tag https://gitlab.com/edissyum/opencapture/opencaptureforinvoices /opt/OpenCaptureForInvoices/
     $ cd /opt/OpenCaptureForInvoices/
   
 Before lauching the Makefile. You have to do the following : 
@@ -50,14 +51,13 @@ Then go to <code>bin/scripts/service_flaskOC.sh</code> and change the default on
 
 **It gives you the IP address where the web server will run**
 
-The `./Makefile` command create the service, but you may want to change the User and Group so just open the `./Makefile` and change lines **14** & **15**. The line **14* is empty by default and it's mandatory to fill it
+The `./Makefile` command create the service using `www-data` group (nginx default group) and the current user. `Please avoid using root user`
 
 You have the choice between using supervisor or basic systemd
 Supervisor is useful if you need to run multiple instance of Open-Capture in parallel but it will be very greedy
 Systemd is perfect for one instance
 
     $ cd bin/install/
-    $ nano +14 Makefile
     $ chmod u+x Makefile
     $ sudo ./Makefile
         # Go grab a coffee ;)
@@ -73,6 +73,8 @@ In most cases you had to modify the <code>/etc/ImageMagick-6/policy.xml</code> f
     <policy domain="coder" rights="none" pattern="PDF" />
 
     $ sudo systemctl restart OCForInvoices-worker (systemd version)
+    $ sudo systemctl restart OCForInvoices_Split-worker.service (systemd version)
+
     $ sudo supervisorctl restart all (supervisor version)
 
 If you need more informations about the usefull commands for supervisor : http://supervisord.org/running.html#running-supervisorctl
@@ -82,15 +84,6 @@ Go to file <code>/etc/nginx/nginx.conf</code> and add <code>client_max_body_size
 Then restart the nginx service
 
     $ sudo systemctl restart nginx
-
-Don't forget to create all the needed path (Modify the user and group if needed) :
-
-    sudo mkdir -p /var/docservers/{OpenCapture,OpenCapture_Splitter}
-    sudo mkdir -p /var/docservers/OpenCapture/images/{tiff,full}
-    sudo mkdir -p /var/docservers/OpenCapture_Splitter/{batches,separated_pdf}
-    sudo mkdir -p /var/docservers/OpenCapture/xml/
-    sudo chmod -R 775 /var/docservers/{OpenCapture,OpenCapture_Splitter}/
-    sudo chown -R your_user:www-data /var/docservers/{OpenCapture,OpenCapture_Splitter}/
 
 ## API for SIRET/SIREN
 
