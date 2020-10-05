@@ -172,7 +172,7 @@ class FindFooter:
                 return False
 
             if float(total) == float(allRateAmount[0]):
-                self.Log.info('Footer informations found : [TOTAL : ' + str(total) + ' ] - [HT : ' + str(noRateAmount[0]) + ' ] - [VATRATE : ' + str(ratePercentage[0]) + ' ]')
+                self.Log.info('Footer informations found : [TOTAL : ' + str(total) + '] - [HT : ' + str(noRateAmount[0]) + '] - [VATRATE : ' + str(ratePercentage[0]) + ']')
                 return [noRateAmount, allRateAmount, ratePercentage, 1]
             else:
                 return False
