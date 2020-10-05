@@ -94,21 +94,22 @@ $(document).ready(function() {
         }
     })
 
-    $("#trashAll").click(function() {
-        if($(".checkBox_list").length){
-            $('#status').delay(200).fadeIn('slow'); // will first fade out the loading animation
-            $('#preloader').fadeIn('slow'); // will fade out the white DIV that covers the website.
-            let cpt = 1
-            let totalChecked = $('input[class=checkBox_list]:checked').length;
-
+    $("#trashAll").click(function () {
+        if ($(".checkBox_list").length) {
             let res = confirm(gt.gettext('_CONFIRM_DELETE_BATCH'));
-            if (res){
-                $(".checkBox_list").each(function() {
-                    if (this.checked){
+            if (res) {
+                $('#status').delay(200).fadeIn('slow'); // will first fade out the loading animation
+                $('#preloader').fadeIn('slow'); // will fade out the white DIV that covers the website.
+                let cpt = 1
+                let totalChecked = $('input[class=checkBox_list]:checked').length;
+                $(".checkBox_list").each(function () {
+                    if (this.checked) {
                         let invoice_id = parseInt(this.id.split('_')[0])
                         deleteInvoice(invoice_id, false, res)
-                        if (cpt === totalChecked){
-                             setTimeout(function(){ window.location.reload() }, 800);
+                        if (cpt === totalChecked) {
+                            setTimeout(function () {
+                                window.location.reload()
+                            }, 800);
                         }
                         cpt += 1
                     }

@@ -23,7 +23,7 @@ import uuid
 
 import PyPDF2
 import shutil
-from datetime import date, datetime
+from datetime import date
 from bin.src.classes.Files import Files
 
 
@@ -118,26 +118,12 @@ class Splitter:
                 invoices[invoice_index].append(page + 1)
         return invoices
 
-    # TODO : Move from here
-    @staticmethod
-    def get_date_uuid_name():
-        now = datetime.now()
-        day = str(now.day)
-        year = str(now.year)
-        month = str('%02d' % now.month)
-        hour = str('%02d' % now.hour)
-        minute = str('%02d' % now.minute)
-        seconds = str('%02d' % now.second)
-        newFilename = day + month + year + '_' + hour + minute + seconds + '_' + uuid.uuid4().hex
-        return newFilename
-
     def save_image_from_pdf(self, path_output_image, invoices_order, batch_folder, origFile):
         invoice_index = 0
         invoice_second_index = 0
         batch_name = os.path.basename(os.path.normpath(batch_folder))
         for invoice_order in invoices_order:
             new_directory_path = batch_folder + 'invoice_' + str(invoice_index) + '/'
-            new_directory_path_to_compare = batch_folder + '/invoice_' + str(invoice_index) + '/'
 
             Files.create_directory(new_directory_path)
             for invoice_page_item in invoice_order:
@@ -214,11 +200,13 @@ class Splitter:
     def save_pdf_result_after_separate(self, pages_list, pdf_path_input, pdf_path_output):
         pdf_writer = PyPDF2.PdfFileWriter()
         pdf_reader = PyPDF2.PdfFileReader(self.Config.cfg['SPLITTER']['pdforiginpath'] + pdf_path_input)
+        pdf_origin_file_name = pdf_path_input.split('/')[-1].replace('.pdf', '').replace('_', '-')
         lot_name = get_lot_name()
+
         for invoice_index, pages in enumerate(pages_list):
             for page in pages:
                 pdf_writer.addPage(pdf_reader.getPage(page))
-            with open(pdf_path_output + '/invoice' + str(invoice_index + 1) + '_' + lot_name + '.pdf', 'wb') as fh:
+            with open(pdf_path_output + '/' + pdf_origin_file_name + '_' + "%03d" % (invoice_index + 1) + '_' + lot_name + '.pdf', 'wb') as fh:
                 pdf_writer.write(fh)
             # init writer
             pdf_writer = PyPDF2.PdfFileWriter()

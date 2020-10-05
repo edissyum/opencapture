@@ -89,10 +89,10 @@
                                     <small class="text-muted">
                                         {{ gettext('INVOICE_NUMBER')}} : {{ pdf['invoice_number'] }}<br>
                                         {{ gettext('INVOICE_DATE')}} : {{ pdf['invoice_date'] }}
-                                    </small>
                                     <br>
-                                    <small class="text-muted">
-                                        {{ gettext('SAVED_THE') }} : {{ pdf['date'] }}
+                                        {{ gettext('SAVED_THE') }} {{ pdf['date'] }}
+                                    <br>
+                                        {{ gettext('ORIGINAL_FILENAME') }} : {{ pdf['original_filename'] }}
                                     </small>
                                     <span id="trash" class="float-right">
                                         <button onclick="deleteInvoice({{ pdf['invoice_id'] }})" class="text-danger text-decoration-none">
