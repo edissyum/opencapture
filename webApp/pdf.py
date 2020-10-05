@@ -380,7 +380,7 @@ def validate_form():
                 contact['addressTown']          = request.form['supplierInfo_city']
                 contact['societyShort']         = request.form['supplierInfo_name']
                 contact['addressStreet']        = request.form['supplierInfo_address']
-                contact['otherData']            = request.form['supplierInfo_vatNumber']
+                contact['otherData']            = request.form['supplierInfo_vat_number']
                 contact['addressZip']           = request.form['supplierInfo_postal_code']
                 contact['email']                = 'À renseigner ' + request.form['supplierInfo_name'] + ' - ' + contact['otherData']
 
