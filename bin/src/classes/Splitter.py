@@ -206,7 +206,7 @@ class Splitter:
         for invoice_index, pages in enumerate(pages_list):
             for page in pages:
                 pdf_writer.addPage(pdf_reader.getPage(page))
-            with open(pdf_path_output + '/' + pdf_origin_file_name + '_' + "%03d" % (invoice_index + 1) + '_' + lot_name + '.pdf', 'wb') as fh:
+            with open(pdf_path_output + '/SPLITTER_' + pdf_origin_file_name + '_' + "%03d" % (invoice_index + 1) + '_' + lot_name + '.pdf', 'wb') as fh:
                 pdf_writer.write(fh)
             # init writer
             pdf_writer = PyPDF2.PdfFileWriter()
