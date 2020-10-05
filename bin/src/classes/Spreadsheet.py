@@ -99,13 +99,23 @@ class Spreadsheet:
         tmpExcelContent = pd.DataFrame(contentSheet)
         for line in tmpExcelContent.to_dict(orient='records'):
             if line[self.referencialSupplierArray['typology']] == line[self.referencialSupplierArray['typology']] and line[self.referencialSupplierArray['typology']]:
-                line[self.referencialSupplierArray['typology']] = int(line[self.referencialSupplierArray['typology']])
+                try:
+                    line[self.referencialSupplierArray['typology']] = int(line[self.referencialSupplierArray['typology']])
+                except ValueError:
+                    line[self.referencialSupplierArray['typology']] = line[self.referencialSupplierArray['typology']]
+
 
             if line[self.referencialSupplierArray['SIRET']] == line[self.referencialSupplierArray['SIRET']] and line[self.referencialSupplierArray['SIRET']]:
-                line[self.referencialSupplierArray['SIRET']] = int(line[self.referencialSupplierArray['SIRET']]
-                                                                   )
+                try:
+                    line[self.referencialSupplierArray['SIRET']] = int(line[self.referencialSupplierArray['SIRET']])
+                except ValueError:
+                    line[self.referencialSupplierArray['SIRET']] = line[self.referencialSupplierArray['SIRET']]
+
             if line[self.referencialSupplierArray['SIREN']] == line[self.referencialSupplierArray['SIREN']] and line[self.referencialSupplierArray['SIREN']]:
-                line[self.referencialSupplierArray['SIREN']] = int(line[self.referencialSupplierArray['SIREN']])
+                try:
+                    line[self.referencialSupplierArray['SIREN']] = int(line[self.referencialSupplierArray['SIREN']])
+                except ValueError:
+                    line[self.referencialSupplierArray['SIREN']] = line[self.referencialSupplierArray['SIREN']]
 
             self.referencialSupplierData[line[self.referencialSupplierArray['VATNumber']]].append(line)
 
