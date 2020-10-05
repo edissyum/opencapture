@@ -189,10 +189,10 @@ def process(file, Log, Config, Files, Ocr, Locale, Database, WebServices, typo):
     # get the number of pages into the PDF documents
     nb_pages = Files.getPages(file, Config)
 
-    originalDirName = os.path.normpath(os.path.dirname(file))
-    if originalDirName == os.path.normpath(Config.cfg['SPLITTER']['pdfoutputpath']):
+    splittedFile = os.path.basename(file).split('_')
+    if splittedFile[0] == 'SPLITTER':
         originalFile = os.path.basename(file).split('_')
-        originalFile = originalFile[0] + '_' + originalFile[1] + '.pdf'
+        originalFile = originalFile[1] + '_' + originalFile[2] + '.pdf'
     else:
         originalFile = os.path.basename(file)
 
