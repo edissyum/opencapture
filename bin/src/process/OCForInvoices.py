@@ -45,8 +45,7 @@ else: FindInvoiceNumber = getattr(__import__(custom_array['FindInvoiceNumber']['
 if 'Spreadsheet' not in custom_array: from bin.src.classes.Spreadsheet import Spreadsheet as _Spreadsheet
 else: _Spreadsheet = getattr(__import__(custom_array['Spreadsheet']['path'] + '.' + custom_array['Spreadsheet']['module'], fromlist=[custom_array['Spreadsheet']['module']]), custom_array['Spreadsheet']['module'])
 
-
-def insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, footer, nb_pages, full_jpg_filename, tiff_filename, status, custom_columns):
+def insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, footer, nb_pages, full_jpg_filename, tiff_filename, status, custom_columns, original_file):
     if Files.isTiff == 'True':
         try:
             filename = os.path.splitext(Files.custom_fileName_tiff)
@@ -90,6 +89,7 @@ def insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, fo
         'tiff_filename': tiff_filename.replace('-%03d', '-001'),
         'status': status,
         'nb_pages': str(nb_pages),
+        'original_filename': original_file
     }
 
     if custom_columns:
@@ -189,6 +189,13 @@ def process(file, Log, Config, Files, Ocr, Locale, Database, WebServices, typo):
     # get the number of pages into the PDF documents
     nb_pages = Files.getPages(file, Config)
 
+    originalDirName = os.path.normpath(os.path.dirname(file))
+    if originalDirName == os.path.normpath(Config.cfg['SPLITTER']['pdfoutputpath']):
+        originalFile = os.path.basename(file).split('_')
+        originalFile = originalFile[0] + '_' + originalFile[1] + '.pdf'
+    else:
+        originalFile = os.path.basename(file)
+
     # Convert files to JPG or TIFF
     convert(file, Files, Ocr, nb_pages)
 
@@ -285,7 +292,7 @@ def process(file, Log, Config, Files, Ocr, Locale, Database, WebServices, typo):
 
     # If all informations are found, do not send it to GED
     if supplier and date and invoiceNumber and footer and Config.cfg['GLOBAL']['allowautomaticvalidation'] == 'True':
-        insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, footer, nb_pages, full_jpg_filename, tiff_filename, 'DEL', False)
+        insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, footer, nb_pages, full_jpg_filename, tiff_filename, 'DEL', False, originalFile)
         Log.info('All the usefull informations are found. Export the XML and  endprocess')
         now = datetime.datetime.now()
         xmlCustom = {}
@@ -381,6 +388,6 @@ def process(file, Log, Config, Files, Ocr, Locale, Database, WebServices, typo):
                 shutil.move(file, Config.cfg['GLOBAL']['errorpath'] + os.path.basename(file))
                 return False
     else:
-        insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, footer, nb_pages, full_jpg_filename, tiff_filename, 'NEW', columns)
+        insert(Database, Log, Files, Config, supplier, file, invoiceNumber, date, footer, nb_pages, full_jpg_filename, tiff_filename, 'NEW', columns, originalFile)
 
     return True
