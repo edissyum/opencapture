@@ -117,5 +117,8 @@ class Spreadsheet:
                 except ValueError:
                     line[self.referencialSupplierArray['SIREN']] = line[self.referencialSupplierArray['SIREN']]
 
+            if line[self.referencialSupplierArray['adressPostalCode']] == line[self.referencialSupplierArray['adressPostalCode']] and line[self.referencialSupplierArray['adressPostalCode']]:
+                if len(str(line[self.referencialSupplierArray['adressPostalCode']])) == 4:
+                    line[self.referencialSupplierArray['adressPostalCode']] = '0' + str(line[self.referencialSupplierArray['adressPostalCode']])
             self.referencialSupplierData[line[self.referencialSupplierArray['VATNumber']]].append(line)
 
