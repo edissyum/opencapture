@@ -14,7 +14,7 @@ CREATE TABLE if NOT EXISTS suppliers(
     siren                      VARCHAR(20),
     adress1                    VARCHAR,
     adress2                    VARCHAR,
-    postal_code                INTEGER,
+    postal_code                VARCHAR,
     city                       VARCHAR,
     typology                   VARCHAR,
     invoice_number_position    VARCHAR,
