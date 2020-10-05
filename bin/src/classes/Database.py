@@ -156,10 +156,10 @@ class Database:
             values  = "'" + "', '".join(valuesList) + "'"
 
             query = "INSERT INTO " + args['table'] + " (" + columns + ") VALUES (" + values + ")"
-
             c = self.conn.cursor()
             try:
                 c.execute(query)
+                self.conn.commit()
                 return True
             except sqlite3.OperationalError as e:
                 self.Log.error('Error while querying INSERT : ' + str(e))
