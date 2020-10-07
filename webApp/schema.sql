@@ -70,7 +70,8 @@ CREATE TABLE if NOT EXISTS invoices(
     invoice_date_page        VARCHAR,
     locked                   INTEGER DEFAULT 0 NOT NULL,
     locked_by                VARCHAR(20),
-    processed                INTEGER DEFAULT 0
+    processed                INTEGER DEFAULT 0,
+    original_filename        VARCHAR
 );
 
 CREATE TABLE IF NOT EXISTS "status" (
