@@ -2,7 +2,7 @@
 
 # Open-Capture for Invoices by Edissyum
  
-Version 0.7.2
+Version 0.7.1
   
 Open-Capture is a **free and Open Source** software under **GNU General Public License v3.0**.
   
