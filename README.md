@@ -94,6 +94,8 @@ This is the consumer key and the consumer secret. You could find help on the INS
     
 ## Supplier's referencial
 
+If you don't fill the referencial with the supplier informations, you'll have trouble for validation and globally, all the process. This part is **MANDATORY**
+
 Before starting using Open-Capture you need to create a spreadsheet of your suppliers. You could find a demo located here : <code>bin/src/referencial/default_referencial_supplier.ods</code> (works with .ods or .xlsx). 
 You just have to fill the supplier name, siret, siren, vat number and address informations. This .ods is bundled with <code>bin/src/referencial/default_referencial_supplier_index.json</code>.
 If your supplier referencial had different column name, the .json file is here for that. You just have to replace the right side of the array with the new column name.
