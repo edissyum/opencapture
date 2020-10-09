@@ -2,7 +2,7 @@
 
 # Open-Capture for Invoices by Edissyum
  
-Version 0.7.1
+Version 0.7.2
   
 Open-Capture is a **free and Open Source** software under **GNU General Public License v3.0**.
   
@@ -93,6 +93,8 @@ You also need to add a subscritpion the the SIRENE V3 applications : https://api
 This is the consumer key and the consumer secret. You could find help on the INSEE website : https://api.insee.fr/catalogue/site/themes/wso2/subthemes/insee/pages/help.jag
     
 ## Supplier's referencial
+
+If you don't fill the referencial with the supplier informations, you'll have trouble for validation and globally, all the process. This part is **MANDATORY**
 
 Before starting using Open-Capture you need to create a spreadsheet of your suppliers. You could find a demo located here : <code>bin/src/referencial/default_referencial_supplier.ods</code> (works with .ods or .xlsx). 
 You just have to fill the supplier name, siret, siren, vat number and address informations. This .ods is bundled with <code>bin/src/referencial/default_referencial_supplier_index.json</code>.
