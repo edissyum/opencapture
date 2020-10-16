@@ -38,8 +38,12 @@
                             <i class="fas fa-cog"></i>
                             {{ gettext('DATABASE_SETTINGS') }}
                         </a>
+                        <hr>
+                        <a class="nav-link" data-toggle="pill" href="#verifyVersion" role="tab" aria-controls="verifyVersion" aria-selected="false">
+                            <i class="fas fa-sync-alt"></i>
+                            {{ gettext('VERIFY_VERSION') }}
+                        </a>
                     </nav>
-                    <br>
                     <hr>
                     <br>
                     <div id="chooseProfile" class="text-center">
@@ -1342,7 +1346,11 @@
                                 </div>
                             </div>
                         </div>
-                    <input type="submit" value="{{ gettext('MODIFY_CONFIGURATION') }}" class="btn btn-outline-dark btn-lg btn-block w-25 m-auto">
+                        <div class="tab-pane fade" id="verifyVersion" role="tabpanel">
+                            {{ gettext('CURRENT_VERSION') }} : {{ git_current }} <br>
+                            {{ gettext('LAST_VERSION') }} : {{ git_last }}
+                        </div>
+                        <input id='submitDashboard' type="submit" value="{{ gettext('MODIFY_CONFIGURATION') }}" class="btn btn-outline-dark btn-lg btn-block w-25 m-auto">
                 </form>
             </div>
         </div>
@@ -1358,6 +1366,18 @@
                 max_shown_results: 200,
                 search_contains: true,
                 width: "70%"
+            });
+
+            // Hide the submit button if we are on the verify version tab
+            $('.nav-link').click(function () {
+                let submitDashboard = $('#submitDashboard')
+                if(this.href.includes('verifyVersion')){
+                    submitDashboard.hide()
+                }else{
+                    if (submitDashboard.is(":hidden")) {
+                        submitDashboard.show()
+                    }
+                }
             });
         </script>
     {% endblock %}
