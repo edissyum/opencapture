@@ -83,7 +83,7 @@
                                             {{ pdf['supplier_name'] }}
                                         </a>
                                     </h5>
-                                    <span class="position-absolute badge badge-secondary badge-pill">{{ pdf['nb_pages'] }} <i class="far fa-file-alt"></i></span>
+                                    <span class="position-absolute badge badge-secondary badge-pill" data-toggle="tooltip" data-placement="bottom" title="{{ gettext('NUMBER_OF_PAGES')}} : {{ pdf['nb_pages'] }}">{{ pdf['nb_pages'] }} <i class="far fa-file-alt"></i></span>
                                 </div>
                                 <p class="card-text">
                                     <small class="text-muted">

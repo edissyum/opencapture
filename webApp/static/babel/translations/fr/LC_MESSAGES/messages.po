@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2020-10-05 16:33+0200\n"
+"POT-Creation-Date: 2020-10-16 13:14+0200\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: fr\n"
@@ -149,16 +149,16 @@ msgstr "Fichier(s) téléchargé(s) avec succès"
 msgid "_CONFIRM_DELETE"
 msgstr "Voulez-vous vraiment supprimer cette facture ?"
 
-#: webApp/static/js/script.js:74 webApp/static/js/script.js:81
-#: webApp/static/js/script.js:90 webApp/static/js/script.js:132
+#: webApp/static/js/script.js:75 webApp/static/js/script.js:82
+#: webApp/static/js/script.js:91 webApp/static/js/script.js:133
 msgid "SELECT_ALL"
 msgstr "Tout sélectionner"
 
-#: webApp/static/js/script.js:83 webApp/static/js/script.js:126
+#: webApp/static/js/script.js:84 webApp/static/js/script.js:127
 msgid "UNSELECT_ALL"
 msgstr "Tout désélectionner"
 
-#: webApp/static/js/script.js:99
+#: webApp/static/js/script.js:100
 msgid "_CONFIRM_DELETE_BATCH"
 msgstr "Voulez vous vraiment supprimer ce lot de factures ?"
 
@@ -932,6 +932,10 @@ msgstr "Facture verrouillée par"
 msgid "INVOICE_CLOSED"
 msgstr "La facture est cloturée et ne peux etre modifiée"
 
+#: webApp/templates/pdf/list.html:86
+msgid "NUMBER_OF_PAGES"
+msgstr "Nombre de pages"
+
 #: webApp/templates/pdf/list.html:91 webApp/templates/pdf/view.html:189
 msgid "INVOICE_DATE"
 msgstr "Date de la facture"
@@ -1074,6 +1078,10 @@ msgstr "Validation du formulaire"
 #: webApp/templates/pdf/view.html:393
 msgid "BACK_TO_VALIDATION"
 msgstr "Retour à la validation"
+
+#: webApp/templates/splitter/splitter_manager.html:45
+msgid "NUMBER_OF_DOCUMENTS"
+msgstr "Nombre de documents"
 
 #: webApp/templates/splitter/splitter_manager.html:56
 msgid "SEPARATOR"
