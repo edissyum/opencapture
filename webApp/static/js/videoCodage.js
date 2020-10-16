@@ -455,7 +455,7 @@ function addVAT(input){
         '                   <div onclick="drawRectangle(document.getElementById(\'' + newClassName + '\'))" class="input-group-prepend" style="display:none;">' +
         '                        <div class="input-group-text"><i class="fas fa-eye" aria-hidden="true"></i></div>' +
         '                    </div>' +
-        '                    <input autocomplete="off" required name="facturationInfo_VAT_' + (cptVAT + 1) + '" id="VAT_' + (cptVAT + 1) + '" onfocusout="ocrOnFly(true, this, false, true); removeRectangle()" onfocusin="ocrOnFly(false, this, false, true)" type="text" class="form-control" x1="" y1="" x2="" y2="">' +
+        '                    <input autocomplete="off" required name="facturationInfo_VAT_' + (cptVAT + 1) + '" id="vat_' + (cptVAT + 1) + '" onfocusout="ocrOnFly(true, this, false, true); removeRectangle()" onfocusin="ocrOnFly(false, this, false, true)" type="text" class="form-control" x1="" y1="" x2="" y2="">' +
         '               </div>' +
         '           </div>' +
         '           <div class="form-group col-md-4">' +
@@ -1040,6 +1040,7 @@ $('#validateForm').on('click', function(){
                     gt.gettext('FORM_ERROR_OR_EMPTY_FIELD') +
                 '</span>');
     }else if(form[0].checkValidity() && (ratioTotal.val() <= (config.CONTACT['total-ratio'] / 100) && banApiError === false)){ // the banApiError is used to do not block form in case the API isn't working
+        console.log(config.GLOBAL['allowbypasssuppliebanverif']);
         modalBody.html('<span id="waitForAdress">' +
             gt.gettext('INCORRECT_BAN_ADDRESS') + ' ' +
             gt.gettext('PUT_FORM_TO_SUPPLIER_WAIT') +
@@ -1051,11 +1052,12 @@ $('#validateForm').on('click', function(){
                     gt.gettext('PUT_ON_HOLD') +
             '</button>').insertAfter($('#returnToValidate'));
         }
-
+        console.log(config.GLOBAL['allowbypasssuppliebanverif']);
+        console.log(typeof config.GLOBAL['allowbypasssuppliebanverif']);
         if ($('#bypassBan').length === 0 && config.GLOBAL['allowbypasssuppliebanverif'] === 'True') {
             $('<button type="button" class="btn btn-danger" onclick=\'changeStatus($("#pdfId").val(), "END");\' id="bypassBan">' +
                     gt.gettext('_VALID_WIHTOUT_BAN_VERIFICATION') +
-            '</button>').insertAfter(awaitAdress);
+            '</button>').insertAfter($('#awaitAdress'));
         }
 
     }else if(form[0].checkValidity() && $('#vat_number').hasClass('is-invalid')){
@@ -1162,20 +1164,24 @@ function calculTotal(){
     let ht              = 0;
 
     for (let i = 1; i <= lastVATCpt; i++){
-        let vatRate = $('#vat_' + i)[0].value / 100;
+        let currentVat = $('#vat_' + i)[0]
 
-        let noTaxe  = $('#no_taxes_' + i)[0].value;
+        if (currentVat){
+            let vatRate = currentVat.value / 100;
 
-        // Check if it's a real number (because a float with point instead of comma, it's not recognized as a float)
-        if (noTaxe !== '' && vatRate !== ''){
-            ht              += parseFloat(noTaxe);
-            ttc             += parseFloat(noTaxe) + (parseFloat(noTaxe) * parseFloat(vatRate));
-            let vatAmount   = parseFloat(noTaxe) * parseFloat(vatRate);
-            $('#TOTAL_vat_' + i).val(vatAmount.toFixed(2));
-            $('#total').val(ttc.toFixed(2));
-            $('#totalHT').val(ht.toFixed(2));
-            structureHT.val(ht.toFixed(2));
-            analyticsHTInfo.html(ht.toFixed(2));
+            let noTaxe  = $('#no_taxes_' + i)[0].value;
+
+            // Check if it's a real number (because a float with point instead of comma, it's not recognized as a float)
+            if (noTaxe !== '' && vatRate !== ''){
+                ht              += parseFloat(noTaxe);
+                ttc             += parseFloat(noTaxe) + (parseFloat(noTaxe) * parseFloat(vatRate));
+                let vatAmount   = parseFloat(noTaxe) * parseFloat(vatRate);
+                $('#TOTAL_vat_' + i).val(vatAmount.toFixed(2));
+                $('#total').val(ttc.toFixed(2));
+                $('#totalHT').val(ht.toFixed(2));
+                structureHT.val(ht.toFixed(2));
+                analyticsHTInfo.html(ht.toFixed(2));
+            }
         }
     }
 }
