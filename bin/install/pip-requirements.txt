@@ -13,6 +13,7 @@ requests
 gunicorn
 psycopg2
 pdf2image
+gitpython
 tensorflow
 flask_cors
 xlsxwriter

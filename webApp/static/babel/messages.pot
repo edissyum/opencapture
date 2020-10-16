@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-10-05 16:33+0200\n"
+"POT-Creation-Date: 2020-10-16 15:20+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -148,16 +148,16 @@ msgstr ""
 msgid "_CONFIRM_DELETE"
 msgstr ""
 
-#: webApp/static/js/script.js:74 webApp/static/js/script.js:81
-#: webApp/static/js/script.js:90 webApp/static/js/script.js:132
+#: webApp/static/js/script.js:75 webApp/static/js/script.js:82
+#: webApp/static/js/script.js:91 webApp/static/js/script.js:133
 msgid "SELECT_ALL"
 msgstr ""
 
-#: webApp/static/js/script.js:83 webApp/static/js/script.js:126
+#: webApp/static/js/script.js:84 webApp/static/js/script.js:127
 msgid "UNSELECT_ALL"
 msgstr ""
 
-#: webApp/static/js/script.js:99
+#: webApp/static/js/script.js:100
 msgid "_CONFIRM_DELETE_BATCH"
 msgstr ""
 
@@ -174,12 +174,12 @@ msgid "ERROR_WHILE_READING_CONFIGURATION_FILE"
 msgstr ""
 
 #: webApp/static/js/videoCodage.js:453
-#: webApp/templates/dashboard/index.html:803 webApp/templates/pdf/view.html:201
+#: webApp/templates/dashboard/index.html:807 webApp/templates/pdf/view.html:201
 msgid "VAT_RATE"
 msgstr ""
 
 #: webApp/static/js/videoCodage.js:462 webApp/static/js/videoCodage.js:563
-#: webApp/templates/dashboard/index.html:781 webApp/templates/pdf/view.html:210
+#: webApp/templates/dashboard/index.html:785 webApp/templates/pdf/view.html:210
 #: webApp/templates/pdf/view.html:284
 msgid "NO_RATE_AMOUNT"
 msgstr ""
@@ -250,8 +250,8 @@ msgstr ""
 msgid "REFUSE_CONFIRMATION"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1010 webApp/static/js/videoCodage.js:1081
-#: webApp/static/js/videoCodage.js:1093
+#: webApp/static/js/videoCodage.js:1010 webApp/static/js/videoCodage.js:1083
+#: webApp/static/js/videoCodage.js:1095
 msgid "YES"
 msgstr ""
 
@@ -259,47 +259,47 @@ msgstr ""
 msgid "FORM_ERROR_OR_EMPTY_FIELD"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1044
+#: webApp/static/js/videoCodage.js:1045
 msgid "INCORRECT_BAN_ADDRESS"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1045
+#: webApp/static/js/videoCodage.js:1046
 msgid "PUT_FORM_TO_SUPPLIER_WAIT"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1051
+#: webApp/static/js/videoCodage.js:1052
 msgid "PUT_ON_HOLD"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1057
+#: webApp/static/js/videoCodage.js:1059
 msgid "_VALID_WIHTOUT_BAN_VERIFICATION"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1064
+#: webApp/static/js/videoCodage.js:1066
 msgid "INVALID_VAT_NUMBER"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1069
+#: webApp/static/js/videoCodage.js:1071
 msgid "_VALID_WIHTOUT_VAT_VERIFICATION"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1076
+#: webApp/static/js/videoCodage.js:1078
 msgid "CALCUL_NOT_EQUAL_WOULD_YOU_VALIDATE"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1087
+#: webApp/static/js/videoCodage.js:1089
 msgid "INVOICE_ALREADY_EXIST"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1226
+#: webApp/static/js/videoCodage.js:1232
 msgid "FIELD_TO_CHECK"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1227 webApp/static/js/videoCodage.js:1232
+#: webApp/static/js/videoCodage.js:1233 webApp/static/js/videoCodage.js:1238
 msgid "BAN_VALUE"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1231
+#: webApp/static/js/videoCodage.js:1237
 msgid "INVALID"
 msgstr ""
 
@@ -413,456 +413,468 @@ msgstr ""
 msgid "DATABASE_SETTINGS"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:46
-#: webApp/templates/dashboard/index.html:48
+#: webApp/templates/dashboard/index.html:44
+msgid "VERIFY_VERSION"
+msgstr ""
+
+#: webApp/templates/dashboard/index.html:50
+#: webApp/templates/dashboard/index.html:52
 msgid "PROFILE_SELECTION"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:62
+#: webApp/templates/dashboard/index.html:66
 msgid "SIRET_SIREN_CHECK_INSEE"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:66
+#: webApp/templates/dashboard/index.html:70
 msgid "CONSUMER_KEY"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:77
+#: webApp/templates/dashboard/index.html:81
 msgid "CONSUMER_SECRET"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:88
+#: webApp/templates/dashboard/index.html:92
 msgid "INSEE_API_URL"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:102
+#: webApp/templates/dashboard/index.html:106
 msgid "INSEE_SIRET_URL"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:113
+#: webApp/templates/dashboard/index.html:117
 msgid "INSEE_SIREN_URL"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:126
+#: webApp/templates/dashboard/index.html:130
 msgid "TVA_NUMBER_VERIFICATION"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:130
-#: webApp/templates/dashboard/index.html:147
+#: webApp/templates/dashboard/index.html:134
+#: webApp/templates/dashboard/index.html:151
 msgid "URL_API"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:143
+#: webApp/templates/dashboard/index.html:147
 msgid "BAN_VERIFICATION"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:163
+#: webApp/templates/dashboard/index.html:167
 msgid "ALLOW_DUPLICATE"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:173
-#: webApp/templates/dashboard/index.html:189
-#: webApp/templates/dashboard/index.html:205
-#: webApp/templates/dashboard/index.html:221
-#: webApp/templates/dashboard/index.html:822
-#: webApp/templates/dashboard/index.html:909
-#: webApp/templates/dashboard/index.html:1195
+#: webApp/templates/dashboard/index.html:177
+#: webApp/templates/dashboard/index.html:193
+#: webApp/templates/dashboard/index.html:209
+#: webApp/templates/dashboard/index.html:225
+#: webApp/templates/dashboard/index.html:826
+#: webApp/templates/dashboard/index.html:913
+#: webApp/templates/dashboard/index.html:1199
 msgid "ENABLED"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:179
+#: webApp/templates/dashboard/index.html:183
 msgid "ALLOW_AUTOMATIC_VALIDATION"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:195
+#: webApp/templates/dashboard/index.html:199
 msgid "CONVERT_PDF_TO_TIFF"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:211
+#: webApp/templates/dashboard/index.html:215
 msgid "ALLOW_BYPASS_SUPPLIER_VERIF"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:230
+#: webApp/templates/dashboard/index.html:234
 msgid "DEFAULT_PASSWORD"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:241
+#: webApp/templates/dashboard/index.html:245
 msgid "TIME_DELTA"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:251
+#: webApp/templates/dashboard/index.html:255
 msgid "TIME_DELTA_HELP"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:255
+#: webApp/templates/dashboard/index.html:259
 msgid "UPLOAD_MAX_FILES"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:268
+#: webApp/templates/dashboard/index.html:272
 msgid "SUPPLIER_ADDRES_VERIFICATION"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:272
+#: webApp/templates/dashboard/index.html:276
 msgid "PERCENTAGE_MAX_PER_FIELD"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:282
-#: webApp/templates/dashboard/index.html:296
-#: webApp/templates/dashboard/index.html:310
+#: webApp/templates/dashboard/index.html:286
+#: webApp/templates/dashboard/index.html:300
+#: webApp/templates/dashboard/index.html:314
 msgid "RATIO_HELP"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:286
+#: webApp/templates/dashboard/index.html:290
 msgid "PERCENTAGE_AVERAGE_PER_FIELD"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:300
+#: webApp/templates/dashboard/index.html:304
 msgid "PERCENTAGE_BEFORE_FORM_SUBMISSION"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:319
+#: webApp/templates/dashboard/index.html:323
 msgid "SEPARATOR_PATH"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:330
+#: webApp/templates/dashboard/index.html:334
 msgid "TMP_BATCH_PATH"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:341
+#: webApp/templates/dashboard/index.html:345
 msgid "PDF_OUTPUT_PATH"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:354
+#: webApp/templates/dashboard/index.html:358
 msgid "PDF_ORIGIN_PATH"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:365
+#: webApp/templates/dashboard/index.html:369
 msgid "ALLOWED_EXTENSIONS"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:381
-#: webApp/templates/dashboard/index.html:893
+#: webApp/templates/dashboard/index.html:385
+#: webApp/templates/dashboard/index.html:897
 msgid "GENERAL"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:384
+#: webApp/templates/dashboard/index.html:388
 msgid "LOCALE"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:387
+#: webApp/templates/dashboard/index.html:391
 msgid "REFERENCIALS"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:390
+#: webApp/templates/dashboard/index.html:394
 msgid "REGEX"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:393
+#: webApp/templates/dashboard/index.html:397
 msgid "QR_CODE_SEPARATION"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:400
+#: webApp/templates/dashboard/index.html:404
 msgid "PROJECT_PATH"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:411
-#: webApp/templates/dashboard/index.html:860
+#: webApp/templates/dashboard/index.html:415
+#: webApp/templates/dashboard/index.html:864
 msgid "TEMP_PATH"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:422
+#: webApp/templates/dashboard/index.html:426
 msgid "IMAGES_PATH"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:436
+#: webApp/templates/dashboard/index.html:440
 msgid "TIFF_PATH"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:447
+#: webApp/templates/dashboard/index.html:451
 msgid "ERROR_PATH"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:458
+#: webApp/templates/dashboard/index.html:462
 msgid "LOGS_FILE"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:472
+#: webApp/templates/dashboard/index.html:476
 msgid "DOCSERVER_PATH"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:483
+#: webApp/templates/dashboard/index.html:487
 msgid "EXPORT_ACCOUNTING_FOLDER"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:494
+#: webApp/templates/dashboard/index.html:498
 msgid "EXPORT_ACCOUNTING_FILE_PARSER"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:508
+#: webApp/templates/dashboard/index.html:512
 msgid "THREADS_NUMBER"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:519
+#: webApp/templates/dashboard/index.html:523
 msgid "OCR_RESOLUTION_DPI"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:533
+#: webApp/templates/dashboard/index.html:537
 msgid "IMAGE_COMPRESSION_QUALITY"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:543
+#: webApp/templates/dashboard/index.html:547
 msgid "COMPRESSION_HELP"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:547
+#: webApp/templates/dashboard/index.html:551
 msgid "OCR_CHAR_CORRECTION"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:558
+#: webApp/templates/dashboard/index.html:562
 msgid "OCR_ERROR_PATH"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:573
+#: webApp/templates/dashboard/index.html:577
 msgid "REGEX_LOCALE_CODE"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:583
+#: webApp/templates/dashboard/index.html:587
 msgid "LOCALE_HELP"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:587
+#: webApp/templates/dashboard/index.html:591
 msgid "OCR_LOCALE_CODE"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:597
+#: webApp/templates/dashboard/index.html:601
 msgid "LOCALE_OCR_HELP"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:601
+#: webApp/templates/dashboard/index.html:605
 msgid "LOCALE_PATH"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:616
+#: webApp/templates/dashboard/index.html:620
 msgid "FINANCIAL_REFERENCIAL"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:627
+#: webApp/templates/dashboard/index.html:631
 msgid "REFERENCIAL_POSITION"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:641
+#: webApp/templates/dashboard/index.html:645
 msgid "SUPPLIERS_REFERENCIAL"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:652
+#: webApp/templates/dashboard/index.html:656
 msgid "SUPPLIERS_EXCEL_INDEX_REFERENCIAL"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:667
+#: webApp/templates/dashboard/index.html:671
 msgid "DATE"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:681 webApp/templates/pdf/view.html:129
+#: webApp/templates/dashboard/index.html:685 webApp/templates/pdf/view.html:129
 msgid "VAT_NUMBER"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:695 webApp/templates/pdf/list.html:90
+#: webApp/templates/dashboard/index.html:699 webApp/templates/pdf/list.html:90
 #: webApp/templates/pdf/view.html:180
 msgid "INVOICE_NUMBER"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:709
+#: webApp/templates/dashboard/index.html:713
 msgid "INVOICE_NUMBER_SIZE"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:720
+#: webApp/templates/dashboard/index.html:724
 msgid "INPUT_FORMAT_DATE"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:731
+#: webApp/templates/dashboard/index.html:735
 msgid "OUTPUT_FORMAT_DATE"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:745
+#: webApp/templates/dashboard/index.html:749
 msgid "URL"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:756 webApp/templates/pdf/view.html:140
+#: webApp/templates/dashboard/index.html:760 webApp/templates/pdf/view.html:140
 #: webApp/templates/suppliers/suppliers_list.html:15
 msgid "SIRET_NUMBER"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:767 webApp/templates/pdf/view.html:149
+#: webApp/templates/dashboard/index.html:771 webApp/templates/pdf/view.html:149
 #: webApp/templates/suppliers/suppliers_list.html:16
 msgid "SIREN_NUMBER"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:792 webApp/templates/pdf/view.html:251
+#: webApp/templates/dashboard/index.html:796 webApp/templates/pdf/view.html:251
 msgid "TOTAL_TTC"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:830
+#: webApp/templates/dashboard/index.html:834
 msgid "PDFA_EXPORT"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:835
+#: webApp/templates/dashboard/index.html:839
 msgid "PDF_EXPORT_PATH"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:846
+#: webApp/templates/dashboard/index.html:850
 msgid "PDFA_EXPORT_PATH"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:871
+#: webApp/templates/dashboard/index.html:875
 msgid "DIVIDER_CREATION_FILE"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:881
+#: webApp/templates/dashboard/index.html:885
 msgid "DIVIDER_HELP"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:913
+#: webApp/templates/dashboard/index.html:917
 msgid "REST_URL"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:924
+#: webApp/templates/dashboard/index.html:928
 msgid "REST_USER"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:935
+#: webApp/templates/dashboard/index.html:939
 msgid "REST_PASSWORD"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:949
+#: webApp/templates/dashboard/index.html:953
 msgid "AVAILABLE_PROCESS"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:960
+#: webApp/templates/dashboard/index.html:964
 msgid "DEFAULT_PROCESS"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:971
+#: webApp/templates/dashboard/index.html:975
 msgid "USERGROUP_ID"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:987
+#: webApp/templates/dashboard/index.html:991
 #: webApp/templates/users/user_list.html:16
 msgid "STATUS"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:998
+#: webApp/templates/dashboard/index.html:1002
 msgid "STATUS_END"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1009
+#: webApp/templates/dashboard/index.html:1013
 msgid "TYPE_ID"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1020
+#: webApp/templates/dashboard/index.html:1024
 msgid "TYPIST"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1034
+#: webApp/templates/dashboard/index.html:1038
 msgid "PRIORITY"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1045
+#: webApp/templates/dashboard/index.html:1049
 msgid "CATEGORY_ID"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1056
+#: webApp/templates/dashboard/index.html:1060
 msgid "FORMAT"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1067
+#: webApp/templates/dashboard/index.html:1071
 msgid "DEFAULT_DESTINATION"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1078
+#: webApp/templates/dashboard/index.html:1082
 msgid "DEFAULT_DESTUSER"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1092
+#: webApp/templates/dashboard/index.html:1096
 msgid "CUSTOM_VAT_NUMBER"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1103
+#: webApp/templates/dashboard/index.html:1107
 msgid "CUSTOM_HT"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1114
+#: webApp/templates/dashboard/index.html:1118
 msgid "CUSTOM_TTC"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1125
+#: webApp/templates/dashboard/index.html:1129
 msgid "CUSTOM_ORDER_NUMBER"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1139
+#: webApp/templates/dashboard/index.html:1143
 msgid "CUSTOM_INVOICE_NUMBER"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1150
+#: webApp/templates/dashboard/index.html:1154
 msgid "CUSTOM_DELIVERY_NUMBER"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1161
+#: webApp/templates/dashboard/index.html:1165
 msgid "CONTACT_TYPE"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1172
+#: webApp/templates/dashboard/index.html:1176
 msgid "CONTACT_PURPOSE_ID"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1199
+#: webApp/templates/dashboard/index.html:1203
 msgid "AI_PATH"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1210
+#: webApp/templates/dashboard/index.html:1214
 msgid "AI_MODEL_PATH"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1223
-#: webApp/templates/dashboard/index.html:1234
+#: webApp/templates/dashboard/index.html:1227
+#: webApp/templates/dashboard/index.html:1238
 msgid "AI_TRAIN_IMAGE_PATH"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1247
+#: webApp/templates/dashboard/index.html:1251
 msgid "AI_CONFIDENCE_MIN"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1262
+#: webApp/templates/dashboard/index.html:1266
 msgid "DATABASE_FILE"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1273
+#: webApp/templates/dashboard/index.html:1277
 msgid "DATABASE_TYPE"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1283
+#: webApp/templates/dashboard/index.html:1287
 msgid "DATABASE_TYPE_HELP"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1287
+#: webApp/templates/dashboard/index.html:1291
 msgid "POSTGRES_HOST"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1298
+#: webApp/templates/dashboard/index.html:1302
 msgid "POSTGRES_PORT"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1311
+#: webApp/templates/dashboard/index.html:1315
 msgid "POSTGRES_DATABASE"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1322
+#: webApp/templates/dashboard/index.html:1326
 msgid "POSTGRES_USER"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1333
+#: webApp/templates/dashboard/index.html:1337
 msgid "POSTGRES_PASSWORD"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1345
+#: webApp/templates/dashboard/index.html:1350
+msgid "CURRENT_VERSION"
+msgstr ""
+
+#: webApp/templates/dashboard/index.html:1351
+msgid "LAST_VERSION"
+msgstr ""
+
+#: webApp/templates/dashboard/index.html:1353
 msgid "MODIFY_CONFIGURATION"
 msgstr ""
 
@@ -918,6 +930,10 @@ msgstr ""
 
 #: webApp/templates/pdf/list.html:70
 msgid "INVOICE_CLOSED"
+msgstr ""
+
+#: webApp/templates/pdf/list.html:86
+msgid "NUMBER_OF_PAGES"
 msgstr ""
 
 #: webApp/templates/pdf/list.html:91 webApp/templates/pdf/view.html:189
@@ -1063,6 +1079,10 @@ msgstr ""
 msgid "BACK_TO_VALIDATION"
 msgstr ""
 
+#: webApp/templates/splitter/splitter_manager.html:45
+msgid "NUMBER_OF_DOCUMENTS"
+msgstr ""
+
 #: webApp/templates/splitter/splitter_manager.html:56
 msgid "SEPARATOR"
 msgstr ""
@@ -1176,7 +1196,6 @@ msgstr ""
 #: webApp/templates/users/user_profile.html:31
 msgid "RESET_PASSWORD"
 msgstr ""
-
 
 msgid "NEW_LONG"
 msgstr ""
