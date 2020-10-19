@@ -227,9 +227,13 @@ def process(file, Log, Config, Files, Ocr, Locale, Database, WebServices, typo):
             })
 
     # Find invoice number
-    invoiceNumber = FindInvoiceNumber(Ocr, Files, Log, Locale, Config, Database, supplier, file, typo, Ocr.header_text, 1, False).run()
+    invoiceNumberClass = FindInvoiceNumber(Ocr, Files, Log, Locale, Config, Database, supplier, file, typo, Ocr.header_text, 1, False)
+    invoiceNumber = invoiceNumberClass.run()
     if not invoiceNumber:
-        invoiceNumber = FindInvoiceNumber(Ocr, Files, Log, Locale, Config, Database, supplier, file, typo, Ocr.header_last_text, nb_pages, True).run()
+        invoiceNumberClass.text = Ocr.header_last_text
+        invoiceNumberClass.nbPages = nb_pages
+        invoiceNumberClass.customPage = True
+        invoiceNumber = invoiceNumberClass.run()
         if invoiceNumber:
             invoiceNumber.append(nb_pages)
 
@@ -241,14 +245,18 @@ def process(file, Log, Config, Files, Ocr, Locale, Database, WebServices, typo):
         if j == 3 or int(tmp_nbPages) - 1 == 0 or nb_pages == 1:
             break
         convert(file, Files, Ocr, tmp_nbPages, True)
-        invoiceNumberClass = FindInvoiceNumber(Ocr, Files, Log, Locale, Config, Database, supplier, file, typo, Ocr.header_last_text, tmp_nbPages, True)
+
         if Files.isTiff == 'True':
             _file = Files.custom_fileName_tiff
         else:
             _file = Files.custom_fileName
 
         image = Files.open_image_return(_file)
+
         invoiceNumberClass.text = Ocr.line_box_builder(image)
+        invoiceNumberClass.nbPages = tmp_nbPages
+        invoiceNumberClass.customPage = True
+
         invoiceNumber = invoiceNumberClass.run()
         if invoiceNumber:
             invoiceFoundOnFirtOrLastPage = True

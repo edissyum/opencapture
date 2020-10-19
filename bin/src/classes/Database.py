@@ -77,7 +77,7 @@ class Database:
                         if 'strftime' in value:
                             columnName = value.split("'")[2].split(')')[0].replace(',', '').strip()
                             dateFormat = value.split("'")[1].replace('%Y', 'YYYY').replace('%m', 'mm').replace('%d', 'dd')
-                            for char in re.finditer(r"(=|<|>)?", value):
+                            for char in re.finditer(r"[=<>]?", value):
                                 if char.group():
                                     value = "to_char(" + columnName + ", '" + dateFormat + "') " + char.group() + " ?"
                                     char_found = True
@@ -169,21 +169,21 @@ class Database:
         if args['table'] == [] or args['set'] == []:
             self.Log.error('One or more required args are empty')
         else:
-            queryList   = []
-            data        = []
+            queryList = []
+            data = []
             for column in args['set']:
                 if args['set'][column] is not None:
                     queryList.append(column + " = ?")
                     data.append(args['set'][column])
 
-            args['data']    = data + args['data']
-            set             = ", ".join(queryList)
-            where           = ' AND '.join(args['where'][0].split(','))
+            args['data'] = data + args['data']
+            _set = ", ".join(queryList)
+            where = ' AND '.join(args['where'][0].split(','))
             if self.type != 'sqlite':
                 where = where.replace('?', '%s')
-                set = set.replace('?', '%s')
+                _set = _set.replace('?', '%s')
 
-            query           = "UPDATE " + args['table'][0] + " SET " + set + " WHERE " + where
+            query = "UPDATE " + args['table'][0] + " SET " + _set + " WHERE " + where
 
             c = self.conn.cursor()
             try:

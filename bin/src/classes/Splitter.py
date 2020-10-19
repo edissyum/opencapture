@@ -50,7 +50,7 @@ class Splitter:
         text_array[current_page] = text_array[current_page].replace('\n', ' ').replace('\r', '')
         for match_number_current_page in re.finditer(self.Locale.pageNumber, text_array[current_page].replace(' ', '')):
             if match_number_current_page:
-                split_text_array_current_page = x = match_number_current_page.group().split()
+                split_text_array_current_page = match_number_current_page.group().split()
                 # split index found (A/B) (result is ['A','/','B']
                 current_page_index = split_text_array_current_page[0]
                 current_page_index_max = split_text_array_current_page[1]
@@ -58,7 +58,7 @@ class Splitter:
                 #  if next page exist
                 if current_page + 1 < len(text_array):
                     for match_number_next_page in re.finditer(self.Locale.pageNumber, text_array[next_page].replace(' ', '')):
-                        split_text_array_next_page = x = match_number_next_page.group().split()
+                        split_text_array_next_page = match_number_next_page.group().split()
                         # split
                         # index found (A/B) (result is ['A','/','B']
                         next_page_index = split_text_array_next_page[1]

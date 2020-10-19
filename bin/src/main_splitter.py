@@ -17,7 +17,6 @@
 import os
 import sys
 import time
-import queue
 import tempfile
 
 # useful to use the worker and avoid ModuleNotFoundError
@@ -136,19 +135,6 @@ def launch(args):
         if check_file(Files, path, Config, Log) is not False:
             # Process the file and send it to Maarch
             OCForInvoices_splitter.process(path, Log, Splitter, Files, Ocr, tmpFolder)
-
-    elif args['path'] is not None:
-        path = args['path']
-        for file in os.listdir(path):
-            if check_file(Files, path + file, Config, Log) is not False:
-                # Create the Queue to store files
-                q = queue.Queue()
-
-                # Find file in the wanted folder (default or exported pdf after qrcode separation)
-                q = OCForInvoices_splitter.process(path + file, Log, Splitter, Files, Ocr, tmpFolder)
-
-                if not q:
-                    continue
 
     # Empty the tmp dir to avoid residual file
     # recursive_delete(tmpFolder, Log)

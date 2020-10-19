@@ -217,9 +217,9 @@ def index(status, time, search):
                            pagination=pagination,
                            cfg=_cfg)
 
-@bp.route('/list/view/<int:id>', methods=('GET', 'POST'))
+@bp.route('/list/view/<int:pdf_id>', methods=('GET', 'POST'))
 @login_required
-def view(id):
+def view(pdf_id):
     _vars           = init()
     _db             = _vars[0]
     _cfg            = _vars[1]
@@ -242,7 +242,7 @@ def view(id):
         'select': ['id, *'],
         'table' : ['invoices'],
         'where' : ['status <> ?', 'id = ?'],
-        'data'  : ['DEL', id],
+        'data'  : ['DEL', pdf_id],
         'limit' : '1'
     })[0]
 
@@ -278,7 +278,7 @@ def view(id):
             'locked_by': session['user_name']
         },
         'where' : ['id = ?'],
-        'data'  : [id]
+        'data'  : [pdf_id]
     })
 
     return render_template("templates/pdf/view.html",
@@ -293,7 +293,7 @@ def view(id):
 @bp.route('/upload')
 @bp.route('/upload?splitter=<string:issep>')
 @login_required
-def upload():
+def upload(issep):
     _vars           = init()
     _cfg            = _vars[1].cfg
 
@@ -315,6 +315,7 @@ def validate_form():
     footer_page = 1
     invoice_number_page = 1
     invoice_date_page = 1
+    vatNumber = False
 
     if request.method == 'POST':
         # Create an array containing the parent element, used to structure the XML
@@ -431,18 +432,18 @@ def validate_form():
             'data'  : [pdfId]
         })
 
-        _db.update({
-            'table': ['suppliers'],
-            'set': {
-                'footer_page': footer_page,
-                'invoice_number_page': invoice_number_page,
-                'invoice_date_page' : invoice_date_page
-            },
-            'where': ['vat_number = ?'],
-            'data': [vatNumber]
-        })
-
-        _files.exportXml(_cfg, request.form['facturationInfo_invoice_number'], parent, True, _db, vatNumber)
+        if vatNumber:
+            _db.update({
+                'table': ['suppliers'],
+                'set': {
+                    'footer_page': footer_page,
+                    'invoice_number_page': invoice_number_page,
+                    'invoice_date_page' : invoice_date_page
+                },
+                'where': ['vat_number = ?'],
+                'data': [vatNumber]
+            })
+            _files.exportXml(_cfg, request.form['facturationInfo_invoice_number'], parent, True, _db, vatNumber)
 
         # Unlock pdf and makes it processed
         _db.update({
