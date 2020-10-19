@@ -16,8 +16,6 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import re
-import sys
-
 
 class FindSupplier:
     def __init__(self, Ocr, Log, Locale, Database, Files, nb_pages, custom_page):
@@ -103,7 +101,7 @@ class FindSupplier:
                     data = [existingSupplier[0]['vat_number'], position, existingSupplier[0], self.nbPages]
 
                     return data
-
+        siretNumber = False
         if not vatFound:
             siretNumber = self.process(self.Locale.SIRETRegex, textAsString)
             if siretNumber:

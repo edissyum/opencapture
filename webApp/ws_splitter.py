@@ -52,6 +52,8 @@ def splitter_manager():
     _cfg = _vars[1]
     page, per_page, offset = get_page_args(page_parameter='page',
                                            per_page_parameter='per_page')
+
+    list_batch = []
     if request.method == 'POST':
         if 'search' in request.args:
             search_str = request.args.get('search')
@@ -93,7 +95,8 @@ def splitter_manager():
     for index_directory, directoryname in enumerate(os.listdir(_cfg.cfg['SPLITTER']['pdfoutputpath'])):
         files_path.append(index_directory)
 
-    result = [dict(pdf) for pdf in list_batch]
+    result = [dict(_pdf) for _pdf in list_batch]
+
     for line in result:
         if _cfg.cfg['DATABASE']['databasetype'] == 'pgsql':
             pattern = "%Y-%m-%d %H:%M:%S.%f"

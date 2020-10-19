@@ -38,7 +38,7 @@ def search_custom_positions(data, Ocr, Files, Locale, file, Config):
     regex = data['regex']
     target = data['target'].lower()
     position = data['position']
-
+    target_file = ''
     if position:
         if 'page' not in data or ('page' in data and data['page'] in ['1', '']):
             if Files.isTiff == 'True':
