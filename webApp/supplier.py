@@ -9,10 +9,13 @@ custom_array = {}
 if custom_id:
     custom_array = check_python_customized_files(custom_id[1])
 
-if 'pdf' not in custom_array: from . import pdf
-else: pdf = getattr(__import__(custom_array['pdf']['path'], fromlist=[custom_array['pdf']['module']]), custom_array['pdf']['module'])
+if 'pdf' not in custom_array:
+    from . import pdf
+else:
+    pdf = getattr(__import__(custom_array['pdf']['path'], fromlist=[custom_array['pdf']['module']]), custom_array['pdf']['module'])
 
 bp = Blueprint('supplier', __name__, url_prefix='/supplier')
+
 
 @bp.route('/list')
 @login_required
@@ -25,7 +28,7 @@ def supplier_list():
 
     total = _db.select({
         'select': ['count(*) as total'],
-        'table' : ['suppliers'],
+        'table': ['suppliers'],
     })[0]['total']
 
     list_supplier = _db.select({

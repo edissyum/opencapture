@@ -8,15 +8,19 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from webApp.auth import login_required, register
 
 from .functions import get_custom_id, check_python_customized_files
+
 custom_id = get_custom_id()
 custom_array = {}
 if custom_id:
     custom_array = check_python_customized_files(custom_id[1])
 
-if 'pdf' not in custom_array: from . import pdf
-else: pdf = getattr(__import__(custom_array['pdf']['path'], fromlist=[custom_array['pdf']['module']]), custom_array['pdf']['module'])
+if 'pdf' not in custom_array:
+    from . import pdf
+else:
+    pdf = getattr(__import__(custom_array['pdf']['path'], fromlist=[custom_array['pdf']['module']]), custom_array['pdf']['module'])
 
 bp = Blueprint('user', __name__, url_prefix='/user')
+
 
 def check_user(user_id):
     _vars = pdf.init()
@@ -30,6 +34,7 @@ def check_user(user_id):
     })[0]
 
     return user
+
 
 @bp.route('/profile', methods=('GET', 'POST'), defaults=({'user_id': None}))
 @bp.route('/profile/<int:user_id>', methods=('GET', 'POST'))
@@ -48,7 +53,8 @@ def profile(user_id):
         new = request.form['new_password']
         change_password(old, new, user_id)
 
-    return render_template('templates/users/user_profile.html', user = user_info)
+    return render_template('templates/users/user_profile.html', user=user_info)
+
 
 def change_password(old_password, new_password, user_id):
     _vars = pdf.init()
@@ -76,7 +82,8 @@ def change_password(old_password, new_password, user_id):
     else:
         flash(gettext('ERROR_WHILE_RETRIEVING_USER'))
 
-@bp.route('/profile/reset_password', defaults=({'user_id' : None}))
+
+@bp.route('/profile/reset_password', defaults=({'user_id': None}))
 @bp.route('/profile/<int:user_id>/reset_password')
 @login_required
 def reset_password(user_id):
@@ -108,6 +115,7 @@ def reset_password(user_id):
 
     return redirect(url_for('user.profile', user_id=user_id))
 
+
 @bp.route('/list')
 @login_required
 def user_list():
@@ -119,16 +127,16 @@ def user_list():
 
     total = _db.select({
         'select': ['count(*) as total'],
-        'table' : ['users'],
-        'where' : ['status not IN (?)'],
-        'data' : ['DEL'],
+        'table': ['users'],
+        'where': ['status not IN (?)'],
+        'data': ['DEL'],
     })[0]['total']
 
     list_user = _db.select({
         'select': ['*'],
         'table': ['users'],
-        'where' : ['status not IN (?)'],
-        'data' : ['DEL'],
+        'where': ['status not IN (?)'],
+        'data': ['DEL'],
         'limit': str(per_page),
         'offset': str(offset)
     })
@@ -155,6 +163,7 @@ def user_list():
                            page=page,
                            per_page=per_page,
                            pagination=pagination)
+
 
 @bp.route('/enable/<int:user_id>', defaults={'fallback': None})
 @bp.route('/enable/<int:user_id>?fallback=<path:fallback>')
@@ -186,6 +195,7 @@ def enable(user_id, fallback):
 
     return redirect(fallback)
 
+
 @bp.route('/disable/<int:user_id>', defaults={'fallback': None})
 @bp.route('/disable/<int:user_id>?fallback=<path:fallback>')
 @login_required
@@ -215,6 +225,7 @@ def disable(user_id, fallback):
             flash(gettext('USER_DISABLED_ERROR') + ' : ' + str(res[1]))
 
     return redirect(fallback)
+
 
 @bp.route('/delete/<int:user_id>', defaults={'fallback': None})
 @bp.route('/delete/<int:user_id>?fallback=<path:fallback>')
