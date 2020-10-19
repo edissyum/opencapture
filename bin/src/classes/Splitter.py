@@ -130,9 +130,11 @@ class Splitter:
                 for page_index, page in path_output_image:
                     image = Files.open_image_return(page)
                     save_path = new_directory_path + 'page' + str(invoice_second_index) + '.jpg'
-                    page_index_start_from_zero = int(page_index) - 1
 
-                    if int(('%03d' % invoice_page_item)) == page_index_start_from_zero:
+                    if int(page_index) != 0:
+                        page_index = int(page_index) - 1
+
+                    if int(invoice_page_item) == int(page_index):
                         args = {
                             'table': 'image_page_number',
                             'columns': {
@@ -141,7 +143,7 @@ class Splitter:
                                               str(invoice_index) + "/page" +
                                               str(invoice_second_index) +
                                               ".jpg",
-                                'image_number': str(page_index_start_from_zero),
+                                'image_number': str(page_index),
                             }
                         }
                         self.db.insert(args)
