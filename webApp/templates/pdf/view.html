@@ -4,28 +4,28 @@
     <script type="text/javascript" src={{ url_for('static', filename='js/otherLib/Gettext.js') }}></script>
     <link rel="gettext" type="application/x-po" href="{{ url_for('static', filename='babel/translations/' + session["lang"] + '/LC_MESSAGES/messages.po') }}">
     <script>
-        var gt = new Gettext();
+        let gt = new Gettext();
     </script>
 {% endblock %}
 {% block content %}
     <div class="container-fluid">
         <div class="row">
-            {% if pdf['nbPages'] is gt 1 %}
-                <div class="nbPages">
-                    <i class="fa fa-arrow-left" onclick="previousPage()" data-pages="{{ pdf['nbPages'] }}"></i>
-                    {{ gettext('PAGE') }} <span id="currentPage">1</span> {{ gettext('OF') }} {{ pdf['nbPages'] }}
+            {% if pdf['nb_pages'] is gt 1 %}
+                <div class="nb_pages">
+                    <i class="fa fa-arrow-left" onclick="previousPage()" data-pages="{{ pdf['nb_pages'] }}"></i>
+                    {{ gettext('PAGE') }} <span id="currentPage">1</span> {{ gettext('OF') }} {{ pdf['nb_pages'] }}
                     <i class="fa fa-arrow-right" onclick="nextPage()"></i>
                 </div>
             {% endif %}
 
             <div class="col-sm-6 img" onmousedown="isKeyPressed(event)">
                 <div id="rectangle" class="rectangle-not-active"></div>
-                <img class="file" id="my-image" alt="File" src="{{ url_for('pdf.static', typeofFile='full', filename=pdf['fullJpgFilename']) }}">
+                <img class="file" id="my-image" alt="File" src="{{ url_for('pdf.static', typeofFile='full', filename=pdf['full_jpg_filename']) }}">
             </div>
             <div class="col-sm-6">
                 <div id="preloader_form">
                     <div id="status_form">
-                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 74.4 81.9" width="300"
+                        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 74.4 81.9" width="300"
                              height="300" xml:space="preserve">
                             <linearGradient id="fill_form" x1="0.5" y1="1" x2="0.5" y2="0">
                                 <stop offset="0%" stop-color="#76B442">
@@ -46,19 +46,19 @@
                         </svg>
                     </div>
                 </div>
-                <form id="invoice_info" action="{{ url_for('pdf.validate_form', id=pdf['rowid']) }}" method="POST">
-                        <input type="hidden" id="pdfId" value="{{ pdf['rowid'] }}">
+                <form id="invoice_info" action="{{ url_for('pdf.validate_form', id=pdf['id']) }}" method="POST">
+                        <input type="hidden" id="pdfId" value="{{ pdf['id'] }}">
                         <input type="hidden" id="widthOriginal" value="{{ width }}">
-                        <input type="hidden" id="pdfCreationDate" name="pdfCreationDate" value="{{ pdf['registerDate'] }}">
+                        <input type="hidden" id="pdfCreationDate" name="pdfCreationDate" value="{{ pdf['register_ate'] }}">
                         <input type="hidden" id="fileInfo_path" name="fileInfo_path" value="{{ pdf['path'] + '/' +  pdf['filename'] }}">
 
                         <div class="form-group float-right" >
-                            <input name="facturationInfo_isSubscription" type="checkbox" class="custom-control-input" id="isSubscription" onclick="removeUserInCharge($(this))">
-                            <label class="custom-control-label" for="isSubscription">{{ gettext('SUBSCRIPTION') }}</label>
+                            <input name="facturationInfo_is_subscription" type="checkbox" class="custom-control-input" id="is_subscription" onclick="removeUserInCharge($(this))">
+                            <label class="custom-control-label" for="is_subscription">{{ gettext('SUBSCRIPTION') }}</label>
                         </div>
                         <div class="form-group float-right" >
-                            <input name="facturationInfo_isAsset" type="checkbox" class="custom-control-input" id="isAsset">
-                            <label class="custom-control-label mr-5" for="isAsset">{{ gettext('ASSET') }}</label>
+                            <input name="facturationInfo_is_asset" type="checkbox" class="custom-control-input" id="is_asset">
+                            <label class="custom-control-label mr-5" for="is_asset">{{ gettext('ASSET') }}</label>
                         </div>
 
                         <span class="infos" onclick="hideOrDisplay('supplier_info');">
@@ -126,32 +126,32 @@
                                 <input type="hidden" id="ratioAdressTotal">
                             </div>
                             <div class="form-group">
-                                <label for="vatNumber">{{ gettext('VAT_NUMBER') }}</label>
+                                <label for="vat_number">{{ gettext('VAT_NUMBER') }}</label>
                                 <div class="input-group mb-2">
-                                    <div onclick="drawRectangle(document.getElementById('vatNumber'))" class="input-group-prepend" style="display:none;">
+                                    <div onclick="drawRectangle(document.getElementById('vat_number'))" class="input-group-prepend" style="display:none;">
                                         <div class="input-group-text"><i class="fas fa-eye" aria-hidden="true"></i></div>
                                     </div>
-                                    <input required name="supplierInfo_vatNumber" onkeyup="checkVAT();" onfocusout="removeRectangle()" type="text" class="form-control" id="vatNumber" x1="" y1="" x2="" y2="" x1_original="{{ position['vatNumber_position'][0][0] }}" y1_original="{{ position['vatNumber_position'][0][1] }}" x2_original="{{ position['vatNumber_position'][1][0] }}" y2_original="{{ position['vatNumber_position'][1][1] }}" value="{{ pdf['vatNumber'] }}" page="1">
-    {#                                <input readonly required name="supplierInfo_vatNumber" onfocusout="removeRectangle()" type="text" class="form-control" id="vatNumber" x1_original="{{ position['vatNumber_position'][0][0] }}" y1_original="{{ position['vatNumber_position'][0][1] }}" x2_original="{{ position['vatNumber_position'][1][0] }}" y2_original="{{ position['vatNumber_position'][1][1] }}" value="{{ pdf['vatNumber'] }}" page="1">#}
+                                    <input required name="supplierInfo_vat_number" onkeyup="checkVAT();" onfocusout="removeRectangle()" type="text" class="form-control" id="vat_number" x1="" y1="" x2="" y2="" x1_original="{{ position['vat_number_position'][0][0] }}" y1_original="{{ position['vat_number_position'][0][1] }}" x2_original="{{ position['vat_number_position'][1][0] }}" y2_original="{{ position['vat_number_position'][1][1] }}" value="{{ pdf['vat_number'] }}" page="{{ pdf['supplier_page'] }}">
+    {#                                <input readonly required name="supplierInfo_vatNumber" onfocusout="removeRectangle()" type="text" class="form-control" id="vatNumber" x1_original="{{ position['vatNumber_position'][0][0] }}" y1_original="{{ position['vatNumber_position'][0][1] }}" x2_original="{{ position['vatNumber_position'][1][0] }}" y2_original="{{ position['vatNumber_position'][1][1] }}" value="{{ pdf['vat_number'] }}" page="1">#}
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
-                                    <label for="siretNumber">{{ gettext('SIRET_NUMBER') }}</label>
+                                    <label for="siret_number">{{ gettext('SIRET_NUMBER') }}</label>
                                     <div class="input-group mb-2">
-                                        <div onclick="drawRectangle(document.getElementById('siretNumber'))" class="input-group-prepend" style="display:none;">
+                                        <div onclick="drawRectangle(document.getElementById('siret_number'))" class="input-group-prepend" style="display:none;">
                                             <div class="input-group-text"><i class="fas fa-eye" aria-hidden="true"></i></div>
                                         </div>
-                                        <input readonly name="supplierInfo_siretNumber" onkeyup="checkSIRET();" onfocusout="removeRectangle()" type="text" class="form-control" id="siretNumber" x1="" y1="" x2="" y2="" x1_original="" y1_original="" x2_original="" y2_original="" value="{{ pdf['siret'] }}">
+                                        <input readonly name="supplierInfo_siret_number" onkeyup="checkSIRET();" onfocusout="removeRectangle()" type="text" class="form-control" id="siret_number" x1="" y1="" x2="" y2="" x1_original="" y1_original="" x2_original="" y2_original="" value="{{ pdf['siret'] }}">
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="sirenNumber">{{ gettext('SIREN_NUMBER') }}</label>
+                                    <label for="siren_number">{{ gettext('SIREN_NUMBER') }}</label>
                                     <div class="input-group mb-2">
-                                        <div onclick="drawRectangle(document.getElementById('sirenNumber'))" class="input-group-prepend" style="display:none;">
+                                        <div onclick="drawRectangle(document.getElementById('siren_number'))" class="input-group-prepend" style="display:none;">
                                             <div class="input-group-text"><i class="fas fa-eye" aria-hidden="true"></i></div>
                                         </div>
-                                        <input readonly name="supplierInfo_sirenNumber" onkeyup="checkSIREN()" onfocusout="ocrOnFly(true, this, true); removeRectangle()" onfocusin="ocrOnFly(false, this, true)" type="text" class="form-control" id="sirenNumber" x1="" y1="" x2="" y2="" x1_original="" y1_original="" x2_original="" y2_original="" value="{{ pdf['siret'] }}">
+                                        <input readonly name="supplierInfo_siren_number" onkeyup="checkSIREN()" onfocusout="ocrOnFly(true, this, true); removeRectangle()" onfocusin="ocrOnFly(false, this, true)" type="text" class="form-control" id="siren_number" x1="" y1="" x2="" y2="" x1_original="" y1_original="" x2_original="" y2_original="" value="{{ pdf['siren'] }}">
                                     </div>
                                 </div>
                             </div>
@@ -177,42 +177,42 @@
                             <input name="facturationInfo_NumberOfTVA" id="NumberOfVAT" type="hidden" value="1">
                             <div class="form-row">
                                 <div class="form-group col-md-6">
-                                    <label for="invoiceNumber">{{ gettext('INVOICE_NUMBER') }}</label>
+                                    <label for="invoice_number">{{ gettext('INVOICE_NUMBER') }}</label>
                                     <div class="input-group mb-2">
-                                        <div onclick="drawRectangle(document.getElementById('invoiceNumber'))" class="input-group-prepend" style="display:none;">
+                                        <div onclick="drawRectangle(document.getElementById('invoice_number'))" class="input-group-prepend" style="display:none;">
                                             <div class="input-group-text"><i class="fas fa-eye" aria-hidden="true"></i></div>
                                         </div>
-                                        <input autocomplete="off" required name="facturationInfo_invoiceNumber" id="invoiceNumber" type="text" class="form-control" onfocusout="ocrOnFly(true, this, true); removeRectangle()" onfocusin="ocrOnFly(false, this, true)"  x1_original="{{ position['invoiceNumber_position'][0][0] }}" y1_original="{{ position['invoiceNumber_position'][0][1] }}" x2_original="{{ position['invoiceNumber_position'][1][0] }}" y2_original="{{ position['invoiceNumber_position'][1][1] }}" {% if pdf['invoiceNumber'] %} value="{{ pdf['invoiceNumber'] }}" {% endif %} page="1">
+                                        <input autocomplete="off" required name="facturationInfo_invoice_number" id="invoice_number" type="text" class="form-control" onfocusout="ocrOnFly(true, this, true); removeRectangle()" onfocusin="ocrOnFly(false, this, true)"  x1_original="{{ position['invoice_number_position'][0][0] }}" y1_original="{{ position['invoice_number_position'][0][1] }}" x2_original="{{ position['invoice_number_position'][1][0] }}" y2_original="{{ position['invoice_number_position'][1][1] }}" {% if pdf['invoice_number'] %} value="{{ pdf['invoice_number'] }}" {% endif %} page="{{ pdf['invoice_number_page'] }}">
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="invoiceDate">{{ gettext('INVOICE_DATE') }}</label>
+                                    <label for="invoice_date">{{ gettext('INVOICE_DATE') }}</label>
                                     <div class="input-group mb-2">
-                                        <div onclick="drawRectangle(document.getElementById('invoiceDate'))" class="input-group-prepend" style="display:none;">
+                                        <div onclick="drawRectangle(document.getElementById('invoice_date'))" class="input-group-prepend" style="display:none;">
                                             <div class="input-group-text"><i class="fas fa-eye" aria-hidden="true"></i></div>
                                         </div>
-                                        <input required id="invoiceDate" name="facturationInfo_date" type="date" class="form-control" x1_original="{{ position['invoiceDate_position'][0][0] }}" y1_original="{{ position['invoiceDate_position'][0][1] }}" x2_original="{{ position['invoiceDate_position'][1][0] }}" y2_original="{{ position['invoiceDate_position'][1][1] }}"  {% if pdf['invoiceDate'] %} value="{{ pdf['invoiceDate'] }}" {% endif %} page="1" >
+                                        <input required id="invoice_date" name="facturationInfo_invoice_date" type="date" class="form-control" x1_original="{{ position['invoice_date_position'][0][0] }}" y1_original="{{ position['invoice_date_position'][0][1] }}" x2_original="{{ position['invoice_date_position'][1][0] }}" y2_original="{{ position['invoice_date_position'][1][1] }}"  {% if pdf['invoice_date'] %} value="{{ pdf['invoice_date'] }}" {% endif %} page="{{ pdf['invoice_date_page'] }}" >
                                     </div>
                                 </div>
                             </div>
-                            <div class="MAIN_TVA_1">
+                            <div class="MAIN_vat_1">
                                 <div class="form-row">
                                     <div class="form-group col-md-4">
-                                        <label for="VAT_1">{{ gettext('VAT_RATE') }} 1 </label>
+                                        <label for="vat_1">{{ gettext('VAT_RATE') }} 1 </label>
                                         <div class="input-group mb-2">
-                                            <div onclick="drawRectangle(document.getElementById('VAT_1'))" class="input-group-prepend" style="display:none;">
+                                            <div onclick="drawRectangle(document.getElementById('vat_1'))" class="input-group-prepend" style="display:none;">
                                                 <div class="input-group-text"><i class="fas fa-eye" aria-hidden="true"></i></div>
                                             </div>
-                                            <input autocomplete="off" required name="facturationInfo_VAT_1" id="VAT_1" onfocusout="ocrOnFly(true, this, false, true); removeRectangle()" onfocusin="ocrOnFly(false, this, false, true)" type="text" class="form-control" id="facturationInfo_VAT_1" x1="" y1="" x2="" y2=""  x1_original="{{ position['VATRate1_position'][0][0] }}" y1_original="{{ position['VATRate1_position'][0][1] }}" x2_original="{{ position['VATRate1_position'][1][0] }}" y2_original="{{ position['VATRate1_position'][1][1] }}"  {% if pdf['VATRate1'] %} value="{{ pdf['VATRate1'] }}" {% endif %} page="1">
+                                            <input autocomplete="off" required name="facturationInfo_vat_1" id="vat_1" onfocusout="ocrOnFly(true, this, false, true); removeRectangle()" onfocusin="ocrOnFly(false, this, false, true)" type="text" class="form-control" id="facturationInfo_vat_1" x1="" y1="" x2="" y2=""  x1_original="{{ position['vat_rate1_position'][0][0] }}" y1_original="{{ position['vat_rate1_position'][0][1] }}" x2_original="{{ position['vat_rate1_position'][1][0] }}" y2_original="{{ position['vat_rate1_position'][1][1] }}"  {% if pdf['vat_rate1'] %} value="{{ pdf['vat_rate1'] }}" {% endif %} page="{{ pdf['footer_page'] }}">
                                         </div>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <label for="noTaxes_1">{{ gettext('NO_RATE_AMOUNT') }} 1</label>
+                                        <label for="no_taxes_1">{{ gettext('NO_RATE_AMOUNT') }} 1</label>
                                         <div class="input-group mb-2">
-                                            <div onclick="drawRectangle(document.getElementById('noTaxes_1'))" class="input-group-prepend" style="display:none;">
+                                            <div onclick="drawRectangle(document.getElementById('no_taxes_1'))" class="input-group-prepend" style="display:none;">
                                                 <div class="input-group-text"><i class="fas fa-eye" aria-hidden="true"></i></div>
                                             </div>
-                                            <input autocomplete="off" required name="facturationInfo_noTaxes_1" onfocusout="ocrOnFly(true, this, false, true); removeRectangle()" onfocusin="ocrOnFly(false, this, false, true)" type="text" class="form-control" id="noTaxes_1" x1="" y1="" x2="" y2=""  x1_original="{{ position['HTAmount1_position'][0][0] }}" y1_original="{{ position['HTAmount1_position'][0][1] }}" x2_original="{{ position['HTAmount1_position'][1][0] }}" y2_original="{{ position['HTAmount1_position'][1][1] }}"  {% if pdf['HTAmount1'] %} value="{{ pdf['HTAmount1'] }}" {% endif %} page="1">
+                                            <input autocomplete="off" required name="facturationInfo_no_taxes_1" onfocusout="ocrOnFly(true, this, false, true); removeRectangle()" onfocusin="ocrOnFly(false, this, false, true)" type="text" class="form-control" id="no_taxes_1" x1="" y1="" x2="" y2=""  x1_original="{{ position['ht_amount1_position'][0][0] }}" y1_original="{{ position['ht_amount1_position'][0][1] }}" x2_original="{{ position['ht_amount1_position'][1][0] }}" y2_original="{{ position['ht_amount1_position'][1][1] }}"  {% if pdf['ht_amount1'] %} value="{{ pdf['ht_amount1'] }}" {% endif %} page="{{ pdf['footer_page'] }}">
                                         </div>
                                     </div>
                                     <div class="form-group col-md-4">
@@ -221,7 +221,7 @@
                                             <select name="facturationInfo_financialAccount_1" id="financialAccount_1" class="form-control chosen-select" data-placeholder="{{ gettext('SELECT_LOAD_ACCOUNT') }}">
                                                 <option value=""></option>
                                                 {% for financial in arrayOfFinancial %}
-                                                    <option value='{{  financial }}'>{{ financial }} - {{ arrayOfFinancial[financial] }}</option>
+                                                    <option value='{{ financial }}'>{{ financial }} - {{ arrayOfFinancial[financial] }}</option>
                                                 {% endfor %}
                                             </select>
                                         </div>
@@ -256,10 +256,10 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group col-md-3 text-center AMOUNT_VAT_1">
-                                    <label for="TOTAL_TVA_1">{{ gettext('VAT_AMOUNT') }} 1</label>
+                                <div class="form-group col-md-3 text-center AMOUNT_vat_1">
+                                    <label for="TOTAL_vat_1">{{ gettext('VAT_AMOUNT') }} 1</label>
                                     <div class="input-group mb-2">
-                                        <input autocomplete="off" required name="facturationInfo_TOTAL_TVA_1" type="text" id="TOTAL_TVA_1" class="form-control">
+                                        <input autocomplete="off" required name="facturationInfo_TOTAL_vat_1" type="text" id="TOTAL_vat_1" class="form-control">
                                         <div class="input-group-prepend">
                                             <div class="input-group-text"><i class="fas fa-euro-sign" aria-hidden="true"></i></div>
                                         </div>

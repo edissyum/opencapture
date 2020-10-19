@@ -30,7 +30,7 @@
     <!-- Preloader -->
     <div id="preloader">
         <div id="status">
-            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 74.4 81.9" width="300"
+            <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 74.4 81.9" width="300"
                  height="300" xml:space="preserve">
                 <linearGradient id="fill" x1="0.5" y1="1" x2="0.5" y2="0">
                     <stop offset="0%" stop-color="#76B442">
@@ -68,7 +68,7 @@
                     <a class="nav-item nav-link {% if request.path == '/upload' %}active{% endif %}" href="{{ url_for('pdf.upload') }}">{{ gettext('UPLOAD') }}</a>
                     <a class="nav-item nav-link {% if request.path == '/user/profile' %}active{% endif %}" href={{ url_for('user.profile') }}>{{ gettext('MY_PROFILE') }}</a>
                     <a class="nav-item nav-link" href="{{ url_for('auth.logout') }}">{{ gettext('LOG_OUT') }}</a>
-                    {% if g.user[1] == 'admin' %}
+                    {% if g.user['username'] == 'admin' %}
                         <a class="nav-item nav-link user {% if request.path == '/dashboard' %}active{% endif %}" href="{{ url_for('dashboard.index') }}">{{ gettext('DASHBOARD') }}</a>
                         <a class="nav-item nav-link {% if request.path == '/user/list' %}active{% endif %}" href="{{ url_for('user.user_list') }}">{{ gettext('USER_LIST') }}</a>
                         <a class="nav-item nav-link {% if request.path == '/user/create' %}active{% endif %}" href="{{ url_for('user.create') }}">{{ gettext('CREATE_USER') }}</a>
@@ -115,7 +115,7 @@
     </nav>
     <section class="content">
         {% for message in get_flashed_messages() %}
-            <div class="flash" onclick="$('.flash').fadeOut()"><script>$('.flash').delay(4000).fadeOut()</script>{{ message }}</div>
+            <div class="flash" onclick="$('.flash').fadeOut()"><script>$('.flash').fadeOut(10000)</script>{{ message }}</div>
         {% endfor %}
         {% block content %}{% endblock %}
     </section>

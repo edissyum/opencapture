@@ -23,8 +23,17 @@ import uuid
 
 import PyPDF2
 import shutil
-from datetime import date, datetime
+from datetime import date
 from bin.src.classes.Files import Files
+
+
+def get_lot_name():
+    random_number = uuid.uuid4().hex
+    # date object of today's date
+    today = date.today()
+    lot_name = str(today.year) + str(today.month) + str(today.day) + str(random_number)
+    return lot_name
+
 
 class Splitter:
     def __init__(self, Config, Database, Locale):
@@ -41,7 +50,7 @@ class Splitter:
         text_array[current_page] = text_array[current_page].replace('\n', ' ').replace('\r', '')
         for match_number_current_page in re.finditer(self.Locale.pageNumber, text_array[current_page].replace(' ', '')):
             if match_number_current_page:
-                split_text_array_current_page = x = match_number_current_page.group().split()
+                split_text_array_current_page = match_number_current_page.group().split()
                 # split index found (A/B) (result is ['A','/','B']
                 current_page_index = split_text_array_current_page[0]
                 current_page_index_max = split_text_array_current_page[1]
@@ -49,7 +58,7 @@ class Splitter:
                 #  if next page exist
                 if current_page + 1 < len(text_array):
                     for match_number_next_page in re.finditer(self.Locale.pageNumber, text_array[next_page].replace(' ', '')):
-                        split_text_array_next_page = x = match_number_next_page.group().split()
+                        split_text_array_next_page = match_number_next_page.group().split()
                         # split
                         # index found (A/B) (result is ['A','/','B']
                         next_page_index = split_text_array_next_page[1]
@@ -109,35 +118,23 @@ class Splitter:
                 invoices[invoice_index].append(page + 1)
         return invoices
 
-    # TODO : Move from here
-    @staticmethod
-    def get_date_uuid_name():
-        now = datetime.now()
-        day = str(now.day)
-        year = str(now.year)
-        month = str('%02d' % now.month)
-        hour = str('%02d' % now.hour)
-        minute = str('%02d' % now.minute)
-        seconds = str('%02d' % now.second)
-        newFilename = day + month + year + '_' + hour + minute + seconds + '_' + uuid.uuid4().hex
-        return newFilename
-
     def save_image_from_pdf(self, path_output_image, invoices_order, batch_folder, origFile):
         invoice_index = 0
         invoice_second_index = 0
         batch_name = os.path.basename(os.path.normpath(batch_folder))
         for invoice_order in invoices_order:
             new_directory_path = batch_folder + 'invoice_' + str(invoice_index) + '/'
-            new_directory_path_to_compare = batch_folder + '/invoice_' + str(invoice_index) + '/'
 
             Files.create_directory(new_directory_path)
             for invoice_page_item in invoice_order:
                 for page_index, page in path_output_image:
                     image = Files.open_image_return(page)
                     save_path = new_directory_path + 'page' + str(invoice_second_index) + '.jpg'
-                    page_index_start_from_zero = int(page_index) - 1
 
-                    if int(('%03d' % invoice_page_item)) == page_index_start_from_zero:
+                    if int(page_index) != 0:
+                        page_index = int(page_index) - 1
+
+                    if int(invoice_page_item) == int(page_index):
                         args = {
                             'table': 'image_page_number',
                             'columns': {
@@ -146,7 +143,7 @@ class Splitter:
                                               str(invoice_index) + "/page" +
                                               str(invoice_second_index) +
                                               ".jpg",
-                                'image_number': str(page_index_start_from_zero),
+                                'image_number': str(page_index),
                             }
                         }
                         self.db.insert(args)
@@ -205,18 +202,13 @@ class Splitter:
     def save_pdf_result_after_separate(self, pages_list, pdf_path_input, pdf_path_output):
         pdf_writer = PyPDF2.PdfFileWriter()
         pdf_reader = PyPDF2.PdfFileReader(self.Config.cfg['SPLITTER']['pdforiginpath'] + pdf_path_input)
-        lot_name = self.get_lot_name()
+        pdf_origin_file_name = pdf_path_input.split('/')[-1].replace('.pdf', '').replace('_', '-')
+        lot_name = get_lot_name()
+
         for invoice_index, pages in enumerate(pages_list):
             for page in pages:
                 pdf_writer.addPage(pdf_reader.getPage(page))
-            with open(pdf_path_output + '/invoice' + str(invoice_index + 1) + '_' + lot_name + '.pdf', 'wb') as fh:
+            with open(pdf_path_output + '/SPLITTER_' + pdf_origin_file_name + '_' + "%03d" % (invoice_index + 1) + '_' + lot_name + '.pdf', 'wb') as fh:
                 pdf_writer.write(fh)
             # init writer
             pdf_writer = PyPDF2.PdfFileWriter()
-
-    def get_lot_name(self):
-        random_number = uuid.uuid4().hex
-        # date object of today's date
-        today = date.today()
-        lot_name = str(today.year) + str(today.month) + str(today.day) + str(random_number)
-        return lot_name

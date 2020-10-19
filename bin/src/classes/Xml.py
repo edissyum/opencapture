@@ -24,7 +24,7 @@ class Xml:
         self.Config         = Config
         self.db             = Database
 
-    def construct_filename(self, invoiceNumber):
+    def construct_filename(self, invoiceNumber, vatNumber):
         root        = etree.parse(self.Config.cfg['GLOBAL']['exportaccountingfileparser'])
         array       = []
         tmpFilename = {}
@@ -51,20 +51,31 @@ class Xml:
             tmpFilename[cpt] = []
             if element['type'] == 'column':
                 if element['filter'] is not None and element['filter'] in dateFilter:
-                    field = "strftime('" + dateFilter[element['filter']] + "', registerDate) as date"
+                    field = "strftime('" + dateFilter[element['filter']] + "', register_date) as date"
+                    labelField = 'date'
                 else:
                     field = element['value']
+                    labelField = field
+
+                table = element['table']
+                where = ''
+                data = ''
+                if table == 'suppliers':
+                    where = 'vat_number = ?'
+                    data = vatNumber
+                elif table == 'invoices':
+                    where = 'invoice_number = ?'
+                    data = invoiceNumber
 
                 res = self.db.select({
                     'select'    : [field],
-                    'table'     : ['suppliers', 'invoices'],
-                    'left_join' : ['suppliers.vatNumber = invoices.vatNumber'],
-                    'where'     : ['invoiceNumber = ?'],
-                    'data'      : [invoiceNumber],
+                    'table'     : [table],
+                    'where'     : [where],
+                    'data'      : [data],
                     'limit'     : 1
                 })
-
-                tmpFilename[cpt] = res[0][0].replace(' ', '_')
+                if res:
+                    tmpFilename[cpt] = res[0][labelField].replace(' ', '_')
 
             elif element['type'] == 'text':
                 tmpFilename[cpt] = element['value']

@@ -1,3 +1,6 @@
+import subprocess
+
+import git
 import json
 import configparser
 from os import listdir, path
@@ -56,8 +59,17 @@ def index():
         process = process.replace(' ', '')
         listOfGEDProcess.append(process)
 
-    return render_template('templates/dashboard/index.html', configDashboard=_cfg, configName=_cfgName, configList=availableCfg, regex=regex, processes=listOfGEDProcess)
+    git_current_version = get_current_git_version(_cfg)
+    git_last_version = get_last_git_version()
 
+    return render_template('templates/dashboard/index.html',
+                           configDashboard=_cfg,
+                           configName=_cfgName,
+                           configList=availableCfg,
+                           regex=regex,
+                           processes=listOfGEDProcess,
+                           git_current=git_current_version,
+                           git_last=git_last_version)
 
 def list_available_profile():
     names = []
@@ -68,7 +80,6 @@ def list_available_profile():
             names.append(cfgName)
 
     return names
-
 
 def modify_profile(profile):
     parser = configparser.ConfigParser()
@@ -81,7 +92,6 @@ def modify_profile(profile):
         return True
     except configparser.Error:
         return False
-
 
 def modify_config(data):
     _vars       = init()
@@ -100,6 +110,7 @@ def modify_config(data):
     convertPdfToTiff         = data.get('GLOBAL_convertpdftotiff')
     allowByPassSupplier      = data.get('GLOBAL_allowbypasssuppliebanverif')
     gedEnabled               = data.get('GED_enabled')
+    aiEnabled                = data.get('AI-CLASSIFICATION_enabled')
 
     if separatorQREnabled is not None:
         parser.set('SEPARATORQR', 'enabled', 'True')
@@ -130,6 +141,11 @@ def modify_config(data):
         parser.set('GED', 'enabled', 'True')
     else:
         parser.set('GED', 'enabled', 'False')
+
+    if aiEnabled is not None:
+        parser.set('AI-CLASSIFICATION', 'enabled', 'True')
+    else:
+        parser.set('AI-CLASSIFICATION', 'enabled', 'False')
 
     if allowByPassSupplier is not None:
         parser.set('GLOBAL', 'allowbypasssuppliebanverif', 'True')
@@ -178,3 +194,12 @@ def change_locale_in_config(lang):
         return True
     except configparser.Error:
         return False
+
+def get_current_git_version(cfg):
+    repo = git.Repo(cfg['GLOBAL']['projectpath'])
+    current_tag = next((tag for tag in repo.tags if tag.commit == repo.head.commit), None)
+    return current_tag
+
+def get_last_git_version():
+    latest_git_version = subprocess.Popen("git ls-remote --tags --sort='v:refname' https://github.com/edissyum/opencaptureforinvoices.git | tail -n1 |  sed 's/.*\///; s/\^{}//'", shell=True, stdout=subprocess.PIPE).stdout.read()
+    return latest_git_version.decode('utf-8').strip()

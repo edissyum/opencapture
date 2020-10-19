@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <ROOT>
-    <!-- 'column' for database data  (table name '.' column name) || 'text' for brut text || 'date' with year/month/day/full_date as filter -->
     <NAME>
         <ELEMENT>
-            <type>column</type>
-            <value>suppliers.name</value>
+            <type>column</type>  <!-- 'column' for database data (column name) || 'text' for brut text || 'date' with year/month/day/full_date as filter -->
+            <value>name</value> <!-- column name or brut text -->
+            <table>suppliers</table> <!-- suppliers or invoices -->
             <filter/>
         </ELEMENT>
         <ELEMENT>
-            <type>column</type>
-            <value>invoices.invoiceNumber</value>
+            <type>column</type> <!-- 'column' for database data (column name) || 'text' for brut text || 'date' with year/month/day/full_date as filter -->
+            <value>invoice_number</value> <!-- column name or brut text -->
+            <table>invoices</table> <!-- suppliers or invoices -->
             <filter/>
         </ELEMENT>
         <ELEMENT>
-            <type>text</type>
-            <value>F</value>
+            <type>text</type> <!-- 'column' for database data (column name) || 'text' for brut text || 'date' with year/month/day/full_date as filter -->
+            <value>F</value> <!-- column name or brut text -->
             <filter/>
         </ELEMENT>
         <ELEMENT>
-            <type>column</type>
-            <value>invoices.registerDate</value>
+            <type>column</type> <!-- 'column' for database data (column name) || 'text' for brut text || 'date' with year/month/day/full_date as filter -->
+            <value>register_date</value> <!-- column name or brut text -->
+            <table>invoices</table> <!-- suppliers or invoices -->
             <filter>full_date</filter>
         </ELEMENT>
     </NAME>

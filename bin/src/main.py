@@ -17,7 +17,6 @@
 import os
 import sys
 import time
-import queue
 import tempfile
 
 # useful to use the worker and avoid ModuleNotFoundError
@@ -56,11 +55,11 @@ else: _PyTesseract = getattr(__import__(custom_array['PyTesseract']['path'] + '.
 if 'Database' not in custom_array: from bin.src.classes.Database import Database as _Database
 else: _Database = getattr(__import__(custom_array['Database']['path'] + '.' + custom_array['Database']['module'], fromlist=[custom_array['Database']['module']]), custom_array['Database']['module'])
 
-if 'SeparatorQR' not in custom_array: from bin.src.classes.SeparatorQR import SeparatorQR as _SeparatorQR
-else: _SeparatorQR = getattr(__import__(custom_array['SeparatorQR']['path'] + '.' + custom_array['SeparatorQR']['module'], fromlist=[custom_array['SeparatorQR']['module']]), custom_array['SeparatorQR']['module'])
+if 'OCForInvoices' not in custom_array: from bin.src.process import OCForInvoices as OCForInvoices_process
+else: OCForInvoices_process = getattr(__import__(custom_array['OCForInvoices']['path'] , fromlist=[custom_array['OCForInvoices']['module']]), custom_array['OCForInvoices']['module'])
 
-if 'OCForInvoices' not in custom_array: from bin.src.process import OCForInvoices
-else: OCForInvoices = getattr(__import__(custom_array['OCForInvoices']['path'] , fromlist=[custom_array['OCForInvoices']['module']]), custom_array['OCForInvoices']['module'])
+if 'invoice_classification' not in custom_array: from bin.src.invoice_classification import invoice_classification
+else: OCForInvoices_process = getattr(__import__(custom_array['invoice_classification']['path'] , fromlist=[custom_array['invoice_classification']['module']]), custom_array['invoice_classification']['module'])
 
 OCforInvoices_worker = Kuyruk()
 
@@ -91,7 +90,24 @@ def recursive_delete(folder, Log):
     except FileNotFoundError as e:
         Log.error('Unable to delete ' + folder + ' on temp folder: ' + str(e))
 
-# If needed just run "kuyruk --app bin.src.main.OCforInvoices manager" to have web dashboard of current running worker
+def get_typo(Config, path, Log):
+    invoice_classification.MODEL_PATH = Config.cfg['AI-CLASSIFICATION']['modelpath']
+    invoice_classification.PREDICT_IMAGES_PATH = Config.cfg['AI-CLASSIFICATION']['trainimagepath']
+    invoice_classification.TRAIN_IMAGES_PATH = Config.cfg['AI-CLASSIFICATION']['predictimagepath']
+    typo, confidence = invoice_classification.predict_typo(path)
+
+    if typo:
+        if confidence >= Config.cfg['AI-CLASSIFICATION']['confidencemin']:
+            Log.info('Typology n°' + typo + ' found using AI with a confidence of ' + confidence + '%')
+            return typo
+        else:
+            Log.info('Typology can\'t be found using AI, the confidence is too low : Typo n°' + typo + ', confidence : ' + confidence + '%' )
+            return False
+    else:
+        Log.info('Typology can\'t be found using AI')
+        return False
+
+# If needed just run "kuyruk --app bin.src.main.OCforInvoices_worker manager" to have web dashboard of current running worker
 @OCforInvoices_worker.task(queue='invoices')
 def launch(args):
     start = time.time()
@@ -107,8 +123,13 @@ def launch(args):
     Locale      = _Locale(Config)
     Log         = _Log(Config.cfg['GLOBAL']['logfile'])
     Ocr         = _PyTesseract(Locale.localeOCR, Log, Config)
-    Separator   = _SeparatorQR(Log, Config)
-    Database    = _Database(Log, Config.cfg['DATABASE']['databasefile'])
+    dbType      = Config.cfg['DATABASE']['databasetype']
+    dbUser      = Config.cfg['DATABASE']['postgresuser']
+    dbPwd       = Config.cfg['DATABASE']['postgrespassword']
+    dbName      = Config.cfg['DATABASE']['postgresdatabase']
+    dbHost      = Config.cfg['DATABASE']['postgreshost']
+    dbPort      = Config.cfg['DATABASE']['postgresport']
+    Database    = _Database(Log, dbType, dbName, dbUser, dbPwd, dbHost, dbPort, Config.cfg['DATABASE']['databasefile'])
     Xml         = _Xml(Config, Database)
 
     tmpFolder   = tempfile.mkdtemp(dir=Config.cfg['GLOBAL']['tmppath'])
@@ -119,6 +140,7 @@ def launch(args):
         int(Config.cfg['GLOBAL']['resolution']),
         int(Config.cfg['GLOBAL']['compressionquality']),
         Xml,
+        Log,
         Config.cfg['GLOBAL']['convertpdftotiff']
     )
 
@@ -137,24 +159,35 @@ def launch(args):
     Database.connect()
 
     # Start process
-    if args['path'] is not None:
+    if 'path' in args and args['path'] is not None:
         path = args['path']
         for file in os.listdir(path):
-            if check_file(Files, path + file, Config, Log) is not False:
-                # Create the Queue to store files
-                q = queue.Queue()
+            if check_file(Files, path + file, Config, Log) is not False and not os.path.isfile(path + file + '.lock'):
+                os.mknod(path + file + '.lock')
+                Log.info('Lock file created : ' + path + file + '.lock')
 
                 # Find file in the wanted folder (default or exported pdf after qrcode separation)
-                q = OCForInvoices.process(args, path + file, Log, Separator, Config, Files, Ocr, Locale, Database, WebServices, q)
+                typo = ''
+                if Config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
+                    typo = get_typo(Config, path + file, Log)
 
-                if not q:
-                    continue
+                OCForInvoices_process.process(path + file, Log, Config, Files, Ocr, Locale, Database, WebServices, typo)
 
-    elif args['file'] is not None:
+                try:
+                    os.remove(path + file + '.lock')
+                    Log.info('Lock file removed : ' + path + file + '.lock')
+                except FileNotFoundError:
+                    pass
+
+    elif 'file' in args and args['file'] is not None:
         path = args['file']
+        typo = ''
+        if Config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
+            typo = get_typo(Config, path, Log)
+
         if check_file(Files, path, Config, Log) is not False:
             # Process the file and send it to Maarch
-            OCForInvoices.process(args, path, Log, Separator, Config, Files, Ocr, Locale, Database, WebServices)
+            OCForInvoices_process.process(path, Log, Config, Files, Ocr, Locale, Database, WebServices, typo)
 
     # Empty the tmp dir to avoid residual file
     recursive_delete(tmpFolder, Log)
@@ -162,4 +195,4 @@ def launch(args):
     Database.conn.close()
 
     end = time.time()
-    Log.info('Process end after ' + timer(start,end) + '')
+    Log.info('Process end after ' + timer(start, end) + '')

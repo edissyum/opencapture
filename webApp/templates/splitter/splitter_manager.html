@@ -42,12 +42,12 @@
                                                 {{ batch['dir_name'] }}
                                             </a>
                                         </h5>
-                                        <span class="position-absolute badge badge-secondary badge-pill">{{batch['page_number']}} <i class="far fa-file-alt"></i></span>
+                                        <span class="position-absolute badge badge-secondary badge-pill" data-toggle="tooltip" data-placement="bottom" title="{{ gettext('NUMBER_OF_DOCUMENTS') }} : {{ batch['page_number'] }}">{{batch['page_number']}} <i class="far fa-file"></i></span>
                                     </div>
 
                                     <div class="card-text">
                                         <small class="text-muted">
-                                                <i class="text-secondary"> {{ gettext('SAVED_THE') }} : {{ batch['ceation_date'].strftime('%d-%m-%Y à %H:%M')}}</i>
+                                                <i class="text-secondary"> {{ gettext('SAVED_THE') }} : {{ batch['creation_date']}}</i>
                                         </small>
                                         <button class="position-absolute badge btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="fas fa-ellipsis-v"></i>

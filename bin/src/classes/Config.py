@@ -16,6 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 from configparser import ConfigParser, ExtendedInterpolation
+import os
 
 class Config:
     def __init__(self, path):
@@ -27,3 +28,31 @@ class Config:
             self.cfg[section] = {}
             for info in parser[section]:
                 self.cfg[section][info] = parser[section][info]
+
+    def read_position(self, typology, key, Locale):
+        file = self.cfg['REFERENCIAL']['referencialposition'] + str(typology) + '.ini'
+        res  = {}
+        if os.path.isfile(file):
+            parser = ConfigParser(interpolation=ExtendedInterpolation())
+            parser.read(file)
+            for section in parser.sections():
+                if section == key:
+                    for info in parser[section]:
+                        res[info] = parser[section][info]
+        if res and res['regex']:
+            localeList = Locale.get()
+            res['regex'] = localeList[res['regex']]
+        return res
+
+    @staticmethod
+    def read_custom_position(file):
+        if os.path.isfile(file):
+            parser = ConfigParser(interpolation=ExtendedInterpolation())
+            parser.read(file)
+            cfg = {}
+            for section in parser.sections():
+                if section.split('-')[0] == 'custom':
+                    cfg[section] = {}
+                    for info in parser[section]:
+                        cfg[section][info] = parser[section][info]
+            return cfg

@@ -1,7 +1,9 @@
+import logging
 import os
 import json
 import requests
 from zeep import Client
+from zeep import exceptions
 import worker_from_python
 
 from flask_babel import gettext
@@ -35,16 +37,22 @@ def checkVAT(vatId):
     vatNumber = vatId[2:]
 
     try:
+        logging.getLogger('zeep').setLevel(logging.ERROR)
         client = Client(URL)
-        res = client.service.checkVat(countryCode, vatNumber)
-        text = res['valid']
-        if res['valid'] is False:
-            text = gettext('VAT_NOT_VALID')
+
+        try:
+            res = client.service.checkVat(countryCode, vatNumber)
+            text = res['valid']
+            if res['valid'] is False:
+                text = gettext('VAT_NOT_VALID')
+        except exceptions.Fault as e:
+            text = gettext('VAT_API_ERROR') + ' : ' + str(e)
+            return json.dumps({'text': text, 'code': 200, 'ok': 'false'})
 
         return json.dumps({'text': text, 'code': 200, 'ok': res['valid']})
     except requests.exceptions.RequestException as e:
-        return json.dumps({'text': str(e), 'code': 200, 'ok' : 'false'})
-
+        text = gettext('VAT_API_ERROR') + ' : ' + str(e)
+        return json.dumps({'text': text, 'code': 200, 'ok' : 'false'})
 
 @bp.route('/ws/cfg/<string:cfgName>',  methods=['GET'])
 @login_required
@@ -70,8 +78,8 @@ def updateConfig():
 def isDuplicate():
     if request.method == 'POST':
         data            = request.get_json()
-        invoiceNumber   = data['invoiceNumber']
-        vatNumber       = data['vatNumber']
+        invoiceNumber   = data['invoice_number']
+        vatNumber       = data['vat_number']
         invoiceId       = data['id']
 
         _vars   = pdf.init()
@@ -80,16 +88,20 @@ def isDuplicate():
 
         # Check if there is already an invoice with the same vat_number and invoice number. If so, verify the rowid to avoid detection of the facture currently processing
         res = _db.select({
-            'select'    : ['rowid, count(*) as nbInvoice'],
+            'select'    : ['id, count(*) as nbInvoice'],
             'table'     : ['invoices'],
-            'where'     : ['vatNumber = ?', 'invoiceNumber = ?', 'processed = ?'],
-            'data'      : [vatNumber, invoiceNumber, 1]
-        })[0]
+            'where'     : ['vat_number = ?', 'invoice_number = ?', 'processed = ?'],
+            'data'      : [vatNumber, invoiceNumber, 1],
+            'group_by'  : 'id'
+        })
 
-        if res['nbInvoice'] == 1 and res['rowid'] != invoiceId or res['nbInvoice'] > 1   :
-            return json.dumps({'text' : 'true', 'code' : 200, 'ok' : 'true'})
+        if res:
+            if res[0]['nbinvoice'] == 1 and res[0]['id'] != invoiceId or res[0]['nbinvoice'] > 1:
+                return json.dumps({'text' : 'true', 'code' : 200, 'ok' : 'true'})
+            else:
+                return json.dumps({'text' : 'false', 'code' : 200, 'ok' : 'true'})
         else:
-            return json.dumps({'text' : 'false', 'code' : 200, 'ok' : 'true'})
+            return json.dumps({'text': 'false', 'code': 200, 'ok': 'true'})
 
 
 @bp.route('/ws/invoice/upload', methods=['POST'])
@@ -105,7 +117,7 @@ def upload():
             f.save(os.path.join(current_app.config['UPLOAD_FOLDER'], secure_filename(file)))
 
             worker_from_python.main({
-                'path'  : current_app.config['UPLOAD_FOLDER'],
+                'file'  : os.path.join(current_app.config['UPLOAD_FOLDER'], secure_filename(file)),
                 'config': current_app.config['CONFIG_FILE']
             })
 
@@ -124,7 +136,11 @@ def getTokenINSEE():
     data = request.get_json()
     try:
         res = requests.post(data['url'], data={'grant_type': 'client_credentials'}, headers={"Authorization": "Basic %s" % data['credentials']})
-        return json.dumps({'text': res.text, 'code': 200, 'ok': 'true'})
+        if 'Maintenance - INSEE' in res.text:
+            text = 'error'
+        else:
+            text = res.text
+        return json.dumps({'text': text, 'code': 200, 'ok': 'true'})
     except requests.exceptions.RequestException as e:
         return json.dumps({'text': str(e), 'code': 500, 'ok': 'false'})
 
@@ -138,8 +154,8 @@ def retrieveSupplier():
     res = _db.select({
         'select': ['*'],
         'table': ['suppliers'],
-        'where': ["name LIKE ?"],
-        'data': ['%' + data['query'] + '%'],
+        'where': ["LOWER(name) LIKE ?"],
+        'data': ['%' + data['query'].lower() + '%'],
         'limit': '10'
     })
 
@@ -150,9 +166,9 @@ def retrieveSupplier():
         arraySupplier[supplier['name']] = []
         arraySupplier[supplier['name']].append({
             'name'      : supplier['name'],
-            'VAT'       : supplier['vatNumber'],
-            'SIRET'     : supplier['SIRET'],
-            'SIREN'     : supplier['SIREN'],
+            'VAT'       : supplier['vat_number'],
+            'siret'     : supplier['siret'],
+            'siren'     : supplier['siren'],
             'adress1'   : supplier['adress1'],
             'adress2'   : supplier['adress2'],
             'zipCode'   : supplier['postal_code'],
@@ -186,4 +202,20 @@ def ocrOnFly():
 def changeLanguage(lang):
     session['lang'] = lang
     dashboard.change_locale_in_config(lang)
+    return json.dumps({'text': 'OK', 'code': 200, 'ok': 'true'})
+
+@bp.route('/ws/deleteInvoice/<int:rowid>', methods=['GET'])
+def deleteInvoice(rowid):
+    _vars = pdf.init()
+    _db = _vars[0]
+    _db.update({
+        'table': ['invoices'],
+        'set': {
+            'status': 'DEL'
+        },
+        'where': ['id = ?'],
+        'data': [rowid]
+    })
+
+    flash(gettext('INVOICE_DELETED'))
     return json.dumps({'text': 'OK', 'code': 200, 'ok': 'true'})

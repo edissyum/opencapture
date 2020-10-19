@@ -1,13 +1,10 @@
 import datetime
-from flask import (
-    current_app, Blueprint, flash, g, redirect, render_template, request, url_for
-)
+from flask import Blueprint, flash, g, redirect, render_template, request, url_for
 
 from flask_babel import gettext
 from flask_paginate import Pagination, get_page_args
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from webApp.db import get_db
 from webApp.auth import login_required, register
 
 from .functions import get_custom_id, check_python_customized_files
@@ -16,33 +13,18 @@ custom_array = {}
 if custom_id:
     custom_array = check_python_customized_files(custom_id[1])
 
-if 'Config' not in custom_array: from bin.src.classes.Config import Config as _Config
-else: _Config = getattr(__import__(custom_array['Config']['path'] + '.' + custom_array['Config']['module'], fromlist=[custom_array['Config']['module']]), custom_array['Config']['module'])
-
-if 'Log' not in custom_array: from bin.src.classes.Log import Log as _Log
-else: _Log = getattr(__import__(custom_array['Log']['path'] + '.' + custom_array['Log']['module'], fromlist=[custom_array['Log']['module']]), custom_array['Log']['module'])
-
-if 'Database' not in custom_array: from bin.src.classes.Database import Database as _Database
-else: _Database = getattr(__import__(custom_array['Database']['path'] + '.' + custom_array['Database']['module'], fromlist=[custom_array['Database']['module']]), custom_array['Database']['module'])
-
+if 'pdf' not in custom_array: from . import pdf
+else: pdf = getattr(__import__(custom_array['pdf']['path'], fromlist=[custom_array['pdf']['module']]), custom_array['pdf']['module'])
 
 bp = Blueprint('user', __name__, url_prefix='/user')
 
-def init():
-    configName  = _Config(current_app.config['CONFIG_FILE'])
-    Config      = _Config(current_app.config['CONFIG_FOLDER'] + '/config_' + configName.cfg['PROFILE']['id'] + '.ini')
-    Log         = _Log(Config.cfg['GLOBAL']['logfile'])
-    db          = _Database(Log, None, get_db())
-
-    return db, Config
-
 def check_user(user_id):
-    _vars = init()
+    _vars = pdf.init()
     _db = _vars[0]
 
     user = _db.select({
         'select': ['*'],
-        'table': ['user'],
+        'table': ['users'],
         'where': ['id = ?'],
         'data': [user_id]
     })[0]
@@ -69,7 +51,7 @@ def profile(user_id):
     return render_template('templates/users/user_profile.html', user = user_info)
 
 def change_password(old_password, new_password, user_id):
-    _vars = init()
+    _vars = pdf.init()
     _db = _vars[0]
 
     user = check_user(g.user['id'])
@@ -79,7 +61,7 @@ def change_password(old_password, new_password, user_id):
             flash(gettext('ERROR_OLD_PASSWORD_NOT_MATCH'))
         else:
             res = _db.update({
-                'table': ['user'],
+                'table': ['users'],
                 'set': {
                     'password': generate_password_hash(new_password)
                 },
@@ -98,7 +80,7 @@ def change_password(old_password, new_password, user_id):
 @bp.route('/profile/<int:user_id>/reset_password')
 @login_required
 def reset_password(user_id):
-    _vars = init()
+    _vars = pdf.init()
     _db = _vars[0]
     _cfg = _vars[1].cfg
     default_password = _cfg['GLOBAL']['defaultpassword']
@@ -109,7 +91,7 @@ def reset_password(user_id):
 
     if user_info is not False:
         res = _db.update({
-            'table': ['user'],
+            'table': ['users'],
             'set': {
                 'password': generate_password_hash(default_password)
             },
@@ -129,7 +111,7 @@ def reset_password(user_id):
 @bp.route('/list')
 @login_required
 def user_list():
-    _vars = init()
+    _vars = pdf.init()
     _db = _vars[0]
 
     page, per_page, offset = get_page_args(page_parameter='page',
@@ -137,17 +119,18 @@ def user_list():
 
     total = _db.select({
         'select': ['count(*) as total'],
-        'table' : ['user'],
-        'where' : ['status not IN(?)'],
+        'table' : ['users'],
+        'where' : ['status not IN (?)'],
         'data' : ['DEL'],
     })[0]['total']
 
     list_user = _db.select({
         'select': ['*'],
-        'table': ['user'],
+        'table': ['users'],
         'where' : ['status not IN (?)'],
         'data' : ['DEL'],
-        'limit': str(offset) + ',' + str(per_page),
+        'limit': str(per_page),
+        'offset': str(offset)
     })
 
     final_list = []
@@ -155,7 +138,7 @@ def user_list():
 
     for user in result:
         if user['creation_date'] is not None:
-            formatted_date = datetime.datetime.strptime(user['creation_date'], '%Y-%m-%d %H:%M:%S').strftime('%d/%m/%Y')
+            formatted_date = datetime.datetime.strptime(str(user['creation_date']).split('.')[0], '%Y-%m-%d %H:%M:%S').strftime('%d/%m/%Y')
             user['creation_date'] = formatted_date
 
         final_list.append(user)
@@ -177,7 +160,7 @@ def user_list():
 @bp.route('/enable/<int:user_id>?fallback=<path:fallback>')
 @login_required
 def enable(user_id, fallback):
-    _vars = init()
+    _vars = pdf.init()
     _db = _vars[0]
 
     if fallback is not None:
@@ -188,7 +171,7 @@ def enable(user_id, fallback):
     user = check_user(user_id)
     if user is not False:
         res = _db.update({
-            'table': ['user'],
+            'table': ['users'],
             'set': {
                 'enabled': 1
             },
@@ -207,7 +190,7 @@ def enable(user_id, fallback):
 @bp.route('/disable/<int:user_id>?fallback=<path:fallback>')
 @login_required
 def disable(user_id, fallback):
-    _vars = init()
+    _vars = pdf.init()
     _db = _vars[0]
 
     if fallback is not None:
@@ -218,7 +201,7 @@ def disable(user_id, fallback):
     user = check_user(user_id)
     if user is not False:
         res = _db.update({
-            'table': ['user'],
+            'table': ['users'],
             'set': {
                 'enabled': 0
             },
@@ -237,7 +220,7 @@ def disable(user_id, fallback):
 @bp.route('/delete/<int:user_id>?fallback=<path:fallback>')
 @login_required
 def delete(user_id, fallback):
-    _vars = init()
+    _vars = pdf.init()
     _db = _vars[0]
 
     if fallback is not None:
@@ -248,7 +231,7 @@ def delete(user_id, fallback):
     user = check_user(user_id)
     if user is not False:
         res = _db.update({
-            'table': ['user'],
+            'table': ['users'],
             'set': {
                 'status': 'DEL'
             },

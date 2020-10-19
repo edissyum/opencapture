@@ -224,6 +224,12 @@ hr {
     top: 20px;
 }
 
+.top-left{
+    position: absolute;
+    top: 5px;
+    left: 5px;
+}
+
 .bs-tooltip-left{
     top: -2rem!important;
     left: 2rem!important;
@@ -436,12 +442,12 @@ hr {
     box-shadow: 0 0 12px 7px #76B442;
 }
 
-.nbPages > i,
+.nb_pages > i,
 .input-group-prepend {
     cursor: pointer;
 }
 
-.nbPages {
+.nb_pages {
     margin-top: -20px;
     position: absolute;
     z-index: 999;

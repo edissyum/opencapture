@@ -16,6 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import os
+import re
 import subprocess
 
 import cv2
@@ -32,69 +33,115 @@ from wand.color import Color
 from wand.api import library
 import xml.etree.ElementTree as ET
 from wand.image import Image as Img
+from wand.exceptions import PolicyError, CacheError
+from werkzeug.utils import secure_filename
+
+from webApp.functions import retrieve_custom_positions
+from xml.sax.saxutils import escape
 
 class Files:
-    def __init__(self, jpgName, res, quality, Xml, isTiff):
-        self.isTiff                 = isTiff
-        self.jpgName                = jpgName + '.jpg'
-        self.jpgName_header         = jpgName + '_header.jpg'
-        self.jpgName_footer         = jpgName + '_footer.jpg'
-        self.jpgName_tiff           = jpgName + '.tiff'
-        self.jpgName_tiff_header    = jpgName + '_header.tiff'
-        self.jpgName_tiff_footer    = jpgName + '_footer.tiff'
-        self.resolution             = res
-        self.compressionQuality     = quality
-        self.img                    = None
-        self.heightRatio            = ''
-        self.Xml                    = Xml
+    def __init__(self, imgName, res, quality, Xml, Log, isTiff):
+        self.isTiff                = isTiff
+        self.jpgName               = imgName + '.jpg'
+        self.jpgName_header        = imgName + '_header.jpg'
+        self.jpgName_footer        = imgName + '_footer.jpg'
+        self.tiffName              = imgName + '.tiff'
+        self.tiffName_header       = imgName + '_header.tiff'
+        self.tiffName_footer       = imgName + '_footer.tiff'
+        self.jpgName_last          = imgName + '_last.jpg'
+        self.jpgName_last_header   = imgName + '_last_header.jpg'
+        self.jpgName_last_footer   = imgName + '_last_footer.jpg'
+        self.tiffName_last         = imgName + '_last.tiff'
+        self.tiffName_last_header  = imgName + '_last_header.tiff'
+        self.tiffName_last_footer  = imgName + '_last_footer.tiff'
+        self.custom_fileName_tiff  = imgName + '_custom.tiff'
+        self.custom_fileName       = imgName + '_custom.jpg'
+        self.resolution            = res
+        self.compressionQuality    = quality
+        self.img                   = None
+        self.heightRatio           = ''
+        self.Xml                   = Xml
+        self.Log                   = Log
 
     # Convert the first page of PDF to JPG and open the image
-    def pdf_to_jpg(self, pdfName, openImg=True, crop=False, zoneToCrop=False):
+    def pdf_to_jpg(self, pdfName, openImg = True, crop = False, zoneToCrop = False, lastImage = False, isCustom = False):
         if crop:
             if zoneToCrop == 'header':
-                self.crop_image_header(pdfName)
+                if isCustom:
+                    self.crop_image_header(pdfName, False, lastImage, self.custom_fileName)
+                else:
+                    self.crop_image_header(pdfName, False, lastImage)
                 if openImg:
-                    self.img = Image.open(self.jpgName_header)
+                    if lastImage:
+                        self.img = Image.open(self.jpgName_last_header)
+                    else:
+                        self.img = Image.open(self.jpgName_header)
             elif zoneToCrop == 'footer':
-                self.crop_image_footer(pdfName)
+                if isCustom:
+                    self.crop_image_footer(pdfName, False, lastImage, self.custom_fileName)
+                else:
+                    self.crop_image_footer(pdfName, False, lastImage)
                 if openImg:
-                    self.img = Image.open(self.jpgName_footer)
+                    if lastImage:
+                        self.img = Image.open(self.jpgName_last_footer)
+                    else:
+                        self.img = Image.open(self.jpgName_footer)
         else:
-            self.save_img_with_wand(pdfName, self.jpgName)
+            if lastImage:
+                target = self.jpgName_last
+            else:
+                target = self.jpgName
+            self.save_img_with_wand(pdfName, target)
             if openImg:
-                self.img = Image.open(self.jpgName)
+                self.img = Image.open(target)
 
-    def pdf_to_tiff(self, pdfName, convertOnlyFirstPage=False, openImg=True, crop=False, zoneToCrop=False):
+    def pdf_to_tiff(self, pdfName, outputFile, convertOnlyFirstPage = False, openImg = True, crop = False, zoneToCrop = False, lastPage = None):
         # Convert firstly the PDF to full tiff file
         # It will be used to crop header and footer later
-        if not os.path.isfile(self.jpgName_tiff):
+        if not os.path.isfile(outputFile):
             args = [
                 "gs", "-q", "-dNOPAUSE", "-dBATCH",
                 "-r" + str(self.resolution), "-sCompression=lzw",
                 "-dDownScaleFactor=1",
                 "-sDEVICE=tiff32nc",
-                "-sOutputFile=" + self.jpgName_tiff,
+                "-sOutputFile=" + outputFile,
             ]
 
             if convertOnlyFirstPage:
                 args.extend(["-dFirstPage=1", "-dLastPage=1"])
+            elif lastPage:
+                args.extend(["-dFirstPage=" + str(lastPage), "-dLastPage=" + str(lastPage)])
+
             args.extend([pdfName])
-
             subprocess.call(args)
-
         if crop:
             if zoneToCrop == 'header':
-                self.crop_image_header(pdfName, True)
+                if outputFile == self.custom_fileName_tiff:
+                    self.crop_image_header(pdfName, True, lastPage, outputFile)
+                else:
+                    self.crop_image_header(pdfName, True, lastPage)
             elif zoneToCrop == 'footer':
-                self.crop_image_footer(pdfName, True)
+                if outputFile == self.custom_fileName_tiff:
+                    self.crop_image_footer(pdfName, True, lastPage, outputFile)
+                else:
+                    self.crop_image_footer(pdfName, True, lastPage)
 
         if openImg:
             if zoneToCrop == 'header':
-                self.img = Image.open(self.jpgName_tiff_header)
+                if lastPage:
+                    self.img = Image.open(self.tiffName_last_header)
+                else:
+                    self.img = Image.open(self.tiffName_header)
             elif zoneToCrop == 'footer':
-                self.img = Image.open(self.jpgName_tiff_footer)
+                if lastPage:
+                    self.img = Image.open(self.tiffName_last_footer)
+                else:
+                    self.img = Image.open(self.tiffName_footer)
             else:
-                self.img = Image.open(self.jpgName_tiff)
+                if lastPage:
+                    self.img = Image.open(self.tiffName_last)
+                else:
+                    self.img = Image.open(self.tiffName)
 
     def save_pdf_to_tiff_in_docserver(self, pdfName, output):
         args = [
@@ -116,13 +163,16 @@ class Files:
 
     # Save pdf with one or more pages into JPG file
     def save_img_with_wand(self, pdfName, output):
-        with Img(filename=pdfName, resolution=self.resolution) as pic:
-            library.MagickResetIterator(pic.wand)
-            pic.scene = 1 # Start cpt of filename at 1 instead of 0
-            pic.compression_quality = self.compressionQuality
-            pic.background_color = Color("white")
-            pic.alpha_channel = 'remove'
-            pic.save(filename=output)
+        try:
+            with Img(filename=pdfName, resolution=self.resolution) as pic:
+                library.MagickResetIterator(pic.wand)
+                pic.scene = 1 # Start cpt of filename at 1 instead of 0
+                pic.compression_quality = self.compressionQuality
+                pic.background_color = Color("white")
+                pic.alpha_channel = 'remove'
+                pic.save(filename=output)
+        except (PolicyError, CacheError) as e:
+            self.Log.error('Error during WAND conversion : ' + str(e))
 
     @staticmethod
     def sorted_file(path, extension):
@@ -181,7 +231,8 @@ class Files:
                     continue
 
     @staticmethod
-    def ocr_on_fly(img, selection, Ocr, thumbSize = None):
+    def ocr_on_fly(img, selection, Ocr, thumbSize = None, regex = None, removeLines = False):
+        rand = str(uuid.uuid4())
         if thumbSize is not None:
             with Image.open(img) as im:
                 ratio       = im.size[0]/thumbSize['width']
@@ -197,12 +248,33 @@ class Files:
         extension = os.path.splitext(img)[1]
         with Image.open(img) as im2:
             croppedImage = im2.crop(cropRatio)
-            croppedImage.save('/tmp/cropped' + extension)
+            croppedImage.save('/tmp/cropped_' + rand + extension)
 
+        if removeLines:
+            image = cv2.imread('/tmp/cropped_' + rand + extension)
+            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
+            horizontal_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (20, 1))
+            detected_lines = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, horizontal_kernel, iterations=2)
+            cnts = cv2.findContours(detected_lines, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            cnts = cnts[0] if len(cnts) == 2 else cnts[1]
+            for c in cnts:
+                cv2.drawContours(image, [c], -1, (255, 255, 255), 3)
+            repair_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+            result = 255 - cv2.morphologyEx(255 - image, cv2.MORPH_CLOSE, repair_kernel, iterations=1)
+            cv2.imwrite('/tmp/cropped_' + rand + extension, result)
+
+        croppedImage = Image.open('/tmp/cropped_' + rand + extension)
         text = Ocr.text_builder(croppedImage)
 
-        os.remove('/tmp/cropped' + extension)
-        return text
+        if regex:
+            for res in re.finditer(r"" + regex, text):
+                os.remove('/tmp/cropped_' + rand + extension)
+                return res.group().replace('\x0c', '').strip()
+            return False
+
+        os.remove('/tmp/cropped_' + rand + extension)
+        return text.replace('\x0c', '').strip()
 
     @staticmethod
     def get_size(img):
@@ -211,62 +283,111 @@ class Files:
 
     # Crop the file to get the header
     # 1/3 + 10% is the ratio we used
-    def crop_image_header(self, pdfName, isTiff=False):
-        if not isTiff:
-            with Img(filename=pdfName, resolution=self.resolution) as pic:
-                pic.compression_quality = self.compressionQuality
-                pic.background_color    = Color("white")
-                pic.alpha_channel       = 'remove'
-                self.heightRatio        = int(pic.height / 3 + pic.height * 0.1)
-                pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='north')
-                pic.save(filename=self.jpgName_header)
-        else:
-            with Img(filename=self.jpgName_tiff, resolution=self.resolution) as pic:
-                pic.compression_quality = self.compressionQuality
-                pic.background_color    = Color("white")
-                pic.alpha_channel       = 'remove'
-                self.heightRatio        = int(pic.height / 3 + pic.height * 0.1)
-                pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='north')
-                pic.save(filename=self.jpgName_tiff_header)
+    def crop_image_header(self, pdfName, isTiff, lastImage, outputName = None):
+        try :
+            if not isTiff:
+                with Img(filename=pdfName, resolution=self.resolution) as pic:
+                    pic.compression_quality = self.compressionQuality
+                    pic.background_color    = Color("white")
+                    pic.alpha_channel       = 'remove'
+                    self.heightRatio        = int(pic.height / 3 + pic.height * 0.1)
+                    pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='north')
+                    if outputName:
+                        pic.save(filename=outputName)
+                    if lastImage:
+                        pic.save(filename=self.jpgName_last_header)
+                    else:
+                        pic.save(filename=self.jpgName_header)
+            else:
+                if outputName:
+                    target = outputName
+                elif lastImage:
+                    target = self.tiffName_last
+                else:
+                    target = self.tiffName
+
+                with Img(filename=target, resolution=self.resolution) as pic:
+                    pic.compression_quality = self.compressionQuality
+                    pic.background_color    = Color("white")
+                    pic.alpha_channel       = 'remove'
+                    self.heightRatio        = int(pic.height / 3 + pic.height * 0.1)
+                    pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='north')
+                    if outputName:
+                        pic.save(filename=outputName)
+                    elif lastImage:
+                        pic.save(filename=self.tiffName_last_header)
+                    else:
+                        pic.save(filename=self.tiffName_header)
+        except (PolicyError, CacheError) as e:
+            self.Log.error('Error during WAND conversion : ' + str(e))
 
     # Crop the file to get the footer
     # 1/3 + 10% is the ratio we used
-    def crop_image_footer(self, img, isTiff=False):
-        if not isTiff:
-            with Img(filename=img, resolution=self.resolution) as pic:
-                pic.compression_quality = self.compressionQuality
-                pic.background_color    = Color("white")
-                pic.alpha_channel       = 'remove'
-                self.heightRatio        = int(pic.height / 3 + pic.height * 0.1)
-                pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='south')
-                pic.save(filename=self.jpgName_footer)
-        else:
-            with Img(filename=self.jpgName_tiff, resolution=self.resolution) as pic:
-                pic.compression_quality = self.compressionQuality
-                pic.background_color = Color("white")
-                pic.alpha_channel = 'remove'
-                self.heightRatio = int(pic.height / 3 + pic.height * 0.1)
-                pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='south')
-                pic.save(filename=self.jpgName_tiff_footer)
+    def crop_image_footer(self, img, isTiff = False, lastImage = False, outputName = None):
+        try:
+            if not isTiff:
+                with Img(filename=img, resolution=self.resolution) as pic:
+                    pic.compression_quality = self.compressionQuality
+                    pic.background_color    = Color("white")
+                    pic.alpha_channel       = 'remove'
+                    self.heightRatio        = int(pic.height / 3 + pic.height * 0.1)
+                    pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='south')
+                    if outputName:
+                        pic.save(filename=outputName)
+                    if lastImage:
+                        pic.save(filename=self.jpgName_last_footer)
+                    else:
+                        pic.save(filename=self.jpgName_footer)
+
+            else:
+                if outputName:
+                    target = outputName
+                elif lastImage:
+                    target = self.tiffName_last
+                else:
+                    target = self.tiffName
+                with Img(filename=target, resolution=self.resolution) as pic:
+                    pic.compression_quality = self.compressionQuality
+                    pic.background_color = Color("white")
+                    pic.alpha_channel = 'remove'
+                    self.heightRatio = int(pic.height / 3 + pic.height * 0.1)
+                    pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='south')
+                    if outputName:
+                        pic.save(filename=outputName)
+                    elif lastImage:
+                        pic.save(filename=self.tiffName_last_footer)
+                    else:
+                        pic.save(filename=self.tiffName_footer)
+        except (PolicyError, CacheError) as e:
+            self.Log.error('Error during WAND conversion : ' + str(e))
 
     @staticmethod
     def improve_image_detection(img):
-        src     = cv2.imread(img, cv2.IMREAD_GRAYSCALE)
-        _, blackAndWhite = cv2.threshold(src, 127, 255, cv2.THRESH_BINARY_INV)
-        nlabels, labels, stats, centroids = cv2.connectedComponentsWithStats(blackAndWhite, None, None, None, 8, cv2.CV_32S)
+        filename = os.path.splitext(img)
+        improved_img = filename[0] + '_improved' + filename[1]
+        if not os.path.isfile(improved_img):
+            src     = cv2.imread(img)
+            gray    = cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)
+            _, blackAndWhite = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY_INV)
+            nlabels, labels, stats, centroids = cv2.connectedComponentsWithStats(blackAndWhite, None, None, None, 8, cv2.CV_32S)
 
-        # get CC_STAT_AREA component
-        sizes = stats[1:, -1]
-        img2 = np.zeros(labels.shape, np.uint8)
+            # get CC_STAT_AREA component
+            sizes = stats[1:, -1]
+            img2 = np.zeros(labels.shape, np.uint8)
 
-        for i in range(0, nlabels - 1):
-            # Filter small dotted regions
-            if sizes[i] >= 50:
-                img2[labels == i + 1] = 255
+            for i in range(0, nlabels - 1):
+                # Filter small dotted regions
+                if sizes[i] >= 20:
+                    img2[labels == i + 1] = 255
 
-        dst = cv2.bitwise_not(img2)
+            dst = cv2.bitwise_not(img2)
 
-        cv2.imwrite(img, dst)
+            kernel = np.ones((1,2),np.uint8)
+            src = cv2.adaptiveThreshold(dst, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY,11,2)
+            dst = cv2.erode(src, kernel)
+            cv2.imwrite(improved_img, dst)
+
+        return improved_img
 
     @staticmethod
     def move_to_docservers(cfg, file):
@@ -318,8 +439,8 @@ class Files:
         return position
 
     def exportXml(self, cfg, invoiceNumber, parent, fillPosition = False, db = None, vatNumber = False):
-        self.Xml.construct_filename(invoiceNumber)
-        filename    = cfg.cfg['GLOBAL']['exportaccountingfolder'] + '/' + self.Xml.filename
+        self.Xml.construct_filename(invoiceNumber, vatNumber)
+        filename    = cfg.cfg['GLOBAL']['exportaccountingfolder'] + '/' + secure_filename(self.Xml.filename)
         root        = ET.Element("ROOT")
 
         for parentElement in parent:
@@ -327,28 +448,88 @@ class Files:
             for child in parent[parentElement]:
                 for childElement in child:
                     cleanChild = childElement.replace(parentElement + '_', '')
-                    if cleanChild not in ['noDelivery', 'noCommands'] and '_position' not in cleanChild:
+                    if cleanChild not in ['noDelivery', 'noCommands']:
                         if fillPosition is not False and db is not False:
                             cleanChildPosition = child[childElement]['position']
                             # Add position in supplier database
                             if cleanChildPosition is not None:
-                                db.update({
-                                    'table': ['suppliers'],
-                                    'set': {
-                                        cleanChild + '_position': cleanChildPosition
-                                    },
-                                    'where': ['vatNumber = ?'],
-                                    'data': [vatNumber]
-                                })
-                                db.conn.commit()
+                                if 'no_taxes' in cleanChild or 'invoice_number' in cleanChild or 'order_number' in cleanChild or 'delivery_number' in cleanChild or 'vat' in cleanChild:
+                                    db.update({
+                                        'table': ['suppliers'],
+                                        'set': {
+                                            cleanChild + '_position': cleanChildPosition
+                                        },
+                                        'where': ['vat_number = ?'],
+                                        'data': [vatNumber]
+                                    })
+                                    db.conn.commit()
                         # Then create the XML
-                        newField = ET.SubElement(element, cleanChild)
+                        newField = ET.SubElement(element, escape(cleanChild))
                         newField.text = child[childElement]['field']
-
         xmlRoot = minidom.parseString(ET.tostring(root, encoding="unicode")).toprettyxml()
-        filename = open(filename, 'w')
-        filename.write(xmlRoot)
+        file = open(filename, 'w')
+        file.write(xmlRoot)
+        file.close()
 
+        res = db.select({
+            'select': ['typology'],
+            'table': ['suppliers'],
+            'where': ['vat_number = ?'],
+            'data': [vatNumber]
+        })
+        if res:
+            root = ET.parse(filename).getroot()
+            typo = res[0]['typology']
+            list_of_fields = retrieve_custom_positions(typo, cfg)
+            select = []
+            if list_of_fields:
+                for index in list_of_fields:
+                    field = index.split('-')[1]
+                    field_position = field + '_position'
+                    select.append(field_position)
+
+                if select:
+                    res = db.select({
+                        'select': select,
+                        'table': ['invoices'],
+                        'where': ['invoice_number = ?'],
+                        'data': [invoiceNumber]
+                    })
+                    if res:
+                        for title in root:
+                            for element in title:
+                                for position in select:
+                                    if element.tag == position.split('_position')[0] and title.tag not in ['supplierInfo']:
+                                        subElementToAppend = root.find(title.tag)
+                                        newField = ET.SubElement(subElementToAppend, position)
+                                        newField.text = res[0][position]
+                        xmlRoot = minidom.parseString(ET.tostring(root, encoding="unicode")).toprettyxml().replace('\n\n', '\n')
+                        file = open(filename, 'w')
+                        file.write(xmlRoot)
+                        file.close()
+
+                        # remove empty lines created by the append of subelement
+                        tmp = open(filename, 'r')
+                        lines = tmp.read().split("\n")
+                        tmp.close()
+                        non_empty_lines = [line for line in lines if line.strip() != ""]
+
+                        file = open(filename, 'w')
+                        string_without_empty_lines = ""
+                        for line in non_empty_lines:
+                            string_without_empty_lines += line + "\n"
+                        file.write(string_without_empty_lines)
+                        file.close()
+
+    def getPages(self, file, Config):
+        with open(file, 'rb') as doc:
+            pdf = PyPDF4.PdfFileReader(doc)
+            try:
+                return pdf.getNumPages()
+            except ValueError as e:
+                self.Log.error(e)
+                shutil.move(file, Config.cfg['GLOBAL']['errorpath'] + os.path.basename(file))
+                return 1
     # OBR01
     @staticmethod
     def create_directory(path):

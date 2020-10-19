@@ -24,7 +24,6 @@ from bin.src.main_splitter import launch
 ap      = argparse.ArgumentParser()
 ap.add_argument("-f", "--file", required=False, help="path to file")
 ap.add_argument("-c", "--config", required=True, help="path to config.xml")
-ap.add_argument("-p", "--path", required=False, help="path to folder containing documents")
 args    = vars(ap.parse_args())
 
 if args['path'] is None and args['file'] is None:

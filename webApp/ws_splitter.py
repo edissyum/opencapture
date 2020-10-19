@@ -1,6 +1,7 @@
 import os
 import json
 import shutil
+from datetime import datetime
 
 from flask_babel import gettext
 from flask_paginate import Pagination, get_page_args
@@ -51,6 +52,8 @@ def splitter_manager():
     _cfg = _vars[1]
     page, per_page, offset = get_page_args(page_parameter='page',
                                            per_page_parameter='per_page')
+
+    list_batch = []
     if request.method == 'POST':
         if 'search' in request.args:
             search_str = request.args.get('search')
@@ -64,17 +67,18 @@ def splitter_manager():
     else:
         list_batch = _db.select({
             'select': ['*'],
-            'table': ['invoices_batch_'],
-            'where': ['status not in (?, ?)'],
-            'data' : ['END', 'DEL'],
-            'limit'     : str(offset) + ',' + str(per_page),
+            'table' : ['invoices_batch_'],
+            'where' : ['status not in (?, ?)'],
+            'data'  : ['END', 'DEL'],
+            'limit' : str(per_page),
+            'offset': str(offset),
         })
 
     total = _db.select({
-        'select': ['count(*) as total'],
-        'table' : ['invoices_batch_'],
-        'where': ['status not in (?, ?)'],
-        'data': ['END', 'DEL'],
+        'select' : ['count(*) as total'],
+        'table'  : ['invoices_batch_'],
+        'where'  : ['status not in (?, ?)'],
+        'data'   : ['END', 'DEL'],
     })[0]['total']
 
     if total == 0:
@@ -91,8 +95,18 @@ def splitter_manager():
     for index_directory, directoryname in enumerate(os.listdir(_cfg.cfg['SPLITTER']['pdfoutputpath'])):
         files_path.append(index_directory)
 
+    result = [dict(_pdf) for _pdf in list_batch]
+
+    for line in result:
+        if _cfg.cfg['DATABASE']['databasetype'] == 'pgsql':
+            pattern = "%Y-%m-%d %H:%M:%S.%f"
+        else:
+            pattern = "%Y-%m-%d %H:%M:%S"
+
+        line['creation_date'] = datetime.strptime(str(line['creation_date']), pattern).strftime('%d-%m-%Y à %H:%M')
+
     return render_template('templates/splitter/splitter_manager.html',
-                            batch_list=list_batch,
+                            batch_list=result,
                             page = page,
                             per_page = per_page,
                             pagination=pagination,

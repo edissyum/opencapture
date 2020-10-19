@@ -11,8 +11,12 @@ kuyruk
 werkzeug
 requests
 gunicorn
-fast_luhn
+psycopg2
+pdf2image
+gitpython
+tensorflow
 flask_cors
+xlsxwriter
 Flask-Babel
 pytesseract
 pyexcel_ods3
@@ -21,3 +25,5 @@ opencv-python
 kuyruk_manager
 flask_paginate
 flask_multistatic
+setuptools>=41.0.0
+numpy<1.19.0,>=1.16.0
