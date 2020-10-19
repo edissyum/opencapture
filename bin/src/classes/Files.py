@@ -31,7 +31,7 @@ from PyPDF4 import utils
 from xml.dom import minidom
 from wand.color import Color
 from wand.api import library
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as Et
 from wand.image import Image as Img
 from wand.exceptions import PolicyError, CacheError
 from werkzeug.utils import secure_filename
@@ -39,117 +39,118 @@ from werkzeug.utils import secure_filename
 from webApp.functions import retrieve_custom_positions
 from xml.sax.saxutils import escape
 
+
 class Files:
-    def __init__(self, imgName, res, quality, Xml, Log, isTiff):
-        self.isTiff                = isTiff
-        self.jpgName               = imgName + '.jpg'
-        self.jpgName_header        = imgName + '_header.jpg'
-        self.jpgName_footer        = imgName + '_footer.jpg'
-        self.tiffName              = imgName + '.tiff'
-        self.tiffName_header       = imgName + '_header.tiff'
-        self.tiffName_footer       = imgName + '_footer.tiff'
-        self.jpgName_last          = imgName + '_last.jpg'
-        self.jpgName_last_header   = imgName + '_last_header.jpg'
-        self.jpgName_last_footer   = imgName + '_last_footer.jpg'
-        self.tiffName_last         = imgName + '_last.tiff'
-        self.tiffName_last_header  = imgName + '_last_header.tiff'
-        self.tiffName_last_footer  = imgName + '_last_footer.tiff'
-        self.custom_fileName_tiff  = imgName + '_custom.tiff'
-        self.custom_fileName       = imgName + '_custom.jpg'
-        self.resolution            = res
-        self.compressionQuality    = quality
-        self.img                   = None
-        self.heightRatio           = ''
-        self.Xml                   = Xml
-        self.Log                   = Log
+    def __init__(self, img_name, res, quality, xml, log, is_tiff):
+        self.isTiff = is_tiff
+        self.jpgName = img_name + '.jpg'
+        self.jpgName_header = img_name + '_header.jpg'
+        self.jpgName_footer = img_name + '_footer.jpg'
+        self.tiffName = img_name + '.tiff'
+        self.tiffName_header = img_name + '_header.tiff'
+        self.tiffName_footer = img_name + '_footer.tiff'
+        self.jpgName_last = img_name + '_last.jpg'
+        self.jpgName_last_header = img_name + '_last_header.jpg'
+        self.jpgName_last_footer = img_name + '_last_footer.jpg'
+        self.tiffName_last = img_name + '_last.tiff'
+        self.tiffName_last_header = img_name + '_last_header.tiff'
+        self.tiffName_last_footer = img_name + '_last_footer.tiff'
+        self.custom_fileName_tiff = img_name + '_custom.tiff'
+        self.custom_fileName = img_name + '_custom.jpg'
+        self.resolution = res
+        self.compressionQuality = quality
+        self.img = None
+        self.heightRatio = ''
+        self.xml = xml
+        self.Log = log
 
     # Convert the first page of PDF to JPG and open the image
-    def pdf_to_jpg(self, pdfName, openImg = True, crop = False, zoneToCrop = False, lastImage = False, isCustom = False):
+    def pdf_to_jpg(self, pdf_name, open_img=True, crop=False, zone_to_crop=False, last_image=False, is_custom=False):
         if crop:
-            if zoneToCrop == 'header':
-                if isCustom:
-                    self.crop_image_header(pdfName, False, lastImage, self.custom_fileName)
+            if zone_to_crop == 'header':
+                if is_custom:
+                    self.crop_image_header(pdf_name, False, last_image, self.custom_fileName)
                 else:
-                    self.crop_image_header(pdfName, False, lastImage)
-                if openImg:
-                    if lastImage:
+                    self.crop_image_header(pdf_name, False, last_image)
+                if open_img:
+                    if last_image:
                         self.img = Image.open(self.jpgName_last_header)
                     else:
                         self.img = Image.open(self.jpgName_header)
-            elif zoneToCrop == 'footer':
-                if isCustom:
-                    self.crop_image_footer(pdfName, False, lastImage, self.custom_fileName)
+            elif zone_to_crop == 'footer':
+                if is_custom:
+                    self.crop_image_footer(pdf_name, False, last_image, self.custom_fileName)
                 else:
-                    self.crop_image_footer(pdfName, False, lastImage)
-                if openImg:
-                    if lastImage:
+                    self.crop_image_footer(pdf_name, False, last_image)
+                if open_img:
+                    if last_image:
                         self.img = Image.open(self.jpgName_last_footer)
                     else:
                         self.img = Image.open(self.jpgName_footer)
         else:
-            if lastImage:
+            if last_image:
                 target = self.jpgName_last
             else:
                 target = self.jpgName
-            self.save_img_with_wand(pdfName, target)
-            if openImg:
+            self.save_img_with_wand(pdf_name, target)
+            if open_img:
                 self.img = Image.open(target)
 
-    def pdf_to_tiff(self, pdfName, outputFile, convertOnlyFirstPage = False, openImg = True, crop = False, zoneToCrop = False, lastPage = None):
+    def pdf_to_tiff(self, pdf_name, output_file, convert_only_first_page=False, open_img=True, crop=False, zone_to_crop=False, last_page=None):
         # Convert firstly the PDF to full tiff file
         # It will be used to crop header and footer later
-        if not os.path.isfile(outputFile):
+        if not os.path.isfile(output_file):
             args = [
                 "gs", "-q", "-dNOPAUSE", "-dBATCH",
                 "-r" + str(self.resolution), "-sCompression=lzw",
                 "-dDownScaleFactor=1",
                 "-sDEVICE=tiff32nc",
-                "-sOutputFile=" + outputFile,
+                "-sOutputFile=" + output_file,
             ]
 
-            if convertOnlyFirstPage:
+            if convert_only_first_page:
                 args.extend(["-dFirstPage=1", "-dLastPage=1"])
-            elif lastPage:
-                args.extend(["-dFirstPage=" + str(lastPage), "-dLastPage=" + str(lastPage)])
+            elif last_page:
+                args.extend(["-dFirstPage=" + str(last_page), "-dLastPage=" + str(last_page)])
 
-            args.extend([pdfName])
+            args.extend([pdf_name])
             subprocess.call(args)
         if crop:
-            if zoneToCrop == 'header':
-                if outputFile == self.custom_fileName_tiff:
-                    self.crop_image_header(pdfName, True, lastPage, outputFile)
+            if zone_to_crop == 'header':
+                if output_file == self.custom_fileName_tiff:
+                    self.crop_image_header(pdf_name, True, last_page, output_file)
                 else:
-                    self.crop_image_header(pdfName, True, lastPage)
-            elif zoneToCrop == 'footer':
-                if outputFile == self.custom_fileName_tiff:
-                    self.crop_image_footer(pdfName, True, lastPage, outputFile)
+                    self.crop_image_header(pdf_name, True, last_page)
+            elif zone_to_crop == 'footer':
+                if output_file == self.custom_fileName_tiff:
+                    self.crop_image_footer(pdf_name, True, last_page, output_file)
                 else:
-                    self.crop_image_footer(pdfName, True, lastPage)
+                    self.crop_image_footer(pdf_name, True, last_page)
 
-        if openImg:
-            if zoneToCrop == 'header':
-                if lastPage:
+        if open_img:
+            if zone_to_crop == 'header':
+                if last_page:
                     self.img = Image.open(self.tiffName_last_header)
                 else:
                     self.img = Image.open(self.tiffName_header)
-            elif zoneToCrop == 'footer':
-                if lastPage:
+            elif zone_to_crop == 'footer':
+                if last_page:
                     self.img = Image.open(self.tiffName_last_footer)
                 else:
                     self.img = Image.open(self.tiffName_footer)
             else:
-                if lastPage:
+                if last_page:
                     self.img = Image.open(self.tiffName_last)
                 else:
                     self.img = Image.open(self.tiffName)
 
-    def save_pdf_to_tiff_in_docserver(self, pdfName, output):
+    def save_pdf_to_tiff_in_docserver(self, pdf_name, output):
         args = [
             "gs", "-q", "-dNOPAUSE", "-dBATCH",
             "-r" + str(self.resolution), "-sCompression=lzw",
             "-sDEVICE=tiff32nc",
             "-sOutputFile=" + output,
-            " -f" + pdfName
+            " -f" + pdf_name
         ]
         subprocess.call(args)
 
@@ -162,11 +163,11 @@ class Files:
         return Image.open(img)
 
     # Save pdf with one or more pages into JPG file
-    def save_img_with_wand(self, pdfName, output):
+    def save_img_with_wand(self, pdf_name, output):
         try:
-            with Img(filename=pdfName, resolution=self.resolution) as pic:
+            with Img(filename=pdf_name, resolution=self.resolution) as pic:
                 library.MagickResetIterator(pic.wand)
-                pic.scene = 1 # Start cpt of filename at 1 instead of 0
+                pic.scene = 1  # Start cpt of filename at 1 instead of 0
                 pic.compression_quality = self.compressionQuality
                 pic.background_color = Color("white")
                 pic.alpha_channel = 'remove'
@@ -179,32 +180,32 @@ class Files:
         file_json = []
         for file in os.listdir(path):
             if file.endswith("." + extension):
-                filename    = os.path.splitext(file)[0]
-                isCountable = filename.split('-')
-                if len(isCountable) > 1 :
-                    cpt = ('%03d' % int(isCountable[1]))
+                filename = os.path.splitext(file)[0]
+                is_countable = filename.split('-')
+                if len(is_countable) > 1:
+                    cpt = ('%03d' % int(is_countable[1]))
                     file_json.append((cpt, path + file))
                 else:
                     file_json.append(('000', path + file))
-        sorted_file = sorted(file_json, key=lambda fileCPT: fileCPT[0])
+        sorted_file = sorted(file_json, key=lambda file_cpt: file_cpt[0])
         return sorted_file
 
     @staticmethod
-    def merge_pdf(fileSorted, tmpPath):
+    def merge_pdf(file_sorted, tmp_path):
         merger = PyPDF4.PdfFileMerger()
-        for pdf in fileSorted:
+        for pdf in file_sorted:
             merger.append(pdf[1])
             os.remove(pdf[1])
-        merger.write(tmpPath + '/result.pdf')
-        fileToReturn = open(tmpPath + '/result.pdf', 'rb').read()
-        os.remove(tmpPath + '/result.pdf')
+        merger.write(tmp_path + '/result.pdf')
+        file_to_return = open(tmp_path + '/result.pdf', 'rb').read()
+        os.remove(tmp_path + '/result.pdf')
 
-        return fileToReturn
+        return file_to_return
 
     @staticmethod
-    def check_file_integrity(file, Config):
-        isFull = False
-        while not isFull:
+    def check_file_integrity(file, config):
+        is_full = False
+        while not is_full:
             with open(file, 'rb') as doc:
                 size = os.path.getsize(file)
                 time.sleep(1)
@@ -214,7 +215,7 @@ class Files:
                         try:
                             PyPDF4.PdfFileReader(doc)
                         except PyPDF4.utils.PdfReadError:
-                            shutil.move(file, Config.cfg['GLOBAL']['errorpath'] + os.path.basename(file))
+                            shutil.move(file, config.cfg['GLOBAL']['errorpath'] + os.path.basename(file))
                             return False
                         else:
                             return True
@@ -231,26 +232,26 @@ class Files:
                     continue
 
     @staticmethod
-    def ocr_on_fly(img, selection, Ocr, thumbSize = None, regex = None, removeLines = False):
+    def ocr_on_fly(img, selection, ocr, thumb_size=None, regex=None, remove_line=False):
         rand = str(uuid.uuid4())
-        if thumbSize is not None:
+        if thumb_size is not None:
             with Image.open(img) as im:
-                ratio       = im.size[0]/thumbSize['width']
+                ratio = im.size[0] / thumb_size['width']
         else:
-            ratio       = 1
+            ratio = 1
 
-        x1          = selection['x1'] * ratio
-        y1          = selection['y1'] * ratio
-        x2          = selection['x2'] * ratio
-        y2          = selection['y2'] * ratio
-        cropRatio   = (x1, y1, x2, y2)
+        x1 = selection['x1'] * ratio
+        y1 = selection['y1'] * ratio
+        x2 = selection['x2'] * ratio
+        y2 = selection['y2'] * ratio
+        crop_ratio = (x1, y1, x2, y2)
 
         extension = os.path.splitext(img)[1]
         with Image.open(img) as im2:
-            croppedImage = im2.crop(cropRatio)
-            croppedImage.save('/tmp/cropped_' + rand + extension)
+            cropped_image = im2.crop(crop_ratio)
+            cropped_image.save('/tmp/cropped_' + rand + extension)
 
-        if removeLines:
+        if remove_line:
             image = cv2.imread('/tmp/cropped_' + rand + extension)
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
@@ -264,8 +265,8 @@ class Files:
             result = 255 - cv2.morphologyEx(255 - image, cv2.MORPH_CLOSE, repair_kernel, iterations=1)
             cv2.imwrite('/tmp/cropped_' + rand + extension, result)
 
-        croppedImage = Image.open('/tmp/cropped_' + rand + extension)
-        text = Ocr.text_builder(croppedImage)
+        cropped_image = Image.open('/tmp/cropped_' + rand + extension)
+        text = ocr.text_builder(cropped_image)
 
         if regex:
             for res in re.finditer(r"" + regex, text):
@@ -283,38 +284,38 @@ class Files:
 
     # Crop the file to get the header
     # 1/3 + 10% is the ratio we used
-    def crop_image_header(self, pdfName, isTiff, lastImage, outputName = None):
-        try :
-            if not isTiff:
-                with Img(filename=pdfName, resolution=self.resolution) as pic:
+    def crop_image_header(self, pdf_name, is_tiff, last_image, output_name=None):
+        try:
+            if not is_tiff:
+                with Img(filename=pdf_name, resolution=self.resolution) as pic:
                     pic.compression_quality = self.compressionQuality
-                    pic.background_color    = Color("white")
-                    pic.alpha_channel       = 'remove'
-                    self.heightRatio        = int(pic.height / 3 + pic.height * 0.1)
+                    pic.background_color = Color("white")
+                    pic.alpha_channel = 'remove'
+                    self.heightRatio = int(pic.height / 3 + pic.height * 0.1)
                     pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='north')
-                    if outputName:
-                        pic.save(filename=outputName)
-                    if lastImage:
+                    if output_name:
+                        pic.save(filename=output_name)
+                    if last_image:
                         pic.save(filename=self.jpgName_last_header)
                     else:
                         pic.save(filename=self.jpgName_header)
             else:
-                if outputName:
-                    target = outputName
-                elif lastImage:
+                if output_name:
+                    target = output_name
+                elif last_image:
                     target = self.tiffName_last
                 else:
                     target = self.tiffName
 
                 with Img(filename=target, resolution=self.resolution) as pic:
                     pic.compression_quality = self.compressionQuality
-                    pic.background_color    = Color("white")
-                    pic.alpha_channel       = 'remove'
-                    self.heightRatio        = int(pic.height / 3 + pic.height * 0.1)
+                    pic.background_color = Color("white")
+                    pic.alpha_channel = 'remove'
+                    self.heightRatio = int(pic.height / 3 + pic.height * 0.1)
                     pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='north')
-                    if outputName:
-                        pic.save(filename=outputName)
-                    elif lastImage:
+                    if output_name:
+                        pic.save(filename=output_name)
+                    elif last_image:
                         pic.save(filename=self.tiffName_last_header)
                     else:
                         pic.save(filename=self.tiffName_header)
@@ -323,26 +324,26 @@ class Files:
 
     # Crop the file to get the footer
     # 1/3 + 10% is the ratio we used
-    def crop_image_footer(self, img, isTiff = False, lastImage = False, outputName = None):
+    def crop_image_footer(self, img, is_tiff=False, last_image=False, output_name=None):
         try:
-            if not isTiff:
+            if not is_tiff:
                 with Img(filename=img, resolution=self.resolution) as pic:
                     pic.compression_quality = self.compressionQuality
-                    pic.background_color    = Color("white")
-                    pic.alpha_channel       = 'remove'
-                    self.heightRatio        = int(pic.height / 3 + pic.height * 0.1)
+                    pic.background_color = Color("white")
+                    pic.alpha_channel = 'remove'
+                    self.heightRatio = int(pic.height / 3 + pic.height * 0.1)
                     pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='south')
-                    if outputName:
-                        pic.save(filename=outputName)
-                    if lastImage:
+                    if output_name:
+                        pic.save(filename=output_name)
+                    if last_image:
                         pic.save(filename=self.jpgName_last_footer)
                     else:
                         pic.save(filename=self.jpgName_footer)
 
             else:
-                if outputName:
-                    target = outputName
-                elif lastImage:
+                if output_name:
+                    target = output_name
+                elif last_image:
                     target = self.tiffName_last
                 else:
                     target = self.tiffName
@@ -352,9 +353,9 @@ class Files:
                     pic.alpha_channel = 'remove'
                     self.heightRatio = int(pic.height / 3 + pic.height * 0.1)
                     pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='south')
-                    if outputName:
-                        pic.save(filename=outputName)
-                    elif lastImage:
+                    if output_name:
+                        pic.save(filename=output_name)
+                    elif last_image:
                         pic.save(filename=self.tiffName_last_footer)
                     else:
                         pic.save(filename=self.tiffName_footer)
@@ -366,10 +367,10 @@ class Files:
         filename = os.path.splitext(img)
         improved_img = filename[0] + '_improved' + filename[1]
         if not os.path.isfile(improved_img):
-            src     = cv2.imread(img)
-            gray    = cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)
-            _, blackAndWhite = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY_INV)
-            nlabels, labels, stats, centroids = cv2.connectedComponentsWithStats(blackAndWhite, None, None, None, 8, cv2.CV_32S)
+            src = cv2.imread(img)
+            gray = cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)
+            _, black_and_white = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY_INV)
+            nlabels, labels, stats, centroids = cv2.connectedComponentsWithStats(black_and_white, None, None, None, 8, cv2.CV_32S)
 
             # get CC_STAT_AREA component
             sizes = stats[1:, -1]
@@ -382,8 +383,8 @@ class Files:
 
             dst = cv2.bitwise_not(img2)
 
-            kernel = np.ones((1,2),np.uint8)
-            src = cv2.adaptiveThreshold(dst, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY,11,2)
+            kernel = np.ones((1, 2), np.uint8)
+            src = cv2.adaptiveThreshold(dst, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
             dst = cv2.erode(src, kernel)
             cv2.imwrite(improved_img, dst)
 
@@ -391,39 +392,39 @@ class Files:
 
     @staticmethod
     def move_to_docservers(cfg, file):
-        now             = datetime.datetime.now()
-        year            = str(now.year)
-        day             = str('%02d' % now.day)
-        month           = str('%02d' % now.month)
-        hour            = str('%02d' % now.hour)
-        minute          = str('%02d' % now.minute)
-        seconds         = str('%02d' % now.second)
-        docserverPath   = cfg['GLOBAL']['docserverpath']
+        now = datetime.datetime.now()
+        year = str(now.year)
+        day = str('%02d' % now.day)
+        month = str('%02d' % now.month)
+        hour = str('%02d' % now.hour)
+        minute = str('%02d' % now.minute)
+        seconds = str('%02d' % now.second)
+        docserver_path = cfg['GLOBAL']['docserverpath']
 
         # Check if docserver folder exists, if not, create it
-        if not os.path.exists(docserverPath):
-            os.mkdir(docserverPath)
+        if not os.path.exists(docserver_path):
+            os.mkdir(docserver_path)
 
         # Check if year folder exist, if not, create it
-        if not os.path.exists(docserverPath + '/' + year):
-            os.mkdir(docserverPath + '/' + year)
+        if not os.path.exists(docserver_path + '/' + year):
+            os.mkdir(docserver_path + '/' + year)
 
         # Do the same with month
-        if not os.path.exists(docserverPath + '/' + year + '/' + month):
-            os.mkdir(docserverPath + '/' + year + '/' + month)
+        if not os.path.exists(docserver_path + '/' + year + '/' + month):
+            os.mkdir(docserver_path + '/' + year + '/' + month)
 
-        newFilename    = day + month + year + '_' + hour + minute + seconds + '_' + uuid.uuid4().hex + '.pdf'
-        finalDirectory = docserverPath + '/' + year + '/' + month + '/' + newFilename
+        new_filename = day + month + year + '_' + hour + minute + seconds + '_' + uuid.uuid4().hex + '.pdf'
+        final_directory = docserver_path + '/' + year + '/' + month + '/' + new_filename
 
-        shutil.move(file, finalDirectory)
+        shutil.move(file, final_directory)
 
-        return finalDirectory
+        return final_directory
 
     # When we crop footer we need to rearrange the position of founded text
     # So we add the heightRatio we used (by default 1/3 + 10% of the full image)
     # And also add the position found on the cropped section divided by 2.8
-    def returnPositionWithRatio(self, line, target):
-        position       = {0: {}, 1: {}}
+    def return_position_with_ratio(self, line, target):
+        position = {0: {}, 1: {}}
         position[0][0] = line.position[0][0]
         position[1][0] = line.position[1][0]
 
@@ -438,47 +439,47 @@ class Files:
 
         return position
 
-    def exportXml(self, cfg, invoiceNumber, parent, fillPosition = False, db = None, vatNumber = False):
-        self.Xml.construct_filename(invoiceNumber, vatNumber)
-        filename    = cfg.cfg['GLOBAL']['exportaccountingfolder'] + '/' + secure_filename(self.Xml.filename)
-        root        = ET.Element("ROOT")
+    def export_xml(self, cfg, invoice_number, parent, fill_position=False, db=None, vat_number=False):
+        self.xml.construct_filename(invoice_number, vat_number)
+        filename = cfg.cfg['GLOBAL']['exportaccountingfolder'] + '/' + secure_filename(self.xml.filename)
+        root = Et.Element("ROOT")
 
         for parentElement in parent:
-            element = ET.SubElement(root, parentElement)
+            element = Et.SubElement(root, parentElement)
             for child in parent[parentElement]:
                 for childElement in child:
-                    cleanChild = childElement.replace(parentElement + '_', '')
-                    if cleanChild not in ['noDelivery', 'noCommands']:
-                        if fillPosition is not False and db is not False:
-                            cleanChildPosition = child[childElement]['position']
+                    clean_child = childElement.replace(parentElement + '_', '')
+                    if clean_child not in ['noDelivery', 'noCommands']:
+                        if fill_position is not False and db is not False:
+                            clean_child_position = child[childElement]['position']
                             # Add position in supplier database
-                            if cleanChildPosition is not None:
-                                if 'no_taxes' in cleanChild or 'invoice_number' in cleanChild or 'order_number' in cleanChild or 'delivery_number' in cleanChild or 'vat' in cleanChild:
+                            if clean_child_position is not None:
+                                if 'no_taxes' in clean_child or 'invoice_number' in clean_child or 'order_number' in clean_child or 'delivery_number' in clean_child or 'vat' in clean_child:
                                     db.update({
                                         'table': ['suppliers'],
                                         'set': {
-                                            cleanChild + '_position': cleanChildPosition
+                                            clean_child + '_position': clean_child_position
                                         },
                                         'where': ['vat_number = ?'],
-                                        'data': [vatNumber]
+                                        'data': [vat_number]
                                     })
                                     db.conn.commit()
                         # Then create the XML
-                        newField = ET.SubElement(element, escape(cleanChild))
-                        newField.text = child[childElement]['field']
-        xmlRoot = minidom.parseString(ET.tostring(root, encoding="unicode")).toprettyxml()
+                        new_field = Et.SubElement(element, escape(clean_child))
+                        new_field.text = child[childElement]['field']
+        xml_root = minidom.parseString(Et.tostring(root, encoding="unicode")).toprettyxml()
         file = open(filename, 'w')
-        file.write(xmlRoot)
+        file.write(xml_root)
         file.close()
 
         res = db.select({
             'select': ['typology'],
             'table': ['suppliers'],
             'where': ['vat_number = ?'],
-            'data': [vatNumber]
+            'data': [vat_number]
         })
         if res:
-            root = ET.parse(filename).getroot()
+            root = Et.parse(filename).getroot()
             typo = res[0]['typology']
             list_of_fields = retrieve_custom_positions(typo, cfg)
             select = []
@@ -493,19 +494,19 @@ class Files:
                         'select': select,
                         'table': ['invoices'],
                         'where': ['invoice_number = ?'],
-                        'data': [invoiceNumber]
+                        'data': [invoice_number]
                     })
                     if res:
                         for title in root:
                             for element in title:
                                 for position in select:
                                     if element.tag == position.split('_position')[0] and title.tag not in ['supplierInfo']:
-                                        subElementToAppend = root.find(title.tag)
-                                        newField = ET.SubElement(subElementToAppend, position)
-                                        newField.text = res[0][position]
-                        xmlRoot = minidom.parseString(ET.tostring(root, encoding="unicode")).toprettyxml().replace('\n\n', '\n')
+                                        sub_element_to_append = root.find(title.tag)
+                                        new_field = Et.SubElement(sub_element_to_append, position)
+                                        new_field.text = res[0][position]
+                        xml_root = minidom.parseString(Et.tostring(root, encoding="unicode")).toprettyxml().replace('\n\n', '\n')
                         file = open(filename, 'w')
-                        file.write(xmlRoot)
+                        file.write(xml_root)
                         file.close()
 
                         # remove empty lines created by the append of subelement
@@ -521,15 +522,16 @@ class Files:
                         file.write(string_without_empty_lines)
                         file.close()
 
-    def getPages(self, file, Config):
+    def get_pages(self, file, config):
         with open(file, 'rb') as doc:
             pdf = PyPDF4.PdfFileReader(doc)
             try:
                 return pdf.getNumPages()
             except ValueError as e:
                 self.Log.error(e)
-                shutil.move(file, Config.cfg['GLOBAL']['errorpath'] + os.path.basename(file))
+                shutil.move(file, config.cfg['GLOBAL']['errorpath'] + os.path.basename(file))
                 return 1
+
     # OBR01
     @staticmethod
     def create_directory(path):

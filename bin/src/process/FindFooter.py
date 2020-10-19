@@ -55,7 +55,7 @@ class FindFooter:
                 result_split    = result.split('.')
                 if len(result_split)> 1:
                     result          = result_split[0] + '.' + result_split[1][0:2]
-                arrayOfData.update({float(result.replace(',','.')) : self.Files.returnPositionWithRatio(line, 'footer')})
+                arrayOfData.update({float(result.replace(',','.')) : self.Files.return_position_with_ratio(line, 'footer')})
 
         # Check list of no rates amount and select the higher
         if len(arrayOfData) > 0:
