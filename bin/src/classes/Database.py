@@ -19,16 +19,17 @@ import sqlite3
 import psycopg2
 import psycopg2.extras
 
+
 class Database:
-    def __init__(self, Log, db_type, db_name = None, user = None, pwd = None, host = None, port = None, file=None, conn=None):
-        self.file   = file
-        self.conn   = conn
-        self.Log    = Log
-        self.type   = db_type
-        self.host   = host
-        self.port   = port
-        self.user   = user
-        self.pwd    = pwd
+    def __init__(self, log, db_type, db_name=None, user=None, pwd=None, host=None, port=None, file=None, conn=None):
+        self.file = file
+        self.conn = conn
+        self.Log = log
+        self.type = db_type
+        self.host = host
+        self.port = port
+        self.user = user
+        self.pwd = pwd
         self.dbName = db_name
         self.connect()
 
@@ -44,10 +45,10 @@ class Database:
         elif self.type == 'pgsql' and self.conn is None:
             try:
                 self.conn = psycopg2.connect(
-                    "dbname     =" + self.dbName    +
-                    " user      =" + self.user      +
-                    " password  =" + self.pwd       +
-                    " host      =" + self.host      +
+                    "dbname     =" + self.dbName +
+                    " user      =" + self.user +
+                    " password  =" + self.pwd +
+                    " host      =" + self.host +
                     " port      =" + self.port)
                 self.conn.autocommit = True
             except (psycopg2.OperationalError, psycopg2.ProgrammingError) as e:
@@ -58,16 +59,16 @@ class Database:
         if 'table' not in args or 'select' not in args:
             self.Log.error('One or more required args are empty')
         else:
-            tmpTable      = args['table']
+            tmp_table = args['table']
             args['table'] = args['table'][0]
             if 'left_join' in args:
-                if (len(tmpTable) - 1) != len(args['left_join']):
+                if (len(tmp_table) - 1) != len(args['left_join']):
                     self.Log.error("Number of tables doesn't match with number of joins")
                     self.Log.error(str(args))
                 else:
                     cpt = 1
                     for joins in args['left_join']:
-                        args['table'] += " LEFT JOIN " + tmpTable[cpt] + " ON " + joins + " "
+                        args['table'] += " LEFT JOIN " + tmp_table[cpt] + " ON " + joins + " "
                         cpt = cpt + 1
 
             if self.type != 'sqlite':
@@ -75,22 +76,22 @@ class Database:
                     char_found = False
                     for cpt, value in enumerate(args['where']):
                         if 'strftime' in value:
-                            columnName = value.split("'")[2].split(')')[0].replace(',', '').strip()
-                            dateFormat = value.split("'")[1].replace('%Y', 'YYYY').replace('%m', 'mm').replace('%d', 'dd')
+                            column_name = value.split("'")[2].split(')')[0].replace(',', '').strip()
+                            date_format = value.split("'")[1].replace('%Y', 'YYYY').replace('%m', 'mm').replace('%d', 'dd')
                             for char in re.finditer(r"[=<>]?", value):
                                 if char.group():
-                                    value = "to_char(" + columnName + ", '" + dateFormat + "') " + char.group() + " ?"
+                                    value = "to_char(" + column_name + ", '" + date_format + "') " + char.group() + " ?"
                                     char_found = True
                             if not char_found:
-                                value = "to_char(" + columnName + ", '" + dateFormat + "') = ?"
+                                value = "to_char(" + column_name + ", '" + date_format + "') = ?"
                             args['where'][cpt] = value
 
                 for cpt, value in enumerate(args['select']):
                     if 'strftime' in value:
-                        columnName = value.split("'")[2].split(')')[0].replace(',', '').strip()
-                        dateFormat = value.split("'")[1].replace('%Y', 'YYYY').replace('%m', 'mm').replace('%d', 'dd').replace('%H', 'HH24').replace('%M', 'MI').replace('%S', 'SS')
-                        label      = value.split("as")[1].strip()
-                        value      = "to_char(" + columnName + ", '" + dateFormat + "') as " + label
+                        column_name = value.split("'")[2].split(')')[0].replace(',', '').strip()
+                        date_format = value.split("'")[1].replace('%Y', 'YYYY').replace('%m', 'mm').replace('%d', 'dd').replace('%H', 'HH24').replace('%M', 'MI').replace('%S', 'SS')
+                        label = value.split("as")[1].strip()
+                        value = "to_char(" + column_name + ", '" + date_format + "') as " + label
 
                         args['select'][cpt] = value
 
@@ -132,7 +133,7 @@ class Database:
             if self.type == 'sqlite':
                 c = self.conn.cursor()
             else:
-                c = self.conn.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
+                c = self.conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
             try:
                 c.execute(query, args['data'])
@@ -145,15 +146,15 @@ class Database:
         if 'table' not in args:
             self.Log.error('One or more required args are empty')
         else:
-            columnsList = []
-            valuesList  = []
+            columns_list = []
+            values_list = []
             for column in args['columns']:
                 if args['columns'][column] is not None:
-                    columnsList.append(column)
-                    valuesList.append(args['columns'][column].replace("'","''").replace('\x0c', ''))
+                    columns_list.append(column)
+                    values_list.append(args['columns'][column].replace("'", "''").replace('\x0c', ''))
 
-            columns = ", ".join(columnsList)
-            values  = "'" + "', '".join(valuesList) + "'"
+            columns = ", ".join(columns_list)
+            values = "'" + "', '".join(values_list) + "'"
 
             query = "INSERT INTO " + args['table'] + " (" + columns + ") VALUES (" + values + ")"
             c = self.conn.cursor()
@@ -169,15 +170,15 @@ class Database:
         if args['table'] == [] or args['set'] == []:
             self.Log.error('One or more required args are empty')
         else:
-            queryList = []
+            query_list = []
             data = []
             for column in args['set']:
                 if args['set'][column] is not None:
-                    queryList.append(column + " = ?")
+                    query_list.append(column + " = ?")
                     data.append(args['set'][column])
 
             args['data'] = data + args['data']
-            _set = ", ".join(queryList)
+            _set = ", ".join(query_list)
             where = ' AND '.join(args['where'][0].split(','))
             if self.type != 'sqlite':
                 where = where.replace('?', '%s')

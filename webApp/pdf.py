@@ -470,7 +470,7 @@ def validate_form():
                 'where': ['vat_number = ?'],
                 'data': [vat_number]
             })
-            _files.exportXml(_cfg, request.form['facturationInfo_invoice_number'], parent, True, _db, vat_number)
+            _files.export_xml(_cfg, request.form['facturationInfo_invoice_number'], parent, True, _db, vat_number)
 
         # Unlock pdf and makes it processed
         _db.update({

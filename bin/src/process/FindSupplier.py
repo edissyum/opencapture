@@ -97,7 +97,7 @@ class FindSupplier:
                     if textAsString:
                         position = (('',''),('',''))
                     else:
-                        position = self.Files.returnPositionWithRatio(line, target)
+                        position = self.Files.return_position_with_ratio(line, target)
                     data = [existingSupplier[0]['vat_number'], position, existingSupplier[0], self.nbPages]
 
                     return data
