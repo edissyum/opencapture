@@ -320,7 +320,7 @@ def view(pdf_id):
 @bp.route('/upload')
 @bp.route('/upload?splitter=<string:issep>')
 @login_required
-def upload(issep):
+def upload(issep=False):
     _vars = init()
     _cfg = _vars[1].cfg
 
@@ -395,7 +395,7 @@ def validate_form():
                     ged[_cfg.cfg[default_process]['customordernumber']] = tmp_order[:-1]
 
             # Looking for an existing user in the GED, using VAT number as primary key
-            ged['contact'] = _ws.retrieve_contact_by_VATNumber(ged['vatNumber'])
+            ged['contact'] = _ws.retrieve_contact_by_vat_number(ged['vatNumber'])
 
             # If no contact found, create it
             if not ged['contact']:

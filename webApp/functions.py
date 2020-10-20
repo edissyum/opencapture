@@ -60,7 +60,7 @@ def search_custom_positions(data, ocr, files, locale, file, config):
                 else:
                     target_file = files.jpgName
         elif data['page'] != '1':
-            nb_pages = files.getPages(file, config)
+            nb_pages = files.get_pages(file, config)
             if str(nb_pages) == str(data['page']):
                 if files.isTiff == 'True':
                     if target == 'footer':

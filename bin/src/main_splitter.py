@@ -95,12 +95,16 @@ def launch(args):
 
     # Init all the necessary classes
     config_name = _Config(args['config'])
-    config = config_name.cfg['PROFILE']['cfgpath'] + '/config_' + config_name.cfg['PROFILE']['id'] + '.ini'
+    cfg_name = config_name.cfg['PROFILE']['cfgpath'] + '/config_' + config_name.cfg['PROFILE']['id'] + '.ini'
 
-    if not os.path.exists(config):
-        sys.exit('config file couldn\'t be found')
+    if not os.path.exists(cfg_name):
+        sys.exit('Config file couldn\'t be found')
 
     config = _Config(config_name.cfg['PROFILE']['cfgpath'] + '/config_' + config_name.cfg['PROFILE']['id'] + '.ini')
+
+    tmp_folder = tempfile.mkdtemp(dir=config.cfg['SPLITTER']['tmpbatchpath']) + '/'
+    file_name = tempfile.NamedTemporaryFile(dir=tmp_folder).name
+
     locale = _Locale(config)
     log = _Log(config.cfg['GLOBAL']['logfile'])
     ocr = _PyTesseract(locale.localeOCR, log, config)
@@ -113,12 +117,8 @@ def launch(args):
     database = _Database(log, db_type, db_name, db_user, db_pwd, db_host, db_port, config.cfg['DATABASE']['databasefile'])
     splitter = _Splitter(config, database, locale)
     xml = _Xml(config, database)
-
-    tmp_folder = tempfile.mkdtemp(dir=config.cfg['GLOBAL']['tmppath'])
-    filename = tempfile.NamedTemporaryFile(dir=tmp_folder).name
-
     files = _Files(
-        filename,
+        file_name,
         int(config.cfg['GLOBAL']['resolution']),
         int(config.cfg['GLOBAL']['compressionquality']),
         xml,
@@ -136,8 +136,6 @@ def launch(args):
             # Process the file and send it to Maarch
             OCForInvoices_splitter.process(path, log, splitter, files, ocr, tmp_folder)
 
-    # Empty the tmp dir to avoid residual file
-    recursive_delete(tmp_folder, log)
     # Close database
     database.conn.close()
 

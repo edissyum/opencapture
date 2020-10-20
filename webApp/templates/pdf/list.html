@@ -57,7 +57,7 @@
                         <div class="card">
                             <a style="height: 400px;" href="
                                     {% if pdf['status'] == 'END' %} #end
-                                        {% elif not pdf['locked'] or (pdf ['locked'] and pdf['locked_by'] == g.user['username']) %} {{ url_for('pdf.view', id=pdf['invoice_id']) }}
+                                        {% elif not pdf['locked'] or (pdf ['locked'] and pdf['locked_by'] == g.user['username']) %} {{ url_for('pdf.view', pdf_id=pdf['invoice_id']) }}
                                         {% else %} #locked
                                     {% endif %}"
 
@@ -73,13 +73,13 @@
                                         onclick="alert('{{ invoice_closed }}')"
                                     {% endif %}>
                                 <img class="card-img-top lazy"
-                                     data-original="{{ url_for('pdf.static', typeofFile='full', filename=pdf['full_jpg_filename']) }}"
+                                     data-original="{{ url_for('pdf.static', type_of_file='full', filename=pdf['full_jpg_filename']) }}"
                                      alt="Thumbnail">
                             </a>
                             <div class="card-body">
                                 <div class="row pb-0 pl-3">
                                     <h5 class="card-title">
-                                        <a href="{{ url_for('pdf.view', id=pdf['invoice_id']) }}">
+                                        <a href="{{ url_for('pdf.view', pdf_id=pdf['invoice_id']) }}">
                                             {{ pdf['supplier_name'] }}
                                         </a>
                                     </h5>

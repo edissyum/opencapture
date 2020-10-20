@@ -64,10 +64,10 @@
                                          <div class="col-md-2 parent invoice-page" id="{{image_path}}">
                                             <div class="invoice-images">
                                                 <input type="checkbox" class="checkbox-page-invoice">
-                                                <a id="image-invoice-zoom" href="#" rel="{{ url_for('pdf.static', typeofFile='splitter', filename=image_path) }}">
+                                                <a id="image-invoice-zoom" href="#" rel="{{ url_for('pdf.static', type_of_file='splitter', filename=image_path) }}">
                                                     <i class="fas fa-search-plus fa-4x"></i>
                                                 </a>
-                                                <img class="image-page-invoice" src="{{ url_for('pdf.static', typeofFile='splitter', filename=image_path) }}" alt="{{image_path}}"/>
+                                                <img class="image-page-invoice" src="{{ url_for('pdf.static', type_of_file='splitter', filename=image_path) }}" alt="{{image_path}}"/>
                                             </div>
                                         </div>
                                     {% endfor %}

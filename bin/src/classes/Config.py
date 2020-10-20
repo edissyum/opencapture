@@ -32,7 +32,7 @@ class Config:
 
     def read_position(self, typology, key, locale):
         file = self.cfg['REFERENCIAL']['referencialposition'] + str(typology) + '.ini'
-        res  = {}
+        res = {}
         if os.path.isfile(file):
             parser = ConfigParser(interpolation=ExtendedInterpolation())
             parser.read(file)
