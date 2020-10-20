@@ -21,26 +21,27 @@ import sys
 import uuid
 import shutil
 import subprocess
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as Et
 import PyPDF4
 
+
 class SeparatorQR:
-    def __init__(self, Log, Config):
-        self.qrList             = None
-        self.Log                = Log
-        self.pages              = []
-        self.nb_pages           = 0
-        self.nb_doc             = 0
-        self.enabled            = Config.cfg['SEPARATORQR']['enabled']
-        self.output_dir         = Config.cfg['SEPARATORQR']['outputpdfpath']
-        self.output_dir_pdfa    = Config.cfg['SEPARATORQR']['outputpdfapath']
-        self.tmp_dir            = Config.cfg['SEPARATORQR']['tmppath']
-        self.convert_to_pdfa    = Config.cfg['SEPARATORQR']['exportpdfa']
-        self.divider            = Config.cfg['SEPARATORQR']['divider']
-        self.error              = False
+    def __init__(self, log, config):
+        self.qrList = None
+        self.Log = log
+        self.pages = []
+        self.nb_pages = 0
+        self.nb_doc = 0
+        self.enabled = config.cfg['SEPARATORQR']['enabled']
+        self.output_dir = config.cfg['SEPARATORQR']['outputpdfpath']
+        self.output_dir_pdfa = config.cfg['SEPARATORQR']['outputpdfapath']
+        self.tmp_dir = config.cfg['SEPARATORQR']['tmppath']
+        self.convert_to_pdfa = config.cfg['SEPARATORQR']['exportpdfa']
+        self.divider = config.cfg['SEPARATORQR']['divider']
+        self.error = False
 
     def run(self, file):
-        self.pages  =   []
+        self.pages = []
         try:
             pdf = PyPDF4.PdfFileReader(open(file, 'rb'))
             self.nb_pages = pdf.getNumPages()
@@ -52,7 +53,6 @@ class SeparatorQR:
         except Exception as e:
             self.error = True
             self.Log.error("INIT : " + str(e))
-
 
     def get_xml_qr_code(self, file):
         try:
@@ -67,12 +67,10 @@ class SeparatorQR:
             out, err = xml.communicate()
             if err.decode('utf-8'):
                 self.Log.error('ZBARIMG : ' + str(err))
-            self.qrList = ET.fromstring(out)
+            self.qrList = Et.fromstring(out)
         except subprocess.CalledProcessError as cpe:
             if cpe.returncode != 4:
                 self.Log.error("ZBARIMG : \nreturn code: %s\ncmd: %s\noutput: %s\nglobal : %s" % (cpe.returncode, cpe.cmd, cpe.output, cpe))
-        except:
-            self.Log.error("ZBARIMG : Unexpected error : " + str(sys.exc_info()[0]))
 
     def parse_xml(self):
         if self.qrList is None:
@@ -80,20 +78,20 @@ class SeparatorQR:
         ns = {'bc': 'http://zbar.sourceforge.net/2008/barcode'}
         indexes = self.qrList[0].findall('bc:index', ns)
         for index in indexes:
-            page                = {}
-            data                = index.find('bc:symbol', ns).find('bc:data', ns)
-            page['service']     = data.text
-            page['index_sep']   = int(index.attrib['num'])
+            page = {}
+            data = index.find('bc:symbol', ns).find('bc:data', ns)
+            page['service'] = data.text
+            page['index_sep'] = int(index.attrib['num'])
 
-            if page['index_sep'] + 1 >= self.nb_pages: # If last page is a separator
-                page['is_empty']    = True
+            if page['index_sep'] + 1 >= self.nb_pages:  # If last page is a separator
+                page['is_empty'] = True
             else:
-                page['is_empty']    = False
+                page['is_empty'] = False
                 page['index_start'] = page['index_sep'] + 2
 
-            page['uuid']            = str(uuid.uuid4())    # Generate random number for pdf filename
-            page['pdf_filename']    = self.output_dir + page['service'] + self.divider + page['uuid'] + '.pdf'
-            page['pdfa_filename']   = self.output_dir_pdfa + page['service'] + self.divider + page['uuid'] + '.pdf'
+            page['uuid'] = str(uuid.uuid4())  # Generate random number for pdf filename
+            page['pdf_filename'] = self.output_dir + page['service'] + self.divider + page['uuid'] + '.pdf'
+            page['pdfa_filename'] = self.output_dir_pdfa + page['service'] + self.divider + page['uuid'] + '.pdf'
             self.pages.append(page)
 
         self.nb_doc = len(self.pages)
@@ -124,8 +122,8 @@ class SeparatorQR:
                 if page['is_empty']:
                     continue
 
-                pagesToKeep = range(page['index_start'], page['index_end'] + 1)
-                self.split_pdf(file, page['pdf_filename'], pagesToKeep)
+                pages_to_keep = range(page['index_start'], page['index_end'] + 1)
+                self.split_pdf(file, page['pdf_filename'], pages_to_keep)
 
                 if self.convert_to_pdfa == 'True':
                     self.convert_to_pdfa(page['pdfa_filename'], page['pdf_filename'])
@@ -133,22 +131,21 @@ class SeparatorQR:
         except Exception as e:
             self.Log.error("EACD: " + str(e))
 
-
     @staticmethod
     def convert_to_pdfa(pdfa_filename, pdf_filename):
-        gs_commandLine = 'gs#-dPDFA#-dNOOUTERSAVE#-sProcessColorModel=DeviceCMYK#-sDEVICE=pdfwrite#-o#%s#-dPDFACompatibilityPolicy=1#PDFA_def.ps#%s' \
+        gs_command = 'gs#-dPDFA#-dNOOUTERSAVE#-sProcessColorModel=DeviceCMYK#-sDEVICE=pdfwrite#-o#%s#-dPDFACompatibilityPolicy=1#PDFA_def.ps#%s' \
                          % (pdfa_filename, pdf_filename)
-        gs_args = gs_commandLine.split('#')
+        gs_args = gs_command.split('#')
         subprocess.check_call(gs_args)
         os.remove(pdf_filename)
 
     @staticmethod
-    def split_pdf(inputPath, outputPath, pages):
-        inputPdf = PyPDF4.PdfFileReader(open(inputPath, "rb"))
-        outputPdf = PyPDF4.PdfFileWriter()
+    def split_pdf(input_path, output_path, pages):
+        input_pdf = PyPDF4.PdfFileReader(open(input_path, "rb"))
+        output_pdf = PyPDF4.PdfFileWriter()
 
         for page in pages:
-            outputPdf.addPage(inputPdf.getPage(page - 1))
+            output_pdf.addPage(input_pdf.getPage(page - 1))
 
-        with open(outputPath, "wb") as stream:
-            outputPdf.write(stream)
+        with open(output_path, "wb") as stream:
+            output_pdf.write(stream)

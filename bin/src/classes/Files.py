@@ -184,9 +184,9 @@ class Files:
                 is_countable = filename.split('-')
                 if len(is_countable) > 1:
                     cpt = ('%03d' % int(is_countable[1]))
-                    file_json.append((cpt, path + file))
+                    file_json.append((cpt, path + '/' + file))
                 else:
-                    file_json.append(('000', path + file))
+                    file_json.append(('000', path + '/' + file))
         sorted_file = sorted(file_json, key=lambda file_cpt: file_cpt[0])
         return sorted_file
 
@@ -429,8 +429,6 @@ class Files:
         position[1][0] = line.position[1][0]
 
         if target == 'footer':
-            # TODO
-            # Améliorer calcul de position lors d'un crop footer (De temps en temps le résultat n'est pas correct (trop haut généralement))
             position[0][1] = line.position[0][1] + self.heightRatio
             position[1][1] = line.position[1][1] + self.heightRatio
         else:
