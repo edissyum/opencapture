@@ -31,81 +31,109 @@ custom_array = {}
 if custom_id:
     custom_array = check_python_customized_files(custom_id[1])
 
-if 'Config' not in custom_array: from bin.src.classes.Config import Config as _Config
-else: _Config = getattr(__import__(custom_array['Config']['path'] + '.' + custom_array['Config']['module'], fromlist=[custom_array['Config']['module']]), custom_array['Config']['module'])
+if 'config' not in custom_array:
+    from bin.src.classes.Config import Config as _Config
+else:
+    _Config = getattr(__import__(custom_array['Config']['path'] + '.' + custom_array['coConfigConfigig']['module'], fromlist=[custom_array['Config']['module']]), custom_array['Config']['module'])
 
-if 'Log' not in custom_array: from bin.src.classes.Log import Log as _Log
-else: _Log = getattr(__import__(custom_array['Log']['path'] + '.' + custom_array['Log']['module'], fromlist=[custom_array['Log']['module']]), custom_array['Log']['module'])
+if 'log' not in custom_array:
+    from bin.src.classes.Log import Log as _Log
+else:
+    _Log = getattr(__import__(custom_array['Log']['path'] + '.' + custom_array['Log']['module'], fromlist=[custom_array['Log']['module']]), custom_array['Log']['module'])
 
-if 'Files' not in custom_array: from bin.src.classes.Files import Files as _Files
-else: _Files = getattr(__import__(custom_array['Files']['path'] + '.' + custom_array['Files']['module'], fromlist=[custom_array['Files']['module']]), custom_array['Files']['module'])
+if 'files' not in custom_array:
+    from bin.src.classes.Files import Files as _Files
+else:
+    _Files = getattr(__import__(custom_array['Files']['path'] + '.' + custom_array['Files']['module'], fromlist=[custom_array['Files']['module']]), custom_array['Files']['module'])
 
-if 'Xml' not in custom_array: from bin.src.classes.Xml import Xml as _Xml
-else: _Xml = getattr(__import__(custom_array['Xml']['path'] + '.' + custom_array['Xml']['module'], fromlist=[custom_array['Xml']['module']]), custom_array['Xml']['module'])
+if 'xml' not in custom_array:
+    from bin.src.classes.Xml import Xml as _Xml
+else:
+    _Xml = getattr(__import__(custom_array['Xml']['path'] + '.' + custom_array['Xml']['module'], fromlist=[custom_array['Xml']['module']]), custom_array['Xml']['module'])
 
-if 'WebServices' not in custom_array: from bin.src.classes.WebServices import WebServices as _WebServices
-else: _WebServices = getattr(__import__(custom_array['WebServices']['path'] + '.' + custom_array['WebServices']['module'], fromlist=[custom_array['WebServices']['module']]), custom_array['WebServices']['module'])
+if 'webservices' not in custom_array:
+    from bin.src.classes.WebServices import WebServices as _WebServices
+else:
+    _WebServices = getattr(__import__(custom_array['WebServices']['path'] + '.' + custom_array['WebServices']['module'], fromlist=[custom_array['WebServices']['module']]),
+                           custom_array['WebServices']['module'])
 
-if 'Locale' not in custom_array: from bin.src.classes.Locale import Locale as _Locale
-else: _Locale = getattr(__import__(custom_array['Locale']['path'] + '.' + custom_array['Locale']['module'], fromlist=[custom_array['Locale']['module']]), custom_array['Locale']['module'])
+if 'locale' not in custom_array:
+    from bin.src.classes.Locale import Locale as _Locale
+else:
+    _Locale = getattr(__import__(custom_array['Locale']['path'] + '.' + custom_array['Locale']['module'], fromlist=[custom_array['Locale']['module']]), custom_array['Locale']['module'])
 
-if 'PyTesseract' not in custom_array: from bin.src.classes.PyTesseract import PyTesseract as _PyTesseract
-else: _PyTesseract = getattr(__import__(custom_array['PyTesseract']['path'] + '.' + custom_array['PyTesseract']['module'], fromlist=[custom_array['PyTesseract']['module']]), custom_array['PyTesseract']['module'])
+if 'PyTesseract' not in custom_array:
+    from bin.src.classes.PyTesseract import PyTesseract as _PyTesseract
+else:
+    _PyTesseract = getattr(__import__(custom_array['PyTesseract']['path'] + '.' + custom_array['PyTesseract']['module'], fromlist=[custom_array['PyTesseract']['module']]),
+                           custom_array['PyTesseract']['module'])
 
-if 'Database' not in custom_array: from bin.src.classes.Database import Database as _Database
-else: _Database = getattr(__import__(custom_array['Database']['path'] + '.' + custom_array['Database']['module'], fromlist=[custom_array['Database']['module']]), custom_array['Database']['module'])
+if 'database' not in custom_array:
+    from bin.src.classes.Database import Database as _Database
+else:
+    _Database = getattr(__import__(custom_array['Database']['path'] + '.' + custom_array['Database']['module'], fromlist=[custom_array['Database']['module']]), custom_array['Database']['module'])
 
-if 'OCForInvoices' not in custom_array: from bin.src.process import OCForInvoices as OCForInvoices_process
-else: OCForInvoices_process = getattr(__import__(custom_array['OCForInvoices']['path'] , fromlist=[custom_array['OCForInvoices']['module']]), custom_array['OCForInvoices']['module'])
+if 'OCForInvoices' not in custom_array:
+    from bin.src.process import OCForInvoices as OCForInvoices_process
+else:
+    OCForInvoices_process = getattr(__import__(custom_array['OCForInvoices']['path'], fromlist=[custom_array['OCForInvoices']['module']]), custom_array['OCForInvoices']['module'])
 
-if 'invoice_classification' not in custom_array: from bin.src.invoice_classification import invoice_classification
-else: OCForInvoices_process = getattr(__import__(custom_array['invoice_classification']['path'] , fromlist=[custom_array['invoice_classification']['module']]), custom_array['invoice_classification']['module'])
+if 'invoice_classification' not in custom_array:
+    from bin.src.invoice_classification import invoice_classification
+else:
+    OCForInvoices_process = getattr(__import__(custom_array['invoice_classification']['path'], fromlist=[custom_array['invoice_classification']['module']]),
+                                    custom_array['invoice_classification']['module'])
 
 OCforInvoices_worker = Kuyruk()
 
-OCforInvoices_worker.config.MANAGER_HOST         = "127.0.0.1"
-OCforInvoices_worker.config.MANAGER_PORT         = 16501
-OCforInvoices_worker.config.MANAGER_HTTP_PORT    = 16500
+OCforInvoices_worker.config.MANAGER_HOST = "127.0.0.1"
+OCforInvoices_worker.config.MANAGER_PORT = 16501
+OCforInvoices_worker.config.MANAGER_HTTP_PORT = 16500
 
 m = Manager(OCforInvoices_worker)
 
-def check_file(Files, path, Config, Log):
-    if not Files.check_file_integrity(path, Config):
-        Log.error('The integrity of file could\'nt be verified : ' + str(path))
+
+def check_file(files, path, config, log):
+    if not files.check_file_integrity(path, config):
+        log.error('The integrity of file could\'nt be verified : ' + str(path))
         return False
 
-def timer(startTime, endTime):
-    hours, rem = divmod(endTime - startTime, 3600)
+
+def timer(start_time, end_time):
+    hours, rem = divmod(end_time - start_time, 3600)
     minutes, seconds = divmod(rem, 60)
     return "{:0>2}:{:0>2}:{:05.2f}".format(int(hours), int(minutes), seconds)
 
-def recursive_delete(folder, Log):
+
+def recursive_delete(folder, log):
     for file in os.listdir(folder):
         try:
             os.remove(folder + '/' + file)
         except FileNotFoundError as e:
-            Log.error('Unable to delete ' + folder + '/' + file + ' on temp folder: ' + str(e))
+            log.error('Unable to delete ' + folder + '/' + file + ' on temp folder: ' + str(e))
     try:
         os.rmdir(folder)
     except FileNotFoundError as e:
-        Log.error('Unable to delete ' + folder + ' on temp folder: ' + str(e))
+        log.error('Unable to delete ' + folder + ' on temp folder: ' + str(e))
 
-def get_typo(Config, path, Log):
-    invoice_classification.MODEL_PATH = Config.cfg['AI-CLASSIFICATION']['modelpath']
-    invoice_classification.PREDICT_IMAGES_PATH = Config.cfg['AI-CLASSIFICATION']['trainimagepath']
-    invoice_classification.TRAIN_IMAGES_PATH = Config.cfg['AI-CLASSIFICATION']['predictimagepath']
+
+def get_typo(config, path, log):
+    invoice_classification.MODEL_PATH = config.cfg['AI-CLASSIFICATION']['modelpath']
+    invoice_classification.PREDICT_IMAGES_PATH = config.cfg['AI-CLASSIFICATION']['trainimagepath']
+    invoice_classification.TRAIN_IMAGES_PATH = config.cfg['AI-CLASSIFICATION']['predictimagepath']
     typo, confidence = invoice_classification.predict_typo(path)
 
     if typo:
-        if confidence >= Config.cfg['AI-CLASSIFICATION']['confidencemin']:
-            Log.info('Typology n°' + typo + ' found using AI with a confidence of ' + confidence + '%')
+        if confidence >= config.cfg['AI-CLASSIFICATION']['confidencemin']:
+            log.info('Typology n°' + typo + ' found using AI with a confidence of ' + confidence + '%')
             return typo
         else:
-            Log.info('Typology can\'t be found using AI, the confidence is too low : Typo n°' + typo + ', confidence : ' + confidence + '%' )
+            log.info('Typology can\'t be found using AI, the confidence is too low : Typo n°' + typo + ', confidence : ' + confidence + '%')
             return False
     else:
-        Log.info('Typology can\'t be found using AI')
+        log.info('Typology can\'t be found using AI')
         return False
+
 
 # If needed just run "kuyruk --app bin.src.main.OCforInvoices_worker manager" to have web dashboard of current running worker
 @OCforInvoices_worker.task(queue='invoices')
@@ -113,86 +141,87 @@ def launch(args):
     start = time.time()
 
     # Init all the necessary classes
-    configName  = _Config(args['config'])
-    cfgName     = configName.cfg['PROFILE']['cfgpath'] + '/config_' + configName.cfg['PROFILE']['id'] + '.ini'
+    config_name = _Config(args['config'])
+    config = config_name.cfg['PROFILE']['cfgpath'] + '/config_' + config_name.cfg['PROFILE']['id'] + '.ini'
 
-    if not os.path.exists(cfgName):
-        sys.exit('Config file couldn\'t be found')
+    if not os.path.exists(config):
+        sys.exit('config file couldn\'t be found')
 
-    Config      = _Config(configName.cfg['PROFILE']['cfgpath'] + '/config_' + configName.cfg['PROFILE']['id'] + '.ini')
-    Locale      = _Locale(Config)
-    Log         = _Log(Config.cfg['GLOBAL']['logfile'])
-    Ocr         = _PyTesseract(Locale.localeOCR, Log, Config)
-    dbType      = Config.cfg['DATABASE']['databasetype']
-    dbUser      = Config.cfg['DATABASE']['postgresuser']
-    dbPwd       = Config.cfg['DATABASE']['postgrespassword']
-    dbName      = Config.cfg['DATABASE']['postgresdatabase']
-    dbHost      = Config.cfg['DATABASE']['postgreshost']
-    dbPort      = Config.cfg['DATABASE']['postgresport']
-    Database    = _Database(Log, dbType, dbName, dbUser, dbPwd, dbHost, dbPort, Config.cfg['DATABASE']['databasefile'])
-    Xml         = _Xml(Config, Database)
+    config = _Config(config_name.cfg['PROFILE']['cfgpath'] + '/config_' + config_name.cfg['PROFILE']['id'] + '.ini')
+    locale = _Locale(config)
+    log = _Log(config.cfg['GLOBAL']['logfile'])
+    ocr = _PyTesseract(locale.localeOCR, log, config)
+    db_type = config.cfg['DATABASE']['databasetype']
+    db_user = config.cfg['DATABASE']['postgresuser']
+    db_pwd = config.cfg['DATABASE']['postgrespassword']
+    db_name = config.cfg['DATABASE']['postgresdatabase']
+    db_host = config.cfg['DATABASE']['postgreshost']
+    db_port = config.cfg['DATABASE']['postgresport']
+    database = _Database(log, db_type, db_name, db_user, db_pwd, db_host, db_port, config.cfg['DATABASE']['databasefile'])
+    xml = _Xml(config, database)
 
-    tmpFolder   = tempfile.mkdtemp(dir=Config.cfg['GLOBAL']['tmppath'])
-    fileName    = tempfile.NamedTemporaryFile(dir=tmpFolder).name
+    tmp_folder = tempfile.mkdtemp(dir=config.cfg['GLOBAL']['tmppath'])
+    filename = tempfile.NamedTemporaryFile(dir=tmp_folder).name
 
-    Files       = _Files(
-        fileName,
-        int(Config.cfg['GLOBAL']['resolution']),
-        int(Config.cfg['GLOBAL']['compressionquality']),
-        Xml,
-        Log,
-        Config.cfg['GLOBAL']['convertpdftotiff']
+    files = _Files(
+        filename,
+        int(config.cfg['GLOBAL']['resolution']),
+        int(config.cfg['GLOBAL']['compressionquality']),
+        xml,
+        log,
+        config.cfg['GLOBAL']['convertpdftotiff']
     )
 
-    if Config.cfg['GED']['enabled'] != 'False':
-        WebServices = _WebServices(
-            Config.cfg['GED']['host'],
-            Config.cfg['GED']['user'],
-            Config.cfg['GED']['password'],
-            Log,
-            Config
+    if config.cfg['GED']['enabled'] != 'False':
+        webservices = _WebServices(
+            config.cfg['GED']['host'],
+            config.cfg['GED']['user'],
+            config.cfg['GED']['password'],
+            log,
+            config
         )
     else:
-        WebServices = False
+        webservices = False
 
     # Connect to database
-    Database.connect()
+    database.connect()
 
     # Start process
     if 'path' in args and args['path'] is not None:
         path = args['path']
         for file in os.listdir(path):
-            if check_file(Files, path + file, Config, Log) is not False and not os.path.isfile(path + file + '.lock'):
+            if check_file(files, path + file, config, log) is not False and not os.path.isfile(path + file + '.lock'):
                 os.mknod(path + file + '.lock')
-                Log.info('Lock file created : ' + path + file + '.lock')
+                log.info('Lock file created : ' + path + file + '.lock')
 
                 # Find file in the wanted folder (default or exported pdf after qrcode separation)
                 typo = ''
-                if Config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
-                    typo = get_typo(Config, path + file, Log)
+                if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
+                    typo = get_typo(config, path + file, log)
 
-                OCForInvoices_process.process(path + file, Log, Config, Files, Ocr, Locale, Database, WebServices, typo)
+                OCForInvoices_process.process(path + file, log, config, files, ocr, locale, database, webservices, typo)
 
                 try:
                     os.remove(path + file + '.lock')
-                    Log.info('Lock file removed : ' + path + file + '.lock')
+                    log.info('Lock file removed : ' + path + file + '.lock')
                 except FileNotFoundError:
                     pass
 
     elif 'file' in args and args['file'] is not None:
         path = args['file']
         typo = ''
-        if Config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
-            typo = get_typo(Config, path, Log)
+        if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
+            typo = get_typo(config, path, log)
 
-        if check_file(Files, path, Config, Log) is not False:
+        if check_file(files, path, config, log) is not False:
             # Process the file and send it to Maarch
-            OCForInvoices_process.process(path, Log, Config, Files, Ocr, Locale, Database, WebServices, typo)
+            OCForInvoices_process.process(path, log, config, files, ocr, locale, database, webservices, typo)
 
     # Empty the tmp dir to avoid residual file
-    recursive_delete(tmpFolder, Log)
+    recursive_delete(tmp_folder, log)
+
     # Close database
-    Database.conn.close()
+    database.conn.close()
 
     end = time.time()
-    Log.info('Process end after ' + timer(start, end) + '')
+    log.info('Process end after ' + timer(start, end) + '')

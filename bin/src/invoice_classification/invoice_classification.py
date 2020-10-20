@@ -9,13 +9,13 @@ Desc: this python show how to use the invoice classification model
 """
 
 import os
+
 # Set error/warning level to 3 (to much warnings displayed by Tensorflow)
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 from pdf2image import convert_from_path
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
-
 
 # Prediction label list
 '''
@@ -38,6 +38,7 @@ MODEL_PATH = ''  # Tensorflow model path
 IMG_HEIGHT = 699
 IMG_WIDTH = 495
 
+
 def convert_pdf_dir_to_images(pdfs_path):
     for dir_name in os.listdir(pdfs_path):
         new_image_dir = TRAIN_IMAGES_PATH + dir_name + "/"
@@ -46,12 +47,14 @@ def convert_pdf_dir_to_images(pdfs_path):
             pages = convert_from_path(pdfs_path + dir_name + "/" + file_name, size=(IMG_WIDTH, IMG_HEIGHT))
             pages[0].save(new_image_dir + file_name.split(".")[0] + '.jpg', 'JPEG')
 
+
 def get_pdf_first_page(pdf_path):
     pages = convert_from_path(pdf_path, size=(IMG_WIDTH, IMG_HEIGHT))
     file_name = pdf_path.split("/")[-1].replace('pdf', 'jpg')
     image_path = PREDICT_IMAGES_PATH + file_name
     pages[0].save(image_path, 'JPEG')
     return image_path
+
 
 # Train and save tensorFlow model
 def train(images_data_path):
@@ -63,10 +66,10 @@ def train(images_data_path):
         image_size=(IMG_HEIGHT, IMG_WIDTH),
         batch_size=32)
 
-    AUTOTUNE = tf.data.experimental.AUTOTUNE
+    autotune = tf.data.experimental.AUTOTUNE
 
-    train_ds = train_ds.cache().prefetch(buffer_size=AUTOTUNE)
-    val_ds = train_ds.cache().prefetch(buffer_size=AUTOTUNE)
+    train_ds = train_ds.cache().prefetch(buffer_size=autotune)
+    val_ds = train_ds.cache().prefetch(buffer_size=autotune)
 
     num_classes = 23
 
@@ -97,6 +100,7 @@ def train(images_data_path):
     # Save model
     model.save(MODEL_PATH)
 
+
 def predict(path_image_test):
     # Load image using Keras
     img = keras.preprocessing.image.load_img(
@@ -118,6 +122,7 @@ def predict(path_image_test):
     else:
         return None
 
+
 def predict_typo(pdf_path):
     image_path = get_pdf_first_page(pdf_path)
     pred_probab = predict(image_path)
@@ -130,14 +135,14 @@ def predict_typo(pdf_path):
         typo = LABELS_ORDERED_LIST[pred_index]
         predict_op = tf.nn.softmax(pred_probab)
         pred_index = list(predict_op).index(max(predict_op))
-        predictionPercentage = str(float('%2f' % int(predict_op[pred_index].numpy() * 100)))
+        prediction_percentage = str(float('%2f' % int(predict_op[pred_index].numpy() * 100)))
 
         try:
             os.remove(image_path)
         except FileNotFoundError:
             pass
 
-        return typo, predictionPercentage
+        return typo, prediction_percentage
     else:
         try:
             os.remove(image_path)

@@ -17,23 +17,24 @@
 
 from lxml import etree
 
-class Xml:
-    def __init__(self, Config, Database):
-        self.filename       = ''
-        self.separator      = ''
-        self.Config         = Config
-        self.db             = Database
 
-    def construct_filename(self, invoiceNumber, vatNumber):
-        root        = etree.parse(self.Config.cfg['GLOBAL']['exportaccountingfileparser'])
-        array       = []
-        tmpFilename = {}
-        cpt         = 0
-        dateFilter  = {
-            'year'      : '%Y',
-            'month'     : '%m',
-            'day'       : '%d',
-            'full_date' : '%d%m%Y'
+class Xml:
+    def __init__(self, config, database):
+        self.filename = ''
+        self.separator = ''
+        self.Config = config
+        self.db = database
+
+    def construct_filename(self, invoice_number, vat_number):
+        root = etree.parse(self.Config.cfg['GLOBAL']['exportaccountingfileparser'])
+        array = []
+        tmp_filename = {}
+        cpt = 0
+        date_filter = {
+            'year': '%Y',
+            'month': '%m',
+            'day': '%d',
+            'full_date': '%d%m%Y'
         }
 
         for elements in root.xpath('/ROOT/NAME/ELEMENT'):
@@ -45,49 +46,49 @@ class Xml:
             array.append(tmparray)
 
         for element in root.xpath('/ROOT/SEPARATOR/value'):
-            self.separator   = element.text
+            self.separator = element.text
 
         for element in array:
-            tmpFilename[cpt] = []
+            tmp_filename[cpt] = []
             if element['type'] == 'column':
-                if element['filter'] is not None and element['filter'] in dateFilter:
-                    field = "strftime('" + dateFilter[element['filter']] + "', register_date) as date"
-                    labelField = 'date'
+                if element['filter'] is not None and element['filter'] in date_filter:
+                    field = "strftime('" + date_filter[element['filter']] + "', register_date) as date"
+                    label_field = 'date'
                 else:
                     field = element['value']
-                    labelField = field
+                    label_field = field
 
                 table = element['table']
                 where = ''
                 data = ''
                 if table == 'suppliers':
                     where = 'vat_number = ?'
-                    data = vatNumber
+                    data = vat_number
                 elif table == 'invoices':
                     where = 'invoice_number = ?'
-                    data = invoiceNumber
+                    data = invoice_number
 
                 res = self.db.select({
-                    'select'    : [field],
-                    'table'     : [table],
-                    'where'     : [where],
-                    'data'      : [data],
-                    'limit'     : 1
+                    'select': [field],
+                    'table': [table],
+                    'where': [where],
+                    'data': [data],
+                    'limit': 1
                 })
                 if res:
-                    tmpFilename[cpt] = res[0][labelField].replace(' ', '_')
+                    tmp_filename[cpt] = res[0][label_field].replace(' ', '_')
 
             elif element['type'] == 'text':
-                tmpFilename[cpt] = element['value']
+                tmp_filename[cpt] = element['value']
 
             cpt += 1
 
         filename = ''
-        for cpt in tmpFilename:
+        for cpt in tmp_filename:
             if self.separator:
-                filename += tmpFilename[cpt] + self.separator
+                filename += tmp_filename[cpt] + self.separator
             else:
-                filename += tmpFilename[cpt]
+                filename += tmp_filename[cpt]
 
         if self.separator:
             # remove last separator

@@ -18,6 +18,7 @@
 from configparser import ConfigParser, ExtendedInterpolation
 import os
 
+
 class Config:
     def __init__(self, path):
         self.cfg = {}
@@ -29,9 +30,9 @@ class Config:
             for info in parser[section]:
                 self.cfg[section][info] = parser[section][info]
 
-    def read_position(self, typology, key, Locale):
+    def read_position(self, typology, key, locale):
         file = self.cfg['REFERENCIAL']['referencialposition'] + str(typology) + '.ini'
-        res  = {}
+        res = {}
         if os.path.isfile(file):
             parser = ConfigParser(interpolation=ExtendedInterpolation())
             parser.read(file)
@@ -40,8 +41,8 @@ class Config:
                     for info in parser[section]:
                         res[info] = parser[section][info]
         if res and res['regex']:
-            localeList = Locale.get()
-            res['regex'] = localeList[res['regex']]
+            locale_list = locale.get()
+            res['regex'] = locale_list[res['regex']]
         return res
 
     @staticmethod
