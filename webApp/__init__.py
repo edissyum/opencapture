@@ -72,7 +72,7 @@ def create_app(test_config=None):
         ]
 
     app.config.from_mapping(
-        SECRET_KEY='',
+        SECRET_KEY='§§SECRET§§',
         CONFIG_FILE=os.path.join(app.instance_path, 'config.ini'),
         CONFIG_FOLDER=os.path.join(app.instance_path, 'config/'),
         UPLOAD_FOLDER=os.path.join(app.instance_path, 'upload/'),
