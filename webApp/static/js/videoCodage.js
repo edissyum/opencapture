@@ -32,6 +32,8 @@ var isDuplicate         = false;
 var config              = '';
 // noinspection ES6ConvertVarToLetConst
 var banApiError         = false;
+// noinspection ES6ConvertVarToLetConst
+var pdfId               = $("#pdfId").val()
 
 /******** MAIN FUNCTIONS ********/
 
@@ -234,14 +236,14 @@ function ocrOnFly(isRemoved, inputId, removeWhiteSpace = false, needToBeNumber =
                                 input.setAttribute('y2', y2.toFixed(2).toString());
                                 input.setAttribute('page', currentPage === undefined ? 1 : currentPage.text());
 
-                                let inputPosition = $('#' + input.name + '_position')
-                                let inputPage = $('#' + input.name + '_page')
+                                let inputPosition = $('#' + input.id + '_position')
+                                let inputPage = $('#' + input.id + '_page')
 
                                 if (!inputPosition.length)
-                                    $('#' + input.id).parent().append('<input type="hidden" id="' + input.name + '_position" name="' + input.name + '_position"/>')
+                                    $('#' + input.id).parent().append('<input type="hidden" id="' + input.id + '_position" name="' + input.name + '_position"/>')
 
                                 if (!inputPage.length)
-                                    $('#' + input.id).parent().append('<input type="hidden" id="' + input.name + '_page" name="' + input.name + '_page"/>')
+                                    $('#' + input.id).parent().append('<input type="hidden" id="' + input.id + '_page" name="' + input.name + '_page"/>')
 
                                 inputPosition.val('((' + x1.toFixed(2) + ',' + y1.toFixed(2) + '),(' + x2.toFixed(2) + ',' + y2.toFixed(2) + '))');
                                 inputPage.val(currentPage === undefined ? 1 : currentPage.text());
@@ -262,22 +264,6 @@ function ocrOnFly(isRemoved, inputId, removeWhiteSpace = false, needToBeNumber =
 }
 
 /******** ONLOAD ********/
-
-function getCookie(cname) {
-  let name = cname + "=";
-  let decodedCookie = decodeURIComponent(document.cookie);
-  let ca = decodedCookie.split(';');
-  for(let i = 0; i <ca.length; i++) {
-    let c = ca[i];
-    while (c.charAt(0) === ' ') {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) === 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
-}
 
 // On load, reload Insee token for SIRET/SIREN validation
 // Also, do all the validation if the input aren't empty
@@ -302,7 +288,7 @@ $(document).ready(function() {
                             console.log('error')
                         }else{
                             let result = JSON.parse(res.text);
-                            document.cookie = "access_token=" + result['access_token'] + ";max-age=604800";
+                            setCookie('access_token', result['access_token'], 7)
                             token = getCookie('access_token');
                         }
                     }
@@ -333,6 +319,8 @@ $(document).ready(function() {
 
             $('#status_form').delay(1000).fadeOut('slow'); // will first fade out the loading animation
             $('#preloader_form').delay(500).fadeOut('slow'); // will fade out the white DIV that covers the website.
+
+            retrieve_form_cookies('invoice_info', pdfId)
         })
         .catch(function() {
             loaded = false;
@@ -738,7 +726,9 @@ function drawRectangle(input){
         let zoomImg = $('.zoomImg');
         let myImage = $('#my-image');
         if(maxPages > 1)
-            changeImage(inputInfo.attr('page'));
+            if (inputInfo.attr('page') !== 1)
+                changeImage(inputInfo.attr('page'));
+
         if(zoomImg.length === 0 || zoomImg.css('opacity') === '0') {
             let ratio   = originalWidth / myImage.width()
 
@@ -1006,7 +996,7 @@ $('#refuseForm').on('click', function(){
             gt.gettext('REFUSE_CONFIRMATION') +
         '</span>');
 
-    $('<button type="button" class="btn btn-danger" onclick=\'changeStatus($("#pdfId").val(), "ERR", false);\'>' +
+    $('<button type="button" class="btn btn-danger" onclick=\'changeStatus(pdfId, "ERR", false);\'>' +
                 gt.gettext('YES') +
     '</button>').insertAfter($('#returnToValidate'));
 
@@ -1048,14 +1038,14 @@ $('#validateForm').on('click', function(){
         let awaitAdress = $('#awaitAdress')
 
         if (awaitAdress.length === 0) {
-            $('<button type="button" class="btn btn-warning" onclick=\'changeStatus($("#pdfId").val(), "WAIT_SUP", false);\' id="awaitAdress">' +
+            $('<button type="button" class="btn btn-warning" onclick=\'changeStatus(pdfId, "WAIT_SUP", false);\' id="awaitAdress">' +
                     gt.gettext('PUT_ON_HOLD') +
             '</button>').insertAfter($('#returnToValidate'));
         }
         console.log(config.GLOBAL['allowbypasssuppliebanverif']);
         console.log(typeof config.GLOBAL['allowbypasssuppliebanverif']);
         if ($('#bypassBan').length === 0 && config.GLOBAL['allowbypasssuppliebanverif'] === 'True') {
-            $('<button type="button" class="btn btn-danger" onclick=\'changeStatus($("#pdfId").val(), "END");\' id="bypassBan">' +
+            $('<button type="button" class="btn btn-danger" onclick=\'changeStatus(pdfId, "END");\' id="bypassBan">' +
                     gt.gettext('_VALID_WIHTOUT_BAN_VERIFICATION') +
             '</button>').insertAfter($('#awaitAdress'));
         }
@@ -1067,7 +1057,7 @@ $('#validateForm').on('click', function(){
             '</span>'
         );
         if ($('#bypassVat').length === 0 ) {
-            $('<button type="button" class="btn btn-danger" onclick=\'changeStatus($("#pdfId").val(), "END");\' id="bypassVat">' +
+            $('<button type="button" class="btn btn-danger" onclick=\'changeStatus(pdfId, "END");\' id="bypassVat">' +
                     gt.gettext('_VALID_WIHTOUT_VAT_VERIFICATION') +
             '</button>').insertAfter($('#returnToValidate'));
         }
@@ -1079,7 +1069,7 @@ $('#validateForm').on('click', function(){
             '</span>'
         );
         if ($('#validateFacAnalyticsError').length === 0) {
-            $('<button type="button" class="btn btn-info" onclick=\'changeStatus($("#pdfId").val(), "END");\' id="validateFacAnalyticsError">' +
+            $('<button type="button" class="btn btn-info" onclick=\'changeStatus(pdfId, "END");\' id="validateFacAnalyticsError">' +
                 gt.gettext('YES') +
                 '</button>').insertAfter($('#returnToValidate'));
         }
@@ -1091,12 +1081,12 @@ $('#validateForm').on('click', function(){
         );
 
         if ($('#validateFacAnalyticsError').length === 0) {
-            $('<button type="button" class="btn btn-info" onclick=\'changeStatus($("#pdfId").val(), "END");\' id="validateFacAnalyticsError">' +
+            $('<button type="button" class="btn btn-info" onclick=\'changeStatus(pdfId, "END");\' id="validateFacAnalyticsError">' +
                 gt.gettext('YES') +
                 '</button>').insertAfter($('#returnToValidate'));
         }
     }else{
-        changeStatus($("#pdfId").val(), "END");
+        changeStatus(pdfId, "END");
     }
 
     modalBack.toggle();
