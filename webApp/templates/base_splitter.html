@@ -25,6 +25,7 @@
     <script type="text/javascript" src="{{ url_for('static', filename='js/otherLib/bootstrap.bundle.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/jqueryLib/chosen.jquery.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/jqueryLib/chosenImage.jquery.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/cookies.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>
 </head>
 <body>
@@ -78,8 +79,6 @@
                 {{ g.user['username'] }}
             </span>
         {% endif %}
-
-
 
         <!-- Change language -->
         <div class="locale">
