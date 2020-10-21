@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<head>
+    <title>{% block title %}{% endblock %} - Open-Cature For Invoices</title>
+    <meta name="author" content="Nathan Cheval">
+    <meta name="description" content="Open-Capture for invoices">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="icon"        href="{{ url_for('static', filename='css/favicon.ico') }}"/>
+    <link rel="stylesheet"  href="{{ url_for('static', filename='css/home.css') }}">
+    <link rel="stylesheet"  href="{{ url_for('static', filename='css/preloader.css') }}">
+    <link rel="stylesheet"  href="{{ url_for('static', filename='css/jqueryLib/chosen.min.css') }}">
+    <link rel="stylesheet"  href="{{ url_for('static', filename='css/jqueryLib/chosenImage.css') }}">
+    <link rel="stylesheet"  href="{{ url_for('static', filename='css/otherLib/bootstrap.min.css') }}">
+    <link rel="stylesheet"  href="{{ url_for('static', filename='css/otherLib/fontawesome/css/all.css') }}">
+    <link rel="stylesheet"  href="{{ url_for('static', filename='css/jqueryLib/jquery.autocomplete.css') }}">
+    <link rel="stylesheet"  href="{{ url_for('static', filename='css/jqueryLib/imgareaselect-default.css') }}">
+
+    {% block css %}
+    {% endblock %}
+
+    {% block javascript %}
+    {% endblock %}
+
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jqueryLib/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/otherLib/bootstrap.bundle.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jqueryLib/chosen.jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jqueryLib/chosenImage.jquery.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/cookies.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <a class="navbar-brand" href="#">
+            <img src="{{ url_for('static', filename='imgs/open-capture.png') }}" class="d-inline-block align-top" alt="Logo Open-Capture" width="200">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                {% if g.user %}
+                    <a class="nav-item nav-link " href="{{ url_for('pdf.home') }}">{{ gettext('HOME') }}</a>
+                    <a class="nav-item nav-link" href="{{ url_for('auth.logout') }}">{{ gettext('LOG_OUT') }}</a>
+                {% else %}
+                    <a class="nav-item nav-link" href="{{ url_for('auth.login') }}">{{ gettext('SIGN_IN') }}</a>
+                {% endif %}
+            </div>
+        </div>
+        {% if g.user %}
+            <span class="navbar-text">
+                {{ g.user['username'] }}
+            </span>
+        {% endif %}
+
+        <!-- Change language -->
+        <div class="locale">
+            <label for="change_language"></label>
+            <select name="changeLanguage" id="change_language">
+                {% for locale in config['LANGUAGES'] %}
+                    <option data-img-src={{ url_for('static', filename="imgs/babel/" ~  locale  ~ ".png") }} value="{{ locale }}" {% if session['lang'] == locale %} selected {% endif %}>
+                        {{ config['LANGUAGES'][locale][0] }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <script>
+            $("#change_language").chosenImage({
+                disable_search_threshold: 10,
+                width: 120,
+            });
+
+            // Add onclick event because Chosen didn't handleonclick
+            $( ".chosen-results" ).on("click","li.active-result", function(event) {
+                let optionsChose    = event['target']['attributes']['data-option-array-index'].value;
+                let lang            = document.getElementById("change_language").options[optionsChose].value;
+                changeLanguage(lang);
+            });
+        </script>
+    </nav>
+
+    <section class="content">
+        {% for message in get_flashed_messages() %}
+            <div class="flash" onclick="$('.flash').fadeOut()"><script>$('.flash').delay(4000).fadeOut()</script>{{ message }}</div>
+        {% endfor %}
+        {% block content_no_nav %}{% endblock %}
+    </section>
+</body>
