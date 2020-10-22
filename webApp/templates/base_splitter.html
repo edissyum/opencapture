@@ -69,8 +69,15 @@
                     <a class="nav-item nav-link {% if '/splitterManager' in request.path %}active{% endif %}" href="{{ url_for('ws_splitter.splitter_manager') }}">{{ gettext('LIST') }}</a>
                     <a class="nav-item nav-link {% if request.path == '/upload' %}active{% endif %}" href="{{ url_for('pdf.upload', splitter='True') }}">{{ gettext('UPLOAD') }}</a>
                     <a class="nav-item nav-link" href="{{ url_for('auth.logout') }}">{{ gettext('LOG_OUT') }}</a>
+                    {% if g.user['role'] == 'admin' %}
+                        <a class="nav-item nav-link user {% if request.path == '/dashboard' %}active{% endif %}" href="{{ url_for('dashboard.index') }}">{{ gettext('DASHBOARD') }}</a>
+                        <a class="nav-item nav-link {% if request.path == '/user/list' %}active{% endif %}" href="{{ url_for('user.user_list') }}">{{ gettext('USER_LIST') }}</a>
+                        <a class="nav-item nav-link {% if request.path == '/user/create' %}active{% endif %}" href="{{ url_for('user.create') }}">{{ gettext('CREATE_USER') }}</a>
+                        <a class="nav-item nav-link {% if request.path == '/supplier/list' %}active{% endif %}" href="{{ url_for('supplier.supplier_list') }}">{{ gettext('SUPPLIER_LIST') }}</a>
+                    {% endif %}
                 {% else %}
                     <a class="nav-item nav-link" href="{{ url_for('auth.login') }}">{{ gettext('SIGN_IN') }}</a>
+                    <a class="nav-item nav-link" href="{{ url_for('auth.register') }}">{{ gettext('SIGN_UP') }}</a>
                 {% endif %}
             </div>
         </div>
