@@ -100,11 +100,13 @@
                                     <br>
                                         {{ gettext('ORIGINAL_FILENAME') }} : {{ pdf['original_filename'] }}
                                     </small>
-                                    <span id="trash" class="float-right">
-                                        <button onclick="deleteInvoice({{ pdf['invoice_id'] }})" class="text-danger text-decoration-none">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </span>
+                                    {% if g.user['role'] == 'admin'%}
+                                        <span id="trash" class="float-right">
+                                            <button onclick="deleteInvoice({{ pdf['invoice_id'] }})" class="text-danger text-decoration-none">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </span>
+                                    {% endif %}
                                 </p>
                             </div>
                             {% if g.user['role'] == 'admin' and pdfs|length > 1 %}
