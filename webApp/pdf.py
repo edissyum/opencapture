@@ -113,7 +113,7 @@ def home():
 
 @bp.route('/list/', defaults={'status': None, 'time': None, 'search': None})
 @bp.route('/list/lot/', defaults={'status': None, 'search': None, 'time': None})
-@bp.route('/list/lot/<string:time>/', defaults={'status': None, 'search': None})
+@bp.route('/list/lot/<string:time>/', defaults={'status': 'NEW', 'search': None})
 @bp.route('/list/lot/<string:time>/<string:status>', defaults={'search': None})
 @bp.route('/list/lot/<string:time>/<string:status>?search=<path:search>')
 @login_required
@@ -203,7 +203,8 @@ def index(status, time, search):
             'left_join': ['invoices.status = status.id'],
             'where': ["status NOT IN ('END', 'DEL')", "strftime('%Y-%m-%d',register_date) = ?"],
             'data': [datetime.today().strftime('%Y-%m-%d')],
-            'limit': str(offset) + ',' + str(per_page),
+            'limit': str(per_page),
+            'offset': str(offset),
             'order_by': ['date DESC']
         })
 
@@ -512,7 +513,13 @@ def static(type_of_file, filename):
         mimetype = 'image/jpeg'
 
     path = docservers + '/' + filename
-    content = open(path, 'rb').read()
+    try:
+        content = open(path, 'rb').read()
+    except FileNotFoundError:
+        if mimetype == 'image/jpeg':
+            content = open(current_app.instance_path + '/document_not_found.jpg', 'rb').read()
+        else:
+            content = open(current_app.instance_path + '/document_not_found.pdf', 'rb').read()
 
     return Response(content, mimetype=mimetype)
 
