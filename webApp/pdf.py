@@ -111,13 +111,12 @@ def home():
     return render_template('templates/home.html')
 
 
-@bp.route('/list/', defaults={'status': None, 'time': None, 'search': None})
-@bp.route('/list/lot/', defaults={'status': None, 'search': None, 'time': None})
-@bp.route('/list/lot/<string:time>/', defaults={'status': 'NEW', 'search': None})
-@bp.route('/list/lot/<string:time>/<string:status>', defaults={'search': None})
-@bp.route('/list/lot/<string:time>/<string:status>?search=<path:search>')
+@bp.route('/list/', defaults={'status': None, 'time': None})
+@bp.route('/list/lot/', defaults={'status': None, 'time': None})
+@bp.route('/list/lot/<string:time>/', defaults={'status': None})
+@bp.route('/list/lot/<string:time>/<string:status>')
 @login_required
-def index(status, time, search):
+def index(status, time):
     _vars = init()
     _db = _vars[0]
     _cfg = _vars[1].cfg
@@ -157,8 +156,8 @@ def index(status, time, search):
         else:
             where.append("invoices.status <> 'DEL'")
 
-        if search:
-            where.append("(invoices.invoiceNumber LIKE '%" + search + "%' OR suppliers.name LIKE '%" + search + "%')")
+        if 'search' in request.args:
+            where.append("(LOWER(invoices.invoice_number) LIKE '%%" + request.args['search'].lower() + "%%' OR LOWER(suppliers.name) LIKE '%%" + request.args['search'].lower() + "%%')")
 
         total = _db.select({
             'select': ['count(DISTINCT(invoices.id)) as total'],
