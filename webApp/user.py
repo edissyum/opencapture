@@ -5,7 +5,7 @@ from flask_babel import gettext
 from flask_paginate import Pagination, get_page_args
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from webApp.auth import login_required, register
+from webApp.auth import login_required, register, admin_login_required, current_login_required
 
 from .functions import get_custom_id, check_python_customized_files
 
@@ -38,7 +38,7 @@ def check_user(user_id):
 
 @bp.route('/profile', methods=('GET', 'POST'), defaults=({'user_id': None}))
 @bp.route('/profile/<int:user_id>', methods=('GET', 'POST'))
-@login_required
+@current_login_required
 def profile(user_id):
     if user_id is None:
         user_id = g.user['id']
@@ -49,19 +49,46 @@ def profile(user_id):
         return redirect(url_for('user.profile', user_id=user_id))
 
     if request.method == 'POST':
-        old = request.form['old_password']
-        new = request.form['new_password']
-        change_password(old, new, user_id)
+        if 'old_password' in request.form:
+            old = request.form['old_password']
+            new = request.form['new_password']
+            change_password(old, new, user_id)
+
+        if 'role' in request.form:
+            role = request.form['role']
+            if role != user_info['role']:
+                change_role(role, user_id)
+                user_info['role'] = role
 
     return render_template('templates/users/user_profile.html', user=user_info)
+
+
+def change_role(role, user_id):
+    _vars = pdf.init()
+    _db = _vars[0]
+
+    user = check_user(user_id)
+    if user is not False:
+        res = _db.update({
+            'table': ['users'],
+            'set': {
+                'role': role
+            },
+            'where': ['id = ?'],
+            'data': [user_id]
+        })
+
+        if res[0] is not False:
+            flash(gettext('UPDATE_ROLE_OK'))
+        else:
+            flash(gettext('UPDATE_ROLE_ERROR') + ' : ' + str(res[1]))
 
 
 def change_password(old_password, new_password, user_id):
     _vars = pdf.init()
     _db = _vars[0]
 
-    user = check_user(g.user['id'])
-
+    user = check_user(user_id)
     if user is not False:
         if not check_password_hash(user['password'], old_password):
             flash(gettext('ERROR_OLD_PASSWORD_NOT_MATCH'))
@@ -117,7 +144,7 @@ def reset_password(user_id):
 
 
 @bp.route('/list')
-@login_required
+@admin_login_required
 def user_list():
     _vars = pdf.init()
     _db = _vars[0]
@@ -168,7 +195,7 @@ def user_list():
 
 @bp.route('/enable/<int:user_id>', defaults={'fallback': None})
 @bp.route('/enable/<int:user_id>?fallback=<path:fallback>')
-@login_required
+@admin_login_required
 def enable(user_id, fallback):
     _vars = pdf.init()
     _db = _vars[0]
@@ -199,7 +226,7 @@ def enable(user_id, fallback):
 
 @bp.route('/disable/<int:user_id>', defaults={'fallback': None})
 @bp.route('/disable/<int:user_id>?fallback=<path:fallback>')
-@login_required
+@admin_login_required
 def disable(user_id, fallback):
     _vars = pdf.init()
     _db = _vars[0]
@@ -230,7 +257,7 @@ def disable(user_id, fallback):
 
 @bp.route('/delete/<int:user_id>', defaults={'fallback': None})
 @bp.route('/delete/<int:user_id>?fallback=<path:fallback>')
-@login_required
+@admin_login_required
 def delete(user_id, fallback):
     _vars = pdf.init()
     _db = _vars[0]
@@ -260,7 +287,7 @@ def delete(user_id, fallback):
 
 
 @bp.route('/create', methods=('GET', 'POST'))
-@login_required
+@admin_login_required
 def create():
     if request.method == 'POST':
         register()

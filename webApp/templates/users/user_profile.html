@@ -13,9 +13,10 @@
         </div>
      </div>
     <div class="row">
-        <div class="login-form align-self-center">
+        <div class="login-form profile-form align-self-center col-md-3 offset-md-3">
             <form method="post">
                 <h2 class="text-center">{{ gettext('CHANGE_PASSWORD') }}</h2>
+                <hr>
                 <div class="form-group">
                     <input autocomplete="off" name="old_password" type="password" class="form-control" placeholder="{{ gettext('OLD_PASSWORD') }}" required="required">
                 </div>
@@ -31,6 +32,25 @@
                     {{ gettext('RESET_PASSWORD') }}
                 </a>
             </p>
+        </div>
+        <div class="login-form profile-form align-self-center col-md-3">
+                <form method="post">
+                    <h2 class="text-center">{{ gettext('CHANGE_ROLE') }}</h2>
+                    <hr>
+                    {% if g.user['role'] == 'admin' %}
+                        <div class="form-group">
+                            <select name="role" class="form-control" required="required">
+                                <option value="user" {% if user['role'] == 'user' %}selected {% endif %}>{{ gettext('ROLE_USER') }}</option>
+                                <option value="admin" {% if user['role'] == 'admin' %}selected {% endif %}>{{ gettext('ROLE_ADMIN') }}</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" class="btn btn-primary btn-block"/>
+                        </div>
+                    {% else %}
+                        <p class="text-center">{{ gettext('NO_RIGHTS') }}</p>
+                    {% endif %}
+                </form>
         </div>
     </div>
     {% block javascript %}

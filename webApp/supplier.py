@@ -1,5 +1,5 @@
 from flask_babel import gettext
-from webApp.auth import login_required
+from webApp.auth import admin_login_required
 from flask import Blueprint, render_template
 from flask_paginate import Pagination, get_page_args
 from webApp.functions import get_custom_id, check_python_customized_files
@@ -18,7 +18,7 @@ bp = Blueprint('supplier', __name__, url_prefix='/supplier')
 
 
 @bp.route('/list')
-@login_required
+@admin_login_required
 def supplier_list():
     _vars = pdf.init()
     _db = _vars[0]

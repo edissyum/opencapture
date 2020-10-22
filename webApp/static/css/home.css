@@ -133,5 +133,9 @@ body {
     opacity: 1;
 }
 
-
+#navbarNavAltMarkup .navbar-nav .user {
+    margin-left: 22px;
+    padding-left: 22px;
+    border-left: 1px solid rgba(151, 191, 61, 1);
+}
 /************ END HOME ************/

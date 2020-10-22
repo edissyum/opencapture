@@ -75,6 +75,10 @@ hr {
     margin: 50px auto;
 }
 
+.profile-form{
+    margin:0;
+}
+
 .login-form form {
     margin-bottom: 15px;
     background: #f7f7f7;

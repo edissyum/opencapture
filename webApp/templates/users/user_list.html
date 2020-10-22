@@ -14,6 +14,7 @@
                         <th>{{ gettext('USERNAME') }}</th>
                         <th>{{ gettext('CREATION_DATE') }}</th>
                         <th>{{ gettext('STATUS') }}</th>
+                        <th>{{ gettext('ROLE') }}</th>
                         <th>{{ gettext('ACTION') }}</th>
                     </tr>
                 </thead>
@@ -44,8 +45,17 @@
                                     {% endif %}
                                 </a>
                             </td>
+                            <td class="role">
+                                <a href="#">
+                                    {% if user['role'] == 'user' %}
+                                        {{ gettext('ROLE_USER') }}
+                                    {% else %}
+                                        {{ gettext('ROLE_ADMIN') }}
+                                    {% endif %}
+                                </a>
+                            </td>
                             <td class="actions">
-                                {% if user['username'] != 'admin' %}
+                                {% if user['username'] != g['user']['username'] %}
                                     <a href="{{ url_for('user.profile', user_id=user['id']) }}">
                                         <i class="fas fa-cog" data-toggle="tooltip" title="{{ gettext('PROFILE_USER') }}"></i>
                                     </a>
