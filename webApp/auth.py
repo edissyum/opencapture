@@ -13,6 +13,8 @@ def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        role = request.form['role']
+
         db = get_db()
         error = None
         user = db.select({
@@ -34,7 +36,8 @@ def register():
                 'table': 'users',
                 'columns': {
                     'username': username,
-                    'password': generate_password_hash(password)
+                    'password': generate_password_hash(password),
+                    'role' : role
                 }
             })
             flash(gettext('USER_CREATED_OK'))
@@ -109,6 +112,22 @@ def logout():
     return redirect(url_for('index'))
 
 
+def current_login_required(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        user_id = kwargs['user_id']
+        if user_id:
+            if g.user['role'] == 'admin' or g.user['id'] == user_id:
+                return view(**kwargs)
+            else:
+                return render_template('templates/error/403.html')
+        else:
+            if g.user is None:
+                return redirect(url_for('auth.login', fallback=str(request.path.replace('/', '%'))))
+        return view(**kwargs)
+    return wrapped_view
+
+
 def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
@@ -125,7 +144,8 @@ def admin_login_required(view):
     def wrapped_view(**kwargs):
         if g.user is None:
             return redirect(url_for('auth.login'))
-        elif g.user['username'] != 'admin':
+        elif g.user['role'] != 'admin':
             return render_template('templates/error/403.html')
         return view(**kwargs)
     return wrapped_view
+

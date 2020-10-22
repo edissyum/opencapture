@@ -39,11 +39,14 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
-                {% if g.user %}
-                    <a class="nav-item nav-link " href="{{ url_for('pdf.home') }}">{{ gettext('HOME') }}</a>
-                    <a class="nav-item nav-link" href="{{ url_for('auth.logout') }}">{{ gettext('LOG_OUT') }}</a>
-                {% else %}
-                    <a class="nav-item nav-link" href="{{ url_for('auth.login') }}">{{ gettext('SIGN_IN') }}</a>
+                <a class="nav-item nav-link" href="{{ url_for('pdf.home') }}">{{ gettext('HOME') }}</a>
+                <a class="nav-item nav-link" href={{ url_for('user.profile') }}>{{ gettext('MY_PROFILE') }}</a>
+                <a class="nav-item nav-link" href="{{ url_for('auth.logout') }}">{{ gettext('LOG_OUT') }}</a>
+                {% if g.user['role'] == 'admin' %}
+                    <a class="nav-item nav-link user" href="{{ url_for('dashboard.index') }}">{{ gettext('DASHBOARD') }}</a>
+                    <a class="nav-item nav-link" href="{{ url_for('user.user_list') }}">{{ gettext('USER_LIST') }}</a>
+                    <a class="nav-item nav-link" href="{{ url_for('user.create') }}">{{ gettext('CREATE_USER') }}</a>
+                    <a class="nav-item nav-link" href="{{ url_for('supplier.supplier_list') }}">{{ gettext('SUPPLIER_LIST') }}</a>
                 {% endif %}
             </div>
         </div>

@@ -69,7 +69,7 @@
                     <a class="nav-item nav-link {% if request.path == '/upload' %}active{% endif %}" href="{{ url_for('pdf.upload') }}">{{ gettext('UPLOAD') }}</a>
                     <a class="nav-item nav-link {% if request.path == '/user/profile' %}active{% endif %}" href={{ url_for('user.profile') }}>{{ gettext('MY_PROFILE') }}</a>
                     <a class="nav-item nav-link" href="{{ url_for('auth.logout') }}">{{ gettext('LOG_OUT') }}</a>
-                    {% if g.user['username'] == 'admin' %}
+                    {% if g.user['role'] == 'admin' %}
                         <a class="nav-item nav-link user {% if request.path == '/dashboard' %}active{% endif %}" href="{{ url_for('dashboard.index') }}">{{ gettext('DASHBOARD') }}</a>
                         <a class="nav-item nav-link {% if request.path == '/user/list' %}active{% endif %}" href="{{ url_for('user.user_list') }}">{{ gettext('USER_LIST') }}</a>
                         <a class="nav-item nav-link {% if request.path == '/user/create' %}active{% endif %}" href="{{ url_for('user.create') }}">{{ gettext('CREATE_USER') }}</a>
