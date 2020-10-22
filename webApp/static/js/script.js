@@ -58,9 +58,11 @@ function deleteInvoice(id, reload = true, res = false){
 function submitForm(){
     event.preventDefault();
     let search  = $('#search').val();
+    let currentUrl = window.location.pathname.split('?')[0];
     if (search !== ''){
-        let currentUrl       = window.location.pathname.split('?')[0];
         window.location.href = currentUrl + '?search=' + search;
+    }else{
+        window.location.href = currentUrl;
     }
 }
 
