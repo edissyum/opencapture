@@ -138,7 +138,8 @@ def user_list():
         'where': ['status not IN (?)'],
         'data': ['DEL'],
         'limit': str(per_page),
-        'offset': str(offset)
+        'offset': str(offset),
+        'order_by': ['id desc']
     })
 
     final_list = []
