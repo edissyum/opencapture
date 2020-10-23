@@ -90,6 +90,8 @@ class Files:
         else:
             if last_image:
                 target = self.jpgName_last
+            elif is_custom:
+                target = self.custom_fileName
             else:
                 target = self.jpgName
             self.save_img_with_wand(pdf_name, target)
