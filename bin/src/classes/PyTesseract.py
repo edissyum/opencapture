@@ -73,7 +73,7 @@ class PyTesseract:
         except pytesseract.pytesseract.TesseractError as t:
             self.Log.error('Tesseract ERROR : ' + str(t))
 
-    def generate_searchable_pdf(self, pdf, files, config):
+    def generate_searchable_pdf(self, pdf, files, config, _return=False):
         tmp_path = config.cfg['GLOBAL']['tmppath']
         files.save_img_with_wand(pdf, tmp_path + 'tmp.jpg')
         i = 0
@@ -90,7 +90,10 @@ class PyTesseract:
             os.remove(img[1])
 
         sorted_pdf_list = files.sorted_file(tmp_path, 'pdf')
-        self.searchablePdf = files.merge_pdf(sorted_pdf_list, tmp_path)
+        if _return:
+            return files.merge_pdf(sorted_pdf_list, tmp_path, _return)
+        else:
+            self.searchablePdf = files.merge_pdf(sorted_pdf_list, tmp_path)
 
     def get_ocr_errors_table(self):
         config_path = self.Config.cfg['GLOBAL']['ocrerrorpath']

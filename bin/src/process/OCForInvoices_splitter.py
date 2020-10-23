@@ -22,11 +22,11 @@ def process(file, log, splitter, files, ocr, tmp_folder, config):
     log.info('Processing file for separation : ' + file)
 
     if config.cfg['REMOVE-BLANK-PAGES']['enabled'] == 'True':
-        files.remove_blank_page(file)
+        files.remove_blank_page(file, config, ocr, files)
 
     # Get the OCR of the file as a list of line content and position
     if files.isTiff == "False":
-        files.pdf_to_jpg(file, False)
+        files.pdf_to_jpg(file, open_img=False)
         extension = 'jpg'
     else:
         tiff_filename = files.jpgName.replace('.jpg', '') + '-%03d.tiff'
