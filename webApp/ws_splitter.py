@@ -123,7 +123,7 @@ def splitter_manager(status, time):
             'select': [
                 "DISTINCT(invoices_batch_.id) as invoice_id",
                 "status.id as status_id",
-                "strftime('%d-%m-%Y à %H:%M', creation_date) as date",
+                "strftime('%d-%m-%Y à %H:%M:%S', creation_date) as date",
                 "*"
             ],
             'table': ['invoices_batch_', 'status'],
