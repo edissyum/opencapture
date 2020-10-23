@@ -47,6 +47,10 @@ pdfOutputPath = ${SPLITTER:splitterpath}/separated_pdf/
 pdfOriginPath = ${GLOBAL:projectPath}/bin/data/OC_Splitter/pdf_sources/
 allowedExtensions  = {'pdf'}
 
+[REMOVE-BLANK-PAGES]
+# True or False
+enabled = False
+
 [DATABASE]
 databasefile = ${GLOBAL:projectPath}/instance/flaskr.sqlite
 # sqlite or pgsql

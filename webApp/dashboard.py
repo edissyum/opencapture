@@ -123,6 +123,7 @@ def modify_config(data):
     allow_bypass_supplier = data.get('GLOBAL_allowbypasssuppliebanverif')
     ged_enabled = data.get('GED_enabled')
     ai_enabled = data.get('AI-CLASSIFICATION_enabled')
+    remove_blank_page_enabled = data.get('REMOVEBLANKPAGES_enabled')
 
     if separator_qrenabled is not None:
         parser.set('SEPARATORQR', 'enabled', 'True')
@@ -163,6 +164,11 @@ def modify_config(data):
         parser.set('GLOBAL', 'allowbypasssuppliebanverif', 'True')
     else:
         parser.set('GLOBAL', 'allowbypasssuppliebanverif', 'False')
+        
+    if remove_blank_page_enabled is not None:
+        parser.set('REMOVE-BLANK-PAGES', 'enabled', 'True')
+    else:
+        parser.set('REMOVE-BLANK-PAGES', 'enabled', 'False')
 
     for info in data:
         splitted_info = info.split('_')

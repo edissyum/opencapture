@@ -530,11 +530,26 @@ class Files:
                 shutil.move(file, config.cfg['GLOBAL']['errorpath'] + os.path.basename(file))
                 return 1
 
-    # OBR01
+    @staticmethod
+    def remove_blank_page(file):
+        with open(file, 'rb') as doc:
+            pdf_reader = PyPDF4.PdfFileReader(doc)
+            pdf_writer = PyPDF4.PdfFileWriter()
+            for page in range(0, pdf_reader.numPages):
+                page_obj = pdf_reader.getPage(page)
+                page_content = page_obj.getContents()
+                page_text = page_obj.extractText()
+                current_page = pdf_reader.getPage(page)
+
+                if page_content is not None and len(page_text) > 10:
+                    pdf_writer.addPage(current_page)
+
+            with open(file, "wb") as stream:
+                pdf_writer.write(stream)
+
     @staticmethod
     def create_directory(path):
         try:
             os.mkdir(path)
         except OSError:
             print("Creation of the directory %s failed" % path)
-    # END OBR01
