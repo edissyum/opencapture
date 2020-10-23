@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2020-10-22 10:14+0200\n"
+"POT-Creation-Date: 2020-10-23 14:05+0200\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: en\n"
@@ -16,48 +16,48 @@ msgstr ""
 
 #: bin/src/classes/WebServices.py:44
 msgid "CONNECTION_ERROR"
-msgstr ""
+msgstr "Error while trying to connect to the GED"
 
-#: webApp/auth.py:26 webApp/auth.py:68
+#: webApp/auth.py:28 webApp/auth.py:71
 msgid "USERNAME_REQUIRED"
 msgstr "Bad login"
 
-#: webApp/auth.py:28 webApp/auth.py:70
+#: webApp/auth.py:30 webApp/auth.py:73
 msgid "PASSWORD_REQUIRED"
 msgstr "Bad password"
 
-#: webApp/auth.py:30
+#: webApp/auth.py:32
 msgid "USER"
 msgstr "User"
 
-#: webApp/auth.py:30
+#: webApp/auth.py:32
 msgid "ALREADY_REGISTERED"
 msgstr "Already registered"
 
-#: webApp/auth.py:40
+#: webApp/auth.py:43
 msgid "USER_CREATED_OK"
 msgstr "User created with succes"
 
-#: webApp/auth.py:72
+#: webApp/auth.py:75
 msgid "USER_DELETED"
 msgstr "User deleted"
 
-#: webApp/auth.py:74
+#: webApp/auth.py:77
 msgid "USER_DISABLED"
 msgstr "User disabled"
 
 #: webApp/pdf.py:228 webApp/static/js/videoCodage.js:59
-#: webApp/ws_splitter.py:90
+#: webApp/ws_splitter.py:142
 msgid "NO_RESULTS"
 msgstr "No results"
 
-#: webApp/pdf.py:230 webApp/supplier.py:43 webApp/user.py:155
-#: webApp/ws_splitter.py:92
+#: webApp/pdf.py:230 webApp/supplier.py:43 webApp/user.py:182
+#: webApp/ws_splitter.py:144
 msgid "SHOW"
 msgstr "Show"
 
 #: webApp/pdf.py:230 webApp/supplier.py:43 webApp/templates/pdf/view.html:16
-#: webApp/user.py:155 webApp/ws_splitter.py:93
+#: webApp/user.py:182 webApp/ws_splitter.py:144
 msgid "OF"
 msgstr "of"
 
@@ -69,43 +69,51 @@ msgstr "Invoice validated and closed"
 msgid "ERROR_WHILE_INSERTING_IN_GED"
 msgstr "Error while inserting invoice in GED"
 
-#: webApp/user.py:48 webApp/user.py:83 webApp/user.py:114
+#: webApp/user.py:48 webApp/user.py:110 webApp/user.py:141
 msgid "ERROR_WHILE_RETRIEVING_USER"
 msgstr "Error while retrieving user informations"
 
-#: webApp/user.py:67
+#: webApp/user.py:82
+msgid "UPDATE_ROLE_OK"
+msgstr "Role updated with success"
+
+#: webApp/user.py:84
+msgid "UPDATE_ROLE_ERROR"
+msgstr "Error while trying to update role"
+
+#: webApp/user.py:94
 msgid "ERROR_OLD_PASSWORD_NOT_MATCH"
 msgstr "The old password do not match"
 
-#: webApp/user.py:79 webApp/user.py:110
+#: webApp/user.py:106 webApp/user.py:137
 msgid "UPDATE_OK"
 msgstr "Password updated with success"
 
-#: webApp/user.py:81 webApp/user.py:112
+#: webApp/user.py:108 webApp/user.py:139
 msgid "UPDATE_ERROR"
 msgstr "Error while updating password"
 
-#: webApp/user.py:193
+#: webApp/user.py:220
 msgid "USER_ENABLED_OK"
 msgstr "User enabled with succes"
 
-#: webApp/user.py:195
+#: webApp/user.py:222
 msgid "USER_ENABLED_ERROR"
 msgstr "Error while attempting to enable user"
 
-#: webApp/user.py:224
+#: webApp/user.py:251
 msgid "USER_DISABLED_OK"
 msgstr "User disabled with succes"
 
-#: webApp/user.py:226
+#: webApp/user.py:253
 msgid "USER_DISABLED_ERROR"
 msgstr "Error while attempting to disable user"
 
-#: webApp/user.py:255
+#: webApp/user.py:282
 msgid "USER_DELETED_OK"
 msgstr "User deleted with succes"
 
-#: webApp/user.py:257
+#: webApp/user.py:284
 msgid "USER_DELETED_ERROR"
 msgstr "Error while attempting to delete user"
 
@@ -137,7 +145,7 @@ msgstr "Error while updating configuration file"
 msgid "INVOICE_DELETED"
 msgstr "Invoice deleted"
 
-#: webApp/ws_splitter.py:48
+#: webApp/ws_splitter.py:49
 msgid "FILE_UPLOAD_SUCCESS"
 msgstr "File(s) upload with success"
 
@@ -145,16 +153,16 @@ msgstr "File(s) upload with success"
 msgid "_CONFIRM_DELETE"
 msgstr "Do you really want to delete this invoice ?"
 
-#: webApp/static/js/script.js:75 webApp/static/js/script.js:82
-#: webApp/static/js/script.js:91 webApp/static/js/script.js:133
+#: webApp/static/js/script.js:80 webApp/static/js/script.js:89
+#: webApp/static/js/script.js:131 webApp/templates/pdf/list.html:52
 msgid "SELECT_ALL"
 msgstr "Select all"
 
-#: webApp/static/js/script.js:84 webApp/static/js/script.js:127
+#: webApp/static/js/script.js:82 webApp/static/js/script.js:125
 msgid "UNSELECT_ALL"
 msgstr "Unselect all"
 
-#: webApp/static/js/script.js:100
+#: webApp/static/js/script.js:98
 msgid "_CONFIRM_DELETE_BATCH"
 msgstr "Do you really want to delete this batch of invoices ?"
 
@@ -173,12 +181,12 @@ msgid "ERROR_WHILE_READING_CONFIGURATION_FILE"
 msgstr "Erreur lors de la lecture du fichier de configuration"
 
 #: webApp/static/js/videoCodage.js:441
-#: webApp/templates/dashboard/index.html:807 webApp/templates/pdf/view.html:201
+#: webApp/templates/dashboard/index.html:810 webApp/templates/pdf/view.html:201
 msgid "VAT_RATE"
 msgstr "VAT rate"
 
 #: webApp/static/js/videoCodage.js:450 webApp/static/js/videoCodage.js:551
-#: webApp/templates/dashboard/index.html:785 webApp/templates/pdf/view.html:210
+#: webApp/templates/dashboard/index.html:788 webApp/templates/pdf/view.html:210
 #: webApp/templates/pdf/view.html:284
 msgid "NO_RATE_AMOUNT"
 msgstr "No rate amount"
@@ -322,38 +330,43 @@ msgstr "Batch"
 msgid "UPLOAD"
 msgstr "Upload"
 
-#: webApp/templates/base.html:70
+#: webApp/templates/base.html:70 webApp/templates/base_home.html:43
 msgid "MY_PROFILE"
 msgstr "My profile"
 
-#: webApp/templates/base.html:71 webApp/templates/base_home.html:43
+#: webApp/templates/base.html:71 webApp/templates/base_home.html:44
 #: webApp/templates/base_splitter.html:71
 msgid "LOG_OUT"
 msgstr "Log out"
 
-#: webApp/templates/base.html:73 webApp/templates/base_home.html:45
+#: webApp/templates/base.html:73 webApp/templates/base_home.html:46
+#: webApp/templates/base_splitter.html:73
 msgid "DASHBOARD"
 msgstr "Dashboard"
 
-#: webApp/templates/base.html:74 webApp/templates/base_home.html:46
+#: webApp/templates/base.html:74 webApp/templates/base_home.html:47
+#: webApp/templates/base_splitter.html:74
 #: webApp/templates/users/user_list.html:2
 msgid "USER_LIST"
 msgstr "Users list"
 
-#: webApp/templates/base.html:75 webApp/templates/base_home.html:47
+#: webApp/templates/base.html:75 webApp/templates/base_home.html:48
+#: webApp/templates/base_splitter.html:75
 msgid "CREATE_USER"
 msgstr "Create user"
 
-#: webApp/templates/base.html:76 webApp/templates/base_home.html:48
+#: webApp/templates/base.html:76 webApp/templates/base_home.html:49
+#: webApp/templates/base_splitter.html:76
 #: webApp/templates/suppliers/suppliers_list.html:2
 msgid "SUPPLIER_LIST"
 msgstr "Suppliers list"
 
-#: webApp/templates/base.html:79 webApp/templates/base_splitter.html:73
+#: webApp/templates/base.html:79 webApp/templates/base_splitter.html:79
 msgid "SIGN_IN"
 msgstr "Sign in"
 
 #: webApp/templates/auth/login.html:19 webApp/templates/base.html:80
+#: webApp/templates/base_splitter.html:80
 msgid "SIGN_UP"
 msgstr "Sign up"
 
@@ -395,11 +408,13 @@ msgstr "Please select a role..."
 
 #: webApp/templates/auth/register.html:18
 #: webApp/templates/users/user_list.html:51
+#: webApp/templates/users/user_profile.html:43
 msgid "ROLE_USER"
 msgstr "User"
 
 #: webApp/templates/auth/register.html:19
 #: webApp/templates/users/user_list.html:53
+#: webApp/templates/users/user_profile.html:44
 msgid "ROLE_ADMIN"
 msgstr "Administrator"
 
@@ -489,9 +504,10 @@ msgstr "Allow duplicate invoice"
 #: webApp/templates/dashboard/index.html:193
 #: webApp/templates/dashboard/index.html:209
 #: webApp/templates/dashboard/index.html:225
-#: webApp/templates/dashboard/index.html:826
-#: webApp/templates/dashboard/index.html:913
-#: webApp/templates/dashboard/index.html:1199
+#: webApp/templates/dashboard/index.html:829
+#: webApp/templates/dashboard/index.html:900
+#: webApp/templates/dashboard/index.html:926
+#: webApp/templates/dashboard/index.html:1212
 msgid "ENABLED"
 msgstr "Enabled"
 
@@ -566,7 +582,7 @@ msgid "ALLOWED_EXTENSIONS"
 msgstr "Allowed extensions"
 
 #: webApp/templates/dashboard/index.html:385
-#: webApp/templates/dashboard/index.html:897
+#: webApp/templates/dashboard/index.html:910
 msgid "GENERAL"
 msgstr "General"
 
@@ -586,317 +602,321 @@ msgstr "Regex"
 msgid "QR_CODE_SEPARATION"
 msgstr "QRCODE Separation"
 
-#: webApp/templates/dashboard/index.html:404
+#: webApp/templates/dashboard/index.html:400
+msgid "BLANK_PAGE_REMOVE"
+msgstr "Remove blank pages"
+
+#: webApp/templates/dashboard/index.html:407
 msgid "PROJECT_PATH"
 msgstr "Project path"
 
-#: webApp/templates/dashboard/index.html:415
-#: webApp/templates/dashboard/index.html:864
+#: webApp/templates/dashboard/index.html:418
+#: webApp/templates/dashboard/index.html:867
 msgid "TEMP_PATH"
 msgstr "Temp path"
 
-#: webApp/templates/dashboard/index.html:426
+#: webApp/templates/dashboard/index.html:429
 msgid "IMAGES_PATH"
 msgstr "Images path"
 
-#: webApp/templates/dashboard/index.html:440
+#: webApp/templates/dashboard/index.html:443
 msgid "TIFF_PATH"
 msgstr "TIFF path"
 
-#: webApp/templates/dashboard/index.html:451
+#: webApp/templates/dashboard/index.html:454
 msgid "ERROR_PATH"
 msgstr "Error path"
 
-#: webApp/templates/dashboard/index.html:462
+#: webApp/templates/dashboard/index.html:465
 msgid "LOGS_FILE"
 msgstr "Logs file"
 
-#: webApp/templates/dashboard/index.html:476
+#: webApp/templates/dashboard/index.html:479
 msgid "DOCSERVER_PATH"
 msgstr "Docservers path"
 
-#: webApp/templates/dashboard/index.html:487
+#: webApp/templates/dashboard/index.html:490
 msgid "EXPORT_ACCOUNTING_FOLDER"
 msgstr "XML export path"
 
-#: webApp/templates/dashboard/index.html:498
+#: webApp/templates/dashboard/index.html:501
 msgid "EXPORT_ACCOUNTING_FILE_PARSER"
 msgstr "XML naming file"
 
-#: webApp/templates/dashboard/index.html:512
+#: webApp/templates/dashboard/index.html:515
 msgid "THREADS_NUMBER"
 msgstr "Number of threads"
 
-#: webApp/templates/dashboard/index.html:523
+#: webApp/templates/dashboard/index.html:526
 msgid "OCR_RESOLUTION_DPI"
 msgstr "Image resolution for OCR (DPI)"
 
-#: webApp/templates/dashboard/index.html:537
+#: webApp/templates/dashboard/index.html:540
 msgid "IMAGE_COMPRESSION_QUALITY"
 msgstr "Quality of image compression"
 
-#: webApp/templates/dashboard/index.html:547
+#: webApp/templates/dashboard/index.html:550
 msgid "COMPRESSION_HELP"
 msgstr "From 1 to 100. 100 being the best quality"
 
-#: webApp/templates/dashboard/index.html:551
+#: webApp/templates/dashboard/index.html:554
 msgid "OCR_CHAR_CORRECTION"
 msgstr "OCR characters correction"
 
-#: webApp/templates/dashboard/index.html:562
+#: webApp/templates/dashboard/index.html:565
 msgid "OCR_ERROR_PATH"
 msgstr "Path for OCR correction file"
 
-#: webApp/templates/dashboard/index.html:577
+#: webApp/templates/dashboard/index.html:580
 msgid "REGEX_LOCALE_CODE"
 msgstr "REGEX language code"
 
-#: webApp/templates/dashboard/index.html:587
+#: webApp/templates/dashboard/index.html:590
 msgid "LOCALE_HELP"
 msgstr "<b>fr_FR</b> or <b>en_EN</b> by default"
 
-#: webApp/templates/dashboard/index.html:591
+#: webApp/templates/dashboard/index.html:594
 msgid "OCR_LOCALE_CODE"
 msgstr "OCR language code"
 
-#: webApp/templates/dashboard/index.html:601
+#: webApp/templates/dashboard/index.html:604
 msgid "LOCALE_OCR_HELP"
 msgstr "<b>fra</b> or <b>eng</b> by default"
 
-#: webApp/templates/dashboard/index.html:605
+#: webApp/templates/dashboard/index.html:608
 msgid "LOCALE_PATH"
 msgstr "Locale files path"
 
-#: webApp/templates/dashboard/index.html:620
+#: webApp/templates/dashboard/index.html:623
 msgid "FINANCIAL_REFERENCIAL"
 msgstr "Financial referencial"
 
-#: webApp/templates/dashboard/index.html:631
+#: webApp/templates/dashboard/index.html:634
 msgid "REFERENCIAL_POSITION"
 msgstr "Location of the folder for positions files"
 
-#: webApp/templates/dashboard/index.html:645
+#: webApp/templates/dashboard/index.html:648
 msgid "SUPPLIERS_REFERENCIAL"
 msgstr "Suppliers referencial"
 
-#: webApp/templates/dashboard/index.html:656
+#: webApp/templates/dashboard/index.html:659
 msgid "SUPPLIERS_EXCEL_INDEX_REFERENCIAL"
 msgstr "EXCEL index referencial for suppliers"
 
-#: webApp/templates/dashboard/index.html:671
+#: webApp/templates/dashboard/index.html:674
 msgid "DATE"
 msgstr "Date"
 
-#: webApp/templates/dashboard/index.html:685 webApp/templates/pdf/view.html:129
+#: webApp/templates/dashboard/index.html:688 webApp/templates/pdf/view.html:129
 msgid "VAT_NUMBER"
 msgstr "VAT number"
 
-#: webApp/templates/dashboard/index.html:699 webApp/templates/pdf/list.html:90
+#: webApp/templates/dashboard/index.html:702 webApp/templates/pdf/list.html:96
 #: webApp/templates/pdf/view.html:180
 msgid "INVOICE_NUMBER"
 msgstr "Invoice number"
 
-#: webApp/templates/dashboard/index.html:713
+#: webApp/templates/dashboard/index.html:716
 msgid "INVOICE_NUMBER_SIZE"
 msgstr "Invoice number minimal size"
 
-#: webApp/templates/dashboard/index.html:724
+#: webApp/templates/dashboard/index.html:727
 msgid "INPUT_FORMAT_DATE"
 msgstr "Input format date"
 
-#: webApp/templates/dashboard/index.html:735
+#: webApp/templates/dashboard/index.html:738
 msgid "OUTPUT_FORMAT_DATE"
 msgstr "Output format date"
 
-#: webApp/templates/dashboard/index.html:749
+#: webApp/templates/dashboard/index.html:752
 msgid "URL"
 msgstr "URL"
 
-#: webApp/templates/dashboard/index.html:760 webApp/templates/pdf/view.html:140
+#: webApp/templates/dashboard/index.html:763 webApp/templates/pdf/view.html:140
 #: webApp/templates/suppliers/suppliers_list.html:15
 msgid "SIRET_NUMBER"
 msgstr "SIRET Number"
 
-#: webApp/templates/dashboard/index.html:771 webApp/templates/pdf/view.html:149
+#: webApp/templates/dashboard/index.html:774 webApp/templates/pdf/view.html:149
 #: webApp/templates/suppliers/suppliers_list.html:16
 msgid "SIREN_NUMBER"
 msgstr "SIREN Number"
 
-#: webApp/templates/dashboard/index.html:796 webApp/templates/pdf/view.html:251
+#: webApp/templates/dashboard/index.html:799 webApp/templates/pdf/view.html:251
 msgid "TOTAL_TTC"
 msgstr "Total including taxes"
 
-#: webApp/templates/dashboard/index.html:834
+#: webApp/templates/dashboard/index.html:837
 msgid "PDFA_EXPORT"
 msgstr "PDF/A export"
 
-#: webApp/templates/dashboard/index.html:839
+#: webApp/templates/dashboard/index.html:842
 msgid "PDF_EXPORT_PATH"
 msgstr "PDF export path"
 
-#: webApp/templates/dashboard/index.html:850
+#: webApp/templates/dashboard/index.html:853
 msgid "PDFA_EXPORT_PATH"
 msgstr "PDF/A export path"
 
-#: webApp/templates/dashboard/index.html:875
+#: webApp/templates/dashboard/index.html:878
 msgid "DIVIDER_CREATION_FILE"
 msgstr "Divider (when creating files)"
 
-#: webApp/templates/dashboard/index.html:885
+#: webApp/templates/dashboard/index.html:888
 msgid "DIVIDER_HELP"
 msgstr "<b>_</b> ou <b>-</b> for example"
 
-#: webApp/templates/dashboard/index.html:917
+#: webApp/templates/dashboard/index.html:930
 msgid "REST_URL"
 msgstr "WebServices URL"
 
-#: webApp/templates/dashboard/index.html:928
+#: webApp/templates/dashboard/index.html:941
 msgid "REST_USER"
 msgstr "Webservices user"
 
-#: webApp/templates/dashboard/index.html:939
+#: webApp/templates/dashboard/index.html:952
 msgid "REST_PASSWORD"
 msgstr "Webservices password"
 
-#: webApp/templates/dashboard/index.html:953
+#: webApp/templates/dashboard/index.html:966
 msgid "AVAILABLE_PROCESS"
 msgstr "Available process"
 
-#: webApp/templates/dashboard/index.html:964
+#: webApp/templates/dashboard/index.html:977
 msgid "DEFAULT_PROCESS"
 msgstr "Default process"
 
-#: webApp/templates/dashboard/index.html:975
+#: webApp/templates/dashboard/index.html:988
 msgid "USERGROUP_ID"
 msgstr "Usegroupd id"
 
-#: webApp/templates/dashboard/index.html:991
+#: webApp/templates/dashboard/index.html:1004
 #: webApp/templates/users/user_list.html:16
 msgid "STATUS"
 msgstr "Status"
 
-#: webApp/templates/dashboard/index.html:1002
+#: webApp/templates/dashboard/index.html:1015
 msgid "STATUS_END"
 msgstr "Status end"
 
-#: webApp/templates/dashboard/index.html:1013
+#: webApp/templates/dashboard/index.html:1026
 msgid "TYPE_ID"
 msgstr "Type id"
 
-#: webApp/templates/dashboard/index.html:1024
+#: webApp/templates/dashboard/index.html:1037
 msgid "TYPIST"
 msgstr "Typist"
 
-#: webApp/templates/dashboard/index.html:1038
+#: webApp/templates/dashboard/index.html:1051
 msgid "PRIORITY"
 msgstr "Priority"
 
-#: webApp/templates/dashboard/index.html:1049
+#: webApp/templates/dashboard/index.html:1062
 msgid "CATEGORY_ID"
 msgstr "Category id"
 
-#: webApp/templates/dashboard/index.html:1060
+#: webApp/templates/dashboard/index.html:1073
 msgid "FORMAT"
 msgstr "Format"
 
-#: webApp/templates/dashboard/index.html:1071
+#: webApp/templates/dashboard/index.html:1084
 msgid "DEFAULT_DESTINATION"
 msgstr "Default destination"
 
-#: webApp/templates/dashboard/index.html:1082
+#: webApp/templates/dashboard/index.html:1095
 msgid "DEFAULT_DESTUSER"
 msgstr "Default recipient user"
 
-#: webApp/templates/dashboard/index.html:1096
+#: webApp/templates/dashboard/index.html:1109
 msgid "CUSTOM_VAT_NUMBER"
 msgstr "Custom for VAT number"
 
-#: webApp/templates/dashboard/index.html:1107
+#: webApp/templates/dashboard/index.html:1120
 msgid "CUSTOM_HT"
 msgstr "Custom for no rates total"
 
-#: webApp/templates/dashboard/index.html:1118
+#: webApp/templates/dashboard/index.html:1131
 msgid "CUSTOM_TTC"
 msgstr "Custom for total including rates"
 
-#: webApp/templates/dashboard/index.html:1129
+#: webApp/templates/dashboard/index.html:1142
 msgid "CUSTOM_ORDER_NUMBER"
 msgstr "Custom for order number"
 
-#: webApp/templates/dashboard/index.html:1143
+#: webApp/templates/dashboard/index.html:1156
 msgid "CUSTOM_INVOICE_NUMBER"
 msgstr "Custom for invoice number"
 
-#: webApp/templates/dashboard/index.html:1154
+#: webApp/templates/dashboard/index.html:1167
 msgid "CUSTOM_DELIVERY_NUMBER"
 msgstr "Custom for delivery number"
 
-#: webApp/templates/dashboard/index.html:1165
+#: webApp/templates/dashboard/index.html:1178
 msgid "CONTACT_TYPE"
 msgstr "Contact type"
 
-#: webApp/templates/dashboard/index.html:1176
+#: webApp/templates/dashboard/index.html:1189
 msgid "CONTACT_PURPOSE_ID"
 msgstr "Contact purpose id"
 
-#: webApp/templates/dashboard/index.html:1203
+#: webApp/templates/dashboard/index.html:1216
 msgid "AI_PATH"
 msgstr "AI path"
 
-#: webApp/templates/dashboard/index.html:1214
+#: webApp/templates/dashboard/index.html:1227
 msgid "AI_MODEL_PATH"
 msgstr "Path of the AI model"
 
-#: webApp/templates/dashboard/index.html:1227
-#: webApp/templates/dashboard/index.html:1238
+#: webApp/templates/dashboard/index.html:1240
+#: webApp/templates/dashboard/index.html:1251
 msgid "AI_TRAIN_IMAGE_PATH"
 msgstr "Path of the train image"
 
-#: webApp/templates/dashboard/index.html:1251
+#: webApp/templates/dashboard/index.html:1264
 msgid "AI_CONFIDENCE_MIN"
 msgstr "Minimal level of confidence"
 
-#: webApp/templates/dashboard/index.html:1266
+#: webApp/templates/dashboard/index.html:1279
 msgid "DATABASE_FILE"
 msgstr "Database file"
 
-#: webApp/templates/dashboard/index.html:1277
+#: webApp/templates/dashboard/index.html:1290
 msgid "DATABASE_TYPE"
 msgstr "Database type"
 
-#: webApp/templates/dashboard/index.html:1287
+#: webApp/templates/dashboard/index.html:1300
 msgid "DATABASE_TYPE_HELP"
 msgstr "pgsql or sqlite"
 
-#: webApp/templates/dashboard/index.html:1291
+#: webApp/templates/dashboard/index.html:1304
 msgid "POSTGRES_HOST"
 msgstr "Postgres host"
 
-#: webApp/templates/dashboard/index.html:1302
+#: webApp/templates/dashboard/index.html:1315
 msgid "POSTGRES_PORT"
 msgstr "Postgres port"
 
-#: webApp/templates/dashboard/index.html:1315
+#: webApp/templates/dashboard/index.html:1328
 msgid "POSTGRES_DATABASE"
 msgstr "Postgres database"
 
-#: webApp/templates/dashboard/index.html:1326
+#: webApp/templates/dashboard/index.html:1339
 msgid "POSTGRES_USER"
 msgstr "Postgres user"
 
-#: webApp/templates/dashboard/index.html:1337
+#: webApp/templates/dashboard/index.html:1350
 msgid "POSTGRES_PASSWORD"
 msgstr "Postgres password"
 
-#: webApp/templates/dashboard/index.html:1350
+#: webApp/templates/dashboard/index.html:1363
 msgid "CURRENT_VERSION"
 msgstr "Current version"
 
-#: webApp/templates/dashboard/index.html:1351
+#: webApp/templates/dashboard/index.html:1364
 msgid "LAST_VERSION"
 msgstr "Last version"
 
-#: webApp/templates/dashboard/index.html:1353
+#: webApp/templates/dashboard/index.html:1366
 msgid "MODIFY_CONFIGURATION"
 msgstr "Modify configuration"
 
@@ -921,53 +941,58 @@ msgid "INVOICES"
 msgstr "Invoices"
 
 #: webApp/templates/pdf/list.html:15
+#: webApp/templates/splitter/splitter_manager.html:17
 msgid "TODAY_LOT"
 msgstr "Daily batch"
 
 #: webApp/templates/pdf/list.html:18
+#: webApp/templates/splitter/splitter_manager.html:20
 msgid "YESTERDAY_LOT"
 msgstr "Yesterday batch"
 
 #: webApp/templates/pdf/list.html:21
+#: webApp/templates/splitter/splitter_manager.html:23
 msgid "OLD_LOT"
 msgstr "Older batch"
 
 #: webApp/templates/pdf/list.html:27 webApp/templates/pdf/list.html:28
-#: webApp/templates/splitter/splitter_manager.html:17
-#: webApp/templates/splitter/splitter_manager.html:18
+#: webApp/templates/splitter/splitter_manager.html:29
+#: webApp/templates/splitter/splitter_manager.html:30
 msgid "_SEARCH_PLACEHOLDER"
 msgstr "Search for invoice"
 
 #: webApp/templates/pdf/list.html:39
+#: webApp/templates/splitter/splitter_manager.html:42
 msgid "NO_FILTER"
 msgstr "No filter"
 
 #: webApp/templates/pdf/list.html:47
+#: webApp/templates/splitter/splitter_manager.html:50
 msgid "FILTER"
 msgstr "Filter"
 
-#: webApp/templates/pdf/list.html:64
+#: webApp/templates/pdf/list.html:71
 msgid "INVOICE_LOCKED_BY"
 msgstr "Invoice locked by"
 
-#: webApp/templates/pdf/list.html:70
+#: webApp/templates/pdf/list.html:75
 msgid "INVOICE_CLOSED"
 msgstr "Invoice is closed and cannot be modified"
 
-#: webApp/templates/pdf/list.html:86
+#: webApp/templates/pdf/list.html:92
 msgid "NUMBER_OF_PAGES"
 msgstr "Number of pages"
 
-#: webApp/templates/pdf/list.html:91 webApp/templates/pdf/view.html:189
+#: webApp/templates/pdf/list.html:97 webApp/templates/pdf/view.html:189
 msgid "INVOICE_DATE"
 msgstr "Invoice date"
 
-#: webApp/templates/pdf/list.html:93
-#: webApp/templates/splitter/splitter_manager.html:50
+#: webApp/templates/pdf/list.html:99
+#: webApp/templates/splitter/splitter_manager.html:83
 msgid "SAVED_THE"
 msgstr "Saved the"
 
-#: webApp/templates/pdf/list.html:95
+#: webApp/templates/pdf/list.html:101
 msgid "ORIGINAL_FILENAME"
 msgstr "Original file"
 
@@ -1101,19 +1126,19 @@ msgstr "Form validation"
 msgid "BACK_TO_VALIDATION"
 msgstr "Back to validation"
 
-#: webApp/templates/splitter/splitter_manager.html:45
+#: webApp/templates/splitter/splitter_manager.html:78
 msgid "NUMBER_OF_DOCUMENTS"
 msgstr "Number of documents"
 
-#: webApp/templates/splitter/splitter_manager.html:56
+#: webApp/templates/splitter/splitter_manager.html:89
 msgid "SEPARATOR"
 msgstr "Separator"
 
-#: webApp/templates/splitter/splitter_manager.html:57
+#: webApp/templates/splitter/splitter_manager.html:90
 msgid "ORIGIN_DOCUMENT"
 msgstr "Origin document"
 
-#: webApp/templates/splitter/splitter_manager.html:59
+#: webApp/templates/splitter/splitter_manager.html:92
 #: webApp/templates/splitter/splitter_process.html:56
 msgid "DELETE"
 msgstr "Delete"
@@ -1211,17 +1236,25 @@ msgstr "My user profile"
 msgid "CHANGE_PASSWORD"
 msgstr "Change password"
 
-#: webApp/templates/users/user_profile.html:20
+#: webApp/templates/users/user_profile.html:21
 msgid "OLD_PASSWORD"
 msgstr "Old password"
 
-#: webApp/templates/users/user_profile.html:23
+#: webApp/templates/users/user_profile.html:24
 msgid "NEW_PASSWORD"
 msgstr "New password"
 
-#: webApp/templates/users/user_profile.html:31
+#: webApp/templates/users/user_profile.html:32
 msgid "RESET_PASSWORD"
 msgstr "Reset password"
+
+#: webApp/templates/users/user_profile.html:38
+msgid "CHANGE_ROLE"
+msgstr "Change role"
+
+#: webApp/templates/users/user_profile.html:51
+msgid "NO_RIGHTS"
+msgstr "You do not have the right to perform this action"
 
 msgid "NEW_LONG"
 msgstr "To validate"
