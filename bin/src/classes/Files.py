@@ -18,6 +18,7 @@
 import os
 import re
 import subprocess
+import tempfile
 
 import cv2
 import time
@@ -193,16 +194,19 @@ class Files:
         return sorted_file
 
     @staticmethod
-    def merge_pdf(file_sorted, tmp_path):
+    def merge_pdf(file_sorted, tmp_path, _return=False):
         merger = PyPDF4.PdfFileMerger()
         for pdf in file_sorted:
             merger.append(pdf[1])
             os.remove(pdf[1])
         merger.write(tmp_path + '/result.pdf')
         file_to_return = open(tmp_path + '/result.pdf', 'rb').read()
-        os.remove(tmp_path + '/result.pdf')
 
-        return file_to_return
+        if _return:
+            return tmp_path + '/result.pdf'
+        else:
+            os.remove(tmp_path + '/result.pdf')
+            return file_to_return
 
     @staticmethod
     def check_file_integrity(file, config):
@@ -532,22 +536,55 @@ class Files:
                 shutil.move(file, config.cfg['GLOBAL']['errorpath'] + os.path.basename(file))
                 return 1
 
-    @staticmethod
-    def remove_blank_page(file):
-        with open(file, 'rb') as doc:
+    def remove_blank_page(self, file, config, ocr, files):
+        tmp_folder = tempfile.mkdtemp(dir=config.cfg['GLOBAL']['tmppath'], prefix='blank_detection_')
+        tmp_filename = tmp_folder + '/tmp-%03d.jpg'
+
+        self.save_img_with_wand(file, tmp_filename)
+
+        new_pdf_file = ocr.generate_searchable_pdf(file, files, config, True)
+
+        with open(new_pdf_file, 'rb') as doc:
             pdf_reader = PyPDF4.PdfFileReader(doc)
             pdf_writer = PyPDF4.PdfFileWriter()
             for page in range(0, pdf_reader.numPages):
-                page_obj = pdf_reader.getPage(page)
-                page_content = page_obj.getContents()
-                page_text = page_obj.extractText()
-                current_page = pdf_reader.getPage(page)
+                current_page = tmp_folder + '/tmp-%03d' % (page + 1) + '.jpg'
 
-                if page_content is not None and len(page_text) > 10:
-                    pdf_writer.addPage(current_page)
+                if not self.is_blank_page(current_page):
+                    current_pdf = pdf_reader.getPage(page)
+                    pdf_writer.addPage(current_pdf)
 
             with open(file, "wb") as stream:
                 pdf_writer.write(stream)
+
+        try:
+            os.remove(new_pdf_file)
+        except FileNotFoundError:
+            pass
+
+    @staticmethod
+    def is_blank_page(image):
+        params = cv2.SimpleBlobDetector_Params()
+        params.minThreshold = 10
+        params.maxThreshold = 200
+        params.filterByArea = True
+        params.minArea = 20
+        params.filterByCircularity = True
+        params.minCircularity = 0.1
+        params.filterByConvexity = True
+        params.minConvexity = 0.87
+        params.filterByInertia = True
+        params.minInertiaRatio = 0.01
+
+        detector = cv2.SimpleBlobDetector_create(params)
+        im = cv2.imread(image)
+        keypoints = detector.detect(im)
+        rows, cols, channel = im.shape
+        blobs_ratio = len(keypoints) / (1.0 * rows * cols)
+
+        if blobs_ratio < 1E-6:
+            return True
+        return False
 
     @staticmethod
     def create_directory(path):
