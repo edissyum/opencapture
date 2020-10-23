@@ -59,7 +59,7 @@
                 {% for batch in items %}
                     <div class="col-sm-3">
                         <div class="card">
-                            <a href="/ws_splitter/{{ batch['image_folder_name'] }}">
+                            <a href="/ws_splitter/{{ batch['image_folder_name'] }}" style="height: 400px;">
                                 <img class="card-img-top lazy"
                                      data-original="{{ url_for('pdf.static', type_of_file='splitter', filename=batch['first_page']) }}"
                                      alt="Thumbnail">
@@ -80,7 +80,7 @@
 
                                 <div class="card-text">
                                     <small class="text-muted">
-                                        <i class="text-secondary"> {{ gettext('SAVED_THE') }} : {{ batch['creation_date'] }}</i>
+                                        <i class="text-secondary"> {{ gettext('SAVED_THE') }} : {{ batch['date'] }}</i>
                                     </small>
                                     <button class="position-absolute badge btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="fas fa-ellipsis-v"></i>

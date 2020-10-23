@@ -195,7 +195,7 @@ def index(status, time):
             'select': [
                 "DISTINCT(invoices.id) as invoice_id",
                 "status.id as status_id",
-                "strftime('%d-%m-%Y à %H:%M', register_date) as date",
+                "strftime('%d-%m-%Y à %H:%M:%S', register_date) as date",
                 "*"
             ],
             'table': ['invoices', 'status'],
