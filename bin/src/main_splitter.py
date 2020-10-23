@@ -134,7 +134,7 @@ def launch(args):
         path = args['file']
         if check_file(files, path, config, log) is not False:
             # Process the file and send it to Maarch
-            OCForInvoices_splitter.process(path, log, splitter, files, ocr, tmp_folder)
+            OCForInvoices_splitter.process(path, log, splitter, files, ocr, tmp_folder, config)
 
     # Close database
     database.conn.close()
