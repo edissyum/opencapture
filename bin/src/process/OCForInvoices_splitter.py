@@ -52,5 +52,5 @@ def process(file, Log, Splitter, Files, Ocr, tmpFolder):
         Files.pdf_to_jpg(file, False)
         files = Files.sorted_file(tmpFolder, extension)
 
-    Splitter.save_image_from_pdf(files ,invoices_separated, tmpFolder, file)
+    Splitter.save_image_from_pdf(files, invoices_separated, tmpFolder, file)
 

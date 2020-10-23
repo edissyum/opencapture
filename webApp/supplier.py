@@ -1,5 +1,5 @@
 from flask_babel import gettext
-from webApp.auth import login_required
+from webApp.auth import admin_login_required
 from flask import Blueprint, render_template
 from flask_paginate import Pagination, get_page_args
 from webApp.functions import get_custom_id, check_python_customized_files
@@ -9,13 +9,16 @@ custom_array = {}
 if custom_id:
     custom_array = check_python_customized_files(custom_id[1])
 
-if 'pdf' not in custom_array: from . import pdf
-else: pdf = getattr(__import__(custom_array['pdf']['path'], fromlist=[custom_array['pdf']['module']]), custom_array['pdf']['module'])
+if 'pdf' not in custom_array:
+    from . import pdf
+else:
+    pdf = getattr(__import__(custom_array['pdf']['path'], fromlist=[custom_array['pdf']['module']]), custom_array['pdf']['module'])
 
 bp = Blueprint('supplier', __name__, url_prefix='/supplier')
 
+
 @bp.route('/list')
-@login_required
+@admin_login_required
 def supplier_list():
     _vars = pdf.init()
     _db = _vars[0]
@@ -25,7 +28,7 @@ def supplier_list():
 
     total = _db.select({
         'select': ['count(*) as total'],
-        'table' : ['suppliers'],
+        'table': ['suppliers'],
     })[0]['total']
 
     list_supplier = _db.select({

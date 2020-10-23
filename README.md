@@ -2,7 +2,7 @@
 
 # Open-Capture for Invoices by Edissyum
  
-Version 0.7.3
+Version 0.7.5
 
 Open-Capture is a **free and Open Source** software under **GNU General Public License v3.0**.
   
@@ -33,17 +33,17 @@ Tested with :
 
 Please, do not run the following command as root and create a specific user for Open-Capture For Invoices.
 
-    $ sudo mkdir /opt/OpenCaptureForInvoices/ && sudo chmod -R 775 /opt/OpenCaptureForInvoices/ && sudo chown -R $(whoami):$(whoami) /opt/OpenCaptureForInvoices/
-    $ sudo apt install git
-    $ latest_tag=$(git ls-remote --tags --sort="v:refname" https://github.com/edissyum/opencaptureforinvoices.git | tail -n1 |  sed 's/.*\///; s/\^{}//')
-    $ git clone -b $latest_tag https://github.com/edissyum/opencaptureforinvoices/ /opt/OpenCaptureForInvoices/
-    $ cd /opt/OpenCaptureForInvoices/
+    sudo mkdir /opt/OpenCaptureForInvoices/ && sudo chmod -R 775 /opt/OpenCaptureForInvoices/ && sudo chown -R $(whoami):$(whoami) /opt/OpenCaptureForInvoices/
+    sudo apt install git
+    latest_tag=$(git ls-remote --tags --sort="v:refname" https://github.com/edissyum/opencaptureforinvoices.git | tail -n1 |  sed 's/.*\///; s/\^{}//')
+    git clone -b $latest_tag https://github.com/edissyum/opencaptureforinvoices/ /opt/OpenCaptureForInvoices/
+    cd /opt/OpenCaptureForInvoices/
   
 Before lauching the Makefile. You have to do the following : 
 
 Using the following command, you have to retrieve the name of your network interface : 
     
-    $ ip a
+    ip a
 
 ![Screenshot](https://edissyum.com/wp-content/uploads/2020/10/screen_ipa.png)
 
@@ -57,14 +57,14 @@ You have the choice between using supervisor or basic systemd
 Supervisor is useful if you need to run multiple instance of Open-Capture in parallel but it will be very greedy
 Systemd is perfect for one instance
 
-    $ cd bin/install/
-    $ chmod u+x Makefile
-    $ sudo ./Makefile
-        # Go grab a coffee ;)
+    cd bin/install/
+    chmod u+x Makefile
+    sudo ./Makefile
+      # Go grab a coffee ;)
 
 It will install all the needed dependencies and install Tesseract V4.X.X with french and english locale. If you need more locales, just do :
   
-    $ sudo apt install tesseract-ocr-<langcode>
+    sudo apt install tesseract-ocr-<langcode>
 
 Here is a list of all available languages code : https://www.macports.org/ports.php?by=name&substr=tesseract-
 
@@ -72,10 +72,10 @@ In most cases you had to modify the <code>/etc/ImageMagick-6/policy.xml</code> f
 
     <policy domain="coder" rights="none" pattern="PDF" />
 
-    $ sudo systemctl restart OCForInvoices-worker (systemd version)
-    $ sudo systemctl restart OCForInvoices_Split-worker.service (systemd version)
+    sudo systemctl restart OCForInvoices-worker (systemd version)
+    sudo systemctl restart OCForInvoices_Split-worker.service (systemd version)
 
-    $ sudo supervisorctl restart all (supervisor version)
+    sudo supervisorctl restart all (supervisor version)
 
 If you need more informations about the usefull commands for supervisor : http://supervisord.org/running.html#running-supervisorctl
 
@@ -83,7 +83,7 @@ If you plan to upload invoices from the interface, using the upload form, you ha
 Go to file <code>/etc/nginx/nginx.conf</code> and add <code>client_max_body_size 100M;</code> into the <code>http</code> bloc
 Then restart the nginx service
 
-    $ sudo systemctl restart nginx
+    sudo systemctl restart nginx
 
 ## API for SIRET/SIREN
 
@@ -102,7 +102,7 @@ If your supplier referencial had different column name, the .json file is here f
 
 Then, just launch :
 
-    $ python3 /opt/OpenCaptureForInvoices/loadReferencial.py -c /opt/OpenCaptureForInvoices/instance/config.ini
+    python3 /opt/OpenCaptureForInvoices/loadReferencial.py -c /opt/OpenCaptureForInvoices/instance/config.ini
     
 It will fill the database with the suppliers informations.
 
@@ -126,7 +126,7 @@ Your could custom python files, templates files and static files (js, css, imgs,
 
 For now (and for somes files like babel's or webApp/*.py files) it is recommended to restart Flask service in order to see the changes :
 
-    $ systemctl restart OCForInvoices-web.service
+    systemctl restart OCForInvoices-web.service
 
 ## Positioning mask
 It is possible to use file filled with positions and some stuff to retrieve some informations hard to find with REGEX only.

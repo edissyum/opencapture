@@ -4,7 +4,8 @@ CREATE TABLE if NOT EXISTS users(
   password TEXT NOT NULL,
   creation_date DATETIME DATETIME DEFAULT (datetime('now', 'localtime')),
   enabled INTEGER DEFAULT 1,
-  status TEXT DEFAULT 'OK'
+  status VARCHAR DEFAULT 'OK',
+  role VARCHAR DEFAULT 'user'
 );
 
 CREATE TABLE if NOT EXISTS suppliers(
@@ -104,4 +105,4 @@ INSERT INTO "status" ("id","label","label_long") VALUES ('ERR','Erreur','Erreur 
 INSERT INTO "status" ("id","label","label_long") VALUES ('ERR_GED','Erreur','Erreur lors de l''envoi à Maarch');
 INSERT INTO "status" ("id","label","label_long") VALUES ('WAIT_SUP','En attente','En attente validation fournisseur');
 INSERT INTO "status" ("id","label","label_long") VALUES ('DEL','Supprimée','Supprimée');
-INSERT INTO "users" ("id","username","password") VALUES (1,'admin','pbkdf2:sha256:150000$7c8waI7f$c0891ac8e18990db0786d4a49aea8bf7c1ad82796dccd8ae35c12ace7d8ee403');
+INSERT INTO "users" ("id","username","password", "role") VALUES (1,'admin','pbkdf2:sha256:150000$7c8waI7f$c0891ac8e18990db0786d4a49aea8bf7c1ad82796dccd8ae35c12ace7d8ee403', 'admin');

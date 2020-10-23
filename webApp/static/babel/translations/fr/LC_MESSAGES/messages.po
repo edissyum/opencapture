@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2020-10-16 15:20+0200\n"
+"POT-Creation-Date: 2020-10-22 10:14+0200\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: fr\n"
@@ -18,130 +18,130 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.8.0\n"
 
-#: bin/src/classes/WebServices.py:43
+#: bin/src/classes/WebServices.py:44
 msgid "CONNECTION_ERROR"
 msgstr "Erreur lors de la connexion à la GED"
 
-#: webApp/auth.py:25 webApp/auth.py:67
+#: webApp/auth.py:26 webApp/auth.py:68
 msgid "USERNAME_REQUIRED"
 msgstr "Mauvais nom de compte"
 
-#: webApp/auth.py:27 webApp/auth.py:69
+#: webApp/auth.py:28 webApp/auth.py:70
 msgid "PASSWORD_REQUIRED"
 msgstr "Mauvais un mot de passe"
 
-#: webApp/auth.py:29
+#: webApp/auth.py:30
 msgid "USER"
 msgstr "L'utilisateur"
 
-#: webApp/auth.py:29
+#: webApp/auth.py:30
 msgid "ALREADY_REGISTERED"
 msgstr "est déjà enregistré"
 
-#: webApp/auth.py:39
+#: webApp/auth.py:40
 msgid "USER_CREATED_OK"
 msgstr "Utilisateur créé avec succès"
 
-#: webApp/auth.py:71
+#: webApp/auth.py:72
 msgid "USER_DELETED"
 msgstr "Utilisateur supprimé"
 
-#: webApp/auth.py:73
+#: webApp/auth.py:74
 msgid "USER_DISABLED"
 msgstr "Utilisateur desactivé"
 
-#: webApp/pdf.py:203 webApp/static/js/videoCodage.js:57
-#: webApp/ws_splitter.py:83
+#: webApp/pdf.py:228 webApp/static/js/videoCodage.js:59
+#: webApp/ws_splitter.py:90
 msgid "NO_RESULTS"
 msgstr "Pas de résultats"
 
-#: webApp/pdf.py:205 webApp/supplier.py:40 webApp/user.py:146
-#: webApp/ws_splitter.py:85
+#: webApp/pdf.py:230 webApp/supplier.py:43 webApp/user.py:155
+#: webApp/ws_splitter.py:92
 msgid "SHOW"
 msgstr "Affichage de"
 
-#: webApp/pdf.py:205 webApp/supplier.py:40 webApp/templates/pdf/view.html:16
-#: webApp/user.py:146 webApp/ws_splitter.py:86
+#: webApp/pdf.py:230 webApp/supplier.py:43 webApp/templates/pdf/view.html:16
+#: webApp/user.py:155 webApp/ws_splitter.py:93
 msgid "OF"
 msgstr "sur"
 
-#: webApp/pdf.py:460
+#: webApp/pdf.py:488
 msgid "END_LONG"
 msgstr "Facture validée et cloturée"
 
-#: webApp/pdf.py:462
+#: webApp/pdf.py:490
 msgid "ERROR_WHILE_INSERTING_IN_GED"
 msgstr "Erreur lors de l'insertion de la facture dans la GED"
 
-#: webApp/user.py:43 webApp/user.py:77 webApp/user.py:107
+#: webApp/user.py:48 webApp/user.py:83 webApp/user.py:114
 msgid "ERROR_WHILE_RETRIEVING_USER"
 msgstr "Erreur lors de la récupération des information utilisateur"
 
-#: webApp/user.py:61
+#: webApp/user.py:67
 msgid "ERROR_OLD_PASSWORD_NOT_MATCH"
 msgstr "L'ancien mot de passe ne corresponds pas"
 
-#: webApp/user.py:73 webApp/user.py:103
+#: webApp/user.py:79 webApp/user.py:110
 msgid "UPDATE_OK"
 msgstr "Mise à jour du mot de passe effectuée avec succès"
 
-#: webApp/user.py:75 webApp/user.py:105
+#: webApp/user.py:81 webApp/user.py:112
 msgid "UPDATE_ERROR"
 msgstr "Erreur lors de la mise à jour du mot de passe"
 
-#: webApp/user.py:183
+#: webApp/user.py:193
 msgid "USER_ENABLED_OK"
 msgstr "Utilisateur ré-activé avec succès"
 
-#: webApp/user.py:185
+#: webApp/user.py:195
 msgid "USER_ENABLED_ERROR"
 msgstr "Erreur lors de la réactivation de l'utilisateur"
 
-#: webApp/user.py:213
+#: webApp/user.py:224
 msgid "USER_DISABLED_OK"
 msgstr "Utilisateur désactivé avec succès"
 
-#: webApp/user.py:215
+#: webApp/user.py:226
 msgid "USER_DISABLED_ERROR"
 msgstr "Erreur lors de la désactivation de l'utilisateur"
 
-#: webApp/user.py:243
+#: webApp/user.py:255
 msgid "USER_DELETED_OK"
 msgstr "Utilisateur supprimé avec succès"
 
-#: webApp/user.py:245
+#: webApp/user.py:257
 msgid "USER_DELETED_ERROR"
 msgstr "Erreur lors de la suppression de l'utilisateur"
 
-#: webApp/ws.py:47
+#: webApp/ws.py:52
 msgid "VAT_NOT_VALID"
 msgstr "Numéro de TVA invalide"
 
-#: webApp/ws.py:49 webApp/ws.py:54
+#: webApp/ws.py:54 webApp/ws.py:59
 msgid "VAT_API_ERROR"
 msgstr "Impossible de joindre l'API de vérification du numéro de TVA"
 
-#: webApp/ws.py:61
+#: webApp/ws.py:67
 msgid "PROFILE_UPDATED"
 msgstr "Profil modifié avec succès"
 
-#: webApp/ws.py:64 webApp/ws.py:65
+#: webApp/ws.py:70 webApp/ws.py:71
 msgid "PROFILE_UPDATE_ERROR"
 msgstr "Erreur lors du changement de profil"
 
-#: webApp/ws.py:71
+#: webApp/ws.py:78
 msgid "CONFIG_FILE_UPDATED"
 msgstr "Fichier de configuration modifié avec succès"
 
-#: webApp/ws.py:73
+#: webApp/ws.py:80
 msgid "ERROR_UPDATE_CONFIG_FILE"
 msgstr "Erreur lors de la modification du fichier de configuration"
 
-#: webApp/ws.py:220
+#: webApp/ws.py:234
 msgid "INVOICE_DELETED"
 msgstr "Facture supprimée"
 
-#: webApp/ws_splitter.py:44
+#: webApp/ws_splitter.py:48
 msgid "FILE_UPLOAD_SUCCESS"
 msgstr "Fichier(s) téléchargé(s) avec succès"
 
@@ -162,202 +162,204 @@ msgstr "Tout désélectionner"
 msgid "_CONFIRM_DELETE_BATCH"
 msgstr "Voulez vous vraiment supprimer ce lot de factures ?"
 
-#: webApp/static/js/videoCodage.js:186
+#: webApp/static/js/videoCodage.js:188
 msgid "WAIT_OCR_END"
 msgstr "Merci d'attendre la fin du processus d'OCR"
 
-#: webApp/static/js/videoCodage.js:297
+#: webApp/static/js/videoCodage.js:283
 msgid "SIRET_CONNECTION_ERROR"
 msgstr ""
 "Erreur lors de la connexion au service de vérification du numéro de "
 "SIRET. Les numéros de SIRET/SIREN ne peuvent donc pas être validé"
 
-#: webApp/static/js/videoCodage.js:339
+#: webApp/static/js/videoCodage.js:327
 msgid "ERROR_WHILE_READING_CONFIGURATION_FILE"
 msgstr "Erreur lors de la lecture du fichier de configuration"
 
-#: webApp/static/js/videoCodage.js:453
+#: webApp/static/js/videoCodage.js:441
 #: webApp/templates/dashboard/index.html:807 webApp/templates/pdf/view.html:201
 msgid "VAT_RATE"
 msgstr "Taux de TVA"
 
-#: webApp/static/js/videoCodage.js:462 webApp/static/js/videoCodage.js:563
+#: webApp/static/js/videoCodage.js:450 webApp/static/js/videoCodage.js:551
 #: webApp/templates/dashboard/index.html:785 webApp/templates/pdf/view.html:210
 #: webApp/templates/pdf/view.html:284
 msgid "NO_RATE_AMOUNT"
 msgstr "Montant HT"
 
-#: webApp/static/js/videoCodage.js:471 webApp/templates/pdf/view.html:219
+#: webApp/static/js/videoCodage.js:459 webApp/templates/pdf/view.html:219
 msgid "LOAD_ACCOUNT"
 msgstr "Compte de charge"
 
-#: webApp/static/js/videoCodage.js:473 webApp/templates/pdf/view.html:221
+#: webApp/static/js/videoCodage.js:461 webApp/templates/pdf/view.html:221
 msgid "SELECT_LOAD_ACCOUNT"
 msgstr "Selectionnez un compte de charge"
 
-#: webApp/static/js/videoCodage.js:491 webApp/templates/pdf/view.html:260
+#: webApp/static/js/videoCodage.js:479 webApp/templates/pdf/view.html:260
 msgid "VAT_AMOUNT"
 msgstr "Montant TVA"
 
-#: webApp/static/js/videoCodage.js:569 webApp/templates/pdf/view.html:290
+#: webApp/static/js/videoCodage.js:557 webApp/templates/pdf/view.html:290
 msgid "BUDGET"
 msgstr "Budget"
 
-#: webApp/static/js/videoCodage.js:571 webApp/templates/pdf/view.html:292
+#: webApp/static/js/videoCodage.js:559 webApp/templates/pdf/view.html:292
 msgid "SELECT_STRUCTURE"
 msgstr "Selectionnez une structure"
 
-#: webApp/static/js/videoCodage.js:577 webApp/templates/pdf/view.html:338
+#: webApp/static/js/videoCodage.js:565 webApp/templates/pdf/view.html:338
 msgid "OUTCOME"
 msgstr "Dépenses"
 
-#: webApp/static/js/videoCodage.js:579 webApp/templates/pdf/view.html:340
+#: webApp/static/js/videoCodage.js:567 webApp/templates/pdf/view.html:340
 msgid "SELECT_BUDGET"
 msgstr "Selectionnez un budget"
 
-#: webApp/static/js/videoCodage.js:616 webApp/static/js/videoCodage.js:654
+#: webApp/static/js/videoCodage.js:604 webApp/static/js/videoCodage.js:642
 msgid "ORDER_NUMBER"
 msgstr "Numéro de commande"
 
-#: webApp/static/js/videoCodage.js:663
+#: webApp/static/js/videoCodage.js:651
 msgid "ADD_ORDER_NUMBER"
 msgstr "Ajouter un numéro de commande"
 
-#: webApp/static/js/videoCodage.js:683 webApp/static/js/videoCodage.js:709
+#: webApp/static/js/videoCodage.js:671 webApp/static/js/videoCodage.js:697
 msgid "DELIVERY_FORM_NUMBER"
 msgstr "Numéro de bon de livraison"
 
-#: webApp/static/js/videoCodage.js:718
+#: webApp/static/js/videoCodage.js:706
 msgid "ADD_DELIVERY_FORM_NUMBER"
 msgstr "Ajouter un numéro de bon de livraison"
 
-#: webApp/static/js/videoCodage.js:843 webApp/static/js/videoCodage.js:859
-#: webApp/static/js/videoCodage.js:896 webApp/static/js/videoCodage.js:906
-#: webApp/static/js/videoCodage.js:937
+#: webApp/static/js/videoCodage.js:833 webApp/static/js/videoCodage.js:849
+#: webApp/static/js/videoCodage.js:886 webApp/static/js/videoCodage.js:896
+#: webApp/static/js/videoCodage.js:927
 msgid "ERROR_OCCURED"
 msgstr "Une erreur est arrivée"
 
-#: webApp/static/js/videoCodage.js:859
+#: webApp/static/js/videoCodage.js:849
 msgid "WRONG_SIRET_FORMAT"
 msgstr "Le format du SIRET n'est pas bon"
 
-#: webApp/static/js/videoCodage.js:906
+#: webApp/static/js/videoCodage.js:896
 msgid "WRONG_SIREN_FORMAT"
 msgstr "Le format du SIREN n'est pas bon"
 
-#: webApp/static/js/videoCodage.js:992
+#: webApp/static/js/videoCodage.js:982
 msgid "BAN_API_ERROR"
 msgstr "Erreur lors de la connexion à l'API de vérification de la BAN"
 
-#: webApp/static/js/videoCodage.js:1006
+#: webApp/static/js/videoCodage.js:996
 msgid "REFUSE_CONFIRMATION"
 msgstr "Voulez vous vraiment refuser cette facture ?"
 
-#: webApp/static/js/videoCodage.js:1010 webApp/static/js/videoCodage.js:1083
-#: webApp/static/js/videoCodage.js:1095
+#: webApp/static/js/videoCodage.js:1000 webApp/static/js/videoCodage.js:1073
+#: webApp/static/js/videoCodage.js:1085
 msgid "YES"
 msgstr "Oui"
 
-#: webApp/static/js/videoCodage.js:1040
+#: webApp/static/js/videoCodage.js:1030
 msgid "FORM_ERROR_OR_EMPTY_FIELD"
 msgstr ""
 "Le formulaire présente des erreurs ou des champs vides. Merci de les "
 "corriger avant de valider"
 
-#: webApp/static/js/videoCodage.js:1045
+#: webApp/static/js/videoCodage.js:1035
 msgid "INCORRECT_BAN_ADDRESS"
 msgstr "L'adresse ne corresponds pas parfaitement au référentiel national."
 
-#: webApp/static/js/videoCodage.js:1046
+#: webApp/static/js/videoCodage.js:1036
 msgid "PUT_FORM_TO_SUPPLIER_WAIT"
 msgstr ""
 "Nous vous conseillons de mettre la facture en attente en attendant de "
 "mettre à jour le fournisseur"
 
-#: webApp/static/js/videoCodage.js:1052
+#: webApp/static/js/videoCodage.js:1042
 msgid "PUT_ON_HOLD"
 msgstr "Mettre en attente"
 
-#: webApp/static/js/videoCodage.js:1059
+#: webApp/static/js/videoCodage.js:1049
 msgid "_VALID_WIHTOUT_BAN_VERIFICATION"
 msgstr "Valider sans la vérification de la BAN"
 
-#: webApp/static/js/videoCodage.js:1066
+#: webApp/static/js/videoCodage.js:1056
 msgid "INVALID_VAT_NUMBER"
 msgstr "Le numéro de TVA n'est pas valide."
 
-#: webApp/static/js/videoCodage.js:1071
+#: webApp/static/js/videoCodage.js:1061
 msgid "_VALID_WIHTOUT_VAT_VERIFICATION"
 msgstr "Valider sans vérifier du numéro de TVA ?"
 
-#: webApp/static/js/videoCodage.js:1078
+#: webApp/static/js/videoCodage.js:1068
 msgid "CALCUL_NOT_EQUAL_WOULD_YOU_VALIDATE"
 msgstr ""
 "La somme des montants alloués à l'analytique est différente du montant "
 "total HT. Voulez-vous malgré tout valider la facture ?"
 
-#: webApp/static/js/videoCodage.js:1089
+#: webApp/static/js/videoCodage.js:1079
 msgid "INVOICE_ALREADY_EXIST"
 msgstr ""
 "Une facture reliée au même fournisseur et ayant le même numéro de facture"
 " apparait déjà en base de données. Voulez-vous quand même valider la "
 "facture ?"
 
-#: webApp/static/js/videoCodage.js:1232
+#: webApp/static/js/videoCodage.js:1222
 msgid "FIELD_TO_CHECK"
 msgstr "Champ à vérifier"
 
-#: webApp/static/js/videoCodage.js:1233 webApp/static/js/videoCodage.js:1238
+#: webApp/static/js/videoCodage.js:1223 webApp/static/js/videoCodage.js:1228
 msgid "BAN_VALUE"
 msgstr "Valeur BAN"
 
-#: webApp/static/js/videoCodage.js:1237
+#: webApp/static/js/videoCodage.js:1227
 msgid "INVALID"
 msgstr "Invalide"
 
-#: webApp/templates/base.html:66 webApp/templates/base_splitter.html:67
-#: webApp/templates/home.html:2
+#: webApp/templates/base.html:67 webApp/templates/base_home.html:42
+#: webApp/templates/base_splitter.html:68 webApp/templates/home.html:2
 msgid "HOME"
 msgstr "Accueil"
 
-#: webApp/templates/base.html:67 webApp/templates/base_splitter.html:68
+#: webApp/templates/base.html:68 webApp/templates/base_splitter.html:69
 msgid "LIST"
 msgstr "Lots"
 
-#: webApp/templates/base.html:68 webApp/templates/base_splitter.html:69
+#: webApp/templates/base.html:69 webApp/templates/base_splitter.html:70
 msgid "UPLOAD"
 msgstr "Téléchargement"
 
-#: webApp/templates/base.html:69
+#: webApp/templates/base.html:70
 msgid "MY_PROFILE"
 msgstr "Mon profil"
 
-#: webApp/templates/base.html:70 webApp/templates/base_splitter.html:70
+#: webApp/templates/base.html:71 webApp/templates/base_home.html:43
+#: webApp/templates/base_splitter.html:71
 msgid "LOG_OUT"
 msgstr "Déconnexion"
 
-#: webApp/templates/base.html:72
+#: webApp/templates/base.html:73 webApp/templates/base_home.html:45
 msgid "DASHBOARD"
 msgstr "Panneau de contrôle"
 
-#: webApp/templates/base.html:73 webApp/templates/users/user_list.html:2
+#: webApp/templates/base.html:74 webApp/templates/base_home.html:46
+#: webApp/templates/users/user_list.html:2
 msgid "USER_LIST"
 msgstr "Liste des utilisateurs"
 
-#: webApp/templates/base.html:74
+#: webApp/templates/base.html:75 webApp/templates/base_home.html:47
 msgid "CREATE_USER"
 msgstr "Ajouter un utilisateur"
 
-#: webApp/templates/base.html:75
+#: webApp/templates/base.html:76 webApp/templates/base_home.html:48
 #: webApp/templates/suppliers/suppliers_list.html:2
 msgid "SUPPLIER_LIST"
 msgstr "Liste des fournisseurs"
 
-#: webApp/templates/base.html:78 webApp/templates/base_splitter.html:72
+#: webApp/templates/base.html:79 webApp/templates/base_splitter.html:73
 msgid "SIGN_IN"
 msgstr "Connexion"
 
-#: webApp/templates/auth/login.html:19 webApp/templates/base.html:79
+#: webApp/templates/auth/login.html:19 webApp/templates/base.html:80
 msgid "SIGN_UP"
 msgstr "Créer un compte"
 
@@ -370,7 +372,7 @@ msgid "VERIFIER_OC"
 msgstr "Open-Capture vérificateur"
 
 #: webApp/templates/auth/login.html:2 webApp/templates/auth/login.html:8
-#: webApp/templates/auth/register.html:22
+#: webApp/templates/auth/register.html:29
 msgid "LOG_IN"
 msgstr "Se connecter"
 
@@ -383,7 +385,7 @@ msgstr "Nom d'utilisateur"
 msgid "PASSWORD"
 msgstr "Mot de passe"
 
-#: webApp/templates/auth/login.html:16 webApp/templates/auth/register.html:16
+#: webApp/templates/auth/login.html:16 webApp/templates/auth/register.html:23
 #: webApp/templates/splitter/splitter_process.html:38
 #: webApp/templates/splitter/splitter_process.html:85
 msgid "VALIDATE"
@@ -392,6 +394,20 @@ msgstr "Valider"
 #: webApp/templates/auth/register.html:2 webApp/templates/auth/register.html:8
 msgid "SIGNING_UP"
 msgstr "Création de compte"
+
+#: webApp/templates/auth/register.html:17
+msgid "SELECT_ROLE"
+msgstr "Merci de selectionner un rôle..."
+
+#: webApp/templates/auth/register.html:18
+#: webApp/templates/users/user_list.html:51
+msgid "ROLE_USER"
+msgstr "Utilisateur"
+
+#: webApp/templates/auth/register.html:19
+#: webApp/templates/users/user_list.html:53
+msgid "ROLE_ADMIN"
+msgstr "Administrateur"
 
 #: webApp/templates/dashboard/index.html:2
 msgid "DASHBOARD_OC"
@@ -1157,30 +1173,34 @@ msgid "CREATION_DATE"
 msgstr "Date de création"
 
 #: webApp/templates/users/user_list.html:17
+msgid "ROLE"
+msgstr "Rôle"
+
+#: webApp/templates/users/user_list.html:18
 msgid "ACTION"
 msgstr "Actions"
 
-#: webApp/templates/users/user_list.html:41
+#: webApp/templates/users/user_list.html:42
 msgid "ACTIVE"
 msgstr "Actif"
 
-#: webApp/templates/users/user_list.html:43
+#: webApp/templates/users/user_list.html:44
 msgid "INACTIVE"
 msgstr "Inactif"
 
-#: webApp/templates/users/user_list.html:50
+#: webApp/templates/users/user_list.html:60
 msgid "PROFILE_USER"
 msgstr "Profil de l'utilisateur"
 
-#: webApp/templates/users/user_list.html:53
+#: webApp/templates/users/user_list.html:63
 msgid "DISABLE_USER"
 msgstr "Désactiver l'utilisateur"
 
-#: webApp/templates/users/user_list.html:57
+#: webApp/templates/users/user_list.html:67
 msgid "ENABLE_USER"
 msgstr "Ré-activer l'utilisateur"
 
-#: webApp/templates/users/user_list.html:61
+#: webApp/templates/users/user_list.html:71
 msgid "DELETE_USER"
 msgstr "Supprimer l'utilisateur"
 

@@ -11,77 +11,107 @@
 {% endblock %}
 
 {% block content %}
-    <div class="search-batch">
-            <form class="form-inline" onsubmit="submitForm()">
+    <div id="lot">
+        <ul class="list-group list-group-horizontal">
+            <li class="list-group-item d-flex justify-content-between align-items-center {% if 'TODAY' in request.path or ('YESTERDAY' not in request.path and 'OLDER' not in request.path) %} active {% endif %} " onclick="window.location.href='/splitterManager/lot/TODAY/NEW'">
+                {{ gettext('TODAY_LOT') }} &nbsp;
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center {% if 'YESTERDAY' in request.path %} active {% endif %}" onclick="window.location.href='/splitterManager/lot/YESTERDAY/NEW'">
+                {{ gettext('YESTERDAY_LOT') }} &nbsp;
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center {% if 'OLDER' in request.path %} active {% endif %}" onclick="window.location.href='/splitterManager/lot/OLDER/NEW'">
+                {{ gettext('OLD_LOT') }} &nbsp;
+            </li>
+        </ul>
+
+        <form class="form-inline" onsubmit="submitForm()">
             <div class="form-group mb-2">
                 <label for="search" class="sr-only">{{ gettext('_SEARCH_PLACEHOLDER') }}</label>
-                <input type="text" name="search" class="form-control" id="search" placeholder="{{ gettext('_SEARCH_PLACEHOLDER')}}" value={% if request.args.get('search') %} {{ request.args.get('search') }} {% endif %}>
+                <input type="text" name="search" class="form-control" id="search" placeholder="{{ gettext('_SEARCH_PLACEHOLDER') }}"
+                       value={% if request.args.get('search') %} {{ request.args.get('search') }} {% endif %}>
             </div>
             <button type="submit" class="btn btn-success mx-sm-2 mb-2">
                 <i class="fas fa-search"></i>
             </button>
-            </form>
-        </div>
-        <div class="container-fluid" id="main_splitter">
-            {{ pagination.info }}
-            {{ pagination.links }}
-            {% for items in batch_list|batch(4) %}
-                <div class="row pdf_list">
-                    {% for batch in items %}
-                        <div class="col-sm-3">
-                            <div class="card">
-                                <a href="/ws_splitter/{{ batch['image_folder_name'] }}">
-                                    <img class="card-img-top lazy"
-                                         data-original="{{ url_for('pdf.static', typeofFile='splitter', filename=batch['first_page']) }}"
-                                         alt="Thumbnail">
-                                </a>
-                                <div class="card-body">
-                                    <div class="row pb-0 pl-3">
-                                        <h5 class="card-title w-75 p-3">
-                                            <a href="/ws_splitter/{{ batch['image_folder_name'] }}">
-                                                {{ batch['dir_name'] }}
-                                            </a>
-                                        </h5>
-                                        <span class="position-absolute badge badge-secondary badge-pill" data-toggle="tooltip" data-placement="bottom" title="{{ gettext('NUMBER_OF_DOCUMENTS') }} : {{ batch['page_number'] }}">{{batch['page_number']}} <i class="far fa-file"></i></span>
-                                    </div>
+        </form>
+    </div>
 
-                                    <div class="card-text">
-                                        <small class="text-muted">
-                                                <i class="text-secondary"> {{ gettext('SAVED_THE') }} : {{ batch['creation_date']}}</i>
-                                        </small>
-                                        <button class="position-absolute badge btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-v"></i>
-                                        </button>
-                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <a class="dropdown-item" href="/ws_splitter/{{ batch['image_folder_name'] }}">{{gettext('SEPARATOR')}}</a>
-                                            <a class="dropdown-item" href="/files/originFile/{{batch['dir_name']}}" target="_blank">{{gettext('ORIGIN_DOCUMENT')}}</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="/ws_splitter/delete?batch_name={{ batch['image_folder_name'] }}">{{gettext('DELETE')}}</a>
-                                        </div>
-                                    </div>
+    <div class="input-group pick_status">
+        {% set statusSelected = request.path.split('/')  %}
+        <select id="pickStatus">
+            <option value='*' selected>{{ gettext('NO_FILTER') }}</option>
+            {% for status in status_list %}
+                {% if status['id'] != 'DEL' %}
+                    <option {% if statusSelected[4] == status['id'] or statusSelected[4] == '' and status['id'] == 'NEW'  %} selected {% endif %}  value="{{ status['id'] }}">{{ gettext(status['id']) }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+        <div class="input-group-append">
+            <button onclick="loadPageFiltered(document.getElementById('pickStatus').options[document.getElementById('pickStatus').selectedIndex].value)" class="btn btn-outline-secondary" type="button">{{ gettext('FILTER') }}</button>
+        </div>
+    </div>
+
+    {{ pagination.info }}
+    {{ pagination.links }}
+    <div class="container-fluid" id="main_splitter">
+        {% for items in batch_list|batch(4) %}
+            <div class="row pdf_list">
+                {% for batch in items %}
+                    <div class="col-sm-3">
+                        <div class="card">
+                            <a href="/ws_splitter/{{ batch['image_folder_name'] }}">
+                                <img class="card-img-top lazy"
+                                     data-original="{{ url_for('pdf.static', type_of_file='splitter', filename=batch['first_page']) }}"
+                                     alt="Thumbnail">
+                            </a>
+                            <div class="card-body">
+                                <div class="row pb-0 pl-3">
+                                    <h5 class="card-title w-75 p-3">
+                                        <a href="/ws_splitter/{{ batch['image_folder_name'] }}">
+                                            {{ batch['dir_name'] }}
+                                        </a>
+                                    </h5>
+                                    <span class="position-absolute badge badge-secondary badge-pill" data-toggle="tooltip" data-placement="bottom"
+                                          title="{{ gettext('NUMBER_OF_DOCUMENTS') }} : {{ batch['page_number'] }}">{{ batch['page_number'] }} <i class="far fa-file"></i></span>
                                 </div>
-                                <div class="ribbon ribbon-top-right {{ batch['status'] }}">
-                                    <span data-toggle="tooltip" data-placement="left" title="{{ gettext(batch['status'] + '_LONG') }}">{{ gettext(batch['status']) }}</span>
+
+                                <div class="card-text">
+                                    <small class="text-muted">
+                                        <i class="text-secondary"> {{ gettext('SAVED_THE') }} : {{ batch['creation_date'] }}</i>
+                                    </small>
+                                    <button class="position-absolute badge btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a class="dropdown-item" href="/ws_splitter/{{ batch['image_folder_name'] }}">{{ gettext('SEPARATOR') }}</a>
+                                        <a class="dropdown-item" href="/files/originFile/{{ batch['dir_name'] }}" target="_blank">{{ gettext('ORIGIN_DOCUMENT') }}</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" href="/ws_splitter/delete?batch_name={{ batch['image_folder_name'] }}">{{ gettext('DELETE') }}</a>
+                                    </div>
                                 </div>
                             </div>
+                            <div class="ribbon ribbon-top-right {{ batch['status'] }}">
+                                <span data-toggle="tooltip" data-placement="left" title="{{ gettext(batch['status'] + '_LONG') }}">{{ gettext(batch['status']) }}</span>
+                            </div>
                         </div>
-                    {% endfor %}
-                </div>
-            {% endfor %}
-        </div>
-        {% if pagination.total != 0 %}
-            {{ pagination.info }}
-            {{ pagination.links }}
-        {% endif %}
-        {% block javascript %}
-            <script src="{{ url_for('static', filename='js/jqueryLib/jquery.min.js') }}"></script>
-            <script src="{{ url_for('static', filename='js/otherLib/bootstrap.bundle.min.js') }}"></script>
-            <script src="{{ url_for('static', filename='js/jqueryLib/jquery.lazyload.min.js') }}"></script>
-            <script>
-                $(document).ready(function(){
-                    $('[data-toggle="tooltip"]').tooltip();
-                });
-                $('#main_splitter .lazy').lazyload({});
-            </script>
-        {% endblock %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+    {% if pagination.total != 0 %}
+        {{ pagination.info }}
+        {{ pagination.links }}
+    {% endif %}
+    {% block javascript %}
+        <script src="{{ url_for('static', filename='js/jqueryLib/jquery.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/otherLib/bootstrap.bundle.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/jqueryLib/jquery.lazyload.min.js') }}"></script>
+        <script>
+            $(document).ready(function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+            $('#main_splitter .lazy').lazyload({});
+        </script>
     {% endblock %}
+{% endblock %}

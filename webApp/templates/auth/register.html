@@ -13,6 +13,13 @@
                     <input name="password" type="password" class="form-control" placeholder="{{ gettext('PASSWORD') }}" required="required">
                 </div>
                 <div class="form-group">
+                    <select name="role" class="form-control" required="required">
+                        <option value="" selected>{{ gettext('SELECT_ROLE') }}</option>
+                        <option value="user">{{ gettext('ROLE_USER') }}</option>
+                        <option value="admin">{{ gettext('ROLE_ADMIN') }}</option>
+                    </select>
+                </div>
+                <div class="form-group">
                     <input type="submit" class="btn btn-primary btn-block" value="{{ gettext('VALIDATE') }}"/>
                 </div>
             </form>

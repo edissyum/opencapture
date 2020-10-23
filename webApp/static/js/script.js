@@ -58,9 +58,11 @@ function deleteInvoice(id, reload = true, res = false){
 function submitForm(){
     event.preventDefault();
     let search  = $('#search').val();
+    let currentUrl = window.location.pathname.split('?')[0];
     if (search !== ''){
-        let currentUrl       = window.location.pathname.split('?')[0];
         window.location.href = currentUrl + '?search=' + search;
+    }else{
+        window.location.href = currentUrl;
     }
 }
 
@@ -70,10 +72,6 @@ if (!window.location.href.includes('splitter')){
             this.checked=false;
         });
 
-        if(!$('#checkAll').length && $('.pdf_list').length){
-            $('.pagination-page-info').prepend('<i id="trashAll" class="position-absolute fas fa-trash" style="display: none; cursor: pointer; left: 195px; margin-top: 4px;"></i>')
-            $('.pagination-page-info').prepend('<p id="checkAll" class="checkAll position-absolute " style="cursor: pointer">' + gt.gettext("SELECT_ALL") + '</p>')
-        }
         if ($('.checkAll').length == 2)
             $('.checkAll')[1].style.display = 'none'
 
