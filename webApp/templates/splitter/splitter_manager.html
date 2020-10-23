@@ -37,7 +37,7 @@
     </div>
 
     <div class="input-group pick_status">
-        {% set statusSelected = request.path.split('/')  %}
+        {% set statusSelected = request.path.split('/') %}
         <select id="pickStatus">
             <option value='*' selected>{{ gettext('NO_FILTER') }}</option>
             {% for status in status_list %}
@@ -63,6 +63,9 @@
                                 <img class="card-img-top lazy"
                                      data-original="{{ url_for('pdf.static', type_of_file='splitter', filename=batch['first_page']) }}"
                                      alt="Thumbnail">
+                                <div class="ribbon ribbon-top-right {{ batch['status'] }}">
+                                    <span data-toggle="tooltip" data-placement="left" title="{{ gettext(batch['status'] + '_LONG') }}">{{ gettext(batch['status']) }}</span>
+                                </div>
                             </a>
                             <div class="card-body">
                                 <div class="row pb-0 pl-3">
@@ -89,9 +92,6 @@
                                         <a class="dropdown-item" href="/ws_splitter/delete?batch_name={{ batch['image_folder_name'] }}">{{ gettext('DELETE') }}</a>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="ribbon ribbon-top-right {{ batch['status'] }}">
-                                <span data-toggle="tooltip" data-placement="left" title="{{ gettext(batch['status'] + '_LONG') }}">{{ gettext(batch['status']) }}</span>
                             </div>
                         </div>
                     </div>

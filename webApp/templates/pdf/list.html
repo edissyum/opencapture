@@ -67,20 +67,20 @@
                                     {% else %} #locked
                                 {% endif %}"
 
-                                {% set invoice_locked = gettext('INVOICE_LOCKED_BY') %}
-
                                 {% if pdf['locked'] and pdf['locked_by'] != g.user['username'] %}
-                                    onclick="alert(' {{ invoice_locked }} : {{ pdf['locked_by'] }}')"
+                                    onclick="alert(' {{ gettext('INVOICE_LOCKED_BY') }} : {{ pdf['locked_by'] }}')"
                                 {% endif %}
 
-                                {% set invoice_closed = gettext('INVOICE_CLOSED') %}
-
                                 {% if pdf['status'] == 'END' %}
-                                    onclick="alert('{{ invoice_closed }}')"
+                                    onclick="alert('{{ gettext('INVOICE_CLOSED') }}')"
                                 {% endif %}>
+
                                 <img class="card-img-top lazy"
                                      data-original="{{ url_for('pdf.static', type_of_file='full', filename=pdf['full_jpg_filename']) }}"
                                      alt="Thumbnail">
+                                <div class="ribbon ribbon-top-right {{ pdf['status_id'] }}">
+                                    <span data-toggle="tooltip" data-placement="left" title="{{ gettext(pdf['status_id'] + '_LONG') }}">{{ gettext(pdf['status_id']) }}{% if pdf['locked'] %} &nbsp;  <i class="fas fa-lock"></i> {% endif %}</span>
+                                </div>
                             </a>
                             <div class="card-body">
                                 <div class="row pb-0 pl-3">
@@ -114,9 +114,6 @@
                                     <input id="{{ pdf['invoice_id'] }}_checkbox" class="checkBox_list" type="checkbox"/>
                                 </div>
                             {% endif %}
-                            <div class="ribbon ribbon-top-right {{ pdf['status_id'] }}">
-                                <span data-toggle="tooltip" data-placement="left" title="{{ gettext(pdf['status_id'] + '_LONG') }}">{{ gettext(pdf['status_id']) }}{% if pdf['locked'] %} &nbsp;  <i class="fas fa-lock"></i> {% endif %}</span>
-                            </div>
                         </div>
                     </div>
                 {% endfor %}
