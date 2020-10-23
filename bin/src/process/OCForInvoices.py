@@ -145,7 +145,7 @@ def convert(file, files, ocr, nb_pages, custom_pages=False):
                 os.remove(improved_img)
             except FileNotFoundError:
                 pass
-            files.pdf_to_tiff(file, files.custom_fileName_tiff, False, False, True, 'full', nb_pages)
+            files.pdf_to_tiff(file, files.custom_fileName_tiff, open_img=False, last_page=nb_pages)
         else:
             try:
                 filename = os.path.splitext(files.custom_fileName)
@@ -154,7 +154,7 @@ def convert(file, files, ocr, nb_pages, custom_pages=False):
                 os.remove(improved_img)
             except FileNotFoundError:
                 pass
-            files.pdf_to_jpg(file + '[' + str(int(nb_pages - 1)) + ']', False, True, 'full', False, True)
+            files.pdf_to_jpg(file + '[' + str(int(nb_pages - 1)) + ']', open_img=False, is_custom=True)
     else:
         if files.isTiff == 'True':
             files.pdf_to_tiff(file, files.tiffName, True, True, True, 'header')
@@ -182,7 +182,7 @@ def convert(file, files, ocr, nb_pages, custom_pages=False):
                 ocr.header_last_text = ocr.line_box_builder(files.img)
                 files.pdf_to_jpg(file + '[' + str(nb_pages - 1) + ']', True, True, 'footer', True)
                 ocr.footer_last_text = ocr.line_box_builder(files.img)
-                files.pdf_to_jpg(file + '[' + str(nb_pages - 1) + ']', lastImage=True)
+                files.pdf_to_jpg(file + '[' + str(nb_pages - 1) + ']', last_image=True)
                 ocr.last_text = ocr.line_box_builder(files.img)
 
 
