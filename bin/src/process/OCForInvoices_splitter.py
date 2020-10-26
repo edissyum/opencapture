@@ -16,41 +16,65 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import os
+import shutil
 
-def process(file, Log, Splitter, Files, Ocr, tmpFolder):
-    Log.info('Processing file for separation : ' + file)
+
+def process(file, log, splitter, files, ocr, tmp_folder, config):
+    log.info('Processing file for separation : ' + file)
 
     # Get the OCR of the file as a list of line content and position
-    if Files.isTiff == "False":
-        Files.pdf_to_jpg(file, False)
+    if files.isTiff == "False":
+        files.pdf_to_jpg(file, open_img=False)
         extension = 'jpg'
     else:
-        tiffFilename = Files.jpgName.replace('.jpg', '') + '-%03d.tiff'
-        Files.save_pdf_to_tiff_in_docserver(file, tiffFilename)
+        tiff_filename = files.jpgName.replace('.jpg', '') + '-%03d.tiff'
+        files.save_pdf_to_tiff_in_docserver(file, tiff_filename)
         extension = 'tiff'
 
-    files = Files.sorted_file(tmpFolder, extension)
+    list_files = files.sorted_file(tmp_folder, extension)
 
     text_extracted = []
-    for f in files:
-        img = Files.open_image_return(f[1])
-        text = Ocr.text_builder(img)
+
+    # Remove blank pages
+    # Recreate the array if somes pages are deleted to get the correct indexes of pages
+    if config.cfg['REMOVE-BLANK-PAGES']['enabled'] == 'True':
+        cpt = 0
+        blank_pages_exists = False
+        tmp_list_files = list_files
+        for f in tmp_list_files:
+            if files.is_blank_page(f[1], config.cfg['REMOVE-BLANK-PAGES']):
+                del tmp_list_files[cpt]
+                blank_pages_exists = True
+            cpt = cpt + 1
+
+        if blank_pages_exists:
+            list_files = []
+            for idx, item in enumerate(tmp_list_files):
+                idx = idx + 1
+                file_name = item[1].split('-')[0]
+                new_file = file_name + '-' + str(idx) + '.jpg'
+                shutil.move(item[1], new_file)
+                list_files.append(('%03d' % idx, new_file))
+
+    # Create array of text within pages
+    for f in list_files:
+        img = files.open_image_return(f[1])
+        text = ocr.text_builder(img)
         text = text.replace('-\n', '')
         text_extracted.append(text)
         # Remove temporary files
-        if Files.isTiff == "True":
+        if files.isTiff == "True":
             try:
                 os.remove(f[1])
             except OSError:
                 pass
 
-    invoices_separated = Splitter.get_page_separate_order(text_extracted)
+    invoices_separated = splitter.get_page_separate_order(text_extracted)
 
     # get jpg format which is used to display images
-    if Files.isTiff == "True":
+    if files.isTiff == "True":
         extension = 'jpg'
-        Files.pdf_to_jpg(file, False)
-        files = Files.sorted_file(tmpFolder, extension)
+        files.pdf_to_jpg(file, False)
+        list_files = files.sorted_file(tmp_folder, extension)
 
-    Splitter.save_image_from_pdf(files, invoices_separated, tmpFolder, file)
-
+    splitter.save_image_from_pdf(list_files, invoices_separated, tmp_folder, file)

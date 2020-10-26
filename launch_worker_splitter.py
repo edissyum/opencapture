@@ -26,10 +26,8 @@ ap.add_argument("-f", "--file", required=False, help="path to file")
 ap.add_argument("-c", "--config", required=True, help="path to config.xml")
 args = vars(ap.parse_args())
 
-if args['path'] is None and args['file'] is None:
-    sys.exit('No file or path were given')
-elif args['path'] is not None and args['file'] is not None:
-    sys.exit('Chose between path or file')
+if args['file'] is None:
+    sys.exit('The file parameters is mandatory')
 
 if not os.path.exists(args['config']):
     sys.exit('Config file couldn\'t be found')

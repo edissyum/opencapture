@@ -25,7 +25,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from kuyruk import Kuyruk
 from kuyruk_manager import Manager
 from webApp.functions import get_custom_id, check_python_customized_files
-from .main import timer, recursive_delete, check_file
+from .main import timer, check_file
 
 custom_id = get_custom_id()
 custom_array = {}
@@ -134,7 +134,7 @@ def launch(args):
         path = args['file']
         if check_file(files, path, config, log) is not False:
             # Process the file and send it to Maarch
-            OCForInvoices_splitter.process(path, log, splitter, files, ocr, tmp_folder)
+            OCForInvoices_splitter.process(path, log, splitter, files, ocr, tmp_folder, config)
 
     # Close database
     database.conn.close()
