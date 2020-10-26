@@ -78,4 +78,3 @@ def process(file, log, splitter, files, ocr, tmp_folder, config):
         list_files = files.sorted_file(tmp_folder, extension)
 
     splitter.save_image_from_pdf(list_files, invoices_separated, tmp_folder, file)
-
