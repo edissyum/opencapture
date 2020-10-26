@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-10-23 14:05+0200\n"
+"POT-Creation-Date: 2020-10-26 14:42+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -500,8 +500,8 @@ msgstr ""
 #: webApp/templates/dashboard/index.html:225
 #: webApp/templates/dashboard/index.html:829
 #: webApp/templates/dashboard/index.html:900
-#: webApp/templates/dashboard/index.html:926
-#: webApp/templates/dashboard/index.html:1212
+#: webApp/templates/dashboard/index.html:942
+#: webApp/templates/dashboard/index.html:1228
 msgid "ENABLED"
 msgstr ""
 
@@ -576,7 +576,7 @@ msgid "ALLOWED_EXTENSIONS"
 msgstr ""
 
 #: webApp/templates/dashboard/index.html:385
-#: webApp/templates/dashboard/index.html:910
+#: webApp/templates/dashboard/index.html:926
 msgid "GENERAL"
 msgstr ""
 
@@ -760,157 +760,165 @@ msgstr ""
 msgid "DIVIDER_HELP"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:930
+#: webApp/templates/dashboard/index.html:904
+msgid "BLOBS_RATIO"
+msgstr ""
+
+#: webApp/templates/dashboard/index.html:914
+msgid "BLOBSRATIO_HELP"
+msgstr ""
+
+#: webApp/templates/dashboard/index.html:946
 msgid "REST_URL"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:941
+#: webApp/templates/dashboard/index.html:957
 msgid "REST_USER"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:952
+#: webApp/templates/dashboard/index.html:968
 msgid "REST_PASSWORD"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:966
+#: webApp/templates/dashboard/index.html:982
 msgid "AVAILABLE_PROCESS"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:977
+#: webApp/templates/dashboard/index.html:993
 msgid "DEFAULT_PROCESS"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:988
+#: webApp/templates/dashboard/index.html:1004
 msgid "USERGROUP_ID"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1004
+#: webApp/templates/dashboard/index.html:1020
 #: webApp/templates/users/user_list.html:16
 msgid "STATUS"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1015
+#: webApp/templates/dashboard/index.html:1031
 msgid "STATUS_END"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1026
+#: webApp/templates/dashboard/index.html:1042
 msgid "TYPE_ID"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1037
+#: webApp/templates/dashboard/index.html:1053
 msgid "TYPIST"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1051
+#: webApp/templates/dashboard/index.html:1067
 msgid "PRIORITY"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1062
+#: webApp/templates/dashboard/index.html:1078
 msgid "CATEGORY_ID"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1073
+#: webApp/templates/dashboard/index.html:1089
 msgid "FORMAT"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1084
+#: webApp/templates/dashboard/index.html:1100
 msgid "DEFAULT_DESTINATION"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1095
+#: webApp/templates/dashboard/index.html:1111
 msgid "DEFAULT_DESTUSER"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1109
+#: webApp/templates/dashboard/index.html:1125
 msgid "CUSTOM_VAT_NUMBER"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1120
+#: webApp/templates/dashboard/index.html:1136
 msgid "CUSTOM_HT"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1131
+#: webApp/templates/dashboard/index.html:1147
 msgid "CUSTOM_TTC"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1142
+#: webApp/templates/dashboard/index.html:1158
 msgid "CUSTOM_ORDER_NUMBER"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1156
+#: webApp/templates/dashboard/index.html:1172
 msgid "CUSTOM_INVOICE_NUMBER"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1167
+#: webApp/templates/dashboard/index.html:1183
 msgid "CUSTOM_DELIVERY_NUMBER"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1178
+#: webApp/templates/dashboard/index.html:1194
 msgid "CONTACT_TYPE"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1189
+#: webApp/templates/dashboard/index.html:1205
 msgid "CONTACT_PURPOSE_ID"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1216
+#: webApp/templates/dashboard/index.html:1232
 msgid "AI_PATH"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1227
+#: webApp/templates/dashboard/index.html:1243
 msgid "AI_MODEL_PATH"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1240
-#: webApp/templates/dashboard/index.html:1251
+#: webApp/templates/dashboard/index.html:1256
+#: webApp/templates/dashboard/index.html:1267
 msgid "AI_TRAIN_IMAGE_PATH"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1264
+#: webApp/templates/dashboard/index.html:1280
 msgid "AI_CONFIDENCE_MIN"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1279
+#: webApp/templates/dashboard/index.html:1295
 msgid "DATABASE_FILE"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1290
+#: webApp/templates/dashboard/index.html:1306
 msgid "DATABASE_TYPE"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1300
+#: webApp/templates/dashboard/index.html:1316
 msgid "DATABASE_TYPE_HELP"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1304
+#: webApp/templates/dashboard/index.html:1320
 msgid "POSTGRES_HOST"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1315
+#: webApp/templates/dashboard/index.html:1331
 msgid "POSTGRES_PORT"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1328
+#: webApp/templates/dashboard/index.html:1344
 msgid "POSTGRES_DATABASE"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1339
+#: webApp/templates/dashboard/index.html:1355
 msgid "POSTGRES_USER"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1350
+#: webApp/templates/dashboard/index.html:1366
 msgid "POSTGRES_PASSWORD"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1363
+#: webApp/templates/dashboard/index.html:1379
 msgid "CURRENT_VERSION"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1364
+#: webApp/templates/dashboard/index.html:1380
 msgid "LAST_VERSION"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:1366
+#: webApp/templates/dashboard/index.html:1382
 msgid "MODIFY_CONFIGURATION"
 msgstr ""
 
@@ -1250,47 +1258,3 @@ msgstr ""
 msgid "NO_RIGHTS"
 msgstr ""
 
-msgid "NEW_LONG"
-msgstr ""
-
-msgid "WAIT_SUP_LONG"
-msgstr ""
-
-msgid "ERR_LONG"
-msgstr ""
-
-msgid "NEW"
-msgstr ""
-
-msgid "WAIT_SUP"
-msgstr ""
-
-msgid "ERR"
-msgstr ""
-
-msgid "ERR_GED"
-msgstr ""
-
-msgid "ERR_GED_LONG"
-msgstr ""
-
-msgid "END"
-msgstr ""
-
-msgid "CANCEL_UPLOAD"
-msgstr ""
-
-msgid "SELECT_OR_DROP_DOC"
-msgstr ""
-
-msgid "FORMAT_NOT_ALLOWED"
-msgstr ""
-
-msgid "FILE_UPLOAD_SUCCESS"
-msgstr ""
-
-msgid "FILE_UPLOAD_ERROR"
-msgstr ""
-
-msgid "CHOOSE_VAT_RATE"
-msgstr ""

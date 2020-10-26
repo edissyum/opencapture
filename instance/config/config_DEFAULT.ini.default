@@ -50,6 +50,8 @@ allowedExtensions  = {'pdf'}
 [REMOVE-BLANK-PAGES]
 # True or False
 enabled = False
+# Float type
+blobsRatio = 1E-6
 
 [DATABASE]
 databasefile = ${GLOBAL:projectPath}/instance/flaskr.sqlite
