@@ -16,13 +16,11 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import os
+import shutil
 
 
 def process(file, log, splitter, files, ocr, tmp_folder, config):
     log.info('Processing file for separation : ' + file)
-
-    if config.cfg['REMOVE-BLANK-PAGES']['enabled'] == 'True':
-        files.remove_blank_page(file, config, ocr, files)
 
     # Get the OCR of the file as a list of line content and position
     if files.isTiff == "False":
@@ -36,6 +34,29 @@ def process(file, log, splitter, files, ocr, tmp_folder, config):
     list_files = files.sorted_file(tmp_folder, extension)
 
     text_extracted = []
+
+    # Remove blank pages
+    # Recreate the array if somes pages are deleted to get the correct indexes of pages
+    if config.cfg['REMOVE-BLANK-PAGES']['enabled'] == 'True':
+        cpt = 0
+        blank_pages_exists = False
+        tmp_list_files = list_files
+        for f in tmp_list_files:
+            if files.is_blank_page(f[1], config.cfg['REMOVE-BLANK-PAGES']):
+                del tmp_list_files[cpt]
+                blank_pages_exists = True
+            cpt = cpt + 1
+
+        if blank_pages_exists:
+            list_files = []
+            for idx, item in enumerate(tmp_list_files):
+                idx = idx + 1
+                file_name = item[1].split('-')[0]
+                new_file = file_name + '-' + str(idx) + '.jpg'
+                shutil.move(item[1], new_file)
+                list_files.append(('%03d' % idx, new_file))
+
+    # Create array of text within pages
     for f in list_files:
         img = files.open_image_return(f[1])
         text = ocr.text_builder(img)

@@ -37,7 +37,7 @@ from wand.image import Image as Img
 from wand.exceptions import PolicyError, CacheError
 from werkzeug.utils import secure_filename
 
-from webApp.functions import retrieve_custom_positions
+from webApp.functions import retrieve_custom_positions, recursive_delete
 from xml.sax.saxutils import escape
 
 
@@ -161,10 +161,6 @@ class Files:
     def open_img(self, img):
         self.img = Image.open(img)
 
-    @staticmethod
-    def open_image_return(img):
-        return Image.open(img)
-
     # Save pdf with one or more pages into JPG file
     def save_img_with_wand(self, pdf_name, output):
         try:
@@ -177,116 +173,6 @@ class Files:
                 pic.save(filename=output)
         except (PolicyError, CacheError) as e:
             self.Log.error('Error during WAND conversion : ' + str(e))
-
-    @staticmethod
-    def sorted_file(path, extension):
-        file_json = []
-        for file in os.listdir(path):
-            if file.endswith("." + extension):
-                filename = os.path.splitext(file)[0]
-                is_countable = filename.split('-')
-                if len(is_countable) > 1:
-                    cpt = ('%03d' % int(is_countable[1]))
-                    file_json.append((cpt, path + '/' + file))
-                else:
-                    file_json.append(('000', path + '/' + file))
-        sorted_file = sorted(file_json, key=lambda file_cpt: file_cpt[0])
-        return sorted_file
-
-    @staticmethod
-    def merge_pdf(file_sorted, tmp_path, _return=False):
-        merger = PyPDF4.PdfFileMerger()
-        for pdf in file_sorted:
-            merger.append(pdf[1])
-            os.remove(pdf[1])
-        merger.write(tmp_path + '/result.pdf')
-        file_to_return = open(tmp_path + '/result.pdf', 'rb').read()
-
-        if _return:
-            return tmp_path + '/result.pdf'
-        else:
-            os.remove(tmp_path + '/result.pdf')
-            return file_to_return
-
-    @staticmethod
-    def check_file_integrity(file, config):
-        is_full = False
-        while not is_full:
-            with open(file, 'rb') as doc:
-                size = os.path.getsize(file)
-                time.sleep(1)
-                size2 = os.path.getsize(file)
-                if size2 == size:
-                    if file.endswith(".pdf"):
-                        try:
-                            PyPDF4.PdfFileReader(doc)
-                        except PyPDF4.utils.PdfReadError:
-                            shutil.move(file, config.cfg['GLOBAL']['errorpath'] + os.path.basename(file))
-                            return False
-                        else:
-                            return True
-                    elif file.endswith(tuple(['.jpg', '.tiff'])):
-                        try:
-                            Image.open(file)
-                        except OSError:
-                            return False
-                        else:
-                            return True
-                    else:
-                        return False
-                else:
-                    continue
-
-    @staticmethod
-    def ocr_on_fly(img, selection, ocr, thumb_size=None, regex=None, remove_line=False):
-        rand = str(uuid.uuid4())
-        if thumb_size is not None:
-            with Image.open(img) as im:
-                ratio = im.size[0] / thumb_size['width']
-        else:
-            ratio = 1
-
-        x1 = selection['x1'] * ratio
-        y1 = selection['y1'] * ratio
-        x2 = selection['x2'] * ratio
-        y2 = selection['y2'] * ratio
-        crop_ratio = (x1, y1, x2, y2)
-
-        extension = os.path.splitext(img)[1]
-        with Image.open(img) as im2:
-            cropped_image = im2.crop(crop_ratio)
-            cropped_image.save('/tmp/cropped_' + rand + extension)
-
-        if remove_line:
-            image = cv2.imread('/tmp/cropped_' + rand + extension)
-            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
-            horizontal_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (20, 1))
-            detected_lines = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, horizontal_kernel, iterations=2)
-            cnts = cv2.findContours(detected_lines, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-            cnts = cnts[0] if len(cnts) == 2 else cnts[1]
-            for c in cnts:
-                cv2.drawContours(image, [c], -1, (255, 255, 255), 3)
-            repair_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
-            result = 255 - cv2.morphologyEx(255 - image, cv2.MORPH_CLOSE, repair_kernel, iterations=1)
-            cv2.imwrite('/tmp/cropped_' + rand + extension, result)
-
-        cropped_image = Image.open('/tmp/cropped_' + rand + extension)
-        text = ocr.text_builder(cropped_image)
-
-        if regex:
-            for res in re.finditer(r"" + regex, text):
-                os.remove('/tmp/cropped_' + rand + extension)
-                return res.group().replace('\x0c', '').strip()
-            return False
-
-        os.remove('/tmp/cropped_' + rand + extension)
-        return text.replace('\x0c', '').strip()
-
-    @staticmethod
-    def get_size(img):
-        im = Image.open(img)
-        return im.size[0]
 
     # Crop the file to get the header
     # 1/3 + 10% is the ratio we used
@@ -367,64 +253,6 @@ class Files:
                         pic.save(filename=self.tiffName_footer)
         except (PolicyError, CacheError) as e:
             self.Log.error('Error during WAND conversion : ' + str(e))
-
-    @staticmethod
-    def improve_image_detection(img):
-        filename = os.path.splitext(img)
-        improved_img = filename[0] + '_improved' + filename[1]
-        if not os.path.isfile(improved_img):
-            src = cv2.imread(img)
-            gray = cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)
-            _, black_and_white = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY_INV)
-            nlabels, labels, stats, centroids = cv2.connectedComponentsWithStats(black_and_white, None, None, None, 8, cv2.CV_32S)
-
-            # get CC_STAT_AREA component
-            sizes = stats[1:, -1]
-            img2 = np.zeros(labels.shape, np.uint8)
-
-            for i in range(0, nlabels - 1):
-                # Filter small dotted regions
-                if sizes[i] >= 20:
-                    img2[labels == i + 1] = 255
-
-            dst = cv2.bitwise_not(img2)
-
-            kernel = np.ones((1, 2), np.uint8)
-            src = cv2.adaptiveThreshold(dst, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
-            dst = cv2.erode(src, kernel)
-            cv2.imwrite(improved_img, dst)
-
-        return improved_img
-
-    @staticmethod
-    def move_to_docservers(cfg, file):
-        now = datetime.datetime.now()
-        year = str(now.year)
-        day = str('%02d' % now.day)
-        month = str('%02d' % now.month)
-        hour = str('%02d' % now.hour)
-        minute = str('%02d' % now.minute)
-        seconds = str('%02d' % now.second)
-        docserver_path = cfg['GLOBAL']['docserverpath']
-
-        # Check if docserver folder exists, if not, create it
-        if not os.path.exists(docserver_path):
-            os.mkdir(docserver_path)
-
-        # Check if year folder exist, if not, create it
-        if not os.path.exists(docserver_path + '/' + year):
-            os.mkdir(docserver_path + '/' + year)
-
-        # Do the same with month
-        if not os.path.exists(docserver_path + '/' + year + '/' + month):
-            os.mkdir(docserver_path + '/' + year + '/' + month)
-
-        new_filename = day + month + year + '_' + hour + minute + seconds + '_' + uuid.uuid4().hex + '.pdf'
-        final_directory = docserver_path + '/' + year + '/' + month + '/' + new_filename
-
-        shutil.move(file, final_directory)
-
-        return final_directory
 
     # When we crop footer we need to rearrange the position of founded text
     # So we add the heightRatio we used (by default 1/3 + 10% of the full image)
@@ -536,34 +364,8 @@ class Files:
                 shutil.move(file, config.cfg['GLOBAL']['errorpath'] + os.path.basename(file))
                 return 1
 
-    def remove_blank_page(self, file, config, ocr, files):
-        tmp_folder = tempfile.mkdtemp(dir=config.cfg['GLOBAL']['tmppath'], prefix='blank_detection_')
-        tmp_filename = tmp_folder + '/tmp-%03d.jpg'
-
-        self.save_img_with_wand(file, tmp_filename)
-
-        new_pdf_file = ocr.generate_searchable_pdf(file, files, config, True)
-
-        with open(new_pdf_file, 'rb') as doc:
-            pdf_reader = PyPDF4.PdfFileReader(doc)
-            pdf_writer = PyPDF4.PdfFileWriter()
-            for page in range(0, pdf_reader.numPages):
-                current_page = tmp_folder + '/tmp-%03d' % (page + 1) + '.jpg'
-
-                if not self.is_blank_page(current_page):
-                    current_pdf = pdf_reader.getPage(page)
-                    pdf_writer.addPage(current_pdf)
-
-            with open(file, "wb") as stream:
-                pdf_writer.write(stream)
-
-        try:
-            os.remove(new_pdf_file)
-        except FileNotFoundError:
-            pass
-
     @staticmethod
-    def is_blank_page(image):
+    def is_blank_page(image, config):
         params = cv2.SimpleBlobDetector_Params()
         params.minThreshold = 10
         params.maxThreshold = 200
@@ -582,7 +384,7 @@ class Files:
         rows, cols, channel = im.shape
         blobs_ratio = len(keypoints) / (1.0 * rows * cols)
 
-        if blobs_ratio < 1E-6:
+        if blobs_ratio < float(config['blobsratio']):
             return True
         return False
 
@@ -592,3 +394,175 @@ class Files:
             os.mkdir(path)
         except OSError:
             print("Creation of the directory %s failed" % path)
+
+    @staticmethod
+    def sorted_file(path, extension):
+        file_json = []
+        for file in os.listdir(path):
+            if file.endswith("." + extension):
+                filename = os.path.splitext(file)[0]
+                is_countable = filename.split('-')
+                if len(is_countable) > 1:
+                    cpt = ('%03d' % int(is_countable[1]))
+                    file_json.append((cpt, path + '/' + file))
+                else:
+                    file_json.append(('000', path + '/' + file))
+        sorted_file = sorted(file_json, key=lambda file_cpt: file_cpt[0])
+        return sorted_file
+
+    @staticmethod
+    def merge_pdf(file_sorted, tmp_path, _return=False):
+        merger = PyPDF4.PdfFileMerger()
+        for pdf in file_sorted:
+            merger.append(pdf[1])
+            os.remove(pdf[1])
+        merger.write(tmp_path + '/result.pdf')
+        file_to_return = open(tmp_path + '/result.pdf', 'rb').read()
+
+        if _return:
+            return tmp_path + '/result.pdf'
+        else:
+            os.remove(tmp_path + '/result.pdf')
+            return file_to_return
+
+    @staticmethod
+    def check_file_integrity(file, config):
+        is_full = False
+        while not is_full:
+            with open(file, 'rb') as doc:
+                size = os.path.getsize(file)
+                time.sleep(1)
+                size2 = os.path.getsize(file)
+                if size2 == size:
+                    if file.endswith(".pdf"):
+                        try:
+                            PyPDF4.PdfFileReader(doc)
+                        except PyPDF4.utils.PdfReadError:
+                            shutil.move(file, config.cfg['GLOBAL']['errorpath'] + os.path.basename(file))
+                            return False
+                        else:
+                            return True
+                    elif file.endswith(tuple(['.jpg', '.tiff'])):
+                        try:
+                            Image.open(file)
+                        except OSError:
+                            return False
+                        else:
+                            return True
+                    else:
+                        return False
+                else:
+                    continue
+
+    @staticmethod
+    def ocr_on_fly(img, selection, ocr, thumb_size=None, regex=None, remove_line=False):
+        rand = str(uuid.uuid4())
+        if thumb_size is not None:
+            with Image.open(img) as im:
+                ratio = im.size[0] / thumb_size['width']
+        else:
+            ratio = 1
+
+        x1 = selection['x1'] * ratio
+        y1 = selection['y1'] * ratio
+        x2 = selection['x2'] * ratio
+        y2 = selection['y2'] * ratio
+        crop_ratio = (x1, y1, x2, y2)
+
+        extension = os.path.splitext(img)[1]
+        with Image.open(img) as im2:
+            cropped_image = im2.crop(crop_ratio)
+            cropped_image.save('/tmp/cropped_' + rand + extension)
+
+        if remove_line:
+            image = cv2.imread('/tmp/cropped_' + rand + extension)
+            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
+            horizontal_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (20, 1))
+            detected_lines = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, horizontal_kernel, iterations=2)
+            cnts = cv2.findContours(detected_lines, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            cnts = cnts[0] if len(cnts) == 2 else cnts[1]
+            for c in cnts:
+                cv2.drawContours(image, [c], -1, (255, 255, 255), 3)
+            repair_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+            result = 255 - cv2.morphologyEx(255 - image, cv2.MORPH_CLOSE, repair_kernel, iterations=1)
+            cv2.imwrite('/tmp/cropped_' + rand + extension, result)
+
+        cropped_image = Image.open('/tmp/cropped_' + rand + extension)
+        text = ocr.text_builder(cropped_image)
+
+        if regex:
+            for res in re.finditer(r"" + regex, text):
+                os.remove('/tmp/cropped_' + rand + extension)
+                return res.group().replace('\x0c', '').strip()
+            return False
+
+        os.remove('/tmp/cropped_' + rand + extension)
+        return text.replace('\x0c', '').strip()
+
+    @staticmethod
+    def get_size(img):
+        im = Image.open(img)
+        return im.size[0]
+
+    @staticmethod
+    def improve_image_detection(img):
+        filename = os.path.splitext(img)
+        improved_img = filename[0] + '_improved' + filename[1]
+        if not os.path.isfile(improved_img):
+            src = cv2.imread(img)
+            gray = cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)
+            _, black_and_white = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY_INV)
+            nlabels, labels, stats, centroids = cv2.connectedComponentsWithStats(black_and_white, None, None, None, 8, cv2.CV_32S)
+
+            # get CC_STAT_AREA component
+            sizes = stats[1:, -1]
+            img2 = np.zeros(labels.shape, np.uint8)
+
+            for i in range(0, nlabels - 1):
+                # Filter small dotted regions
+                if sizes[i] >= 20:
+                    img2[labels == i + 1] = 255
+
+            dst = cv2.bitwise_not(img2)
+
+            kernel = np.ones((1, 2), np.uint8)
+            src = cv2.adaptiveThreshold(dst, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
+            dst = cv2.erode(src, kernel)
+            cv2.imwrite(improved_img, dst)
+
+        return improved_img
+
+    @staticmethod
+    def move_to_docservers(cfg, file):
+        now = datetime.datetime.now()
+        year = str(now.year)
+        day = str('%02d' % now.day)
+        month = str('%02d' % now.month)
+        hour = str('%02d' % now.hour)
+        minute = str('%02d' % now.minute)
+        seconds = str('%02d' % now.second)
+        docserver_path = cfg['GLOBAL']['docserverpath']
+
+        # Check if docserver folder exists, if not, create it
+        if not os.path.exists(docserver_path):
+            os.mkdir(docserver_path)
+
+        # Check if year folder exist, if not, create it
+        if not os.path.exists(docserver_path + '/' + year):
+            os.mkdir(docserver_path + '/' + year)
+
+        # Do the same with month
+        if not os.path.exists(docserver_path + '/' + year + '/' + month):
+            os.mkdir(docserver_path + '/' + year + '/' + month)
+
+        new_filename = day + month + year + '_' + hour + minute + seconds + '_' + uuid.uuid4().hex + '.pdf'
+        final_directory = docserver_path + '/' + year + '/' + month + '/' + new_filename
+
+        shutil.move(file, final_directory)
+
+        return final_directory
+
+    @staticmethod
+    def open_image_return(img):
+        return Image.open(img)

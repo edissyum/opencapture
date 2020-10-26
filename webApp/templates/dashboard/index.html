@@ -899,6 +899,22 @@
                                             {% endif %}
                                             <label class="custom-control-label" for="REMOVEBLANKPAGES_enabled">{{ gettext('ENABLED') }}</label>
                                         </div>
+                                        <div class="form-row">
+                                             <div class="form-group col-md-4">
+                                                <label for="blobsRatio">{{ gettext('BLOBS_RATIO') }}</label>
+                                                <div class="input-group mb-2">
+                                                    <div class="input-group-prepend">
+                                                        <div class="input-group-text">
+                                                            <i class="fas fa-percent"></i>
+                                                        </div>
+                                                    </div>
+                                                    <input type="text" class="form-control" id="blobsRatio" name="REMOVEBLANKPAGES_blobsratio" value="{{ configDashboard['REMOVE-BLANK-PAGES']['blobsratio'] }}">
+                                                </div>
+                                                <small id="blobsratioHelp" class="form-text text-muted">
+                                                    {{ gettext('BLOBSRATIO_HELP') }}
+                                                </small>
+                                         </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

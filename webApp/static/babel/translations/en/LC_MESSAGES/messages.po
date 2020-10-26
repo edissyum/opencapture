@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2020-10-23 14:05+0200\n"
+"POT-Creation-Date: 2020-10-26 14:35+0100\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: en\n"
@@ -506,8 +506,8 @@ msgstr "Allow duplicate invoice"
 #: webApp/templates/dashboard/index.html:225
 #: webApp/templates/dashboard/index.html:829
 #: webApp/templates/dashboard/index.html:900
-#: webApp/templates/dashboard/index.html:926
-#: webApp/templates/dashboard/index.html:1212
+#: webApp/templates/dashboard/index.html:942
+#: webApp/templates/dashboard/index.html:1228
 msgid "ENABLED"
 msgstr "Enabled"
 
@@ -582,7 +582,7 @@ msgid "ALLOWED_EXTENSIONS"
 msgstr "Allowed extensions"
 
 #: webApp/templates/dashboard/index.html:385
-#: webApp/templates/dashboard/index.html:910
+#: webApp/templates/dashboard/index.html:926
 msgid "GENERAL"
 msgstr "General"
 
@@ -766,157 +766,166 @@ msgstr "Divider (when creating files)"
 msgid "DIVIDER_HELP"
 msgstr "<b>_</b> ou <b>-</b> for example"
 
-#: webApp/templates/dashboard/index.html:930
+#: webApp/templates/dashboard/index.html:904
+msgid "BLOBS_RATIO"
+msgstr "Minimal ratio of blank page detection"
+
+
+#: webApp/templates/dashboard/index.html:914
+msgid "BLOBSRATIO_HELP"
+msgstr "Takes the number of keypoint found into the image comprade to the size of the image"
+
+#: webApp/templates/dashboard/index.html:946
 msgid "REST_URL"
 msgstr "WebServices URL"
 
-#: webApp/templates/dashboard/index.html:941
+#: webApp/templates/dashboard/index.html:957
 msgid "REST_USER"
 msgstr "Webservices user"
 
-#: webApp/templates/dashboard/index.html:952
+#: webApp/templates/dashboard/index.html:968
 msgid "REST_PASSWORD"
 msgstr "Webservices password"
 
-#: webApp/templates/dashboard/index.html:966
+#: webApp/templates/dashboard/index.html:982
 msgid "AVAILABLE_PROCESS"
 msgstr "Available process"
 
-#: webApp/templates/dashboard/index.html:977
+#: webApp/templates/dashboard/index.html:993
 msgid "DEFAULT_PROCESS"
 msgstr "Default process"
 
-#: webApp/templates/dashboard/index.html:988
+#: webApp/templates/dashboard/index.html:1004
 msgid "USERGROUP_ID"
 msgstr "Usegroupd id"
 
-#: webApp/templates/dashboard/index.html:1004
+#: webApp/templates/dashboard/index.html:1020
 #: webApp/templates/users/user_list.html:16
 msgid "STATUS"
 msgstr "Status"
 
-#: webApp/templates/dashboard/index.html:1015
+#: webApp/templates/dashboard/index.html:1031
 msgid "STATUS_END"
 msgstr "Status end"
 
-#: webApp/templates/dashboard/index.html:1026
+#: webApp/templates/dashboard/index.html:1042
 msgid "TYPE_ID"
 msgstr "Type id"
 
-#: webApp/templates/dashboard/index.html:1037
+#: webApp/templates/dashboard/index.html:1053
 msgid "TYPIST"
 msgstr "Typist"
 
-#: webApp/templates/dashboard/index.html:1051
+#: webApp/templates/dashboard/index.html:1067
 msgid "PRIORITY"
 msgstr "Priority"
 
-#: webApp/templates/dashboard/index.html:1062
+#: webApp/templates/dashboard/index.html:1078
 msgid "CATEGORY_ID"
 msgstr "Category id"
 
-#: webApp/templates/dashboard/index.html:1073
+#: webApp/templates/dashboard/index.html:1089
 msgid "FORMAT"
 msgstr "Format"
 
-#: webApp/templates/dashboard/index.html:1084
+#: webApp/templates/dashboard/index.html:1100
 msgid "DEFAULT_DESTINATION"
 msgstr "Default destination"
 
-#: webApp/templates/dashboard/index.html:1095
+#: webApp/templates/dashboard/index.html:1111
 msgid "DEFAULT_DESTUSER"
 msgstr "Default recipient user"
 
-#: webApp/templates/dashboard/index.html:1109
+#: webApp/templates/dashboard/index.html:1125
 msgid "CUSTOM_VAT_NUMBER"
 msgstr "Custom for VAT number"
 
-#: webApp/templates/dashboard/index.html:1120
+#: webApp/templates/dashboard/index.html:1136
 msgid "CUSTOM_HT"
 msgstr "Custom for no rates total"
 
-#: webApp/templates/dashboard/index.html:1131
+#: webApp/templates/dashboard/index.html:1147
 msgid "CUSTOM_TTC"
 msgstr "Custom for total including rates"
 
-#: webApp/templates/dashboard/index.html:1142
+#: webApp/templates/dashboard/index.html:1158
 msgid "CUSTOM_ORDER_NUMBER"
 msgstr "Custom for order number"
 
-#: webApp/templates/dashboard/index.html:1156
+#: webApp/templates/dashboard/index.html:1172
 msgid "CUSTOM_INVOICE_NUMBER"
 msgstr "Custom for invoice number"
 
-#: webApp/templates/dashboard/index.html:1167
+#: webApp/templates/dashboard/index.html:1183
 msgid "CUSTOM_DELIVERY_NUMBER"
 msgstr "Custom for delivery number"
 
-#: webApp/templates/dashboard/index.html:1178
+#: webApp/templates/dashboard/index.html:1194
 msgid "CONTACT_TYPE"
 msgstr "Contact type"
 
-#: webApp/templates/dashboard/index.html:1189
+#: webApp/templates/dashboard/index.html:1205
 msgid "CONTACT_PURPOSE_ID"
 msgstr "Contact purpose id"
 
-#: webApp/templates/dashboard/index.html:1216
+#: webApp/templates/dashboard/index.html:1232
 msgid "AI_PATH"
 msgstr "AI path"
 
-#: webApp/templates/dashboard/index.html:1227
+#: webApp/templates/dashboard/index.html:1243
 msgid "AI_MODEL_PATH"
 msgstr "Path of the AI model"
 
-#: webApp/templates/dashboard/index.html:1240
-#: webApp/templates/dashboard/index.html:1251
+#: webApp/templates/dashboard/index.html:1256
+#: webApp/templates/dashboard/index.html:1267
 msgid "AI_TRAIN_IMAGE_PATH"
 msgstr "Path of the train image"
 
-#: webApp/templates/dashboard/index.html:1264
+#: webApp/templates/dashboard/index.html:1280
 msgid "AI_CONFIDENCE_MIN"
 msgstr "Minimal level of confidence"
 
-#: webApp/templates/dashboard/index.html:1279
+#: webApp/templates/dashboard/index.html:1295
 msgid "DATABASE_FILE"
 msgstr "Database file"
 
-#: webApp/templates/dashboard/index.html:1290
+#: webApp/templates/dashboard/index.html:1306
 msgid "DATABASE_TYPE"
 msgstr "Database type"
 
-#: webApp/templates/dashboard/index.html:1300
+#: webApp/templates/dashboard/index.html:1316
 msgid "DATABASE_TYPE_HELP"
 msgstr "pgsql or sqlite"
 
-#: webApp/templates/dashboard/index.html:1304
+#: webApp/templates/dashboard/index.html:1320
 msgid "POSTGRES_HOST"
 msgstr "Postgres host"
 
-#: webApp/templates/dashboard/index.html:1315
+#: webApp/templates/dashboard/index.html:1331
 msgid "POSTGRES_PORT"
 msgstr "Postgres port"
 
-#: webApp/templates/dashboard/index.html:1328
+#: webApp/templates/dashboard/index.html:1344
 msgid "POSTGRES_DATABASE"
 msgstr "Postgres database"
 
-#: webApp/templates/dashboard/index.html:1339
+#: webApp/templates/dashboard/index.html:1355
 msgid "POSTGRES_USER"
 msgstr "Postgres user"
 
-#: webApp/templates/dashboard/index.html:1350
+#: webApp/templates/dashboard/index.html:1366
 msgid "POSTGRES_PASSWORD"
 msgstr "Postgres password"
 
-#: webApp/templates/dashboard/index.html:1363
+#: webApp/templates/dashboard/index.html:1379
 msgid "CURRENT_VERSION"
 msgstr "Current version"
 
-#: webApp/templates/dashboard/index.html:1364
+#: webApp/templates/dashboard/index.html:1380
 msgid "LAST_VERSION"
 msgstr "Last version"
 
-#: webApp/templates/dashboard/index.html:1366
+#: webApp/templates/dashboard/index.html:1382
 msgid "MODIFY_CONFIGURATION"
 msgstr "Modify configuration"
 

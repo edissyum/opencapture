@@ -25,7 +25,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from kuyruk import Kuyruk
 from kuyruk_manager import Manager
 from webApp.functions import get_custom_id, check_python_customized_files
-from .main import timer, recursive_delete, check_file
+from .main import timer, check_file
 
 custom_id = get_custom_id()
 custom_array = {}

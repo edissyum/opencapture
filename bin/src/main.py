@@ -24,7 +24,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from kuyruk import Kuyruk
 from kuyruk_manager import Manager
-from webApp.functions import get_custom_id, check_python_customized_files
+from webApp.functions import get_custom_id, check_python_customized_files, recursive_delete
 
 custom_id = get_custom_id()
 custom_array = {}
@@ -103,18 +103,6 @@ def timer(start_time, end_time):
     hours, rem = divmod(end_time - start_time, 3600)
     minutes, seconds = divmod(rem, 60)
     return "{:0>2}:{:0>2}:{:05.2f}".format(int(hours), int(minutes), seconds)
-
-
-def recursive_delete(folder, log):
-    for file in os.listdir(folder):
-        try:
-            os.remove(folder + '/' + file)
-        except FileNotFoundError as e:
-            log.error('Unable to delete ' + folder + '/' + file + ' on temp folder: ' + str(e))
-    try:
-        os.rmdir(folder)
-    except FileNotFoundError as e:
-        log.error('Unable to delete ' + folder + ' on temp folder: ' + str(e))
 
 
 def get_typo(config, path, log):
