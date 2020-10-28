@@ -75,6 +75,10 @@ hr {
     margin: 50px auto;
 }
 
+.profile-form{
+    margin:0;
+}
+
 .login-form form {
     margin-bottom: 15px;
     background: #f7f7f7;
@@ -222,6 +226,12 @@ hr {
     display: flex;
     justify-content: center;
     top: 20px;
+}
+
+.top-left{
+    position: absolute;
+    top: 5px;
+    left: 5px;
 }
 
 .bs-tooltip-left{
@@ -436,12 +446,12 @@ hr {
     box-shadow: 0 0 12px 7px #76B442;
 }
 
-.nbPages > i,
+.nb_pages > i,
 .input-group-prepend {
     cursor: pointer;
 }
 
-.nbPages {
+.nb_pages {
     margin-top: -20px;
     position: absolute;
     z-index: 999;
@@ -625,9 +635,3 @@ hr {
 }
 
 /************ END USER AND SUPPLIER LIST ************/
-
-/***** Splitter MANAGER *****/
-
-#main_splitter{
-  margin-top: 8%;
-}

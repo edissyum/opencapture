@@ -17,53 +17,53 @@
 
 import json
 
+
 class Locale:
-    def __init__(self, Config):
-        self.locale         = Config.cfg['LOCALE']['locale']
-        self.localeOCR      = Config.cfg['LOCALE']['localeocr']
-        self.date_path      = Config.cfg['LOCALE']['localepath']
-        self.arrayDate      = []
-        self.dateRegex      = ''
-        self.formatDate     = ''
-        self.SIRETRegex     = ''
-        self.SIRENRegex     = ''
+    def __init__(self, config):
+        self.locale = config.cfg['LOCALE']['locale']
+        self.localeOCR = config.cfg['LOCALE']['localeocr']
+        self.date_path = config.cfg['LOCALE']['localepath']
+        self.arrayDate = []
+        self.dateRegex = ''
+        self.formatDate = ''
+        self.SIRETRegex = ''
+        self.SIRENRegex = ''
         self.VATNumberRegex = ''
         self.dateTimeFormat = ''
-        self.invoiceRegex   = ''
+        self.invoiceRegex = ''
         self.invoiceSizeMin = ''
-        self.allRatesRegex  = ''
-        self.noRatesRegex   = ''
-        self.vatRateRegex   = ''
+        self.allRatesRegex = ''
+        self.noRatesRegex = ''
+        self.vatRateRegex = ''
 
         with open(self.date_path + self.locale + '.json') as file:
-            fp                  = json.load(file)
-            self.arrayDate      = fp['dateConvert']     if 'dateConvert'    in fp else ''
-            self.dateRegex      = fp['dateRegex']       if 'dateRegex'      in fp else ''
-            self.VATNumberRegex = fp['VATNumberRegex']  if 'VATNumberRegex' in fp else ''
-            self.formatDate     = fp['formatDate']      if 'formatDate'     in fp else ''
-            self.dateTimeFormat = fp['dateTimeFormat']  if 'dateTimeFormat' in fp else ''
-            self.SIRETRegex     = fp['SIRETRegex']      if 'SIRETRegex'     in fp else ''
-            self.SIRENRegex     = fp['SIRENRegex']      if 'SIRENRegex'     in fp else ''
-            self.invoiceRegex   = fp['invoiceRegex']    if 'invoiceRegex'   in fp else ''
-            self.invoiceSizeMin = fp['invoiceSizeMin']  if 'invoiceSizeMin' in fp else ''
-            self.allRatesRegex  = fp['allRatesRegex']   if 'allRatesRegex'  in fp else ''
-            self.noRatesRegex   = fp['noRatesRegex']    if 'noRatesRegex'   in fp else ''
-            self.vatRateRegex   = fp['vatRateRegex']    if 'vatRateRegex'   in fp else ''
-
+            fp = json.load(file)
+            self.arrayDate = fp['dateConvert'] if 'dateConvert' in fp else ''
+            self.dateRegex = fp['dateRegex'] if 'dateRegex' in fp else ''
+            self.VATNumberRegex = fp['VATNumberRegex'] if 'VATNumberRegex' in fp else ''
+            self.formatDate = fp['formatDate'] if 'formatDate' in fp else ''
+            self.dateTimeFormat = fp['dateTimeFormat'] if 'dateTimeFormat' in fp else ''
+            self.SIRETRegex = fp['SIRETRegex'] if 'SIRETRegex' in fp else ''
+            self.SIRENRegex = fp['SIRENRegex'] if 'SIRENRegex' in fp else ''
+            self.invoiceRegex = fp['invoiceRegex'] if 'invoiceRegex' in fp else ''
+            self.invoiceSizeMin = fp['invoiceSizeMin'] if 'invoiceSizeMin' in fp else ''
+            self.allRatesRegex = fp['allRatesRegex'] if 'allRatesRegex' in fp else ''
+            self.noRatesRegex = fp['noRatesRegex'] if 'noRatesRegex' in fp else ''
+            self.vatRateRegex = fp['vatRateRegex'] if 'vatRateRegex' in fp else ''
 
     def get(self):
-        arrayOfLocale = {
-            'arrayDate'     : self.arrayDate,
-            'dateRegex'     : self.dateRegex,
+        array_locale = {
+            'arrayDate': self.arrayDate,
+            'dateRegex': self.dateRegex,
             'VATNumberRegex': self.VATNumberRegex,
-            'formatDate'    : self.formatDate,
+            'formatDate': self.formatDate,
             'dateTimeFormat': self.dateTimeFormat,
-            'SIRETRegex'    : self.SIRETRegex,
-            'SIRENRegex'    : self.SIRENRegex,
-            'invoiceRegex'  : self.invoiceRegex,
+            'SIRETRegex': self.SIRETRegex,
+            'SIRENRegex': self.SIRENRegex,
+            'invoiceRegex': self.invoiceRegex,
             'invoiceSizeMin': self.invoiceSizeMin,
-            'allRatesRegex' : self.allRatesRegex,
-            'noRatesRegex'  : self.noRatesRegex,
-            'vatRateRegex'  : self.vatRateRegex,
+            'allRatesRegex': self.allRatesRegex,
+            'noRatesRegex': self.noRatesRegex,
+            'vatRateRegex': self.vatRateRegex,
         }
-        return arrayOfLocale
+        return array_locale
