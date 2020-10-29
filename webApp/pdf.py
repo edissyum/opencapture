@@ -7,6 +7,7 @@ import pandas as pd
 from datetime import datetime
 from datetime import timedelta
 
+from webApp import forms
 from webApp.db import get_db
 from webApp.auth import login_required
 from webApp.functions import get_custom_id, check_python_customized_files
@@ -306,8 +307,30 @@ def view(pdf_id):
         'where': ['id = ?'],
         'data': [pdf_id]
     })
+    supplier_form = forms.SupplierForm(request.form)
+    for field in supplier_form:
+        if pdf_info['vat_number']:
+            res = _db.select({
+                'select': [field.column],
+                'table': [field.table],
+                'where': ['vat_number = ?'],
+                'data': [pdf_info['vat_number']],
+            })[0]
+
+            if res:
+                field.data = res[field.column]
+
+            if field.render_kw:
+                field.render_kw['page'] = pdf_info['supplier_page']
+
+            if field.column + '_position' in position_dict and field.is_position:
+                field.render_kw['x1_original'] = position_dict[field.column + '_position'][0][0]
+                field.render_kw['y1_original'] = position_dict[field.column + '_position'][0][1]
+                field.render_kw['x2_original'] = position_dict[field.column + '_position'][1][0]
+                field.render_kw['y2_original'] = position_dict[field.column + '_position'][1][1]
 
     return render_template("templates/pdf/view.html",
+                           supplier_form=supplier_form,
                            pdf=pdf_info,
                            position=position_dict,
                            width=original_width,

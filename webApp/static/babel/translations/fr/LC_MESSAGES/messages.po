@@ -1051,7 +1051,7 @@ msgstr "Nom"
 #: webApp/templates/pdf/view.html:86
 #: webApp/templates/suppliers/suppliers_list.html:17
 #: webApp/templates/suppliers/suppliers_list.html:18
-msgid "Address"
+msgid "ADDRESS"
 msgstr "Adresse"
 
 #: webApp/templates/pdf/view.html:101
