@@ -8,6 +8,7 @@ pyPdf4
 pandas
 pillow
 kuyruk
+wtforms
 werkzeug
 requests
 gunicorn
