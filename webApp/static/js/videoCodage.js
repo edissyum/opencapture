@@ -46,14 +46,14 @@ function readConfig() {
 }
 
 function searchSupplier(){
-    let inputVAT    = $('#vat_number');
-    let inputSIRET  = $('#siret_number');
-    let inputSIREN  = $('#siren_number');
-    let inputCity   = $('#supplier_city');
-    let inputAdress = $('#supplier_address');
-    let inputZip    = $('#supplier_postal_code');
+    let inputVAT = $('#supplierInfo_vat_number');
+    let inputSIRET = $('#supplierInfo_siret_number');
+    let inputSIREN = $('#supplierInfo_siren_number');
+    let inputCity = $('#supplierInfo_city');
+    let inputAdress = $('#supplierInfo_address');
+    let inputZip = $('#supplierInfo_postal_code');
 
-    $('#supplier').autocomplete({
+    $('#supplierInfo_name').autocomplete({
         serviceUrl: '/ws/supplier/retrieve',
         deferRequestBy: 300,
         noSuggestionNotice: gt.gettext('NO_RESULTS'),
@@ -81,14 +81,14 @@ function searchSupplier(){
             }
         },
         onSelect: function (suggestion) {
-            let data        = JSON.parse(suggestion['data'])[0];
-            let zip         = data['zipCode'];
-            let VAT         = data['VAT'];
-            let city        = data['city'];
-            let SIRET       = data['siret'];
-            let SIREN       = data['siren'];
-            let adress1     = data['adress1'];
-            let adress2     = data['adress2'];
+            let data = JSON.parse(suggestion['data'])[0];
+            let zip = data['zipCode'];
+            let VAT = data['VAT'];
+            let city = data['city'];
+            let SIRET = data['siret'];
+            let SIREN = data['siren'];
+            let adress1 = data['adress1'];
+            let adress2 = data['adress2'];
 
             if(adress1 !== null && adress2 !== null && (inputAdress.val() === '' || inputAdress.val() !== adress1 + ' ' + adress2)){
                 inputAdress.val(adress1.trim() + ' ' + adress2.trim()).prev().fadeOut();
@@ -137,10 +137,10 @@ function searchSupplier(){
 }
 
 function ocrOnFly(isRemoved, inputId, removeWhiteSpace = false, needToBeNumber = false){
-    let myImage     = $('#my-image');
-    let zoomImg     = $('.zoomImg');
+    let myImage = $('#my-image');
+    let zoomImg = $('.zoomImg');
     // ratioImg is used to recalculate the (x,y) position when the ocr is done on the zoomed image
-    let ratioImg    = originalWidth / myImage.width();
+    let ratioImg = originalWidth / myImage.width();
 
     let isNotZoomed = (zoomImg.length === 0 || zoomImg.css('opacity') === '0');
     if (isNotZoomed){
@@ -216,7 +216,7 @@ function ocrOnFly(isRemoved, inputId, removeWhiteSpace = false, needToBeNumber =
                                 if (attr !== null) {
                                     input.dispatchEvent(new KeyboardEvent('keyup'));
                                 } else if (inputId.id === 'supplier') {
-                                    $('#supplier').focus();
+                                    $('#supplierInfo_name').focus();
                                 }
 
                                 // Add the coordonates of selection to draw rectangle later
@@ -282,7 +282,7 @@ $(document).ready(function() {
                         $('<div class="invalid-feedback invalidSIRET">' +
                             gt.gettext('SIRET_CONNECTION_ERROR') +
                             '</div>'
-                        ).insertAfter($('#siret_number')).slideDown();
+                        ).insertAfter($('#supplierInfo_siret_number')).slideDown();
                     } else {
                         if (res.text.toString() === 'error') {
                             console.log('error')
@@ -303,7 +303,7 @@ $(document).ready(function() {
 
             // Focus supplier field to reload info thanks to VATNumber
             // Avoid the need to prefill all the field about supplier into HTML
-            let supplier = $('#supplier')
+            let supplier = $('#supplierInfo_name')
             supplier.focus();
 
             checkAll();
@@ -322,8 +322,9 @@ $(document).ready(function() {
 
             retrieve_form_cookies('invoice_info', pdfId)
         })
-        .catch(function() {
+        .catch((error) => {
             loaded = false;
+            console.log(error)
             alert(gt.gettext('ERROR_WHILE_READING_CONFIGURATION_FILE'))
         });
 
@@ -336,12 +337,12 @@ $(document).ready(function() {
 
 function generateTokenInsee(consumer_key, consumer_secret){
     return fetch('/ws/insee/getToken', {
-        method  : 'POST',
+        method : 'POST',
         headers : {
             'Content-Type': 'application/json'
         },
-        body    : JSON.stringify({
-            url         : config.GENERAL['siret-url-token'],
+        body : JSON.stringify({
+            url : config.GENERAL['siret-url-token'],
             credentials : btoa(consumer_key + ':' + consumer_secret)
         })
     })
@@ -379,8 +380,8 @@ function toggleZoom(){
     else{
         removeRectangle();
         $('.img').zoom({
-            on          : 'toggle',
-            magnify     : 0.7,
+            on : 'toggle',
+            magnify : 0.7,
         });
     }
 }
@@ -411,27 +412,29 @@ function previousPage(){
 }
 
 function changeImage(pageToShow){
-    let image           = $('#my-image');
-    let currentSrc      = image.attr('src');
-    let filename        = currentSrc.replace(/^.*[\\\/]/, '');
-    let fileNameArray   = filename.split('.');
-    let onlySrc         = currentSrc.substr(0, currentSrc.length - filename.length);
+    if (pageToShow){
+        let image = $('#my-image');
+        let currentSrc = image.attr('src');
+        let filename = currentSrc.replace(/^.*[\\\/]/, '');
+        let fileNameArray = filename.split('.');
+        let onlySrc = currentSrc.substr(0, currentSrc.length - filename.length);
 
-    let newFileName    = onlySrc + fileNameArray[0].substr(0, fileNameArray[0].length - 1) + (pageToShow).toString() + '.' + fileNameArray[1];
+        let newFileName = onlySrc + fileNameArray[0].substr(0, fileNameArray[0].length - 1) + (pageToShow).toString() + '.' + fileNameArray[1];
 
-    image.attr('src', newFileName);
-    currentPage.text(pageToShow);
-    removeZoom();
+        image.attr('src', newFileName);
+        currentPage.text(pageToShow);
+        removeZoom();
+    }
 }
 
 /******** FUNCTIONS TO ADD OR REMOVE INPUT AND RECTANGLES ********/
 
 function addVAT(input){
-    let lastVAT             = $('#' + input.id).prev()[0];
-    let cptVAT              = parseInt(lastVAT.className.split('_')[2]);
-    let newClassName        = 'vat_' + (cptVAT + 1);
-    let lastVATAmount       = $('.AMOUNT_vat_' + cptVAT);
-    let optionsFinancial    = document.getElementById('financialAccount_1').innerHTML;
+    let lastVAT = $('#' + input.id).prev()[0];
+    let cptVAT = parseInt(lastVAT.className.split('_')[2]);
+    let newClassName = 'vat_' + (cptVAT + 1);
+    let lastVATAmount = $('.AMOUNT_vat_' + cptVAT);
+    let optionsFinancial = document.getElementById('financialAccount_1').innerHTML;
 
     if(cptVAT < 5){
         $(
@@ -490,9 +493,9 @@ function addVAT(input){
 }
 
 function removeVAT(input){
-    let VATToRemove         = $('.MAIN_' + input.className);
-    let VATAmountToRemove   = $('.AMOUNT_' + input.className);
-    let currentCptVAT       = parseInt(VATToRemove[0].className.split('_')[2]);
+    let VATToRemove = $('.MAIN_' + input.className);
+    let VATAmountToRemove = $('.AMOUNT_' + input.className);
+    let currentCptVAT = parseInt(VATToRemove[0].className.split('_')[2]);
 
     // Avoid deletion of VAT rate if there is just one
     // And avoid deletion of the first, before the second (for example)
@@ -510,8 +513,8 @@ function removeVAT(input){
 }
 
 function removeDeliveryNumber(input){
-    let DeliveryNumberToRemove      = $('.MAIN_' + input.className);
-    let currentCptDeliveryNumber    = parseInt(DeliveryNumberToRemove[0].className.split('_')[2]);
+    let DeliveryNumberToRemove = $('.MAIN_' + input.className);
+    let currentCptDeliveryNumber = parseInt(DeliveryNumberToRemove[0].className.split('_')[2]);
 
     // Avoid deletion of delivery Number if there is just one
     // And avoid deletion of the first, before the second (for example)
@@ -524,8 +527,8 @@ function removeDeliveryNumber(input){
 }
 
 function removeOrderNumber(input){
-    let orderNumberToRemove      = $('.MAIN_' + input.className);
-    let currentCptOrderNumber    = parseInt(orderNumberToRemove[0].className.split('_')[2]);
+    let orderNumberToRemove = $('.MAIN_' + input.className);
+    let currentCptOrderNumber = parseInt(orderNumberToRemove[0].className.split('_')[2]);
 
     // Avoid deletion of delivery Number if there is just one
     // And avoid deletion of the first, before the second (for example)
@@ -538,10 +541,10 @@ function removeOrderNumber(input){
 }
 
 function addStructure(input){
-    let lastStructure       = $('#' + input.id).prev()[0];
-    let cptStructure        = parseInt(lastStructure.className.split('_')[1]);
-    let optionsStructure    = document.getElementById('structureSelection_1').innerHTML;
-    let optionsBudget       = document.getElementById('budgetSelection_1').innerHTML;
+    let lastStructure = $('#' + input.id).prev()[0];
+    let cptStructure = parseInt(lastStructure.className.split('_')[1]);
+    let optionsStructure = document.getElementById('structureSelection_1').innerHTML;
+    let optionsBudget = document.getElementById('budgetSelection_1').innerHTML;
 
     if(cptStructure < 41){
         $(
@@ -582,7 +585,7 @@ function addStructure(input){
 }
 
 function removeStructure(input){
-    let structureToRemove   = $('.' + input.className);
+    let structureToRemove = $('.' + input.className);
     let currentCptStructure = parseInt(structureToRemove[0].className.split('_')[1]);
 
     // Avoid deletion if there is just one
@@ -595,8 +598,8 @@ function removeStructure(input){
 }
 
 function addOrderNumber(input){
-    let lastOrder         = $('#' + input.id).prev()[0];
-    let cptOrder          = parseInt(lastOrder.className.split('_')[2]);
+    let lastOrder = $('#' + input.id).prev()[0];
+    let cptOrder = parseInt(lastOrder.className.split('_')[2]);
 
     $(
         '<div class="MAIN_ORDER_' + (cptOrder + 1) + '" style="display: none">' +
@@ -662,8 +665,8 @@ function removeAllOrderNumber(radioButton){
 }
 
 function addDeliveryNumber(input){
-    let lastDelivery         = $('#' + input.id).prev()[0];
-    let cptDelivery          = parseInt(lastDelivery.className.split('_')[2]);
+    let lastDelivery = $('#' + input.id).prev()[0];
+    let cptDelivery = parseInt(lastDelivery.className.split('_')[2]);
 
     $(
         '<div class="MAIN_DELIVERY_' + (cptDelivery + 1) + '" style="display: none">' +
@@ -730,12 +733,12 @@ function drawRectangle(input){
                 changeImage(inputInfo.attr('page'));
 
         if(zoomImg.length === 0 || zoomImg.css('opacity') === '0') {
-            let ratio   = originalWidth / myImage.width()
+            let ratio = originalWidth / myImage.width()
 
-            let _x1     = inputInfo.attr('x1_original') !== '' ? inputInfo.attr('x1_original') / ratio : inputInfo.attr('x1') / ratio;
-            let _y1     = inputInfo.attr('y1_original') !== '' ? inputInfo.attr('y1_original') / ratio : inputInfo.attr('y1') / ratio;
-            let _x2     = inputInfo.attr('x2_original') !== '' ? inputInfo.attr('x2_original') / ratio : inputInfo.attr('x2') / ratio;
-            let _y2     = inputInfo.attr('y2_original') !== '' ? inputInfo.attr('y2_original') / ratio : inputInfo.attr('y2') / ratio;
+            let _x1 = inputInfo.attr('x1_original') !== '' ? inputInfo.attr('x1_original') / ratio : inputInfo.attr('x1') / ratio;
+            let _y1 = inputInfo.attr('y1_original') !== '' ? inputInfo.attr('y1_original') / ratio : inputInfo.attr('y1') / ratio;
+            let _x2 = inputInfo.attr('x2_original') !== '' ? inputInfo.attr('x2_original') / ratio : inputInfo.attr('x2') / ratio;
+            let _y2 = inputInfo.attr('y2_original') !== '' ? inputInfo.attr('y2_original') / ratio : inputInfo.attr('y2') / ratio;
 
             rectangle.css({
                 'left': ((_x1 - 5) / myImage.width()) * 100 + '%',
@@ -796,17 +799,17 @@ function checkAll(){
     });
 
     // Launch the check adress
-    if($('#supplier_address').val() !== '' && $('#supplier_postal_code').val() !== '' && $('#supplier_city').val() !== ''){
+    if($('#supplierInfo_address').val() !== '' && $('#supplierInfo_postal_code').val() !== '' && $('#supplier_city').val() !== ''){
         checkAdress();
     }
 }
 
 // Check SIRET and display informations about the veracity (green or red input background)
 function checkSIRET(){
-    let sizeSIRET       = 14;
-    let apiUrl          = config.GENERAL['siret-url'];
-    let siretId         = $('#siret_number');
-    let sirenId         = $('#siren_number');
+    let sizeSIRET = 14;
+    let apiUrl = config.GENERAL['siret-url'];
+    let siretId = $('#supplierInfo_siret_number');
+    let sirenId = $('#supplierInfo_siren_number');
 
     if(!isSIRETRunning && siretId[0].value !== ''){
         if(verify(siretId[0].value, sizeSIRET)) {
@@ -860,9 +863,9 @@ function checkSIRET(){
 
 // Check SIREN and display informations about the veracity (green or red input background)
 function checkSIREN(){
-    let sizeSIREN       = 9;
-    let apiUrl          = config.GENERAL['siren-url'];
-    let sirenId         = $('#siren_number');
+    let sizeSIREN = 9;
+    let apiUrl = config.GENERAL['siren-url'];
+    let sirenId = $('#supplierInfo_siren_number');
 
     if(!isSIRENRunning && sirenId[0].value !== '') {
         if (verify(sirenId[0].value, sizeSIREN)) {
@@ -906,8 +909,8 @@ function checkSIREN(){
 }
 
 function checkVAT(){
-    let sizeVAT         = 13;
-    let VATId           = $('#vat_number');
+    let sizeVAT = 13;
+    let VATId = $('#supplierInfo_vat_number');
 
     if(!isVATRunning){
         if(verify(VATId[0].value, sizeVAT, true)) {
@@ -943,14 +946,14 @@ function checkVAT(){
 }
 
 function checkAdress(){
-    let apiUrl          = config.GENERAL['ban-url'];
-    let city            = $('#supplier_city');
-    let cityRatio       = $('#supplier_cityRatio');
-    let adress          = $('#supplier_address');
-    let adressRatio     = $('#supplier_addressRatio');
-    let postalCode      = $('#supplier_postal_code');
-    let postalRatio     = $('#supplier_postal_codeRatio');
-    let value           = '';
+    let apiUrl = config.GENERAL['ban-url'];
+    let city = $('#supplierInfo_city');
+    let cityRatio = $('#supplierInfo_cityRatio');
+    let adress = $('#supplierInfo_address');
+    let adressRatio = $('#supplierInfo_addressRatio');
+    let postalCode = $('#supplierInfo_postal_code');
+    let postalRatio = $('#supplierInfo_postal_codeRatio');
+    let value = '';
 
     if(!isAdressRunning){
         isAdressRunning = true;
@@ -960,11 +963,11 @@ function checkAdress(){
         })
         .done(function (data) {
             if(data['features'][0] !== undefined){
-                let infos       = data['features'][0]['properties'];
-                let ratioCity   = calculateSCore(city[0].value, infos['city']);
-                let ratioAdr    = calculateSCore(adress[0].value, infos['name']);
+                let infos = data['features'][0]['properties'];
+                let ratioCity = calculateSCore(city[0].value, infos['city']);
+                let ratioAdr = calculateSCore(adress[0].value, infos['name']);
                 let ratioPostal = calculateSCore(postalCode[0].value, infos['postcode']);
-                let ratioTotal  = $('#ratioAdressTotal');
+                let ratioTotal = $('#ratioAdressTotal');
 
                 cityRatio.addClass('input-group-text').html(ratioCity + '%');
                 adressRatio.addClass('input-group-text').html(ratioAdr + '%');
@@ -972,14 +975,14 @@ function checkAdress(){
 
                 ratioTotal.val((ratioCity/100 + ratioAdr/100 + ratioPostal/100) / 3);
 
-                processRatio(ratioCity, city, cityRatio, infos['city'], 'supplier_city');
-                processRatio(ratioAdr, adress, adressRatio, infos['name'],'supplier_address');
-                processRatio(ratioPostal, postalCode, postalRatio, infos['postcode'], 'supplier_postal_code');
+                processRatio(ratioCity, city, cityRatio, infos['city'], 'supplierInfo_city');
+                processRatio(ratioAdr, adress, adressRatio, infos['name'],'supplierInfo_address');
+                processRatio(ratioPostal, postalCode, postalRatio, infos['postcode'], 'supplierInfo_postal_code');
             }
         })
         .fail(function(){
             banApiError = true;
-            $('.supplier_address').html(gt.gettext('BAN_API_ERROR')).slideDown();
+            $('.supplierInfo_address').html(gt.gettext('BAN_API_ERROR')).slideDown();
         });
         isAdressRunning = false;
     }
@@ -988,8 +991,8 @@ function checkAdress(){
 /******** VALIDATE or REFUSE FORM ********/
 
 $('#refuseForm').on('click', function(){
-    let modalBody   = $('.modal-body');
-    let modalBack   = $('.modal-backdrop');
+    let modalBody = $('.modal-body');
+    let modalBack = $('.modal-backdrop');
 
     modalBack.toggle();
     modalBody.html('<span id="modalError">' +
@@ -1008,17 +1011,17 @@ $('#refuseForm').on('click', function(){
 
 // Validate form before send it
 $('#validateForm').on('click', function(){
-    let form        = $('#invoice_info');
-    let ratioTotal  = $('#ratioAdressTotal');
-    let modalBack   = $('.modal-backdrop');
-    let modalBody   = $('.modal-body');
+    let form = $('#invoice_info');
+    let ratioTotal = $('#ratioAdressTotal');
+    let modalBack = $('.modal-backdrop');
+    let modalBody = $('.modal-body');
 
     // Verify the total analytics amount and the total HT amount
-    let parsedStructure     = $('#addStructure').prev()[0].className.split('_');
-    let lastCPTStructure    = parseInt(parsedStructure[1]);
-    let className           = parsedStructure[0];
-    let totalStructure      = 0;
-    let totalHT             = parseFloat($('#totalHT').val());
+    let parsedStructure = $('#addStructure').prev()[0].className.split('_');
+    let lastCPTStructure = parseInt(parsedStructure[1]);
+    let className = parsedStructure[0];
+    let totalStructure = 0;
+    let totalHT = parseFloat($('#totalHT').val());
     for (let i = 1; i <= lastCPTStructure; i++){
         let val = $('.' + className + '_' + i).find('input').val();
         totalStructure += parseFloat(val)
@@ -1038,19 +1041,18 @@ $('#validateForm').on('click', function(){
         let awaitAdress = $('#awaitAdress')
 
         if (awaitAdress.length === 0) {
-            $('<button type="button" class="btn btn-warning" onclick=\'changeStatus(pdfId, "WAIT_SUP", false);\' id="awaitAdress">' +
+            $('<button type="button" class="btn btn-warning" onclick=\'changeStatus(pdfId, "WAIT_SUP", false); save_form_to_cookies("invoice_info", pdfId)\' id="awaitAdress">' +
                     gt.gettext('PUT_ON_HOLD') +
             '</button>').insertAfter($('#returnToValidate'));
         }
-        console.log(config.GLOBAL['allowbypasssuppliebanverif']);
-        console.log(typeof config.GLOBAL['allowbypasssuppliebanverif']);
+
         if ($('#bypassBan').length === 0 && config.GLOBAL['allowbypasssuppliebanverif'] === 'True') {
             $('<button type="button" class="btn btn-danger" onclick=\'changeStatus(pdfId, "END");\' id="bypassBan">' +
                     gt.gettext('_VALID_WIHTOUT_BAN_VERIFICATION') +
             '</button>').insertAfter($('#awaitAdress'));
         }
 
-    }else if(form[0].checkValidity() && $('#vat_number').hasClass('is-invalid')){
+    }else if(form[0].checkValidity() && $('#supplierInfo_vat_number').hasClass('is-invalid')){
         modalBody.html(
             '<span id="tvaError">' +
                 '<br>' + gt.gettext('INVALID_VAT_NUMBER') +
@@ -1104,7 +1106,7 @@ $(function() {
 });
 
 $('#returnToValidate, #closeModal').on('click', function(){
-    let modalBack   = $('.modal-backdrop');
+    let modalBack = $('.modal-backdrop');
     modalBack.toggle();
 
     $('#awaitAdress').remove();
@@ -1118,13 +1120,13 @@ $('#submitForm').on('click', function(){
 
 function changeStatus(idPdf, status, submitForm = true){
     fetch('/ws/database/updateStatus', {
-        method  : 'POST',
+        method : 'POST',
         headers : {
             'Content-Type': 'application/json'
         },
-        body    : JSON.stringify({
-            id          : idPdf,
-            status      : status
+        body : JSON.stringify({
+            id : idPdf,
+            status : status
         })
     }).then(function(response) {
         response.json().then(function(res){
@@ -1146,12 +1148,12 @@ function changeStatus(idPdf, status, submitForm = true){
 /******** VALIDATION FUNCTIONS ********/
 
 function calculTotal(){
-    let lastVAT         = $('#addVAT').prev();
-    let lastVATCpt      = parseInt(lastVAT[0].className.split('_')[2]);
-    let structureHT     = $('#analytics_HT_1');
+    let lastVAT = $('#addVAT').prev();
+    let lastVATCpt = parseInt(lastVAT[0].className.split('_')[2]);
+    let structureHT = $('#analytics_HT_1');
     let analyticsHTInfo = $('#totalHT_info span');
-    let ttc             = 0;
-    let ht              = 0;
+    let ttc = 0;
+    let ht = 0;
 
     for (let i = 1; i <= lastVATCpt; i++){
         let currentVat = $('#vat_' + i)[0]
@@ -1163,9 +1165,9 @@ function calculTotal(){
 
             // Check if it's a real number (because a float with point instead of comma, it's not recognized as a float)
             if (noTaxe !== '' && vatRate !== ''){
-                ht              += parseFloat(noTaxe);
-                ttc             += parseFloat(noTaxe) + (parseFloat(noTaxe) * parseFloat(vatRate));
-                let vatAmount   = parseFloat(noTaxe) * parseFloat(vatRate);
+                ht += parseFloat(noTaxe);
+                ttc += parseFloat(noTaxe) + (parseFloat(noTaxe) * parseFloat(vatRate));
+                let vatAmount = parseFloat(noTaxe) * parseFloat(vatRate);
                 $('#TOTAL_vat_' + i).val(vatAmount.toFixed(2));
                 $('#total').val(ttc.toFixed(2));
                 $('#totalHT').val(ht.toFixed(2));
@@ -1194,9 +1196,9 @@ function verify(number, size, isVAT = false){
     let bal     = 0;
     let total   = 0;
     for (let i = size - 1; i >= 0; i--){
-        let step    = (number.charCodeAt(i) - 48) * (bal + 1);
-        total       += (step > 9) ? step - 9:step;
-        bal         = 1 - bal;
+        let step = (number.charCodeAt(i) - 48) * (bal + 1);
+        total += (step > 9) ? step - 9:step;
+        bal = 1 - bal;
     }
     return total % 10 === 0;
 }
@@ -1206,7 +1208,7 @@ function calculateSCore(s1, s2){
 }
 
 function processRatio(percent, input, ratioClass, banInfo, invalidClass){
-    let invalidFeed     = $('.' + invalidClass);
+    let invalidFeed = $('.' + invalidClass);
 
     invalidFeed.removeClass('redRatio red_' + input[0].id);
     invalidFeed.removeClass('orangeRatio orange_' + input[0].id);
@@ -1231,12 +1233,12 @@ function processRatio(percent, input, ratioClass, banInfo, invalidClass){
 
 function verifyTotalAnalytics() {
     // Verify the total analytics amount and the total HT amount
-    let parsedStructure     = $('#addStructure').prev()[0].className.split('_');
-    let lastCPTStructure    = parseInt(parsedStructure[1]);
-    let analyticsHTInfo     = $('#totalHT_info span');
-    let className           = parsedStructure[0];
-    let totalStructure      = 0;
-    let totalHT             = parseFloat($('#totalHT').val());
+    let parsedStructure = $('#addStructure').prev()[0].className.split('_');
+    let lastCPTStructure = parseInt(parsedStructure[1]);
+    let analyticsHTInfo = $('#totalHT_info span');
+    let className = parsedStructure[0];
+    let totalStructure = 0;
+    let totalHT = parseFloat($('#totalHT').val());
 
     for (let i = 1; i <= lastCPTStructure; i++){
         let val = $('.' + className + '_' + i).find('input').val();
@@ -1256,14 +1258,14 @@ function verifyTotalAnalytics() {
 // False if is not
 function checkIsDuplicate(){
     fetch('/ws/invoice/isDuplicate', {
-        method  : 'POST',
+        method : 'POST',
         headers : {
             'Content-Type': 'application/json'
         },
-        body    : JSON.stringify({
+        body : JSON.stringify({
             'invoice_number' : $('#invoice_number').val(),
-            'vat_number'     : $('#vat_number').val(),
-            'id'            : $('#pdfId').val()
+            'vat_number' : $('#supplierInfo_vat_number').val(),
+            'id' : $('#pdfId').val()
         })
     }).then(function(response) {
         response.json().then(function(res){
