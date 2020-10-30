@@ -49,12 +49,13 @@
                     </div>
                 </div>
                 <form id="invoice_info" action="{{ url_for('pdf.validate_form', id=pdf['id']) }}" method="POST">
-                    <input type="hidden" id="ratioAdressTotal">
-                    <input type="hidden" id="pdfId" value="{{ pdf['id'] }}">
-                    <input type="hidden" id="widthOriginal" value="{{ width }}">
-                    <input type="hidden" id="pdfCreationDate" name="pdfCreationDate" value="{{ pdf['register_date'] }}">
-                    <input type="hidden" id="fileInfo_path" name="fileInfo_path" value="{{ pdf['path'] + '/' +  pdf['filename'] }}">
-
+                    <div id="hiddenInputs">
+                        <input type="hidden" id="ratioAdressTotal">
+                        <input type="hidden" id="pdfId" value="{{ pdf['id'] }}">
+                        <input type="hidden" id="widthOriginal" value="{{ width }}">
+                        <input type="hidden" id="pdfCreationDate" name="pdfCreationDate" value="{{ pdf['register_date'] }}">
+                        <input type="hidden" id="fileInfo_path" name="fileInfo_path" value="{{ pdf['path'] + '/' +  pdf['filename'] }}">
+                    </div>
                     <div class="form-group float-right" >
                         <input name="facturationInfo_is_subscription" type="checkbox" class="custom-control-input" id="is_subscription" onclick="removeUserInCharge($(this))">
                         <label class="custom-control-label" for="is_subscription">{{ gettext('SUBSCRIPTION') }}</label>
@@ -81,7 +82,6 @@
                         </div>
                         <hr>
                     </div>
-
                     <div id="facturationInfo">
                         <span class="infos" onclick="hideOrDisplay('facturation_info');">
                         <span>
@@ -195,7 +195,6 @@
                         </div>
                         <hr>
                     </div>
-
                     <div id="analyticsInfo">
                         <span class="infos" onclick="hideOrDisplay('analytic_info');">
                         <span>
@@ -282,23 +281,25 @@
                             </div>
                         </div>
                     </div>
-
-                    {% if list_users[1] is defined %}
-                        <div class="gedUser">
-                            <hr>
-                            <div class="form-group col-md-4">
-                                <label for="ged_users">{{ gettext('USER_IN_CHARGE') }}</label>
-                                <div class="input-group mb-2">
-                                    <select required name="ged_users" id="ged_users" class="form-control chosen-select" data-placeholder="{{ gettext('SELECT_USER') }}">
-                                        <option value=""></option>
-                                        {% for user in list_users %}
-                                            <option value='{{ user['user_id'] }}#{{ user['entity_id'] }}'>{{ user['firstname'] }} {{ user['lastname'] }} ({{ user['entity_id'] }})</option>
-                                        {% endfor %}
-                                    </select>
+                    <div id="gedUserInfo">
+                        {% if list_users[1] is defined %}
+                            <div class="gedUser">
+                                <hr>
+                                <div class="form-group col-md-4">
+                                    <label for="ged_users">{{ gettext('USER_IN_CHARGE') }}</label>
+                                    <div class="input-group mb-2">
+                                        <select required name="ged_users" id="ged_users" class="form-control chosen-select" data-placeholder="{{ gettext('SELECT_USER') }}">
+                                            <option value=""></option>
+                                            {% for user in list_users %}
+                                                <option value='{{ user['user_id'] }}#{{ user['entity_id'] }}'>{{ user['firstname'] }} {{ user['lastname'] }} ({{ user['entity_id'] }})</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    {% endif %}
+                        {% endif %}
+                    </div>
+
                     <div id="buttons">
                         <button type="button" id="validateForm" class="btn btn-outline-success btn-lg">{{ gettext('VALIDATE_INVOICE') }}</button>
                         <button type="button" id="refuseForm" class="btn btn-outline-danger btn-lg">{{ gettext('REFUSE_INVOICE') }}</button>
