@@ -44,8 +44,8 @@ class FindDate:
             date_convert = self.Locale.arrayDate
             for key in date_convert:
                 for month in date_convert[key]:
-                    if month.lower() in self.date.lower():
-                        self.date = (self.date.lower().replace(month.lower(), key))
+                    if month.lower() in date.lower():
+                        date = (date.lower().replace(month.lower(), key))
                         break
 
         try:
@@ -63,7 +63,7 @@ class FindDate:
             doc_date = datetime.strptime(date, self.Locale.formatDate)
             timedelta = today - doc_date
 
-            if int(self.Config.cfg['GLOBAL']['timedelta']) != -1:
+            if int(self.Config.cfg['GLOBAL']['timedelta']) not in [-1, 0]:
                 if timedelta.days > int(self.Config.cfg['GLOBAL']['timedelta']) or timedelta.days < 0:
                     self.Log.info("Date is older than " + str(self.Config.cfg['GLOBAL']['timedelta']) + " days or in the future : " + date)
                     date = False
