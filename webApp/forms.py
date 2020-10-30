@@ -11,7 +11,10 @@ from .override_wtform import CustomStringField
 
 # Supplier's input
 class SupplierForm(Form):
-    supplierInfo_name = CustomStringField(
+    # the xml_index is mandatorywhen you create a new input class
+    xml_index = 'supplierInfo'
+
+    name = CustomStringField(
         lazy_gettext('NAME'),
         [validators.required()],
         unique_row=True,
@@ -24,7 +27,7 @@ class SupplierForm(Form):
             'onfocusin': "ocrOnFly(false, this)"
         },
     )
-    supplierInfo_address = CustomStringField(
+    address = CustomStringField(
         lazy_gettext('ADDRESS'),
         [validators.required()],
         unique_row=True,
@@ -35,7 +38,7 @@ class SupplierForm(Form):
             'readonly': True
         }
     )
-    supplierInfo_postal_code = CustomStringField(
+    postal_code = CustomStringField(
         lazy_gettext('ZIP_CODE'),
         [validators.required()],
         new_row=True,
@@ -47,7 +50,7 @@ class SupplierForm(Form):
             'readonly': True
         }
     )
-    supplierInfo_city = CustomStringField(
+    city = CustomStringField(
         lazy_gettext('CITY'),
         [validators.required()],
         end_row=True,
@@ -59,7 +62,7 @@ class SupplierForm(Form):
             'readonly': True
         }
     )
-    supplierInfo_vat_number = CustomStringField(
+    vat_number = CustomStringField(
         lazy_gettext('VAT_NUMBER'),
         [validators.required()],
         unique_row=True,
@@ -76,7 +79,7 @@ class SupplierForm(Form):
             'page': ''
         }
     )
-    supplierInfo_siret_number = CustomStringField(
+    siret_number = CustomStringField(
         lazy_gettext('SIRET_NUMBER'),
         [validators.required()],
         new_row=True,
@@ -88,7 +91,7 @@ class SupplierForm(Form):
             'readonly': True,
         }
     )
-    supplierInfo_siren_number = CustomStringField(
+    siren_number = CustomStringField(
         lazy_gettext('SIREN_NUMBER'),
         [validators.required()],
         end_row=True,

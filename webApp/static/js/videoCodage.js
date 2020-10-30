@@ -46,14 +46,14 @@ function readConfig() {
 }
 
 function searchSupplier(){
-    let inputVAT = $('#supplierInfo_vat_number');
-    let inputSIRET = $('#supplierInfo_siret_number');
-    let inputSIREN = $('#supplierInfo_siren_number');
-    let inputCity = $('#supplierInfo_city');
-    let inputAdress = $('#supplierInfo_address');
-    let inputZip = $('#supplierInfo_postal_code');
+    let inputVAT = $('#vat_number');
+    let inputSIRET = $('#siret_number');
+    let inputSIREN = $('#siren_number');
+    let inputCity = $('#city');
+    let inputAdress = $('#address');
+    let inputZip = $('#postal_code');
 
-    $('#supplierInfo_name').autocomplete({
+    $('#name').autocomplete({
         serviceUrl: '/ws/supplier/retrieve',
         deferRequestBy: 300,
         noSuggestionNotice: gt.gettext('NO_RESULTS'),
@@ -216,7 +216,7 @@ function ocrOnFly(isRemoved, inputId, removeWhiteSpace = false, needToBeNumber =
                                 if (attr !== null) {
                                     input.dispatchEvent(new KeyboardEvent('keyup'));
                                 } else if (inputId.id === 'supplier') {
-                                    $('#supplierInfo_name').focus();
+                                    $('#name').focus();
                                 }
 
                                 // Add the coordonates of selection to draw rectangle later
@@ -279,7 +279,7 @@ $(document).ready(function() {
                 .then(function(res) {
                     if (!JSON.parse(res.ok)) {
                         loaded = false;
-                        let invalidSIRET = $('.supplierInfo_siret_number_invalid')
+                        let invalidSIRET = $('.siret_number_invalid')
                         invalidSIRET.html(gt.gettext('SIRET_CONNECTION_ERROR'))
 
                     } else {
@@ -304,7 +304,7 @@ $(document).ready(function() {
 
             // Focus supplier field to reload info thanks to VATNumber
             // Avoid the need to prefill all the field about supplier into HTML
-            let supplier = $('#supplierInfo_name')
+            let supplier = $('#name')
             supplier.focus();
 
             checkAll();
@@ -800,7 +800,7 @@ function checkAll(){
     });
 
     // Launch the check adress
-    if($('#supplierInfo_address').val() !== '' && $('#supplierInfo_postal_code').val() !== '' && $('#supplier_city').val() !== ''){
+    if($('#address').val() !== '' && $('#postal_code').val() !== '' && $('#supplier_city').val() !== ''){
         checkAdress();
     }
 }
@@ -809,11 +809,11 @@ function checkAll(){
 function checkSIRET(){
     let sizeSIRET = 14;
     let apiUrl = config.GENERAL['siret-url'];
-    let siretId = $('#supplierInfo_siret_number');
-    let sirenId = $('#supplierInfo_siren_number');
+    let siretId = $('#siret_number');
+    let sirenId = $('#siren_number');
 
     if(!isSIRETRunning && siretId[0].value !== ''){
-        let invalidSIRET = $('.supplierInfo_siret_number_invalid')
+        let invalidSIRET = $('.siret_number_invalid')
         if(verify(siretId[0].value, sizeSIRET)) {
             isSIRETRunning = true;
             $.ajax({
@@ -861,8 +861,8 @@ function checkSIRET(){
 function checkSIREN(){
     let sizeSIREN = 9;
     let apiUrl = config.GENERAL['siren-url'];
-    let sirenId = $('#supplierInfo_siren_number');
-    let invalidSIREN = $('.supplierInfo_siren_number_invalid')
+    let sirenId = $('#siren_number');
+    let invalidSIREN = $('.siren_number_invalid')
 
     if(!isSIRENRunning && sirenId[0].value !== '') {
         if (verify(sirenId[0].value, sizeSIREN)) {
@@ -897,7 +897,7 @@ function checkSIREN(){
 
 function checkVAT(){
     let sizeVAT = 13;
-    let VATId = $('#supplierInfo_vat_number');
+    let VATId = $('#vat_number');
 
     if(!isVATRunning){
         if(verify(VATId[0].value, sizeVAT, true)) {
@@ -934,12 +934,12 @@ function checkVAT(){
 
 function checkAdress(){
     let apiUrl = config.GENERAL['ban-url'];
-    let city = $('#supplierInfo_city');
-    let cityRatio = $('#supplierInfo_cityRatio');
-    let adress = $('#supplierInfo_address');
-    let adressRatio = $('#supplierInfo_addressRatio');
-    let postalCode = $('#supplierInfo_postal_code');
-    let postalRatio = $('#supplierInfo_postal_codeRatio');
+    let city = $('#city');
+    let cityRatio = $('#cityRatio');
+    let adress = $('#address');
+    let adressRatio = $('#addressRatio');
+    let postalCode = $('#postal_code');
+    let postalRatio = $('#postal_codeRatio');
     let value = '';
 
     if(!isAdressRunning){
@@ -962,14 +962,14 @@ function checkAdress(){
 
                 ratioTotal.val((ratioCity/100 + ratioAdr/100 + ratioPostal/100) / 3);
 
-                processRatio(ratioCity, city, cityRatio, infos['city'], 'supplierInfo_city_invalid');
-                processRatio(ratioAdr, adress, adressRatio, infos['name'],'supplierInfo_address_invalid');
-                processRatio(ratioPostal, postalCode, postalRatio, infos['postcode'], 'supplierInfo_postal_code_invalid');
+                processRatio(ratioCity, city, cityRatio, infos['city'], 'city_invalid');
+                processRatio(ratioAdr, adress, adressRatio, infos['name'],'address_invalid');
+                processRatio(ratioPostal, postalCode, postalRatio, infos['postcode'], 'postal_code_invalid');
             }
         })
         .fail(function(){
             banApiError = true;
-            $('.supplierInfo_address').html(gt.gettext('BAN_API_ERROR')).slideDown();
+            $('.address').html(gt.gettext('BAN_API_ERROR')).slideDown();
         });
         isAdressRunning = false;
     }
@@ -1039,7 +1039,7 @@ $('#validateForm').on('click', function(){
             '</button>').insertAfter($('#awaitAdress'));
         }
 
-    }else if(form[0].checkValidity() && $('#supplierInfo_vat_number').hasClass('is-invalid')){
+    }else if(form[0].checkValidity() && $('#vat_number').hasClass('is-invalid')){
         modalBody.html(
             '<span id="tvaError">' +
                 '<br>' + gt.gettext('INVALID_VAT_NUMBER') +
@@ -1251,7 +1251,7 @@ function checkIsDuplicate(){
         },
         body : JSON.stringify({
             'invoice_number' : $('#invoice_number').val(),
-            'vat_number' : $('#supplierInfo_vat_number').val(),
+            'vat_number' : $('#vat_number').val(),
             'id' : $('#pdfId').val()
         })
     }).then(function(response) {
