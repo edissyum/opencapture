@@ -20,7 +20,7 @@
                 </thead>
                 <tbody>
                     {% for user in users %}
-                        <tr>
+                        <tr onclick="window.location.href = '{{ url_for('user.profile', user_id=user['id']) }}'">
                             <td class="user_id">
                                 <a href="#">
                                     {{ user['id'] }}
