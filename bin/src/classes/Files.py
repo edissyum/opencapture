@@ -283,10 +283,14 @@ class Files:
                     clean_child = childElement.replace(parentElement + '_', '')
                     if clean_child not in ['noDelivery', 'noCommands']:
                         if fill_position is not False and db is not False:
-                            clean_child_position = child[childElement]['position']
+                            new_field = Et.SubElement(element, escape(clean_child))
+                            new_field.text = child[childElement]['field']
+
                             # Add position in supplier database
+                            clean_child_position = child[childElement]['position']
                             if clean_child_position is not None:
-                                if 'no_taxes' in clean_child or 'invoice_number' in clean_child or 'order_number' in clean_child or 'delivery_number' in clean_child or 'vat' in clean_child:
+                                if 'no_taxes' in clean_child or 'invoice_number' in clean_child or 'order_number' in clean_child \
+                                        or 'delivery_number' in clean_child or ('vat' in clean_child and clean_child != 'vat_number'):
                                     db.update({
                                         'table': ['suppliers'],
                                         'set': {
@@ -296,9 +300,10 @@ class Files:
                                         'data': [vat_number]
                                     })
                                     db.conn.commit()
-                        # Then create the XML
-                        new_field = Et.SubElement(element, escape(clean_child))
-                        new_field.text = child[childElement]['field']
+
+                                new_field = Et.SubElement(element, escape(clean_child + '_position'))
+                                new_field.text = clean_child_position
+
         xml_root = minidom.parseString(Et.tostring(root, encoding="unicode")).toprettyxml()
         file = open(filename, 'w')
         file.write(xml_root)
@@ -332,7 +337,7 @@ class Files:
                         for title in root:
                             for element in title:
                                 for position in select:
-                                    if element.tag == position.split('_position')[0] and title.tag not in ['supplierInfo']:
+                                    if element.tag == position.split('_position')[0]:
                                         sub_element_to_append = root.find(title.tag)
                                         new_field = Et.SubElement(sub_element_to_append, position)
                                         new_field.text = res[0][position]

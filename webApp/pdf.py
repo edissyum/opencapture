@@ -369,10 +369,20 @@ def validate_form():
     vat_number = False
 
     if request.method == 'POST':
+        supplier_form = forms.SupplierForm(request.form)
+
         # Create an array containing the parent element, used to structure the XML
-        for field in request.form:
-            parent_xml_name = field.split('_')[0]
-            parent[parent_xml_name] = []
+        parent = {
+            'pdfCreationDate': [],
+            'fileInfo': [],
+            supplier_form.xml_index: []
+        }
+        # for field in request.form:
+        #     parent_xml_name = field.split('_')[0]
+        #     parent[parent_xml_name] = []
+        # print(parent)
+        # exit()
+        vat_number = supplier_form.vat_number.data
 
         # If GED is set up, send the document to the GED application (Maarch by default)
         if _cfg.cfg['GED']['enabled'] == 'True':
@@ -387,8 +397,8 @@ def validate_form():
             ged['creationDate'] = request.form['pdfCreationDate']
             ged['date'] = request.form['facturationInfo_invoice_date']
             ged['dest_user'] = request.form['ged_users'].split('#')[0]
-            ged['vatNumber'] = request.form['supplierInfo_vat_number']
-            ged[_cfg.cfg[default_process]['customvatnumber']] = request.form['supplierInfo_vat_number']
+            ged['vatNumber'] = vat_number
+            ged[_cfg.cfg[default_process]['customvatnumber']] = vat_number
             ged[_cfg.cfg[default_process]['customht']] = request.form['facturationInfo_totalHT']
             ged[_cfg.cfg[default_process]['customttc']] = request.form['facturationInfo_totalTTC']
             ged[_cfg.cfg[default_process]['custominvoicenumber']] = request.form['facturationInfo_invoice_number']
@@ -428,13 +438,13 @@ def validate_form():
                 contact['firstname'] = ''
                 contact['contactType'] = _cfg.cfg[default_process]['contacttype']
                 contact['contactPurposeId'] = _cfg.cfg[default_process]['contactpurposeid']
-                contact['society'] = request.form['supplierInfo_name']
-                contact['addressTown'] = request.form['supplierInfo_city']
-                contact['societyShort'] = request.form['supplierInfo_name']
-                contact['addressStreet'] = request.form['supplierInfo_address']
-                contact['otherData'] = request.form['supplierInfo_vat_number']
-                contact['addressZip'] = request.form['supplierInfo_postal_code']
-                contact['email'] = 'À renseigner ' + request.form['supplierInfo_name'] + ' - ' + contact['otherData']
+                contact['society'] = supplier_form.name.data
+                contact['addressTown'] = supplier_form.city.data
+                contact['societyShort'] = supplier_form.name.data
+                contact['addressStreet'] = supplier_form.address.data
+                contact['otherData'] = vat_number
+                contact['addressZip'] = supplier_form.postal_code.data
+                contact['email'] = 'À renseigner ' + supplier_form.name.data + ' - ' + vat_number
 
                 contact = _ws.create_contact(contact)
                 if contact is not False:
@@ -443,19 +453,26 @@ def validate_form():
             res = _ws.insert_with_args(ged, _cfg)
 
         # Fill the parent array with all the child infos
+        for field in supplier_form:
+            if 'x1_original' in field.render_kw:
+                parent[supplier_form.xml_index].append({
+                    field.name: {'field': field.data, 'position': request.form[field.name + '_position']}
+                })
+            else:
+                parent[supplier_form.xml_index].append({
+                    field.name: {'field': field.data, 'position': None}
+                })
+        # exit()
         for value in parent:
             for field in request.form:
-                if any(x in field for x in ['facturationInfo_no_taxes', 'facturationInfo_vat_']):
+                if any(x in field for x in ['facturationInfo_no_taxes', '<facturationInfo_vat_>']):
                     if '_page' in field:
                         footer_page = request.form[field]
                 if field == 'facturationInfo_invoice_number_page':
                     invoice_number_page = request.form['facturationInfo_invoice_number_page']
                 if field == 'facturationInfo_invoice_date_page':
                     invoice_date_page = request.form['facturationInfo_date_number_page']
-
                 if field.split('_')[0] == value:
-                    vat_number = request.form['supplierInfo_vat_number']
-
                     # If a position is associated
                     if field + '_position' in request.form:
                         parent[value].append({
@@ -493,8 +510,9 @@ def validate_form():
                 'where': ['vat_number = ?'],
                 'data': [vat_number]
             })
+            print(parent)
             _files.export_xml(_cfg, request.form['facturationInfo_invoice_number'], parent, True, _db, vat_number)
-
+        exit()
         # Unlock pdf and makes it processed
         _db.update({
             'table': ['invoices'],

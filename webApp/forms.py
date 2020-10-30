@@ -1,3 +1,5 @@
+import secrets
+
 from wtforms import Form, BooleanField, StringField, PasswordField, validators
 from flask_babel import lazy_gettext
 from .override_wtform import CustomStringField
