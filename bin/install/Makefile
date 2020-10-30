@@ -206,14 +206,14 @@ cp $defaultPath/instance/config.ini.default $defaultPath/instance/config.ini
 cp $defaultPath/instance/config/config_DEFAULT.ini.default $defaultPath/instance/config/config_DEFAULT.ini
 
 ####################
-# Initialize flask database
-export FLASK_APP="$defaultPath"/webApp
-flask init-db
-
-####################
 # Generate secret key for Flask and replace it in webbAp/__init.py file
 secret=$(python3 -c 'import secrets; print(secrets.token_hex(16))')
 sed -i "s#§§SECRET§§#$secret#g" "$defaultPath"/webApp/__init__.py
+
+####################
+# Initialize flask database
+export FLASK_APP="$defaultPath"/webApp
+flask init-db
 
 ####################
 # Nginx setup
