@@ -2,31 +2,38 @@
     {% if field.new_row == True %}
         <div class="form-row">
     {% endif %}
-<div class="form-group {{ field.form_group_class }}">
-    {{ field.label }}
-    <div class="input-group mb-2">
-        <div onclick="drawRectangle(document.getElementById('{{ field.id }}'))" class="input-group-prepend" style="display:none;">
-            <div class="input-group-text"><i class="fas fa-eye" aria-hidden="true"></i></div>
-        </div>
+    <div class="form-group {{ field.form_group_class }}">
+        {{ field.label }}
+        <div class="input-group mb-2">
+            <div onclick="drawRectangle(document.getElementById('{{ field.id }}'))" class="input-group-prepend" style="display:none;">
+                <div class="input-group-text"><i class="fas fa-eye" aria-hidden="true"></i></div>
+            </div>
             {{ field(class_="form-control")|safe }}
 
-        {% if field.use_ratio %}
-            <div class="input-group-prepend {{ field.id }}Ratio">
-                <div id="{{ field.id }}Ratio"></div>
-            </div>
-            <div class="invalid-feedback {{ field.id }}"></div>
-        {% endif %}
+            {% if 'x1_original' in field.render_kw %}
+                {% set position ='((' + field.render_kw['x1_original']|string + ',' + field.render_kw['y1_original']|string + '),(' + field.render_kw['x2_original']|string + ',' + field.render_kw['y2_original']|string + '))' %}
+                <input type="hidden" name="{{ field.id }}_position" id="{{ field.id }}_position" value="{{ position }}">
+                <input type="hidden" name="{{ field.id }}_page" id="{{ field.id }}_page" value="{{ field.render_kw['page'] }}">
+            {% endif %}
 
-        {% if field.errors %}
-            <ul class=errors>
-                {% for error in field.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
+            {% if field.use_ratio %}
+                <div class="input-group-prepend {{ field.id }}Ratio">
+                    <div id="{{ field.id }}Ratio"></div>
+                </div>
+            {% endif %}
+
+            <div class="invalid-feedback {{ field.id }}_invalid"></div>
+
+            {% if field.errors %}
+                <ul class=errors>
+                    {% for error in field.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
     </div>
-</div>
-{% if field.end_row == True %}
-    </div>
-{% endif %}
+    {% if field.end_row == True %}
+        </div>
+    {% endif %}
 {% endmacro %}
