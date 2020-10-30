@@ -279,10 +279,9 @@ $(document).ready(function() {
                 .then(function(res) {
                     if (!JSON.parse(res.ok)) {
                         loaded = false;
-                        $('<div class="invalid-feedback invalidSIRET">' +
-                            gt.gettext('SIRET_CONNECTION_ERROR') +
-                            '</div>'
-                        ).insertAfter($('#supplierInfo_siret_number')).slideDown();
+                        let invalidSIRET = $('.supplierInfo_siret_number_invalid')
+                        invalidSIRET.html(gt.gettext('SIRET_CONNECTION_ERROR'))
+
                     } else {
                         if (res.text.toString() === 'error') {
                             console.log('error')
@@ -814,6 +813,7 @@ function checkSIRET(){
     let sirenId = $('#supplierInfo_siren_number');
 
     if(!isSIRETRunning && siretId[0].value !== ''){
+        let invalidSIRET = $('.supplierInfo_siret_number_invalid')
         if(verify(siretId[0].value, sizeSIRET)) {
             isSIRETRunning = true;
             $.ajax({
@@ -833,12 +833,9 @@ function checkSIRET(){
             .fail(function (data){
                 siretId.addClass('is-invalid');
                 siretId.removeClass('is-valid');
-                if ($('.invalidSIRET').length === 0) {
-                    $('<div class="invalid-feedback invalidSIRET">' +
-                        gt.gettext('ERROR_OCCURED') + ' : (' + data['status'].toString() + ') ' + data['statusText'] +
-                        '</div>'
-                    ).insertAfter(siretId);
-                }
+
+                invalidSIRET.html(gt.gettext('ERROR_OCCURED') + ' : (' + data['status'].toString() + ') ' + data['statusText'])
+
             })
         }else{
             siretId.addClass('is-invalid');
@@ -849,12 +846,9 @@ function checkSIRET(){
             siretId[0].setAttribute('y1', '');
             siretId[0].setAttribute('x2', '');
             siretId[0].setAttribute('y2', '');
-            if ($('.invalidSIRET').length === 0) {
-                $('<div class="invalid-feedback invalidSIRET">' +
-                    gt.gettext('ERROR_OCCURED') + ' : ' + gt.gettext('WRONG_SIRET_FORMAT') +
-                    '</div>'
-                ).insertAfter(siretId);
-            }
+
+            invalidSIRET.html(gt.gettext('ERROR_OCCURED') + ' : ' + gt.gettext('WRONG_SIRET_FORMAT'))
+
             isSIRETRunning = false;
         }
     }else if(siretId[0].value === ''){
@@ -868,6 +862,7 @@ function checkSIREN(){
     let sizeSIREN = 9;
     let apiUrl = config.GENERAL['siren-url'];
     let sirenId = $('#supplierInfo_siren_number');
+    let invalidSIREN = $('.supplierInfo_siren_number_invalid')
 
     if(!isSIRENRunning && sirenId[0].value !== '') {
         if (verify(sirenId[0].value, sizeSIREN)) {
@@ -886,22 +881,12 @@ function checkSIREN(){
                 .fail(function (data) {
                     sirenId.addClass('is-invalid');
                     sirenId.removeClass('is-valid');
-                    if ($('.invalidSIREN').length === 0) {
-                        $('<div class="invalid-feedback invalidSIREN">' +
-                            gt.gettext('ERROR_OCCURED') + ' : (' + data['status'].toString() + ') ' + data['statusText'] +
-                            '</div>'
-                        ).insertAfter(sirenId);
-                    }
+                    invalidSIREN.html(gt.gettext('ERROR_OCCURED') + ' : (' + data['status'].toString() + ') ' + data['statusText'])
                 })
         } else {
             sirenId.addClass('is-invalid');
             sirenId.removeClass('is-valid');
-            if ($('.invalidSIREN').length === 0) {
-                $('<div class="invalid-feedback invalidSIREN">' +
-                    gt.gettext('ERROR_OCCURED') + ' : ' + gt.gettext('WRONG_SIREN_FORMAT') +
-                    '</div>'
-                ).insertAfter(sirenId);
-            }
+            invalidSIREN.html(gt.gettext('ERROR_OCCURED') + ' : ' + gt.gettext('WRONG_SIREN_FORMAT'))
             isSIRENRunning = false;
         }
     } else if (sirenId[0].value === '') {
@@ -977,9 +962,9 @@ function checkAdress(){
 
                 ratioTotal.val((ratioCity/100 + ratioAdr/100 + ratioPostal/100) / 3);
 
-                processRatio(ratioCity, city, cityRatio, infos['city'], 'supplierInfo_city');
-                processRatio(ratioAdr, adress, adressRatio, infos['name'],'supplierInfo_address');
-                processRatio(ratioPostal, postalCode, postalRatio, infos['postcode'], 'supplierInfo_postal_code');
+                processRatio(ratioCity, city, cityRatio, infos['city'], 'supplierInfo_city_invalid');
+                processRatio(ratioAdr, adress, adressRatio, infos['name'],'supplierInfo_address_invalid');
+                processRatio(ratioPostal, postalCode, postalRatio, infos['postcode'], 'supplierInfo_postal_code_invalid');
             }
         })
         .fail(function(){
