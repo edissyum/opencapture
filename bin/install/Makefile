@@ -153,6 +153,8 @@ else
   apt install -y supervisor
   mkdir "$defaultPath"/bin/data/log/Supervisor/
   touch /etc/supervisor/conf.d/OCForInvoices-worker.conf
+  touch /etc/supervisor/conf.d/OCForInvoices_Split-worker.conf
+
   su -c "cat > /etc/supervisor/conf.d/OCForInvoices-worker.conf << EOF
 [program:OCWorker]
 command=$defaultPath/bin/scripts/service_workerOC.sh
@@ -167,7 +169,22 @@ stopwaitsecs=10
 stderr_logfile=$defaultPath/bin/data/log/Supervisor/OCForInvoices_worker_%(process_num)02d_error.log
 EOF"
 
+  su -c "cat > /etc/supervisor/conf.d/OCForInvoices_Split-worker.conf << EOF
+[program:OCWorker]
+command=$defaultPath/bin/scripts/service_workerOC_splitter.sh
+process_name=%(program_name)s_%(process_num)02d
+numprocs=$nbProcess
+socket_owner=$user
+stopsignal=QUIT
+stopasgroup=true
+killasgroup=true
+stopwaitsecs=10
+
+stderr_logfile=$defaultPath/bin/data/log/Supervisor/OCForInvoices_SPLIT_worker_%(process_num)02d_error.log
+EOF"
+
   chmod 755 /etc/supervisor/conf.d/OCForInvoices-worker.conf
+  chmod 755 /etc/supervisor/conf.d/OCForInvoices_Split-worker.conf
 
   systemctl restart supervisor
   systemctl enable supervisor
@@ -177,6 +194,7 @@ fi
 # Start and enable web service
 systemctl daemon-reload && systemctl start OCForInvoices-web.service
 systemctl enable OCForInvoices-web.service
+
 ####################
 # Create a custom temp directory to cron the delete of the ImageMagick temp content
 mkdir /tmp/OpenCaptureForInvoices/
