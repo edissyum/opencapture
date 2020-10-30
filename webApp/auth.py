@@ -133,9 +133,7 @@ def login_required(view):
     def wrapped_view(**kwargs):
         if g.user is None:
             return redirect(url_for('auth.login', fallback=str(request.path.replace('/', '%'))))
-
         return view(**kwargs)
-
     return wrapped_view
 
 
@@ -148,4 +146,3 @@ def admin_login_required(view):
             return render_template('templates/error/403.html')
         return view(**kwargs)
     return wrapped_view
-

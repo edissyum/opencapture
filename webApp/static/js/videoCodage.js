@@ -288,8 +288,10 @@ $(document).ready(function() {
                             console.log('error')
                         }else{
                             let result = JSON.parse(res.text);
-                            setCookie('access_token', result['access_token'], 7)
-                            token = getCookie('access_token');
+                            if (result){
+                                setCookie('access_token', result['access_token'], 7)
+                                token = getCookie('access_token');
+                            }
                         }
                     }
                 });
