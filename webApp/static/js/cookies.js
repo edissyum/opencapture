@@ -28,7 +28,6 @@ function setCookie(cname, cvalue, exdays) {
 function save_form_to_cookies(form_id, invoice_id) {
     let data = [];
     $("#" + form_id + " input[name*='facturationInfo']").each(function () {
-        console.log(this)
         if (this) {
             data.push({
                 'name': this.name,
@@ -44,7 +43,6 @@ function retrieve_form_cookies(form_id, invoice_id){
     let data = getCookie('invoice_data_' + invoice_id);
     if (data){
         data = JSON.parse(data)
-        console.log(data)
         $("#" + form_id + " input[name*='facturationInfo']").each(function () {
             if (this) {
                 for(let i = 0; i < data.length; i++){

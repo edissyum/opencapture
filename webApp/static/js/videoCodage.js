@@ -288,8 +288,10 @@ $(document).ready(function() {
                             console.log('error')
                         }else{
                             let result = JSON.parse(res.text);
-                            setCookie('access_token', result['access_token'], 7)
-                            token = getCookie('access_token');
+                            if (result){
+                                setCookie('access_token', result['access_token'], 7)
+                                token = getCookie('access_token');
+                            }
                         }
                     }
                 });
@@ -1038,7 +1040,7 @@ $('#validateForm').on('click', function(){
         let awaitAdress = $('#awaitAdress')
 
         if (awaitAdress.length === 0) {
-            $('<button type="button" class="btn btn-warning" onclick=\'changeStatus(pdfId, "WAIT_SUP", false);\' id="awaitAdress">' +
+             $('<button type="button" class="btn btn-warning" onclick=\'changeStatus(pdfId, "WAIT_SUP", false); save_form_to_cookies("invoice_info", pdfId)\' id="awaitAdress">' +
                     gt.gettext('PUT_ON_HOLD') +
             '</button>').insertAfter($('#returnToValidate'));
         }
