@@ -9,6 +9,7 @@ from .override_wtform import CustomStringField, CustomBooleanField, CustomSelect
 # new_row : needed if you start a new line with multiple input. The last input need las_row attribute
 # form_group_class : if new_row or end_row is True, you can use a bootstrap class (e.g col-md-4)
 # is_position : if true, create an hidden input using XX_original position and page from render_kw
+# use_ratio : used for adress inputs. If True, add div to display the ratio of adresse between the given one and the one from the BAN
 # table : name of table where the field is located
 # table_field : name of the column using to retrieve data
 # is_footer : needed for facturationInfo field that uses the footer_page column in database to store the page number
