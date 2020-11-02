@@ -1,10 +1,9 @@
 {% extends 'base_splitter.html' %}
 {% block title %}Lots{% endblock %}
 {% block css %}
-    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/splitterManager.css') }}"/>
     <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/otherLib/dropzone.css') }}">
     <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/otherLib/dropzone-custom.css') }}">
-    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/splitterManager.css') }}" media="screen"/>
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/splitterList.css') }}" media="screen"/>
     <script type="text/javascript" src="{{ url_for('static', filename='js/otherLib/dropzone.js') }}"></script>
     <script type="text/javascript" src={{ url_for('static', filename='js/otherLib/Gettext.js') }}></script>
     <link rel="gettext" type="application/x-po" href="{{ url_for('static', filename='babel/translations/' + session["lang"] + '/LC_MESSAGES/messages.po') }}">
@@ -13,13 +12,13 @@
 {% block content %}
     <div id="lot">
         <ul class="list-group list-group-horizontal">
-            <li class="list-group-item d-flex justify-content-between align-items-center {% if 'TODAY' in request.path or ('YESTERDAY' not in request.path and 'OLDER' not in request.path) %} active {% endif %} " onclick="window.location.href='/splitterManager/lot/TODAY/NEW'">
+            <li class="list-group-item d-flex justify-content-between align-items-center {% if 'TODAY' in request.path or ('YESTERDAY' not in request.path and 'OLDER' not in request.path) %} active {% endif %} " onclick="window.location.href='/splitter/list/lot/TODAY/NEW'">
                 {{ gettext('TODAY_LOT') }} &nbsp;
             </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center {% if 'YESTERDAY' in request.path %} active {% endif %}" onclick="window.location.href='/splitterManager/lot/YESTERDAY/NEW'">
+            <li class="list-group-item d-flex justify-content-between align-items-center {% if 'YESTERDAY' in request.path %} active {% endif %}" onclick="window.location.href='/splitter/list//lot/YESTERDAY/NEW'">
                 {{ gettext('YESTERDAY_LOT') }} &nbsp;
             </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center {% if 'OLDER' in request.path %} active {% endif %}" onclick="window.location.href='/splitterManager/lot/OLDER/NEW'">
+            <li class="list-group-item d-flex justify-content-between align-items-center {% if 'OLDER' in request.path %} active {% endif %}" onclick="window.location.href='/splitter/list//lot/OLDER/NEW'">
                 {{ gettext('OLD_LOT') }} &nbsp;
             </li>
         </ul>
@@ -59,7 +58,7 @@
                 {% for batch in items %}
                     <div class="col-sm-3">
                         <div class="card">
-                            <a href="/ws_splitter/{{ batch['image_folder_name'] }}" style="height: 400px;">
+                            <a href="/splitter/view/{{ batch['image_folder_name'] }}" style="height: 400px;">
                                 <img class="card-img-top lazy"
                                      data-original="{{ url_for('pdf.static', type_of_file='splitter', filename=batch['first_page']) }}"
                                      alt="Thumbnail">
@@ -70,7 +69,7 @@
                             <div class="card-body">
                                 <div class="row pb-0 pl-3">
                                     <h5 class="card-title">
-                                        <a href="/ws_splitter/{{ batch['image_folder_name'] }}">
+                                        <a href="/splitter/view/{{ batch['image_folder_name'] }}">
                                             {{ batch['dir_name'] }}
                                         </a>
                                     </h5>
@@ -86,10 +85,10 @@
                                         <i class="fas fa-ellipsis-v"></i>
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        <a class="dropdown-item" href="/ws_splitter/{{ batch['image_folder_name'] }}">{{ gettext('SEPARATOR') }}</a>
+                                        <a class="dropdown-item" href="/splitter/view/{{ batch['image_folder_name'] }}">{{ gettext('SEPARATOR') }}</a>
                                         <a class="dropdown-item" href="/files/originFile/{{ batch['dir_name'] }}" target="_blank">{{ gettext('ORIGIN_DOCUMENT') }}</a>
                                         <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="/ws_splitter/delete?batch_name={{ batch['image_folder_name'] }}">{{ gettext('DELETE') }}</a>
+                                        <a class="dropdown-item" href="/ws/splitter/delete?batch_name={{ batch['image_folder_name'] }}">{{ gettext('DELETE') }}</a>
                                     </div>
                                 </div>
                             </div>

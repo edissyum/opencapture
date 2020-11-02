@@ -95,7 +95,7 @@ function submitSplit(){
             list_ids.push(ids);
     }
 
-    fetch('/submitSplit', {
+    fetch('/ws/splitter/submit', {
         method  : 'POST',
         headers : {
             'Content-Type': 'application/json'
@@ -106,7 +106,7 @@ function submitSplit(){
     }).then(function(response) {
         response.json().then(function(res){
             if (JSON.parse(res.ok)) {
-                window.location = "/splitterManager";
+                window.location = "/splitter/list";
             }else {
             }
         });

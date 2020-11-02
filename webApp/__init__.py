@@ -47,10 +47,10 @@ if 'dashboard' not in custom_array:
 else:
     dashboard = getattr(__import__(custom_array['dashboard']['path'], fromlist=[custom_array['dashboard']['module']]), custom_array['dashboard']['module'])
 
-if 'ws_splitter' not in custom_array:
-    from . import ws_splitter
+if 'splitter' not in custom_array:
+    from . import splitter
 else:
-    ws_splitter = getattr(__import__(custom_array['ws_splitter']['path'], fromlist=[custom_array['ws_splitter']['module']]), custom_array['ws_splitter']['module'])
+    splitter = getattr(__import__(custom_array['splitter']['path'], fromlist=[custom_array['splitter']['module']]), custom_array['splitter']['module'])
 
 
 def create_app(test_config=None):
@@ -95,7 +95,7 @@ def create_app(test_config=None):
     app.register_blueprint(user.bp)
     app.register_blueprint(supplier.bp)
     app.register_blueprint(dashboard.bp)
-    app.register_blueprint(ws_splitter.bp)
+    app.register_blueprint(splitter.bp)
     app.add_url_rule('/', endpoint='index')
 
     # Add custom templates location

@@ -1,9 +1,12 @@
-import logging
 import os
 import json
+import shutil
+import logging
 import requests
 from zeep import Client
 from zeep import exceptions
+
+import worker_splitter_from_python
 import worker_from_python
 
 from flask_babel import gettext
@@ -233,3 +236,85 @@ def delete_invoice(rowid):
 
     flash(gettext('INVOICE_DELETED'))
     return json.dumps({'text': 'OK', 'code': 200, 'ok': 'true'})
+
+
+@bp.route('/ws/splitter/submit', methods=('GET', 'POST'))
+def submit_split():
+    _vars = pdf.init()
+    _db = _vars[0]
+    _cfg = _vars[1]
+    _Splitter = _vars[7]
+    data = request.get_json()
+
+    # Get origin file name from database to split files us it as a reference
+    batch = _db.select({
+        'select': ['*'],
+        'table': ['splitter_batches'],
+        'where': ['image_folder_name = ?'],
+        'data': [str(data['ids'][0][0]).split("/")[0]]
+    })[0]
+
+    # merging invoices pages by or creation_date
+    _Splitter.get_page_order_after_user_change(data['ids'],
+                                               str(batch['dir_name']),
+                                               _cfg.cfg['SPLITTER']['pdfoutputpath'])
+
+    # delete batch after validate
+    args = {
+        'table': ['splitter_batches'],
+        'set': {'status': 'DEL'},
+        'where': ["image_folder_name=?"],
+        'data': [batch['image_folder_name']]
+    }
+    _db.update(args)
+    args = {
+        'table': ['splitter_images'],
+        'set': {'status': 'DEL'},
+        'where': ["batch_name=?"],
+        'data': [batch['image_folder_name']]
+    }
+    _db.update(args)
+
+    shutil.rmtree(_cfg.cfg['SPLITTER']['tmpbatchpath'] + batch['image_folder_name'])
+
+    return json.dumps({'text': 'res', 'code': 200, 'ok': 'true'})
+
+
+@bp.route('/ws/splitter/upload', methods=['GET', 'POST'])
+def upload_file():
+    _vars = pdf.init()
+    _db = _vars[0]
+    _cfg = _vars[1]
+    _Files = _vars[5]
+    _Splitter = _vars[7]
+    if request.method == 'POST':
+        for file in request.files:
+            f = request.files[file]
+            # The next 2 lines lower the extensions because an UPPER extension will throw silent error
+            filename, file_ext = os.path.splitext(f.filename)
+            file = filename.replace(' ', '_') + file_ext.lower()
+            f.save(os.path.join(_cfg.cfg['SPLITTER']['pdforiginpath'], secure_filename(file)))
+
+            worker_splitter_from_python.main({
+                'file': _cfg.cfg['SPLITTER']['pdforiginpath'] + file,
+                'config': current_app.config['CONFIG_FILE']
+            })
+    flash(gettext('FILE_UPLOAD_SUCCESS'))
+    return url_for('pdf.upload', splitter='True')
+
+
+@bp.route('/ws/splitter/delete', methods=('GET', 'POST'))
+@login_required
+def delete_batch():
+    _vars = pdf.init()
+    _db = _vars[0]
+    _cfg = _vars[1].cfg
+    batch_dir_name = request.args.get('batch_name')
+    args = {
+        'table': ['splitter_batches'],
+        'set': {'status': 'DEL'},
+        'where': ["image_folder_name=?"],
+        'data': [str(batch_dir_name)]
+    }
+    _db.update(args)
+    return redirect(url_for('splitter.splitter_list'))

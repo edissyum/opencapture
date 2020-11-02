@@ -1,6 +1,4 @@
 import os
-import json
-import shutil
 from datetime import datetime
 from datetime import timedelta
 
@@ -8,9 +6,7 @@ from flask_babel import gettext
 from flask_paginate import Pagination, get_page_args
 from flask import current_app, Blueprint, flash, render_template, url_for, redirect, request
 
-import worker_splitter_from_python
 from webApp.auth import login_required
-from werkzeug.utils import secure_filename
 
 from .functions import get_custom_id, check_python_customized_files
 
@@ -24,38 +20,15 @@ if 'pdf' not in custom_array:
 else:
     pdf = getattr(__import__(custom_array['pdf']['path'], fromlist=[custom_array['pdf']['module']]), custom_array['pdf']['module'])
 
-bp = Blueprint('ws_splitter', __name__)
+bp = Blueprint('splitter', __name__)
 
 
-@bp.route('/splitter/upload', methods=['GET', 'POST'])
-def upload_file():
-    _vars = pdf.init()
-    _db = _vars[0]
-    _cfg = _vars[1]
-    _Files = _vars[5]
-    _Splitter = _vars[7]
-    if request.method == 'POST':
-        for file in request.files:
-            f = request.files[file]
-            # The next 2 lines lower the extensions because an UPPER extension will throw silent error
-            filename, file_ext = os.path.splitext(f.filename)
-            file = filename.replace(' ', '_') + file_ext.lower()
-            f.save(os.path.join(_cfg.cfg['SPLITTER']['pdforiginpath'], secure_filename(file)))
-
-            worker_splitter_from_python.main({
-                'file': _cfg.cfg['SPLITTER']['pdforiginpath'] + secure_filename(file),
-                'config': current_app.config['CONFIG_FILE']
-            })
-    flash(gettext('FILE_UPLOAD_SUCCESS'))
-    return url_for('pdf.upload', splitter='True')
-
-
-@bp.route('/splitterManager/', defaults={'status': None, 'time': None})
-@bp.route('/splitterManager/lot/', defaults={'status': None, 'time': None})
-@bp.route('/splitterManager/lot/<string:time>/', defaults={'status': None})
-@bp.route('/splitterManager/lot/<string:time>/<string:status>')
+@bp.route('/splitter/list/', defaults={'status': None, 'time': None})
+@bp.route('/splitter/list/lot/', defaults={'status': None, 'time': None})
+@bp.route('/splitter/list/lot/<string:time>/', defaults={'status': None})
+@bp.route('/splitter/list/lot/<string:time>/<string:status>')
 @login_required
-def splitter_manager(status, time):
+def splitter_list(status, time):
     _vars = pdf.init()
     _db = _vars[0]
     _cfg = _vars[1].cfg
@@ -157,85 +130,10 @@ def splitter_manager(status, time):
                            cfg=_cfg)
 
 
-@bp.route('/ws_splitter/delete', methods=('GET', 'POST'))
+@bp.route('/splitter/view/', methods=('GET', 'POST'))
+@bp.route('/splitter/view/<batch_dir_name>', methods=('GET', 'POST'))
 @login_required
-def delete_batch():
-    _vars = pdf.init()
-    _db = _vars[0]
-    _cfg = _vars[1].cfg
-    batch_dir_name = request.args.get('batch_name')
-    args = {
-        'table': ['splitter_batches'],
-        'set': {'status': 'DEL'},
-        'where': ["image_folder_name=?"],
-        'data': [str(batch_dir_name)]
-    }
-    _db.update(args)
-    return redirect(url_for('ws_splitter.splitter_manager'))
-
-
-@bp.route('/deletePage/<path:path>', methods=('GET', 'POST'))
-def delete_page(path):
-    os.remove(path)
-    return redirect(url_for('separate'))
-
-
-@bp.route('/deleteInvoice', methods=('GET', 'POST'))
-def delete_invoice():
-    _vars = pdf.init()
-    _cfg = _vars[1].cfg
-    data = request.get_json()
-    shutil.rmtree(_cfg.cfg['SPLITTER']['invoicespath'] + '/invoice' + str(data['index']), ignore_errors=True)
-    return redirect(url_for('separate'))
-
-
-@bp.route('/submitSplit', methods=('GET', 'POST'))
-def submit_split():
-    _vars = pdf.init()
-    _db = _vars[0]
-    _cfg = _vars[1]
-    _Splitter = _vars[7]
-    data = request.get_json()
-
-    # Get origin file name from database to split files us it as a reference
-    batch = _db.select({
-        'select': ['*'],
-        'table': ['splitter_batches'],
-        'where': ['image_folder_name = ?'],
-        'data': [str(data['ids'][0][0]).split("/")[0]]
-    })[0]
-
-    # merging invoices pages by or creation_date
-    _Splitter.get_page_order_after_user_change(data['ids'],
-                                               str(batch['dir_name']),
-                                               _cfg.cfg['SPLITTER']['pdfoutputpath'])
-
-    # delete batch after validate
-    args = {
-        'table': ['splitter_batches'],
-        'set': {'status': 'DEL'},
-        'where': ["image_folder_name=?"],
-        'data': [batch['image_folder_name']]
-    }
-    _db.update(args)
-    args = {
-        'table': ['splitter_images'],
-        'set': {'status': 'DEL'},
-        'where': ["batch_name=?"],
-        'data': [batch['image_folder_name']]
-    }
-    _db.update(args)
-
-    shutil.rmtree(_cfg.cfg['SPLITTER']['tmpbatchpath'] + batch['image_folder_name'])
-
-    return json.dumps({'text': 'res', 'code': 200, 'ok': 'true'})
-
-
-# Splitter web services
-@bp.route('/ws_splitter', methods=('GET', 'POST'))
-@bp.route('/ws_splitter/<batch_dir_name>', methods=('GET', 'POST'))
-@login_required
-def separate(batch_dir_name):
+def splitter_view(batch_dir_name):
     _vars = pdf.init()
     _db = _vars[0]
     _cfg = _vars[1]
