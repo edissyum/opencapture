@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2020-10-26 14:35+0100\n"
+"POT-Creation-Date: 2020-11-02 09:57+0100\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: fr\n"
@@ -50,26 +50,26 @@ msgstr "Utilisateur supprimé"
 msgid "USER_DISABLED"
 msgstr "Utilisateur desactivé"
 
-#: webApp/pdf.py:228 webApp/static/js/videoCodage.js:59
+#: webApp/pdf.py:229 webApp/static/js/videoCodage.js:59
 #: webApp/ws_splitter.py:142
 msgid "NO_RESULTS"
 msgstr "Pas de résultats"
 
-#: webApp/pdf.py:230 webApp/supplier.py:43 webApp/user.py:182
+#: webApp/pdf.py:231 webApp/supplier.py:43 webApp/user.py:182
 #: webApp/ws_splitter.py:144
 msgid "SHOW"
 msgstr "Affichage de"
 
-#: webApp/pdf.py:230 webApp/supplier.py:43 webApp/templates/pdf/view.html:16
+#: webApp/pdf.py:231 webApp/supplier.py:43 webApp/templates/pdf/view.html:18
 #: webApp/user.py:182 webApp/ws_splitter.py:144
 msgid "OF"
 msgstr "sur"
 
-#: webApp/pdf.py:488
+#: webApp/pdf.py:529
 msgid "END_LONG"
 msgstr "Facture validée et cloturée"
 
-#: webApp/pdf.py:490
+#: webApp/pdf.py:531
 msgid "ERROR_WHILE_INSERTING_IN_GED"
 msgstr "Erreur lors de l'insertion de la facture dans la GED"
 
@@ -170,6 +170,15 @@ msgstr "Tout désélectionner"
 msgid "_CONFIRM_DELETE_BATCH"
 msgstr "Voulez vous vraiment supprimer ce lot de factures ?"
 
+#: webApp/static/js/splitter.js:142 webApp/static/js/splitter.js:175
+#: webApp/static/js/splitter.js:251 webApp/static/js/splitter.js:258
+#: webApp/templates/splitter/view.html:28
+#: webApp/templates/splitter/view.html:35
+#: webApp/templates/splitter/view.html:59
+#: webApp/templates/splitter/view.html:60
+msgid "INVOICE"
+msgstr "Facture"
+
 #: webApp/static/js/videoCodage.js:188
 msgid "WAIT_OCR_END"
 msgstr "Merci d'attendre la fin du processus d'OCR"
@@ -180,146 +189,146 @@ msgstr ""
 "Erreur lors de la connexion au service de vérification du numéro de "
 "SIRET. Les numéros de SIRET/SIREN ne peuvent donc pas être validé"
 
-#: webApp/static/js/videoCodage.js:327
+#: webApp/static/js/videoCodage.js:329
 msgid "ERROR_WHILE_READING_CONFIGURATION_FILE"
 msgstr "Erreur lors de la lecture du fichier de configuration"
 
-#: webApp/static/js/videoCodage.js:441
-#: webApp/templates/dashboard/index.html:810 webApp/templates/pdf/view.html:201
+#: webApp/static/js/videoCodage.js:445
+#: webApp/templates/dashboard/index.html:799 webApp/templates/pdf/view.html:127
 msgid "VAT_RATE"
 msgstr "Taux de TVA"
 
-#: webApp/static/js/videoCodage.js:450 webApp/static/js/videoCodage.js:551
-#: webApp/templates/dashboard/index.html:788 webApp/templates/pdf/view.html:210
-#: webApp/templates/pdf/view.html:284
+#: webApp/static/js/videoCodage.js:454 webApp/static/js/videoCodage.js:555
+#: webApp/templates/dashboard/index.html:777 webApp/templates/pdf/view.html:136
+#: webApp/templates/pdf/view.html:212
 msgid "NO_RATE_AMOUNT"
 msgstr "Montant HT"
 
-#: webApp/static/js/videoCodage.js:459 webApp/templates/pdf/view.html:219
+#: webApp/static/js/videoCodage.js:463 webApp/templates/pdf/view.html:145
 msgid "LOAD_ACCOUNT"
 msgstr "Compte de charge"
 
-#: webApp/static/js/videoCodage.js:461 webApp/templates/pdf/view.html:221
+#: webApp/static/js/videoCodage.js:465 webApp/templates/pdf/view.html:147
 msgid "SELECT_LOAD_ACCOUNT"
 msgstr "Selectionnez un compte de charge"
 
-#: webApp/static/js/videoCodage.js:479 webApp/templates/pdf/view.html:260
+#: webApp/static/js/videoCodage.js:483 webApp/templates/pdf/view.html:186
 msgid "VAT_AMOUNT"
 msgstr "Montant TVA"
 
-#: webApp/static/js/videoCodage.js:557 webApp/templates/pdf/view.html:290
+#: webApp/static/js/videoCodage.js:561 webApp/templates/pdf/view.html:218
 msgid "BUDGET"
 msgstr "Budget"
 
-#: webApp/static/js/videoCodage.js:559 webApp/templates/pdf/view.html:292
+#: webApp/static/js/videoCodage.js:563 webApp/templates/pdf/view.html:220
 msgid "SELECT_STRUCTURE"
 msgstr "Selectionnez une structure"
 
-#: webApp/static/js/videoCodage.js:565 webApp/templates/pdf/view.html:338
+#: webApp/static/js/videoCodage.js:569 webApp/templates/pdf/view.html:266
 msgid "OUTCOME"
 msgstr "Dépenses"
 
-#: webApp/static/js/videoCodage.js:567 webApp/templates/pdf/view.html:340
+#: webApp/static/js/videoCodage.js:571 webApp/templates/pdf/view.html:268
 msgid "SELECT_BUDGET"
 msgstr "Selectionnez un budget"
 
-#: webApp/static/js/videoCodage.js:604 webApp/static/js/videoCodage.js:642
+#: webApp/static/js/videoCodage.js:608 webApp/static/js/videoCodage.js:646
 msgid "ORDER_NUMBER"
 msgstr "Numéro de commande"
 
-#: webApp/static/js/videoCodage.js:651
+#: webApp/static/js/videoCodage.js:655
 msgid "ADD_ORDER_NUMBER"
 msgstr "Ajouter un numéro de commande"
 
-#: webApp/static/js/videoCodage.js:671 webApp/static/js/videoCodage.js:697
+#: webApp/static/js/videoCodage.js:675 webApp/static/js/videoCodage.js:701
 msgid "DELIVERY_FORM_NUMBER"
 msgstr "Numéro de bon de livraison"
 
-#: webApp/static/js/videoCodage.js:706
+#: webApp/static/js/videoCodage.js:710
 msgid "ADD_DELIVERY_FORM_NUMBER"
 msgstr "Ajouter un numéro de bon de livraison"
 
-#: webApp/static/js/videoCodage.js:833 webApp/static/js/videoCodage.js:849
-#: webApp/static/js/videoCodage.js:886 webApp/static/js/videoCodage.js:896
-#: webApp/static/js/videoCodage.js:927
+#: webApp/static/js/videoCodage.js:837 webApp/static/js/videoCodage.js:850
+#: webApp/static/js/videoCodage.js:884 webApp/static/js/videoCodage.js:889
+#: webApp/static/js/videoCodage.js:917
 msgid "ERROR_OCCURED"
 msgstr "Une erreur est arrivée"
 
-#: webApp/static/js/videoCodage.js:849
+#: webApp/static/js/videoCodage.js:850
 msgid "WRONG_SIRET_FORMAT"
 msgstr "Le format du SIRET n'est pas bon"
 
-#: webApp/static/js/videoCodage.js:896
+#: webApp/static/js/videoCodage.js:889
 msgid "WRONG_SIREN_FORMAT"
 msgstr "Le format du SIREN n'est pas bon"
 
-#: webApp/static/js/videoCodage.js:982
+#: webApp/static/js/videoCodage.js:972
 msgid "BAN_API_ERROR"
 msgstr "Erreur lors de la connexion à l'API de vérification de la BAN"
 
-#: webApp/static/js/videoCodage.js:996
+#: webApp/static/js/videoCodage.js:986
 msgid "REFUSE_CONFIRMATION"
 msgstr "Voulez vous vraiment refuser cette facture ?"
 
-#: webApp/static/js/videoCodage.js:1000 webApp/static/js/videoCodage.js:1073
-#: webApp/static/js/videoCodage.js:1085
+#: webApp/static/js/videoCodage.js:990 webApp/static/js/videoCodage.js:1062
+#: webApp/static/js/videoCodage.js:1074
 msgid "YES"
 msgstr "Oui"
 
-#: webApp/static/js/videoCodage.js:1030
+#: webApp/static/js/videoCodage.js:1020
 msgid "FORM_ERROR_OR_EMPTY_FIELD"
 msgstr ""
 "Le formulaire présente des erreurs ou des champs vides. Merci de les "
 "corriger avant de valider"
 
-#: webApp/static/js/videoCodage.js:1035
+#: webApp/static/js/videoCodage.js:1025
 msgid "INCORRECT_BAN_ADDRESS"
 msgstr "L'adresse ne corresponds pas parfaitement au référentiel national."
 
-#: webApp/static/js/videoCodage.js:1036
+#: webApp/static/js/videoCodage.js:1026
 msgid "PUT_FORM_TO_SUPPLIER_WAIT"
 msgstr ""
 "Nous vous conseillons de mettre la facture en attente en attendant de "
 "mettre à jour le fournisseur"
 
-#: webApp/static/js/videoCodage.js:1042
+#: webApp/static/js/videoCodage.js:1032
 msgid "PUT_ON_HOLD"
 msgstr "Mettre en attente"
 
-#: webApp/static/js/videoCodage.js:1049
+#: webApp/static/js/videoCodage.js:1038
 msgid "_VALID_WIHTOUT_BAN_VERIFICATION"
 msgstr "Valider sans la vérification de la BAN"
 
-#: webApp/static/js/videoCodage.js:1056
+#: webApp/static/js/videoCodage.js:1045
 msgid "INVALID_VAT_NUMBER"
 msgstr "Le numéro de TVA n'est pas valide."
 
-#: webApp/static/js/videoCodage.js:1061
+#: webApp/static/js/videoCodage.js:1050
 msgid "_VALID_WIHTOUT_VAT_VERIFICATION"
 msgstr "Valider sans vérifier du numéro de TVA ?"
 
-#: webApp/static/js/videoCodage.js:1068
+#: webApp/static/js/videoCodage.js:1057
 msgid "CALCUL_NOT_EQUAL_WOULD_YOU_VALIDATE"
 msgstr ""
 "La somme des montants alloués à l'analytique est différente du montant "
 "total HT. Voulez-vous malgré tout valider la facture ?"
 
-#: webApp/static/js/videoCodage.js:1079
+#: webApp/static/js/videoCodage.js:1068
 msgid "INVOICE_ALREADY_EXIST"
 msgstr ""
 "Une facture reliée au même fournisseur et ayant le même numéro de facture"
 " apparait déjà en base de données. Voulez-vous quand même valider la "
 "facture ?"
 
-#: webApp/static/js/videoCodage.js:1222
+#: webApp/static/js/videoCodage.js:1211
 msgid "FIELD_TO_CHECK"
 msgstr "Champ à vérifier"
 
-#: webApp/static/js/videoCodage.js:1223 webApp/static/js/videoCodage.js:1228
+#: webApp/static/js/videoCodage.js:1212 webApp/static/js/videoCodage.js:1217
 msgid "BAN_VALUE"
 msgstr "Valeur BAN"
 
-#: webApp/static/js/videoCodage.js:1227
+#: webApp/static/js/videoCodage.js:1216
 msgid "INVALID"
 msgstr "Invalide"
 
@@ -399,8 +408,8 @@ msgid "PASSWORD"
 msgstr "Mot de passe"
 
 #: webApp/templates/auth/login.html:16 webApp/templates/auth/register.html:23
-#: webApp/templates/splitter/splitter_process.html:38
-#: webApp/templates/splitter/splitter_process.html:85
+#: webApp/templates/splitter/view.html:42
+#: webApp/templates/splitter/view.html:89
 msgid "VALIDATE"
 msgstr "Valider"
 
@@ -510,10 +519,10 @@ msgstr "Autoriser les doublons de facture"
 #: webApp/templates/dashboard/index.html:193
 #: webApp/templates/dashboard/index.html:209
 #: webApp/templates/dashboard/index.html:225
-#: webApp/templates/dashboard/index.html:829
-#: webApp/templates/dashboard/index.html:900
-#: webApp/templates/dashboard/index.html:942
-#: webApp/templates/dashboard/index.html:1228
+#: webApp/templates/dashboard/index.html:818
+#: webApp/templates/dashboard/index.html:889
+#: webApp/templates/dashboard/index.html:931
+#: webApp/templates/dashboard/index.html:1217
 msgid "ENABLED"
 msgstr "Actif"
 
@@ -583,354 +592,352 @@ msgstr "Chemin de sortie des PDF"
 msgid "PDF_ORIGIN_PATH"
 msgstr "Chemin de stockage des fichiers originaux"
 
-#: webApp/templates/dashboard/index.html:369
-msgid "ALLOWED_EXTENSIONS"
-msgstr "Types de fichiers autorisés"
-
-#: webApp/templates/dashboard/index.html:385
-#: webApp/templates/dashboard/index.html:926
+#: webApp/templates/dashboard/index.html:374
+#: webApp/templates/dashboard/index.html:915
 msgid "GENERAL"
 msgstr "Général"
 
-#: webApp/templates/dashboard/index.html:388
+#: webApp/templates/dashboard/index.html:377
 msgid "LOCALE"
 msgstr "Locale"
 
-#: webApp/templates/dashboard/index.html:391
+#: webApp/templates/dashboard/index.html:380
 msgid "REFERENCIALS"
 msgstr "Référentiels"
 
-#: webApp/templates/dashboard/index.html:394
+#: webApp/templates/dashboard/index.html:383
 msgid "REGEX"
 msgstr "Regex"
 
-#: webApp/templates/dashboard/index.html:397
+#: webApp/templates/dashboard/index.html:386
 msgid "QR_CODE_SEPARATION"
 msgstr "Séparations par QR Code"
 
-#: webApp/templates/dashboard/index.html:400
+#: webApp/templates/dashboard/index.html:389
 msgid "BLANK_PAGE_REMOVE"
 msgstr "Suppression des pages blanches"
 
-#: webApp/templates/dashboard/index.html:407
+#: webApp/templates/dashboard/index.html:396
 msgid "PROJECT_PATH"
 msgstr "Chemin du projet"
 
-#: webApp/templates/dashboard/index.html:418
-#: webApp/templates/dashboard/index.html:867
+#: webApp/templates/dashboard/index.html:407
+#: webApp/templates/dashboard/index.html:856
 msgid "TEMP_PATH"
 msgstr "Chemin temporaire"
 
-#: webApp/templates/dashboard/index.html:429
+#: webApp/templates/dashboard/index.html:418
 msgid "IMAGES_PATH"
 msgstr "Chemin pour les images"
 
-#: webApp/templates/dashboard/index.html:443
+#: webApp/templates/dashboard/index.html:432
 msgid "TIFF_PATH"
 msgstr "Chemin pour les fichiers TIFF"
 
-#: webApp/templates/dashboard/index.html:454
+#: webApp/templates/dashboard/index.html:443
 msgid "ERROR_PATH"
 msgstr "Chemin d'erreur"
 
-#: webApp/templates/dashboard/index.html:465
+#: webApp/templates/dashboard/index.html:454
 msgid "LOGS_FILE"
 msgstr "Fichier de logs"
 
-#: webApp/templates/dashboard/index.html:479
+#: webApp/templates/dashboard/index.html:468
 msgid "DOCSERVER_PATH"
 msgstr "Chemin des docservers"
 
-#: webApp/templates/dashboard/index.html:490
+#: webApp/templates/dashboard/index.html:479
 msgid "EXPORT_ACCOUNTING_FOLDER"
 msgstr "Chemin d'export XML"
 
-#: webApp/templates/dashboard/index.html:501
+#: webApp/templates/dashboard/index.html:490
 msgid "EXPORT_ACCOUNTING_FILE_PARSER"
 msgstr "Fichier de nommage des fichiers XML"
 
-#: webApp/templates/dashboard/index.html:515
+#: webApp/templates/dashboard/index.html:504
 msgid "THREADS_NUMBER"
 msgstr "Nombre de threads"
 
-#: webApp/templates/dashboard/index.html:526
+#: webApp/templates/dashboard/index.html:515
 msgid "OCR_RESOLUTION_DPI"
 msgstr "Résolution de l'image pour OCR (DPI)"
 
-#: webApp/templates/dashboard/index.html:540
+#: webApp/templates/dashboard/index.html:529
 msgid "IMAGE_COMPRESSION_QUALITY"
 msgstr "Qualité de compression de l'image"
 
-#: webApp/templates/dashboard/index.html:550
+#: webApp/templates/dashboard/index.html:539
 msgid "COMPRESSION_HELP"
 msgstr "De 1 à 100, 100 étant la meilleure qualité"
 
-#: webApp/templates/dashboard/index.html:554
+#: webApp/templates/dashboard/index.html:543
 msgid "OCR_CHAR_CORRECTION"
 msgstr "Correction des caractères OCR"
 
-#: webApp/templates/dashboard/index.html:565
+#: webApp/templates/dashboard/index.html:554
 msgid "OCR_ERROR_PATH"
 msgstr "Chemin pour le fichier de correction OCR"
 
-#: webApp/templates/dashboard/index.html:580
+#: webApp/templates/dashboard/index.html:569
 msgid "REGEX_LOCALE_CODE"
 msgstr "Code language pour REGEX"
 
-#: webApp/templates/dashboard/index.html:590
+#: webApp/templates/dashboard/index.html:579
 msgid "LOCALE_HELP"
 msgstr "<b>fr_FR</b> ou <b>en_EN</b> par défaut"
 
-#: webApp/templates/dashboard/index.html:594
+#: webApp/templates/dashboard/index.html:583
 msgid "OCR_LOCALE_CODE"
 msgstr "Code language pour OCR"
 
-#: webApp/templates/dashboard/index.html:604
+#: webApp/templates/dashboard/index.html:593
 msgid "LOCALE_OCR_HELP"
 msgstr "<b>fra</b> ou <b>eng</b> par défaut"
 
-#: webApp/templates/dashboard/index.html:608
+#: webApp/templates/dashboard/index.html:597
 msgid "LOCALE_PATH"
 msgstr "Chemin vers les fichiers de langues"
 
-#: webApp/templates/dashboard/index.html:623
+#: webApp/templates/dashboard/index.html:612
 msgid "FINANCIAL_REFERENCIAL"
 msgstr "Référentiel plan comptable"
 
-#: webApp/templates/dashboard/index.html:634
+#: webApp/templates/dashboard/index.html:623
 msgid "REFERENCIAL_POSITION"
 msgstr "Dossier des masques de positions"
 
-#: webApp/templates/dashboard/index.html:648
+#: webApp/templates/dashboard/index.html:637
 msgid "SUPPLIERS_REFERENCIAL"
 msgstr "Referentiel des fournisseurs"
 
-#: webApp/templates/dashboard/index.html:659
+#: webApp/templates/dashboard/index.html:648
 msgid "SUPPLIERS_EXCEL_INDEX_REFERENCIAL"
 msgstr "Référentiel des index EXCEL pour fournisseurs"
 
-#: webApp/templates/dashboard/index.html:674
+#: webApp/templates/dashboard/index.html:663
 msgid "DATE"
 msgstr "Date"
 
-#: webApp/templates/dashboard/index.html:688 webApp/templates/pdf/view.html:129
+#: webApp/templates/dashboard/index.html:677
 msgid "VAT_NUMBER"
 msgstr "Numéro de TVA"
 
-#: webApp/templates/dashboard/index.html:702 webApp/templates/pdf/list.html:96
-#: webApp/templates/pdf/view.html:180
+#: webApp/templates/dashboard/index.html:691 webApp/templates/pdf/list.html:96
+#: webApp/templates/pdf/view.html:106
 msgid "INVOICE_NUMBER"
 msgstr "Numéro de facture"
 
-#: webApp/templates/dashboard/index.html:716
+#: webApp/templates/dashboard/index.html:705
 msgid "INVOICE_NUMBER_SIZE"
 msgstr "Longueur minimale de facture"
 
-#: webApp/templates/dashboard/index.html:727
+#: webApp/templates/dashboard/index.html:716
 msgid "INPUT_FORMAT_DATE"
 msgstr "Format de date en entrée"
 
-#: webApp/templates/dashboard/index.html:738
+#: webApp/templates/dashboard/index.html:727
 msgid "OUTPUT_FORMAT_DATE"
 msgstr "Format de date en sortie"
 
-#: webApp/templates/dashboard/index.html:752
+#: webApp/templates/dashboard/index.html:741
 msgid "URL"
 msgstr "URL"
 
-#: webApp/templates/dashboard/index.html:763 webApp/templates/pdf/view.html:140
+#: webApp/templates/dashboard/index.html:752
 #: webApp/templates/suppliers/suppliers_list.html:15
 msgid "SIRET_NUMBER"
 msgstr "Numéro de SIRET"
 
-#: webApp/templates/dashboard/index.html:774 webApp/templates/pdf/view.html:149
+#: webApp/templates/dashboard/index.html:763
 #: webApp/templates/suppliers/suppliers_list.html:16
 msgid "SIREN_NUMBER"
 msgstr "Numéro de SIREN"
 
-#: webApp/templates/dashboard/index.html:799 webApp/templates/pdf/view.html:251
+#: webApp/templates/dashboard/index.html:788 webApp/templates/pdf/view.html:177
 msgid "TOTAL_TTC"
 msgstr "Total TTC"
 
-#: webApp/templates/dashboard/index.html:837
+#: webApp/templates/dashboard/index.html:826
 msgid "PDFA_EXPORT"
 msgstr "Export PDF/A"
 
-#: webApp/templates/dashboard/index.html:842
+#: webApp/templates/dashboard/index.html:831
 msgid "PDF_EXPORT_PATH"
 msgstr "Chemin d'export PDF"
 
-#: webApp/templates/dashboard/index.html:853
+#: webApp/templates/dashboard/index.html:842
 msgid "PDFA_EXPORT_PATH"
 msgstr "Chemin d'export PDF/A"
 
-#: webApp/templates/dashboard/index.html:878
+#: webApp/templates/dashboard/index.html:867
 msgid "DIVIDER_CREATION_FILE"
 msgstr "Séparateur (lors de la création de fichiers)"
 
-#: webApp/templates/dashboard/index.html:888
+#: webApp/templates/dashboard/index.html:877
 msgid "DIVIDER_HELP"
 msgstr "<b>_</b> ou <b>-</b> par exemple"
 
-#: webApp/templates/dashboard/index.html:904
+#: webApp/templates/dashboard/index.html:893
 msgid "BLOBS_RATIO"
 msgstr "Ratio minimal de detection de page blanche"
 
-#: webApp/templates/dashboard/index.html:914
+#: webApp/templates/dashboard/index.html:903
 msgid "BLOBSRATIO_HELP"
-msgstr "Il prends en compte le nombre de points trouvé dans l'image par rapport à la taille de l'image"
+msgstr ""
+"Il prends en compte le nombre de points trouvé dans l'image par rapport à"
+" la taille de l'image"
 
-#: webApp/templates/dashboard/index.html:946
+#: webApp/templates/dashboard/index.html:935
 msgid "REST_URL"
 msgstr "URL des Webservices"
 
-#: webApp/templates/dashboard/index.html:957
+#: webApp/templates/dashboard/index.html:946
 msgid "REST_USER"
 msgstr "Utilisateur Webservices"
 
-#: webApp/templates/dashboard/index.html:968
+#: webApp/templates/dashboard/index.html:957
 msgid "REST_PASSWORD"
 msgstr "Mot de passe Webservices"
 
-#: webApp/templates/dashboard/index.html:982
+#: webApp/templates/dashboard/index.html:971
 msgid "AVAILABLE_PROCESS"
 msgstr "Process disponible"
 
-#: webApp/templates/dashboard/index.html:993
+#: webApp/templates/dashboard/index.html:982
 msgid "DEFAULT_PROCESS"
 msgstr "Process par défaut"
 
-#: webApp/templates/dashboard/index.html:1004
+#: webApp/templates/dashboard/index.html:993
 msgid "USERGROUP_ID"
 msgstr "Identifiant du groupe utilisateur"
 
-#: webApp/templates/dashboard/index.html:1020
+#: webApp/templates/dashboard/index.html:1009
 #: webApp/templates/users/user_list.html:16
 msgid "STATUS"
 msgstr "Status"
 
-#: webApp/templates/dashboard/index.html:1031
+#: webApp/templates/dashboard/index.html:1020
 msgid "STATUS_END"
 msgstr "Status clos"
 
-#: webApp/templates/dashboard/index.html:1042
+#: webApp/templates/dashboard/index.html:1031
 msgid "TYPE_ID"
 msgstr "Identifiant du type de document"
 
-#: webApp/templates/dashboard/index.html:1053
+#: webApp/templates/dashboard/index.html:1042
 msgid "TYPIST"
 msgstr "Rédacteur"
 
-#: webApp/templates/dashboard/index.html:1067
+#: webApp/templates/dashboard/index.html:1056
 msgid "PRIORITY"
 msgstr "Priorité"
 
-#: webApp/templates/dashboard/index.html:1078
+#: webApp/templates/dashboard/index.html:1067
 msgid "CATEGORY_ID"
 msgstr "Identifiant de la catégorie"
 
-#: webApp/templates/dashboard/index.html:1089
+#: webApp/templates/dashboard/index.html:1078
 msgid "FORMAT"
 msgstr "Format"
 
-#: webApp/templates/dashboard/index.html:1100
+#: webApp/templates/dashboard/index.html:1089
 msgid "DEFAULT_DESTINATION"
 msgstr "Destination par défaut"
 
-#: webApp/templates/dashboard/index.html:1111
+#: webApp/templates/dashboard/index.html:1100
 msgid "DEFAULT_DESTUSER"
 msgstr "Destinataire par défaut"
 
-#: webApp/templates/dashboard/index.html:1125
+#: webApp/templates/dashboard/index.html:1114
 msgid "CUSTOM_VAT_NUMBER"
 msgstr "Champs custom pour le numéro de TVA"
 
-#: webApp/templates/dashboard/index.html:1136
+#: webApp/templates/dashboard/index.html:1125
 msgid "CUSTOM_HT"
 msgstr "Champs custom pour le total HT"
 
-#: webApp/templates/dashboard/index.html:1147
+#: webApp/templates/dashboard/index.html:1136
 msgid "CUSTOM_TTC"
 msgstr "Champs custom pour le total TTC"
 
-#: webApp/templates/dashboard/index.html:1158
+#: webApp/templates/dashboard/index.html:1147
 msgid "CUSTOM_ORDER_NUMBER"
 msgstr "Champs custom du numéro de commande"
 
-#: webApp/templates/dashboard/index.html:1172
+#: webApp/templates/dashboard/index.html:1161
 msgid "CUSTOM_INVOICE_NUMBER"
 msgstr "Champs custom pour le numéro de facture"
 
-#: webApp/templates/dashboard/index.html:1183
+#: webApp/templates/dashboard/index.html:1172
 msgid "CUSTOM_DELIVERY_NUMBER"
 msgstr "Champs custom pour le numéro de BL"
 
-#: webApp/templates/dashboard/index.html:1194
+#: webApp/templates/dashboard/index.html:1183
 msgid "CONTACT_TYPE"
 msgstr "Type de contact"
 
-#: webApp/templates/dashboard/index.html:1205
+#: webApp/templates/dashboard/index.html:1194
 msgid "CONTACT_PURPOSE_ID"
 msgstr "Identifiant du label de l'adresse"
 
-#: webApp/templates/dashboard/index.html:1232
+#: webApp/templates/dashboard/index.html:1221
 msgid "AI_PATH"
 msgstr "Chemin vers l'IA"
 
-#: webApp/templates/dashboard/index.html:1243
+#: webApp/templates/dashboard/index.html:1232
 msgid "AI_MODEL_PATH"
 msgstr "Chemin vers le modèle"
 
+#: webApp/templates/dashboard/index.html:1245
 #: webApp/templates/dashboard/index.html:1256
-#: webApp/templates/dashboard/index.html:1267
 msgid "AI_TRAIN_IMAGE_PATH"
 msgstr "Chemin vers les fichiers d'entrainement"
 
-#: webApp/templates/dashboard/index.html:1280
+#: webApp/templates/dashboard/index.html:1269
 msgid "AI_CONFIDENCE_MIN"
 msgstr "Niveau minimale de confiance"
 
-#: webApp/templates/dashboard/index.html:1295
+#: webApp/templates/dashboard/index.html:1284
 msgid "DATABASE_FILE"
 msgstr "Fichier de base de données"
 
-#: webApp/templates/dashboard/index.html:1306
+#: webApp/templates/dashboard/index.html:1295
 msgid "DATABASE_TYPE"
 msgstr "Type de base de données"
 
-#: webApp/templates/dashboard/index.html:1316
+#: webApp/templates/dashboard/index.html:1305
 msgid "DATABASE_TYPE_HELP"
 msgstr "pgsql ou sqlite"
 
-#: webApp/templates/dashboard/index.html:1320
+#: webApp/templates/dashboard/index.html:1309
 msgid "POSTGRES_HOST"
 msgstr "Hôte Postgres"
 
-#: webApp/templates/dashboard/index.html:1331
+#: webApp/templates/dashboard/index.html:1320
 msgid "POSTGRES_PORT"
 msgstr "Port Postgres"
 
-#: webApp/templates/dashboard/index.html:1344
+#: webApp/templates/dashboard/index.html:1333
 msgid "POSTGRES_DATABASE"
 msgstr "Nom de la base de données Postgres"
 
-#: webApp/templates/dashboard/index.html:1355
+#: webApp/templates/dashboard/index.html:1344
 msgid "POSTGRES_USER"
 msgstr "Utilisateur Postgres"
 
-#: webApp/templates/dashboard/index.html:1366
+#: webApp/templates/dashboard/index.html:1355
 msgid "POSTGRES_PASSWORD"
 msgstr "Mot de passe postgres"
 
-#: webApp/templates/dashboard/index.html:1379
+#: webApp/templates/dashboard/index.html:1368
 msgid "CURRENT_VERSION"
 msgstr "Version actuelle"
 
-#: webApp/templates/dashboard/index.html:1380
+#: webApp/templates/dashboard/index.html:1369
 msgid "LAST_VERSION"
 msgstr "Dernière version"
 
-#: webApp/templates/dashboard/index.html:1382
+#: webApp/templates/dashboard/index.html:1371
 msgid "MODIFY_CONFIGURATION"
 msgstr "Modifier la configuration"
 
@@ -954,34 +961,29 @@ msgstr "Retourner en arrière"
 msgid "INVOICES"
 msgstr "Factures"
 
-#: webApp/templates/pdf/list.html:15
-#: webApp/templates/splitter/splitter_manager.html:17
+#: webApp/templates/pdf/list.html:15 webApp/templates/splitter/list.html:17
 msgid "TODAY_LOT"
 msgstr "Lot du jour"
 
-#: webApp/templates/pdf/list.html:18
-#: webApp/templates/splitter/splitter_manager.html:20
+#: webApp/templates/pdf/list.html:18 webApp/templates/splitter/list.html:20
 msgid "YESTERDAY_LOT"
 msgstr "Lot de la veille"
 
-#: webApp/templates/pdf/list.html:21
-#: webApp/templates/splitter/splitter_manager.html:23
+#: webApp/templates/pdf/list.html:21 webApp/templates/splitter/list.html:23
 msgid "OLD_LOT"
 msgstr "Lot plus ancien"
 
 #: webApp/templates/pdf/list.html:27 webApp/templates/pdf/list.html:28
-#: webApp/templates/splitter/splitter_manager.html:29
-#: webApp/templates/splitter/splitter_manager.html:30
+#: webApp/templates/splitter/list.html:29
+#: webApp/templates/splitter/list.html:30
 msgid "_SEARCH_PLACEHOLDER"
 msgstr "Rechercher une facture"
 
-#: webApp/templates/pdf/list.html:39
-#: webApp/templates/splitter/splitter_manager.html:42
+#: webApp/templates/pdf/list.html:39 webApp/templates/splitter/list.html:42
 msgid "NO_FILTER"
 msgstr "Aucun filtre"
 
-#: webApp/templates/pdf/list.html:47
-#: webApp/templates/splitter/splitter_manager.html:50
+#: webApp/templates/pdf/list.html:47 webApp/templates/splitter/list.html:50
 msgid "FILTER"
 msgstr "Filtrer"
 
@@ -997,12 +999,11 @@ msgstr "La facture est cloturée et ne peux etre modifiée"
 msgid "NUMBER_OF_PAGES"
 msgstr "Nombre de pages"
 
-#: webApp/templates/pdf/list.html:97 webApp/templates/pdf/view.html:189
+#: webApp/templates/pdf/list.html:97 webApp/templates/pdf/view.html:115
 msgid "INVOICE_DATE"
 msgstr "Date de la facture"
 
-#: webApp/templates/pdf/list.html:99
-#: webApp/templates/splitter/splitter_manager.html:83
+#: webApp/templates/pdf/list.html:99 webApp/templates/splitter/list.html:83
 msgid "SAVED_THE"
 msgstr "Enregistré le"
 
@@ -1014,188 +1015,173 @@ msgstr "Fichier d'origine"
 msgid "UPLOAD_PDF"
 msgstr "Enregistrement d'un PDF"
 
-#: webApp/templates/pdf/upload.html:64
-#: webApp/templates/splitter/splitter_process.html:34
+#: webApp/templates/pdf/upload.html:64 webApp/templates/splitter/view.html:38
 msgid "SEND"
 msgstr "Envoyer"
 
-#: webApp/templates/pdf/view.html:2
+#: webApp/templates/pdf/view.html:4
 msgid "PDF_VIEW"
 msgstr "Visualisation du PDF"
 
-#: webApp/templates/pdf/view.html:16
+#: webApp/templates/pdf/view.html:18
 msgid "PAGE"
 msgstr "Page"
 
-#: webApp/templates/pdf/view.html:57
+#: webApp/templates/pdf/view.html:61
 msgid "SUBSCRIPTION"
 msgstr "Abonnement (clos)"
 
-#: webApp/templates/pdf/view.html:61
+#: webApp/templates/pdf/view.html:65
 msgid "ASSET"
 msgstr "Avoir"
 
-#: webApp/templates/pdf/view.html:66
+#: webApp/templates/pdf/view.html:71
 msgid "HIDE_SUPPLIER_INFO"
 msgstr "Cacher les informations du fournisseur"
 
-#: webApp/templates/pdf/view.html:70
+#: webApp/templates/pdf/view.html:75
 #: webApp/templates/suppliers/suppliers_list.html:14
 msgid "SUPPLIER"
 msgstr "Fournisseur"
 
-#: webApp/templates/pdf/view.html:75
-msgid "NAME"
-msgstr "Nom"
+#: webApp/templates/pdf/view.html:88
+msgid "HIDE_FACTURATION_INFO"
+msgstr "Cacher les informations de facturation"
 
-#: webApp/templates/pdf/view.html:86
+#: webApp/templates/pdf/view.html:92
+msgid "BILLING"
+msgstr "Facturation"
+
+#: webApp/templates/pdf/view.html:97
+msgid "INVOICE_WITHOUT_ORDER"
+msgstr "Facture sans commande"
+
+#: webApp/templates/pdf/view.html:101
+msgid "INVOICE_WITHOUT_DELIVERY_FORM"
+msgstr "Facture sans bon de livraison"
+
+#: webApp/templates/pdf/view.html:157
+msgid "ADD_VAT_RATE"
+msgstr "Ajouter un taux de TVA"
+
+#: webApp/templates/pdf/view.html:162
+msgid "CALCULATE_TOTAL_AMOUNT"
+msgstr "Calculer le montant total"
+
+#: webApp/templates/pdf/view.html:168
+msgid "TOTAL_NO_RATE"
+msgstr "Total HT"
+
+#: webApp/templates/pdf/view.html:201
+msgid "HIDE_ANALYTIC_INFO"
+msgstr "Cacher les informations analytiques"
+
+#: webApp/templates/pdf/view.html:205
+msgid "ANALYTIC"
+msgstr "Analytiques"
+
+#: webApp/templates/pdf/view.html:269
+msgid "INVESTMENT"
+msgstr "Investissement"
+
+#: webApp/templates/pdf/view.html:270
+msgid "OPERATION"
+msgstr "Fonctionnement"
+
+#: webApp/templates/pdf/view.html:276
+msgid "ADD_NEW_LINE"
+msgstr "Ajouter une nouvelle ligne"
+
+#: webApp/templates/pdf/view.html:280
+msgid "TOTAL_NO_RATE_AMOUNT"
+msgstr "Montant HT"
+
+#: webApp/templates/pdf/view.html:289
+msgid "USER_IN_CHARGE"
+msgstr "Utilisateur en charge"
+
+#: webApp/templates/pdf/view.html:291
+msgid "SELECT_USER"
+msgstr "Selectionnez un utilisateur.."
+
+#: webApp/templates/pdf/view.html:304
+msgid "VALIDATE_INVOICE"
+msgstr "Valider la facture"
+
+#: webApp/templates/pdf/view.html:305
+msgid "REFUSE_INVOICE"
+msgstr "Refuser la facture"
+
+#: webApp/templates/pdf/view.html:317
+msgid "FORM_VALIDATION"
+msgstr "Validation du formulaire"
+
+#: webApp/templates/pdf/view.html:325
+msgid "BACK_TO_VALIDATION"
+msgstr "Retour à la validation"
+
+#: webApp/templates/splitter/list.html:78
+msgid "NUMBER_OF_DOCUMENTS"
+msgstr "Nombre de documents"
+
+#: webApp/templates/splitter/list.html:89
+msgid "SEPARATOR"
+msgstr "Séparateur"
+
+#: webApp/templates/splitter/list.html:90
+msgid "ORIGIN_DOCUMENT"
+msgstr "Document original"
+
+#: webApp/templates/splitter/list.html:92
+#: webApp/templates/splitter/view.html:60
+msgid "DELETE"
+msgstr "Supprimer"
+
+#: webApp/templates/splitter/view.html:2
+msgid "SEPARATOR_PROCESS"
+msgstr "Processus de séparation"
+
+#: webApp/templates/splitter/view.html:14
+msgid "DELETE_SELECTION"
+msgstr "Supprimer la selection"
+
+#: webApp/templates/splitter/view.html:19
+msgid "CHECK_ALL"
+msgstr "Selectionner tout"
+
+#: webApp/templates/splitter/view.html:22
+msgid "UNCHECK_ALL"
+msgstr "Désélectionner tout"
+
+#: webApp/templates/splitter/view.html:25
+msgid "RESET"
+msgstr "Réinitialiser"
+
+#: webApp/templates/splitter/view.html:28
+#: webApp/templates/splitter/view.html:86
+msgid "ADD"
+msgstr "Ajouter"
+
+#: webApp/templates/splitter/view.html:32
+msgid "SEND_TO"
+msgstr "Envoyer à "
+
+#: webApp/templates/splitter/view.html:92
+msgid "HISTORY"
+msgstr "Historique"
+
 #: webApp/templates/suppliers/suppliers_list.html:17
 #: webApp/templates/suppliers/suppliers_list.html:18
 msgid "ADDRESS"
 msgstr "Adresse"
 
-#: webApp/templates/pdf/view.html:101
 #: webApp/templates/suppliers/suppliers_list.html:19
 msgid "ZIP_CODE"
 msgstr "Code postal"
 
-#: webApp/templates/pdf/view.html:114
 #: webApp/templates/suppliers/suppliers_list.html:20
 msgid "CITY"
 msgstr "Ville"
-
-#: webApp/templates/pdf/view.html:162
-msgid "HIDE_FACTURATION_INFO"
-msgstr "Cacher les informations de facturation"
-
-#: webApp/templates/pdf/view.html:166
-msgid "BILLING"
-msgstr "Facturation"
-
-#: webApp/templates/pdf/view.html:171
-msgid "INVOICE_WITHOUT_ORDER"
-msgstr "Facture sans commande"
-
-#: webApp/templates/pdf/view.html:175
-msgid "INVOICE_WITHOUT_DELIVERY_FORM"
-msgstr "Facture sans bon de livraison"
-
-#: webApp/templates/pdf/view.html:231
-msgid "ADD_VAT_RATE"
-msgstr "Ajouter un taux de TVA"
-
-#: webApp/templates/pdf/view.html:236
-msgid "CALCULATE_TOTAL_AMOUNT"
-msgstr "Calculer le montant total"
-
-#: webApp/templates/pdf/view.html:242
-msgid "TOTAL_NO_RATE"
-msgstr "Total HT"
-
-#: webApp/templates/pdf/view.html:273
-msgid "HIDE_ANALYTIC_INFO"
-msgstr "Cacher les informations analytiques"
-
-#: webApp/templates/pdf/view.html:277
-msgid "ANALYTIC"
-msgstr "Analytiques"
-
-#: webApp/templates/pdf/view.html:341
-msgid "INVESTMENT"
-msgstr "Investissement"
-
-#: webApp/templates/pdf/view.html:342
-msgid "OPERATION"
-msgstr "Fonctionnement"
-
-#: webApp/templates/pdf/view.html:348
-msgid "ADD_NEW_LINE"
-msgstr "Ajouter une nouvelle ligne"
-
-#: webApp/templates/pdf/view.html:352
-msgid "TOTAL_NO_RATE_AMOUNT"
-msgstr "Montant HT"
-
-#: webApp/templates/pdf/view.html:359
-msgid "USER_IN_CHARGE"
-msgstr "Utilisateur en charge"
-
-#: webApp/templates/pdf/view.html:361
-msgid "SELECT_USER"
-msgstr "Selectionnez un utilisateur.."
-
-#: webApp/templates/pdf/view.html:372
-msgid "VALIDATE_INVOICE"
-msgstr "Valider la facture"
-
-#: webApp/templates/pdf/view.html:373
-msgid "REFUSE_INVOICE"
-msgstr "Refuser la facture"
-
-#: webApp/templates/pdf/view.html:385
-msgid "FORM_VALIDATION"
-msgstr "Validation du formulaire"
-
-#: webApp/templates/pdf/view.html:393
-msgid "BACK_TO_VALIDATION"
-msgstr "Retour à la validation"
-
-#: webApp/templates/splitter/splitter_manager.html:78
-msgid "NUMBER_OF_DOCUMENTS"
-msgstr "Nombre de documents"
-
-#: webApp/templates/splitter/splitter_manager.html:89
-msgid "SEPARATOR"
-msgstr "Séparateur"
-
-#: webApp/templates/splitter/splitter_manager.html:90
-msgid "ORIGIN_DOCUMENT"
-msgstr "Document original"
-
-#: webApp/templates/splitter/splitter_manager.html:92
-#: webApp/templates/splitter/splitter_process.html:56
-msgid "DELETE"
-msgstr "Supprimer"
-
-#: webApp/templates/splitter/splitter_process.html:2
-msgid "SEPARATOR_PROCESS"
-msgstr "Processus de séparation"
-
-#: webApp/templates/splitter/splitter_process.html:10
-msgid "DELETE_SELECTION"
-msgstr "Supprimer la selection"
-
-#: webApp/templates/splitter/splitter_process.html:15
-msgid "CHECK_ALL"
-msgstr "Selectionner tout"
-
-#: webApp/templates/splitter/splitter_process.html:18
-msgid "UNCHECK_ALL"
-msgstr "Désélectionner tout"
-
-#: webApp/templates/splitter/splitter_process.html:21
-msgid "RESET"
-msgstr "Réinitialiser"
-
-#: webApp/templates/splitter/splitter_process.html:24
-#: webApp/templates/splitter/splitter_process.html:82
-msgid "ADD"
-msgstr "Ajouter"
-
-#: webApp/templates/splitter/splitter_process.html:24
-#: webApp/templates/splitter/splitter_process.html:31
-#: webApp/templates/splitter/splitter_process.html:55
-#: webApp/templates/splitter/splitter_process.html:56
-msgid "INVOICE"
-msgstr "Facture"
-
-#: webApp/templates/splitter/splitter_process.html:28
-msgid "SEND_TO"
-msgstr "Envoyer à "
-
-#: webApp/templates/splitter/splitter_process.html:88
-msgid "HISTORY"
-msgstr "Historique"
 
 #: webApp/templates/suppliers/suppliers_list.html:21
 msgid "TYPOLOGY"

@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS "status" (
 	"label_long"	VARCHAR(200)
 );
 
-CREATE TABLE IF NOT EXISTS invoices_batch_(
+CREATE TABLE IF NOT EXISTS splitter_batches(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     dir_name VARCHAR,
     first_page VARCHAR,
@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS invoices_batch_(
     page_number INTEGER
 );
 
-CREATE TABLE IF NOT EXISTS image_page_number(
+CREATE TABLE IF NOT EXISTS splitter_images(
     id INTEGER PRIMARY KEY AUTOINCREMENT ,
     batch_name VARCHAR,
     image_path VARCHAR,

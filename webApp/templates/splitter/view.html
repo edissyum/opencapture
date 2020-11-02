@@ -3,6 +3,10 @@
 
 {% block css %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/splitter.css') }}" type="text/css" media="screen" />
+    <script type="text/javascript" src={{ url_for('static', filename='js/otherLib/Gettext.js') }}></script>
+    <link rel="gettext" type="application/x-po" href="{{ url_for('static', filename='babel/translations/' + session["lang"] + '/LC_MESSAGES/messages.po') }}"><script>
+        let gt = new Gettext();
+    </script>
 {% endblock %}
 
 {% block content %}
@@ -95,6 +99,6 @@
     {% block javascript %}
         <script src="{{ url_for('static', filename='js/jqueryLib/jquery.min.js') }}"></script>
         <script src="{{ url_for('static', filename='js/jqueryLib/jquery-ui.min.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/splitter_jquery_script.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/splitter.js') }}"></script>
     {% endblock %}
 {% endblock %}

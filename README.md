@@ -169,8 +169,7 @@ In the default <code>config_DEFAULT.ini</code> file there is a SPLITTER part :
     - tmpBatchPath : Path to the currently running batches
     - pdfOutputPath : Path for the separated PDF. Need to be a folder currently watching by Open-Capture For Invoices 
     - pdfOriginPath : Path to keep the original PDF files (without any separation)
-    - allowedExtensions : Files extensions allowed, JSON format  
-    
+
 ## Launch manually
 
 Obviously you could launch the separation by the web using the "Download" page. But you also could launch separation using bash script combined with incron.

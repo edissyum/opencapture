@@ -571,3 +571,19 @@ class Files:
     @staticmethod
     def open_image_return(img):
         return Image.open(img)
+
+    @staticmethod
+    def delete_file_with_extension(dir_path, extension):
+        files = os.listdir(dir_path)
+
+        for item in files:
+            if item.endswith(extension):
+                os.remove(os.path.join(dir_path, item))
+
+    @staticmethod
+    def get_uuid_with_date():
+        random_number = uuid.uuid4().hex
+        # date object of today's date
+        today = datetime.date.today()
+        uuid_with_date = str(today.year) + str(today.month) + str(today.day) + str(random_number)
+        return uuid_with_date
