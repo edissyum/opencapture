@@ -307,30 +307,17 @@ def view(pdf_id):
         'where': ['id = ?'],
         'data': [pdf_id]
     })
+
+    # Generate form using WTFORM
     supplier_form = forms.SupplierForm(request.form)
-    for field in supplier_form:
-        if pdf_info['vat_number']:
-            res = _db.select({
-                'select': [field.column],
-                'table': [field.table],
-                'where': ['vat_number = ?'],
-                'data': [pdf_info['vat_number']],
-            })[0]
+    supplier_form = populate_form(supplier_form, pdf_info, position_dict, _db)
 
-            if res:
-                field.data = res[field.column]
-
-            if field.render_kw:
-                field.render_kw['page'] = pdf_info['supplier_page']
-
-            if field.column + '_position' in position_dict and field.is_position:
-                field.render_kw['x1_original'] = position_dict[field.column + '_position'][0][0]
-                field.render_kw['y1_original'] = position_dict[field.column + '_position'][0][1]
-                field.render_kw['x2_original'] = position_dict[field.column + '_position'][1][0]
-                field.render_kw['y2_original'] = position_dict[field.column + '_position'][1][1]
+    facturation_form = forms.FacturationForm(request.form)
+    facturation_form = populate_form(facturation_form, pdf_info, position_dict, _db)
 
     return render_template("templates/pdf/view.html",
                            supplier_form=supplier_form,
+                           facturation_form=facturation_form,
                            pdf=pdf_info,
                            position=position_dict,
                            width=original_width,
@@ -490,8 +477,8 @@ def validate_form():
                 'invoice_number_position': request.form['facturationInfo_invoice_number_position'] if 'facturationInfo_invoice_number_position' in request.form else '',
                 'ht_amount1': request.form['facturationInfo_no_taxes_1'],
                 'ht_amount1_position': request.form['facturationInfo_no_taxes_1_position'] if 'facturationInfo_no_taxes_1_position' in request.form else '',
-                'vat_rate1': request.form['facturationInfo_vat_1'],
-                'vat_rate1_position': request.form['facturationInfo_vat_1_position'] if 'facturationInfo_vat_1_position' in request.form else '',
+                'vat_1': request.form['facturationInfo_vat_1'],
+                'vat_1_position': request.form['facturationInfo_vat_1_position'] if 'facturationInfo_vat_1_position' in request.form else '',
                 'invoice_date': request.form['facturationInfo_invoice_date'],
                 'invoice_date_position': request.form['facturationInfo_invoice_date_position'] if 'facturationInfo_invoice_date_position' in request.form else '',
             },
@@ -585,14 +572,14 @@ def get_financial():
     _vars = init()
     _db = _vars[0]
     _cfg = _vars[1].cfg
-    array = {}
+    _array = [['', gettext('SELECT_LOAD_ACCOUNT'), True]]
 
     content = pd.DataFrame(_Spreadsheet.read_excel_sheet(_cfg['REFERENCIAL']['referencialfinancial']))
+
     for line in content.to_dict(orient='records'):
         if len(str(line['ID'])) >= 3:
-            array[str(line['ID']).rstrip()] = line['LABEL']
-
-    return array
+            _array.append([str(line['ID']).rstrip(), line['LABEL'], False])
+    return _array
 
 
 def ocr_on_the_fly(file_name, selection, thumb_size):
@@ -616,3 +603,44 @@ def ocr_on_the_fly(file_name, selection, thumb_size):
         _files.improve_image_detection(path)
         text = _files.ocr_on_fly(path, selection, _Ocr, thumb_size)
         return text
+
+
+def populate_form(form, pdf_info, position_dict, _db):
+    for field in form:
+        if pdf_info['vat_number']:
+            if field.column and field.table:
+                if field.table == 'suppliers':
+                    where = ['vat_number = ?']
+                    data = [pdf_info['vat_number']]
+                else:
+                    where = ['vat_number = ? and id = ?']
+                    data = [pdf_info['vat_number'], pdf_info['id']]
+
+                res = _db.select({
+                    'select': [field.column],
+                    'table': [field.table],
+                    'where': where,
+                    'data': data,
+                })[0]
+
+                if res:
+                    field.data = res[field.column]
+
+            if field.render_kw:
+                if field.table == 'suppliers':
+                    field.render_kw['page'] = pdf_info['supplier_page']
+                else:
+                    if field.is_footer:
+                        field.render_kw['page'] = pdf_info['footer_page']
+                    elif field.column:
+                        field.render_kw['page'] = pdf_info[field.column + '_page']
+
+            if field.column and field.column + '_position' in position_dict and field.is_position:
+                field.render_kw['x1_original'] = position_dict[field.column + '_position'][0][0]
+                field.render_kw['y1_original'] = position_dict[field.column + '_position'][0][1]
+                field.render_kw['x2_original'] = position_dict[field.column + '_position'][1][0]
+                field.render_kw['y2_original'] = position_dict[field.column + '_position'][1][1]
+
+            if field.type == 'CustomSelectField':
+                field.choices = eval(field.choices[0] + '()')
+    return form

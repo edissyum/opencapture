@@ -52,7 +52,7 @@ msgstr "Utilisateur desactivé"
 
 #: webApp/forms.py:20
 msgid "NAME"
-msgstr ""
+msgstr "Nom"
 
 #: webApp/forms.py:33 webApp/templates/suppliers/suppliers_list.html:17
 #: webApp/templates/suppliers/suppliers_list.html:18

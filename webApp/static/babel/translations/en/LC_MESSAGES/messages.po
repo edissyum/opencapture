@@ -48,7 +48,7 @@ msgstr "User disabled"
 
 #: webApp/forms.py:20
 msgid "NAME"
-msgstr ""
+msgstr "Name"
 
 #: webApp/forms.py:33 webApp/templates/suppliers/suppliers_list.html:17
 #: webApp/templates/suppliers/suppliers_list.html:18

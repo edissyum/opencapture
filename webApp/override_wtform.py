@@ -1,6 +1,8 @@
 import inspect
 import itertools
+from abc import ABC
 
+from markupsafe import escape, Markup
 from wtforms import widgets
 from wtforms.fields.core import UnboundField, Flags, Label
 from wtforms.i18n import DummyTranslations
@@ -11,6 +13,9 @@ from wtforms.compat import text_type
 
 # Override Field and StringField Class to use specific argument
 # Used to display automatically input using BS grid
+from wtforms.widgets import html_params
+
+
 class Field(object):
     """
     Field base class
@@ -29,6 +34,8 @@ class Field(object):
     column = None
     is_position = None
     use_ratio = None
+    is_date = None
+    is_footer = None
     # END NCH01 override class
     _formfield = True
     _translations = DummyTranslations()
@@ -45,7 +52,7 @@ class Field(object):
                  render_kw=None, _form=None, _name=None, _prefix='',
                  _translations=None, _meta=None,
                  new_row=None, end_row=None, unique_row=None, form_group_class='',
-                 table=None, column=None, is_position=None, use_ratio=None):  # NCH01 add args after _meta
+                 table=None, column=None, is_position=None, use_ratio=None, is_date=None, is_footer=None):  # NCH01 add args after _meta
         """
         Construct a new field.
 
@@ -113,6 +120,12 @@ class Field(object):
 
         if use_ratio is not None:
             self.use_ratio = use_ratio
+
+        if is_date is not None:
+            self.is_date = is_date
+
+        if is_footer is not None:
+            self.is_footer = is_footer
 
         self.form_group_class = form_group_class
         # END NCH01 override class
@@ -374,6 +387,42 @@ class Field(object):
         setattr(obj, name, self.data)
 
 
+class CustomBooleanField(Field):
+    """
+    Represents an ``<input type="checkbox">``. Set the ``checked``-status by using the
+    ``default``-option. Any value for ``default``, e.g. ``default="checked"`` puts
+    ``checked`` into the html-element and sets the ``data`` to ``True``
+
+    :param false_values:
+        If provided, a sequence of strings each of which is an exact match
+        string of what is considered a "false" value. Defaults to the tuple
+        ``(False, 'false', '',)``
+    """
+
+    def __init__(self, label=None, validators=None, false_values=None, **kwargs):
+        super(CustomBooleanField, self).__init__(label, validators, **kwargs)
+        if false_values is not None:
+            self.false_values = false_values
+
+    widget = widgets.CheckboxInput()
+    false_values = (False, 'false', '')
+
+    def process_data(self, value):
+        self.data = bool(value)
+
+    def process_formdata(self, valuelist):
+        if not valuelist or valuelist[0] in self.false_values:
+            self.data = False
+        else:
+            self.data = True
+
+    def _value(self):
+        if self.raw_data:
+            return text_type(self.raw_data[0])
+        else:
+            return 'y'
+
+
 class CustomStringField(Field):
     """
     This field is the base for most of the more complicated fields, and
@@ -389,3 +438,89 @@ class CustomStringField(Field):
 
     def _value(self):
         return text_type(self.data) if self.data is not None else ''
+
+
+# Override default Select class because iter_choices() raise an error
+class CustomSelect(object):
+    """
+    Renders a select field.
+
+    If `multiple` is True, then the `size` property should be specified on
+    rendering to make the field useful.
+
+    The field must provide an `iter_choices()` method which the widget will
+    call on rendering; this method must yield tuples of
+    `(value, label, selected)`.
+    """
+    def __init__(self, multiple=False):
+        self.multiple = multiple
+
+    def __call__(self, field, **kwargs):
+        kwargs.setdefault('id', field.id)
+        if self.multiple:
+            kwargs['multiple'] = True
+        if 'required' not in kwargs and 'required' in getattr(field, 'flags', []):
+            kwargs['required'] = True
+        html = ['<select %s>' % html_params(name=field.name, **kwargs)]
+        for val, label, selected in field.choices:
+            html.append(self.render_option(val, label, selected))
+        html.append('</select>')
+        return Markup(''.join(html))
+
+    @classmethod
+    def render_option(cls, value, label, selected, **kwargs):
+        if value is True:
+            # Handle the special case of a 'True' value.
+            value = text_type(value)
+
+        options = dict(kwargs, value=value)
+        if selected:
+            options['selected'] = True
+        return Markup('<option %s>%s</option>' % (html_params(**options), escape(label)))
+
+
+class SelectFieldBase(Field):
+    option_widget = widgets.Option()
+
+    """
+    Base class for fields which can be iterated to produce options.
+
+    This isn't a field, but an abstract base class for fields which want to
+    provide this functionality.
+    """
+    def __init__(self, label=None, validators=None, option_widget=None, **kwargs):
+        super(SelectFieldBase, self).__init__(label, validators, **kwargs)
+
+        if option_widget is not None:
+            self.option_widget = option_widget
+
+    def iter_choices(self):
+        """
+        Provides data for choice widget rendering. Must return a sequence or
+        iterable of (value, label, selected) tuples.
+        """
+        raise NotImplementedError()
+
+    def __iter__(self):
+        opts = dict(widget=self.option_widget, _name=self.name, _form=None, _meta=self.meta)
+        for i, (value, label, checked) in enumerate(self.iter_choices()):
+            opt = self._Option(label=label, id='%s-%d' % (self.id, i), **opts)
+            opt.process(None, value)
+            opt.checked = checked
+            yield opt
+
+    class _Option(Field):
+        checked = False
+
+        def _value(self):
+            return text_type(self.data)
+
+
+class CustomSelectField(SelectFieldBase, ABC):
+    widget = CustomSelect()
+
+    def __init__(self, label=None, validators=None, coerce=text_type, choices=None, validate_choice=True, **kwargs):
+        super(CustomSelectField, self).__init__(label, validators, **kwargs)
+        self.coerce = coerce
+        self.choices = list(choices) if choices is not None else None
+        self.validate_choice = validate_choice

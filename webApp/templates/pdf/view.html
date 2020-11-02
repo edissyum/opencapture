@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% from 'forms_macro_input_text.html' import render_field_text %}
+{% from 'forms_macro_input_general.html' import render_field %}
 {% from 'forms_macro_checkbox.html' import render_field_checkbox %}
 
 {% block title %}{{ gettext('PDF_VIEW') }}{% endblock %}
@@ -79,90 +79,33 @@
                         <div class="supplier_info toggled">
                             <!-- Retrieve supplier form from forms.py SupplierForm class -->
                             {% for field in supplier_form %}
-                                {% if field.type  == 'CustomStringField' %}
-                                    {{ render_field_text(field) }}
-                                {% elif field.type == 'CustomBooleanField' %}
+                                {% if field.type == 'CustomBooleanField' %}
                                     {{ render_field_checkbox(field) }}
+                                {% else %}
+                                    {{ render_field(field) }}
                                 {% endif %}
                             {% endfor %}
                         </div>
-                        <hr>
                     </div>
+                    <hr>
                     <div id="facturationInfo">
                         <span class="infos" onclick="hideOrDisplay('facturation_info');">
-                        <span>
-                            <a href="#toggle" id="facturation_info" data-toggle="tooltip" title="{{ gettext('HIDE_FACTURATION_INFO') }}">
-                                <i class="fas fa-chevron-right" aria-hidden="true"></i>
-                            </a>
+                            <span>
+                                <a href="#toggle" id="facturation_info" data-toggle="tooltip" title="{{ gettext('HIDE_FACTURATION_INFO') }}">
+                                    <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                                </a>
+                            </span>
+                            <h3 class="amount">{{ gettext('BILLING') }}</h3>
                         </span>
-                        <h3 class="amount">{{ gettext('BILLING') }}</h3>
-                    </span>
                         <div class="facturation_info toggled" style="display:none">
                             <!-- Retrieve supplier form from forms.py SupplierForm class -->
                             {% for field in facturation_form %}
-                                {% if field.type  == 'CustomStringField' %}
-                                    {{ render_field_text(field) }}
-                                {% elif field.type == 'CustomBooleanField' %}
+                                {% if field.type == 'CustomBooleanField' %}
                                     {{ render_field_checkbox(field) }}
+                                {% else %}
+                                    {{ render_field(field) }}
                                 {% endif %}
                             {% endfor %}
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <label for="invoice_number">{{ gettext('INVOICE_NUMBER') }}</label>
-                                    <div class="input-group mb-2">
-                                        <div onclick="drawRectangle(document.getElementById('invoice_number'))" class="input-group-prepend" style="display:none;">
-                                            <div class="input-group-text"><i class="fas fa-eye" aria-hidden="true"></i></div>
-                                        </div>
-                                        <input autocomplete="off" required name="facturationInfo_invoice_number" id="invoice_number" type="text" class="form-control" onfocusout="ocrOnFly(true, this, true); removeRectangle()" onfocusin="ocrOnFly(false, this, true)"  x1_original="{{ position['invoice_number_position'][0][0] }}" y1_original="{{ position['invoice_number_position'][0][1] }}" x2_original="{{ position['invoice_number_position'][1][0] }}" y2_original="{{ position['invoice_number_position'][1][1] }}" {% if pdf['invoice_number'] %} value="{{ pdf['invoice_number'] }}" {% endif %} page="{{ pdf['invoice_number_page'] }}">
-                                    </div>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="invoice_date">{{ gettext('INVOICE_DATE') }}</label>
-                                    <div class="input-group mb-2">
-                                        <div onclick="drawRectangle(document.getElementById('invoice_date'))" class="input-group-prepend" style="display:none;">
-                                            <div class="input-group-text"><i class="fas fa-eye" aria-hidden="true"></i></div>
-                                        </div>
-                                        <input required id="invoice_date" name="facturationInfo_invoice_date" type="date" class="form-control" x1_original="{{ position['invoice_date_position'][0][0] }}" y1_original="{{ position['invoice_date_position'][0][1] }}" x2_original="{{ position['invoice_date_position'][1][0] }}" y2_original="{{ position['invoice_date_position'][1][1] }}"  {% if pdf['invoice_date'] %} value="{{ pdf['invoice_date'] }}" {% endif %} page="{{ pdf['invoice_date_page'] }}" >
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="MAIN_vat_1">
-                                <div class="form-row">
-                                    <div class="form-group col-md-4">
-                                        <label for="vat_1">{{ gettext('VAT_RATE') }} 1 </label>
-                                        <div class="input-group mb-2">
-                                            <div onclick="drawRectangle(document.getElementById('vat_1'))" class="input-group-prepend" style="display:none;">
-                                                <div class="input-group-text"><i class="fas fa-eye" aria-hidden="true"></i></div>
-                                            </div>
-                                            <input autocomplete="off" required name="facturationInfo_vat_1" id="vat_1" onfocusout="ocrOnFly(true, this, false, true); removeRectangle()" onfocusin="ocrOnFly(false, this, false, true)" type="text" class="form-control" id="facturationInfo_vat_1" x1="" y1="" x2="" y2=""  x1_original="{{ position['vat_rate1_position'][0][0] }}" y1_original="{{ position['vat_rate1_position'][0][1] }}" x2_original="{{ position['vat_rate1_position'][1][0] }}" y2_original="{{ position['vat_rate1_position'][1][1] }}"  {% if pdf['vat_rate1'] %} value="{{ pdf['vat_rate1'] }}" {% endif %} page="{{ pdf['footer_page'] }}">
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-md-4">
-                                        <label for="no_taxes_1">{{ gettext('NO_RATE_AMOUNT') }} 1</label>
-                                        <div class="input-group mb-2">
-                                            <div onclick="drawRectangle(document.getElementById('no_taxes_1'))" class="input-group-prepend" style="display:none;">
-                                                <div class="input-group-text"><i class="fas fa-eye" aria-hidden="true"></i></div>
-                                            </div>
-                                            <input autocomplete="off" required name="facturationInfo_no_taxes_1" onfocusout="ocrOnFly(true, this, false, true); removeRectangle()" onfocusin="ocrOnFly(false, this, false, true)" type="text" class="form-control" id="no_taxes_1" x1="" y1="" x2="" y2=""  x1_original="{{ position['ht_amount1_position'][0][0] }}" y1_original="{{ position['ht_amount1_position'][0][1] }}" x2_original="{{ position['ht_amount1_position'][1][0] }}" y2_original="{{ position['ht_amount1_position'][1][1] }}"  {% if pdf['ht_amount1'] %} value="{{ pdf['ht_amount1'] }}" {% endif %} page="{{ pdf['footer_page'] }}">
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-md-4">
-                                        <label for="financialAccount_1">{{ gettext('LOAD_ACCOUNT') }} 1 </label>
-                                        <div class="input-group mb-2">
-                                            <select name="facturationInfo_financialAccount_1" id="financialAccount_1" class="form-control chosen-select" data-placeholder="{{ gettext('SELECT_LOAD_ACCOUNT') }}">
-                                                <option value=""></option>
-                                                {% for financial in arrayOfFinancial %}
-                                                    <option value='{{ financial }}'>{{ financial }} - {{ arrayOfFinancial[financial] }}</option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <a id="addVAT" href="#addTVA" onclick="addVAT(this)" data-toggle="tooltip" title="{{ gettext('ADD_VAT_RATE') }}">
-                                <i class="fa fa-plus-square" aria-hidden="true"></i>
-                            </a>
-                            <hr>
                             <div class="text-center">
                                 <a id="calculTotal" href="#calcTotal" onclick="calculTotal()" data-toggle="tooltip" title="{{ gettext('CALCULATE_TOTAL_AMOUNT') }}">
                                     <i class="fa fa-calculator" aria-hidden="true"></i>
@@ -198,8 +141,8 @@
                                 </div>
                             </div>
                         </div>
-                        <hr>
                     </div>
+                    <hr>
                     <div id="analyticsInfo">
                         <span class="infos" onclick="hideOrDisplay('analytic_info');">
                         <span>
@@ -286,6 +229,7 @@
                             </div>
                         </div>
                     </div>
+                    <hr>
                     <div id="gedUserInfo">
                         {% if list_users[1] is defined %}
                             <div class="gedUser">

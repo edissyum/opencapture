@@ -1,6 +1,10 @@
-{% macro render_field_text(field) %}
+{% macro render_field(field) %}
     {% if field.new_row == True %}
-        <div class="form-row">
+        {% if field.is_footer %}
+            <div class="form-row MAIN_vat_1">
+        {% else %}
+            <div class="form-row">
+        {% endif %}
     {% endif %}
     <div class="form-group {{ field.form_group_class }}">
         {{ field.label }}
@@ -8,7 +12,13 @@
             <div onclick="drawRectangle(document.getElementById('{{ field.id }}'))" class="input-group-prepend" style="display:none;">
                 <div class="input-group-text"><i class="fas fa-eye" aria-hidden="true"></i></div>
             </div>
-            {{ field(class_="form-control")|safe }}
+            {% if field.is_date %}
+                {{ field(class_="form-control", type='date') | safe }}
+            {% elif field.type == 'CustomSelectField' %}
+                {{ field(class_="form-control chosen-select") | safe }}
+            {% else %}
+                {{ field(class_="form-control") | safe }}
+            {% endif %}
 
             {% if 'x1_original' in field.render_kw %}
                 {% set position ='((' + field.render_kw['x1_original']|string + ',' + field.render_kw['y1_original']|string + '),(' + field.render_kw['x2_original']|string + ',' + field.render_kw['y2_original']|string + '))' %}
@@ -35,5 +45,11 @@
     </div>
     {% if field.end_row == True %}
         </div>
+        {% if field.is_footer %}
+            <a id="addVAT" href="#addTVA" onclick="addVAT(this)" data-toggle="tooltip" title="{{ gettext('ADD_VAT_RATE') }}">
+                <i class="fa fa-plus-square" aria-hidden="true"></i>
+            </a>
+            <hr>
+        {% endif %}
     {% endif %}
 {% endmacro %}

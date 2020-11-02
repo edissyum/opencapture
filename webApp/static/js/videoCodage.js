@@ -435,38 +435,36 @@ function addVAT(input){
     let cptVAT = parseInt(lastVAT.className.split('_')[2]);
     let newClassName = 'vat_' + (cptVAT + 1);
     let lastVATAmount = $('.AMOUNT_vat_' + cptVAT);
-    let optionsFinancial = document.getElementById('financialAccount_1').innerHTML;
+    let optionsFinancial = document.getElementById('financial_account_1').innerHTML;
 
     if(cptVAT < 5){
         $(
-        '   <div class="MAIN_' + newClassName + '" style="display: none">' +
-        '       <div class="form-row">' +
-        '           <div class="form-group col-md-4">' +
-        '               <label for="' + newClassName + '">' + gt.gettext('VAT_RATE') + ' ' + (cptVAT + 1) + ' <a href="#removeVAT" class="vat_' + (cptVAT + 1) + '" onclick="removeVAT(this)"><i class="fa fa-minus-square" aria-hidden="true"></i></a></label>' +
-        '               <div class="input-group mb-2">' +
-        '                   <div onclick="drawRectangle(document.getElementById(\'' + newClassName + '\'))" class="input-group-prepend" style="display:none;">' +
-        '                        <div class="input-group-text"><i class="fas fa-eye" aria-hidden="true"></i></div>' +
-        '                    </div>' +
-        '                    <input autocomplete="off" required name="facturationInfo_VAT_' + (cptVAT + 1) + '" id="vat_' + (cptVAT + 1) + '" onfocusout="ocrOnFly(true, this, false, true); removeRectangle()" onfocusin="ocrOnFly(false, this, false, true)" type="text" class="form-control" x1="" y1="" x2="" y2="">' +
-        '               </div>' +
+        '   <div class="form-row MAIN_' + newClassName + '" style="display: none">' +
+        '       <div class="form-group col-md-4">' +
+        '           <label for="' + newClassName + '">' + gt.gettext('VAT_RATE') + ' ' + (cptVAT + 1) + ' <a href="#removeVAT" class="vat_' + (cptVAT + 1) + '" onclick="removeVAT(this)"><i class="fa fa-minus-square" aria-hidden="true"></i></a></label>' +
+        '           <div class="input-group mb-2">' +
+        '               <div onclick="drawRectangle(document.getElementById(\'' + newClassName + '\'))" class="input-group-prepend" style="display:none;">' +
+        '                    <div class="input-group-text"><i class="fas fa-eye" aria-hidden="true"></i></div>' +
+        '                </div>' +
+        '                <input autocomplete="off" required name="facturationInfo_VAT_' + (cptVAT + 1) + '" id="vat_' + (cptVAT + 1) + '" onfocusout="ocrOnFly(true, this, false, true); removeRectangle()" onfocusin="ocrOnFly(false, this, false, true)" type="text" class="form-control" x1="" y1="" x2="" y2="">' +
         '           </div>' +
-        '           <div class="form-group col-md-4">' +
-        '               <label for="no_taxes_' + (cptVAT + 1) + '">' + gt.gettext('NO_RATE_AMOUNT') + ' ' + (cptVAT + 1) + '</label>' +
-        '               <div class="input-group mb-2">' +
-        '                   <div onclick="drawRectangle(document.getElementById(\'no_taxes_' + (cptVAT + 1) +'\'))" class="input-group-prepend" style="display:none;">' +
-        '                       <div class="input-group-text"><i class="fas fa-eye" aria-hidden="true"></i></div>' +
-        '                   </div>' +
-        '                   <input autocomplete="off" required name="facturationInfo_no_taxes_' + (cptVAT + 1) +'" onfocusout="ocrOnFly(true, this, false, true); removeRectangle()" onfocusin="ocrOnFly(false, this, false, true)" type="text" step="0.01" class="form-control" id="no_taxes_' + (cptVAT + 1) + '" x1="" y1="" x2="" y2="" value="">' +
+        '       </div>' +
+        '       <div class="form-group col-md-4">' +
+        '           <label for="no_taxes_' + (cptVAT + 1) + '">' + gt.gettext('NO_RATE_AMOUNT') + ' ' + (cptVAT + 1) + '</label>' +
+        '           <div class="input-group mb-2">' +
+        '               <div onclick="drawRectangle(document.getElementById(\'no_taxes_' + (cptVAT + 1) +'\'))" class="input-group-prepend" style="display:none;">' +
+        '                   <div class="input-group-text"><i class="fas fa-eye" aria-hidden="true"></i></div>' +
         '               </div>' +
+        '               <input autocomplete="off" required name="facturationInfo_no_taxes_' + (cptVAT + 1) +'" onfocusout="ocrOnFly(true, this, false, true); removeRectangle()" onfocusin="ocrOnFly(false, this, false, true)" type="text" step="0.01" class="form-control" id="no_taxes_' + (cptVAT + 1) + '" x1="" y1="" x2="" y2="" value="">' +
         '           </div>' +
-        '           <div class="form-group col-md-4">' +
-        '               <label for="financialAccount_' + (cptVAT + 1) + '">' + gt.gettext('LOAD_ACCOUNT') + ' ' + (cptVAT + 1) + ' </label>' +
-        '               <div class="input-group mb-2">' +
-        '                   <select name="facturationInfo_financialAccount_' + (cptVAT + 1) + '" id="financialAccount_' + (cptVAT + 1) + '" class="form-control chosen-select" data-placeholder="' + gt.gettext('SELECT_LOAD_ACCOUNT') + '">' +
-        '                       <option value=""></option>' +
-                                optionsFinancial +
-        '                   </select>' +
-        '               </div>' +
+        '       </div>' +
+        '       <div class="form-group col-md-4">' +
+        '           <label for="financialAccount_' + (cptVAT + 1) + '">' + gt.gettext('LOAD_ACCOUNT') + ' ' + (cptVAT + 1) + ' </label>' +
+        '           <div class="input-group mb-2">' +
+        '               <select name="facturationInfo_financialAccount_' + (cptVAT + 1) + '" id="financialAccount_' + (cptVAT + 1) + '" class="form-control chosen-select" data-placeholder="' + gt.gettext('SELECT_LOAD_ACCOUNT') + '">' +
+        '                   <option value=""></option>' +
+                            optionsFinancial +
+        '               </select>' +
         '           </div>' +
         '       </div>' +
         '   </div>'
