@@ -45,7 +45,6 @@ splitterpath = /var/docservers/OpenCapture_Splitter/
 tmpBatchPath = ${SPLITTER:splitterpath}/batches/
 pdfOutputPath = ${SPLITTER:splitterpath}/separated_pdf/
 pdfOriginPath = ${GLOBAL:projectPath}/bin/data/OC_Splitter/pdf_sources/
-allowedExtensions  = {'pdf'}
 
 [REMOVE-BLANK-PAGES]
 # True or False
