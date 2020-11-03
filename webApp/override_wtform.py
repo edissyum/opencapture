@@ -25,10 +25,10 @@ class Field(object):
     raw_data = None
     validators = tuple()
     widget = None
+
     # NCH01 override class
     new_row = None
     end_row = None
-    unique_row = None
     form_group_class = ''
     table = None
     column = None
@@ -36,7 +36,10 @@ class Field(object):
     use_ratio = None
     is_date = None
     is_footer = None
+    footer_class = None
+    hidden = None
     # END NCH01 override class
+
     _formfield = True
     _translations = DummyTranslations()
     do_not_call_in_templates = True  # Allow Django 1.4 traversal
@@ -51,8 +54,9 @@ class Field(object):
                  description='', id=None, default=None, widget=None,
                  render_kw=None, _form=None, _name=None, _prefix='',
                  _translations=None, _meta=None,
-                 new_row=None, end_row=None, unique_row=None, form_group_class='',
-                 table=None, column=None, is_position=None, use_ratio=None, is_date=None, is_footer=None):  # NCH01 add args after _meta
+                 new_row=None, end_row=None, form_group_class='', table=None,
+                 column=None, is_position=None, use_ratio=None, is_date=None,
+                 is_footer=None, footer_class=None, hidden=None):  # NCH01 add args after _meta
         """
         Construct a new field.
 
@@ -103,9 +107,6 @@ class Field(object):
         if new_row is not None:
             self.new_row = new_row
 
-        if unique_row is not None:
-            self.unique_row = unique_row
-
         if end_row is not None:
             self.end_row = end_row
 
@@ -126,6 +127,12 @@ class Field(object):
 
         if is_footer is not None:
             self.is_footer = is_footer
+
+        if footer_class is not None:
+            self.footer_class = footer_class
+
+        if hidden is not None:
+            self.hidden = hidden
 
         self.form_group_class = form_group_class
         # END NCH01 override class
@@ -462,6 +469,7 @@ class CustomSelect(object):
         if 'required' not in kwargs and 'required' in getattr(field, 'flags', []):
             kwargs['required'] = True
         html = ['<select %s>' % html_params(name=field.name, **kwargs)]
+
         for val, label, selected in field.choices:
             html.append(self.render_option(val, label, selected))
         html.append('</select>')

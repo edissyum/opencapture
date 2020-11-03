@@ -5,14 +5,15 @@ from .override_wtform import CustomStringField, CustomBooleanField, CustomSelect
 
 
 # Construction of new input
-# Unique_row : needed if you have one input on the line (aka col-md-12)
-# new_row : needed if you start a new line with multiple input. The last input need las_row attribute
+#
+# new_row : needed if you start a new line with multiple input. The last input need last_row attribute. If it's empty, the input will be displayed alone in the line
 # form_group_class : if new_row or end_row is True, you can use a bootstrap class (e.g col-md-4)
 # is_position : if true, create an hidden input using XX_original position and page from render_kw
 # use_ratio : used for adress inputs. If True, add div to display the ratio of adresse between the given one and the one from the BAN
 # table : name of table where the field is located
 # table_field : name of the column using to retrieve data
 # is_footer : needed for facturationInfo field that uses the footer_page column in database to store the page number
+# footer_class : If is_footer is True, you could use footer_class to add specific class to the form-row (needed to VAT input, order_number and delivery_order for example)
 # is_date : needed if you want to have a type=date input and not type=text
 # choices : if you need a select, put into this arg the name of function to retrieve data. The function need to be input pdf.py file (e.g : get_financial)
 
@@ -24,7 +25,6 @@ class SupplierForm(Form):
     name = CustomStringField(
         lazy_gettext('NAME'),
         [validators.required()],
-        unique_row=True,
         table='suppliers',
         column='name',
         render_kw={
@@ -37,7 +37,6 @@ class SupplierForm(Form):
     address = CustomStringField(
         lazy_gettext('ADDRESS'),
         [validators.required()],
-        unique_row=True,
         table='suppliers',
         column='adress1',
         use_ratio=True,
@@ -72,7 +71,6 @@ class SupplierForm(Form):
     vat_number = CustomStringField(
         lazy_gettext('VAT_NUMBER'),
         [validators.required()],
-        unique_row=True,
         table='suppliers',
         column='vat_number',
         is_position=True,
@@ -113,12 +111,11 @@ class SupplierForm(Form):
 
 
 class FacturationForm(Form):
-    # the xml_index is mandatorywhen you create a new input class
+    # The xml_index is mandatory when you create a new input class
     xml_index = 'facturationInfo'
 
     noCommands = CustomBooleanField(
         lazy_gettext('INVOICE_WITHOUT_ORDER'),
-        [validators.required()],
         render_kw={
             'checked': '',
             'onclick': "removeAllOrderNumber($(this), $('.MAIN_ORDER_0'))"
@@ -126,7 +123,6 @@ class FacturationForm(Form):
     )
     noDelivery = CustomBooleanField(
         lazy_gettext('INVOICE_WITHOUT_DELIVERY_FORM'),
-        [validators.required()],
         render_kw={
             'checked': '',
             'onclick': "removeAllDeliveryNumber($(this), $('.MAIN_ORDER_0'))"
@@ -168,6 +164,13 @@ class FacturationForm(Form):
             'page': ''
         }
     )
+
+    order_number_1 = CustomStringField(
+        lazy_gettext('ORDER_NUMBER'),
+        form_group_class="MAIN_order_1",
+        hidden=True,
+    )
+
     vat_1 = CustomStringField(
         lazy_gettext('VAT_RATE'),
         [validators.required()],
@@ -177,6 +180,7 @@ class FacturationForm(Form):
         form_group_class='col-md-4',
         is_position=True,
         is_footer=True,
+        footer_class="MAIN_vat_1",
         render_kw={
             'x1_original': '',
             'y1_original': '',
@@ -189,7 +193,7 @@ class FacturationForm(Form):
         lazy_gettext('NO_RATE_AMOUNT'),
         [validators.required()],
         table='invoices',
-        column='ht_1',
+        column='no_taxes_1',
         form_group_class='col-md-4',
         is_position=True,
         is_footer=True,

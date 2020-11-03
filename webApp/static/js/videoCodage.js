@@ -535,7 +535,7 @@ function removeOrderNumber(input){
         orderNumberToRemove.slideToggle(400, 'swing', function(){
             orderNumberToRemove.remove();
         });
-        $('#NumberOfOrderNumber').val((currentCptOrderNumber - 1));
+        $('#number_order_number').val((currentCptOrderNumber - 1));
     }
 }
 
@@ -599,22 +599,22 @@ function removeStructure(input){
 function addOrderNumber(input){
     let lastOrder = $('#' + input.id).prev()[0];
     let cptOrder = parseInt(lastOrder.className.split('_')[2]);
-
+    console.log(lastOrder)
     $(
-        '<div class="MAIN_ORDER_' + (cptOrder + 1) + '" style="display: none">' +
+        '<div class="MAIN_order_' + (cptOrder + 1) + '" style="display: none">' +
         '        <div class="form-group">' +
         '            <label for="orderNumber_' + (cptOrder + 1) + '">' + gt.gettext('ORDER_NUMBER') + ' ' + (cptOrder + 1) + ' <a href="#removeorder" class="ORDER_' + (cptOrder + 1) + '" onclick="removeOrderNumber(this)"><i class="fa fa-minus-square" aria-hidden="true"></i></a> </label>' +
         '            <div class="input-group mb-2">' +
         '                <div onclick="drawRectangle(document.getElementById(\'orderNumber_' + (cptOrder + 1) + '\'))" class="input-group-prepend" style="display:none;">' +
         '                    <div class="input-group-text"><i class="fas fa-eye" aria-hidden="true"></i></div>' +
         '                </div>' +
-        '                <input autocomplete="off" required name="facturationInfo_orderNumber_' + (cptOrder + 1) + '" id="orderNumber_' + (cptOrder + 1) + '" type="text" class="form-control" onfocusout="ocrOnFly(true, this, true); removeRectangle()" onfocusin="ocrOnFly(false, this, true)">\n' +
+        '                <input autocomplete="off" required name="facturationInfo_order_number_' + (cptOrder + 1) + '" id="orderNumber_' + (cptOrder + 1) + '" type="text" class="form-control" onfocusout="ocrOnFly(true, this, true); removeRectangle()" onfocusin="ocrOnFly(false, this, true)">\n' +
         '            </div>' +
         '        </div>' +
         '    </div>'
     ).insertAfter(lastOrder).slideToggle();
 
-    $('#NumberOfOrderNumber').val(cptOrder + 1);
+    $('#number_order_number').val(cptOrder + 1);
 }
 
 function removeUserInCharge(radioButton){
@@ -631,35 +631,25 @@ function removeUserInCharge(radioButton){
 
 function removeAllOrderNumber(radioButton){
     if (radioButton.prop("checked")) {
-        $("div[class^='MAIN_ORDER_']").slideToggle(400, 'swing', function () {
-            $(this).remove();
+        $("div[class^='MAIN_order_']").slideToggle(400, 'swing', function () {
+            let cptOrder = parseInt(this.className.split('_')[2]);
+            if(cptOrder > 1)
+                $(this).remove();
+            else
+                $(this).slideUp()
         });
         $('#addOrderNumber').remove();
-        $('#NumberOfOrderNumber').val(0);
+        $('#number_order_number').val(0);
     }else{
-        $(
-            '<div class="MAIN_ORDER_0"></div>' +
-            '<div class="MAIN_ORDER_1" style="display: none">' +
-                '<div class="form-group">' +
-                    '<label for="orderNumber_1">' + gt.gettext('ORDER_NUMBER') + ' 1</label>' +
-                    '<div class="input-group mb-2">' +
-                        '<div onclick="drawRectangle(document.getElementById(\'orderNumber_1\'))" class="input-group-prepend" style="display:none;">' +
-                            '<div class="input-group-text"><i class="fas fa-eye" aria-hidden="true"></i></div>' +
-                        '</div>' +
-                        '<input autocomplete="off" required name="facturationInfo_orderNumber_1" id="orderNumber_1" type="text" class="form-control" onfocusout="ocrOnFly(true, this, true); removeRectangle()" onfocusin="ocrOnFly(false, this, true)">' +
-                    '</div>' +
-                '</div>' +
-            '</div>' +
-            '<a id="addOrderNumber" href="#addOrder" onclick="addOrderNumber(this)" data-toggle="tooltip" title="' + gt.gettext('ADD_ORDER_NUMBER') + '" style="display: none">' +
+        $('.MAIN_order_1').slideDown();
+        if (!$('#addOrderNumber').length){
+            $('<a id="addOrderNumber" href="#addOrder" onclick="addOrderNumber(this)" data-toggle="tooltip" title="' + gt.gettext('ADD_ORDER_NUMBER') + '" style="display: none">' +
                 '<i class="fa fa-plus-square" aria-hidden="true"></i>' +
-            '</a>'
-        ).insertBefore($('.MAIN_vat_1')).slideToggle();
+            '</a>').insertBefore($('.MAIN_vat_1')).slideToggle();
+        }
 
-        let numberOfOrderNumber = $('#NumberOfOrderNumber')
-        if(numberOfOrderNumber.length === 0)
-            $('<input name="facturationInfo_NumberOfOrderNumber" id="NumberOfOrderNumber" type="hidden" value="1">').insertBefore($('#NumberOfVAT'));
-        else
-            numberOfOrderNumber.val(1);
+        let number_order_number = $('#number_order_number')
+        number_order_number.val(1);
     }
 }
 
@@ -1007,6 +997,12 @@ $('#validateForm').on('click', function(){
     let className = parsedStructure[0];
     let totalStructure = 0;
     let totalHT = parseFloat($('#totalHT').val());
+
+    let awaitAdress = $('#awaitAdress')
+    let bypassBan = $('#bypassBan')
+    awaitAdress.remove()
+    bypassBan.remove()
+
     for (let i = 1; i <= lastCPTStructure; i++){
         let val = $('.' + className + '_' + i).find('input').val();
         totalStructure += parseFloat(val)
@@ -1015,23 +1011,19 @@ $('#validateForm').on('click', function(){
         form.find(':submit').click();
         modalBody.html(
                 '<span id="modalError">' +
-                    gt.gettext('FORM_ERROR_OR_EMPTY_FIELD') +
+                    gt.gettext('FORM_ERROR_OR_EMPTY_FIELD') + ' : ' + form[0].validationMessage +
                 '</span>');
     }else if(form[0].checkValidity() && (ratioTotal.val() <= (config.CONTACT['total-ratio'] / 100) && banApiError === false)){ // the banApiError is used to do not block form in case the API isn't working
-        console.log(config.GLOBAL['allowbypasssuppliebanverif']);
         modalBody.html('<span id="waitForAdress">' +
             gt.gettext('INCORRECT_BAN_ADDRESS') + ' ' +
             gt.gettext('PUT_FORM_TO_SUPPLIER_WAIT') +
             '</span>');
-        let awaitAdress = $('#awaitAdress')
 
-        if (awaitAdress.length === 0) {
-            $('<button type="button" class="btn btn-warning" onclick=\'changeStatus(pdfId, "WAIT_SUP", false); save_form_to_cookies("invoice_info", pdfId)\' id="awaitAdress">' +
-                    gt.gettext('PUT_ON_HOLD') +
-            '</button>').insertAfter($('#returnToValidate'));
-        }
+        $('<button type="button" class="btn btn-warning" onclick=\'changeStatus(pdfId, "WAIT_SUP", false); save_form_to_cookies("invoice_info", pdfId)\' id="awaitAdress">' +
+                gt.gettext('PUT_ON_HOLD') +
+        '</button>').insertAfter($('#returnToValidate'));
 
-        if ($('#bypassBan').length === 0 && config.GLOBAL['allowbypasssuppliebanverif'] === 'True') {
+        if (config.GLOBAL['allowbypasssuppliebanverif'] === 'True') {
             $('<button type="button" class="btn btn-danger" onclick=\'changeStatus(pdfId, "END");\' id="bypassBan">' +
                     gt.gettext('_VALID_WIHTOUT_BAN_VERIFICATION') +
             '</button>').insertAfter($('#awaitAdress'));

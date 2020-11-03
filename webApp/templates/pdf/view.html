@@ -54,9 +54,10 @@
                         <input type="hidden" id="ratioAdressTotal">
                         <input type="hidden" id="pdfId" value="{{ pdf['id'] }}">
                         <input type="hidden" id="widthOriginal" value="{{ width }}">
-                        <input type="hidden" id="NumberOfVAT" name="facturationInfo_NumberOfTVA" value="1">
-                        <input type="hidden" id="pdfCreationDate" name="pdfCreationDate" value="{{ pdf['register_date'] }}">
+                        <input type="hidden" id="NumberOfVAT" name="facturationInfo_number_of_tva" value="1">
+                        <input type="hidden" id="pdf_creation_date" name="fileInfo_pdf_creation_date" value="{{ pdf['register_date'] }}">
                         <input type="hidden" id="fileInfo_path" name="fileInfo_path" value="{{ pdf['path'] + '/' +  pdf['filename'] }}">
+                        <input type="hidden" id="number_order_number" name="facturationInfo_number_order_number" value="0">
                     </div>
                     <div class="form-group float-right" >
                         <input name="facturationInfo_is_subscription" type="checkbox" class="custom-control-input" id="is_subscription" onclick="removeUserInCharge($(this))">

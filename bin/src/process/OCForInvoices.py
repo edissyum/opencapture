@@ -95,8 +95,8 @@ def insert(database, log, files, config, supplier, file, invoice_number, date, f
         'invoice_number_page': str(invoice_number[2]) if invoice_number and invoice_number[2] else '1',
         'total_amount': str(footer[1][0]) if footer and footer[1] else '',
         'total_amount_position': str(footer[1][1]) if footer and footer[1] else '',
-        'ht_amount1': str(footer[0][0]) if footer and footer[0] else '',
-        'ht_amount1_position': str(footer[0][1]) if footer and footer[0] else '',
+        'no_taxes_1': str(footer[0][0]) if footer and footer[0] else '',
+        'no_taxes_1_position': str(footer[0][1]) if footer and footer[0] else '',
         'vat_1': str(footer[2][0]) if footer and footer[2] else '',
         'vat_1_position': str(footer[2][1]) if footer and footer[2] else '',
         'footer_page': str(footer[3]) if footer and footer[3] else '1',
@@ -221,15 +221,17 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
     convert(file, files, ocr, nb_pages)
 
     # Find supplier in document
-    supplier = FindSupplier(ocr, log, locale, database, files, nb_pages, False).run()
+    supplier = FindSupplier(ocr, log, locale, database, files, nb_pages, 1, False).run()
+
     i = 0
     tmp_nb_pages = nb_pages
     while not supplier:
         tmp_nb_pages = tmp_nb_pages - 1
-        if i == 3 or int(tmp_nb_pages) - 1 == 0 or nb_pages == 1:
+        if i == 3 or int(tmp_nb_pages) == 1 or nb_pages == 1:
             break
+
         convert(file, files, ocr, tmp_nb_pages, True)
-        supplier = FindSupplier(ocr, log, locale, database, files, tmp_nb_pages, True).run()
+        supplier = FindSupplier(ocr, log, locale, database, files, nb_pages, tmp_nb_pages, True).run()
         i += 1
 
     if typo:
@@ -334,7 +336,7 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
             })
 
         parent = {
-            'pdfCreationDate': [{'pdfCreationDate': {'field': str(now.year) + '-' + str('%02d' % now.month) + '-' + str(now.day)}}],
+            'pdf_creation_date': [{'pdf_creation_date': {'field': str(now.year) + '-' + str('%02d' % now.month) + '-' + str(now.day)}}],
             'fileInfo': [{'fileInfoPath': {'field': os.path.dirname(file) + '/' + os.path.basename(file)}}],
             'supplierInfo': [{
                 'supplierInfo_name': {'field': supplier[2]['name']},
@@ -346,12 +348,12 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
                 'supplierInfo_postal_code': {'field': str(supplier[2]['postal_code'])},
             }],
             'facturationInfo': [{
-                'facturationInfo_NumberOfTVA': {'field': '1'},
+                'facturationInfo_number_of_tva': {'field': '1'},
                 'facturationInfo_date': {'field': date[0]},
-                'facturationInfo_invoiceNumber': {'field': invoice_number[0]},
-                'facturationInfo_noTaxes_1': {'field': str("%.2f" % (footer[0][0]))},
-                'facturationInfo_VAT_1': {'field': str("%.2f" % (footer[2][0]))},
-                'facturationInfo_TOTAL_TVA_1': {'field': str("%.2f" % (footer[0][0] * (footer[2][0] / 100)))},
+                'facturationInfo_invoice_number': {'field': invoice_number[0]},
+                'facturationInfo_no_taxes_1': {'field': str("%.2f" % (footer[0][0]))},
+                'facturationInfo_vat_1': {'field': str("%.2f" % (footer[2][0]))},
+                'facturationInfo_total_vat_1': {'field': str("%.2f" % (footer[0][0] * (footer[2][0] / 100)))},
                 'facturationInfo_totalHT': {'field': str("%.2f" % (footer[0][0]))},
                 'facturationInfo_totalTTC': {'field': str("%.2f" % (footer[0][0] * (footer[2][0] / 100) + footer[0][0]))},
             }],

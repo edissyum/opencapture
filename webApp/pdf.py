@@ -11,6 +11,7 @@ from webApp import forms
 from webApp.db import get_db
 from webApp.auth import login_required
 from webApp.functions import get_custom_id, check_python_customized_files
+from webApp.override_wtform import CustomStringField
 
 custom_id = get_custom_id()
 custom_array = {}
@@ -345,7 +346,6 @@ def validate_form():
     _ws = _vars[3]
     _files = _vars[5]
 
-    parent = {}
     ged = {}
     contact = {}
     pdf_id = request.args['id']
@@ -357,19 +357,20 @@ def validate_form():
 
     if request.method == 'POST':
         supplier_form = forms.SupplierForm(request.form)
+        facturation_form = forms.FacturationForm(request.form)
 
         # Create an array containing the parent element, used to structure the XML
         parent = {
-            'pdfCreationDate': [],
             'fileInfo': [],
-            supplier_form.xml_index: []
+            supplier_form.xml_index: [],
+            facturation_form.xml_index: []
         }
-        # for field in request.form:
-        #     parent_xml_name = field.split('_')[0]
-        #     parent[parent_xml_name] = []
-        # print(parent)
-        # exit()
+
         vat_number = supplier_form.vat_number.data
+        invoice_number = facturation_form.invoice_number.data
+        invoice_date = facturation_form.invoice_date.data
+        vat_1 = facturation_form.vat_1.data
+        no_taxes_1 = facturation_form.no_taxes_1.data
 
         # If GED is set up, send the document to the GED application (Maarch by default)
         if _cfg.cfg['GED']['enabled'] == 'True':
@@ -381,17 +382,17 @@ def validate_form():
                 ged['status'] = _cfg.cfg[default_process]['status']
             # Create the data list of arguments
             ged['fileContent'] = open(request.form['fileInfo_path'], 'rb').read()
-            ged['creationDate'] = request.form['pdfCreationDate']
-            ged['date'] = request.form['facturationInfo_invoice_date']
+            ged['creationDate'] = request.form['pdf_creation_date']
+            ged['date'] = invoice_date
             ged['dest_user'] = request.form['ged_users'].split('#')[0]
             ged['vatNumber'] = vat_number
             ged[_cfg.cfg[default_process]['customvatnumber']] = vat_number
             ged[_cfg.cfg[default_process]['customht']] = request.form['facturationInfo_totalHT']
             ged[_cfg.cfg[default_process]['customttc']] = request.form['facturationInfo_totalTTC']
-            ged[_cfg.cfg[default_process]['custominvoicenumber']] = request.form['facturationInfo_invoice_number']
+            ged[_cfg.cfg[default_process]['custominvoicenumber']] = invoice_number
             ged[_cfg.cfg[default_process]['custombudget']] = request.form['analyticsInfo_budgetSelection_1']
             ged[_cfg.cfg[default_process]['customoutcome']] = request.form['analyticsInfo_structureSelection_1']
-            ged['subject'] = 'Facture N°' + request.form['facturationInfo_invoice_number']
+            ged['subject'] = 'Facture N°' + invoice_number
             ged['destination'] = request.form['ged_users'].split('#')[1] if request.form['ged_users'] else _cfg.cfg[default_process]['defaultdestination']
 
             if 'facturationInfo_NumberOfDeliveryNumber' in request.form:
@@ -404,18 +405,18 @@ def validate_form():
                         tmp_delivery += request.form['facturationInfo_deliveryNumber_' + str(i)] + ';'
                     ged[_cfg.cfg[default_process]['customdeliverynumber']] = tmp_delivery[:-1]
 
-            if 'facturationInfo_NumberOfOrderNumber' in request.form:
-                number_of_order_number = int(request.form['facturationInfo_NumberOfOrderNumber'])
+            if request.form['facturationInfo_number_order_number'] > 0:
+                number_of_order_number = int(request.form['facturationInfo_number_order_number'])
                 if number_of_order_number and number_of_order_number == 1:
-                    ged[_cfg.cfg[default_process]['customordernumber']] = request.form['facturationInfo_orderNumber_1']
+                    ged[_cfg.cfg[default_process]['customordernumber']] = facturation_form.order_number_1.data
                 elif number_of_order_number > 1:
                     tmp_order = ''
                     for i in range(1, number_of_order_number + 1):
-                        tmp_order += request.form['facturationInfo_orderNumber_' + str(i)] + ';'
+                        tmp_order += request.form['facturationInfo_order_number_' + str(i)] + ';'
                     ged[_cfg.cfg[default_process]['customordernumber']] = tmp_order[:-1]
 
             # Looking for an existing user in the GED, using VAT number as primary key
-            ged['contact'] = _ws.retrieve_contact_by_vat_number(ged['vatNumber'])
+            ged['contact'] = _ws.retrieve_contact_by_vat_number(vat_number)
 
             # If no contact found, create it
             if not ged['contact']:
@@ -440,25 +441,16 @@ def validate_form():
             res = _ws.insert_with_args(ged, _cfg)
 
         # Fill the parent array with all the child infos
-        for field in supplier_form:
-            if 'x1_original' in field.render_kw:
-                parent[supplier_form.xml_index].append({
-                    field.name: {'field': field.data, 'position': request.form[field.name + '_position']}
-                })
-            else:
-                parent[supplier_form.xml_index].append({
-                    field.name: {'field': field.data, 'position': None}
-                })
-        # exit()
         for value in parent:
+            print(value)
             for field in request.form:
-                if any(x in field for x in ['facturationInfo_no_taxes', '<facturationInfo_vat_>']):
+                if any(x in field for x in ['no_taxes', 'vat_']):
                     if '_page' in field:
                         footer_page = request.form[field]
-                if field == 'facturationInfo_invoice_number_page':
-                    invoice_number_page = request.form['facturationInfo_invoice_number_page']
-                if field == 'facturationInfo_invoice_date_page':
-                    invoice_date_page = request.form['facturationInfo_date_number_page']
+                if field == 'invoice_number_page':
+                    invoice_number_page = request.form['invoice_number_page']
+                if field == 'invoice_date_page':
+                    invoice_date_page = request.form['invoice_date_page']
                 if field.split('_')[0] == value:
                     # If a position is associated
                     if field + '_position' in request.form:
@@ -470,17 +462,37 @@ def validate_form():
                             field: {'field': request.form[field], 'position': None}
                         })
 
+        for field in supplier_form:
+            if field.render_kw and 'x1_original' in field.render_kw and field.name + '_position' in request.form:
+                parent[supplier_form.xml_index].append({
+                    field.name: {'field': field.data, 'position': request.form[field.name + '_position']}
+                })
+            else:
+                parent[supplier_form.xml_index].append({
+                    field.name: {'field': field.data, 'position': None}
+                })
+
+        for field in facturation_form:
+            if field.render_kw and 'x1_original' in field.render_kw and field.name + '_position' in request.form:
+                parent[facturation_form.xml_index].append({
+                    field.name: {'field': field.data, 'position': request.form[field.name + '_position']}
+                })
+            else:
+                parent[facturation_form.xml_index].append({
+                    field.name: {'field': field.data, 'position': None}
+                })
+
         _db.update({
             'table': ['invoices'],
             'set': {
-                'invoice_number': request.form['facturationInfo_invoice_number'],
-                'invoice_number_position': request.form['facturationInfo_invoice_number_position'] if 'facturationInfo_invoice_number_position' in request.form else '',
-                'ht_amount1': request.form['facturationInfo_no_taxes_1'],
-                'ht_amount1_position': request.form['facturationInfo_no_taxes_1_position'] if 'facturationInfo_no_taxes_1_position' in request.form else '',
-                'vat_1': request.form['facturationInfo_vat_1'],
-                'vat_1_position': request.form['facturationInfo_vat_1_position'] if 'facturationInfo_vat_1_position' in request.form else '',
-                'invoice_date': request.form['facturationInfo_invoice_date'],
-                'invoice_date_position': request.form['facturationInfo_invoice_date_position'] if 'facturationInfo_invoice_date_position' in request.form else '',
+                'invoice_number': invoice_number,
+                'invoice_number_position': request.form['invoice_number_position'] if 'invoice_number_position' in request.form else '',
+                'no_taxes_1': no_taxes_1,
+                'no_taxes_1_position': request.form['no_taxes_1_position'] if 'no_taxes_1_position' in request.form else '',
+                'vat_1': vat_1,
+                'vat_1_position': request.form['vat_1_position'] if 'vat_1_position' in request.form else '',
+                'invoice_date': invoice_date,
+                'invoice_date_position': request.form['invoice_date_position'] if 'invoice_date_position' in request.form else '',
             },
             'where': ['id = ?'],
             'data': [pdf_id]
@@ -497,9 +509,9 @@ def validate_form():
                 'where': ['vat_number = ?'],
                 'data': [vat_number]
             })
-            print(parent)
-            _files.export_xml(_cfg, request.form['facturationInfo_invoice_number'], parent, True, _db, vat_number)
-        exit()
+
+            _files.export_xml(_cfg, invoice_number, parent, True, _db, vat_number)
+
         # Unlock pdf and makes it processed
         _db.update({
             'table': ['invoices'],
@@ -607,40 +619,47 @@ def ocr_on_the_fly(file_name, selection, thumb_size):
 
 def populate_form(form, pdf_info, position_dict, _db):
     for field in form:
-        if pdf_info['vat_number']:
-            if field.column and field.table:
-                if field.table == 'suppliers':
+        select = table = where = data = False
+        if field.table == 'suppliers':
+            if pdf_info['vat_number']:
+                if field.column and field.table:
+                    select = [field.column]
+                    table = [field.table]
                     where = ['vat_number = ?']
                     data = [pdf_info['vat_number']]
-                else:
-                    where = ['vat_number = ? and id = ?']
-                    data = [pdf_info['vat_number'], pdf_info['id']]
+        else:
+            if field.column and field.table:
+                select = [field.column]
+                table = [field.table]
+                where = ['vat_number = ? and id = ?']
+                data = [pdf_info['vat_number'], pdf_info['id']]
 
-                res = _db.select({
-                    'select': [field.column],
-                    'table': [field.table],
-                    'where': where,
-                    'data': data,
-                })[0]
+        if select and table and where and data:
+            res = _db.select({
+                'select': select,
+                'table': table,
+                'where': where,
+                'data': data,
+            })[0]
 
-                if res:
-                    field.data = res[field.column]
+            if res:
+                field.data = res[field.column]
 
-            if field.render_kw:
-                if field.table == 'suppliers':
-                    field.render_kw['page'] = pdf_info['supplier_page']
-                else:
-                    if field.is_footer:
-                        field.render_kw['page'] = pdf_info['footer_page']
-                    elif field.column:
-                        field.render_kw['page'] = pdf_info[field.column + '_page']
+        if field.render_kw:
+            if field.table == 'suppliers':
+                field.render_kw['page'] = pdf_info['supplier_page']
+            else:
+                if field.is_footer:
+                    field.render_kw['page'] = pdf_info['footer_page']
+                elif field.column:
+                    field.render_kw['page'] = pdf_info[field.column + '_page']
 
-            if field.column and field.column + '_position' in position_dict and field.is_position:
-                field.render_kw['x1_original'] = position_dict[field.column + '_position'][0][0]
-                field.render_kw['y1_original'] = position_dict[field.column + '_position'][0][1]
-                field.render_kw['x2_original'] = position_dict[field.column + '_position'][1][0]
-                field.render_kw['y2_original'] = position_dict[field.column + '_position'][1][1]
+        if field.column and field.column + '_position' in position_dict and field.is_position:
+            field.render_kw['x1_original'] = position_dict[field.column + '_position'][0][0]
+            field.render_kw['y1_original'] = position_dict[field.column + '_position'][0][1]
+            field.render_kw['x2_original'] = position_dict[field.column + '_position'][1][0]
+            field.render_kw['y2_original'] = position_dict[field.column + '_position'][1][1]
 
-            if field.type == 'CustomSelectField':
-                field.choices = eval(field.choices[0] + '()')
+        if field.type == 'CustomSelectField':
+            field.choices = eval(field.choices[0] + '()')
     return form

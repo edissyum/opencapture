@@ -1,12 +1,12 @@
 {% macro render_field(field) %}
     {% if field.new_row == True %}
         {% if field.is_footer %}
-            <div class="form-row MAIN_vat_1">
+            <div class="form-row {{ field.footer_class }}">
         {% else %}
             <div class="form-row">
         {% endif %}
     {% endif %}
-    <div class="form-group {{ field.form_group_class }}">
+    <div class="{{ field.form_group_class }} form-group" {% if field.hidden %} style="display: none" {% endif %}>
         {{ field.label }}
         <div class="input-group mb-2">
             <div onclick="drawRectangle(document.getElementById('{{ field.id }}'))" class="input-group-prepend" style="display:none;">
@@ -20,10 +20,13 @@
                 {{ field(class_="form-control") | safe }}
             {% endif %}
 
-            {% if 'x1_original' in field.render_kw %}
+            {% if field.render_kw and 'x1_original' in field.render_kw %}
                 {% set position ='((' + field.render_kw['x1_original']|string + ',' + field.render_kw['y1_original']|string + '),(' + field.render_kw['x2_original']|string + ',' + field.render_kw['y2_original']|string + '))' %}
-                <input type="hidden" name="{{ field.id }}_position" id="{{ field.id }}_position" value="{{ position }}">
-                <input type="hidden" name="{{ field.id }}_page" id="{{ field.id }}_page" value="{{ field.render_kw['page'] }}">
+
+                {% if position != '((,),(,))' %}
+                    <input type="hidden" name="{{ field.id }}_position" id="{{ field.id }}_position" value="{{ position }}">
+                    <input type="hidden" name="{{ field.id }}_page" id="{{ field.id }}_page" value="{{ field.render_kw['page'] }}">
+                {% endif %}
             {% endif %}
 
             {% if field.use_ratio %}

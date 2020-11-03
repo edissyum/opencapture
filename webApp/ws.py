@@ -34,10 +34,6 @@ else:
 bp = Blueprint('ws', __name__)
 
 
-def retrieve_init():
-    return pdf.init()
-
-
 @bp.route('/ws/VAT/<string:vat_id>', methods=['GET'])
 @login_required
 def check_vat(vat_id):
