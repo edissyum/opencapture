@@ -19,7 +19,7 @@ regex       =
 type        = string
 page        = 1
 
-[ht_amount]
+[no_taxes]
 position    = ((x1, y1), (x2, y2))
 regex       =
 type        = string
