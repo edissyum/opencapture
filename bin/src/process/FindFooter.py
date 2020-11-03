@@ -72,7 +72,7 @@ class FindFooter:
             'data': [self.supplier[0]]
         })[0]
 
-        if position and position[select[0]]:
+        if position and position[select[0]] and position[select[0]] != '((,),(,))':
             data = {'position': position[select[0]], 'regex': None, 'target': 'full', 'page': position[select[1]]}
             text, position = search_custom_positions(data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
             if text:
@@ -130,7 +130,7 @@ class FindFooter:
                 0: re.sub(r"[^0-9\.]|\.(?!\d)", "", all_rate[0].replace(',', '.')),
                 1: all_rate[1]
             }
-        no_rate = search_by_positions(self.supplier, 'ht_amount', self.Config, self.Locale, self.Ocr, self.Files, target, self.typo)
+        no_rate = search_by_positions(self.supplier, 'no_taxes', self.Config, self.Locale, self.Ocr, self.Files, target, self.typo)
         no_rate_amount = {}
         if no_rate and no_rate[0]:
             no_rate_amount = {
