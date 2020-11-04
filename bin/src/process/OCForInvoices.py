@@ -93,8 +93,8 @@ def insert(database, log, files, config, supplier, file, invoice_number, date, f
         'invoice_number': invoice_number[0] if invoice_number and invoice_number[0] else '',
         'invoice_number_position': str(invoice_number[1]) if invoice_number and invoice_number[1] else '',
         'invoice_number_page': str(invoice_number[2]) if invoice_number and invoice_number[2] else '1',
-        'total_amount': str(footer[1][0]) if footer and footer[1] else '',
-        'total_amount_position': str(footer[1][1]) if footer and footer[1] else '',
+        'total_ttc': str(footer[1][0]) if footer and footer[1] else '',
+        'total_ttc_position': str(footer[1][1]) if footer and footer[1] else '',
         'no_taxes_1': str(footer[0][0]) if footer and footer[0] else '',
         'no_taxes_1_position': str(footer[0][1]) if footer and footer[0] else '',
         'vat_1': str(footer[2][0]) if footer and footer[2] else '',
@@ -354,8 +354,8 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
                 'facturationInfo_no_taxes_1': {'field': str("%.2f" % (footer[0][0]))},
                 'facturationInfo_vat_1': {'field': str("%.2f" % (footer[2][0]))},
                 'facturationInfo_total_vat_1': {'field': str("%.2f" % (footer[0][0] * (footer[2][0] / 100)))},
-                'facturationInfo_totalHT': {'field': str("%.2f" % (footer[0][0]))},
-                'facturationInfo_totalTTC': {'field': str("%.2f" % (footer[0][0] * (footer[2][0] / 100) + footer[0][0]))},
+                'facturationInfo_total_ht': {'field': str("%.2f" % (footer[0][0]))},
+                'facturationInfo_total_ttc': {'field': str("%.2f" % (footer[0][0] * (footer[2][0] / 100) + footer[0][0]))},
             }],
             'customInfo': [xml_custom]
         }
@@ -400,8 +400,8 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
                 'destination': config.cfg[default_process]['defaultdestination'],
                 'fileContent': open(parent['fileInfo'][0]['fileInfoPath']['field'], 'rb').read(),
                 config.cfg[default_process]['customvatnumber']: supplier[2]['vat_number'],
-                config.cfg[default_process]['customht']: parent['facturationInfo'][0]['facturationInfo_totalHT']['field'],
-                config.cfg[default_process]['customttc']: parent['facturationInfo'][0]['facturationInfo_totalTTC']['field'],
+                config.cfg[default_process]['customht']: parent['facturationInfo'][0]['facturationInfo_total_ht']['field'],
+                config.cfg[default_process]['customttc']: parent['facturationInfo'][0]['facturationInfo_total_ttc']['field'],
                 config.cfg[default_process]['custominvoicenumber']: invoice_number[0],
                 'contact': contact,
                 'dest_user': config.cfg[default_process]['defaultdestuser']
