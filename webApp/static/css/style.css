@@ -528,8 +528,8 @@ hr {
     border-color: transparent;
 }
 
-#totalHT_info,
-#totalHT_info span {
+#total_ht_info,
+#total_ht_info span {
     color: #6c757d;
     transition: all ease .5s;
 }

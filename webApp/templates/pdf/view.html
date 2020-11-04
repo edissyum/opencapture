@@ -107,121 +107,27 @@
                                     {{ render_field(field) }}
                                 {% endif %}
                             {% endfor %}
-                            <div class="text-center">
-                                <a id="calculTotal" href="#calcTotal" onclick="calculTotal()" data-toggle="tooltip" title="{{ gettext('CALCULATE_TOTAL_AMOUNT') }}">
-                                    <i class="fa fa-calculator" aria-hidden="true"></i>
-                                </a>
-                            </div>
-                            <div class="form-row justify-content-md-center">
-                                <div class="form-group col-md-3 text-center">
-                                    <label for="total_ht">{{ gettext('TOTAL_NO_RATE') }}</label>
-                                    <div class="input-group mb-2">
-                                        <input autocomplete="off" required name="facturationInfo_total_ht" type="text" id="total_ht" class="form-control">
-                                        <div class="input-group-prepend">
-                                            <div class="input-group-text"><i class="fas fa-euro-sign" aria-hidden="true"></i></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group col-md-3 text-center">
-                                    <label for="total">{{ gettext('TOTAL_TTC') }}</label>
-                                    <div class="input-group mb-2">
-                                        <input autocomplete="off" required name="facturationInfo_total_ttc" type="text" id="total_ttc" class="form-control">
-                                        <div class="input-group-prepend">
-                                            <div class="input-group-text"><i class="fas fa-euro-sign" aria-hidden="true"></i></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group col-md-3 text-center AMOUNT_vat_1">
-                                    <label for="TOTAL_vat_1">{{ gettext('VAT_AMOUNT') }} 1</label>
-                                    <div class="input-group mb-2">
-                                        <input autocomplete="off" required name="facturationInfo_TOTAL_vat_1" type="text" id="TOTAL_vat_1" class="form-control">
-                                        <div class="input-group-prepend">
-                                            <div class="input-group-text"><i class="fas fa-euro-sign" aria-hidden="true"></i></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                     <hr>
                     <div id="analyticsInfo">
                         <span class="infos" onclick="hideOrDisplay('analytic_info');">
-                        <span>
-                            <a href="#toggle" id="analytic_info" data-toggle="tooltip" title="{{ gettext('HIDE_ANALYTIC_INFO') }}">
-                                <i class="fas fa-chevron-right" aria-hidden="true"></i>
-                            </a>
+                            <span>
+                                <a href="#toggle" id="analytic_info" data-toggle="tooltip" title="{{ gettext('HIDE_ANALYTIC_INFO') }}">
+                                    <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                                </a>
+                            </span>
+                            <h3 class="analytic">{{ gettext('ANALYTIC') }}</h3>
                         </span>
-                        <h3 class="analytic">{{ gettext('ANALYTIC') }}</h3>
-                    </span>
                         <div class="analytic_info toggled" style="display:none">
-                            <div class="STRUCTURE_0"></div>
-                            <div class="STRUCTURE_1">
-                                <div class="form-row">
-                                    <div class="form-group col-md-4">
-                                        <label for="analytics_HT_1">{{ gettext('NO_RATE_AMOUNT') }} 1</label>
-                                        <div class="input-group mb-2">
-                                            <input autocomplete="off" onkeyup="verifyTotalAnalytics()" required name="analyticsInfo_HT_1" type="number" step="0.01" class="form-control" id="analytics_HT_1" x1="" y1="" x2="" y2="" x1_original="" y1_original="" x2_original="" y2_original="" value="">
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-md-4">
-                                        <label for="structureSelection_1">{{ gettext('BUDGET') }}</label>
-                                        <div class="input-group mb-2">
-                                            <select name="analyticsInfo_structureSelection_1" id="structureSelection_1" class="form-control chosen-select" data-placeholder="{{ gettext('SELECT_STRUCTURE') }}">
-                                                <option value='Village 1' selected>Village 1</option>
-                                                <option value='Village 2'>Village 2</option>
-                                                <option value='Village 3'>Village 3</option>
-                                                <option value='Village 4'>Village 4</option>
-                                                <option value='Village 5'>Village 5</option>
-                                                <option value='Village 6'>Village 6</option>
-                                                <option value='Village 7'>Village 7</option>
-                                                <option value='Village 8'>Village 8</option>
-                                                <option value='Village 9'>Village 9</option>
-                                                <option value='Village 10'>Village 10</option>
-                                                <option value='Village 11'>Village 11</option>
-                                                <option value='Village 12'>Village 12</option>
-                                                <option value='Village 13'>Village 13</option>
-                                                <option value='Village 14'>Village 14</option>
-                                                <option value='Village 15'>Village 15</option>
-                                                <option value='Village 16'>Village 16</option>
-                                                <option value='Village 17'>Village 17</option>
-                                                <option value='Village 18'>Village 18</option>
-                                                <option value='Village 19'>Village 19</option>
-                                                <option value='Village 20'>Village 20</option>
-                                                <option value='Village 21'>Village 21</option>
-                                                <option value='Village 22'>Village 22</option>
-                                                <option value='Village 23'>Village 23</option>
-                                                <option value='Village 24'>Village 24</option>
-                                                <option value='Village 25'>Village 25</option>
-                                                <option value='Village 26'>Village 26</option>
-                                                <option value='Village 27'>Village 27</option>
-                                                <option value='Village 28'>Village 28</option>
-                                                <option value='Village 29'>Village 29</option>
-                                                <option value='Village 30'>Village 30</option>
-                                                <option value='Village 31'>Village 31</option>
-                                                <option value='Village 32'>Village 32</option>
-                                                <option value='Village 33'>Village 33</option>
-                                                <option value='Village 34'>Village 34</option>
-                                                <option value='Village 35'>Village 35</option>
-                                                <option value='Village 36'>Village 36</option>
-                                                <option value='Village 37'>Village 37</option>
-                                                <option value='Village 38'>Village 38</option>
-                                                <option value='Village 39'>Village 39</option>
-                                                <option value='Village 40'>Village 40</option>
-                                                <option value='Village 41'>Village 41</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-md-4">
-                                        <label for="budgetSelection_1">{{ gettext('OUTCOME') }}</label>
-                                        <div class="input-group mb-2">
-                                            <select name="analyticsInfo_budgetSelection_1" id="budgetSelection_1" class="form-control chosen-select" data-placeholder="{{ gettext('SELECT_BUDGET') }}">
-                                                <option value="Investissement" selected>{{ gettext('INVESTMENT') }}</option>
-                                                <option value="Fonctionnement">{{ gettext('OPERATION') }}</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <!-- Retrieve supplier form from forms.py SupplierForm class -->
+                            {% for field in analytics_form %}
+                                {% if field.type == 'CustomBooleanField' %}
+                                    {{ render_field_checkbox(field) }}
+                                {% else %}
+                                    {{ render_field(field) }}
+                                {% endif %}
+                            {% endfor %}
                             <a id="addStructure" href="#addStructure" onclick="addStructure(this)" data-toggle="tooltip" title="{{ gettext('ADD_NEW_LINE') }}">
                                 <i class="fa fa-plus-square" aria-hidden="true"></i>
                             </a>

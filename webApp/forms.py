@@ -1,5 +1,5 @@
 from wtforms import Form, validators
-from flask_babel import lazy_gettext
+from flask_babel import lazy_gettext, pgettext
 
 from .override_wtform import CustomStringField, CustomBooleanField, CustomSelectField
 
@@ -14,7 +14,7 @@ from .override_wtform import CustomStringField, CustomBooleanField, CustomSelect
 # table_field : name of the column using to retrieve data
 # is_footer : needed for facturationInfo field that uses the footer_page column in database to store the page number
 # footer_class : If is_footer is True, you could use footer_class to add specific class to the form-row (needed to VAT input, order_number and delivery_order for example)
-# is_date : needed if you want to have a type=date input and not type=text
+# is_date_type : needed if you want to have a type=date input and not type=text
 # choices : if you need a select, put into this arg the name of function to retrieve data. The function need to be input pdf.py file (e.g : get_financial)
 
 # Supplier's input
@@ -155,7 +155,7 @@ class FacturationForm(Form):
         column='invoice_date',
         form_group_class='col-md-6',
         is_position=True,
-        is_date=True,
+        is_date_type=True,
         render_kw={
             'x1_original': '',
             'y1_original': '',
@@ -186,7 +186,9 @@ class FacturationForm(Form):
             'y1_original': '',
             'x2_original': '',
             'y2_original': '',
-            'page': ''
+            'page': '',
+            'onfocusout': "ocrOnFly(true, this, true); removeRectangle()",
+            'onfocusin': "ocrOnFly(false, this, true, true)"
         }
     )
     no_taxes_1 = CustomStringField(
@@ -202,14 +204,15 @@ class FacturationForm(Form):
             'y1_original': '',
             'x2_original': '',
             'y2_original': '',
-            'page': ''
+            'page': '',
+            'onfocusout': "ocrOnFly(true, this, true); removeRectangle()",
+            'onfocusin': "ocrOnFly(false, this, true, true)"
         }
     )
     financial_account_1 = CustomSelectField(
         lazy_gettext('LOAD_ACCOUNT'),
         end_row=True,
         form_group_class='col-md-4',
-        is_position=True,
         is_footer=True,
         choices=['get_financial'],
         render_kw={
@@ -219,5 +222,55 @@ class FacturationForm(Form):
             'y2_original': '',
             'page': '',
             'data-placeholder': lazy_gettext('SELECT_LOAD_ACCOUNT')
+        }
+    )
+    total_ht = CustomStringField(
+        lazy_gettext('TOTAL_NO_RATE'),
+        new_row=True,
+        add_calc=True,
+        form_group_class='col-md-3 text-center',
+        form_row_class='justify-content-md-center'
+    )
+    total_ttc = CustomStringField(
+        lazy_gettext('TOTAL_TTC'),
+        form_group_class='col-md-3 text-center',
+        form_row_class='justify-content-md-center'
+    )
+    total_vat_1 = CustomStringField(
+        lazy_gettext('VAT_AMOUNT'),
+        end_row=True,
+        form_group_class='col-md-3 text-center',
+        form_row_class='justify-content-md-center'
+    )
+
+
+class AnalyticsForm(Form):
+    # The xml_index is mandatory when you create a new input class
+    xml_index = 'analyticsInfo'
+
+    ht_1 = CustomStringField(
+        lazy_gettext('NO_RATE_AMOUNT'),
+        new_row=True,
+        form_group_class='col-md-4',
+        form_row_class='structure_1',
+        render_kw={
+            'onkeyup': "verifyTotalAnalytics()"
+        }
+    )
+    structure_selection_1 = CustomSelectField(
+        lazy_gettext('BUDGET'),
+        form_group_class='col-md-4',
+        choices=['get_structure'],
+        render_kw={
+            'data-placeholder': lazy_gettext('SELECT_STRUCTURE')
+        }
+    )
+    budget_selection_1 = CustomSelectField(
+        lazy_gettext('OUTCOME'),
+        end_row=True,
+        form_group_class='col-md-4',
+        choices=['get_outcome'],
+        render_kw={
+            'data-placeholder': lazy_gettext('SELECT_OUTCOME')
         }
     )

@@ -123,7 +123,7 @@ class FindFooter:
             target = self.Files.tiffName
         else:
             target = self.Files.jpgName
-        all_rate = search_by_positions(self.supplier, 'total_amount', self.Config, self.Locale, self.Ocr, self.Files, target, self.typo)
+        all_rate = search_by_positions(self.supplier, 'total_ttc ', self.Config, self.Locale, self.Ocr, self.Files, target, self.typo)
         all_rate_amount = {}
         if all_rate and all_rate[0]:
             all_rate_amount = {

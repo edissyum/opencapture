@@ -13,7 +13,7 @@ regex       = dateRegex
 type        = date
 page        = 1
 
-[total_amount]
+[total_ttc]
 position    = ((x1, y1), (x2, y2))
 regex       =
 type        = string

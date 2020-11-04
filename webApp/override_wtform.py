@@ -34,10 +34,12 @@ class Field(object):
     column = None
     is_position = None
     use_ratio = None
-    is_date = None
+    is_date_type = None
     is_footer = None
     footer_class = None
     hidden = None
+    add_calc = None
+    form_row_class = None
     # END NCH01 override class
 
     _formfield = True
@@ -55,8 +57,8 @@ class Field(object):
                  render_kw=None, _form=None, _name=None, _prefix='',
                  _translations=None, _meta=None,
                  new_row=None, end_row=None, form_group_class='', table=None,
-                 column=None, is_position=None, use_ratio=None, is_date=None,
-                 is_footer=None, footer_class=None, hidden=None):  # NCH01 add args after _meta
+                 column=None, is_position=None, use_ratio=None, is_date_type=None,
+                 is_footer=None, footer_class=None, hidden=None, add_calc=None, form_row_class=None):  # NCH01 add args after _meta
         """
         Construct a new field.
 
@@ -122,8 +124,8 @@ class Field(object):
         if use_ratio is not None:
             self.use_ratio = use_ratio
 
-        if is_date is not None:
-            self.is_date = is_date
+        if is_date_type is not None:
+            self.is_date_type = is_date_type
 
         if is_footer is not None:
             self.is_footer = is_footer
@@ -133,6 +135,12 @@ class Field(object):
 
         if hidden is not None:
             self.hidden = hidden
+
+        if add_calc is not None:
+            self.add_calc = add_calc
+
+        if form_row_class is not None:
+            self.form_row_class = form_row_class
 
         self.form_group_class = form_group_class
         # END NCH01 override class

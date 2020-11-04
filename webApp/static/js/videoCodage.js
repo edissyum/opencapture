@@ -478,9 +478,9 @@ function addVAT(input){
 
         $(
         '   <div class="form-group col-md-3 text-center AMOUNT_vat_' + (cptVAT + 1) + '" style="display: none">' +
-        '       <label for="TOTAL_vat_' + (cptVAT + 1) + '">' + gt.gettext('VAT_AMOUNT') + ' ' + (cptVAT + 1) + '</label>' +
+        '       <label for="total_vat_' + (cptVAT + 1) + '">' + gt.gettext('VAT_AMOUNT') + ' ' + (cptVAT + 1) + '</label>' +
         '       <div class="input-group mb-2">' +
-        '           <input autocomplete="off" name="facturationInfo_TOTAL_TVA_' + (cptVAT + 1) + '" type="text" id="TOTAL_vat_' + (cptVAT + 1) + '" class="form-control">' +
+        '           <input autocomplete="off" name="facturationInfo_TOTAL_TVA_' + (cptVAT + 1) + '" type="text" id="total_vat_' + (cptVAT + 1) + '" class="form-control">' +
         '           <div class="input-group-prepend">' +
         '               <div class="input-group-text"><i class="fas fa-euro-sign" aria-hidden="true"></i></div>' +
         '           </div>' +
@@ -542,36 +542,34 @@ function removeOrderNumber(input){
 function addStructure(input){
     let lastStructure = $('#' + input.id).prev()[0];
     let cptStructure = parseInt(lastStructure.className.split('_')[1]);
-    let optionsStructure = document.getElementById('structureSelection_1').innerHTML;
-    let optionsBudget = document.getElementById('budgetSelection_1').innerHTML;
+    let optionsStructure = document.getElementById('structure_selection_1').innerHTML;
+    let optionsBudget = document.getElementById('budget_selection_1').innerHTML;
 
     if(cptStructure < 41){
         $(
-            '<div class="STRUCTURE_' + (cptStructure + 1) + '" style="display: none">' +
-            '   <div class="form-row">' +
-            '       <div class="form-group col-md-4">' +
-            '           <label for="analytics_HT_' + (cptStructure + 1) + '">' + gt.gettext('NO_RATE_AMOUNT') + ' ' + (cptStructure + 1) + ' <a href="#removeStructure" class="STRUCTURE_' + (cptStructure + 1) + '" onclick="removeStructure(this)"><i class="fa fa-minus-square" aria-hidden="true"></i></a></label>' +
-            '           <div class="input-group mb-2">' +
-            '               <input autocomplete="off" onkeyup="verifyTotalAnalytics()" required name="analyticsInfo_HT_' + (cptStructure + 1) + '" type="number" step="0.01" class="form-control" id="analytics_HT_' + (cptStructure + 1) + '" x1="" y1="" x2="" y2="" x1_original="" y1_original="" x2_original="" y2_original="" value="">' +
-            '               </div>' +
-            '       </div>' +
-            '       <div class="form-group col-md-4">' +
-            '           <label for="structureSelection_' + (cptStructure + 1) + '">' + gt.gettext('BUDGET') + '</label>' +
-            '           <div class="input-group mb-2">' +
-            '               <select name="analyticsInfo_structureSelection_' + (cptStructure + 1) + '" id="structureSelection_' + (cptStructure + 1) + '" class="form-control chosen-select" data-placeholder="' + gt.gettext('SELECT_STRUCTURE') + '">' +
-                                optionsStructure +
-            '               </select>' +
-            '           </div>' +
-            '       </div>' +
-            '       <div class="form-group col-md-4">' +
-            '           <label for="budgetSelection_1">' + gt.gettext('OUTCOME') + '</label>' +
-            '           <div class="input-group mb-2">' +
-            '               <select name="analyticsInfo_budgetSelection_' + (cptStructure + 1) + '" id="budgetSelection_' + (cptStructure + 1) + '" class="form-control chosen-select" data-placeholder="' + gt.gettext('SELECT_BUDGET') + '">' +
-                                optionsBudget +
-            '               </select>' +
-            '           </div>' +
-            '       </div>' +
-            '   </div>' +
+            '<div class="structure_' + (cptStructure + 1) + ' form-row" style="display: none">' +
+            '    <div class="form-group col-md-4">' +
+            '        <label for="analytics_HT_' + (cptStructure + 1) + '">' + gt.gettext('NO_RATE_AMOUNT') + ' ' + (cptStructure + 1) + ' <a href="#removeStructure" class="structure_' + (cptStructure + 1) + '" onclick="removeStructure(this)"><i class="fa fa-minus-square" aria-hidden="true"></i></a></label>' +
+            '        <div class="input-group mb-2">' +
+            '            <input autocomplete="off" onkeyup="verifyTotalAnalytics()" required name="analyticsInfo_HT_' + (cptStructure + 1) + '" type="number" step="0.01" class="form-control" id="analytics_HT_' + (cptStructure + 1) + '" x1="" y1="" x2="" y2="" x1_original="" y1_original="" x2_original="" y2_original="" value="">' +
+            '            </div>' +
+            '    </div>' +
+            '    <div class="form-group col-md-4">' +
+            '        <label for="structure_selection_' + (cptStructure + 1) + '">' + gt.gettext('BUDGET') + '</label>' +
+            '        <div class="input-group mb-2">' +
+            '            <select name="structure_selection_' + (cptStructure + 1) + '" id="structure_selection_' + (cptStructure + 1) + '" class="form-control chosen-select" data-placeholder="' + gt.gettext('SELECT_STRUCTURE') + '">' +
+                             optionsStructure +
+            '            </select>' +
+            '        </div>' +
+            '    </div>' +
+            '    <div class="form-group col-md-4">' +
+            '        <label for="budget_selection_1">' + gt.gettext('OUTCOME') + '</label>' +
+            '        <div class="input-group mb-2">' +
+            '            <select name="budget_selection_' + (cptStructure + 1) + '" id="budget_selection_' + (cptStructure + 1) + '" class="form-control chosen-select" data-placeholder="' + gt.gettext('SELECT_BUDGET') + '">' +
+                             optionsBudget +
+            '            </select>' +
+            '        </div>' +
+            '    </div>' +
             '</div>'
         ).insertAfter(lastStructure).slideToggle();
 
@@ -585,15 +583,10 @@ function addStructure(input){
 
 function removeStructure(input){
     let structureToRemove = $('.' + input.className);
-    let currentCptStructure = parseInt(structureToRemove[0].className.split('_')[1]);
 
-    // Avoid deletion if there is just one
-    // And avoid deletion of the first, before the second (for example)
-    if($('.STRUCTURE_' + (currentCptStructure + 1)).length === 0 && currentCptStructure > 1){
-        structureToRemove.slideToggle(400, 'swing', function(){
-            structureToRemove.remove();
-        });
-    }
+    structureToRemove.slideToggle(400, 'swing', function(){
+        structureToRemove.remove();
+    });
 }
 
 function addOrderNumber(input){
@@ -996,7 +989,7 @@ $('#validateForm').on('click', function(){
     let lastCPTStructure = parseInt(parsedStructure[1]);
     let className = parsedStructure[0];
     let totalStructure = 0;
-    let totalHT = parseFloat($('#totalHT').val());
+    let total_ht = parseFloat($('#total_ht').val());
 
     let awaitAdress = $('#awaitAdress')
     let bypassBan = $('#bypassBan')
@@ -1041,7 +1034,7 @@ $('#validateForm').on('click', function(){
             '</button>').insertAfter($('#returnToValidate'));
         }
 
-    }else if(form[0].checkValidity() && totalStructure !== totalHT){
+    }else if(form[0].checkValidity() && totalStructure !== total_ht){
         modalBody.html(
             '<span id="analyticsAmountError">' +
                 gt.gettext('CALCUL_NOT_EQUAL_WOULD_YOU_VALIDATE') +
@@ -1127,8 +1120,8 @@ function changeStatus(idPdf, status, submitForm = true){
 function calculTotal(){
     let lastVAT = $('#addVAT').prev();
     let lastVATCpt = parseInt(lastVAT[0].className.split('_')[2]);
-    let structureHT = $('#analytics_HT_1');
-    let analyticsHTInfo = $('#totalHT_info span');
+    let structureHT = $('#ht_1');
+    let analyticsHTInfo = $('#total_ht_info span');
     let ttc = 0;
     let ht = 0;
 
@@ -1145,9 +1138,9 @@ function calculTotal(){
                 ht += parseFloat(noTaxe);
                 ttc += parseFloat(noTaxe) + (parseFloat(noTaxe) * parseFloat(vatRate));
                 let vatAmount = parseFloat(noTaxe) * parseFloat(vatRate);
-                $('#TOTAL_vat_' + i).val(vatAmount.toFixed(2));
-                $('#total').val(ttc.toFixed(2));
-                $('#totalHT').val(ht.toFixed(2));
+                $('#total_vat_' + i).val(vatAmount.toFixed(2));
+                $('#total_ttc').val(ttc.toFixed(2));
+                $('#total_ht').val(ht.toFixed(2));
                 structureHT.val(ht.toFixed(2));
                 analyticsHTInfo.html(ht.toFixed(2));
             }
@@ -1212,17 +1205,17 @@ function verifyTotalAnalytics() {
     // Verify the total analytics amount and the total HT amount
     let parsedStructure = $('#addStructure').prev()[0].className.split('_');
     let lastCPTStructure = parseInt(parsedStructure[1]);
-    let analyticsHTInfo = $('#totalHT_info span');
+    let analyticsHTInfo = $('#total_ht_info span');
     let className = parsedStructure[0];
     let totalStructure = 0;
-    let totalHT = parseFloat($('#totalHT').val());
+    let total_ht = parseFloat($('#total_ht').val());
 
     for (let i = 1; i <= lastCPTStructure; i++){
         let val = $('.' + className + '_' + i).find('input').val();
         totalStructure += parseFloat(val);
     }
 
-    if (totalStructure > totalHT){
+    if (totalStructure > total_ht){
         analyticsHTInfo.removeClass('text-success');
         analyticsHTInfo.addClass('text-danger font-weight-bold');
     }else{

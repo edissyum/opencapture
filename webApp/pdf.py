@@ -316,9 +316,13 @@ def view(pdf_id):
     facturation_form = forms.FacturationForm(request.form)
     facturation_form = populate_form(facturation_form, pdf_info, position_dict, _db)
 
+    analytics_form = forms.AnalyticsForm(request.form)
+    analytics_form = populate_form(analytics_form, pdf_info, position_dict, _db)
+
     return render_template("templates/pdf/view.html",
                            supplier_form=supplier_form,
                            facturation_form=facturation_form,
+                           analytics_form=analytics_form,
                            pdf=pdf_info,
                            position=position_dict,
                            width=original_width,
@@ -353,17 +357,18 @@ def validate_form():
     footer_page = 1
     invoice_number_page = 1
     invoice_date_page = 1
-    vat_number = False
 
     if request.method == 'POST':
         supplier_form = forms.SupplierForm(request.form)
         facturation_form = forms.FacturationForm(request.form)
+        analytics_form = forms.AnalyticsForm(request.form)
 
         # Create an array containing the parent element, used to structure the XML
         parent = {
             'fileInfo': [],
             supplier_form.xml_index: [],
-            facturation_form.xml_index: []
+            facturation_form.xml_index: [],
+            analytics_form.xml_index: []
         }
 
         vat_number = supplier_form.vat_number.data
@@ -387,11 +392,11 @@ def validate_form():
             ged['dest_user'] = request.form['ged_users'].split('#')[0]
             ged['vatNumber'] = vat_number
             ged[_cfg.cfg[default_process]['customvatnumber']] = vat_number
-            ged[_cfg.cfg[default_process]['customht']] = request.form['facturationInfo_total_ht']
-            ged[_cfg.cfg[default_process]['customttc']] = request.form['facturationInfo_total_ttc']
+            ged[_cfg.cfg[default_process]['customht']] = request.form['total_ht']
+            ged[_cfg.cfg[default_process]['customttc']] = request.form['total_ttc']
             ged[_cfg.cfg[default_process]['custominvoicenumber']] = invoice_number
-            ged[_cfg.cfg[default_process]['custombudget']] = request.form['analyticsInfo_budgetSelection_1']
-            ged[_cfg.cfg[default_process]['customoutcome']] = request.form['analyticsInfo_structureSelection_1']
+            ged[_cfg.cfg[default_process]['custombudget']] = request.form['budget_selection_1']
+            ged[_cfg.cfg[default_process]['customoutcome']] = request.form['structure_selection_1']
             ged['subject'] = 'Facture N°' + invoice_number
             ged['destination'] = request.form['ged_users'].split('#')[1] if request.form['ged_users'] else _cfg.cfg[default_process]['defaultdestination']
 
@@ -479,6 +484,16 @@ def validate_form():
                 })
             else:
                 parent[facturation_form.xml_index].append({
+                    field.name: {'field': field.data, 'position': None}
+                })
+
+        for field in analytics_form:
+            if field.render_kw and 'x1_original' in field.render_kw and field.name + '_position' in request.form:
+                parent[analytics_form.xml_index].append({
+                    field.name: {'field': field.data, 'position': request.form[field.name + '_position']}
+                })
+            else:
+                parent[analytics_form.xml_index].append({
                     field.name: {'field': field.data, 'position': None}
                 })
 
@@ -591,6 +606,20 @@ def get_financial():
     for line in content.to_dict(orient='records'):
         if len(str(line['ID'])) >= 3:
             _array.append([str(line['ID']).rstrip(), line['LABEL'], False])
+    return _array
+
+
+def get_structure():
+    _array = []
+    for i in range(1, 41):
+        _array.append(['village ' + str(i), 'Village ' + str(i), False])
+    return _array
+
+
+def get_outcome():
+    _array = []
+    for i in range(1, 3):
+        _array.append(['budget ' + str(i), 'Budget ' + str(i), False])
     return _array
 
 

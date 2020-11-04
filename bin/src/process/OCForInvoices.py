@@ -353,9 +353,9 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
                 'facturationInfo_invoice_number': {'field': invoice_number[0]},
                 'facturationInfo_no_taxes_1': {'field': str("%.2f" % (footer[0][0]))},
                 'facturationInfo_vat_1': {'field': str("%.2f" % (footer[2][0]))},
-                'facturationInfo_total_vat_1': {'field': str("%.2f" % (footer[0][0] * (footer[2][0] / 100)))},
-                'facturationInfo_total_ht': {'field': str("%.2f" % (footer[0][0]))},
-                'facturationInfo_total_ttc': {'field': str("%.2f" % (footer[0][0] * (footer[2][0] / 100) + footer[0][0]))},
+                'total_vat_1': {'field': str("%.2f" % (footer[0][0] * (footer[2][0] / 100)))},
+                'total_ht': {'field': str("%.2f" % (footer[0][0]))},
+                'total_ttc': {'field': str("%.2f" % (footer[0][0] * (footer[2][0] / 100) + footer[0][0]))},
             }],
             'customInfo': [xml_custom]
         }
@@ -400,8 +400,8 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
                 'destination': config.cfg[default_process]['defaultdestination'],
                 'fileContent': open(parent['fileInfo'][0]['fileInfoPath']['field'], 'rb').read(),
                 config.cfg[default_process]['customvatnumber']: supplier[2]['vat_number'],
-                config.cfg[default_process]['customht']: parent['facturationInfo'][0]['facturationInfo_total_ht']['field'],
-                config.cfg[default_process]['customttc']: parent['facturationInfo'][0]['facturationInfo_total_ttc']['field'],
+                config.cfg[default_process]['customht']: parent['facturationInfo'][0]['total_ht']['field'],
+                config.cfg[default_process]['customttc']: parent['facturationInfo'][0]['total_ttc']['field'],
                 config.cfg[default_process]['custominvoicenumber']: invoice_number[0],
                 'contact': contact,
                 'dest_user': config.cfg[default_process]['defaultdestuser']
