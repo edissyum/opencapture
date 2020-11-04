@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2020-11-02 11:31+0100\n"
+"POT-Creation-Date: 2020-11-04 16:07+0100\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: fr\n"
@@ -50,74 +50,124 @@ msgstr "Utilisateur supprimé"
 msgid "USER_DISABLED"
 msgstr "Utilisateur desactivé"
 
-#: webApp/forms.py:20
+#: webApp/forms.py:26
 msgid "NAME"
 msgstr "Nom"
 
-#: webApp/forms.py:33 webApp/templates/suppliers/suppliers_list.html:17
+#: webApp/forms.py:38 webApp/templates/suppliers/suppliers_list.html:17
 #: webApp/templates/suppliers/suppliers_list.html:18
 msgid "ADDRESS"
 msgstr "Adresse"
 
-#: webApp/forms.py:44 webApp/templates/suppliers/suppliers_list.html:19
+#: webApp/forms.py:48 webApp/templates/suppliers/suppliers_list.html:19
 msgid "ZIP_CODE"
 msgstr "Code postal"
 
-#: webApp/forms.py:56 webApp/templates/suppliers/suppliers_list.html:20
+#: webApp/forms.py:60 webApp/templates/suppliers/suppliers_list.html:20
 msgid "CITY"
 msgstr "Ville"
 
-#: webApp/forms.py:68 webApp/templates/dashboard/index.html:677
+#: webApp/forms.py:72 webApp/templates/dashboard/index.html:677
 msgid "VAT_NUMBER"
 msgstr "Numéro de TVA"
 
-#: webApp/forms.py:85 webApp/templates/dashboard/index.html:752
+#: webApp/forms.py:88 webApp/templates/dashboard/index.html:752
 #: webApp/templates/suppliers/suppliers_list.html:15
 msgid "SIRET_NUMBER"
 msgstr "Numéro de SIRET"
 
-#: webApp/forms.py:97 webApp/templates/dashboard/index.html:763
+#: webApp/forms.py:100 webApp/templates/dashboard/index.html:763
 #: webApp/templates/suppliers/suppliers_list.html:16
 msgid "SIREN_NUMBER"
 msgstr "Numéro de SIREN"
 
-#: webApp/forms.py:115
+#: webApp/forms.py:118
 msgid "INVOICE_WITHOUT_ORDER"
 msgstr "Facture sans commande"
 
-#: webApp/forms.py:123
+#: webApp/forms.py:125
 msgid "INVOICE_WITHOUT_DELIVERY_FORM"
 msgstr "Facture sans bon de livraison"
 
 #: webApp/forms.py:133 webApp/templates/dashboard/index.html:691
-#: webApp/templates/pdf/list.html:96 webApp/templates/pdf/view.html:111
+#: webApp/templates/pdf/list.html:96
 msgid "INVOICE_NUMBER"
 msgstr "Numéro de facture"
 
 #: webApp/forms.py:151 webApp/templates/pdf/list.html:97
-#: webApp/templates/pdf/view.html:120
 msgid "INVOICE_DATE"
 msgstr "Date de la facture"
 
-#: webApp/pdf.py:229 webApp/splitter.py:115 webApp/static/js/videoCodage.js:59
+#: webApp/forms.py:169 webApp/static/js/videoCodage.js:599
+msgid "ORDER_NUMBER"
+msgstr "Numéro de commande"
+
+#: webApp/forms.py:175 webApp/static/js/videoCodage.js:444
+#: webApp/templates/dashboard/index.html:799
+msgid "VAT_RATE"
+msgstr "Taux de TVA"
+
+#: webApp/forms.py:195 webApp/forms.py:252 webApp/static/js/videoCodage.js:453
+#: webApp/static/js/videoCodage.js:552
+#: webApp/templates/dashboard/index.html:777
+msgid "NO_RATE_AMOUNT"
+msgstr "Montant HT"
+
+#: webApp/forms.py:213 webApp/static/js/videoCodage.js:462
+msgid "LOAD_ACCOUNT"
+msgstr "Compte de charge"
+
+#: webApp/forms.py:224 webApp/pdf.py:602 webApp/static/js/videoCodage.js:464
+msgid "SELECT_LOAD_ACCOUNT"
+msgstr "Selectionnez un compte de charge"
+
+#: webApp/forms.py:228
+msgid "TOTAL_NO_RATE"
+msgstr "Total HT"
+
+#: webApp/forms.py:235 webApp/templates/dashboard/index.html:788
+msgid "TOTAL_TTC"
+msgstr "Total TTC"
+
+#: webApp/forms.py:240 webApp/static/js/videoCodage.js:481
+msgid "VAT_AMOUNT"
+msgstr "Montant TVA"
+
+#: webApp/forms.py:261 webApp/static/js/videoCodage.js:558
+msgid "BUDGET"
+msgstr "Budget"
+
+#: webApp/forms.py:265 webApp/static/js/videoCodage.js:560
+msgid "SELECT_STRUCTURE"
+msgstr "Selectionnez une structure"
+
+#: webApp/forms.py:269 webApp/static/js/videoCodage.js:566
+msgid "OUTCOME"
+msgstr "Dépenses"
+
+#: webApp/forms.py:274
+msgid "SELECT_OUTCOME"
+msgstr "Choix de la dépense"
+
+#: webApp/pdf.py:230 webApp/splitter.py:115 webApp/static/js/videoCodage.js:59
 msgid "NO_RESULTS"
 msgstr "Pas de résultats"
 
-#: webApp/pdf.py:231 webApp/splitter.py:117 webApp/supplier.py:43
+#: webApp/pdf.py:232 webApp/splitter.py:117 webApp/supplier.py:43
 #: webApp/user.py:182
 msgid "SHOW"
 msgstr "Affichage de"
 
-#: webApp/pdf.py:231 webApp/splitter.py:117 webApp/supplier.py:43
+#: webApp/pdf.py:232 webApp/splitter.py:117 webApp/supplier.py:43
 #: webApp/templates/pdf/view.html:19 webApp/user.py:182
 msgid "OF"
 msgstr "sur"
 
-#: webApp/pdf.py:532
+#: webApp/pdf.py:543
 msgid "END_LONG"
 msgstr "Facture validée et cloturée"
 
-#: webApp/pdf.py:534
+#: webApp/pdf.py:545
 msgid "ERROR_WHILE_INSERTING_IN_GED"
 msgstr "Erreur lors de l'insertion de la facture dans la GED"
 
@@ -241,142 +291,103 @@ msgstr ""
 msgid "ERROR_WHILE_READING_CONFIGURATION_FILE"
 msgstr "Erreur lors de la lecture du fichier de configuration"
 
-#: webApp/static/js/videoCodage.js:445
-#: webApp/templates/dashboard/index.html:799 webApp/templates/pdf/view.html:132
-msgid "VAT_RATE"
-msgstr "Taux de TVA"
-
-#: webApp/static/js/videoCodage.js:454 webApp/static/js/videoCodage.js:555
-#: webApp/templates/dashboard/index.html:777 webApp/templates/pdf/view.html:141
-#: webApp/templates/pdf/view.html:217
-msgid "NO_RATE_AMOUNT"
-msgstr "Montant HT"
-
-#: webApp/static/js/videoCodage.js:463 webApp/templates/pdf/view.html:150
-msgid "LOAD_ACCOUNT"
-msgstr "Compte de charge"
-
-#: webApp/static/js/videoCodage.js:465 webApp/templates/pdf/view.html:152
-msgid "SELECT_LOAD_ACCOUNT"
-msgstr "Selectionnez un compte de charge"
-
-#: webApp/static/js/videoCodage.js:483 webApp/templates/pdf/view.html:191
-msgid "VAT_AMOUNT"
-msgstr "Montant TVA"
-
-#: webApp/static/js/videoCodage.js:561 webApp/templates/pdf/view.html:223
-msgid "BUDGET"
-msgstr "Budget"
-
-#: webApp/static/js/videoCodage.js:563 webApp/templates/pdf/view.html:225
-msgid "SELECT_STRUCTURE"
-msgstr "Selectionnez une structure"
-
-#: webApp/static/js/videoCodage.js:569 webApp/templates/pdf/view.html:271
-msgid "OUTCOME"
-msgstr "Dépenses"
-
-#: webApp/static/js/videoCodage.js:571 webApp/templates/pdf/view.html:273
+#: webApp/static/js/videoCodage.js:568
 msgid "SELECT_BUDGET"
 msgstr "Selectionnez un budget"
 
-#: webApp/static/js/videoCodage.js:608 webApp/static/js/videoCodage.js:646
-msgid "ORDER_NUMBER"
-msgstr "Numéro de commande"
-
-#: webApp/static/js/videoCodage.js:655
+#: webApp/static/js/videoCodage.js:639
 msgid "ADD_ORDER_NUMBER"
 msgstr "Ajouter un numéro de commande"
 
-#: webApp/static/js/videoCodage.js:675 webApp/static/js/videoCodage.js:701
+#: webApp/static/js/videoCodage.js:656 webApp/static/js/videoCodage.js:682
 msgid "DELIVERY_FORM_NUMBER"
 msgstr "Numéro de bon de livraison"
 
-#: webApp/static/js/videoCodage.js:710
+#: webApp/static/js/videoCodage.js:691
 msgid "ADD_DELIVERY_FORM_NUMBER"
 msgstr "Ajouter un numéro de bon de livraison"
 
-#: webApp/static/js/videoCodage.js:837 webApp/static/js/videoCodage.js:850
-#: webApp/static/js/videoCodage.js:884 webApp/static/js/videoCodage.js:889
-#: webApp/static/js/videoCodage.js:917
+#: webApp/static/js/videoCodage.js:818 webApp/static/js/videoCodage.js:831
+#: webApp/static/js/videoCodage.js:865 webApp/static/js/videoCodage.js:870
+#: webApp/static/js/videoCodage.js:898
 msgid "ERROR_OCCURED"
 msgstr "Une erreur est arrivée"
 
-#: webApp/static/js/videoCodage.js:850
+#: webApp/static/js/videoCodage.js:831
 msgid "WRONG_SIRET_FORMAT"
 msgstr "Le format du SIRET n'est pas bon"
 
-#: webApp/static/js/videoCodage.js:889
+#: webApp/static/js/videoCodage.js:870
 msgid "WRONG_SIREN_FORMAT"
 msgstr "Le format du SIREN n'est pas bon"
 
-#: webApp/static/js/videoCodage.js:972
+#: webApp/static/js/videoCodage.js:953
 msgid "BAN_API_ERROR"
 msgstr "Erreur lors de la connexion à l'API de vérification de la BAN"
 
-#: webApp/static/js/videoCodage.js:986
+#: webApp/static/js/videoCodage.js:967
 msgid "REFUSE_CONFIRMATION"
 msgstr "Voulez vous vraiment refuser cette facture ?"
 
-#: webApp/static/js/videoCodage.js:990 webApp/static/js/videoCodage.js:1062
-#: webApp/static/js/videoCodage.js:1074
+#: webApp/static/js/videoCodage.js:971 webApp/static/js/videoCodage.js:1045
+#: webApp/static/js/videoCodage.js:1057
 msgid "YES"
 msgstr "Oui"
 
-#: webApp/static/js/videoCodage.js:1020
+#: webApp/static/js/videoCodage.js:1007
 msgid "FORM_ERROR_OR_EMPTY_FIELD"
 msgstr ""
 "Le formulaire présente des erreurs ou des champs vides. Merci de les "
 "corriger avant de valider"
 
-#: webApp/static/js/videoCodage.js:1025
+#: webApp/static/js/videoCodage.js:1011
 msgid "INCORRECT_BAN_ADDRESS"
 msgstr "L'adresse ne corresponds pas parfaitement au référentiel national."
 
-#: webApp/static/js/videoCodage.js:1026
+#: webApp/static/js/videoCodage.js:1012
 msgid "PUT_FORM_TO_SUPPLIER_WAIT"
 msgstr ""
 "Nous vous conseillons de mettre la facture en attente en attendant de "
 "mettre à jour le fournisseur"
 
-#: webApp/static/js/videoCodage.js:1032
+#: webApp/static/js/videoCodage.js:1016
 msgid "PUT_ON_HOLD"
 msgstr "Mettre en attente"
 
-#: webApp/static/js/videoCodage.js:1038
+#: webApp/static/js/videoCodage.js:1021
 msgid "_VALID_WIHTOUT_BAN_VERIFICATION"
 msgstr "Valider sans la vérification de la BAN"
 
-#: webApp/static/js/videoCodage.js:1045
+#: webApp/static/js/videoCodage.js:1028
 msgid "INVALID_VAT_NUMBER"
 msgstr "Le numéro de TVA n'est pas valide."
 
-#: webApp/static/js/videoCodage.js:1050
+#: webApp/static/js/videoCodage.js:1033
 msgid "_VALID_WIHTOUT_VAT_VERIFICATION"
 msgstr "Valider sans vérifier du numéro de TVA ?"
 
-#: webApp/static/js/videoCodage.js:1057
+#: webApp/static/js/videoCodage.js:1040
 msgid "CALCUL_NOT_EQUAL_WOULD_YOU_VALIDATE"
 msgstr ""
 "La somme des montants alloués à l'analytique est différente du montant "
 "total HT. Voulez-vous malgré tout valider la facture ?"
 
-#: webApp/static/js/videoCodage.js:1068
+#: webApp/static/js/videoCodage.js:1051
 msgid "INVOICE_ALREADY_EXIST"
 msgstr ""
 "Une facture reliée au même fournisseur et ayant le même numéro de facture"
 " apparait déjà en base de données. Voulez-vous quand même valider la "
 "facture ?"
 
-#: webApp/static/js/videoCodage.js:1211
+#: webApp/static/js/videoCodage.js:1194
 msgid "FIELD_TO_CHECK"
 msgstr "Champ à vérifier"
 
-#: webApp/static/js/videoCodage.js:1212 webApp/static/js/videoCodage.js:1217
+#: webApp/static/js/videoCodage.js:1195 webApp/static/js/videoCodage.js:1200
 msgid "BAN_VALUE"
 msgstr "Valeur BAN"
 
-#: webApp/static/js/videoCodage.js:1216
+#: webApp/static/js/videoCodage.js:1199
 msgid "INVALID"
 msgstr "Invalide"
 
@@ -432,6 +443,14 @@ msgstr "Connexion"
 #: webApp/templates/base_splitter.html:79
 msgid "SIGN_UP"
 msgstr "Créer un compte"
+
+#: webApp/templates/forms_macro_input_general.html:4
+msgid "CALCULATE_TOTAL_AMOUNT"
+msgstr "Calculer le montant total"
+
+#: webApp/templates/forms_macro_input_general.html:60
+msgid "ADD_VAT_RATE"
+msgstr "Ajouter un taux de TVA"
 
 #: webApp/templates/home.html:19
 msgid "SEPARATOR_OC"
@@ -782,10 +801,6 @@ msgstr "Format de date en sortie"
 msgid "URL"
 msgstr "URL"
 
-#: webApp/templates/dashboard/index.html:788 webApp/templates/pdf/view.html:182
-msgid "TOTAL_TTC"
-msgstr "Total TTC"
-
 #: webApp/templates/dashboard/index.html:826
 msgid "PDFA_EXPORT"
 msgstr "Export PDF/A"
@@ -1052,88 +1067,68 @@ msgstr "Visualisation du PDF"
 msgid "PAGE"
 msgstr "Page"
 
-#: webApp/templates/pdf/view.html:63
+#: webApp/templates/pdf/view.html:64
 msgid "SUBSCRIPTION"
 msgstr "Abonnement (clos)"
 
-#: webApp/templates/pdf/view.html:67
+#: webApp/templates/pdf/view.html:68
 msgid "ASSET"
 msgstr "Avoir"
 
-#: webApp/templates/pdf/view.html:73
+#: webApp/templates/pdf/view.html:74
 msgid "HIDE_SUPPLIER_INFO"
 msgstr "Cacher les informations du fournisseur"
 
-#: webApp/templates/pdf/view.html:77
+#: webApp/templates/pdf/view.html:78
 #: webApp/templates/suppliers/suppliers_list.html:14
 msgid "SUPPLIER"
 msgstr "Fournisseur"
 
-#: webApp/templates/pdf/view.html:94
+#: webApp/templates/pdf/view.html:95
 msgid "HIDE_FACTURATION_INFO"
 msgstr "Cacher les informations de facturation"
 
-#: webApp/templates/pdf/view.html:98
+#: webApp/templates/pdf/view.html:99
 msgid "BILLING"
 msgstr "Facturation"
 
-#: webApp/templates/pdf/view.html:162
-msgid "ADD_VAT_RATE"
-msgstr "Ajouter un taux de TVA"
-
-#: webApp/templates/pdf/view.html:167
-msgid "CALCULATE_TOTAL_AMOUNT"
-msgstr "Calculer le montant total"
-
-#: webApp/templates/pdf/view.html:173
-msgid "TOTAL_NO_RATE"
-msgstr "Total HT"
-
-#: webApp/templates/pdf/view.html:206
+#: webApp/templates/pdf/view.html:116
 msgid "HIDE_ANALYTIC_INFO"
 msgstr "Cacher les informations analytiques"
 
-#: webApp/templates/pdf/view.html:210
+#: webApp/templates/pdf/view.html:120
 msgid "ANALYTIC"
 msgstr "Analytiques"
 
-#: webApp/templates/pdf/view.html:274
-msgid "INVESTMENT"
-msgstr "Investissement"
-
-#: webApp/templates/pdf/view.html:275
-msgid "OPERATION"
-msgstr "Fonctionnement"
-
-#: webApp/templates/pdf/view.html:281
+#: webApp/templates/pdf/view.html:131
 msgid "ADD_NEW_LINE"
 msgstr "Ajouter une nouvelle ligne"
 
-#: webApp/templates/pdf/view.html:285
+#: webApp/templates/pdf/view.html:135
 msgid "TOTAL_NO_RATE_AMOUNT"
 msgstr "Montant HT"
 
-#: webApp/templates/pdf/view.html:294
+#: webApp/templates/pdf/view.html:145
 msgid "USER_IN_CHARGE"
 msgstr "Utilisateur en charge"
 
-#: webApp/templates/pdf/view.html:296
+#: webApp/templates/pdf/view.html:147
 msgid "SELECT_USER"
 msgstr "Selectionnez un utilisateur.."
 
-#: webApp/templates/pdf/view.html:309
+#: webApp/templates/pdf/view.html:160
 msgid "VALIDATE_INVOICE"
 msgstr "Valider la facture"
 
-#: webApp/templates/pdf/view.html:310
+#: webApp/templates/pdf/view.html:161
 msgid "REFUSE_INVOICE"
 msgstr "Refuser la facture"
 
-#: webApp/templates/pdf/view.html:322
+#: webApp/templates/pdf/view.html:173
 msgid "FORM_VALIDATION"
 msgstr "Validation du formulaire"
 
-#: webApp/templates/pdf/view.html:330
+#: webApp/templates/pdf/view.html:181
 msgid "BACK_TO_VALIDATION"
 msgstr "Retour à la validation"
 
