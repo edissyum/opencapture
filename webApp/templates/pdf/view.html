@@ -114,9 +114,9 @@
                             </div>
                             <div class="form-row justify-content-md-center">
                                 <div class="form-group col-md-3 text-center">
-                                    <label for="totalHT">{{ gettext('TOTAL_NO_RATE') }}</label>
+                                    <label for="total_ht">{{ gettext('TOTAL_NO_RATE') }}</label>
                                     <div class="input-group mb-2">
-                                        <input autocomplete="off" required name="facturationInfo_totalHT" type="text" id="totalHT" class="form-control">
+                                        <input autocomplete="off" required name="facturationInfo_total_ht" type="text" id="total_ht" class="form-control">
                                         <div class="input-group-prepend">
                                             <div class="input-group-text"><i class="fas fa-euro-sign" aria-hidden="true"></i></div>
                                         </div>
@@ -125,7 +125,7 @@
                                 <div class="form-group col-md-3 text-center">
                                     <label for="total">{{ gettext('TOTAL_TTC') }}</label>
                                     <div class="input-group mb-2">
-                                        <input autocomplete="off" required name="facturationInfo_totalTTC" type="text" id="total" class="form-control">
+                                        <input autocomplete="off" required name="facturationInfo_total_ttc" type="text" id="total_ttc" class="form-control">
                                         <div class="input-group-prepend">
                                             <div class="input-group-text"><i class="fas fa-euro-sign" aria-hidden="true"></i></div>
                                         </div>
@@ -225,7 +225,7 @@
                             <a id="addStructure" href="#addStructure" onclick="addStructure(this)" data-toggle="tooltip" title="{{ gettext('ADD_NEW_LINE') }}">
                                 <i class="fa fa-plus-square" aria-hidden="true"></i>
                             </a>
-                            <div id="totalHT_info">
+                            <div id="total_ht_info">
                                 {{ gettext('TOTAL_NO_RATE_AMOUNT') }} : <span></span>
                             </div>
                         </div>

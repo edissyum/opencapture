@@ -387,8 +387,8 @@ def validate_form():
             ged['dest_user'] = request.form['ged_users'].split('#')[0]
             ged['vatNumber'] = vat_number
             ged[_cfg.cfg[default_process]['customvatnumber']] = vat_number
-            ged[_cfg.cfg[default_process]['customht']] = request.form['facturationInfo_totalHT']
-            ged[_cfg.cfg[default_process]['customttc']] = request.form['facturationInfo_totalTTC']
+            ged[_cfg.cfg[default_process]['customht']] = request.form['facturationInfo_total_ht']
+            ged[_cfg.cfg[default_process]['customttc']] = request.form['facturationInfo_total_ttc']
             ged[_cfg.cfg[default_process]['custominvoicenumber']] = invoice_number
             ged[_cfg.cfg[default_process]['custombudget']] = request.form['analyticsInfo_budgetSelection_1']
             ged[_cfg.cfg[default_process]['customoutcome']] = request.form['analyticsInfo_structureSelection_1']
