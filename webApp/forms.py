@@ -1,5 +1,5 @@
 from wtforms import Form, validators
-from flask_babel import lazy_gettext, pgettext
+from flask_babel import lazy_gettext
 
 from .override_wtform import CustomStringField, CustomBooleanField, CustomSelectField
 
@@ -14,7 +14,7 @@ from .override_wtform import CustomStringField, CustomBooleanField, CustomSelect
 # table_field : name of the column using to retrieve data
 # is_footer : needed for facturationInfo field that uses the footer_page column in database to store the page number
 # footer_class : If is_footer is True, you could use footer_class to add specific class to the form-row (needed to VAT input, order_number and delivery_order for example)
-# is_date_type : needed if you want to have a type=date input and not type=text
+# is_date_type : needed if you want to have a type=date input and not type=text for CustomStringField
 # choices : if you need a select, put into this arg the name of function to retrieve data. The function need to be input pdf.py file (e.g : get_financial)
 
 # Supplier's input
