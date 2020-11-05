@@ -11,7 +11,7 @@ var isAdressRunning     = false;
 // noinspection ES6ConvertVarToLetConst
 var windowsWidth        = $('#my-image').width();
 // noinspection ES6ConvertVarToLetConst
-var originalWidth       = $('#widthOriginal').val();
+var originalWidth       = $('#width_original').val();
 // noinspection ES6ConvertVarToLetConst
 var currentPage         = $('#currentPage');
 // noinspection ES6ConvertVarToLetConst
@@ -33,7 +33,7 @@ var config              = '';
 // noinspection ES6ConvertVarToLetConst
 var banApiError         = false;
 // noinspection ES6ConvertVarToLetConst
-var pdfId               = $("#pdfId").val()
+var pdfId               = $("#pdf_id").val()
 
 /******** MAIN FUNCTIONS ********/
 
@@ -487,7 +487,7 @@ function addVAT(input){
         '       </div>' +
         '   </div>'
         ).insertAfter(lastVATAmount).slideToggle();
-        $('#NumberOfVAT').val((cptVAT + 1));
+        $('#number_of_vat').val((cptVAT + 1));
     }
 }
 
@@ -508,30 +508,29 @@ function removeVAT(input){
         });
     }
 
-    $('#NumberOfVAT').val((currentCptVAT - 1));
+    $('#number_of_vat').val((currentCptVAT - 1));
 }
 
 function removeDeliveryNumber(input){
-    let DeliveryNumberToRemove = $('.MAIN_' + input.className);
+    let DeliveryNumberToRemove = $('.main_' + input.className);
     let currentCptDeliveryNumber = parseInt(DeliveryNumberToRemove[0].className.split('_')[2]);
 
     // Avoid deletion of delivery Number if there is just one
     // And avoid deletion of the first, before the second (for example)
-    if($('.MAIN_DELIVERY_' + (currentCptDeliveryNumber + 1)).length === 0 && currentCptDeliveryNumber > 1){
+    if($('.main_delivery_' + (currentCptDeliveryNumber + 1)).length === 0 && currentCptDeliveryNumber > 1){
         DeliveryNumberToRemove.slideToggle(400, 'swing', function(){
             DeliveryNumberToRemove.remove();
         });
-        $('#NumberOfDeliveryNumber').val((currentCptDeliveryNumber - 1));
+        $('#number_of_delivery_number').val((currentCptDeliveryNumber - 1));
     }
 }
 
 function removeOrderNumber(input){
-    let orderNumberToRemove = $('.MAIN_' + input.className);
+    let orderNumberToRemove = $('.main_' + input.className);
     let currentCptOrderNumber = parseInt(orderNumberToRemove[0].className.split('_')[2]);
-
     // Avoid deletion of delivery Number if there is just one
     // And avoid deletion of the first, before the second (for example)
-    if($('.MAIN_DELIVERY_' + (currentCptOrderNumber + 1)).length === 0 && currentCptOrderNumber > 1){
+    if($('.main_delivery_' + (currentCptOrderNumber + 1)).length === 0 && currentCptOrderNumber > 1){
         orderNumberToRemove.slideToggle(400, 'swing', function(){
             orderNumberToRemove.remove();
         });
@@ -594,14 +593,14 @@ function addOrderNumber(input){
     let cptOrder = parseInt(lastOrder.className.split('_')[2]);
     console.log(lastOrder)
     $(
-        '<div class="MAIN_order_' + (cptOrder + 1) + '" style="display: none">' +
+        '<div class="main_order_' + (cptOrder + 1) + '" style="display: none">' +
         '        <div class="form-group">' +
-        '            <label for="orderNumber_' + (cptOrder + 1) + '">' + gt.gettext('ORDER_NUMBER') + ' ' + (cptOrder + 1) + ' <a href="#removeorder" class="ORDER_' + (cptOrder + 1) + '" onclick="removeOrderNumber(this)"><i class="fa fa-minus-square" aria-hidden="true"></i></a> </label>' +
+        '            <label for="order_number_' + (cptOrder + 1) + '">' + gt.gettext('ORDER_NUMBER') + ' ' + (cptOrder + 1) + ' <a href="#removeorder" class="order_' + (cptOrder + 1) + '" onclick="removeOrderNumber(this)"><i class="fa fa-minus-square" aria-hidden="true"></i></a> </label>' +
         '            <div class="input-group mb-2">' +
-        '                <div onclick="drawRectangle(document.getElementById(\'orderNumber_' + (cptOrder + 1) + '\'))" class="input-group-prepend" style="display:none;">' +
+        '                <div onclick="drawRectangle(document.getElementById(\'order_number_' + (cptOrder + 1) + '\'))" class="input-group-prepend" style="display:none;">' +
         '                    <div class="input-group-text"><i class="fas fa-eye" aria-hidden="true"></i></div>' +
         '                </div>' +
-        '                <input autocomplete="off" required name="facturationInfo_order_number_' + (cptOrder + 1) + '" id="orderNumber_' + (cptOrder + 1) + '" type="text" class="form-control" onfocusout="ocrOnFly(true, this, true); removeRectangle()" onfocusin="ocrOnFly(false, this, true)">\n' +
+        '                <input autocomplete="off" required name="facturationInfo_order_number_' + (cptOrder + 1) + '" id="order_number_' + (cptOrder + 1) + '" type="text" class="form-control" onfocusout="ocrOnFly(true, this, true); removeRectangle()" onfocusin="ocrOnFly(false, this, true)">\n' +
         '            </div>' +
         '        </div>' +
         '    </div>'
@@ -624,7 +623,7 @@ function removeUserInCharge(radioButton){
 
 function removeAllOrderNumber(radioButton){
     if (radioButton.prop("checked")) {
-        $("div[class^='MAIN_order_']").slideToggle(400, 'swing', function () {
+        $("div[class^='main_order_']").slideToggle(400, 'swing', function () {
             let cptOrder = parseInt(this.className.split('_')[2]);
             if(cptOrder > 1)
                 $(this).remove();
@@ -634,11 +633,12 @@ function removeAllOrderNumber(radioButton){
         $('#addOrderNumber').remove();
         $('#number_order_number').val(0);
     }else{
-        $('.MAIN_order_1').slideDown();
+        let main_order = $('.main_order_1')
+        main_order.slideDown();
         if (!$('#addOrderNumber').length){
             $('<a id="addOrderNumber" href="#addOrder" onclick="addOrderNumber(this)" data-toggle="tooltip" title="' + gt.gettext('ADD_ORDER_NUMBER') + '" style="display: none">' +
                 '<i class="fa fa-plus-square" aria-hidden="true"></i>' +
-            '</a>').insertBefore($('.MAIN_vat_1')).slideToggle();
+            '</a>').insertAfter(main_order).slideToggle();
         }
 
         let number_order_number = $('#number_order_number')
@@ -651,52 +651,43 @@ function addDeliveryNumber(input){
     let cptDelivery = parseInt(lastDelivery.className.split('_')[2]);
 
     $(
-        '<div class="MAIN_DELIVERY_' + (cptDelivery + 1) + '" style="display: none">' +
+        '<div class="main_delivery_' + (cptDelivery + 1) + '" style="display: none">' +
         '        <div class="form-group">' +
-        '            <label for="deliveryNumber_' + (cptDelivery + 1) + '">' + gt.gettext('DELIVERY_FORM_NUMBER') + ' ' + (cptDelivery + 1) + ' <a href="#removedelivery" class="DELIVERY_' + (cptDelivery + 1) + '" onclick="removeDeliveryNumber(this)"><i class="fa fa-minus-square" aria-hidden="true"></i></a></label>' +
+        '            <label for="delivery_number_' + (cptDelivery + 1) + '">' + gt.gettext('DELIVERY_FORM_NUMBER') + ' ' + (cptDelivery + 1) + ' <a href="#removedelivery" class="delivery_' + (cptDelivery + 1) + '" onclick="removeDeliveryNumber(this)"><i class="fa fa-minus-square" aria-hidden="true"></i></a></label>' +
         '            <div class="input-group mb-2">' +
-        '                <div onclick="drawRectangle(document.getElementById(\'deliveryNumber_' + (cptDelivery + 1) + '\'))" class="input-group-prepend" style="display:none;">' +
+        '                <div onclick="drawRectangle(document.getElementById(\'delivery_number_' + (cptDelivery + 1) + '\'))" class="input-group-prepend" style="display:none;">' +
         '                    <div class="input-group-text"><i class="fas fa-eye" aria-hidden="true"></i></div>' +
         '                </div>' +
-        '                <input autocomplete="off" required name="facturationInfo_deliveryNumber_' + (cptDelivery + 1) + '" id="deliveryNumber_' + (cptDelivery + 1) + '" type="text" class="form-control" onfocusout="ocrOnFly(true, this, true); removeRectangle()" onfocusin="ocrOnFly(false, this, true)">\n' +
+        '                <input autocomplete="off" required name="facturationInfo_delivery_number_' + (cptDelivery + 1) + '" id="delivery_number_' + (cptDelivery + 1) + '" type="text" class="form-control" onfocusout="ocrOnFly(true, this, true); removeRectangle()" onfocusin="ocrOnFly(false, this, true)">\n' +
         '            </div>' +
         '        </div>' +
         '    </div>'
     ).insertAfter(lastDelivery).slideToggle();
 
-    $('#NumberOfDeliveryNumber').val(cptDelivery + 1);
+    $('#number_of_delivery_number').val(cptDelivery + 1);
 }
 
 function removeAllDeliveryNumber(radioButton){
     if (radioButton.prop("checked")) {
-        $("div[class^='MAIN_DELIVERY_']").slideToggle(400, 'swing', function () {
-            $(this).remove();
+        $("div[class^='main_delivery_']").slideToggle(400, 'swing', function () {
+            let cptDelivery = parseInt(this.className.split('_')[2]);
+            if(cptDelivery > 1)
+                $(this).remove();
+            else
+                $(this).slideUp()
         });
         $('#addDeliveryNumber').remove();
-        $('#NumberOfDeliveryNumber').val(0);
+        $('#number_of_delivery_number').val(0);
     }else{
-        $(
-            '<div class="MAIN_DELIVERY_0"></div>' +
-            '<div class="MAIN_DELIVERY_1" style="display: none">' +
-                '<div class="form-group">' +
-                    '<label for="deliveryNumber_1">' + gt.gettext('DELIVERY_FORM_NUMBER') + ' 1</label>' +
-                    '<div class="input-group mb-2">' +
-                        '<div onclick="drawRectangle(document.getElementById(\'deliveryNumber_1\'))" class="input-group-prepend" style="display:none;">' +
-                            '<div class="input-group-text"><i class="fas fa-eye" aria-hidden="true"></i></div>' +
-                        '</div>' +
-                        '<input autocomplete="off" required name="facturationInfo_deliveryNumber_1" id="deliveryNumber_1" type="text" class="form-control" onfocusout="ocrOnFly(true, this, true); removeRectangle()" onfocusin="ocrOnFly(false, this, true)">' +
-                    '</div>' +
-                '</div>' +
-            '</div>' +
-            '<a id="addDeliveryNumber" href="#addDelivery" onclick="addDeliveryNumber(this)" data-toggle="tooltip" title="' + gt.gettext('ADD_DELIVERY_FORM_NUMBER') + '" style="display: none">' +
+        let main_delivery = $('.main_delivery_1')
+        main_delivery.slideDown();
+        if (!$('#addDeliveryNumber').length){
+            $('<a id="addDeliveryNumber" href="#addDelivery" onclick="addDeliveryNumber(this)" data-toggle="tooltip" title="' + gt.gettext('ADD_DELIVERY_FORM_NUMBER') + '" style="display: none">' +
                 '<i class="fa fa-plus-square" aria-hidden="true"></i>' +
-            '</a>'
-        ).insertBefore($('.MAIN_vat_1')).slideToggle();
-        let numberOfDeliveryNumber = $('#NumberOfDeliveryNumber')
-        if(numberOfDeliveryNumber.length === 0)
-            $('<input name="facturationInfo_NumberOfDeliveryNumber" id="NumberOfDeliveryNumber" type="hidden" value="1">').insertBefore($('#NumberOfVAT'));
-        else
-            numberOfDeliveryNumber.val(1);
+            '</a>').insertAfter(main_delivery).slideToggle();
+        }
+        let numberOfDeliveryNumber = $('#number_of_delivery_number')
+        numberOfDeliveryNumber.val(1);
     }
 }
 
@@ -962,12 +953,19 @@ $('#refuseForm').on('click', function(){
     let modalBody = $('.modal-body');
     let modalBack = $('.modal-backdrop');
 
+    let refuse_yes = $('#refuse_yes')
+    let awaitAdress = $('#awaitAdress')
+    let bypassBan = $('#bypassBan')
+    bypassBan.remove()
+    awaitAdress.remove()
+    refuse_yes.remove()
+
     modalBack.toggle();
     modalBody.html('<span id="modalError">' +
             gt.gettext('REFUSE_CONFIRMATION') +
         '</span>');
 
-    $('<button type="button" class="btn btn-danger" onclick=\'changeStatus(pdfId, "ERR", false);\'>' +
+    $('<button type="button" class="btn btn-danger" id="refuse_yes" onclick=\'changeStatus(pdfId, "ERR", false);\'>' +
                 gt.gettext('YES') +
     '</button>').insertAfter($('#returnToValidate'));
 
@@ -993,8 +991,10 @@ $('#validateForm').on('click', function(){
 
     let awaitAdress = $('#awaitAdress')
     let bypassBan = $('#bypassBan')
+    let refuse_yes = $('#refuse_yes')
     awaitAdress.remove()
     bypassBan.remove()
+    refuse_yes.remove()
 
     for (let i = 1; i <= lastCPTStructure; i++){
         let val = $('.' + className + '_' + i).find('input').val();
@@ -1224,8 +1224,6 @@ function verifyTotalAnalytics() {
     }
 }
 
-// Return true if an invoice a duplicate
-// False if is not
 function checkIsDuplicate(){
     fetch('/ws/invoice/isDuplicate', {
         method : 'POST',
@@ -1235,17 +1233,19 @@ function checkIsDuplicate(){
         body : JSON.stringify({
             'invoice_number' : $('#invoice_number').val(),
             'vat_number' : $('#vat_number').val(),
-            'id' : $('#pdfId').val()
+            'id' : $('#pdf_id').val()
         })
     }).then(function(response) {
         response.json().then(function(res){
             if (!JSON.parse(res.ok)) {
                 alert(response.statusText);
             }else{
-                if(JSON.parse(res.text))
+                if(JSON.parse(res.text)){
                     isDuplicate = true;
-                else
-                    isDuplicate = false;
+                    return true
+                }
+                isDuplicate = false;
+                return false
             }
         });
     });

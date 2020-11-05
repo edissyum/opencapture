@@ -400,18 +400,18 @@ def validate_form():
             ged['subject'] = 'Facture N°' + invoice_number
             ged['destination'] = request.form['ged_users'].split('#')[1] if request.form['ged_users'] else _cfg.cfg[default_process]['defaultdestination']
 
-            if 'facturationInfo_NumberOfDeliveryNumber' in request.form:
-                number_of_delivery_number = int(request.form['facturationInfo_NumberOfDeliveryNumber'])
+            if request.form['facturationInfo_number_of_delivery_number'] > 0:
+                number_of_delivery_number = int(request.form['facturationInfo_number_of_delivery_number'])
                 if number_of_delivery_number and number_of_delivery_number == 1:
-                    ged[_cfg.cfg[default_process]['customdeliverynumber']] = request.form['facturationInfo_deliveryNumber_1']
+                    ged[_cfg.cfg[default_process]['customdeliverynumber']] = facturation_form.delivery_number_1.data
                 elif number_of_delivery_number > 1:
                     tmp_delivery = ''
                     for i in range(1, number_of_delivery_number + 1):
-                        tmp_delivery += request.form['facturationInfo_deliveryNumber_' + str(i)] + ';'
+                        tmp_delivery += request.form['delivery_number_' + str(i)] + ';'
                     ged[_cfg.cfg[default_process]['customdeliverynumber']] = tmp_delivery[:-1]
 
-            if request.form['facturationInfo_number_order_number'] > 0:
-                number_of_order_number = int(request.form['facturationInfo_number_order_number'])
+            if request.form['facturationInfo_number_of_order_number'] > 0:
+                number_of_order_number = int(request.form['facturationInfo_number_of_order_number'])
                 if number_of_order_number and number_of_order_number == 1:
                     ged[_cfg.cfg[default_process]['customordernumber']] = facturation_form.order_number_1.data
                 elif number_of_order_number > 1:
@@ -447,7 +447,6 @@ def validate_form():
 
         # Fill the parent array with all the child infos
         for value in parent:
-            print(value)
             for field in request.form:
                 if any(x in field for x in ['no_taxes', 'vat_']):
                     if '_page' in field:
