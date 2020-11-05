@@ -25,6 +25,7 @@ class FindFooter:
         self.date = ''
         self.Ocr = ocr
         self.text = text
+        self.tmp_text = text
         self.Log = log
         self.Locale = locale
         self.Config = config
@@ -36,11 +37,24 @@ class FindFooter:
         self.allRateAmount = {}
         self.ratePercentage = {}
         self.typo = typo
+        self.rerun = False
+        self.rerun_as_text = False
+        self.splitted = False
 
-    def process(self, regex):
+    def process(self, regex, text_as_string):
         array_of_data = {}
+
+        if text_as_string and not self.splitted:
+            self.text = self.text.split('\n')
+            self.splitted = True
+
         for line in self.text:
-            for res in re.finditer(r"" + regex + "", line.content.upper()):
+            if text_as_string:
+                content = line
+            else:
+                content = line.content
+
+            for res in re.finditer(r"" + regex + "", content.upper()):
 
                 # Retrieve only the number and add it in array
                 # In case of multiple no rates amount found, take the higher
@@ -56,7 +70,11 @@ class FindFooter:
                 result_split = result.split('.')
                 if len(result_split) > 1:
                     result = result_split[0] + '.' + result_split[1][0:2]
-                array_of_data.update({float(result.replace(',', '.')): self.Files.return_position_with_ratio(line, 'footer')})
+
+                if text_as_string:
+                    array_of_data.update({float(result.replace(',', '.')): (('', ''), ('', ''))})
+                else:
+                    array_of_data.update({float(result.replace(',', '.')): self.Files.return_position_with_ratio(line, 'footer')})
 
         # Check list of no rates amount and select the higher
         if len(array_of_data) > 0:
@@ -99,12 +117,12 @@ class FindFooter:
                 if no_rate_amount in [False, None]:
                     no_rate_amount = self.process_with_position(['no_taxes_1_position', 'footer_page'])
                     if no_rate_amount:
-                        self.Log.info('noRateAmount found with position')
+                        self.Log.info('noRateAmount found with position : ' + str(no_rate_amount))
 
                 if rate_percentage in [False, None]:
                     rate_percentage = self.process_with_position(['vat_1_position', 'footer_page'])
                     if rate_percentage:
-                        self.Log.info('ratePercentage found with position')
+                        self.Log.info('ratePercentage found with position : ' + str(rate_percentage))
 
             if no_rate_amount and rate_percentage:
                 self.noRateAmount = no_rate_amount
@@ -118,12 +136,12 @@ class FindFooter:
         self.allRateAmount = all_rate_amount
         self.ratePercentage = rate_percentage
 
-    def run(self):
+    def run(self, text_as_string=False):
         if self.Files.isTiff == 'True':
             target = self.Files.tiffName
         else:
             target = self.Files.jpgName
-        all_rate = search_by_positions(self.supplier, 'ttc ', self.Config, self.Locale, self.Ocr, self.Files, target, self.typo)
+        all_rate = search_by_positions(self.supplier, 'ttc', self.Config, self.Locale, self.Ocr, self.Files, target, self.typo)
         all_rate_amount = {}
         if all_rate and all_rate[0]:
             all_rate_amount = {
@@ -146,9 +164,9 @@ class FindFooter:
             }
 
         if not self.test_amount(no_rate_amount, all_rate_amount, rate_percentage):
-            no_rate_amount = self.process(self.Locale.noRatesRegex)
-            rate_percentage = self.process(self.Locale.vatRateRegex)
-            all_rate_amount = self.process(self.Locale.allRatesRegex)
+            no_rate_amount = self.process(self.Locale.noRatesRegex, text_as_string)
+            rate_percentage = self.process(self.Locale.vatRateRegex, text_as_string)
+            all_rate_amount = self.process(self.Locale.allRatesRegex, text_as_string)
 
         # Test all amounts. If some are false, try to search them with position. If not, pass
         if self.test_amount(no_rate_amount, all_rate_amount, rate_percentage) is not False:
@@ -178,6 +196,20 @@ class FindFooter:
             else:
                 return False
         else:
+            if not self.rerun:
+                self.rerun = True
+                if self.Files.isTiff == 'True':
+                    improved_image = self.Files.improve_image_detection(self.Files.tiffName_footer)
+                else:
+                    improved_image = self.Files.improve_image_detection(self.Files.jpgName_footer)
+                self.Files.open_img(improved_image)
+                self.text = self.Ocr.line_box_builder(self.Files.img)
+                self.run()
+
+            if self.rerun and not self.rerun_as_text:
+                self.rerun_as_text = True
+                self.text = self.Ocr.text_builder(self.Files.img)
+                self.run(text_as_string=True)
             return False
 
     @staticmethod
