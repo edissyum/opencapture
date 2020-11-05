@@ -363,6 +363,8 @@ def validate_form():
         facturation_form = forms.FacturationForm(request.form)
         analytics_form = forms.AnalyticsForm(request.form)
 
+        _forms = [supplier_form, facturation_form, analytics_form]
+
         # Create an array containing the parent element, used to structure the XML
         parent = {
             'fileInfo': [],
@@ -370,6 +372,18 @@ def validate_form():
             facturation_form.xml_index: [],
             analytics_form.xml_index: []
         }
+
+        # Fill the XML object with WWTFORM
+        for form in _forms:
+            for field in form:
+                if field.render_kw and 'x1_original' in field.render_kw and field.name + '_position' in request.form:
+                    parent[form.xml_index].append({
+                        field.name: {'field': field.data, 'position': request.form[field.name + '_position']}
+                    })
+                else:
+                    parent[form.xml_index].append({
+                        field.name: {'field': field.data, 'position': None}
+                    })
 
         vat_number = supplier_form.vat_number.data
         invoice_number = facturation_form.invoice_number.data
@@ -465,36 +479,6 @@ def validate_form():
                         parent[value].append({
                             field: {'field': request.form[field], 'position': None}
                         })
-
-        for field in supplier_form:
-            if field.render_kw and 'x1_original' in field.render_kw and field.name + '_position' in request.form:
-                parent[supplier_form.xml_index].append({
-                    field.name: {'field': field.data, 'position': request.form[field.name + '_position']}
-                })
-            else:
-                parent[supplier_form.xml_index].append({
-                    field.name: {'field': field.data, 'position': None}
-                })
-
-        for field in facturation_form:
-            if field.render_kw and 'x1_original' in field.render_kw and field.name + '_position' in request.form:
-                parent[facturation_form.xml_index].append({
-                    field.name: {'field': field.data, 'position': request.form[field.name + '_position']}
-                })
-            else:
-                parent[facturation_form.xml_index].append({
-                    field.name: {'field': field.data, 'position': None}
-                })
-
-        for field in analytics_form:
-            if field.render_kw and 'x1_original' in field.render_kw and field.name + '_position' in request.form:
-                parent[analytics_form.xml_index].append({
-                    field.name: {'field': field.data, 'position': request.form[field.name + '_position']}
-                })
-            else:
-                parent[analytics_form.xml_index].append({
-                    field.name: {'field': field.data, 'position': None}
-                })
 
         _db.update({
             'table': ['invoices'],
