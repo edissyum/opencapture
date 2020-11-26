@@ -401,7 +401,7 @@ def validate_form():
                 ged['status'] = _cfg.cfg[default_process]['status']
             # Create the data list of arguments
             ged['fileContent'] = open(request.form['fileInfo_path'], 'rb').read()
-            ged['creationDate'] = request.form['pdf_creation_date']
+            ged['creationDate'] = request.form['fileInfo_pdf_creation_date']
             ged['date'] = invoice_date
             ged['dest_user'] = request.form['ged_users'].split('#')[0]
             ged['vatNumber'] = vat_number
@@ -414,7 +414,7 @@ def validate_form():
             ged['subject'] = 'Facture N°' + invoice_number
             ged['destination'] = request.form['ged_users'].split('#')[1] if request.form['ged_users'] else _cfg.cfg[default_process]['defaultdestination']
 
-            if request.form['facturationInfo_number_of_delivery_number'] > 0:
+            if int(request.form['facturationInfo_number_of_delivery_number']) > 0:
                 number_of_delivery_number = int(request.form['facturationInfo_number_of_delivery_number'])
                 if number_of_delivery_number and number_of_delivery_number == 1:
                     ged[_cfg.cfg[default_process]['customdeliverynumber']] = facturation_form.delivery_number_1.data
@@ -424,7 +424,7 @@ def validate_form():
                         tmp_delivery += request.form['delivery_number_' + str(i)] + ';'
                     ged[_cfg.cfg[default_process]['customdeliverynumber']] = tmp_delivery[:-1]
 
-            if request.form['facturationInfo_number_of_order_number'] > 0:
+            if int(request.form['facturationInfo_number_of_order_number']) > 0:
                 number_of_order_number = int(request.form['facturationInfo_number_of_order_number'])
                 if number_of_order_number and number_of_order_number == 1:
                     ged[_cfg.cfg[default_process]['customordernumber']] = facturation_form.order_number_1.data
