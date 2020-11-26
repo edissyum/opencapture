@@ -116,26 +116,27 @@ password            =
 # Split different process with comma
 availableProcess    = OCForMaarch-invoice
 defaultProcess      = OCForMaarch-invoice
-usergroupid         = COURRIER
+# integer
+usergroupid         = 1
 
 # Use - and not _
 [OCForMaarch-invoice]
 status               = INIT
 statusEnd            = END
 typeid               = 1202
-typist               = invoice
+typist               = 21
 priority             = poiuytre1357nbvc
 format               = pdf
-categoryId           = incoming
-defaultDestination   = COU
-defaultDestUser      = bblier
-customInvoiceNumber  = custom_t1
-customVatNumber      = custom_t2
-customOutcome        = custom_t3
-customBudget         = custom_t4
-customHT             = custom_f1
-customTTC            = custom_f2
-customOrderNumber    = custom_t5
-customDeliveryNumber = custom_t6
+modelId              = 1
+defaultDestination   = 1
+defaultDestUser      = 21
+customInvoiceNumber  = 6
+customVatNumber      = 7
+customOutcome        = 8
+customBudget         = 9
+customHT             = 10
+customTTC            = 11
+customOrderNumber    = 12
+customDeliveryNumber = 13
 contactType          = 100
 contactPurposeId     = 3

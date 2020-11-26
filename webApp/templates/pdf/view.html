@@ -148,7 +148,7 @@
                                         <select required name="ged_users" id="ged_users" class="form-control chosen-select" data-placeholder="{{ gettext('SELECT_USER') }}">
                                             <option value=""></option>
                                             {% for user in list_users %}
-                                                <option value='{{ user['user_id'] }}#{{ user['entity_id'] }}'>{{ user['firstname'] }} {{ user['lastname'] }} ({{ user['entity_id'] }})</option>
+                                                <option value='{{ user['id'] }}#{{ user['entities_id'] }}'>{{ user['firstname'] }} {{ user['lastname'] }} ({{ user['entity_id'] }})</option>
                                             {% endfor %}
                                         </select>
                                     </div>

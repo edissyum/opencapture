@@ -28,6 +28,10 @@ Tested with :
 - Debian 10.X with Python 3.7.3 & Tesseract V4.0.0 & nginx as web server
 - Ubuntu 20.04 LTS with Python 3.7.7 & Tesseract V4.1.1 & nginx as web server
 - Ubuntu 20.04 LTS with Python 3.8.5 & Tesseract V4.1.1 & nginx as web server
+- Ubuntu 20.10 with Python 3.8.5 & Tesseract V4.1.1 & nginx as web server
+
+Recommended version :
+- Debian 10.X with Python 3.7.3 & Tesseract V4.0.0 & nginx as web server
 
 ## Install Open-Capture for Invoices
 
@@ -139,7 +143,7 @@ For the custom ones, you'll have some settings to fill :
 
 The positioning mask is named only with the typology number : <code>eg : 1.ini</code>. The typology number has to be mentionned in the default_referencial_supplier for each supplier
 
-## WebServices for Maarch 19.04
+## WebServices for Maarch 20.03 & 20.10
 
 The list of files needed to be modify is in install/Maarch with the correct structure. Each modifications on files are between the following tags :
 

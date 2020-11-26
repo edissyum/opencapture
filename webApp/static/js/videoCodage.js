@@ -591,7 +591,7 @@ function removeStructure(input){
 function addOrderNumber(input){
     let lastOrder = $('#' + input.id).prev()[0];
     let cptOrder = parseInt(lastOrder.className.split('_')[2]);
-    console.log(lastOrder)
+
     $(
         '<div class="main_order_' + (cptOrder + 1) + '" style="display: none">' +
         '        <div class="form-group">' +

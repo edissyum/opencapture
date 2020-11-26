@@ -67,31 +67,50 @@ class WebServices:
         custom_delivery_number = config.cfg[_process]['customdeliverynumber']
         contact = args['contact']
         if not contact:
-            contact = {'id': '', 'contact_id': ''}
+            contact = {}
+        else:
+            contact = [{'id': contact['id'], 'type': 'contact'}]
+
         data = {
             'encodedFile': base64.b64encode(args['fileContent']).decode('utf-8'),
             'priority': config.cfg[_process]['priority'],
             'status': args['status'],
-            'type_id': config.cfg[_process]['typeid'],
+            'doctype': config.cfg[_process]['typeid'],
             'format': config.cfg[_process]['format'],
-            'category_id': config.cfg[_process]['categoryid'],
+            'modelId': config.cfg[_process]['modelid'],
             'typist': config.cfg[_process]['typist'],
             'subject': args['subject'],
             'destination': args['destination'],
             'dest_user': args['dest_user'],
-            'address_id': contact['id'],
-            'exp_contact_id': contact['contact_id'],
-            'doc_date': args['date'],
+            'senders': contact,
+            'documentDate': args['date'],
             'admission_date': args['creationDate'],
-            custom_budget: args[custom_budget] if custom_budget in args else '',
-            custom_no_rate: args[custom_no_rate] if custom_no_rate in args else '',
-            custom_all_rate: args[custom_all_rate] if custom_all_rate in args else '',
-            custom_outcome: args[custom_outcome] if custom_outcome in args else '',
-            custom_vat_number: args[custom_vat_number] if custom_vat_number in args else '',
-            custom_order_number: args[custom_order_number] if custom_order_number in args else '',
-            custom_invoice_number: args[custom_invoice_number] if custom_invoice_number in args else '',
-            custom_delivery_number: args[custom_delivery_number] if custom_delivery_number in args else '',
+            'customFields': {},
         }
+
+        if 'dest_user' in args:
+            data['diffusionList'] = [{
+                'mode': 'dest',
+                'type': 'user',
+                'id': args['dest_user'],
+            }]
+
+        if custom_budget in args:
+            data['customFields'][custom_budget] = args[custom_budget]
+        if custom_no_rate in args:
+            data['customFields'][custom_no_rate] = args[custom_no_rate]
+        if custom_all_rate in args:
+            data['customFields'][custom_all_rate] = args[custom_all_rate]
+        if custom_outcome in args:
+            data['customFields'][custom_outcome] = args[custom_outcome]
+        if custom_vat_number in args:
+            data['customFields'][custom_vat_number] = args[custom_vat_number]
+        if custom_order_number in args:
+            data['customFields'][custom_order_number] = args[custom_order_number]
+        if custom_invoice_number in args:
+            data['customFields'][custom_invoice_number] = args[custom_invoice_number]
+        if custom_delivery_number in args:
+            data['customFields'][custom_delivery_number] = args[custom_delivery_number]
 
         res = requests.post(self.baseUrl + 'resources', auth=self.auth, data=json.dumps(data), headers={'Connection': 'close', 'Content-Type': 'application/json'})
 
