@@ -1,12 +1,13 @@
 nginx
 incron
-python3
+libpq-dev
 zbar-tools
 pkg-config
 imagemagick
 python3-pip
 poppler-utils
+python3
 rabbitmq-server
+libgl1-mesa-glx
 libtesseract-dev
 libleptonica-dev
-libmagickwand-dev

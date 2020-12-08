@@ -1,11 +1,7 @@
-from flask import (
-    current_app, Blueprint, render_template,
-)
-
 from flask_babel import gettext
+from webApp.auth import admin_login_required
+from flask import Blueprint, render_template
 from flask_paginate import Pagination, get_page_args
-from webApp.db import get_db
-from webApp.auth import login_required
 from webApp.functions import get_custom_id, check_python_customized_files
 
 custom_id = get_custom_id()
@@ -13,29 +9,18 @@ custom_array = {}
 if custom_id:
     custom_array = check_python_customized_files(custom_id[1])
 
-if 'Config' not in custom_array: from bin.src.classes.Config import Config as _Config
-else: _Config = getattr(__import__(custom_array['Config']['path'] + '.' + custom_array['Config']['module'], fromlist=[custom_array['Config']['module']]), custom_array['Config']['module'])
-
-if 'Log' not in custom_array: from bin.src.classes.Log import Log as _Log
-else: _Log = getattr(__import__(custom_array['Log']['path'] + '.' + custom_array['Log']['module'], fromlist=[custom_array['Log']['module']]), custom_array['Log']['module'])
-
-if 'Database' not in custom_array: from bin.src.classes.Database import Database as _Database
-else: _Database = getattr(__import__(custom_array['Database']['path'] + '.' + custom_array['Database']['module'], fromlist=[custom_array['Database']['module']]), custom_array['Database']['module'])
+if 'pdf' not in custom_array:
+    from . import pdf
+else:
+    pdf = getattr(__import__(custom_array['pdf']['path'], fromlist=[custom_array['pdf']['module']]), custom_array['pdf']['module'])
 
 bp = Blueprint('supplier', __name__, url_prefix='/supplier')
 
-def init():
-    configName  = _Config(current_app.config['CONFIG_FILE'])
-    Config      = _Config(current_app.config['CONFIG_FOLDER'] + '/config_' + configName.cfg['PROFILE']['id'] + '.ini')
-    Log         = _Log(Config.cfg['GLOBAL']['logfile'])
-    db          = _Database(Log, None, get_db())
-
-    return db, Config
 
 @bp.route('/list')
-@login_required
+@admin_login_required
 def supplier_list():
-    _vars = init()
+    _vars = pdf.init()
     _db = _vars[0]
 
     page, per_page, offset = get_page_args(page_parameter='page',
@@ -43,13 +28,14 @@ def supplier_list():
 
     total = _db.select({
         'select': ['count(*) as total'],
-        'table' : ['suppliers'],
+        'table': ['suppliers'],
     })[0]['total']
 
     list_supplier = _db.select({
         'select': ['*'],
         'table': ['suppliers'],
-        'limit': str(offset) + ',' + str(per_page),
+        'limit': str(per_page),
+        'offset': str(offset)
     })
 
     result = [dict(supplier) for supplier in list_supplier]

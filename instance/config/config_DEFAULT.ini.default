@@ -1,9 +1,9 @@
 [GLOBAL]
-# Use ${GLOBAL:projectPath} to specify once for all the path of the project
+; Use ${GLOBAL:projectPath} to specify once for all the path of the project
 nbthreads                   = 5
 resolution                  = 300
 compressionquality          = 100
-# Used to fix potential OCR error into mail detection
+; Used to fix potential OCR error into mail detection
 sanitizeStr                 = {}\[\]()!?§&é~èàç
 projectPath                 = /opt/OpenCaptureForInvoices/
 tmpPath                     = ${GLOBAL:projectPath}/bin/data/tmp/
@@ -15,55 +15,80 @@ exportAccountingFileParser  = ${GLOBAL:projectPath}/instance/config/exported_fil
 errorPath                   = ${GLOBAL:projectPath}/bin/data/error/
 logFile                     = ${GLOBAL:projectPath}/bin/data/log/OCforInvoices.log
 ocrErrorPath                = ${GLOBAL:projectPath}/instance/config/OCR_ERRORS.xml
-# True or False, python way
+; True or False, python way
 allowDuplicate              = False
-# True or False, python way
 allowAutomaticValidation    = False
 defaultPassword             = Open-CaptureForInvoices
-# True or False, python way
+; True or False, python way
 convertPdfToTiff            = True
-# True or False, python way
 allowBypassSupplieBanVerif  = True
+; Delta between date found and today date, in days
+; -1 to disable
+timeDelta                   = -1
+; Number of files uploaded simultaneously
+uploadMaxFiles              = 3
+
+[AI-CLASSIFICATION]
+; True or False, python way
+enabled = False
+iaPath = ${GLOBAL:projectPath}/bin/src/invoice_classification/
+modelPath = ${AI-CLASSIFICATION:iaPath}/invoice_classification.model
+trainImagePath = ${AI-CLASSIFICATION:iaPath}/images/training-images/
+predictImagePath = ${AI-CLASSIFICATION:iaPath}/images/predict-images/
+; Percentage minimum to keep the typology found by the AI
+confidenceMin = 80
 
 [SPLITTER]
 splitterpath = /var/docservers/OpenCapture_Splitter/
 tmpBatchPath = ${SPLITTER:splitterpath}/batches/
 pdfOutputPath = ${SPLITTER:splitterpath}/separated_pdf/
 pdfOriginPath = ${GLOBAL:projectPath}/bin/data/OC_Splitter/pdf_sources/
-allowedExtensions  = {'pdf'}
+
+[REMOVE-BLANK-PAGES]
+; True or False
+enabled = False
+; Float type
+blobsRatio = 1E-6
 
 [DATABASE]
-databasefile                = ${GLOBAL:projectPath}/instance/flaskr.sqlite
+databasefile = ${GLOBAL:projectPath}/instance/flaskr.sqlite
+; sqlite or pgsql
+databaseType = sqlite
+postgresHost = localhost
+postgresPort = 5432
+postgresDatabase = opencapture
+postgresUser =
+postgresPassword =
 
 [LOCALE]
-# fr_FR or en_EN by default
+; fr_FR or en_EN by default
 locale                   = fr_FR
-# fra or eng by default
+; fra or eng by default
 localeocr                = fra
 localepath               = ${GLOBAL:projectPath}/webApp/static/locale/
 
 [REFERENCIAL]
 referencialfinancial            = ${GLOBAL:projectPath}/bin/src/referencial/plan_comptable.xlsx
-# ODS or XLSX supported
-referencialsupplierdocumentpath = ${GLOBAL:projectPath}/bin/src/referencial/default_referencial_supplier.ods
-referencialsupplierindexpath    = ${GLOBAL:projectPath}/bin/src/referencial/default_referencial_supplier_index.json
+; ODS or XLSX supported
+referencialSupplierDocumentPath = ${GLOBAL:projectPath}/bin/src/referencial/default_referencial_supplier.ods
+referencialSupplierIndexpath    = ${GLOBAL:projectPath}/bin/src/referencial/default_referencial_supplier_index.json
+referencialPosition             = ${GLOBAL:projectPath}/bin/src/referencial/positions/
 
 [REGEX]
 urlpattern          = fr|com|net|org|gouv
 
 [SEPARATORQR]
-# True or False, python way
+; True or False, python way
 enabled             = False
-# True or False, python way
+; True or False, python way
 exportpdfa          = False
 outputpdfpath       = ${GLOBAL:projectPath}/data/exported_pdf/
 outputpdfapath      = ${GLOBAL:projectPath}/data/exported_pdfa/
 tmppath             = /tmp/
-# _ or - for exemple
+; _ or - for exemple
 divider             = _
 
-# VIDEOCODAGE settings
-
+; VIDEOCODAGE settings
 [GENERAL]
 siret-consumer      =
 siret-secret        =
@@ -79,38 +104,35 @@ orange-ratio        = 50
 total-ratio         = 95
 
 [GED]
-# True or False, python way
+; True or False, python way
 enabled             = False
-# Dont forget to add the WS link. By default for maarch : '/rest'
+; Dont forget to add the WS link. By default for maarch : '/rest'
 host                = http://localhost/cs_maarch/rest/
 user                =
 password            =
-# Split different process with comma
+; Split different process with comma
 availableProcess    = OCForMaarch-invoice
 defaultProcess      = OCForMaarch-invoice
-usergroupid         = COURRIER
-# Delta between date found and today date, in days
-# -1 to disable
-timeDelta           = -1
+usergroupid         = 1
 
-# Use - and not _
+; Use - and not _ for the label of the process
 [OCForMaarch-invoice]
 status               = INIT
 statusEnd            = END
 typeid               = 1202
-typist               = invoice
+typist               = 21
 priority             = poiuytre1357nbvc
 format               = pdf
-categoryId           = incoming
-defaultDestination   = COU
-defaultDestUser      = bblier
-customInvoiceNumber  = custom_t1
-customVatNumber      = custom_t2
-customOutcome        = custom_t3
-customBudget         = custom_t4
-customHT             = custom_f1
-customTTC            = custom_f2
-customOrderNumber    = custom_t5
-customDeliveryNumber = custom_t6
+modelId              = 1
+defaultDestination   = 1
+defaultDestUser      = 21
+customInvoiceNumber  = 6
+customVatNumber      = 7
+customOutcome        = 8
+customBudget         = 9
+customHT             = 10
+customTTC            = 11
+customOrderNumber    = 12
+customDeliveryNumber = 13
 contactType          = 100
 contactPurposeId     = 3

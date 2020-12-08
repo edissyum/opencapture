@@ -1,5 +1,5 @@
 $(function() {
-    // drag and drop between lists
+    // Drag and drop between lists
     $(".facet-list").sortable({
         connectWith: "div",
         placeholder: "placeholder",
@@ -8,13 +8,14 @@ $(function() {
             deleteInvoicesIfEmpty();
         },
         start: function(e, ui){
-        // get responsive placeholder height and width
-        ui.placeholder.height($('.image-page-invoice').height());
-        ui.placeholder.width($('.image-page-invoice').width());
+        // Det responsive placeholder height and width
+         let image_dimensions = $('.image-page-invoice');
+        ui.placeholder.height(image_dimensions.height());
+        ui.placeholder.width(image_dimensions.width());
         }
     }).disableSelection();
 
-    // image invoice hover effect
+    // Image invoice hover effect
     $('.image-page-invoice, #image-invoice-zoom').hover(
         function () {
             $(this).parent().children('a').css("display", "block")
@@ -25,7 +26,7 @@ $(function() {
         $('.placeholder').css("height", "" + $('.image-page-invoice').height() );
 });
 
-// invoice zoom button
+// Invoice zoom button
 $(document).on('click','#image-invoice-zoom',function(e) {
     // disable scroll up when click
     e.preventDefault();
@@ -71,7 +72,7 @@ function refresh(){
     location.reload();
 }
 
-// check or uncheck if image clicked
+// Check or uncheck if image clicked
 $('.image-page-invoice').click(function(e) {
     let $checkbox = $(this).parent().find('input:checkbox')
     if($checkbox.is(":checked")){
@@ -82,9 +83,9 @@ $('.image-page-invoice').click(function(e) {
     }
 });
 
-// save new order of invoices
+// Save new order of invoices
 function submitSplit(){
-     // disable scroll up when click
+     // Disable scroll up when click
     let count_id_len = $("#invoices-list").find('[id^=row_]').length;
     let list_ids = JSON.parse('[]');
 
@@ -94,7 +95,7 @@ function submitSplit(){
             list_ids.push(ids);
     }
 
-    fetch('/submitSplit', {
+    fetch('/ws/splitter/submit', {
         method  : 'POST',
         headers : {
             'Content-Type': 'application/json'
@@ -105,27 +106,27 @@ function submitSplit(){
     }).then(function(response) {
         response.json().then(function(res){
             if (JSON.parse(res.ok)) {
-                window.location = "/splitterManager";
+                window.location = "/splitter/list";
             }else {
             }
         });
     });
 }
 
-// hide image zoom when
+// Hide image zoom when
 $(document).mouseup(function (e){
   let container = $("#zoom-image") // YOUR CONTAINER SELECTOR
   if (!container.is(e.target) // if the target of the click isn't the container...
       && container.has(e.target).length === 0) // ... nor a descendant of the container
   {
-    $('#zoom-image').attr('src','');
-    $("#zoom-image").css({
+    container.attr('src','');
+    container.css({
         "visibility":"hidden"
     })
   }
 });
 
-// add new invoice list
+// Add new invoice list
 function add_invoice(){
     // get the new invoice index
     let invoices_ids = $("#invoices-list").find('[id^=row_]');
@@ -134,12 +135,11 @@ function add_invoice(){
     let isElementInView100;
     let isElementInView200;
     let $element;
-    let $append_invoice_in;
     let new_invoice = '\t\t\t<div class="row delete-if-empty change-row-id-on-invoice-add" id="row_'+ count_id_len + '">\n' +
                         '\t\t\t\t<div class="col-xl">\n' +
                         '\t\t\t\t\t <div class="card">\n' +
                         '\t\t\t\t\t\t<div class="card-header">\n' +
-                        '\t\t\t\t\t\t\t<label>Facture ' + count_id_len + '</label>\n' +
+                        '\t\t\t\t\t\t\t<label>' + gt.gettext('INVOICE') + ' ' + count_id_len + '</label>\n' +
                         '\t\t\t\t\t\t\t<a id="delete-invoice" href="#" rel="' + count_id_len + '">\n' +
                         '\t\t\t\t\t\t\t\t<i class="fas fa-trash"></i>\n' +
                         '\t\t\t\t\t\t\t</a>' +
@@ -152,7 +152,7 @@ function add_invoice(){
                         '\t\t\t\t</div>\n' +
                         '\t\t\t</div>';
 
-    // append in the current scroll position
+    // Append in the current scroll position
     for(let invoice of invoices_ids){
         $element = $('#' + invoice.id);
         isElementInView100 = isScrolledIntoView($element, 100);
@@ -165,18 +165,18 @@ function add_invoice(){
         $('#' + invoice_in_view.id).after(new_invoice);
     }
     else {
-        // if all invoices were deleted
+        // If all invoices were deleted
         $('.container-fluid').append(new_invoice);
     }
 
     $('#row_' + count_id_len).hide().slideDown();
     orderInvoiceIds();
     $('#input-send-invoice').append(
-        '<option class="invoice-number-option" id=\"option_invoice_' + count_id_len + '\"> Facture ' + count_id_len + '</option>'
+         '<option class="invoice-number-option" id=\"option_invoice_' + count_id_len + '\"> ' + gt.gettext('INVOICE') + ' ' + count_id_len + '</option>'
     );
 
-    // delete invoice
-    // add new list to sortable
+    // Delete invoice
+    // Add new list to sortable
     $(".facet-list").sortable({
       connectWith: "div",
       placeholder: "placeholder",
@@ -195,21 +195,17 @@ $(document).on('click','#delete-invoice',function(e) {
     removeInvoice(invoice_index);
 });
 
-// pages delete hist
+// Pages delete hist
 function show_hide_history(){
     $("#invoices-history-list").slideToggle();
 }
 
 
-// hide history per default
+// Hide history per default
 $(document).ready(function() {
     $("#invoices-history-list").hide();
     $(".sortable").sortable({
            scroll: false
-    });
-    // remove invoice list if empty
-    $('.facet-list').bind("DOMSubtreeModified",function(){
-        let count_element_in_list = $("#invoices-list").find('[id^=list_]').length;
     });
 });
 
@@ -223,11 +219,11 @@ $(document).on('click','#delete-invoice-image',function(e) {
 // remove invoice
 function removeInvoice(index) {
         $('#row_' + index).slideUp("normal", function() { $(this).remove(); } );
-        // delete invoice from control menu option
+        // Delete invoice from control menu option
         $('#input-send-invoice > #option_invoice_' + index).remove();
 }
 
-// remove invoice if empty
+// Remove invoice if empty
 function deleteInvoicesIfEmpty() {
     $('.remove-if-empty').each(function () {
         if ($(this).children().length === 0){
@@ -236,7 +232,7 @@ function deleteInvoicesIfEmpty() {
     });
 }
 
-// check if invoice is displayed
+// Check if invoice is displayed
 function isScrolledIntoView(elem, correct_scrolling){
     let docViewTop = $(window).scrollTop() - correct_scrolling;
     let docViewBottom = docViewTop + $(window).height();
@@ -247,19 +243,19 @@ function isScrolledIntoView(elem, correct_scrolling){
     return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop));
 }
 
-// order invoices ids
+// Order invoices ids
 function orderInvoiceIds(){
     $( ".change-row-id-on-invoice-add" ).each(function( index ) {
         index ++;
         $(this).attr("id", "row_" + index);
-        $(this).find('label').text("Facture " + index);
+        $(this).find('label').text(gt.gettext('INVOICE') + ' ' + index);
         $(this).find('.change-list-id-on-invoice-add').attr("id", "list_" + index);
         //change delete index rel attribute
         $(this).find('#delete-invoice').attr("rel", index);
     });
     $( "#input-send-invoice > option" ).each(function( index ) {
         index ++;
-        $(this).text("Facture " + index);
+        $(this).text(gt.gettext('INVOICE') + ' ' + index);
         $(this).attr("id", "option_invoice_" + index);
     });
 }

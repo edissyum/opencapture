@@ -11,7 +11,7 @@ var isAdressRunning     = false;
 // noinspection ES6ConvertVarToLetConst
 var windowsWidth        = $('#my-image').width();
 // noinspection ES6ConvertVarToLetConst
-var originalWidth       = $('#widthOriginal').val();
+var originalWidth       = $('#width_original').val();
 // noinspection ES6ConvertVarToLetConst
 var currentPage         = $('#currentPage');
 // noinspection ES6ConvertVarToLetConst
@@ -32,6 +32,8 @@ var isDuplicate         = false;
 var config              = '';
 // noinspection ES6ConvertVarToLetConst
 var banApiError         = false;
+// noinspection ES6ConvertVarToLetConst
+var pdfId               = $("#pdf_id").val()
 
 /******** MAIN FUNCTIONS ********/
 
@@ -44,14 +46,14 @@ function readConfig() {
 }
 
 function searchSupplier(){
-    let inputVAT    = $('#vatNumber');
-    let inputSIRET  = $('#siretNumber');
-    let inputSIREN  = $('#sirenNumber');
-    let inputCity   = $('#supplier_city');
-    let inputAdress = $('#supplier_address');
-    let inputZip    = $('#supplier_postal_code');
+    let inputVAT = $('#vat_number');
+    let inputSIRET = $('#siret_number');
+    let inputSIREN = $('#siren_number');
+    let inputCity = $('#city');
+    let inputAdress = $('#address');
+    let inputZip = $('#postal_code');
 
-    $('#supplier').autocomplete({
+    $('#name').autocomplete({
         serviceUrl: '/ws/supplier/retrieve',
         deferRequestBy: 300,
         noSuggestionNotice: gt.gettext('NO_RESULTS'),
@@ -79,14 +81,14 @@ function searchSupplier(){
             }
         },
         onSelect: function (suggestion) {
-            let data        = JSON.parse(suggestion['data'])[0];
-            let zip         = data['zipCode'];
-            let VAT         = data['VAT'];
-            let city        = data['city'];
-            let SIRET       = data['SIRET'];
-            let SIREN       = data['SIREN'];
-            let adress1     = data['adress1'];
-            let adress2     = data['adress2'];
+            let data = JSON.parse(suggestion['data'])[0];
+            let zip = data['zipCode'];
+            let VAT = data['VAT'];
+            let city = data['city'];
+            let SIRET = data['siret'];
+            let SIREN = data['siren'];
+            let adress1 = data['adress1'];
+            let adress2 = data['adress2'];
 
             if(adress1 !== null && adress2 !== null && (inputAdress.val() === '' || inputAdress.val() !== adress1 + ' ' + adress2)){
                 inputAdress.val(adress1.trim() + ' ' + adress2.trim()).prev().fadeOut();
@@ -135,17 +137,18 @@ function searchSupplier(){
 }
 
 function ocrOnFly(isRemoved, inputId, removeWhiteSpace = false, needToBeNumber = false){
-    let myImage     = $('#my-image');
-    let zoomImg     = $('.zoomImg');
+    let myImage = $('#my-image');
+    let zoomImg = $('.zoomImg');
     // ratioImg is used to recalculate the (x,y) position when the ocr is done on the zoomed image
-    let ratioImg   = '1';
-    let isNotZoomed    = (zoomImg.length === 0 || zoomImg.css('opacity') === '0');
+    let ratioImg = originalWidth / myImage.width();
+
+    let isNotZoomed = (zoomImg.length === 0 || zoomImg.css('opacity') === '0');
     if (isNotZoomed){
         zoomImg.css({
             'z-index' : -99
         });
     }else {
-        ratioImg = zoomImg.width() / myImage.width();
+        ratioImg = originalWidth / zoomImg.width();
         myImage = zoomImg;
     }
 
@@ -213,28 +216,37 @@ function ocrOnFly(isRemoved, inputId, removeWhiteSpace = false, needToBeNumber =
                                 if (attr !== null) {
                                     input.dispatchEvent(new KeyboardEvent('keyup'));
                                 } else if (inputId.id === 'supplier') {
-                                    $('#supplier').focus();
+                                    $('#name').focus();
                                 }
 
                                 // Add the coordonates of selection to draw rectangle later
                                 // Remove the _original because of the ratio issues
+                                let x1 = selection.x1 * ratioImg;
+                                let y1 = selection.y1 * ratioImg;
+                                let x2 = selection.x2 * ratioImg;
+                                let y2 = selection.y2 * ratioImg;
+
                                 input.setAttribute('x1_original', '');
                                 input.setAttribute('y1_original', '');
                                 input.setAttribute('x2_original', '');
                                 input.setAttribute('y2_original', '');
-                                input.setAttribute('x1', isNotZoomed ? selection.x1 : selection.x1 / ratioImg);
-                                input.setAttribute('y1', isNotZoomed ? selection.y1 : selection.y1 / ratioImg);
-                                input.setAttribute('x2', isNotZoomed ? selection.x2 : selection.x2 / ratioImg);
-                                input.setAttribute('y2', isNotZoomed ? selection.y2 : selection.y2 / ratioImg);
+                                input.setAttribute('x1', x1.toFixed(2).toString());
+                                input.setAttribute('y1', y1.toFixed(2).toString());
+                                input.setAttribute('x2', x2.toFixed(2).toString());
+                                input.setAttribute('y2', y2.toFixed(2).toString());
                                 input.setAttribute('page', currentPage === undefined ? 1 : currentPage.text());
 
-                                let x1 = isNotZoomed ? selection.x1 : selection.x1 / ratioImg;
-                                let y1 = isNotZoomed ? selection.y1 : selection.y1 / ratioImg;
-                                let x2 = isNotZoomed ? selection.x2 : selection.x2 / ratioImg;
-                                let y2 = isNotZoomed ? selection.y2 : selection.y2 / ratioImg;
+                                let inputPosition = $('#' + input.id + '_position')
+                                let inputPage = $('#' + input.id + '_page')
 
-                                $('#' + input.id).parent().append('<input type="hidden" id="' + input.name + '_position" name="' + input.name + '_position"/>')
-                                $('#' + input.name + '_position').val('((' + x1 + ',' + y1 + '),(' + x2 + ',' + y2 + '))');
+                                if (!inputPosition.length)
+                                    $('#' + input.id).parent().append('<input type="hidden" id="' + input.id + '_position" name="' + input.name + '_position"/>')
+
+                                if (!inputPage.length)
+                                    $('#' + input.id).parent().append('<input type="hidden" id="' + input.id + '_page" name="' + input.name + '_page"/>')
+
+                                inputPosition.val('((' + x1.toFixed(2) + ',' + y1.toFixed(2) + '),(' + x2.toFixed(2) + ',' + y2.toFixed(2) + '))');
+                                inputPage.val(currentPage === undefined ? 1 : currentPage.text());
 
                                 // Show the eyes, on click on it, it will show the rectangle on the image
                                 // .prev() allow us to display the input-group-text class, containing the eye
@@ -261,51 +273,63 @@ $(document).ready(function() {
         // Get the config
         readConfig().then((res) => {    // Put the rest of code into the 'then' to make synchronous API call
             config = res;
+            token = getCookie('access_token');
+            if(token === ''){
+                generateTokenInsee(config.GENERAL['siret-consumer'], config.GENERAL['siret-secret'])
+                .then(function(res) {
+                    if (!JSON.parse(res.ok)) {
+                        loaded = false;
+                        let invalidSIRET = $('.siret_number_invalid')
+                        invalidSIRET.html(gt.gettext('SIRET_CONNECTION_ERROR'))
 
-            generateTokenInsee(config.GENERAL['siret-consumer'], config.GENERAL['siret-secret'])
-            .then(function(res) {
-                if (!JSON.parse(res.ok)) {
-                    loaded = false;
-                    $('<div class="invalid-feedback invalidSIRET">' +
-                        gt.gettext('SIRET_CONNECTION_ERROR') +
-                        '</div>'
-                    ).insertAfter($('#siretNumber')).slideDown();
-                } else {
-                    if (JSON.parse(res.text)) {
-                        let result = JSON.parse(res.text);
-                        token = result['access_token'];
+                    } else {
+                        if (res.text.toString() === 'error') {
+                            console.log('error')
+                        }else{
+                            let result = JSON.parse(res.text);
+                            if (result){
+                                setCookie('access_token', result['access_token'], 7)
+                                token = getCookie('access_token');
+                            }
+                        }
                     }
-                }
-
-                $('.chosen-select').chosen({
-                    max_shown_results: 200,
-                    search_contains: true,
-                    width: "100%"
                 });
+            }
 
-                // Focus supplier field to reload info thanks to VATNumber
-                // Avoid the need to prefill all the field about supplier into HTML
-                $('#supplier').focus();
-
-                checkAll();
-
-                // If there is a VAT rate and a notaxes amount, calcul the total
-                $('#calculTotal').click();
-
-                // Check if duplicate, to display a message after validation if duplicate
-                checkIsDuplicate();
-
-                $('#status_form').delay(1000).fadeOut('slow'); // will first fade out the loading animation
-                $('#preloader_form').delay(500).fadeOut('slow'); // will fade out the white DIV that covers the website.
+            $('.chosen-select').chosen({
+                max_shown_results: 200,
+                search_contains: true,
+                width: "100%"
             });
+
+            // Focus supplier field to reload info thanks to VATNumber
+            // Avoid the need to prefill all the field about supplier into HTML
+            let supplier = $('#name')
+            supplier.focus();
+
+            checkAll();
+
+            // Remove focus to avoid multiple call to the API
+            supplier.delay(500).blur();
+
+            // If there is a VAT rate and a notaxes amount, calcul the total
+            $('#calculTotal').click();
+
+            // Check if duplicate, to display a message after validation if duplicate
+            checkIsDuplicate();
+
+            $('#status_form').delay(1000).fadeOut('slow'); // will first fade out the loading animation
+            $('#preloader_form').delay(500).fadeOut('slow'); // will fade out the white DIV that covers the website.
+
+            retrieve_form_cookies('invoice_info', pdfId)
         })
-        .catch(function() {
+        .catch((error) => {
             loaded = false;
+            console.log(error)
             alert(gt.gettext('ERROR_WHILE_READING_CONFIGURATION_FILE'))
         });
 
     }
-
     // Reload image width if user zoom in the page
     $(window).resize(function(){
         windowsWidth = $('#my-image').width();
@@ -314,12 +338,12 @@ $(document).ready(function() {
 
 function generateTokenInsee(consumer_key, consumer_secret){
     return fetch('/ws/insee/getToken', {
-        method  : 'POST',
+        method : 'POST',
         headers : {
             'Content-Type': 'application/json'
         },
-        body    : JSON.stringify({
-            url         : config.GENERAL['siret-url-token'],
+        body : JSON.stringify({
+            url : config.GENERAL['siret-url-token'],
             credentials : btoa(consumer_key + ':' + consumer_secret)
         })
     })
@@ -336,11 +360,11 @@ function isKeyPressed(event) {
     if (event.ctrlKey && zoom === false) {
         toggleZoom();
         zoom = true;
-        $('.nbPages').slideUp();
+        $('.nb_pages').slideUp();
     }else{
         removeZoom();
         zoom = false;
-        $('.nbPages').slideDown();
+        $('.nb_pages').slideDown();
     }
 }
 
@@ -357,8 +381,8 @@ function toggleZoom(){
     else{
         removeRectangle();
         $('.img').zoom({
-            on          : 'toggle',
-            magnify     : 0.7,
+            on : 'toggle',
+            magnify : 0.7,
         });
     }
 }
@@ -389,58 +413,58 @@ function previousPage(){
 }
 
 function changeImage(pageToShow){
-    let image           = $('#my-image');
-    let currentSrc      = image.attr('src');
-    let filename        = currentSrc.replace(/^.*[\\\/]/, '');
-    let fileNameArray   = filename.split('.');
-    let onlySrc         = currentSrc.substr(0, currentSrc.length - filename.length);
+    if (pageToShow){
+        let image = $('#my-image');
+        let currentSrc = image.attr('src');
+        let filename = currentSrc.replace(/^.*[\\\/]/, '');
+        let fileNameArray = filename.split('.');
+        let onlySrc = currentSrc.substr(0, currentSrc.length - filename.length);
 
-    let newFileName    = onlySrc + fileNameArray[0].substr(0, fileNameArray[0].length - 1) + (pageToShow).toString() + '.' + fileNameArray[1];
+        let newFileName = onlySrc + fileNameArray[0].substr(0, fileNameArray[0].length - 1) + (pageToShow).toString() + '.' + fileNameArray[1];
 
-    image.attr('src', newFileName);
-    currentPage.text(pageToShow);
-    removeZoom();
+        image.attr('src', newFileName);
+        currentPage.text(pageToShow);
+        removeZoom();
+    }
 }
 
 /******** FUNCTIONS TO ADD OR REMOVE INPUT AND RECTANGLES ********/
 
 function addVAT(input){
-    let lastVAT             = $('#' + input.id).prev()[0];
-    let cptVAT              = parseInt(lastVAT.className.split('_')[2]);
-    let newClassName        = 'VAT_' + (cptVAT + 1);
-    let lastVATAmount       = $('.AMOUNT_VAT_' + cptVAT);
-    let optionsFinancial    = document.getElementById('financialAccount_1').innerHTML;
+    let lastVAT = $('#' + input.id).prev()[0];
+    let cptVAT = parseInt(lastVAT.className.split('_')[2]);
+    let newClassName = 'vat_' + (cptVAT + 1);
+    let lastVATAmount = $('.AMOUNT_vat_' + cptVAT);
+    let optionsFinancial = document.getElementById('financial_account_1').innerHTML;
 
     if(cptVAT < 5){
         $(
-        '   <div class="MAIN_' + newClassName + '" style="display: none">' +
-        '       <div class="form-row">' +
-        '           <div class="form-group col-md-4">' +
-        '               <label for="' + newClassName + '">' + gt.gettext('VAT_RATE') + ' ' + (cptVAT + 1) + ' <a href="#removeVAT" class="VAT_' + (cptVAT + 1) + '" onclick="removeVAT(this)"><i class="fa fa-minus-square" aria-hidden="true"></i></a></label>' +
-        '               <div class="input-group mb-2">' +
-        '                   <div onclick="drawRectangle(document.getElementById(\'' + newClassName + '\'))" class="input-group-prepend" style="display:none;">' +
-        '                        <div class="input-group-text"><i class="fas fa-eye" aria-hidden="true"></i></div>' +
-        '                    </div>' +
-        '                    <input autocomplete="off" required name="facturationInfo_VAT_' + (cptVAT + 1) + '" id="VAT_' + (cptVAT + 1) + '" onfocusout="ocrOnFly(true, this, false, true); removeRectangle()" onfocusin="ocrOnFly(false, this, false, true)" type="text" class="form-control" x1="" y1="" x2="" y2="">' +
-        '               </div>' +
+        '   <div class="form-row MAIN_' + newClassName + '" style="display: none">' +
+        '       <div class="form-group col-md-4">' +
+        '           <label for="' + newClassName + '">' + gt.gettext('VAT_RATE') + ' ' + (cptVAT + 1) + ' <a href="#removeVAT" class="vat_' + (cptVAT + 1) + '" onclick="removeVAT(this)"><i class="fa fa-minus-square" aria-hidden="true"></i></a></label>' +
+        '           <div class="input-group mb-2">' +
+        '               <div onclick="drawRectangle(document.getElementById(\'' + newClassName + '\'))" class="input-group-prepend" style="display:none;">' +
+        '                    <div class="input-group-text"><i class="fas fa-eye" aria-hidden="true"></i></div>' +
+        '                </div>' +
+        '                <input autocomplete="off" required name="facturationInfo_VAT_' + (cptVAT + 1) + '" id="vat_' + (cptVAT + 1) + '" onfocusout="ocrOnFly(true, this, false, true); removeRectangle()" onfocusin="ocrOnFly(false, this, false, true)" type="text" class="form-control" x1="" y1="" x2="" y2="">' +
         '           </div>' +
-        '           <div class="form-group col-md-4">' +
-        '               <label for="noTaxes_' + (cptVAT + 1) + '">' + gt.gettext('NO_RATE_AMOUNT') + ' ' + (cptVAT + 1) + '</label>' +
-        '               <div class="input-group mb-2">' +
-        '                   <div onclick="drawRectangle(document.getElementById(\'noTaxes_' + (cptVAT + 1) +'\'))" class="input-group-prepend" style="display:none;">' +
-        '                       <div class="input-group-text"><i class="fas fa-eye" aria-hidden="true"></i></div>' +
-        '                   </div>' +
-        '                   <input autocomplete="off" required name="facturationInfo_noTaxes_' + (cptVAT + 1) +'" onfocusout="ocrOnFly(true, this, false, true); removeRectangle()" onfocusin="ocrOnFly(false, this, false, true)" type="text" step="0.01" class="form-control" id="noTaxes_' + (cptVAT + 1) + '" x1="" y1="" x2="" y2="" value="">' +
+        '       </div>' +
+        '       <div class="form-group col-md-4">' +
+        '           <label for="no_taxes_' + (cptVAT + 1) + '">' + gt.gettext('NO_RATE_AMOUNT') + ' ' + (cptVAT + 1) + '</label>' +
+        '           <div class="input-group mb-2">' +
+        '               <div onclick="drawRectangle(document.getElementById(\'no_taxes_' + (cptVAT + 1) +'\'))" class="input-group-prepend" style="display:none;">' +
+        '                   <div class="input-group-text"><i class="fas fa-eye" aria-hidden="true"></i></div>' +
         '               </div>' +
+        '               <input autocomplete="off" required name="facturationInfo_no_taxes_' + (cptVAT + 1) +'" onfocusout="ocrOnFly(true, this, false, true); removeRectangle()" onfocusin="ocrOnFly(false, this, false, true)" type="text" step="0.01" class="form-control" id="no_taxes_' + (cptVAT + 1) + '" x1="" y1="" x2="" y2="" value="">' +
         '           </div>' +
-        '           <div class="form-group col-md-4">' +
-        '               <label for="financialAccount_' + (cptVAT + 1) + '">' + gt.gettext('LOAD_ACCOUNT') + ' ' + (cptVAT + 1) + ' </label>' +
-        '               <div class="input-group mb-2">' +
-        '                   <select name="facturationInfo_financialAccount_' + (cptVAT + 1) + '" id="financialAccount_' + (cptVAT + 1) + '" class="form-control chosen-select" data-placeholder="' + gt.gettext('SELECT_LOAD_ACCOUNT') + '">' +
-        '                       <option value=""></option>' +
-                                optionsFinancial +
-        '                   </select>' +
-        '               </div>' +
+        '       </div>' +
+        '       <div class="form-group col-md-4">' +
+        '           <label for="financialAccount_' + (cptVAT + 1) + '">' + gt.gettext('LOAD_ACCOUNT') + ' ' + (cptVAT + 1) + ' </label>' +
+        '           <div class="input-group mb-2">' +
+        '               <select name="facturationInfo_financialAccount_' + (cptVAT + 1) + '" id="financialAccount_' + (cptVAT + 1) + '" class="form-control chosen-select" data-placeholder="' + gt.gettext('SELECT_LOAD_ACCOUNT') + '">' +
+        '                   <option value=""></option>' +
+                            optionsFinancial +
+        '               </select>' +
         '           </div>' +
         '       </div>' +
         '   </div>'
@@ -453,24 +477,24 @@ function addVAT(input){
         });
 
         $(
-        '   <div class="form-group col-md-3 text-center AMOUNT_VAT_' + (cptVAT + 1) + '" style="display: none">' +
-        '       <label for="TOTAL_TVA_' + (cptVAT + 1) + '">' + gt.gettext('VAT_AMOUNT') + ' ' + (cptVAT + 1) + '</label>' +
+        '   <div class="form-group col-md-3 text-center AMOUNT_vat_' + (cptVAT + 1) + '" style="display: none">' +
+        '       <label for="total_vat_' + (cptVAT + 1) + '">' + gt.gettext('VAT_AMOUNT') + ' ' + (cptVAT + 1) + '</label>' +
         '       <div class="input-group mb-2">' +
-        '           <input autocomplete="off" name="facturationInfo_TOTAL_TVA_' + (cptVAT + 1) + '" type="text" id="TOTAL_TVA_' + (cptVAT + 1) + '" class="form-control">' +
+        '           <input autocomplete="off" name="facturationInfo_TOTAL_TVA_' + (cptVAT + 1) + '" type="text" id="total_vat_' + (cptVAT + 1) + '" class="form-control">' +
         '           <div class="input-group-prepend">' +
         '               <div class="input-group-text"><i class="fas fa-euro-sign" aria-hidden="true"></i></div>' +
         '           </div>' +
         '       </div>' +
         '   </div>'
         ).insertAfter(lastVATAmount).slideToggle();
-        $('#NumberOfVAT').val((cptVAT + 1));
+        $('#number_of_vat').val((cptVAT + 1));
     }
 }
 
 function removeVAT(input){
-    let VATToRemove         = $('.MAIN_' + input.className);
-    let VATAmountToRemove   = $('.AMOUNT_' + input.className);
-    let currentCptVAT       = parseInt(VATToRemove[0].className.split('_')[2]);
+    let VATToRemove = $('.MAIN_' + input.className);
+    let VATAmountToRemove = $('.AMOUNT_' + input.className);
+    let currentCptVAT = parseInt(VATToRemove[0].className.split('_')[2]);
 
     // Avoid deletion of VAT rate if there is just one
     // And avoid deletion of the first, before the second (for example)
@@ -484,70 +508,67 @@ function removeVAT(input){
         });
     }
 
-    $('#NumberOfVAT').val((currentCptVAT - 1));
+    $('#number_of_vat').val((currentCptVAT - 1));
 }
 
 function removeDeliveryNumber(input){
-    let DeliveryNumberToRemove      = $('.MAIN_' + input.className);
-    let currentCptDeliveryNumber    = parseInt(DeliveryNumberToRemove[0].className.split('_')[2]);
+    let DeliveryNumberToRemove = $('.main_' + input.className);
+    let currentCptDeliveryNumber = parseInt(DeliveryNumberToRemove[0].className.split('_')[2]);
 
     // Avoid deletion of delivery Number if there is just one
     // And avoid deletion of the first, before the second (for example)
-    if($('.MAIN_DELIVERY_' + (currentCptDeliveryNumber + 1)).length === 0 && currentCptDeliveryNumber > 1){
+    if($('.main_delivery_' + (currentCptDeliveryNumber + 1)).length === 0 && currentCptDeliveryNumber > 1){
         DeliveryNumberToRemove.slideToggle(400, 'swing', function(){
             DeliveryNumberToRemove.remove();
         });
-        $('#NumberOfDeliveryNumber').val((currentCptDeliveryNumber - 1));
+        $('#number_of_delivery_number').val((currentCptDeliveryNumber - 1));
     }
 }
 
 function removeOrderNumber(input){
-    let orderNumberToRemove      = $('.MAIN_' + input.className);
-    let currentCptOrderNumber    = parseInt(orderNumberToRemove[0].className.split('_')[2]);
-
+    let orderNumberToRemove = $('.main_' + input.className);
+    let currentCptOrderNumber = parseInt(orderNumberToRemove[0].className.split('_')[2]);
     // Avoid deletion of delivery Number if there is just one
     // And avoid deletion of the first, before the second (for example)
-    if($('.MAIN_DELIVERY_' + (currentCptOrderNumber + 1)).length === 0 && currentCptOrderNumber > 1){
+    if($('.main_delivery_' + (currentCptOrderNumber + 1)).length === 0 && currentCptOrderNumber > 1){
         orderNumberToRemove.slideToggle(400, 'swing', function(){
             orderNumberToRemove.remove();
         });
-        $('#NumberOfOrderNumber').val((currentCptOrderNumber - 1));
+        $('#number_order_number').val((currentCptOrderNumber - 1));
     }
 }
 
 function addStructure(input){
-    let lastStructure       = $('#' + input.id).prev()[0];
-    let cptStructure        = parseInt(lastStructure.className.split('_')[1]);
-    let optionsStructure    = document.getElementById('structureSelection_1').innerHTML;
-    let optionsBudget       = document.getElementById('budgetSelection_1').innerHTML;
+    let lastStructure = $('#' + input.id).prev()[0];
+    let cptStructure = parseInt(lastStructure.className.split('_')[1]);
+    let optionsStructure = document.getElementById('structure_selection_1').innerHTML;
+    let optionsBudget = document.getElementById('budget_selection_1').innerHTML;
 
     if(cptStructure < 41){
         $(
-            '<div class="STRUCTURE_' + (cptStructure + 1) + '" style="display: none">' +
-            '   <div class="form-row">' +
-            '       <div class="form-group col-md-4">' +
-            '           <label for="analytics_HT_' + (cptStructure + 1) + '">' + gt.gettext('NO_RATE_AMOUNT') + ' ' + (cptStructure + 1) + ' <a href="#removeStructure" class="STRUCTURE_' + (cptStructure + 1) + '" onclick="removeStructure(this)"><i class="fa fa-minus-square" aria-hidden="true"></i></a></label>' +
-            '           <div class="input-group mb-2">' +
-            '               <input autocomplete="off" onkeyup="verifyTotalAnalytics()" required name="analyticsInfo_HT_' + (cptStructure + 1) + '" type="number" step="0.01" class="form-control" id="analytics_HT_' + (cptStructure + 1) + '" x1="" y1="" x2="" y2="" x1_original="" y1_original="" x2_original="" y2_original="" value="">' +
-            '               </div>' +
-            '       </div>' +
-            '       <div class="form-group col-md-4">' +
-            '           <label for="structureSelection_' + (cptStructure + 1) + '">' + gt.gettext('BUDGET') + '</label>' +
-            '           <div class="input-group mb-2">' +
-            '               <select name="analyticsInfo_structureSelection_' + (cptStructure + 1) + '" id="structureSelection_' + (cptStructure + 1) + '" class="form-control chosen-select" data-placeholder="' + gt.gettext('SELECT_STRUCTURE') + '">' +
-                                optionsStructure +
-            '               </select>' +
-            '           </div>' +
-            '       </div>' +
-            '       <div class="form-group col-md-4">' +
-            '           <label for="budgetSelection_1">' + gt.gettext('OUTCOME') + '</label>' +
-            '           <div class="input-group mb-2">' +
-            '               <select name="analyticsInfo_budgetSelection_' + (cptStructure + 1) + '" id="budgetSelection_' + (cptStructure + 1) + '" class="form-control chosen-select" data-placeholder="' + gt.gettext('SELECT_BUDGET') + '">' +
-                                optionsBudget +
-            '               </select>' +
-            '           </div>' +
-            '       </div>' +
-            '   </div>' +
+            '<div class="structure_' + (cptStructure + 1) + ' form-row" style="display: none">' +
+            '    <div class="form-group col-md-4">' +
+            '        <label for="analytics_HT_' + (cptStructure + 1) + '">' + gt.gettext('NO_RATE_AMOUNT') + ' ' + (cptStructure + 1) + ' <a href="#removeStructure" class="structure_' + (cptStructure + 1) + '" onclick="removeStructure(this)"><i class="fa fa-minus-square" aria-hidden="true"></i></a></label>' +
+            '        <div class="input-group mb-2">' +
+            '            <input autocomplete="off" onkeyup="verifyTotalAnalytics()" required name="analyticsInfo_HT_' + (cptStructure + 1) + '" type="number" step="0.01" class="form-control" id="analytics_HT_' + (cptStructure + 1) + '" x1="" y1="" x2="" y2="" x1_original="" y1_original="" x2_original="" y2_original="" value="">' +
+            '            </div>' +
+            '    </div>' +
+            '    <div class="form-group col-md-4">' +
+            '        <label for="structure_selection_' + (cptStructure + 1) + '">' + gt.gettext('BUDGET') + '</label>' +
+            '        <div class="input-group mb-2">' +
+            '            <select name="structure_selection_' + (cptStructure + 1) + '" id="structure_selection_' + (cptStructure + 1) + '" class="form-control chosen-select" data-placeholder="' + gt.gettext('SELECT_STRUCTURE') + '">' +
+                             optionsStructure +
+            '            </select>' +
+            '        </div>' +
+            '    </div>' +
+            '    <div class="form-group col-md-4">' +
+            '        <label for="budget_selection_1">' + gt.gettext('OUTCOME') + '</label>' +
+            '        <div class="input-group mb-2">' +
+            '            <select name="budget_selection_' + (cptStructure + 1) + '" id="budget_selection_' + (cptStructure + 1) + '" class="form-control chosen-select" data-placeholder="' + gt.gettext('SELECT_BUDGET') + '">' +
+                             optionsBudget +
+            '            </select>' +
+            '        </div>' +
+            '    </div>' +
             '</div>'
         ).insertAfter(lastStructure).slideToggle();
 
@@ -560,37 +581,32 @@ function addStructure(input){
 }
 
 function removeStructure(input){
-    let structureToRemove   = $('.' + input.className);
-    let currentCptStructure = parseInt(structureToRemove[0].className.split('_')[1]);
+    let structureToRemove = $('.' + input.className);
 
-    // Avoid deletion if there is just one
-    // And avoid deletion of the first, before the second (for example)
-    if($('.STRUCTURE_' + (currentCptStructure + 1)).length === 0 && currentCptStructure > 1){
-        structureToRemove.slideToggle(400, 'swing', function(){
-            structureToRemove.remove();
-        });
-    }
+    structureToRemove.slideToggle(400, 'swing', function(){
+        structureToRemove.remove();
+    });
 }
 
 function addOrderNumber(input){
-    let lastOrder         = $('#' + input.id).prev()[0];
-    let cptOrder          = parseInt(lastOrder.className.split('_')[2]);
+    let lastOrder = $('#' + input.id).prev()[0];
+    let cptOrder = parseInt(lastOrder.className.split('_')[2]);
 
     $(
-        '<div class="MAIN_ORDER_' + (cptOrder + 1) + '" style="display: none">' +
+        '<div class="main_order_' + (cptOrder + 1) + '" style="display: none">' +
         '        <div class="form-group">' +
-        '            <label for="orderNumber_' + (cptOrder + 1) + '">' + gt.gettext('ORDER_NUMBER') + ' ' + (cptOrder + 1) + ' <a href="#removeorder" class="ORDER_' + (cptOrder + 1) + '" onclick="removeOrderNumber(this)"><i class="fa fa-minus-square" aria-hidden="true"></i></a> </label>' +
+        '            <label for="order_number_' + (cptOrder + 1) + '">' + gt.gettext('ORDER_NUMBER') + ' ' + (cptOrder + 1) + ' <a href="#removeorder" class="order_' + (cptOrder + 1) + '" onclick="removeOrderNumber(this)"><i class="fa fa-minus-square" aria-hidden="true"></i></a> </label>' +
         '            <div class="input-group mb-2">' +
-        '                <div onclick="drawRectangle(document.getElementById(\'orderNumber_' + (cptOrder + 1) + '\'))" class="input-group-prepend" style="display:none;">' +
+        '                <div onclick="drawRectangle(document.getElementById(\'order_number_' + (cptOrder + 1) + '\'))" class="input-group-prepend" style="display:none;">' +
         '                    <div class="input-group-text"><i class="fas fa-eye" aria-hidden="true"></i></div>' +
         '                </div>' +
-        '                <input autocomplete="off" required name="facturationInfo_orderNumber_' + (cptOrder + 1) + '" id="orderNumber_' + (cptOrder + 1) + '" type="text" class="form-control" onfocusout="ocrOnFly(true, this, true); removeRectangle()" onfocusin="ocrOnFly(false, this, true)">\n' +
+        '                <input autocomplete="off" required name="facturationInfo_order_number_' + (cptOrder + 1) + '" id="order_number_' + (cptOrder + 1) + '" type="text" class="form-control" onfocusout="ocrOnFly(true, this, true); removeRectangle()" onfocusin="ocrOnFly(false, this, true)">\n' +
         '            </div>' +
         '        </div>' +
         '    </div>'
     ).insertAfter(lastOrder).slideToggle();
 
-    $('#NumberOfOrderNumber').val(cptOrder + 1);
+    $('#number_order_number').val(cptOrder + 1);
 }
 
 function removeUserInCharge(radioButton){
@@ -607,87 +623,71 @@ function removeUserInCharge(radioButton){
 
 function removeAllOrderNumber(radioButton){
     if (radioButton.prop("checked")) {
-        $("div[class^='MAIN_ORDER_']").slideToggle(400, 'swing', function () {
-            $(this).remove();
+        $("div[class^='main_order_']").slideToggle(400, 'swing', function () {
+            let cptOrder = parseInt(this.className.split('_')[2]);
+            if(cptOrder > 1)
+                $(this).remove();
+            else
+                $(this).slideUp()
         });
         $('#addOrderNumber').remove();
-        $('#NumberOfOrderNumber').val(0);
+        $('#number_order_number').val(0);
     }else{
-        $(
-            '<div class="MAIN_ORDER_0"></div>' +
-            '<div class="MAIN_ORDER_1" style="display: none">' +
-                '<div class="form-group">' +
-                    '<label for="orderNumber_1">' + gt.gettext('ORDER_NUMBER') + ' 1</label>' +
-                    '<div class="input-group mb-2">' +
-                        '<div onclick="drawRectangle(document.getElementById(\'orderNumber_1\'))" class="input-group-prepend" style="display:none;">' +
-                            '<div class="input-group-text"><i class="fas fa-eye" aria-hidden="true"></i></div>' +
-                        '</div>' +
-                        '<input autocomplete="off" required name="facturationInfo_orderNumber_1" id="orderNumber_1" type="text" class="form-control" onfocusout="ocrOnFly(true, this, true); removeRectangle()" onfocusin="ocrOnFly(false, this, true)">' +
-                    '</div>' +
-                '</div>' +
-            '</div>' +
-            '<a id="addOrderNumber" href="#addOrder" onclick="addOrderNumber(this)" data-toggle="tooltip" title="' + gt.gettext('ADD_ORDER_NUMBER') + '" style="display: none">' +
+        let main_order = $('.main_order_1')
+        main_order.slideDown();
+        if (!$('#addOrderNumber').length){
+            $('<a id="addOrderNumber" href="#addOrder" onclick="addOrderNumber(this)" data-toggle="tooltip" title="' + gt.gettext('ADD_ORDER_NUMBER') + '" style="display: none">' +
                 '<i class="fa fa-plus-square" aria-hidden="true"></i>' +
-            '</a>'
-        ).insertBefore($('.MAIN_TVA_1')).slideToggle();
+            '</a>').insertAfter(main_order).slideToggle();
+        }
 
-          if($('#NumberOfOrderNumber').length === 0)
-            $('<input name="facturationInfo_NumberOfOrderNumber" id="NumberOfOrderNumber" type="hidden" value="1">').insertBefore($('#NumberOfVAT'));
-        else
-            $('#NumberOfOrderNumber').val(1);
+        let number_order_number = $('#number_order_number')
+        number_order_number.val(1);
     }
 }
 
 function addDeliveryNumber(input){
-    let lastDelivery         = $('#' + input.id).prev()[0];
-    let cptDelivery          = parseInt(lastDelivery.className.split('_')[2]);
+    let lastDelivery = $('#' + input.id).prev()[0];
+    let cptDelivery = parseInt(lastDelivery.className.split('_')[2]);
 
     $(
-        '<div class="MAIN_DELIVERY_' + (cptDelivery + 1) + '" style="display: none">' +
+        '<div class="main_delivery_' + (cptDelivery + 1) + '" style="display: none">' +
         '        <div class="form-group">' +
-        '            <label for="deliveryNumber_' + (cptDelivery + 1) + '">' + gt.gettext('DELIVERY_FORM_NUMBER') + ' ' + (cptDelivery + 1) + ' <a href="#removedelivery" class="DELIVERY_' + (cptDelivery + 1) + '" onclick="removeDeliveryNumber(this)"><i class="fa fa-minus-square" aria-hidden="true"></i></a></label>' +
+        '            <label for="delivery_number_' + (cptDelivery + 1) + '">' + gt.gettext('DELIVERY_FORM_NUMBER') + ' ' + (cptDelivery + 1) + ' <a href="#removedelivery" class="delivery_' + (cptDelivery + 1) + '" onclick="removeDeliveryNumber(this)"><i class="fa fa-minus-square" aria-hidden="true"></i></a></label>' +
         '            <div class="input-group mb-2">' +
-        '                <div onclick="drawRectangle(document.getElementById(\'deliveryNumber_' + (cptDelivery + 1) + '\'))" class="input-group-prepend" style="display:none;">' +
+        '                <div onclick="drawRectangle(document.getElementById(\'delivery_number_' + (cptDelivery + 1) + '\'))" class="input-group-prepend" style="display:none;">' +
         '                    <div class="input-group-text"><i class="fas fa-eye" aria-hidden="true"></i></div>' +
         '                </div>' +
-        '                <input autocomplete="off" required name="facturationInfo_deliveryNumber_' + (cptDelivery + 1) + '" id="deliveryNumber_' + (cptDelivery + 1) + '" type="text" class="form-control" onfocusout="ocrOnFly(true, this, true); removeRectangle()" onfocusin="ocrOnFly(false, this, true)">\n' +
+        '                <input autocomplete="off" required name="facturationInfo_delivery_number_' + (cptDelivery + 1) + '" id="delivery_number_' + (cptDelivery + 1) + '" type="text" class="form-control" onfocusout="ocrOnFly(true, this, true); removeRectangle()" onfocusin="ocrOnFly(false, this, true)">\n' +
         '            </div>' +
         '        </div>' +
         '    </div>'
     ).insertAfter(lastDelivery).slideToggle();
 
-    $('#NumberOfDeliveryNumber').val(cptDelivery + 1);
+    $('#number_of_delivery_number').val(cptDelivery + 1);
 }
 
 function removeAllDeliveryNumber(radioButton){
     if (radioButton.prop("checked")) {
-        $("div[class^='MAIN_DELIVERY_']").slideToggle(400, 'swing', function () {
-            $(this).remove();
+        $("div[class^='main_delivery_']").slideToggle(400, 'swing', function () {
+            let cptDelivery = parseInt(this.className.split('_')[2]);
+            if(cptDelivery > 1)
+                $(this).remove();
+            else
+                $(this).slideUp()
         });
         $('#addDeliveryNumber').remove();
-        $('#NumberOfDeliveryNumber').val(0);
+        $('#number_of_delivery_number').val(0);
     }else{
-        $(
-            '<div class="MAIN_DELIVERY_0"></div>' +
-            '<div class="MAIN_DELIVERY_1" style="display: none">' +
-                '<div class="form-group">' +
-                    '<label for="deliveryNumber_1">' + gt.gettext('DELIVERY_FORM_NUMBER') + ' 1</label>' +
-                    '<div class="input-group mb-2">' +
-                        '<div onclick="drawRectangle(document.getElementById(\'deliveryNumber_1\'))" class="input-group-prepend" style="display:none;">' +
-                            '<div class="input-group-text"><i class="fas fa-eye" aria-hidden="true"></i></div>' +
-                        '</div>' +
-                        '<input autocomplete="off" required name="facturationInfo_deliveryNumber_1" id="deliveryNumber_1" type="text" class="form-control" onfocusout="ocrOnFly(true, this, true); removeRectangle()" onfocusin="ocrOnFly(false, this, true)">' +
-                    '</div>' +
-                '</div>' +
-            '</div>' +
-            '<a id="addDeliveryNumber" href="#addDelivery" onclick="addDeliveryNumber(this)" data-toggle="tooltip" title="' + gt.gettext('ADD_DELIVERY_FORM_NUMBER') + '" style="display: none">' +
+        let main_delivery = $('.main_delivery_1')
+        main_delivery.slideDown();
+        if (!$('#addDeliveryNumber').length){
+            $('<a id="addDeliveryNumber" href="#addDelivery" onclick="addDeliveryNumber(this)" data-toggle="tooltip" title="' + gt.gettext('ADD_DELIVERY_FORM_NUMBER') + '" style="display: none">' +
                 '<i class="fa fa-plus-square" aria-hidden="true"></i>' +
-            '</a>'
-        ).insertBefore($('.MAIN_TVA_1')).slideToggle();
-        if($('#NumberOfDeliveryNumber').length === 0)
-            $('<input name="facturationInfo_NumberOfDeliveryNumber" id="NumberOfDeliveryNumber" type="hidden" value="1">').insertBefore($('#NumberOfVAT'));
-        else
-            $('#NumberOfDeliveryNumber').val(1);
+            '</a>').insertAfter(main_delivery).slideToggle();
+        }
+        let numberOfDeliveryNumber = $('#number_of_delivery_number')
+        numberOfDeliveryNumber.val(1);
     }
 }
 
@@ -702,14 +702,16 @@ function drawRectangle(input){
         let zoomImg = $('.zoomImg');
         let myImage = $('#my-image');
         if(maxPages > 1)
-            changeImage(inputInfo.attr('page'));
-        if(zoomImg.length === 0 || zoomImg.css('opacity') === '0') {
-            let ratio   = inputInfo.attr('x1_original') !== '' ? originalWidth / myImage.width() : imgSizeOnOCR / windowsWidth;
+            if (inputInfo.attr('page') !== 1)
+                changeImage(inputInfo.attr('page'));
 
-            let _x1     = inputInfo.attr('x1_original') !== '' ? inputInfo.attr('x1_original') / ratio : inputInfo.attr('x1') / ratio;
-            let _y1     = inputInfo.attr('y1_original') !== '' ? inputInfo.attr('y1_original') / ratio : inputInfo.attr('y1') / ratio;
-            let _x2     = inputInfo.attr('x2_original') !== '' ? inputInfo.attr('x2_original') / ratio : inputInfo.attr('x2') / ratio;
-            let _y2     = inputInfo.attr('y2_original') !== '' ? inputInfo.attr('y2_original') / ratio : inputInfo.attr('y2') / ratio;
+        if(zoomImg.length === 0 || zoomImg.css('opacity') === '0') {
+            let ratio = originalWidth / myImage.width()
+
+            let _x1 = inputInfo.attr('x1_original') !== '' ? inputInfo.attr('x1_original') / ratio : inputInfo.attr('x1') / ratio;
+            let _y1 = inputInfo.attr('y1_original') !== '' ? inputInfo.attr('y1_original') / ratio : inputInfo.attr('y1') / ratio;
+            let _x2 = inputInfo.attr('x2_original') !== '' ? inputInfo.attr('x2_original') / ratio : inputInfo.attr('x2') / ratio;
+            let _y2 = inputInfo.attr('y2_original') !== '' ? inputInfo.attr('y2_original') / ratio : inputInfo.attr('y2') / ratio;
 
             rectangle.css({
                 'left': ((_x1 - 5) / myImage.width()) * 100 + '%',
@@ -744,7 +746,6 @@ function hideOrDisplay(input){
     });
 }
 
-
 /******** CHECK FUNCTION ********/
 
 function checkAll(){
@@ -771,19 +772,20 @@ function checkAll(){
     });
 
     // Launch the check adress
-    if($('#supplier_address').val() !== '' && $('#supplier_postal_code').val() !== '' && $('#supplier_city').val() !== ''){
+    if($('#address').val() !== '' && $('#postal_code').val() !== '' && $('#supplier_city').val() !== ''){
         checkAdress();
     }
 }
 
 // Check SIRET and display informations about the veracity (green or red input background)
 function checkSIRET(){
-    let sizeSIRET       = 14;
-    let apiUrl          = config.GENERAL['siret-url'];
-    let siretId         = $('#siretNumber');
-    let sirenId         = $('#sirenNumber');
+    let sizeSIRET = 14;
+    let apiUrl = config.GENERAL['siret-url'];
+    let siretId = $('#siret_number');
+    let sirenId = $('#siren_number');
 
     if(!isSIRETRunning && siretId[0].value !== ''){
+        let invalidSIRET = $('.siret_number_invalid')
         if(verify(siretId[0].value, sizeSIRET)) {
             isSIRETRunning = true;
             $.ajax({
@@ -803,12 +805,9 @@ function checkSIRET(){
             .fail(function (data){
                 siretId.addClass('is-invalid');
                 siretId.removeClass('is-valid');
-                if ($('.invalidSIRET').length === 0) {
-                    $('<div class="invalid-feedback invalidSIRET">' +
-                        gt.gettext('ERROR_OCCURED') + ' : (' + data['status'].toString() + ') ' + data['statusText'] +
-                        '</div>'
-                    ).insertAfter(siretId);
-                }
+
+                invalidSIRET.html(gt.gettext('ERROR_OCCURED') + ' : (' + data['status'].toString() + ') ' + data['statusText'])
+
             })
         }else{
             siretId.addClass('is-invalid');
@@ -819,12 +818,9 @@ function checkSIRET(){
             siretId[0].setAttribute('y1', '');
             siretId[0].setAttribute('x2', '');
             siretId[0].setAttribute('y2', '');
-            if ($('.invalidSIRET').length === 0) {
-                $('<div class="invalid-feedback invalidSIRET">' +
-                    gt.gettext('ERROR_OCCURED') + ' : ' + gt.gettext('WRONG_SIRET_FORMAT') +
-                    '</div>'
-                ).insertAfter(siretId);
-            }
+
+            invalidSIRET.html(gt.gettext('ERROR_OCCURED') + ' : ' + gt.gettext('WRONG_SIRET_FORMAT'))
+
             isSIRETRunning = false;
         }
     }else if(siretId[0].value === ''){
@@ -835,9 +831,10 @@ function checkSIRET(){
 
 // Check SIREN and display informations about the veracity (green or red input background)
 function checkSIREN(){
-    let sizeSIREN       = 9;
-    let apiUrl          = config.GENERAL['siren-url'];
-    let sirenId         = $('#sirenNumber');
+    let sizeSIREN = 9;
+    let apiUrl = config.GENERAL['siren-url'];
+    let sirenId = $('#siren_number');
+    let invalidSIREN = $('.siren_number_invalid')
 
     if(!isSIRENRunning && sirenId[0].value !== '') {
         if (verify(sirenId[0].value, sizeSIREN)) {
@@ -856,22 +853,12 @@ function checkSIREN(){
                 .fail(function (data) {
                     sirenId.addClass('is-invalid');
                     sirenId.removeClass('is-valid');
-                    if ($('.invalidSIREN').length === 0) {
-                        $('<div class="invalid-feedback invalidSIREN">' +
-                            gt.gettext('ERROR_OCCURED') + ' : (' + data['status'].toString() + ') ' + data['statusText'] +
-                            '</div>'
-                        ).insertAfter(sirenId);
-                    }
+                    invalidSIREN.html(gt.gettext('ERROR_OCCURED') + ' : (' + data['status'].toString() + ') ' + data['statusText'])
                 })
         } else {
             sirenId.addClass('is-invalid');
             sirenId.removeClass('is-valid');
-            if ($('.invalidSIREN').length === 0) {
-                $('<div class="invalid-feedback invalidSIREN">' +
-                    gt.gettext('ERROR_OCCURED') + ' : ' + gt.gettext('WRONG_SIREN_FORMAT') +
-                    '</div>'
-                ).insertAfter(sirenId);
-            }
+            invalidSIREN.html(gt.gettext('ERROR_OCCURED') + ' : ' + gt.gettext('WRONG_SIREN_FORMAT'))
             isSIRENRunning = false;
         }
     } else if (sirenId[0].value === '') {
@@ -881,8 +868,8 @@ function checkSIREN(){
 }
 
 function checkVAT(){
-    let sizeVAT         = 13;
-    let VATId           = $('#vatNumber');
+    let sizeVAT = 13;
+    let VATId = $('#vat_number');
 
     if(!isVATRunning){
         if(verify(VATId[0].value, sizeVAT, true)) {
@@ -918,14 +905,14 @@ function checkVAT(){
 }
 
 function checkAdress(){
-    let apiUrl          = config.GENERAL['ban-url'];
-    let city            = $('#supplier_city');
-    let cityRatio       = $('#supplier_cityRatio');
-    let adress          = $('#supplier_address');
-    let adressRatio     = $('#supplier_addressRatio');
-    let postalCode      = $('#supplier_postal_code');
-    let postalRatio     = $('#supplier_postal_codeRatio');
-    let value           = '';
+    let apiUrl = config.GENERAL['ban-url'];
+    let city = $('#city');
+    let cityRatio = $('#cityRatio');
+    let adress = $('#address');
+    let adressRatio = $('#addressRatio');
+    let postalCode = $('#postal_code');
+    let postalRatio = $('#postal_codeRatio');
+    let value = '';
 
     if(!isAdressRunning){
         isAdressRunning = true;
@@ -935,11 +922,11 @@ function checkAdress(){
         })
         .done(function (data) {
             if(data['features'][0] !== undefined){
-                let infos       = data['features'][0]['properties'];
-                let ratioCity   = calculateSCore(city[0].value, infos['city']);
-                let ratioAdr    = calculateSCore(adress[0].value, infos['name']);
+                let infos = data['features'][0]['properties'];
+                let ratioCity = calculateSCore(city[0].value, infos['city']);
+                let ratioAdr = calculateSCore(adress[0].value, infos['name']);
                 let ratioPostal = calculateSCore(postalCode[0].value, infos['postcode']);
-                let ratioTotal  = $('#ratioAdressTotal');
+                let ratioTotal = $('#ratioAdressTotal');
 
                 cityRatio.addClass('input-group-text').html(ratioCity + '%');
                 adressRatio.addClass('input-group-text').html(ratioAdr + '%');
@@ -947,14 +934,14 @@ function checkAdress(){
 
                 ratioTotal.val((ratioCity/100 + ratioAdr/100 + ratioPostal/100) / 3);
 
-                processRatio(ratioCity, city, cityRatio, infos['city'], 'supplier_city');
-                processRatio(ratioAdr, adress, adressRatio, infos['name'],'supplier_address');
-                processRatio(ratioPostal, postalCode, postalRatio, infos['postcode'], 'supplier_postal_code');
+                processRatio(ratioCity, city, cityRatio, infos['city'], 'city_invalid');
+                processRatio(ratioAdr, adress, adressRatio, infos['name'],'address_invalid');
+                processRatio(ratioPostal, postalCode, postalRatio, infos['postcode'], 'postal_code_invalid');
             }
         })
-        .fail(function(data){
+        .fail(function(){
             banApiError = true;
-            $('.supplier_address').html(gt.gettext('BAN_API_ERROR')).slideDown();
+            $('.address').html(gt.gettext('BAN_API_ERROR')).slideDown();
         });
         isAdressRunning = false;
     }
@@ -963,15 +950,22 @@ function checkAdress(){
 /******** VALIDATE or REFUSE FORM ********/
 
 $('#refuseForm').on('click', function(){
-    let modalBody   = $('.modal-body');
-    let modalBack   = $('.modal-backdrop');
+    let modalBody = $('.modal-body');
+    let modalBack = $('.modal-backdrop');
+
+    let refuse_yes = $('#refuse_yes')
+    let awaitAdress = $('#awaitAdress')
+    let bypassBan = $('#bypassBan')
+    bypassBan.remove()
+    awaitAdress.remove()
+    refuse_yes.remove()
 
     modalBack.toggle();
     modalBody.html('<span id="modalError">' +
             gt.gettext('REFUSE_CONFIRMATION') +
         '</span>');
 
-    $('<button type="button" class="btn btn-danger" onclick=\'changeStatus($("#pdfId").val(), "ERR", false);\'>' +
+    $('<button type="button" class="btn btn-danger" id="refuse_yes" onclick=\'changeStatus(pdfId, "ERR", false);\'>' +
                 gt.gettext('YES') +
     '</button>').insertAfter($('#returnToValidate'));
 
@@ -983,17 +977,25 @@ $('#refuseForm').on('click', function(){
 
 // Validate form before send it
 $('#validateForm').on('click', function(){
-    let form        = $('#invoice_info');
-    let ratioTotal  = $('#ratioAdressTotal');
-    let modalBack   = $('.modal-backdrop');
-    let modalBody   = $('.modal-body');
+    let form = $('#invoice_info');
+    let ratioTotal = $('#ratioAdressTotal');
+    let modalBack = $('.modal-backdrop');
+    let modalBody = $('.modal-body');
 
     // Verify the total analytics amount and the total HT amount
-    let parsedStructure     = $('#addStructure').prev()[0].className.split('_');
-    let lastCPTStructure    = parseInt(parsedStructure[1]);
-    let className           = parsedStructure[0];
-    let totalStructure      = 0;
-    let totalHT             = parseFloat($('#totalHT').val());
+    let parsedStructure = $('#addStructure').prev()[0].className.split('_');
+    let lastCPTStructure = parseInt(parsedStructure[1]);
+    let className = parsedStructure[0];
+    let totalStructure = 0;
+    let total_ht = parseFloat($('#total_ht').val());
+
+    let awaitAdress = $('#awaitAdress')
+    let bypassBan = $('#bypassBan')
+    let refuse_yes = $('#refuse_yes')
+    awaitAdress.remove()
+    bypassBan.remove()
+    refuse_yes.remove()
+
     for (let i = 1; i <= lastCPTStructure; i++){
         let val = $('.' + className + '_' + i).find('input').val();
         totalStructure += parseFloat(val)
@@ -1002,40 +1004,44 @@ $('#validateForm').on('click', function(){
         form.find(':submit').click();
         modalBody.html(
                 '<span id="modalError">' +
-                    gt.gettext('FORM_ERROR_OR_EMPTY_FIELD') +
+                    gt.gettext('FORM_ERROR_OR_EMPTY_FIELD') + ' : ' + form[0].validationMessage +
                 '</span>');
     }else if(form[0].checkValidity() && (ratioTotal.val() <= (config.CONTACT['total-ratio'] / 100) && banApiError === false)){ // the banApiError is used to do not block form in case the API isn't working
         modalBody.html('<span id="waitForAdress">' +
             gt.gettext('INCORRECT_BAN_ADDRESS') + ' ' +
             gt.gettext('PUT_FORM_TO_SUPPLIER_WAIT') +
             '</span>');
-        if ($('#awaitAdress').length === 0) {
-            $('<button type="button" class="btn btn-warning" onclick=\'changeStatus($("#pdfId").val(), "WAIT_SUP", false);\' id="awaitAdress">' +
-                    gt.gettext('PUT_ON_HOLD') +
-            '</button>').insertAfter($('#returnToValidate'));
-        }
 
-        if ($('#bypassBan').length === 0 && config.GLOBAL['allowbypasssuppliebanverif'] === 'True') {
-            $('<button type="button" class="btn btn-danger" onclick=\'changeStatus($("#pdfId").val(), "END");\' id="bypassBan">' +
+        $('<button type="button" class="btn btn-warning" onclick=\'changeStatus(pdfId, "WAIT_SUP", false); save_form_to_cookies("invoice_info", pdfId)\' id="awaitAdress">' +
+                gt.gettext('PUT_ON_HOLD') +
+        '</button>').insertAfter($('#returnToValidate'));
+
+        if (config.GLOBAL['allowbypasssuppliebanverif'] === 'True') {
+            $('<button type="button" class="btn btn-danger" onclick=\'changeStatus(pdfId, "END");\' id="bypassBan">' +
                     gt.gettext('_VALID_WIHTOUT_BAN_VERIFICATION') +
             '</button>').insertAfter($('#awaitAdress'));
         }
 
-    }else if(form[0].checkValidity() && $('#vatNumber').hasClass('is-invalid')){
+    }else if(form[0].checkValidity() && $('#vat_number').hasClass('is-invalid')){
         modalBody.html(
             '<span id="tvaError">' +
                 '<br>' + gt.gettext('INVALID_VAT_NUMBER') +
             '</span>'
         );
+        if ($('#bypassVat').length === 0 ) {
+            $('<button type="button" class="btn btn-danger" onclick=\'changeStatus(pdfId, "END");\' id="bypassVat">' +
+                    gt.gettext('_VALID_WIHTOUT_VAT_VERIFICATION') +
+            '</button>').insertAfter($('#returnToValidate'));
+        }
 
-    }else if(form[0].checkValidity() && totalStructure !== totalHT){
+    }else if(form[0].checkValidity() && totalStructure !== total_ht){
         modalBody.html(
             '<span id="analyticsAmountError">' +
                 gt.gettext('CALCUL_NOT_EQUAL_WOULD_YOU_VALIDATE') +
             '</span>'
         );
         if ($('#validateFacAnalyticsError').length === 0) {
-            $('<button type="button" class="btn btn-info" onclick=\'changeStatus($("#pdfId").val(), "END");\' id="validateFacAnalyticsError">' +
+            $('<button type="button" class="btn btn-info" onclick=\'changeStatus(pdfId, "END");\' id="validateFacAnalyticsError">' +
                 gt.gettext('YES') +
                 '</button>').insertAfter($('#returnToValidate'));
         }
@@ -1047,12 +1053,12 @@ $('#validateForm').on('click', function(){
         );
 
         if ($('#validateFacAnalyticsError').length === 0) {
-            $('<button type="button" class="btn btn-info" onclick=\'changeStatus($("#pdfId").val(), "END");\' id="validateFacAnalyticsError">' +
+            $('<button type="button" class="btn btn-info" onclick=\'changeStatus(pdfId, "END");\' id="validateFacAnalyticsError">' +
                 gt.gettext('YES') +
                 '</button>').insertAfter($('#returnToValidate'));
         }
     }else{
-        changeStatus($("#pdfId").val(), "END");
+        changeStatus(pdfId, "END");
     }
 
     modalBack.toggle();
@@ -1070,7 +1076,7 @@ $(function() {
 });
 
 $('#returnToValidate, #closeModal').on('click', function(){
-    let modalBack   = $('.modal-backdrop');
+    let modalBack = $('.modal-backdrop');
     modalBack.toggle();
 
     $('#awaitAdress').remove();
@@ -1084,13 +1090,13 @@ $('#submitForm').on('click', function(){
 
 function changeStatus(idPdf, status, submitForm = true){
     fetch('/ws/database/updateStatus', {
-        method  : 'POST',
+        method : 'POST',
         headers : {
             'Content-Type': 'application/json'
         },
-        body    : JSON.stringify({
-            id          : idPdf,
-            status      : status
+        body : JSON.stringify({
+            id : idPdf,
+            status : status
         })
     }).then(function(response) {
         response.json().then(function(res){
@@ -1112,28 +1118,32 @@ function changeStatus(idPdf, status, submitForm = true){
 /******** VALIDATION FUNCTIONS ********/
 
 function calculTotal(){
-    let lastVAT         = $('#addVAT').prev();
-    let lastVATCpt      = parseInt(lastVAT[0].className.split('_')[2]);
-    let structureHT     = $('#analytics_HT_1');
-    let analyticsHTInfo = $('#totalHT_info span');
-    let ttc             = 0;
-    let ht              = 0;
+    let lastVAT = $('#addVAT').prev();
+    let lastVATCpt = parseInt(lastVAT[0].className.split('_')[2]);
+    let structureHT = $('#ht_1');
+    let analyticsHTInfo = $('#total_ht_info span');
+    let ttc = 0;
+    let ht = 0;
 
     for (let i = 1; i <= lastVATCpt; i++){
-        let vatRate = $('#VAT_' + i)[0].value / 100;
+        let currentVat = $('#vat_' + i)[0]
 
-        let noTaxe  = $('#noTaxes_' + i)[0].value;
+        if (currentVat){
+            let vatRate = currentVat.value / 100;
 
-        // Check if it's a real number (because a float with point instead of comma, it's not recognized as a float)
-        if (noTaxe !== '' && vatRate !== ''){
-            ht              += parseFloat(noTaxe);
-            ttc             += parseFloat(noTaxe) + (parseFloat(noTaxe) * parseFloat(vatRate));
-            let vatAmount   = parseFloat(noTaxe) * parseFloat(vatRate);
-            $('#TOTAL_TVA_' + i).val(vatAmount.toFixed(2));
-            $('#total').val(ttc.toFixed(2));
-            $('#totalHT').val(ht.toFixed(2));
-            structureHT.val(ht.toFixed(2));
-            analyticsHTInfo.html(ht.toFixed(2));
+            let noTaxe  = $('#no_taxes_' + i)[0].value;
+
+            // Check if it's a real number (because a float with point instead of comma, it's not recognized as a float)
+            if (noTaxe !== '' && vatRate !== ''){
+                ht += parseFloat(noTaxe);
+                ttc += parseFloat(noTaxe) + (parseFloat(noTaxe) * parseFloat(vatRate));
+                let vatAmount = parseFloat(noTaxe) * parseFloat(vatRate);
+                $('#total_vat_' + i).val(vatAmount.toFixed(2));
+                $('#total_ttc').val(ttc.toFixed(2));
+                $('#total_ht').val(ht.toFixed(2));
+                structureHT.val(ht.toFixed(2));
+                analyticsHTInfo.html(ht.toFixed(2));
+            }
         }
     }
 }
@@ -1156,20 +1166,19 @@ function verify(number, size, isVAT = false){
     let bal     = 0;
     let total   = 0;
     for (let i = size - 1; i >= 0; i--){
-        let step    = (number.charCodeAt(i) - 48) * (bal + 1);
-        total       += (step > 9) ? step - 9:step;
-        bal         = 1 - bal;
+        let step = (number.charCodeAt(i) - 48) * (bal + 1);
+        total += (step > 9) ? step - 9:step;
+        bal = 1 - bal;
     }
     return total % 10 === 0;
 }
 
 function calculateSCore(s1, s2){
-    return parseInt(((new difflib.SequenceMatcher(null, s1.toUpperCase(), s2.toUpperCase())).ratio() * 100).toString())
+    return parseInt(((new difflib.SequenceMatcher(null, s1.toUpperCase(), s2.toUpperCase())).ratio() * 100).toString());
 }
 
 function processRatio(percent, input, ratioClass, banInfo, invalidClass){
-    let ratioClassId    = $('.' + ratioClass[0].id);
-    let invalidFeed     = $('.' + invalidClass);
+    let invalidFeed = $('.' + invalidClass);
 
     invalidFeed.removeClass('redRatio red_' + input[0].id);
     invalidFeed.removeClass('orangeRatio orange_' + input[0].id);
@@ -1194,19 +1203,19 @@ function processRatio(percent, input, ratioClass, banInfo, invalidClass){
 
 function verifyTotalAnalytics() {
     // Verify the total analytics amount and the total HT amount
-    let parsedStructure     = $('#addStructure').prev()[0].className.split('_');
-    let lastCPTStructure    = parseInt(parsedStructure[1]);
-    let analyticsHTInfo     = $('#totalHT_info span');
-    let className           = parsedStructure[0];
-    let totalStructure      = 0;
-    let totalHT             = parseFloat($('#totalHT').val());
+    let parsedStructure = $('#addStructure').prev()[0].className.split('_');
+    let lastCPTStructure = parseInt(parsedStructure[1]);
+    let analyticsHTInfo = $('#total_ht_info span');
+    let className = parsedStructure[0];
+    let totalStructure = 0;
+    let total_ht = parseFloat($('#total_ht').val());
 
     for (let i = 1; i <= lastCPTStructure; i++){
         let val = $('.' + className + '_' + i).find('input').val();
-        totalStructure += parseFloat(val)
+        totalStructure += parseFloat(val);
     }
 
-    if (totalStructure > totalHT){
+    if (totalStructure > total_ht){
         analyticsHTInfo.removeClass('text-success');
         analyticsHTInfo.addClass('text-danger font-weight-bold');
     }else{
@@ -1215,28 +1224,28 @@ function verifyTotalAnalytics() {
     }
 }
 
-// Return true if an invoice a duplicate
-// False if is not
 function checkIsDuplicate(){
     fetch('/ws/invoice/isDuplicate', {
-        method  : 'POST',
+        method : 'POST',
         headers : {
             'Content-Type': 'application/json'
         },
-        body    : JSON.stringify({
-            'invoiceNumber' : $('#invoiceNumber').val(),
-            'vatNumber'     : $('#vatNumber').val(),
-            'id'            : $('#pdfId').val()
+        body : JSON.stringify({
+            'invoice_number' : $('#invoice_number').val(),
+            'vat_number' : $('#vat_number').val(),
+            'id' : $('#pdf_id').val()
         })
     }).then(function(response) {
         response.json().then(function(res){
             if (!JSON.parse(res.ok)) {
-                alert(response.statusText)
+                alert(response.statusText);
             }else{
-                if(JSON.parse(res.text))
+                if(JSON.parse(res.text)){
                     isDuplicate = true;
-                else
-                    isDuplicate = false;
+                    return true
+                }
+                isDuplicate = false;
+                return false
             }
         });
     });

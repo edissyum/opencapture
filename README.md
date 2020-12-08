@@ -2,14 +2,14 @@
 
 # Open-Capture for Invoices by Edissyum
  
-Version 0.3.0
-  
+Version 0.7.6
+
 Open-Capture is a **free and Open Source** software under **GNU General Public License v3.0**.
   
 The functionnalities of Open-Capture for Invoices are :
    - Fully web interface for videocoding : No installation needed on user's workstation
-   - OCR ON THE FLY. Draw a rectangle on the image, get the text directly in your input
-   - The core works on Linux (Ubuntu or Debian)
+   - OCR On Fly. Draw a rectangle on the image, get the text directly in your input
+   - The core works on Linux (tested on Ubuntu and Debian) and might be working on Windows (not tested yet)
    - Complex machine learning algorithms used to predict informations locations from one invoice to another
    - Find suppliers into an invoices using VAT Number, SIRET or SIREN
    - Find VAT Rate, no taxes amount and total taxes amount using powerful algorithm.
@@ -18,82 +18,100 @@ The functionnalities of Open-Capture for Invoices are :
    - Multiple ADR (LAD) profile, using INI file
    - SIRET/SIREN & Adress verification (Only FR for now, could be disabled in settings)
    - Complex locale REGEX used. Easy to improve and modify
-   - You have the choice to convert PDF to TIFF or JPG. With the TIFF format the results are better but the size of files are much bigger
+   - You have the choice to convert PDF to TIFF or JPG.
+   - SQLITE OR POSTGRESQL database support
   
 # Installation
 ## Linux Distributions
 
 Tested with :
-- Debian 9.8 with Python 3.5.3 & Tesseract v3.04.01 or Tesseract V4.0.0 (stretch-backports) & nginx as web server
-- Debian 9.6 with Python 3.5.3 & Tesseract v3.04.01 or Tesseract V4.0.0 (stretch-backports) & nginx as web server
-- Debian 10 with Python 3.7.3 Tesseract V4.0.0 & nginx as web server
-  
-## Install Open-Capture for Invoices
-  
-(Modify the user and group if needed)
+- Debian 10.X with Python 3.7.3 & Tesseract V4.0.0 & nginx as web server
+- Ubuntu 20.04 LTS with Python 3.7.7 & Tesseract V4.1.1 & nginx as web server
+- Ubuntu 20.04 LTS with Python 3.8.5 & Tesseract V4.1.1 & nginx as web server
+- Ubuntu 20.10 with Python 3.8.5 & Tesseract V4.1.1 & nginx as web server
 
-    $ sudo mkdir /opt/OpenCaptureForInvoices/ && sudo chmod -R 775 /opt/OpenCaptureForInvoices/ && sudo chown -R edissyum:edissyum /opt/OpenCaptureForInvoices/  
-    $ sudo apt install git
-    $ git clone -b 0.3.0 https://gitlab.com/edissyum/opencapture/opencaptureforinvoices /opt/OpenCaptureForInvoices/
-    $ cd /opt/OpenCaptureForInvoices/
+Recommended version :
+- Debian 10.X with Python 3.7.3 & Tesseract V4.0.0 & nginx as web server
+
+## Install Open-Capture for Invoices
+
+Please, do not run the following command as root and create a specific user for Open-Capture For Invoices.
+
+    sudo mkdir /opt/OpenCaptureForInvoices/ && sudo chmod -R 775 /opt/OpenCaptureForInvoices/ && sudo chown -R $(whoami):$(whoami) /opt/OpenCaptureForInvoices/
+    sudo apt install git
+    latest_tag=$(git ls-remote --tags --sort="v:refname" https://github.com/edissyum/opencaptureforinvoices.git | tail -n1 |  sed 's/.*\///; s/\^{}//')
+    git clone -b $latest_tag https://github.com/edissyum/opencaptureforinvoices/ /opt/OpenCaptureForInvoices/
+    cd /opt/OpenCaptureForInvoices/
   
 Before lauching the Makefile. You have to do the following : 
 
 Using the following command, you have to retrieve the name of your network interface : 
     
-    $ ip a
-    
+    ip a
+
+![Screenshot](https://edissyum.com/wp-content/uploads/2020/10/screen_ipa.png)
+
 Then go to <code>bin/scripts/service_flaskOC.sh</code> and change the default one <code>enp0s3</code> by your interface name. This is the interface needed to run the web server. 
 
 **It gives you the IP address where the web server will run**
 
-Finally you have to generate a secret key for the flask web server. First, generate a random key using, for example : 
-    
-    $ python3 -c 'import secrets; print(secrets.token_hex(16))'
-    
-Copy the generated text and go to <code>webApp/\_\_init\_\_.py</code>. Find the line with <code>SECRET_KEY</code> and paste between ""   
+The `./Makefile` command create the service using `www-data` group (nginx default group) and the current user. `Please avoid using root user`
+
+You have the choice between using supervisor or basic systemd
+Supervisor is useful if you need to run multiple instance of Open-Capture in parallel but it will be very greedy
+Systemd is perfect for one instance
+
+    cd bin/install/
+    chmod u+x Makefile
+    sudo ./Makefile
+      # Go grab a coffee ;)
+
+It will install all the needed dependencies and install Tesseract V4.X.X with french and english locale. If you need more locales, just do :
   
-The ./Makefile command create the service, but you may want to change the User and Group so just open the ./Makefile and change lines **6** & **7**
-  
-    $ cd bin/install/
-    $ chmod u+x Makefile
-    $ sudo ./Makefile
-        # Go grab a coffee ;)
-   
-It will install all the needed dependencies and install Tesseract V4.0.0 with french and english locale. If you need more locales, just do :
-  
-    $ sudo apt install tesseract-ocr-langcode
+    sudo apt install tesseract-ocr-<langcode>
 
 Here is a list of all available languages code : https://www.macports.org/ports.php?by=name&substr=tesseract-
 
-Don't forget to create all the needed path (Modify the user and group if needed) :
+In most cases you had to modify the <code>/etc/ImageMagick-6/policy.xml</code> file to comment the following line (~ line 94) and then restart the OCForInvoices-worker service:
 
-    $ sudo mkdir -p /var/docservers/{OpenCapture,OpenCapture_Splitter} 
-    $ sudo mkdir -p /var/docservers/OpenCapture/images/{tiff,full}
-    $ sudo mkdir -p /var/docservers/OpenCapture_Splitter/{batches,separated_pdf}
-    $ sudo mkdir -p /var/docservers/OpenCapture/xml/
-    $ sudo chmod -R 775 /var/docservers/{OpenCapture,OpenCapture_Splitter}/
-    $ sudo chown -R edissyum:www-data /var/docservers/{OpenCapture,OpenCapture_Splitter}/
-    
+    <policy domain="coder" rights="none" pattern="PDF" />
+
+    sudo systemctl restart OCForInvoices-worker (systemd version)
+    sudo systemctl restart OCForInvoices_Split-worker.service (systemd version)
+
+    sudo supervisorctl restart all (supervisor version)
+
+If you need more informations about the usefull commands for supervisor : http://supervisord.org/running.html#running-supervisorctl
+
+If you plan to upload invoices from the interface, using the upload form, you had to modify NGINX settings to increase the max size of upload.OCForInvoices.
+Go to file <code>/etc/nginx/nginx.conf</code> and add <code>client_max_body_size 100M;</code> into the <code>http</code> bloc
+Then restart the nginx service
+
+    sudo systemctl restart nginx
+
 ## API for SIRET/SIREN
 
 In order to user the online verification of SIRET and SIREN you need to create a WS account on the INSEE website : https://api.insee.fr/catalogue/site/themes/wso2/subthemes/insee/pages/item-info.jag?name=Sirene&version=V3&provider=insee
-You need to retrieve two tokens and put them into the <code>config_DEFAULT.ini</code> file. 
+You need to retrieve two tokens and put them into the <code>config_DEFAULT.ini</code> file.
+You also need to add a subscritpion the the SIRENE V3 applications : https://api.insee.fr/catalogue/site/themes/wso2/subthemes/insee/pages/item-info.jag?name=Sirene&version=V3&provider=insee
 This is the consumer key and the consumer secret. You could find help on the INSEE website : https://api.insee.fr/catalogue/site/themes/wso2/subthemes/insee/pages/help.jag
     
 ## Supplier's referencial
 
+If you don't fill the referencial with the supplier informations, you'll have trouble for validation and globally, all the process. This part is **MANDATORY**
+
 Before starting using Open-Capture you need to create a spreadsheet of your suppliers. You could find a demo located here : <code>bin/src/referencial/default_referencial_supplier.ods</code> (works with .ods or .xlsx). 
-You just have to fill the supplier name, siret, siren, vat number and adress informations. This .ods is bundled with <code>bin/src/referencial/default_referencial_supplier_index.json</code>.
+You just have to fill the supplier name, siret, siren, vat number and address informations. This .ods is bundled with <code>bin/src/referencial/default_referencial_supplier_index.json</code>.
 If your supplier referencial had different column name, the .json file is here for that. You just have to replace the right side of the array with the new column name.
 
 Then, just launch :
 
-    $ python3 /opt/OpenCaptureForInvoices/loadReferencial.py -c /opt/OpenCaptureForInvoices/instance/config.ini
+    python3 /opt/OpenCaptureForInvoices/loadReferencial.py -c /opt/OpenCaptureForInvoices/instance/config.ini
     
 It will fill the database with the suppliers informations.
 
 ## Set up the incron & the cron to start the service
+
 We want to automatise the capture of document. For that, we'll use incrontab.
 First, add your user into the following file :
 
@@ -101,7 +119,7 @@ First, add your user into the following file :
 
 Then use <code>incrontab -e</code> and put the following line :
 
-    /path/to/capture/ IN_CLOSE_WRITE,IN_MOVED_TO /opt/OpenCaptureForInvoices/scripts/launch_DEFAULT.sh $@/$#
+    /path/to/capture/ IN_CLOSE_WRITE,IN_MOVED_TO /opt/OpenCaptureForInvoices/bin/scripts/launch_DEFAULT.sh $@/$#
 
 ## Custom development
 You can modify a lot of files if needed, without loose everything at every update. For that, you have to modify the <code>custom/custom.ini</code> file to add the id (between the brackets)
@@ -112,9 +130,20 @@ Your could custom python files, templates files and static files (js, css, imgs,
 
 For now (and for somes files like babel's or webApp/*.py files) it is recommended to restart Flask service in order to see the changes :
 
-    $ systemctl restart OCForInvoices-web.service
+    systemctl restart OCForInvoices-web.service
 
-## WebServices for Maarch 19.04
+## Positioning mask
+It is possible to use file filled with positions and some stuff to retrieve some informations hard to find with REGEX only.
+In this file you'll find to type of metadata, the default one and the custom one. Normmally you don't have to touch the default one except the <code>position</code>.
+For the custom ones, you'll have some settings to fill :
+    - regex  : Use regex present in the JSON file (use the index name. exemple : <code>dateRegex</code>) or create a new one into this file (you need to modifiy the Locale file in order to get this working)
+    - type   : string, number or date. If number, it could replace some letters by number to avoid error (O will became 0 for exemple)  <code>OCR_ERRORS.xml</code> file. If it's date, it will be formatted
+    - column : Column in database, don't forget to add two column (one for name and one for position like 'example' and 'example_position'). Both of the column need to be VARCHAR
+    - target : Part of file to search into. It could be <code>header</code>, <code>footer</code> or <code>full</code>
+
+The positioning mask is named only with the typology number : <code>eg : 1.ini</code>. The typology number has to be mentionned in the default_referencial_supplier for each supplier
+
+## WebServices for Maarch 20.03 & 20.10
 
 The list of files needed to be modify is in install/Maarch with the correct structure. Each modifications on files are between the following tags :
 
@@ -144,15 +173,13 @@ In the default <code>config_DEFAULT.ini</code> file there is a SPLITTER part :
     - tmpBatchPath : Path to the currently running batches
     - pdfOutputPath : Path for the separated PDF. Need to be a folder currently watching by Open-Capture For Invoices 
     - pdfOriginPath : Path to keep the original PDF files (without any separation)
-    - allowedExtensions : Files extensions allowed, JSON format  
-    
+
 ## Launch manually
 
 Obviously you could launch the separation by the web using the "Download" page. But you also could launch separation using bash script combined with incron.
 Here is an example of incrontab : 
 
-    /path/to/capture/ IN_CLOSE_WRITE,IN_MOVED_TO /opt/OpenCaptureForInvoices/scripts/launch_SPLITTER.sh $@/$#
-    
+    /path/to/capture/ IN_CLOSE_WRITE,IN_MOVED_TO /opt/OpenCaptureForInvoices/bin/scripts/launch_SPLITTER.sh $@/$#
     
 # LICENSE
 Open-Capture for Maarch is released under the GPL v3.

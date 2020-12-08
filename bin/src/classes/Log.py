@@ -18,16 +18,17 @@
 import logging
 from logging.handlers import RotatingFileHandler
 
+
 class Log:
     def __init__(self, path):
         self.LOGGER = logging.getLogger('Open-Capture')
         if self.LOGGER.hasHandlers():
-            self.LOGGER.handlers.clear() # Clear the handlers to avoid double logs
+            self.LOGGER.handlers.clear()  # Clear the handlers to avoid double logs
 
-        logFile = RotatingFileHandler(path, mode='a', maxBytes=5 * 1024 * 1024, backupCount=2, encoding=None, delay=False)
+        log_file = RotatingFileHandler(path, mode='a', maxBytes=5 * 1024 * 1024, backupCount=2, encoding=None, delay=False)
         formatter = logging.Formatter('[%(name)-14s] %(asctime)s %(levelname)s %(message)s', datefmt='%d-%m-%Y %H:%M:%S')
-        logFile.setFormatter(formatter)
-        self.LOGGER.addHandler(logFile)
+        log_file.setFormatter(formatter)
+        self.LOGGER.addHandler(log_file)
         self.LOGGER.setLevel(logging.DEBUG)
 
     def info(self, msg):

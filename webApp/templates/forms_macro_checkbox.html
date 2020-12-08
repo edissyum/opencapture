@@ -1,0 +1,6 @@
+{% macro render_field_checkbox(field) %}
+    <div class="form-group text-center">
+        {{ field(class_="custom-control-input")|safe }}
+        {{ field.label(class_="custom-control-label")|safe }}
+    </div>
+{% endmacro %}

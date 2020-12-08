@@ -1,10 +1,10 @@
-{% extends 'base_no_nav.html' %}
+{% extends 'base_home.html' %}
 {% block title %} {{ gettext('HOME') }} {% endblock %}
 {% block css %}
     <script type="text/javascript" src={{ url_for('static', filename='js/otherLib/Gettext.js') }}></script>
     <link rel="gettext" type="application/x-po" href="{{ url_for('static', filename='babel/translations/' + session["lang"] + '/LC_MESSAGES/messages.po') }}">
     <script>
-        var gt = new Gettext();
+        let gt = new Gettext();
     </script>
 {% endblock %}
 
@@ -12,7 +12,7 @@
     <div class="cards">
         <article class="card card--2">
             <div class="card__img"></div>
-            <a href="{{ url_for('ws_splitter.splitter_manager') }}" class="card_link">
+             <a href="{{ url_for('splitter.splitter_list', time='TODAY', status='NEW') }}" class="card_link">
                 <div class="card__img--hover"></div>
             </a>
             <div class="card__info">

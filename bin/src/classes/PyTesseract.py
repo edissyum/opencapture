@@ -19,23 +19,27 @@ import os
 import pyocr
 import pytesseract
 import pyocr.builders
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as Et
+
 
 class PyTesseract:
-    def __init__(self, locale, Log, Config):
-        self.Log                = Log
-        self.text               = ''
-        self.footer_text        = ''
-        self.header_text        = ''
-        self.tool               = ''
-        self.lang               = locale
-        self.Config             = Config
-        self.searchablePdf      = ''
-        self.OCRErrorsTable     = {}
+    def __init__(self, locale, log, config):
+        self.Log = log
+        self.text = ''
+        self.footer_text = ''
+        self.header_text = ''
+        self.last_text = ''
+        self.footer_last_text = ''
+        self.header_last_text = ''
+        self.tool = ''
+        self.lang = locale
+        self.Config = config
+        self.searchablePdf = ''
+        self.OCRErrorsTable = {}
 
-        tools       = pyocr.get_available_tools()
-        self.tool   = tools[0]
-        self.getOCRErrorsTable()
+        tools = pyocr.get_available_tools()
+        self.tool = tools[0]
+        self.get_ocr_errors_table()
 
     def text_builder(self, img):
         try:
@@ -69,28 +73,28 @@ class PyTesseract:
         except pytesseract.pytesseract.TesseractError as t:
             self.Log.error('Tesseract ERROR : ' + str(t))
 
-    def generate_searchable_pdf(self, pdf, Image, Pdf, Config):
-        tmpPath = Config.cfg['GLOBAL']['tmppath']
-        Image.save_img_with_wand(pdf, tmpPath + 'tmp.jpg')
+    def generate_searchable_pdf(self, pdf, files, config):
+        tmp_path = config.cfg['GLOBAL']['tmppath']
+        files.save_img_with_wand(pdf, tmp_path + 'tmp.jpg')
         i = 0
-        sortedImgList = Image.sorted_file(tmpPath, 'jpg')
-        for img in sortedImgList:
-            tmpSearchablePdf =  pytesseract.image_to_pdf_or_hocr(
+        sorted_img_list = files.sorted_file(tmp_path, 'jpg')
+        for img in sorted_img_list:
+            tmp_searchable_pdf = pytesseract.image_to_pdf_or_hocr(
                 img[1],
                 extension='pdf'
             )
-            f = open(tmpPath + 'tmp-'+ str(i) +'.pdf', 'wb')
-            f.write(bytearray(tmpSearchablePdf))
+            f = open(tmp_path + 'tmp-' + str(i) + '.pdf', 'wb')
+            f.write(bytearray(tmp_searchable_pdf))
             f.close()
             i = i + 1
             os.remove(img[1])
 
-        sortedPdfList       = Image.sorted_file(tmpPath, 'pdf')
-        self.searchablePdf  = Pdf.merge_pdf(sortedPdfList, tmpPath)
+        sorted_pdf_list = files.sorted_file(tmp_path, 'pdf')
+        self.searchablePdf = files.merge_pdf(sorted_pdf_list, tmp_path)
 
-    def getOCRErrorsTable(self):
-        configPath  = self.Config.cfg['GLOBAL']['ocrerrorpath']
-        root        = ET.parse(configPath).getroot()
+    def get_ocr_errors_table(self):
+        config_path = self.Config.cfg['GLOBAL']['ocrerrorpath']
+        root = Et.parse(config_path).getroot()
 
         for element in root:
             self.OCRErrorsTable[element.tag] = {}
@@ -100,11 +104,11 @@ class PyTesseract:
 
     @staticmethod
     def prepare_ocr_on_fly(position):
-        position        = eval(position)
-        positionArray   = {}
-        positionArray.update({'x1': position[0][0]})
-        positionArray.update({'y1': position[0][1]})
-        positionArray.update({'x2': position[1][0]})
-        positionArray.update({'y2': position[1][1]})
+        position = eval(position)
+        position_array = {}
+        position_array.update({'x1': position[0][0]})
+        position_array.update({'y1': position[0][1]})
+        position_array.update({'x2': position[1][0]})
+        position_array.update({'y2': position[1][1]})
 
-        return positionArray
+        return position_array

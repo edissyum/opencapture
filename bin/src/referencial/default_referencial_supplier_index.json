@@ -6,5 +6,6 @@
   "adress1"           : "Adresse 1",
   "adress2"           : "Adresse 2",
   "adressTown"        : "VILLE",
-  "adressPostalCode"  : "CP"
+  "adressPostalCode"  : "CP",
+  "typology"          : "Typologie"
 }

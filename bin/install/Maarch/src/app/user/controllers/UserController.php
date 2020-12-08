@@ -54,9 +54,9 @@ class UserController
         $group_id = $data['group'];
 
         $aUsers = DatabaseModel::select([
-            'select'    => ['id', 'users.user_id', 'firstname', 'lastname', 'status', 'enabled', 'mail', 'entity_id'],
+            'select'    => ['id', 'users.user_id', 'firstname', 'lastname', 'status', 'status', 'mail', 'entity_id'],
             'table'     => ['users', 'users_entities', 'usergroup_content'], // NCH01 add usergroup_content
-            'left_join' => ['users.user_id = users_entities.user_id', 'users.user_id = usergroup_content.user_id'],
+            'left_join' => ['users.id = users_entities.user_id', 'users.id = usergroup_content.user_id'],
             'where'     => ['users.user_id NOT IN (?)', 'status != ?', "entity_id <> ''", 'group_id = ?'],
             'data'      => ['superadmin', 'DEL', $group_id]
         ]);

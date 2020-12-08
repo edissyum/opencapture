@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}{{ gettext('USER_LIST') }}{% endblock %}
+{% block title %}{{ gettext('SUPPLIER_LIST') }}{% endblock %}
 
 {% block content %}
     {{ pagination.info }}
@@ -14,10 +14,11 @@
                         <th>{{ gettext('SUPPLIER') }}</th>
                         <th>{{ gettext('SIRET_NUMBER') }}</th>
                         <th>{{ gettext('SIREN_NUMBER') }}</th>
-                        <th>{{ gettext('Address') }} 1</th>
-                        <th>{{ gettext('Address') }} 2</th>
+                        <th>{{ gettext('ADDRESS') }} 1</th>
+                        <th>{{ gettext('ADDRESS') }} 2</th>
                         <th>{{ gettext('ZIP_CODE') }}</th>
                         <th>{{ gettext('CITY') }}</th>
+                        <th>{{ gettext('TYPOLOGY') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -25,7 +26,7 @@
                         <tr>
                             <td>
                                 <a href="#">
-                                    {{ supplier['vatNumber'] }}
+                                    {{ supplier['vat_number'] }}
                                 </a>
                             </td>
                             <td>
@@ -35,19 +36,19 @@
                             </td>
                             <td>
                                 <a href="#">
-                                    {% if supplier['SIRET'] == 'nan' %}
+                                    {% if supplier['siret'] == 'nan' %}
                                         N/A
                                     {% else %}
-                                        {{ supplier['SIRET'] }}
+                                        {{ supplier['siret'] }}
                                     {% endif %}
                                 </a>
                             </td>
                             <td>
                                 <a href="#">
-                                    {% if supplier['SIREN'] == 'nan' %}
+                                    {% if supplier['siren'] == 'nan' %}
                                         N/A
                                     {% else %}
-                                        {{ supplier['SIREN'] }}
+                                        {{ supplier['siren'] }}
                                     {% endif %}
                                 </a>
                             </td>
@@ -87,6 +88,15 @@
                                     {% endif %}
                                 </a>
                             </td>
+                            <td>
+                                <a href="#">
+                                    {% if supplier['typology'] == 'nan' %}
+                                        N/A
+                                    {% else %}
+                                        {{ supplier['typology'] }}
+                                    {% endif %}
+                                </a>
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -99,11 +109,5 @@
     {% block javascript %}
         <script src="{{ url_for('static', filename='js/jqueryLib/jquery.min.js') }}"></script>
         <script src="{{ url_for('static', filename='js/otherLib/bootstrap.bundle.min.js') }}"></script>
-        <script type="text/javascript">
-            $(document).ready(function(){
-                $('[data-toggle="tooltip"]').tooltip();
-            });
-        </script>
-
     {% endblock %}
 {% endblock %}
