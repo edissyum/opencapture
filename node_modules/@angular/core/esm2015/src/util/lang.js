@@ -1,0 +1,28 @@
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+/**
+ * Determine if the argument is shaped like a Promise
+ */
+export function isPromise(obj) {
+    // allow any Promise/A+ compliant thenable.
+    // It's up to the caller to ensure that obj.then conforms to the spec
+    return !!obj && typeof obj.then === 'function';
+}
+/**
+ * Determine if the argument is an Observable
+ *
+ * Strictly this tests that the `obj` is `Subscribable`, since `Observable`
+ * types need additional methods, such as `lift()`. But it is adequate for our
+ * needs since within the Angular framework code we only ever need to use the
+ * `subscribe()` method, and RxJS has mechanisms to wrap `Subscribable` objects
+ * into `Observable` as needed.
+ */
+export function isObservable(obj) {
+    return !!obj && typeof obj.subscribe === 'function';
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoibGFuZy5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uLy4uLy4uL3BhY2thZ2VzL2NvcmUvc3JjL3V0aWwvbGFuZy50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTs7Ozs7O0dBTUc7QUFJSDs7R0FFRztBQUNILE1BQU0sVUFBVSxTQUFTLENBQVUsR0FBUTtJQUN6QywyQ0FBMkM7SUFDM0MscUVBQXFFO0lBQ3JFLE9BQU8sQ0FBQyxDQUFDLEdBQUcsSUFBSSxPQUFPLEdBQUcsQ0FBQyxJQUFJLEtBQUssVUFBVSxDQUFDO0FBQ2pELENBQUM7QUFFRDs7Ozs7Ozs7R0FRRztBQUNILE1BQU0sVUFBVSxZQUFZLENBQUMsR0FBd0I7SUFDbkQsT0FBTyxDQUFDLENBQUMsR0FBRyxJQUFJLE9BQU8sR0FBRyxDQUFDLFNBQVMsS0FBSyxVQUFVLENBQUM7QUFDdEQsQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbIi8qKlxuICogQGxpY2Vuc2VcbiAqIENvcHlyaWdodCBHb29nbGUgTExDIEFsbCBSaWdodHMgUmVzZXJ2ZWQuXG4gKlxuICogVXNlIG9mIHRoaXMgc291cmNlIGNvZGUgaXMgZ292ZXJuZWQgYnkgYW4gTUlULXN0eWxlIGxpY2Vuc2UgdGhhdCBjYW4gYmVcbiAqIGZvdW5kIGluIHRoZSBMSUNFTlNFIGZpbGUgYXQgaHR0cHM6Ly9hbmd1bGFyLmlvL2xpY2Vuc2VcbiAqL1xuXG5pbXBvcnQge09ic2VydmFibGV9IGZyb20gJ3J4anMnO1xuXG4vKipcbiAqIERldGVybWluZSBpZiB0aGUgYXJndW1lbnQgaXMgc2hhcGVkIGxpa2UgYSBQcm9taXNlXG4gKi9cbmV4cG9ydCBmdW5jdGlvbiBpc1Byb21pc2U8VCA9IGFueT4ob2JqOiBhbnkpOiBvYmogaXMgUHJvbWlzZTxUPiB7XG4gIC8vIGFsbG93IGFueSBQcm9taXNlL0ErIGNvbXBsaWFudCB0aGVuYWJsZS5cbiAgLy8gSXQncyB1cCB0byB0aGUgY2FsbGVyIHRvIGVuc3VyZSB0aGF0IG9iai50aGVuIGNvbmZvcm1zIHRvIHRoZSBzcGVjXG4gIHJldHVybiAhIW9iaiAmJiB0eXBlb2Ygb2JqLnRoZW4gPT09ICdmdW5jdGlvbic7XG59XG5cbi8qKlxuICogRGV0ZXJtaW5lIGlmIHRoZSBhcmd1bWVudCBpcyBhbiBPYnNlcnZhYmxlXG4gKlxuICogU3RyaWN0bHkgdGhpcyB0ZXN0cyB0aGF0IHRoZSBgb2JqYCBpcyBgU3Vic2NyaWJhYmxlYCwgc2luY2UgYE9ic2VydmFibGVgXG4gKiB0eXBlcyBuZWVkIGFkZGl0aW9uYWwgbWV0aG9kcywgc3VjaCBhcyBgbGlmdCgpYC4gQnV0IGl0IGlzIGFkZXF1YXRlIGZvciBvdXJcbiAqIG5lZWRzIHNpbmNlIHdpdGhpbiB0aGUgQW5ndWxhciBmcmFtZXdvcmsgY29kZSB3ZSBvbmx5IGV2ZXIgbmVlZCB0byB1c2UgdGhlXG4gKiBgc3Vic2NyaWJlKClgIG1ldGhvZCwgYW5kIFJ4SlMgaGFzIG1lY2hhbmlzbXMgdG8gd3JhcCBgU3Vic2NyaWJhYmxlYCBvYmplY3RzXG4gKiBpbnRvIGBPYnNlcnZhYmxlYCBhcyBuZWVkZWQuXG4gKi9cbmV4cG9ydCBmdW5jdGlvbiBpc09ic2VydmFibGUob2JqOiBhbnl8T2JzZXJ2YWJsZTxhbnk+KTogb2JqIGlzIE9ic2VydmFibGU8YW55PiB7XG4gIHJldHVybiAhIW9iaiAmJiB0eXBlb2Ygb2JqLnN1YnNjcmliZSA9PT0gJ2Z1bmN0aW9uJztcbn1cbiJdfQ==

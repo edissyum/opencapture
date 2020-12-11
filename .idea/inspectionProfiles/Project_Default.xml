@@ -1,0 +1,74 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="DuplicatedCode" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <Languages>
+        <language minSize="77" name="JavaScript" />
+        <language minSize="153" name="Python" />
+      </Languages>
+    </inspection_tool>
+    <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myValues">
+        <value>
+          <list size="14">
+            <item index="0" class="java.lang.String" itemvalue="onkeyup-no-arg" />
+            <item index="1" class="java.lang.String" itemvalue="x1_original" />
+            <item index="2" class="java.lang.String" itemvalue="y1_original" />
+            <item index="3" class="java.lang.String" itemvalue="x2_original" />
+            <item index="4" class="java.lang.String" itemvalue="y2_original" />
+            <item index="5" class="java.lang.String" itemvalue="width_original" />
+            <item index="6" class="java.lang.String" itemvalue="y2" />
+            <item index="7" class="java.lang.String" itemvalue="x2" />
+            <item index="8" class="java.lang.String" itemvalue="y1" />
+            <item index="9" class="java.lang.String" itemvalue="x1" />
+            <item index="10" class="java.lang.String" itemvalue="height" />
+            <item index="11" class="java.lang.String" itemvalue="width" />
+            <item index="12" class="java.lang.String" itemvalue="transform" />
+            <item index="13" class="java.lang.String" itemvalue="page" />
+          </list>
+        </value>
+      </option>
+      <option name="myCustomValuesEnabled" value="true" />
+    </inspection_tool>
+    <inspection_tool class="HtmlUnknownTag" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myValues">
+        <value>
+          <list size="9">
+            <item index="0" class="java.lang.String" itemvalue="nobr" />
+            <item index="1" class="java.lang.String" itemvalue="noembed" />
+            <item index="2" class="java.lang.String" itemvalue="comment" />
+            <item index="3" class="java.lang.String" itemvalue="noscript" />
+            <item index="4" class="java.lang.String" itemvalue="embed" />
+            <item index="5" class="java.lang.String" itemvalue="script" />
+            <item index="6" class="java.lang.String" itemvalue="h3" />
+            <item index="7" class="java.lang.String" itemvalue="a" />
+            <item index="8" class="java.lang.String" itemvalue="li" />
+          </list>
+        </value>
+      </option>
+      <option name="myCustomValuesEnabled" value="true" />
+    </inspection_tool>
+    <inspection_tool class="PyInterpreterInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="PyPep8Inspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="PyPep8NamingInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="PyProtocolInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <list>
+          <option value="float.__getitem__" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="SpellCheckingInspection" enabled="false" level="TYPO" enabled_by_default="false">
+      <option name="processCode" value="true" />
+      <option name="processLiterals" value="true" />
+      <option name="processComments" value="true" />
+    </inspection_tool>
+    <inspection_tool class="SqlDialectInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlErrorHandlingInspection" enabled="false" level="ERROR" enabled_by_default="false" />
+    <inspection_tool class="SqlNoDataSourceInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlSideEffectsInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlStorageInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="SqlWithoutWhereInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+  </profile>
+</component>

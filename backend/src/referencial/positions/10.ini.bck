@@ -1,0 +1,32 @@
+# Default metadata
+[invoice]
+position    = ((2510, 525), (2700, 570))
+regex       =
+type        = string
+page        = 1
+
+[date]
+position    = ((3080, 115), (3290, 170))
+regex       = dateRegex
+type        = date
+
+[total_ttc ]
+position    = ((2150, 2380), (2420, 2415))
+regex       =
+type        = string
+
+# Custom metadata
+[custom-nni]
+position    = ((785, 384), (1080, 425))
+regex       =
+type        = number
+column      = nni
+target      = header
+page        = 2
+
+[custom-birth_date]
+position    = ((1145, 935), (1340, 980))
+regex       = dateRegex
+type        = date
+column      = birth_date
+target      = header

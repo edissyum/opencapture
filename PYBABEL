@@ -1,0 +1,3 @@
+pybabel extract -F webApp/babel.cfg -k lazy_gettext -o webApp/static/babel/messages.pot .
+pybabel update -i webApp/static/babel/messages.pot -d webApp/static/babel/translations
+pybabel compile -d webApp/static/babel/translations 
