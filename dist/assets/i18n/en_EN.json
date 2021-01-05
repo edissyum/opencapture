@@ -1,0 +1,15 @@
+{
+	"GLOBAL": {
+		"download": "Download",
+		"home": "Home",
+		"log_out": "Log out",
+		"batches": "Batches",
+		"my_profile": "My profile"
+	},
+	"SETTINGS": {
+		"add_user": "Add user",
+		"control_panel": "Control panel",
+		"suppliers_list": "Suppliers list",
+		"users_list": "Users list"
+	}
+}

@@ -63,12 +63,14 @@ def create_app(test_config=None):
     if custom_id:
         app.static_folder = [
             os.path.join(app.root_path.replace('webApp', ''), 'custom/' + custom_id[0] + '/webApp/static/'),
-            os.path.join(app.root_path, 'static')
+            os.path.join(app.root_path, 'static'),
+            os.path.join(app.root_path.replace('webApp', ''), 'dist'),
         ]
     else:
         app.static_folder = [
             os.path.join(app.root_path, 'static'),
-            os.path.join(app.root_path, 'static')
+            os.path.join(app.root_path, 'static'),
+            os.path.join(app.root_path.replace('webApp', ''), 'dist'),
         ]
 
     app.config.from_mapping(
@@ -102,11 +104,13 @@ def create_app(test_config=None):
     if custom_id:
         array_location = [
             'custom/' + custom_id[0] + '/webApp',
-            'webApp'
+            'webApp',
+            'dist/'
         ]
     else:
         array_location = [
-            'webApp'
+            'webApp',
+            'dist/'
         ]
 
     templates_locations = jinja2.ChoiceLoader([

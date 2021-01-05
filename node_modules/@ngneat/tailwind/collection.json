@@ -1,0 +1,16 @@
+{
+  "$schema": "../../node_modules/@angular-devkit/schematics/collection-schema.json",
+  "name": "tailwind",
+  "schematics": {
+    "ng-add": {
+      "factory": "./src/schematics/ng-add/ng-add",
+      "schema": "./src/schematics/ng-add/schema.json",
+      "description": "Schematics to setup Tailwind for Angular applications in AngularCLI/Nx Workspace (with Angular CLI)"
+    },
+    "nx-setup": {
+      "factory": "./src/schematics/nx-setup/nx-setup",
+      "schema": "./src/schematics/nx-setup/schema.json",
+      "description": "Schematics to setup Tailwind for Angular applications in Nx Workspace (with Nx CLI)"
+    }
+  }
+}

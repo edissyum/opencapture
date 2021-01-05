@@ -1,0 +1,15 @@
+{
+	"GLOBAL": {
+		"download": "Téléchargement",
+		"home": "Accueil",
+		"log_out": "Déconnexion",
+		"batches": "Lots",
+		"my_profile": "Mon profil"
+	},
+	"SETTINGS": {
+		"add_user": "Ajouter un utilisateur",
+		"control_panel": "Panneau de contrôle",
+		"suppliers_list": "Liste des fournisseurs",
+		"users_list": "Liste des utilisateurs"
+	}
+}
