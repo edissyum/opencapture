@@ -88,7 +88,8 @@ export class AppComponent implements OnInit {
     }
 
     changeLocale(data: any){
-        console.log(data.value)
-        console.log(this.translate.use(data.value))
+        this.translate.use(data.value)
+        // TODO
+        // Change locale in config file
     }
 }
