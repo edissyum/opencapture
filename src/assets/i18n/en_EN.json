@@ -1,16 +1,35 @@
 {
+	"AUTH": {
+		"account_deleted": "Account deleted",
+		"account_disabled": "Account disabled",
+		"authenticated": "You have successfully authenticated",
+		"bad_password": "Bad password",
+		"bad_username": "bad username",
+		"field_required": "This field is required",
+		"login": "Log in",
+		"not_connected": "Please authenticate yourself before accessing this page",
+		"password": "Password",
+		"username": "Username"
+	},
 	"GLOBAL": {
 		"batches": "Batches",
 		"download": "Download",
 		"home": "Home",
-		"language": "",
+		"language": "Language",
 		"log_out": "Log out",
-		"my_profile": "My profile"
+		"login": "Login",
+		"my_profile": "My profile",
+		"unknow_error": "Unknow error"
 	},
 	"SETTINGS": {
 		"add_user": "Add user",
 		"control_panel": "Control panel",
 		"suppliers_list": "Suppliers list",
 		"users_list": "Users list"
+	},
+	"lang": {
+		"connectionFailed": "",
+		"documentOutOfPerimeter": "",
+		"documentsOutOfPerimeter": ""
 	}
 }

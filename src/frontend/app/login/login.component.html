@@ -1,0 +1,22 @@
+<div class="flex justify-center items-center" style="height: 85vh">
+    <mat-card class="text-center w-1/4">
+        <mat-card-title>
+            {{ 'GLOBAL.login' | translate }}
+        </mat-card-title>
+        <mat-card-content>
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+                <mat-form-field class="block">
+                    <input type="text" matInput placeholder="{{ 'AUTH.username' | translate }}" formControlName="username" required>
+                    <mat-error *ngIf="submittedForm && loginForm.controls.username.invalid">{{ getErrorMessage('username') }}</mat-error>
+                </mat-form-field>
+                <mat-form-field class="block">
+                    <input type="password" matInput placeholder="{{ 'AUTH.password' | translate }}" formControlName="password" required>
+                    <mat-error *ngIf="submittedForm && loginForm.controls.password.invalid">{{ getErrorMessage('password') }}</mat-error>
+                </mat-form-field>
+                <div class="button">
+                    <button type="submit" mat-button>{{ 'AUTH.login' | translate }}</button>
+                </div>
+            </form>
+        </mat-card-content>
+    </mat-card>
+</div>

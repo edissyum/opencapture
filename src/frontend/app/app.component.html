@@ -43,8 +43,9 @@
                     <div [@toggle]="profileDropdownCurrentState"
                          class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-50"
                          role="menu" aria-orientation="vertical" aria-labelledby="user-menu">
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative" role="menuitem">{{ 'GLOBAL.my_profile' | translate }}</a>
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative" role="menuitem">{{ 'GLOBAL.log_out' | translate }}</a>
+                        {{ user['username'] }}
+                        <a (click)="closeprofileDropDown()" routerLink="/" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative" role="menuitem">{{ 'GLOBAL.my_profile' | translate }}</a>
+                        <a (click)="closeprofileDropDown()" routerLink="/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative" role="menuitem">{{ 'GLOBAL.log_out' | translate }}</a>
                     </div>
                 </div>
                 <div class="ml-3 relative">
@@ -58,10 +59,10 @@
                     <div [@toggle]="profileSettingsCurrentState"
                          class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-50"
                          role="menu" aria-orientation="vertical" aria-labelledby="settings-menu">
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative" role="menuitem">{{ 'SETTINGS.control_panel' | translate }}</a>
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative" role="menuitem">{{ 'SETTINGS.users_list' | translate }}</a>
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative" role="menuitem">{{ 'SETTINGS.add_user' | translate }}</a>
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative" role="menuitem">{{ 'SETTINGS.suppliers_list' | translate }}</a>
+                        <a (click)="closeSettingsDropDown()" href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative" role="menuitem">{{ 'SETTINGS.control_panel' | translate }}</a>
+                        <a (click)="closeSettingsDropDown()" href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative" role="menuitem">{{ 'SETTINGS.users_list' | translate }}</a>
+                        <a (click)="closeSettingsDropDown()" href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative" role="menuitem">{{ 'SETTINGS.add_user' | translate }}</a>
+                        <a (click)="closeSettingsDropDown()" href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative" role="menuitem">{{ 'SETTINGS.suppliers_list' | translate }}</a>
                     </div>
                 </div>
                 <div class="ml-3 relative">

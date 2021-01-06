@@ -1,4 +1,5 @@
 module.exports = (isProd) => ({
+    important: true,
     prefix: '',
     purge: {
         enabled: isProd,

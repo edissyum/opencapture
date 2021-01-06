@@ -1,11 +1,98 @@
 import functools
+import datetime
+
+import jwt, jwt.exceptions
 from flask_babel import gettext
 from werkzeug.security import check_password_hash, generate_password_hash
-from flask import Blueprint, flash, g, redirect, render_template, request, session, url_for
+from flask import Blueprint, flash, g, redirect, render_template, request, session, url_for, make_response, jsonify, current_app
 
 from webApp.db import get_db
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
+
+
+class Auth:
+
+    def encode_auth_token(self, user_id):
+        """
+        Generates the Auth Token
+        :return: string
+        """
+        try:
+            payload = {
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1, seconds=0),
+                'iat': datetime.datetime.utcnow(),
+                'sub': user_id
+            }
+            return jwt.encode(
+                payload,
+                current_app.config.get('SECRET_KEY'),
+                algorithm='HS256'
+            )
+        except Exception as e:
+            return e
+
+    def load_logged_in_user(self):
+        user_id = session.get('user_id')
+
+        if user_id is None:
+            g.user = None
+        else:
+            db = get_db()
+            g.user = db.select({
+                'select': ['*'],
+                'table': ['users'],
+                'where': ['id = ?'],
+                'data': [user_id]
+            })[0]
+
+    def login(self, username, password):
+        db = get_db()
+        error = None
+        user = db.select({
+            'select': ['*'],
+            'table': ['users'],
+            'where': ['username = ?'],
+            'data': [username]
+        })
+
+        if not user:
+            error = "Bad username"
+        elif not check_password_hash(user[0]['password'], password):
+            error = "Authentication Failed"
+        elif user[0]['status'] == 'DEL':
+            error = "User deleted"
+        elif user[0]['enabled'] == 0:
+            error = "User disabled"
+
+        if error is None:
+            if 'lang' in session:
+                lang = session['lang']
+            else:
+                # TODO
+                # Get lang from config file
+                lang = 'fr_FR'
+            session.clear()
+            session['user_id'] = user[0]['id']
+            session['user_name'] = user[0]['username']
+            session['lang'] = lang
+            session['jwt'] = self.encode_auth_token(user[0]['id'])
+
+            response = {
+                'status': 'success',
+                'message': 'Successfully logged in.',
+                'auth_token': session['jwt'].decode(),
+                'user': db.select({
+                            'select': ['id', 'username', 'role', 'status'],
+                            'table': ['users'],
+                            'where': ['username = ?'],
+                            'data': [username]
+                        })[0]
+            }
+
+            return response, 200
+        else:
+            return error, 403
 
 
 @bp.route('/register', methods=('GET', 'POST'))
@@ -138,6 +225,31 @@ def login_required(view):
 
     return wrapped_view
 
+def token_required(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if 'Authorization' in request.headers:
+            token = request.headers['Authorization'].split('Bearer')[1].lstrip()
+            try:
+                token = jwt.decode(token, current_app.config['SECRET_KEY'])
+            except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError, jwt.ExpiredSignatureError) as e:
+                return jsonify({"errors": "JWT error", "message": str(e)}), 500
+
+            db = get_db()
+            user = db.select({
+                'select': ['*'],
+                'table': ['users'],
+                'where': ['id = ?'],
+                'data': [token['sub']]
+            })
+            if not user:
+                return jsonify({"errors": "JWT error", "message": "User doesn't exist"}), 500
+        else:
+            return jsonify({"errors": "JWT error", "message": "Valid token is mandatory"}), 500
+
+        return view(**kwargs)
+
+    return wrapped_view
 
 def admin_login_required(view):
     @functools.wraps(view)

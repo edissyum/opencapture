@@ -1,9 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Inject, Injectable, OnInit} from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter, map } from 'rxjs/operators';
 import { animate, state, style, transition, trigger } from "@angular/animations";
 import { TranslateService } from "@ngx-translate/core";
+import { HttpClient } from "@angular/common/http";
+import { API_URL } from './env';
+import { NotificationService } from "../services/notifications/notifications.service";
+
+import { ConfigService } from "../services/config.service";
+import {AuthService} from "../services/auth.service";
 
 @Component({
     selector: 'app-root',
@@ -26,17 +32,22 @@ import { TranslateService } from "@ngx-translate/core";
 })
 
 export class AppComponent implements OnInit {
-    title = 'Open-Capture For Invoices';
-    image = '';
-    profileDropdownCurrentState = 'hide'
-    profileSettingsCurrentState = 'hide'
-    mobileMenuState = 'hide'
+    title                       : string = 'Open-Capture For Invoices';
+    image                       : string = '';
+    user                        : any;
+    profileDropdownCurrentState : string = 'hide'
+    profileSettingsCurrentState : string = 'hide'
+    mobileMenuState             : string = 'hide'
 
     constructor(
-        private titleService: Title,
         private router: Router,
+        private http: HttpClient,
+        private titleService: Title,
+        private notify:NotificationService,
+        private translate: TranslateService,
         private activatedRoute: ActivatedRoute,
-        private translate: TranslateService
+        private configService: ConfigService,
+        private authService: AuthService
     ) {
     }
 
@@ -71,6 +82,9 @@ export class AppComponent implements OnInit {
                 this.titleService.setTitle(data + ' - ' + this.title);
             });
         });
+
+        this.configService.readConfig()
+        this.user = this.authService.getUserFromLocal()
     }
 
     toggleProfileDropdown() {
@@ -81,6 +95,14 @@ export class AppComponent implements OnInit {
     toggleSettingsDropdown() {
         this.profileSettingsCurrentState = this.profileSettingsCurrentState === 'hide' ? 'show' : 'hide';
         this.profileDropdownCurrentState = this.profileDropdownCurrentState === 'show' && this.profileSettingsCurrentState == 'show' ? 'hide' : this.profileDropdownCurrentState
+    }
+
+    closeSettingsDropDown(){
+        this.profileSettingsCurrentState = 'hide';
+    }
+
+    closeprofileDropDown(){
+        this.profileDropdownCurrentState = 'hide';
     }
 
     toggleMobileMenu() {

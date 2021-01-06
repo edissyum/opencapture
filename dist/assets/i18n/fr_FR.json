@@ -1,9 +1,10 @@
 {
 	"GLOBAL": {
+		"batches": "Lots",
 		"download": "Téléchargement",
 		"home": "Accueil",
+		"language": "",
 		"log_out": "Déconnexion",
-		"batches": "Lots",
 		"my_profile": "Mon profil"
 	},
 	"SETTINGS": {

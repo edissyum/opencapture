@@ -1,0 +1,11 @@
+<div class="notif-container" (click)="dismiss()">
+    <div class="notif-container-icon">
+        <i class="fa fa-{{data.icon}} fa-2x"></i>
+    </div>
+    <div class="notif-container-content">
+        <div class="notif-container-content-msg">
+            <div [innerHTML]="data.url"></div>
+            <div [innerHTML]="data.message"></div>
+        </div>
+    </div>
+</div>

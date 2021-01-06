@@ -7,11 +7,12 @@ from zeep import exceptions
 import worker_from_python
 
 from flask_babel import gettext
-from .auth import login_required
+from .auth import login_required, token_required
 from werkzeug.utils import secure_filename
-from flask import current_app, Blueprint, flash, redirect, request, url_for, session
+from flask import current_app, Blueprint, flash, redirect, request, url_for, session, make_response, jsonify, g
 
 from .functions import get_custom_id, check_python_customized_files
+from .auth import Auth as Auth
 
 custom_id = get_custom_id()
 custom_array = {}
@@ -30,6 +31,16 @@ else:
 
 bp = Blueprint('ws', __name__)
 
+
+@bp.route('/ws/login', methods=['POST'])
+def login():
+    data = request.json
+    auth = Auth()
+    res = auth.login(data['username'], data['password'])
+    auth.load_logged_in_user()
+    print(res)
+    print(g.user)
+    return make_response(jsonify(res[0])), res[1]
 
 @bp.route('/ws/VAT/<string:vat_id>', methods=['GET'])
 @login_required
@@ -58,7 +69,6 @@ def check_vat(vat_id):
     except requests.exceptions.RequestException as e:
         text = gettext('VAT_API_ERROR') + ' : ' + str(e)
         return json.dumps({'text': text, 'code': 200, 'ok': 'false'})
-
 
 @bp.route('/ws/cfg/<string:cfg_name>', methods=['GET'])
 @login_required
@@ -133,7 +143,7 @@ def upload():
 
 
 @bp.route('/ws/readConfig', methods=['GET'])
-@login_required
+@token_required
 def read_config():
     if request.method == 'GET':
         _vars = pdf.init()

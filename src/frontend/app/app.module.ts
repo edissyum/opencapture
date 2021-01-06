@@ -1,19 +1,22 @@
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppMaterialModule } from './app-material.module';
-
+import { ServicesModule } from '../services/services.module';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ViewerComponent } from './verifier/viewer/viewer.component';
 import { ListComponent } from './verifier/list/list.component';
-import { AuthComponent } from './auth/auth.component';
+import { LoginComponent } from './login/login.component';
+import { LogoutComponent } from "./logout/logout.component";
 import { HomeComponent } from './home/home.component';
+
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
+import {TranslateLoader, TranslateModule, TranslateService} from "@ngx-translate/core";
 import {HttpClient} from "@angular/common/http";
 import {HttpClientModule} from "@angular/common/http";
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
+import {ReactiveFormsModule} from "@angular/forms";
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, '../assets/i18n/', '.json');
@@ -24,8 +27,9 @@ export function createTranslateLoader(http: HttpClient) {
     AppComponent,
     ViewerComponent,
     ListComponent,
-    AuthComponent,
-    HomeComponent,
+    LoginComponent,
+    LogoutComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
@@ -33,6 +37,7 @@ export function createTranslateLoader(http: HttpClient) {
     AppMaterialModule,
     BrowserAnimationsModule,
     HttpClientModule,
+    ServicesModule,
     TranslateModule.forRoot({
       defaultLanguage: 'fr_FR',
       loader: {
@@ -40,10 +45,12 @@ export function createTranslateLoader(http: HttpClient) {
         useFactory: (createTranslateLoader),
         deps: [HttpClient]
       }
-    })
+    }),
+    ReactiveFormsModule,
   ],
   providers: [
-    Title
+    Title,
+    TranslateService
   ],
   bootstrap: [AppComponent]
 })
