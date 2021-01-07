@@ -12,11 +12,11 @@ import { LogoutComponent } from "./logout/logout.component";
 import { HomeComponent } from './home/home.component';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {TranslateLoader, TranslateModule, TranslateService} from "@ngx-translate/core";
-import {HttpClient} from "@angular/common/http";
-import {HttpClientModule} from "@angular/common/http";
-import {TranslateHttpLoader} from "@ngx-translate/http-loader";
-import {ReactiveFormsModule} from "@angular/forms";
+import { TranslateLoader, TranslateModule, TranslateService } from "@ngx-translate/core";
+import { HttpClient} from "@angular/common/http";
+import { HttpClientModule } from "@angular/common/http";
+import { TranslateHttpLoader } from "@ngx-translate/http-loader";
+import { ReactiveFormsModule } from "@angular/forms";
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, '../assets/i18n/', '.json');
@@ -50,7 +50,7 @@ export function createTranslateLoader(http: HttpClient) {
   ],
   providers: [
     Title,
-    TranslateService
+    TranslateService,
   ],
   bootstrap: [AppComponent]
 })

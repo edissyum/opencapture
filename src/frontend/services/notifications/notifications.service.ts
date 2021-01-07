@@ -28,6 +28,7 @@ export class NotificationService {
             duration: duration,
             panelClass: 'success-snackbar',
             verticalPosition : 'top',
+            horizontalPosition: 'right',
             data: { message: message, icon: 'info-circle', close: () => {snackBar.dismiss()} }
         });
     }
@@ -38,6 +39,7 @@ export class NotificationService {
             duration: duration,
             panelClass: 'error-snackbar',
             verticalPosition : 'top',
+            horizontalPosition: 'right',
             data: { url: url, message: message, icon: 'exclamation-triangle', close: () => {snackBar.dismiss()} }
         });
     }

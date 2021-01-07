@@ -1,4 +1,5 @@
 import {Component, Inject, Injectable, OnInit} from '@angular/core';
+import { Location } from '@angular/common';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter, map } from 'rxjs/operators';
@@ -34,13 +35,14 @@ import {AuthService} from "../services/auth.service";
 export class AppComponent implements OnInit {
     title                       : string = 'Open-Capture For Invoices';
     image                       : string = '';
-    user                        : any;
+    user                        : any = {username: '', firstname: '', lastname: '', role: '', groups: [], privileges: [], preferences: [], featureTour: [] };
     profileDropdownCurrentState : string = 'hide'
     profileSettingsCurrentState : string = 'hide'
     mobileMenuState             : string = 'hide'
 
     constructor(
         private router: Router,
+        public location: Location,
         private http: HttpClient,
         private titleService: Title,
         private notify:NotificationService,
@@ -82,8 +84,6 @@ export class AppComponent implements OnInit {
                 this.titleService.setTitle(data + ' - ' + this.title);
             });
         });
-
-        this.configService.readConfig()
         this.user = this.authService.getUserFromLocal()
     }
 

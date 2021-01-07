@@ -1,14 +1,15 @@
 import {Injectable} from '@angular/core';
 import {API_URL} from "../app/env";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {NotificationService} from "./notifications/notifications.service";
 import {AuthService} from "./auth.service";
+import {catchError, subscribeOn, tap} from "rxjs/operators";
+import {of} from "rxjs";
 
 @Injectable({
     providedIn: 'root'
 })
 export class ConfigService {
-    config = {}
 
     constructor(
         private http: HttpClient,
@@ -18,19 +19,28 @@ export class ConfigService {
     }
 
     readConfig() {
-        setTimeout(() =>{
-            const headers = {}
-            this.http.get(API_URL + '/ws/readConfig', {headers}).subscribe((data: {}) => {
-                this.config = data
-            }, (err: any) => {
-                console.debug(err)
-                this.notify.handleErrors(err);
-                return {'error': "Could not config file"}
-            });
-        }, 100)
+        const headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.authService.getToken())
+        return new Promise((resolve, reject) => {
+            this.http.get(API_URL + '/ws/readConfig', {headers}).pipe(
+                tap((data: any) => {
+                    this.setConfig(data.text)
+                    resolve(true);
+                }),
+                catchError((err: any) => {
+                    console.debug(err)
+                    resolve(false);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe()
+        });
+    }
+
+    setConfig(config: any){
+        this.authService.setTokenCustom('OpenCaptureForInvoicesConfig', btoa(JSON.stringify(config)));
     }
 
     getConfig(){
-        return this.config
+        return JSON.parse(atob(<string>this.authService.getTokenCustom('OpenCaptureForInvoicesConfig')))
     }
 }

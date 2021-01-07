@@ -9,6 +9,7 @@ import {of} from "rxjs";
 import {LocalStorageService} from "../../services/local-storage.service";
 import {AuthService} from "../../services/auth.service";
 import {Router} from "@angular/router";
+import {ConfigService} from "../../services/config.service";
 
 @Component({
     selector: 'app-login',
@@ -23,11 +24,12 @@ export class LoginComponent implements OnInit {
         private http: HttpClient,
         private router: Router,
         private formBuilder: FormBuilder,
+        private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,
+        private configService: ConfigService,
         private localStorage: LocalStorageService,
-        private authService: AuthService
-    ) {
+) {
     }
 
     ngOnInit(): void {
@@ -42,39 +44,42 @@ export class LoginComponent implements OnInit {
         let password = this.loginForm.get('password').value
         let username = this.loginForm.get('username').value
         if (password && username){
-            this.http.post(
-                API_URL + '/ws/login',
-                {
-                    'username': username,
-                    'password': password,
-                },
-                {
-                    observe: 'response'
-                },
-            ).pipe(
-                tap((data: any) => {
-                    this.localStorage.resetLocal();
-                    this.authService.setUser(data.body.user)
-                    this.authService.setTokens(data.body.auth_token, btoa(JSON.stringify(this.authService.getUser())));
-                    this.notify.success(this.translate.instant('AUTH.authenticated'))
-                    this.router.navigate(['/home']);
-                }),
-                catchError((err: any) => {
-                    console.debug(err)
-                    if (err.error === 'Authentication Failed') {
-                        this.notify.error(this.translate.instant('AUTH.bad_password'));
-                    } else if (err.error === 'Bad username') {
-                        this.notify.error(this.translate.instant('AUTH.bad_username'));
-                    } else if (err.error === 'User disabled') {
-                        this.notify.error(this.translate.instant('AUTH.account_disabled'));
-                    } else if (err.error === 'User deleted') {
-                        this.notify.error(this.translate.instant('AUTH.account_deleted'));
-                    } else {
-                        this.notify.handleSoftErrors(err);
-                    }
-                    return of(false);
-                })
-            ).subscribe();
+            setTimeout(async () => {
+                this.http.post(
+                    API_URL + '/ws/login',
+                    {
+                        'username': username,
+                        'password': password,
+                    },
+                    {
+                        observe: 'response'
+                    },
+                ).pipe(
+                    tap((data: any) => {
+                        this.localStorage.resetLocal();
+                        this.authService.setUser(data.body.user)
+                        this.authService.setTokens(data.body.auth_token, btoa(JSON.stringify(this.authService.getUser())));
+                        this.notify.success(this.translate.instant('AUTH.authenticated'))
+                        this.configService.readConfig()
+                        this.router.navigate(['/home']);
+                    }),
+                    catchError((err: any) => {
+                        console.debug(err)
+                        if (err.error === 'Authentication Failed') {
+                            this.notify.error(this.translate.instant('AUTH.bad_password'));
+                        } else if (err.error === 'Bad username') {
+                            this.notify.error(this.translate.instant('AUTH.bad_username'));
+                        } else if (err.error === 'User disabled') {
+                            this.notify.error(this.translate.instant('AUTH.account_disabled'));
+                        } else if (err.error === 'User deleted') {
+                            this.notify.error(this.translate.instant('AUTH.account_deleted'));
+                        } else {
+                            this.notify.handleSoftErrors(err);
+                        }
+                        return of(false);
+                    })
+                ).subscribe();
+            }, 1000)
         }
     }
 
