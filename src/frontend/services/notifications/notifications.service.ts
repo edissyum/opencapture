@@ -45,7 +45,6 @@ export class NotificationService {
     }
 
     handleErrors(err: any) {
-        console.log(err);
         if (err.status === 0 && err.statusText === 'Unknown Error') {
             this.error(this.translate.instant('lang.connectionFailed'));
         } else {

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2020-10-26 14:35+0100\n"
+"POT-Creation-Date: 2021-01-07 16:49+0100\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: en\n"
@@ -18,33 +18,45 @@ msgstr ""
 msgid "CONNECTION_ERROR"
 msgstr "Error while trying to connect to the GED"
 
-#: webApp/auth.py:28 webApp/auth.py:71
+#: webApp/auth.py:60 webApp/auth.py:117 webApp/auth.py:160
 msgid "USERNAME_REQUIRED"
 msgstr "Bad login"
 
-#: webApp/auth.py:30 webApp/auth.py:73
+#: webApp/auth.py:62 webApp/auth.py:119 webApp/auth.py:162
 msgid "PASSWORD_REQUIRED"
 msgstr "Bad password"
 
-#: webApp/auth.py:32
-msgid "USER"
-msgstr "User"
-
-#: webApp/auth.py:32
-msgid "ALREADY_REGISTERED"
-msgstr "Already registered"
-
-#: webApp/auth.py:43
-msgid "USER_CREATED_OK"
-msgstr "User created with succes"
-
-#: webApp/auth.py:75
+#: webApp/auth.py:64 webApp/auth.py:164
 msgid "USER_DELETED"
 msgstr "User deleted"
 
-#: webApp/auth.py:77
+#: webApp/auth.py:66 webApp/auth.py:166
 msgid "USER_DISABLED"
 msgstr "User disabled"
+
+#: webApp/auth.py:94
+msgid "LOGIN_ERROR"
+msgstr "Error while log in"
+
+#: webApp/auth.py:121
+msgid "USER"
+msgstr "User"
+
+#: webApp/auth.py:121
+msgid "ALREADY_REGISTERED"
+msgstr "Already registered"
+
+#: webApp/auth.py:132
+msgid "USER_CREATED_OK"
+msgstr "User created with succes"
+
+#: webApp/auth.py:240 webApp/auth.py:250 webApp/auth.py:252
+msgid "JWT_ERROR"
+msgstr "Authentification by token error"
+
+#: webApp/dashboard.py:217
+msgid "CHANGE_LOCALE_ERROR"
+msgstr "Error while changing locale"
 
 #: webApp/pdf.py:228 webApp/static/js/videoCodage.js:59
 #: webApp/ws_splitter.py:142
@@ -117,31 +129,31 @@ msgstr "User deleted with succes"
 msgid "USER_DELETED_ERROR"
 msgstr "Error while attempting to delete user"
 
-#: webApp/ws.py:52
+#: webApp/ws.py:61
 msgid "VAT_NOT_VALID"
 msgstr "Invalid VAT number"
 
-#: webApp/ws.py:54 webApp/ws.py:59
+#: webApp/ws.py:63 webApp/ws.py:68
 msgid "VAT_API_ERROR"
 msgstr "Unable to join VAT number verification API"
 
-#: webApp/ws.py:67
+#: webApp/ws.py:75
 msgid "PROFILE_UPDATED"
 msgstr "Profile updated"
 
-#: webApp/ws.py:70 webApp/ws.py:71
+#: webApp/ws.py:78 webApp/ws.py:79
 msgid "PROFILE_UPDATE_ERROR"
 msgstr "Error while updating profile"
 
-#: webApp/ws.py:78
+#: webApp/ws.py:86
 msgid "CONFIG_FILE_UPDATED"
 msgstr "Configuration file updated with success"
 
-#: webApp/ws.py:80
+#: webApp/ws.py:88
 msgid "ERROR_UPDATE_CONFIG_FILE"
 msgstr "Error while updating configuration file"
 
-#: webApp/ws.py:234
+#: webApp/ws.py:243
 msgid "INVOICE_DELETED"
 msgstr "Invoice deleted"
 
@@ -176,144 +188,144 @@ msgstr ""
 " Error while connection to SIRET verification service. The SIRET/SIREN "
 "could'nt be verified"
 
-#: webApp/static/js/videoCodage.js:327
+#: webApp/static/js/videoCodage.js:329
 msgid "ERROR_WHILE_READING_CONFIGURATION_FILE"
 msgstr "Erreur lors de la lecture du fichier de configuration"
 
-#: webApp/static/js/videoCodage.js:441
+#: webApp/static/js/videoCodage.js:443
 #: webApp/templates/dashboard/index.html:810 webApp/templates/pdf/view.html:201
 msgid "VAT_RATE"
 msgstr "VAT rate"
 
-#: webApp/static/js/videoCodage.js:450 webApp/static/js/videoCodage.js:551
+#: webApp/static/js/videoCodage.js:452 webApp/static/js/videoCodage.js:553
 #: webApp/templates/dashboard/index.html:788 webApp/templates/pdf/view.html:210
 #: webApp/templates/pdf/view.html:284
 msgid "NO_RATE_AMOUNT"
 msgstr "No rate amount"
 
-#: webApp/static/js/videoCodage.js:459 webApp/templates/pdf/view.html:219
+#: webApp/static/js/videoCodage.js:461 webApp/templates/pdf/view.html:219
 msgid "LOAD_ACCOUNT"
 msgstr "Load account"
 
-#: webApp/static/js/videoCodage.js:461 webApp/templates/pdf/view.html:221
+#: webApp/static/js/videoCodage.js:463 webApp/templates/pdf/view.html:221
 msgid "SELECT_LOAD_ACCOUNT"
 msgstr "Select a load account"
 
-#: webApp/static/js/videoCodage.js:479 webApp/templates/pdf/view.html:260
+#: webApp/static/js/videoCodage.js:481 webApp/templates/pdf/view.html:260
 msgid "VAT_AMOUNT"
 msgstr "VAT amount"
 
-#: webApp/static/js/videoCodage.js:557 webApp/templates/pdf/view.html:290
+#: webApp/static/js/videoCodage.js:559 webApp/templates/pdf/view.html:290
 msgid "BUDGET"
 msgstr "Budget"
 
-#: webApp/static/js/videoCodage.js:559 webApp/templates/pdf/view.html:292
+#: webApp/static/js/videoCodage.js:561 webApp/templates/pdf/view.html:292
 msgid "SELECT_STRUCTURE"
 msgstr "Select a structure"
 
-#: webApp/static/js/videoCodage.js:565 webApp/templates/pdf/view.html:338
+#: webApp/static/js/videoCodage.js:567 webApp/templates/pdf/view.html:338
 msgid "OUTCOME"
 msgstr "Outcome"
 
-#: webApp/static/js/videoCodage.js:567 webApp/templates/pdf/view.html:340
+#: webApp/static/js/videoCodage.js:569 webApp/templates/pdf/view.html:340
 msgid "SELECT_BUDGET"
 msgstr "Select a budget"
 
-#: webApp/static/js/videoCodage.js:604 webApp/static/js/videoCodage.js:642
+#: webApp/static/js/videoCodage.js:606 webApp/static/js/videoCodage.js:644
 msgid "ORDER_NUMBER"
 msgstr "Order number"
 
-#: webApp/static/js/videoCodage.js:651
+#: webApp/static/js/videoCodage.js:653
 msgid "ADD_ORDER_NUMBER"
 msgstr "Add an order number"
 
-#: webApp/static/js/videoCodage.js:671 webApp/static/js/videoCodage.js:697
+#: webApp/static/js/videoCodage.js:673 webApp/static/js/videoCodage.js:699
 msgid "DELIVERY_FORM_NUMBER"
 msgstr "Delivery form number"
 
-#: webApp/static/js/videoCodage.js:706
+#: webApp/static/js/videoCodage.js:708
 msgid "ADD_DELIVERY_FORM_NUMBER"
 msgstr "Add a delivery form number"
 
-#: webApp/static/js/videoCodage.js:833 webApp/static/js/videoCodage.js:849
-#: webApp/static/js/videoCodage.js:886 webApp/static/js/videoCodage.js:896
-#: webApp/static/js/videoCodage.js:927
+#: webApp/static/js/videoCodage.js:835 webApp/static/js/videoCodage.js:851
+#: webApp/static/js/videoCodage.js:888 webApp/static/js/videoCodage.js:898
+#: webApp/static/js/videoCodage.js:929
 msgid "ERROR_OCCURED"
 msgstr "Error occured"
 
-#: webApp/static/js/videoCodage.js:849
+#: webApp/static/js/videoCodage.js:851
 msgid "WRONG_SIRET_FORMAT"
 msgstr "The SIRET have a wrong format"
 
-#: webApp/static/js/videoCodage.js:896
+#: webApp/static/js/videoCodage.js:898
 msgid "WRONG_SIREN_FORMAT"
 msgstr "The SIREN have a wrong format"
 
-#: webApp/static/js/videoCodage.js:982
+#: webApp/static/js/videoCodage.js:984
 msgid "BAN_API_ERROR"
 msgstr "Error while connecting API for national adress verification"
 
-#: webApp/static/js/videoCodage.js:996
+#: webApp/static/js/videoCodage.js:998
 msgid "REFUSE_CONFIRMATION"
 msgstr "Do you really want to refuse the invoice ?"
 
-#: webApp/static/js/videoCodage.js:1000 webApp/static/js/videoCodage.js:1073
-#: webApp/static/js/videoCodage.js:1085
+#: webApp/static/js/videoCodage.js:1002 webApp/static/js/videoCodage.js:1075
+#: webApp/static/js/videoCodage.js:1087
 msgid "YES"
 msgstr "Yes"
 
-#: webApp/static/js/videoCodage.js:1030
+#: webApp/static/js/videoCodage.js:1032
 msgid "FORM_ERROR_OR_EMPTY_FIELD"
 msgstr ""
 "The form have some errors or empty field. Please correct them before "
 "validate"
 
-#: webApp/static/js/videoCodage.js:1035
+#: webApp/static/js/videoCodage.js:1037
 msgid "INCORRECT_BAN_ADDRESS"
 msgstr "The address doesn't perfectly match to national referential"
 
-#: webApp/static/js/videoCodage.js:1036
+#: webApp/static/js/videoCodage.js:1038
 msgid "PUT_FORM_TO_SUPPLIER_WAIT"
 msgstr "We advise you to put on hold this invoice, awaiting supplier update"
 
-#: webApp/static/js/videoCodage.js:1042
+#: webApp/static/js/videoCodage.js:1044
 msgid "PUT_ON_HOLD"
 msgstr "Put on hold"
 
-#: webApp/static/js/videoCodage.js:1049
+#: webApp/static/js/videoCodage.js:1051
 msgid "_VALID_WIHTOUT_BAN_VERIFICATION"
 msgstr "Valid without address verification"
 
-#: webApp/static/js/videoCodage.js:1056
+#: webApp/static/js/videoCodage.js:1058
 msgid "INVALID_VAT_NUMBER"
 msgstr "The VAT number is invalid."
 
-#: webApp/static/js/videoCodage.js:1061
+#: webApp/static/js/videoCodage.js:1063
 msgid "_VALID_WIHTOUT_VAT_VERIFICATION"
 msgstr "Valid without VAT verification ?"
 
-#: webApp/static/js/videoCodage.js:1068
+#: webApp/static/js/videoCodage.js:1070
 msgid "CALCUL_NOT_EQUAL_WOULD_YOU_VALIDATE"
 msgstr ""
 "The sum of the amounts allocated to the analytics is different from the "
 "total amount without rates. Do you still want to validate the invoice ?"
 
-#: webApp/static/js/videoCodage.js:1079
+#: webApp/static/js/videoCodage.js:1081
 msgid "INVOICE_ALREADY_EXIST"
 msgstr ""
 "An invoice linked to the same supplier and having the same invoice number"
 " already appears in the database. Do you still want to validate the "
 "invoice ?"
 
-#: webApp/static/js/videoCodage.js:1222
+#: webApp/static/js/videoCodage.js:1224
 msgid "FIELD_TO_CHECK"
 msgstr "Field to check"
 
-#: webApp/static/js/videoCodage.js:1223 webApp/static/js/videoCodage.js:1228
+#: webApp/static/js/videoCodage.js:1225 webApp/static/js/videoCodage.js:1230
 msgid "BAN_VALUE"
 msgstr "National address base value"
 
-#: webApp/static/js/videoCodage.js:1227
+#: webApp/static/js/videoCodage.js:1229
 msgid "INVALID"
 msgstr "Invalid"
 
@@ -770,10 +782,11 @@ msgstr "<b>_</b> ou <b>-</b> for example"
 msgid "BLOBS_RATIO"
 msgstr "Minimal ratio of blank page detection"
 
-
 #: webApp/templates/dashboard/index.html:914
 msgid "BLOBSRATIO_HELP"
-msgstr "Takes the number of keypoint found into the image comprade to the size of the image"
+msgstr ""
+"Takes the number of keypoint found into the image comprade to the size of"
+" the image"
 
 #: webApp/templates/dashboard/index.html:946
 msgid "REST_URL"
@@ -1265,45 +1278,45 @@ msgstr "Change role"
 msgid "NO_RIGHTS"
 msgstr "You do not have the right to perform this action"
 
-msgid "NEW_LONG"
-msgstr "To validate"
+#~ msgid "NEW_LONG"
+#~ msgstr "To validate"
 
-msgid "WAIT_SUP_LONG"
-msgstr "Waiting supplier validation"
+#~ msgid "WAIT_SUP_LONG"
+#~ msgstr "Waiting supplier validation"
 
-msgid "ERR_LONG"
-msgstr "Qualification error"
+#~ msgid "ERR_LONG"
+#~ msgstr "Qualification error"
 
-msgid "NEW"
-msgstr "To validate"
+#~ msgid "NEW"
+#~ msgstr "To validate"
 
-msgid "WAIT_SUP"
-msgstr "Waiting"
+#~ msgid "WAIT_SUP"
+#~ msgstr "Waiting"
 
-msgid "ERR"
-msgstr "Error"
+#~ msgid "ERR"
+#~ msgstr "Error"
 
-msgid "ERR_GED"
-msgstr "GED error"
+#~ msgid "ERR_GED"
+#~ msgstr "GED error"
 
-msgid "ERR_GED_LONG"
-msgstr "Error while inserting in GED"
+#~ msgid "ERR_GED_LONG"
+#~ msgstr "Error while inserting in GED"
 
-msgid "END"
-msgstr "Closed"
+#~ msgid "END"
+#~ msgstr "Closed"
 
-msgid "CANCEL_UPLOAD"
-msgstr "Cancel upload"
+#~ msgid "CANCEL_UPLOAD"
+#~ msgstr "Cancel upload"
 
-msgid "SELECT_OR_DROP_DOC"
-msgstr "Select or drop document"
+#~ msgid "SELECT_OR_DROP_DOC"
+#~ msgstr "Select or drop document"
 
-msgid "FORMAT_NOT_ALLOWED"
-msgstr "Format not allowed"
+#~ msgid "FORMAT_NOT_ALLOWED"
+#~ msgstr "Format not allowed"
 
-msgid "FILE_UPLOAD_ERROR"
-msgstr "Error while uploading file(s)"
+#~ msgid "FILE_UPLOAD_ERROR"
+#~ msgstr "Error while uploading file(s)"
 
-msgid "CHOOSE_VAT_RATE"
-msgstr "Choose VAT rate"
+#~ msgid "CHOOSE_VAT_RATE"
+#~ msgstr "Choose VAT rate"
 

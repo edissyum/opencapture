@@ -57,13 +57,13 @@ class Auth:
         })
 
         if not user:
-            error = "Bad username"
+            error = gettext('USERNAME_REQUIRED')
         elif not check_password_hash(user[0]['password'], password):
-            error = "Authentication Failed"
+            error = gettext('PASSWORD_REQUIRED')
         elif user[0]['status'] == 'DEL':
-            error = "User deleted"
+            error = gettext('USER_DELETED')
         elif user[0]['enabled'] == 0:
-            error = "User disabled"
+            error = gettext('USER_DISABLED')
 
         if error is None:
             if 'lang' in session:
@@ -79,20 +79,22 @@ class Auth:
             session['jwt'] = self.encode_auth_token(user[0]['id'])
 
             response = {
-                'status': 'success',
-                'message': 'Successfully logged in.',
                 'auth_token': session['jwt'].decode(),
                 'user': db.select({
-                            'select': ['id', 'username', 'role', 'status'],
-                            'table': ['users'],
-                            'where': ['username = ?'],
-                            'data': [username]
-                        })[0]
+                    'select': ['id', 'username', 'role', 'status'],
+                    'table': ['users'],
+                    'where': ['username = ?'],
+                    'data': [username]
+                })[0]
             }
 
             return response, 200
         else:
-            return error, 403
+            response = {
+                "errors": gettext('LOGIN_ERROR'),
+                "message": error
+            }
+            return response, 401
 
 
 @bp.route('/register', methods=('GET', 'POST'))
@@ -225,15 +227,17 @@ def login_required(view):
 
     return wrapped_view
 
+
 def token_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if 'Authorization' in request.headers:
             token = request.headers['Authorization'].split('Bearer')[1].lstrip()
+            print(token)
             try:
                 token = jwt.decode(token, current_app.config['SECRET_KEY'])
             except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError, jwt.ExpiredSignatureError) as e:
-                return jsonify({"errors": "JWT error", "message": str(e)}), 500
+                return jsonify({"errors": gettext("JWT_ERROR"), "message": str(e)}), 500
 
             db = get_db()
             user = db.select({
@@ -243,13 +247,14 @@ def token_required(view):
                 'data': [token['sub']]
             })
             if not user:
-                return jsonify({"errors": "JWT error", "message": "User doesn't exist"}), 500
+                return jsonify({"errors": gettext("JWT_ERROR"), "message": "User doesn't exist"}), 500
         else:
-            return jsonify({"errors": "JWT error", "message": "Valid token is mandatory"}), 500
+            return jsonify({"errors": gettext("JWT_ERROR"), "message": "Valid token is mandatory"}), 500
 
         return view(**kwargs)
 
     return wrapped_view
+
 
 def admin_login_required(view):
     @functools.wraps(view)

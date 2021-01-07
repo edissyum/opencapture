@@ -3,7 +3,7 @@ import {API_URL} from "../app/env";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {NotificationService} from "./notifications/notifications.service";
 import {AuthService} from "./auth.service";
-import {catchError, subscribeOn, tap} from "rxjs/operators";
+import {catchError, tap} from "rxjs/operators";
 import {of} from "rxjs";
 
 @Injectable({

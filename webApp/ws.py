@@ -1,6 +1,8 @@
 import logging
 import os
 import json
+
+import configparser
 import requests
 from zeep import Client
 from zeep import exceptions
@@ -38,8 +40,6 @@ def login():
     auth = Auth()
     res = auth.login(data['username'], data['password'])
     auth.load_logged_in_user()
-    print(res)
-    print(g.user)
     return make_response(jsonify(res[0])), res[1]
 
 @bp.route('/ws/VAT/<string:vat_id>', methods=['GET'])
@@ -222,10 +222,36 @@ def ocr_on_fly():
 
 
 @bp.route('/ws/changeLanguage/<string:lang>', methods=['GET'])
+@token_required
 def change_language(lang):
     session['lang'] = lang
-    dashboard.change_locale_in_config(lang)
-    return json.dumps({'text': 'OK', 'code': 200, 'ok': 'true'})
+    response = dashboard.change_locale_in_config(lang)
+
+    return jsonify(response, response[1])
+
+
+@bp.route('/ws/getCurrentLang', methods=['GET'])
+@token_required
+def get_current_lang():
+    _vars = pdf.init()
+    language = current_app.config['LANGUAGES']
+    current_lang = _vars[1].cfg['LOCALE']['locale']
+    lang = 'fr'
+    for l in language:
+        if language[l][1] == current_lang:
+            lang = l
+    return {'lang': lang}, 200
+
+@bp.route('/ws/getAllLang', methods=['GET'])
+@token_required
+def get_all_lang():
+    _vars = pdf.init()
+    language = current_app.config['LANGUAGES']
+    langs = []
+    for lang in language:
+        langs.append([lang, language[lang][0]])
+
+    return {'langs': langs}, 200
 
 
 @bp.route('/ws/deleteInvoice/<int:rowid>', methods=['GET'])

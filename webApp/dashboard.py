@@ -5,6 +5,8 @@ import json
 import configparser
 from os import listdir, path
 
+from flask_babel import gettext
+
 from webApp.db import get_db
 from webApp.auth import admin_login_required
 from flask import current_app, Blueprint, render_template
@@ -197,7 +199,6 @@ def modify_config(data):
     except configparser.Error:
         return False
 
-
 def change_locale_in_config(lang):
     _vars = init()
     config_file = _vars[4]
@@ -210,9 +211,10 @@ def change_locale_in_config(lang):
     try:
         with open(config_file, 'w') as configfile:
             parser.write(configfile)
-        return True
-    except configparser.Error:
-        return False
+        return {}, 200
+    except configparser.Error as e:
+        return {'errors': gettext("CHANGE_LOCALE_ERROR"), 'message': str(e)}, 500
+
 
 
 def get_current_git_version(cfg):

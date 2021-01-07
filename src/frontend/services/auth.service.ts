@@ -17,13 +17,6 @@ export class AuthService {
     ) {
     }
 
-    getUserFromLocal(){
-        let token = this.getTokenAuth()
-        if(token){
-            return JSON.parse(atob(<string>token))
-        }
-    }
-
     setCachedUrl(url: string) {
         this.localStorage.save('OpenCaptureForInvoicesCachedUrl', url);
     }

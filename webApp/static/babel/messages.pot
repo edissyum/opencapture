@@ -1,14 +1,14 @@
 # Translations template for PROJECT.
-# Copyright (C) 2020 ORGANIZATION
+# Copyright (C) 2021 ORGANIZATION
 # This file is distributed under the same license as the PROJECT project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-10-26 14:42+0100\n"
+"POT-Creation-Date: 2021-01-07 16:49+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,32 +21,44 @@ msgstr ""
 msgid "CONNECTION_ERROR"
 msgstr ""
 
-#: webApp/auth.py:28 webApp/auth.py:71
+#: webApp/auth.py:60 webApp/auth.py:117 webApp/auth.py:160
 msgid "USERNAME_REQUIRED"
 msgstr ""
 
-#: webApp/auth.py:30 webApp/auth.py:73
+#: webApp/auth.py:62 webApp/auth.py:119 webApp/auth.py:162
 msgid "PASSWORD_REQUIRED"
 msgstr ""
 
-#: webApp/auth.py:32
-msgid "USER"
-msgstr ""
-
-#: webApp/auth.py:32
-msgid "ALREADY_REGISTERED"
-msgstr ""
-
-#: webApp/auth.py:43
-msgid "USER_CREATED_OK"
-msgstr ""
-
-#: webApp/auth.py:75
+#: webApp/auth.py:64 webApp/auth.py:164
 msgid "USER_DELETED"
 msgstr ""
 
-#: webApp/auth.py:77
+#: webApp/auth.py:66 webApp/auth.py:166
 msgid "USER_DISABLED"
+msgstr ""
+
+#: webApp/auth.py:94
+msgid "LOGIN_ERROR"
+msgstr ""
+
+#: webApp/auth.py:121
+msgid "USER"
+msgstr ""
+
+#: webApp/auth.py:121
+msgid "ALREADY_REGISTERED"
+msgstr ""
+
+#: webApp/auth.py:132
+msgid "USER_CREATED_OK"
+msgstr ""
+
+#: webApp/auth.py:240 webApp/auth.py:250 webApp/auth.py:252
+msgid "JWT_ERROR"
+msgstr ""
+
+#: webApp/dashboard.py:217
+msgid "CHANGE_LOCALE_ERROR"
 msgstr ""
 
 #: webApp/pdf.py:228 webApp/static/js/videoCodage.js:59
@@ -120,31 +132,31 @@ msgstr ""
 msgid "USER_DELETED_ERROR"
 msgstr ""
 
-#: webApp/ws.py:52
+#: webApp/ws.py:61
 msgid "VAT_NOT_VALID"
 msgstr ""
 
-#: webApp/ws.py:54 webApp/ws.py:59
+#: webApp/ws.py:63 webApp/ws.py:68
 msgid "VAT_API_ERROR"
 msgstr ""
 
-#: webApp/ws.py:67
+#: webApp/ws.py:75
 msgid "PROFILE_UPDATED"
 msgstr ""
 
-#: webApp/ws.py:70 webApp/ws.py:71
+#: webApp/ws.py:78 webApp/ws.py:79
 msgid "PROFILE_UPDATE_ERROR"
 msgstr ""
 
-#: webApp/ws.py:78
+#: webApp/ws.py:86
 msgid "CONFIG_FILE_UPDATED"
 msgstr ""
 
-#: webApp/ws.py:80
+#: webApp/ws.py:88
 msgid "ERROR_UPDATE_CONFIG_FILE"
 msgstr ""
 
-#: webApp/ws.py:234
+#: webApp/ws.py:243
 msgid "INVOICE_DELETED"
 msgstr ""
 
@@ -177,137 +189,137 @@ msgstr ""
 msgid "SIRET_CONNECTION_ERROR"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:327
+#: webApp/static/js/videoCodage.js:329
 msgid "ERROR_WHILE_READING_CONFIGURATION_FILE"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:441
+#: webApp/static/js/videoCodage.js:443
 #: webApp/templates/dashboard/index.html:810 webApp/templates/pdf/view.html:201
 msgid "VAT_RATE"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:450 webApp/static/js/videoCodage.js:551
+#: webApp/static/js/videoCodage.js:452 webApp/static/js/videoCodage.js:553
 #: webApp/templates/dashboard/index.html:788 webApp/templates/pdf/view.html:210
 #: webApp/templates/pdf/view.html:284
 msgid "NO_RATE_AMOUNT"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:459 webApp/templates/pdf/view.html:219
+#: webApp/static/js/videoCodage.js:461 webApp/templates/pdf/view.html:219
 msgid "LOAD_ACCOUNT"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:461 webApp/templates/pdf/view.html:221
+#: webApp/static/js/videoCodage.js:463 webApp/templates/pdf/view.html:221
 msgid "SELECT_LOAD_ACCOUNT"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:479 webApp/templates/pdf/view.html:260
+#: webApp/static/js/videoCodage.js:481 webApp/templates/pdf/view.html:260
 msgid "VAT_AMOUNT"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:557 webApp/templates/pdf/view.html:290
+#: webApp/static/js/videoCodage.js:559 webApp/templates/pdf/view.html:290
 msgid "BUDGET"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:559 webApp/templates/pdf/view.html:292
+#: webApp/static/js/videoCodage.js:561 webApp/templates/pdf/view.html:292
 msgid "SELECT_STRUCTURE"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:565 webApp/templates/pdf/view.html:338
+#: webApp/static/js/videoCodage.js:567 webApp/templates/pdf/view.html:338
 msgid "OUTCOME"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:567 webApp/templates/pdf/view.html:340
+#: webApp/static/js/videoCodage.js:569 webApp/templates/pdf/view.html:340
 msgid "SELECT_BUDGET"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:604 webApp/static/js/videoCodage.js:642
+#: webApp/static/js/videoCodage.js:606 webApp/static/js/videoCodage.js:644
 msgid "ORDER_NUMBER"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:651
+#: webApp/static/js/videoCodage.js:653
 msgid "ADD_ORDER_NUMBER"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:671 webApp/static/js/videoCodage.js:697
+#: webApp/static/js/videoCodage.js:673 webApp/static/js/videoCodage.js:699
 msgid "DELIVERY_FORM_NUMBER"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:706
+#: webApp/static/js/videoCodage.js:708
 msgid "ADD_DELIVERY_FORM_NUMBER"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:833 webApp/static/js/videoCodage.js:849
-#: webApp/static/js/videoCodage.js:886 webApp/static/js/videoCodage.js:896
-#: webApp/static/js/videoCodage.js:927
+#: webApp/static/js/videoCodage.js:835 webApp/static/js/videoCodage.js:851
+#: webApp/static/js/videoCodage.js:888 webApp/static/js/videoCodage.js:898
+#: webApp/static/js/videoCodage.js:929
 msgid "ERROR_OCCURED"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:849
+#: webApp/static/js/videoCodage.js:851
 msgid "WRONG_SIRET_FORMAT"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:896
+#: webApp/static/js/videoCodage.js:898
 msgid "WRONG_SIREN_FORMAT"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:982
+#: webApp/static/js/videoCodage.js:984
 msgid "BAN_API_ERROR"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:996
+#: webApp/static/js/videoCodage.js:998
 msgid "REFUSE_CONFIRMATION"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1000 webApp/static/js/videoCodage.js:1073
-#: webApp/static/js/videoCodage.js:1085
+#: webApp/static/js/videoCodage.js:1002 webApp/static/js/videoCodage.js:1075
+#: webApp/static/js/videoCodage.js:1087
 msgid "YES"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1030
+#: webApp/static/js/videoCodage.js:1032
 msgid "FORM_ERROR_OR_EMPTY_FIELD"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1035
+#: webApp/static/js/videoCodage.js:1037
 msgid "INCORRECT_BAN_ADDRESS"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1036
+#: webApp/static/js/videoCodage.js:1038
 msgid "PUT_FORM_TO_SUPPLIER_WAIT"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1042
+#: webApp/static/js/videoCodage.js:1044
 msgid "PUT_ON_HOLD"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1049
+#: webApp/static/js/videoCodage.js:1051
 msgid "_VALID_WIHTOUT_BAN_VERIFICATION"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1056
+#: webApp/static/js/videoCodage.js:1058
 msgid "INVALID_VAT_NUMBER"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1061
+#: webApp/static/js/videoCodage.js:1063
 msgid "_VALID_WIHTOUT_VAT_VERIFICATION"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1068
+#: webApp/static/js/videoCodage.js:1070
 msgid "CALCUL_NOT_EQUAL_WOULD_YOU_VALIDATE"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1079
+#: webApp/static/js/videoCodage.js:1081
 msgid "INVOICE_ALREADY_EXIST"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1222
+#: webApp/static/js/videoCodage.js:1224
 msgid "FIELD_TO_CHECK"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1223 webApp/static/js/videoCodage.js:1228
+#: webApp/static/js/videoCodage.js:1225 webApp/static/js/videoCodage.js:1230
 msgid "BAN_VALUE"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1227
+#: webApp/static/js/videoCodage.js:1229
 msgid "INVALID"
 msgstr ""
 

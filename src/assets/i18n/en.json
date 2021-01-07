@@ -1,0 +1,32 @@
+{
+	"AUTH": {
+		"authenticated": "You have successfully authenticated",
+		"field_required": "This field is required",
+		"login": "Log in",
+		"not_connected": "Please authenticate yourself before accessing this page",
+		"password": "Password",
+		"username": "Username"
+	},
+	"GLOBAL": {
+		"batches": "Batches",
+		"download": "Download",
+		"home": "Home",
+		"language": "Language",
+		"log_out": "Log out",
+		"login": "Login",
+		"my_profile": "My profile",
+		"unknow_error": "Unknow error"
+	},
+	"SETTINGS": {
+		"about_us": "About us",
+		"add_user": "Add user",
+		"control_panel": "Control panel",
+		"suppliers_list": "Suppliers list",
+		"users_list": "Users list"
+	},
+	"lang": {
+		"connectionFailed": "",
+		"documentOutOfPerimeter": "",
+		"documentsOutOfPerimeter": ""
+	}
+}

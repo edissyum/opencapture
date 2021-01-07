@@ -16,7 +16,8 @@ import { TranslateLoader, TranslateModule, TranslateService } from "@ngx-transla
 import { HttpClient} from "@angular/common/http";
 import { HttpClientModule } from "@angular/common/http";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
-import { ReactiveFormsModule } from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import { MenuComponent } from './menu/menu.component';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, '../assets/i18n/', '.json');
@@ -29,7 +30,8 @@ export function createTranslateLoader(http: HttpClient) {
     ListComponent,
     LoginComponent,
     LogoutComponent,
-    HomeComponent
+    HomeComponent,
+    MenuComponent
   ],
   imports: [
     BrowserModule,
@@ -47,6 +49,7 @@ export function createTranslateLoader(http: HttpClient) {
       }
     }),
     ReactiveFormsModule,
+    FormsModule,
   ],
   providers: [
     Title,

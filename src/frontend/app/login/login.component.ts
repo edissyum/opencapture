@@ -44,7 +44,7 @@ export class LoginComponent implements OnInit {
         let password = this.loginForm.get('password').value
         let username = this.loginForm.get('username').value
         if (password && username){
-            setTimeout(async () => {
+            // setTimeout(async () => {
                 this.http.post(
                     API_URL + '/ws/login',
                     {
@@ -56,30 +56,19 @@ export class LoginComponent implements OnInit {
                     },
                 ).pipe(
                     tap((data: any) => {
-                        this.localStorage.resetLocal();
                         this.authService.setUser(data.body.user)
                         this.authService.setTokens(data.body.auth_token, btoa(JSON.stringify(this.authService.getUser())));
                         this.notify.success(this.translate.instant('AUTH.authenticated'))
                         this.configService.readConfig()
-                        this.router.navigate(['/home']);
+                        this.router.navigate(['/home'])
                     }),
                     catchError((err: any) => {
                         console.debug(err)
-                        if (err.error === 'Authentication Failed') {
-                            this.notify.error(this.translate.instant('AUTH.bad_password'));
-                        } else if (err.error === 'Bad username') {
-                            this.notify.error(this.translate.instant('AUTH.bad_username'));
-                        } else if (err.error === 'User disabled') {
-                            this.notify.error(this.translate.instant('AUTH.account_disabled'));
-                        } else if (err.error === 'User deleted') {
-                            this.notify.error(this.translate.instant('AUTH.account_deleted'));
-                        } else {
-                            this.notify.handleSoftErrors(err);
-                        }
+                        this.notify.handleErrors(err);
                         return of(false);
                     })
                 ).subscribe();
-            }, 1000)
+            // }, 500)
         }
     }
 

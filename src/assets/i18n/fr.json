@@ -1,0 +1,32 @@
+{
+	"AUTH": {
+		"authenticated": "Vous vous êtes authentifié avec succès",
+		"field_required": "Ce champ est requis",
+		"login": "Se connecter",
+		"not_connected": "Merci de vous authentifier avant d'accéder à cette page",
+		"password": "Mot de passe",
+		"username": "Nom d'utilisateur"
+	},
+	"GLOBAL": {
+		"batches": "Lots",
+		"download": "Téléchargement",
+		"home": "Accueil",
+		"language": "Langage",
+		"log_out": "Déconnexion",
+		"login": "Connexion",
+		"my_profile": "Mon profil",
+		"unknow_error": "Erreur inconnue"
+	},
+	"SETTINGS": {
+		"about_us": "À propos",
+		"add_user": "Ajouter un utilisateur",
+		"control_panel": "Panneau de contrôle",
+		"suppliers_list": "Liste des fournisseurs",
+		"users_list": "Liste des utilisateurs"
+	},
+	"lang": {
+		"connectionFailed": "",
+		"documentOutOfPerimeter": "",
+		"documentsOutOfPerimeter": ""
+	}
+}
