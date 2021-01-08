@@ -18,6 +18,7 @@ export class LoginRequiredService {
     }
 
     canActivate(): boolean {
+
         if (this.authService.getToken()) {
             return true;
         }

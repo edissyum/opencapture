@@ -94,8 +94,8 @@
             <label for="change_language"></label>
             <select name="changeLanguage" id="change_language">
                 {% for locale in config['LANGUAGES'] %}
-                    <option data-img-src={{ url_for('static', filename="imgs/babel/" ~  locale  ~ ".png") }} value="{{ locale }}" {% if session['lang'] == locale %} selected {% endif %}>
-                        {{ config['LANGUAGES'][locale][0] }}
+                    <option data-img-src={{ url_for('static', filename="imgs/babel/" ~  locale  ~ ".png") }} value="{{ config['LANGUAGES'][locale]['lang_code'] }}" {% if session['lang'] == config['LANGUAGES'][locale]['lang_code'] %} selected {% endif %}>
+                        {{ config['LANGUAGES'][locale]['label'] }}
                     </option>
                 {% endfor %}
             </select>

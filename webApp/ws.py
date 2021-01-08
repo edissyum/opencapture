@@ -234,13 +234,10 @@ def change_language(lang):
 @token_required
 def get_current_lang():
     _vars = pdf.init()
-    language = current_app.config['LANGUAGES']
     current_lang = _vars[1].cfg['LOCALE']['locale']
-    lang = 'fr'
-    for l in language:
-        if language[l][1] == current_lang:
-            lang = l
-    return {'lang': lang}, 200
+
+    return {'lang': current_lang}, 200
+
 
 @bp.route('/ws/getAllLang', methods=['GET'])
 @token_required
@@ -249,7 +246,7 @@ def get_all_lang():
     language = current_app.config['LANGUAGES']
     langs = []
     for lang in language:
-        langs.append([lang, language[lang][0]])
+        langs.append([language[lang]['lang_code'], language[lang]['label']])
 
     return {'langs': langs}, 200
 

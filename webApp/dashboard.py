@@ -199,22 +199,27 @@ def modify_config(data):
     except configparser.Error:
         return False
 
+
 def change_locale_in_config(lang):
     _vars = init()
     config_file = _vars[4]
-    language = current_app.config['LANGUAGES'][lang]
+    languages = current_app.config['LANGUAGES']
     parser = configparser.ConfigParser()
 
+    language = {'label': 'Francais', 'lang_code' : 'fra'}
+    for l in languages:
+        if lang == languages[l]['lang_code']:
+            language = languages[l]
+
     parser.read(config_file)
-    parser.set('LOCALE', 'locale', language[1])
-    parser.set('LOCALE', 'localeocr', language[2])
+    parser.set('LOCALE', 'locale', language['lang_code'])
+    parser.set('LOCALE', 'localeocr', language['lang_code'])
     try:
         with open(config_file, 'w') as configfile:
             parser.write(configfile)
         return {}, 200
     except configparser.Error as e:
         return {'errors': gettext("CHANGE_LOCALE_ERROR"), 'message': str(e)}, 500
-
 
 
 def get_current_git_version(cfg):

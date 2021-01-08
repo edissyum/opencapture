@@ -81,13 +81,13 @@ class Auth:
             response = {
                 'auth_token': session['jwt'].decode(),
                 'user': db.select({
-                    'select': ['id', 'username', 'role', 'status'],
+                    'select': ['id', 'username', 'firstname', 'lastname', 'role', 'status'],
                     'table': ['users'],
                     'where': ['username = ?'],
                     'data': [username]
                 })[0]
             }
-
+            print(response)
             return response, 200
         else:
             response = {
@@ -233,7 +233,6 @@ def token_required(view):
     def wrapped_view(**kwargs):
         if 'Authorization' in request.headers:
             token = request.headers['Authorization'].split('Bearer')[1].lstrip()
-            print(token)
             try:
                 token = jwt.decode(token, current_app.config['SECRET_KEY'])
             except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError, jwt.ExpiredSignatureError) as e:

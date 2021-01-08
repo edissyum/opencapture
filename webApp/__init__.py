@@ -1,3 +1,4 @@
+import json
 import os
 import jinja2
 from flask_cors import CORS
@@ -77,19 +78,15 @@ def create_app(test_config=None):
         SECRET_KEY='§§SECRET§§',
         CONFIG_FILE=os.path.join(app.instance_path, 'config.ini'),
         CONFIG_FOLDER=os.path.join(app.instance_path, 'config/'),
+        LANG_FILE=os.path.join(app.instance_path, 'lang.json'),
         UPLOAD_FOLDER=os.path.join(app.instance_path, 'upload/'),
         PER_PAGE=16,
         BABEL_TRANSLATION_DIRECTORIES=os.path.join(app.static_folder[0], 'babel/translations/') if os.path.isdir(app.static_folder[0] + 'babel/translations') else os.path.join(app.static_folder[1],
                                                                                                                                                                                 'babel/translations/'),
-        # array key is the babel language code
-        # index 0 is the label
-        # index 1 is the locale language code in the config.ini
-        # index 2 is the localeocr language code in the config.ini (tesseract)
-        LANGUAGES={
-            'fr': ['Français', 'fr_FR', 'fra'],
-            'en': ['English', 'en_EN', 'eng']
-        },
     )
+
+    langs = json.loads(open(app.config['LANG_FILE']).read())
+    app.config['LANGUAGES'] = langs
 
     app.register_blueprint(ws.bp)
     app.register_blueprint(pdf.bp)

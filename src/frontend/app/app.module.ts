@@ -2,6 +2,14 @@ import { BrowserModule, Title } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppMaterialModule } from './app-material.module';
 import { ServicesModule } from '../services/services.module';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
+
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { TranslateLoader, TranslateModule, TranslateService } from "@ngx-translate/core";
+import { HttpClient} from "@angular/common/http";
+import { HttpClientModule } from "@angular/common/http";
+import { TranslateHttpLoader } from "@ngx-translate/http-loader";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -10,14 +18,9 @@ import { ListComponent } from './verifier/list/list.component';
 import { LoginComponent } from './login/login.component';
 import { LogoutComponent } from "./logout/logout.component";
 import { HomeComponent } from './home/home.component';
-
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { TranslateLoader, TranslateModule, TranslateService } from "@ngx-translate/core";
-import { HttpClient} from "@angular/common/http";
-import { HttpClientModule } from "@angular/common/http";
-import { TranslateHttpLoader } from "@ngx-translate/http-loader";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { MenuComponent } from './menu/menu.component';
+import { RegisterComponent } from './register/register.component';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, '../assets/i18n/', '.json');
@@ -31,7 +34,9 @@ export function createTranslateLoader(http: HttpClient) {
     LoginComponent,
     LogoutComponent,
     HomeComponent,
-    MenuComponent
+    MenuComponent,
+    RegisterComponent,
+    NotFoundComponent
   ],
   imports: [
     BrowserModule,
@@ -41,7 +46,7 @@ export function createTranslateLoader(http: HttpClient) {
     HttpClientModule,
     ServicesModule,
     TranslateModule.forRoot({
-      defaultLanguage: 'fr_FR',
+      defaultLanguage: 'fra',
       loader: {
         provide: TranslateLoader,
         useFactory: (createTranslateLoader),
@@ -54,6 +59,7 @@ export function createTranslateLoader(http: HttpClient) {
   providers: [
     Title,
     TranslateService,
+    { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } }
   ],
   bootstrap: [AppComponent]
 })

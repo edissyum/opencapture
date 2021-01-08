@@ -1,6 +1,8 @@
 CREATE TABLE if NOT EXISTS users (
   id SERIAL PRIMARY KEY,
   username VARCHAR UNIQUE NOT NULL,
+  firstname VARCHAR NOT NULL,
+  lastname VARCHAR NOT NULL,
   password VARCHAR NOT NULL,
   creation_date TIMESTAMP DEFAULT NOW(),
   enabled INTEGER DEFAULT 1,

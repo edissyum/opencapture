@@ -1,15 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import { Location } from '@angular/common';
 import { Title } from '@angular/platform-browser';
-import {ActivatedRoute, NavigationEnd, Router, RouterOutlet} from '@angular/router';
+import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import { filter, map } from 'rxjs/operators';
-import { animate, state, style, transition, trigger } from "@angular/animations";
 import { TranslateService } from "@ngx-translate/core";
 import { HttpClient } from "@angular/common/http";
-import { NotificationService } from "../services/notifications/notifications.service";
 
-import { ConfigService } from "../services/config.service";
-import { AuthService } from "../services/auth.service";
+import { NotificationService } from "../services/notifications/notifications.service";
 
 @Component({
     selector: 'app-root',
@@ -62,6 +59,7 @@ export class AppComponent implements OnInit {
             this.translate.get(ttl).subscribe((data:any)=> {
                 this.titleService.setTitle(data + ' - ' + this.title);
             });
+            this.loading = false
         });
     }
 }

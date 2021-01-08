@@ -29,8 +29,7 @@ export class LoginComponent implements OnInit {
         private notify: NotificationService,
         private configService: ConfigService,
         private localStorage: LocalStorageService,
-) {
-    }
+) {}
 
     ngOnInit(): void {
         this.loginForm = this.formBuilder.group({

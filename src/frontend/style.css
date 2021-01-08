@@ -1,0 +1,24 @@
+.mat-form-field-appearance-outline .mat-form-field-outline {
+    color: #4C4C4E !important;
+    transition: all;
+}
+
+.mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+    color: #97BF3D !important;
+}
+
+.mat-input-element {
+   caret-color: #97BF3D !important;
+}
+
+.mat-form-field-label {
+    color: #4C4C4E !important;
+}
+
+.mat-selected{
+    background-color: rgba(151, 191, 61, 0.5) !important;
+}
+
+.mat-selected .mat-option-text {
+    color: #4C4C4E !important;
+}

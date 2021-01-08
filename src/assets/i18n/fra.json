@@ -7,6 +7,10 @@
 		"password": "Mot de passe",
 		"username": "Nom d'utilisateur"
 	},
+	"ERROR": {
+		"404": "La page demandée n'existe pas",
+		"connection_failed": "Erreur lors de la connexion au serveur"
+	},
 	"GLOBAL": {
 		"batches": "Lots",
 		"download": "Téléchargement",
@@ -23,10 +27,5 @@
 		"control_panel": "Panneau de contrôle",
 		"suppliers_list": "Liste des fournisseurs",
 		"users_list": "Liste des utilisateurs"
-	},
-	"lang": {
-		"connectionFailed": "",
-		"documentOutOfPerimeter": "",
-		"documentsOutOfPerimeter": ""
 	}
 }

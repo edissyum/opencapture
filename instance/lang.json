@@ -1,0 +1,10 @@
+{
+    "fra": {
+        "label" : "Francais",
+        "lang_code": "fra"
+    },
+    "eng": {
+        "label" : "English",
+        "lang_code": "eng"
+    }
+}

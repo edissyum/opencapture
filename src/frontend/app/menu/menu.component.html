@@ -45,7 +45,7 @@
                     <div [@toggle]="profileDropdownCurrentState" class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-50"
                          role="menu" aria-orientation="vertical" aria-labelledby="user-menu">
                         <span class="block text-center mb-2 text-gray-900">
-                            {{ user['username'] }}
+                            <b>{{ user['lastname'] }}</b> {{ user['firstname'] }} ({{ user['username'] }})
                             <hr>
                         </span>
                         <a (click)="closeprofileDropDown()" routerLink="/" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative"
@@ -81,9 +81,7 @@
                     </div>
                 </div>
                 <div class="ml-3 relative">
-                    <!-- TODO -->
-                    <!-- Put locale into a json file -->
-                    <mat-form-field appearance="fill" class="origin-top-right right-0 mt-4 w-32">
+                    <mat-form-field class="origin-top-right right-0 mt-4 w-32">
                         <mat-label>{{ 'GLOBAL.language' | translate }}</mat-label>
                         <mat-select (selectionChange)="changeLocale($event)" [(value)]="currentLang">
                             <mat-option *ngFor="let lang of langs" [value]="lang[0]">{{ lang[1] }}</mat-option>
