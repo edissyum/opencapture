@@ -2,9 +2,12 @@
 	"AUTH": {
 		"authenticated": "You have successfully authenticated",
 		"field_required": "This field is required",
+		"firstname": "Firstname",
+		"lastname": "Lastname",
 		"login": "Log in",
 		"not_connected": "Please authenticate yourself before accessing this page",
 		"password": "Password",
+		"registered": "User registered successfully",
 		"username": "Username"
 	},
 	"ERROR": {
@@ -19,6 +22,8 @@
 		"log_out": "Log out",
 		"login": "Login",
 		"my_profile": "My profile",
+		"register": "Register an account",
+		"submit": "Submit",
 		"unknow_error": "Unknow error"
 	},
 	"SETTINGS": {

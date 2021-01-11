@@ -1,5 +1,8 @@
+<div class="mt-32 -mb-32 flex justify-center h-20">
+    <img src="assets/imgs/open-capture.png" alt="Open-Capture For Invoices logo"/>
+</div>
 <div class="flex justify-center items-center" style="height: 85vh">
-    <mat-card class="text-center w-1/4">
+    <mat-card class="text-center w-full lg:w-1/4">
         <mat-card-title class="mb-10">
             {{ 'GLOBAL.login' | translate }}
         </mat-card-title>
@@ -8,17 +11,20 @@
                 <mat-form-field class="block">
                     <mat-label>{{ 'AUTH.username' | translate }}</mat-label>
                     <input matInput formControlName="username"  type="text" placeholder="{{ 'AUTH.username' | translate }}" required>
-                    <mat-error *ngIf="submittedForm && loginForm.controls.username.invalid">{{ getErrorMessage('username') }}</mat-error>
+                    <mat-error *ngIf="loginForm.controls.username.invalid">{{ getErrorMessage('username') }}</mat-error>
                 </mat-form-field>
                 <mat-form-field class="block">
                     <mat-label>{{ 'AUTH.password' | translate }}</mat-label>
                     <input matInput formControlName="password" type="password" placeholder="{{ 'AUTH.password' | translate }}" required>
-                    <mat-error *ngIf="submittedForm && loginForm.controls.password.invalid">{{ getErrorMessage('password') }}</mat-error>
+                    <mat-error *ngIf="loginForm.controls.password.invalid">{{ getErrorMessage('password') }}</mat-error>
                 </mat-form-field>
                 <div class="button">
-                    <button type="submit" mat-button>{{ 'AUTH.login' | translate }}</button>
+                    <button class="hover:bg-green-400 hover:text-white transition duration-300" type="submit" mat-button>{{ 'AUTH.login' | translate }}</button>
                 </div>
             </form>
         </mat-card-content>
     </mat-card>
+    <div class="absolute mt-96 hover:text-green-400 transition duration-500">
+        <a routerLink="/register">{{ 'GLOBAL.register' | translate }}</a>
+    </div>
 </div>

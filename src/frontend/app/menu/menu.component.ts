@@ -12,6 +12,7 @@ import {UserService} from "../../services/user.service";
 import {API_URL} from "../env";
 import {catchError, tap} from "rxjs/operators";
 import {of} from "rxjs";
+import {LocaleService} from "../../services/locale.service";
 
 @Component({
     selector: 'app-menu',
@@ -37,8 +38,6 @@ export class MenuComponent implements OnInit {
     profileSettingsCurrentState : string = 'hide'
     mobileMenuState             : string = 'hide'
     user                        : any
-    currentLang                 : string = ''
-    langs                       : [] = []
 
     constructor(
         private router: Router,
@@ -51,13 +50,14 @@ export class MenuComponent implements OnInit {
         private configService: ConfigService,
         private authService: AuthService,
         private userService: UserService,
+        public localeService: LocaleService
     ) {
     }
 
     ngOnInit(): void {
         this.user = this.userService.getUserFromLocal()
-        this.getLocales()
-        this.getCurrentLocale()
+        this.localeService.getLocales()
+        this.localeService.getCurrentLocale()
     }
 
     toggleProfileDropdown() {
@@ -82,46 +82,6 @@ export class MenuComponent implements OnInit {
         this.mobileMenuState = this.mobileMenuState === 'hide' ? 'show' : 'hide';
     }
 
-    changeLocale(data: any) {
-        const headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.authService.getToken())
-        this.http.get(API_URL + '/ws/changeLanguage/' + data.value, {headers}).pipe(
-            catchError((err: any) => {
-                console.debug(err)
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe()
-        this.currentLang = data.value
-        this.translate.use(data.value)
-    }
 
-    getCurrentLocale(){
-        const headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.authService.getToken())
-        this.http.get(API_URL + '/ws/getCurrentLang', {headers}).pipe(
-            tap((data: any) => {
-                this.currentLang = data.lang
-                this.translate.use(this.currentLang)
-            }),
-            catchError((err: any) => {
-                console.debug(err)
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe()
-    }
-
-    getLocales(){
-        const headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.authService.getToken())
-        this.http.get(API_URL + '/ws/getAllLang', {headers}).pipe(
-            tap((data: any) => {
-                this.langs = data.langs
-            }),
-            catchError((err: any) => {
-                console.debug(err)
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe()
-    }
 
 }

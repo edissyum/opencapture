@@ -22,3 +22,15 @@
 .mat-selected .mat-option-text {
     color: #4C4C4E !important;
 }
+
+.mat-form-field-appearance-outline.mat-form-field-invalid.mat-form-field-invalid .mat-form-field-outline-thick {
+    color:  red !important;
+}
+
+.mat-form-field-invalid .mat-input-element, .mat-warn .mat-input-element {
+    caret-color:  red !important;
+}
+
+.mat-form-field.mat-form-field-invalid .mat-form-field-label {
+    color: red !important;
+}

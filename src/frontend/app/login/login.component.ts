@@ -10,6 +10,7 @@ import {LocalStorageService} from "../../services/local-storage.service";
 import {AuthService} from "../../services/auth.service";
 import {Router} from "@angular/router";
 import {ConfigService} from "../../services/config.service";
+import {LocaleService} from "../../services/locale.service";
 
 @Component({
     selector: 'app-login',
@@ -18,17 +19,16 @@ import {ConfigService} from "../../services/config.service";
 })
 export class LoginComponent implements OnInit {
     loginForm: any;
-    submittedForm: boolean = false;
 
     constructor(
-        private http: HttpClient,
         private router: Router,
+        private http: HttpClient,
         private formBuilder: FormBuilder,
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,
         private configService: ConfigService,
-        private localStorage: LocalStorageService,
+        private localeService: LocaleService
 ) {}
 
     ngOnInit(): void {
@@ -36,38 +36,37 @@ export class LoginComponent implements OnInit {
             username: [null, Validators.required],
             password: [null, Validators.required]
         });
+        this.localeService.getCurrentLocale()
     }
 
     onSubmit() {
-        this.submittedForm = true;
         let password = this.loginForm.get('password').value
         let username = this.loginForm.get('username').value
         if (password && username){
-            // setTimeout(async () => {
-                this.http.post(
-                    API_URL + '/ws/login',
-                    {
-                        'username': username,
-                        'password': password,
-                    },
-                    {
-                        observe: 'response'
-                    },
-                ).pipe(
-                    tap((data: any) => {
-                        this.authService.setUser(data.body.user)
-                        this.authService.setTokens(data.body.auth_token, btoa(JSON.stringify(this.authService.getUser())));
-                        this.notify.success(this.translate.instant('AUTH.authenticated'))
-                        this.configService.readConfig()
-                        this.router.navigate(['/home'])
-                    }),
-                    catchError((err: any) => {
-                        console.debug(err)
-                        this.notify.handleErrors(err);
-                        return of(false);
-                    })
-                ).subscribe();
-            // }, 500)
+            this.http.post(
+                API_URL + '/ws/login',
+                {
+                    'username': username,
+                    'password': password,
+                    'lang': this.localeService.currentLang
+                },
+                {
+                    observe: 'response'
+                },
+            ).pipe(
+                tap((data: any) => {
+                    this.authService.setUser(data.body.user)
+                    this.authService.setTokens(data.body.auth_token, btoa(JSON.stringify(this.authService.getUser())));
+                    this.notify.success(this.translate.instant('AUTH.authenticated'))
+                    this.configService.readConfig()
+                    this.router.navigate(['/home'])
+                }),
+                catchError((err: any) => {
+                    console.debug(err)
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
         }
     }
 

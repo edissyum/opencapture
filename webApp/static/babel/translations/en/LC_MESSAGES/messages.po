@@ -44,7 +44,7 @@ msgstr "User"
 
 #: webApp/auth.py:121
 msgid "ALREADY_REGISTERED"
-msgstr "Already registered"
+msgstr "is already registered"
 
 #: webApp/auth.py:132
 msgid "USER_CREATED_OK"

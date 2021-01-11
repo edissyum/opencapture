@@ -38,9 +38,17 @@ bp = Blueprint('ws', __name__)
 def login():
     data = request.json
     auth = Auth()
-    res = auth.login(data['username'], data['password'])
-    auth.load_logged_in_user()
+    res = auth.login(data['username'], data['password'], data['lang'])
     return make_response(jsonify(res[0])), res[1]
+
+@bp.route('/ws/register', methods=['POST'])
+def register():
+    data = request.json
+    auth = Auth()
+    res = auth.register(data['username'], data['password'], data['firstname'], data['lastname'], data['lang'])
+    print(res)
+    return make_response(jsonify(res[0])), res[1]
+
 
 @bp.route('/ws/VAT/<string:vat_id>', methods=['GET'])
 @login_required
@@ -231,7 +239,6 @@ def change_language(lang):
 
 
 @bp.route('/ws/getCurrentLang', methods=['GET'])
-@token_required
 def get_current_lang():
     _vars = pdf.init()
     current_lang = _vars[1].cfg['LOCALE']['locale']

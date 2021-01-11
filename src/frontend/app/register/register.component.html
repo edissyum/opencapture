@@ -1,1 +1,42 @@
-<p>register works!</p>
+<div class="mt-32 -mb-32 flex justify-center h-20">
+    <img src="assets/imgs/open-capture.png" alt="Open-Capture For Invoices logo"/>
+</div>
+<div class="flex justify-center items-center" style="height: 85vh">
+    <mat-card class="text-center w-1/4">
+        <mat-card-title class="mb-10">
+            {{ 'GLOBAL.register' | translate }}
+        </mat-card-title>
+        <mat-card-content>
+            <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+                <div class="grid grid-cols-2 gap-4">
+                    <mat-form-field class="block">
+                        <mat-label>{{ 'AUTH.firstname' | translate }}</mat-label>
+                        <input matInput formControlName="firstname" autocomplete="off" type="text" placeholder="{{ 'AUTH.firstname' | translate }}" required>
+                        <mat-error *ngIf="registerForm.controls.firstname.invalid">{{ getErrorMessage('firstname') }}</mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="block">
+                        <mat-label>{{ 'AUTH.lastname' | translate }}</mat-label>
+                        <input matInput formControlName="lastname" autocomplete="off" type="text" placeholder="{{ 'AUTH.lastname' | translate }}" required>
+                        <mat-error *ngIf="registerForm.controls.lastname.invalid">{{ getErrorMessage('lastname') }}</mat-error>
+                    </mat-form-field>
+                </div>
+                <mat-form-field class="block">
+                    <mat-label>{{ 'AUTH.username' | translate }}</mat-label>
+                    <input matInput formControlName="username" autocomplete="off" type="text" placeholder="{{ 'AUTH.username' | translate }}" required>
+                    <mat-error *ngIf="registerForm.controls.username.invalid">{{ getErrorMessage('username') }}</mat-error>
+                </mat-form-field>
+                <mat-form-field class="block">
+                    <mat-label>{{ 'AUTH.password' | translate }}</mat-label>
+                    <input matInput formControlName="password" autocomplete="off" type="password" placeholder="{{ 'AUTH.password' | translate }}" required>
+                    <mat-error *ngIf="registerForm.controls.password.invalid">{{ getErrorMessage('password') }}</mat-error>
+                </mat-form-field>
+                <div class="button">
+                    <button type="submit" mat-button>{{ 'GLOBAL.submit' | translate }}</button>
+                </div>
+            </form>
+        </mat-card-content>
+    </mat-card>
+    <div class="absolute mt-96 hover:text-green-400 transition duration-500">
+        <a class="relative top-7" routerLink="/login">{{ 'AUTH.login' | translate }}</a>
+    </div>
+</div>

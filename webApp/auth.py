@@ -32,22 +32,9 @@ class Auth:
         except Exception as e:
             return e
 
-    def load_logged_in_user(self):
-        user_id = session.get('user_id')
-
-        if user_id is None:
-            g.user = None
-        else:
-            db = get_db()
-            g.user = db.select({
-                'select': ['*'],
-                'table': ['users'],
-                'where': ['id = ?'],
-                'data': [user_id]
-            })[0]
-
-    def login(self, username, password):
+    def login(self, username, password, lang):
         db = get_db()
+        session['lang'] = lang
         error = None
         user = db.select({
             'select': ['*'],
@@ -66,12 +53,6 @@ class Auth:
             error = gettext('USER_DISABLED')
 
         if error is None:
-            if 'lang' in session:
-                lang = session['lang']
-            else:
-                # TODO
-                # Get lang from config file
-                lang = 'fr_FR'
             session.clear()
             session['user_id'] = user[0]['id']
             session['user_name'] = user[0]['username']
@@ -87,7 +68,7 @@ class Auth:
                     'data': [username]
                 })[0]
             }
-            print(response)
+
             return response, 200
         else:
             response = {
@@ -95,6 +76,45 @@ class Auth:
                 "message": error
             }
             return response, 401
+
+    def register(self, username, password, firstname, lastname, lang):
+        if request.method == 'POST':
+            session['lang'] = lang
+            db = get_db()
+            error = None
+            user = db.select({
+                'select': ['id'],
+                'table': ['users'],
+                'where': ['username = ?'],
+                'data': [username]
+            })
+
+            if not username:
+                error = gettext('USERNAME_REQUIRED')
+            elif not password:
+                error = gettext('PASSWORD_REQUIRED')
+            elif user:
+                error = gettext('USER') + ' ' + username + ' ' + gettext('ALREADY_REGISTERED')
+
+            if error is None:
+                db.insert({
+                    'table': 'users',
+                    'columns': {
+                        'username': username,
+                        'firstname': firstname,
+                        'lastname': lastname,
+                        'password': generate_password_hash(password),
+                    }
+                })
+                return '', 200
+            else:
+                response = {
+                    "errors": gettext('REGISTER_ERROR'),
+                    "message": error
+                }
+                return response, 401
+
+
 
 
 @bp.route('/register', methods=('GET', 'POST'))
@@ -134,50 +154,6 @@ def register():
         flash(error)
 
     return render_template('templates/auth/register.html')
-
-
-@bp.route('/login', defaults={'fallback': None}, methods=['GET', 'POST'])
-@bp.route('/login?fallback=<path:fallback>', methods=['GET', 'POST'])
-def login(fallback):
-    if fallback is not None:
-        fallback = fallback.replace('%', '/')
-    else:
-        fallback = url_for('pdf.index', time='TODAY')
-
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        db = get_db()
-        error = None
-        user = db.select({
-            'select': ['*'],
-            'table': ['users'],
-            'where': ['username = ?'],
-            'data': [username]
-        })
-
-        if not user:
-            error = gettext('USERNAME_REQUIRED')
-        elif not check_password_hash(user[0]['password'], password):
-            error = gettext('PASSWORD_REQUIRED')
-        elif user[0]['status'] == 'DEL':
-            error = gettext('USER_DELETED')
-        elif user[0]['enabled'] == 0:
-            error = gettext('USER_DISABLED')
-
-        if error is None:
-            lang = session['lang']
-            session.clear()
-            session['user_id'] = user[0]['id']
-            session['user_name'] = user[0]['username']
-            session['lang'] = lang
-
-            return redirect(fallback)
-
-        flash(error)
-
-    return render_template('templates/auth/login.html')
-
 
 @bp.before_app_request
 def load_logged_in_user():

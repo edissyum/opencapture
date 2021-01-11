@@ -21,6 +21,7 @@ import { HomeComponent } from './home/home.component';
 import { MenuComponent } from './menu/menu.component';
 import { RegisterComponent } from './register/register.component';
 import { NotFoundComponent } from './not-found/not-found.component';
+import { ProfileComponent } from './profile/profile.component';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, '../assets/i18n/', '.json');
@@ -36,7 +37,8 @@ export function createTranslateLoader(http: HttpClient) {
     HomeComponent,
     MenuComponent,
     RegisterComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,

@@ -2,9 +2,12 @@
 	"AUTH": {
 		"authenticated": "Vous vous êtes authentifié avec succès",
 		"field_required": "Ce champ est requis",
+		"firstname": "Prénom",
+		"lastname": "Nom de famille",
 		"login": "Se connecter",
 		"not_connected": "Merci de vous authentifier avant d'accéder à cette page",
 		"password": "Mot de passe",
+		"registered": "Utilisateur enregistré avec succès",
 		"username": "Nom d'utilisateur"
 	},
 	"ERROR": {
@@ -19,6 +22,8 @@
 		"log_out": "Déconnexion",
 		"login": "Connexion",
 		"my_profile": "Mon profil",
+		"register": "Créer un compte",
+		"submit": "Soumettre",
 		"unknow_error": "Erreur inconnue"
 	},
 	"SETTINGS": {

@@ -1,9 +1,9 @@
 {
-    "fra": {
+    "fr": {
         "label" : "Francais",
         "lang_code": "fra"
     },
-    "eng": {
+    "en": {
         "label" : "English",
         "lang_code": "eng"
     }

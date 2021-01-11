@@ -21,16 +21,16 @@
             </div>
             <div class="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
                 <div class="flex-shrink-0 flex items-center">
-                    <img class="block h-10 w-auto" src="assets/imgs/open-capture_verifier.png" alt="Workflow">
+                    <img class="hidden lg:block h-10 w-auto" src="assets/imgs/open-capture_verifier.png" alt="Workflow">
                 </div>
                 <div class="hidden sm:block sm:ml-6">
                     <div class="flex space-x-4">
                         <button mat-flat-button routerLink="/home" [routerLinkActive]="'bg-gray-900 text-green-400'"
-                           class="text-gray-500 hover:bg-green-400 hover:text-white px-3 py-2 text-sm font-medium">{{ 'GLOBAL.home' | translate }}</button>
+                           class="text-gray-500 hover:bg-green-400 hover:text-white px-3 py-2 text-sm font-medium transition duration-300">{{ 'GLOBAL.home' | translate }}</button>
                         <button mat-flat-button routerLink="/verifier" [routerLinkActive]="'bg-gray-900 text-green-400'"
-                           class="text-gray-500 hover:bg-green-400 hover:text-white px-3 py-2 text-sm font-medium">{{ 'GLOBAL.batches' | translate }}</button>
+                           class="text-gray-500 hover:bg-green-400 hover:text-white px-3 py-2 text-sm font-medium transition duration-300">{{ 'GLOBAL.batches' | translate }}</button>
                             <button mat-flat-button routerLink="/download" [routerLinkActive]="'bg-gray-900 text-green-400'"
-                           class="text-gray-500 hover:bg-green-400 hover:text-white px-3 py-2 text-sm font-medium">{{ 'GLOBAL.download' | translate }}</button>
+                           class="text-gray-500 hover:bg-green-400 hover:text-white px-3 py-2 text-sm font-medium transition duration-300">{{ 'GLOBAL.download' | translate }}</button>
                     </div>
                 </div>
             </div>
@@ -42,13 +42,13 @@
                             <i class="fas fa-users-cog"></i>
                         </button>
                     </div>
-                    <div [@toggle]="profileDropdownCurrentState" class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-50"
+                    <div [@toggle]="profileDropdownCurrentState" class="origin-top-right absolute md:right-0 mt-2 w-56 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-50"
                          role="menu" aria-orientation="vertical" aria-labelledby="user-menu">
                         <span class="block text-center mb-2 text-gray-900">
                             <b>{{ user['lastname'] }}</b> {{ user['firstname'] }} ({{ user['username'] }})
                             <hr>
                         </span>
-                        <a (click)="closeprofileDropDown()" routerLink="/" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative"
+                        <a (click)="closeprofileDropDown()" routerLink="/profile/{{ user['id'] }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative"
                            role="menuitem">{{ 'GLOBAL.my_profile' | translate }}</a>
                         <a (click)="closeprofileDropDown()" routerLink="/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative"
                            role="menuitem">{{ 'GLOBAL.log_out' | translate }}</a>
@@ -61,7 +61,7 @@
                         </button>
                     </div>
                     <div [@toggle]="profileSettingsCurrentState"
-                         class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-50"
+                         class="origin-top-right absolute md:right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-50"
                          role="menu" aria-orientation="vertical" aria-labelledby="settings-menu">
                         <a (click)="closeSettingsDropDown()" href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative" role="menuitem">
                             {{ 'SETTINGS.control_panel' | translate }}
@@ -83,8 +83,8 @@
                 <div class="ml-3 relative">
                     <mat-form-field class="origin-top-right right-0 mt-4 w-32">
                         <mat-label>{{ 'GLOBAL.language' | translate }}</mat-label>
-                        <mat-select (selectionChange)="changeLocale($event)" [(value)]="currentLang">
-                            <mat-option *ngFor="let lang of langs" [value]="lang[0]">{{ lang[1] }}</mat-option>
+                        <mat-select (selectionChange)="localeService.changeLocale($event)" [(value)]="localeService.currentLang">
+                            <mat-option *ngFor="let lang of localeService.langs" [value]="lang[0]">{{ lang[1] }}</mat-option>
                         </mat-select>
                     </mat-form-field>
                 </div>
