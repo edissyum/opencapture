@@ -9,7 +9,19 @@ module.exports = (isProd) => ({
     },
     darkMode: false, // or 'media' or 'class'
     theme: {
+        backgroundSize: {
+            'auto': 'auto',
+            'cover': 'cover',
+            'contain': 'contain',
+            '60': '60%',
+            '70': '70%',
+            '100': '100%',
+        },
         extend: {
+            backgroundImage: theme => ({
+                'verifier': "url('assets/imgs/loupeSeule.svg')",
+                'splitter': "url('assets/imgs/Open-Capture_Splitter.svg')",
+            }),
             colors: {
                 green: {
                     400: '#97bf3d'

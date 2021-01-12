@@ -13,8 +13,10 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ViewerComponent } from './verifier/viewer/viewer.component';
-import { ListComponent } from './verifier/list/list.component';
+import { VerifierViewerComponent } from './verifier/viewer/viewer.component';
+import { VerifierListComponent } from './verifier/list/list.component';
+import { SplitterViewerComponent } from './splitter/viewer/viewer.component';
+import { SplitterListComponent } from './splitter/list/list.component';
 import { LoginComponent } from './login/login.component';
 import { LogoutComponent } from "./logout/logout.component";
 import { HomeComponent } from './home/home.component';
@@ -30,8 +32,10 @@ export function createTranslateLoader(http: HttpClient) {
 @NgModule({
   declarations: [
     AppComponent,
-    ViewerComponent,
-    ListComponent,
+    VerifierViewerComponent,
+    VerifierListComponent,
+    SplitterListComponent,
+    SplitterViewerComponent,
     LoginComponent,
     LogoutComponent,
     HomeComponent,

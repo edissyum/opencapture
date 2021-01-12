@@ -75,6 +75,10 @@ export class AuthService {
         this.localStorage.save('OpenCaptureForInvoicesToken_2', token2);
     }
 
+    setTokenAuth(token: string){
+        this.localStorage.save('OpenCaptureForInvoicesToken_2', token);
+    }
+
     getToken() {
         return this.localStorage.get('OpenCaptureForInvoicesToken');
     }

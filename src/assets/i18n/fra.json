@@ -2,13 +2,9 @@
 	"AUTH": {
 		"authenticated": "Vous vous êtes authentifié avec succès",
 		"field_required": "Ce champ est requis",
-		"firstname": "Prénom",
-		"lastname": "Nom de famille",
 		"login": "Se connecter",
 		"not_connected": "Merci de vous authentifier avant d'accéder à cette page",
-		"password": "Mot de passe",
-		"registered": "Utilisateur enregistré avec succès",
-		"username": "Nom d'utilisateur"
+		"registered": "Utilisateur enregistré avec succès"
 	},
 	"ERROR": {
 		"404": "La page demandée n'existe pas",
@@ -21,14 +17,13 @@
 		"language": "Langage",
 		"log_out": "Déconnexion",
 		"login": "Connexion",
-		"my_profile": "Mon profil",
 		"register": "Créer un compte",
 		"submit": "Soumettre",
 		"unknow_error": "Erreur inconnue"
 	},
-	"VERIFIER": {
-		"list": "Liste des pdf's",
-		"viewer": "Visualisation du pdf"
+	"HOME": {
+		"splitter": "Open-Capture splitter",
+		"verifier": "Open-Capture vérificateur"
 	},
 	"SETTINGS": {
 		"about_us": "À propos",
@@ -36,5 +31,26 @@
 		"control_panel": "Panneau de contrôle",
 		"suppliers_list": "Liste des fournisseurs",
 		"users_list": "Liste des utilisateurs"
+	},
+	"SPLITTER": {
+		"list": "Liste des lots",
+		"viewer": "Visualisation du lot"
+	},
+	"USER": {
+		"firstname": "Prénom",
+		"lastname": "Nom de famille",
+		"modify": "Modifier",
+		"modify_my_profile": "Modifier mon profil",
+		"modify_profile_of": "Modifier le profil de ",
+		"my_profile": "Mon profil",
+		"new_password": "Nouveau mot de passe",
+		"old_password": "Ancien mot de passe",
+		"password": "Mot de passe",
+		"profile_updated": "Profil mis à jour",
+		"username": "Nom d'utilisateur"
+	},
+	"VERIFIER": {
+		"list": "Factures",
+		"viewer": "Visualisation du PDF"
 	}
 }

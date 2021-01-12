@@ -9,13 +9,13 @@
         <mat-card-content>
             <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
                 <mat-form-field class="block">
-                    <mat-label>{{ 'AUTH.username' | translate }}</mat-label>
-                    <input matInput formControlName="username"  type="text" placeholder="{{ 'AUTH.username' | translate }}" required>
+                    <mat-label>{{ 'USER.username' | translate }}</mat-label>
+                    <input matInput formControlName="username"  type="text" placeholder="{{ 'USER.username' | translate }}" required>
                     <mat-error *ngIf="loginForm.controls.username.invalid">{{ getErrorMessage('username') }}</mat-error>
                 </mat-form-field>
                 <mat-form-field class="block">
-                    <mat-label>{{ 'AUTH.password' | translate }}</mat-label>
-                    <input matInput formControlName="password" type="password" placeholder="{{ 'AUTH.password' | translate }}" required>
+                    <mat-label>{{ 'USER.password' | translate }}</mat-label>
+                    <input matInput formControlName="password" type="password" placeholder="{{ 'USER.password' | translate }}" required>
                     <mat-error *ngIf="loginForm.controls.password.invalid">{{ getErrorMessage('password') }}</mat-error>
                 </mat-form-field>
                 <div class="button">

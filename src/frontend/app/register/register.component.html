@@ -10,24 +10,24 @@
             <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
                 <div class="grid grid-cols-2 gap-4">
                     <mat-form-field class="block">
-                        <mat-label>{{ 'AUTH.firstname' | translate }}</mat-label>
-                        <input matInput formControlName="firstname" autocomplete="off" type="text" placeholder="{{ 'AUTH.firstname' | translate }}" required>
+                        <mat-label>{{ 'USER.firstname' | translate }}</mat-label>
+                        <input matInput formControlName="firstname" autocomplete="off" type="text" placeholder="{{ 'USER.firstname' | translate }}" required>
                         <mat-error *ngIf="registerForm.controls.firstname.invalid">{{ getErrorMessage('firstname') }}</mat-error>
                     </mat-form-field>
                     <mat-form-field class="block">
-                        <mat-label>{{ 'AUTH.lastname' | translate }}</mat-label>
-                        <input matInput formControlName="lastname" autocomplete="off" type="text" placeholder="{{ 'AUTH.lastname' | translate }}" required>
+                        <mat-label>{{ 'USER.lastname' | translate }}</mat-label>
+                        <input matInput formControlName="lastname" autocomplete="off" type="text" placeholder="{{ 'USER.lastname' | translate }}" required>
                         <mat-error *ngIf="registerForm.controls.lastname.invalid">{{ getErrorMessage('lastname') }}</mat-error>
                     </mat-form-field>
                 </div>
                 <mat-form-field class="block">
-                    <mat-label>{{ 'AUTH.username' | translate }}</mat-label>
-                    <input matInput formControlName="username" autocomplete="off" type="text" placeholder="{{ 'AUTH.username' | translate }}" required>
+                    <mat-label>{{ 'USER.username' | translate }}</mat-label>
+                    <input matInput formControlName="username" autocomplete="off" type="text" placeholder="{{ 'USER.username' | translate }}" required>
                     <mat-error *ngIf="registerForm.controls.username.invalid">{{ getErrorMessage('username') }}</mat-error>
                 </mat-form-field>
                 <mat-form-field class="block">
-                    <mat-label>{{ 'AUTH.password' | translate }}</mat-label>
-                    <input matInput formControlName="password" autocomplete="off" type="password" placeholder="{{ 'AUTH.password' | translate }}" required>
+                    <mat-label>{{ 'USER.password' | translate }}</mat-label>
+                    <input matInput formControlName="password" autocomplete="off" type="password" placeholder="{{ 'USER.password' | translate }}" required>
                     <mat-error *ngIf="registerForm.controls.password.invalid">{{ getErrorMessage('password') }}</mat-error>
                 </mat-form-field>
                 <div class="button">

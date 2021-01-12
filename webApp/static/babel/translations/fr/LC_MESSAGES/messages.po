@@ -147,7 +147,7 @@ msgstr "Profil modifié avec succès"
 
 #: webApp/ws.py:78 webApp/ws.py:79
 msgid "PROFILE_UPDATE_ERROR"
-msgstr "Erreur lors du changement de profil"
+msgstr "Erreur lors de la modification du profil"
 
 #: webApp/ws.py:86
 msgid "CONFIG_FILE_UPDATED"

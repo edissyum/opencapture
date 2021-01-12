@@ -26,11 +26,21 @@
                 <div class="hidden sm:block sm:ml-6">
                     <div class="flex space-x-4">
                         <button mat-flat-button routerLink="/home" [routerLinkActive]="'bg-gray-900 text-green-400'"
-                           class="text-gray-500 hover:bg-green-400 hover:text-white px-3 py-2 text-sm font-medium transition duration-300">{{ 'GLOBAL.home' | translate }}</button>
-                        <button mat-flat-button routerLink="/verifier" [routerLinkActive]="'bg-gray-900 text-green-400'"
-                           class="text-gray-500 hover:bg-green-400 hover:text-white px-3 py-2 text-sm font-medium transition duration-300">{{ 'GLOBAL.batches' | translate }}</button>
-                            <button mat-flat-button routerLink="/download" [routerLinkActive]="'bg-gray-900 text-green-400'"
-                           class="text-gray-500 hover:bg-green-400 hover:text-white px-3 py-2 text-sm font-medium transition duration-300">{{ 'GLOBAL.download' | translate }}</button>
+                           class="text-gray-500 hover:bg-green-400 hover:text-white px-3 py-2 text-sm font-medium transition duration-300">
+                            {{ 'GLOBAL.home' | translate }}
+                        </button>
+                        <button mat-flat-button routerLink="/verifier" [routerLinkActive]="'bg-gray-900 text-green-400'" *ngIf="location.path() !== '/home' && location.path().includes('/verifier')"
+                           class="text-gray-500 hover:bg-green-400 hover:text-white px-3 py-2 text-sm font-medium transition duration-300">
+                            {{ 'GLOBAL.batches' | translate }}
+                        </button>
+                        <button mat-flat-button routerLink="/splitter" [routerLinkActive]="'bg-gray-900 text-green-400'" *ngIf="location.path() !== '/home' && location.path().includes('/splitter')"
+                           class="text-gray-500 hover:bg-green-400 hover:text-white px-3 py-2 text-sm font-medium transition duration-300">
+                            {{ 'GLOBAL.batches' | translate }}
+                        </button>
+                        <button mat-flat-button routerLink="/download" [routerLinkActive]="'bg-gray-900 text-green-400'" *ngIf="location.path() !== '/home'"
+                       class="text-gray-500 hover:bg-green-400 hover:text-white px-3 py-2 text-sm font-medium transition duration-300">
+                            {{ 'GLOBAL.download' | translate }}
+                        </button>
                     </div>
                 </div>
             </div>
@@ -49,7 +59,7 @@
                             <hr>
                         </span>
                         <a (click)="closeprofileDropDown()" routerLink="/profile/{{ user['id'] }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative"
-                           role="menuitem">{{ 'GLOBAL.my_profile' | translate }}</a>
+                           role="menuitem">{{ 'USER.my_profile' | translate }}</a>
                         <a (click)="closeprofileDropDown()" routerLink="/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative"
                            role="menuitem">{{ 'GLOBAL.log_out' | translate }}</a>
                     </div>
@@ -104,7 +114,7 @@
             <a href="#"
                class="text-gray-500 hover:bg-green-400 hover:text-white block px-3 py-2 rounded-md text-sm font-medium">{{ 'GLOBAL.download' | translate }}</a>
             <a href="#"
-               class="text-gray-500 hover:bg-green-400 hover:text-white block px-3 py-2 rounded-md text-sm font-medium">{{ 'GLOBAL.my_profile' | translate }}</a>
+               class="text-gray-500 hover:bg-green-400 hover:text-white block px-3 py-2 rounded-md text-sm font-medium">{{ 'USER.my_profile' | translate }}</a>
         </div>
     </div>
 </nav>

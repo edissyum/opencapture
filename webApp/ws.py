@@ -55,11 +55,19 @@ def register():
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('/ws/getUserById/<int:user_id>', methods=['get'])
+@bp.route('/ws/getUserById/<int:user_id>', methods=['GET'])
+@token_required
 def get_user_by_id(user_id):
     _user = user.check_user(user_id)
     return make_response(jsonify(_user[0])), _user[1]
 
+
+@bp.route('/ws/updateUser/<int:user_id>', methods=['PUT'])
+@token_required
+def update_user(user_id):
+    data = request.json['args']
+    res = user.update_profile(user_id, data)
+    return make_response(jsonify(res[0])), res[1]
 
 
 @bp.route('/ws/VAT/<string:vat_id>', methods=['GET'])

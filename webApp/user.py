@@ -22,12 +22,16 @@ else:
 bp = Blueprint('user', __name__, url_prefix='/user')
 
 
-def check_user(user_id):
+def check_user(user_id, get_password=False):
     _vars = pdf.init()
     _db = _vars[0]
 
+    _select = ['id', 'username', 'firstname', 'lastname', 'role', 'status', 'creation_date', 'enabled']
+    if get_password:
+        _select.append('password')
+
     user = _db.select({
-        'select': ['*'],
+        'select': _select,
         'table': ['users'],
         'where': ['id = ?'],
         'data': [user_id]
@@ -37,6 +41,53 @@ def check_user(user_id):
     else:
         response = {
             "errors": gettext('USER_ERROR'),
+            "message": gettext('ERROR_WHILE_RETRIEVING_USER')
+        }
+        return response, 401
+
+
+def update_profile(user_id, data):
+    _vars = pdf.init()
+    _db = _vars[0]
+    user = check_user(user_id, True)
+
+    if user is not False:
+        if data['new_password'] and data['old_password'] and not check_password_hash(user[0]['password'], data['old_password']):
+            response = {
+                "errors": gettext('UPDATE_PROFILE'),
+                "message": gettext('ERROR_OLD_PASSWORD_NOT_MATCH')
+            }
+            return response, 401
+
+        _set = {
+            'firstname': data['firstname'],
+            'lastname': data['lastname'],
+        }
+
+        if data['new_password']:
+            _set.update({
+                'password': generate_password_hash(data['new_password'])
+            })
+
+        res = _db.update({
+            'table': ['users'],
+            'set': _set,
+            'where': ['id = ?'],
+            'data': [user_id]
+        })
+
+        if res[0] is not False:
+            user = check_user(user_id)
+            return user[0], 200
+        else:
+            response = {
+                "errors": gettext('PROFILE_UPDATE_ERROR'),
+                "message": str(res[1])
+            }
+            return response, 401
+    else:
+        response = {
+            "errors": gettext('PROFILE_UPDATE_ERROR'),
             "message": gettext('ERROR_WHILE_RETRIEVING_USER')
         }
         return response, 401

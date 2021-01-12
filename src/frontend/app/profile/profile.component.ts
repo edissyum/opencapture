@@ -10,6 +10,7 @@ import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {NotificationService} from "../../services/notifications/notifications.service";
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 
 @Component({
     selector: 'app-profile',
@@ -20,27 +21,35 @@ export class ProfileComponent implements OnInit {
     userId      : any;
     user        : any;
     currentUser : any;
+
     profileForm : any[] = [
         {
-            id: 'username',
-            label: 'AUTH.username',
-            type: 'string',
-            control: new FormControl(),
-            required: true
-        },
-        {
             id: 'firstname',
-            label: 'AUTH.firstname',
-            type: 'string',
+            label: marker('USER.firstname'),
+            type: 'text',
             control: new FormControl(),
-            required: true
+            required: true,
         },
         {
             id: 'lastname',
-            label: 'AUTH.lastname',
-            type: 'string',
+            label: marker('USER.lastname'),
+            type: 'text',
             control: new FormControl(),
             required: true
+        },
+        {
+            id: 'old_password',
+            label: marker('USER.old_password'),
+            type: 'password',
+            control: new FormControl(),
+            required: false
+        },
+        {
+            id: 'new_password',
+            label: marker('USER.new_password'),
+            type: 'password',
+            control: new FormControl(),
+            required: false
         }
     ]
     public loading: boolean = true;
@@ -52,7 +61,9 @@ export class ProfileComponent implements OnInit {
         private formBuilder: FormBuilder,
         private authService: AuthService,
         private userService: UserService,
-        private notify: NotificationService
+        private translate: TranslateService,
+        private notify: NotificationService,
+        private localeService: LocaleService
     ) {
     }
 
@@ -83,14 +94,62 @@ export class ProfileComponent implements OnInit {
         ).subscribe()
     }
 
-    onSubmit(){
+    isValidForm() {
+        let state = true;
 
+        this.profileForm.forEach(element => {
+            if (element.control.status !== 'DISABLED' && element.control.status !== 'VALID') {
+                state = false;
+            }
+            element.control.markAsTouched();
+        });
+
+        return state;
+    }
+
+
+    onSubmit(){
+        if(this.isValidForm()){
+            const user : any = {}
+            let headers = this.authService.headers
+
+            this.profileForm.forEach(element => {
+                user[element.id] = element.control.value
+            });
+            this.http.put(
+                API_URL + '/ws/updateUser/' + this.userId,
+                {
+                    'args': user,
+                    'lang': this.localeService.currentLang
+                },
+                {
+                    headers
+                },
+            ).pipe(
+                tap((data: any) => {
+                    this.notify.success(this.translate.instant('USER.profile_updated'))
+                    if (this.userId == this.currentUser.id){
+                        this.authService.setUser(data)
+                        this.authService.setTokenAuth(btoa(JSON.stringify(this.authService.getUser())));
+                    }
+                }),
+                catchError((err: any) => {
+                    console.debug(err)
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        }
     }
 
     getErrorMessage(field: any) {
-        // if(this.profileForm.get(field).hasError('required')){
-        //     return this.translate.instant('AUTH.field_required')
-        // }
-        // return this.translate.instant('GLOBAL.unknow_error')
+        let error = ''
+        this.profileForm.forEach(element => {
+            if(element.id == field)
+                if (element.required){
+                    error = this.translate.instant('AUTH.field_required')
+                }
+        })
+        return error
     }
 }
