@@ -26,6 +26,11 @@ if 'pdf' not in custom_array:
 else:
     pdf = getattr(__import__(custom_array['pdf']['path'], fromlist=[custom_array['pdf']['module']]), custom_array['pdf']['module'])
 
+if 'user' not in custom_array:
+    from . import user
+else:
+    user = getattr(__import__(custom_array['user']['path'], fromlist=[custom_array['user']['module']]), custom_array['user']['module'])
+
 if 'dashboard' not in custom_array:
     from . import dashboard
 else:
@@ -41,13 +46,20 @@ def login():
     res = auth.login(data['username'], data['password'], data['lang'])
     return make_response(jsonify(res[0])), res[1]
 
+
 @bp.route('/ws/register', methods=['POST'])
 def register():
     data = request.json
     auth = Auth()
     res = auth.register(data['username'], data['password'], data['firstname'], data['lastname'], data['lang'])
-    print(res)
     return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('/ws/getUserById/<int:user_id>', methods=['get'])
+def get_user_by_id(user_id):
+    _user = user.check_user(user_id)
+    return make_response(jsonify(_user[0])), _user[1]
+
 
 
 @bp.route('/ws/VAT/<string:vat_id>', methods=['GET'])

@@ -31,9 +31,15 @@ def check_user(user_id):
         'table': ['users'],
         'where': ['id = ?'],
         'data': [user_id]
-    })[0]
-
-    return user
+    })
+    if user:
+        return user[0], 200
+    else:
+        response = {
+            "errors": gettext('USER_ERROR'),
+            "message": gettext('ERROR_WHILE_RETRIEVING_USER')
+        }
+        return response, 401
 
 
 @bp.route('/profile', methods=('GET', 'POST'), defaults=({'user_id': None}))

@@ -66,7 +66,7 @@ class Spreadsheet:
 
     @staticmethod
     def read_excel_sheet(referencial_spreadsheet):
-        content_sheet = pd.read_excel(referencial_spreadsheet)
+        content_sheet = pd.read_excel(referencial_spreadsheet, engine='openpyxl')
         return content_sheet
 
     def read_ods_sheet(self, referencial_spreadsheet):

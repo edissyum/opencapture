@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {LocalStorageService} from "./local-storage.service";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {catchError, tap} from "rxjs/operators";
 import { API_URL } from '../app/env';
 import {of} from "rxjs";
@@ -9,12 +9,25 @@ import {of} from "rxjs";
     providedIn: 'root'
 })
 export class AuthService {
-    user: any = {username: '', firstname: '', lastname: '', role: '', groups: [], privileges: [], preferences: [], featureTour: [] };
+    user: any = {
+        username: '',
+        firstname: '',
+        lastname: '',
+        role: '',
+        creation_date: '',
+        enabled: '',
+        status: '',
+        groups: [],
+        privileges: [],
+        preferences: []
+    };
+    public headers : HttpHeaders;
 
     constructor(
         private http: HttpClient,
         private localStorage: LocalStorageService,
     ) {
+        this.headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.getToken())
     }
 
     setCachedUrl(url: string) {

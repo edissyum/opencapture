@@ -1,5 +1,10 @@
 import {Injectable} from '@angular/core';
 import {AuthService} from "./auth.service";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {API_URL} from "../app/env";
+import {catchError, tap} from "rxjs/operators";
+import {of} from "rxjs";
+import {NotificationService} from "./notifications/notifications.service";
 
 @Injectable({
     providedIn: 'root'
@@ -10,14 +15,17 @@ export class UserService {
         firstname: '',
         lastname: '',
         role: '',
+        creation_date: '',
+        enabled: '',
+        status: '',
         groups: [],
         privileges: [],
-        preferences: [],
-        featureTour: []
+        preferences: []
     };
 
     constructor(
-        private authService: AuthService
+        private http: HttpClient,
+        private authService: AuthService,
     ) {
     }
 

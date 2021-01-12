@@ -26,6 +26,10 @@
 		"submit": "Submit",
 		"unknow_error": "Unknow error"
 	},
+	"VERIFIER": {
+		"list": "Pdf's list",
+		"viewer": "View pdf"
+	},
 	"SETTINGS": {
 		"about_us": "About us",
 		"add_user": "Add user",

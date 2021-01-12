@@ -1,1 +1,20 @@
-<p>profile works! {{ userId }}</p>
+<div *ngIf="!loading" class="flex justify-center items-center" style="height: 85vh">
+    <mat-card class="text-center w-full lg:w-1/4">
+        <mat-card-title class="mb-10">
+            <span *ngIf="this.userId == this.currentUser.id">{{ 'USER.my_profile' | translate }}</span>
+        </mat-card-title>
+        <mat-card-content>
+            <form (ngSubmit)="onSubmit()">
+                <mat-form-field class="block" *ngFor="let field of profileForm">
+                    <mat-label>{{ field.label | translate }}</mat-label>
+                    <input matInput [formControl]="field.control" type="text" placeholder="{{ field.label | translate }}" required>
+                </mat-form-field>
+                <div class="button">
+                    <button class="hover:bg-green-400 hover:text-white transition duration-300" type="submit" mat-button>
+                        {{ 'AUTH.login' | translate }}
+                    </button>
+                </div>
+            </form>
+        </mat-card-content>
+    </mat-card>
+</div>

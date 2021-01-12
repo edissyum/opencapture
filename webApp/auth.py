@@ -62,7 +62,7 @@ class Auth:
             response = {
                 'auth_token': session['jwt'].decode(),
                 'user': db.select({
-                    'select': ['id', 'username', 'firstname', 'lastname', 'role', 'status'],
+                    'select': ['id', 'username', 'firstname', 'lastname', 'role', 'status', 'creation_date', 'enabled'],
                     'table': ['users'],
                     'where': ['username = ?'],
                     'data': [username]

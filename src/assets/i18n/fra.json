@@ -26,6 +26,10 @@
 		"submit": "Soumettre",
 		"unknow_error": "Erreur inconnue"
 	},
+	"VERIFIER": {
+		"list": "Liste des pdf's",
+		"viewer": "Visualisation du pdf"
+	},
 	"SETTINGS": {
 		"about_us": "À propos",
 		"add_user": "Ajouter un utilisateur",

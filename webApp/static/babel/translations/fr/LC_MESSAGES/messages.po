@@ -87,7 +87,7 @@ msgstr "Erreur lors de l'insertion de la facture dans la GED"
 
 #: webApp/user.py:48 webApp/user.py:110 webApp/user.py:141
 msgid "ERROR_WHILE_RETRIEVING_USER"
-msgstr "Erreur lors de la récupération des information utilisateur"
+msgstr "Erreur lors de la récupération des informations utilisateur"
 
 #: webApp/user.py:82
 msgid "UPDATE_ROLE_OK"

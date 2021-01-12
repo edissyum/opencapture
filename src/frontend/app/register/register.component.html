@@ -31,7 +31,9 @@
                     <mat-error *ngIf="registerForm.controls.password.invalid">{{ getErrorMessage('password') }}</mat-error>
                 </mat-form-field>
                 <div class="button">
-                    <button type="submit" mat-button>{{ 'GLOBAL.submit' | translate }}</button>
+                    <button class="hover:bg-green-400 hover:text-white transition duration-300" type="submit" mat-button>
+                        {{ 'GLOBAL.submit' | translate }}
+                    </button>
                 </div>
             </form>
         </mat-card-content>
