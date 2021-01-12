@@ -50,6 +50,8 @@ export class NotificationService {
             if(err.statusText !== undefined)
                 message += ' : ' + err.statusText
             this.error(message);
+            if (this.router.url !== '/login')
+                this.router.navigate(['/logout'])
         } else {
             if (err.error !== undefined) {
                 if (err.error.errors !== undefined) {

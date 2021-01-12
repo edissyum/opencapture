@@ -23,8 +23,10 @@ export class LoginRequiredService {
             return true;
         }
         else {
-            this.notify.error(this.translate.instant('AUTH.not_connected'))
-            this.router.navigateByUrl('/login');
+            this.translate.get('AUTH.not_connected').subscribe((translated: string) => {
+                this.notify.error(translated)
+                this.router.navigate(['/login'])
+            });
             return false;
         }
     }
