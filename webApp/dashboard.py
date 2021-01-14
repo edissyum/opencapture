@@ -8,7 +8,6 @@ from os import listdir, path
 from flask_babel import gettext
 
 from webApp.db import get_db
-from webApp.auth import admin_login_required
 from flask import current_app, Blueprint, render_template
 
 from webApp.functions import get_custom_id, check_python_customized_files
@@ -53,7 +52,6 @@ def init():
 
 
 @bp.route('/dashboard')
-@admin_login_required
 def index():
     _vars = init()
     _db = _vars[0]

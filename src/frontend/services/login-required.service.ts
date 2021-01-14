@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {AuthService} from "./auth.service";
-import {Router} from "@angular/router";
+import {ActivatedRouteSnapshot, Router, RouterStateSnapshot} from "@angular/router";
 import {NotificationService} from "./notifications/notifications.service";
 import {TranslateService} from "@ngx-translate/core";
 
@@ -17,15 +17,16 @@ export class LoginRequiredService {
     ) {
     }
 
-    canActivate(): boolean {
+    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
 
         if (this.authService.getToken()) {
             return true;
         }
         else {
             this.translate.get('AUTH.not_connected').subscribe((translated: string) => {
+                this.authService.setCachedUrl(state.url.replace(/^\//g, ''));
                 this.notify.error(translated)
-                this.router.navigate(['/login'])
+                this.authService.logout()
             });
             return false;
         }

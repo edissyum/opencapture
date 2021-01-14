@@ -4,26 +4,17 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {catchError, tap} from "rxjs/operators";
 import { API_URL } from '../app/env';
 import {of} from "rxjs";
+import {Router} from "@angular/router";
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
-    user: any = {
-        username: '',
-        firstname: '',
-        lastname: '',
-        role: '',
-        creation_date: '',
-        enabled: '',
-        status: '',
-        groups: [],
-        privileges: [],
-        preferences: []
-    };
+    user: any = {};
     public headers : HttpHeaders;
 
     constructor(
+        private router: Router,
         private http: HttpClient,
         private localStorage: LocalStorageService,
     ) {
@@ -42,25 +33,6 @@ export class AuthService {
         return this.localStorage.remove('OpenCaptureForInvoicesCachedUrl');
     }
 
-    cleanUrl(id: number) {
-        return this.localStorage.remove(`OpenCaptureForInvoicesUrl_${id}`);
-    }
-
-    getUrl(id: number) {
-        return this.localStorage.get(`OpenCaptureForInvoicesUrl_${id}`);
-    }
-
-    setUrl(url: string) {
-        const arrUrl = url.split('/');
-
-        if (arrUrl.indexOf('resources') === -1 && arrUrl.indexOf('content') === -1) {
-            let token = this.getToken()
-            if (token){
-                this.localStorage.save(`OpenCaptureForInvoicesUrl_${JSON.parse(atob(token.split('.')[1])).user.id}`, url);
-            }
-        }
-    }
-
     setTokenCustom(name: string, token: string) {
         this.localStorage.save(name, token);
     }
@@ -70,26 +42,26 @@ export class AuthService {
     }
 
 
-    setTokens(token: string, token2: string) {
-        this.localStorage.save('OpenCaptureForInvoicesToken', token);
-        this.localStorage.save('OpenCaptureForInvoicesToken_2', token2);
+    setTokens(token: string, token2: string, days_before_exp: number) {
+        this.localStorage.setCookie('OpenCaptureForInvoicesToken', token, days_before_exp)
+        this.localStorage.setCookie('OpenCaptureForInvoicesToken_2', token2, days_before_exp)
     }
 
-    setTokenAuth(token: string){
-        this.localStorage.save('OpenCaptureForInvoicesToken_2', token);
+    setTokenAuth(token: string, days_before_exp: number){
+        this.localStorage.setCookie('OpenCaptureForInvoicesToken_2', token, days_before_exp);
     }
 
     getToken() {
-        return this.localStorage.get('OpenCaptureForInvoicesToken');
+        return this.localStorage.getCookie('OpenCaptureForInvoicesToken');
     }
 
     getTokenAuth() {
-        return this.localStorage.get('OpenCaptureForInvoicesToken_2');
+        return this.localStorage.getCookie('OpenCaptureForInvoicesToken_2');
     }
 
     clearTokens() {
-        this.localStorage.remove('OpenCaptureForInvoicesToken');
-        this.localStorage.remove('OpenCaptureForInvoicesToken_2');
+        this.localStorage.deleteCookie('OpenCaptureForInvoicesToken');
+        this.localStorage.deleteCookie('OpenCaptureForInvoicesToken_2');
     }
 
     setUser(value: any) {
@@ -101,16 +73,9 @@ export class AuthService {
     }
 
     logout(){
-        if (this.getToken() !== null ) {
-            let token = this.getToken()
-            if (token){
-                if (JSON.parse(atob(token.split('.')[1])).user) {
-                    this.cleanUrl(JSON.parse(atob(token.split('.')[1])).user.id);
-                }
-            }
-        }
         this.setUser({});
         this.clearTokens();
+        this.router.navigateByUrl("/login")
     }
 
 }

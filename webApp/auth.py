@@ -11,16 +11,15 @@ from webApp.db import get_db
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 
-class Auth:
-
-    def encode_auth_token(self, user_id):
+def encode_auth_token(user_id):
         """
         Generates the Auth Token
         :return: string
         """
+        days_before_exp = 1
         try:
             payload = {
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1, seconds=0),
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=days_before_exp, seconds=0),
                 'iat': datetime.datetime.utcnow(),
                 'sub': user_id
             }
@@ -28,11 +27,12 @@ class Auth:
                 payload,
                 current_app.config.get('SECRET_KEY'),
                 algorithm='HS256'
-            )
+            ), days_before_exp
         except Exception as e:
             return e
 
-    def login(self, username, password, lang):
+
+def login(username, password, lang):
         db = get_db()
         session['lang'] = lang
         error = None
@@ -54,13 +54,12 @@ class Auth:
 
         if error is None:
             session.clear()
-            session['user_id'] = user[0]['id']
-            session['user_name'] = user[0]['username']
+            encoded_token = encode_auth_token(user[0]['id'])
             session['lang'] = lang
-            session['jwt'] = self.encode_auth_token(user[0]['id'])
 
             response = {
-                'auth_token': session['jwt'].decode(),
+                'auth_token': encoded_token[0].decode(),
+                'days_before_exp': encoded_token[1],
                 'user': db.select({
                     'select': ['id', 'username', 'firstname', 'lastname', 'role', 'status', 'creation_date', 'enabled'],
                     'table': ['users'],
@@ -77,7 +76,8 @@ class Auth:
             }
             return response, 401
 
-    def register(self, username, password, firstname, lastname, lang):
+
+def register(username, password, firstname, lastname, lang):
         if request.method == 'POST':
             session['lang'] = lang
             db = get_db()
@@ -115,95 +115,6 @@ class Auth:
                 return response, 401
 
 
-
-
-@bp.route('/register', methods=('GET', 'POST'))
-def register():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        role = request.form['role']
-
-        db = get_db()
-        error = None
-        user = db.select({
-            'select': ['id'],
-            'table': ['users'],
-            'where': ['username = ?'],
-            'data': [username]
-        })
-
-        if not username:
-            error = gettext('USERNAME_REQUIRED')
-        elif not password:
-            error = gettext('PASSWORD_REQUIRED')
-        elif user:
-            error = gettext('USER') + ' ' + username + ' ' + gettext('ALREADY_REGISTERED')
-
-        if error is None:
-            db.insert({
-                'table': 'users',
-                'columns': {
-                    'username': username,
-                    'password': generate_password_hash(password),
-                    'role' : role
-                }
-            })
-            flash(gettext('USER_CREATED_OK'))
-            return redirect(url_for('auth.login'))
-        flash(error)
-
-    return render_template('templates/auth/register.html')
-
-@bp.before_app_request
-def load_logged_in_user():
-    user_id = session.get('user_id')
-
-    if user_id is None:
-        g.user = None
-    else:
-        db = get_db()
-        g.user = db.select({
-            'select': ['*'],
-            'table': ['users'],
-            'where': ['id = ?'],
-            'data': [user_id]
-        })[0]
-
-
-@bp.route('/logout')
-def logout():
-    session.clear()
-    return redirect(url_for('index'))
-
-
-def current_login_required(view):
-    @functools.wraps(view)
-    def wrapped_view(**kwargs):
-        user_id = kwargs['user_id']
-        if user_id:
-            if g.user['role'] == 'admin' or g.user['id'] == user_id:
-                return view(**kwargs)
-            else:
-                return render_template('templates/error/403.html')
-        else:
-            if g.user is None:
-                return redirect(url_for('auth.login', fallback=str(request.path.replace('/', '%'))))
-        return view(**kwargs)
-    return wrapped_view
-
-
-def login_required(view):
-    @functools.wraps(view)
-    def wrapped_view(**kwargs):
-        if g.user is None:
-            return redirect(url_for('auth.login', fallback=str(request.path.replace('/', '%'))))
-
-        return view(**kwargs)
-
-    return wrapped_view
-
-
 def token_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
@@ -229,15 +140,3 @@ def token_required(view):
         return view(**kwargs)
 
     return wrapped_view
-
-
-def admin_login_required(view):
-    @functools.wraps(view)
-    def wrapped_view(**kwargs):
-        if g.user is None:
-            return redirect(url_for('auth.login'))
-        elif g.user['role'] != 'admin':
-            return render_template('templates/error/403.html')
-        return view(**kwargs)
-    return wrapped_view
-

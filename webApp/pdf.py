@@ -8,7 +8,6 @@ from datetime import datetime
 from datetime import timedelta
 
 from webApp.db import get_db
-from webApp.auth import login_required
 from webApp.functions import get_custom_id, check_python_customized_files
 
 custom_id = get_custom_id()
@@ -106,7 +105,6 @@ def init():
 
 
 @bp.route('/')
-@login_required
 def home():
     return render_template('templates/home.html')
 
@@ -115,7 +113,6 @@ def home():
 @bp.route('/list/lot/', defaults={'status': None, 'time': None})
 @bp.route('/list/lot/<string:time>/', defaults={'status': None})
 @bp.route('/list/lot/<string:time>/<string:status>')
-@login_required
 def index(status, time):
     _vars = init()
     _db = _vars[0]
@@ -244,7 +241,6 @@ def index(status, time):
 
 
 @bp.route('/list/view/<int:pdf_id>', methods=('GET', 'POST'))
-@login_required
 def view(pdf_id):
     _vars = init()
     _db = _vars[0]
@@ -319,7 +315,6 @@ def view(pdf_id):
 
 @bp.route('/upload')
 @bp.route('/upload?splitter=<string:issep>')
-@login_required
 def upload(issep=False):
     _vars = init()
     _cfg = _vars[1].cfg

@@ -5,8 +5,7 @@ from flask_babel import gettext
 from flask_paginate import Pagination, get_page_args
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from webApp.auth import login_required, register, admin_login_required, current_login_required
-
+from webApp.auth import register
 from .functions import get_custom_id, check_python_customized_files
 
 custom_id = get_custom_id()
@@ -77,8 +76,9 @@ def update_profile(user_id, data):
         })
 
         if res[0] is not False:
+            days_before_exp = 1
             user = check_user(user_id)
-            return user[0], 200
+            return {"user": user[0], "days_before_exp": days_before_exp}, 200
         else:
             response = {
                 "errors": gettext('PROFILE_UPDATE_ERROR'),
@@ -95,7 +95,6 @@ def update_profile(user_id, data):
 
 @bp.route('/profile', methods=('GET', 'POST'), defaults=({'user_id': None}))
 @bp.route('/profile/<int:user_id>', methods=('GET', 'POST'))
-@current_login_required
 def profile(user_id):
     if user_id is None:
         user_id = g.user['id']
@@ -169,7 +168,6 @@ def change_password(old_password, new_password, user_id):
 
 @bp.route('/profile/reset_password', defaults=({'user_id': None}))
 @bp.route('/profile/<int:user_id>/reset_password')
-@login_required
 def reset_password(user_id):
     _vars = pdf.init()
     _db = _vars[0]
@@ -201,7 +199,6 @@ def reset_password(user_id):
 
 
 @bp.route('/list')
-@admin_login_required
 def user_list():
     _vars = pdf.init()
     _db = _vars[0]
@@ -252,7 +249,6 @@ def user_list():
 
 @bp.route('/enable/<int:user_id>', defaults={'fallback': None})
 @bp.route('/enable/<int:user_id>?fallback=<path:fallback>')
-@admin_login_required
 def enable(user_id, fallback):
     _vars = pdf.init()
     _db = _vars[0]
@@ -283,7 +279,6 @@ def enable(user_id, fallback):
 
 @bp.route('/disable/<int:user_id>', defaults={'fallback': None})
 @bp.route('/disable/<int:user_id>?fallback=<path:fallback>')
-@admin_login_required
 def disable(user_id, fallback):
     _vars = pdf.init()
     _db = _vars[0]
@@ -314,7 +309,6 @@ def disable(user_id, fallback):
 
 @bp.route('/delete/<int:user_id>', defaults={'fallback': None})
 @bp.route('/delete/<int:user_id>?fallback=<path:fallback>')
-@admin_login_required
 def delete(user_id, fallback):
     _vars = pdf.init()
     _db = _vars[0]
@@ -344,7 +338,6 @@ def delete(user_id, fallback):
 
 
 @bp.route('/create', methods=('GET', 'POST'))
-@admin_login_required
 def create():
     if request.method == 'POST':
         register()

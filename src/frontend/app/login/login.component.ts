@@ -6,7 +6,6 @@ import {HttpClient} from "@angular/common/http";
 import {NotificationService} from "../../services/notifications/notifications.service";
 import {catchError, tap} from "rxjs/operators";
 import {of} from "rxjs";
-import {LocalStorageService} from "../../services/local-storage.service";
 import {AuthService} from "../../services/auth.service";
 import {Router} from "@angular/router";
 import {ConfigService} from "../../services/config.service";

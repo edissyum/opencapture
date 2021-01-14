@@ -8,7 +8,8 @@
 	},
 	"ERROR": {
 		"404": "La page demandée n'existe pas",
-		"connection_failed": "Erreur lors de la connexion au serveur"
+		"connection_failed": "Erreur lors de la connexion au serveur",
+		"jwt_error": "Erreur lors de l'authentification par token"
 	},
 	"GLOBAL": {
 		"batches": "Lots",
