@@ -25,26 +25,33 @@
                 </div>
                 <div class="hidden sm:block sm:ml-6">
                     <div class="flex space-x-4">
-                        <button mat-flat-button routerLink="/home" [routerLinkActive]="'bg-gray-900 text-green-400'"
+                        <button mat-flat-button routerLink="/home"
+                                [routerLinkActive]="'bg-gray-900 text-green-400'"
                            class="text-gray-500 hover:bg-green-400 hover:text-white px-3 py-2 text-sm font-medium transition duration-300">
                             {{ 'GLOBAL.home' | translate }}
                         </button>
-                        <button mat-flat-button routerLink="/verifier" [routerLinkActive]="'bg-gray-900 text-green-400'" *ngIf="location.path() !== '/home' && location.path().includes('/verifier')"
+                        <button mat-flat-button routerLink="/verifier"
+                                [routerLinkActive]="'bg-gray-900 text-green-400'"
+                                *ngIf="location.path() !== '/home' && this.localeStorageService.get('splitter_or_verifier') == 'verifier'"
                            class="text-gray-500 hover:bg-green-400 hover:text-white px-3 py-2 text-sm font-medium transition duration-300">
                             {{ 'GLOBAL.batches' | translate }}
                         </button>
-                        <button mat-flat-button routerLink="/splitter" [routerLinkActive]="'bg-gray-900 text-green-400'" *ngIf="location.path() !== '/home' && location.path().includes('/splitter')"
+                        <button mat-flat-button routerLink="/splitter"
+                                [routerLinkActive]="'bg-gray-900 text-green-400'"
+                                *ngIf="location.path() !== '/home' && this.localeStorageService.get('splitter_or_verifier') == 'splitter'"
                            class="text-gray-500 hover:bg-green-400 hover:text-white px-3 py-2 text-sm font-medium transition duration-300">
                             {{ 'GLOBAL.batches' | translate }}
                         </button>
-                        <button mat-flat-button routerLink="/download" [routerLinkActive]="'bg-gray-900 text-green-400'" *ngIf="location.path() !== '/home'"
+                        <button mat-flat-button routerLink="/download"
+                                [routerLinkActive]="'bg-gray-900 text-green-400'"
+                                *ngIf="location.path() !== '/home'"
                        class="text-gray-500 hover:bg-green-400 hover:text-white px-3 py-2 text-sm font-medium transition duration-300">
                             {{ 'GLOBAL.download' | translate }}
                         </button>
                     </div>
                 </div>
             </div>
-            <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+            <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0" *ngIf="location.path() !== '/home'">
                 <!-- Profile dropdown -->
                 <div class="ml-3 relative">
                     <div>

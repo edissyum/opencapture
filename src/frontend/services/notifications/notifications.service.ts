@@ -20,8 +20,12 @@ export class CustomSnackbarComponent {
 @Injectable()
 export class NotificationService {
 
-    constructor(public translate: TranslateService, private router: Router, public snackBar: MatSnackBar) {
-    }
+    constructor(
+        public translate: TranslateService,
+        private router: Router,
+        public snackBar: MatSnackBar)
+    { }
+
     success(message: string) {
         const duration = this.getMessageDuration(message, 2000);
         const snackBar = this.snackBar.openFromComponent(CustomSnackbarComponent, {
@@ -50,31 +54,29 @@ export class NotificationService {
             if(err.statusText !== undefined)
                 message += ' : ' + err.statusText
             this.error(message);
-            // if (this.router.url !== '/login')
-            //     this.router.navigate(['/logout'])
-        } else {
-            if (err.error !== undefined) {
-                if (err.error.errors !== undefined) {
-                    this.error(err.error.errors + ' : ' + err.error.message, err.url);
-                    if (err.status === 403 || err.status === 404) {
-                        this.router.navigate(['/home']);
-                    }else if (err.error.errors == this.translate.instant('ERROR.jwt_error')){
-                        this.router.navigate(['/logout']);
-                    }
-                } else if (err.error.exception !== undefined) {
-                    this.error(err.error.exception[0].message, err.url);
-                } else if (err.error.error !== undefined) {
-                    if (err.error.error[0] !== undefined) {
-                        this.error(err.error.error[0].message, err.url);
-                    } else {
-                        this.error(err.error.error.message, err.url);
-                    }
+            if (this.router.url !== '/login')
+                this.router.navigate(['/logout'])
+        } else if (err.error !== undefined) {
+            if (err.error.errors !== undefined) {
+                this.error(err.error.errors + ' : ' + err.error.message, err.url);
+                if (err.status === 403 || err.status === 404) {
+                    this.router.navigate(['/home']);
+                } else if (err.error.errors == this.translate.instant('ERROR.jwt_error')) {
+                    this.router.navigate(['/logout']);
+                }
+            } else if (err.error.exception !== undefined) {
+                this.error(err.error.exception[0].message, err.url);
+            } else if (err.error.error !== undefined) {
+                if (err.error.error[0] !== undefined) {
+                    this.error(err.error.error[0].message, err.url);
                 } else {
-                    this.error(`${err.status} : ${err.statusText}`, err.url);
+                    this.error(err.error.error.message, err.url);
                 }
             } else {
-                this.error(err);
+                this.error(`${err.status} : ${err.statusText}`, err.url);
             }
+        } else {
+            this.error(err);
         }
     }
 

@@ -1,9 +1,6 @@
 import {Injectable} from '@angular/core';
 import {LocalStorageService} from "./local-storage.service";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {catchError, tap} from "rxjs/operators";
-import { API_URL } from '../app/env';
-import {of} from "rxjs";
 import {Router} from "@angular/router";
 
 @Injectable({
@@ -41,7 +38,6 @@ export class AuthService {
         return this.localStorage.get(name);
     }
 
-
     setTokens(token: string, token2: string, days_before_exp: number) {
         this.localStorage.setCookie('OpenCaptureForInvoicesToken', token, days_before_exp)
         this.localStorage.setCookie('OpenCaptureForInvoicesToken_2', token2, days_before_exp)
@@ -77,5 +73,4 @@ export class AuthService {
         this.clearTokens();
         this.router.navigateByUrl("/login")
     }
-
 }
