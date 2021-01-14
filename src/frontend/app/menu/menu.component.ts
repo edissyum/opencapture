@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {Location} from "@angular/common";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {Title} from "@angular/platform-browser";
 import {NotificationService} from "../../services/notifications/notifications.service";
 import {TranslateService} from "@ngx-translate/core";
@@ -9,10 +9,8 @@ import {ConfigService} from "../../services/config.service";
 import {AuthService} from "../../services/auth.service";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {UserService} from "../../services/user.service";
-import {API_URL} from "../env";
-import {catchError, tap} from "rxjs/operators";
-import {of} from "rxjs";
 import {LocaleService} from "../../services/locale.service";
+import {LocalStorageService} from "../../services/local-storage.service";
 
 @Component({
     selector: 'app-menu',
@@ -33,11 +31,12 @@ import {LocaleService} from "../../services/locale.service";
         ])
     ]
 })
+
 export class MenuComponent implements OnInit {
     profileDropdownCurrentState : string = 'hide'
     profileSettingsCurrentState : string = 'hide'
     mobileMenuState             : string = 'hide'
-    user                        : any
+    user                        : any;
 
     constructor(
         private router: Router,
@@ -50,7 +49,8 @@ export class MenuComponent implements OnInit {
         private configService: ConfigService,
         private authService: AuthService,
         private userService: UserService,
-        public localeService: LocaleService
+        public localeService: LocaleService,
+        public localeStorageService: LocalStorageService
     ) {
     }
 
