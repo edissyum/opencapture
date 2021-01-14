@@ -56,10 +56,16 @@ export class LoginComponent implements OnInit {
             ).pipe(
                 tap((data: any) => {
                     this.authService.setUser(data.body.user)
-                    this.authService.setTokens(data.body.auth_token, btoa(JSON.stringify(this.authService.getUser())));
+                    this.authService.setTokens(data.body.auth_token, btoa(JSON.stringify(this.authService.getUser())), data.body.days_before_exp);
                     this.notify.success(this.translate.instant('AUTH.authenticated'))
                     this.configService.readConfig()
-                    this.router.navigate(['/home'])
+                    if (this.authService.getCachedUrl()) {
+                        // @ts-ignore
+                        this.router.navigateByUrl(this.authService.getCachedUrl());
+                        this.authService.cleanCachedUrl();
+                    }else{
+                        this.router.navigate(['/home'])
+                    }
                 }),
                 catchError((err: any) => {
                     console.debug(err)
