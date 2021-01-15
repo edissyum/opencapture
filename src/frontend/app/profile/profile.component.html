@@ -1,8 +1,8 @@
 <div *ngIf="!loading" class="flex justify-center items-center" style="height: 85vh">
     <mat-card class="text-center w-full lg:w-1/4">
         <mat-card-title class="mb-10">
-            <span *ngIf="this.userId == this.currentUser.id">{{ 'USER.modify_my_profile' | translate }}</span>
-            <span *ngIf="this.userId != this.currentUser.id">{{ 'USER.modify_profile_of' | translate }} {{this.user['username']}}</span>
+            <span *ngIf="this.userId == this.userService.user.id">{{ 'USER.modify_my_profile' | translate }}</span>
+            <span *ngIf="this.userId != this.userService.user.id">{{ 'USER.modify_profile_of' | translate }} {{this.profile['username']}}</span>
         </mat-card-title>
         <mat-card-content>
             <form (ngSubmit)="onSubmit()" >

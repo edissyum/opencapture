@@ -19,8 +19,7 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 })
 export class ProfileComponent implements OnInit {
     userId      : any;
-    user        : any;
-    currentUser : any;
+    profile     : any;
 
     profileForm : any[] = [
         {
@@ -60,7 +59,7 @@ export class ProfileComponent implements OnInit {
         private route: ActivatedRoute,
         private formBuilder: FormBuilder,
         private authService: AuthService,
-        private userService: UserService,
+        public userService: UserService,
         private translate: TranslateService,
         private notify: NotificationService,
         private localeService: LocaleService
@@ -69,17 +68,16 @@ export class ProfileComponent implements OnInit {
 
     ngOnInit(){
         this.userId = this.route.snapshot.params['id']
-        this.currentUser = this.userService.getUserFromLocal()
 
         let headers = this.authService.headers
-        this.user = this.http.get(API_URL + '/ws/getUserById/' + this.userId, {headers}).pipe(
+        this.http.get(API_URL + '/ws/getUserById/' + this.userId, {headers}).pipe(
             tap((data: any) => {
-                this.user = data
-                for (let field in this.user){
-                    if (this.user.hasOwnProperty(field)){
+                this.profile = data
+                for (let field in this.profile){
+                    if (this.profile.hasOwnProperty(field)){
                         this.profileForm.forEach(element => {
                             if (element.id == field){
-                                element.control.value = this.user[field]
+                                element.control.value = this.profile[field]
                             }
                         });
                     }
@@ -128,9 +126,9 @@ export class ProfileComponent implements OnInit {
             ).pipe(
                 tap((data: any) => {
                     this.notify.success(this.translate.instant('USER.profile_updated'))
-                    if (this.userId == this.currentUser.id){
-                        this.authService.setUser(data.user)
-                        this.authService.setTokenAuth(btoa(JSON.stringify(this.authService.getUser())), data.days_before_exp);
+                    if (this.userId == this.userService.user.id){
+                        this.userService.setUser(data.user)
+                        this.authService.setTokenAuth(btoa(JSON.stringify(this.userService.getUser())), data.days_before_exp);
                     }
                 }),
                 catchError((err: any) => {

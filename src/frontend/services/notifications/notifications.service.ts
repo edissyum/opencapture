@@ -80,27 +80,6 @@ export class NotificationService {
         }
     }
 
-    handleSoftErrors(err: any) {
-        console.log(err);
-        if (err.error !== undefined) {
-            if (err.error.errors !== undefined) {
-                this.error(err.error.errors, err.url);
-            } else if (err.error.exception !== undefined) {
-                this.error(err.error.exception[0].message, err.url);
-            } else if (err.error.error !== undefined) {
-                if (err.error.error[0] !== undefined) {
-                    this.error(err.error.error[0].message, err.url);
-                } else {
-                    this.error(err.error.error.message, err.url);
-                }
-            } else {
-                this.error(`${err.status} : ${err.statusText}`, err.url);
-            }
-        } else {
-            this.error(err);
-        }
-    }
-
     getMessageDuration(message: string, minimumDuration: number) {
         const duration = (message.length / 25) * 1000;
         const maxDuration = 10000;

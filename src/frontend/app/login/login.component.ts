@@ -10,6 +10,7 @@ import {AuthService} from "../../services/auth.service";
 import {Router} from "@angular/router";
 import {ConfigService} from "../../services/config.service";
 import {LocaleService} from "../../services/locale.service";
+import {UserService} from "../../services/user.service";
 
 @Component({
     selector: 'app-login',
@@ -24,6 +25,7 @@ export class LoginComponent implements OnInit {
         private http: HttpClient,
         private formBuilder: FormBuilder,
         private authService: AuthService,
+        private userService: UserService,
         private translate: TranslateService,
         private notify: NotificationService,
         private configService: ConfigService,
@@ -54,8 +56,8 @@ export class LoginComponent implements OnInit {
                 },
             ).pipe(
                 tap((data: any) => {
-                    this.authService.setUser(data.body.user)
-                    this.authService.setTokens(data.body.auth_token, btoa(JSON.stringify(this.authService.getUser())), data.body.days_before_exp);
+                    this.userService.setUser(data.body.user)
+                    this.authService.setTokens(data.body.auth_token, btoa(JSON.stringify(this.userService.getUser())), data.body.days_before_exp);
                     this.notify.success(this.translate.instant('AUTH.authenticated'))
                     this.configService.readConfig()
                     if (this.authService.getCachedUrl()) {

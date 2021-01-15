@@ -2,17 +2,18 @@ import {Injectable} from '@angular/core';
 import {LocalStorageService} from "./local-storage.service";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Router} from "@angular/router";
+import {UserService} from "./user.service";
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
-    user: any = {};
     public headers : HttpHeaders;
 
     constructor(
         private router: Router,
         private http: HttpClient,
+        private userService: UserService,
         private localStorage: LocalStorageService,
     ) {
         this.headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.getToken())
@@ -51,25 +52,13 @@ export class AuthService {
         return this.localStorage.getCookie('OpenCaptureForInvoicesToken');
     }
 
-    getTokenAuth() {
-        return this.localStorage.getCookie('OpenCaptureForInvoicesToken_2');
-    }
-
     clearTokens() {
         this.localStorage.deleteCookie('OpenCaptureForInvoicesToken');
         this.localStorage.deleteCookie('OpenCaptureForInvoicesToken_2');
     }
 
-    setUser(value: any) {
-        this.user = value;
-    }
-
-    getUser(){
-        return this.user
-    }
-
     logout(){
-        this.setUser({});
+        this.userService.setUser({});
         this.clearTokens();
         this.router.navigateByUrl("/login")
     }

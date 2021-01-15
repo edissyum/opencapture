@@ -51,7 +51,7 @@
                     </div>
                 </div>
             </div>
-            <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0" *ngIf="location.path() !== '/home'">
+            <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 <!-- Profile dropdown -->
                 <div class="ml-3 relative">
                     <div>
@@ -62,16 +62,16 @@
                     <div [@toggle]="profileDropdownCurrentState" class="origin-top-right absolute md:right-0 mt-2 w-56 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-50"
                          role="menu" aria-orientation="vertical" aria-labelledby="user-menu">
                         <span class="block text-center mb-2 text-gray-900">
-                            <b>{{ user['lastname'] }}</b> {{ user['firstname'] }} ({{ user['username'] }})
+                            <b>{{ userService.user['lastname'] }}</b> {{ userService.user['firstname'] }} ({{ userService.user['username'] }})
                             <hr>
                         </span>
-                        <a (click)="closeprofileDropDown()" routerLink="/profile/{{ user['id'] }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative"
+                        <a *ngIf="location.path() !== '/home'" (click)="closeprofileDropDown()" routerLink="/profile/{{ userService.user['id'] }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative"
                            role="menuitem">{{ 'USER.my_profile' | translate }}</a>
                         <a (click)="closeprofileDropDown()" routerLink="/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative"
                            role="menuitem">{{ 'GLOBAL.log_out' | translate }}</a>
                     </div>
                 </div>
-                <div class="ml-3 relative">
+                <div class="ml-3 relative" *ngIf="location.path() !== '/home'">
                     <div>
                         <button mat-mini-fab (click)="toggleSettingsDropdown()" class="bg-green-400" id="settings-menu" aria-haspopup="true">
                             <i class="fas fa-cog "></i>
