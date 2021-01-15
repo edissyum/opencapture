@@ -41,35 +41,6 @@ else:
 bp = Blueprint('ws', __name__)
 
 
-@bp.route('/ws/login', methods=['POST'])
-def login():
-    data = request.json
-    res = auth.login(data['username'], data['password'], data['lang'])
-    return make_response(jsonify(res[0])), res[1]
-
-
-@bp.route('/ws/register', methods=['POST'])
-def register():
-    data = request.json
-    res = auth.register(data['username'], data['password'], data['firstname'], data['lastname'], data['lang'])
-    return make_response(jsonify(res[0])), res[1]
-
-
-@bp.route('/ws/getUserById/<int:user_id>', methods=['GET'])
-@auth.token_required
-def get_user_by_id(user_id):
-    _user = user.check_user(user_id)
-    return make_response(jsonify(_user[0])), _user[1]
-
-
-@bp.route('/ws/updateUser/<int:user_id>', methods=['PUT'])
-@auth.token_required
-def update_user(user_id):
-    data = request.json['args']
-    res = user.update_profile(user_id, data)
-    return make_response(jsonify(res[0])), res[1]
-
-
 @bp.route('/ws/readConfig', methods=['GET'])
 @auth.token_required
 def read_config():
@@ -77,32 +48,4 @@ def read_config():
         _vars = pdf.init()
         return json.dumps({'text': _vars[1].cfg, 'code': 200, 'ok': 'true'})
 
-
-@bp.route('/ws/changeLanguage/<string:lang>', methods=['GET'])
-@auth.token_required
-def change_language(lang):
-    session['lang'] = lang
-    response = dashboard.change_locale_in_config(lang)
-
-    return jsonify(response, response[1])
-
-
-@bp.route('/ws/getCurrentLang', methods=['GET'])
-def get_current_lang():
-    _vars = pdf.init()
-    current_lang = _vars[1].cfg['LOCALE']['locale']
-
-    return {'lang': current_lang}, 200
-
-
-@bp.route('/ws/getAllLang', methods=['GET'])
-@auth.token_required
-def get_all_lang():
-    _vars = pdf.init()
-    language = current_app.config['LANGUAGES']
-    langs = []
-    for lang in language:
-        langs.append([language[lang]['lang_code'], language[lang]['label']])
-
-    return {'langs': langs}, 200
 

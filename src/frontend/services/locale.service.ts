@@ -24,7 +24,7 @@ export class LocaleService {
 
     changeLocale(data: any) {
         const headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.authService.getToken())
-        this.http.get(API_URL + '/ws/changeLanguage/' + data.value, {headers}).pipe(
+        this.http.get(API_URL + '/ws/i18n/changeLanguage/' + data.value, {headers}).pipe(
             catchError((err: any) => {
                 console.debug(err)
                 this.notify.handleErrors(err);
@@ -36,8 +36,9 @@ export class LocaleService {
     }
 
     getCurrentLocale() {
-        this.http.get(API_URL + '/ws/getCurrentLang').pipe(
+        this.http.get(API_URL + '/ws/i18n/getCurrentLang').pipe(
             tap((data: any) => {
+                console.log(data.lang)
                 this.currentLang = data.lang
                 this.translate.use(this.currentLang)
             }),
@@ -51,7 +52,7 @@ export class LocaleService {
 
     getLocales() {
         const headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.authService.getToken())
-        this.http.get(API_URL + '/ws/getAllLang', {headers}).pipe(
+        this.http.get(API_URL + '/ws/i18n/getAllLang', {headers}).pipe(
             tap((data: any) => {
                 this.langs = data.langs
             }),

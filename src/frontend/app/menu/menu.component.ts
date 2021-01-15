@@ -4,6 +4,8 @@ import { animate, state, style, transition, trigger } from "@angular/animations"
 import { UserService } from "../../services/user.service";
 import { LocaleService } from "../../services/locale.service";
 import { LocalStorageService } from "../../services/local-storage.service";
+import {HttpHeaders} from "@angular/common/http";
+import {AuthService} from "../../services/auth.service";
 
 @Component({
     selector: 'app-menu',
@@ -26,32 +28,34 @@ import { LocalStorageService } from "../../services/local-storage.service";
 })
 
 export class MenuComponent implements OnInit {
-    profileDropdownCurrentState : string = 'hide'
-    profileSettingsCurrentState : string = 'hide'
-    mobileMenuState             : string = 'hide'
+    profileDropdownCurrentState : string = 'hide';
+    profileSettingsCurrentState : string = 'hide';
+    mobileMenuState             : string = 'hide';
 
     constructor(
         public location: Location,
         public userService: UserService,
+        private authService: AuthService,
         public localeService: LocaleService,
         public localeStorageService: LocalStorageService
     ) {
     }
 
     ngOnInit(): void {
-        this.userService.user = this.userService.getUserFromLocal()
-        this.localeService.getLocales()
-        this.localeService.getCurrentLocale()
+        this.authService.headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.authService.getToken());
+        this.userService.user = this.userService.getUserFromLocal();
+        this.localeService.getLocales();
+        this.localeService.getCurrentLocale();
     }
 
     toggleProfileDropdown() {
         this.profileDropdownCurrentState = this.profileDropdownCurrentState === 'hide' ? 'show' : 'hide';
-        this.profileSettingsCurrentState = this.profileDropdownCurrentState === 'show' && this.profileSettingsCurrentState == 'show' ? 'hide' : this.profileSettingsCurrentState
+        this.profileSettingsCurrentState = this.profileDropdownCurrentState === 'show' && this.profileSettingsCurrentState == 'show' ? 'hide' : this.profileSettingsCurrentState;
     }
 
     toggleSettingsDropdown() {
         this.profileSettingsCurrentState = this.profileSettingsCurrentState === 'hide' ? 'show' : 'hide';
-        this.profileDropdownCurrentState = this.profileDropdownCurrentState === 'show' && this.profileSettingsCurrentState == 'show' ? 'hide' : this.profileDropdownCurrentState
+        this.profileDropdownCurrentState = this.profileDropdownCurrentState === 'show' && this.profileSettingsCurrentState == 'show' ? 'hide' : this.profileDropdownCurrentState;
     }
 
     closeSettingsDropDown() {
@@ -65,7 +69,4 @@ export class MenuComponent implements OnInit {
     toggleMobileMenu() {
         this.mobileMenuState = this.mobileMenuState === 'hide' ? 'show' : 'hide';
     }
-
-
-
 }

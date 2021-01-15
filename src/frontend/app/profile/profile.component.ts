@@ -50,7 +50,7 @@ export class ProfileComponent implements OnInit {
             control: new FormControl(),
             required: false
         }
-    ]
+    ];
     public loading: boolean = true;
 
     constructor(
@@ -67,17 +67,17 @@ export class ProfileComponent implements OnInit {
     }
 
     ngOnInit(){
-        this.userId = this.route.snapshot.params['id']
+        this.userId = this.route.snapshot.params['id'];
 
-        let headers = this.authService.headers
-        this.http.get(API_URL + '/ws/getUserById/' + this.userId, {headers}).pipe(
+        let headers = this.authService.headers;
+        this.http.get(API_URL + '/ws/user/getUserById/' + this.userId, {headers}).pipe(
             tap((data: any) => {
-                this.profile = data
+                this.profile = data;
                 for (let field in this.profile){
                     if (this.profile.hasOwnProperty(field)){
                         this.profileForm.forEach(element => {
                             if (element.id == field){
-                                element.control.value = this.profile[field]
+                                element.control.value = this.profile[field];
                             }
                         });
                     }
@@ -85,7 +85,7 @@ export class ProfileComponent implements OnInit {
             }),
             finalize(() => this.loading = false ),
             catchError((err: any) => {
-                console.debug(err)
+                console.debug(err);
                 this.notify.handleErrors(err);
                 return of(false);
             })
@@ -108,14 +108,14 @@ export class ProfileComponent implements OnInit {
 
     onSubmit(){
         if(this.isValidForm()){
-            const user : any = {}
-            let headers = this.authService.headers
+            const user : any = {};
+            let headers = this.authService.headers;
 
             this.profileForm.forEach(element => {
-                user[element.id] = element.control.value
+                user[element.id] = element.control.value;
             });
             this.http.put(
-                API_URL + '/ws/updateUser/' + this.userId,
+                API_URL + '/ws/user/updateUser/' + this.userId,
                 {
                     'args': user,
                     'lang': this.localeService.currentLang
@@ -125,14 +125,14 @@ export class ProfileComponent implements OnInit {
                 },
             ).pipe(
                 tap((data: any) => {
-                    this.notify.success(this.translate.instant('USER.profile_updated'))
+                    this.notify.success(this.translate.instant('USER.profile_updated'));
                     if (this.userId == this.userService.user.id){
-                        this.userService.setUser(data.user)
+                        this.userService.setUser(data.user);
                         this.authService.setTokenAuth(btoa(JSON.stringify(this.userService.getUser())), data.days_before_exp);
                     }
                 }),
                 catchError((err: any) => {
-                    console.debug(err)
+                    console.debug(err);
                     this.notify.handleErrors(err);
                     return of(false);
                 })
@@ -141,11 +141,11 @@ export class ProfileComponent implements OnInit {
     }
 
     getErrorMessage(field: any) {
-        let error = ''
+        let error = '';
         this.profileForm.forEach(element => {
             if(element.id == field)
                 if (element.required){
-                    error = this.translate.instant('AUTH.field_required')
+                    error = this.translate.instant('AUTH.field_required');
                 }
         })
         return error

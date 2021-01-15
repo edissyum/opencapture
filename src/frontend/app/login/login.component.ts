@@ -37,15 +37,15 @@ export class LoginComponent implements OnInit {
             username: [null, Validators.required],
             password: [null, Validators.required]
         });
-        this.localeService.getCurrentLocale()
+        this.localeService.getCurrentLocale();
     }
 
     onSubmit() {
-        let password = this.loginForm.get('password').value
-        let username = this.loginForm.get('username').value
+        let password = this.loginForm.get('password').value;
+        let username = this.loginForm.get('username').value;
         if (password && username){
             this.http.post(
-                API_URL + '/ws/login',
+                API_URL + '/ws/auth/login',
                 {
                     'username': username,
                     'password': password,
@@ -56,20 +56,21 @@ export class LoginComponent implements OnInit {
                 },
             ).pipe(
                 tap((data: any) => {
-                    this.userService.setUser(data.body.user)
+                    this.userService.setUser(data.body.user);
                     this.authService.setTokens(data.body.auth_token, btoa(JSON.stringify(this.userService.getUser())), data.body.days_before_exp);
-                    this.notify.success(this.translate.instant('AUTH.authenticated'))
-                    this.configService.readConfig()
-                    if (this.authService.getCachedUrl()) {
-                        // @ts-ignore
-                        this.router.navigateByUrl(this.authService.getCachedUrl());
-                        this.authService.cleanCachedUrl();
-                    }else{
-                        this.router.navigate(['/home'])
-                    }
+                    this.notify.success(this.translate.instant('AUTH.authenticated'));
+                    this.configService.readConfig().then(() => {
+                        if (this.authService.getCachedUrl()) {
+                            // @ts-ignore
+                            this.router.navigateByUrl(this.authService.getCachedUrl()).then();
+                            this.authService.cleanCachedUrl();
+                        } else {
+                            this.router.navigate(['/home']).then();
+                        }
+                    });
                 }),
                 catchError((err: any) => {
-                    console.debug(err)
+                    console.debug(err);
                     this.notify.handleErrors(err);
                     return of(false);
                 })
@@ -79,8 +80,8 @@ export class LoginComponent implements OnInit {
 
     getErrorMessage(field: any) {
         if(this.loginForm.get(field).hasError('required')){
-            return this.translate.instant('AUTH.field_required')
+            return this.translate.instant('AUTH.field_required');
         }
-        return this.translate.instant('GLOBAL.unknow_error')
+        return this.translate.instant('GLOBAL.unknow_error');
     }
 }

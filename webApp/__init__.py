@@ -29,14 +29,19 @@ else:
     pdf = getattr(__import__(custom_array['pdf']['path'], fromlist=[custom_array['pdf']['module']]), custom_array['pdf']['module'])
 
 if 'auth' not in custom_array:
-    from . import auth
+    from .rest import auth
 else:
     auth = getattr(__import__(custom_array['auth']['path'], fromlist=[custom_array['auth']['module']]), custom_array['auth']['module'])
 
 if 'user' not in custom_array:
-    from . import user
+    from .rest import user
 else:
     user = getattr(__import__(custom_array['user']['path'], fromlist=[custom_array['user']['module']]), custom_array['user']['module'])
+
+if 'locale' not in custom_array:
+    from .rest import locale
+else:
+    locale = getattr(__import__(custom_array['locale']['path'], fromlist=[custom_array['locale']['module']]), custom_array['locale']['module'])
 
 if 'supplier' not in custom_array:
     from . import supplier
@@ -92,6 +97,7 @@ def create_app(test_config=None):
     app.register_blueprint(pdf.bp)
     app.register_blueprint(auth.bp)
     app.register_blueprint(user.bp)
+    app.register_blueprint(locale.bp)
     app.register_blueprint(supplier.bp)
     app.register_blueprint(dashboard.bp)
     app.register_blueprint(ws_splitter.bp)

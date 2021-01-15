@@ -16,7 +16,7 @@ export class AuthService {
         private userService: UserService,
         private localStorage: LocalStorageService,
     ) {
-        this.headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.getToken())
+        this.headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.getToken());
     }
 
     setCachedUrl(url: string) {
@@ -40,8 +40,8 @@ export class AuthService {
     }
 
     setTokens(token: string, token2: string, days_before_exp: number) {
-        this.localStorage.setCookie('OpenCaptureForInvoicesToken', token, days_before_exp)
-        this.localStorage.setCookie('OpenCaptureForInvoicesToken_2', token2, days_before_exp)
+        this.localStorage.setCookie('OpenCaptureForInvoicesToken', token, days_before_exp);
+        this.localStorage.setCookie('OpenCaptureForInvoicesToken_2', token2, days_before_exp);
     }
 
     setTokenAuth(token: string, days_before_exp: number){
@@ -60,6 +60,6 @@ export class AuthService {
     logout(){
         this.userService.setUser({});
         this.clearTokens();
-        this.router.navigateByUrl("/login")
+        this.router.navigateByUrl("/login");
     }
 }

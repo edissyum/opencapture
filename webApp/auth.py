@@ -4,11 +4,9 @@ import datetime
 import jwt, jwt.exceptions
 from flask_babel import gettext
 from werkzeug.security import check_password_hash, generate_password_hash
-from flask import Blueprint, flash, g, redirect, render_template, request, session, url_for, make_response, jsonify, current_app
+from flask import request, session, jsonify, current_app
 
 from webApp.db import get_db
-
-bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 
 def encode_auth_token(user_id):

@@ -6,7 +6,7 @@ import { LocalStorageService } from "./local-storage.service";
     providedIn: 'root'
 })
 export class UserService {
-    user : any = {}
+    user : any = {};
 
     constructor(
         private http: HttpClient,
@@ -19,14 +19,13 @@ export class UserService {
     }
 
     getUser(){
-        return this.user
+        return this.user;
     }
 
     getUserFromLocal() {
-        let token = this.getTokenAuth()
-
+        let token = this.getTokenAuth();
         if (token) {
-            return JSON.parse(atob(<string>token))
+            return JSON.parse(atob(<string>token));
         }
     }
 

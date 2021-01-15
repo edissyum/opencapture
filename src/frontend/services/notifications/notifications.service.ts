@@ -50,12 +50,12 @@ export class NotificationService {
 
     handleErrors(err: any) {
         if (err.status === 0 && err.statusText === 'Unknown Error') {
-            let message = this.translate.instant('ERROR.connection_failed')
+            let message = this.translate.instant('ERROR.connection_failed');
             if(err.statusText !== undefined)
-                message += ' : ' + err.statusText
+                message += ' : ' + err.statusText;
             this.error(message);
             if (this.router.url !== '/login')
-                this.router.navigate(['/logout'])
+                this.router.navigate(['/logout']);
         } else if (err.error !== undefined) {
             if (err.error.errors !== undefined) {
                 this.error(err.error.errors + ' : ' + err.error.message, err.url);

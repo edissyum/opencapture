@@ -48,7 +48,7 @@ export class RegisterComponent implements OnInit {
         let lastname = this.registerForm.get('lastname').value
         if (password && username){
             this.http.post(
-                API_URL + '/ws/register',
+                API_URL + '/ws/auth/register',
                 {
                     'username': username,
                     'password': password,
@@ -62,7 +62,7 @@ export class RegisterComponent implements OnInit {
             ).pipe(
                 tap((data: any) => {
                     this.notify.success(this.translate.instant('AUTH.registered'))
-                    this.router.navigate(['/login'])
+                    this.authService.logout()
                 }),
                 catchError((err: any) => {
                     console.debug(err)
