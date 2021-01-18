@@ -18,7 +18,7 @@
 import os
 import sys
 import argparse
-from bin.src.main import launch
+from src.backend.main import launch
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()

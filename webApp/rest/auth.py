@@ -1,5 +1,5 @@
 from flask import Blueprint, request, make_response, jsonify
-from .. import auth
+from ..controllers import auth
 
 
 bp = Blueprint('auth', __name__, url_prefix='/ws/')

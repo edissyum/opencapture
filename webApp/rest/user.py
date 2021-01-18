@@ -1,6 +1,6 @@
-from flask import Blueprint, g, request, make_response, jsonify
-from ..auth import token_required
-from .. import user
+from flask import Blueprint, request, make_response, jsonify
+from ..controllers.auth import token_required
+from ..controllers import user
 
 bp = Blueprint('user', __name__, url_prefix='/ws/')
 

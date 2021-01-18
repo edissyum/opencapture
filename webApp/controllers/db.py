@@ -1,29 +1,8 @@
 import click
-
 from flask import current_app, g
-from flask.cli import with_appcontext
-from webApp.functions import get_custom_id, check_python_customized_files
 from psycopg2 import ProgrammingError
-
-custom_id = get_custom_id()
-custom_array = {}
-if custom_id:
-    custom_array = check_python_customized_files(custom_id[1])
-
-if 'Config' not in custom_array:
-    from bin.src.classes.Config import Config as _Config
-else:
-    _Config = getattr(__import__(custom_array['Config']['path'] + '.' + custom_array['Config']['module'], fromlist=[custom_array['Config']['module']]), custom_array['Config']['module'])
-
-if 'Database' not in custom_array:
-    from bin.src.classes.Database import Database as _Database
-else:
-    _Database = getattr(__import__(custom_array['Database']['path'] + '.' + custom_array['Database']['module'], fromlist=[custom_array['Database']['module']]), custom_array['Database']['module'])
-
-if 'Log' not in custom_array:
-    from bin.src.classes.Log import Log as _Log
-else:
-    _Log = getattr(__import__(custom_array['Log']['path'] + '.' + custom_array['Log']['module'], fromlist=[custom_array['Log']['module']]), custom_array['Log']['module'])
+from flask.cli import with_appcontext
+from import_classes import _Config, _Database, _Log
 
 
 def init():

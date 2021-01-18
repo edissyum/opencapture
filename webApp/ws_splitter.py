@@ -11,17 +11,7 @@ from flask import current_app, Blueprint, flash, render_template, url_for, redir
 import worker_splitter_from_python
 from werkzeug.utils import secure_filename
 
-from .functions import get_custom_id, check_python_customized_files
-
-custom_id = get_custom_id()
-custom_array = {}
-if custom_id:
-    custom_array = check_python_customized_files(custom_id[1])
-
-if 'pdf' not in custom_array:
-    from . import pdf
-else:
-    pdf = getattr(__import__(custom_array['pdf']['path'], fromlist=[custom_array['pdf']['module']]), custom_array['pdf']['module'])
+from import_controllers import pdf
 
 bp = Blueprint('ws_splitter', __name__)
 

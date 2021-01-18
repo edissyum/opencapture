@@ -19,51 +19,11 @@ import os
 import uuid
 import shutil
 import datetime
-
-from webApp.functions import get_custom_id, check_python_customized_files
-
-custom_id = get_custom_id()
-custom_array = {}
-if custom_id:
-    custom_array = check_python_customized_files(custom_id[1])
-
-if 'FindDate' not in custom_array:
-    from .FindDate import FindDate
-else:
-    FindDate = getattr(__import__(custom_array['FindDate']['path'] + '.' + custom_array['FindDate']['module'], fromlist=[custom_array['FindDate']['module']]), custom_array['FindDate']['module'])
-
-if 'FindFooter' not in custom_array:
-    from .FindFooter import FindFooter
-else:
-    FindFooter = getattr(__import__(custom_array['FindFooter']['path'] + '.' + custom_array['FindFooter']['module'], fromlist=[custom_array['FindFooter']['module']]),
-                         custom_array['FindFooter']['module'])
-
-if 'FindSupplier' not in custom_array:
-    from .FindSupplier import FindSupplier
-else:
-    FindSupplier = getattr(__import__(custom_array['FindSupplier']['path'] + '.' + custom_array['FindSupplier']['module'], fromlist=[custom_array['FindSupplier']['module']]),
-                           custom_array['FindSupplier']['module'])
-
-if 'FindCustom' not in custom_array:
-    from .FindCustom import FindCustom
-else:
-    FindSupplier = getattr(__import__(custom_array['FindCustom']['path'] + '.' + custom_array['FindCustom']['module'], fromlist=[custom_array['FindCustom']['module']]),
-                           custom_array['FindCustom']['module'])
-
-if 'FindInvoiceNumber' not in custom_array:
-    from .FindInvoiceNumber import FindInvoiceNumber
-else:
-    FindInvoiceNumber = getattr(__import__(custom_array['FindInvoiceNumber']['path'] + '.' + custom_array['FindInvoiceNumber']['module'], fromlist=[custom_array['FindInvoiceNumber']['module']]),
-                                custom_array['FindInvoiceNumber']['module'])
-
-if 'Spreadsheet' not in custom_array:
-    from bin.src.classes.Spreadsheet import Spreadsheet as _Spreadsheet
-else:
-    _Spreadsheet = getattr(__import__(custom_array['Spreadsheet']['path'] + '.' + custom_array['Spreadsheet']['module'], fromlist=[custom_array['Spreadsheet']['module']]),
-                           custom_array['Spreadsheet']['module'])
+from import_process import FindDate, FindFooter, FindInvoiceNumber, FindSupplier, FindCustom, _Spreadsheet
 
 
-def insert(database, log, files, config, supplier, file, invoice_number, date, footer, nb_pages, full_jpg_filename, tiff_filename, status, custom_columns, original_file):
+def insert(database, log, files, config, supplier, file, invoice_number, date, footer, nb_pages, full_jpg_filename,
+           tiff_filename, status, custom_columns, original_file):
     if files.isTiff == 'True':
         try:
             filename = os.path.splitext(files.custom_fileName_tiff)

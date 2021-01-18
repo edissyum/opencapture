@@ -24,7 +24,7 @@ import uuid
 import PyPDF2
 import shutil
 from datetime import date
-from bin.src.classes.Files import Files
+from src.backend.classes.Files import Files
 
 
 def get_lot_name():

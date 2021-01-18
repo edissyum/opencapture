@@ -1,6 +1,6 @@
 from flask import Blueprint, make_response, jsonify, session, current_app
-from ..auth import token_required
-from .. import dashboard, pdf
+from ..controllers.auth import token_required
+from ..controllers import config, pdf
 
 
 bp = Blueprint('i18n', __name__, url_prefix='/ws/')
@@ -10,7 +10,7 @@ bp = Blueprint('i18n', __name__, url_prefix='/ws/')
 @token_required
 def change_language(lang):
     session['lang'] = lang
-    response = dashboard.change_locale_in_config(lang)
+    response = config.change_locale_in_config(lang)
 
     return jsonify(response, response[1])
 

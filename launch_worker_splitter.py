@@ -18,7 +18,7 @@
 import os
 import sys
 import argparse
-from bin.src.main_splitter import launch
+from src.backend.main_splitter import launch
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()

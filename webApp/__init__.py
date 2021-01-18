@@ -6,57 +6,11 @@ from flask_babel import Babel
 from flask import redirect, url_for, request, session
 from flask_multistatic import MultiStaticFlask
 
-from .functions import get_custom_id, check_python_customized_files
+from import_controllers import db
+from import_rest import auth, locale, config
 
+from webApp.functions import get_custom_id
 custom_id = get_custom_id()
-custom_array = {}
-if custom_id:
-    custom_array = check_python_customized_files(custom_id[1])
-
-if 'db' not in custom_array:
-    from . import db
-else:
-    db = getattr(__import__(custom_array['db']['path'], fromlist=[custom_array['db']['module']]), custom_array['db']['module'])
-
-if 'ws' not in custom_array:
-    from . import ws
-else:
-    ws = getattr(__import__(custom_array['ws']['path'], fromlist=[custom_array['ws']['module']]), custom_array['ws']['module'])
-
-if 'pdf' not in custom_array:
-    from . import pdf
-else:
-    pdf = getattr(__import__(custom_array['pdf']['path'], fromlist=[custom_array['pdf']['module']]), custom_array['pdf']['module'])
-
-if 'auth' not in custom_array:
-    from .rest import auth
-else:
-    auth = getattr(__import__(custom_array['auth']['path'], fromlist=[custom_array['auth']['module']]), custom_array['auth']['module'])
-
-if 'user' not in custom_array:
-    from .rest import user
-else:
-    user = getattr(__import__(custom_array['user']['path'], fromlist=[custom_array['user']['module']]), custom_array['user']['module'])
-
-if 'locale' not in custom_array:
-    from .rest import locale
-else:
-    locale = getattr(__import__(custom_array['locale']['path'], fromlist=[custom_array['locale']['module']]), custom_array['locale']['module'])
-
-if 'supplier' not in custom_array:
-    from . import supplier
-else:
-    supplier = getattr(__import__(custom_array['supplier']['path'], fromlist=[custom_array['supplier']['module']]), custom_array['supplier']['module'])
-
-if 'dashboard' not in custom_array:
-    from . import dashboard
-else:
-    dashboard = getattr(__import__(custom_array['dashboard']['path'], fromlist=[custom_array['dashboard']['module']]), custom_array['dashboard']['module'])
-
-if 'ws_splitter' not in custom_array:
-    from . import ws_splitter
-else:
-    ws_splitter = getattr(__import__(custom_array['ws_splitter']['path'], fromlist=[custom_array['ws_splitter']['module']]), custom_array['ws_splitter']['module'])
 
 
 def create_app(test_config=None):
@@ -86,21 +40,17 @@ def create_app(test_config=None):
         LANG_FILE=os.path.join(app.instance_path, 'lang.json'),
         UPLOAD_FOLDER=os.path.join(app.instance_path, 'upload/'),
         PER_PAGE=16,
-        BABEL_TRANSLATION_DIRECTORIES=os.path.join(app.static_folder[0], 'babel/translations/') if os.path.isdir(app.static_folder[0] + 'babel/translations') else os.path.join(app.static_folder[1],
-                                                                                                                                                                                'babel/translations/'),
+        BABEL_TRANSLATION_DIRECTORIES=os.path.join(app.static_folder[0], 'babel/translations/')
+        if os.path.isdir(app.static_folder[0] + 'babel/translations') else os.path.join(app.static_folder[1],
+                                                                                        'babel/translations/'),
     )
 
     langs = json.loads(open(app.config['LANG_FILE']).read())
     app.config['LANGUAGES'] = langs
 
-    app.register_blueprint(ws.bp)
-    app.register_blueprint(pdf.bp)
     app.register_blueprint(auth.bp)
-    app.register_blueprint(user.bp)
     app.register_blueprint(locale.bp)
-    app.register_blueprint(supplier.bp)
-    app.register_blueprint(dashboard.bp)
-    app.register_blueprint(ws_splitter.bp)
+    app.register_blueprint(config.bp)
     app.add_url_rule('/', endpoint='index')
 
     # Add custom templates location

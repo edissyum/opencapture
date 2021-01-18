@@ -1,5 +1,5 @@
 import os
-from bin.src.classes.Config import Config as _Config
+from src.backend.classes.Config import Config as _Config
 
 
 def get_custom_id():

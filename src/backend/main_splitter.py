@@ -20,64 +20,13 @@ import time
 import tempfile
 
 # useful to use the worker and avoid ModuleNotFoundError
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+# sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from kuyruk import Kuyruk
 from kuyruk_manager import Manager
-from webApp.functions import get_custom_id, check_python_customized_files
 from .main import timer, check_file
-
-custom_id = get_custom_id()
-custom_array = {}
-if custom_id:
-    custom_array = check_python_customized_files(custom_id[1])
-
-if 'Config' not in custom_array:
-    from bin.src.classes.Config import Config as _Config
-else:
-    _Config = getattr(__import__(custom_array['Config']['path'] + '.' + custom_array['Config']['module'], fromlist=[custom_array['Config']['module']]), custom_array['Config']['module'])
-
-if 'Log' not in custom_array:
-    from bin.src.classes.Log import Log as _Log
-else:
-    _Log = getattr(__import__(custom_array['Log']['path'] + '.' + custom_array['Log']['module'], fromlist=[custom_array['Log']['module']]), custom_array['Log']['module'])
-
-if 'Files' not in custom_array:
-    from bin.src.classes.Files import Files as _Files
-else:
-    _Files = getattr(__import__(custom_array['Files']['path'] + '.' + custom_array['Files']['module'], fromlist=[custom_array['Files']['module']]), custom_array['Files']['module'])
-
-if 'Xml' not in custom_array:
-    from bin.src.classes.Xml import Xml as _Xml
-else:
-    _Xml = getattr(__import__(custom_array['Xml']['path'] + '.' + custom_array['Xml']['module'], fromlist=[custom_array['Xml']['module']]), custom_array['Xml']['module'])
-
-if 'Locale' not in custom_array:
-    from bin.src.classes.Locale import Locale as _Locale
-else:
-    _Locale = getattr(__import__(custom_array['Locale']['path'] + '.' + custom_array['Locale']['module'], fromlist=[custom_array['Locale']['module']]), custom_array['Locale']['module'])
-
-if 'PyTesseract' not in custom_array:
-    from bin.src.classes.PyTesseract import PyTesseract as _PyTesseract
-else:
-    _PyTesseract = getattr(__import__(custom_array['PyTesseract']['path'] + '.' + custom_array['PyTesseract']['module'], fromlist=[custom_array['PyTesseract']['module']]),
-                           custom_array['PyTesseract']['module'])
-
-if 'Database' not in custom_array:
-    from bin.src.classes.Database import Database as _Database
-else:
-    _Database = getattr(__import__(custom_array['Database']['path'] + '.' + custom_array['Database']['module'], fromlist=[custom_array['Database']['module']]), custom_array['Database']['module'])
-
-if 'Splitter' not in custom_array:
-    from bin.src.classes.Splitter import Splitter as _Splitter
-else:
-    _Splitter = getattr(__import__(custom_array['Splitter']['path'] + '.' + custom_array['Splitter']['module'], fromlist=[custom_array['Splitter']['module']]), custom_array['Splitter']['module'])
-
-if 'OCForInvoices_splitter' not in custom_array:
-    from bin.src.process import OCForInvoices_splitter
-else:
-    OCForInvoices_splitter = getattr(__import__(custom_array['OCForInvoices_splitter']['path'], fromlist=[custom_array['OCForInvoices_splitter']['module']]),
-                                     custom_array['OCForInvoices_splitter']['module'])
+from import_classes import _Database, _Splitter, _PyTesseract, _Locale, _Xml, _Files, _Log, _Config
+from import_process import OCForInvoices_splitter
 
 OCforInvoices = Kuyruk()
 
@@ -88,7 +37,7 @@ OCforInvoices.config.MANAGER_HTTP_PORT = 16503
 m = Manager(OCforInvoices)
 
 
-# If needed just run "kuyruk --app bin.src.main_splitter.OCforInvoices_Sep manager" to have web dashboard of current running worker
+# If needed just run "kuyruk --app src.backend.main_splitter.OCforInvoices_Sep manager" to have web dashboard of current running worker
 @OCforInvoices.task(queue='splitter')
 def launch(args):
     start = time.time()
