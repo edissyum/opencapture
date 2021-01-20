@@ -55,19 +55,12 @@ else:
     _Database = getattr(__import__(custom_array['Database']['path'] + '.' + custom_array['Database']['module'],
                                    fromlist=[custom_array['Database']['module']]), custom_array['Database']['module'])
 
-if 'OCForInvoices' not in custom_array:
-    from src.backend.process import OCForInvoices as OCForInvoices_process
-else:
-    OCForInvoices_process = getattr(__import__(custom_array['OCForInvoices']['path'],
-                                               fromlist=[custom_array['OCForInvoices']['module']]),
-                                    custom_array['OCForInvoices']['module'])
-
 if 'invoice_classification' not in custom_array:
     from src.backend.invoice_classification import invoice_classification
 else:
-    OCForInvoices_process = getattr(__import__(custom_array['invoice_classification']['path'],
-                                               fromlist=[custom_array['invoice_classification']['module']]),
-                                    custom_array['invoice_classification']['module'])
+    invoice_classification = getattr(__import__(custom_array['invoice_classification']['path'],
+                                                fromlist=[custom_array['invoice_classification']['module']]),
+                                     custom_array['invoice_classification']['module'])
 
 if 'Splitter' not in custom_array:
     from src.backend.classes.Splitter import Splitter as _Splitter

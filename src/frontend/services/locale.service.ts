@@ -38,7 +38,6 @@ export class LocaleService {
     getCurrentLocale() {
         this.http.get(API_URL + '/ws/i18n/getCurrentLang').pipe(
             tap((data: any) => {
-                console.log(data.lang)
                 this.currentLang = data.lang
                 this.translate.use(this.currentLang)
             }),

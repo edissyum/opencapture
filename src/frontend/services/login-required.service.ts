@@ -18,7 +18,6 @@ export class LoginRequiredService {
     }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-
         if (this.authService.getToken()) {
             return true;
         }

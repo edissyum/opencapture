@@ -18,16 +18,12 @@ import os
 import sys
 import time
 import tempfile
-
-# useful to use the worker and avoid ModuleNotFoundError
-# sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-
 from kuyruk import Kuyruk
 from kuyruk_manager import Manager
 from webApp.functions import recursive_delete
-from import_classes import _Database, _PyTesseract, _Locale, _Xml, _Files, _Log, _Config, \
-    OCForInvoices_process, invoice_classification, _WebServices
-
+from import_process import OCForInvoices_process
+from import_classes import _Database, _PyTesseract, _Locale, _Xml, _Files, _Log, _Config, invoice_classification, \
+    _WebServices
 
 OCforInvoices_worker = Kuyruk()
 

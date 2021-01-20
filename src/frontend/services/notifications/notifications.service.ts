@@ -60,7 +60,7 @@ export class NotificationService {
             if (err.error.errors !== undefined) {
                 this.error(err.error.errors + ' : ' + err.error.message, err.url);
                 if (err.status === 403 || err.status === 404) {
-                    this.router.navigate(['/home']);
+                    this.router.navigate(['/login']);
                 } else if (err.error.errors == this.translate.instant('ERROR.jwt_error')) {
                     this.router.navigate(['/logout']);
                 }

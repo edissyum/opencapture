@@ -48,6 +48,13 @@ else:
                                                 fromlist=[custom_array['OCForInvoices_splitter']['module']]),
                                      custom_array['OCForInvoices_splitter']['module'])
 
+if 'OCForInvoices' not in custom_array:
+    from src.backend.process import OCForInvoices as OCForInvoices_process
+else:
+    OCForInvoices_process = getattr(__import__(custom_array['OCForInvoices']['path'],
+                                               fromlist=[custom_array['OCForInvoices']['module']]),
+                                    custom_array['OCForInvoices']['module'])
+
 if 'Spreadsheet' not in custom_array:
     from src.backend.classes.Spreadsheet import Spreadsheet as _Spreadsheet
 else:

@@ -22,11 +22,11 @@ msgid "CONNECTION_ERROR"
 msgstr ""
 
 #: webApp/auth.py:60 webApp/auth.py:117 webApp/auth.py:160
-msgid "USERNAME_REQUIRED"
+msgid "BAD_USERNAME"
 msgstr ""
 
 #: webApp/auth.py:62 webApp/auth.py:119 webApp/auth.py:162
-msgid "PASSWORD_REQUIRED"
+msgid "BAD_PASSWORD"
 msgstr ""
 
 #: webApp/auth.py:64 webApp/auth.py:164

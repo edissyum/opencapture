@@ -19,11 +19,11 @@ msgid "CONNECTION_ERROR"
 msgstr "Error while trying to connect to the GED"
 
 #: webApp/auth.py:60 webApp/auth.py:117 webApp/auth.py:160
-msgid "USERNAME_REQUIRED"
+msgid "BAD_USERNAME"
 msgstr "Bad login"
 
 #: webApp/auth.py:62 webApp/auth.py:119 webApp/auth.py:162
-msgid "PASSWORD_REQUIRED"
+msgid "BAD_PASSWORD"
 msgstr "Bad password"
 
 #: webApp/auth.py:64 webApp/auth.py:164

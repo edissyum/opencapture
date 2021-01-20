@@ -7,14 +7,15 @@ import {Router} from "@angular/router";
 })
 export class LoginRedirectService {
 
-  constructor(private authService: AuthService, private router: Router) {}
-  canActivate(): boolean {
-    if (this.authService.getToken()) {
-      this.router.navigateByUrl('/home');
-      return false;
+    constructor(private authService: AuthService, private router: Router) {
     }
-    else {
-      return true;
+
+    canActivate(): boolean {
+        if (this.authService.getToken()) {
+            this.router.navigateByUrl('/home');
+            return false;
+        } else {
+            return true;
+        }
     }
-  }
 }

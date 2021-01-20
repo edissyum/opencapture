@@ -34,4 +34,3 @@ if 'ws_splitter' not in custom_array:
     from webApp import ws_splitter
 else:
     ws_splitter = getattr(__import__(custom_array['ws_splitter']['path'], fromlist=[custom_array['ws_splitter']['module']]), custom_array['ws_splitter']['module'])
-
