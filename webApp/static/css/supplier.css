@@ -1,0 +1,37 @@
+#bnt-show-add-modal {
+    float: right;
+    margin: 10px 5px 15px 0px;
+}
+
+#bnt-export-supplier{
+    margin: 10px 15px 15px 5px;
+    float: right;
+}
+
+#search-input{
+    margin: 10px 15px 15px 15px;
+    float: left;
+}
+#search-input > button{
+    color: white;
+    background-color: #76B442;
+    border: none;
+}
+
+.btn-supplier-edit, .supplier-delete {
+    cursor: pointer;
+}
+
+#company-type{
+    margin-bottom: 10px;
+    width: 220px;
+}
+
+.input-shadow{
+    border-color: #A7A8AA;
+    transition: all 1s ease;
+    -o-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    -webkit-transition: all 1s ease;
+    box-shadow: 0 0 0 0 rgba(151, 191, 61, 0.8);
+}

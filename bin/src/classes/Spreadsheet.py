@@ -50,6 +50,33 @@ class Spreadsheet:
                     line.append(typo)
         save_data(self.referencialSuppplierSpreadsheet, content_sheet)
 
+    def update_supplier_ods_sheet(self, _db):
+        content_sheet = get_data(self.referencialSuppplierSpreadsheet)
+
+        res = _db.select({
+            'select': ['*'],
+            'table': ['suppliers'],
+            'where': ['status = ?'],
+            'data': ['ACTIVE'],
+        })
+        try:
+            content_sheet['Fournisseur'] = content_sheet['Fournisseur'][:1]
+            for supplier in res:
+                line = [supplier['name'] if supplier['name'] is not None else '',
+                        supplier['vat_number'] if supplier['vat_number'] is not None else '',
+                        supplier['siret'] if supplier['siret'] is not None else '',
+                        supplier['siren'] if supplier['siren'] is not None else '',
+                        supplier['adress1'] if supplier['adress1'] is not None else '',
+                        supplier['adress2'] if supplier['adress2'] is not None else '',
+                        supplier['postal_code'] if supplier['postal_code'] is not None else '',
+                        supplier['city'] if supplier['city'] is not None else '',
+                        supplier['typology'] if supplier['typology'] is not None else '']
+                content_sheet['Fournisseur'].append(line)
+        except IndexError:
+            self.Log.error("IndexError while updating ods reference file.")
+
+        save_data(self.referencialSuppplierSpreadsheet, content_sheet)
+
     def write_typo_excel_sheet(self, vat_number, typo):
         content_sheet = pd.read_excel(self.referencialSuppplierSpreadsheet)
         sheet_name = pd.ExcelFile(self.referencialSuppplierSpreadsheet).sheet_names
@@ -92,32 +119,40 @@ class Spreadsheet:
 
     def construct_supplier_array(self, content_sheet):
         # Create the first index of array, with provider number (taxe number)
-        tmp_provider_number = pd.DataFrame(content_sheet, columns=[self.referencialSupplierArray['VATNumber']]).drop_duplicates()
+        tmp_provider_number = pd.DataFrame(content_sheet,
+                                           columns=[self.referencialSupplierArray['VATNumber']]).drop_duplicates()
         for value in tmp_provider_number.to_dict(orient='records'):
             self.referencialSupplierData[value[self.referencialSupplierArray['VATNumber']]] = []
 
         # Then go through the Excel document and fill our final array with all infos about the provider and the bill
         tmp_excel_content = pd.DataFrame(content_sheet)
         for line in tmp_excel_content.to_dict(orient='records'):
-            if line[self.referencialSupplierArray['typology']] == line[self.referencialSupplierArray['typology']] and line[self.referencialSupplierArray['typology']]:
+            if line[self.referencialSupplierArray['typology']] == line[self.referencialSupplierArray['typology']] and \
+                    line[self.referencialSupplierArray['typology']]:
                 try:
-                    line[self.referencialSupplierArray['typology']] = int(line[self.referencialSupplierArray['typology']])
+                    line[self.referencialSupplierArray['typology']] = int(
+                        line[self.referencialSupplierArray['typology']])
                 except ValueError:
                     line[self.referencialSupplierArray['typology']] = line[self.referencialSupplierArray['typology']]
 
-            if line[self.referencialSupplierArray['SIRET']] == line[self.referencialSupplierArray['SIRET']] and line[self.referencialSupplierArray['SIRET']]:
+            if line[self.referencialSupplierArray['SIRET']] == line[self.referencialSupplierArray['SIRET']] and line[
+                self.referencialSupplierArray['SIRET']]:
                 try:
                     line[self.referencialSupplierArray['SIRET']] = int(line[self.referencialSupplierArray['SIRET']])
                 except ValueError:
                     line[self.referencialSupplierArray['SIRET']] = line[self.referencialSupplierArray['SIRET']]
 
-            if line[self.referencialSupplierArray['SIREN']] == line[self.referencialSupplierArray['SIREN']] and line[self.referencialSupplierArray['SIREN']]:
+            if line[self.referencialSupplierArray['SIREN']] == line[self.referencialSupplierArray['SIREN']] and line[
+                self.referencialSupplierArray['SIREN']]:
                 try:
                     line[self.referencialSupplierArray['SIREN']] = int(line[self.referencialSupplierArray['SIREN']])
                 except ValueError:
                     line[self.referencialSupplierArray['SIREN']] = line[self.referencialSupplierArray['SIREN']]
 
-            if line[self.referencialSupplierArray['adressPostalCode']] == line[self.referencialSupplierArray['adressPostalCode']] and line[self.referencialSupplierArray['adressPostalCode']]:
+            if line[self.referencialSupplierArray['adressPostalCode']] == line[
+                self.referencialSupplierArray['adressPostalCode']] and line[
+                self.referencialSupplierArray['adressPostalCode']]:
                 if len(str(line[self.referencialSupplierArray['adressPostalCode']])) == 4:
-                    line[self.referencialSupplierArray['adressPostalCode']] = '0' + str(line[self.referencialSupplierArray['adressPostalCode']])
+                    line[self.referencialSupplierArray['adressPostalCode']] = '0' + str(
+                        line[self.referencialSupplierArray['adressPostalCode']])
             self.referencialSupplierData[line[self.referencialSupplierArray['VATNumber']]].append(line)

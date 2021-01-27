@@ -41,7 +41,7 @@ class SupplierForm(Form):
         column='adress1',
         use_ratio=True,
         render_kw={
-            'readonly': True
+            'readonly': False
         }
     )
     postal_code = CustomStringField(
@@ -53,7 +53,7 @@ class SupplierForm(Form):
         form_group_class='col-md-6',
         use_ratio=True,
         render_kw={
-            'readonly': True
+            'readonly': False
         }
     )
     city = CustomStringField(
@@ -65,7 +65,7 @@ class SupplierForm(Form):
         form_group_class='col-md-6',
         use_ratio=True,
         render_kw={
-            'readonly': True
+            'readonly': False
         }
     )
     vat_number = CustomStringField(
@@ -75,7 +75,7 @@ class SupplierForm(Form):
         column='vat_number',
         is_position=True,
         render_kw={
-            'readonly': True,
+            'readonly': False,
             'onkeyup': "checkVAT();",
             'x1_original': '',
             'y1_original': '',
@@ -93,7 +93,7 @@ class SupplierForm(Form):
         form_group_class='col-md-6',
         is_position=True,
         render_kw={
-            'readonly': True,
+            'readonly': False,
         }
     )
     siren_number = CustomStringField(
@@ -105,7 +105,7 @@ class SupplierForm(Form):
         form_group_class='col-md-6',
         is_position=True,
         render_kw={
-            'readonly': True,
+            'readonly': False,
         }
     )
 

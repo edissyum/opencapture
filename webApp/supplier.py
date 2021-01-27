@@ -1,8 +1,10 @@
 from flask_babel import gettext
 from webApp.auth import admin_login_required
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request
 from flask_paginate import Pagination, get_page_args
 from webApp.functions import get_custom_id, check_python_customized_files
+from webApp import forms
+from .pdf import populate_form
 
 custom_id = get_custom_id()
 custom_array = {}
@@ -22,21 +24,36 @@ bp = Blueprint('supplier', __name__, url_prefix='/supplier')
 def supplier_list():
     _vars = pdf.init()
     _db = _vars[0]
+    data = request.args
 
     page, per_page, offset = get_page_args(page_parameter='page',
                                            per_page_parameter='per_page')
+    query_where = ['status= ?']
+    query_data = ['ACTIVE']
+
+    search = data.get('search')
+    if search is not None:
+        query_where.append('name LIKE ?')
+        query_data.append('%' + search + '%')
 
     total = _db.select({
         'select': ['count(*) as total'],
         'table': ['suppliers'],
+        'where': query_where,
+        'data': query_data,
     })[0]['total']
 
     list_supplier = _db.select({
         'select': ['*'],
         'table': ['suppliers'],
+        'where': query_where,
+        'data': query_data,
         'limit': str(per_page),
         'offset': str(offset)
     })
+
+    # Generate form using WTFORM
+    supplier_form = forms.SupplierForm(request.form)
 
     result = [dict(supplier) for supplier in list_supplier]
 
@@ -49,6 +66,7 @@ def supplier_list():
 
     return render_template('templates/suppliers/suppliers_list.html',
                            suppliers=result,
+                           supplier_form=supplier_form,
                            page=page,
                            per_page=per_page,
                            pagination=pagination)
