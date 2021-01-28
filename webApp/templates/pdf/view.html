@@ -80,7 +80,7 @@
                         </span>
                         <div class="supplier_info toggled">
                            <div id="hiddenInputs">
-                                <input type="hidden" id="supplier_id">
+                                <input type="hidden" id="supplier_id" value="{% if pdf['id_supplier'] != None %}{{ pdf['id_supplier'] }}{% endif %}">
                             </div>
                             <!-- Retrieve supplier form from forms.py SupplierForm class -->
                             {% for field in supplier_form %}

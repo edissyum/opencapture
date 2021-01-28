@@ -110,15 +110,16 @@ def insert(database, log, files, config, supplier, file, invoice_number, date, f
     }
 
     # Add supplier id to invoice
-    res = database.select({
-        'select': ['id'],
-        'table': ['suppliers'],
-        'where': ['vat_number = ?'],
-        'data': [columns['vat_number']],
-    })
-    if res:
-        if len(res) > 0:
-            columns['id_supplier'] = str(res[0]['id'])
+    if columns['vat_number'] != '':
+        res = database.select({
+            'select': ['id'],
+            'table': ['suppliers'],
+            'where': ['vat_number = ?'],
+            'data': [columns['vat_number']],
+        })
+        if res:
+            if len(res) > 0:
+                columns['id_supplier'] = str(res[0]['id'])
 
     if custom_columns:
         columns.update(custom_columns)
