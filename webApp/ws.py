@@ -305,7 +305,6 @@ def get_reference_file():
     _vars = pdf.init()
     _cfg = _vars[1]
     file_path = _cfg.cfg['REFERENCIAL']['referencialsupplierdocumentpath']
-    print(file_path)
     return send_file(file_path, as_attachment=True, cache_timeout=0)
 
 @bp.route('/ws/supplier/retrieve', methods=['GET'])

@@ -298,9 +298,14 @@ $(document).ready(function() {
         let buttonEditSupplier = $('#edit_supplier');
 
         let supplierId = $('#supplier_id');
+
         if(supplierId.val() !== ''){
             buttonAddSupplier.hide();
             buttonEditSupplier.show();
+        }
+        else {
+            buttonAddSupplier.show();
+            buttonEditSupplier.hide();
         }
 
         loaded = true;

@@ -78,7 +78,6 @@ function addSupplier() {
     if(inputCompanyType !== undefined && inputCompanyType.val()){
         companyType = inputCompanyType.children(":selected").attr("id");
     }
-    console.log("companyType :  " + typeof inputCompanyType);
     fetch('/ws/supplier/add', {
         method : 'POST',
         headers : {
@@ -130,7 +129,6 @@ function editSupplier() {
     if(inputCompanyType !== undefined && inputCompanyType.val()){
         companyType = inputCompanyType.children(":selected").attr("id");
     }
-    console.log("companyType" + inputCompanyType)
     fetch('/ws/supplier/edit', {
         method : 'POST',
         headers : {
@@ -197,7 +195,6 @@ function openSupplierEditModal(event){
     })
         .then(response => response.json())
         .then(function(response) {
-            console.log(response.suppliers);
             if (response.suppliers.length > 0){
                 let supplier = JSON.parse(response.suppliers[0].data)[0];
                 $('#name').val(supplier.name);
