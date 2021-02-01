@@ -39,6 +39,7 @@ class Spreadsheet:
             self.referencialSupplierArray['adressTown'] = fp['adressTown']
             self.referencialSupplierArray['adressPostalCode'] = fp['adressPostalCode']
             self.referencialSupplierArray['typology'] = fp['typology']
+            self.referencialSupplierArray['companyType'] = fp['companyType']
 
     def write_typo_ods_sheet(self, vat_number, typo):
         content_sheet = get_data(self.referencialSuppplierSpreadsheet)
@@ -70,7 +71,8 @@ class Spreadsheet:
                         supplier['adress2'] if supplier['adress2'] is not None else '',
                         supplier['postal_code'] if supplier['postal_code'] is not None else '',
                         supplier['city'] if supplier['city'] is not None else '',
-                        supplier['typology'] if supplier['typology'] is not None else '']
+                        supplier['typology'] if supplier['typology'] is not None else '',
+                        supplier['company_type'] if supplier['company_type'] is not None else '']
                 content_sheet['Fournisseur'].append(line)
         except IndexError:
             self.Log.error("IndexError while updating ods reference file.")
@@ -108,7 +110,8 @@ class Spreadsheet:
             self.referencialSupplierArray['adress2'],
             self.referencialSupplierArray['adressPostalCode'],
             self.referencialSupplierArray['adressTown'],
-            self.referencialSupplierArray['typology']
+            self.referencialSupplierArray['typology'],
+            self.referencialSupplierArray['companyType']
         ])
         # Drop row 0 because it contains the indexes columns
         content_sheet = content_sheet.drop(0)
