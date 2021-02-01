@@ -53,103 +53,81 @@
                 </thead>
                 <tbody>
                     {% for supplier in suppliers %}
-                        <tr id="{{ supplier['id'] }}">
+                        <tr id="{{ supplier['id'] }}" class="btn-supplier-edit">
                             <td class="btn-supplier-edit">
-                                <a data-toggle="modal" data-target="#supplier-modal">
-                                    {{ supplier['id'] }}
-                                </a>
+                                {{ supplier['id'] }}
                             </td>
                             <td class="btn-supplier-edit">
-                                <a data-toggle="modal" data-target="#supplier-modal">
                                     {{ supplier['vat_number'] }}
-                                </a>
                             </td>
                             <td>
-                                <a class="btn-supplier-edit">
-                                    {{ supplier['name'] }}
-                                </a>
+                                {{ supplier['name'] }}
                             </td>
                             <td>
-                                <a class="btn-supplier-edit">
-                                    {% if supplier['siret'] == 'nan' %}
-                                        N/A
-                                    {% else %}
-                                        {{ supplier['siret'] }}
-                                    {% endif %}
-                                </a>
+                                {% if supplier['siret'] == 'nan' %}
+                                    N/A
+                                {% else %}
+                                    {{ supplier['siret'] }}
+                                {% endif %}
                             </td>
                             <td>
-                                <a class="btn-supplier-edit">
-                                    {% if supplier['siren'] == 'nan' %}
-                                        N/A
-                                    {% else %}
-                                        {{ supplier['siren'] }}
-                                    {% endif %}
-                                </a>
+                                {% if supplier['siren'] == 'nan' %}
+                                    N/A
+                                {% else %}
+                                    {{ supplier['siren'] }}
+                                {% endif %}
                             </td>
                             <td>
-                                <a class="btn-supplier-edit">
-                                    {% if supplier['adress1'] == 'nan' %}
-                                        N/A
-                                    {% else %}
-                                        {{ supplier['adress1'] }}
-                                    {% endif %}
-                                </a>
+                                {% if supplier['adress1'] == 'nan' %}
+                                    N/A
+                                {% else %}
+                                    {{ supplier['adress1'] }}
+                                {% endif %}
                             </td>
                             <td>
-                                <a class="btn-supplier-edit">
-                                    {% if supplier['adress2'] == 'nan' %}
-                                        N/A
-                                    {% else %}
-                                        {{ supplier['adress2'] }}
-                                    {% endif %}
-                                </a>
+                                {% if supplier['adress2'] == 'nan' %}
+                                    N/A
+                                {% else %}
+                                    {{ supplier['adress2'] }}
+                                {% endif %}
                             </td>
                             <td>
-                                <a class="btn-supplier-edit">
-                                    {% if supplier['postal_code'] == 'nan' %}
-                                        N/A
-                                    {% else %}
-                                        {{ supplier['postal_code'] }}
-                                    {% endif %}
-                                </a>
+                                {% if supplier['postal_code'] == 'nan' %}
+                                    N/A
+                                {% else %}
+                                    {{ supplier['postal_code'] }}
+                                {% endif %}
                             </td>
                             <td>
-                                <a class="btn-supplier-edit">
-                                    {% if supplier['city'] == 'nan' %}
-                                        N/A
-                                    {% else %}
-                                        {{ supplier['city'] }}
-                                    {% endif %}
-                                </a>
+                                {% if supplier['city'] == 'nan' %}
+                                    N/A
+                                {% else %}
+                                    {{ supplier['city'] }}
+                                {% endif %}
                             </td>
                             <td>
-                                <a class="btn-supplier-edit">
-                                    {% if supplier['typology'] == 'nan' %}
-                                        N/A
-                                    {% else %}
-                                        {{ supplier['typology'] }}
-                                    {% endif %}
-                                </a>
+                                {% if supplier['typology'] == 'nan' %}
+                                    N/A
+                                {% else %}
+                                    {{ supplier['typology'] }}
+                                {% endif %}
                             </td>
                             <td>
-                                <a class="btn-supplier-edit">
-                                    {% if supplier['company_type'] == 'nan' %}
-                                        N/A
-                                    {% elif supplier['company_type'] == 'supplier' %}
-                                        {{ gettext('SUPPLIER') }}
-                                    {% elif supplier['company_type'] == 'client' %}
-                                        {{ gettext('CLIENT') }}
-                                    {% endif %}
-                                </a>
+                                {% if supplier['company_type'] == 'nan' %}
+                                    N/A
+                                {% elif supplier['company_type'] == 'supplier' %}
+                                    {{ gettext('SUPPLIER') }}
+                                {% elif supplier['company_type'] == 'client' %}
+                                    {{ gettext('CLIENT') }}
+                                {% endif %}
                             </td>
                             <td class="actions">
-                                    <a class="btn-supplier-edit" data-toggle="tooltip" title="{{ gettext('EDIT') }}">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <a class="ml-2 supplier-delete" data-toggle="tooltip" title="{{ gettext('DELETE') }}">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
+                                <a class="btn-supplier-edit" data-toggle="tooltip" title="{{ gettext('EDIT') }}">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a class="ml-2 supplier-delete" data-toggle="tooltip" title="{{ gettext('DELETE') }}">
+                                    <i class="fas fa-trash"></i>
+                                </a>
                             </td>
                         </tr>
 

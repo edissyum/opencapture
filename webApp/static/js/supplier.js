@@ -1,21 +1,13 @@
 $(document).ready(() => {
-    $('.btn-supplier-edit').click((event)=>{
+    $('.btn-supplier-edit').off('click').on('click', function (event) {
         openSupplierEditModal(event);
     });
-
-    $(".supplier-delete").off('click').on('click', function (e) {
+    
+    $(".supplier-delete").off('click').on('click', function (event) {
         if (confirm(gt.gettext('_CONFIRM_DELETE_SUPPLIER'))) {
-            deleteSupplier(e);
+            deleteSupplier(event);
         }
-        e.stopPropagation();
-        e.preventDefault();
-    });
-
-    $("#search-input").on("keyup", function() {
-        let value = $(this).val().toLowerCase();
-        $("#supplier-table tbody tr").filter(function() {
-          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-        });
+        event.stopPropagation();
     });
 });
 
