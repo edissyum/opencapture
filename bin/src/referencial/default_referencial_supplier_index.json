@@ -7,5 +7,6 @@
   "adress2"           : "Adresse 2",
   "adressTown"        : "VILLE",
   "adressPostalCode"  : "CP",
-  "typology"          : "Typologie"
+  "typology"          : "Typologie",
+  "companyType"       : "Type"
 }
