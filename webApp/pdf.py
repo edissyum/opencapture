@@ -235,7 +235,7 @@ def index(status, time):
                             page=page,
                             total=total,
                             display_msg=msg)
-    print(return_pdf)
+
     return render_template('templates/pdf/list.html',
                            pdfs=return_pdf,
                            status_list=status_list,
