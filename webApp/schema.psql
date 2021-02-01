@@ -41,8 +41,8 @@ CREATE TABLE if NOT EXISTS suppliers(
     supplier_page              VARCHAR,
     invoice_number_page        VARCHAR,
     invoice_date_page          VARCHAR,
-    company_type               VARCHAR,
-    status                     VARCHAR default 'ACTIVE'
+    company_type               VARCHAR DEFAULT 'supplier',
+    status                     VARCHAR DEFAULT 'ACTIVE'
 );
 
 CREATE TABLE if NOT EXISTS invoices(
