@@ -1328,48 +1328,48 @@ msgstr "Changer de rôle"
 msgid "NO_RIGHTS"
 msgstr "Vous n'avez pas les droits pour effectuer cette action"
 
-#~ msgid "Supplier"
-#~ msgstr "Fornisseur"
+msgid "Supplier"
+msgstr "Fornisseur"
 
-#~ msgid "NEW_LONG"
-#~ msgstr "À valider"
+msgid "NEW_LONG"
+msgstr "À valider"
 
-#~ msgid "WAIT_SUP_LONG"
-#~ msgstr "En attente validation fournisseur"
+msgid "WAIT_SUP_LONG"
+msgstr "En attente validation fournisseur"
 
-#~ msgid "ERR_LONG"
-#~ msgstr "Erreur lors de la qualification"
+msgid "ERR_LONG"
+msgstr "Erreur lors de la qualification"
 
-#~ msgid "NEW"
-#~ msgstr "À valider"
+msgid "NEW"
+msgstr "À valider"
 
-#~ msgid "WAIT_SUP"
-#~ msgstr "En attente"
+msgid "WAIT_SUP"
+msgstr "En attente"
 
-#~ msgid "ERR"
-#~ msgstr "Erreur"
+msgid "ERR"
+msgstr "Erreur"
 
-#~ msgid "ERR_GED"
-#~ msgstr "Erreur GED"
+msgid "ERR_GED"
+msgstr "Erreur GED"
 
-#~ msgid "ERR_GED_LONG"
-#~ msgstr "Erreur lors de l'insertion en GED"
+msgid "ERR_GED_LONG"
+msgstr "Erreur lors de l'insertion en GED"
 
-#~ msgid "END"
-#~ msgstr "Cloturée"
+msgid "END"
+msgstr "Cloturée"
 
-#~ msgid "CANCEL_UPLOAD"
-#~ msgstr "Annuler"
+msgid "CANCEL_UPLOAD"
+msgstr "Annuler"
 
-#~ msgid "SELECT_OR_DROP_DOC"
-#~ msgstr "Selectionner ou faites glisser un document"
+msgid "SELECT_OR_DROP_DOC"
+msgstr "Selectionner ou faites glisser un document"
 
-#~ msgid "FORMAT_NOT_ALLOWED"
-#~ msgstr "Format non autorisé"
+msgid "FORMAT_NOT_ALLOWED"
+msgstr "Format non autorisé"
 
-#~ msgid "FILE_UPLOAD_ERROR"
-#~ msgstr "Erreurs lors du téléchargement du/des fichier(s)"
+msgid "FILE_UPLOAD_ERROR"
+msgstr "Erreurs lors du téléchargement du/des fichier(s)"
 
-#~ msgid "CHOOSE_VAT_RATE"
-#~ msgstr "Selectionnez un taux de TVA"
+msgid "CHOOSE_VAT_RATE"
+msgstr "Selectionnez un taux de TVA"
 

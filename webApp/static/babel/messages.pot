@@ -1314,3 +1314,47 @@ msgstr ""
 msgid "NO_RIGHTS"
 msgstr ""
 
+msgid "NEW_LONG"
+msgstr ""
+
+msgid "WAIT_SUP_LONG"
+msgstr ""
+
+msgid "ERR_LONG"
+msgstr ""
+
+msgid "NEW"
+msgstr ""
+
+msgid "WAIT_SUP"
+msgstr ""
+
+msgid "ERR"
+msgstr ""
+
+msgid "ERR_GED"
+msgstr ""
+
+msgid "ERR_GED_LONG"
+msgstr ""
+
+msgid "END"
+msgstr ""
+
+msgid "CANCEL_UPLOAD"
+msgstr ""
+
+msgid "SELECT_OR_DROP_DOC"
+msgstr ""
+
+msgid "FORMAT_NOT_ALLOWED"
+msgstr ""
+
+msgid "FILE_UPLOAD_SUCCESS"
+msgstr ""
+
+msgid "FILE_UPLOAD_ERROR"
+msgstr ""
+
+msgid "CHOOSE_VAT_RATE"
+msgstr ""

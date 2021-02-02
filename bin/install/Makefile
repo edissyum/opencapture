@@ -5,6 +5,8 @@ if [ "$EUID" -ne 0 ]
   exit 1
 fi
 
+apt install -y lsb-release
+
 bold=$(tput bold)
 normal=$(tput sgr0)
 OS=$(lsb_release -si)
@@ -113,7 +115,7 @@ Description=Daemon for Open-Capture for Invoices
 Type=simple
 
 User=$user
-Group=$user
+Group=$group
 UMask=0022
 
 ExecStart=$defaultPath/bin/scripts/service_workerOC.sh
@@ -134,7 +136,7 @@ Description=Splitter Daemon for Open-Capture for Invoices
 Type=simple
 
 User=$user
-Group=$user
+Group=$group
 UMask=0022
 
 ExecStart=$defaultPath/bin/scripts/service_workerOC_splitter.sh
