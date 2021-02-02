@@ -1322,9 +1322,6 @@ msgstr "Change role"
 msgid "NO_RIGHTS"
 msgstr "You do not have the right to perform this action"
 
-msgid "Supplier"
-msgstr "Supplier"
-
 msgid "NEW_LONG"
 msgstr "To validate"
 
@@ -1366,4 +1363,7 @@ msgstr "Error while uploading file(s)"
 
 msgid "CHOOSE_VAT_RATE"
 msgstr "Choose VAT rate"
+
+msgid "Supplier"
+msgstr "Supplier"
 
