@@ -5,6 +5,8 @@ if [ "$EUID" -ne 0 ]
   exit 1
 fi
 
+apt install -y lsb-release
+
 bold=$(tput bold)
 normal=$(tput sgr0)
 OS=$(lsb_release -si)
