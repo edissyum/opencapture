@@ -94,7 +94,7 @@ def insert(database, log, files, config, supplier, file, invoice_number, date, f
         'invoice_number_position': str(invoice_number[1]) if invoice_number and invoice_number[1] else '',
         'invoice_number_page': str(invoice_number[2]) if invoice_number and invoice_number[2] else '1',
         'total_ttc': str(footer[1][0]) if footer and footer[1] else '',
-        'total_ttc_position': str(footer[1][1]) if footer and footer[1] else '',
+        'total_ttc_position': str(footer[1][1]) if footer and footer[1] and len(footer[1]) > 1 else '',
         'no_taxes_1': str(footer[0][0]) if footer and footer[0] else '',
         'no_taxes_1_position': str(footer[0][1]) if footer and footer[0] else '',
         'vat_1': str(footer[2][0]) if footer and footer[2] else '',
