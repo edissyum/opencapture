@@ -8,17 +8,48 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-01-27 12:55+0100\n"
+"POT-Creation-Date: 2021-02-02 10:28+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.9.0\n"
+"Generated-By: Babel 2.8.0\n"
 
 #: bin/src/classes/WebServices.py:44
 msgid "CONNECTION_ERROR"
+msgstr ""
+
+#: custom/votre_custom/webApp/templates/auth/login.html:2
+#: custom/votre_custom/webApp/templates/auth/login.html:19
+#: webApp/templates/auth/login.html:2 webApp/templates/auth/login.html:8
+#: webApp/templates/auth/register.html:29
+msgid "LOG_IN"
+msgstr ""
+
+#: custom/votre_custom/webApp/templates/auth/login.html:21
+#: webApp/templates/auth/login.html:10 webApp/templates/auth/register.html:10
+#: webApp/templates/users/user_list.html:14
+msgid "USERNAME"
+msgstr ""
+
+#: custom/votre_custom/webApp/templates/auth/login.html:24
+#: webApp/templates/auth/login.html:13 webApp/templates/auth/register.html:13
+msgid "PASSWORD"
+msgstr ""
+
+#: custom/votre_custom/webApp/templates/auth/login.html:27
+#: webApp/templates/auth/login.html:16 webApp/templates/auth/register.html:23
+#: webApp/templates/splitter/view.html:42
+#: webApp/templates/splitter/view.html:89
+msgid "VALIDATE"
+msgstr ""
+
+#: custom/votre_custom/webApp/templates/auth/login.html:30
+#: webApp/templates/auth/login.html:19 webApp/templates/base.html:80
+#: webApp/templates/base_splitter.html:79
+msgid "SIGN_UP"
 msgstr ""
 
 #: webApp/auth.py:28 webApp/auth.py:71
@@ -49,30 +80,134 @@ msgstr ""
 msgid "USER_DISABLED"
 msgstr ""
 
-#: webApp/pdf.py:230 webApp/splitter.py:115 webApp/static/js/videoCodage.js:62
+#: webApp/forms.py:26
+msgid "NAME"
+msgstr ""
+
+#: webApp/forms.py:38 webApp/templates/suppliers/suppliers_list.html:45
+#: webApp/templates/suppliers/suppliers_list.html:46
+msgid "ADDRESS"
+msgstr ""
+
+#: webApp/forms.py:50
+msgid "ADDRESS_COMPLEMENT"
+msgstr ""
+
+#: webApp/forms.py:62 webApp/templates/suppliers/suppliers_list.html:47
+msgid "ZIP_CODE"
+msgstr ""
+
+#: webApp/forms.py:74 webApp/templates/suppliers/suppliers_list.html:48
+msgid "CITY"
+msgstr ""
+
+#: webApp/forms.py:86 webApp/templates/dashboard/index.html:677
+#: webApp/templates/suppliers/suppliers_list.html:41
+msgid "VAT_NUMBER"
+msgstr ""
+
+#: webApp/forms.py:102 webApp/templates/dashboard/index.html:752
+#: webApp/templates/suppliers/suppliers_list.html:43
+msgid "SIRET_NUMBER"
+msgstr ""
+
+#: webApp/forms.py:114 webApp/templates/dashboard/index.html:763
+#: webApp/templates/suppliers/suppliers_list.html:44
+msgid "SIREN_NUMBER"
+msgstr ""
+
+#: webApp/forms.py:132
+msgid "INVOICE_WITHOUT_ORDER"
+msgstr ""
+
+#: webApp/forms.py:139
+msgid "INVOICE_WITHOUT_DELIVERY_FORM"
+msgstr ""
+
+#: webApp/forms.py:147 webApp/static/js/videoCodage.js:641
+msgid "ORDER_NUMBER"
+msgstr ""
+
+#: webApp/forms.py:153 webApp/static/js/videoCodage.js:699
+msgid "DELIVERY_FORM_NUMBER"
+msgstr ""
+
+#: webApp/forms.py:159 webApp/templates/dashboard/index.html:691
+#: webApp/templates/pdf/list.html:96
+msgid "INVOICE_NUMBER"
+msgstr ""
+
+#: webApp/forms.py:177 webApp/templates/pdf/list.html:97
+msgid "INVOICE_DATE"
+msgstr ""
+
+#: webApp/forms.py:195 webApp/static/js/videoCodage.js:487
+#: webApp/templates/dashboard/index.html:799
+msgid "VAT_RATE"
+msgstr ""
+
+#: webApp/forms.py:215 webApp/forms.py:272 webApp/static/js/videoCodage.js:496
+#: webApp/static/js/videoCodage.js:594
+#: webApp/templates/dashboard/index.html:777
+msgid "NO_RATE_AMOUNT"
+msgstr ""
+
+#: webApp/forms.py:233 webApp/static/js/videoCodage.js:505
+msgid "LOAD_ACCOUNT"
+msgstr ""
+
+#: webApp/forms.py:244 webApp/pdf.py:584 webApp/static/js/videoCodage.js:507
+msgid "SELECT_LOAD_ACCOUNT"
+msgstr ""
+
+#: webApp/forms.py:248
+msgid "TOTAL_NO_RATE"
+msgstr ""
+
+#: webApp/forms.py:255 webApp/templates/dashboard/index.html:788
+msgid "TOTAL_TTC"
+msgstr ""
+
+#: webApp/forms.py:260 webApp/static/js/videoCodage.js:524
+msgid "VAT_AMOUNT"
+msgstr ""
+
+#: webApp/forms.py:281 webApp/static/js/videoCodage.js:600
+msgid "BUDGET"
+msgstr ""
+
+#: webApp/forms.py:285 webApp/static/js/videoCodage.js:602
+msgid "SELECT_STRUCTURE"
+msgstr ""
+
+#: webApp/forms.py:289 webApp/static/js/videoCodage.js:608
+msgid "OUTCOME"
+msgstr ""
+
+#: webApp/forms.py:294
+msgid "SELECT_OUTCOME"
+msgstr ""
+
+#: webApp/pdf.py:229 webApp/splitter.py:115 webApp/static/js/videoCodage.js:63
 msgid "NO_RESULTS"
 msgstr ""
 
-#: webApp/pdf.py:232 webApp/splitter.py:117 webApp/supplier.py:60
+#: webApp/pdf.py:231 webApp/splitter.py:117 webApp/supplier.py:60
 #: webApp/user.py:182
 msgid "SHOW"
 msgstr ""
 
-#: webApp/pdf.py:232 webApp/splitter.py:117 webApp/supplier.py:60
+#: webApp/pdf.py:231 webApp/splitter.py:117 webApp/supplier.py:60
 #: webApp/templates/pdf/view.html:19 webApp/user.py:182
 msgid "OF"
 msgstr ""
 
-#: webApp/pdf.py:526
+#: webApp/pdf.py:525
 msgid "END_LONG"
 msgstr ""
 
-#: webApp/pdf.py:528
+#: webApp/pdf.py:527
 msgid "ERROR_WHILE_INSERTING_IN_GED"
-msgstr ""
-
-#: webApp/pdf.py:585 webApp/static/js/videoCodage.js:498
-msgid "SELECT_LOAD_ACCOUNT"
 msgstr ""
 
 #: webApp/user.py:48 webApp/user.py:110 webApp/user.py:141
@@ -159,11 +294,11 @@ msgstr ""
 msgid "SUPPLIER_DELETED"
 msgstr ""
 
-#: webApp/ws.py:400
+#: webApp/ws.py:399
 msgid "INVOICE_DELETED"
 msgstr ""
 
-#: webApp/ws.py:465
+#: webApp/ws.py:464
 msgid "FILE_UPLOAD_SUCCESS"
 msgstr ""
 
@@ -197,144 +332,106 @@ msgstr ""
 msgid "_CONFIRM_DELETE_SUPPLIER"
 msgstr ""
 
-#: webApp/static/js/supplier.js:70
+#: webApp/static/js/supplier.js:62 webApp/static/js/supplier.js:113
 msgid "INVALID-INPUT"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:211
+#: webApp/static/js/videoCodage.js:213
 msgid "WAIT_OCR_END"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:317
+#: webApp/static/js/videoCodage.js:326
 msgid "SIRET_CONNECTION_ERROR"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:363
+#: webApp/static/js/videoCodage.js:372
 msgid "ERROR_WHILE_READING_CONFIGURATION_FILE"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:478
-#: webApp/templates/dashboard/index.html:799
-msgid "VAT_RATE"
-msgstr ""
-
-#: webApp/static/js/videoCodage.js:487 webApp/static/js/videoCodage.js:585
-#: webApp/templates/dashboard/index.html:777
-msgid "NO_RATE_AMOUNT"
-msgstr ""
-
-#: webApp/static/js/videoCodage.js:496
-msgid "LOAD_ACCOUNT"
-msgstr ""
-
-#: webApp/static/js/videoCodage.js:515
-msgid "VAT_AMOUNT"
-msgstr ""
-
-#: webApp/static/js/videoCodage.js:591
-msgid "BUDGET"
-msgstr ""
-
-#: webApp/static/js/videoCodage.js:593
-msgid "SELECT_STRUCTURE"
-msgstr ""
-
-#: webApp/static/js/videoCodage.js:599
-msgid "OUTCOME"
-msgstr ""
-
-#: webApp/static/js/videoCodage.js:601
+#: webApp/static/js/videoCodage.js:610
 msgid "SELECT_BUDGET"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:632
-msgid "ORDER_NUMBER"
-msgstr ""
-
-#: webApp/static/js/videoCodage.js:673
+#: webApp/static/js/videoCodage.js:682
 msgid "ADD_ORDER_NUMBER"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:690
-msgid "DELIVERY_FORM_NUMBER"
-msgstr ""
-
-#: webApp/static/js/videoCodage.js:719
+#: webApp/static/js/videoCodage.js:728
 msgid "ADD_DELIVERY_FORM_NUMBER"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:843 webApp/static/js/videoCodage.js:856
-#: webApp/static/js/videoCodage.js:890 webApp/static/js/videoCodage.js:895
-#: webApp/static/js/videoCodage.js:923
+#: webApp/static/js/videoCodage.js:852 webApp/static/js/videoCodage.js:865
+#: webApp/static/js/videoCodage.js:899 webApp/static/js/videoCodage.js:904
+#: webApp/static/js/videoCodage.js:932
 msgid "ERROR_OCCURED"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:856
+#: webApp/static/js/videoCodage.js:865
 msgid "WRONG_SIRET_FORMAT"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:895
+#: webApp/static/js/videoCodage.js:904
 msgid "WRONG_SIREN_FORMAT"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:978
+#: webApp/static/js/videoCodage.js:987
 msgid "BAN_API_ERROR"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:999
+#: webApp/static/js/videoCodage.js:1008
 msgid "REFUSE_CONFIRMATION"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1003 webApp/static/js/videoCodage.js:1079
-#: webApp/static/js/videoCodage.js:1091
+#: webApp/static/js/videoCodage.js:1012 webApp/static/js/videoCodage.js:1088
+#: webApp/static/js/videoCodage.js:1100
 msgid "YES"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1041
+#: webApp/static/js/videoCodage.js:1050
 msgid "FORM_ERROR_OR_EMPTY_FIELD"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1045
+#: webApp/static/js/videoCodage.js:1054
 msgid "INCORRECT_BAN_ADDRESS"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1046
+#: webApp/static/js/videoCodage.js:1055
 msgid "PUT_FORM_TO_SUPPLIER_WAIT"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1050
+#: webApp/static/js/videoCodage.js:1059
 msgid "PUT_ON_HOLD"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1055
+#: webApp/static/js/videoCodage.js:1064
 msgid "_VALID_WIHTOUT_BAN_VERIFICATION"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1062
+#: webApp/static/js/videoCodage.js:1071
 msgid "INVALID_VAT_NUMBER"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1067
+#: webApp/static/js/videoCodage.js:1076
 msgid "_VALID_WIHTOUT_VAT_VERIFICATION"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1074
+#: webApp/static/js/videoCodage.js:1083
 msgid "CALCUL_NOT_EQUAL_WOULD_YOU_VALIDATE"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1085
+#: webApp/static/js/videoCodage.js:1094
 msgid "INVOICE_ALREADY_EXIST"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1228
+#: webApp/static/js/videoCodage.js:1237
 msgid "FIELD_TO_CHECK"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1229 webApp/static/js/videoCodage.js:1234
+#: webApp/static/js/videoCodage.js:1238 webApp/static/js/videoCodage.js:1243
 msgid "BAN_VALUE"
 msgstr ""
 
-#: webApp/static/js/videoCodage.js:1233
+#: webApp/static/js/videoCodage.js:1242
 msgid "INVALID"
 msgstr ""
 
@@ -386,11 +483,6 @@ msgstr ""
 msgid "SIGN_IN"
 msgstr ""
 
-#: webApp/templates/auth/login.html:19 webApp/templates/base.html:80
-#: webApp/templates/base_splitter.html:79
-msgid "SIGN_UP"
-msgstr ""
-
 #: webApp/templates/forms_macro_input_general.html:4
 msgid "CALCULATE_TOTAL_AMOUNT"
 msgstr ""
@@ -405,26 +497,6 @@ msgstr ""
 
 #: webApp/templates/home.html:29
 msgid "VERIFIER_OC"
-msgstr ""
-
-#: webApp/templates/auth/login.html:2 webApp/templates/auth/login.html:8
-#: webApp/templates/auth/register.html:29
-msgid "LOG_IN"
-msgstr ""
-
-#: webApp/templates/auth/login.html:10 webApp/templates/auth/register.html:10
-#: webApp/templates/users/user_list.html:14
-msgid "USERNAME"
-msgstr ""
-
-#: webApp/templates/auth/login.html:13 webApp/templates/auth/register.html:13
-msgid "PASSWORD"
-msgstr ""
-
-#: webApp/templates/auth/login.html:16 webApp/templates/auth/register.html:23
-#: webApp/templates/splitter/view.html:42
-#: webApp/templates/splitter/view.html:89
-msgid "VALIDATE"
 msgstr ""
 
 #: webApp/templates/auth/register.html:2 webApp/templates/auth/register.html:8
@@ -732,15 +804,6 @@ msgstr ""
 msgid "DATE"
 msgstr ""
 
-#: webApp/templates/dashboard/index.html:677
-#: webApp/templates/suppliers/suppliers_list.html:41
-msgid "VAT_NUMBER"
-msgstr ""
-
-#: webApp/templates/dashboard/index.html:691 webApp/templates/pdf/list.html:96
-msgid "INVOICE_NUMBER"
-msgstr ""
-
 #: webApp/templates/dashboard/index.html:705
 msgid "INVOICE_NUMBER_SIZE"
 msgstr ""
@@ -755,20 +818,6 @@ msgstr ""
 
 #: webApp/templates/dashboard/index.html:741
 msgid "URL"
-msgstr ""
-
-#: webApp/templates/dashboard/index.html:752
-#: webApp/templates/suppliers/suppliers_list.html:43
-msgid "SIRET_NUMBER"
-msgstr ""
-
-#: webApp/templates/dashboard/index.html:763
-#: webApp/templates/suppliers/suppliers_list.html:44
-msgid "SIREN_NUMBER"
-msgstr ""
-
-#: webApp/templates/dashboard/index.html:788
-msgid "TOTAL_TTC"
 msgstr ""
 
 #: webApp/templates/dashboard/index.html:826
@@ -1012,10 +1061,6 @@ msgstr ""
 msgid "NUMBER_OF_PAGES"
 msgstr ""
 
-#: webApp/templates/pdf/list.html:97
-msgid "INVOICE_DATE"
-msgstr ""
-
 #: webApp/templates/pdf/list.html:99 webApp/templates/splitter/list.html:82
 msgid "SAVED_THE"
 msgstr ""
@@ -1056,22 +1101,22 @@ msgstr ""
 #: webApp/templates/pdf/view.html:98
 #: webApp/templates/suppliers/suppliers_list.html:23
 #: webApp/templates/suppliers/suppliers_list.html:42
-#: webApp/templates/suppliers/suppliers_list.html:140
-#: webApp/templates/suppliers/suppliers_list.html:167
-#: webApp/templates/suppliers/suppliers_list.html:179
+#: webApp/templates/suppliers/suppliers_list.html:119
+#: webApp/templates/suppliers/suppliers_list.html:145
+#: webApp/templates/suppliers/suppliers_list.html:157
 msgid "SUPPLIER"
 msgstr ""
 
 #: webApp/templates/pdf/view.html:95 webApp/templates/splitter/view.html:28
 #: webApp/templates/splitter/view.html:86
 #: webApp/templates/suppliers/suppliers_list.html:23
-#: webApp/templates/suppliers/suppliers_list.html:194
+#: webApp/templates/suppliers/suppliers_list.html:172
 msgid "ADD"
 msgstr ""
 
 #: webApp/templates/pdf/view.html:98
-#: webApp/templates/suppliers/suppliers_list.html:147
-#: webApp/templates/suppliers/suppliers_list.html:195
+#: webApp/templates/suppliers/suppliers_list.html:125
+#: webApp/templates/suppliers/suppliers_list.html:173
 msgid "EDIT"
 msgstr ""
 
@@ -1137,7 +1182,7 @@ msgstr ""
 
 #: webApp/templates/splitter/list.html:91
 #: webApp/templates/splitter/view.html:60
-#: webApp/templates/suppliers/suppliers_list.html:150
+#: webApp/templates/suppliers/suppliers_list.html:128
 msgid "DELETE"
 msgstr ""
 
@@ -1181,25 +1226,12 @@ msgstr ""
 msgid "_SEARCH_PLACEHOLDER_SUPPLIER"
 msgstr ""
 
-#: webApp/templates/suppliers/suppliers_list.html:45
-#: webApp/templates/suppliers/suppliers_list.html:46
-msgid "ADDRESS"
-msgstr ""
-
-#: webApp/templates/suppliers/suppliers_list.html:47
-msgid "ZIP_CODE"
-msgstr ""
-
-#: webApp/templates/suppliers/suppliers_list.html:48
-msgid "CITY"
-msgstr ""
-
 #: webApp/templates/suppliers/suppliers_list.html:49
 msgid "TYPOLOGY"
 msgstr ""
 
 #: webApp/templates/suppliers/suppliers_list.html:50
-#: webApp/templates/suppliers/suppliers_list.html:177
+#: webApp/templates/suppliers/suppliers_list.html:155
 msgid "TYPE"
 msgstr ""
 
@@ -1208,12 +1240,12 @@ msgstr ""
 msgid "ACTION"
 msgstr ""
 
-#: webApp/templates/suppliers/suppliers_list.html:142
-#: webApp/templates/suppliers/suppliers_list.html:180
+#: webApp/templates/suppliers/suppliers_list.html:121
+#: webApp/templates/suppliers/suppliers_list.html:158
 msgid "CLIENT"
 msgstr ""
 
-#: webApp/templates/suppliers/suppliers_list.html:193
+#: webApp/templates/suppliers/suppliers_list.html:171
 msgid "CANCEL"
 msgstr ""
 
