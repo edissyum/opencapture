@@ -506,7 +506,7 @@ msgstr "Panneau de contrôle Open-Capture"
 
 #: webApp/templates/dashboard/index.html:15
 msgid "GENERAL SETTINGS"
-msgstr "Paramètres généraux"
+msgstr "Paramètres d'API"
 
 #: webApp/templates/dashboard/index.html:19
 msgid "ADVANCED SETTINGS"

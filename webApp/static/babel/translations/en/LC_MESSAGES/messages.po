@@ -499,7 +499,7 @@ msgid "DASHBOARD_OC"
 msgstr "OpenCapture dashboard"
 
 #: webApp/templates/dashboard/index.html:15
-msgid "GENERAL SETTINGS"
+msgid "API SETTINGS"
 msgstr "General settings"
 
 #: webApp/templates/dashboard/index.html:19
