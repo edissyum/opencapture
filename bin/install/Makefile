@@ -115,7 +115,7 @@ Description=Daemon for Open-Capture for Invoices
 Type=simple
 
 User=$user
-Group=$user
+Group=$group
 UMask=0022
 
 ExecStart=$defaultPath/bin/scripts/service_workerOC.sh
@@ -136,7 +136,7 @@ Description=Splitter Daemon for Open-Capture for Invoices
 Type=simple
 
 User=$user
-Group=$user
+Group=$group
 UMask=0022
 
 ExecStart=$defaultPath/bin/scripts/service_workerOC_splitter.sh
