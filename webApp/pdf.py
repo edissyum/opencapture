@@ -622,10 +622,14 @@ def ocr_on_the_fly(file_name, selection, thumb_size):
     text = _files.ocr_on_fly(path, selection, _Ocr, thumb_size)
 
     if text:
+        if text.count('.'):
+            text = text.replace('.', ',')
         return text
     else:
         _files.improve_image_detection(path)
         text = _files.ocr_on_fly(path, selection, _Ocr, thumb_size)
+        if text.count('.'):
+            text = text.replace('.', ',')
         return text
 
 
