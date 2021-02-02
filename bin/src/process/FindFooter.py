@@ -101,7 +101,7 @@ class FindFooter:
                     result += re.sub('\s*', '', t.group())
 
                 if result != '':
-                    result = float(result.replace(',', '.'))
+                    result = float(result.replace('.', '').replace(',', '.'))
                     return [result, position, data['page']]
                 else:
                     return False
