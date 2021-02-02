@@ -12,7 +12,7 @@ import worker_from_python
 from flask_babel import gettext
 from .auth import login_required
 from werkzeug.utils import secure_filename
-from flask import current_app, Blueprint, flash, redirect, request, url_for, session
+from flask import current_app, Blueprint, flash, redirect, request, url_for, session, send_file
 
 from .functions import get_custom_id, check_python_customized_files
 
@@ -30,6 +30,17 @@ if 'dashboard' not in custom_array:
     from . import dashboard
 else:
     dashboard = getattr(__import__(custom_array['dashboard']['path'], fromlist=[custom_array['dashboard']['module']]), custom_array['dashboard']['module'])
+
+if 'Spreadsheet' not in custom_array:
+    from bin.src.classes.Spreadsheet import Spreadsheet as _Spreadsheet
+else:
+    _Spreadsheet = getattr(__import__(custom_array['Spreadsheet']['path'] + '.' + custom_array['Spreadsheet']['module'], fromlist=[custom_array['Spreadsheet']['module']]),
+                           custom_array['Spreadsheet']['module'])
+
+if 'Log' not in custom_array:
+    from bin.src.classes.Log import Log as _Log
+else:
+    _Log = getattr(__import__(custom_array['Log']['path'] + '.' + custom_array['Log']['module'], fromlist=[custom_array['Log']['module']]), custom_array['Log']['module'])
 
 bp = Blueprint('ws', __name__)
 
@@ -158,26 +169,176 @@ def get_token_insee():
         return json.dumps({'text': str(e), 'code': 500, 'ok': 'false'})
 
 
+@bp.route('/ws/supplier/add', methods=['POST'])
+@login_required
+def add_supplier():
+    _vars = pdf.init()
+    _db = _vars[0]
+    _cfg = _vars[1]
+    log = _Log(_cfg.cfg['GLOBAL']['logfile'])
+    spreadsheet = _Spreadsheet(log, _cfg)
+    data = request.get_json()
+
+    add_data = {
+        'name': data['name'],
+        'vat_number': data['VAT'],
+        'siret': data['SIRET'],
+        'siren': data['SIREN'],
+        'city': data['city'],
+        'adress1': data['adress'],
+        'postal_code': data['zip'],
+        'company_type': data['companyType'],
+    }
+    args = {
+        'table': 'suppliers',
+        'columns': add_data,
+    }
+    res = _db.insert(args)
+
+    if res:
+        spreadsheet.update_supplier_ods_sheet(_db)
+        if 'pdfId' in data:
+            id_supplier = _db.select({
+                'select': ['*'],
+                'table': ['suppliers'],
+                'where': ['status= ?'],
+                'data': ['ACTIVE'],
+                'order_by': ['id DESC'],
+                'limit': '1'
+            })[0]['id']
+
+            args = {
+                'table': ['invoices'],
+                'set': {
+                    'id_supplier': id_supplier,
+                },
+                'where': ['id = ?'],
+                'data': [data['pdfId']],
+            }
+            res = _db.update(args)
+        flash(gettext('SUPPLIER_ADDED'))
+    else:
+        return json.dumps({'code': 500, 'ok': 'false'})
+
+    return json.dumps({'code': 200, 'ok': 'true'})
+
+
+@bp.route('/ws/supplier/edit', methods=['POST'])
+@login_required
+def edit_supplier():
+    _vars = pdf.init()
+    _db = _vars[0]
+    _cfg = _vars[1]
+    log = _Log(_cfg.cfg['GLOBAL']['logfile'])
+    spreadsheet = _Spreadsheet(log, _cfg)
+    data = request.get_json()
+
+    update_data = {
+        'name': data['name'],
+        'vat_number': data['VAT'],
+        'siret': data['SIRET'],
+        'siren': data['SIREN'],
+        'city': data['city'],
+        'adress1': data['adress'],
+        'postal_code': data['zip'],
+    }
+
+    if data['companyType'] != '':
+        update_data['company_type'] = data['companyType']
+
+    args = {
+        'table': ['suppliers'],
+        'set': update_data,
+        'where': ['id = ?'],
+        'data': [data['supplierId']],
+    }
+    res = _db.update(args)
+
+    if res:
+        spreadsheet.update_supplier_ods_sheet(_db)
+        if 'pdfId' in data:
+            args = {
+                'table': ['invoices'],
+                'set': {
+                    'id_supplier': data['supplierId'],
+                },
+                'where': ['id = ?'],
+                'data': [data['pdfId']],
+            }
+            res = _db.update(args)
+        flash(gettext('SUPPLIER_EDITED'))
+
+    else:
+        return json.dumps({'code': 500, 'ok': 'false'})
+
+    return json.dumps({'code': 200, 'ok': 'true'})
+
+
+@bp.route('/ws/supplier/delete/<string:supplier_id>', methods=['GET'])
+@login_required
+def delete_supplier(supplier_id):
+    _vars = pdf.init()
+    _db = _vars[0]
+    _cfg = _vars[1]
+    log = _Log(_cfg.cfg['GLOBAL']['logfile'])
+    spreadsheet = _Spreadsheet(log, _cfg)
+    res = _db.update({
+        'table': ['suppliers'],
+        'set': {
+            'status': 'DEL'
+        },
+        'where': ['id = ?'],
+        'data': [supplier_id]
+    })
+
+    if res:
+        spreadsheet.update_supplier_ods_sheet(_db)
+        flash(gettext('SUPPLIER_DELETED'))
+        return json.dumps({'text': 'OK', 'code': 200, 'ok': 'true'})
+
+    return res
+
+
+@bp.route('/ws/supplier/getReferenceFile', methods=['GET'])
+@login_required
+def get_reference_file():
+    _vars = pdf.init()
+    _cfg = _vars[1]
+    file_path = _cfg.cfg['REFERENCIAL']['referencialsupplierdocumentpath']
+    return send_file(file_path, as_attachment=True, cache_timeout=0)
+
 @bp.route('/ws/supplier/retrieve', methods=['GET'])
 @login_required
 def retrieve_supplier():
     _vars = pdf.init()
     _db = _vars[0]
     data = request.args
+
+    supplier_id = data.get('id')
+    if supplier_id is not None:
+        query_where = 'id= ?'
+        query_data = supplier_id
+        result_name = 'suppliers'
+    else:
+        query_where = 'LOWER(name) LIKE ?'
+        query_data = '%' + data['query'].lower() + '%'
+        result_name = 'suggestions'
+
     res = _db.select({
         'select': ['*'],
         'table': ['suppliers'],
-        'where': ["LOWER(name) LIKE ?"],
-        'data': ['%' + data['query'].lower() + '%'],
+        'where': ['status= ?', query_where],
+        'data': ['ACTIVE', query_data],
         'limit': '10'
     })
 
     array_return = {}
     array_supplier = {}
-    array_return['suggestions'] = []
+    array_return[result_name] = []
     for supplier in res:
         array_supplier[supplier['name']] = []
         array_supplier[supplier['name']].append({
+            'supplier_id': supplier['id'],
             'name': supplier['name'],
             'VAT': supplier['vat_number'],
             'siret': supplier['siret'],
@@ -186,10 +347,11 @@ def retrieve_supplier():
             'adress2': supplier['adress2'],
             'zipCode': supplier['postal_code'],
             'city': supplier['city'],
+            'companyType': supplier['company_type'],
         })
 
     for name in array_supplier:
-        array_return['suggestions'].append({
+        array_return[result_name].append({
             "value": name, "data": json.dumps(array_supplier[name])
         })
 

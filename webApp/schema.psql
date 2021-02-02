@@ -9,8 +9,10 @@ CREATE TABLE if NOT EXISTS users (
 );
 
 CREATE TABLE if NOT EXISTS suppliers(
-    vat_number                 VARCHAR(200) NOT NULL PRIMARY KEY,
-    name                       VARCHAR         NOT NULL,
+    id                         INTEGER NOT NULL PRIMARY KEY,
+    id_supplier                INTEGER,
+    vat_number                 VARCHAR(200),
+    name                       VARCHAR NOT NULL,
     siret                      VARCHAR(20),
     siren                      VARCHAR(20),
     adress1                    VARCHAR,
@@ -38,7 +40,9 @@ CREATE TABLE if NOT EXISTS suppliers(
     footer_page                VARCHAR,
     supplier_page              VARCHAR,
     invoice_number_page        VARCHAR,
-    invoice_date_page          VARCHAR
+    invoice_date_page          VARCHAR,
+    company_type               VARCHAR DEFAULT 'supplier',
+    status                     VARCHAR DEFAULT 'ACTIVE'
 );
 
 CREATE TABLE if NOT EXISTS invoices(

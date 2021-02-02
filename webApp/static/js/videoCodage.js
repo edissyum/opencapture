@@ -46,12 +46,15 @@ function readConfig() {
 }
 
 function searchSupplier(){
+    let supplierId = $('#supplier_id');
     let inputVAT = $('#vat_number');
     let inputSIRET = $('#siret_number');
     let inputSIREN = $('#siren_number');
     let inputCity = $('#city');
     let inputAdress = $('#address');
     let inputZip = $('#postal_code');
+    let buttonAddSupplier = $('#add_supplier');
+    let buttonEditSupplier = $('#edit_supplier');
 
     $('#name').autocomplete({
         serviceUrl: '/ws/supplier/retrieve',
@@ -60,6 +63,15 @@ function searchSupplier(){
         showNoSuggestionNotice: true,
         onSearchComplete: function (query, suggestions) {
             if (suggestions.length === 0){
+                if(buttonAddSupplier.is(":hidden")) {
+                    buttonAddSupplier.show();
+                    buttonEditSupplier.hide();
+                    // Icon effect
+                    setTimeout(function () {
+                        $(".supplier-action-icon").fadeOut(150).fadeIn(150);
+                    }, 150);
+                }
+                supplierId.val('');
                 inputVAT.val('');
                 inputZip.val('');
                 inputCity.val('');
@@ -81,7 +93,16 @@ function searchSupplier(){
             }
         },
         onSelect: function (suggestion) {
+            if(buttonEditSupplier.is(":hidden")){
+                buttonAddSupplier.hide();
+                buttonEditSupplier.show();
+                // Icon effect
+                 setTimeout(function() {
+                         $(".supplier-action-icon").fadeOut(150).fadeIn(150);
+                 }, 150);
+            }
             let data = JSON.parse(suggestion['data'])[0];
+            let supplierIdValue = data['supplier_id'];
             let zip = data['zipCode'];
             let VAT = data['VAT'];
             let city = data['city'];
@@ -89,6 +110,8 @@ function searchSupplier(){
             let SIREN = data['siren'];
             let adress1 = data['adress1'];
             let adress2 = data['adress2'];
+
+            supplierId.val(supplierIdValue);
 
             if(adress1 !== null && adress2 !== null && (inputAdress.val() === '' || inputAdress.val() !== adress1 + ' ' + adress2)){
                 inputAdress.val(adress1.trim() + ' ' + adress2.trim()).prev().fadeOut();
@@ -269,8 +292,24 @@ function ocrOnFly(isRemoved, inputId, removeWhiteSpace = false, needToBeNumber =
 
 // On load, reload Insee token for SIRET/SIREN validation
 // Also, do all the validation if the input aren't empty
+// Also, control supplier edit and add button
 $(document).ready(function() {
     if(!loaded){
+        // Set supplier button to edit if id_supplier is set
+        let buttonAddSupplier = $('#add_supplier');
+        let buttonEditSupplier = $('#edit_supplier');
+
+        let supplierId = $('#supplier_id');
+
+        if(supplierId.val() !== ''){
+            buttonAddSupplier.hide();
+            buttonEditSupplier.show();
+        }
+        else {
+            buttonAddSupplier.show();
+            buttonEditSupplier.hide();
+        }
+
         loaded = true;
         // Get the config
         readConfig().then((res) => {    // Put the rest of code into the 'then' to make synchronous API call
