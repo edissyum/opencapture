@@ -62,7 +62,7 @@ class FindSupplier:
                     content = line.content
                 corrected_line = re.sub(pattern, item, content)
 
-            for _data in re.finditer(r"" + regex + "", corrected_line.replace(' ', '')):
+            for _data in re.finditer(r"" + regex + "", corrected_line.replace(' ', '').replace('.', '')):
                 array_of_data.update({_data.group(): line})
 
         if len(array_of_data) != 0:
@@ -223,7 +223,7 @@ class FindSupplier:
         if retry and not self.found_third and self.found_fourth:
             self.Log.info('No supplier informations found in the footer, improve image and retry...')
             if self.Files.isTiff == 'True':
-                improved_image = self.Files.improve_image_detection(self.Files.tiffName_header)
+                improved_image = self.Files.improve_image_detection(self.Files.tiffName_footer)
             else:
                 improved_image = self.Files.improve_image_detection(self.Files.jpgName_footer)
             self.Files.open_img(improved_image)
