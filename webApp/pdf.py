@@ -11,7 +11,6 @@ from webApp import forms
 from webApp.db import get_db
 from webApp.auth import login_required
 from webApp.functions import get_custom_id, check_python_customized_files
-from webApp.override_wtform import CustomStringField
 
 custom_id = get_custom_id()
 custom_array = {}
