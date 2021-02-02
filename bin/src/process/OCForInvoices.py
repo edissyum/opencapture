@@ -82,7 +82,6 @@ def insert(database, log, files, config, supplier, file, invoice_number, date, f
         except FileNotFoundError:
             pass
         path = config.cfg['GLOBAL']['fullpath'] + '/' + full_jpg_filename.replace('-%03d', '-001')
-
     columns = {
         'vat_number': supplier[0] if supplier and supplier[0] else '',
         'vat_number_position': str(supplier[1]) if supplier and supplier[1] else '',
@@ -109,6 +108,18 @@ def insert(database, log, files, config, supplier, file, invoice_number, date, f
         'nb_pages': str(nb_pages),
         'original_filename': original_file
     }
+
+    # Add supplier id to invoice
+    if columns['vat_number'] != '':
+        res = database.select({
+            'select': ['id'],
+            'table': ['suppliers'],
+            'where': ['vat_number = ?'],
+            'data': [columns['vat_number']],
+        })
+        if res:
+            if len(res) > 0:
+                columns['id_supplier'] = str(res[0]['id'])
 
     if custom_columns:
         columns.update(custom_columns)

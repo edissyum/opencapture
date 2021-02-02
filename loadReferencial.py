@@ -84,7 +84,8 @@ if __name__ == '__main__':
                     'adress2': str(spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['adress2']]),
                     'postal_code': str(spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['adressPostalCode']]),
                     'city': str(spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['adressTown']]),
-                    'typology': str(spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['typology']])
+                    'typology': str(spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['typology']]),
+                    'company_type': str(spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['companyType']])
                 }
             }
             res = database.insert(args)
@@ -105,7 +106,8 @@ if __name__ == '__main__':
                     'adress2': str(spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['adress2']]),
                     'postal_code': str(spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['adressPostalCode']]),
                     'city': str(spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['adressTown']]),
-                    'typology': str(spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['typology']])
+                    'typology': str(spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['typology']]),
+                    'company_type': str(spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['companyType']])
                 },
                 'where': ['vat_number = ?'],
                 'data': [taxe_number]

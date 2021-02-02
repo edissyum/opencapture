@@ -164,7 +164,7 @@ def index(status, time):
         total = _db.select({
             'select': ['count(DISTINCT(invoices.id)) as total'],
             'table': ['invoices', 'status', 'suppliers'],
-            'left_join': ['invoices.status = status.id', 'invoices.vat_number = suppliers.vat_number'],
+            'left_join': ['invoices.status = status.id', 'invoices.id_supplier = suppliers.id'],
             'where': where,
             'data': [day]
         })[0]['total']
@@ -177,7 +177,7 @@ def index(status, time):
                 "*"
             ],
             'table': ['invoices', 'status', 'suppliers'],
-            'left_join': ['invoices.status = status.id', 'invoices.vat_number = suppliers.vat_number'],
+            'left_join': ['invoices.status = status.id', 'invoices.id_supplier = suppliers.id'],
             'where': where,
             'data': [day],
             'limit': str(per_page),
@@ -216,8 +216,8 @@ def index(status, time):
         supplier = _db.select({
             'select': ['*'],
             'table': ['suppliers'],
-            'where': ['vat_number = ?'],
-            'data': [pdf['vat_number']]
+            'where': ['id = ?'],
+            'data': [pdf['id_supplier']]
         })
 
         if supplier:
@@ -274,12 +274,12 @@ def view(pdf_id):
         'limit': '1'
     })[0]
 
-    # Retrieve supplier info if vatNumber is found
+    # Retrieve supplier info
     supplier_info = _db.select({
         'select': ['*'],
         'table': ['suppliers'],
-        'where': ['vat_number = ?'],
-        'data': [pdf_info['vat_number']],
+        'where': ['id = ?'],
+        'data': [pdf_info['id_supplier']],
         'limit': '1'
     })
 
@@ -633,12 +633,12 @@ def populate_form(form, pdf_info, position_dict, _db):
     for field in form:
         select = table = where = data = False
         if field.table == 'suppliers':
-            if pdf_info['vat_number']:
+            if pdf_info['id_supplier']:
                 if field.column and field.table:
                     select = [field.column]
                     table = [field.table]
-                    where = ['vat_number = ?']
-                    data = [pdf_info['vat_number']]
+                    where = ['id = ?']
+                    data = [pdf_info['id_supplier']]
         else:
             if field.column and field.table:
                 select = [field.column]

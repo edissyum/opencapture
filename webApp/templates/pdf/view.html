@@ -79,6 +79,9 @@
                             <h3>{{ gettext('SUPPLIER') }}</h3>
                         </span>
                         <div class="supplier_info toggled">
+                           <div id="hiddenInputs">
+                                <input type="hidden" id="supplier_id" value="{% if pdf['id_supplier'] != None %}{{ pdf['id_supplier'] }}{% endif %}">
+                            </div>
                             <!-- Retrieve supplier form from forms.py SupplierForm class -->
                             {% for field in supplier_form %}
                                 {% if field.type == 'CustomBooleanField' %}
@@ -87,6 +90,14 @@
                                     {{ render_field(field) }}
                                 {% endif %}
                             {% endfor %}
+                            <div class="d-flex justify-content-center">
+                                <button onclick="addSupplier()" type="button" id="add_supplier" class="btn btn-outline-secondary btn-lgbtn-secondary">
+                                    <i class="supplier-action-icon fa fa-plus"></i> {{ gettext('ADD') }} {{ gettext('SUPPLIER') }}
+                                </button>
+                                <button onclick="editSupplier()" type="button" id="edit_supplier" class="btn btn-outline-secondary" style="display: none;">
+                                    <i class="supplier-action-icon fa fa-edit"></i> {{ gettext('EDIT') }} {{ gettext('SUPPLIER') }}
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <hr>
@@ -194,6 +205,7 @@
         <script type="text/javascript" src={{ url_for('static', filename='js/jqueryLib/jquery.autocomplete.min.js') }}></script>
         <script type="text/javascript" src={{ url_for('static', filename='js/jqueryLib/chosen.jquery.min.js') }}></script>
         <script type="text/javascript" src={{ url_for('static', filename='js/videoCodage.js') }}></script>
+        <script type="text/javascript" src={{ url_for('static', filename='js/supplier.js') }}></script>
     {% endblock %}
     <div class="modal-backdrop fade show" style="display: none"></div>
 {% endblock %}

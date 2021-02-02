@@ -607,7 +607,8 @@ hr {
 }
 
 .user_list table tbody tr:hover > td > a,
-.supplier_list table tbody tr:hover > td > a{
+.btn-supplier-edit:not(.actions):hover,
+.supplier-delete:hover{
     color: #76B442;
 }
 

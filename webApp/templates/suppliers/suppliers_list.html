@@ -1,16 +1,44 @@
 {% extends 'base.html' %}
 {% block title %}{{ gettext('SUPPLIER_LIST') }}{% endblock %}
+{% from 'forms_macro_input_general.html' import render_field %}
+{% from 'forms_macro_checkbox.html' import render_field_checkbox %}
+{% block css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/supplier.css') }}" type="text/css" media="screen" />
+    <script type="text/javascript" src={{ url_for('static', filename='js/otherLib/Gettext.js') }}></script>
+    <link rel="gettext" type="application/x-po" href="{{ url_for('static', filename='babel/translations/' + session["lang"] + '/LC_MESSAGES/messages.po') }}">
+    <script>
+        let gt = new Gettext();
+    </script>
+{% endblock %}
 
 {% block content %}
     {{ pagination.info }}
     {{ pagination.links }}
     <hr>
+    <a type="button" id="bnt-export-supplier" class="btn btn-outline-secondary w-15"
+       href="{{ url_for('ws.get_reference_file', filename="downloadFile.txt") }}">
+        <i class="fa fa-file-download"></i> {{ gettext('EXPORT') }} {{ gettext('SUPPLIERS') }}
+    </a>
+    <button type="button" id="bnt-show-add-modal" class="btn btn-outline-secondary w-15" onclick="openSupplierAddModal()">
+        <i class="fa fa-plus"></i> {{ gettext('ADD') }} {{ gettext('SUPPLIER') }}
+    </button>
+    <form id="search-input" class="form-inline" method="get">
+        <div class="form-group mb-2">
+            <label for="search" class="sr-only">{{ gettext('_SEARCH_PLACEHOLDER')}}</label>
+            <input type="text" class="form-control" id="search" name="search" placeholder="{{ gettext('_SEARCH_PLACEHOLDER_SUPPLIER')}}" value={% if request.args.get('search') %} {{ request.args.get('search') }} {% endif %}>
+        </div>
+        <button type="submit" class="btn btn-primary mx-sm-2 mb-2">
+            <i class="fas fa-search"></i>
+        </button>
+    </form>
+{#    <input type="text" id="search-input" class="form-control input-shadow" placeholder="Recherche">#}
     <div class="container-fluid" id="main">
         <div class="table-wrapper supplier_list">
-            <table class="table">
+            <table id="supplier-table" class="table">
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>{{ gettext('VAT_NUMBER') }}</th>
                         <th>{{ gettext('SUPPLIER') }}</th>
                         <th>{{ gettext('SIRET_NUMBER') }}</th>
                         <th>{{ gettext('SIREN_NUMBER') }}</th>
@@ -19,95 +47,139 @@
                         <th>{{ gettext('ZIP_CODE') }}</th>
                         <th>{{ gettext('CITY') }}</th>
                         <th>{{ gettext('TYPOLOGY') }}</th>
+                        <th>{{ gettext('TYPE') }}</th>
+                        <th>{{ gettext('ACTION') }}</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for supplier in suppliers %}
-                        <tr>
-                            <td>
-                                <a href="#">
+                        <tr id="{{ supplier['id'] }}" class="btn-supplier-edit">
+                            <td class="btn-supplier-edit">
+                                {{ supplier['id'] }}
+                            </td>
+                            <td class="btn-supplier-edit">
                                     {{ supplier['vat_number'] }}
-                                </a>
                             </td>
                             <td>
-                                <a href="#">
-                                    {{ supplier['name'] }}
-                                </a>
+                                {{ supplier['name'] }}
                             </td>
                             <td>
-                                <a href="#">
-                                    {% if supplier['siret'] == 'nan' %}
-                                        N/A
-                                    {% else %}
-                                        {{ supplier['siret'] }}
-                                    {% endif %}
-                                </a>
+                                {% if supplier['siret'] == 'nan' %}
+                                    N/A
+                                {% else %}
+                                    {{ supplier['siret'] }}
+                                {% endif %}
                             </td>
                             <td>
-                                <a href="#">
-                                    {% if supplier['siren'] == 'nan' %}
-                                        N/A
-                                    {% else %}
-                                        {{ supplier['siren'] }}
-                                    {% endif %}
-                                </a>
+                                {% if supplier['siren'] == 'nan' %}
+                                    N/A
+                                {% else %}
+                                    {{ supplier['siren'] }}
+                                {% endif %}
                             </td>
                             <td>
-                                <a href="#">
-                                    {% if supplier['adress1'] == 'nan' %}
-                                        N/A
-                                    {% else %}
-                                        {{ supplier['adress1'] }}
-                                    {% endif %}
-                                </a>
+                                {% if supplier['adress1'] == 'nan' %}
+                                    N/A
+                                {% else %}
+                                    {{ supplier['adress1'] }}
+                                {% endif %}
                             </td>
                             <td>
-                                <a href="#">
-                                    {% if supplier['adress2'] == 'nan' %}
-                                        N/A
-                                    {% else %}
-                                        {{ supplier['adress2'] }}
-                                    {% endif %}
-                                </a>
+                                {% if supplier['adress2'] == 'nan' %}
+                                    N/A
+                                {% else %}
+                                    {{ supplier['adress2'] }}
+                                {% endif %}
                             </td>
                             <td>
-                                <a href="#">
-                                    {% if supplier['postal_code'] == 'nan' %}
-                                        N/A
-                                    {% else %}
-                                        {{ supplier['postal_code'] }}
-                                    {% endif %}
-                                </a>
+                                {% if supplier['postal_code'] == 'nan' %}
+                                    N/A
+                                {% else %}
+                                    {{ supplier['postal_code'] }}
+                                {% endif %}
                             </td>
                             <td>
-                                <a href="#">
-                                    {% if supplier['city'] == 'nan' %}
-                                        N/A
-                                    {% else %}
-                                        {{ supplier['city'] }}
-                                    {% endif %}
-                                </a>
+                                {% if supplier['city'] == 'nan' %}
+                                    N/A
+                                {% else %}
+                                    {{ supplier['city'] }}
+                                {% endif %}
                             </td>
                             <td>
-                                <a href="#">
-                                    {% if supplier['typology'] == 'nan' %}
-                                        N/A
-                                    {% else %}
-                                        {{ supplier['typology'] }}
-                                    {% endif %}
+                                {% if supplier['typology'] == 'nan' %}
+                                    N/A
+                                {% else %}
+                                    {{ supplier['typology'] }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if supplier['company_type'] == 'nan' %}
+                                    N/A
+                                {% elif supplier['company_type'] == 'supplier' %}
+                                    {{ gettext('SUPPLIER') }}
+                                {% elif supplier['company_type'] == 'client' %}
+                                    {{ gettext('CLIENT') }}
+                                {% endif %}
+                            </td>
+                            <td class="actions">
+                                <a class="btn-supplier-edit" data-toggle="tooltip" title="{{ gettext('EDIT') }}">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a class="ml-2 supplier-delete" data-toggle="tooltip" title="{{ gettext('DELETE') }}">
+                                    <i class="fas fa-trash"></i>
                                 </a>
                             </td>
                         </tr>
+
                     {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
     <hr>
+    <!-- Modal -->
+    <div class="modal fade" id="supplier-modal" tabindex="-1" role="dialog" aria-labelledby="supplier-modal-title" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title font-weight-bold" id="exampleModalLongTitle">{{ gettext('SUPPLIER') }}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div id="hiddenInputs">
+                <input type="hidden" id="supplier_id">
+            </div>
+            <div class="facturation_info toggled">
+                <label for="company-type">{{ gettext('TYPE') }}</label>
+                <select  class="form-control input-shadow" id="company-type">
+                  <option id='supplier'>{{ gettext('SUPPLIER') }}</option>
+                  <option id='client'>{{ gettext('CLIENT') }}</option>
+                </select>
+                <!-- Retrieve supplier form from forms.py SupplierForm class -->
+                {% for field in supplier_form %}
+                    {% if field.type == 'CustomBooleanField' %}
+                        {{ render_field_checkbox(field) }}
+                    {% else %}
+                        {{ render_field(field) }}
+                    {% endif %}
+                {% endfor %}
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary w-25" data-dismiss="modal">{{ gettext('CANCEL') }}</button>
+            <button type="button" id="btn-supplier-add" onclick="addSupplier()" class="btn btn-outline-success w-25">{{ gettext('ADD') }}</button>
+            <button type="button" id="btn-supplier-edit" onclick="editSupplier()" class="btn btn-outline-success w-25">{{ gettext('EDIT') }}</button>
+          </div>
+        </div>
+      </div>
+    </div>
     {{ pagination.links }}
 
     {% block javascript %}
         <script src="{{ url_for('static', filename='js/jqueryLib/jquery.min.js') }}"></script>
         <script src="{{ url_for('static', filename='js/otherLib/bootstrap.bundle.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/supplier.js') }}"></script>
     {% endblock %}
 {% endblock %}
