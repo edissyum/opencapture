@@ -37,9 +37,23 @@ class SupplierForm(Form):
     address = CustomStringField(
         lazy_gettext('ADDRESS'),
         [validators.required()],
+        new_row=True,
+        form_group_class='col-md-6',
         table='suppliers',
         column='adress1',
         use_ratio=True,
+        render_kw={
+            'readonly': False
+        }
+    )
+    address2 = CustomStringField(
+        lazy_gettext('ADDRESS_COMPLEMENT'),
+        [validators.required()],
+        table='suppliers',
+        form_group_class='col-md-6',
+        column='adress2',
+        use_ratio=False,
+        end_row=True,
         render_kw={
             'readonly': False
         }

@@ -52,6 +52,7 @@ function searchSupplier(){
     let inputSIREN = $('#siren_number');
     let inputCity = $('#city');
     let inputAdress = $('#address');
+    let inputAdressCompletement = $('#address2');
     let inputZip = $('#postal_code');
     let buttonAddSupplier = $('#add_supplier');
     let buttonEditSupplier = $('#edit_supplier');
@@ -114,7 +115,8 @@ function searchSupplier(){
             supplierId.val(supplierIdValue);
 
             if(adress1 !== null && adress2 !== null && (inputAdress.val() === '' || inputAdress.val() !== adress1 + ' ' + adress2)){
-                inputAdress.val(adress1.trim() + ' ' + adress2.trim()).prev().fadeOut();
+                inputAdress.val(adress1.trim()).prev().fadeOut();
+                inputAdressCompletement.val(adress2.trim()).prev().fadeOut();
             }else if(adress1 !== null && adress2 === null && (inputAdress.val() === '' || inputAdress.val() !== adress1)){
                 inputAdress.val(adress1.trim()).prev().fadeOut();
             } else if(adress1 === 'nan'){

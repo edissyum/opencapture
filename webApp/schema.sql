@@ -9,7 +9,7 @@ CREATE TABLE if NOT EXISTS users(
 );
 
 CREATE TABLE if NOT EXISTS suppliers(
-    id                         INTEGER NOT NULL PRIMARY KEY,
+    id                         INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     vat_number                 VARCHAR(200),
     name                       VARCHAR NOT NULL,
     siret                      VARCHAR(20),
@@ -46,7 +46,7 @@ CREATE TABLE if NOT EXISTS suppliers(
 
 CREATE TABLE if NOT EXISTS invoices(
     id                       INTEGER PRIMARY KEY AUTOINCREMENT,
-    id_supplier                INTEGER,
+    id_supplier              INTEGER,
     vat_number               VARCHAR DEFAULT NULL,
     vat_number_position      VARCHAR,
     invoice_number           VARCHAR,

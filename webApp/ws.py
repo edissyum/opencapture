@@ -240,6 +240,7 @@ def edit_supplier():
         'siren': data['SIREN'],
         'city': data['city'],
         'adress1': data['adress'],
+        'adress2': data['adress2'],
         'postal_code': data['zip'],
     }
 

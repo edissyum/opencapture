@@ -33,7 +33,7 @@ def supplier_list():
 
     search = data.get('search')
     if search is not None:
-        query_where.append('name LIKE ?')
+        query_where.append('name ILIKE ?')
         query_data.append('%' + search + '%')
 
     total = _db.select({

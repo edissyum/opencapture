@@ -101,6 +101,7 @@ function editSupplier() {
     let SIREN = $('#siren_number').val();
     let city = $('#city').val();
     let adress = $('#address').val();
+    let adress2 = $('#address2').val();
     let zip = $('#postal_code').val();
     let pdfId = $('#pdf_id').val();
     let supplierId = $('#supplier_id').val();
@@ -135,6 +136,7 @@ function editSupplier() {
             SIREN : SIREN,
             city : city,
             adress : adress,
+            adress2 : adress2,
             zip : zip,
             companyType : companyType,
         })
@@ -155,6 +157,7 @@ function openSupplierAddModal() {
     $('#siret_number').val('');
     $('#siren_number').val('');
     $('#address').val('');
+    $('#address2').val('');
 
     let inputName = $('#name').val('').prop('required',true);
     inputName.val('').prop('required',true);
@@ -196,6 +199,7 @@ function openSupplierEditModal(event){
                 $('#siret_number').val(supplier.siret);
                 $('#siren_number').val(supplier.siren);
                 $('#address').val(supplier.adress1);
+                $('#address2').val(supplier.adress2);
                 $('#company-type option')
                      .removeAttr('selected')
                      .filter('[id=' + supplier.companyType + ']')
