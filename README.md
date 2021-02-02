@@ -136,6 +136,7 @@ For now (and for somes files like babel's or webApp/*.py files) it is recommende
 It is possible to use file filled with positions and some stuff to retrieve some informations hard to find with REGEX only.
 In this file you'll find to type of metadata, the default one and the custom one. Normmally you don't have to touch the default one except the <code>position</code>.
 For the custom ones, you'll have some settings to fill :
+
     - regex  : Use regex present in the JSON file (use the index name. exemple : <code>dateRegex</code>) or create a new one into this file (you need to modifiy the Locale file in order to get this working)
     - type   : string, number or date. If number, it could replace some letters by number to avoid error (O will became 0 for exemple)  <code>OCR_ERRORS.xml</code> file. If it's date, it will be formatted
     - column : Column in database, don't forget to add two column (one for name and one for position like 'example' and 'example_position'). Both of the column need to be VARCHAR
@@ -161,14 +162,16 @@ By default, there is ony one superadmin account. Login is 'admin' and password i
 
 Splitter module is a part from OC for invoice project, the goal is to separate invoices automatically.
 
-It will use a lot of metadata to be able to separate invoices without physical separator : 
+It will use a lot of metadata to be able to separate invoices without physical separator :
+
     - Invoice number
     - VAT Number of supplier
     - Number of page if available
     
 When the separation is done, you could access to a web interface to control the separation and modify it if needed. After separate invoices, Open-Capture for Invocies will process them normally
 
-In the default <code>config_DEFAULT.ini</code> file there is a SPLITTER part : 
+In the default <code>config_DEFAULT.ini</code> file there is a SPLITTER part :
+
     - splitterpath : Path to the specific docserver of separation
     - tmpBatchPath : Path to the currently running batches
     - pdfOutputPath : Path for the separated PDF. Need to be a folder currently watching by Open-Capture For Invoices 
