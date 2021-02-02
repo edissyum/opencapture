@@ -128,8 +128,11 @@ class FindFooter:
                 self.noRateAmount = no_rate_amount
                 self.ratePercentage = rate_percentage
                 return True
-
-            elif no_rate_amount in [False, None] and rate_percentage in [False, None]:
+            elif no_rate_amount and all_rate_amount:
+                self.noRateAmount = no_rate_amount
+                self.allRateAmount = all_rate_amount
+                return True
+            else:
                 return False
 
         self.noRateAmount = no_rate_amount
@@ -191,6 +194,9 @@ class FindFooter:
                 return False
 
             if float(total) == float(all_rate_amount[0]):
+                self.Log.info('Footer informations found : [TOTAL : ' + str(total) + '] - [HT : ' + str(no_rate_amount[0]) + '] - [VATRATE : ' + str(rate_percentage[0]) + ']')
+                return [no_rate_amount, all_rate_amount, rate_percentage, 1]
+            elif float(all_rate_amount[0]) == float(vat_amount + no_rate_amount[0]):
                 self.Log.info('Footer informations found : [TOTAL : ' + str(total) + '] - [HT : ' + str(no_rate_amount[0]) + '] - [VATRATE : ' + str(rate_percentage[0]) + ']')
                 return [no_rate_amount, all_rate_amount, rate_percentage, 1]
             else:
