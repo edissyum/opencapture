@@ -10,6 +10,7 @@ pillow
 kuyruk
 wtforms
 werkzeug
+openpyxl
 requests
 gunicorn
 psycopg2

@@ -51,7 +51,7 @@ class Spreadsheet:
         save_data(self.referencialSuppplierSpreadsheet, content_sheet)
 
     def write_typo_excel_sheet(self, vat_number, typo):
-        content_sheet = pd.read_excel(self.referencialSuppplierSpreadsheet)
+        content_sheet = pd.read_excel(self.referencialSuppplierSpreadsheet, engine='openpyxl')
         sheet_name = pd.ExcelFile(self.referencialSuppplierSpreadsheet).sheet_names
         content_sheet = content_sheet.to_dict(orient='records')
 
@@ -66,7 +66,7 @@ class Spreadsheet:
 
     @staticmethod
     def read_excel_sheet(referencial_spreadsheet):
-        content_sheet = pd.read_excel(referencial_spreadsheet)
+        content_sheet = pd.read_excel(referencial_spreadsheet, engine='openpyxl')
         return content_sheet
 
     def read_ods_sheet(self, referencial_spreadsheet):
