@@ -52,6 +52,7 @@ function addSupplier() {
     let SIREN = $('#siren_number').val();
     let city = $('#city').val();
     let adress = $('#address').val();
+    let adress2 = $('#address2').val();
     let zip = $('#postal_code').val();
     let pdfId = $('#pdf_id').val();
     let inputCompanyType = $('#company-type');
@@ -84,6 +85,7 @@ function addSupplier() {
             SIREN : SIREN,
             city : city,
             adress : adress,
+            adress2 : adress2,
             zip : zip,
             companyType : companyType,
             companyTypo : inputCompanyTypo

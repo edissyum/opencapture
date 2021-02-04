@@ -70,11 +70,6 @@ if 'Splitter' not in custom_array:
 else:
     _Splitter = getattr(__import__(custom_array['Splitter']['path'] + '.' + custom_array['Splitter']['module'], fromlist=[custom_array['Splitter']['module']]), custom_array['Splitter']['module'])
 
-if 'forms' not in custom_array:
-    from webApp import forms
-else:
-    from custom.oc_invoices_1.webApp import forms
-
 
 bp = Blueprint('pdf', __name__)
 

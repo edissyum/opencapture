@@ -186,6 +186,7 @@ def add_supplier():
         'siren': data['SIREN'],
         'city': data['city'],
         'adress1': data['adress'],
+        'adress2': data['adress2'],
         'postal_code': data['zip'],
         'company_type': data['companyType'],
     }
