@@ -188,6 +188,7 @@ def add_supplier():
         'adress1': data['adress'],
         'postal_code': data['zip'],
         'company_type': data['companyType'],
+        'typology': data['companyTypo']
     }
     args = {
         'table': 'suppliers',
@@ -242,7 +243,11 @@ def edit_supplier():
         'adress1': data['adress'],
         'adress2': data['adress2'],
         'postal_code': data['zip'],
+        'company_type': data['companyType'],
+        'typology': data['companyTypo']
     }
+    print(data['companyType'])
+    print(data['companyTypo'])
 
     if data['companyType'] != '':
         update_data['company_type'] = data['companyType']
