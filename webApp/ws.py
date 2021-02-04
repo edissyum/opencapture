@@ -190,7 +190,7 @@ def add_supplier():
         'company_type': data['companyType'],
     }
 
-    if data['companyTypo']:
+    if 'companyTypo' in data:
         add_data['typology'] = data['companyTypo']
 
     args = {
@@ -248,7 +248,7 @@ def edit_supplier():
         'postal_code': data['zip'],
     }
 
-    if data['companyTypo']:
+    if 'companyTypo' in data:
         update_data['typology'] = data['companyTypo']
 
     if data['companyType'] != '':
