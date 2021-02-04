@@ -186,9 +186,14 @@ def add_supplier():
         'siren': data['SIREN'],
         'city': data['city'],
         'adress1': data['adress'],
+        'adress2': data['adress2'],
         'postal_code': data['zip'],
         'company_type': data['companyType'],
     }
+
+    if 'companyTypo' in data:
+        add_data['typology'] = data['companyTypo']
+
     args = {
         'table': 'suppliers',
         'columns': add_data,
@@ -243,6 +248,9 @@ def edit_supplier():
         'adress2': data['adress2'],
         'postal_code': data['zip'],
     }
+
+    if 'companyTypo' in data:
+        update_data['typology'] = data['companyTypo']
 
     if data['companyType'] != '':
         update_data['company_type'] = data['companyType']

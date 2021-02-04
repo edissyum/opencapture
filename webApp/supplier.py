@@ -2,9 +2,18 @@ from flask_babel import gettext
 from webApp.auth import admin_login_required
 from flask import Blueprint, render_template, request
 from flask_paginate import Pagination, get_page_args
-from webApp.functions import get_custom_id, check_python_customized_files
 from webApp import forms
-from .pdf import populate_form
+
+from .functions import get_custom_id, check_python_customized_files
+
+custom_id = get_custom_id()
+custom_array = {}
+if custom_id:
+    custom_array = check_python_customized_files(custom_id[1])
+if 'pdf' not in custom_array:
+    from . import pdf
+else:
+    pdf = getattr(__import__(custom_array['pdf']['path'], fromlist=[custom_array['pdf']['module']]), custom_array['pdf']['module'])
 
 custom_id = get_custom_id()
 custom_array = {}

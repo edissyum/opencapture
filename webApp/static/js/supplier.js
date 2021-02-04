@@ -52,9 +52,11 @@ function addSupplier() {
     let SIREN = $('#siren_number').val();
     let city = $('#city').val();
     let adress = $('#address').val();
+    let adress2 = $('#address2').val();
     let zip = $('#postal_code').val();
     let pdfId = $('#pdf_id').val();
     let inputCompanyType = $('#company-type');
+    let inputCompanyTypo = $('#company-typo').val();
     if(name === ''){
         if(!inputName.hasClass("is-invalid")){
             inputName.addClass('is-invalid');
@@ -83,8 +85,10 @@ function addSupplier() {
             SIREN : SIREN,
             city : city,
             adress : adress,
+            adress2 : adress2,
             zip : zip,
             companyType : companyType,
+            companyTypo : inputCompanyTypo
         })
     })
         .then(response => response.json())
@@ -106,6 +110,7 @@ function editSupplier() {
     let pdfId = $('#pdf_id').val();
     let supplierId = $('#supplier_id').val();
     let inputCompanyType = $('#company-type');
+    let companyTypo = $('#company-typo').val();
 
     if(name === ''){
         if(!inputName.hasClass("is-invalid")){
@@ -139,6 +144,7 @@ function editSupplier() {
             adress2 : adress2,
             zip : zip,
             companyType : companyType,
+            companyTypo : companyTypo
         })
     })
         .then(response => response.json())

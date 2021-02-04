@@ -70,6 +70,7 @@ if 'Splitter' not in custom_array:
 else:
     _Splitter = getattr(__import__(custom_array['Splitter']['path'] + '.' + custom_array['Splitter']['module'], fromlist=[custom_array['Splitter']['module']]), custom_array['Splitter']['module'])
 
+
 bp = Blueprint('pdf', __name__)
 
 

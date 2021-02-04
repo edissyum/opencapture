@@ -43,7 +43,8 @@ class SupplierForm(Form):
         column='adress1',
         use_ratio=True,
         render_kw={
-            'readonly': False
+            'onfocusout': "ocrOnFly(true, this); removeRectangle()",
+            'onfocusin': "ocrOnFly(false, this)"
         }
     )
     address2 = CustomStringField(
@@ -55,7 +56,8 @@ class SupplierForm(Form):
         use_ratio=False,
         end_row=True,
         render_kw={
-            'readonly': False
+            'onfocusout': "ocrOnFly(true, this); removeRectangle()",
+            'onfocusin': "ocrOnFly(false, this)"
         }
     )
     postal_code = CustomStringField(
@@ -67,7 +69,8 @@ class SupplierForm(Form):
         form_group_class='col-md-6',
         use_ratio=True,
         render_kw={
-            'readonly': False
+            'onfocusout': "ocrOnFly(true, this); removeRectangle()",
+            'onfocusin': "ocrOnFly(false, this, true, true)"
         }
     )
     city = CustomStringField(
@@ -79,7 +82,8 @@ class SupplierForm(Form):
         form_group_class='col-md-6',
         use_ratio=True,
         render_kw={
-            'readonly': False
+            'onfocusout': "ocrOnFly(true, this); removeRectangle()",
+            'onfocusin': "ocrOnFly(false, this)"
         }
     )
     vat_number = CustomStringField(
@@ -89,7 +93,8 @@ class SupplierForm(Form):
         column='vat_number',
         is_position=True,
         render_kw={
-            'readonly': False,
+            'onfocusout': "ocrOnFly(true, this); removeRectangle()",
+            'onfocusin': "ocrOnFly(false, this)",
             'onkeyup': "checkVAT();",
             'x1_original': '',
             'y1_original': '',
@@ -107,7 +112,8 @@ class SupplierForm(Form):
         form_group_class='col-md-6',
         is_position=True,
         render_kw={
-            'readonly': False,
+            'onfocusout': "ocrOnFly(true, this); removeRectangle()",
+            'onfocusin': "ocrOnFly(false, this, true, true)"
         }
     )
     siren_number = CustomStringField(
@@ -119,7 +125,8 @@ class SupplierForm(Form):
         form_group_class='col-md-6',
         is_position=True,
         render_kw={
-            'readonly': False,
+            'onfocusout': "ocrOnFly(true, this); removeRectangle()",
+            'onfocusin': "ocrOnFly(false, this, true, true)"
         }
     )
 
