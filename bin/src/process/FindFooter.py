@@ -178,6 +178,9 @@ class FindFooter:
             all_rate_amount = self.return_max(self.allRateAmount)
             rate_percentage = self.return_max(self.ratePercentage)
 
+            if all_rate_amount and no_rate_amount:
+                vat_amount = float("%.2f" % (float(all_rate_amount[0]) - float(no_rate_amount[0])))
+
             if no_rate_amount is False and all_rate_amount and rate_percentage:
                 no_rate_amount = [float("%.2f" % (float(all_rate_amount[0]) / (1 + float(rate_percentage[0] / 100)))), (('', ''), ('', ''))]
             elif all_rate_amount is False and no_rate_amount and rate_percentage:
