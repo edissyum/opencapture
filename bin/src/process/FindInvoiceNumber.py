@@ -46,14 +46,20 @@ class FindInvoiceNumber:
             return invoice_number
 
         for line in self.text:
+            pass_this_line = False
             for _invoice in re.finditer(r"" + self.Locale.invoiceRegex + "", line.content.upper()):
-                tmp_invoice_number = re.sub(r"" + self.Locale.invoiceRegex[:-2] + "", '', _invoice.group())  # Delete the invoice keyword
-                invoice_number = tmp_invoice_number.lstrip().split(' ')[0]
-                if len(invoice_number) > int(self.Locale.invoiceSizeMin):
-                    self.Log.info('Invoice number found : ' + invoice_number)
-                    return [invoice_number, line.position, self.nbPages]
-                else:
-                    found = False
+                # If the regex return a date, continue the search
+                for _date in re.finditer(r"" + self.Locale.dateRegex + "", _invoice.group()):
+                    if _date.group():
+                        pass_this_line = True
+                if not pass_this_line:
+                    tmp_invoice_number = re.sub(r"" + self.Locale.invoiceRegex[:-2] + "", '', _invoice.group())  # Delete the invoice keyword
+                    invoice_number = tmp_invoice_number.lstrip().split(' ')[0]
+                    if len(invoice_number) > int(self.Locale.invoiceSizeMin):
+                        self.Log.info('Invoice number found : ' + invoice_number)
+                        return [invoice_number, line.position, self.nbPages]
+                    else:
+                        found = False
 
         if not found and self.supplier and not self.customPage:
             self.Log.info('Invoice number not found. Searching invoice number using position in database')
