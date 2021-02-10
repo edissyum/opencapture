@@ -93,8 +93,8 @@ class SupplierForm(Form):
         column='vat_number',
         is_position=True,
         render_kw={
-            'onfocusout': "ocrOnFly(true, this); removeRectangle()",
-            'onfocusin': "ocrOnFly(false, this)",
+            'onfocusout': "ocrOnFly(true, this, true); removeRectangle()",
+            'onfocusin': "ocrOnFly(false, this, true)",
             'onkeyup': "checkVAT();",
             'x1_original': '',
             'y1_original': '',
