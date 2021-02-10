@@ -166,10 +166,20 @@ class FindFooter:
                 1: all_rate[1]
             }
 
+        vat_amount = False
+
         if not self.test_amount(no_rate_amount, all_rate_amount, rate_percentage):
             no_rate_amount = self.process(self.Locale.noRatesRegex, text_as_string)
             rate_percentage = self.process(self.Locale.vatRateRegex, text_as_string)
             all_rate_amount = self.process(self.Locale.allRatesRegex, text_as_string)
+            vat_amount = self.process(self.Locale.vatAmountRegex, text_as_string)
+
+        if all_rate_amount and no_rate_amount:
+            vat_amount = float("%.2f" % (self.return_max(all_rate_amount)[0] - self.return_max(no_rate_amount)[0]))
+
+        if all_rate_amount and vat_amount:
+            if not no_rate_amount:
+                no_rate_amount = [self.return_max(all_rate_amount)[0] - self.return_max(vat_amount)[0], (('', ''), ('', ''))]
 
         # Test all amounts. If some are false, try to search them with position. If not, pass
         if self.test_amount(no_rate_amount, all_rate_amount, rate_percentage) is not False:
@@ -177,9 +187,6 @@ class FindFooter:
             no_rate_amount = self.return_max(self.noRateAmount)
             all_rate_amount = self.return_max(self.allRateAmount)
             rate_percentage = self.return_max(self.ratePercentage)
-
-            if all_rate_amount and no_rate_amount:
-                vat_amount = float("%.2f" % (float(all_rate_amount[0]) - float(no_rate_amount[0])))
 
             if no_rate_amount is False and all_rate_amount and rate_percentage:
                 no_rate_amount = [float("%.2f" % (float(all_rate_amount[0]) / (1 + float(rate_percentage[0] / 100)))), (('', ''), ('', ''))]
