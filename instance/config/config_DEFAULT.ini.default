@@ -114,6 +114,7 @@ password            =
 availableProcess    = OCForMaarch-invoice
 defaultProcess      = OCForMaarch-invoice
 usergroupid         = 1
+contactVATCustom    = 1
 
 ; Use - and not _ for the label of the process
 [OCForMaarch-invoice]

@@ -383,20 +383,17 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
             contact = webservices.retrieve_contact_by_vat_number(supplier[2]['vat_number'])
             if not contact:
                 contact = {
-                    'isCorporatePerson': 'Y',
-                    'function': '',
-                    'lastname': '',
-                    'firstname': '',
                     'contactType': config.cfg[default_process]['contacttype'],
                     'contactPurposeId': config.cfg[default_process]['contactpurposeid'],
                     'society': parent['supplierInfo'][0]['supplierInfo_name']['field'],
                     'addressTown': parent['supplierInfo'][0]['supplierInfo_city']['field'],
                     'societyShort': parent['supplierInfo'][0]['supplierInfo_name']['field'],
                     'addressStreet': parent['supplierInfo'][0]['supplierInfo_address']['field'],
-                    'otherData': parent['supplierInfo'][0]['supplierInfo_vat_number']['field'],
-                    'addressZip': parent['supplierInfo'][0]['supplierInfo_postal_code']['field']
+                    'addressZip': parent['supplierInfo'][0]['supplierInfo_postal_code']['field'],
+                    'customFields': {},
+                    'email': 'A_renseigner_' + parent['supplierInfo'][0]['supplierInfo_name']['field'].replace(' ', '_') + '@' + parent['supplierInfo'][0]['supplierInfo_vat_number']['field'] + '.fr'
                 }
-                contact['email'] = 'À renseigner ' + parent['supplierInfo'][0]['supplierInfo_name']['field'] + ' - ' + contact['otherData']
+                contact['customFields'][config.cfg['GED']['contactvatcustom']] = parent['supplierInfo'][0]['supplierInfo_vat_number']['field']
 
                 res = webservices.create_contact(contact)
                 if res is not False:
