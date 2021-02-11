@@ -554,8 +554,8 @@ abstract class ContactModelAbstract
 
         $aContact = DatabaseModel::select([
             'select'    => empty($aArgs['select']) ? ['*'] : $aArgs['select'],
-            'table'     => ['contact_addresses'],
-            'where'     => ["other_data = ?"],
+            'table'     => ['contacts'],
+            'where'     => ["custom_fields #>> '{" . $aArgs['custom_id'] . "}' = ?"],
             'data'      => [$aArgs['VAT']],
             'limit'     => 1
         ]);
