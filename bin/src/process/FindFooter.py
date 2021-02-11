@@ -172,7 +172,6 @@ class FindFooter:
             no_rate_amount = self.process(self.Locale.noRatesRegex, text_as_string)
             rate_percentage = self.process(self.Locale.vatRateRegex, text_as_string)
             all_rate_amount = self.process(self.Locale.allRatesRegex, text_as_string)
-            vat_amount = self.process(self.Locale.vatAmountRegex, text_as_string)
 
         if all_rate_amount and no_rate_amount:
             vat_amount = float("%.2f" % (self.return_max(all_rate_amount)[0] - self.return_max(no_rate_amount)[0]))
