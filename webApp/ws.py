@@ -467,7 +467,7 @@ def upload_file():
             f.save(os.path.join(_cfg.cfg['SPLITTER']['pdforiginpath'], secure_filename(file)))
 
             worker_splitter_from_python.main({
-                'file': _cfg.cfg['SPLITTER']['pdforiginpath'] + file,
+                'file': _cfg.cfg['SPLITTER']['pdforiginpath'] + secure_filename(file),
                 'config': current_app.config['CONFIG_FILE']
             })
     flash(gettext('FILE_UPLOAD_SUCCESS'))
