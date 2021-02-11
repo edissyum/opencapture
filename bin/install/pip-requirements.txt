@@ -9,7 +9,6 @@ pandas
 pillow
 kuyruk
 wtforms
-img2pdf
 werkzeug
 openpyxl
 requests
