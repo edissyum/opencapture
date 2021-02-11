@@ -17,7 +17,7 @@
 
 import os
 import shutil
-import img2pdf
+from PyPDF2 import PdfFileReader, PdfFileWriter
 
 
 def process(file, log, splitter, files, ocr, tmp_folder, config):
@@ -38,11 +38,11 @@ def process(file, log, splitter, files, ocr, tmp_folder, config):
 
     # Remove blank pages
     # Recreate the array if somes pages are deleted to get the correct indexes of pages
+    pages_to_keep = []
     blank_pages_exists = False
     if config.cfg['REMOVE-BLANK-PAGES']['enabled'] == 'True':
         cpt = 0
         tmp_list_files = list_files
-
         for f in tmp_list_files:
             if files.is_blank_page(f[1], config.cfg['REMOVE-BLANK-PAGES']):
                 del tmp_list_files[cpt]
@@ -54,9 +54,11 @@ def process(file, log, splitter, files, ocr, tmp_folder, config):
             for idx, item in enumerate(tmp_list_files):
                 idx = idx + 1
                 file_name = item[1].split('-')[0]
+                pages_to_keep.append(os.path.splitext(item[1])[0].split('-')[1])
                 new_file = file_name + '-' + str(idx) + '.jpg'
                 shutil.move(item[1], new_file)
                 list_files.append(('%03d' % idx, new_file))
+
     # Create array of text within pages
     for f in list_files:
         img = files.open_image_return(f[1])
@@ -78,12 +80,15 @@ def process(file, log, splitter, files, ocr, tmp_folder, config):
         files.pdf_to_jpg(file, False)
         list_files = files.sorted_file(tmp_folder, extension)
 
-    # Recreate the PDF if there is blank page
+    # Delete blank page from original PDF file
     if config.cfg['REMOVE-BLANK-PAGES']['enabled'] == 'True' and blank_pages_exists:
-        with open(file, "wb") as f:
-            imgs = []
-            for page in list_files:
-                imgs.append(page[1])
-            f.write(img2pdf.convert(imgs))
+        infile = PdfFileReader(file)
+        output = PdfFileWriter()
+        for i in pages_to_keep:
+            p = infile.getPage(int(i) - 1)
+            output.addPage(p)
+
+        with open(file, 'wb') as f:
+            output.write(f)
 
     splitter.save_image_from_pdf(list_files, invoices_separated, tmp_folder, file)
