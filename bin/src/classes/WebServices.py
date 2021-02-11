@@ -176,8 +176,7 @@ class WebServices:
             return json.loads(res.text)
 
     def create_contact(self, contact):
-        res = requests.post(self.baseUrl + '/contacts', auth=self.auth, params=contact)
-
+        res = requests.post(self.baseUrl + '/contacts', auth=self.auth, data=json.dumps(contact), headers={'Connection': 'close', 'Content-Type': 'application/json'})
         if res.status_code != 200:
             self.Log.error('(' + str(res.status_code) + ') CreateContactError : ' + str(res.text))
             return False

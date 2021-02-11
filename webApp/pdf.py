@@ -439,23 +439,20 @@ def validate_form():
 
             # If no contact found, create it
             if not ged['contact']:
-                contact['isCorporatePerson'] = 'Y'
-                contact['function'] = ''
-                contact['lastname'] = ''
-                contact['firstname'] = ''
                 contact['contactType'] = _cfg.cfg[default_process]['contacttype']
                 contact['contactPurposeId'] = _cfg.cfg[default_process]['contactpurposeid']
-                contact['society'] = supplier_form.name.data
+                contact['company'] = supplier_form.name.data
                 contact['addressTown'] = supplier_form.city.data
                 contact['societyShort'] = supplier_form.name.data
                 contact['addressStreet'] = supplier_form.address.data
-                contact['otherData'] = vat_number
                 contact['addressZip'] = supplier_form.postal_code.data
-                contact['email'] = 'À renseigner ' + supplier_form.name.data + ' - ' + vat_number
+                contact['email'] = 'A_renseigner_' + supplier_form.name.data.replace(' ', '_') + '@' + vat_number + '.fr'
+                contact['customFields'] = {}
+                contact['customFields'][_cfg.cfg['GED']['contactvatcustom']] = vat_number
 
                 contact = _ws.create_contact(contact)
                 if contact is not False:
-                    ged['contact'] = {'id': contact['addressId'], 'contact_id': contact['contactId']}
+                    ged['contact'] = {'id': contact['id'], 'type': 'contact'}
 
             res = _ws.insert_with_args(ged, _cfg)
 
