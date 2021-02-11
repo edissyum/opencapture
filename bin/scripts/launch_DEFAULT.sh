@@ -27,10 +27,10 @@ echo "[$name.sh      ] $(date +"%d-%m-%Y %T") INFO Launching $name.sh script" >>
 
 filepath=$1
 filename=$(basename "$filepath")
-ext=$(file -b -i "$filepath")
+ext=$(file -b --mime-type "$filepath")
 
 
-if ! test -e $PID && test "$ext" = 'application/pdf; charset=binary' && test -f "$filepath";
+if ! test -e $PID && test "$ext" = 'application/pdf' && test -f "$filepath";
 then
     touch $PID
     echo $$ > $PID
@@ -42,7 +42,7 @@ then
 
     rm -f $PID
 
-elif test -f "$filepath" && test "$ext" != 'application/pdf; charset=binary';
+elif test -f "$filepath" && test "$ext" != 'application/pdf';
 then
     echo "[$name.sh      ] $(date +"%d-%m-%Y %T") ERROR $filename is a not valid PDF file" >> "$logFile"
     mkdir -p "$errFilepath"
