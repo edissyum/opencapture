@@ -389,7 +389,7 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
                     'addressTown': parent['supplierInfo'][0]['supplierInfo_city']['field'],
                     'societyShort': parent['supplierInfo'][0]['supplierInfo_name']['field'],
                     'addressStreet': parent['supplierInfo'][0]['supplierInfo_address']['field'],
-                    'addressZip': parent['supplierInfo'][0]['supplierInfo_postal_code']['field'],
+                    'addressPostcode': parent['supplierInfo'][0]['supplierInfo_postal_code']['field'],
                     'customFields': {},
                     'email': 'A_renseigner_' + parent['supplierInfo'][0]['supplierInfo_name']['field'].replace(' ', '_') + '@' + parent['supplierInfo'][0]['supplierInfo_vat_number']['field'] + '.fr'
                 }

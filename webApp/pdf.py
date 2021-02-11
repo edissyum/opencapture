@@ -445,7 +445,7 @@ def validate_form():
                 contact['addressTown'] = supplier_form.city.data
                 contact['societyShort'] = supplier_form.name.data
                 contact['addressStreet'] = supplier_form.address.data
-                contact['addressZip'] = supplier_form.postal_code.data
+                contact['addressPostcode'] = supplier_form.postal_code.data
                 contact['email'] = 'A_renseigner_' + supplier_form.name.data.replace(' ', '_') + '@' + vat_number + '.fr'
                 contact['customFields'] = {}
                 contact['customFields'][_cfg.cfg['GED']['contactvatcustom']] = vat_number
