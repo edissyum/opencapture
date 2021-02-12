@@ -48,7 +48,7 @@ class WebServices:
 
     def retrieve_users(self):
         res = requests.get(self.baseUrl + 'getUsers?group=' + self.Config.cfg['GED']['usergroupid'], auth=self.auth)
-        print(res.text)
+
         if res.status_code != 200:
             self.Log.error('(' + str(res.status_code) + ') getUsers : ' + str(res.text))
             return False
