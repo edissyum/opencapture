@@ -42,8 +42,8 @@ def supplier_list():
 
     search = data.get('search')
     if search is not None:
-        query_where.append('name ILIKE ?')
-        query_data.append('%' + search + '%')
+        query_where.append('UPPER(name) LIKE ?')
+        query_data.append('%' + search.upper() + '%')
 
     total = _db.select({
         'select': ['count(*) as total'],
