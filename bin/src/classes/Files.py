@@ -31,6 +31,10 @@ from PyPDF4 import utils
 from xml.dom import minidom
 from wand.color import Color
 from wand.api import library
+from deskew import determine_skew
+from skimage import io
+from skimage.color import rgb2gray
+from skimage.transform import rotate
 import xml.etree.ElementTree as Et
 from wand.image import Image as Img
 from wand.exceptions import PolicyError, CacheError
@@ -478,6 +482,14 @@ class Files:
             cropped_image = im2.crop(crop_ratio)
             cropped_image.save('/tmp/cropped_' + rand + extension)
 
+        # Rotate the image
+        image = cv2.imread('/tmp/cropped_' + rand + extension)
+        grayscale = rgb2gray(image)
+        angle = determine_skew(grayscale)
+        if angle < -80:
+            rotated = rotate(image, angle, resize=True) * 255
+            io.imsave('/tmp/cropped_' + rand + extension, rotated.astype(np.uint8))
+
         if remove_line:
             image = cv2.imread('/tmp/cropped_' + rand + extension)
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -497,11 +509,11 @@ class Files:
 
         if regex:
             for res in re.finditer(r"" + regex, text):
-                os.remove('/tmp/cropped_' + rand + extension)
+                # os.remove('/tmp/cropped_' + rand + extension)
                 return res.group().replace('\x0c', '').strip()
             return False
 
-        os.remove('/tmp/cropped_' + rand + extension)
+        # os.remove('/tmp/cropped_' + rand + extension)
         return text.replace('\x0c', '').strip()
 
     @staticmethod
