@@ -19,6 +19,7 @@ import json
 import base64
 import requests
 from flask import flash
+from datetime import datetime
 from flask_babel import gettext
 from requests.auth import HTTPBasicAuth
 
@@ -84,7 +85,7 @@ class WebServices:
             'dest_user': args['dest_user'],
             'senders': contact,
             'documentDate': args['date'],
-            'admission_date': args['creationDate'],
+            'arrivaldate': str(datetime.now()),
             'customFields': {},
         }
 
