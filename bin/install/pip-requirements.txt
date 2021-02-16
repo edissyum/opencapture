@@ -8,6 +8,7 @@ pyPdf4
 pandas
 pillow
 kuyruk
+deskew
 wtforms
 werkzeug
 openpyxl
@@ -21,6 +22,7 @@ flask_cors
 xlsxwriter
 Flask-Babel
 pytesseract
+scikit-image
 pyexcel_ods3
 configparser
 opencv-python

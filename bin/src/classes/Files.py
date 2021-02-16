@@ -27,16 +27,16 @@ import PyPDF4
 import datetime
 import numpy as np
 from PIL import Image
+from skimage import io
 from PyPDF4 import utils
 from xml.dom import minidom
 from wand.color import Color
 from wand.api import library
 from deskew import determine_skew
-from skimage import io
 from skimage.color import rgb2gray
-from skimage.transform import rotate
 import xml.etree.ElementTree as Et
 from wand.image import Image as Img
+from skimage.transform import rotate
 from wand.exceptions import PolicyError, CacheError
 from werkzeug.utils import secure_filename
 
