@@ -509,11 +509,11 @@ class Files:
 
         if regex:
             for res in re.finditer(r"" + regex, text):
-                # os.remove('/tmp/cropped_' + rand + extension)
+                os.remove('/tmp/cropped_' + rand + extension)
                 return res.group().replace('\x0c', '').strip()
             return False
 
-        # os.remove('/tmp/cropped_' + rand + extension)
+        os.remove('/tmp/cropped_' + rand + extension)
         return text.replace('\x0c', '').strip()
 
     @staticmethod
