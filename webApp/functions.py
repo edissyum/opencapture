@@ -44,7 +44,7 @@ def search_custom_positions(data, ocr, files, locale, file, config):
     position = data['position']
     target_file = ''
     if position:
-        if 'page' not in data or ('page' in data and data['page'] in ['1', '']):
+        if 'page' not in data or ('page' in data and data['page'] in ['1', '', 'None']):
             if files.isTiff == 'True':
                 if target == 'footer':
                     target_file = files.tiffName_footer

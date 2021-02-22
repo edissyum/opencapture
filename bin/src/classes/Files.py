@@ -486,7 +486,7 @@ class Files:
         image = cv2.imread('/tmp/cropped_' + rand + extension)
         grayscale = rgb2gray(image)
         angle = determine_skew(grayscale)
-        if angle < -80:
+        if angle and angle < -80:
             rotated = rotate(image, angle, resize=True) * 255
             io.imsave('/tmp/cropped_' + rand + extension, rotated.astype(np.uint8))
 
