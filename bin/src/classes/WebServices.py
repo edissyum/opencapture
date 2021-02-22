@@ -82,7 +82,6 @@ class WebServices:
             'typist': config.cfg[_process]['typist'],
             'subject': args['subject'],
             'destination': args['destination'],
-            'dest_user': args['dest_user'],
             'senders': contact,
             'documentDate': args['date'],
             'arrivaldate': str(datetime.now()),
@@ -90,6 +89,7 @@ class WebServices:
         }
 
         if 'dest_user' in args:
+            data['dest_user'] = args['dest_user']
             data['diffusionList'] = [{
                 'mode': 'dest',
                 'type': 'user',
