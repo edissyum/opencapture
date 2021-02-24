@@ -27,7 +27,7 @@
             {% else %}
                 {{ field(class_="form-control") | safe }}
             {% endif %}
-            {% if field.flags.required %}
+            {% if field.flags.required and field.table != 'suppliers' %}
                 <div class="invalid-feedback">
                   Ce champ est obligatoire
                 </div>

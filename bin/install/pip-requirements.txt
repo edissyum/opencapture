@@ -18,6 +18,7 @@ gunicorn
 psycopg2
 pdf2image
 gitpython
+unidecode
 tensorflow
 flask_cors
 xlsxwriter
