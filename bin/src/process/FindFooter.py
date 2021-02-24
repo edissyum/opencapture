@@ -117,11 +117,13 @@ class FindFooter:
                 if no_rate_amount in [False, None]:
                     no_rate_amount = self.process_with_position(['no_taxes_1_position', 'footer_page'])
                     if no_rate_amount:
+                        self.noRateAmount = no_rate_amount
                         self.Log.info('noRateAmount found with position : ' + str(no_rate_amount))
 
                 if rate_percentage in [False, None]:
                     rate_percentage = self.process_with_position(['vat_1_position', 'footer_page'])
                     if rate_percentage:
+                        self.ratePercentage = rate_percentage
                         self.Log.info('ratePercentage found with position : ' + str(rate_percentage))
 
             if no_rate_amount and rate_percentage:
@@ -219,12 +221,12 @@ class FindFooter:
                     improved_image = self.Files.improve_image_detection(self.Files.jpgName_footer)
                 self.Files.open_img(improved_image)
                 self.text = self.Ocr.line_box_builder(self.Files.img)
-                self.run()
+                return self.run()
 
             if self.rerun and not self.rerun_as_text:
                 self.rerun_as_text = True
                 self.text = self.Ocr.text_builder(self.Files.img)
-                self.run(text_as_string=True)
+                return self.run(text_as_string=True)
             return False
 
     @staticmethod
