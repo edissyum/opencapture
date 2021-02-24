@@ -22,6 +22,7 @@ unidecode
 tensorflow
 flask_cors
 xlsxwriter
+Levenshtein
 Flask-Babel
 pytesseract
 scikit-image
