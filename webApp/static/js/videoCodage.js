@@ -1244,12 +1244,12 @@ function processRatio(percent, input, ratioClass, banInfo, invalidClass){
         input.addClass('is-invalid orangeRatioInput ');
         invalidFeed.addClass('orangeRatio orange_' + input[0].id);
         invalidFeed.html(gt.gettext('FIELD_TO_CHECK') + ' <br>' +
-            gt.gettext('BAN_VALUE') + ' : <span class="font-weight-bold"><a style="color:#ED8022" href="#correct" onclick="replaceValue(' + input[0].id + ', \'' + banInfo + '\')">' + banInfo + '</a></span>');
+            gt.gettext('BAN_VALUE') + ' : <span class="font-weight-bold"><a style="color:#ED8022; text-decoration: underline" href="#correct" onclick="replaceValue(' + input[0].id + ', \'' + banInfo + '\')">' + banInfo + '</a></span>');
     }else{
         input.addClass('is-invalid redRatioInput');
         invalidFeed.addClass('red_' + input[0].id);
         invalidFeed.html(gt.gettext('INVALID') + ' <br>' +
-            gt.gettext('BAN_VALUE') + ' : <span class="font-weight-bold"><a style="color:#ED8022" href="#correct" onclick="replaceValue(' + input[0].id + ', \'' + banInfo + '\')">' + banInfo + '</a></span>');
+            gt.gettext('BAN_VALUE') + ' : <span class="font-weight-bold"><a style="color:#ED8022; text-decoration: underline" href="#correct" onclick="replaceValue(' + input[0].id + ', \'' + banInfo + '\')">' + banInfo + '</a></span>');
     }
 }
 
