@@ -17,6 +17,7 @@
 
 import os
 import re
+import ast
 import subprocess
 
 import cv2
@@ -506,6 +507,15 @@ class Files:
 
         cropped_image = Image.open('/tmp/cropped_' + rand + extension)
         text = ocr.text_builder(cropped_image)
+
+        try:
+            litteral_number = ast.literal_eval(text)
+            if type(litteral_number) != int:
+                first_part = str(ast.literal_eval(text)[0]).replace(',', '').replace('.', '')
+                second_part = str(ast.literal_eval(text)[1])
+                text = first_part + '.' + second_part
+        except (ValueError, SyntaxError):
+            pass
 
         if regex:
             for res in re.finditer(r"" + regex, text):
