@@ -124,13 +124,15 @@ def search(position, regex, files, ocr, target_file):
         return [data.replace('\n', ' '), position]
 
 
-def recursive_delete(folder, log):
-    for file in os.listdir(folder):
-        try:
-            os.remove(folder + '/' + file)
-        except FileNotFoundError as e:
-            log.error('Unable to delete ' + folder + '/' + file + ' on temp folder: ' + str(e))
-    try:
-        os.rmdir(folder)
-    except FileNotFoundError as e:
-        log.error('Unable to delete ' + folder + ' on temp folder: ' + str(e))
+def recursive_delete(list_folder, log):
+    for folder in list_folder:
+        if os.path.exists(folder):
+            for file in os.listdir(folder):
+                try:
+                    os.remove(folder + '/' + file)
+                except FileNotFoundError as e:
+                    log.error('Unable to delete ' + folder + '/' + file + ' on temp folder: ' + str(e))
+            try:
+                os.rmdir(folder)
+            except FileNotFoundError as e:
+                log.error('Unable to delete ' + folder + ' on temp folder: ' + str(e))
