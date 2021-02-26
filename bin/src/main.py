@@ -220,11 +220,9 @@ def launch(args):
     elif 'file' in args and args['file'] is not None:
         path = args['file']
         typo = ''
-
         if separator_qr.enabled:
-            for fileToSep in os.listdir(path):
-                if check_file(files, path + fileToSep, config, log):
-                    separator_qr.run(path + fileToSep)
+            if check_file(files, path, config, log) is not False:
+                separator_qr.run(path)
             path = separator_qr.output_dir_pdfa if str2bool(separator_qr.convert_to_pdfa) is True else separator_qr.output_dir
 
             for file in os.listdir(path):
@@ -253,7 +251,7 @@ def launch(args):
                 OCForInvoices_process.process(path, log, config, files, ocr, locale, database, webservices, typo)
 
     # Empty the tmp dir to avoid residual file
-    recursive_delete(tmp_folder, log)
+    recursive_delete([tmp_folder, separator_qr.output_dir, separator_qr.output_dir_pdfa], log)
 
     # Close database
     database.conn.close()
