@@ -31,33 +31,39 @@ custom_array = {}
 if custom_id:
     custom_array = check_python_customized_files(custom_id[1])
 
-if 'config' not in custom_array:
+if 'Config' not in custom_array:
     from bin.src.classes.Config import Config as _Config
 else:
     _Config = getattr(__import__(custom_array['Config']['path'] + '.' + custom_array['coConfigConfigig']['module'], fromlist=[custom_array['Config']['module']]), custom_array['Config']['module'])
 
-if 'log' not in custom_array:
+if 'Log' not in custom_array:
     from bin.src.classes.Log import Log as _Log
 else:
     _Log = getattr(__import__(custom_array['Log']['path'] + '.' + custom_array['Log']['module'], fromlist=[custom_array['Log']['module']]), custom_array['Log']['module'])
 
-if 'files' not in custom_array:
+if 'Files' not in custom_array:
     from bin.src.classes.Files import Files as _Files
 else:
     _Files = getattr(__import__(custom_array['Files']['path'] + '.' + custom_array['Files']['module'], fromlist=[custom_array['Files']['module']]), custom_array['Files']['module'])
 
-if 'xml' not in custom_array:
+if 'Xml' not in custom_array:
     from bin.src.classes.Xml import Xml as _Xml
 else:
     _Xml = getattr(__import__(custom_array['Xml']['path'] + '.' + custom_array['Xml']['module'], fromlist=[custom_array['Xml']['module']]), custom_array['Xml']['module'])
 
-if 'webservices' not in custom_array:
+if 'WebServices' not in custom_array:
     from bin.src.classes.WebServices import WebServices as _WebServices
 else:
     _WebServices = getattr(__import__(custom_array['WebServices']['path'] + '.' + custom_array['WebServices']['module'], fromlist=[custom_array['WebServices']['module']]),
                            custom_array['WebServices']['module'])
 
-if 'locale' not in custom_array:
+if 'SeparatorQR' not in custom_array:
+    from bin.src.classes.SeparatorQR import SeparatorQR as SeparatorQR
+else:
+    SeparatorQR = getattr(__import__(custom_array['SeparatorQR']['path'] + '.' + custom_array['SeparatorQR']['module'], fromlist=[custom_array['SeparatorQR']['module']]),
+                           custom_array['SeparatorQR']['module'])
+
+if 'Locale' not in custom_array:
     from bin.src.classes.Locale import Locale as _Locale
 else:
     _Locale = getattr(__import__(custom_array['Locale']['path'] + '.' + custom_array['Locale']['module'], fromlist=[custom_array['Locale']['module']]), custom_array['Locale']['module'])
@@ -68,7 +74,7 @@ else:
     _PyTesseract = getattr(__import__(custom_array['PyTesseract']['path'] + '.' + custom_array['PyTesseract']['module'], fromlist=[custom_array['PyTesseract']['module']]),
                            custom_array['PyTesseract']['module'])
 
-if 'database' not in custom_array:
+if 'Database' not in custom_array:
     from bin.src.classes.Database import Database as _Database
 else:
     _Database = getattr(__import__(custom_array['Database']['path'] + '.' + custom_array['Database']['module'], fromlist=[custom_array['Database']['module']]), custom_array['Database']['module'])
@@ -123,6 +129,15 @@ def get_typo(config, path, log):
         return False
 
 
+def str2bool(value):
+    """
+    Function to convert string to boolean
+
+    :return: Boolean
+    """
+    return value.lower() in "true"
+
+
 # If needed just run "kuyruk --app bin.src.main.OCforInvoices_worker manager" to have web dashboard of current running worker
 @OCforInvoices_worker.task(queue='invoices')
 def launch(args):
@@ -151,6 +166,7 @@ def launch(args):
     tmp_folder = tempfile.mkdtemp(dir=config.cfg['GLOBAL']['tmppath'])
     filename = tempfile.NamedTemporaryFile(dir=tmp_folder).name
 
+    separator_qr = SeparatorQR(log, config, tmp_folder)
     files = _Files(
         filename,
         int(config.cfg['GLOBAL']['resolution']),
@@ -177,6 +193,12 @@ def launch(args):
     # Start process
     if 'path' in args and args['path'] is not None:
         path = args['path']
+        if separator_qr.enabled:
+            for fileToSep in os.listdir(path):
+                if check_file(files, path + fileToSep, config, log):
+                    separator_qr.run(path + fileToSep)
+            path = separator_qr.output_dir_pdfa if str2bool(separator_qr.convert_to_pdfa) is True else separator_qr.output_dir
+
         for file in os.listdir(path):
             if check_file(files, path + file, config, log) is not False and not os.path.isfile(path + file + '.lock'):
                 os.mknod(path + file + '.lock')
@@ -198,12 +220,37 @@ def launch(args):
     elif 'file' in args and args['file'] is not None:
         path = args['file']
         typo = ''
-        if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
-            typo = get_typo(config, path, log)
 
-        if check_file(files, path, config, log) is not False:
-            # Process the file and send it to Maarch
-            OCForInvoices_process.process(path, log, config, files, ocr, locale, database, webservices, typo)
+        if separator_qr.enabled:
+            for fileToSep in os.listdir(path):
+                if check_file(files, path + fileToSep, config, log):
+                    separator_qr.run(path + fileToSep)
+            path = separator_qr.output_dir_pdfa if str2bool(separator_qr.convert_to_pdfa) is True else separator_qr.output_dir
+
+            for file in os.listdir(path):
+                if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
+                    typo = get_typo(config, path + file, log)
+
+                if check_file(files, path + file, config, log) is not False:
+                    # Process the file and send it to Maarch
+                    OCForInvoices_process.process(path + file, log, config, files, ocr, locale, database, webservices, typo)
+        elif config.cfg['SEPARATE_BY_DOCUMENT']['enabled'] == 'True':
+            list_of_files = separator_qr.split_document_every_two_pages(path)
+            for file in list_of_files:
+                if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
+                    typo = get_typo(config, file, log)
+
+                if check_file(files, file, config, log) is not False:
+                    # Process the file and send it to Maarch
+                    OCForInvoices_process.process(file, log, config, files, ocr, locale, database, webservices, typo)
+            os.remove(path)
+        else:
+            if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
+                typo = get_typo(config, path, log)
+
+            if check_file(files, path, config, log) is not False:
+                # Process the file and send it to Maarch
+                OCForInvoices_process.process(path, log, config, files, ocr, locale, database, webservices, typo)
 
     # Empty the tmp dir to avoid residual file
     recursive_delete(tmp_folder, log)

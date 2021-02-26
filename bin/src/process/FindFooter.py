@@ -71,10 +71,11 @@ class FindFooter:
                 if len(result_split) > 1:
                     result = result_split[0] + '.' + result_split[1][0:2]
 
-                if text_as_string:
-                    array_of_data.update({float(result.replace(',', '.')): (('', ''), ('', ''))})
-                else:
-                    array_of_data.update({float(result.replace(',', '.')): self.Files.return_position_with_ratio(line, 'footer')})
+                if result:
+                    if text_as_string:
+                        array_of_data.update({float(result.replace(',', '.')): (('', ''), ('', ''))})
+                    else:
+                        array_of_data.update({float(result.replace(',', '.')): self.Files.return_position_with_ratio(line, 'footer')})
 
         # Check list of no rates amount and select the higher
         if len(array_of_data) > 0:
