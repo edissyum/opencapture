@@ -38,7 +38,7 @@ class SeparatorQR:
         self.nb_pages = 0
         self.error = False
         self.qrList = None
-        self.enabled = False
+        self.enabled = config.cfg['SEPARATORQR']['enabled']
         self.divider = config.cfg['SEPARATORQR']['divider']
         self.convert_to_pdfa = config.cfg['SEPARATORQR']['exportpdfa']
         tmp_folder_name = os.path.basename(os.path.normpath(tmp_folder))
@@ -68,7 +68,7 @@ class SeparatorQR:
         keypoints = detector.detect(im)
         rows, cols, channel = im.shape
         blobs_ratio = len(keypoints) / (1.0 * rows * cols)
-        if blobs_ratio < float(config['SEPARATORQR']['blobsratio']):
+        if blobs_ratio < float(config['REMOVE-BLANK-PAGES']['blobsratio']):
             return True
         return False
 

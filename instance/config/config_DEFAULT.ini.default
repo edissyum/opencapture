@@ -88,7 +88,7 @@ enabled             = False
 exportpdfa          = False
 outputpdfpath       = ${GLOBAL:projectPath}/bin/data/exported_pdf/
 outputpdfapath      = ${GLOBAL:projectPath}/bin/data/exported_pdfa/
-tmppath             = /tmp/
+tmppath             = ${GLOBAL:projectPath}/bin/data/tmp/
 ; _ or - for exemple
 divider             = _
 
