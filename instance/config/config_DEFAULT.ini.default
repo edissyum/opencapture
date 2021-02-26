@@ -79,7 +79,7 @@ urlpattern          = fr|com|net|org|gouv
 
 [SEPARATE_BY_DOCUMENT]
 ; Split document every 2 page (recto/verso)
-enabled = True
+enabled = False
 
 [SEPARATORQR]
 ; True or False, python way
