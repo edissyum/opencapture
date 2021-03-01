@@ -193,7 +193,7 @@ def launch(args):
     # Start process
     if 'path' in args and args['path'] is not None:
         path = args['path']
-        if separator_qr.enabled:
+        if separator_qr.enabled == 'True':
             for fileToSep in os.listdir(path):
                 if check_file(files, path + fileToSep, config, log):
                     separator_qr.run(path + fileToSep)
@@ -220,7 +220,7 @@ def launch(args):
     elif 'file' in args and args['file'] is not None:
         path = args['file']
         typo = ''
-        if separator_qr.enabled:
+        if separator_qr.enabled == 'True':
             if check_file(files, path, config, log) is not False:
                 separator_qr.run(path)
             path = separator_qr.output_dir_pdfa if str2bool(separator_qr.convert_to_pdfa) is True else separator_qr.output_dir
