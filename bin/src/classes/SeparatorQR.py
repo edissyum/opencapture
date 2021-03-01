@@ -17,32 +17,121 @@
 # @dev : Pierre-Yvon Bezert <pierreyvon.bezert@edissyum.com>
 
 import os
-import sys
+import cv2
 import uuid
 import shutil
 import subprocess
 import xml.etree.ElementTree as Et
 import PyPDF4
+import PyPDF2
+from wand.color import Color
+from wand.image import Image as Img
+from wand.api import library
 
 
 class SeparatorQR:
-    def __init__(self, log, config):
-        self.qrList = None
+    def __init__(self, log, config, tmp_folder):
         self.Log = log
+        self.Config = config
         self.pages = []
-        self.nb_pages = 0
         self.nb_doc = 0
-        self.enabled = config.cfg['SEPARATORQR']['enabled']
-        self.output_dir = config.cfg['SEPARATORQR']['outputpdfpath']
-        self.output_dir_pdfa = config.cfg['SEPARATORQR']['outputpdfapath']
-        self.tmp_dir = config.cfg['SEPARATORQR']['tmppath']
-        self.convert_to_pdfa = config.cfg['SEPARATORQR']['exportpdfa']
-        self.divider = config.cfg['SEPARATORQR']['divider']
+        self.nb_pages = 0
         self.error = False
+        self.qrList = None
+        self.enabled = config.cfg['SEPARATORQR']['enabled']
+        self.divider = config.cfg['SEPARATORQR']['divider']
+        self.convert_to_pdfa = config.cfg['SEPARATORQR']['exportpdfa']
+        tmp_folder_name = os.path.basename(os.path.normpath(tmp_folder))
+        self.tmp_dir = config.cfg['SEPARATORQR']['tmppath'] + '/' + tmp_folder_name + '/'
+        self.output_dir = config.cfg['SEPARATORQR']['outputpdfpath'] + '/' + tmp_folder_name + '/'
+        self.output_dir_pdfa = config.cfg['SEPARATORQR']['outputpdfapath'] + '/' + tmp_folder_name + '/'
+
+        os.mkdir(self.output_dir)
+        os.mkdir(self.output_dir_pdfa)
+
+    @staticmethod
+    def is_blank_page(image, config):
+        params = cv2.SimpleBlobDetector_Params()
+        params.minThreshold = 10
+        params.maxThreshold = 200
+        params.filterByArea = True
+        params.minArea = 20
+        params.filterByCircularity = True
+        params.minCircularity = 0.1
+        params.filterByConvexity = True
+        params.minConvexity = 0.87
+        params.filterByInertia = True
+        params.minInertiaRatio = 0.01
+
+        detector = cv2.SimpleBlobDetector_create(params)
+        im = cv2.imread(image)
+        keypoints = detector.detect(im)
+        rows, cols, channel = im.shape
+        blobs_ratio = len(keypoints) / (1.0 * rows * cols)
+        if blobs_ratio < float(config['REMOVE-BLANK-PAGES']['blobsratio']):
+            return True
+        return False
+
+    def remove_blank_page(self, file):
+        with Img(filename=file, resolution=300) as pic:
+            library.MagickResetIterator(pic.wand)
+            pic.scene = 1  # Start cpt of filename at 1 instead of 0
+            pic.compression_quality = 100
+            pic.background_color = Color("white")
+            pic.alpha_channel = 'remove'
+            pic.save(filename=(self.output_dir + '/result.jpg'))
+
+        blank_page_exists = False
+        pages_to_keep = []
+        for _file in os.listdir(self.output_dir):
+            if _file.endswith('.jpg'):
+                if not self.is_blank_page(self.output_dir + '/' + _file, self.Config.cfg):
+                    blank_page_exists = True
+                    pages_to_keep.append(os.path.splitext(_file)[0].split('-')[1])
+                try:
+                    os.remove(self.output_dir + '/' + _file)
+                except FileNotFoundError:
+                    pass
+
+        if blank_page_exists:
+            infile = PyPDF4.PdfFileReader(file)
+            output = PyPDF4.PdfFileWriter()
+            for i in sorted(pages_to_keep):
+                p = infile.getPage(int(i) - 1)
+                output.addPage(p)
+
+            with open(file, 'wb') as f:
+                output.write(f)
+
+    @staticmethod
+    def split_document_every_two_pages(file):
+        path = os.path.dirname(file)
+        file_without_extention = os.path.splitext(os.path.basename(file))[0]
+
+        pdf = PyPDF2.PdfFileReader(open(file, 'rb'))
+        nb_pages = pdf.getNumPages()
+
+        array_of_files = []
+        cpt = 1
+        for i in range(nb_pages):
+            if i % 2 == 0:
+                output = PyPDF2.PdfFileWriter()
+                output.addPage(pdf.getPage(i))
+                if i + 1 < nb_pages:
+                    output.addPage(pdf.getPage(i + 1))
+                newname = path + '/' + file_without_extention + "-" + str(cpt) + ".pdf"
+                with open(newname, "wb") as outputStream:
+                    output.write(outputStream)
+                array_of_files.append(newname)
+                outputStream.close()
+                cpt = cpt + 1
+        return array_of_files
 
     def run(self, file):
         self.pages = []
         try:
+            if self.Config.cfg['REMOVE-BLANK-PAGES']['enabled'] == 'True':
+                self.remove_blank_page(file)
             pdf = PyPDF4.PdfFileReader(open(file, 'rb'))
             self.nb_pages = pdf.getNumPages()
             self.get_xml_qr_code(file)

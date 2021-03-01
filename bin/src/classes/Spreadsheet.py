@@ -130,31 +130,25 @@ class Spreadsheet:
         # Then go through the Excel document and fill our final array with all infos about the provider and the bill
         tmp_excel_content = pd.DataFrame(content_sheet)
         for line in tmp_excel_content.to_dict(orient='records'):
-            if line[self.referencialSupplierArray['typology']] == line[self.referencialSupplierArray['typology']] and \
-                    line[self.referencialSupplierArray['typology']]:
+            if line[self.referencialSupplierArray['typology']] == line[self.referencialSupplierArray['typology']] and line[self.referencialSupplierArray['typology']]:
                 try:
-                    line[self.referencialSupplierArray['typology']] = int(
-                        line[self.referencialSupplierArray['typology']])
+                    line[self.referencialSupplierArray['typology']] = int(line[self.referencialSupplierArray['typology']])
                 except ValueError:
                     line[self.referencialSupplierArray['typology']] = line[self.referencialSupplierArray['typology']]
 
-            if line[self.referencialSupplierArray['SIRET']] == line[self.referencialSupplierArray['SIRET']] and line[
-                self.referencialSupplierArray['SIRET']]:
+            if line[self.referencialSupplierArray['SIRET']] == line[self.referencialSupplierArray['SIRET']] and line[self.referencialSupplierArray['SIRET']]:
                 try:
                     line[self.referencialSupplierArray['SIRET']] = int(line[self.referencialSupplierArray['SIRET']])
                 except ValueError:
                     line[self.referencialSupplierArray['SIRET']] = line[self.referencialSupplierArray['SIRET']]
 
-            if line[self.referencialSupplierArray['SIREN']] == line[self.referencialSupplierArray['SIREN']] and line[
-                self.referencialSupplierArray['SIREN']]:
+            if line[self.referencialSupplierArray['SIREN']] == line[self.referencialSupplierArray['SIREN']] and line[self.referencialSupplierArray['SIREN']]:
                 try:
                     line[self.referencialSupplierArray['SIREN']] = int(line[self.referencialSupplierArray['SIREN']])
                 except ValueError:
                     line[self.referencialSupplierArray['SIREN']] = line[self.referencialSupplierArray['SIREN']]
 
-            if line[self.referencialSupplierArray['adressPostalCode']] == line[
-                self.referencialSupplierArray['adressPostalCode']] and line[
-                self.referencialSupplierArray['adressPostalCode']]:
+            if line[self.referencialSupplierArray['adressPostalCode']] == line[self.referencialSupplierArray['adressPostalCode']] and line[self.referencialSupplierArray['adressPostalCode']]:
                 if len(str(line[self.referencialSupplierArray['adressPostalCode']])) == 4:
                     line[self.referencialSupplierArray['adressPostalCode']] = '0' + str(
                         line[self.referencialSupplierArray['adressPostalCode']])

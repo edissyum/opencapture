@@ -162,6 +162,9 @@
                                                 <option value='{{ user['id'] }}#{{ user['entity_id'] }}'>{{ user['firstname'] }} {{ user['lastname'] }} ({{ user['entity_label'] }})</option>
                                             {% endfor %}
                                         </select>
+                                        <div class="invalid-feedback">
+                                          Ce champ est obligatoire
+                                        </div>
                                     </div>
                                 </div>
                             </div>

@@ -27,6 +27,11 @@
             {% else %}
                 {{ field(class_="form-control") | safe }}
             {% endif %}
+            {% if field.flags.required and field.table != 'suppliers' %}
+                <div class="invalid-feedback">
+                  Ce champ est obligatoire
+                </div>
+            {% endif %}
 
             {% if field.render_kw and 'x1_original' in field.render_kw %}
                 {% set position ='((' + field.render_kw['x1_original']|string + ',' + field.render_kw['y1_original']|string + '),(' + field.render_kw['x2_original']|string + ',' + field.render_kw['y2_original']|string + '))' %}

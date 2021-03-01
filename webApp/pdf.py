@@ -395,7 +395,7 @@ def validate_form():
         if _cfg.cfg['GED']['enabled'] == 'True':
             default_process = _cfg.cfg['GED']['defaultprocess']
             # If it's an invoice about a regular subscription, send it to the GED application using a CLOSED status
-            if 'facturationInfo_isSubscription' in request.form:
+            if 'facturationInfo_is_subscription' in request.form:
                 ged['status'] = _cfg.cfg[default_process]['statusend']
             else:
                 ged['status'] = _cfg.cfg[default_process]['status']
@@ -403,7 +403,8 @@ def validate_form():
             ged['fileContent'] = open(request.form['fileInfo_path'], 'rb').read()
             ged['creationDate'] = request.form['fileInfo_pdf_creation_date']
             ged['date'] = invoice_date
-            ged['dest_user'] = request.form['ged_users'].split('#')[0]
+            if 'ged_users' in request.form and request.form['ged_users']:
+                ged['dest_user'] = request.form['ged_users'].split('#')[0]
             ged['vatNumber'] = vat_number
             ged[_cfg.cfg[default_process]['customvatnumber']] = vat_number
             ged[_cfg.cfg[default_process]['customht']] = request.form['total_ht']

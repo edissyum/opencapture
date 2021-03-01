@@ -104,7 +104,6 @@ class SupplierForm(Form):
     )
     siret_number = CustomStringField(
         lazy_gettext('SIRET_NUMBER'),
-        [validators.required()],
         new_row=True,
         table='suppliers',
         column='siret',
@@ -117,7 +116,6 @@ class SupplierForm(Form):
     )
     siren_number = CustomStringField(
         lazy_gettext('SIREN_NUMBER'),
-        [validators.required()],
         end_row=True,
         table='suppliers',
         column='siren',

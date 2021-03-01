@@ -77,14 +77,18 @@ referencialPosition             = ${GLOBAL:projectPath}/bin/src/referencial/posi
 [REGEX]
 urlpattern          = fr|com|net|org|gouv
 
+[SEPARATE_BY_DOCUMENT]
+; Split document every 2 page (recto/verso)
+enabled = False
+
 [SEPARATORQR]
 ; True or False, python way
 enabled             = False
 ; True or False, python way
 exportpdfa          = False
-outputpdfpath       = ${GLOBAL:projectPath}/data/exported_pdf/
-outputpdfapath      = ${GLOBAL:projectPath}/data/exported_pdfa/
-tmppath             = /tmp/
+outputpdfpath       = ${GLOBAL:projectPath}/bin/data/exported_pdf/
+outputpdfapath      = ${GLOBAL:projectPath}/bin/data/exported_pdfa/
+tmppath             = ${GLOBAL:projectPath}/bin/data/tmp/
 ; _ or - for exemple
 divider             = _
 

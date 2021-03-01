@@ -19,6 +19,7 @@ import json
 import base64
 import requests
 from flask import flash
+from datetime import datetime
 from flask_babel import gettext
 from requests.auth import HTTPBasicAuth
 
@@ -81,14 +82,14 @@ class WebServices:
             'typist': config.cfg[_process]['typist'],
             'subject': args['subject'],
             'destination': args['destination'],
-            'dest_user': args['dest_user'],
             'senders': contact,
             'documentDate': args['date'],
-            'admission_date': args['creationDate'],
+            'arrivaldate': str(datetime.now()),
             'customFields': {},
         }
 
         if 'dest_user' in args:
+            data['dest_user'] = args['dest_user']
             data['diffusionList'] = [{
                 'mode': 'dest',
                 'type': 'user',

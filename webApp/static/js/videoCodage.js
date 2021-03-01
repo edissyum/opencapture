@@ -1025,6 +1025,15 @@ $('#validateForm').on('click', function(){
     let modalBack = $('.modal-backdrop');
     let modalBody = $('.modal-body');
 
+    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+    var forms = document.getElementById('invoice_info');
+    // Loop over them and prevent submission
+    var validation = Array.prototype.filter.call(forms, function (form) {
+        if (form.checkValidity() === false) {
+            form.classList.add('is-invalid');
+        }
+    });
+
     // Verify the total analytics amount and the total HT amount
     let parsedStructure = $('#addStructure').prev()[0].className.split('_');
     let lastCPTStructure = parseInt(parsedStructure[1]);
@@ -1047,7 +1056,7 @@ $('#validateForm').on('click', function(){
         form.find(':submit').click();
         modalBody.html(
                 '<span id="modalError">' +
-                    gt.gettext('FORM_ERROR_OR_EMPTY_FIELD') + ' : ' + form[0].validationMessage +
+                    gt.gettext('FORM_ERROR_OR_EMPTY_FIELD') +
                 '</span>');
     }else if(form[0].checkValidity() && (ratioTotal.val() <= (config.CONTACT['total-ratio'] / 100) && banApiError === false)){ // the banApiError is used to do not block form in case the API isn't working
         modalBody.html('<span id="waitForAdress">' +
@@ -1235,13 +1244,18 @@ function processRatio(percent, input, ratioClass, banInfo, invalidClass){
         input.addClass('is-invalid orangeRatioInput ');
         invalidFeed.addClass('orangeRatio orange_' + input[0].id);
         invalidFeed.html(gt.gettext('FIELD_TO_CHECK') + ' <br>' +
-            gt.gettext('BAN_VALUE') + ' : <span class="font-weight-bold">' + banInfo + '</span>');
+            gt.gettext('BAN_VALUE') + ' : <span class="font-weight-bold"><a style="color:#ED8022; text-decoration: underline" href="#correct" onclick="replaceValue(' + input[0].id + ', \'' + banInfo + '\')">' + banInfo + '</a></span>');
     }else{
         input.addClass('is-invalid redRatioInput');
         invalidFeed.addClass('red_' + input[0].id);
         invalidFeed.html(gt.gettext('INVALID') + ' <br>' +
-            gt.gettext('BAN_VALUE') + ' : <span class="font-weight-bold">' + banInfo + '</span>');
+            gt.gettext('BAN_VALUE') + ' : <span class="font-weight-bold"><a style="color:#ED8022; text-decoration: underline" href="#correct" onclick="replaceValue(' + input[0].id + ', \'' + banInfo + '\')">' + banInfo + '</a></span>');
     }
+}
+
+function replaceValue(id, new_value){
+    id.value = new_value
+    checkAdress()
 }
 
 function verifyTotalAnalytics() {

@@ -17,6 +17,7 @@
 
 import os
 import re
+import ast
 import subprocess
 
 import cv2
@@ -27,12 +28,16 @@ import PyPDF4
 import datetime
 import numpy as np
 from PIL import Image
+from skimage import io
 from PyPDF4 import utils
 from xml.dom import minidom
 from wand.color import Color
 from wand.api import library
+from deskew import determine_skew
+from skimage.color import rgb2gray
 import xml.etree.ElementTree as Et
 from wand.image import Image as Img
+from skimage.transform import rotate
 from wand.exceptions import PolicyError, CacheError
 from werkzeug.utils import secure_filename
 
@@ -478,6 +483,14 @@ class Files:
             cropped_image = im2.crop(crop_ratio)
             cropped_image.save('/tmp/cropped_' + rand + extension)
 
+        # Rotate the image
+        image = cv2.imread('/tmp/cropped_' + rand + extension)
+        grayscale = rgb2gray(image)
+        angle = determine_skew(grayscale)
+        if angle and angle < -80:
+            rotated = rotate(image, angle, resize=True) * 255
+            io.imsave('/tmp/cropped_' + rand + extension, rotated.astype(np.uint8))
+
         if remove_line:
             image = cv2.imread('/tmp/cropped_' + rand + extension)
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -494,6 +507,15 @@ class Files:
 
         cropped_image = Image.open('/tmp/cropped_' + rand + extension)
         text = ocr.text_builder(cropped_image)
+
+        try:
+            litteral_number = ast.literal_eval(text)
+            if type(litteral_number) != int:
+                first_part = str(ast.literal_eval(text)[0]).replace(',', '').replace('.', '')
+                second_part = str(ast.literal_eval(text)[1])
+                text = first_part + '.' + second_part
+        except (ValueError, SyntaxError):
+            pass
 
         if regex:
             for res in re.finditer(r"" + regex, text):
