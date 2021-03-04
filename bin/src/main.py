@@ -79,6 +79,11 @@ if 'Database' not in custom_array:
 else:
     _Database = getattr(__import__(custom_array['Database']['path'] + '.' + custom_array['Database']['module'], fromlist=[custom_array['Database']['module']]), custom_array['Database']['module'])
 
+if 'Mail' not in custom_array:
+    from bin.src.classes.Mail import Mail as _Mail
+else:
+    _Mail = getattr(__import__(custom_array['Mail']['path'] + '.' + custom_array['Mail']['module'], fromlist=[custom_array['Mail']['module']]), custom_array['Mail']['module'])
+
 if 'OCForInvoices' not in custom_array:
     from bin.src.process import OCForInvoices as OCForInvoices_process
 else:
@@ -150,9 +155,15 @@ def launch(args):
     if not os.path.exists(config):
         sys.exit('config file couldn\'t be found')
 
-    config = _Config(config_name.cfg['PROFILE']['cfgpath'] + '/config_' + config_name.cfg['PROFILE']['id'] + '.ini')
+    config = _Config(config)
     locale = _Locale(config)
-    log = _Log(config.cfg['GLOBAL']['logfile'])
+
+    if args.get('isMail') is not None and args['isMail'] is True:
+        log = _Log((args['log']))
+        log.info('Process attachment n°' + args['cpt'] + '/' + args['nb_of_attachments'])
+    else:
+        log = _Log(config.cfg['GLOBAL']['logfile'])
+
     ocr = _PyTesseract(locale.localeOCR, log, config)
     db_type = config.cfg['DATABASE']['databasetype']
     db_user = config.cfg['DATABASE']['postgresuser']
@@ -167,6 +178,10 @@ def launch(args):
     filename = tempfile.NamedTemporaryFile(dir=tmp_folder).name
 
     separator_qr = SeparatorQR(log, config, tmp_folder)
+
+    if args.get('isMail') is None or args.get('isMail') is False:
+        separator_qr.enabled = str2bool(config.cfg['SEPARATORQR']['enabled'])
+
     files = _Files(
         filename,
         int(config.cfg['GLOBAL']['resolution']),
