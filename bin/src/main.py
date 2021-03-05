@@ -89,11 +89,11 @@ if 'OCForInvoices' not in custom_array:
 else:
     OCForInvoices_process = getattr(__import__(custom_array['OCForInvoices']['path'], fromlist=[custom_array['OCForInvoices']['module']]), custom_array['OCForInvoices']['module'])
 
-if 'invoice_classification' not in custom_array:
-    from bin.src.invoice_classification import invoice_classification
-else:
-    invoice_classification = getattr(__import__(custom_array['invoice_classification']['path'], fromlist=[custom_array['invoice_classification']['module']]),
-                                    custom_array['invoice_classification']['module'])
+# if 'invoice_classification' not in custom_array:
+#     from bin.src.invoice_classification import invoice_classification
+# else:
+#     invoice_classification = getattr(__import__(custom_array['invoice_classification']['path'], fromlist=[custom_array['invoice_classification']['module']]),
+#                                     custom_array['invoice_classification']['module'])
 
 OCforInvoices_worker = Kuyruk()
 
@@ -116,22 +116,22 @@ def timer(start_time, end_time):
     return "{:0>2}:{:0>2}:{:05.2f}".format(int(hours), int(minutes), seconds)
 
 
-def get_typo(config, path, log):
-    invoice_classification.MODEL_PATH = config.cfg['AI-CLASSIFICATION']['modelpath']
-    invoice_classification.PREDICT_IMAGES_PATH = config.cfg['AI-CLASSIFICATION']['trainimagepath']
-    invoice_classification.TRAIN_IMAGES_PATH = config.cfg['AI-CLASSIFICATION']['predictimagepath']
-    typo, confidence = invoice_classification.predict_typo(path)
-
-    if typo:
-        if confidence >= config.cfg['AI-CLASSIFICATION']['confidencemin']:
-            log.info('Typology n°' + typo + ' found using AI with a confidence of ' + confidence + '%')
-            return typo
-        else:
-            log.info('Typology can\'t be found using AI, the confidence is too low : Typo n°' + typo + ', confidence : ' + confidence + '%')
-            return False
-    else:
-        log.info('Typology can\'t be found using AI')
-        return False
+# def get_typo(config, path, log):
+#     invoice_classification.MODEL_PATH = config.cfg['AI-CLASSIFICATION']['modelpath']
+#     invoice_classification.PREDICT_IMAGES_PATH = config.cfg['AI-CLASSIFICATION']['trainimagepath']
+#     invoice_classification.TRAIN_IMAGES_PATH = config.cfg['AI-CLASSIFICATION']['predictimagepath']
+#     typo, confidence = invoice_classification.predict_typo(path)
+#
+#     if typo:
+#         if confidence >= config.cfg['AI-CLASSIFICATION']['confidencemin']:
+#             log.info('Typology n°' + typo + ' found using AI with a confidence of ' + confidence + '%')
+#             return typo
+#         else:
+#             log.info('Typology can\'t be found using AI, the confidence is too low : Typo n°' + typo + ', confidence : ' + confidence + '%')
+#             return False
+#     else:
+#         log.info('Typology can\'t be found using AI')
+#         return False
 
 
 def str2bool(value):
@@ -221,8 +221,8 @@ def launch(args):
 
                 # Find file in the wanted folder (default or exported pdf after qrcode separation)
                 typo = ''
-                if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
-                    typo = get_typo(config, path + file, log)
+                # if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
+                #     typo = get_typo(config, path + file, log)
 
                 OCForInvoices_process.process(path + file, log, config, files, ocr, locale, database, webservices, typo)
 
@@ -241,8 +241,8 @@ def launch(args):
             path = separator_qr.output_dir_pdfa if str2bool(separator_qr.convert_to_pdfa) is True else separator_qr.output_dir
 
             for file in os.listdir(path):
-                if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
-                    typo = get_typo(config, path + file, log)
+                # if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
+                #     typo = get_typo(config, path + file, log)
 
                 if check_file(files, path + file, config, log) is not False:
                     # Process the file and send it to Maarch
@@ -250,16 +250,16 @@ def launch(args):
         elif config.cfg['SEPARATE_BY_DOCUMENT']['enabled'] == 'True':
             list_of_files = separator_qr.split_document_every_two_pages(path)
             for file in list_of_files:
-                if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
-                    typo = get_typo(config, file, log)
+                # if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
+                #     typo = get_typo(config, file, log)
 
                 if check_file(files, file, config, log) is not False:
                     # Process the file and send it to Maarch
                     OCForInvoices_process.process(file, log, config, files, ocr, locale, database, webservices, typo)
             os.remove(path)
         else:
-            if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
-                typo = get_typo(config, path, log)
+            # if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
+            #     typo = get_typo(config, path, log)
 
             if check_file(files, path, config, log) is not False:
                 # Process the file and send it to Maarch
