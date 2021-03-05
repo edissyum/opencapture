@@ -38,7 +38,7 @@ class SeparatorQR:
         self.nb_pages = 0
         self.error = False
         self.qrList = None
-        self.enabled = config.cfg['SEPARATORQR']['enabled']
+        self.enabled = False
         self.divider = config.cfg['SEPARATORQR']['divider']
         self.convert_to_pdfa = config.cfg['SEPARATORQR']['exportpdfa']
         tmp_folder_name = os.path.basename(os.path.normpath(tmp_folder))

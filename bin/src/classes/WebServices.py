@@ -84,6 +84,7 @@ class WebServices:
             'destination': args['destination'],
             'senders': contact,
             'documentDate': args['date'],
+            'chrono': True if _process['generate_chrono'] == 'True' else '',
             'arrivaldate': str(datetime.now()),
             'customFields': {},
         }

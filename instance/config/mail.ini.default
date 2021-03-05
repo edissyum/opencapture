@@ -1,0 +1,22 @@
+[GLOBAL]
+batchPath             = /opt/OpenCaptureForInvoices/bin/data/MailCollect/
+# True or False
+importOnlyAttachments = True
+
+[MAIL_1]
+host                 = imap.gmail.com
+port                 = 993
+; True or False
+securedConnection    = True
+login                = test@gmail.com
+; If you have $ in your password, you must double it
+password             = test
+
+folderToCrawl        = _MAARCH
+folderDestination    = _MAARCH_ARCHIVES
+; If folderTrash is empty, mail will be deleted and cannot be retrieve (even in default IMAP trash folder)
+folderTrash          = Trash
+; move, delete or none
+actionAfterProcess   = move
+
+

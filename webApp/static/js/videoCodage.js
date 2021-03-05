@@ -317,7 +317,7 @@ $(document).ready(function() {
         readConfig().then((res) => {    // Put the rest of code into the 'then' to make synchronous API call
             config = res;
             token = getCookie('access_token');
-            if(token === ''){
+            if(token === '' || token === undefined || token === 'undefined'){
                 generateTokenInsee(config.GENERAL['siret-consumer'], config.GENERAL['siret-secret'])
                 .then(function(res) {
                     if (!JSON.parse(res.ok)) {

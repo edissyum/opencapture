@@ -129,6 +129,7 @@ typist               = 21
 priority             = poiuytre1357nbvc
 format               = pdf
 modelId              = 1
+generate_chrono      = True
 defaultDestination   = 1
 defaultDestUser      = 21
 customInvoiceNumber  = 6
