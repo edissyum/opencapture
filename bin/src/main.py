@@ -92,7 +92,7 @@ else:
 if 'invoice_classification' not in custom_array:
     from bin.src.invoice_classification import invoice_classification
 else:
-    OCForInvoices_process = getattr(__import__(custom_array['invoice_classification']['path'], fromlist=[custom_array['invoice_classification']['module']]),
+    invoice_classification = getattr(__import__(custom_array['invoice_classification']['path'], fromlist=[custom_array['invoice_classification']['module']]),
                                     custom_array['invoice_classification']['module'])
 
 OCforInvoices_worker = Kuyruk()
