@@ -65,14 +65,15 @@ class FindFooter:
                         # If two amounts are found, separate them
                         continue
                     number_formatted = t.group()
-                    try:
-                        litteral_number = ast.literal_eval(t.group())
-                        if type(litteral_number) not in [int, float]:
-                            first_part = str(litteral_number[0]).replace(',', '').replace('.', '')
-                            second_part = str(litteral_number[1])
-                            number_formatted = first_part + '.' + second_part
-                    except (ValueError, SyntaxError, TypeError):
-                        pass
+                    if regex != self.Locale.vatRateRegex:
+                        try:
+                            litteral_number = ast.literal_eval(t.group())
+                            if type(litteral_number) not in [int, float]:
+                                first_part = str(litteral_number[0]).replace(',', '').replace('.', '')
+                                second_part = str(litteral_number[1])
+                                number_formatted = first_part + '.' + second_part
+                        except (ValueError, SyntaxError, TypeError):
+                            pass
 
                     result += re.sub('\s*', '', number_formatted).replace(',', '.')
                     i = i + 1
