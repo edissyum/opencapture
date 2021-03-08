@@ -77,7 +77,7 @@ referencialPosition             = ${GLOBAL:projectPath}/bin/src/referencial/posi
 [REGEX]
 urlpattern          = fr|com|net|org|gouv
 
-[SEPARATE_BY_DOCUMENT]
+[SEPARATE-BY-DOCUMENT]
 ; Split document every 2 page (recto/verso)
 enabled = False
 

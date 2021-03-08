@@ -116,6 +116,7 @@ def modify_config(data):
     parser.read(config_file)
 
     separator_qrenabled = data.get('SEPARATORQR_enabled')
+    separate_by_document_enabled = data.get('SEPARATE-BY-DOCUMENT_enabled')
     separator_qrexport_pdfa = data.get('SEPARATORQR_exportpdfa')
     allow_duplicate = data.get('GLOBAL_allowduplicate')
     allow_automatic_validation = data.get('GLOBAL_allowautomaticvalidation')
@@ -123,12 +124,17 @@ def modify_config(data):
     allow_bypass_supplier = data.get('GLOBAL_allowbypasssuppliebanverif')
     ged_enabled = data.get('GED_enabled')
     ai_enabled = data.get('AI-CLASSIFICATION_enabled')
-    remove_blank_page_enabled = data.get('REMOVEBLANKPAGES_enabled')
+    remove_blank_page_enabled = data.get('REMOVE-BLANK-PAGES_enabled')
 
     if separator_qrenabled is not None:
         parser.set('SEPARATORQR', 'enabled', 'True')
     else:
         parser.set('SEPARATORQR', 'enabled', 'False')
+
+    if separate_by_document_enabled is not None:
+        parser.set('SEPARATE-BY-DOCUMENT', 'enabled', 'True')
+    else:
+        parser.set('SEPARATE-BY-DOCUMENT', 'enabled', 'False')
 
     if separator_qrexport_pdfa is not None:
         parser.set('SEPARATORQR', 'exportpdfa', 'True')
