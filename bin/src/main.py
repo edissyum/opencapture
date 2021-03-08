@@ -247,7 +247,7 @@ def launch(args):
                 if check_file(files, path + file, config, log) is not False:
                     # Process the file and send it to Maarch
                     OCForInvoices_process.process(path + file, log, config, files, ocr, locale, database, webservices, typo)
-        elif config.cfg['SEPARATE_BY_DOCUMENT']['enabled'] == 'True':
+        elif config.cfg['SEPARATE-BY-DOCUMENT']['enabled'] == 'True':
             list_of_files = separator_qr.split_document_every_two_pages(path)
             for file in list_of_files:
                 # if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
