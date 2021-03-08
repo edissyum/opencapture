@@ -511,10 +511,10 @@ class Files:
         try:
             litteral_number = ast.literal_eval(text)
             if type(litteral_number) != int:
-                first_part = str(ast.literal_eval(text)[0]).replace(',', '').replace('.', '')
-                second_part = str(ast.literal_eval(text)[1])
+                first_part = str(litteral_number[0]).replace(',', '').replace('.', '')
+                second_part = str(litteral_number[1])
                 text = first_part + '.' + second_part
-        except (ValueError, SyntaxError):
+        except (ValueError, SyntaxError, TypeError):
             pass
 
         if regex:

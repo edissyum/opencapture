@@ -818,6 +818,14 @@
                                             <label class="custom-control-label" for="enabled">{{ gettext('ENABLED') }}</label>
                                         </div>
                                         <div class="form-group col-md-4 offset-md-6">
+                                            {% if configDashboard['SEPARATE-BY-DOCUMENT']['enabled'] == 'True' %}
+                                                <input type="checkbox" class="custom-control-input" name="SEPARATE-BY-DOCUMENT_enabled"  id="SEPARATE-BY-DOCUMENT_enabled" checked>
+                                            {% else %}
+                                                <input type="checkbox" class="custom-control-input" name="SEPARATE-BY-DOCUMENT_enabled" id="SEPARATE-BY-DOCUMENT_enabled">
+                                            {% endif %}
+                                            <label class="custom-control-label" for="SEPARATE-BY-DOCUMENT_enabled">{{ gettext('SEPARATE_BY_DOCUMENT') }}</label>
+                                        </div>
+                                        <div class="form-group col-md-4 offset-md-6">
                                             {% if configDashboard['SEPARATORQR']['exportpdfa'] == 'True' %}
                                                 <input type="checkbox" class="custom-control-input" name="SEPARATORQR_exportpdfa" id="exportPdfa" checked>
                                             {% else %}
@@ -882,11 +890,11 @@
                                     <div class="tab-pane fade" id="lad_blank" role="tabpanel">
                                         <div class="form-group col-md-4 offset-md-6">
                                             {% if configDashboard['REMOVE-BLANK-PAGES']['enabled'] == 'True' %}
-                                                <input type="checkbox" class="custom-control-input" name="REMOVEBLANKPAGES_enabled"  id="REMOVEBLANKPAGES_enabled" checked>
+                                                <input type="checkbox" class="custom-control-input" name="REMOVE-BLANK-PAGES_enabled"  id="REMOVE-BLANK-PAGES_enabled" checked>
                                             {% else %}
-                                                <input type="checkbox" class="custom-control-input" name="REMOVEBLANKPAGES_enabled" id="REMOVEBLANKPAGES_enabled">
+                                                <input type="checkbox" class="custom-control-input" name="REMOVE-BLANK-PAGES_enabled" id="REMOVE-BLANK-PAGES_enabled">
                                             {% endif %}
-                                            <label class="custom-control-label" for="REMOVEBLANKPAGES_enabled">{{ gettext('ENABLED') }}</label>
+                                            <label class="custom-control-label" for="REMOVE-BLANK-PAGES_enabled">{{ gettext('ENABLED') }}</label>
                                         </div>
                                         <div class="form-row">
                                              <div class="form-group col-md-4">
@@ -897,7 +905,7 @@
                                                             <i class="fas fa-percent"></i>
                                                         </div>
                                                     </div>
-                                                    <input type="text" class="form-control" id="blobsRatio" name="REMOVEBLANKPAGES_blobsratio" value="{{ configDashboard['REMOVE-BLANK-PAGES']['blobsratio'] }}">
+                                                    <input type="text" class="form-control" id="blobsRatio" name="REMOVE-BLANK-PAGES_blobsratio" value="{{ configDashboard['REMOVE-BLANK-PAGES']['blobsratio'] }}">
                                                 </div>
                                                 <small id="blobsratioHelp" class="form-text text-muted">
                                                     {{ gettext('BLOBSRATIO_HELP') }}

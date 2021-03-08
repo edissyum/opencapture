@@ -14,7 +14,7 @@
 # along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
-
+import ast
 import re
 import operator
 from webApp.functions import search_by_positions, search_custom_positions
@@ -55,17 +55,26 @@ class FindFooter:
                 content = line.content
 
             for res in re.finditer(r"" + regex + "", content.upper()):
-
                 # Retrieve only the number and add it in array
                 # In case of multiple no rates amount found, take the higher
-                tmp = re.finditer(r'[-+]?\d*[.,]+\d+|\d+', res.group())
+                tmp = re.finditer(r'[-+]?\d*[.,]+\d+([.,]+\d+)?|\d+', res.group())
                 result = ''
                 i = 0
                 for t in tmp:
                     if ('.' in t.group() or ',' in t.group()) and i > 1:
                         # If two amounts are found, separate them
                         continue
-                    result += re.sub('\s*', '', t.group()).replace(',', '.')
+                    number_formatted = t.group()
+                    try:
+                        litteral_number = ast.literal_eval(t.group())
+                        if type(litteral_number) not in [int, float]:
+                            first_part = str(litteral_number[0]).replace(',', '').replace('.', '')
+                            second_part = str(litteral_number[1])
+                            number_formatted = first_part + '.' + second_part
+                    except (ValueError, SyntaxError, TypeError):
+                        pass
+
+                    result += re.sub('\s*', '', number_formatted).replace(',', '.')
                     i = i + 1
                 result_split = result.split('.')
                 if len(result_split) > 1:
