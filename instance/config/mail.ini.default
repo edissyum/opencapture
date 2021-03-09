@@ -1,7 +1,5 @@
 [GLOBAL]
 batchPath             = /opt/OpenCaptureForInvoices/bin/data/MailCollect/
-# True or False
-importOnlyAttachments = True
 
 [MAIL_1]
 host                 = imap.gmail.com
