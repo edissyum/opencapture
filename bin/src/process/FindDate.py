@@ -68,7 +68,7 @@ class FindDate:
                     self.Log.info("Date is older than " + str(self.Config.cfg['GLOBAL']['timedelta']) + " days or in the future : " + date)
                     date = False
             return date, position
-        except ValueError:
+        except (ValueError, IndexError):
             self.Log.info("Date wasn't in a good format : " + date)
             return False
 
