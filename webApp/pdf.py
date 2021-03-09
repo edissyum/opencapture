@@ -654,7 +654,7 @@ def populate_form(form, pdf_info, position_dict, _db):
                 'table': table,
                 'where': where,
                 'data': data,
-            })[0]
+            })
 
             if res and res[0]:
                 field.data = res[0][field.column]
