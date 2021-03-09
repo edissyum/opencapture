@@ -110,7 +110,6 @@ folder_trash = cfg['foldertrash']
 action = cfg['actionafterprocess']
 folder_to_crawl = cfg['foldertocrawl']
 folder_destination = cfg['folderdestination']
-import_only_attachments = str2bool(config_mail.cfg['GLOBAL']['importonlyattachments'])
 Mail.test_connection(secured_connection)
 
 if action == 'delete':
@@ -142,7 +141,6 @@ if check:
 
         Log = logClass.Log(batch_path + '/' + date_batch + '.log')
         Log.info('Start following batch : ' + os.path.basename(os.path.normpath(batch_path)))
-        Log.info('Import only attachments is : ' + str(import_only_attachments))
         Log.info('Action after processing e-mail is : ' + action)
         Log.info('Number of e-mail to process : ' + str(len(emails)))
 

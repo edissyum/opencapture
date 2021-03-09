@@ -19,6 +19,7 @@ psycopg2
 pdf2image
 gitpython
 unidecode
+imap-tools
 tensorflow
 flask_cors
 xlsxwriter

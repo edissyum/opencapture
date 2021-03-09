@@ -656,8 +656,8 @@ def populate_form(form, pdf_info, position_dict, _db):
                 'data': data,
             })[0]
 
-            if res:
-                field.data = res[field.column]
+            if res and res[0]:
+                field.data = res[0][field.column]
 
         if field.render_kw:
             if field.table == 'suppliers':
