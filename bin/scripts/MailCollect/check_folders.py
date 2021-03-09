@@ -22,12 +22,12 @@ from imap_tools import MailBox, MailBoxUnencrypted
 
 hostname = ''
 port = 143
-isSSL = False
+securedConnection = False
 login = ''
 password = ''
 
 try:
-    if isSSL:
+    if securedConnection:
         conn = MailBox(host=hostname, port=port)
     else:
         conn = MailBoxUnencrypted(host=hostname, port=port)
