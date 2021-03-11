@@ -48,8 +48,20 @@ class FindDeliveryNumber:
             if position and position['delivery_number_1_position']:
                 data = {'position': position['delivery_number_1_position'], 'regex': None, 'target': 'full', 'page': '1'}
                 text, position = search_custom_positions(data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
+                for _delivery in re.finditer(r"" + self.Locale.deliveryNumberRegex + "", text.upper()):
+                    delivery_res = _delivery.group()
+                    # If the regex return a date, remove it
+                    for _date in re.finditer(r"" + self.Locale.dateRegex + "", _delivery.group()):
+                        if _date.group():
+                            delivery_res = _delivery.group().replace(_date.group(), '')
 
-                if text != '':
+                    tmp_delivery_number = re.sub(r"" + self.Locale.deliveryNumberRegex[:-2] + "", '', delivery_res)  # Delete the delivery number keyword
+                    delivery_number = tmp_delivery_number.lstrip().split(' ')[0]
+
+                    if delivery_number != '':
+                        self.Log.info('Delivery number found with position : ' + delivery_number)
+                        return [delivery_number, position, data['page']]
+                if text != "":
                     self.Log.info('Delivery number found with position : ' + text)
                     return [text, position, data['page']]
 
