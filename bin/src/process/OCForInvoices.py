@@ -347,7 +347,6 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
     # Find order number
     order_number_class = FindOrderNumber(ocr, files, log, locale, config, database, supplier, file, typo, ocr.header_text, 1, False)
     order_number = order_number_class.run()
-    print(order_number)
 
     file_name = str(uuid.uuid4())
     full_jpg_filename = 'full_' + file_name + '-%03d.jpg'
