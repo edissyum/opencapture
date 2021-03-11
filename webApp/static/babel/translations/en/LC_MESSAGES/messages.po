@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2021-03-08 10:49+0100\n"
+"POT-Creation-Date: 2021-03-11 09:34+0100\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: en\n"
@@ -82,75 +82,71 @@ msgstr "SIRET Number"
 msgid "SIREN_NUMBER"
 msgstr "SIREN Number"
 
-#: webApp/forms.py:136
-msgid "INVOICE_WITHOUT_ORDER"
-msgstr "Invoice without order"
-
-#: webApp/forms.py:143
-msgid "INVOICE_WITHOUT_DELIVERY_FORM"
-msgstr "Invoice without delivery form"
-
 #: webApp/forms.py:151 webApp/static/js/videoCodage.js:641
 msgid "ORDER_NUMBER"
 msgstr "Order number"
 
-#: webApp/forms.py:157 webApp/static/js/videoCodage.js:699
+#: webApp/forms.py:169 webApp/static/js/videoCodage.js:699
 msgid "DELIVERY_FORM_NUMBER"
 msgstr "Delivery form number"
 
-#: webApp/forms.py:163 webApp/templates/dashboard/index.html:691
+#: webApp/forms.py:187 webApp/templates/dashboard/index.html:691
 #: webApp/templates/pdf/list.html:96
 msgid "INVOICE_NUMBER"
 msgstr "Invoice number"
 
-#: webApp/forms.py:181 webApp/templates/pdf/list.html:97
+#: webApp/forms.py:203 webApp/templates/pdf/list.html:97
 msgid "INVOICE_DATE"
 msgstr "Invoice date"
 
-#: webApp/forms.py:199 webApp/static/js/videoCodage.js:487
+#: webApp/forms.py:221
+msgid "DUE_DATE"
+msgstr "Due date"
+
+#: webApp/forms.py:238 webApp/static/js/videoCodage.js:487
 #: webApp/templates/dashboard/index.html:799
 msgid "VAT_RATE"
 msgstr "VAT rate"
 
-#: webApp/forms.py:219 webApp/forms.py:276 webApp/static/js/videoCodage.js:496
+#: webApp/forms.py:258 webApp/forms.py:315 webApp/static/js/videoCodage.js:496
 #: webApp/static/js/videoCodage.js:594
 #: webApp/templates/dashboard/index.html:777
 msgid "NO_RATE_AMOUNT"
 msgstr "No rate amount"
 
-#: webApp/forms.py:237 webApp/static/js/videoCodage.js:505
+#: webApp/forms.py:276 webApp/static/js/videoCodage.js:505
 msgid "LOAD_ACCOUNT"
 msgstr "Load account"
 
-#: webApp/forms.py:248 webApp/pdf.py:583 webApp/static/js/videoCodage.js:507
+#: webApp/forms.py:287 webApp/pdf.py:583 webApp/static/js/videoCodage.js:507
 msgid "SELECT_LOAD_ACCOUNT"
 msgstr "Select a load account"
 
-#: webApp/forms.py:252
+#: webApp/forms.py:291
 msgid "TOTAL_NO_RATE"
 msgstr "Total without rate"
 
-#: webApp/forms.py:259 webApp/templates/dashboard/index.html:788
+#: webApp/forms.py:298 webApp/templates/dashboard/index.html:788
 msgid "TOTAL_TTC"
 msgstr "Total including taxes"
 
-#: webApp/forms.py:264 webApp/static/js/videoCodage.js:524
+#: webApp/forms.py:303 webApp/static/js/videoCodage.js:524
 msgid "VAT_AMOUNT"
 msgstr "VAT amount"
 
-#: webApp/forms.py:285 webApp/static/js/videoCodage.js:600
+#: webApp/forms.py:324 webApp/static/js/videoCodage.js:600
 msgid "BUDGET"
 msgstr "Budget"
 
-#: webApp/forms.py:289 webApp/static/js/videoCodage.js:602
+#: webApp/forms.py:328 webApp/static/js/videoCodage.js:602
 msgid "SELECT_STRUCTURE"
 msgstr "Select a structure"
 
-#: webApp/forms.py:293 webApp/static/js/videoCodage.js:608
+#: webApp/forms.py:332 webApp/static/js/videoCodage.js:608
 msgid "OUTCOME"
 msgstr "Outcome"
 
-#: webApp/forms.py:298
+#: webApp/forms.py:337
 msgid "SELECT_OUTCOME"
 msgstr "Select an outcome"
 
@@ -1364,7 +1360,4 @@ msgstr "Error while uploading file(s)"
 
 msgid "CHOOSE_VAT_RATE"
 msgstr "Choose VAT rate"
-
-#~ msgid "ENABLE_BLANK_PAGE_SEPARATION"
-#~ msgstr ""
 

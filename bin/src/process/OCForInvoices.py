@@ -56,6 +56,18 @@ else:
     FindInvoiceNumber = getattr(__import__(custom_array['FindInvoiceNumber']['path'] + '.' + custom_array['FindInvoiceNumber']['module'], fromlist=[custom_array['FindInvoiceNumber']['module']]),
                                 custom_array['FindInvoiceNumber']['module'])
 
+# if 'FindDeliveryNumber' not in custom_array:
+#     from bin.src.process.FindDeliveryNumber import FindDeliveryNumber
+# else:
+#     FindDeliveryNumber = getattr(__import__(custom_array['FindDeliveryNumber']['path'] + '.' + custom_array['FindDeliveryNumber']['module'], fromlist=[custom_array['FindDeliveryNumber']['module']]),
+#                                 custom_array['FindDeliveryNumber']['module'])
+#
+# if 'FindOrderNumber' not in custom_array:
+#     from bin.src.process.FindOrderNumber import FindOrderNumber
+# else:
+#     FindOrderNumber = getattr(__import__(custom_array['FindOrderNumber']['path'] + '.' + custom_array['FindOrderNumber']['module'], fromlist=[custom_array['FindOrderNumber']['module']]),
+#                                 custom_array['FindOrderNumber']['module'])
+
 if 'Spreadsheet' not in custom_array:
     from bin.src.classes.Spreadsheet import Spreadsheet as _Spreadsheet
 else:
@@ -89,6 +101,9 @@ def insert(database, log, files, config, supplier, file, invoice_number, date, f
         'invoice_date': date[0] if date and date[0] else '',
         'invoice_date_position': str(date[1]) if date and date[1] else '',
         'invoice_date_page': str(date[2]) if date and date[2] else '1',
+        'invoice_due_date': str(date[3][0]) if date and date[3] else '',
+        'invoice_due_date_position': str(date[3][1]) if date and date[3] else '',
+        'invoice_due_date_page': str(date[2]) if date and date[2] else '1',
         'invoice_number': invoice_number[0] if invoice_number and invoice_number[0] else '',
         'invoice_number_position': str(invoice_number[1]) if invoice_number and invoice_number[1] else '',
         'invoice_number_page': str(invoice_number[2]) if invoice_number and invoice_number[2] else '1',

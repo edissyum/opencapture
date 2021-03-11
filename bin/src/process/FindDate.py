@@ -81,6 +81,16 @@ class FindDate:
                 return date
             return False
 
+    def process_due_date(self, line, position):
+        regex = self.Locale.dueDateRegex + self.Locale.dateRegex
+        for _date in re.finditer(r"" + regex + "", line):
+            for res in re.finditer(r"" + self.Locale.dateRegex + "", line):
+                date = self.format_date(res.group(), position, True)
+                if date and date[0]:
+                    self.Log.info('Due date found : ' + str(date[0]))
+                    return date
+                return False
+
     def run(self):
         if self.Files.isTiff == 'True':
             target = self.Files.tiffName_header
@@ -98,11 +108,17 @@ class FindDate:
                 else:
                     return [res[0], res[1], '']
 
+        due_date = False
+        for line in self.text:
+            due_date = self.process_due_date(re.sub(r'(\d)\s+(\d)', r'\1\2', line.content.upper()), line.position)
+            if due_date:
+                break
+
         for line in self.text:
             res = self.process(re.sub(r'(\d)\s+(\d)', r'\1\2', line.content), line.position)
             if not res:
                 res = self.process(line.content, line.position)
                 if res:
-                    return [res[0], res[1], self.nbPages]
+                    return [res[0], res[1], self.nbPages, due_date]
             else:
-                return [res[0], res[1], self.nbPages]
+                return [res[0], res[1], self.nbPages, due_date]

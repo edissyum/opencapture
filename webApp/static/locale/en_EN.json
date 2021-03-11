@@ -62,14 +62,18 @@
         ]
     },
     "dateRegex"         : "(\\d{4}\\s?|[/,-]\\d{1,2}[/,-]\\d{1,2}|\\d{1,2}\\s?[JFMASONDjfmasond][a-zA-Z_À-ÿ]*\\s?\\d{2,4})",
+    "dueDateRegex" : "",
     "VATNumberRegex"    : "(GB)?([0-9]{9}([0-9]{3})?|[A-Z]{2}[0-9]{3})",
+    "invoiceRegex"      : "",
+    "invoiceSizeMin"    : "6",
     "dateTimeFormat"    : "%Y %m %d",
     "formatDate"        : "%Y-%m-%d",
     "SIRETRegex"        : "[0-9]{14}",
     "SIRENRegex"        : "[0-9]{9}",
-    "invoiceRegex"      : "",
-    "invoiceSizeMin"    : "6",
-    "allRatesRegex"     : "",
+    "deliveryNumberRegex": "",
+    "orderNumberRegex"  : "",
     "noRatesRegex"      : "",
-    "vatRateRegex"      : ""
+    "allRatesRegex"     : "",
+    "vatRateRegex"      : "",
+    "vatAmountRegex"    : ""
 }
