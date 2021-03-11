@@ -98,6 +98,11 @@ class Spreadsheet:
         content_sheet = pd.read_excel(referencial_spreadsheet, engine='openpyxl')
         return content_sheet
 
+    @staticmethod
+    def read_csv_sheet(referencial_spreadsheet):
+        content_sheet = pd.read_csv(referencial_spreadsheet, sep=";")
+        return content_sheet
+
     def read_ods_sheet(self, referencial_spreadsheet):
         content_sheet = get_data(referencial_spreadsheet)
         content_sheet = content_sheet['Fournisseur']
