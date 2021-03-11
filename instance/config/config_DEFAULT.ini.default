@@ -1,6 +1,5 @@
 [GLOBAL]
 ; Use ${GLOBAL:projectPath} to specify once for all the path of the project
-nbthreads                   = 5
 resolution                  = 300
 compressionquality          = 100
 ; Used to fix potential OCR error into mail detection
@@ -73,9 +72,6 @@ referencialfinancial            = ${GLOBAL:projectPath}/bin/src/referencial/plan
 referencialSupplierDocumentPath = ${GLOBAL:projectPath}/bin/src/referencial/default_referencial_supplier.ods
 referencialSupplierIndexpath    = ${GLOBAL:projectPath}/bin/src/referencial/default_referencial_supplier_index.json
 referencialPosition             = ${GLOBAL:projectPath}/bin/src/referencial/positions/
-
-[REGEX]
-urlpattern          = fr|com|net|org|gouv
 
 [SEPARATE-BY-DOCUMENT]
 ; Split document every 2 page (recto/verso)
