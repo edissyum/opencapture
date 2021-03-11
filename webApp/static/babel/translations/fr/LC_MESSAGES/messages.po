@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2021-03-08 10:49+0100\n"
+"POT-Creation-Date: 2021-03-11 09:34+0100\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: fr\n"
@@ -86,75 +86,71 @@ msgstr "Numéro de SIRET"
 msgid "SIREN_NUMBER"
 msgstr "Numéro de SIREN"
 
-#: webApp/forms.py:136
-msgid "INVOICE_WITHOUT_ORDER"
-msgstr "Facture sans commande"
-
-#: webApp/forms.py:143
-msgid "INVOICE_WITHOUT_DELIVERY_FORM"
-msgstr "Facture sans bon de livraison"
-
 #: webApp/forms.py:151 webApp/static/js/videoCodage.js:641
 msgid "ORDER_NUMBER"
 msgstr "Numéro de commande"
 
-#: webApp/forms.py:157 webApp/static/js/videoCodage.js:699
+#: webApp/forms.py:169 webApp/static/js/videoCodage.js:699
 msgid "DELIVERY_FORM_NUMBER"
 msgstr "Numéro de bon de livraison"
 
-#: webApp/forms.py:163 webApp/templates/dashboard/index.html:691
+#: webApp/forms.py:187 webApp/templates/dashboard/index.html:691
 #: webApp/templates/pdf/list.html:96
 msgid "INVOICE_NUMBER"
 msgstr "Numéro de facture"
 
-#: webApp/forms.py:181 webApp/templates/pdf/list.html:97
+#: webApp/forms.py:203 webApp/templates/pdf/list.html:97
 msgid "INVOICE_DATE"
 msgstr "Date de la facture"
 
-#: webApp/forms.py:199 webApp/static/js/videoCodage.js:487
+#: webApp/forms.py:221
+msgid "DUE_DATE"
+msgstr "Date d'échéance"
+
+#: webApp/forms.py:238 webApp/static/js/videoCodage.js:487
 #: webApp/templates/dashboard/index.html:799
 msgid "VAT_RATE"
 msgstr "Taux de TVA"
 
-#: webApp/forms.py:219 webApp/forms.py:276 webApp/static/js/videoCodage.js:496
+#: webApp/forms.py:258 webApp/forms.py:315 webApp/static/js/videoCodage.js:496
 #: webApp/static/js/videoCodage.js:594
 #: webApp/templates/dashboard/index.html:777
 msgid "NO_RATE_AMOUNT"
 msgstr "Montant HT"
 
-#: webApp/forms.py:237 webApp/static/js/videoCodage.js:505
+#: webApp/forms.py:276 webApp/static/js/videoCodage.js:505
 msgid "LOAD_ACCOUNT"
 msgstr "Compte de charge"
 
-#: webApp/forms.py:248 webApp/pdf.py:583 webApp/static/js/videoCodage.js:507
+#: webApp/forms.py:287 webApp/pdf.py:583 webApp/static/js/videoCodage.js:507
 msgid "SELECT_LOAD_ACCOUNT"
 msgstr "Selectionnez un compte de charge"
 
-#: webApp/forms.py:252
+#: webApp/forms.py:291
 msgid "TOTAL_NO_RATE"
 msgstr "Total HT"
 
-#: webApp/forms.py:259 webApp/templates/dashboard/index.html:788
+#: webApp/forms.py:298 webApp/templates/dashboard/index.html:788
 msgid "TOTAL_TTC"
 msgstr "Total TTC"
 
-#: webApp/forms.py:264 webApp/static/js/videoCodage.js:524
+#: webApp/forms.py:303 webApp/static/js/videoCodage.js:524
 msgid "VAT_AMOUNT"
 msgstr "Montant TVA"
 
-#: webApp/forms.py:285 webApp/static/js/videoCodage.js:600
+#: webApp/forms.py:324 webApp/static/js/videoCodage.js:600
 msgid "BUDGET"
 msgstr "Budget"
 
-#: webApp/forms.py:289 webApp/static/js/videoCodage.js:602
+#: webApp/forms.py:328 webApp/static/js/videoCodage.js:602
 msgid "SELECT_STRUCTURE"
 msgstr "Selectionnez une structure"
 
-#: webApp/forms.py:293 webApp/static/js/videoCodage.js:608
+#: webApp/forms.py:332 webApp/static/js/videoCodage.js:608
 msgid "OUTCOME"
 msgstr "Dépenses"
 
-#: webApp/forms.py:298
+#: webApp/forms.py:337
 msgid "SELECT_OUTCOME"
 msgstr "Choix de la dépense"
 
@@ -1371,4 +1367,9 @@ msgstr "Erreurs lors du téléchargement du/des fichier(s)"
 msgid "CHOOSE_VAT_RATE"
 msgstr "Selectionnez un taux de TVA"
 
+#~ msgid "INVOICE_WITHOUT_ORDER"
+#~ msgstr "Facture sans commande"
+
+#~ msgid "INVOICE_WITHOUT_DELIVERY_FORM"
+#~ msgstr "Facture sans bon de livraison"
 

@@ -132,40 +132,62 @@ class FacturationForm(Form):
     # The xml_index is mandatory when you create a new input class
     xml_index = 'facturationInfo'
 
-    noCommands = CustomBooleanField(
-        lazy_gettext('INVOICE_WITHOUT_ORDER'),
-        render_kw={
-            'checked': '',
-            'onclick': "removeAllOrderNumber($(this), $('.main_order_0'))"
-        },
-    )
-    noDelivery = CustomBooleanField(
-        lazy_gettext('INVOICE_WITHOUT_DELIVERY_FORM'),
-        render_kw={
-            'checked': '',
-            'onclick': "removeAllDeliveryNumber($(this), $('.main_order_0'))"
-        },
-    )
+    # noCommands = CustomBooleanField(
+    #     lazy_gettext('INVOICE_WITHOUT_ORDER'),
+    #     render_kw={
+    #         'checked': '',
+    #         'onclick': "removeAllOrderNumber($(this), $('.main_order_0'))"
+    #     },
+    # )
+    # noDelivery = CustomBooleanField(
+    #     lazy_gettext('INVOICE_WITHOUT_DELIVERY_FORM'),
+    #     render_kw={
+    #         'checked': '',
+    #         'onclick': "removeAllDeliveryNumber($(this), $('.main_order_0'))"
+    #     },
+    # )
 
     order_number_1 = CustomStringField(
         lazy_gettext('ORDER_NUMBER'),
-        form_group_class="main_order_1",
-        hidden=True,
+        new_row=True,
+        form_group_class="main_order_1 col-md-6",
+        table='invoices',
+        column='order_number_1',
+        is_position=True,
+        render_kw={
+            'x1_original': '',
+            'y1_original': '',
+            'x2_original': '',
+            'y2_original': '',
+            'page': '',
+            'onfocusout': "ocrOnFly(true, this, true); removeRectangle()",
+            'onfocusin': "ocrOnFly(false, this, true)"
+        }
     )
 
     delivery_number_1 = CustomStringField(
         lazy_gettext('DELIVERY_FORM_NUMBER'),
-        form_group_class="main_delivery_1",
-        hidden=True,
+        end_row=True,
+        form_group_class="main_delivery_1 col-md-6",
+        table='invoices',
+        column='delivery_number_1',
+        is_position=True,
+        render_kw={
+            'x1_original': '',
+            'y1_original': '',
+            'x2_original': '',
+            'y2_original': '',
+            'page': '',
+            'onfocusout': "ocrOnFly(true, this, true); removeRectangle()",
+            'onfocusin': "ocrOnFly(false, this, true)"
+        }
     )
 
     invoice_number = CustomStringField(
         lazy_gettext('INVOICE_NUMBER'),
         [validators.required()],
-        new_row=True,
         table='invoices',
         column='invoice_number',
-        form_group_class='col-md-6',
         is_position=True,
         render_kw={
             'x1_original': '',
@@ -180,9 +202,26 @@ class FacturationForm(Form):
     invoice_date = CustomStringField(
         lazy_gettext('INVOICE_DATE'),
         [validators.required()],
-        end_row=True,
+        new_row=True,
         table='invoices',
         column='invoice_date',
+        form_group_class='col-md-6',
+        is_position=True,
+        is_date_type=True,
+        render_kw={
+            'x1_original': '',
+            'y1_original': '',
+            'x2_original': '',
+            'y2_original': '',
+            'page': ''
+        }
+    )
+
+    due_date = CustomStringField(
+        lazy_gettext('DUE_DATE'),
+        end_row=True,
+        table='invoices',
+        column='invoice_due_date',
         form_group_class='col-md-6',
         is_position=True,
         is_date_type=True,

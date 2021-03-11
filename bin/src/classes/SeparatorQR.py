@@ -28,6 +28,7 @@ import PyPDF4
 import PyPDF2
 import pdf2image
 
+
 class SeparatorQR:
     def __init__(self, log, config, tmp_folder):
         self.Log = log
