@@ -56,17 +56,17 @@ else:
     FindInvoiceNumber = getattr(__import__(custom_array['FindInvoiceNumber']['path'] + '.' + custom_array['FindInvoiceNumber']['module'], fromlist=[custom_array['FindInvoiceNumber']['module']]),
                                 custom_array['FindInvoiceNumber']['module'])
 
-# if 'FindDeliveryNumber' not in custom_array:
-#     from bin.src.process.FindDeliveryNumber import FindDeliveryNumber
-# else:
-#     FindDeliveryNumber = getattr(__import__(custom_array['FindDeliveryNumber']['path'] + '.' + custom_array['FindDeliveryNumber']['module'], fromlist=[custom_array['FindDeliveryNumber']['module']]),
-#                                 custom_array['FindDeliveryNumber']['module'])
-#
-# if 'FindOrderNumber' not in custom_array:
-#     from bin.src.process.FindOrderNumber import FindOrderNumber
-# else:
-#     FindOrderNumber = getattr(__import__(custom_array['FindOrderNumber']['path'] + '.' + custom_array['FindOrderNumber']['module'], fromlist=[custom_array['FindOrderNumber']['module']]),
-#                                 custom_array['FindOrderNumber']['module'])
+if 'FindDeliveryNumber' not in custom_array:
+    from bin.src.process.FindDeliveryNumber import FindDeliveryNumber
+else:
+    FindDeliveryNumber = getattr(__import__(custom_array['FindDeliveryNumber']['path'] + '.' + custom_array['FindDeliveryNumber']['module'], fromlist=[custom_array['FindDeliveryNumber']['module']]),
+                                custom_array['FindDeliveryNumber']['module'])
+
+if 'FindOrderNumber' not in custom_array:
+    from bin.src.process.FindOrderNumber import FindOrderNumber
+else:
+    FindOrderNumber = getattr(__import__(custom_array['FindOrderNumber']['path'] + '.' + custom_array['FindOrderNumber']['module'], fromlist=[custom_array['FindOrderNumber']['module']]),
+                                custom_array['FindOrderNumber']['module'])
 
 if 'Spreadsheet' not in custom_array:
     from bin.src.classes.Spreadsheet import Spreadsheet as _Spreadsheet
@@ -75,7 +75,7 @@ else:
                            custom_array['Spreadsheet']['module'])
 
 
-def insert(database, log, files, config, supplier, file, invoice_number, date, footer, nb_pages, full_jpg_filename, tiff_filename, status, custom_columns, original_file):
+def insert(database, log, files, config, supplier, file, invoice_number, date, footer, nb_pages, full_jpg_filename, tiff_filename, status, custom_columns, original_file, delivery_number, order_number):
     if files.isTiff == 'True':
         try:
             filename = os.path.splitext(files.custom_fileName_tiff)
@@ -107,6 +107,10 @@ def insert(database, log, files, config, supplier, file, invoice_number, date, f
         'invoice_number': invoice_number[0] if invoice_number and invoice_number[0] else '',
         'invoice_number_position': str(invoice_number[1]) if invoice_number and invoice_number[1] else '',
         'invoice_number_page': str(invoice_number[2]) if invoice_number and invoice_number[2] else '1',
+        'delivery_number_1': delivery_number[0] if delivery_number and delivery_number[0] else '',
+        'delivery_number_1_position': str(delivery_number[1]) if delivery_number and delivery_number[1] else '',
+        'order_number_1': order_number[0] if order_number and order_number[0] else '',
+        'order_number_1_position': str(order_number[1]) if order_number and order_number[1] else '',
         'total_ttc': str(footer[1][0]) if footer and footer[1] else '',
         'total_ttc_position': str(footer[1][1]) if footer and footer[1] and len(footer[1]) > 1 else '',
         'no_taxes_1': str(footer[0][0]) if footer and footer[0] else '',
@@ -336,6 +340,15 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
         if footer:
             footer.append(nb_pages)
 
+    # Find delivery number
+    delivery_number_class = FindDeliveryNumber(ocr, files, log, locale, config, database, supplier, file, typo, ocr.header_text, 1, False)
+    delivery_number = delivery_number_class.run()
+
+    # Find order number
+    order_number_class = FindOrderNumber(ocr, files, log, locale, config, database, supplier, file, typo, ocr.header_text, 1, False)
+    order_number = order_number_class.run()
+    print(order_number)
+
     file_name = str(uuid.uuid4())
     full_jpg_filename = 'full_' + file_name + '-%03d.jpg'
     tiff_filename = 'tiff_' + file_name + '-%03d.tiff'
@@ -349,7 +362,7 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
 
     # If all informations are found, do not send it to GED
     if supplier and date and invoice_number and footer and config.cfg['GLOBAL']['allowautomaticvalidation'] == 'True':
-        insert(database, log, files, config, supplier, file, invoice_number, date, footer, nb_pages, full_jpg_filename, tiff_filename, 'DEL', False, original_file)
+        insert(database, log, files, config, supplier, file, invoice_number, date, footer, nb_pages, full_jpg_filename, tiff_filename, 'DEL', False, original_file, delivery_number, order_number)
         log.info('All the usefull informations are found. Export the XML and  endprocess')
         now = datetime.datetime.now()
         xml_custom = {}
@@ -375,8 +388,11 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
             }],
             'facturationInfo': [{
                 'facturationInfo_number_of_tva': {'field': '1'},
-                'facturationInfo_date': {'field': date[0]},
+                'facturationInfo_invoice_date': {'field': date[0]},
+                'facturationInfo_due_date': {'field': date[3][0] if date[3] else ''},
                 'facturationInfo_invoice_number': {'field': invoice_number[0]},
+                'facturationInfo_delivery_number_1': {'field': delivery_number[0] if delivery_number and delivery_number[0] else ''},
+                'facturationInfo_order_number_1': {'field': order_number[0] if order_number and order_number[0] else ''},
                 'facturationInfo_no_taxes_1': {'field': str("%.2f" % (footer[0][0]))},
                 'facturationInfo_vat_1': {'field': str("%.2f" % (footer[2][0]))},
                 'total_vat_1': {'field': str("%.2f" % (footer[0][0] * (footer[2][0] / 100)))},
@@ -442,6 +458,6 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
                 shutil.move(file, config.cfg['GLOBAL']['errorpath'] + os.path.basename(file))
                 return False
     else:
-        insert(database, log, files, config, supplier, file, invoice_number, date, footer, nb_pages, full_jpg_filename, tiff_filename, 'NEW', columns, original_file)
+        insert(database, log, files, config, supplier, file, invoice_number, date, footer, nb_pages, full_jpg_filename, tiff_filename, 'NEW', columns, original_file, delivery_number, order_number)
 
     return True
