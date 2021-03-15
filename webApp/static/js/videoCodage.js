@@ -696,7 +696,7 @@ function drawRectangle(input){
         let zoomImg = $('.zoomImg');
         let myImage = $('#my-image');
         if(maxPages > 1)
-            if (inputInfo.attr('page') !== 1)
+            if (inputInfo.attr('page') !== 1 && inputInfo.attr('page') !== 'None')
                 changeImage(inputInfo.attr('page'));
 
         if(zoomImg.length === 0 || zoomImg.css('opacity') === '0') {
