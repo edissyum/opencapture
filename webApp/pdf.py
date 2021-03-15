@@ -586,7 +586,7 @@ def get_financial():
 
     for line in content.to_dict(orient='records'):
         if len(str(line['ID'])) >= 3:
-            _array.append([str(line['ID']).rstrip(), line['LABEL'], False])
+            _array.append([str(line['ID']).rstrip(), str(line['ID']).rstrip() + ' - ' + line['LABEL'], False])
     return _array
 
 
