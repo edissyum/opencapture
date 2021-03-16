@@ -88,8 +88,8 @@ class FindSupplier:
                 args = {
                     'select': ['*'],
                     'table': ['suppliers'],
-                    'where': ['vat_number = ?'],
-                    'data': [_vat]
+                    'where': ['vat_number = ?', 'status NOT IN (?)'],
+                    'data': [_vat, 'DEL']
                 }
                 existing_supplier = self.Database.select(args)
                 if existing_supplier:
@@ -112,8 +112,8 @@ class FindSupplier:
                         args = {
                             'select': ['*'],
                             'table': ['suppliers'],
-                            'where': ['siret = ?'],
-                            'data': [_siret]
+                            'where': ['siret = ?', 'status NOT IN (?)'],
+                            'data': [_siret, 'DEL']
                         }
                         existing_supplier = self.Database.select(args)
                         if existing_supplier:
@@ -133,8 +133,8 @@ class FindSupplier:
                         args = {
                             'select': ['*'],
                             'table': ['suppliers'],
-                            'where': ['SIREN = ?'],
-                            'data': [_siren]
+                            'where': ['SIREN = ?', 'status NOT IN (?)'],
+                            'data': [_siren, 'DEL']
                         }
                         existing_supplier = self.Database.select(args)
                         if existing_supplier:
@@ -153,8 +153,8 @@ class FindSupplier:
                                         args = {
                                             'select': ['*'],
                                             'table': ['suppliers'],
-                                            'where': ['SIREN = ?'],
-                                            'data': [siren]
+                                            'where': ['SIREN = ?', 'status NOT IN (?)'],
+                                            'data': [siren, 'DEL']
                                         }
                                         existing_supplier = self.Database.select(args)
                                         if existing_supplier:
