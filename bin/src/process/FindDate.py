@@ -148,7 +148,7 @@ class FindDate:
         for line in self.text:
             res = self.process(line.content.upper(), line.position)
             if res:
-                self.Log.info('Payment ref number found : ' + res[0])
+                self.Log.info('Invoice date found : ' + res[0])
                 return res
 
         for line in self.text:
