@@ -346,6 +346,7 @@ def upload(issep=False):
 def validate_form():
     _vars = init()
     _db = _vars[0]
+    _locale = _vars[2]
     _cfg = _vars[1]
     _ws = _vars[3]
     _files = _vars[5]
@@ -402,7 +403,7 @@ def validate_form():
             # Create the data list of arguments
             ged['fileContent'] = open(request.form['fileInfo_path'], 'rb').read()
             ged['creationDate'] = request.form['fileInfo_pdf_creation_date']
-            ged['date'] = invoice_date
+            ged['date'] = datetime.strptime(invoice_date, _locale.formatDate).strftime('%Y-%m-%d')
             if 'ged_users' in request.form and request.form['ged_users']:
                 ged['dest_user'] = request.form['ged_users'].split('#')[0]
             ged['vatNumber'] = vat_number

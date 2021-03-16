@@ -61,19 +61,25 @@ class Spreadsheet:
             'data': ['ACTIVE'],
         })
         try:
-            content_sheet['Fournisseur'] = content_sheet['Fournisseur'][:1]
-            for supplier in res:
-                line = [supplier['name'] if supplier['name'] is not None else '',
-                        supplier['vat_number'] if supplier['vat_number'] is not None else '',
-                        supplier['siret'] if supplier['siret'] is not None else '',
-                        supplier['siren'] if supplier['siren'] is not None else '',
-                        supplier['adress1'] if supplier['adress1'] is not None else '',
-                        supplier['adress2'] if supplier['adress2'] is not None else '',
-                        supplier['postal_code'] if supplier['postal_code'] is not None else '',
-                        supplier['city'] if supplier['city'] is not None else '',
-                        supplier['typology'] if supplier['typology'] is not None else '',
-                        supplier['company_type'] if supplier['company_type'] is not None else '']
-                content_sheet['Fournisseur'].append(line)
+            sheet_name = False
+            for sheet in content_sheet:
+                sheet_name = sheet
+
+            if sheet_name:
+                content_sheet[sheet_name] = content_sheet[sheet_name][:1]
+                for supplier in res:
+                    line = [supplier['name'] if supplier['name'] is not None else '',
+                            supplier['vat_number'] if supplier['vat_number'] is not None else '',
+                            supplier['siret'] if supplier['siret'] is not None else '',
+                            supplier['siren'] if supplier['siren'] is not None else '',
+                            supplier['adress1'] if supplier['adress1'] is not None else '',
+                            supplier['adress2'] if supplier['adress2'] is not None else '',
+                            supplier['postal_code'] if supplier['postal_code'] is not None else '',
+                            supplier['city'] if supplier['city'] is not None else '',
+                            supplier['typology'] if supplier['typology'] is not None else '',
+                            supplier['company_type'] if supplier['company_type'] is not None else '']
+                    content_sheet[sheet_name].append(line)
+
         except IndexError:
             self.Log.error("IndexError while updating ods reference file.")
 

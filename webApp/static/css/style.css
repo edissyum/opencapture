@@ -406,6 +406,15 @@ hr {
     display: block;
 }
 
+.datepicker{
+    z-index: 9999 !important;
+}
+
+.date_style{
+    letter-spacing: 2px;
+    padding: 10px!important;
+}
+
 .file {
     width: 100%;
 }

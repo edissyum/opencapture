@@ -161,7 +161,7 @@ function searchSupplier(){
     });
 }
 
-function ocrOnFly(isRemoved, inputId, removeWhiteSpace = false, needToBeNumber = false){
+function ocrOnFly(isRemoved, inputId, removeWhiteSpace = false, needToBeNumber = false, needToBeDate = false){
     let myImage = $('#my-image');
     let zoomImg = $('.zoomImg');
     // ratioImg is used to recalculate the (x,y) position when the ocr is done on the zoomed image
@@ -229,10 +229,17 @@ function ocrOnFly(isRemoved, inputId, removeWhiteSpace = false, needToBeNumber =
                                     result = result.toString().replace(/[,]/g, ".").replace(/[^0-9.]/g, '');
                                 }
 
+                                if (needToBeDate === true){
+                                    result = result.replace(/,/g, "/")
+                                    result = result.replace(/\./g, "/")
+                                }
+
                                 if (removeWhiteSpace === true) {
                                     input.value = result.replace(/\s/g, "");
+                                    input.dispatchEvent(new KeyboardEvent('keyup'));
                                 } else {
                                     input.value = result;
+                                    input.dispatchEvent(new KeyboardEvent('keyup'));
                                 }
 
                                 // Execute the function to check the value of the input using external API
@@ -259,7 +266,7 @@ function ocrOnFly(isRemoved, inputId, removeWhiteSpace = false, needToBeNumber =
                                 input.setAttribute('y1', y1.toFixed(2).toString());
                                 input.setAttribute('x2', x2.toFixed(2).toString());
                                 input.setAttribute('y2', y2.toFixed(2).toString());
-                                input.setAttribute('page', currentPage === undefined ? 1 : currentPage.text());
+                                input.setAttribute('page', currentPage === undefined || Object.keys(currentPage).length === 0 ? 1 : currentPage.text());
 
                                 let inputPosition = $('#' + input.id + '_position')
                                 let inputPage = $('#' + input.id + '_page')
@@ -271,9 +278,7 @@ function ocrOnFly(isRemoved, inputId, removeWhiteSpace = false, needToBeNumber =
                                     $('#' + input.id).parent().append('<input type="hidden" id="' + input.id + '_page" name="' + input.name + '_page"/>')
 
                                 document.getElementById(input.id + '_position').value = '((' + x1.toFixed(2) + ',' + y1.toFixed(2) + '),(' + x2.toFixed(2) + ',' + y2.toFixed(2) + '))'
-                                // inputPosition.val('((' + x1.toFixed(2) + ',' + y1.toFixed(2) + '),(' + x2.toFixed(2) + ',' + y2.toFixed(2) + '))');
-                                document.getElementById(input.id + '_page').value = currentPage === undefined ? 1 : currentPage.text()
-                                // inputPage.val(currentPage === undefined ? 1 : currentPage.text());
+                                document.getElementById(input.id + '_page').value = currentPage === undefined || Object.keys(currentPage).length === 0 ? 1 : currentPage.text()
 
                                 // Show the eyes, on click on it, it will show the rectangle on the image
                                 // .prev() allow us to display the input-group-text class, containing the eye

@@ -17,11 +17,11 @@
 
 import re
 from datetime import datetime
-from webApp.functions import search_by_positions
+from webApp.functions import search_by_positions, search_custom_positions
 
 
 class FindDate:
-    def __init__(self, text, log, locale, config, files, ocr, supplier, typo, nb_pages):
+    def __init__(self, text, log, locale, config, files, ocr, supplier, typo, nb_pages, db, file):
         self.date = ''
         self.text = text
         self.Log = log
@@ -32,6 +32,8 @@ class FindDate:
         self.supplier = supplier
         self.typo = typo
         self.nbPages = nb_pages
+        self.db = db
+        self.file = file
 
     def format_date(self, date, position, convert=False):
         date = date.replace('1er', '01')  # Replace some possible inconvenient char
@@ -108,11 +110,46 @@ class FindDate:
                 else:
                     return [res[0], res[1], '']
 
-        due_date = False
+        if self.supplier:
+            position = self.db.select({
+                'select': ['invoice_date_position', 'invoice_date_page', 'due_date_position', 'due_date_page'],
+                'table': ['suppliers'],
+                'where': ['vat_number = ?'],
+                'data': [self.supplier[0]]
+            })[0]
+
+            due_date = False
+
+            if position and position['due_date_position']:
+                data = {'position': position['due_date_position'], 'regex': None, 'target': 'full', 'page': position['due_date_page']}
+                _text, _position = search_custom_positions(data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
+                if _text != '':
+                    res = self.format_date(_text, _position)
+                    if res:
+                        due_date = [res[0], res[1]]
+                        self.Log.info('Due date found using position : ' + str(res[0]))
+
+            if not due_date:
+                for line in self.text:
+                    due_date = self.process_due_date(re.sub(r'(\d)\s+(\d)', r'\1\2', line.content.upper()), line.position)
+                    if due_date:
+                        break
+
+            if position and position['invoice_date_position']:
+                data = {'position': position['invoice_date_position'], 'regex': None, 'target': 'full', 'page': position['invoice_date_page']}
+                text, position = search_custom_positions(data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
+                if text != '':
+                    res = self.format_date(text, position)
+                    if res:
+                        self.date = res[0]
+                        self.Log.info('Invoice date found using position : ' + str(res[0]))
+                        return [self.date, position, data['page'], due_date]
+
         for line in self.text:
-            due_date = self.process_due_date(re.sub(r'(\d)\s+(\d)', r'\1\2', line.content.upper()), line.position)
-            if due_date:
-                break
+            res = self.process(line.content.upper(), line.position)
+            if res:
+                self.Log.info('Payment ref number found : ' + res[0])
+                return res
 
         for line in self.text:
             res = self.process(re.sub(r'(\d)\s+(\d)', r'\1\2', line.content), line.position)

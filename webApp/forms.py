@@ -198,7 +198,9 @@ class FacturationForm(Form):
             'y1_original': '',
             'x2_original': '',
             'y2_original': '',
-            'page': ''
+            'page': '',
+            'onfocusin': "ocrOnFly(false, this, false, false, true)",
+            'onfocusout': "ocrOnFly(true, this); removeRectangle()",
         }
     )
 
@@ -215,7 +217,9 @@ class FacturationForm(Form):
             'y1_original': '',
             'x2_original': '',
             'y2_original': '',
-            'page': ''
+            'page': '',
+            'onfocusin': "ocrOnFly(false, this, false, false, true)",
+            'onfocusout': "ocrOnFly(true, this); removeRectangle()",
         }
     )
 

@@ -324,7 +324,7 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
         text_custom = ocr.text
         page_for_date = 1
 
-    date = FindDate(text_custom, log, locale, config, files, ocr, supplier, typo, page_for_date).run()
+    date = FindDate(text_custom, log, locale, config, files, ocr, supplier, typo, page_for_date, database, file).run()
     k = 0
     tmp_nb_pages = nb_pages
     while not date:

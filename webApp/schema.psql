@@ -40,6 +40,9 @@ CREATE TABLE if NOT EXISTS suppliers(
     supplier_page              VARCHAR,
     invoice_number_page        VARCHAR,
     invoice_date_page          VARCHAR,
+    invoice_date_position      VARCHAR,
+    due_date_position          VARCHAR,
+    due_date_page              VARCHAR,
     company_type               VARCHAR DEFAULT 'supplier',
     status                     VARCHAR DEFAULT 'ACTIVE'
 );
