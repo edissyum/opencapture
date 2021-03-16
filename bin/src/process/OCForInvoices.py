@@ -362,7 +362,7 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
     # If all informations are found, do not send it to GED
     if supplier and date and invoice_number and footer and config.cfg['GLOBAL']['allowautomaticvalidation'] == 'True':
         insert(database, log, files, config, supplier, file, invoice_number, date, footer, nb_pages, full_jpg_filename, tiff_filename, 'DEL', False, original_file, delivery_number, order_number)
-        log.info('All the usefull informations are found. Export the XML and  endprocess')
+        log.info('All the usefull informations are found. Export the XML and end process')
         now = datetime.datetime.now()
         xml_custom = {}
         for custom in custom_fields:
