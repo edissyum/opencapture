@@ -79,7 +79,6 @@ class FindDate:
             date = self.format_date(_date.group(), position, True)
             if date and date[0]:
                 self.date = date[0]
-                self.Log.info('Date found : ' + str(date[0]))
                 return date
             return False
 
@@ -99,6 +98,7 @@ class FindDate:
         else:
             target = self.Files.jpgName_header
         date = search_by_positions(self.supplier, 'date', self.Config, self.Locale, self.Ocr, self.Files, target, self.typo)
+        due_date = False
         if date and date[0]:
             res = self.format_date(date[0], date[1])
             if res:
@@ -117,8 +117,6 @@ class FindDate:
                 'where': ['vat_number = ?'],
                 'data': [self.supplier[0]]
             })[0]
-
-            due_date = False
 
             if position and position['due_date_position']:
                 data = {'position': position['due_date_position'], 'regex': None, 'target': 'full', 'page': position['due_date_page']}
@@ -149,7 +147,7 @@ class FindDate:
             res = self.process(line.content.upper(), line.position)
             if res:
                 self.Log.info('Invoice date found : ' + res[0])
-                return res
+                return [res[0], res[1], self.nbPages, due_date]
 
         for line in self.text:
             res = self.process(re.sub(r'(\d)\s+(\d)', r'\1\2', line.content), line.position)
