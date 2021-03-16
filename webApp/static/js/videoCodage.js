@@ -161,7 +161,7 @@ function searchSupplier(){
     });
 }
 
-function ocrOnFly(isRemoved, inputId, removeWhiteSpace = false, needToBeNumber = false){
+function ocrOnFly(isRemoved, inputId, removeWhiteSpace = false, needToBeNumber = false, needToBeDate = false){
     let myImage = $('#my-image');
     let zoomImg = $('.zoomImg');
     // ratioImg is used to recalculate the (x,y) position when the ocr is done on the zoomed image
@@ -229,10 +229,17 @@ function ocrOnFly(isRemoved, inputId, removeWhiteSpace = false, needToBeNumber =
                                     result = result.toString().replace(/[,]/g, ".").replace(/[^0-9.]/g, '');
                                 }
 
+                                if (needToBeDate === true){
+                                    result = result.replace(/,/g, "/")
+                                    result = result.replace(/\./g, "/")
+                                }
+
                                 if (removeWhiteSpace === true) {
                                     input.value = result.replace(/\s/g, "");
+                                    input.dispatchEvent(new KeyboardEvent('keyup'));
                                 } else {
                                     input.value = result;
+                                    input.dispatchEvent(new KeyboardEvent('keyup'));
                                 }
 
                                 // Execute the function to check the value of the input using external API
@@ -259,7 +266,7 @@ function ocrOnFly(isRemoved, inputId, removeWhiteSpace = false, needToBeNumber =
                                 input.setAttribute('y1', y1.toFixed(2).toString());
                                 input.setAttribute('x2', x2.toFixed(2).toString());
                                 input.setAttribute('y2', y2.toFixed(2).toString());
-                                input.setAttribute('page', currentPage === undefined ? 1 : currentPage.text());
+                                input.setAttribute('page', currentPage === undefined || Object.keys(currentPage).length === 0 ? 1 : currentPage.text());
 
                                 let inputPosition = $('#' + input.id + '_position')
                                 let inputPage = $('#' + input.id + '_page')
@@ -271,9 +278,7 @@ function ocrOnFly(isRemoved, inputId, removeWhiteSpace = false, needToBeNumber =
                                     $('#' + input.id).parent().append('<input type="hidden" id="' + input.id + '_page" name="' + input.name + '_page"/>')
 
                                 document.getElementById(input.id + '_position').value = '((' + x1.toFixed(2) + ',' + y1.toFixed(2) + '),(' + x2.toFixed(2) + ',' + y2.toFixed(2) + '))'
-                                // inputPosition.val('((' + x1.toFixed(2) + ',' + y1.toFixed(2) + '),(' + x2.toFixed(2) + ',' + y2.toFixed(2) + '))');
-                                document.getElementById(input.id + '_page').value = currentPage === undefined ? 1 : currentPage.text()
-                                // inputPage.val(currentPage === undefined ? 1 : currentPage.text());
+                                document.getElementById(input.id + '_page').value = currentPage === undefined || Object.keys(currentPage).length === 0 ? 1 : currentPage.text()
 
                                 // Show the eyes, on click on it, it will show the rectangle on the image
                                 // .prev() allow us to display the input-group-text class, containing the eye
@@ -664,31 +669,6 @@ function removeUserInCharge(radioButton){
     }
 }
 
-function removeAllOrderNumber(radioButton){
-    if (radioButton.prop("checked")) {
-        $("div[class^='main_order_']").slideToggle(400, 'swing', function () {
-            let cptOrder = parseInt(this.className.split('_')[2]);
-            if(cptOrder > 1)
-                $(this).remove();
-            else
-                $(this).slideUp()
-        });
-        $('#addOrderNumber').remove();
-        $('#number_order_number').val(0);
-    }else{
-        let main_order = $('.main_order_1')
-        main_order.slideDown();
-        if (!$('#addOrderNumber').length){
-            $('<a id="addOrderNumber" href="#addOrder" onclick="addOrderNumber(this)" data-toggle="tooltip" title="' + gt.gettext('ADD_ORDER_NUMBER') + '" style="display: none">' +
-                '<i class="fa fa-plus-square" aria-hidden="true"></i>' +
-            '</a>').insertAfter(main_order).slideToggle();
-        }
-
-        let number_order_number = $('#number_order_number')
-        number_order_number.val(1);
-    }
-}
-
 function addDeliveryNumber(input){
     let lastDelivery = $('#' + input.id).prev()[0];
     let cptDelivery = parseInt(lastDelivery.className.split('_')[2]);
@@ -710,30 +690,6 @@ function addDeliveryNumber(input){
     $('#number_of_delivery_number').val(cptDelivery + 1);
 }
 
-function removeAllDeliveryNumber(radioButton){
-    if (radioButton.prop("checked")) {
-        $("div[class^='main_delivery_']").slideToggle(400, 'swing', function () {
-            let cptDelivery = parseInt(this.className.split('_')[2]);
-            if(cptDelivery > 1)
-                $(this).remove();
-            else
-                $(this).slideUp()
-        });
-        $('#addDeliveryNumber').remove();
-        $('#number_of_delivery_number').val(0);
-    }else{
-        let main_delivery = $('.main_delivery_1')
-        main_delivery.slideDown();
-        if (!$('#addDeliveryNumber').length){
-            $('<a id="addDeliveryNumber" href="#addDelivery" onclick="addDeliveryNumber(this)" data-toggle="tooltip" title="' + gt.gettext('ADD_DELIVERY_FORM_NUMBER') + '" style="display: none">' +
-                '<i class="fa fa-plus-square" aria-hidden="true"></i>' +
-            '</a>').insertAfter(main_delivery).slideToggle();
-        }
-        let numberOfDeliveryNumber = $('#number_of_delivery_number')
-        numberOfDeliveryNumber.val(1);
-    }
-}
-
 // Draw rectangle on image using the x1,y1 & x2,y2 tuple
 function drawRectangle(input){
     let inputInfo = $('#' + input.id);
@@ -745,7 +701,7 @@ function drawRectangle(input){
         let zoomImg = $('.zoomImg');
         let myImage = $('#my-image');
         if(maxPages > 1)
-            if (inputInfo.attr('page') !== 1)
+            if (inputInfo.attr('page') !== 1 && inputInfo.attr('page') !== 'None')
                 changeImage(inputInfo.attr('page'));
 
         if(zoomImg.length === 0 || zoomImg.css('opacity') === '0') {

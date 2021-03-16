@@ -21,12 +21,13 @@
                 <div class="input-group-text"><i class="fas fa-eye" aria-hidden="true"></i></div>
             </div>
             {% if field.is_date_type %}
-                {{ field(class_="form-control", type='date') | safe }}
+                {{ field(class_="form-control date_style") | safe }}
             {% elif field.type == 'CustomSelectField' %}
                 {{ field(class_="form-control chosen-select") | safe }}
             {% else %}
                 {{ field(class_="form-control") | safe }}
             {% endif %}
+
             {% if field.flags.required and field.table != 'suppliers' %}
                 <div class="invalid-feedback">
                   Ce champ est obligatoire

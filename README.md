@@ -6,7 +6,7 @@ Open-Capture is a **free and Open Source** software under **GNU General Public L
 
 **If you want a clearer tutorial (in French only, for now)** : [Click here](https://edissyum.gitbook.io/open-capture-for-invoices/)
 
-The functionnalities of Open-Capture for Invoices are :
+The functionnalities of Open-Capture for InvoiceNs are :
    - Fully web interface for videocoding : No installation needed on user's workstation
    - OCR On Fly. Draw a rectangle on the image, get the text directly in your input
    - The core works on Linux (tested on Ubuntu and Debian) and might be working on Windows (not tested yet)

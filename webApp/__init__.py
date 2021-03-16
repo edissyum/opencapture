@@ -101,7 +101,7 @@ def create_app(test_config=None):
     # Add custom templates location
     if custom_id:
         array_location = [
-            'custom/' + custom_id[0] + '/webApp',
+            custom_id[1] + '/webApp',
             'webApp'
         ]
     else:

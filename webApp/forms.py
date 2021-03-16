@@ -132,21 +132,6 @@ class FacturationForm(Form):
     # The xml_index is mandatory when you create a new input class
     xml_index = 'facturationInfo'
 
-    # noCommands = CustomBooleanField(
-    #     lazy_gettext('INVOICE_WITHOUT_ORDER'),
-    #     render_kw={
-    #         'checked': '',
-    #         'onclick': "removeAllOrderNumber($(this), $('.main_order_0'))"
-    #     },
-    # )
-    # noDelivery = CustomBooleanField(
-    #     lazy_gettext('INVOICE_WITHOUT_DELIVERY_FORM'),
-    #     render_kw={
-    #         'checked': '',
-    #         'onclick': "removeAllDeliveryNumber($(this), $('.main_order_0'))"
-    #     },
-    # )
-
     order_number_1 = CustomStringField(
         lazy_gettext('ORDER_NUMBER'),
         new_row=True,
@@ -213,7 +198,9 @@ class FacturationForm(Form):
             'y1_original': '',
             'x2_original': '',
             'y2_original': '',
-            'page': ''
+            'page': '',
+            'onfocusin': "ocrOnFly(false, this, false, false, true)",
+            'onfocusout': "ocrOnFly(true, this); removeRectangle()",
         }
     )
 
@@ -230,7 +217,9 @@ class FacturationForm(Form):
             'y1_original': '',
             'x2_original': '',
             'y2_original': '',
-            'page': ''
+            'page': '',
+            'onfocusin': "ocrOnFly(false, this, false, false, true)",
+            'onfocusout': "ocrOnFly(true, this); removeRectangle()",
         }
     )
 
