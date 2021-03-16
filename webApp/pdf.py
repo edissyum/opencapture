@@ -329,6 +329,7 @@ def view(pdf_id):
                            supplier=supplier_info,
                            arrayOfFinancial=array_financial,
                            list_users=ged_users['users'],
+                           currentLang=_cfg.cfg['LOCALE']['localeocr']
                            )
 
 
