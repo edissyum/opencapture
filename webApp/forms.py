@@ -30,8 +30,6 @@ class SupplierForm(Form):
         render_kw={
             'autocomplete': 'off',
             'onfocus': "searchSupplier()",
-            'onfocusout': "ocrOnFly(true, this); removeRectangle()",
-            'onfocusin': "ocrOnFly(false, this)"
         },
     )
     address = CustomStringField(

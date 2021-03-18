@@ -177,12 +177,6 @@ function ocrOnFly(isRemoved, inputId, removeWhiteSpace = false, needToBeNumber =
         myImage = zoomImg;
     }
 
-    // Fix to avoid error of value put in the supplier name field
-    if(inputId.id !== 'name'){
-        $('#name').blur()
-        $('#' + inputId.id).focus()
-    }
-
     let input = document.getElementById(inputId.id);
     myImage.imgAreaSelect({
         outerOpacity    : '0',
