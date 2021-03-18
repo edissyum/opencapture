@@ -50,15 +50,15 @@ class UserController
     // NCH01
 
     public function getByGroup(Request $request, Response $response){
-        $data = $request-> getParams();
+        $data = $request -> getParams();
         $group_id = $data['group'];
 
         $aUsers = DatabaseModel::select([
             'select'    => ['users.id', 'users.user_id', 'firstname', 'lastname', 'status', 'status', 'mail', 'entities.entity_id as entity_label' ,'entities.id as entity_id'],
             'table'     => ['users', 'users_entities', 'usergroup_content', 'entities'], // NCH01 add usergroup_content
             'left_join' => ['users.user_id = users_entities.user_id', 'users.id = usergroup_content.user_id', 'users_entities.entity_id = entities.entity_id'],
-            'where'     => ['users.user_id NOT IN (?)', 'status != ?', "users_entities.entity_id <> ''", 'group_id = ?'],
-            'data'      => ['superadmin', 'DEL', $group_id]
+            'where'     => ['primary_entity = ?', 'users.user_id NOT IN (?)', 'status != ?', "users_entities.entity_id <> ''", 'group_id = ?'],
+            'data'      => ['Y', 'superadmin', 'DEL', $group_id]
         ]);
 
         return $response->withJson(['users' => $aUsers]);
