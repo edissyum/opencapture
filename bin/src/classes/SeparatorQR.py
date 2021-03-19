@@ -134,6 +134,7 @@ class SeparatorQR:
         return array_of_files
 
     def run(self, file):
+        self.Log.info('Start page separation using QR CODE')
         self.pages = []
         try:
             if self.Config.cfg['REMOVE-BLANK-PAGES']['enabled'] == 'True':
