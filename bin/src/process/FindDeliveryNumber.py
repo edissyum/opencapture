@@ -60,10 +60,10 @@ class FindDeliveryNumber:
                         delivery_number = tmp_delivery_number.lstrip().split(' ')[0]
 
                         if delivery_number != '':
-                            self.Log.info('Delivery number found with position : ' + delivery_number)
+                            self.Log.info('Delivery number found with position : ' + str(delivery_number))
                             return [delivery_number, position, data['page']]
                     if text != "":
-                        self.Log.info('Delivery number found with position : ' + text)
+                        self.Log.info('Delivery number found with position : ' + str(text))
                         return [text, position, data['page']]
 
         if not found:

@@ -60,10 +60,10 @@ class FindOrderNumber:
                         order_number = tmp_order_number.lstrip().split(' ')[0]
 
                         if order_number != '':
-                            self.Log.info('Order number found with position : ' + order_number)
+                            self.Log.info('Order number found with position : ' + str(order_number))
                             return [order_number, position, data['page']]
                     if text != "":
-                        self.Log.info('Order number found with position : ' + text)
+                        self.Log.info('Order number found with position : ' + str(text))
                         return [text, position, data['page']]
 
         if not found:
