@@ -182,7 +182,7 @@ def modify_config(data):
         field = splitted_info[1]
 
         # Don't process REGEX param here, because it's another file
-        if 'REGEX' not in section or 'REGEX' in section:
+        if 'REGEX' not in section:
             if field not in ['exportpdfa', 'enabled', 'allowduplicate', 'allowautomaticvalidation', 'convertpdftotiff', 'allowbypasssuppliebanverif']:
                 parser.set(section, field, data[info])
         else:
