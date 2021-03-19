@@ -133,7 +133,6 @@ class FindFooter:
     def test_amount(self, no_rate_amount, all_rate_amount, rate_percentage):
         if no_rate_amount in [False, None] or rate_percentage in [False, None]:
             if self.supplier is not False:
-                self.Log.info('No amount or percentage found in footer, start searching with supplier position')
                 if no_rate_amount in [False, None]:
                     no_rate_amount = self.process_with_position(['no_taxes_1_position', 'footer_page'])
                     if no_rate_amount:
@@ -212,7 +211,7 @@ class FindFooter:
             if no_rate_amount is False and all_rate_amount and rate_percentage:
                 no_rate_amount = [float("%.2f" % (float(all_rate_amount[0]) / (1 + float(rate_percentage[0] / 100)))), (('', ''), ('', ''))]
             elif all_rate_amount is False and no_rate_amount and rate_percentage:
-                all_rate_amount = [float("%.2f" % (float(no_rate_amount[0]) + (float(no_rate_amount[0]) * float(rate_percentage[0] / 100)))), (('', ''), ('', ''))]
+                all_rate_amount = [float("%.2f" % (float(no_rate_amount[0]) + (float(no_rate_amount[0]) * float(float(rate_percentage[0]) / 100)))), (('', ''), ('', ''))]
             elif rate_percentage is False and no_rate_amount and all_rate_amount:
                 vat_amount = float("%.2f" % (float(all_rate_amount[0]) - float(no_rate_amount[0])))
                 rate_percentage = [float("%.2f" % (float(vat_amount) / float(no_rate_amount[0]) * 100)), (('', ''), ('', ''))]
