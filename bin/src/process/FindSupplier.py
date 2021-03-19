@@ -88,8 +88,8 @@ class FindSupplier:
                 args = {
                     'select': ['*'],
                     'table': ['suppliers'],
-                    'where': ['vat_number = ?', 'status NOT IN (?)'],
-                    'data': [_vat, 'DEL']
+                    'where': ['vat_number = ?', 'status NOT IN (?)', 'company_type = ?'],
+                    'data': [_vat, 'DEL', 'supplier']
                 }
                 existing_supplier = self.Database.select(args)
                 if existing_supplier:
@@ -112,8 +112,8 @@ class FindSupplier:
                         args = {
                             'select': ['*'],
                             'table': ['suppliers'],
-                            'where': ['siret = ?', 'status NOT IN (?)'],
-                            'data': [_siret, 'DEL']
+                            'where': ['siret = ?', 'status NOT IN (?)', 'company_type = ?'],
+                            'data': [_siret, 'DEL', 'supplier']
                         }
                         existing_supplier = self.Database.select(args)
                         if existing_supplier:
@@ -133,8 +133,8 @@ class FindSupplier:
                         args = {
                             'select': ['*'],
                             'table': ['suppliers'],
-                            'where': ['SIREN = ?', 'status NOT IN (?)'],
-                            'data': [_siren, 'DEL']
+                            'where': ['SIREN = ?', 'status NOT IN (?)', 'company_type = ?'],
+                            'data': [_siren, 'DEL', 'supplier']
                         }
                         existing_supplier = self.Database.select(args)
                         if existing_supplier:
@@ -153,8 +153,8 @@ class FindSupplier:
                                         args = {
                                             'select': ['*'],
                                             'table': ['suppliers'],
-                                            'where': ['SIREN = ?', 'status NOT IN (?)'],
-                                            'data': [siren, 'DEL']
+                                            'where': ['SIREN = ?', 'status NOT IN (?)', 'company_type = ?'],
+                                            'data': [siren, 'DEL', 'supplier']
                                         }
                                         existing_supplier = self.Database.select(args)
                                         if existing_supplier:
