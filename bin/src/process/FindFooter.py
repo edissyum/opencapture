@@ -106,13 +106,22 @@ class FindFooter:
             text, position = search_custom_positions(data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
             if text:
                 # Filter the result to get only the digits
-                text = re.finditer(r'[-+]?\d*[.,\s]+\d+|\d+', text)
+                text = re.finditer(r'[-+]?\d*[.,]+\d+([.,]+\d+)?|\d+', text)
                 result = ''
                 for t in text:
                     result += re.sub('\s*', '', t.group())
+                if select[0] != 'vat_1_position':
+                    try:
+                        litteral_number = ast.literal_eval(result)
+                        if type(litteral_number) not in [int, float]:
+                            first_part = str(litteral_number[0]).replace(',', '').replace('.', '')
+                            second_part = str(litteral_number[1])
+                            result = first_part + '.' + second_part
+                    except (ValueError, SyntaxError, TypeError):
+                        pass
 
                 if result != '':
-                    result = float(result.replace('.', '').replace(',', '.'))
+                    result = re.sub('\s*', '', result).replace(',', '.')
                     return [result, position, data['page']]
                 else:
                     return False
