@@ -981,6 +981,24 @@ $('#validateForm').on('click', function(){
     let modalBack = $('.modal-backdrop');
     let modalBody = $('.modal-body');
 
+    let invoice_date = $('#invoice_date').val()
+    let due_date = $('#due_date').val()
+    let date_error = false
+    if (invoice_date ){
+         if (!isValidDate(invoice_date)){
+             $('.invoice_date_invalid')[0].textContent= gt.gettext('BAD_FORMAT')
+             $('#invoice_date').addClass('is-invalid')
+             date_error = true
+         }
+    }
+    if (due_date ){
+         if (!isValidDate(due_date)){
+             $('.due_date_invalid')[0].textContent= gt.gettext('BAD_FORMAT')
+             $('#due_date').addClass('is-invalid')
+             date_error = true
+         }
+    }
+
     // Fetch all the forms we want to apply custom Bootstrap validation styles to
     var forms = document.getElementById('invoice_info');
     // Loop over them and prevent submission
@@ -1008,8 +1026,9 @@ $('#validateForm').on('click', function(){
         let val = $('.' + className + '_' + i).find('input').val();
         totalStructure += parseFloat(val)
     }
-    if(!form[0].checkValidity()){
-        form.find(':submit').click();
+    if(!form[0].checkValidity() || date_error === true){
+        if (date_error !== true)
+            form.find(':submit').click();
         modalBody.html(
                 '<span id="modalError">' +
                     gt.gettext('FORM_ERROR_OR_EMPTY_FIELD') +
