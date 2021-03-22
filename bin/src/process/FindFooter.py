@@ -40,6 +40,7 @@ class FindFooter:
         self.rerun = False
         self.rerun_as_text = False
         self.splitted = False
+        self.nbPage = 1
 
     def process(self, regex, text_as_string):
         array_of_data = {}
@@ -122,6 +123,7 @@ class FindFooter:
 
                 if result != '':
                     result = re.sub('\s*', '', result).replace(',', '.')
+                    self.nbPage = data['page']
                     return [result, position, data['page']]
                 else:
                     return False
@@ -225,10 +227,10 @@ class FindFooter:
 
             if float(total) == float(all_rate_amount[0]):
                 self.Log.info('Footer informations found : [TOTAL : ' + str(total) + '] - [HT : ' + str(no_rate_amount[0]) + '] - [VATRATE : ' + str(rate_percentage[0]) + ']')
-                return [no_rate_amount, all_rate_amount, rate_percentage, 1]
+                return [no_rate_amount, all_rate_amount, rate_percentage, self.nbPage]
             elif float(all_rate_amount[0]) == float(vat_amount + no_rate_amount[0]):
                 self.Log.info('Footer informations found : [TOTAL : ' + str(total) + '] - [HT : ' + str(no_rate_amount[0]) + '] - [VATRATE : ' + str(rate_percentage[0]) + ']')
-                return [no_rate_amount, all_rate_amount, rate_percentage, 1]
+                return [no_rate_amount, all_rate_amount, rate_percentage, self.nbPage]
             else:
                 return False
         else:
