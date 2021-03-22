@@ -308,6 +308,47 @@ def delete_supplier(supplier_id):
     return res
 
 
+@bp.route('/ws/supplier/deletePosition/<string:supplier_id>', methods=['GET'])
+@login_required
+def delete_supplier_position(supplier_id):
+    _vars = pdf.init()
+    _db = _vars[0]
+    _cfg = _vars[1]
+    log = _Log(_cfg.cfg['GLOBAL']['logfile'])
+    res = _db.update({
+        'table': ['suppliers'],
+        'set': {
+            'invoice_number_position': '',
+            'invoice_date_position': '',
+            'due_date_position': '',
+            'no_taxes_1_position': '',
+            'no_taxes_2_position': '',
+            'no_taxes_3_position': '',
+            'no_taxes_4_position': '',
+            'order_number_1_position': '',
+            'order_number_2_position': '',
+            'order_number_3_position': '',
+            'order_number_4_position': '',
+            'delivery_number_1_position': '',
+            'delivery_number_2_position': '',
+            'delivery_number_3_position': '',
+            'delivery_number_4_position': '',
+            'vat_1_position': '',
+            'vat_2_position': '',
+            'vat_3_position': '',
+            'vat_4_position': '',
+        },
+        'where': ['id = ?'],
+        'data': [supplier_id]
+    })
+
+    if res:
+        flash(gettext('SUPPLIER_POSITION_DELETED'))
+        return json.dumps({'text': 'OK', 'code': 200, 'ok': 'true'})
+
+    return res
+
+
 @bp.route('/ws/supplier/getReferenceFile', methods=['GET'])
 @login_required
 def get_reference_file():

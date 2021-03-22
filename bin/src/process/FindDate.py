@@ -36,42 +36,45 @@ class FindDate:
         self.file = file
 
     def format_date(self, date, position, convert=False):
-        date = date.replace('1er', '01')  # Replace some possible inconvenient char
-        date = date.replace(',', ' ')  # Replace some possible inconvenient char
-        date = date.replace('/', ' ')  # Replace some possible inconvenient char
-        date = date.replace('-', ' ')  # Replace some possible inconvenient char
-        date = date.replace('.', ' ')  # Replace some possible inconvenient char
+        if date:
+            date = date.replace('1er', '01')  # Replace some possible inconvenient char
+            date = date.replace(',', ' ')  # Replace some possible inconvenient char
+            date = date.replace('/', ' ')  # Replace some possible inconvenient char
+            date = date.replace('-', ' ')  # Replace some possible inconvenient char
+            date = date.replace('.', ' ')  # Replace some possible inconvenient char
 
-        if convert:
-            date_convert = self.Locale.arrayDate
-            for key in date_convert:
-                for month in date_convert[key]:
-                    if month.lower() in date.lower():
-                        date = (date.lower().replace(month.lower(), key))
-                        break
+            if convert:
+                date_convert = self.Locale.arrayDate
+                for key in date_convert:
+                    for month in date_convert[key]:
+                        if month.lower() in date.lower():
+                            date = (date.lower().replace(month.lower(), key))
+                            break
 
-        try:
-            # Fix to handle date with 2 digits year
-            length_of_year = len(date.split(' ')[2])
-            if length_of_year == 2:
-                regex = self.Locale.dateTimeFormat.replace('%Y', '%y')
-            else:
-                regex = self.Locale.dateTimeFormat
+            try:
+                # Fix to handle date with 2 digits year
+                length_of_year = len(date.split(' ')[2])
+                if length_of_year == 2:
+                    regex = self.Locale.dateTimeFormat.replace('%Y', '%y')
+                else:
+                    regex = self.Locale.dateTimeFormat
 
-            date = datetime.strptime(date, regex).strftime(self.Locale.formatDate)
+                date = datetime.strptime(date, regex).strftime(self.Locale.formatDate)
 
-            # Check if the date of the document isn't too old. 62 (default value) is equivalent of 2 months
-            today = datetime.now()
-            doc_date = datetime.strptime(date, self.Locale.formatDate)
-            timedelta = today - doc_date
+                # Check if the date of the document isn't too old. 62 (default value) is equivalent of 2 months
+                today = datetime.now()
+                doc_date = datetime.strptime(date, self.Locale.formatDate)
+                timedelta = today - doc_date
 
-            if int(self.Config.cfg['GLOBAL']['timedelta']) not in [-1, 0]:
-                if timedelta.days > int(self.Config.cfg['GLOBAL']['timedelta']) or timedelta.days < 0:
-                    self.Log.info("Date is older than " + str(self.Config.cfg['GLOBAL']['timedelta']) + " days or in the future : " + date)
-                    date = False
-            return date, position
-        except (ValueError, IndexError):
-            self.Log.info("Date wasn't in a good format : " + date)
+                if int(self.Config.cfg['GLOBAL']['timedelta']) not in [-1, 0]:
+                    if timedelta.days > int(self.Config.cfg['GLOBAL']['timedelta']) or timedelta.days < 0:
+                        self.Log.info("Date is older than " + str(self.Config.cfg['GLOBAL']['timedelta']) + " days or in the future : " + date)
+                        date = False
+                return date, position
+            except (ValueError, IndexError):
+                self.Log.info("Date wasn't in a good format : " + date)
+                return False
+        else:
             return False
 
     def process(self, line, position):

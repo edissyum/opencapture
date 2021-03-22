@@ -40,6 +40,7 @@ class FindFooter:
         self.rerun = False
         self.rerun_as_text = False
         self.splitted = False
+        self.nbPage = 1
 
     def process(self, regex, text_as_string):
         array_of_data = {}
@@ -106,13 +107,23 @@ class FindFooter:
             text, position = search_custom_positions(data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
             if text:
                 # Filter the result to get only the digits
-                text = re.finditer(r'[-+]?\d*[.,\s]+\d+|\d+', text)
+                text = re.finditer(r'[-+]?\d*[.,]+\d+([.,]+\d+)?|\d+', text)
                 result = ''
                 for t in text:
                     result += re.sub('\s*', '', t.group())
+                if select[0] != 'vat_1_position':
+                    try:
+                        litteral_number = ast.literal_eval(result)
+                        if type(litteral_number) not in [int, float]:
+                            first_part = str(litteral_number[0]).replace(',', '').replace('.', '')
+                            second_part = str(litteral_number[1])
+                            result = first_part + '.' + second_part
+                    except (ValueError, SyntaxError, TypeError):
+                        pass
 
                 if result != '':
-                    result = float(result.replace('.', '').replace(',', '.'))
+                    result = re.sub('\s*', '', result).replace(',', '.')
+                    self.nbPage = data['page']
                     return [result, position, data['page']]
                 else:
                     return False
@@ -124,7 +135,6 @@ class FindFooter:
     def test_amount(self, no_rate_amount, all_rate_amount, rate_percentage):
         if no_rate_amount in [False, None] or rate_percentage in [False, None]:
             if self.supplier is not False:
-                self.Log.info('No amount or percentage found in footer, start searching with supplier position')
                 if no_rate_amount in [False, None]:
                     no_rate_amount = self.process_with_position(['no_taxes_1_position', 'footer_page'])
                     if no_rate_amount:
@@ -203,7 +213,7 @@ class FindFooter:
             if no_rate_amount is False and all_rate_amount and rate_percentage:
                 no_rate_amount = [float("%.2f" % (float(all_rate_amount[0]) / (1 + float(rate_percentage[0] / 100)))), (('', ''), ('', ''))]
             elif all_rate_amount is False and no_rate_amount and rate_percentage:
-                all_rate_amount = [float("%.2f" % (float(no_rate_amount[0]) + (float(no_rate_amount[0]) * float(rate_percentage[0] / 100)))), (('', ''), ('', ''))]
+                all_rate_amount = [float("%.2f" % (float(no_rate_amount[0]) + (float(no_rate_amount[0]) * float(float(rate_percentage[0]) / 100)))), (('', ''), ('', ''))]
             elif rate_percentage is False and no_rate_amount and all_rate_amount:
                 vat_amount = float("%.2f" % (float(all_rate_amount[0]) - float(no_rate_amount[0])))
                 rate_percentage = [float("%.2f" % (float(vat_amount) / float(no_rate_amount[0]) * 100)), (('', ''), ('', ''))]
@@ -217,10 +227,10 @@ class FindFooter:
 
             if float(total) == float(all_rate_amount[0]):
                 self.Log.info('Footer informations found : [TOTAL : ' + str(total) + '] - [HT : ' + str(no_rate_amount[0]) + '] - [VATRATE : ' + str(rate_percentage[0]) + ']')
-                return [no_rate_amount, all_rate_amount, rate_percentage, 1]
+                return [no_rate_amount, all_rate_amount, rate_percentage, self.nbPage]
             elif float(all_rate_amount[0]) == float(vat_amount + no_rate_amount[0]):
                 self.Log.info('Footer informations found : [TOTAL : ' + str(total) + '] - [HT : ' + str(no_rate_amount[0]) + '] - [VATRATE : ' + str(rate_percentage[0]) + ']')
-                return [no_rate_amount, all_rate_amount, rate_percentage, 1]
+                return [no_rate_amount, all_rate_amount, rate_percentage, self.nbPage]
             else:
                 return False
         else:

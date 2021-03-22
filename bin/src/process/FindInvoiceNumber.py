@@ -76,7 +76,7 @@ class FindInvoiceNumber:
                 text, position = search_custom_positions(data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
 
                 if text != '':
-                    self.Log.info('Invoice number found with position : ' + text)
+                    self.Log.info('Invoice number found with position : ' + str(text))
                     return [text, position, data['page']]
                 else:
                     return False

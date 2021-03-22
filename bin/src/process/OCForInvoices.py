@@ -375,14 +375,14 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
 
         parent = {
             'pdf_creation_date': [{'pdf_creation_date': {'field': str(now.year) + '-' + str('%02d' % now.month) + '-' + str(now.day)}}],
-            'fileInfo': [{'fileInfoPath': {'field': os.path.dirname(file) + '/' + os.path.basename(file)}}],
+            'fileInfo': [{'fileInfo_path': {'field': os.path.dirname(file) + '/' + os.path.basename(file)}}],
             'supplierInfo': [{
                 'supplierInfo_name': {'field': supplier[2]['name']},
                 'supplierInfo_city': {'field': supplier[2]['city']},
-                'supplierInfo_siretNumber': {'field': supplier[2]['siret']},
-                'supplierInfo_sirenNumber': {'field': supplier[2]['siren']},
+                'supplierInfo_siret_number': {'field': supplier[2]['siret']},
+                'supplierInfo_siren_number': {'field': supplier[2]['siren']},
                 'supplierInfo_address': {'field': supplier[2]['adress1']},
-                'supplierInfo_vatNumber': {'field': supplier[2]['vat_number']},
+                'supplierInfo_vat_number': {'field': supplier[2]['vat_number']},
                 'supplierInfo_postal_code': {'field': str(supplier[2]['postal_code'])},
             }],
             'facturationInfo': [{
@@ -392,15 +392,15 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
                 'facturationInfo_invoice_number': {'field': invoice_number[0]},
                 'facturationInfo_delivery_number_1': {'field': delivery_number[0] if delivery_number and delivery_number[0] else ''},
                 'facturationInfo_order_number_1': {'field': order_number[0] if order_number and order_number[0] else ''},
-                'facturationInfo_no_taxes_1': {'field': str("%.2f" % (footer[0][0]))},
-                'facturationInfo_vat_1': {'field': str("%.2f" % (footer[2][0]))},
-                'total_vat_1': {'field': str("%.2f" % (footer[0][0] * (footer[2][0] / 100)))},
-                'total_ht': {'field': str("%.2f" % (footer[0][0]))},
-                'total_ttc': {'field': str("%.2f" % (footer[0][0] * (footer[2][0] / 100) + footer[0][0]))},
+                'facturationInfo_no_taxes_1': {'field': str("%.2f" % (float(footer[0][0])))},
+                'facturationInfo_vat_1': {'field': str("%.2f" % (float(footer[2][0])))},
+                'total_vat_1': {'field': str("%.2f" % (float(footer[0][0]) * (float(footer[2][0]) / 100)))},
+                'total_ht': {'field': str("%.2f" % (float(footer[0][0])))},
+                'total_ttc': {'field': str("%.2f" % (float(footer[0][0]) * (float(footer[2][0]) / 100) + float(footer[0][0])))},
             }],
             'customInfo': [xml_custom]
         }
-        files.export_xml(config, invoice_number[0], parent, supplier[2]['vat_number'])
+        files.export_xml(config, invoice_number[0], parent, False, database, supplier[2]['vat_number'])
         if config.cfg['GED']['enabled'] == 'True':
             default_process = config.cfg['GED']['defaultprocess']
             invoice_info = database.select({

@@ -153,7 +153,7 @@ if check:
                 Log.info('Found ' + str(len(ret['attachments'])) + ' attachments')
                 cpt = 1
                 for attachment in ret['attachments']:
-                    if attachment['format'] == 'pdf':
+                    if attachment['format'].lower() == 'pdf':
                         launch({
                             'cpt': str(cpt),
                             'log': batch_path + '/' + date_batch + '.log',

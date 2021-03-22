@@ -286,82 +286,82 @@ class Files:
                 for childElement in child:
                     clean_child = childElement.replace(parentElement + '_', '')
                     if clean_child not in ['noDelivery', 'noCommands']:
+                        new_field = Et.SubElement(element, escape(clean_child))
+                        new_field.text = child[childElement]['field']
                         if fill_position is not False and db is not False:
-                            new_field = Et.SubElement(element, escape(clean_child))
-                            new_field.text = child[childElement]['field']
-
                             # Add position in supplier database
-                            clean_child_position = child[childElement]['position']
-                            if clean_child_position is not None:
-                                if 'due_date' in clean_child or 'invoice_date' in clean_child or 'no_taxes' in clean_child or 'invoice_number' in clean_child or 'order_number' in clean_child \
-                                        or 'delivery_number' in clean_child or ('vat' in clean_child and clean_child != 'vat_number'):
-                                    db.update({
-                                        'table': ['suppliers'],
-                                        'set': {
-                                            clean_child + '_position': clean_child_position
-                                        },
-                                        'where': ['vat_number = ?'],
-                                        'data': [vat_number]
-                                    })
-                                    db.conn.commit()
-
-                                new_field = Et.SubElement(element, escape(clean_child + '_position'))
-                                new_field.text = clean_child_position
+                            if 'position' in child[childElement]:
+                                clean_child_position = child[childElement]['position']
+                                if clean_child_position is not None:
+                                    if 'due_date' in clean_child or 'invoice_date' in clean_child or 'no_taxes' in clean_child or 'invoice_number' in clean_child or 'order_number' in clean_child \
+                                            or 'delivery_number' in clean_child or ('vat' in clean_child and clean_child != 'vat_number'):
+                                        db.update({
+                                            'table': ['suppliers'],
+                                            'set': {
+                                                clean_child + '_position': clean_child_position
+                                            },
+                                            'where': ['vat_number = ?'],
+                                            'data': [vat_number]
+                                        })
+                                        db.conn.commit()
+                                    new_field = Et.SubElement(element, escape(clean_child + '_position'))
+                                    new_field.text = clean_child_position
 
         xml_root = minidom.parseString(Et.tostring(root, encoding="unicode")).toprettyxml()
         file = open(filename, 'w')
         file.write(xml_root)
         file.close()
 
-        res = db.select({
-            'select': ['typology'],
-            'table': ['suppliers'],
-            'where': ['vat_number = ?'],
-            'data': [vat_number]
-        })
-        if res:
-            root = Et.parse(filename).getroot()
-            typo = res[0]['typology']
-            list_of_fields = retrieve_custom_positions(typo, cfg)
-            select = []
-            if list_of_fields:
-                for index in list_of_fields:
-                    field = index.split('-')[1]
-                    field_position = field + '_position'
-                    select.append(field_position)
+        if db:
+            res = db.select({
+                'select': ['typology'],
+                'table': ['suppliers'],
+                'where': ['vat_number = ?'],
+                'data': [vat_number]
+            })
+            if res:
+                root = Et.parse(filename).getroot()
+                typo = res[0]['typology']
+                list_of_fields = retrieve_custom_positions(typo, cfg)
+                select = []
+                if list_of_fields:
+                    for index in list_of_fields:
+                        field = index.split('-')[1]
+                        field_position = field + '_position'
+                        select.append(field_position)
 
-                if select:
-                    res = db.select({
-                        'select': select,
-                        'table': ['invoices'],
-                        'where': ['invoice_number = ?'],
-                        'data': [invoice_number]
-                    })
-                    if res:
-                        for title in root:
-                            for element in title:
-                                for position in select:
-                                    if element.tag == position.split('_position')[0]:
-                                        sub_element_to_append = root.find(title.tag)
-                                        new_field = Et.SubElement(sub_element_to_append, position)
-                                        new_field.text = res[0][position]
-                        xml_root = minidom.parseString(Et.tostring(root, encoding="unicode")).toprettyxml().replace('\n\n', '\n')
-                        file = open(filename, 'w')
-                        file.write(xml_root)
-                        file.close()
+                    if select:
+                        res = db.select({
+                            'select': select,
+                            'table': ['invoices'],
+                            'where': ['invoice_number = ?'],
+                            'data': [invoice_number]
+                        })
+                        if res:
+                            for title in root:
+                                for element in title:
+                                    for position in select:
+                                        if element.tag == position.split('_position')[0]:
+                                            sub_element_to_append = root.find(title.tag)
+                                            new_field = Et.SubElement(sub_element_to_append, position)
+                                            new_field.text = res[0][position]
+                            xml_root = minidom.parseString(Et.tostring(root, encoding="unicode")).toprettyxml().replace('\n\n', '\n')
+                            file = open(filename, 'w')
+                            file.write(xml_root)
+                            file.close()
 
-                        # remove empty lines created by the append of subelement
-                        tmp = open(filename, 'r')
-                        lines = tmp.read().split("\n")
-                        tmp.close()
-                        non_empty_lines = [line for line in lines if line.strip() != ""]
+                            # remove empty lines created by the append of subelement
+                            tmp = open(filename, 'r')
+                            lines = tmp.read().split("\n")
+                            tmp.close()
+                            non_empty_lines = [line for line in lines if line.strip() != ""]
 
-                        file = open(filename, 'w')
-                        string_without_empty_lines = ""
-                        for line in non_empty_lines:
-                            string_without_empty_lines += line + "\n"
-                        file.write(string_without_empty_lines)
-                        file.close()
+                            file = open(filename, 'w')
+                            string_without_empty_lines = ""
+                            for line in non_empty_lines:
+                                string_without_empty_lines += line + "\n"
+                            file.write(string_without_empty_lines)
+                            file.close()
 
     def get_pages(self, file, config):
         with open(file, 'rb') as doc:
