@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-03-19 09:57+0100\n"
+"POT-Creation-Date: 2021-03-22 14:05+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -261,11 +261,15 @@ msgstr ""
 msgid "SUPPLIER_DELETED"
 msgstr ""
 
-#: webApp/ws.py:408
+#: webApp/ws.py:346
+msgid "SUPPLIER_POSITION_DELETED"
+msgstr ""
+
+#: webApp/ws.py:449
 msgid "INVOICE_DELETED"
 msgstr ""
 
-#: webApp/ws.py:473
+#: webApp/ws.py:514
 msgid "FILE_UPLOAD_SUCCESS"
 msgstr ""
 
@@ -299,7 +303,11 @@ msgstr ""
 msgid "_CONFIRM_DELETE_SUPPLIER"
 msgstr ""
 
-#: webApp/static/js/supplier.js:64 webApp/static/js/supplier.js:119
+#: webApp/static/js/supplier.js:14
+msgid "_CONFIRM_DELETE_SUPPLIER_POSITION"
+msgstr ""
+
+#: webApp/static/js/supplier.js:71 webApp/static/js/supplier.js:126
 msgid "INVALID-INPUT"
 msgstr ""
 
@@ -1086,21 +1094,21 @@ msgstr ""
 #: webApp/templates/suppliers/suppliers_list.html:23
 #: webApp/templates/suppliers/suppliers_list.html:43
 #: webApp/templates/suppliers/suppliers_list.html:120
-#: webApp/templates/suppliers/suppliers_list.html:146
-#: webApp/templates/suppliers/suppliers_list.html:160
+#: webApp/templates/suppliers/suppliers_list.html:150
+#: webApp/templates/suppliers/suppliers_list.html:164
 msgid "SUPPLIER"
 msgstr ""
 
 #: webApp/templates/pdf/view.html:95 webApp/templates/splitter/view.html:28
 #: webApp/templates/splitter/view.html:86
 #: webApp/templates/suppliers/suppliers_list.html:23
-#: webApp/templates/suppliers/suppliers_list.html:181
+#: webApp/templates/suppliers/suppliers_list.html:185
 msgid "ADD"
 msgstr ""
 
 #: webApp/templates/pdf/view.html:98
 #: webApp/templates/suppliers/suppliers_list.html:126
-#: webApp/templates/suppliers/suppliers_list.html:182
+#: webApp/templates/suppliers/suppliers_list.html:186
 msgid "EDIT"
 msgstr ""
 
@@ -1215,7 +1223,7 @@ msgid "TYPOLOGY"
 msgstr ""
 
 #: webApp/templates/suppliers/suppliers_list.html:51
-#: webApp/templates/suppliers/suppliers_list.html:158
+#: webApp/templates/suppliers/suppliers_list.html:162
 msgid "TYPE"
 msgstr ""
 
@@ -1225,11 +1233,15 @@ msgid "ACTION"
 msgstr ""
 
 #: webApp/templates/suppliers/suppliers_list.html:122
-#: webApp/templates/suppliers/suppliers_list.html:161
+#: webApp/templates/suppliers/suppliers_list.html:165
 msgid "CLIENT"
 msgstr ""
 
-#: webApp/templates/suppliers/suppliers_list.html:180
+#: webApp/templates/suppliers/suppliers_list.html:132
+msgid "DELETE_SUPPLIER_POSITION"
+msgstr ""
+
+#: webApp/templates/suppliers/suppliers_list.html:184
 msgid "CANCEL"
 msgstr ""
 
@@ -1342,4 +1354,3 @@ msgstr ""
 
 msgid "CHOOSE_VAT_RATE"
 msgstr ""
-

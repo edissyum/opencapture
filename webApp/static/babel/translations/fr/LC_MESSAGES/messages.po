@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2021-03-19 09:57+0100\n"
+"POT-Creation-Date: 2021-03-22 14:05+0100\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: fr\n"
@@ -262,11 +262,15 @@ msgstr "Fournisseur modifié"
 msgid "SUPPLIER_DELETED"
 msgstr "Fournisseur supprimé"
 
-#: webApp/ws.py:408
+#: webApp/ws.py:346
+msgid "SUPPLIER_POSITION_DELETED"
+msgstr "Positions du fournisseur supprimées"
+
+#: webApp/ws.py:449
 msgid "INVOICE_DELETED"
 msgstr "Facture supprimée"
 
-#: webApp/ws.py:473
+#: webApp/ws.py:514
 msgid "FILE_UPLOAD_SUCCESS"
 msgstr "Fichier(s) téléchargé(s) avec succès"
 
@@ -298,9 +302,13 @@ msgstr "Facture"
 
 #: webApp/static/js/supplier.js:7
 msgid "_CONFIRM_DELETE_SUPPLIER"
-msgstr "Voulez-vous vraiment supprimer ce fornisseur ?"
+msgstr "Voulez-vous vraiment supprimer ce fournisseur ?"
 
-#: webApp/static/js/supplier.js:64 webApp/static/js/supplier.js:119
+#: webApp/static/js/supplier.js:14
+msgid "_CONFIRM_DELETE_SUPPLIER_POSITION"
+msgstr "Voulez-vous vraiment supprimer les positions de ce fournisseurs ? Cette action ne peut pas être annulée"
+
+#: webApp/static/js/supplier.js:71 webApp/static/js/supplier.js:126
 msgid "INVALID-INPUT"
 msgstr "Champ invalide"
 
@@ -1100,21 +1108,21 @@ msgstr "Cacher les informations du fournisseur"
 #: webApp/templates/suppliers/suppliers_list.html:23
 #: webApp/templates/suppliers/suppliers_list.html:43
 #: webApp/templates/suppliers/suppliers_list.html:120
-#: webApp/templates/suppliers/suppliers_list.html:146
-#: webApp/templates/suppliers/suppliers_list.html:160
+#: webApp/templates/suppliers/suppliers_list.html:150
+#: webApp/templates/suppliers/suppliers_list.html:164
 msgid "SUPPLIER"
 msgstr "Fournisseur"
 
 #: webApp/templates/pdf/view.html:95 webApp/templates/splitter/view.html:28
 #: webApp/templates/splitter/view.html:86
 #: webApp/templates/suppliers/suppliers_list.html:23
-#: webApp/templates/suppliers/suppliers_list.html:181
+#: webApp/templates/suppliers/suppliers_list.html:185
 msgid "ADD"
 msgstr "Ajouter"
 
 #: webApp/templates/pdf/view.html:98
 #: webApp/templates/suppliers/suppliers_list.html:126
-#: webApp/templates/suppliers/suppliers_list.html:182
+#: webApp/templates/suppliers/suppliers_list.html:186
 msgid "EDIT"
 msgstr "Modifier"
 
@@ -1229,7 +1237,7 @@ msgid "TYPOLOGY"
 msgstr "Typologie"
 
 #: webApp/templates/suppliers/suppliers_list.html:51
-#: webApp/templates/suppliers/suppliers_list.html:158
+#: webApp/templates/suppliers/suppliers_list.html:162
 msgid "TYPE"
 msgstr "Type"
 
@@ -1239,11 +1247,15 @@ msgid "ACTION"
 msgstr "Actions"
 
 #: webApp/templates/suppliers/suppliers_list.html:122
-#: webApp/templates/suppliers/suppliers_list.html:161
+#: webApp/templates/suppliers/suppliers_list.html:165
 msgid "CLIENT"
 msgstr "Client"
 
-#: webApp/templates/suppliers/suppliers_list.html:180
+#: webApp/templates/suppliers/suppliers_list.html:132
+msgid "DELETE_SUPPLIER_POSITION"
+msgstr "Supprimer les positions enregistrées"
+
+#: webApp/templates/suppliers/suppliers_list.html:184
 msgid "CANCEL"
 msgstr "Annuler"
 
@@ -1356,22 +1368,3 @@ msgstr "Erreurs lors du téléchargement du/des fichier(s)"
 
 msgid "CHOOSE_VAT_RATE"
 msgstr "Selectionnez un taux de TVA"
-
-#~ msgid "INVOICE_WITHOUT_ORDER"
-#~ msgstr "Facture sans commande"
-
-#~ msgid "INVOICE_WITHOUT_DELIVERY_FORM"
-#~ msgstr "Facture sans bon de livraison"
-
-#~ msgid "ADD_ORDER_NUMBER"
-#~ msgstr "Ajouter un numéro de commande"
-
-#~ msgid "ADD_DELIVERY_FORM_NUMBER"
-#~ msgstr "Ajouter un numéro de bon de livraison"
-
-#~ msgid "THREADS_NUMBER"
-#~ msgstr "Nombre de threads"
-
-#~ msgid "URL"
-#~ msgstr "URL"
-

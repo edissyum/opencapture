@@ -615,6 +615,14 @@ hr {
     box-shadow: 0 0 12px 4px rgba(0,0,0,0.75);
 }
 
+.position-delete:hover > #position_hidden{
+    display: inherit!important;
+}
+
+.position-delete:hover > #position{
+    display: none;
+}
+
 .user_list table tbody tr:hover > td > a,
 .btn-supplier-edit:not(.actions):hover,
 .supplier-delete:hover{

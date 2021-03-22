@@ -9,6 +9,13 @@ $(document).ready(() => {
         }
         event.stopPropagation();
     });
+
+    $(".position-delete").off('click').on('click', function (event) {
+        if (confirm(gt.gettext('_CONFIRM_DELETE_SUPPLIER_POSITION'))) {
+            deleteSupplierPosition(event);
+        }
+        event.stopPropagation();
+    });
 });
 
 function checkSupplierExist(name) {
@@ -230,5 +237,25 @@ function deleteSupplier(event){
                 window.location.href = "/supplier/list";
             else
                 document.location.reload();
+        })
+}
+
+function deleteSupplierPosition(event){
+    let supplierId = event.target.closest("tr").id;
+
+    fetch('/ws/supplier/deletePosition/' + supplierId, {
+        method : 'GET',
+        headers : {
+            'Content-Type': 'application/json'
+        },
     })
+        .then(response => response.json())
+        .then(function(response) {
+            // Check if only one row in table
+            if($("#supplier-table > tbody > tr").length === 1)
+                window.location.href = "/supplier/list";
+            else
+                document.location.reload();
+        })
+
 }

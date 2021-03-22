@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2021-03-19 09:57+0100\n"
+"POT-Creation-Date: 2021-03-22 14:05+0100\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: en\n"
@@ -258,11 +258,15 @@ msgstr "Supplier edited"
 msgid "SUPPLIER_DELETED"
 msgstr "Supplier deleted"
 
-#: webApp/ws.py:408
+#: webApp/ws.py:346
+msgid "SUPPLIER_POSITION_DELETED"
+msgstr "Positions du fournisseur supprimées"
+
+#: webApp/ws.py:449
 msgid "INVOICE_DELETED"
 msgstr "Invoice deleted"
 
-#: webApp/ws.py:473
+#: webApp/ws.py:514
 msgid "FILE_UPLOAD_SUCCESS"
 msgstr "File(s) upload with success"
 
@@ -296,7 +300,11 @@ msgstr "Invoice"
 msgid "_CONFIRM_DELETE_SUPPLIER"
 msgstr "Are you sure you want to delete this supplier?"
 
-#: webApp/static/js/supplier.js:64 webApp/static/js/supplier.js:119
+#: webApp/static/js/supplier.js:14
+msgid "_CONFIRM_DELETE_SUPPLIER_POSITION"
+msgstr "Do you really want to delete this supplier's positions ? This action can't be undo"
+
+#: webApp/static/js/supplier.js:71 webApp/static/js/supplier.js:126
 msgid "INVALID-INPUT"
 msgstr "Invalid field"
 
@@ -1094,21 +1102,21 @@ msgstr "Hide supplier informations"
 #: webApp/templates/suppliers/suppliers_list.html:23
 #: webApp/templates/suppliers/suppliers_list.html:43
 #: webApp/templates/suppliers/suppliers_list.html:120
-#: webApp/templates/suppliers/suppliers_list.html:146
-#: webApp/templates/suppliers/suppliers_list.html:160
+#: webApp/templates/suppliers/suppliers_list.html:150
+#: webApp/templates/suppliers/suppliers_list.html:164
 msgid "SUPPLIER"
 msgstr "Supplier"
 
 #: webApp/templates/pdf/view.html:95 webApp/templates/splitter/view.html:28
 #: webApp/templates/splitter/view.html:86
 #: webApp/templates/suppliers/suppliers_list.html:23
-#: webApp/templates/suppliers/suppliers_list.html:181
+#: webApp/templates/suppliers/suppliers_list.html:185
 msgid "ADD"
 msgstr "Add"
 
 #: webApp/templates/pdf/view.html:98
 #: webApp/templates/suppliers/suppliers_list.html:126
-#: webApp/templates/suppliers/suppliers_list.html:182
+#: webApp/templates/suppliers/suppliers_list.html:186
 msgid "EDIT"
 msgstr "Edit"
 
@@ -1223,7 +1231,7 @@ msgid "TYPOLOGY"
 msgstr "Typology"
 
 #: webApp/templates/suppliers/suppliers_list.html:51
-#: webApp/templates/suppliers/suppliers_list.html:158
+#: webApp/templates/suppliers/suppliers_list.html:162
 msgid "TYPE"
 msgstr "Type"
 
@@ -1233,11 +1241,15 @@ msgid "ACTION"
 msgstr "Actions"
 
 #: webApp/templates/suppliers/suppliers_list.html:122
-#: webApp/templates/suppliers/suppliers_list.html:161
+#: webApp/templates/suppliers/suppliers_list.html:165
 msgid "CLIENT"
 msgstr "Client"
 
-#: webApp/templates/suppliers/suppliers_list.html:180
+#: webApp/templates/suppliers/suppliers_list.html:132
+msgid "DELETE_SUPPLIER_POSITION"
+msgstr "Supprimer les positions enregistrées"
+
+#: webApp/templates/suppliers/suppliers_list.html:184
 msgid "CANCEL"
 msgstr "Cancel"
 
@@ -1350,16 +1362,3 @@ msgstr "Error while uploading file(s)"
 
 msgid "CHOOSE_VAT_RATE"
 msgstr "Choose VAT rate"
-
-#~ msgid "ADD_ORDER_NUMBER"
-#~ msgstr "Add an order number"
-
-#~ msgid "ADD_DELIVERY_FORM_NUMBER"
-#~ msgstr "Add a delivery form number"
-
-#~ msgid "THREADS_NUMBER"
-#~ msgstr "Number of threads"
-
-#~ msgid "URL"
-#~ msgstr "URL"
-

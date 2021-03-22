@@ -129,6 +129,10 @@
                             <a class="ml-2 supplier-delete" data-toggle="tooltip" title="{{ gettext('DELETE') }}">
                                 <i class="fas fa-trash"></i>
                             </a>
+                            <a class="ml-2 position-delete" data-toggle="tooltip" title="{{ gettext('DELETE_SUPPLIER_POSITION') }}">
+                                <img id="position" src="{{ url_for('static', filename='imgs/map-marker-alt-solid-del.svg') }}" width="22">
+                                <img id="position_hidden" src="{{ url_for('static', filename='imgs/map-marker-alt-solid-del_hover.svg') }}" width="22" style="display: none">
+                            </a>
                         </td>
                     </tr>
 
