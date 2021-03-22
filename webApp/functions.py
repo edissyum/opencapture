@@ -78,11 +78,17 @@ def search_custom_positions(data, ocr, files, locale, file, config):
                         target_file = files.jpgName_last
             else:
                 if files.isTiff == 'True':
-                    files.pdf_to_tiff(file, files.custom_fileName_tiff, False, False, True, target, data['page'])
-                    target_file = files.custom_fileName_tiff
+                    if os.path.isfile(files.custom_fileName_tiff):
+                        files.pdf_to_tiff(file, files.custom_fileName_tiff, False, False, True, target, data['page'])
+                        target_file = files.custom_fileName_tiff
+                    else:
+                        return [False, (('', ''), ('', ''))]
                 else:
-                    files.pdf_to_jpg(file + '[' + str(int(data['page']) - 1) + ']', False, True, target, False, True)
-                    target_file = files.custom_fileName
+                    if os.path.isfile(files.custom_fileName):
+                        files.pdf_to_jpg(file + '[' + str(int(data['page']) - 1) + ']', False, True, target, False, True)
+                        target_file = files.custom_fileName
+                    else:
+                        return [False, (('', ''), ('', ''))]
         if regex:
             locale_list = locale.get()
             regex = locale_list[regex]
