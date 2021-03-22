@@ -375,7 +375,7 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
 
         parent = {
             'pdf_creation_date': [{'pdf_creation_date': {'field': str(now.year) + '-' + str('%02d' % now.month) + '-' + str(now.day)}}],
-            'fileInfo': [{'fileInfoPath': {'field': os.path.dirname(file) + '/' + os.path.basename(file)}}],
+            'fileInfo': [{'fileInfo_path': {'field': os.path.dirname(file) + '/' + os.path.basename(file)}}],
             'supplierInfo': [{
                 'supplierInfo_name': {'field': supplier[2]['name']},
                 'supplierInfo_city': {'field': supplier[2]['city']},
