@@ -329,7 +329,6 @@ $(document).ready(function() {
                         loaded = false;
                         let invalidSIRET = $('.siret_number_invalid')
                         invalidSIRET.html(gt.gettext('SIRET_CONNECTION_ERROR'))
-
                     } else {
                         if (res.text.toString() === 'error') {
                             console.log('error')
