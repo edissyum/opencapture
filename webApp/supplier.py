@@ -42,7 +42,8 @@ def supplier_list():
 
     search = data.get('search')
     if search is not None:
-        query_where.append('UPPER(name) LIKE ?')
+        query_where.append('UPPER(name) LIKE ? OR UPPER(vat_number) LIKE ?')
+        query_data.append('%' + search.upper() + '%')
         query_data.append('%' + search.upper() + '%')
 
     total = _db.select({
