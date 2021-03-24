@@ -27,7 +27,7 @@ function setCookie(cname, cvalue, exdays) {
 
 function save_form_to_cookies(form_id, invoice_id) {
     let data = [];
-    $("#" + form_id + " input[name*='facturationInfo']").each(function () {
+    $("#" + form_id + " .facturation_info :input").each(function () {
         if (this) {
             data.push({
                 'name': this.name,
@@ -37,13 +37,14 @@ function save_form_to_cookies(form_id, invoice_id) {
         }
     });
     setCookie('invoice_data_' + invoice_id, JSON.stringify(data), 0);
+    $('body').append('<div class="flash" onclick="$(this).fadeOut()">' + gt.gettext('FORM_SAVED') + '</div>')
 }
 
 function retrieve_form_cookies(form_id, invoice_id){
     let data = getCookie('invoice_data_' + invoice_id);
     if (data){
         data = JSON.parse(data)
-        $("#" + form_id + " input[name*='facturationInfo']").each(function () {
+        $("#" + form_id + " .facturation_info :input").each(function () {
             if (this) {
                 for(let i = 0; i < data.length; i++){
                     if(data[i].id === this.id){
@@ -52,17 +53,20 @@ function retrieve_form_cookies(form_id, invoice_id){
                         let page = $("#" + form_id + " input[name*='" + this.name + "_page']")
 
                         if (!position.length){
-                            let element = $('#' + data[i].id)
-                            let position_value = get_value(data[i].id + '_position', data);
+                            let element = $('#' + data[i].id.replace('_position', ''))
+                            let position_value = get_value(data[i].id, data);
                             if (position_value){
-                                element.parent().append('<input type="hidden" id="' + data[i].id + '_position" name="' + data[i].name + '_position"/>')
-                                $('#' + data[i].id + '_position').val(position_value);
+                                let data_id = $('#' + data[i].id)
+                                if (!data_id.length){
+                                    element.parent().append('<input type="hidden" id="' + data[i].id + '" name="' + data[i].name + '"/>')
+                                }
+                                data_id.val(position_value);
 
                                 let real_value = position_value.replaceAll('(', '').replaceAll(')', '').split(',')
-                                element.attr('x1', real_value[0])
-                                element.attr('y1', real_value[1])
-                                element.attr('x2', real_value[2])
-                                element.attr('y2', real_value[3])
+                                element.attr('x1_original', real_value[0])
+                                element.attr('y1_original', real_value[1])
+                                element.attr('x2_original', real_value[2])
+                                element.attr('y2_original', real_value[3])
 
                                 element.prev('div').show()
                             }
@@ -71,7 +75,7 @@ function retrieve_form_cookies(form_id, invoice_id){
                         if (!page.length){
                             let page_value = get_value(data[i].id + '_page', data)
                             if (page_value){
-                                $('#' + data[i].id).parent().append('<input type="hidden" id="' + data[i].id + '_page" name="' + data[i].name + '_page"/>')
+                                $('#' + data[i].id).parent().append('<input type="hidden" id="' + data[i].id + '" name="' + data[i].name + '"/>')
                                 $('#' + data[i].id + '_page').val(page_value);
                             }
                         }
