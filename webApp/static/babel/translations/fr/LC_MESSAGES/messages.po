@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2021-03-23 17:03+0100\n"
+"POT-Creation-Date: 2021-03-24 09:29+0100\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: fr\n"
@@ -160,12 +160,12 @@ msgstr "Choix de la dépense"
 msgid "NO_RESULTS"
 msgstr "Pas de résultats"
 
-#: webApp/pdf.py:232 webApp/splitter.py:117 webApp/supplier.py:69
+#: webApp/pdf.py:232 webApp/splitter.py:117 webApp/supplier.py:70
 #: webApp/user.py:182
 msgid "SHOW"
 msgstr "Affichage de"
 
-#: webApp/pdf.py:232 webApp/splitter.py:117 webApp/supplier.py:69
+#: webApp/pdf.py:232 webApp/splitter.py:117 webApp/supplier.py:70
 #: webApp/templates/pdf/view.html:19 webApp/user.py:182
 msgid "OF"
 msgstr "sur"
@@ -1097,6 +1097,10 @@ msgstr "Visualisation du PDF"
 msgid "PAGE"
 msgstr "Page"
 
+#: webApp/templates/pdf/view.html:67
+msgid "SAVE_FORM"
+msgstr "Sauvegarder les modifications"
+
 #: webApp/templates/pdf/view.html:71
 msgid "SUBSCRIPTION"
 msgstr "Abonnement (clos)"
@@ -1374,3 +1378,4 @@ msgstr "Erreurs lors du téléchargement du/des fichier(s)"
 
 msgid "CHOOSE_VAT_RATE"
 msgstr "Selectionnez un taux de TVA"
+

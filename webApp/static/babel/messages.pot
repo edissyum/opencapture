@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-03-23 17:03+0100\n"
+"POT-Creation-Date: 2021-03-24 09:29+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -159,12 +159,12 @@ msgstr ""
 msgid "NO_RESULTS"
 msgstr ""
 
-#: webApp/pdf.py:232 webApp/splitter.py:117 webApp/supplier.py:69
+#: webApp/pdf.py:232 webApp/splitter.py:117 webApp/supplier.py:70
 #: webApp/user.py:182
 msgid "SHOW"
 msgstr ""
 
-#: webApp/pdf.py:232 webApp/splitter.py:117 webApp/supplier.py:69
+#: webApp/pdf.py:232 webApp/splitter.py:117 webApp/supplier.py:70
 #: webApp/templates/pdf/view.html:19 webApp/user.py:182
 msgid "OF"
 msgstr ""
@@ -1081,6 +1081,10 @@ msgstr ""
 msgid "PAGE"
 msgstr ""
 
+#: webApp/templates/pdf/view.html:67
+msgid "SAVE_FORM"
+msgstr ""
+
 #: webApp/templates/pdf/view.html:71
 msgid "SUBSCRIPTION"
 msgstr ""
@@ -1358,4 +1362,3 @@ msgstr ""
 
 msgid "CHOOSE_VAT_RATE"
 msgstr ""
-

@@ -64,7 +64,7 @@
                     <div style="margin-bottom: 10px">
                         <span style="cursor: pointer;" onclick="save_form_to_cookies('invoice_info', {{ pdf['id'] }})">
                             <i class="fas fa-save"></i>
-                            Sauvegarder les modifications
+                            {{ gettext('SAVE_FORM') }}
                         </span>
                         <div class="form-group float-right">
                             <input name="facturationInfo_is_subscription" type="checkbox" class="custom-control-input" id="is_subscription" onclick="removeUserInCharge($(this))">
