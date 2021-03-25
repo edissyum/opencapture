@@ -361,7 +361,7 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
 
     # If all informations are found, do not send it to GED
     if supplier and date and invoice_number and footer and config.cfg['GLOBAL']['allowautomaticvalidation'] == 'True':
-        insert(database, log, files, config, supplier, file, invoice_number, date, footer, nb_pages, full_jpg_filename, tiff_filename, 'DEL', False, original_file, delivery_number, order_number)
+        insert(database, log, files, config, supplier, file, invoice_number, date, footer, nb_pages, full_jpg_filename, tiff_filename, 'END', False, original_file, delivery_number, order_number)
         log.info('All the usefull informations are found. Export the XML and end process')
         now = datetime.datetime.now()
         xml_custom = {}
@@ -434,7 +434,7 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
                 'vatNumber': supplier[2]['vat_number'],
                 'creationDate': invoice_info[0]['register_date'],
                 'subject': 'Facture N°' + invoice_number[0],
-                'status': config.cfg[default_process]['status'],
+                'status': config.cfg[default_process]['statusend'],
                 'destination': config.cfg[default_process]['defaultdestination'],
                 'fileContent': open(parent['fileInfo'][0]['fileInfoPath']['field'], 'rb').read(),
                 config.cfg[default_process]['customvatnumber']: supplier[2]['vat_number'],
