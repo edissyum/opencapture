@@ -36,7 +36,6 @@ class FindInvoiceNumber:
         self.customPage = custom_page
 
     def run(self):
-        found = False
         if self.Files.isTiff == 'True':
             target = self.Files.tiffName_header
         else:
@@ -44,6 +43,22 @@ class FindInvoiceNumber:
         invoice_number = search_by_positions(self.supplier, 'invoice', self.Config, self.Locale, self.Ocr, self.Files, target, self.typo)
         if invoice_number and invoice_number[0]:
             return invoice_number
+
+        if self.supplier and not self.customPage:
+            position = self.Database.select({
+                'select': ['invoice_number_position', 'invoice_number_page'],
+                'table': ['suppliers'],
+                'where': ['vat_number = ?'],
+                'data': [self.supplier[0]]
+            })[0]
+
+            if position and position['invoice_number_position']:
+                data = {'position': position['invoice_number_position'], 'regex': None, 'target': 'full', 'page': position['invoice_number_page']}
+                text, position = search_custom_positions(data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
+
+                if text != '':
+                    self.Log.info('Invoice number found with position : ' + str(text))
+                    return [text, position, data['page']]
 
         for line in self.text:
             for _invoice in re.finditer(r"" + self.Locale.invoiceRegex + "", line.content.upper()):
@@ -60,27 +75,5 @@ class FindInvoiceNumber:
                     self.Log.info('Invoice number found : ' + invoice_number)
                     return [invoice_number, line.position, self.nbPages]
                 else:
-                    found = False
-
-        if not found and self.supplier and not self.customPage:
-            self.Log.info('Invoice number not found. Searching invoice number using position in database')
-            position = self.Database.select({
-                'select': ['invoice_number_position', 'invoice_number_page'],
-                'table': ['suppliers'],
-                'where': ['vat_number = ?'],
-                'data': [self.supplier[0]]
-            })[0]
-
-            if position and position['invoice_number_position']:
-                data = {'position': position['invoice_number_position'], 'regex': None, 'target': 'full', 'page': position['invoice_number_page']}
-                text, position = search_custom_positions(data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
-
-                if text != '':
-                    self.Log.info('Invoice number found with position : ' + str(text))
-                    return [text, position, data['page']]
-                else:
                     return False
-            else:
-                return False
-        else:
-            return False
+
