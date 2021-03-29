@@ -360,7 +360,7 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
         files.save_pdf_to_tiff_in_docserver(file, config.cfg['GLOBAL']['tiffpath'] + '/' + tiff_filename)
 
     # If all informations are found, do not send it to GED
-    if supplier and date and invoice_number and footer and config.cfg['GLOBAL']['allowautomaticvalidation'] == 'True':
+    if supplier and supplier[2]['skip_auto_validate'] == 'False' and date and invoice_number and footer and config.cfg['GLOBAL']['allowautomaticvalidation'] == 'True':
         insert(database, log, files, config, supplier, file, invoice_number, date, footer, nb_pages, full_jpg_filename, tiff_filename, 'END', False, original_file, delivery_number, order_number)
         log.info('All the usefull informations are found. Export the XML and end process')
         now = datetime.datetime.now()
@@ -457,6 +457,16 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
                 shutil.move(file, config.cfg['GLOBAL']['errorpath'] + os.path.basename(file))
                 return False
     else:
+        if supplier[2]['skip_auto_validate'] == 'True':
+            log.info('Skip automatic validation this time')
+            database.update({
+                'table': ['suppliers'],
+                'set': {
+                    'skip_auto_validate': 'False'
+                },
+                'where': ['vat_number = ?'],
+                'data': [supplier[2]['vat_number']]
+            })
         insert(database, log, files, config, supplier, file, invoice_number, date, footer, nb_pages, full_jpg_filename, tiff_filename, 'NEW', columns, original_file, delivery_number, order_number)
 
     return True

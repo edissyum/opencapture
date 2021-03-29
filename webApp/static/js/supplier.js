@@ -16,6 +16,21 @@ $(document).ready(() => {
         }
         event.stopPropagation();
     });
+
+    $(".skip-auto-validation").off('click').on('click', function (event) {
+        if (confirm(gt.gettext('_CONFIRM_SKIP_AUTO_VALIDATION'))) {
+            skipAutoValidation(event);
+        }
+        event.stopPropagation();
+    });
+
+    $(".disable-skip-auto-validation").off('click').on('click', function (event) {
+        if (confirm(gt.gettext('_CONFIRM_DISABLE_SKIP_AUTO_VALIDATION'))) {
+            disableSkipAutoValidation(event);
+        }
+        event.stopPropagation();
+    });
+
 });
 
 function checkSupplierExist(name) {
@@ -257,5 +272,42 @@ function deleteSupplierPosition(event){
             else
                 document.location.reload();
         })
+}
 
+function skipAutoValidation(event){
+    let supplierId = event.target.closest("tr").id;
+
+    fetch('/ws/supplier/skipSupplierAutoValidate/' + supplierId, {
+        method : 'GET',
+        headers : {
+            'Content-Type': 'application/json'
+        },
+    })
+        .then(response => response.json())
+        .then(function(response) {
+            // Check if only one row in table
+            if($("#supplier-table > tbody > tr").length === 1)
+                window.location.href = "/supplier/list";
+            else
+                document.location.reload();
+        })
+}
+
+function disableSkipAutoValidation(event){
+    let supplierId = event.target.closest("tr").id;
+
+    fetch('/ws/supplier/disableSkipSupplierAutoValidate/' + supplierId, {
+        method : 'GET',
+        headers : {
+            'Content-Type': 'application/json'
+        },
+    })
+        .then(response => response.json())
+        .then(function(response) {
+            // Check if only one row in table
+            if($("#supplier-table > tbody > tr").length === 1)
+                window.location.href = "/supplier/list";
+            else
+                document.location.reload();
+        })
 }

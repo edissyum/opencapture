@@ -314,7 +314,6 @@ def delete_supplier_position(supplier_id):
     _vars = pdf.init()
     _db = _vars[0]
     _cfg = _vars[1]
-    log = _Log(_cfg.cfg['GLOBAL']['logfile'])
     res = _db.update({
         'table': ['suppliers'],
         'set': {
@@ -349,6 +348,50 @@ def delete_supplier_position(supplier_id):
     return res
 
 
+@bp.route('/ws/supplier/skipSupplierAutoValidate/<string:supplier_id>', methods=['GET'])
+@login_required
+def skip_supplier_auto_validate(supplier_id):
+    _vars = pdf.init()
+    _db = _vars[0]
+    _cfg = _vars[1]
+    res = _db.update({
+        'table': ['suppliers'],
+        'set': {
+            'skip_auto_validate': 'True'
+        },
+        'where': ['id = ?'],
+        'data': [supplier_id]
+    })
+
+    if res:
+        flash(gettext('SUPPLIER_AUTO_VALIDATION_SKIPPED'))
+        return json.dumps({'text': 'OK', 'code': 200, 'ok': 'true'})
+
+    return res
+
+
+@bp.route('/ws/supplier/disableSkipSupplierAutoValidate/<string:supplier_id>', methods=['GET'])
+@login_required
+def disable_skip_supplier_auto_validate(supplier_id):
+    _vars = pdf.init()
+    _db = _vars[0]
+    _cfg = _vars[1]
+    res = _db.update({
+        'table': ['suppliers'],
+        'set': {
+            'skip_auto_validate': 'False'
+        },
+        'where': ['id = ?'],
+        'data': [supplier_id]
+    })
+
+    if res:
+        flash(gettext('SUPPLIER_AUTO_VALIDATION_SKIPPED_DISABLED'))
+        return json.dumps({'text': 'OK', 'code': 200, 'ok': 'true'})
+
+    return res
+
+
 @bp.route('/ws/supplier/getReferenceFile', methods=['GET'])
 @login_required
 def get_reference_file():
@@ -356,6 +399,7 @@ def get_reference_file():
     _cfg = _vars[1]
     file_path = _cfg.cfg['REFERENCIAL']['referencialsupplierdocumentpath']
     return send_file(file_path, as_attachment=True, cache_timeout=0)
+
 
 @bp.route('/ws/supplier/retrieve', methods=['GET'])
 @login_required

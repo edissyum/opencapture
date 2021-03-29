@@ -133,6 +133,16 @@
                                 <img id="position" src="{{ url_for('static', filename='imgs/map-marker-alt-solid-del.svg') }}" width="22">
                                 <img id="position_hidden" src="{{ url_for('static', filename='imgs/map-marker-alt-solid-del_hover.svg') }}" width="22" style="display: none">
                             </a>
+                            {% if supplier['skip_auto_validate'] == 'False' %}
+                                <a class="ml-2 skip-auto-validation" data-toggle="tooltip" title="{{ gettext('SKIP_AUTO_VALIDATION') }}">
+                                    <i class="fas fa-forward"></i>
+                                </a>
+                            {% else %}
+                                <a class="ml-2 disable-skip-auto-validation" data-toggle="tooltip" title="{{ gettext('AUTO_VALIDATION_IS_SKIPPED') }}">
+                                    <i class="fas fa-step-forward"></i>
+                                </a>
+                            {% endif %}
+                            </a>
                         </td>
                     </tr>
 
