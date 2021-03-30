@@ -457,7 +457,7 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
                 shutil.move(file, config.cfg['GLOBAL']['errorpath'] + os.path.basename(file))
                 return False
     else:
-        if supplier[2]['skip_auto_validate'] == 'True':
+        if supplier and supplier[2]['skip_auto_validate'] == 'True':
             log.info('Skip automatic validation this time')
             database.update({
                 'table': ['suppliers'],
