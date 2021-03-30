@@ -44,7 +44,8 @@ CREATE TABLE if NOT EXISTS suppliers(
     due_date_position          VARCHAR,
     due_date_page              VARCHAR,
     company_type               VARCHAR DEFAULT 'supplier',
-    status                     VARCHAR DEFAULT 'ACTIVE'
+    status                     VARCHAR DEFAULT 'ACTIVE',
+    skip_auto_validate         VARCHAR DEFAULT 'False'
 );
 
 CREATE TABLE if NOT EXISTS invoices(

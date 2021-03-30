@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2021-03-23 17:03+0100\n"
+"POT-Creation-Date: 2021-03-29 09:50+0200\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: fr\n"
@@ -160,12 +160,12 @@ msgstr "Choix de la dépense"
 msgid "NO_RESULTS"
 msgstr "Pas de résultats"
 
-#: webApp/pdf.py:232 webApp/splitter.py:117 webApp/supplier.py:69
+#: webApp/pdf.py:232 webApp/splitter.py:117 webApp/supplier.py:70
 #: webApp/user.py:182
 msgid "SHOW"
 msgstr "Affichage de"
 
-#: webApp/pdf.py:232 webApp/splitter.py:117 webApp/supplier.py:69
+#: webApp/pdf.py:232 webApp/splitter.py:117 webApp/supplier.py:70
 #: webApp/templates/pdf/view.html:19 webApp/user.py:182
 msgid "OF"
 msgstr "sur"
@@ -262,15 +262,23 @@ msgstr "Fournisseur modifié"
 msgid "SUPPLIER_DELETED"
 msgstr "Fournisseur supprimé"
 
-#: webApp/ws.py:346
+#: webApp/ws.py:345
 msgid "SUPPLIER_POSITION_DELETED"
 msgstr "Positions du fournisseur supprimées"
 
-#: webApp/ws.py:449
+#: webApp/ws.py:367
+msgid "SUPPLIER_AUTO_VALIDATION_SKIPPED"
+msgstr "La prochaine validation automatique sera bien outrepassée"
+
+#: webApp/ws.py:389
+msgid "SUPPLIER_AUTO_VALIDATION_SKIPPED_DISABLED"
+msgstr "La prochaine validation automatique est bien réactivée"
+
+#: webApp/ws.py:493
 msgid "INVOICE_DELETED"
 msgstr "Facture supprimée"
 
-#: webApp/ws.py:514
+#: webApp/ws.py:558
 msgid "FILE_UPLOAD_SUCCESS"
 msgstr "Fichier(s) téléchargé(s) avec succès"
 
@@ -314,7 +322,15 @@ msgstr ""
 "Voulez-vous vraiment supprimer les positions de ce fournisseurs ? Cette "
 "action ne peut pas être annulée"
 
-#: webApp/static/js/supplier.js:71 webApp/static/js/supplier.js:126
+#: webApp/static/js/supplier.js:21
+msgid "_CONFIRM_SKIP_AUTO_VALIDATION"
+msgstr "Voulez-vous vraiment outrepasser la prochaine validation automatique ?"
+
+#: webApp/static/js/supplier.js:28
+msgid "_CONFIRM_DISABLE_SKIP_AUTO_VALIDATION"
+msgstr "Voulez-vous vraiment ré-activer la prochaine validation automatique ?"
+
+#: webApp/static/js/supplier.js:86 webApp/static/js/supplier.js:141
 msgid "INVALID-INPUT"
 msgstr "Champ invalide"
 
@@ -1097,6 +1113,10 @@ msgstr "Visualisation du PDF"
 msgid "PAGE"
 msgstr "Page"
 
+#: webApp/templates/pdf/view.html:67
+msgid "SAVE_FORM"
+msgstr "Sauvegarder les modifications"
+
 #: webApp/templates/pdf/view.html:71
 msgid "SUBSCRIPTION"
 msgstr "Abonnement (clos)"
@@ -1114,21 +1134,21 @@ msgstr "Cacher les informations du fournisseur"
 #: webApp/templates/suppliers/suppliers_list.html:23
 #: webApp/templates/suppliers/suppliers_list.html:43
 #: webApp/templates/suppliers/suppliers_list.html:120
-#: webApp/templates/suppliers/suppliers_list.html:150
-#: webApp/templates/suppliers/suppliers_list.html:164
+#: webApp/templates/suppliers/suppliers_list.html:160
+#: webApp/templates/suppliers/suppliers_list.html:174
 msgid "SUPPLIER"
 msgstr "Fournisseur"
 
 #: webApp/templates/pdf/view.html:99 webApp/templates/splitter/view.html:28
 #: webApp/templates/splitter/view.html:86
 #: webApp/templates/suppliers/suppliers_list.html:23
-#: webApp/templates/suppliers/suppliers_list.html:185
+#: webApp/templates/suppliers/suppliers_list.html:195
 msgid "ADD"
 msgstr "Ajouter"
 
 #: webApp/templates/pdf/view.html:102
 #: webApp/templates/suppliers/suppliers_list.html:126
-#: webApp/templates/suppliers/suppliers_list.html:186
+#: webApp/templates/suppliers/suppliers_list.html:196
 msgid "EDIT"
 msgstr "Modifier"
 
@@ -1243,7 +1263,7 @@ msgid "TYPOLOGY"
 msgstr "Typologie"
 
 #: webApp/templates/suppliers/suppliers_list.html:51
-#: webApp/templates/suppliers/suppliers_list.html:162
+#: webApp/templates/suppliers/suppliers_list.html:172
 msgid "TYPE"
 msgstr "Type"
 
@@ -1253,7 +1273,7 @@ msgid "ACTION"
 msgstr "Actions"
 
 #: webApp/templates/suppliers/suppliers_list.html:122
-#: webApp/templates/suppliers/suppliers_list.html:165
+#: webApp/templates/suppliers/suppliers_list.html:175
 msgid "CLIENT"
 msgstr "Client"
 
@@ -1261,7 +1281,15 @@ msgstr "Client"
 msgid "DELETE_SUPPLIER_POSITION"
 msgstr "Supprimer les positions enregistrées"
 
-#: webApp/templates/suppliers/suppliers_list.html:184
+#: webApp/templates/suppliers/suppliers_list.html:137
+msgid "SKIP_AUTO_VALIDATION"
+msgstr "Outrepasser la prochaine validation automatique"
+
+#: webApp/templates/suppliers/suppliers_list.html:141
+msgid "AUTO_VALIDATION_IS_SKIPPED"
+msgstr "La prochaine validation automatique est désactivée"
+
+#: webApp/templates/suppliers/suppliers_list.html:194
 msgid "CANCEL"
 msgstr "Annuler"
 
@@ -1374,3 +1402,4 @@ msgstr "Erreurs lors du téléchargement du/des fichier(s)"
 
 msgid "CHOOSE_VAT_RATE"
 msgstr "Selectionnez un taux de TVA"
+

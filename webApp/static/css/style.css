@@ -625,7 +625,9 @@ hr {
 
 .user_list table tbody tr:hover > td > a,
 .btn-supplier-edit:not(.actions):hover,
-.supplier-delete:hover{
+.supplier-delete:hover,
+.skip-auto-validation:hover,
+.disable-skip-auto-validation:hover{
     color: #76B442;
 }
 

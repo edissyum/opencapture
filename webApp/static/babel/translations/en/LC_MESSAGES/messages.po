@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2021-03-23 17:03+0100\n"
+"POT-Creation-Date: 2021-03-29 09:50+0200\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: en\n"
@@ -156,12 +156,12 @@ msgstr "Select an outcome"
 msgid "NO_RESULTS"
 msgstr "No results"
 
-#: webApp/pdf.py:232 webApp/splitter.py:117 webApp/supplier.py:69
+#: webApp/pdf.py:232 webApp/splitter.py:117 webApp/supplier.py:70
 #: webApp/user.py:182
 msgid "SHOW"
 msgstr "Show"
 
-#: webApp/pdf.py:232 webApp/splitter.py:117 webApp/supplier.py:69
+#: webApp/pdf.py:232 webApp/splitter.py:117 webApp/supplier.py:70
 #: webApp/templates/pdf/view.html:19 webApp/user.py:182
 msgid "OF"
 msgstr "of"
@@ -258,15 +258,23 @@ msgstr "Supplier edited"
 msgid "SUPPLIER_DELETED"
 msgstr "Supplier deleted"
 
-#: webApp/ws.py:346
+#: webApp/ws.py:345
 msgid "SUPPLIER_POSITION_DELETED"
 msgstr "Positions du fournisseur supprimées"
 
-#: webApp/ws.py:449
+#: webApp/ws.py:367
+msgid "SUPPLIER_AUTO_VALIDATION_SKIPPED"
+msgstr "The next automatic validation will be skipped"
+
+#: webApp/ws.py:389
+msgid "SUPPLIER_AUTO_VALIDATION_SKIPPED_DISABLED"
+msgstr "The automatic validation is now enabled"
+
+#: webApp/ws.py:493
 msgid "INVOICE_DELETED"
 msgstr "Invoice deleted"
 
-#: webApp/ws.py:514
+#: webApp/ws.py:558
 msgid "FILE_UPLOAD_SUCCESS"
 msgstr "File(s) upload with success"
 
@@ -310,7 +318,15 @@ msgstr ""
 "Do you really want to delete this supplier's positions ? This action "
 "can't be undo"
 
-#: webApp/static/js/supplier.js:71 webApp/static/js/supplier.js:126
+#: webApp/static/js/supplier.js:21
+msgid "_CONFIRM_SKIP_AUTO_VALIDATION"
+msgstr "Do you really want to skip next automatic validation ?"
+
+#: webApp/static/js/supplier.js:28
+msgid "_CONFIRM_DISABLE_SKIP_AUTO_VALIDATION"
+msgstr "Do you really want to re enable automatic validation ?"
+
+#: webApp/static/js/supplier.js:86 webApp/static/js/supplier.js:141
 msgid "INVALID-INPUT"
 msgstr "Invalid field"
 
@@ -1091,6 +1107,10 @@ msgstr "View PDF"
 msgid "PAGE"
 msgstr "Page"
 
+#: webApp/templates/pdf/view.html:67
+msgid "SAVE_FORM"
+msgstr "Save modifications"
+
 #: webApp/templates/pdf/view.html:71
 msgid "SUBSCRIPTION"
 msgstr "Subscription (end)"
@@ -1108,21 +1128,21 @@ msgstr "Hide supplier informations"
 #: webApp/templates/suppliers/suppliers_list.html:23
 #: webApp/templates/suppliers/suppliers_list.html:43
 #: webApp/templates/suppliers/suppliers_list.html:120
-#: webApp/templates/suppliers/suppliers_list.html:150
-#: webApp/templates/suppliers/suppliers_list.html:164
+#: webApp/templates/suppliers/suppliers_list.html:160
+#: webApp/templates/suppliers/suppliers_list.html:174
 msgid "SUPPLIER"
 msgstr "Supplier"
 
 #: webApp/templates/pdf/view.html:99 webApp/templates/splitter/view.html:28
 #: webApp/templates/splitter/view.html:86
 #: webApp/templates/suppliers/suppliers_list.html:23
-#: webApp/templates/suppliers/suppliers_list.html:185
+#: webApp/templates/suppliers/suppliers_list.html:195
 msgid "ADD"
 msgstr "Add"
 
 #: webApp/templates/pdf/view.html:102
 #: webApp/templates/suppliers/suppliers_list.html:126
-#: webApp/templates/suppliers/suppliers_list.html:186
+#: webApp/templates/suppliers/suppliers_list.html:196
 msgid "EDIT"
 msgstr "Edit"
 
@@ -1237,7 +1257,7 @@ msgid "TYPOLOGY"
 msgstr "Typology"
 
 #: webApp/templates/suppliers/suppliers_list.html:51
-#: webApp/templates/suppliers/suppliers_list.html:162
+#: webApp/templates/suppliers/suppliers_list.html:172
 msgid "TYPE"
 msgstr "Type"
 
@@ -1247,7 +1267,7 @@ msgid "ACTION"
 msgstr "Actions"
 
 #: webApp/templates/suppliers/suppliers_list.html:122
-#: webApp/templates/suppliers/suppliers_list.html:165
+#: webApp/templates/suppliers/suppliers_list.html:175
 msgid "CLIENT"
 msgstr "Client"
 
@@ -1255,7 +1275,15 @@ msgstr "Client"
 msgid "DELETE_SUPPLIER_POSITION"
 msgstr "Supprimer les positions enregistrées"
 
-#: webApp/templates/suppliers/suppliers_list.html:184
+#: webApp/templates/suppliers/suppliers_list.html:137
+msgid "SKIP_AUTO_VALIDATION"
+msgstr "Skip next automatic validation"
+
+#: webApp/templates/suppliers/suppliers_list.html:141
+msgid "AUTO_VALIDATION_IS_SKIPPED"
+msgstr "Next automatic validation is skipped"
+
+#: webApp/templates/suppliers/suppliers_list.html:194
 msgid "CANCEL"
 msgstr "Cancel"
 
