@@ -68,10 +68,10 @@ class FindFooter:
                     number_formatted = t.group()
                     if regex != self.Locale.vatRateRegex:
                         try:
-                            litteral_number = ast.literal_eval(t.group())
+                            litteral_number = ast.literal_eval(t.group().replace(",0", ",0o"))
                             if type(litteral_number) not in [int, float]:
                                 first_part = str(litteral_number[0]).replace(',', '').replace('.', '')
-                                second_part = str(litteral_number[1])
+                                second_part = str(litteral_number[1]).zfill(2)
                                 number_formatted = first_part + '.' + second_part
                         except (ValueError, SyntaxError, TypeError):
                             pass

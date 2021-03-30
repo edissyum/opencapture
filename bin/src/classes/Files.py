@@ -509,12 +509,12 @@ class Files:
         text = ocr.text_builder(cropped_image)
 
         try:
-            litteral_number = ast.literal_eval(text)
+            litteral_number = ast.literal_eval(text.replace(",0", ",0o"))
             if type(litteral_number) != int:
                 first_part = str(litteral_number[0]).replace(',', '').replace('.', '')
-                second_part = str(litteral_number[1])
+                second_part = str(litteral_number[1]).zfill(2)
                 text = first_part + '.' + second_part
-        except (ValueError, SyntaxError, TypeError):
+        except (ValueError, SyntaxError, TypeError) as e:
             pass
 
         if regex:
