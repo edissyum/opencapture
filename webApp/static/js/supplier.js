@@ -94,6 +94,7 @@ function addSupplier() {
     if(inputCompanyType !== undefined && inputCompanyType.val()){
         companyType = inputCompanyType.children(":selected").attr("id");
     }
+
     fetch('/ws/supplier/add', {
         method : 'POST',
         headers : {

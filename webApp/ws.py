@@ -188,8 +188,10 @@ def add_supplier():
         'adress1': data['adress'],
         'adress2': data['adress2'],
         'postal_code': data['zip'],
-        'company_type': data['companyType'],
     }
+
+    if data['companyType']:
+        add_data['company_type'] = data['companyType']
 
     if 'companyTypo' in data:
         add_data['typology'] = data['companyTypo']
