@@ -45,7 +45,7 @@ class FindDeliveryNumber:
                 'data': [self.supplier[0]]
             })[0]
 
-            if position and position['delivery_number_1_position']:
+            if position and position['delivery_number_1_position'] not in [False, 'NULL', '', None]:
                 data = {'position': position['delivery_number_1_position'], 'regex': None, 'target': 'full', 'page': '1'}
                 text, position = search_custom_positions(data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
                 if text is not False:
