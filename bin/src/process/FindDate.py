@@ -130,12 +130,13 @@ class FindDate:
                         due_date = [res[0], res[1]]
                         self.Log.info('Due date found using position : ' + str(res[0]))
 
-            if not due_date:
-                for line in self.text:
-                    due_date = self.process_due_date(re.sub(r'(\d)\s+(\d)', r'\1\2', line.content.upper()), line.position)
-                    if due_date:
-                        break
+        if not due_date:
+            for line in self.text:
+                due_date = self.process_due_date(re.sub(r'(\d)\s+(\d)', r'\1\2', line.content.upper()), line.position)
+                if due_date:
+                    break
 
+        if self.supplier:
             if position and position['invoice_date_position']:
                 data = {'position': position['invoice_date_position'], 'regex': None, 'target': 'full', 'page': position['invoice_date_page']}
                 text, position = search_custom_positions(data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
