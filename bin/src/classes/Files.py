@@ -464,7 +464,7 @@ class Files:
                     continue
 
     @staticmethod
-    def ocr_on_fly(img, selection, ocr, thumb_size=None, regex=None, remove_line=False):
+    def ocr_on_fly(self, img, selection, ocr, thumb_size=None, regex=None, remove_line=False):
         rand = str(uuid.uuid4())
         if thumb_size is not None:
             with Image.open(img) as im:
@@ -484,12 +484,12 @@ class Files:
             cropped_image.save('/tmp/cropped_' + rand + extension)
 
         # Rotate the image
-        image = cv2.imread('/tmp/cropped_' + rand + extension)
-        grayscale = rgb2gray(image)
-        angle = determine_skew(grayscale)
-        if angle and angle < -80:
-            rotated = rotate(image, angle, resize=True) * 255
-            io.imsave('/tmp/cropped_' + rand + extension, rotated.astype(np.uint8))
+        # image = cv2.imread('/tmp/cropped_' + rand + extension)
+        # grayscale = rgb2gray(image)
+        # angle = determine_skew(grayscale)
+        # if angle and angle < -80:
+        #     rotated = rotate(image, angle, resize=True) * 255
+        #     io.imsave('/tmp/cropped_' + rand + extension, rotated.astype(np.uint8))
 
         if remove_line:
             image = cv2.imread('/tmp/cropped_' + rand + extension)
@@ -508,6 +508,11 @@ class Files:
         cropped_image = Image.open('/tmp/cropped_' + rand + extension)
         text = ocr.text_builder(cropped_image)
 
+        if not text or text == '' or text.isspace():
+            self.improve_image_detection('/tmp/cropped_' + rand + extension)
+            improved_cropped_image = Image.open('/tmp/cropped_' + rand + '_improved' + extension)
+            text = ocr.text_builder(improved_cropped_image)
+
         try:
             litteral_number = ast.literal_eval(text.replace(",0", ",0o"))
             if type(litteral_number) != int:
@@ -520,10 +525,12 @@ class Files:
         if regex:
             for res in re.finditer(r"" + regex, text):
                 os.remove('/tmp/cropped_' + rand + extension)
+                os.remove('/tmp/cropped_' + rand + '_improved' + extension)
                 return res.group().replace('\x0c', '').strip()
             return False
 
         os.remove('/tmp/cropped_' + rand + extension)
+        os.remove('/tmp/cropped_' + rand + '_improved' + extension)
         return text.replace('\x0c', '').strip()
 
     @staticmethod
