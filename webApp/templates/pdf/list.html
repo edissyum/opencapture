@@ -49,7 +49,7 @@
     </div>
     {% if g.user['role'] == 'admin' and pdfs|length > 1 %}
         <i id="trashAll" class="position-absolute fas fa-trash" style="display: none; cursor: pointer; left: 205px; margin-top: 35px;"></i>
-        <p id="checkAll" class="checkAll position-absolute " style="cursor: pointer; left: 25px; top:190px" onclick="check_all_invoices()">{{ gettext("SELECT_ALL") }}</p>
+        <p id="checkAll" class="checkAll position-absolute " style="cursor: pointer; left: 25px; top:190px">{{ gettext("SELECT_ALL") }}</p>
     {% endif %}
 
     {{ pagination.info }}
