@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-03-29 09:50+0200\n"
+"POT-Creation-Date: 2021-04-02 10:38+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -96,11 +96,11 @@ msgid "DELIVERY_FORM_NUMBER"
 msgstr ""
 
 #: webApp/forms.py:170 webApp/templates/dashboard/index.html:694
-#: webApp/templates/pdf/list.html:96
+#: webApp/templates/pdf/list.html:92
 msgid "INVOICE_NUMBER"
 msgstr ""
 
-#: webApp/forms.py:186 webApp/templates/pdf/list.html:97
+#: webApp/forms.py:186 webApp/templates/pdf/list.html:93
 msgid "INVOICE_DATE"
 msgstr ""
 
@@ -249,39 +249,43 @@ msgstr ""
 msgid "ERROR_UPDATE_CONFIG_FILE"
 msgstr ""
 
-#: webApp/ws.py:224
+#: webApp/ws.py:226
 msgid "SUPPLIER_ADDED"
 msgstr ""
 
-#: webApp/ws.py:278
+#: webApp/ws.py:280
 msgid "SUPPLIER_EDITED"
 msgstr ""
 
-#: webApp/ws.py:305
+#: webApp/ws.py:307
 msgid "SUPPLIER_DELETED"
 msgstr ""
 
-#: webApp/ws.py:345
+#: webApp/ws.py:347
 msgid "SUPPLIER_POSITION_DELETED"
 msgstr ""
 
-#: webApp/ws.py:367
+#: webApp/ws.py:369
 msgid "SUPPLIER_AUTO_VALIDATION_SKIPPED"
 msgstr ""
 
-#: webApp/ws.py:389
+#: webApp/ws.py:391
 msgid "SUPPLIER_AUTO_VALIDATION_SKIPPED_DISABLED"
 msgstr ""
 
-#: webApp/ws.py:493
+#: webApp/ws.py:495
 msgid "INVOICE_DELETED"
 msgstr ""
 
-#: webApp/ws.py:558
+#: webApp/ws.py:560
 msgid "FILE_UPLOAD_SUCCESS"
 msgstr ""
 
-#: webApp/static/js/cookies.js:40
+#: webApp/static/js/cookies.js:42
+msgid "FORM_SAVED_AUTO"
+msgstr ""
+
+#: webApp/static/js/cookies.js:44
 msgid "FORM_SAVED"
 msgstr ""
 
@@ -327,7 +331,7 @@ msgstr ""
 msgid "_CONFIRM_DISABLE_SKIP_AUTO_VALIDATION"
 msgstr ""
 
-#: webApp/static/js/supplier.js:86 webApp/static/js/supplier.js:141
+#: webApp/static/js/supplier.js:86 webApp/static/js/supplier.js:142
 msgid "INVALID-INPUT"
 msgstr ""
 
@@ -483,7 +487,7 @@ msgstr ""
 msgid "CALCULATE_TOTAL_AMOUNT"
 msgstr ""
 
-#: webApp/templates/forms_macro_input_general.html:66
+#: webApp/templates/forms_macro_input_general.html:78
 msgid "ADD_VAT_RATE"
 msgstr ""
 
@@ -1065,19 +1069,15 @@ msgstr ""
 msgid "INVOICE_LOCKED_BY"
 msgstr ""
 
-#: webApp/templates/pdf/list.html:75
-msgid "INVOICE_CLOSED"
-msgstr ""
-
-#: webApp/templates/pdf/list.html:92
+#: webApp/templates/pdf/list.html:88
 msgid "NUMBER_OF_PAGES"
 msgstr ""
 
-#: webApp/templates/pdf/list.html:99 webApp/templates/splitter/list.html:82
+#: webApp/templates/pdf/list.html:95 webApp/templates/splitter/list.html:82
 msgid "SAVED_THE"
 msgstr ""
 
-#: webApp/templates/pdf/list.html:101
+#: webApp/templates/pdf/list.html:97
 msgid "ORIGINAL_FILENAME"
 msgstr ""
 
@@ -1097,24 +1097,24 @@ msgstr ""
 msgid "PAGE"
 msgstr ""
 
-#: webApp/templates/pdf/view.html:67
+#: webApp/templates/pdf/view.html:68
 msgid "SAVE_FORM"
 msgstr ""
 
-#: webApp/templates/pdf/view.html:71
+#: webApp/templates/pdf/view.html:73
 msgid "SUBSCRIPTION"
 msgstr ""
 
-#: webApp/templates/pdf/view.html:75
+#: webApp/templates/pdf/view.html:77
 msgid "ASSET"
 msgstr ""
 
-#: webApp/templates/pdf/view.html:82
+#: webApp/templates/pdf/view.html:84
 msgid "HIDE_SUPPLIER_INFO"
 msgstr ""
 
-#: webApp/templates/pdf/view.html:86 webApp/templates/pdf/view.html:99
-#: webApp/templates/pdf/view.html:102
+#: webApp/templates/pdf/view.html:88 webApp/templates/pdf/view.html:102
+#: webApp/templates/pdf/view.html:105
 #: webApp/templates/suppliers/suppliers_list.html:23
 #: webApp/templates/suppliers/suppliers_list.html:43
 #: webApp/templates/suppliers/suppliers_list.html:120
@@ -1123,64 +1123,64 @@ msgstr ""
 msgid "SUPPLIER"
 msgstr ""
 
-#: webApp/templates/pdf/view.html:99 webApp/templates/splitter/view.html:28
+#: webApp/templates/pdf/view.html:102 webApp/templates/splitter/view.html:28
 #: webApp/templates/splitter/view.html:86
 #: webApp/templates/suppliers/suppliers_list.html:23
 #: webApp/templates/suppliers/suppliers_list.html:195
 msgid "ADD"
 msgstr ""
 
-#: webApp/templates/pdf/view.html:102
+#: webApp/templates/pdf/view.html:105
 #: webApp/templates/suppliers/suppliers_list.html:126
 #: webApp/templates/suppliers/suppliers_list.html:196
 msgid "EDIT"
 msgstr ""
 
-#: webApp/templates/pdf/view.html:111
+#: webApp/templates/pdf/view.html:115
 msgid "HIDE_FACTURATION_INFO"
 msgstr ""
 
-#: webApp/templates/pdf/view.html:115
+#: webApp/templates/pdf/view.html:119
 msgid "BILLING"
 msgstr ""
 
-#: webApp/templates/pdf/view.html:132
+#: webApp/templates/pdf/view.html:136
 msgid "HIDE_ANALYTIC_INFO"
 msgstr ""
 
-#: webApp/templates/pdf/view.html:136
+#: webApp/templates/pdf/view.html:140
 msgid "ANALYTIC"
 msgstr ""
 
-#: webApp/templates/pdf/view.html:147
+#: webApp/templates/pdf/view.html:151
 msgid "ADD_NEW_LINE"
 msgstr ""
 
-#: webApp/templates/pdf/view.html:151
+#: webApp/templates/pdf/view.html:155
 msgid "TOTAL_NO_RATE_AMOUNT"
 msgstr ""
 
-#: webApp/templates/pdf/view.html:161
+#: webApp/templates/pdf/view.html:165
 msgid "USER_IN_CHARGE"
 msgstr ""
 
-#: webApp/templates/pdf/view.html:163
+#: webApp/templates/pdf/view.html:167
 msgid "SELECT_USER"
 msgstr ""
 
-#: webApp/templates/pdf/view.html:179
+#: webApp/templates/pdf/view.html:184
 msgid "VALIDATE_INVOICE"
 msgstr ""
 
-#: webApp/templates/pdf/view.html:180
+#: webApp/templates/pdf/view.html:185
 msgid "REFUSE_INVOICE"
 msgstr ""
 
-#: webApp/templates/pdf/view.html:192
+#: webApp/templates/pdf/view.html:198
 msgid "FORM_VALIDATION"
 msgstr ""
 
-#: webApp/templates/pdf/view.html:200
+#: webApp/templates/pdf/view.html:206
 msgid "BACK_TO_VALIDATION"
 msgstr ""
 

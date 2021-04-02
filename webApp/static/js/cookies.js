@@ -25,7 +25,8 @@ function setCookie(cname, cvalue, exdays) {
     }
 }
 
-function save_form_to_cookies(form_id, invoice_id) {
+function save_form_to_cookies(form_id, invoice_id, auto_save=false) {
+    console.log(invoice_id)
     let data = [];
     $("#" + form_id + " .facturation_info :input").each(function () {
         if (this) {
@@ -37,7 +38,11 @@ function save_form_to_cookies(form_id, invoice_id) {
         }
     });
     setCookie('invoice_data_' + invoice_id, JSON.stringify(data), 0);
-    $('body').append('<div class="flash" onclick="$(this).fadeOut()">' + gt.gettext('FORM_SAVED') + '</div>')
+    if (auto_save)
+        $('body').append("<div class='flash' onclick='$(this).fadeOut()'><script>$('.flash').delay(4000).fadeOut()</script>" + gt.gettext('FORM_SAVED_AUTO') + "</div>")
+    else
+        $('body').append("<div class='flash' onclick='$(this).fadeOut()'><script>$('.flash').delay(4000).fadeOut()</script>" + gt.gettext('FORM_SAVED') + "</div>")
+
 }
 
 function retrieve_form_cookies(form_id, invoice_id){
