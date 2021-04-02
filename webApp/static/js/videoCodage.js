@@ -305,8 +305,6 @@ function autoSaveForm()
 
 $(document).ready(function() {
     if(!loaded){
-        let milliseconds = 60;  // 60 Seconds
-        setTimeout(autoSaveForm, milliseconds*1000);
         // Set supplier button to edit if id_supplier is set
         let buttonAddSupplier = $('#add_supplier');
         let buttonEditSupplier = $('#edit_supplier');
@@ -326,6 +324,11 @@ $(document).ready(function() {
         // Get the config
         readConfig().then((res) => {    // Put the rest of code into the 'then' to make synchronous API call
             config = res;
+            if(config.GLOBAL['enableautosave'] === 'True'){
+                let milliseconds = 60;  // 60 Seconds
+                setTimeout(autoSaveForm, milliseconds * 1000)
+            }
+
             token = getCookie('access_token');
             if(token === '' || token === undefined || token === 'undefined'){
                 generateTokenInsee(config.GENERAL['siret-consumer'], config.GENERAL['siret-secret'])

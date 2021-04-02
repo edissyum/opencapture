@@ -26,6 +26,8 @@ allowBypassSupplieBanVerif  = True
 timeDelta                   = -1
 ; Number of files uploaded simultaneously
 uploadMaxFiles              = 3
+; Enable autosave of Facturation Informations into form
+enableAutoSave              = True
 
 [AI-CLASSIFICATION]
 ; True or False, python way
