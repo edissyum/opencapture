@@ -296,12 +296,17 @@ function ocrOnFly(isRemoved, inputId, removeWhiteSpace = false, needToBeNumber =
 }
 
 /******** ONLOAD ********/
+function autoSaveForm()
+{
+    let milliseconds = 60;  // 60 Seconds
+    save_form_to_cookies('invoice_info', pdfId, true)
+    setTimeout(autoSaveForm, milliseconds*1000);
+}
 
-// On load, reload Insee token for SIRET/SIREN validation
-// Also, do all the validation if the input aren't empty
-// Also, control supplier edit and add button
 $(document).ready(function() {
     if(!loaded){
+        let milliseconds = 60;  // 60 Seconds
+        setTimeout(autoSaveForm, milliseconds*1000);
         // Set supplier button to edit if id_supplier is set
         let buttonAddSupplier = $('#add_supplier');
         let buttonEditSupplier = $('#edit_supplier');
