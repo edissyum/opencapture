@@ -63,12 +63,12 @@ class FindSupplier:
                     content = line.content
                 corrected_line = re.sub(pattern, item, content)
 
-            for _data in re.finditer(r"" + regex + "", corrected_line.replace('.', '').replace(',', '').replace('(', '').replace(')', '')):
+            for _data in re.finditer(r"" + regex + "", corrected_line.replace('.', '').replace(',', '').replace('(', '').replace(')', '').replace('-', '')):
                 found = True
                 array_of_data.update({_data.group(): line})
 
             if not found:
-                for _data in re.finditer(r"" + regex + "", corrected_line.replace(' ', '').replace('.', '').replace(',', '').replace('(', '').replace(')', '')):
+                for _data in re.finditer(r"" + regex + "", corrected_line.replace(' ', '').replace('.', '').replace(',', '').replace('(', '').replace(')', '').replace('-', '')):
                     array_of_data.update({_data.group(): line})
 
         if len(array_of_data) != 0:
