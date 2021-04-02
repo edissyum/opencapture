@@ -463,7 +463,6 @@ class Files:
                 else:
                     continue
 
-    @staticmethod
     def ocr_on_fly(self, img, selection, ocr, thumb_size=None, regex=None, remove_line=False):
         rand = str(uuid.uuid4())
         if thumb_size is not None:
@@ -525,12 +524,14 @@ class Files:
         if regex:
             for res in re.finditer(r"" + regex, text):
                 os.remove('/tmp/cropped_' + rand + extension)
-                os.remove('/tmp/cropped_' + rand + '_improved' + extension)
+                if os.path.isfile('/tmp/cropped_' + rand + '_improved' + extension):
+                    os.remove('/tmp/cropped_' + rand + '_improved' + extension)
                 return res.group().replace('\x0c', '').strip()
             return False
 
         os.remove('/tmp/cropped_' + rand + extension)
-        os.remove('/tmp/cropped_' + rand + '_improved' + extension)
+        if os.path.isfile('/tmp/cropped_' + rand + '_improved' + extension):
+            os.remove('/tmp/cropped_' + rand + '_improved' + extension)
         return text.replace('\x0c', '').strip()
 
     @staticmethod
