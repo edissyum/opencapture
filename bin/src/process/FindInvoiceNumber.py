@@ -52,7 +52,7 @@ class FindInvoiceNumber:
                 'data': [self.supplier[0]]
             })[0]
 
-            if position and position['invoice_number_position']:
+            if position and position['invoice_number_position'] not in [False, 'NULL', '', None]:
                 data = {'position': position['invoice_number_position'], 'regex': None, 'target': 'full', 'page': position['invoice_number_page']}
                 text, position = search_custom_positions(data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
 

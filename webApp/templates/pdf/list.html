@@ -62,17 +62,13 @@
                     <div class="col-sm-3">
                         <div class="card">
                             <a style="height: 400px;" href="
-                                {% if pdf['status'] == 'END' %} #end
+                                {% if pdf['status_id'] == 'END' %} {{ url_for('pdf.view', pdf_id=pdf['invoice_id']) }}
                                     {% elif not pdf['locked'] or (pdf ['locked'] and pdf['locked_by'] == g.user['username']) %} {{ url_for('pdf.view', pdf_id=pdf['invoice_id']) }}
                                     {% else %} #locked
                                 {% endif %}"
 
                                 {% if pdf['locked'] and pdf['locked_by'] != g.user['username'] %}
                                     onclick="alert(' {{ gettext('INVOICE_LOCKED_BY') }} : {{ pdf['locked_by'] }}')"
-                                {% endif %}
-
-                                {% if pdf['status'] == 'END' %}
-                                    onclick="alert('{{ gettext('INVOICE_CLOSED') }}')"
                                 {% endif %}>
 
                                 <img class="card-img-top lazy"

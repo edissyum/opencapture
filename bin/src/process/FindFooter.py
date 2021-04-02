@@ -21,7 +21,7 @@ from webApp.functions import search_by_positions, search_custom_positions
 
 
 class FindFooter:
-    def __init__(self, ocr, log, locale, config, files, database, supplier, file, text, typo):
+    def __init__(self, ocr, log, locale, config, files, database, supplier, file, text, typo, target='footer'):
         self.date = ''
         self.Ocr = ocr
         self.text = text
@@ -41,6 +41,7 @@ class FindFooter:
         self.rerun_as_text = False
         self.splitted = False
         self.nbPage = 1
+        self.target = target
 
     def process(self, regex, text_as_string):
         array_of_data = {}
@@ -86,7 +87,7 @@ class FindFooter:
                     if text_as_string:
                         array_of_data.update({float(result.replace(',', '.')): (('', ''), ('', ''))})
                     else:
-                        array_of_data.update({float(result.replace(',', '.')): self.Files.return_position_with_ratio(line, 'footer')})
+                        array_of_data.update({float(result.replace(',', '.')): self.Files.return_position_with_ratio(line, self.target)})
 
         # Check list of no rates amount and select the higher
         if len(array_of_data) > 0:
@@ -102,7 +103,7 @@ class FindFooter:
             'data': [self.supplier[0]]
         })[0]
 
-        if position and position[select[0]] and position[select[0]] != '((,),(,))':
+        if position and position[select[0]] not in ['((,),(,))', 'NULL', None, '', False]:
             data = {'position': position[select[0]], 'regex': None, 'target': 'full', 'page': position[select[1]]}
             text, position = search_custom_positions(data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
             if text:
@@ -201,7 +202,10 @@ class FindFooter:
 
         if all_rate_amount and vat_amount:
             if not no_rate_amount:
-                no_rate_amount = [self.return_max(all_rate_amount)[0] - self.return_max(vat_amount)[0], (('', ''), ('', ''))]
+                no_rate_amount = [float("%.2f" % self.return_max(all_rate_amount)[0] - self.return_max(vat_amount)[0]), (('', ''), ('', ''))]
+
+        if all_rate_amount and rate_percentage:
+            no_rate_amount = [float("%.2f" % (self.return_max(all_rate_amount)[0] / (1 + float(self.return_max(rate_percentage)[0] / 100)))), (('', ''), ('', ''))]
 
         # Test all amounts. If some are false, try to search them with position. If not, pass
         if self.test_amount(no_rate_amount, all_rate_amount, rate_percentage) is not False:

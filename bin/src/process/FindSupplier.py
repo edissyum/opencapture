@@ -54,6 +54,7 @@ class FindSupplier:
 
         for line in self.text:
             corrected_line = ''
+            found = False
             for item in self.OCRErrorsTable['NUMBERS']:
                 pattern = r'[%s]' % self.OCRErrorsTable['NUMBERS'][item]
                 if text_as_string:
@@ -62,8 +63,13 @@ class FindSupplier:
                     content = line.content
                 corrected_line = re.sub(pattern, item, content)
 
-            for _data in re.finditer(r"" + regex + "", corrected_line.replace(' ', '').replace('.', '')):
+            for _data in re.finditer(r"" + regex + "", corrected_line.replace('.', '').replace(',', '').replace('(', '').replace(')', '')):
+                found = True
                 array_of_data.update({_data.group(): line})
+
+            if not found:
+                for _data in re.finditer(r"" + regex + "", corrected_line.replace(' ', '').replace('.', '').replace(',', '').replace('(', '').replace(')', '')):
+                    array_of_data.update({_data.group(): line})
 
         if len(array_of_data) != 0:
             return array_of_data
@@ -101,8 +107,9 @@ class FindSupplier:
                     else:
                         position = self.Files.return_position_with_ratio(line, target)
                     data = [existing_supplier[0]['vat_number'], position, existing_supplier[0], self.current_page]
-
                     return data
+                else:
+                    self.Log.info('VAT number found : ' + _vat + ' but no supplier found in database')
         siret_number = False
         if not vat_found:
             siret_number = self.process(self.Locale.SIRETRegex, text_as_string)
@@ -125,7 +132,6 @@ class FindSupplier:
                         else:
                             self.Log.info('SIRET found : ' + _siret + ' but no supplier found in database using this SIRET')
         if not siret_found:
-            self.Log.info("SIRET not found or doesn't meet the Luhn's algorithm")
             siren_number = self.process(self.Locale.SIRENRegex, text_as_string)
             if siren_number:
                 for _siren in siren_number:
@@ -163,7 +169,6 @@ class FindSupplier:
                                             data = [existing_supplier[0]['vat_number'], (('', ''), ('', '')), existing_supplier[0], self.current_page]
 
                                             return data
-                self.Log.info("SIREN not found or doesn't meet the Luhn's algorithm")
 
             if not retry:
                 self.found_first = False

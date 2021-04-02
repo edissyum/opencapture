@@ -334,11 +334,13 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
 
     # Find footer informations (total amount, no rate amount etc..)
     footer = FindFooter(ocr, log, locale, config, files, database, supplier, file, ocr.footer_text, typo).run()
-
     if not footer:
-        footer = FindFooter(ocr, log, locale, config, files, database, supplier, file, ocr.footer_last_text, typo).run()
+        footer = FindFooter(ocr, log, locale, config, files, database, supplier, file, ocr.last_text, typo, 'full').run()
         if footer:
-            footer.append(nb_pages)
+            if len(footer) == 4:
+                footer[3] = nb_pages
+            else:
+                footer.append(nb_pages)
 
     # Find delivery number
     delivery_number_class = FindDeliveryNumber(ocr, files, log, locale, config, database, supplier, file, typo, ocr.header_text, 1, False)
