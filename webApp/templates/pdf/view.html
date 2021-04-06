@@ -20,6 +20,9 @@
                     <i class="fa fa-arrow-right" onclick="nextPage()"></i>
                 </div>
             {% endif %}
+            <div class="original_filename">
+               {{ pdf['original_filename'] }}
+            </div>
 
             <div class="col-sm-6 img" onmousedown="isKeyPressed(event)" style="height: 100%">
                 <div id="rectangle" class="rectangle-not-active"></div>
@@ -49,7 +52,7 @@
                         </svg>
                     </div>
                 </div>
-                <form id="invoice_info" action="{{ url_for('pdf.validate_form', id=pdf['id']) }}" method="POST">
+                <form id="invoice_info" action="{{ url_for('pdf.validate_form', id=pdf['id'], old_page=old_page, old_time=old_time, old_status=old_status) }}" method="POST">
                     <div id="hiddenInputs">
                         <input type="hidden" id="ratioAdressTotal">
                         <input type="hidden" id="pdf_id" value="{{ pdf['id'] }}">

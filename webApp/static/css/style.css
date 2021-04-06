@@ -468,6 +468,14 @@ hr {
     text-align: center;
 }
 
+.original_filename{
+    position: absolute;
+    z-index: 999;
+    margin-top: -10px;
+    right: 50%;
+    opacity: 70%;
+}
+
 /***** FORM DESGIN *****/
 
 .form-check-label {
