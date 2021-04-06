@@ -118,12 +118,20 @@ def home():
 @bp.route('/list/lot/<string:time>/', defaults={'status': None})
 @bp.route('/list/lot/<string:time>/<string:status>')
 @login_required
-def index(status, time):
+def index(status, time, page_args=None):
     _vars = init()
     _db = _vars[0]
     _cfg = _vars[1].cfg
 
-    page, per_page, offset = get_page_args(page_parameter='page', per_page_parameter='per_page')
+    time = request.args.get('old_time', time)
+    status = request.args.get('old_status', status)
+
+    if not page_args:
+        page, per_page, offset = get_page_args(page_parameter='page', per_page_parameter='per_page')
+    else:
+        page, per_page, offset = get_page_args(page_parameter='page', per_page_parameter='per_page')
+        page = page_args
+
     status_list = _db.select({
         'select': ['*'],
         'table': ['status']
@@ -226,8 +234,11 @@ def index(status, time):
         return_pdf.append(pdf)
 
     nb_of_pdf = len(pdf_list) if pdf_list else 0
+
     if total == 0:
         msg = gettext('NO_RESULTS')
+    elif nb_of_pdf == 0:
+        return redirect(url_for('pdf.index', time=time, status=status, page=int(page) - 1))
     else:
         msg = gettext('SHOW') + ' <span id="count">' + str(offset + 1) + '</span> - <span>' + str(offset + nb_of_pdf) + '</span> ' + gettext('OF') + ' ' + str(total)
 
@@ -242,7 +253,8 @@ def index(status, time):
                            page=page,
                            per_page=per_page,
                            pagination=pagination,
-                           cfg=_cfg)
+                           cfg=_cfg,
+                           time=time)
 
 
 @bp.route('/list/view/<int:pdf_id>', methods=('GET', 'POST'))
@@ -251,6 +263,10 @@ def view(pdf_id):
     _vars = init()
     _db = _vars[0]
     _cfg = _vars[1]
+
+    old_page = request.args.get('old_page', None)
+    old_time = request.args.get('old_time', None)
+    old_status = request.args.get('old_status', None)
 
     if _cfg.cfg['GED']['enabled'] == 'True':
         _ws = _vars[3]
@@ -329,7 +345,10 @@ def view(pdf_id):
                            supplier=supplier_info,
                            arrayOfFinancial=array_financial,
                            list_users=ged_users['users'],
-                           currentLang=_cfg.cfg['LOCALE']['localeocr']
+                           currentLang=_cfg.cfg['LOCALE']['localeocr'],
+                           old_page=old_page,
+                           old_time=old_time,
+                           old_status=old_status
                            )
 
 
@@ -351,6 +370,10 @@ def validate_form():
     _cfg = _vars[1]
     _ws = _vars[3]
     _files = _vars[5]
+
+    old_page = request.args.get('old_page', None)
+    old_time = request.args.get('old_time', 'TODAY')
+    old_status = request.args.get('old_status', 'NEW')
 
     ged = {}
     contact = {}
@@ -528,7 +551,7 @@ def validate_form():
             flash(gettext('ERROR_WHILE_INSERTING_IN_GED'))
             change_status(pdf_id, 'ERR_GED')
 
-        return redirect(url_for('pdf.index', time="TODAY", status='NEW'))
+        return redirect(url_for('pdf.index', time=old_time, status=old_status, page=old_page))
 
 
 @bp.route('/files/<string:type_of_file>/<path:filename>', methods=['GET', 'POST'])

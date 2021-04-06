@@ -62,8 +62,8 @@
                     <div class="col-sm-3">
                         <div class="card">
                             <a style="height: 400px;" href="
-                                {% if pdf['status_id'] == 'END' %} {{ url_for('pdf.view', pdf_id=pdf['invoice_id']) }}
-                                    {% elif not pdf['locked'] or (pdf ['locked'] and pdf['locked_by'] == g.user['username']) %} {{ url_for('pdf.view', pdf_id=pdf['invoice_id']) }}
+                                {% if pdf['status_id'] == 'END' %} {{ url_for('pdf.view', pdf_id=pdf['invoice_id'], old_page=page, old_status=pdf['status_id'], old_time=time) }}
+                                    {% elif not pdf['locked'] or (pdf ['locked'] and pdf['locked_by'] == g.user['username']) %} {{ url_for('pdf.view', pdf_id=pdf['invoice_id'], old_page=page, old_status=pdf['status_id'], old_time=time) }}
                                     {% else %} #locked
                                 {% endif %}"
 
