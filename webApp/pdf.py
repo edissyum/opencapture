@@ -382,6 +382,7 @@ def validate_form():
     footer_page = 1
     invoice_number_page = 1
     invoice_date_page = 1
+    due_date_page = 1
 
     if request.method == 'POST':
         supplier_form = forms.SupplierForm(request.form)
@@ -492,6 +493,8 @@ def validate_form():
                     invoice_number_page = request.form['invoice_number_page']
                 if field == 'invoice_date_page':
                     invoice_date_page = request.form['invoice_date_page']
+                if field == 'due_date_page':
+                    due_date_page = request.form['due_date_page']
                 if field.split('_')[0] == value:
                     # If a position is associated
                     if field + '_position' in request.form:
@@ -525,6 +528,7 @@ def validate_form():
                 'set': {
                     'footer_page': footer_page,
                     'invoice_number_page': invoice_number_page,
+                    'due_date_page': due_date_page,
                     'invoice_date_page': invoice_date_page
                 },
                 'where': ['vat_number = ?'],
