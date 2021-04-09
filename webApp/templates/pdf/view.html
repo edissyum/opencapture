@@ -71,13 +71,13 @@
                                 {{ gettext('SAVE_FORM') }}
                             </span>
                         {% endif %}
-                        <div class="form-group float-right">
+                        <div class="form-group float-right form_checkboxes">
                             <input {% if pdf['status'] == 'END' %} disabled {% endif %} name="facturationInfo_is_subscription" type="checkbox" class="custom-control-input" id="is_subscription" onclick="removeUserInCharge($(this))">
-                            <label class="custom-control-label" for="is_subscription">{{ gettext('SUBSCRIPTION') }}</label>
+                            <label class="custom-control-label label_checkboxes" for="is_subscription">{{ gettext('SUBSCRIPTION') }}</label>
                         </div>
-                        <div class="form-group float-right">
+                        <div class="form-group float-right form_checkboxes">
                             <input {% if pdf['status'] == 'END' %} disabled {% endif %} name="facturationInfo_is_asset" type="checkbox" class="custom-control-input" id="is_asset">
-                            <label class="custom-control-label mr-5" for="is_asset">{{ gettext('ASSET') }}</label>
+                            <label class="custom-control-label label_checkboxes mr-5" for="is_asset">{{ gettext('ASSET') }}</label>
                         </div>
                     </div>
 
@@ -96,7 +96,7 @@
                                 {% if field.type == 'CustomBooleanField' %}
                                     {{ render_field_checkbox(field) }}
                                 {% else %}
-                                    {{ render_field(field, pdf['status']) }}
+                                    {{ render_field(field, pdf['status'], True) }}
                                 {% endif %}
                             {% endfor %}
                             {% if pdf['status'] != 'END' %}
@@ -223,6 +223,11 @@
         <script type="text/javascript" src={{ url_for('static', filename='js/jqueryLib/chosen.jquery.min.js') }}></script>
         <script type="text/javascript" src={{ url_for('static', filename='js/videoCodage.js') }}></script>
         <script type="text/javascript" src={{ url_for('static', filename='js/supplier.js') }}></script>
+        <script>
+            $(document).ready(function(){
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+        </script>
         <script>
             (function($){
                 $.fn.datepicker.dates['fra'] = {

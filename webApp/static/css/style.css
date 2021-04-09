@@ -470,7 +470,7 @@ hr {
 
 .original_filename{
     position: absolute;
-    z-index: 999;
+    z-index: 100;
     margin-top: -10px;
     right: 50%;
     opacity: 70%;
@@ -481,6 +481,35 @@ hr {
 .form-check-label {
     margin-left: 5px;
     line-height: 31px;
+}
+
+.found_auto::before{
+    top: 0.7rem !important;
+    left: -1.5rem !important;
+}
+
+.found_auto::after{
+    top: 0.7rem !important;
+    left: -1.5rem !important;
+    opacity: 0;
+    margin-top: -4px;
+    margin-left: 2px;
+}
+
+.label_checkboxes::after{
+    opacity: 0;
+    margin-top: -4px;
+    margin-left: 2px;
+}
+
+.custom-control-input:disabled ~ .custom-control-label, .custom-control-input[disabled] ~ .custom-control-label{
+    color:black!important;
+}
+
+.input-group-append input:checked ~ .found_auto::after,
+.form_checkboxes input:checked ~ .label_checkboxes::after{
+    content:'✓'!important;
+    opacity: 1;
 }
 
 #invoice_info {
@@ -542,7 +571,7 @@ hr {
 
 .custom-control-input:checked ~ .custom-control-label:before {
     background-color: #76B442 !important;
-    border-color: transparent;
+    border-color: #6c757d!important;
 }
 
 #total_ht_info,
