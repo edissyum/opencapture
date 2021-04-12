@@ -477,10 +477,23 @@ hr {
 }
 
 /***** FORM DESGIN *****/
+.custom-control-label:before{
+    background-color:#fff;
+    box-shadow: none !important;
+}
+.custom-control-input:checked ~ .custom-control-label:before{
+    background-color:#76B442!important;
+    border-color: transparent;
+}
 
-.form-check-label {
-    margin-left: 5px;
-    line-height: 31px;
+.custom-control-label:after{
+    margin-top: -4px;
+    margin-left: 2px;
+}
+
+.custom-control-input:checked ~ .custom-control-label:after{
+    content:'✓'!important;
+    opacity: 1;
 }
 
 .found_auto::before{
@@ -491,25 +504,10 @@ hr {
 .found_auto::after{
     top: 0.7rem !important;
     left: -1.5rem !important;
-    opacity: 0;
-    margin-top: -4px;
-    margin-left: 2px;
-}
-
-.label_checkboxes::after{
-    opacity: 0;
-    margin-top: -4px;
-    margin-left: 2px;
 }
 
 .custom-control-input:disabled ~ .custom-control-label, .custom-control-input[disabled] ~ .custom-control-label{
     color:black!important;
-}
-
-.input-group-append input:checked ~ .found_auto::after,
-.form_checkboxes input:checked ~ .label_checkboxes::after{
-    content:'✓'!important;
-    opacity: 1;
 }
 
 #invoice_info {
