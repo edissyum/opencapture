@@ -477,10 +477,12 @@ hr {
 }
 
 /***** FORM DESGIN *****/
+
 .custom-control-label:before{
     background-color:#fff;
     box-shadow: none !important;
 }
+
 .custom-control-input:checked ~ .custom-control-label:before{
     background-color:#76B442!important;
     border-color: transparent;
