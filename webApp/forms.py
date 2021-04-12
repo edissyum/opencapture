@@ -1,7 +1,7 @@
 from wtforms import Form, validators
 from flask_babel import lazy_gettext
 
-from .override_wtform import CustomStringField, CustomBooleanField, CustomSelectField
+from .override_wtform import CustomStringField, CustomSelectField
 
 
 # Construction of new input

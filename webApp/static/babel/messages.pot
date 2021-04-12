@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-04-09 15:16+0200\n"
+"POT-Creation-Date: 2021-04-12 15:50+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -53,8 +53,8 @@ msgstr ""
 msgid "NAME"
 msgstr ""
 
-#: webApp/forms.py:36 webApp/templates/suppliers/suppliers_list.html:46
-#: webApp/templates/suppliers/suppliers_list.html:47
+#: webApp/forms.py:36 webApp/templates/suppliers/suppliers_list.html:49
+#: webApp/templates/suppliers/suppliers_list.html:50
 msgid "ADDRESS"
 msgstr ""
 
@@ -62,26 +62,26 @@ msgstr ""
 msgid "ADDRESS_COMPLEMENT"
 msgstr ""
 
-#: webApp/forms.py:61 webApp/templates/suppliers/suppliers_list.html:48
+#: webApp/forms.py:61 webApp/templates/suppliers/suppliers_list.html:51
 msgid "ZIP_CODE"
 msgstr ""
 
-#: webApp/forms.py:74 webApp/templates/suppliers/suppliers_list.html:49
+#: webApp/forms.py:74 webApp/templates/suppliers/suppliers_list.html:52
 msgid "CITY"
 msgstr ""
 
 #: webApp/forms.py:87 webApp/templates/dashboard/index.html:696
-#: webApp/templates/suppliers/suppliers_list.html:42
+#: webApp/templates/suppliers/suppliers_list.html:45
 msgid "VAT_NUMBER"
 msgstr ""
 
 #: webApp/forms.py:104 webApp/templates/dashboard/index.html:785
-#: webApp/templates/suppliers/suppliers_list.html:44
+#: webApp/templates/suppliers/suppliers_list.html:47
 msgid "SIRET_NUMBER"
 msgstr ""
 
 #: webApp/forms.py:116 webApp/templates/dashboard/index.html:796
-#: webApp/templates/suppliers/suppliers_list.html:45
+#: webApp/templates/suppliers/suppliers_list.html:48
 msgid "SIREN_NUMBER"
 msgstr ""
 
@@ -261,23 +261,27 @@ msgstr ""
 msgid "SUPPLIER_DELETED"
 msgstr ""
 
-#: webApp/ws.py:347
+#: webApp/ws.py:322
 msgid "SUPPLIER_POSITION_DELETED"
 msgstr ""
 
-#: webApp/ws.py:369
+#: webApp/ws.py:325
+msgid "ALL_SUPPLIER_POSITION_DELETED"
+msgstr ""
+
+#: webApp/ws.py:379
 msgid "SUPPLIER_AUTO_VALIDATION_SKIPPED"
 msgstr ""
 
-#: webApp/ws.py:391
+#: webApp/ws.py:401
 msgid "SUPPLIER_AUTO_VALIDATION_SKIPPED_DISABLED"
 msgstr ""
 
-#: webApp/ws.py:495
+#: webApp/ws.py:505
 msgid "INVOICE_DELETED"
 msgstr ""
 
-#: webApp/ws.py:560
+#: webApp/ws.py:570
 msgid "FILE_UPLOAD_SUCCESS"
 msgstr ""
 
@@ -333,6 +337,10 @@ msgstr ""
 
 #: webApp/static/js/supplier.js:86 webApp/static/js/supplier.js:142
 msgid "INVALID-INPUT"
+msgstr ""
+
+#: webApp/static/js/supplier.js:180
+msgid "_CONFIRM_DELETE_ALL_POSITIONS"
 msgstr ""
 
 #: webApp/static/js/videoCodage.js:213
@@ -1062,7 +1070,7 @@ msgstr ""
 #: webApp/templates/pdf/list.html:27 webApp/templates/pdf/list.html:28
 #: webApp/templates/splitter/list.html:28
 #: webApp/templates/splitter/list.html:29
-#: webApp/templates/suppliers/suppliers_list.html:27
+#: webApp/templates/suppliers/suppliers_list.html:30
 msgid "_SEARCH_PLACEHOLDER"
 msgstr ""
 
@@ -1124,24 +1132,24 @@ msgstr ""
 
 #: webApp/templates/pdf/view.html:91 webApp/templates/pdf/view.html:105
 #: webApp/templates/pdf/view.html:108
-#: webApp/templates/suppliers/suppliers_list.html:23
-#: webApp/templates/suppliers/suppliers_list.html:43
-#: webApp/templates/suppliers/suppliers_list.html:120
-#: webApp/templates/suppliers/suppliers_list.html:160
-#: webApp/templates/suppliers/suppliers_list.html:174
+#: webApp/templates/suppliers/suppliers_list.html:26
+#: webApp/templates/suppliers/suppliers_list.html:46
+#: webApp/templates/suppliers/suppliers_list.html:123
+#: webApp/templates/suppliers/suppliers_list.html:163
+#: webApp/templates/suppliers/suppliers_list.html:177
 msgid "SUPPLIER"
 msgstr ""
 
 #: webApp/templates/pdf/view.html:105 webApp/templates/splitter/view.html:28
 #: webApp/templates/splitter/view.html:86
-#: webApp/templates/suppliers/suppliers_list.html:23
-#: webApp/templates/suppliers/suppliers_list.html:195
+#: webApp/templates/suppliers/suppliers_list.html:26
+#: webApp/templates/suppliers/suppliers_list.html:198
 msgid "ADD"
 msgstr ""
 
 #: webApp/templates/pdf/view.html:108
-#: webApp/templates/suppliers/suppliers_list.html:126
-#: webApp/templates/suppliers/suppliers_list.html:196
+#: webApp/templates/suppliers/suppliers_list.html:129
+#: webApp/templates/suppliers/suppliers_list.html:199
 msgid "EDIT"
 msgstr ""
 
@@ -1207,7 +1215,7 @@ msgstr ""
 
 #: webApp/templates/splitter/list.html:91
 #: webApp/templates/splitter/view.html:60
-#: webApp/templates/suppliers/suppliers_list.html:129
+#: webApp/templates/suppliers/suppliers_list.html:132
 msgid "DELETE"
 msgstr ""
 
@@ -1239,50 +1247,54 @@ msgstr ""
 msgid "HISTORY"
 msgstr ""
 
-#: webApp/templates/suppliers/suppliers_list.html:20
+#: webApp/templates/suppliers/suppliers_list.html:19
+msgid "DELETE_ALL_POSITIONS"
+msgstr ""
+
+#: webApp/templates/suppliers/suppliers_list.html:23
 msgid "EXPORT"
 msgstr ""
 
-#: webApp/templates/suppliers/suppliers_list.html:20
+#: webApp/templates/suppliers/suppliers_list.html:23
 msgid "SUPPLIERS"
 msgstr ""
 
-#: webApp/templates/suppliers/suppliers_list.html:28
+#: webApp/templates/suppliers/suppliers_list.html:31
 msgid "_SEARCH_PLACEHOLDER_SUPPLIER"
 msgstr ""
 
-#: webApp/templates/suppliers/suppliers_list.html:50
+#: webApp/templates/suppliers/suppliers_list.html:53
 msgid "TYPOLOGY"
 msgstr ""
 
-#: webApp/templates/suppliers/suppliers_list.html:51
-#: webApp/templates/suppliers/suppliers_list.html:172
+#: webApp/templates/suppliers/suppliers_list.html:54
+#: webApp/templates/suppliers/suppliers_list.html:175
 msgid "TYPE"
 msgstr ""
 
-#: webApp/templates/suppliers/suppliers_list.html:52
+#: webApp/templates/suppliers/suppliers_list.html:55
 #: webApp/templates/users/user_list.html:18
 msgid "ACTION"
 msgstr ""
 
-#: webApp/templates/suppliers/suppliers_list.html:122
-#: webApp/templates/suppliers/suppliers_list.html:175
+#: webApp/templates/suppliers/suppliers_list.html:125
+#: webApp/templates/suppliers/suppliers_list.html:178
 msgid "CLIENT"
 msgstr ""
 
-#: webApp/templates/suppliers/suppliers_list.html:132
+#: webApp/templates/suppliers/suppliers_list.html:135
 msgid "DELETE_SUPPLIER_POSITION"
 msgstr ""
 
-#: webApp/templates/suppliers/suppliers_list.html:137
+#: webApp/templates/suppliers/suppliers_list.html:140
 msgid "SKIP_AUTO_VALIDATION"
 msgstr ""
 
-#: webApp/templates/suppliers/suppliers_list.html:141
+#: webApp/templates/suppliers/suppliers_list.html:144
 msgid "AUTO_VALIDATION_IS_SKIPPED"
 msgstr ""
 
-#: webApp/templates/suppliers/suppliers_list.html:194
+#: webApp/templates/suppliers/suppliers_list.html:197
 msgid "CANCEL"
 msgstr ""
 
@@ -1395,5 +1407,3 @@ msgstr ""
 
 msgid "CHOOSE_VAT_RATE"
 msgstr ""
-
-

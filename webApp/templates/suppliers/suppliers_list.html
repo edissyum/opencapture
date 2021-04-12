@@ -15,6 +15,9 @@
     {{ pagination.info }}
     {{ pagination.links }}
     <hr>
+    <button type="button" id="bnt-show-add-modal" class="btn btn-outline-secondary w-15" onclick="delete_all_positions()">
+        <i class="fa fa-trash"></i> {{ gettext('DELETE_ALL_POSITIONS') }}
+    </button>
     <a type="button" id="bnt-export-supplier" class="btn btn-outline-secondary w-15"
        href="{{ url_for('ws.get_reference_file', filename="downloadFile.txt") }}">
         <i class="fa fa-file-download"></i> {{ gettext('EXPORT') }} {{ gettext('SUPPLIERS') }}
