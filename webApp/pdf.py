@@ -382,10 +382,10 @@ def validate_form():
     contact = {}
     pdf_id = request.args['id']
     res = True
-    footer_page = 1
-    invoice_number_page = 1
-    invoice_date_page = 1
-    due_date_page = 1
+    footer_page = None
+    invoice_number_page = None
+    invoice_date_page = None
+    due_date_page = None
 
     if request.method == 'POST':
         supplier_form = forms.SupplierForm(request.form)
@@ -526,17 +526,34 @@ def validate_form():
         })
 
         if vat_number:
-            _db.update({
-                'table': ['suppliers'],
-                'set': {
-                    'footer_page': footer_page,
+            _set = {}
+            if invoice_number_page:
+                _set.update({
                     'invoice_number_page': invoice_number_page,
+                })
+
+            if due_date_page:
+                _set.update({
                     'due_date_page': due_date_page,
+                })
+
+            if invoice_date_page:
+                _set.update({
                     'invoice_date_page': invoice_date_page
-                },
-                'where': ['vat_number = ?'],
-                'data': [vat_number]
-            })
+                })
+
+            if footer_page:
+                _set.update({
+                    'footer_page': footer_page,
+                })
+
+            if _set:
+                _db.update({
+                    'table': ['suppliers'],
+                    'set': _set,
+                    'where': ['vat_number = ?'],
+                    'data': [vat_number]
+                })
 
             _files.export_xml(_cfg, invoice_number, parent, True, _db, vat_number)
 
