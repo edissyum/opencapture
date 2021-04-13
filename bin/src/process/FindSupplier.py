@@ -46,15 +46,25 @@ class FindSupplier:
         r = [int(ch) for ch in str(n)][::-1]
         return (sum(r[0::2]) + sum(sum(divmod(d * 2, 10)) for d in r[1::2])) % 10 == 0
 
-    def process(self, regex, text_as_string):
-        array_of_data = {}
+    def search_suplier(self, column, data):
+        args = {
+            'select': ['*'],
+            'table': ['suppliers'],
+            'where': [column + ' = ?', 'status NOT IN (?)', 'company_type = ?'],
+            'data': [data, 'DEL', 'supplier']
+        }
+        existing_supplier = self.Database.select(args)
+        if existing_supplier:
+            return existing_supplier[0]
+        return False
+
+    def process(self, regex, text_as_string, column):
         if text_as_string and not self.splitted:
             self.text = self.text.split('\n')
             self.splitted = True
 
         for line in self.text:
             corrected_line = ''
-            found = False
             for item in self.OCRErrorsTable['NUMBERS']:
                 pattern = r'[%s]' % self.OCRErrorsTable['NUMBERS'][item]
                 if text_as_string:
@@ -64,18 +74,15 @@ class FindSupplier:
                 corrected_line = re.sub(pattern, item, content)
 
             for _data in re.finditer(r"" + regex + "", corrected_line.replace('.', '').replace(',', '').replace('(', '').replace(')', '').replace('-', '')):
-                found = True
-                array_of_data.update({_data.group(): line})
+                supplier = self.search_suplier(column, _data.group())
+                if supplier:
+                    return supplier, line
 
-            if not found:
-                for _data in re.finditer(r"" + regex + "", corrected_line.replace(' ', '').replace('.', '').replace(',', '').replace('(', '').replace(')', '').replace('-', '')):
-                    array_of_data.update({_data.group(): line})
-
-        if len(array_of_data) != 0:
-            return array_of_data
-        else:
-            # If there is no regex found, return false
-            return False
+            for _data in re.finditer(r"" + regex + "", corrected_line.replace(' ', '').replace('.', '').replace(',', '').replace('(', '').replace(')', '').replace('-', '')):
+                supplier = self.search_suplier(column, _data.group())
+                if supplier:
+                    return supplier, line
+        return []
 
     def regenerate_ocr(self):
         if self.Files.isTiff == 'True':
@@ -84,92 +91,33 @@ class FindSupplier:
             self.Files.open_img(self.Files.jpgName_header)
 
     def run(self, retry=False, regenerate_ocr=False, target=None, text_as_string=False):
-        vat_found = False
-        siret_found = False
+        supplier = self.process(self.Locale.VATNumberRegex, text_as_string, 'vat_number')
 
-        vat_number = self.process(self.Locale.VATNumberRegex, text_as_string)
+        if supplier:
+            self.regenerate_ocr()
+            self.Log.info('Supplier found : ' + supplier[0]['name'] + ' using VAT Number : ' + supplier[0]['vat_number'])
+            line = supplier[1]
+            if text_as_string:
+                position = (('', ''), ('', ''))
+            else:
+                position = self.Files.return_position_with_ratio(line, target)
+            data = [supplier[0]['vat_number'], position, supplier[0], self.current_page]
+            return data
 
-        if vat_number:
-            for _vat in vat_number:
-                args = {
-                    'select': ['*'],
-                    'table': ['suppliers'],
-                    'where': ['vat_number = ?', 'status NOT IN (?)', 'company_type = ?'],
-                    'data': [_vat, 'DEL', 'supplier']
-                }
-                existing_supplier = self.Database.select(args)
-                if existing_supplier:
-                    self.regenerate_ocr()
-                    self.Log.info('Supplier found : ' + existing_supplier[0]['name'] + ' using VAT Number : ' + _vat)
-                    line = vat_number[_vat]
-                    if text_as_string:
-                        position = (('', ''), ('', ''))
-                    else:
-                        position = self.Files.return_position_with_ratio(line, target)
-                    data = [existing_supplier[0]['vat_number'], position, existing_supplier[0], self.current_page]
-                    return data
-                else:
-                    self.Log.info('VAT number found : ' + _vat + ' but no supplier found in database')
-        siret_number = False
-        if not vat_found:
-            siret_number = self.process(self.Locale.SIRETRegex, text_as_string)
-            if siret_number:
-                for _siret in siret_number:
-                    if self.validate_luhn(_siret):
-                        args = {
-                            'select': ['*'],
-                            'table': ['suppliers'],
-                            'where': ['siret = ?', 'status NOT IN (?)', 'company_type = ?'],
-                            'data': [_siret, 'DEL', 'supplier']
-                        }
-                        existing_supplier = self.Database.select(args)
-                        if existing_supplier:
-                            self.regenerate_ocr()
-                            self.Log.info('Supplier found : ' + existing_supplier[0]['name'] + ' using SIRET : ' + _siret)
-                            data = [existing_supplier[0]['vat_number'], (('', ''), ('', '')), existing_supplier[0], self.current_page]
+        supplier = self.process(self.Locale.SIRETRegex, text_as_string, 'siret')
+        if supplier:
+            self.regenerate_ocr()
+            self.Log.info('Supplier found : ' + supplier[0]['name'] + ' using SIRET : ' + supplier[0]['siret'])
+            data = [supplier[0]['vat_number'], (('', ''), ('', '')), supplier[0], self.current_page]
+            return data
 
-                            return data
-                        else:
-                            self.Log.info('SIRET found : ' + _siret + ' but no supplier found in database using this SIRET')
-        if not siret_found:
-            siren_number = self.process(self.Locale.SIRENRegex, text_as_string)
-            if siren_number:
-                for _siren in siren_number:
-                    if self.validate_luhn(_siren):
-                        args = {
-                            'select': ['*'],
-                            'table': ['suppliers'],
-                            'where': ['SIREN = ?', 'status NOT IN (?)', 'company_type = ?'],
-                            'data': [_siren, 'DEL', 'supplier']
-                        }
-                        existing_supplier = self.Database.select(args)
-                        if existing_supplier:
-                            self.regenerate_ocr()
-                            self.Log.info('Supplier found : ' + existing_supplier[0]['name'] + ' using SIREN : ' + _siren)
-                            data = [existing_supplier[0]['vat_number'], (('', ''), ('', '')), existing_supplier[0], self.current_page]
-
-                            return data
-                        else:
-                            if siret_number:
-                                for _siret in siret_number:
-                                    if self.validate_luhn(_siret):
-                                        siren_regex = self.Locale.SIRENRegex
-                                        siren_size = siren_regex[siren_regex.find('{') + 1:siren_regex.find("}")]
-                                        siren = _siret[:int(siren_size)]
-                                        args = {
-                                            'select': ['*'],
-                                            'table': ['suppliers'],
-                                            'where': ['SIREN = ?', 'status NOT IN (?)', 'company_type = ?'],
-                                            'data': [siren, 'DEL', 'supplier']
-                                        }
-                                        existing_supplier = self.Database.select(args)
-                                        if existing_supplier:
-                                            self.regenerate_ocr()
-                                            self.Log.info('Supplier found : ' + existing_supplier[0]['name'] + ' using SIREN : ' + _siret)
-                                            data = [existing_supplier[0]['vat_number'], (('', ''), ('', '')), existing_supplier[0], self.current_page]
-
-                                            return data
-
+        supplier = self.process(self.Locale.SIRENRegex, text_as_string, 'siren')
+        if supplier:
+            self.regenerate_ocr()
+            self.Log.info('Supplier found : ' + supplier[0]['name'] + ' using SIREN : ' + supplier[0]['siren'])
+            data = [supplier[0]['vat_number'], (('', ''), ('', '')), supplier[0], self.current_page]
+            return data
+        else:
             if not retry:
                 self.found_first = False
             elif retry and self.found_second:
