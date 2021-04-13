@@ -292,7 +292,7 @@ class Files:
                             # Add position in supplier database
                             if 'position' in child[childElement]:
                                 clean_child_position = child[childElement]['position']
-                                if clean_child_position is not None:
+                                if clean_child_position not in [None, '']:
                                     if 'due_date' in clean_child or 'invoice_date' in clean_child or 'no_taxes' in clean_child or 'invoice_number' in clean_child or 'order_number' in clean_child \
                                             or 'delivery_number' in clean_child or ('vat' in clean_child and clean_child != 'vat_number'):
                                         db.update({
