@@ -126,6 +126,7 @@ def modify_config(data):
     ai_enabled = data.get('AI-CLASSIFICATION_enabled')
     remove_blank_page_enabled = data.get('REMOVE-BLANK-PAGES_enabled')
     enable_auto_save = data.get('GLOBAL_enableautosave')
+    enable_visual = data.get('GLOBAL_enablevisualifpositionsfound')
 
     if separator_qrenabled is not None:
         parser.set('SEPARATORQR', 'enabled', 'True')
@@ -162,6 +163,11 @@ def modify_config(data):
     else:
         parser.set('GLOBAL', 'enableautosave', 'False')
 
+    if enable_visual is not None:
+        parser.set('GLOBAL', 'enablevisualifpositionsfound', 'True')
+    else:
+        parser.set('GLOBAL', 'enablevisualifpositionsfound', 'False')
+
     if ged_enabled is not None:
         parser.set('GED', 'enabled', 'True')
     else:
@@ -189,7 +195,7 @@ def modify_config(data):
 
         # Don't process REGEX param here, because it's another file
         if 'REGEX' not in section:
-            if field not in ['exportpdfa', 'enabled', 'allowduplicate', 'allowautomaticvalidation', 'convertpdftotiff', 'allowbypasssuppliebanverif', 'enableautosave']:
+            if field not in ['exportpdfa', 'enabled', 'allowduplicate', 'allowautomaticvalidation', 'convertpdftotiff', 'allowbypasssuppliebanverif', 'enableautosave', 'enablevisualifpositionsfound']:
                 parser.set(section, field, data[info])
         else:
             with open(localepath + locale + '.json', 'r') as file:

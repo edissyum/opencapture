@@ -28,6 +28,8 @@ timeDelta                   = -1
 uploadMaxFiles              = 3
 ; Enable autosave of Facturation Informations into form
 enableAutoSave              = True
+; Enable visual indication in view form if data was found automatically
+enableVisualIfPositionsFound = False
 
 [AI-CLASSIFICATION]
 ; True or False, python way

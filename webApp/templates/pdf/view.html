@@ -127,7 +127,7 @@
                                 {% if field.type == 'CustomBooleanField' %}
                                     {{ render_field_checkbox(field) }}
                                 {% else %}
-                                    {{ render_field(field, pdf['status']) }}
+                                    {{ render_field(field, pdf['status'], False, cfg) }}
                                 {% endif %}
                             {% endfor %}
                         </div>
@@ -148,7 +148,7 @@
                                 {% if field.type == 'CustomBooleanField' %}
                                     {{ render_field_checkbox(field) }}
                                 {% else %}
-                                    {{ render_field(field, pdf['status']) }}
+                                    {{ render_field(field, pdf['status'], False, cfg) }}
                                 {% endif %}
                             {% endfor %}
                             <a id="addStructure" href="#addStructure" onclick="addStructure(this)" data-toggle="tooltip" title="{{ gettext('ADD_NEW_LINE') }}">

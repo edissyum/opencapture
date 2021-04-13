@@ -182,6 +182,7 @@ def index(status, time, page_args=None):
                 "DISTINCT(invoices.id) as invoice_id",
                 "status.id as status_id",
                 "strftime('%d-%m-%Y à %H:%M:%S', register_date) as date",
+                "strftime('%Y-%m-%d', register_date) as date_order",
                 "*"
             ],
             'table': ['invoices', 'status', 'suppliers'],
@@ -190,7 +191,7 @@ def index(status, time, page_args=None):
             'data': [day],
             'limit': str(per_page),
             'offset': str(offset),
-            'order_by': ['date DESC']
+            'order_by': ['date_order DESC']
         })
 
     else:
@@ -206,6 +207,7 @@ def index(status, time, page_args=None):
                 "DISTINCT(invoices.id) as invoice_id",
                 "status.id as status_id",
                 "strftime('%d-%m-%Y à %H:%M:%S', register_date) as date",
+                "strftime('%Y-%m-%d', register_date) as date_order",
                 "*"
             ],
             'table': ['invoices', 'status'],
@@ -214,7 +216,7 @@ def index(status, time, page_args=None):
             'data': [datetime.today().strftime('%Y-%m-%d')],
             'limit': str(per_page),
             'offset': str(offset),
-            'order_by': ['date DESC']
+            'order_by': ['date_order DESC']
         })
 
     result = [dict(pdf) for pdf in pdf_list]
@@ -348,7 +350,8 @@ def view(pdf_id):
                            currentLang=_cfg.cfg['LOCALE']['localeocr'],
                            old_page=old_page,
                            old_time=old_time,
-                           old_status=old_status
+                           old_status=old_status,
+                           cfg=_cfg
                            )
 
 

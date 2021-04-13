@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2021-04-12 15:50+0200\n"
+"POT-Creation-Date: 2021-04-13 11:35+0200\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: fr\n"
@@ -71,32 +71,32 @@ msgstr "Code postal"
 msgid "CITY"
 msgstr "Ville"
 
-#: webApp/forms.py:87 webApp/templates/dashboard/index.html:696
+#: webApp/forms.py:87 webApp/templates/dashboard/index.html:712
 #: webApp/templates/suppliers/suppliers_list.html:45
 msgid "VAT_NUMBER"
 msgstr "Numéro de TVA"
 
-#: webApp/forms.py:104 webApp/templates/dashboard/index.html:785
+#: webApp/forms.py:104 webApp/templates/dashboard/index.html:801
 #: webApp/templates/suppliers/suppliers_list.html:47
 msgid "SIRET_NUMBER"
 msgstr "Numéro de SIRET"
 
-#: webApp/forms.py:116 webApp/templates/dashboard/index.html:796
+#: webApp/forms.py:116 webApp/templates/dashboard/index.html:812
 #: webApp/templates/suppliers/suppliers_list.html:48
 msgid "SIREN_NUMBER"
 msgstr "Numéro de SIREN"
 
 #: webApp/forms.py:134 webApp/static/js/videoCodage.js:653
-#: webApp/templates/dashboard/index.html:735
+#: webApp/templates/dashboard/index.html:751
 msgid "ORDER_NUMBER"
 msgstr "Numéro de commande"
 
 #: webApp/forms.py:152 webApp/static/js/videoCodage.js:686
-#: webApp/templates/dashboard/index.html:724
+#: webApp/templates/dashboard/index.html:740
 msgid "DELIVERY_FORM_NUMBER"
 msgstr "Numéro de bon de livraison"
 
-#: webApp/forms.py:170 webApp/templates/dashboard/index.html:710
+#: webApp/forms.py:170 webApp/templates/dashboard/index.html:726
 #: webApp/templates/pdf/list.html:92
 msgid "INVOICE_NUMBER"
 msgstr "Numéro de facture"
@@ -105,18 +105,18 @@ msgstr "Numéro de facture"
 msgid "INVOICE_DATE"
 msgstr "Date de la facture"
 
-#: webApp/forms.py:207 webApp/templates/dashboard/index.html:682
+#: webApp/forms.py:207 webApp/templates/dashboard/index.html:698
 msgid "DUE_DATE"
 msgstr "Date d'échéance"
 
 #: webApp/forms.py:227 webApp/static/js/videoCodage.js:499
-#: webApp/templates/dashboard/index.html:832
+#: webApp/templates/dashboard/index.html:848
 msgid "VAT_RATE"
 msgstr "Taux de TVA"
 
 #: webApp/forms.py:247 webApp/forms.py:304 webApp/static/js/videoCodage.js:508
 #: webApp/static/js/videoCodage.js:606
-#: webApp/templates/dashboard/index.html:810
+#: webApp/templates/dashboard/index.html:826
 msgid "NO_RATE_AMOUNT"
 msgstr "Montant HT"
 
@@ -124,7 +124,7 @@ msgstr "Montant HT"
 msgid "LOAD_ACCOUNT"
 msgstr "Compte de charge"
 
-#: webApp/forms.py:276 webApp/pdf.py:612 webApp/static/js/videoCodage.js:519
+#: webApp/forms.py:276 webApp/pdf.py:614 webApp/static/js/videoCodage.js:519
 msgid "SELECT_LOAD_ACCOUNT"
 msgstr "Selectionnez un compte de charge"
 
@@ -132,7 +132,7 @@ msgstr "Selectionnez un compte de charge"
 msgid "TOTAL_NO_RATE"
 msgstr "Total HT"
 
-#: webApp/forms.py:287 webApp/templates/dashboard/index.html:821
+#: webApp/forms.py:287 webApp/templates/dashboard/index.html:837
 msgid "TOTAL_TTC"
 msgstr "Total TTC"
 
@@ -156,25 +156,25 @@ msgstr "Dépenses"
 msgid "SELECT_OUTCOME"
 msgstr "Choix de la dépense"
 
-#: webApp/pdf.py:239 webApp/splitter.py:115 webApp/static/js/videoCodage.js:63
+#: webApp/pdf.py:241 webApp/splitter.py:115 webApp/static/js/videoCodage.js:63
 msgid "NO_RESULTS"
 msgstr "Pas de résultats"
 
-#: webApp/pdf.py:243 webApp/splitter.py:117 webApp/supplier.py:70
+#: webApp/pdf.py:245 webApp/splitter.py:117 webApp/supplier.py:70
 #: webApp/user.py:182
 msgid "SHOW"
 msgstr "Affichage de"
 
-#: webApp/pdf.py:243 webApp/splitter.py:117 webApp/supplier.py:70
+#: webApp/pdf.py:245 webApp/splitter.py:117 webApp/supplier.py:70
 #: webApp/templates/pdf/view.html:19 webApp/user.py:182
 msgid "OF"
 msgstr "sur"
 
-#: webApp/pdf.py:553
+#: webApp/pdf.py:555
 msgid "END_LONG"
 msgstr "Facture validée et cloturée"
 
-#: webApp/pdf.py:555
+#: webApp/pdf.py:557
 msgid "ERROR_WHILE_INSERTING_IN_GED"
 msgstr "Erreur lors de l'insertion de la facture dans la GED"
 
@@ -263,12 +263,12 @@ msgid "SUPPLIER_DELETED"
 msgstr "Fournisseur supprimé"
 
 #: webApp/ws.py:322
-msgid "SUPPLIER_POSITION_DELETED"
-msgstr "Positions du fournisseur supprimées"
-
-#: webApp/ws.py:325
 msgid "ALL_SUPPLIER_POSITION_DELETED"
 msgstr "Positions de tous les fournisseur supprimées"
+
+#: webApp/ws.py:325
+msgid "SUPPLIER_POSITION_DELETED"
+msgstr "Positions du fournisseur supprimées"
 
 #: webApp/ws.py:379
 msgid "SUPPLIER_AUTO_VALIDATION_SKIPPED"
@@ -656,10 +656,11 @@ msgstr "Autoriser les doublons de facture"
 #: webApp/templates/dashboard/index.html:209
 #: webApp/templates/dashboard/index.html:225
 #: webApp/templates/dashboard/index.html:241
-#: webApp/templates/dashboard/index.html:851
-#: webApp/templates/dashboard/index.html:930
-#: webApp/templates/dashboard/index.html:972
-#: webApp/templates/dashboard/index.html:1258
+#: webApp/templates/dashboard/index.html:257
+#: webApp/templates/dashboard/index.html:867
+#: webApp/templates/dashboard/index.html:946
+#: webApp/templates/dashboard/index.html:988
+#: webApp/templates/dashboard/index.html:1274
 msgid "ENABLED"
 msgstr "Actif"
 
@@ -679,379 +680,383 @@ msgstr "Autoriser le bypass de la vérification d'adresse des fournisseurs"
 msgid "ENABLE_AUTO_SAVE"
 msgstr "Activer la sauvegarde automatique du formulaire"
 
-#: webApp/templates/dashboard/index.html:250
+#: webApp/templates/dashboard/index.html:247
+msgid "ENABLE_VISUAL_IF_POSITIONS_FOUND"
+msgstr "Activer l'indication visuelle si le champ à été trouvé automatiquement"
+
+#: webApp/templates/dashboard/index.html:266
 msgid "DEFAULT_PASSWORD"
 msgstr "Mot de passe par défaut"
 
-#: webApp/templates/dashboard/index.html:261
+#: webApp/templates/dashboard/index.html:277
 msgid "TIME_DELTA"
 msgstr "Différence de jour maximale depuis aujourd'hui (date de facture)"
 
-#: webApp/templates/dashboard/index.html:271
+#: webApp/templates/dashboard/index.html:287
 msgid "TIME_DELTA_HELP"
 msgstr "-1 pour désactiver cette fonctionnalité"
 
-#: webApp/templates/dashboard/index.html:275
+#: webApp/templates/dashboard/index.html:291
 msgid "UPLOAD_MAX_FILES"
 msgstr "Nombre de fichiers maximum à uploader en simultané"
 
-#: webApp/templates/dashboard/index.html:288
+#: webApp/templates/dashboard/index.html:304
 msgid "SUPPLIER_ADDRES_VERIFICATION"
 msgstr "Validation adresse fournisseur"
 
-#: webApp/templates/dashboard/index.html:292
+#: webApp/templates/dashboard/index.html:308
 msgid "PERCENTAGE_MAX_PER_FIELD"
 msgstr "Pourcentage de validation maximale par champs"
 
-#: webApp/templates/dashboard/index.html:302
-#: webApp/templates/dashboard/index.html:316
-#: webApp/templates/dashboard/index.html:330
+#: webApp/templates/dashboard/index.html:318
+#: webApp/templates/dashboard/index.html:332
+#: webApp/templates/dashboard/index.html:346
 msgid "RATIO_HELP"
 msgstr "De 1 à 100"
 
-#: webApp/templates/dashboard/index.html:306
+#: webApp/templates/dashboard/index.html:322
 msgid "PERCENTAGE_AVERAGE_PER_FIELD"
 msgstr "Pourcentage de validation moyenne par champs"
 
-#: webApp/templates/dashboard/index.html:320
+#: webApp/templates/dashboard/index.html:336
 msgid "PERCENTAGE_BEFORE_FORM_SUBMISSION"
 msgstr "Pourcentage de validation avant soumission formulaire"
 
-#: webApp/templates/dashboard/index.html:339
+#: webApp/templates/dashboard/index.html:355
 msgid "SEPARATOR_PATH"
 msgstr "Chemin de séparation"
 
-#: webApp/templates/dashboard/index.html:350
+#: webApp/templates/dashboard/index.html:366
 msgid "TMP_BATCH_PATH"
 msgstr "Chemin temporaire des batchs (utilisé pour la version web)"
 
-#: webApp/templates/dashboard/index.html:361
+#: webApp/templates/dashboard/index.html:377
 msgid "PDF_OUTPUT_PATH"
 msgstr "Chemin de sortie des PDF"
 
-#: webApp/templates/dashboard/index.html:374
+#: webApp/templates/dashboard/index.html:390
 msgid "PDF_ORIGIN_PATH"
 msgstr "Chemin de stockage des fichiers originaux"
 
-#: webApp/templates/dashboard/index.html:390
-#: webApp/templates/dashboard/index.html:956
+#: webApp/templates/dashboard/index.html:406
+#: webApp/templates/dashboard/index.html:972
 msgid "GENERAL"
 msgstr "Général"
 
-#: webApp/templates/dashboard/index.html:393
+#: webApp/templates/dashboard/index.html:409
 msgid "LOCALE"
 msgstr "Locale"
 
-#: webApp/templates/dashboard/index.html:396
+#: webApp/templates/dashboard/index.html:412
 msgid "REFERENCIALS"
 msgstr "Référentiels"
 
-#: webApp/templates/dashboard/index.html:399
+#: webApp/templates/dashboard/index.html:415
 msgid "REGEX"
 msgstr "Regex"
 
-#: webApp/templates/dashboard/index.html:402
+#: webApp/templates/dashboard/index.html:418
 msgid "QR_CODE_SEPARATION"
 msgstr "Séparations par QR Code"
 
-#: webApp/templates/dashboard/index.html:405
+#: webApp/templates/dashboard/index.html:421
 msgid "BLANK_PAGE_REMOVE"
 msgstr "Suppression des pages blanches"
 
-#: webApp/templates/dashboard/index.html:412
+#: webApp/templates/dashboard/index.html:428
 msgid "PROJECT_PATH"
 msgstr "Chemin du projet"
 
-#: webApp/templates/dashboard/index.html:423
-#: webApp/templates/dashboard/index.html:897
+#: webApp/templates/dashboard/index.html:439
+#: webApp/templates/dashboard/index.html:913
 msgid "TEMP_PATH"
 msgstr "Chemin temporaire"
 
-#: webApp/templates/dashboard/index.html:434
+#: webApp/templates/dashboard/index.html:450
 msgid "IMAGES_PATH"
 msgstr "Chemin pour les images"
 
-#: webApp/templates/dashboard/index.html:448
+#: webApp/templates/dashboard/index.html:464
 msgid "TIFF_PATH"
 msgstr "Chemin pour les fichiers TIFF"
 
-#: webApp/templates/dashboard/index.html:459
+#: webApp/templates/dashboard/index.html:475
 msgid "ERROR_PATH"
 msgstr "Chemin d'erreur"
 
-#: webApp/templates/dashboard/index.html:470
+#: webApp/templates/dashboard/index.html:486
 msgid "LOGS_FILE"
 msgstr "Fichier de logs"
 
-#: webApp/templates/dashboard/index.html:484
+#: webApp/templates/dashboard/index.html:500
 msgid "DOCSERVER_PATH"
 msgstr "Chemin des docservers"
 
-#: webApp/templates/dashboard/index.html:495
+#: webApp/templates/dashboard/index.html:511
 msgid "EXPORT_ACCOUNTING_FOLDER"
 msgstr "Chemin d'export XML"
 
-#: webApp/templates/dashboard/index.html:506
+#: webApp/templates/dashboard/index.html:522
 msgid "EXPORT_ACCOUNTING_FILE_PARSER"
 msgstr "Fichier de nommage des fichiers XML"
 
-#: webApp/templates/dashboard/index.html:520
+#: webApp/templates/dashboard/index.html:536
 msgid "OCR_RESOLUTION_DPI"
 msgstr "Résolution de l'image pour OCR (DPI)"
 
-#: webApp/templates/dashboard/index.html:534
+#: webApp/templates/dashboard/index.html:550
 msgid "IMAGE_COMPRESSION_QUALITY"
 msgstr "Qualité de compression de l'image"
 
-#: webApp/templates/dashboard/index.html:544
+#: webApp/templates/dashboard/index.html:560
 msgid "COMPRESSION_HELP"
 msgstr "De 1 à 100, 100 étant la meilleure qualité"
 
-#: webApp/templates/dashboard/index.html:548
+#: webApp/templates/dashboard/index.html:564
 msgid "OCR_CHAR_CORRECTION"
 msgstr "Correction des caractères OCR"
 
-#: webApp/templates/dashboard/index.html:559
+#: webApp/templates/dashboard/index.html:575
 msgid "OCR_ERROR_PATH"
 msgstr "Chemin pour le fichier de correction OCR"
 
-#: webApp/templates/dashboard/index.html:574
+#: webApp/templates/dashboard/index.html:590
 msgid "REGEX_LOCALE_CODE"
 msgstr "Code language pour REGEX"
 
-#: webApp/templates/dashboard/index.html:584
+#: webApp/templates/dashboard/index.html:600
 msgid "LOCALE_HELP"
 msgstr "<b>fr_FR</b> ou <b>en_EN</b> par défaut"
 
-#: webApp/templates/dashboard/index.html:588
+#: webApp/templates/dashboard/index.html:604
 msgid "OCR_LOCALE_CODE"
 msgstr "Code language pour OCR"
 
-#: webApp/templates/dashboard/index.html:598
+#: webApp/templates/dashboard/index.html:614
 msgid "LOCALE_OCR_HELP"
 msgstr "<b>fra</b> ou <b>eng</b> par défaut"
 
-#: webApp/templates/dashboard/index.html:602
+#: webApp/templates/dashboard/index.html:618
 msgid "LOCALE_PATH"
 msgstr "Chemin vers les fichiers de langues"
 
-#: webApp/templates/dashboard/index.html:617
+#: webApp/templates/dashboard/index.html:633
 msgid "FINANCIAL_REFERENCIAL"
 msgstr "Référentiel plan comptable"
 
-#: webApp/templates/dashboard/index.html:628
+#: webApp/templates/dashboard/index.html:644
 msgid "REFERENCIAL_POSITION"
 msgstr "Dossier des masques de positions"
 
-#: webApp/templates/dashboard/index.html:642
+#: webApp/templates/dashboard/index.html:658
 msgid "SUPPLIERS_REFERENCIAL"
 msgstr "Referentiel des fournisseurs"
 
-#: webApp/templates/dashboard/index.html:653
+#: webApp/templates/dashboard/index.html:669
 msgid "SUPPLIERS_EXCEL_INDEX_REFERENCIAL"
 msgstr "Référentiel des index EXCEL pour fournisseurs"
 
-#: webApp/templates/dashboard/index.html:668
+#: webApp/templates/dashboard/index.html:684
 msgid "DATE"
 msgstr "Date"
 
-#: webApp/templates/dashboard/index.html:749
+#: webApp/templates/dashboard/index.html:765
 msgid "INVOICE_NUMBER_SIZE"
 msgstr "Longueur minimale de facture"
 
-#: webApp/templates/dashboard/index.html:760
+#: webApp/templates/dashboard/index.html:776
 msgid "INPUT_FORMAT_DATE"
 msgstr "Format de date en entrée"
 
-#: webApp/templates/dashboard/index.html:771
+#: webApp/templates/dashboard/index.html:787
 msgid "OUTPUT_FORMAT_DATE"
 msgstr "Format de date en sortie"
 
-#: webApp/templates/dashboard/index.html:859
+#: webApp/templates/dashboard/index.html:875
 msgid "SEPARATE_BY_DOCUMENT"
 msgstr "Séparation toute les deux pages (recto/verso)"
 
-#: webApp/templates/dashboard/index.html:867
+#: webApp/templates/dashboard/index.html:883
 msgid "PDFA_EXPORT"
 msgstr "Export PDF/A"
 
-#: webApp/templates/dashboard/index.html:872
+#: webApp/templates/dashboard/index.html:888
 msgid "PDF_EXPORT_PATH"
 msgstr "Chemin d'export PDF"
 
-#: webApp/templates/dashboard/index.html:883
+#: webApp/templates/dashboard/index.html:899
 msgid "PDFA_EXPORT_PATH"
 msgstr "Chemin d'export PDF/A"
 
-#: webApp/templates/dashboard/index.html:908
+#: webApp/templates/dashboard/index.html:924
 msgid "DIVIDER_CREATION_FILE"
 msgstr "Séparateur (lors de la création de fichiers)"
 
-#: webApp/templates/dashboard/index.html:918
+#: webApp/templates/dashboard/index.html:934
 msgid "DIVIDER_HELP"
 msgstr "<b>_</b> ou <b>-</b> par exemple"
 
-#: webApp/templates/dashboard/index.html:934
+#: webApp/templates/dashboard/index.html:950
 msgid "BLOBS_RATIO"
 msgstr "Ratio minimal de detection de page blanche"
 
-#: webApp/templates/dashboard/index.html:944
+#: webApp/templates/dashboard/index.html:960
 msgid "BLOBSRATIO_HELP"
 msgstr ""
 "Il prends en compte le nombre de points trouvé dans l'image par rapport à"
 " la taille de l'image"
 
-#: webApp/templates/dashboard/index.html:976
+#: webApp/templates/dashboard/index.html:992
 msgid "REST_URL"
 msgstr "URL des Webservices"
 
-#: webApp/templates/dashboard/index.html:987
+#: webApp/templates/dashboard/index.html:1003
 msgid "REST_USER"
 msgstr "Utilisateur Webservices"
 
-#: webApp/templates/dashboard/index.html:998
+#: webApp/templates/dashboard/index.html:1014
 msgid "REST_PASSWORD"
 msgstr "Mot de passe Webservices"
 
-#: webApp/templates/dashboard/index.html:1012
+#: webApp/templates/dashboard/index.html:1028
 msgid "AVAILABLE_PROCESS"
 msgstr "Process disponible"
 
-#: webApp/templates/dashboard/index.html:1023
+#: webApp/templates/dashboard/index.html:1039
 msgid "DEFAULT_PROCESS"
 msgstr "Process par défaut"
 
-#: webApp/templates/dashboard/index.html:1034
+#: webApp/templates/dashboard/index.html:1050
 msgid "USERGROUP_ID"
 msgstr "Identifiant du groupe utilisateur"
 
-#: webApp/templates/dashboard/index.html:1050
+#: webApp/templates/dashboard/index.html:1066
 #: webApp/templates/users/user_list.html:16
 msgid "STATUS"
 msgstr "Status"
 
-#: webApp/templates/dashboard/index.html:1061
+#: webApp/templates/dashboard/index.html:1077
 msgid "STATUS_END"
 msgstr "Status clos"
 
-#: webApp/templates/dashboard/index.html:1072
+#: webApp/templates/dashboard/index.html:1088
 msgid "TYPE_ID"
 msgstr "Identifiant du type de document"
 
-#: webApp/templates/dashboard/index.html:1083
+#: webApp/templates/dashboard/index.html:1099
 msgid "TYPIST"
 msgstr "Rédacteur"
 
-#: webApp/templates/dashboard/index.html:1097
+#: webApp/templates/dashboard/index.html:1113
 msgid "PRIORITY"
 msgstr "Priorité"
 
-#: webApp/templates/dashboard/index.html:1108
+#: webApp/templates/dashboard/index.html:1124
 msgid "CATEGORY_ID"
 msgstr "Identifiant de la catégorie"
 
-#: webApp/templates/dashboard/index.html:1119
+#: webApp/templates/dashboard/index.html:1135
 msgid "FORMAT"
 msgstr "Format"
 
-#: webApp/templates/dashboard/index.html:1130
+#: webApp/templates/dashboard/index.html:1146
 msgid "DEFAULT_DESTINATION"
 msgstr "Destination par défaut"
 
-#: webApp/templates/dashboard/index.html:1141
+#: webApp/templates/dashboard/index.html:1157
 msgid "DEFAULT_DESTUSER"
 msgstr "Destinataire par défaut"
 
-#: webApp/templates/dashboard/index.html:1155
+#: webApp/templates/dashboard/index.html:1171
 msgid "CUSTOM_VAT_NUMBER"
 msgstr "Champs custom pour le numéro de TVA"
 
-#: webApp/templates/dashboard/index.html:1166
+#: webApp/templates/dashboard/index.html:1182
 msgid "CUSTOM_HT"
 msgstr "Champs custom pour le total HT"
 
-#: webApp/templates/dashboard/index.html:1177
+#: webApp/templates/dashboard/index.html:1193
 msgid "CUSTOM_TTC"
 msgstr "Champs custom pour le total TTC"
 
-#: webApp/templates/dashboard/index.html:1188
+#: webApp/templates/dashboard/index.html:1204
 msgid "CUSTOM_ORDER_NUMBER"
 msgstr "Champs custom du numéro de commande"
 
-#: webApp/templates/dashboard/index.html:1202
+#: webApp/templates/dashboard/index.html:1218
 msgid "CUSTOM_INVOICE_NUMBER"
 msgstr "Champs custom pour le numéro de facture"
 
-#: webApp/templates/dashboard/index.html:1213
+#: webApp/templates/dashboard/index.html:1229
 msgid "CUSTOM_DELIVERY_NUMBER"
 msgstr "Champs custom pour le numéro de BL"
 
-#: webApp/templates/dashboard/index.html:1224
+#: webApp/templates/dashboard/index.html:1240
 msgid "CONTACT_TYPE"
 msgstr "Type de contact"
 
-#: webApp/templates/dashboard/index.html:1235
+#: webApp/templates/dashboard/index.html:1251
 msgid "CONTACT_PURPOSE_ID"
 msgstr "Identifiant du label de l'adresse"
 
-#: webApp/templates/dashboard/index.html:1262
+#: webApp/templates/dashboard/index.html:1278
 msgid "AI_PATH"
 msgstr "Chemin vers l'IA"
 
-#: webApp/templates/dashboard/index.html:1273
+#: webApp/templates/dashboard/index.html:1289
 msgid "AI_MODEL_PATH"
 msgstr "Chemin vers le modèle"
 
-#: webApp/templates/dashboard/index.html:1286
-#: webApp/templates/dashboard/index.html:1297
+#: webApp/templates/dashboard/index.html:1302
+#: webApp/templates/dashboard/index.html:1313
 msgid "AI_TRAIN_IMAGE_PATH"
 msgstr "Chemin vers les fichiers d'entrainement"
 
-#: webApp/templates/dashboard/index.html:1310
+#: webApp/templates/dashboard/index.html:1326
 msgid "AI_CONFIDENCE_MIN"
 msgstr "Niveau minimale de confiance"
 
-#: webApp/templates/dashboard/index.html:1325
+#: webApp/templates/dashboard/index.html:1341
 msgid "DATABASE_FILE"
 msgstr "Fichier de base de données"
 
-#: webApp/templates/dashboard/index.html:1336
+#: webApp/templates/dashboard/index.html:1352
 msgid "DATABASE_TYPE"
 msgstr "Type de base de données"
 
-#: webApp/templates/dashboard/index.html:1346
+#: webApp/templates/dashboard/index.html:1362
 msgid "DATABASE_TYPE_HELP"
 msgstr "pgsql ou sqlite"
 
-#: webApp/templates/dashboard/index.html:1350
+#: webApp/templates/dashboard/index.html:1366
 msgid "POSTGRES_HOST"
 msgstr "Hôte Postgres"
 
-#: webApp/templates/dashboard/index.html:1361
+#: webApp/templates/dashboard/index.html:1377
 msgid "POSTGRES_PORT"
 msgstr "Port Postgres"
 
-#: webApp/templates/dashboard/index.html:1374
+#: webApp/templates/dashboard/index.html:1390
 msgid "POSTGRES_DATABASE"
 msgstr "Nom de la base de données Postgres"
 
-#: webApp/templates/dashboard/index.html:1385
+#: webApp/templates/dashboard/index.html:1401
 msgid "POSTGRES_USER"
 msgstr "Utilisateur Postgres"
 
-#: webApp/templates/dashboard/index.html:1396
+#: webApp/templates/dashboard/index.html:1412
 msgid "POSTGRES_PASSWORD"
 msgstr "Mot de passe postgres"
 
-#: webApp/templates/dashboard/index.html:1409
+#: webApp/templates/dashboard/index.html:1425
 msgid "CURRENT_VERSION"
 msgstr "Version actuelle"
 
-#: webApp/templates/dashboard/index.html:1410
+#: webApp/templates/dashboard/index.html:1426
 msgid "LAST_VERSION"
 msgstr "Dernière version"
 
-#: webApp/templates/dashboard/index.html:1412
+#: webApp/templates/dashboard/index.html:1428
 msgid "MODIFY_CONFIGURATION"
 msgstr "Modifier la configuration"
 
