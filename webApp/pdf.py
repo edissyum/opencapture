@@ -182,7 +182,7 @@ def index(status, time, page_args=None):
                 "DISTINCT(invoices.id) as invoice_id",
                 "status.id as status_id",
                 "strftime('%d-%m-%Y à %H:%M:%S', register_date) as date",
-                "strftime('%Y-%m-%d', register_date) as date_order",
+                "strftime('%Y-%m-%d %H:%M:%S', register_date) as date_order",
                 "*"
             ],
             'table': ['invoices', 'status', 'suppliers'],
@@ -193,7 +193,7 @@ def index(status, time, page_args=None):
             'offset': str(offset),
             'order_by': ['date_order DESC']
         })
-
+        # exit()
     else:
         total = _db.select({
             'select': ['count(DISTINCT(invoices.id)) as total'],
@@ -207,7 +207,7 @@ def index(status, time, page_args=None):
                 "DISTINCT(invoices.id) as invoice_id",
                 "status.id as status_id",
                 "strftime('%d-%m-%Y à %H:%M:%S', register_date) as date",
-                "strftime('%Y-%m-%d', register_date) as date_order",
+                "strftime('%Y-%m-%d %H:%M:%S', register_date) as date_order",
                 "*"
             ],
             'table': ['invoices', 'status'],
