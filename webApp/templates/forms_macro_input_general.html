@@ -44,11 +44,13 @@
                 {% set position ='((' + field.render_kw['x1_original']|string + ',' + field.render_kw['y1_original']|string + '),(' + field.render_kw['x2_original']|string + ',' + field.render_kw['y2_original']|string + '))' %}
 
                 {% if position != '((,),(,))' %}
-                    {% if not supplier and cfg.cfg['GLOBAL']['enablevisualifpositionsfound'] == 'True' %}
-                        <div class="input-group-append">
-                            <input disabled class="custom-control-input" name="{{ field.name }}_found_auto" type="checkbox" id="{{ field.name }}_found_auto" {% if field.data %} checked {% endif %}>
-                            <label data-toggle="tooltip" data-placement="bottom" title="{{ gettext('FOUND_WITH_POSITION') }}" class="custom-control-label found_auto" for="{{ field.name }}_found_auto"></label>
-                        </div>
+                    {% if not supplier and cfg %}
+                        {% if cfg.cfg['GLOBAL']['enablevisualifpositionsfound'] == 'True' %}
+                            <div class="input-group-append">
+                                <input disabled class="custom-control-input" name="{{ field.name }}_found_auto" type="checkbox" id="{{ field.name }}_found_auto" {% if field.data %} checked {% endif %}>
+                                <label data-toggle="tooltip" data-placement="bottom" title="{{ gettext('FOUND_WITH_POSITION') }}" class="custom-control-label found_auto" for="{{ field.name }}_found_auto"></label>
+                            </div>
+                        {% endif %}
                     {% endif %}
                     <input type="hidden" name="{{ field.id }}_position" id="{{ field.id }}_position" value="{{ position }}">
                     <input type="hidden" name="{{ field.id }}_page" id="{{ field.id }}_page" value="{{ field.render_kw['page'] }}">
