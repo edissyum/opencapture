@@ -144,11 +144,13 @@ if check:
         Log.info('Action after processing e-mail is : ' + action)
         Log.info('Number of e-mail to process : ' + str(len(emails)))
 
+        cpt_mail = 1
         for msg in emails:
             # Backup all the e-mail into batch path
             Mail.backup_email(msg, batch_path)
             ret = Mail.construct_dict_before_send_to_maarch(msg, config_mail.cfg[process], batch_path, Log)
             Log.info('Start to process only attachments')
+            Log.info('Process e-mail n°' + str(cpt_mail) + '/' + str(len(emails)))
             if len(ret['attachments']) > 0:
                 Log.info('Found ' + str(len(ret['attachments'])) + ' attachments')
                 cpt = 1
@@ -179,6 +181,7 @@ if check:
             elif action == 'delete':
                 Log.info('Move mail to trash')
                 Mail.delete_mail(msg, folder_trash, Log)
+            cpt_mail = cpt_mail + 1
     else:
         sys.exit('Folder do not contain any e-mail. Exit...')
 else:

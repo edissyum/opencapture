@@ -227,6 +227,22 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="enableautosave">
+                                <h3>{{ gettext('ENABLE_AUTO_SAVE') }}</h3>
+                                <hr>
+                                <div class="col-md-4 offset-md-4">
+                                    <div class="form-row">
+                                         <div class="form-group col-md-4 offset-md-6">
+                                            {% if configDashboard['GLOBAL']['enableautosave'] == 'True' %}
+                                                <input type="checkbox" class="custom-control-input" name="GLOBAL_enableautosave" id="enableautosave" checked>
+                                            {% else %}
+                                                <input type="checkbox" class="custom-control-input" name="GLOBAL_enableautosave" id="enableautosave">
+                                            {% endif %}
+                                            <label class="custom-control-label" for="enableautosave">{{ gettext('ENABLED') }}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="defaultPassword">
                                 <hr>
                                 <div class="form-row">

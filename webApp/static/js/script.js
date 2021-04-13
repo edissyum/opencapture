@@ -49,6 +49,14 @@ function deleteInvoice(id, reload = true, res = false){
             method  : 'GET',
         }).then(function () {
             if (reload){
+                if ($('.card').length === 1){
+                    let urlParams = new URLSearchParams(window.location.search);
+                    let page = urlParams.get('page');
+                    if (page !== null && parseInt(page) !== 1){
+                        urlParams.set("page", (parseInt(page) - 1).toString());
+                        history.replaceState(null, null, "?" + urlParams.toString());
+                    }
+                }
                 window.location.reload();
             }
         });
@@ -106,6 +114,14 @@ if (!window.location.href.includes('splitter')){
                             let invoice_id = parseInt(this.id.split('_')[0])
                             deleteInvoice(invoice_id, false, res)
                             if (cpt === totalChecked) {
+                                if (parseInt($('#cptTrash').html()) === $('.card').length){
+                                    let urlParams = new URLSearchParams(window.location.search);
+                                    let page = urlParams.get('page');
+                                    if (page !== null && parseInt(page) !== 1){
+                                        urlParams.set("page", (parseInt(page) - 1).toString());
+                                        history.replaceState(null, null, "?" + urlParams.toString());
+                                    }
+                                }
                                 setTimeout(function () {
                                     window.location.reload()
                                 }, 800);

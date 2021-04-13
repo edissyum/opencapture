@@ -20,6 +20,9 @@
                     <i class="fa fa-arrow-right" onclick="nextPage()"></i>
                 </div>
             {% endif %}
+            <div class="original_filename">
+               {{ pdf['original_filename'] }}
+            </div>
 
             <div class="col-sm-6 img" onmousedown="isKeyPressed(event)" style="height: 100%">
                 <div id="rectangle" class="rectangle-not-active"></div>
@@ -49,7 +52,7 @@
                         </svg>
                     </div>
                 </div>
-                <form id="invoice_info" action="{{ url_for('pdf.validate_form', id=pdf['id']) }}" method="POST">
+                <form id="invoice_info" action="{{ url_for('pdf.validate_form', id=pdf['id'], old_page=old_page, old_time=old_time, old_status=old_status) }}" method="POST">
                     <div id="hiddenInputs">
                         <input type="hidden" id="ratioAdressTotal">
                         <input type="hidden" id="pdf_id" value="{{ pdf['id'] }}">
@@ -68,13 +71,13 @@
                                 {{ gettext('SAVE_FORM') }}
                             </span>
                         {% endif %}
-                        <div class="form-group float-right">
+                        <div class="form-group float-right form_checkboxes">
                             <input {% if pdf['status'] == 'END' %} disabled {% endif %} name="facturationInfo_is_subscription" type="checkbox" class="custom-control-input" id="is_subscription" onclick="removeUserInCharge($(this))">
-                            <label class="custom-control-label" for="is_subscription">{{ gettext('SUBSCRIPTION') }}</label>
+                            <label class="custom-control-label label_checkboxes" for="is_subscription">{{ gettext('SUBSCRIPTION') }}</label>
                         </div>
-                        <div class="form-group float-right">
+                        <div class="form-group float-right form_checkboxes">
                             <input {% if pdf['status'] == 'END' %} disabled {% endif %} name="facturationInfo_is_asset" type="checkbox" class="custom-control-input" id="is_asset">
-                            <label class="custom-control-label mr-5" for="is_asset">{{ gettext('ASSET') }}</label>
+                            <label class="custom-control-label label_checkboxes mr-5" for="is_asset">{{ gettext('ASSET') }}</label>
                         </div>
                     </div>
 
@@ -93,7 +96,7 @@
                                 {% if field.type == 'CustomBooleanField' %}
                                     {{ render_field_checkbox(field) }}
                                 {% else %}
-                                    {{ render_field(field, pdf['status']) }}
+                                    {{ render_field(field, pdf['status'], True) }}
                                 {% endif %}
                             {% endfor %}
                             {% if pdf['status'] != 'END' %}
@@ -220,6 +223,11 @@
         <script type="text/javascript" src={{ url_for('static', filename='js/jqueryLib/chosen.jquery.min.js') }}></script>
         <script type="text/javascript" src={{ url_for('static', filename='js/videoCodage.js') }}></script>
         <script type="text/javascript" src={{ url_for('static', filename='js/supplier.js') }}></script>
+        <script>
+            $(document).ready(function(){
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+        </script>
         <script>
             (function($){
                 $.fn.datepicker.dates['fra'] = {

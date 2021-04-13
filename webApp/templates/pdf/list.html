@@ -49,7 +49,7 @@
     </div>
     {% if g.user['role'] == 'admin' and pdfs|length > 1 %}
         <i id="trashAll" class="position-absolute fas fa-trash" style="display: none; cursor: pointer; left: 205px; margin-top: 35px;"></i>
-        <p id="checkAll" class="checkAll position-absolute " style="cursor: pointer; left: 25px; top:190px" onclick="check_all_invoices()">{{ gettext("SELECT_ALL") }}</p>
+        <p id="checkAll" class="checkAll position-absolute " style="cursor: pointer; left: 25px; top:190px">{{ gettext("SELECT_ALL") }}</p>
     {% endif %}
 
     {{ pagination.info }}
@@ -62,8 +62,8 @@
                     <div class="col-sm-3">
                         <div class="card">
                             <a style="height: 400px;" href="
-                                {% if pdf['status_id'] == 'END' %} {{ url_for('pdf.view', pdf_id=pdf['invoice_id']) }}
-                                    {% elif not pdf['locked'] or (pdf ['locked'] and pdf['locked_by'] == g.user['username']) %} {{ url_for('pdf.view', pdf_id=pdf['invoice_id']) }}
+                                {% if pdf['status_id'] == 'END' %} {{ url_for('pdf.view', pdf_id=pdf['invoice_id'], old_page=page, old_status=pdf['status_id'], old_time=time) }}
+                                    {% elif not pdf['locked'] or (pdf ['locked'] and pdf['locked_by'] == g.user['username']) %} {{ url_for('pdf.view', pdf_id=pdf['invoice_id'], old_page=page, old_status=pdf['status_id'], old_time=time) }}
                                     {% else %} #locked
                                 {% endif %}"
 

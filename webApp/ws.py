@@ -316,6 +316,16 @@ def delete_supplier_position(supplier_id):
     _vars = pdf.init()
     _db = _vars[0]
     _cfg = _vars[1]
+
+    where = ['id is not null']
+    data = []
+    error_message = gettext('ALL_SUPPLIER_POSITION_DELETED')
+
+    if supplier_id != 'all':
+        error_message = gettext('SUPPLIER_POSITION_DELETED')
+        where = ['id = ?']
+        data = [supplier_id]
+
     res = _db.update({
         'table': ['suppliers'],
         'set': {
@@ -339,12 +349,12 @@ def delete_supplier_position(supplier_id):
             'vat_3_position': '',
             'vat_4_position': '',
         },
-        'where': ['id = ?'],
-        'data': [supplier_id]
+        'where': where,
+        'data': data
     })
 
     if res:
-        flash(gettext('SUPPLIER_POSITION_DELETED'))
+        flash(error_message)
         return json.dumps({'text': 'OK', 'code': 200, 'ok': 'true'})
 
     return res

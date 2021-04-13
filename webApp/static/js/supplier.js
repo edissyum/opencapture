@@ -176,6 +176,26 @@ function editSupplier() {
     })
 }
 
+function delete_all_positions(){
+    if (confirm(gt.gettext('_CONFIRM_DELETE_ALL_POSITIONS'))) {
+        fetch('/ws/supplier/deletePosition/all', {
+        method : 'GET',
+        headers : {
+            'Content-Type': 'application/json'
+        },
+    })
+        .then(response => response.json())
+        .then(function(response) {
+            // Check if only one row in table
+            if($("#supplier-table > tbody > tr").length === 1)
+                window.location.href = "/supplier/list";
+            else
+                document.location.reload();
+        })
+    }
+    event.stopPropagation();
+}
+
 function openSupplierAddModal() {
     $('#supplier-modal').modal('show');
     $('#btn-supplier-add').show();
