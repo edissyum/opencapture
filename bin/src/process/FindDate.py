@@ -123,8 +123,6 @@ class FindDate:
                 _text, _position = search_custom_positions(data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
                 if _text != '':
                     res = self.format_date(_text, _position, True)
-                    print(res)
-                    exit()
                     if res:
                         due_date = [res[0], res[1]]
                         self.Log.info('Due date found using position : ' + str(res[0]))
