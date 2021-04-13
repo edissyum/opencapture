@@ -350,7 +350,8 @@ def view(pdf_id):
                            currentLang=_cfg.cfg['LOCALE']['localeocr'],
                            old_page=old_page,
                            old_time=old_time,
-                           old_status=old_status
+                           old_status=old_status,
+                           cfg=_cfg
                            )
 
 
