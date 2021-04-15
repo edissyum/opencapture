@@ -52,7 +52,7 @@ pip3 install --upgrade -r pip-requirements.txt
 cd $OCForInvoicesPath || exit 2
 find . -name ".gitkeep" -delete
 
-# Fix right on folder and files
+# Fix rights on folder and files
 chmod -R 775 $OCForInvoicesPath
 chown -R "$user":"$user" $OCForInvoicesPath
 chmod u+x $OCForInvoicesPath/bin/scripts/*.sh
