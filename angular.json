@@ -31,7 +31,7 @@
               "src/assets"
             ],
             "styles": [
-              "./src/frontend/style.css",
+              "./src/frontend/style.scss",
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "./node_modules/@fortawesome/fontawesome-free/css/all.css"
             ],
