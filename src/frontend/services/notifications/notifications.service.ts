@@ -19,7 +19,6 @@ export class CustomSnackbarComponent {
 
 @Injectable()
 export class NotificationService {
-
     constructor(
         public translate: TranslateService,
         private router: Router,
@@ -51,7 +50,7 @@ export class NotificationService {
     handleErrors(err: any) {
         if (err.status === 0 && err.statusText === 'Unknown Error') {
             let message = this.translate.instant('ERROR.connection_failed');
-            if(err.statusText !== undefined)
+            if(err.statusText !== undefined && err.statusText !== 'Unknown Error')
                 message += ' : ' + err.statusText;
             this.error(message);
             if (this.router.url !== '/login')
