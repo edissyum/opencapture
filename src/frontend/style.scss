@@ -3,12 +3,12 @@
 @import 'tailwindcss/utilities';
 
 .mat-form-field-appearance-outline .mat-form-field-outline {
-    color: #4C4C4E !important;
+    @apply text-gray-900 #{!important};
     transition: all;
 }
 
 .mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
-    color: #97BF3D !important;
+    @apply text-green-400 #{!important};
 }
 
 .mat-input-element {
@@ -16,15 +16,15 @@
 }
 
 .mat-form-field-label {
-    color: #4C4C4E !important;
+    @apply text-gray-900 #{!important};
 }
 
 .mat-selected{
-    background-color: rgba(151, 191, 61, 0.5) !important;
+    @apply bg-green-400 #{!important};
 }
 
 .mat-selected .mat-option-text {
-    color: #4C4C4E !important;
+    @apply text-gray-900 #{!important};
 }
 
 .mat-form-field-appearance-outline.mat-form-field-invalid.mat-form-field-invalid .mat-form-field-outline-thick {
