@@ -402,7 +402,19 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
             }],
             'customInfo': [xml_custom]
         }
-        files.export_xml(config, invoice_number[0], parent, False, database, supplier[2]['vat_number'])
+
+        vat_1_calculated = False
+        ht_calculated = False
+        ttc_calculted = False
+
+        if len(footer[0]) == 3:
+            ht_calculated = footer[0][2]
+        if len(footer[0]) == 3:
+            ttc_calculted = footer[1][2]
+        if len(footer[2]) == 3:
+            vat_1_calculated = footer[2][2]
+
+        files.export_xml(config, invoice_number[0], parent, False, database, supplier[2]['vat_number'], vat_1_calculated, ht_calculated, ttc_calculted)
         if config.cfg['GED']['enabled'] == 'True':
             default_process = config.cfg['GED']['defaultprocess']
             invoice_info = database.select({

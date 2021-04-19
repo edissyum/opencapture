@@ -215,12 +215,12 @@ class FindFooter:
             rate_percentage = self.return_max(self.ratePercentage)
 
             if no_rate_amount is False and all_rate_amount and rate_percentage:
-                no_rate_amount = [float("%.2f" % (float(all_rate_amount[0]) / (1 + float(rate_percentage[0] / 100)))), (('', ''), ('', ''))]
+                no_rate_amount = [float("%.2f" % (float(all_rate_amount[0]) / (1 + float(rate_percentage[0] / 100)))), (('', ''), ('', '')), True]
             elif all_rate_amount is False and no_rate_amount and rate_percentage:
-                all_rate_amount = [float("%.2f" % (float(no_rate_amount[0]) + (float(no_rate_amount[0]) * float(float(rate_percentage[0]) / 100)))), (('', ''), ('', ''))]
+                all_rate_amount = [float("%.2f" % (float(no_rate_amount[0]) + (float(no_rate_amount[0]) * float(float(rate_percentage[0]) / 100)))), (('', ''), ('', '')), True]
             elif rate_percentage is False and no_rate_amount and all_rate_amount:
                 vat_amount = float("%.2f" % (float(all_rate_amount[0]) - float(no_rate_amount[0])))
-                rate_percentage = [float("%.2f" % (float(vat_amount) / float(no_rate_amount[0]) * 100)), (('', ''), ('', ''))]
+                rate_percentage = [float("%.2f" % (float(vat_amount) / float(no_rate_amount[0]) * 100)), (('', ''), ('', '')), True]
 
             # Test if the three var's are good by simple math operation
             # Round up value with 2 decimals
