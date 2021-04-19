@@ -275,7 +275,7 @@ class Files:
 
         return position
 
-    def export_xml(self, cfg, invoice_number, parent, fill_position=False, db=None, vat_number=False, vat_1_calculated=False, ht_calculated=False, ttc_calculted=False):
+    def export_xml(self, cfg, invoice_number, parent, fill_position=False, db=None, vat_number=False, vat_1_calculated=False, ht_calculated=False, ttc_calculated=False):
         self.xml.construct_filename(invoice_number, vat_number)
         filename = cfg.cfg['GLOBAL']['exportaccountingfolder'] + '/' + secure_filename(self.xml.filename)
         root = Et.Element("ROOT")
@@ -298,7 +298,7 @@ class Files:
 
                         if clean_child == 'total_ttc':
                             new_field = Et.SubElement(element, escape('total_ttc_calculated'))
-                            new_field.text = str(ttc_calculted)
+                            new_field.text = str(ttc_calculated)
 
                         if fill_position is not False and db is not False:
                             # Add position in supplier database
