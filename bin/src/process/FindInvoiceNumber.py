@@ -89,6 +89,7 @@ class FindInvoiceNumber:
 
                 if len(invoice_number) >= int(self.Locale.invoiceSizeMin):
                     self.Log.info('Invoice number found : ' + invoice_number)
-                    return [invoice_number, line.position, self.nbPages]
+                    position = self.Files.return_position_with_ratio(line, 'footer')
+                    return [invoice_number, position, self.nbPages]
                 else:
                     return False
