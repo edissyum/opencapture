@@ -20,10 +20,11 @@ from webApp.functions import search_by_positions, search_custom_positions
 
 
 class FindInvoiceNumber:
-    def __init__(self, ocr, files, log, locale, config, database, supplier, file, typo, text, nb_pages, custom_page):
+    def __init__(self, ocr, files, log, locale, config, database, supplier, file, typo, text, nb_pages, custom_page, footer_text):
         self.vatNumber = ''
         self.Ocr = ocr
         self.text = text
+        self.footer_text = footer_text
         self.Log = log
         self.Files = files
         self.Locale = locale
@@ -75,7 +76,7 @@ class FindInvoiceNumber:
                     self.Log.info('Invoice number found : ' + invoice_number)
                     return [invoice_number, line.position, self.nbPages]
 
-        for line in self.Ocr.footer_text:
+        for line in self.footer_text:
             for _invoice in re.finditer(r"" + self.Locale.invoiceRegex + "", line.content.upper()):
                 invoice_res = _invoice.group()
                 # If the regex return a date, remove it
