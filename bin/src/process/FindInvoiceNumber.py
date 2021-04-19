@@ -74,6 +74,20 @@ class FindInvoiceNumber:
                 if len(invoice_number) >= int(self.Locale.invoiceSizeMin):
                     self.Log.info('Invoice number found : ' + invoice_number)
                     return [invoice_number, line.position, self.nbPages]
+
+        for line in self.Ocr.footer_text:
+            for _invoice in re.finditer(r"" + self.Locale.invoiceRegex + "", line.content.upper()):
+                invoice_res = _invoice.group()
+                # If the regex return a date, remove it
+                for _date in re.finditer(r"" + self.Locale.dateRegex + "", _invoice.group()):
+                    if _date.group():
+                        invoice_res = _invoice.group().replace(_date.group(), '')
+
+                tmp_invoice_number = re.sub(r"" + self.Locale.invoiceRegex[:-2] + "", '', invoice_res)  # Delete the invoice keyword
+                invoice_number = tmp_invoice_number.lstrip().split(' ')[0]
+
+                if len(invoice_number) >= int(self.Locale.invoiceSizeMin):
+                    self.Log.info('Invoice number found : ' + invoice_number)
+                    return [invoice_number, line.position, self.nbPages]
                 else:
                     return False
-
