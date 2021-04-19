@@ -17,7 +17,6 @@
 
 import os
 import re
-import ast
 import subprocess
 
 import cv2
@@ -518,18 +517,25 @@ class Files:
 
         cropped_image = Image.open('/tmp/cropped_' + rand + extension)
         text = ocr.text_builder(cropped_image)
-
         if not text or text == '' or text.isspace():
             self.improve_image_detection('/tmp/cropped_' + rand + extension)
             improved_cropped_image = Image.open('/tmp/cropped_' + rand + '_improved' + extension)
             text = ocr.text_builder(improved_cropped_image)
 
         try:
-            litteral_number = ast.literal_eval(text.replace(",0", ",0o"))
-            if type(litteral_number) != int:
-                first_part = str(litteral_number[0]).replace(',', '').replace('.', '')
-                second_part = str(litteral_number[1]).zfill(2)
-                text = first_part + '.' + second_part
+            period = text.find('.')
+            comma = text.find(',')
+            floatted_text = None
+
+            if period != -1 and comma != -1:
+                floatted_text = text.replace('.', '').replace('\x0c', '').replace('\n', '').replace(',', '.')
+            elif period == -1 and comma != -1:
+                floatted_text = text.replace('\x0c', '').replace('\n', '').replace(',', '.')
+            elif period != -1 and comma == -1:
+                floatted_text = text.replace('.', '').replace('\x0c', '').replace('\n', '')
+
+            if floatted_text:
+                text = str(float(floatted_text))
         except (ValueError, SyntaxError, TypeError) as e:
             pass
 
