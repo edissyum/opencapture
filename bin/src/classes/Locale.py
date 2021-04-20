@@ -38,6 +38,7 @@ class Locale:
         self.vatRateRegex = ''
         self.deliveryNumberRegex = ''
         self.orderNumberRegex = ''
+        self.vatRateList = ''
 
         with open(self.date_path + self.locale + '.json') as file:
             fp = json.load(file)
@@ -56,6 +57,7 @@ class Locale:
             self.vatRateRegex = fp['vatRateRegex'] if 'vatRateRegex' in fp else ''
             self.deliveryNumberRegex = fp['deliveryNumberRegex'] if 'deliveryNumberRegex' in fp else ''
             self.orderNumberRegex = fp['orderNumberRegex'] if 'orderNumberRegex' in fp else ''
+            self.vatRateList = fp['vatRateList'] if 'vatRateList' in fp else ''
 
     def get(self):
         array_locale = {
@@ -74,5 +76,6 @@ class Locale:
             'vatRateRegex': self.vatRateRegex,
             'deliveryNumberRegex': self.deliveryNumberRegex,
             'orderNumberRegex': self.orderNumberRegex,
+            'vatRateList': self.vatRateList,
         }
         return array_locale
