@@ -316,7 +316,7 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
             invoice_found_on_first_or_last_page = True
         j += 1
 
-    #  Find invoice date number
+    # Find invoice date number
     if invoice_found_on_first_or_last_page:
         log.info("Search invoice date using the same page as invoice number")
         text_custom = invoice_number_class.text
