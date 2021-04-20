@@ -525,10 +525,15 @@ class Files:
         try:
             period = text.find('.')
             comma = text.find(',')
+            space = text.find(' ')
             floatted_text = None
 
             if period != -1 and comma != -1:
                 floatted_text = text.replace('.', '').replace('\x0c', '').replace('\n', '').replace(',', '.')
+            elif space != -1 and period != -1 and comma == -1:
+                floatted_text = text.replace(' ', '').replace('\x0c', '').replace('\n', '')
+            elif space != -1 and comma != -1 and period == -1:
+                floatted_text = text.replace(' ', '').replace('\x0c', '').replace('\n', '').replace(',', '.')
             elif period == -1 and comma != -1:
                 floatted_text = text.replace('\x0c', '').replace('\n', '').replace(',', '.')
             elif period != -1 and comma == -1:
@@ -536,7 +541,7 @@ class Files:
 
             if floatted_text:
                 text = str(float(floatted_text))
-        except (ValueError, SyntaxError, TypeError) as e:
+        except (ValueError, SyntaxError, TypeError):
             pass
 
         if regex:
