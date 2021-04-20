@@ -280,10 +280,11 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
             })
 
     # Find invoice number
-    invoice_number_class = FindInvoiceNumber(ocr, files, log, locale, config, database, supplier, file, typo, ocr.header_text, 1, False)
+    invoice_number_class = FindInvoiceNumber(ocr, files, log, locale, config, database, supplier, file, typo, ocr.header_text, 1, False, ocr.footer_text)
     invoice_number = invoice_number_class.run()
     if not invoice_number:
         invoice_number_class.text = ocr.header_last_text
+        invoice_number_class.footer_text = ocr.footer_last_text
         invoice_number_class.nbPages = nb_pages
         invoice_number_class.customPage = True
         invoice_number = invoice_number_class.run()
@@ -335,12 +336,29 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
     # Find footer informations (total amount, no rate amount etc..)
     footer = FindFooter(ocr, log, locale, config, files, database, supplier, file, ocr.footer_text, typo).run()
     if not footer:
-        footer = FindFooter(ocr, log, locale, config, files, database, supplier, file, ocr.last_text, typo, 'full').run()
+        footer = FindFooter(ocr, log, locale, config, files, database, supplier, file, ocr.last_text, typo, 'full', nb_pages).run()
         if footer:
             if len(footer) == 4:
                 footer[3] = nb_pages
             else:
                 footer.append(nb_pages)
+
+    i = 0
+    tmp_nb_pages = nb_pages
+    while not footer:
+        tmp_nb_pages = tmp_nb_pages - 1
+        if i == 3 or int(tmp_nb_pages) == 1 or nb_pages == 1:
+            break
+        convert(file, files, ocr, tmp_nb_pages, True)
+        if files.isTiff == 'True':
+            _file = files.custom_fileName_tiff
+        else:
+            _file = files.custom_fileName
+
+        image = files.open_image_return(_file)
+        text = ocr.line_box_builder(image)
+        footer = FindFooter(ocr, log, locale, config, files, database, supplier, file, text, typo, 'full', tmp_nb_pages).run()
+        i += 1
 
     # Find delivery number
     delivery_number_class = FindDeliveryNumber(ocr, files, log, locale, config, database, supplier, file, typo, ocr.header_text, 1, False)
@@ -402,7 +420,19 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
             }],
             'customInfo': [xml_custom]
         }
-        files.export_xml(config, invoice_number[0], parent, False, database, supplier[2]['vat_number'])
+
+        vat_1_calculated = False
+        ht_calculated = False
+        ttc_calculated = False
+
+        if len(footer[0]) == 3:
+            ht_calculated = footer[0][2]
+        if len(footer[1]) == 3:
+            ttc_calculated = footer[1][2]
+        if len(footer[2]) == 3:
+            vat_1_calculated = footer[2][2]
+
+        files.export_xml(config, invoice_number[0], parent, False, database, supplier[2]['vat_number'], vat_1_calculated, ht_calculated, ttc_calculated)
         if config.cfg['GED']['enabled'] == 'True':
             default_process = config.cfg['GED']['defaultprocess']
             invoice_info = database.select({

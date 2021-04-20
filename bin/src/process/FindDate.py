@@ -50,7 +50,6 @@ class FindDate:
                         if month.lower() in date.lower():
                             date = (date.lower().replace(month.lower(), key))
                             break
-
             try:
                 # Fix to handle date with 2 digits year
                 length_of_year = len(date.split(' ')[2])
@@ -60,7 +59,6 @@ class FindDate:
                     regex = self.Locale.dateTimeFormat
 
                 date = datetime.strptime(date, regex).strftime(self.Locale.formatDate)
-
                 # Check if the date of the document isn't too old. 62 (default value) is equivalent of 2 months
                 today = datetime.now()
                 doc_date = datetime.strptime(date, self.Locale.formatDate)
@@ -120,12 +118,11 @@ class FindDate:
                 'where': ['vat_number = ?'],
                 'data': [self.supplier[0]]
             })[0]
-
             if position and position['due_date_position'] not in [False, 'NULL', '', None]:
                 data = {'position': position['due_date_position'], 'regex': None, 'target': 'full', 'page': position['due_date_page']}
                 _text, _position = search_custom_positions(data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
                 if _text != '':
-                    res = self.format_date(_text, _position)
+                    res = self.format_date(_text, _position, True)
                     if res:
                         due_date = [res[0], res[1]]
                         self.Log.info('Due date found using position : ' + str(res[0]))
@@ -141,7 +138,7 @@ class FindDate:
                 data = {'position': position['invoice_date_position'], 'regex': None, 'target': 'full', 'page': position['invoice_date_page']}
                 text, position = search_custom_positions(data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
                 if text != '':
-                    res = self.format_date(text, position)
+                    res = self.format_date(text, position, True)
                     if res:
                         self.date = res[0]
                         self.Log.info('Invoice date found using position : ' + str(res[0]))

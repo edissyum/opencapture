@@ -14,14 +14,13 @@
 # along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
-import ast
 import re
 import operator
 from webApp.functions import search_by_positions, search_custom_positions
 
 
 class FindFooter:
-    def __init__(self, ocr, log, locale, config, files, database, supplier, file, text, typo, target='footer'):
+    def __init__(self, ocr, log, locale, config, files, database, supplier, file, text, typo, target='footer', nbPages=False):
         self.date = ''
         self.Ocr = ocr
         self.text = text
@@ -40,7 +39,7 @@ class FindFooter:
         self.rerun = False
         self.rerun_as_text = False
         self.splitted = False
-        self.nbPage = 1
+        self.nbPage = 1 if nbPages is False else nbPages
         self.target = target
 
     def process(self, regex, text_as_string):
@@ -69,11 +68,22 @@ class FindFooter:
                     number_formatted = t.group()
                     if regex != self.Locale.vatRateRegex:
                         try:
-                            litteral_number = ast.literal_eval(t.group().replace(",0", ",0o"))
-                            if type(litteral_number) not in [int, float]:
-                                first_part = str(litteral_number[0]).replace(',', '').replace('.', '')
-                                second_part = str(litteral_number[1]).zfill(2)
-                                number_formatted = first_part + '.' + second_part
+                            try:
+                                period = t.group().find('.')
+                                comma = t.group().find(',')
+                                floatted_text = None
+                                if period != -1 and comma != -1:
+                                    floatted_text = t.group().replace('.', '').replace('\x0c', '').replace('\n', '').replace(',', '.')
+                                elif period == -1 and comma != -1:
+                                    floatted_text = t.group().replace('\x0c', '').replace('\n', '').replace(',', '.')
+                                elif period != -1 and comma == -1:
+                                    floatted_text = t.group().replace('.', '').replace('\x0c', '').replace('\n', '')
+
+                                if floatted_text:
+                                    number_formatted = str(float(floatted_text))
+                            except (ValueError, SyntaxError, TypeError) as e:
+                                pass
+
                         except (ValueError, SyntaxError, TypeError):
                             pass
 
@@ -95,7 +105,7 @@ class FindFooter:
         else:
             return False
 
-    def process_with_position(self, select):
+    def process_footer_with_position(self, select):
         position = self.Database.select({
             'select': select,
             'table': ['suppliers'],
@@ -104,23 +114,51 @@ class FindFooter:
         })[0]
 
         if position and position[select[0]] not in ['((,),(,))', 'NULL', None, '', False]:
-            data = {'position': position[select[0]], 'regex': None, 'target': 'full', 'page': position[select[1]]}
+            page = position[select[1]]
+            if self.target == 'full':
+                page = self.nbPage
+
+            data = {'position': position[select[0]], 'regex': None, 'target': 'full', 'page': page}
             text, position = search_custom_positions(data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
             if text:
-                # Filter the result to get only the digits
-                text = re.finditer(r'[-+]?\d*[.,]+\d+([.,]+\d+)?|\d+', text)
-                result = ''
-                for t in text:
-                    result += re.sub('\s*', '', t.group())
-                if select[0] != 'vat_1_position':
-                    try:
-                        litteral_number = ast.literal_eval(result)
-                        if type(litteral_number) not in [int, float]:
-                            first_part = str(litteral_number[0]).replace(',', '').replace('.', '')
-                            second_part = str(litteral_number[1])
-                            result = first_part + '.' + second_part
-                    except (ValueError, SyntaxError, TypeError):
-                        pass
+                try:
+                    # Try if the return string could be convert to float
+                    float(text)
+                    result = text
+                    if select[0] == 'vat_1_position':  # Fix if we retrieve 2000.0, or 200.0 instead of 20.0 for example
+                        tva_amounts = eval(self.Locale.vatRateList)
+                        _split = result.split('.')
+                        if _split[1] == '0':
+                            result = _split[0]
+
+                        for tva in tva_amounts:
+                            if str(tva) in str(result.replace(',', '.')):
+                                result = str(tva)
+                                break
+                except (ValueError, SyntaxError, TypeError):
+                    # If results isn't a float, transform it
+                    text = re.finditer(r'[-+]?\d*[.,]+\d+([.,]+\d+)?|\d+', text)
+                    result = ''
+                    for t in text:
+                        result += t.group()
+
+                    if select[0] != 'vat_1_position':
+                        try:
+                            period = result.find('.')
+                            comma = result.find(',')
+                            floatted_text = None
+
+                            if period != -1 and comma != -1:
+                                floatted_text = result.replace('.', '').replace('\x0c', '').replace('\n', '').replace(',', '.')
+                            elif period == -1 and comma != -1:
+                                floatted_text = result.replace('\x0c', '').replace('\n', '').replace(',', '.')
+                            elif period != -1 and comma == -1:
+                                floatted_text = result.replace('.', '').replace('\x0c', '').replace('\n', '')
+
+                            if floatted_text:
+                                result = str(float(floatted_text))
+                        except (ValueError, SyntaxError, TypeError):
+                            pass
 
                 if result != '':
                     result = re.sub('\s*', '', result).replace(',', '.')
@@ -137,13 +175,13 @@ class FindFooter:
         if no_rate_amount in [False, None] or rate_percentage in [False, None]:
             if self.supplier is not False:
                 if no_rate_amount in [False, None]:
-                    no_rate_amount = self.process_with_position(['no_taxes_1_position', 'footer_page'])
+                    no_rate_amount = self.process_footer_with_position(['no_taxes_1_position', 'footer_page'])
                     if no_rate_amount:
                         self.noRateAmount = no_rate_amount
                         self.Log.info('noRateAmount found with position : ' + str(no_rate_amount))
 
                 if rate_percentage in [False, None]:
-                    rate_percentage = self.process_with_position(['vat_1_position', 'footer_page'])
+                    rate_percentage = self.process_footer_with_position(['vat_1_position', 'footer_page'])
                     if rate_percentage:
                         self.ratePercentage = rate_percentage
                         self.Log.info('ratePercentage found with position : ' + str(rate_percentage))
@@ -215,12 +253,12 @@ class FindFooter:
             rate_percentage = self.return_max(self.ratePercentage)
 
             if no_rate_amount is False and all_rate_amount and rate_percentage:
-                no_rate_amount = [float("%.2f" % (float(all_rate_amount[0]) / (1 + float(rate_percentage[0] / 100)))), (('', ''), ('', ''))]
+                no_rate_amount = [float("%.2f" % (float(all_rate_amount[0]) / (1 + float(rate_percentage[0] / 100)))), (('', ''), ('', '')), True]
             elif all_rate_amount is False and no_rate_amount and rate_percentage:
-                all_rate_amount = [float("%.2f" % (float(no_rate_amount[0]) + (float(no_rate_amount[0]) * float(float(rate_percentage[0]) / 100)))), (('', ''), ('', ''))]
+                all_rate_amount = [float("%.2f" % (float(no_rate_amount[0]) + (float(no_rate_amount[0]) * float(float(rate_percentage[0]) / 100)))), (('', ''), ('', '')), True]
             elif rate_percentage is False and no_rate_amount and all_rate_amount:
                 vat_amount = float("%.2f" % (float(all_rate_amount[0]) - float(no_rate_amount[0])))
-                rate_percentage = [float("%.2f" % (float(vat_amount) / float(no_rate_amount[0]) * 100)), (('', ''), ('', ''))]
+                rate_percentage = [float("%.2f" % (float(vat_amount) / float(no_rate_amount[0]) * 100)), (('', ''), ('', '')), True]
 
             # Test if the three var's are good by simple math operation
             # Round up value with 2 decimals

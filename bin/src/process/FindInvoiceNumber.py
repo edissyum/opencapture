@@ -20,10 +20,11 @@ from webApp.functions import search_by_positions, search_custom_positions
 
 
 class FindInvoiceNumber:
-    def __init__(self, ocr, files, log, locale, config, database, supplier, file, typo, text, nb_pages, custom_page):
+    def __init__(self, ocr, files, log, locale, config, database, supplier, file, typo, text, nb_pages, custom_page, footer_text):
         self.vatNumber = ''
         self.Ocr = ocr
         self.text = text
+        self.footer_text = footer_text
         self.Log = log
         self.Files = files
         self.Locale = locale
@@ -74,6 +75,21 @@ class FindInvoiceNumber:
                 if len(invoice_number) >= int(self.Locale.invoiceSizeMin):
                     self.Log.info('Invoice number found : ' + invoice_number)
                     return [invoice_number, line.position, self.nbPages]
+
+        for line in self.footer_text:
+            for _invoice in re.finditer(r"" + self.Locale.invoiceRegex + "", line.content.upper()):
+                invoice_res = _invoice.group()
+                # If the regex return a date, remove it
+                for _date in re.finditer(r"" + self.Locale.dateRegex + "", _invoice.group()):
+                    if _date.group():
+                        invoice_res = _invoice.group().replace(_date.group(), '')
+
+                tmp_invoice_number = re.sub(r"" + self.Locale.invoiceRegex[:-2] + "", '', invoice_res)  # Delete the invoice keyword
+                invoice_number = tmp_invoice_number.lstrip().split(' ')[0]
+
+                if len(invoice_number) >= int(self.Locale.invoiceSizeMin):
+                    self.Log.info('Invoice number found : ' + invoice_number)
+                    position = self.Files.return_position_with_ratio(line, 'footer')
+                    return [invoice_number, position, self.nbPages]
                 else:
                     return False
-
