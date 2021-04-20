@@ -72,7 +72,6 @@ class FindFooter:
                                 period = t.group().find('.')
                                 comma = t.group().find(',')
                                 floatted_text = None
-
                                 if period != -1 and comma != -1:
                                     floatted_text = t.group().replace('.', '').replace('\x0c', '').replace('\n', '').replace(',', '.')
                                 elif period == -1 and comma != -1:
@@ -122,28 +121,44 @@ class FindFooter:
             data = {'position': position[select[0]], 'regex': None, 'target': 'full', 'page': page}
             text, position = search_custom_positions(data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
             if text:
-                # Filter the result to get only the digits
-                text = re.finditer(r'[-+]?\d*[.,]+\d+([.,]+\d+)?|\d+', text)
-                result = ''
-                for t in text:
-                    result += re.sub('\s*', '', t.group())
-                if select[0] != 'vat_1_position':
-                    try:
-                        period = result.find('.')
-                        comma = result.find(',')
-                        floatted_text = None
+                try:
+                    # Try if the return string could be convert to float
+                    float(text)
+                    result = text
+                    if select[0] == 'vat_1_position':  # Fix if we retrieve 2000.0, or 200.0 instead of 20.0 for example
+                        tva_amounts = eval(self.Locale.vatRateList)
+                        _split = result.split('.')
+                        if _split[1] == '0':
+                            result = _split[0]
 
-                        if period != -1 and comma != -1:
-                            floatted_text = result.replace('.', '').replace('\x0c', '').replace('\n', '').replace(',', '.')
-                        elif period == -1 and comma != -1:
-                            floatted_text = result.replace('\x0c', '').replace('\n', '').replace(',', '.')
-                        elif period != -1 and comma == -1:
-                            floatted_text = result.replace('.', '').replace('\x0c', '').replace('\n', '')
+                        for tva in tva_amounts:
+                            if str(tva) in str(result.replace(',', '.')):
+                                result = str(tva)
+                                break
+                except (ValueError, SyntaxError, TypeError):
+                    # If results isn't a float, transform it
+                    text = re.finditer(r'[-+]?\d*[.,]+\d+([.,]+\d+)?|\d+', text)
+                    result = ''
+                    for t in text:
+                        result += t.group()
 
-                        if floatted_text:
-                            result = str(float(floatted_text))
-                    except (ValueError, SyntaxError, TypeError) as e:
-                        pass
+                    if select[0] != 'vat_1_position':
+                        try:
+                            period = result.find('.')
+                            comma = result.find(',')
+                            floatted_text = None
+
+                            if period != -1 and comma != -1:
+                                floatted_text = result.replace('.', '').replace('\x0c', '').replace('\n', '').replace(',', '.')
+                            elif period == -1 and comma != -1:
+                                floatted_text = result.replace('\x0c', '').replace('\n', '').replace(',', '.')
+                            elif period != -1 and comma == -1:
+                                floatted_text = result.replace('.', '').replace('\x0c', '').replace('\n', '')
+
+                            if floatted_text:
+                                result = str(float(floatted_text))
+                        except (ValueError, SyntaxError, TypeError):
+                            pass
 
                 if result != '':
                     result = re.sub('\s*', '', result).replace(',', '.')
