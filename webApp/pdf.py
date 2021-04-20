@@ -193,7 +193,6 @@ def index(status, time, page_args=None):
             'offset': str(offset),
             'order_by': ['date_order DESC']
         })
-        # exit()
     else:
         total = _db.select({
             'select': ['count(DISTINCT(invoices.id)) as total'],
