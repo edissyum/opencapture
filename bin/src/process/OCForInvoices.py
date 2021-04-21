@@ -363,10 +363,18 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
     # Find delivery number
     delivery_number_class = FindDeliveryNumber(ocr, files, log, locale, config, database, supplier, file, typo, ocr.header_text, 1, False)
     delivery_number = delivery_number_class.run()
+    if not delivery_number:
+        delivery_number_class.text = ocr.footer_text
+        delivery_number_class.target = 'footer'
+        delivery_number = delivery_number_class.run()
 
     # Find order number
     order_number_class = FindOrderNumber(ocr, files, log, locale, config, database, supplier, file, typo, ocr.header_text, 1, False)
     order_number = order_number_class.run()
+    if not order_number:
+        order_number_class.text = ocr.footer_text
+        order_number_class.target = 'footer'
+        order_number = order_number_class.run()
 
     file_name = str(uuid.uuid4())
     full_jpg_filename = 'full_' + file_name + '-%03d.jpg'
