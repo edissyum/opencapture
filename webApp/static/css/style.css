@@ -462,7 +462,7 @@ hr {
 
 .nb_pages {
     margin-top: -20px;
-    position: absolute;
+    position: fixed;
     z-index: 999;
     font-size: 25px;
     text-align: center;

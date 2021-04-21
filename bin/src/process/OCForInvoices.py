@@ -433,6 +433,7 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
             vat_1_calculated = footer[2][2]
 
         files.export_xml(config, invoice_number[0], parent, False, database, supplier[2]['vat_number'], vat_1_calculated, ht_calculated, ttc_calculated)
+
         if config.cfg['GED']['enabled'] == 'True':
             default_process = config.cfg['GED']['defaultprocess']
             invoice_info = database.select({
