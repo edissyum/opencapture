@@ -36,7 +36,6 @@ class FindDeliveryNumber:
         self.customPage = custom_page
 
     def run(self):
-        found = False
         if self.supplier and not self.customPage:
             position = self.Database.select({
                 'select': ['delivery_number_1_position'],

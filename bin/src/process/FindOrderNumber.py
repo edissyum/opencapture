@@ -36,7 +36,6 @@ class FindOrderNumber:
         self.customPage = custom_page
 
     def run(self):
-        found = False
         if self.supplier and not self.customPage:
             position = self.Database.select({
                 'select': ['order_number_1_position'],
@@ -66,23 +65,18 @@ class FindOrderNumber:
                         self.Log.info('Order number found with position : ' + str(text))
                         return [text, position, data['page']]
 
-        if not found:
-            for line in self.text:
-                for _order in re.finditer(r"" + self.Locale.orderNumberRegex + "", line.content.upper()):
-                    order_res = _order.group()
+        for line in self.text:
+            for _order in re.finditer(r"" + self.Locale.orderNumberRegex + "", line.content.upper()):
+                order_res = _order.group()
+                # If the regex return a date, remove it
+                for _date in re.finditer(r"" + self.Locale.dateRegex + "", _order.group()):
+                    if _date.group():
+                        order_res = _order.group().replace(_date.group(), '')
 
-                    # If the regex return a date, remove it
-                    for _date in re.finditer(r"" + self.Locale.dateRegex + "", _order.group()):
-                        if _date.group():
-                            order_res = _order.group().replace(_date.group(), '')
+                tmp_order_number = re.sub(r"" + self.Locale.orderNumberRegex[:-2] + "", '', order_res)  # Delete the delivery number keyword
+                order_number = tmp_order_number.lstrip().split(' ')[0]
 
-                    tmp_order_number = re.sub(r"" + self.Locale.orderNumberRegex[:-2] + "", '', order_res)  # Delete the delivery number keyword
-                    order_number = tmp_order_number.lstrip().split(' ')[0]
-
-                    if len(order_number) >= int(self.Locale.invoiceSizeMin):
-                        self.Log.info('Order number found : ' + order_number)
-                        return [order_number, line.position, self.nbPages]
-                    else:
-                        return False
-        else:
-            return False
+                if len(order_number) >= int(self.Locale.invoiceSizeMin):
+                    self.Log.info('Order number found : ' + order_number)
+                    return [order_number, line.position, self.nbPages]
+        return False
