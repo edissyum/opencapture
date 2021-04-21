@@ -91,5 +91,3 @@ class FindInvoiceNumber:
                     self.Log.info('Invoice number found : ' + invoice_number)
                     position = self.Files.return_position_with_ratio(line, 'footer')
                     return [invoice_number, position, self.nbPages]
-                else:
-                    return False
