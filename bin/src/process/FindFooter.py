@@ -238,11 +238,10 @@ class FindFooter:
         if all_rate_amount and no_rate_amount:
             vat_amount = float("%.2f" % (self.return_max(all_rate_amount)[0] - self.return_max(no_rate_amount)[0]))
 
-        if all_rate_amount and vat_amount:
-            if not no_rate_amount:
-                no_rate_amount = [float("%.2f" % self.return_max(all_rate_amount)[0] - self.return_max(vat_amount)[0]), (('', ''), ('', ''))]
+        if all_rate_amount and vat_amount and not no_rate_amount:
+            no_rate_amount = [float("%.2f" % self.return_max(all_rate_amount)[0] - self.return_max(vat_amount)[0]), (('', ''), ('', ''))]
 
-        if all_rate_amount and rate_percentage:
+        if all_rate_amount and rate_percentage and not no_rate_amount:
             no_rate_amount = [float("%.2f" % (self.return_max(all_rate_amount)[0] / (1 + float(self.return_max(rate_percentage)[0] / 100)))), (('', ''), ('', ''))]
 
         # Test all amounts. If some are false, try to search them with position. If not, pass
