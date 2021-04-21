@@ -78,6 +78,6 @@
     "SIRENRegex": "[0-9]{9}",
     "noRatesRegex": "(?P<r1>MONTANT\\s*(NET)?|(SOUS(-|\\s+)?)TOTAL|VAT\\s*BASE|VALEUR\\s*POSITIONS|IMPOSABLE|PRIX\\s*NET\\s*(TOTAL)?|TOTAL\\s*(ORDRE|NET|INTERM(E|É)DIAIRE)|BASE\\s*TOTAL)?\\s*(:\\s*|EN)?(€|EUROS|EUR)?\\s*(?(r1)()|(\\()?((H(\\.)?T(\\.)?(V(\\.)?A(\\.)?)?|HORS TVA|(EXCL|BASE)\\s*(\\.)?\\s*TVA|TOTAL\\s*INTERM(É|E)DIAIRE))(\\))?){1}\\s*(:)?(€|EUROS|EUR)?\\s*([0-9]*(\\.?\\,?\\s?)[0-9]+((\\.?\\,?\\s?)[0-9])+|[0-9]+)\\s*(€|EUROS|EUR)?|([0-9]*(\\.?\\,?\\s?)[0-9]+((\\.?\\,?\\s?)[0-9])+|[0-9]+)\\s*(€)?\\s*(HT)",
     "allRatesRegex": "(?P<r1>MONTANT|^\\s*TOTAL)?\\s*(:\\s*)?(€|EUROS|EUR)?\\s*(?(r1)()|(T(.)?T(.)?C|\\(TVA COMPRISE\\)|TVAC|FINAL AMOUNT INCL\\..*)){1}(\\s*(À|A)\\s*PAYER)?\\s*(:|(€|EUROS|EUR))?\\s*([0-9]*(\\.?\\,?\\|?\\s?)[0-9]+((\\.?\\,?\\s?)[0-9])+|[0-9]+)\\s*(€|EUROS|EUR)?",
-    "vatRateRegex": "(10((,|.)0{1,2})?|20((,|.)0{1,2})?|19(\\.|,)6|0|2(\\.|,)1|5(\\.|,)5)\\s*\\%",
+    "vatRateRegex": "(TVA|%)\\s*(5(?:\\.|,)5|19(?:\\.|,)6|(6|10|12|20)(?:[.,]00)?)|(5(?:\\.|,)5|19(?:\\.|,)6|(6|10|12|20)(?:[.,]00)?)(\\s*%)",
     "vatRateList": "[20, 19.6, 10, 5.5, 2.1]"
 }
