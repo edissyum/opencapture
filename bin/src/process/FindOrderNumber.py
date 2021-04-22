@@ -20,7 +20,7 @@ from webApp.functions import search_by_positions, search_custom_positions
 
 
 class FindOrderNumber:
-    def __init__(self, ocr, files, log, locale, config, database, supplier, file, typo, text, nb_pages, custom_page):
+    def __init__(self, ocr, files, log, locale, config, database, supplier, file, typo, text, nb_pages, custom_page, target='header'):
         self.vatNumber = ''
         self.Ocr = ocr
         self.text = text
@@ -34,6 +34,7 @@ class FindOrderNumber:
         self.file = file
         self.nbPages = nb_pages
         self.customPage = custom_page
+        self.target = target
 
     def run(self):
         if self.supplier and not self.customPage:
@@ -78,5 +79,8 @@ class FindOrderNumber:
 
                 if len(order_number) >= int(self.Locale.invoiceSizeMin):
                     self.Log.info('Order number found : ' + order_number)
-                    return [order_number, line.position, self.nbPages]
+                    position = line.position
+                    if self.target != 'header':
+                        position = self.Files.return_position_with_ratio(line, self.target)
+                    return [order_number, position, self.nbPages]
         return False

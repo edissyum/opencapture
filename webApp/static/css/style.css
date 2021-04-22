@@ -133,7 +133,7 @@ hr {
 
 .flash {
     position: fixed;
-    right: 10px;
+    right: 4px;
     top: 4px;
     z-index: 9999;
     padding: 1em;
