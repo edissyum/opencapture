@@ -22,36 +22,6 @@ def init():
     return db, config, locale, config_name, config_file
 
 
-@bp.route('/dashboard')
-def index():
-    _vars = init()
-    _db = _vars[0]
-    _cfg = _vars[1].cfg
-    _cfg_name = _vars[3].cfg['PROFILE']['id']
-    regex = _vars[2].get()
-    available_cfg = list_available_profile()
-
-    tmp_list = _cfg['GED']['availableprocess'].split(',')
-    list_ged_process = []
-
-    # Remove space into process name
-    for process in tmp_list:
-        process = process.replace(' ', '')
-        list_ged_process.append(process)
-
-    git_current_version = get_current_git_version(_cfg)
-    git_last_version = get_last_git_version()
-
-    return render_template('templates/dashboard/index.html',
-                           configDashboard=_cfg,
-                           configName=_cfg_name,
-                           configList=available_cfg,
-                           regex=regex,
-                           processes=list_ged_process,
-                           git_current=git_current_version,
-                           git_last=git_last_version)
-
-
 def list_available_profile():
     names = []
     for file in listdir(current_app.config['CONFIG_FOLDER']):

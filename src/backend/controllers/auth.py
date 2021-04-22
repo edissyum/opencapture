@@ -64,7 +64,7 @@ def register(username, password, firstname, lastname, lang):
     if request.method == 'POST':
         session['lang'] = lang
         user, error = auth_model.registrer({
-            'username' : username,
+            'username': username,
             'password': password,
             'firstname': firstname,
             'lastname': lastname

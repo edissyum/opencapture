@@ -19,7 +19,7 @@ The functionnalities of Open-Capture for Invoices are :
    - SIRET/SIREN & Adress verification (Only FR for now, could be disabled in settings)
    - Complex locale REGEX used. Easy to improve and modify
    - You have the choice to convert PDF to TIFF or JPG.
-   - SQLITE OR POSTGRESQL database support
+   - POSTGRESQL database support
   
 # Installation
 ## Linux Distributions

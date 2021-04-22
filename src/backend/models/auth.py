@@ -27,13 +27,13 @@ def registrer(args):
     user = db.select({
         'select': ['id'],
         'table': ['users'],
-        'where': ['username = ?'],
+        'where': ['username = %s'],
         'data': [args['username']]
     })
 
     if not args['username']:
         error = gettext('BAD_USERNAME')
-    elif not password:
+    elif not args['password']:
         error = gettext('BAD_PASSWORD')
     elif user:
         error = gettext('USER') + ' ' + args['username'] + ' ' + gettext('ALREADY_REGISTERED')

@@ -40,9 +40,7 @@ def create_app(test_config=None):
         LANG_FILE=os.path.join(app.instance_path, 'lang.json'),
         UPLOAD_FOLDER=os.path.join(app.instance_path, 'upload/'),
         PER_PAGE=16,
-        BABEL_TRANSLATION_DIRECTORIES=os.path.join(app.static_folder[0], 'babel/translations/')
-        if os.path.isdir(app.static_folder[0] + 'babel/translations') else os.path.join(app.static_folder[1],
-                                                                                        'babel/translations/'),
+        BABEL_TRANSLATION_DIRECTORIES=app.root_path.replace('backend', 'assets') + '/i18n/backend/translations/'
     )
 
     langs = json.loads(open(app.config['LANG_FILE']).read())

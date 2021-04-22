@@ -1,3 +1,3 @@
-pybabel extract -F webApp/babel.cfg -k lazy_gettext -o webApp/static/babel/messages.pot .
-pybabel update -i webApp/static/babel/messages.pot -d webApp/static/babel/translations
-pybabel compile -d webApp/static/babel/translations 
+pybabel extract -F instance/config/babel.cfg -k lazy_gettext -o src/assets/i18n/backend/messages.pot .
+pybabel update -i src/assets/i18n/backend/messages.pot -d src/assets/i18n/backend/translations
+pybabel compile -d src/assets/i18n/backend/translations
