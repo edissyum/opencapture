@@ -114,12 +114,13 @@ class Database:
             columns = ", ".join(columns_list)
             values = "'" + "', '".join(values_list) + "'"
 
-            query = "INSERT INTO " + args['table'] + " (" + columns + ") VALUES (" + values + ")"
+            query = "INSERT INTO " + args['table'] + " (" + columns + ") VALUES (" + values + ") RETURNING id"
             c = self.conn.cursor()
             try:
                 c.execute(query)
+                new_row_id = c.fetchone()[0]
                 self.conn.commit()
-                return True
+                return new_row_id
             except psycopg2.OperationalError as e:
                 self.Log.error('Error while querying INSERT : ' + str(e))
                 return False

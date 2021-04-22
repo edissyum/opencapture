@@ -169,56 +169,21 @@ CREATE TABLE "status" (
   "label_long" VARCHAR(200)
 );
 
-CREATE TABLE "splitter_batches" (
-  "id" SERIAL PRIMARY KEY,
-  "dir_name" VARCHAR,
-  "first_page" VARCHAR,
-  "image_folder_name" VARCHAR,
-  "creation_date" TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
-  "status" VARCHAR DEFAULT 'NEW',
-  "page_number" INTEGER
-);
-
-CREATE TABLE "splitter_images" (
-  "id" SERIAL PRIMARY KEY,
-  "batch_name" VARCHAR,
-  "image_path" VARCHAR,
-  "image_number" INTEGER,
-  "status" VARCHAR DEFAULT 'NEW'
-);
-
 ALTER TABLE "roles" ADD FOREIGN KEY ("id") REFERENCES "users" ("role");
-
 ALTER TABLE "roles_services" ADD FOREIGN KEY ("role_id") REFERENCES "roles" ("id");
-
 ALTER TABLE "status" ADD FOREIGN KEY ("id") REFERENCES "invoices" ("status");
-
 ALTER TABLE "accounts" ADD FOREIGN KEY ("type") REFERENCES "accounts_type" ("id");
-
 ALTER TABLE "accounting_plan" ADD FOREIGN KEY ("id") REFERENCES "companies" ("accounting_plan");
-
 ALTER TABLE "journals" ADD FOREIGN KEY ("id") REFERENCES "accounting_plan" ("journal_code");
-
 ALTER TABLE "accounts" ADD FOREIGN KEY ("id") REFERENCES "accounts_supplements" ("account_id");
-
 ALTER TABLE "companies_accounts" ADD FOREIGN KEY ("company_id") REFERENCES "companies" ("id");
-
 ALTER TABLE "companies_accounts" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("id");
-
 ALTER TABLE "users" ADD FOREIGN KEY ("id") REFERENCES "users_companies" ("user_id");
-
 ALTER TABLE "companies" ADD FOREIGN KEY ("id") REFERENCES "users_companies" ("company_id");
-
 ALTER TABLE "adresses" ADD FOREIGN KEY ("id") REFERENCES "accounts" ("adress_id");
-
 ALTER TABLE "adresses" ADD FOREIGN KEY ("id") REFERENCES "companies" ("adress_id");
-
 ALTER TABLE "history" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
-
 ALTER TABLE "form_models" ADD FOREIGN KEY ("id") REFERENCES "accounts" ("form_id");
-
 ALTER TABLE "form_models" ADD FOREIGN KEY ("id") REFERENCES "form_models_field" ("form_id");
-
 ALTER TABLE "accounts" ADD FOREIGN KEY ("id") REFERENCES "invoices" ("account_id");
-
 ALTER TABLE "custom_fields" ADD FOREIGN KEY ("id") REFERENCES "form_models_field" ("fields");

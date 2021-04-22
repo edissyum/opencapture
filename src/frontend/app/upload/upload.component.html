@@ -1,1 +1,11 @@
-<p>upload works!</p>
+<ngx-file-drag-drop
+        [formControl]="fileControl"
+        activeBorderColor="#3F51B5"
+        multiple
+        emptyPlaceholder="{{ 'SPLITTER.upload_zone' | translate }}">
+</ngx-file-drag-drop>
+
+<button mat-flat-button (click)="uploadFile()"
+        class="btn-upload text-gray-500 bg-gray-200 hover:bg-green-400 hover:text-white px-3 py-2 text-sm font-medium transition duration-300">
+    {{ 'SPLITTER.send' | translate }}
+</button>

@@ -1,3 +1,21 @@
+# This file is part of Open-Capture for Invoices.
+
+# Open-Capture for Invoices is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# Open-Capture is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
+
+# @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+# @dev : Oussama Brich <oussama.brich@edissyum.com>
+
 import datetime
 from flask import Blueprint, flash, g, redirect, render_template, request, url_for
 
@@ -5,11 +23,30 @@ from flask_babel import gettext
 from flask_paginate import Pagination, get_page_args
 from werkzeug.security import check_password_hash, generate_password_hash
 from import_controllers import pdf
+from ..models import user
 
 bp = Blueprint('user', __name__, url_prefix='/user')
 
 
-def check_user(user_id, get_password=False):
+def retrieve_users(args):
+    _vars = pdf.init()
+    _config = _vars[1]
+
+    users, error = user.retrieve_users(args)
+    if users:
+        response = {
+            "users": users
+        }
+        return response, 200
+    else:
+        response = {
+            "errors": "ERROR",
+            "message": error
+        }
+        return response, 401
+
+
+def retrieve_user_by_id(user_id, get_password=False):
     _vars = pdf.init()
     _db = _vars[0]
 
@@ -17,14 +54,13 @@ def check_user(user_id, get_password=False):
     if get_password:
         _select.append('password')
 
-    user = _db.select({
+    user_info, error = user.get_user_by_id({
         'select': _select,
-        'table': ['users'],
-        'where': ['id = ?'],
-        'data': [user_id]
+        'user_id': user_id
     })
-    if user:
-        return user[0], 200
+
+    if user_info:
+        return user_info, 200
     else:
         response = {
             "errors": gettext('USER_ERROR'),

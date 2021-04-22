@@ -1,12 +1,10 @@
 import jwt
 import datetime
 import functools
-import jwt.exceptions
 from flask_babel import gettext
 from flask import request, session, jsonify, current_app
-from werkzeug.security import check_password_hash, generate_password_hash
 
-from ..models import auth as auth_model
+from ..models import auth, user
 
 
 def encode_auth_token(user_id):
@@ -32,22 +30,22 @@ def encode_auth_token(user_id):
 
 def login(username, password, lang):
     session['lang'] = lang
-    user, error = auth_model.login({
+    user_info, error = auth.login({
         'username': username,
         'password': password
     })
 
     if error is None:
         session.clear()
-        encoded_token = encode_auth_token(user['id'])
+        encoded_token = encode_auth_token(user_info['id'])
         session['lang'] = lang
 
         response = {
             'auth_token': encoded_token[0].decode(),
             'days_before_exp': encoded_token[1],
-            'user':  auth_model.get_user_by_id({
+            'user':  user.get_user_by_id({
                 'select': ['id', 'username', 'firstname', 'lastname', 'role', 'status', 'creation_date', 'enabled'],
-                'user_id': user['id']
+                'user_id': user_info['id']
             })[0]
         }
 
@@ -63,7 +61,7 @@ def login(username, password, lang):
 def register(username, password, firstname, lastname, lang):
     if request.method == 'POST':
         session['lang'] = lang
-        user, error = auth_model.registrer({
+        user_info, error = auth.registrer({
             'username': username,
             'password': password,
             'firstname': firstname,
@@ -91,12 +89,12 @@ def token_required(view):
                     jwt.ExpiredSignatureError) as e:
                 return jsonify({"errors": gettext("JWT_ERROR"), "message": str(e)}), 500
 
-            user, error = auth_model.get_user_by_id({
+            user_info, error = user.get_user_by_id({
                 'select': ['id'],
                 'user_id': token['sub']
             })
 
-            if not user:
+            if not user_info:
                 return jsonify({"errors": gettext("JWT_ERROR"), "message": "User doesn't exist"}), 500
         else:
             return jsonify({"errors": gettext("JWT_ERROR"), "message": "Valid token is mandatory"}), 500

@@ -1,0 +1,1 @@
+INSERT INTO "users" ("id","username","firstname", "lastname","password", "role") VALUES (1,'admin', 'Super', 'ADMIN', 'pbkdf2:sha256:150000$7c8waI7f$c0891ac8e18990db0786d4a49aea8bf7c1ad82796dccd8ae35c12ace7d8ee403', 'admin');

@@ -16,31 +16,37 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
-from flask import Blueprint, request, make_response, jsonify
-from ..controllers.auth import token_required
-from ..controllers import user
-
-bp = Blueprint('user', __name__, url_prefix='/ws/')
+from gettext import gettext
+from ..controllers.db import get_db
 
 
-@bp.route('user/list', methods=['GET'])
-@token_required
-def get_users():
-    args = {}
-    _users = user.retrieve_users(args)
-    return make_response(jsonify(_users[0])), _users[1]
+def retrieve_users(args):
+    db = get_db()
+    error = None
+    users = db.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['users'],
+    })
+
+    if not users:
+        error = gettext('USER_ERROR')
+
+    return users, error
 
 
-@bp.route('user/getUserById/<int:user_id>', methods=['GET'])
-@token_required
-def get_user_by_id(user_id):
-    _user = user.retrieve_user_by_id(user_id)
-    return make_response(jsonify(_user[0])), _user[1]
+def get_user_by_id(args):
+    db = get_db()
+    error = None
+    user = db.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['users'],
+        'where': ['id = %s'],
+        'data': [args['user_id']]
+    })
 
+    if not user:
+        error = gettext('BAD_USERNAME')
+    else:
+        user = user[0]
 
-@bp.route('user/updateUser/<int:user_id>', methods=['PUT'])
-@token_required
-def update_user(user_id):
-    data = request.json['args']
-    res = user.update_profile(user_id, data)
-    return make_response(jsonify(res[0])), res[1]
+    return user, error

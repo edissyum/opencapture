@@ -25,8 +25,7 @@ const routes: Routes = [
   {path: 'logout', component: LogoutComponent , canActivate: [LoginRequiredService]},
   {path: 'profile/:id', component: ProfileComponent, canActivate: [LoginRequiredService]},
 
-  {path: 'splitter/viewer', component: SplitterViewerComponent , data: { title: marker('SPLITTER.viewer'), image: 'assets/imgs/Open-Capture_Splitter.png' }, canActivate: [LoginRequiredService]},
-  {path: 'splitter/list', component: SplitterListComponent , data: { title: marker('SPLITTER.list'), image: 'assets/imgs/Open-Capture_Splitter.png' }, canActivate: [LoginRequiredService]},
+  {path: 'splitter/viewer/:id', component: SplitterViewerComponent , data: { title: marker('SPLITTER.viewer'), image: 'assets/imgs/Open-Capture_Splitter.png' }, canActivate: [LoginRequiredService]},  {path: 'splitter/list', component: SplitterListComponent , data: { title: marker('SPLITTER.list'), image: 'assets/imgs/Open-Capture_Splitter.png' }, canActivate: [LoginRequiredService]},
   {path: 'splitter', redirectTo: 'splitter/list', pathMatch: 'full'},
 
   {path: 'verifier/viewer', component: VerifierViewerComponent , data: { title: marker('VERIFIER.viewer'), image: 'assets/imgs/open-capture_verifier.png' }, canActivate: [LoginRequiredService]},
