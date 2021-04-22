@@ -1,10 +1,7 @@
 [GLOBAL]
 # Use ${GLOBAL:projectPath} to specify once for all the path of the project
-nbthreads                   = 5
 resolution                  = 300
 compressionquality          = 100
-# Used to fix potential OCR error into mail detection
-sanitizeStr                 = {}\[\]()!?§&é~èàç
 projectPath                 = /opt/OpenCaptureForInvoices/
 tmpPath                     = ${GLOBAL:projectPath}/bin/data/tmp/
 docserverPath               = /var/docservers/OpenCapture/
@@ -29,6 +26,10 @@ allowBypassSupplieBanVerif  = True
 timeDelta                   = -1
 # Number of files uploaded simultaneously
 uploadMaxFiles              = 3
+; Enable autosave of Facturation Informations into form
+enableAutoSave              = True
+; Enable visual indication in view form if data was found automatically
+enableVisualIfPositionsFound = False
 
 [AI-CLASSIFICATION]
 # True or False, python way
@@ -45,7 +46,6 @@ splitterpath = /var/docservers/OpenCapture_Splitter/
 tmpBatchPath = ${SPLITTER:splitterpath}/batches/
 pdfOutputPath = ${SPLITTER:splitterpath}/separated_pdf/
 pdfOriginPath = ${GLOBAL:projectPath}/bin/data/OC_Splitter/pdf_sources/
-allowedExtensions  = {'pdf'}
 
 [REMOVE-BLANK-PAGES]
 # True or False
@@ -54,9 +54,6 @@ enabled = False
 blobsRatio = 1E-6
 
 [DATABASE]
-databasefile = ${GLOBAL:projectPath}/instance/flaskr.sqlite
-# sqlite or pgsql
-databaseType = sqlite
 postgresHost = localhost
 postgresPort = 5432
 postgresDatabase = opencapture

@@ -27,7 +27,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { UploadComponent } from './upload/upload.component';
 
 export function createTranslateLoader(http: HttpClient) {
-  return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
+  return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
 }
 
 @NgModule({

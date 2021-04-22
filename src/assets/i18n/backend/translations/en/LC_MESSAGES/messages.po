@@ -1,0 +1,1428 @@
+
+msgid ""
+msgstr ""
+"Project-Id-Version:  0.1\n"
+"Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
+"POT-Creation-Date: 2021-04-13 11:35+0200\n"
+"PO-Revision-Date: 2019-09-02 17:48+0200\n"
+"Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
+"Language: en\n"
+"Language-Team: en <nathan.cheval@edissyum.com>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.8.0\n"
+
+#: bin/src/classes/WebServices.py:45
+msgid "CONNECTION_ERROR"
+msgstr "Error while trying to connect to the GED"
+
+#: webApp/auth.py:28 webApp/auth.py:71
+msgid "USERNAME_REQUIRED"
+msgstr "Bad login"
+
+#: webApp/auth.py:30 webApp/auth.py:73
+msgid "PASSWORD_REQUIRED"
+msgstr "Bad password"
+
+#: webApp/auth.py:32
+msgid "USER"
+msgstr "User"
+
+#: webApp/auth.py:32
+msgid "ALREADY_REGISTERED"
+msgstr "Already registered"
+
+#: webApp/auth.py:43
+msgid "USER_CREATED_OK"
+msgstr "User created with succes"
+
+#: webApp/auth.py:75
+msgid "USER_DELETED"
+msgstr "User deleted"
+
+#: webApp/auth.py:77
+msgid "USER_DISABLED"
+msgstr "User disabled"
+
+#: webApp/forms.py:26
+msgid "NAME"
+msgstr "Name"
+
+#: webApp/forms.py:36 webApp/templates/suppliers/suppliers_list.html:49
+#: webApp/templates/suppliers/suppliers_list.html:50
+msgid "ADDRESS"
+msgstr "Address"
+
+#: webApp/forms.py:49
+msgid "ADDRESS_COMPLEMENT"
+msgstr "Adress complement"
+
+#: webApp/forms.py:61 webApp/templates/suppliers/suppliers_list.html:51
+msgid "ZIP_CODE"
+msgstr "Zip code"
+
+#: webApp/forms.py:74 webApp/templates/suppliers/suppliers_list.html:52
+msgid "CITY"
+msgstr "City"
+
+#: webApp/forms.py:87 webApp/templates/dashboard/index.html:712
+#: webApp/templates/suppliers/suppliers_list.html:45
+msgid "VAT_NUMBER"
+msgstr "VAT number"
+
+#: webApp/forms.py:104 webApp/templates/dashboard/index.html:801
+#: webApp/templates/suppliers/suppliers_list.html:47
+msgid "SIRET_NUMBER"
+msgstr "SIRET Number"
+
+#: webApp/forms.py:116 webApp/templates/dashboard/index.html:812
+#: webApp/templates/suppliers/suppliers_list.html:48
+msgid "SIREN_NUMBER"
+msgstr "SIREN Number"
+
+#: webApp/forms.py:134 webApp/static/js/videoCodage.js:653
+#: webApp/templates/dashboard/index.html:751
+msgid "ORDER_NUMBER"
+msgstr "Order number"
+
+#: webApp/forms.py:152 webApp/static/js/videoCodage.js:686
+#: webApp/templates/dashboard/index.html:740
+msgid "DELIVERY_FORM_NUMBER"
+msgstr "Delivery form number"
+
+#: webApp/forms.py:170 webApp/templates/dashboard/index.html:726
+#: webApp/templates/pdf/list.html:92
+msgid "INVOICE_NUMBER"
+msgstr "Invoice number"
+
+#: webApp/forms.py:186 webApp/templates/pdf/list.html:93
+msgid "INVOICE_DATE"
+msgstr "Invoice date"
+
+#: webApp/forms.py:207 webApp/templates/dashboard/index.html:698
+msgid "DUE_DATE"
+msgstr "Due date"
+
+#: webApp/forms.py:227 webApp/static/js/videoCodage.js:499
+#: webApp/templates/dashboard/index.html:848
+msgid "VAT_RATE"
+msgstr "VAT rate"
+
+#: webApp/forms.py:247 webApp/forms.py:304 webApp/static/js/videoCodage.js:508
+#: webApp/static/js/videoCodage.js:606
+#: webApp/templates/dashboard/index.html:826
+msgid "NO_RATE_AMOUNT"
+msgstr "No rate amount"
+
+#: webApp/forms.py:265 webApp/static/js/videoCodage.js:517
+msgid "LOAD_ACCOUNT"
+msgstr "Load account"
+
+#: webApp/forms.py:276 webApp/pdf.py:614 webApp/static/js/videoCodage.js:519
+msgid "SELECT_LOAD_ACCOUNT"
+msgstr "Select a load account"
+
+#: webApp/forms.py:280
+msgid "TOTAL_NO_RATE"
+msgstr "Total without rate"
+
+#: webApp/forms.py:287 webApp/templates/dashboard/index.html:837
+msgid "TOTAL_TTC"
+msgstr "Total including taxes"
+
+#: webApp/forms.py:292 webApp/static/js/videoCodage.js:536
+msgid "VAT_AMOUNT"
+msgstr "VAT amount"
+
+#: webApp/forms.py:313 webApp/static/js/videoCodage.js:612
+msgid "BUDGET"
+msgstr "Budget"
+
+#: webApp/forms.py:317 webApp/static/js/videoCodage.js:614
+msgid "SELECT_STRUCTURE"
+msgstr "Select a structure"
+
+#: webApp/forms.py:321 webApp/static/js/videoCodage.js:620
+msgid "OUTCOME"
+msgstr "Outcome"
+
+#: webApp/forms.py:326
+msgid "SELECT_OUTCOME"
+msgstr "Select an outcome"
+
+#: webApp/pdf.py:241 webApp/splitter.py:115 webApp/static/js/videoCodage.js:63
+msgid "NO_RESULTS"
+msgstr "No results"
+
+#: webApp/pdf.py:245 webApp/splitter.py:117 webApp/supplier.py:70
+#: webApp/user.py:182
+msgid "SHOW"
+msgstr "Show"
+
+#: webApp/pdf.py:245 webApp/splitter.py:117 webApp/supplier.py:70
+#: webApp/templates/pdf/view.html:19 webApp/user.py:182
+msgid "OF"
+msgstr "of"
+
+#: webApp/pdf.py:555
+msgid "END_LONG"
+msgstr "Invoice validated and closed"
+
+#: webApp/pdf.py:557
+msgid "ERROR_WHILE_INSERTING_IN_GED"
+msgstr "Error while inserting invoice in GED"
+
+#: webApp/user.py:48 webApp/user.py:110 webApp/user.py:141
+msgid "ERROR_WHILE_RETRIEVING_USER"
+msgstr "Error while retrieving user informations"
+
+#: webApp/user.py:82
+msgid "UPDATE_ROLE_OK"
+msgstr "Role updated with success"
+
+#: webApp/user.py:84
+msgid "UPDATE_ROLE_ERROR"
+msgstr "Error while trying to update role"
+
+#: webApp/user.py:94
+msgid "ERROR_OLD_PASSWORD_NOT_MATCH"
+msgstr "The old password do not match"
+
+#: webApp/user.py:106 webApp/user.py:137
+msgid "UPDATE_OK"
+msgstr "Password updated with success"
+
+#: webApp/user.py:108 webApp/user.py:139
+msgid "UPDATE_ERROR"
+msgstr "Error while updating password"
+
+#: webApp/user.py:220
+msgid "USER_ENABLED_OK"
+msgstr "User enabled with succes"
+
+#: webApp/user.py:222
+msgid "USER_ENABLED_ERROR"
+msgstr "Error while attempting to enable user"
+
+#: webApp/user.py:251
+msgid "USER_DISABLED_OK"
+msgstr "User disabled with succes"
+
+#: webApp/user.py:253
+msgid "USER_DISABLED_ERROR"
+msgstr "Error while attempting to disable user"
+
+#: webApp/user.py:282
+msgid "USER_DELETED_OK"
+msgstr "User deleted with succes"
+
+#: webApp/user.py:284
+msgid "USER_DELETED_ERROR"
+msgstr "Error while attempting to delete user"
+
+#: webApp/ws.py:66
+msgid "VAT_NOT_VALID"
+msgstr "Invalid VAT number"
+
+#: webApp/ws.py:68 webApp/ws.py:73
+msgid "VAT_API_ERROR"
+msgstr "Unable to join VAT number verification API"
+
+#: webApp/ws.py:81
+msgid "PROFILE_UPDATED"
+msgstr "Profile updated"
+
+#: webApp/ws.py:84 webApp/ws.py:85
+msgid "PROFILE_UPDATE_ERROR"
+msgstr "Error while updating profile"
+
+#: webApp/ws.py:92
+msgid "CONFIG_FILE_UPDATED"
+msgstr "Configuration file updated with success"
+
+#: webApp/ws.py:94
+msgid "ERROR_UPDATE_CONFIG_FILE"
+msgstr "Error while updating configuration file"
+
+#: webApp/ws.py:226
+msgid "SUPPLIER_ADDED"
+msgstr "Supplier added"
+
+#: webApp/ws.py:280
+msgid "SUPPLIER_EDITED"
+msgstr "Supplier edited"
+
+#: webApp/ws.py:307
+msgid "SUPPLIER_DELETED"
+msgstr "Supplier deleted"
+
+#: webApp/ws.py:322
+msgid "ALL_SUPPLIER_POSITION_DELETED"
+msgstr "Positions of all the suppliers deleted"
+
+#: webApp/ws.py:325
+msgid "SUPPLIER_POSITION_DELETED"
+msgstr "Supplier positions deleted"
+
+#: webApp/ws.py:379
+msgid "SUPPLIER_AUTO_VALIDATION_SKIPPED"
+msgstr "The next automatic validation will be skipped"
+
+#: webApp/ws.py:401
+msgid "SUPPLIER_AUTO_VALIDATION_SKIPPED_DISABLED"
+msgstr "The automatic validation is now enabled"
+
+#: webApp/ws.py:505
+msgid "INVOICE_DELETED"
+msgstr "Invoice deleted"
+
+#: webApp/ws.py:570
+msgid "FILE_UPLOAD_SUCCESS"
+msgstr "File(s) upload with success"
+
+#: webApp/static/js/cookies.js:42
+msgid "FORM_SAVED_AUTO"
+msgstr "Facturation informations saved with sucess (automatically)"
+
+#: webApp/static/js/cookies.js:44
+msgid "FORM_SAVED"
+msgstr "Facturation informations saved with sucess"
+
+#: webApp/static/js/script.js:45
+msgid "_CONFIRM_DELETE"
+msgstr "Do you really want to delete this invoice ?"
+
+#: webApp/static/js/script.js:88 webApp/static/js/script.js:97
+#: webApp/static/js/script.js:147 webApp/templates/pdf/list.html:52
+msgid "SELECT_ALL"
+msgstr "Select all"
+
+#: webApp/static/js/script.js:90 webApp/static/js/script.js:141
+msgid "UNSELECT_ALL"
+msgstr "Unselect all"
+
+#: webApp/static/js/script.js:106
+msgid "_CONFIRM_DELETE_BATCH"
+msgstr "Do you really want to delete this batch of invoices ?"
+
+#: webApp/static/js/splitter.js:142 webApp/static/js/splitter.js:175
+#: webApp/static/js/splitter.js:251 webApp/static/js/splitter.js:258
+#: webApp/templates/splitter/view.html:28
+#: webApp/templates/splitter/view.html:35
+#: webApp/templates/splitter/view.html:59
+#: webApp/templates/splitter/view.html:60
+msgid "INVOICE"
+msgstr "Invoice"
+
+#: webApp/static/js/supplier.js:7
+msgid "_CONFIRM_DELETE_SUPPLIER"
+msgstr "Are you sure you want to delete this supplier?"
+
+#: webApp/static/js/supplier.js:14
+msgid "_CONFIRM_DELETE_SUPPLIER_POSITION"
+msgstr ""
+"Do you really want to delete this supplier's positions ? This action "
+"can't be undo"
+
+#: webApp/static/js/supplier.js:21
+msgid "_CONFIRM_SKIP_AUTO_VALIDATION"
+msgstr "Do you really want to skip next automatic validation ?"
+
+#: webApp/static/js/supplier.js:28
+msgid "_CONFIRM_DISABLE_SKIP_AUTO_VALIDATION"
+msgstr "Do you really want to re enable automatic validation ?"
+
+#: webApp/static/js/supplier.js:86 webApp/static/js/supplier.js:142
+msgid "INVALID-INPUT"
+msgstr "Invalid field"
+
+#: webApp/static/js/supplier.js:180
+msgid "_CONFIRM_DELETE_ALL_POSITIONS"
+msgstr "Do you really want to delete positions of ALL the suppliers ?"
+
+#: webApp/static/js/videoCodage.js:213
+msgid "WAIT_OCR_END"
+msgstr "Please wait the end of the first OCR process"
+
+#: webApp/static/js/videoCodage.js:339
+msgid "SIRET_CONNECTION_ERROR"
+msgstr ""
+" Error while connection to SIRET verification service. The SIRET/SIREN "
+"could'nt be verified"
+
+#: webApp/static/js/videoCodage.js:384
+msgid "ERROR_WHILE_READING_CONFIGURATION_FILE"
+msgstr "Erreur lors de la lecture du fichier de configuration"
+
+#: webApp/static/js/videoCodage.js:622
+msgid "SELECT_BUDGET"
+msgstr "Select a budget"
+
+#: webApp/static/js/videoCodage.js:815 webApp/static/js/videoCodage.js:828
+#: webApp/static/js/videoCodage.js:862 webApp/static/js/videoCodage.js:867
+#: webApp/static/js/videoCodage.js:895
+msgid "ERROR_OCCURED"
+msgstr "Error occured"
+
+#: webApp/static/js/videoCodage.js:828
+msgid "WRONG_SIRET_FORMAT"
+msgstr "The SIRET have a wrong format"
+
+#: webApp/static/js/videoCodage.js:867
+msgid "WRONG_SIREN_FORMAT"
+msgstr "The SIREN have a wrong format"
+
+#: webApp/static/js/videoCodage.js:950
+msgid "BAN_API_ERROR"
+msgstr "Error while connecting API for national adress verification"
+
+#: webApp/static/js/videoCodage.js:971
+msgid "REFUSE_CONFIRMATION"
+msgstr "Do you really want to refuse the invoice ?"
+
+#: webApp/static/js/videoCodage.js:975 webApp/static/js/videoCodage.js:1106
+#: webApp/static/js/videoCodage.js:1118
+msgid "YES"
+msgstr "Yes"
+
+#: webApp/static/js/videoCodage.js:1023 webApp/static/js/videoCodage.js:1030
+msgid "BAD_FORMAT"
+msgstr "The date format isn't good"
+
+#: webApp/static/js/videoCodage.js:1068
+msgid "FORM_ERROR_OR_EMPTY_FIELD"
+msgstr ""
+"The form have some errors or empty field. Please correct them before "
+"validate"
+
+#: webApp/static/js/videoCodage.js:1072
+msgid "INCORRECT_BAN_ADDRESS"
+msgstr "The address doesn't perfectly match to national referential"
+
+#: webApp/static/js/videoCodage.js:1073
+msgid "PUT_FORM_TO_SUPPLIER_WAIT"
+msgstr "We advise you to put on hold this invoice, awaiting supplier update"
+
+#: webApp/static/js/videoCodage.js:1077
+msgid "PUT_ON_HOLD"
+msgstr "Put on hold"
+
+#: webApp/static/js/videoCodage.js:1082
+msgid "_VALID_WIHTOUT_BAN_VERIFICATION"
+msgstr "Valid without address verification"
+
+#: webApp/static/js/videoCodage.js:1089
+msgid "INVALID_VAT_NUMBER"
+msgstr "The VAT number is invalid."
+
+#: webApp/static/js/videoCodage.js:1094
+msgid "_VALID_WIHTOUT_VAT_VERIFICATION"
+msgstr "Valid without VAT verification ?"
+
+#: webApp/static/js/videoCodage.js:1101
+msgid "CALCUL_NOT_EQUAL_WOULD_YOU_VALIDATE"
+msgstr ""
+"The sum of the amounts allocated to the analytics is different from the "
+"total amount without rates. Do you still want to validate the invoice ?"
+
+#: webApp/static/js/videoCodage.js:1112
+msgid "INVOICE_ALREADY_EXIST"
+msgstr ""
+"An invoice linked to the same supplier and having the same invoice number"
+" already appears in the database. Do you still want to validate the "
+"invoice ?"
+
+#: webApp/static/js/videoCodage.js:1255
+msgid "FIELD_TO_CHECK"
+msgstr "Field to check"
+
+#: webApp/static/js/videoCodage.js:1256 webApp/static/js/videoCodage.js:1261
+msgid "BAN_VALUE"
+msgstr "National address base value"
+
+#: webApp/static/js/videoCodage.js:1260
+msgid "INVALID"
+msgstr "Invalid"
+
+#: webApp/templates/base.html:68 webApp/templates/base_home.html:42
+#: webApp/templates/base_splitter.html:68 webApp/templates/home.html:2
+msgid "HOME"
+msgstr "Home"
+
+#: webApp/templates/base.html:69 webApp/templates/base_splitter.html:69
+msgid "LIST"
+msgstr "Batch"
+
+#: webApp/templates/base.html:70 webApp/templates/base_splitter.html:69
+msgid "UPLOAD"
+msgstr "Upload"
+
+#: webApp/templates/base.html:71 webApp/templates/base_home.html:43
+msgid "MY_PROFILE"
+msgstr "My profile"
+
+#: webApp/templates/base.html:72 webApp/templates/base_home.html:44
+#: webApp/templates/base_splitter.html:70
+msgid "LOG_OUT"
+msgstr "Log out"
+
+#: webApp/templates/base.html:74 webApp/templates/base_home.html:46
+#: webApp/templates/base_splitter.html:72
+msgid "DASHBOARD"
+msgstr "Dashboard"
+
+#: webApp/templates/base.html:75 webApp/templates/base_home.html:47
+#: webApp/templates/base_splitter.html:73
+#: webApp/templates/users/user_list.html:2
+msgid "USER_LIST"
+msgstr "Users list"
+
+#: webApp/templates/base.html:76 webApp/templates/base_home.html:48
+#: webApp/templates/base_splitter.html:74
+msgid "CREATE_USER"
+msgstr "Create user"
+
+#: webApp/templates/base.html:77 webApp/templates/base_home.html:49
+#: webApp/templates/base_splitter.html:75
+#: webApp/templates/suppliers/suppliers_list.html:2
+msgid "SUPPLIER_LIST"
+msgstr "Suppliers list"
+
+#: webApp/templates/base.html:80 webApp/templates/base_splitter.html:78
+msgid "SIGN_IN"
+msgstr "Sign in"
+
+#: webApp/templates/auth/login.html:19 webApp/templates/base.html:81
+#: webApp/templates/base_splitter.html:79
+msgid "SIGN_UP"
+msgstr "Sign up"
+
+#: webApp/templates/forms_macro_input_general.html:4
+msgid "CALCULATE_TOTAL_AMOUNT"
+msgstr "Calcultate the total amount"
+
+#: webApp/templates/forms_macro_input_general.html:50
+msgid "FOUND_WITH_POSITION"
+msgstr "Value found automatically\" # (uncheck to delete positions in database"
+
+#: webApp/templates/forms_macro_input_general.html:84
+msgid "ADD_VAT_RATE"
+msgstr "Add a VAT rate"
+
+#: webApp/templates/home.html:19
+msgid "SEPARATOR_OC"
+msgstr "Open-Capture splitter"
+
+#: webApp/templates/home.html:29
+msgid "VERIFIER_OC"
+msgstr "Open-Capture verifier"
+
+#: webApp/templates/auth/login.html:2 webApp/templates/auth/login.html:8
+#: webApp/templates/auth/register.html:29
+msgid "LOG_IN"
+msgstr "Log in"
+
+#: webApp/templates/auth/login.html:10 webApp/templates/auth/register.html:10
+#: webApp/templates/users/user_list.html:14
+msgid "USERNAME"
+msgstr "Username"
+
+#: webApp/templates/auth/login.html:13 webApp/templates/auth/register.html:13
+msgid "PASSWORD"
+msgstr "Password"
+
+#: webApp/templates/auth/login.html:16 webApp/templates/auth/register.html:23
+#: webApp/templates/splitter/view.html:42
+#: webApp/templates/splitter/view.html:89
+msgid "VALIDATE"
+msgstr "Validate"
+
+#: webApp/templates/auth/register.html:2 webApp/templates/auth/register.html:8
+msgid "SIGNING_UP"
+msgstr "Signing up"
+
+#: webApp/templates/auth/register.html:17
+msgid "SELECT_ROLE"
+msgstr "Please select a role..."
+
+#: webApp/templates/auth/register.html:18
+#: webApp/templates/users/user_list.html:51
+#: webApp/templates/users/user_profile.html:43
+msgid "ROLE_USER"
+msgstr "User"
+
+#: webApp/templates/auth/register.html:19
+#: webApp/templates/users/user_list.html:53
+#: webApp/templates/users/user_profile.html:44
+msgid "ROLE_ADMIN"
+msgstr "Administrator"
+
+#: webApp/templates/dashboard/index.html:2
+msgid "DASHBOARD_OC"
+msgstr "OpenCapture dashboard"
+
+#: webApp/templates/dashboard/index.html:15
+msgid "GENERAL SETTINGS"
+msgstr "General settings"
+
+#: webApp/templates/dashboard/index.html:19
+msgid "ADVANCED SETTINGS"
+msgstr "Advanced settings"
+
+#: webApp/templates/dashboard/index.html:23
+msgid "SEPARATOR_SETTINGS"
+msgstr "Separator settings"
+
+#: webApp/templates/dashboard/index.html:27
+msgid "LAD SETTINGS"
+msgstr "ADR settings"
+
+#: webApp/templates/dashboard/index.html:31
+msgid "GED SETTINGS"
+msgstr "GED settings"
+
+#: webApp/templates/dashboard/index.html:35
+msgid "AI_SETTINGS"
+msgstr "AI settings"
+
+#: webApp/templates/dashboard/index.html:39
+msgid "DATABASE_SETTINGS"
+msgstr "Database settings"
+
+#: webApp/templates/dashboard/index.html:44
+msgid "VERIFY_VERSION"
+msgstr "Verify version"
+
+#: webApp/templates/dashboard/index.html:50
+#: webApp/templates/dashboard/index.html:52
+msgid "PROFILE_SELECTION"
+msgstr "Profile selection"
+
+#: webApp/templates/dashboard/index.html:66
+msgid "SIRET_SIREN_CHECK_INSEE"
+msgstr "SIRET/SIREN check via INSEE"
+
+#: webApp/templates/dashboard/index.html:70
+msgid "CONSUMER_KEY"
+msgstr "Consumer key"
+
+#: webApp/templates/dashboard/index.html:81
+msgid "CONSUMER_SECRET"
+msgstr "Consumer secret"
+
+#: webApp/templates/dashboard/index.html:92
+msgid "INSEE_API_URL"
+msgstr "API URL"
+
+#: webApp/templates/dashboard/index.html:106
+msgid "INSEE_SIRET_URL"
+msgstr "URL for SIRET verification"
+
+#: webApp/templates/dashboard/index.html:117
+msgid "INSEE_SIREN_URL"
+msgstr "URL for SIREN verification"
+
+#: webApp/templates/dashboard/index.html:130
+msgid "TVA_NUMBER_VERIFICATION"
+msgstr "VAT Number verification"
+
+#: webApp/templates/dashboard/index.html:134
+#: webApp/templates/dashboard/index.html:151
+msgid "URL_API"
+msgstr "API URL"
+
+#: webApp/templates/dashboard/index.html:147
+msgid "BAN_VERIFICATION"
+msgstr "Address verification"
+
+#: webApp/templates/dashboard/index.html:167
+msgid "ALLOW_DUPLICATE"
+msgstr "Allow duplicate invoice"
+
+#: webApp/templates/dashboard/index.html:177
+#: webApp/templates/dashboard/index.html:193
+#: webApp/templates/dashboard/index.html:209
+#: webApp/templates/dashboard/index.html:225
+#: webApp/templates/dashboard/index.html:241
+#: webApp/templates/dashboard/index.html:257
+#: webApp/templates/dashboard/index.html:867
+#: webApp/templates/dashboard/index.html:946
+#: webApp/templates/dashboard/index.html:988
+#: webApp/templates/dashboard/index.html:1274
+msgid "ENABLED"
+msgstr "Enabled"
+
+#: webApp/templates/dashboard/index.html:183
+msgid "ALLOW_AUTOMATIC_VALIDATION"
+msgstr "Allow automatic validation"
+
+#: webApp/templates/dashboard/index.html:199
+msgid "CONVERT_PDF_TO_TIFF"
+msgstr "Convert PDF to TIFF format instead of JPG"
+
+#: webApp/templates/dashboard/index.html:215
+msgid "ALLOW_BYPASS_SUPPLIER_VERIF"
+msgstr "Allow bypass supplier address verification"
+
+#: webApp/templates/dashboard/index.html:231
+msgid "ENABLE_AUTO_SAVE"
+msgstr "Enable automatic form save"
+
+#: webApp/templates/dashboard/index.html:247
+msgid "ENABLE_VISUAL_IF_POSITIONS_FOUND"
+msgstr "Enable visual indication is the field was automatically found"
+
+#: webApp/templates/dashboard/index.html:266
+msgid "DEFAULT_PASSWORD"
+msgstr "Default password"
+
+#: webApp/templates/dashboard/index.html:277
+msgid "TIME_DELTA"
+msgstr "Maximal difference of day between today and invoice date"
+
+#: webApp/templates/dashboard/index.html:287
+msgid "TIME_DELTA_HELP"
+msgstr "-1 to disable this functionnality"
+
+#: webApp/templates/dashboard/index.html:291
+msgid "UPLOAD_MAX_FILES"
+msgstr "Number of files uploaded simultaneously"
+
+#: webApp/templates/dashboard/index.html:304
+msgid "SUPPLIER_ADDRES_VERIFICATION"
+msgstr "Supplier address verification"
+
+#: webApp/templates/dashboard/index.html:308
+msgid "PERCENTAGE_MAX_PER_FIELD"
+msgstr "Maximum percentage per field"
+
+#: webApp/templates/dashboard/index.html:318
+#: webApp/templates/dashboard/index.html:332
+#: webApp/templates/dashboard/index.html:346
+msgid "RATIO_HELP"
+msgstr "From 1 to 100"
+
+#: webApp/templates/dashboard/index.html:322
+msgid "PERCENTAGE_AVERAGE_PER_FIELD"
+msgstr "Average percentage per field"
+
+#: webApp/templates/dashboard/index.html:336
+msgid "PERCENTAGE_BEFORE_FORM_SUBMISSION"
+msgstr "Percentage before form submission"
+
+#: webApp/templates/dashboard/index.html:355
+msgid "SEPARATOR_PATH"
+msgstr "Separator path"
+
+#: webApp/templates/dashboard/index.html:366
+msgid "TMP_BATCH_PATH"
+msgstr "Path to temporary batch (used in the webversion)"
+
+#: webApp/templates/dashboard/index.html:377
+msgid "PDF_OUTPUT_PATH"
+msgstr "Output PDF path"
+
+#: webApp/templates/dashboard/index.html:390
+msgid "PDF_ORIGIN_PATH"
+msgstr "Path to original PDF path"
+
+#: webApp/templates/dashboard/index.html:406
+#: webApp/templates/dashboard/index.html:972
+msgid "GENERAL"
+msgstr "General"
+
+#: webApp/templates/dashboard/index.html:409
+msgid "LOCALE"
+msgstr "Locale"
+
+#: webApp/templates/dashboard/index.html:412
+msgid "REFERENCIALS"
+msgstr "Referencials"
+
+#: webApp/templates/dashboard/index.html:415
+msgid "REGEX"
+msgstr "Regex"
+
+#: webApp/templates/dashboard/index.html:418
+msgid "QR_CODE_SEPARATION"
+msgstr "QRCODE Separation"
+
+#: webApp/templates/dashboard/index.html:421
+msgid "BLANK_PAGE_REMOVE"
+msgstr "Remove blank pages"
+
+#: webApp/templates/dashboard/index.html:428
+msgid "PROJECT_PATH"
+msgstr "Project path"
+
+#: webApp/templates/dashboard/index.html:439
+#: webApp/templates/dashboard/index.html:913
+msgid "TEMP_PATH"
+msgstr "Temp path"
+
+#: webApp/templates/dashboard/index.html:450
+msgid "IMAGES_PATH"
+msgstr "Images path"
+
+#: webApp/templates/dashboard/index.html:464
+msgid "TIFF_PATH"
+msgstr "TIFF path"
+
+#: webApp/templates/dashboard/index.html:475
+msgid "ERROR_PATH"
+msgstr "Error path"
+
+#: webApp/templates/dashboard/index.html:486
+msgid "LOGS_FILE"
+msgstr "Logs file"
+
+#: webApp/templates/dashboard/index.html:500
+msgid "DOCSERVER_PATH"
+msgstr "Docservers path"
+
+#: webApp/templates/dashboard/index.html:511
+msgid "EXPORT_ACCOUNTING_FOLDER"
+msgstr "XML export path"
+
+#: webApp/templates/dashboard/index.html:522
+msgid "EXPORT_ACCOUNTING_FILE_PARSER"
+msgstr "XML naming file"
+
+#: webApp/templates/dashboard/index.html:536
+msgid "OCR_RESOLUTION_DPI"
+msgstr "Image resolution for OCR (DPI)"
+
+#: webApp/templates/dashboard/index.html:550
+msgid "IMAGE_COMPRESSION_QUALITY"
+msgstr "Quality of image compression"
+
+#: webApp/templates/dashboard/index.html:560
+msgid "COMPRESSION_HELP"
+msgstr "From 1 to 100. 100 being the best quality"
+
+#: webApp/templates/dashboard/index.html:564
+msgid "OCR_CHAR_CORRECTION"
+msgstr "OCR characters correction"
+
+#: webApp/templates/dashboard/index.html:575
+msgid "OCR_ERROR_PATH"
+msgstr "Path for OCR correction file"
+
+#: webApp/templates/dashboard/index.html:590
+msgid "REGEX_LOCALE_CODE"
+msgstr "REGEX language code"
+
+#: webApp/templates/dashboard/index.html:600
+msgid "LOCALE_HELP"
+msgstr "<b>fr_FR</b> or <b>en_EN</b> by default"
+
+#: webApp/templates/dashboard/index.html:604
+msgid "OCR_LOCALE_CODE"
+msgstr "OCR language code"
+
+#: webApp/templates/dashboard/index.html:614
+msgid "LOCALE_OCR_HELP"
+msgstr "<b>fra</b> or <b>eng</b> by default"
+
+#: webApp/templates/dashboard/index.html:618
+msgid "LOCALE_PATH"
+msgstr "Locale files path"
+
+#: webApp/templates/dashboard/index.html:633
+msgid "FINANCIAL_REFERENCIAL"
+msgstr "Financial referencial"
+
+#: webApp/templates/dashboard/index.html:644
+msgid "REFERENCIAL_POSITION"
+msgstr "Location of the folder for positions files"
+
+#: webApp/templates/dashboard/index.html:658
+msgid "SUPPLIERS_REFERENCIAL"
+msgstr "Suppliers referencial"
+
+#: webApp/templates/dashboard/index.html:669
+msgid "SUPPLIERS_EXCEL_INDEX_REFERENCIAL"
+msgstr "EXCEL index referencial for suppliers"
+
+#: webApp/templates/dashboard/index.html:684
+msgid "DATE"
+msgstr "Date"
+
+#: webApp/templates/dashboard/index.html:765
+msgid "INVOICE_NUMBER_SIZE"
+msgstr "Invoice number minimal size"
+
+#: webApp/templates/dashboard/index.html:776
+msgid "INPUT_FORMAT_DATE"
+msgstr "Input format date"
+
+#: webApp/templates/dashboard/index.html:787
+msgid "OUTPUT_FORMAT_DATE"
+msgstr "Output format date"
+
+#: webApp/templates/dashboard/index.html:875
+msgid "SEPARATE_BY_DOCUMENT"
+msgstr "Separate every two pages (recto/verso)"
+
+#: webApp/templates/dashboard/index.html:883
+msgid "PDFA_EXPORT"
+msgstr "PDF/A export"
+
+#: webApp/templates/dashboard/index.html:888
+msgid "PDF_EXPORT_PATH"
+msgstr "PDF export path"
+
+#: webApp/templates/dashboard/index.html:899
+msgid "PDFA_EXPORT_PATH"
+msgstr "PDF/A export path"
+
+#: webApp/templates/dashboard/index.html:924
+msgid "DIVIDER_CREATION_FILE"
+msgstr "Divider (when creating files)"
+
+#: webApp/templates/dashboard/index.html:934
+msgid "DIVIDER_HELP"
+msgstr "<b>_</b> ou <b>-</b> for example"
+
+#: webApp/templates/dashboard/index.html:950
+msgid "BLOBS_RATIO"
+msgstr "Minimal ratio of blank page detection"
+
+#: webApp/templates/dashboard/index.html:960
+msgid "BLOBSRATIO_HELP"
+msgstr ""
+"Takes the number of keypoint found into the image comprade to the size of"
+" the image"
+
+#: webApp/templates/dashboard/index.html:992
+msgid "REST_URL"
+msgstr "WebServices URL"
+
+#: webApp/templates/dashboard/index.html:1003
+msgid "REST_USER"
+msgstr "Webservices user"
+
+#: webApp/templates/dashboard/index.html:1014
+msgid "REST_PASSWORD"
+msgstr "Webservices password"
+
+#: webApp/templates/dashboard/index.html:1028
+msgid "AVAILABLE_PROCESS"
+msgstr "Available process"
+
+#: webApp/templates/dashboard/index.html:1039
+msgid "DEFAULT_PROCESS"
+msgstr "Default process"
+
+#: webApp/templates/dashboard/index.html:1050
+msgid "USERGROUP_ID"
+msgstr "Usegroupd id"
+
+#: webApp/templates/dashboard/index.html:1066
+#: webApp/templates/users/user_list.html:16
+msgid "STATUS"
+msgstr "Status"
+
+#: webApp/templates/dashboard/index.html:1077
+msgid "STATUS_END"
+msgstr "Status end"
+
+#: webApp/templates/dashboard/index.html:1088
+msgid "TYPE_ID"
+msgstr "Type id"
+
+#: webApp/templates/dashboard/index.html:1099
+msgid "TYPIST"
+msgstr "Typist"
+
+#: webApp/templates/dashboard/index.html:1113
+msgid "PRIORITY"
+msgstr "Priority"
+
+#: webApp/templates/dashboard/index.html:1124
+msgid "CATEGORY_ID"
+msgstr "Category id"
+
+#: webApp/templates/dashboard/index.html:1135
+msgid "FORMAT"
+msgstr "Format"
+
+#: webApp/templates/dashboard/index.html:1146
+msgid "DEFAULT_DESTINATION"
+msgstr "Default destination"
+
+#: webApp/templates/dashboard/index.html:1157
+msgid "DEFAULT_DESTUSER"
+msgstr "Default recipient user"
+
+#: webApp/templates/dashboard/index.html:1171
+msgid "CUSTOM_VAT_NUMBER"
+msgstr "Custom for VAT number"
+
+#: webApp/templates/dashboard/index.html:1182
+msgid "CUSTOM_HT"
+msgstr "Custom for no rates total"
+
+#: webApp/templates/dashboard/index.html:1193
+msgid "CUSTOM_TTC"
+msgstr "Custom for total including rates"
+
+#: webApp/templates/dashboard/index.html:1204
+msgid "CUSTOM_ORDER_NUMBER"
+msgstr "Custom for order number"
+
+#: webApp/templates/dashboard/index.html:1218
+msgid "CUSTOM_INVOICE_NUMBER"
+msgstr "Custom for invoice number"
+
+#: webApp/templates/dashboard/index.html:1229
+msgid "CUSTOM_DELIVERY_NUMBER"
+msgstr "Custom for delivery number"
+
+#: webApp/templates/dashboard/index.html:1240
+msgid "CONTACT_TYPE"
+msgstr "Contact type"
+
+#: webApp/templates/dashboard/index.html:1251
+msgid "CONTACT_PURPOSE_ID"
+msgstr "Contact purpose id"
+
+#: webApp/templates/dashboard/index.html:1278
+msgid "AI_PATH"
+msgstr "AI path"
+
+#: webApp/templates/dashboard/index.html:1289
+msgid "AI_MODEL_PATH"
+msgstr "Path of the AI model"
+
+#: webApp/templates/dashboard/index.html:1302
+#: webApp/templates/dashboard/index.html:1313
+msgid "AI_TRAIN_IMAGE_PATH"
+msgstr "Path of the train image"
+
+#: webApp/templates/dashboard/index.html:1326
+msgid "AI_CONFIDENCE_MIN"
+msgstr "Minimal level of confidence"
+
+#: webApp/templates/dashboard/index.html:1341
+msgid "DATABASE_FILE"
+msgstr "Database file"
+
+#: webApp/templates/dashboard/index.html:1352
+msgid "DATABASE_TYPE"
+msgstr "Database type"
+
+#: webApp/templates/dashboard/index.html:1362
+msgid "DATABASE_TYPE_HELP"
+msgstr "pgsql or sqlite"
+
+#: webApp/templates/dashboard/index.html:1366
+msgid "POSTGRES_HOST"
+msgstr "Postgres host"
+
+#: webApp/templates/dashboard/index.html:1377
+msgid "POSTGRES_PORT"
+msgstr "Postgres port"
+
+#: webApp/templates/dashboard/index.html:1390
+msgid "POSTGRES_DATABASE"
+msgstr "Postgres database"
+
+#: webApp/templates/dashboard/index.html:1401
+msgid "POSTGRES_USER"
+msgstr "Postgres user"
+
+#: webApp/templates/dashboard/index.html:1412
+msgid "POSTGRES_PASSWORD"
+msgstr "Postgres password"
+
+#: webApp/templates/dashboard/index.html:1425
+msgid "CURRENT_VERSION"
+msgstr "Current version"
+
+#: webApp/templates/dashboard/index.html:1426
+msgid "LAST_VERSION"
+msgstr "Last version"
+
+#: webApp/templates/dashboard/index.html:1428
+msgid "MODIFY_CONFIGURATION"
+msgstr "Modify configuration"
+
+#: webApp/templates/error/403.html:11
+msgid "403"
+msgstr "Sorry, this page is not accessible"
+
+#: webApp/templates/error/403.html:20
+msgid "ERROR_CODE"
+msgstr "Error code"
+
+#: webApp/templates/error/403.html:24
+msgid "ACCESS_DENIED_SECURITY_REASONS"
+msgstr "Access denied for security reasons"
+
+#: webApp/templates/error/403.html:25
+msgid "GO_BACK"
+msgstr "Go back"
+
+#: webApp/templates/pdf/list.html:2
+msgid "INVOICES"
+msgstr "Invoices"
+
+#: webApp/templates/pdf/list.html:15 webApp/templates/splitter/list.html:16
+msgid "TODAY_LOT"
+msgstr "Daily batch"
+
+#: webApp/templates/pdf/list.html:18 webApp/templates/splitter/list.html:19
+msgid "YESTERDAY_LOT"
+msgstr "Yesterday batch"
+
+#: webApp/templates/pdf/list.html:21 webApp/templates/splitter/list.html:22
+msgid "OLD_LOT"
+msgstr "Older batch"
+
+#: webApp/templates/pdf/list.html:27 webApp/templates/pdf/list.html:28
+#: webApp/templates/splitter/list.html:28
+#: webApp/templates/splitter/list.html:29
+#: webApp/templates/suppliers/suppliers_list.html:30
+msgid "_SEARCH_PLACEHOLDER"
+msgstr "Search for invoice"
+
+#: webApp/templates/pdf/list.html:39 webApp/templates/splitter/list.html:41
+msgid "NO_FILTER"
+msgstr "No filter"
+
+#: webApp/templates/pdf/list.html:47 webApp/templates/splitter/list.html:49
+msgid "FILTER"
+msgstr "Filter"
+
+#: webApp/templates/pdf/list.html:71
+msgid "INVOICE_LOCKED_BY"
+msgstr "Invoice locked by"
+
+#: webApp/templates/pdf/list.html:88
+msgid "NUMBER_OF_PAGES"
+msgstr "Number of pages"
+
+#: webApp/templates/pdf/list.html:95 webApp/templates/splitter/list.html:82
+msgid "SAVED_THE"
+msgstr "Saved the"
+
+#: webApp/templates/pdf/list.html:97
+msgid "ORIGINAL_FILENAME"
+msgstr "Original file"
+
+#: webApp/templates/pdf/upload.html:7
+msgid "UPLOAD_PDF"
+msgstr "Upload PDF"
+
+#: webApp/templates/pdf/upload.html:64 webApp/templates/splitter/view.html:38
+msgid "SEND"
+msgstr "Send"
+
+#: webApp/templates/pdf/view.html:5
+msgid "PDF_VIEW"
+msgstr "View PDF"
+
+#: webApp/templates/pdf/view.html:19
+msgid "PAGE"
+msgstr "Page"
+
+#: webApp/templates/pdf/view.html:71
+msgid "SAVE_FORM"
+msgstr "Save modifications"
+
+#: webApp/templates/pdf/view.html:76
+msgid "SUBSCRIPTION"
+msgstr "Subscription (end)"
+
+#: webApp/templates/pdf/view.html:80
+msgid "ASSET"
+msgstr "Asset"
+
+#: webApp/templates/pdf/view.html:87
+msgid "HIDE_SUPPLIER_INFO"
+msgstr "Hide supplier informations"
+
+#: webApp/templates/pdf/view.html:91 webApp/templates/pdf/view.html:105
+#: webApp/templates/pdf/view.html:108
+#: webApp/templates/suppliers/suppliers_list.html:26
+#: webApp/templates/suppliers/suppliers_list.html:46
+#: webApp/templates/suppliers/suppliers_list.html:123
+#: webApp/templates/suppliers/suppliers_list.html:163
+#: webApp/templates/suppliers/suppliers_list.html:177
+msgid "SUPPLIER"
+msgstr "Supplier"
+
+#: webApp/templates/pdf/view.html:105 webApp/templates/splitter/view.html:28
+#: webApp/templates/splitter/view.html:86
+#: webApp/templates/suppliers/suppliers_list.html:26
+#: webApp/templates/suppliers/suppliers_list.html:198
+msgid "ADD"
+msgstr "Add"
+
+#: webApp/templates/pdf/view.html:108
+#: webApp/templates/suppliers/suppliers_list.html:129
+#: webApp/templates/suppliers/suppliers_list.html:199
+msgid "EDIT"
+msgstr "Edit"
+
+#: webApp/templates/pdf/view.html:118
+msgid "HIDE_FACTURATION_INFO"
+msgstr "Hide facturation informations"
+
+#: webApp/templates/pdf/view.html:122
+msgid "BILLING"
+msgstr "Billing"
+
+#: webApp/templates/pdf/view.html:139
+msgid "HIDE_ANALYTIC_INFO"
+msgstr "Hide analytic informations"
+
+#: webApp/templates/pdf/view.html:143
+msgid "ANALYTIC"
+msgstr "Analytic"
+
+#: webApp/templates/pdf/view.html:154
+msgid "ADD_NEW_LINE"
+msgstr "Add a new line"
+
+#: webApp/templates/pdf/view.html:158
+msgid "TOTAL_NO_RATE_AMOUNT"
+msgstr "Total no rate amount"
+
+#: webApp/templates/pdf/view.html:168
+msgid "USER_IN_CHARGE"
+msgstr "User in charge"
+
+#: webApp/templates/pdf/view.html:170
+msgid "SELECT_USER"
+msgstr "Select user.."
+
+#: webApp/templates/pdf/view.html:187
+msgid "VALIDATE_INVOICE"
+msgstr "Validate invoice"
+
+#: webApp/templates/pdf/view.html:188
+msgid "REFUSE_INVOICE"
+msgstr "Refuse invoice"
+
+#: webApp/templates/pdf/view.html:201
+msgid "FORM_VALIDATION"
+msgstr "Form validation"
+
+#: webApp/templates/pdf/view.html:209
+msgid "BACK_TO_VALIDATION"
+msgstr "Back to validation"
+
+#: webApp/templates/splitter/list.html:77
+msgid "NUMBER_OF_DOCUMENTS"
+msgstr "Number of documents"
+
+#: webApp/templates/splitter/list.html:88
+msgid "SEPARATOR"
+msgstr "Separator"
+
+#: webApp/templates/splitter/list.html:89
+msgid "ORIGIN_DOCUMENT"
+msgstr "Origin document"
+
+#: webApp/templates/splitter/list.html:91
+#: webApp/templates/splitter/view.html:60
+#: webApp/templates/suppliers/suppliers_list.html:132
+msgid "DELETE"
+msgstr "Delete"
+
+#: webApp/templates/splitter/view.html:2
+msgid "SEPARATOR_PROCESS"
+msgstr "Separation process"
+
+#: webApp/templates/splitter/view.html:14
+msgid "DELETE_SELECTION"
+msgstr "Delete selection"
+
+#: webApp/templates/splitter/view.html:19
+msgid "CHECK_ALL"
+msgstr "Check all"
+
+#: webApp/templates/splitter/view.html:22
+msgid "UNCHECK_ALL"
+msgstr "Uncheck all"
+
+#: webApp/templates/splitter/view.html:25
+msgid "RESET"
+msgstr "Reset"
+
+#: webApp/templates/splitter/view.html:32
+msgid "SEND_TO"
+msgstr "Send to "
+
+#: webApp/templates/splitter/view.html:92
+msgid "HISTORY"
+msgstr "History"
+
+#: webApp/templates/suppliers/suppliers_list.html:19
+msgid "DELETE_ALL_POSITIONS"
+msgstr "Delete positions of all suppliers"
+
+#: webApp/templates/suppliers/suppliers_list.html:23
+msgid "EXPORT"
+msgstr "Export"
+
+#: webApp/templates/suppliers/suppliers_list.html:23
+msgid "SUPPLIERS"
+msgstr "Suppliers"
+
+#: webApp/templates/suppliers/suppliers_list.html:31
+msgid "_SEARCH_PLACEHOLDER_SUPPLIER"
+msgstr "Search for supplier"
+
+#: webApp/templates/suppliers/suppliers_list.html:53
+msgid "TYPOLOGY"
+msgstr "Typology"
+
+#: webApp/templates/suppliers/suppliers_list.html:54
+#: webApp/templates/suppliers/suppliers_list.html:175
+msgid "TYPE"
+msgstr "Type"
+
+#: webApp/templates/suppliers/suppliers_list.html:55
+#: webApp/templates/users/user_list.html:18
+msgid "ACTION"
+msgstr "Actions"
+
+#: webApp/templates/suppliers/suppliers_list.html:125
+#: webApp/templates/suppliers/suppliers_list.html:178
+msgid "CLIENT"
+msgstr "Client"
+
+#: webApp/templates/suppliers/suppliers_list.html:135
+msgid "DELETE_SUPPLIER_POSITION"
+msgstr "Supprimer les positions enregistrées"
+
+#: webApp/templates/suppliers/suppliers_list.html:140
+msgid "SKIP_AUTO_VALIDATION"
+msgstr "Skip next automatic validation"
+
+#: webApp/templates/suppliers/suppliers_list.html:144
+msgid "AUTO_VALIDATION_IS_SKIPPED"
+msgstr "Next automatic validation is skipped"
+
+#: webApp/templates/suppliers/suppliers_list.html:197
+msgid "CANCEL"
+msgstr "Cancel"
+
+#: webApp/templates/users/user_list.html:15
+msgid "CREATION_DATE"
+msgstr "Creation date"
+
+#: webApp/templates/users/user_list.html:17
+msgid "ROLE"
+msgstr "Role"
+
+#: webApp/templates/users/user_list.html:42
+msgid "ACTIVE"
+msgstr "Active"
+
+#: webApp/templates/users/user_list.html:44
+msgid "INACTIVE"
+msgstr "Inactive"
+
+#: webApp/templates/users/user_list.html:60
+msgid "PROFILE_USER"
+msgstr "User profile"
+
+#: webApp/templates/users/user_list.html:63
+msgid "DISABLE_USER"
+msgstr "Disable user"
+
+#: webApp/templates/users/user_list.html:67
+msgid "ENABLE_USER"
+msgstr "Enable user"
+
+#: webApp/templates/users/user_list.html:71
+msgid "DELETE_USER"
+msgstr "Delete user"
+
+#: webApp/templates/users/user_profile.html:2
+#: webApp/templates/users/user_profile.html:9
+msgid "USER_PROFILE"
+msgstr "User profile"
+
+#: webApp/templates/users/user_profile.html:11
+msgid "MY_USER_PROFILE"
+msgstr "My user profile"
+
+#: webApp/templates/users/user_profile.html:18
+msgid "CHANGE_PASSWORD"
+msgstr "Change password"
+
+#: webApp/templates/users/user_profile.html:21
+msgid "OLD_PASSWORD"
+msgstr "Old password"
+
+#: webApp/templates/users/user_profile.html:24
+msgid "NEW_PASSWORD"
+msgstr "New password"
+
+#: webApp/templates/users/user_profile.html:32
+msgid "RESET_PASSWORD"
+msgstr "Reset password"
+
+#: webApp/templates/users/user_profile.html:38
+msgid "CHANGE_ROLE"
+msgstr "Change role"
+
+#: webApp/templates/users/user_profile.html:51
+msgid "NO_RIGHTS"
+msgstr "You do not have the right to perform this action"
+
+msgid "Supplier"
+msgstr "Supplier"
+
+msgid "NEW_LONG"
+msgstr "To validate"
+
+msgid "WAIT_SUP_LONG"
+msgstr "Waiting supplier validation"
+
+msgid "ERR_LONG"
+msgstr "Qualification error"
+
+msgid "NEW"
+msgstr "To validate"
+
+msgid "WAIT_SUP"
+msgstr "Waiting"
+
+msgid "ERR"
+msgstr "Error"
+
+msgid "ERR_GED"
+msgstr "GED error"
+
+msgid "ERR_GED_LONG"
+msgstr "Error while inserting in GED"
+
+msgid "END"
+msgstr "Closed"
+
+msgid "CANCEL_UPLOAD"
+msgstr "Cancel upload"
+
+msgid "SELECT_OR_DROP_DOC"
+msgstr "Select or drop document"
+
+msgid "FORMAT_NOT_ALLOWED"
+msgstr "Format not allowed"
+
+msgid "FILE_UPLOAD_ERROR"
+msgstr "Error while uploading file(s)"
+
+msgid "CHOOSE_VAT_RATE"
+msgstr "Choose VAT rate"
+
+#~ msgid "INVOICE_CLOSED"
+#~ msgstr "Invoice is closed and cannot be modified"
+
