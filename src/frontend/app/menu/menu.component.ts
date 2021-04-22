@@ -48,6 +48,10 @@ export class MenuComponent implements OnInit {
         this.localeService.getCurrentLocale();
     }
 
+    getSplitterOrVerifier(){
+        return this.localeStorageService.get('splitter_or_verifier')
+    }
+
     toggleProfileDropdown() {
         this.profileDropdownCurrentState = this.profileDropdownCurrentState === 'hide' ? 'show' : 'hide';
         this.profileSettingsCurrentState = this.profileDropdownCurrentState === 'show' && this.profileSettingsCurrentState == 'show' ? 'hide' : this.profileSettingsCurrentState;

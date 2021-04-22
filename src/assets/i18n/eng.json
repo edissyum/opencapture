@@ -20,7 +20,8 @@
 		"login": "Login",
 		"register": "Register an account",
 		"submit": "Submit",
-		"unknow_error": "Unknow error"
+		"unknow_error": "Unknow error",
+		"upload": ""
 	},
 	"HOME": {
 		"splitter": "Open-Capture splitter",

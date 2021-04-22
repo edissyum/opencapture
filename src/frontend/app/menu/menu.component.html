@@ -32,21 +32,21 @@
                         </button>
                         <button mat-flat-button routerLink="/verifier"
                                 [routerLinkActive]="'bg-gray-900 text-green-400'"
-                                *ngIf="location.path() !== '/home' && this.localeStorageService.get('splitter_or_verifier') == 'verifier'"
+                                *ngIf="location.path() !== '/home' && this.getSplitterOrVerifier() == 'verifier'"
                            class="text-gray-500 hover:bg-green-400 hover:text-white px-3 py-2 text-sm font-medium transition duration-300">
                             {{ 'GLOBAL.batches' | translate }}
                         </button>
                         <button mat-flat-button routerLink="/splitter"
                                 [routerLinkActive]="'bg-gray-900 text-green-400'"
-                                *ngIf="location.path() !== '/home' && this.localeStorageService.get('splitter_or_verifier') == 'splitter'"
+                                *ngIf="location.path() !== '/home' && this.getSplitterOrVerifier() == 'splitter'"
                            class="text-gray-500 hover:bg-green-400 hover:text-white px-3 py-2 text-sm font-medium transition duration-300">
                             {{ 'GLOBAL.batches' | translate }}
                         </button>
-                        <button mat-flat-button routerLink="/download"
+                        <button mat-flat-button routerLink="/upload"
                                 [routerLinkActive]="'bg-gray-900 text-green-400'"
                                 *ngIf="location.path() !== '/home'"
                        class="text-gray-500 hover:bg-green-400 hover:text-white px-3 py-2 text-sm font-medium transition duration-300">
-                            {{ 'GLOBAL.download' | translate }}
+                            {{ 'GLOBAL.upload' | translate }}
                         </button>
                     </div>
                 </div>
@@ -119,7 +119,7 @@
             <a href="#"
                class="bg-gray-900 text-white block px-3 py-2 rounded-md text-sm font-medium">{{ 'GLOBAL.home' | translate }}</a>
             <a href="#"
-               class="text-gray-500 hover:bg-green-400 hover:text-white block px-3 py-2 rounded-md text-sm font-medium">{{ 'GLOBAL.download' | translate }}</a>
+               class="text-gray-500 hover:bg-green-400 hover:text-white block px-3 py-2 rounded-md text-sm font-medium">{{ 'GLOBAL.upload' | translate }}</a>
             <a href="#"
                class="text-gray-500 hover:bg-green-400 hover:text-white block px-3 py-2 rounded-md text-sm font-medium">{{ 'USER.my_profile' | translate }}</a>
         </div>

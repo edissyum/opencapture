@@ -13,14 +13,14 @@
 	},
 	"GLOBAL": {
 		"batches": "Lots",
-		"download": "Téléchargement",
 		"home": "Accueil",
 		"language": "Langage",
 		"log_out": "Déconnexion",
 		"login": "Connexion",
 		"register": "Créer un compte",
 		"submit": "Soumettre",
-		"unknow_error": "Erreur inconnue"
+		"unknow_error": "Erreur inconnue",
+		"upload": "Téléversement"
 	},
 	"HOME": {
 		"splitter": "Open-Capture splitter",
