@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ViewEncapsulation} from '@angular/core';
 import {FormBuilder, FormControl} from "@angular/forms";
 import {FileValidators} from "ngx-file-drag-drop";
@@ -14,64 +14,82 @@ import {NotificationService} from "../../services/notifications/notifications.se
 
 
 @Component({
-  selector: 'app-download',
-  templateUrl: './download.component.html',
-  styleUrls: ['./download.component.scss'],
-  encapsulation: ViewEncapsulation.None,
+    selector: 'app-upload',
+    templateUrl: './upload.component.html',
+    styleUrls: ['./upload.component.scss'],
+    encapsulation: ViewEncapsulation.None,
 })
 
 export class UploadComponent implements OnInit {
-  constructor(
-      private http: HttpClient,
-      private router: Router,
-      private route: ActivatedRoute,
-      private formBuilder: FormBuilder,
-      private authService: AuthService,
-      public userService: UserService,
-      private translate: TranslateService,
-      private notify: NotificationService,
-  ) {
-  }
-
-  fileControl = new FormControl(
-      [],
-      [FileValidators.required,
-        FileValidators.maxFileCount(2)]
-  );
-
-  formData: FormData = new FormData();
-
-  ngOnInit(): void {
-  }
-
-  uploadFile(): void{
-    const formData: FormData = new FormData();
-    let headers = this.authService.headers;
-
-    if(this.fileControl.value.length == 0){
-      this.notify.handleErrors("No file!");
-      return;
+    constructor(
+        private http: HttpClient,
+        private router: Router,
+        private route: ActivatedRoute,
+        private formBuilder: FormBuilder,
+        private authService: AuthService,
+        public userService: UserService,
+        private translate: TranslateService,
+        private notify: NotificationService,
+    ) {
     }
 
-    for (let i = 0; i < this.fileControl.value.length; i++){
-      formData.append('file', this.fileControl.value[i], this.fileControl.value[i].name);
+    fileControl = new FormControl(
+        [],
+        [
+            FileValidators.required,
+            FileValidators.fileExtension(['pdf'])
+        ]
+    );
+
+    formData: FormData = new FormData();
+
+    ngOnInit(): void {
     }
 
-    headers.append('Content-Type', 'application/pdf');
-    headers.append('Accept', 'application/pdf');
+    checkFile(data: any): void {
+        if (data && data.length != 0) {
+            for (let i = 0; i < data.length; i++) {
+                let file_name = data[i].name
+                let file_extension = file_name.split('.').pop();
+                console.log(file_extension)
+                if (file_extension.toLowerCase() != 'pdf') {
+                    this.notify.handleErrors(this.translate.instant('UPLOAD.extension_unauthorized'));
+                    return;
+                }
+            }
+        }
+    }
 
-    this.http.post(API_URL + '/ws/splitter/upload', formData,
-        {
-          headers
-        },
-    ).pipe(
-        tap((data: any) => {
-          this.notify.success(this.translate.instant('SPLITTER.download_success'));
-        }),
-        catchError((err: any) => {
-          this.notify.handleErrors(err);
-          return of(false);
-        })
-    ).subscribe();
-  }
+    uploadFile(): void {
+        const formData: FormData = new FormData();
+        let headers = this.authService.headers;
+
+        if (this.fileControl.value.length == 0) {
+            this.notify.handleErrors("No file!");
+            return;
+        }
+
+        for (let i = 0; i < this.fileControl.value.length; i++) {
+            if (this.fileControl.status == 'VALID') {
+                formData.append('file', this.fileControl.value[i], this.fileControl.value[i].name);
+            } else {
+                this.notify.handleErrors(this.translate.instant('UPLOAD.extension_unauthorized'));
+                return;
+            }
+        }
+
+        this.http.post(API_URL + '/ws/splitter/upload', formData,
+            {
+                headers
+            },
+        ).pipe(
+            tap((data: any) => {
+                this.notify.success(this.translate.instant('SPLITTER.download_success'));
+            }),
+            catchError((err: any) => {
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
 }

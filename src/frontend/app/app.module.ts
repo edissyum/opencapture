@@ -25,6 +25,7 @@ import { RegisterComponent } from './register/register.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { ProfileComponent } from './profile/profile.component';
 import { UploadComponent } from './upload/upload.component';
+import {NgxFileDragDropModule} from "ngx-file-drag-drop";
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -63,6 +64,7 @@ export function createTranslateLoader(http: HttpClient) {
     }),
     ReactiveFormsModule,
     FormsModule,
+    NgxFileDragDropModule,
   ],
   providers: [
     Title,

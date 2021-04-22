@@ -8,7 +8,8 @@ from datetime import datetime
 from datetime import timedelta
 
 from .db import get_db
-from import_classes import _Config, _Log, _Files, _Xml, _WebServices, _Locale, _PyTesseract, _Database, _Spreadsheet, _Splitter
+from import_classes import _Config, _Log, _Files, _Xml, _WebServices, _Locale, _PyTesseract, _Database, _Spreadsheet, \
+    _Splitter, _SeparatorQR
 
 bp = Blueprint('pdf', __name__)
 
@@ -30,7 +31,8 @@ def init():
     )
     locale = _Locale(config)
     ocr = _PyTesseract(locale.localeOCR, log, config)
-    splitter = _Splitter(config, db, locale)
+    separator_qr = _SeparatorQR(log, config)
+    splitter = _Splitter(config, db, locale, separator_qr)
     ws = ''
 
     if config.cfg['GED']['enabled'] == 'True':

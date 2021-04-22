@@ -34,8 +34,14 @@
 		"users_list": "Liste des utilisateurs"
 	},
 	"SPLITTER": {
+		"download_success": "",
 		"list": "Liste des lots",
 		"viewer": "Visualisation du lot"
+	},
+	"UPLOAD": {
+		"extension_unauthorized": "Un ou plusieurs fichiers ne sont pas au format PDF",
+		"placeholder": "Cliquer pour choisir un document ou faites glisser un document",
+		"send": "Téléverser"
 	},
 	"USER": {
 		"firstname": "Prénom",

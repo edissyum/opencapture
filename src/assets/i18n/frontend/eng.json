@@ -34,8 +34,14 @@
 		"users_list": "Users list"
 	},
 	"SPLITTER": {
+		"download_success": "",
 		"list": "List of batches",
 		"viewer": "Batch view"
+	},
+	"UPLOAD": {
+		"extension_unauthorized": "",
+		"placeholder": "",
+		"send": ""
 	},
 	"USER": {
 		"firstname": "Firstname",

@@ -68,6 +68,12 @@ else:
     _Splitter = getattr(__import__(custom_array['Splitter']['path'] + '.' + custom_array['Splitter']['module'],
                                    fromlist=[custom_array['Splitter']['module']]), custom_array['Splitter']['module'])
 
+if 'SeparatorQR' not in custom_array:
+    from src.backend.classes.SeparatorQR import SeparatorQR as _SeparatorQR
+else:
+    SeparatorQR = getattr(__import__(custom_array['SeparatorQR']['path'] + '.' + custom_array['SeparatorQR']['module'],
+                                   fromlist=[custom_array['SeparatorQR']['module']]), custom_array['SeparatorQR']['module'])
+
 if 'Spreadsheet' not in custom_array:
     from src.backend.classes.Spreadsheet import Spreadsheet as _Spreadsheet
 else:

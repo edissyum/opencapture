@@ -24,7 +24,7 @@ module.exports = (isProd) => ({
             }),
             colors: {
                 green: {
-                    400: '#97bf3d'
+                    400: '#97BF3D'
                 },
                 gray: {
                     900: '#4C4C4E',

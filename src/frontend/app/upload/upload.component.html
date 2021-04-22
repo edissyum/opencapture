@@ -1,11 +1,18 @@
 <ngx-file-drag-drop
         [formControl]="fileControl"
-        activeBorderColor="#3F51B5"
-        multiple
-        emptyPlaceholder="{{ 'SPLITTER.upload_zone' | translate }}">
+        [activeBorderColor]="'#97BF3D'"
+        [multiple]="true"
+        [accept]="'pdf'"
+        [displayFileSize]="true"
+        [emptyPlaceholder]="'UPLOAD.placeholder' | translate"
+        [class]="'max-w-3xl h-56'"
+        (valueChanged)="checkFile($event)">
 </ngx-file-drag-drop>
 
-<button mat-flat-button (click)="uploadFile()"
-        class="btn-upload text-gray-500 bg-gray-200 hover:bg-green-400 hover:text-white px-3 py-2 text-sm font-medium transition duration-300">
-    {{ 'SPLITTER.send' | translate }}
-</button>
+<div class="flex justify-center content-center">
+    <button mat-flat-button
+            (click)="uploadFile()"
+            class="mt-5 bg-gray-200 hover:bg-green-400 hover:text-white px-3 py-2 text-sm font-medium transition duration-300">
+        {{ 'UPLOAD.send' | translate }}
+    </button>
+</div>

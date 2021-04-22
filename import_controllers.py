@@ -30,7 +30,7 @@ if 'supplier' not in custom_array:
 else:
     supplier = getattr(__import__(custom_array['supplier']['path'], fromlist=[custom_array['supplier']['module']]), custom_array['supplier']['module'])
 
-if 'ws_splitter' not in custom_array:
-    from src.backend import ws_splitter
+if 'splitter' not in custom_array:
+    from src.backend.controllers import splitter
 else:
-    ws_splitter = getattr(__import__(custom_array['ws_splitter']['path'], fromlist=[custom_array['ws_splitter']['module']]), custom_array['ws_splitter']['module'])
+    ws_splitter = getattr(__import__(custom_array['splitter']['path'], fromlist=[custom_array['splitter']['module']]), custom_array['splitter']['module'])
