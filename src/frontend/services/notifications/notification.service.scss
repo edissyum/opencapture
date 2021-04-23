@@ -3,7 +3,6 @@
   align-items: center;
   padding-top: 25px;
   padding-bottom: 25px;
-
   cursor: pointer;
 
   &-icon {
@@ -24,14 +23,16 @@
   }
 }
 
-::ng-deep.mat-snack-bar-container.error-snackbar  {
-  color: red;
+::ng-deep.mat-snack-bar-container {
   background: white;
-  border: solid 1px red;
-}
 
-::ng-deep.mat-snack-bar-container.success-snackbar  {
-  color: green;
-  background: white;
-  border: solid 1px green;
+  &.error-snackbar{
+    color: red;
+    border: solid 1px red;
+  }
+
+  &.success-snackbar{
+    color: green;
+    border: solid 1px green;
+  }
 }

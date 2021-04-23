@@ -47,7 +47,7 @@ def registrer(args):
                 'password': generate_password_hash(args['password']),
             }
         })
-        return True, ''
+        return True, error
     else:
         return False, error
 

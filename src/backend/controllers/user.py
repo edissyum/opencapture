@@ -47,9 +47,6 @@ def retrieve_users(args):
 
 
 def retrieve_user_by_id(user_id, get_password=False):
-    _vars = pdf.init()
-    _db = _vars[0]
-
     _select = ['id', 'username', 'firstname', 'lastname', 'role', 'status', 'creation_date', 'enabled']
     if get_password:
         _select.append('password')
@@ -59,12 +56,12 @@ def retrieve_user_by_id(user_id, get_password=False):
         'user_id': user_id
     })
 
-    if user_info:
+    if error is None:
         return user_info, 200
     else:
         response = {
             "errors": gettext('USER_ERROR'),
-            "message": gettext('ERROR_WHILE_RETRIEVING_USER')
+            "message": error
         }
         return response, 401
 

@@ -34,7 +34,14 @@ module.exports = (isProd) => ({
         },
     },
     variants: {
-        extend: {},
+        extend: {
+            backgroundColor: ['hover'],
+            ringOffsetColor: ['hover'],
+            ringOffsetWidth: ['hover'],
+            ringOpacity: ['hover'],
+            ringColor: ['hover'],
+            ringWidth: ['hover']
+        }
     },
     plugins: [],
 });

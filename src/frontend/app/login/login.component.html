@@ -19,7 +19,7 @@
                     <mat-error *ngIf="loginForm.controls.password.invalid">{{ getErrorMessage('password') }}</mat-error>
                 </mat-form-field>
                 <div class="button">
-                    <button class="hover:bg-green-400 hover:text-white transition duration-300" type="submit" mat-button>
+                    <button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300" type="submit" mat-button>
                         {{ 'AUTH.login' | translate }}
                     </button>
                 </div>
@@ -27,6 +27,8 @@
         </mat-card-content>
     </mat-card>
     <div class="absolute mt-96 hover:text-green-400 transition duration-500">
-        <a routerLink="/register">{{ 'GLOBAL.register' | translate }}</a>
+        <a routerLink="/register">
+            {{ 'GLOBAL.register' | translate }}
+        </a>
     </div>
 </div>

@@ -11,6 +11,7 @@ import {AuthService} from "../../services/auth.service";
 import {UserService} from "../../services/user.service";
 import {TranslateService} from "@ngx-translate/core";
 import {NotificationService} from "../../services/notifications/notifications.service";
+import {LocalStorageService} from "../../services/local-storage.service";
 
 
 @Component({
@@ -30,6 +31,7 @@ export class UploadComponent implements OnInit {
         public userService: UserService,
         private translate: TranslateService,
         private notify: NotificationService,
+        public localeStorageService: LocalStorageService
     ) {
     }
 
@@ -41,8 +43,6 @@ export class UploadComponent implements OnInit {
         ]
     );
 
-    formData: FormData = new FormData();
-
     ngOnInit(): void {
     }
 
@@ -53,7 +53,7 @@ export class UploadComponent implements OnInit {
                 let file_extension = file_name.split('.').pop();
                 console.log(file_extension)
                 if (file_extension.toLowerCase() != 'pdf') {
-                    this.notify.handleErrors(this.translate.instant('UPLOAD.extension_unauthorized'));
+                    this.notify.handleErrors(this.translate.instant('UPLOAD.extension_unauthorized', {count: data.length}));
                     return;
                 }
             }
@@ -65,31 +65,42 @@ export class UploadComponent implements OnInit {
         let headers = this.authService.headers;
 
         if (this.fileControl.value.length == 0) {
-            this.notify.handleErrors("No file!");
+            this.notify.handleErrors(this.translate.instant('UPLOAD.no_file'));
             return;
         }
 
         for (let i = 0; i < this.fileControl.value.length; i++) {
             if (this.fileControl.status == 'VALID') {
-                formData.append('file', this.fileControl.value[i], this.fileControl.value[i].name);
+                console.log(this.fileControl.value[i])
+                console.log(this.fileControl.value[i].name)
+                formData.append(this.fileControl.value[i].name, this.fileControl.value[i]);
+                console.log(formData)
             } else {
                 this.notify.handleErrors(this.translate.instant('UPLOAD.extension_unauthorized'));
                 return;
             }
         }
-
-        this.http.post(API_URL + '/ws/splitter/upload', formData,
-            {
-                headers
-            },
-        ).pipe(
-            tap((data: any) => {
-                this.notify.success(this.translate.instant('SPLITTER.download_success'));
-            }),
-            catchError((err: any) => {
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
+        console.log(formData)
+        let splitter_or_verifier = this.localeStorageService.get('splitter_or_verifier')
+        if(splitter_or_verifier !== undefined || splitter_or_verifier !== ''){
+            this.http.post(
+                API_URL + '/ws/' + splitter_or_verifier + '/upload',
+                formData,
+                {
+                    headers
+                },
+            ).pipe(
+                tap((data: any) => {
+                    this.notify.success(this.translate.instant('UPLOAD.upload_success'));
+                }),
+                catchError((err: any) => {
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        }else{
+            this.notify.handleErrors(this.translate.instant('ERROR.unknow_error'));
+            return;
+        }
     }
 }

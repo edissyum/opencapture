@@ -1,0 +1,75 @@
+{
+    "dateConvert"       : {
+        "01": [
+            "January",
+            "Jan",
+            "Jan."
+        ],
+        "02": [
+            "February",
+            "Febr",
+            "Febr.",
+            "Feb",
+            "Feb."
+        ],
+        "03": [
+            "March"
+        ],
+        "04": [
+            "April",
+            "Apr",
+            "Apr."
+        ],
+        "05": [
+            "May"
+        ],
+        "06": [
+            "June"
+        ],
+        "07": [
+            "July",
+            "Jul",
+            "Jul."
+        ],
+        "08": [
+            "August",
+            "Aug",
+            "Aug."
+        ],
+        "09": [
+            "September",
+            "Sept",
+            "Sep",
+            "Sept.",
+            "Sep."
+        ],
+        "10": [
+            "October",
+            "Oct",
+            "Oct."
+        ],
+        "11": [
+            "November",
+            "Nov",
+            "Nov."
+        ],
+        "12": [
+            "Décember",
+            "Déc",
+            "Déc.",
+            "Dec",
+            "Dec."
+        ]
+    },
+    "dateRegex"         : "(\\d{4}\\s?|[/,-]\\d{1,2}[/,-]\\d{1,2}|\\d{1,2}\\s?[JFMASONDjfmasond][a-zA-Z_À-ÿ]*\\s?\\d{2,4})",
+    "VATNumberRegex"    : "(GB)?([0-9]{9}([0-9]{3})?|[A-Z]{2}[0-9]{3})",
+    "dateTimeFormat"    : "%Y %m %d",
+    "formatDate"        : "%Y-%m-%d",
+    "SIRETRegex"        : "[0-9]{14}",
+    "SIRENRegex"        : "[0-9]{9}",
+    "invoiceRegex"      : "",
+    "invoiceSizeMin"    : "6",
+    "allRatesRegex"     : "",
+    "noRatesRegex"      : "",
+    "vatRateRegex"      : ""
+}

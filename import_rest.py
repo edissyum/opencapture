@@ -24,8 +24,20 @@ else:
     locale = getattr(__import__(custom_array['locale']['path'], fromlist=[custom_array['locale']['module']]),
                      custom_array['locale']['module'])
 
-if 'dashboard' not in custom_array:
+if 'config' not in custom_array:
     from src.backend.rest import config
 else:
     config = getattr(__import__(custom_array['config']['path'], fromlist=[custom_array['config']['module']]),
                      custom_array['config']['module'])
+
+if 'verifier' not in custom_array:
+    from src.backend.rest import verifier
+else:
+    splitter = getattr(__import__(custom_array['verifier']['path'], fromlist=[custom_array['verifier']['module']]),
+                       custom_array['verifier']['module'])
+
+if 'splitter' not in custom_array:
+    from src.backend.rest import splitter
+else:
+    splitter = getattr(__import__(custom_array['splitter']['path'], fromlist=[custom_array['splitter']['module']]),
+                       custom_array['splitter']['module'])

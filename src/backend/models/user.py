@@ -45,7 +45,7 @@ def get_user_by_id(args):
     })
 
     if not user:
-        error = gettext('BAD_USERNAME')
+        error = gettext('ERROR_WHILE_RETRIEVING_USER')
     else:
         user = user[0]
 

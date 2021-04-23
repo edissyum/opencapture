@@ -16,6 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
+from flask import current_app
 from import_controllers import pdf
 from import_classes import _Files
 from ..models import splitter
@@ -23,11 +24,8 @@ from ..models import splitter
 import base64
 
 
-def upload_files(files):
-    _vars = pdf.init()
-    _config = _vars[1]
-    result = _Files.save_uploaded_file(files, _config.cfg['SPLITTER']['pdforiginpath'])
-
+def handle_uploaded_file(files):
+    result = _Files.save_uploaded_file(files, current_app.config['UPLOAD_FOLDER'])
     return result
 
 

@@ -29,7 +29,7 @@ export class NotificationService {
         const duration = this.getMessageDuration(message, 2000);
         const snackBar = this.snackBar.openFromComponent(CustomSnackbarComponent, {
             duration: duration,
-            panelClass: ['success-snackbar', 'mt-16'],
+            panelClass: ['success-snackbar', 'mt-20', 'mr-3'],
             verticalPosition : 'top',
             horizontalPosition: 'right',
             data: { message: message, icon: 'info-circle', close: () => {snackBar.dismiss()} }
@@ -40,7 +40,7 @@ export class NotificationService {
         const duration = this.getMessageDuration(message, 4000);
         const snackBar = this.snackBar.openFromComponent(CustomSnackbarComponent, {
             duration: duration,
-            panelClass: ['error-snackbar', 'mt-16'],
+            panelClass: ['error-snackbar', 'mt-20', 'mr-3'],
             verticalPosition : 'top',
             horizontalPosition: 'right',
             data: { url: url, message: message, icon: 'exclamation-triangle', close: () => {snackBar.dismiss()} }

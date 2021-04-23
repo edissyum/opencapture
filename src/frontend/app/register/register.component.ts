@@ -77,7 +77,7 @@ export class RegisterComponent implements OnInit {
         if (this.registerForm.get(field).hasError('required')) {
             return this.translate.instant('AUTH.field_required')
         }
-        return this.translate.instant('GLOBAL.unknow_error')
+        return this.translate.instant('ERROR.unknow_error')
     }
 
 }

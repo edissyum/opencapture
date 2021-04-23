@@ -17,8 +17,8 @@
 
 import json
 
-from flask import Blueprint, make_response, jsonify, request, current_app
-
+from flask import Blueprint, make_response, jsonify, request
+from flask_babel import gettext
 from ..controllers.auth import token_required
 from ..controllers.splitter import *
 
@@ -28,12 +28,13 @@ bp = Blueprint('splitter', __name__, url_prefix='/ws/')
 @bp.route('splitter/upload', methods=['POST'])
 @token_required
 def upload():
-    files = request.files
-
-    if 'file' not in files:
-        return make_response({'ok': False}, 500)
-    upload_files(files)
-    return make_response({'ok': True}, 200)
+    if request.method == 'POST':
+        files = request.files
+        res = handle_uploaded_file(files)
+        if res:
+            return make_response('', 200)
+        else:
+            return make_response(gettext('UNKNOW_ERROR'), 400)
 
 
 @bp.route('splitter/batches', methods=['GET'])

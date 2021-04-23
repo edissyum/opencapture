@@ -4,7 +4,8 @@ import functools
 from flask_babel import gettext
 from flask import request, session, jsonify, current_app
 
-from ..models import auth, user
+from . import privileges
+from ..models import auth, user, roles
 
 
 def encode_auth_token(user_id):
@@ -40,13 +41,23 @@ def login(username, password, lang):
         encoded_token = encode_auth_token(user_info['id'])
         session['lang'] = lang
 
+        returned_user = user.get_user_by_id({
+            'select': ['id', 'username', 'firstname', 'lastname', 'role', 'status', 'creation_date', 'enabled'],
+            'user_id': user_info['id']
+        })[0]
+
+        user_privileges = privileges.get_user_privileges(user_info['role'])
+        if user_privileges:
+            returned_user['privileges'] = user_privileges[0]
+
+        user_role = roles.get_role_label({'role_id': user_info['role']})
+        if user_role:
+            returned_user['role'] = user_role[0]
+
         response = {
             'auth_token': encoded_token[0].decode(),
             'days_before_exp': encoded_token[1],
-            'user':  user.get_user_by_id({
-                'select': ['id', 'username', 'firstname', 'lastname', 'role', 'status', 'creation_date', 'enabled'],
-                'user_id': user_info['id']
-            })[0]
+            'user': returned_user
         }
 
         return response, 200

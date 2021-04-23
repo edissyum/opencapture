@@ -1,0 +1,149 @@
+
+msgid ""
+msgstr ""
+"Project-Id-Version:  0.1\n"
+"Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
+"POT-Creation-Date: 2021-04-22 15:51+0200\n"
+"PO-Revision-Date: 2019-09-02 17:48+0200\n"
+"Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
+"Language: en\n"
+"Language-Team: en <nathan.cheval@edissyum.com>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.8.0\n"
+
+#: src/backend/ws_splitter.py:38
+msgid "FILE_UPLOAD_SUCCESS"
+msgstr "File(s) upload with success"
+
+#: src/backend/controllers/pdf.py:160 src/backend/ws_splitter.py:130
+msgid "NO_RESULTS"
+msgstr "No results"
+
+#: src/backend/controllers/pdf.py:162 src/backend/controllers/supplier.py:32
+#: src/backend/controllers/user.py:224 src/backend/ws_splitter.py:132
+msgid "SHOW"
+msgstr "Show"
+
+#: src/backend/controllers/pdf.py:162 src/backend/controllers/supplier.py:32
+#: src/backend/controllers/user.py:224 src/backend/ws_splitter.py:132
+msgid "OF"
+msgstr "of"
+
+#: src/backend/classes/WebServices.py:44
+msgid "CONNECTION_ERROR"
+msgstr "Error while trying to connect to the GED"
+
+#: src/backend/controllers/auth.py:57
+msgid "LOGIN_ERROR"
+msgstr "Login error"
+
+#: src/backend/controllers/auth.py:77
+msgid "REGISTER_ERROR"
+msgstr "Registration error"
+
+#: src/backend/controllers/auth.py:92 src/backend/controllers/auth.py:100
+#: src/backend/controllers/auth.py:102
+msgid "JWT_ERROR"
+msgstr "Authentification by token error"
+
+#: src/backend/controllers/config.py:191
+msgid "CHANGE_LOCALE_ERROR"
+msgstr "Error while changing locale"
+
+#: src/backend/controllers/pdf.py:418
+msgid "END_LONG"
+msgstr "Invoice validated and closed"
+
+#: src/backend/controllers/pdf.py:420
+msgid "ERROR_WHILE_INSERTING_IN_GED"
+msgstr "Error while inserting invoice in GED"
+
+#: src/backend/controllers/user.py:30
+msgid "USER_ERROR"
+msgstr "User error"
+
+#: src/backend/controllers/user.py:31 src/backend/controllers/user.py:79
+#: src/backend/controllers/user.py:92 src/backend/controllers/user.py:154
+#: src/backend/controllers/user.py:184
+msgid "ERROR_WHILE_RETRIEVING_USER"
+msgstr "Error while retrieving user informations"
+
+#: src/backend/controllers/user.py:44
+msgid "UPDATE_PROFILE"
+msgstr "Update profile"
+
+#: src/backend/controllers/user.py:45 src/backend/controllers/user.py:138
+msgid "ERROR_OLD_PASSWORD_NOT_MATCH"
+msgstr "The old password do not match"
+
+#: src/backend/controllers/user.py:72 src/backend/controllers/user.py:78
+msgid "PROFILE_UPDATE_ERROR"
+msgstr "Error while updating profile"
+
+#: src/backend/controllers/user.py:126
+msgid "UPDATE_ROLE_OK"
+msgstr "Role updated with success"
+
+#: src/backend/controllers/user.py:128
+msgid "UPDATE_ROLE_ERROR"
+msgstr "Error while trying to update role"
+
+#: src/backend/controllers/user.py:150 src/backend/controllers/user.py:180
+msgid "UPDATE_OK"
+msgstr "Password updated with success"
+
+#: src/backend/controllers/user.py:152 src/backend/controllers/user.py:182
+msgid "UPDATE_ERROR"
+msgstr "Error while updating password"
+
+#: src/backend/controllers/user.py:261
+msgid "USER_ENABLED_OK"
+msgstr "User enabled with succes"
+
+#: src/backend/controllers/user.py:263
+msgid "USER_ENABLED_ERROR"
+msgstr "Error while attempting to enable user"
+
+#: src/backend/controllers/user.py:291
+msgid "USER_DISABLED_OK"
+msgstr "User disabled with succes"
+
+#: src/backend/controllers/user.py:293
+msgid "USER_DISABLED_ERROR"
+msgstr "Error while attempting to disable user"
+
+#: src/backend/controllers/user.py:321
+msgid "USER_DELETED_OK"
+msgstr "User deleted with succes"
+
+#: src/backend/controllers/user.py:323
+msgid "USER_DELETED_ERROR"
+msgstr "Error while attempting to delete user"
+
+#: src/backend/models/auth.py:17 src/backend/models/auth.py:35
+#: src/backend/models/auth.py:67
+msgid "BAD_USERNAME"
+msgstr "Bad username"
+
+#: src/backend/models/auth.py:37 src/backend/models/auth.py:69
+msgid "BAD_PASSWORD"
+msgstr "Bad password"
+
+#: src/backend/models/auth.py:39
+msgid "USER"
+msgstr "User"
+
+#: src/backend/models/auth.py:39
+msgid "ALREADY_REGISTERED"
+msgstr "Already registered"
+
+#: src/backend/models/auth.py:71
+msgid "USER_DELETED"
+msgstr "User deleted"
+
+#: src/backend/models/auth.py:73
+msgid "USER_DISABLED"
+msgstr "User disabled"

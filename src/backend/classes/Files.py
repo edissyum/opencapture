@@ -566,3 +566,13 @@ class Files:
     @staticmethod
     def open_image_return(img):
         return Image.open(img)
+
+    @staticmethod
+    def save_uploaded_file(files, path):
+        for file in files:
+            f = files[file]
+            # The next 2 lines lower the extensions because an UPPER extension will throw silent error
+            filename, file_ext = os.path.splitext(f.filename)
+            file = filename.replace(' ', '_') + file_ext.lower()
+            f.save(os.path.join(path, secure_filename(file)))
+        return True

@@ -1,3 +1,21 @@
+# This file is part of Open-Capture for Invoices.
+
+# Open-Capture for Invoices is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# Open-Capture is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
+
+# @dev : Nathan Cheval <nathan.cheval@edissyum.com>
+# @dev : Oussama Brich <oussama.brich@edissyum.com>
+
 import json
 import os
 import jinja2
@@ -6,8 +24,7 @@ from flask_babel import Babel
 from flask import redirect, url_for, request, session
 from flask_multistatic import MultiStaticFlask
 
-from import_controllers import db
-from import_rest import auth, locale, config, user
+from import_rest import auth, locale, config, user, splitter, verifier
 
 from .functions import get_custom_id
 custom_id = get_custom_id()
@@ -50,6 +67,8 @@ def create_app(test_config=None):
     app.register_blueprint(user.bp)
     app.register_blueprint(locale.bp)
     app.register_blueprint(config.bp)
+    app.register_blueprint(verifier.bp)
+    app.register_blueprint(splitter.bp)
     app.add_url_rule('/', endpoint='index')
 
     # Add custom templates location
