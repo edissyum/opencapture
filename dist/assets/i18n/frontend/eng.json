@@ -10,6 +10,7 @@
 		"404": "The page you are looking for does not exist",
 		"connection_failed": "Error connecting to server",
 		"jwt_error": "Authentification by token error",
+		"unauthorized": "",
 		"unknow_error": "Unknow error"
 	},
 	"GLOBAL": {
@@ -19,6 +20,7 @@
 		"log_out": "Log out",
 		"login": "Login",
 		"register": "Register an account",
+		"settings": "",
 		"submit": "Submit",
 		"upload": "Upload"
 	},
@@ -30,11 +32,13 @@
 		"about_us": "About us",
 		"add_user": "Add user",
 		"control_panel": "Control panel",
+		"splitter_setting": "",
 		"suppliers_list": "Suppliers list",
 		"users_list": "Users list"
 	},
 	"SPLITTER": {
 		"list": "List of batches",
+		"search": "",
 		"viewer": "Batch view"
 	},
 	"UPLOAD": {

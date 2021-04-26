@@ -13,16 +13,12 @@ export class HomeComponent implements OnInit {
     constructor(
         private authService: AuthService,
         private userService: UserService,
-        private localeStorageService: LocalStorageService,
-        private privilegesService: PrivilegesService
+        public privilegesService: PrivilegesService,
+        private localeStorageService: LocalStorageService
     ) {
     }
 
     ngOnInit() {
-    }
-
-    hasPrivilege(privilege_id: any){
-       return this.privilegesService.hasPrivilege(privilege_id)
     }
 
     setValue(value: string){

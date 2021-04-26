@@ -45,6 +45,7 @@
                         <button mat-flat-button routerLink="/upload"
                                 [routerLinkActive]="'bg-gray-900 text-green-400'"
                                 *ngIf="location.path() !== '/home'"
+                                [class.disabled]="!this.privilegesService.hasPrivilege('upload')"
                        class="text-gray-500 hover:bg-green-400 hover:text-white px-3 py-2 text-sm font-medium transition duration-300">
                             {{ 'GLOBAL.upload' | translate }}
                         </button>
@@ -74,7 +75,8 @@
                 </div>
                 <div class="ml-3 relative" *ngIf="location.path() !== '/home'">
                     <div>
-                        <button mat-mini-fab (click)="toggleSettingsDropdown()" class="bg-green-400 focus:outline-none hover:outline-none hover:ring-4 hover:ring-offset-4 hover:ring-green-400 hover:ring-opacity-60" id="settings-menu" aria-haspopup="true">
+                        <button routerLink="/settings/panel"
+                                mat-mini-fab (click)="toggleSettingsDropdown()" class="bg-green-400 focus:outline-none hover:outline-none hover:ring-4 hover:ring-offset-4 hover:ring-green-400 hover:ring-opacity-60" id="settings-menu" aria-haspopup="true">
                             <i class="fas fa-cog "></i>
                         </button>
                     </div>
@@ -119,7 +121,7 @@
         <div class="px-2 pt-2 pb-3 space-y-1">
             <a href="#"
                class="bg-gray-900 text-white block px-3 py-2 rounded-md text-sm font-medium">{{ 'GLOBAL.home' | translate }}</a>
-            <a href="#"
+            <a href="#" [class.disabled]="!this.privilegesService.hasPrivilege('upload')"
                class="text-gray-500 hover:bg-green-400 hover:text-white block px-3 py-2 rounded-md text-sm font-medium">{{ 'GLOBAL.upload' | translate }}</a>
             <a href="#"
                class="text-gray-500 hover:bg-green-400 hover:text-white block px-3 py-2 rounded-md text-sm font-medium">{{ 'USER.my_profile' | translate }}</a>

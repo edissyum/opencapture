@@ -11,6 +11,7 @@ import {of} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {NotificationService} from "../../services/notifications/notifications.service";
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import {PrivilegesService} from "../../services/privileges.service";
 
 @Component({
     selector: 'app-profile',
@@ -62,12 +63,20 @@ export class ProfileComponent implements OnInit {
         public userService: UserService,
         private translate: TranslateService,
         private notify: NotificationService,
-        private localeService: LocaleService
+        private localeService: LocaleService,
+        private privilegeService: PrivilegesService
     ) {
     }
 
     ngOnInit(){
         this.userId = this.route.snapshot.params['id'];
+
+        if (this.userId != this.userService.user.id){
+            if (!this.privilegeService.hasPrivilege('modify_user')){
+                this.notify.error('ERROR.unauthorized')
+                this.router.navigateByUrl('/home')
+            }
+        }
 
         let headers = this.authService.headers;
         this.http.get(API_URL + '/ws/user/getUserById/' + this.userId, {headers}).pipe(

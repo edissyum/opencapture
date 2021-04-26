@@ -1,0 +1,42 @@
+<mat-drawer-container>
+    <mat-drawer #drawer mode="side" opened>
+        <div class="search-input">
+            <mat-form-field class="absolute top-4 mx-4 w-5/6" appearance="outline">
+                <mat-label>{{ 'SPLITTER.search' | translate }}</mat-label>
+                <input id="search-input" matInput [(ngModel)]="searchSetting">
+            </mat-form-field>
+        </div>
+        <mat-accordion class="setting-list absolute top-24 w-full">
+            <mat-expansion-panel [expanded]="true" (opened)="settingListOpenState = true"
+                                 (closed)="settingListOpenState = false">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        {{ 'SETTINGS.splitter_setting' | translate }}
+                    </mat-panel-title>
+                    <mat-panel-description>
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+                <div class="w-full border-top">
+                    <div class="w-full h-full" *ngFor="let setting of settings">
+                        <button mat-button class="border-bottom w-full h-20" (click)="changeSetting(setting['id'])">
+                            <i [ngClass]="{'bg-green-400': selectedSetting === setting['id']}" class="absolute left-4 text-white bg-gray-600 w-10
+                  h-10 rounded-full flex items-center justify-center {{setting['icon']}}"> </i>
+                            <p [ngClass]="{'text-green-400': selectedSetting === setting['id']}"> {{ setting['label'] | translate }} </p>
+                        </button>
+                    </div>
+                </div>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </mat-drawer>
+    <mat-drawer-content>
+        <button mat-icon-button (click)="drawer.toggle(); toggleMenu();" class="absolute top-0 left-0"><i class="fas fa-bars fa-2x"></i></button>
+        <div [ngSwitch]="selectedSetting">
+            <app-users-list *ngSwitchCase="'users'"></app-users-list>
+<!--            <app-connector *ngSwitchCase="'connector'"></app-connector>-->
+<!--            <app-custom-fields *ngSwitchCase="'custom-fields'"></app-custom-fields>-->
+<!--            <app-document-type *ngSwitchCase="'document-type'"></app-document-type>-->
+<!--            <app-separator *ngSwitchCase="'separator'"></app-separator>-->
+<!--            <app-update *ngSwitchCase="'update'"></app-update>-->
+        </div>
+    </mat-drawer-content>
+</mat-drawer-container>

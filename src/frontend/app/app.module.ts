@@ -25,7 +25,9 @@ import { RegisterComponent } from './register/register.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { ProfileComponent } from './profile/profile.component';
 import { UploadComponent } from './upload/upload.component';
-import {NgxFileDragDropModule} from "ngx-file-drag-drop";
+import { NgxFileDragDropModule } from "ngx-file-drag-drop";
+import { UserListComponent } from './settings/users/list/list.component';
+import { PanelComponent } from './settings/panel/panel.component';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -45,7 +47,9 @@ export function createTranslateLoader(http: HttpClient) {
     RegisterComponent,
     NotFoundComponent,
     ProfileComponent,
-    UploadComponent
+    UploadComponent,
+    UserListComponent,
+    PanelComponent
   ],
   imports: [
     BrowserModule,

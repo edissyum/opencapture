@@ -13,7 +13,6 @@ export class LoginRequiredService {
         private authService: AuthService,
         private notify: NotificationService,
         private translate: TranslateService,
-        private router: Router
     ) {
     }
 

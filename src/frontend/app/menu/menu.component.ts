@@ -6,6 +6,7 @@ import { LocaleService } from "../../services/locale.service";
 import { LocalStorageService } from "../../services/local-storage.service";
 import {HttpHeaders} from "@angular/common/http";
 import {AuthService} from "../../services/auth.service";
+import {PrivilegesService} from "../../services/privileges.service";
 
 @Component({
     selector: 'app-menu',
@@ -37,6 +38,7 @@ export class MenuComponent implements OnInit {
         public userService: UserService,
         private authService: AuthService,
         public localeService: LocaleService,
+        public privilegesService: PrivilegesService,
         public localeStorageService: LocalStorageService
     ) {
     }

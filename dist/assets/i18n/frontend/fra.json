@@ -10,6 +10,7 @@
 		"404": "La page demandée n'existe pas",
 		"connection_failed": "Erreur lors de la connexion au serveur",
 		"jwt_error": "Erreur lors de l'authentification par token",
+		"unauthorized": "Vous n'êtes pas autorisé à visualiser cette page",
 		"unknow_error": "Erreur inconnue"
 	},
 	"GLOBAL": {
@@ -19,6 +20,7 @@
 		"log_out": "Déconnexion",
 		"login": "Connexion",
 		"register": "Créer un compte",
+		"settings": "Paramètres",
 		"submit": "Soumettre",
 		"upload": "Téléversement"
 	},
@@ -30,11 +32,13 @@
 		"about_us": "À propos",
 		"add_user": "Ajouter un utilisateur",
 		"control_panel": "Panneau de contrôle",
+		"splitter_setting": "",
 		"suppliers_list": "Liste des fournisseurs",
 		"users_list": "Liste des utilisateurs"
 	},
 	"SPLITTER": {
 		"list": "Liste des lots",
+		"search": "",
 		"viewer": "Visualisation du lot"
 	},
 	"UPLOAD": {
