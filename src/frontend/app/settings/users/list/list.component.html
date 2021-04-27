@@ -1,1 +1,49 @@
-<p>list works!</p>
+<div>
+    <mat-paginator showFirstLastButtons
+            [length]="this.total"
+            [pageSize]="pageSize"
+            [pageSizeOptions]="[5, 10, 15, 20, 50]"
+            (page)="onPageChange($event)">
+    </mat-paginator>
+    <table mat-table [dataSource]="users" class="w-full">
+        <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef> {{ 'USER.id' | translate }} </th>
+            <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+        </ng-container>
+        <ng-container matColumnDef="username">
+            <th mat-header-cell *matHeaderCellDef> {{ 'USER.username' | translate }} </th>
+            <td mat-cell *matCellDef="let element"> {{element.username}} </td>
+        </ng-container>
+        <ng-container matColumnDef="firstname">
+            <th mat-header-cell *matHeaderCellDef> {{ 'USER.firstname' | translate }} </th>
+            <td mat-cell *matCellDef="let element"> {{element.firstname}} </td>
+        </ng-container>
+        <ng-container matColumnDef="lastname">
+            <th mat-header-cell *matHeaderCellDef> {{ 'USER.lastname' | translate }} </th>
+            <td mat-cell *matCellDef="let element"> {{element.lastname}} </td>
+        </ng-container>
+        <ng-container matColumnDef="role">
+            <th mat-header-cell *matHeaderCellDef> {{ 'USER.role' | translate }} </th>
+            <td mat-cell *matCellDef="let element"> {{element.role_label}} </td>
+        </ng-container>
+        <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef> {{ 'USER.status' | translate }} </th>
+            <td mat-cell *matCellDef="let element"> {{element.status}} </td>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef> </th>
+            <td mat-cell *matCellDef="let element">
+                <button title="{{ 'GLOBAL.update' | translate }}" mat-icon-button
+                        class="inline-block align-text-top">
+                    <i class="btn-action-icon fas fa-edit fa-lg"></i>
+                </button>
+                <button title="{{ 'GLOBAL.delete' | translate }}" mat-icon-button
+                        class="inline-block align-text-top">
+                    <i class="btn-action-icon fas fa-trash fa-lg"></i>
+                </button>
+            </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+        <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
+    </table>
+</div>

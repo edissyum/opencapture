@@ -9,7 +9,7 @@ import { TranslateLoader, TranslateModule, TranslateService } from "@ngx-transla
 import { HttpClient} from "@angular/common/http";
 import { HttpClientModule } from "@angular/common/http";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -28,6 +28,8 @@ import { UploadComponent } from './upload/upload.component';
 import { NgxFileDragDropModule } from "ngx-file-drag-drop";
 import { UserListComponent } from './settings/users/list/list.component';
 import { PanelComponent } from './settings/panel/panel.component';
+import {MatPaginatorIntl} from "@angular/material/paginator";
+import {CustomMatPaginatorIntl} from "./custom-mat-paginator";
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -73,7 +75,11 @@ export function createTranslateLoader(http: HttpClient) {
   providers: [
     Title,
     TranslateService,
-    { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } }
+    { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } },
+    {
+      provide: MatPaginatorIntl,
+      useClass: CustomMatPaginatorIntl
+    }
   ],
   bootstrap: [AppComponent]
 })

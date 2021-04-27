@@ -1,35 +1,41 @@
-<mat-drawer-container>
-    <mat-drawer #drawer mode="side" opened>
+<mat-drawer-container class="w-full min-h-screen left-auto bg-white">
+    <mat-drawer #drawer mode="side" opened class="w-1/6">
         <div class="search-input">
             <mat-form-field class="absolute top-4 mx-4 w-5/6" appearance="outline">
                 <mat-label>{{ 'SPLITTER.search' | translate }}</mat-label>
-                <input id="search-input" matInput [(ngModel)]="searchSetting">
+                <input  id="search-input" matInput [(ngModel)]="searchSetting">
             </mat-form-field>
         </div>
         <mat-accordion class="setting-list absolute top-24 w-full">
-            <mat-expansion-panel [expanded]="true" (opened)="settingListOpenState = true"
+            <mat-expansion-panel *ngFor="let parent of settingsParent"
+                                 [expanded]="this.selectedParentSetting == parent['id']"
+                                 (opened)="settingListOpenState = true"
                                  (closed)="settingListOpenState = false">
                 <mat-expansion-panel-header>
                     <mat-panel-title>
-                        {{ 'SETTINGS.splitter_setting' | translate }}
+                        {{ parent['label'] | translate }}
                     </mat-panel-title>
-                    <mat-panel-description>
-                    </mat-panel-description>
                 </mat-expansion-panel-header>
-                <div class="w-full border-top">
-                    <div class="w-full h-full" *ngFor="let setting of settings">
-                        <button mat-button class="border-bottom w-full h-20" (click)="changeSetting(setting['id'])">
-                            <i [ngClass]="{'bg-green-400': selectedSetting === setting['id']}" class="absolute left-4 text-white bg-gray-600 w-10
-                  h-10 rounded-full flex items-center justify-center {{setting['icon']}}"> </i>
-                            <p [ngClass]="{'text-green-400': selectedSetting === setting['id']}"> {{ setting['label'] | translate }} </p>
+                <div class="w-full border-t-2 border-gray-600">
+                    <div class="border-b border-gray-400 " *ngFor="let setting of settings[parent['id']]; let cpt = index">
+                        <button mat-button [class.text-green-400]="selectedSetting === setting['id']"
+                                class="font-normal w-full h-20 flex justify-center items-center text-center"
+                                (click)="changeSetting(setting['id'], parent['id'])">
+                            <i class="absolute left-4 w-10 h-10 rounded-full flex items-center justify-center fa-lg {{setting['icon']}}"> </i>
+                            <p [class.font-medium]="selectedSetting === setting['id']" class="m-0">
+                                {{ setting['label'] | translate }}
+                            </p>
                         </button>
                     </div>
                 </div>
             </mat-expansion-panel>
         </mat-accordion>
     </mat-drawer>
-    <mat-drawer-content>
-        <button mat-icon-button (click)="drawer.toggle(); toggleMenu();" class="absolute top-0 left-0"><i class="fas fa-bars fa-2x"></i></button>
+    <mat-drawer-content class="p-10">
+        <button mat-icon-button (click)="drawer.toggle(); toggleMenu();"
+                class="absolute top-0 left-0">
+            <i [class.fa-arrow-right]="!this.isMenuOpen" class="fas fa-arrow-left fa-2x"></i>
+        </button>
         <div [ngSwitch]="selectedSetting">
             <app-users-list *ngSwitchCase="'users'"></app-users-list>
 <!--            <app-connector *ngSwitchCase="'connector'"></app-connector>-->

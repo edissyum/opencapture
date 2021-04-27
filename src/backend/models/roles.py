@@ -19,7 +19,22 @@ from flask_babel import gettext
 from ..controllers.db import get_db
 
 
-def get_role_label(args):
+def get_roles():
+    db = get_db()
+    error = None
+
+    roles = db.select({
+        'select': ['*'],
+        'table': ['roles'],
+    })
+
+    if not roles:
+        error = gettext('ERROR_RETRIEVING_ROLES')
+
+    return roles, error
+
+
+def get_role_by_id(args):
     db = get_db()
     error = None
     role_id = args['role_id']

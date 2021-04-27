@@ -15,6 +15,7 @@
 	},
 	"GLOBAL": {
 		"batches": "Lots",
+		"delete": "Supprimer",
 		"home": "Accueil",
 		"language": "Langage",
 		"log_out": "Déconnexion",
@@ -28,17 +29,28 @@
 		"splitter": "Open-Capture splitter",
 		"verifier": "Open-Capture vérificateur"
 	},
+	"PAGINATOR": {
+		"items_per_page": "Nombre de lignes",
+		"next_page": "Page suivante",
+		"page": "Page",
+		"previous_page": "Page précédente"
+	},
 	"SETTINGS": {
-		"about_us": "À propos",
-		"add_user": "Ajouter un utilisateur",
-		"control_panel": "Panneau de contrôle",
-		"splitter_setting": "",
-		"suppliers_list": "Liste des fournisseurs",
-		"users_list": "Liste des utilisateurs"
+		"abouts_us": "À propos",
+		"connector_EDM": "Connecteur GED",
+		"custom_fields": "Champs personnalisés",
+		"document_separator": "Séparateur de document",
+		"document_type": "Type de documents",
+		"general": "Paramètres généraux",
+		"roles_list": "Liste des rôles",
+		"splitter": "Paramètres du Splitter",
+		"users_list": "Liste des utilisateurs",
+		"verifier": "Paramètres du Vérificateur",
+		"version_and_update": "Version et mise à jour"
 	},
 	"SPLITTER": {
 		"list": "Liste des lots",
-		"search": "",
+		"search": "Recherche",
 		"viewer": "Visualisation du lot"
 	},
 	"UPLOAD": {

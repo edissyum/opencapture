@@ -26,6 +26,8 @@ def retrieve_users(args):
     users = db.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['users'],
+        'limit': str(args['limit']) if 'limit' in args else [],
+        'offset': str(args['offset']) if 'offset' in args else [],
     })
 
     if not users:

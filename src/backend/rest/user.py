@@ -26,8 +26,9 @@ bp = Blueprint('user', __name__, url_prefix='/ws/')
 @bp.route('user/list', methods=['GET'])
 @token_required
 def get_users():
-    args = {}
+    args = {'select': ['*', 'count(*) OVER() as total', ], 'offset': request.args['offset'], 'limit': request.args['limit']}
     _users = user.retrieve_users(args)
+
     return make_response(jsonify(_users[0])), _users[1]
 
 

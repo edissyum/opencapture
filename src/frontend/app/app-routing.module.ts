@@ -22,43 +22,82 @@ import { PanelComponent } from "./settings/panel/panel.component";
 import {HasPrivilegeService} from "../services/has-privilege.service";
 
 const routes: Routes = [
-  {path: '', redirectTo: 'home', pathMatch: 'full'},
-  {path: 'home', component: HomeComponent , data: { title: marker('GLOBAL.home'), image: 'assets/imgs/open-capture.png' }, canActivate: [LoginRequiredService]},
-  {path: 'login', component: LoginComponent , data: { title: marker('GLOBAL.login'), image: 'assets/imgs/open-capture.png' }, canActivate: [LoginRedirectService]},
-  {path: 'register', component: RegisterComponent , data: { title: marker('GLOBAL.register'), image: 'assets/imgs/open-capture.png' }, canActivate: [LoginRedirectService]},
-  {path: 'logout', component: LogoutComponent , canActivate: [LoginRequiredService]},
-  {path: 'profile/:id', component: ProfileComponent, canActivate: [LoginRequiredService]},
+    {path: '', redirectTo: 'home', pathMatch: 'full'},
+    {path: 'home', component: HomeComponent , data: { title: marker('GLOBAL.home'), image: 'assets/imgs/open-capture.png' }, canActivate: [LoginRequiredService]},
+    {path: 'login', component: LoginComponent , data: { title: marker('GLOBAL.login'), image: 'assets/imgs/open-capture.png' }, canActivate: [LoginRedirectService]},
+    {path: 'register', component: RegisterComponent , data: { title: marker('GLOBAL.register'), image: 'assets/imgs/open-capture.png' }, canActivate: [LoginRedirectService]},
+    {path: 'logout', component: LogoutComponent , canActivate: [LoginRequiredService]},
+    {path: 'profile/:id', component: ProfileComponent, canActivate: [LoginRequiredService]},
 
-  {path: 'splitter/viewer/:id', component: SplitterViewerComponent , data: { title: marker('SPLITTER.viewer'), image: 'assets/imgs/Open-Capture_Splitter.png' }, canActivate: [LoginRequiredService]},
+    {
+        path: 'splitter/viewer/:id',
+        component: SplitterViewerComponent,
+        data: {title: marker('SPLITTER.viewer'), image: 'assets/imgs/Open-Capture_Splitter.png', privilege: 'splitter' },
+        canActivate: [
+            LoginRequiredService,
+            HasPrivilegeService
+        ]
+    },
+    {
+        path: 'splitter/list',
+        component: SplitterListComponent,
+        data: {title: marker('SPLITTER.list'), image: 'assets/imgs/Open-Capture_Splitter.png', privilege: 'splitter'},
+        canActivate: [
+            LoginRequiredService,
+            HasPrivilegeService
+        ],
 
-  {
-    path: 'splitter/list',
-    component: SplitterListComponent,
-    data: {title: marker('SPLITTER.list'), image: 'assets/imgs/Open-Capture_Splitter.png', privilege: 'splitter'},
-    canActivate: [
-        LoginRequiredService,
-        HasPrivilegeService
-    ],
+    },
+    {path: 'splitter', redirectTo: 'splitter/list', pathMatch: 'full'},
 
-  },
-  {path: 'splitter', redirectTo: 'splitter/list', pathMatch: 'full'},
+    {
+        path: 'verifier/viewer',
+        component: VerifierViewerComponent,
+        data: {title: marker('VERIFIER.viewer'), image: 'assets/imgs/open-capture_verifier.png', privilege: 'verifier'},
+        canActivate: [
+            LoginRequiredService,
+            HasPrivilegeService
+        ]
+    },
+    {
+        path: 'verifier/list',
+        component: VerifierListComponent,
+        data: {title: marker('VERIFIER.list'), image: 'assets/imgs/open-capture_verifier.png', privilege: 'verifier'},
+        canActivate: [
+            LoginRequiredService,
+            HasPrivilegeService
+        ]
+    },
+    {path: 'verifier', redirectTo: 'verifier/list', pathMatch: 'full'},
+    {
+        path: 'upload',
+        component: UploadComponent,
+        data: {title: marker('GLOBAL.upload'), image: 'assets/imgs/open-capture_verifier.png', privilege: 'upload'},
+        canActivate: [
+            LoginRequiredService,
+            HasPrivilegeService
+        ]
+    },
 
-  {path: 'verifier/viewer', component: VerifierViewerComponent , data: { title: marker('VERIFIER.viewer'), image: 'assets/imgs/open-capture_verifier.png' }, canActivate: [LoginRequiredService]},
-  {path: 'verifier/list', component: VerifierListComponent , data: { title: marker('VERIFIER.list'), image: 'assets/imgs/open-capture_verifier.png' }, canActivate: [LoginRequiredService]},
-  {path: 'verifier', redirectTo: 'verifier/list', pathMatch: 'full'},
-  {path: 'upload', component: UploadComponent, data: { title: marker('GLOBAL.upload'), image: 'assets/imgs/open-capture_verifier.png' }, canActivate: [LoginRequiredService]},
+    {
+        path: 'settings/panel',
+        component: PanelComponent,
+        data: {title: marker('GLOBAL.settings'), image: 'assets/imgs/open-capture_verifier.png', privilege: 'settings'},
+        canActivate: [
+            LoginRequiredService,
+            HasPrivilegeService
+        ]
+    },
 
-  {path: 'settings/panel', component: PanelComponent, data: { title: marker('GLOBAL.settings'), image: 'assets/imgs/open-capture_verifier.png' }, canActivate: [LoginRequiredService]},
-
-  {path: '404', component: NotFoundComponent}, // This two routes (** and 404) need to be the last of const routes: Routes variable
-  {path: '**', redirectTo: '404'}, // if routes doesn't exists, redirect to 404, display a popup and then redirect to login
+    {path: '404', component: NotFoundComponent}, // This two routes (** and 404) need to be the last of const routes: Routes variable
+    {path: '**', redirectTo: '404'}, // if routes doesn't exists, redirect to 404, display a popup and then redirect to login
 ];
 
 @NgModule({
-  imports: [
-      RouterModule.forRoot(routes, {useHash: true})
-  ],
-  exports: [RouterModule]
+    imports: [
+        RouterModule.forRoot(routes, {useHash: true})
+    ],
+    exports: [RouterModule]
 })
 
 export class AppRoutingModule {}

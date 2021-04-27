@@ -24,7 +24,7 @@ from flask_babel import Babel
 from flask import redirect, url_for, request, session
 from flask_multistatic import MultiStaticFlask
 
-from import_rest import auth, locale, config, user, splitter, verifier
+from import_rest import auth, locale, config, user, splitter, verifier, roles
 
 from .functions import get_custom_id
 custom_id = get_custom_id()
@@ -65,9 +65,10 @@ def create_app(test_config=None):
 
     app.register_blueprint(auth.bp)
     app.register_blueprint(user.bp)
+    app.register_blueprint(roles.bp)
     app.register_blueprint(locale.bp)
     app.register_blueprint(config.bp)
-    app.register_blueprint(verifier.bp)
+    app.register_blueprint(splitter.bp)
     app.register_blueprint(splitter.bp)
     app.add_url_rule('/', endpoint='index')
 

@@ -27,13 +27,14 @@ CREATE TABLE "form_models_field"
     "fields"    JSONB
 );
 
-CREATE TABLE "custom_fields"
-(
-    "id"     SERIAL UNIQUE PRIMARY KEY,
-    "label"  VARCHAR(50),
-    "type"   VARCHAR(10),
-    "module" VARCHAR(8),
-    "value"  TEXT
+CREATE TABLE "custom_fields" (
+     "id" SERIAL PRIMARY KEY,
+     "label_short" VARCHAR(10),
+     "label" VARCHAR(50),
+     "type" VARCHAR(10),
+     "module" VARCHAR(10),
+     "settings" JSONB,
+     "enabled" BOOLEAN
 );
 
 CREATE TABLE "users_companies"

@@ -41,3 +41,9 @@ if 'splitter' not in custom_array:
 else:
     splitter = getattr(__import__(custom_array['splitter']['path'], fromlist=[custom_array['splitter']['module']]),
                        custom_array['splitter']['module'])
+
+if 'roles' not in custom_array:
+    from src.backend.rest import roles
+else:
+    roles = getattr(__import__(custom_array['roles']['path'], fromlist=[custom_array['roles']['module']]),
+                       custom_array['roles']['module'])

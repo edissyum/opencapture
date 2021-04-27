@@ -2,6 +2,10 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+:focus {
+    outline: none!important;
+}
+
 .mat-form-field-appearance-outline .mat-form-field-outline {
     @apply text-gray-900 #{!important};
     transition: all;

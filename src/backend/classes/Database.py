@@ -71,12 +71,12 @@ class Database:
             else:
                 order_by = ' ORDER BY ' + ', '.join(args['order_by']) + ' '
 
-            if 'limit' not in args:
+            if 'limit' not in args or args['limit'] in ['', []]:
                 limit = ''
             else:
                 limit = ' LIMIT ' + str(args['limit'])
 
-            if 'offset' not in args:
+            if 'offset' not in args or args['offset'] in ['', []]:
                 offset = ''
             else:
                 offset = ' OFFSET ' + str(args['offset'])

@@ -15,15 +15,14 @@ import {PrivilegesService} from "../../services/privileges.service";
     animations: [
         trigger('toggle', [
             state('hide', style({
-                opacity: 0,
-                scale: 0,
+                display: 'none',
+
             })),
             state('show', style({
-                opacity: 100,
-                scale: 1,
+                display: "block",
             })),
-            transition('show => hide', animate('350ms ease-out')),
-            transition('hide => show', animate('250ms ease-in'))
+            transition('show => hide', animate('150ms ease-out')),
+            transition('hide => show', animate('100ms ease-in'))
         ])
     ]
 })
@@ -57,15 +56,6 @@ export class MenuComponent implements OnInit {
     toggleProfileDropdown() {
         this.profileDropdownCurrentState = this.profileDropdownCurrentState === 'hide' ? 'show' : 'hide';
         this.profileSettingsCurrentState = this.profileDropdownCurrentState === 'show' && this.profileSettingsCurrentState == 'show' ? 'hide' : this.profileSettingsCurrentState;
-    }
-
-    toggleSettingsDropdown() {
-        this.profileSettingsCurrentState = this.profileSettingsCurrentState === 'hide' ? 'show' : 'hide';
-        this.profileDropdownCurrentState = this.profileDropdownCurrentState === 'show' && this.profileSettingsCurrentState == 'show' ? 'hide' : this.profileDropdownCurrentState;
-    }
-
-    closeSettingsDropDown() {
-        this.profileSettingsCurrentState = 'hide';
     }
 
     closeprofileDropDown() {

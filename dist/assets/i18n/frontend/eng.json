@@ -15,6 +15,7 @@
 	},
 	"GLOBAL": {
 		"batches": "Batches",
+		"delete": "",
 		"home": "Home",
 		"language": "Language",
 		"log_out": "Log out",
@@ -28,13 +29,24 @@
 		"splitter": "Open-Capture splitter",
 		"verifier": "Open-Capture verifier"
 	},
+	"PAGINATOR": {
+		"items_per_page": "",
+		"next_page": "",
+		"page": "",
+		"previous_page": ""
+	},
 	"SETTINGS": {
-		"about_us": "About us",
-		"add_user": "Add user",
-		"control_panel": "Control panel",
-		"splitter_setting": "",
-		"suppliers_list": "Suppliers list",
-		"users_list": "Users list"
+		"abouts_us": "",
+		"connector_EDM": "",
+		"custom_fields": "",
+		"document_separator": "",
+		"document_type": "",
+		"general": "",
+		"roles_list": "",
+		"splitter": "",
+		"users_list": "",
+		"verifier": "",
+		"version_and_update": ""
 	},
 	"SPLITTER": {
 		"list": "List of batches",
