@@ -32,16 +32,37 @@ def get_users():
     return make_response(jsonify(_users[0])), _users[1]
 
 
-@bp.route('user/getUserById/<int:user_id>', methods=['GET'])
+@bp.route('user/getById/<int:user_id>', methods=['GET'])
 @token_required
 def get_user_by_id(user_id):
     _user = user.retrieve_user_by_id(user_id)
     return make_response(jsonify(_user[0])), _user[1]
 
 
-@bp.route('user/updateUser/<int:user_id>', methods=['PUT'])
+@bp.route('user/update/<int:user_id>', methods=['PUT'])
 @token_required
 def update_user(user_id):
     data = request.json['args']
-    res = user.update_profile(user_id, data)
+    res = user.update_user(user_id, data)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('user/delete/<int:user_id>', methods=['DELETE'])
+@token_required
+def delete_user(user_id):
+    res = user.delete_user(user_id)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('user/disable/<int:user_id>', methods=['PUT'])
+@token_required
+def disable_user(user_id):
+    res = user.disable_user(user_id)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('user/enable/<int:user_id>', methods=['PUT'])
+@token_required
+def enable_user(user_id):
+    res = user.enable_user(user_id)
     return make_response(jsonify(res[0])), res[1]

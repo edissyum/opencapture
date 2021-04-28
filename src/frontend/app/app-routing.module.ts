@@ -11,15 +11,14 @@ import { LogoutComponent } from './logout/logout.component';
 import { HomeComponent } from './home/home.component';
 import { NotFoundComponent } from "./not-found/not-found.component";
 import { RegisterComponent } from "./register/register.component";
-import { ProfileComponent } from "./profile/profile.component";
+import { UserProfileComponent } from "./profile/profile.component";
 import { SplitterViewerComponent } from "./splitter/viewer/viewer.component";
 import { SplitterListComponent } from "./splitter/list/list.component";
 import { VerifierViewerComponent } from './verifier/viewer/viewer.component';
 import { VerifierListComponent } from './verifier/list/list.component';
 import { UploadComponent } from "./upload/upload.component";
-import { UserListComponent } from "./settings/users/list/list.component";
 import { PanelComponent } from "./settings/panel/panel.component";
-import {HasPrivilegeService} from "../services/has-privilege.service";
+import { HasPrivilegeService } from "../services/has-privilege.service";
 
 const routes: Routes = [
     {path: '', redirectTo: 'home', pathMatch: 'full'},
@@ -27,7 +26,7 @@ const routes: Routes = [
     {path: 'login', component: LoginComponent , data: { title: marker('GLOBAL.login'), image: 'assets/imgs/open-capture.png' }, canActivate: [LoginRedirectService]},
     {path: 'register', component: RegisterComponent , data: { title: marker('GLOBAL.register'), image: 'assets/imgs/open-capture.png' }, canActivate: [LoginRedirectService]},
     {path: 'logout', component: LogoutComponent , canActivate: [LoginRequiredService]},
-    {path: 'profile/:id', component: ProfileComponent, canActivate: [LoginRequiredService]},
+    {path: 'profile/:id', component: UserProfileComponent, canActivate: [LoginRequiredService]},
 
     {
         path: 'splitter/viewer/:id',
@@ -78,7 +77,6 @@ const routes: Routes = [
             HasPrivilegeService
         ]
     },
-
     {
         path: 'settings/panel',
         component: PanelComponent,

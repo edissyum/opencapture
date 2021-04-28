@@ -9,13 +9,18 @@
 	"ERROR": {
 		"404": "La page demandée n'existe pas",
 		"connection_failed": "Erreur lors de la connexion au serveur",
+		"is_server_up": "Le serveur {{server}} est-il accessible ?",
 		"jwt_error": "Erreur lors de l'authentification par token",
 		"unauthorized": "Vous n'êtes pas autorisé à visualiser cette page",
 		"unknow_error": "Erreur inconnue"
 	},
 	"GLOBAL": {
 		"batches": "Lots",
+		"cancel": "Annuler",
+		"confirm": "Confirmation",
 		"delete": "Supprimer",
+		"disable": "Désactiver",
+		"enable": "Activer",
 		"home": "Accueil",
 		"language": "Langage",
 		"log_out": "Déconnexion",
@@ -23,6 +28,7 @@
 		"register": "Créer un compte",
 		"settings": "Paramètres",
 		"submit": "Soumettre",
+		"update": "Mettre à jour",
 		"upload": "Téléversement"
 	},
 	"HOME": {
@@ -61,7 +67,15 @@
 		"upload_success": "Fichier(s) téléversé(s) avec succès"
 	},
 	"USER": {
+		"active": "Actif",
+		"confirm_delete": "Êtes vous sûr de vouloir supprimer l'utilisateur {{user}} ?",
+		"confirm_disable": "Êtes vous sûr de vouloir désactiver l'utilisateur {{user}} ?",
+		"confirm_enable": "Êtes vous sûr de vouloir ré-activer l'utilisateur {{user}} ?",
+		"disable": "Désactiver l'utilisateur",
+		"enable": "Activer l'utilisateur",
 		"firstname": "Prénom",
+		"id": "Identifiant technique",
+		"inactive": "Inactif",
 		"lastname": "Nom de famille",
 		"modify": "Modifier",
 		"modify_my_profile": "Modifier mon profil",
@@ -71,6 +85,8 @@
 		"old_password": "Ancien mot de passe",
 		"password": "Mot de passe",
 		"profile_updated": "Profil mis à jour",
+		"role": "Rôle",
+		"status": "Status",
 		"username": "Nom d'utilisateur"
 	},
 	"VERIFIER": {

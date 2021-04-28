@@ -14,14 +14,14 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import {PrivilegesService} from "../../services/privileges.service";
 
 @Component({
-    selector: 'app-profile',
+    selector: 'app-user-profile',
     templateUrl: './profile.component.html',
     styleUrls: ['./profile.component.scss']
 })
-export class ProfileComponent implements OnInit {
+export class UserProfileComponent implements OnInit {
     userId      : any;
     profile     : any;
-
+    roles       : any[] = [];
     profileForm : any[] = [
         {
             id: 'firstname',
@@ -50,6 +50,14 @@ export class ProfileComponent implements OnInit {
             type: 'password',
             control: new FormControl(),
             required: false
+        },
+        {
+            id: 'role',
+            label: marker('USER.role'),
+            type: 'select',
+            values: [],
+            control: new FormControl(),
+            required: false
         }
     ];
     public loading: boolean = true;
@@ -70,6 +78,7 @@ export class ProfileComponent implements OnInit {
 
     ngOnInit(){
         this.userId = this.route.snapshot.params['id'];
+        let headers = this.authService.headers;
 
         if (this.userId != this.userService.user.id){
             if (!this.privilegeService.hasPrivilege('modify_user')){
@@ -78,15 +87,37 @@ export class ProfileComponent implements OnInit {
             }
         }
 
-        let headers = this.authService.headers;
-        this.http.get(API_URL + '/ws/user/getUserById/' + this.userId, {headers}).pipe(
+        this.http.get(API_URL + '/ws/roles/get', {headers}).pipe(
+            tap((data: any) => {
+                data.forEach((element: any) => {
+                    if (element.editable){
+                        this.roles.push(element)
+                    }else{
+                        if((this.userService.getUser().privileges == '*')){
+                            this.roles.push(element)
+                        }
+                    }
+                });
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe()
+
+        this.http.get(API_URL + '/ws/user/getById/' + this.userId, {headers}).pipe(
             tap((data: any) => {
                 this.profile = data;
+                // console.log(this.profile)
                 for (let field in this.profile){
                     if (this.profile.hasOwnProperty(field)){
                         this.profileForm.forEach(element => {
                             if (element.id == field){
                                 element.control.value = this.profile[field];
+                                if (element.id == 'role'){
+                                    element.values = this.roles
+                                }
                             }
                         });
                     }
@@ -114,6 +145,9 @@ export class ProfileComponent implements OnInit {
         return state;
     }
 
+    // async getRoles(){
+    //
+    // }
 
     onSubmit(){
         if(this.isValidForm()){
@@ -124,7 +158,7 @@ export class ProfileComponent implements OnInit {
                 user[element.id] = element.control.value;
             });
             this.http.put(
-                API_URL + '/ws/user/updateUser/' + this.userId,
+                API_URL + '/ws/user/update/' + this.userId,
                 {
                     'args': user,
                     'lang': this.localeService.currentLang

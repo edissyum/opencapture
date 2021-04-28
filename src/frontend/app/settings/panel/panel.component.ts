@@ -49,7 +49,7 @@ export class PanelComponent implements OnInit {
             {
                 "id"    : "custom-fields",
                 "label" : this.translate.instant("SETTINGS.custom_fields"),
-                "icon"  : "fas fa-align-center",
+                "icon"  : "fas fa-code",
             },
             {
                 "id"    : "update",

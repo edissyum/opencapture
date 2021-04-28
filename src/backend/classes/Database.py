@@ -133,7 +133,7 @@ class Database:
             data = []
             for column in args['set']:
                 if args['set'][column] is not None:
-                    query_list.append(column + " = ?")
+                    query_list.append(column + " = %s")
                     data.append(args['set'][column])
 
             args['data'] = data + args['data']
@@ -141,7 +141,8 @@ class Database:
             where = ' AND '.join(args['where'][0].split(','))
 
             query = "UPDATE " + args['table'][0] + " SET " + _set + " WHERE " + where
-
+            print(query)
+            print(args['data'])
             c = self.conn.cursor()
             try:
                 c.execute(query, args['data'])

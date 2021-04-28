@@ -66,13 +66,13 @@ def retrieve_user_by_id(user_id, get_password=False):
         return response, 401
 
 
-def update_profile(user_id, data):
+def update_user(user_id, data):
     _vars = pdf.init()
     _db = _vars[0]
-    user = check_user(user_id, True)
+    user_info, error = user.get_user_by_id(user_id)
 
-    if user is not False:
-        if data['new_password'] and data['old_password'] and not check_password_hash(user[0]['password'], data['old_password']):
+    if error is None:
+        if data['new_password'] and data['old_password'] and not check_password_hash(user_info[0]['password'], data['old_password']):
             response = {
                 "errors": gettext('UPDATE_PROFILE'),
                 "message": gettext('ERROR_OLD_PASSWORD_NOT_MATCH')
@@ -89,27 +89,91 @@ def update_profile(user_id, data):
                 'password': generate_password_hash(data['new_password'])
             })
 
-        res = _db.update({
-            'table': ['users'],
-            'set': _set,
-            'where': ['id = ?'],
-            'data': [user_id]
-        })
+        res, error = user.update_user({'set': _set, 'user_id': user_id})
 
-        if res[0] is not False:
+        if error is None:
             days_before_exp = 1
-            user = check_user(user_id)
-            return {"user": user[0], "days_before_exp": days_before_exp}, 200
+            user_info = user.get_user_by_id(user_id)
+            return {"user": user_info[0], "days_before_exp": days_before_exp}, 200
         else:
             response = {
-                "errors": gettext('PROFILE_UPDATE_ERROR'),
-                "message": str(res[1])
+                "errors": gettext('UPDATE_USER_ERROR'),
+                "message": error
             }
             return response, 401
     else:
         response = {
-            "errors": gettext('PROFILE_UPDATE_ERROR'),
-            "message": gettext('ERROR_WHILE_RETRIEVING_USER')
+            "errors": gettext('UPDATE_USER_ERROR'),
+            "message": error
+        }
+        return response, 401
+
+
+def delete_user(user_id):
+    _vars = pdf.init()
+    _db = _vars[0]
+
+    user_info, error = user.get_user_by_id({'user_id': user_id})
+    if error is None:
+        res, error = user.update_user({'set': {'status': 'DEL'}, 'user_id': user_id})
+        if error is None:
+            return '', 200
+        else:
+            response = {
+                "errors": gettext('DELETE_USER_ERROR'),
+                "message": error
+            }
+            return response, 401
+    else:
+        response = {
+            "errors": gettext('DELETE_USER_ERROR'),
+            "message": error
+        }
+        return response, 401
+
+
+def disable_user(user_id):
+    _vars = pdf.init()
+    _db = _vars[0]
+
+    user_info, error = user.get_user_by_id({'user_id': user_id})
+    if error is None:
+        res, error = user.update_user({'set': {'enabled': False}, 'user_id': user_id})
+        if error is None:
+            return '', 200
+        else:
+            response = {
+                "errors": gettext('DISABLE_USER_ERROR'),
+                "message": error
+            }
+            return response, 401
+    else:
+        response = {
+            "errors": gettext('DISABLE_USER_ERROR'),
+            "message": error
+        }
+        return response, 401
+
+
+def enable_user(user_id):
+    _vars = pdf.init()
+    _db = _vars[0]
+
+    user_info, error = user.get_user_by_id({'user_id': user_id})
+    if error is None:
+        res, error = user.update_user({'set': {'enabled': True}, 'user_id': user_id})
+        if error is None:
+            return '', 200
+        else:
+            response = {
+                "errors": gettext('DISABLE_USER_ERROR'),
+                "message": error
+            }
+            return response, 401
+    else:
+        response = {
+            "errors": gettext('DISABLE_USER_ERROR'),
+            "message": error
         }
         return response, 401
 
@@ -217,150 +281,3 @@ def reset_password(user_id):
         flash(gettext('ERROR_WHILE_RETRIEVING_USER'))
 
     return redirect(url_for('user.profile', user_id=user_id))
-
-
-@bp.route('/list')
-def user_list():
-    _vars = pdf.init()
-    _db = _vars[0]
-
-    page, per_page, offset = get_page_args(page_parameter='page',
-                                           per_page_parameter='per_page')
-
-    total = _db.select({
-        'select': ['count(*) as total'],
-        'table': ['users'],
-        'where': ['status not IN (?)'],
-        'data': ['DEL'],
-    })[0]['total']
-
-    list_user = _db.select({
-        'select': ['*'],
-        'table': ['users'],
-        'where': ['status not IN (?)'],
-        'data': ['DEL'],
-        'limit': str(per_page),
-        'offset': str(offset),
-        'order_by': ['id desc']
-    })
-
-    final_list = []
-    result = [dict(user) for user in list_user]
-
-    for user in result:
-        if user['creation_date'] is not None:
-            formatted_date = datetime.datetime.strptime(str(user['creation_date']).split('.')[0], '%Y-%m-%d %H:%M:%S').strftime('%d/%m/%Y')
-            user['creation_date'] = formatted_date
-
-        final_list.append(user)
-
-    msg = gettext('SHOW') + ' <span id="count">' + str(offset + 1) + '</span> - <span>' + str(offset + len(list_user)) + '</span> ' + gettext('OF') + ' ' + str(total)
-
-    pagination = Pagination(per_page=per_page,
-                            page=page,
-                            total=total,
-                            display_msg=msg)
-
-    return render_template('templates/users/user_list.html',
-                           users=final_list,
-                           page=page,
-                           per_page=per_page,
-                           pagination=pagination)
-
-
-@bp.route('/enable/<int:user_id>', defaults={'fallback': None})
-@bp.route('/enable/<int:user_id>?fallback=<path:fallback>')
-def enable(user_id, fallback):
-    _vars = pdf.init()
-    _db = _vars[0]
-
-    if fallback is not None:
-        fallback = url_for('user.user_list') + '?page=' + fallback
-    else:
-        fallback = url_for('user.user_list')
-
-    user = check_user(user_id)
-    if user is not False:
-        res = _db.update({
-            'table': ['users'],
-            'set': {
-                'enabled': 1
-            },
-            'where': ['id = ?'],
-            'data': [user_id]
-        })
-
-        if res[0] is not False:
-            flash(gettext('USER_ENABLED_OK'))
-        else:
-            flash(gettext('USER_ENABLED_ERROR') + ' : ' + str(res[1]))
-
-    return redirect(fallback)
-
-
-@bp.route('/disable/<int:user_id>', defaults={'fallback': None})
-@bp.route('/disable/<int:user_id>?fallback=<path:fallback>')
-def disable(user_id, fallback):
-    _vars = pdf.init()
-    _db = _vars[0]
-
-    if fallback is not None:
-        fallback = url_for('user.user_list') + '?page=' + fallback
-    else:
-        fallback = url_for('user.user_list')
-
-    user = check_user(user_id)
-    if user is not False:
-        res = _db.update({
-            'table': ['users'],
-            'set': {
-                'enabled': 0
-            },
-            'where': ['id = ?'],
-            'data': [user_id]
-        })
-
-        if res[0] is not False:
-            flash(gettext('USER_DISABLED_OK'))
-        else:
-            flash(gettext('USER_DISABLED_ERROR') + ' : ' + str(res[1]))
-
-    return redirect(fallback)
-
-
-@bp.route('/delete/<int:user_id>', defaults={'fallback': None})
-@bp.route('/delete/<int:user_id>?fallback=<path:fallback>')
-def delete(user_id, fallback):
-    _vars = pdf.init()
-    _db = _vars[0]
-
-    if fallback is not None:
-        fallback = url_for('user.user_list') + '?page=' + fallback
-    else:
-        fallback = url_for('user.user_list')
-
-    user = check_user(user_id)
-    if user is not False:
-        res = _db.update({
-            'table': ['users'],
-            'set': {
-                'status': 'DEL'
-            },
-            'where': ['id = ?'],
-            'data': [user_id]
-        })
-
-        if res[0] is not False:
-            flash(gettext('USER_DELETED_OK'))
-        else:
-            flash(gettext('USER_DELETED_ERROR') + ' : ' + str(res[1]))
-
-    return redirect(fallback)
-
-
-@bp.route('/create', methods=('GET', 'POST'))
-def create():
-    if request.method == 'POST':
-        register()
-        return redirect(url_for('user.user_list'))
-    return render_template('templates/auth/register.html')

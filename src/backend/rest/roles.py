@@ -25,7 +25,5 @@ bp = Blueprint('roles', __name__, url_prefix='/ws/')
 @bp.route('roles/get', methods=['GET'])
 @token_required
 def get_roles():
-    _users = roles.get_roles()
-    print(_users)
-
-    return make_response(jsonify(_users[0])), _users[1]
+    _roles = roles.get_roles()
+    return make_response(jsonify(_roles[0])), _roles[1]

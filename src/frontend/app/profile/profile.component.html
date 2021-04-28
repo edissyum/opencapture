@@ -7,10 +7,16 @@
         <mat-card-content>
             <form (ngSubmit)="onSubmit()" >
                 <ng-container *ngFor="let field of profileForm">
-                    <mat-form-field class="block">
+                    <mat-form-field class="block" *ngIf="field.type != 'select'">
                         <mat-label>{{ field.label | translate }}</mat-label>
                         <input matInput [formControl]="field.control" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field.required">
                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="block" *ngIf="field.type == 'select'">
+                        <mat-label>{{ field.label }}</mat-label>
+                        <mat-select [(value)]="field.control.value">
+                            <mat-option *ngFor="let option of field.values" [value]="option['id']">{{ option['label'] }}</mat-option>
+                        </mat-select>
                     </mat-form-field>
                 </ng-container>
                 <div class="button">

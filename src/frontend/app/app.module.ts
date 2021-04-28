@@ -23,13 +23,14 @@ import { HomeComponent } from './home/home.component';
 import { MenuComponent } from './menu/menu.component';
 import { RegisterComponent } from './register/register.component';
 import { NotFoundComponent } from './not-found/not-found.component';
-import { ProfileComponent } from './profile/profile.component';
+import { UserProfileComponent } from './profile/profile.component';
 import { UploadComponent } from './upload/upload.component';
 import { NgxFileDragDropModule } from "ngx-file-drag-drop";
 import { UserListComponent } from './settings/users/list/list.component';
 import { PanelComponent } from './settings/panel/panel.component';
-import {MatPaginatorIntl} from "@angular/material/paginator";
-import {CustomMatPaginatorIntl} from "./custom-mat-paginator";
+import { MatPaginatorIntl } from "@angular/material/paginator";
+import { CustomMatPaginatorIntl } from "./custom-mat-paginator";
+import { LastUrlService } from "../services/last-url.service";
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -48,7 +49,7 @@ export function createTranslateLoader(http: HttpClient) {
     MenuComponent,
     RegisterComponent,
     NotFoundComponent,
-    ProfileComponent,
+    UserProfileComponent,
     UploadComponent,
     UserListComponent,
     PanelComponent
@@ -75,6 +76,7 @@ export function createTranslateLoader(http: HttpClient) {
   providers: [
     Title,
     TranslateService,
+    LastUrlService,
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } },
     {
       provide: MatPaginatorIntl,
@@ -83,4 +85,8 @@ export function createTranslateLoader(http: HttpClient) {
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(
+      private routerExtService: LastUrlService,
+  ){}
+}

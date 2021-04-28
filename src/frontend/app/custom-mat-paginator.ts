@@ -18,6 +18,12 @@ export class CustomMatPaginatorIntl extends MatPaginatorIntl {
         this.translate.get('PAGINATOR.next_page').subscribe((translated: string) => {
             this.nextPageLabel = translated;
         });
+        this.translate.get('PAGINATOR.first_page').subscribe((translated: string) => {
+            this.firstPageLabel = translated;
+        });
+        this.translate.get('PAGINATOR.last_page').subscribe((translated: string) => {
+            this.lastPageLabel = translated;
+        });
         this.translate.get('PAGINATOR.previous_page').subscribe((translated: string) => {
             this.previousPageLabel = translated;
         });
@@ -33,8 +39,8 @@ export class CustomMatPaginatorIntl extends MatPaginatorIntl {
 
         // If the start index exceeds the list length, do not try and fix the end index to the end.
         const endIndex = startIndex < length ?
-            Math.min(startIndex + pageSize, length) :
-            startIndex + pageSize;
+            Math.min(startIndex + pageSize, length):
+                startIndex + pageSize;
 
         const nbPage = Math.ceil(length / pageSize);
         //return `${startIndex + 1} - ${endIndex} / ${length} (${page})`;

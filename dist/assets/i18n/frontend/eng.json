@@ -9,13 +9,18 @@
 	"ERROR": {
 		"404": "The page you are looking for does not exist",
 		"connection_failed": "Error connecting to server",
+		"is_server_up": "",
 		"jwt_error": "Authentification by token error",
 		"unauthorized": "",
 		"unknow_error": "Unknow error"
 	},
 	"GLOBAL": {
 		"batches": "Batches",
+		"cancel": "",
+		"confirm": "",
 		"delete": "",
+		"disable": "",
+		"enable": "",
 		"home": "Home",
 		"language": "Language",
 		"log_out": "Log out",
@@ -23,6 +28,7 @@
 		"register": "Register an account",
 		"settings": "",
 		"submit": "Submit",
+		"update": "",
 		"upload": "Upload"
 	},
 	"HOME": {
@@ -61,7 +67,15 @@
 		"upload_success": "File upload successfully"
 	},
 	"USER": {
+		"active": "",
+		"confirm_delete": "",
+		"confirm_disable": "",
+		"confirm_enable": "",
+		"disable": "",
+		"enable": "",
 		"firstname": "Firstname",
+		"id": "",
+		"inactive": "",
 		"lastname": "Lastname",
 		"modify": "Modify",
 		"modify_my_profile": "Modify my profile",
@@ -71,6 +85,8 @@
 		"old_password": "Old password",
 		"password": "Password",
 		"profile_updated": "Profile updated",
+		"role": "",
+		"status": "",
 		"username": "Username"
 	},
 	"VERIFIER": {

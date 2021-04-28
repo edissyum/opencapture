@@ -8,8 +8,7 @@ export class PrivilegesService {
 
     constructor(
         private userService: UserService
-    ) {
-    }
+    ) { }
 
     hasPrivilege(privilege_id: any) {
         let found = false

@@ -26,6 +26,9 @@ def retrieve_users(args):
     users = db.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['users'],
+        'where': ['status NOT IN (%s)'],
+        'data': ['DEL'],
+        'order_by': ['id ASC'],
         'limit': str(args['limit']) if 'limit' in args else [],
         'offset': str(args['offset']) if 'offset' in args else [],
     })
@@ -47,8 +50,25 @@ def get_user_by_id(args):
     })
 
     if not user:
-        error = gettext('ERROR_WHILE_RETRIEVING_USER')
+        error = gettext('ERROR_WHILE_UPATING_USER')
     else:
         user = user[0]
+
+    return user, error
+
+
+def update_user(args):
+    db = get_db()
+    error = None
+
+    user = db.update({
+        'table': ['users'],
+        'set': args['set'],
+        'where': ['id = %s'],
+        'data': [args['user_id']]
+    })
+
+    if user[0] is False:
+        error = gettext('PROFILE_UPDATE_ERROR')
 
     return user, error

@@ -5,7 +5,7 @@ CREATE TABLE "users"
     "firstname"     VARCHAR(255)       NOT NULL,
     "lastname"      VARCHAR(255)       NOT NULL,
     "password"      VARCHAR(255)       NOT NULL,
-    "enabled"       INTEGER    DEFAULT 1,
+    "enabled"       BOOLEAN    DEFAULT true,
     "status"        VARCHAR(5) DEFAULT 'OK',
     "creation_date" TIMESTAMP  DEFAULT (CURRENT_TIMESTAMP),
     "role"          INTEGER DEFAULT 3
