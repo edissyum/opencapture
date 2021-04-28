@@ -17,13 +17,25 @@
 
 from flask import Blueprint, request, make_response, jsonify
 from ..controllers.auth import token_required
-from ..models import roles
+from ..controllers import roles
 
 bp = Blueprint('roles', __name__, url_prefix='/ws/')
 
 
-@bp.route('roles/get', methods=['GET'])
+@bp.route('roles/list', methods=['GET'])
 @token_required
-def get_roles():
-    _roles = roles.get_roles()
+def retrieve_roles():
+    args = {
+        'select': ['*', 'count(*) OVER() as total'],
+        'offset': request.args['offset'] if 'offset' in request.args else '',
+        'limit': request.args['limit'] if 'limit' in request.args else ''
+    }
+    _roles = roles.retrieve_roles(args)
     return make_response(jsonify(_roles[0])), _roles[1]
+
+
+@bp.route('roles/delete/<int:role_id>', methods=['DELETE'])
+@token_required
+def delete_user(role_id):
+    res = roles.delete_role(role_id)
+    return make_response(jsonify(res[0])), res[1]

@@ -77,6 +77,7 @@ export class UserProfileComponent implements OnInit {
     }
 
     ngOnInit(){
+        console.log(this.userService.getUserFromLocal()['privileges'])
         this.userId = this.route.snapshot.params['id'];
         let headers = this.authService.headers;
 
@@ -87,9 +88,9 @@ export class UserProfileComponent implements OnInit {
             }
         }
 
-        this.http.get(API_URL + '/ws/roles/get', {headers}).pipe(
+        this.http.get(API_URL + '/ws/roles/list', {headers}).pipe(
             tap((data: any) => {
-                data.forEach((element: any) => {
+                data.roles.forEach((element: any) => {
                     if (element.editable){
                         this.roles.push(element)
                     }else{
@@ -106,7 +107,7 @@ export class UserProfileComponent implements OnInit {
             })
         ).subscribe()
 
-        this.http.get(API_URL + '/ws/user/getById/' + this.userId, {headers}).pipe(
+        this.http.get(API_URL + '/ws/users/getById/' + this.userId, {headers}).pipe(
             tap((data: any) => {
                 this.profile = data;
                 // console.log(this.profile)
@@ -145,10 +146,6 @@ export class UserProfileComponent implements OnInit {
         return state;
     }
 
-    // async getRoles(){
-    //
-    // }
-
     onSubmit(){
         if(this.isValidForm()){
             const user : any = {};
@@ -157,8 +154,9 @@ export class UserProfileComponent implements OnInit {
             this.profileForm.forEach(element => {
                 user[element.id] = element.control.value;
             });
+
             this.http.put(
-                API_URL + '/ws/user/update/' + this.userId,
+                API_URL + '/ws/users/update/' + this.userId,
                 {
                     'args': user,
                     'lang': this.localeService.currentLang

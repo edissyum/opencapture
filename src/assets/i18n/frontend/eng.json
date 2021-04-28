@@ -22,13 +22,13 @@
 		"disable": "",
 		"enable": "",
 		"home": "Home",
+		"id": "",
 		"language": "Language",
 		"log_out": "Log out",
 		"login": "Login",
 		"register": "Register an account",
 		"settings": "",
 		"submit": "Submit",
-		"update": "",
 		"upload": "Upload"
 	},
 	"HOME": {
@@ -36,13 +36,23 @@
 		"verifier": "Open-Capture verifier"
 	},
 	"PAGINATOR": {
+		"first_page": "",
 		"items_per_page": "",
+		"last_page": "",
 		"next_page": "",
 		"page": "",
 		"previous_page": ""
 	},
+	"ROLE": {
+		"editable": "",
+		"label": "",
+		"label_short": "",
+		"non_editable": "",
+		"update": ""
+	},
 	"SETTINGS": {
 		"abouts_us": "",
+		"administration": "",
 		"connector_EDM": "",
 		"custom_fields": "",
 		"document_separator": "",
@@ -74,7 +84,6 @@
 		"disable": "",
 		"enable": "",
 		"firstname": "Firstname",
-		"id": "",
 		"inactive": "",
 		"lastname": "Lastname",
 		"modify": "Modify",
@@ -87,6 +96,7 @@
 		"profile_updated": "Profile updated",
 		"role": "",
 		"status": "",
+		"update": "",
 		"username": "Username"
 	},
 	"VERIFIER": {

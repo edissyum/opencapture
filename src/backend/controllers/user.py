@@ -14,18 +14,13 @@
 # along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
-# @dev : Oussama Brich <oussama.brich@edissyum.com>
 
-import datetime
-from flask import Blueprint, flash, g, redirect, render_template, request, url_for
+from flask import flash, g, redirect, render_template, request, url_for
 
 from flask_babel import gettext
-from flask_paginate import Pagination, get_page_args
 from werkzeug.security import check_password_hash, generate_password_hash
 from import_controllers import pdf
 from ..models import user
-
-bp = Blueprint('user', __name__, url_prefix='/user')
 
 
 def retrieve_users(args):
@@ -40,7 +35,7 @@ def retrieve_users(args):
         return response, 200
     else:
         response = {
-            "errors": "ERROR",
+            "errors": gettext("USERS_ERROR"),
             "message": error
         }
         return response, 401
@@ -69,7 +64,7 @@ def retrieve_user_by_id(user_id, get_password=False):
 def update_user(user_id, data):
     _vars = pdf.init()
     _db = _vars[0]
-    user_info, error = user.get_user_by_id(user_id)
+    user_info, error = user.get_user_by_id({'user_id': user_id})
 
     if error is None:
         if data['new_password'] and data['old_password'] and not check_password_hash(user_info[0]['password'], data['old_password']):
@@ -82,6 +77,7 @@ def update_user(user_id, data):
         _set = {
             'firstname': data['firstname'],
             'lastname': data['lastname'],
+            'role': data['role']
         }
 
         if data['new_password']:
@@ -93,7 +89,7 @@ def update_user(user_id, data):
 
         if error is None:
             days_before_exp = 1
-            user_info = user.get_user_by_id(user_id)
+            user_info = user.get_user_by_id({'user_id': user_id})
             return {"user": user_info[0], "days_before_exp": days_before_exp}, 200
         else:
             response = {
@@ -178,32 +174,6 @@ def enable_user(user_id):
         return response, 401
 
 
-@bp.route('/profile', methods=('GET', 'POST'), defaults=({'user_id': None}))
-@bp.route('/profile/<int:user_id>', methods=('GET', 'POST'))
-def profile(user_id):
-    if user_id is None:
-        user_id = g.user['id']
-    user_info = check_user(user_id)
-
-    if user_info is False:
-        flash(gettext('ERROR_WHILE_RETRIEVING_USER'))
-        return redirect(url_for('user.profile', user_id=user_id))
-
-    if request.method == 'POST':
-        if 'old_password' in request.form:
-            old = request.form['old_password']
-            new = request.form['new_password']
-            change_password(old, new, user_id)
-
-        if 'role' in request.form:
-            role = request.form['role']
-            if role != user_info['role']:
-                change_role(role, user_id)
-                user_info['role'] = role
-
-    return render_template('templates/users/user_profile.html', user=user_info)
-
-
 def change_role(role, user_id):
     _vars = pdf.init()
     _db = _vars[0]
@@ -249,35 +219,3 @@ def change_password(old_password, new_password, user_id):
                 flash(gettext('UPDATE_ERROR') + ' : ' + str(res[1]))
     else:
         flash(gettext('ERROR_WHILE_RETRIEVING_USER'))
-
-
-@bp.route('/profile/reset_password', defaults=({'user_id': None}))
-@bp.route('/profile/<int:user_id>/reset_password')
-def reset_password(user_id):
-    _vars = pdf.init()
-    _db = _vars[0]
-    _cfg = _vars[1].cfg
-    default_password = _cfg['GLOBAL']['defaultpassword']
-
-    if user_id is None:
-        user_id = g.user['id']
-    user_info = check_user(user_id)
-
-    if user_info is not False:
-        res = _db.update({
-            'table': ['users'],
-            'set': {
-                'password': generate_password_hash(default_password)
-            },
-            'where': ['id = ?'],
-            'data': [user_id]
-        })
-
-        if res[0] is not False:
-            flash(gettext('UPDATE_OK'))
-        else:
-            flash(gettext('UPDATE_ERROR') + ' : ' + str(res[1]))
-    else:
-        flash(gettext('ERROR_WHILE_RETRIEVING_USER'))
-
-    return redirect(url_for('user.profile', user_id=user_id))

@@ -13,14 +13,14 @@
                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
                     </mat-form-field>
                     <mat-form-field class="block" *ngIf="field.type == 'select'">
-                        <mat-label>{{ field.label }}</mat-label>
-                        <mat-select [(value)]="field.control.value">
+                        <mat-label>{{ field.label | translate }}</mat-label>
+                        <mat-select [disabled]="this.userService.getUserFromLocal()['privileges'] != '*'" [(value)]="field.control.value">
                             <mat-option *ngFor="let option of field.values" [value]="option['id']">{{ option['label'] }}</mat-option>
                         </mat-select>
                     </mat-form-field>
                 </ng-container>
                 <div class="button">
-                    <button class="hover:bg-green-400 hover:text-white transition duration-300" type="submit" mat-button>
+                    <button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300" type="submit" mat-button>
                         {{ 'USER.modify' | translate }}
                     </button>
                 </div>

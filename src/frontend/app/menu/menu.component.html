@@ -21,7 +21,7 @@
             </div>
             <div class="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
                 <div class="flex-shrink-0 flex items-center">
-                    <img class="hidden lg:block h-10 w-auto" src="assets/imgs/open-capture_verifier.png" alt="Workflow">
+                    <img class="hidden lg:block h-10 w-auto" src="assets/imgs/logo_opencapture.png" alt="Open-Capture logo">
                 </div>
                 <div class="hidden sm:block sm:ml-6">
                     <div class="flex space-x-4">
@@ -76,15 +76,13 @@
                            role="menuitem">{{ 'GLOBAL.log_out' | translate }}</a>
                     </div>
                 </div>
-                <div class="ml-3 relative" *ngIf="location.path() !== '/home'">
-                    <div>
-                        <button id="settings-menu" aria-haspopup="true"
-                                mat-mini-fab routerLink="/settings/panel"
-                                [class.settings_active]="location.path().includes('settings')"
-                                class="bg-green-400 hover:ring-4 hover:ring-offset-4 hover:ring-green-400 hover:ring-opacity-60">
-                            <i class="fas fa-cog "></i>
-                        </button>
-                    </div>
+                <div class="ml-3 relative" *ngIf="this.getSplitterOrVerifier() != undefined && this.privilegesService.hasPrivilege('settings')">
+                    <button id="settings-menu" aria-haspopup="true"
+                            mat-mini-fab routerLink="/settings/panel"
+                            [class.settings_active]="location.path().includes('settings')"
+                            class="bg-green-400 hover:ring-4 hover:ring-offset-4 hover:ring-green-400 hover:ring-opacity-60">
+                        <i class="fas fa-cog "></i>
+                    </button>
                 </div>
                 <div class="ml-3 relative">
                     <mat-form-field class="origin-top-right right-0 mt-4 w-32">

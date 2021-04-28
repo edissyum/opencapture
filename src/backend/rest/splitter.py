@@ -69,5 +69,4 @@ def retrieve_batch_pages(batch_id):
 def validate():
     data = request.data
     data = json.loads(data)
-    print(data['documents'][0])
     return make_response(jsonify({})), 200

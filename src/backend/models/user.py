@@ -34,7 +34,7 @@ def retrieve_users(args):
     })
 
     if not users:
-        error = gettext('USER_ERROR')
+        error = gettext('USER_RETRIEVE_ERROR')
 
     return users, error
 
@@ -50,7 +50,7 @@ def get_user_by_id(args):
     })
 
     if not user:
-        error = gettext('ERROR_WHILE_UPATING_USER')
+        error = gettext('USER_RETRIEVE_ERROR')
     else:
         user = user[0]
 
@@ -69,6 +69,6 @@ def update_user(args):
     })
 
     if user[0] is False:
-        error = gettext('PROFILE_UPDATE_ERROR')
+        error = gettext('USERS_UPDATE_ERROR')
 
     return user, error

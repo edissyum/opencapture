@@ -22,13 +22,13 @@
 		"disable": "Désactiver",
 		"enable": "Activer",
 		"home": "Accueil",
+		"id": "Identifiant technique",
 		"language": "Langage",
 		"log_out": "Déconnexion",
 		"login": "Connexion",
 		"register": "Créer un compte",
 		"settings": "Paramètres",
 		"submit": "Soumettre",
-		"update": "Mettre à jour",
 		"upload": "Téléversement"
 	},
 	"HOME": {
@@ -36,13 +36,23 @@
 		"verifier": "Open-Capture vérificateur"
 	},
 	"PAGINATOR": {
+		"first_page": "Première page",
 		"items_per_page": "Nombre de lignes",
+		"last_page": "Dernière page",
 		"next_page": "Page suivante",
 		"page": "Page",
 		"previous_page": "Page précédente"
 	},
+	"ROLE": {
+		"editable": "Modifiable",
+		"label": "Libellé",
+		"label_short": "Libellé technique",
+		"non_editable": "Non modifiable",
+		"update": "Mettre à jour le rôle"
+	},
 	"SETTINGS": {
 		"abouts_us": "À propos",
+		"administration": "Panneau d'administration",
 		"connector_EDM": "Connecteur GED",
 		"custom_fields": "Champs personnalisés",
 		"document_separator": "Séparateur de document",
@@ -74,7 +84,6 @@
 		"disable": "Désactiver l'utilisateur",
 		"enable": "Activer l'utilisateur",
 		"firstname": "Prénom",
-		"id": "Identifiant technique",
 		"inactive": "Inactif",
 		"lastname": "Nom de famille",
 		"modify": "Modifier",
@@ -87,6 +96,7 @@
 		"profile_updated": "Profil mis à jour",
 		"role": "Rôle",
 		"status": "Status",
+		"update": "Modifier l'utilisateur",
 		"username": "Nom d'utilisateur"
 	},
 	"VERIFIER": {

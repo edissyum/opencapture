@@ -59,6 +59,7 @@ CREATE TABLE "roles"
     "id"    SERIAL UNIQUE PRIMARY KEY,
     "label_short" VARCHAR(10),
     "label" VARCHAR(20),
+    "status" VARCHAR(3) DEFAULT 'OK',
     "editable" BOOLEAN
 );
 

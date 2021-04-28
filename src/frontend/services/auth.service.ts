@@ -55,6 +55,7 @@ export class AuthService {
     clearTokens() {
         this.localStorage.deleteCookie('OpenCaptureForInvoicesToken');
         this.localStorage.deleteCookie('OpenCaptureForInvoicesToken_2');
+        this.localStorage.remove('splitter_or_verifier');
     }
 
     logout(){

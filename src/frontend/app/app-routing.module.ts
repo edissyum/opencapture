@@ -22,16 +22,16 @@ import { HasPrivilegeService } from "../services/has-privilege.service";
 
 const routes: Routes = [
     {path: '', redirectTo: 'home', pathMatch: 'full'},
-    {path: 'home', component: HomeComponent , data: { title: marker('GLOBAL.home'), image: 'assets/imgs/open-capture.png' }, canActivate: [LoginRequiredService]},
-    {path: 'login', component: LoginComponent , data: { title: marker('GLOBAL.login'), image: 'assets/imgs/open-capture.png' }, canActivate: [LoginRedirectService]},
-    {path: 'register', component: RegisterComponent , data: { title: marker('GLOBAL.register'), image: 'assets/imgs/open-capture.png' }, canActivate: [LoginRedirectService]},
+    {path: 'home', component: HomeComponent , data: { title: marker('GLOBAL.home'), image: 'assets/imgs/logo_opencapture.png' }, canActivate: [LoginRequiredService]},
+    {path: 'login', component: LoginComponent , data: { title: marker('GLOBAL.login')}, canActivate: [LoginRedirectService]},
+    {path: 'register', component: RegisterComponent , data: { title: marker('GLOBAL.register')}, canActivate: [LoginRedirectService]},
     {path: 'logout', component: LogoutComponent , canActivate: [LoginRequiredService]},
     {path: 'profile/:id', component: UserProfileComponent, canActivate: [LoginRequiredService]},
 
     {
         path: 'splitter/viewer/:id',
         component: SplitterViewerComponent,
-        data: {title: marker('SPLITTER.viewer'), image: 'assets/imgs/Open-Capture_Splitter.png', privilege: 'splitter' },
+        data: {title: marker('SPLITTER.viewer'), privilege: 'splitter' },
         canActivate: [
             LoginRequiredService,
             HasPrivilegeService
@@ -40,7 +40,7 @@ const routes: Routes = [
     {
         path: 'splitter/list',
         component: SplitterListComponent,
-        data: {title: marker('SPLITTER.list'), image: 'assets/imgs/Open-Capture_Splitter.png', privilege: 'splitter'},
+        data: {title: marker('SPLITTER.list'), privilege: 'splitter'},
         canActivate: [
             LoginRequiredService,
             HasPrivilegeService
@@ -52,7 +52,7 @@ const routes: Routes = [
     {
         path: 'verifier/viewer',
         component: VerifierViewerComponent,
-        data: {title: marker('VERIFIER.viewer'), image: 'assets/imgs/open-capture_verifier.png', privilege: 'verifier'},
+        data: {title: marker('VERIFIER.viewer'), privilege: 'verifier'},
         canActivate: [
             LoginRequiredService,
             HasPrivilegeService
@@ -61,7 +61,7 @@ const routes: Routes = [
     {
         path: 'verifier/list',
         component: VerifierListComponent,
-        data: {title: marker('VERIFIER.list'), image: 'assets/imgs/open-capture_verifier.png', privilege: 'verifier'},
+        data: {title: marker('VERIFIER.list'), privilege: 'verifier'},
         canActivate: [
             LoginRequiredService,
             HasPrivilegeService
@@ -71,7 +71,7 @@ const routes: Routes = [
     {
         path: 'upload',
         component: UploadComponent,
-        data: {title: marker('GLOBAL.upload'), image: 'assets/imgs/open-capture_verifier.png', privilege: 'upload'},
+        data: {title: marker('GLOBAL.upload'), privilege: 'upload'},
         canActivate: [
             LoginRequiredService,
             HasPrivilegeService
@@ -80,7 +80,7 @@ const routes: Routes = [
     {
         path: 'settings/panel',
         component: PanelComponent,
-        data: {title: marker('GLOBAL.settings'), image: 'assets/imgs/open-capture_verifier.png', privilege: 'settings'},
+        data: {title: marker('GLOBAL.settings'), privilege: 'settings'},
         canActivate: [
             LoginRequiredService,
             HasPrivilegeService

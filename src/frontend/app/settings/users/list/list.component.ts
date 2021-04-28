@@ -13,12 +13,14 @@ import { ConfirmDialogComponent } from "../../../../services/confirm-dialog/conf
 import { MatDialog } from "@angular/material/dialog";
 import { LocalStorageService } from "../../../../services/local-storage.service";
 import { LastUrlService } from "../../../../services/last-url.service";
+import {Sort} from "@angular/material/sort";
 
 @Component({
     selector: 'app-users-list',
     templateUrl: './list.component.html',
     styleUrls: ['./list.component.scss']
 })
+
 export class UserListComponent implements OnInit {
     columnsToDisplay: string[]    = ['id', 'username', 'firstname', 'lastname', 'role','status', 'actions'];
     users : any                   = [];
@@ -64,9 +66,9 @@ export class UserListComponent implements OnInit {
     loadUsers(): void{
         let headers = this.authService.headers;
         let roles: never[] = []
-        this.http.get(API_URL + '/ws/roles/get', {headers}).pipe(
+        this.http.get(API_URL + '/ws/roles/list', {headers}).pipe(
             tap((data: any) => {
-                roles = data
+                roles = data.roles
             }),
             catchError((err: any) => {
                 console.debug(err);
@@ -75,7 +77,7 @@ export class UserListComponent implements OnInit {
             })
         ).subscribe()
 
-        this.http.get(API_URL + '/ws/user/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers}).pipe(
+        this.http.get(API_URL + '/ws/users/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers}).pipe(
             tap((data: any) => {
                 this.total = data.users[0].total
                 this.users = data.users;
@@ -157,7 +159,7 @@ export class UserListComponent implements OnInit {
     deleteUser(user_id: number){
         let headers = this.authService.headers;
         if (user_id !== undefined){
-            this.http.delete(API_URL + '/ws/user/delete/' + user_id, {headers}).pipe(
+            this.http.delete(API_URL + '/ws/users/delete/' + user_id, {headers}).pipe(
                 tap((data: any) => {
                     this.loadUsers()
                 }),
@@ -173,7 +175,7 @@ export class UserListComponent implements OnInit {
     disableUser(user_id: number){
         let headers = this.authService.headers;
         if (user_id !== undefined){
-            this.http.put(API_URL + '/ws/user/disable/' + user_id, null, {headers}).pipe(
+            this.http.put(API_URL + '/ws/users/disable/' + user_id, null, {headers}).pipe(
                 tap((data: any) => {
                     this.loadUsers()
                 }),
@@ -189,7 +191,7 @@ export class UserListComponent implements OnInit {
     enableUser(user_id: number){
         let headers = this.authService.headers;
         if (user_id !== undefined){
-            this.http.put(API_URL + '/ws/user/enable/' + user_id, null, {headers}).pipe(
+            this.http.put(API_URL + '/ws/users/enable/' + user_id, null, {headers}).pipe(
                 tap((data: any) => {
                     this.loadUsers()
                 }),
@@ -200,5 +202,31 @@ export class UserListComponent implements OnInit {
                 })
             ).subscribe()
         }
+    }
+
+    sortData(sort: Sort){
+        let data = this.users.slice()
+        if(!sort.active || sort.direction === ''){
+            this.users = data
+            return;
+        }
+
+        this.users = data.sort((a: any, b: any) => {
+            const isAsc = sort.direction === 'asc';
+            switch (sort.active) {
+                case 'id': return this.compare(a.id, b.id, isAsc);
+                case 'username': return this.compare(a.username, b.username, isAsc);
+                case 'firstname': return this.compare(a.firstname, b.firstname, isAsc);
+                case 'lastname': return this.compare(a.lastname, b.lastname, isAsc);
+                case 'role': return this.compare(a.role, b.role, isAsc);
+                case 'status': return this.compare(a.status, b.status, isAsc);
+                default: return 0;
+            }
+        });
+
+    }
+
+    compare(a: number | string, b: number | string, isAsc: boolean) {
+        return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
     }
 }

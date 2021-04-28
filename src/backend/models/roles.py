@@ -19,13 +19,18 @@ from flask_babel import gettext
 from ..controllers.db import get_db
 
 
-def get_roles():
+def retrieve_roles(args):
     db = get_db()
     error = None
 
     roles = db.select({
-        'select': ['*'],
+        'select': ['*'] if 'select' not in args else args['select'],
         'table': ['roles'],
+        'where': ['status NOT IN (%s)'],
+        'data': ['DEL'],
+        'order_by': ['id ASC'],
+        'limit': str(args['limit']) if 'limit' in args else [],
+        'offset': str(args['offset']) if 'offset' in args else [],
     })
 
     if not roles:
@@ -34,7 +39,7 @@ def get_roles():
     return roles, error
 
 
-def get_role_by_id(args):
+def retrieve_role_by_id(args):
     db = get_db()
     error = None
     role_id = args['role_id']
@@ -49,5 +54,22 @@ def get_role_by_id(args):
         error = gettext('ERROR_RETRIEVING_ROLE')
     else:
         role = role[0]
+
+    return role, error
+
+
+def update_role(args):
+    db = get_db()
+    error = None
+
+    role = db.update({
+        'table': ['roles'],
+        'set': args['set'],
+        'where': ['id = %s'],
+        'data': [args['role_id']]
+    })
+
+    if role[0] is False:
+        error = gettext('ROLE_UPDATE_ERROR')
 
     return role, error

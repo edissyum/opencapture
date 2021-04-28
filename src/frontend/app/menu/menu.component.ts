@@ -4,9 +4,11 @@ import { animate, state, style, transition, trigger } from "@angular/animations"
 import { UserService } from "../../services/user.service";
 import { LocaleService } from "../../services/locale.service";
 import { LocalStorageService } from "../../services/local-storage.service";
-import {HttpHeaders} from "@angular/common/http";
-import {AuthService} from "../../services/auth.service";
-import {PrivilegesService} from "../../services/privileges.service";
+import { HttpHeaders } from "@angular/common/http";
+import { AuthService } from "../../services/auth.service";
+import { PrivilegesService } from "../../services/privileges.service";
+import {filter, map} from "rxjs/operators";
+import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
 
 @Component({
     selector: 'app-menu',
@@ -31,12 +33,15 @@ export class MenuComponent implements OnInit {
     profileDropdownCurrentState : string = 'hide';
     profileSettingsCurrentState : string = 'hide';
     mobileMenuState             : string = 'hide';
+    image_url                   : string = 'assets/imgs/logo_opencapture.png';
 
     constructor(
+        public router: Router,
         public location: Location,
         public userService: UserService,
         private authService: AuthService,
         public localeService: LocaleService,
+        private activatedRoute: ActivatedRoute,
         public privilegesService: PrivilegesService,
         public localeStorageService: LocalStorageService
     ) {

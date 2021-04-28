@@ -31,6 +31,9 @@ import { PanelComponent } from './settings/panel/panel.component';
 import { MatPaginatorIntl } from "@angular/material/paginator";
 import { CustomMatPaginatorIntl } from "./custom-mat-paginator";
 import { LastUrlService } from "../services/last-url.service";
+import { AboutUsComponent } from './settings/about-us/about-us.component';
+import { VersionUpdateComponent } from './settings/version-update/version-update.component';
+import { RolesComponent } from './settings/roles/roles.component';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -52,7 +55,10 @@ export function createTranslateLoader(http: HttpClient) {
     UserProfileComponent,
     UploadComponent,
     UserListComponent,
-    PanelComponent
+    PanelComponent,
+    AboutUsComponent,
+    VersionUpdateComponent,
+    RolesComponent
   ],
   imports: [
     BrowserModule,
