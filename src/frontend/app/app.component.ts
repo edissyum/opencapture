@@ -1,12 +1,14 @@
 import {Component, OnInit} from '@angular/core';
 import { Location } from '@angular/common';
 import { Title } from '@angular/platform-browser';
-import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
+import {ActivatedRoute, NavigationEnd, NavigationError, NavigationStart, Router} from '@angular/router';
 import { filter, map } from 'rxjs/operators';
 import { TranslateService } from "@ngx-translate/core";
 import { HttpClient } from "@angular/common/http";
 
 import { NotificationService } from "../services/notifications/notifications.service";
+import {LocaleService} from "../services/locale.service";
+import {LocalStorageService} from "../services/local-storage.service";
 
 @Component({
     selector: 'app-root',
@@ -26,9 +28,9 @@ export class AppComponent implements OnInit {
         private titleService: Title,
         private notify:NotificationService,
         private translate: TranslateService,
-        private activatedRoute: ActivatedRoute
-    ) {
-    }
+        private activatedRoute: ActivatedRoute,
+        private localeStorageService: LocalStorageService
+    ) { }
 
     ngOnInit() {
         const appTitle = this.titleService.getTitle();
@@ -36,14 +38,20 @@ export class AppComponent implements OnInit {
             filter(event => event instanceof NavigationEnd),
             map(() => {
                 let child = this.activatedRoute.firstChild;
-                let child_image = ''
+                let child_image = 'assets/imgs/logo_opencapture.png'
                 if (child) {
                     while (child.firstChild) {
                         child = child.firstChild;
                     }
-
-                    if (child.snapshot.data['image']) {
-                        child_image = child.snapshot.data['image']
+                    if (this.router.url != '/home' && !this.router.url.includes('settings')) {
+                        let splitter_or_verifier = this.localeStorageService.get('splitter_or_verifier')
+                        if (splitter_or_verifier != undefined){
+                            if (splitter_or_verifier == 'splitter'){
+                                child_image = 'assets/imgs/logo_splitter.png'
+                            }else{
+                                child_image = 'assets/imgs/logo_verifier.png'
+                            }
+                        }
                     }
 
                     if (child.snapshot.data['title']) {

@@ -15,6 +15,7 @@
 		"unknow_error": "Unknow error"
 	},
 	"GLOBAL": {
+		"actions": "",
 		"batches": "Batches",
 		"cancel": "",
 		"confirm": "",
@@ -44,6 +45,7 @@
 		"previous_page": ""
 	},
 	"ROLE": {
+		"confirm_delete": "",
 		"editable": "",
 		"label": "",
 		"label_short": "",
@@ -66,7 +68,6 @@
 	},
 	"SPLITTER": {
 		"list": "List of batches",
-		"search": "",
 		"viewer": "Batch view"
 	},
 	"UPLOAD": {
@@ -78,6 +79,7 @@
 	},
 	"USER": {
 		"active": "",
+		"add": "",
 		"confirm_delete": "",
 		"confirm_disable": "",
 		"confirm_enable": "",
@@ -98,6 +100,9 @@
 		"status": "",
 		"update": "",
 		"username": "Username"
+	},
+	"USERS": {
+		"list": ""
 	},
 	"VERIFIER": {
 		"list": "Invoices",

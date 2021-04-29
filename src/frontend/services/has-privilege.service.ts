@@ -17,20 +17,22 @@ export class HasPrivilegeService {
     ) {
     }
 
-    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-        if (route.data.privilege !== undefined){
-            let hasPrivilege = this.privilegesService.hasPrivilege(route.data.privilege)
-            if (hasPrivilege){
-                return true
-            }else{
-                this.translate.get('ERROR.unauthorized').subscribe((translated: string) => {
-                    this.notify.error(translated)
-                    this.router.navigateByUrl('/home')
-                });
-                return false
-            }
+    canActivate(route: ActivatedRouteSnapshot): boolean {
+        if (route.data.privileges !== undefined){
+            let return_value = true
+            route.data.privileges.forEach((privilege:any) => {
+                let hasPrivilege = this.privilegesService.hasPrivilege(privilege)
+                if (!hasPrivilege){
+                    this.translate.get('ERROR.unauthorized').subscribe((translated: string) => {
+                        this.notify.error(translated)
+                        this.router.navigateByUrl('/home')
+                    });
+                    return_value = false
+                }
+            })
+            return return_value
         }else{
-          return true
+          return false
         }
     }
 }

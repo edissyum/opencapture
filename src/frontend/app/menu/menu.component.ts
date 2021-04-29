@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import { Location } from "@angular/common";
 import { animate, state, style, transition, trigger } from "@angular/animations";
 import { UserService } from "../../services/user.service";
@@ -30,10 +30,10 @@ import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
 })
 
 export class MenuComponent implements OnInit {
+    @Input() image: any;
     profileDropdownCurrentState : string = 'hide';
     profileSettingsCurrentState : string = 'hide';
     mobileMenuState             : string = 'hide';
-    image_url                   : string = 'assets/imgs/logo_opencapture.png';
 
     constructor(
         public router: Router,
@@ -41,11 +41,9 @@ export class MenuComponent implements OnInit {
         public userService: UserService,
         private authService: AuthService,
         public localeService: LocaleService,
-        private activatedRoute: ActivatedRoute,
         public privilegesService: PrivilegesService,
         public localeStorageService: LocalStorageService
-    ) {
-    }
+    ) { }
 
     ngOnInit(): void {
         this.authService.headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.authService.getToken());

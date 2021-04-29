@@ -15,6 +15,7 @@
 		"unknow_error": "Erreur inconnue"
 	},
 	"GLOBAL": {
+		"actions": "Actions",
 		"batches": "Lots",
 		"cancel": "Annuler",
 		"confirm": "Confirmation",
@@ -44,6 +45,8 @@
 		"previous_page": "Page précédente"
 	},
 	"ROLE": {
+		"add": "Ajouter un rôle",
+		"confirm_delete": "",
 		"editable": "Modifiable",
 		"label": "Libellé",
 		"label_short": "Libellé technique",
@@ -66,7 +69,6 @@
 	},
 	"SPLITTER": {
 		"list": "Liste des lots",
-		"search": "Recherche",
 		"viewer": "Visualisation du lot"
 	},
 	"UPLOAD": {
@@ -78,6 +80,7 @@
 	},
 	"USER": {
 		"active": "Actif",
+		"add": "Ajouter un utilisateur",
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer l'utilisateur {{user}} ?",
 		"confirm_disable": "Êtes vous sûr de vouloir désactiver l'utilisateur {{user}} ?",
 		"confirm_enable": "Êtes vous sûr de vouloir ré-activer l'utilisateur {{user}} ?",

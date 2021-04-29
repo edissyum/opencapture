@@ -21,7 +21,7 @@
             </div>
             <div class="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
                 <div class="flex-shrink-0 flex items-center">
-                    <img class="hidden lg:block h-10 w-auto" src="assets/imgs/logo_opencapture.png" alt="Open-Capture logo">
+                    <img class="hidden lg:block h-10 w-auto" [src]="this.image" alt="Open-Capture logo">
                 </div>
                 <div class="hidden sm:block sm:ml-6">
                     <div class="flex space-x-4">
@@ -70,10 +70,18 @@
                             <i>{{ userService.user['role']['label'] }}</i>
                             <hr>
                         </span>
-                        <a *ngIf="location.path() !== '/home'" (click)="closeprofileDropDown()" routerLink="/profile/{{ userService.user['id'] }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative"
-                           role="menuitem">{{ 'USER.my_profile' | translate }}</a>
-                        <a (click)="closeprofileDropDown()" routerLink="/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative"
-                           role="menuitem">{{ 'GLOBAL.log_out' | translate }}</a>
+                        <a *ngIf="this.getSplitterOrVerifier() != undefined"
+                           (click)="closeprofileDropDown()" routerLink="/profile/{{ userService.user['id'] }}"
+                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative"
+                           role="menuitem">
+                            {{ 'USER.my_profile' | translate }}
+                        </a>
+                        <a (click)="closeprofileDropDown()"
+                           routerLink="/logout"
+                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative"
+                           role="menuitem">
+                            {{ 'GLOBAL.log_out' | translate }}
+                        </a>
                     </div>
                 </div>
                 <div class="ml-3 relative" *ngIf="this.getSplitterOrVerifier() != undefined && this.privilegesService.hasPrivilege('settings')">

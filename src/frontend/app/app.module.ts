@@ -12,6 +12,7 @@ import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 import { AppRoutingModule } from './app-routing.module';
+import { SettingsRoutingModule } from './settings/settings-routing.module';
 import { AppComponent } from './app.component';
 import { VerifierViewerComponent } from './verifier/viewer/viewer.component';
 import { VerifierListComponent } from './verifier/list/list.component';
@@ -26,14 +27,14 @@ import { NotFoundComponent } from './not-found/not-found.component';
 import { UserProfileComponent } from './profile/profile.component';
 import { UploadComponent } from './upload/upload.component';
 import { NgxFileDragDropModule } from "ngx-file-drag-drop";
-import { UserListComponent } from './settings/users/list/list.component';
+import { UsersListComponent} from './settings/users/list/users-list.component';
 import { PanelComponent } from './settings/panel/panel.component';
 import { MatPaginatorIntl } from "@angular/material/paginator";
 import { CustomMatPaginatorIntl } from "./custom-mat-paginator";
 import { LastUrlService } from "../services/last-url.service";
 import { AboutUsComponent } from './settings/about-us/about-us.component';
 import { VersionUpdateComponent } from './settings/version-update/version-update.component';
-import { RolesComponent } from './settings/roles/roles.component';
+import { RolesListComponent } from './settings/roles/list/roles-list.component';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -54,14 +55,15 @@ export function createTranslateLoader(http: HttpClient) {
     NotFoundComponent,
     UserProfileComponent,
     UploadComponent,
-    UserListComponent,
+    UsersListComponent,
     PanelComponent,
     AboutUsComponent,
     VersionUpdateComponent,
-    RolesComponent
+    RolesListComponent,
   ],
   imports: [
     BrowserModule,
+    SettingsRoutingModule,
     AppRoutingModule,
     AppMaterialModule,
     BrowserAnimationsModule,

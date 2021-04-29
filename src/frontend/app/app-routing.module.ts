@@ -4,7 +4,6 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 
 import { LoginRedirectService } from '../services/login-redirect.service';
 import { LoginRequiredService } from '../services/login-required.service';
-import { PrivilegesService } from "../services/privileges.service";
 
 import { LoginComponent } from './login/login.component';
 import { LogoutComponent } from './logout/logout.component';
@@ -17,21 +16,20 @@ import { SplitterListComponent } from "./splitter/list/list.component";
 import { VerifierViewerComponent } from './verifier/viewer/viewer.component';
 import { VerifierListComponent } from './verifier/list/list.component';
 import { UploadComponent } from "./upload/upload.component";
-import { PanelComponent } from "./settings/panel/panel.component";
 import { HasPrivilegeService } from "../services/has-privilege.service";
 
 const routes: Routes = [
     {path: '', redirectTo: 'home', pathMatch: 'full'},
-    {path: 'home', component: HomeComponent , data: { title: marker('GLOBAL.home'), image: 'assets/imgs/logo_opencapture.png' }, canActivate: [LoginRequiredService]},
-    {path: 'login', component: LoginComponent , data: { title: marker('GLOBAL.login')}, canActivate: [LoginRedirectService]},
-    {path: 'register', component: RegisterComponent , data: { title: marker('GLOBAL.register')}, canActivate: [LoginRedirectService]},
+    {path: 'home', component: HomeComponent , data: {title: marker('GLOBAL.home')}, canActivate: [LoginRequiredService]},
+    {path: 'login', component: LoginComponent , data: {title: marker('GLOBAL.login')}, canActivate: [LoginRedirectService]},
+    {path: 'register', component: RegisterComponent , data: {title: marker('GLOBAL.register')}, canActivate: [LoginRedirectService]},
     {path: 'logout', component: LogoutComponent , canActivate: [LoginRequiredService]},
     {path: 'profile/:id', component: UserProfileComponent, canActivate: [LoginRequiredService]},
 
     {
         path: 'splitter/viewer/:id',
         component: SplitterViewerComponent,
-        data: {title: marker('SPLITTER.viewer'), privilege: 'splitter' },
+        data: {title: marker('SPLITTER.viewer'), privileges: ['splitter']},
         canActivate: [
             LoginRequiredService,
             HasPrivilegeService
@@ -40,7 +38,7 @@ const routes: Routes = [
     {
         path: 'splitter/list',
         component: SplitterListComponent,
-        data: {title: marker('SPLITTER.list'), privilege: 'splitter'},
+        data: {title: marker('SPLITTER.list'), privileges: ['splitter']},
         canActivate: [
             LoginRequiredService,
             HasPrivilegeService
@@ -52,7 +50,7 @@ const routes: Routes = [
     {
         path: 'verifier/viewer',
         component: VerifierViewerComponent,
-        data: {title: marker('VERIFIER.viewer'), privilege: 'verifier'},
+        data: {title: marker('VERIFIER.viewer'), privileges: ['verifier']},
         canActivate: [
             LoginRequiredService,
             HasPrivilegeService
@@ -61,7 +59,7 @@ const routes: Routes = [
     {
         path: 'verifier/list',
         component: VerifierListComponent,
-        data: {title: marker('VERIFIER.list'), privilege: 'verifier'},
+        data: {title: marker('VERIFIER.list'), privileges: ['verifier']},
         canActivate: [
             LoginRequiredService,
             HasPrivilegeService
@@ -71,16 +69,7 @@ const routes: Routes = [
     {
         path: 'upload',
         component: UploadComponent,
-        data: {title: marker('GLOBAL.upload'), privilege: 'upload'},
-        canActivate: [
-            LoginRequiredService,
-            HasPrivilegeService
-        ]
-    },
-    {
-        path: 'settings/panel',
-        component: PanelComponent,
-        data: {title: marker('GLOBAL.settings'), privilege: 'settings'},
+        data: {title: marker('GLOBAL.upload'), privileges: ['upload']},
         canActivate: [
             LoginRequiredService,
             HasPrivilegeService

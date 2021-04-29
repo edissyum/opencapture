@@ -14,14 +14,15 @@ import { MatDialog } from "@angular/material/dialog";
 import { LocalStorageService } from "../../../../services/local-storage.service";
 import { LastUrlService } from "../../../../services/last-url.service";
 import {Sort} from "@angular/material/sort";
+import {SettingsService} from "../../../../services/settings.service";
 
 @Component({
     selector: 'app-users-list',
-    templateUrl: './list.component.html',
-    styleUrls: ['./list.component.scss']
+    templateUrl: './users-list.component.html',
+    styleUrls: ['./users-list.component.scss']
 })
 
-export class UserListComponent implements OnInit {
+export class UsersListComponent implements OnInit {
     columnsToDisplay: string[]    = ['id', 'username', 'firstname', 'lastname', 'role','status', 'actions'];
     users : any                   = [];
     pageSize : number             = 10;
@@ -39,6 +40,7 @@ export class UserListComponent implements OnInit {
         private translate: TranslateService,
         private notify: NotificationService,
         private dialog: MatDialog,
+        public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         private localeStorageService: LocalStorageService,
     ) { }
