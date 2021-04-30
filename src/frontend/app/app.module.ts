@@ -28,13 +28,14 @@ import { UserProfileComponent } from './profile/profile.component';
 import { UploadComponent } from './upload/upload.component';
 import { NgxFileDragDropModule } from "ngx-file-drag-drop";
 import { UsersListComponent} from './settings/users/list/users-list.component';
-import { PanelComponent } from './settings/panel/panel.component';
+import { SettingsComponent } from './settings/settings.component';
 import { MatPaginatorIntl } from "@angular/material/paginator";
 import { CustomMatPaginatorIntl } from "./custom-mat-paginator";
 import { LastUrlService } from "../services/last-url.service";
 import { AboutUsComponent } from './settings/about-us/about-us.component';
 import { VersionUpdateComponent } from './settings/version-update/version-update.component';
 import { RolesListComponent } from './settings/roles/list/roles-list.component';
+import { CreateUserComponent } from './settings/users/create/create-user.component';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -56,10 +57,11 @@ export function createTranslateLoader(http: HttpClient) {
     UserProfileComponent,
     UploadComponent,
     UsersListComponent,
-    PanelComponent,
+    SettingsComponent,
     AboutUsComponent,
     VersionUpdateComponent,
     RolesListComponent,
+    CreateUserComponent,
   ],
   imports: [
     BrowserModule,

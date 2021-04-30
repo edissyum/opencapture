@@ -2,6 +2,7 @@ import {Injectable, OnInit} from '@angular/core';
 import {TranslateService} from "@ngx-translate/core";
 import {LocalStorageService} from "./local-storage.service";
 import {LastUrlService} from "./last-url.service";
+import {Title} from "@angular/platform-browser";
 
 @Injectable({
     providedIn: 'root'
@@ -29,16 +30,31 @@ export class SettingsService {
     settings: any = {
         "general": [
             {
-                "id"    : "users",
-                "label" : this.translate.instant("SETTINGS.users_list"),
-                "icon"  : "fas fa-user",
-                "route" : '/settings/users'
+                "id"      : "users",
+                "label"   : this.translate.instant("SETTINGS.users_list"),
+                "icon"    : "fas fa-user",
+                "route"   : '/settings/general/users',
+                "actions" : [
+                    {
+                        "id"    : 'users_new',
+                        "label" : this.translate.instant("USER.add"),
+                        "route" : "/settings/general/users/new",
+                        "icon"  : "fas fa-plus"
+                    }
+                ]
             },
             {
-                "id"    : "roles",
-                "label" : this.translate.instant("SETTINGS.roles_list"),
-                "icon"  : "fas fa-users",
-                "route" : "/settings/roles"
+                "id"      : "roles",
+                "label"   : this.translate.instant("SETTINGS.roles_list"),
+                "icon"    : "fas fa-users",
+                "route"   : "/settings/general/roles",
+                "actions" : [
+                    {
+                        "label" : this.translate.instant("ROLE.add"),
+                        "route" : "/settings/general/roles/new",
+                        "icon"  : "fas fa-plus"
+                    }
+                ]
             },
             {
                 "id": "custom-fields",
@@ -55,6 +71,14 @@ export class SettingsService {
                 "label": this.translate.instant("SETTINGS.abouts_us"),
                 "icon": "fas fa-address-card",
             }
+        ],
+        "verifier": [
+            {
+                "id"    : "form_builder",
+                "label" : this.translate.instant("verifier.form_builder"),
+                "icon"  : "fas fa-tools",
+                "route" : "/settings/verifier/forms/builder"
+            },
         ],
         "splitter": [
             {
@@ -74,8 +98,9 @@ export class SettingsService {
             }
         ]
     };
-    
+
     constructor(
+        private titleService: Title,
         private translate: TranslateService,
         private routerExtService: LastUrlService,
         private localeStorageService: LocalStorageService
@@ -83,7 +108,6 @@ export class SettingsService {
 
     init(){
         let lastUrl = this.routerExtService.getPreviousUrl()
-        console.log(lastUrl)
         if (lastUrl.includes('roles') || lastUrl == '/' || lastUrl.includes('users')){
             let selectedSettings = this.localeStorageService.get('selectedSettings')
             let selectedParentSettings = this.localeStorageService.get('selectedParentSettings')
@@ -99,6 +123,12 @@ export class SettingsService {
             this.setSelectedSettings("users")
             this.setSelectedParentSettings('general')
         }
+    }
+
+    getTitle(){
+        let title = this.titleService.getTitle()
+        title = title.split(' - ')[0]
+        return title
     }
 
     changeSetting(settingId: string, settingParentId: string) {
@@ -132,6 +162,16 @@ export class SettingsService {
         return this.settings;
     }
 
+    getSelectedSettingInfo(value: any){
+        let data : any[] = []
+        this.settings[this.selectedParentSetting].forEach((element: any) =>{
+            if (element['id'] == this.selectedSetting){
+                data = element[value]
+            }
+        })
+        return data
+    }
+
     setIsMenuOpen(value: boolean){
         this.isMenuOpen = value;
     }
@@ -146,5 +186,9 @@ export class SettingsService {
 
     setSettingListOpenState(value: boolean){
         this.settingListOpenState = value;
+    }
+
+    toggleMenu() {
+        this.isMenuOpen = !this.isMenuOpen;
     }
 }

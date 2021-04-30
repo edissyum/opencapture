@@ -1,10 +1,10 @@
-<mat-sidenav-container class="absolute left-0 top-20 right-0 bottom-0">
-    <mat-sidenav mode="side" opened class="w-1/6 flex flex-col h-full " style="top:0.1rem">
+<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.2rem">
+    <mat-sidenav #sidenav mode="side" opened class="w-1/6 flex flex-col h-full border-r border-green-400" style="top:0.1rem">
         <h3 class="text-center text-gray-900" style="margin-top: 0.75rem">{{ "SETTINGS.administration" | translate }}</h3>
-        <mat-divider></mat-divider>
+        <mat-divider class="border-green-400"></mat-divider>
         <mat-nav-list>
             <h3 mat-subheader>{{ 'GLOBAL.actions' | translate}}</h3>
-            <a mat-list-item routerLink="/settings/roles/new">
+            <a mat-list-item routerLink="/settings/general/roles//new">
                 <mat-icon mat-list-icon class="fa fa-plus"></mat-icon>
                 <p mat-line>
                     {{ 'ROLE.add' | translate }}
@@ -14,8 +14,6 @@
         <mat-divider></mat-divider>
         <mat-nav-list>
             <mat-expansion-panel *ngFor="let parent of this.serviceSettings.getSettingsParent()"
-                                 (opened)="this.serviceSettings.getSettingListOpenState()"
-                                 (closed)="!this.serviceSettings.getSettingListOpenState()"
                                  [expanded]="this.serviceSettings.getSelectedParentSetting() == parent['id']">
                 <mat-expansion-panel-header>
                     <mat-panel-title>
@@ -38,7 +36,17 @@
             </mat-expansion-panel>
         </mat-nav-list>
     </mat-sidenav>
-    <mat-sidenav-content>
+    <mat-sidenav-content class="bg-white">
+        <div class="settings text-gray-900" style="margin-top: 0.75rem">
+            <button mat-icon-button
+                    (click)="sidenav.toggle(); this.serviceSettings.toggleMenu();" class="absolute left-2 top-2">
+                <i [class.fa-arrow-right]="!this.serviceSettings.getIsMenuOpen()" class="fas fa-arrow-left text-2xl"></i>
+            </button>
+            <div class="settings_title text-center">
+                <h3>{{ this.serviceSettings.getTitle() }}</h3>
+                <hr class="border-green-400">
+            </div>
+        </div>
         <mat-table matSort [dataSource]="roles" (matSortChange)="sortData($event)" class="w-full">
             <ng-container matColumnDef="id">
                 <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'GLOBAL.id' | translate }} </mat-header-cell>
@@ -53,7 +61,7 @@
                 <mat-cell *matCellDef="let element"> {{element.label}} </mat-cell>
             </ng-container>
             <ng-container matColumnDef="editable">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ROLE.editable' | translate }} </mat-header-cell>
+                <mat-header-cell *matHeaderCellDef> {{ 'ROLE.editable' | translate }} </mat-header-cell>
                 <mat-cell *matCellDef="let element">
                     <span *ngIf="element.editable"> <span class="text-green-400 text-4xl relative top-2 leading-4">&bull;</span> {{ 'ROLE.editable' | translate }}</span>
                     <span *ngIf="!element.editable"> <span class="text-red-600 text-4xl relative top-2 leading-4">&bull;</span> {{ 'ROLE.non_editable' | translate }}</span>

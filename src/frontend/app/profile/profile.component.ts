@@ -8,7 +8,7 @@ import {LocaleService} from "../../services/locale.service";
 import {API_URL} from "../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {NotificationService} from "../../services/notifications/notifications.service";
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import {PrivilegesService} from "../../services/privileges.service";
@@ -19,6 +19,7 @@ import {PrivilegesService} from "../../services/privileges.service";
     styleUrls: ['./profile.component.scss']
 })
 export class UserProfileComponent implements OnInit {
+    headers: HttpHeaders = this.authService.headers;
     userId      : any;
     profile     : any;
     roles       : any[] = [];
@@ -79,7 +80,6 @@ export class UserProfileComponent implements OnInit {
     ngOnInit(){
         console.log(this.userService.getUserFromLocal()['privileges'])
         this.userId = this.route.snapshot.params['id'];
-        let headers = this.authService.headers;
 
         if (this.userId != this.userService.user.id){
             if (!this.privilegeService.hasPrivilege('modify_user')){
@@ -88,7 +88,7 @@ export class UserProfileComponent implements OnInit {
             }
         }
 
-        this.http.get(API_URL + '/ws/roles/list', {headers}).pipe(
+        this.http.get(API_URL + '/ws/roles/list', {headers: this.headers}).pipe(
             tap((data: any) => {
                 data.roles.forEach((element: any) => {
                     if (element.editable){
@@ -107,7 +107,7 @@ export class UserProfileComponent implements OnInit {
             })
         ).subscribe()
 
-        this.http.get(API_URL + '/ws/users/getById/' + this.userId, {headers}).pipe(
+        this.http.get(API_URL + '/ws/users/getById/' + this.userId, {headers: this.headers}).pipe(
             tap((data: any) => {
                 this.profile = data;
                 // console.log(this.profile)
@@ -149,8 +149,6 @@ export class UserProfileComponent implements OnInit {
     onSubmit(){
         if(this.isValidForm()){
             const user : any = {};
-            let headers = this.authService.headers;
-
             this.profileForm.forEach(element => {
                 user[element.id] = element.control.value;
             });
@@ -162,7 +160,7 @@ export class UserProfileComponent implements OnInit {
                     'lang': this.localeService.currentLang
                 },
                 {
-                    headers
+                    headers: this.headers
                 },
             ).pipe(
                 tap((data: any) => {

@@ -15,6 +15,7 @@
 		"unknow_error": "Erreur inconnue"
 	},
 	"GLOBAL": {
+		"actions": "Actions",
 		"batches": "Lots",
 		"cancel": "Annuler",
 		"confirm": "Confirmation",
@@ -44,6 +45,8 @@
 		"previous_page": "Page précédente"
 	},
 	"ROLE": {
+		"add": "Ajouter un rôle",
+		"confirm_delete": "",
 		"editable": "Modifiable",
 		"label": "Libellé",
 		"label_short": "Libellé technique",
@@ -54,6 +57,7 @@
 		"abouts_us": "À propos",
 		"administration": "Panneau d'administration",
 		"connector_EDM": "Connecteur GED",
+		"create_user": "Créer un utilisateur",
 		"custom_fields": "Champs personnalisés",
 		"document_separator": "Séparateur de document",
 		"document_type": "Type de documents",
@@ -66,7 +70,6 @@
 	},
 	"SPLITTER": {
 		"list": "Liste des lots",
-		"search": "Recherche",
 		"viewer": "Visualisation du lot"
 	},
 	"UPLOAD": {
@@ -78,6 +81,7 @@
 	},
 	"USER": {
 		"active": "Actif",
+		"add": "Ajouter un utilisateur",
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer l'utilisateur {{user}} ?",
 		"confirm_disable": "Êtes vous sûr de vouloir désactiver l'utilisateur {{user}} ?",
 		"confirm_enable": "Êtes vous sûr de vouloir ré-activer l'utilisateur {{user}} ?",
@@ -102,5 +106,8 @@
 	"VERIFIER": {
 		"list": "Factures",
 		"viewer": "Visualisation du PDF"
+	},
+	"verifier": {
+		"form_builder": "Création de formulaire"
 	}
 }

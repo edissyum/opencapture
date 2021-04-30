@@ -19,8 +19,7 @@ export class LocaleService {
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService
-    ) {
-    }
+    ) {}
 
     changeLocale(data: any) {
         const headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.authService.getToken())

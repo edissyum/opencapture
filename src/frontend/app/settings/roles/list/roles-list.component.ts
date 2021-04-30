@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormBuilder} from "@angular/forms";
 import {AuthService} from "../../../../services/auth.service";
@@ -23,6 +23,7 @@ import {SettingsService} from "../../../../services/settings.service";
 })
 
 export class RolesListComponent implements OnInit {
+  headers: HttpHeaders          = this.authService.headers;
   columnsToDisplay: string[]    = ['id', 'label_short', 'label', 'editable', 'actions'];
   roles : any                   = [];
   pageSize : number             = 10;
@@ -59,8 +60,7 @@ export class RolesListComponent implements OnInit {
   }
 
   loadRoles(): void{
-    let headers = this.authService.headers;
-    this.http.get(API_URL + '/ws/roles/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers}).pipe(
+    this.http.get(API_URL + '/ws/roles/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.headers}).pipe(
         tap((data: any) => {
           this.total = data.roles[0].total
           this.roles = data.roles
@@ -100,9 +100,8 @@ export class RolesListComponent implements OnInit {
   }
 
   deleteRole(role_id: number){
-    let headers = this.authService.headers;
     if (role_id !== undefined){
-      this.http.delete(API_URL + '/ws/roles/delete/' + role_id, {headers}).pipe(
+      this.http.delete(API_URL + '/ws/roles/delete/' + role_id, {headers: this.headers}).pipe(
           tap((data: any) => {
             this.loadRoles()
           }),
@@ -128,7 +127,6 @@ export class RolesListComponent implements OnInit {
         case 'id': return this.compare(a.id, b.id, isAsc);
         case 'label_short': return this.compare(a.label_short, b.label_short, isAsc);
         case 'label': return this.compare(a.label, b.label, isAsc);
-        case 'editable': return this.compare(a.editable, b.editable, isAsc);
         default: return 0;
       }
     });

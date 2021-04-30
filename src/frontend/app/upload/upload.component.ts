@@ -5,7 +5,7 @@ import {FileValidators} from "ngx-file-drag-drop";
 import {API_URL} from "../env";
 import {catchError, tap} from "rxjs/operators";
 import {of} from "rxjs";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {ActivatedRoute, Router} from "@angular/router";
 import {AuthService} from "../../services/auth.service";
 import {UserService} from "../../services/user.service";
@@ -22,6 +22,8 @@ import {LocalStorageService} from "../../services/local-storage.service";
 })
 
 export class UploadComponent implements OnInit {
+    headers: HttpHeaders = this.authService.headers;
+
     constructor(
         private http: HttpClient,
         private router: Router,
@@ -62,7 +64,6 @@ export class UploadComponent implements OnInit {
 
     uploadFile(): void {
         const formData: FormData = new FormData();
-        let headers = this.authService.headers;
 
         if (this.fileControl.value.length == 0) {
             this.notify.handleErrors(this.translate.instant('UPLOAD.no_file'));
@@ -71,10 +72,7 @@ export class UploadComponent implements OnInit {
 
         for (let i = 0; i < this.fileControl.value.length; i++) {
             if (this.fileControl.status == 'VALID') {
-                console.log(this.fileControl.value[i])
-                console.log(this.fileControl.value[i].name)
                 formData.append(this.fileControl.value[i].name, this.fileControl.value[i]);
-                console.log(formData)
             } else {
                 this.notify.handleErrors(this.translate.instant('UPLOAD.extension_unauthorized'));
                 return;
@@ -87,7 +85,7 @@ export class UploadComponent implements OnInit {
                 API_URL + '/ws/' + splitter_or_verifier + '/upload',
                 formData,
                 {
-                    headers
+                    headers: this.headers
                 },
             ).pipe(
                 tap((data: any) => {

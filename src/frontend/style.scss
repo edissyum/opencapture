@@ -42,3 +42,11 @@
 .mat-form-field.mat-form-field-invalid .mat-form-field-label {
     color: red !important;
 }
+
+.mat-expansion-panel-body{
+    padding:0 !important;
+}
+
+.mat-expansion-indicator::after{
+    @apply border-green-400;
+}

@@ -57,6 +57,7 @@
 		"abouts_us": "À propos",
 		"administration": "Panneau d'administration",
 		"connector_EDM": "Connecteur GED",
+		"create_user": "Créer un utilisateur",
 		"custom_fields": "Champs personnalisés",
 		"document_separator": "Séparateur de document",
 		"document_type": "Type de documents",
@@ -105,5 +106,8 @@
 	"VERIFIER": {
 		"list": "Factures",
 		"viewer": "Visualisation du PDF"
+	},
+	"verifier": {
+		"form_builder": "Création de formulaire"
 	}
 }

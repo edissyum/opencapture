@@ -69,7 +69,7 @@ def create_app(test_config=None):
     app.register_blueprint(locale.bp)
     app.register_blueprint(config.bp)
     app.register_blueprint(splitter.bp)
-    app.register_blueprint(splitter.bp)
+    app.register_blueprint(verifier.bp)
     app.add_url_rule('/', endpoint='index')
 
     # Add custom templates location

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import { FormBuilder } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { UserService } from "../../../../services/user.service";
@@ -23,12 +23,14 @@ import {SettingsService} from "../../../../services/settings.service";
 })
 
 export class UsersListComponent implements OnInit {
+    headers: HttpHeaders          = this.authService.headers;
     columnsToDisplay: string[]    = ['id', 'username', 'firstname', 'lastname', 'role','status', 'actions'];
     users : any                   = [];
     pageSize : number             = 10;
     pageIndex: number             = 0;
     total: number                 = 0;
     offset: number                = 0;
+    roles : any                   = [];
 
     constructor(
         private http: HttpClient,
@@ -47,6 +49,7 @@ export class UsersListComponent implements OnInit {
 
 
     ngOnInit(): void {
+
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
         let lastUrl = this.routerExtService.getPreviousUrl()
         if (lastUrl.includes('profile/') || lastUrl == '/'){
@@ -55,7 +58,18 @@ export class UsersListComponent implements OnInit {
             this.offset = this.pageSize * (this.pageIndex)
         }else
             this.localeStorageService.remove('usersPageIndex')
-        this.loadUsers()
+
+        this.http.get(API_URL + '/ws/roles/list', {headers: this.headers}).pipe(
+            tap((data: any) => {
+                this.roles = data.roles
+                this.loadUsers()
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe()
     }
 
     onPageChange(event: any){
@@ -66,26 +80,13 @@ export class UsersListComponent implements OnInit {
     }
 
     loadUsers(): void{
-        let headers = this.authService.headers;
-        let roles: never[] = []
-        this.http.get(API_URL + '/ws/roles/list', {headers}).pipe(
-            tap((data: any) => {
-                roles = data.roles
-            }),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe()
-
-        this.http.get(API_URL + '/ws/users/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers}).pipe(
+        this.http.get(API_URL + '/ws/users/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.headers}).pipe(
             tap((data: any) => {
                 this.total = data.users[0].total
                 this.users = data.users;
-                if (roles){
+                if (this.roles){
                     this.users.forEach((user: any) => {
-                        roles.forEach((element: any) => {
+                        this.roles.forEach((element: any) => {
                             if (user.role == element.id){
                                 user.role_label = element.label
                             }
@@ -159,9 +160,8 @@ export class UsersListComponent implements OnInit {
     }
 
     deleteUser(user_id: number){
-        let headers = this.authService.headers;
         if (user_id !== undefined){
-            this.http.delete(API_URL + '/ws/users/delete/' + user_id, {headers}).pipe(
+            this.http.delete(API_URL + '/ws/users/delete/' + user_id, {headers: this.headers}).pipe(
                 tap((data: any) => {
                     this.loadUsers()
                 }),
@@ -175,9 +175,8 @@ export class UsersListComponent implements OnInit {
     }
 
     disableUser(user_id: number){
-        let headers = this.authService.headers;
         if (user_id !== undefined){
-            this.http.put(API_URL + '/ws/users/disable/' + user_id, null, {headers}).pipe(
+            this.http.put(API_URL + '/ws/users/disable/' + user_id, null, {headers: this.headers}).pipe(
                 tap((data: any) => {
                     this.loadUsers()
                 }),
@@ -191,9 +190,8 @@ export class UsersListComponent implements OnInit {
     }
 
     enableUser(user_id: number){
-        let headers = this.authService.headers;
         if (user_id !== undefined){
-            this.http.put(API_URL + '/ws/users/enable/' + user_id, null, {headers}).pipe(
+            this.http.put(API_URL + '/ws/users/enable/' + user_id, null, {headers: this.headers}).pipe(
                 tap((data: any) => {
                     this.loadUsers()
                 }),

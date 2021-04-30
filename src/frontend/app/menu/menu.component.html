@@ -44,7 +44,7 @@
                         </button>
                         <button mat-flat-button routerLink="/upload"
                                 [routerLinkActive]="'bg-gray-900 text-green-400'"
-                                *ngIf="location.path() !== '/home'"
+                                *ngIf="location.path() !== '/home' && this.getSplitterOrVerifier() != undefined"
                                 [class.disabled]="!this.privilegesService.hasPrivilege('upload')"
                        class="text-gray-500 hover:bg-green-400 hover:text-white px-3 py-2 text-sm font-medium transition duration-300">
                             {{ 'GLOBAL.upload' | translate }}
@@ -70,8 +70,7 @@
                             <i>{{ userService.user['role']['label'] }}</i>
                             <hr>
                         </span>
-                        <a *ngIf="this.getSplitterOrVerifier() != undefined"
-                           (click)="closeprofileDropDown()" routerLink="/profile/{{ userService.user['id'] }}"
+                        <a (click)="closeprofileDropDown()" routerLink="/profile/{{ userService.user['id'] }}"
                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 relative"
                            role="menuitem">
                             {{ 'USER.my_profile' | translate }}
@@ -84,9 +83,9 @@
                         </a>
                     </div>
                 </div>
-                <div class="ml-3 relative" *ngIf="this.getSplitterOrVerifier() != undefined && this.privilegesService.hasPrivilege('settings')">
+                <div class="ml-3 relative" *ngIf="this.privilegesService.hasPrivilege('settings')">
                     <button id="settings-menu" aria-haspopup="true"
-                            mat-mini-fab routerLink="/settings/panel"
+                            mat-mini-fab routerLink="/settings"
                             [class.settings_active]="location.path().includes('settings')"
                             class="bg-green-400 hover:ring-4 hover:ring-offset-4 hover:ring-green-400 hover:ring-opacity-60">
                         <i class="fas fa-cog "></i>

@@ -2,13 +2,15 @@ import {Component, OnInit} from '@angular/core';
 import { Location } from '@angular/common';
 import { Title } from '@angular/platform-browser';
 import {ActivatedRoute, NavigationEnd, NavigationError, NavigationStart, Router} from '@angular/router';
-import { filter, map } from 'rxjs/operators';
+import {catchError, filter, map, tap} from 'rxjs/operators';
 import { TranslateService } from "@ngx-translate/core";
 import { HttpClient } from "@angular/common/http";
 
 import { NotificationService } from "../services/notifications/notifications.service";
 import {LocaleService} from "../services/locale.service";
 import {LocalStorageService} from "../services/local-storage.service";
+import {API_URL} from "./env";
+import {of} from "rxjs";
 
 @Component({
     selector: 'app-root',
@@ -29,8 +31,11 @@ export class AppComponent implements OnInit {
         private notify:NotificationService,
         private translate: TranslateService,
         private activatedRoute: ActivatedRoute,
+        private localeService: LocaleService,
         private localeStorageService: LocalStorageService
-    ) { }
+    ) {
+
+    }
 
     ngOnInit() {
         const appTitle = this.titleService.getTitle();
@@ -58,16 +63,32 @@ export class AppComponent implements OnInit {
                         return [child.snapshot.data['title'], child_image];
                     }
                 }
-
                 return [appTitle, child_image]
             })
         ).subscribe((data: any) => {
             let ttl = data[0]
             this.image = data[1]
-            this.translate.get(ttl).subscribe((data:any)=> {
-                this.titleService.setTitle(data + ' - ' + this.title);
-            });
-            this.loading = false
+            if (this.translate.currentLang == undefined){
+                this.http.get(API_URL + '/ws/i18n/getCurrentLang').pipe(
+                    tap((data: any) => {
+                        this.translate.use(data.lang)
+                        this.translate.get(ttl).subscribe((data:any)=> {
+                            this.titleService.setTitle(data + ' - ' + this.title);
+                        });
+                        this.loading = false
+                    }),
+                    catchError((err: any) => {
+                        console.debug(err)
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe()
+            }else{
+                this.translate.get(ttl).subscribe((data:any)=> {
+                    this.titleService.setTitle(data + ' - ' + this.title);
+                });
+                this.loading = false
+            }
         });
     }
 }
