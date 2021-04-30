@@ -220,8 +220,8 @@ export class UsersListComponent implements OnInit {
                 case 'username': return this.compare(a.username, b.username, isAsc);
                 case 'firstname': return this.compare(a.firstname, b.firstname, isAsc);
                 case 'lastname': return this.compare(a.lastname, b.lastname, isAsc);
-                case 'role': return this.compare(a.role, b.role, isAsc);
-                case 'status': return this.compare(a.status, b.status, isAsc);
+                case 'role': return this.compare(a.role_label, b.role_label, isAsc);
+                case 'status': return this.compare(a.enabled, b.enabled, isAsc);
                 default: return 0;
             }
         });
