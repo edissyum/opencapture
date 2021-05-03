@@ -172,6 +172,16 @@ export class SettingsService {
         return data
     }
 
+    getSettingsAction(setting_id: any){
+        let actions = undefined
+        this.settings[this.selectedParentSetting].forEach((element: any) =>{
+            if (element['id'] == setting_id && element['actions']){
+                actions = element['actions']
+            }
+        })
+        return actions
+    }
+
     setIsMenuOpen(value: boolean){
         this.isMenuOpen = value;
     }

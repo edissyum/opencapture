@@ -34,7 +34,7 @@ export class UsersListComponent implements OnInit {
 
     constructor(
         private http: HttpClient,
-        private router: Router,
+        public router: Router,
         private route: ActivatedRoute,
         private formBuilder: FormBuilder,
         private authService: AuthService,
