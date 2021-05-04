@@ -149,7 +149,10 @@ class FindFooter:
                             floatted_text = None
 
                             if period != -1 and comma != -1:
-                                floatted_text = result.replace('.', '').replace('\x0c', '').replace('\n', '').replace(',', '.')
+                                if comma < period:
+                                    floatted_text = result.replace(',', '').replace('\x0c', '').replace('\n', '')
+                                else:
+                                    floatted_text = result.replace('.', '').replace('\x0c', '').replace('\n', '').replace(',', '.')
                             elif period == -1 and comma != -1:
                                 floatted_text = result.replace('\x0c', '').replace('\n', '').replace(',', '.')
                             elif period != -1 and comma == -1:

@@ -493,14 +493,6 @@ class Files:
             cropped_image = im2.crop(crop_ratio)
             cropped_image.save('/tmp/cropped_' + rand + extension)
 
-        # Rotate the image
-        # image = cv2.imread('/tmp/cropped_' + rand + extension)
-        # grayscale = rgb2gray(image)
-        # angle = determine_skew(grayscale)
-        # if angle and angle < -80:
-        #     rotated = rotate(image, angle, resize=True) * 255
-        #     io.imsave('/tmp/cropped_' + rand + extension, rotated.astype(np.uint8))
-
         if remove_line:
             image = cv2.imread('/tmp/cropped_' + rand + extension)
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -529,7 +521,10 @@ class Files:
             floatted_text = None
 
             if period != -1 and comma != -1:
-                floatted_text = text.replace('.', '').replace('\x0c', '').replace('\n', '').replace(',', '.')
+                if comma < period:
+                    floatted_text = text.replace(',', '').replace('\x0c', '').replace('\n', '')
+                else:
+                    floatted_text = text.replace('.', '').replace('\x0c', '').replace('\n', '').replace(',', '.')
             elif space != -1 and period != -1 and comma == -1:
                 floatted_text = text.replace(' ', '').replace('\x0c', '').replace('\n', '')
             elif space != -1 and comma != -1 and period == -1:

@@ -71,6 +71,9 @@ class FindSupplier:
                     content = line
                 else:
                     content = line.content
+
+                if corrected_line:
+                    content = corrected_line
                 corrected_line = re.sub(pattern, item, content)
 
             for _data in re.finditer(r"" + regex + "", corrected_line.replace('.', '').replace(',', '').replace('(', '').replace(')', '').replace('-', '')):
