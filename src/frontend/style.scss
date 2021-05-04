@@ -50,3 +50,7 @@
 .mat-expansion-indicator::after{
     @apply border-green-400;
 }
+
+.disable_link{
+    pointer-events: none!important;
+}

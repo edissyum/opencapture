@@ -69,26 +69,6 @@ def login(username, password, lang):
         return response, 401
 
 
-def register(username, password, firstname, lastname, lang):
-    if request.method == 'POST':
-        session['lang'] = lang
-        user_info, error = auth.registrer({
-            'username': username,
-            'password': password,
-            'firstname': firstname,
-            'lastname': lastname
-        })
-
-        if error is None:
-            return '', 200
-        else:
-            response = {
-                "errors": gettext('REGISTER_ERROR'),
-                "message": error
-            }
-            return response, 401
-
-
 def token_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):

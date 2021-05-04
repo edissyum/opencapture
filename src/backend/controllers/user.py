@@ -23,6 +23,19 @@ from import_controllers import pdf
 from ..models import user
 
 
+def create_user(args):
+    user_info, error = user.create_user(args)
+
+    if error is None:
+        return '', 200
+    else:
+        response = {
+            "errors": gettext('USER_NEW_ERROR'),
+            "message": error
+        }
+        return response, 401
+
+
 def retrieve_users(args):
     _vars = pdf.init()
     _config = _vars[1]
@@ -67,7 +80,7 @@ def update_user(user_id, data):
     user_info, error = user.get_user_by_id({'user_id': user_id})
 
     if error is None:
-        if data['new_password'] and data['old_password'] and not check_password_hash(user_info[0]['password'], data['old_password']):
+        if 'new_password' in data and 'old_password' in data and not check_password_hash(user_info[0]['password'], data['old_password']):
             response = {
                 "errors": gettext('UPDATE_PROFILE'),
                 "message": gettext('ERROR_OLD_PASSWORD_NOT_MATCH')
@@ -80,7 +93,7 @@ def update_user(user_id, data):
             'role': data['role']
         }
 
-        if data['new_password']:
+        if 'new_password' in data and data['new_password']:
             _set.update({
                 'password': generate_password_hash(data['new_password'])
             })
@@ -172,50 +185,3 @@ def enable_user(user_id):
             "message": error
         }
         return response, 401
-
-
-def change_role(role, user_id):
-    _vars = pdf.init()
-    _db = _vars[0]
-
-    user = check_user(user_id)
-    if user is not False:
-        res = _db.update({
-            'table': ['users'],
-            'set': {
-                'role': role
-            },
-            'where': ['id = ?'],
-            'data': [user_id]
-        })
-
-        if res[0] is not False:
-            flash(gettext('UPDATE_ROLE_OK'))
-        else:
-            flash(gettext('UPDATE_ROLE_ERROR') + ' : ' + str(res[1]))
-
-
-def change_password(old_password, new_password, user_id):
-    _vars = pdf.init()
-    _db = _vars[0]
-
-    user = check_user(user_id)
-    if user is not False:
-        if not check_password_hash(user['password'], old_password):
-            flash(gettext('ERROR_OLD_PASSWORD_NOT_MATCH'))
-        else:
-            res = _db.update({
-                'table': ['users'],
-                'set': {
-                    'password': generate_password_hash(new_password)
-                },
-                'where': ['id = ?'],
-                'data': [user_id]
-            })
-
-            if res[0] is not False:
-                flash(gettext('UPDATE_OK'))
-            else:
-                flash(gettext('UPDATE_ERROR') + ' : ' + str(res[1]))
-    else:
-        flash(gettext('ERROR_WHILE_RETRIEVING_USER'))

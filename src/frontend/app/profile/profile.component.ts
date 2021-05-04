@@ -19,7 +19,7 @@ import {PrivilegesService} from "../../services/privileges.service";
     styleUrls: ['./profile.component.scss']
 })
 export class UserProfileComponent implements OnInit {
-    headers: HttpHeaders = this.authService.headers;
+    headers     : HttpHeaders = this.authService.headers;
     userId      : any;
     profile     : any;
     roles       : any[] = [];
@@ -78,7 +78,6 @@ export class UserProfileComponent implements OnInit {
     }
 
     ngOnInit(){
-        console.log(this.userService.getUserFromLocal()['privileges'])
         this.userId = this.route.snapshot.params['id'];
 
         if (this.userId != this.userService.user.id){
@@ -110,7 +109,6 @@ export class UserProfileComponent implements OnInit {
         this.http.get(API_URL + '/ws/users/getById/' + this.userId, {headers: this.headers}).pipe(
             tap((data: any) => {
                 this.profile = data;
-                // console.log(this.profile)
                 for (let field in this.profile){
                     if (this.profile.hasOwnProperty(field)){
                         this.profileForm.forEach(element => {
@@ -154,14 +152,7 @@ export class UserProfileComponent implements OnInit {
             });
 
             this.http.put(
-                API_URL + '/ws/users/update/' + this.userId,
-                {
-                    'args': user,
-                    'lang': this.localeService.currentLang
-                },
-                {
-                    headers: this.headers
-                },
+                API_URL + '/ws/users/update/' + this.userId,{'args': user}, {headers: this.headers},
             ).pipe(
                 tap((data: any) => {
                     this.notify.success(this.translate.instant('USER.profile_updated'));

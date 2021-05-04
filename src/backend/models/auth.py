@@ -20,38 +20,6 @@ from flask_babel import gettext
 from werkzeug.security import check_password_hash, generate_password_hash
 
 
-def registrer(args):
-    db = get_db()
-    error = None
-    user = db.select({
-        'select': ['id'],
-        'table': ['users'],
-        'where': ['username = %s'],
-        'data': [args['username']]
-    })
-
-    if not args['username']:
-        error = gettext('BAD_USERNAME')
-    elif not args['password']:
-        error = gettext('BAD_PASSWORD')
-    elif user:
-        error = gettext('USER') + ' ' + args['username'] + ' ' + gettext('ALREADY_REGISTERED')
-
-    if error is None:
-        db.insert({
-            'table': 'users',
-            'columns': {
-                'username': args['username'],
-                'firstname': args['firstname'],
-                'lastname': args['lastname'],
-                'password': generate_password_hash(args['password']),
-            }
-        })
-        return True, error
-    else:
-        return False, error
-
-
 def login(args):
     db = get_db()
     error = None

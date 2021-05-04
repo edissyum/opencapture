@@ -15,7 +15,6 @@
 		"unknow_error": "Unknow error"
 	},
 	"GLOBAL": {
-		"actions": "Actions",
 		"batches": "Batches",
 		"cancel": "Cancel",
 		"confirm": "Confirm",
@@ -64,6 +63,7 @@
 		"general": "General",
 		"roles_list": "Roles list",
 		"splitter": "Splitter",
+		"update_user": "",
 		"users_list": "Users list",
 		"verifier": "Verifier",
 		"version_and_update": "Versions and update"
@@ -85,6 +85,8 @@
 		"confirm_delete": "",
 		"confirm_disable": "",
 		"confirm_enable": "",
+		"create": "",
+		"created": "",
 		"disable": "",
 		"enable": "",
 		"firstname": "Firstname",
@@ -97,6 +99,7 @@
 		"new_password": "New password",
 		"old_password": "Old password",
 		"password": "Password",
+		"password_check": "",
 		"profile_updated": "Profile updated",
 		"role": "",
 		"status": "",

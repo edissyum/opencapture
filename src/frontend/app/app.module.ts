@@ -36,6 +36,7 @@ import { AboutUsComponent } from './settings/about-us/about-us.component';
 import { VersionUpdateComponent } from './settings/version-update/version-update.component';
 import { RolesListComponent } from './settings/roles/list/roles-list.component';
 import { CreateUserComponent } from './settings/users/create/create-user.component';
+import { UpdateUserComponent } from './settings/users/update/update-user.component';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -62,6 +63,7 @@ export function createTranslateLoader(http: HttpClient) {
     VersionUpdateComponent,
     RolesListComponent,
     CreateUserComponent,
+    UpdateUserComponent,
   ],
   imports: [
     BrowserModule,

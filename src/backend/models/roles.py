@@ -26,7 +26,7 @@ def retrieve_roles(args):
     roles = db.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['roles'],
-        'where': ['status NOT IN (%s)'],
+        'where': ["status NOT IN (%s)", "label <> 'SuperUtilisateur'"],
         'data': ['DEL'],
         'order_by': ['id ASC'],
         'limit': str(args['limit']) if 'limit' in args else [],

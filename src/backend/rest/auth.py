@@ -11,9 +11,3 @@ def login():
     res = auth.login(data['username'], data['password'], data['lang'])
     return make_response(jsonify(res[0])), res[1]
 
-
-@bp.route('auth/register', methods=['POST'])
-def register():
-    data = request.json
-    res = auth.register(data['username'], data['password'], data['firstname'], data['lastname'], data['lang'])
-    return make_response(jsonify(res[0])), res[1]

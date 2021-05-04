@@ -13,30 +13,31 @@
                 <div class="w-full border-t-2 border-gray-600">
                     <div class="border-b border-gray-400 " *ngFor="let setting of this.serviceSettings.getSettings()[parent['id']];">
                         <div *ngIf="this.serviceSettings.getSettingsAction(setting['id']) else noActions">
-                            <mat-expansion-panel *ngFor="let action of this.serviceSettings.getSettingsAction(setting['id'])"
-                                                 [expanded]="this.router.url.includes(action['route'])">
+                            <mat-expansion-panel [expanded]="this.serviceSettings.getSelectedSetting() == setting['id']">
                                 <mat-expansion-panel-header class="font-normal w-full h-20">
                                     <mat-panel-title class="font-normal justify-center items-center text-center">
-                                        <i [class.text-green-400]="this.serviceSettings.getSelectedSetting() === setting['id']"
+                                        <i [class.text-green-400]="this.router.url == setting['route']"
                                            class="absolute text-lg left-4 w-10 h-10 rounded-full flex items-center justify-center {{setting['icon']}}">
                                         </i>
-                                        <button mat-button [class.text-green-400]="this.serviceSettings.getSelectedSetting() === setting['id']"
+                                        <button mat-button [class.text-green-400]="this.router.url == setting['route']"
                                                 class="font-normal w-full h-20 flex justify-center items-center text-center"
                                                 (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
                                                 routerLink="{{ setting['route'] }}">
-                                            <p [class.font-medium]="this.serviceSettings.getSelectedSetting() === parent['id']" class="m-0">
+                                            <p [class.font-medium]="this.serviceSettings.getSelectedSetting() === setting['id']" class="m-0">
                                                 {{ setting['label'] | translate }}
                                             </p>
                                         </button>
                                     </mat-panel-title>
                                 </mat-expansion-panel-header>
-                                <div class="w-full border-t border-gray-600">
-                                    <div class="border-b border-gray-400">
+                                <div *ngFor="let action of this.serviceSettings.getSettingsAction(setting['id'])"
+                                     class="w-full border-t border-gray-600">
+                                    <div class="border-b border-gray-400" *ngIf="!action['showOnlyIfActive'] || (action['showOnlyIfActive'] && this.router.url.includes(action['route']))">
                                         <button mat-button
                                                 [class.text-green-400]="this.router.url.includes(action['route'])"
                                                 class="font-normal w-full h-12 ml-12 flex items-center text-center"
                                                 (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
-                                                routerLink="{{ action['route'] }}">
+                                                routerLink="{{ action['route'] }}"
+                                                [class.disable_link]="action['showOnlyIfActive']">
                                             <i class="absolute text-lg w-10 h-10 rounded-full flex items-center justify-center {{action['icon']}}"></i>
                                             <p class="m-0 ml-12" style="margin-top: 2.5px!important">
                                                 {{ action['label'] | translate }}
@@ -47,7 +48,7 @@
                             </mat-expansion-panel>
                         </div>
                         <ng-template #noActions>
-                            <button mat-button [class.text-green-400]="this.serviceSettings.getSelectedSetting() === setting['id']"
+                            <button mat-button [class.text-green-400]="this.router.url == setting['route']"
                                     class="font-normal w-full h-20 flex justify-center items-center text-center"
                                     (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
                                     routerLink="{{ setting['route'] }}">
@@ -61,8 +62,9 @@
                 </div>
             </mat-expansion-panel>
         </mat-nav-list>
-    </mat-sidenav>    <mat-sidenav-content class="bg-white">
-        <div class="settings text-gray-900" style="margin-top: 0.75rem">
+    </mat-sidenav>
+    <mat-sidenav-content class="bg-white">
+        <div class="settings_header  text-gray-900" style="margin-top: 0.75rem">
             <button mat-icon-button
                     (click)="sidenav.toggle(); this.serviceSettings.toggleMenu();" class="absolute left-2 top-2">
                 <i [class.fa-arrow-right]="!this.serviceSettings.getIsMenuOpen()" class="fas fa-arrow-left text-2xl"></i>

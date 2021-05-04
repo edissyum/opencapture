@@ -5,7 +5,7 @@
             <span *ngIf="this.userId != this.userService.user.id">{{ 'USER.modify_profile_of' | translate }} {{this.profile['username']}}</span>
         </mat-card-title>
         <mat-card-content>
-            <form (ngSubmit)="onSubmit()" >
+            <form (ngSubmit)="onSubmit()">
                 <ng-container *ngFor="let field of profileForm">
                     <mat-form-field class="block" *ngIf="field.type != 'select'">
                         <mat-label>{{ field.label | translate }}</mat-label>

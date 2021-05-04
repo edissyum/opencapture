@@ -40,6 +40,13 @@ export class SettingsService {
                         "label" : this.translate.instant("USER.add"),
                         "route" : "/settings/general/users/new",
                         "icon"  : "fas fa-plus"
+                    },
+                    {
+                        "id"    : 'users_new',
+                        "label" : this.translate.instant("USER.update"),
+                        "route" : "/settings/general/users/update/",
+                        "icon"  : "fas fa-edit",
+                        "showOnlyIfActive" : true
                     }
                 ]
             },
@@ -70,6 +77,7 @@ export class SettingsService {
                 "id": "about-us",
                 "label": this.translate.instant("SETTINGS.abouts_us"),
                 "icon": "fas fa-address-card",
+                "route": "/settings/general/about-us"
             }
         ],
         "verifier": [

@@ -1,0 +1,101 @@
+<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.2rem">
+    <mat-sidenav #sidenav mode="side" opened class="w-1/6 flex flex-col h-full border-r border-green-400" style="top:0.1rem">
+        <h3 class="text-center text-gray-900" style="margin-top: 0.75rem">{{ "SETTINGS.administration" | translate }}</h3>
+        <mat-divider class="border-green-400"></mat-divider>
+        <mat-nav-list>
+            <mat-expansion-panel *ngFor="let parent of this.serviceSettings.getSettingsParent()"
+                                 [expanded]="this.serviceSettings.getSelectedParentSetting() == parent['id']">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        {{ parent['label'] | translate }}
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div class="w-full border-t-2 border-gray-600">
+                    <div class="border-b border-gray-400 " *ngFor="let setting of this.serviceSettings.getSettings()[parent['id']];">
+                        <div *ngIf="this.serviceSettings.getSettingsAction(setting['id']) else noActions">
+                            <mat-expansion-panel [expanded]="this.serviceSettings.getSelectedSetting() == setting['id']">
+                                <mat-expansion-panel-header class="font-normal w-full h-20">
+                                    <mat-panel-title class="font-normal justify-center items-center text-center">
+                                        <i [class.text-green-400]="this.router.url == setting['route']"
+                                           class="absolute text-lg left-4 w-10 h-10 rounded-full flex items-center justify-center {{setting['icon']}}">
+                                        </i>
+                                        <button mat-button [class.text-green-400]="this.router.url == setting['route']"
+                                                class="font-normal w-full h-20 flex justify-center items-center text-center"
+                                                (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
+                                                routerLink="{{ setting['route'] }}">
+                                            <p [class.font-medium]="this.serviceSettings.getSelectedSetting() === setting['id']" class="m-0">
+                                                {{ setting['label'] | translate }}
+                                            </p>
+                                        </button>
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <div *ngFor="let action of this.serviceSettings.getSettingsAction(setting['id'])"
+                                     class="w-full border-t border-gray-600">
+                                    <div class="border-b border-gray-400" *ngIf="!action['showOnlyIfActive'] || (action['showOnlyIfActive'] && this.router.url.includes(action['route']))">
+                                        <button mat-button
+                                                [class.text-green-400]="this.router.url.includes(action['route'])"
+                                                class="font-normal w-full h-12 ml-12 flex items-center text-center"
+                                                (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
+                                                routerLink="{{ action['route'] }}"
+                                                [class.disable_link]="action['showOnlyIfActive']">
+                                            <i class="absolute text-lg w-10 h-10 rounded-full flex items-center justify-center {{action['icon']}}"></i>
+                                            <p class="m-0 ml-12" style="margin-top: 2.5px!important">
+                                                {{ action['label'] | translate }}
+                                            </p>
+                                        </button>
+                                    </div>
+                                </div>
+                            </mat-expansion-panel>
+                        </div>
+                        <ng-template #noActions>
+                            <button mat-button [class.text-green-400]="this.router.url == setting['route']"
+                                    class="font-normal w-full h-20 flex justify-center items-center text-center"
+                                    (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
+                                    routerLink="{{ setting['route'] }}">
+                                <i class="absolute left-4 w-10 h-10 rounded-full flex items-center justify-center fa-lg {{setting['icon']}}"></i>
+                                <p [class.font-medium]="this.serviceSettings.getSelectedSetting() === setting['id']" class="m-0">
+                                    {{ setting['label'] | translate }}
+                                </p>
+                            </button>
+                        </ng-template>
+                    </div>
+                </div>
+            </mat-expansion-panel>
+        </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content class="bg-white">
+        <div class="settings_header text-gray-900" style="margin-top: 0.75rem">
+            <button mat-icon-button
+                    (click)="sidenav.toggle(); this.serviceSettings.toggleMenu();" class="absolute left-2 top-2">
+                <i [class.fa-arrow-right]="!this.serviceSettings.getIsMenuOpen()" class="fas fa-arrow-left text-2xl"></i>
+            </button>
+            <div class="settings_title text-center" *ngIf="this.user">
+                <h3>{{ this.serviceSettings.getTitle() }} : {{ this.user['firstname'] }} {{ this.user['lastname'] }} <b>({{ this.user['username'] }})</b></h3>
+                <hr class="border-green-400">
+            </div>
+        </div>
+        <div class="flex justify-center items-center align-middle">
+            <form (ngSubmit)="onSubmit()" class="grid grid-cols-3 gap-6 w-full m-10 text-center">
+                <ng-container *ngFor="let field of userForm">
+                    <mat-form-field class="block" *ngIf="field.type != 'select'">
+                        <mat-label>{{ field.label | translate }}</mat-label>
+                        <input matInput [formControl]="field.control" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field.required">
+                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="block" *ngIf="field.type == 'select'">
+                        <mat-label>{{ field.label | translate }}</mat-label>
+                        <mat-select [formControl]="field.control" [(value)]="field.control.value" [required]="field.required">
+                            <mat-option *ngFor="let option of field.values" [value]="option['id']">{{ option['label'] }}</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
+                    </mat-form-field>
+                </ng-container>
+                <div class="button col-span-3">
+                    <button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300" type="submit" mat-button>
+                        {{ 'USER.update' | translate }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

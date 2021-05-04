@@ -23,6 +23,13 @@ from ..controllers import user
 bp = Blueprint('users', __name__, url_prefix='/ws/')
 
 
+@bp.route('users/new', methods=['POST'])
+def register():
+    data = request.json
+    res = user.create_user(data)
+    return make_response(jsonify(res[0])), res[1]
+
+
 @bp.route('users/list', methods=['GET'])
 @token_required
 def get_users():

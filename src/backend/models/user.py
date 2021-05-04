@@ -17,7 +17,42 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 from gettext import gettext
+
+from werkzeug.security import generate_password_hash
+
 from ..controllers.db import get_db
+
+
+def create_user(args):
+    db = get_db()
+    error = None
+    user = db.select({
+        'select': ['id'],
+        'table': ['users'],
+        'where': ['username = %s'],
+        'data': [args['username']]
+    })
+
+    if not args['username']:
+        error = gettext('BAD_USERNAME')
+    elif not args['password']:
+        error = gettext('BAD_PASSWORD')
+    elif user:
+        error = gettext('USER') + ' ' + args['username'] + ' ' + gettext('ALREADY_REGISTERED')
+
+    if error is None:
+        db.insert({
+            'table': 'users',
+            'columns': {
+                'username': args['username'],
+                'firstname': args['firstname'],
+                'lastname': args['lastname'],
+                'password': generate_password_hash(args['password']),
+            }
+        })
+        return True, error
+    else:
+        return False, error
 
 
 def retrieve_users(args):
@@ -26,7 +61,7 @@ def retrieve_users(args):
     users = db.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['users'],
-        'where': ['status NOT IN (%s)'],
+        'where': ['status NOT IN (%s)', "role <> 1"],
         'data': ['DEL'],
         'order_by': ['id ASC'],
         'limit': str(args['limit']) if 'limit' in args else [],

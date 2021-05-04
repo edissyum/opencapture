@@ -15,7 +15,6 @@
 		"unknow_error": "Erreur inconnue"
 	},
 	"GLOBAL": {
-		"actions": "Actions",
 		"batches": "Lots",
 		"cancel": "Annuler",
 		"confirm": "Confirmation",
@@ -46,7 +45,7 @@
 	},
 	"ROLE": {
 		"add": "Ajouter un rôle",
-		"confirm_delete": "",
+		"confirm_delete": "Êtes vous sûr de vouloir supprimer le role {{role}} ",
 		"editable": "Modifiable",
 		"label": "Libellé",
 		"label_short": "Libellé technique",
@@ -64,6 +63,7 @@
 		"general": "Paramètres généraux",
 		"roles_list": "Liste des rôles",
 		"splitter": "Paramètres du Splitter",
+		"update_user": "Modifier l'utilisateur",
 		"users_list": "Liste des utilisateurs",
 		"verifier": "Paramètres du Vérificateur",
 		"version_and_update": "Version et mise à jour"
@@ -85,6 +85,8 @@
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer l'utilisateur {{user}} ?",
 		"confirm_disable": "Êtes vous sûr de vouloir désactiver l'utilisateur {{user}} ?",
 		"confirm_enable": "Êtes vous sûr de vouloir ré-activer l'utilisateur {{user}} ?",
+		"create": "Créer l'utilisateur",
+		"created": "Utiliser créer avec succès",
 		"disable": "Désactiver l'utilisateur",
 		"enable": "Activer l'utilisateur",
 		"firstname": "Prénom",
@@ -97,6 +99,7 @@
 		"new_password": "Nouveau mot de passe",
 		"old_password": "Ancien mot de passe",
 		"password": "Mot de passe",
+		"password_check": "Vérification du mot de passe",
 		"profile_updated": "Profil mis à jour",
 		"role": "Rôle",
 		"status": "Status",
