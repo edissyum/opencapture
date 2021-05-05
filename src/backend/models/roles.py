@@ -19,39 +19,38 @@ from flask_babel import gettext
 from ..controllers.db import get_db
 
 
-def retrieve_roles(args):
+def get_roles(args):
     db = get_db()
     error = None
 
     roles = db.select({
-        'select': ['*'] if 'select' not in args else args['select'],
-        'table': ['roles'],
+        'select': ["*"] if "select" not in args else args["select"],
+        'table': ["roles"],
         'where': ["status NOT IN (%s)", "label <> 'SuperUtilisateur'"],
-        'data': ['DEL'],
-        'order_by': ['id ASC'],
+        'data': ["DEL"],
+        'order_by': ["id ASC"],
         'limit': str(args['limit']) if 'limit' in args else [],
         'offset': str(args['offset']) if 'offset' in args else [],
     })
 
     if not roles:
-        error = gettext('ERROR_RETRIEVING_ROLES')
+        error = gettext('NO_ROLES')
 
     return roles, error
 
 
-def retrieve_role_by_id(args):
+def get_role_by_id(args):
     db = get_db()
     error = None
-    role_id = args['role_id']
     role = db.select({
-        'select': ['*'],
+        'select': ['*'] if 'select' not in args else args['select'],
         'table': ['roles'],
-        'where': ['id = %s'],
-        'data': [role_id]
+        'where': ['id = %s', "label <> %s", "status NOT IN (%s)"],
+        'data': [args['role_id'], 'SuperUtilisateur', 'DEL']
     })
 
     if not role:
-        error = gettext('ERROR_RETRIEVING_ROLE')
+        error = gettext('ROLE_DOESNT_EXISTS')
     else:
         role = role[0]
 

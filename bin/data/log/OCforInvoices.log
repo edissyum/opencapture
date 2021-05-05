@@ -10109,3 +10109,5 @@ FATAL:  password authentication failed for user "nathn"
 [Open-Capture  ] 23-04-2021 13:38:08 ERROR PGSQL connection error : FATAL:  password authentication failed for user "nathn"
 FATAL:  password authentication failed for user "nathn"
 
+[Open-Capture  ] 04-05-2021 14:18:55 ERROR Number of tables doesn't match with number of joins
+[Open-Capture  ] 04-05-2021 14:18:55 ERROR {'select': ['*', 'count(*) OVER() as total'], 'table': 'users', 'left_join': ['users.role = roles.id'], 'where': ['users.status NOT IN (%s)', "label <> 'SuperUtilisateur'"], 'data': ['DEL'], 'order_by': ['users.id ASC'], 'limit': '10', 'offset': '0'}

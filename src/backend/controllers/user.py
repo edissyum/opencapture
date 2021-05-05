@@ -36,11 +36,11 @@ def create_user(args):
         return response, 401
 
 
-def retrieve_users(args):
+def get_users(args):
     _vars = pdf.init()
     _config = _vars[1]
 
-    users, error = user.retrieve_users(args)
+    users, error = user.get_users(args)
     if users:
         response = {
             "users": users
@@ -48,13 +48,13 @@ def retrieve_users(args):
         return response, 200
     else:
         response = {
-            "errors": gettext("USERS_ERROR"),
+            "errors": gettext("RETRIEVES_USERS_ERROR"),
             "message": error
         }
         return response, 401
 
 
-def retrieve_user_by_id(user_id, get_password=False):
+def get_user_by_id(user_id, get_password=False):
     _select = ['id', 'username', 'firstname', 'lastname', 'role', 'status', 'creation_date', 'enabled']
     if get_password:
         _select.append('password')
@@ -68,7 +68,7 @@ def retrieve_user_by_id(user_id, get_password=False):
         return user_info, 200
     else:
         response = {
-            "errors": gettext('USER_ERROR'),
+            "errors": gettext('GET_USER_BY_ID_ERROR'),
             "message": error
         }
         return response, 401

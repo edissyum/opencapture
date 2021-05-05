@@ -22,11 +22,11 @@ from import_controllers import pdf
 from ..models import roles
 
 
-def retrieve_roles(args):
+def get_roles(args):
     _vars = pdf.init()
     _config = _vars[1]
 
-    _roles, error = roles.retrieve_roles(args)
+    _roles, error = roles.get_roles(args)
 
     if _roles:
         response = {
@@ -35,7 +35,20 @@ def retrieve_roles(args):
         return response, 200
     else:
         response = {
-            "errors": gettext("ROLES_ERROR"),
+            "errors": gettext("GET_ROLES_ERROR"),
+            "message": error
+        }
+        return response, 401
+
+
+def get_role_by_id(role_id):
+    user_info, error = roles.get_role_by_id({'role_id': role_id})
+
+    if error is None:
+        return user_info, 200
+    else:
+        response = {
+            "errors": gettext('GET_ROLE_BY_ID_ERROR'),
             "message": error
         }
         return response, 401
@@ -45,7 +58,7 @@ def delete_role(role_id):
     _vars = pdf.init()
     _db = _vars[0]
 
-    role_info, error = roles.retrieve_role_by_id({'role_id': role_id})
+    role_info, error = roles.get_role_by_id({'role_id': role_id})
     if error is None:
         res, error = roles.update_role({'set': {'status': 'DEL'}, 'role_id': role_id})
         if error is None:

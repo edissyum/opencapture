@@ -38,14 +38,14 @@ def get_users():
         'offset': request.args['offset'] if 'offset' in request.args else '',
         'limit': request.args['limit'] if 'limit' in request.args else ''
     }
-    _users = user.retrieve_users(args)
+    _users = user.get_users(args)
     return make_response(jsonify(_users[0])), _users[1]
 
 
 @bp.route('users/getById/<int:user_id>', methods=['GET'])
 @token_required
 def get_user_by_id(user_id):
-    _user = user.retrieve_user_by_id(user_id)
+    _user = user.get_user_by_id(user_id)
     return make_response(jsonify(_user[0])), _user[1]
 
 

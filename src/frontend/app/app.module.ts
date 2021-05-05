@@ -22,7 +22,6 @@ import { LoginComponent } from './login/login.component';
 import { LogoutComponent } from "./logout/logout.component";
 import { HomeComponent } from './home/home.component';
 import { MenuComponent } from './menu/menu.component';
-import { RegisterComponent } from './register/register.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { UserProfileComponent } from './profile/profile.component';
 import { UploadComponent } from './upload/upload.component';
@@ -37,6 +36,8 @@ import { VersionUpdateComponent } from './settings/version-update/version-update
 import { RolesListComponent } from './settings/roles/list/roles-list.component';
 import { CreateUserComponent } from './settings/users/create/create-user.component';
 import { UpdateUserComponent } from './settings/users/update/update-user.component';
+import { UpdateRoleComponent } from './settings/roles/update/update-role.component';
+import { CreateRoleComponent } from './settings/roles/create/create-role.component';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -53,7 +54,6 @@ export function createTranslateLoader(http: HttpClient) {
     LogoutComponent,
     HomeComponent,
     MenuComponent,
-    RegisterComponent,
     NotFoundComponent,
     UserProfileComponent,
     UploadComponent,
@@ -64,6 +64,8 @@ export function createTranslateLoader(http: HttpClient) {
     RolesListComponent,
     CreateUserComponent,
     UpdateUserComponent,
+    UpdateRoleComponent,
+    CreateRoleComponent,
   ],
   imports: [
     BrowserModule,

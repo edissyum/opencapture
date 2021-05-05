@@ -9,7 +9,6 @@ import { LoginComponent } from './login/login.component';
 import { LogoutComponent } from './logout/logout.component';
 import { HomeComponent } from './home/home.component';
 import { NotFoundComponent } from "./not-found/not-found.component";
-import { RegisterComponent } from "./register/register.component";
 import { UserProfileComponent } from "./profile/profile.component";
 import { SplitterViewerComponent } from "./splitter/viewer/viewer.component";
 import { SplitterListComponent } from "./splitter/list/list.component";
@@ -22,58 +21,37 @@ const routes: Routes = [
     {path: '', redirectTo: 'home', pathMatch: 'full'},
     {path: 'home', component: HomeComponent , data: {title: marker('GLOBAL.home')}, canActivate: [LoginRequiredService]},
     {path: 'login', component: LoginComponent , data: {title: marker('GLOBAL.login')}, canActivate: [LoginRedirectService]},
-    {path: 'register', component: RegisterComponent , data: {title: marker('GLOBAL.register')}, canActivate: [LoginRedirectService]},
     {path: 'logout', component: LogoutComponent , canActivate: [LoginRequiredService]},
     {path: 'profile/:id', component: UserProfileComponent, canActivate: [LoginRequiredService]},
-
     {
-        path: 'splitter/viewer/:id',
-        component: SplitterViewerComponent,
+        path: 'splitter/viewer/:id', component: SplitterViewerComponent,
         data: {title: marker('SPLITTER.viewer'), privileges: ['splitter']},
-        canActivate: [
-            LoginRequiredService,
-            HasPrivilegeService
-        ]
+        canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
-        path: 'splitter/list',
-        component: SplitterListComponent,
+        path: 'splitter/list', component: SplitterListComponent,
         data: {title: marker('SPLITTER.list'), privileges: ['splitter']},
-        canActivate: [
-            LoginRequiredService,
-            HasPrivilegeService
-        ],
+        canActivate: [LoginRequiredService, HasPrivilegeService]
 
     },
     {path: 'splitter', redirectTo: 'splitter/list', pathMatch: 'full'},
-
     {
-        path: 'verifier/viewer',
-        component: VerifierViewerComponent,
+        path: 'verifier/viewer', component: VerifierViewerComponent,
         data: {title: marker('VERIFIER.viewer'), privileges: ['verifier']},
-        canActivate: [
-            LoginRequiredService,
-            HasPrivilegeService
-        ]
+        canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
-        path: 'verifier/list',
-        component: VerifierListComponent,
+        path: 'verifier/list', component: VerifierListComponent,
         data: {title: marker('VERIFIER.list'), privileges: ['verifier']},
-        canActivate: [
-            LoginRequiredService,
-            HasPrivilegeService
-        ]
+        canActivate: [LoginRequiredService, HasPrivilegeService]
+
     },
     {path: 'verifier', redirectTo: 'verifier/list', pathMatch: 'full'},
     {
-        path: 'upload',
-        component: UploadComponent,
+        path: 'upload', component: UploadComponent,
         data: {title: marker('GLOBAL.upload'), privileges: ['upload']},
-        canActivate: [
-            LoginRequiredService,
-            HasPrivilegeService
-        ]
+        canActivate: [LoginRequiredService, HasPrivilegeService]
+
     },
 
     {path: '404', component: NotFoundComponent}, // This two routes (** and 404) need to be the last of const routes: Routes variable

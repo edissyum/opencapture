@@ -55,7 +55,7 @@ def create_user(args):
         return False, error
 
 
-def retrieve_users(args):
+def get_users(args):
     db = get_db()
     error = None
     users = db.select({
@@ -69,7 +69,7 @@ def retrieve_users(args):
     })
 
     if not users:
-        error = gettext('USER_RETRIEVE_ERROR')
+        error = gettext('GET_USERS_ERROR')
 
     return users, error
 
@@ -85,7 +85,7 @@ def get_user_by_id(args):
     })
 
     if not user:
-        error = gettext('USER_RETRIEVE_ERROR')
+        error = gettext('GET_USER_BY_ID_ERROR')
     else:
         user = user[0]
 

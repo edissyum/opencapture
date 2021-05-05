@@ -54,3 +54,10 @@
 .disable_link{
     pointer-events: none!important;
 }
+
+.settings_header{
+    @apply bg-green-400;
+    @apply bg-opacity-60;
+    @apply text-gray-900;
+    padding-top: 0.9rem;
+}

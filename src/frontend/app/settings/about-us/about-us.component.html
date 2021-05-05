@@ -1,8 +1,8 @@
-<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.2rem">
+<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem">
     <mat-sidenav #sidenav mode="side" opened class="w-1/6 flex flex-col h-full border-r border-green-400" style="top:0.1rem">
-        <h3 class="text-center text-gray-900" style="margin-top: 0.75rem">{{ "SETTINGS.administration" | translate }}</h3>
+        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">{{ "SETTINGS.administration" | translate }}</h3>
         <mat-divider class="border-green-400"></mat-divider>
-        <mat-nav-list>
+        <mat-nav-list class="pt-0">
             <mat-expansion-panel *ngFor="let parent of this.serviceSettings.getSettingsParent()"
                                  [expanded]="this.serviceSettings.getSelectedParentSetting() == parent['id']">
                 <mat-expansion-panel-header>
@@ -30,8 +30,11 @@
                                     </mat-panel-title>
                                 </mat-expansion-panel-header>
                                 <div *ngFor="let action of this.serviceSettings.getSettingsAction(setting['id'])"
-                                     class="w-full border-t border-gray-600">
-                                    <div class="border-b border-gray-400" *ngIf="!action['showOnlyIfActive'] || (action['showOnlyIfActive'] && this.router.url.includes(action['route']))">
+                                     [class.border-gray-600]="!action['showOnlyIfActive']"
+                                     [class.border-t]="!action['showOnlyIfActive']"
+                                     [class.w-full]="!action['showOnlyIfActive']">
+                                    <div class="border-b border-gray-400"
+                                         *ngIf="!action['showOnlyIfActive'] || (action['showOnlyIfActive'] && this.router.url.includes(action['route']))">
                                         <button mat-button
                                                 [class.text-green-400]="this.router.url.includes(action['route'])"
                                                 class="font-normal w-full h-12 ml-12 flex items-center text-center"
@@ -64,7 +67,7 @@
         </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content class="bg-white">
-        <div class="settings_header text-gray-900" style="margin-top: 0.75rem">
+        <div class="settings_header">
             <button mat-icon-button
                     (click)="sidenav.toggle(); this.serviceSettings.toggleMenu();" class="absolute left-2 top-2">
                 <i [class.fa-arrow-right]="!this.serviceSettings.getIsMenuOpen()" class="fas fa-arrow-left text-2xl"></i>

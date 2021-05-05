@@ -24,14 +24,21 @@ bp = Blueprint('roles', __name__, url_prefix='/ws/')
 
 @bp.route('roles/list', methods=['GET'])
 @token_required
-def retrieve_roles():
+def get_roles():
     args = {
         'select': ['*', 'count(*) OVER() as total'],
         'offset': request.args['offset'] if 'offset' in request.args else '',
         'limit': request.args['limit'] if 'limit' in request.args else ''
     }
-    _roles = roles.retrieve_roles(args)
+    _roles = roles.get_roles(args)
     return make_response(jsonify(_roles[0])), _roles[1]
+
+
+@bp.route('roles/getById/<int:role_id>', methods=['GET'])
+@token_required
+def get_user_by_id(role_id):
+    _role = roles.get_role_by_id(role_id)
+    return make_response(jsonify(_role[0])), _role[1]
 
 
 @bp.route('roles/delete/<int:role_id>', methods=['DELETE'])

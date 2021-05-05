@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {ActivatedRoute, Router} from "@angular/router";
-import {FormBuilder, FormControl, Validators} from "@angular/forms";
+import {FormBuilder, FormControl} from "@angular/forms";
 import {AuthService} from "../../../../services/auth.service";
 import {UserService} from "../../../../services/user.service";
 import {TranslateService} from "@ngx-translate/core";
@@ -80,6 +80,7 @@ export class CreateUserComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.serviceSettings.init()
         this.http.get(API_URL + '/ws/roles/list', {headers: this.headers}).pipe(
             tap((data: any) => {
                 data.roles.forEach((element: any) => {

@@ -42,7 +42,7 @@ export class SettingsService {
                         "icon"  : "fas fa-plus"
                     },
                     {
-                        "id"    : 'users_new',
+                        "id"    : 'users_update',
                         "label" : this.translate.instant("USER.update"),
                         "route" : "/settings/general/users/update/",
                         "icon"  : "fas fa-edit",
@@ -60,6 +60,13 @@ export class SettingsService {
                         "label" : this.translate.instant("ROLE.add"),
                         "route" : "/settings/general/roles/new",
                         "icon"  : "fas fa-plus"
+                    },
+                    {
+                        "id"    : 'roles_update',
+                        "label" : this.translate.instant("ROLE.update"),
+                        "route" : "/settings/general/roles/update/",
+                        "icon"  : "fas fa-edit",
+                        "showOnlyIfActive" : true
                     }
                 ]
             },
@@ -119,7 +126,6 @@ export class SettingsService {
         if (lastUrl.includes('roles') || lastUrl == '/' || lastUrl.includes('users')){
             let selectedSettings = this.localeStorageService.get('selectedSettings')
             let selectedParentSettings = this.localeStorageService.get('selectedParentSettings')
-
             if (selectedSettings)
                 this.setSelectedSettings(selectedSettings)
 
@@ -168,16 +174,6 @@ export class SettingsService {
 
     getSettings(){
         return this.settings;
-    }
-
-    getSelectedSettingInfo(value: any){
-        let data : any[] = []
-        this.settings[this.selectedParentSetting].forEach((element: any) =>{
-            if (element['id'] == this.selectedSetting){
-                data = element[value]
-            }
-        })
-        return data
     }
 
     getSettingsAction(setting_id: any){

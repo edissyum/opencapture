@@ -13,7 +13,6 @@ export class PrivilegesService {
     hasPrivilege(privilege_id: any) {
         let found = false
         let user_privileges = this.userService.getUserFromLocal()['privileges']
-
         if (user_privileges){
             if (user_privileges == '*')
                 return true
