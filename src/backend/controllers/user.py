@@ -175,13 +175,13 @@ def enable_user(user_id):
             return '', 200
         else:
             response = {
-                "errors": gettext('DISABLE_USER_ERROR'),
+                "errors": gettext('ENABLE_USER_ERROR'),
                 "message": error
             }
             return response, 401
     else:
         response = {
-            "errors": gettext('DISABLE_USER_ERROR'),
+            "errors": gettext('ENABLE_USER_ERROR'),
             "message": error
         }
         return response, 401

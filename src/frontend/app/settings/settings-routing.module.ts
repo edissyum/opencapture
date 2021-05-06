@@ -32,7 +32,7 @@ const routes: Routes = [
     },
     {
         path: 'settings/general/users/update/:id', component: UpdateUserComponent,
-        data: {title: marker('SETTINGS.update_user'), privileges: ['settings', 'modify_user']},
+        data: {title: marker('USER.update'), privileges: ['settings', 'modify_user']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     // END Users
@@ -50,7 +50,7 @@ const routes: Routes = [
     },
     {
         path: 'settings/general/roles/update/:id', component: UpdateRoleComponent,
-        data: {title: marker('SETTINGS.update_role'), privileges: ['settings', 'modify_role']},
+        data: {title: marker('ROLE.update'), privileges: ['settings', 'modify_role']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     // END Roles

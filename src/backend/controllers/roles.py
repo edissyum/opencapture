@@ -41,6 +41,36 @@ def get_roles(args):
         return response, 401
 
 
+def update_role(role_id, data):
+    _vars = pdf.init()
+    _db = _vars[0]
+    user_info, error = roles.get_role_by_id({'role_id': role_id})
+
+    if error is None:
+        _set = {
+            'label': data['label'],
+            'label_short': data['label_short'],
+            'enabled': data['enabled']
+        }
+
+        res, error = roles.update_role({'set': _set, 'role_id': role_id})
+
+        if error is None:
+            return '', 200
+        else:
+            response = {
+                "errors": gettext('UPDATE_ROLE_ERROR'),
+                "message": error
+            }
+            return response, 401
+    else:
+        response = {
+            "errors": gettext('UPDATE_ROLE_ERROR'),
+            "message": error
+        }
+        return response, 401
+
+
 def get_role_by_id(role_id):
     user_info, error = roles.get_role_by_id({'role_id': role_id})
 
@@ -72,6 +102,52 @@ def delete_role(role_id):
     else:
         response = {
             "errors": gettext('DELETE_ROLE_ERROR'),
+            "message": error
+        }
+        return response, 401
+
+
+def disable_role(role_id):
+    _vars = pdf.init()
+    _db = _vars[0]
+
+    role_info, error = roles.get_role_by_id({'role_id': role_id})
+    if error is None:
+        res, error = roles.update_role({'set': {'enabled': False}, 'role_id': role_id})
+        if error is None:
+            return '', 200
+        else:
+            response = {
+                "errors": gettext('DISABLE_ROLE_ERROR'),
+                "message": error
+            }
+            return response, 401
+    else:
+        response = {
+            "errors": gettext('DISABLE_ROLE_ERROR'),
+            "message": error
+        }
+        return response, 401
+
+
+def enable_role(role_id):
+    _vars = pdf.init()
+    _db = _vars[0]
+
+    user_info, error = roles.get_role_by_id({'role_id': role_id})
+    if error is None:
+        res, error = roles.update_role({'set': {'enabled': True}, 'role_id': role_id})
+        if error is None:
+            return '', 200
+        else:
+            response = {
+                "errors": gettext('ENABLE_ROLE_ERROR'),
+                "message": error
+            }
+            return response, 401
+    else:
+        response = {
+            "errors": gettext('ENABLE_ROLE_ERROR'),
             "message": error
         }
         return response, 401

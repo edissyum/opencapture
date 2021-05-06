@@ -77,7 +77,7 @@
         </div>
         <mat-table matSort [dataSource]="users" (matSortChange)="sortData($event)" class="w-full">
             <ng-container matColumnDef="id">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'GLOBAL.id' | translate }} </mat-header-cell>
+                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.id' | translate }} </mat-header-cell>
                 <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
             </ng-container>
             <ng-container matColumnDef="username">
@@ -93,11 +93,11 @@
                 <mat-cell *matCellDef="let element"> {{element.lastname}} </mat-cell>
             </ng-container>
             <ng-container matColumnDef="role">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'USER.role' | translate }} </mat-header-cell>
+                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.role' | translate }} </mat-header-cell>
                 <mat-cell *matCellDef="let element"> {{element.role_label}} </mat-cell>
             </ng-container>
             <ng-container matColumnDef="status">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'USER.status' | translate }} </mat-header-cell>
+                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.status' | translate }} </mat-header-cell>
                 <mat-cell *matCellDef="let element">
                     <span *ngIf="element.enabled "> <span class="text-green-400 text-4xl relative top-2 leading-4">&bull;</span> {{ 'USER.active' | translate }}</span>
                     <span *ngIf="!element.enabled"> <span class="text-red-600 text-4xl relative top-2 leading-4">&bull;</span> {{ 'USER.inactive' | translate }}</span>

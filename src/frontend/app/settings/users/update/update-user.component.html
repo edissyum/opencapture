@@ -82,7 +82,7 @@
                 <ng-container *ngFor="let field of userForm">
                     <mat-form-field class="block" *ngIf="field.type != 'select'">
                         <mat-label>{{ field.label | translate }}</mat-label>
-                        <input matInput [formControl]="field.control" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field.required">
+                        <input matInput [readonly]="field.id == 'username'" [formControl]="field.control" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field.required">
                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
                     </mat-form-field>
                     <mat-form-field class="block" *ngIf="field.type == 'select'">

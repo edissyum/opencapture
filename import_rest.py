@@ -47,3 +47,9 @@ if 'roles' not in custom_array:
 else:
     roles = getattr(__import__(custom_array['roles']['path'], fromlist=[custom_array['roles']['module']]),
                        custom_array['roles']['module'])
+
+if 'privileges' not in custom_array:
+    from src.backend.rest import privileges
+else:
+    privileges = getattr(__import__(custom_array['privileges']['path'], fromlist=[custom_array['privileges']['module']]),
+                       custom_array['privileges']['module'])

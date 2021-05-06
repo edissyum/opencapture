@@ -90,7 +90,7 @@ export class SettingsService {
         "verifier": [
             {
                 "id"    : "form_builder",
-                "label" : this.translate.instant("verifier.form_builder"),
+                "label" : this.translate.instant("VERIFIER.form_builder"),
                 "icon"  : "fas fa-tools",
                 "route" : "/settings/verifier/forms/builder"
             },
@@ -113,7 +113,6 @@ export class SettingsService {
             }
         ]
     };
-
     constructor(
         private titleService: Title,
         private translate: TranslateService,

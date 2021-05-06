@@ -19,15 +19,16 @@
    caret-color: #97BF3D !important;
 }
 
-.mat-form-field-label {
-    @apply text-gray-900 #{!important};
-}
-
-.mat-selected{
+.mat-selected,
+.mat-checkbox-checked.mat-accent .mat-checkbox-background,.mat-checkbox-indeterminate.mat-accent .mat-checkbox-background,
+.mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar,
+.mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb,
+mat-ink-bar{
     @apply bg-green-400 #{!important};
 }
 
-.mat-selected .mat-option-text {
+.mat-selected .mat-option-text,
+.mat-form-field-label{
     @apply text-gray-900 #{!important};
 }
 

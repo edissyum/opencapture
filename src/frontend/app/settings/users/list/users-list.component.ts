@@ -162,7 +162,7 @@ export class UsersListComponent implements OnInit {
     deleteUser(user_id: number){
         if (user_id !== undefined){
             this.http.delete(API_URL + '/ws/users/delete/' + user_id, {headers: this.headers}).pipe(
-                tap((data: any) => {
+                tap(() => {
                     this.loadUsers()
                 }),
                 catchError((err: any) => {
@@ -177,7 +177,7 @@ export class UsersListComponent implements OnInit {
     disableUser(user_id: number){
         if (user_id !== undefined){
             this.http.put(API_URL + '/ws/users/disable/' + user_id, null, {headers: this.headers}).pipe(
-                tap((data: any) => {
+                tap(() => {
                     this.loadUsers()
                 }),
                 catchError((err: any) => {
@@ -192,7 +192,7 @@ export class UsersListComponent implements OnInit {
     enableUser(user_id: number){
         if (user_id !== undefined){
             this.http.put(API_URL + '/ws/users/enable/' + user_id, null, {headers: this.headers}).pipe(
-                tap((data: any) => {
+                tap(() => {
                     this.loadUsers()
                 }),
                 catchError((err: any) => {

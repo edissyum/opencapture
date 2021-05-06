@@ -10,7 +10,6 @@ import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {NotificationService} from "../../services/notifications/notifications.service";
-import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import {PrivilegesService} from "../../services/privileges.service";
 
 @Component({
@@ -26,35 +25,35 @@ export class UserProfileComponent implements OnInit {
     profileForm : any[] = [
         {
             id: 'firstname',
-            label: marker('USER.firstname'),
+            label: this.translate.instant('USER.firstname'),
             type: 'text',
             control: new FormControl(),
             required: true,
         },
         {
             id: 'lastname',
-            label: marker('USER.lastname'),
+            label: this.translate.instant('USER.lastname'),
             type: 'text',
             control: new FormControl(),
             required: true
         },
         {
             id: 'old_password',
-            label: marker('USER.old_password'),
+            label: this.translate.instant('USER.old_password'),
             type: 'password',
             control: new FormControl(),
             required: false
         },
         {
             id: 'new_password',
-            label: marker('USER.new_password'),
+            label: this.translate.instant('USER.new_password'),
             type: 'password',
             control: new FormControl(),
             required: false
         },
         {
             id: 'role',
-            label: marker('USER.role'),
+            label: this.translate.instant('HEADER.role'),
             type: 'select',
             values: [],
             control: new FormControl(),
@@ -173,10 +172,11 @@ export class UserProfileComponent implements OnInit {
     getErrorMessage(field: any) {
         let error = '';
         this.profileForm.forEach(element => {
-            if(element.id == field)
-                if (element.required){
+            if(element.id == field) {
+                if (element.required) {
                     error = this.translate.instant('AUTH.field_required');
                 }
+            }
         })
         return error
     }

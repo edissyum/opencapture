@@ -46,7 +46,7 @@ def login(username, password, lang):
             'user_id': user_info['id']
         })[0]
 
-        user_privileges = privileges.get_user_privileges(user_info['role'])
+        user_privileges = privileges.get_privileges_by_role_id({'role_id': user_info['role']})
         if user_privileges:
             returned_user['privileges'] = user_privileges[0]
 

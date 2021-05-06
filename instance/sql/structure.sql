@@ -60,7 +60,8 @@ CREATE TABLE "roles"
     "label_short" VARCHAR(10),
     "label" VARCHAR(20),
     "status" VARCHAR(3) DEFAULT 'OK',
-    "editable" BOOLEAN DEFAULT true
+    "editable" BOOLEAN DEFAULT true,
+    "enabled" BOOLEAN DEFAULT true,
 );
 
 CREATE TABLE "roles_privileges"
@@ -73,6 +74,7 @@ CREATE TABLE "roles_privileges"
 CREATE TABLE "privileges"
 (
     "id"    SERIAL UNIQUE PRIMARY KEY,
+    "parent" VARCHAR(20),
     "label" VARCHAR(50)
 );
 

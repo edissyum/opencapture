@@ -7,7 +7,6 @@ import {UserService} from "../../../../services/user.service";
 import {TranslateService} from "@ngx-translate/core";
 import {NotificationService} from "../../../../services/notifications/notifications.service";
 import {SettingsService} from "../../../../services/settings.service";
-import {marker} from "@biesbjerg/ngx-translate-extract-marker";
 import {API_URL} from "../../../env";
 import {catchError, tap} from "rxjs/operators";
 import {of} from "rxjs";
@@ -23,42 +22,42 @@ export class CreateUserComponent implements OnInit {
     userForm    : any[] = [
         {
             id: 'username',
-            label: marker('USER.username'),
+            label: this.translate.instant('USER.username'),
             type: 'text',
             control: new FormControl(),
             required: true,
         },
         {
             id: 'firstname',
-            label: marker('USER.firstname'),
+            label: this.translate.instant('USER.firstname'),
             type: 'text',
             control: new FormControl(),
             required: true,
         },
         {
             id: 'lastname',
-            label: marker('USER.lastname'),
+            label: this.translate.instant('USER.lastname'),
             type: 'text',
             control: new FormControl(),
             required: true
         },
         {
             id: 'password',
-            label: marker('USER.password'),
+            label: this.translate.instant('USER.password'),
             type: 'password',
             control: new FormControl(),
             required: true
         },
         {
             id: 'password_check',
-            label: marker('USER.password_check'),
+            label: this.translate.instant('USER.password_check'),
             type: 'password',
             control: new FormControl(),
             required: true
         },
         {
             id: 'role',
-            label: marker('USER.role'),
+            label: this.translate.instant('HEADER.role'),
             type: 'select',
             values: [],
             control: new FormControl(),

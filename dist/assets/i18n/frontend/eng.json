@@ -3,8 +3,7 @@
 		"authenticated": "You have successfully authenticated",
 		"field_required": "This field is required",
 		"login": "Log in",
-		"not_connected": "Please authenticate yourself before accessing this page",
-		"registered": "User registered successfully"
+		"not_connected": "Please authenticate yourself before accessing this page"
 	},
 	"ERROR": {
 		"404": "The page you are looking for does not exist",
@@ -22,14 +21,18 @@
 		"disable": "Disable",
 		"enable": "Enable",
 		"home": "Home",
-		"id": "Technical id",
 		"language": "Language",
 		"log_out": "Log out",
 		"login": "Login",
-		"register": "Register an account",
 		"settings": "Settings",
-		"submit": "Submit",
 		"upload": "Upload"
+	},
+	"HEADER": {
+		"id": "",
+		"label": "",
+		"label_short": "",
+		"role": "",
+		"status": ""
 	},
 	"HOME": {
 		"splitter": "Open-Capture splitter",
@@ -43,19 +46,40 @@
 		"page": "Page",
 		"previous_page": "Previous page"
 	},
+	"PRIVILEGES": {
+		"accounts_list": "",
+		"add_role": "",
+		"add_user": "",
+		"administration": "",
+		"global": "",
+		"list": "",
+		"modify_role": "",
+		"modify_user": "",
+		"roles_list": "",
+		"settings": "",
+		"splitter": "",
+		"upload": "",
+		"users_list": "",
+		"verifier": ""
+	},
 	"ROLE": {
+		"active": "",
 		"add": "Add role",
 		"confirm_delete": "",
-		"editable": "Editable",
-		"label": "Label",
-		"label_short": "Short label",
-		"non_editable": "Non editable",
-		"update": "Update"
+		"confirm_disable": "",
+		"confirm_enable": "",
+		"disable": "",
+		"enable": "",
+		"inactive": "",
+		"update": "Update",
+		"update_role": "",
+		"updated": ""
 	},
 	"SETTINGS": {
 		"abouts_us": "About us",
 		"administration": "Administration",
 		"connector_EDM": "EDM connector",
+		"create_role": "",
 		"create_user": "Create user",
 		"custom_fields": "Custom fields",
 		"document_separator": "Document separator",
@@ -63,7 +87,6 @@
 		"general": "General",
 		"roles_list": "Roles list",
 		"splitter": "Splitter",
-		"update_user": "",
 		"users_list": "Users list",
 		"verifier": "Verifier",
 		"version_and_update": "Versions and update"
@@ -101,16 +124,13 @@
 		"password": "Password",
 		"password_check": "",
 		"profile_updated": "Profile updated",
-		"role": "",
-		"status": "",
 		"update": "",
+		"updated": "",
 		"username": "Username"
 	},
 	"VERIFIER": {
+		"form_builder": "",
 		"list": "Invoices",
 		"viewer": "View PDF"
-	},
-	"verifier": {
-		"form_builder": ""
 	}
 }

@@ -7,7 +7,6 @@ import {UserService} from "../../../../services/user.service";
 import {TranslateService} from "@ngx-translate/core";
 import {NotificationService} from "../../../../services/notifications/notifications.service";
 import {SettingsService} from "../../../../services/settings.service";
-import {marker} from "@biesbjerg/ngx-translate-extract-marker";
 import {API_URL} from "../../../env";
 import {catchError, tap} from "rxjs/operators";
 import {of} from "rxjs";
@@ -26,42 +25,42 @@ export class UpdateUserComponent implements OnInit {
     userForm: any[] = [
         {
             id: 'username',
-            label: marker('USER.username'),
+            label: this.translate.instant('USER.username'),
             type: 'text',
             control: new FormControl(),
             required: true,
         },
         {
             id: 'firstname',
-            label: marker('USER.firstname'),
+            label: this.translate.instant('USER.firstname'),
             type: 'text',
             control: new FormControl(),
             required: true,
         },
         {
             id: 'lastname',
-            label: marker('USER.lastname'),
+            label: this.translate.instant('USER.lastname'),
             type: 'text',
             control: new FormControl(),
             required: true
         },
         {
             id: 'password',
-            label: marker('USER.password'),
+            label: this.translate.instant('USER.password'),
             type: 'password',
             control: new FormControl(),
             required: false
         },
         {
             id: 'password_check',
-            label: marker('USER.password_check'),
+            label: this.translate.instant('USER.password_check'),
             type: 'password',
             control: new FormControl(),
             required: false
         },
         {
             id: 'role',
-            label: marker('USER.role'),
+            label: this.translate.instant('HEADER.role'),
             type: 'select',
             values: [],
             control: new FormControl(),
@@ -82,11 +81,11 @@ export class UpdateUserComponent implements OnInit {
     ) {
     }
 
-    ngOnInit(): void {
+    async ngOnInit(): Promise<void> {
         this.serviceSettings.init()
         this.userId = this.route.snapshot.params['id'];
 
-        this.http.get(API_URL + '/ws/roles/list', {headers: this.headers}).pipe(
+       await this.http.get(API_URL + '/ws/roles/list', {headers: this.headers}).pipe(
             tap((data: any) => {
                 data.roles.forEach((element: any) => {
                     if (element.editable) {
@@ -105,14 +104,14 @@ export class UpdateUserComponent implements OnInit {
             })
         ).subscribe()
 
-        this.http.get(API_URL + '/ws/users/getById/' + this.userId, {headers: this.headers}).pipe(
+        await this.http.get(API_URL + '/ws/users/getById/' + this.userId, {headers: this.headers}).pipe(
             tap((data: any) => {
                 this.user = data;
                 for (let field in data) {
                     if (data.hasOwnProperty(field)) {
                         this.userForm.forEach(element => {
                             if (element.id == field) {
-                                element.control.value = data[field];
+                                element.control.setValue(data[field]);
                                 if (element.id == 'role') {
                                     element.values = this.roles
                                 }
@@ -157,7 +156,7 @@ export class UpdateUserComponent implements OnInit {
                 }),
                 catchError((err: any) => {
                     console.debug(err)
-                    this.notify.handleErrors(err);
+                    this.notify.handleErrors(err, '/settings/general/users/');
                     return of(false);
                 })
             ).subscribe();
@@ -167,10 +166,11 @@ export class UpdateUserComponent implements OnInit {
     getErrorMessage(field: any) {
         let error = undefined;
         this.userForm.forEach(element => {
-            if (element.id == field)
-                if (element.required) {
+            if (element.id == field){
+                if (element.required && !(element.value || element.control.value)) {
                     error = this.translate.instant('AUTH.field_required');
                 }
+            }
         })
         return error
     }

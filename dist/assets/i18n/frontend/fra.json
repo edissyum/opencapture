@@ -3,8 +3,7 @@
 		"authenticated": "Vous vous êtes authentifié avec succès",
 		"field_required": "Ce champ est requis",
 		"login": "Se connecter",
-		"not_connected": "Merci de vous authentifier avant d'accéder à cette page",
-		"registered": "Utilisateur enregistré avec succès"
+		"not_connected": "Merci de vous authentifier avant d'accéder à cette page"
 	},
 	"ERROR": {
 		"404": "La page demandée n'existe pas",
@@ -22,14 +21,18 @@
 		"disable": "Désactiver",
 		"enable": "Activer",
 		"home": "Accueil",
-		"id": "Identifiant technique",
 		"language": "Langage",
 		"log_out": "Déconnexion",
 		"login": "Connexion",
-		"register": "Créer un compte",
 		"settings": "Paramètres",
-		"submit": "Soumettre",
 		"upload": "Téléversement"
+	},
+	"HEADER": {
+		"id": "Identifiant technique",
+		"label": "Libellé",
+		"label_short": "Libellé technique",
+		"role": "Rôle",
+		"status": "Status"
 	},
 	"HOME": {
 		"splitter": "Open-Capture splitter",
@@ -43,19 +46,38 @@
 		"page": "Page",
 		"previous_page": "Page précédente"
 	},
+	"PRIVILEGES": {
+		"add_role": "Ajouter un rôle",
+		"add_user": "Ajouter un utilisateur",
+		"administration": "Privilèges d'administration",
+		"general": "Privilèges globaux",
+		"list": "Liste des privilèges",
+		"modify_role": "Modifier un rôle",
+		"modify_user": "Modifier un utilisateur",
+		"roles_list": "Visualiser la liste des rôles",
+		"settings": "Accès au panneau d'administration",
+		"splitter": "Accès à Open-Capture Splitter",
+		"upload": "Téléverser des fichiers",
+		"users_list": "Visualiser la liste des utilisateurs",
+		"verifier": "Accès à Open-Capture Verifier"
+	},
 	"ROLE": {
+		"active": "Actif",
 		"add": "Ajouter un rôle",
-		"confirm_delete": "Êtes vous sûr de vouloir supprimer le role {{role}} ",
-		"editable": "Modifiable",
-		"label": "Libellé",
-		"label_short": "Libellé technique",
-		"non_editable": "Non modifiable",
-		"update": "Mettre à jour le rôle"
+		"confirm_delete": "Êtes vous sûr de vouloir supprimer le rôle {{role}} ?",
+		"confirm_disable": "Êtes vous sûr de vouloir désactiver le rôle {{role}} ?",
+		"confirm_enable": "Êtes vous sûr de vouloir réactiver le rôle {{role}} ?",
+		"disable": "Désactiver le rôle",
+		"enable": "Activer le rôle",
+		"inactive": "Inactif",
+		"update": "Modifier le rôle",
+		"updated": "Rôle mis à jour"
 	},
 	"SETTINGS": {
 		"abouts_us": "À propos",
 		"administration": "Panneau d'administration",
 		"connector_EDM": "Connecteur GED",
+		"create_role": "Créer un rôle",
 		"create_user": "Créer un utilisateur",
 		"custom_fields": "Champs personnalisés",
 		"document_separator": "Séparateur de document",
@@ -63,7 +85,6 @@
 		"general": "Paramètres généraux",
 		"roles_list": "Liste des rôles",
 		"splitter": "Paramètres du Splitter",
-		"update_user": "Modifier l'utilisateur",
 		"users_list": "Liste des utilisateurs",
 		"verifier": "Paramètres du Vérificateur",
 		"version_and_update": "Version et mise à jour"
@@ -101,16 +122,13 @@
 		"password": "Mot de passe",
 		"password_check": "Vérification du mot de passe",
 		"profile_updated": "Profil mis à jour",
-		"role": "Rôle",
-		"status": "Status",
 		"update": "Modifier l'utilisateur",
+		"updated": "Utilisateur mis à jour",
 		"username": "Nom d'utilisateur"
 	},
 	"VERIFIER": {
+		"form_builder": "Création de formulaire",
 		"list": "Factures",
 		"viewer": "Visualisation du PDF"
-	},
-	"verifier": {
-		"form_builder": "Création de formulaire"
 	}
 }

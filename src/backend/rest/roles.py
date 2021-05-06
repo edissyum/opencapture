@@ -36,13 +36,35 @@ def get_roles():
 
 @bp.route('roles/getById/<int:role_id>', methods=['GET'])
 @token_required
-def get_user_by_id(role_id):
+def get_role_by_id(role_id):
     _role = roles.get_role_by_id(role_id)
     return make_response(jsonify(_role[0])), _role[1]
 
 
+@bp.route('roles/update/<int:role_id>', methods=['PUT'])
+@token_required
+def update_role(role_id):
+    data = request.json['args']
+    res = roles.update_role(role_id, data)
+    return make_response(jsonify(res[0])), res[1]
+
+
 @bp.route('roles/delete/<int:role_id>', methods=['DELETE'])
 @token_required
-def delete_user(role_id):
+def delete_role(role_id):
     res = roles.delete_role(role_id)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('roles/disable/<int:role_id>', methods=['PUT'])
+@token_required
+def disable_user(role_id):
+    res = roles.disable_role(role_id)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('roles/enable/<int:role_id>', methods=['PUT'])
+@token_required
+def enable_user(role_id):
+    res = roles.enable_role(role_id)
     return make_response(jsonify(res[0])), res[1]

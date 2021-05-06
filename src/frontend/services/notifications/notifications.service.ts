@@ -48,7 +48,7 @@ export class NotificationService {
         });
     }
 
-    handleErrors(err: any) {
+    handleErrors(err: any, route='') {
         if (err.status === 0 && err.statusText === 'Unknown Error') {
             let message = this.translate.instant('ERROR.connection_failed') + ' : ' + this.translate.instant('ERROR.is_server_up', {server: API_URL});
             this.error(message);
@@ -72,6 +72,10 @@ export class NotificationService {
                 this.error(`${err.status} : ${err.statusText}`, err.url);
         } else
             this.error(err);
+
+        if (route){
+            this.router.navigate([route]).then()
+        }
     }
 
     getMessageDuration(message: string, minimumDuration: number) {

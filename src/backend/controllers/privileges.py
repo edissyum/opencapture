@@ -14,29 +14,55 @@
 # along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+from flask_babel import gettext
 
 from ..models import privileges
 
 
-def get_user_privileges(role_id):
+def get_privileges():
+    all_privileges, error = privileges.get_privileges()
+
+    if error is None:
+        list_role_privileges = {
+            'parent': [],
+            'privileges': []
+        }
+        for privilege_id in all_privileges:
+            if privilege_id['parent'] not in list_role_privileges['parent']:
+                list_role_privileges['parent'].append(privilege_id['parent'])
+            list_role_privileges['privileges'].append({'label': privilege_id['label'], 'parent': privilege_id['parent']})
+        return list_role_privileges, 200
+    else:
+        response = {
+            "errors": gettext('GET_PRIVILEGES_ERROR'),
+            "message": error
+        }
+        return response, 401
+
+
+def get_privileges_by_role_id(args):
     privilege_info, error = privileges.get_by_role_id({
-        'role_id': role_id
+        'role_id': args['role_id']
     })
 
     if error is None:
-        user_privileges = privilege_info['privileges_id']['data']
-        if type(eval(user_privileges)) == list:
-            user_privileges = eval(user_privileges)
-            if user_privileges[0] == '*':
+        role_privileges = privilege_info['privileges_id']['data']
+        if type(eval(role_privileges)) == list:
+            role_privileges = eval(role_privileges)
+            if role_privileges[0] == '*':
                 return '*', 200
             else:
-                all_privileges = privileges.get_privileges()
-                list_user_privileges = []
-                for user_privilege_id in user_privileges:
-                    for privilege_id in all_privileges[0]:
-                        if privilege_id['id'] == user_privilege_id:
-                            list_user_privileges.append(privilege_id['label'])
+                all_privileges, error = privileges.get_privileges()
+                list_role_privileges = []
+                for role_privilege_id in role_privileges:
+                    for privilege_id in all_privileges:
+                        if privilege_id['id'] == role_privilege_id:
+                            list_role_privileges.append(privilege_id['label'])
 
-                return list_user_privileges, 200
+                return list_role_privileges, 200
     else:
-        return False, False
+        response = {
+            "errors": gettext('GET_PRIVILEGES_BY_ROLE_ERROR'),
+            "message": error
+        }
+        return response, 401
