@@ -7,6 +7,7 @@ import {UserService} from "../../../../services/user.service";
 import {TranslateService} from "@ngx-translate/core";
 import {NotificationService} from "../../../../services/notifications/notifications.service";
 import {SettingsService} from "../../../../services/settings.service";
+import {PrivilegesService} from "../../../../services/privileges.service";
 
 @Component({
     selector: 'app-create',
@@ -25,7 +26,8 @@ export class CreateRoleComponent implements OnInit {
         public userService: UserService,
         private translate: TranslateService,
         private notify: NotificationService,
-        public serviceSettings: SettingsService
+        public serviceSettings: SettingsService,
+        public privilegesService: PrivilegesService
     ) {
     }
 

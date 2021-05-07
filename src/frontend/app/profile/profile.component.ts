@@ -80,7 +80,7 @@ export class UserProfileComponent implements OnInit {
         this.userId = this.route.snapshot.params['id'];
 
         if (this.userId != this.userService.user.id){
-            if (!this.privilegeService.hasPrivilege('modify_user')){
+            if (!this.privilegeService.hasPrivilege('update_user')){
                 this.notify.error('ERROR.unauthorized')
                 this.router.navigateByUrl('/home')
             }

@@ -10,6 +10,7 @@ import {SettingsService} from "../../../../services/settings.service";
 import {API_URL} from "../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
+import {PrivilegesService} from "../../../../services/privileges.service";
 
 @Component({
     selector: 'app-create-user',
@@ -76,6 +77,7 @@ export class CreateUserComponent implements OnInit {
         private translate: TranslateService,
         private notify: NotificationService,
         public serviceSettings: SettingsService,
+        public privilegesService: PrivilegesService
     ) {
     }
 

@@ -72,3 +72,20 @@ def update_role(args):
         error = gettext('ROLE_UPDATE_ERROR')
 
     return role, error
+
+
+def update_role_privileges(args):
+    db = get_db()
+    error = None
+
+    role = db.update({
+        'table': ['roles_privileges'],
+        'set': args['set'],
+        'where': ['role_id = %s'],
+        'data': [args['role_id']]
+    })
+
+    if role[0] is False:
+        error = gettext('ROLE_PRIVILEGES_UPDATE_ERROR')
+
+    return role, error

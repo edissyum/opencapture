@@ -15,6 +15,7 @@ import {of} from "rxjs";
 import {Sort} from "@angular/material/sort";
 import {ConfirmDialogComponent} from "../../../../services/confirm-dialog/confirm-dialog.component";
 import {SettingsService} from "../../../../services/settings.service";
+import {PrivilegesService} from "../../../../services/privileges.service";
 
 @Component({
     selector: 'app-roles-list',
@@ -33,17 +34,18 @@ export class RolesListComponent implements OnInit {
     offset: number = 0;
 
     constructor(
-        private http: HttpClient,
         public router: Router,
+        private http: HttpClient,
+        private dialog: MatDialog,
         private route: ActivatedRoute,
+        public userService: UserService,
         private formBuilder: FormBuilder,
         private authService: AuthService,
-        public userService: UserService,
         private translate: TranslateService,
         private notify: NotificationService,
-        private dialog: MatDialog,
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
+        public privilegesService: PrivilegesService,
         private localeStorageService: LocalStorageService,
     ) {
     }

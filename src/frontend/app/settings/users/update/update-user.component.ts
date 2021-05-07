@@ -10,6 +10,7 @@ import {SettingsService} from "../../../../services/settings.service";
 import {API_URL} from "../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
+import {PrivilegesService} from "../../../../services/privileges.service";
 
 @Component({
     selector: 'app-update',
@@ -70,15 +71,16 @@ export class UpdateUserComponent implements OnInit {
     ];
 
     constructor(
-        private http: HttpClient,
         public router: Router,
+        private http: HttpClient,
         private route: ActivatedRoute,
+        public userService: UserService,
         private formBuilder: FormBuilder,
         private authService: AuthService,
-        public userService: UserService,
         private translate: TranslateService,
         private notify: NotificationService,
-        public serviceSettings: SettingsService
+        public serviceSettings: SettingsService,
+        public privilegesService: PrivilegesService
     ) {
     }
 

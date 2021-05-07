@@ -10,10 +10,10 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (3, 'settings', 'admin
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (4, 'upload', 'general');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (6, 'users_list', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (7, 'add_user', 'administration');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (8, 'modify_user', 'administration');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (8, 'update_user', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (9, 'roles_list', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (10, 'add_role', 'administration');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (11, 'modify_role', 'administration');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (11, 'update_role', 'administration');
 
 -- ADD PRIVILEGES TO ROLES
 INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (1, '{"data" : "[''*'']"}');

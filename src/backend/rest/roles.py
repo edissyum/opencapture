@@ -49,6 +49,14 @@ def update_role(role_id):
     return make_response(jsonify(res[0])), res[1]
 
 
+@bp.route('roles/updatePrivilege/<int:role_id>', methods=['PUT'])
+@token_required
+def update_privilege(role_id):
+    data = request.json['privileges']
+    res = roles.update_role_privilege(role_id, data)
+    return make_response(jsonify(res[0])), res[1]
+
+
 @bp.route('roles/delete/<int:role_id>', methods=['DELETE'])
 @token_required
 def delete_role(role_id):

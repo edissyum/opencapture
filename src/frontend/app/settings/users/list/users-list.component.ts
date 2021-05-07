@@ -15,6 +15,7 @@ import { LocalStorageService } from "../../../../services/local-storage.service"
 import { LastUrlService } from "../../../../services/last-url.service";
 import {Sort} from "@angular/material/sort";
 import {SettingsService} from "../../../../services/settings.service";
+import {PrivilegesService} from "../../../../services/privileges.service";
 
 @Component({
     selector: 'app-users-list',
@@ -34,17 +35,18 @@ export class UsersListComponent implements OnInit {
     roles : any                   = [];
 
     constructor(
-        private http: HttpClient,
         public router: Router,
+        private http: HttpClient,
+        private dialog: MatDialog,
         private route: ActivatedRoute,
+        public userService: UserService,
         private formBuilder: FormBuilder,
         private authService: AuthService,
-        public userService: UserService,
         private translate: TranslateService,
         private notify: NotificationService,
-        private dialog: MatDialog,
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
+        public privilegesService: PrivilegesService,
         private localeStorageService: LocalStorageService,
     ) { }
 

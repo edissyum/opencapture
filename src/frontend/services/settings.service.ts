@@ -30,61 +30,71 @@ export class SettingsService {
     settings: any = {
         "general": [
             {
-                "id"      : "users",
-                "label"   : this.translate.instant("SETTINGS.users_list"),
-                "icon"    : "fas fa-user",
-                "route"   : '/settings/general/users',
-                "actions" : [
+                "id"        : "users",
+                "label"     : this.translate.instant("SETTINGS.users_list"),
+                "icon"      : "fas fa-user",
+                "route"     : '/settings/general/users',
+                "privilege" : "users_list",
+                "actions"   : [
                     {
-                        "id"    : 'users_new',
-                        "label" : this.translate.instant("USER.add"),
-                        "route" : "/settings/general/users/new",
-                        "icon"  : "fas fa-plus"
+                        "id"        : 'add_user',
+                        "label"     : this.translate.instant("USER.add"),
+                        "route"     : "/settings/general/users/new",
+                        "privilege" : "add_user",
+                        "icon"      : "fas fa-plus"
                     },
                     {
-                        "id"    : 'users_update',
-                        "label" : this.translate.instant("USER.update"),
-                        "route" : "/settings/general/users/update/",
-                        "icon"  : "fas fa-edit",
-                        "showOnlyIfActive" : true
+                        "id"                : 'update_user',
+                        "label"             : this.translate.instant("USER.update"),
+                        "route"             : "/settings/general/users/update/",
+                        "icon"              : "fas fa-edit",
+                        "privilege"         : "update_user",
+                        "showOnlyIfActive"  : true
                     }
                 ]
             },
             {
-                "id"      : "roles",
-                "label"   : this.translate.instant("SETTINGS.roles_list"),
-                "icon"    : "fas fa-users",
-                "route"   : "/settings/general/roles",
-                "actions" : [
+                "id"        : "roles",
+                "label"     : this.translate.instant("SETTINGS.roles_list"),
+                "icon"      : "fas fa-users",
+                "route"     : "/settings/general/roles",
+                "privilege" : "roles_list",
+                "actions"   : [
                     {
-                        "label" : this.translate.instant("ROLE.add"),
-                        "route" : "/settings/general/roles/new",
-                        "icon"  : "fas fa-plus"
+                        "id"        : "add_role",
+                        "label"     : this.translate.instant("ROLE.add"),
+                        "route"     : "/settings/general/roles/new",
+                        "privilege" : "add_role",
+                        "icon"      : "fas fa-plus"
                     },
                     {
-                        "id"    : 'roles_update',
-                        "label" : this.translate.instant("ROLE.update"),
-                        "route" : "/settings/general/roles/update/",
-                        "icon"  : "fas fa-edit",
-                        "showOnlyIfActive" : true
+                        "id"                : 'update_role',
+                        "label"             : this.translate.instant("ROLE.update"),
+                        "route"             : "/settings/general/roles/update/",
+                        "icon"              : "fas fa-edit",
+                        "privilege"         : "update_role",
+                        "showOnlyIfActive"  : true
                     }
                 ]
             },
             {
-                "id": "custom-fields",
-                "label": this.translate.instant("SETTINGS.custom_fields"),
-                "icon": "fas fa-code",
+                "id"        : "custom-fields",
+                "label"     : this.translate.instant("SETTINGS.custom_fields"),
+                "icon"      : "fas fa-code",
+                "privilege" : "custom_fields",
             },
             {
-                "id": "version-update",
-                "label": this.translate.instant("SETTINGS.version_and_update"),
-                "icon": "fas fa-sync",
+                "id"        : "version-update",
+                "label"     : this.translate.instant("SETTINGS.version_and_update"),
+                "icon"      : "fas fa-sync",
+                "privilege" : "update_app",
             },
             {
-                "id": "about-us",
-                "label": this.translate.instant("SETTINGS.abouts_us"),
-                "icon": "fas fa-address-card",
-                "route": "/settings/general/about-us"
+                "id"        : "about-us",
+                "label"     : this.translate.instant("SETTINGS.abouts_us"),
+                "icon"      : "fas fa-address-card",
+                "route"     : "/settings/general/about-us",
+                "privilege" : "*"
             }
         ],
         "verifier": [

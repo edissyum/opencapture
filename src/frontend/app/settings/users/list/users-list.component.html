@@ -11,9 +11,12 @@
                     </mat-panel-title>
                 </mat-expansion-panel-header>
                 <div class="w-full border-t-2 border-gray-600">
-                    <div class="border-b border-gray-400 " *ngFor="let setting of this.serviceSettings.getSettings()[parent['id']];">
+                    <div *ngFor="let setting of this.serviceSettings.getSettings()[parent['id']];"
+                         [class.border-b]="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] == '*'"
+                         [class.border-gray-400]="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] == '*'">
                         <div *ngIf="this.serviceSettings.getSettingsAction(setting['id']) else noActions">
-                            <mat-expansion-panel [expanded]="this.serviceSettings.getSelectedSetting() == setting['id']">
+                            <mat-expansion-panel *ngIf="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] == '*'"
+                                                 [expanded]="this.serviceSettings.getSelectedSetting() == setting['id']">
                                 <mat-expansion-panel-header class="font-normal w-full h-20">
                                     <mat-panel-title class="font-normal justify-center items-center text-center">
                                         <i [class.text-green-400]="this.router.url == setting['route']"
@@ -34,7 +37,7 @@
                                      [class.border-t]="!action['showOnlyIfActive']"
                                      [class.w-full]="!action['showOnlyIfActive']">
                                     <div class="border-b border-gray-400"
-                                         *ngIf="!action['showOnlyIfActive'] || (action['showOnlyIfActive'] && this.router.url.includes(action['route']))">
+                                         *ngIf="(this.privilegesService.hasPrivilege(action['privilege']) || setting['privilege'] == '*') && (!action['showOnlyIfActive'] || (action['showOnlyIfActive'] && this.router.url.includes(action['route'])))">
                                         <button mat-button
                                                 [class.text-green-400]="this.router.url.includes(action['route'])"
                                                 class="font-normal w-full h-12 ml-12 flex items-center text-center"
@@ -51,7 +54,8 @@
                             </mat-expansion-panel>
                         </div>
                         <ng-template #noActions>
-                            <button mat-button [class.text-green-400]="this.router.url == setting['route']"
+                            <button *ngIf="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] == '*'"
+                                    mat-button [class.text-green-400]="this.router.url == setting['route']"
                                     class="font-normal w-full h-20 flex justify-center items-center text-center"
                                     (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
                                     routerLink="{{ setting['route'] }}">

@@ -62,10 +62,10 @@ export class UpdateRoleComponent implements OnInit {
         this.translate.instant('PRIVILEGES.upload'),
         this.translate.instant('PRIVILEGES.users_list'),
         this.translate.instant('PRIVILEGES.add_user'),
-        this.translate.instant('PRIVILEGES.modify_user'),
+        this.translate.instant('PRIVILEGES.update_user'),
         this.translate.instant('PRIVILEGES.roles_list'),
         this.translate.instant('PRIVILEGES.add_role'),
-        this.translate.instant('PRIVILEGES.modify_role')
+        this.translate.instant('PRIVILEGES.update_role')
     ]
     // End translation
     constructor(
@@ -111,7 +111,6 @@ export class UpdateRoleComponent implements OnInit {
             tap((data: any) => {
                 this.rolePrivileges = data
             }),
-            finalize(() => this.loading = false),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err, '/settings/general/roles');
@@ -124,6 +123,7 @@ export class UpdateRoleComponent implements OnInit {
                 this.privileges = data
                 console.log(this.privileges)
             }),
+            finalize(() => this.loading = false),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err, '/settings/general/roles');
@@ -152,7 +152,25 @@ export class UpdateRoleComponent implements OnInit {
                 role[element.id] = element.control.value;
             });
 
+            let role_privileges: any[] = []
+            this.privileges['privileges'].forEach((element: any) => {
+                this.rolePrivileges.forEach((element2: any) => {
+                    if (element['label'] == element2){
+                        role_privileges.push(element['id'])
+                    }
+                })
+            })
+
             this.http.put(API_URL + '/ws/roles/update/' + this.roleId, {'args': role}, {headers: this.headers},
+            ).pipe(
+                catchError((err: any) => {
+                    console.debug(err)
+                    this.notify.handleErrors(err, '/settings/general/roles/');
+                    return of(false);
+                })
+            ).subscribe();
+
+            this.http.put(API_URL + '/ws/roles/updatePrivilege/' + this.roleId, {'privileges': role_privileges}, {headers: this.headers},
             ).pipe(
                 tap(() => {
                     this.notify.success(this.translate.instant('ROLE.updated'))
@@ -203,7 +221,6 @@ export class UpdateRoleComponent implements OnInit {
     changePrivilege(event: any){
         let privilege = event.source.name
         let checked = event.checked
-        console.log(this.rolePrivileges)
         if (!checked){
             this.rolePrivileges.forEach((element: any) => {
                 if (privilege == element){
@@ -214,8 +231,6 @@ export class UpdateRoleComponent implements OnInit {
         }else{
             this.rolePrivileges.push(privilege)
         }
-        console.log(this.rolePrivileges)
-
     }
 
 }

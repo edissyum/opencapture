@@ -30,7 +30,7 @@ def get_privileges():
         for privilege_id in all_privileges:
             if privilege_id['parent'] not in list_role_privileges['parent']:
                 list_role_privileges['parent'].append(privilege_id['parent'])
-            list_role_privileges['privileges'].append({'label': privilege_id['label'], 'parent': privilege_id['parent']})
+            list_role_privileges['privileges'].append({'id': privilege_id['id'], 'label': privilege_id['label'], 'parent': privilege_id['parent']})
         return list_role_privileges, 200
     else:
         response = {

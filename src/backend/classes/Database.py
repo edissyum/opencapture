@@ -147,6 +147,6 @@ class Database:
                 c.execute(query, args['data'])
                 self.conn.commit()
                 return True, ''
-            except psycopg2.OperationalError as e:
+            except (psycopg2.OperationalError, psycopg2.errors.InvalidTextRepresentation) as e:
                 self.Log.error('Error while querying UPDATE : ' + str(e))
                 return False, e

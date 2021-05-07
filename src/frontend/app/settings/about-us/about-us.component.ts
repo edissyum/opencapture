@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {SettingsService} from "../../../services/settings.service";
 import {Router} from "@angular/router";
+import {PrivilegesService} from "../../../services/privileges.service";
 
 @Component({
   selector: 'app-about-us',
@@ -12,6 +13,7 @@ export class AboutUsComponent implements OnInit {
   constructor(
       public router: Router,
       public serviceSettings: SettingsService,
+      public privilegesService: PrivilegesService
   ) { }
 
   ngOnInit(): void {

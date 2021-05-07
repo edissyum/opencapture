@@ -1,16 +1,13 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import { Location } from '@angular/common';
-import {ActivatedRoute, Router} from "@angular/router";
-import {FormBuilder} from "@angular/forms";
-import {AuthService} from "../../services/auth.service";
+import {Router} from "@angular/router";
 import {UserService} from "../../services/user.service";
-import {TranslateService} from "@ngx-translate/core";
 import {SettingsService} from "../../services/settings.service";
+import {PrivilegesService} from "../../services/privileges.service";
 
 @Component({
     selector: 'app-panel',
-    template: ``
+    templateUrl: "settings.component.html"
 })
 
 export class SettingsComponent implements OnInit {
@@ -21,10 +18,10 @@ export class SettingsComponent implements OnInit {
     settings : any                  = this.serviceSettings.getSettings()
 
     constructor(
-        private http: HttpClient,
-        private router: Router,
+        public router: Router,
         public userService: UserService,
         public serviceSettings: SettingsService,
+        public privilegesService: PrivilegesService
     ) { }
 
     ngOnInit(): void {
@@ -35,7 +32,7 @@ export class SettingsComponent implements OnInit {
         this.settings[this.selectedParentSetting].forEach((element: any) =>{
             if (element['id'] == this.selectedSetting){
                 let routeToGo = element.route;
-                if (routeToGo)
+                if (routeToGo && this.privilegesService.hasPrivilege(element.privilege))
                     this.router.navigateByUrl(routeToGo);
             }
         })

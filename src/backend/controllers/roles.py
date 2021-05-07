@@ -71,6 +71,34 @@ def update_role(role_id, data):
         return response, 401
 
 
+def update_role_privilege(role_id, privileges):
+    _vars = pdf.init()
+    _db = _vars[0]
+    user_info, error = roles.get_role_by_id({'role_id': role_id})
+
+    if error is None:
+        _set = {
+            'privileges_id': '{"data": "' + str(privileges) + '"}',
+        }
+
+        res, error = roles.update_role_privileges({'set': _set, 'role_id': role_id})
+
+        if error is None:
+            return '', 200
+        else:
+            response = {
+                "errors": gettext('UPDATE_ROLE_PRIVILEGE_ERROR'),
+                "message": error
+            }
+            return response, 401
+    else:
+        response = {
+            "errors": gettext('UPDATE_ROLE_ERROR'),
+            "message": error
+        }
+        return response, 401
+
+
 def get_role_by_id(role_id):
     user_info, error = roles.get_role_by_id({'role_id': role_id})
 
