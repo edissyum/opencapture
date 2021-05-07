@@ -6,7 +6,7 @@ import { UserService } from "../../../../services/user.service";
 import { AuthService } from "../../../../services/auth.service";
 import { NotificationService } from "../../../../services/notifications/notifications.service";
 import { TranslateService } from "@ngx-translate/core";
-import { catchError, tap } from "rxjs/operators";
+import {catchError, finalize, tap} from "rxjs/operators";
 import { API_URL } from "../../../env";
 import { of } from "rxjs";
 import { ConfirmDialogComponent } from "../../../../services/confirm-dialog/confirm-dialog.component";
@@ -24,6 +24,7 @@ import {SettingsService} from "../../../../services/settings.service";
 
 export class UsersListComponent implements OnInit {
     headers: HttpHeaders          = this.authService.headers;
+    loading : boolean             = true;
     columnsToDisplay: string[]    = ['id', 'username', 'firstname', 'lastname', 'role','status', 'actions'];
     users : any                   = [];
     pageSize : number             = 10;
@@ -64,6 +65,7 @@ export class UsersListComponent implements OnInit {
                 this.roles = data.roles
                 this.loadUsers()
             }),
+            finalize(() => this.loading = false),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);

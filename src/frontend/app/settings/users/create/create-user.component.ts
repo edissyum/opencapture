@@ -8,7 +8,7 @@ import {TranslateService} from "@ngx-translate/core";
 import {NotificationService} from "../../../../services/notifications/notifications.service";
 import {SettingsService} from "../../../../services/settings.service";
 import {API_URL} from "../../../env";
-import {catchError, tap} from "rxjs/operators";
+import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 
 @Component({
@@ -18,6 +18,7 @@ import {of} from "rxjs";
 })
 export class CreateUserComponent implements OnInit {
     headers     : HttpHeaders = this.authService.headers;
+    loading     : boolean = true
     roles       : any[] = [];
     userForm    : any[] = [
         {
@@ -93,6 +94,7 @@ export class CreateUserComponent implements OnInit {
                     }
                 });
             }),
+            finalize(() => this.loading = false),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);

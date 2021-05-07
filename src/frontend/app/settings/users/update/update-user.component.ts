@@ -8,7 +8,7 @@ import {TranslateService} from "@ngx-translate/core";
 import {NotificationService} from "../../../../services/notifications/notifications.service";
 import {SettingsService} from "../../../../services/settings.service";
 import {API_URL} from "../../../env";
-import {catchError, tap} from "rxjs/operators";
+import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 
 @Component({
@@ -19,6 +19,7 @@ import {of} from "rxjs";
 
 export class UpdateUserComponent implements OnInit {
     headers: HttpHeaders = this.authService.headers;
+    loading: boolean = true;
     userId: any;
     user: any;
     roles: any[] = [];
@@ -81,11 +82,11 @@ export class UpdateUserComponent implements OnInit {
     ) {
     }
 
-    async ngOnInit(): Promise<void> {
+    ngOnInit(): void {
         this.serviceSettings.init()
         this.userId = this.route.snapshot.params['id'];
 
-       await this.http.get(API_URL + '/ws/roles/list', {headers: this.headers}).pipe(
+        this.http.get(API_URL + '/ws/roles/list', {headers: this.headers}).pipe(
             tap((data: any) => {
                 data.roles.forEach((element: any) => {
                     if (element.editable) {
@@ -104,7 +105,7 @@ export class UpdateUserComponent implements OnInit {
             })
         ).subscribe()
 
-        await this.http.get(API_URL + '/ws/users/getById/' + this.userId, {headers: this.headers}).pipe(
+        this.http.get(API_URL + '/ws/users/getById/' + this.userId, {headers: this.headers}).pipe(
             tap((data: any) => {
                 this.user = data;
                 for (let field in data) {
@@ -120,6 +121,7 @@ export class UpdateUserComponent implements OnInit {
                     }
                 }
             }),
+            finalize(() => this.loading = false),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
@@ -166,7 +168,7 @@ export class UpdateUserComponent implements OnInit {
     getErrorMessage(field: any) {
         let error = undefined;
         this.userForm.forEach(element => {
-            if (element.id == field){
+            if (element.id == field) {
                 if (element.required && !(element.value || element.control.value)) {
                     error = this.translate.instant('AUTH.field_required');
                 }

@@ -8,7 +8,7 @@ import {TranslateService} from "@ngx-translate/core";
 import {NotificationService} from "../../../../services/notifications/notifications.service";
 import {SettingsService} from "../../../../services/settings.service";
 import {API_URL} from "../../../env";
-import {catchError, tap} from "rxjs/operators";
+import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {PrivilegesService} from "../../../../services/privileges.service";
 
@@ -19,6 +19,7 @@ import {PrivilegesService} from "../../../../services/privileges.service";
 })
 export class UpdateRoleComponent implements OnInit {
     headers: HttpHeaders = this.authService.headers;
+    loading: boolean = true;
     roleId: any;
     role: any;
     roles: any[] = [];
@@ -109,8 +110,8 @@ export class UpdateRoleComponent implements OnInit {
         this.http.get(API_URL + '/ws/privileges/getbyRoleId/' + this.roleId, {headers: this.headers}).pipe(
             tap((data: any) => {
                 this.rolePrivileges = data
-                console.log(this.rolePrivileges)
             }),
+            finalize(() => this.loading = false),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err, '/settings/general/roles');

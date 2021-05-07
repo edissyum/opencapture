@@ -38,8 +38,8 @@ def login(username, password, lang):
 
     if error is None:
         session.clear()
-        encoded_token = encode_auth_token(user_info['id'])
         session['lang'] = lang
+        encoded_token = encode_auth_token(user_info['id'])
 
         returned_user = user.get_user_by_id({
             'select': ['id', 'username', 'firstname', 'lastname', 'role', 'status', 'creation_date', 'enabled'],

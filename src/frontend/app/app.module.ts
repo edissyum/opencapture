@@ -38,6 +38,7 @@ import { CreateUserComponent } from './settings/users/create/create-user.compone
 import { UpdateUserComponent } from './settings/users/update/update-user.component';
 import { UpdateRoleComponent } from './settings/roles/update/update-role.component';
 import { CreateRoleComponent } from './settings/roles/create/create-role.component';
+import { LoaderComponent } from './loader.component';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -66,6 +67,7 @@ export function createTranslateLoader(http: HttpClient) {
     UpdateUserComponent,
     UpdateRoleComponent,
     CreateRoleComponent,
+    LoaderComponent
   ],
   imports: [
     BrowserModule,

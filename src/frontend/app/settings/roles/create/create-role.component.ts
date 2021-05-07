@@ -14,6 +14,7 @@ import {SettingsService} from "../../../../services/settings.service";
     styleUrls: ['./create-role.component.scss']
 })
 export class CreateRoleComponent implements OnInit {
+    loading : boolean = true;
 
     constructor(
         private http: HttpClient,

@@ -8,7 +8,7 @@ import {Router} from "@angular/router";
   styleUrls: ['./about-us.component.scss']
 })
 export class AboutUsComponent implements OnInit {
-
+  loading : boolean = true
   constructor(
       public router: Router,
       public serviceSettings: SettingsService,

@@ -10,7 +10,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {LastUrlService} from "../../../../services/last-url.service";
 import {LocalStorageService} from "../../../../services/local-storage.service";
 import {API_URL} from "../../../env";
-import {catchError, tap} from "rxjs/operators";
+import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {Sort} from "@angular/material/sort";
 import {ConfirmDialogComponent} from "../../../../services/confirm-dialog/confirm-dialog.component";
@@ -25,6 +25,7 @@ import {SettingsService} from "../../../../services/settings.service";
 export class RolesListComponent implements OnInit {
     headers: HttpHeaders = this.authService.headers;
     columnsToDisplay: string[] = ['id', 'label_short', 'label', 'status', 'actions'];
+    loading: boolean = true;
     roles: any = [];
     pageSize: number = 10;
     pageIndex: number = 0;
@@ -66,6 +67,7 @@ export class RolesListComponent implements OnInit {
                 this.total = data.roles[0].total
                 this.roles = data.roles
             }),
+            finalize(() => this.loading = false),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
