@@ -1629,7 +1629,6 @@ class LastUrlService {
                 this.previousUrl = this.currentUrl;
                 this.currentUrl = event.url;
             }
-            ;
         });
     }
     getPreviousUrl() {

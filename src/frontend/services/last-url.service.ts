@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Router, RouterEvent, NavigationEnd } from '@angular/router';
+import {Router, NavigationEnd} from '@angular/router';
 
 /** A router wrapper, adding extra functions. */
 @Injectable()
@@ -14,7 +14,7 @@ export class LastUrlService {
             if (event instanceof NavigationEnd) {
                 this.previousUrl = this.currentUrl;
                 this.currentUrl = event.url;
-            };
+            }
         });
     }
 
