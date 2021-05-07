@@ -1,7 +1,6 @@
-import json
 from flask import Blueprint, request, jsonify, make_response
 from ..controllers.auth import token_required
-from import_controllers import pdf
+from ..import_controllers import pdf
 
 bp = Blueprint('config', __name__,  url_prefix='/ws/')
 

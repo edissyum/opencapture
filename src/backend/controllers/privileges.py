@@ -15,7 +15,6 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 from flask_babel import gettext
-
 from ..models import privileges
 
 

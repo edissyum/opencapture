@@ -1,5 +1,5 @@
 from flask import current_app, g
-from import_classes import _Config, _Database, _Log
+from ..import_classes import _Config, _Database, _Log
 
 
 def init():

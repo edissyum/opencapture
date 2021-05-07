@@ -2,7 +2,7 @@
 from flask_babel import gettext
 from flask import Blueprint, render_template
 from flask_paginate import Pagination, get_page_args
-from import_controllers import pdf
+from ..import_controllers import pdf
 
 bp = Blueprint('supplier', __name__, url_prefix='/supplier')
 

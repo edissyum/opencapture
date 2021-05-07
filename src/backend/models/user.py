@@ -17,7 +17,6 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 from gettext import gettext
-
 from werkzeug.security import generate_password_hash
 
 from ..controllers.db import get_db

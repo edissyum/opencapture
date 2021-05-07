@@ -19,7 +19,7 @@ from flask import flash, g, redirect, render_template, request, url_for
 
 from flask_babel import gettext
 from werkzeug.security import check_password_hash, generate_password_hash
-from import_controllers import pdf
+from ..import_controllers import pdf
 from ..models import user
 
 

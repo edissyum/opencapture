@@ -1,4 +1,4 @@
-from src.backend.functions import get_custom_id, check_python_customized_files
+from .functions import get_custom_id, check_python_customized_files
 
 custom_id = get_custom_id()
 custom_array = {}
@@ -6,31 +6,31 @@ if custom_id:
     custom_array = check_python_customized_files(custom_id[1])
 
 if 'db' not in custom_array:
-    from src.backend.controllers import db
+    from .controllers import db
 else:
     db = getattr(__import__(custom_array['db']['path'], fromlist=[custom_array['db']['module']]), custom_array['db']['module'])
 
 if 'pdf' not in custom_array:
-    from src.backend.controllers import pdf
+    from .controllers import pdf
 else:
     pdf = getattr(__import__(custom_array['pdf']['path'], fromlist=[custom_array['pdf']['module']]), custom_array['pdf']['module'])
 
 if 'auth' not in custom_array:
-    from src.backend.controllers import auth
+    from .controllers import auth
 else:
     auth = getattr(__import__(custom_array['auth']['path'], fromlist=[custom_array['auth']['module']]), custom_array['auth']['module'])
 
 if 'user' not in custom_array:
-    from src.backend.controllers import user
+    from .controllers import user
 else:
     user = getattr(__import__(custom_array['user']['path'], fromlist=[custom_array['user']['module']]), custom_array['user']['module'])
 
 if 'supplier' not in custom_array:
-    from src.backend.controllers import supplier
+    from .controllers import supplier
 else:
     supplier = getattr(__import__(custom_array['supplier']['path'], fromlist=[custom_array['supplier']['module']]), custom_array['supplier']['module'])
 
 if 'splitter' not in custom_array:
-    from src.backend.controllers import splitter
+    from .controllers import splitter
 else:
     ws_splitter = getattr(__import__(custom_array['splitter']['path'], fromlist=[custom_array['splitter']['module']]), custom_array['splitter']['module'])

@@ -18,7 +18,7 @@
 from flask import flash, g, redirect, render_template, request, url_for
 
 from flask_babel import gettext
-from import_controllers import pdf
+from ..import_controllers import pdf
 from ..models import roles
 
 

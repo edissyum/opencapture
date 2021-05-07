@@ -19,7 +19,7 @@ import os
 import uuid
 
 from datetime import date
-from src.backend.classes.Files import Files
+from . import Files
 
 
 def get_lot_name():

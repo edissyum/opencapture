@@ -6,7 +6,7 @@ from .db import get_db
 from os import listdir, path
 from flask_babel import gettext
 from flask import current_app, Blueprint, render_template
-from import_classes import _Config, _Log, _Locale, _Database
+from ..import_classes import _Config, _Log, _Locale, _Database
 
 bp = Blueprint('dashboard', __name__)
 

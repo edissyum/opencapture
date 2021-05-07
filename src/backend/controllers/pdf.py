@@ -8,7 +8,7 @@ from datetime import datetime
 from datetime import timedelta
 
 from .db import get_db
-from import_classes import _Config, _Log, _Files, _Xml, _WebServices, _Locale, _PyTesseract, _Database, _Spreadsheet, \
+from ..import_classes import _Config, _Log, _Files, _Xml, _WebServices, _Locale, _PyTesseract, _Database, _Spreadsheet, \
     _Splitter, _SeparatorQR
 
 bp = Blueprint('pdf', __name__)

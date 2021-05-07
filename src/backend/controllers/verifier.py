@@ -17,7 +17,7 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 from flask import current_app
-from import_classes import _Files
+from ..import_classes import _Files
 
 
 def handle_uploaded_file(files):

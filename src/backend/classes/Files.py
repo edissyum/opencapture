@@ -37,7 +37,7 @@ from wand.image import Image as Img
 from wand.exceptions import PolicyError, CacheError
 from werkzeug.utils import secure_filename
 
-from src.backend.functions import retrieve_custom_positions, recursive_delete
+from ..functions import retrieve_custom_positions
 from xml.sax.saxutils import escape
 
 
