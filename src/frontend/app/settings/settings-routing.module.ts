@@ -9,8 +9,10 @@ import { RolesListComponent } from "./roles/list/roles-list.component";
 import { CreateUserComponent } from "./users/create/create-user.component";
 import { AboutUsComponent } from './about-us/about-us.component';
 import { UpdateUserComponent } from "./users/update/update-user.component";
-import {CreateRoleComponent} from "./roles/create/create-role.component";
-import {UpdateRoleComponent} from "./roles/update/update-role.component";
+import { CreateRoleComponent } from "./roles/create/create-role.component";
+import { UpdateRoleComponent } from "./roles/update/update-role.component";
+import { VersionUpdateComponent } from "./version-update/version-update.component";
+import { CustomFieldsComponent } from "./custom-fields/custom-fields.component";
 
 const routes: Routes = [
     {
@@ -57,6 +59,16 @@ const routes: Routes = [
     {
         path: 'settings/general/about-us', component: AboutUsComponent,
         data: {title: marker('SETTINGS.abouts_us')},
+        canActivate: [LoginRequiredService]
+    },
+    {
+        path: 'settings/general/version-update', component: VersionUpdateComponent,
+        data: {title: marker('SETTINGS.version_and_update'), privileges: ['settings', 'version_update']},
+        canActivate: [LoginRequiredService]
+    },
+    {
+        path: 'settings/general/custom-fields', component: CustomFieldsComponent,
+        data: {title: marker('SETTINGS.custom_fields'), privileges: ['settings', 'custom_fields']},
         canActivate: [LoginRequiredService]
     }
 ];

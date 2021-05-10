@@ -19,6 +19,10 @@ export class AuthService {
         this.headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.getToken());
     }
 
+    generateHeaders(){
+        this.headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.getToken());
+    }
+
     setCachedUrl(url: string) {
         this.localStorage.save('OpenCaptureForInvoicesCachedUrl', url);
     }

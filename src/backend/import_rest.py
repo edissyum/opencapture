@@ -53,3 +53,9 @@ if 'privileges' not in custom_array:
 else:
     privileges = getattr(__import__(custom_array['privileges']['path'], fromlist=[custom_array['privileges']['module']]),
                        custom_array['privileges']['module'])
+
+if 'custom_fields' not in custom_array:
+    from .rest import custom_fields
+else:
+    custom_fields = getattr(__import__(custom_array['custom_fields']['path'], fromlist=[custom_array['custom_fields']['module']]),
+                       custom_array['custom_fields']['module'])

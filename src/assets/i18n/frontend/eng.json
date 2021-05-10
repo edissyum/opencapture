@@ -1,9 +1,23 @@
 {
+	"ABOUT-US": {
+		"lead_dev": ""
+	},
 	"AUTH": {
 		"authenticated": "You have successfully authenticated",
 		"field_required": "This field is required",
 		"login": "Log in",
 		"not_connected": "Please authenticate yourself before accessing this page"
+	},
+	"CUSTOM-FIELDS": {
+		"add": "",
+		"checkbox": "",
+		"field_added": "",
+		"field_updated": "",
+		"module": "",
+		"select": "",
+		"textarea": "",
+		"textbox": "",
+		"type": ""
 	},
 	"ERROR": {
 		"404": "The page you are looking for does not exist",
@@ -14,6 +28,7 @@
 		"unknow_error": "Unknow error"
 	},
 	"GLOBAL": {
+		"active": "",
 		"batches": "Batches",
 		"cancel": "Cancel",
 		"confirm": "Confirm",
@@ -21,6 +36,7 @@
 		"disable": "Disable",
 		"enable": "Enable",
 		"home": "Home",
+		"inactive": "",
 		"language": "Language",
 		"log_out": "Log out",
 		"login": "Login",
@@ -47,17 +63,16 @@
 		"previous_page": "Previous page"
 	},
 	"PRIVILEGES": {
-		"accounts_list": "",
 		"add_role": "",
 		"add_user": "",
 		"administration": "",
-		"global": "",
+		"general": "",
 		"list": "",
-		"update_role": "",
-		"update_user": "",
 		"roles_list": "",
 		"settings": "",
 		"splitter": "",
+		"update_role": "",
+		"update_user": "",
 		"upload": "",
 		"users_list": "",
 		"verifier": ""
@@ -72,11 +87,11 @@
 		"enable": "",
 		"inactive": "",
 		"update": "Update",
-		"update_role": "",
 		"updated": ""
 	},
 	"SETTINGS": {
 		"abouts_us": "About us",
+		"add_custom_fields": "",
 		"administration": "Administration",
 		"connector_EDM": "EDM connector",
 		"create_role": "",

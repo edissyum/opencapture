@@ -1,9 +1,23 @@
 {
+	"ABOUT-US": {
+		"lead_dev": "Lead developer"
+	},
 	"AUTH": {
 		"authenticated": "Vous vous êtes authentifié avec succès",
 		"field_required": "Ce champ est requis",
 		"login": "Se connecter",
 		"not_connected": "Merci de vous authentifier avant d'accéder à cette page"
+	},
+	"CUSTOM-FIELDS": {
+		"add": "Ajouter le champ personnalisé",
+		"checkbox": "Case à cocher",
+		"field_added": "Champ personnalisé créé avec succès",
+		"field_updated": "Champ personnalisé modifié avec succès",
+		"module": "Module",
+		"select": "Liste à choix",
+		"textarea": "Multi lignes",
+		"textbox": "Texte",
+		"type": "Type"
 	},
 	"ERROR": {
 		"404": "La page demandée n'existe pas",
@@ -14,6 +28,7 @@
 		"unknow_error": "Erreur inconnue"
 	},
 	"GLOBAL": {
+		"active": "Actif",
 		"batches": "Lots",
 		"cancel": "Annuler",
 		"confirm": "Confirmation",
@@ -21,6 +36,7 @@
 		"disable": "Désactiver",
 		"enable": "Activer",
 		"home": "Accueil",
+		"inactive": "Inactif",
 		"language": "Langage",
 		"log_out": "Déconnexion",
 		"login": "Connexion",
@@ -35,8 +51,8 @@
 		"status": "Status"
 	},
 	"HOME": {
-		"splitter": "Open-Capture splitter",
-		"verifier": "Open-Capture vérificateur"
+		"splitter": "Open-Capture Splitter",
+		"verifier": "Open-Capture Vérificateur"
 	},
 	"PAGINATOR": {
 		"first_page": "Première page",
@@ -52,11 +68,11 @@
 		"administration": "Privilèges d'administration",
 		"general": "Privilèges globaux",
 		"list": "Liste des privilèges",
-		"update_role": "Modifier un rôle",
-		"update_user": "Modifier un utilisateur",
 		"roles_list": "Visualiser la liste des rôles",
 		"settings": "Accès au panneau d'administration",
 		"splitter": "Accès à Open-Capture Splitter",
+		"update_role": "Modifier un rôle",
+		"update_user": "Modifier un utilisateur",
 		"upload": "Téléverser des fichiers",
 		"users_list": "Visualiser la liste des utilisateurs",
 		"verifier": "Accès à Open-Capture Verifier"
@@ -75,6 +91,7 @@
 	},
 	"SETTINGS": {
 		"abouts_us": "À propos",
+		"add_custom_fields": "Ajout de champ personnalisés",
 		"administration": "Panneau d'administration",
 		"connector_EDM": "Connecteur GED",
 		"create_role": "Créer un rôle",

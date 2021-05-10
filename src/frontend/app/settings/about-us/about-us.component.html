@@ -4,7 +4,7 @@
         <mat-divider class="border-green-400"></mat-divider>
         <mat-nav-list class="pt-0">
             <mat-expansion-panel *ngFor="let parent of this.serviceSettings.getSettingsParent()"
-                                 [expanded]="this.serviceSettings.getSelectedParentSetting() == parent['id']">
+                                 [expanded]="this.router.url.includes(parent['id'])">
                 <mat-expansion-panel-header>
                     <mat-panel-title>
                         {{ parent['label'] | translate }}
@@ -16,7 +16,7 @@
                          [class.border-gray-400]="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] == '*'">
                         <div *ngIf="this.serviceSettings.getSettingsAction(setting['id']) else noActions">
                             <mat-expansion-panel *ngIf="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] == '*'"
-                                                 [expanded]="this.serviceSettings.getSelectedSetting() == setting['id']">
+                                                 [expanded]="this.router.url == setting['route']">
                                 <mat-expansion-panel-header class="font-normal w-full h-20">
                                     <mat-panel-title class="font-normal justify-center items-center text-center">
                                         <i [class.text-green-400]="this.router.url == setting['route']"
@@ -26,7 +26,7 @@
                                                 class="font-normal w-full h-20 flex justify-center items-center text-center"
                                                 (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
                                                 routerLink="{{ setting['route'] }}">
-                                            <p [class.font-medium]="this.serviceSettings.getSelectedSetting() === setting['id']" class="m-0">
+                                            <p [class.font-medium]="this.router.url == setting['route']" class="m-0">
                                                 {{ setting['label'] | translate }}
                                             </p>
                                         </button>
@@ -60,7 +60,7 @@
                                     (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
                                     routerLink="{{ setting['route'] }}">
                                 <i class="absolute left-4 w-10 h-10 rounded-full flex items-center justify-center fa-lg {{setting['icon']}}"></i>
-                                <p [class.font-medium]="this.serviceSettings.getSelectedSetting() === setting['id']" class="m-0">
+                                <p [class.font-medium]="this.router.url == setting['route']" class="m-0">
                                     {{ setting['label'] | translate }}
                                 </p>
                             </button>
@@ -80,16 +80,25 @@
                 <i [class.fa-arrow-right]="!this.serviceSettings.getIsMenuOpen()" class="fas fa-arrow-left text-2xl"></i>
             </button>
             <div class="settings_title text-center">
-                <h3>Open-Capture For Invoices</h3>
+                <h3>{{ this.serviceSettings.getTitle() }}</h3>
                 <hr class="border-green-400">
             </div>
+        </div>
+        <div class="edissyum text-center mt-10 text-2xl" style="line-height: 35px !important;">
+            Société Edissyum <br>
+            129 Boulevard Louis Giraud <br>
+            84200 Carpentras
         </div>
         <div class="logo flex justify-center items-center gap-48 mt-12">
             <div id="verifier">
                 <img src="assets/imgs/logo_verifier.png" alt="Open-Capture Verifier">
+                <hr class="m-auto mt-10 w-1/2 border-green-400">
+                <h3 class="mt-6">{{ 'ABOUT-US.lead_dev' | translate }} : CHEVAL Nathan</h3>
             </div>
             <div id="splitter">
                 <img src="assets/imgs/logo_splitter.png" alt="Open-Capture Splitter">
+                <hr class="m-auto mt-10 w-1/2 border-green-400">
+                <h3 class="mt-6">{{ 'ABOUT-US.lead_dev' | translate }} : BRICH Oussama</h3>
             </div>
         </div>
     </mat-sidenav-content>

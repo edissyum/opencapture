@@ -64,7 +64,7 @@ export class RolesListComponent implements OnInit {
     }
 
     loadRoles(): void {
-        this.http.get(API_URL + '/ws/roles/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.headers}).pipe(
+        this.http.get(API_URL + '/ws/roles/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.total = data.roles[0].total
                 this.roles = data.roles
@@ -145,7 +145,7 @@ export class RolesListComponent implements OnInit {
 
     deleteRole(role_id: number) {
         if (role_id !== undefined) {
-            this.http.delete(API_URL + '/ws/roles/delete/' + role_id, {headers: this.headers}).pipe(
+            this.http.delete(API_URL + '/ws/roles/delete/' + role_id, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadRoles()
                 }),
@@ -160,7 +160,7 @@ export class RolesListComponent implements OnInit {
 
     disableRole(role_id: number){
         if (role_id !== undefined){
-            this.http.put(API_URL + '/ws/roles/disable/' + role_id, null, {headers: this.headers}).pipe(
+            this.http.put(API_URL + '/ws/roles/disable/' + role_id, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadRoles()
                 }),
@@ -175,7 +175,7 @@ export class RolesListComponent implements OnInit {
 
     enableRole(role_id: number){
         if (role_id !== undefined){
-            this.http.put(API_URL + '/ws/roles/enable/' + role_id, null, {headers: this.headers}).pipe(
+            this.http.put(API_URL + '/ws/roles/enable/' + role_id, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadRoles()
                 }),

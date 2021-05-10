@@ -18,11 +18,9 @@
                     <input matInput formControlName="password" type="password" placeholder="{{ 'USER.password' | translate }}" required>
                     <mat-error *ngIf="loginForm.controls.password.invalid">{{ getErrorMessage('password') }}</mat-error>
                 </mat-form-field>
-                <div class="button">
-                    <button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300" type="submit" mat-button>
-                        {{ 'AUTH.login' | translate }}
-                    </button>
-                </div>
+                <button mat-button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300" type="submit">
+                    {{ 'AUTH.login' | translate }}
+                </button>
             </form>
         </mat-card-content>
     </mat-card>

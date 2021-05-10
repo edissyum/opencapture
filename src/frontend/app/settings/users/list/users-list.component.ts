@@ -62,7 +62,7 @@ export class UsersListComponent implements OnInit {
         }else
             this.localeStorageService.remove('usersPageIndex')
 
-        this.http.get(API_URL + '/ws/roles/list', {headers: this.headers}).pipe(
+        this.http.get(API_URL + '/ws/roles/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.roles = data.roles
                 this.loadUsers()
@@ -84,7 +84,7 @@ export class UsersListComponent implements OnInit {
     }
 
     loadUsers(): void{
-        this.http.get(API_URL + '/ws/users/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.headers}).pipe(
+        this.http.get(API_URL + '/ws/users/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.total = data.users[0].total
                 this.users = data.users;
@@ -165,7 +165,7 @@ export class UsersListComponent implements OnInit {
 
     deleteUser(user_id: number){
         if (user_id !== undefined){
-            this.http.delete(API_URL + '/ws/users/delete/' + user_id, {headers: this.headers}).pipe(
+            this.http.delete(API_URL + '/ws/users/delete/' + user_id, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadUsers()
                 }),
@@ -180,7 +180,7 @@ export class UsersListComponent implements OnInit {
 
     disableUser(user_id: number){
         if (user_id !== undefined){
-            this.http.put(API_URL + '/ws/users/disable/' + user_id, null, {headers: this.headers}).pipe(
+            this.http.put(API_URL + '/ws/users/disable/' + user_id, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadUsers()
                 }),
@@ -195,7 +195,7 @@ export class UsersListComponent implements OnInit {
 
     enableUser(user_id: number){
         if (user_id !== undefined){
-            this.http.put(API_URL + '/ws/users/enable/' + user_id, null, {headers: this.headers}).pipe(
+            this.http.put(API_URL + '/ws/users/enable/' + user_id, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadUsers()
                 }),

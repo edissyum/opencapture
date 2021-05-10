@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {UserService} from "../../services/user.service";
 import {SettingsService} from "../../services/settings.service";
@@ -29,11 +28,11 @@ export class SettingsComponent implements OnInit {
         this.selectedSetting = this.serviceSettings.getSelectedSetting();
         this.selectedParentSetting = this.serviceSettings.getSelectedParentSetting();
         this.settings = this.serviceSettings.getSettings();
-        this.settings[this.selectedParentSetting].forEach((element: any) =>{
+        this.settings[this.selectedParentSetting].forEach((element: any) => {
             if (element['id'] == this.selectedSetting){
                 let routeToGo = element.route;
                 if (routeToGo && this.privilegesService.hasPrivilege(element.privilege))
-                    this.router.navigateByUrl(routeToGo);
+                    this.router.navigateByUrl(routeToGo).then();
             }
         })
     }

@@ -80,12 +80,14 @@ export class SettingsService {
             {
                 "id"        : "custom-fields",
                 "label"     : this.translate.instant("SETTINGS.custom_fields"),
+                "route"     : "/settings/general/custom-fields",
                 "icon"      : "fas fa-code",
                 "privilege" : "custom_fields",
             },
             {
                 "id"        : "version-update",
                 "label"     : this.translate.instant("SETTINGS.version_and_update"),
+                "route"     : "/settings/general/version-update",
                 "icon"      : "fas fa-sync",
                 "privilege" : "update_app",
             },

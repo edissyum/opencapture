@@ -88,7 +88,7 @@ export class UpdateUserComponent implements OnInit {
         this.serviceSettings.init()
         this.userId = this.route.snapshot.params['id'];
 
-        this.http.get(API_URL + '/ws/roles/list', {headers: this.headers}).pipe(
+        this.http.get(API_URL + '/ws/roles/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 data.roles.forEach((element: any) => {
                     if (element.editable) {
@@ -107,7 +107,7 @@ export class UpdateUserComponent implements OnInit {
             })
         ).subscribe()
 
-        this.http.get(API_URL + '/ws/users/getById/' + this.userId, {headers: this.headers}).pipe(
+        this.http.get(API_URL + '/ws/users/getById/' + this.userId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.user = data;
                 for (let field in data) {
@@ -152,7 +152,7 @@ export class UpdateUserComponent implements OnInit {
                 user[element.id] = element.control.value;
             });
 
-            this.http.put(API_URL + '/ws/users/update/' + this.userId, {'args': user}, {headers: this.headers},
+            this.http.put(API_URL + '/ws/users/update/' + this.userId, {'args': user}, {headers: this.authService.headers},
             ).pipe(
                 tap(() => {
                     this.notify.success(this.translate.instant('USER.updated'))

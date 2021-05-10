@@ -25,6 +25,12 @@ if 'user' not in custom_array:
 else:
     user = getattr(__import__(custom_array['user']['path'], fromlist=[custom_array['user']['module']]), custom_array['user']['module'])
 
+    
+if 'config' not in custom_array:
+    from .controllers import config
+else:
+    config = getattr(__import__(custom_array['config']['path'], fromlist=[custom_array['config']['module']]), custom_array['config']['module'])
+
 if 'supplier' not in custom_array:
     from .controllers import supplier
 else:
@@ -33,4 +39,10 @@ else:
 if 'splitter' not in custom_array:
     from .controllers import splitter
 else:
-    ws_splitter = getattr(__import__(custom_array['splitter']['path'], fromlist=[custom_array['splitter']['module']]), custom_array['splitter']['module'])
+    splitter = getattr(__import__(custom_array['splitter']['path'], fromlist=[custom_array['splitter']['module']]), custom_array['splitter']['module'])
+
+
+if 'custom_fields' not in custom_array:
+    from .controllers import custom_fields
+else:
+    custom_fields = getattr(__import__(custom_array['custom_fields']['path'], fromlist=[custom_array['custom_fields']['module']]), custom_array['custom_fields']['module'])

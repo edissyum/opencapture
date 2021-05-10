@@ -85,7 +85,7 @@ export class UploadComponent implements OnInit {
                 API_URL + '/ws/' + splitter_or_verifier + '/upload',
                 formData,
                 {
-                    headers: this.headers
+                    headers: this.authService.headers
                 },
             ).pipe(
                 tap((data: any) => {

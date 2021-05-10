@@ -86,7 +86,7 @@ export class UpdateRoleComponent implements OnInit {
         this.serviceSettings.init()
         this.roleId = this.route.snapshot.params['id'];
 
-        this.http.get(API_URL + '/ws/roles/getById/' + this.roleId, {headers: this.headers}).pipe(
+        this.http.get(API_URL + '/ws/roles/getById/' + this.roleId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.role = data;
                 for (let field in data) {
@@ -107,7 +107,7 @@ export class UpdateRoleComponent implements OnInit {
             })
         ).subscribe()
 
-        this.http.get(API_URL + '/ws/privileges/getbyRoleId/' + this.roleId, {headers: this.headers}).pipe(
+        this.http.get(API_URL + '/ws/privileges/getbyRoleId/' + this.roleId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.rolePrivileges = data
             }),
@@ -118,7 +118,7 @@ export class UpdateRoleComponent implements OnInit {
             })
         ).subscribe()
 
-        this.http.get(API_URL + '/ws/privileges/list', {headers: this.headers}).pipe(
+        this.http.get(API_URL + '/ws/privileges/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.privileges = data
                 console.log(this.privileges)
@@ -161,7 +161,7 @@ export class UpdateRoleComponent implements OnInit {
                 })
             })
 
-            this.http.put(API_URL + '/ws/roles/update/' + this.roleId, {'args': role}, {headers: this.headers},
+            this.http.put(API_URL + '/ws/roles/update/' + this.roleId, {'args': role}, {headers: this.authService.headers},
             ).pipe(
                 catchError((err: any) => {
                     console.debug(err)
@@ -170,7 +170,7 @@ export class UpdateRoleComponent implements OnInit {
                 })
             ).subscribe();
 
-            this.http.put(API_URL + '/ws/roles/updatePrivilege/' + this.roleId, {'privileges': role_privileges}, {headers: this.headers},
+            this.http.put(API_URL + '/ws/roles/updatePrivilege/' + this.roleId, {'privileges': role_privileges}, {headers: this.authService.headers},
             ).pipe(
                 tap(() => {
                     this.notify.success(this.translate.instant('ROLE.updated'))

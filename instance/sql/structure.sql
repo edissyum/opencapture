@@ -1,5 +1,4 @@
-CREATE TABLE "users"
-(
+CREATE TABLE "users" (
     "id"            SERIAL UNIQUE PRIMARY KEY,
     "username"      VARCHAR(20) UNIQUE NOT NULL,
     "firstname"     VARCHAR(255)       NOT NULL,
@@ -11,16 +10,14 @@ CREATE TABLE "users"
     "role"          INTEGER DEFAULT 3
 );
 
-CREATE TABLE "form_models"
-(
+CREATE TABLE "form_models" (
     "id"      SERIAL UNIQUE PRIMARY KEY,
     "label"   VARCHAR(50),
     "default" boolean,
     "enabled" boolean
 );
 
-CREATE TABLE "form_models_field"
-(
+CREATE TABLE "form_models_field" (
     "id"        SERIAL UNIQUE PRIMARY KEY,
     "form_id"   INTEGER,
     "mandatory" boolean,
@@ -34,18 +31,17 @@ CREATE TABLE "custom_fields" (
      "type" VARCHAR(10),
      "module" VARCHAR(10),
      "settings" JSONB,
-     "enabled" BOOLEAN
+     "enabled" BOOLEAN default true,
+     "status" VARCHAR(5) default 'OK'
 );
 
-CREATE TABLE "users_companies"
-(
+CREATE TABLE "users_companies" (
     "id"         SERIAL UNIQUE PRIMARY KEY,
     "user_id"    INTEGER,
     "company_id" INTEGER
 );
 
-CREATE TABLE "adresses"
-(
+CREATE TABLE "adresses" (
     "id"          SERIAL UNIQUE PRIMARY KEY,
     "adress1"     VARCHAR(255),
     "adress2"     VARCHAR(255),
@@ -54,8 +50,7 @@ CREATE TABLE "adresses"
     "country"     VARCHAR(50)
 );
 
-CREATE TABLE "roles"
-(
+CREATE TABLE "roles" (
     "id"    SERIAL UNIQUE PRIMARY KEY,
     "label_short" VARCHAR(10),
     "label" VARCHAR(20),
@@ -64,22 +59,19 @@ CREATE TABLE "roles"
     "enabled" BOOLEAN DEFAULT true,
 );
 
-CREATE TABLE "roles_privileges"
-(
+CREATE TABLE "roles_privileges" (
     "id"           SERIAL UNIQUE PRIMARY KEY,
     "role_id"      INTEGER,
     "privileges_id" JSONB
 );
 
-CREATE TABLE "privileges"
-(
+CREATE TABLE "privileges" (
     "id"    SERIAL UNIQUE PRIMARY KEY,
     "parent" VARCHAR(20),
     "label" VARCHAR(50)
 );
 
-CREATE TABLE "accounts"
-(
+CREATE TABLE "accounts" (
     "id"        SERIAL UNIQUE PRIMARY KEY,
     "name"      VARCHAR NOT NULL,
     "type"      INTEGER,
@@ -90,8 +82,7 @@ CREATE TABLE "accounts"
     "form_id"   INTEGER
 );
 
-CREATE TABLE "companies"
-(
+CREATE TABLE "companies" (
     "id"              SERIAL UNIQUE PRIMARY KEY,
     "name"            VARCHAR(255),
     "company_number"  INTEGER,
@@ -99,15 +90,13 @@ CREATE TABLE "companies"
     "adress_id"       INTEGER
 );
 
-CREATE TABLE "companies_accounts"
-(
+CREATE TABLE "companies_accounts" (
     "id"         SERIAL UNIQUE PRIMARY KEY,
     "company_id" INTEGER,
     "account_id" INTEGER
 );
 
-CREATE TABLE "accounts_supplements"
-(
+CREATE TABLE "accounts_supplements" (
     "id"                        SERIAL UNIQUE PRIMARY KEY,
     "account_id"                VARCHAR(20),
     "invoice_number_position"   VARCHAR,
@@ -121,14 +110,12 @@ CREATE TABLE "accounts_supplements"
     "thirds_page"               INTEGER
 );
 
-CREATE TABLE "accounts_type"
-(
+CREATE TABLE "accounts_type" (
     "id"    SERIAL UNIQUE PRIMARY KEY,
     "label" VARCHAR(20)
 );
 
-CREATE TABLE "accounting_plan"
-(
+CREATE TABLE "accounting_plan" (
     "id"            SERIAL UNIQUE PRIMARY KEY,
     "journal_code"  VARCHAR(2),
     "journal_lib"   VARCHAR(10),
@@ -143,14 +130,12 @@ CREATE TABLE "accounting_plan"
     "ecriture_lib"  VARCHAR
 );
 
-CREATE TABLE "journals"
-(
+CREATE TABLE "journals" (
     "id"    SERIAL UNIQUE PRIMARY KEY,
     "label" VARCHAR(10)
 );
 
-CREATE TABLE "invoices"
-(
+CREATE TABLE "invoices" (
     "id"                      SERIAL UNIQUE PRIMARY KEY,
     "account_id"              INTEGER,
     "vat_number"              VARCHAR               DEFAULT NULL,
@@ -183,8 +168,7 @@ CREATE TABLE "invoices"
     "original_filename"       VARCHAR(255)
 );
 
-CREATE TABLE "history"
-(
+CREATE TABLE "history" (
     "id"                 SERIAL UNIQUE PRIMARY KEY,
     "user_id"            INTEGER,
     "history_type"       VARCHAR(20),
@@ -195,15 +179,13 @@ CREATE TABLE "history"
     "user_ip"            VARCHAR(12)
 );
 
-CREATE TABLE "status"
-(
+CREATE TABLE "status" (
     "id"         VARCHAR(20),
     "label"      VARCHAR(200),
     "label_long" VARCHAR(200)
 );
 
-CREATE TABLE "splitter_batches"
-(
+CREATE TABLE "splitter_batches" (
     "id"                SERIAL UNIQUE PRIMARY KEY,
     "dir_name"          VARCHAR,
     "first_page"        VARCHAR,
@@ -213,8 +195,7 @@ CREATE TABLE "splitter_batches"
     "page_number"       INTEGER
 );
 
-CREATE TABLE "splitter_images"
-(
+CREATE TABLE "splitter_images" (
     "id"           SERIAL UNIQUE PRIMARY KEY,
     "batch_name"   VARCHAR,
     "image_path"   VARCHAR,

@@ -86,7 +86,7 @@ export class UserProfileComponent implements OnInit {
             }
         }
 
-        this.http.get(API_URL + '/ws/roles/list', {headers: this.headers}).pipe(
+        this.http.get(API_URL + '/ws/roles/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 data.roles.forEach((element: any) => {
                     if (element.editable){
@@ -105,7 +105,7 @@ export class UserProfileComponent implements OnInit {
             })
         ).subscribe()
 
-        this.http.get(API_URL + '/ws/users/getById/' + this.userId, {headers: this.headers}).pipe(
+        this.http.get(API_URL + '/ws/users/getById/' + this.userId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.profile = data;
                 for (let field in this.profile){
@@ -151,7 +151,7 @@ export class UserProfileComponent implements OnInit {
             });
 
             this.http.put(
-                API_URL + '/ws/users/update/' + this.userId,{'args': user}, {headers: this.headers},
+                API_URL + '/ws/users/update/' + this.userId,{'args': user}, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {
                     this.notify.success(this.translate.instant('USER.profile_updated'));

@@ -83,7 +83,7 @@ export class CreateUserComponent implements OnInit {
 
     ngOnInit(): void {
         this.serviceSettings.init()
-        this.http.get(API_URL + '/ws/roles/list', {headers: this.headers}).pipe(
+        this.http.get(API_URL + '/ws/roles/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 data.roles.forEach((element: any) => {
                     if (element.editable){
@@ -131,7 +131,7 @@ export class CreateUserComponent implements OnInit {
                 return of(false);
             }
 
-            this.http.post(API_URL + '/ws/users/new', user, {headers: this.headers},
+            this.http.post(API_URL + '/ws/users/new', user, {headers: this.authService.headers},
             ).pipe(
                 tap(() => {
                     this.notify.success(this.translate.instant('USER.created'))

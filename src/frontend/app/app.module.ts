@@ -39,6 +39,8 @@ import { UpdateUserComponent } from './settings/users/update/update-user.compone
 import { UpdateRoleComponent } from './settings/roles/update/update-role.component';
 import { CreateRoleComponent } from './settings/roles/create/create-role.component';
 import { LoaderComponent } from './loader.component';
+import { CustomFieldsComponent } from './settings/custom-fields/custom-fields.component';
+import {DragDropModule} from "@angular/cdk/drag-drop";
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -67,28 +69,30 @@ export function createTranslateLoader(http: HttpClient) {
     UpdateUserComponent,
     UpdateRoleComponent,
     CreateRoleComponent,
-    LoaderComponent
+    LoaderComponent,
+    CustomFieldsComponent
   ],
-  imports: [
-    BrowserModule,
-    SettingsRoutingModule,
-    AppRoutingModule,
-    AppMaterialModule,
-    BrowserAnimationsModule,
-    HttpClientModule,
-    ServicesModule,
-    TranslateModule.forRoot({
-      defaultLanguage: 'fra',
-      loader: {
-        provide: TranslateLoader,
-        useFactory: (createTranslateLoader),
-        deps: [HttpClient]
-      }
-    }),
-    ReactiveFormsModule,
-    FormsModule,
-    NgxFileDragDropModule,
-  ],
+    imports: [
+        BrowserModule,
+        SettingsRoutingModule,
+        AppRoutingModule,
+        AppMaterialModule,
+        BrowserAnimationsModule,
+        HttpClientModule,
+        ServicesModule,
+        TranslateModule.forRoot({
+            defaultLanguage: 'fra',
+            loader: {
+                provide: TranslateLoader,
+                useFactory: (createTranslateLoader),
+                deps: [HttpClient]
+            }
+        }),
+        ReactiveFormsModule,
+        FormsModule,
+        NgxFileDragDropModule,
+        DragDropModule,
+    ],
   providers: [
     Title,
     TranslateService,
