@@ -101,10 +101,27 @@ export class SettingsService {
         ],
         "verifier": [
             {
-                "id"    : "form_builder",
-                "label" : this.translate.instant("VERIFIER.form_builder"),
-                "icon"  : "fas fa-tools",
-                "route" : "/settings/verifier/form-builder"
+                "id"        : "form_builder",
+                "label"     : this.translate.instant("SETTINGS.list_forms"),
+                "icon"      : "fab fa-wpforms",
+                "route"     : "/settings/verifier/forms",
+                "actions"   : [
+                    {
+                        "id"        : "add_form",
+                        "label"     : this.translate.instant("SETTINGS.form_builder"),
+                        "route"     : "/settings/verifier/forms/builder",
+                        "privilege" : "add_form",
+                        "icon"      : "fas fa-tools"
+                    },
+                    {
+                        "id"        : "update_form",
+                        "label"     : this.translate.instant("SETTINGS.form_builder_edit"),
+                        "route"     : "/settings/verifier/forms/builder/",
+                        "privilege" : "update_form",
+                        "icon"      : "fas fa-hammer",
+                        "showOnlyIfActive"  : true
+                    }
+                ]
             },
         ],
         "splitter": [
@@ -187,9 +204,9 @@ export class SettingsService {
         return this.settings;
     }
 
-    getSettingsAction(setting_id: any){
+    getSettingsAction(parent_id: any, setting_id: any){
         let actions = undefined
-        this.settings[this.selectedParentSetting].forEach((element: any) =>{
+        this.settings[parent_id].forEach((element: any) =>{
             if (element['id'] == setting_id && element['actions']){
                 actions = element['actions']
             }

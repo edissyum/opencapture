@@ -13,7 +13,8 @@ import { CreateRoleComponent } from "./general/roles/create/create-role.componen
 import { UpdateRoleComponent } from "./general/roles/update/update-role.component";
 import { VersionUpdateComponent } from "./general/version-update/version-update.component";
 import { CustomFieldsComponent } from "./general/custom-fields/custom-fields.component";
-import { FormBuilderComponent } from "./verifier/form-builder/form-builder.component";
+import { FormBuilderComponent } from "./verifier/form/builder/form-builder.component";
+import { FormListComponent } from "./verifier/form/list/form-list.component";
 
 const routes: Routes = [
     {
@@ -76,10 +77,20 @@ const routes: Routes = [
 // --- END General
 // --- Verifier
     {
-        path: 'settings/verifier/form-builder', component: FormBuilderComponent,
-        data: {title: marker('SETTINGS.form-builder'), privileges: ['settings', 'form_builder']},
+        path: 'settings/verifier/forms', component: FormListComponent,
+        data: {title: marker('SETTINGS.list_forms'), privileges: ['settings', 'forms_list']},
         canActivate: [LoginRequiredService]
-    }
+    },
+    {
+        path: 'settings/verifier/forms/builder', component: FormBuilderComponent,
+        data: {title: marker('SETTINGS.form_builder'), privileges: ['settings', 'form_builder']},
+        canActivate: [LoginRequiredService]
+    },
+    {
+        path: 'settings/verifier/forms/builder/:id', component: FormBuilderComponent,
+        data: {title: marker('SETTINGS.form_update'), privileges: ['settings', 'form_builder']},
+        canActivate: [LoginRequiredService]
+    },
 // -- END Verifier
 ];
 

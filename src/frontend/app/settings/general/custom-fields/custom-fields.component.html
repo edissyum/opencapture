@@ -16,7 +16,7 @@
                     <div *ngFor="let setting of this.serviceSettings.getSettings()[parent['id']];"
                          [class.border-b]="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] == '*'"
                          [class.border-gray-400]="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] == '*'">
-                        <div *ngIf="this.serviceSettings.getSettingsAction(setting['id']) else noActions">
+                        <div *ngIf="this.serviceSettings.getSettingsAction(parent['id'], setting['id']) else noActions">
                             <mat-expansion-panel
                                     *ngIf="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] == '*'"
                                     [expanded]="this.router.url.includes(setting['route'])">
@@ -35,7 +35,7 @@
                                         </button>
                                     </mat-panel-title>
                                 </mat-expansion-panel-header>
-                                <div *ngFor="let action of this.serviceSettings.getSettingsAction(setting['id'])"
+                                <div *ngFor="let action of this.serviceSettings.getSettingsAction(parent['id'], setting['id'])"
                                      [class.border-gray-600]="!action['showOnlyIfActive']"
                                      [class.border-t]="!action['showOnlyIfActive']"
                                      [class.w-full]="!action['showOnlyIfActive']">
@@ -126,7 +126,7 @@
                 <mat-tab *ngFor="let parent of this.parent" [label]="this.translate.instant(parent.label)">
                     <div cdkDropListGroup class="w-max mx-auto">
                         <div class="list-container">
-                            <h2>{{ 'GLOBAL.inactive' | translate }}</h2>
+                            <h2>{{ 'HEADER.inactive' | translate }}</h2>
                             <div cdkDropList [cdkDropListData]="inactiveFields" (cdkDropListDropped)="drop($event)" class="custom-fields-list overflow-auto">
                                 <span *ngFor="let item of inactiveFields; let i = index;">
                                     <div cdkDrag class="custom-field-box" *ngIf="item.module == parent['id']">
@@ -142,7 +142,7 @@
                             </div>
                         </div>
                         <div class="list-container">
-                            <h2>{{ 'GLOBAL.active' | translate }}</h2>
+                            <h2>{{ 'HEADER.active' | translate }}</h2>
                             <div cdkDropList [cdkDropListData]="activeFields" (cdkDropListDropped)="drop($event)" class="custom-fields-list overflow-auto">
                                 <span *ngFor="let item of activeFields; let i = index;">
                                     <div cdkDrag class="custom-field-box" *ngIf="item.module == parent['id']">

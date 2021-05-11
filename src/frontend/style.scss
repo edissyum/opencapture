@@ -1,6 +1,6 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :focus {
     outline: none!important;
@@ -23,12 +23,12 @@
 .mat-checkbox-checked.mat-accent .mat-checkbox-background,.mat-checkbox-indeterminate.mat-accent .mat-checkbox-background,
 .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar,
 .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb,
-mat-ink-bar{
+mat-ink-bar {
     @apply bg-green-400 #{!important};
 }
 
 .mat-selected .mat-option-text,
-.mat-form-field-label{
+.mat-form-field-label {
     @apply text-gray-900 #{!important};
 }
 
@@ -44,19 +44,19 @@ mat-ink-bar{
     color: red !important;
 }
 
-.mat-expansion-panel-body{
+.mat-expansion-panel-body {
     padding:0 !important;
 }
 
-.mat-expansion-indicator::after{
+.mat-expansion-indicator::after {
     @apply border-green-400;
 }
 
-.disable_link{
+.disable_link {
     pointer-events: none!important;
 }
 
-.settings_header{
+.settings_header {
     @apply bg-green-400;
     @apply bg-opacity-60;
     @apply text-gray-900;

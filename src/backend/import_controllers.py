@@ -25,11 +25,16 @@ if 'user' not in custom_array:
 else:
     user = getattr(__import__(custom_array['user']['path'], fromlist=[custom_array['user']['module']]), custom_array['user']['module'])
 
-    
 if 'config' not in custom_array:
     from .controllers import config
 else:
     config = getattr(__import__(custom_array['config']['path'], fromlist=[custom_array['config']['module']]), custom_array['config']['module'])
+
+
+if 'forms' not in custom_array:
+    from .controllers import forms
+else:
+    forms = getattr(__import__(custom_array['forms']['path'], fromlist=[custom_array['forms']['module']]), custom_array['forms']['module'])
 
 if 'supplier' not in custom_array:
     from .controllers import supplier

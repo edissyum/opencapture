@@ -24,5 +24,8 @@ INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (1, '{"data" 
 INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (2, '{"data" : "[1, 2, 3, 4, 5, 6, 7, 8, 9]"}');
 INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (3, '{"data" : "[2, 3, 6, 7, 8, 9]"}');
 
+-- ADD DEFAULT FORMS
+INSERT INTO "form_models" (id, label, "default", enabled) VALUES (1, 'Formulaire par défaut', true, true);
+
 -- CREATE SUPERADMIN user
 INSERT INTO "users" ("username","firstname", "lastname","password", "role") VALUES ('admin', 'Super', 'ADMIN', 'pbkdf2:sha256:150000$7c8waI7f$c0891ac8e18990db0786d4a49aea8bf7c1ad82796dccd8ae35c12ace7d8ee403', 1);

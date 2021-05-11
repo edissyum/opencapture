@@ -14,7 +14,7 @@
                     <div *ngFor="let setting of this.serviceSettings.getSettings()[parent['id']];"
                          [class.border-b]="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] == '*'"
                          [class.border-gray-400]="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] == '*'">
-                        <div *ngIf="this.serviceSettings.getSettingsAction(setting['id']) else noActions">
+                        <div *ngIf="this.serviceSettings.getSettingsAction(parent['id'], setting['id']) else noActions">
                             <mat-expansion-panel *ngIf="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] == '*'"
                                                  [expanded]="this.router.url.includes(setting['route'])">
                                 <mat-expansion-panel-header class="font-normal w-full h-20">
@@ -32,7 +32,7 @@
                                         </button>
                                     </mat-panel-title>
                                 </mat-expansion-panel-header>
-                                <div *ngFor="let action of this.serviceSettings.getSettingsAction(setting['id'])"
+                                <div *ngFor="let action of this.serviceSettings.getSettingsAction(parent['id'], setting['id'])"
                                      [class.border-gray-600]="!action['showOnlyIfActive']"
                                      [class.border-t]="!action['showOnlyIfActive']"
                                      [class.w-full]="!action['showOnlyIfActive']">
@@ -106,18 +106,13 @@
             <ng-container matColumnDef="status">
                 <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.status' | translate }} </mat-header-cell>
                 <mat-cell *matCellDef="let element">
-                    <span *ngIf="element.enabled "> <span class="text-green-400 text-4xl relative top-2 leading-4">&bull;</span> {{ 'USER.active' | translate }}</span>
-                    <span *ngIf="!element.enabled"> <span class="text-red-600 text-4xl relative top-2 leading-4">&bull;</span> {{ 'USER.inactive' | translate }}</span>
+                    <span *ngIf="element.enabled "> <span class="text-green-400 text-4xl relative top-2 leading-4">&bull;</span> {{ 'HEADER.active' | translate }}</span>
+                    <span *ngIf="!element.enabled"> <span class="text-red-600 text-4xl relative top-2 leading-4">&bull;</span> {{ 'HEADER.inactive' | translate }}</span>
                 </mat-cell>
             </ng-container>
             <ng-container matColumnDef="actions">
                 <mat-header-cell *matHeaderCellDef> </mat-header-cell>
                 <mat-cell *matCellDef="let element">
-                    <button routerLink="/settings/general/users/update/{{element.id}}"
-                            matTooltip="{{ 'USER.update' | translate }}" mat-icon-button
-                            class="inline-block align-text-top">
-                        <i class="btn-action-icon fas fa-edit fa-lg"></i>
-                    </button>
                     <button *ngIf="element.enabled"
                             (click)="$event.stopPropagation();disableConfirmDialog(element.id, element.username)"
                             matTooltip="{{ 'USER.disable' | translate }}" mat-icon-button

@@ -198,12 +198,9 @@ export class RolesListComponent implements OnInit {
         this.roles = data.sort((a: any, b: any) => {
             const isAsc = sort.direction === 'asc';
             switch (sort.active) {
-                case 'id':
-                    return this.compare(a.id, b.id, isAsc);
-                case 'label_short':
-                    return this.compare(a.label_short, b.label_short, isAsc);
-                case 'label':
-                    return this.compare(a.label, b.label, isAsc);
+                case 'id': return this.compare(a.id, b.id, isAsc);
+                case 'label_short': return this.compare(a.label_short, b.label_short, isAsc);
+                case 'label': return this.compare(a.label, b.label, isAsc);
                 default:
                     return 0;
             }

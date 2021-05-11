@@ -41,7 +41,8 @@ import { UpdateRoleComponent } from './settings/general/roles/update/update-role
 import { CreateRoleComponent } from './settings/general/roles/create/create-role.component';
 import { LoaderComponent } from './loader.component';
 import { CustomFieldsComponent } from './settings/general/custom-fields/custom-fields.component';
-import { FormBuilderComponent } from './settings/verifier/form-builder/form-builder.component';
+import { FormListComponent } from './settings/verifier/form/list/form-list.component';
+import { FormBuilderComponent } from './settings/verifier/form/builder/form-builder.component';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -72,6 +73,8 @@ export function createTranslateLoader(http: HttpClient) {
     CreateRoleComponent,
     LoaderComponent,
     CustomFieldsComponent,
+    FormBuilderComponent,
+    FormListComponent,
     FormBuilderComponent
   ],
     imports: [

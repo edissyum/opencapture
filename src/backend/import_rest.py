@@ -48,6 +48,12 @@ else:
     roles = getattr(__import__(custom_array['roles']['path'], fromlist=[custom_array['roles']['module']]),
                        custom_array['roles']['module'])
 
+if 'forms' not in custom_array:
+    from .rest import forms
+else:
+    forms = getattr(__import__(custom_array['forms']['path'], fromlist=[custom_array['forms']['module']]),
+                       custom_array['forms']['module'])
+
 if 'privileges' not in custom_array:
     from .rest import privileges
 else:
