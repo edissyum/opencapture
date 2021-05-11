@@ -16,7 +16,7 @@
                          [class.border-gray-400]="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] == '*'">
                         <div *ngIf="this.serviceSettings.getSettingsAction(setting['id']) else noActions">
                             <mat-expansion-panel *ngIf="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] == '*'"
-                                                 [expanded]="this.router.url == setting['route']">
+                                                 [expanded]="this.router.url.includes(setting['route'])">
                                 <mat-expansion-panel-header class="font-normal w-full h-20">
                                     <mat-panel-title class="font-normal justify-center items-center text-center">
                                         <i [class.text-green-400]="this.router.url == setting['route']"
@@ -79,33 +79,48 @@
                     (click)="sidenav.toggle(); this.serviceSettings.toggleMenu();" class="absolute left-2 top-2">
                 <i [class.fa-arrow-right]="!this.serviceSettings.getIsMenuOpen()" class="fas fa-arrow-left text-2xl"></i>
             </button>
-            <div class="settings_title text-center" *ngIf="this.user">
-                <h3>{{ this.serviceSettings.getTitle() }} : {{ this.user['firstname'] }} {{ this.user['lastname'] }} <b>({{ this.user['username'] }})</b></h3>
+            <div class="settings_title text-center" *ngIf="this.role">
+                <h3>{{ this.serviceSettings.getTitle() }} : {{ this.role['label'] }} <b>({{ this.role['label_short'] }})</b></h3>
                 <hr class="border-green-400">
             </div>
         </div>
-        <div class="flex justify-center items-center align-middle">
+        <div class="flex justify-center items-center">
             <form (ngSubmit)="onSubmit()" class="grid grid-cols-3 gap-6 w-full m-10 text-center">
-                <ng-container *ngFor="let field of userForm">
-                    <mat-form-field class="block" *ngIf="field.type != 'select'">
+                <ng-container *ngFor="let field of roleForm">
+                    <mat-form-field *ngIf="field.type == 'text'">
                         <mat-label>{{ field.label | translate }}</mat-label>
-                        <input matInput [readonly]="field.id == 'username'" [formControl]="field.control" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field.required">
+                        <input matInput [value]="field.control.value" [formControl]="field.control" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field.required">
                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
                     </mat-form-field>
-                    <mat-form-field class="block" *ngIf="field.type == 'select'">
-                        <mat-label>{{ field.label | translate }}</mat-label>
-                        <mat-select [formControl]="field.control" [(value)]="field.control.value" [required]="field.required">
-                            <mat-option *ngFor="let option of field.values" [value]="option['id']">{{ option['label'] }}</mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
-                    </mat-form-field>
+                    <mat-checkbox class="mt-4 -ml-72"
+                            *ngIf="field.type == 'checkbox'"
+                            [formControl]="field.control">
+                        {{ field.label | translate }}
+                    </mat-checkbox>
                 </ng-container>
-                <div class="button col-span-3">
-                    <button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300" type="submit" mat-button>
-                        {{ 'USER.update' | translate }}
-                    </button>
-                </div>
             </form>
+        </div>
+        <mat-divider class="w-1/2 m-auto border-green-400"></mat-divider>
+        <h4 class="text-center mt-10 mb-10">{{ 'PRIVILEGES.list' | translate }}</h4>
+        <div class="flex justify-center items-center ml-10 mr-5">
+            <mat-tab-group *ngIf="this.privileges && this.rolePrivileges" dynamicHeight>
+                <mat-tab *ngFor="let parent of this.privileges['parent']" [label]="this.translate.instant('PRIVILEGES.' + parent)">
+                    <div class="grid grid-cols-4 gap-x-60 gap-y-10 mt-10">
+                        <mat-slide-toggle *ngFor="let privilege of this.getChildsByParent(parent)"
+                                          [name]="privilege"
+                                          [checked]="this.hasPrivilege(privilege)"
+                                          (change)="changePrivilege($event)">
+                            {{ 'PRIVILEGES.' + privilege | translate }}
+                        </mat-slide-toggle>
+                    </div>
+                </mat-tab>
+            </mat-tab-group>
+
+        </div>
+        <div class="flex justify-center items-center mt-10">
+            <button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300" (click)="onSubmit()" mat-button>
+                {{ 'ROLE.update' | translate }}
+            </button>
         </div>
     </mat-sidenav-content>
 </mat-sidenav-container>

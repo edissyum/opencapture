@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { AppMaterialModule } from './app-material.module';
 import { ServicesModule } from '../services/services.module';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
+import { DragDropModule } from "@angular/cdk/drag-drop";
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateLoader, TranslateModule, TranslateService } from "@ngx-translate/core";
@@ -26,21 +27,21 @@ import { NotFoundComponent } from './not-found/not-found.component';
 import { UserProfileComponent } from './profile/profile.component';
 import { UploadComponent } from './upload/upload.component';
 import { NgxFileDragDropModule } from "ngx-file-drag-drop";
-import { UsersListComponent} from './settings/users/list/users-list.component';
+import { UsersListComponent} from './settings/general/users/list/users-list.component';
 import { SettingsComponent } from './settings/settings.component';
 import { MatPaginatorIntl } from "@angular/material/paginator";
 import { CustomMatPaginatorIntl } from "./custom-mat-paginator";
 import { LastUrlService } from "../services/last-url.service";
-import { AboutUsComponent } from './settings/about-us/about-us.component';
-import { VersionUpdateComponent } from './settings/version-update/version-update.component';
-import { RolesListComponent } from './settings/roles/list/roles-list.component';
-import { CreateUserComponent } from './settings/users/create/create-user.component';
-import { UpdateUserComponent } from './settings/users/update/update-user.component';
-import { UpdateRoleComponent } from './settings/roles/update/update-role.component';
-import { CreateRoleComponent } from './settings/roles/create/create-role.component';
+import { AboutUsComponent } from './settings/general/about-us/about-us.component';
+import { VersionUpdateComponent } from './settings/general/version-update/version-update.component';
+import { CreateUserComponent } from './settings/general/users/create/create-user.component';
+import { UpdateUserComponent } from './settings/general/users/update/update-user.component';
+import { RolesListComponent } from './settings/general/roles/list/roles-list.component';
+import { UpdateRoleComponent } from './settings/general/roles/update/update-role.component';
+import { CreateRoleComponent } from './settings/general/roles/create/create-role.component';
 import { LoaderComponent } from './loader.component';
-import { CustomFieldsComponent } from './settings/custom-fields/custom-fields.component';
-import {DragDropModule} from "@angular/cdk/drag-drop";
+import { CustomFieldsComponent } from './settings/general/custom-fields/custom-fields.component';
+import { FormBuilderComponent } from './settings/verifier/form-builder/form-builder.component';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -70,7 +71,8 @@ export function createTranslateLoader(http: HttpClient) {
     UpdateRoleComponent,
     CreateRoleComponent,
     LoaderComponent,
-    CustomFieldsComponent
+    CustomFieldsComponent,
+    FormBuilderComponent
   ],
     imports: [
         BrowserModule,

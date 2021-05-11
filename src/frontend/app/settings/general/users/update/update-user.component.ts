@@ -2,15 +2,15 @@ import {Component, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormBuilder, FormControl} from "@angular/forms";
-import {AuthService} from "../../../../services/auth.service";
-import {UserService} from "../../../../services/user.service";
+import {AuthService} from "../../../../../services/auth.service";
+import {UserService} from "../../../../../services/user.service";
 import {TranslateService} from "@ngx-translate/core";
-import {NotificationService} from "../../../../services/notifications/notifications.service";
-import {SettingsService} from "../../../../services/settings.service";
-import {API_URL} from "../../../env";
+import {NotificationService} from "../../../../../services/notifications/notifications.service";
+import {SettingsService} from "../../../../../services/settings.service";
+import {API_URL} from "../../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
-import {PrivilegesService} from "../../../../services/privileges.service";
+import {PrivilegesService} from "../../../../../services/privileges.service";
 
 @Component({
     selector: 'app-update',

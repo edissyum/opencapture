@@ -7,14 +7,11 @@
                         class="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-white hover:bg-gray-900 focus:ring-2 focus:ring-inset focus:ring-gray-900"
                         aria-expanded="false">
                     <svg *ngIf="mobileMenuState == 'hide'" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg"
-                         fill="none" viewBox="0 0 24 24"
-                         stroke="currentColor" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M4 6h16M4 12h16M4 18h16"/>
+                         fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                     </svg>
                     <svg *ngIf="mobileMenuState == 'show'" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg"
-                         fill="none" viewBox="0 0 24 24"
-                         stroke="currentColor" aria-hidden="true">
+                         fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                 </button>
@@ -25,25 +22,21 @@
                 </div>
                 <div class="hidden sm:block sm:ml-6">
                     <div class="flex space-x-4">
-                        <button mat-flat-button routerLink="/home"
-                                [routerLinkActive]="'bg-gray-900 text-green-400'"
+                        <button mat-flat-button routerLink="/home" [routerLinkActive]="'bg-gray-900 text-green-400'"
                            class="text-gray-500 hover:bg-green-400 hover:text-white px-3 py-2 text-sm font-medium transition duration-300">
                             {{ 'GLOBAL.home' | translate }}
                         </button>
-                        <button mat-flat-button routerLink="/verifier"
-                                [routerLinkActive]="'bg-gray-900 text-green-400'"
+                        <button mat-flat-button routerLink="/verifier" [routerLinkActive]="'bg-gray-900 text-green-400'"
                                 *ngIf="location.path() !== '/home' && this.getSplitterOrVerifier() == 'verifier'"
                            class="text-gray-500 hover:bg-green-400 hover:text-white px-3 py-2 text-sm font-medium transition duration-300">
                             {{ 'GLOBAL.batches' | translate }}
                         </button>
-                        <button mat-flat-button routerLink="/splitter"
-                                [routerLinkActive]="'bg-gray-900 text-green-400'"
+                        <button mat-flat-button routerLink="/splitter" [routerLinkActive]="'bg-gray-900 text-green-400'"
                                 *ngIf="location.path() !== '/home' && this.getSplitterOrVerifier() == 'splitter'"
                            class="text-gray-500 hover:bg-green-400 hover:text-white px-3 py-2 text-sm font-medium transition duration-300">
                             {{ 'GLOBAL.batches' | translate }}
                         </button>
-                        <button mat-flat-button routerLink="/upload"
-                                [routerLinkActive]="'bg-gray-900 text-green-400'"
+                        <button mat-flat-button routerLink="/upload" [routerLinkActive]="'bg-gray-900 text-green-400'"
                                 *ngIf="location.path() !== '/home' && this.getSplitterOrVerifier() != undefined"
                                 [class.disabled]="!this.privilegesService.hasPrivilege('upload')"
                        class="text-gray-500 hover:bg-green-400 hover:text-white px-3 py-2 text-sm font-medium transition duration-300">

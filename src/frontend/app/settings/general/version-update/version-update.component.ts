@@ -1,14 +1,14 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
-import {UserService} from "../../../services/user.service";
+import {UserService} from "../../../../services/user.service";
 import {FormBuilder} from "@angular/forms";
-import {AuthService} from "../../../services/auth.service";
+import {AuthService} from "../../../../services/auth.service";
 import {TranslateService} from "@ngx-translate/core";
-import {NotificationService} from "../../../services/notifications/notifications.service";
-import {SettingsService} from "../../../services/settings.service";
-import {PrivilegesService} from "../../../services/privileges.service";
-import {API_URL} from "../../env";
+import {NotificationService} from "../../../../services/notifications/notifications.service";
+import {SettingsService} from "../../../../services/settings.service";
+import {PrivilegesService} from "../../../../services/privileges.service";
+import {API_URL} from "../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 

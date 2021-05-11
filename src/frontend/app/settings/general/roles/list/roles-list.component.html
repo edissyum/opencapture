@@ -16,7 +16,7 @@
                          [class.border-gray-400]="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] == '*'">
                         <div *ngIf="this.serviceSettings.getSettingsAction(setting['id']) else noActions">
                             <mat-expansion-panel *ngIf="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] == '*'"
-                                                 [expanded]="this.router.url == setting['route']">
+                                                 [expanded]="this.router.url.includes(setting['route'])">
                                 <mat-expansion-panel-header class="font-normal w-full h-20">
                                     <mat-panel-title class="font-normal justify-center items-center text-center">
                                         <i [class.text-green-400]="this.router.url == setting['route']"

@@ -33,9 +33,7 @@ export class AppComponent implements OnInit {
         private activatedRoute: ActivatedRoute,
         private localeService: LocaleService,
         private localeStorageService: LocalStorageService
-    ) {
-
-    }
+    ) {}
 
     ngOnInit() {
         const appTitle = this.titleService.getTitle();

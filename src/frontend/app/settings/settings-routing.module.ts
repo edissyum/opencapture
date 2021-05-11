@@ -4,15 +4,15 @@ import { SettingsComponent } from "./settings.component";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import { LoginRequiredService } from "../../services/login-required.service";
 import { HasPrivilegeService } from "../../services/has-privilege.service";
-import { UsersListComponent } from "./users/list/users-list.component";
-import { RolesListComponent } from "./roles/list/roles-list.component";
-import { CreateUserComponent } from "./users/create/create-user.component";
-import { AboutUsComponent } from './about-us/about-us.component';
-import { UpdateUserComponent } from "./users/update/update-user.component";
-import { CreateRoleComponent } from "./roles/create/create-role.component";
-import { UpdateRoleComponent } from "./roles/update/update-role.component";
-import { VersionUpdateComponent } from "./version-update/version-update.component";
-import { CustomFieldsComponent } from "./custom-fields/custom-fields.component";
+import { UsersListComponent } from "./general/users/list/users-list.component";
+import { RolesListComponent } from "./general/roles/list/roles-list.component";
+import { CreateUserComponent } from "./general/users/create/create-user.component";
+import { AboutUsComponent } from './general/about-us/about-us.component';
+import { UpdateUserComponent } from "./general/users/update/update-user.component";
+import { CreateRoleComponent } from "./general/roles/create/create-role.component";
+import { UpdateRoleComponent } from "./general/roles/update/update-role.component";
+import { VersionUpdateComponent } from "./general/version-update/version-update.component";
+import { CustomFieldsComponent } from "./general/custom-fields/custom-fields.component";
 
 const routes: Routes = [
     {

@@ -16,7 +16,7 @@
                          [class.border-gray-400]="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] == '*'">
                         <div *ngIf="this.serviceSettings.getSettingsAction(setting['id']) else noActions">
                             <mat-expansion-panel *ngIf="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] == '*'"
-                                                 [expanded]="this.router.url == setting['route']">
+                                                 [expanded]="this.router.url.includes(setting['route'])">
                                 <mat-expansion-panel-header class="font-normal w-full h-20">
                                     <mat-panel-title class="font-normal justify-center items-center text-center">
                                         <i [class.text-green-400]="this.router.url == setting['route']"
@@ -76,13 +76,78 @@
         </div>
         <div class="settings_header">
             <button mat-icon-button
-                    (click)="sidenav.toggle(); this.serviceSettings.toggleMenu();" class="absolute left-2 top-2">
+                    (click)="sidenav.toggle(); this.serviceSettings.toggleMenu()" class="absolute left-2 top-2">
                 <i [class.fa-arrow-right]="!this.serviceSettings.getIsMenuOpen()" class="fas fa-arrow-left text-2xl"></i>
             </button>
-            <div class="settings_title text-center">
-                <h3>{{ this.serviceSettings.getTitle() }}</h3>
-                <hr class="border-green-400">
-            </div>
+            <h3 class="text-center">{{ this.serviceSettings.getTitle() }}</h3>
+            <hr class="border-green-400">
         </div>
+        <mat-table matSort [dataSource]="users" (matSortChange)="sortData($event)" class="w-full">
+            <ng-container matColumnDef="id">
+                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.id' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="username">
+                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'USER.username' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.username}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="firstname">
+                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'USER.firstname' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.firstname}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="lastname">
+                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'USER.lastname' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.lastname}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="role">
+                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.role' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.role_label}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="status">
+                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.status' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <span *ngIf="element.enabled "> <span class="text-green-400 text-4xl relative top-2 leading-4">&bull;</span> {{ 'USER.active' | translate }}</span>
+                    <span *ngIf="!element.enabled"> <span class="text-red-600 text-4xl relative top-2 leading-4">&bull;</span> {{ 'USER.inactive' | translate }}</span>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="actions">
+                <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <button routerLink="/settings/general/users/update/{{element.id}}"
+                            matTooltip="{{ 'USER.update' | translate }}" mat-icon-button
+                            class="inline-block align-text-top">
+                        <i class="btn-action-icon fas fa-edit fa-lg"></i>
+                    </button>
+                    <button *ngIf="element.enabled"
+                            (click)="$event.stopPropagation();disableConfirmDialog(element.id, element.username)"
+                            matTooltip="{{ 'USER.disable' | translate }}" mat-icon-button
+                            class="inline-block align-text-top">
+                        <i class="btn-action-icon fas fa-pause fa-lg"></i>
+                    </button>
+                    <button *ngIf="!element.enabled"
+                            (click)="$event.stopPropagation();enableConfirmDialog(element.id, element.username)"
+                            matTooltip="{{ 'USER.enable' | translate }}" mat-icon-button
+                            class="inline-block align-text-top">
+                        <i class="btn-action-icon fas fa-play fa-lg"></i>
+                    </button>
+                    <button (click)="$event.stopPropagation();deleteConfirmDialog(element.id, element.username)"
+                            matTooltip="{{ 'GLOBAL.delete' | translate }}" mat-icon-button
+                            class="inline-block align-text-top">
+                        <i class="btn-action-icon fas fa-trash fa-lg"></i>
+                    </button>
+                </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: columnsToDisplay;"
+                 routerLink="/settings/general/users/update/{{row.id}}"
+                 class="cursor-pointer hover:text-green-400 hover:shadow-md transition-colors duration-300"></mat-row>
+        </mat-table>
+        <mat-paginator showFirstLastButtons
+                       [length]="this.total"
+                       [pageSize]="pageSize"
+                       [pageIndex]="pageIndex"
+                       [pageSizeOptions]="[5, 10, 15, 20, 50]"
+                       (page)="onPageChange($event)">
+        </mat-paginator>
     </mat-sidenav-content>
 </mat-sidenav-container>
