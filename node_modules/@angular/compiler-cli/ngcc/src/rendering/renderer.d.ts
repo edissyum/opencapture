@@ -8,7 +8,7 @@
  */
 import { ConstantPool } from '@angular/compiler';
 import * as ts from 'typescript';
-import { FileSystem } from '../../../src/ngtsc/file_system';
+import { ReadonlyFileSystem } from '../../../src/ngtsc/file_system';
 import { Logger } from '../../../src/ngtsc/logging';
 import { ImportManager } from '../../../src/ngtsc/translator';
 import { ParsedConfiguration } from '../../../src/perform_compile';
@@ -32,7 +32,7 @@ export declare class Renderer {
     private logger;
     private bundle;
     private tsConfig;
-    constructor(host: NgccReflectionHost, srcFormatter: RenderingFormatter, fs: FileSystem, logger: Logger, bundle: EntryPointBundle, tsConfig?: ParsedConfiguration | null);
+    constructor(host: NgccReflectionHost, srcFormatter: RenderingFormatter, fs: ReadonlyFileSystem, logger: Logger, bundle: EntryPointBundle, tsConfig?: ParsedConfiguration | null);
     renderProgram(decorationAnalyses: DecorationAnalyses, switchMarkerAnalyses: SwitchMarkerAnalyses, privateDeclarationsAnalyses: PrivateDeclarationsAnalyses): FileToWrite[];
     /**
      * Render the source code and source-map for an Analyzed file.

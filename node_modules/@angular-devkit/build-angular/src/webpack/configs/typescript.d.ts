@@ -1,4 +1,5 @@
-import { AngularCompilerPlugin } from '@ngtools/webpack';
+import { AngularCompilerPlugin, ivy } from '@ngtools/webpack';
+import { RuleSetLoader } from 'webpack';
 import { WebpackConfigOptions } from '../../utils/build-options';
 export declare function getNonAotConfig(wco: WebpackConfigOptions): {
     module: {
@@ -7,15 +8,15 @@ export declare function getNonAotConfig(wco: WebpackConfigOptions): {
             loader: string;
         }[];
     };
-    plugins: AngularCompilerPlugin[];
+    plugins: (AngularCompilerPlugin | ivy.AngularWebpackPlugin)[];
 };
 export declare function getAotConfig(wco: WebpackConfigOptions, i18nExtract?: boolean): {
     module: {
         rules: {
             test: RegExp;
-            use: any[];
+            use: (string | RuleSetLoader)[];
         }[];
     };
-    plugins: AngularCompilerPlugin[];
+    plugins: (AngularCompilerPlugin | ivy.AngularWebpackPlugin)[];
 };
-export declare function getTypescriptWorkerPlugin(wco: WebpackConfigOptions, workerTsConfigPath: string): AngularCompilerPlugin;
+export declare function getTypescriptWorkerPlugin(wco: WebpackConfigOptions, workerTsConfigPath: string): AngularCompilerPlugin | ivy.AngularWebpackPlugin;

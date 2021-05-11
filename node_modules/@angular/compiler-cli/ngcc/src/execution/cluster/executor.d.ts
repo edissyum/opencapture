@@ -6,7 +6,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { FileSystem } from '../../../../src/ngtsc/file_system';
+import { PathManipulation } from '../../../../src/ngtsc/file_system';
 import { Logger } from '../../../../src/ngtsc/logging';
 import { AsyncLocker } from '../../locking/async_locker';
 import { FileWriter } from '../../writing/file_writer';
@@ -25,6 +25,6 @@ export declare class ClusterExecutor implements Executor {
     private pkgJsonUpdater;
     private lockFile;
     private createTaskCompletedCallback;
-    constructor(workerCount: number, fileSystem: FileSystem, logger: Logger, fileWriter: FileWriter, pkgJsonUpdater: PackageJsonUpdater, lockFile: AsyncLocker, createTaskCompletedCallback: CreateTaskCompletedCallback);
+    constructor(workerCount: number, fileSystem: PathManipulation, logger: Logger, fileWriter: FileWriter, pkgJsonUpdater: PackageJsonUpdater, lockFile: AsyncLocker, createTaskCompletedCallback: CreateTaskCompletedCallback);
     execute(analyzeEntryPoints: AnalyzeEntryPointsFn, _createCompileFn: CreateCompileFn): Promise<void>;
 }

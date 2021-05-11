@@ -6,7 +6,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { AbsoluteFsPath, FileSystem, PathSegment } from '../../../src/ngtsc/file_system';
+import { AbsoluteFsPath, PathSegment, ReadonlyFileSystem } from '../../../src/ngtsc/file_system';
 import { EntryPoint } from '../packages/entry_point';
 import { ModuleResolver } from './module_resolver';
 export interface DependencyHost {
@@ -23,9 +23,9 @@ export interface EntryPointWithDependencies {
 }
 export declare function createDependencyInfo(): DependencyInfo;
 export declare abstract class DependencyHostBase implements DependencyHost {
-    protected fs: FileSystem;
+    protected fs: ReadonlyFileSystem;
     protected moduleResolver: ModuleResolver;
-    constructor(fs: FileSystem, moduleResolver: ModuleResolver);
+    constructor(fs: ReadonlyFileSystem, moduleResolver: ModuleResolver);
     /**
      * Find all the dependencies for the entry-point at the given path.
      *

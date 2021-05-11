@@ -40,13 +40,18 @@ export declare function conditionallyCreateMapObjectLiteral(keys: {
  */
 export declare function trimTrailingNulls(parameters: o.Expression[]): o.Expression[];
 export declare function getQueryPredicate(query: R3QueryMetadata, constantPool: ConstantPool): o.Expression;
-export declare class DefinitionMap {
+/**
+ * A representation for an object literal used during codegen of definition objects. The generic
+ * type `T` allows to reference a documented type of the generated structure, such that the
+ * property names that are set can be resolved to their documented declaration.
+ */
+export declare class DefinitionMap<T = any> {
     values: {
         key: string;
         quoted: boolean;
         value: o.Expression;
     }[];
-    set(key: string, value: o.Expression | null): void;
+    set(key: keyof T, value: o.Expression | null): void;
     toLiteralMap(): o.LiteralMapExpr;
 }
 /**

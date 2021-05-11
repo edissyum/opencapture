@@ -22,6 +22,11 @@ export interface IncrementalBuildStrategy {
      * future compilations.
      */
     setIncrementalDriver(driver: IncrementalDriver, program: ts.Program): void;
+    /**
+     * Convert this `IncrementalBuildStrategy` into a possibly new instance to be used in the next
+     * incremental compilation (may be a no-op if the strategy is not stateful).
+     */
+    toNextBuildStrategy(): IncrementalBuildStrategy;
 }
 /**
  * A noop implementation of `IncrementalBuildStrategy` which neither returns nor tracks any
@@ -30,6 +35,7 @@ export interface IncrementalBuildStrategy {
 export declare class NoopIncrementalBuildStrategy implements IncrementalBuildStrategy {
     getIncrementalDriver(): null;
     setIncrementalDriver(): void;
+    toNextBuildStrategy(): IncrementalBuildStrategy;
 }
 /**
  * Tracks an `IncrementalDriver` within the strategy itself.
@@ -48,4 +54,5 @@ export declare class TrackedIncrementalBuildStrategy implements IncrementalBuild
 export declare class PatchedProgramIncrementalBuildStrategy implements IncrementalBuildStrategy {
     getIncrementalDriver(program: ts.Program): IncrementalDriver | null;
     setIncrementalDriver(driver: IncrementalDriver, program: ts.Program): void;
+    toNextBuildStrategy(): IncrementalBuildStrategy;
 }

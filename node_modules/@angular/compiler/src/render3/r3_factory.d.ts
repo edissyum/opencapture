@@ -53,12 +53,7 @@ export interface R3ConstructorFactoryMetadata {
 }
 export declare enum R3FactoryDelegateType {
     Class = 0,
-    Function = 1,
-    Factory = 2
-}
-export interface R3DelegatedFactoryMetadata extends R3ConstructorFactoryMetadata {
-    delegate: o.Expression;
-    delegateType: R3FactoryDelegateType.Factory;
+    Function = 1
 }
 export interface R3DelegatedFnOrClassMetadata extends R3ConstructorFactoryMetadata {
     delegate: o.Expression;
@@ -68,7 +63,7 @@ export interface R3DelegatedFnOrClassMetadata extends R3ConstructorFactoryMetada
 export interface R3ExpressionFactoryMetadata extends R3ConstructorFactoryMetadata {
     expression: o.Expression;
 }
-export declare type R3FactoryMetadata = R3ConstructorFactoryMetadata | R3DelegatedFactoryMetadata | R3DelegatedFnOrClassMetadata | R3ExpressionFactoryMetadata;
+export declare type R3FactoryMetadata = R3ConstructorFactoryMetadata | R3DelegatedFnOrClassMetadata | R3ExpressionFactoryMetadata;
 export declare enum R3FactoryTarget {
     Directive = 0,
     Component = 1,

@@ -65,7 +65,8 @@ export interface Schema {
      */
     scripts?: ExtraEntryPoint[];
     /**
-     * Output source maps.
+     * Output source maps for scripts and styles. For more information, see
+     * https://angular.io/guide/workspace-config#source-map-configuration.
      */
     sourceMap?: SourceMapUnion;
     /**
@@ -130,7 +131,8 @@ export interface ExtraEntryPointClass {
     input: string;
 }
 /**
- * Output source maps.
+ * Output source maps for scripts and styles. For more information, see
+ * https://angular.io/guide/workspace-config#source-map-configuration.
  */
 export declare type SourceMapUnion = boolean | SourceMapClass;
 export interface SourceMapClass {

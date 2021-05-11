@@ -9,6 +9,7 @@
 import { ConstantPool } from '@angular/compiler';
 import * as ts from 'typescript';
 import { IncrementalBuild } from '../../incremental/api';
+import { SemanticDepGraphUpdater, SemanticSymbol } from '../../incremental/semantic_graph';
 import { IndexingContext } from '../../indexer';
 import { PerfRecorder } from '../../perf';
 import { ClassDeclaration, DeclarationNode, Decorator, ReflectionHost } from '../../reflection';
@@ -27,7 +28,7 @@ export interface ClassRecord {
     /**
      * All traits which matched on the class.
      */
-    traits: Trait<unknown, unknown, unknown>[];
+    traits: Trait<unknown, unknown, SemanticSymbol | null, unknown>[];
     /**
      * Meta-diagnostics about the class, which are usually related to whether certain combinations of
      * Angular decorators are not permitted.
@@ -61,6 +62,7 @@ export declare class TraitCompiler implements ProgramTypeCheckAdapter {
     private compileNonExportedClasses;
     private compilationMode;
     private dtsTransforms;
+    private semanticDepGraphUpdater;
     /**
      * Maps class declarations to their `ClassRecord`, which tracks the Ivy traits being applied to
      * those classes.
@@ -73,7 +75,7 @@ export declare class TraitCompiler implements ProgramTypeCheckAdapter {
     protected fileToClasses: Map<ts.SourceFile, Set<ClassDeclaration<DeclarationNode>>>;
     private reexportMap;
     private handlersByName;
-    constructor(handlers: DecoratorHandler<unknown, unknown, unknown>[], reflector: ReflectionHost, perf: PerfRecorder, incrementalBuild: IncrementalBuild<ClassRecord, unknown>, compileNonExportedClasses: boolean, compilationMode: CompilationMode, dtsTransforms: DtsTransformRegistry);
+    constructor(handlers: DecoratorHandler<unknown, unknown, SemanticSymbol | null, unknown>[], reflector: ReflectionHost, perf: PerfRecorder, incrementalBuild: IncrementalBuild<ClassRecord, unknown>, compileNonExportedClasses: boolean, compilationMode: CompilationMode, dtsTransforms: DtsTransformRegistry, semanticDepGraphUpdater: SemanticDepGraphUpdater | null);
     analyzeSync(sf: ts.SourceFile): void;
     analyzeAsync(sf: ts.SourceFile): Promise<void> | undefined;
     private analyze;
@@ -89,9 +91,10 @@ export declare class TraitCompiler implements ProgramTypeCheckAdapter {
      */
     private adopt;
     private scanClassForTraits;
-    protected detectTraits(clazz: ClassDeclaration, decorators: Decorator[] | null): PendingTrait<unknown, unknown, unknown>[] | null;
+    protected detectTraits(clazz: ClassDeclaration, decorators: Decorator[] | null): PendingTrait<unknown, unknown, SemanticSymbol | null, unknown>[] | null;
+    private makeSymbolForTrait;
     protected analyzeClass(clazz: ClassDeclaration, preanalyzeQueue: Promise<void>[] | null): void;
-    protected analyzeTrait(clazz: ClassDeclaration, trait: Trait<unknown, unknown, unknown>, flags?: HandlerFlags): void;
+    protected analyzeTrait(clazz: ClassDeclaration, trait: Trait<unknown, unknown, SemanticSymbol | null, unknown>, flags?: HandlerFlags): void;
     resolve(): void;
     /**
      * Generate type-checking code into the `TypeCheckContext` for any components within the given
@@ -99,6 +102,7 @@ export declare class TraitCompiler implements ProgramTypeCheckAdapter {
      */
     typeCheck(sf: ts.SourceFile, ctx: TypeCheckContext): void;
     index(ctx: IndexingContext): void;
+    updateResources(clazz: DeclarationNode): void;
     compile(clazz: DeclarationNode, constantPool: ConstantPool): CompileResult[] | null;
     decoratorsFor(node: ts.Declaration): ts.Decorator[];
     get diagnostics(): ReadonlyArray<ts.Diagnostic>;

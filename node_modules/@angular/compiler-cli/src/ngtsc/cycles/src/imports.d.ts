@@ -7,7 +7,7 @@
  */
 /// <amd-module name="@angular/compiler-cli/src/ngtsc/cycles/src/imports" />
 import * as ts from 'typescript';
-import { ModuleResolver } from '../../imports';
+import { PerfRecorder } from '../../perf';
 /**
  * A cached graph of imports in the `ts.Program`.
  *
@@ -15,9 +15,10 @@ import { ModuleResolver } from '../../imports';
  * dependencies within the same program are tracked; imports into packages on NPM are not.
  */
 export declare class ImportGraph {
-    private resolver;
+    private checker;
+    private perf;
     private map;
-    constructor(resolver: ModuleResolver);
+    constructor(checker: ts.TypeChecker, perf: PerfRecorder);
     /**
      * List the direct (not transitive) imports of a given `ts.SourceFile`.
      *
@@ -29,6 +30,18 @@ export declare class ImportGraph {
      */
     transitiveImportsOf(sf: ts.SourceFile): Set<ts.SourceFile>;
     private transitiveImportsOfHelper;
+    /**
+     * Find an import path from the `start` SourceFile to the `end` SourceFile.
+     *
+     * This function implements a breadth first search that results in finding the
+     * shortest path between the `start` and `end` points.
+     *
+     * @param start the starting point of the path.
+     * @param end the ending point of the path.
+     * @returns an array of source files that connect the `start` and `end` source files, or `null` if
+     *     no path could be found.
+     */
+    findPath(start: ts.SourceFile, end: ts.SourceFile): ts.SourceFile[] | null;
     /**
      * Add a record of an import from `sf` to `imported`, that's not present in the original
      * `ts.Program` but will be remembered by the `ImportGraph`.

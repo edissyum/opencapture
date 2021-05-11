@@ -19,8 +19,8 @@ module.exports = (isProd) => ({
         },
         extend: {
             backgroundImage: theme => ({
-                'verifier': "url('assets/imgs/Open-Capture_Verifier.svg')",
-                'splitter': "url('assets/imgs/Open-Capture_Splitter.svg')",
+                'verifier': "url('../assets/imgs/Open-Capture_Verifier.svg')",
+                'splitter': "url('../assets/imgs/Open-Capture_Splitter.svg')",
             }),
             colors: {
                 green: {

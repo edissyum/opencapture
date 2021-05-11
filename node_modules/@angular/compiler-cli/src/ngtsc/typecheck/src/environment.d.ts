@@ -27,15 +27,13 @@ export declare class Environment {
     readonly config: TypeCheckingConfig;
     protected importManager: ImportManager;
     private refEmitter;
-    private reflector;
+    readonly reflector: ReflectionHost;
     protected contextFile: ts.SourceFile;
     private nextIds;
     private typeCtors;
     protected typeCtorStatements: ts.Statement[];
     private pipeInsts;
     protected pipeInstStatements: ts.Statement[];
-    private outputHelperIdent;
-    protected helperStatements: ts.Statement[];
     constructor(config: TypeCheckingConfig, importManager: ImportManager, refEmitter: ReferenceEmitter, reflector: ReflectionHost, contextFile: ts.SourceFile);
     /**
      * Get an expression referring to a type constructor for the given directive.
@@ -45,13 +43,6 @@ export declare class Environment {
      */
     typeCtorFor(dir: TypeCheckableDirectiveMeta): ts.Expression;
     pipeInst(ref: Reference<ClassDeclaration<ts.ClassDeclaration>>): ts.Expression;
-    /**
-     * Declares a helper function to be able to cast directive outputs of type `EventEmitter<T>` to
-     * have an accurate `subscribe()` method that properly carries over the generic type `T` into the
-     * listener function passed as argument to `subscribe`. This is done to work around a typing
-     * deficiency in `EventEmitter.subscribe`, where the listener function is typed as any.
-     */
-    declareOutputHelper(): ts.Expression;
     /**
      * Generate a `ts.Expression` that references the given node.
      *

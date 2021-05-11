@@ -6,7 +6,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { AbsoluteFsPath, FileSystem } from '../../../src/ngtsc/file_system';
+import { AbsoluteFsPath, ReadonlyFileSystem } from '../../../src/ngtsc/file_system';
 import { Logger } from '../../../src/ngtsc/logging';
 import { EntryPointWithDependencies } from '../dependencies/dependency_host';
 import { DependencyResolver } from '../dependencies/dependency_resolver';
@@ -20,7 +20,7 @@ export declare class EntryPointCollector {
     private config;
     private logger;
     private resolver;
-    constructor(fs: FileSystem, config: NgccConfiguration, logger: Logger, resolver: DependencyResolver);
+    constructor(fs: ReadonlyFileSystem, config: NgccConfiguration, logger: Logger, resolver: DependencyResolver);
     /**
      * Look for Angular packages that need to be compiled, starting at the source directory.
      * The function will recurse into directories that start with `@...`, e.g. `@angular/...`.

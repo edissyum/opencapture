@@ -28,7 +28,20 @@ export declare class NewEntryPointFileWriter extends InPlaceFileWriter {
     constructor(fs: FileSystem, logger: Logger, errorOnFailedEntryPoint: boolean, pkgJsonUpdater: PackageJsonUpdater);
     writeBundle(bundle: EntryPointBundle, transformedFiles: FileToWrite[], formatProperties: EntryPointJsonProperty[]): void;
     revertBundle(entryPoint: EntryPoint, transformedFilePaths: AbsoluteFsPath[], formatProperties: EntryPointJsonProperty[]): void;
-    protected copyBundle(bundle: EntryPointBundle, packagePath: AbsoluteFsPath, ngccFolder: AbsoluteFsPath): void;
+    protected copyBundle(bundle: EntryPointBundle, packagePath: AbsoluteFsPath, ngccFolder: AbsoluteFsPath, transformedFiles: FileToWrite[]): void;
+    /**
+     * If a source file has an associated source-map, then copy this, while updating its sourceRoot
+     * accordingly.
+     *
+     * For now don't try to parse the source for inline source-maps or external source-map links,
+     * since that is more complex and will slow ngcc down.
+     * Instead just check for a source-map file residing next to the source file, which is by far
+     * the most common case.
+     *
+     * @param originalSrcPath absolute path to the original source file being copied.
+     * @param newSrcPath absolute path to where the source will be written.
+     */
+    protected copyAndUpdateSourceMap(originalSrcPath: AbsoluteFsPath, newSrcPath: AbsoluteFsPath): void;
     protected writeFile(file: FileToWrite, packagePath: AbsoluteFsPath, ngccFolder: AbsoluteFsPath): void;
     protected revertFile(filePath: AbsoluteFsPath, packagePath: AbsoluteFsPath): void;
     protected updatePackageJson(entryPoint: EntryPoint, formatProperties: EntryPointJsonProperty[], ngccFolder: AbsoluteFsPath): void;

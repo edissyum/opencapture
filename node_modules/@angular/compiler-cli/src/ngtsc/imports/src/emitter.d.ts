@@ -42,6 +42,33 @@ export declare enum ImportFlags {
     AllowTypeImports = 4
 }
 /**
+ * An emitter strategy has the ability to indicate which `ts.SourceFile` is being imported by the
+ * expression that it has generated. This information is useful for consumers of the emitted
+ * reference that would otherwise have to perform a relatively expensive module resolution step,
+ * e.g. for cyclic import analysis. In cases the emitter is unable to definitively determine the
+ * imported source file or a computation would be required to actually determine the imported
+ * source file, then `'unknown'` should be returned. If the generated expression does not represent
+ * an import then `null` should be used.
+ */
+export declare type ImportedFile = ts.SourceFile | 'unknown' | null;
+/**
+ * Represents the emitted expression of a `Reference` that is valid in the source file it was
+ * emitted from.
+ */
+export interface EmittedReference {
+    /**
+     * The expression that refers to `Reference`.
+     */
+    expression: Expression;
+    /**
+     * The `ts.SourceFile` that is imported by `expression`. This is not necessarily the source file
+     * of the `Reference`'s declaration node, as the reference may have been rewritten through an
+     * alias export. It could also be `null` if `expression` is a local identifier, or `'unknown'` if
+     * the exact source file that is being imported is not known to the emitter.
+     */
+    importedFile: ImportedFile;
+}
+/**
  * A particular strategy for generating an expression which refers to a `Reference`.
  *
  * There are many potential ways a given `Reference` could be referred to in the context of a given
@@ -61,9 +88,10 @@ export interface ReferenceEmitStrategy {
      * @param ref the `Reference` for which to generate an expression
      * @param context the source file in which the `Expression` must be valid
      * @param importFlags a flag which controls whether imports should be generated or not
-     * @returns an `Expression` which refers to the `Reference`, or `null` if none can be generated
+     * @returns an `EmittedReference` which refers to the `Reference`, or `null` if none can be
+     *   generated
      */
-    emit(ref: Reference, context: ts.SourceFile, importFlags: ImportFlags): Expression | null;
+    emit(ref: Reference, context: ts.SourceFile, importFlags: ImportFlags): EmittedReference | null;
 }
 /**
  * Generates `Expression`s which refer to `Reference`s in a given context.
@@ -74,14 +102,27 @@ export interface ReferenceEmitStrategy {
 export declare class ReferenceEmitter {
     private strategies;
     constructor(strategies: ReferenceEmitStrategy[]);
-    emit(ref: Reference, context: ts.SourceFile, importFlags?: ImportFlags): Expression;
+    emit(ref: Reference, context: ts.SourceFile, importFlags?: ImportFlags): EmittedReference;
 }
 /**
  * A `ReferenceEmitStrategy` which will refer to declarations by any local `ts.Identifier`s, if
  * such identifiers are available.
  */
 export declare class LocalIdentifierStrategy implements ReferenceEmitStrategy {
-    emit(ref: Reference<ts.Node>, context: ts.SourceFile, importFlags: ImportFlags): Expression | null;
+    emit(ref: Reference, context: ts.SourceFile, importFlags: ImportFlags): EmittedReference | null;
+}
+/**
+ * Represents the exported declarations from a module source file.
+ */
+interface ModuleExports {
+    /**
+     * The source file of the module.
+     */
+    module: ts.SourceFile;
+    /**
+     * The map of declarations to their exported name.
+     */
+    exportMap: Map<DeclarationNode, string>;
 }
 /**
  * A `ReferenceEmitStrategy` which will refer to declarations that come from `node_modules` using
@@ -103,10 +144,9 @@ export declare class AbsoluteModuleStrategy implements ReferenceEmitStrategy {
      */
     private moduleExportsCache;
     constructor(program: ts.Program, checker: ts.TypeChecker, moduleResolver: ModuleResolver, reflectionHost: ReflectionHost);
-    emit(ref: Reference<ts.Node>, context: ts.SourceFile, importFlags: ImportFlags): Expression | null;
-    private resolveImportName;
+    emit(ref: Reference, context: ts.SourceFile, importFlags: ImportFlags): EmittedReference | null;
     private getExportsOfModule;
-    protected enumerateExportsOfModule(specifier: string, fromFile: string): Map<DeclarationNode, string> | null;
+    protected enumerateExportsOfModule(specifier: string, fromFile: string): ModuleExports | null;
 }
 /**
  * A `ReferenceEmitStrategy` which will refer to declarations via relative paths, provided they're
@@ -120,7 +160,7 @@ export declare class LogicalProjectStrategy implements ReferenceEmitStrategy {
     private reflector;
     private logicalFs;
     constructor(reflector: ReflectionHost, logicalFs: LogicalFileSystem);
-    emit(ref: Reference<ts.Node>, context: ts.SourceFile): Expression | null;
+    emit(ref: Reference, context: ts.SourceFile): EmittedReference | null;
 }
 /**
  * A `ReferenceEmitStrategy` which constructs relatives paths between `ts.SourceFile`s.
@@ -131,7 +171,7 @@ export declare class LogicalProjectStrategy implements ReferenceEmitStrategy {
 export declare class RelativePathStrategy implements ReferenceEmitStrategy {
     private reflector;
     constructor(reflector: ReflectionHost);
-    emit(ref: Reference<ts.Node>, context: ts.SourceFile): Expression | null;
+    emit(ref: Reference, context: ts.SourceFile): EmittedReference | null;
 }
 /**
  * A `ReferenceEmitStrategy` which uses a `UnifiedModulesHost` to generate absolute import
@@ -141,5 +181,6 @@ export declare class UnifiedModulesStrategy implements ReferenceEmitStrategy {
     private reflector;
     private unifiedModulesHost;
     constructor(reflector: ReflectionHost, unifiedModulesHost: UnifiedModulesHost);
-    emit(ref: Reference<ts.Node>, context: ts.SourceFile): Expression | null;
+    emit(ref: Reference, context: ts.SourceFile): EmittedReference | null;
 }
+export {};

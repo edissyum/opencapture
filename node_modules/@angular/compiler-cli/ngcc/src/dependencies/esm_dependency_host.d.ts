@@ -7,7 +7,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import * as ts from 'typescript';
-import { AbsoluteFsPath, FileSystem } from '../../../src/ngtsc/file_system';
+import { AbsoluteFsPath, ReadonlyFileSystem } from '../../../src/ngtsc/file_system';
 import { DependencyHostBase } from './dependency_host';
 import { ModuleResolver } from './module_resolver';
 /**
@@ -15,7 +15,7 @@ import { ModuleResolver } from './module_resolver';
  */
 export declare class EsmDependencyHost extends DependencyHostBase {
     private scanImportExpressions;
-    constructor(fs: FileSystem, moduleResolver: ModuleResolver, scanImportExpressions?: boolean);
+    constructor(fs: ReadonlyFileSystem, moduleResolver: ModuleResolver, scanImportExpressions?: boolean);
     private scanner;
     protected canSkipFile(fileContents: string): boolean;
     /**

@@ -30,7 +30,6 @@ var Style;
 var ViewEncapsulation;
 (function (ViewEncapsulation) {
     ViewEncapsulation["Emulated"] = "Emulated";
-    ViewEncapsulation["Native"] = "Native";
     ViewEncapsulation["None"] = "None";
     ViewEncapsulation["ShadowDom"] = "ShadowDom";
 })(ViewEncapsulation = exports.ViewEncapsulation || (exports.ViewEncapsulation = {}));

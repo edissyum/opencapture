@@ -3,6 +3,7 @@ import { AbsoluteFsPath, FileSystem, PathSegment } from '../../../src/ngtsc/file
 import { Logger } from '../../../src/ngtsc/logging';
 import { EntryPointWithDependencies } from '../dependencies/dependency_host';
 import { NgccConfiguration } from './configuration';
+import { PackageJsonFormatProperties } from './entry_point';
 /**
  * Manages reading and writing a manifest file that contains a list of all the entry-points that
  * were found below a given basePath.
@@ -73,3 +74,7 @@ export interface EntryPointManifestFile {
     lockFileHash: string;
     entryPointPaths: EntryPointPaths[];
 }
+/** The JSON format of the entrypoint properties. */
+export declare type NewEntryPointPropertiesMap = {
+    [Property in PackageJsonFormatProperties as `${Property}_ivy_ngcc`]?: string;
+};

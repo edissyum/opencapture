@@ -37,12 +37,3 @@ export declare function getBasePaths(logger: Logger, sourceDirectory: AbsoluteFs
  * @returns The result of calling `task`.
  */
 export declare function trackDuration<T = void>(task: () => T extends Promise<unknown> ? never : T, log: (duration: number) => void): T;
-/**
- * Remove paths that are contained by other paths.
- *
- * For example:
- * Given `['a/b/c', 'a/b/x', 'a/b', 'd/e', 'd/f']` we will end up with `['a/b', 'd/e', 'd/f]`.
- * (Note that we do not get `d` even though `d/e` and `d/f` share a base directory, since `d` is not
- * one of the base paths.)
- */
-export declare function dedupePaths(paths: AbsoluteFsPath[]): AbsoluteFsPath[];

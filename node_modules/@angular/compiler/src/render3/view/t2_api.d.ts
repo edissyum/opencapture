@@ -55,6 +55,7 @@ export interface DirectiveMeta {
      * Null otherwise
      */
     exportAs: string[] | null;
+    isStructural: boolean;
 }
 /**
  * Interface to the binding API, which processes a template and returns an object similar to the

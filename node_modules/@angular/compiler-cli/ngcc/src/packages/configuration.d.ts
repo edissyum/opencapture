@@ -1,5 +1,5 @@
 /// <amd-module name="@angular/compiler-cli/ngcc/src/packages/configuration" />
-import { AbsoluteFsPath, FileSystem } from '../../../src/ngtsc/file_system';
+import { AbsoluteFsPath, PathManipulation, ReadonlyFileSystem } from '../../../src/ngtsc/file_system';
 import { PackageJsonFormatPropertiesMap } from './entry_point';
 /**
  * The format of a project level configuration file.
@@ -123,7 +123,7 @@ export declare class ProcessedNgccPackageConfig implements Omit<RawNgccPackageCo
      * displaying a warning.
      */
     ignorableDeepImportMatchers: RegExp[];
-    constructor(packagePath: AbsoluteFsPath, { entryPoints, ignorableDeepImportMatchers, }: RawNgccPackageConfig);
+    constructor(fs: PathManipulation, packagePath: AbsoluteFsPath, { entryPoints, ignorableDeepImportMatchers, }: RawNgccPackageConfig);
 }
 /**
  * Ngcc has a hierarchical configuration system that lets us "fix up" packages that do not
@@ -155,7 +155,7 @@ export declare class NgccConfiguration {
     private projectConfig;
     private cache;
     readonly hash: string;
-    constructor(fs: FileSystem, baseDir: AbsoluteFsPath);
+    constructor(fs: ReadonlyFileSystem, baseDir: AbsoluteFsPath);
     /**
      * Get the configuration options for locking the ngcc process.
      */

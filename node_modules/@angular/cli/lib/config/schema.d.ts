@@ -18,6 +18,7 @@ export interface CliOptions {
      * Share anonymous usage data with the Angular Team at Google.
      */
     analytics?: Analytics;
+    analyticsSharing?: AnalyticsSharing;
     /**
      * The default schematics collection to use.
      */
@@ -35,6 +36,16 @@ export interface CliOptions {
  * Share anonymous usage data with the Angular Team at Google.
  */
 export declare type Analytics = boolean | string;
+export interface AnalyticsSharing {
+    /**
+     * Analytics sharing info tracking ID.
+     */
+    tracking?: string;
+    /**
+     * Analytics sharing info universally unique identifier.
+     */
+    uuid?: string;
+}
 /**
  * Specify which package manager tool to use.
  */

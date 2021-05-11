@@ -8,7 +8,7 @@
 /// <amd-module name="@angular/compiler-cli/src/ngtsc/annotations/src/util" />
 import { Expression, ParseSourceSpan, R3DependencyMetadata, R3Reference, WrappedNodeExpr } from '@angular/compiler';
 import * as ts from 'typescript';
-import { DefaultImportRecorder, Reference, ReferenceEmitter } from '../../imports';
+import { Reference, ReferenceEmitter } from '../../imports';
 import { ForeignFunctionResolver, PartialEvaluator } from '../../partial_evaluator';
 import { ClassDeclaration, CtorParameter, Decorator, Import, ImportedTypeValueReference, LocalTypeValueReference, ReflectionHost, TypeValueReference, UnavailableValue } from '../../reflection';
 import { DeclarationData } from '../../scope';
@@ -23,7 +23,7 @@ export interface ConstructorDepError {
     param: CtorParameter;
     reason: UnavailableValue;
 }
-export declare function getConstructorDependencies(clazz: ClassDeclaration, reflector: ReflectionHost, defaultImportRecorder: DefaultImportRecorder, isCore: boolean): ConstructorDeps | null;
+export declare function getConstructorDependencies(clazz: ClassDeclaration, reflector: ReflectionHost, isCore: boolean): ConstructorDeps | null;
 /**
  * Convert a `TypeValueReference` to an `Expression` which refers to the type as a value.
  *
@@ -31,8 +31,8 @@ export declare function getConstructorDependencies(clazz: ClassDeclaration, refl
  * references are converted to an `ExternalExpr`. Note that this is only valid in the context of the
  * file in which the `TypeValueReference` originated.
  */
-export declare function valueReferenceToExpression(valueRef: LocalTypeValueReference | ImportedTypeValueReference, defaultImportRecorder: DefaultImportRecorder): Expression;
-export declare function valueReferenceToExpression(valueRef: TypeValueReference, defaultImportRecorder: DefaultImportRecorder): Expression | null;
+export declare function valueReferenceToExpression(valueRef: LocalTypeValueReference | ImportedTypeValueReference): Expression;
+export declare function valueReferenceToExpression(valueRef: TypeValueReference): Expression | null;
 /**
  * Convert `ConstructorDeps` into the `R3DependencyMetadata` array for those deps if they're valid,
  * or into an `'invalid'` signal if they're not.
@@ -40,7 +40,7 @@ export declare function valueReferenceToExpression(valueRef: TypeValueReference,
  * This is a companion function to `validateConstructorDependencies` which accepts invalid deps.
  */
 export declare function unwrapConstructorDependencies(deps: ConstructorDeps | null): R3DependencyMetadata[] | 'invalid' | null;
-export declare function getValidConstructorDependencies(clazz: ClassDeclaration, reflector: ReflectionHost, defaultImportRecorder: DefaultImportRecorder, isCore: boolean): R3DependencyMetadata[] | null;
+export declare function getValidConstructorDependencies(clazz: ClassDeclaration, reflector: ReflectionHost, isCore: boolean): R3DependencyMetadata[] | null;
 /**
  * Validate that `ConstructorDeps` does not have any invalid dependencies and convert them into the
  * `R3DependencyMetadata` array if so, or raise a diagnostic if some deps are invalid.

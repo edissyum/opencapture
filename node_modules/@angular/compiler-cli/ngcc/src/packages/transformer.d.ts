@@ -8,7 +8,7 @@
  */
 import * as ts from 'typescript';
 import { ParsedConfiguration } from '../../..';
-import { FileSystem } from '../../../src/ngtsc/file_system';
+import { ReadonlyFileSystem } from '../../../src/ngtsc/file_system';
 import { Logger } from '../../../src/ngtsc/logging';
 import { ModuleWithProvidersAnalyses } from '../analysis/module_with_providers_analyzer';
 import { ExportInfo } from '../analysis/private_declarations_analyzer';
@@ -51,7 +51,7 @@ export declare class Transformer {
     private fs;
     private logger;
     private tsConfig;
-    constructor(fs: FileSystem, logger: Logger, tsConfig?: ParsedConfiguration | null);
+    constructor(fs: ReadonlyFileSystem, logger: Logger, tsConfig?: ParsedConfiguration | null);
     /**
      * Transform the source (and typings) files of a bundle.
      * @param bundle the bundle to transform.

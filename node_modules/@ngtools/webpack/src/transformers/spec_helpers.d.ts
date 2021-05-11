@@ -1,6 +1,6 @@
 import * as ts from 'typescript';
 import { WebpackCompilerHost } from '../compiler_host';
-export declare function createTypescriptContext(content: string, additionalFiles?: Record<string, string>, useLibs?: boolean, extraCompilerOptions?: ts.CompilerOptions): {
+export declare function createTypescriptContext(content: string, additionalFiles?: Record<string, string>, useLibs?: boolean, extraCompilerOptions?: ts.CompilerOptions, jsxFile?: boolean): {
     compilerHost: WebpackCompilerHost;
     program: ts.Program;
 };

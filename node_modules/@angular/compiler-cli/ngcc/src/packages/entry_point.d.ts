@@ -1,5 +1,5 @@
 /// <amd-module name="@angular/compiler-cli/ngcc/src/packages/entry_point" />
-import { AbsoluteFsPath, FileSystem } from '../../../src/ngtsc/file_system';
+import { AbsoluteFsPath, ReadonlyFileSystem } from '../../../src/ngtsc/file_system';
 import { Logger } from '../../../src/ngtsc/logging';
 import { NgccConfiguration } from './configuration';
 /**
@@ -100,7 +100,7 @@ export declare type GetEntryPointResult = EntryPoint | typeof IGNORED_ENTRY_POIN
  * - `INCOMPATIBLE_ENTRY_POINT` when there is a package.json but it is not a valid Angular compiled
  *   entry-point.
  */
-export declare function getEntryPointInfo(fs: FileSystem, config: NgccConfiguration, logger: Logger, packagePath: AbsoluteFsPath, entryPointPath: AbsoluteFsPath): GetEntryPointResult;
+export declare function getEntryPointInfo(fs: ReadonlyFileSystem, config: NgccConfiguration, logger: Logger, packagePath: AbsoluteFsPath, entryPointPath: AbsoluteFsPath): GetEntryPointResult;
 export declare function isEntryPoint(result: GetEntryPointResult): result is EntryPoint;
 /**
  * Convert a package.json property into an entry-point format.
@@ -108,4 +108,4 @@ export declare function isEntryPoint(result: GetEntryPointResult): result is Ent
  * @param property The property to convert to a format.
  * @returns An entry-point format or `undefined` if none match the given property.
  */
-export declare function getEntryPointFormat(fs: FileSystem, entryPoint: EntryPoint, property: EntryPointJsonProperty): EntryPointFormat | undefined;
+export declare function getEntryPointFormat(fs: ReadonlyFileSystem, entryPoint: EntryPoint, property: EntryPointJsonProperty): EntryPointFormat | undefined;

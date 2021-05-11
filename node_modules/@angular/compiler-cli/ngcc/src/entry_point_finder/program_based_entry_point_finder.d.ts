@@ -6,7 +6,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { AbsoluteFsPath, FileSystem } from '../../../src/ngtsc/file_system';
+import { AbsoluteFsPath, ReadonlyFileSystem } from '../../../src/ngtsc/file_system';
 import { Logger } from '../../../src/ngtsc/logging';
 import { ParsedConfiguration } from '../../../src/perform_compile';
 import { EntryPointWithDependencies } from '../dependencies/dependency_host';
@@ -27,7 +27,7 @@ export declare class ProgramBasedEntryPointFinder extends TracingEntryPointFinde
     private entryPointManifest;
     private tsConfig;
     private entryPointsWithDependencies;
-    constructor(fs: FileSystem, config: NgccConfiguration, logger: Logger, resolver: DependencyResolver, entryPointCollector: EntryPointCollector, entryPointManifest: EntryPointManifest, basePath: AbsoluteFsPath, tsConfig: ParsedConfiguration, projectPath: AbsoluteFsPath);
+    constructor(fs: ReadonlyFileSystem, config: NgccConfiguration, logger: Logger, resolver: DependencyResolver, entryPointCollector: EntryPointCollector, entryPointManifest: EntryPointManifest, basePath: AbsoluteFsPath, tsConfig: ParsedConfiguration, projectPath: AbsoluteFsPath);
     /**
      * Return an array containing the external import paths that were extracted from the source-files
      * of the program defined by the tsconfig.json.

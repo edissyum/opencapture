@@ -9,3 +9,4 @@ export * from './src/tooling';
 export { CompilerOptions as AngularCompilerOptions } from './src/transformers/api';
 export { ngToTsDiagnostic } from './src/transformers/util';
 export { NgTscPlugin } from './src/ngtsc/tsc_plugin';
+export { NgtscProgram } from './src/ngtsc/program';

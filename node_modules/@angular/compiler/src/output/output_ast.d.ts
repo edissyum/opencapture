@@ -210,6 +210,14 @@ export declare class InvokeFunctionExpr extends Expression {
     isConstant(): boolean;
     visitExpression(visitor: ExpressionVisitor, context: any): any;
 }
+export declare class TaggedTemplateExpr extends Expression {
+    tag: Expression;
+    template: TemplateLiteral;
+    constructor(tag: Expression, template: TemplateLiteral, type?: Type | null, sourceSpan?: ParseSourceSpan | null);
+    isEquivalent(e: Expression): boolean;
+    isConstant(): boolean;
+    visitExpression(visitor: ExpressionVisitor, context: any): any;
+}
 export declare class InstantiateExpr extends Expression {
     classExpr: Expression;
     args: Expression[];
@@ -224,6 +232,17 @@ export declare class LiteralExpr extends Expression {
     isEquivalent(e: Expression): boolean;
     isConstant(): boolean;
     visitExpression(visitor: ExpressionVisitor, context: any): any;
+}
+export declare class TemplateLiteral {
+    elements: TemplateLiteralElement[];
+    expressions: Expression[];
+    constructor(elements: TemplateLiteralElement[], expressions: Expression[]);
+}
+export declare class TemplateLiteralElement {
+    text: string;
+    sourceSpan?: ParseSourceSpan | undefined;
+    rawText: string;
+    constructor(text: string, sourceSpan?: ParseSourceSpan | undefined, rawText?: string);
 }
 export declare abstract class MessagePiece {
     text: string;
@@ -405,6 +424,7 @@ export interface ExpressionVisitor {
     visitWritePropExpr(expr: WritePropExpr, context: any): any;
     visitInvokeMethodExpr(ast: InvokeMethodExpr, context: any): any;
     visitInvokeFunctionExpr(ast: InvokeFunctionExpr, context: any): any;
+    visitTaggedTemplateExpr(ast: TaggedTemplateExpr, context: any): any;
     visitInstantiateExpr(ast: InstantiateExpr, context: any): any;
     visitLiteralExpr(ast: LiteralExpr, context: any): any;
     visitLocalizedString(ast: LocalizedString, context: any): any;
@@ -569,6 +589,7 @@ export declare class AstTransformer implements StatementVisitor, ExpressionVisit
     visitWritePropExpr(expr: WritePropExpr, context: any): any;
     visitInvokeMethodExpr(ast: InvokeMethodExpr, context: any): any;
     visitInvokeFunctionExpr(ast: InvokeFunctionExpr, context: any): any;
+    visitTaggedTemplateExpr(ast: TaggedTemplateExpr, context: any): any;
     visitInstantiateExpr(ast: InstantiateExpr, context: any): any;
     visitLiteralExpr(ast: LiteralExpr, context: any): any;
     visitLocalizedString(ast: LocalizedString, context: any): any;
@@ -585,7 +606,7 @@ export declare class AstTransformer implements StatementVisitor, ExpressionVisit
     visitLiteralArrayExpr(ast: LiteralArrayExpr, context: any): any;
     visitLiteralMapExpr(ast: LiteralMapExpr, context: any): any;
     visitCommaExpr(ast: CommaExpr, context: any): any;
-    visitAllExpressions(exprs: Expression[], context: any): Expression[];
+    visitAllExpressions<T extends Expression>(exprs: T[], context: any): T[];
     visitDeclareVarStmt(stmt: DeclareVarStmt, context: any): any;
     visitDeclareFunctionStmt(stmt: DeclareFunctionStmt, context: any): any;
     visitExpressionStmt(stmt: ExpressionStatement, context: any): any;
@@ -611,6 +632,7 @@ export declare class RecursiveAstVisitor implements StatementVisitor, Expression
     visitWritePropExpr(ast: WritePropExpr, context: any): any;
     visitInvokeMethodExpr(ast: InvokeMethodExpr, context: any): any;
     visitInvokeFunctionExpr(ast: InvokeFunctionExpr, context: any): any;
+    visitTaggedTemplateExpr(ast: TaggedTemplateExpr, context: any): any;
     visitInstantiateExpr(ast: InstantiateExpr, context: any): any;
     visitLiteralExpr(ast: LiteralExpr, context: any): any;
     visitLocalizedString(ast: LocalizedString, context: any): any;
@@ -660,6 +682,7 @@ export declare function not(expr: Expression, sourceSpan?: ParseSourceSpan | nul
 export declare function assertNotNull(expr: Expression, sourceSpan?: ParseSourceSpan | null): AssertNotNull;
 export declare function fn(params: FnParam[], body: Statement[], type?: Type | null, sourceSpan?: ParseSourceSpan | null, name?: string | null): FunctionExpr;
 export declare function ifStmt(condition: Expression, thenClause: Statement[], elseClause?: Statement[], sourceSpan?: ParseSourceSpan, leadingComments?: LeadingComment[]): IfStmt;
+export declare function taggedTemplate(tag: Expression, template: TemplateLiteral, type?: Type | null, sourceSpan?: ParseSourceSpan | null): TaggedTemplateExpr;
 export declare function literal(value: any, type?: Type | null, sourceSpan?: ParseSourceSpan | null): LiteralExpr;
 export declare function localizedString(metaBlock: I18nMeta, messageParts: LiteralPiece[], placeholderNames: PlaceholderPiece[], expressions: Expression[], sourceSpan?: ParseSourceSpan | null): LocalizedString;
 export declare function isNull(exp: Expression): boolean;

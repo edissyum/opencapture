@@ -39,6 +39,7 @@ export declare class SymbolBuilder {
     private getDirectiveSymbolForAccessExpression;
     private getSymbolOfVariable;
     private getSymbolOfReference;
+    private getSymbolOfPipe;
     private getSymbolOfTemplateExpression;
     private getSymbolOfTsNode;
     private getShimPositionForNode;

@@ -46,6 +46,8 @@ export interface Schema {
  * @deprecated Use 'format' option instead.
  */
 export declare enum Format {
+    Arb = "arb",
+    Json = "json",
     Xlf = "xlf",
     Xlf2 = "xlf2",
     Xlif = "xlif",

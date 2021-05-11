@@ -1,4 +1,12 @@
 /// <amd-module name="@angular/compiler-cli/ngcc/src/rendering/commonjs_rendering_formatter" />
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+import { PathManipulation } from '@angular/compiler-cli/src/ngtsc/file_system';
 import MagicString from 'magic-string';
 import * as ts from 'typescript';
 import { Reexport } from '../../../src/ngtsc/imports';
@@ -13,7 +21,7 @@ import { Esm5RenderingFormatter } from './esm5_rendering_formatter';
  */
 export declare class CommonJsRenderingFormatter extends Esm5RenderingFormatter {
     protected commonJsHost: NgccReflectionHost;
-    constructor(commonJsHost: NgccReflectionHost, isCore: boolean);
+    constructor(fs: PathManipulation, commonJsHost: NgccReflectionHost, isCore: boolean);
     /**
      *  Add the imports below any in situ imports as `require` calls.
      */

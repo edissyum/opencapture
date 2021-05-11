@@ -13,12 +13,12 @@ export declare class XmlTagDefinition implements TagDefinition {
     };
     parentToAdd: string;
     implicitNamespacePrefix: string;
-    contentType: TagContentType;
     isVoid: boolean;
     ignoreFirstLf: boolean;
     canSelfClose: boolean;
     preventNamespaceInheritance: boolean;
     requireExtraParent(currentParent: string): boolean;
     isClosedByChild(name: string): boolean;
+    getContentType(): TagContentType;
 }
 export declare function getXmlTagDefinition(tagName: string): XmlTagDefinition;

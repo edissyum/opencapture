@@ -64,9 +64,6 @@ export declare class AotCompiler {
     private _externalIdentifierReferences;
     private _createTypeCheckBlock;
     emitMessageBundle(analyzeResult: NgAnalyzedModules, locale: string | null): MessageBundle;
-    emitAllPartialModules({ ngModuleByPipeOrDirective, files }: NgAnalyzedModules, r3Files: NgAnalyzedFileWithInjectables[]): PartialModule[];
-    private _compileShallowModules;
-    private _compilePartialModule;
     emitAllPartialModules2(files: NgAnalyzedFileWithInjectables[]): PartialModule[];
     private _emitPartialModule2;
     emitAllImpls(analyzeResult: NgAnalyzedModules): GeneratedFile[];

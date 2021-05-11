@@ -91,6 +91,7 @@ export interface CompileQueryMetadata {
     propertyName: string;
     read: CompileTokenMetadata;
     static?: boolean;
+    emitDistinctChangesOnly?: boolean;
 }
 /**
  * Metadata about a stylesheet

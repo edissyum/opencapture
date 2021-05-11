@@ -7,7 +7,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import * as ts from 'typescript';
-import { AbsoluteFsPath, FileSystem } from '../../../src/ngtsc/file_system';
+import { AbsoluteFsPath, ReadonlyFileSystem } from '../../../src/ngtsc/file_system';
 /**
  * A cache that holds on to source files that can be shared for processing all entry-points in a
  * single invocation of ngcc. In particular, the following files are shared across all entry-points
@@ -29,7 +29,7 @@ import { AbsoluteFsPath, FileSystem } from '../../../src/ngtsc/file_system';
 export declare class SharedFileCache {
     private fs;
     private sfCache;
-    constructor(fs: FileSystem);
+    constructor(fs: ReadonlyFileSystem);
     /**
      * Loads a `ts.SourceFile` if the provided `fileName` is deemed appropriate to be cached. To
      * optimize for memory usage, only files that are generally used in all entry-points are cached.
@@ -60,7 +60,7 @@ export declare class SharedFileCache {
  * @param absPath The path for which to determine if it corresponds with a default library file.
  * @param fs The filesystem to use for inspecting the path.
  */
-export declare function isDefaultLibrary(absPath: AbsoluteFsPath, fs: FileSystem): boolean;
+export declare function isDefaultLibrary(absPath: AbsoluteFsPath, fs: ReadonlyFileSystem): boolean;
 /**
  * Determines whether the provided path corresponds with a .d.ts file inside of an @angular
  * scoped package. This logic only accounts for the .d.ts files in the root, which is sufficient
@@ -69,7 +69,7 @@ export declare function isDefaultLibrary(absPath: AbsoluteFsPath, fs: FileSystem
  * @param absPath The path for which to determine if it corresponds with an @angular .d.ts file.
  * @param fs The filesystem to use for inspecting the path.
  */
-export declare function isAngularDts(absPath: AbsoluteFsPath, fs: FileSystem): boolean;
+export declare function isAngularDts(absPath: AbsoluteFsPath, fs: ReadonlyFileSystem): boolean;
 /**
  * A cache for processing a single entry-point. This exists to share `ts.SourceFile`s between the
  * source and typing programs that are created for a single program.
@@ -78,7 +78,7 @@ export declare class EntryPointFileCache {
     private fs;
     private sharedFileCache;
     private readonly sfCache;
-    constructor(fs: FileSystem, sharedFileCache: SharedFileCache);
+    constructor(fs: ReadonlyFileSystem, sharedFileCache: SharedFileCache);
     /**
      * Returns and caches a parsed `ts.SourceFile` for the provided `fileName`. If the `fileName` is
      * cached in the shared file cache, that result is used. Otherwise, the source file is cached
@@ -94,4 +94,4 @@ export declare class EntryPointFileCache {
  *
  * @param fs The filesystem to use for path operations.
  */
-export declare function createModuleResolutionCache(fs: FileSystem): ts.ModuleResolutionCache;
+export declare function createModuleResolutionCache(fs: ReadonlyFileSystem): ts.ModuleResolutionCache;

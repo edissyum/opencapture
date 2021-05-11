@@ -7,7 +7,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import * as ts from 'typescript';
-import { AbsoluteFsPath, FileSystem } from '../../../src/ngtsc/file_system';
+import { AbsoluteFsPath, ReadonlyFileSystem } from '../../../src/ngtsc/file_system';
 /**
  * An entry point bundle contains one or two programs, e.g. `src` and `dts`,
  * that are compiled via TypeScript.
@@ -29,8 +29,8 @@ export interface BundleProgram {
 /**
  * Create a bundle program.
  */
-export declare function makeBundleProgram(fs: FileSystem, isCore: boolean, pkg: AbsoluteFsPath, path: AbsoluteFsPath, r3FileName: string, options: ts.CompilerOptions, host: ts.CompilerHost, additionalFiles?: AbsoluteFsPath[]): BundleProgram;
+export declare function makeBundleProgram(fs: ReadonlyFileSystem, isCore: boolean, pkg: AbsoluteFsPath, path: AbsoluteFsPath, r3FileName: string, options: ts.CompilerOptions, host: ts.CompilerHost, additionalFiles?: AbsoluteFsPath[]): BundleProgram;
 /**
  * Search the given directory hierarchy to find the path to the `r3_symbols` file.
  */
-export declare function findR3SymbolsPath(fs: FileSystem, directory: AbsoluteFsPath, filename: string): AbsoluteFsPath | null;
+export declare function findR3SymbolsPath(fs: ReadonlyFileSystem, directory: AbsoluteFsPath, filename: string): AbsoluteFsPath | null;

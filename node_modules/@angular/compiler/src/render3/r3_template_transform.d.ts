@@ -15,5 +15,10 @@ export interface Render3ParseResult {
     styles: string[];
     styleUrls: string[];
     ngContentSelectors: string[];
+    commentNodes?: t.Comment[];
 }
-export declare function htmlAstToRender3Ast(htmlNodes: html.Node[], bindingParser: BindingParser): Render3ParseResult;
+interface Render3ParseOptions {
+    collectCommentNodes: boolean;
+}
+export declare function htmlAstToRender3Ast(htmlNodes: html.Node[], bindingParser: BindingParser, options: Render3ParseOptions): Render3ParseResult;
+export {};

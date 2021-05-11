@@ -8,6 +8,7 @@
 import * as i18n from '../../../i18n/i18n_ast';
 import * as html from '../../../ml_parser/ast';
 import { InterpolationConfig } from '../../../ml_parser/interpolation_config';
+import { ParseTreeResult } from '../../../ml_parser/parser';
 import * as o from '../../../output/output_ast';
 export declare type I18nMeta = {
     id?: string;
@@ -26,9 +27,11 @@ export declare class I18nMetaVisitor implements html.Visitor {
     private keepI18nAttrs;
     private enableI18nLegacyMessageIdFormat;
     hasI18nMeta: boolean;
+    private _errors;
     private _createI18nMessage;
     constructor(interpolationConfig?: InterpolationConfig, keepI18nAttrs?: boolean, enableI18nLegacyMessageIdFormat?: boolean);
     private _generateI18nMessage;
+    visitAllWithErrors(nodes: html.Node[]): ParseTreeResult;
     visitElement(element: html.Element): any;
     visitExpansion(expansion: html.Expansion, currentMessage: i18n.Message | undefined): any;
     visitText(text: html.Text): any;
@@ -59,6 +62,7 @@ export declare class I18nMetaVisitor implements html.Visitor {
      * @param meta information about the message being processed
      */
     private _setLegacyIds;
+    private _reportError;
 }
 /**
  * Parses i18n metas like:

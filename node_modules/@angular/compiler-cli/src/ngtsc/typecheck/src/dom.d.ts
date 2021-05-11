@@ -9,7 +9,7 @@
 import { ParseSourceSpan, SchemaMetadata, TmplAstElement } from '@angular/compiler';
 import { TemplateId } from '../api';
 import { TemplateDiagnostic } from '../diagnostics';
-import { TemplateSourceResolver } from './diagnostics';
+import { TemplateSourceResolver } from './tcb_util';
 /**
  * Checks every non-Angular element/property processed in a template and potentially produces
  * `ts.Diagnostic`s related to improper usage.

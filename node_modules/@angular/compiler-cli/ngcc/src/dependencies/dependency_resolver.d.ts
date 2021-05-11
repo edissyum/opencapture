@@ -7,7 +7,7 @@
  */
 /// <amd-module name="@angular/compiler-cli/ngcc/src/dependencies/dependency_resolver" />
 import { DepGraph } from 'dependency-graph';
-import { FileSystem } from '../../../src/ngtsc/file_system';
+import { ReadonlyFileSystem } from '../../../src/ngtsc/file_system';
 import { Logger } from '../../../src/ngtsc/logging';
 import { NgccConfiguration } from '../packages/configuration';
 import { EntryPoint, EntryPointFormat } from '../packages/entry_point';
@@ -78,7 +78,7 @@ export declare class DependencyResolver {
     private config;
     private hosts;
     private typingsHost;
-    constructor(fs: FileSystem, logger: Logger, config: NgccConfiguration, hosts: Partial<Record<EntryPointFormat, DependencyHost>>, typingsHost: DependencyHost);
+    constructor(fs: ReadonlyFileSystem, logger: Logger, config: NgccConfiguration, hosts: Partial<Record<EntryPointFormat, DependencyHost>>, typingsHost: DependencyHost);
     /**
      * Sort the array of entry points so that the dependant entry points always come later than
      * their dependencies in the array.

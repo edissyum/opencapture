@@ -6,7 +6,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { AbsoluteFsPath, FileSystem } from '../../../../src/ngtsc/file_system';
+import { AbsoluteFsPath, FileSystem, ReadonlyFileSystem } from '../../../../src/ngtsc/file_system';
 import { EntryPoint } from '../../packages/entry_point';
 import { CleaningStrategy } from './cleaning_strategies';
 /**
@@ -15,7 +15,7 @@ import { CleaningStrategy } from './cleaning_strategies';
 export declare class PackageCleaner {
     private fs;
     private cleaners;
-    constructor(fs: FileSystem, cleaners: CleaningStrategy[]);
+    constructor(fs: ReadonlyFileSystem, cleaners: CleaningStrategy[]);
     /**
      * Recurse through the file-system cleaning files and directories as determined by the configured
      * cleaning-strategies.

@@ -6,5 +6,5 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <amd-module name="@angular/compiler-cli/src/ngtsc/cycles" />
-export { CycleAnalyzer } from './src/analyzer';
+export { Cycle, CycleAnalyzer, CycleHandlingStrategy } from './src/analyzer';
 export { ImportGraph } from './src/imports';

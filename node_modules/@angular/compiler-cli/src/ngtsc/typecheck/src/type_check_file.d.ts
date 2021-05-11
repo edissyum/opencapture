@@ -14,6 +14,7 @@ import { TypeCheckBlockMetadata, TypeCheckingConfig } from '../api';
 import { DomSchemaChecker } from './dom';
 import { Environment } from './environment';
 import { OutOfBandDiagnosticRecorder } from './oob';
+import { TcbGenericContextBehavior } from './type_check_block';
 /**
  * An `Environment` representing the single type-checking file into which most (if not all) Type
  * Check Blocks (TCBs) will be generated.
@@ -27,8 +28,8 @@ export declare class TypeCheckFile extends Environment {
     private nextTcbId;
     private tcbStatements;
     constructor(fileName: AbsoluteFsPath, config: TypeCheckingConfig, refEmitter: ReferenceEmitter, reflector: ReflectionHost, compilerHost: Pick<ts.CompilerHost, 'getCanonicalFileName'>);
-    addTypeCheckBlock(ref: Reference<ClassDeclaration<ts.ClassDeclaration>>, meta: TypeCheckBlockMetadata, domSchemaChecker: DomSchemaChecker, oobRecorder: OutOfBandDiagnosticRecorder): void;
-    render(): string;
+    addTypeCheckBlock(ref: Reference<ClassDeclaration<ts.ClassDeclaration>>, meta: TypeCheckBlockMetadata, domSchemaChecker: DomSchemaChecker, oobRecorder: OutOfBandDiagnosticRecorder, genericContextBehavior: TcbGenericContextBehavior): void;
+    render(removeComments: boolean): string;
     getPreludeStatements(): ts.Statement[];
 }
 export declare function typeCheckFilePath(rootDirs: AbsoluteFsPath[]): AbsoluteFsPath;

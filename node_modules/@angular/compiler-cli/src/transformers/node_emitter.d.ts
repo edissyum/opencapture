@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <amd-module name="@angular/compiler-cli/src/transformers/node_emitter" />
-import { AssertNotNull, BinaryOperatorExpr, CastExpr, ClassStmt, CommaExpr, ConditionalExpr, DeclareFunctionStmt, DeclareVarStmt, ExpressionStatement, ExpressionVisitor, ExternalExpr, FunctionExpr, IfStmt, InstantiateExpr, InvokeFunctionExpr, InvokeMethodExpr, LiteralArrayExpr, LiteralExpr, LiteralMapExpr, LocalizedString, NotExpr, ParseSourceSpan, PartialModule, ReadKeyExpr, ReadPropExpr, ReadVarExpr, ReturnStatement, Statement, StatementVisitor, ThrowStmt, TryCatchStmt, TypeofExpr, UnaryOperatorExpr, WrappedNodeExpr, WriteKeyExpr, WritePropExpr, WriteVarExpr } from '@angular/compiler';
+import { AssertNotNull, BinaryOperatorExpr, CastExpr, ClassStmt, CommaExpr, ConditionalExpr, DeclareFunctionStmt, DeclareVarStmt, ExpressionStatement, ExpressionVisitor, ExternalExpr, FunctionExpr, IfStmt, InstantiateExpr, InvokeFunctionExpr, InvokeMethodExpr, LiteralArrayExpr, LiteralExpr, LiteralMapExpr, LocalizedString, NotExpr, ParseSourceSpan, PartialModule, ReadKeyExpr, ReadPropExpr, ReadVarExpr, ReturnStatement, Statement, StatementVisitor, TaggedTemplateExpr, ThrowStmt, TryCatchStmt, TypeofExpr, UnaryOperatorExpr, WrappedNodeExpr, WriteKeyExpr, WritePropExpr, WriteVarExpr } from '@angular/compiler';
 import * as ts from 'typescript';
 export interface Node {
     sourceSpan: ParseSourceSpan | null;
@@ -83,6 +83,7 @@ export declare class NodeEmitterVisitor implements StatementVisitor, ExpressionV
     visitWritePropExpr(expr: WritePropExpr): RecordedNode<ts.BinaryExpression>;
     visitInvokeMethodExpr(expr: InvokeMethodExpr): RecordedNode<ts.CallExpression>;
     visitInvokeFunctionExpr(expr: InvokeFunctionExpr): RecordedNode<ts.CallExpression>;
+    visitTaggedTemplateExpr(expr: TaggedTemplateExpr): RecordedNode<ts.TaggedTemplateExpression>;
     visitInstantiateExpr(expr: InstantiateExpr): RecordedNode<ts.NewExpression>;
     visitLiteralExpr(expr: LiteralExpr): RecordedNode<ts.Identifier | ts.NullLiteral | ts.StringLiteral>;
     visitLocalizedString(expr: LocalizedString, context: any): void;

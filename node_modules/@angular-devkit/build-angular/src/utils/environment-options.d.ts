@@ -4,3 +4,4 @@ export declare const allowMinify: boolean;
 export declare const cachingDisabled: boolean;
 export declare const cachingBasePath: string | null;
 export declare const profilingEnabled: boolean;
+export declare const legacyIvyPluginEnabled: boolean;

@@ -26,15 +26,6 @@ export interface LocalModuleScope extends ExportScope {
     schemas: SchemaMetadata[];
 }
 /**
- * Information about the compilation scope of a registered declaration.
- */
-export interface CompilationScope extends ScopeData {
-    /** The declaration whose compilation scope is described here. */
-    declaration: ClassDeclaration;
-    /** The declaration of the NgModule that declares this `declaration`. */
-    ngModule: ClassDeclaration;
-}
-/**
  * A registry which collects information about NgModules, Directives, Components, and Pipes which
  * are local (declared in the ts.Program being compiled), and can produce `LocalModuleScope`s
  * which summarize the compilation scope of a component.
@@ -130,10 +121,6 @@ export declare class LocalModuleScopeRegistry implements MetadataRegistry, Compo
      * the given NgModule, or `null` if no errors were present.
      */
     getDiagnosticsOfModule(clazz: ClassDeclaration): ts.Diagnostic[] | null;
-    /**
-     * Returns a collection of the compilation scope for each registered declaration.
-     */
-    getCompilationScopes(): CompilationScope[];
     private registerDeclarationOfModule;
     /**
      * Implementation of `getScopeOfModule` which accepts a reference to a class.

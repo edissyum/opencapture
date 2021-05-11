@@ -7,15 +7,6 @@
  */
 /// <amd-module name="@angular/compiler-cli/src/ngtsc/translator/src/api/import_generator" />
 /**
- * Information about an import that has been added to a module.
- */
-export interface Import {
-    /** The name of the module that has been imported. */
-    specifier: string;
-    /** The alias of the imported module. */
-    qualifier: string;
-}
-/**
  * The symbol name and import namespace of an imported symbol,
  * which has been registered through the ImportGenerator.
  */

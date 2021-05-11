@@ -13,12 +13,12 @@ export declare enum TagContentType {
 export interface TagDefinition {
     closedByParent: boolean;
     implicitNamespacePrefix: string | null;
-    contentType: TagContentType;
     isVoid: boolean;
     ignoreFirstLf: boolean;
     canSelfClose: boolean;
     preventNamespaceInheritance: boolean;
     isClosedByChild(name: string): boolean;
+    getContentType(prefix?: string): TagContentType;
 }
 export declare function splitNsName(elementName: string): [string | null, string];
 export declare function isNgContainer(tagName: string): boolean;

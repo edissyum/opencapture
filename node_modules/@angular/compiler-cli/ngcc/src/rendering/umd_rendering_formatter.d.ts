@@ -1,6 +1,14 @@
 /// <amd-module name="@angular/compiler-cli/ngcc/src/rendering/umd_rendering_formatter" />
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
 import MagicString from 'magic-string';
 import * as ts from 'typescript';
+import { PathManipulation } from '../../../src/ngtsc/file_system';
 import { Reexport } from '../../../src/ngtsc/imports';
 import { Import, ImportManager } from '../../../src/ngtsc/translator';
 import { ExportInfo } from '../analysis/private_declarations_analyzer';
@@ -13,7 +21,7 @@ import { Esm5RenderingFormatter } from './esm5_rendering_formatter';
  */
 export declare class UmdRenderingFormatter extends Esm5RenderingFormatter {
     protected umdHost: UmdReflectionHost;
-    constructor(umdHost: UmdReflectionHost, isCore: boolean);
+    constructor(fs: PathManipulation, umdHost: UmdReflectionHost, isCore: boolean);
     /**
      * Add the imports to the UMD module IIFE.
      *

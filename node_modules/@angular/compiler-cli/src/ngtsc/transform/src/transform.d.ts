@@ -7,7 +7,8 @@
  */
 /// <amd-module name="@angular/compiler-cli/src/ngtsc/transform/src/transform" />
 import * as ts from 'typescript';
-import { DefaultImportRecorder, ImportRewriter } from '../../imports';
+import { DefaultImportTracker, ImportRewriter } from '../../imports';
+import { PerfRecorder } from '../../perf';
 import { ReflectionHost } from '../../reflection';
 import { TraitCompiler } from './compilation';
-export declare function ivyTransformFactory(compilation: TraitCompiler, reflector: ReflectionHost, importRewriter: ImportRewriter, defaultImportRecorder: DefaultImportRecorder, isCore: boolean, isClosureCompilerEnabled: boolean): ts.TransformerFactory<ts.SourceFile>;
+export declare function ivyTransformFactory(compilation: TraitCompiler, reflector: ReflectionHost, importRewriter: ImportRewriter, defaultImportTracker: DefaultImportTracker, perf: PerfRecorder, isCore: boolean, isClosureCompilerEnabled: boolean): ts.TransformerFactory<ts.SourceFile>;

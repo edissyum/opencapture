@@ -9,7 +9,7 @@
 import { AbsoluteSourceSpan, ParseSourceFile, ParseSourceSpan } from '@angular/compiler';
 import * as ts from 'typescript';
 import { TemplateId, TemplateSourceMapping } from '../api';
-import { TemplateSourceResolver } from './diagnostics';
+import { TemplateSourceResolver } from './tcb_util';
 /**
  * Represents the source of a template that was processed during type-checking. This information is
  * used when translating parse offsets in diagnostics back to their original line/column location.

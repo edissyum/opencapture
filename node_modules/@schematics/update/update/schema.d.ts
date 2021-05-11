@@ -1,9 +1,5 @@
 export interface Schema {
     /**
-     * When true, update all packages in `package.json`.
-     */
-    all?: boolean;
-    /**
      * When false (the default), reports an error if installed packages are incompatible with
      * the update.
      */

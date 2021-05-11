@@ -55,6 +55,7 @@ function createI18nOptions(metadata, inline) {
             throw new Error('Project i18n sourceLocale field is malformed. Expected a string.');
         }
         i18n.sourceLocale = rawSourceLocale;
+        i18n.hasDefinedSourceLocale = true;
     }
     i18n.locales[i18n.sourceLocale] = {
         files: [],
@@ -138,71 +139,76 @@ async function configureI18nBuild(context, options) {
         buildOptions.i18nFormat = undefined;
         buildOptions.i18nLocale = undefined;
     }
-    if (i18n.inlineLocales.size > 0) {
-        const projectRoot = path.join(context.workspaceRoot, metadata.root || '');
-        const localeDataBasePath = findLocaleDataBasePath(projectRoot);
-        if (!localeDataBasePath) {
-            throw new Error(`Unable to find locale data within '@angular/common'. Please ensure '@angular/common' is installed.`);
+    // No additional processing needed if no inlining requested and no source locale defined.
+    if (!i18n.shouldInline && !i18n.hasDefinedSourceLocale) {
+        return { buildOptions, i18n };
+    }
+    const projectRoot = path.join(context.workspaceRoot, metadata.root || '');
+    const localeDataBasePath = findLocaleDataBasePath(projectRoot);
+    if (!localeDataBasePath) {
+        throw new Error(`Unable to find locale data within '@angular/common'. Please ensure '@angular/common' is installed.`);
+    }
+    // Load locale data and translations (if present)
+    let loader;
+    const usedFormats = new Set();
+    for (const [locale, desc] of Object.entries(i18n.locales)) {
+        if (!i18n.inlineLocales.has(locale) && locale !== i18n.sourceLocale) {
+            continue;
         }
-        // Load locales
-        const loader = await load_translations_1.createTranslationLoader();
-        const usedFormats = new Set();
-        for (const [locale, desc] of Object.entries(i18n.locales)) {
-            if (!i18n.inlineLocales.has(locale)) {
-                continue;
-            }
-            let localeDataPath = findLocaleDataPath(locale, localeDataBasePath);
-            if (!localeDataPath) {
-                const [first] = locale.split('-');
-                if (first) {
-                    localeDataPath = findLocaleDataPath(first.toLowerCase(), localeDataBasePath);
-                    if (localeDataPath) {
-                        context.logger.warn(`Locale data for '${locale}' cannot be found.  Using locale data for '${first}'.`);
-                    }
+        let localeDataPath = findLocaleDataPath(locale, localeDataBasePath);
+        if (!localeDataPath) {
+            const [first] = locale.split('-');
+            if (first) {
+                localeDataPath = findLocaleDataPath(first.toLowerCase(), localeDataBasePath);
+                if (localeDataPath) {
+                    context.logger.warn(`Locale data for '${locale}' cannot be found.  Using locale data for '${first}'.`);
                 }
             }
-            if (!localeDataPath) {
-                context.logger.warn(`Locale data for '${locale}' cannot be found.  No locale data will be included for this locale.`);
-            }
-            else {
-                desc.dataPath = localeDataPath;
-            }
-            if (!desc.files.length) {
-                continue;
-            }
-            for (const file of desc.files) {
-                const loadResult = loader(path.join(context.workspaceRoot, file.path));
-                for (const diagnostics of loadResult.diagnostics.messages) {
-                    if (diagnostics.type === 'error') {
-                        throw new Error(`Error parsing translation file '${file.path}': ${diagnostics.message}`);
-                    }
-                    else {
-                        context.logger.warn(`WARNING [${file.path}]: ${diagnostics.message}`);
-                    }
-                }
-                if (loadResult.locale !== undefined && loadResult.locale !== locale) {
-                    context.logger.warn(`WARNING [${file.path}]: File target locale ('${loadResult.locale}') does not match configured locale ('${locale}')`);
-                }
-                usedFormats.add(loadResult.format);
-                if (usedFormats.size > 1 && tsConfig.options.enableI18nLegacyMessageIdFormat !== false) {
-                    // This limitation is only for legacy message id support (defaults to true as of 9.0)
-                    throw new Error('Localization currently only supports using one type of translation file format for the entire application.');
-                }
-                file.format = loadResult.format;
-                file.integrity = loadResult.integrity;
-                if (desc.translation) {
-                    // Merge translations
-                    for (const [id, message] of Object.entries(loadResult.translations)) {
-                        if (desc.translation[id] !== undefined) {
-                            context.logger.warn(`WARNING [${file.path}]: Duplicate translations for message '${id}' when merging`);
-                        }
-                        desc.translation[id] = message;
-                    }
+        }
+        if (!localeDataPath) {
+            context.logger.warn(`Locale data for '${locale}' cannot be found.  No locale data will be included for this locale.`);
+        }
+        else {
+            desc.dataPath = localeDataPath;
+        }
+        if (!desc.files.length) {
+            continue;
+        }
+        if (!loader) {
+            loader = await load_translations_1.createTranslationLoader();
+        }
+        for (const file of desc.files) {
+            const loadResult = loader(path.join(context.workspaceRoot, file.path));
+            for (const diagnostics of loadResult.diagnostics.messages) {
+                if (diagnostics.type === 'error') {
+                    throw new Error(`Error parsing translation file '${file.path}': ${diagnostics.message}`);
                 }
                 else {
-                    // First or only translation file
-                    desc.translation = loadResult.translations;
+                    context.logger.warn(`WARNING [${file.path}]: ${diagnostics.message}`);
                 }
+            }
+            if (loadResult.locale !== undefined && loadResult.locale !== locale) {
+                context.logger.warn(`WARNING [${file.path}]: File target locale ('${loadResult.locale}') does not match configured locale ('${locale}')`);
+            }
+            usedFormats.add(loadResult.format);
+            if (usedFormats.size > 1 && tsConfig.options.enableI18nLegacyMessageIdFormat !== false) {
+                // This limitation is only for legacy message id support (defaults to true as of 9.0)
+                throw new Error('Localization currently only supports using one type of translation file format for the entire application.');
+            }
+            file.format = loadResult.format;
+            file.integrity = loadResult.integrity;
+            if (desc.translation) {
+                // Merge translations
+                for (const [id, message] of Object.entries(loadResult.translations)) {
+                    if (desc.translation[id] !== undefined) {
+                        context.logger.warn(`WARNING [${file.path}]: Duplicate translations for message '${id}' when merging`);
+                    }
+                    desc.translation[id] = message;
+                }
+            }
+            else {
+                // First or only translation file
+                desc.translation = loadResult.translations;
             }
         }
         // Legacy message id's require the format of the translations

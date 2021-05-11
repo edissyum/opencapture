@@ -7,6 +7,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import * as ts from 'typescript';
+import { SemanticSymbol } from '../../../src/ngtsc/incremental/semantic_graph';
 import { ClassDeclaration, Decorator } from '../../../src/ngtsc/reflection';
 import { DecoratorHandler, HandlerFlags, Trait, TraitCompiler } from '../../../src/ngtsc/transform';
 import { NgccReflectionHost } from '../host/ngcc_host';
@@ -18,7 +19,7 @@ import { NgccReflectionHost } from '../host/ngcc_host';
  */
 export declare class NgccTraitCompiler extends TraitCompiler {
     private ngccReflector;
-    constructor(handlers: DecoratorHandler<unknown, unknown, unknown>[], ngccReflector: NgccReflectionHost);
+    constructor(handlers: DecoratorHandler<unknown, unknown, SemanticSymbol | null, unknown>[], ngccReflector: NgccReflectionHost);
     get analyzedFiles(): ts.SourceFile[];
     /**
      * Analyzes the source file in search for classes to process. For any class that is found in the
@@ -32,7 +33,7 @@ export declare class NgccTraitCompiler extends TraitCompiler {
      * @param decorator the decorator to inject.
      * @param flags optional bitwise flag to influence the compilation of the decorator.
      */
-    injectSyntheticDecorator(clazz: ClassDeclaration, decorator: Decorator, flags?: HandlerFlags): Trait<unknown, unknown, unknown>[];
+    injectSyntheticDecorator(clazz: ClassDeclaration, decorator: Decorator, flags?: HandlerFlags): Trait<unknown, unknown, SemanticSymbol | null, unknown>[];
     /**
      * Returns all decorators that have been recognized for the provided class, including any
      * synthetically injected decorators.

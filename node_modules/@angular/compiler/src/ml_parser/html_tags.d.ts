@@ -8,9 +8,9 @@
 import { TagContentType, TagDefinition } from './tags';
 export declare class HtmlTagDefinition implements TagDefinition {
     private closedByChildren;
+    private contentType;
     closedByParent: boolean;
     implicitNamespacePrefix: string | null;
-    contentType: TagContentType;
     isVoid: boolean;
     ignoreFirstLf: boolean;
     canSelfClose: boolean;
@@ -19,11 +19,15 @@ export declare class HtmlTagDefinition implements TagDefinition {
         closedByChildren?: string[];
         closedByParent?: boolean;
         implicitNamespacePrefix?: string;
-        contentType?: TagContentType;
+        contentType?: TagContentType | {
+            default: TagContentType;
+            [namespace: string]: TagContentType;
+        };
         isVoid?: boolean;
         ignoreFirstLf?: boolean;
         preventNamespaceInheritance?: boolean;
     });
     isClosedByChild(name: string): boolean;
+    getContentType(prefix?: string): TagContentType;
 }
 export declare function getHtmlTagDefinition(tagName: string): HtmlTagDefinition;

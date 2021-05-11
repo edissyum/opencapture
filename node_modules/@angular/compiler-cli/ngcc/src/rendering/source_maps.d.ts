@@ -9,7 +9,7 @@
 import { SourceMapConverter } from 'convert-source-map';
 import MagicString from 'magic-string';
 import * as ts from 'typescript';
-import { FileSystem } from '../../../src/ngtsc/file_system';
+import { ReadonlyFileSystem } from '../../../src/ngtsc/file_system';
 import { Logger } from '../../../src/ngtsc/logging';
 import { FileToWrite } from './utils';
 export interface SourceMapInfo {
@@ -21,4 +21,4 @@ export interface SourceMapInfo {
  * Merge the input and output source-maps, replacing the source-map comment in the output file
  * with an appropriate source-map comment pointing to the merged source-map.
  */
-export declare function renderSourceAndMap(logger: Logger, fs: FileSystem, sourceFile: ts.SourceFile, generatedMagicString: MagicString): FileToWrite[];
+export declare function renderSourceAndMap(logger: Logger, fs: ReadonlyFileSystem, sourceFile: ts.SourceFile, generatedMagicString: MagicString): FileToWrite[];

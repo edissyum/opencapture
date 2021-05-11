@@ -27,8 +27,19 @@ export interface SyncNgccOptions {
      */
     propertiesToConsider?: string[];
     /**
+     * Whether to only process the typings files for this entry-point.
+     *
+     * This is useful when running ngcc only to provide typings files to downstream tooling such as
+     * the Angular Language Service or ng-packagr. Defaults to `false`.
+     *
+     * If this is set to `true` then `compileAllFormats` is forced to `false`.
+     */
+    typingsOnly?: boolean;
+    /**
      * Whether to process all formats specified by (`propertiesToConsider`)  or to stop processing
-     * this entry-point at the first matching format. Defaults to `true`.
+     * this entry-point at the first matching format.
+     *
+     * Defaults to `true`, but is forced to `false` if `typingsOnly` is `true`.
      */
     compileAllFormats?: boolean;
     /**

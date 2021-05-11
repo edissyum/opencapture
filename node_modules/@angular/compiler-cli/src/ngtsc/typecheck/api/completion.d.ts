@@ -61,4 +61,9 @@ export interface GlobalCompletion {
      * the same name (from the `componentContext` completions).
      */
     templateContext: Map<string, ReferenceCompletion | VariableCompletion>;
+    /**
+     * A location within the type-checking shim where TypeScript's completion APIs can be used to
+     * access completions for the AST node of the cursor position (primitive constants).
+     */
+    nodeContext: ShimLocation | null;
 }

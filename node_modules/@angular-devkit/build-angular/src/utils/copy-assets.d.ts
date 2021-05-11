@@ -4,4 +4,5 @@ export declare function copyAssets(entries: {
     input: string;
     output: string;
     flatten?: boolean;
+    followSymlinks?: boolean;
 }[], basePaths: Iterable<string>, root: string, changed?: Set<string>): Promise<void>;

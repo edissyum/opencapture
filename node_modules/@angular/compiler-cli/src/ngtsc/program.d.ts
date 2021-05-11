@@ -41,8 +41,6 @@ export declare class NgtscProgram implements api.Program {
     private reuseTsProgram;
     private closureCompilerEnabled;
     private host;
-    private perfRecorder;
-    private perfTracker;
     private incrementalStrategy;
     constructor(rootNames: ReadonlyArray<string>, options: NgCompilerOptions, delegateHost: api.CompilerHost, oldProgram?: NgtscProgram);
     getTsProgram(): ts.Program;

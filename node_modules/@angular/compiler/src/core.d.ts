@@ -14,6 +14,7 @@ export interface Attribute {
     attributeName: string;
 }
 export declare const createAttribute: MetadataFactory<Attribute>;
+export declare const emitDistinctChangesOnlyDefaultValue = false;
 export interface Query {
     descendants: boolean;
     first: boolean;
@@ -21,6 +22,7 @@ export interface Query {
     isViewQuery: boolean;
     selector: any;
     static?: boolean;
+    emitDistinctChangesOnly: boolean;
 }
 export declare const createContentChildren: MetadataFactory<Query>;
 export declare const createContentChild: MetadataFactory<Query>;
@@ -172,6 +174,7 @@ export declare const enum NodeFlags {
     StaticQuery = 268435456,
     DynamicQuery = 536870912,
     TypeModuleProvider = 1073741824,
+    EmitDistinctChangesOnly = -2147483648,
     CatQuery = 201326592,
     Types = 201347067
 }

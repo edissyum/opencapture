@@ -6,5 +6,5 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <amd-module name="@angular/compiler-cli/src/ngtsc/core" />
-export { NgCompiler } from './src/compiler';
+export * from './src/compiler';
 export { NgCompilerHost } from './src/host';

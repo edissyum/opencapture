@@ -6,7 +6,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { AbsoluteFsPath, FileSystem } from '../../../src/ngtsc/file_system';
+import { AbsoluteFsPath, ReadonlyFileSystem } from '../../../src/ngtsc/file_system';
 import { Logger } from '../../../src/ngtsc/logging';
 import { EntryPointWithDependencies } from '../dependencies/dependency_host';
 import { DependencyResolver, SortedEntryPointsInfo } from '../dependencies/dependency_resolver';
@@ -23,7 +23,7 @@ import { TracingEntryPointFinder } from './tracing_entry_point_finder';
  */
 export declare class TargetedEntryPointFinder extends TracingEntryPointFinder {
     private targetPath;
-    constructor(fs: FileSystem, config: NgccConfiguration, logger: Logger, resolver: DependencyResolver, basePath: AbsoluteFsPath, pathMappings: PathMappings | undefined, targetPath: AbsoluteFsPath);
+    constructor(fs: ReadonlyFileSystem, config: NgccConfiguration, logger: Logger, resolver: DependencyResolver, basePath: AbsoluteFsPath, pathMappings: PathMappings | undefined, targetPath: AbsoluteFsPath);
     /**
      * Search for Angular entry-points that can be reached from the entry-point specified by the given
      * `targetPath`.
@@ -63,6 +63,15 @@ export declare class TargetedEntryPointFinder extends TracingEntryPointFinder {
      * @param entryPointPath the path to the entry-point, whose package path we want to compute.
      */
     private computePackagePath;
+    /**
+     * Compute whether the `test` path is contained within the `base` path.
+     *
+     * Note that this doesn't use a simple `startsWith()` since that would result in a false positive
+     * for `test` paths such as `a/b/c-x` when the `base` path is `a/b/c`.
+     *
+     * Since `fs.relative()` can be quite expensive we check the fast possibilities first.
+     */
+    private isPathContainedBy;
     /**
      * Search down to the `entryPointPath` from the `containingPath` for the first `package.json` that
      * we come to. This is the path to the entry-point's containing package. For example if

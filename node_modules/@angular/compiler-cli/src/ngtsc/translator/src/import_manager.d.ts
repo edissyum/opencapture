@@ -8,7 +8,16 @@
  */
 import * as ts from 'typescript';
 import { ImportRewriter } from '../../imports';
-import { Import, ImportGenerator, NamedImport } from './api/import_generator';
+import { ImportGenerator, NamedImport } from './api/import_generator';
+/**
+ * Information about an import that has been added to a module.
+ */
+export interface Import {
+    /** The name of the module that has been imported. */
+    specifier: string;
+    /** The `ts.Identifer` by which the imported module is known. */
+    qualifier: ts.Identifier;
+}
 export declare class ImportManager implements ImportGenerator<ts.Identifier> {
     protected rewriter: ImportRewriter;
     private prefix;

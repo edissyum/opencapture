@@ -14,18 +14,61 @@ function clone(obj) {
         return JSON.parse(JSON.stringify(obj));
     }
 }
-// TODO: create a base class for all workspace related hosts.
+function findProjectTarget(workspace, project, target) {
+    const projectDefinition = workspace.projects.get(project);
+    if (!projectDefinition) {
+        throw new Error(`Project "${project}" does not exist.`);
+    }
+    const targetDefinition = projectDefinition.targets.get(target);
+    if (!targetDefinition) {
+        throw new Error('Project target does not exist.');
+    }
+    return targetDefinition;
+}
 class WorkspaceNodeModulesArchitectHost {
-    constructor(_workspace, _root) {
-        this._workspace = _workspace;
+    constructor(workspaceOrHost, _root) {
         this._root = _root;
+        if ('getBuilderName' in workspaceOrHost) {
+            this.workspaceHost = workspaceOrHost;
+        }
+        else {
+            this.workspaceHost = {
+                async getBuilderName(project, target) {
+                    const targetDefinition = findProjectTarget(workspaceOrHost, project, target);
+                    return targetDefinition.builder;
+                },
+                async getOptions(project, target, configuration) {
+                    var _a, _b, _c, _d;
+                    const targetDefinition = findProjectTarget(workspaceOrHost, project, target);
+                    if (configuration === undefined) {
+                        return ((_a = targetDefinition.options) !== null && _a !== void 0 ? _a : {});
+                    }
+                    if (!((_b = targetDefinition.configurations) === null || _b === void 0 ? void 0 : _b[configuration])) {
+                        throw new Error(`Configuration '${configuration}' is not set in the workspace.`);
+                    }
+                    return ((_d = (_c = targetDefinition.configurations) === null || _c === void 0 ? void 0 : _c[configuration]) !== null && _d !== void 0 ? _d : {});
+                },
+                async getMetadata(project) {
+                    const projectDefinition = workspaceOrHost.projects.get(project);
+                    if (!projectDefinition) {
+                        throw new Error(`Project "${project}" does not exist.`);
+                    }
+                    return {
+                        root: projectDefinition.root,
+                        sourceRoot: projectDefinition.sourceRoot,
+                        prefix: projectDefinition.prefix,
+                        ...clone(projectDefinition.extensions),
+                    };
+                },
+                async hasTarget(project, target) {
+                    var _a;
+                    return !!((_a = workspaceOrHost.projects.get(project)) === null || _a === void 0 ? void 0 : _a.targets.has(target));
+                },
+            };
+        }
     }
     async getBuilderNameForTarget(target) {
-        const targetDefinition = this.findProjectTarget(target);
-        if (!targetDefinition) {
-            throw new Error('Project target does not exist.');
-        }
-        return targetDefinition.builder;
+        return this.workspaceHost.getBuilderName(target.project, target.target);
     }
     /**
      * Resolve a builder. This needs to be a string which will be used in a dynamic `import()`
@@ -71,43 +114,24 @@ class WorkspaceNodeModulesArchitectHost {
         return this._root;
     }
     async getOptionsForTarget(target) {
-        const targetSpec = this.findProjectTarget(target);
-        if (targetSpec === undefined) {
+        if (!(await this.workspaceHost.hasTarget(target.project, target.target))) {
             return null;
         }
-        let additionalOptions = {};
+        let options = await this.workspaceHost.getOptions(target.project, target.target);
         if (target.configuration) {
-            const configurations = target.configuration.split(',').map(c => c.trim());
+            const configurations = target.configuration.split(',').map((c) => c.trim());
             for (const configuration of configurations) {
-                if (!(targetSpec['configurations'] && targetSpec['configurations'][configuration])) {
-                    throw new Error(`Configuration '${configuration}' is not set in the workspace.`);
-                }
-                else {
-                    additionalOptions = {
-                        ...additionalOptions,
-                        ...targetSpec['configurations'][configuration],
-                    };
-                }
+                options = {
+                    ...options,
+                    ...await this.workspaceHost.getOptions(target.project, target.target, configuration),
+                };
             }
         }
-        const options = {
-            ...targetSpec['options'],
-            ...additionalOptions,
-        };
         return clone(options);
     }
     async getProjectMetadata(target) {
         const projectName = typeof target === 'string' ? target : target.project;
-        const projectDefinition = this._workspace.projects.get(projectName);
-        if (!projectDefinition) {
-            throw new Error(`Project "${projectName}" does not exist.`);
-        }
-        const metadata = {
-            root: projectDefinition.root,
-            sourceRoot: projectDefinition.sourceRoot,
-            prefix: projectDefinition.prefix,
-            ...clone(projectDefinition.extensions),
-        };
+        const metadata = this.workspaceHost.getMetadata(projectName);
         return metadata;
     }
     async loadBuilder(info) {
@@ -116,13 +140,6 @@ class WorkspaceNodeModulesArchitectHost {
             return builder;
         }
         throw new Error('Builder is not a builder');
-    }
-    findProjectTarget(target) {
-        const projectDefinition = this._workspace.projects.get(target.project);
-        if (!projectDefinition) {
-            throw new Error(`Project "${target.project}" does not exist.`);
-        }
-        return projectDefinition.targets.get(target.target);
     }
 }
 exports.WorkspaceNodeModulesArchitectHost = WorkspaceNodeModulesArchitectHost;

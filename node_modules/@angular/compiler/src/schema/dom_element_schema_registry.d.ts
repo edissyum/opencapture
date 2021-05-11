@@ -34,6 +34,7 @@ export declare class DomElementSchemaRegistry extends ElementSchemaRegistry {
         msg?: string;
     };
     allKnownElementNames(): string[];
+    allKnownAttributesOfElement(tagName: string): string[];
     normalizeAnimationStyleProperty(propName: string): string;
     normalizeAnimationStyleValue(camelCaseProp: string, userProvidedProp: string, val: string | number): {
         error: string;

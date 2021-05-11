@@ -1,6 +1,6 @@
 /// <amd-module name="@angular/compiler-cli/ngcc/src/rendering/dts_renderer" />
 import * as ts from 'typescript';
-import { FileSystem } from '../../../src/ngtsc/file_system';
+import { ReadonlyFileSystem } from '../../../src/ngtsc/file_system';
 import { Reexport } from '../../../src/ngtsc/imports';
 import { Logger } from '../../../src/ngtsc/logging';
 import { CompileResult } from '../../../src/ngtsc/transform';
@@ -44,7 +44,7 @@ export declare class DtsRenderer {
     private logger;
     private host;
     private bundle;
-    constructor(dtsFormatter: RenderingFormatter, fs: FileSystem, logger: Logger, host: NgccReflectionHost, bundle: EntryPointBundle);
+    constructor(dtsFormatter: RenderingFormatter, fs: ReadonlyFileSystem, logger: Logger, host: NgccReflectionHost, bundle: EntryPointBundle);
     renderProgram(decorationAnalyses: DecorationAnalyses, privateDeclarationsAnalyses: PrivateDeclarationsAnalyses, moduleWithProvidersAnalyses: ModuleWithProvidersAnalyses | null): FileToWrite[];
     renderDtsFile(dtsFile: ts.SourceFile, renderInfo: DtsRenderInfo): FileToWrite[];
     private getTypingsFilesToRender;

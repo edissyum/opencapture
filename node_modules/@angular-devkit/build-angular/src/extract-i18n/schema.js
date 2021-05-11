@@ -11,6 +11,8 @@ exports.Format = void 0;
  */
 var Format;
 (function (Format) {
+    Format["Arb"] = "arb";
+    Format["Json"] = "json";
     Format["Xlf"] = "xlf";
     Format["Xlf2"] = "xlf2";
     Format["Xlif"] = "xlif";

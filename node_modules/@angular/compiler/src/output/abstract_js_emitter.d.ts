@@ -18,6 +18,7 @@ export declare abstract class AbstractJsEmitterVisitor extends AbstractEmitterVi
     visitDeclareVarStmt(stmt: o.DeclareVarStmt, ctx: EmitterVisitorContext): any;
     visitCastExpr(ast: o.CastExpr, ctx: EmitterVisitorContext): any;
     visitInvokeFunctionExpr(expr: o.InvokeFunctionExpr, ctx: EmitterVisitorContext): string | null;
+    visitTaggedTemplateExpr(ast: o.TaggedTemplateExpr, ctx: EmitterVisitorContext): any;
     visitFunctionExpr(ast: o.FunctionExpr, ctx: EmitterVisitorContext): any;
     visitDeclareFunctionStmt(stmt: o.DeclareFunctionStmt, ctx: EmitterVisitorContext): any;
     visitTryCatchStmt(stmt: o.TryCatchStmt, ctx: EmitterVisitorContext): any;

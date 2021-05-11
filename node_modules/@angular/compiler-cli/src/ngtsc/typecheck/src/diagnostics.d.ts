@@ -8,26 +8,9 @@
  */
 import { AbsoluteSourceSpan, ParseSourceSpan } from '@angular/compiler';
 import * as ts from 'typescript';
-import { TemplateId, TemplateSourceMapping } from '../api';
+import { TemplateId } from '../api';
 import { TemplateDiagnostic } from '../diagnostics';
-/**
- * Adapter interface which allows the template type-checking diagnostics code to interpret offsets
- * in a TCB and map them back to original locations in the template.
- */
-export interface TemplateSourceResolver {
-    getTemplateId(node: ts.ClassDeclaration): TemplateId;
-    /**
-     * For the given template id, retrieve the original source mapping which describes how the offsets
-     * in the template should be interpreted.
-     */
-    getSourceMapping(id: TemplateId): TemplateSourceMapping;
-    /**
-     * Convert an absolute source span associated with the given template id into a full
-     * `ParseSourceSpan`. The returned parse span has line and column numbers in addition to only
-     * absolute offsets and gives access to the original template source.
-     */
-    toParseSourceSpan(id: TemplateId, span: AbsoluteSourceSpan): ParseSourceSpan | null;
-}
+import { TemplateSourceResolver } from './tcb_util';
 /**
  * Wraps the node in parenthesis such that inserted span comments become attached to the proper
  * node. This is an alias for `ts.createParen` with the benefit that it signifies that the
@@ -71,4 +54,3 @@ export declare function shouldReportDiagnostic(diagnostic: ts.Diagnostic): boole
  * file from being reported as type-check errors.
  */
 export declare function translateDiagnostic(diagnostic: ts.Diagnostic, resolver: TemplateSourceResolver): TemplateDiagnostic | null;
-export declare function findTypeCheckBlock(file: ts.SourceFile, id: TemplateId): ts.Node | null;

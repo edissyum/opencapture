@@ -7,5 +7,5 @@
  */
 /// <amd-module name="@angular/compiler-cli/src/ngtsc/diagnostics" />
 export { FatalDiagnosticError, isFatalDiagnosticError, makeDiagnostic, makeRelatedInformation } from './src/error';
-export { ErrorCode, ngErrorCode } from './src/error_code';
+export { COMPILER_ERRORS_WITH_GUIDES, ERROR_DETAILS_PAGE_BASE_URL, ErrorCode, ngErrorCode } from './src/error_code';
 export { replaceTsWithNgInErrors } from './src/util';

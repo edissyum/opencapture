@@ -7,7 +7,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import * as ts from 'typescript';
-import { AbsoluteFsPath, FileSystem } from '../../src/ngtsc/file_system';
+import { AbsoluteFsPath, ReadonlyFileSystem } from '../../src/ngtsc/file_system';
 import { DeclarationNode, KnownDeclaration } from '../../src/ngtsc/reflection';
 /**
  * A list (`Array`) of partially ordered `T` items.
@@ -71,7 +71,7 @@ export declare class FactoryMap<K, V> {
  * to the `path` and checking if the file exists on disk.
  * @returns An absolute path to the first matching existing file, or `null` if none exist.
  */
-export declare function resolveFileWithPostfixes(fs: FileSystem, path: AbsoluteFsPath, postFixes: string[]): AbsoluteFsPath | null;
+export declare function resolveFileWithPostfixes(fs: ReadonlyFileSystem, path: AbsoluteFsPath, postFixes: string[]): AbsoluteFsPath | null;
 /**
  * Determine whether a function declaration corresponds with a TypeScript helper function, returning
  * its kind if so or null if the declaration does not seem to correspond with such a helper.

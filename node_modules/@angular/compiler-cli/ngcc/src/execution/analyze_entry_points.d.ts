@@ -7,4 +7,4 @@ import { AnalyzeEntryPointsFn } from './api';
 /**
  * Create the function for performing the analysis of the entry-points.
  */
-export declare function getAnalyzeEntryPointsFn(logger: Logger, finder: EntryPointFinder, fileSystem: FileSystem, supportedPropertiesToConsider: EntryPointJsonProperty[], compileAllFormats: boolean, propertiesToConsider: string[], inParallel: boolean): AnalyzeEntryPointsFn;
+export declare function getAnalyzeEntryPointsFn(logger: Logger, finder: EntryPointFinder, fileSystem: FileSystem, supportedPropertiesToConsider: EntryPointJsonProperty[], typingsOnly: boolean, compileAllFormats: boolean, propertiesToConsider: string[], inParallel: boolean): AnalyzeEntryPointsFn;

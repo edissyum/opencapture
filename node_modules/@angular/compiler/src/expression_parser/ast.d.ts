@@ -431,7 +431,8 @@ export declare class ParsedEvent {
     handler: ASTWithSource;
     sourceSpan: ParseSourceSpan;
     handlerSpan: ParseSourceSpan;
-    constructor(name: string, targetOrPhase: string, type: ParsedEventType, handler: ASTWithSource, sourceSpan: ParseSourceSpan, handlerSpan: ParseSourceSpan);
+    readonly keySpan: ParseSourceSpan | undefined;
+    constructor(name: string, targetOrPhase: string, type: ParsedEventType, handler: ASTWithSource, sourceSpan: ParseSourceSpan, handlerSpan: ParseSourceSpan, keySpan: ParseSourceSpan | undefined);
 }
 /**
  * ParsedVariable represents a variable declaration in a microsyntax expression.

@@ -171,6 +171,7 @@ interface ModuleInfo {
 	isEntry: boolean;
 	isExternal: boolean;
 	meta: CustomPluginOptions;
+	syntheticNamedExports: boolean | string;
 }
 
 export type GetModuleInfo = (moduleId: string) => ModuleInfo | null;
@@ -195,6 +196,7 @@ export interface PluginContext extends MinimalPluginContext {
 	getFileName: (fileReferenceId: string) => string;
 	getModuleIds: () => IterableIterator<string>;
 	getModuleInfo: GetModuleInfo;
+	getWatchFiles: () => string[];
 	/** @deprecated Use `this.resolve` instead */
 	isExternal: IsExternal;
 	/** @deprecated Use `this.getModuleIds` instead */
@@ -318,6 +320,13 @@ export type ResolveFileUrlHook = (
 export type AddonHookFunction = (this: PluginContext) => string | Promise<string>;
 export type AddonHook = string | AddonHookFunction;
 
+export type ChangeEvent = 'create' | 'update' | 'delete';
+export type WatchChangeHook = (
+	this: PluginContext,
+	id: string,
+	change: { event: ChangeEvent }
+) => void;
+
 /**
  * use this type for plugin annotation
  * @example
@@ -345,13 +354,18 @@ export interface OutputBundleWithPlaceholders {
 export interface PluginHooks extends OutputPluginHooks {
 	buildEnd: (this: PluginContext, err?: Error) => Promise<void> | void;
 	buildStart: (this: PluginContext, options: NormalizedInputOptions) => Promise<void> | void;
+	closeBundle: (this: PluginContext) => Promise<void> | void;
+	closeWatcher: (this: PluginContext) => void;
 	load: LoadHook;
 	moduleParsed: ModuleParsedHook;
-	options: (this: MinimalPluginContext, options: InputOptions) => InputOptions | null | undefined;
+	options: (
+		this: MinimalPluginContext,
+		options: InputOptions
+	) => Promise<InputOptions | null | undefined> | InputOptions | null | undefined;
 	resolveDynamicImport: ResolveDynamicImportHook;
 	resolveId: ResolveIdHook;
 	transform: TransformHook;
-	watchChange: (id: string) => void;
+	watchChange: WatchChangeHook;
 }
 
 interface OutputPluginHooks {
@@ -391,6 +405,7 @@ interface OutputPluginHooks {
 }
 
 export type AsyncPluginHooks =
+	| 'options'
 	| 'buildEnd'
 	| 'buildStart'
 	| 'generateBundle'
@@ -402,7 +417,8 @@ export type AsyncPluginHooks =
 	| 'resolveDynamicImport'
 	| 'resolveId'
 	| 'transform'
-	| 'writeBundle';
+	| 'writeBundle'
+	| 'closeBundle';
 
 export type PluginValueHooks = 'banner' | 'footer' | 'intro' | 'outro';
 
@@ -419,6 +435,7 @@ export type FirstPluginHooks =
 
 export type SequentialPluginHooks =
 	| 'augmentChunkHash'
+	| 'closeWatcher'
 	| 'generateBundle'
 	| 'options'
 	| 'outputOptions'
@@ -436,7 +453,8 @@ export type ParallelPluginHooks =
 	| 'outro'
 	| 'renderError'
 	| 'renderStart'
-	| 'writeBundle';
+	| 'writeBundle'
+	| 'closeBundle';
 
 interface OutputPluginValueHooks {
 	banner: AddonHook;
@@ -561,11 +579,39 @@ export type InteropType = boolean | 'auto' | 'esModule' | 'default' | 'defaultOn
 
 export type GetInterop = (id: string | null) => InteropType;
 
+export type AmdOptions = (
+	| {
+			autoId?: false;
+			id: string;
+	  }
+	| {
+			autoId: true;
+			basePath?: string;
+			id?: undefined;
+	  }
+	| {
+			autoId?: false;
+			id?: undefined;
+	  }
+) & {
+	define?: string;
+};
+
+export type NormalizedAmdOptions = (
+	| {
+			autoId: false;
+			id?: string;
+	  }
+	| {
+			autoId: true;
+			basePath: string;
+	  }
+) & {
+	define: string;
+};
+
 export interface OutputOptions {
-	amd?: {
-		define?: string;
-		id?: string;
-	};
+	amd?: AmdOptions;
 	assetFileNames?: string | ((chunkInfo: PreRenderedAsset) => string);
 	banner?: string | (() => string | Promise<string>);
 	chunkFileNames?: string | ((chunkInfo: PreRenderedChunk) => string);
@@ -610,10 +656,7 @@ export interface OutputOptions {
 }
 
 export interface NormalizedOutputOptions {
-	amd: {
-		define: string;
-		id?: string;
-	};
+	amd: NormalizedAmdOptions;
 	assetFileNames: string | ((chunkInfo: PreRenderedAsset) => string);
 	banner: () => string | Promise<string>;
 	chunkFileNames: string | ((chunkInfo: PreRenderedChunk) => string);
@@ -729,6 +772,8 @@ export interface RollupOutput {
 
 export interface RollupBuild {
 	cache: RollupCache | undefined;
+	close: () => Promise<void>;
+	closed: boolean;
 	generate: (outputOptions: OutputOptions) => Promise<RollupOutput>;
 	getTimings?: () => SerializedTimings;
 	watchFiles: string[];
@@ -783,9 +828,9 @@ export interface RollupWatchOptions extends InputOptions {
 	watch?: WatcherOptions | false;
 }
 
-interface TypedEventEmitter<T> {
+interface TypedEventEmitter<T extends { [event: string]: (...args: any) => any }> {
 	addListener<K extends keyof T>(event: K, listener: T[K]): this;
-	emit<K extends keyof T>(event: K, ...args: any[]): boolean;
+	emit<K extends keyof T>(event: K, ...args: Parameters<T[K]>): boolean;
 	eventNames(): Array<keyof T>;
 	getMaxListeners(): number;
 	listenerCount(type: keyof T): number;
@@ -803,20 +848,21 @@ interface TypedEventEmitter<T> {
 
 export type RollupWatcherEvent =
 	| { code: 'START' }
-	| { code: 'BUNDLE_START'; input: InputOption; output: readonly string[] }
+	| { code: 'BUNDLE_START'; input?: InputOption; output: readonly string[] }
 	| {
 			code: 'BUNDLE_END';
 			duration: number;
-			input: InputOption;
+			input?: InputOption;
 			output: readonly string[];
 			result: RollupBuild;
 	  }
 	| { code: 'END' }
-	| { code: 'ERROR'; error: RollupError };
+	| { code: 'ERROR'; error: RollupError; result: RollupBuild | null };
 
 export interface RollupWatcher
 	extends TypedEventEmitter<{
-		change: (id: string) => void;
+		change: (id: string, change: { event: ChangeEvent }) => void;
+		close: () => void;
 		event: (event: RollupWatcherEvent) => void;
 		restart: () => void;
 	}> {

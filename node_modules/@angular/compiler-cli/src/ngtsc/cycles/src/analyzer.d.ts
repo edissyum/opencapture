@@ -15,9 +15,13 @@ export declare class CycleAnalyzer {
     private importGraph;
     constructor(importGraph: ImportGraph);
     /**
-     * Check whether adding an import from `from` to `to` would create a cycle in the `ts.Program`.
+     * Check for a cycle to be created in the `ts.Program` by adding an import between `from` and
+     * `to`.
+     *
+     * @returns a `Cycle` object if an import between `from` and `to` would create a cycle; `null`
+     *     otherwise.
      */
-    wouldCreateCycle(from: ts.SourceFile, to: ts.SourceFile): boolean;
+    wouldCreateCycle(from: ts.SourceFile, to: ts.SourceFile): Cycle | null;
     /**
      * Record a synthetic import from `from` to `to`.
      *
@@ -25,4 +29,32 @@ export declare class CycleAnalyzer {
      * import graph for cycle creation.
      */
     recordSyntheticImport(from: ts.SourceFile, to: ts.SourceFile): void;
+}
+/**
+ * Represents an import cycle between `from` and `to` in the program.
+ *
+ * This class allows us to do the work to compute the cyclic path between `from` and `to` only if
+ * needed.
+ */
+export declare class Cycle {
+    private importGraph;
+    readonly from: ts.SourceFile;
+    readonly to: ts.SourceFile;
+    constructor(importGraph: ImportGraph, from: ts.SourceFile, to: ts.SourceFile);
+    /**
+     * Compute an array of source-files that illustrates the cyclic path between `from` and `to`.
+     *
+     * Note that a `Cycle` will not be created unless a path is available between `to` and `from`,
+     * so `findPath()` will never return `null`.
+     */
+    getPath(): ts.SourceFile[];
+}
+/**
+ * What to do if a cycle is detected.
+ */
+export declare const enum CycleHandlingStrategy {
+    /** Add "remote scoping" code to avoid creating a cycle. */
+    UseRemoteScoping = 0,
+    /** Fail the compilation with an error. */
+    Error = 1
 }
