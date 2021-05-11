@@ -52,12 +52,14 @@ export class UpdateRoleComponent implements OnInit {
     // Only used to get translation available while running the extract-translations
     parent_label = [
         this.translate.instant('PRIVILEGES.general'),
-        this.translate.instant('PRIVILEGES.administration')
+        this.translate.instant('PRIVILEGES.administration'),
+        this.translate.instant('PRIVILEGES.verifier'),
+        this.translate.instant('PRIVILEGES.splitter')
     ]
 
     privileges_label = [
-        this.translate.instant('PRIVILEGES.verifier'),
-        this.translate.instant('PRIVILEGES.splitter'),
+        this.translate.instant('PRIVILEGES.access_verifier'),
+        this.translate.instant('PRIVILEGES.access_splitter'),
         this.translate.instant('PRIVILEGES.settings'),
         this.translate.instant('PRIVILEGES.upload'),
         this.translate.instant('PRIVILEGES.users_list'),
@@ -65,7 +67,10 @@ export class UpdateRoleComponent implements OnInit {
         this.translate.instant('PRIVILEGES.update_user'),
         this.translate.instant('PRIVILEGES.roles_list'),
         this.translate.instant('PRIVILEGES.add_role'),
-        this.translate.instant('PRIVILEGES.update_role')
+        this.translate.instant('PRIVILEGES.update_role'),
+        this.translate.instant('PRIVILEGES.version_update'),
+        this.translate.instant('PRIVILEGES.custom_fields'),
+        this.translate.instant('PRIVILEGES.form_builder')
     ]
     // End translation
     constructor(

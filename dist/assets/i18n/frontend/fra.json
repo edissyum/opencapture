@@ -63,6 +63,8 @@
 		"previous_page": "Page précédente"
 	},
 	"PRIVILEGES": {
+		"access_splitter": "Accès à Open-Capture Splitter",
+		"access_verifier": "Accès à Open-Capture Verifier",
 		"add_role": "Ajouter un rôle",
 		"add_user": "Ajouter un utilisateur",
 		"administration": "Privilèges d'administration",
@@ -70,12 +72,15 @@
 		"list": "Liste des privilèges",
 		"roles_list": "Visualiser la liste des rôles",
 		"settings": "Accès au panneau d'administration",
-		"splitter": "Accès à Open-Capture Splitter",
+		"splitter": "Open-Capture Splitter",
 		"update_role": "Modifier un rôle",
 		"update_user": "Modifier un utilisateur",
 		"upload": "Téléverser des fichiers",
 		"users_list": "Visualiser la liste des utilisateurs",
-		"verifier": "Accès à Open-Capture Verifier"
+		"verifier": "Open-Capture Vérificateur",
+		"version_update": "Version et mise à jour",
+		"custom_fields": "Champs personnalisés",
+		"form_builder": "Création de formulaire"
 	},
 	"ROLE": {
 		"active": "Actif",
@@ -99,6 +104,7 @@
 		"custom_fields": "Champs personnalisés",
 		"document_separator": "Séparateur de document",
 		"document_type": "Type de documents",
+		"form-builder": "Création de formulaire",
 		"general": "Paramètres généraux",
 		"roles_list": "Liste des rôles",
 		"splitter": "Paramètres du Splitter",

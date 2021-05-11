@@ -104,7 +104,7 @@ export class SettingsService {
                 "id"    : "form_builder",
                 "label" : this.translate.instant("VERIFIER.form_builder"),
                 "icon"  : "fas fa-tools",
-                "route" : "/settings/verifier/forms/builder"
+                "route" : "/settings/verifier/form-builder"
             },
         ],
         "splitter": [

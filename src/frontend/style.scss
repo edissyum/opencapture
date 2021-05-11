@@ -61,4 +61,6 @@ mat-ink-bar{
     @apply bg-opacity-60;
     @apply text-gray-900;
     padding-top: 0.9rem;
+    @apply relative;
+    @apply z-20;
 }

@@ -63,6 +63,8 @@
 		"previous_page": "Previous page"
 	},
 	"PRIVILEGES": {
+		"access_splitter": "",
+		"access_verifier": "",
 		"add_role": "",
 		"add_user": "",
 		"administration": "",
@@ -99,6 +101,7 @@
 		"custom_fields": "Custom fields",
 		"document_separator": "Document separator",
 		"document_type": "Document type",
+		"form-builder": "",
 		"general": "General",
 		"roles_list": "Roles list",
 		"splitter": "Splitter",

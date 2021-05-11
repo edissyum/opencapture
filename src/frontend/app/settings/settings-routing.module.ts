@@ -13,6 +13,7 @@ import { CreateRoleComponent } from "./general/roles/create/create-role.componen
 import { UpdateRoleComponent } from "./general/roles/update/update-role.component";
 import { VersionUpdateComponent } from "./general/version-update/version-update.component";
 import { CustomFieldsComponent } from "./general/custom-fields/custom-fields.component";
+import { FormBuilderComponent } from "./verifier/form-builder/form-builder.component";
 
 const routes: Routes = [
     {
@@ -21,6 +22,7 @@ const routes: Routes = [
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
 
+// --- General
     // Users
     {
         path: 'settings/general/users', component: UsersListComponent,
@@ -70,7 +72,15 @@ const routes: Routes = [
         path: 'settings/general/custom-fields', component: CustomFieldsComponent,
         data: {title: marker('SETTINGS.custom_fields'), privileges: ['settings', 'custom_fields']},
         canActivate: [LoginRequiredService]
+    },
+// --- END General
+// --- Verifier
+    {
+        path: 'settings/verifier/form-builder', component: FormBuilderComponent,
+        data: {title: marker('SETTINGS.form-builder'), privileges: ['settings', 'form_builder']},
+        canActivate: [LoginRequiredService]
     }
+// -- END Verifier
 ];
 
 @NgModule({
