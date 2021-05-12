@@ -2,6 +2,13 @@
 	"ABOUT-US": {
 		"lead_dev": "Lead developer"
 	},
+	"ACCOUNTS": {
+		"accounts": "Fournisseur",
+		"name": "Nom",
+		"siren": "Numéro de SIREN",
+		"siret": "Numéro de SIRET",
+		"vat_number": "Numéro de TVA"
+	},
 	"AUTH": {
 		"authenticated": "Vous vous êtes authentifié avec succès",
 		"field_required": "Ce champ est requis",
@@ -27,8 +34,19 @@
 		"unauthorized": "Vous n'êtes pas autorisé à visualiser cette page",
 		"unknow_error": "Erreur inconnue"
 	},
+	"FACTURATION": {
+		"facturation": "Facturation"
+	},
 	"FORMS": {
-		"default": "Formulaire par défaut"
+		"available_fields": "Champs disponibles",
+		"confirm_delete": "Êtes vous sûr de vouloir supprimer le formulaire {{form}} ?",
+		"confirm_disable": "Êtes vous sûr de vouloir désactiver le formulaire {{form}} ?",
+		"confirm_enable": "Êtes vous sûr de vouloir réactiver le formulaire {{form}} ?",
+		"custom_fields": "",
+		"default": "Formulaire par défaut",
+		"delete": "Supprimer le formulaire",
+		"disable": "Désactiver le formulaire",
+		"enable": "Activer le formulaire"
 	},
 	"GLOBAL": {
 		"batches": "Lots",
@@ -118,6 +136,9 @@
 	"SPLITTER": {
 		"list": "Liste des lots",
 		"viewer": "Visualisation du lot"
+	},
+	"TYPES": {
+		"text": "Chaîne de caractères"
 	},
 	"UPLOAD": {
 		"extension_unauthorized": "Un ou plusieurs fichiers ne sont pas au format PDF",

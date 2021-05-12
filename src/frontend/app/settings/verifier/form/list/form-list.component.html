@@ -75,8 +75,8 @@
             <app-loader></app-loader>
         </div>
         <div class="settings_header">
-            <button mat-icon-button
-                    (click)="sidenav.toggle(); this.serviceSettings.toggleMenu();" class="absolute left-2 top-2">
+            <button mat-icon-button (click)="sidenav.toggle(); this.serviceSettings.toggleMenu();"
+                    class="absolute left-2 top-2">
                 <i [class.fa-arrow-right]="!this.serviceSettings.getIsMenuOpen()" class="fas fa-arrow-left text-2xl"></i>
             </button>
             <div class="settings_title text-center">
@@ -111,18 +111,18 @@
                 <mat-header-cell *matHeaderCellDef></mat-header-cell>
                 <mat-cell *matCellDef="let element">
                     <button *ngIf="element.enabled"
-                            (click)="$event.stopPropagation();"
+                            (click)="$event.stopPropagation(); disableConfirmDialog(element.id, element.label)"
                             matTooltip="{{ 'FORMS.disable' | translate }}" mat-icon-button
                             class="inline-block align-text-top">
                         <i class="btn-action-icon fas fa-pause fa-lg"></i>
                     </button>
                     <button *ngIf="!element.enabled"
-                            (click)="$event.stopPropagation();"
+                            (click)="$event.stopPropagation(); enableConfirmDialog(element.id, element.label)"
                             matTooltip="{{ 'FORMS.enable' | translate }}" mat-icon-button
                             class="inline-block align-text-top">
                         <i class="btn-action-icon fas fa-play fa-lg"></i>
                     </button>
-                    <button (click)="$event.stopPropagation();"
+                    <button (click)="$event.stopPropagation(); deleteConfirmDialog(element.id, element.label)"
                             matTooltip="{{ 'FORMS.delete' | translate }}" mat-icon-button
                             class="inline-block align-text-top">
                         <i class="btn-action-icon fas fa-trash fa-lg"></i>
@@ -131,7 +131,7 @@
             </ng-container>
             <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
             <mat-row *matRowDef="let row; columns: columnsToDisplay;"
-                     routerLink="/settings/verifier/forms/builder/{{row.id}}"
+                     routerLink="/settings/verifier/forms/builder/edit/{{row.id}}"
                      class="cursor-pointer hover:text-green-400 hover:shadow-md transition-colors duration-300"></mat-row>
         </mat-table>
         <mat-paginator showFirstLastButtons

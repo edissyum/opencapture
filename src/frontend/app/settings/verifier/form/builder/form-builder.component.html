@@ -1,4 +1,4 @@
-<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem">
+<mat-sidenav-container cdkDropListGroup class="absolute left-0 right-0 bottom-0" style="top: 4.1rem">
     <mat-sidenav #sidenav mode="side" opened class="w-1/6 flex flex-col h-full border-r border-green-400" style="top:0.1rem">
         <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">{{ "SETTINGS.administration" | translate }}</h3>
         <mat-divider class="border-green-400"></mat-divider>
@@ -71,18 +71,54 @@
         </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content class="bg-white">
+        <div *ngIf="loading">
+            <app-loader></app-loader>
+        </div>
         <div class="settings_header">
-            <button mat-icon-button
-                    (click)="sidenav.toggle(); this.serviceSettings.toggleMenu();" class="absolute left-2 top-2">
+            <button mat-icon-button (click)="sidenav.toggle(); this.serviceSettings.toggleMenu();"
+                    class="absolute left-2 top-2">
                 <i [class.fa-arrow-right]="!this.serviceSettings.getIsMenuOpen()" class="fas fa-arrow-left text-2xl"></i>
             </button>
             <div class="settings_title text-center">
                 <h3>{{ this.serviceSettings.getTitle() }}</h3>
                 <hr class="border-green-400">
             </div>
+            <button mat-icon-button (click)="sidenav2.toggle();"
+                    class="absolute right-2 top-2">
+                <i class="fas fa-stream text-2xl"></i>
+            </button>
         </div>
-        <div *ngIf="loading">
-            <app-loader></app-loader>
-        </div>
+        <ng-container *ngFor="let category of fieldCategories">
+            <div cdkDropList [id]="category['id']" class="flex border-green-400 border rounded-lg m-20" style="min-height: 50px">
+                <div class="title relative text-xl tracking-wider -top-4 left-2 z-10 pl-1.5 pr-1.5 bg-white">
+                    {{ category['label'] | translate }}
+                </div>
+                <div class="content"></div>
+            </div>
+        </ng-container>
     </mat-sidenav-content>
+    <mat-sidenav #sidenav2 mode="side" opened position="end" class="w-1/4 flex flex-col h-full border-r border-green-400" >
+        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">{{ "FORMS.available_fields" | translate }}</h3>
+        <mat-divider class="border-green-400"></mat-divider>
+        <mat-tab-group>
+            <mat-tab *ngFor="let availableFields of this.availableFieldsParent" [label]="this.translate.instant(availableFields['label'])">
+                <div [cdkDropListConnectedTo]="['accounts','facturation']"
+                     cdkDropList [cdkDropListData]="availableFields['values']" (cdkDropListDropped)="drop($event)"
+                     *ngFor="let field of availableFields['values']">
+                    <div cdkDrag class="flex flex-row items-center justify-between m-5 cursor-pointer">
+                        <ng-container *ngIf="field.type === 'text'">
+                            <div class="relative -top-3">
+                                <i class="relative fas fa-arrows-alt text-xl top-0.5 mr-2 text-green-400"></i>
+                                {{ field['label'] | translate }}
+                            </div>
+                            <mat-form-field class="right-0">
+                                <mat-label>{{ 'TYPES.' + field['type'] | translate }}</mat-label>
+                                <input matInput type="text" disabled>
+                            </mat-form-field>
+                        </ng-container>
+                    </div>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </mat-sidenav>
 </mat-sidenav-container>

@@ -2,6 +2,13 @@
 	"ABOUT-US": {
 		"lead_dev": ""
 	},
+	"ACCOUNTS": {
+		"accounts": "",
+		"name": "",
+		"siren": "",
+		"siret": "",
+		"vat_number": ""
+	},
 	"AUTH": {
 		"authenticated": "You have successfully authenticated",
 		"field_required": "This field is required",
@@ -27,8 +34,19 @@
 		"unauthorized": "You are not allowed to see this page",
 		"unknow_error": "Unknow error"
 	},
+	"FACTURATION": {
+		"facturation": ""
+	},
 	"FORMS": {
-		"default": ""
+		"available_fields": "",
+		"confirm_delete": "",
+		"confirm_disable": "",
+		"confirm_enable": "",
+		"custom_fields": "",
+		"default": "",
+		"delete": "",
+		"disable": "",
+		"enable": ""
 	},
 	"GLOBAL": {
 		"batches": "Batches",
@@ -118,6 +136,9 @@
 	"SPLITTER": {
 		"list": "List of batches",
 		"viewer": "Batch view"
+	},
+	"TYPES": {
+		"text": ""
 	},
 	"UPLOAD": {
 		"extension_unauthorized": "One or more files aren't in PDF format",

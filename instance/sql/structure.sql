@@ -14,7 +14,8 @@ CREATE TABLE "form_models" (
     "id"      SERIAL UNIQUE PRIMARY KEY,
     "label"   VARCHAR(50),
     "default" boolean,
-    "enabled" boolean
+    "enabled" boolean,
+    "status" VARCHAR(5) default 'OK'
 );
 
 CREATE TABLE "form_models_field" (
@@ -72,14 +73,15 @@ CREATE TABLE "privileges" (
 );
 
 CREATE TABLE "accounts" (
-    "id"        SERIAL UNIQUE PRIMARY KEY,
-    "name"      VARCHAR NOT NULL,
-    "type"      INTEGER,
-    "siret"     VARCHAR(20),
-    "siren"     VARCHAR(20),
-    "adress_id" INTEGER,
-    "typology"  VARCHAR,
-    "form_id"   INTEGER
+    "id"         SERIAL UNIQUE PRIMARY KEY,
+    "name"       VARCHAR NOT NULL,
+    "type"       INTEGER,
+    "vat_number" VARCHAR(20),
+    "siret"      VARCHAR(20),
+    "siren"      VARCHAR(20),
+    "adress_id"  INTEGER,
+    "typology"   VARCHAR,
+    "form_id"    INTEGER
 );
 
 CREATE TABLE "companies" (

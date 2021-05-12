@@ -20,7 +20,7 @@ from gettext import gettext
 from ..controllers.db import get_db
 
 
-def retrieve_forms(args):
+def get_forms(args):
     db = get_db()
     error = None
     forms = db.select({
@@ -32,27 +32,42 @@ def retrieve_forms(args):
         'offset': str(args['offset']) if 'offset' in args else [],
     })
 
+    if not forms:
+        error = gettext('NO_FORMS')
+
     return forms, error
 
 
-def update(args):
+def get_form_by_id(args):
+    db = get_db()
+    error = None
+    form = db.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['form_models'],
+        'where': ['id = %s', 'status <> %s'],
+        'data': [args['form_id'], 'DEL']
+    })
+
+    if not form:
+        error = gettext('GET_FORM_BY_ID_ERROR')
+    else:
+        form = form[0]
+
+    return form, error
+
+
+def update_form(args):
     db = get_db()
     error = None
 
     res = db.update({
-        'table': ['custom_fields'],
-        'set': {
-            'label': args['label'],
-            'type': args['type'],
-            'module': args['module'],
-            'enabled': args['enabled'],
-            'label_short': args['label_short'],
-        },
+        'table': ['form_models'],
+        'set': args['set'],
         'where': ['id = %s'],
-        'data': [args['id']]
+        'data': [args['form_id']]
     })
 
     if not res:
-        error = gettext('UPDATE_CUSTOM_FIELDS_ERROR')
+        error = gettext('UPDATE_FORM_ERROR')
 
     return res, error

@@ -82,12 +82,12 @@ const routes: Routes = [
         canActivate: [LoginRequiredService]
     },
     {
-        path: 'settings/verifier/forms/builder', component: FormBuilderComponent,
+        path: 'settings/verifier/forms/builder/new', component: FormBuilderComponent,
         data: {title: marker('SETTINGS.form_builder'), privileges: ['settings', 'form_builder']},
         canActivate: [LoginRequiredService]
     },
     {
-        path: 'settings/verifier/forms/builder/:id', component: FormBuilderComponent,
+        path: 'settings/verifier/forms/builder/edit/:id', component: FormBuilderComponent,
         data: {title: marker('SETTINGS.form_update'), privileges: ['settings', 'form_builder']},
         canActivate: [LoginRequiredService]
     },

@@ -18,7 +18,6 @@ import {PrivilegesService} from "../../../../../services/privileges.service";
     styleUrls: ['./create-user.component.scss']
 })
 export class CreateUserComponent implements OnInit {
-    headers     : HttpHeaders = this.authService.headers;
     loading     : boolean = true
     roles       : any[] = [];
     userForm    : any[] = [
@@ -68,14 +67,14 @@ export class CreateUserComponent implements OnInit {
     ];
 
     constructor(
-        private http: HttpClient,
         public router: Router,
+        private http: HttpClient,
         private route: ActivatedRoute,
+        public userService: UserService,
         private formBuilder: FormBuilder,
         private authService: AuthService,
-        public userService: UserService,
-        private translate: TranslateService,
         private notify: NotificationService,
+        private translate: TranslateService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService
     ) {

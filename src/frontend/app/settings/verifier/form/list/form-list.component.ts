@@ -14,6 +14,8 @@ import {of} from "rxjs";
 import {LastUrlService} from "../../../../../services/last-url.service";
 import {LocalStorageService} from "../../../../../services/local-storage.service";
 import {Sort} from "@angular/material/sort";
+import {ConfirmDialogComponent} from "../../../../../services/confirm-dialog/confirm-dialog.component";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
     selector: 'app-list',
@@ -30,12 +32,13 @@ export class FormListComponent implements OnInit {
     forms : any                 = [];
 
     constructor(
-        private http: HttpClient,
         public router: Router,
+        private http: HttpClient,
+        private dialog: MatDialog,
         private route: ActivatedRoute,
+        public userService: UserService,
         private formBuilder: FormBuilder,
         private authService: AuthService,
-        public userService: UserService,
         public translate: TranslateService,
         private notify: NotificationService,
         public serviceSettings: SettingsService,
@@ -55,10 +58,22 @@ export class FormListComponent implements OnInit {
         }else
             this.localeStorageService.remove('formsPageIndex')
 
-        this.http.get(API_URL + '/ws/forms/list', {headers: this.authService.headers}).pipe(
+        this.loadForms()
+    }
+
+    onPageChange(event: any){
+        this.pageSize = event.pageSize
+        this.offset = this.pageSize * (event.pageIndex)
+        this.localeStorageService.save('formsPageIndex', event.pageIndex)
+        this.loadForms()
+    }
+
+    loadForms(): void {
+        this.loading = true
+        this.http.get(API_URL + '/ws/forms/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.forms = data.roles
-                this.loadforms()
+                this.total = data.forms[0].total
+                this.forms = data.forms;
             }),
             finalize(() => this.loading = false),
             catchError((err: any) => {
@@ -69,26 +84,106 @@ export class FormListComponent implements OnInit {
         ).subscribe()
     }
 
-    onPageChange(event: any){
-        this.pageSize = event.pageSize
-        this.offset = this.pageSize * (event.pageIndex)
-        this.localeStorageService.save('formsPageIndex', event.pageIndex)
-        this.loadforms()
+    deleteConfirmDialog(form_id: number, form: string) {
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            data:{
+                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
+                confirmText         : this.translate.instant('FORMS.confirm_delete', {"form": form}),
+                confirmButton       : this.translate.instant('GLOBAL.delete'),
+                confirmButtonColor  : "warn",
+                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+            },
+            width: "600px",
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if(result){
+                this.deleteForm(form_id)
+            }
+        });
     }
 
-    loadforms(): void{
-        this.http.get(API_URL + '/ws/forms/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                this.total = data.forms[0].total
-                this.forms = data.forms;
-                console.log(this.forms)
-            }),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe()
+    disableConfirmDialog(form_id: number, form: string) {
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            data:{
+                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
+                confirmText         : this.translate.instant('FORMS.confirm_disable', {"form": form}),
+                confirmButton       : this.translate.instant('GLOBAL.disable'),
+                confirmButtonColor  : "warn",
+                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+            },
+            width: "600px",
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if(result){
+                this.disableForm(form_id)
+            }
+        });
+    }
+
+    enableConfirmDialog(form_id: number, form: string) {
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            data:{
+                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
+                confirmText         : this.translate.instant('FORMS.confirm_enable', {"form": form}),
+                confirmButton       : this.translate.instant('GLOBAL.enable'),
+                confirmButtonColor  : "warn",
+                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+            },
+            width: "600px",
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if(result){
+                this.enableForm(form_id)
+            }
+        });
+    }
+
+    deleteForm(form_id: number){
+        if (form_id !== undefined){
+            this.http.delete(API_URL + '/ws/forms/delete/' + form_id, {headers: this.authService.headers}).pipe(
+                tap(() => {
+                    this.loadForms()
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe()
+        }
+    }
+
+    disableForm(form_id: number){
+        if (form_id !== undefined){
+            this.http.put(API_URL + '/ws/forms/disable/' + form_id, null, {headers: this.authService.headers}).pipe(
+                tap(() => {
+                    this.loadForms()
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe()
+        }
+    }
+
+    enableForm(forms_id: number){
+        if (forms_id !== undefined){
+            this.http.put(API_URL + '/ws/forms/enable/' + forms_id, null, {headers: this.authService.headers}).pipe(
+                tap(() => {
+                    this.loadForms()
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe()
+        }
     }
 
     sortData(sort: Sort){

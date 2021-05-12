@@ -109,16 +109,16 @@ export class SettingsService {
                     {
                         "id"        : "add_form",
                         "label"     : this.translate.instant("SETTINGS.form_builder"),
-                        "route"     : "/settings/verifier/forms/builder",
+                        "route"     : "/settings/verifier/forms/builder/new",
                         "privilege" : "add_form",
                         "icon"      : "fas fa-tools"
                     },
                     {
-                        "id"        : "update_form",
-                        "label"     : this.translate.instant("SETTINGS.form_builder_edit"),
-                        "route"     : "/settings/verifier/forms/builder/",
-                        "privilege" : "update_form",
-                        "icon"      : "fas fa-hammer",
+                        "id"                : "update_form",
+                        "label"             : this.translate.instant("SETTINGS.form_update"),
+                        "route"             : "/settings/verifier/forms/builder/edit/",
+                        "privilege"         : "update_form",
+                        "icon"              : "fas fa-hammer",
                         "showOnlyIfActive"  : true
                     }
                 ]

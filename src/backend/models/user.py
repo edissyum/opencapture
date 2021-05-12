@@ -68,7 +68,7 @@ def get_users(args):
     })
 
     if not users:
-        error = gettext('GET_USERS_ERROR')
+        error = gettext('NO_USERS')
 
     return users, error
 

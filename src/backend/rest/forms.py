@@ -8,14 +8,15 @@ bp = Blueprint('forms', __name__, url_prefix='/ws/')
 
 @bp.route('forms/list', methods=['GET'])
 @token_required
-def retrieve_forms():
+def get_forms():
     args = {
         'select': ['*', 'count(*) OVER() as total'],
         'offset': request.args['offset'] if 'offset' in request.args else '',
-        'limit': request.args['limit'] if 'limit' in request.args else ''
+        'limit': request.args['limit'] if 'limit' in request.args else '',
+        'where': ["status <> 'DEL'"]
     }
-    res = forms.retrieve_forms(args)
-    return make_response(jsonify(res[0])), res[1]
+    res = forms.get_forms(args)
+    return make_response(jsonify(res[0]), res[1])
 
 
 @bp.route('forms/add', methods=['POST'])
@@ -26,9 +27,37 @@ def add_form():
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('forms/update', methods=['POST'])
+@bp.route('forms/getById/<int:user_id>', methods=['GET'])
 @token_required
-def update_form():
-    data = json.loads(request.data)
-    res = forms.update(data)
+def get_form_by_id(user_id):
+    _user = forms.get_form_by_id(user_id)
+    return make_response(jsonify(_user[0])), _user[1]
+
+
+@bp.route('forms/update/<int:form_id>', methods=['PUT'])
+@token_required
+def update_form(form_id):
+    data = request.json['args']
+    res = forms.update_form(form_id, data)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('forms/delete/<int:form_id>', methods=['DELETE'])
+@token_required
+def delete_form(form_id):
+    res = forms.delete_form(form_id)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('forms/disable/<int:form_id>', methods=['PUT'])
+@token_required
+def disable_form(form_id):
+    res = forms.disable_form(form_id)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('forms/enable/<int:form_id>', methods=['PUT'])
+@token_required
+def enable_form(form_id):
+    res = forms.enable_form(form_id)
     return make_response(jsonify(res[0])), res[1]
