@@ -35,7 +35,7 @@ export class FormBuilderComponent implements OnInit {
 
     availableFieldsParent = [
         {
-            'id': 'accounts',
+            'id': 'accounts_fields',
             'label': this.translate.instant('ACCOUNTS.accounts'),
             'values': [
                 {
@@ -69,19 +69,21 @@ export class FormBuilderComponent implements OnInit {
             ]
         },
         {
-            'id': 'facturation',
+            'id': 'facturation_fields',
             'label': this.translate.instant('FACTURATION.facturation'),
             'values': []
         },
         {
-            'id': 'custom',
+            'id': 'custom_fields',
             'label': this.translate.instant('FORMS.custom_fields'),
             'values': []
         },
     ]
 
-    fields_accounts: any = [];
-    fields_facturation: any = [];
+    fields: any = {
+        'accounts': [],
+        'facturation': []
+    }
 
     constructor(
         private http: HttpClient,
@@ -105,7 +107,7 @@ export class FormBuilderComponent implements OnInit {
         this.loading = false
     }
 
-    drop(event: any) {
+    dropFromAvailableFields(event: any) {
         if (event.previousContainer === event.container) {
             moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
         } else {
@@ -114,6 +116,19 @@ export class FormBuilderComponent implements OnInit {
                 event.previousIndex,
                 event.currentIndex);
         }
+    }
+
+    dropFromForm(event: any) {
+        let unit = event.container.id
+        if (event.previousContainer === event.container) {
+            moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+        } else {
+            transferArrayItem(event.previousContainer.data,
+                event.container.data ? event.container.data : this.fields[unit],
+                event.previousIndex,
+                event.currentIndex);
+        }
+        console.log(this.fields)
     }
 
 }

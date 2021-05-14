@@ -89,33 +89,50 @@
             </button>
         </div>
         <ng-container *ngFor="let category of fieldCategories">
-            <div cdkDropList [id]="category['id']" class="flex border-green-400 border rounded-lg m-20" style="min-height: 50px">
-                <div class="title relative text-xl tracking-wider -top-4 left-2 z-10 pl-1.5 pr-1.5 bg-white">
+            <div class="flex border-green-400 border rounded-lg m-20" style="min-height: 50px">
+                <div class="relative text-xl tracking-wider -top-4 left-2 z-10 pl-1.5 pr-1.5 bg-white">
                     {{ category['label'] | translate }}
                 </div>
-                <div class="content"></div>
+                <div cdkDropList [cdkDropListData]="fields[category['id']]" style="min-height: 50px; min-width: 70%"
+                     (cdkDropListDropped)="dropFromForm($event)" id="{{ category['id'] }}">
+                    <div *ngFor="let field of this.fields[category['id']]">
+                        <div cdkDrag class="flex flex-row items-center justify-between m-5 cursor-pointer">
+                            <ng-container *ngIf="field.type === 'text'">
+                                <div class="relative -top-3">
+                                    <i class="relative fas fa-arrows-alt text-xl top-0.5 mr-2 text-green-400"></i>
+                                    {{ field['label'] | translate }}
+                                </div>
+                                <mat-form-field class="right-0">
+                                    <mat-label>{{ 'TYPES.' + field['type'] | translate }}</mat-label>
+                                    <input matInput type="text" disabled>
+                                </mat-form-field>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
             </div>
         </ng-container>
     </mat-sidenav-content>
-    <mat-sidenav #sidenav2 mode="side" opened position="end" class="w-1/4 flex flex-col h-full border-r border-green-400" >
+    <mat-sidenav #sidenav2 mode="side" opened position="end" class="w-1/4 flex flex-col h-full border-r border-green-400">
         <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">{{ "FORMS.available_fields" | translate }}</h3>
         <mat-divider class="border-green-400"></mat-divider>
         <mat-tab-group>
-            <mat-tab *ngFor="let availableFields of this.availableFieldsParent" [label]="this.translate.instant(availableFields['label'])">
-                <div [cdkDropListConnectedTo]="['accounts','facturation']"
-                     cdkDropList [cdkDropListData]="availableFields['values']" (cdkDropListDropped)="drop($event)"
-                     *ngFor="let field of availableFields['values']">
-                    <div cdkDrag class="flex flex-row items-center justify-between m-5 cursor-pointer">
-                        <ng-container *ngIf="field.type === 'text'">
-                            <div class="relative -top-3">
-                                <i class="relative fas fa-arrows-alt text-xl top-0.5 mr-2 text-green-400"></i>
-                                {{ field['label'] | translate }}
-                            </div>
-                            <mat-form-field class="right-0">
-                                <mat-label>{{ 'TYPES.' + field['type'] | translate }}</mat-label>
-                                <input matInput type="text" disabled>
-                            </mat-form-field>
-                        </ng-container>
+            <mat-tab *ngFor="let availableFields of this.availableFieldsParent" label="{{ availableFields['label'] | translate }}">
+                <div id="{{ availableFields['id'] }}" cdkDropList [cdkDropListData]="availableFields['values']"
+                     (cdkDropListDropped)="dropFromAvailableFields($event)" class="min-h-screen min-w-full">
+                    <div *ngFor="let field of availableFields['values']">
+                        <div cdkDrag class="flex flex-row items-center justify-between m-5 cursor-pointer">
+                            <ng-container *ngIf="field.type === 'text'">
+                                <div class="relative -top-3">
+                                    <i class="relative fas fa-arrows-alt text-xl top-0.5 mr-2 text-green-400"></i>
+                                    {{ field['label'] | translate }}
+                                </div>
+                                <mat-form-field class="right-0">
+                                    <mat-label>{{ 'TYPES.' + field['type'] | translate }}</mat-label>
+                                    <input matInput type="text" disabled>
+                                </mat-form-field>
+                            </ng-container>
+                        </div>
                     </div>
                 </div>
             </mat-tab>
