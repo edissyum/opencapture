@@ -530,18 +530,6 @@ function addVAT(input){
             search_contains: true,
             width: "100%"
         });
-
-        $(
-        '   <div class="form-group col-md-3 text-center AMOUNT_vat_' + (cptVAT + 1) + '" style="display: none">' +
-        '       <label for="total_vat_' + (cptVAT + 1) + '">' + gt.gettext('VAT_AMOUNT') + ' ' + (cptVAT + 1) + '</label>' +
-        '       <div class="input-group mb-2">' +
-        '           <input autocomplete="off" name="facturationInfo_TOTAL_TVA_' + (cptVAT + 1) + '" type="text" id="total_vat_' + (cptVAT + 1) + '" class="form-control">' +
-        '           <div class="input-group-prepend">' +
-        '               <div class="input-group-text"><i class="fas fa-euro-sign" aria-hidden="true"></i></div>' +
-        '           </div>' +
-        '       </div>' +
-        '   </div>'
-        ).insertAfter(lastVATAmount).slideToggle();
         $('#number_of_vat').val((cptVAT + 1));
     }
 }
@@ -559,7 +547,7 @@ function removeVAT(input){
         });
         VATAmountToRemove.slideToggle(400, 'swing', function(){
             VATAmountToRemove.remove();
-            calculTotal();
+            $('#calculTotal').click();
         });
     }
 
@@ -1178,6 +1166,38 @@ function changeStatus(idPdf, status, submitForm = true){
 
 /******** VALIDATION FUNCTIONS ********/
 
+function calculTotalRaw(){
+    let lastVAT = $('#addVAT').prev();
+    let lastVATCpt = parseInt(lastVAT[0].className.split('_')[2]);
+    let structureHT = $('#ht_1');
+    let analyticsHTInfo = $('#total_ht_info span');
+    let final_ttc = 0;
+    let final_ht = 0;
+    let final_vatAmount = 0;
+    for (let i = 1; i <= lastVATCpt; i++){
+        let currentVat = $('#vat_' + i)[0]
+        if (currentVat){
+            let noTaxe = parseFloat($('#no_taxes_' + i).val())
+            let vatAmount = parseFloat($('#vat_amount_' + i).val())
+            // Check if it's a real number (because a float with point instead of comma, it's not recognized as a float)
+            if (noTaxe !== '' && !isNaN(noTaxe)){
+                final_ht += noTaxe;
+                final_ttc += (noTaxe + vatAmount);
+                final_vatAmount += vatAmount;
+                if (final_vatAmount !== '' && !isNaN(final_vatAmount))
+                    $('#total_vat').val(final_vatAmount.toFixed(2));
+                if (final_ttc !== '' && !isNaN(final_ttc))
+                    $('#total_ttc').val(final_ttc.toFixed(2));
+                if (final_ht !== '' && !isNaN(final_ht)){
+                    $('#total_ht').val(final_ht.toFixed(2));
+                    structureHT.val(final_ht.toFixed(2));
+                    analyticsHTInfo.html(final_ht.toFixed(2));
+                }
+            }
+        }
+    }
+}
+
 function calculTotal(){
     let lastVAT = $('#addVAT').prev();
     let lastVATCpt = parseInt(lastVAT[0].className.split('_')[2]);
@@ -1188,18 +1208,15 @@ function calculTotal(){
 
     for (let i = 1; i <= lastVATCpt; i++){
         let currentVat = $('#vat_' + i)[0]
-
         if (currentVat){
             let vatRate = currentVat.value / 100;
-
             let noTaxe  = $('#no_taxes_' + i)[0].value;
-
             // Check if it's a real number (because a float with point instead of comma, it's not recognized as a float)
             if (noTaxe !== '' && vatRate !== ''){
                 ht += parseFloat(noTaxe);
                 ttc += parseFloat(noTaxe) + (parseFloat(noTaxe) * parseFloat(vatRate));
                 let vatAmount = parseFloat(noTaxe) * parseFloat(vatRate);
-                $('#total_vat_' + i).val(vatAmount.toFixed(2));
+                $('#total_vat').val(vatAmount.toFixed(2));
                 $('#total_ttc').val(ttc.toFixed(2));
                 $('#total_ht').val(ht.toFixed(2));
                 structureHT.val(ht.toFixed(2));

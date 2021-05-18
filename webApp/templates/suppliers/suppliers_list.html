@@ -35,7 +35,6 @@
             <i class="fas fa-search"></i>
         </button>
     </form>
-    {#    <input type="text" id="search-input" class="form-control input-shadow" placeholder="Recherche">#}
     <div class="container-fluid" id="main">
         <div class="table-wrapper supplier_list">
             <table id="supplier-table" class="table">
@@ -148,7 +147,6 @@
                             </a>
                         </td>
                     </tr>
-
                 {% endfor %}
                 </tbody>
             </table>
@@ -179,8 +177,14 @@
                                 </select>
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="company-typo">Typologie</label>
+                                <label for="company-typo">{{ gettext('TYPOLOGY') }}</label>
                                 <input class="form-control" type="text" id="company-typo">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-12" style="margin-left: 25px;">
+                                <input class="custom-control-input" type="checkbox" id="get-only-raw-footer">
+                                <label for="get-only-raw-footer" class="custom-control-label">{{ gettext('GET_ONLY_RAW_FOOTER') }}</label>
                             </div>
                         </div>
                         <!-- Retrieve supplier form from forms.py SupplierForm class -->

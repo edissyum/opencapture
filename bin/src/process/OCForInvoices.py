@@ -38,6 +38,12 @@ else:
     FindFooter = getattr(__import__(custom_array['FindFooter']['path'] + '.' + custom_array['FindFooter']['module'], fromlist=[custom_array['FindFooter']['module']]),
                          custom_array['FindFooter']['module'])
 
+if 'FindFooterRaw' not in custom_array:
+    from bin.src.process.FindFooterRaw import FindFooterRaw
+else:
+    FindFooterRaw = getattr(__import__(custom_array['FindFooterRaw']['path'] + '.' + custom_array['FindFooterRaw']['module'], fromlist=[custom_array['FindFooterRaw']['module']]),
+                         custom_array['FindFooterRaw']['module'])
+
 if 'FindSupplier' not in custom_array:
     from bin.src.process.FindSupplier import FindSupplier
 else:
@@ -117,6 +123,8 @@ def insert(database, log, files, config, supplier, file, invoice_number, date, f
         'no_taxes_1_position': str(footer[0][1]) if footer and footer[0] else '',
         'vat_1': str(footer[2][0]) if footer and footer[2] else '',
         'vat_1_position': str(footer[2][1]) if footer and footer[2] else '',
+        'vat_amount_1': str(footer[4][0]) if footer and footer[4] else '',
+        'vat_amount_1_position': str(footer[4][1]) if footer and footer[4] and len(footer[4]) > 1 else '',
         'footer_page': str(footer[3]) if footer and footer[3] else '1',
         'filename': os.path.basename(file),
         'path': os.path.dirname(file),
@@ -334,31 +342,40 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
             break
 
     # Find footer informations (total amount, no rate amount etc..)
-    footer = FindFooter(ocr, log, locale, config, files, database, supplier, file, ocr.footer_text, typo).run()
+    footerClass = FindFooter(ocr, log, locale, config, files, database, supplier, file, ocr.footer_text, typo)
+    if supplier and supplier[2]['get_only_raw_footer'] == 'True':
+        footerClass = FindFooterRaw(ocr, log, locale, config, files, database, supplier, file, ocr.footer_text, typo)
+
+    footer = footerClass.run()
     if not footer:
-        footer = FindFooter(ocr, log, locale, config, files, database, supplier, file, ocr.last_text, typo, 'full', nb_pages).run()
+        footerClass.target = 'full'
+        footerClass.text = ocr.last_text
+        footerClass.nbPage = nb_pages
+        footer = footerClass.run()
         if footer:
             if len(footer) == 4:
                 footer[3] = nb_pages
             else:
                 footer.append(nb_pages)
+        i = 0
+        tmp_nb_pages = nb_pages
+        while not footer:
+            tmp_nb_pages = tmp_nb_pages - 1
+            if i == 3 or int(tmp_nb_pages) == 1 or nb_pages == 1:
+                break
+            convert(file, files, ocr, tmp_nb_pages, True)
+            if files.isTiff == 'True':
+                _file = files.custom_fileName_tiff
+            else:
+                _file = files.custom_fileName
 
-    i = 0
-    tmp_nb_pages = nb_pages
-    while not footer:
-        tmp_nb_pages = tmp_nb_pages - 1
-        if i == 3 or int(tmp_nb_pages) == 1 or nb_pages == 1:
-            break
-        convert(file, files, ocr, tmp_nb_pages, True)
-        if files.isTiff == 'True':
-            _file = files.custom_fileName_tiff
-        else:
-            _file = files.custom_fileName
-
-        image = files.open_image_return(_file)
-        text = ocr.line_box_builder(image)
-        footer = FindFooter(ocr, log, locale, config, files, database, supplier, file, text, typo, 'full', tmp_nb_pages).run()
-        i += 1
+            image = files.open_image_return(_file)
+            text = ocr.line_box_builder(image)
+            footerClass.text = text
+            footerClass.target = 'full'
+            footerClass.nbPage = tmp_nb_pages
+            footer = footerClass.run()
+            i += 1
 
     # Find delivery number
     delivery_number_class = FindDeliveryNumber(ocr, files, log, locale, config, database, supplier, file, typo, ocr.header_text, 1, False)

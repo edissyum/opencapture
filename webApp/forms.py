@@ -229,7 +229,7 @@ class FacturationForm(Form):
         new_row=True,
         table='invoices',
         column='vat_1',
-        form_group_class='col-md-4',
+        form_group_class='col-md-3',
         is_position=True,
         is_footer=True,
         footer_class="MAIN_vat_1",
@@ -248,9 +248,28 @@ class FacturationForm(Form):
         [validators.required()],
         table='invoices',
         column='no_taxes_1',
-        form_group_class='col-md-4',
+        form_group_class='col-md-3',
         is_position=True,
         is_footer=True,
+        render_kw={
+            'x1_original': '',
+            'y1_original': '',
+            'x2_original': '',
+            'y2_original': '',
+            'page': '',
+            'onfocusout': "ocrOnFly(true, this, true); removeRectangle()",
+            'onfocusin': "ocrOnFly(false, this, true, true)"
+        }
+    )
+    vat_amount_1 = CustomStringField(
+        lazy_gettext('VAT_AMOUNT'),
+        [validators.required()],
+        table='invoices',
+        column='vat_amount_1',
+        form_group_class='col-md-3',
+        is_position=True,
+        is_footer=True,
+        footer_class="MAIN_vat_1",
         render_kw={
             'x1_original': '',
             'y1_original': '',
@@ -264,7 +283,7 @@ class FacturationForm(Form):
     financial_account_1 = CustomSelectField(
         lazy_gettext('LOAD_ACCOUNT'),
         end_row=True,
-        form_group_class='col-md-4',
+        form_group_class='col-md-3',
         is_footer=True,
         choices=['get_financial'],
         render_kw={
@@ -276,6 +295,25 @@ class FacturationForm(Form):
             'data-placeholder': lazy_gettext('SELECT_LOAD_ACCOUNT')
         }
     )
+    total_ttc = CustomStringField(
+        lazy_gettext('TOTAL_TTC'),
+        table='invoices',
+        column='total_ttc',
+        new_row=True,
+        add_calc=True,
+        form_group_class='col-md-3 text-center',
+        form_row_class='justify-content-md-center',
+        is_position=True,
+        render_kw={
+            'x1_original': '',
+            'y1_original': '',
+            'x2_original': '',
+            'y2_original': '',
+            'page': '',
+            'onfocusout': "ocrOnFly(true, this, true); removeRectangle()",
+            'onfocusin': "ocrOnFly(false, this, true, true)"
+        }
+    )
     total_ht = CustomStringField(
         lazy_gettext('TOTAL_NO_RATE'),
         new_row=True,
@@ -283,13 +321,8 @@ class FacturationForm(Form):
         form_group_class='col-md-3 text-center',
         form_row_class='justify-content-md-center'
     )
-    total_ttc = CustomStringField(
-        lazy_gettext('TOTAL_TTC'),
-        form_group_class='col-md-3 text-center',
-        form_row_class='justify-content-md-center'
-    )
     total_vat_1 = CustomStringField(
-        lazy_gettext('VAT_AMOUNT'),
+        lazy_gettext('TOTAL_VAT_AMOUNT'),
         end_row=True,
         form_group_class='col-md-3 text-center',
         form_row_class='justify-content-md-center'

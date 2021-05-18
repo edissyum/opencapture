@@ -326,6 +326,10 @@ def view(pdf_id):
         'data': [pdf_id]
     })
 
+    get_only_raw_footer = False
+    if supplier_info:
+        get_only_raw_footer = supplier_info['get_only_raw_footer']
+
     # Generate form using WTFORM
     supplier_form = forms.SupplierForm(request.form)
     supplier_form = populate_form(supplier_form, pdf_info, position_dict, _db)
@@ -350,7 +354,8 @@ def view(pdf_id):
                            old_page=old_page,
                            old_time=old_time,
                            old_status=old_status,
-                           cfg=_cfg
+                           cfg=_cfg,
+                           get_only_raw_footer=get_only_raw_footer
                            )
 
 
