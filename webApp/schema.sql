@@ -75,6 +75,7 @@ CREATE TABLE if NOT EXISTS invoices(
     register_date            DATETIME DEFAULT (datetime('now', 'localtime')),
     total_ttc                VARCHAR,
     total_ttc_position       VARCHAR,
+    total_ttc_page           VARCHAR,
     no_taxes_1               VARCHAR,
     no_taxes_1_position      VARCHAR,
     vat_1                    VARCHAR,
