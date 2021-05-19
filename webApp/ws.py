@@ -179,6 +179,9 @@ def add_supplier():
     spreadsheet = _Spreadsheet(log, _cfg)
     data = request.get_json()
 
+    if 'getOnlyRawFooter' not in data:
+        data['getOnlyRawFooter'] = False
+
     add_data = {
         'name': data['name'],
         'vat_number': data['VAT'],
@@ -188,6 +191,7 @@ def add_supplier():
         'adress1': data['adress'],
         'adress2': data['adress2'],
         'postal_code': data['zip'],
+        'get_only_raw_footer': str(data['getOnlyRawFooter'])
     }
 
     if data['companyType']:
@@ -240,6 +244,9 @@ def edit_supplier():
     spreadsheet = _Spreadsheet(log, _cfg)
     data = request.get_json()
 
+    if 'getOnlyRawFooter' not in data:
+        data['getOnlyRawFooter'] = False
+
     update_data = {
         'name': data['name'],
         'vat_number': data['VAT'],
@@ -249,6 +256,7 @@ def edit_supplier():
         'adress1': data['adress'],
         'adress2': data['adress2'],
         'postal_code': data['zip'],
+        'get_only_raw_footer': str(data['getOnlyRawFooter'])
     }
 
     if 'companyTypo' in data:
@@ -454,6 +462,7 @@ def retrieve_supplier():
             'zipCode': supplier['postal_code'],
             'city': supplier['city'],
             'companyType': supplier['company_type'],
+            'getOnlyRawFooter': supplier['get_only_raw_footer']
         })
 
     for name in array_supplier:

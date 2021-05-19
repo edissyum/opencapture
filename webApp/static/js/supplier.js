@@ -79,6 +79,8 @@ function addSupplier() {
     let pdfId = $('#pdf_id').val();
     let inputCompanyType = $('#company-type');
     let inputCompanyTypo = $('#company-typo').val();
+    let getOnlyRawFooter = $('#get-only-raw-footer').prop('checked');
+
     if(name === ''){
         if(!inputName.hasClass("is-invalid")){
             inputName.addClass('is-invalid');
@@ -111,7 +113,8 @@ function addSupplier() {
             adress2 : adress2,
             zip : zip,
             companyType : companyType,
-            companyTypo : inputCompanyTypo
+            companyTypo : inputCompanyTypo,
+            getOnlyRawFooter: getOnlyRawFooter
         })
     })
         .then(response => response.json())
@@ -134,6 +137,7 @@ function editSupplier() {
     let supplierId = $('#supplier_id').val();
     let inputCompanyType = $('#company-type');
     let companyTypo = $('#company-typo').val();
+    let getOnlyRawFooter = $('#get-only-raw-footer').prop('checked');
 
     if(name === ''){
         if(!inputName.hasClass("is-invalid")){
@@ -167,7 +171,8 @@ function editSupplier() {
             adress2 : adress2,
             zip : zip,
             companyType : companyType,
-            companyTypo : companyTypo
+            companyTypo : companyTypo,
+            getOnlyRawFooter: getOnlyRawFooter
         })
     })
         .then(response => response.json())
@@ -253,6 +258,12 @@ function openSupplierEditModal(event){
                      .removeAttr('selected')
                      .filter('[id=' + supplier.companyType + ']')
                          .attr('selected', true)
+
+                if (supplier['getOnlyRawFooter'] === 'True'){
+                    $('#get-only-raw-footer').prop('checked', true)
+                }else{
+                    $('#get-only-raw-footer').prop('checked', false)
+                }
             }
         })
 }

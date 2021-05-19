@@ -36,6 +36,8 @@ CREATE TABLE if NOT EXISTS suppliers(
     vat_2_position             VARCHAR,
     vat_3_position             VARCHAR,
     vat_4_position             VARCHAR,
+    vat_amount_1_position      VARCHAR,
+    total_ttc_position         VARCHAR,
     footer_page                VARCHAR,
     supplier_page              VARCHAR,
     invoice_number_page        VARCHAR,
@@ -45,7 +47,8 @@ CREATE TABLE if NOT EXISTS suppliers(
     due_date_page              VARCHAR,
     company_type               VARCHAR DEFAULT 'supplier',
     status                     VARCHAR DEFAULT 'ACTIVE',
-    skip_auto_validate         VARCHAR DEFAULT 'False'
+    skip_auto_validate         VARCHAR DEFAULT 'False',
+    get_only_raw_footer        VARCHAR DEFAULT 'False'
 );
 
 CREATE TABLE if NOT EXISTS invoices(
@@ -72,10 +75,13 @@ CREATE TABLE if NOT EXISTS invoices(
     register_date            DATETIME DEFAULT (datetime('now', 'localtime')),
     total_ttc                VARCHAR,
     total_ttc_position       VARCHAR,
+    total_ttc_page           VARCHAR,
     no_taxes_1               VARCHAR,
     no_taxes_1_position      VARCHAR,
     vat_1                    VARCHAR,
     vat_1_position           VARCHAR,
+    vat_amount_1             VARCHAR,
+    vat_amount_1_position    VARCHAR,
     order_number_1           VARCHAR,
     order_number_1_position  VARCHAR,
     order_number_1_page      VARCHAR,

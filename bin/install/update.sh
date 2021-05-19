@@ -23,8 +23,9 @@ fi
 
 # Put the default paths.
 # Modify them if needed
+currentDate=$(date +%m%d%Y-%H%M%S)
 OCForInvoicesPath="/opt/OpenCaptureForInvoices/"
-backupPath="/opt/OpenCaptureForInvoices.bck/"
+backupPath="/opt/OpenCaptureForInvoices.$currentDate"
 
 user=$(who am i | awk '{print $1}')
 
