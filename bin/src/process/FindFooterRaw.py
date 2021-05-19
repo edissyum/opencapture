@@ -178,7 +178,7 @@ class FindFooterRaw:
             return False
 
     def test_amount(self, no_rate_amount, all_rate_amount, rate_percentage, vat_amount):
-        if no_rate_amount in [False, None] or rate_percentage in [False, None] or all_rate_amount in [False, None] or vat_amount in [False, None]:
+        if no_rate_amount in [False, None, {}] or rate_percentage in [False, None, {}] or all_rate_amount in [False, None, {}] or vat_amount in [False, None, {}]:
             if self.supplier is not False:
                 if no_rate_amount in [False, None, {}]:
                     no_rate_amount = self.process_footer_with_position(['no_taxes_1_position', 'footer_page'])
@@ -208,6 +208,10 @@ class FindFooterRaw:
                 self.vatAmount = vat_amount
             if all_rate_amount:
                 self.allRateAmount = all_rate_amount
+            if rate_percentage:
+                self.ratePercentage = rate_percentage
+            if no_rate_amount:
+                self.noRateAmount = no_rate_amount
 
             if no_rate_amount and rate_percentage:
                 self.noRateAmount = no_rate_amount
@@ -292,6 +296,6 @@ class FindFooterRaw:
         elif value:
             result = value
         else:
-            result = False
+            result = ['', '']
 
         return result
