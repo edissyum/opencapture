@@ -9,6 +9,13 @@
 		"siret": "",
 		"vat_number": ""
 	},
+	"ADDRESSES": {
+		"address_1": "",
+		"address_2": "",
+		"city": "",
+		"country": "",
+		"postal_code": ""
+	},
 	"AUTH": {
 		"authenticated": "You have successfully authenticated",
 		"field_required": "This field is required",
@@ -42,11 +49,14 @@
 		"confirm_delete": "",
 		"confirm_disable": "",
 		"confirm_enable": "",
+		"create": "",
 		"custom_fields": "",
 		"default": "",
 		"delete": "",
 		"disable": "",
-		"enable": ""
+		"enable": "",
+		"modify": "",
+		"updated": ""
 	},
 	"GLOBAL": {
 		"batches": "Batches",

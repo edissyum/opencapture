@@ -71,3 +71,38 @@ def update_form(args):
         error = gettext('UPDATE_FORM_ERROR')
 
     return res, error
+
+
+def update_form_fields(args):
+    db = get_db()
+    error = None
+
+    res = db.update({
+        'table': ['form_models_field'],
+        'set': args['set'],
+        'where': ['id = %s'],
+        'data': [args['form_id']]
+    })
+
+    if not res:
+        error = gettext('UPDATE_FORM_FIELDS_ERROR')
+
+    return res, error
+
+
+def get_fields(args):
+    db = get_db()
+    error = None
+    form_fields = db.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['form_models_field'],
+        'where': ['id = %s'],
+        'data': [args['form_id']]
+    })
+
+    if not form_fields:
+        error = gettext('GET_FIELDS_FORM_ERROR')
+    else:
+        form_fields = form_fields[0]
+
+    return form_fields, error

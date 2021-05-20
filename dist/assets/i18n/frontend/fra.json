@@ -9,6 +9,13 @@
 		"siret": "Numéro de SIRET",
 		"vat_number": "Numéro de TVA"
 	},
+	"ADDRESSES": {
+		"address_1": "N° et nom de rue",
+		"address_2": "Complément d'adresse",
+		"city": "Ville",
+		"country": "Pays",
+		"postal_code": "Code postal"
+	},
 	"AUTH": {
 		"authenticated": "Vous vous êtes authentifié avec succès",
 		"field_required": "Ce champ est requis",
@@ -42,11 +49,14 @@
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer le formulaire {{form}} ?",
 		"confirm_disable": "Êtes vous sûr de vouloir désactiver le formulaire {{form}} ?",
 		"confirm_enable": "Êtes vous sûr de vouloir réactiver le formulaire {{form}} ?",
-		"custom_fields": "",
+		"create": "Créer le formulaire",
+		"custom_fields": "Champs personnalisés",
 		"default": "Formulaire par défaut",
 		"delete": "Supprimer le formulaire",
 		"disable": "Désactiver le formulaire",
-		"enable": "Activer le formulaire"
+		"enable": "Activer le formulaire",
+		"modify": "Modifier le formulaire",
+		"updated": "Formulaire mis à jour avec succès"
 	},
 	"GLOBAL": {
 		"batches": "Lots",

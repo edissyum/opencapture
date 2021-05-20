@@ -61,3 +61,18 @@ def disable_form(form_id):
 def enable_form(form_id):
     res = forms.enable_form(form_id)
     return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('forms/getFields/<int:form_id>', methods=['GET'])
+@token_required
+def get_fields(form_id):
+    res = forms.get_fields(form_id)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('forms/updateFields/<int:form_id>', methods=['POST'])
+@token_required
+def update_fields(form_id):
+    data = request.json
+    res = forms.update_fields({'form_id': form_id, 'data': data})
+    return make_response(jsonify(res[0])), res[1]

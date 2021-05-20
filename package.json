@@ -28,6 +28,7 @@
         "@ngx-translate/core": "^13.0.0",
         "@ngx-translate/http-loader": "^6.0.0",
         "@schematics/angular": "^11.0.5",
+        "ng-sortgrid": "^4.0.3",
         "ngx-file-drag-drop": "^5.1.1",
         "postcss": "^8.2.15",
         "rxjs": "~6.6.0",

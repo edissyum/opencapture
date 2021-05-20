@@ -1,0 +1,22 @@
+::ng-deep .form-builder > .mat-form-field-wrapper > .mat-form-field-flex{
+    @apply h-14
+}
+
+::ng-deep .form-builder > .mat-form-field-wrapper  {
+    @apply pb-3;
+    @apply pt-3;
+    & .mat-form-field-flex > .mat-form-field-infix{
+        @apply w-full;
+
+        & .mat-select > .mat-select-trigger {
+            @apply absolute;
+            @apply -top-4;
+
+            & .mat-select-value > .mat-select-value-text > .mat-select-min-line {
+                @apply absolute;
+                @apply -top-1;
+                @apply right-5;
+            }
+        }
+    }
+}

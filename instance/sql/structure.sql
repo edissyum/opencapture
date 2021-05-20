@@ -21,7 +21,6 @@ CREATE TABLE "form_models" (
 CREATE TABLE "form_models_field" (
     "id"        SERIAL UNIQUE PRIMARY KEY,
     "form_id"   INTEGER,
-    "mandatory" boolean,
     "fields"    JSONB
 );
 
@@ -42,10 +41,10 @@ CREATE TABLE "users_companies" (
     "company_id" INTEGER
 );
 
-CREATE TABLE "adresses" (
+CREATE TABLE "addresses" (
     "id"          SERIAL UNIQUE PRIMARY KEY,
-    "adress1"     VARCHAR(255),
-    "adress2"     VARCHAR(255),
+    "address1"    VARCHAR(255),
+    "address2"    VARCHAR(255),
     "postal_code" VARCHAR(10),
     "city"        VARCHAR(50),
     "country"     VARCHAR(50)
@@ -79,7 +78,7 @@ CREATE TABLE "accounts" (
     "vat_number" VARCHAR(20),
     "siret"      VARCHAR(20),
     "siren"      VARCHAR(20),
-    "adress_id"  INTEGER,
+    "address_id"  INTEGER,
     "typology"   VARCHAR,
     "form_id"    INTEGER
 );
@@ -89,7 +88,7 @@ CREATE TABLE "companies" (
     "name"            VARCHAR(255),
     "company_number"  INTEGER,
     "accounting_plan" INTEGER,
-    "adress_id"       INTEGER
+    "address_id"      INTEGER
 );
 
 CREATE TABLE "companies_accounts" (

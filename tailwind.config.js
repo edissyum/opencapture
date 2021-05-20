@@ -22,6 +22,9 @@ module.exports = (isProd) => ({
                 'verifier': "url('../assets/imgs/Open-Capture_Verifier.svg')",
                 'splitter': "url('../assets/imgs/Open-Capture_Splitter.svg')",
             }),
+            width:{
+                '30': '30%'
+            },
             colors: {
                 green: {
                     400: '#97BF3D'
