@@ -27,11 +27,11 @@ def add_form():
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('forms/getById/<int:user_id>', methods=['GET'])
+@bp.route('forms/getById/<int:form_id>', methods=['GET'])
 @token_required
-def get_form_by_id(user_id):
-    _user = forms.get_form_by_id(user_id)
-    return make_response(jsonify(_user[0])), _user[1]
+def get_form_by_id(form_id):
+    _form = forms.get_form_by_id(form_id)
+    return make_response(jsonify(_form[0])), _form[1]
 
 
 @bp.route('forms/update/<int:form_id>', methods=['PUT'])

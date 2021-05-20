@@ -55,6 +55,8 @@
 		"delete": "",
 		"disable": "",
 		"enable": "",
+		"is_default": "",
+		"label": "",
 		"modify": "",
 		"updated": ""
 	},

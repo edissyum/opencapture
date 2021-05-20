@@ -88,44 +88,57 @@
                 <i class="fas fa-stream text-2xl"></i>
             </button>
         </div>
-        <ng-container *ngFor="let category of fieldCategories; let i = index">
-            <div class="relative text-xl tracking-wider pl-1.5 pr-1.5 bg-white" style="top: 4.3rem; left:4.5rem; width:130px">
-                {{ category['label'] | translate }}
-            </div>
-            <div class="border-green-400 border rounded-lg m-14">
-                <div cdkDropList [cdkDropListData]="fields[category['id']]" class="flex flex-wrap cursor-pointer w-full"
-                     style="min-height: 50px;" (cdkDropListDropped)="dropFromForm($event)" id="{{ category['id'] }}">
-                    <div *ngFor="let field of this.fields[category['id']]" class="flex items-center my-3 px-3 overflow-hidden" [class]="field.class"
-                         ngSortGridGroup="{{ category['id'] }}" ngSortgridItem [ngSortGridItems]="fields[category['id']]" (sorted)="storeNewOrder($event, category['id'])">
-                        <i cdkDrag class="fas fa-arrows-alt text-xl text-green-400 mr-1 mb-1" style="z-index: 999"></i>
-                        <ng-container *ngIf="field.type === 'text'">
-                            <mat-form-field class="right-0 w-full form-builder" [matTooltip]="this.translate.instant(field['label']) + ' (' + this.translate.instant('TYPES.' + field['type']) + ')'">
-                                <mat-label class="border-r-2 border-green-400 inline-block overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
-                                    <b>{{ field['label'] | translate }}</b> ({{ 'TYPES.' + field['type'] | translate }})
-                                </mat-label>
-                                <input class="cursor-pointer" matInput type="text" readonly>
-                                <mat-select [id]="field.id + '_size'" class="relative float-right w-1/5" [(ngModel)]="field.class" (selectionChange)="changeClass($event, category['id'])">
-                                    <mat-option *ngFor="let _class of classList" [value]="_class.id">
-                                        {{ _class.label }}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </ng-container>
-                    </div>
+        <div *ngIf="!loading">
+            <div class="flex flex-wrap justify-center items-center mx-14">
+                <mat-form-field class="w-3/4 mt-6">
+                    <mat-label>{{ "FORMS.label" | translate }}</mat-label>
+                    <input matInput [value]="this.form.label">
+                </mat-form-field>
+                <div class="w-1/4 flex justify-center mt-3">
+                    <mat-slide-toggle [checked]="this.form.default">
+                        {{ "FORMS.is_default" | translate }}
+                    </mat-slide-toggle>
                 </div>
             </div>
-        </ng-container>
-        <div class="flex justify-center items-center">
-            <button mat-button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300" type="submit">
-                <span *ngIf="creationMode">{{ "FORMS.create" | translate }}</span>
-                <span (click)="updateForm()" *ngIf="!creationMode">{{ "FORMS.modify" | translate }}</span>
-            </button>
+            <ng-container *ngFor="let category of fieldCategories; let i = index">
+                <div class="relative text-xl tracking-wider pl-1.5 pr-1.5 bg-white" style="top: 2.5rem; left:4.5rem; width:130px">
+                    {{ category['label'] | translate }}
+                </div>
+                <div class="border-green-400 border rounded-lg mx-14 m-7">
+                    <div cdkDropList (cdkDropListDropped)="dropFromForm($event)" id="{{ category['id'] }}"
+                         class="flex flex-wrap cursor-pointer w-full my-3" style="min-height: 50px;">
+                        <div *ngFor="let field of this.fields[category['id']]" class="flex items-center px-3 overflow-hidden" [class]="field.class"
+                             ngSortGridGroup="{{ category['id'] }}" ngSortgridItem [ngSortGridItems]="fields[category['id']]" (sorted)="storeNewOrder($event, category['id'])">
+                            <i cdkDrag class="fas fa-arrows-alt text-xl text-green-400 mr-1 mb-1" style="z-index: 999"></i>
+                            <ng-container *ngIf="field.type === 'text'">
+                                <mat-form-field class="right-0 w-full form-builder" [matTooltip]="this.translate.instant(field['label']) + ' (' + this.translate.instant('TYPES.' + field['type']) + ')'">
+                                    <mat-label class="border-r-2 border-green-400 inline-block overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
+                                        <b>{{ field['label'] | translate }}</b> ({{ 'TYPES.' + field['type'] | translate }})
+                                    </mat-label>
+                                    <input class="cursor-pointer" matInput type="text" readonly>
+                                    <mat-select [id]="field.id + '_size'" class="relative float-right w-1/5" [(ngModel)]="field.class" (selectionChange)="changeClass($event, category['id'])">
+                                        <mat-option *ngFor="let _class of classList" [value]="_class.id">
+                                            {{ _class.label }}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+            <div class="flex justify-center items-center">
+                <button mat-button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300" type="submit">
+                    <span *ngIf="creationMode">{{ "FORMS.create" | translate }}</span>
+                    <span (click)="updateForm()" *ngIf="!creationMode">{{ "FORMS.modify" | translate }}</span>
+                </button>
+            </div>
         </div>
     </mat-sidenav-content>
-    <mat-sidenav #sidenav2 mode="side" opened position="end" class="w-1/4 flex flex-col h-full border-r border-green-400">
+    <mat-sidenav #sidenav2 mode="side" opened position="end" class="available-fields w-1/4 flex flex-col h-full border-r border-green-400">
         <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">{{ "FORMS.available_fields" | translate }}</h3>
         <mat-divider class="border-green-400"></mat-divider>
-        <mat-tab-group>
+        <mat-tab-group style="height: calc(100% - 64px)" *ngIf="!loading">
             <mat-tab *ngFor="let availableFields of this.availableFieldsParent" label="{{ availableFields['label'] | translate }}">
 <!--                <div ngSortgridItem [ngSortGridItems]="availableFields['values']" *ngFor="let field of availableFields['values']">-->
 <!--                    <div class="flex flex-row items-center justify-between m-5 cursor-pointer">-->
@@ -142,7 +155,7 @@
 <!--                    </div>-->
 <!--                </div>-->
                 <div id="{{ availableFields['id'] }}" cdkDropList [cdkDropListData]="availableFields['values']"
-                     (cdkDropListDropped)="dropFromAvailableFields($event)" class="min-h-screen min-w-full">
+                     (cdkDropListDropped)="dropFromAvailableFields($event)" class="min-w-full" style="min-height: 500px">
                     <div *ngFor="let field of availableFields['values']">
                         <div cdkDrag class="flex flex-row items-center justify-between m-5 cursor-pointer">
                             <ng-container *ngIf="field.type === 'text'">

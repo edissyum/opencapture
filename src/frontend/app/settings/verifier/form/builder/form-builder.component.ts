@@ -1,14 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpClient } from "@angular/common/http";
-import { ActivatedRoute, Router } from "@angular/router";
-import { FormBuilder } from "@angular/forms";
-import { AuthService } from "../../../../../services/auth.service";
-import { UserService } from "../../../../../services/user.service";
-import { TranslateService } from "@ngx-translate/core";
-import { NotificationService } from "../../../../../services/notifications/notifications.service";
-import { SettingsService } from "../../../../../services/settings.service";
-import { PrivilegesService } from "../../../../../services/privileges.service";
-import { moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
+import {Component, OnInit} from '@angular/core';
+import {HttpClient} from "@angular/common/http";
+import {ActivatedRoute, Router} from "@angular/router";
+import {FormBuilder} from "@angular/forms";
+import {AuthService} from "../../../../../services/auth.service";
+import {UserService} from "../../../../../services/user.service";
+import {TranslateService} from "@ngx-translate/core";
+import {NotificationService} from "../../../../../services/notifications/notifications.service";
+import {SettingsService} from "../../../../../services/settings.service";
+import {PrivilegesService} from "../../../../../services/privileges.service";
+import {moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 import {API_URL} from "../../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
@@ -20,6 +20,7 @@ import {of} from "rxjs";
 })
 export class FormBuilderComponent implements OnInit {
     loading = true
+    form: any;
     formId: any;
     creationMode: boolean = true
     labelType = [
@@ -126,30 +127,29 @@ export class FormBuilderComponent implements OnInit {
             'values': []
         },
     ]
-
     fields: any = {
         'accounts': [],
         'facturation': []
     }
     classList: any[] = [
         {
-            'id' : 'w-full',
+            'id': 'w-full',
             'label': '1'
         },
         {
-            'id' : 'w-1/2',
+            'id': 'w-1/2',
             'label': '1/2'
         },
         {
-            'id' : 'w-30',
+            'id': 'w-30',
             'label': '1/3'
         },
         {
-            'id' : 'w-1/4',
+            'id': 'w-1/4',
             'label': '1/4'
         },
         {
-            'id' : 'w-1/5',
+            'id': 'w-1/5',
             'label': '1/5'
         }
     ]
@@ -165,60 +165,86 @@ export class FormBuilderComponent implements OnInit {
         private notify: NotificationService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService
-    ) { }
+    ) {
+    }
 
     ngOnInit(): void {
         this.serviceSettings.init()
         this.formId = this.route.snapshot.params['id'];
-        if (this.formId){
+        if (this.formId) {
             this.creationMode = false
-        }
-        this.http.get(API_URL + '/ws/forms/getFields/' + this.formId, {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                if(data.form_fields.fields){
-                    this.fields = data.form_fields.fields
-                    for (let category in this.fields){
-                        if (this.fields.hasOwnProperty(category)){
-                            this.fields[category].forEach((current_field: any) =>{
-                                this.availableFieldsParent.forEach((parent_fields: any) => {
-                                    let cpt = 0
-                                    parent_fields['values'].forEach((child_fields: any) => {
-                                        if (current_field.id == child_fields.id){
-                                            parent_fields['values'].splice(cpt, 1)
-                                        }
-                                        cpt = cpt + 1
+
+            this.http.get(API_URL + '/ws/forms/getById/' + this.formId, {headers: this.authService.headers}).pipe(
+                tap((data: any) => {
+                    this.form = data
+                    console.log(this.form)
+                }),
+                finalize(() => setTimeout(() => {
+                    this.loading = false
+                }, 500)),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe()
+
+            this.http.get(API_URL + '/ws/forms/getFields/' + this.formId, {headers: this.authService.headers}).pipe(
+                tap((data: any) => {
+                    if (data.form_fields.fields) {
+                        this.fields = data.form_fields.fields
+                        for (let category in this.fields) {
+                            if (this.fields.hasOwnProperty(category)) {
+                                this.fields[category].forEach((current_field: any) => {
+                                    this.availableFieldsParent.forEach((parent: any) => {
+                                        let cpt = 0
+                                        parent['values'].forEach((child_fields: any) => {
+                                            if (current_field.id == child_fields.id) {
+                                                parent['values'].splice(cpt, 1)
+                                            }
+                                            cpt = cpt + 1
+                                        })
                                     })
                                 })
-                            })
+                            }
                         }
                     }
-                }
-            }),
-            finalize(() => this.loading = false),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe()
+                }),
+                finalize(() => setTimeout(() => {
+                    this.loading = false
+                }, 500)),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe()
+        }else{
+            this.loading = false
+            this.form = {
+                'label': '',
+                'default': false
+            }
+        }
     }
 
     dropFromAvailableFields(event: any) {
+        let unit = event.previousContainer.id
         if (event.previousContainer === event.container) {
             moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
         } else {
-            transferArrayItem(event.previousContainer.data,
+            transferArrayItem(event.previousContainer.data ? event.previousContainer.data : this.fields[unit],
                 event.container.data,
                 event.previousIndex,
                 event.currentIndex);
         }
     }
 
-    changeClass(event: any, category: any){
+    changeClass(event: any, category: any) {
         let new_class = event.value
         let id = event.source.id.replace('_size', '')
         this.fields[category].forEach((element: any) => {
-            if(element.id == id){
+            if (element.id == id) {
                 element.class = new_class
             }
         })
@@ -226,22 +252,32 @@ export class FormBuilderComponent implements OnInit {
 
     dropFromForm(event: any) {
         let unit = event.container.id
+        let previousUnit = event.previousContainer.id
         if (event.previousContainer === event.container) {
             moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
         } else {
-            transferArrayItem(event.previousContainer.data,
+            transferArrayItem(event.previousContainer.data ? event.previousContainer.data : this.fields[previousUnit],
                 event.container.data ? event.container.data : this.fields[unit],
                 event.previousIndex,
                 event.currentIndex);
         }
     }
 
-    storeNewOrder(event: any, category_id: any){
-        this.fields[category_id] = event.currentOrder
+    storeNewOrder(event: any, category_id: any) {
+        let tmpCurrentOrder: any[] = []
+        event.currentOrder.forEach((element: any) => {
+            this.fields[category_id].forEach((field: any) => {
+                if (element.id == field.id) {
+                    tmpCurrentOrder.push(element)
+                    console.log(element.id)
+                }
+            })
+        })
+        this.fields[category_id] = tmpCurrentOrder
     }
 
     updateForm() {
-        this.http.post(API_URL + '/ws/forms/updateFields/' + this.formId, this.fields,{headers: this.authService.headers}).pipe(
+        this.http.post(API_URL + '/ws/forms/updateFields/' + this.formId, this.fields, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.notify.success(this.translate.instant('FORMS.updated'))
             }),

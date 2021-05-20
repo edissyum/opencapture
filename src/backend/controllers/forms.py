@@ -54,6 +54,20 @@ def add_form(args):
         return response, 401
 
 
+def get_form_by_id(form_id):
+    form_info, error = forms.get_form_by_id({
+        'form_id': form_id
+    })
+
+    if error is None:
+        return form_info, 200
+    else:
+        response = {
+            "errors": gettext('GET_FORM_BY_ID_ERROR'),
+            "message": error
+        }
+        return response, 401
+
 def update_form(form_id, args):
     form_info, error = forms.get_form_by_id({'form_id': form_id})
     if error is None:
