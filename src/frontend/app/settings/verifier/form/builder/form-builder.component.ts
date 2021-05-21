@@ -242,6 +242,8 @@ export class FormBuilderComponent implements OnInit {
 
     dropFromAvailableFields(event: any) {
         let unit = event.previousContainer.id
+        console.log(event.previousIndex)
+        console.log(event.currentIndex)
         if (event.previousContainer === event.container) {
             moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
         } else {
@@ -275,13 +277,26 @@ export class FormBuilderComponent implements OnInit {
         }
     }
 
+    deleteField(event: any, previousIndex: any, category:any){
+        for(let parent_field in this.availableFieldsParent){
+            let id = this.availableFieldsParent[parent_field].id.split('_fields')[0]
+            if (id == category){
+                let currentIndex = this.availableFieldsParent[parent_field]['values'].length
+                transferArrayItem(this.fields[category],
+                    this.availableFieldsParent[parent_field]['values'],
+                    previousIndex,
+                    currentIndex);
+            }
+        }
+
+    }
+
     storeNewOrder(event: any, category_id: any) {
         let tmpCurrentOrder: any[] = []
         event.currentOrder.forEach((element: any) => {
             this.fields[category_id].forEach((field: any) => {
                 if (element.id == field.id) {
                     tmpCurrentOrder.push(element)
-                    console.log(element.id)
                 }
             })
         })
@@ -324,8 +339,15 @@ export class FormBuilderComponent implements OnInit {
             this.http.post(API_URL + '/ws/forms/add', {'args': {'label' : label, '"default"' : is_default}}, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {
+                    this.http.post(API_URL + '/ws/forms/updateFields/' + data.id, this.fields, {headers: this.authService.headers}).pipe(
+                        catchError((err: any) => {
+                            console.debug(err);
+                            this.notify.handleErrors(err);
+                            return of(false);
+                        })
+                    ).subscribe()
                     this.notify.success(this.translate.instant('FORMS.created'))
-
+                    this.router.navigateByUrl('settings/verifier/forms').then()
                 }),
                 catchError((err: any) => {
                     console.debug(err);

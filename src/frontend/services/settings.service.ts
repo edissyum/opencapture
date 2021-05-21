@@ -214,10 +214,6 @@ export class SettingsService {
         return actions
     }
 
-    setIsMenuOpen(value: boolean){
-        this.isMenuOpen = value;
-    }
-
     setSelectedSettings(value: string){
         this.selectedSetting = value;
     }
