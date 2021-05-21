@@ -516,27 +516,17 @@ class Files:
             text = ocr.text_builder(improved_cropped_image)
 
         try:
-            period = text.find('.')
-            comma = text.find(',')
-            space = text.find(' ')
-            floatted_text = None
-
-            if period != -1 and comma != -1:
-                if comma < period:
-                    floatted_text = text.replace(',', '').replace('\x0c', '').replace('\n', '')
-                else:
-                    floatted_text = text.replace('.', '').replace('\x0c', '').replace('\n', '').replace(',', '.')
-            elif space != -1 and period != -1 and comma == -1:
-                floatted_text = text.replace(' ', '').replace('\x0c', '').replace('\n', '')
-            elif space != -1 and comma != -1 and period == -1:
-                floatted_text = text.replace(' ', '').replace('\x0c', '').replace('\n', '').replace(',', '.')
-            elif period == -1 and comma != -1:
-                floatted_text = text.replace('\x0c', '').replace('\n', '').replace(',', '.')
-            elif period != -1 and comma == -1:
-                floatted_text = text.replace('.', '').replace('\x0c', '').replace('\n', '')
-
-            if floatted_text:
-                text = str(float(floatted_text))
+            text = text.replace(' ', '.')
+            text = text.replace('\x0c', '')
+            text = text.replace('\n', '')
+            text = text.replace(',', '.')
+            splitted_number = text.split('.')
+            last_index = splitted_number[len(splitted_number) - 1]
+            if len(last_index) > 2:
+                text = text.replace('.', '')
+            else:
+                splitted_number.pop(-1)
+                text = ''.join(splitted_number) + '.' + last_index
         except (ValueError, SyntaxError, TypeError):
             pass
 
