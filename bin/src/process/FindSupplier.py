@@ -85,6 +85,11 @@ class FindSupplier:
                 supplier = self.search_suplier(column, _data.group())
                 if supplier:
                     return supplier, line
+
+            for _data in re.finditer(r"" + regex + "", corrected_line.replace(' ', '').replace('.', '').replace(',', '').replace('(', '').replace(')', '')):
+                supplier = self.search_suplier(column, _data.group())
+                if supplier:
+                    return supplier, line
         return []
 
     def regenerate_ocr(self):
