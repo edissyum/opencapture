@@ -84,7 +84,7 @@
                 <hr class="border-green-400">
             </div>
         </div>
-        <mat-table matSort [dataSource]="forms" (matSortChange)="sortData($event)" class="w-full">
+        <mat-table matSort matSortDisableClear [dataSource]="forms" (matSortChange)="sortData($event)" class="w-full">
             <ng-container matColumnDef="id">
                 <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.id' | translate }} </mat-header-cell>
                 <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>

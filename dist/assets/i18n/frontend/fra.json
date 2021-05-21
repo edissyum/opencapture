@@ -55,6 +55,8 @@
 		"delete": "Supprimer le formulaire",
 		"disable": "Désactiver le formulaire",
 		"enable": "Activer le formulaire",
+		"is_default": "Formulaire par défaut",
+		"label": "Libellé du formulaire",
 		"modify": "Modifier le formulaire",
 		"updated": "Formulaire mis à jour avec succès"
 	},

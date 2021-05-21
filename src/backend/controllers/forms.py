@@ -45,6 +45,7 @@ def add_form(args):
         response = {
             "id": res
         }
+        forms.add_form_fields(res)
         return response, 200
     else:
         response = {
@@ -68,10 +69,11 @@ def get_form_by_id(form_id):
         }
         return response, 401
 
+
 def update_form(form_id, args):
     form_info, error = forms.get_form_by_id({'form_id': form_id})
     if error is None:
-        res, error = forms.update_form(args)
+        res, error = forms.update_form({'set': args, 'form_id': form_id})
         if res:
             response = {
                 "res": res
@@ -164,17 +166,10 @@ def get_fields(form_id):
     form_info, error = forms.get_form_by_id({'form_id': form_id})
     if error is None:
         res, error = forms.get_fields({'form_id': form_id})
-        if res:
-            response = {
-                "form_fields": res
-            }
-            return response, 200
-        else:
-            response = {
-                "errors": "GET_FORMS_FIELDS_ERROR",
-                "message": error
-            }
-            return response, 401
+        response = {
+            "form_fields": res
+        }
+        return response, 200
     else:
         response = {
             "errors": "GET_FORMS_FIELDS_ERROR",

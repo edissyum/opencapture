@@ -13,8 +13,8 @@ CREATE TABLE "users" (
 CREATE TABLE "form_models" (
     "id"      SERIAL UNIQUE PRIMARY KEY,
     "label"   VARCHAR(50),
-    "default" boolean,
-    "enabled" boolean,
+    "default" boolean default false,
+    "enabled" boolean default true,
     "status" VARCHAR(5) default 'OK'
 );
 

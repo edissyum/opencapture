@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {ActivatedRoute, Router} from "@angular/router";
-import {FormBuilder} from "@angular/forms";
+import {FormBuilder, FormControl} from "@angular/forms";
 import {AuthService} from "../../../../../services/auth.service";
 import {UserService} from "../../../../../services/user.service";
 import {TranslateService} from "@ngx-translate/core";
@@ -20,7 +20,14 @@ import {of} from "rxjs";
 })
 export class FormBuilderComponent implements OnInit {
     loading = true
-    form: any;
+    form: any = {
+        'label': {
+            'control': new FormControl(),
+        },
+        'default': {
+            'control': new FormControl(),
+        }
+    }
     formId: any;
     creationMode: boolean = true
     labelType = [
@@ -48,7 +55,7 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'accounts',
                     type: 'text',
                     required: true,
-                    class: "w-1/3"
+                    class: "w-30"
                 },
                 {
                     id: 'siret',
@@ -56,7 +63,7 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'accounts',
                     type: 'text',
                     required: false,
-                    class: "w-1/3"
+                    class: "w-30"
                 },
                 {
                     id: 'siren',
@@ -64,7 +71,7 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'accounts',
                     type: 'text',
                     required: false,
-                    class: "w-1/3"
+                    class: "w-30"
                 },
                 {
                     id: 'vat_number',
@@ -72,7 +79,7 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'accounts',
                     type: 'text',
                     required: true,
-                    class: "w-1/3"
+                    class: "w-30"
                 },
                 {
                     id: 'address1',
@@ -80,7 +87,7 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'addresses',
                     type: 'text',
                     required: true,
-                    class: "w-1/3"
+                    class: "w-30"
                 },
                 {
                     id: 'address2',
@@ -88,7 +95,7 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'addresses',
                     type: 'text',
                     required: true,
-                    class: "w-1/3"
+                    class: "w-30"
                 },
                 {
                     id: 'postal_code',
@@ -96,7 +103,7 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'addresses',
                     type: 'text',
                     required: true,
-                    class: "w-1/3"
+                    class: "w-30"
                 },
                 {
                     id: 'city',
@@ -104,7 +111,7 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'addresses',
                     type: 'text',
                     required: true,
-                    class: "w-1/3"
+                    class: "w-30"
                 },
                 {
                     id: 'country',
@@ -112,7 +119,7 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'addresses',
                     type: 'text',
                     required: true,
-                    class: "w-1/3"
+                    class: "w-30"
                 },
             ]
         },
@@ -176,8 +183,17 @@ export class FormBuilderComponent implements OnInit {
 
             this.http.get(API_URL + '/ws/forms/getById/' + this.formId, {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
-                    this.form = data
-                    console.log(this.form)
+                    for (let field in this.form){
+                        if (this.form.hasOwnProperty(field)){
+                            for (let info in data){
+                                if (data.hasOwnProperty(info)){
+                                    if (info == field){
+                                        this.form[field].control.value = data[info]
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }),
                 finalize(() => setTimeout(() => {
                     this.loading = false
@@ -221,10 +237,6 @@ export class FormBuilderComponent implements OnInit {
             ).subscribe()
         }else{
             this.loading = false
-            this.form = {
-                'label': '',
-                'default': false
-            }
         }
     }
 
@@ -277,15 +289,52 @@ export class FormBuilderComponent implements OnInit {
     }
 
     updateForm() {
-        this.http.post(API_URL + '/ws/forms/updateFields/' + this.formId, this.fields, {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                this.notify.success(this.translate.instant('FORMS.updated'))
-            }),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe()
+        let label = this.form.label.control.value
+        let is_default = this.form.default.control.value
+        if (label){
+            this.http.put(API_URL + '/ws/forms/update/' + this.formId, {'args': {'label' : label, '"default"' : is_default}}, {headers: this.authService.headers},
+            ).pipe(
+                tap(()=> {
+                    this.http.post(API_URL + '/ws/forms/updateFields/' + this.formId, this.fields, {headers: this.authService.headers}).pipe(
+                        tap((data: any) => {
+                            this.notify.success(this.translate.instant('FORMS.updated'))
+                        }),
+                        catchError((err: any) => {
+                            console.debug(err);
+                            this.notify.handleErrors(err);
+                            return of(false);
+                        })
+                    ).subscribe()
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        }else{
+            this.notify.error('FORMS.label_mandatory')
+        }
+    }
+
+    createForm(){
+        let label = this.form.label.control.value
+        let is_default = this.form.default.control.value
+        if (label){
+            this.http.post(API_URL + '/ws/forms/add', {'args': {'label' : label, '"default"' : is_default}}, {headers: this.authService.headers},
+            ).pipe(
+                tap((data: any) => {
+                    this.notify.success(this.translate.instant('FORMS.created'))
+
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        }else{
+            this.notify.error('FORMS.label_mandatory')
+        }
     }
 }

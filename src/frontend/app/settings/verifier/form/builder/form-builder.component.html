@@ -70,7 +70,7 @@
             </mat-expansion-panel>
         </mat-nav-list>
     </mat-sidenav>
-    <mat-sidenav-content class="bg-white">
+    <mat-sidenav-content class="bg-white overflow-hidden">
         <div *ngIf="loading">
             <app-loader></app-loader>
         </div>
@@ -88,14 +88,14 @@
                 <i class="fas fa-stream text-2xl"></i>
             </button>
         </div>
-        <div *ngIf="!loading">
+        <div *ngIf="!loading" class="overflow-auto" style="height: calc(100% - 64px)">
             <div class="flex flex-wrap justify-center items-center mx-14">
                 <mat-form-field class="w-3/4 mt-6">
                     <mat-label>{{ "FORMS.label" | translate }}</mat-label>
-                    <input matInput [value]="this.form.label">
+                    <input matInput [formControl]="this.form['label'].control" required>
                 </mat-form-field>
-                <div class="w-1/4 flex justify-center mt-3">
-                    <mat-slide-toggle [checked]="this.form.default">
+                <div class="w-1/4 flex justify-center mt-1">
+                    <mat-slide-toggle [formControl]="this.form['default'].control">
                         {{ "FORMS.is_default" | translate }}
                     </mat-slide-toggle>
                 </div>
@@ -128,9 +128,9 @@
                 </div>
             </ng-container>
             <div class="flex justify-center items-center">
-                <button mat-button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300" type="submit">
-                    <span *ngIf="creationMode">{{ "FORMS.create" | translate }}</span>
-                    <span (click)="updateForm()" *ngIf="!creationMode">{{ "FORMS.modify" | translate }}</span>
+                <button mat-button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300">
+                    <span class="block" (click)="createForm()" *ngIf="creationMode">{{ "FORMS.create" | translate }}</span>
+                    <span class="block" (click)="updateForm()" *ngIf="!creationMode">{{ "FORMS.modify" | translate }}</span>
                 </button>
             </div>
         </div>
@@ -140,20 +140,6 @@
         <mat-divider class="border-green-400"></mat-divider>
         <mat-tab-group style="height: calc(100% - 64px)" *ngIf="!loading">
             <mat-tab *ngFor="let availableFields of this.availableFieldsParent" label="{{ availableFields['label'] | translate }}">
-<!--                <div ngSortgridItem [ngSortGridItems]="availableFields['values']" *ngFor="let field of availableFields['values']">-->
-<!--                    <div class="flex flex-row items-center justify-between m-5 cursor-pointer">-->
-<!--                        <ng-container *ngIf="field.type === 'text'">-->
-<!--                            <div class="relative -top-3">-->
-<!--                                <i class="relative fas fa-arrows-alt text-xl top-0.5 mr-2 text-green-400"></i>-->
-<!--                                {{ field['label'] | translate }}-->
-<!--                            </div>-->
-<!--                            <mat-form-field class="right-0">-->
-<!--                                <mat-label>{{ 'TYPES.' + field['type'] | translate }}</mat-label>-->
-<!--                                <input class="cursor-pointer" matInput type="text" readonly>-->
-<!--                            </mat-form-field>-->
-<!--                        </ng-container>-->
-<!--                    </div>-->
-<!--                </div>-->
                 <div id="{{ availableFields['id'] }}" cdkDropList [cdkDropListData]="availableFields['values']"
                      (cdkDropListDropped)="dropFromAvailableFields($event)" class="min-w-full" style="min-height: 500px">
                     <div *ngFor="let field of availableFields['values']">

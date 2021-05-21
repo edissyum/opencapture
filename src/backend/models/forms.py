@@ -29,6 +29,7 @@ def get_forms(args):
         'where': ['1=%s'] if 'where' not in args else args['where'],
         'data': ['1'] if 'data' not in args else args['data'],
         'limit': str(args['limit']) if 'limit' in args else [],
+        'order_by': ['id ASC'],
         'offset': str(args['offset']) if 'offset' in args else [],
     })
 
@@ -80,7 +81,7 @@ def update_form_fields(args):
     res = db.update({
         'table': ['form_models_field'],
         'set': args['set'],
-        'where': ['id = %s'],
+        'where': ['form_id = %s'],
         'data': [args['form_id']]
     })
 
@@ -90,19 +91,55 @@ def update_form_fields(args):
     return res, error
 
 
+def add_form_fields(args):
+    db = get_db()
+    args = {
+        'table': 'form_models_field',
+        'columns': {
+            'form_id': str(args),
+        }
+    }
+    res = db.insert(args)
+    return '', False
+
+
+def add_form(args):
+    db = get_db()
+    forms_exists, error = get_forms({
+        'where': ['label = %s', 'status <> %s'],
+        'data': [args['label'], 'DEL']
+    })
+
+    if not forms_exists:
+        args = {
+            'table': 'form_models',
+            'columns': {
+                'label': args['label'],
+                'default': args['"default"'],
+            }
+        }
+        res = db.insert(args)
+
+        if not res:
+            error = gettext('ADD_FORM_ERROR')
+        return res, error
+    else:
+        error = gettext('FORM_LABEL_ALREADY_EXIST')
+
+    return '', error
+
+
 def get_fields(args):
     db = get_db()
     error = None
     form_fields = db.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['form_models_field'],
-        'where': ['id = %s'],
+        'where': ['form_id = %s'],
         'data': [args['form_id']]
     })
 
-    if not form_fields:
-        error = gettext('GET_FIELDS_FORM_ERROR')
-    else:
+    if form_fields:
         form_fields = form_fields[0]
 
     return form_fields, error

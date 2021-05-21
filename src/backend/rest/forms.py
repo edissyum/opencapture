@@ -22,7 +22,7 @@ def get_forms():
 @bp.route('forms/add', methods=['POST'])
 @token_required
 def add_form():
-    data = json.loads(request.data)
+    data = request.json['args']
     res = forms.add_form(data)
     return make_response(jsonify(res[0])), res[1]
 
