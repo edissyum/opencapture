@@ -521,12 +521,13 @@ class Files:
             text = text.replace('\n', '')
             text = text.replace(',', '.')
             splitted_number = text.split('.')
-            last_index = splitted_number[len(splitted_number) - 1]
-            if len(last_index) > 2:
-                text = text.replace('.', '')
-            else:
-                splitted_number.pop(-1)
-                text = ''.join(splitted_number) + '.' + last_index
+            if len(splitted_number) > 1:
+                last_index = splitted_number[len(splitted_number) - 1]
+                if len(last_index) > 2:
+                    text = text.replace('.', '')
+                else:
+                    splitted_number.pop(-1)
+                    text = ''.join(splitted_number) + '.' + last_index
         except (ValueError, SyntaxError, TypeError):
             pass
 
