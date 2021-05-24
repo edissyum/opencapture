@@ -520,19 +520,14 @@ def validate_form():
 
         _set = {
             'invoice_number': invoice_number,
-            'invoice_number_position': request.form['invoice_number_position'] if 'invoice_number_position' in request.form else '',
             'no_taxes_1': no_taxes_1,
             'vat_amount_1': vat_amount_1,
             'vat_1': vat_1,
             'total_ttc': total_ttc,
             'invoice_date': invoice_date,
-            'invoice_date_position': request.form['invoice_date_position'] if 'invoice_date_position' in request.form else '',
             'invoice_due_date': invoice_due_date,
-            'invoice_due_date_position': request.form['invoice_due_date_position'] if 'invoice_due_date_position' in request.form else '',
             'delivery_number_1': delivery_number,
-            'delivery_number_1_position': request.form['delivery_number_1_position'] if 'delivery_number_1_position' in request.form else '',
             'order_number_1': order_number,
-            'order_number_1_position': request.form['order_number_1_position'] if 'order_number_1_position' in request.form else ''
         }
 
         if footer_page != '':
@@ -543,8 +538,19 @@ def validate_form():
             _set['vat_amount_1_position'] = request.form['vat_amount_1_position']
         if 'vat_1_position' in request.form and request.form['vat_1_position'] != "":
             _set['vat_1_position'] = request.form['vat_1_position']
+
+        if 'order_number_1_position' in request.form and request.form['order_number_1_position'] != "":
+            _set['order_number_1_position'] = request.form['order_number_1_position']
+        if 'delivery_number_1_position' in request.form and request.form['delivery_number_1_position'] != "":
+            _set['delivery_number_1_position'] = request.form['delivery_number_1_position']
+        if 'invoice_due_date_position' in request.form and request.form['invoice_due_date_position'] != "":
+            _set['invoice_due_date_position'] = request.form['invoice_due_date_position']
+        if 'invoice_date_position' in request.form and request.form['invoice_date_position'] != "":
+            _set['invoice_date_position'] = request.form['invoice_date_position']
         if 'total_ttc_position' in request.form and request.form['total_ttc_position'] != "":
             _set['total_ttc_position'] = request.form['total_ttc_position']
+        if 'invoice_number_position' in request.form and request.form['invoice_number_position'] != "":
+            _set['invoice_number_position'] = request.form['invoice_number_position']
 
         _db.update({
             'table': ['invoices'],
