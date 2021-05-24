@@ -1187,7 +1187,9 @@ function calculTotalRaw(){
                 if (final_vatAmount !== '' && !isNaN(final_vatAmount))
                     $('#total_vat').val(final_vatAmount.toFixed(2));
                 if (final_ttc !== '' && !isNaN(final_ttc))
-                    $('#total_ttc').val(final_ttc.toFixed(2));
+                    if ($('#pdf_status').val() !== 'END' && $('#total_ttc').val() !== ""){
+                        $('#total_ttc').val(final_ttc.toFixed(2));
+                    }
                 if (final_ht !== '' && !isNaN(final_ht)){
                     $('#total_ht').val(final_ht.toFixed(2));
                     structureHT.val(final_ht.toFixed(2));
