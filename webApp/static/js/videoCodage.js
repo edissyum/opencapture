@@ -1083,7 +1083,7 @@ $('#validateForm').on('click', function(){
             '</button>').insertAfter($('#returnToValidate'));
         }
 
-    }else if(form[0].checkValidity() && totalStructure !== total_ht){
+    }else if(form[0].checkValidity() && totalStructure !== total_ht && $('#supplier_raw_footer').val() === 'False'){
         modalBody.html(
             '<span id="analyticsAmountError">' +
                 gt.gettext('CALCUL_NOT_EQUAL_WOULD_YOU_VALIDATE') +
