@@ -12,11 +12,13 @@ import {moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 import {API_URL} from "../../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
+import {DateAdapter, MAT_DATE_LOCALE} from "@angular/material/core";
+import {LocaleService} from "../../../../../services/locale.service";
 
 @Component({
     selector: 'app-create',
     templateUrl: './form-builder.component.html',
-    styleUrls: ['./form-builder.component.scss']
+    styleUrls: ['./form-builder.component.scss'],
 })
 export class FormBuilderComponent implements OnInit {
     loading = true
@@ -31,7 +33,10 @@ export class FormBuilderComponent implements OnInit {
     formId: any;
     creationMode: boolean = true
     labelType = [
-        this.translate.instant('TYPES.text')
+        this.translate.instant('TYPES.text'),
+        this.translate.instant('TYPES.textarea'),
+        this.translate.instant('TYPES.date'),
+        this.translate.instant('TYPES.select')
     ]
 
     fieldCategories: any[] = [
@@ -42,6 +47,10 @@ export class FormBuilderComponent implements OnInit {
         {
             'id': 'facturation',
             'label': this.translate.instant('FACTURATION.facturation')
+        },
+        {
+            'id': 'other',
+            'label': this.translate.instant('FORMS.other')
         }
     ];
     availableFieldsParent = [
@@ -55,7 +64,7 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'accounts',
                     type: 'text',
                     required: true,
-                    class: "w-30"
+                    class: "w-1/3"
                 },
                 {
                     id: 'siret',
@@ -63,7 +72,7 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'accounts',
                     type: 'text',
                     required: false,
-                    class: "w-30"
+                    class: "w-1/3"
                 },
                 {
                     id: 'siren',
@@ -71,7 +80,7 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'accounts',
                     type: 'text',
                     required: false,
-                    class: "w-30"
+                    class: "w-1/3"
                 },
                 {
                     id: 'vat_number',
@@ -79,7 +88,7 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'accounts',
                     type: 'text',
                     required: true,
-                    class: "w-30"
+                    class: "w-1/3"
                 },
                 {
                     id: 'address1',
@@ -87,7 +96,7 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'addresses',
                     type: 'text',
                     required: true,
-                    class: "w-30"
+                    class: "w-1/3"
                 },
                 {
                     id: 'address2',
@@ -95,7 +104,7 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'addresses',
                     type: 'text',
                     required: true,
-                    class: "w-30"
+                    class: "w-1/3"
                 },
                 {
                     id: 'postal_code',
@@ -103,7 +112,7 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'addresses',
                     type: 'text',
                     required: true,
-                    class: "w-30"
+                    class: "w-1/3"
                 },
                 {
                     id: 'city',
@@ -111,7 +120,7 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'addresses',
                     type: 'text',
                     required: true,
-                    class: "w-30"
+                    class: "w-1/3"
                 },
                 {
                     id: 'country',
@@ -119,14 +128,111 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'addresses',
                     type: 'text',
                     required: true,
-                    class: "w-30"
+                    class: "w-1/3"
                 },
             ]
         },
         {
             'id': 'facturation_fields',
             'label': this.translate.instant('FACTURATION.facturation'),
-            'values': []
+            'values': [
+                {
+                    id: 'order_number',
+                    label: this.translate.instant('FACTURATION.order_number'),
+                    unit: 'facturation',
+                    type: 'text',
+                    required: true,
+                    class: "w-1/3"
+                },
+                {
+                    id: 'delivery_number',
+                    label: this.translate.instant('FACTURATION.delivery_number'),
+                    unit: 'facturation',
+                    type: 'text',
+                    required: true,
+                    class: "w-1/3"
+                },
+                {
+                    id: 'invoice_number',
+                    label: this.translate.instant('FACTURATION.invoice_number'),
+                    unit: 'facturation',
+                    type: 'text',
+                    required: true,
+                    class: "w-1/3"
+                },
+                {
+                    id: 'invoice_date',
+                    label: this.translate.instant('FACTURATION.invoice_date'),
+                    unit: 'facturation',
+                    type: 'date',
+                    required: true,
+                    class: "w-1/3"
+                },
+                {
+                    id: 'invoice_due_date',
+                    label: this.translate.instant('FACTURATION.invoice_due_date'),
+                    unit: 'facturation',
+                    type: 'date',
+                    required: true,
+                    class: "w-1/3"
+                },
+                {
+                    id: 'vat_rate',
+                    label: this.translate.instant('FACTURATION.vat_rate'),
+                    unit: 'facturation',
+                    type: 'text',
+                    required: true,
+                    class: "w-1/3"
+                },
+                {
+                    id: 'no_rate_amount',
+                    label: this.translate.instant('FACTURATION.no_rate_amount'),
+                    unit: 'facturation',
+                    type: 'text',
+                    required: true,
+                    class: "w-1/3"
+                },
+                {
+                    id: 'vat_amount',
+                    label: this.translate.instant('FACTURATION.vat_amount'),
+                    unit: 'facturation',
+                    type: 'text',
+                    required: true,
+                    class: "w-1/3"
+                },
+                {
+                    id: 'accounting_plan',
+                    label: this.translate.instant('FACTURATION.accounting_plan'),
+                    unit: 'facturation',
+                    type: 'select',
+                    required: true,
+                    class: "w-1/3"
+                },
+                {
+                    id: 'total_ttc',
+                    label: this.translate.instant('FACTURATION.total_ttc'),
+                    unit: 'facturation',
+                    type: 'text',
+                    required: true,
+                    class: "w-1/3"
+                },
+                {
+                    id: 'total_ht',
+                    label: this.translate.instant('FACTURATION.total_ht'),
+                    unit: 'facturation',
+                    type: 'text',
+                    required: true,
+                    class: "w-1/3"
+                },
+                {
+                    id: 'total_vat',
+                    label: this.translate.instant('FACTURATION.total_vat'),
+                    unit: 'facturation',
+                    type: 'text',
+                    required: true,
+                    class: "w-1/3"
+                },
+            ]
         },
         {
             'id': 'custom_fields',
@@ -136,7 +242,8 @@ export class FormBuilderComponent implements OnInit {
     ]
     fields: any = {
         'accounts': [],
-        'facturation': []
+        'facturation': [],
+        'other': []
     }
     classList: any[] = [
         {
@@ -150,6 +257,10 @@ export class FormBuilderComponent implements OnInit {
         {
             'id': 'w-30',
             'label': '1/3'
+        },
+        {
+            'id': 'w-1/3',
+            'label': '1/33'
         },
         {
             'id': 'w-1/4',
@@ -168,14 +279,17 @@ export class FormBuilderComponent implements OnInit {
         public userService: UserService,
         private formBuilder: FormBuilder,
         private authService: AuthService,
+        private _adapter: DateAdapter<any>,
         public translate: TranslateService,
         private notify: NotificationService,
+        private localeService: LocaleService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService
     ) {
     }
 
     ngOnInit(): void {
+        this._adapter.setLocale(this.localeService.matLang);
         this.serviceSettings.init()
         this.formId = this.route.snapshot.params['id'];
         if (this.formId) {
@@ -195,9 +309,39 @@ export class FormBuilderComponent implements OnInit {
                         }
                     }
                 }),
-                finalize(() => setTimeout(() => {
-                    this.loading = false
-                }, 500)),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe()
+
+            this.http.get(API_URL + '/ws/customFields/list', {headers: this.authService.headers}).pipe(
+                tap((data: any) => {
+                    if (data.customFields) {
+                        for (let field in data.customFields) {
+                            if (data.customFields.hasOwnProperty(field)){
+                                if(data.customFields[field].module == 'verifier'){
+                                    for (let parent in this.availableFieldsParent){
+                                        if(this.availableFieldsParent[parent].id == 'custom_fields'){
+                                            this.availableFieldsParent[parent].values.push(
+                                                {
+                                                    id: 'custom_' + data.customFields[field].id,
+                                                    label: data.customFields[field].label,
+                                                    unit: 'custom',
+                                                    type: data.customFields[field].type,
+                                                    required: data.customFields[field].required,
+                                                    class: "w-1/3"
+                                                }
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }),
+                finalize(() => setTimeout(() => {}, 500)),
                 catchError((err: any) => {
                     console.debug(err);
                     this.notify.handleErrors(err);
@@ -208,7 +352,13 @@ export class FormBuilderComponent implements OnInit {
             this.http.get(API_URL + '/ws/forms/getFields/' + this.formId, {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
                     if (data.form_fields.fields) {
-                        this.fields = data.form_fields.fields
+                        if(data.form_fields.fields.facturation !== undefined)
+                            this.fields.facturation = data.form_fields.fields.facturation
+                        if(data.form_fields.fields.accounts)
+                            this.fields.accounts = data.form_fields.fields.accounts
+                        if(data.form_fields.fields.other)
+                            this.fields.other = data.form_fields.fields.other
+
                         for (let category in this.fields) {
                             if (this.fields.hasOwnProperty(category)) {
                                 this.fields[category].forEach((current_field: any) => {
@@ -242,8 +392,6 @@ export class FormBuilderComponent implements OnInit {
 
     dropFromAvailableFields(event: any) {
         let unit = event.previousContainer.id
-        console.log(event.previousIndex)
-        console.log(event.currentIndex)
         if (event.previousContainer === event.container) {
             moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
         } else {
@@ -267,6 +415,7 @@ export class FormBuilderComponent implements OnInit {
     dropFromForm(event: any) {
         let unit = event.container.id
         let previousUnit = event.previousContainer.id
+
         if (event.previousContainer === event.container) {
             moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
         } else {
@@ -277,10 +426,12 @@ export class FormBuilderComponent implements OnInit {
         }
     }
 
-    deleteField(event: any, previousIndex: any, category:any){
+    deleteField(event: any, previousIndex: any, category:any, unit: any){
+        if (unit == 'addresses')
+            unit = 'accounts'
         for(let parent_field in this.availableFieldsParent){
             let id = this.availableFieldsParent[parent_field].id.split('_fields')[0]
-            if (id == category){
+            if (id == unit){
                 let currentIndex = this.availableFieldsParent[parent_field]['values'].length
                 transferArrayItem(this.fields[category],
                     this.availableFieldsParent[parent_field]['values'],

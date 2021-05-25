@@ -5,9 +5,9 @@
             style="padding-top: 0.9rem">{{ "SETTINGS.administration" | translate }}</h3>
         <mat-divider class="border-green-400"></mat-divider>
         <mat-nav-list class="pt-0">
-            <mat-expansion-panel *ngFor="let parent of this.serviceSettings.getSettingsParent()"
+                        <mat-expansion-panel *ngFor="let parent of this.serviceSettings.getSettingsParent()"
                                  [expanded]="this.router.url.includes(parent['id'])">
-                <mat-expansion-panel-header>
+                <mat-expansion-panel-header class="border-t border-green-400 z-30" style="box-shadow: 0 1px 5px 4px gray">
                     <mat-panel-title>
                         {{ parent['label'] | translate }}
                     </mat-panel-title>

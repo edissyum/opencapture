@@ -42,14 +42,27 @@
 		"unknow_error": "Erreur inconnue"
 	},
 	"FACTURATION": {
-		"facturation": "Facturation"
+		"accounting_plan": "Compte de charge",
+		"delivery_number": "Numéro de livraison",
+		"facturation": "Facturation",
+		"invoice_date": "Date de facturation",
+		"invoice_due_date": "Date d'échéance",
+		"invoice_number": "Numéro de facture",
+		"no_rate_amount": "Montant HT",
+		"order_number": "Numéro de commande",
+		"total_ht": "Total HT",
+		"total_ttc": "Total TTC",
+		"total_vat": "Total TVA",
+		"vat_amount": "Montant TVA",
+		"vat_rate": "Taux de TVA"
 	},
 	"FORMS": {
 		"available_fields": "Champs disponibles",
-		"confirm_delete": "Êtes vous sûr de vouloir supprimer le formulaire {{form}} ?",
-		"confirm_disable": "Êtes vous sûr de vouloir désactiver le formulaire {{form}} ?",
-		"confirm_enable": "Êtes vous sûr de vouloir réactiver le formulaire {{form}} ?",
+		"confirm_delete": "Êtes vous sûr de vouloir supprimer le formulaire {{ form }} ?",
+		"confirm_disable": "Êtes vous sûr de vouloir désactiver le formulaire {{ form }} ?",
+		"confirm_enable": "Êtes vous sûr de vouloir réactiver le formulaire {{ form }} ?",
 		"create": "Créer le formulaire",
+		"created": "Formulaire créé avec succès",
 		"custom_fields": "Champs personnalisés",
 		"default": "Formulaire par défaut",
 		"delete": "Supprimer le formulaire",
@@ -58,6 +71,7 @@
 		"is_default": "Formulaire par défaut",
 		"label": "Libellé du formulaire",
 		"modify": "Modifier le formulaire",
+		"other": "Autres",
 		"updated": "Formulaire mis à jour avec succès"
 	},
 	"GLOBAL": {
@@ -117,9 +131,9 @@
 	},
 	"ROLE": {
 		"add": "Ajouter un rôle",
-		"confirm_delete": "Êtes vous sûr de vouloir supprimer le rôle {{role}} ?",
-		"confirm_disable": "Êtes vous sûr de vouloir désactiver le rôle {{role}} ?",
-		"confirm_enable": "Êtes vous sûr de vouloir réactiver le rôle {{role}} ?",
+		"confirm_delete": "Êtes vous sûr de vouloir supprimer le rôle {{ role }} ?",
+		"confirm_disable": "Êtes vous sûr de vouloir désactiver le rôle {{ role }} ?",
+		"confirm_enable": "Êtes vous sûr de vouloir réactiver le rôle {{ role }} ?",
 		"disable": "Désactiver le rôle",
 		"enable": "Activer le rôle",
 		"update": "Modifier le rôle",
@@ -150,7 +164,10 @@
 		"viewer": "Visualisation du lot"
 	},
 	"TYPES": {
-		"text": "Chaîne de caractères"
+		"date": "Date",
+		"select": "Liste de choix",
+		"text": "Chaîne de caractères",
+		"textarea": "Multi lignes"
 	},
 	"UPLOAD": {
 		"extension_unauthorized": "Un ou plusieurs fichiers ne sont pas au format PDF",
@@ -161,9 +178,9 @@
 	},
 	"USER": {
 		"add": "Ajouter un utilisateur",
-		"confirm_delete": "Êtes vous sûr de vouloir supprimer l'utilisateur {{user}} ?",
-		"confirm_disable": "Êtes vous sûr de vouloir désactiver l'utilisateur {{user}} ?",
-		"confirm_enable": "Êtes vous sûr de vouloir ré-activer l'utilisateur {{user}} ?",
+		"confirm_delete": "Êtes vous sûr de vouloir supprimer l'utilisateur {{ user }} ?",
+		"confirm_disable": "Êtes vous sûr de vouloir désactiver l'utilisateur {{ user }} ?",
+		"confirm_enable": "Êtes vous sûr de vouloir ré-activer l'utilisateur {{ user }} ?",
 		"create": "Créer l'utilisateur",
 		"created": "Utiliser créer avec succès",
 		"disable": "Désactiver l'utilisateur",

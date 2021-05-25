@@ -12,6 +12,7 @@ import {TranslateService} from "@ngx-translate/core";
 })
 export class LocaleService {
     currentLang: string = ''
+    matLang: string = 'fr-FR'
     langs: [] = []
 
     constructor(
@@ -38,6 +39,9 @@ export class LocaleService {
         this.http.get(API_URL + '/ws/i18n/getCurrentLang').pipe(
             tap((data: any) => {
                 this.currentLang = data.lang
+                if (this.currentLang != 'fra'){
+                    this.matLang = 'en-GB'
+                }
                 this.translate.use(this.currentLang)
             }),
             catchError((err: any) => {

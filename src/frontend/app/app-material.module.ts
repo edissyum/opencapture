@@ -1,4 +1,4 @@
-import {MAT_DATE_FORMATS} from "@angular/material/core";
+import {MAT_DATE_FORMATS, MAT_DATE_LOCALE} from "@angular/material/core";
 
 export const APP_DATE_FORMATS =
 {
@@ -125,6 +125,7 @@ import { MatTreeModule } from '@angular/material/tree';
         MatTreeModule,
     ],
     providers: [
+        { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' },
         { provide: MAT_DATE_FORMATS, useValue: APP_DATE_FORMATS },
     ]
 })
