@@ -36,7 +36,7 @@ class Locale:
         self.noRatesRegex = ''
         self.vatRateRegex = ''
 
-        with open(self.date_path + self.locale + '.json') as file:
+        with open(self.date_path + self.locale + '.json', encoding="utf-8") as file:
             fp = json.load(file)
             self.arrayDate = fp['dateConvert'] if 'dateConvert' in fp else ''
             self.dateRegex = fp['dateRegex'] if 'dateRegex' in fp else ''

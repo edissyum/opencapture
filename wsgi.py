@@ -1,4 +1,3 @@
-from webApp import appwsgi
-
-if __name__ == "__main__":
-    appwsgi.run()
+import sys
+sys.path.insert(0, '§§PATH§§')
+from src.backend import app as application

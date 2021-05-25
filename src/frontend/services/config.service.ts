@@ -19,9 +19,8 @@ export class ConfigService {
     }
 
     readConfig() {
-        const headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.authService.getToken())
-        return new Promise((resolve, reject) => {
-            this.http.get(API_URL + '/ws/config/readConfig', {headers}).pipe(
+        return new Promise((resolve) => {
+            this.http.get(API_URL + '/ws/config/readConfig', {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
                     this.setConfig(data.text)
                     resolve(true);

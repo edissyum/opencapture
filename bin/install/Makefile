@@ -9,7 +9,7 @@ bold=$(tput bold)
 normal=$(tput sgr0)
 OS=$(lsb_release -si)
 VER=$(lsb_release -r)
-defaultPath=/opt/OpenCaptureForInvoices/
+defaultPath=/var/www/html/opencaptureforinvoices/
 docserverPath=/var/docservers/
 
 user=$(who am i | awk '{print $1}')
@@ -85,24 +85,32 @@ find . -name ".gitkeep" -delete
 chmod u+x $defaultPath/bin/scripts/*.sh
 
 ####################
-# Create the service systemd or supervisor
-touch /etc/systemd/system/OCForInvoices-web.service
-su -c "cat > /etc/systemd/system/OCForInvoices-web.service << EOF
-[Unit]
-Description=Gunicorn instance to Open-Capture For Invoices
-After=network.target
+# Create the Apache service for backend
+touch /etc/apache2/sites-available/opencapture.conf
+su -c "cat > /etc/apache2/sites-available/opencapture.conf << EOF
+<VirtualHost *:80>
+    ServerName localhost
+    WSGIDaemonProcess opencapture user=$user group=$group threads=5
+    WSGIScriptAlias /backend_oc /var/www/html/opencaptureforinvoices/wsgi.py
 
-[Service]
-User=$user
-Group=$group
-WorkingDirectory=$defaultPath/
-ExecStart=gunicorn --timeout 300000 --workers 3 --bind unix:OCForInvoices.sock -m 007 wsgi:appwsgi
-
-[Install]
-WantedBy=multi-user.target
-
+    <Directory $defaultPath>
+        WSGIProcessGroup opencapture
+        WSGIApplicationGroup %{GLOBAL}
+        WSGIPassAuthorization On
+        Order deny,allow
+        Allow from all
+        Require all granted
+    </Directory>
+</VirtualHost>
 EOF"
 
+####################
+# Setting up the WSGI path
+sed -i "s#§§PATH§§#$defaultPath#g" "$defaultPath"/wsgi.py
+
+
+####################
+# Create the service systemd or supervisor
 if [ "$finalChoice" == 2 ]; then
   touch /etc/systemd/system/OCForInvoices-worker.service
   su -c "cat > /etc/systemd/system/OCForInvoices-worker.service << EOF
@@ -174,10 +182,6 @@ EOF"
 fi
 
 ####################
-# Start and enable web service
-systemctl daemon-reload && systemctl start OCForInvoices-web.service
-systemctl enable OCForInvoices-web.service
-####################
 # Create a custom temp directory to cron the delete of the ImageMagick temp content
 mkdir /tmp/OpenCaptureForInvoices/
 chown -R "$user":"$user" /tmp/OpenCaptureForInvoices
@@ -188,37 +192,9 @@ cp $defaultPath/instance/config.ini.default $defaultPath/instance/config.ini
 cp $defaultPath/instance/config/config_DEFAULT.ini.default $defaultPath/instance/config/config_DEFAULT.ini
 
 ####################
-# Initialize flask database
-export FLASK_APP="$defaultPath"/webApp
-flask init-db
-
-####################
 # Generate secret key for Flask and replace it in webbAp/__init.py file
 secret=$(python3 -c 'import secrets; print(secrets.token_hex(16))')
-sed -i "s#§§SECRET§§#$secret#g" "$defaultPath"/webApp/__init__.py
-
-####################
-# Nginx setup
-su -c "cat > /etc/nginx/sites-available/OCForInvoices << EOF
-server {
-    listen 80;
-    server_name 127.0.0.1;
-
-    location / {
-        include proxy_params;
-        proxy_pass http://unix:$defaultPath/OCForInvoices.sock;
-    }
-}
-EOF"
-
-ln -s /etc/nginx/sites-available/OCForInvoices /etc/nginx/sites-enabled
-rm /etc/nginx/sites-enabled/default
-systemctl restart nginx
-
-####################
-# Start and enable the web service
-sleep 5
-systemctl daemon-reload && systemctl start OCForInvoices-web.service
+sed -i "s#§§SECRET§§#$secret#g" "$defaultPath"/src/backend/__init__.py
 
 ####################
 # Fix the rights after root launch to avoid permissions issues
