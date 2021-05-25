@@ -84,5 +84,37 @@
                 <hr class="border-green-400">
             </div>
         </div>
+        <div class="flex justify-center items-center">
+            <form (ngSubmit)="onSubmit()" class="grid grid-cols-2 gap-6 w-full m-10 text-center">
+                <ng-container *ngFor="let field of roleForm">
+                    <mat-form-field *ngIf="field.type == 'text'">
+                        <mat-label>{{ field.label | translate }}</mat-label>
+                        <input matInput [value]="field.control.value" [formControl]="field.control" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field.required">
+                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
+                    </mat-form-field>
+                </ng-container>
+            </form>
+        </div>
+        <mat-divider class="w-1/2 m-auto border-green-400"></mat-divider>
+        <h4 class="text-center mt-10 mb-10">{{ 'PRIVILEGES.list' | translate }}</h4>
+        <div class="flex justify-center items-center ml-10 mr-5">
+            <mat-tab-group *ngIf="this.privileges" dynamicHeight>
+                <mat-tab *ngFor="let parent of this.privileges['parent']" [label]="this.translate.instant('PRIVILEGES.' + parent)">
+                    <div class="grid grid-cols-4 gap-x-60 gap-y-10 mt-10">
+                        <mat-slide-toggle *ngFor="let privilege of this.getChildsByParent(parent)"
+                                          [name]="privilege"
+                                          [checked]="this.hasPrivilege(privilege)"
+                                          (change)="changePrivilege($event)">
+                            {{ 'PRIVILEGES.' + privilege | translate }}
+                        </mat-slide-toggle>
+                    </div>
+                </mat-tab>
+            </mat-tab-group>
+        </div>
+        <div class="flex justify-center items-center mt-10">
+            <button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300" (click)="onSubmit()" mat-button>
+                {{ 'ROLE.create' | translate }}
+            </button>
+        </div>
     </mat-sidenav-content>
 </mat-sidenav-container>

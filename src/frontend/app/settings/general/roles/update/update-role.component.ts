@@ -56,7 +56,6 @@ export class UpdateRoleComponent implements OnInit {
         this.translate.instant('PRIVILEGES.verifier'),
         this.translate.instant('PRIVILEGES.splitter')
     ]
-
     privileges_label = [
         this.translate.instant('PRIVILEGES.access_verifier'),
         this.translate.instant('PRIVILEGES.access_splitter'),
@@ -70,6 +69,7 @@ export class UpdateRoleComponent implements OnInit {
         this.translate.instant('PRIVILEGES.update_role'),
         this.translate.instant('PRIVILEGES.version_update'),
         this.translate.instant('PRIVILEGES.custom_fields'),
+        this.translate.instant('PRIVILEGES.forms_list'),
         this.translate.instant('PRIVILEGES.form_builder')
     ]
     // End translation
@@ -138,14 +138,12 @@ export class UpdateRoleComponent implements OnInit {
 
     isValidForm() {
         let state = true;
-
         this.roleForm.forEach(element => {
             if (element.control.status !== 'DISABLED' && element.control.status !== 'VALID') {
                 state = false;
             }
             element.control.markAsTouched();
         });
-
         return state;
     }
 
@@ -186,7 +184,6 @@ export class UpdateRoleComponent implements OnInit {
                     return of(false);
                 })
             ).subscribe();
-
         }
     }
 
@@ -236,5 +233,4 @@ export class UpdateRoleComponent implements OnInit {
             this.rolePrivileges.push(privilege)
         }
     }
-
 }

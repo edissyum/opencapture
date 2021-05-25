@@ -28,7 +28,7 @@ def get_roles(args):
 
     _roles, error = roles.get_roles(args)
 
-    if _roles:
+    if not error:
         response = {
             "roles": _roles
         }
@@ -44,7 +44,7 @@ def get_roles(args):
 def update_role(role_id, data):
     _vars = pdf.init()
     _db = _vars[0]
-    user_info, error = roles.get_role_by_id({'role_id': role_id})
+    role_info, error = roles.get_role_by_id({'role_id': role_id})
 
     if error is None:
         _set = {
@@ -66,6 +66,31 @@ def update_role(role_id, data):
     else:
         response = {
             "errors": gettext('UPDATE_ROLE_ERROR'),
+            "message": error
+        }
+        return response, 401
+
+
+def create_role(data):
+    _vars = pdf.init()
+    _db = _vars[0]
+
+    _columns = {
+        'label': data['label'],
+        'label_short': data['label_short'],
+    }
+
+    res, error = roles.create_role({'columns': _columns})
+
+    if error is None:
+        response = {
+            "id": res
+        }
+        roles.create_role_privileges({'role_id': res})
+        return response, 200
+    else:
+        response = {
+            "errors": gettext('CREATE_ROLE_ERROR'),
             "message": error
         }
         return response, 401

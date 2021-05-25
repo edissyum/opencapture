@@ -76,3 +76,11 @@ def disable_user(role_id):
 def enable_user(role_id):
     res = roles.enable_role(role_id)
     return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('roles/create', methods=['POST'])
+@token_required
+def create_user():
+    data = request.json['args']
+    res = roles.create_role(data)
+    return make_response(jsonify(res[0])), res[1]

@@ -33,9 +33,6 @@ def get_roles(args):
         'offset': str(args['offset']) if 'offset' in args else [],
     })
 
-    if not roles:
-        error = gettext('NO_ROLES')
-
     return roles, error
 
 
@@ -74,6 +71,21 @@ def update_role(args):
     return role, error
 
 
+def create_role(args):
+    db = get_db()
+    error = None
+
+    role = db.insert({
+        'table': 'roles',
+        'columns': args['columns'],
+    })
+
+    if not role:
+        error = gettext('ROLE_UPDATE_ERROR')
+
+    return role, error
+
+
 def update_role_privileges(args):
     db = get_db()
     error = None
@@ -89,3 +101,20 @@ def update_role_privileges(args):
         error = gettext('ROLE_PRIVILEGES_UPDATE_ERROR')
 
     return role, error
+
+
+def create_role_privileges(args):
+    db = get_db()
+    error = None
+
+    role_privilege = db.insert({
+        'table': 'roles_privileges',
+        'columns': {
+            'role_id': str(args['role_id']),
+        }
+    })
+
+    if not role_privilege:
+        error = gettext('ROLE_PRIVILEGES_CREATE_ERROR')
+
+    return role_privilege, error
