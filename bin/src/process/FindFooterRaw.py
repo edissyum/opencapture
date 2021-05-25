@@ -128,8 +128,9 @@ class FindFooterRaw:
                     if select[0] == 'vat_1_position':  # Fix if we retrieve 2000.0, or 200.0 instead of 20.0 for example
                         tva_amounts = eval(self.Locale.vatRateList)
                         _split = result.split('.')
-                        if _split[1] == '0':
-                            result = _split[0]
+                        if len(_split) > 1:
+                            if _split[1] == '0':
+                                result = _split[0]
 
                         for tva in tva_amounts:
                             if str(tva) in str(result.replace(',', '.')):
