@@ -1,0 +1,7 @@
+::ng-deep .batches > .mat-tab-header {
+    @apply z-20;
+    & .mat-tab-label-container > .mat-tab-list > .mat-tab-labels > .mat-tab-label{
+        @apply w-1/3;
+        @apply h-16;
+    }
+}

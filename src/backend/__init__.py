@@ -21,16 +21,14 @@ import os
 import jinja2
 from flask_cors import CORS
 from flask_babel import Babel
-from flask import redirect, url_for, request, session
+from flask import request, session
 from flask_multistatic import MultiStaticFlask
 
-from .import_rest import auth, locale, config, user, splitter, verifier, roles, privileges, custom_fields, forms
+from .import_rest import auth, locale, config, user, splitter, verifier, roles, privileges, custom_fields, forms, status
 from .functions import get_custom_id
 custom_id = get_custom_id()
 
 
-# def create_app(test_config=None):
-# create and configure the app
 app = MultiStaticFlask(__name__, instance_relative_config=True)
 babel = Babel(app)
 CORS(app, supports_credentials=True)
@@ -67,6 +65,7 @@ app.register_blueprint(user.bp)
 app.register_blueprint(roles.bp)
 app.register_blueprint(forms.bp)
 app.register_blueprint(locale.bp)
+app.register_blueprint(status.bp)
 app.register_blueprint(config.bp)
 app.register_blueprint(splitter.bp)
 app.register_blueprint(verifier.bp)
@@ -99,12 +98,14 @@ try:
 except OSError:
     pass
 
+
 @babel.localeselector
 def get_locale():
     if 'lang' not in session:
         session['lang'] = request.accept_languages.best_match(app.config['LANGUAGES'].keys())
 
     return session['lang']
+
 
 if __name__ == "__main__":
     app.run()

@@ -1,4 +1,10 @@
--- CREATE ROLES
+-- CREATE STATUS
+INSERT INTO "status" ("id","label","label_long") VALUES ('NEW','À valider','À valider');
+INSERT INTO "status" ("id","label","label_long") VALUES ('END','Cloturée','Facture validée et cloturée');
+INSERT INTO "status" ("id","label","label_long") VALUES ('ERR','Erreur','Erreur lors de la qualification');
+INSERT INTO "status" ("id","label","label_long") VALUES ('WAIT_SUP','En attente','En attente validation fournisseur');
+INSERT INTO "status" ("id","label","label_long") VALUES ('DEL','Supprimée','Supprimée');
+
 -- CREATE ROLES
 INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (1, 'superadmin', 'SuperUtilisateur', 'false');
 INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (2, 'admin', 'Administrateur', 'true');

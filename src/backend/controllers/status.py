@@ -15,30 +15,26 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from ..controllers.db import get_db
+from flask import flash, g, redirect, render_template, request, url_for
+
 from flask_babel import gettext
-from werkzeug.security import check_password_hash
+from ..import_controllers import pdf
+from ..models import status
 
 
-def login(args):
-    db = get_db()
-    error = None
-    user = db.select({
-        'select': ['*'] if 'select' not in args else args['select'],
-        'table': ['users'],
-        'where': ['username = %s'],
-        'data': [args['username']]
-    })
+def get_status():
+    _vars = pdf.init()
+    _config = _vars[1]
 
-    if not user:
-        error = gettext('BAD_USERNAME')
-    elif not check_password_hash(user[0]['password'], args['password']):
-        error = gettext('BAD_PASSWORD')
-    elif user[0]['status'] == 'DEL':
-        error = gettext('USER_DELETED')
-    elif user[0]['enabled'] == 0:
-        error = gettext('USER_DISABLED')
+    _status, error = status.get_status()
+    if _status:
+        response = {
+            "status": _status
+        }
+        return response, 200
     else:
-        user = user[0]
-
-    return user, error
+        response = {
+            "errors": gettext("RETRIEVES_STATUS_ERROR"),
+            "message": error
+        }
+        return response, 401

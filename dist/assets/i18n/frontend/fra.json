@@ -22,6 +22,11 @@
 		"login": "Se connecter",
 		"not_connected": "Merci de vous authentifier avant d'accéder à cette page"
 	},
+	"BATCH": {
+		"older": "Lots anciens",
+		"today": "Lots du jour",
+		"yesterday": "Lots de la veille"
+	},
 	"CUSTOM-FIELDS": {
 		"add": "Ajouter le champ personnalisé",
 		"checkbox": "Case à cocher",
@@ -165,6 +170,9 @@
 	"SPLITTER": {
 		"list": "Liste des lots",
 		"viewer": "Visualisation du lot"
+	},
+	"STATUS": {
+		"list": "Liste des status"
 	},
 	"TYPES": {
 		"date": "Date",

@@ -15,30 +15,15 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from ..controllers.db import get_db
-from flask_babel import gettext
-from werkzeug.security import check_password_hash
+from flask import Blueprint, make_response, jsonify
+from ..controllers import status
 
 
-def login(args):
-    db = get_db()
-    error = None
-    user = db.select({
-        'select': ['*'] if 'select' not in args else args['select'],
-        'table': ['users'],
-        'where': ['username = %s'],
-        'data': [args['username']]
-    })
+bp = Blueprint('status', __name__, url_prefix='/ws/')
 
-    if not user:
-        error = gettext('BAD_USERNAME')
-    elif not check_password_hash(user[0]['password'], args['password']):
-        error = gettext('BAD_PASSWORD')
-    elif user[0]['status'] == 'DEL':
-        error = gettext('USER_DELETED')
-    elif user[0]['enabled'] == 0:
-        error = gettext('USER_DISABLED')
-    else:
-        user = user[0]
 
-    return user, error
+@bp.route('status/list', methods=['GET'])
+def status_list():
+    _status = status.get_status()
+    return make_response(jsonify(_status[0])), _status[1]
+

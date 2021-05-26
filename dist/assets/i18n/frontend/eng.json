@@ -22,6 +22,11 @@
 		"login": "Log in",
 		"not_connected": "Please authenticate yourself before accessing this page"
 	},
+	"BATCH": {
+		"older": "",
+		"today": "",
+		"yesterday": ""
+	},
 	"CUSTOM-FIELDS": {
 		"add": "",
 		"checkbox": "",
@@ -165,6 +170,9 @@
 	"SPLITTER": {
 		"list": "List of batches",
 		"viewer": "Batch view"
+	},
+	"STATUS": {
+		"list": ""
 	},
 	"TYPES": {
 		"date": "",
