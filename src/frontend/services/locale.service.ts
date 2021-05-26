@@ -11,7 +11,7 @@ import {TranslateService} from "@ngx-translate/core";
     providedIn: 'root'
 })
 export class LocaleService {
-    currentLang: string = ''
+    currentLang: string = 'fra'
     matLang: string = 'fr-FR'
     langs: [] = []
 

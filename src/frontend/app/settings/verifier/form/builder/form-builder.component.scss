@@ -2,11 +2,44 @@
     @apply h-14
 }
 
-::ng-deep .form-builder > .mat-form-field-wrapper  {
+i.cdk-drag{
+    @apply absolute;
+    @apply text-sm;
+    @apply text-red-500;
+    @apply mr-2;
+    @apply mb-1;
+}
+
+::ng-deep .form-builder > .mat-form-field-wrapper {
     @apply pb-3;
     @apply pt-3;
+
+    &:hover > .mat-form-field-flex > .mat-form-field-infix > i{
+        @apply visible;
+        @apply opacity-100;
+    }
+
+    &:hover > .mat-form-field-flex > .mat-form-field-infix > .mat-form-field-label-wrapper > .mat-form-field-label > mat-label{
+        @apply pl-6
+    }
+
     & .mat-form-field-flex > .mat-form-field-infix{
         @apply w-full;
+
+        & i {
+            @apply invisible;
+            @apply opacity-0;
+            @apply left-0.5;
+            @apply transition-all;
+            @apply duration-500;
+            @apply top-0.5;
+            top: 7px;
+        }
+
+        & .mat-form-field-label-wrapper > .mat-form-field-label > mat-label{
+            @apply ml-0;
+            transition: all .5s;
+        }
 
         & .mat-select > .mat-select-trigger {
             @apply absolute;

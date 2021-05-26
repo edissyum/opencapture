@@ -117,6 +117,7 @@
 		"administration": "Privilèges d'administration",
 		"custom_fields": "Champs personnalisés",
 		"form_builder": "Création de formulaire",
+		"forms_list": "Liste des formulaires",
 		"general": "Privilèges globaux",
 		"list": "Liste des privilèges",
 		"roles_list": "Visualiser la liste des rôles",
@@ -134,10 +135,12 @@
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer le rôle {{ role }} ?",
 		"confirm_disable": "Êtes vous sûr de vouloir désactiver le rôle {{ role }} ?",
 		"confirm_enable": "Êtes vous sûr de vouloir réactiver le rôle {{ role }} ?",
+		"create": "Créer un rôle",
+		"created": "Rôle créé avec succès",
 		"disable": "Désactiver le rôle",
 		"enable": "Activer le rôle",
 		"update": "Modifier le rôle",
-		"updated": "Rôle mis à jour"
+		"updated": "Rôle mis à jour avec succès"
 	},
 	"SETTINGS": {
 		"abouts_us": "À propos",
