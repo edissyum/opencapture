@@ -17,8 +17,7 @@
 
 from flask_babel import gettext
 from ..controllers.auth import token_required
-from ..controllers.verifier import handle_uploaded_file
-from ..controllers import pdf
+from ..controllers import pdf, verifier
 from flask import Blueprint, make_response, request
 
 bp = Blueprint('verifier', __name__, url_prefix='/ws/')
@@ -28,20 +27,20 @@ bp = Blueprint('verifier', __name__, url_prefix='/ws/')
 @token_required
 def upload():
     files = request.files
-    res = handle_uploaded_file(files)
+    res = verifier.handle_uploaded_file(files)
     if res:
         return make_response('', 200)
     else:
         return make_response(gettext('UNKNOW_ERROR'), 400)
 
 
-@bp.route('verifier/list', defaults={'status': None, 'time': None})
-@bp.route('verifier/list/<string:time>', defaults={'status': None})
-@bp.route('verifier/list/<string:time>/<string:status>')
+@bp.route('verifier/invoices/list', methods=['POST'])
 @token_required
-def list(time, status):
+def invoices_list():
     _vars = pdf.init()
     _db = _vars[0]
     _cfg = _vars[1].cfg
 
-    return make_response('', 200)
+    data = request.json
+    res = verifier.retrieve_invoices(data)
+    return make_response(res[0], res[1])

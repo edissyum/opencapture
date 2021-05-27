@@ -26,19 +26,12 @@ def get_roles(args):
     _vars = pdf.init()
     _config = _vars[1]
 
-    _roles, error = roles.get_roles(args)
+    _roles = roles.get_roles(args)
 
-    if not error:
-        response = {
-            "roles": _roles
-        }
-        return response, 200
-    else:
-        response = {
-            "errors": gettext("GET_ROLES_ERROR"),
-            "message": error
-        }
-        return response, 401
+    response = {
+        "roles": _roles
+    }
+    return response, 200
 
 
 def update_role(role_id, data):

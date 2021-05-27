@@ -21,8 +21,6 @@ from ..controllers.db import get_db
 
 def get_roles(args):
     db = get_db()
-    error = None
-
     roles = db.select({
         'select': ["*"] if "select" not in args else args["select"],
         'table': ["roles"],
@@ -33,7 +31,7 @@ def get_roles(args):
         'offset': str(args['offset']) if 'offset' in args else [],
     })
 
-    return roles, error
+    return roles
 
 
 def get_role_by_id(args):

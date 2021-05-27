@@ -107,10 +107,13 @@
 		"verifier": "Open-Capture Vérificateur"
 	},
 	"PAGINATOR": {
+		"display": "Affichage",
 		"first_page": "Première page",
-		"items_per_page": "Nombre de lignes",
+		"items_per_page": "Nombre d'éléments",
 		"last_page": "Dernière page",
 		"next_page": "Page suivante",
+		"of": "de",
+		"on": "sur",
 		"page": "Page",
 		"previous_page": "Page précédente"
 	},

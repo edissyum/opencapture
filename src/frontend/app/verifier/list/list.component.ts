@@ -8,6 +8,7 @@ import {HttpClient} from "@angular/common/http";
 import {AuthService} from "../../../services/auth.service";
 import {TranslateService} from "@ngx-translate/core";
 import {marker} from "@biesbjerg/ngx-translate-extract-marker";
+import {LastUrlService} from "../../../services/last-url.service";
 
 @Component({
     selector: 'app-list',
@@ -15,10 +16,11 @@ import {marker} from "@biesbjerg/ngx-translate-extract-marker";
     styleUrls: ['./list.component.scss']
 })
 export class VerifierListComponent implements OnInit {
-    loading: boolean = true
-    status: any[] = []
-    defaultStatus: string = 'NEW'
-    batchList: any[] = [
+    loading         : boolean   = true
+    status          : any[]     = []
+    currentStatus   : string    = 'NEW'
+    currentTime     : string    = 'today'
+    batchList       : any[]     = [
         {
             'id': 'today',
             'label': marker('BATCH.today'),
@@ -32,22 +34,51 @@ export class VerifierListComponent implements OnInit {
             'label': marker('BATCH.older'),
         }
     ]
+    pageSize        : number    = 16;
+    pageIndex       : number    = 0;
+    total           : number    = 0;
+    offset          : number    = 0;
 
     constructor(
         private http: HttpClient,
         private authService: AuthService,
-        private notify: NotificationService,
         public translate: TranslateService,
+        private notify: NotificationService,
+        private routerExtService: LastUrlService,
         private localeStorageService: LocalStorageService
 
     ) {}
 
     ngOnInit(): void {
         this.localeStorageService.save('splitter_or_verifier', 'verifier')
+        let lastUrl = this.routerExtService.getPreviousUrl()
+        if (lastUrl.includes('verifier/') || lastUrl == '/' || lastUrl == '/upload'){
+            if (this.localeStorageService.get('invoicesPageIndex'))
+                this.pageIndex = parseInt(<string>this.localeStorageService.get('invoicesPageIndex'))
+            this.offset = this.pageSize * (this.pageIndex)
+        }else
+            this.localeStorageService.remove('invoicesPageIndex')
+
         this.http.get(API_URL + '/ws/status/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.status = data.status
-                console.log(this.status)
+            }),
+            finalize(() => this.loading = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe()
+
+        this.loadInvoices()
+    }
+
+    loadInvoices(){
+        this.http.post(API_URL + '/ws/verifier/invoices/list', {'status': this.currentStatus, 'time': this.currentTime},{headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.total = data.total
+                console.log(data)
             }),
             finalize(() => this.loading = false),
             catchError((err: any) => {
@@ -58,10 +89,24 @@ export class VerifierListComponent implements OnInit {
         ).subscribe()
     }
 
-    changeTab(){
+    changeStatus(event: any){
+        this.currentStatus = event.value
+        this.loadInvoices()
+    }
+
+    changeTab(event: any){
         this.loading = true
+        let selectedIndex = event.index
+        this.currentTime = this.batchList[selectedIndex].id
+        this.loadInvoices()
         setTimeout(() => {this.loading = false}, 1000)
     }
 
+    onPageChange(event: any){
+        this.pageSize = event.pageSize
+        this.offset = this.pageSize * (event.pageIndex)
+        this.localeStorageService.save('invoicesPageIndex', event.pageIndex)
+        this.loadInvoices()
+    }
 
 }

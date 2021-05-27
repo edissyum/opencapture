@@ -66,7 +66,7 @@ class Database:
             else:
                 where = ' WHERE ' + ' AND '.join(args['where']) + ' '
 
-            if 'order_by' not in args:
+            if 'order_by' not in args or args['order_by'] in ['', []]:
                 order_by = ''
             else:
                 order_by = ' ORDER BY ' + ', '.join(args['order_by']) + ' '
@@ -90,7 +90,6 @@ class Database:
                 args['data'] = []
 
             query = "SELECT " + select + " FROM " + args['table'] + where + order_by + limit + offset + group_by
-
             c = self.conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
             try:
