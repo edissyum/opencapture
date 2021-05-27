@@ -9,11 +9,15 @@ import {AuthService} from "../../../services/auth.service";
 import {TranslateService} from "@ngx-translate/core";
 import {marker} from "@biesbjerg/ngx-translate-extract-marker";
 import {LastUrlService} from "../../../services/last-url.service";
+import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from "@angular/material/form-field";
 
 @Component({
     selector: 'app-list',
     templateUrl: './list.component.html',
-    styleUrls: ['./list.component.scss']
+    styleUrls: ['./list.component.scss'],
+    providers: [
+        { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } },
+    ]
 })
 export class VerifierListComponent implements OnInit {
     loading         : boolean   = true
@@ -38,6 +42,7 @@ export class VerifierListComponent implements OnInit {
     pageIndex       : number    = 0;
     total           : number    = 0;
     offset          : number    = 0;
+    invoices        : any []    = [];
 
     constructor(
         private http: HttpClient,
@@ -52,7 +57,7 @@ export class VerifierListComponent implements OnInit {
     ngOnInit(): void {
         this.localeStorageService.save('splitter_or_verifier', 'verifier')
         let lastUrl = this.routerExtService.getPreviousUrl()
-        if (lastUrl.includes('verifier/') || lastUrl == '/' || lastUrl == '/upload'){
+        if (lastUrl.includes('verifier/') && !lastUrl.includes('settings') || lastUrl == '/' || lastUrl == '/upload'){
             if (this.localeStorageService.get('invoicesPageIndex'))
                 this.pageIndex = parseInt(<string>this.localeStorageService.get('invoicesPageIndex'))
             this.offset = this.pageSize * (this.pageIndex)
@@ -75,10 +80,13 @@ export class VerifierListComponent implements OnInit {
     }
 
     loadInvoices(){
-        this.http.post(API_URL + '/ws/verifier/invoices/list', {'status': this.currentStatus, 'time': this.currentTime},{headers: this.authService.headers}).pipe(
+        this.http.post(API_URL + '/ws/verifier/invoices/list',
+            {'status': this.currentStatus, 'time': this.currentTime, 'limit': this.pageSize, 'offset': this.offset},
+            {headers: this.authService.headers}
+        ).pipe(
             tap((data: any) => {
                 this.total = data.total
-                console.log(data)
+                this.invoices = data.invoices
             }),
             finalize(() => this.loading = false),
             catchError((err: any) => {

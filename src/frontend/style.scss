@@ -6,12 +6,16 @@
     outline: none!important;
 }
 
+::ng-deep .mat-form-field-appearance-legacy .mat-form-field-underline {
+    background-color: transparent;
+}
+
 .mat-form-field-appearance-outline .mat-form-field-outline {
     @apply text-gray-900 #{!important};
     transition: all;
 }
 
-.mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+.mat-form-field-appearance-outline .mat-focused .mat-form-field-outline-thick {
     @apply text-green-400 #{!important};
 }
 
@@ -32,7 +36,7 @@ mat-ink-bar {
     @apply text-gray-900 #{!important};
 }
 
-.mat-form-field-appearance-outline.mat-form-field-invalid.mat-form-field-invalid .mat-form-field-outline-thick {
+.mat-form-field-appearance-outline .mat-form-field-invalid .mat-form-field-invalid .mat-form-field-outline-thick {
     color:  red !important;
 }
 
@@ -71,4 +75,12 @@ mat-ink-bar {
 
 .mat-row:hover{
     transform: scale(1)
+}
+
+.mat-paginator-page-size-select > .mat-form-field-wrapper > .mat-form-field-flex {
+    @apply bg-transparent #{!important};
+
+    & .mat-form-field-infix > .mat-select > .mat-select-trigger > .mat-select-arrow-wrapper {
+        transform: none!important;
+    }
 }

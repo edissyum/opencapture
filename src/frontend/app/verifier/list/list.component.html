@@ -1,31 +1,46 @@
 <div class="content">
-    <mat-tab-group (selectedTabChange)="changeTab($event)" class="batches" animationDuration="0ms" dynamicHeight>
+    <mat-tab-group (selectedTabChange)="changeTab($event)" class="batches overflow-auto" animationDuration="0ms">
         <mat-tab *ngFor="let batch of batchList" [label]="this.translate.instant(batch.label)" [id]="batch.id">
             <div class="flex flex-col">
-                <mat-form-field class="w-1/6 mt-4 m-auto relative z-30">
+                <mat-form-field class="w-1/6 mt-4 m-auto relative z-30" appearance="outline">
                     <mat-label>{{ 'STATUS.list' | translate }}</mat-label>
-                    <mat-select [(value)]="currentStatus" (selectionChange)="changeStatus($event)">
+                    <mat-select [(value)]="currentStatus" (selectionChange)="changeStatus($event)" >
                         <mat-option *ngFor="let option of status" [value]="option['id']">
                             {{ option['label'] }}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
-                <hr class="w-1/2 m-auto border-green-400 relative z-30">
+                <mat-paginator showFirstLastButtons
+                               class="w1/3 right-4 -mt-20 mb-4"
+                               [length]="this.total"
+                               [pageSize]="pageSize"
+                               [pageIndex]="pageIndex"
+                               [pageSizeOptions]="[4, 8, 16, 24, 48]"
+                               (page)="onPageChange($event)">
+                </mat-paginator>
+                <hr class="w-1/2 m-auto mb-4 border-green-400 relative z-30">
                 <div *ngIf="loading">
                     <app-loader></app-loader>
                 </div>
-                <div class="content mx-10 mt-10" *ngIf="!loading">
-                    <mat-paginator showFirstLastButtons
-                                   [length]="this.total"
-                                   [pageSize]="pageSize"
-                                   [pageIndex]="pageIndex"
-                                   [pageSizeOptions]="[5, 10, 15, 20, 50]"
-                                   (page)="onPageChange($event)">
-                    </mat-paginator>
-                    <div class="list grid grid-cols-4 grid-flow-row gap-4">
-                        <div *ngFor="let t of [1,2,3,4,5,6,7,8,9,10]" class="bg-red-50">
-                            {{ t }}
-                        </div>
+                <div class="content mx-10 mt-3" *ngIf="!loading">
+                    <div class="list grid grid-cols-4 grid-flow-row gap-6">
+                        <mat-card *ngFor="let invoice of this.invoices; let i = index">
+                            <img mat-card-image class="p-3.5" src="assets/imgs/thumb.jpg">
+                            <mat-card-header>
+                                <mat-card-title>
+                                    Nom du fournisseur
+                                    <span class="absolute right-6 text-green-400 text-md badge badge-secondary badge-pill"
+                                          [matTooltip]="this.translate.instant('VERIFIER.nb_pages') + ' : 1'">1 <i class="far fa-file-alt"></i>
+                                    </span>
+                                </mat-card-title>
+                                <mat-card-subtitle>Informations sur la facture</mat-card-subtitle>
+                            </mat-card-header>
+                            <mat-card-actions>
+                                <i class="fas fa-trash cursor-pointer text-red-500">
+                                    <span class="font-medium mat-typography">{{ 'VERIFIER.delete_invoice' | translate }}</span>
+                                </i>
+                            </mat-card-actions>
+                        </mat-card>
                     </div>
                 </div>
             </div>

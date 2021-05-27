@@ -16,11 +16,15 @@ import {Sort} from "@angular/material/sort";
 import {ConfirmDialogComponent} from "../../../../../services/confirm-dialog/confirm-dialog.component";
 import {SettingsService} from "../../../../../services/settings.service";
 import {PrivilegesService} from "../../../../../services/privileges.service";
+import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from "@angular/material/form-field";
 
 @Component({
     selector: 'app-roles-list',
     templateUrl: './roles-list.component.html',
-    styleUrls: ['./roles-list.component.scss']
+    styleUrls: ['./roles-list.component.scss'],
+    providers: [
+        { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } },
+    ]
 })
 
 export class RolesListComponent implements OnInit {

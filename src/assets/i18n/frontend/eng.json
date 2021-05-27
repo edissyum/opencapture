@@ -215,6 +215,7 @@
 		"username": "Username"
 	},
 	"VERIFIER": {
+		"delete_invoice": "",
 		"list": "Invoices",
 		"viewer": "View PDF"
 	}

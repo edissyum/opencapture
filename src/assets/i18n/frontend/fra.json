@@ -215,6 +215,7 @@
 		"username": "Nom d'utilisateur"
 	},
 	"VERIFIER": {
+		"delete_invoice": "Supprimer la facture",
 		"list": "Factures",
 		"viewer": "Visualisation du PDF"
 	}

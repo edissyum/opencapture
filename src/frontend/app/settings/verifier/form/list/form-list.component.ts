@@ -16,11 +16,15 @@ import {LocalStorageService} from "../../../../../services/local-storage.service
 import {Sort} from "@angular/material/sort";
 import {ConfirmDialogComponent} from "../../../../../services/confirm-dialog/confirm-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
+import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from "@angular/material/form-field";
 
 @Component({
     selector: 'app-list',
     templateUrl: './form-list.component.html',
-    styleUrls: ['./form-list.component.scss']
+    styleUrls: ['./form-list.component.scss'],
+    providers: [
+        { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } },
+    ]
 })
 export class FormListComponent implements OnInit {
     loading: boolean            = true
