@@ -48,7 +48,7 @@ export class CustomMatPaginatorIntl extends MatPaginatorIntl {
     }
 
     getRangeLabel = (page: number, pageSize: number, length: number) =>  {
-        if (length == 0 || pageSize == 0) { return `0 de ${length}`; }
+        if (length == 0 || pageSize == 0) { return '0 ' + this.translate.instant('PAGINATOR.of') + ` ${length}`; }
 
         length = Math.max(length, 0);
 
@@ -60,7 +60,9 @@ export class CustomMatPaginatorIntl extends MatPaginatorIntl {
                 startIndex + pageSize;
 
         const nbPage = Math.ceil(length / pageSize);
-        //return `${startIndex + 1} - ${endIndex} / ${length} (${page})`;
-        return this.translate.instant('PAGINATOR.page') + ` ${page + 1} / ${nbPage}`;
+        // return `${startIndex + 1} - ${endIndex} / ${length} (${page})`;
+        return this.translate.instant('PAGINATOR.display') + ' ' + this.translate.instant('PAGINATOR.of') + ' ' +
+            ` ${startIndex + 1} - ${endIndex} ` + this.translate.instant('PAGINATOR.on') + ` ${length} ` + '  |  ' +
+            this.translate.instant('PAGINATOR.page') + ` ${page + 1} / ${nbPage}`;
     }
 }
