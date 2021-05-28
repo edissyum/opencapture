@@ -45,3 +45,11 @@ def invoices_list():
     print(data)
     res = verifier.retrieve_invoices(data)
     return make_response(res[0], res[1])
+
+
+@bp.route('verifier/ocrOnFly', methods=['POST'])
+@token_required
+def ocr_on_fly():
+    data = request.json
+    print(data)
+    return make_response('', 200)

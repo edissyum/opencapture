@@ -51,7 +51,7 @@
 		"accounting_plan": "Compte de charge",
 		"delivery_number": "Numéro de livraison",
 		"facturation": "Facturation",
-		"invoice_date": "Date de facturation",
+		"invoice_date": "Date de la facture",
 		"invoice_due_date": "Date d'échéance",
 		"invoice_number": "Numéro de facture",
 		"no_rate_amount": "Montant HT",
@@ -219,6 +219,8 @@
 		"delete_invoice": "Supprimer la facture",
 		"list": "Factures",
 		"nb_pages": "Nombre de page",
+		"original_file": "Fichier d'origine",
+		"register_date": "Enregistré le",
 		"search": "Rechercher une facture",
 		"viewer": "Visualisation du PDF"
 	}

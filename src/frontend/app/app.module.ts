@@ -44,7 +44,7 @@ import { CustomFieldsComponent } from './settings/general/custom-fields/custom-f
 import { FormListComponent } from './settings/verifier/form/list/form-list.component';
 import { FormBuilderComponent } from './settings/verifier/form/builder/form-builder.component';
 import { NgsgModule } from 'ng-sortgrid'
-
+declare var $: any;
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
 }

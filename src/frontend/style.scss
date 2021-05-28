@@ -6,6 +6,35 @@
     outline: none!important;
 }
 
+
+/*** Image area select ***/
+.imgareaselect-border1, .imgareaselect-border2,
+.imgareaselect-border3, .imgareaselect-border4 {
+    @apply opacity-50;
+    @apply border;
+    @apply border-black;
+}
+
+.imgareaselect-handle {
+    @apply bg-white;
+    @apply border;
+    @apply border-black;
+    @apply opacity-50;
+}
+
+.imgareaselect-selection{
+    @apply bg-black;
+    @apply opacity-20;
+    @apply border;
+    @apply border-black;
+}
+
+.imgareaselect-outer{
+    @apply opacity-0;
+}
+
+/*** END image area select ***/
+
 ::ng-deep .mat-form-field-appearance-legacy .mat-form-field-underline {
     background-color: transparent;
 }
