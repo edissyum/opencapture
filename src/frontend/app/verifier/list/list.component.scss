@@ -17,6 +17,44 @@
 }
 
 ::ng-deep .list > mat-card {
+    & .mat-card-image{
+        transform: scale(1);
+        @apply transition-all;
+        @apply duration-500;
+    }
+
+    & .mat-card-header .mat-card-title > span:first-child {
+        @apply relative;
+
+        &:after {
+            @apply absolute;
+            content: "";
+            @apply w-0;
+            @apply h-0.5;
+            @apply bg-green-400;
+            @apply left-1/2;
+            @apply -bottom-0.5;
+            @apply transition-all;
+            @apply duration-500;
+        }
+    }
+
+    &:hover {
+        & .mat-card-image{
+            transform: scale(1.1);
+        }
+
+        & .mat-card-header > .mat-card-header-text > .mat-card-title > span:first-child:after{
+            width: 100%;
+            left: 0;
+        }
+
+        & mat-card-actions {
+            @apply visible;
+            @apply opacity-100;
+        }
+    }
+
     & mat-card-actions {
         margin: 0 16px;
         @apply invisible;
@@ -39,8 +77,4 @@
         }
     }
 
-    &:hover > mat-card-actions {
-        @apply visible;
-        @apply opacity-100;
-    }
 }

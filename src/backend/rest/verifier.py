@@ -42,5 +42,6 @@ def invoices_list():
     _cfg = _vars[1].cfg
 
     data = request.json
+    print(data)
     res = verifier.retrieve_invoices(data)
     return make_response(res[0], res[1])

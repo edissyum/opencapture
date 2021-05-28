@@ -6,6 +6,8 @@ import { LocaleService } from "../../services/locale.service";
 import { LocalStorageService } from "../../services/local-storage.service";
 import { PrivilegesService } from "../../services/privileges.service";
 import { Router } from "@angular/router";
+import {TranslateService} from "@ngx-translate/core";
+import {marker} from "@biesbjerg/ngx-translate-extract-marker";
 
 @Component({
     selector: 'app-menu',
@@ -36,12 +38,14 @@ export class MenuComponent implements OnInit {
         public router: Router,
         public location: Location,
         public userService: UserService,
+        public translate: TranslateService,
         public localeService: LocaleService,
         public privilegesService: PrivilegesService,
         public localeStorageService: LocalStorageService
     ) { }
 
     ngOnInit(): void {
+        marker('ACCOUNTS.accounts_list') // Needed to get the translation in the JSON file
         this.userService.user = this.userService.getUserFromLocal();
         if (this.userService.user){
             this.localeService.getLocales();

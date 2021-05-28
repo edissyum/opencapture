@@ -4,6 +4,7 @@
 	},
 	"ACCOUNTS": {
 		"accounts": "Fournisseur",
+		"accounts_list": "Liste des fournisseurs",
 		"name": "Nom",
 		"siren": "Numéro de SIREN",
 		"siret": "Numéro de SIRET",
@@ -217,6 +218,8 @@
 	"VERIFIER": {
 		"delete_invoice": "Supprimer la facture",
 		"list": "Factures",
+		"nb_pages": "Nombre de page",
+		"search": "Rechercher une facture",
 		"viewer": "Visualisation du PDF"
 	}
 }

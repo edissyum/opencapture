@@ -4,6 +4,7 @@
 	},
 	"ACCOUNTS": {
 		"accounts": "",
+		"accounts_list": "",
 		"name": "",
 		"siren": "",
 		"siret": "",
@@ -215,7 +216,10 @@
 		"username": "Username"
 	},
 	"VERIFIER": {
+		"delete_invoice": "",
 		"list": "Invoices",
+		"nb_pages": "",
+		"search": "",
 		"viewer": "View PDF"
 	}
 }

@@ -42,7 +42,9 @@ export class VerifierListComponent implements OnInit {
     pageIndex       : number    = 0;
     total           : number    = 0;
     offset          : number    = 0;
+    selectedTab     : number    = 0;
     invoices        : any []    = [];
+    search          : string    = '';
 
     constructor(
         private http: HttpClient,
@@ -55,20 +57,28 @@ export class VerifierListComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
+        marker('VERIFIER.nb_pages') // Needed to get the translation in the JSON file
         this.localeStorageService.save('splitter_or_verifier', 'verifier')
         let lastUrl = this.routerExtService.getPreviousUrl()
         if (lastUrl.includes('verifier/') && !lastUrl.includes('settings') || lastUrl == '/' || lastUrl == '/upload'){
             if (this.localeStorageService.get('invoicesPageIndex'))
                 this.pageIndex = parseInt(<string>this.localeStorageService.get('invoicesPageIndex'))
+
+            if (this.localeStorageService.get('invoicesTimeIndex')){
+                this.selectedTab = parseInt(<string>this.localeStorageService.get('invoicesTimeIndex'))
+                this.currentTime = this.batchList[this.selectedTab].id
+            }
+
             this.offset = this.pageSize * (this.pageIndex)
-        }else
+        }else{
             this.localeStorageService.remove('invoicesPageIndex')
+            this.localeStorageService.remove('invoicesTimeIndex')
+        }
 
         this.http.get(API_URL + '/ws/status/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.status = data.status
             }),
-            finalize(() => this.loading = false),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
@@ -80,8 +90,9 @@ export class VerifierListComponent implements OnInit {
     }
 
     loadInvoices(){
+        this.loading = true
         this.http.post(API_URL + '/ws/verifier/invoices/list',
-            {'status': this.currentStatus, 'time': this.currentTime, 'limit': this.pageSize, 'offset': this.offset},
+            {'status': this.currentStatus, 'time': this.currentTime, 'limit': this.pageSize, 'offset': this.offset, 'search': this.search},
             {headers: this.authService.headers}
         ).pipe(
             tap((data: any) => {
@@ -102,18 +113,22 @@ export class VerifierListComponent implements OnInit {
         this.loadInvoices()
     }
 
-    changeTab(event: any){
-        this.loading = true
-        let selectedIndex = event.index
-        this.currentTime = this.batchList[selectedIndex].id
+    onTabChange(event: any){
+        this.selectedTab = event.index
+        this.localeStorageService.save('invoicesTimeIndex', this.selectedTab)
+        this.currentTime = this.batchList[this.selectedTab].id
         this.loadInvoices()
-        setTimeout(() => {this.loading = false}, 1000)
     }
 
     onPageChange(event: any){
         this.pageSize = event.pageSize
         this.offset = this.pageSize * (event.pageIndex)
         this.localeStorageService.save('invoicesPageIndex', event.pageIndex)
+        this.loadInvoices()
+    }
+
+    searchInvoice(event: any){
+        this.search = event.target.value
         this.loadInvoices()
     }
 
