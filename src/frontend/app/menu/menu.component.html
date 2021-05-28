@@ -86,7 +86,7 @@
                         <i class="fas fa-cog"></i>
                     </button>
                 </div>
-                <div class="ml-3 relative" *ngIf="this.privilegesService.hasPrivilege('settings')">
+                <div class="ml-3 relative" *ngIf="this.privilegesService.hasPrivilege('suppliers_list')">
                     <button id="accounts-menu" aria-haspopup="true"
                             mat-mini-fab routerLink="/settings"
                             [class.settings_active]="location.path().includes('settings')"

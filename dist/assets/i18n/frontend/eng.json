@@ -219,6 +219,8 @@
 		"delete_invoice": "",
 		"list": "Invoices",
 		"nb_pages": "",
+		"original_file": "",
+		"register_date": "",
 		"search": "",
 		"viewer": "View PDF"
 	}
