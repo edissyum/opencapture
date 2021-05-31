@@ -30,7 +30,20 @@ export class VerifierViewerComponent implements OnInit {
     ngOnInit(): void {
         let invoiceId = this.route.snapshot.params['id'];
         this.imageInvoice = $('#my-image')
-        this.ocrOnFly(false, '')
+        // this.ocrOnFly(false, '')
+    }
+
+    ocr(event: any){
+        let inputId = event.target.id
+        let inputLabel = event.target.labels[0].textContent
+        this.imageInvoice.selectAreas({
+            minSize: [20, 20],
+            maxSize: [this.imageInvoice.width(), this.imageInvoice.height() / 8],
+            onChanged: function(img: any, cpt: any, selection: any) {
+                if ($('#select-area-label_' + cpt).length == 0)
+                    $('#select-areas-label-container_' + cpt).append('<div id="select-area-label_' + cpt + '">' + inputLabel + '</div>')
+            }
+        });
     }
 
     ocrOnFly(isRemoved: boolean, input: string, removeWhiteSpace = false, needToBeNumber = false, needToBeDate = false){

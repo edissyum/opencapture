@@ -26,7 +26,7 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (12, 'custom_fields', 
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (13, 'version_update', 'general');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (14, 'forms_list', 'verifier');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (15, 'form_builder', 'verifier');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (16, 'suppliers_list', 'general');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (16, 'accounts_list', 'general');
 ALTER SEQUENCE "privileges_id_seq" RESTART WITH 16;
 
 -- ADD PRIVILEGES TO ROLES

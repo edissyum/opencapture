@@ -78,18 +78,16 @@
                     </div>
                 </div>
                 <div class="ml-3 mr-2 relative" *ngIf="this.privilegesService.hasPrivilege('settings')">
-                    <button id="settings-menu" aria-haspopup="true"
-                            mat-mini-fab routerLink="/settings"
+                    <button id="settings-menu" aria-haspopup="true" mat-mini-fab routerLink="/settings"
                             [class.settings_active]="location.path().includes('settings')"
                             [matTooltip]="this.translate.instant('GLOBAL.settings')"
                             class="bg-green-400 hover:ring-4 hover:ring-offset-4 hover:ring-green-400 hover:ring-opacity-60">
                         <i class="fas fa-cog"></i>
                     </button>
                 </div>
-                <div class="ml-3 relative" *ngIf="this.privilegesService.hasPrivilege('suppliers_list')">
-                    <button id="accounts-menu" aria-haspopup="true"
-                            mat-mini-fab routerLink="/settings"
-                            [class.settings_active]="location.path().includes('settings')"
+                <div class="ml-3 relative" *ngIf="this.privilegesService.hasPrivilege('accounts_list')">
+                    <button id="accounts-menu" aria-haspopup="true" mat-mini-fab routerLink="/accounts_list"
+                            [class.settings_active]="location.path().includes('accounts_list')"
                             [matTooltip]="this.translate.instant('ACCOUNTS.accounts_list')"
                             class="bg-green-400 hover:ring-4 hover:ring-offset-4 hover:ring-green-400 hover:ring-opacity-60">
                         <i class="fas fa-building"></i>

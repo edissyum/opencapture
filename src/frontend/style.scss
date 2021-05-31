@@ -8,31 +8,78 @@
 
 
 /*** Image area select ***/
-.imgareaselect-border1, .imgareaselect-border2,
-.imgareaselect-border3, .imgareaselect-border4 {
-    @apply opacity-50;
-    @apply border;
-    @apply border-black;
+//.imgareaselect-border1, .imgareaselect-border2,
+//.imgareaselect-border3, .imgareaselect-border4 {
+//    @apply opacity-50;
+//    @apply border;
+//    @apply border-black;
+//}
+//
+//.imgareaselect-handle {
+//    @apply bg-white;
+//    @apply border;
+//    @apply border-black;
+//    @apply opacity-50;
+//}
+//
+//.imgareaselect-selection{
+//    @apply bg-black;
+//    @apply opacity-20;
+//    @apply border;
+//    @apply border-black;
+//}
+//
+//.imgareaselect-outer{
+//    @apply opacity-0;
+//}
+//
+
+.select-areas-overlay {
+    @apply overflow-hidden;
+    @apply absolute;
 }
 
-.imgareaselect-handle {
-    @apply bg-white;
+.select-areas-outline {
     @apply border;
     @apply border-black;
     @apply opacity-50;
+    @apply overflow-hidden;
 }
 
-.imgareaselect-selection{
+.select-areas-background-area{
     @apply bg-black;
     @apply opacity-20;
+}
+
+.select-areas-resize-handler {
+    @apply bg-black;
+    @apply border;
+    @apply border-white;
+    @apply overflow-hidden;
+    height: 8px;
+    width: 8px;
+}
+
+.select-areas-delete-area {
+    @apply cursor-pointer;
+    height: 16px;
+    width: 16px;
+}
+
+.delete-area {
+    @apply absolute;
+    @apply cursor-pointer;
+    padding: 5px;
+}
+
+div[id*="select-area-label_"] {
+    @apply opacity-100;
     @apply border;
     @apply border-black;
+    @apply bg-white;
+    @apply relative;
+    top: -22px;
 }
-
-.imgareaselect-outer{
-    @apply opacity-0;
-}
-
 /*** END image area select ***/
 
 ::ng-deep .mat-form-field-appearance-legacy .mat-form-field-underline {
