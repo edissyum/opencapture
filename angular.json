@@ -37,6 +37,7 @@
                         ],
                         "scripts": [
                             "node_modules/jquery/dist/jquery.min.js",
+                            "src/assets/jqueryLib/jquery.imgareaselect.pack.js",
                             "src/assets/jqueryLib/jquery.selectareas.min.js"
                         ],
                         "customWebpackConfig": {

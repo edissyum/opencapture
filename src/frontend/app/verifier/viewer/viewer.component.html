@@ -1,20 +1,20 @@
 <div class="grid grid-cols-2 overflow-auto" style="height: calc(100vh + -3rem) !important">
-    <div>
+    <div class="image-container">
         <div id="rectangle" class="rectangle-not-active"></div>
         <img class="file" id="my-image" alt="File" src="assets/imgs/thumb.jpg">
     </div>
     <div>
         <mat-form-field>
             <mat-label>Numéro de facture</mat-label>
-            <input (focus)="ocr($event, 'red')" matInput type="text" id="test">
+            <input (focusin)="ocr($event, true, 'red')" (focusout)="ocr($event, false)" matInput type="text" id="test">
         </mat-form-field>
         <mat-form-field>
             <mat-label>Date de facture</mat-label>
-            <input (focus)="ocr($event, 'blue')" matInput type="text" id="test1">
+            <input (focusin)="ocr($event, true,'blue')" (focusout)="ocr($event, false)" matInput type="text" id="test1">
         </mat-form-field>
         <mat-form-field>
             <mat-label>Numéro de commande</mat-label>
-            <input (focus)="ocr($event, 'yellow')" matInput type="text" id="test2">
+            <input (focusin)="ocr($event, true,'yellow')" (focusout)="ocr($event, false)" matInput type="text" id="test2">
         </mat-form-field>
     </div>
 </div>

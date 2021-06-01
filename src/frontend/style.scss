@@ -78,6 +78,13 @@ div[id*="select-area-label_"] {
     @apply border-black;
     @apply bg-white;
     @apply relative;
+    @apply px-0.5;
+    @apply absolute;
+    @apply right-0;
+    @apply whitespace-nowrap;
+    @apply overflow-hidden;
+    @apply overflow-ellipsis;
+    @apply max-w-full;
     top: -22px;
 }
 /*** END image area select ***/

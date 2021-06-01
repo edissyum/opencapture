@@ -111,17 +111,18 @@
                              ngSortGridGroup="{{ category['id'] }}" ngSortgridItem [ngSortGridItems]="fields[category['id']]" (sorted)="storeNewOrder($event, category['id'])">
                             <ng-container *ngIf="field.type === 'text'">
                                 <mat-form-field class="right-0 w-full form-builder"
+                                                [matTooltipClass]="'-mt-3'"
                                                 [matTooltip]="this.translate.instant(field['label']) + ' (' + this.translate.instant('TYPES.' + field['type']) + ')'">
                                     <i cdkDrag class="fas fa-trash" (click)="deleteField($event, index, category['id'], field.unit)" [matTooltip]="this.translate.instant('FORMS.delete_field')"></i>
                                     <mat-label class="border-r-2 border-green-400 inline-block overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
                                         <b>{{ field.label | translate }}</b> ({{ 'TYPES.' + field.type | translate }})
                                     </mat-label>
                                     <input class="cursor-pointer" matInput type="text" readonly>
-                                    <div class="absolute top-0 right-0">
+                                    <div class="absolute top-0 -right-4">
                                         <button mat-button [matMenuTriggerFor]="menu"
                                                 [matTooltip]="this.translate.instant('VERIFIER.field_settings')"
                                                 matTooltipPosition="above">
-                                            <mat-icon class="text-md">more_vert</mat-icon>
+                                            <mat-icon class="field_settings text-md">more_vert</mat-icon>
                                         </button>
                                         <mat-menu #menu="matMenu">
                                             <button mat-menu-item [matMenuTriggerFor]="colors"
@@ -155,17 +156,18 @@
                             </ng-container>
                             <ng-container *ngIf="field.type === 'textarea'">
                                 <mat-form-field class="right-0 w-full form-builder"
+                                                [matTooltipClass]="'-mt-3'"
                                                 [matTooltip]="this.translate.instant(field['label']) + ' (' + this.translate.instant('TYPES.' + field['type']) + ')'">
                                     <i cdkDrag class="fas fa-trash" (click)="deleteField($event, index, category['id'], field.unit)" [matTooltip]="this.translate.instant('FORMS.delete_field')"></i>
                                     <mat-label class="border-r-2 border-green-400 inline-block overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
                                         <b>{{ field.label | translate }}</b> ({{ 'TYPES.' + field.type | translate }})
                                     </mat-label>
                                     <input class="cursor-pointer" matInput type="text" readonly>
-                                    <div class="absolute top-0 right-0">
+                                    <div class="absolute top-0 -right-4">
                                         <button mat-button [matMenuTriggerFor]="menu"
                                                 [matTooltip]="this.translate.instant('VERIFIER.field_settings')"
                                                 matTooltipPosition="above">
-                                            <mat-icon class="text-md">more_vert</mat-icon>
+                                            <mat-icon class="field_settings text-md">more_vert</mat-icon>
                                         </button>
                                         <mat-menu #menu="matMenu">
                                             <button mat-menu-item [matMenuTriggerFor]="colors"
@@ -198,17 +200,18 @@
                             </ng-container>
                             <ng-container *ngIf="field.type === 'date'">
                                 <mat-form-field class="right-0 w-full form-builder"
+                                                [matTooltipClass]="'-mt-3'"
                                                 [matTooltip]="this.translate.instant(field['label']) + ' (' + this.translate.instant('TYPES.' + field['type']) + ')'">
                                     <i cdkDrag class="fas fa-trash" (click)="deleteField($event, index, category['id'], field.unit)" [matTooltip]="this.translate.instant('FORMS.delete_field')"></i>
                                     <mat-label class="border-r-2 border-green-400 inline-block overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
                                         <b>{{ field.label | translate }}</b> ({{ 'TYPES.' + field.type | translate }})
                                     </mat-label>
                                     <input class="cursor-pointer" matInput readonly>
-                                    <div class="absolute top-0 right-0">
+                                    <div class="absolute top-0 -right-4">
                                         <button mat-button [matMenuTriggerFor]="menu"
                                                 [matTooltip]="this.translate.instant('VERIFIER.field_settings')"
                                                 matTooltipPosition="above">
-                                            <mat-icon class="text-md">more_vert</mat-icon>
+                                            <mat-icon class="field_settings text-md">more_vert</mat-icon>
                                         </button>
                                         <mat-menu #menu="matMenu">
                                             <button mat-menu-item [matMenuTriggerFor]="colors"
@@ -247,7 +250,7 @@
                                         <b>{{ field.label | translate }}</b> ({{ 'TYPES.' + field.type | translate }})
                                     </mat-label>
                                     <input class="cursor-pointer" matInput readonly>
-                                    <div class="absolute top-0 right-0">
+                                    <div class="absolute top-0 -right-4">
                                         <button mat-button [matMenuTriggerFor]="menu"
                                                 [matTooltip]="this.translate.instant('VERIFIER.field_settings')"
                                                 matTooltipPosition="above">

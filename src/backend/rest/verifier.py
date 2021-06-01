@@ -42,7 +42,6 @@ def invoices_list():
     _cfg = _vars[1].cfg
 
     data = request.json
-    print(data)
     res = verifier.retrieve_invoices(data)
     return make_response(res[0], res[1])
 
@@ -51,5 +50,6 @@ def invoices_list():
 @token_required
 def ocr_on_fly():
     data = request.json
-    print(data)
-    return make_response('', 200)
+    result = pdf.ocr_on_the_fly(data['fileName'], data['selection'], data['thumbSize'])
+    print(result)
+    return make_response({'result': result}, 200)

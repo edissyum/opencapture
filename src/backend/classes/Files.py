@@ -454,8 +454,7 @@ class Files:
                 else:
                     continue
 
-    @staticmethod
-    def ocr_on_fly(img, selection, ocr, thumb_size=None, regex=None, remove_line=False):
+    def ocr_on_fly(self, img, selection, ocr, thumb_size=None, regex=None, remove_line=False):
         rand = str(uuid.uuid4())
         if thumb_size is not None:
             with Image.open(img) as im:
@@ -463,10 +462,10 @@ class Files:
         else:
             ratio = 1
 
-        x1 = selection['x1'] * ratio
-        y1 = selection['y1'] * ratio
-        x2 = selection['x2'] * ratio
-        y2 = selection['y2'] * ratio
+        x1 = selection['x'] * ratio
+        y1 = selection['y'] * ratio
+        x2 = (selection['x'] + selection['width']) * ratio
+        y2 = (selection['y'] + selection['height']) * ratio
         crop_ratio = (x1, y1, x2, y2)
 
         extension = os.path.splitext(img)[1]
@@ -491,13 +490,42 @@ class Files:
         cropped_image = Image.open('/tmp/cropped_' + rand + extension)
         text = ocr.text_builder(cropped_image)
 
+        if not text or text == '' or text.isspace():
+            self.improve_image_detection('/tmp/cropped_' + rand + extension)
+            improved_cropped_image = Image.open('/tmp/cropped_' + rand + '_improved' + extension)
+            text = ocr.text_builder(improved_cropped_image)
+
+        try:
+            tmp_text = text.replace(' ', '.')
+            tmp_text = tmp_text.replace('\x0c', '')
+            tmp_text = tmp_text.replace('\n', '')
+            tmp_text = tmp_text.replace(',', '.')
+            splitted_number = tmp_text.split('.')
+            if len(splitted_number) > 1:
+                last_index = splitted_number[len(splitted_number) - 1]
+                if len(last_index) > 2:
+                    tmp_text = tmp_text.replace('.', '')
+                    if type(tmp_text) in [float, int]:
+                        text = tmp_text
+                else:
+                    splitted_number.pop(-1)
+                    text = ''.join(splitted_number) + '.' + last_index
+                    if type(tmp_text) in [float, int]:
+                        text = tmp_text
+        except (ValueError, SyntaxError, TypeError):
+            pass
+
         if regex:
             for res in re.finditer(r"" + regex, text):
                 os.remove('/tmp/cropped_' + rand + extension)
+                if os.path.isfile('/tmp/cropped_' + rand + '_improved' + extension):
+                    os.remove('/tmp/cropped_' + rand + '_improved' + extension)
                 return res.group().replace('\x0c', '').strip()
             return False
 
         os.remove('/tmp/cropped_' + rand + extension)
+        if os.path.isfile('/tmp/cropped_' + rand + '_improved' + extension):
+            os.remove('/tmp/cropped_' + rand + '_improved' + extension)
         return text.replace('\x0c', '').strip()
 
     @staticmethod
