@@ -28,6 +28,25 @@
 		"today": "Lots du jour",
 		"yesterday": "Lots de la veille"
 	},
+	"COLORS": {
+		"aqua": "Bleu clair",
+		"black": "Noir",
+		"blue": "Bleu",
+		"fuchsia": "Fuchsia",
+		"gray": "Gris",
+		"green": "Vert",
+		"lime": "Vert clair",
+		"maroon": "Marron",
+		"navy": "Bleu foncé",
+		"orange": "Orange",
+		"pink": "Rose",
+		"purple": "Violet",
+		"red": "Rouge",
+		"silver": "Argent",
+		"teal": "Sarcelle",
+		"white": "Blanc",
+		"yellow": "Jaune"
+	},
 	"CUSTOM-FIELDS": {
 		"add": "Ajouter le champ personnalisé",
 		"checkbox": "Case à cocher",
@@ -216,12 +235,14 @@
 		"username": "Nom d'utilisateur"
 	},
 	"VERIFIER": {
+		"colors": "Couleurs",
 		"delete_invoice": "Supprimer la facture",
 		"list": "Factures",
 		"nb_pages": "Nombre de page",
 		"original_file": "Fichier d'origine",
 		"register_date": "Enregistré le",
 		"search": "Rechercher une facture",
+		"size": "Taille",
 		"viewer": "Visualisation du PDF"
 	}
 }

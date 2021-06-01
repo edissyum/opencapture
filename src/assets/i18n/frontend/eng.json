@@ -28,6 +28,25 @@
 		"today": "",
 		"yesterday": ""
 	},
+	"COLORS": {
+		"aqua": "",
+		"black": "",
+		"blue": "",
+		"fuchsia": "",
+		"gray": "",
+		"green": "",
+		"lime": "",
+		"maroon": "",
+		"navy": "",
+		"orange": "",
+		"pink": "",
+		"purple": "",
+		"red": "",
+		"silver": "",
+		"teal": "",
+		"white": "",
+		"yellow": ""
+	},
 	"CUSTOM-FIELDS": {
 		"add": "",
 		"checkbox": "",
@@ -216,12 +235,14 @@
 		"username": "Username"
 	},
 	"VERIFIER": {
+		"colors": "",
 		"delete_invoice": "",
 		"list": "Invoices",
 		"nb_pages": "",
 		"original_file": "",
 		"register_date": "",
 		"search": "",
+		"size": "",
 		"viewer": "View PDF"
 	}
 }

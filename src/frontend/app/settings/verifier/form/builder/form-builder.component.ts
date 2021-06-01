@@ -12,7 +12,7 @@ import {moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 import {API_URL} from "../../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
-import {DateAdapter, MAT_DATE_LOCALE} from "@angular/material/core";
+import {DateAdapter} from "@angular/material/core";
 import {LocaleService} from "../../../../../services/locale.service";
 
 @Component({
@@ -36,7 +36,7 @@ export class FormBuilderComponent implements OnInit {
         this.translate.instant('TYPES.text'),
         this.translate.instant('TYPES.textarea'),
         this.translate.instant('TYPES.date'),
-        this.translate.instant('TYPES.select')
+        this.translate.instant('TYPES.select'),
     ]
 
     fieldCategories: any[] = [
@@ -64,7 +64,8 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'accounts',
                     type: 'text',
                     required: true,
-                    class: "w-1/3"
+                    class: "w-1/3",
+                    class_label: "1/33",
                 },
                 {
                     id: 'siret',
@@ -72,7 +73,9 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'accounts',
                     type: 'text',
                     required: false,
-                    class: "w-1/3"
+                    class: "w-1/3",
+                    class_label: "1/33",
+                    color: 'green'
                 },
                 {
                     id: 'siren',
@@ -80,7 +83,9 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'accounts',
                     type: 'text',
                     required: false,
-                    class: "w-1/3"
+                    class: "w-1/3",
+                    class_label: "1/33",
+                    color: 'lime'
                 },
                 {
                     id: 'vat_number',
@@ -88,7 +93,9 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'accounts',
                     type: 'text',
                     required: true,
-                    class: "w-1/3"
+                    class: "w-1/3",
+                    class_label: "1/33",
+                    color: 'olive'
                 },
                 {
                     id: 'address1',
@@ -96,7 +103,8 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'addresses',
                     type: 'text',
                     required: true,
-                    class: "w-1/3"
+                    class: "w-1/3",
+                    class_label: "1/33",
                 },
                 {
                     id: 'address2',
@@ -104,7 +112,8 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'addresses',
                     type: 'text',
                     required: true,
-                    class: "w-1/3"
+                    class: "w-1/3",
+                    class_label: "1/33",
                 },
                 {
                     id: 'postal_code',
@@ -112,7 +121,8 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'addresses',
                     type: 'text',
                     required: true,
-                    class: "w-1/3"
+                    class: "w-1/3",
+                    class_label: "1/33",
                 },
                 {
                     id: 'city',
@@ -120,7 +130,8 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'addresses',
                     type: 'text',
                     required: true,
-                    class: "w-1/3"
+                    class: "w-1/3",
+                    class_label: "1/33",
                 },
                 {
                     id: 'country',
@@ -128,7 +139,8 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'addresses',
                     type: 'text',
                     required: true,
-                    class: "w-1/3"
+                    class: "w-1/3",
+                    class_label: "1/33",
                 },
             ]
         },
@@ -142,7 +154,9 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'facturation',
                     type: 'text',
                     required: true,
-                    class: "w-1/3"
+                    class: "w-1/3",
+                    class_label: "1/33",
+                    color: 'white'
                 },
                 {
                     id: 'delivery_number',
@@ -150,7 +164,9 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'facturation',
                     type: 'text',
                     required: true,
-                    class: "w-1/3"
+                    class: "w-1/3",
+                    class_label: "1/33",
+                    color: 'silver'
                 },
                 {
                     id: 'invoice_number',
@@ -158,7 +174,9 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'facturation',
                     type: 'text',
                     required: true,
-                    class: "w-1/3"
+                    class: "w-1/3",
+                    class_label: "1/33",
+                    color: 'red'
                 },
                 {
                     id: 'invoice_date',
@@ -166,7 +184,9 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'facturation',
                     type: 'date',
                     required: true,
-                    class: "w-1/3"
+                    class: "w-1/3",
+                    class_label: "1/33",
+                    color: 'yellow'
                 },
                 {
                     id: 'invoice_due_date',
@@ -174,7 +194,9 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'facturation',
                     type: 'date',
                     required: true,
-                    class: "w-1/3"
+                    class: "w-1/3",
+                    class_label: "1/33",
+                    color: 'blue'
                 },
                 {
                     id: 'vat_rate',
@@ -182,7 +204,9 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'facturation',
                     type: 'text',
                     required: true,
-                    class: "w-1/3"
+                    class: "w-1/3",
+                    class_label: "1/33",
+                    color: 'aqua'
                 },
                 {
                     id: 'no_rate_amount',
@@ -190,7 +214,9 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'facturation',
                     type: 'text',
                     required: true,
-                    class: "w-1/3"
+                    class: "w-1/3",
+                    class_label: "1/33",
+                    color: 'fuschia'
                 },
                 {
                     id: 'vat_amount',
@@ -198,7 +224,9 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'facturation',
                     type: 'text',
                     required: true,
-                    class: "w-1/3"
+                    class: "w-1/3",
+                    class_label: "1/33",
+                    color: 'teal'
                 },
                 {
                     id: 'accounting_plan',
@@ -206,7 +234,8 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'facturation',
                     type: 'select',
                     required: true,
-                    class: "w-1/3"
+                    class: "w-1/3",
+                    class_label: "1/33",
                 },
                 {
                     id: 'total_ttc',
@@ -214,7 +243,8 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'facturation',
                     type: 'text',
                     required: true,
-                    class: "w-1/3"
+                    class: "w-1/3",
+                    class_label: "1/33",
                 },
                 {
                     id: 'total_ht',
@@ -222,7 +252,8 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'facturation',
                     type: 'text',
                     required: true,
-                    class: "w-1/3"
+                    class: "w-1/3",
+                    class_label: "1/33",
                 },
                 {
                     id: 'total_vat',
@@ -230,7 +261,9 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'facturation',
                     type: 'text',
                     required: true,
-                    class: "w-1/3"
+                    class: "w-1/3",
+                    class_label: "1/33",
+                    color: '',
                 },
             ]
         },
@@ -271,7 +304,76 @@ export class FormBuilderComponent implements OnInit {
             'label': '1/5'
         }
     ]
-
+    colorsList: any[] = [
+        {
+            'id': 'yellow',
+            'label': this.translate.instant('COLORS.yellow')
+        },
+        {
+            'id': 'pink',
+            'label': this.translate.instant('COLORS.pink')
+        },
+        {
+            'id': 'red',
+            'label': this.translate.instant('COLORS.red')
+        },
+        {
+            'id': 'blue',
+            'label': this.translate.instant('COLORS.blue')
+        },
+        {
+            'id': 'orange',
+            'label': this.translate.instant('COLORS.orange')
+        },
+        {
+            'id': 'purple',
+            'label': this.translate.instant('COLORS.purple')
+        },
+        {
+            'id': 'black',
+            'label': this.translate.instant('COLORS.black')
+        },
+        {
+            'id': 'white',
+            'label': this.translate.instant('COLORS.white')
+        },
+        {
+            'id': 'aqua',
+            'label': this.translate.instant('COLORS.aqua')
+        },
+        {
+            'id': 'maroon',
+            'label': this.translate.instant('COLORS.maroon')
+        },
+        {
+            'id': 'teal',
+            'label': this.translate.instant('COLORS.teal')
+        },
+        {
+            'id': 'navy',
+            'label': this.translate.instant('COLORS.navy')
+        },
+        {
+            'id': 'fuchsia',
+            'label': this.translate.instant('COLORS.fuchsia')
+        },
+        {
+            'id': 'silver',
+            'label': this.translate.instant('COLORS.silver')
+        },
+        {
+            'id': 'gray',
+            'label': this.translate.instant('COLORS.gray')
+        },
+        {
+            'id': 'lime',
+            'label': this.translate.instant('COLORS.lime')
+        },
+        {
+            'id': 'green',
+            'label': this.translate.instant('COLORS.green')
+        },
+    ]
     constructor(
         private http: HttpClient,
         public router: Router,
@@ -331,7 +433,8 @@ export class FormBuilderComponent implements OnInit {
                                                     unit: 'custom',
                                                     type: data.customFields[field].type,
                                                     required: data.customFields[field].required,
-                                                    class: "w-1/3"
+                                                    class: "w-1/3",
+                    class_label: "1/33",
                                                 }
                                             )
                                         }
@@ -402,12 +505,21 @@ export class FormBuilderComponent implements OnInit {
         }
     }
 
-    changeClass(event: any, category: any) {
-        let new_class = event.value
-        let id = event.source.id.replace('_size', '')
+    changeClass(field_id: any, new_class: any, class_label: any, category: any) {
+        let id = field_id
         this.fields[category].forEach((element: any) => {
             if (element.id == id) {
                 element.class = new_class
+                element.class_label = class_label
+            }
+        })
+    }
+
+    changeColor(field_id: any, new_color: any, category: any) {
+        let id = field_id
+        this.fields[category].forEach((element: any) => {
+            if (element.id == id) {
+                element.color = new_color
             }
         })
     }

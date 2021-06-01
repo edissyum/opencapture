@@ -19,13 +19,14 @@ export class VerifierViewerComponent implements OnInit {
     imageInvoice: any;
     isOCRRunning: boolean = false;
 
+    lastLabel: string = '';
+    lastColor: string ='';
     constructor(
         private http: HttpClient,
         private route: ActivatedRoute,
         private authService: AuthService,
         private notify: NotificationService
-    ) {
-    }
+    ) {}
 
     ngOnInit(): void {
         let invoiceId = this.route.snapshot.params['id'];
@@ -33,15 +34,19 @@ export class VerifierViewerComponent implements OnInit {
         // this.ocrOnFly(false, '')
     }
 
-    ocr(event: any){
+    ocr(event: any, color: any){
+        let _this = this
         let inputId = event.target.id
-        let inputLabel = event.target.labels[0].textContent
+        this.lastLabel = event.target.labels[0].textContent
+        this.lastColor = color
         this.imageInvoice.selectAreas({
             minSize: [20, 20],
             maxSize: [this.imageInvoice.width(), this.imageInvoice.height() / 8],
             onChanged: function(img: any, cpt: any, selection: any) {
-                if ($('#select-area-label_' + cpt).length == 0)
-                    $('#select-areas-label-container_' + cpt).append('<div id="select-area-label_' + cpt + '">' + inputLabel + '</div>')
+                if ($('#select-area-label_' + cpt).length == 0){
+                    $('#select-areas-label-container_' + cpt).append('<div id="select-area-label_' + cpt + '">' + _this.lastLabel + '</div>')
+                    $('#select-areas-background-area_' + cpt).css('background-color', _this.lastColor)
+                }
             }
         });
     }
