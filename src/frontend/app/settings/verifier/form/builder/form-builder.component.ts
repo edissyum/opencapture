@@ -14,6 +14,7 @@ import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {DateAdapter} from "@angular/material/core";
 import {LocaleService} from "../../../../../services/locale.service";
+import {marker} from "@biesbjerg/ngx-translate-extract-marker";
 
 @Component({
     selector: 'app-create',
@@ -33,10 +34,11 @@ export class FormBuilderComponent implements OnInit {
     formId: any;
     creationMode: boolean = true
     labelType = [
-        this.translate.instant('TYPES.text'),
-        this.translate.instant('TYPES.textarea'),
-        this.translate.instant('TYPES.date'),
-        this.translate.instant('TYPES.select'),
+        marker('TYPES.text'),
+        marker('TYPES.textarea'),
+        marker('TYPES.date'),
+        marker('TYPES.select'),
+        marker('VERIFIER.field_settings'),
     ]
 
     fieldCategories: any[] = [

@@ -237,6 +237,7 @@
 	"VERIFIER": {
 		"colors": "",
 		"delete_invoice": "",
+		"field_settings": "",
 		"list": "Invoices",
 		"nb_pages": "",
 		"original_file": "",

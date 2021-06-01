@@ -118,11 +118,15 @@
                                     </mat-label>
                                     <input class="cursor-pointer" matInput type="text" readonly>
                                     <div class="absolute top-0 right-0">
-                                        <button mat-button [matMenuTriggerFor]="menu">
+                                        <button mat-button [matMenuTriggerFor]="menu"
+                                                [matTooltip]="this.translate.instant('VERIFIER.field_settings')"
+                                                matTooltipPosition="above">
                                             <mat-icon class="text-md">more_vert</mat-icon>
                                         </button>
                                         <mat-menu #menu="matMenu">
-                                            <button mat-menu-item [matMenuTriggerFor]="colors" [style]="'background-color:' + field.color ">
+                                            <button mat-menu-item [matMenuTriggerFor]="colors"
+                                                    [style]="'background-color:' + field.color"
+                                                    [class.text-white]="field.color == 'black' || field.color == 'navy'">
                                                 {{ "VERIFIER.colors" | translate }}
                                             </button>
                                             <button mat-menu-item [matMenuTriggerFor]="size">
@@ -140,16 +144,13 @@
                                         <mat-menu #colors="matMenu">
                                             <button mat-menu-item [id]="field.id" *ngFor="let _color of colorsList"
                                                     (click)="changeColor(field.id, _color.id, category['id'])"
-                                                    [style]="'background-color:' + _color.id">
+                                                    [style]="'background-color:' + _color.id"
+                                                    [class.text-white]="_color.id == 'black' || _color.id == 'navy'">
                                                 {{ _color.label | translate }}
                                             </button>
                                         </mat-menu>
                                     </div>
-<!--                                    <mat-select [id]="field.id + '_size'" class="relative float-right w-1/5" [(ngModel)]="field.class" (selectionChange)="changeClass($event, category['id'])">-->
-<!--                                        <mat-option *ngFor="let _class of classList" [value]="_class.id">-->
-<!--                                            {{ _class.label }}-->
-<!--                                        </mat-option>-->
-<!--                                    </mat-select>-->
+
                                 </mat-form-field>
                             </ng-container>
                             <ng-container *ngIf="field.type === 'textarea'">
@@ -160,11 +161,39 @@
                                         <b>{{ field.label | translate }}</b> ({{ 'TYPES.' + field.type | translate }})
                                     </mat-label>
                                     <input class="cursor-pointer" matInput type="text" readonly>
-<!--                                    <mat-select [id]="field.id + '_size'" class="relative float-right w-1/5" [(ngModel)]="field.class" (selectionChange)="changeClass($event, category['id'])">-->
-<!--                                        <mat-option *ngFor="let _class of classList" [value]="_class.id">-->
-<!--                                            {{ _class.label }}-->
-<!--                                        </mat-option>-->
-<!--                                    </mat-select>-->
+                                    <div class="absolute top-0 right-0">
+                                        <button mat-button [matMenuTriggerFor]="menu"
+                                                [matTooltip]="this.translate.instant('VERIFIER.field_settings')"
+                                                matTooltipPosition="above">
+                                            <mat-icon class="text-md">more_vert</mat-icon>
+                                        </button>
+                                        <mat-menu #menu="matMenu">
+                                            <button mat-menu-item [matMenuTriggerFor]="colors"
+                                                    [style]="'background-color:' + field.color"
+                                                    [class.text-white]="field.color == 'black' || field.color == 'navy'">
+                                                {{ "VERIFIER.colors" | translate }}
+                                            </button>
+                                            <button mat-menu-item [matMenuTriggerFor]="size">
+                                                {{ "VERIFIER.size" | translate }} <small class="ml-2">{{ field.class_label }}</small>
+                                            </button>
+                                        </mat-menu>
+                                        <mat-menu #size="matMenu">
+                                            <button mat-menu-item [id]="field.id"
+                                                    *ngFor="let _class of classList"
+                                                    (click)="changeClass(field.id, _class.id, _class.label, category['id'])"
+                                                    [class.bg-green-400]="_class.id == field.class">
+                                                {{ _class.label | translate  }}
+                                            </button>
+                                        </mat-menu>
+                                        <mat-menu #colors="matMenu">
+                                            <button mat-menu-item [id]="field.id" *ngFor="let _color of colorsList"
+                                                    (click)="changeColor(field.id, _color.id, category['id'])"
+                                                    [style]="'background-color:' + _color.id"
+                                                    [class.text-white]="_color.id == 'black' || _color.id == 'navy'">
+                                                {{ _color.label | translate }}
+                                            </button>
+                                        </mat-menu>
+                                    </div>
                                 </mat-form-field>
                             </ng-container>
                             <ng-container *ngIf="field.type === 'date'">
@@ -175,11 +204,39 @@
                                         <b>{{ field.label | translate }}</b> ({{ 'TYPES.' + field.type | translate }})
                                     </mat-label>
                                     <input class="cursor-pointer" matInput readonly>
-<!--                                    <mat-select [id]="field.id + '_size'" class="relative float-right w-1/5" [(ngModel)]="field.class" (selectionChange)="changeClass($event, category['id'])">-->
-<!--                                        <mat-option *ngFor="let _class of classList" [value]="_class.id">-->
-<!--                                            {{ _class.label }}-->
-<!--                                        </mat-option>-->
-<!--                                    </mat-select>-->
+                                    <div class="absolute top-0 right-0">
+                                        <button mat-button [matMenuTriggerFor]="menu"
+                                                [matTooltip]="this.translate.instant('VERIFIER.field_settings')"
+                                                matTooltipPosition="above">
+                                            <mat-icon class="text-md">more_vert</mat-icon>
+                                        </button>
+                                        <mat-menu #menu="matMenu">
+                                            <button mat-menu-item [matMenuTriggerFor]="colors"
+                                                    [style]="'background-color:' + field.color"
+                                                    [class.text-white]="field.color == 'black' || field.color == 'navy'">
+                                                {{ "VERIFIER.colors" | translate }}
+                                            </button>
+                                            <button mat-menu-item [matMenuTriggerFor]="size">
+                                                {{ "VERIFIER.size" | translate }} <small class="ml-2">{{ field.class_label }}</small>
+                                            </button>
+                                        </mat-menu>
+                                        <mat-menu #size="matMenu">
+                                            <button mat-menu-item [id]="field.id"
+                                                    *ngFor="let _class of classList"
+                                                    (click)="changeClass(field.id, _class.id, _class.label, category['id'])"
+                                                    [class.bg-green-400]="_class.id == field.class">
+                                                {{ _class.label | translate  }}
+                                            </button>
+                                        </mat-menu>
+                                        <mat-menu #colors="matMenu">
+                                            <button mat-menu-item [id]="field.id" *ngFor="let _color of colorsList"
+                                                    (click)="changeColor(field.id, _color.id, category['id'])"
+                                                    [style]="'background-color:' + _color.id"
+                                                    [class.text-white]="_color.id == 'black' || _color.id == 'navy'">
+                                                {{ _color.label | translate }}
+                                            </button>
+                                        </mat-menu>
+                                    </div>
                                 </mat-form-field>
                             </ng-container>
                             <ng-container *ngIf="field.type === 'select'">
@@ -190,11 +247,39 @@
                                         <b>{{ field.label | translate }}</b> ({{ 'TYPES.' + field.type | translate }})
                                     </mat-label>
                                     <input class="cursor-pointer" matInput readonly>
-<!--                                    <mat-select [id]="field.id + '_size'" class="relative float-right w-1/5" [(ngModel)]="field.class" (selectionChange)="changeClass($event, category['id'])">-->
-<!--                                        <mat-option *ngFor="let _class of classList" [value]="_class.id">-->
-<!--                                            {{ _class.label }}-->
-<!--                                        </mat-option>-->
-<!--                                    </mat-select>-->
+                                    <div class="absolute top-0 right-0">
+                                        <button mat-button [matMenuTriggerFor]="menu"
+                                                [matTooltip]="this.translate.instant('VERIFIER.field_settings')"
+                                                matTooltipPosition="above">
+                                            <mat-icon class="text-md">more_vert</mat-icon>
+                                        </button>
+                                        <mat-menu #menu="matMenu">
+                                            <button mat-menu-item [matMenuTriggerFor]="colors"
+                                                    [style]="'background-color:' + field.color"
+                                                    [class.text-white]="field.color == 'black' || field.color == 'navy'">
+                                                {{ "VERIFIER.colors" | translate }}
+                                            </button>
+                                            <button mat-menu-item [matMenuTriggerFor]="size">
+                                                {{ "VERIFIER.size" | translate }} <small class="ml-2">{{ field.class_label }}</small>
+                                            </button>
+                                        </mat-menu>
+                                        <mat-menu #size="matMenu">
+                                            <button mat-menu-item [id]="field.id"
+                                                    *ngFor="let _class of classList"
+                                                    (click)="changeClass(field.id, _class.id, _class.label, category['id'])"
+                                                    [class.bg-green-400]="_class.id == field.class">
+                                                {{ _class.label | translate  }}
+                                            </button>
+                                        </mat-menu>
+                                        <mat-menu #colors="matMenu">
+                                            <button mat-menu-item [id]="field.id" *ngFor="let _color of colorsList"
+                                                    (click)="changeColor(field.id, _color.id, category['id'])"
+                                                    [style]="'background-color:' + _color.id"
+                                                    [class.text-white]="_color.id == 'black' || _color.id == 'navy'">
+                                                {{ _color.label | translate }}
+                                            </button>
+                                        </mat-menu>
+                                    </div>
                                 </mat-form-field>
                             </ng-container>
                         </div>

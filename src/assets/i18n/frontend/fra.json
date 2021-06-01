@@ -237,6 +237,7 @@
 	"VERIFIER": {
 		"colors": "Couleurs",
 		"delete_invoice": "Supprimer la facture",
+		"field_settings": "Paramètres du champ",
 		"list": "Factures",
 		"nb_pages": "Nombre de page",
 		"original_file": "Fichier d'origine",
