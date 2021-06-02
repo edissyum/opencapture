@@ -15,6 +15,7 @@ import { SplitterListComponent } from "./splitter/list/list.component";
 import { VerifierViewerComponent } from './verifier/viewer/viewer.component';
 import { VerifierListComponent } from './verifier/list/list.component';
 import { UploadComponent } from "./upload/upload.component";
+import { SuppliersListComponent } from "./accounts/suppliers/list/suppliers-list.component"
 import { HasPrivilegeService } from "../services/has-privilege.service";
 
 const routes: Routes = [
@@ -50,6 +51,14 @@ const routes: Routes = [
     {
         path: 'upload', component: UploadComponent,
         data: {title: marker('GLOBAL.upload'), privileges: ['upload']},
+        canActivate: [LoginRequiredService, HasPrivilegeService]
+
+    },
+
+    {path: 'accounts/suppliers', redirectTo: 'accounts/suppliers/list', pathMatch: 'full'},
+    {
+        path: 'accounts/suppliers/list', component: SuppliersListComponent,
+        data: {title: marker('ACCOUNTS.suppliers_list'), privileges: ['suppliers_list']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
 
     },

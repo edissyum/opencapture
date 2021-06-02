@@ -1,55 +1,66 @@
-<div class="content">
-    <mat-tab-group [selectedIndex]="selectedTab" (selectedTabChange)="onTabChange($event)" class="batches overflow-auto" animationDuration="0ms">
-        <mat-tab *ngFor="let batch of batchList" [label]="this.translate.instant(batch.label)" [id]="batch.id">
-            <div class="flex flex-col">
-                <div class="grid grid-cols-3 grid-flow-row gap-0 mt-4 z-30">
-                    <mat-form-field class="left-4 w-1/2" appearance="outline">
-                        <mat-label>{{ 'VERIFIER.search' | translate }}</mat-label>
-                        <input matInput type="text" (keyup)="searchInvoice($event)">
-                    </mat-form-field>
-                    <mat-form-field class="w-1/2 m-auto" appearance="outline">
-                        <mat-label>{{ 'STATUS.list' | translate }}</mat-label>
-                        <mat-select [(value)]="currentStatus" (selectionChange)="changeStatus($event)">
-                            <mat-option *ngFor="let option of status" [value]="option['id']">
-                                {{ option['label'] }}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                    <mat-paginator [length]="this.total" [pageSize]="pageSize" [pageIndex]="pageIndex"
-                                   [pageSizeOptions]="[4, 8, 16, 24, 48]" (page)="onPageChange($event)"></mat-paginator>
-                </div>
-                <hr class="w-1/2 m-auto mb-4 border-green-400 relative z-30">
-                <div *ngIf="loading">
-                    <app-loader></app-loader>
-                </div>
-                <div class="content mx-10 mt-3" *ngIf="!loading">
-                    <div class="list grid grid-cols-4 grid-flow-row gap-12">
-                        <mat-card *ngFor="let invoice of this.invoices;" [routerLink]="'/verifier/viewer/'+ invoice.id" class="cursor-pointer">
-                            <img mat-card-image class="p-3.5 m-auto" src="assets/imgs/thumb.jpg">
-                            <mat-card-header class="leading-6">
-                                <mat-card-title>
-                                    <span>Nom du fournisseur</span>
-                                    <span class="absolute right-6 text-green-400 text-base badge badge-secondary badge-pill"
-                                          [matTooltip]="this.translate.instant('VERIFIER.nb_pages') + ' : ' + invoice.nb_pages">
+<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem">
+    <mat-sidenav #sidenav mode="side" opened class="w-1/6 flex flex-col h-full border-r border-green-400" style="top:0.1rem">
+
+    </mat-sidenav>
+    <mat-sidenav-content class="bg-white overflow-hidden">
+        <button mat-icon-button (click)="sidenav.toggle();"
+                class="absolute left-2 top-2" style="z-index: 999">
+            <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fas fa-stream text-xl"></i>
+        </button>
+        <mat-tab-group [selectedIndex]="selectedTab" (selectedTabChange)="onTabChange($event)" class="batches overflow-auto" animationDuration="0ms">
+            <mat-tab *ngFor="let batch of batchList" [label]="this.translate.instant(batch.label)" [id]="batch.id">
+                <div class="flex flex-col">
+                    <div class="grid grid-cols-3 grid-flow-row gap-0 mt-4 z-30">
+                        <mat-form-field class="left-4 w-1/2" appearance="outline">
+                            <mat-label>{{ 'VERIFIER.search' | translate }}</mat-label>
+                            <input matInput type="text" (keyup)="searchInvoice($event)">
+                        </mat-form-field>
+                        <mat-form-field class="w-1/2 m-auto" appearance="outline">
+                            <mat-label>{{ 'STATUS.list' | translate }}</mat-label>
+                            <mat-select [(value)]="currentStatus" (selectionChange)="changeStatus($event)">
+                                <mat-option *ngFor="let option of status" [value]="option['id']">
+                                    {{ option['label'] }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-paginator [length]="this.total" [pageSize]="pageSize" [pageIndex]="pageIndex"
+                                       [pageSizeOptions]="[4, 8, 16, 24, 48]" (page)="onPageChange($event)"></mat-paginator>
+                    </div>
+                    <hr class="w-1/2 m-auto mb-4 border-green-400 relative z-30">
+                    <div *ngIf="loading">
+                        <app-loader></app-loader>
+                    </div>
+                    <div class="content mx-10 mt-3" *ngIf="!loading">
+                        <div class="list grid grid-cols-4 grid-flow-row gap-12">
+                            <mat-card *ngFor="let invoice of this.invoices;" [routerLink]="'/verifier/viewer/'+ invoice.id" class="cursor-pointer">
+                                <img mat-card-image class="p-3.5 m-auto" src="assets/imgs/thumb.jpg">
+                                <mat-card-header class="leading-6">
+                                    <mat-card-title>
+                                        <span>Nom du fournisseur</span>
+                                        <span class="absolute right-6 text-green-400 text-base badge badge-secondary badge-pill"
+                                              [matTooltip]="this.translate.instant('VERIFIER.nb_pages') + ' : ' + invoice.nb_pages">
                                         {{ invoice.nb_pages }}<i class="far fa-file-alt ml-1"></i>
                                     </span>
-                                </mat-card-title>
-                                <mat-card-subtitle class="mt-2 -mb-1">
-                                    {{ 'FACTURATION.invoice_number' | translate }} : {{ invoice.invoice_number }}<br>
-                                    {{ 'FACTURATION.invoice_date' | translate }} : {{ invoice.invoice_date | date:'dd-MM-YYYY' }}<br>
-                                    {{ 'VERIFIER.register_date' | translate }} {{ invoice.date }}<br>
-                                    {{ 'VERIFIER.original_file' | translate }} : {{ invoice.original_filename }}
-                                </mat-card-subtitle>
-                            </mat-card-header>
-                            <mat-card-actions>
-                                <i class="fas fa-trash cursor-pointer text-red-500">
-                                    <span class="font-medium mat-typography">{{ 'VERIFIER.delete_invoice' | translate }}</span>
-                                </i>
-                            </mat-card-actions>
-                        </mat-card>
+                                    </mat-card-title>
+                                    <mat-card-subtitle class="mt-2 -mb-1">
+                                        {{ 'FACTURATION.invoice_number' | translate }} : {{ invoice.invoice_number }}<br>
+                                        {{ 'FACTURATION.invoice_date' | translate }} : {{ invoice.invoice_date | date:'dd-MM-YYYY' }}<br>
+                                        {{ 'VERIFIER.register_date' | translate }} {{ invoice.date }}<br>
+                                        {{ 'VERIFIER.original_file' | translate }} : {{ invoice.original_filename }}
+                                    </mat-card-subtitle>
+                                </mat-card-header>
+                                <mat-card-actions>
+                                    <i class="fas fa-trash cursor-pointer text-red-500">
+                                        <span class="font-medium mat-typography">{{ 'VERIFIER.delete_invoice' | translate }}</span>
+                                    </i>
+                                </mat-card-actions>
+                            </mat-card>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </mat-tab>
-    </mat-tab-group>
+            </mat-tab>
+        </mat-tab-group>
+    </mat-sidenav-content>
+</mat-sidenav-container>
+<div class="content">
 </div>

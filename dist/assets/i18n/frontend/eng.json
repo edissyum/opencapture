@@ -4,10 +4,11 @@
 	},
 	"ACCOUNTS": {
 		"accounts": "",
-		"accounts_list": "",
+		"customers_list": "",
 		"name": "",
 		"siren": "",
 		"siret": "",
+		"suppliers_list": "",
 		"vat_number": ""
 	},
 	"ADDRESSES": {

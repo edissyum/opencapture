@@ -14,7 +14,7 @@
 # along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
-from flask_babel import gettext
+
 from ..import_controllers import db
 
 

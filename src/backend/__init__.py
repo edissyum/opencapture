@@ -24,7 +24,7 @@ from flask_babel import Babel
 from flask import request, session
 from flask_multistatic import MultiStaticFlask
 
-from .import_rest import auth, locale, config, user, splitter, verifier, roles, privileges, custom_fields, forms, status
+from .import_rest import auth, locale, config, user, splitter, verifier, roles, privileges, custom_fields, forms, status, accounts
 from .functions import get_custom_id
 custom_id = get_custom_id()
 
@@ -68,6 +68,7 @@ app.register_blueprint(locale.bp)
 app.register_blueprint(status.bp)
 app.register_blueprint(config.bp)
 app.register_blueprint(splitter.bp)
+app.register_blueprint(accounts.bp)
 app.register_blueprint(verifier.bp)
 app.register_blueprint(privileges.bp)
 app.register_blueprint(custom_fields.bp)

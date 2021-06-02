@@ -87,7 +87,7 @@ export class UsersListComponent implements OnInit {
         this.loadUsers()
     }
 
-    loadUsers(): void{
+    loadUsers(): void {
         this.http.get(API_URL + '/ws/users/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.total = data.users[0].total

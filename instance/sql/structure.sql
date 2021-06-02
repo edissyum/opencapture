@@ -71,7 +71,7 @@ CREATE TABLE "privileges" (
     "label" VARCHAR(50)
 );
 
-CREATE TABLE "accounts" (
+CREATE TABLE "accounts_supplier" (
     "id"         SERIAL UNIQUE PRIMARY KEY,
     "name"       VARCHAR NOT NULL,
     "type"       INTEGER,
@@ -83,18 +83,12 @@ CREATE TABLE "accounts" (
     "form_id"    INTEGER
 );
 
-CREATE TABLE "companies" (
+CREATE TABLE "accounts_customer" (
     "id"              SERIAL UNIQUE PRIMARY KEY,
     "name"            VARCHAR(255),
     "company_number"  INTEGER,
     "accounting_plan" INTEGER,
     "address_id"      INTEGER
-);
-
-CREATE TABLE "companies_accounts" (
-    "id"         SERIAL UNIQUE PRIMARY KEY,
-    "company_id" INTEGER,
-    "account_id" INTEGER
 );
 
 CREATE TABLE "accounts_supplements" (
@@ -109,11 +103,6 @@ CREATE TABLE "accounts_supplements" (
     "delivery_number_positions" JSONB,
     "footer_page"               INTEGER,
     "thirds_page"               INTEGER
-);
-
-CREATE TABLE "accounts_type" (
-    "id"    SERIAL UNIQUE PRIMARY KEY,
-    "label" VARCHAR(20)
 );
 
 CREATE TABLE "accounting_plan" (

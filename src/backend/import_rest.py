@@ -60,6 +60,12 @@ else:
     status = getattr(__import__(custom_array['status']['path'], fromlist=[custom_array['status']['module']]),
                        custom_array['status']['module'])
 
+if 'accounts' not in custom_array:
+    from .rest import accounts
+else:
+    accounts = getattr(__import__(custom_array['accounts']['path'], fromlist=[custom_array['accounts']['module']]),
+                       custom_array['accounts']['module'])
+
 if 'privileges' not in custom_array:
     from .rest import privileges
 else:

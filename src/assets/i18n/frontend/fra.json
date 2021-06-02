@@ -4,10 +4,11 @@
 	},
 	"ACCOUNTS": {
 		"accounts": "Fournisseur",
-		"accounts_list": "Liste des fournisseurs",
+		"customers_list": "Liste des clients",
 		"name": "Nom",
 		"siren": "Numéro de SIREN",
 		"siret": "Numéro de SIRET",
+		"suppliers_list": "Liste des fournisseurs",
 		"vat_number": "Numéro de TVA"
 	},
 	"ADDRESSES": {

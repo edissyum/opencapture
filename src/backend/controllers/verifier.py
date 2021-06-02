@@ -17,8 +17,6 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 from flask import current_app
-from flask_babel import gettext
-
 from ..import_classes import _Files
 from ..import_controllers import pdf
 from ..models import verifier

@@ -45,7 +45,8 @@ export class MenuComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        marker('ACCOUNTS.accounts_list') // Needed to get the translation in the JSON file
+        marker('ACCOUNTS.suppliers_list') // Needed to get the translation in the JSON file
+        marker('ACCOUNTS.customers_list') // Needed to get the translation in the JSON file
         this.userService.user = this.userService.getUserFromLocal();
         if (this.userService.user){
             this.localeService.getLocales();

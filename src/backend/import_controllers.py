@@ -46,6 +46,11 @@ if 'splitter' not in custom_array:
 else:
     splitter = getattr(__import__(custom_array['splitter']['path'], fromlist=[custom_array['splitter']['module']]), custom_array['splitter']['module'])
 
+if 'accounts' not in custom_array:
+    from .controllers import accounts
+else:
+    accounts = getattr(__import__(custom_array['accounts']['path'], fromlist=[custom_array['accounts']['module']]), custom_array['accounts']['module'])
+
 
 if 'custom_fields' not in custom_array:
     from .controllers import custom_fields
