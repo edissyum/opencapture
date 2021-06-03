@@ -1,1 +1,43 @@
-<p>create works!</p>
+<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem">
+    <mat-sidenav-content class="bg-white">
+        <div *ngIf="loading">
+            <app-loader></app-loader>
+        </div>
+        <div class="settings_header">
+            <div class="settings_title text-center" *ngIf="this.supplier">
+                <h3>{{ this.serviceSettings.getTitle() }} : {{ this.supplier['name'] }}</h3>
+                <hr class="border-green-400">
+            </div>
+        </div>
+        <div class="flex justify-center items-center align-middle">
+            <form (ngSubmit)="onSubmit()" class="grid grid-cols-6 gap-2 w-full m-10 text-center">
+                <ng-container *ngFor="let field of supplierForm">
+                    <mat-form-field class="block" *ngIf="field.type != 'select'">
+                        <mat-label>{{ field.label | translate }}</mat-label>
+                        <input matInput [formControl]="field.control" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field.required">
+                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessageSupplier(field.id) }}</mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="block" *ngIf="field.type == 'select'">
+                        <mat-label>{{ field.label | translate }}</mat-label>
+                        <mat-select [formControl]="field.control" [required]="field.required">
+                            <mat-option *ngFor="let option of field.values" [value]="option['id']">{{ option['label'] }}</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessageSupplier(field.id) }}</mat-error>
+                    </mat-form-field>
+                </ng-container>
+                <ng-container *ngFor="let field of addressForm">
+                    <mat-form-field [class.col-span-2]="field.id == 'address1'" class="block" *ngIf="field.type != 'select'">
+                        <mat-label>{{ field.label | translate }}</mat-label>
+                        <input matInput [formControl]="field.control" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field.required">
+                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessageAddress(field.id) }}</mat-error>
+                    </mat-form-field>
+                </ng-container>
+                <div class="button col-span-6">
+                    <button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300" type="submit" mat-button>
+                        {{ 'ACCOUNTS.create_supplier' | translate }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

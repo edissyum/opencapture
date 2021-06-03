@@ -11,6 +11,7 @@ import {API_URL} from "../../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {PrivilegesService} from "../../../../../services/privileges.service";
+import {marker} from "@biesbjerg/ngx-translate-extract-marker";
 
 @Component({
     selector: 'app-update',
@@ -51,26 +52,30 @@ export class UpdateRoleComponent implements OnInit {
 
     // Only used to get translation available while running the extract-translations
     parent_label = [
-        this.translate.instant('PRIVILEGES.general'),
-        this.translate.instant('PRIVILEGES.administration'),
-        this.translate.instant('PRIVILEGES.verifier'),
-        this.translate.instant('PRIVILEGES.splitter')
+        marker('PRIVILEGES.general'),
+        marker('PRIVILEGES.administration'),
+        marker('PRIVILEGES.verifier'),
+        marker('PRIVILEGES.splitter'),
+        marker('PRIVILEGES.accounts')
     ]
     privileges_label = [
-        this.translate.instant('PRIVILEGES.access_verifier'),
-        this.translate.instant('PRIVILEGES.access_splitter'),
-        this.translate.instant('PRIVILEGES.settings'),
-        this.translate.instant('PRIVILEGES.upload'),
-        this.translate.instant('PRIVILEGES.users_list'),
-        this.translate.instant('PRIVILEGES.add_user'),
-        this.translate.instant('PRIVILEGES.update_user'),
-        this.translate.instant('PRIVILEGES.roles_list'),
-        this.translate.instant('PRIVILEGES.add_role'),
-        this.translate.instant('PRIVILEGES.update_role'),
-        this.translate.instant('PRIVILEGES.version_update'),
-        this.translate.instant('PRIVILEGES.custom_fields'),
-        this.translate.instant('PRIVILEGES.forms_list'),
-        this.translate.instant('PRIVILEGES.form_builder')
+        marker('PRIVILEGES.access_verifier'),
+        marker('PRIVILEGES.access_splitter'),
+        marker('PRIVILEGES.settings'),
+        marker('PRIVILEGES.upload'),
+        marker('PRIVILEGES.users_list'),
+        marker('PRIVILEGES.add_user'),
+        marker('PRIVILEGES.update_user'),
+        marker('PRIVILEGES.roles_list'),
+        marker('PRIVILEGES.add_role'),
+        marker('PRIVILEGES.update_role'),
+        marker('PRIVILEGES.version_update'),
+        marker('PRIVILEGES.custom_fields'),
+        marker('PRIVILEGES.forms_list'),
+        marker('PRIVILEGES.customers_list'),
+        marker('PRIVILEGES.suppliers_list'),
+        marker('PRIVILEGES.create_supplier'),
+        marker('PRIVILEGES.update_supplier')
     ]
     // End translation
     constructor(

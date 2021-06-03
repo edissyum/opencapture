@@ -28,8 +28,63 @@ bp = Blueprint('accounts', __name__, url_prefix='/ws/')
 def suppliers_list():
     args = {
         'select': ['*', 'count(*) OVER() as total'],
+        'where': ['status <> %s'],
+        'data': ['DEL'],
         'offset': request.args['offset'] if 'offset' in request.args else '',
         'limit': request.args['limit'] if 'limit' in request.args else ''
     }
     res = accounts.retrieve_suppliers(args)
     return make_response(res[0], res[1])
+
+
+@bp.route('accounts/suppliers/getById/<int:supplier_id>', methods=['GET'])
+@token_required
+def get_supplier_by_id(supplier_id):
+    _user = accounts.get_supplier_by_id(supplier_id)
+    return make_response(jsonify(_user[0])), _user[1]
+
+
+@bp.route('accounts/suppliers/getAdressById/<int:address_id>', methods=['GET'])
+@token_required
+def get_adress_by_id(address_id):
+    _user = accounts.get_address_by_id(address_id)
+    return make_response(jsonify(_user[0])), _user[1]
+
+
+@bp.route('accounts/suppliers/update/<int:supplier_id>', methods=['PUT'])
+@token_required
+def update_supplier(supplier_id):
+    data = request.json['args']
+    res = accounts.update_supplier(supplier_id, data)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('accounts/suppliers/addresses/update/<int:supplier_id>', methods=['PUT'])
+@token_required
+def update_address(supplier_id):
+    data = request.json['args']
+    res = accounts.update_address(supplier_id, data)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('accounts/suppliers/addresses/create', methods=['POST'])
+@token_required
+def create_address():
+    data = request.json['args']
+    res = accounts.create_address(data)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('accounts/suppliers/create', methods=['POST'])
+@token_required
+def create_supplier():
+    data = request.json['args']
+    res = accounts.create_supplier(data)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('accounts/suppliers/delete/<int:supplier_id>', methods=['DELETE'])
+@token_required
+def delete_supplier(supplier_id):
+    res = accounts.delete_supplier(supplier_id)
+    return make_response(jsonify(res[0])), res[1]

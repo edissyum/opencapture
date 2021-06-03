@@ -4,6 +4,10 @@
             <app-loader></app-loader>
         </div>
         <div class="settings_header">
+            <button routerLink="/accounts/suppliers/create" mat-icon-button class="absolute left-2 top-2">
+                <i class="fas fa-plus text-2xl ml-2"></i>
+                <span class="ml-2 top-0.5">{{ 'ACCOUNTS.create_supplier' | translate }}</span>
+            </button>
             <h3 class="text-center">{{ this.serviceSettings.getTitle() }}</h3>
             <hr class="border-green-400">
         </div>
@@ -13,44 +17,29 @@
                 <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
             </ng-container>
             <ng-container matColumnDef="name">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'USER.username' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{element.username}} </mat-cell>
+                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ACCOUNTS.supplier_name' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
             </ng-container>
             <ng-container matColumnDef="vat_number">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'USER.firstname' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{element.firstname}} </mat-cell>
+                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ACCOUNTS.vat_number' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.vat_number}} </mat-cell>
             </ng-container>
             <ng-container matColumnDef="siret">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'USER.lastname' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{element.lastname}} </mat-cell>
+                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ACCOUNTS.siret' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.siret}} </mat-cell>
             </ng-container>
             <ng-container matColumnDef="siren">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.role' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element"> {{element.role_label}} </mat-cell>
+                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ACCOUNTS.siren' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.siren}} </mat-cell>
             </ng-container>
-            <ng-container matColumnDef="typology">
-                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.status' | translate }} </mat-header-cell>
-                <mat-cell *matCellDef="let element">
-                    <span *ngIf="element.enabled "> <span class="text-green-400 text-4xl relative top-2 leading-4">&bull;</span> {{ 'HEADER.active' | translate }}</span>
-                    <span *ngIf="!element.enabled"> <span class="text-red-600 text-4xl relative top-2 leading-4">&bull;</span> {{ 'HEADER.inactive' | translate }}</span>
-                </mat-cell>
+            <ng-container matColumnDef="form_label">
+                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ACCOUNTS.form' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.form_label}} </mat-cell>
             </ng-container>
             <ng-container matColumnDef="actions">
                 <mat-header-cell *matHeaderCellDef> </mat-header-cell>
                 <mat-cell *matCellDef="let element">
-                    <button *ngIf="element.enabled"
-                            (click)="$event.stopPropagation();disableConfirmDialog(element.id, element.username)"
-                            matTooltip="{{ 'USER.disable' | translate }}" mat-icon-button
-                            class="inline-block align-text-top">
-                        <i class="btn-action-icon fas fa-pause fa-lg"></i>
-                    </button>
-                    <button *ngIf="!element.enabled"
-                            (click)="$event.stopPropagation();enableConfirmDialog(element.id, element.username)"
-                            matTooltip="{{ 'USER.enable' | translate }}" mat-icon-button
-                            class="inline-block align-text-top">
-                        <i class="btn-action-icon fas fa-play fa-lg"></i>
-                    </button>
-                    <button (click)="$event.stopPropagation();deleteConfirmDialog(element.id, element.username)"
+                    <button (click)="$event.stopPropagation();deleteConfirmDialog(element.id, element.name)"
                             matTooltip="{{ 'GLOBAL.delete' | translate }}" mat-icon-button
                             class="inline-block align-text-top">
                         <i class="btn-action-icon fas fa-trash fa-lg"></i>
@@ -59,7 +48,7 @@
             </ng-container>
             <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
             <mat-row *matRowDef="let row; columns: columnsToDisplay;"
-                     routerLink="/settings/general/users/update/{{row.id}}"
+                     routerLink="/accounts/suppliers/update/{{row.id}}"
                      class="cursor-pointer hover:text-green-400 hover:shadow-md transition-colors duration-300"></mat-row>
         </mat-table>
         <mat-paginator showFirstLastButtons

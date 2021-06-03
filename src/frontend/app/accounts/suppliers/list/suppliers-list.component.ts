@@ -25,7 +25,7 @@ import {ConfirmDialogComponent} from "../../../../services/confirm-dialog/confir
 export class SuppliersListComponent implements OnInit {
     headers         : HttpHeaders = this.authService.headers;
     loading         : boolean     = true;
-    columnsToDisplay: string[]    = ['id', 'name', 'vat_number', 'siret', 'siren','typology', 'actions'];
+    columnsToDisplay: string[]    = ['id', 'name', 'vat_number', 'siret', 'siren','form_label', 'actions'];
     suppliers       : any         = [];
     pageSize        : number      = 10;
     pageIndex       : number      = 0;
@@ -66,11 +66,26 @@ export class SuppliersListComponent implements OnInit {
             tap((data: any) => {
                 this.suppliers = data.suppliers;
                 if (this.suppliers.length !== 0){
-                    console.log(this.suppliers)
                     this.total = data.suppliers[0].total
                 }
+                this.http.get(API_URL + '/ws/forms/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
+                    tap((data: any) => {
+                        for (let cpt in this.suppliers){
+                            for (let form of data.forms){
+                                if (form.id == this.suppliers[cpt].form_id){
+                                    this.suppliers[cpt].form_label = form.label
+                                }
+                            }
+                        }
+                    }),
+                    finalize(() => this.loading = false),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe()
             }),
-            finalize(()=> this.loading = false),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
@@ -90,7 +105,7 @@ export class SuppliersListComponent implements OnInit {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data:{
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
-                confirmText         : this.translate.instant('ACCOUNTS.confirm_delete_supplier', {"supplier": supplier}),
+                confirmText         : this.translate.instant('ACCOUNTS.confirm_delete', {"supplier": supplier}),
                 confirmButton       : this.translate.instant('GLOBAL.delete'),
                 confirmButtonColor  : "warn",
                 cancelButton        : this.translate.instant('GLOBAL.cancel'),
@@ -105,77 +120,9 @@ export class SuppliersListComponent implements OnInit {
         });
     }
 
-    disableConfirmDialog(supplier_id: number, supplier: string) {
-        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
-                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
-                confirmText         : this.translate.instant('ACCOUNTS.confirm_disable_supplier', {"supplier": supplier}),
-                confirmButton       : this.translate.instant('GLOBAL.disable'),
-                confirmButtonColor  : "warn",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
-            },
-            width: "600px",
-        });
-
-        dialogRef.afterClosed().subscribe(result => {
-            if(result){
-                this.disableSupplier(supplier_id)
-            }
-        });
-    }
-
-    enableConfirmDialog(supplier_id: number, supplier: string) {
-        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
-                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
-                confirmText         : this.translate.instant('ACCOUNTS.confirm_enable_supplier', {"supplier": supplier}),
-                confirmButton       : this.translate.instant('GLOBAL.enable'),
-                confirmButtonColor  : "warn",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
-            },
-            width: "600px",
-        });
-
-        dialogRef.afterClosed().subscribe(result => {
-            if(result){
-                this.enableSupplier(supplier_id)
-            }
-        });
-    }
-
     deleteSupplier(supplier_id: number){
         if (supplier_id !== undefined){
-            this.http.delete(API_URL + '/ws/accounts/supppliers/delete/' + supplier_id, {headers: this.authService.headers}).pipe(
-                tap(() => {
-                    this.loadSuppliers()
-                }),
-                catchError((err: any) => {
-                    console.debug(err);
-                    this.notify.handleErrors(err);
-                    return of(false);
-                })
-            ).subscribe()
-        }
-    }
-
-    disableSupplier(supplier_id: number){
-        if (supplier_id !== undefined){
-            this.http.put(API_URL + '/ws/accounts/suppplier/disable/' + supplier_id, null, {headers: this.authService.headers}).pipe(
-                tap(() => {
-                    this.loadSuppliers()
-                }),
-                catchError((err: any) => {
-                    console.debug(err);
-                    this.notify.handleErrors(err);
-                    return of(false);
-                })
-            ).subscribe()
-        }
-    }
-
-    enableSupplier(supplier_id: number){
-        if (supplier_id !== undefined){
-            this.http.put(API_URL + '/ws/users/enable/' + supplier_id, null, {headers: this.authService.headers}).pipe(
+            this.http.delete(API_URL + '/ws/accounts/suppliers/delete/' + supplier_id, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadSuppliers()
                 }),

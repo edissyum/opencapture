@@ -47,7 +47,7 @@ CREATE TABLE "addresses" (
     "address2"    VARCHAR(255),
     "postal_code" VARCHAR(10),
     "city"        VARCHAR(50),
-    "country"     VARCHAR(50)
+    "country"     VARCHAR(50),
 );
 
 CREATE TABLE "roles" (
@@ -74,13 +74,13 @@ CREATE TABLE "privileges" (
 CREATE TABLE "accounts_supplier" (
     "id"         SERIAL UNIQUE PRIMARY KEY,
     "name"       VARCHAR NOT NULL,
-    "type"       INTEGER,
     "vat_number" VARCHAR(20),
     "siret"      VARCHAR(20),
     "siren"      VARCHAR(20),
-    "address_id"  INTEGER,
+    "address_id" INTEGER,
     "typology"   VARCHAR,
-    "form_id"    INTEGER
+    "form_id"    INTEGER,
+    "status"     VARCHAR(3) DEFAULT 'OK'
 );
 
 CREATE TABLE "accounts_customer" (
@@ -88,7 +88,8 @@ CREATE TABLE "accounts_customer" (
     "name"            VARCHAR(255),
     "company_number"  INTEGER,
     "accounting_plan" INTEGER,
-    "address_id"      INTEGER
+    "address_id"      INTEGER,
+    "status"          VARCHAR(3) DEFAULT 'OK'
 );
 
 CREATE TABLE "accounts_supplements" (

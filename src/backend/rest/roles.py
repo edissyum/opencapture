@@ -66,21 +66,21 @@ def delete_role(role_id):
 
 @bp.route('roles/disable/<int:role_id>', methods=['PUT'])
 @token_required
-def disable_user(role_id):
+def disable_role(role_id):
     res = roles.disable_role(role_id)
     return make_response(jsonify(res[0])), res[1]
 
 
 @bp.route('roles/enable/<int:role_id>', methods=['PUT'])
 @token_required
-def enable_user(role_id):
+def enable_role(role_id):
     res = roles.enable_role(role_id)
     return make_response(jsonify(res[0])), res[1]
 
 
 @bp.route('roles/create', methods=['POST'])
 @token_required
-def create_user():
+def create_role():
     data = request.json['args']
     res = roles.create_role(data)
     return make_response(jsonify(res[0])), res[1]

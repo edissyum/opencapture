@@ -79,7 +79,7 @@ def create_role(args):
     })
 
     if not role:
-        error = gettext('ROLE_UPDATE_ERROR')
+        error = gettext('ROLE_CREATE_ERROR')
 
     return role, error
 

@@ -16,6 +16,8 @@ import { VerifierViewerComponent } from './verifier/viewer/viewer.component';
 import { VerifierListComponent } from './verifier/list/list.component';
 import { UploadComponent } from "./upload/upload.component";
 import { SuppliersListComponent } from "./accounts/suppliers/list/suppliers-list.component"
+import { UpdateSupplierComponent } from "./accounts/suppliers/update/update-supplier.component"
+import { CreateSupplierComponent } from "./accounts/suppliers/create/create-supplier.component"
 import { HasPrivilegeService } from "../services/has-privilege.service";
 
 const routes: Routes = [
@@ -59,6 +61,18 @@ const routes: Routes = [
     {
         path: 'accounts/suppliers/list', component: SuppliersListComponent,
         data: {title: marker('ACCOUNTS.suppliers_list'), privileges: ['suppliers_list']},
+        canActivate: [LoginRequiredService, HasPrivilegeService]
+
+    },
+    {
+        path: 'accounts/suppliers/update/:id', component: UpdateSupplierComponent,
+        data: {title: marker('ACCOUNTS.update_supplier'), privileges: ['update_supplier']},
+        canActivate: [LoginRequiredService, HasPrivilegeService]
+
+    },
+    {
+        path: 'accounts/suppliers/create', component: CreateSupplierComponent,
+        data: {title: marker('ACCOUNTS.create_supplier'), privileges: ['create_supplier']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
 
     },

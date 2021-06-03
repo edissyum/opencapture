@@ -62,7 +62,7 @@ export class FormBuilderComponent implements OnInit {
             'values': [
                 {
                     id: 'name',
-                    label: this.translate.instant('ACCOUNTS.name'),
+                    label: this.translate.instant('ACCOUNTS.supplier_name'),
                     unit: 'accounts',
                     type: 'text',
                     required: true,
