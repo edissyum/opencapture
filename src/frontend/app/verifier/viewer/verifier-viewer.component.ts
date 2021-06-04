@@ -10,8 +10,8 @@ declare var $: any;
 
 @Component({
     selector: 'app-viewer',
-    templateUrl: './viewer.component.html',
-    styleUrls: ['./viewer.component.scss']
+    templateUrl: './verifier-viewer.component.html',
+    styleUrls: ['./verifier-viewer.component.scss']
 })
 
 export class VerifierViewerComponent implements OnInit {

@@ -75,78 +75,161 @@ def update_supplier(args):
     _db = db.get_db()
     error = None
 
-    role = _db.update({
+    supplier = _db.update({
         'table': ['accounts_supplier'],
         'set': args['set'],
         'where': ['id = %s'],
         'data': [args['supplier_id']]
     })
 
-    if role[0] is False:
+    if supplier[0] is False:
         error = gettext('SUPPLIER_UPDATE_ERROR')
 
-    return role, error
+    return supplier, error
 
 
 def update_address(args):
     _db = db.get_db()
     error = None
 
-    role = _db.update({
+    supplier = _db.update({
         'table': ['addresses'],
         'set': args['set'],
         'where': ['id = %s'],
         'data': [args['address_id']]
     })
 
-    if role[0] is False:
+    if supplier[0] is False:
         error = gettext('ADDRESS_UPDATE_ERROR')
 
-    return role, error
+    return supplier, error
 
 
 def create_address(args):
     _db = db.get_db()
     error = None
 
-    role = _db.insert({
+    supplier = _db.insert({
         'table': 'addresses',
         'columns': args['columns'],
     })
 
-    if not role:
+    if not supplier:
         error = gettext('ADDRESS_CREATE_ERROR')
 
-    return role, error
+    return supplier, error
 
 
 def create_supplier(args):
     _db = db.get_db()
     error = None
 
-    role = _db.insert({
+    supplier = _db.insert({
         'table': 'accounts_supplier',
         'columns': args['columns'],
     })
 
-    if not role:
+    if not supplier:
         error = gettext('SUPPLIER_CREATE_ERROR')
 
-    return role, error
+    return supplier, error
 
 
 def delete_supplier(args):
     _db = db.get_db()
     error = None
 
-    role = _db.update({
+    supplier = _db.update({
         'table': ['accounts_supplier'],
         'set': args['set'],
         'where': ['id = %s'],
         'data': [args['supplier_id']]
     })
 
-    if not role:
-        error = gettext('SUPPLIER_CREATE_ERROR')
+    if not supplier:
+        error = gettext('SUPPLIER_DELETE_ERROR')
 
-    return role, error
+    return supplier, error
+
+
+def retrieve_customers(args):
+    _db = db.get_db()
+
+    customers = _db.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['accounts_customer'],
+        'where': ['1 = %s'] if 'where' not in args else args['where'],
+        'data': ['1'] if 'data' not in args else args['data'],
+        'order_by': ['id ASC'] if 'order_by' not in args else args['order_by'],
+        'limit': str(args['limit']) if 'limit' in args else [],
+        'offset': str(args['offset']) if 'offset' in args else [],
+    })
+
+    return customers
+
+
+def get_customer_by_id(args):
+    _db = db.get_db()
+    error = None
+    customer = _db.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['accounts_customer'],
+        'where': ['id = %s'],
+        'data': [args['customer_id']]
+    })
+
+    if not customer:
+        error = gettext('GET_CUSTOMER_BY_ID_ERROR')
+    else:
+        customer = customer[0]
+
+    return customer, error
+
+
+def update_customer(args):
+    _db = db.get_db()
+    error = None
+
+    customer = _db.update({
+        'table': ['accounts_customer'],
+        'set': args['set'],
+        'where': ['id = %s'],
+        'data': [args['customer_id']]
+    })
+
+    if customer[0] is False:
+        error = gettext('CUSTOMER_UPDATE_ERROR')
+
+    return customer, error
+
+
+def create_customer(args):
+    _db = db.get_db()
+    error = None
+
+    customer = _db.insert({
+        'table': 'accounts_customer',
+        'columns': args['columns'],
+    })
+
+    if not customer:
+        error = gettext('CUSTOMER_CREATE_ERROR')
+
+    return customer, error
+
+
+def delete_customer(args):
+    _db = db.get_db()
+    error = None
+
+    customer = _db.update({
+        'table': ['accounts_customer'],
+        'set': args['set'],
+        'where': ['id = %s'],
+        'data': [args['customer_id']]
+    })
+
+    if not customer:
+        error = gettext('CUSTOMER_DELETE_ERROR')
+
+    return customer, error

@@ -15,10 +15,10 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { AppRoutingModule } from './app-routing.module';
 import { SettingsRoutingModule } from './settings/settings-routing.module';
 import { AppComponent } from './app.component';
-import { VerifierViewerComponent } from './verifier/viewer/viewer.component';
-import { VerifierListComponent } from './verifier/list/list.component';
-import { SplitterViewerComponent } from './splitter/viewer/viewer.component';
-import { SplitterListComponent } from './splitter/list/list.component';
+import { VerifierViewerComponent } from './verifier/viewer/verifier-viewer.component';
+import { VerifierListComponent } from './verifier/list/verifier-list.component';
+import { SplitterViewerComponent } from './splitter/viewer/splitter-viewer.component';
+import { SplitterListComponent } from './splitter/list/splitter-list.component';
 import { LoginComponent } from './login/login.component';
 import { LogoutComponent } from "./logout/logout.component";
 import { HomeComponent } from './home/home.component';
@@ -47,7 +47,7 @@ import { NgsgModule } from 'ng-sortgrid';
 import { SuppliersListComponent } from './accounts/suppliers/list/suppliers-list.component';
 import { UpdateSupplierComponent } from './accounts/suppliers/update/update-supplier.component';
 import { CreateSupplierComponent } from './accounts/suppliers/create/create-supplier.component';
-import { CustomerListComponent } from './accounts/customers/list/customer-list.component';
+import { CustomersListComponent } from './accounts/customers/list/customers-list.component';
 import { UpdateCustomerComponent } from './accounts/customers/update/update-customer.component';
 import { CreateCustomerComponent } from './accounts/customers/create/create-customer.component';
 
@@ -86,7 +86,7 @@ export function createTranslateLoader(http: HttpClient) {
         SuppliersListComponent,
         UpdateSupplierComponent,
         CreateSupplierComponent,
-        CustomerListComponent,
+        CustomersListComponent,
         CreateCustomerComponent,
         UpdateCustomerComponent
     ],

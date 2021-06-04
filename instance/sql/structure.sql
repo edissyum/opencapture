@@ -35,19 +35,20 @@ CREATE TABLE "custom_fields" (
      "status" VARCHAR(5) default 'OK'
 );
 
-CREATE TABLE "users_companies" (
-    "id"         SERIAL UNIQUE PRIMARY KEY,
-    "user_id"    INTEGER,
-    "company_id" INTEGER
+CREATE TABLE "users_customers" (
+    "id"           SERIAL UNIQUE PRIMARY KEY,
+    "user_id"      INTEGER,
+    "customers_id" JSONB
 );
 
 CREATE TABLE "addresses" (
-    "id"          SERIAL UNIQUE PRIMARY KEY,
-    "address1"    VARCHAR(255),
-    "address2"    VARCHAR(255),
-    "postal_code" VARCHAR(10),
-    "city"        VARCHAR(50),
-    "country"     VARCHAR(50),
+    "id"            SERIAL UNIQUE PRIMARY KEY,
+    "address1"      VARCHAR(255),
+    "address2"      VARCHAR(255),
+    "postal_code"   VARCHAR(10),
+    "city"          VARCHAR(50),
+    "country"       VARCHAR(50),
+    "creation_date" TIMESTAMP             DEFAULT (CURRENT_TIMESTAMP),
 );
 
 CREATE TABLE "roles" (
@@ -72,24 +73,29 @@ CREATE TABLE "privileges" (
 );
 
 CREATE TABLE "accounts_supplier" (
-    "id"         SERIAL UNIQUE PRIMARY KEY,
-    "name"       VARCHAR NOT NULL,
-    "vat_number" VARCHAR(20),
-    "siret"      VARCHAR(20),
-    "siren"      VARCHAR(20),
-    "address_id" INTEGER,
-    "typology"   VARCHAR,
-    "form_id"    INTEGER,
-    "status"     VARCHAR(3) DEFAULT 'OK'
+    "id"            SERIAL UNIQUE PRIMARY KEY,
+    "name"          VARCHAR NOT NULL,
+    "vat_number"    VARCHAR(20),
+    "siret"         VARCHAR(20),
+    "siren"         VARCHAR(20),
+    "address_id"    INTEGER,
+    "typology"      VARCHAR,
+    "form_id"       INTEGER,
+    "status"        VARCHAR(3) DEFAULT 'OK',
+    "creation_date" TIMESTAMP             DEFAULT (CURRENT_TIMESTAMP),
 );
 
 CREATE TABLE "accounts_customer" (
     "id"              SERIAL UNIQUE PRIMARY KEY,
     "name"            VARCHAR(255),
-    "company_number"  INTEGER,
+    "vat_number"      VARCHAR(20),
+    "siret"           VARCHAR(20),
+    "siren"           VARCHAR(20),
+    "company_number"  VARCHAR(10),
     "accounting_plan" INTEGER,
     "address_id"      INTEGER,
-    "status"          VARCHAR(3) DEFAULT 'OK'
+    "status"          VARCHAR(3) DEFAULT 'OK',
+    "creation_date"   TIMESTAMP             DEFAULT (CURRENT_TIMESTAMP),
 );
 
 CREATE TABLE "accounts_supplements" (

@@ -76,3 +76,18 @@ def disable_user(user_id):
 def enable_user(user_id):
     res = user.enable_user(user_id)
     return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('users/getCustomersByUserId/<int:user_id>', methods=['GET'])
+@token_required
+def get_customers_by_user_id(user_id):
+    res = user.get_customers_by_user_id(user_id)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('users/customers/update/<int:user_id>', methods=['put'])
+@token_required
+def update_customers_by_user_id(user_id):
+    customers = request.json['customers']
+    res = user.update_customers_by_user_id(user_id, customers)
+    return make_response(jsonify(res[0])), res[1]

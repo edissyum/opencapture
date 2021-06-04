@@ -12,9 +12,9 @@ import {LastUrlService} from "../../../services/last-url.service";
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from "@angular/material/form-field";
 
 @Component({
-    selector: 'app-list',
-    templateUrl: './list.component.html',
-    styleUrls: ['./list.component.scss'],
+    selector: 'app-verifier-list',
+    templateUrl: './verifier-list.component.html',
+    styleUrls: ['./verifier-list.scss'],
     providers: [
         { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } },
     ]

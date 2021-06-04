@@ -4,8 +4,8 @@ import {LocalStorageService} from "../../../services/local-storage.service";
 
 @Component({
     selector: 'app-list',
-    templateUrl: './list.component.html',
-    styleUrls: ['./list.component.scss']
+    templateUrl: './splitter-list.component.html',
+    styleUrls: ['./splitter-list.component.scss']
 })
 export class SplitterListComponent implements OnInit {
 

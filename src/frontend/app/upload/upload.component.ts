@@ -31,7 +31,7 @@ export class UploadComponent implements OnInit {
         private formBuilder: FormBuilder,
         private authService: AuthService,
         public userService: UserService,
-        private translate: TranslateService,
+        public translate: TranslateService,
         private notify: NotificationService,
         public localeStorageService: LocalStorageService
     ) {
@@ -62,7 +62,11 @@ export class UploadComponent implements OnInit {
         }
     }
 
-    uploadFile(): void {
+    uploadSaleInvoice(): void {
+
+    }
+
+    uploadPurchaseInvoice(): void {
         const formData: FormData = new FormData();
 
         if (this.fileControl.value.length == 0) {
@@ -78,7 +82,7 @@ export class UploadComponent implements OnInit {
                 return;
             }
         }
-        console.log(formData)
+
         let splitter_or_verifier = this.localeStorageService.get('splitter_or_verifier')
         if(splitter_or_verifier !== undefined || splitter_or_verifier !== ''){
             this.http.post(

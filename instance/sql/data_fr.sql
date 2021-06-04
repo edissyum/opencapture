@@ -26,11 +26,13 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (12, 'custom_fields', 
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (13, 'version_update', 'general');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (14, 'forms_list', 'verifier');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (15, 'form_builder', 'verifier');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (16, 'customers_list', 'accounts');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (17, 'suppliers_list', 'accounts');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (18, 'create_supplier', 'accounts');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (19, 'update_supplier', 'accounts');
-ALTER SEQUENCE "privileges_id_seq" RESTART WITH 19;
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (16, 'suppliers_list', 'accounts');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (17, 'create_supplier', 'accounts');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (18, 'update_supplier', 'accounts');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (19, 'customers_list', 'accounts');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (20, 'create_customer', 'accounts');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (21, 'update_customer', 'accounts');
+ALTER SEQUENCE "privileges_id_seq" RESTART WITH 21;
 
 -- ADD PRIVILEGES TO ROLES
 INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (1, '{"data" : "[''*'']"}');

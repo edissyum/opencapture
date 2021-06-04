@@ -69,6 +69,8 @@ export class UpdateUserComponent implements OnInit {
             required: true
         }
     ];
+    customers: any[] = [];
+    usersCustomers: any[] = [];
 
     constructor(
         public router: Router,
@@ -87,6 +89,28 @@ export class UpdateUserComponent implements OnInit {
     ngOnInit(): void {
         this.serviceSettings.init()
         this.userId = this.route.snapshot.params['id'];
+
+        this.http.get(API_URL + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.customers = data.customers;
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe()
+
+        this.http.get(API_URL + '/ws/users/getCustomersByUserId/' + this.userId, {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.usersCustomers = data
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe()
 
         this.http.get(API_URL + '/ws/roles/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -177,5 +201,43 @@ export class UpdateUserComponent implements OnInit {
             }
         })
         return error
+    }
+
+    hasCustomer(customerId: any){
+        for (let customer_id of this.usersCustomers){
+            if(customer_id == customerId){
+                return true;
+            }
+        }
+        return false
+    }
+
+    updateUsersCustomers(customerId: any){
+        let found = false
+        let cpt = 0;
+        for (let customer_id of this.usersCustomers) {
+            if(customer_id == customerId){
+                found = true;
+                break
+            }
+            cpt = cpt + 1
+        }
+        if (!found){
+            this.usersCustomers.push(customerId)
+        }else{
+            this.usersCustomers.splice(cpt, 1)
+        }
+
+        this.http.put(API_URL + '/ws/users/customers/update/' + this.userId, {'customers': this.usersCustomers}, {headers: this.authService.headers},
+        ).pipe(
+            tap(() => {
+                this.notify.success(this.translate.instant('USER.customers_updated'))
+            }),
+            catchError((err: any) => {
+                console.debug(err)
+                this.notify.handleErrors(err, '/settings/general/users/');
+                return of(false);
+            })
+        ).subscribe();
     }
 }

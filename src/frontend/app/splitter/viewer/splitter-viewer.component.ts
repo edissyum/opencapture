@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-viewer',
-  templateUrl: './viewer.component.html',
-  styleUrls: ['./viewer.component.scss']
+  templateUrl: './splitter-viewer.component.html',
+  styleUrls: ['./splitter-viewer.component.scss']
 })
 export class SplitterViewerComponent implements OnInit {
 

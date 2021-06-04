@@ -1,0 +1,62 @@
+<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem">
+    <mat-sidenav-content class="bg-white">
+        <div *ngIf="loading">
+            <app-loader></app-loader>
+        </div>
+        <div class="settings_header">
+            <button routerLink="/accounts/customers/create" mat-icon-button class="absolute left-2 top-2">
+                <i class="fas fa-plus text-2xl ml-2"></i>
+                <span class="ml-2 top-0.5">{{ 'ACCOUNTS.create_customer' | translate }}</span>
+            </button>
+            <h3 class="text-center">{{ this.serviceSettings.getTitle() }}</h3>
+            <hr class="border-green-400">
+        </div>
+        <mat-table matSort [dataSource]="customers" (matSortChange)="sortData($event)" class="w-full">
+            <ng-container matColumnDef="id">
+                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.id' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="name">
+                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ACCOUNTS.customer_name' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="company_number">
+                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ACCOUNTS.company_number' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.company_number}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="vat_number">
+                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ACCOUNTS.vat_number' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.vat_number}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="siret">
+                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ACCOUNTS.siret' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.siret}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="siren">
+                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ACCOUNTS.siren' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.siren}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="actions">
+                <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <button (click)="$event.stopPropagation();deleteConfirmDialog(element.id, element.name)"
+                            matTooltip="{{ 'GLOBAL.delete' | translate }}" mat-icon-button
+                            class="inline-block align-text-top">
+                        <i class="btn-action-icon fas fa-trash fa-lg"></i>
+                    </button>
+                </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: columnsToDisplay;"
+                     routerLink="/accounts/customers/update/{{row.id}}"
+                     class="cursor-pointer hover:text-green-400 hover:shadow-md transition-colors duration-300"></mat-row>
+        </mat-table>
+        <mat-paginator showFirstLastButtons
+                       [length]="this.total"
+                       [pageSize]="pageSize"
+                       [pageIndex]="pageIndex"
+                       [pageSizeOptions]="[5, 10, 15, 20, 50]"
+                       (page)="onPageChange($event)">
+        </mat-paginator>
+    </mat-sidenav-content>
+</mat-sidenav-container>

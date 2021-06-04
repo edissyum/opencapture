@@ -91,6 +91,23 @@ def get_user_by_id(args):
     return user, error
 
 
+def get_customers_by_user_id(args):
+    db = get_db()
+    error = None
+    customers = db.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['users_customers'],
+        'where': ['user_id = %s'],
+        'data': [args['user_id']]
+    })
+
+    if not customers:
+        error = gettext('GET_CUSTOMERS_BY_USER_ID_ERROR')
+    else:
+        customers = customers[0]
+    return customers, error
+
+
 def update_user(args):
     db = get_db()
     error = None
@@ -104,5 +121,22 @@ def update_user(args):
 
     if user[0] is False:
         error = gettext('USERS_UPDATE_ERROR')
+
+    return user, error
+
+
+def update_customers_by_user_id(args):
+    db = get_db()
+    error = None
+
+    user = db.update({
+        'table': ['users_customers'],
+        'set': args['set'],
+        'where': ['user_id = %s'],
+        'data': [args['user_id']]
+    })
+
+    if user[0] is False:
+        error = gettext('USERS_CUSTOMERS_UPDATE_ERROR')
 
     return user, error

@@ -1,3 +1,7 @@
-.mat-chip.mat-standard-chip.mat-chip-selected.mat-accent{
+.mat-chip.mat-standard-chip .mat-chip-selected.mat-accent{
     background-color: #97BF3D!important;
+}
+
+.upload .mat-tab-header .mat-tab-label-container > .mat-tab-list > .mat-tab-labels > .mat-tab-label{
+    @apply w-1/2;
 }

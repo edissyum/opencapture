@@ -11,22 +11,22 @@ import {SettingsService} from "../../../../services/settings.service";
 import {LastUrlService} from "../../../../services/last-url.service";
 import {PrivilegesService} from "../../../../services/privileges.service";
 import {LocalStorageService} from "../../../../services/local-storage.service";
-import {Sort} from "@angular/material/sort";
 import {API_URL} from "../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {ConfirmDialogComponent} from "../../../../services/confirm-dialog/confirm-dialog.component";
+import {Sort} from "@angular/material/sort";
 
 @Component({
     selector: 'app-list',
-    templateUrl: './suppliers-list.component.html',
-    styleUrls: ['./suppliers-list.component.scss']
+    templateUrl: './customers-list.component.html',
+    styleUrls: ['./customers-list.component.scss']
 })
-export class SuppliersListComponent implements OnInit {
+export class CustomersListComponent implements OnInit {
     headers         : HttpHeaders = this.authService.headers;
     loading         : boolean     = true;
-    columnsToDisplay: string[]    = ['id', 'name', 'vat_number', 'siret', 'siren','form_label', 'actions'];
-    suppliers       : any         = [];
+    columnsToDisplay: string[]    = ['id', 'name', 'company_number', 'vat_number', 'siret', 'siren', 'actions'];
+    customers       : any         = [];
     pageSize        : number      = 10;
     pageIndex       : number      = 0;
     total           : number      = 0;
@@ -51,41 +51,25 @@ export class SuppliersListComponent implements OnInit {
     ngOnInit(): void {
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
         let lastUrl = this.routerExtService.getPreviousUrl()
-        if (lastUrl.includes('accounts/suppliers') || lastUrl == '/'){
-            if (this.localeStorageService.get('suppliersPageIndex'))
-                this.pageIndex = parseInt(<string>this.localeStorageService.get('suppliersPageIndex'))
+        if (lastUrl.includes('accounts/customers') || lastUrl == '/'){
+            if (this.localeStorageService.get('customersPageIndex'))
+                this.pageIndex = parseInt(<string>this.localeStorageService.get('customersPageIndex'))
             this.offset = this.pageSize * (this.pageIndex)
         }else
-            this.localeStorageService.remove('suppliersPageIndex')
+            this.localeStorageService.remove('customersPageIndex')
 
-        this.loadSuppliers()
+        this.loadCustomers()
     }
 
-    loadSuppliers(){
-        this.http.get(API_URL + '/ws/accounts/suppliers/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
+    loadCustomers(){
+        this.http.get(API_URL + '/ws/accounts/customers/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.suppliers = data.suppliers;
-                if (this.suppliers.length !== 0){
-                    this.total = data.suppliers[0].total
+                this.customers = data.customers;
+                if (this.customers.length !== 0){
+                    this.total = data.customers[0].total
                 }
-                this.http.get(API_URL + '/ws/forms/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
-                    tap((data: any) => {
-                        for (let cpt in this.suppliers){
-                            for (let form of data.forms){
-                                if (form.id == this.suppliers[cpt].form_id){
-                                    this.suppliers[cpt].form_label = form.label
-                                }
-                            }
-                        }
-                    }),
-                    finalize(() => this.loading = false),
-                    catchError((err: any) => {
-                        console.debug(err);
-                        this.notify.handleErrors(err);
-                        return of(false);
-                    })
-                ).subscribe()
             }),
+            finalize(() => this.loading = false),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
@@ -97,15 +81,15 @@ export class SuppliersListComponent implements OnInit {
     onPageChange(event: any){
         this.pageSize = event.pageSize
         this.offset = this.pageSize * (event.pageIndex)
-        this.localeStorageService.save('suppliersPageIndex', event.pageIndex)
-        this.loadSuppliers()
+        this.localeStorageService.save('customersPageIndex', event.pageIndex)
+        this.loadCustomers()
     }
 
-    deleteConfirmDialog(supplier_id: number, supplier: string) {
+    deleteConfirmDialog(customer_id: number, customer: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data:{
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
-                confirmText         : this.translate.instant('ACCOUNTS.confirm_delete_supplier', {"supplier": supplier}),
+                confirmText         : this.translate.instant('ACCOUNTS.confirm_delete_customer', {"customer": customer}),
                 confirmButton       : this.translate.instant('GLOBAL.delete'),
                 confirmButtonColor  : "warn",
                 cancelButton        : this.translate.instant('GLOBAL.cancel'),
@@ -115,16 +99,16 @@ export class SuppliersListComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if(result){
-                this.deleteSupplier(supplier_id)
+                this.deleteSupplier(customer_id)
             }
         });
     }
 
     deleteSupplier(supplier_id: number){
         if (supplier_id !== undefined){
-            this.http.delete(API_URL + '/ws/accounts/suppliers/delete/' + supplier_id, {headers: this.authService.headers}).pipe(
+            this.http.delete(API_URL + '/ws/accounts/customers/delete/' + supplier_id, {headers: this.authService.headers}).pipe(
                 tap(() => {
-                    this.loadSuppliers()
+                    this.loadCustomers()
                 }),
                 catchError((err: any) => {
                     console.debug(err);
@@ -136,21 +120,21 @@ export class SuppliersListComponent implements OnInit {
     }
 
     sortData(sort: Sort){
-        let data = this.suppliers.slice()
+        let data = this.customers.slice()
         if(!sort.active || sort.direction === ''){
-            this.suppliers = data
+            this.customers = data
             return;
         }
 
-        this.suppliers = data.sort((a: any, b: any) => {
+        this.customers = data.sort((a: any, b: any) => {
             const isAsc = sort.direction === 'asc';
             switch (sort.active) {
                 case 'id': return this.compare(a.id, b.id, isAsc);
                 case 'name': return this.compare(a.name, b.name, isAsc);
+                case 'company_number': return this.compare(a.company_number, b.company_number, isAsc);
                 case 'vat_number': return this.compare(a.vat_number, b.vat_number, isAsc);
                 case 'siret': return this.compare(a.siret, b.siret, isAsc);
                 case 'siren': return this.compare(a.siren, b.siren, isAsc);
-                case 'typology': return this.compare(a.typology, b.typology, isAsc);
                 default: return 0;
             }
         });

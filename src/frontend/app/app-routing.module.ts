@@ -10,14 +10,17 @@ import { LogoutComponent } from './logout/logout.component';
 import { HomeComponent } from './home/home.component';
 import { NotFoundComponent } from "./not-found/not-found.component";
 import { UserProfileComponent } from "./profile/profile.component";
-import { SplitterViewerComponent } from "./splitter/viewer/viewer.component";
-import { SplitterListComponent } from "./splitter/list/list.component";
-import { VerifierViewerComponent } from './verifier/viewer/viewer.component';
-import { VerifierListComponent } from './verifier/list/list.component';
+import { SplitterViewerComponent } from "./splitter/viewer/splitter-viewer.component";
+import { SplitterListComponent } from "./splitter/list/splitter-list.component";
+import { VerifierViewerComponent } from './verifier/viewer/verifier-viewer.component';
+import { VerifierListComponent } from './verifier/list/verifier-list.component';
 import { UploadComponent } from "./upload/upload.component";
 import { SuppliersListComponent } from "./accounts/suppliers/list/suppliers-list.component"
 import { UpdateSupplierComponent } from "./accounts/suppliers/update/update-supplier.component"
 import { CreateSupplierComponent } from "./accounts/suppliers/create/create-supplier.component"
+import { CustomersListComponent } from "./accounts/customers/list/customers-list.component"
+import { UpdateCustomerComponent } from "./accounts/customers/update/update-customer.component"
+import { CreateCustomerComponent } from "./accounts/customers/create/create-customer.component"
 import { HasPrivilegeService } from "../services/has-privilege.service";
 
 const routes: Routes = [
@@ -73,6 +76,26 @@ const routes: Routes = [
     {
         path: 'accounts/suppliers/create', component: CreateSupplierComponent,
         data: {title: marker('ACCOUNTS.create_supplier'), privileges: ['create_supplier']},
+        canActivate: [LoginRequiredService, HasPrivilegeService]
+
+    },
+
+    {path: 'accounts/customers', redirectTo: 'accounts/customers/list', pathMatch: 'full'},
+    {
+        path: 'accounts/customers/list', component: CustomersListComponent,
+        data: {title: marker('ACCOUNTS.customers_list'), privileges: ['customers_list']},
+        canActivate: [LoginRequiredService, HasPrivilegeService]
+
+    },
+    {
+        path: 'accounts/customers/update/:id', component: UpdateCustomerComponent,
+        data: {title: marker('ACCOUNTS.update_customer'), privileges: ['update_customer']},
+        canActivate: [LoginRequiredService, HasPrivilegeService]
+
+    },
+    {
+        path: 'accounts/customers/create', component: CreateCustomerComponent,
+        data: {title: marker('ACCOUNTS.create_customer'), privileges: ['create_customer']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
 
     },

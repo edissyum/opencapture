@@ -64,14 +64,21 @@ def update_supplier(supplier_id, data):
     supplier_info, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
 
     if error is None:
-        _set = {
-            'name': data['name'],
-            'siret': data['siret'],
-            'siren': data['siren'],
-            'vat_number': data['vat_number'],
-            'typology': data['typology'],
-            'form_id': data['form_id']
-        }
+        _set = {}
+        if 'address_id' in data:
+            _set.update({'address_id': data['address_id']})
+        if 'name' in data:
+            _set.update({'name': data['name']})
+        if 'siret' in data:
+            _set.update({'siret': data['siret']})
+        if 'siren' in data:
+            _set.update({'siren': data['siren']})
+        if 'vat_number' in data:
+            _set.update({'vat_number': data['vat_number']})
+        if 'typology' in data:
+            _set.update({'typology': data['typology']})
+        if 'form_id' in data:
+            _set.update({'form_id': data['form_id']})
 
         res, error = accounts.update_supplier({'set': _set, 'supplier_id': supplier_id})
 
@@ -179,16 +186,106 @@ def create_supplier(data):
         return response, 401
 
 
-def delete_supplier(supplier_id):
+def retrieve_customers(args):
+    _vars = pdf.init()
+    _config = _vars[1]
+
+    customers = accounts.retrieve_customers(args)
+    response = {
+        "customers": customers
+    }
+    return response, 200
+
+
+def get_customer_by_id(customer_id):
+    customer_info, error = accounts.get_customer_by_id({'customer_id': customer_id})
+
+    if error is None:
+        return customer_info, 200
+    else:
+        response = {
+            "errors": gettext('GET_CUSTOMER_BY_ID_ERROR'),
+            "message": error
+        }
+        return response, 401
+
+
+def update_customer(customer_id, data):
     _vars = pdf.init()
     _db = _vars[0]
-    supplier_info, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
+    supplier_info, error = accounts.get_customer_by_id({'customer_id': customer_id})
+
+    if error is None:
+        _set = {}
+
+        if 'address_id' in data:
+            _set.update({'address_id': data['address_id']})
+        if 'name' in data:
+            _set.update({'name': data['name']})
+        if 'siret' in data:
+            _set.update({'siret': data['siret']})
+        if 'siren' in data:
+            _set.update({'siren': data['siren']})
+        if 'vat_number' in data:
+            _set.update({'vat_number': data['vat_number']})
+        if 'company_number' in data:
+            _set.update({'company_number': data['company_number']})
+
+        res, error = accounts.update_customer({'set': _set, 'customer_id': customer_id})
+
+        if error is None:
+            return '', 200
+        else:
+            response = {
+                "errors": gettext('UPDATE_CUSTOMER_ERROR'),
+                "message": error
+            }
+            return response, 401
+    else:
+        response = {
+            "errors": gettext('UPDATE_CUSTOMER_ERROR'),
+            "message": error
+        }
+        return response, 401
+
+
+def create_customer(data):
+    _vars = pdf.init()
+    _db = _vars[0]
+
+    _columns = {
+        'name': data['name'],
+        'siret': data['siret'],
+        'company_number': data['company_number'],
+        'siren': data['siren'],
+        'vat_number': data['vat_number'],
+    }
+
+    res, error = accounts.create_customer({'columns': _columns})
+
+    if error is None:
+        response = {
+            "id": res
+        }
+        return response, 200
+    else:
+        response = {
+            "errors": gettext('CREATE_CUSTOMER_ERROR'),
+            "message": error
+        }
+        return response, 401
+
+
+def delete_customer(customer_id):
+    _vars = pdf.init()
+    _db = _vars[0]
+    customer_info, error = accounts.get_customer_by_id({'customer_id': customer_id})
 
     if error is None:
         _set = {
             'status': 'DEL',
         }
-        res, error = accounts.delete_supplier({'set': _set, 'supplier_id': supplier_id})
+        res, error = accounts.delete_customer({'set': _set, 'customer_id': customer_id})
         if error is None:
             return '', 200
         else:

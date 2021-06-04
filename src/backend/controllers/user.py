@@ -74,6 +74,23 @@ def get_user_by_id(user_id, get_password=False):
         return response, 401
 
 
+def get_customers_by_user_id(user_id):
+    user_info, error = user.get_user_by_id({'user_id': user_id})
+
+    if error is None:
+        customers, error = user.get_customers_by_user_id({'user_id': user_id})
+        if type(eval(customers['customers_id']['data'])) == list:
+            customers = eval(customers['customers_id']['data'])
+        if error is None:
+            return customers, 200
+    else:
+        response = {
+            "errors": gettext('GET_CUSTOMERS_BY_USER_ID_ERROR'),
+            "message": error
+        }
+        return response, 401
+
+
 def update_user(user_id, data):
     _vars = pdf.init()
     _db = _vars[0]
@@ -182,6 +199,32 @@ def enable_user(user_id):
     else:
         response = {
             "errors": gettext('ENABLE_USER_ERROR'),
+            "message": error
+        }
+        return response, 401
+
+
+def update_customers_by_user_id(user_id, customers):
+    _vars = pdf.init()
+    _db = _vars[0]
+
+    user_info, error = user.get_user_by_id({'user_id': user_id})
+    if error is None:
+        _set = {
+            'customers_id': '{"data": "' + str(customers) + '"}',
+        }
+        res, error = user.update_customers_by_user_id({'set': _set, 'user_id': user_id})
+        if error is None:
+            return '', 200
+        else:
+            response = {
+                "errors": gettext('UPDATE_CUSTOMERS_USER_ERROR'),
+                "message": error
+            }
+            return response, 401
+    else:
+        response = {
+            "errors": gettext('UPDATE_CUSTOMERS_USER_ERROR'),
             "message": error
         }
         return response, 401

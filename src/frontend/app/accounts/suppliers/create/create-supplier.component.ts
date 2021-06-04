@@ -168,7 +168,7 @@ export class CreateSupplierComponent implements OnInit {
                 address[element.id] = element.control.value;
             });
 
-            this.http.post(API_URL + '/ws/accounts/suppliers/addresses/create', {'args': address}, {headers: this.authService.headers},
+            this.http.post(API_URL + '/ws/accounts/addresses/create', {'args': address}, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {
                     supplier['address_id'] = data.id

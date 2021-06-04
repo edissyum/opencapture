@@ -1,18 +1,40 @@
-<ngx-file-drag-drop
-        [formControl]="fileControl"
-        [activeBorderColor]="'#97BF3D'"
-        [multiple]="true"
-        [accept]="'pdf'"
-        [displayFileSize]="true"
-        [emptyPlaceholder]="'UPLOAD.placeholder' | translate"
-        [class]="'max-w-3xl h-56'"
-        (valueChanged)="checkFile($event)">
-</ngx-file-drag-drop>
-
-<div class="flex justify-center content-center">
-    <button mat-flat-button
-            (click)="uploadFile()"
-            class="mt-5 border-solid border-green-400 border hover:bg-green-400 hover:text-white px-3 py-2 text-sm font-medium transition duration-300">
-        {{ 'UPLOAD.send' | translate }}
-    </button>
-</div>
+<mat-tab-group class="upload">
+    <mat-tab [label]="'UPLOAD.purchase_invoice' | translate">
+        <ngx-file-drag-drop
+                [formControl]="fileControl"
+                [activeBorderColor]="'#97BF3D'"
+                [multiple]="true"
+                [accept]="'pdf'"
+                [displayFileSize]="true"
+                [emptyPlaceholder]="'UPLOAD.placeholder' | translate"
+                [class]="'max-w-3xl h-56'"
+                (valueChanged)="checkFile($event)">
+        </ngx-file-drag-drop>
+        <div class="flex justify-center content-center">
+            <button mat-flat-button
+                    (click)="uploadPurchaseInvoice()"
+                    class="mt-5 border-solid border-green-400 border hover:bg-green-400 hover:text-white px-3 py-2 text-sm font-medium transition duration-300">
+                {{ 'UPLOAD.send_purchase_invoice' | translate }}
+            </button>
+        </div>
+    </mat-tab>
+    <mat-tab [label]="'UPLOAD.sale_invoice' | translate">
+        <ngx-file-drag-drop
+                [formControl]="fileControl"
+                [activeBorderColor]="'#97BF3D'"
+                [multiple]="true"
+                [accept]="'pdf'"
+                [displayFileSize]="true"
+                [emptyPlaceholder]="'UPLOAD.placeholder' | translate"
+                [class]="'max-w-3xl h-56'"
+                (valueChanged)="checkFile($event)">
+        </ngx-file-drag-drop>
+        <div class="flex justify-center content-center">
+            <button mat-flat-button
+                    (click)="uploadSaleInvoice()"
+                    class="mt-5 border-solid border-green-400 border hover:bg-green-400 hover:text-white px-3 py-2 text-sm font-medium transition duration-300">
+                {{ 'UPLOAD.send_sale_invoice' | translate }}
+            </button>
+        </div>
+    </mat-tab>
+</mat-tab-group>

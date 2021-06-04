@@ -83,6 +83,10 @@
                 <h3>{{ this.serviceSettings.getTitle() }} : {{ this.user['firstname'] }} {{ this.user['lastname'] }} <b>({{ this.user['username'] }})</b></h3>
                 <hr class="border-green-400">
             </div>
+            <button mat-icon-button (click)="sidenav2.toggle();"
+                    class="absolute right-2 top-2">
+                <i [class.transform]="!sidenav2.opened" [class.rotate-180]="!sidenav2.opened" class="fas fa-stream text-2xl"></i>
+            </button>
         </div>
         <div class="flex justify-center items-center align-middle">
             <form (ngSubmit)="onSubmit()" class="grid grid-cols-3 gap-6 w-full m-10 text-center">
@@ -108,4 +112,15 @@
             </form>
         </div>
     </mat-sidenav-content>
+    <mat-sidenav #sidenav2 mode="side" opened position="end" class="customers w-1/4 flex flex-col h-full border-r border-green-400">
+        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">{{ "ACCOUNTS.customers_list" | translate }}</h3>
+        <mat-divider class="border-green-400"></mat-divider>
+        <mat-list>
+            <mat-list-item *ngFor="let customer of customers" class="hover:bg-green-400 cursor-pointer m-2 w-auto"
+                           [class.bg-green-400]="hasCustomer(customer.id)" (click)="updateUsersCustomers(customer.id)">
+                {{ customer.name }}
+                {{customer.id}}
+            </mat-list-item>
+        </mat-list>
+    </mat-sidenav>
 </mat-sidenav-container>

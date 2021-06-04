@@ -44,25 +44,25 @@ export class FormBuilderComponent implements OnInit {
     fieldCategories: any[] = [
         {
             'id': 'accounts',
-            'label': this.translate.instant('ACCOUNTS.accounts')
+            'label': marker('ACCOUNTS.supplier')
         },
         {
             'id': 'facturation',
-            'label': this.translate.instant('FACTURATION.facturation')
+            'label': marker('FACTURATION.facturation')
         },
         {
             'id': 'other',
-            'label': this.translate.instant('FORMS.other')
+            'label': marker('FORMS.other')
         }
     ];
     availableFieldsParent = [
         {
             'id': 'accounts_fields',
-            'label': this.translate.instant('ACCOUNTS.accounts'),
+            'label': marker('ACCOUNTS.supplier'),
             'values': [
                 {
                     id: 'name',
-                    label: this.translate.instant('ACCOUNTS.supplier_name'),
+                    label: marker('ACCOUNTS.supplier_name'),
                     unit: 'accounts',
                     type: 'text',
                     required: true,
@@ -71,7 +71,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'siret',
-                    label: this.translate.instant('ACCOUNTS.siret'),
+                    label: marker('ACCOUNTS.siret'),
                     unit: 'accounts',
                     type: 'text',
                     required: false,
@@ -81,7 +81,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'siren',
-                    label: this.translate.instant('ACCOUNTS.siren'),
+                    label: marker('ACCOUNTS.siren'),
                     unit: 'accounts',
                     type: 'text',
                     required: false,
@@ -91,7 +91,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'vat_number',
-                    label: this.translate.instant('ACCOUNTS.vat_number'),
+                    label: marker('ACCOUNTS.vat_number'),
                     unit: 'accounts',
                     type: 'text',
                     required: true,
@@ -101,7 +101,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'address1',
-                    label: this.translate.instant('ADDRESSES.address_1'),
+                    label: marker('ADDRESSES.address_1'),
                     unit: 'addresses',
                     type: 'text',
                     required: true,
@@ -110,7 +110,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'address2',
-                    label: this.translate.instant('ADDRESSES.address_2'),
+                    label: marker('ADDRESSES.address_2'),
                     unit: 'addresses',
                     type: 'text',
                     required: true,
@@ -119,7 +119,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'postal_code',
-                    label: this.translate.instant('ADDRESSES.postal_code'),
+                    label: marker('ADDRESSES.postal_code'),
                     unit: 'addresses',
                     type: 'text',
                     required: true,
@@ -128,7 +128,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'city',
-                    label: this.translate.instant('ADDRESSES.city'),
+                    label: marker('ADDRESSES.city'),
                     unit: 'addresses',
                     type: 'text',
                     required: true,
@@ -137,7 +137,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'country',
-                    label: this.translate.instant('ADDRESSES.country'),
+                    label: marker('ADDRESSES.country'),
                     unit: 'addresses',
                     type: 'text',
                     required: true,
@@ -152,7 +152,7 @@ export class FormBuilderComponent implements OnInit {
             'values': [
                 {
                     id: 'order_number',
-                    label: this.translate.instant('FACTURATION.order_number'),
+                    label: marker('FACTURATION.order_number'),
                     unit: 'facturation',
                     type: 'text',
                     required: true,
@@ -162,7 +162,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'delivery_number',
-                    label: this.translate.instant('FACTURATION.delivery_number'),
+                    label: marker('FACTURATION.delivery_number'),
                     unit: 'facturation',
                     type: 'text',
                     required: true,
@@ -172,7 +172,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'invoice_number',
-                    label: this.translate.instant('FACTURATION.invoice_number'),
+                    label: marker('FACTURATION.invoice_number'),
                     unit: 'facturation',
                     type: 'text',
                     required: true,
@@ -182,7 +182,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'invoice_date',
-                    label: this.translate.instant('FACTURATION.invoice_date'),
+                    label: marker('FACTURATION.invoice_date'),
                     unit: 'facturation',
                     type: 'date',
                     required: true,
@@ -192,7 +192,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'invoice_due_date',
-                    label: this.translate.instant('FACTURATION.invoice_due_date'),
+                    label: marker('FACTURATION.invoice_due_date'),
                     unit: 'facturation',
                     type: 'date',
                     required: true,
@@ -202,7 +202,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'vat_rate',
-                    label: this.translate.instant('FACTURATION.vat_rate'),
+                    label: marker('FACTURATION.vat_rate'),
                     unit: 'facturation',
                     type: 'text',
                     required: true,
@@ -212,7 +212,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'no_rate_amount',
-                    label: this.translate.instant('FACTURATION.no_rate_amount'),
+                    label: marker('FACTURATION.no_rate_amount'),
                     unit: 'facturation',
                     type: 'text',
                     required: true,
@@ -222,7 +222,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'vat_amount',
-                    label: this.translate.instant('FACTURATION.vat_amount'),
+                    label: marker('FACTURATION.vat_amount'),
                     unit: 'facturation',
                     type: 'text',
                     required: true,
@@ -232,7 +232,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'accounting_plan',
-                    label: this.translate.instant('FACTURATION.accounting_plan'),
+                    label: marker('FACTURATION.accounting_plan'),
                     unit: 'facturation',
                     type: 'select',
                     required: true,
@@ -241,7 +241,7 @@ export class FormBuilderComponent implements OnInit {
                 },
                 {
                     id: 'total_ttc',
-                    label: this.translate.instant('FACTURATION.total_ttc'),
+                    label: marker('FACTURATION.total_ttc'),
                     unit: 'facturation',
                     type: 'text',
                     required: true,
@@ -271,7 +271,7 @@ export class FormBuilderComponent implements OnInit {
         },
         {
             'id': 'custom_fields',
-            'label': this.translate.instant('FORMS.custom_fields'),
+            'label': marker('FORMS.custom_fields'),
             'values': []
         },
     ]
@@ -309,71 +309,71 @@ export class FormBuilderComponent implements OnInit {
     colorsList: any[] = [
         {
             'id': 'yellow',
-            'label': this.translate.instant('COLORS.yellow')
+            'label': marker('COLORS.yellow')
         },
         {
             'id': 'pink',
-            'label': this.translate.instant('COLORS.pink')
+            'label': marker('COLORS.pink')
         },
         {
             'id': 'red',
-            'label': this.translate.instant('COLORS.red')
+            'label': marker('COLORS.red')
         },
         {
             'id': 'blue',
-            'label': this.translate.instant('COLORS.blue')
+            'label': marker('COLORS.blue')
         },
         {
             'id': 'orange',
-            'label': this.translate.instant('COLORS.orange')
+            'label': marker('COLORS.orange')
         },
         {
             'id': 'purple',
-            'label': this.translate.instant('COLORS.purple')
+            'label': marker('COLORS.purple')
         },
         {
             'id': 'black',
-            'label': this.translate.instant('COLORS.black')
+            'label': marker('COLORS.black')
         },
         {
             'id': 'white',
-            'label': this.translate.instant('COLORS.white')
+            'label': marker('COLORS.white')
         },
         {
             'id': 'aqua',
-            'label': this.translate.instant('COLORS.aqua')
+            'label': marker('COLORS.aqua')
         },
         {
             'id': 'maroon',
-            'label': this.translate.instant('COLORS.maroon')
+            'label': marker('COLORS.maroon')
         },
         {
             'id': 'teal',
-            'label': this.translate.instant('COLORS.teal')
+            'label': marker('COLORS.teal')
         },
         {
             'id': 'navy',
-            'label': this.translate.instant('COLORS.navy')
+            'label': marker('COLORS.navy')
         },
         {
             'id': 'fuchsia',
-            'label': this.translate.instant('COLORS.fuchsia')
+            'label': marker('COLORS.fuchsia')
         },
         {
             'id': 'silver',
-            'label': this.translate.instant('COLORS.silver')
+            'label': marker('COLORS.silver')
         },
         {
             'id': 'gray',
-            'label': this.translate.instant('COLORS.gray')
+            'label': marker('COLORS.gray')
         },
         {
             'id': 'lime',
-            'label': this.translate.instant('COLORS.lime')
+            'label': marker('COLORS.lime')
         },
         {
             'id': 'green',
-            'label': this.translate.instant('COLORS.green')
+            'label': marker('COLORS.green')
         },
     ]
     constructor(
@@ -436,7 +436,7 @@ export class FormBuilderComponent implements OnInit {
                                                     type: data.customFields[field].type,
                                                     required: data.customFields[field].required,
                                                     class: "w-1/3",
-                    class_label: "1/33",
+                                                    class_label: "1/33",
                                                 }
                                             )
                                         }
