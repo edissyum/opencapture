@@ -376,14 +376,26 @@ class Files:
                             file.close()
 
     def get_pages(self, file, config):
-        with open(file, 'rb') as doc:
-            pdf = PyPDF4.PdfFileReader(doc, strict=False)
-            try:
-                return pdf.getNumPages()
-            except ValueError as e:
-                self.Log.error(e)
-                shutil.move(file, config.cfg['GLOBAL']['errorpath'] + os.path.basename(file))
-                return 1
+        try:
+            with open(file, 'rb') as doc:
+                pdf = PyPDF4.PdfFileReader(doc)
+                try:
+                    return pdf.getNumPages()
+                except ValueError as e:
+                    self.Log.error(e)
+                    shutil.move(file, config.cfg['GLOBAL']['errorpath'] + os.path.basename(file))
+                    return 1
+        except PyPDF4.utils.PdfReadError:
+            pdfreadRewrite = PyPDF4.PdfFileReader(file, strict=False)
+            pdfwrite = PyPDF4.PdfFileWriter()
+            for page_count in range(pdfreadRewrite.numPages):
+                pages = pdfreadRewrite.getPage(page_count)
+                pdfwrite.addPage(pages)
+
+            fileobjfix = open(file, 'wb')
+            pdfwrite.write(fileobjfix)
+            fileobjfix.close()
+            return pdfreadRewrite.getNumPages()
 
     @staticmethod
     def is_blank_page(image, config):
@@ -516,18 +528,22 @@ class Files:
             text = ocr.text_builder(improved_cropped_image)
 
         try:
-            text = text.replace(' ', '.')
-            text = text.replace('\x0c', '')
-            text = text.replace('\n', '')
-            text = text.replace(',', '.')
-            splitted_number = text.split('.')
+            tmp_text = text.replace(' ', '.')
+            tmp_text = tmp_text.replace('\x0c', '')
+            tmp_text = tmp_text.replace('\n', '')
+            tmp_text = tmp_text.replace(',', '.')
+            splitted_number = tmp_text.split('.')
             if len(splitted_number) > 1:
                 last_index = splitted_number[len(splitted_number) - 1]
                 if len(last_index) > 2:
-                    text = text.replace('.', '')
+                    tmp_text = tmp_text.replace('.', '')
+                    if type(tmp_text) in [float, int]:
+                        text = tmp_text
                 else:
                     splitted_number.pop(-1)
                     text = ''.join(splitted_number) + '.' + last_index
+                    if type(tmp_text) in [float, int]:
+                        text = tmp_text
         except (ValueError, SyntaxError, TypeError):
             pass
 
