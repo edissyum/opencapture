@@ -317,12 +317,10 @@ class FacturationForm(Form):
     )
     total_ht = CustomStringField(
         lazy_gettext('TOTAL_NO_RATE'),
-        new_row=True,
-        add_calc=True,
         form_group_class='col-md-3 text-center',
         form_row_class='justify-content-md-center'
     )
-    total_vat_1 = CustomStringField(
+    total_vat = CustomStringField(
         lazy_gettext('TOTAL_VAT_AMOUNT'),
         end_row=True,
         form_group_class='col-md-3 text-center',
