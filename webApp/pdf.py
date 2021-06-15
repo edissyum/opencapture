@@ -82,15 +82,17 @@ def init():
     db = _Database(log, db_type, conn=get_db().conn)
     xml = _Xml(config, db)
     file_name = config.cfg['GLOBAL']['tmppath'] + 'tmp'
+    locale = _Locale(config)
     files = _Files(
         file_name,
         int(config.cfg['GLOBAL']['resolution']),
         int(config.cfg['GLOBAL']['compressionquality']),
         xml,
         log,
-        config.cfg['GLOBAL']['convertpdftotiff']
+        config.cfg['GLOBAL']['convertpdftotiff'],
+        locale,
+        config
     )
-    locale = _Locale(config)
     ocr = _PyTesseract(locale.localeOCR, log, config)
     splitter = _Splitter(config, db, locale)
     ws = ''

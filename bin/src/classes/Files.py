@@ -27,25 +27,32 @@ import PyPDF4
 import datetime
 import numpy as np
 from PIL import Image
-from skimage import io
 from PyPDF4 import utils
 from xml.dom import minidom
 from wand.color import Color
 from wand.api import library
-from deskew import determine_skew
-from skimage.color import rgb2gray
 import xml.etree.ElementTree as Et
 from wand.image import Image as Img
-from skimage.transform import rotate
 from wand.exceptions import PolicyError, CacheError
 from werkzeug.utils import secure_filename
 
 from webApp.functions import retrieve_custom_positions
 from xml.sax.saxutils import escape
 
+from webApp.functions import get_custom_id, check_python_customized_files
+custom_id = get_custom_id()
+custom_array = {}
+if custom_id:
+    custom_array = check_python_customized_files(custom_id[1])
+
+if 'FindDate' not in custom_array:
+    from bin.src.process.FindDate import FindDate
+else:
+    FindDate = getattr(__import__(custom_array['FindDate']['path'] + '.' + custom_array['FindDate']['module'], fromlist=[custom_array['FindDate']['module']]), custom_array['FindDate']['module'])
+
 
 class Files:
-    def __init__(self, img_name, res, quality, xml, log, is_tiff):
+    def __init__(self, img_name, res, quality, xml, log, is_tiff, Locale, Config):
         self.isTiff = is_tiff
         self.jpgName = img_name + '.jpg'
         self.jpgName_header = img_name + '_header.jpg'
@@ -67,6 +74,8 @@ class Files:
         self.heightRatio = ''
         self.xml = xml
         self.Log = log
+        self.Locale = Locale
+        self.Config = Config
 
     # Convert the first page of PDF to JPG and open the image
     def pdf_to_jpg(self, pdf_name, open_img=True, crop=False, zone_to_crop=False, last_image=False, is_custom=False):
@@ -522,31 +531,36 @@ class Files:
 
         cropped_image = Image.open('/tmp/cropped_' + rand + extension)
         text = ocr.text_builder(cropped_image)
+        isNumber = False
         if not text or text == '' or text.isspace():
             self.improve_image_detection('/tmp/cropped_' + rand + extension)
             improved_cropped_image = Image.open('/tmp/cropped_' + rand + '_improved' + extension)
             text = ocr.text_builder(improved_cropped_image)
 
         try:
-            tmp_text = text.replace(' ', '.')
-            tmp_text = tmp_text.replace('\x0c', '')
-            tmp_text = tmp_text.replace('\n', '')
-            tmp_text = tmp_text.replace(',', '.')
-            splitted_number = tmp_text.split('.')
+            text = text.replace(' ', '.')
+            text = text.replace('\x0c', '')
+            text = text.replace('\n', '')
+            text = text.replace(',', '.')
+            splitted_number = text.split('.')
             if len(splitted_number) > 1:
                 last_index = splitted_number[len(splitted_number) - 1]
                 if len(last_index) > 2:
-                    tmp_text = tmp_text.replace('.', '')
-                    if type(tmp_text) in [float, int]:
-                        text = tmp_text
+                    text = text.replace('.', '')
+                    isNumber = True
                 else:
                     splitted_number.pop(-1)
                     text = ''.join(splitted_number) + '.' + last_index
-                    if type(tmp_text) in [float, int]:
-                        text = tmp_text
+                    isNumber = True
         except (ValueError, SyntaxError, TypeError):
             pass
 
+        if not isNumber:
+            for res in re.finditer(r"" + self.Locale.dateRegex + "", text):
+                dateClass = FindDate('', self.Log, self.Locale, self.Config, self, ocr, '', '', '', '', '')
+                date = dateClass.format_date(res.group(), (('', ''), ('', '')), True)
+                if date:
+                    text = date[0]
         if regex:
             for res in re.finditer(r"" + regex, text):
                 os.remove('/tmp/cropped_' + rand + extension)
