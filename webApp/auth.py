@@ -37,7 +37,7 @@ def register():
                 'columns': {
                     'username': username,
                     'password': generate_password_hash(password),
-                    'role' : role
+                    'role': role
                 }
             })
             flash(gettext('USER_CREATED_OK'))

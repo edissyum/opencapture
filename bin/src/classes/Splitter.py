@@ -178,12 +178,13 @@ class Splitter:
     # Save result after user separate in pdf (pdf for every invoice)
     def save_pdf_result_after_separate(self, pages_list, pdf_path_input, pdf_path_output):
         pdf_writer = PyPDF2.PdfFileWriter()
-        pdf_reader = PyPDF2.PdfFileReader(self.Config.cfg['SPLITTER']['pdforiginpath'] + pdf_path_input)
+        pdf_reader = PyPDF2.PdfFileReader(self.Config.cfg['SPLITTER']['pdforiginpath'] + pdf_path_input, strict=False)
         pdf_origin_file_name = pdf_path_input.split('/')[-1].replace('.pdf', '').replace('_', '-')
         lot_name = Files.get_uuid_with_date()
 
         for invoice_index, pages in enumerate(pages_list):
             for page in pages:
+                print(page)
                 pdf_writer.addPage(pdf_reader.getPage(page))
             with open(pdf_path_output + '/SPLITTER_' + pdf_origin_file_name + '_' + "%03d" % (invoice_index + 1) + '_' + lot_name + '.pdf', 'wb') as fh:
                 pdf_writer.write(fh)

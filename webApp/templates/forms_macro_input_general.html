@@ -1,7 +1,7 @@
 {% macro render_field(field, status, supplier=False, cfg=None, footer_raw=False) %}
     {% if field.add_calc == True %}
         <div class="text-center">
-            {% if footer_raw %}
+            {% if footer_raw == 'True' %}
                 <a id="calculTotal" href="#calcTotal" onclick="calculTotalRaw()" data-toggle="tooltip" title="{{ gettext('CALCULATE_TOTAL_AMOUNT') }}">
                     <i class="fa fa-calculator" aria-hidden="true"></i>
                 </a>

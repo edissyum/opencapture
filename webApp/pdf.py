@@ -82,15 +82,17 @@ def init():
     db = _Database(log, db_type, conn=get_db().conn)
     xml = _Xml(config, db)
     file_name = config.cfg['GLOBAL']['tmppath'] + 'tmp'
+    locale = _Locale(config)
     files = _Files(
         file_name,
         int(config.cfg['GLOBAL']['resolution']),
         int(config.cfg['GLOBAL']['compressionquality']),
         xml,
         log,
-        config.cfg['GLOBAL']['convertpdftotiff']
+        config.cfg['GLOBAL']['convertpdftotiff'],
+        locale,
+        config
     )
-    locale = _Locale(config)
     ocr = _PyTesseract(locale.localeOCR, log, config)
     splitter = _Splitter(config, db, locale)
     ws = ''
@@ -420,9 +422,14 @@ def validate_form():
 
         vat_number = supplier_form.vat_number.data
         invoice_number = facturation_form.invoice_number.data
+        order_number = facturation_form.order_number_1.data
+        delivery_number = facturation_form.delivery_number_1.data
         invoice_date = facturation_form.invoice_date.data
+        invoice_due_date = facturation_form.due_date.data
         vat_1 = facturation_form.vat_1.data
+        total_ttc = facturation_form.total_ttc.data
         no_taxes_1 = facturation_form.no_taxes_1.data
+        vat_amount_1 = facturation_form.vat_amount_1.data
 
         # If GED is set up, send the document to the GED application (Maarch by default)
         if _cfg.cfg['GED']['enabled'] == 'True':
@@ -513,18 +520,43 @@ def validate_form():
                             field: {'field': request.form[field], 'position': None}
                         })
 
+        _set = {
+            'invoice_number': invoice_number,
+            'no_taxes_1': no_taxes_1,
+            'vat_amount_1': vat_amount_1,
+            'vat_1': vat_1,
+            'total_ttc': total_ttc,
+            'invoice_date': invoice_date,
+            'invoice_due_date': invoice_due_date,
+            'delivery_number_1': delivery_number,
+            'order_number_1': order_number,
+        }
+
+        if footer_page != '':
+            _set['footer_page'] = footer_page
+        if 'no_taxes_1_position' in request.form and request.form['no_taxes_1_position'] != "":
+            _set['no_taxes_1_position'] = request.form['no_taxes_1_position']
+        if 'vat_amount_1_position' in request.form and request.form['vat_amount_1_position'] != "":
+            _set['vat_amount_1_position'] = request.form['vat_amount_1_position']
+        if 'vat_1_position' in request.form and request.form['vat_1_position'] != "":
+            _set['vat_1_position'] = request.form['vat_1_position']
+
+        if 'order_number_1_position' in request.form and request.form['order_number_1_position'] != "":
+            _set['order_number_1_position'] = request.form['order_number_1_position']
+        if 'delivery_number_1_position' in request.form and request.form['delivery_number_1_position'] != "":
+            _set['delivery_number_1_position'] = request.form['delivery_number_1_position']
+        if 'invoice_due_date_position' in request.form and request.form['invoice_due_date_position'] != "":
+            _set['invoice_due_date_position'] = request.form['invoice_due_date_position']
+        if 'invoice_date_position' in request.form and request.form['invoice_date_position'] != "":
+            _set['invoice_date_position'] = request.form['invoice_date_position']
+        if 'total_ttc_position' in request.form and request.form['total_ttc_position'] != "":
+            _set['total_ttc_position'] = request.form['total_ttc_position']
+        if 'invoice_number_position' in request.form and request.form['invoice_number_position'] != "":
+            _set['invoice_number_position'] = request.form['invoice_number_position']
+
         _db.update({
             'table': ['invoices'],
-            'set': {
-                'invoice_number': invoice_number,
-                'invoice_number_position': request.form['invoice_number_position'] if 'invoice_number_position' in request.form else '',
-                'no_taxes_1': no_taxes_1,
-                'no_taxes_1_position': request.form['no_taxes_1_position'] if 'no_taxes_1_position' in request.form else '',
-                'vat_1': vat_1,
-                'vat_1_position': request.form['vat_1_position'] if 'vat_1_position' in request.form else '',
-                'invoice_date': invoice_date,
-                'invoice_date_position': request.form['invoice_date_position'] if 'invoice_date_position' in request.form else '',
-            },
+            'set': _set,
             'where': ['id = ?'],
             'data': [pdf_id]
         })

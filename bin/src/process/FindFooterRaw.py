@@ -71,22 +71,19 @@ class FindFooterRaw:
                     number_formatted = t.group()
                     if regex != self.Locale.vatRateRegex:
                         try:
-                            try:
-                                period = t.group().find('.')
-                                comma = t.group().find(',')
-                                floatted_text = None
-                                if period != -1 and comma != -1:
-                                    floatted_text = t.group().replace('.', '').replace('\x0c', '').replace('\n', '').replace(',', '.')
-                                elif period == -1 and comma != -1:
-                                    floatted_text = t.group().replace('\x0c', '').replace('\n', '').replace(',', '.')
-                                elif period != -1 and comma == -1:
-                                    floatted_text = t.group().replace('.', '').replace('\x0c', '').replace('\n', '')
-
-                                if floatted_text:
-                                    number_formatted = str(float(floatted_text))
-                            except (ValueError, SyntaxError, TypeError):
-                                pass
-
+                            text = t.group().replace(' ', '.')
+                            text = text.replace('\x0c', '')
+                            text = text.replace('\n', '')
+                            text = text.replace(',', '.')
+                            splitted_number = text.split('.')
+                            if len(splitted_number) > 1:
+                                last_index = splitted_number[len(splitted_number) - 1]
+                                if len(last_index) > 2:
+                                    number_formatted = text.replace('.', '')
+                                else:
+                                    splitted_number.pop(-1)
+                                    number_formatted = ''.join(splitted_number) + '.' + last_index
+                                    number_formatted = str(float(number_formatted))
                         except (ValueError, SyntaxError, TypeError):
                             pass
 
@@ -131,8 +128,9 @@ class FindFooterRaw:
                     if select[0] == 'vat_1_position':  # Fix if we retrieve 2000.0, or 200.0 instead of 20.0 for example
                         tva_amounts = eval(self.Locale.vatRateList)
                         _split = result.split('.')
-                        if _split[1] == '0':
-                            result = _split[0]
+                        if len(_split) > 1:
+                            if _split[1] == '0':
+                                result = _split[0]
 
                         for tva in tva_amounts:
                             if str(tva) in str(result.replace(',', '.')):
@@ -147,22 +145,19 @@ class FindFooterRaw:
 
                     if select[0] != 'vat_1_position':
                         try:
-                            period = result.find('.')
-                            comma = result.find(',')
-                            floatted_text = None
-
-                            if period != -1 and comma != -1:
-                                if comma < period:
-                                    floatted_text = result.replace(',', '').replace('\x0c', '').replace('\n', '')
+                            text = result.replace(' ', '.')
+                            text = text.replace('\x0c', '')
+                            text = text.replace('\n', '')
+                            text = text.replace(',', '.')
+                            splitted_number = text.split('.')
+                            if len(splitted_number) > 1:
+                                last_index = splitted_number[len(splitted_number) - 1]
+                                if len(last_index) > 2:
+                                    result = text.replace('.', '')
                                 else:
-                                    floatted_text = result.replace('.', '').replace('\x0c', '').replace('\n', '').replace(',', '.')
-                            elif period == -1 and comma != -1:
-                                floatted_text = result.replace('\x0c', '').replace('\n', '').replace(',', '.')
-                            elif period != -1 and comma == -1:
-                                floatted_text = result.replace('.', '').replace('\x0c', '').replace('\n', '')
-
-                            if floatted_text:
-                                result = str(float(floatted_text))
+                                    splitted_number.pop(-1)
+                                    result = ''.join(splitted_number) + '.' + last_index
+                                    result = str(float(result))
                         except (ValueError, SyntaxError, TypeError):
                             pass
 

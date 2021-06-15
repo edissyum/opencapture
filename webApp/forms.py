@@ -302,8 +302,9 @@ class FacturationForm(Form):
         new_row=True,
         add_calc=True,
         form_group_class='col-md-3 text-center',
-        form_row_class='justify-content-md-center',
+        footer_class='justify-content-md-center',
         is_position=True,
+        is_footer=True,
         render_kw={
             'x1_original': '',
             'y1_original': '',

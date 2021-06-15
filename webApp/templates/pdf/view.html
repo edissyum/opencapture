@@ -56,8 +56,10 @@
                     <div id="hiddenInputs">
                         <input type="hidden" id="ratioAdressTotal">
                         <input type="hidden" id="pdf_id" value="{{ pdf['id'] }}">
+                        <input type="hidden" id="pdf_status" value="{{ pdf['status'] }}">
                         <input type="hidden" id="width_original" value="{{ width }}">
                         <input type="hidden" id="number_of_vat" name="facturationInfo_number_of_tva" value="1">
+                        <input type="hidden" id="supplier_raw_footer" name="supplier_raw_footer" value="{{ get_only_raw_footer }}">
                         <input type="hidden" id="number_order_number" name="facturationInfo_number_of_order_number" value="0">
                         <input type="hidden" id="path" name="fileInfo_path" value="{{ pdf['path'] + '/' +  pdf['filename'] }}">
                         <input type="hidden" id="number_of_delivery_number" name="facturationInfo_number_of_delivery_number" value="0">

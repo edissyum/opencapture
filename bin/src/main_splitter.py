@@ -123,7 +123,8 @@ def launch(args):
         int(config.cfg['GLOBAL']['compressionquality']),
         xml,
         log,
-        config.cfg['GLOBAL']['convertpdftotiff']
+        config.cfg['GLOBAL']['convertpdftotiff'],
+        locale
     )
 
     # Connect to database
