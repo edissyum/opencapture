@@ -16,15 +16,15 @@
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
 from flask_babel import gettext
-from ..controllers.auth import token_required
-from ..controllers import pdf, verifier
+from ..import_controllers import auth
+from ..import_controllers import pdf, verifier
 from flask import Blueprint, make_response, request
 
 bp = Blueprint('verifier', __name__, url_prefix='/ws/')
 
 
 @bp.route('verifier/upload', methods=['POST'])
-@token_required
+@auth.token_required
 def upload():
     files = request.files
     res = verifier.handle_uploaded_file(files)
@@ -35,21 +35,25 @@ def upload():
 
 
 @bp.route('verifier/invoices/list', methods=['POST'])
-@token_required
+@auth.token_required
 def invoices_list():
-    _vars = pdf.init()
-    _db = _vars[0]
-    _cfg = _vars[1].cfg
-
     data = request.json
     res = verifier.retrieve_invoices(data)
     return make_response(res[0], res[1])
 
 
+@bp.route('verifier/invoices/<int:invoice_id>', methods=['GET'])
+@auth.token_required
+def invoice_info(invoice_id):
+    res = verifier.get_invoice_by_id(invoice_id)
+    return make_response(res[0], res[1])
+
+
 @bp.route('verifier/ocrOnFly', methods=['POST'])
-@token_required
+@auth.token_required
 def ocr_on_fly():
     data = request.json
+    print(data)
     result = pdf.ocr_on_the_fly(data['fileName'], data['selection'], data['thumbSize'])
     print(result)
     return make_response({'result': result}, 200)
