@@ -16,7 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 from flask import Blueprint, make_response, jsonify
-from ..controllers import status
+from ..import_controllers import status
 
 
 bp = Blueprint('status', __name__, url_prefix='/ws/')

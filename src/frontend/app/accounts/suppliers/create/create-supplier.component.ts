@@ -153,6 +153,12 @@ export class CreateSupplierComponent implements OnInit {
             }
             element.control.markAsTouched();
         });
+        this.addressForm.forEach(element => {
+            if (element.control.status !== 'DISABLED' && element.control.status !== 'VALID') {
+                state = false;
+            }
+            element.control.markAsTouched();
+        });
 
         return state;
     }

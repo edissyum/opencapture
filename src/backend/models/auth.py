@@ -15,15 +15,15 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from ..controllers.db import get_db
+from ..import_controllers import db
 from flask_babel import gettext
 from werkzeug.security import check_password_hash
 
 
 def login(args):
-    db = get_db()
+    _db = db.get_db()
     error = None
-    user = db.select({
+    user = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['users'],
         'where': ['username = %s'],

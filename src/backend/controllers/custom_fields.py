@@ -16,7 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
-from ..models import custom_fields
+from ..import_models import custom_fields
 
 
 def add_custom_field(args):

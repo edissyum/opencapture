@@ -2,6 +2,7 @@ xlrd
 wand
 flask
 zeep
+PyJWT
 pyocr
 pyPdf2
 pyPdf4

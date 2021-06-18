@@ -17,9 +17,9 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 from flask import current_app
+from flask_babel import gettext
 from ..import_classes import _Files
-from ..import_controllers import pdf
-from ..models import verifier
+from ..import_models import verifier
 
 
 def handle_uploaded_file(files):
@@ -27,10 +27,19 @@ def handle_uploaded_file(files):
     return result
 
 
-def retrieve_invoices(args):
-    _vars = pdf.init()
-    _config = _vars[1]
+def get_invoice_by_id(invoice_id):
+    invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
+    if error is None:
+        return invoice_info, 200
+    else:
+        response = {
+            "errors": gettext('GET_INVOICE_BY_ID_ERROR'),
+            "message": error
+        }
+        return response, 401
 
+
+def retrieve_invoices(args):
     if 'where' not in args:
         args['where'] = []
     if 'data' not in args:

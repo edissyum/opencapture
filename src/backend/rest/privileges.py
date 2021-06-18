@@ -16,21 +16,21 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 from flask import Blueprint, make_response, jsonify
-from ..controllers.auth import token_required
-from ..controllers import privileges
+from ..import_controllers import auth
+from ..import_controllers import privileges
 
 bp = Blueprint('privileges', __name__, url_prefix='/ws/')
 
 
 @bp.route('privileges/list', methods=['GET'])
-@token_required
+@auth.token_required
 def get_privileges():
     _privileges = privileges.get_privileges()
     return make_response(jsonify(_privileges[0])), _privileges[1]
 
 
 @bp.route('privileges/getbyRoleId/<int:role_id>', methods=['GET'])
-@token_required
+@auth.token_required
 def get_privileges_by_role_id(role_id):
     args = {'role_id': role_id}
     _privileges = privileges.get_privileges_by_role_id(args)

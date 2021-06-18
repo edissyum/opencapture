@@ -19,7 +19,7 @@ import json
 
 from flask_babel import gettext
 
-from ..models import forms
+from ..import_models import forms
 from ..import_controllers import pdf
 
 

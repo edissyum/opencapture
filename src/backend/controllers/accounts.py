@@ -18,7 +18,7 @@
 from flask_babel import gettext
 
 from ..import_controllers import pdf
-from ..models import accounts
+from ..import_models import accounts
 
 
 def retrieve_suppliers(args):

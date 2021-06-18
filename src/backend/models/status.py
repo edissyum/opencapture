@@ -15,14 +15,14 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from ..controllers.db import get_db
+from ..import_controllers import db
 from flask_babel import gettext
 
 
 def get_status():
-    db = get_db()
+    _db = db.get_db()
     error = None
-    forms = db.select({
+    forms = _db.select({
         'select': ['*'],
         'table': ['status'],
     })

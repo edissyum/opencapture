@@ -17,7 +17,7 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 from flask import Blueprint, request, make_response, jsonify
-from ..controllers.auth import token_required
+from ..import_controllers import auth
 from ..import_controllers import user
 
 bp = Blueprint('users', __name__, url_prefix='/ws/')
@@ -31,7 +31,7 @@ def register():
 
 
 @bp.route('users/list', methods=['GET'])
-@token_required
+@auth.token_required
 def get_users():
     args = {
         'select': ['*', 'count(*) OVER() as total'],
@@ -43,14 +43,14 @@ def get_users():
 
 
 @bp.route('users/getById/<int:user_id>', methods=['GET'])
-@token_required
+@auth.token_required
 def get_user_by_id(user_id):
     _user = user.get_user_by_id(user_id)
     return make_response(jsonify(_user[0])), _user[1]
 
 
 @bp.route('users/update/<int:user_id>', methods=['PUT'])
-@token_required
+@auth.token_required
 def update_user(user_id):
     data = request.json['args']
     res = user.update_user(user_id, data)
@@ -58,35 +58,35 @@ def update_user(user_id):
 
 
 @bp.route('users/delete/<int:user_id>', methods=['DELETE'])
-@token_required
+@auth.token_required
 def delete_user(user_id):
     res = user.delete_user(user_id)
     return make_response(jsonify(res[0])), res[1]
 
 
 @bp.route('users/disable/<int:user_id>', methods=['PUT'])
-@token_required
+@auth.token_required
 def disable_user(user_id):
     res = user.disable_user(user_id)
     return make_response(jsonify(res[0])), res[1]
 
 
 @bp.route('users/enable/<int:user_id>', methods=['PUT'])
-@token_required
+@auth.token_required
 def enable_user(user_id):
     res = user.enable_user(user_id)
     return make_response(jsonify(res[0])), res[1]
 
 
 @bp.route('users/getCustomersByUserId/<int:user_id>', methods=['GET'])
-@token_required
+@auth.token_required
 def get_customers_by_user_id(user_id):
     res = user.get_customers_by_user_id(user_id)
     return make_response(jsonify(res[0])), res[1]
 
 
 @bp.route('users/customers/update/<int:user_id>', methods=['put'])
-@token_required
+@auth.token_required
 def update_customers_by_user_id(user_id):
     customers = request.json['customers']
     res = user.update_customers_by_user_id(user_id, customers)

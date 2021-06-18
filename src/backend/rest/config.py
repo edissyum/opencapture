@@ -1,12 +1,12 @@
 from flask import Blueprint, request, jsonify, make_response
-from ..controllers.auth import token_required
+from ..import_controllers import auth
 from ..import_controllers import pdf, config
 
 bp = Blueprint('config', __name__,  url_prefix='/ws/')
 
 
 @bp.route('config/readConfig', methods=['GET'])
-@token_required
+@auth.token_required
 def read_config():
     if request.method == 'GET':
         _vars = pdf.init()
@@ -14,7 +14,7 @@ def read_config():
 
 
 @bp.route('config/gitInfo', methods=['GET'])
-@token_required
+@auth.token_required
 def get_git_info():
     _vars = pdf.init()
     return make_response({

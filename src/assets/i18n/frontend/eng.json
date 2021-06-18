@@ -109,6 +109,7 @@
 		"enable": "",
 		"is_default": "",
 		"label": "",
+		"label_mandatory": "",
 		"modify": "",
 		"other": "",
 		"updated": ""

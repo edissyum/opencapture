@@ -16,12 +16,12 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 from flask_babel import gettext
-from ..controllers.db import get_db
+from ..import_controllers import db
 
 
 def get_roles(args):
-    db = get_db()
-    roles = db.select({
+    _db = db.get_db()
+    roles = _db.select({
         'select': ["*"] if "select" not in args else args["select"],
         'table': ["roles"],
         'where': ["status NOT IN (%s)", "editable <> %s"],
@@ -35,9 +35,9 @@ def get_roles(args):
 
 
 def get_role_by_id(args):
-    db = get_db()
+    _db = db.get_db()
     error = None
-    role = db.select({
+    role = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['roles'],
         'where': ['id = %s', "editable <> %s", "status NOT IN (%s)"],
@@ -53,10 +53,10 @@ def get_role_by_id(args):
 
 
 def update_role(args):
-    db = get_db()
+    _db = db.get_db()
     error = None
 
-    role = db.update({
+    role = _db.update({
         'table': ['roles'],
         'set': args['set'],
         'where': ['id = %s'],
@@ -70,7 +70,7 @@ def update_role(args):
 
 
 def create_role(args):
-    db = get_db()
+    _db = db.get_db()
     error = None
 
     role = db.insert({
@@ -85,10 +85,10 @@ def create_role(args):
 
 
 def update_role_privileges(args):
-    db = get_db()
+    _db = db.get_db()
     error = None
 
-    role = db.update({
+    role = _db.update({
         'table': ['roles_privileges'],
         'set': args['set'],
         'where': ['role_id = %s'],
@@ -102,7 +102,7 @@ def update_role_privileges(args):
 
 
 def create_role_privileges(args):
-    db = get_db()
+    _db = db.get_db()
     error = None
 
     role_privilege = db.insert({

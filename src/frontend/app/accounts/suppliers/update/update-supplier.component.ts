@@ -143,6 +143,7 @@ export class UpdateSupplierComponent implements OnInit {
                                     }else if (field == 'address_id'){
                                         this.addressId = this.supplier[field]
                                         if (this.addressId) {
+                                            console.log('here')
                                             this.http.get(API_URL + '/ws/accounts/getAdressById/' + this.addressId, {headers: this.authService.headers}).pipe(
                                                 tap((address: any) => {
                                                     for (let field in address) {
@@ -163,6 +164,7 @@ export class UpdateSupplierComponent implements OnInit {
                                                 })
                                             ).subscribe()
                                         }else{
+                                            console.log('naaaa')
                                             this.http.post(API_URL + '/ws/accounts/addresses/create',
                                                 {'args': {
                                                         'address1': '',
@@ -210,63 +212,19 @@ export class UpdateSupplierComponent implements OnInit {
                 return of(false);
             })
         ).subscribe()
-
-        if (this.addressId) {
-            this.http.get(API_URL + '/ws/accounts/getAdressById/' + this.addressId, {headers: this.authService.headers}).pipe(
-                tap((address: any) => {
-                    for (let field in address) {
-                        if (address.hasOwnProperty(field)) {
-                            this.addressForm.forEach(element => {
-                                if (element.id == field) {
-                                    element.control.setValue(address[field]);
-                                }
-                            })
-                        }
-                    }
-                }),
-                finalize(() => this.loading = false),
-                catchError((err: any) => {
-                    console.debug(err);
-                    this.notify.handleErrors(err);
-                    return of(false);
-                })
-            ).subscribe()
-        }else{
-            this.http.post(API_URL + '/ws/accounts/addresses/create',
-                {'args': {
-                        'address1': '',
-                        'address2': '',
-                        'postal_code': '',
-                        'city': '',
-                        'country': ''
-                    }
-                }, {headers: this.authService.headers},
-            ).pipe(
-                tap((data: any) => {
-                    this.addressId = data.id
-                    this.http.put(API_URL + '/ws/accounts/suppliers/update/' + this.supplierId, {'args': {'address_id' : this.addressId}}, {headers: this.authService.headers},
-                    ).pipe(
-                        finalize(() => this.loading = false),
-                        catchError((err: any) => {
-                            console.debug(err)
-                            this.notify.handleErrors(err, '/accounts/suppliers/list');
-                            return of(false);
-                        })
-                    ).subscribe();
-                }),
-                catchError((err: any) => {
-                    console.debug(err)
-                    this.notify.handleErrors(err, '/accounts/customers/list');
-                    return of(false);
-                })
-            ).subscribe();
-        }
     }
 
     isValidForm() {
         let state = true;
 
         this.supplierForm.forEach(element => {
+            if (element.control.status !== 'DISABLED' && element.control.status !== 'VALID') {
+                state = false;
+            }
+            element.control.markAsTouched();
+        });
+
+        this.addressForm.forEach(element => {
             if (element.control.status !== 'DISABLED' && element.control.status !== 'VALID') {
                 state = false;
             }
@@ -295,7 +253,7 @@ export class UpdateSupplierComponent implements OnInit {
                     return of(false);
                 })
             ).subscribe();
-
+            console.log(this.addressId)
             this.http.put(API_URL + '/ws/accounts/addresses/update/' + this.addressId, {'args': address}, {headers: this.authService.headers},
             ).pipe(
                 tap(() => {

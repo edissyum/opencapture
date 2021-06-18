@@ -17,14 +17,14 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 from flask import Blueprint, request, make_response, jsonify
-from ..controllers.auth import token_required
+from ..import_controllers import auth
 from ..import_controllers import accounts
 
 bp = Blueprint('accounts', __name__, url_prefix='/ws/')
 
 
 @bp.route('accounts/suppliers/list', methods=['GET'])
-@token_required
+@auth.token_required
 def suppliers_list():
     args = {
         'select': ['*', 'count(*) OVER() as total'],
@@ -38,21 +38,21 @@ def suppliers_list():
 
 
 @bp.route('accounts/suppliers/getById/<int:supplier_id>', methods=['GET'])
-@token_required
+@auth.token_required
 def get_supplier_by_id(supplier_id):
     supplier = accounts.get_supplier_by_id(supplier_id)
     return make_response(jsonify(supplier[0])), supplier[1]
 
 
 @bp.route('accounts/getAdressById/<int:address_id>', methods=['GET'])
-@token_required
+@auth.token_required
 def get_adress_by_id(address_id):
     _address = accounts.get_address_by_id(address_id)
     return make_response(jsonify(_address[0])), _address[1]
 
 
 @bp.route('accounts/suppliers/update/<int:supplier_id>', methods=['PUT'])
-@token_required
+@auth.token_required
 def update_supplier(supplier_id):
     data = request.json['args']
     res = accounts.update_supplier(supplier_id, data)
@@ -60,7 +60,7 @@ def update_supplier(supplier_id):
 
 
 @bp.route('accounts/addresses/update/<int:supplier_id>', methods=['PUT'])
-@token_required
+@auth.token_required
 def update_address(supplier_id):
     data = request.json['args']
     res = accounts.update_address(supplier_id, data)
@@ -68,7 +68,7 @@ def update_address(supplier_id):
 
 
 @bp.route('accounts/addresses/create', methods=['POST'])
-@token_required
+@auth.token_required
 def create_address():
     data = request.json['args']
     res = accounts.create_address(data)
@@ -76,7 +76,7 @@ def create_address():
 
 
 @bp.route('accounts/suppliers/create', methods=['POST'])
-@token_required
+@auth.token_required
 def create_supplier():
     data = request.json['args']
     res = accounts.create_supplier(data)
@@ -84,14 +84,14 @@ def create_supplier():
 
 
 @bp.route('accounts/suppliers/delete/<int:supplier_id>', methods=['DELETE'])
-@token_required
+@auth.token_required
 def delete_supplier(supplier_id):
     res = accounts.delete_supplier(supplier_id)
     return make_response(jsonify(res[0])), res[1]
 
 
 @bp.route('accounts/customers/list', methods=['GET'])
-@token_required
+@auth.token_required
 def customers_list():
     args = {
         'select': ['*', 'count(*) OVER() as total'],
@@ -105,14 +105,14 @@ def customers_list():
 
 
 @bp.route('accounts/customers/getById/<int:customer_id>', methods=['GET'])
-@token_required
+@auth.token_required
 def get_customer_by_id(customer_id):
     _customer = accounts.get_customer_by_id(customer_id)
     return make_response(jsonify(_customer[0])), _customer[1]
 
 
 @bp.route('accounts/customers/update/<int:customer_id>', methods=['PUT'])
-@token_required
+@auth.token_required
 def update_customer(customer_id):
     data = request.json['args']
     res = accounts.update_customer(customer_id, data)
@@ -120,7 +120,7 @@ def update_customer(customer_id):
 
 
 @bp.route('accounts/customers/create', methods=['POST'])
-@token_required
+@auth.token_required
 def create_customer():
     data = request.json['args']
     res = accounts.create_supplier(data)
@@ -128,7 +128,7 @@ def create_customer():
 
 
 @bp.route('accounts/customers/delete/<int:customer_id>', methods=['DELETE'])
-@token_required
+@auth.token_required
 def delete_customer(customer_id):
     res = accounts.delete_customer(customer_id)
     return make_response(jsonify(res[0])), res[1]

@@ -19,7 +19,7 @@
 from flask import current_app
 from ..import_controllers import pdf
 from ..import_classes import _Files
-from ..models import splitter
+from ..import_models import splitter
 
 import base64
 

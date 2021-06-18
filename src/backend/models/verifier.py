@@ -14,8 +14,27 @@
 # along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+from flask_babel import gettext
 
 from ..import_controllers import db
+
+
+def get_invoice_by_id(args):
+    _db = db.get_db()
+    error = None
+    user = _db.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['invoices'],
+        'where': ['id = %s'],
+        'data': [args['invoice_id']]
+    })
+
+    if not user:
+        error = gettext('GET_INVOICE_BY_ID_ERROR')
+    else:
+        user = user[0]
+
+    return user, error
 
 
 def get_invoices(args):

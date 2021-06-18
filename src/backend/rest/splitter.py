@@ -19,18 +19,18 @@ import json
 
 from flask import Blueprint, make_response, jsonify, request
 from flask_babel import gettext
-from ..controllers.auth import token_required
-from ..controllers.splitter import *
+from ..import_controllers import auth
+from ..import_controllers import splitter
 
 bp = Blueprint('splitter', __name__, url_prefix='/ws/')
 
 
 @bp.route('splitter/upload', methods=['POST'])
-@token_required
+@auth.token_required
 def upload():
     if request.method == 'POST':
         files = request.files
-        res = handle_uploaded_file(files)
+        res = splitter.handle_uploaded_file(files)
         if res:
             return make_response('', 200)
         else:
@@ -38,14 +38,14 @@ def upload():
 
 
 @bp.route('splitter/batches', methods=['GET'])
-@token_required
+@auth.token_required
 def retrieve_splitter_batches():
-    res = retrieve_batches()
+    res = splitter.retrieve_batches()
     return make_response(jsonify(res[0])), res[1]
 
 
 @bp.route('splitter/status', methods=['PUT'])
-@token_required
+@auth.token_required
 def change_batch_status():
     data = json.loads(request.data)
 
@@ -53,19 +53,19 @@ def change_batch_status():
         'id': str(data['id']),
         'status': data['status']
     }
-    res = change_status(args)
+    res = splitter.change_status(args)
     return make_response(jsonify(res[0])), res[1]
 
 
 @bp.route('splitter/pages/<int:batch_id>', methods=['GET'])
-@token_required
+@auth.token_required
 def retrieve_batch_pages(batch_id):
-    res = retrieve_pages(batch_id)
+    res = splitter.retrieve_pages(batch_id)
     return make_response(jsonify(res[0])), res[1]
 
 
 @bp.route('splitter/validate', methods=['POST'])
-@token_required
+@auth.token_required
 def validate():
     data = request.data
     data = json.loads(data)

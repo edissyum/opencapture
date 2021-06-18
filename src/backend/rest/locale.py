@@ -1,13 +1,13 @@
 from flask import Blueprint, make_response, jsonify, session, current_app
-from ..controllers.auth import token_required
-from ..controllers import config, pdf
+from ..import_controllers import auth
+from ..import_controllers import config, pdf
 
 
 bp = Blueprint('i18n', __name__, url_prefix='/ws/')
 
 
 @bp.route('i18n/changeLanguage/<string:lang>', methods=['GET'])
-@token_required
+@auth.token_required
 def change_language(lang):
     session['lang'] = lang
     response = config.change_locale_in_config(lang)
@@ -16,7 +16,7 @@ def change_language(lang):
 
 
 @bp.route('i18n/getAllLang', methods=['GET'])
-@token_required
+@auth.token_required
 def get_all_lang():
     language = current_app.config['LANGUAGES']
     langs = []

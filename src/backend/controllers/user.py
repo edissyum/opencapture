@@ -20,7 +20,7 @@ from flask import flash, g, redirect, render_template, request, url_for
 from flask_babel import gettext
 from werkzeug.security import check_password_hash, generate_password_hash
 from ..import_controllers import pdf
-from ..models import user
+from ..import_models import user
 
 
 def create_user(args):
@@ -37,9 +37,6 @@ def create_user(args):
 
 
 def get_users(args):
-    _vars = pdf.init()
-    _config = _vars[1]
-
     users, error = user.get_users(args)
     if users:
         response = {

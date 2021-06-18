@@ -593,7 +593,7 @@ export class FormBuilderComponent implements OnInit {
                 })
             ).subscribe();
         }else{
-            this.notify.error('FORMS.label_mandatory')
+            this.notify.error(this.translate.instant('FORMS.label_mandatory'))
         }
     }
 
@@ -621,7 +621,7 @@ export class FormBuilderComponent implements OnInit {
                 })
             ).subscribe();
         }else{
-            this.notify.error('FORMS.label_mandatory')
+            this.notify.error(this.translate.instant('FORMS.label_mandatory'))
         }
     }
 }

@@ -287,7 +287,7 @@ class Files:
                             # Add position in supplier database
                             if clean_child_position is not None:
                                 if 'no_taxes' in clean_child or 'invoice_number' in clean_child or 'order_number' in clean_child or 'delivery_number' in clean_child or 'vat' in clean_child:
-                                    db.update({
+                                    _db.update({
                                         'table': ['suppliers'],
                                         'set': {
                                             clean_child + '_position': clean_child_position
@@ -304,7 +304,7 @@ class Files:
         file.write(xml_root)
         file.close()
 
-        res = db.select({
+        res = _db.select({
             'select': ['typology'],
             'table': ['suppliers'],
             'where': ['vat_number = ?'],
@@ -322,7 +322,7 @@ class Files:
                     select.append(field_position)
 
                 if select:
-                    res = db.select({
+                    res = _db.select({
                         'select': select,
                         'table': ['invoices'],
                         'where': ['invoice_number = ?'],

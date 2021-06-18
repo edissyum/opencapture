@@ -19,13 +19,13 @@
 from gettext import gettext
 from werkzeug.security import generate_password_hash
 
-from ..controllers.db import get_db
+from ..import_controllers import db
 
 
 def create_user(args):
-    db = get_db()
+    _db = db.get_db()
     error = None
-    user = db.select({
+    user = _db.select({
         'select': ['id'],
         'table': ['users'],
         'where': ['username = %s'],
@@ -55,9 +55,9 @@ def create_user(args):
 
 
 def get_users(args):
-    db = get_db()
+    _db = db.get_db()
     error = None
-    users = db.select({
+    users = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['users'],
         'where': ['status NOT IN (%s)', "role <> 1"],
@@ -74,9 +74,9 @@ def get_users(args):
 
 
 def get_user_by_id(args):
-    db = get_db()
+    _db = db.get_db()
     error = None
-    user = db.select({
+    user = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['users'],
         'where': ['id = %s'],
@@ -92,9 +92,9 @@ def get_user_by_id(args):
 
 
 def get_customers_by_user_id(args):
-    db = get_db()
+    _db = db.get_db()
     error = None
-    customers = db.select({
+    customers = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['users_customers'],
         'where': ['user_id = %s'],
@@ -109,10 +109,10 @@ def get_customers_by_user_id(args):
 
 
 def update_user(args):
-    db = get_db()
+    _db = db.get_db()
     error = None
 
-    user = db.update({
+    user = _db.update({
         'table': ['users'],
         'set': args['set'],
         'where': ['id = %s'],
@@ -126,10 +126,10 @@ def update_user(args):
 
 
 def update_customers_by_user_id(args):
-    db = get_db()
+    _db = db.get_db()
     error = None
 
-    user = db.update({
+    user = _db.update({
         'table': ['users_customers'],
         'set': args['set'],
         'where': ['user_id = %s'],

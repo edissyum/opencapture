@@ -5,7 +5,7 @@ from flask_babel import gettext
 from flask import request, session, jsonify, current_app
 
 from . import privileges
-from ..models import auth, user, roles
+from ..import_models import auth, user, roles
 
 
 def encode_auth_token(user_id):

@@ -17,11 +17,11 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 from gettext import gettext
-from ..controllers.db import get_db
+from ..import_controllers import db
 
 
 def add_custom_field(args):
-    db = get_db()
+    _db = db.get_db()
     error = None
     customs_exists, error = retrieve_custom_fields({
         'where': ['label_short = %s', 'module = %s'],
@@ -50,9 +50,9 @@ def add_custom_field(args):
 
 
 def retrieve_custom_fields(args):
-    db = get_db()
+    _db = db.get_db()
     error = None
-    custom_fields = db.select({
+    custom_fields = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['custom_fields'],
         'where': ['1=%s'] if 'where' not in args else args['where'],
@@ -63,10 +63,10 @@ def retrieve_custom_fields(args):
 
 
 def update(args):
-    db = get_db()
+    _db = db.get_db()
     error = None
 
-    res = db.update({
+    res = _db.update({
         'table': ['custom_fields'],
         'set': {
             'label': args['label'],

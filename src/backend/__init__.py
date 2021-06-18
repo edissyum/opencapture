@@ -24,7 +24,8 @@ from flask_babel import Babel
 from flask import request, session
 from flask_multistatic import MultiStaticFlask
 
-from .import_rest import auth, locale, config, user, splitter, verifier, roles, privileges, custom_fields, forms, status, accounts
+from .import_rest import auth, locale, config, user, splitter, verifier, roles, privileges, custom_fields, \
+    forms, status, accounts
 from .functions import get_custom_id
 custom_id = get_custom_id()
 

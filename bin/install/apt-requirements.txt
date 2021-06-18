@@ -13,4 +13,3 @@ libtesseract-dev
 libleptonica-dev
 libmagickwand-dev
 libapache2-mod-wsgi-py3
-

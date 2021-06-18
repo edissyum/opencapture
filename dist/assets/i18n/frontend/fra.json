@@ -109,6 +109,7 @@
 		"enable": "Activer le formulaire",
 		"is_default": "Formulaire par défaut",
 		"label": "Libellé du formulaire",
+		"label_mandatory": "Le libellé du formulaire est obligatoire",
 		"modify": "Modifier le formulaire",
 		"other": "Autres",
 		"updated": "Formulaire mis à jour avec succès"

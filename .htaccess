@@ -1,12 +1,5 @@
 <IfModule mod_rewrite.c>
 	RewriteEngine On
-
- 	# -- REDIRECTION to https (optional):
-	# If you need this, uncomment the next two commands
-	# RewriteCond %{HTTPS} !on
-  	# RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [L]
-	# --
-
     RewriteCond %{REQUEST_URI} !^/opencaptureforinvoices/dist/
     RewriteRule (.*) /opencaptureforinvoices/dist/#/login [R=301,NE]
 </IfModule>

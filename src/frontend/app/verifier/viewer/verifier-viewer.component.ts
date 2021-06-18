@@ -15,12 +15,15 @@ declare var $: any;
 })
 
 export class VerifierViewerComponent implements OnInit {
-    loading: boolean = true
+    loading     : boolean = true
     imageInvoice: any;
     isOCRRunning: boolean = false;
+    invoiceId   : any;
 
-    lastLabel: string = '';
-    lastColor: string ='';
+    lastLabel   : string = '';
+    lastId      : string = '';
+    lastColor   : string ='';
+
     constructor(
         private http: HttpClient,
         private route: ActivatedRoute,
@@ -29,34 +32,59 @@ export class VerifierViewerComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        let invoiceId = this.route.snapshot.params['id'];
-        this.imageInvoice = $('#my-image')
-        // this.ocrOnFly(false, '')
+        this.invoiceId = this.route.snapshot.params['id'];
+        this.imageInvoice = $('#my-image');
+        this.loadForm();
+    }
+
+    loadForm(){
+        this.http.get(API_URL + '/ws/verifier/invoices/' + this.invoiceId, {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                let accountId = data.account_id
+                if (accountId){
+                    console.log('formulaire du fournisseur ' + accountId)
+                }else{
+                    console.log('formulaire par défaut')
+                }
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe()
     }
 
     ocr(event: any, enable: boolean, color = 'red'){
-        let _this = this
-        let inputId = event.target.id
-        this.lastLabel = event.target.labels[0].textContent
-        this.lastColor = color
+        let _this = this;
+        this.lastId = event.target.id;
+        this.lastLabel = event.target.labels[0].textContent;
+        this.lastColor = color;
         let imageContainer = $('.image-container');
-        imageContainer.addClass('pointer-events-none')
-        imageContainer.addClass('cursor-auto')
-
+        let deleteArea = $('.delete-area');
+        let backgroundArea = $('.select-areas-background-area');
+        let resizeArea = $('.select-areas-resize-handler');
+        deleteArea.addClass('pointer-events-auto');
+        backgroundArea.addClass('pointer-events-auto');
+        resizeArea.addClass('pointer-events-auto');
+        imageContainer.addClass('pointer-events-none');
+        imageContainer.addClass('cursor-auto');
         if (enable){
-            imageContainer.removeClass('pointer-events-none')
-            imageContainer.removeClass('cursor-auto')
+            imageContainer.removeClass('pointer-events-none');
+            imageContainer.removeClass('cursor-auto');
             this.imageInvoice.selectAreas({
-                mineSize: [20, 20],
+                minSize: [20, 20],
                 maxSize: [this.imageInvoice.width(), this.imageInvoice.height() / 8],
                 onChanged: function(img: any, cpt: any, selection: any) {
-                    if (selection['width'] !== 0 && selection['height'] !== 0) {
+                    if (selection.length !== 0 && selection['width'] !== 0 && selection['height'] !== 0) {
                         // Write the label of the input above the selection rectangle
                         if ($('#select-area-label_' + cpt).length == 0) {
-                            $('#select-areas-label-container_' + cpt).append('<div id="select-area-label_' + cpt + '">' + _this.lastLabel + '</div>')
+                            $('#select-areas-label-container_' + cpt).append('<div id="select-area-label_' + cpt + '" class="input_' + _this.lastId + '">' + _this.lastLabel + '</div>')
                             $('#select-areas-background-area_' + cpt).css('background-color', _this.lastColor)
                         }
                         // End write
+
+                        let inputId = $('#select-area-label_' + cpt).attr('class').replace('input_', '')
 
                         // Test to avoid multi selection for same label. If same label exists, remove the selected areas and replace it by the new one
                         let label = $('div[id*=select-area-label_]:contains(' + _this.lastLabel + ')')
@@ -81,7 +109,7 @@ export class VerifierViewerComponent implements OnInit {
                                 {headers: _this.authService.headers})
                                 .pipe(
                                     tap((data: any) => {
-                                        console.log(data)
+                                        $('#' + inputId).val(data.result)
                                         _this.isOCRRunning = false
                                     }),
                                     catchError((err: any) => {
@@ -96,39 +124,4 @@ export class VerifierViewerComponent implements OnInit {
             });
         }
     }
-
-    ocrOnFly(isRemoved: boolean, input: string, removeWhiteSpace = false, needToBeNumber = false, needToBeDate = false){
-        let _this = this
-        this.imageInvoice.imgAreaSelect({
-            fadeSpeed: 400,
-            autoHide: false,
-            handles: true,
-            remove: isRemoved,
-            maxWidth: this.imageInvoice.width(),
-            maxHeight: this.imageInvoice.height() / 8,
-            onSelectEnd     : function(img: any, selection: any) {
-                console.log(selection)
-                if (selection['width'] !== 0 && selection['height'] !== 0) {
-                    if (!_this.isOCRRunning){
-                        _this.isOCRRunning = true
-                        _this.http.post(API_URL + '/ws/verifier/ocrOnFly',
-                            {selection: selection, fileName: $('#my-image')[0].src.replace(/^.*[\\\/]/, ''), thumbSize: {width: img.width, height: img.height}},
-                            {headers: _this.authService.headers})
-                        .pipe(
-                            tap((data: any) => {
-                                console.log(data)
-                            }),
-                            catchError((err: any) => {
-                                console.debug(err);
-                                _this.notify.handleErrors(err);
-                                return of(false);
-                            })
-                        ).subscribe()
-                    }
-                }
-            }
-        });
-        console.log(this.isOCRRunning)
-    }
-
 }

@@ -68,7 +68,7 @@ class Xml:
                     where = 'invoice_number = ?'
                     data = invoice_number
 
-                res = self.db.select({
+                res = self._db.select({
                     'select': [field],
                     'table': [table],
                     'where': [where],

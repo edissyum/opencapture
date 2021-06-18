@@ -16,14 +16,14 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 from flask import Blueprint, request, make_response, jsonify
-from ..controllers.auth import token_required
-from ..controllers import roles
+from ..import_controllers import auth
+from ..import_controllers import roles
 
 bp = Blueprint('roles', __name__, url_prefix='/ws/')
 
 
 @bp.route('roles/list', methods=['GET'])
-@token_required
+@auth.token_required
 def get_roles():
     args = {
         'select': ['*', 'count(*) OVER() as total'],
@@ -35,14 +35,14 @@ def get_roles():
 
 
 @bp.route('roles/getById/<int:role_id>', methods=['GET'])
-@token_required
+@auth.token_required
 def get_role_by_id(role_id):
     _role = roles.get_role_by_id(role_id)
     return make_response(jsonify(_role[0])), _role[1]
 
 
 @bp.route('roles/update/<int:role_id>', methods=['PUT'])
-@token_required
+@auth.token_required
 def update_role(role_id):
     data = request.json['args']
     res = roles.update_role(role_id, data)
@@ -50,7 +50,7 @@ def update_role(role_id):
 
 
 @bp.route('roles/updatePrivilege/<int:role_id>', methods=['PUT'])
-@token_required
+@auth.token_required
 def update_privilege(role_id):
     data = request.json['privileges']
     res = roles.update_role_privilege(role_id, data)
@@ -58,28 +58,28 @@ def update_privilege(role_id):
 
 
 @bp.route('roles/delete/<int:role_id>', methods=['DELETE'])
-@token_required
+@auth.token_required
 def delete_role(role_id):
     res = roles.delete_role(role_id)
     return make_response(jsonify(res[0])), res[1]
 
 
 @bp.route('roles/disable/<int:role_id>', methods=['PUT'])
-@token_required
+@auth.token_required
 def disable_role(role_id):
     res = roles.disable_role(role_id)
     return make_response(jsonify(res[0])), res[1]
 
 
 @bp.route('roles/enable/<int:role_id>', methods=['PUT'])
-@token_required
+@auth.token_required
 def enable_role(role_id):
     res = roles.enable_role(role_id)
     return make_response(jsonify(res[0])), res[1]
 
 
 @bp.route('roles/create', methods=['POST'])
-@token_required
+@auth.token_required
 def create_role():
     data = request.json['args']
     res = roles.create_role(data)

@@ -17,13 +17,13 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 from gettext import gettext
-from ..controllers.db import get_db
+from ..import_controllers import db
 
 
 def get_forms(args):
-    db = get_db()
+    _db = db.get_db()
     error = None
-    forms = db.select({
+    forms = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['form_models'],
         'where': ['1=%s'] if 'where' not in args else args['where'],
@@ -40,9 +40,9 @@ def get_forms(args):
 
 
 def get_form_by_id(args):
-    db = get_db()
+    _db = db.get_db()
     error = None
-    form = db.select({
+    form = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['form_models'],
         'where': ['id = %s', 'status <> %s'],
@@ -58,10 +58,10 @@ def get_form_by_id(args):
 
 
 def update_form(args):
-    db = get_db()
+    _db = db.get_db()
     error = None
 
-    res = db.update({
+    res = _db.update({
         'table': ['form_models'],
         'set': args['set'],
         'where': ['id = %s'],
@@ -75,10 +75,10 @@ def update_form(args):
 
 
 def update_form_fields(args):
-    db = get_db()
+    _db = db.get_db()
     error = None
 
-    res = db.update({
+    res = _db.update({
         'table': ['form_models_field'],
         'set': args['set'],
         'where': ['form_id = %s'],
@@ -92,7 +92,7 @@ def update_form_fields(args):
 
 
 def add_form_fields(args):
-    db = get_db()
+    _db = db.get_db()
     args = {
         'table': 'form_models_field',
         'columns': {
@@ -104,7 +104,7 @@ def add_form_fields(args):
 
 
 def add_form(args):
-    db = get_db()
+    _db = db.get_db()
     forms_exists, error = get_forms({
         'where': ['label = %s', 'status <> %s'],
         'data': [args['label'], 'DEL']
@@ -130,9 +130,9 @@ def add_form(args):
 
 
 def get_fields(args):
-    db = get_db()
+    _db = db.get_db()
     error = None
-    form_fields = db.select({
+    form_fields = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['form_models_field'],
         'where': ['form_id = %s'],

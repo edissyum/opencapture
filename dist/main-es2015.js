@@ -2207,7 +2207,7 @@ UsersListComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_5__["ɵɵdefin
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "API_URL", function() { return API_URL; });
-const API_URL = 'http://192.168.1.9:5000';
+const API_URL = 'http://192.168.10.60:5000';
 // export const API_URL = '../../backend_oc';
 
 
@@ -3683,7 +3683,7 @@ AboutUsComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineC
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](18, "div", 13);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](19, " Soci\u00E9t\u00E9 Edissyum ");
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](20, "br");
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](21, " 129 Boulevard Louis Giraud ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](21, " 98 Avenue Pierre Semard ");
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](22, "br");
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](23, " 84200 Carpentras ");
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
@@ -5095,6 +5095,7 @@ class UpdateSupplierComponent {
                             else if (field == 'address_id') {
                                 this.addressId = this.supplier[field];
                                 if (this.addressId) {
+                                    console.log('here');
                                     this.http.get(_env__WEBPACK_IMPORTED_MODULE_2__["API_URL"] + '/ws/accounts/getAdressById/' + this.addressId, { headers: this.authService.headers }).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])((address) => {
                                         for (let field in address) {
                                             if (address.hasOwnProperty(field)) {
@@ -5112,6 +5113,7 @@ class UpdateSupplierComponent {
                                     })).subscribe();
                                 }
                                 else {
+                                    console.log('naaaa');
                                     this.http.post(_env__WEBPACK_IMPORTED_MODULE_2__["API_URL"] + '/ws/accounts/addresses/create', { 'args': {
                                             'address1': '',
                                             'address2': '',
@@ -5146,48 +5148,16 @@ class UpdateSupplierComponent {
             this.notify.handleErrors(err);
             return Object(rxjs__WEBPACK_IMPORTED_MODULE_4__["of"])(false);
         })).subscribe();
-        if (this.addressId) {
-            this.http.get(_env__WEBPACK_IMPORTED_MODULE_2__["API_URL"] + '/ws/accounts/getAdressById/' + this.addressId, { headers: this.authService.headers }).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])((address) => {
-                for (let field in address) {
-                    if (address.hasOwnProperty(field)) {
-                        this.addressForm.forEach(element => {
-                            if (element.id == field) {
-                                element.control.setValue(address[field]);
-                            }
-                        });
-                    }
-                }
-            }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["finalize"])(() => this.loading = false), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])((err) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return Object(rxjs__WEBPACK_IMPORTED_MODULE_4__["of"])(false);
-            })).subscribe();
-        }
-        else {
-            this.http.post(_env__WEBPACK_IMPORTED_MODULE_2__["API_URL"] + '/ws/accounts/addresses/create', { 'args': {
-                    'address1': '',
-                    'address2': '',
-                    'postal_code': '',
-                    'city': '',
-                    'country': ''
-                }
-            }, { headers: this.authService.headers }).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])((data) => {
-                this.addressId = data.id;
-                this.http.put(_env__WEBPACK_IMPORTED_MODULE_2__["API_URL"] + '/ws/accounts/suppliers/update/' + this.supplierId, { 'args': { 'address_id': this.addressId } }, { headers: this.authService.headers }).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["finalize"])(() => this.loading = false), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])((err) => {
-                    console.debug(err);
-                    this.notify.handleErrors(err, '/accounts/suppliers/list');
-                    return Object(rxjs__WEBPACK_IMPORTED_MODULE_4__["of"])(false);
-                })).subscribe();
-            }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])((err) => {
-                console.debug(err);
-                this.notify.handleErrors(err, '/accounts/customers/list');
-                return Object(rxjs__WEBPACK_IMPORTED_MODULE_4__["of"])(false);
-            })).subscribe();
-        }
     }
     isValidForm() {
         let state = true;
         this.supplierForm.forEach(element => {
+            if (element.control.status !== 'DISABLED' && element.control.status !== 'VALID') {
+                state = false;
+            }
+            element.control.markAsTouched();
+        });
+        this.addressForm.forEach(element => {
             if (element.control.status !== 'DISABLED' && element.control.status !== 'VALID') {
                 state = false;
             }
@@ -5210,6 +5180,7 @@ class UpdateSupplierComponent {
                 this.notify.handleErrors(err, '/accounts/suppliers/list');
                 return Object(rxjs__WEBPACK_IMPORTED_MODULE_4__["of"])(false);
             })).subscribe();
+            console.log(this.addressId);
             this.http.put(_env__WEBPACK_IMPORTED_MODULE_2__["API_URL"] + '/ws/accounts/addresses/update/' + this.addressId, { 'args': address }, { headers: this.authService.headers }).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(() => {
                 this.notify.success(this.translate.instant('ACCOUNTS.supplier_updated'));
                 this.router.navigate(['/accounts/suppliers/list']);
@@ -7905,7 +7876,7 @@ class FormBuilderComponent {
             })).subscribe();
         }
         else {
-            this.notify.error('FORMS.label_mandatory');
+            this.notify.error(this.translate.instant('FORMS.label_mandatory'));
         }
     }
     createForm() {
@@ -7927,7 +7898,7 @@ class FormBuilderComponent {
             })).subscribe();
         }
         else {
-            this.notify.error('FORMS.label_mandatory');
+            this.notify.error(this.translate.instant('FORMS.label_mandatory'));
         }
     }
 }
@@ -10154,6 +10125,12 @@ class CreateSupplierComponent {
             }
             element.control.markAsTouched();
         });
+        this.addressForm.forEach(element => {
+            if (element.control.status !== 'DISABLED' && element.control.status !== 'VALID') {
+                state = false;
+            }
+            element.control.markAsTouched();
+        });
         return state;
     }
     onSubmit() {
@@ -10465,35 +10442,58 @@ class VerifierViewerComponent {
         this.loading = true;
         this.isOCRRunning = false;
         this.lastLabel = '';
+        this.lastId = '';
         this.lastColor = '';
     }
     ngOnInit() {
-        let invoiceId = this.route.snapshot.params['id'];
+        this.invoiceId = this.route.snapshot.params['id'];
         this.imageInvoice = $('#my-image');
-        // this.ocrOnFly(false, '')
+        this.loadForm();
+    }
+    loadForm() {
+        this.http.get(_env__WEBPACK_IMPORTED_MODULE_0__["API_URL"] + '/ws/verifier/invoices/' + this.invoiceId, { headers: this.authService.headers }).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["tap"])((data) => {
+            let accountId = data.account_id;
+            if (accountId) {
+                console.log('formulaire du fournisseur ' + accountId);
+            }
+            else {
+                console.log('formulaire par défaut');
+            }
+        }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["catchError"])((err) => {
+            console.debug(err);
+            this.notify.handleErrors(err);
+            return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(false);
+        })).subscribe();
     }
     ocr(event, enable, color = 'red') {
         let _this = this;
-        let inputId = event.target.id;
+        this.lastId = event.target.id;
         this.lastLabel = event.target.labels[0].textContent;
         this.lastColor = color;
         let imageContainer = $('.image-container');
+        let deleteArea = $('.delete-area');
+        let backgroundArea = $('.select-areas-background-area');
+        let resizeArea = $('.select-areas-resize-handler');
+        deleteArea.addClass('pointer-events-auto');
+        backgroundArea.addClass('pointer-events-auto');
+        resizeArea.addClass('pointer-events-auto');
         imageContainer.addClass('pointer-events-none');
         imageContainer.addClass('cursor-auto');
         if (enable) {
             imageContainer.removeClass('pointer-events-none');
             imageContainer.removeClass('cursor-auto');
             this.imageInvoice.selectAreas({
-                mineSize: [20, 20],
+                minSize: [20, 20],
                 maxSize: [this.imageInvoice.width(), this.imageInvoice.height() / 8],
                 onChanged: function (img, cpt, selection) {
-                    if (selection['width'] !== 0 && selection['height'] !== 0) {
+                    if (selection.length !== 0 && selection['width'] !== 0 && selection['height'] !== 0) {
                         // Write the label of the input above the selection rectangle
                         if ($('#select-area-label_' + cpt).length == 0) {
-                            $('#select-areas-label-container_' + cpt).append('<div id="select-area-label_' + cpt + '">' + _this.lastLabel + '</div>');
+                            $('#select-areas-label-container_' + cpt).append('<div id="select-area-label_' + cpt + '" class="input_' + _this.lastId + '">' + _this.lastLabel + '</div>');
                             $('#select-areas-background-area_' + cpt).css('background-color', _this.lastColor);
                         }
                         // End write
+                        let inputId = $('#select-area-label_' + cpt).attr('class').replace('input_', '');
                         // Test to avoid multi selection for same label. If same label exists, remove the selected areas and replace it by the new one
                         let label = $('div[id*=select-area-label_]:contains(' + _this.lastLabel + ')');
                         let labelCount = label.length;
@@ -10513,7 +10513,7 @@ class VerifierViewerComponent {
                                 thumbSize: { width: img.currentTarget.width, height: img.currentTarget.height }
                             }, { headers: _this.authService.headers })
                                 .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["tap"])((data) => {
-                                console.log(data);
+                                $('#' + inputId).val(data.result);
                                 _this.isOCRRunning = false;
                             }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["catchError"])((err) => {
                                 console.debug(err);
@@ -10526,65 +10526,36 @@ class VerifierViewerComponent {
             });
         }
     }
-    ocrOnFly(isRemoved, input, removeWhiteSpace = false, needToBeNumber = false, needToBeDate = false) {
-        let _this = this;
-        this.imageInvoice.imgAreaSelect({
-            fadeSpeed: 400,
-            autoHide: false,
-            handles: true,
-            remove: isRemoved,
-            maxWidth: this.imageInvoice.width(),
-            maxHeight: this.imageInvoice.height() / 8,
-            onSelectEnd: function (img, selection) {
-                console.log(selection);
-                if (selection['width'] !== 0 && selection['height'] !== 0) {
-                    if (!_this.isOCRRunning) {
-                        _this.isOCRRunning = true;
-                        _this.http.post(_env__WEBPACK_IMPORTED_MODULE_0__["API_URL"] + '/ws/verifier/ocrOnFly', { selection: selection, fileName: $('#my-image')[0].src.replace(/^.*[\\\/]/, ''), thumbSize: { width: img.width, height: img.height } }, { headers: _this.authService.headers })
-                            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["tap"])((data) => {
-                            console.log(data);
-                        }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["catchError"])((err) => {
-                            console.debug(err);
-                            _this.notify.handleErrors(err);
-                            return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(false);
-                        })).subscribe();
-                    }
-                }
-            }
-        });
-        console.log(this.isOCRRunning);
-    }
 }
 VerifierViewerComponent.ɵfac = function VerifierViewerComponent_Factory(t) { return new (t || VerifierViewerComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_angular_common_http__WEBPACK_IMPORTED_MODULE_4__["HttpClient"]), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_5__["ActivatedRoute"]), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_services_auth_service__WEBPACK_IMPORTED_MODULE_6__["AuthService"]), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_services_notifications_notifications_service__WEBPACK_IMPORTED_MODULE_7__["NotificationService"])); };
-VerifierViewerComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdefineComponent"]({ type: VerifierViewerComponent, selectors: [["app-viewer"]], decls: 17, vars: 0, consts: [[1, "grid", "grid-cols-2", "overflow-auto", 2, "height", "calc(100vh + -3rem) !important"], [1, "image-container"], ["id", "rectangle", 1, "rectangle-not-active"], ["id", "my-image", "alt", "File", "src", "assets/imgs/thumb.jpg", 1, "file"], ["matInput", "", "type", "text", "id", "test", 3, "focusin", "focusout"], ["matInput", "", "type", "text", "id", "test1", 3, "focusin", "focusout"], ["matInput", "", "type", "text", "id", "test2", 3, "focusin", "focusout"]], template: function VerifierViewerComponent_Template(rf, ctx) { if (rf & 1) {
+VerifierViewerComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdefineComponent"]({ type: VerifierViewerComponent, selectors: [["app-viewer"]], decls: 16, vars: 0, consts: [[1, "grid", "grid-cols-2", "overflow-auto", 2, "height", "calc(100vh + -3rem) !important"], [1, "image-container"], ["id", "my-image", "alt", "File", "src", "assets/imgs/thumb.jpg", 1, "file"], ["matInput", "", "type", "text", "id", "test", 3, "focusin", "focusout"], ["matInput", "", "type", "text", "id", "test1", 3, "focusin", "focusout"], ["matInput", "", "type", "text", "id", "test2", 3, "focusin", "focusout"]], template: function VerifierViewerComponent_Template(rf, ctx) { if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](0, "div", 0);
         _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](1, "div", 1);
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelement"](2, "div", 2);
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelement"](3, "img", 3);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelement"](2, "img", 2);
         _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](4, "div");
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](5, "mat-form-field");
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](6, "mat-label");
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtext"](7, "Num\u00E9ro de facture");
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](3, "div");
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](4, "mat-form-field");
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](5, "mat-label");
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtext"](6, "Num\u00E9ro de facture");
         _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](8, "input", 4);
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵlistener"]("focusin", function VerifierViewerComponent_Template_input_focusin_8_listener($event) { return ctx.ocr($event, true, "red"); })("focusout", function VerifierViewerComponent_Template_input_focusout_8_listener($event) { return ctx.ocr($event, false); });
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](9, "mat-form-field");
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](10, "mat-label");
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtext"](11, "Date de facture");
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](12, "input", 5);
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵlistener"]("focusin", function VerifierViewerComponent_Template_input_focusin_12_listener($event) { return ctx.ocr($event, true, "blue"); })("focusout", function VerifierViewerComponent_Template_input_focusout_12_listener($event) { return ctx.ocr($event, false); });
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](7, "input", 3);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵlistener"]("focusin", function VerifierViewerComponent_Template_input_focusin_7_listener($event) { return ctx.ocr($event, true, "red"); })("focusout", function VerifierViewerComponent_Template_input_focusout_7_listener($event) { return ctx.ocr($event, false); });
         _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](13, "mat-form-field");
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](14, "mat-label");
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtext"](15, "Num\u00E9ro de commande");
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](8, "mat-form-field");
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](9, "mat-label");
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtext"](10, "Date de facture");
         _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](16, "input", 6);
-        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵlistener"]("focusin", function VerifierViewerComponent_Template_input_focusin_16_listener($event) { return ctx.ocr($event, true, "yellow"); })("focusout", function VerifierViewerComponent_Template_input_focusout_16_listener($event) { return ctx.ocr($event, false); });
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](11, "input", 4);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵlistener"]("focusin", function VerifierViewerComponent_Template_input_focusin_11_listener($event) { return ctx.ocr($event, true, "blue"); })("focusout", function VerifierViewerComponent_Template_input_focusout_11_listener($event) { return ctx.ocr($event, false); });
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](12, "mat-form-field");
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](13, "mat-label");
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵtext"](14, "Num\u00E9ro de commande");
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementStart"](15, "input", 5);
+        _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵlistener"]("focusin", function VerifierViewerComponent_Template_input_focusin_15_listener($event) { return ctx.ocr($event, true, "yellow"); })("focusout", function VerifierViewerComponent_Template_input_focusout_15_listener($event) { return ctx.ocr($event, false); });
         _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵelementEnd"]();
