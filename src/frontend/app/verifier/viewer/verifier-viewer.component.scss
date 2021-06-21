@@ -1,0 +1,44 @@
+.box-shadow {
+    box-shadow: 10px 5px 5px red!important;
+}
+
+::ng-deep .form-viewer > .mat-form-field-wrapper {
+    @apply pb-3;
+    @apply pt-3;
+
+    & .mat-form-field-flex {
+        @apply h-14;
+
+        & .mat-form-field-infix {
+            @apply w-full;
+
+            & div > button {
+                @apply invisible;
+                @apply opacity-0;
+                @apply transition-all;
+                @apply duration-500;
+                @apply left-8;
+
+                & .mat-button-focus-overlay{
+                    @apply bg-transparent;
+                }
+            }
+
+            & i {
+                @apply invisible;
+                @apply opacity-0;
+                @apply left-0.5;
+                @apply transition-all;
+                @apply duration-500;
+                @apply top-0.5;
+                top: 7px;
+            }
+
+            & .mat-form-field-label-wrapper > .mat-form-field-label > mat-label {
+                @apply ml-0;
+                @apply transition-all;
+                @apply duration-500;
+            }
+        }
+    }
+}

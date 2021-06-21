@@ -112,7 +112,10 @@
 		"label_mandatory": "",
 		"modify": "",
 		"other": "",
-		"updated": ""
+		"refuse": "",
+		"supplier": "",
+		"updated": "",
+		"validate": ""
 	},
 	"GLOBAL": {
 		"batches": "Batches",

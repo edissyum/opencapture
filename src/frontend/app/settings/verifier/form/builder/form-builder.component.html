@@ -101,13 +101,13 @@
                 </div>
             </div>
             <ng-container *ngFor="let category of fieldCategories; let i = index">
-                <div class="relative text-xl tracking-wider pl-1.5 pr-1.5 bg-white" style="top: 2.5rem; left:2.5rem; width:130px">
+                <div class="relative text-xl tracking-wider pl-1.5 pr-1.5 bg-white" style="top: 2.5rem; left:2.5rem;" [style]="'width:calc(3% + ' + this.translate.instant(category['label']).length + '%)'">
                     {{ category['label'] | translate }}
                 </div>
                 <div class="border-green-400 border rounded-lg mx-6 m-7">
                     <div cdkDropList (cdkDropListDropped)="dropFromForm($event)" id="{{ category['id'] }}"
                          class="flex flex-wrap cursor-pointer w-full my-3" style="min-height: 50px;">
-                        <div *ngFor="let field of this.fields[category['id']]; let index = index" class="test flex items-center px-3 overflow-hidden" [class]="field.class"
+                        <div *ngFor="let field of this.fields[category['id']]; let index = index" class="flex items-center px-3 overflow-hidden" [class]="field.class"
                              ngSortGridGroup="{{ category['id'] }}" ngSortgridItem [ngSortGridItems]="fields[category['id']]" (sorted)="storeNewOrder($event, category['id'])">
                             <ng-container *ngIf="field.type === 'text'">
                                 <mat-form-field class="right-0 w-full form-builder"

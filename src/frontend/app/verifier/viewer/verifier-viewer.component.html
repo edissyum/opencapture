@@ -1,19 +1,83 @@
-<div class="grid grid-cols-2 overflow-auto" style="height: calc(100vh + -3rem) !important">
-    <div class="image-container">
-        <img class="file" id="my-image" alt="File" src="assets/imgs/thumb.jpg">
+<div *ngIf="loading">
+    <app-loader></app-loader>
+</div>
+<div class="grid grid-cols-2 overflow-auto mt-2">
+    <div class="overflow-auto" style="height: calc(100vh - 64px) !important; direction: rtl">
+        <div class="image-container px-4">
+            <img class="file" id="invoice_image" alt="File" src="assets/imgs/thumb.jpg">
+        </div>
     </div>
-    <div>
-        <mat-form-field>
-            <mat-label>Numéro de facture</mat-label>
-            <input (focusin)="ocr($event, true, 'red')" (focusout)="ocr($event, false)" matInput type="text" id="test">
-        </mat-form-field>
-        <mat-form-field>
-            <mat-label>Date de facture</mat-label>
-            <input (focusin)="ocr($event, true,'blue')" (focusout)="ocr($event, false)" matInput type="text" id="test1">
-        </mat-form-field>
-        <mat-form-field>
-            <mat-label>Numéro de commande</mat-label>
-            <input (focusin)="ocr($event, true,'yellow')" (focusout)="ocr($event, false)" matInput type="text" id="test2">
-        </mat-form-field>
+    <div *ngIf="this.fields" class="px-4 -mt-4 overflow-auto" style="height: calc(100vh - 56px) !important">
+        <ng-container *ngFor="let category of this.fieldCategories;">
+            <div class="relative text-xl tracking-wider pl-1.5 pr-1.5 bg-white" style="top: 1rem; left:1.5rem;" [style]="'width:calc(3% + ' + this.translate.instant(category['label']).length + '%)'">
+                {{ category['label'] | translate }}
+            </div>
+            <div class="border-green-400 border rounded-lg">
+                <div id="{{ category['id'] }}" class="flex flex-wrap w-full my-3" style="min-height: 50px;">
+                    <div *ngFor="let field of this.fields[category['id']];" class="flex items-center px-3" [class]="field.class">
+                        <ng-container *ngIf="field.type === 'text'">
+                            <mat-form-field class="right-0 w-full form-viewer">
+                                <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
+                                    {{ field.label | translate }}
+                                </mat-label>
+                                <input [id]="field.id" matInput type="text"
+                                       (focusin)="ocr($event, true, field.color)"
+                                       (focusout)="ocr($event, false)">
+                            </mat-form-field>
+                        </ng-container>
+                        <ng-container *ngIf="field.type === 'textarea'">
+                            <mat-form-field class="right-0 w-full form-viewer">
+                                <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
+                                    {{ field.label | translate }}
+                                </mat-label>
+                                <textarea [id]="field.id" cdkTextareaAutosize cdkAutosizeMinRows="1" matInput
+                                          (focusin)="ocr($event, true, field.color)"
+                                          (focusout)="ocr($event, false)"></textarea>
+                            </mat-form-field>
+                        </ng-container>
+                        <ng-container *ngIf="field.type === 'date'">
+                            <mat-form-field class="right-0 w-full form-viewer">
+                                <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
+                                    {{ field.label | translate }}
+                                </mat-label>
+                                <input [id]="field.id" matInput [matDatepicker]="picker"
+                                       (focusin)="ocr($event, true, field.color)"
+                                       (focusout)="ocr($event, false)">
+                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-datepicker #picker></mat-datepicker>
+                            </mat-form-field>
+                        </ng-container>
+                        <ng-container *ngIf="field.type === 'select'">
+                            <mat-form-field class="right-0 w-full form-viewer">
+                                <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
+                                    {{ field.label | translate }}
+                                </mat-label>
+                                <mat-select [id]="field.id"></mat-select>
+                            </mat-form-field>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+        <div class="mt-4 mb-4 grid grid-cols-2 gap-4 h-12 text-gray-900">
+            <button mat-button class="border-solid border-green-400 border-opacity-70 border hover:bg-green-400 hover:bg-opacity-70 hover:text-white transition duration-300" type="submit">
+                {{ 'FORMS.validate' | translate }}
+            </button>
+            <button mat-button class="border-solid border-red-400 border hover:bg-red-400 hover:text-white transition duration-300" type="submit">
+                {{ 'FORMS.refuse' | translate }}
+            </button>
+        </div>
+        <!--        <mat-form-field>-->
+<!--            <mat-label>Numéro de facture</mat-label>-->
+<!--            <input (focusin)="ocr($event, true, 'red')" (focusout)="ocr($event, false)" matInput type="text" id="test">-->
+<!--        </mat-form-field>-->
+<!--        <mat-form-field>-->
+<!--            <mat-label>Date de facture</mat-label>-->
+<!--            <input (focusin)="ocr($event, true,'blue')" (focusout)="ocr($event, false)" matInput type="text" id="test1">-->
+<!--        </mat-form-field>-->
+<!--        <mat-form-field>-->
+<!--            <mat-label>Numéro de commande</mat-label>-->
+<!--            <input (focusin)="ocr($event, true,'yellow')" (focusout)="ocr($event, false)" matInput type="text" id="test2">-->
+<!--        </mat-form-field>-->
     </div>
 </div>

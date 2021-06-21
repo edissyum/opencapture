@@ -44,7 +44,7 @@ export class FormBuilderComponent implements OnInit {
     fieldCategories: any[] = [
         {
             'id': 'accounts',
-            'label': marker('ACCOUNTS.supplier')
+            'label': marker('FORMS.supplier')
         },
         {
             'id': 'facturation',

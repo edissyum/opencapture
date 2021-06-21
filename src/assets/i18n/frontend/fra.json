@@ -112,7 +112,10 @@
 		"label_mandatory": "Le libellé du formulaire est obligatoire",
 		"modify": "Modifier le formulaire",
 		"other": "Autres",
-		"updated": "Formulaire mis à jour avec succès"
+		"refuse": "Refuser la facture",
+		"supplier": "Fournisseur",
+		"updated": "Formulaire mis à jour avec succès",
+		"validate": "Valider la facture"
 	},
 	"GLOBAL": {
 		"batches": "Lots",

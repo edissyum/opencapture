@@ -99,7 +99,7 @@ def add_form_fields(args):
             'form_id': str(args),
         }
     }
-    res = db.insert(args)
+    db.insert(args)
     return '', False
 
 
