@@ -133,6 +133,9 @@
                                             <button mat-menu-item [matMenuTriggerFor]="size">
                                                 {{ "VERIFIER.size" | translate }} <small class="ml-2">{{ field.class_label }}</small>
                                             </button>
+                                            <button mat-menu-item [matMenuTriggerFor]="format">
+                                                {{ "VERIFIER.format" | translate }} <small class="ml-2"><i class="text-base {{ field.format_icon }}"></i></small>
+                                            </button>
                                         </mat-menu>
                                         <mat-menu #size="matMenu">
                                             <button mat-menu-item [id]="field.id"
@@ -143,11 +146,20 @@
                                             </button>
                                         </mat-menu>
                                         <mat-menu #colors="matMenu">
-                                            <button mat-menu-item [id]="field.id" *ngFor="let _color of colorsList"
+                                            <button mat-menu-item [id]="field.id"
+                                                    *ngFor="let _color of colorsList"
                                                     (click)="changeColor(field.id, _color.id, category['id'])"
                                                     [style]="'background-color:' + _color.id"
                                                     [class.text-white]="_color.id == 'black' || _color.id == 'navy'">
                                                 {{ _color.label | translate }}
+                                            </button>
+                                        </mat-menu>
+                                        <mat-menu #format="matMenu">
+                                            <button mat-menu-item [id]="field.id"
+                                                    *ngFor="let _format of formatList"
+                                                    (click)="changeFormat(field.id, _format.id, _format.icon, category['id'])"
+                                                    [class.bg-green-400]="_format.id == field.format">
+                                                {{ _format.label | translate }}
                                             </button>
                                         </mat-menu>
                                     </div>

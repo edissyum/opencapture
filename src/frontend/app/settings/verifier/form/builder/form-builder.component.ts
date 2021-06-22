@@ -22,8 +22,8 @@ import {marker} from "@biesbjerg/ngx-translate-extract-marker";
     styleUrls: ['./form-builder.component.scss'],
 })
 export class FormBuilderComponent implements OnInit {
-    loading = true
-    form: any = {
+    loading                 : boolean = true
+    form                    : any = {
         'label': {
             'control': new FormControl(),
         },
@@ -31,17 +31,16 @@ export class FormBuilderComponent implements OnInit {
             'control': new FormControl(),
         }
     }
-    formId: any;
-    creationMode: boolean = true
-    labelType = [
+    formId                  : any;
+    creationMode            : boolean = true
+    labelType               : any [] = [
         marker('TYPES.text'),
         marker('TYPES.textarea'),
         marker('TYPES.date'),
         marker('TYPES.select'),
         marker('VERIFIER.field_settings'),
     ]
-
-    fieldCategories: any[] = [
+    fieldCategories         : any[] = [
         {
             'id': 'accounts',
             'label': marker('FORMS.supplier')
@@ -55,7 +54,7 @@ export class FormBuilderComponent implements OnInit {
             'label': marker('FORMS.other')
         }
     ];
-    availableFieldsParent = [
+    availableFieldsParent   : any [] = [
         {
             'id': 'accounts_fields',
             'label': marker('ACCOUNTS.supplier'),
@@ -68,6 +67,9 @@ export class FormBuilderComponent implements OnInit {
                     required: true,
                     class: "w-1/3",
                     class_label: "1/33",
+                    color: 'white',
+                    format: 'alphanum',
+                    format_icon:'fas fa-hashtag'
                 },
                 {
                     id: 'siret',
@@ -77,7 +79,9 @@ export class FormBuilderComponent implements OnInit {
                     required: false,
                     class: "w-1/3",
                     class_label: "1/33",
-                    color: 'green'
+                    color: 'green',
+                    format: 'number',
+                    format_icon:'text-lg icomoon-numbers'
                 },
                 {
                     id: 'siren',
@@ -87,7 +91,9 @@ export class FormBuilderComponent implements OnInit {
                     required: false,
                     class: "w-1/3",
                     class_label: "1/33",
-                    color: 'lime'
+                    color: 'lime',
+                    format: 'number',
+                    format_icon:'text-lg icomoon-numbers'
                 },
                 {
                     id: 'vat_number',
@@ -97,7 +103,9 @@ export class FormBuilderComponent implements OnInit {
                     required: true,
                     class: "w-1/3",
                     class_label: "1/33",
-                    color: 'olive'
+                    color: 'olive',
+                    format: 'alphanum',
+                    format_icon:'fas fas fa-hashtag'
                 },
                 {
                     id: 'address1',
@@ -107,6 +115,8 @@ export class FormBuilderComponent implements OnInit {
                     required: true,
                     class: "w-1/3",
                     class_label: "1/33",
+                    format: 'alphanum',
+                    format_icon:'fas fas fa-hashtag'
                 },
                 {
                     id: 'address2',
@@ -116,6 +126,8 @@ export class FormBuilderComponent implements OnInit {
                     required: true,
                     class: "w-1/3",
                     class_label: "1/33",
+                    format: 'alphanum',
+                    format_icon:'fas fas fa-hashtag'
                 },
                 {
                     id: 'postal_code',
@@ -125,6 +137,8 @@ export class FormBuilderComponent implements OnInit {
                     required: true,
                     class: "w-1/3",
                     class_label: "1/33",
+                    format: 'number',
+                    format_icon:'text-lg icomoon-numbers'
                 },
                 {
                     id: 'city',
@@ -134,6 +148,8 @@ export class FormBuilderComponent implements OnInit {
                     required: true,
                     class: "w-1/3",
                     class_label: "1/33",
+                    format: 'char',
+                    format_icon:'fas fa-font'
                 },
                 {
                     id: 'country',
@@ -143,6 +159,8 @@ export class FormBuilderComponent implements OnInit {
                     required: true,
                     class: "w-1/3",
                     class_label: "1/33",
+                    format: 'char',
+                    format_icon:'fas fa-font'
                 },
             ]
         },
@@ -158,7 +176,10 @@ export class FormBuilderComponent implements OnInit {
                     required: true,
                     class: "w-1/3",
                     class_label: "1/33",
-                    color: 'white'
+                    color: 'yellow',
+                    format: 'alphanum',
+                    format_icon: 'fas fa-hashtag'
+
                 },
                 {
                     id: 'delivery_number',
@@ -168,7 +189,9 @@ export class FormBuilderComponent implements OnInit {
                     required: true,
                     class: "w-1/3",
                     class_label: "1/33",
-                    color: 'silver'
+                    color: 'silver',
+                    format: 'alphanum',
+                    format_icon: 'fas fa-hashtag'
                 },
                 {
                     id: 'invoice_number',
@@ -178,7 +201,9 @@ export class FormBuilderComponent implements OnInit {
                     required: true,
                     class: "w-1/3",
                     class_label: "1/33",
-                    color: 'red'
+                    color: 'red',
+                    format: 'alphanum',
+                    format_icon: 'fas fa-hashtag'
                 },
                 {
                     id: 'invoice_date',
@@ -188,7 +213,9 @@ export class FormBuilderComponent implements OnInit {
                     required: true,
                     class: "w-1/3",
                     class_label: "1/33",
-                    color: 'yellow'
+                    color: 'yellow',
+                    format: 'date',
+                    format_icon: 'fas fa-calendar-day'
                 },
                 {
                     id: 'invoice_due_date',
@@ -198,7 +225,9 @@ export class FormBuilderComponent implements OnInit {
                     required: true,
                     class: "w-1/3",
                     class_label: "1/33",
-                    color: 'blue'
+                    color: 'blue',
+                    format: 'date',
+                    format_icon: 'fas fa-calendar-day'
                 },
                 {
                     id: 'vat_rate',
@@ -208,7 +237,9 @@ export class FormBuilderComponent implements OnInit {
                     required: true,
                     class: "w-1/3",
                     class_label: "1/33",
-                    color: 'aqua'
+                    color: 'pink',
+                    format: 'number',
+                    format_icon:'text-lg icomoon-numbers'
                 },
                 {
                     id: 'no_rate_amount',
@@ -218,7 +249,9 @@ export class FormBuilderComponent implements OnInit {
                     required: true,
                     class: "w-1/3",
                     class_label: "1/33",
-                    color: 'fuschia'
+                    color: 'fuschia',
+                    format: 'number',
+                    format_icon:'text-lg icomoon-numbers'
                 },
                 {
                     id: 'vat_amount',
@@ -228,7 +261,9 @@ export class FormBuilderComponent implements OnInit {
                     required: true,
                     class: "w-1/3",
                     class_label: "1/33",
-                    color: 'teal'
+                    color: 'purple',
+                    format: 'number',
+                    format_icon:'text-lg icomoon-numbers'
                 },
                 {
                     id: 'accounting_plan',
@@ -247,6 +282,8 @@ export class FormBuilderComponent implements OnInit {
                     required: true,
                     class: "w-1/3",
                     class_label: "1/33",
+                    format: 'number',
+                    format_icon:'text-lg icomoon-numbers'
                 },
                 {
                     id: 'total_ht',
@@ -256,6 +293,8 @@ export class FormBuilderComponent implements OnInit {
                     required: true,
                     class: "w-1/3",
                     class_label: "1/33",
+                    format: 'number',
+                    format_icon:'text-lg icomoon-numbers'
                 },
                 {
                     id: 'total_vat',
@@ -266,6 +305,8 @@ export class FormBuilderComponent implements OnInit {
                     class: "w-1/3",
                     class_label: "1/33",
                     color: '',
+                    format: 'number',
+                    format_icon:'text-lg icomoon-numbers'
                 },
             ]
         },
@@ -275,12 +316,12 @@ export class FormBuilderComponent implements OnInit {
             'values': []
         },
     ]
-    fields: any = {
+    fields                  : any = {
         'accounts': [],
         'facturation': [],
         'other': []
     }
-    classList: any[] = [
+    classList               : any[] = [
         {
             'id': 'w-full',
             'label': '1'
@@ -306,7 +347,7 @@ export class FormBuilderComponent implements OnInit {
             'label': '1/5'
         }
     ]
-    colorsList: any[] = [
+    colorsList              : any[] = [
         {
             'id': 'yellow',
             'label': marker('COLORS.yellow')
@@ -376,6 +417,29 @@ export class FormBuilderComponent implements OnInit {
             'label': marker('COLORS.green')
         },
     ]
+    formatList              : any[] = [
+        {
+            'id': 'date',
+            'label': marker('FORMATS.date'),
+            'icon': 'fas fa-calendar-day'
+        },
+        {
+            'id': 'number',
+            'label': marker('FORMATS.number'),
+            'icon': 'text-lg icomoon-numbers'
+        },
+        {
+            'id': 'char',
+            'label': marker('FORMATS.char'),
+            'icon': 'fas fa-font'
+        },
+        {
+            'id': 'alphanum',
+            'label': marker('FORMATS.alphanum'),
+            'icon': 'fas fa-hashtag'
+        },
+    ]
+
     constructor(
         private http: HttpClient,
         public router: Router,
@@ -513,6 +577,16 @@ export class FormBuilderComponent implements OnInit {
             if (element.id == id) {
                 element.class = new_class
                 element.class_label = class_label
+            }
+        })
+    }
+
+    changeFormat(field_id: any, new_format: any, format_icon: any, category: any) {
+        let id = field_id
+        this.fields[category].forEach((element: any) => {
+            if (element.id == id) {
+                element.format = new_format
+                element.format_icon = format_icon
             }
         })
     }

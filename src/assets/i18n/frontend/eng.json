@@ -95,6 +95,13 @@
 		"vat_amount": "",
 		"vat_rate": ""
 	},
+	"FORMATS": {
+		"alphanum": "",
+		"char": "",
+		"date": "",
+		"no_format": "",
+		"number": ""
+	},
 	"FORMS": {
 		"available_fields": "",
 		"confirm_delete": "",
@@ -264,6 +271,7 @@
 		"colors": "",
 		"delete_invoice": "",
 		"field_settings": "",
+		"format": "",
 		"list": "Invoices",
 		"nb_pages": "",
 		"original_file": "",

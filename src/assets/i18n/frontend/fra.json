@@ -95,6 +95,13 @@
 		"vat_amount": "Montant TVA",
 		"vat_rate": "Taux de TVA"
 	},
+	"FORMATS": {
+		"alphanum": "Caractères alphanumériques [0-9aA-zZ]",
+		"char": "Caractères alphabétiques [aA-zZ]",
+		"date": "Date",
+		"no_format": "Aucun format",
+		"number": "Caractères numériques [0-9][0.0-9.0]"
+	},
 	"FORMS": {
 		"available_fields": "Champs disponibles",
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer le formulaire {{ form }} ?",
@@ -264,6 +271,7 @@
 		"colors": "Couleurs",
 		"delete_invoice": "Supprimer la facture",
 		"field_settings": "Paramètres du champ",
+		"format": "Format des données",
 		"list": "Factures",
 		"nb_pages": "Nombre de page",
 		"original_file": "Fichier d'origine",
