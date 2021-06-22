@@ -99,7 +99,6 @@
 		"alphanum": "",
 		"char": "",
 		"date": "",
-		"no_format": "",
 		"number": ""
 	},
 	"FORMS": {
@@ -278,6 +277,7 @@
 		"register_date": "",
 		"search": "",
 		"size": "",
+		"suppliers_by_customer": "",
 		"viewer": "View PDF"
 	}
 }

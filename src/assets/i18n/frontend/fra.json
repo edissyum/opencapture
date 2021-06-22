@@ -99,7 +99,6 @@
 		"alphanum": "Caractères alphanumériques [0-9aA-zZ]",
 		"char": "Caractères alphabétiques [aA-zZ]",
 		"date": "Date",
-		"no_format": "Aucun format",
 		"number": "Caractères numériques [0-9][0.0-9.0]"
 	},
 	"FORMS": {
@@ -278,6 +277,7 @@
 		"register_date": "Enregistré le",
 		"search": "Rechercher une facture",
 		"size": "Taille",
+		"suppliers_by_customer": "Liste des fournisseurs par client",
 		"viewer": "Visualisation du PDF"
 	}
 }

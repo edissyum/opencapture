@@ -14,7 +14,7 @@ import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from "@angular/material/form-field";
 @Component({
     selector: 'app-verifier-list',
     templateUrl: './verifier-list.component.html',
-    styleUrls: ['./verifier-list.scss'],
+    styleUrls: ['./verifier-list.component.scss'],
     providers: [
         { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } },
     ]

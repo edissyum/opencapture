@@ -60,7 +60,7 @@ export class VerifierViewerComponent implements OnInit {
         this.http.get(API_URL + '/ws/verifier/invoices/' + this.invoiceId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 let accountId = data.account_id
-                if (accountId){
+                if (accountId) {
                     this.http.get(API_URL + '/ws/forms/getBySupplierId/' + accountId, {headers: this.authService.headers}).pipe(
                         tap((data: any) => {
                             this.fields = data.fields
@@ -84,11 +84,14 @@ export class VerifierViewerComponent implements OnInit {
         ).subscribe()
     }
 
-    test(){
-        console.log('here')
+    getSelectionByCpt(selection: any, cpt: any){
+        for (let index in selection){
+            if (selection[index].id == cpt)
+                return selection[index]
+        }
     }
 
-    ocr(event: any, enable: boolean, color = 'white') {
+    ocr(event: any, enable: boolean, color = 'green') {
         let _this = this;
         this.lastId = event.target.id;
         this.lastLabel = event.target.labels[0].textContent;
@@ -103,20 +106,23 @@ export class VerifierViewerComponent implements OnInit {
         imageContainer.addClass('pointer-events-none');
         imageContainer.addClass('cursor-auto');
         if (enable) {
-            $('.background_' + _this.lastId).css('box-shadow', '0px 0px 16px 10px ' + color)
+            // $('.outline_' + _this.lastId).animate({
+            //     boxShadow: '10px 10px 10px 10px ' + color
+            // }, 500)
+            $('.outline_' + _this.lastId).toggleClass('animate')
+
             imageContainer.removeClass('pointer-events-none');
             imageContainer.removeClass('cursor-auto');
             this.imageInvoice.selectAreas({
                 minSize: [20, 20],
                 maxSize: [this.imageInvoice.width(), this.imageInvoice.height() / 8],
                 onChanged: function(img: any, cpt: any, selection: any) {
-                    console.log(cpt)
-                    console.log(selection)
                     if (selection.length !== 0 && selection['width'] !== 0 && selection['height'] !== 0) {
                         // Write the label of the input above the selection rectangle
                         if ($('#select-area-label_' + cpt).length == 0) {
                             $('#select-areas-label-container_' + cpt).append('<div id="select-area-label_' + cpt + '" class="input_' + _this.lastId + '">' + _this.lastLabel + '</div>')
-                            $('#select-areas-background-area_' + cpt).addClass('background_' + _this.lastId).css('background-color', _this.lastColor)
+                            $('#select-areas-background-area_' + cpt).css('background-color', _this.lastColor)
+                            $('#select-areas-outline_' + cpt).addClass('outline_' + _this.lastId)
                         }
                         // End write
 
@@ -138,32 +144,43 @@ export class VerifierViewerComponent implements OnInit {
                             _this.isOCRRunning = true
                             _this.http.post(API_URL + '/ws/verifier/ocrOnFly',
                                 {
-                                    selection: selection[cpt],
-                                    fileName: _this.imageInvoice[0].src.replace(/^.*[\\\/]/, ''),
-                                    thumbSize: {width: img.currentTarget.width, height: img.currentTarget.height}
-                                },
-                                {headers: _this.authService.headers})
-                                .pipe(
-                                    tap((data: any) => {
-                                        $('#' + inputId).val(data.result)
-                                        _this.isOCRRunning = false;
-                                    }),
-                                    catchError((err: any) => {
-                                        console.debug(err);
-                                        _this.notify.handleErrors(err);
-                                        return of(false);
-                                    })
-                                ).subscribe()
+                                selection: _this.getSelectionByCpt(selection, cpt),
+                                fileName: _this.imageInvoice[0].src.replace(/^.*[\\\/]/, ''),
+                                thumbSize: {width: img.currentTarget.width, height: img.currentTarget.height}
+                            },{headers: _this.authService.headers})
+                            .pipe(
+                                tap((data: any) => {
+                                    $('#' + inputId).val(data.result)
+                                    _this.isOCRRunning = false;
+                                }),
+                                catchError((err: any) => {
+                                    console.debug(err);
+                                    _this.notify.handleErrors(err);
+                                    return of(false);
+                                })
+                            ).subscribe()
                         }
+                    }
+                },
+                onDeleted: function(img: any, cpt: any, selection: any){
+                    let inputId = $('#select-area-label_' + cpt).attr('class').replace('input_', '')
+                    if (inputId){
+                        $('#' + inputId).val('')
                     }
                 }
             });
         }else{
+            let deleteClicked = false
+            $(".select-areas-delete-area").click(function(){
+                deleteClicked = true
+            });
             setTimeout(function (){
-                resizeArea.css('display', 'none');
-                deleteArea.css('display', 'none');
-            }, 500)
-            $('.background_' + _this.lastId).css('box-shadow', 'none')
+                if (!deleteClicked){
+                    resizeArea.css('display', 'none');
+                    deleteArea.css('display', 'none');
+                }
+            }, 50)
+            $('.outline_' + _this.lastId).removeClass('animate')
         }
     }
 }
