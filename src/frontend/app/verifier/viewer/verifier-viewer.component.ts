@@ -13,7 +13,7 @@ declare var $: any;
 @Component({
     selector: 'app-viewer',
     templateUrl: './verifier-viewer.component.html',
-    styleUrls: ['./verifier-viewer.component.scss']
+    styleUrls: ['./verifier-viewer.component.scss'],
 })
 
 export class VerifierViewerComponent implements OnInit {
@@ -47,7 +47,7 @@ export class VerifierViewerComponent implements OnInit {
         private route: ActivatedRoute,
         private authService: AuthService,
         public translate: TranslateService,
-        private notify: NotificationService
+        private notify: NotificationService,
     ) {}
 
     ngOnInit(): void {
@@ -106,9 +106,6 @@ export class VerifierViewerComponent implements OnInit {
         imageContainer.addClass('pointer-events-none');
         imageContainer.addClass('cursor-auto');
         if (enable) {
-            // $('.outline_' + _this.lastId).animate({
-            //     boxShadow: '10px 10px 10px 10px ' + color
-            // }, 500)
             $('.outline_' + _this.lastId).toggleClass('animate')
 
             imageContainer.removeClass('pointer-events-none');

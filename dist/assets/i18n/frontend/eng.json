@@ -95,6 +95,12 @@
 		"vat_amount": "",
 		"vat_rate": ""
 	},
+	"FORMATS": {
+		"alphanum": "",
+		"char": "",
+		"date": "",
+		"number": ""
+	},
 	"FORMS": {
 		"available_fields": "",
 		"confirm_delete": "",
@@ -112,7 +118,10 @@
 		"label_mandatory": "",
 		"modify": "",
 		"other": "",
-		"updated": ""
+		"refuse": "",
+		"supplier": "",
+		"updated": "",
+		"validate": ""
 	},
 	"GLOBAL": {
 		"batches": "Batches",
@@ -261,12 +270,14 @@
 		"colors": "",
 		"delete_invoice": "",
 		"field_settings": "",
+		"format": "",
 		"list": "Invoices",
 		"nb_pages": "",
 		"original_file": "",
 		"register_date": "",
 		"search": "",
 		"size": "",
+		"suppliers_by_customer": "",
 		"viewer": "View PDF"
 	}
 }

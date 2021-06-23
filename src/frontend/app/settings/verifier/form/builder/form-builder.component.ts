@@ -447,17 +447,14 @@ export class FormBuilderComponent implements OnInit {
         public userService: UserService,
         private formBuilder: FormBuilder,
         private authService: AuthService,
-        private _adapter: DateAdapter<any>,
         public translate: TranslateService,
         private notify: NotificationService,
-        private localeService: LocaleService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService
     ) {
     }
 
     ngOnInit(): void {
-        this._adapter.setLocale(this.localeService.matLang);
         this.serviceSettings.init()
         this.formId = this.route.snapshot.params['id'];
         if (this.formId) {

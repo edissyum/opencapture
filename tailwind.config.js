@@ -13,8 +13,10 @@ module.exports = (isProd) => ({
             'auto': 'auto',
             'cover': 'cover',
             'contain': 'contain',
+            '50': '50%',
             '60': '60%',
             '70': '70%',
+            '90': '90%',
             '100': '100%',
         },
         extend: {

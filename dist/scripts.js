@@ -430,6 +430,7 @@
                 refresh("releaseSelection");
             },
             deleteSelection = function (event) {
+                fireEvent("deleted");
                 cancelEvent(event);
                 $selection.remove();
                 $outline.remove();
@@ -442,7 +443,6 @@
                     $btDelete.remove();
                 }
                 parent._remove(id);
-                fireEvent("changed");
             },
             getElementOffset = function (object) {
                 var offset = $(object).offset();
@@ -501,9 +501,10 @@
 
         // Initialize all handlers
         if (options.allowResize) {
-            $.each(["nw", "ne", "se", "sw"], function (key, card) {
-                $resizeHandlers[card] =  $("<div class=\"select-areas-resize-handler_" + getData().id + " select-areas-resize-handler " + card + "\"/>")
-                    .css({
+            $.each(['nw', 'n', 'ne', 'e', 'se', 's', 'sw', 'w'], function(key, card) {
+                $resizeHandlers[card] = $(
+                    '<div class="select-areas-resize-handler ' + card + ' select-areas-resize-handler_' + getData().id + '"/>'
+                ).css({
                         opacity : 0.5,
                         position : "absolute",
                         cursor : card + "-resize"
@@ -594,6 +595,7 @@
                 areas: [],
                 onChanging: null,
                 onChanged: null,
+                onDeleted: null
             };
 
         this.options = $.extend(defaultOptions, customOptions);
@@ -618,6 +620,9 @@
         }
         if (this.options.onChanged) {
             this.$image.on("changed", this.options.onChanged);
+        }
+        if (this.options.onDeleted) {
+            this.$image.on("deleted", this.options.onDeleted);
         }
         if (this.options.onLoaded) {
             this.$image.on("loaded", this.options.onLoaded);
@@ -794,7 +799,7 @@
         this.$trigger.remove();
         this.$image.css("width", "").css("position", "").unwrap();
         this.$image.removeData("mainImageSelectAreas");
-        this.$image.off('changing changed loaded');
+        this.$image.off('changing changed loaded deleted');
     };
 
     $.imageSelectAreas.prototype.areas = function () {

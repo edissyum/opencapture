@@ -1,19 +1,5 @@
-import {MAT_DATE_FORMATS, MAT_DATE_LOCALE} from "@angular/material/core";
-
-export const APP_DATE_FORMATS =
-{
-    parse: {
-        dateInput: { month: 'short', year: 'numeric', day: 'numeric' }
-    },
-    display: {
-        dateInput: 'input',
-        monthYearLabel: { month: 'short', year: 'numeric', day: 'numeric' },
-        dateA11yLabel: { year: 'numeric', month: 'long', day: 'numeric' },
-        monthYearA11yLabel: { year: 'numeric', month: 'long' },
-    }
-};
-
-
+import {MomentDateAdapter,MAT_MOMENT_DATE_ADAPTER_OPTIONS,MAT_MOMENT_DATE_FORMATS} from '@angular/material-moment-adapter';
+import { DateAdapter } from '@angular/material/core';
 import { NgModule } from '@angular/core';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -23,7 +9,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
-import { MatNativeDateModule } from '@angular/material/core';
+import {MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule} from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -48,7 +34,6 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatRippleModule } from '@angular/material/core';
-
 import { MatTreeModule } from '@angular/material/tree';
 
 @NgModule({
@@ -125,8 +110,8 @@ import { MatTreeModule } from '@angular/material/tree';
         MatTreeModule,
     ],
     providers: [
-        { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' },
-        { provide: MAT_DATE_FORMATS, useValue: APP_DATE_FORMATS },
-    ]
+        {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]},
+        {provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS},
+    ],
 })
-export class AppMaterialModule { }
+export class AppMaterialModule {}

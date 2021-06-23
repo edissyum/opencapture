@@ -12,7 +12,6 @@
     font-display: block;
 }
 
-
 [class^="icomoon-"], [class*="icomoon-"] {
     /* use !important to prevent issues with browser extensions that change fonts */
     font-family: 'icomoon' !important;
@@ -99,7 +98,6 @@ div[id*="select-area-label_"] {
 }
 
 /*** END image area select ***/
-
 ::ng-deep .mat-form-field-appearance-legacy .mat-form-field-underline {
     background-color: transparent;
 }
@@ -109,7 +107,8 @@ div[id*="select-area-label_"] {
     transition: all;
 }
 
-.mat-form-field-appearance-outline .mat-focused .mat-form-field-outline-thick {
+.mat-form-field-appearance-outline .mat-focused .mat-form-field-outline-thick,
+.mat-datepicker-toggle-active{
     @apply text-green-400 #{!important};
 }
 
@@ -117,10 +116,18 @@ div[id*="select-area-label_"] {
     caret-color: #97BF3D !important;
 }
 
+.mat-calendar-body-cell:not(.mat-calendar-body-disabled):hover > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical),
+.cdk-keyboard-focused .mat-calendar-body-active > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical),
+.cdk-program-focused .mat-calendar-body-active > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical){
+    @apply bg-green-400 #{!important};
+    @apply bg-opacity-60 #{!important};
+}
+
 .mat-selected,
 .mat-checkbox-checked.mat-accent .mat-checkbox-background, .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background,
 .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar,
 .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb,
+.mat-calendar-body-selected,
 mat-ink-bar {
     @apply bg-green-400 #{!important};
 }
