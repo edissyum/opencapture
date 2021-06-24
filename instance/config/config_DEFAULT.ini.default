@@ -61,8 +61,8 @@ postgresUser =
 postgresPassword =
 
 [LOCALE]
-# fr_FR or en_EN by default
-locale                   = fr_FR
+# fr-FR or en-GB by default
+locale                   = fra
 # fra or eng by default
 localeocr                = fra
 localepath               = ${GLOBAL:projectPath}/webApp/static/locale/

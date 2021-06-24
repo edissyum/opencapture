@@ -1,10 +1,12 @@
 {
     "fr": {
         "label" : "Francais",
-        "lang_code": "fra"
+        "lang_code": "fra",
+        "moment_lang_code": "fr-FR"
     },
     "en": {
         "label" : "English",
-        "lang_code": "eng"
+        "lang_code": "eng",
+        "moment_lang_code": "en-GB"
     }
 }

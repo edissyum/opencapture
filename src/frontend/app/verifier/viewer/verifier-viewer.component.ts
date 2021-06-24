@@ -8,12 +8,15 @@ import {AuthService} from "../../../services/auth.service";
 import {NotificationService} from "../../../services/notifications/notifications.service";
 import {TranslateService} from "@ngx-translate/core";
 import {marker} from "@biesbjerg/ngx-translate-extract-marker";
+import {FormControl} from "@angular/forms";
+import { DatePipe } from '@angular/common';
 declare var $: any;
 
 @Component({
     selector: 'app-viewer',
     templateUrl: './verifier-viewer.component.html',
     styleUrls: ['./verifier-viewer.component.scss'],
+    providers: [DatePipe]
 })
 
 export class VerifierViewerComponent implements OnInit {
@@ -25,11 +28,9 @@ export class VerifierViewerComponent implements OnInit {
     lastLabel       : string = '';
     lastId          : string = '';
     lastColor       : string ='';
-    clickedDelete   : boolean = false;
-
     fieldCategories: any[] = [
         {
-            'id': 'accounts',
+            'id': 'supplier',
             'label': marker('FORMS.supplier')
         },
         {
@@ -42,8 +43,15 @@ export class VerifierViewerComponent implements OnInit {
         }
     ];
 
+    form : any = {
+        'supplier': [],
+        'facturation': [],
+        'other': []
+    }
+
     constructor(
         private http: HttpClient,
+        public datepipe: DatePipe,
         private route: ActivatedRoute,
         private authService: AuthService,
         public translate: TranslateService,
@@ -58,12 +66,30 @@ export class VerifierViewerComponent implements OnInit {
 
     loadForm(){
         this.http.get(API_URL + '/ws/verifier/invoices/' + this.invoiceId, {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                let accountId = data.account_id
+            tap((invoice: any) => {
+                let accountId = invoice.account_id
                 if (accountId) {
                     this.http.get(API_URL + '/ws/forms/getBySupplierId/' + accountId, {headers: this.authService.headers}).pipe(
                         tap((data: any) => {
                             this.fields = data.fields
+                            for (let parent in this.fields){
+                                data.fields[parent].forEach((field: any) => {
+                                    this.form[parent].push({
+                                        id: field.id,
+                                        label: field.label,
+                                        required: field.required,
+                                        control: new FormControl(),
+                                        type: field.type,
+                                        color: field.color,
+                                        unit: field.unit,
+                                        class: field.class,
+                                        format: field.format,
+                                        format_icon: field.format_icon,
+                                        class_label: field.class_label,
+                                    })
+                                })
+                            }
+                            this.getData(invoice)
                         }),
                         finalize(() => {this.loading = false}),
                         catchError((err: any) => {
@@ -82,6 +108,18 @@ export class VerifierViewerComponent implements OnInit {
                 return of(false);
             })
         ).subscribe()
+    }
+
+    getData(data: any){
+        for (let parent in this.fields){
+            this.form[parent].forEach((field: any) => {
+                let value = data[field.id]
+                if (field.format == 'date' && data[field.id] !== '' && data[field.id] !== undefined){
+                    value = new Date(value)
+                }
+                field.control.setValue(value)
+            })
+        }
     }
 
     getSelectionByCpt(selection: any, cpt: any){
@@ -180,4 +218,16 @@ export class VerifierViewerComponent implements OnInit {
             $('.outline_' + _this.lastId).removeClass('animate')
         }
     }
+
+    // getErrorMessageSupplier(field: any) {
+    //     let error = undefined;
+    //     this.customerForm.forEach(element => {
+    //         if (element.id == field) {
+    //             if (element.required && !(element.value || element.control.value)) {
+    //                 error = this.translate.instant('AUTH.field_required');
+    //             }
+    //         }
+    //     })
+    //     return error
+    // }
 }

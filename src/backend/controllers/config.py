@@ -1,11 +1,9 @@
 import git
-import json
 import subprocess
 import configparser
 from .db import get_db
-from os import listdir, path
 from flask_babel import gettext
-from flask import current_app, Blueprint, render_template
+from flask import current_app, Blueprint
 from ..import_classes import _Config, _Log, _Locale, _Database
 
 bp = Blueprint('dashboard', __name__)
@@ -28,10 +26,10 @@ def change_locale_in_config(lang):
     languages = current_app.config['LANGUAGES']
     parser = configparser.ConfigParser()
 
-    language = {'label': 'Francais', 'lang_code' : 'fra'}
-    for l in languages:
-        if lang == languages[l]['lang_code']:
-            language = languages[l]
+    language = {'label': 'Francais', 'lang_code': 'fra'}
+    for _l in languages:
+        if lang == languages[_l]['lang_code']:
+            language = languages[_l]
 
     parser.read(config_file)
     parser.set('LOCALE', 'locale', language['lang_code'])

@@ -30,5 +30,10 @@ def get_all_lang():
 def get_current_lang():
     _vars = pdf.init()
     current_lang = _vars[1].cfg['LOCALE']['locale']
+    languages = current_app.config['LANGUAGES']
+    angular_moment_lang = ''
+    for _l in languages:
+        if current_lang == languages[_l]['lang_code']:
+            angular_moment_lang = languages[_l]['moment_lang_code']
 
-    return make_response({'lang': current_lang}, 200)
+    return make_response({'lang': current_lang, 'moment_lang': angular_moment_lang}, 200)

@@ -42,7 +42,7 @@ export class FormBuilderComponent implements OnInit {
     ]
     fieldCategories         : any[] = [
         {
-            'id': 'accounts',
+            'id': 'supplier',
             'label': marker('FORMS.supplier')
         },
         {
@@ -62,7 +62,7 @@ export class FormBuilderComponent implements OnInit {
                 {
                     id: 'name',
                     label: marker('ACCOUNTS.supplier_name'),
-                    unit: 'accounts',
+                    unit: 'supplier',
                     type: 'text',
                     required: true,
                     class: "w-1/3",
@@ -74,7 +74,7 @@ export class FormBuilderComponent implements OnInit {
                 {
                     id: 'siret',
                     label: marker('ACCOUNTS.siret'),
-                    unit: 'accounts',
+                    unit: 'supplier',
                     type: 'text',
                     required: false,
                     class: "w-1/3",
@@ -86,7 +86,7 @@ export class FormBuilderComponent implements OnInit {
                 {
                     id: 'siren',
                     label: marker('ACCOUNTS.siren'),
-                    unit: 'accounts',
+                    unit: 'supplier',
                     type: 'text',
                     required: false,
                     class: "w-1/3",
@@ -98,7 +98,7 @@ export class FormBuilderComponent implements OnInit {
                 {
                     id: 'vat_number',
                     label: marker('ACCOUNTS.vat_number'),
-                    unit: 'accounts',
+                    unit: 'supplier',
                     type: 'text',
                     required: true,
                     class: "w-1/3",
@@ -317,7 +317,7 @@ export class FormBuilderComponent implements OnInit {
         },
     ]
     fields                  : any = {
-        'accounts': [],
+        'supplier': [],
         'facturation': [],
         'other': []
     }
@@ -520,8 +520,8 @@ export class FormBuilderComponent implements OnInit {
                     if (data.form_fields.fields) {
                         if(data.form_fields.fields.facturation !== undefined)
                             this.fields.facturation = data.form_fields.fields.facturation
-                        if(data.form_fields.fields.accounts)
-                            this.fields.accounts = data.form_fields.fields.accounts
+                        if(data.form_fields.fields.supplier)
+                            this.fields.supplier = data.form_fields.fields.supplier
                         if(data.form_fields.fields.other)
                             this.fields.other = data.form_fields.fields.other
 
@@ -613,7 +613,7 @@ export class FormBuilderComponent implements OnInit {
 
     deleteField(event: any, previousIndex: any, category:any, unit: any){
         if (unit == 'addresses')
-            unit = 'accounts'
+            unit = 'supplier'
         for(let parent_field in this.availableFieldsParent){
             let id = this.availableFieldsParent[parent_field].id.split('_fields')[0]
             if (id == unit){

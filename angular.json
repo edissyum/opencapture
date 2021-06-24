@@ -20,6 +20,9 @@
                 "build": {
                     "builder": "@angular-builders/custom-webpack:browser",
                     "options": {
+                        "allowedCommonJsDependencies": [
+                            "moment"
+                        ],
                         "outputPath": "dist/",
                         "index": "src/frontend/index.html",
                         "polyfills": "src/frontend/polyfills.ts",
