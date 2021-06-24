@@ -11057,9 +11057,8 @@ function VerifierViewerComponent_div_5_Template(rf, ctx) { if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtextInterpolate1"](" ", _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵpipeBind1"](8, 5, "FORMS.refuse"), " ");
 } }
 class VerifierViewerComponent {
-    constructor(http, datepipe, route, authService, translate, notify) {
+    constructor(http, route, authService, translate, notify) {
         this.http = http;
-        this.datepipe = datepipe;
         this.route = route;
         this.authService = authService;
         this.translate = translate;
@@ -11090,8 +11089,16 @@ class VerifierViewerComponent {
         };
     }
     ngOnInit() {
-        this.invoiceId = this.route.snapshot.params['id'];
         this.imageInvoice = $('#invoice_image');
+        this.ocr({
+            'target': {
+                'id': '',
+                'labels': [
+                    { 'textContent': '' }
+                ]
+            }
+        }, true);
+        this.invoiceId = this.route.snapshot.params['id'];
         this.loadForm();
     }
     loadForm() {
@@ -11117,8 +11124,7 @@ class VerifierViewerComponent {
                             });
                         });
                     }
-                    this.getData(invoice);
-                }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["finalize"])(() => { this.loading = false; }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["catchError"])((err) => {
+                }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["finalize"])(() => { this.loading = false; this.getData(invoice); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["catchError"])((err) => {
                     console.debug(err);
                     this.notify.handleErrors(err);
                     return Object(rxjs__WEBPACK_IMPORTED_MODULE_2__["of"])(false);
@@ -11137,6 +11143,26 @@ class VerifierViewerComponent {
         for (let parent in this.fields) {
             this.form[parent].forEach((field) => {
                 let value = data[field.id];
+                let value_position = data[field.id + '_position'];
+                if (value_position) {
+                    value_position = JSON.parse(value_position);
+                    let newArea = {
+                        x: value_position.x,
+                        y: value_position.y,
+                        width: value_position.width,
+                        height: value_position.height
+                    };
+                    let event = {
+                        'target': {
+                            'id': field.id,
+                            'labels': [
+                                { 'textContent': this.translate.instant(field.label) }
+                            ]
+                        }
+                    };
+                    this.imageInvoice.mousedown();
+                    console.log('here');
+                }
                 if (field.format == 'date' && data[field.id] !== '' && data[field.id] !== undefined) {
                     value = new Date(value);
                 }
@@ -11150,7 +11176,7 @@ class VerifierViewerComponent {
                 return selection[index];
         }
     }
-    ocr(event, enable, color = 'green') {
+    ocr(event, enable, color = 'green', newArea = false) {
         let _this = this;
         this.lastId = event.target.id;
         this.lastLabel = event.target.labels[0].textContent;
@@ -11201,7 +11227,7 @@ class VerifierViewerComponent {
                                 thumbSize: { width: img.currentTarget.width, height: img.currentTarget.height }
                             }, { headers: _this.authService.headers })
                                 .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["tap"])((data) => {
-                                $('#' + inputId).val(data.result);
+                                $('#' + inputId).val(data.result.text);
                                 _this.isOCRRunning = false;
                             }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["catchError"])((err) => {
                                 console.debug(err);
@@ -11234,7 +11260,7 @@ class VerifierViewerComponent {
         }
     }
 }
-VerifierViewerComponent.ɵfac = function VerifierViewerComponent_Factory(t) { return new (t || VerifierViewerComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_angular_common_http__WEBPACK_IMPORTED_MODULE_7__["HttpClient"]), _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_angular_common__WEBPACK_IMPORTED_MODULE_5__["DatePipe"]), _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_8__["ActivatedRoute"]), _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_services_auth_service__WEBPACK_IMPORTED_MODULE_9__["AuthService"]), _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_ngx_translate_core__WEBPACK_IMPORTED_MODULE_10__["TranslateService"]), _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_services_notifications_notifications_service__WEBPACK_IMPORTED_MODULE_11__["NotificationService"])); };
+VerifierViewerComponent.ɵfac = function VerifierViewerComponent_Factory(t) { return new (t || VerifierViewerComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_angular_common_http__WEBPACK_IMPORTED_MODULE_7__["HttpClient"]), _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_8__["ActivatedRoute"]), _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_services_auth_service__WEBPACK_IMPORTED_MODULE_9__["AuthService"]), _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_ngx_translate_core__WEBPACK_IMPORTED_MODULE_10__["TranslateService"]), _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdirectiveInject"](_services_notifications_notifications_service__WEBPACK_IMPORTED_MODULE_11__["NotificationService"])); };
 VerifierViewerComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵdefineComponent"]({ type: VerifierViewerComponent, selectors: [["app-viewer"]], features: [_angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵProvidersFeature"]([_angular_common__WEBPACK_IMPORTED_MODULE_5__["DatePipe"]])], decls: 6, vars: 2, consts: [[4, "ngIf"], [1, "grid", "grid-cols-2", "overflow-auto", "mt-2"], [1, "overflow-auto", 2, "height", "calc(100vh - 64px) !important", "direction", "rtl"], [1, "image-container", "px-4"], ["id", "invoice_image", "alt", "File", "src", "assets/imgs/thumb.jpg", 1, "file"], ["class", "px-4 overflow-auto", "style", "height: calc(100vh - 56px) !important", 4, "ngIf"], [1, "px-4", "overflow-auto", 2, "height", "calc(100vh - 56px) !important"], [4, "ngFor", "ngForOf"], [1, "mt-4", "mb-4", "grid", "grid-cols-2", "gap-4", "h-12", "text-gray-900"], ["mat-button", "", "type", "submit", 1, "border-solid", "border-green-400", "border-opacity-70", "border", "hover:bg-green-400", "hover:bg-opacity-70", "hover:text-white", "transition", "duration-300"], ["mat-button", "", "type", "submit", 1, "border-solid", "border-red-400", "border", "hover:bg-red-400", "hover:text-white", "transition", "duration-300"], [1, "relative", "text-xl", "tracking-wider", "pl-1.5", "pr-1.5", "bg-white", "left-6", "z-50"], [1, "relative", "border-green-400", "border", "rounded-lg", "-top-3.5"], [1, "flex", "flex-wrap", "w-full", "my-3", 2, "min-height", "50px", 3, "id"], ["class", "flex items-center px-3", 3, "class", 4, "ngFor", "ngForOf"], [1, "flex", "items-center", "px-3"], [1, "right-0", "w-full", "form-viewer"], [1, "overflow-ellipsis", "overflow-hidden", "whitespace-nowrap", "w-8/12"], ["matInput", "", "type", "text", 3, "id", "formControl", "focusin", "focusout"], ["cdkTextareaAutosize", "", "cdkAutosizeMinRows", "1", "matInput", "", 3, "id", "formControl", "focusin", "focusout"], ["matInput", "", 3, "id", "matDatepicker", "formControl", "focusin", "focusout"], ["matSuffix", "", 3, "for"], ["picker", ""], [3, "id"]], template: function VerifierViewerComponent_Template(rf, ctx) { if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵtemplate"](0, VerifierViewerComponent_div_0_Template, 2, 0, "div", 0);
         _angular_core__WEBPACK_IMPORTED_MODULE_6__["ɵɵelementStart"](1, "div", 1);

@@ -526,7 +526,7 @@ class Files:
         os.remove('/tmp/cropped_' + rand + extension)
         if os.path.isfile('/tmp/cropped_' + rand + '_improved' + extension):
             os.remove('/tmp/cropped_' + rand + '_improved' + extension)
-        return text.replace('\x0c', '').strip()
+        return {'text': text.replace('\x0c', '').strip(), 'selection': selection}
 
     @staticmethod
     def get_size(img):

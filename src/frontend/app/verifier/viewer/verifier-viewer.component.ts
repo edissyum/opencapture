@@ -51,7 +51,6 @@ export class VerifierViewerComponent implements OnInit {
 
     constructor(
         private http: HttpClient,
-        public datepipe: DatePipe,
         private route: ActivatedRoute,
         private authService: AuthService,
         public translate: TranslateService,
@@ -59,8 +58,16 @@ export class VerifierViewerComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.invoiceId = this.route.snapshot.params['id'];
         this.imageInvoice = $('#invoice_image');
+        this.ocr({
+            'target' : {
+                'id': '',
+                'labels': [
+                    {'textContent': ''}
+                ]
+            }
+        }, true)
+        this.invoiceId = this.route.snapshot.params['id'];
         this.loadForm();
     }
 
@@ -89,9 +96,8 @@ export class VerifierViewerComponent implements OnInit {
                                     })
                                 })
                             }
-                            this.getData(invoice)
                         }),
-                        finalize(() => {this.loading = false}),
+                        finalize(() => {this.loading = false; this.getData(invoice)}),
                         catchError((err: any) => {
                             console.debug(err);
                             this.notify.handleErrors(err);
@@ -113,7 +119,27 @@ export class VerifierViewerComponent implements OnInit {
     getData(data: any){
         for (let parent in this.fields){
             this.form[parent].forEach((field: any) => {
-                let value = data[field.id]
+                let value = data[field.id];
+                let value_position = data[field.id + '_position'];
+                if (value_position){
+                    value_position = JSON.parse(value_position);
+                    let newArea = {
+                        x: value_position.x,
+                        y: value_position.y,
+                        width: value_position.width,
+                        height: value_position.height
+                    };
+                    let event = {
+                        'target' : {
+                            'id': field.id,
+                            'labels': [
+                                {'textContent': this.translate.instant(field.label)}
+                            ]
+                        }
+                    }
+                    this.imageInvoice.mousedown()
+                    console.log('here')
+                }
                 if (field.format == 'date' && data[field.id] !== '' && data[field.id] !== undefined){
                     value = new Date(value)
                 }
@@ -129,7 +155,7 @@ export class VerifierViewerComponent implements OnInit {
         }
     }
 
-    ocr(event: any, enable: boolean, color = 'green') {
+    ocr(event: any, enable: boolean, color = 'green', newArea: any = false) {
         let _this = this;
         this.lastId = event.target.id;
         this.lastLabel = event.target.labels[0].textContent;
@@ -143,9 +169,9 @@ export class VerifierViewerComponent implements OnInit {
         resizeArea.addClass('pointer-events-auto');
         imageContainer.addClass('pointer-events-none');
         imageContainer.addClass('cursor-auto');
+
         if (enable) {
             $('.outline_' + _this.lastId).toggleClass('animate')
-
             imageContainer.removeClass('pointer-events-none');
             imageContainer.removeClass('cursor-auto');
             this.imageInvoice.selectAreas({
@@ -179,21 +205,21 @@ export class VerifierViewerComponent implements OnInit {
                             _this.isOCRRunning = true
                             _this.http.post(API_URL + '/ws/verifier/ocrOnFly',
                                 {
-                                selection: _this.getSelectionByCpt(selection, cpt),
-                                fileName: _this.imageInvoice[0].src.replace(/^.*[\\\/]/, ''),
-                                thumbSize: {width: img.currentTarget.width, height: img.currentTarget.height}
-                            },{headers: _this.authService.headers})
-                            .pipe(
-                                tap((data: any) => {
-                                    $('#' + inputId).val(data.result)
-                                    _this.isOCRRunning = false;
-                                }),
-                                catchError((err: any) => {
-                                    console.debug(err);
-                                    _this.notify.handleErrors(err);
-                                    return of(false);
-                                })
-                            ).subscribe()
+                                    selection: _this.getSelectionByCpt(selection, cpt),
+                                    fileName: _this.imageInvoice[0].src.replace(/^.*[\\\/]/, ''),
+                                    thumbSize: {width: img.currentTarget.width, height: img.currentTarget.height}
+                                },{headers: _this.authService.headers})
+                                .pipe(
+                                    tap((data: any) => {
+                                        $('#' + inputId).val(data.result.text)
+                                        _this.isOCRRunning = false;
+                                    }),
+                                    catchError((err: any) => {
+                                        console.debug(err);
+                                        _this.notify.handleErrors(err);
+                                        return of(false);
+                                    })
+                                ).subscribe()
                         }
                     }
                 },

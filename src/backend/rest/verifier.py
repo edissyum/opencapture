@@ -53,7 +53,6 @@ def invoice_info(invoice_id):
 @auth.token_required
 def ocr_on_fly():
     data = request.json
-    print(data)
     result = pdf.ocr_on_the_fly(data['fileName'], data['selection'], data['thumbSize'])
     print(result)
     return make_response({'result': result}, 200)
