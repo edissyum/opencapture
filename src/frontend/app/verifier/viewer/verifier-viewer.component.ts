@@ -59,88 +59,82 @@ export class VerifierViewerComponent implements OnInit {
 
     async ngOnInit(): Promise<void> {
         this.imageInvoice = $('#invoice_image');
+        this.ocr({
+            'target' : {
+                'id': '',
+                'labels': [
+                    {'textContent': ''}
+                ]
+            }
+        }, true)
         this.invoiceId = this.route.snapshot.params['id'];
-        await this.loadForm();
+        this.invoice = await this.getInvoice()
+        let form = await this.getForm()
+        await this.fillForm(form)
         setTimeout(() => {
-            this.getData();
+            this.drawPositions(form)
             this.loading = false;
-        }, 2000)
+        }, 1000)
     }
 
-    async loadForm(){
-        await this.http.get(API_URL + '/ws/verifier/invoices/' + this.invoiceId, {headers: this.authService.headers}).pipe(
-            tap((invoice: any) => {
-                let accountId = invoice.account_id
-                this.invoice = invoice
-                if (accountId) {
-                    this.http.get(API_URL + '/ws/forms/getBySupplierId/' + accountId, {headers: this.authService.headers}).pipe(
-                        tap((data: any) => {
-                            this.fields = data.fields
-                            for (let parent in this.fields){
-                                data.fields[parent].forEach((field: any) => {
-                                    this.form[parent].push({
-                                        id: field.id,
-                                        label: field.label,
-                                        required: field.required,
-                                        control: new FormControl(),
-                                        type: field.type,
-                                        color: field.color,
-                                        unit: field.unit,
-                                        class: field.class,
-                                        format: field.format,
-                                        format_icon: field.format_icon,
-                                        class_label: field.class_label,
-                                    })
-                                    let value = invoice[field.id];
-                                    let _field = this.form[parent][this.form[parent].length - 1]
-                                    if (field.format == 'date' && field.id !== '' && field.id !== undefined){
-                                        value = new Date(value)
-                                    }
-                                    _field.control.setValue(value)
-                                })
-                            }
-
-                        }),
-                        catchError((err: any) => {
-                            console.debug(err);
-                            this.notify.handleErrors(err);
-                            return of(false);
-                        })
-                    ).subscribe();
-                }else{
-                    console.log('formulaire par défaut')
+    async drawPositions(data: any): Promise<any>{
+        for (let parent in this.fields) {
+            for (let cpt in data.fields[parent]) {
+                let field = data.fields[parent][cpt]
+                let position = this.invoice[field.id + '_position'];
+                if (position){
+                    position = JSON.parse(position)
+                    $('#' + field.id).focus().attr('foundFromBack', true)
+                    let newArea = {
+                        x: position.x,
+                        y: position.y,
+                        width: position.width,
+                        height: position.height
+                    };
+                    let triggerEvent = $('.trigger')
+                    triggerEvent.trigger('mousedown')
+                    triggerEvent.trigger('mouseup', [newArea])
                 }
-            }),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe()
+            }
+        }
     }
 
-    getData(){
-        let data = this.invoice
+    async getInvoice(): Promise<any>{
+        return await this.http.get(API_URL + '/ws/verifier/invoices/' + this.invoiceId, {headers: this.authService.headers}).toPromise();
+    }
+
+    async getForm(): Promise<any>{
+        if (this.invoice.account_id)
+            return await this.http.get(API_URL + '/ws/forms/getBySupplierId/' + this.invoice.account_id, {headers: this.authService.headers}).toPromise();
+        else
+            return await this.http.get(API_URL + '/ws/forms/getDefault', {headers: this.authService.headers}).toPromise();
+    }
+
+    async fillForm(data: any): Promise<any>{
+        this.fields = data.fields
         for (let parent in this.fields){
-            this.form[parent].forEach((field: any) => {
-                let value_position = data[field.id + '_position'];
-                if (value_position) {
-                    setTimeout(() => {
-                        $('#' + field.id).focus().attr('foundFromBack', true)
-                    }, 500);
-                    setTimeout(() => {
-                        let newArea = {
-                            x: value_position.x,
-                            y: value_position.y,
-                            width: value_position.width,
-                            height: value_position.height
-                        };
-                        let triggerEvent = $('.trigger')
-                        triggerEvent.trigger('mousedown')
-                        triggerEvent.trigger('mouseup', [newArea])
-                    }, 500);
+            for (let cpt in data.fields[parent]){
+                let field = data.fields[parent][cpt]
+                this.form[parent].push({
+                    id: field.id,
+                    label: field.label,
+                    required: field.required,
+                    control: new FormControl(),
+                    type: field.type,
+                    color: field.color,
+                    unit: field.unit,
+                    class: field.class,
+                    format: field.format,
+                    format_icon: field.format_icon,
+                    class_label: field.class_label,
+                })
+                let value = this.invoice[field.id];
+                let _field = this.form[parent][this.form[parent].length - 1]
+                if (field.format == 'date' && field.id !== '' && field.id !== undefined){
+                    value = new Date(value)
                 }
-            })
+                _field.control.setValue(value)
+            }
         }
     }
 
