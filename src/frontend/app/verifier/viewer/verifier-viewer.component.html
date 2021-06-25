@@ -10,7 +10,7 @@
     <div *ngIf="this.fields" class="px-4 overflow-auto" style="height: calc(100vh - 56px) !important">
         <ng-container *ngFor="let category of this.fieldCategories;">
             <ng-container  *ngIf="this.form[category['id']].length !== 0" >
-                <div class="relative text-xl tracking-wider pl-1.5 pr-1.5 bg-white left-6 z-50" [style]="'width:calc(3% + ' + this.translate.instant(category['label']).length + '%)'">
+                <div class="relative text-xl tracking-wider pl-1.5 pr-1.5 bg-white left-6 z-5" [style]="'width:calc(3% + ' + this.translate.instant(category['label']).length + '%)'">
                     {{ category['label'] | translate }}
                 </div>
                 <div class="relative border-green-400 border rounded-lg -top-3.5">

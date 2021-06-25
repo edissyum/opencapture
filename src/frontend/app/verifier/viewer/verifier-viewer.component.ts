@@ -24,11 +24,12 @@ export class VerifierViewerComponent implements OnInit {
     imageInvoice    : any;
     isOCRRunning    : boolean = false;
     invoiceId       : any;
+    invoice         : any;
     fields          : any;
     lastLabel       : string = '';
     lastId          : string = '';
     lastColor       : string ='';
-    fieldCategories: any[] = [
+    fieldCategories : any[] = [
         {
             'id': 'supplier',
             'label': marker('FORMS.supplier')
@@ -42,8 +43,7 @@ export class VerifierViewerComponent implements OnInit {
             'label': marker('FORMS.other')
         }
     ];
-
-    form : any = {
+    form            : any = {
         'supplier': [],
         'facturation': [],
         'other': []
@@ -57,24 +57,21 @@ export class VerifierViewerComponent implements OnInit {
         private notify: NotificationService,
     ) {}
 
-    ngOnInit(): void {
+    async ngOnInit(): Promise<void> {
         this.imageInvoice = $('#invoice_image');
-        this.ocr({
-            'target' : {
-                'id': '',
-                'labels': [
-                    {'textContent': ''}
-                ]
-            }
-        }, true)
         this.invoiceId = this.route.snapshot.params['id'];
-        this.loadForm();
+        await this.loadForm();
+        setTimeout(() => {
+            this.getData();
+            this.loading = false;
+        }, 2000)
     }
 
-    loadForm(){
-        this.http.get(API_URL + '/ws/verifier/invoices/' + this.invoiceId, {headers: this.authService.headers}).pipe(
+    async loadForm(){
+        await this.http.get(API_URL + '/ws/verifier/invoices/' + this.invoiceId, {headers: this.authService.headers}).pipe(
             tap((invoice: any) => {
                 let accountId = invoice.account_id
+                this.invoice = invoice
                 if (accountId) {
                     this.http.get(API_URL + '/ws/forms/getBySupplierId/' + accountId, {headers: this.authService.headers}).pipe(
                         tap((data: any) => {
@@ -94,10 +91,16 @@ export class VerifierViewerComponent implements OnInit {
                                         format_icon: field.format_icon,
                                         class_label: field.class_label,
                                     })
+                                    let value = invoice[field.id];
+                                    let _field = this.form[parent][this.form[parent].length - 1]
+                                    if (field.format == 'date' && field.id !== '' && field.id !== undefined){
+                                        value = new Date(value)
+                                    }
+                                    _field.control.setValue(value)
                                 })
                             }
+
                         }),
-                        finalize(() => {this.loading = false; this.getData(invoice)}),
                         catchError((err: any) => {
                             console.debug(err);
                             this.notify.handleErrors(err);
@@ -116,34 +119,27 @@ export class VerifierViewerComponent implements OnInit {
         ).subscribe()
     }
 
-    getData(data: any){
+    getData(){
+        let data = this.invoice
         for (let parent in this.fields){
             this.form[parent].forEach((field: any) => {
-                let value = data[field.id];
                 let value_position = data[field.id + '_position'];
-                if (value_position){
-                    value_position = JSON.parse(value_position);
-                    let newArea = {
-                        x: value_position.x,
-                        y: value_position.y,
-                        width: value_position.width,
-                        height: value_position.height
-                    };
-                    let event = {
-                        'target' : {
-                            'id': field.id,
-                            'labels': [
-                                {'textContent': this.translate.instant(field.label)}
-                            ]
-                        }
-                    }
-                    this.imageInvoice.mousedown()
-                    console.log('here')
+                if (value_position) {
+                    setTimeout(() => {
+                        $('#' + field.id).focus().attr('foundFromBack', true)
+                    }, 500);
+                    setTimeout(() => {
+                        let newArea = {
+                            x: value_position.x,
+                            y: value_position.y,
+                            width: value_position.width,
+                            height: value_position.height
+                        };
+                        let triggerEvent = $('.trigger')
+                        triggerEvent.trigger('mousedown')
+                        triggerEvent.trigger('mouseup', [newArea])
+                    }, 500);
                 }
-                if (field.format == 'date' && data[field.id] !== '' && data[field.id] !== undefined){
-                    value = new Date(value)
-                }
-                field.control.setValue(value)
             })
         }
     }
@@ -155,7 +151,7 @@ export class VerifierViewerComponent implements OnInit {
         }
     }
 
-    ocr(event: any, enable: boolean, color = 'green', newArea: any = false) {
+    ocr(event: any, enable: boolean, color = 'green') {
         let _this = this;
         this.lastId = event.target.id;
         this.lastLabel = event.target.labels[0].textContent;
@@ -178,6 +174,7 @@ export class VerifierViewerComponent implements OnInit {
                 minSize: [20, 20],
                 maxSize: [this.imageInvoice.width(), this.imageInvoice.height() / 8],
                 onChanged: function(img: any, cpt: any, selection: any) {
+                    console.log(selection)
                     if (selection.length !== 0 && selection['width'] !== 0 && selection['height'] !== 0) {
                         // Write the label of the input above the selection rectangle
                         if ($('#select-area-label_' + cpt).length == 0) {
@@ -211,7 +208,12 @@ export class VerifierViewerComponent implements OnInit {
                                 },{headers: _this.authService.headers})
                                 .pipe(
                                     tap((data: any) => {
-                                        $('#' + inputId).val(data.result.text)
+                                        let input = $('#' + inputId)
+                                        if (input.attr('foundFromBack') !== 'true'){
+                                            input.val(data.result.text)
+                                        }else{
+                                            input.removeAttr('foundFromBack')
+                                        }
                                         _this.isOCRRunning = false;
                                     }),
                                     catchError((err: any) => {

@@ -88,10 +88,10 @@
                     height: area.height,
                     left: area.x,
                     top: area.y,
-                    "z-index": area.z
+                    // "z-index": area.z
                 });
 
-                // Update the selection layer
+                 // Update the selection layer
                 $selection.css({
                     backgroundPosition : ( - area.x - 1) + "px " + ( - area.y - 1) + "px",
                     cursor : options.allowMove ? "move" : "default",
@@ -99,14 +99,14 @@
                     height: (area.height - 2 > 0) ? (area.height - 2) : 0,
                     left : area.x + 1,
                     top : area.y + 1,
-                    "z-index": area.z + 2
+                    // "z-index": area.z + 2
                 });
 
                 $label.css({
                     width: (area.width - 2 > 0) ? (area.width - 2) : 0,
                     left : area.x + 2,
                     top : area.y + 1,
-                    "z-index": area.z + 2
+                    // "z-index": area.z + 2
                 });
 
             },
@@ -147,7 +147,7 @@
                             display: "block",
                             left: area.x + left,
                             top: area.y + top,
-                            "z-index": area.z + 1
+                            // "z-index": area.z + 1
                         });
                     });
                 } else {
@@ -162,7 +162,7 @@
                         display: visible ? "block" : "none",
                         left: area.x + area.width + 1,
                         top: area.y - $btDelete.outerHeight() - 1,
-                        "z-index": area.z + 1
+                        // "z-index": area.z + 1
                     });
                 }
             },
@@ -209,7 +209,7 @@
                         updateBtDelete();
                         break;
 
-                    //case "releaseSelection":
+                    // case "releaseSelection":
                     default:
                         updateSelection();
                         updateResizeHandlers(true);
@@ -218,14 +218,12 @@
             },
             startSelection  = function (event) {
                 cancelEvent(event);
-
                 // Reset the selection size
                 area.width = options.minSize[0];
                 area.height = options.minSize[1];
                 focus();
                 on("move", resizeSelection);
                 on("stop", releaseSelection);
-
                 // Get the selection origin
                 selectionOrigin = getMousePosition(event);
                 if (selectionOrigin[0] + area.width > $image.width()) {
@@ -272,7 +270,6 @@
                 } else if (card === "e" || card === "w") {
                     resizeVertically = false;
                 }
-
                 on("move", resizeSelection);
                 on("stop", releaseSelection);
 
@@ -413,11 +410,19 @@
                 }
                 refresh("moveSelection");
             },
-            releaseSelection = function (event) {
+            releaseSelection = function (event, newArea) {
                 cancelEvent(event);
                 off("move", "stop");
 
                 // Update the selection origin
+                if (newArea){
+                    area.x = newArea.x;
+                    area.y = newArea.y;
+                    area.z = newArea.z;
+                    area.width = newArea.width;
+                    area.height = newArea.height;
+                    updateSelection()
+                }
                 selectionOrigin[0] = area.x;
                 selectionOrigin[1] = area.y;
 
@@ -659,8 +664,10 @@
                 opacity : 0,
                 position : "absolute",
                 width: this.$image.width(),
-                height: this.$image.height()
+                height: this.$image.height(),
+                top: "1px",
             })
+            .addClass('trigger')
             .insertAfter(this.$overlay);
 
         $.each(this.options.areas, function (key, area) {

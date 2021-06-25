@@ -9,6 +9,14 @@ module.exports = (isProd) => ({
     },
     darkMode: false, // or 'media' or 'class'
     theme: {
+        zIndex: {
+            '5': 5,
+            '10': 10,
+            '20': 20,
+            '30': 30,
+            '40': 40,
+            '50': 50,
+        },
         backgroundSize: {
             'auto': 'auto',
             'cover': 'cover',
