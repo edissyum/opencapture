@@ -1171,7 +1171,7 @@ MenuComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdefineComp
         _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](1);
         _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("ngIf", ctx.location.path() !== "/home" && ctx.getSplitterOrVerifier() == "splitter");
         _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](1);
-        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("ngIf", ctx.location.path() !== "/home" && ctx.getSplitterOrVerifier() != undefined);
+        _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("ngIf", ctx.location.path() !== "/home" && ctx.getSplitterOrVerifier() != undefined && ctx.getSplitterOrVerifier() != "");
         _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵadvance"](4);
         _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵclassProp"]("settings_active", ctx.location.path().includes("profile/" + ctx.userService.user["id"]));
         _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵproperty"]("matTooltip", ctx.translate.instant("USER.my_profile"));
@@ -5644,6 +5644,7 @@ class HomeComponent {
         this.localeStorageService = localeStorageService;
     }
     ngOnInit() {
+        this.setValue('');
     }
     setValue(value) {
         this.localeStorageService.save('splitter_or_verifier', value);
@@ -10866,13 +10867,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _services_auth_service__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../../services/auth.service */ "PS2H");
 /* harmony import */ var _ngx_translate_core__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @ngx-translate/core */ "sYmb");
 /* harmony import */ var _services_notifications_notifications_service__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../../services/notifications/notifications.service */ "IspW");
-/* harmony import */ var _loader_component__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../loader.component */ "sUWp");
-/* harmony import */ var _angular_material_button__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @angular/material/button */ "bTqV");
-/* harmony import */ var _angular_material_form_field__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! @angular/material/form-field */ "kmnG");
-/* harmony import */ var _angular_material_input__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! @angular/material/input */ "qFsG");
-/* harmony import */ var _angular_cdk_text_field__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! @angular/cdk/text-field */ "ihCf");
-/* harmony import */ var _angular_material_datepicker__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! @angular/material/datepicker */ "iadO");
-/* harmony import */ var _angular_material_select__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! @angular/material/select */ "d3UM");
+/* harmony import */ var _services_local_storage_service__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../../services/local-storage.service */ "/azQ");
+/* harmony import */ var _loader_component__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../loader.component */ "sUWp");
+/* harmony import */ var _angular_material_button__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! @angular/material/button */ "bTqV");
+/* harmony import */ var _angular_material_form_field__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! @angular/material/form-field */ "kmnG");
+/* harmony import */ var _angular_material_input__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! @angular/material/input */ "qFsG");
+/* harmony import */ var _angular_cdk_text_field__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! @angular/cdk/text-field */ "ihCf");
+/* harmony import */ var _angular_material_datepicker__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! @angular/material/datepicker */ "iadO");
+/* harmony import */ var _angular_material_select__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! @angular/material/select */ "d3UM");
+
 
 
 
@@ -11059,12 +11062,13 @@ function VerifierViewerComponent_div_5_Template(rf, ctx) { if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtextInterpolate1"](" ", _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵpipeBind1"](8, 5, "FORMS.refuse"), " ");
 } }
 class VerifierViewerComponent {
-    constructor(http, route, authService, translate, notify) {
+    constructor(http, route, authService, translate, notify, localeStorageService) {
         this.http = http;
         this.route = route;
         this.authService = authService;
         this.translate = translate;
         this.notify = notify;
+        this.localeStorageService = localeStorageService;
         this.loading = true;
         this.isOCRRunning = false;
         this.lastLabel = '';
@@ -11084,6 +11088,7 @@ class VerifierViewerComponent {
                 'label': Object(_biesbjerg_ngx_translate_extract_marker__WEBPACK_IMPORTED_MODULE_4__["marker"])('FORMS.other')
             }
         ];
+        this.disableOCR = false;
         this.form = {
             'supplier': [],
             'facturation': [],
@@ -11092,85 +11097,95 @@ class VerifierViewerComponent {
     }
     ngOnInit() {
         return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function* () {
+            this.localeStorageService.save('splitter_or_verifier', 'verifier');
             this.imageInvoice = $('#invoice_image');
+            this.ocr({
+                'target': {
+                    'id': '',
+                    'labels': [
+                        { 'textContent': '' }
+                    ]
+                }
+            }, true);
             this.invoiceId = this.route.snapshot.params['id'];
-            yield this.loadForm();
-            setTimeout(() => {
-                this.getData();
-                this.loading = false;
-            }, 2000);
+            this.invoice = yield this.getInvoice();
+            let form = yield this.getForm();
+            yield this.fillForm(form);
+            yield this.drawPositions(form);
+            this.loading = false;
         });
     }
-    loadForm() {
+    drawPositions(data) {
         return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function* () {
-            yield this.http.get(_env__WEBPACK_IMPORTED_MODULE_1__["API_URL"] + '/ws/verifier/invoices/' + this.invoiceId, { headers: this.authService.headers }).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["tap"])((invoice) => {
-                let accountId = invoice.account_id;
-                this.invoice = invoice;
-                if (accountId) {
-                    this.http.get(_env__WEBPACK_IMPORTED_MODULE_1__["API_URL"] + '/ws/forms/getBySupplierId/' + accountId, { headers: this.authService.headers }).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["tap"])((data) => {
-                        this.fields = data.fields;
-                        for (let parent in this.fields) {
-                            data.fields[parent].forEach((field) => {
-                                this.form[parent].push({
-                                    id: field.id,
-                                    label: field.label,
-                                    required: field.required,
-                                    control: new _angular_forms__WEBPACK_IMPORTED_MODULE_5__["FormControl"](),
-                                    type: field.type,
-                                    color: field.color,
-                                    unit: field.unit,
-                                    class: field.class,
-                                    format: field.format,
-                                    format_icon: field.format_icon,
-                                    class_label: field.class_label,
-                                });
-                                let value = invoice[field.id];
-                                let _field = this.form[parent][this.form[parent].length - 1];
-                                if (field.format == 'date' && field.id !== '' && field.id !== undefined) {
-                                    value = new Date(value);
-                                }
-                                _field.control.setValue(value);
-                            });
-                        }
-                    }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["catchError"])((err) => {
-                        console.debug(err);
-                        this.notify.handleErrors(err);
-                        return Object(rxjs__WEBPACK_IMPORTED_MODULE_3__["of"])(false);
-                    })).subscribe();
-                }
-                else {
-                    console.log('formulaire par défaut');
-                }
-            }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["catchError"])((err) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return Object(rxjs__WEBPACK_IMPORTED_MODULE_3__["of"])(false);
-            })).subscribe();
-        });
-    }
-    getData() {
-        let data = this.invoice;
-        for (let parent in this.fields) {
-            this.form[parent].forEach((field) => {
-                let value_position = data[field.id + '_position'];
-                if (value_position) {
-                    setTimeout(() => {
-                        $('#' + field.id).focus().attr('foundFromBack', true);
-                    }, 500);
-                    setTimeout(() => {
+            for (let parent in this.fields) {
+                for (let cpt in data.fields[parent]) {
+                    let field = data.fields[parent][cpt];
+                    let position = this.invoice[field.id + '_position'];
+                    if (position) {
+                        position = JSON.parse(position);
+                        this.lastId = field.id;
+                        this.lastLabel = this.translate.instant(field.label).trim();
+                        this.lastColor = field.color;
+                        this.disableOCR = true;
+                        $('#' + field.id).focus();
                         let newArea = {
-                            x: value_position.x,
-                            y: value_position.y,
-                            width: value_position.width,
-                            height: value_position.height
+                            x: position.x,
+                            y: position.y,
+                            width: position.width,
+                            height: position.height
                         };
                         let triggerEvent = $('.trigger');
                         triggerEvent.trigger('mousedown');
                         triggerEvent.trigger('mouseup', [newArea]);
-                    }, 500);
+                        setTimeout(() => {
+                            $('#' + field.id).blur();
+                        });
+                    }
                 }
-            });
-        }
+            }
+        });
+    }
+    getInvoice() {
+        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function* () {
+            return yield this.http.get(_env__WEBPACK_IMPORTED_MODULE_1__["API_URL"] + '/ws/verifier/invoices/' + this.invoiceId, { headers: this.authService.headers }).toPromise();
+        });
+    }
+    getForm() {
+        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function* () {
+            if (this.invoice.account_id)
+                return yield this.http.get(_env__WEBPACK_IMPORTED_MODULE_1__["API_URL"] + '/ws/forms/getBySupplierId/' + this.invoice.account_id, { headers: this.authService.headers }).toPromise();
+            else
+                return yield this.http.get(_env__WEBPACK_IMPORTED_MODULE_1__["API_URL"] + '/ws/forms/getDefault', { headers: this.authService.headers }).toPromise();
+        });
+    }
+    fillForm(data) {
+        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function* () {
+            this.fields = data.fields;
+            for (let parent in this.fields) {
+                for (let cpt in data.fields[parent]) {
+                    let field = data.fields[parent][cpt];
+                    this.form[parent].push({
+                        id: field.id,
+                        label: field.label,
+                        required: field.required,
+                        control: new _angular_forms__WEBPACK_IMPORTED_MODULE_5__["FormControl"](),
+                        type: field.type,
+                        color: field.color,
+                        unit: field.unit,
+                        class: field.class,
+                        format: field.format,
+                        format_icon: field.format_icon,
+                        class_label: field.class_label,
+                    });
+                    let value = this.invoice[field.id];
+                    let _field = this.form[parent][this.form[parent].length - 1];
+                    if (field.format == 'date' && field.id !== '' && field.id !== undefined) {
+                        value = new Date(value);
+                    }
+                    _field.control.setValue(value);
+                }
+            }
+        });
     }
     getSelectionByCpt(selection, cpt) {
         for (let index in selection) {
@@ -11181,7 +11196,7 @@ class VerifierViewerComponent {
     ocr(event, enable, color = 'green') {
         let _this = this;
         this.lastId = event.target.id;
-        this.lastLabel = event.target.labels[0].textContent;
+        this.lastLabel = event.target.labels[0].textContent.trim();
         this.lastColor = color;
         let imageContainer = $('.image-container');
         let deleteArea = $('.delete-area');
@@ -11200,7 +11215,6 @@ class VerifierViewerComponent {
                 minSize: [20, 20],
                 maxSize: [this.imageInvoice.width(), this.imageInvoice.height() / 8],
                 onChanged: function (img, cpt, selection) {
-                    console.log(selection);
                     if (selection.length !== 0 && selection['width'] !== 0 && selection['height'] !== 0) {
                         // Write the label of the input above the selection rectangle
                         if ($('#select-area-label_' + cpt).length == 0) {
@@ -11210,7 +11224,8 @@ class VerifierViewerComponent {
                         }
                         // End write
                         let inputId = $('#select-area-label_' + cpt).attr('class').replace('input_', '');
-                        $('#' + inputId).focus();
+                        let input = $('#' + inputId);
+                        input.focus();
                         // Test to avoid multi selection for same label. If same label exists, remove the selected areas and replace it by the new one
                         let label = $('div[id*=select-area-label_]:contains(' + _this.lastLabel + ')');
                         let labelCount = label.length;
@@ -11222,7 +11237,7 @@ class VerifierViewerComponent {
                             $('#select-areas-delete_' + cptToDelete).remove();
                             $('.select-areas-resize-handler_' + cptToDelete).remove();
                         }
-                        if (!_this.isOCRRunning) {
+                        if (!_this.isOCRRunning && !_this.loading) {
                             _this.isOCRRunning = true;
                             _this.http.post(_env__WEBPACK_IMPORTED_MODULE_1__["API_URL"] + '/ws/verifier/ocrOnFly', {
                                 selection: _this.getSelectionByCpt(selection, cpt),
@@ -11230,14 +11245,9 @@ class VerifierViewerComponent {
                                 thumbSize: { width: img.currentTarget.width, height: img.currentTarget.height }
                             }, { headers: _this.authService.headers })
                                 .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["tap"])((data) => {
-                                let input = $('#' + inputId);
-                                if (input.attr('foundFromBack') !== 'true') {
-                                    input.val(data.result.text);
-                                }
-                                else {
-                                    input.removeAttr('foundFromBack');
-                                }
+                                input.val(data.result.text);
                                 _this.isOCRRunning = false;
+                                _this.savePosition(_this.getSelectionByCpt(selection, cpt));
                             }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["catchError"])((err) => {
                                 console.debug(err);
                                 _this.notify.handleErrors(err);
@@ -11246,7 +11256,7 @@ class VerifierViewerComponent {
                         }
                     }
                 },
-                onDeleted: function (img, cpt, selection) {
+                onDeleted: function (img, cpt) {
                     let inputId = $('#select-area-label_' + cpt).attr('class').replace('input_', '');
                     if (inputId) {
                         $('#' + inputId).val('');
@@ -11268,8 +11278,17 @@ class VerifierViewerComponent {
             $('.outline_' + _this.lastId).removeClass('animate');
         }
     }
+    savePosition(position) {
+        this.http.put(_env__WEBPACK_IMPORTED_MODULE_1__["API_URL"] + '/ws/verifier/invoices/' + this.invoiceId + '/updatePosition', { 'args': { 'input_id': this.lastId, 'position': position } }, { headers: this.authService.headers }).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["tap"])(() => {
+            this.notify.success(this.translate.instant('INVOICES.position_updated', { "input": this.lastLabel }));
+        }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["catchError"])((err) => {
+            console.debug(err);
+            this.notify.handleErrors(err);
+            return Object(rxjs__WEBPACK_IMPORTED_MODULE_3__["of"])(false);
+        })).subscribe();
+    }
 }
-VerifierViewerComponent.ɵfac = function VerifierViewerComponent_Factory(t) { return new (t || VerifierViewerComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdirectiveInject"](_angular_common_http__WEBPACK_IMPORTED_MODULE_8__["HttpClient"]), _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_9__["ActivatedRoute"]), _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdirectiveInject"](_services_auth_service__WEBPACK_IMPORTED_MODULE_10__["AuthService"]), _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdirectiveInject"](_ngx_translate_core__WEBPACK_IMPORTED_MODULE_11__["TranslateService"]), _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdirectiveInject"](_services_notifications_notifications_service__WEBPACK_IMPORTED_MODULE_12__["NotificationService"])); };
+VerifierViewerComponent.ɵfac = function VerifierViewerComponent_Factory(t) { return new (t || VerifierViewerComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdirectiveInject"](_angular_common_http__WEBPACK_IMPORTED_MODULE_8__["HttpClient"]), _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_9__["ActivatedRoute"]), _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdirectiveInject"](_services_auth_service__WEBPACK_IMPORTED_MODULE_10__["AuthService"]), _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdirectiveInject"](_ngx_translate_core__WEBPACK_IMPORTED_MODULE_11__["TranslateService"]), _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdirectiveInject"](_services_notifications_notifications_service__WEBPACK_IMPORTED_MODULE_12__["NotificationService"]), _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdirectiveInject"](_services_local_storage_service__WEBPACK_IMPORTED_MODULE_13__["LocalStorageService"])); };
 VerifierViewerComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdefineComponent"]({ type: VerifierViewerComponent, selectors: [["app-viewer"]], features: [_angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵProvidersFeature"]([_angular_common__WEBPACK_IMPORTED_MODULE_6__["DatePipe"]])], decls: 6, vars: 2, consts: [[4, "ngIf"], [1, "grid", "grid-cols-2", "overflow-auto", "mt-2"], [1, "overflow-auto", 2, "height", "calc(100vh - 64px) !important", "direction", "rtl"], [1, "image-container", "px-4"], ["id", "invoice_image", "alt", "File", "src", "assets/imgs/thumb.jpg", 1, "file"], ["class", "px-4 overflow-auto", "style", "height: calc(100vh - 56px) !important", 4, "ngIf"], [1, "px-4", "overflow-auto", 2, "height", "calc(100vh - 56px) !important"], [4, "ngFor", "ngForOf"], [1, "mt-4", "mb-4", "grid", "grid-cols-2", "gap-4", "h-12", "text-gray-900"], ["mat-button", "", "type", "submit", 1, "border-solid", "border-green-400", "border-opacity-70", "border", "hover:bg-green-400", "hover:bg-opacity-70", "hover:text-white", "transition", "duration-300"], ["mat-button", "", "type", "submit", 1, "border-solid", "border-red-400", "border", "hover:bg-red-400", "hover:text-white", "transition", "duration-300"], [1, "relative", "text-xl", "tracking-wider", "pl-1.5", "pr-1.5", "bg-white", "left-6", "z-5"], [1, "relative", "border-green-400", "border", "rounded-lg", "-top-3.5"], [1, "flex", "flex-wrap", "w-full", "my-3", 2, "min-height", "50px", 3, "id"], ["class", "flex items-center px-3", 3, "class", 4, "ngFor", "ngForOf"], [1, "flex", "items-center", "px-3"], [1, "right-0", "w-full", "form-viewer"], [1, "overflow-ellipsis", "overflow-hidden", "whitespace-nowrap", "w-8/12"], ["matInput", "", "type", "text", 3, "id", "formControl", "focusin", "focusout"], ["cdkTextareaAutosize", "", "cdkAutosizeMinRows", "1", "matInput", "", 3, "id", "formControl", "focusin", "focusout"], ["matInput", "", 3, "id", "matDatepicker", "formControl", "focusin", "focusout"], ["matSuffix", "", 3, "for"], ["picker", ""], [3, "id"]], template: function VerifierViewerComponent_Template(rf, ctx) { if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtemplate"](0, VerifierViewerComponent_div_0_Template, 2, 0, "div", 0);
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](1, "div", 1);
@@ -11284,7 +11303,7 @@ VerifierViewerComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵ
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵproperty"]("ngIf", ctx.loading);
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵadvance"](5);
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵproperty"]("ngIf", ctx.fields);
-    } }, directives: [_angular_common__WEBPACK_IMPORTED_MODULE_6__["NgIf"], _loader_component__WEBPACK_IMPORTED_MODULE_13__["LoaderComponent"], _angular_common__WEBPACK_IMPORTED_MODULE_6__["NgForOf"], _angular_material_button__WEBPACK_IMPORTED_MODULE_14__["MatButton"], _angular_material_form_field__WEBPACK_IMPORTED_MODULE_15__["MatFormField"], _angular_material_form_field__WEBPACK_IMPORTED_MODULE_15__["MatLabel"], _angular_material_input__WEBPACK_IMPORTED_MODULE_16__["MatInput"], _angular_forms__WEBPACK_IMPORTED_MODULE_5__["DefaultValueAccessor"], _angular_forms__WEBPACK_IMPORTED_MODULE_5__["NgControlStatus"], _angular_forms__WEBPACK_IMPORTED_MODULE_5__["FormControlDirective"], _angular_cdk_text_field__WEBPACK_IMPORTED_MODULE_17__["CdkTextareaAutosize"], _angular_material_datepicker__WEBPACK_IMPORTED_MODULE_18__["MatDatepickerInput"], _angular_material_datepicker__WEBPACK_IMPORTED_MODULE_18__["MatDatepickerToggle"], _angular_material_form_field__WEBPACK_IMPORTED_MODULE_15__["MatSuffix"], _angular_material_datepicker__WEBPACK_IMPORTED_MODULE_18__["MatDatepicker"], _angular_material_select__WEBPACK_IMPORTED_MODULE_19__["MatSelect"]], pipes: [_ngx_translate_core__WEBPACK_IMPORTED_MODULE_11__["TranslatePipe"]], styles: [".form-viewer > .mat-form-field-wrapper {\n  padding-bottom: 0.75rem;\n  padding-top: 0.75rem;\n}\n\n  .form-viewer > .mat-form-field-wrapper .mat-form-field-flex {\n  height: 3.5rem;\n}\n\n  .form-viewer > .mat-form-field-wrapper .mat-form-field-flex .mat-form-field-infix {\n  width: 100%;\n}\n\n  .form-viewer > .mat-form-field-wrapper .mat-form-field-flex .mat-form-field-infix div > button {\n  visibility: hidden;\n  opacity: 0;\n  transition-property: all;\n  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);\n  transition-duration: 150ms;\n  transition-duration: 500ms;\n  left: 2rem;\n}\n\n  .form-viewer > .mat-form-field-wrapper .mat-form-field-flex .mat-form-field-infix div > button .mat-button-focus-overlay {\n  background-color: transparent;\n}\n\n  .form-viewer > .mat-form-field-wrapper .mat-form-field-flex .mat-form-field-infix i {\n  visibility: hidden;\n  opacity: 0;\n  left: 0.125rem;\n  transition-property: all;\n  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);\n  transition-duration: 150ms;\n  transition-duration: 500ms;\n  top: 0.125rem;\n  top: 7px;\n}\n\n  .form-viewer > .mat-form-field-wrapper .mat-form-field-flex .mat-form-field-infix .mat-form-field-label-wrapper > .mat-form-field-label > mat-label {\n  margin-left: 0px;\n  transition-property: all;\n  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);\n  transition-duration: 150ms;\n  transition-duration: 500ms;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL3ZlcmlmaWVyLXZpZXdlci5jb21wb25lbnQuc2NzcyIsIi4uLy4uLy4uLy4uLy4uL25vZGVfbW9kdWxlcy90YWlsd2luZGNzcy9saWIvbGliL3N1YnN0aXR1dGVDbGFzc0FwcGx5QXRSdWxlcy5qcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQ0VBLHVCQUFtQjtFQUFuQixvQkFBbUI7QURDbkI7O0FBQ0k7RUNGSixjQUFtQjtBREluQjs7QUFDUTtFQ0xSLFdBQW1CO0FET25COztBQUNZO0VDUlosa0JBQW1CO0VBQW5CLFVBQW1CO0VBQW5CLHdCQUFtQjtFQUFuQix3REFBbUI7RUFBbkIsMEJBQW1CO0VBQW5CLDBCQUFtQjtFQUFuQixVQUFtQjtBRGNuQjs7QUFDZ0I7RUNmaEIsNkJBQW1CO0FEaUJuQjs7QUFHWTtFQ3BCWixrQkFBbUI7RUFBbkIsVUFBbUI7RUFBbkIsY0FBbUI7RUFBbkIsd0JBQW1CO0VBQW5CLHdEQUFtQjtFQUFuQiwwQkFBbUI7RUFBbkIsMEJBQW1CO0VBQW5CLGFBQW1CO0VEMkJILFFBQUE7QUFEaEI7O0FBSVk7RUM5QlosZ0JBQW1CO0VBQW5CLHdCQUFtQjtFQUFuQix3REFBbUI7RUFBbkIsMEJBQW1CO0VBQW5CLDBCQUFtQjtBRCtCbkIiLCJmaWxlIjoidmVyaWZpZXItdmlld2VyLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiOjpuZy1kZWVwIC5mb3JtLXZpZXdlciA+IC5tYXQtZm9ybS1maWVsZC13cmFwcGVyIHtcbiAgICBAYXBwbHkgcGItMztcbiAgICBAYXBwbHkgcHQtMztcblxuICAgICYgLm1hdC1mb3JtLWZpZWxkLWZsZXgge1xuICAgICAgICBAYXBwbHkgaC0xNDtcblxuICAgICAgICAmIC5tYXQtZm9ybS1maWVsZC1pbmZpeCB7XG4gICAgICAgICAgICBAYXBwbHkgdy1mdWxsO1xuXG4gICAgICAgICAgICAmIGRpdiA+IGJ1dHRvbiB7XG4gICAgICAgICAgICAgICAgQGFwcGx5IGludmlzaWJsZTtcbiAgICAgICAgICAgICAgICBAYXBwbHkgb3BhY2l0eS0wO1xuICAgICAgICAgICAgICAgIEBhcHBseSB0cmFuc2l0aW9uLWFsbDtcbiAgICAgICAgICAgICAgICBAYXBwbHkgZHVyYXRpb24tNTAwO1xuICAgICAgICAgICAgICAgIEBhcHBseSBsZWZ0LTg7XG5cbiAgICAgICAgICAgICAgICAmIC5tYXQtYnV0dG9uLWZvY3VzLW92ZXJsYXl7XG4gICAgICAgICAgICAgICAgICAgIEBhcHBseSBiZy10cmFuc3BhcmVudDtcbiAgICAgICAgICAgICAgICB9XG4gICAgICAgICAgICB9XG5cbiAgICAgICAgICAgICYgaSB7XG4gICAgICAgICAgICAgICAgQGFwcGx5IGludmlzaWJsZTtcbiAgICAgICAgICAgICAgICBAYXBwbHkgb3BhY2l0eS0wO1xuICAgICAgICAgICAgICAgIEBhcHBseSBsZWZ0LTAuNTtcbiAgICAgICAgICAgICAgICBAYXBwbHkgdHJhbnNpdGlvbi1hbGw7XG4gICAgICAgICAgICAgICAgQGFwcGx5IGR1cmF0aW9uLTUwMDtcbiAgICAgICAgICAgICAgICBAYXBwbHkgdG9wLTAuNTtcbiAgICAgICAgICAgICAgICB0b3A6IDdweDtcbiAgICAgICAgICAgIH1cblxuICAgICAgICAgICAgJiAubWF0LWZvcm0tZmllbGQtbGFiZWwtd3JhcHBlciA+IC5tYXQtZm9ybS1maWVsZC1sYWJlbCA+IG1hdC1sYWJlbCB7XG4gICAgICAgICAgICAgICAgQGFwcGx5IG1sLTA7XG4gICAgICAgICAgICAgICAgQGFwcGx5IHRyYW5zaXRpb24tYWxsO1xuICAgICAgICAgICAgICAgIEBhcHBseSBkdXJhdGlvbi01MDA7XG4gICAgICAgICAgICB9XG4gICAgICAgIH1cbiAgICB9XG59IiwiQHRhaWx3aW5kIGJhc2U7XG5AdGFpbHdpbmQgY29tcG9uZW50cztcbkB0YWlsd2luZCB1dGlsaXRpZXM7Il19 */"] });
+    } }, directives: [_angular_common__WEBPACK_IMPORTED_MODULE_6__["NgIf"], _loader_component__WEBPACK_IMPORTED_MODULE_14__["LoaderComponent"], _angular_common__WEBPACK_IMPORTED_MODULE_6__["NgForOf"], _angular_material_button__WEBPACK_IMPORTED_MODULE_15__["MatButton"], _angular_material_form_field__WEBPACK_IMPORTED_MODULE_16__["MatFormField"], _angular_material_form_field__WEBPACK_IMPORTED_MODULE_16__["MatLabel"], _angular_material_input__WEBPACK_IMPORTED_MODULE_17__["MatInput"], _angular_forms__WEBPACK_IMPORTED_MODULE_5__["DefaultValueAccessor"], _angular_forms__WEBPACK_IMPORTED_MODULE_5__["NgControlStatus"], _angular_forms__WEBPACK_IMPORTED_MODULE_5__["FormControlDirective"], _angular_cdk_text_field__WEBPACK_IMPORTED_MODULE_18__["CdkTextareaAutosize"], _angular_material_datepicker__WEBPACK_IMPORTED_MODULE_19__["MatDatepickerInput"], _angular_material_datepicker__WEBPACK_IMPORTED_MODULE_19__["MatDatepickerToggle"], _angular_material_form_field__WEBPACK_IMPORTED_MODULE_16__["MatSuffix"], _angular_material_datepicker__WEBPACK_IMPORTED_MODULE_19__["MatDatepicker"], _angular_material_select__WEBPACK_IMPORTED_MODULE_20__["MatSelect"]], pipes: [_ngx_translate_core__WEBPACK_IMPORTED_MODULE_11__["TranslatePipe"]], styles: [".form-viewer > .mat-form-field-wrapper {\n  padding-bottom: 0.75rem;\n  padding-top: 0.75rem;\n}\n\n  .form-viewer > .mat-form-field-wrapper .mat-form-field-flex {\n  height: 3.5rem;\n}\n\n  .form-viewer > .mat-form-field-wrapper .mat-form-field-flex .mat-form-field-infix {\n  width: 100%;\n}\n\n  .form-viewer > .mat-form-field-wrapper .mat-form-field-flex .mat-form-field-infix div > button {\n  visibility: hidden;\n  opacity: 0;\n  transition-property: all;\n  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);\n  transition-duration: 150ms;\n  transition-duration: 500ms;\n  left: 2rem;\n}\n\n  .form-viewer > .mat-form-field-wrapper .mat-form-field-flex .mat-form-field-infix div > button .mat-button-focus-overlay {\n  background-color: transparent;\n}\n\n  .form-viewer > .mat-form-field-wrapper .mat-form-field-flex .mat-form-field-infix i {\n  visibility: hidden;\n  opacity: 0;\n  left: 0.125rem;\n  transition-property: all;\n  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);\n  transition-duration: 150ms;\n  transition-duration: 500ms;\n  top: 0.125rem;\n  top: 7px;\n}\n\n  .form-viewer > .mat-form-field-wrapper .mat-form-field-flex .mat-form-field-infix .mat-form-field-label-wrapper > .mat-form-field-label > mat-label {\n  margin-left: 0px;\n  transition-property: all;\n  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);\n  transition-duration: 150ms;\n  transition-duration: 500ms;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL3ZlcmlmaWVyLXZpZXdlci5jb21wb25lbnQuc2NzcyIsIi4uLy4uLy4uLy4uLy4uL25vZGVfbW9kdWxlcy90YWlsd2luZGNzcy9saWIvbGliL3N1YnN0aXR1dGVDbGFzc0FwcGx5QXRSdWxlcy5qcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQ0VBLHVCQUFtQjtFQUFuQixvQkFBbUI7QURDbkI7O0FBQ0k7RUNGSixjQUFtQjtBREluQjs7QUFDUTtFQ0xSLFdBQW1CO0FET25COztBQUNZO0VDUlosa0JBQW1CO0VBQW5CLFVBQW1CO0VBQW5CLHdCQUFtQjtFQUFuQix3REFBbUI7RUFBbkIsMEJBQW1CO0VBQW5CLDBCQUFtQjtFQUFuQixVQUFtQjtBRGNuQjs7QUFDZ0I7RUNmaEIsNkJBQW1CO0FEaUJuQjs7QUFHWTtFQ3BCWixrQkFBbUI7RUFBbkIsVUFBbUI7RUFBbkIsY0FBbUI7RUFBbkIsd0JBQW1CO0VBQW5CLHdEQUFtQjtFQUFuQiwwQkFBbUI7RUFBbkIsMEJBQW1CO0VBQW5CLGFBQW1CO0VEMkJILFFBQUE7QUFEaEI7O0FBSVk7RUM5QlosZ0JBQW1CO0VBQW5CLHdCQUFtQjtFQUFuQix3REFBbUI7RUFBbkIsMEJBQW1CO0VBQW5CLDBCQUFtQjtBRCtCbkIiLCJmaWxlIjoidmVyaWZpZXItdmlld2VyLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiOjpuZy1kZWVwIC5mb3JtLXZpZXdlciA+IC5tYXQtZm9ybS1maWVsZC13cmFwcGVyIHtcbiAgICBAYXBwbHkgcGItMztcbiAgICBAYXBwbHkgcHQtMztcblxuICAgICYgLm1hdC1mb3JtLWZpZWxkLWZsZXgge1xuICAgICAgICBAYXBwbHkgaC0xNDtcblxuICAgICAgICAmIC5tYXQtZm9ybS1maWVsZC1pbmZpeCB7XG4gICAgICAgICAgICBAYXBwbHkgdy1mdWxsO1xuXG4gICAgICAgICAgICAmIGRpdiA+IGJ1dHRvbiB7XG4gICAgICAgICAgICAgICAgQGFwcGx5IGludmlzaWJsZTtcbiAgICAgICAgICAgICAgICBAYXBwbHkgb3BhY2l0eS0wO1xuICAgICAgICAgICAgICAgIEBhcHBseSB0cmFuc2l0aW9uLWFsbDtcbiAgICAgICAgICAgICAgICBAYXBwbHkgZHVyYXRpb24tNTAwO1xuICAgICAgICAgICAgICAgIEBhcHBseSBsZWZ0LTg7XG5cbiAgICAgICAgICAgICAgICAmIC5tYXQtYnV0dG9uLWZvY3VzLW92ZXJsYXl7XG4gICAgICAgICAgICAgICAgICAgIEBhcHBseSBiZy10cmFuc3BhcmVudDtcbiAgICAgICAgICAgICAgICB9XG4gICAgICAgICAgICB9XG5cbiAgICAgICAgICAgICYgaSB7XG4gICAgICAgICAgICAgICAgQGFwcGx5IGludmlzaWJsZTtcbiAgICAgICAgICAgICAgICBAYXBwbHkgb3BhY2l0eS0wO1xuICAgICAgICAgICAgICAgIEBhcHBseSBsZWZ0LTAuNTtcbiAgICAgICAgICAgICAgICBAYXBwbHkgdHJhbnNpdGlvbi1hbGw7XG4gICAgICAgICAgICAgICAgQGFwcGx5IGR1cmF0aW9uLTUwMDtcbiAgICAgICAgICAgICAgICBAYXBwbHkgdG9wLTAuNTtcbiAgICAgICAgICAgICAgICB0b3A6IDdweDtcbiAgICAgICAgICAgIH1cblxuICAgICAgICAgICAgJiAubWF0LWZvcm0tZmllbGQtbGFiZWwtd3JhcHBlciA+IC5tYXQtZm9ybS1maWVsZC1sYWJlbCA+IG1hdC1sYWJlbCB7XG4gICAgICAgICAgICAgICAgQGFwcGx5IG1sLTA7XG4gICAgICAgICAgICAgICAgQGFwcGx5IHRyYW5zaXRpb24tYWxsO1xuICAgICAgICAgICAgICAgIEBhcHBseSBkdXJhdGlvbi01MDA7XG4gICAgICAgICAgICB9XG4gICAgICAgIH1cbiAgICB9XG59IiwiQHRhaWx3aW5kIGJhc2U7XG5AdGFpbHdpbmQgY29tcG9uZW50cztcbkB0YWlsd2luZCB1dGlsaXRpZXM7Il19 */"] });
 
 
 /***/ }),
