@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { FormBuilder } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { UserService } from "../../../../../services/user.service";
 import { AuthService } from "../../../../../services/auth.service";
 import { NotificationService } from "../../../../../services/notifications/notifications.service";
 import { TranslateService } from "@ngx-translate/core";
-import {catchError, finalize, tap} from "rxjs/operators";
+import { catchError, finalize, tap } from "rxjs/operators";
 import { API_URL } from "../../../../env";
 import { of } from "rxjs";
 import { ConfirmDialogComponent } from "../../../../../services/confirm-dialog/confirm-dialog.component";
@@ -16,7 +16,7 @@ import { LastUrlService } from "../../../../../services/last-url.service";
 import { Sort } from "@angular/material/sort";
 import { SettingsService } from "../../../../../services/settings.service";
 import { PrivilegesService } from "../../../../../services/privileges.service";
-import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from "@angular/material/form-field";
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 
 @Component({
     selector: 'app-users-list',
@@ -59,7 +59,7 @@ export class UsersListComponent implements OnInit {
         this.serviceSettings.init()
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
         let lastUrl = this.routerExtService.getPreviousUrl()
-        if (lastUrl.includes('profile/') || lastUrl == '/'){
+        if (lastUrl.includes('users/') || lastUrl == '/'){
             if (this.localeStorageService.get('usersPageIndex'))
                 this.pageIndex = parseInt(<string>this.localeStorageService.get('usersPageIndex'))
             this.offset = this.pageSize * (this.pageIndex)

@@ -73,7 +73,7 @@ def create_role(args):
     _db = db.get_db()
     error = None
 
-    role = db.insert({
+    role = _db.insert({
         'table': 'roles',
         'columns': args['columns'],
     })
@@ -105,7 +105,7 @@ def create_role_privileges(args):
     _db = db.get_db()
     error = None
 
-    role_privilege = db.insert({
+    role_privilege = _db.insert({
         'table': 'roles_privileges',
         'columns': {
             'role_id': str(args['role_id']),

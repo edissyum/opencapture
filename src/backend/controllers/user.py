@@ -76,10 +76,10 @@ def get_customers_by_user_id(user_id):
 
     if error is None:
         customers, error = user.get_customers_by_user_id({'user_id': user_id})
-        if type(eval(customers['customers_id']['data'])) == list:
-            customers = eval(customers['customers_id']['data'])
         if error is None:
-            return customers, 200
+            if type(eval(customers['customers_id']['data'])) == list:
+                customers = eval(customers['customers_id']['data'])
+        return customers, 200
     else:
         response = {
             "errors": gettext('GET_CUSTOMERS_BY_USER_ID_ERROR'),

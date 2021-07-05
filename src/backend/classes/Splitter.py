@@ -33,7 +33,7 @@ def get_lot_name():
 class Splitter:
     def __init__(self, config, database, locale, separator_qr):
         self.Config = config
-        self.db = database
+        self._db = database
         self.Locale = locale
         self.separator_qr = separator_qr
 
@@ -49,7 +49,7 @@ class Splitter:
                 'page_number': str(len(pages) - len(self.separator_qr.pages))
             }
         }
-        batch_id = self.db.insert(args)
+        batch_id = self._db.insert(args)
 
         for index, path in pages:
             is_separator = list(filter(lambda separator: int(separator['num']) + 1 == int(index),
@@ -69,7 +69,7 @@ class Splitter:
                             'page_number': str(len(pages) - len(self.separator_qr.pages))
                         }
                     }
-                    batch_id = self.db.insert(args)
+                    batch_id = self._db.insert(args)
 
                 continue
 
@@ -82,7 +82,7 @@ class Splitter:
                     'split_document': str(split_document),
                 }
             }
-            self.db.insert(args)
+            self._db.insert(args)
             image.save(path, 'JPEG')
         self.db.conn.commit()
 

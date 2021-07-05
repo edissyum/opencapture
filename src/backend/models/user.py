@@ -15,7 +15,7 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
-
+import json
 from gettext import gettext
 from werkzeug.security import generate_password_hash
 
@@ -40,7 +40,7 @@ def create_user(args):
         error = gettext('USER') + ' ' + args['username'] + ' ' + gettext('ALREADY_REGISTERED')
 
     if error is None:
-        db.insert({
+        user_id = _db.insert({
             'table': 'users',
             'columns': {
                 'username': args['username'],
@@ -49,6 +49,15 @@ def create_user(args):
                 'password': generate_password_hash(args['password']),
             }
         })
+
+        _db.insert({
+            'table': 'users_customers',
+            'columns': {
+                'user_id': user_id,
+                'customers_id': json.dumps({"data": "[]"})
+            }
+        })
+
         return True, error
     else:
         return False, error

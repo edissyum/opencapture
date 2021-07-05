@@ -99,7 +99,7 @@ def add_form_fields(args):
             'form_id': str(args),
         }
     }
-    db.insert(args)
+    _db.insert(args)
     return '', False
 
 
@@ -118,7 +118,7 @@ def add_form(args):
                 'default': args['"default"'],
             }
         }
-        res = db.insert(args)
+        res = _db.insert(args)
 
         if not res:
             error = gettext('ADD_FORM_ERROR')

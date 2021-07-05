@@ -250,7 +250,7 @@
 		"confirm_disable": "Êtes vous sûr de vouloir désactiver l'utilisateur {{ user }} ?",
 		"confirm_enable": "Êtes vous sûr de vouloir ré-activer l'utilisateur {{ user }} ?",
 		"create": "Créer l'utilisateur",
-		"created": "Utiliser créer avec succès",
+		"created": "Utilisateur créé avec succès",
 		"customers_updated": "Liste des comptes clients de l'utilisateur mis à jour",
 		"disable": "Désactiver l'utilisateur",
 		"enable": "Activer l'utilisateur",

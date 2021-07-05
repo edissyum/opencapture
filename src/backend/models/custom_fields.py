@@ -38,7 +38,7 @@ def add_custom_field(args):
                 'module': args['module'],
             }
         }
-        res = db.insert(args)
+        res = _db.insert(args)
 
         if not res:
             error = gettext('ADD_CUSTOM_FIELD_ERROR')
