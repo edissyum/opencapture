@@ -61,7 +61,7 @@ postgresUser =
 postgresPassword =
 
 [LOCALE]
-# fr-FR or en-GB by default
+# fra or eng by default
 locale                   = fra
 # fra or eng by default
 localeocr                = fra

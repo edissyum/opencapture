@@ -15,7 +15,7 @@ import * as moment from 'moment';
     providedIn: 'root'
 })
 export class LocaleService {
-    currentLang         : string = 'fr-FR'
+    currentLang         : string = 'fra'
     dateAdaptaterLocale : string = 'fr-FR'
     langs               : [] = []
 
@@ -61,8 +61,7 @@ export class LocaleService {
     }
 
     changeLocale(data: any) {
-        const headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.authService.getToken())
-        this.http.get(API_URL + '/ws/i18n/changeLanguage/' + data.value, {headers}).pipe(
+        this.http.get(API_URL + '/ws/i18n/changeLanguage/' + data.value, {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.getCurrentLocale()
             }),

@@ -150,6 +150,9 @@
 		"splitter": "Open-Capture splitter",
 		"verifier": "Open-Capture verifier"
 	},
+	"INVOICES": {
+		"position_updated": ""
+	},
 	"PAGINATOR": {
 		"display": "",
 		"first_page": "First page",

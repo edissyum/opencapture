@@ -103,6 +103,7 @@ export class UpdateUserComponent implements OnInit {
 
         this.http.get(API_URL + '/ws/users/getCustomersByUserId/' + this.userId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
+                console.log(data)
                 this.usersCustomers = data
             }),
             catchError((err: any) => {

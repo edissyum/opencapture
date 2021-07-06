@@ -31,24 +31,24 @@ const routes: Routes = [
     {path: 'profile/:id', component: UserProfileComponent, canActivate: [LoginRequiredService]},
     {
         path: 'splitter/viewer/:id', component: SplitterViewerComponent,
-        data: {title: marker('SPLITTER.viewer'), privileges: ['splitter']},
+        data: {title: marker('SPLITTER.viewer'), privileges: ['access_splitter']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
         path: 'splitter/list', component: SplitterListComponent,
-        data: {title: marker('SPLITTER.list'), privileges: ['splitter']},
+        data: {title: marker('SPLITTER.list'), privileges: ['access_splitter']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
 
     },
     {path: 'splitter', redirectTo: 'splitter/list', pathMatch: 'full'},
     {
         path: 'verifier/viewer/:id', component: VerifierViewerComponent,
-        data: {title: marker('VERIFIER.viewer'), privileges: ['verifier']},
+        data: {title: marker('VERIFIER.viewer'), privileges: ['access_verifier']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
         path: 'verifier/list', component: VerifierListComponent,
-        data: {title: marker('VERIFIER.list'), privileges: ['verifier']},
+        data: {title: marker('VERIFIER.list'), privileges: ['access_verifier']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
 
     },

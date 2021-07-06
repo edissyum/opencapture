@@ -2,6 +2,29 @@
     <mat-sidenav #sidenav mode="side" opened class="w-1/6 flex flex-col h-full border-r border-green-400" style="top:0.1rem">
         <h3 class="text-center text-gray-900 m-0 h-16" style="padding-top: 1.2rem">{{ "VERIFIER.suppliers_by_customer" | translate }}</h3>
         <mat-divider></mat-divider>
+        <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+            <mat-tree-node style="min-height: 24px" class="cursor-pointer hover:bg-black hover:bg-opacity-20" *matTreeNodeDef="let node; when:isLevelTwo" matTreeNodePadding>
+                <button mat-icon-button disabled>
+                    <i class="text-green-400 ml-4 fas fa-user pb-0.5"></i>
+                </button>
+                <span class="pl-2 font-normal">{{node.name}}</span>
+            </mat-tree-node>
+            <mat-tree-node style="min-height: 24px" class="cursor-pointer hover:bg-black hover:bg-opacity-10" *matTreeNodeDef="let node;when: hasChild; when:isNotLevelOne" matTreeNodePadding matTreeNodeToggle>
+                <button mat-icon-button>
+                    <mat-icon class="mat-icon-rtl-mirror text-gray-900">
+                        {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                    </mat-icon>
+                </button>
+                {{node.name}}
+            </mat-tree-node>
+            <mat-tree-node style="min-height: 24px" class="cursor-pointer hover:bg-black hover:bg-opacity-10" *matTreeNodeDef="let node;when: isLevelOne" matTreeNodePadding matTreeNodeToggle>
+                <button mat-icon-button>
+                    <i [class.fa-folder-open]="treeControl.isExpanded(node)" class="text-gray-600 ml-4 fas fa-folder pb-0.5"></i>
+                </button>
+                <span class="pl-2 font-normal">{{node.name}}</span>
+            </mat-tree-node>
+        </mat-tree>
+
     </mat-sidenav>
     <mat-sidenav-content class="bg-white overflow-hidden">
         <button mat-icon-button (click)="sidenav.toggle();"
