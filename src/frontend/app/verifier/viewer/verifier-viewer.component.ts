@@ -63,6 +63,7 @@ export class VerifierViewerComponent implements OnInit {
     async ngOnInit(): Promise<void> {
         this.localeStorageService.save('splitter_or_verifier', 'verifier')
         this.imageInvoice = $('#invoice_image');
+        // Enable library to draw rectangle (OCR ON FLY)
         this.ocr({
             'target' : {
                 'id': '',
@@ -113,8 +114,8 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     async getForm(): Promise<any> {
-        if (this.invoice.account_id)
-            return await this.http.get(API_URL + '/ws/forms/getBySupplierId/' + this.invoice.account_id, {headers: this.authService.headers}).toPromise();
+        if (this.invoice.supplier_id)
+            return await this.http.get(API_URL + '/ws/forms/getBySupplierId/' + this.invoice.supplier_id, {headers: this.authService.headers}).toPromise();
         else
             return await this.http.get(API_URL + '/ws/forms/getDefault', {headers: this.authService.headers}).toPromise();
     }
@@ -246,8 +247,12 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     savePosition(position: []) {
-        this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoiceId + '/updatePosition',
-            {'args': {'input_id' : this.lastId, 'position': position}},
+        let data = {
+            [this.lastId]: position
+        }
+        console.log(data)
+        this.http.put(API_URL + '/ws/accounts/supplier/' + this.invoice.supplier_id + '/updatePosition',
+            {'args': {[this.lastId]: position}},
             {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('INVOICES.position_updated', {"input": this.lastLabel}));

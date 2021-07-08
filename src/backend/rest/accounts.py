@@ -55,8 +55,33 @@ def get_adress_by_id(address_id):
 @auth.token_required
 def update_supplier(supplier_id):
     data = request.json['args']
-    res = accounts.update_supplier(supplier_id, data)
+    _set = {}
+    if 'address_id' in data:
+        _set.update({'address_id': data['address_id']})
+    if 'name' in data:
+        _set.update({'name': data['name']})
+    if 'siret' in data:
+        _set.update({'siret': data['siret']})
+    if 'siren' in data:
+        _set.update({'siren': data['siren']})
+    if 'vat_number' in data:
+        _set.update({'vat_number': data['vat_number']})
+    if 'typology' in data:
+        _set.update({'typology': data['typology']})
+    if 'form_id' in data:
+        _set.update({'form_id': data['form_id']})
+
+    res = accounts.update_supplier(supplier_id, _set)
     return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('accounts/supplier/<int:supplier_id>/updatePosition', methods=['PUT'])
+@auth.token_required
+def update_position(supplier_id):
+    data = request.json['args']
+    print(data)
+    res = accounts.update_position_by_supplier_id(supplier_id, data)
+    return make_response(res[0], res[1])
 
 
 @bp.route('accounts/addresses/update/<int:supplier_id>', methods=['PUT'])

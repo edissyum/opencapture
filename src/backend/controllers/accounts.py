@@ -64,23 +64,7 @@ def update_supplier(supplier_id, data):
     supplier_info, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
 
     if error is None:
-        _set = {}
-        if 'address_id' in data:
-            _set.update({'address_id': data['address_id']})
-        if 'name' in data:
-            _set.update({'name': data['name']})
-        if 'siret' in data:
-            _set.update({'siret': data['siret']})
-        if 'siren' in data:
-            _set.update({'siren': data['siren']})
-        if 'vat_number' in data:
-            _set.update({'vat_number': data['vat_number']})
-        if 'typology' in data:
-            _set.update({'typology': data['typology']})
-        if 'form_id' in data:
-            _set.update({'form_id': data['form_id']})
-
-        res, error = accounts.update_supplier({'set': _set, 'supplier_id': supplier_id})
+        res, error = accounts.update_supplier({'set': data, 'supplier_id': supplier_id})
 
         if error is None:
             return '', 200
@@ -96,6 +80,14 @@ def update_supplier(supplier_id, data):
             "message": error
         }
         return response, 401
+
+
+def update_position_by_supplier_id(supplier_id, data):
+    _vars = pdf.init()
+    _db = _vars[0]
+    supplier_info, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
+    print(supplier_info)
+    return '', 200
 
 
 def update_address(address_id, data):

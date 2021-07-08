@@ -21,7 +21,7 @@ CREATE TABLE "form_models" (
 CREATE TABLE "form_models_field" (
     "id"        SERIAL UNIQUE PRIMARY KEY,
     "form_id"   INTEGER,
-    "fields"    JSONB
+    "fields"    JSONB DEFAULT '{}',
 );
 
 CREATE TABLE "custom_fields" (
@@ -30,7 +30,7 @@ CREATE TABLE "custom_fields" (
      "label" VARCHAR(50),
      "type" VARCHAR(10),
      "module" VARCHAR(10),
-     "settings" JSONB,
+     "settings" JSONB DEFAULT '{}',
      "enabled" BOOLEAN default true,
      "status" VARCHAR(5) default 'OK'
 );
@@ -38,7 +38,7 @@ CREATE TABLE "custom_fields" (
 CREATE TABLE "users_customers" (
     "id"           SERIAL UNIQUE PRIMARY KEY,
     "user_id"      INTEGER,
-    "customers_id" JSONB
+    "customers_id" JSONB DEFAULT '{}',
 );
 
 CREATE TABLE "addresses" (
@@ -48,7 +48,7 @@ CREATE TABLE "addresses" (
     "postal_code"   VARCHAR(10),
     "city"          VARCHAR(50),
     "country"       VARCHAR(50),
-    "creation_date" TIMESTAMP             DEFAULT (CURRENT_TIMESTAMP),
+    "creation_date" TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
 );
 
 CREATE TABLE "roles" (
@@ -63,7 +63,7 @@ CREATE TABLE "roles" (
 CREATE TABLE "roles_privileges" (
     "id"           SERIAL UNIQUE PRIMARY KEY,
     "role_id"      INTEGER,
-    "privileges_id" JSONB
+    "privileges_id" JSONB DEFAULT '{}',
 );
 
 CREATE TABLE "privileges" (
@@ -82,7 +82,8 @@ CREATE TABLE "accounts_supplier" (
     "typology"      VARCHAR,
     "form_id"       INTEGER,
     "status"        VARCHAR(3) DEFAULT 'OK',
-    "creation_date" TIMESTAMP             DEFAULT (CURRENT_TIMESTAMP),
+    "creation_date" TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
+    "positions"     JSONB DEFAULT '{}',
 );
 
 CREATE TABLE "accounts_customer" (
@@ -95,7 +96,7 @@ CREATE TABLE "accounts_customer" (
     "accounting_plan" INTEGER,
     "address_id"      INTEGER,
     "status"          VARCHAR(3) DEFAULT 'OK',
-    "creation_date"   TIMESTAMP             DEFAULT (CURRENT_TIMESTAMP),
+    "creation_date"   TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
 );
 
 CREATE TABLE "accounts_supplements" (
@@ -104,10 +105,10 @@ CREATE TABLE "accounts_supplements" (
     "invoice_number_position"   VARCHAR,
     "invoice_number_page"       VARCHAR,
     "invoice_date_page"         VARCHAR,
-    "vat_positions"             JSONB,
-    "no_taxes_positions"        JSONB,
-    "order_number_positions"    JSONB,
-    "delivery_number_positions" JSONB,
+    "vat_positions"             JSONB DEFAULT '{}',
+    "no_taxes_positions"        JSONB DEFAULT '{}',
+    "order_number_positions"    JSONB DEFAULT '{}',
+    "delivery_number_positions" JSONB DEFAULT '{}',
     "footer_page"               INTEGER,
     "thirds_page"               INTEGER
 );
@@ -134,7 +135,7 @@ CREATE TABLE "journals" (
 
 CREATE TABLE "invoices" (
     "id"                      SERIAL UNIQUE PRIMARY KEY,
-    "account_id"              INTEGER,
+    "supplier_id"             INTEGER,
     "vat_number"              VARCHAR               DEFAULT NULL,
     "vat_number_position"     VARCHAR(80),
     "invoice_number"          VARCHAR(255),
@@ -151,10 +152,10 @@ CREATE TABLE "invoices" (
     "register_date"           TIMESTAMP             DEFAULT (CURRENT_TIMESTAMP),
     "total_amount"            VARCHAR(255),
     "total_amount_position"   VARCHAR(80),
-    "ht_amounts"              JSONB,
-    "ht_amounts_positions"    JSONB,
-    "vat_rates"               JSONB,
-    "vat_rates_positions"     JSONB,
+    "ht_amounts"              JSONB DEFAULT '{}',
+    "ht_amounts_positions"    JSONB DEFAULT '{}',
+    "vat_rates"               JSONB DEFAULT '{}',
+    "vat_rates_positions"     JSONB DEFAULT '{}',
     "footer_page"             INTEGER,
     "supplier_page"           INTEGER,
     "invoice_number_page"     INTEGER,
