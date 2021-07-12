@@ -126,33 +126,45 @@ export class VerifierListComponent implements OnInit {
 
     loadCustomers() {
         let user = this.userService.getUser()
-
         this.http.get(API_URL + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.customers = data.customers;
-                this.http.get(API_URL + '/ws/users/getCustomersByUserId/' + user.id, {headers: this.authService.headers}).pipe(
-                    tap((data: any) => {
-                        data.forEach((id: any) =>{
-                            this.customers.forEach((customer: any) => {
-                                if (customer.id == id) {
-                                    this.TREE_DATA.push({
-                                        name: customer.name,
-                                        children: [
-                                            {'name': "Facture d'achat", children:[ {"name": 'ETM'}]},
-                                            {'name': "Facture de vente"}
-                                        ]
-                                    });
-                                }
-                            });
+                if (user.privileges == '*'){
+                    this.customers.forEach((customer: any) => {
+                        this.TREE_DATA.push({
+                            name: customer.name,
+                            children: [
+                                {'name': "Facture d'achat"},
+                                {'name': "Facture de vente"}
+                            ]
                         });
-                        this.dataSource.data = this.TREE_DATA;
-                    }),
-                    catchError((err: any) => {
-                        console.debug(err);
-                        this.notify.handleErrors(err);
-                        return of(false);
-                    })
-                ).subscribe()
+                    });
+                    this.dataSource.data = this.TREE_DATA;
+                }else{
+                    this.http.get(API_URL + '/ws/users/getCustomersByUserId/' + user.id, {headers: this.authService.headers}).pipe(
+                        tap((data: any) => {
+                            data.forEach((id: any) =>{
+                                this.customers.forEach((customer: any) => {
+                                    if (customer.id == id) {
+                                        this.TREE_DATA.push({
+                                            name: customer.name,
+                                            children: [
+                                                {'name': "Facture d'achat"},
+                                                {'name': "Facture de vente"}
+                                            ]
+                                        });
+                                    }
+                                });
+                            });
+                            this.dataSource.data = this.TREE_DATA;
+                        }),
+                        catchError((err: any) => {
+                            console.debug(err);
+                            this.notify.handleErrors(err);
+                            return of(false);
+                        })
+                    ).subscribe()
+                }
             }),
             catchError((err: any) => {
                 console.debug(err);

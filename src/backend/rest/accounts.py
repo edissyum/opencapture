@@ -79,7 +79,6 @@ def update_supplier(supplier_id):
 @auth.token_required
 def update_position(supplier_id):
     data = request.json['args']
-    print(data)
     res = accounts.update_position_by_supplier_id(supplier_id, data)
     return make_response(res[0], res[1])
 

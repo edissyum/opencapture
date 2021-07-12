@@ -38,7 +38,8 @@
                         </button>
                         <button mat-flat-button routerLink="/upload" [routerLinkActive]="'bg-gray-900 text-green-400'"
                                 *ngIf="location.path() !== '/home' && this.getSplitterOrVerifier() != undefined && this.getSplitterOrVerifier() != ''"
-                                [class.disabled]="!this.privilegesService.hasPrivilege('upload')"
+                                [disabled]="!this.privilegesService.hasPrivilege('upload')"
+                                [class.cursor-not-allowed]="!this.privilegesService.hasPrivilege('upload')"
                        class="text-gray-500 hover:bg-green-400 hover:text-white px-3 py-2 text-sm font-medium transition duration-300">
                             {{ 'GLOBAL.upload' | translate }}
                         </button>

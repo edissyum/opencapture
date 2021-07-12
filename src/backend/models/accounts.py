@@ -233,3 +233,21 @@ def delete_customer(args):
         error = gettext('CUSTOMER_DELETE_ERROR')
 
     return customer, error
+
+
+def check_if_position_exist(args):
+    _db = db.get_db()
+    error = None
+    position = _db.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['accounts_supplier'],
+        'where': ['id = %s'],
+        'data': [args['supplier_id']]
+    })
+
+    if not position:
+        error = gettext('GET_SUPPLIER_POSITIONS_ERROR')
+    else:
+        position = position[0]
+
+    return position, error

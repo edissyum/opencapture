@@ -15,6 +15,8 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
+import json
+
 from flask_babel import gettext
 
 from ..import_controllers import pdf
@@ -86,8 +88,26 @@ def update_position_by_supplier_id(supplier_id, data):
     _vars = pdf.init()
     _db = _vars[0]
     supplier_info, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
-    print(supplier_info)
-    return '', 200
+    if error is None:
+        column = ''
+        position = ''
+        for _position in data:
+            column = _position
+            position = data[_position]
+
+        supplier_positions = supplier_info['positions']
+        supplier_positions.update({
+            column: position
+        })
+        res, error = accounts.update_supplier({'set': {"positions": json.dumps(supplier_positions)}, 'supplier_id': supplier_id})
+        if error is None:
+            return '', 200
+        else:
+            response = {
+                "errors": gettext('UPDATE_SUPPLIER_POSITIONS_ERROR'),
+                "message": error
+            }
+            return response, 401
 
 
 def update_address(address_id, data):
