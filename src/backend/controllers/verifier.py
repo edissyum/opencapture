@@ -19,7 +19,7 @@
 from flask import current_app
 from flask_babel import gettext
 from ..import_classes import _Files
-from ..import_models import verifier
+from ..import_models import verifier, accounts
 
 
 def handle_uploaded_file(files):
@@ -61,9 +61,15 @@ def retrieve_invoices(args):
         args['where'].append('status = %s')
         args['data'].append(args['status'])
 
+    if 'allowedCustomers' in args and args['allowedCustomers']:
+        args['where'].append('customer_id IN (' + ','.join(map(str, args['allowedCustomers'])) + ')')
+
     total_invoices = verifier.get_invoices({'select': ['count(DISTINCT(invoices.id)) as total'], 'where': args['where'], 'data': args['data']})
     if total_invoices != 0:
         invoices_list = verifier.get_invoices(args)
+        for invoice in invoices_list:
+            if invoice['supplier_id']:
+                invoice['supplier_name'] = accounts.get_supplier_by_id({'supplier_id': invoice['supplier_id']})[0]['name']
         response = {
             "total": total_invoices[0]['total'],
             "invoices": invoices_list

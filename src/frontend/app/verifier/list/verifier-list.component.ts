@@ -16,12 +16,17 @@ import {UserService} from "../../../services/user.service";
 
 interface accountsNode {
     name: string;
+    id: number;
+    number: number,
+    display: boolean,
     children?: accountsNode [];
 }
 
 interface flatNode {
     expandable: boolean;
     name: string;
+    display: boolean;
+    number: number;
     level: number;
 }
 
@@ -58,13 +63,15 @@ export class VerifierListComponent implements OnInit {
     offset          : number            = 0;
     selectedTab     : number            = 0;
     invoices        : any []            = [];
-    customers       : any []            = [];
+    allowedCustomers: any []            = [];
     search          : string            = '';
     TREE_DATA       : accountsNode[]    = [];
     private _transformer = (node: accountsNode, level: number) => {
         return {
             expandable: !!node.children && node.children.length > 0,
             name: node.name,
+            display: node.display,
+            number: node.number,
             level: level,
         };
     }
@@ -121,42 +128,43 @@ export class VerifierListComponent implements OnInit {
         ).subscribe()
 
         this.loadCustomers()
-        this.loadInvoices()
     }
 
     loadCustomers() {
         let user = this.userService.getUser()
         this.http.get(API_URL + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.customers = data.customers;
+                let customers = data.customers;
                 if (user.privileges == '*'){
-                    this.customers.forEach((customer: any) => {
+                    customers.forEach((customer: any) => {
+                        this.allowedCustomers.push(customer.id)
                         this.TREE_DATA.push({
                             name: customer.name,
-                            children: [
-                                {'name': "Facture d'achat"},
-                                {'name': "Facture de vente"}
-                            ]
+                            id: customer.id,
+                            display: true,
+                            number: 0,
+                            children: []
                         });
                     });
-                    this.dataSource.data = this.TREE_DATA;
+                    this.loadInvoices();
                 }else{
                     this.http.get(API_URL + '/ws/users/getCustomersByUserId/' + user.id, {headers: this.authService.headers}).pipe(
                         tap((data: any) => {
                             data.forEach((id: any) =>{
-                                this.customers.forEach((customer: any) => {
+                                customers.forEach((customer: any) => {
                                     if (customer.id == id) {
+                                        this.allowedCustomers.push(customer.id)
                                         this.TREE_DATA.push({
                                             name: customer.name,
-                                            children: [
-                                                {'name': "Facture d'achat"},
-                                                {'name': "Facture de vente"}
-                                            ]
+                                            id: customer.id,
+                                            display: true,
+                                            number: 0,
+                                            children: []
                                         });
                                     }
                                 });
                             });
-                            this.dataSource.data = this.TREE_DATA;
+                            this.loadInvoices();
                         }),
                         catchError((err: any) => {
                             console.debug(err);
@@ -177,20 +185,148 @@ export class VerifierListComponent implements OnInit {
     loadInvoices() {
         this.loading = true
         this.http.post(API_URL + '/ws/verifier/invoices/list',
-            {'status': this.currentStatus, 'time': this.currentTime, 'limit': this.pageSize, 'offset': this.offset, 'search': this.search},
+            {'allowedCustomers': this.allowedCustomers, 'status': this.currentStatus, 'time': this.currentTime, 'limit': this.pageSize, 'offset': this.offset, 'search': this.search},
             {headers: this.authService.headers}
         ).pipe(
             tap((data: any) => {
-                this.total = data.total
-                this.invoices = data.invoices
+                this.total = data.total;
+                this.invoices = data.invoices;
+                let customersToKeep: any = [];
+                let customersPurchaseToKeep : any = [];
+                let customersSaleToKeep : any = [];
+                this.allowedCustomers.forEach((customer: any) => {
+                    this.invoices.forEach((invoice:any) => {
+                        if (invoice.customer_id == customer) {
+                            if (!customersToKeep.includes(customer))
+                                customersToKeep.push(customer)
+                            if (invoice.purchase_or_sale == 'purchase' && !customersPurchaseToKeep.includes(customer))
+                                customersPurchaseToKeep.push(customer)
+                            if (invoice.purchase_or_sale == 'sale' && !customersSaleToKeep.includes(customer))
+                                customersSaleToKeep.push(customer)
+                        }
+                    })
+                })
+
+                let customersToDelete = this.allowedCustomers.filter(function(o1) {
+                    return !customersToKeep.some(function(o2: any) {
+                        return o1 == o2
+                    });
+                });
+                // RESET the TREE DATA before re populate it
+                this.allowedCustomers.forEach((customer: any) => {
+                    this.TREE_DATA.forEach((data: any, index: number) => {
+                        if (data.id == customer) {
+                            this.TREE_DATA[index].display = true
+                            this.TREE_DATA[index].children = []
+                        }
+                    });
+                })
+                customersToDelete.forEach((customer: any) => {
+                    this.TREE_DATA.forEach((data: any, index: number) => {
+                        if (data.id == customer) {
+                            this.TREE_DATA[index].display = false
+                            this.TREE_DATA[index].children = []
+                        }
+                    });
+                })
+
+                this.TREE_DATA.forEach((data: any, index: number) => {
+                    customersSaleToKeep.forEach((customer1: any) => {
+                        if (data.id == customer1) {
+                            let childExists = false
+                            // @ts-ignore
+                            this.TREE_DATA[index].children.forEach((child: any) => {
+                                if (child.id == 0)
+                                    childExists = true
+                            })
+                            if (!childExists) {
+                                // @ts-ignore
+                                this.TREE_DATA[index].children.push(
+                                    {name: this.translate.instant('UPLOAD.sale_invoice'), id: 0, display: true, number: 0, children: []},
+                                )
+                                // @ts-ignore
+                                this.TREE_DATA[index].children.forEach((child: any, child_index) => {
+                                    if (child.id == 0) {
+                                        this.invoices.forEach((invoice: any) => {
+                                            if (this.TREE_DATA[index].id == invoice.customer_id && invoice.purchase_or_sale == 'sale') {
+                                                if(invoice.supplier_id) {
+                                                    // @ts-ignore
+                                                    this.fillChildren(this.TREE_DATA[index].children[child_index].children, invoice.supplier_name, invoice.supplier_name, invoice.id)
+                                                }else {
+                                                    // @ts-ignore
+                                                    this.fillChildren(this.TREE_DATA[index].children[child_index].children, invoice.supplier_name, 'Fournisseur inconnu', invoice.id)
+                                                }
+                                            }
+                                        })
+                                    }
+                                })
+                            }
+                        }
+                    })
+                    customersPurchaseToKeep.forEach((customer2: any) => {
+                        if (data.id == customer2) {
+                            if (this.TREE_DATA[index]) {
+                                let childExists = false
+                                // @ts-ignore
+                                this.TREE_DATA[index].children.forEach((child: any) => {
+                                    if (child.id == 1)
+                                        childExists = true
+                                })
+                                if (!childExists) {
+                                    // @ts-ignore
+                                    this.TREE_DATA[index].children.push(
+                                        {name: this.translate.instant('UPLOAD.purchase_invoice'), id: 1, display: true, number: 0, children: []},
+                                    )
+                                    // @ts-ignore
+                                    this.TREE_DATA[index].children.forEach((child: any, child_index) => {
+                                        if (child.id == 1) {
+                                            this.invoices.forEach((invoice: any) => {
+                                                if (this.TREE_DATA[index].id == invoice.customer_id && invoice.purchase_or_sale == 'purchase') {
+                                                    if(invoice.supplier_id) {
+                                                        // @ts-ignore
+                                                        this.fillChildren(this.TREE_DATA[index].children[child_index].children, invoice.supplier_name, invoice.supplier_name, invoice.id)
+                                                    }else {
+                                                        // @ts-ignore
+                                                        this.fillChildren(this.TREE_DATA[index].children[child_index].children, invoice.supplier_name, 'Fournisseur inconnu', invoice.id)
+                                                    }
+                                                }
+                                            })
+                                        }
+                                    })
+                                }
+                            }
+                        }
+                    })
+                })
+                console.log(this.TREE_DATA)
+                this.dataSource.data = this.TREE_DATA;
             }),
-            finalize(() => this.loading = false),
+            finalize(() => {console.log('here');this.loading = false}),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
                 return of(false);
             })
         ).subscribe()
+    }
+
+    fillChildren(parent: any, child_name: any, name: any, id: any){
+        let child_name_exists = false;
+        parent.forEach((child: any) => {
+            if (child.name == child_name){
+                child_name_exists = true;
+                child.number = child.number + 1;
+            }
+        })
+
+        if (!child_name_exists){
+            parent.push({
+                name: name,
+                id: id,
+                number: 1,
+                display: true
+            });
+        }
     }
 
     changeStatus(event: any){

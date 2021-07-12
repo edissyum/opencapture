@@ -7,9 +7,13 @@
                 <button mat-icon-button disabled>
                     <i class="text-green-400 ml-4 fas fa-user pb-0.5"></i>
                 </button>
-                <span class="pl-2 font-normal">{{node.name}}</span>
+                <span class="pl-2 font-normal">{{node.name}}
+                    <span class="relative bottom-1 bg-green-400 rounded-full px-1.5 text-center text-xs text-white">
+                        {{node.number}}
+                    </span>
+                </span>
             </mat-tree-node>
-            <mat-tree-node style="min-height: 24px" class="cursor-pointer hover:bg-black hover:bg-opacity-10" *matTreeNodeDef="let node;when: hasChild; when:isNotLevelOne" matTreeNodePadding matTreeNodeToggle>
+            <mat-tree-node [class.hidden]="!node.display" style="min-height: 24px" class="cursor-pointer hover:bg-black hover:bg-opacity-10" *matTreeNodeDef="let node;when: hasChild; when:isNotLevelOne" matTreeNodePadding matTreeNodeToggle>
                 <button mat-icon-button>
                     <mat-icon class="mat-icon-rtl-mirror text-gray-900">
                         {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
@@ -24,7 +28,6 @@
                 <span class="pl-2 font-normal">{{node.name}}</span>
             </mat-tree-node>
         </mat-tree>
-
     </mat-sidenav>
     <mat-sidenav-content class="bg-white overflow-hidden">
         <button mat-icon-button (click)="sidenav.toggle();"
@@ -70,7 +73,8 @@
                                         {{ 'FACTURATION.invoice_number' | translate }} : {{ invoice.invoice_number }}<br>
                                         {{ 'FACTURATION.invoice_date' | translate }} : {{ invoice.invoice_date | date:'dd-MM-YYYY' }}<br>
                                         {{ 'VERIFIER.register_date' | translate }} {{ invoice.date }}<br>
-                                        {{ 'VERIFIER.original_file' | translate }} : {{ invoice.original_filename }}
+                                        {{ 'VERIFIER.original_file' | translate }} : {{ invoice.original_filename }}<br>
+                                        {{ 'VERIFIER.customer_id' | translate }} : {{ invoice.customer_id }}
                                     </mat-card-subtitle>
                                 </mat-card-header>
                                 <mat-card-actions>

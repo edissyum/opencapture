@@ -136,6 +136,7 @@ CREATE TABLE "journals" (
 CREATE TABLE "invoices" (
     "id"                      SERIAL UNIQUE PRIMARY KEY,
     "supplier_id"             INTEGER,
+    "customer_id"             INTEGER,
     "purchase_or_sale"        VARCHAR(8) DEFAULT 'purchase',
     "vat_number"              VARCHAR DEFAULT NULL,
     "vat_number_position"     VARCHAR(80),
