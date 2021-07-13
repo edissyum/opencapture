@@ -1,31 +1,42 @@
 <mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem">
     <mat-sidenav #sidenav mode="side" opened class="w-1/6 flex flex-col h-full border-r border-green-400" style="top:0.1rem">
-        <h3 class="text-center text-gray-900 m-0 h-16" style="padding-top: 1.2rem">{{ "VERIFIER.suppliers_by_customer" | translate }}</h3>
+        <h3 class="text-center text-gray-900 m-0 h-16" style="padding-top: 1.2rem">
+            <i class="fas fa-sync-alt mr-2 cursor-pointer"
+               [matTooltip]="this.translate.instant('VERIFIER.reset_invoice_list')"
+               (click)="resetInvoices()"></i>
+            {{ "VERIFIER.suppliers_by_customer" | translate }}
+        </h3>
         <mat-divider></mat-divider>
         <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
-            <mat-tree-node style="min-height: 24px" class="cursor-pointer hover:bg-black hover:bg-opacity-20" *matTreeNodeDef="let node; when:isLevelTwo" matTreeNodePadding>
+            <mat-tree-node style="min-height: 24px" class="pl-12 cursor-pointer hover:bg-black hover:bg-opacity-20"
+                           *matTreeNodeDef="let node; when:isLevelTwo" (click)="loadInvoicePerCustomer(node)">
                 <button mat-icon-button disabled>
                     <i class="text-green-400 ml-4 fas fa-user pb-0.5"></i>
                 </button>
-                <span class="pl-2 font-normal">{{node.name}}
-                    <span class="relative bottom-1 bg-green-400 rounded-full px-1.5 text-center text-xs text-white">
-                        {{node.number}}
-                    </span>
+                <span class="pl-2 font-normal select-none">{{node.name}}</span>
+                <span class="float-right ml-auto select-none mr-20 bottom-1 bg-green-400 rounded-full px-1.5 py-0.5 text-center text-xs text-white">
+                    {{node.number}}
                 </span>
             </mat-tree-node>
-            <mat-tree-node [class.hidden]="!node.display" style="min-height: 24px" class="cursor-pointer hover:bg-black hover:bg-opacity-10" *matTreeNodeDef="let node;when: hasChild; when:isNotLevelOne" matTreeNodePadding matTreeNodeToggle>
+            <mat-tree-node [class.hidden]="!node.display || node.number == 0" style="min-height: 24px" class="cursor-pointer hover:bg-black hover:bg-opacity-10" *matTreeNodeDef="let node;when: hasChild; when:isNotLevelOne" matTreeNodeToggle>
                 <button mat-icon-button>
                     <mat-icon class="mat-icon-rtl-mirror text-gray-900">
                         {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
                     </mat-icon>
                 </button>
-                {{node.name}}
+                <span class="select-none">{{node.name}}</span>
+                <span *ngIf="!treeControl.isExpanded(node)" class="float-right ml-auto select-none mr-4 bg-green-400 rounded-full px-1.5 py-0.5 text-center text-xs text-white">
+                    {{node.number}}
+                </span>
             </mat-tree-node>
-            <mat-tree-node style="min-height: 24px" class="cursor-pointer hover:bg-black hover:bg-opacity-10" *matTreeNodeDef="let node;when: isLevelOne" matTreeNodePadding matTreeNodeToggle>
+            <mat-tree-node style="min-height: 24px" class="pl-6 cursor-pointer hover:bg-black hover:bg-opacity-10" *matTreeNodeDef="let node;when: isLevelOne" matTreeNodeToggle>
                 <button mat-icon-button>
                     <i [class.fa-folder-open]="treeControl.isExpanded(node)" class="text-gray-600 ml-4 fas fa-folder pb-0.5"></i>
                 </button>
-                <span class="pl-2 font-normal">{{node.name}}</span>
+                <span class="pl-2 font-normal select-none">{{node.name}}</span>
+                <span *ngIf="!treeControl.isExpanded(node)" class="float-right ml-auto select-none mr-12 bottom-1 bg-green-400 rounded-full px-1.5 py-0.5 text-center text-xs text-white">
+                    {{node.number}}
+                </span>
             </mat-tree-node>
         </mat-tree>
     </mat-sidenav>
@@ -63,7 +74,7 @@
                                 <img mat-card-image class="p-3.5 m-auto" src="assets/imgs/thumb.jpg">
                                 <mat-card-header class="leading-6">
                                     <mat-card-title>
-                                        <span>Nom du fournisseur</span>
+                                        <span>{{ invoice.supplier_name }}</span>
                                         <span class="absolute right-6 text-green-400 text-base badge badge-secondary badge-pill"
                                               [matTooltip]="this.translate.instant('VERIFIER.nb_pages') + ' : ' + invoice.nb_pages">
                                         {{ invoice.nb_pages }}<i class="far fa-file-alt ml-1"></i>
@@ -72,9 +83,8 @@
                                     <mat-card-subtitle class="mt-2 -mb-1">
                                         {{ 'FACTURATION.invoice_number' | translate }} : {{ invoice.invoice_number }}<br>
                                         {{ 'FACTURATION.invoice_date' | translate }} : {{ invoice.invoice_date | date:'dd-MM-YYYY' }}<br>
-                                        {{ 'VERIFIER.register_date' | translate }} {{ invoice.date }}<br>
-                                        {{ 'VERIFIER.original_file' | translate }} : {{ invoice.original_filename }}<br>
-                                        {{ 'VERIFIER.customer_id' | translate }} : {{ invoice.customer_id }}
+                                        {{ 'VERIFIER.register_date' | translate }} : {{ invoice.date }}<br>
+                                        {{ 'VERIFIER.original_file' | translate }} : {{ invoice.original_filename }}
                                     </mat-card-subtitle>
                                 </mat-card-header>
                                 <mat-card-actions>

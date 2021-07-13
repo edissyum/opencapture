@@ -64,6 +64,16 @@ def retrieve_invoices(args):
     if 'allowedCustomers' in args and args['allowedCustomers']:
         args['where'].append('customer_id IN (' + ','.join(map(str, args['allowedCustomers'])) + ')')
 
+    if 'allowedSuppliers' in args and args['allowedSuppliers']:
+        if not args['allowedSuppliers'][0]:
+            args['where'].append('supplier_id is NULL')
+        else:
+            args['where'].append('supplier_id IN (' + ','.join(map(str, args['allowedSuppliers'])) + ')')
+
+    if 'purchaseOrSale' in args and args['purchaseOrSale']:
+        args['where'].append('purchase_or_sale = %s')
+        args['data'].append(args['purchaseOrSale'])
+
     total_invoices = verifier.get_invoices({'select': ['count(DISTINCT(invoices.id)) as total'], 'where': args['where'], 'data': args['data']})
     if total_invoices != 0:
         invoices_list = verifier.get_invoices(args)

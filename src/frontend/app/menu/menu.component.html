@@ -40,7 +40,9 @@
                                 *ngIf="location.path() !== '/home' && this.getSplitterOrVerifier() != undefined && this.getSplitterOrVerifier() != ''"
                                 [disabled]="!this.privilegesService.hasPrivilege('upload')"
                                 [class.cursor-not-allowed]="!this.privilegesService.hasPrivilege('upload')"
-                       class="text-gray-500 hover:bg-green-400 hover:text-white px-3 py-2 text-sm font-medium transition duration-300">
+                                [class.hover:bg-green-400]="this.privilegesService.hasPrivilege('upload')"
+                                [class.hover:text-white]="this.privilegesService.hasPrivilege('upload')"
+                                class="text-gray-500 px-3 py-2 text-sm font-medium transition duration-300">
                             {{ 'GLOBAL.upload' | translate }}
                         </button>
                     </div>
