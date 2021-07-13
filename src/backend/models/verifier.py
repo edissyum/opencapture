@@ -42,7 +42,8 @@ def get_invoices(args):
 
     invoices = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
-        'table': ['invoices'],
+        'table': ['invoices'] if 'table' not in args else args['table'],
+        'left_join': [] if 'left_join' not in args else args['left_join'],
         'where': ['1 = %s'] if 'where' not in args else args['where'],
         'data': ['1'] if 'data' not in args else args['data'],
         'order_by': [] if 'order_by' not in args else args['order_by'],

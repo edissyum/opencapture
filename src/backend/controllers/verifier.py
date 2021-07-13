@@ -50,6 +50,8 @@ def retrieve_invoices(args):
     args['select'].append("DISTINCT(invoices.id) as invoice_id")
     args['select'].append("to_char(register_date, 'DD-MM-YYY à HH24:MI:SS') as date")
     args['select'].append("*")
+    args['table'] = ['invoices']
+    args['left_join'] = []
 
     if 'time' in args:
         if args['time'] in ['today', 'yesterday']:
@@ -58,8 +60,13 @@ def retrieve_invoices(args):
             args['where'].append("to_char(register_date, 'YYYY-MM-DD') < to_char(TIMESTAMP 'yesterday', 'YYYY-MM-DD')")
 
     if 'status' in args:
-        args['where'].append('status = %s')
+        args['where'].append('invoices.status = %s')
         args['data'].append(args['status'])
+
+    if 'search' in args and args['search']:
+        args['table'] = ['invoices', 'accounts_supplier']
+        args['left_join'] = ['invoices.supplier_id = accounts_supplier.id']
+        args['where'].append("(LOWER(invoices.invoice_number) LIKE '%%" + args['search'].lower() + "%%' OR LOWER(accounts_supplier.name) LIKE '%%" + args['search'].lower() + "%%')")
 
     if 'allowedCustomers' in args and args['allowedCustomers']:
         args['where'].append('customer_id IN (' + ','.join(map(str, args['allowedCustomers'])) + ')')
@@ -74,7 +81,13 @@ def retrieve_invoices(args):
         args['where'].append('purchase_or_sale = %s')
         args['data'].append(args['purchaseOrSale'])
 
-    total_invoices = verifier.get_invoices({'select': ['count(DISTINCT(invoices.id)) as total'], 'where': args['where'], 'data': args['data']})
+    total_invoices = verifier.get_invoices({
+        'select': ['count(DISTINCT(invoices.id)) as total'],
+        'where': args['where'],
+        'data': args['data'],
+        'table': args['table'],
+        'left_join': args['left_join'],
+    })
     if total_invoices != 0:
         invoices_list = verifier.get_invoices(args)
         for invoice in invoices_list:
