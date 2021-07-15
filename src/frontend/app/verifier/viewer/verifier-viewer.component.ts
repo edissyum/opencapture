@@ -8,10 +8,12 @@ import {AuthService} from "../../../services/auth.service";
 import {NotificationService} from "../../../services/notifications/notifications.service";
 import {TranslateService} from "@ngx-translate/core";
 import {marker} from "@biesbjerg/ngx-translate-extract-marker";
-import {FormControl} from "@angular/forms";
+import {FormControl, Validators} from "@angular/forms";
 import { DatePipe } from '@angular/common';
 import {LocalStorageService} from "../../../services/local-storage.service";
+import {ConfigService} from "../../../services/config.service";
 declare var $: any;
+import * as moment from 'moment';
 
 @Component({
     selector: 'app-viewer',
@@ -50,6 +52,12 @@ export class VerifierViewerComponent implements OnInit {
         'facturation': [],
         'other': []
     }
+    pattern         : any = {
+        'alphanum': '^[0-9a-zA-Z]*$',
+        'number_int': '^[0-9]*$',
+        'number_float': '^[0-9]*([.][0-9]*)*$',
+        'char': '^.*$',
+    }
 
     constructor(
         private http: HttpClient,
@@ -57,13 +65,16 @@ export class VerifierViewerComponent implements OnInit {
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
+        private configService: ConfigService,
         private localeStorageService: LocalStorageService
     ) {}
 
     async ngOnInit(): Promise<void> {
         this.localeStorageService.save('splitter_or_verifier', 'verifier')
         this.imageInvoice = $('#invoice_image');
-        // Enable library to draw rectangle (OCR ON FLY)
+        /*
+        * Enable library to draw rectangle (OCR ON FLY)
+        */
         this.ocr({
             'target' : {
                 'id': '',
@@ -84,9 +95,9 @@ export class VerifierViewerComponent implements OnInit {
         for (let parent in this.fields) {
             for (let cpt in data.fields[parent]) {
                 let field = data.fields[parent][cpt]
-                let position = this.invoice[field.id + '_position'];
+                let position = this.getPosition(field.id);
+
                 if (position){
-                    position = JSON.parse(position);
                     this.lastId = field.id;
                     this.lastLabel = this.translate.instant(field.label).trim();
                     this.lastColor = field.color
@@ -99,14 +110,22 @@ export class VerifierViewerComponent implements OnInit {
                         height: position.height
                     };
                     let triggerEvent = $('.trigger');
+                    triggerEvent.hide();
                     triggerEvent.trigger('mousedown');
                     triggerEvent.trigger('mouseup', [newArea]);
-                    setTimeout(() => {
-                        $('#' + field.id).blur();
-                    });
                 }
             }
         }
+    }
+
+    getPosition(field_id: any) {
+        let position: any
+        Object.keys(this.invoice.positions).forEach((element: any) => {
+            if (element == field_id) {
+                position = this.invoice.positions[field_id]
+            }
+        })
+        return position
     }
 
     async getInvoice(): Promise<any> {
@@ -122,8 +141,8 @@ export class VerifierViewerComponent implements OnInit {
 
     async fillForm(data: any): Promise<any> {
         this.fields = data.fields
-        for (let parent in this.fields){
-            for (let cpt in data.fields[parent]){
+        for (let parent in this.fields) {
+            for (let cpt in data.fields[parent]) {
                 let field = data.fields[parent][cpt]
                 this.form[parent].push({
                     id: field.id,
@@ -131,6 +150,7 @@ export class VerifierViewerComponent implements OnInit {
                     required: field.required,
                     control: new FormControl(),
                     type: field.type,
+                    pattern: this.getPattern(field.format),
                     color: field.color,
                     unit: field.unit,
                     class: field.class,
@@ -140,12 +160,13 @@ export class VerifierViewerComponent implements OnInit {
                 })
                 let value = this.invoice[field.id];
                 let _field = this.form[parent][this.form[parent].length - 1]
-                if (field.format == 'date' && field.id !== '' && field.id !== undefined){
+                if (field.format == 'date' && field.id !== '' && field.id !== undefined) {
                     value = new Date(value)
                 }
                 _field.control.setValue(value)
             }
         }
+        console.log(this.form)
     }
 
     getSelectionByCpt(selection: any, cpt: any) {
@@ -156,6 +177,7 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     ocr(event: any, enable: boolean, color = 'green') {
+        $('.trigger').show();
         let _this = this;
         this.lastId = event.target.id;
         this.lastLabel = event.target.labels[0].textContent.trim();
@@ -246,34 +268,71 @@ export class VerifierViewerComponent implements OnInit {
         }
     }
 
-    savePosition(position: []) {
-        let data = {
-            [this.lastId]: position
+    savePosition(position: any) {
+        position = {
+            x: position.x,
+            y: position.y,
+            height: position.height,
+            width: position.width
         }
-        console.log(data)
+
         this.http.put(API_URL + '/ws/accounts/supplier/' + this.invoice.supplier_id + '/updatePosition',
             {'args': {[this.lastId]: position}},
             {headers: this.authService.headers}).pipe(
-            tap(() => {
-                this.notify.success(this.translate.instant('INVOICES.position_updated', {"input": this.lastLabel}));
-            }),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+        ).subscribe()
+
+        this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/updatePosition',
+            {'args': {[this.lastId]: position}},
+            {headers: this.authService.headers}).pipe(
+                tap(() => {
+                    this.notify.success(this.translate.instant('INVOICES.position_updated', {"input": this.lastLabel}));
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
         ).subscribe()
     }
 
-    // getErrorMessageSupplier(field: any) {
-    //     let error = undefined;
-    //     this.customerForm.forEach(element => {
-    //         if (element.id == field) {
-    //             if (element.required && !(element.value || element.control.value)) {
-    //                 error = this.translate.instant('AUTH.field_required');
-    //             }
-    //         }
-    //     })
-    //     return error
-    // }
+    getPattern(format: any) {
+        let pattern = ''
+        for (let cpt in this.pattern) {
+            if (cpt == format){
+                pattern = this.pattern[cpt]
+            }
+        }
+        return pattern
+    }
+
+    getErrorMessage(field: any, category: any) {
+        let error = undefined;
+        this.form[category].forEach((element: any) => {
+            if (element.id == field) {
+                if (element.control.errors) {
+                    let pattern = element.control.errors.pattern;
+                    let datePickerPattern = element.control.errors.matDatepickerParse;
+                    if (pattern) {
+                        if (pattern.requiredPattern == this.getPattern('alphanum')) {
+                            error = this.translate.instant('ERROR.alphanum_pattern');
+                        }else if(pattern.requiredPattern == this.getPattern('number_int')) {
+                            error = this.translate.instant('ERROR.number_int_pattern');
+                        }else if(pattern.requiredPattern == this.getPattern('number_float')) {
+                            error = this.translate.instant('ERROR.number_float_pattern');
+                        }
+                    }else if (datePickerPattern) {
+                        error = this.translate.instant('ERROR.date_pattern');
+                    }else {
+                        error = this.translate.instant('ERROR.unknow_error');
+                    }
+                }
+            }
+        })
+        return error
+    }
 }

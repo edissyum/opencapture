@@ -40,7 +40,7 @@ export class FormBuilderComponent implements OnInit {
         marker('TYPES.select'),
         marker('VERIFIER.field_settings'),
     ]
-    fieldCategories         : any[] = [
+    fieldCategories         : any [] = [
         {
             'id': 'supplier',
             'label': marker('FORMS.supplier')
@@ -80,7 +80,7 @@ export class FormBuilderComponent implements OnInit {
                     class: "w-1/3",
                     class_label: "1/33",
                     color: 'green',
-                    format: 'number',
+                    format: 'number_int',
                     format_icon:'text-lg icomoon-numbers'
                 },
                 {
@@ -92,7 +92,7 @@ export class FormBuilderComponent implements OnInit {
                     class: "w-1/3",
                     class_label: "1/33",
                     color: 'lime',
-                    format: 'number',
+                    format: 'number_int',
                     format_icon:'text-lg icomoon-numbers'
                 },
                 {
@@ -137,7 +137,7 @@ export class FormBuilderComponent implements OnInit {
                     required: true,
                     class: "w-1/3",
                     class_label: "1/33",
-                    format: 'number',
+                    format: 'number_int',
                     format_icon:'text-lg icomoon-numbers'
                 },
                 {
@@ -238,7 +238,7 @@ export class FormBuilderComponent implements OnInit {
                     class: "w-1/3",
                     class_label: "1/33",
                     color: 'pink',
-                    format: 'number',
+                    format: 'number_float',
                     format_icon:'text-lg icomoon-numbers'
                 },
                 {
@@ -250,7 +250,7 @@ export class FormBuilderComponent implements OnInit {
                     class: "w-1/3",
                     class_label: "1/33",
                     color: 'fuschia',
-                    format: 'number',
+                    format: 'number_float',
                     format_icon:'text-lg icomoon-numbers'
                 },
                 {
@@ -262,7 +262,7 @@ export class FormBuilderComponent implements OnInit {
                     class: "w-1/3",
                     class_label: "1/33",
                     color: 'purple',
-                    format: 'number',
+                    format: 'number_float',
                     format_icon:'text-lg icomoon-numbers'
                 },
                 {
@@ -282,7 +282,7 @@ export class FormBuilderComponent implements OnInit {
                     required: true,
                     class: "w-1/3",
                     class_label: "1/33",
-                    format: 'number',
+                    format: 'number_float',
                     format_icon:'text-lg icomoon-numbers'
                 },
                 {
@@ -293,7 +293,7 @@ export class FormBuilderComponent implements OnInit {
                     required: true,
                     class: "w-1/3",
                     class_label: "1/33",
-                    format: 'number',
+                    format: 'number_float',
                     format_icon:'text-lg icomoon-numbers'
                 },
                 {
@@ -305,7 +305,7 @@ export class FormBuilderComponent implements OnInit {
                     class: "w-1/3",
                     class_label: "1/33",
                     color: '',
-                    format: 'number',
+                    format: 'number_float',
                     format_icon:'text-lg icomoon-numbers'
                 },
             ]
@@ -321,7 +321,7 @@ export class FormBuilderComponent implements OnInit {
         'facturation': [],
         'other': []
     }
-    classList               : any[] = [
+    classList               : any [] = [
         {
             'id': 'w-full',
             'label': '1'
@@ -347,7 +347,7 @@ export class FormBuilderComponent implements OnInit {
             'label': '1/5'
         }
     ]
-    colorsList              : any[] = [
+    colorsList              : any [] = [
         {
             'id': 'yellow',
             'label': marker('COLORS.yellow')
@@ -417,15 +417,20 @@ export class FormBuilderComponent implements OnInit {
             'label': marker('COLORS.green')
         },
     ]
-    formatList              : any[] = [
+    formatList              : any [] = [
         {
             'id': 'date',
             'label': marker('FORMATS.date'),
             'icon': 'fas fa-calendar-day'
         },
         {
-            'id': 'number',
-            'label': marker('FORMATS.number'),
+            'id': 'number_float',
+            'label': marker('FORMATS.number_float'),
+            'icon': 'text-lg icomoon-numbers'
+        },
+        {
+            'id': 'number_int',
+            'label': marker('FORMATS.number_int'),
             'icon': 'text-lg icomoon-numbers'
         },
         {
@@ -451,15 +456,13 @@ export class FormBuilderComponent implements OnInit {
         private notify: NotificationService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService
-    ) {
-    }
+    ) {}
 
     ngOnInit(): void {
         this.serviceSettings.init()
         this.formId = this.route.snapshot.params['id'];
         if (this.formId) {
             this.creationMode = false
-
             this.http.get(API_URL + '/ws/forms/getById/' + this.formId, {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
                     for (let field in this.form){

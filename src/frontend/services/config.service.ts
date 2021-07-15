@@ -15,8 +15,7 @@ export class ConfigService {
         private http: HttpClient,
         private authService: AuthService,
         private notify:NotificationService,
-    ) {
-    }
+    ) {}
 
     readConfig() {
         return new Promise((resolve) => {
@@ -40,6 +39,6 @@ export class ConfigService {
     }
 
     getConfig(){
-        return JSON.parse(atob(<string>this.authService.getTokenCustom('OpenCaptureForInvoicesConfig')))
+        return JSON.parse(atob(<string>this.authService.getTokenCustom('OpenCaptureForInvoicesConfig')));
     }
 }

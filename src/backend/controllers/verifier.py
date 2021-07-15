@@ -15,10 +15,12 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
+import json
 
 from flask import current_app
 from flask_babel import gettext
 from ..import_classes import _Files
+from ..import_controllers import pdf
 from ..import_models import verifier, accounts
 
 
@@ -98,3 +100,31 @@ def retrieve_invoices(args):
             "invoices": invoices_list
         }
         return response, 200
+
+
+def update_position_by_invoice_id(invoice_id, data):
+    _vars = pdf.init()
+    _db = _vars[0]
+    invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
+    if error is None:
+        column = ''
+        position = ''
+        for _position in data:
+            column = _position
+            position = data[_position]
+
+        invoice_positions = invoice_info['positions']
+        invoice_positions.update({
+            column: position
+        })
+        res, error = verifier.update_invoice({'set': {"positions": json.dumps(invoice_positions)}, 'invoice_id': invoice_id})
+        if error is None:
+            return '', 200
+        else:
+            response = {
+                "errors": gettext('UPDATE_INVOICE_POSITIONS_ERROR'),
+                "message": error
+            }
+            return response, 401
+
+

@@ -86,6 +86,23 @@ def get_form_by_supplier_id(supplier_id):
             return response, 401
 
 
+def get_default_form():
+    form_id, error = forms.get_default_form({'select': ['id']})
+    if error is None:
+        form_info, error = forms.get_fields({
+            'form_id': form_id['id']
+        })
+
+        if error is None:
+            return form_info, 200
+        else:
+            response = {
+                "errors": gettext('GET_FORM_BY_SUPPLIER_ID_ERROR'),
+                "message": error
+            }
+            return response, 401
+
+
 def update_form(form_id, args):
     form_info, error = forms.get_form_by_id({'form_id': form_id})
     if error is None:

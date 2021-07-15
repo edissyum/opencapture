@@ -57,6 +57,24 @@ def get_form_by_id(args):
     return form, error
 
 
+def get_default_form(args):
+    _db = db.get_db()
+    error = None
+    form = _db.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['form_models'],
+        'where': ['"default" = %s', 'status <> %s'],
+        'data': [True, 'DEL']
+    })
+
+    if not form:
+        error = gettext('GET_DEFAULT_FORM_ERROR')
+    else:
+        form = form[0]
+
+    return form, error
+
+
 def update_form(args):
     _db = db.get_db()
     error = None

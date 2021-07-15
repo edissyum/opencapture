@@ -52,3 +52,20 @@ def get_invoices(args):
     })
 
     return invoices
+
+
+def update_invoice(args):
+    _db = db.get_db()
+    error = None
+
+    supplier = _db.update({
+        'table': ['invoices'],
+        'set': args['set'],
+        'where': ['id = %s'],
+        'data': [args['invoice_id']]
+    })
+
+    if supplier[0] is False:
+        error = gettext('INVOICE_UPDATE_ERROR')
+
+    return supplier, error
