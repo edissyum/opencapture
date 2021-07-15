@@ -50,7 +50,7 @@ class FindSupplier:
         args = {
             'select': ['*'],
             'table': ['suppliers'],
-            'where': [column + ' = ?', 'status NOT IN (?)', 'company_type = ?'],
+            'where': ['TRIM(' + column + ') = ?', 'status NOT IN (?)', 'company_type = ?'],
             'data': [data, 'DEL', 'supplier']
         }
         existing_supplier = self.Database.select(args)
