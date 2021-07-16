@@ -16,7 +16,7 @@
     }
 }
 
-::ng-deep .mat-paginator {
+::ng-deep .verifier-list .mat-paginator {
     & .mat-paginator-outer-container {
         width: 110%;
         @apply -ml-14;

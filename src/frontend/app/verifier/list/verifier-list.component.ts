@@ -68,6 +68,7 @@ export class VerifierListComponent implements OnInit {
     ]
     pageSize        : number            = 16;
     pageIndex       : number            = 0;
+    pageSizeOptions : any []            = [4, 8, 16, 24, 48];
     total           : number            = 0;
     offset          : number            = 0;
     selectedTab     : number            = 0;
@@ -116,7 +117,7 @@ export class VerifierListComponent implements OnInit {
     isLevelTwo = (_: number, node: flatNode) => node.level === 2;
     isNotLevelOne = (_: number, node: flatNode) => node.level !== 1;
 
-    ngOnInit(): void {
+    async ngOnInit() {
         marker('VERIFIER.nb_pages') // Needed to get the translation in the JSON file
         marker('VERIFIER.reset_invoice_list') // Needed to get the translation in the JSON file
         this.localeStorageService.save('splitter_or_verifier', 'verifier')

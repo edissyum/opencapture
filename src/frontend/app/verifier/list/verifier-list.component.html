@@ -43,12 +43,12 @@
     <mat-sidenav-content class="bg-white overflow-hidden">
         <button mat-icon-button (click)="sidenav.toggle();"
                 class="absolute left-2 top-2" style="z-index: 999">
-            <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fas fa-stream text-xl"></i>
+            <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fas fa-stream text-xl text-gray-900"></i>
         </button>
         <mat-tab-group [selectedIndex]="selectedTab" (selectedTabChange)="onTabChange($event)" class="batches overflow-auto" animationDuration="0ms">
             <mat-tab *ngFor="let batch of batchList" [label]="this.translate.instant(batch.label)" [id]="batch.id">
                 <div class="flex flex-col">
-                    <div class="grid grid-cols-3 grid-flow-row gap-0 mt-4 z-30">
+                    <div class="verifier-list grid grid-cols-3 grid-flow-row gap-0 mt-4 z-30">
                         <mat-form-field class="left-4 w-1/2" appearance="outline">
                             <mat-label>{{ 'VERIFIER.search' | translate }}</mat-label>
                             <input matInput type="text" (keyup)="searchInvoice($event)">
@@ -62,7 +62,7 @@
                             </mat-select>
                         </mat-form-field>
                         <mat-paginator [length]="this.total" [pageSize]="pageSize" [pageIndex]="pageIndex"
-                                       [pageSizeOptions]="[4, 8, 16, 24, 48]" (page)="onPageChange($event)"></mat-paginator>
+                                       [pageSizeOptions]="this.pageSizeOptions" (page)="onPageChange($event)"></mat-paginator>
                     </div>
                     <hr class="w-1/2 m-auto mb-4 border-green-400 relative z-30">
                     <div *ngIf="loading">

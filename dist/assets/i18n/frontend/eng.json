@@ -74,9 +74,13 @@
 	},
 	"ERROR": {
 		"404": "The page you are looking for does not exist",
+		"alphanum_pattern": "",
 		"connection_failed": "Error connecting to server",
+		"date_pattern": "",
 		"is_server_up": "Is server up ?",
 		"jwt_error": "Authentification by token error",
+		"number_float_pattern": "",
+		"number_int_pattern": "",
 		"unauthorized": "You are not allowed to see this page",
 		"unknow_error": "Unknow error"
 	},
@@ -99,7 +103,8 @@
 		"alphanum": "",
 		"char": "",
 		"date": "",
-		"number": ""
+		"number_float": "",
+		"number_int": ""
 	},
 	"FORMS": {
 		"available_fields": "",
@@ -111,6 +116,7 @@
 		"custom_fields": "",
 		"default": "",
 		"delete": "",
+		"delete_field": "",
 		"disable": "",
 		"enable": "",
 		"is_default": "",
@@ -229,9 +235,9 @@
 		"list": ""
 	},
 	"TYPES": {
+		"char": "",
 		"date": "",
 		"select": "",
-		"text": "",
 		"textarea": ""
 	},
 	"UPLOAD": {
@@ -278,6 +284,7 @@
 		"nb_pages": "",
 		"original_file": "",
 		"register_date": "",
+		"reset_invoice_list": "",
 		"search": "",
 		"size": "",
 		"suppliers_by_customer": "",
