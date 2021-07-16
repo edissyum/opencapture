@@ -116,6 +116,7 @@
 		"custom_fields": "",
 		"default": "",
 		"delete": "",
+		"delete_field": "",
 		"disable": "",
 		"enable": "",
 		"is_default": "",
@@ -234,9 +235,9 @@
 		"list": ""
 	},
 	"TYPES": {
+		"char": "",
 		"date": "",
 		"select": "",
-		"text": "",
 		"textarea": ""
 	},
 	"UPLOAD": {

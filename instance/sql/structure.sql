@@ -13,7 +13,7 @@ CREATE TABLE "users" (
 CREATE TABLE "form_models" (
     "id"      SERIAL UNIQUE PRIMARY KEY,
     "label"   VARCHAR(50),
-    "default" boolean default false,
+    "default_form" boolean default false,
     "enabled" boolean default true,
     "status" VARCHAR(5) default 'OK'
 );
@@ -97,20 +97,6 @@ CREATE TABLE "accounts_customer" (
     "address_id"      INTEGER,
     "status"          VARCHAR(3) DEFAULT 'OK',
     "creation_date"   TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
-);
-
-CREATE TABLE "accounts_supplements" (
-    "id"                        SERIAL UNIQUE PRIMARY KEY,
-    "account_id"                VARCHAR(20),
-    "invoice_number_position"   VARCHAR,
-    "invoice_number_page"       VARCHAR,
-    "invoice_date_page"         VARCHAR,
-    "vat_positions"             JSONB DEFAULT '{}',
-    "no_taxes_positions"        JSONB DEFAULT '{}',
-    "order_number_positions"    JSONB DEFAULT '{}',
-    "delivery_number_positions" JSONB DEFAULT '{}',
-    "footer_page"               INTEGER,
-    "thirds_page"               INTEGER
 );
 
 CREATE TABLE "accounting_plan" (

@@ -28,7 +28,7 @@ import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from "@angular/material/form-field";
 })
 export class FormListComponent implements OnInit {
     loading: boolean            = true
-    columnsToDisplay: string[]  = ['id', 'label', 'default', 'enabled', 'actions'];
+    columnsToDisplay: string[]  = ['id', 'label', 'default_form', 'enabled', 'actions'];
     pageSize : number           = 10;
     pageIndex: number           = 0;
     total: number               = 0;

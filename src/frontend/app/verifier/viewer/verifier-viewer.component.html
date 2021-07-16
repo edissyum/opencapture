@@ -22,8 +22,7 @@
                                         {{ field.label | translate }}
                                     </mat-label>
                                     <input [id]="field.id" matInput type="text"
-                                           [formControl]="field.control"
-                                           [pattern]="field.pattern"
+                                           [formControl]="field.control" [pattern]="field.pattern"
                                            (focusin)="ocr($event, true, field.color)"
                                            (focusout)="ocr($event, false)">
                                     <mat-error class="mt-1" *ngIf="field.control.errors">{{ getErrorMessage(field.id, category['id']) }}</mat-error>
@@ -35,8 +34,7 @@
                                         {{ field.label | translate }}
                                     </mat-label>
                                     <textarea [id]="field.id" cdkTextareaAutosize cdkAutosizeMinRows="1" matInput
-                                              [formControl]="field.control"
-                                              [pattern]="field.pattern"
+                                              [formControl]="field.control" [pattern]="field.pattern"
                                               (focusin)="ocr($event, true, field.color)"
                                               (focusout)="ocr($event, false)"></textarea>
                                     <mat-error class="mt-1" *ngIf="field.control.errors">{{ getErrorMessage(field.id, category['id']) }}</mat-error>

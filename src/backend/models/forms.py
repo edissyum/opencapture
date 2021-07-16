@@ -63,7 +63,7 @@ def get_default_form(args):
     form = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['form_models'],
-        'where': ['"default" = %s', 'status <> %s'],
+        'where': ['default_form = %s', 'status <> %s'],
         'data': [True, 'DEL']
     })
 
@@ -133,7 +133,7 @@ def add_form(args):
             'table': 'form_models',
             'columns': {
                 'label': args['label'],
-                'default': args['"default"'],
+                'default': args['default_form'],
             }
         }
         res = _db.insert(args)

@@ -103,8 +103,8 @@
 		"alphanum": "Caractères alphanumériques [0-9aA-zZ]",
 		"char": "Caractères alphabétiques [aA-zZ]",
 		"date": "Date",
-		"number_float": "Caractères numériques entier [0-9]",
-		"number_int": "Caractères numériques flottant [0-90.0-0.9]"
+		"number_float": "Caractères numériques flottant [0-90.0-0.9]",
+		"number_int": "Caractères numériques entier [0-9]"
 	},
 	"FORMS": {
 		"available_fields": "Champs disponibles",
@@ -116,6 +116,7 @@
 		"custom_fields": "Champs personnalisés",
 		"default": "Formulaire par défaut",
 		"delete": "Supprimer le formulaire",
+		"delete_field": "Supprimer le champ",
 		"disable": "Désactiver le formulaire",
 		"enable": "Activer le formulaire",
 		"is_default": "Formulaire par défaut",
@@ -234,9 +235,9 @@
 		"list": "Liste des status"
 	},
 	"TYPES": {
+		"char": "Chaine de caractères",
 		"date": "Date",
 		"select": "Liste de choix",
-		"text": "Chaîne de caractères",
 		"textarea": "Multi lignes"
 	},
 	"UPLOAD": {

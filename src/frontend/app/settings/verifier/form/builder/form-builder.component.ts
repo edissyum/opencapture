@@ -27,18 +27,21 @@ export class FormBuilderComponent implements OnInit {
         'label': {
             'control': new FormControl(),
         },
-        'default': {
+        'default_form': {
             'control': new FormControl(),
         }
     }
     formId                  : any;
     creationMode            : boolean = true
     labelType               : any [] = [
-        marker('TYPES.text'),
+        marker('TYPES.char'),
         marker('TYPES.textarea'),
+        marker('FORMATS.number_int'),
+        marker('FORMATS.number_float'),
         marker('TYPES.date'),
         marker('TYPES.select'),
         marker('VERIFIER.field_settings'),
+        marker('FORMS.delete_field'),
     ]
     fieldCategories         : any [] = [
         {
@@ -644,9 +647,9 @@ export class FormBuilderComponent implements OnInit {
 
     updateForm() {
         let label = this.form.label.control.value
-        let is_default = this.form.default.control.value
+        let is_default = this.form.default_form.control.value
         if (label){
-            this.http.put(API_URL + '/ws/forms/update/' + this.formId, {'args': {'label' : label, '"default"' : is_default}}, {headers: this.authService.headers},
+            this.http.put(API_URL + '/ws/forms/update/' + this.formId, {'args': {'label' : label, 'default_form' : is_default}}, {headers: this.authService.headers},
             ).pipe(
                 tap(()=> {
                     this.http.post(API_URL + '/ws/forms/updateFields/' + this.formId, this.fields, {headers: this.authService.headers}).pipe(
@@ -673,9 +676,9 @@ export class FormBuilderComponent implements OnInit {
 
     createForm(){
         let label = this.form.label.control.value
-        let is_default = this.form.default.control.value
+        let is_default = this.form.default_form.control.value
         if (label){
-            this.http.post(API_URL + '/ws/forms/add', {'args': {'label' : label, '"default"' : is_default}}, {headers: this.authService.headers},
+            this.http.post(API_URL + '/ws/forms/add', {'args': {'label' : label, 'default_form' : is_default}}, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {
                     this.http.post(API_URL + '/ws/forms/updateFields/' + data.id, this.fields, {headers: this.authService.headers}).pipe(

@@ -96,8 +96,7 @@ export class VerifierViewerComponent implements OnInit {
             for (let cpt in data.fields[parent]) {
                 let field = data.fields[parent][cpt]
                 let position = this.getPosition(field.id);
-
-                if (position){
+                if (position) {
                     this.lastId = field.id;
                     this.lastLabel = this.translate.instant(field.label).trim();
                     this.lastColor = field.color
@@ -166,7 +165,6 @@ export class VerifierViewerComponent implements OnInit {
                 _field.control.setValue(value)
             }
         }
-        console.log(this.form)
     }
 
     getSelectionByCpt(selection: any, cpt: any) {

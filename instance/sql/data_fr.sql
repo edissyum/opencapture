@@ -40,7 +40,7 @@ INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (2, '{"data" 
 INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (3, '{"data" : "[2, 3, 6, 7, 8, 9]"}');
 
 -- ADD DEFAULT FORM
-INSERT INTO "form_models" (id, label, "default", enabled) VALUES (1, 'Formulaire par défaut', true, true);
+INSERT INTO "form_models" (id, label, default_form, enabled) VALUES (1, 'Formulaire par défaut', true, true);
 ALTER SEQUENCE "form_models_id_seq" RESTART WITH 2;
 
 -- GENERATE DEFAULT FORM FIELD

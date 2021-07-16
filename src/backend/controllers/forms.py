@@ -106,7 +106,13 @@ def get_default_form():
 def update_form(form_id, args):
     form_info, error = forms.get_form_by_id({'form_id': form_id})
     if error is None:
+        # Remove previous default form is the updated one is set to default
+        if 'default_form' in args and args['default_form'] is True:
+            default_form = forms.get_default_form({})
+            forms.update_form({'set': {'default_form': False}, 'form_id': default_form[0]['id']})
+
         res, error = forms.update_form({'set': args, 'form_id': form_id})
+
         if res:
             response = {
                 "res": res

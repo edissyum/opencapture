@@ -93,11 +93,11 @@
                 <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.label' | translate }} </mat-header-cell>
                 <mat-cell *matCellDef="let element"> {{element.label}} </mat-cell>
             </ng-container>
-            <ng-container matColumnDef="default">
+            <ng-container matColumnDef="default_form">
                 <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'FORMS.default' | translate }} </mat-header-cell>
                 <mat-cell *matCellDef="let element">
-                    <span *ngIf="element.default "> <span class="text-green-400 text-6xl relative top-2 left-10 leading-4">&bull;</span></span>
-                    <span *ngIf="!element.default"> <span class="text-red-600 text-6xl relative top-2 left-10 leading-4">&bull;</span></span>
+                    <span *ngIf="element.default_form "> <span class="text-green-400 text-6xl relative top-2 left-10 leading-4">&bull;</span></span>
+                    <span *ngIf="!element.default_form"> <span class="text-red-600 text-6xl relative top-2 left-10 leading-4">&bull;</span></span>
                 </mat-cell>
             </ng-container>
             <ng-container matColumnDef="enabled">

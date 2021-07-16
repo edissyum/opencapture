@@ -95,7 +95,7 @@
                     <input matInput [formControl]="this.form['label'].control" required>
                 </mat-form-field>
                 <div class="w-1/4 flex justify-center mt-1">
-                    <mat-slide-toggle [formControl]="this.form['default'].control">
+                    <mat-slide-toggle [formControl]="this.form['default_form'].control">
                         {{ "FORMS.is_default" | translate }}
                     </mat-slide-toggle>
                 </div>
@@ -112,10 +112,10 @@
                             <ng-container *ngIf="field.type === 'text'">
                                 <mat-form-field class="right-0 w-full form-builder"
                                                 [matTooltipClass]="'-mt-3'"
-                                                [matTooltip]="this.translate.instant(field['label']) + ' (' + this.translate.instant('TYPES.' + field['type']) + ')'">
+                                                [matTooltip]="this.translate.instant(field['label']) + ' (' + this.translate.instant('FORMATS.' + field.format) + ')'">
                                     <i cdkDrag class="fas fa-trash" (click)="deleteField($event, index, category['id'], field.unit)" [matTooltip]="this.translate.instant('FORMS.delete_field')"></i>
                                     <mat-label class="border-r-2 border-green-400 inline-block overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
-                                        <b>{{ field.label | translate }}</b> ({{ 'TYPES.' + field.type | translate }})
+                                        <b>{{ field.label | translate }}</b> ({{ 'FORMATS.' + field.format | translate }})
                                     </mat-label>
                                     <input class="cursor-pointer" matInput type="text" readonly>
                                     <div class="absolute top-0 -right-4">
