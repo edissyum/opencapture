@@ -147,7 +147,7 @@ def update_invoice_data_by_invoice_id(invoice_id, data):
             return '', 200
         else:
             response = {
-                "errors": gettext('UPDATE_INVOICE_POSITIONS_ERROR'),
+                "errors": gettext('UPDATE_INVOICE_DATA_ERROR'),
                 "message": error
             }
             return response, 401
