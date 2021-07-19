@@ -13,7 +13,7 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import { FlatTreeControl } from "@angular/cdk/tree";
 import { MatTreeFlatDataSource, MatTreeFlattener } from "@angular/material/tree";
 import { UserService } from "../../../services/user.service";
-import {MatPaginator} from "@angular/material/paginator";
+declare var $: any;
 
 interface accountsNode {
     name: string;
@@ -78,6 +78,7 @@ export class VerifierListComponent implements OnInit {
     purchaseOrSale  : string            = '';
     search          : string            = '';
     TREE_DATA       : accountsNode[]    = [];
+    expanded        : boolean           = false
 
     private _transformer = (node: accountsNode, level: number) => {
         return {
@@ -130,7 +131,7 @@ export class VerifierListComponent implements OnInit {
                 this.currentTime = this.batchList[this.selectedTab].id
             }
             this.offset = this.pageSize * (this.pageIndex)
-        }else {
+        } else {
             this.localeStorageService.remove('invoicesPageIndex')
             this.localeStorageService.remove('invoicesTimeIndex')
         }
@@ -149,55 +150,24 @@ export class VerifierListComponent implements OnInit {
     }
 
     loadCustomers() {
-        let user = this.userService.getUser();
         this.TREE_DATA = []
         this.http.get(API_URL + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 let customers = data.customers;
-                if (user.privileges == '*') {
-                    customers.forEach((customer: any) => {
-                        this.allowedCustomers.push(customer.id);
-                        this.TREE_DATA.push({
-                            name: customer.name,
-                            id: customer.id,
-                            parent_id: '',
-                            supplier_id: '',
-                            purchase_or_sale: '',
-                            display: true,
-                            number: 0,
-                            children: []
-                        });
+                customers.forEach((customer: any) => {
+                    this.allowedCustomers.push(customer.id);
+                    this.TREE_DATA.push({
+                        name: customer.name,
+                        id: customer.id,
+                        parent_id: '',
+                        supplier_id: '',
+                        purchase_or_sale: '',
+                        display: true,
+                        number: 0,
+                        children: []
                     });
-                    this.loadInvoices();
-                }else{
-                    this.http.get(API_URL + '/ws/users/getCustomersByUserId/' + user.id, {headers: this.authService.headers}).pipe(
-                        tap((data: any) => {
-                            data.forEach((id: any) => {
-                                customers.forEach((customer: any) => {
-                                    if (customer.id == id) {
-                                        this.allowedCustomers.push(customer.id)
-                                        this.TREE_DATA.push({
-                                            name: customer.name,
-                                            id: customer.id,
-                                            parent_id: '',
-                                            supplier_id: '',
-                                            purchase_or_sale: '',
-                                            display: true,
-                                            number: 0,
-                                            children: []
-                                        });
-                                    }
-                                });
-                            });
-                            this.loadInvoices();
-                        }),
-                        catchError((err: any) => {
-                            console.debug(err);
-                            this.notify.handleErrors(err);
-                            return of(false);
-                        })
-                    ).subscribe()
-                }
+                });
+                this.loadInvoices();
             }),
             catchError((err: any) => {
                 console.debug(err);
@@ -223,26 +193,16 @@ export class VerifierListComponent implements OnInit {
                 /*
                 * Starting from here, we fill the customers tree
                 */
-                let customersToKeep: any = [];
+                // let customersToKeep: any = [];
                 let customersPurchaseToKeep : any = [];
                 let customersSaleToKeep : any = [];
                 this.allowedCustomers.forEach((customer: any) => {
                     this.invoices.forEach((invoice:any) => {
-                        if (invoice.customer_id == customer) {
-                            if (!customersToKeep.includes(customer))
-                                customersToKeep.push(customer)
-                            if (invoice.purchase_or_sale == 'purchase' && !customersPurchaseToKeep.includes(customer))
-                                customersPurchaseToKeep.push(customer)
-                            if (invoice.purchase_or_sale == 'sale' && !customersSaleToKeep.includes(customer))
-                                customersSaleToKeep.push(customer)
-                        }
+                        if (invoice.purchase_or_sale == 'purchase' && !customersPurchaseToKeep.includes(customer))
+                            customersPurchaseToKeep.push(customer)
+                        if (invoice.purchase_or_sale == 'sale' && !customersSaleToKeep.includes(customer))
+                            customersSaleToKeep.push(customer)
                     })
-                });
-
-                let customersToDelete = this.allowedCustomers.filter(function(o1) {
-                    return !customersToKeep.some(function(o2: any) {
-                        return o1 == o2
-                    });
                 });
 
                 /*
@@ -253,15 +213,7 @@ export class VerifierListComponent implements OnInit {
                     this.TREE_DATA[index].number = 0;
                     this.TREE_DATA[index].children = [];
                 });
-                customersToDelete.forEach((customer: any) => {
-                    this.TREE_DATA.forEach((data: any, index: number) => {
-                        if (data.id == customer) {
-                            this.TREE_DATA[index].display = false;
-                            this.TREE_DATA[index].number = 0;
-                            this.TREE_DATA[index].children = [];
-                        }
-                    });
-                });
+
                 this.TREE_DATA.forEach((data: any, index: number) => {
                     customersSaleToKeep.forEach((customer1: any) => {
                         if (data.id == customer1) {
@@ -402,5 +354,15 @@ export class VerifierListComponent implements OnInit {
         this.offset = 0;
         this.pageIndex = 0;
         this.localeStorageService.save('invoicesPageIndex', this.pageIndex);
+    }
+
+    expandAll(){
+        this.expanded = !this.expanded
+        /*
+        * mat-tree-node.child are clicked twice to be sure they will be close at the second click
+         */
+        $('mat-tree-node.child').click()
+        $('mat-tree-node.parent').click()
+        $('mat-tree-node.child').click()
     }
 }

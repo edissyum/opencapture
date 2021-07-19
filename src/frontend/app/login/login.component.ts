@@ -43,7 +43,7 @@ export class LoginComponent implements OnInit {
     onSubmit() {
         let password = this.loginForm.get('password').value;
         let username = this.loginForm.get('username').value;
-        if (password && username){
+        if (password && username) {
             this.http.post(
                 API_URL + '/ws/auth/login',
                 {

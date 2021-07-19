@@ -13,9 +13,9 @@ CREATE TABLE "users" (
 CREATE TABLE "form_models" (
     "id"      SERIAL UNIQUE PRIMARY KEY,
     "label"   VARCHAR(50),
-    "default_form" boolean default false,
-    "enabled" boolean default true,
-    "status" VARCHAR(5) default 'OK'
+    "default_form" boolean DEFAULT false,
+    "enabled" boolean DEFAULT true,
+    "status" VARCHAR(5) DEFAULT 'OK'
 );
 
 CREATE TABLE "form_models_field" (
@@ -124,29 +124,21 @@ CREATE TABLE "invoices" (
     "supplier_id"           INTEGER,
     "customer_id"           INTEGER,
     "purchase_or_sale"      VARCHAR(8) DEFAULT 'purchase',
-    "vat_number"            VARCHAR DEFAULT NULL,
-    "invoice_number"        VARCHAR(255),
-    "invoice_date"          TIMESTAMP,
     "filename"              VARCHAR NOT NULL,
     "path"                  VARCHAR NOT NULL,
-    "status"                VARCHAR(20)  NOT NULL DEFAULT 'NEW',
+    "status"                VARCHAR(20) NOT NULL DEFAULT 'NEW',
     "full_jpg_filename"     VARCHAR,
     "tiff_filename"         VARCHAR,
     "img_width"             INTEGER,
-    "nb_pages"              INTEGER DEFAULT 1,
     "register_date"         TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
-    "total_amount"          VARCHAR(255),
-    "ht_amounts"            JSONB DEFAULT '{}',
-    "vat_rates"             JSONB DEFAULT '{}',
-    "footer_page"           INTEGER,
-    "supplier_page"         INTEGER,
-    "invoice_number_page"   INTEGER,
-    "invoice_date_page"     INTEGER,
+    "nb_pages"              INTEGER NOT NULL DEFAULT 1,
+    "processed"             INTEGER NOT NULL DEFAULT 0,
     "locked"                INTEGER NOT NULL DEFAULT 0,
     "locked_by"             VARCHAR(20),
-    "processed"             INTEGER NOT NULL DEFAULT 0,
     "original_filename"     VARCHAR(255),
     "positions"             JSONB DEFAULT '{}',
+    "pages"                 JSONB DEFAULT '{}',
+    "data"                  JSONB DEFAULT '{}'
 );
 
 CREATE TABLE "history" (

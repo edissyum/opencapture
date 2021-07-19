@@ -26,7 +26,7 @@ export class LocaleService {
         private notify: NotificationService,
         private _adapter: DateAdapter<any>
     ) {
-        this._adapter.setLocale('fr-FR')
+        this._adapter.setLocale('fr-FR');
         moment.updateLocale('fr-FR', {
             monthsShort : 'janv._févr._mars_avr._mai_juin_juil._août_sept._oct._nov._déc.'.split('_'),
             weekdaysMin : 'Di_Lu_Ma_Me_Je_Ve_Sa'.split('_'),
@@ -42,7 +42,7 @@ export class LocaleService {
             week : {
                 dow : 1, // Monday is the first day of the week.
             }
-        })
+        });
         moment.updateLocale('en-GB', {
             longDateFormat : {
                 LT: "h:mm A",
@@ -57,7 +57,8 @@ export class LocaleService {
             week : {
                 dow : 0, // Sunday is the first day of the week.
             }
-        })
+        });
+        moment.locale(this.dateAdaptaterLocale)
     }
 
     changeLocale(data: any) {
@@ -81,6 +82,7 @@ export class LocaleService {
                     this.dateAdaptaterLocale = data.moment_lang
                 this._adapter.setLocale(this.dateAdaptaterLocale);
                 this.translate.use(this.currentLang)
+                moment.locale(this.dateAdaptaterLocale)
             }),
             catchError((err: any) => {
                 console.debug(err)

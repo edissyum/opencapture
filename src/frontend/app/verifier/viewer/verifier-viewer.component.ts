@@ -13,6 +13,8 @@ import { DatePipe } from '@angular/common';
 import {LocalStorageService} from "../../../services/local-storage.service";
 import {ConfigService} from "../../../services/config.service";
 declare var $: any;
+import 'moment/locale/en-gb';
+import 'moment/locale/fr';
 import * as moment from 'moment';
 
 @Component({
@@ -89,6 +91,8 @@ export class VerifierViewerComponent implements OnInit {
         await this.fillForm(form);
         await this.drawPositions(form);
         this.loading = false;
+        let triggerEvent = $('.trigger');
+        triggerEvent.hide();
     }
 
     async drawPositions(data: any): Promise<any> {
@@ -118,12 +122,14 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     getPosition(field_id: any) {
-        let position: any
-        Object.keys(this.invoice.positions).forEach((element: any) => {
-            if (element == field_id) {
-                position = this.invoice.positions[field_id]
-            }
-        })
+        let position: any;
+        if (this.invoice.positions) {
+            Object.keys(this.invoice.positions).forEach((element: any) => {
+                if (element == field_id) {
+                    position = this.invoice.positions[field_id]
+                }
+            })
+        }
         return position
     }
 
@@ -157,10 +163,15 @@ export class VerifierViewerComponent implements OnInit {
                     format_icon: field.format_icon,
                     class_label: field.class_label,
                 })
-                let value = this.invoice[field.id];
+                let value = this.invoice.data[field.id];
                 let _field = this.form[parent][this.form[parent].length - 1]
                 if (field.format == 'date' && field.id !== '' && field.id !== undefined) {
-                    value = new Date(value)
+                    value = value.replaceAll('.', '/')
+                    value = value.replaceAll(',', '/')
+                    value = value.replaceAll(' ', '/')
+                    let format = moment().localeData().longDateFormat('L')
+                    value = moment(value, format)
+                    value = new Date(value._d)
                 }
                 _field.control.setValue(value)
             }
@@ -234,6 +245,7 @@ export class VerifierViewerComponent implements OnInit {
                                         input.val(data.result.text)
                                         _this.isOCRRunning = false;
                                         _this.savePosition(_this.getSelectionByCpt(selection, cpt))
+                                        _this.saveData(data.result.text)
                                     }),
                                     catchError((err: any) => {
                                         console.debug(err);
@@ -273,7 +285,6 @@ export class VerifierViewerComponent implements OnInit {
             height: position.height,
             width: position.width
         }
-
         this.http.put(API_URL + '/ws/accounts/supplier/' + this.invoice.supplier_id + '/updatePosition',
             {'args': {[this.lastId]: position}},
             {headers: this.authService.headers}).pipe(
@@ -295,6 +306,18 @@ export class VerifierViewerComponent implements OnInit {
                     this.notify.handleErrors(err);
                     return of(false);
                 })
+        ).subscribe()
+    }
+
+    saveData(data: any) {
+        this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/updateData',
+            {'args': {[this.lastId]: data}},
+            {headers: this.authService.headers}).pipe(
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
         ).subscribe()
     }
 

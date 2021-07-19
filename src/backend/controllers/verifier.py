@@ -107,8 +107,7 @@ def update_position_by_invoice_id(invoice_id, data):
     _db = _vars[0]
     invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
     if error is None:
-        column = ''
-        position = ''
+        column = position = ''
         for _position in data:
             column = _position
             position = data[_position]
@@ -118,6 +117,32 @@ def update_position_by_invoice_id(invoice_id, data):
             column: position
         })
         res, error = verifier.update_invoice({'set': {"positions": json.dumps(invoice_positions)}, 'invoice_id': invoice_id})
+        if error is None:
+            return '', 200
+        else:
+            response = {
+                "errors": gettext('UPDATE_INVOICE_POSITIONS_ERROR'),
+                "message": error
+            }
+            return response, 401
+
+
+def update_invoice_data_by_invoice_id(invoice_id, data):
+    _vars = pdf.init()
+    _db = _vars[0]
+    invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
+    if error is None:
+        column = value = False
+        _set = {}
+        for _data in data:
+            column = _data
+            value = data[_data]
+
+        invoice_data = invoice_info['data']
+        invoice_data.update({
+            column: value
+        })
+        res, error = verifier.update_invoice({'set': {"data": json.dumps(invoice_data)}, 'invoice_id': invoice_id})
         if error is None:
             return '', 200
         else:

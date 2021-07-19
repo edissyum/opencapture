@@ -57,6 +57,14 @@ def update_invoice_position(invoice_id):
     return make_response(res[0], res[1])
 
 
+@bp.route('verifier/invoices/<int:invoice_id>/updateData', methods=['PUT'])
+@auth.token_required
+def update_invoice_data(invoice_id):
+    data = request.json['args']
+    res = verifier.update_invoice_data_by_invoice_id(invoice_id, data)
+    return make_response(res[0], res[1])
+
+
 @bp.route('verifier/ocrOnFly', methods=['POST'])
 @auth.token_required
 def ocr_on_fly():
