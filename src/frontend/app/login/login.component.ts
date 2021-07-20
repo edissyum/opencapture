@@ -79,9 +79,8 @@ export class LoginComponent implements OnInit {
     }
 
     getErrorMessage(field: any) {
-        if(this.loginForm.get(field).hasError('required')){
+        if(this.loginForm.get(field).hasError('required'))
             return this.translate.instant('AUTH.field_required');
-        }
         return this.translate.instant('ERROR.unknow_error');
     }
 }

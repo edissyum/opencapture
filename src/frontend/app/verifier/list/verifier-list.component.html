@@ -1,10 +1,10 @@
 <mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem">
     <mat-sidenav #sidenav mode="side" opened class="w-1/6 flex flex-col h-full border-r border-green-400" style="top:0.1rem">
         <h3 class="text-center text-gray-900 m-0 h-16" style="padding-top: 1.2rem">
-            <i class="fas fa-sync-alt mr-6 cursor-pointer" (click)="resetInvoices()"
+            <i class="fas fa-sync-alt mr-4 cursor-pointer" (click)="resetInvoices()"
                [matTooltip]="this.translate.instant('VERIFIER.reset_invoice_list')"></i>
             {{ "VERIFIER.suppliers_by_customer" | translate }}
-            <i [class.fa-compress-arrows-alt]="this.expanded" [class.fa-expand-arrows-alt]="!this.expanded" class="fas ml-6 cursor-pointer" (click)="expandAll()"
+            <i [class.fa-compress-arrows-alt]="this.expanded" [class.fa-expand-arrows-alt]="!this.expanded" class="fas ml-4 cursor-pointer" (click)="expandAll()"
                [matTooltip]="this.translate.instant('VERIFIER.expand_all')"></i>
         </h3>
         <mat-divider></mat-divider>
@@ -82,10 +82,10 @@
                                     </span>
                                     </mat-card-title>
                                     <mat-card-subtitle class="mt-2 -mb-1">
-                                        {{ 'FACTURATION.invoice_number' | translate }} : {{ invoice.invoice_number }}<br>
-                                        {{ 'FACTURATION.invoice_date' | translate }} : {{ invoice.invoice_date | date:'dd-MM-YYYY' }}<br>
+                                        {{ 'FACTURATION.invoice_number' | translate }} : {{ invoice.datas.invoice_number }}<br>
+                                        {{ 'FACTURATION.invoice_date' | translate }} : {{ invoice.datas.invoice_date | date:'dd-MM-YYYY' }}<br>
                                         {{ 'VERIFIER.register_date' | translate }} : {{ invoice.date }}<br>
-                                        {{ 'VERIFIER.original_file' | translate }} : {{ invoice.original_filename }}
+                                        {{ 'VERIFIER.original_file' | translate }} : {{ invoice.datas.original_filename }}
                                     </mat-card-subtitle>
                                 </mat-card-header>
                                 <mat-card-actions>

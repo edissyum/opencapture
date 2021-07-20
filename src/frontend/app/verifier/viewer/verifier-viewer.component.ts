@@ -163,9 +163,9 @@ export class VerifierViewerComponent implements OnInit {
                     format_icon: field.format_icon,
                     class_label: field.class_label,
                 })
-                let value = this.invoice.data[field.id];
+                let value = this.invoice.datas[field.id];
                 let _field = this.form[parent][this.form[parent].length - 1]
-                if (field.format == 'date' && field.id !== '' && field.id !== undefined) {
+                if (field.format == 'date' && field.id !== '' && field.id !== undefined && value) {
                     value = value.replaceAll('.', '/')
                     value = value.replaceAll(',', '/')
                     value = value.replaceAll(' ', '/')

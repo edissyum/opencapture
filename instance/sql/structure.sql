@@ -138,7 +138,7 @@ CREATE TABLE "invoices" (
     "original_filename"     VARCHAR(255),
     "positions"             JSONB DEFAULT '{}',
     "pages"                 JSONB DEFAULT '{}',
-    "data"                  JSONB DEFAULT '{}'
+    "datas"                 JSONB DEFAULT '{}'
 );
 
 CREATE TABLE "history" (

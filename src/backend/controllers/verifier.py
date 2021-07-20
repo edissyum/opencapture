@@ -68,7 +68,7 @@ def retrieve_invoices(args):
     if 'search' in args and args['search']:
         args['table'] = ['invoices', 'accounts_supplier']
         args['left_join'] = ['invoices.supplier_id = accounts_supplier.id']
-        args['where'].append("(LOWER(invoices.invoice_number) LIKE '%%" + args['search'].lower() + "%%' OR LOWER(accounts_supplier.name) LIKE '%%" + args['search'].lower() + "%%')")
+        args['where'].append("(LOWER((datas -> 'invoice_number')::text) LIKE '%%" + args['search'].lower() + "%%' OR LOWER(accounts_supplier.name) LIKE '%%" + args['search'].lower() + "%%')")
 
     if 'allowedCustomers' in args and args['allowedCustomers']:
         args['where'].append('customer_id IN (' + ','.join(map(str, args['allowedCustomers'])) + ')')
@@ -102,15 +102,15 @@ def retrieve_invoices(args):
         return response, 200
 
 
-def update_position_by_invoice_id(invoice_id, data):
+def update_position_by_invoice_id(invoice_id, args):
     _vars = pdf.init()
     _db = _vars[0]
     invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
     if error is None:
         column = position = ''
-        for _position in data:
+        for _position in args:
             column = _position
-            position = data[_position]
+            position = args[_position]
 
         invoice_positions = invoice_info['positions']
         invoice_positions.update({
@@ -127,22 +127,22 @@ def update_position_by_invoice_id(invoice_id, data):
             return response, 401
 
 
-def update_invoice_data_by_invoice_id(invoice_id, data):
+def update_invoice_data_by_invoice_id(invoice_id, args):
     _vars = pdf.init()
     _db = _vars[0]
     invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
     if error is None:
         column = value = False
         _set = {}
-        for _data in data:
+        for _data in args:
             column = _data
-            value = data[_data]
+            value = args[_data]
 
-        invoice_data = invoice_info['data']
+        invoice_data = invoice_info['datas']
         invoice_data.update({
             column: value
         })
-        res, error = verifier.update_invoice({'set': {"data": json.dumps(invoice_data)}, 'invoice_id': invoice_id})
+        res, error = verifier.update_invoice({'set': {"datas": json.dumps(invoice_data)}, 'invoice_id': invoice_id})
         if error is None:
             return '', 200
         else:
