@@ -16,6 +16,9 @@
         </button>
         <mat-tab-group class="upload" (selectedTabChange)="setPurchaseOrSale($event)">
             <mat-tab [label]="'UPLOAD.purchase_invoice' | translate">
+                <div *ngIf="loading">
+                    <app-loader></app-loader>
+                </div>
                 <ngx-file-drag-drop
                         [formControl]="fileControl"
                         [activeBorderColor]="'#97BF3D'"
@@ -27,8 +30,9 @@
                         (valueChanged)="checkFile($event)">
                 </ngx-file-drag-drop>
                 <div class="flex justify-center content-center">
-                    <button mat-flat-button [disabled]="this.selectedCustomer == ''" (click)="uploadInvoice()"
-                            class="mt-5 border-solid border-green-400 border hover:bg-green-400 hover:text-white px-3 py-2 text-sm font-medium transition duration-300">
+                    <button mat-flat-button [disabled]="this.selectedCustomer == '' || this.fileControl.value.length == 0" (click)="uploadInvoice()"
+                            [class.hover:bg-green-400]="this.selectedCustomer && this.fileControl.value.length != 0" [class.hover:text-white]="this.selectedCustomer && this.fileControl.value.length != 0"
+                            class="mt-5 border-solid border-green-400 border px-3 py-2 text-sm font-medium transition duration-300">
                         {{ 'UPLOAD.send_purchase_invoice' | translate }}
                     </button>
                 </div>
@@ -48,8 +52,9 @@
                         (valueChanged)="checkFile($event)">
                 </ngx-file-drag-drop>
                 <div class="flex justify-center content-center">
-                    <button mat-flat-button [disabled]="this.selectedCustomer == ''" (click)="uploadInvoice()"
-                            class="mt-5 border-solid border-green-400 border hover:bg-green-400 hover:text-white px-3 py-2 text-sm font-medium transition duration-300">
+                    <button mat-flat-button [disabled]="this.selectedCustomer == '' || this.fileControl.value.length == 0" (click)="uploadInvoice()"
+                            [class.hover:bg-green-400]="this.selectedCustomer && this.fileControl.value.length != 0" [class.hover:text-white]="this.selectedCustomer && this.fileControl.value.length != 0"
+                            class="mt-5 border-solid border-green-400 border px-3 py-2 text-sm font-medium transition duration-300">
                         {{ 'UPLOAD.send_sale_invoice' | translate }}
                     </button>
                 </div>
