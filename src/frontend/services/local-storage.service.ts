@@ -48,9 +48,9 @@ export class LocalStorageService {
         if (exdays !== 0) {
             d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
             let expires = "expires=" + d.toUTCString();
-            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/;SameSite=Strict";
         } else {
-            document.cookie = cname + "=" + cvalue;
+            document.cookie = cname + "=" + cvalue + ";path=/;SameSite=Strict";
         }
     }
 

@@ -3,6 +3,7 @@
 		"lead_dev": "Lead developer"
 	},
 	"ACCOUNTS": {
+		"choose_customer_upload": "Choix du compte client",
 		"company_number": "Numéro de société",
 		"confirm_delete_customer": "Êtes vous sûr de vouloir supprimer le compte client <b>{{ customer }}</b> ?",
 		"confirm_delete_supplier": "Êtes vous sûr de vouloir supprimer le compte fournisseur <b>{{ supplier }}</b> ?",
@@ -244,6 +245,7 @@
 		"extension_unauthorized": "Un ou plusieurs fichiers ne sont pas au format PDF",
 		"no_file": "Aucun fichier à téléverser",
 		"placeholder": "Cliquer pour choisir un document ou faites glisser un document",
+		"please_select_customer": "Merci de sélectionner un compte client avant de téléverser une facture",
 		"purchase_invoice": "Facture d'achat",
 		"sale_invoice": "Facture de vente",
 		"send_purchase_invoice": "Téléverser la facture d'achat",
@@ -276,8 +278,10 @@
 		"username": "Nom d'utilisateur"
 	},
 	"VERIFIER": {
+		"collapse_all": "Replier tous les clients",
 		"colors": "Couleurs",
 		"delete_invoice": "Supprimer la facture",
+		"expand_all": "Développer tous les clients",
 		"field_settings": "Paramètres du champ",
 		"format": "Format des données",
 		"list": "Factures",

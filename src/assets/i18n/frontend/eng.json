@@ -3,6 +3,7 @@
 		"lead_dev": ""
 	},
 	"ACCOUNTS": {
+		"choose_customer_upload": "",
 		"company_number": "",
 		"confirm_delete_customer": "",
 		"confirm_delete_supplier": "",
@@ -244,6 +245,7 @@
 		"extension_unauthorized": "One or more files aren't in PDF format",
 		"no_file": "No file to upload",
 		"placeholder": "Drag and drop or click to upload file(s)",
+		"please_select_customer": "",
 		"purchase_invoice": "",
 		"sale_invoice": "",
 		"send_purchase_invoice": "",
@@ -276,8 +278,10 @@
 		"username": "Username"
 	},
 	"VERIFIER": {
+		"collapse_all": "",
 		"colors": "",
 		"delete_invoice": "",
+		"expand_all": "",
 		"field_settings": "",
 		"format": "",
 		"list": "Invoices",

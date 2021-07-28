@@ -121,6 +121,9 @@ export class VerifierListComponent implements OnInit {
     async ngOnInit() {
         marker('VERIFIER.nb_pages') // Needed to get the translation in the JSON file
         marker('VERIFIER.reset_invoice_list') // Needed to get the translation in the JSON file
+        marker('VERIFIER.expand_all') // Needed to get the translation in the JSON file
+        marker('VERIFIER.collapse_all') // Needed to get the translation in the JSON file
+
         this.localeStorageService.save('splitter_or_verifier', 'verifier')
         let lastUrl = this.routerExtService.getPreviousUrl()
         if (lastUrl.includes('verifier/') && !lastUrl.includes('settings') || lastUrl == '/' || lastUrl == '/upload') {

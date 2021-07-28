@@ -17,7 +17,7 @@
 
 import re
 from datetime import datetime
-from webApp.functions import search_by_positions
+from src.backend.functions import search_by_positions
 
 
 class FindDate:

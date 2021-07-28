@@ -206,6 +206,7 @@ export class VerifierViewerComponent implements OnInit {
             imageContainer.removeClass('pointer-events-none');
             imageContainer.removeClass('cursor-auto');
             this.imageInvoice.selectAreas({
+                allowNudge: false,
                 minSize: [20, 20],
                 maxSize: [this.imageInvoice.width(), this.imageInvoice.height() / 8],
                 onChanged: function(img: any, cpt: any, selection: any) {
@@ -219,12 +220,12 @@ export class VerifierViewerComponent implements OnInit {
                         // End write
 
                         let inputId = $('#select-area-label_' + cpt).attr('class').replace('input_', '')
-                        let input = $('#' + inputId)
-                        input.focus()
+                        $('#' + inputId).focus()
+
                         // Test to avoid multi selection for same label. If same label exists, remove the selected areas and replace it by the new one
                         let label = $('div[id*=select-area-label_]:contains(' + _this.lastLabel + ')')
                         let labelCount = label.length
-                        if (labelCount > 1){
+                        if (labelCount > 1) {
                             let cptToDelete = label[labelCount - 1].id.split('_')[1]
                             $('#select-areas-label-container_' + cptToDelete).remove()
                             $('#select-areas-background-area_' + cptToDelete).remove()
@@ -242,7 +243,7 @@ export class VerifierViewerComponent implements OnInit {
                                 },{headers: _this.authService.headers})
                                 .pipe(
                                     tap((data: any) => {
-                                        input.val(data.result.text)
+                                        _this.updateFormValue(inputId, data.result.text)
                                         _this.isOCRRunning = false;
                                         _this.savePosition(_this.getSelectionByCpt(selection, cpt))
                                         _this.saveData(data.result.text)
@@ -259,7 +260,7 @@ export class VerifierViewerComponent implements OnInit {
                 onDeleted: function(img: any, cpt: any) {
                     let inputId = $('#select-area-label_' + cpt).attr('class').replace('input_', '')
                     if (inputId){
-                        $('#' + inputId).val('')
+                        _this.updateFormValue(inputId, '')
                     }
                 }
             });
@@ -268,13 +269,23 @@ export class VerifierViewerComponent implements OnInit {
             $(".select-areas-delete-area").click(function(){
                 deleteClicked = true
             });
-            setTimeout(function (){
+            setTimeout(function () {
                 if (!deleteClicked){
                     resizeArea.css('display', 'none');
                     deleteArea.css('display', 'none');
                 }
             }, 50)
             $('.outline_' + _this.lastId).removeClass('animate')
+        }
+    }
+
+    updateFormValue(input_id: string, value: any) {
+        for (let category in this.form) {
+            this.form[category].forEach((input: any) => {
+                if (input.id == input_id) {
+                    input.control.setValue(value)
+                }
+            })
         }
     }
 

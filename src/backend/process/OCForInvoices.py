@@ -19,7 +19,8 @@ import os
 import uuid
 import shutil
 import datetime
-from import_process import FindDate, FindFooter, FindInvoiceNumber, FindSupplier, FindCustom, _Spreadsheet
+from src.backend.import_process import FindDate, FindFooter, FindInvoiceNumber, FindSupplier, FindCustom
+from src.backend.import_classes import _Spreadsheet
 
 
 def insert(database, log, files, config, supplier, file, invoice_number, date, footer, nb_pages, full_jpg_filename,

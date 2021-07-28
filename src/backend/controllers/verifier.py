@@ -15,18 +15,30 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
+
 import json
+import os
 
 from flask import current_app
 from flask_babel import gettext
 from ..import_classes import _Files
 from ..import_controllers import pdf
 from ..import_models import verifier, accounts
+from src.backend.main import launch
 
 
-def handle_uploaded_file(files):
-    result = _Files.save_uploaded_file(files, current_app.config['UPLOAD_FOLDER'])
-    return result
+def handle_uploaded_file(files, purchase_or_sale, customer_id):
+    path = current_app.config['UPLOAD_FOLDER']
+    for file in files:
+        f = files[file]
+        filename = _Files.save_uploaded_file(f, path)
+        launch({
+            'file': filename,
+            'config': current_app.config['CONFIG_FILE'],
+            'purchaseOrSale': purchase_or_sale,
+            'customerId': customer_id
+        })
+    return True
 
 
 def get_invoice_by_id(invoice_id):

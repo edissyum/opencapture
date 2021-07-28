@@ -5,7 +5,7 @@
                [matTooltip]="this.translate.instant('VERIFIER.reset_invoice_list')"></i>
             {{ "VERIFIER.suppliers_by_customer" | translate }}
             <i [class.fa-compress-arrows-alt]="this.expanded" [class.fa-expand-arrows-alt]="!this.expanded" class="fas ml-4 cursor-pointer" (click)="expandAll()"
-               [matTooltip]="this.translate.instant('VERIFIER.expand_all')"></i>
+               [matTooltip]="!this.expanded ? this.translate.instant('VERIFIER.expand_all') : this.translate.instant('VERIFIER.collapse_all') "></i>
         </h3>
         <mat-divider></mat-divider>
         <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">

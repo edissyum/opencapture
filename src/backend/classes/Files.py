@@ -17,15 +17,13 @@
 
 import os
 import re
-import subprocess
-import tempfile
-
 import cv2
 import time
 import uuid
 import shutil
 import PyPDF4
 import datetime
+import subprocess
 import numpy as np
 from PIL import Image
 from PyPDF4 import utils
@@ -33,12 +31,11 @@ from xml.dom import minidom
 from wand.color import Color
 from wand.api import library
 import xml.etree.ElementTree as Et
-from wand.image import Image as Img
-from wand.exceptions import PolicyError, CacheError
-from werkzeug.utils import secure_filename
-
-from ..functions import retrieve_custom_positions
 from xml.sax.saxutils import escape
+from wand.image import Image as Img
+from werkzeug.utils import secure_filename
+from ..functions import retrieve_custom_positions
+from wand.exceptions import PolicyError, CacheError
 
 
 class Files:
@@ -99,7 +96,8 @@ class Files:
             if open_img:
                 self.img = Image.open(target)
 
-    def pdf_to_tiff(self, pdf_name, output_file, convert_only_first_page=False, open_img=True, crop=False, zone_to_crop=False, last_page=None):
+    def pdf_to_tiff(self, pdf_name, output_file, convert_only_first_page=False, open_img=True, crop=False,
+                    zone_to_crop=False, last_page=None):
         # Convert firstly the PDF to full tiff file
         # It will be used to crop header and footer later
         if not os.path.isfile(output_file):
@@ -271,7 +269,7 @@ class Files:
 
         return position
 
-    def export_xml(self, cfg, invoice_number, parent, fill_position=False, db=None, vat_number=False):
+    def export_xml(self, cfg, invoice_number, parent, fill_position=False, _db=None, vat_number=False):
         self.xml.construct_filename(invoice_number, vat_number)
         filename = cfg.cfg['GLOBAL']['exportaccountingfolder'] + '/' + secure_filename(self.xml.filename)
         root = Et.Element("ROOT")
@@ -282,7 +280,7 @@ class Files:
                 for childElement in child:
                     clean_child = childElement.replace(parentElement + '_', '')
                     if clean_child not in ['noDelivery', 'noCommands']:
-                        if fill_position is not False and db is not False:
+                        if fill_position is not False and _db is not False:
                             clean_child_position = child[childElement]['position']
                             # Add position in supplier database
                             if clean_child_position is not None:
@@ -295,7 +293,7 @@ class Files:
                                         'where': ['vat_number = ?'],
                                         'data': [vat_number]
                                     })
-                                    db.conn.commit()
+                                    _db.conn.commit()
                         # Then create the XML
                         new_field = Et.SubElement(element, escape(clean_child))
                         new_field.text = child[childElement]['field']
@@ -332,11 +330,13 @@ class Files:
                         for title in root:
                             for element in title:
                                 for position in select:
-                                    if element.tag == position.split('_position')[0] and title.tag not in ['supplierInfo']:
+                                    if element.tag == position.split('_position')[0] and title.tag not in \
+                                            ['supplierInfo']:
                                         sub_element_to_append = root.find(title.tag)
                                         new_field = Et.SubElement(sub_element_to_append, position)
                                         new_field.text = res[0][position]
-                        xml_root = minidom.parseString(Et.tostring(root, encoding="unicode")).toprettyxml().replace('\n\n', '\n')
+                        xml_root = minidom.parseString(Et.tostring(root, encoding="unicode"))\
+                            .toprettyxml().replace('\n\n', '\n')
                         file = open(filename, 'w')
                         file.write(xml_root)
                         file.close()
@@ -541,7 +541,8 @@ class Files:
             src = cv2.imread(img)
             gray = cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)
             _, black_and_white = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY_INV)
-            nlabels, labels, stats, centroids = cv2.connectedComponentsWithStats(black_and_white, None, None, None, 8, cv2.CV_32S)
+            nlabels, labels, stats, centroids = cv2.connectedComponentsWithStats(black_and_white, None, None, None, 8,
+                                                                                 cv2.CV_32S)
 
             # get CC_STAT_AREA component
             sizes = stats[1:, -1]
@@ -596,11 +597,10 @@ class Files:
         return Image.open(img)
 
     @staticmethod
-    def save_uploaded_file(files, path):
-        for file in files:
-            f = files[file]
-            # The next 2 lines lower the extensions because an UPPER extension will throw silent error
-            filename, file_ext = os.path.splitext(f.filename)
-            file = filename.replace(' ', '_') + file_ext.lower()
-            f.save(os.path.join(path, secure_filename(file)))
-        return True
+    def save_uploaded_file(f, path):
+        # The next 2 lines lower the extensions because an UPPER extension will throw silent error
+        filename, file_ext = os.path.splitext(f.filename)
+        file = filename.replace(' ', '_') + file_ext.lower()
+        new_path = os.path.join(path, secure_filename(file))
+        f.save(new_path)
+        return new_path

@@ -24,8 +24,8 @@ import tempfile
 
 from kuyruk import Kuyruk
 from kuyruk_manager import Manager
-from .main import timer, check_file
-from import_classes import _Database, _Splitter, _PyTesseract, _Locale, _Xml, _Files, _Log, _Config
+from .main import timer, check_file, create_classes
+from import_classes import _Files, _Config
 from import_process import OCForInvoices_splitter
 
 OCforInvoices = Kuyruk()
@@ -37,34 +37,22 @@ OCforInvoices.config.MANAGER_HTTP_PORT = 16503
 m = Manager(OCforInvoices)
 
 
-# If needed just run "kuyruk --app src.backend.main_splitter.OCforInvoices_Sep manager" to have web dashboard of current running worker
+# If needed just run "kuyruk --app src.backend.main_splitter.OCforInvoices_Sep manager"
+# to have web dashboard of current running worker
 @OCforInvoices.task(queue='splitter')
 def launch(args):
     start = time.time()
 
     # Init all the necessary classes
     config_name = _Config(args['config'])
-    cfg_name = config_name.cfg['PROFILE']['cfgpath'] + '/config_' + config_name.cfg['PROFILE']['id'] + '.ini'
+    config_file = config_name.cfg['PROFILE']['cfgpath'] + '/config_' + config_name.cfg['PROFILE']['id'] + '.ini'
 
-    if not os.path.exists(cfg_name):
+    if not os.path.exists(config_file):
         sys.exit('Config file couldn\'t be found')
 
-    config = _Config(config_name.cfg['PROFILE']['cfgpath'] + '/config_' + config_name.cfg['PROFILE']['id'] + '.ini')
-
+    config, locale, log, ocr, database, xml, splitter, separator_qr = create_classes(config_name)
     tmp_folder = tempfile.mkdtemp(dir=config.cfg['SPLITTER']['tmpbatchpath']) + '/'
     file_name = tempfile.NamedTemporaryFile(dir=tmp_folder).name
-
-    locale = _Locale(config)
-    log = _Log(config.cfg['GLOBAL']['logfile'])
-    ocr = _PyTesseract(locale.localeOCR, log, config)
-    db_user = config.cfg['DATABASE']['postgresuser']
-    db_pwd = config.cfg['DATABASE']['postgrespassword']
-    db_name = config.cfg['DATABASE']['postgresdatabase']
-    db_host = config.cfg['DATABASE']['postgreshost']
-    db_port = config.cfg['DATABASE']['postgresport']
-    database = _Database(log, db_name, db_user, db_pwd, db_host, db_port)
-    splitter = _Splitter(config, database, locale)
-    xml = _Xml(config, database)
     files = _Files(
         file_name,
         int(config.cfg['GLOBAL']['resolution']),

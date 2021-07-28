@@ -86,8 +86,8 @@ class FindSupplier:
             for _vat in vat_number:
                 args = {
                     'select': ['*'],
-                    'table': ['suppliers'],
-                    'where': ['vat_number = ?'],
+                    'table': ['accounts_supplier'],
+                    'where': ['vat_number = %s'],
                     'data': [_vat]
                 }
                 existing_supplier = self.Database.select(args)
@@ -110,8 +110,8 @@ class FindSupplier:
                     if self.validate_luhn(_siret):
                         args = {
                             'select': ['*'],
-                            'table': ['suppliers'],
-                            'where': ['siret = ?'],
+                            'table': ['accounts_supplier'],
+                            'where': ['siret = %s'],
                             'data': [_siret]
                         }
                         existing_supplier = self.Database.select(args)
@@ -131,8 +131,8 @@ class FindSupplier:
                     if self.validate_luhn(_siren):
                         args = {
                             'select': ['*'],
-                            'table': ['suppliers'],
-                            'where': ['SIREN = ?'],
+                            'table': ['accounts_supplier'],
+                            'where': ['SIREN = %s'],
                             'data': [_siren]
                         }
                         existing_supplier = self.Database.select(args)
@@ -151,8 +151,8 @@ class FindSupplier:
                                         siren = _siret[:int(siren_size)]
                                         args = {
                                             'select': ['*'],
-                                            'table': ['suppliers'],
-                                            'where': ['SIREN = ?'],
+                                            'table': ['accounts_supplier'],
+                                            'where': ['SIREN = %s'],
                                             'data': [siren]
                                         }
                                         existing_supplier = self.Database.select(args)

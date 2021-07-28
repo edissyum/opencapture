@@ -20,10 +20,10 @@ import time
 import tempfile
 from kuyruk import Kuyruk
 from kuyruk_manager import Manager
-from webApp.functions import recursive_delete
-from import_process import OCForInvoices_process
-from import_classes import _Database, _PyTesseract, _Locale, _Xml, _Files, _Log, _Config, invoice_classification, \
-    _WebServices
+from .functions import recursive_delete
+from .import_process import OCForInvoices_process
+from .import_classes import _Database, _PyTesseract, _Locale, _Xml, _Files, _Log, _Config, invoice_classification, \
+    _WebServices, _SeparatorQR, _Splitter
 
 OCforInvoices_worker = Kuyruk()
 
@@ -32,6 +32,23 @@ OCforInvoices_worker.config.MANAGER_PORT = 16501
 OCforInvoices_worker.config.MANAGER_HTTP_PORT = 16500
 
 m = Manager(OCforInvoices_worker)
+
+
+def create_classes(config_name):
+    config = _Config(config_name.cfg['PROFILE']['cfgpath'] + '/config_' + config_name.cfg['PROFILE']['id'] + '.ini')
+    locale = _Locale(config)
+    log = _Log(config.cfg['GLOBAL']['logfile'])
+    ocr = _PyTesseract(locale.localeOCR, log, config)
+    db_user = config.cfg['DATABASE']['postgresuser']
+    db_pwd = config.cfg['DATABASE']['postgrespassword']
+    db_name = config.cfg['DATABASE']['postgresdatabase']
+    db_host = config.cfg['DATABASE']['postgreshost']
+    db_port = config.cfg['DATABASE']['postgresport']
+    database = _Database(log, db_name, db_user, db_pwd, db_host, db_port)
+    xml = _Xml(config, database)
+    separator_qr = _SeparatorQR(log, config)
+    splitter = _Splitter(config, database, locale, separator_qr)
+    return config, locale, log, ocr, database, xml, splitter, separator_qr
 
 
 def check_file(files, path, config, log):
@@ -64,34 +81,22 @@ def get_typo(config, path, log):
         return False
 
 
-# If needed just run "kuyruk --app src.backend.main.OCforInvoices_worker manager" to have web dashboard of current running worker
-# @OCforInvoices_worker.task(queue='invoices')
+# If needed just run "kuyruk --app src.backend.main.OCforInvoices_worker manager"
+# to have web dashboard of current running worker
+@OCforInvoices_worker.task(queue='invoices')
 def launch(args):
     start = time.time()
 
     # Init all the necessary classes
     config_name = _Config(args['config'])
-    config = config_name.cfg['PROFILE']['cfgpath'] + '/config_' + config_name.cfg['PROFILE']['id'] + '.ini'
+    config_file = config_name.cfg['PROFILE']['cfgpath'] + '/config_' + config_name.cfg['PROFILE']['id'] + '.ini'
 
-    if not os.path.exists(config):
+    if not os.path.exists(config_file):
         sys.exit('config file couldn\'t be found')
 
-    config = _Config(config_name.cfg['PROFILE']['cfgpath'] + '/config_' + config_name.cfg['PROFILE']['id'] + '.ini')
-    locale = _Locale(config)
-    log = _Log(config.cfg['GLOBAL']['logfile'])
-    ocr = _PyTesseract(locale.localeOCR, log, config)
-    db_type = config.cfg['DATABASE']['databasetype']
-    db_user = config.cfg['DATABASE']['postgresuser']
-    db_pwd = config.cfg['DATABASE']['postgrespassword']
-    db_name = config.cfg['DATABASE']['postgresdatabase']
-    db_host = config.cfg['DATABASE']['postgreshost']
-    db_port = config.cfg['DATABASE']['postgresport']
-    database = _Database(log, db_type, db_name, db_user, db_pwd, db_host, db_port, config.cfg['DATABASE']['databasefile'])
-    xml = _Xml(config, database)
-
+    config, locale, log, ocr, database, xml, splitter, separator_qr = create_classes(config_name)
     tmp_folder = tempfile.mkdtemp(dir=config.cfg['GLOBAL']['tmppath'])
     filename = tempfile.NamedTemporaryFile(dir=tmp_folder).name
-
     files = _Files(
         filename,
         int(config.cfg['GLOBAL']['resolution']),

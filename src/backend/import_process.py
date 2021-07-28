@@ -1,4 +1,4 @@
-from functions import get_custom_id, check_python_customized_files
+from .functions import get_custom_id, check_python_customized_files
 
 custom_id = get_custom_id()
 custom_array = {}
@@ -54,10 +54,3 @@ else:
     OCForInvoices_process = getattr(__import__(custom_array['OCForInvoices']['path'],
                                                fromlist=[custom_array['OCForInvoices']['module']]),
                                     custom_array['OCForInvoices']['module'])
-
-if 'Spreadsheet' not in custom_array:
-    from src.backend.classes.Spreadsheet import Spreadsheet as _Spreadsheet
-else:
-    _Spreadsheet = getattr(__import__(custom_array['Spreadsheet']['path'] + '.' + custom_array['Spreadsheet']['module'],
-                                      fromlist=[custom_array['Spreadsheet']['module']]),
-                           custom_array['Spreadsheet']['module'])
