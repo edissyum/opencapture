@@ -78,5 +78,4 @@ if 'Spreadsheet' not in custom_array:
     from .classes.Spreadsheet import Spreadsheet as _Spreadsheet
 else:
     _Spreadsheet = getattr(__import__(custom_array['Spreadsheet']['path'] + '.' + custom_array['Spreadsheet']['module'],
-                                      fromlist=[custom_array['Spreadsheet']['module']]),
-                           custom_array['Spreadsheet']['module'])
+                                      fromlist=[custom_array['Spreadsheet']['module']]), custom_array['Spreadsheet']['module'])

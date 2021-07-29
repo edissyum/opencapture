@@ -160,7 +160,7 @@
 		"verifier": "Open-Capture verifier"
 	},
 	"INVOICES": {
-		"position_updated": ""
+		"position_and_data_updated": ""
 	},
 	"PAGINATOR": {
 		"display": "",

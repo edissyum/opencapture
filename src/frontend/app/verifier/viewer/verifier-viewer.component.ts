@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {API_URL} from "../../env";
-import {catchError, finalize, tap} from "rxjs/operators";
-import {of} from "rxjs";
+import {catchError, finalize, map, startWith, tap} from "rxjs/operators";
+import {Observable, of, pipe} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {AuthService} from "../../../services/auth.service";
 import {NotificationService} from "../../../services/notifications/notifications.service";
@@ -25,16 +25,16 @@ import * as moment from 'moment';
 })
 
 export class VerifierViewerComponent implements OnInit {
-    loading         : boolean = true
+    loading         : boolean   = true
     imageInvoice    : any;
-    isOCRRunning    : boolean = false;
+    isOCRRunning    : boolean   = false;
     invoiceId       : any;
     invoice         : any;
     fields          : any;
-    lastLabel       : string = '';
-    lastId          : string = '';
-    lastColor       : string ='';
-    fieldCategories : any[] = [
+    lastLabel       : string    = '';
+    lastId          : string    = '';
+    lastColor       : string    ='';
+    fieldCategories : any[]     = [
         {
             'id': 'supplier',
             'label': marker('FORMS.supplier')
@@ -48,19 +48,35 @@ export class VerifierViewerComponent implements OnInit {
             'label': marker('FORMS.other')
         }
     ];
-    disableOCR      : boolean = false;
-    form            : any = {
+    disableOCR      : boolean   = false;
+    form            : any       = {
         'supplier': [],
         'facturation': [],
         'other': []
     }
-    pattern         : any = {
-        'alphanum': '^[0-9a-zA-Z]*$',
+    pattern         : any       = {
+        'alphanum': '^[0-9a-zA-Z\\s]*$',
         'alphanum_extended': '^[0-9a-zA-Z-/#\\s]*$',
         'number_int': '^[0-9]*$',
         'number_float': '^[0-9]*([.][0-9]*)*$',
-        'char': '^[A-Za-z]*$',
+        'char': '^[A-Za-z\\s]*$',
     }
+    suppliers         : any     = [
+        {
+            'id': 1,
+            'name': 'Edissyum'
+        },
+        {
+            'id': 2,
+            'name': 'Ideal Standard'
+        },
+        {
+            'id': 3,
+            'name': 'ETM'
+        },
+    ]
+    filteredOptions   : Observable<any> | undefined;
+    supplierNamecontrol = new FormControl();
 
     constructor(
         private http: HttpClient,
@@ -89,11 +105,30 @@ export class VerifierViewerComponent implements OnInit {
         this.invoiceId = this.route.snapshot.params['id'];
         this.invoice = await this.getInvoice();
         let form = await this.getForm();
+        this.suppliers = await this.retrieveSuppliers();
+        this.suppliers = this.suppliers.suppliers
         await this.fillForm(form);
         await this.drawPositions(form);
         this.loading = false;
         let triggerEvent = $('.trigger');
         triggerEvent.hide();
+        this.filteredOptions = this.supplierNamecontrol.valueChanges
+            .pipe(
+                startWith(''),
+                map(option => option ? this._filter(option) : this.suppliers.slice())
+            );
+    }
+
+    private _filter(value: string): string[] {
+        const filterValue = value.toLowerCase();
+        return this.suppliers.filter((supplier: any) => supplier.name.toLowerCase().indexOf(filterValue) === 0);
+    }
+
+    updateFilteredOption(event: any, control: any) {
+        let value = ''
+        if (event.target.value) value = event.target.value
+        else if (control.value) value = control.value
+        control.patchValue(value)
     }
 
     async drawPositions(data: any): Promise<any> {
@@ -132,6 +167,10 @@ export class VerifierViewerComponent implements OnInit {
             })
         }
         return position
+    }
+
+    async retrieveSuppliers(): Promise<any> {
+        return await this.http.get(API_URL + '/ws/accounts/suppliers/list?order=name ASC', {headers: this.authService.headers}).toPromise();
     }
 
     async getInvoice(): Promise<any> {
@@ -175,6 +214,9 @@ export class VerifierViewerComponent implements OnInit {
                     value = new Date(value._d)
                 }
                 _field.control.setValue(value)
+                if (field.id == 'name' && parent == 'supplier'){
+                    this.supplierNamecontrol = this.form[parent][cpt].control
+                }
             }
         }
     }
@@ -244,11 +286,10 @@ export class VerifierViewerComponent implements OnInit {
                                 },{headers: _this.authService.headers})
                                 .pipe(
                                     tap((data: any) => {
-                                        console.log(data.result.text)
-                                        _this.updateFormValue(inputId, data.result.text)
+                                        _this.updateFormValue(inputId, data.result)
                                         _this.isOCRRunning = false;
                                         _this.savePosition(_this.getSelectionByCpt(selection, cpt))
-                                        _this.saveData(data.result.text)
+                                        _this.saveData(data.result)
                                     }),
                                     catchError((err: any) => {
                                         console.debug(err);
@@ -285,6 +326,11 @@ export class VerifierViewerComponent implements OnInit {
         for (let category in this.form) {
             this.form[category].forEach((input: any) => {
                 if (input.id.trim() === input_id.trim()) {
+                    if (input.type == 'date'){
+                        let format = moment().localeData().longDateFormat('L')
+                        value = moment(value, format)
+                        value = new Date(value._d)
+                    }
                     input.control.setValue(value)
                 }
             })
@@ -311,9 +357,6 @@ export class VerifierViewerComponent implements OnInit {
         this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/updatePosition',
             {'args': {[this.lastId]: position}},
             {headers: this.authService.headers}).pipe(
-                tap(() => {
-                    this.notify.success(this.translate.instant('INVOICES.position_updated', {"input": this.lastLabel}));
-                }),
                 catchError((err: any) => {
                     console.debug(err);
                     this.notify.handleErrors(err);
@@ -326,6 +369,9 @@ export class VerifierViewerComponent implements OnInit {
         this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/updateData',
             {'args': {[this.lastId]: data}},
             {headers: this.authService.headers}).pipe(
+            tap(() => {
+                this.notify.success(this.translate.instant('INVOICES.position_and_data_updated', {"input": this.lastLabel}));
+            }),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
@@ -342,6 +388,59 @@ export class VerifierViewerComponent implements OnInit {
             }
         }
         return pattern
+    }
+
+    getSupplierInfo(event: any) {
+        let supplier_id = event.option.id;
+        this.suppliers.forEach((supplier: any) => {
+            if (supplier.id == supplier_id) {
+                this.http.get(API_URL + '/ws/accounts/getAdressById/' + supplier.address_id, {headers: this.authService.headers}).pipe(
+                    tap((address: any) => {
+                        let supplier_data : any = {
+                            'address1': address.address1,
+                            'address2': address.address2,
+                            'city': address.city,
+                            'country': address.country,
+                            'postal_code': address.postal_code,
+                            'siret': supplier.siret,
+                            'siren': supplier.siren,
+                            'vat_number': supplier.vat_number,
+                        }
+
+                        for (let column in supplier_data) {
+                            this.updateFormValue(column, supplier_data[column]);
+                        }
+
+                        this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoiceId + '/update',
+                            {'args': {'supplier_id': supplier_id}},
+                            {headers: this.authService.headers}).pipe(
+                            catchError((err: any) => {
+                                console.debug(err);
+                                this.notify.handleErrors(err);
+                                return of(false);
+                            })
+                        ).subscribe()
+                        this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/updateData',
+                            {'args': supplier_data},
+                            {headers: this.authService.headers}).pipe(
+                            tap(() => {
+                                this.notify.success(this.translate.instant('INVOICES.supplier_infos_updated'));
+                            }),
+                            catchError((err: any) => {
+                                console.debug(err);
+                                this.notify.handleErrors(err);
+                                return of(false);
+                            })
+                        ).subscribe()
+                    }),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
+            }
+        })
     }
 
     getErrorMessage(field: any, category: any) {

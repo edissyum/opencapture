@@ -80,7 +80,11 @@ def retrieve_invoices(args):
     if 'search' in args and args['search']:
         args['table'] = ['invoices', 'accounts_supplier']
         args['left_join'] = ['invoices.supplier_id = accounts_supplier.id']
-        args['where'].append("(LOWER((datas -> 'invoice_number')::text) LIKE '%%" + args['search'].lower() + "%%' OR LOWER(accounts_supplier.name) LIKE '%%" + args['search'].lower() + "%%')")
+        args['where'].append(
+            "LOWER(filename) LIKE '%%" + args['search'].lower() + "%%' OR "
+            "(LOWER((datas -> 'invoice_number')::text) LIKE '%%" + args['search'].lower() + "%%' OR "
+            "LOWER(accounts_supplier.name) LIKE '%%" + args['search'].lower() + "%%')"
+        )
 
     if 'allowedCustomers' in args and args['allowedCustomers']:
         args['where'].append('customer_id IN (' + ','.join(map(str, args['allowedCustomers'])) + ')')
@@ -144,16 +148,14 @@ def update_invoice_data_by_invoice_id(invoice_id, args):
     _db = _vars[0]
     invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
     if error is None:
-        column = value = False
         _set = {}
+        invoice_data = invoice_info['datas']
         for _data in args:
             column = _data
             value = args[_data]
-
-        invoice_data = invoice_info['datas']
-        invoice_data.update({
-            column: value
-        })
+            invoice_data.update({
+                column: value
+            })
         res, error = verifier.update_invoice({'set': {"datas": json.dumps(invoice_data)}, 'invoice_id': invoice_id})
         if error is None:
             return '', 200
@@ -187,4 +189,27 @@ def delete_invoice(invoice_id):
         }
         return response, 401
 
+
+def update_invoice(invoice_id, data):
+    _vars = pdf.init()
+    _db = _vars[0]
+    role_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
+
+    if error is None:
+        res, error = verifier.update_invoice({'set': data, 'invoice_id': invoice_id})
+
+        if error is None:
+            return '', 200
+        else:
+            response = {
+                "errors": gettext('UPDATE_ROLE_ERROR'),
+                "message": error
+            }
+            return response, 401
+    else:
+        response = {
+            "errors": gettext('UPDATE_ROLE_ERROR'),
+            "message": error
+        }
+        return response, 401
 

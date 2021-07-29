@@ -34,12 +34,23 @@ import xml.etree.ElementTree as Et
 from xml.sax.saxutils import escape
 from wand.image import Image as Img
 from werkzeug.utils import secure_filename
-from ..functions import retrieve_custom_positions
+from ..functions import retrieve_custom_positions, get_custom_id, check_python_customized_files
 from wand.exceptions import PolicyError, CacheError
+
+custom_id = get_custom_id()
+custom_array = {}
+if custom_id:
+    custom_array = check_python_customized_files(custom_id[1])
+
+if 'FindDate' not in custom_array:
+    from ..process.FindDate import FindDate
+else:
+    FindDate = getattr(__import__(custom_array['FindDate']['path'] + '.' + custom_array['FindDate']['module'], fromlist=[custom_array['FindDate']['module']]), custom_array['FindDate']['module'])
+
 
 
 class Files:
-    def __init__(self, img_name, res, quality, xml, log, is_tiff):
+    def __init__(self, img_name, res, quality, xml, log, is_tiff, Locale, Config):
         self.isTiff = is_tiff
         self.jpgName = img_name + '.jpg'
         self.jpgName_header = img_name + '_header.jpg'
@@ -60,6 +71,8 @@ class Files:
         self.img = None
         self.heightRatio = ''
         self.xml = xml
+        self.Locale = Locale
+        self.Config = Config
         self.Log = log
 
     # Convert the first page of PDF to JPG and open the image
@@ -489,32 +502,45 @@ class Files:
 
         cropped_image = Image.open('/tmp/cropped_' + rand + extension)
         text = ocr.text_builder(cropped_image)
-
+        isNumber = False
+        dateFound = False
         if not text or text == '' or text.isspace():
             self.improve_image_detection('/tmp/cropped_' + rand + extension)
             improved_cropped_image = Image.open('/tmp/cropped_' + rand + '_improved' + extension)
             text = ocr.text_builder(improved_cropped_image)
 
-        try:
-            tmp_text = text.replace(' ', '.')
-            tmp_text = tmp_text.replace('\x0c', '')
-            tmp_text = tmp_text.replace('\n', '')
-            tmp_text = tmp_text.replace(',', '.')
-            splitted_number = tmp_text.split('.')
-            if len(splitted_number) > 1:
-                last_index = splitted_number[len(splitted_number) - 1]
-                if len(last_index) > 2:
-                    tmp_text = tmp_text.replace('.', '')
-                    if type(tmp_text) in [float, int]:
-                        text = tmp_text
-                else:
-                    splitted_number.pop(-1)
-                    text = ''.join(splitted_number) + '.' + last_index
-                    if type(tmp_text) in [float, int]:
-                        text = tmp_text
-        except (ValueError, SyntaxError, TypeError):
-            pass
+        if text.count('.'):
+            for res in re.finditer(r"" + self.Locale.dateRegex + "", text):
+                dateClass = FindDate('', self.Log, self.Locale, self.Config, self, ocr, '',  '',  '')
+                date = dateClass.format_date(res.group(), (('', ''), ('', '')), True)
+                if date:
+                    text = date[0]
+                    dateFound = True
+        if not dateFound:
+            try:
+                text = text.replace(' ', '.')
+                text = text.replace('\x0c', '')
+                text = text.replace('\n', '')
+                text = text.replace(',', '.')
+                splitted_number = text.split('.')
+                if len(splitted_number) > 1:
+                    last_index = splitted_number[len(splitted_number) - 1]
+                    if len(last_index) > 2:
+                        text = text.replace('.', '')
+                        isNumber = True
+                    else:
+                        splitted_number.pop(-1)
+                        text = ''.join(splitted_number) + '.' + last_index
+                        isNumber = True
+            except (ValueError, SyntaxError, TypeError):
+                pass
 
+            if not isNumber:
+                for res in re.finditer(r"" + self.Locale.dateRegex + "", text):
+                    dateClass = FindDate('', self.Log, self.Locale, self.Config, self, ocr, '', '', '')
+                    date = dateClass.format_date(res.group(), (('', ''), ('', '')), True)
+                    if date:
+                        text = date[0]
         if regex:
             for res in re.finditer(r"" + regex, text):
                 os.remove('/tmp/cropped_' + rand + extension)
@@ -526,7 +552,7 @@ class Files:
         os.remove('/tmp/cropped_' + rand + extension)
         if os.path.isfile('/tmp/cropped_' + rand + '_improved' + extension):
             os.remove('/tmp/cropped_' + rand + '_improved' + extension)
-        return {'text': text.replace('\x0c', '').strip(), 'selection': selection}
+        return text.replace('\x0c', '').strip()
 
     @staticmethod
     def get_size(img):

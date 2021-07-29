@@ -31,7 +31,8 @@ def suppliers_list():
         'where': ['status <> %s'],
         'data': ['DEL'],
         'offset': request.args['offset'] if 'offset' in request.args else '',
-        'limit': request.args['limit'] if 'limit' in request.args else ''
+        'limit': request.args['limit'] if 'limit' in request.args else '',
+        'order_by': [request.args['order']] if 'order' in request.args else ''
     }
     res = accounts.retrieve_suppliers(args)
     return make_response(res[0], res[1])

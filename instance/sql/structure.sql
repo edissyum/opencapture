@@ -135,7 +135,6 @@ CREATE TABLE "invoices" (
     "processed"             INTEGER NOT NULL DEFAULT 0,
     "locked"                INTEGER NOT NULL DEFAULT 0,
     "locked_by"             VARCHAR(20),
-    "original_filename"     VARCHAR(255),
     "positions"             JSONB DEFAULT '{}',
     "pages"                 JSONB DEFAULT '{}',
     "datas"                 JSONB DEFAULT '{}'

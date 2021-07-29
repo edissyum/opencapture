@@ -160,7 +160,7 @@
 		"verifier": "Open-Capture Vérificateur"
 	},
 	"INVOICES": {
-		"position_updated": "Position du champ <b>{{ input }}</b> mise à jour"
+		"position_and_data_updated": "Position et valeur du champ <b>{{ input }}</b> mise à jour"
 	},
 	"PAGINATOR": {
 		"display": "Affichage",
@@ -295,10 +295,10 @@
 		"register_date": "Enregistré le",
 		"reset_invoice_list": "Réinitialiser la liste des factures",
 		"search": "Rechercher une facture",
-		"select_all": "Sélectionner tout",
+		"select_all": "Tout sélectionner",
 		"size": "Taille",
 		"suppliers_by_customer": "Liste des fournisseurs par client",
-		"unselect_all": "Désélectionner tout",
+		"unselect_all": "Tout désélectionner",
 		"viewer": "Visualisation du PDF"
 	}
 }

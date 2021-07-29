@@ -21,13 +21,16 @@ def init():
     db = _Database(log, conn=get_db().conn)
     xml = _Xml(config, db)
     file_name = config.cfg['GLOBAL']['tmppath'] + 'tmp'
+    locale = _Locale(config)
     files = _Files(
         file_name,
         int(config.cfg['GLOBAL']['resolution']),
         int(config.cfg['GLOBAL']['compressionquality']),
         xml,
         log,
-        config.cfg['GLOBAL']['convertpdftotiff']
+        config.cfg['GLOBAL']['convertpdftotiff'],
+        locale,
+        config
     )
     locale = _Locale(config)
     ocr = _PyTesseract(locale.localeOCR, log, config)
@@ -500,7 +503,6 @@ def ocr_on_the_fly(file_name, selection, thumb_size):
         path = _cfg['GLOBAL']['fullpath'] + file_name
 
     text = _files.ocr_on_fly(path, selection, _Ocr, thumb_size)
-
     if text:
         return text
     else:
