@@ -162,7 +162,7 @@ export class UpdateRoleComponent implements OnInit {
             let role_privileges: any[] = []
             this.privileges['privileges'].forEach((element: any) => {
                 this.rolePrivileges.forEach((element2: any) => {
-                    if (element['label'] == element2){
+                    if (element['label'] == element2) {
                         role_privileges.push(element['id'])
                     }
                 })
@@ -195,7 +195,7 @@ export class UpdateRoleComponent implements OnInit {
     getErrorMessage(field: any) {
         let error = undefined;
         this.roleForm.forEach(element => {
-            if (element.id == field){
+            if (element.id == field) {
                 if (element.required) {
                     error = this.translate.instant('AUTH.field_required');
                 }
@@ -204,32 +204,32 @@ export class UpdateRoleComponent implements OnInit {
         return error
     }
 
-    hasPrivilege(privilege_id: number){
+    hasPrivilege(privilege_id: number) {
         let found = false
         this.rolePrivileges.forEach((element: any) => {
-            if (privilege_id == element){
+            if (privilege_id == element) {
                 found = true
             }
         })
         return found
     }
 
-    getChildsByParent(parent: any){
+    getChildsByParent(parent: any) {
         let data: any[] = []
         this.privileges['privileges'].forEach((element: any) => {
-            if (parent == element['parent']){
+            if (parent == element['parent']) {
                 data.push(element['label'])
             }
         })
         return data
     }
 
-    changePrivilege(event: any){
+    changePrivilege(event: any) {
         let privilege = event.source.name
         let checked = event.checked
-        if (!checked){
+        if (!checked) {
             this.rolePrivileges.forEach((element: any) => {
-                if (privilege == element){
+                if (privilege == element) {
                     let index = this.rolePrivileges.indexOf(privilege, 0)
                     this.rolePrivileges.splice(index, 1)
                 }

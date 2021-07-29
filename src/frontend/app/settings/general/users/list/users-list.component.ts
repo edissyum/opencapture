@@ -59,7 +59,7 @@ export class UsersListComponent implements OnInit {
         this.serviceSettings.init()
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
         let lastUrl = this.routerExtService.getPreviousUrl()
-        if (lastUrl.includes('users/') || lastUrl == '/'){
+        if (lastUrl.includes('users/') || lastUrl == '/') {
             if (this.localeStorageService.get('usersPageIndex'))
                 this.pageIndex = parseInt(<string>this.localeStorageService.get('usersPageIndex'))
             this.offset = this.pageSize * (this.pageIndex)
@@ -80,7 +80,7 @@ export class UsersListComponent implements OnInit {
         ).subscribe()
     }
 
-    onPageChange(event: any){
+    onPageChange(event: any) {
         this.pageSize = event.pageSize
         this.offset = this.pageSize * (event.pageIndex)
         this.localeStorageService.save('usersPageIndex', event.pageIndex)
@@ -92,10 +92,10 @@ export class UsersListComponent implements OnInit {
             tap((data: any) => {
                 this.total = data.users[0].total
                 this.users = data.users;
-                if (this.roles){
+                if (this.roles) {
                     this.users.forEach((user: any) => {
                         this.roles.forEach((element: any) => {
-                            if (user.role == element.id){
+                            if (user.role == element.id) {
                                 user.role_label = element.label
                             }
                         })
@@ -123,7 +123,7 @@ export class UsersListComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if(result){
+            if(result) {
                 this.deleteUser(user_id)
             }
         });
@@ -142,7 +142,7 @@ export class UsersListComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if(result){
+            if(result) {
                 this.disableUser(user_id)
             }
         });
@@ -161,29 +161,29 @@ export class UsersListComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if(result){
+            if(result) {
                 this.enableUser(user_id)
             }
         });
     }
 
-    deleteUser(user_id: number){
-        if (user_id !== undefined){
+    deleteUser(user_id: number) {
+        if (user_id !== undefined) {
             this.http.delete(API_URL + '/ws/users/delete/' + user_id, {headers: this.authService.headers}).pipe(
                 tap(() => {
-                    this.loadUsers()
+                    this.loadUsers();
                 }),
                 catchError((err: any) => {
                     console.debug(err);
                     this.notify.handleErrors(err);
                     return of(false);
                 })
-            ).subscribe()
+            ).subscribe();
         }
     }
 
-    disableUser(user_id: number){
-        if (user_id !== undefined){
+    disableUser(user_id: number) {
+        if (user_id !== undefined) {
             this.http.put(API_URL + '/ws/users/disable/' + user_id, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadUsers()
@@ -197,8 +197,8 @@ export class UsersListComponent implements OnInit {
         }
     }
 
-    enableUser(user_id: number){
-        if (user_id !== undefined){
+    enableUser(user_id: number) {
+        if (user_id !== undefined) {
             this.http.put(API_URL + '/ws/users/enable/' + user_id, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadUsers()
@@ -212,9 +212,9 @@ export class UsersListComponent implements OnInit {
         }
     }
 
-    sortData(sort: Sort){
+    sortData(sort: Sort) {
         let data = this.users.slice()
-        if(!sort.active || sort.direction === ''){
+        if(!sort.active || sort.direction === '') {
             this.users = data
             return;
         }

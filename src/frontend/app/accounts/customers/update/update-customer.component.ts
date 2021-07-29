@@ -126,7 +126,7 @@ export class UpdateCustomerComponent implements OnInit {
                         this.customerForm.forEach(element => {
                             if (element.id == field) {
                                 element.control.setValue(this.customer[field]);
-                            }else if (field == 'address_id'){
+                            }else if (field == 'address_id') {
                                 this.addressId = this.customer[field]
                                 if (this.addressId) {
                                     this.http.get(API_URL + '/ws/accounts/getAdressById/' + this.addressId, {headers: this.authService.headers}).pipe(

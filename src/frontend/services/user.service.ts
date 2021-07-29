@@ -18,7 +18,7 @@ export class UserService {
         this.user = value;
     }
 
-    getUser(){
+    getUser() {
         return this.user;
     }
 

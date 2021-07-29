@@ -51,7 +51,7 @@ export class CustomersListComponent implements OnInit {
     ngOnInit(): void {
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
         let lastUrl = this.routerExtService.getPreviousUrl()
-        if (lastUrl.includes('accounts/customers') || lastUrl == '/'){
+        if (lastUrl.includes('accounts/customers') || lastUrl == '/') {
             if (this.localeStorageService.get('customersPageIndex'))
                 this.pageIndex = parseInt(<string>this.localeStorageService.get('customersPageIndex'))
             this.offset = this.pageSize * (this.pageIndex)
@@ -61,11 +61,11 @@ export class CustomersListComponent implements OnInit {
         this.loadCustomers()
     }
 
-    loadCustomers(){
+    loadCustomers() {
         this.http.get(API_URL + '/ws/accounts/customers/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.customers = data.customers;
-                if (this.customers.length !== 0){
+                if (this.customers.length !== 0) {
                     this.total = data.customers[0].total
                 }
             }),
@@ -78,7 +78,7 @@ export class CustomersListComponent implements OnInit {
         ).subscribe()
     }
 
-    onPageChange(event: any){
+    onPageChange(event: any) {
         this.pageSize = event.pageSize
         this.offset = this.pageSize * (event.pageIndex)
         this.localeStorageService.save('customersPageIndex', event.pageIndex)
@@ -98,14 +98,14 @@ export class CustomersListComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if(result){
+            if(result) {
                 this.deleteSupplier(customer_id)
             }
         });
     }
 
-    deleteSupplier(supplier_id: number){
-        if (supplier_id !== undefined){
+    deleteSupplier(supplier_id: number) {
+        if (supplier_id !== undefined) {
             this.http.delete(API_URL + '/ws/accounts/customers/delete/' + supplier_id, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadCustomers()
@@ -119,9 +119,9 @@ export class CustomersListComponent implements OnInit {
         }
     }
 
-    sortData(sort: Sort){
+    sortData(sort: Sort) {
         let data = this.customers.slice()
-        if(!sort.active || sort.direction === ''){
+        if(!sort.active || sort.direction === '') {
             this.customers = data
             return;
         }

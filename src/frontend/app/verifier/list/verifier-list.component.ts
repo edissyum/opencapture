@@ -13,6 +13,8 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import { FlatTreeControl } from "@angular/cdk/tree";
 import { MatTreeFlatDataSource, MatTreeFlattener } from "@angular/material/tree";
 import { UserService } from "../../../services/user.service";
+import {ConfirmDialogComponent} from "../../../services/confirm-dialog/confirm-dialog.component";
+import {MatDialog} from "@angular/material/dialog";
 declare var $: any;
 
 interface accountsNode {
@@ -79,6 +81,8 @@ export class VerifierListComponent implements OnInit {
     search          : string            = '';
     TREE_DATA       : accountsNode[]    = [];
     expanded        : boolean           = false
+    invoiceToDeleteSelected : boolean   = false
+    totalChecked    : number            = 0
 
     private _transformer = (node: accountsNode, level: number) => {
         return {
@@ -105,6 +109,7 @@ export class VerifierListComponent implements OnInit {
 
     constructor(
         private http: HttpClient,
+        private dialog: MatDialog,
         private authService: AuthService,
         private userService: UserService,
         public translate: TranslateService,
@@ -123,6 +128,8 @@ export class VerifierListComponent implements OnInit {
         marker('VERIFIER.reset_invoice_list') // Needed to get the translation in the JSON file
         marker('VERIFIER.expand_all') // Needed to get the translation in the JSON file
         marker('VERIFIER.collapse_all') // Needed to get the translation in the JSON file
+        marker('VERIFIER.select_all') // Needed to get the translation in the JSON file
+        marker('VERIFIER.unselect_all') // Needed to get the translation in the JSON file
 
         this.localeStorageService.save('splitter_or_verifier', 'verifier')
         let lastUrl = this.routerExtService.getPreviousUrl()
@@ -181,7 +188,9 @@ export class VerifierListComponent implements OnInit {
     }
 
     loadInvoices() {
-        this.loading = true
+        this.invoiceToDeleteSelected = false;
+        this.totalChecked = 0;
+        this.loading = true;
         this.http.post(API_URL + '/ws/verifier/invoices/list',
             {
                 'allowedCustomers': this.allowedCustomers, 'status': this.currentStatus, 'allowedSuppliers': this.allowedSuppliers,
@@ -265,7 +274,7 @@ export class VerifierListComponent implements OnInit {
     fillChildren(parent_id: any , parent: any, child_name: any, supplier_name: any, supplier_id: any, id: any, purchase_or_sale: any) {
         let child_name_exists = false;
         parent.forEach((child: any) => {
-            if (child.name == child_name){
+            if (child.name == child_name) {
                 child_name_exists = true;
                 child.number = child.number + 1;
             }
@@ -327,6 +336,84 @@ export class VerifierListComponent implements OnInit {
         this.loadCustomers();
     }
 
+    selectOrUnselectAllInvoices(event: any) {
+        let label = event.srcElement.textContent
+        this.invoiceToDeleteSelected = !this.invoiceToDeleteSelected;
+        let checkboxList = $(".checkBox_list")
+        checkboxList.each((cpt: any) => {
+            checkboxList[cpt].checked = label == this.translate.instant('VERIFIER.select_all');
+        });
+        this.totalChecked = $('input.checkBox_list:checked').length;
+    }
+
+    deleteAllInvoices() {
+        this.loading = true;
+        let checkboxList = $(".checkBox_list");
+        checkboxList.each((cpt: any) => {
+            let invoice_id = checkboxList[cpt].id.split('_')[0];
+            this.deleteInvoice(invoice_id, true);
+        });
+        this.notify.success('VERIFIER.all_invoices_deleted');
+        this.loadCustomers();
+    }
+
+    deleteInvoice(invoice_id: number, batch_delete = false) {
+        this.http.delete(API_URL + '/ws/verifier/invoices/delete/' + invoice_id, {headers: this.authService.headers}).pipe(
+            tap(() => {
+                if (!batch_delete) this.loadCustomers();
+                this.notify.success('VERIFIER.invoice_deleted');
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    checkCheckedInvoices () {
+        this.totalChecked = $('input.checkBox_list:checked').length;
+        this.invoiceToDeleteSelected = this.totalChecked !== 0;
+    }
+
+    deleteConfirmDialog(invoice_id: number) {
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            data:{
+                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
+                confirmText         : this.translate.instant('VERIFIER.confirm_delete_invoice'),
+                confirmButton       : this.translate.instant('GLOBAL.delete'),
+                confirmButtonColor  : "warn",
+                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+            },
+            width: "600px",
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if(result) {
+                this.deleteInvoice(invoice_id)
+            }
+        });
+    }
+
+    deleteAllConfirmDialog() {
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            data:{
+                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
+                confirmText         : this.translate.instant('VERIFIER.confirm_delete_all_invoices'),
+                confirmButton       : this.translate.instant('VERIFIER.delete_all'),
+                confirmButtonColor  : "warn",
+                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+            },
+            width: "600px",
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if(result) {
+                this.deleteAllInvoices();
+            }
+        });
+    }
+
     changeStatus(event: any) {
         this.currentStatus = event.value;
         this.resetPaginator();
@@ -359,7 +446,7 @@ export class VerifierListComponent implements OnInit {
         this.localeStorageService.save('invoicesPageIndex', this.pageIndex);
     }
 
-    expandAll(){
+    expandAll() {
         this.expanded = !this.expanded
         /*
         * mat-tree-node.child are clicked twice to be sure they will be close at the second click

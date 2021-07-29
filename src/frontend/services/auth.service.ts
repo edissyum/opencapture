@@ -19,7 +19,7 @@ export class AuthService {
         this.headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.getToken());
     }
 
-    generateHeaders(){
+    generateHeaders() {
         this.headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.getToken());
     }
 
@@ -39,7 +39,7 @@ export class AuthService {
         this.localStorage.save(name, token);
     }
 
-    getTokenCustom(name: string){
+    getTokenCustom(name: string) {
         return this.localStorage.get(name);
     }
 
@@ -48,7 +48,7 @@ export class AuthService {
         this.localStorage.setCookie('OpenCaptureForInvoicesToken_2', token2, days_before_exp);
     }
 
-    setTokenAuth(token: string, days_before_exp: number){
+    setTokenAuth(token: string, days_before_exp: number) {
         this.localStorage.setCookie('OpenCaptureForInvoicesToken_2', token, days_before_exp);
     }
 
@@ -62,7 +62,7 @@ export class AuthService {
         this.localStorage.remove('splitter_or_verifier');
     }
 
-    logout(){
+    logout() {
         this.userService.setUser({});
         this.clearTokens();
         this.router.navigateByUrl("/login");

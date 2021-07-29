@@ -13,12 +13,12 @@ export class PrivilegesService {
     hasPrivilege(privilege_id: any) {
         let found = false
         let user_privileges = this.userService.getUserFromLocal()['privileges']
-        if (user_privileges){
+        if (user_privileges) {
             if (user_privileges == '*')
                 return true
 
             user_privileges.forEach((element: any) => {
-                if (privilege_id == element){
+                if (privilege_id == element) {
                     found = true
                 }
             })

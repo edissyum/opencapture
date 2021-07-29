@@ -129,7 +129,7 @@ export class UploadComponent implements OnInit {
             }
         }
         let splitter_or_verifier = this.localeStorageService.get('splitter_or_verifier');
-        if (splitter_or_verifier !== undefined || splitter_or_verifier !== ''){
+        if (splitter_or_verifier !== undefined || splitter_or_verifier !== '') {
             this.http.post(
                 API_URL + '/ws/' + splitter_or_verifier + '/upload?purchaseOrSale=' + this.purchaseOrSale + '&customerId=' + this.selectedCustomer,
                 formData,

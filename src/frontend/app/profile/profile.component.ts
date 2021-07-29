@@ -76,11 +76,11 @@ export class UserProfileComponent implements OnInit {
     ) {
     }
 
-    ngOnInit(){
+    ngOnInit() {
         this.userId = this.route.snapshot.params['id'];
 
-        if (this.userId != this.userService.user.id){
-            if (!this.privilegeService.hasPrivilege('update_user')){
+        if (this.userId != this.userService.user.id) {
+            if (!this.privilegeService.hasPrivilege('update_user')) {
                 this.notify.error('ERROR.unauthorized')
                 this.router.navigateByUrl('/home')
             }
@@ -89,10 +89,10 @@ export class UserProfileComponent implements OnInit {
         this.http.get(API_URL + '/ws/roles/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 data.roles.forEach((element: any) => {
-                    if (element.editable){
+                    if (element.editable) {
                         this.roles.push(element)
                     }else{
-                        if((this.userService.getUser().privileges == '*')){
+                        if((this.userService.getUser().privileges == '*')) {
                             this.roles.push(element)
                         }
                     }
@@ -108,12 +108,12 @@ export class UserProfileComponent implements OnInit {
         this.http.get(API_URL + '/ws/users/getById/' + this.userId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.profile = data;
-                for (let field in this.profile){
-                    if (this.profile.hasOwnProperty(field)){
+                for (let field in this.profile) {
+                    if (this.profile.hasOwnProperty(field)) {
                         this.profileForm.forEach(element => {
-                            if (element.id == field){
+                            if (element.id == field) {
                                 element.control.value = this.profile[field];
-                                if (element.id == 'role'){
+                                if (element.id == 'role') {
                                     element.values = this.roles
                                 }
                             }
@@ -143,8 +143,8 @@ export class UserProfileComponent implements OnInit {
         return state;
     }
 
-    onSubmit(){
-        if(this.isValidForm()){
+    onSubmit() {
+        if(this.isValidForm()) {
             const user : any = {};
             this.profileForm.forEach(element => {
                 user[element.id] = element.control.value;
@@ -155,7 +155,7 @@ export class UserProfileComponent implements OnInit {
             ).pipe(
                 tap((data: any) => {
                     this.notify.success(this.translate.instant('USER.profile_updated'));
-                    if (this.userId == this.userService.user.id){
+                    if (this.userId == this.userService.user.id) {
                         this.userService.setUser(data.user);
                         this.authService.setTokenAuth(btoa(JSON.stringify(this.userService.getUser())), data.days_before_exp);
                     }

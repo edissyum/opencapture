@@ -65,15 +65,21 @@
                         <mat-paginator [length]="this.total" [pageSize]="pageSize" [pageIndex]="pageIndex"
                                        [pageSizeOptions]="this.pageSizeOptions" (page)="onPageChange($event)"></mat-paginator>
                     </div>
+                    <div class="z-40 -mt-2 mb-2 select-none" style="margin-left: 1.2rem">
+                        <span class="cursor-pointer" (click)="selectOrUnselectAllInvoices($event)" [innerHTML]="invoiceToDeleteSelected ? this.translate.instant('VERIFIER.unselect_all') : this.translate.instant('VERIFIER.select_all')"></span>
+                        <span [class.hidden]="this.totalChecked == 0"> ({{ this.totalChecked}})</span>
+                        <span [class.hidden]="!invoiceToDeleteSelected" (click)="$event.stopPropagation();deleteAllConfirmDialog()"><i class="fas fa-trash ml-2 text-red-500 cursor-pointer"></i></span>
+                    </div>
                     <hr class="w-1/2 m-auto mb-4 border-green-400 relative z-30">
                     <div *ngIf="loading">
                         <app-loader></app-loader>
                     </div>
                     <div class="content mx-10 mt-3" *ngIf="!loading">
                         <div class="list grid grid-cols-4 grid-flow-row gap-12">
-                            <mat-card *ngFor="let invoice of this.invoices;" [routerLink]="'/verifier/viewer/'+ invoice.id" class="cursor-pointer">
-                                <img mat-card-image class="p-3.5 m-auto" src="assets/imgs/thumb.jpg">
-                                <mat-card-header class="leading-6">
+                            <mat-card *ngFor="let invoice of this.invoices;" class="cursor-pointer">
+                                <input id="{{ invoice.id }}_checkbox" class="checkBox_list absolute z-40" type="checkbox" (click)="checkCheckedInvoices()"/>
+                                <img [routerLink]="'/verifier/viewer/'+ invoice.id"  mat-card-image class="p-3.5 m-auto" src="assets/imgs/thumb.jpg">
+                                <mat-card-header class="leading-6" [routerLink]="'/verifier/viewer/'+ invoice.id" >
                                     <mat-card-title>
                                         <span>{{ invoice.supplier_name }}</span>
                                         <span class="absolute right-6 text-green-400 text-base badge badge-secondary badge-pill"
@@ -89,7 +95,7 @@
                                     </mat-card-subtitle>
                                 </mat-card-header>
                                 <mat-card-actions>
-                                    <i class="fas fa-trash cursor-pointer text-red-500">
+                                    <i class="fas fa-trash cursor-pointer text-red-500" (click)="$event.stopPropagation();deleteConfirmDialog(invoice.id)">
                                         <span class="font-medium mat-typography">{{ 'VERIFIER.delete_invoice' | translate }}</span>
                                     </i>
                                 </mat-card-actions>

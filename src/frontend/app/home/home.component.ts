@@ -22,7 +22,7 @@ export class HomeComponent implements OnInit {
         this.setValue('')
     }
 
-    setValue(value: string){
+    setValue(value: string) {
         this.localeStorageService.save('splitter_or_verifier', value);
     }
 }

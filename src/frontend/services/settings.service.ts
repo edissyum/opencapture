@@ -149,9 +149,9 @@ export class SettingsService {
         private localeStorageService: LocalStorageService
     ) {}
 
-    init(){
+    init() {
         let lastUrl = this.routerExtService.getPreviousUrl()
-        if (lastUrl.includes('roles') || lastUrl == '/' || lastUrl.includes('users')){
+        if (lastUrl.includes('roles') || lastUrl == '/' || lastUrl.includes('users')) {
             let selectedSettings = this.localeStorageService.get('selectedSettings')
             let selectedParentSettings = this.localeStorageService.get('selectedParentSettings')
             if (selectedSettings)
@@ -167,7 +167,7 @@ export class SettingsService {
         }
     }
 
-    getTitle(){
+    getTitle() {
         let title = this.titleService.getTitle()
         title = title.split(' - ')[0]
         return title
@@ -180,49 +180,49 @@ export class SettingsService {
         this.localeStorageService.save('selectedParentSettings',settingParentId)
     }
 
-    getIsMenuOpen(){
+    getIsMenuOpen() {
         return this.isMenuOpen;
     }
 
-    getSelectedSetting(){
+    getSelectedSetting() {
         return this.selectedSetting;
     }
 
-    getSelectedParentSetting(){
+    getSelectedParentSetting() {
         return this.selectedParentSetting;
     }
 
-    getSettingListOpenState(){
+    getSettingListOpenState() {
         return this.settingListOpenState;
     }
 
-    getSettingsParent(){
+    getSettingsParent() {
         return this.settingsParent;
     }
 
-    getSettings(){
+    getSettings() {
         return this.settings;
     }
 
-    getSettingsAction(parent_id: any, setting_id: any){
+    getSettingsAction(parent_id: any, setting_id: any) {
         let actions = undefined
-        this.settings[parent_id].forEach((element: any) =>{
-            if (element['id'] == setting_id && element['actions']){
+        this.settings[parent_id].forEach((element: any) => {
+            if (element['id'] == setting_id && element['actions']) {
                 actions = element['actions']
             }
         })
         return actions
     }
 
-    setSelectedSettings(value: string){
+    setSelectedSettings(value: string) {
         this.selectedSetting = value;
     }
 
-    setSelectedParentSettings(value: string){
+    setSelectedParentSettings(value: string) {
         this.selectedParentSetting = value;
     }
 
-    setSettingListOpenState(value: boolean){
+    setSettingListOpenState(value: boolean) {
         this.settingListOpenState = value;
     }
 

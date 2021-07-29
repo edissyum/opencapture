@@ -1,5 +1,5 @@
 function patchPostCSS(webpackConfig, tailwindConfig, components = false) {
-  if(!tailwindConfig){
+  if(!tailwindConfig) {
     console.error('Missing tailwind config :', tailwindConfig);
     return;
   }

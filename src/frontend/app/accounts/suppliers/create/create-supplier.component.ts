@@ -163,7 +163,7 @@ export class CreateSupplierComponent implements OnInit {
         return state;
     }
 
-    onSubmit(){
+    onSubmit() {
         if (this.isValidForm()) {
             const supplier: any = {};
             const address: any = {};

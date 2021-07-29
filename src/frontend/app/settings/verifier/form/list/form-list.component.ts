@@ -55,7 +55,7 @@ export class FormListComponent implements OnInit {
     ngOnInit(): void {
         this.serviceSettings.init()
         let lastUrl = this.routerExtService.getPreviousUrl()
-        if (lastUrl.includes('settings/verifier/forms') || lastUrl == '/'){
+        if (lastUrl.includes('settings/verifier/forms') || lastUrl == '/') {
             if (this.localeStorageService.get('formsPageIndex'))
                 this.pageIndex = parseInt(<string>this.localeStorageService.get('formsPageIndex'))
             this.offset = this.pageSize * (this.pageIndex)
@@ -65,7 +65,7 @@ export class FormListComponent implements OnInit {
         this.loadForms()
     }
 
-    onPageChange(event: any){
+    onPageChange(event: any) {
         this.pageSize = event.pageSize
         this.offset = this.pageSize * (event.pageIndex)
         this.localeStorageService.save('formsPageIndex', event.pageIndex)
@@ -101,7 +101,7 @@ export class FormListComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if(result){
+            if(result) {
                 this.deleteForm(form_id)
             }
         });
@@ -120,7 +120,7 @@ export class FormListComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if(result){
+            if(result) {
                 this.disableForm(form_id)
             }
         });
@@ -139,14 +139,14 @@ export class FormListComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if(result){
+            if(result) {
                 this.enableForm(form_id)
             }
         });
     }
 
-    deleteForm(form_id: number){
-        if (form_id !== undefined){
+    deleteForm(form_id: number) {
+        if (form_id !== undefined) {
             this.http.delete(API_URL + '/ws/forms/delete/' + form_id, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadForms()
@@ -160,8 +160,8 @@ export class FormListComponent implements OnInit {
         }
     }
 
-    disableForm(form_id: number){
-        if (form_id !== undefined){
+    disableForm(form_id: number) {
+        if (form_id !== undefined) {
             this.http.put(API_URL + '/ws/forms/disable/' + form_id, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadForms()
@@ -175,8 +175,8 @@ export class FormListComponent implements OnInit {
         }
     }
 
-    enableForm(forms_id: number){
-        if (forms_id !== undefined){
+    enableForm(forms_id: number) {
+        if (forms_id !== undefined) {
             this.http.put(API_URL + '/ws/forms/enable/' + forms_id, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadForms()
@@ -190,9 +190,9 @@ export class FormListComponent implements OnInit {
         }
     }
 
-    sortData(sort: Sort){
+    sortData(sort: Sort) {
         let data = this.forms.slice()
-        if(!sort.active || sort.direction === ''){
+        if(!sort.active || sort.direction === '') {
             this.forms = data
             return;
         }

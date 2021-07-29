@@ -56,9 +56,10 @@ export class VerifierViewerComponent implements OnInit {
     }
     pattern         : any = {
         'alphanum': '^[0-9a-zA-Z]*$',
+        'alphanum_extended': '^[0-9a-zA-Z-/#\\s]*$',
         'number_int': '^[0-9]*$',
         'number_float': '^[0-9]*([.][0-9]*)*$',
-        'char': '^.*$',
+        'char': '^[A-Za-z]*$',
     }
 
     constructor(
@@ -75,7 +76,7 @@ export class VerifierViewerComponent implements OnInit {
         this.localeStorageService.save('splitter_or_verifier', 'verifier')
         this.imageInvoice = $('#invoice_image');
         /*
-        * Enable library to draw rectangle (OCR ON FLY)
+        * Enable library to draw rectangle on load (OCR ON FLY)
         */
         this.ocr({
             'target' : {
@@ -179,7 +180,7 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     getSelectionByCpt(selection: any, cpt: any) {
-        for (let index in selection){
+        for (let index in selection) {
             if (selection[index].id == cpt)
                 return selection[index]
         }
@@ -213,13 +214,13 @@ export class VerifierViewerComponent implements OnInit {
                     if (selection.length !== 0 && selection['width'] !== 0 && selection['height'] !== 0) {
                         // Write the label of the input above the selection rectangle
                         if ($('#select-area-label_' + cpt).length == 0) {
-                            $('#select-areas-label-container_' + cpt).append('<div id="select-area-label_' + cpt + '" class="input_' + _this.lastId + '">' + _this.lastLabel + '</div>')
+                            $('#select-areas-label-container_' + cpt).append('<div id="select-area-label_' + cpt + '" class="input_' + _this.lastId + ' select-none">' + _this.lastLabel + '</div>')
                             $('#select-areas-background-area_' + cpt).css('background-color', _this.lastColor)
                             $('#select-areas-outline_' + cpt).addClass('outline_' + _this.lastId)
                         }
                         // End write
 
-                        let inputId = $('#select-area-label_' + cpt).attr('class').replace('input_', '')
+                        let inputId = $('#select-area-label_' + cpt).attr('class').replace('input_', '').replace('select-none', '')
                         $('#' + inputId).focus()
 
                         // Test to avoid multi selection for same label. If same label exists, remove the selected areas and replace it by the new one
@@ -243,6 +244,7 @@ export class VerifierViewerComponent implements OnInit {
                                 },{headers: _this.authService.headers})
                                 .pipe(
                                     tap((data: any) => {
+                                        console.log(data.result.text)
                                         _this.updateFormValue(inputId, data.result.text)
                                         _this.isOCRRunning = false;
                                         _this.savePosition(_this.getSelectionByCpt(selection, cpt))
@@ -259,18 +261,18 @@ export class VerifierViewerComponent implements OnInit {
                 },
                 onDeleted: function(img: any, cpt: any) {
                     let inputId = $('#select-area-label_' + cpt).attr('class').replace('input_', '')
-                    if (inputId){
+                    if (inputId) {
                         _this.updateFormValue(inputId, '')
                     }
                 }
             });
         }else{
             let deleteClicked = false
-            $(".select-areas-delete-area").click(function(){
+            $(".select-areas-delete-area").click(function() {
                 deleteClicked = true
             });
             setTimeout(function () {
-                if (!deleteClicked){
+                if (!deleteClicked) {
                     resizeArea.css('display', 'none');
                     deleteArea.css('display', 'none');
                 }
@@ -282,7 +284,7 @@ export class VerifierViewerComponent implements OnInit {
     updateFormValue(input_id: string, value: any) {
         for (let category in this.form) {
             this.form[category].forEach((input: any) => {
-                if (input.id == input_id) {
+                if (input.id.trim() === input_id.trim()) {
                     input.control.setValue(value)
                 }
             })
@@ -335,7 +337,7 @@ export class VerifierViewerComponent implements OnInit {
     getPattern(format: any) {
         let pattern = ''
         for (let cpt in this.pattern) {
-            if (cpt == format){
+            if (cpt == format) {
                 pattern = this.pattern[cpt]
             }
         }
@@ -352,6 +354,9 @@ export class VerifierViewerComponent implements OnInit {
                     if (pattern) {
                         if (pattern.requiredPattern == this.getPattern('alphanum')) {
                             error = this.translate.instant('ERROR.alphanum_pattern');
+                        }
+                        if (pattern.requiredPattern == this.getPattern('alphanum_extended')) {
+                            error = this.translate.instant('ERROR.alphanum_extended_pattern');
                         }else if(pattern.requiredPattern == this.getPattern('number_int')) {
                             error = this.translate.instant('ERROR.number_int_pattern');
                         }else if(pattern.requiredPattern == this.getPattern('number_float')) {

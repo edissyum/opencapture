@@ -54,7 +54,7 @@ export class LocalStorageService {
         }
     }
 
-    deleteCookie(cname: string){
+    deleteCookie(cname: string) {
         this.setCookie(cname, '', -1)
     }
 }

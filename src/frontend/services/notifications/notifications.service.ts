@@ -73,7 +73,7 @@ export class NotificationService {
         } else
             this.error(err);
 
-        if (route){
+        if (route) {
             this.router.navigate([route]).then();
         }
     }

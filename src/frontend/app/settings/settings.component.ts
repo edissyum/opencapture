@@ -29,7 +29,7 @@ export class SettingsComponent implements OnInit {
         this.selectedParentSetting = this.serviceSettings.getSelectedParentSetting();
         this.settings = this.serviceSettings.getSettings();
         this.settings[this.selectedParentSetting].forEach((element: any) => {
-            if (element['id'] == this.selectedSetting){
+            if (element['id'] == this.selectedSetting) {
                 let routeToGo = element.route;
                 if (routeToGo && this.privilegesService.hasPrivilege(element.privilege))
                     this.router.navigateByUrl(routeToGo).then();

@@ -48,8 +48,8 @@ export class AppComponent implements OnInit {
                     }
                     if (this.router.url != '/home' && !this.router.url.includes('settings')) {
                         let splitter_or_verifier = this.localeStorageService.get('splitter_or_verifier')
-                        if (splitter_or_verifier != undefined){
-                            if (splitter_or_verifier == 'splitter'){
+                        if (splitter_or_verifier != undefined) {
+                            if (splitter_or_verifier == 'splitter') {
                                 child_image = 'assets/imgs/logo_splitter.png'
                             }else{
                                 child_image = 'assets/imgs/logo_verifier.png'
@@ -66,7 +66,7 @@ export class AppComponent implements OnInit {
         ).subscribe((data: any) => {
             let ttl = data[0]
             this.image = data[1]
-            if (this.translate.currentLang == undefined){
+            if (this.translate.currentLang == undefined) {
                 this.http.get(API_URL + '/ws/i18n/getCurrentLang').pipe(
                     tap((data: any) => {
                         this.translate.use(data.lang)

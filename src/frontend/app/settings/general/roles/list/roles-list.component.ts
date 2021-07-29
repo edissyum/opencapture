@@ -162,8 +162,8 @@ export class RolesListComponent implements OnInit {
         }
     }
 
-    disableRole(role_id: number){
-        if (role_id !== undefined){
+    disableRole(role_id: number) {
+        if (role_id !== undefined) {
             this.http.put(API_URL + '/ws/roles/disable/' + role_id, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadRoles()
@@ -177,8 +177,8 @@ export class RolesListComponent implements OnInit {
         }
     }
 
-    enableRole(role_id: number){
-        if (role_id !== undefined){
+    enableRole(role_id: number) {
+        if (role_id !== undefined) {
             this.http.put(API_URL + '/ws/roles/enable/' + role_id, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadRoles()

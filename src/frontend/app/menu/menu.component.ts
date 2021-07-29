@@ -48,7 +48,7 @@ export class MenuComponent implements OnInit {
         marker('ACCOUNTS.suppliers_list') // Needed to get the translation in the JSON file
         marker('ACCOUNTS.customers_list') // Needed to get the translation in the JSON file
         this.userService.user = this.userService.getUserFromLocal();
-        if (this.userService.user){
+        if (this.userService.user) {
             this.localeService.getLocales();
             this.localeService.getCurrentLocale();
         }

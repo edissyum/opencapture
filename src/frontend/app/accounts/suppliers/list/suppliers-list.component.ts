@@ -51,7 +51,7 @@ export class SuppliersListComponent implements OnInit {
     ngOnInit(): void {
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
         let lastUrl = this.routerExtService.getPreviousUrl()
-        if (lastUrl.includes('accounts/suppliers') || lastUrl == '/'){
+        if (lastUrl.includes('accounts/suppliers') || lastUrl == '/') {
             if (this.localeStorageService.get('suppliersPageIndex'))
                 this.pageIndex = parseInt(<string>this.localeStorageService.get('suppliersPageIndex'))
             this.offset = this.pageSize * (this.pageIndex)
@@ -61,18 +61,18 @@ export class SuppliersListComponent implements OnInit {
         this.loadSuppliers()
     }
 
-    loadSuppliers(){
+    loadSuppliers() {
         this.http.get(API_URL + '/ws/accounts/suppliers/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.suppliers = data.suppliers;
-                if (this.suppliers.length !== 0){
+                if (this.suppliers.length !== 0) {
                     this.total = data.suppliers[0].total
                 }
                 this.http.get(API_URL + '/ws/forms/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
-                        for (let cpt in this.suppliers){
-                            for (let form of data.forms){
-                                if (form.id == this.suppliers[cpt].form_id){
+                        for (let cpt in this.suppliers) {
+                            for (let form of data.forms) {
+                                if (form.id == this.suppliers[cpt].form_id) {
                                     this.suppliers[cpt].form_label = form.label
                                 }
                             }
@@ -94,7 +94,7 @@ export class SuppliersListComponent implements OnInit {
         ).subscribe()
     }
 
-    onPageChange(event: any){
+    onPageChange(event: any) {
         this.pageSize = event.pageSize
         this.offset = this.pageSize * (event.pageIndex)
         this.localeStorageService.save('suppliersPageIndex', event.pageIndex)
@@ -114,14 +114,14 @@ export class SuppliersListComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if(result){
+            if(result) {
                 this.deleteSupplier(supplier_id)
             }
         });
     }
 
-    deleteSupplier(supplier_id: number){
-        if (supplier_id !== undefined){
+    deleteSupplier(supplier_id: number) {
+        if (supplier_id !== undefined) {
             this.http.delete(API_URL + '/ws/accounts/suppliers/delete/' + supplier_id, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadSuppliers()
@@ -135,9 +135,9 @@ export class SuppliersListComponent implements OnInit {
         }
     }
 
-    sortData(sort: Sort){
+    sortData(sort: Sort) {
         let data = this.suppliers.slice()
-        if(!sort.active || sort.direction === ''){
+        if(!sort.active || sort.direction === '') {
             this.suppliers = data
             return;
         }

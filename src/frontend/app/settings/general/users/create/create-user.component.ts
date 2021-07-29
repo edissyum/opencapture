@@ -85,12 +85,12 @@ export class CreateUserComponent implements OnInit {
         this.http.get(API_URL + '/ws/roles/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 data.roles.forEach((element: any) => {
-                    if (element.editable){
+                    if (element.editable) {
                         this.roles.push(element)
                     }
                 });
                 this.userForm.forEach(element => {
-                    if (element.id == 'role'){
+                    if (element.id == 'role') {
                         element.values = this.roles
                     }
                 });
@@ -125,7 +125,7 @@ export class CreateUserComponent implements OnInit {
                 user[element.id] = element.control.value;
             });
 
-            if (user['password'] !== user['password_check']){
+            if (user['password'] !== user['password_check']) {
                 this.notify.handleErrors('USER.password_mismatch');
                 return of(false);
             }
@@ -149,7 +149,7 @@ export class CreateUserComponent implements OnInit {
         let error = undefined;
         this.userForm.forEach(element => {
             if(element.id == field)
-                if (element.required){
+                if (element.required) {
                     error = this.translate.instant('AUTH.field_required');
                 }
         })

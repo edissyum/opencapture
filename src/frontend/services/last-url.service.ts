@@ -18,7 +18,7 @@ export class LastUrlService {
         });
     }
 
-    public getPreviousUrl(){
+    public getPreviousUrl() {
         return this.previousUrl;
     }
 }

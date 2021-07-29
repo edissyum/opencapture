@@ -98,6 +98,11 @@ div[id*="select-area-label_"] {
 }
 
 /*** END image area select ***/
+
+.mat-menu-panel {
+    max-width:fit-content !important;
+}
+
 ::ng-deep .mat-form-field-appearance-legacy .mat-form-field-underline {
     background-color: transparent;
 }

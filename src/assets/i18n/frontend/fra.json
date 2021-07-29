@@ -75,6 +75,7 @@
 	},
 	"ERROR": {
 		"404": "La page demandée n'existe pas",
+		"alphanum_extended_pattern": "La valeur n'est pas au format attendu : alphanumérique avec caractères spéciaux",
 		"alphanum_pattern": "La valeur n'est pas au format attendu : alphanumérique",
 		"connection_failed": "Erreur lors de la connexion au serveur",
 		"date_pattern": "La valeur n'est pas au format attendu : date",
@@ -102,6 +103,7 @@
 	},
 	"FORMATS": {
 		"alphanum": "Caractères alphanumériques [0-9aA-zZ]",
+		"alphanum_extended": "Caractères alphanumériques étendus [0-9aA-zZ-/#\\s]",
 		"char": "Caractères alphabétiques [aA-zZ]",
 		"date": "Date",
 		"number_float": "Caractères numériques flottant [0-90.0-0.9]",
@@ -280,6 +282,9 @@
 	"VERIFIER": {
 		"collapse_all": "Replier tous les clients",
 		"colors": "Couleurs",
+		"confirm_delete_all_invoices": "Êtes-vous sûr de vouloir supprimer toutes les factures de la page ?",
+		"confirm_delete_invoice": "Êtes-vous sûr de vouloir supprimer cette facture ?",
+		"delete_all": "Supprimer toutes les factures de la page",
 		"delete_invoice": "Supprimer la facture",
 		"expand_all": "Développer tous les clients",
 		"field_settings": "Paramètres du champ",
@@ -290,8 +295,10 @@
 		"register_date": "Enregistré le",
 		"reset_invoice_list": "Réinitialiser la liste des factures",
 		"search": "Rechercher une facture",
+		"select_all": "Sélectionner tout",
 		"size": "Taille",
 		"suppliers_by_customer": "Liste des fournisseurs par client",
+		"unselect_all": "Désélectionner tout",
 		"viewer": "Visualisation du PDF"
 	}
 }

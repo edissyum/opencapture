@@ -137,10 +137,10 @@ export class UpdateSupplierComponent implements OnInit {
                                 this.supplierForm.forEach(element => {
                                     if (element.id == field) {
                                         element.control.setValue(this.supplier[field]);
-                                        if (element.id == 'form_id'){
+                                        if (element.id == 'form_id') {
                                             element.values = forms.forms
                                         }
-                                    }else if (field == 'address_id'){
+                                    }else if (field == 'address_id') {
                                         this.addressId = this.supplier[field]
                                         if (this.addressId) {
                                             console.log('here')

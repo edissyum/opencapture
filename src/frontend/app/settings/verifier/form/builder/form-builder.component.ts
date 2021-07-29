@@ -12,8 +12,6 @@ import {moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 import {API_URL} from "../../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
-import {DateAdapter} from "@angular/material/core";
-import {LocaleService} from "../../../../../services/locale.service";
 import {marker} from "@biesbjerg/ngx-translate-extract-marker";
 
 @Component({
@@ -36,8 +34,6 @@ export class FormBuilderComponent implements OnInit {
     labelType               : any [] = [
         marker('TYPES.char'),
         marker('TYPES.textarea'),
-        marker('FORMATS.number_int'),
-        marker('FORMATS.number_float'),
         marker('TYPES.date'),
         marker('TYPES.select'),
         marker('VERIFIER.field_settings'),
@@ -180,7 +176,7 @@ export class FormBuilderComponent implements OnInit {
                     class: "w-1/3",
                     class_label: "1/33",
                     color: 'yellow',
-                    format: 'alphanum',
+                    format: 'alphanum_extended',
                     format_icon: 'fas fa-hashtag'
 
                 },
@@ -193,7 +189,7 @@ export class FormBuilderComponent implements OnInit {
                     class: "w-1/3",
                     class_label: "1/33",
                     color: 'silver',
-                    format: 'alphanum',
+                    format: 'alphanum_extended',
                     format_icon: 'fas fa-hashtag'
                 },
                 {
@@ -446,6 +442,11 @@ export class FormBuilderComponent implements OnInit {
             'label': marker('FORMATS.alphanum'),
             'icon': 'fas fa-hashtag'
         },
+        {
+            'id': 'alphanum_extended',
+            'label': marker('FORMATS.alphanum_extended'),
+            'icon': 'fas fa-level-up-alt'
+        },
     ]
 
     constructor(
@@ -468,11 +469,11 @@ export class FormBuilderComponent implements OnInit {
             this.creationMode = false
             this.http.get(API_URL + '/ws/forms/getById/' + this.formId, {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
-                    for (let field in this.form){
-                        if (this.form.hasOwnProperty(field)){
-                            for (let info in data){
-                                if (data.hasOwnProperty(info)){
-                                    if (info == field){
+                    for (let field in this.form) {
+                        if (this.form.hasOwnProperty(field)) {
+                            for (let info in data) {
+                                if (data.hasOwnProperty(info)) {
+                                    if (info == field) {
                                         this.form[field].control.value = data[info]
                                     }
                                 }
@@ -491,10 +492,10 @@ export class FormBuilderComponent implements OnInit {
                 tap((data: any) => {
                     if (data.customFields) {
                         for (let field in data.customFields) {
-                            if (data.customFields.hasOwnProperty(field)){
-                                if(data.customFields[field].module == 'verifier'){
-                                    for (let parent in this.availableFieldsParent){
-                                        if(this.availableFieldsParent[parent].id == 'custom_fields'){
+                            if (data.customFields.hasOwnProperty(field)) {
+                                if(data.customFields[field].module == 'verifier') {
+                                    for (let parent in this.availableFieldsParent) {
+                                        if(this.availableFieldsParent[parent].id == 'custom_fields') {
                                             this.availableFieldsParent[parent].values.push(
                                                 {
                                                     id: 'custom_' + data.customFields[field].id,
@@ -617,12 +618,12 @@ export class FormBuilderComponent implements OnInit {
         }
     }
 
-    deleteField(event: any, previousIndex: any, category:any, unit: any){
+    deleteField(event: any, previousIndex: any, category:any, unit: any) {
         if (unit == 'addresses')
             unit = 'supplier'
-        for(let parent_field in this.availableFieldsParent){
+        for(let parent_field in this.availableFieldsParent) {
             let id = this.availableFieldsParent[parent_field].id.split('_fields')[0]
-            if (id == unit){
+            if (id == unit) {
                 let currentIndex = this.availableFieldsParent[parent_field]['values'].length
                 transferArrayItem(this.fields[category],
                     this.availableFieldsParent[parent_field]['values'],
@@ -648,7 +649,7 @@ export class FormBuilderComponent implements OnInit {
     updateForm() {
         let label = this.form.label.control.value
         let is_default = this.form.default_form.control.value
-        if (label){
+        if (label) {
             this.http.put(API_URL + '/ws/forms/update/' + this.formId, {'args': {'label' : label, 'default_form' : is_default}}, {headers: this.authService.headers},
             ).pipe(
                 tap(()=> {
@@ -674,10 +675,10 @@ export class FormBuilderComponent implements OnInit {
         }
     }
 
-    createForm(){
+    createForm() {
         let label = this.form.label.control.value
         let is_default = this.form.default_form.control.value
-        if (label){
+        if (label) {
             this.http.post(API_URL + '/ws/forms/add', {'args': {'label' : label, 'default_form' : is_default}}, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {

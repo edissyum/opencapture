@@ -203,26 +203,26 @@ export class UpdateUserComponent implements OnInit {
         return error
     }
 
-    hasCustomer(customerId: any){
-        for (let customer_id of this.usersCustomers){
-            if(customer_id == customerId){
+    hasCustomer(customerId: any) {
+        for (let customer_id of this.usersCustomers) {
+            if(customer_id == customerId) {
                 return true;
             }
         }
         return false
     }
 
-    updateUsersCustomers(customerId: any){
+    updateUsersCustomers(customerId: any) {
         let found = false
         let cpt = 0;
         for (let customer_id of this.usersCustomers) {
-            if(customer_id == customerId){
+            if(customer_id == customerId) {
                 found = true;
                 break
             }
             cpt = cpt + 1
         }
-        if (!found){
+        if (!found) {
             this.usersCustomers.push(customerId)
         }else{
             this.usersCustomers.splice(cpt, 1)
