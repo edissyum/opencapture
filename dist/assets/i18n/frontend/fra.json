@@ -3,6 +3,7 @@
 		"lead_dev": "Lead developer"
 	},
 	"ACCOUNTS": {
+		"choose_customer_upload": "Choix du compte client",
 		"company_number": "Numéro de société",
 		"confirm_delete_customer": "Êtes vous sûr de vouloir supprimer le compte client <b>{{ customer }}</b> ?",
 		"confirm_delete_supplier": "Êtes vous sûr de vouloir supprimer le compte fournisseur <b>{{ supplier }}</b> ?",
@@ -74,6 +75,7 @@
 	},
 	"ERROR": {
 		"404": "La page demandée n'existe pas",
+		"alphanum_extended_pattern": "La valeur n'est pas au format attendu : alphanumérique avec caractères spéciaux",
 		"alphanum_pattern": "La valeur n'est pas au format attendu : alphanumérique",
 		"connection_failed": "Erreur lors de la connexion au serveur",
 		"date_pattern": "La valeur n'est pas au format attendu : date",
@@ -101,6 +103,7 @@
 	},
 	"FORMATS": {
 		"alphanum": "Caractères alphanumériques [0-9aA-zZ]",
+		"alphanum_extended": "Caractères alphanumériques étendus [0-9aA-zZ-/#\\s]",
 		"char": "Caractères alphabétiques [aA-zZ]",
 		"date": "Date",
 		"number_float": "Caractères numériques flottant [0-90.0-0.9]",
@@ -157,7 +160,7 @@
 		"verifier": "Open-Capture Vérificateur"
 	},
 	"INVOICES": {
-		"position_updated": "Position du champ <b>{{ input }}</b> mise à jour"
+		"position_and_data_updated": "Position et valeur du champ <b>{{ input }}</b> mise à jour"
 	},
 	"PAGINATOR": {
 		"display": "Affichage",
@@ -244,6 +247,7 @@
 		"extension_unauthorized": "Un ou plusieurs fichiers ne sont pas au format PDF",
 		"no_file": "Aucun fichier à téléverser",
 		"placeholder": "Cliquer pour choisir un document ou faites glisser un document",
+		"please_select_customer": "Merci de sélectionner un compte client avant de téléverser une facture",
 		"purchase_invoice": "Facture d'achat",
 		"sale_invoice": "Facture de vente",
 		"send_purchase_invoice": "Téléverser la facture d'achat",
@@ -276,8 +280,13 @@
 		"username": "Nom d'utilisateur"
 	},
 	"VERIFIER": {
+		"collapse_all": "Replier tous les clients",
 		"colors": "Couleurs",
+		"confirm_delete_all_invoices": "Êtes-vous sûr de vouloir supprimer toutes les factures de la page ?",
+		"confirm_delete_invoice": "Êtes-vous sûr de vouloir supprimer cette facture ?",
+		"delete_all": "Supprimer toutes les factures de la page",
 		"delete_invoice": "Supprimer la facture",
+		"expand_all": "Développer tous les clients",
 		"field_settings": "Paramètres du champ",
 		"format": "Format des données",
 		"list": "Factures",
@@ -286,8 +295,10 @@
 		"register_date": "Enregistré le",
 		"reset_invoice_list": "Réinitialiser la liste des factures",
 		"search": "Rechercher une facture",
+		"select_all": "Tout sélectionner",
 		"size": "Taille",
 		"suppliers_by_customer": "Liste des fournisseurs par client",
+		"unselect_all": "Tout désélectionner",
 		"viewer": "Visualisation du PDF"
 	}
 }

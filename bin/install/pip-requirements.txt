@@ -1,7 +1,6 @@
 xlrd
 wand
 flask
-zeep
 PyJWT
 pyocr
 pyPdf2
@@ -11,7 +10,6 @@ pillow
 kuyruk
 werkzeug
 requests
-gunicorn
 psycopg2
 pdf2image
 gitpython
@@ -24,7 +22,6 @@ pyexcel_ods3
 configparser
 opencv-python
 kuyruk_manager
-flask_paginate
 flask_multistatic
 setuptools>=41.0.0
 numpy<1.19.0,>=1.16.0

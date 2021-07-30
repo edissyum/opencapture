@@ -40,11 +40,6 @@ if 'forms' not in custom_array:
 else:
     forms = getattr(__import__(custom_array['forms']['path'], fromlist=[custom_array['forms']['module']]), custom_array['forms']['module'])
 
-if 'supplier' not in custom_array:
-    from .controllers import supplier
-else:
-    supplier = getattr(__import__(custom_array['supplier']['path'], fromlist=[custom_array['supplier']['module']]), custom_array['supplier']['module'])
-
 if 'splitter' not in custom_array:
     from .controllers import splitter
 else:

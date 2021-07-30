@@ -3,6 +3,7 @@
 		"lead_dev": ""
 	},
 	"ACCOUNTS": {
+		"choose_customer_upload": "",
 		"company_number": "",
 		"confirm_delete_customer": "",
 		"confirm_delete_supplier": "",
@@ -74,6 +75,7 @@
 	},
 	"ERROR": {
 		"404": "The page you are looking for does not exist",
+		"alphanum_extended_pattern": "",
 		"alphanum_pattern": "",
 		"connection_failed": "Error connecting to server",
 		"date_pattern": "",
@@ -101,6 +103,7 @@
 	},
 	"FORMATS": {
 		"alphanum": "",
+		"alphanum_extended": "",
 		"char": "",
 		"date": "",
 		"number_float": "",
@@ -157,7 +160,7 @@
 		"verifier": "Open-Capture verifier"
 	},
 	"INVOICES": {
-		"position_updated": ""
+		"position_and_data_updated": ""
 	},
 	"PAGINATOR": {
 		"display": "",
@@ -244,6 +247,7 @@
 		"extension_unauthorized": "One or more files aren't in PDF format",
 		"no_file": "No file to upload",
 		"placeholder": "Drag and drop or click to upload file(s)",
+		"please_select_customer": "",
 		"purchase_invoice": "",
 		"sale_invoice": "",
 		"send_purchase_invoice": "",
@@ -276,8 +280,13 @@
 		"username": "Username"
 	},
 	"VERIFIER": {
+		"collapse_all": "",
 		"colors": "",
+		"confirm_delete_all_invoices": "",
+		"confirm_delete_invoice": "",
+		"delete_all": "",
 		"delete_invoice": "",
+		"expand_all": "",
 		"field_settings": "",
 		"format": "",
 		"list": "Invoices",
@@ -286,8 +295,10 @@
 		"register_date": "",
 		"reset_invoice_list": "",
 		"search": "",
+		"select_all": "",
 		"size": "",
 		"suppliers_by_customer": "",
+		"unselect_all": "",
 		"viewer": "View PDF"
 	}
 }

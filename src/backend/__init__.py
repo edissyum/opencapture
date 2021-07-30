@@ -18,7 +18,6 @@
 
 import json
 import os
-import jinja2
 from flask_cors import CORS
 from flask_babel import Babel
 from flask import request, session
@@ -88,17 +87,17 @@ else:
         'dist/'
     ]
 
-templates_locations = jinja2.ChoiceLoader([
-    app.jinja_loader,
-    jinja2.FileSystemLoader(array_location),
-])
-app.jinja_loader = templates_locations
+# templates_locations = jinja2.ChoiceLoader([
+#     app.jinja_loader,
+#     jinja2.FileSystemLoader(array_location),
+# ])
+# app.jinja_loader = templates_locations
 
 # ensure the instance folder exists
-try:
-    os.makedirs(app.instance_path)
-except OSError:
-    pass
+# try:
+#     os.makedirs(app.instance_path)
+# except OSError:
+#     pass
 
 
 @babel.localeselector

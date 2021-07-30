@@ -108,7 +108,6 @@ EOF"
 # Setting up the WSGI path
 sed -i "s#§§PATH§§#$defaultPath#g" "$defaultPath"/wsgi.py
 
-
 ####################
 # Create the service systemd or supervisor
 if [ "$finalChoice" == 2 ]; then

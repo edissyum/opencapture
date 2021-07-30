@@ -397,6 +397,7 @@ export class VerifierViewerComponent implements OnInit {
                 this.http.get(API_URL + '/ws/accounts/getAdressById/' + supplier.address_id, {headers: this.authService.headers}).pipe(
                     tap((address: any) => {
                         let supplier_data : any = {
+                            'name': supplier.name,
                             'address1': address.address1,
                             'address2': address.address2,
                             'city': address.city,
@@ -419,7 +420,8 @@ export class VerifierViewerComponent implements OnInit {
                                 this.notify.handleErrors(err);
                                 return of(false);
                             })
-                        ).subscribe()
+                        ).subscribe();
+
                         this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/updateData',
                             {'args': supplier_data},
                             {headers: this.authService.headers}).pipe(
@@ -431,7 +433,7 @@ export class VerifierViewerComponent implements OnInit {
                                 this.notify.handleErrors(err);
                                 return of(false);
                             })
-                        ).subscribe()
+                        ).subscribe();
                     }),
                     catchError((err: any) => {
                         console.debug(err);
