@@ -14,38 +14,19 @@
 # along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
-# @dev : Oussama Brich <oussama.brich@edissyum.com>
 
-import json
 import os
+import json
 from flask_cors import CORS
 from flask_babel import Babel
-from flask import request, session
-from flask_multistatic import MultiStaticFlask
-
+from flask import request, session, Flask
 from .import_rest import auth, locale, config, user, splitter, verifier, roles, privileges, custom_fields, \
     forms, status, accounts
-from .functions import get_custom_id
-custom_id = get_custom_id()
 
 
-app = MultiStaticFlask(__name__, instance_relative_config=True)
+app = Flask(__name__, instance_relative_config=True)
 babel = Babel(app)
 CORS(app, supports_credentials=True)
-
-# Add custom static location
-if custom_id:
-    app.static_folder = [
-        os.path.join(app.root_path.replace('backend', ''), 'custom/' + custom_id[0] + '/backend/static/'),
-        os.path.join(app.root_path, 'static'),
-        os.path.join(app.root_path.replace('backend', ''), 'dist'),
-    ]
-else:
-    app.static_folder = [
-        os.path.join(app.root_path, 'static'),
-        os.path.join(app.root_path, 'static'),
-        os.path.join(app.root_path.replace('backend', ''), 'dist'),
-    ]
 
 app.config.from_mapping(
     SECRET_KEY='§§SECRET§§',
@@ -53,7 +34,6 @@ app.config.from_mapping(
     CONFIG_FOLDER=os.path.join(app.instance_path, 'config/'),
     LANG_FILE=os.path.join(app.instance_path, 'lang.json'),
     UPLOAD_FOLDER=os.path.join(app.instance_path, 'upload/'),
-    PER_PAGE=16,
     BABEL_TRANSLATION_DIRECTORIES=app.root_path.replace('backend', 'assets') + '/i18n/backend/translations/'
 )
 
@@ -72,32 +52,6 @@ app.register_blueprint(accounts.bp)
 app.register_blueprint(verifier.bp)
 app.register_blueprint(privileges.bp)
 app.register_blueprint(custom_fields.bp)
-app.add_url_rule('/', endpoint='index')
-
-# Add custom templates location
-if custom_id:
-    array_location = [
-        'custom/' + custom_id[0] + '/backend',
-        'backend',
-        'dist/'
-    ]
-else:
-    array_location = [
-        'backend',
-        'dist/'
-    ]
-
-# templates_locations = jinja2.ChoiceLoader([
-#     app.jinja_loader,
-#     jinja2.FileSystemLoader(array_location),
-# ])
-# app.jinja_loader = templates_locations
-
-# ensure the instance folder exists
-# try:
-#     os.makedirs(app.instance_path)
-# except OSError:
-#     pass
 
 
 @babel.localeselector

@@ -17,7 +17,7 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 name="SPLITTER"
-OCPath="/opt/OpenCaptureForInvoices/"
+OCPath="/var/www/html/opencaptureforinvoices/"
 logFile="$OCPath"bin/data/log/OCforInvoices.log
 errFilepath="$OCPath/bin/data/error/"
 tmpFilepath="$OCPath/bin/data/OC_Splitter/pdf_sources/"

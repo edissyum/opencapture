@@ -2,7 +2,7 @@
 # Use ${GLOBAL:projectPath} to specify once for all the path of the project
 resolution                  = 300
 compressionquality          = 100
-projectPath                 = /opt/OpenCaptureForInvoices/
+projectPath                 = /var/www/html/opencaptureforinvoices/
 tmpPath                     = ${GLOBAL:projectPath}/bin/data/tmp/
 docserverPath               = /var/docservers/OpenCapture/
 fullPath                    = ${GLOBAL:docserverPath}/images/full/
@@ -65,7 +65,7 @@ postgresPassword =
 locale                   = fra
 # fra or eng by default
 localeocr                = fra
-localepath               = ${GLOBAL:projectPath}/webApp/static/locale/
+localepath               = ${GLOBAL:projectPath}/src/assets/locale/
 
 [REFERENCIAL]
 referencialfinancial            = ${GLOBAL:projectPath}/bin/src/referencial/plan_comptable.xlsx

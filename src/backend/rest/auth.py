@@ -15,7 +15,7 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from flask import Blueprint, request, make_response, jsonify
+from flask import Blueprint, request, make_response
 from ..import_controllers import auth
 
 
@@ -26,5 +26,5 @@ bp = Blueprint('auth', __name__, url_prefix='/ws/')
 def login():
     data = request.json
     res = auth.login(data['username'], data['password'], data['lang'])
-    return make_response(jsonify(res[0])), res[1]
+    return make_response(res[0], res[1])
 

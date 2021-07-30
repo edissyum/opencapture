@@ -33,7 +33,8 @@ export class VerifierViewerComponent implements OnInit {
     fields          : any;
     lastLabel       : string    = '';
     lastId          : string    = '';
-    lastColor       : string    ='';
+    lastColor       : string    = '';
+    ratio           : number    = 0;
     fieldCategories : any[]     = [
         {
             'id': 'supplier',
@@ -91,6 +92,7 @@ export class VerifierViewerComponent implements OnInit {
     async ngOnInit(): Promise<void> {
         this.localeStorageService.save('splitter_or_verifier', 'verifier')
         this.imageInvoice = $('#invoice_image');
+
         /*
         * Enable library to draw rectangle on load (OCR ON FLY)
         */
@@ -104,6 +106,7 @@ export class VerifierViewerComponent implements OnInit {
         }, true);
         this.invoiceId = this.route.snapshot.params['id'];
         this.invoice = await this.getInvoice();
+        this.ratio = this.invoice.img_width / this.imageInvoice.width()
         let form = await this.getForm();
         this.suppliers = await this.retrieveSuppliers();
         this.suppliers = this.suppliers.suppliers
@@ -143,10 +146,10 @@ export class VerifierViewerComponent implements OnInit {
                     this.disableOCR = true
                     $('#' + field.id).focus()
                     let newArea = {
-                        x: position.x,
-                        y: position.y,
-                        width: position.width,
-                        height: position.height
+                        x: position.x / this.ratio,
+                        y: position.y / this.ratio,
+                        width: position.width / this.ratio,
+                        height: position.height / this.ratio
                     };
                     let triggerEvent = $('.trigger');
                     triggerEvent.hide();
@@ -339,11 +342,12 @@ export class VerifierViewerComponent implements OnInit {
 
     savePosition(position: any) {
         position = {
-            x: position.x,
-            y: position.y,
-            height: position.height,
-            width: position.width
+            x: position.x * this.ratio,
+            y: position.y * this.ratio,
+            height: position.height * this.ratio,
+            width: position.width * this.ratio
         }
+
         this.http.put(API_URL + '/ws/accounts/supplier/' + this.invoice.supplier_id + '/updatePosition',
             {'args': {[this.lastId]: position}},
             {headers: this.authService.headers}).pipe(

@@ -11324,6 +11324,7 @@ class VerifierViewerComponent {
         this.lastLabel = '';
         this.lastId = '';
         this.lastColor = '';
+        this.ratio = 0;
         this.fieldCategories = [
             {
                 'id': 'supplier',
@@ -11384,6 +11385,7 @@ class VerifierViewerComponent {
             }, true);
             this.invoiceId = this.route.snapshot.params['id'];
             this.invoice = yield this.getInvoice();
+            this.ratio = this.invoice.img_width / this.imageInvoice.width();
             let form = yield this.getForm();
             this.suppliers = yield this.retrieveSuppliers();
             this.suppliers = this.suppliers.suppliers;
@@ -11420,11 +11422,15 @@ class VerifierViewerComponent {
                         this.lastColor = field.color;
                         this.disableOCR = true;
                         $('#' + field.id).focus();
+                        console.log(position);
+                        console.log(this.ratio);
+                        console.log(this.ratio / 10);
+                        console.log(position.x / this.ratio, position.y / this.ratio);
                         let newArea = {
-                            x: position.x,
-                            y: position.y,
-                            width: position.width,
-                            height: position.height
+                            x: position.x / this.ratio,
+                            y: position.y / this.ratio,
+                            width: position.width / this.ratio,
+                            height: position.height / this.ratio
                         };
                         let triggerEvent = $('.trigger');
                         triggerEvent.hide();
@@ -11610,12 +11616,15 @@ class VerifierViewerComponent {
         }
     }
     savePosition(position) {
+        console.log(position);
+        console.log(this.ratio);
         position = {
-            x: position.x,
-            y: position.y,
-            height: position.height,
-            width: position.width
+            x: position.x * this.ratio,
+            y: position.y * this.ratio,
+            height: position.height * this.ratio,
+            width: position.width * this.ratio
         };
+        console.log(position);
         this.http.put(_env__WEBPACK_IMPORTED_MODULE_1__["API_URL"] + '/ws/accounts/supplier/' + this.invoice.supplier_id + '/updatePosition', { 'args': { [this.lastId]: position } }, { headers: this.authService.headers }).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["catchError"])((err) => {
             console.debug(err);
             this.notify.handleErrors(err);

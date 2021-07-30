@@ -2,7 +2,7 @@
 
 # Open-Capture for Invoices by Edissyum
  
-Version 0.7.5
+Version 2.0.0
 
 Open-Capture is a **free and Open Source** software under **GNU General Public License v3.0**.
   
@@ -24,20 +24,17 @@ The functionnalities of Open-Capture for Invoices are :
 # Installation
 ## Linux Distributions
 
-Tested with :
-- Debian 10.X with Python 3.7.3 & Tesseract V4.0.0 & nginx as web server
-- Ubuntu 20.04 LTS with Python 3.7.7 & Tesseract V4.1.1 & nginx as web server
-- Ubuntu 20.04 LTS with Python 3.8.5 & Tesseract V4.1.1 & nginx as web server
+We recommend using latest stable debian version
 
 ## Install Open-Capture for Invoices
 
 Please, do not run the following command as root and create a specific user for Open-Capture For Invoices.
 
-    sudo mkdir /opt/OpenCaptureForInvoices/ && sudo chmod -R 775 /opt/OpenCaptureForInvoices/ && sudo chown -R $(whoami):$(whoami) /opt/OpenCaptureForInvoices/
+    sudo mkdir /var/www/html/opencaptureforinvoices/ && sudo chmod -R 775 /var/www/html/opencaptureforinvoices/ && sudo chown -R $(whoami):$(whoami) /var/www/html/opencaptureforinvoices/
     sudo apt install git
     latest_tag=$(git ls-remote --tags --sort="v:refname" https://github.com/edissyum/opencaptureforinvoices.git | tail -n1 |  sed 's/.*\///; s/\^{}//')
-    git clone -b $latest_tag https://github.com/edissyum/opencaptureforinvoices/ /opt/OpenCaptureForInvoices/
-    cd /opt/OpenCaptureForInvoices/
+    git clone -b $latest_tag https://github.com/edissyum/opencaptureforinvoices/ /var/www/html/opencaptureforinvoices/
+    cd /var/www/html/opencaptureforinvoices/
   
 Before lauching the Makefile. You have to do the following : 
 
@@ -102,7 +99,7 @@ If your supplier referencial had different column name, the .json file is here f
 
 Then, just launch :
 
-    python3 /opt/OpenCaptureForInvoices/loadReferencial.py -c /opt/OpenCaptureForInvoices/instance/config.ini
+    python3 /var/www/html/opencaptureforinvoices/loadReferencial.py -c /var/www/html/opencaptureforinvoices/instance/config.ini
     
 It will fill the database with the suppliers informations.
 
@@ -115,7 +112,7 @@ First, add your user into the following file :
 
 Then use <code>incrontab -e</code> and put the following line :
 
-    /path/to/capture/ IN_CLOSE_WRITE,IN_MOVED_TO /opt/OpenCaptureForInvoices/bin/scripts/launch_DEFAULT.sh $@/$#
+    /path/to/capture/ IN_CLOSE_WRITE,IN_MOVED_TO /var/www/html/opencaptureforinvoices/bin/scripts/launch_DEFAULT.sh $@/$#
 
 ## Custom development
 You can modify a lot of files if needed, without loose everything at every update. For that, you have to modify the <code>custom/custom.ini</code> file to add the id (between the brackets)
@@ -176,7 +173,7 @@ In the default <code>config_DEFAULT.ini</code> file there is a SPLITTER part :
 Obviously you could launch the separation by the web using the "Download" page. But you also could launch separation using bash script combined with incron.
 Here is an example of incrontab : 
 
-    /path/to/capture/ IN_CLOSE_WRITE,IN_MOVED_TO /opt/OpenCaptureForInvoices/bin/scripts/launch_SPLITTER.sh $@/$#
+    /path/to/capture/ IN_CLOSE_WRITE,IN_MOVED_TO /var/www/html/opencaptureforinvoices/bin/scripts/launch_SPLITTER.sh $@/$#
     
 # LICENSE
 Open-Capture for Maarch is released under the GPL v3.

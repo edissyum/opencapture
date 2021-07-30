@@ -10,8 +10,8 @@ normal=$(tput sgr0)
 OS=$(lsb_release -si)
 VER=$(lsb_release -r)
 defaultPath=/var/www/html/opencaptureforinvoices/
+imageMagickPolicyFile=/etc/ImageMagick-6/policy.xml
 docserverPath=/var/docservers/
-
 user=$(who am i | awk '{print $1}')
 group=www-data
 
@@ -160,6 +160,8 @@ else
   apt install -y supervisor
   mkdir "$defaultPath"/bin/data/log/Supervisor/
   touch /etc/supervisor/conf.d/OCForInvoices-worker.conf
+  touch /etc/supervisor/conf.d/OCForInvoices_Split-worker.conf
+
   su -c "cat > /etc/supervisor/conf.d/OCForInvoices-worker.conf << EOF
 [program:OCWorker]
 command=$defaultPath/bin/scripts/service_workerOC.sh
@@ -174,7 +176,22 @@ stopwaitsecs=10
 stderr_logfile=$defaultPath/bin/data/log/Supervisor/OCForInvoices_worker_%(process_num)02d_error.log
 EOF"
 
+  su -c "cat > /etc/supervisor/conf.d/OCForInvoices_Split-worker.conf << EOF
+[program:OCWorker]
+command=$defaultPath/bin/scripts/service_workerOC_splitter.sh
+process_name=%(program_name)s_%(process_num)02d
+numprocs=$nbProcess
+socket_owner=$user
+stopsignal=QUIT
+stopasgroup=true
+killasgroup=true
+stopwaitsecs=10
+
+stderr_logfile=$defaultPath/bin/data/log/Supervisor/OCForInvoices_SPLIT_worker_%(process_num)02d_error.log
+EOF"
+
   chmod 755 /etc/supervisor/conf.d/OCForInvoices-worker.conf
+  chmod 755 /etc/supervisor/conf.d/OCForInvoices_Split-worker.conf
 
   systemctl restart supervisor
   systemctl enable supervisor
@@ -189,6 +206,14 @@ chown -R "$user":"$user" /tmp/OpenCaptureForInvoices
 # Modify default config
 cp $defaultPath/instance/config.ini.default $defaultPath/instance/config.ini
 cp $defaultPath/instance/config/config_DEFAULT.ini.default $defaultPath/instance/config/config_DEFAULT.ini
+
+####################
+# Fix ImageMagick Policies
+if test -f "$imageMagickPolicyFile"; then
+  sudo sed -i 's#<policy domain="coder" rights="none" pattern="PDF" />#<policy domain="coder" rights="read|write" pattern="PDF" />#g' $imageMagickPolicyFile
+else
+  echo "We could not fix the ImageMagick policy files because it doesn't exists. Please fix it manually using the informations in the README"
+fi
 
 ####################
 # Generate secret key for Flask and replace it in webbAp/__init.py file

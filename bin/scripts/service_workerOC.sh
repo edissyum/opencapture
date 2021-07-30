@@ -20,5 +20,5 @@ export LD_LIBRARY_PATH=/usr/local/lib/
 export MAGICK_TMPDIR=/tmp/OpenCaptureForInvoices/
 export TESSDATA_PREFIX=/usr/share/tesseract-ocr/4.00/tessdata/
 
-cd /opt/OpenCaptureForInvoices/ || exit
+cd /var/www/html/opencaptureforinvoices/ || exit
 /usr/local/bin/kuyruk --app bin.src.main.OCforInvoices_worker worker --queue invoices
