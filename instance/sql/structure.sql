@@ -73,17 +73,18 @@ CREATE TABLE "privileges" (
 );
 
 CREATE TABLE "accounts_supplier" (
-    "id"            SERIAL UNIQUE PRIMARY KEY,
-    "name"          VARCHAR NOT NULL,
-    "vat_number"    VARCHAR(20),
-    "siret"         VARCHAR(20),
-    "siren"         VARCHAR(20),
-    "address_id"    INTEGER,
-    "typology"      VARCHAR,
-    "form_id"       INTEGER,
-    "status"        VARCHAR(3) DEFAULT 'OK',
-    "creation_date" TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
-    "positions"     JSONB DEFAULT '{}',
+    "id"                    SERIAL UNIQUE PRIMARY KEY,
+    "name"                  VARCHAR NOT NULL,
+    "vat_number"            VARCHAR(20),
+    "siret"                 VARCHAR(20),
+    "siren"                 VARCHAR(20),
+    "address_id"            INTEGER,
+    "typology"              VARCHAR,
+    "form_id"               INTEGER,
+    "status"                VARCHAR(3) DEFAULT 'OK',
+    "get_only_raw_footer"   BOOLEAN DEFAULT false,
+    "creation_date"         TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
+    "positions"             JSONB DEFAULT '{}',
 );
 
 CREATE TABLE "accounts_customer" (

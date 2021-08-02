@@ -19,12 +19,11 @@ import operator
 from ..functions import search_by_positions, search_custom_positions
 
 
-class FindFooter:
+class FindFooterRaw:
     def __init__(self, ocr, log, locale, config, files, database, supplier, file, text, typo, target='footer', nbPages=False):
         self.date = ''
         self.Ocr = ocr
         self.text = text
-        self.tmp_text = text
         self.Log = log
         self.Locale = locale
         self.Config = config
@@ -35,6 +34,7 @@ class FindFooter:
         self.noRateAmount = {}
         self.allRateAmount = {}
         self.ratePercentage = {}
+        self.vatAmount = {}
         self.typo = typo
         self.rerun = False
         self.rerun_as_text = False
@@ -54,11 +54,14 @@ class FindFooter:
                 content = line
             else:
                 content = line.content
-
             for res in re.finditer(r"" + regex + "", content.upper()):
                 # Retrieve only the number and add it in array
                 # In case of multiple no rates amount found, take the higher
-                tmp = re.finditer(r'[-+]?\d*[.,]+\d+([.,]+\d+)?|\d+', res.group())
+                data = res.group()
+                if regex == self.Locale.vatAmountRegex:
+                    data = re.sub(r"" + self.Locale.vatAmountRegex[:-2] + "", '', res.group())  # Delete the delivery number keyword
+
+                tmp = re.finditer(r'[-+]?\d*[.,]+\d+([.,]+\d+)?|\d+', data)
                 result = ''
                 i = 0
                 for t in tmp:
@@ -125,8 +128,9 @@ class FindFooter:
                     if select[0] == 'vat_1_position':  # Fix if we retrieve 2000.0, or 200.0 instead of 20.0 for example
                         tva_amounts = eval(self.Locale.vatRateList)
                         _split = result.split('.')
-                        if _split[1] == '0':
-                            result = _split[0]
+                        if len(_split) > 1:
+                            if _split[1] == '0':
+                                result = _split[0]
 
                         for tva in tva_amounts:
                             if str(tva) in str(result.replace(',', '.')):
@@ -168,20 +172,41 @@ class FindFooter:
         else:
             return False
 
-    def test_amount(self, no_rate_amount, all_rate_amount, rate_percentage):
-        if no_rate_amount in [False, None] or rate_percentage in [False, None]:
+    def test_amount(self, no_rate_amount, all_rate_amount, rate_percentage, vat_amount):
+        if no_rate_amount in [False, None, {}] or rate_percentage in [False, None, {}] or all_rate_amount in [False, None, {}] or vat_amount in [False, None, {}]:
             if self.supplier is not False:
-                if no_rate_amount in [False, None]:
+                if no_rate_amount in [False, None, {}]:
                     no_rate_amount = self.process_footer_with_position(['no_taxes_1_position', 'footer_page'])
                     if no_rate_amount:
                         self.noRateAmount = no_rate_amount
                         self.Log.info('noRateAmount found with position : ' + str(no_rate_amount))
 
-                if rate_percentage in [False, None]:
+                if rate_percentage in [False, None, {}]:
                     rate_percentage = self.process_footer_with_position(['vat_1_position', 'footer_page'])
                     if rate_percentage:
                         self.ratePercentage = rate_percentage
                         self.Log.info('ratePercentage found with position : ' + str(rate_percentage))
+
+                if vat_amount in [False, None, 0, {}]:
+                    vat_amount = self.process_footer_with_position(['vat_amount_1_position', 'footer_page'])
+                    if vat_amount:
+                        self.vatAmount = vat_amount
+                        self.Log.info('vatAmount found with position : ' + str(vat_amount))
+
+                if all_rate_amount in [False, None, 0, {}]:
+                    all_rate_amount = self.process_footer_with_position(['total_ttc_position', 'footer_page'])
+                    if all_rate_amount:
+                        self.allRateAmount = all_rate_amount
+                        self.Log.info('allRateAmount found with position : ' + str(all_rate_amount))
+
+            if vat_amount:
+                self.vatAmount = vat_amount
+            if all_rate_amount:
+                self.allRateAmount = all_rate_amount
+            if rate_percentage:
+                self.ratePercentage = rate_percentage
+            if no_rate_amount:
+                self.noRateAmount = no_rate_amount
 
             if no_rate_amount and rate_percentage:
                 self.noRateAmount = no_rate_amount
@@ -197,6 +222,7 @@ class FindFooter:
         self.noRateAmount = no_rate_amount
         self.allRateAmount = all_rate_amount
         self.ratePercentage = rate_percentage
+        self.vatAmount = vat_amount
 
     def run(self, text_as_string=False):
         if self.Files.isTiff == 'True':
@@ -215,62 +241,32 @@ class FindFooter:
         if no_rate and no_rate[0]:
             no_rate_amount = {
                 0: re.sub(r"[^0-9\.]|\.(?!\d)", "", no_rate[0].replace(',', '.')),
-                1: all_rate[1]
+                1: no_rate[1]
             }
         percentage = search_by_positions(self.supplier, 'rate_percentage', self.Config, self.Locale, self.Ocr, self.Files, target, self.typo)
         rate_percentage = {}
         if percentage and percentage[0]:
             rate_percentage = {
                 0: re.sub(r"[^0-9\.]|\.(?!\d)", "", percentage[0].replace(',', '.')),
-                1: all_rate[1]
+                1: percentage[1]
             }
 
-        vat_amount = False
+        vat_amount = {}
 
-        if not self.test_amount(no_rate_amount, all_rate_amount, rate_percentage):
+        if not self.test_amount(no_rate_amount, all_rate_amount, rate_percentage, vat_amount):
             no_rate_amount = self.process(self.Locale.noRatesRegex, text_as_string)
             rate_percentage = self.process(self.Locale.vatRateRegex, text_as_string)
             all_rate_amount = self.process(self.Locale.allRatesRegex, text_as_string)
-
-        if all_rate_amount and no_rate_amount:
-            vat_amount = float("%.2f" % (self.return_max(all_rate_amount)[0] - self.return_max(no_rate_amount)[0]))
-
-        if all_rate_amount and vat_amount and not no_rate_amount:
-            no_rate_amount = [float("%.2f" % self.return_max(all_rate_amount)[0] - self.return_max(vat_amount)[0]), (('', ''), ('', ''))]
-
-        if all_rate_amount and rate_percentage and not no_rate_amount:
-            no_rate_amount = [float("%.2f" % (self.return_max(all_rate_amount)[0] / (1 + float(self.return_max(rate_percentage)[0] / 100)))), (('', ''), ('', ''))]
+            vat_amount = self.process(self.Locale.vatAmountRegex, text_as_string)
 
         # Test all amounts. If some are false, try to search them with position. If not, pass
-        if self.test_amount(no_rate_amount, all_rate_amount, rate_percentage) is not False:
-            # First args is amount, second is position
+        if self.test_amount(no_rate_amount, all_rate_amount, rate_percentage, vat_amount) is not False:
             no_rate_amount = self.return_max(self.noRateAmount)
             all_rate_amount = self.return_max(self.allRateAmount)
             rate_percentage = self.return_max(self.ratePercentage)
-
-            if no_rate_amount is False and all_rate_amount and rate_percentage:
-                no_rate_amount = [float("%.2f" % (float(all_rate_amount[0]) / (1 + float(rate_percentage[0] / 100)))), (('', ''), ('', '')), True]
-            elif all_rate_amount is False and no_rate_amount and rate_percentage:
-                all_rate_amount = [float("%.2f" % (float(no_rate_amount[0]) + (float(no_rate_amount[0]) * float(float(rate_percentage[0]) / 100)))), (('', ''), ('', '')), True]
-            elif rate_percentage is False and no_rate_amount and all_rate_amount:
-                vat_amount = float("%.2f" % (float(all_rate_amount[0]) - float(no_rate_amount[0])))
-                rate_percentage = [float("%.2f" % (float(vat_amount) / float(no_rate_amount[0]) * 100)), (('', ''), ('', '')), True]
-
-            # Test if the three var's are good by simple math operation
-            # Round up value with 2 decimals
-            try:
-                total = "%.2f" % (float(no_rate_amount[0]) + (float(no_rate_amount[0]) * float(rate_percentage[0]) / 100))
-            except TypeError:
-                return False
-
-            if float(total) == float(all_rate_amount[0]):
-                self.Log.info('Footer informations found : [TOTAL : ' + str(total) + '] - [HT : ' + str(no_rate_amount[0]) + '] - [VATRATE : ' + str(rate_percentage[0]) + ']')
-                return [no_rate_amount, all_rate_amount, rate_percentage, self.nbPage, ["%.2f" % float(float(no_rate_amount[0]) * (float(rate_percentage[0]) / 100))]]
-            elif float(all_rate_amount[0]) == float(vat_amount + no_rate_amount[0]):
-                self.Log.info('Footer informations found : [TOTAL : ' + str(total) + '] - [HT : ' + str(no_rate_amount[0]) + '] - [VATRATE : ' + str(rate_percentage[0]) + ']')
-                return [no_rate_amount, all_rate_amount, rate_percentage, self.nbPage, ["%.2f" % float(float(no_rate_amount[0]) * (float(rate_percentage[0]) / 100))]]
-            else:
-                return False
+            vat_amount = self.return_max(self.vatAmount)
+            self.Log.info('Raw footer informations found : [TOTAL : ' + str(all_rate_amount[0]) + '] - [HT : ' + str(no_rate_amount[0]) + '] - [VATRATE : ' + str(rate_percentage[0]) + '] - [VAT AMOUNT : ' + str(vat_amount[0]) + ']')
+            return [no_rate_amount, all_rate_amount, rate_percentage, self.nbPage, vat_amount]
         else:
             if not self.rerun:
                 self.rerun = True
@@ -295,6 +291,6 @@ class FindFooter:
         elif value:
             result = value
         else:
-            result = False
+            result = ['', '']
 
         return result

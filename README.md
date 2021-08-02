@@ -35,18 +35,6 @@ Please, do not run the following command as root and create a specific user for 
     latest_tag=$(git ls-remote --tags --sort="v:refname" https://github.com/edissyum/opencaptureforinvoices.git | tail -n1 |  sed 's/.*\///; s/\^{}//')
     git clone -b $latest_tag https://github.com/edissyum/opencaptureforinvoices/ /var/www/html/opencaptureforinvoices/
     cd /var/www/html/opencaptureforinvoices/
-  
-Before lauching the Makefile. You have to do the following : 
-
-Using the following command, you have to retrieve the name of your network interface : 
-    
-    ip a
-
-![Screenshot](https://edissyum.com/wp-content/uploads/2020/10/screen_ipa.png)
-
-Then go to <code>bin/scripts/service_flaskOC.sh</code> and change the default one <code>enp0s3</code> by your interface name. This is the interface needed to run the web server. 
-
-**It gives you the IP address where the web server will run**
 
 The `./Makefile` command create the service using `www-data` group (nginx default group) and the current user. `Please avoid using root user`
 

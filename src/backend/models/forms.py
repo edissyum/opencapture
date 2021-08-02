@@ -33,9 +33,6 @@ def get_forms(args):
         'offset': str(args['offset']) if 'offset' in args else [],
     })
 
-    if not forms:
-        error = gettext('NO_FORMS')
-
     return forms, error
 
 

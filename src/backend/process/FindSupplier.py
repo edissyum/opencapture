@@ -19,7 +19,7 @@ import re
 
 
 class FindSupplier:
-    def __init__(self, ocr, log, locale, database, files, nb_pages, custom_page):
+    def __init__(self, ocr, log, locale, database, files, nb_pages, current_page, custom_page):
         self.Ocr = ocr
         self.text = ocr.header_text
         self.Log = log
@@ -38,6 +38,7 @@ class FindSupplier:
         self.splitted = False
         self.nbPages = nb_pages
         self.tmpNbPages = nb_pages
+        self.current_page = current_page
         self.customPage = custom_page
 
     @staticmethod
@@ -45,8 +46,19 @@ class FindSupplier:
         r = [int(ch) for ch in str(n)][::-1]
         return (sum(r[0::2]) + sum(sum(divmod(d * 2, 10)) for d in r[1::2])) % 10 == 0
 
-    def process(self, regex, text_as_string):
-        array_of_data = {}
+    def search_suplier(self, column, data):
+        args = {
+            'select': ['*'],
+            'table': ['suppliers'],
+            'where': ['TRIM(' + column + ') = ?', 'status NOT IN (?)', 'company_type = ?'],
+            'data': [data, 'DEL', 'supplier']
+        }
+        existing_supplier = self.Database.select(args)
+        if existing_supplier:
+            return existing_supplier[0]
+        return False
+
+    def process(self, regex, text_as_string, column):
         if text_as_string and not self.splitted:
             self.text = self.text.split('\n')
             self.splitted = True
@@ -59,16 +71,26 @@ class FindSupplier:
                     content = line
                 else:
                     content = line.content
+
+                if corrected_line:
+                    content = corrected_line
                 corrected_line = re.sub(pattern, item, content)
 
-            for _data in re.finditer(r"" + regex + "", corrected_line.replace(' ', '')):
-                array_of_data.update({_data.group(): line})
+            for _data in re.finditer(r"" + regex + "", corrected_line.replace('.', '').replace(',', '').replace('(', '').replace(')', '').replace('-', '')):
+                supplier = self.search_suplier(column, _data.group().replace(' ', ''))
+                if supplier:
+                    return supplier, line
 
-        if len(array_of_data) != 0:
-            return array_of_data
-        else:
-            # If there is no regex found, return false
-            return False
+            for _data in re.finditer(r"" + regex + "", corrected_line.replace(' ', '').replace('.', '').replace(',', '').replace('(', '').replace(')', '').replace('-', '')):
+                supplier = self.search_suplier(column, _data.group())
+                if supplier:
+                    return supplier, line
+
+            for _data in re.finditer(r"" + regex + "", corrected_line.replace(' ', '').replace('.', '').replace(',', '').replace('(', '').replace(')', '')):
+                supplier = self.search_suplier(column, _data.group())
+                if supplier:
+                    return supplier, line
+        return []
 
     def regenerate_ocr(self):
         if self.Files.isTiff == 'True':
@@ -77,93 +99,33 @@ class FindSupplier:
             self.Files.open_img(self.Files.jpgName_header)
 
     def run(self, retry=False, regenerate_ocr=False, target=None, text_as_string=False):
-        vat_found = False
-        siret_found = False
+        supplier = self.process(self.Locale.VATNumberRegex, text_as_string, 'vat_number')
 
-        vat_number = self.process(self.Locale.VATNumberRegex, text_as_string)
+        if supplier:
+            self.regenerate_ocr()
+            self.Log.info('Supplier found : ' + supplier[0]['name'] + ' using VAT Number : ' + supplier[0]['vat_number'])
+            line = supplier[1]
+            if text_as_string:
+                position = (('', ''), ('', ''))
+            else:
+                position = self.Files.return_position_with_ratio(line, target)
+            data = [supplier[0]['vat_number'], position, supplier[0], self.current_page]
+            return data
 
-        if vat_number:
-            for _vat in vat_number:
-                args = {
-                    'select': ['*'],
-                    'table': ['accounts_supplier'],
-                    'where': ['vat_number = %s'],
-                    'data': [_vat]
-                }
-                existing_supplier = self.Database.select(args)
-                if existing_supplier:
-                    self.regenerate_ocr()
-                    self.Log.info('Supplier found : ' + existing_supplier[0]['name'] + ' using VAT Number : ' + _vat)
-                    line = vat_number[_vat]
-                    if text_as_string:
-                        position = (('', ''), ('', ''))
-                    else:
-                        position = self.Files.return_position_with_ratio(line, target)
-                    data = [existing_supplier[0]['vat_number'], position, existing_supplier[0], self.nbPages]
+        supplier = self.process(self.Locale.SIRETRegex, text_as_string, 'siret')
+        if supplier:
+            self.regenerate_ocr()
+            self.Log.info('Supplier found : ' + supplier[0]['name'] + ' using SIRET : ' + supplier[0]['siret'])
+            data = [supplier[0]['vat_number'], (('', ''), ('', '')), supplier[0], self.current_page]
+            return data
 
-                    return data
-        siret_number = False
-        if not vat_found:
-            siret_number = self.process(self.Locale.SIRETRegex, text_as_string)
-            if siret_number:
-                for _siret in siret_number:
-                    if self.validate_luhn(_siret):
-                        args = {
-                            'select': ['*'],
-                            'table': ['accounts_supplier'],
-                            'where': ['siret = %s'],
-                            'data': [_siret]
-                        }
-                        existing_supplier = self.Database.select(args)
-                        if existing_supplier:
-                            self.regenerate_ocr()
-                            self.Log.info('Supplier found : ' + existing_supplier[0]['name'] + ' using SIRET : ' + _siret)
-                            data = [existing_supplier[0]['vat_number'], (('', ''), ('', '')), existing_supplier[0], self.nbPages]
-
-                            return data
-                        else:
-                            self.Log.info('SIRET found : ' + _siret + ' but no supplier found in database using this SIRET')
-        if not siret_found:
-            self.Log.info("SIRET not found or doesn't meet the Luhn's algorithm")
-            siren_number = self.process(self.Locale.SIRENRegex, text_as_string)
-            if siren_number:
-                for _siren in siren_number:
-                    if self.validate_luhn(_siren):
-                        args = {
-                            'select': ['*'],
-                            'table': ['accounts_supplier'],
-                            'where': ['SIREN = %s'],
-                            'data': [_siren]
-                        }
-                        existing_supplier = self.Database.select(args)
-                        if existing_supplier:
-                            self.regenerate_ocr()
-                            self.Log.info('Supplier found : ' + existing_supplier[0]['name'] + ' using SIREN : ' + _siren)
-                            data = [existing_supplier[0]['vat_number'], (('', ''), ('', '')), existing_supplier[0], self.nbPages]
-
-                            return data
-                        else:
-                            if siret_number:
-                                for _siret in siret_number:
-                                    if self.validate_luhn(_siret):
-                                        siren_regex = self.Locale.SIRENRegex
-                                        siren_size = siren_regex[siren_regex.find('{') + 1:siren_regex.find("}")]
-                                        siren = _siret[:int(siren_size)]
-                                        args = {
-                                            'select': ['*'],
-                                            'table': ['accounts_supplier'],
-                                            'where': ['SIREN = %s'],
-                                            'data': [siren]
-                                        }
-                                        existing_supplier = self.Database.select(args)
-                                        if existing_supplier:
-                                            self.regenerate_ocr()
-                                            self.Log.info('Supplier found : ' + existing_supplier[0]['name'] + ' using SIREN : ' + _siret)
-                                            data = [existing_supplier[0]['vat_number'], (('', ''), ('', '')), existing_supplier[0], self.nbPages]
-
-                                            return data
-                self.Log.info("SIREN not found or doesn't meet the Luhn's algorithm")
-
+        supplier = self.process(self.Locale.SIRENRegex, text_as_string, 'siren')
+        if supplier:
+            self.regenerate_ocr()
+            self.Log.info('Supplier found : ' + supplier[0]['name'] + ' using SIREN : ' + supplier[0]['siren'])
+            data = [supplier[0]['vat_number'], (('', ''), ('', '')), supplier[0], self.current_page]
+            return data
+        else:
             if not retry:
                 self.found_first = False
             elif retry and self.found_second:
@@ -209,14 +171,12 @@ class FindSupplier:
                 improved_image = self.Files.improve_image_detection(self.Files.jpgName_header)
             self.Files.open_img(improved_image)
             self.text = self.Ocr.line_box_builder(self.Files.img)
-            self.nbPages = 1
             return self.run(retry=True, target=None)
 
         # If, even with improved image, nothing was found, check the footer
         if retry and not self.found_second and self.found_third:
             self.Log.info('No supplier informations found with improved image, try with footer...')
             self.text = self.Ocr.footer_text
-            self.nbPages = 1
             return self.run(retry=True, target='footer')
 
         # If NO supplier identification are found in the footer,
@@ -224,12 +184,11 @@ class FindSupplier:
         if retry and not self.found_third and self.found_fourth:
             self.Log.info('No supplier informations found in the footer, improve image and retry...')
             if self.Files.isTiff == 'True':
-                improved_image = self.Files.improve_image_detection(self.Files.tiffName_header)
+                improved_image = self.Files.improve_image_detection(self.Files.tiffName_footer)
             else:
                 improved_image = self.Files.improve_image_detection(self.Files.jpgName_footer)
             self.Files.open_img(improved_image)
             self.text = self.Ocr.line_box_builder(self.Files.img)
-            self.nbPages = 1
             return self.run(retry=True, target='footer')
 
         # If NO supplier identification are found in the improved footer,
@@ -242,7 +201,6 @@ class FindSupplier:
                 improved_image = self.Files.improve_image_detection(self.Files.jpgName_header)
             self.Files.open_img(improved_image)
             self.text = self.Ocr.text_builder(self.Files.img)
-            self.nbPages = 1
             return self.run(retry=True, target='header', text_as_string=True)
 
         if retry and not self.found_fifth and self.found_last_first:
@@ -254,17 +212,17 @@ class FindSupplier:
                 improved_image = self.Files.improve_image_detection(self.Files.jpgName_footer)
             self.Files.open_img(improved_image)
             self.text = self.Ocr.text_builder(self.Files.img)
-            self.nbPages = 1
+            self.current_page = 1
             return self.run(retry=True, target='footer', text_as_string=True)
 
         # Try now with the last page
-        if retry and not self.found_last_first and self.found_last_first:
+        if retry and not self.found_last_first and self.found_last_second:
             self.Log.info('No supplier informations found in the first page, try with the last page header')
             self.text = self.Ocr.header_last_text
-            self.nbPages = self.tmpNbPages
+            self.current_page = self.nbPages  # Use the last page number because we search on the last page
             return self.run(retry=True, target='header')
 
-        if retry and not self.found_last_first and self.found_last_second:
+        if retry and not self.found_last_second and self.found_last_three:
             self.Log.info('No supplier informations found in the header last page, try with the improved last page header')
             if self.Files.isTiff == 'True':
                 improved_image = self.Files.improve_image_detection(self.Files.tiffName_last_header)
@@ -272,13 +230,13 @@ class FindSupplier:
                 improved_image = self.Files.improve_image_detection(self.Files.jpgName_last_header)
             self.Files.open_img(improved_image)
             self.text = self.Ocr.line_box_builder(self.Files.img)
-            self.nbPages = self.tmpNbPages
+            self.current_page = self.nbPages
             return self.run(retry=True, target='header')
 
-        if retry and not self.found_last_second and self.found_last_three:
+        if retry and not self.found_last_three:
             self.Log.info('No supplier informations found in the header last page, try with the footer last page header')
             self.text = self.Ocr.footer_last_text
-            self.nbPages = self.tmpNbPages
+            self.current_page = self.nbPages
             return self.run(retry=True, regenerate_ocr=True, target='footer')
 
         self.Log.error('No supplier found...')

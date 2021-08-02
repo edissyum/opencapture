@@ -14,17 +14,18 @@
 # along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
-import mimetypes
+
 import os
 import uuid
 import shutil
 import datetime
-from src.backend.import_process import FindDate, FindFooter, FindInvoiceNumber, FindSupplier, FindCustom
+import mimetypes
+from src.backend.import_process import FindDate, FindFooter, FindInvoiceNumber, FindSupplier, FindCustom, \
+    FindOrderNumber, FindDeliveryNumber, FindFooterRaw
 from src.backend.import_classes import _Spreadsheet
 
 
-def insert(database, log, files, config, supplier, file, invoice_number, date, footer, nb_pages, full_jpg_filename,
-           tiff_filename, status, custom_columns, original_file):
+def insert(database, log, files, config, supplier, file, invoice_number, date, footer, nb_pages, full_jpg_filename, tiff_filename, status, custom_columns, original_file, delivery_number, order_number):
     if files.isTiff == 'True':
         try:
             filename = os.path.splitext(files.custom_fileName_tiff)
@@ -47,19 +48,6 @@ def insert(database, log, files, config, supplier, file, invoice_number, date, f
     columns = {
         'vat_number': supplier[0] if supplier and supplier[0] else '',
         'vat_number_position': str(supplier[1]) if supplier and supplier[1] else '',
-        'supplier_page': str(supplier[3]) if supplier and supplier[3] else '1',
-        'invoice_date': date[0] if date and date[0] else '',
-        'invoice_date_position': str(date[1]) if date and date[1] else '',
-        'invoice_date_page': str(date[2]) if date and date[2] else '1',
-        'invoice_number': invoice_number[0] if invoice_number and invoice_number[0] else '',
-        'invoice_number_position': str(invoice_number[1]) if invoice_number and invoice_number[1] else '',
-        'invoice_number_page': str(invoice_number[2]) if invoice_number and invoice_number[2] else '1',
-        'total_amount': str(footer[1][0]) if footer and footer[1] else '',
-        'total_amount_position': str(footer[1][1]) if footer and footer[1] else '',
-        'ht_amount1': str(footer[0][0]) if footer and footer[0] else '',
-        'ht_amount1_position': str(footer[0][1]) if footer and footer[0] else '',
-        'vat_rate1': str(footer[2][0]) if footer and footer[2] else '',
-        'vat_rate1_position': str(footer[2][1]) if footer and footer[2] else '',
         'footer_page': str(footer[3]) if footer and footer[3] else '1',
         'filename': os.path.basename(file),
         'path': os.path.dirname(file),
@@ -68,8 +56,19 @@ def insert(database, log, files, config, supplier, file, invoice_number, date, f
         'tiff_filename': tiff_filename.replace('-%03d', '-001'),
         'status': status,
         'nb_pages': str(nb_pages),
-        'original_filename': original_file
     }
+
+    # Add supplier id to invoice
+    if columns['vat_number'] != '':
+        res = database.select({
+            'select': ['id'],
+            'table': ['suppliers'],
+            'where': ['vat_number = ?'],
+            'data': [columns['vat_number']],
+        })
+        if res:
+            if len(res) > 0:
+                columns['id_supplier'] = str(res[0]['id'])
 
     if custom_columns:
         columns.update(custom_columns)
@@ -182,15 +181,17 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
     convert(file, files, ocr, nb_pages)
 
     # Find supplier in document
-    supplier = FindSupplier(ocr, log, locale, database, files, nb_pages, False).run()
+    supplier = FindSupplier(ocr, log, locale, database, files, nb_pages, 1, False).run()
+
     i = 0
     tmp_nb_pages = nb_pages
     while not supplier:
         tmp_nb_pages = tmp_nb_pages - 1
-        if i == 3 or int(tmp_nb_pages) - 1 == 0 or nb_pages == 1:
+        if i == 3 or int(tmp_nb_pages) == 1 or nb_pages == 1:
             break
+
         convert(file, files, ocr, tmp_nb_pages, True)
-        supplier = FindSupplier(ocr, log, locale, database, files, tmp_nb_pages, True).run()
+        supplier = FindSupplier(ocr, log, locale, database, files, nb_pages, tmp_nb_pages, True).run()
         i += 1
 
     if typo:
@@ -209,10 +210,11 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
             })
 
     # Find invoice number
-    invoice_number_class = FindInvoiceNumber(ocr, files, log, locale, config, database, supplier, file, typo, ocr.header_text, 1, False)
+    invoice_number_class = FindInvoiceNumber(ocr, files, log, locale, config, database, supplier, file, typo, ocr.header_text, 1, False, ocr.footer_text)
     invoice_number = invoice_number_class.run()
     if not invoice_number:
         invoice_number_class.text = ocr.header_last_text
+        invoice_number_class.footer_text = ocr.footer_last_text
         invoice_number_class.nbPages = nb_pages
         invoice_number_class.customPage = True
         invoice_number = invoice_number_class.run()
@@ -253,7 +255,7 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
         text_custom = ocr.text
         page_for_date = 1
 
-    date = FindDate(text_custom, log, locale, config, files, ocr, supplier, typo, page_for_date).run()
+    date = FindDate(text_custom, log, locale, config, files, ocr, supplier, typo, page_for_date, database, file).run()
     k = 0
     tmp_nb_pages = nb_pages
     while not date:
@@ -262,12 +264,56 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
             break
 
     # Find footer informations (total amount, no rate amount etc..)
-    footer = FindFooter(ocr, log, locale, config, files, database, supplier, file, ocr.footer_text, typo).run()
+    footer_class = FindFooter(ocr, log, locale, config, files, database, supplier, file, ocr.footer_text, typo)
+    if supplier and supplier[2]['get_only_raw_footer'] == 'True':
+        footer_class = FindFooterRaw(ocr, log, locale, config, files, database, supplier, file, ocr.footer_text, typo)
 
+    footer = footer_class.run()
     if not footer:
-        footer = FindFooter(ocr, log, locale, config, files, database, supplier, file, ocr.footer_last_text, typo).run()
+        footer_class.target = 'full'
+        footer_class.text = ocr.last_text
+        footer_class.nbPage = nb_pages
+        footer = footer_class.run()
         if footer:
-            footer.append(nb_pages)
+            if len(footer) == 4:
+                footer[3] = nb_pages
+            else:
+                footer.append(nb_pages)
+        i = 0
+        tmp_nb_pages = nb_pages
+        while not footer:
+            tmp_nb_pages = tmp_nb_pages - 1
+            if i == 3 or int(tmp_nb_pages) == 1 or nb_pages == 1:
+                break
+            convert(file, files, ocr, tmp_nb_pages, True)
+            if files.isTiff == 'True':
+                _file = files.custom_fileName_tiff
+            else:
+                _file = files.custom_fileName
+
+            image = files.open_image_return(_file)
+            text = ocr.line_box_builder(image)
+            footer_class.text = text
+            footer_class.target = 'full'
+            footer_class.nbPage = tmp_nb_pages
+            footer = footer_class.run()
+            i += 1
+
+    # Find delivery number
+    delivery_number_class = FindDeliveryNumber(ocr, files, log, locale, config, database, supplier, file, typo, ocr.header_text, 1, False)
+    delivery_number = delivery_number_class.run()
+    if not delivery_number:
+        delivery_number_class.text = ocr.footer_text
+        delivery_number_class.target = 'footer'
+        delivery_number = delivery_number_class.run()
+
+    # Find order number
+    order_number_class = FindOrderNumber(ocr, files, log, locale, config, database, supplier, file, typo, ocr.header_text, 1, False)
+    order_number = order_number_class.run()
+    if not order_number:
+        order_number_class.text = ocr.footer_text
+        order_number_class.target = 'footer'
+        order_number = order_number_class.run()
 
     file_name = str(uuid.uuid4())
     full_jpg_filename = 'full_' + file_name + '-%03d.jpg'
@@ -281,9 +327,9 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
         files.save_pdf_to_tiff_in_docserver(file, config.cfg['GLOBAL']['tiffpath'] + '/' + tiff_filename)
 
     # If all informations are found, do not send it to GED
-    if supplier and date and invoice_number and footer and config.cfg['GLOBAL']['allowautomaticvalidation'] == 'True':
-        insert(database, log, files, config, supplier, file, invoice_number, date, footer, nb_pages, full_jpg_filename, tiff_filename, 'DEL', False, original_file)
-        log.info('All the usefull informations are found. Export the XML and  endprocess')
+    if supplier and supplier[2]['skip_auto_validate'] == 'False' and date and invoice_number and footer and config.cfg['GLOBAL']['allowautomaticvalidation'] == 'True':
+        insert(database, log, files, config, supplier, file, invoice_number, date, footer, nb_pages, full_jpg_filename, tiff_filename, 'END', False, original_file, delivery_number, order_number)
+        log.info('All the usefull informations are found. Export the XML and end process')
         now = datetime.datetime.now()
         xml_custom = {}
         for custom in custom_fields:
@@ -295,30 +341,46 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
             })
 
         parent = {
-            'pdfCreationDate': [{'pdfCreationDate': {'field': str(now.year) + '-' + str('%02d' % now.month) + '-' + str(now.day)}}],
-            'fileInfo': [{'fileInfoPath': {'field': os.path.dirname(file) + '/' + os.path.basename(file)}}],
+            'pdf_creation_date': [{'pdf_creation_date': {'field': str(now.year) + '-' + str('%02d' % now.month) + '-' + str(now.day)}}],
+            'fileInfo': [{'fileInfo_path': {'field': os.path.dirname(file) + '/' + os.path.basename(file)}}],
             'supplierInfo': [{
                 'supplierInfo_name': {'field': supplier[2]['name']},
                 'supplierInfo_city': {'field': supplier[2]['city']},
-                'supplierInfo_siretNumber': {'field': supplier[2]['siret']},
-                'supplierInfo_sirenNumber': {'field': supplier[2]['siren']},
+                'supplierInfo_siret_number': {'field': supplier[2]['siret']},
+                'supplierInfo_siren_number': {'field': supplier[2]['siren']},
                 'supplierInfo_address': {'field': supplier[2]['adress1']},
-                'supplierInfo_vatNumber': {'field': supplier[2]['vat_number']},
+                'supplierInfo_vat_number': {'field': supplier[2]['vat_number']},
                 'supplierInfo_postal_code': {'field': str(supplier[2]['postal_code'])},
             }],
             'facturationInfo': [{
-                'facturationInfo_NumberOfTVA': {'field': '1'},
-                'facturationInfo_date': {'field': date[0]},
-                'facturationInfo_invoiceNumber': {'field': invoice_number[0]},
-                'facturationInfo_noTaxes_1': {'field': str("%.2f" % (footer[0][0]))},
-                'facturationInfo_VAT_1': {'field': str("%.2f" % (footer[2][0]))},
-                'facturationInfo_TOTAL_TVA_1': {'field': str("%.2f" % (footer[0][0] * (footer[2][0] / 100)))},
-                'facturationInfo_totalHT': {'field': str("%.2f" % (footer[0][0]))},
-                'facturationInfo_totalTTC': {'field': str("%.2f" % (footer[0][0] * (footer[2][0] / 100) + footer[0][0]))},
+                'facturationInfo_number_of_tva': {'field': '1'},
+                'facturationInfo_invoice_date': {'field': date[0]},
+                'facturationInfo_due_date': {'field': date[3][0] if date[3] else ''},
+                'facturationInfo_invoice_number': {'field': invoice_number[0]},
+                'facturationInfo_delivery_number_1': {'field': delivery_number[0] if delivery_number and delivery_number[0] else ''},
+                'facturationInfo_order_number_1': {'field': order_number[0] if order_number and order_number[0] else ''},
+                'facturationInfo_no_taxes_1': {'field': str("%.2f" % (float(footer[0][0])))},
+                'facturationInfo_vat_1': {'field': str("%.2f" % (float(footer[2][0])))},
+                'total_vat_1': {'field': str("%.2f" % (float(footer[0][0]) * (float(footer[2][0]) / 100)))},
+                'total_ht': {'field': str("%.2f" % (float(footer[0][0])))},
+                'total_ttc': {'field': str("%.2f" % (float(footer[0][0]) * (float(footer[2][0]) / 100) + float(footer[0][0])))},
             }],
             'customInfo': [xml_custom]
         }
-        files.export_xml(config, invoice_number[0], parent, supplier[2]['vat_number'])
+
+        vat_1_calculated = False
+        ht_calculated = False
+        ttc_calculated = False
+
+        if len(footer[0]) == 3:
+            ht_calculated = footer[0][2]
+        if len(footer[1]) == 3:
+            ttc_calculated = footer[1][2]
+        if len(footer[2]) == 3:
+            vat_1_calculated = footer[2][2]
+
+        files.export_xml(config, invoice_number[0], parent, False, database, supplier[2]['vat_number'], vat_1_calculated, ht_calculated, ttc_calculated)
+
         if config.cfg['GED']['enabled'] == 'True':
             default_process = config.cfg['GED']['defaultprocess']
             invoice_info = database.select({
@@ -331,20 +393,17 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
             contact = webservices.retrieve_contact_by_vat_number(supplier[2]['vat_number'])
             if not contact:
                 contact = {
-                    'isCorporatePerson': 'Y',
-                    'function': '',
-                    'lastname': '',
-                    'firstname': '',
                     'contactType': config.cfg[default_process]['contacttype'],
                     'contactPurposeId': config.cfg[default_process]['contactpurposeid'],
                     'society': parent['supplierInfo'][0]['supplierInfo_name']['field'],
                     'addressTown': parent['supplierInfo'][0]['supplierInfo_city']['field'],
                     'societyShort': parent['supplierInfo'][0]['supplierInfo_name']['field'],
                     'addressStreet': parent['supplierInfo'][0]['supplierInfo_address']['field'],
-                    'otherData': parent['supplierInfo'][0]['supplierInfo_vat_number']['field'],
-                    'addressZip': parent['supplierInfo'][0]['supplierInfo_postal_code']['field']
+                    'addressPostcode': parent['supplierInfo'][0]['supplierInfo_postal_code']['field'],
+                    'customFields': {},
+                    'email': 'A_renseigner_' + parent['supplierInfo'][0]['supplierInfo_name']['field'].replace(' ', '_') + '@' + parent['supplierInfo'][0]['supplierInfo_vat_number']['field'] + '.fr'
                 }
-                contact['email'] = 'À renseigner ' + parent['supplierInfo'][0]['supplierInfo_name']['field'] + ' - ' + contact['otherData']
+                contact['customFields'][config.cfg['GED']['contactvatcustom']] = parent['supplierInfo'][0]['supplierInfo_vat_number']['field']
 
                 res = webservices.create_contact(contact)
                 if res is not False:
@@ -355,12 +414,12 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
                 'vatNumber': supplier[2]['vat_number'],
                 'creationDate': invoice_info[0]['register_date'],
                 'subject': 'Facture N°' + invoice_number[0],
-                'status': config.cfg[default_process]['status'],
+                'status': config.cfg[default_process]['statusend'],
                 'destination': config.cfg[default_process]['defaultdestination'],
                 'fileContent': open(parent['fileInfo'][0]['fileInfoPath']['field'], 'rb').read(),
                 config.cfg[default_process]['customvatnumber']: supplier[2]['vat_number'],
-                config.cfg[default_process]['customht']: parent['facturationInfo'][0]['facturationInfo_totalHT']['field'],
-                config.cfg[default_process]['customttc']: parent['facturationInfo'][0]['facturationInfo_totalTTC']['field'],
+                config.cfg[default_process]['customht']: parent['facturationInfo'][0]['total_ht']['field'],
+                config.cfg[default_process]['customttc']: parent['facturationInfo'][0]['total_ttc']['field'],
                 config.cfg[default_process]['custominvoicenumber']: invoice_number[0],
                 'contact': contact,
                 'dest_user': config.cfg[default_process]['defaultdestuser']
@@ -378,6 +437,16 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
                 shutil.move(file, config.cfg['GLOBAL']['errorpath'] + os.path.basename(file))
                 return False
     else:
-        insert(database, log, files, config, supplier, file, invoice_number, date, footer, nb_pages, full_jpg_filename, tiff_filename, 'NEW', columns, original_file)
+        if supplier and supplier[2]['skip_auto_validate'] == 'True':
+            log.info('Skip automatic validation this time')
+            database.update({
+                'table': ['suppliers'],
+                'set': {
+                    'skip_auto_validate': 'False'
+                },
+                'where': ['vat_number = ?'],
+                'data': [supplier[2]['vat_number']]
+            })
+        insert(database, log, files, config, supplier, file, invoice_number, date, footer, nb_pages, full_jpg_filename, tiff_filename, 'NEW', columns, original_file, delivery_number, order_number)
 
     return True

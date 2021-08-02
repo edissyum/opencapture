@@ -74,6 +74,9 @@ referencialSupplierDocumentPath = ${GLOBAL:projectPath}/bin/src/referencial/defa
 referencialSupplierIndexpath    = ${GLOBAL:projectPath}/bin/src/referencial/default_referencial_supplier_index.json
 referencialPosition             = ${GLOBAL:projectPath}/bin/src/referencial/positions/
 
+[SEPARATE-BY-DOCUMENT]
+enabled = False
+
 [REGEX]
 urlpattern          = fr|com|net|org|gouv
 

@@ -25,6 +25,7 @@ class Locale:
         self.date_path = config.cfg['LOCALE']['localepath']
         self.arrayDate = []
         self.dateRegex = ''
+        self.dueDateRegex = ''
         self.formatDate = ''
         self.SIRETRegex = ''
         self.SIRENRegex = ''
@@ -35,11 +36,16 @@ class Locale:
         self.allRatesRegex = ''
         self.noRatesRegex = ''
         self.vatRateRegex = ''
+        self.deliveryNumberRegex = ''
+        self.orderNumberRegex = ''
+        self.vatRateList = ''
+        self.vatAmountRegex = ''
 
-        with open(self.date_path + self.locale + '.json', encoding="utf-8") as file:
+        with open(self.date_path + self.locale + '.json') as file:
             fp = json.load(file)
             self.arrayDate = fp['dateConvert'] if 'dateConvert' in fp else ''
             self.dateRegex = fp['dateRegex'] if 'dateRegex' in fp else ''
+            self.dueDateRegex = fp['dueDateRegex'] if 'dueDateRegex' in fp else ''
             self.VATNumberRegex = fp['VATNumberRegex'] if 'VATNumberRegex' in fp else ''
             self.formatDate = fp['formatDate'] if 'formatDate' in fp else ''
             self.dateTimeFormat = fp['dateTimeFormat'] if 'dateTimeFormat' in fp else ''
@@ -50,11 +56,16 @@ class Locale:
             self.allRatesRegex = fp['allRatesRegex'] if 'allRatesRegex' in fp else ''
             self.noRatesRegex = fp['noRatesRegex'] if 'noRatesRegex' in fp else ''
             self.vatRateRegex = fp['vatRateRegex'] if 'vatRateRegex' in fp else ''
+            self.deliveryNumberRegex = fp['deliveryNumberRegex'] if 'deliveryNumberRegex' in fp else ''
+            self.orderNumberRegex = fp['orderNumberRegex'] if 'orderNumberRegex' in fp else ''
+            self.vatRateList = fp['vatRateList'] if 'vatRateList' in fp else ''
+            self.vatAmountRegex = fp['vatAmountRegex'] if 'vatAmountRegex' in fp else ''
 
     def get(self):
         array_locale = {
             'arrayDate': self.arrayDate,
             'dateRegex': self.dateRegex,
+            'dueDateRegex': self.dueDateRegex,
             'VATNumberRegex': self.VATNumberRegex,
             'formatDate': self.formatDate,
             'dateTimeFormat': self.dateTimeFormat,
@@ -65,5 +76,9 @@ class Locale:
             'allRatesRegex': self.allRatesRegex,
             'noRatesRegex': self.noRatesRegex,
             'vatRateRegex': self.vatRateRegex,
+            'deliveryNumberRegex': self.deliveryNumberRegex,
+            'orderNumberRegex': self.orderNumberRegex,
+            'vatRateList': self.vatRateList,
+            'vatAmountRegex': self.vatAmountRegex,
         }
         return array_locale

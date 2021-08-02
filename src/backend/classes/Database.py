@@ -61,7 +61,7 @@ class Database:
 
             select = ', '.join(args['select'])
 
-            if 'where' not in args:
+            if 'where' not in args or args['where'] in ['', []]:
                 where = ''
             else:
                 where = ' WHERE ' + ' AND '.join(args['where']) + ' '
@@ -81,12 +81,12 @@ class Database:
             else:
                 offset = ' OFFSET ' + str(args['offset'])
 
-            if 'group_by' not in args:
+            if 'group_by' not in args or args['group_by'] in ['', []]:
                 group_by = ''
             else:
                 group_by = ' GROUP BY ' + str(args['group_by'])
 
-            if 'data' not in args:
+            if 'data' not in args or args['data'] in ['', []]:
                 args['data'] = []
 
             query = "SELECT " + select + " FROM " + args['table'] + where + order_by + limit + offset + group_by

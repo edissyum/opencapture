@@ -13,6 +13,7 @@
 		"customer_updated": "",
 		"customers_list": "",
 		"form": "",
+		"get_only_raw_footer": "",
 		"siren": "",
 		"siret": "",
 		"supplier": "",
@@ -72,6 +73,10 @@
 		"textarea": "",
 		"textbox": "",
 		"type": ""
+	},
+	"DISPLAY": {
+		"multi": "",
+		"simple": ""
 	},
 	"ERROR": {
 		"404": "The page you are looking for does not exist",
@@ -160,7 +165,8 @@
 		"verifier": "Open-Capture verifier"
 	},
 	"INVOICES": {
-		"position_and_data_updated": ""
+		"position_and_data_updated": "",
+		"supplier_infos_updated": ""
 	},
 	"PAGINATOR": {
 		"display": "",
@@ -180,6 +186,7 @@
 		"add_role": "",
 		"add_user": "",
 		"administration": "",
+		"change_language": "",
 		"create_supplier": "",
 		"custom_fields": "",
 		"customers_list": "",
@@ -280,17 +287,20 @@
 		"username": "Username"
 	},
 	"VERIFIER": {
+		"calculated_footer": "",
 		"collapse_all": "",
 		"colors": "",
 		"confirm_delete_all_invoices": "",
 		"confirm_delete_invoice": "",
 		"delete_all": "",
 		"delete_invoice": "",
+		"display": "",
 		"expand_all": "",
 		"field_settings": "",
 		"format": "",
 		"list": "Invoices",
 		"nb_pages": "",
+		"only_raw_footer": "",
 		"original_file": "",
 		"register_date": "",
 		"reset_invoice_list": "",

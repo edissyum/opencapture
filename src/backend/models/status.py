@@ -28,6 +28,6 @@ def get_status():
     })
 
     if not forms:
-        error = gettext('NO_FORMS')
+        error = gettext('NO_STATUS')
 
     return forms, error

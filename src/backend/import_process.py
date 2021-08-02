@@ -43,8 +43,20 @@ else:
     OCForInvoices_splitter = getattr(__import__(custom_array['OCForInvoices_splitter']['path'],
                                                 fromlist=[custom_array['OCForInvoices_splitter']['module']]), custom_array['OCForInvoices_splitter']['module'])
 
-if 'OCForInvoices' not in custom_array:
-    from src.backend.process import OCForInvoices as OCForInvoices_process
+if 'FindDeliveryNumber' not in custom_array:
+    from src.backend.process.FindDeliveryNumber import FindDeliveryNumber
 else:
-    OCForInvoices_process = getattr(__import__(custom_array['OCForInvoices']['path'],
-                                               fromlist=[custom_array['OCForInvoices']['module']]), custom_array['OCForInvoices']['module'])
+    FindDeliveryNumber = getattr(__import__(custom_array['FindDeliveryNumber']['path'] + '.' + custom_array['FindDeliveryNumber']['module'], fromlist=[custom_array['FindDeliveryNumber']['module']]),
+                                 custom_array['FindDeliveryNumber']['module'])
+
+if 'FindOrderNumber' not in custom_array:
+    from src.backend.process.FindOrderNumber import FindOrderNumber
+else:
+    FindOrderNumber = getattr(__import__(custom_array['FindOrderNumber']['path'] + '.' + custom_array['FindOrderNumber']['module'], fromlist=[custom_array['FindOrderNumber']['module']]),
+                              custom_array['FindOrderNumber']['module'])
+
+if 'FindFooterRaw' not in custom_array:
+    from src.backend.process.FindFooterRaw import FindFooterRaw
+else:
+    FindFooterRaw = getattr(__import__(custom_array['FindFooterRaw']['path'] + '.' + custom_array['FindFooterRaw']['module'], fromlist=[custom_array['FindFooterRaw']['module']]),
+                              custom_array['FindFooterRaw']['module'])

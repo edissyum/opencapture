@@ -27,7 +27,7 @@ ap.add_argument("-c", "--config", required=True, help="path to config.xml")
 args = vars(ap.parse_args())
 
 if args['file'] is None:
-    sys.exit('The file parameters is mandatory')
+    sys.exit('The file parameter is mandatory')
 
 if not os.path.exists(args['config']):
     sys.exit('Config file couldn\'t be found')

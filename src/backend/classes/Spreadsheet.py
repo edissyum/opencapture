@@ -50,8 +50,41 @@ class Spreadsheet:
                     line.append(typo)
         save_data(self.referencialSuppplierSpreadsheet, content_sheet)
 
+    def update_supplier_ods_sheet(self, _db):
+        content_sheet = get_data(self.referencialSuppplierSpreadsheet)
+
+        res = _db.select({
+            'select': ['*'],
+            'table': ['suppliers'],
+            'where': ['status = ?'],
+            'data': ['ACTIVE'],
+        })
+        try:
+            sheet_name = False
+            for sheet in content_sheet:
+                sheet_name = sheet
+
+            if sheet_name:
+                content_sheet[sheet_name] = content_sheet[sheet_name][:1]
+                for supplier in res:
+                    line = [supplier['name'] if supplier['name'] is not None else '',
+                            supplier['vat_number'] if supplier['vat_number'] is not None else '',
+                            supplier['siret'] if supplier['siret'] is not None else '',
+                            supplier['siren'] if supplier['siren'] is not None else '',
+                            supplier['adress1'] if supplier['adress1'] is not None else '',
+                            supplier['adress2'] if supplier['adress2'] is not None else '',
+                            supplier['postal_code'] if supplier['postal_code'] is not None else '',
+                            supplier['city'] if supplier['city'] is not None else '',
+                            supplier['typology'] if supplier['typology'] is not None else '']
+                    content_sheet[sheet_name].append(line)
+
+        except IndexError:
+            self.Log.error("IndexError while updating ods reference file.")
+
+        save_data(self.referencialSuppplierSpreadsheet, content_sheet)
+
     def write_typo_excel_sheet(self, vat_number, typo):
-        content_sheet = pd.read_excel(self.referencialSuppplierSpreadsheet)
+        content_sheet = pd.read_excel(self.referencialSuppplierSpreadsheet, engine='openpyxl')
         sheet_name = pd.ExcelFile(self.referencialSuppplierSpreadsheet).sheet_names
         content_sheet = content_sheet.to_dict(orient='records')
 
@@ -69,6 +102,11 @@ class Spreadsheet:
         content_sheet = pd.read_excel(referencial_spreadsheet, engine='openpyxl')
         return content_sheet
 
+    @staticmethod
+    def read_csv_sheet(referencial_spreadsheet):
+        content_sheet = pd.read_csv(referencial_spreadsheet, sep=";")
+        return content_sheet
+
     def read_ods_sheet(self, referencial_spreadsheet):
         content_sheet = get_data(referencial_spreadsheet)
         content_sheet = content_sheet['Fournisseur']
@@ -81,7 +119,8 @@ class Spreadsheet:
             self.referencialSupplierArray['adress2'],
             self.referencialSupplierArray['adressPostalCode'],
             self.referencialSupplierArray['adressTown'],
-            self.referencialSupplierArray['typology']
+            self.referencialSupplierArray['typology'],
+            self.referencialSupplierArray['companyType']
         ])
         # Drop row 0 because it contains the indexes columns
         content_sheet = content_sheet.drop(0)
@@ -92,7 +131,8 @@ class Spreadsheet:
 
     def construct_supplier_array(self, content_sheet):
         # Create the first index of array, with provider number (taxe number)
-        tmp_provider_number = pd.DataFrame(content_sheet, columns=[self.referencialSupplierArray['VATNumber']]).drop_duplicates()
+        tmp_provider_number = pd.DataFrame(content_sheet,
+                                           columns=[self.referencialSupplierArray['VATNumber']]).drop_duplicates()
         for value in tmp_provider_number.to_dict(orient='records'):
             self.referencialSupplierData[value[self.referencialSupplierArray['VATNumber']]] = []
 
@@ -119,5 +159,6 @@ class Spreadsheet:
 
             if line[self.referencialSupplierArray['adressPostalCode']] == line[self.referencialSupplierArray['adressPostalCode']] and line[self.referencialSupplierArray['adressPostalCode']]:
                 if len(str(line[self.referencialSupplierArray['adressPostalCode']])) == 4:
-                    line[self.referencialSupplierArray['adressPostalCode']] = '0' + str(line[self.referencialSupplierArray['adressPostalCode']])
+                    line[self.referencialSupplierArray['adressPostalCode']] = '0' + str(
+                        line[self.referencialSupplierArray['adressPostalCode']])
             self.referencialSupplierData[line[self.referencialSupplierArray['VATNumber']]].append(line)

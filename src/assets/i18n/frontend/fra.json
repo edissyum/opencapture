@@ -13,6 +13,7 @@
 		"customer_updated": "Compte client mis à jour avec succès",
 		"customers_list": "Liste des comptes clients",
 		"form": "Nom du formulaire",
+		"get_only_raw_footer": "Contrôle de cohérence du pied de page",
 		"siren": "Numéro de SIREN",
 		"siret": "Numéro de SIRET",
 		"supplier": "Compte Fournisseur",
@@ -72,6 +73,10 @@
 		"textarea": "Multi lignes",
 		"textbox": "Texte",
 		"type": "Type"
+	},
+	"DISPLAY": {
+		"multi": "Multiple",
+		"simple": "Simple"
 	},
 	"ERROR": {
 		"404": "La page demandée n'existe pas",
@@ -160,7 +165,8 @@
 		"verifier": "Open-Capture Vérificateur"
 	},
 	"INVOICES": {
-		"position_and_data_updated": "Position et valeur du champ <b>{{ input }}</b> mise à jour"
+		"position_and_data_updated": "Position et valeur du champ <b>{{ input }}</b> mise à jour",
+		"supplier_infos_updated": "Fournisseur paramétré pour cette facture"
 	},
 	"PAGINATOR": {
 		"display": "Affichage",
@@ -180,6 +186,7 @@
 		"add_role": "Ajouter un rôle",
 		"add_user": "Ajouter un utilisateur",
 		"administration": "Privilèges d'administration",
+		"change_language": "Modifier la langue",
 		"create_supplier": "Créer un fournisseur",
 		"custom_fields": "Champs personnalisés",
 		"customers_list": "Liste des clients",
@@ -280,17 +287,20 @@
 		"username": "Nom d'utilisateur"
 	},
 	"VERIFIER": {
+		"calculated_footer": "Contrôle de cohérence du pied de page activé",
 		"collapse_all": "Replier tous les clients",
 		"colors": "Couleurs",
 		"confirm_delete_all_invoices": "Êtes-vous sûr de vouloir supprimer toutes les factures de la page ?",
 		"confirm_delete_invoice": "Êtes-vous sûr de vouloir supprimer cette facture ?",
 		"delete_all": "Supprimer toutes les factures de la page",
 		"delete_invoice": "Supprimer la facture",
+		"display": "Affichage",
 		"expand_all": "Développer tous les clients",
 		"field_settings": "Paramètres du champ",
 		"format": "Format des données",
 		"list": "Factures",
 		"nb_pages": "Nombre de page",
+		"only_raw_footer": "Contrôle de cohérence du pied de page désactivé",
 		"original_file": "Fichier d'origine",
 		"register_date": "Enregistré le",
 		"reset_invoice_list": "Réinitialiser la liste des factures",

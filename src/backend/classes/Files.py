@@ -17,13 +17,14 @@
 
 import os
 import re
+import subprocess
+
 import cv2
 import time
 import uuid
 import shutil
 import PyPDF4
 import datetime
-import subprocess
 import numpy as np
 from PIL import Image
 from PyPDF4 import utils
@@ -34,23 +35,22 @@ import xml.etree.ElementTree as Et
 from xml.sax.saxutils import escape
 from wand.image import Image as Img
 from werkzeug.utils import secure_filename
-from ..functions import retrieve_custom_positions, get_custom_id, check_python_customized_files
 from wand.exceptions import PolicyError, CacheError
-
+from src.backend.functions import get_custom_id, check_python_customized_files, retrieve_custom_positions
 custom_id = get_custom_id()
 custom_array = {}
 if custom_id:
     custom_array = check_python_customized_files(custom_id[1])
 
 if 'FindDate' not in custom_array:
-    from ..process.FindDate import FindDate
+    from src.backend.process.FindDate import FindDate
 else:
-    FindDate = getattr(__import__(custom_array['FindDate']['path'] + '.' + custom_array['FindDate']['module'], fromlist=[custom_array['FindDate']['module']]), custom_array['FindDate']['module'])
-
+    FindDate = getattr(__import__(custom_array['FindDate']['path'] + '.' + custom_array['FindDate']['module'],
+                                  fromlist=[custom_array['FindDate']['module']]), custom_array['FindDate']['module'])
 
 
 class Files:
-    def __init__(self, img_name, res, quality, xml, log, is_tiff, Locale, Config):
+    def __init__(self, img_name, res, quality, xml, log, is_tiff, locale, config):
         self.isTiff = is_tiff
         self.jpgName = img_name + '.jpg'
         self.jpgName_header = img_name + '_header.jpg'
@@ -71,9 +71,9 @@ class Files:
         self.img = None
         self.heightRatio = ''
         self.xml = xml
-        self.Locale = Locale
-        self.Config = Config
         self.Log = log
+        self.Locale = locale
+        self.Config = config
 
     # Convert the first page of PDF to JPG and open the image
     def pdf_to_jpg(self, pdf_name, open_img=True, crop=False, zone_to_crop=False, last_image=False, is_custom=False):
@@ -109,8 +109,7 @@ class Files:
             if open_img:
                 self.img = Image.open(target)
 
-    def pdf_to_tiff(self, pdf_name, output_file, convert_only_first_page=False, open_img=True, crop=False,
-                    zone_to_crop=False, last_page=None):
+    def pdf_to_tiff(self, pdf_name, output_file, convert_only_first_page=False, open_img=True, crop=False, zone_to_crop=False, last_page=None):
         # Convert firstly the PDF to full tiff file
         # It will be used to crop header and footer later
         if not os.path.isfile(output_file):
@@ -120,7 +119,7 @@ class Files:
                 "-dDownScaleFactor=1",
                 "-sDEVICE=tiff32nc",
                 "-sOutputFile=" + output_file,
-            ]
+                ]
 
             if convert_only_first_page:
                 args.extend(["-dFirstPage=1", "-dLastPage=1"])
@@ -282,7 +281,7 @@ class Files:
 
         return position
 
-    def export_xml(self, cfg, invoice_number, parent, fill_position=False, _db=None, vat_number=False):
+    def export_xml(self, cfg, invoice_number, parent, fill_position=False, db=None, vat_number=False, vat_1_calculated=False, ht_calculated=False, ttc_calculated=False):
         self.xml.construct_filename(invoice_number, vat_number)
         filename = cfg.cfg['GLOBAL']['exportaccountingfolder'] + '/' + secure_filename(self.xml.filename)
         root = Et.Element("ROOT")
@@ -293,89 +292,117 @@ class Files:
                 for childElement in child:
                     clean_child = childElement.replace(parentElement + '_', '')
                     if clean_child not in ['noDelivery', 'noCommands']:
-                        if fill_position is not False and _db is not False:
-                            clean_child_position = child[childElement]['position']
-                            # Add position in supplier database
-                            if clean_child_position is not None:
-                                if 'no_taxes' in clean_child or 'invoice_number' in clean_child or 'order_number' in clean_child or 'delivery_number' in clean_child or 'vat' in clean_child:
-                                    _db.update({
-                                        'table': ['suppliers'],
-                                        'set': {
-                                            clean_child + '_position': clean_child_position
-                                        },
-                                        'where': ['vat_number = ?'],
-                                        'data': [vat_number]
-                                    })
-                                    _db.conn.commit()
-                        # Then create the XML
                         new_field = Et.SubElement(element, escape(clean_child))
                         new_field.text = child[childElement]['field']
+                        if clean_child == 'vat_1':
+                            new_field = Et.SubElement(element, escape('vat_1_calculated'))
+                            new_field.text = str(vat_1_calculated)
+
+                        if clean_child == 'no_taxes_1':
+                            new_field = Et.SubElement(element, escape('no_taxes_1_calculated'))
+                            new_field.text = str(ht_calculated)
+
+                        if clean_child == 'total_ttc':
+                            new_field = Et.SubElement(element, escape('total_ttc_calculated'))
+                            new_field.text = str(ttc_calculated)
+
+                        if fill_position is not False and db is not False:
+                            # Add position in supplier database
+                            if 'position' in child[childElement]:
+                                clean_child_position = child[childElement]['position']
+                                if clean_child_position not in [None, '']:
+                                    if 'vat_amount' in clean_child or 'total_ttc' in clean_child or 'due_date' in clean_child or 'invoice_date' in clean_child \
+                                            or 'no_taxes' in clean_child or 'invoice_number' in clean_child or 'order_number' in clean_child \
+                                            or 'delivery_number' in clean_child or ('vat' in clean_child and clean_child != 'vat_number'):
+                                        db.update({
+                                            'table': ['suppliers'],
+                                            'set': {
+                                                clean_child + '_position': clean_child_position
+                                            },
+                                            'where': ['vat_number = ?'],
+                                            'data': [vat_number]
+                                        })
+                                        db.conn.commit()
+                                    new_field = Et.SubElement(element, escape(clean_child + '_position'))
+                                    new_field.text = clean_child_position
+
         xml_root = minidom.parseString(Et.tostring(root, encoding="unicode")).toprettyxml()
         file = open(filename, 'w')
         file.write(xml_root)
         file.close()
 
-        res = _db.select({
-            'select': ['typology'],
-            'table': ['suppliers'],
-            'where': ['vat_number = ?'],
-            'data': [vat_number]
-        })
-        if res:
-            root = Et.parse(filename).getroot()
-            typo = res[0]['typology']
-            list_of_fields = retrieve_custom_positions(typo, cfg)
-            select = []
-            if list_of_fields:
-                for index in list_of_fields:
-                    field = index.split('-')[1]
-                    field_position = field + '_position'
-                    select.append(field_position)
+        if db:
+            res = db.select({
+                'select': ['typology'],
+                'table': ['suppliers'],
+                'where': ['vat_number = ?'],
+                'data': [vat_number]
+            })
+            if res:
+                root = Et.parse(filename).getroot()
+                typo = res[0]['typology']
+                list_of_fields = retrieve_custom_positions(typo, cfg)
+                select = []
+                if list_of_fields:
+                    for index in list_of_fields:
+                        field = index.split('-')[1]
+                        field_position = field + '_position'
+                        select.append(field_position)
 
-                if select:
-                    res = _db.select({
-                        'select': select,
-                        'table': ['invoices'],
-                        'where': ['invoice_number = ?'],
-                        'data': [invoice_number]
-                    })
-                    if res:
-                        for title in root:
-                            for element in title:
-                                for position in select:
-                                    if element.tag == position.split('_position')[0] and title.tag not in \
-                                            ['supplierInfo']:
-                                        sub_element_to_append = root.find(title.tag)
-                                        new_field = Et.SubElement(sub_element_to_append, position)
-                                        new_field.text = res[0][position]
-                        xml_root = minidom.parseString(Et.tostring(root, encoding="unicode"))\
-                            .toprettyxml().replace('\n\n', '\n')
-                        file = open(filename, 'w')
-                        file.write(xml_root)
-                        file.close()
+                    if select:
+                        res = db.select({
+                            'select': select,
+                            'table': ['invoices'],
+                            'where': ['invoice_number = ?'],
+                            'data': [invoice_number]
+                        })
+                        if res:
+                            for title in root:
+                                for element in title:
+                                    for position in select:
+                                        if element.tag == position.split('_position')[0]:
+                                            sub_element_to_append = root.find(title.tag)
+                                            new_field = Et.SubElement(sub_element_to_append, position)
+                                            new_field.text = res[0][position]
+                            xml_root = minidom.parseString(Et.tostring(root, encoding="unicode")).toprettyxml().replace('\n\n', '\n')
+                            file = open(filename, 'w')
+                            file.write(xml_root)
+                            file.close()
 
-                        # remove empty lines created by the append of subelement
-                        tmp = open(filename, 'r')
-                        lines = tmp.read().split("\n")
-                        tmp.close()
-                        non_empty_lines = [line for line in lines if line.strip() != ""]
+                            # remove empty lines created by the append of subelement
+                            tmp = open(filename, 'r')
+                            lines = tmp.read().split("\n")
+                            tmp.close()
+                            non_empty_lines = [line for line in lines if line.strip() != ""]
 
-                        file = open(filename, 'w')
-                        string_without_empty_lines = ""
-                        for line in non_empty_lines:
-                            string_without_empty_lines += line + "\n"
-                        file.write(string_without_empty_lines)
-                        file.close()
+                            file = open(filename, 'w')
+                            string_without_empty_lines = ""
+                            for line in non_empty_lines:
+                                string_without_empty_lines += line + "\n"
+                            file.write(string_without_empty_lines)
+                            file.close()
 
     def get_pages(self, file, config):
-        with open(file, 'rb') as doc:
-            pdf = PyPDF4.PdfFileReader(doc)
-            try:
-                return pdf.getNumPages()
-            except ValueError as e:
-                self.Log.error(e)
-                shutil.move(file, config.cfg['GLOBAL']['errorpath'] + os.path.basename(file))
-                return 1
+        try:
+            with open(file, 'rb') as doc:
+                pdf = PyPDF4.PdfFileReader(doc)
+                try:
+                    return pdf.getNumPages()
+                except ValueError as e:
+                    self.Log.error(e)
+                    shutil.move(file, config.cfg['GLOBAL']['errorpath'] + os.path.basename(file))
+                    return 1
+        except PyPDF4.utils.PdfReadError:
+            pdfreadRewrite = PyPDF4.PdfFileReader(file, strict=False)
+            pdfwrite = PyPDF4.PdfFileWriter()
+            for page_count in range(pdfreadRewrite.numPages):
+                pages = pdfreadRewrite.getPage(page_count)
+                pdfwrite.addPage(pages)
+
+            fileobjfix = open(file, 'wb')
+            pdfwrite.write(fileobjfix)
+            fileobjfix.close()
+            return pdfreadRewrite.getNumPages()
 
     @staticmethod
     def is_blank_page(image, config):
@@ -503,44 +530,35 @@ class Files:
         cropped_image = Image.open('/tmp/cropped_' + rand + extension)
         text = ocr.text_builder(cropped_image)
         isNumber = False
-        dateFound = False
         if not text or text == '' or text.isspace():
             self.improve_image_detection('/tmp/cropped_' + rand + extension)
             improved_cropped_image = Image.open('/tmp/cropped_' + rand + '_improved' + extension)
             text = ocr.text_builder(improved_cropped_image)
 
-        if text.count('.'):
+        try:
+            text = text.replace(' ', '.')
+            text = text.replace('\x0c', '')
+            text = text.replace('\n', '')
+            text = text.replace(',', '.')
+            splitted_number = text.split('.')
+            if len(splitted_number) > 1:
+                last_index = splitted_number[len(splitted_number) - 1]
+                if len(last_index) > 2:
+                    text = text.replace('.', '')
+                    isNumber = True
+                else:
+                    splitted_number.pop(-1)
+                    text = ''.join(splitted_number) + '.' + last_index
+                    isNumber = True
+        except (ValueError, SyntaxError, TypeError):
+            pass
+
+        if not isNumber:
             for res in re.finditer(r"" + self.Locale.dateRegex + "", text):
-                dateClass = FindDate('', self.Log, self.Locale, self.Config, self, ocr, '',  '',  '')
+                dateClass = FindDate('', self.Log, self.Locale, self.Config, self, ocr, '', '', '', '', '')
                 date = dateClass.format_date(res.group(), (('', ''), ('', '')), True)
                 if date:
                     text = date[0]
-                    dateFound = True
-        if not dateFound:
-            try:
-                text = text.replace(' ', '.')
-                text = text.replace('\x0c', '')
-                text = text.replace('\n', '')
-                text = text.replace(',', '.')
-                splitted_number = text.split('.')
-                if len(splitted_number) > 1:
-                    last_index = splitted_number[len(splitted_number) - 1]
-                    if len(last_index) > 2:
-                        text = text.replace('.', '')
-                        isNumber = True
-                    else:
-                        splitted_number.pop(-1)
-                        text = ''.join(splitted_number) + '.' + last_index
-                        isNumber = True
-            except (ValueError, SyntaxError, TypeError):
-                pass
-
-            if not isNumber:
-                for res in re.finditer(r"" + self.Locale.dateRegex + "", text):
-                    dateClass = FindDate('', self.Log, self.Locale, self.Config, self, ocr, '', '', '')
-                    date = dateClass.format_date(res.group(), (('', ''), ('', '')), True)
-                    if date:
-                        text = date[0]
         if regex:
             for res in re.finditer(r"" + regex, text):
                 os.remove('/tmp/cropped_' + rand + extension)
@@ -567,8 +585,7 @@ class Files:
             src = cv2.imread(img)
             gray = cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)
             _, black_and_white = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY_INV)
-            nlabels, labels, stats, centroids = cv2.connectedComponentsWithStats(black_and_white, None, None, None, 8,
-                                                                                 cv2.CV_32S)
+            nlabels, labels, stats, centroids = cv2.connectedComponentsWithStats(black_and_white, None, None, None, 8, cv2.CV_32S)
 
             # get CC_STAT_AREA component
             sizes = stats[1:, -1]
@@ -623,10 +640,17 @@ class Files:
         return Image.open(img)
 
     @staticmethod
-    def save_uploaded_file(f, path):
-        # The next 2 lines lower the extensions because an UPPER extension will throw silent error
-        filename, file_ext = os.path.splitext(f.filename)
-        file = filename.replace(' ', '_') + file_ext.lower()
-        new_path = os.path.join(path, secure_filename(file))
-        f.save(new_path)
-        return new_path
+    def delete_file_with_extension(dir_path, extension):
+        files = os.listdir(dir_path)
+
+        for item in files:
+            if item.endswith(extension):
+                os.remove(os.path.join(dir_path, item))
+
+    @staticmethod
+    def get_uuid_with_date():
+        random_number = uuid.uuid4().hex
+        # date object of today's date
+        today = datetime.date.today()
+        uuid_with_date = str(today.year) + str(today.month) + str(today.day) + str(random_number)
+        return uuid_with_date

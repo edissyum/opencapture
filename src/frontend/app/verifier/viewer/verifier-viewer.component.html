@@ -8,10 +8,17 @@
         </div>
     </div>
     <div *ngIf="this.fields" class="px-4 overflow-auto" style="height: calc(100vh - 56px) !important">
-        <ng-container *ngFor="let category of this.fieldCategories;">
-            <ng-container  *ngIf="this.form[category['id']].length !== 0" >
-                <div class="relative text-xl tracking-wider pl-1.5 pr-1.5 bg-white left-6 z-5" [style]="'width:calc(3% + ' + this.translate.instant(category['label']).length + '%)'">
+        <ng-container *ngFor="let category of this.fieldCategories">
+            <ng-container *ngIf="this.form[category['id']].length !== 0">
+                <div class="relative text-xl tracking-wider pl-1.5 pr-1.5 bg-white left-6 z-5"
+                     [style]="'width:calc(3% + ' + (this.translate.instant(category['label']).length + 2)+ '%)'">
                     {{ category['label'] | translate }}
+                    <span *ngIf="get_only_raw_footer && this.translate.instant(category['label']) == this.translate.instant('FORMS.supplier')"
+                          class="cursor-default relative top-1 text-red-500 text-3xl"
+                          [matTooltip]="this.translate.instant('VERIFIER.only_raw_footer')">&bull;</span>
+                    <span *ngIf="!get_only_raw_footer && this.translate.instant(category['label']) == this.translate.instant('FORMS.supplier')"
+                          class="cursor-default relative top-1 text-green-400 text-3xl"
+                          [matTooltip]="this.translate.instant('VERIFIER.calculated_footer')">&bull;</span>
                 </div>
                 <div class="relative border-green-400 border rounded-lg -top-3.5">
                     <div id="{{ category['id'] }}" class="flex flex-wrap w-full my-3" style="min-height: 50px;">
@@ -26,7 +33,7 @@
                                            (focusin)="ocr($event, true, field.color)"
                                            (focusout)="ocr($event, false)" [matAutocomplete]="auto">
                                     <mat-error class="mt-1" *ngIf="field.control.errors">{{ getErrorMessage(field.id, category['id']) }}</mat-error>
-                                    <mat-autocomplete #auto="matAutocomplete" (optionSelected)='getSupplierInfo($event)'>
+                                    <mat-autocomplete #auto="matAutocomplete" (optionSelected)='getSupplierInfo($event.option.id, true)'>
                                         <mat-option *ngFor="let option of filteredOptions | async" [value]="option.name" [id]="option.id">
                                             {{ option.name }}
                                         </mat-option>
@@ -35,8 +42,12 @@
                                 <ng-template #other>
                                     <mat-form-field class="right-0 w-full form-viewer">
                                         <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
-                                            {{ field.label | translate }}
+                                            {{ field.label | translate }} <span *ngIf="isChildField(field.id)">{{ field.cpt }}</span>
                                         </mat-label>
+                                        <span *ngIf="field.display == 'multi'" (click)="duplicateField(field.id, category['id'])"
+                                              class="absolute -top-2 -right-0.5 cursor-pointer text-xl text-gray-900">
+                                            +
+                                        </span>
                                         <input [id]="field.id" matInput type="text"
                                                [formControl]="field.control" [pattern]="field.pattern"
                                                (focusin)="ocr($event, true, field.color)"
@@ -48,7 +59,7 @@
                             <ng-container *ngIf="field.type === 'textarea'">
                                 <mat-form-field class="right-0 w-full form-viewer">
                                     <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
-                                        {{ field.label | translate }}
+                                        {{ field.label | translate }} <span *ngIf="isChildField(field.id)">{{ field.cpt }}</span>
                                     </mat-label>
                                     <textarea [id]="field.id" cdkTextareaAutosize cdkAutosizeMinRows="1" matInput
                                               [formControl]="field.control" [pattern]="field.pattern"
@@ -84,7 +95,7 @@
                 </div>
             </ng-container>
         </ng-container>
-        <div class="mt-4 mb-4 grid grid-cols-2 gap-4 h-12 text-gray-900">
+        <div class="mt-4 mb-6 grid grid-cols-2 gap-4 h-12 text-gray-900">
             <button mat-button class="border-solid border-green-400 border-opacity-70 border hover:bg-green-400 hover:bg-opacity-70 hover:text-white transition duration-300" type="submit">
                 {{ 'FORMS.validate' | translate }}
             </button>

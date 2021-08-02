@@ -104,7 +104,7 @@
                         <i class="fas fa-user"></i>
                     </button>
                 </div>
-                <div class="ml-3 relative">
+                <div class="ml-3 relative" *ngIf="this.privilegesService.hasPrivilege('change_language')">
                     <mat-form-field class="origin-top-right right-0 mt-4 w-32">
                         <mat-label>{{ 'GLOBAL.language' | translate }}</mat-label>
                         <mat-select (selectionChange)="localeService.changeLocale($event)" [(value)]="localeService.currentLang">

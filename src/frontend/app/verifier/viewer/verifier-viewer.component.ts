@@ -1,14 +1,14 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {API_URL} from "../../env";
-import {catchError, finalize, map, startWith, tap} from "rxjs/operators";
-import {Observable, of, pipe} from "rxjs";
+import {catchError, map, startWith, tap} from "rxjs/operators";
+import {Observable, of} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {AuthService} from "../../../services/auth.service";
 import {NotificationService} from "../../../services/notifications/notifications.service";
 import {TranslateService} from "@ngx-translate/core";
 import {marker} from "@biesbjerg/ngx-translate-extract-marker";
-import {FormControl, Validators} from "@angular/forms";
+import {FormControl} from "@angular/forms";
 import { DatePipe } from '@angular/common';
 import {LocalStorageService} from "../../../services/local-storage.service";
 import {ConfigService} from "../../../services/config.service";
@@ -62,7 +62,7 @@ export class VerifierViewerComponent implements OnInit {
         'number_float': '^[0-9]*([.][0-9]*)*$',
         'char': '^[A-Za-z\\s]*$',
     }
-    suppliers         : any     = [
+    suppliers       : any       = [
         {
             'id': 1,
             'name': 'Edissyum'
@@ -76,8 +76,9 @@ export class VerifierViewerComponent implements OnInit {
             'name': 'ETM'
         },
     ]
-    filteredOptions   : Observable<any> | undefined;
+    filteredOptions : Observable<any> | undefined;
     supplierNamecontrol = new FormControl();
+    get_only_raw_footer : boolean   = false;
 
     constructor(
         private http: HttpClient,
@@ -90,7 +91,9 @@ export class VerifierViewerComponent implements OnInit {
     ) {}
 
     async ngOnInit(): Promise<void> {
-        this.localeStorageService.save('splitter_or_verifier', 'verifier')
+        marker('VERIFIER.only_raw_footer')
+        marker('VERIFIER.calculated_footer')
+        this.localeStorageService.save('splitter_or_verifier', 'verifier');
         this.imageInvoice = $('#invoice_image');
 
         /*
@@ -106,10 +109,13 @@ export class VerifierViewerComponent implements OnInit {
         }, true);
         this.invoiceId = this.route.snapshot.params['id'];
         this.invoice = await this.getInvoice();
-        this.ratio = this.invoice.img_width / this.imageInvoice.width()
+        this.ratio = this.invoice.img_width / this.imageInvoice.width();
         let form = await this.getForm();
         this.suppliers = await this.retrieveSuppliers();
-        this.suppliers = this.suppliers.suppliers
+        this.suppliers = this.suppliers.suppliers;
+        if (this.invoice.supplier_id) {
+            this.getSupplierInfo(this.invoice.supplier_id);
+        }
         await this.fillForm(form);
         await this.drawPositions(form);
         this.loading = false;
@@ -128,10 +134,10 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     updateFilteredOption(event: any, control: any) {
-        let value = ''
-        if (event.target.value) value = event.target.value
-        else if (control.value) value = control.value
-        control.patchValue(value)
+        let value = '';
+        if (event.target.value) value = event.target.value;
+        else if (control.value) value = control.value;
+        control.patchValue(value);
     }
 
     async drawPositions(data: any): Promise<any> {
@@ -142,9 +148,9 @@ export class VerifierViewerComponent implements OnInit {
                 if (position) {
                     this.lastId = field.id;
                     this.lastLabel = this.translate.instant(field.label).trim();
-                    this.lastColor = field.color
-                    this.disableOCR = true
-                    $('#' + field.id).focus()
+                    this.lastColor = field.color;
+                    this.disableOCR = true;
+                    $('#' + field.id).focus();
                     let newArea = {
                         x: position.x / this.ratio,
                         y: position.y / this.ratio,
@@ -188,10 +194,10 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     async fillForm(data: any): Promise<any> {
-        this.fields = data.fields
+        this.fields = data.fields;
         for (let parent in this.fields) {
             for (let cpt in data.fields[parent]) {
-                let field = data.fields[parent][cpt]
+                let field = data.fields[parent][cpt];
                 this.form[parent].push({
                     id: field.id,
                     label: field.label,
@@ -203,22 +209,25 @@ export class VerifierViewerComponent implements OnInit {
                     unit: field.unit,
                     class: field.class,
                     format: field.format,
+                    display: field.display,
                     format_icon: field.format_icon,
+                    display_icon: field.display_icon,
                     class_label: field.class_label,
-                })
+                    cpt: 0,
+                });
                 let value = this.invoice.datas[field.id];
                 let _field = this.form[parent][this.form[parent].length - 1]
                 if (field.format == 'date' && field.id !== '' && field.id !== undefined && value) {
-                    value = value.replaceAll('.', '/')
-                    value = value.replaceAll(',', '/')
-                    value = value.replaceAll(' ', '/')
-                    let format = moment().localeData().longDateFormat('L')
-                    value = moment(value, format)
-                    value = new Date(value._d)
+                    value = value.replaceAll('.', '/');
+                    value = value.replaceAll(',', '/');
+                    value = value.replaceAll(' ', '/');
+                    let format = moment().localeData().longDateFormat('L');
+                    value = moment(value, format);
+                    value = new Date(value._d);
                 }
                 _field.control.setValue(value)
                 if (field.id == 'name' && parent == 'supplier'){
-                    this.supplierNamecontrol = this.form[parent][cpt].control
+                    this.supplierNamecontrol = this.form[parent][cpt].control;
                 }
             }
         }
@@ -394,8 +403,32 @@ export class VerifierViewerComponent implements OnInit {
         return pattern
     }
 
-    getSupplierInfo(event: any) {
-        let supplier_id = event.option.id;
+    duplicateField(field_id: any, category_id: any) {
+        for (let category in this.form) {
+            if (category == category_id) {
+                this.form[category].forEach((field: any, cpt:number) => {
+                    if (field.id.trim() === field_id.trim()) {
+                        field.cpt += 1;
+                        let new_field = Object.assign({}, field);
+                        new_field.cpt = field.cpt;
+                        new_field.display = 'simple';
+                        new_field.id = new_field.id + '_' + cpt;
+                        this.form[category].splice(cpt + 1, 0, new_field);
+                    }
+                })
+            }
+        }
+    }
+
+    isChildField(field_id: any) {
+        let splitted_id = field_id.split('_')
+        if (Number.isInteger(parseInt(splitted_id[splitted_id.length - 1]))){
+            return true
+        }
+        return false
+    }
+
+    getSupplierInfo(supplier_id: any, show_notif = false) {
         this.suppliers.forEach((supplier: any) => {
             if (supplier.id == supplier_id) {
                 this.http.get(API_URL + '/ws/accounts/getAdressById/' + supplier.address_id, {headers: this.authService.headers}).pipe(
@@ -411,7 +444,7 @@ export class VerifierViewerComponent implements OnInit {
                             'siren': supplier.siren,
                             'vat_number': supplier.vat_number,
                         }
-
+                        this.get_only_raw_footer = supplier.get_only_raw_footer;
                         for (let column in supplier_data) {
                             this.updateFormValue(column, supplier_data[column]);
                         }
@@ -430,7 +463,9 @@ export class VerifierViewerComponent implements OnInit {
                             {'args': supplier_data},
                             {headers: this.authService.headers}).pipe(
                             tap(() => {
-                                this.notify.success(this.translate.instant('INVOICES.supplier_infos_updated'));
+                                if (show_notif) {
+                                    this.notify.success(this.translate.instant('INVOICES.supplier_infos_updated'));
+                                }
                             }),
                             catchError((err: any) => {
                                 console.debug(err);

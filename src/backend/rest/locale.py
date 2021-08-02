@@ -11,7 +11,6 @@ bp = Blueprint('i18n', __name__, url_prefix='/ws/')
 def change_language(lang):
     session['lang'] = lang
     response = config.change_locale_in_config(lang)
-
     return jsonify(response, response[1])
 
 
@@ -22,7 +21,6 @@ def get_all_lang():
     langs = []
     for lang in language:
         langs.append([language[lang]['lang_code'], language[lang]['label']])
-
     return make_response({'langs': langs}, 200)
 
 
@@ -35,5 +33,4 @@ def get_current_lang():
     for _l in languages:
         if current_lang == languages[_l]['lang_code']:
             angular_moment_lang = languages[_l]['moment_lang_code']
-
     return make_response({'lang': current_lang, 'moment_lang': angular_moment_lang}, 200)

@@ -18,14 +18,10 @@ import os
 import sys
 import time
 import tempfile
-
-# useful to use the worker and avoid ModuleNotFoundError
-# sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-
 from kuyruk import Kuyruk
 from kuyruk_manager import Manager
 from .main import timer, check_file, create_classes
-from import_classes import _Files, _Config
+from import_classes import _Files, _Config, _Splitter, _SeparatorQR
 from import_process import OCForInvoices_splitter
 
 OCforInvoices = Kuyruk()
@@ -50,8 +46,11 @@ def launch(args):
     if not os.path.exists(config_file):
         sys.exit('Config file couldn\'t be found')
 
-    config, locale, log, ocr, database, xml, splitter, separator_qr = create_classes(config_name)
+    config, locale, log, ocr, database, xml, webservices = create_classes(config_name)
     tmp_folder = tempfile.mkdtemp(dir=config.cfg['SPLITTER']['tmpbatchpath']) + '/'
+    separator_qr = _SeparatorQR(log, config, tmp_folder)
+    splitter = _Splitter(config, database, locale, separator_qr)
+
     file_name = tempfile.NamedTemporaryFile(dir=tmp_folder).name
     files = _Files(
         file_name,

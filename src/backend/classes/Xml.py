@@ -86,9 +86,9 @@ class Xml:
         filename = ''
         for cpt in tmp_filename:
             if self.separator:
-                filename += tmp_filename[cpt] + self.separator
+                filename += str(tmp_filename[cpt]) + self.separator
             else:
-                filename += tmp_filename[cpt]
+                filename += str(tmp_filename[cpt])
 
         if self.separator:
             # remove last separator

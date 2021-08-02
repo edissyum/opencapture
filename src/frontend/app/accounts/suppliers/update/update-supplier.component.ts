@@ -8,9 +8,7 @@ import {AuthService} from "../../../../services/auth.service";
 import {TranslateService} from "@ngx-translate/core";
 import {NotificationService} from "../../../../services/notifications/notifications.service";
 import {SettingsService} from "../../../../services/settings.service";
-import {LastUrlService} from "../../../../services/last-url.service";
 import {PrivilegesService} from "../../../../services/privileges.service";
-import {LocalStorageService} from "../../../../services/local-storage.service";
 import {marker} from "@biesbjerg/ngx-translate-extract-marker";
 import {API_URL} from "../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
@@ -28,6 +26,13 @@ export class UpdateSupplierComponent implements OnInit {
     addressId: any;
     supplier: any;
     supplierForm: any[] = [
+        {
+            id: 'get_only_raw_footer',
+            label: marker('ACCOUNTS.get_only_raw_footer'),
+            type: 'mat-slide-toggle',
+            control: new FormControl(),
+            required: true,
+        },
         {
             id: 'name',
             label: marker('ACCOUNTS.supplier_name'),
@@ -126,7 +131,6 @@ export class UpdateSupplierComponent implements OnInit {
 
     ngOnInit(): void {
         this.supplierId = this.route.snapshot.params['id'];
-
         this.http.get(API_URL + '/ws/forms/list', {headers: this.authService.headers}).pipe(
             tap((forms: any) => {
                 this.http.get(API_URL + '/ws/accounts/suppliers/getById/' + this.supplierId, {headers: this.authService.headers}).pipe(
@@ -141,9 +145,8 @@ export class UpdateSupplierComponent implements OnInit {
                                             element.values = forms.forms
                                         }
                                     }else if (field == 'address_id') {
-                                        this.addressId = this.supplier[field]
+                                        this.addressId = this.supplier[field];
                                         if (this.addressId) {
-                                            console.log('here')
                                             this.http.get(API_URL + '/ws/accounts/getAdressById/' + this.addressId, {headers: this.authService.headers}).pipe(
                                                 tap((address: any) => {
                                                     for (let field in address) {
@@ -164,7 +167,6 @@ export class UpdateSupplierComponent implements OnInit {
                                                 })
                                             ).subscribe()
                                         }else{
-                                            console.log('naaaa')
                                             this.http.post(API_URL + '/ws/accounts/addresses/create',
                                                 {'args': {
                                                         'address1': '',
@@ -176,19 +178,19 @@ export class UpdateSupplierComponent implements OnInit {
                                                 }, {headers: this.authService.headers},
                                             ).pipe(
                                                 tap((data: any) => {
-                                                    this.addressId = data.id
+                                                    this.addressId = data.id;
                                                     this.http.put(API_URL + '/ws/accounts/suppliers/update/' + this.supplierId, {'args': {'address_id' : this.addressId}}, {headers: this.authService.headers},
                                                     ).pipe(
                                                         finalize(() => this.loading = false),
                                                         catchError((err: any) => {
-                                                            console.debug(err)
+                                                            console.debug(err);
                                                             this.notify.handleErrors(err, '/accounts/suppliers/list');
                                                             return of(false);
                                                         })
                                                     ).subscribe();
                                                 }),
                                                 catchError((err: any) => {
-                                                    console.debug(err)
+                                                    console.debug(err);
                                                     this.notify.handleErrors(err, '/accounts/customers/list');
                                                     return of(false);
                                                 })
@@ -216,7 +218,6 @@ export class UpdateSupplierComponent implements OnInit {
 
     isValidForm() {
         let state = true;
-
         this.supplierForm.forEach(element => {
             if (element.control.status !== 'DISABLED' && element.control.status !== 'VALID') {
                 state = false;
@@ -248,20 +249,20 @@ export class UpdateSupplierComponent implements OnInit {
             this.http.put(API_URL + '/ws/accounts/suppliers/update/' + this.supplierId, {'args': supplier}, {headers: this.authService.headers},
             ).pipe(
                 catchError((err: any) => {
-                    console.debug(err)
+                    console.debug(err);
                     this.notify.handleErrors(err, '/accounts/suppliers/list');
                     return of(false);
                 })
             ).subscribe();
-            console.log(this.addressId)
+
             this.http.put(API_URL + '/ws/accounts/addresses/update/' + this.addressId, {'args': address}, {headers: this.authService.headers},
             ).pipe(
                 tap(() => {
-                    this.notify.success(this.translate.instant('ACCOUNTS.supplier_updated'))
-                    this.router.navigate(['/accounts/suppliers/list'])
+                    this.notify.success(this.translate.instant('ACCOUNTS.supplier_updated'));
+                    this.router.navigate(['/accounts/suppliers/list']);
                 }),
                 catchError((err: any) => {
-                    console.debug(err)
+                    console.debug(err);
                     this.notify.handleErrors(err, '/accounts/suppliers/list');
                     return of(false);
                 })
@@ -277,7 +278,7 @@ export class UpdateSupplierComponent implements OnInit {
                     error = this.translate.instant('AUTH.field_required');
                 }
             }
-        })
+        });
         return error
     }
 
@@ -289,7 +290,7 @@ export class UpdateSupplierComponent implements OnInit {
                     error = this.translate.instant('AUTH.field_required');
                 }
             }
-        })
+        });
         return error
     }
 }

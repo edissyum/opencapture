@@ -53,7 +53,7 @@ def login(username, password, lang):
             returned_user['role'] = user_role[0]
 
         response = {
-            'auth_token': encoded_token[0],
+            'auth_token': str(encoded_token[0]),
             'days_before_exp': encoded_token[1],
             'user': returned_user
         }
@@ -72,7 +72,7 @@ def token_required(view):
         if 'Authorization' in request.headers:
             token = request.headers['Authorization'].split('Bearer')[1].lstrip()
             try:
-                token = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=["HS256"])
+                token = jwt.decode(str(token), current_app.config['SECRET_KEY'], algorithms=["HS256"])
             except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
                     jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as e:
                 return jsonify({"errors": gettext("JWT_ERROR"), "message": str(e)}), 500

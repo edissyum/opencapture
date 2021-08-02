@@ -33,8 +33,6 @@ def init():
     )
     locale = _Locale(config)
     ocr = _PyTesseract(locale.localeOCR, log, config)
-    separator_qr = _SeparatorQR(log, config)
-    splitter = _Splitter(config, db, locale, separator_qr)
     ws = ''
 
     if config.cfg['GED']['enabled'] == 'True':
@@ -46,90 +44,7 @@ def init():
             config
         )
 
-    return db, config, locale, ws, xml, files, ocr, splitter
-
-
-
-@bp.route('/list/view/<int:pdf_id>', methods=('GET', 'POST'))
-def view(pdf_id):
-    _vars = init()
-    _db = _vars[0]
-    _cfg = _vars[1]
-
-    if _cfg.cfg['GED']['enabled'] == 'True':
-        _ws = _vars[3]
-        check = _ws.check_connection()
-        if check:
-            ged_users = _ws.retrieve_users()
-            if not ged_users:
-                ged_users = {'users': []}
-        else:
-            ged_users = {'users': {}}
-    else:
-        ged_users = {'users': []}
-
-    position_dict = {}
-
-    pdf_info = _db.select({
-        'select': ['id, *'],
-        'table': ['invoices'],
-        'where': ['status <> ?', 'id = ?'],
-        'data': ['DEL', pdf_id],
-        'limit': '1'
-    })[0]
-
-    # Retrieve supplier info if vatNumber is found
-    supplier_info = _db.select({
-        'select': ['*'],
-        'table': ['suppliers'],
-        'where': ['vat_number = ?'],
-        'data': [pdf_info['vat_number']],
-        'limit': '1'
-    })
-
-    # Converting str position to original type (tuple for exemple)
-    for key in dict(pdf_info):
-        if '_position' in key:
-            if pdf_info[key]:
-                position_dict[key] = eval(pdf_info[key])
-            else:
-                position_dict[key] = (('', ''), ('', ''))
-
-    original_width = eval(pdf_info['img_width'])
-
-    if supplier_info:
-        supplier_info = supplier_info[0]
-
-    array_financial = get_financial()
-
-    # Update invoice to add lock
-    _db.update({
-        'table': ['invoices'],
-        'set': {
-            'locked': 1,
-            'locked_by': session['user_name']
-        },
-        'where': ['id = ?'],
-        'data': [pdf_id]
-    })
-
-    return render_template("templates/pdf/view.html",
-                           pdf=pdf_info,
-                           position=position_dict,
-                           width=original_width,
-                           supplier=supplier_info,
-                           arrayOfFinancial=array_financial,
-                           list_users=ged_users['users'],
-                           )
-
-
-@bp.route('/upload')
-@bp.route('/upload?splitter=<string:issep>')
-def upload(issep=False):
-    _vars = init()
-    _cfg = _vars[1].cfg
-
-    return render_template("templates/pdf/upload.html", cfg=_cfg)
+    return db, config, locale, ws, xml, files, ocr
 
 
 @bp.route('/validate', methods=['POST'])

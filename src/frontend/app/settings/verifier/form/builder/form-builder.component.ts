@@ -68,7 +68,9 @@ export class FormBuilderComponent implements OnInit {
                     class_label: "1/33",
                     color: 'white',
                     format: 'alphanum',
-                    format_icon:'fas fa-hashtag'
+                    format_icon:'fas fa-hashtag',
+                    display: 'simple',
+                    display_icon:'fas file-alt'
                 },
                 {
                     id: 'siret',
@@ -80,7 +82,9 @@ export class FormBuilderComponent implements OnInit {
                     class_label: "1/33",
                     color: 'green',
                     format: 'number_int',
-                    format_icon:'text-lg icomoon-numbers'
+                    format_icon:'text-lg icomoon-numbers',
+                    display: 'simple',
+                    display_icon:'fas file-alt'
                 },
                 {
                     id: 'siren',
@@ -92,7 +96,9 @@ export class FormBuilderComponent implements OnInit {
                     class_label: "1/33",
                     color: 'lime',
                     format: 'number_int',
-                    format_icon:'text-lg icomoon-numbers'
+                    format_icon:'text-lg icomoon-numbers',
+                    display: 'simple',
+                    display_icon:'fas file-alt'
                 },
                 {
                     id: 'vat_number',
@@ -104,7 +110,9 @@ export class FormBuilderComponent implements OnInit {
                     class_label: "1/33",
                     color: 'olive',
                     format: 'alphanum',
-                    format_icon:'fas fas fa-hashtag'
+                    format_icon:'fas fas fa-hashtag',
+                    display: 'simple',
+                    display_icon:'fas file-alt'
                 },
                 {
                     id: 'address1',
@@ -115,7 +123,9 @@ export class FormBuilderComponent implements OnInit {
                     class: "w-1/3",
                     class_label: "1/33",
                     format: 'alphanum',
-                    format_icon:'fas fas fa-hashtag'
+                    format_icon:'fas fas fa-hashtag',
+                    display: 'simple',
+                    display_icon:'fas file-alt'
                 },
                 {
                     id: 'address2',
@@ -126,7 +136,9 @@ export class FormBuilderComponent implements OnInit {
                     class: "w-1/3",
                     class_label: "1/33",
                     format: 'alphanum',
-                    format_icon:'fas fas fa-hashtag'
+                    format_icon:'fas fas fa-hashtag',
+                    display: 'simple',
+                    display_icon:'fas file-alt'
                 },
                 {
                     id: 'postal_code',
@@ -137,7 +149,9 @@ export class FormBuilderComponent implements OnInit {
                     class: "w-1/3",
                     class_label: "1/33",
                     format: 'number_int',
-                    format_icon:'text-lg icomoon-numbers'
+                    format_icon:'text-lg icomoon-numbers',
+                    display: 'simple',
+                    display_icon:'fas file-alt'
                 },
                 {
                     id: 'city',
@@ -148,7 +162,9 @@ export class FormBuilderComponent implements OnInit {
                     class: "w-1/3",
                     class_label: "1/33",
                     format: 'char',
-                    format_icon:'fas fa-font'
+                    format_icon:'fas fa-font',
+                    display: 'simple',
+                    display_icon:'fas file-alt'
                 },
                 {
                     id: 'country',
@@ -159,7 +175,9 @@ export class FormBuilderComponent implements OnInit {
                     class: "w-1/3",
                     class_label: "1/33",
                     format: 'char',
-                    format_icon:'fas fa-font'
+                    format_icon:'fas fa-font',
+                    display: 'simple',
+                    display_icon:'fas file-alt'
                 },
             ]
         },
@@ -177,7 +195,9 @@ export class FormBuilderComponent implements OnInit {
                     class_label: "1/33",
                     color: 'yellow',
                     format: 'alphanum_extended',
-                    format_icon: 'fas fa-hashtag'
+                    format_icon: 'fas fa-hashtag',
+                    display: 'multi',
+                    display_icon:'fas fa-layer-group'
 
                 },
                 {
@@ -190,7 +210,9 @@ export class FormBuilderComponent implements OnInit {
                     class_label: "1/33",
                     color: 'silver',
                     format: 'alphanum_extended',
-                    format_icon: 'fas fa-hashtag'
+                    format_icon: 'fas fa-hashtag',
+                    display: 'multi',
+                    display_icon:'fas fa-layer-group'
                 },
                 {
                     id: 'invoice_number',
@@ -202,7 +224,9 @@ export class FormBuilderComponent implements OnInit {
                     class_label: "1/33",
                     color: 'red',
                     format: 'alphanum',
-                    format_icon: 'fas fa-hashtag'
+                    format_icon: 'fas fa-hashtag',
+                    display: 'simple',
+                    display_icon:'fas file-alt'
                 },
                 {
                     id: 'invoice_date',
@@ -214,7 +238,9 @@ export class FormBuilderComponent implements OnInit {
                     class_label: "1/33",
                     color: 'yellow',
                     format: 'date',
-                    format_icon: 'fas fa-calendar-day'
+                    format_icon: 'fas fa-calendar-day',
+                    display: 'simple',
+                    display_icon:'fas file-alt'
                 },
                 {
                     id: 'invoice_due_date',
@@ -226,7 +252,9 @@ export class FormBuilderComponent implements OnInit {
                     class_label: "1/33",
                     color: 'blue',
                     format: 'date',
-                    format_icon: 'fas fa-calendar-day'
+                    format_icon: 'fas fa-calendar-day',
+                    display: 'simple',
+                    display_icon:'fas file-alt'
                 },
                 {
                     id: 'vat_rate',
@@ -238,7 +266,9 @@ export class FormBuilderComponent implements OnInit {
                     class_label: "1/33",
                     color: 'pink',
                     format: 'number_float',
-                    format_icon:'text-lg icomoon-numbers'
+                    format_icon:'text-lg icomoon-numbers',
+                    display: 'multi',
+                    display_icon:'fas fa-layer-group'
                 },
                 {
                     id: 'no_rate_amount',
@@ -250,7 +280,9 @@ export class FormBuilderComponent implements OnInit {
                     class_label: "1/33",
                     color: 'fuschia',
                     format: 'number_float',
-                    format_icon:'text-lg icomoon-numbers'
+                    format_icon:'text-lg icomoon-numbers',
+                    display: 'multi',
+                    display_icon:'fas fa-layer-group'
                 },
                 {
                     id: 'vat_amount',
@@ -262,7 +294,9 @@ export class FormBuilderComponent implements OnInit {
                     class_label: "1/33",
                     color: 'purple',
                     format: 'number_float',
-                    format_icon:'text-lg icomoon-numbers'
+                    format_icon:'text-lg icomoon-numbers',
+                    display: 'multi',
+                    display_icon:'fas fa-layer-group'
                 },
                 {
                     id: 'accounting_plan',
@@ -272,6 +306,8 @@ export class FormBuilderComponent implements OnInit {
                     required: true,
                     class: "w-1/3",
                     class_label: "1/33",
+                    display: 'multi',
+                    display_icon:'fas fa-layer-group'
                 },
                 {
                     id: 'total_ttc',
@@ -282,7 +318,9 @@ export class FormBuilderComponent implements OnInit {
                     class: "w-1/3",
                     class_label: "1/33",
                     format: 'number_float',
-                    format_icon:'text-lg icomoon-numbers'
+                    format_icon:'text-lg icomoon-numbers',
+                    display: 'simple',
+                    display_icon:'fas file-alt'
                 },
                 {
                     id: 'total_ht',
@@ -293,7 +331,9 @@ export class FormBuilderComponent implements OnInit {
                     class: "w-1/3",
                     class_label: "1/33",
                     format: 'number_float',
-                    format_icon:'text-lg icomoon-numbers'
+                    format_icon:'text-lg icomoon-numbers',
+                    display: 'simple',
+                    display_icon:'fas file-alt'
                 },
                 {
                     id: 'total_vat',
@@ -305,7 +345,9 @@ export class FormBuilderComponent implements OnInit {
                     class_label: "1/33",
                     color: '',
                     format: 'number_float',
-                    format_icon:'text-lg icomoon-numbers'
+                    format_icon:'text-lg icomoon-numbers',
+                    display: 'simple',
+                    display_icon:'fas file-alt'
                 },
             ]
         },
@@ -448,6 +490,18 @@ export class FormBuilderComponent implements OnInit {
             'icon': 'fas fa-level-up-alt'
         },
     ]
+    displayList             : any [] = [
+        {
+            'id': 'simple',
+            'label': marker('DISPLAY.simple'),
+            'icon': 'fas fa-file-alt'
+        },
+        {
+            'id': 'multi',
+            'label': marker('DISPLAY.multi'),
+            'icon': 'fas fa-layer-group'
+        },
+    ]
 
     constructor(
         private http: HttpClient,
@@ -550,7 +604,7 @@ export class FormBuilderComponent implements OnInit {
                     }
                 }),
                 finalize(() => setTimeout(() => {
-                    this.loading = false
+                    this.loading = false;
                 }, 500)),
                 catchError((err: any) => {
                     console.debug(err);
@@ -559,12 +613,12 @@ export class FormBuilderComponent implements OnInit {
                 })
             ).subscribe()
         }else{
-            this.loading = false
+            this.loading = false;
         }
     }
 
     dropFromAvailableFields(event: any) {
-        let unit = event.previousContainer.id
+        let unit = event.previousContainer.id;
         if (event.previousContainer === event.container) {
             moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
         } else {
@@ -576,37 +630,47 @@ export class FormBuilderComponent implements OnInit {
     }
 
     changeClass(field_id: any, new_class: any, class_label: any, category: any) {
-        let id = field_id
+        let id = field_id;
         this.fields[category].forEach((element: any) => {
             if (element.id == id) {
-                element.class = new_class
-                element.class_label = class_label
+                element.class = new_class;
+                element.class_label = class_label;
             }
         })
     }
 
     changeFormat(field_id: any, new_format: any, format_icon: any, category: any) {
-        let id = field_id
+        let id = field_id;
         this.fields[category].forEach((element: any) => {
             if (element.id == id) {
-                element.format = new_format
-                element.format_icon = format_icon
+                element.format = new_format;
+                element.format_icon = format_icon;
+            }
+        })
+    }
+
+    changeDisplay(field_id: any, new_display: any, display_icon: any, category: any) {
+        let id = field_id;
+        this.fields[category].forEach((element: any) => {
+            if (element.id == id) {
+                element.display = new_display;
+                element.display_icon = display_icon;
             }
         })
     }
 
     changeColor(field_id: any, new_color: any, category: any) {
-        let id = field_id
+        let id = field_id;
         this.fields[category].forEach((element: any) => {
             if (element.id == id) {
-                element.color = new_color
+                element.color = new_color;
             }
         })
     }
 
     dropFromForm(event: any) {
-        let unit = event.container.id
-        let previousUnit = event.previousContainer.id
+        let unit = event.container.id;
+        let previousUnit = event.previousContainer.id;
 
         if (event.previousContainer === event.container) {
             moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
@@ -620,11 +684,11 @@ export class FormBuilderComponent implements OnInit {
 
     deleteField(event: any, previousIndex: any, category:any, unit: any) {
         if (unit == 'addresses')
-            unit = 'supplier'
+            unit = 'supplier';
         for(let parent_field in this.availableFieldsParent) {
-            let id = this.availableFieldsParent[parent_field].id.split('_fields')[0]
+            let id = this.availableFieldsParent[parent_field].id.split('_fields')[0];
             if (id == unit) {
-                let currentIndex = this.availableFieldsParent[parent_field]['values'].length
+                let currentIndex = this.availableFieldsParent[parent_field]['values'].length;
                 transferArrayItem(this.fields[category],
                     this.availableFieldsParent[parent_field]['values'],
                     previousIndex,
@@ -635,27 +699,27 @@ export class FormBuilderComponent implements OnInit {
     }
 
     storeNewOrder(event: any, category_id: any) {
-        let tmpCurrentOrder: any[] = []
+        let tmpCurrentOrder: any[] = [];
         event.currentOrder.forEach((element: any) => {
             this.fields[category_id].forEach((field: any) => {
                 if (element.id == field.id) {
-                    tmpCurrentOrder.push(element)
+                    tmpCurrentOrder.push(element);
                 }
             })
         })
-        this.fields[category_id] = tmpCurrentOrder
+        this.fields[category_id] = tmpCurrentOrder;
     }
 
     updateForm() {
-        let label = this.form.label.control.value
-        let is_default = this.form.default_form.control.value
+        let label = this.form.label.control.value;
+        let is_default = this.form.default_form.control.value;
         if (label) {
             this.http.put(API_URL + '/ws/forms/update/' + this.formId, {'args': {'label' : label, 'default_form' : is_default}}, {headers: this.authService.headers},
             ).pipe(
                 tap(()=> {
                     this.http.post(API_URL + '/ws/forms/updateFields/' + this.formId, this.fields, {headers: this.authService.headers}).pipe(
                         tap((data: any) => {
-                            this.notify.success(this.translate.instant('FORMS.updated'))
+                            this.notify.success(this.translate.instant('FORMS.updated'));
                         }),
                         catchError((err: any) => {
                             console.debug(err);
@@ -671,13 +735,13 @@ export class FormBuilderComponent implements OnInit {
                 })
             ).subscribe();
         }else{
-            this.notify.error(this.translate.instant('FORMS.label_mandatory'))
+            this.notify.error(this.translate.instant('FORMS.label_mandatory'));
         }
     }
 
     createForm() {
-        let label = this.form.label.control.value
-        let is_default = this.form.default_form.control.value
+        let label = this.form.label.control.value;
+        let is_default = this.form.default_form.control.value;
         if (label) {
             this.http.post(API_URL + '/ws/forms/add', {'args': {'label' : label, 'default_form' : is_default}}, {headers: this.authService.headers},
             ).pipe(
@@ -699,7 +763,7 @@ export class FormBuilderComponent implements OnInit {
                 })
             ).subscribe();
         }else{
-            this.notify.error(this.translate.instant('FORMS.label_mandatory'))
+            this.notify.error(this.translate.instant('FORMS.label_mandatory'));
         }
     }
 }
