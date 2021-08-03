@@ -44,6 +44,11 @@
                             class="inline-block align-text-top">
                         <i class="btn-action-icon fas fa-trash fa-lg"></i>
                     </button>
+                    <button (click)="$event.stopPropagation();deletePositionsConfirmDialog(element.id, element.name)"
+                            matTooltip="{{ 'GLOBAL.delete_supplier_positions' | translate }}" mat-icon-button
+                            class="inline-block align-text-top">
+                        <i class="text-lg icomoon-wrong_location"></i>
+                    </button>
                 </mat-cell>
             </ng-container>
             <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>

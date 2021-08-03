@@ -31,6 +31,7 @@ export class SuppliersListComponent implements OnInit {
     pageIndex       : number      = 0;
     total           : number      = 0;
     offset          : number      = 0;
+    deletePositionSrc: string     = 'assets/imgs/map-marker-alt-solid-del.svg';
 
     constructor(
         public router: Router,
@@ -120,11 +121,45 @@ export class SuppliersListComponent implements OnInit {
         });
     }
 
+    deletePositionsConfirmDialog(supplier_id: number, supplier: string) {
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            data:{
+                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
+                confirmText         : this.translate.instant('ACCOUNTS.confirm_delete_supplier_positions', {"supplier": supplier}),
+                confirmButton       : this.translate.instant('GLOBAL.delete'),
+                confirmButtonColor  : "warn",
+                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+            },
+            width: "600px",
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if(result) {
+                this.deleteSupplierPositions(supplier_id);
+            }
+        });
+    }
+
     deleteSupplier(supplier_id: number) {
         if (supplier_id !== undefined) {
             this.http.delete(API_URL + '/ws/accounts/suppliers/delete/' + supplier_id, {headers: this.authService.headers}).pipe(
                 tap(() => {
-                    this.loadSuppliers()
+                    this.loadSuppliers();
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe()
+        }
+    }
+
+    deleteSupplierPositions(supplier_id: number) {
+        if (supplier_id !== undefined) {
+            this.http.delete(API_URL + '/ws/accounts/suppliers/deletePositions/' + supplier_id, {headers: this.authService.headers}).pipe(
+                tap(() => {
+                    this.notify.success(this.translate.instant('ACCOUNTS.positions_deleted'));
                 }),
                 catchError((err: any) => {
                     console.debug(err);
@@ -136,9 +171,9 @@ export class SuppliersListComponent implements OnInit {
     }
 
     sortData(sort: Sort) {
-        let data = this.suppliers.slice()
+        let data = this.suppliers.slice();
         if(!sort.active || sort.direction === '') {
-            this.suppliers = data
+            this.suppliers = data;
             return;
         }
 

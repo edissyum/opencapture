@@ -79,6 +79,14 @@ def update_invoice_data(invoice_id):
     return make_response(res[0], res[1])
 
 
+@bp.route('verifier/invoices/<int:invoice_id>/deleteData', methods=['PUT'])
+@auth.token_required
+def delete_invoice_data(invoice_id):
+    field_id = request.json['args']
+    res = verifier.delete_invoice_data_by_invoice_id(invoice_id, field_id)
+    return make_response(res[0], res[1])
+
+
 @bp.route('verifier/invoices/<int:invoice_id>/update', methods=['PUT'])
 @auth.token_required
 def update_invoice(invoice_id):
@@ -92,5 +100,4 @@ def update_invoice(invoice_id):
 def ocr_on_fly():
     data = request.json
     result = pdf.ocr_on_the_fly(data['fileName'], data['selection'], data['thumbSize'])
-    print(result)
     return make_response({'result': result}, 200)

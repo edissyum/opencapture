@@ -45,8 +45,12 @@
                                             {{ field.label | translate }} <span *ngIf="isChildField(field.id)">{{ field.cpt }}</span>
                                         </mat-label>
                                         <span *ngIf="field.display == 'multi'" (click)="duplicateField(field.id, category['id'])"
-                                              class="absolute -top-2 -right-0.5 cursor-pointer text-xl text-gray-900">
-                                            +
+                                              class="absolute -top-2 -right-2.5 cursor-pointer text-gray-900">
+                                            <mat-icon class="text-lg">add_circle</mat-icon>
+                                        </span>
+                                        <span *ngIf="isChildField(field.id)" (click)="removeDuplicateField(field.id, category['id'])"
+                                              class="absolute -top-2 -right-2.5 cursor-pointer text-red-500">
+                                            <mat-icon class="text-xl">delete_forever</mat-icon>
                                         </span>
                                         <input [id]="field.id" matInput type="text"
                                                [formControl]="field.control" [pattern]="field.pattern"

@@ -17,8 +17,7 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 from flask import Blueprint, request, make_response, jsonify
-from ..import_controllers import auth
-from ..import_controllers import accounts
+from ..import_controllers import auth, accounts
 
 bp = Blueprint('accounts', __name__, url_prefix='/ws/')
 
@@ -114,6 +113,13 @@ def create_supplier():
 @auth.token_required
 def delete_supplier(supplier_id):
     res = accounts.delete_supplier(supplier_id)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('accounts/suppliers/deletePositions/<int:supplier_id>', methods=['DELETE'])
+@auth.token_required
+def delete_supplier_positions(supplier_id):
+    res = accounts.update_supplier(supplier_id, {'positions': '{}'})
     return make_response(jsonify(res[0])), res[1]
 
 

@@ -294,10 +294,30 @@ def delete_customer(customer_id):
     customer_info, error = accounts.get_customer_by_id({'customer_id': customer_id})
 
     if error is None:
-        _set = {
-            'status': 'DEL',
+        res, error = accounts.delete_customer({'customer_id': customer_id})
+        if error is None:
+            return '', 200
+        else:
+            response = {
+                "errors": gettext('DELETE_CUSTOMER_ERROR'),
+                "message": error
+            }
+            return response, 401
+    else:
+        response = {
+            "errors": gettext('DELETE_CUSTOMER_ERROR'),
+            "message": error
         }
-        res, error = accounts.delete_customer({'set': _set, 'customer_id': customer_id})
+        return response, 401
+
+
+def delete_supplier(supplier_id):
+    _vars = pdf.init()
+    _db = _vars[0]
+    supplier_info, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
+
+    if error is None:
+        res, error = accounts.delete_supplier({'supplier_id': supplier_id})
         if error is None:
             return '', 200
         else:

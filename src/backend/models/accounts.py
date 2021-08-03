@@ -141,7 +141,7 @@ def delete_supplier(args):
 
     supplier = _db.update({
         'table': ['accounts_supplier'],
-        'set': args['set'],
+        'set': {'status': 'DEL'},
         'where': ['id = %s'],
         'data': [args['supplier_id']]
     })
@@ -224,7 +224,7 @@ def delete_customer(args):
 
     customer = _db.update({
         'table': ['accounts_customer'],
-        'set': args['set'],
+        'set': {'status': 'DEL'},
         'where': ['id = %s'],
         'data': [args['customer_id']]
     })
