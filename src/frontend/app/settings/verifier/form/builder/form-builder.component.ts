@@ -20,7 +20,7 @@ import {marker} from "@biesbjerg/ngx-translate-extract-marker";
     styleUrls: ['./form-builder.component.scss'],
 })
 export class FormBuilderComponent implements OnInit {
-    loading                 : boolean = true
+    loading                 : boolean = true;
     form                    : any = {
         'label': {
             'control': new FormControl(),
@@ -28,9 +28,9 @@ export class FormBuilderComponent implements OnInit {
         'default_form': {
             'control': new FormControl(),
         }
-    }
+    };
     formId                  : any;
-    creationMode            : boolean = true
+    creationMode            : boolean = true;
     labelType               : any [] = [
         marker('TYPES.char'),
         marker('TYPES.textarea'),
@@ -38,7 +38,7 @@ export class FormBuilderComponent implements OnInit {
         marker('TYPES.select'),
         marker('VERIFIER.field_settings'),
         marker('FORMS.delete_field'),
-    ]
+    ];
     fieldCategories         : any [] = [
         {
             'id': 'supplier',
@@ -64,6 +64,7 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'supplier',
                     type: 'text',
                     required: true,
+                    required_icon: 'fas fa-star',
                     class: "w-1/3",
                     class_label: "1/33",
                     color: 'white',
@@ -78,6 +79,7 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'supplier',
                     type: 'text',
                     required: false,
+                    required_icon: 'far fa-star',
                     class: "w-1/3",
                     class_label: "1/33",
                     color: 'green',
@@ -92,6 +94,7 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'supplier',
                     type: 'text',
                     required: false,
+                    required_icon: 'far fa-star',
                     class: "w-1/3",
                     class_label: "1/33",
                     color: 'lime',
@@ -106,6 +109,7 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'supplier',
                     type: 'text',
                     required: true,
+                    required_icon: 'fas fa-star',
                     class: "w-1/3",
                     class_label: "1/33",
                     color: 'olive',
@@ -120,6 +124,7 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'addresses',
                     type: 'text',
                     required: true,
+                    required_icon: 'fas fa-star',
                     class: "w-1/3",
                     class_label: "1/33",
                     format: 'alphanum',
@@ -132,7 +137,8 @@ export class FormBuilderComponent implements OnInit {
                     label: marker('ADDRESSES.address_2'),
                     unit: 'addresses',
                     type: 'text',
-                    required: true,
+                    required: false,
+                    required_icon: 'fas fa-star',
                     class: "w-1/3",
                     class_label: "1/33",
                     format: 'alphanum',
@@ -146,6 +152,7 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'addresses',
                     type: 'text',
                     required: true,
+                    required_icon: 'fas fa-star',
                     class: "w-1/3",
                     class_label: "1/33",
                     format: 'number_int',
@@ -159,6 +166,7 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'addresses',
                     type: 'text',
                     required: true,
+                    required_icon: 'fas fa-star',
                     class: "w-1/3",
                     class_label: "1/33",
                     format: 'char',
@@ -172,6 +180,7 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'addresses',
                     type: 'text',
                     required: true,
+                    required_icon: 'fas fa-star',
                     class: "w-1/3",
                     class_label: "1/33",
                     format: 'char',
@@ -190,7 +199,8 @@ export class FormBuilderComponent implements OnInit {
                     label: marker('FACTURATION.order_number'),
                     unit: 'facturation',
                     type: 'text',
-                    required: true,
+                    required: false,
+                    required_icon: 'far fa-star',
                     class: "w-1/3",
                     class_label: "1/33",
                     color: 'yellow',
@@ -205,7 +215,8 @@ export class FormBuilderComponent implements OnInit {
                     label: marker('FACTURATION.delivery_number'),
                     unit: 'facturation',
                     type: 'text',
-                    required: true,
+                    required: false,
+                    required_icon: 'far fa-star',
                     class: "w-1/3",
                     class_label: "1/33",
                     color: 'silver',
@@ -220,6 +231,7 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'facturation',
                     type: 'text',
                     required: true,
+                    required_icon: 'fas fa-star',
                     class: "w-1/3",
                     class_label: "1/33",
                     color: 'red',
@@ -234,6 +246,7 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'facturation',
                     type: 'date',
                     required: true,
+                    required_icon: 'fas fa-star',
                     class: "w-1/3",
                     class_label: "1/33",
                     color: 'yellow',
@@ -247,7 +260,8 @@ export class FormBuilderComponent implements OnInit {
                     label: marker('FACTURATION.invoice_due_date'),
                     unit: 'facturation',
                     type: 'date',
-                    required: true,
+                    required: false,
+                    required_icon: 'far fa-star',
                     class: "w-1/3",
                     class_label: "1/33",
                     color: 'blue',
@@ -262,6 +276,7 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'facturation',
                     type: 'text',
                     required: true,
+                    required_icon: 'fas fa-star',
                     class: "w-1/3",
                     class_label: "1/33",
                     color: 'pink',
@@ -276,6 +291,7 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'facturation',
                     type: 'text',
                     required: true,
+                    required_icon: 'fas fa-star',
                     class: "w-1/3",
                     class_label: "1/33",
                     color: 'fuschia',
@@ -290,6 +306,7 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'facturation',
                     type: 'text',
                     required: true,
+                    required_icon: 'fas fa-star',
                     class: "w-1/3",
                     class_label: "1/33",
                     color: 'purple',
@@ -303,7 +320,8 @@ export class FormBuilderComponent implements OnInit {
                     label: marker('FACTURATION.accounting_plan'),
                     unit: 'facturation',
                     type: 'select',
-                    required: true,
+                    required: false,
+                    required_icon: 'fas fa-star',
                     class: "w-1/3",
                     class_label: "1/33",
                     display: 'multi',
@@ -315,6 +333,7 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'facturation',
                     type: 'text',
                     required: true,
+                    required_icon: 'fas fa-star',
                     class: "w-1/3",
                     class_label: "1/33",
                     format: 'number_float',
@@ -328,6 +347,7 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'facturation',
                     type: 'text',
                     required: true,
+                    required_icon: 'fas fa-star',
                     class: "w-1/3",
                     class_label: "1/33",
                     format: 'number_float',
@@ -341,6 +361,7 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'facturation',
                     type: 'text',
                     required: true,
+                    required_icon: 'fas fa-star',
                     class: "w-1/3",
                     class_label: "1/33",
                     color: '',
@@ -356,12 +377,12 @@ export class FormBuilderComponent implements OnInit {
             'label': marker('FORMS.custom_fields'),
             'values': []
         },
-    ]
+    ];
     fields                  : any = {
         'supplier': [],
         'facturation': [],
         'other': []
-    }
+    };
     classList               : any [] = [
         {
             'id': 'w-full',
@@ -387,7 +408,7 @@ export class FormBuilderComponent implements OnInit {
             'id': 'w-1/5',
             'label': '1/5'
         }
-    ]
+    ];
     colorsList              : any [] = [
         {
             'id': 'yellow',
@@ -457,7 +478,7 @@ export class FormBuilderComponent implements OnInit {
             'id': 'green',
             'label': marker('COLORS.green')
         },
-    ]
+    ];
     formatList              : any [] = [
         {
             'id': 'date',
@@ -489,7 +510,7 @@ export class FormBuilderComponent implements OnInit {
             'label': marker('FORMATS.alphanum_extended'),
             'icon': 'fas fa-level-up-alt'
         },
-    ]
+    ];
     displayList             : any [] = [
         {
             'id': 'simple',
@@ -501,7 +522,19 @@ export class FormBuilderComponent implements OnInit {
             'label': marker('DISPLAY.multi'),
             'icon': 'fas fa-layer-group'
         },
-    ]
+    ];
+    mandatoryList             : any [] = [
+        {
+            'id': true,
+            'label': marker('MANDATORY.required'),
+            'icon': 'fas fa-star'
+        },
+        {
+            'id': false,
+            'label': marker('MANDATORY.not_required'),
+            'icon': 'far fa-star'
+        },
+    ];
 
     constructor(
         private http: HttpClient,
@@ -655,6 +688,16 @@ export class FormBuilderComponent implements OnInit {
             if (element.id == id) {
                 element.display = new_display;
                 element.display_icon = display_icon;
+            }
+        })
+    }
+
+    changeRequired(field_id: any, new_required: any, required_icon: any, category: any) {
+        let id = field_id;
+        this.fields[category].forEach((element: any) => {
+            if (element.id == id) {
+                element.required = new_required;
+                element.required_icon = required_icon;
             }
         })
     }

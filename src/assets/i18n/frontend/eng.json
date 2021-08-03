@@ -7,6 +7,7 @@
 		"company_number": "",
 		"confirm_delete_customer": "",
 		"confirm_delete_supplier": "",
+		"confirm_delete_supplier_positions": "",
 		"create_customer": "",
 		"create_supplier": "",
 		"customer_name": "",
@@ -14,6 +15,7 @@
 		"customers_list": "",
 		"form": "",
 		"get_only_raw_footer": "",
+		"positions_deleted": "",
 		"siren": "",
 		"siret": "",
 		"supplier": "",
@@ -84,6 +86,7 @@
 		"alphanum_pattern": "",
 		"connection_failed": "Error connecting to server",
 		"date_pattern": "",
+		"field_required": "",
 		"is_server_up": "Is server up ?",
 		"jwt_error": "Authentification by token error",
 		"number_float_pattern": "",
@@ -142,6 +145,7 @@
 		"cancel": "Cancel",
 		"confirm": "Confirm",
 		"delete": "Delete",
+		"delete_supplier_positions": "",
 		"disable": "Disable",
 		"enable": "Enable",
 		"home": "Home",
@@ -165,6 +169,7 @@
 		"verifier": "Open-Capture verifier"
 	},
 	"INVOICES": {
+		"data_deleted": "",
 		"position_and_data_updated": "",
 		"supplier_infos_updated": ""
 	},

@@ -7,6 +7,7 @@
 		"company_number": "Numéro de société",
 		"confirm_delete_customer": "Êtes vous sûr de vouloir supprimer le compte client <b>{{ customer }}</b> ?",
 		"confirm_delete_supplier": "Êtes vous sûr de vouloir supprimer le compte fournisseur <b>{{ supplier }}</b> ?",
+		"confirm_delete_supplier_positions": "Êtes vous sûr de vouloir supprimer les positions du compte fournisseur <b>{{ supplier }}</b> ",
 		"create_customer": "Ajouter un compte client",
 		"create_supplier": "Ajouter un compte fournisseur",
 		"customer_name": "Nom du compte client",
@@ -14,6 +15,7 @@
 		"customers_list": "Liste des comptes clients",
 		"form": "Nom du formulaire",
 		"get_only_raw_footer": "Contrôle de cohérence du pied de page",
+		"positions_deleted": "Positions du fournisseurs supprimées",
 		"siren": "Numéro de SIREN",
 		"siret": "Numéro de SIRET",
 		"supplier": "Compte Fournisseur",
@@ -84,6 +86,7 @@
 		"alphanum_pattern": "La valeur n'est pas au format attendu : alphanumérique",
 		"connection_failed": "Erreur lors de la connexion au serveur",
 		"date_pattern": "La valeur n'est pas au format attendu : date",
+		"field_required": "Le champ est obligatoire",
 		"is_server_up": "Le serveur <b>{{server}}</b> est-il accessible ?",
 		"jwt_error": "Erreur lors de l'authentification par token",
 		"number_float_pattern": "La valeur n'est pas au format attendu : nombre flottant",
@@ -142,6 +145,7 @@
 		"cancel": "Annuler",
 		"confirm": "Confirmation",
 		"delete": "Supprimer",
+		"delete_supplier_positions": "Supprimer les positions du compte fournisseur",
 		"disable": "Désactiver",
 		"enable": "Activer",
 		"home": "Accueil",
@@ -165,6 +169,7 @@
 		"verifier": "Open-Capture Vérificateur"
 	},
 	"INVOICES": {
+		"data_deleted": "Champ supprimé",
 		"position_and_data_updated": "Position et valeur du champ <b>{{ input }}</b> mise à jour",
 		"supplier_infos_updated": "Fournisseur paramétré pour cette facture"
 	},

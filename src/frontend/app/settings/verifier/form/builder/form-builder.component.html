@@ -117,7 +117,7 @@
                                     <mat-label class="border-r-2 border-green-400 inline-block overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
                                         <b>{{ field.label | translate }}</b> ({{ 'FORMATS.' + field.format | translate }})
                                     </mat-label>
-                                    <input class="cursor-pointer" matInput type="text" readonly>
+                                    <input class="cursor-pointer" [required]="field.required" matInput type="text" readonly>
                                     <div class="absolute top-0 -right-4">
                                         <button mat-button [matMenuTriggerFor]="menu"
                                                 [matTooltip]="this.translate.instant('VERIFIER.field_settings')"
@@ -138,6 +138,9 @@
                                             </button>
                                             <button mat-menu-item [matMenuTriggerFor]="display">
                                                 {{ "VERIFIER.display" | translate }} <small class="ml-2"><i class="text-base {{ field.display_icon }}"></i></small>
+                                            </button>
+                                            <button mat-menu-item [matMenuTriggerFor]="required">
+                                                {{ "VERIFIER.required" | translate }} <small class="ml-2"><i class="text-base {{ field.required_icon }}"></i></small>
                                             </button>
                                         </mat-menu>
                                         <mat-menu #size="matMenu">
@@ -171,6 +174,14 @@
                                                     (click)="changeDisplay(field.id, _display.id, _display.icon, category['id'])"
                                                     [class.bg-green-400]="_display.id == field.display">
                                                 {{ _display.label | translate }}
+                                            </button>
+                                        </mat-menu>
+                                        <mat-menu #required="matMenu">
+                                            <button mat-menu-item [id]="field.id"
+                                                    *ngFor="let required of mandatoryList"
+                                                    (click)="changeRequired(field.id, required.id, required.icon, category['id'])"
+                                                    [class.bg-green-400]="required.id == field.required">
+                                                {{ required.label | translate }}
                                             </button>
                                         </mat-menu>
                                     </div>
@@ -184,7 +195,7 @@
                                     <mat-label class="border-r-2 border-green-400 inline-block overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
                                         <b>{{ field.label | translate }}</b> ({{ 'TYPES.' + field.type | translate }})
                                     </mat-label>
-                                    <input class="cursor-pointer" matInput type="text" readonly>
+                                    <input class="cursor-pointer" [required]="field.required" matInput type="text" readonly>
                                     <div class="absolute top-0 -right-4">
                                         <button mat-button [matMenuTriggerFor]="menu"
                                                 [matTooltip]="this.translate.instant('VERIFIER.field_settings')"
@@ -205,6 +216,9 @@
                                             </button>
                                             <button mat-menu-item [matMenuTriggerFor]="display">
                                                 {{ "VERIFIER.display" | translate }} <small class="ml-2"><i class="text-base {{ field.display_icon }}"></i></small>
+                                            </button>
+                                            <button mat-menu-item [matMenuTriggerFor]="required">
+                                                {{ "VERIFIER.required" | translate }} <small class="ml-2"><i class="text-base {{ field.required_icon }}"></i></small>
                                             </button>
                                         </mat-menu>
                                         <mat-menu #size="matMenu">
@@ -238,6 +252,14 @@
                                                     (click)="changeDisplay(field.id, _display.id, _display.icon, category['id'])"
                                                     [class.bg-green-400]="_display.id == field.display">
                                                 {{ _display.label | translate }}
+                                            </button>
+                                        </mat-menu>
+                                        <mat-menu #required="matMenu">
+                                            <button mat-menu-item [id]="field.id"
+                                                    *ngFor="let required of mandatoryList"
+                                                    (click)="changeRequired(field.id, required.id, required.icon, category['id'])"
+                                                    [class.bg-green-400]="required.id == field.required">
+                                                {{ required.label | translate }}
                                             </button>
                                         </mat-menu>
                                     </div>
@@ -251,7 +273,7 @@
                                     <mat-label class="border-r-2 border-green-400 inline-block overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
                                         <b>{{ field.label | translate }}</b> ({{ 'TYPES.' + field.type | translate }})
                                     </mat-label>
-                                    <input class="cursor-pointer" matInput readonly>
+                                    <input class="cursor-pointer" [required]="field.required" matInput readonly>
                                     <div class="absolute top-0 -right-4">
                                         <button mat-button [matMenuTriggerFor]="menu"
                                                 [matTooltip]="this.translate.instant('VERIFIER.field_settings')"
@@ -272,6 +294,9 @@
                                             </button>
                                             <button mat-menu-item [matMenuTriggerFor]="display">
                                                 {{ "VERIFIER.display" | translate }} <small class="ml-2"><i class="text-base {{ field.display_icon }}"></i></small>
+                                            </button>
+                                            <button mat-menu-item [matMenuTriggerFor]="required">
+                                                {{ "VERIFIER.required" | translate }} <small class="ml-2"><i class="text-base {{ field.required_icon }}"></i></small>
                                             </button>
                                         </mat-menu>
                                         <mat-menu #size="matMenu">
@@ -305,6 +330,14 @@
                                                     (click)="changeDisplay(field.id, _display.id, _display.icon, category['id'])"
                                                     [class.bg-green-400]="_display.id == field.display">
                                                 {{ _display.label | translate }}
+                                            </button>
+                                        </mat-menu>
+                                        <mat-menu #required="matMenu">
+                                            <button mat-menu-item [id]="field.id"
+                                                    *ngFor="let required of mandatoryList"
+                                                    (click)="changeRequired(field.id, required.id, required.icon, category['id'])"
+                                                    [class.bg-green-400]="required.id == field.required">
+                                                {{ required.label | translate }}
                                             </button>
                                         </mat-menu>
                                     </div>
@@ -339,6 +372,9 @@
                                             <button mat-menu-item [matMenuTriggerFor]="display">
                                                 {{ "VERIFIER.display" | translate }} <small class="ml-2"><i class="text-base {{ field.display_icon }}"></i></small>
                                             </button>
+                                            <button mat-menu-item [matMenuTriggerFor]="required">
+                                                {{ "VERIFIER.required" | translate }} <small class="ml-2"><i class="text-base {{ field.required_icon }}"></i></small>
+                                            </button>
                                         </mat-menu>
                                         <mat-menu #size="matMenu">
                                             <button mat-menu-item [id]="field.id"
@@ -371,6 +407,14 @@
                                                     (click)="changeDisplay(field.id, _display.id, _display.icon, category['id'])"
                                                     [class.bg-green-400]="_display.id == field.display">
                                                 {{ _display.label | translate }}
+                                            </button>
+                                        </mat-menu>
+                                        <mat-menu #required="matMenu">
+                                            <button mat-menu-item [id]="field.id"
+                                                    *ngFor="let required of mandatoryList"
+                                                    (click)="changeRequired(field.id, required.id, required.icon, category['id'])"
+                                                    [class.bg-green-400]="required.id == field.required">
+                                                {{ required.label | translate }}
                                             </button>
                                         </mat-menu>
                                     </div>

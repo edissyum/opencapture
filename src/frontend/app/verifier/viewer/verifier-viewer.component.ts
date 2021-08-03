@@ -80,6 +80,7 @@ export class VerifierViewerComponent implements OnInit {
     filteredOptions : Observable<any> | undefined;
     supplierNamecontrol = new FormControl();
     get_only_raw_footer : boolean   = false;
+    oldValue            : string    = '';
 
     constructor(
         private http: HttpClient,
@@ -172,7 +173,7 @@ export class VerifierViewerComponent implements OnInit {
         if (this.invoice.positions) {
             Object.keys(this.invoice.positions).forEach((element: any) => {
                 if (element == field_id) {
-                    position = this.invoice.positions[field_id]
+                    position = this.invoice.positions[field_id];
                 }
             })
         }
@@ -216,20 +217,22 @@ export class VerifierViewerComponent implements OnInit {
                     class_label: field.class_label,
                     cpt: 0,
                 });
-                let value = this.invoice.datas[field.id];
+
                 let _field = this.form[category][this.form[category].length - 1];
-                if (field.format == 'date' && field.id !== '' && field.id !== undefined && value) {
-                    value = value.replaceAll('.', '/');
-                    value = value.replaceAll(',', '/');
-                    value = value.replaceAll(' ', '/');
-                    let format = moment().localeData().longDateFormat('L');
-                    value = moment(value, format);
-                    value = new Date(value._d);
+                if (this.invoice.datas[field.id]) {
+                    let value = this.invoice.datas[field.id];
+                    if (field.format == 'date' && field.id !== '' && field.id !== undefined && value) {
+                        value = value.replaceAll('.', '/');
+                        value = value.replaceAll(',', '/');
+                        value = value.replaceAll(' ', '/');
+                        let format = moment().localeData().longDateFormat('L');
+                        value = moment(value, format);
+                        value = new Date(value._d);
+                    }
+                    _field.control.setValue(value);
+                    _field.control.markAsTouched();
                 }
-                _field.control.setValue(value);
-                if (field.id == 'name' && category == 'supplier') {
-                    this.supplierNamecontrol = this.form[category][cpt].control;
-                }
+                if (field.id == 'name' && category == 'supplier') this.supplierNamecontrol = this.form[category][cpt].control;
                 this.findChildren(field.id, _field, category);
             }
         }
@@ -332,8 +335,8 @@ export class VerifierViewerComponent implements OnInit {
                                     tap((data: any) => {
                                         _this.updateFormValue(inputId, data.result);
                                         _this.isOCRRunning = false;
-                                        _this.savePosition(_this.getSelectionByCpt(selection, cpt));
-                                        _this.saveData({[_this.lastId] : data.result}, true);
+                                        let res = _this.saveData(data.result, _this.lastId, true);
+                                        if (res) _this.savePosition(_this.getSelectionByCpt(selection, cpt));
                                     }),
                                     catchError((err: any) => {
                                         console.debug(err);
@@ -377,7 +380,7 @@ export class VerifierViewerComponent implements OnInit {
                     }
                     input.control.setValue(value);
                 }
-            })
+            });
         }
     }
 
@@ -410,21 +413,40 @@ export class VerifierViewerComponent implements OnInit {
         ).subscribe()
     }
 
-    saveData(data: any, show_notif: boolean = false) {
-        this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/updateData',
-            {'args': data},
-            {headers: this.authService.headers}).pipe(
-            tap(() => {
-                if (show_notif) {
-                    this.notify.success(this.translate.instant('INVOICES.position_and_data_updated', {"input": this.lastLabel}));
+    saveData(data: any, field_id: any = false, show_notif: boolean = false) {
+        if (data) {
+            if (field_id) {
+                let field = this.getField(field_id);
+                if (field.control.errors || this.oldValue == data) return false;
+                data = {[field_id]: data};
+            }
+            this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/updateData',
+                {'args': data},
+                {headers: this.authService.headers}).pipe(
+                tap(() => {
+                    if (show_notif) this.notify.success(this.translate.instant('INVOICES.position_and_data_updated', {"input": this.lastLabel}));
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+            return true;
+        }
+        return false;
+    }
+
+    getField(field_id: any) {
+        let _field : any = {};
+        for (let category in this.form) {
+            this.form[category].forEach((field: any) => {
+                if (field.id.trim() == field_id.trim()){
+                    _field = field;
                 }
-            }),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe()
+            });
+        }
+        return _field;
     }
 
     deleteData(field_id: any) {
@@ -464,7 +486,7 @@ export class VerifierViewerComponent implements OnInit {
                         new_field.display = 'simple';
                         new_field.control.value = '';
                         this.form[category].splice(cpt + field.cpt, 0, new_field);
-                        this.saveData({[new_field.id] : ''});
+                        this.saveData('', new_field.id);
                     }
                 })
             }
@@ -477,7 +499,7 @@ export class VerifierViewerComponent implements OnInit {
             if (category == category_id) {
                 this.form[category].forEach((field: any, cpt:number) => {
                     if (field.id.trim() === field_id.trim()) {
-                        this.deleteData(field.id)
+                        this.deleteData(field.id);
                         this.form[category].splice(cpt, 1);
                     }else if (field.id.trim() === parent_id.trim()) {
                         field.cpt = field.cpt - 1;
@@ -555,6 +577,7 @@ export class VerifierViewerComponent implements OnInit {
         this.form[category].forEach((element: any) => {
             if (element.id == field) {
                 if (element.control.errors) {
+                    let required = element.control.errors.required;
                     let pattern = element.control.errors.pattern;
                     let datePickerPattern = element.control.errors.matDatepickerParse;
                     if (pattern) {
@@ -570,12 +593,27 @@ export class VerifierViewerComponent implements OnInit {
                         }
                     }else if (datePickerPattern) {
                         error = this.translate.instant('ERROR.date_pattern');
+                    }else if (required) {
+                        error = this.translate.instant('ERROR.field_required');
                     }else {
                         error = this.translate.instant('ERROR.unknow_error');
                     }
                 }
             }
-        })
-        return error
+        });
+        return error;
+    }
+
+    validateForm() {
+        let valid = true;
+        for (let category in this.form) {
+            this.form[category].forEach((input: any) => {
+                if(input.control.errors) {
+                    valid = false;
+                    this.notify.error('ERROR.form_not_valid');
+                    return;
+                }
+            });
+        }
     }
 }
