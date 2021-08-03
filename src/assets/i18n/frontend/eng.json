@@ -173,6 +173,10 @@
 		"position_and_data_updated": "",
 		"supplier_infos_updated": ""
 	},
+	"MANDATORY": {
+		"not_required": "",
+		"required": ""
+	},
 	"PAGINATOR": {
 		"display": "",
 		"first_page": "First page",
@@ -308,6 +312,7 @@
 		"only_raw_footer": "",
 		"original_file": "",
 		"register_date": "",
+		"required": "",
 		"reset_invoice_list": "",
 		"search": "",
 		"select_all": "",

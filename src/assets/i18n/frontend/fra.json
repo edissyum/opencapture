@@ -173,6 +173,10 @@
 		"position_and_data_updated": "Position et valeur du champ <b>{{ input }}</b> mise à jour",
 		"supplier_infos_updated": "Fournisseur paramétré pour cette facture"
 	},
+	"MANDATORY": {
+		"not_required": "Champ obligatoire",
+		"required": "Champ non obligatoire"
+	},
 	"PAGINATOR": {
 		"display": "Affichage",
 		"first_page": "Première page",
@@ -308,6 +312,7 @@
 		"only_raw_footer": "Contrôle de cohérence du pied de page désactivé",
 		"original_file": "Fichier d'origine",
 		"register_date": "Enregistré le",
+		"required": "Obligatoire ?",
 		"reset_invoice_list": "Réinitialiser la liste des factures",
 		"search": "Rechercher une facture",
 		"select_all": "Tout sélectionner",
