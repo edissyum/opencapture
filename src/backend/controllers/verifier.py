@@ -233,3 +233,8 @@ def update_invoice(invoice_id, data):
         }
         return response, 401
 
+
+def export_xml(invoice_id):
+    print(invoice_id)
+
+    return '', 200

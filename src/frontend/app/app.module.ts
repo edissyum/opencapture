@@ -50,6 +50,9 @@ import { CreateSupplierComponent } from './accounts/suppliers/create/create-supp
 import { CustomersListComponent } from './accounts/customers/list/customers-list.component';
 import { UpdateCustomerComponent } from './accounts/customers/update/update-customer.component';
 import { CreateCustomerComponent } from './accounts/customers/create/create-customer.component';
+import { CreateOutputComponent } from './settings/verifier/outputs/create/create-output.component';
+import { OutputsListComponent } from './settings/verifier/outputs/list/outputs-list.component';
+import { UpdateOutputComponent } from './settings/verifier/outputs/update/update-output.component';
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -88,7 +91,10 @@ export function createTranslateLoader(http: HttpClient) {
         CreateSupplierComponent,
         CustomersListComponent,
         CreateCustomerComponent,
-        UpdateCustomerComponent
+        UpdateCustomerComponent,
+        CreateOutputComponent,
+        OutputsListComponent,
+        UpdateOutputComponent
     ],
     imports: [
         BrowserModule,
@@ -125,8 +131,5 @@ export function createTranslateLoader(http: HttpClient) {
     bootstrap: [AppComponent]
 })
 export class AppModule {
-    constructor(
-        private routerExtService: LastUrlService,
-    ) {
-    }
+    constructor() {}
 }

@@ -6,6 +6,22 @@ i.cdk-drag {
     @apply mb-1;
 }
 
+::ng-deep .builder-tab {
+    & .mat-tab-header{
+        & .mat-tab-label-container > .mat-tab-list > .mat-tab-labels > .mat-tab-label {
+            @apply w-1/2;
+        }
+    }
+
+    & .mat-tab-body-wrapper > .mat-tab-body > .mat-tab-body-content {
+        height: calc(100vh - 20rem) !important;
+
+        & .flex > .content > .list > .mat-card:nth-last-child(-n+4) {
+            @apply mb-5
+        }
+    }
+}
+
 ::ng-deep .form-builder > .mat-form-field-wrapper {
     @apply pb-3;
     @apply pt-3;

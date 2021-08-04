@@ -33,6 +33,9 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (19, 'customers_list',
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (20, 'create_customer', 'accounts');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (21, 'update_customer', 'accounts');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (22, 'change_language', 'general');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (23, 'outputs_list', 'verifier');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (24, 'add_output', 'verifier');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (25, 'update_output', 'verifier');
 ALTER SEQUENCE "privileges_id_seq" RESTART WITH 21;
 
 -- ADD PRIVILEGES TO ROLES

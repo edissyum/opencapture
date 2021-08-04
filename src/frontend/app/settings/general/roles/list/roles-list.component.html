@@ -111,19 +111,19 @@
                             (click)="$event.stopPropagation();disableConfirmDialog(element.id, element.label)"
                             matTooltip="{{ 'ROLE.disable' | translate }}" mat-icon-button
                             class="inline-block align-text-top">
-                        <i class="btn-action-icon fas fa-pause fa-lg"></i>
+                        <i class="fas fa-pause fa-lg"></i>
                     </button>
                     <button *ngIf="!element.enabled"
                             (click)="$event.stopPropagation();enableConfirmDialog(element.id, element.label)"
                             matTooltip="{{ 'ROLE.enable' | translate }}" mat-icon-button
                             class="inline-block align-text-top">
-                        <i class="btn-action-icon fas fa-play fa-lg"></i>
+                        <i class="fas fa-play fa-lg"></i>
                     </button>
                     <button mat-icon-button
                             (click)="$event.stopPropagation();deleteConfirmDialog(element.id, element.label)"
                             matTooltip="{{ 'GLOBAL.delete' | translate }}"
                             class="inline-block align-text-top">
-                        <i class="btn-action-icon fas fa-trash fa-lg"></i>
+                        <i class="fas fa-trash fa-lg"></i>
                     </button>
                 </mat-cell>
             </ng-container>

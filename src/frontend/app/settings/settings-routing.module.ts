@@ -15,6 +15,9 @@ import { VersionUpdateComponent } from "./general/version-update/version-update.
 import { CustomFieldsComponent } from "./general/custom-fields/custom-fields.component";
 import { FormBuilderComponent } from "./verifier/form/builder/form-builder.component";
 import { FormListComponent } from "./verifier/form/list/form-list.component";
+import { OutputsListComponent } from "./verifier/outputs/list/outputs-list.component";
+import { UpdateOutputComponent } from "./verifier/outputs/update/update-output.component";
+import { CreateOutputComponent } from "./verifier/outputs/create/create-output.component";
 
 const routes: Routes = [
     {
@@ -83,12 +86,27 @@ const routes: Routes = [
     },
     {
         path: 'settings/verifier/forms/builder/new', component: FormBuilderComponent,
-        data: {title: marker('SETTINGS.form_builder'), privileges: ['settings', 'form_builder']},
+        data: {title: marker('SETTINGS.form_builder'), privileges: ['settings', 'add_form']},
         canActivate: [LoginRequiredService]
     },
     {
         path: 'settings/verifier/forms/builder/edit/:id', component: FormBuilderComponent,
-        data: {title: marker('SETTINGS.form_update'), privileges: ['settings', 'form_builder']},
+        data: {title: marker('SETTINGS.form_update'), privileges: ['settings', 'update_form']},
+        canActivate: [LoginRequiredService]
+    },
+    {
+        path: 'settings/verifier/outputs', component: OutputsListComponent,
+        data: {title: marker('FORMS.output_settings'), privileges: ['settings', 'outputs_list']},
+        canActivate: [LoginRequiredService]
+    },
+    {
+        path: 'settings/verifier/outputs/new', component: CreateOutputComponent,
+        data: {title: marker('SETTINGS.add_output'), privileges: ['settings', 'add_output']},
+        canActivate: [LoginRequiredService]
+    },
+    {
+        path: 'settings/verifier/outputs/edit/:id', component: UpdateOutputComponent,
+        data: {title: marker('SETTINGS.update_output'), privileges: ['settings', 'update_output']},
         canActivate: [LoginRequiredService]
     },
 // -- END Verifier

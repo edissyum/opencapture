@@ -114,18 +114,23 @@
                             (click)="$event.stopPropagation(); disableConfirmDialog(element.id, element.label)"
                             matTooltip="{{ 'FORMS.disable' | translate }}" mat-icon-button
                             class="inline-block align-text-top">
-                        <i class="btn-action-icon fas fa-pause fa-lg"></i>
+                        <i class="fas fa-pause fa-lg"></i>
                     </button>
                     <button *ngIf="!element.enabled"
                             (click)="$event.stopPropagation(); enableConfirmDialog(element.id, element.label)"
                             matTooltip="{{ 'FORMS.enable' | translate }}" mat-icon-button
                             class="inline-block align-text-top">
-                        <i class="btn-action-icon fas fa-play fa-lg"></i>
+                        <i class="fas fa-play fa-lg"></i>
+                    </button>
+                    <button (click)="$event.stopPropagation(); duplicateConfirmDialog(element.id, element.label)"
+                            matTooltip="{{ 'FORMS.duplicate' | translate }}" mat-icon-button
+                            class="inline-block align-text-top">
+                        <i class="fas fa-clone fa-lg"></i>
                     </button>
                     <button (click)="$event.stopPropagation(); deleteConfirmDialog(element.id, element.label)"
                             matTooltip="{{ 'FORMS.delete' | translate }}" mat-icon-button
                             class="inline-block align-text-top">
-                        <i class="btn-action-icon fas fa-trash fa-lg"></i>
+                        <i class="fas fa-trash fa-lg"></i>
                     </button>
                 </mat-cell>
             </ng-container>

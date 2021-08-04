@@ -123,6 +123,29 @@ export class SettingsService {
                     }
                 ]
             },
+            {
+                "id"        : "output_settings",
+                "label"     : this.translate.instant("FORMS.output_settings"),
+                "icon"      : "fas fa-sign-out-alt",
+                "route"     : "/settings/verifier/outputs",
+                "actions"   : [
+                    {
+                        "id"        : "add_form",
+                        "label"     : this.translate.instant("SETTINGS.add_output"),
+                        "route"     : "/settings/verifier/outputs/new",
+                        "privilege" : "add_output",
+                        "icon"      : "fas fa-plus"
+                    },
+                    {
+                        "id"                : "update_form",
+                        "label"             : this.translate.instant("SETTINGS.update_output"),
+                        "route"             : "/settings/verifier/outputs/edit/",
+                        "privilege"         : "update_output",
+                        "icon"              : "fas fa-edit",
+                        "showOnlyIfActive"  : true
+                    }
+                ]
+            },
         ],
         "splitter": [
             {

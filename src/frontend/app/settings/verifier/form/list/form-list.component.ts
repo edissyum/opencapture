@@ -27,7 +27,7 @@ import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from "@angular/material/form-field";
     ]
 })
 export class FormListComponent implements OnInit {
-    loading: boolean            = true
+    loading: boolean            = true;
     columnsToDisplay: string[]  = ['id', 'label', 'default_form', 'enabled', 'actions'];
     pageSize : number           = 10;
     pageIndex: number           = 0;
@@ -107,6 +107,25 @@ export class FormListComponent implements OnInit {
         });
     }
 
+    duplicateConfirmDialog(form_id: number, form: string) {
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            data:{
+                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
+                confirmText         : this.translate.instant('FORMS.confirm_duplicate', {"form": form}),
+                confirmButton       : this.translate.instant('GLOBAL.duplicate'),
+                confirmButtonColor  : "warn",
+                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+            },
+            width: "600px",
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if(result) {
+                this.duplicateForm(form_id)
+            }
+        });
+    }
+
     disableConfirmDialog(form_id: number, form: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data:{
@@ -157,6 +176,21 @@ export class FormListComponent implements OnInit {
                     return of(false);
                 })
             ).subscribe()
+        }
+    }
+
+    duplicateForm(form_id: number) {
+        if (form_id !== undefined) {
+            // this.http.delete(API_URL + '/ws/forms/duplicate/' + form_id, {headers: this.authService.headers}).pipe(
+            //     tap(() => {
+            //         this.loadForms()
+            //     }),
+            //     catchError((err: any) => {
+            //         console.debug(err);
+            //         this.notify.handleErrors(err);
+            //         return of(false);
+            //     })
+            // ).subscribe()
         }
     }
 

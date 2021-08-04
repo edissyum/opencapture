@@ -88,7 +88,7 @@
                 <i [class.transform]="sidenav2.opened" [class.rotate-180]="sidenav2.opened" class="fas fa-stream text-xl text-gray-900"></i>
             </button>
         </div>
-        <div *ngIf="!loading" class="overflow-auto" style="height: calc(100% - 64px)">
+        <div *ngIf="!loading">
             <div class="flex flex-wrap justify-center items-center mx-6">
                 <mat-form-field class="w-3/4 mt-6">
                     <mat-label>{{ "FORMS.label" | translate }}</mat-label>
@@ -100,103 +100,109 @@
                     </mat-slide-toggle>
                 </div>
             </div>
-            <ng-container *ngFor="let category of fieldCategories; let i = index">
-                <div class="relative text-xl tracking-wider pl-1.5 pr-1.5 bg-white" style="top: 2.5rem; left:2.5rem;" [style]="'width:calc(3% + ' + this.translate.instant(category['label']).length + '%)'">
-                    {{ category['label'] | translate }}
-                </div>
-                <div class="border-green-400 border rounded-lg mx-6 m-7">
-                    <div cdkDropList (cdkDropListDropped)="dropFromForm($event)" id="{{ category['id'] }}"
-                         class="flex flex-wrap cursor-pointer w-full my-3" style="min-height: 50px;">
-                        <div *ngFor="let field of this.fields[category['id']]; let index = index" class="flex items-center px-3 overflow-hidden" [class]="field.class"
-                             ngSortGridGroup="{{ category['id'] }}" ngSortgridItem [ngSortGridItems]="fields[category['id']]" (sorted)="storeNewOrder($event, category['id'])">
-                            <mat-form-field class="right-0 w-full form-builder"
-                                            [matTooltipClass]="'-mt-3'"
-                                            [matTooltip]="this.translate.instant(field['label']) + ' (' + this.translate.instant('FORMATS.' + field.format) + ')'">
-                                <i cdkDrag class="fas fa-trash" (click)="deleteField($event, index, category['id'], field.unit)" [matTooltip]="this.translate.instant('FORMS.delete_field')"></i>
-                                <mat-label class="border-r-2 border-green-400 inline-block overflow-ellipsis overflow-hidden whitespace-nowrap w-10/12">
-                                    <span *ngIf="field.required" class="text-red-500 mr-2">*</span>
-                                    <b>{{ field.label | translate }}</b>
-                                    ({{ 'FORMATS.' + field.format | translate }})
-                                </mat-label>
-                                <input class="cursor-pointer" matInput type="text" readonly>
-                                <div class="absolute top-0 -right-4">
-                                    <button mat-button [matMenuTriggerFor]="menu"
-                                            [matTooltip]="this.translate.instant('VERIFIER.field_settings')"
-                                            matTooltipPosition="above">
-                                        <mat-icon class="field_settings text-md">more_vert</mat-icon>
-                                    </button>
-                                    <mat-menu #menu="matMenu">
-                                        <button mat-menu-item [matMenuTriggerFor]="colors"
-                                                [style]="'background-color:' + field.color"
-                                                [class.text-white]="field.color == 'black' || field.color == 'navy'">
-                                            {{ "VERIFIER.colors" | translate }}
-                                        </button>
-                                        <button mat-menu-item [matMenuTriggerFor]="size">
-                                            {{ "VERIFIER.size" | translate }} <small class="ml-2">{{ field.class_label }}</small>
-                                        </button>
-                                        <button mat-menu-item [matMenuTriggerFor]="format">
-                                            {{ "VERIFIER.format" | translate }} <small class="ml-2"><i class="text-base {{ field.format_icon }}"></i></small>
-                                        </button>
-                                        <button mat-menu-item [matMenuTriggerFor]="display">
-                                            {{ "VERIFIER.display" | translate }} <small class="ml-2"><i class="text-base {{ field.display_icon }}"></i></small>
-                                        </button>
-                                        <button mat-menu-item [matMenuTriggerFor]="required">
-                                            {{ "VERIFIER.required" | translate }} <small class="ml-2"><i class="text-base {{ field.required_icon }}"></i></small>
-                                        </button>
-                                    </mat-menu>
-                                    <mat-menu #size="matMenu">
-                                        <button mat-menu-item [id]="field.id"
-                                                *ngFor="let _class of classList"
-                                                (click)="changeClass(field.id, _class.id, _class.label, category['id'])"
-                                                [class.bg-green-400]="_class.id == field.class">
-                                            {{ _class.label | translate  }}
-                                        </button>
-                                    </mat-menu>
-                                    <mat-menu #colors="matMenu">
-                                        <button mat-menu-item [id]="field.id"
-                                                *ngFor="let _color of colorsList"
-                                                (click)="changeColor(field.id, _color.id, category['id'])"
-                                                [style]="'background-color:' + _color.id"
-                                                [class.text-white]="_color.id == 'black' || _color.id == 'navy'">
-                                            {{ _color.label | translate }}
-                                        </button>
-                                    </mat-menu>
-                                    <mat-menu #format="matMenu">
-                                        <button mat-menu-item [id]="field.id"
-                                                *ngFor="let _format of formatList"
-                                                (click)="changeFormat(field.id, _format.id, _format.icon, category['id'])"
-                                                [class.bg-green-400]="_format.id == field.format">
-                                            {{ _format.label | translate }}
-                                        </button>
-                                    </mat-menu>
-                                    <mat-menu #display="matMenu">
-                                        <button mat-menu-item [id]="field.id"
-                                                *ngFor="let _display of displayList"
-                                                (click)="changeDisplay(field.id, _display.id, _display.icon, category['id'])"
-                                                [class.bg-green-400]="_display.id == field.display">
-                                            {{ _display.label | translate }}
-                                        </button>
-                                    </mat-menu>
-                                    <mat-menu #required="matMenu">
-                                        <button mat-menu-item [id]="field.id"
-                                                *ngFor="let required of mandatoryList"
-                                                (click)="changeRequired(field.id, required.id, required.icon, category['id'])"
-                                                [class.bg-green-400]="required.id == field.required">
-                                            {{ required.label | translate }}
-                                        </button>
-                                    </mat-menu>
-                                </div>
-                            </mat-form-field>
-                        </div>
-                    </div>
-                </div>
-            </ng-container>
             <div class="flex justify-center items-center">
                 <button mat-button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300">
                     <span class="block" (click)="createForm()" *ngIf="creationMode">{{ "FORMS.create" | translate }}</span>
                     <span class="block" (click)="updateForm()" *ngIf="!creationMode">{{ "FORMS.modify" | translate }}</span>
                 </button>
             </div>
+            <mat-tab-group class="builder-tab overflow-auto">
+                <mat-tab [label]="'FORMS.build_form' | translate">
+                    <ng-container *ngFor="let category of fieldCategories; let i = index">
+                        <div class="relative text-xl tracking-wider pl-1.5 pr-1.5 bg-white" style="top: 2.5rem; left:2.5rem;" [style]="'width:calc(3% + ' + this.translate.instant(category['label']).length + '%)'">
+                            {{ category['label'] | translate }}
+                        </div>
+                        <div class="border-green-400 border rounded-lg mx-6 m-7">
+                            <div cdkDropList (cdkDropListDropped)="dropFromForm($event)" id="{{ category['id'] }}"
+                                 class="flex flex-wrap cursor-pointer w-full my-3" style="min-height: 50px;">
+                                <div *ngFor="let field of this.fields[category['id']]; let index = index" class="flex items-center px-3 overflow-hidden" [class]="field.class"
+                                     ngSortGridGroup="{{ category['id'] }}" ngSortgridItem [ngSortGridItems]="fields[category['id']]" (sorted)="storeNewOrder($event, category['id'])">
+                                    <mat-form-field class="right-0 w-full form-builder"
+                                                    [matTooltipClass]="'-mt-3'"
+                                                    [matTooltip]="this.translate.instant(field['label']) + ' (' + this.translate.instant('FORMATS.' + field.format) + ')'">
+                                        <i cdkDrag class="fas fa-trash" (click)="deleteField($event, index, category['id'], field.unit)" [matTooltip]="this.translate.instant('FORMS.delete_field')"></i>
+                                        <mat-label class="border-r-2 border-green-400 inline-block overflow-ellipsis overflow-hidden whitespace-nowrap w-10/12">
+                                            <span *ngIf="field.required" class="text-red-500 mr-2">*</span>
+                                            <b>{{ field.label | translate }}</b>
+                                            ({{ 'FORMATS.' + field.format | translate }})
+                                        </mat-label>
+                                        <input class="cursor-pointer" matInput type="text" readonly>
+                                        <div class="absolute top-0 -right-4">
+                                            <button mat-button [matMenuTriggerFor]="menu"
+                                                    [matTooltip]="this.translate.instant('VERIFIER.field_settings')"
+                                                    matTooltipPosition="above">
+                                                <mat-icon class="field_settings text-md">more_vert</mat-icon>
+                                            </button>
+                                            <mat-menu #menu="matMenu">
+                                                <button mat-menu-item [matMenuTriggerFor]="colors"
+                                                        [style]="'background-color:' + field.color"
+                                                        [class.text-white]="field.color == 'black' || field.color == 'navy'">
+                                                    {{ "VERIFIER.colors" | translate }}
+                                                </button>
+                                                <button mat-menu-item [matMenuTriggerFor]="size">
+                                                    {{ "VERIFIER.size" | translate }} <small class="ml-2">{{ field.class_label }}</small>
+                                                </button>
+                                                <button mat-menu-item [matMenuTriggerFor]="format">
+                                                    {{ "VERIFIER.format" | translate }} <small class="ml-2"><i class="text-base {{ field.format_icon }}"></i></small>
+                                                </button>
+                                                <button mat-menu-item [matMenuTriggerFor]="display">
+                                                    {{ "VERIFIER.display" | translate }} <small class="ml-2"><i class="text-base {{ field.display_icon }}"></i></small>
+                                                </button>
+                                                <button mat-menu-item [matMenuTriggerFor]="required">
+                                                    {{ "VERIFIER.required" | translate }} <small class="ml-2"><i class="text-base {{ field.required_icon }}"></i></small>
+                                                </button>
+                                            </mat-menu>
+                                            <mat-menu #size="matMenu">
+                                                <button mat-menu-item [id]="field.id"
+                                                        *ngFor="let _class of classList"
+                                                        (click)="changeClass(field.id, _class.id, _class.label, category['id'])"
+                                                        [class.bg-green-400]="_class.id == field.class">
+                                                    {{ _class.label | translate  }}
+                                                </button>
+                                            </mat-menu>
+                                            <mat-menu #colors="matMenu">
+                                                <button mat-menu-item [id]="field.id"
+                                                        *ngFor="let _color of colorsList"
+                                                        (click)="changeColor(field.id, _color.id, category['id'])"
+                                                        [style]="'background-color:' + _color.id"
+                                                        [class.text-white]="_color.id == 'black' || _color.id == 'navy'">
+                                                    {{ _color.label | translate }}
+                                                </button>
+                                            </mat-menu>
+                                            <mat-menu #format="matMenu">
+                                                <button mat-menu-item [id]="field.id"
+                                                        *ngFor="let _format of formatList"
+                                                        (click)="changeFormat(field.id, _format.id, _format.icon, category['id'])"
+                                                        [class.bg-green-400]="_format.id == field.format">
+                                                    {{ _format.label | translate }}
+                                                </button>
+                                            </mat-menu>
+                                            <mat-menu #display="matMenu">
+                                                <button mat-menu-item [id]="field.id"
+                                                        *ngFor="let _display of displayList"
+                                                        (click)="changeDisplay(field.id, _display.id, _display.icon, category['id'])"
+                                                        [class.bg-green-400]="_display.id == field.display">
+                                                    {{ _display.label | translate }}
+                                                </button>
+                                            </mat-menu>
+                                            <mat-menu #required="matMenu">
+                                                <button mat-menu-item [id]="field.id"
+                                                        *ngFor="let required of mandatoryList"
+                                                        (click)="changeRequired(field.id, required.id, required.icon, category['id'])"
+                                                        [class.bg-green-400]="required.id == field.required">
+                                                    {{ required.label | translate }}
+                                                </button>
+                                            </mat-menu>
+                                        </div>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                </mat-tab>
+                <mat-tab [label]="'FORMS.output_settings' | translate">
+                </mat-tab>
+            </mat-tab-group>
         </div>
     </mat-sidenav-content>
     <mat-sidenav #sidenav2 mode="side" opened position="end" class="available-fields w-1/4 flex flex-col h-full border-r border-green-400">

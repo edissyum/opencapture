@@ -117,18 +117,18 @@
                             (click)="$event.stopPropagation();disableConfirmDialog(element.id, element.username)"
                             matTooltip="{{ 'USER.disable' | translate }}" mat-icon-button
                             class="inline-block align-text-top">
-                        <i class="btn-action-icon fas fa-pause fa-lg"></i>
+                        <i class="fas fa-pause fa-lg"></i>
                     </button>
                     <button *ngIf="!element.enabled"
                             (click)="$event.stopPropagation();enableConfirmDialog(element.id, element.username)"
                             matTooltip="{{ 'USER.enable' | translate }}" mat-icon-button
                             class="inline-block align-text-top">
-                        <i class="btn-action-icon fas fa-play fa-lg"></i>
+                        <i class="fas fa-play fa-lg"></i>
                     </button>
                     <button (click)="$event.stopPropagation();deleteConfirmDialog(element.id, element.username)"
                             matTooltip="{{ 'GLOBAL.delete' | translate }}" mat-icon-button
                             class="inline-block align-text-top">
-                        <i class="btn-action-icon fas fa-trash fa-lg"></i>
+                        <i class="fas fa-trash fa-lg"></i>
                     </button>
                 </mat-cell>
             </ng-container>

@@ -116,7 +116,7 @@ export class VerifierViewerComponent implements OnInit {
         this.suppliers = await this.retrieveSuppliers();
         this.suppliers = this.suppliers.suppliers;
         if (this.invoice.supplier_id) {
-            this.getSupplierInfo(this.invoice.supplier_id);
+            this.getSupplierInfo(this.invoice.supplier_id, false, true);
         }
         await this.fillForm(form);
         await this.drawPositions(form);
@@ -514,7 +514,7 @@ export class VerifierViewerComponent implements OnInit {
         return Number.isInteger(parseInt(splitted_id[splitted_id.length - 1]));
     }
 
-    getSupplierInfo(supplier_id: any, show_notif = false) {
+    getSupplierInfo(supplier_id: any, show_notif = false, launchOnInit = false) {
         this.suppliers.forEach((supplier: any) => {
             if (supplier.id == supplier_id) {
                 this.http.get(API_URL + '/ws/accounts/getAdressById/' + supplier.address_id, {headers: this.authService.headers}).pipe(
@@ -535,32 +535,33 @@ export class VerifierViewerComponent implements OnInit {
                             this.updateFormValue(column, supplier_data[column]);
                         }
 
-                        this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoiceId + '/update',
-                            {'args': {'supplier_id': supplier_id}},
-                            {headers: this.authService.headers}).pipe(
-                            catchError((err: any) => {
-                                console.debug(err);
-                                this.notify.handleErrors(err);
-                                return of(false);
-                            })
-                        ).subscribe();
+                        if (!launchOnInit){
+                            this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoiceId + '/update',
+                                {'args': {'supplier_id': supplier_id}},
+                                {headers: this.authService.headers}).pipe(
+                                catchError((err: any) => {
+                                    console.debug(err);
+                                    this.notify.handleErrors(err);
+                                    return of(false);
+                                })
+                            ).subscribe();
+                            this.saveData(supplier_data)
+                            this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/updateData',
+                                {'args': supplier_data},
+                                {headers: this.authService.headers}).pipe(
+                                tap(() => {
+                                    if (show_notif) {
+                                        this.notify.success(this.translate.instant('INVOICES.supplier_infos_updated'));
+                                    }
+                                }),
+                                catchError((err: any) => {
+                                    console.debug(err);
+                                    this.notify.handleErrors(err);
+                                    return of(false);
+                                })
+                            ).subscribe();
 
-                        this.saveData(supplier_data)
-
-                        this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/updateData',
-                            {'args': supplier_data},
-                            {headers: this.authService.headers}).pipe(
-                            tap(() => {
-                                if (show_notif) {
-                                    this.notify.success(this.translate.instant('INVOICES.supplier_infos_updated'));
-                                }
-                            }),
-                            catchError((err: any) => {
-                                console.debug(err);
-                                this.notify.handleErrors(err);
-                                return of(false);
-                            })
-                        ).subscribe();
+                        }
                     }),
                     catchError((err: any) => {
                         console.debug(err);
@@ -586,9 +587,9 @@ export class VerifierViewerComponent implements OnInit {
                         }
                         if (pattern.requiredPattern == this.getPattern('alphanum_extended')) {
                             error = this.translate.instant('ERROR.alphanum_extended_pattern');
-                        }else if(pattern.requiredPattern == this.getPattern('number_int')) {
+                        }else if (pattern.requiredPattern == this.getPattern('number_int')) {
                             error = this.translate.instant('ERROR.number_int_pattern');
-                        }else if(pattern.requiredPattern == this.getPattern('number_float')) {
+                        }else if (pattern.requiredPattern == this.getPattern('number_float')) {
                             error = this.translate.instant('ERROR.number_float_pattern');
                         }
                     }else if (datePickerPattern) {
@@ -606,14 +607,18 @@ export class VerifierViewerComponent implements OnInit {
 
     validateForm() {
         let valid = true;
+        let arrayData: any = {};
         for (let category in this.form) {
             this.form[category].forEach((input: any) => {
-                if(input.control.errors) {
+                if (input.control.value) arrayData.push({[input.id] : input.control.value});
+                if (input.control.errors) {
                     valid = false;
-                    this.notify.error('ERROR.form_not_valid');
-                    return;
+                    this.notify.error(this.translate.instant('ERROR.form_not_valid'));
                 }
             });
         }
+        if (!valid) return;
+        this.saveData(arrayData);
+
     }
 }

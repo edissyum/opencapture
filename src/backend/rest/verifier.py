@@ -79,6 +79,13 @@ def update_invoice_data(invoice_id):
     return make_response(res[0], res[1])
 
 
+@bp.route('verifier/invoices/<int:invoice_id>/exportXML', methods=['POST'])
+@auth.token_required
+def export_xml(invoice_id):
+    res = verifier.export_xml(invoice_id)
+    return make_response(res[0], res[1])
+
+
 @bp.route('verifier/invoices/<int:invoice_id>/deleteData', methods=['PUT'])
 @auth.token_required
 def delete_invoice_data(invoice_id):
