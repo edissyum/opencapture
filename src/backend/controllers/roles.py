@@ -15,8 +15,6 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from flask import flash, g, redirect, render_template, request, url_for
-
 from flask_babel import gettext
 from ..import_controllers import pdf
 from ..import_models import roles
@@ -92,7 +90,7 @@ def create_role(data):
 def update_role_privilege(role_id, privileges):
     _vars = pdf.init()
     _db = _vars[0]
-    user_info, error = roles.get_role_by_id({'role_id': role_id})
+    role_info, error = roles.get_role_by_id({'role_id': role_id})
 
     if error is None:
         _set = {
@@ -118,10 +116,10 @@ def update_role_privilege(role_id, privileges):
 
 
 def get_role_by_id(role_id):
-    user_info, error = roles.get_role_by_id({'role_id': role_id})
+    role_info, error = roles.get_role_by_id({'role_id': role_id})
 
     if error is None:
-        return user_info, 200
+        return role_info, 200
     else:
         response = {
             "errors": gettext('GET_ROLE_BY_ID_ERROR'),
@@ -180,7 +178,7 @@ def enable_role(role_id):
     _vars = pdf.init()
     _db = _vars[0]
 
-    user_info, error = roles.get_role_by_id({'role_id': role_id})
+    role_info, error = roles.get_role_by_id({'role_id': role_id})
     if error is None:
         res, error = roles.update_role({'set': {'enabled': True}, 'role_id': role_id})
         if error is None:

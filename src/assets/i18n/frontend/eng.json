@@ -167,6 +167,7 @@
 		"inactive": "",
 		"label": "",
 		"label_short": "",
+		"output_type": "",
 		"role": "",
 		"status": ""
 	},
@@ -182,6 +183,10 @@
 	"MANDATORY": {
 		"not_required": "",
 		"required": ""
+	},
+	"OUTPUT": {
+		"confirm_delete": "",
+		"output_settings_list": ""
 	},
 	"PAGINATOR": {
 		"display": "",

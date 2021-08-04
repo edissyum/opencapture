@@ -105,7 +105,7 @@ const routes: Routes = [
         canActivate: [LoginRequiredService]
     },
     {
-        path: 'settings/verifier/outputs/edit/:id', component: UpdateOutputComponent,
+        path: 'settings/verifier/outputs/update/:id', component: UpdateOutputComponent,
         data: {title: marker('SETTINGS.update_output'), privileges: ['settings', 'update_output']},
         canActivate: [LoginRequiredService]
     },

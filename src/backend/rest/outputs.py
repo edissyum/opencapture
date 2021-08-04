@@ -16,70 +16,55 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 from flask import Blueprint, request, make_response, jsonify
-from ..import_controllers import auth, roles
+from ..import_controllers import auth, outputs
 
-bp = Blueprint('roles', __name__, url_prefix='/ws/')
+bp = Blueprint('outputs', __name__, url_prefix='/ws/')
 
 
-@bp.route('roles/list', methods=['GET'])
+@bp.route('outputs/list', methods=['GET'])
 @auth.token_required
-def get_roles():
+def get_outputs():
     args = {
         'select': ['*', 'count(*) OVER() as total'],
         'offset': request.args['offset'] if 'offset' in request.args else '',
         'limit': request.args['limit'] if 'limit' in request.args else ''
     }
-    _roles = roles.get_roles(args)
+    _roles = outputs.get_outputs(args)
     return make_response(jsonify(_roles[0])), _roles[1]
 
 
-@bp.route('roles/getById/<int:role_id>', methods=['GET'])
+@bp.route('outputs/getOutputsType', methods=['GET'])
 @auth.token_required
-def get_role_by_id(role_id):
-    _role = roles.get_role_by_id(role_id)
+def get_outputs_types():
+    _roles = outputs.get_outputs_types()
+    return make_response(jsonify(_roles[0])), _roles[1]
+
+
+@bp.route('outputs/getById/<int:output_id>', methods=['GET'])
+@auth.token_required
+def get_output_by_id(output_id):
+    _role = outputs.get_output_by_id(output_id)
     return make_response(jsonify(_role[0])), _role[1]
 
 
-@bp.route('roles/update/<int:role_id>', methods=['PUT'])
+@bp.route('outputs/update/<int:output_id>', methods=['PUT'])
 @auth.token_required
-def update_role(role_id):
+def update_output(output_id):
     data = request.json['args']
-    res = roles.update_role(role_id, data)
+    res = outputs.update_output(output_id, data)
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('roles/updatePrivilege/<int:role_id>', methods=['PUT'])
+@bp.route('outputs/delete/<int:output_id>', methods=['DELETE'])
 @auth.token_required
-def update_privilege(role_id):
-    data = request.json['privileges']
-    res = roles.update_role_privilege(role_id, data)
+def delete_output(output_id):
+    res = outputs.delete_output(output_id)
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('roles/delete/<int:role_id>', methods=['DELETE'])
+@bp.route('outputs/create', methods=['POST'])
 @auth.token_required
-def delete_role(role_id):
-    res = roles.delete_role(role_id)
-    return make_response(jsonify(res[0])), res[1]
-
-
-@bp.route('roles/disable/<int:role_id>', methods=['PUT'])
-@auth.token_required
-def disable_role(role_id):
-    res = roles.disable_role(role_id)
-    return make_response(jsonify(res[0])), res[1]
-
-
-@bp.route('roles/enable/<int:role_id>', methods=['PUT'])
-@auth.token_required
-def enable_role(role_id):
-    res = roles.enable_role(role_id)
-    return make_response(jsonify(res[0])), res[1]
-
-
-@bp.route('roles/create', methods=['POST'])
-@auth.token_required
-def create_role():
+def create_output():
     data = request.json['args']
-    res = roles.create_role(data)
+    res = outputs.create_output(data)
     return make_response(jsonify(res[0])), res[1]

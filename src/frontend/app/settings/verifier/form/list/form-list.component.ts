@@ -76,7 +76,7 @@ export class FormListComponent implements OnInit {
         this.loading = true
         this.http.get(API_URL + '/ws/forms/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.total = data.forms[0].total
+                if (data.forms[0]) this.total = data.forms[0].total
                 this.forms = data.forms;
             }),
             finalize(() => this.loading = false),

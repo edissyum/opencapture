@@ -139,7 +139,7 @@
 		"label_mandatory": "Le libellé du formulaire est obligatoire",
 		"modify": "Modifier le formulaire",
 		"other": "Autres",
-		"output_settings": "Paramètres de sortie",
+		"output_settings": "Paramètres des chaînes sortantes",
 		"refuse": "Refuser la facture",
 		"supplier": "Fournisseur",
 		"updated": "Formulaire mis à jour avec succès",
@@ -167,6 +167,7 @@
 		"inactive": "Inactif",
 		"label": "Libellé",
 		"label_short": "Libellé technique",
+		"output_type": "Type de chaîne sortante",
 		"role": "Rôle",
 		"status": "Status"
 	},
@@ -182,6 +183,10 @@
 	"MANDATORY": {
 		"not_required": "Champ obligatoire",
 		"required": "Champ non obligatoire"
+	},
+	"OUTPUT": {
+		"confirm_delete": "Êtes vous sûr de vouloir supprimer la chaîne sortante <b>{{ output }}</b> ?",
+		"output_settings_list": "Paramètres de la chaîne sortante"
 	},
 	"PAGINATOR": {
 		"display": "Affichage",
@@ -235,7 +240,7 @@
 	"SETTINGS": {
 		"abouts_us": "À propos",
 		"add_custom_fields": "Ajout de champ personnalisés",
-		"add_output": "Ajouter une nouvelle sortie",
+		"add_output": "Ajouter une chaîne sortante",
 		"administration": "Panneau d'administration",
 		"connector_EDM": "Connecteur GED",
 		"create_role": "Créer un rôle",
@@ -249,7 +254,7 @@
 		"list_forms": "Liste des formulaires",
 		"roles_list": "Liste des rôles",
 		"splitter": "Paramètres du Splitter",
-		"update_output": "Modifier une sortie",
+		"update_output": "Modifier une chaîne sortante",
 		"users_list": "Liste des utilisateurs",
 		"verifier": "Paramètres du Vérificateur",
 		"version_and_update": "Version et mise à jour"

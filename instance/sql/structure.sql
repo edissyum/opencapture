@@ -13,9 +13,9 @@ CREATE TABLE "users" (
 CREATE TABLE "form_models" (
     "id"      SERIAL UNIQUE PRIMARY KEY,
     "label"   VARCHAR(50),
-    "default_form" boolean DEFAULT false,
-    "enabled" boolean DEFAULT true,
-    "status" VARCHAR(5) DEFAULT 'OK'
+    "default_form" BOOLEAN DEFAULT false,
+    "enabled" BOOLEAN DEFAULT true,
+    "status"  VARCHAR(5) DEFAULT 'OK'
 );
 
 CREATE TABLE "form_models_field" (
@@ -23,6 +23,21 @@ CREATE TABLE "form_models_field" (
     "form_id"   INTEGER,
     "fields"    JSONB DEFAULT '{}',
 );
+
+CREATE TABLE "outputs" (
+    "id"                SERIAL UNIQUE PRIMARY KEY,
+    "output_type_id"    VARCHAR(20),
+    "output_label"      VARCHAR,
+    "status"            VARCHAR(3) DEFAULT 'OK',
+    "data"              JSONB DEFAULT '{}'
+)
+
+CREATE TABLE "outputs_types" (
+   "id"            SERIAL UNIQUE PRIMARY KEY,
+   "type_id"       VARCHAR(20),
+   "type_label"    VARCHAR(50),
+   "data"          JSONB DEFAULT '{}'
+)
 
 CREATE TABLE "custom_fields" (
      "id" SERIAL PRIMARY KEY,

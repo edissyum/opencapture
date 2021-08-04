@@ -70,7 +70,7 @@ export class RolesListComponent implements OnInit {
     loadRoles(): void {
         this.http.get(API_URL + '/ws/roles/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.total = data.roles[0].total
+                if (data.roles[0]) this.total = data.roles[0].total
                 this.roles = data.roles
             }),
             finalize(() => this.loading = false),

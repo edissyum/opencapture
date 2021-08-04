@@ -139,7 +139,7 @@ export class SettingsService {
                     {
                         "id"                : "update_form",
                         "label"             : this.translate.instant("SETTINGS.update_output"),
-                        "route"             : "/settings/verifier/outputs/edit/",
+                        "route"             : "/settings/verifier/outputs/update/",
                         "privilege"         : "update_output",
                         "icon"              : "fas fa-edit",
                         "showOnlyIfActive"  : true

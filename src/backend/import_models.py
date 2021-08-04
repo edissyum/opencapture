@@ -54,3 +54,8 @@ if 'custom_fields' not in custom_array:
     from .models import custom_fields
 else:
     custom_fields = getattr(__import__(custom_array['custom_fields']['path'], fromlist=[custom_array['custom_fields']['module']]), custom_array['custom_fields']['module'])
+
+if 'outputs' not in custom_array:
+    from .models import outputs
+else:
+    outputs = getattr(__import__(custom_array['outputs']['path'], fromlist=[custom_array['outputs']['module']]), custom_array['custom_fields']['module'])

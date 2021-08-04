@@ -19,14 +19,14 @@ import {marker} from "@biesbjerg/ngx-translate-extract-marker";
     styleUrls: ['./update-role.component.scss']
 })
 export class UpdateRoleComponent implements OnInit {
-    headers: HttpHeaders = this.authService.headers;
-    loading: boolean = true;
-    roleId: any;
-    role: any;
-    roles: any[] = [];
-    privileges: any;
+    headers     : HttpHeaders = this.authService.headers;
+    loading     : boolean   = true;
+    roleId      : any;
+    role        : any;
+    roles       : any[]     = [];
+    privileges  : any;
     rolePrivileges: any;
-    roleForm: any[] = [
+    roleForm    : any[]     = [
         {
             id: 'label',
             label: this.translate.instant('HEADER.label'),
