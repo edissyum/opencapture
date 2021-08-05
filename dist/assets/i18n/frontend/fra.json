@@ -7,12 +7,15 @@
 		"company_number": "Numéro de société",
 		"confirm_delete_customer": "Êtes vous sûr de vouloir supprimer le compte client <b>{{ customer }}</b> ?",
 		"confirm_delete_supplier": "Êtes vous sûr de vouloir supprimer le compte fournisseur <b>{{ supplier }}</b> ?",
+		"confirm_delete_supplier_positions": "Êtes vous sûr de vouloir supprimer les positions du compte fournisseur <b>{{ supplier }}</b> ",
 		"create_customer": "Ajouter un compte client",
 		"create_supplier": "Ajouter un compte fournisseur",
 		"customer_name": "Nom du compte client",
 		"customer_updated": "Compte client mis à jour avec succès",
 		"customers_list": "Liste des comptes clients",
 		"form": "Nom du formulaire",
+		"get_only_raw_footer": "Contrôle de cohérence du pied de page",
+		"positions_deleted": "Positions du fournisseurs supprimées",
 		"siren": "Numéro de SIREN",
 		"siret": "Numéro de SIRET",
 		"supplier": "Compte Fournisseur",
@@ -73,12 +76,18 @@
 		"textbox": "Texte",
 		"type": "Type"
 	},
+	"DISPLAY": {
+		"multi": "Multiple",
+		"simple": "Simple"
+	},
 	"ERROR": {
 		"404": "La page demandée n'existe pas",
 		"alphanum_extended_pattern": "La valeur n'est pas au format attendu : alphanumérique avec caractères spéciaux",
 		"alphanum_pattern": "La valeur n'est pas au format attendu : alphanumérique",
 		"connection_failed": "Erreur lors de la connexion au serveur",
 		"date_pattern": "La valeur n'est pas au format attendu : date",
+		"field_required": "Le champ est obligatoire",
+		"form_not_valid": "Formulaire non valide, merci de vérifier les champs",
 		"is_server_up": "Le serveur <b>{{server}}</b> est-il accessible ?",
 		"jwt_error": "Erreur lors de l'authentification par token",
 		"number_float_pattern": "La valeur n'est pas au format attendu : nombre flottant",
@@ -111,8 +120,10 @@
 	},
 	"FORMS": {
 		"available_fields": "Champs disponibles",
+		"build_form": "Construction du formulaire",
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer le formulaire <b>{{ form }}</b> ?",
 		"confirm_disable": "Êtes vous sûr de vouloir désactiver le formulaire <b>{{ form }}</b> ?",
+		"confirm_duplicate": "Êtes vous sûr de vouloir dupliquer le formulaire <b>{{ form }}</b> ?",
 		"confirm_enable": "Êtes vous sûr de vouloir réactiver le formulaire <b>{{ form }}</b> ?",
 		"create": "Créer le formulaire",
 		"created": "Formulaire créé avec succès",
@@ -121,12 +132,14 @@
 		"delete": "Supprimer le formulaire",
 		"delete_field": "Supprimer le champ",
 		"disable": "Désactiver le formulaire",
+		"duplicate": "Dupliquer le formulaire",
 		"enable": "Activer le formulaire",
 		"is_default": "Formulaire par défaut",
 		"label": "Libellé du formulaire",
 		"label_mandatory": "Le libellé du formulaire est obligatoire",
 		"modify": "Modifier le formulaire",
 		"other": "Autres",
+		"output_settings": "Paramètres des chaînes sortantes",
 		"refuse": "Refuser la facture",
 		"supplier": "Fournisseur",
 		"updated": "Formulaire mis à jour avec succès",
@@ -137,7 +150,9 @@
 		"cancel": "Annuler",
 		"confirm": "Confirmation",
 		"delete": "Supprimer",
+		"delete_supplier_positions": "Supprimer les positions du compte fournisseur",
 		"disable": "Désactiver",
+		"duplicate": "Dupliquer",
 		"enable": "Activer",
 		"home": "Accueil",
 		"language": "Langage",
@@ -152,6 +167,7 @@
 		"inactive": "Inactif",
 		"label": "Libellé",
 		"label_short": "Libellé technique",
+		"output_type": "Type de chaîne sortante",
 		"role": "Rôle",
 		"status": "Status"
 	},
@@ -160,7 +176,20 @@
 		"verifier": "Open-Capture Vérificateur"
 	},
 	"INVOICES": {
-		"position_and_data_updated": "Position et valeur du champ <b>{{ input }}</b> mise à jour"
+		"data_deleted": "Champ supprimé",
+		"position_and_data_updated": "Position et valeur du champ <b>{{ input }}</b> mise à jour",
+		"supplier_infos_updated": "Fournisseur paramétré pour cette facture"
+	},
+	"MANDATORY": {
+		"not_required": "Champ obligatoire",
+		"required": "Champ non obligatoire"
+	},
+	"OUTPUT": {
+		"auth": "Authentification",
+		"confirm_delete": "Êtes vous sûr de vouloir supprimer la chaîne sortante <b>{{ output }}</b> ?",
+		"no_auth_necessary": "Pas d'authentification nécessaire",
+		"output_settings_list": "Paramètres de la chaîne sortante",
+		"specific": "Spécifiques"
 	},
 	"PAGINATOR": {
 		"display": "Affichage",
@@ -180,6 +209,7 @@
 		"add_role": "Ajouter un rôle",
 		"add_user": "Ajouter un utilisateur",
 		"administration": "Privilèges d'administration",
+		"change_language": "Modifier la langue",
 		"create_supplier": "Créer un fournisseur",
 		"custom_fields": "Champs personnalisés",
 		"customers_list": "Liste des clients",
@@ -213,6 +243,7 @@
 	"SETTINGS": {
 		"abouts_us": "À propos",
 		"add_custom_fields": "Ajout de champ personnalisés",
+		"add_output": "Ajouter une chaîne sortante",
 		"administration": "Panneau d'administration",
 		"connector_EDM": "Connecteur GED",
 		"create_role": "Créer un rôle",
@@ -226,6 +257,7 @@
 		"list_forms": "Liste des formulaires",
 		"roles_list": "Liste des rôles",
 		"splitter": "Paramètres du Splitter",
+		"update_output": "Modifier une chaîne sortante",
 		"users_list": "Liste des utilisateurs",
 		"verifier": "Paramètres du Vérificateur",
 		"version_and_update": "Version et mise à jour"
@@ -280,19 +312,23 @@
 		"username": "Nom d'utilisateur"
 	},
 	"VERIFIER": {
+		"calculated_footer": "Contrôle de cohérence du pied de page activé",
 		"collapse_all": "Replier tous les clients",
 		"colors": "Couleurs",
 		"confirm_delete_all_invoices": "Êtes-vous sûr de vouloir supprimer toutes les factures de la page ?",
 		"confirm_delete_invoice": "Êtes-vous sûr de vouloir supprimer cette facture ?",
 		"delete_all": "Supprimer toutes les factures de la page",
 		"delete_invoice": "Supprimer la facture",
+		"display": "Affichage",
 		"expand_all": "Développer tous les clients",
 		"field_settings": "Paramètres du champ",
 		"format": "Format des données",
 		"list": "Factures",
 		"nb_pages": "Nombre de page",
+		"only_raw_footer": "Contrôle de cohérence du pied de page désactivé",
 		"original_file": "Fichier d'origine",
 		"register_date": "Enregistré le",
+		"required": "Obligatoire ?",
 		"reset_invoice_list": "Réinitialiser la liste des factures",
 		"search": "Rechercher une facture",
 		"select_all": "Tout sélectionner",

@@ -23,7 +23,7 @@ from kuyruk_manager import Manager
 from .functions import recursive_delete
 from .functions import get_custom_id, check_python_customized_files
 from .import_classes import _Database, _PyTesseract, _Locale, _Xml, _Files, _Log, _Config, invoice_classification, \
-    _WebServices, _SeparatorQR
+    _maarchWebServices, _SeparatorQR
 
 custom_id = get_custom_id()
 custom_array = {}
@@ -59,7 +59,7 @@ def create_classes(config_name):
     database = _Database(log, db_name, db_user, db_pwd, db_host, db_port)
     xml = _Xml(config, database)
     if config.cfg['GED']['enabled'] != 'False':
-        webservices = _WebServices(
+        webservices = _maarchWebServices(
             config.cfg['GED']['host'],
             config.cfg['GED']['user'],
             config.cfg['GED']['password'],

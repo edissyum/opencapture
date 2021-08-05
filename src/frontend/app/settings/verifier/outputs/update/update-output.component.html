@@ -84,13 +84,13 @@
                 <hr class="border-green-400">
             </div>
         </div>
-        <div class="flex justify-center items-center">
+        <div *ngIf="!loading" class="flex justify-center items-center">
             <form (ngSubmit)="onSubmit()" class="grid grid-cols-2 gap-12 w-full m-10 text-center">
                 <ng-container *ngFor="let field of outputForm">
                     <mat-form-field *ngIf="field.type == 'text'">
                         <mat-label>{{ field.label | translate }}</mat-label>
                         <input matInput [value]="field.control.value" [formControl]="field.control" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field.required">
-                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
+                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputForm) }}</mat-error>
                     </mat-form-field>
                     <mat-form-field *ngIf="field.type == 'select'">
                         <mat-label>{{ field.label | translate }}</mat-label>
@@ -99,7 +99,7 @@
                                 {{ option.type_label }}
                             </mat-option>
                         </mat-select>
-                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
+                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputForm) }}</mat-error>
                     </mat-form-field>
                 </ng-container>
             </form>
@@ -107,23 +107,60 @@
         <mat-divider class="w-1/2 m-auto border-green-400"></mat-divider>
         <h4 class="text-center mt-10 mb-10">{{ 'OUTPUT.output_settings_list' | translate }}</h4>
         <div class="flex justify-center items-center ml-10 mr-5">
-            <form class="grid grid-cols-4 gap-4 w-full m-10 text-center">
-                <ng-container *ngFor="let field of outputsTypesForm[selectedOutputType]">
-                    <mat-form-field *ngIf="field[0].type == 'text'">
-                        <mat-label>{{ field[0].label | translate }}</mat-label>
-                        <input matInput [value]="field[0].control.value" [formControl]="field[0].control" [type]="field[0].type" placeholder="{{ field[0].label | translate }}" [required]="field[0].required">
-                        <mat-error *ngIf="field[0].control.invalid">{{ getErrorMessage(field[0].id) }}</mat-error>
-                    </mat-form-field>
-                    <mat-form-field *ngIf="field[0].type == 'select'">
-                        <mat-label>{{ field[0].label | translate }}</mat-label>
-                        <mat-select [id]="field[0].id" [(ngModel)]="field[0].control.value">
-                            <mat-option *ngFor="let option of outputsTypes" [value]="option.type_id">
-                                {{ option.type_label }}
-                            </mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="field[0].control.invalid">{{ getErrorMessage(field[0].id) }}</mat-error>
-                    </mat-form-field>
-                </ng-container>
+            <form class="w-full text-center" *ngIf="selectedOutputType && outputsTypesForm[selectedOutputType]">
+                <mat-tab-group class="output-tab">
+                    <mat-tab [label]="'OUTPUT.auth' | translate">
+                        <span *ngIf="outputsTypesForm[selectedOutputType]['auth'].length == 0" class="relative top-10 text-xl">
+                            {{ 'OUTPUT.no_auth_necessary' | translate }}
+                        </span>
+                        <div class="grid grid-cols-4 gap-4 m-5">
+                            <ng-container *ngFor="let field of outputsTypesForm[selectedOutputType]['auth']">
+                                <mat-form-field *ngIf="field.type == 'text' || field.type == 'number'">
+                                    <mat-label>{{ field.label | translate }}</mat-label>
+                                    <input matInput [value]="field.control.value"
+                                           [formControl]="field.control" [type]="field.type"
+                                           [placeholder]="field.placeholder" [required]="field.required">
+                                    <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputsTypesForm[selectedOutputType]['auth']) }}</mat-error>
+                                </mat-form-field>
+                                <mat-form-field *ngIf="field.type == 'select'">
+                                    <mat-label>{{ field.label | translate }}</mat-label>
+                                    <mat-select [id]="field.id" [(ngModel)]="field.control.value">
+                                        <mat-option *ngFor="let option of outputsTypes" [value]="option.type_id">
+                                            {{ option.type_label }}
+                                        </mat-option>
+                                    </mat-select>
+                                    <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputsTypesForm[selectedOutputType]['auth']) }}</mat-error>
+                                </mat-form-field>
+                            </ng-container>
+                        </div>
+                        <button *ngIf="outputsTypesForm[selectedOutputType]['auth'].length != 0"
+                                mat-button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300">
+                            <span class="block" (click)="testConnection()">{{ "OUTPUT.test_connection" | translate }}</span>
+                        </button>
+                    </mat-tab>
+                    <mat-tab [label]="'OUTPUT.specific' | translate">
+                        <div class="grid grid-cols-4 gap-4 m-5">
+                            <ng-container *ngFor="let field of outputsTypesForm[selectedOutputType]['parameters']">
+                                <mat-form-field *ngIf="field.type == 'text' || field.type == 'number'">
+                                    <mat-label>{{ field.label | translate }}</mat-label>
+                                    <input matInput [value]="field.control.value"
+                                           [formControl]="field.control" [type]="field.type"
+                                           [placeholder]="field.placeholder" [required]="field.required">
+                                    <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputsTypesForm[selectedOutputType]['parameters']) }}</mat-error>
+                                </mat-form-field>
+                                <mat-form-field *ngIf="field.type == 'select'">
+                                    <mat-label>{{ field.label | translate }}</mat-label>
+                                    <mat-select [id]="field.id" [(ngModel)]="field.control.value">
+                                        <mat-option *ngFor="let option of outputsTypes" [value]="option.type_id">
+                                            {{ option.type_label }}
+                                        </mat-option>
+                                    </mat-select>
+                                    <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputsTypesForm[selectedOutputType]['parameters'] ) }}</mat-error>
+                                </mat-form-field>
+                            </ng-container>
+                        </div>
+                    </mat-tab>
+                </mat-tab-group>
             </form>
         </div>
     </mat-sidenav-content>

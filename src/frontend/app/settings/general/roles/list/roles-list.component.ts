@@ -55,7 +55,7 @@ export class RolesListComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.serviceSettings.init()
+        this.serviceSettings.init();
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
         let lastUrl = this.routerExtService.getPreviousUrl()
         if (lastUrl.includes('roles/') || lastUrl == '/') {

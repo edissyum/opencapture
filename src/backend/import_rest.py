@@ -83,3 +83,9 @@ if 'outputs' not in custom_array:
 else:
     outputs = getattr(__import__(custom_array['outputs']['path'], fromlist=[custom_array['outputs']['module']]),
                        custom_array['outputs']['module'])
+
+if 'maarch' not in custom_array:
+    from .rest import maarch
+else:
+    maarch = getattr(__import__(custom_array['maarch']['path'], fromlist=[custom_array['maarch']['module']]),
+                       custom_array['maarch']['module'])

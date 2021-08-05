@@ -29,12 +29,12 @@ else:
     _Xml = getattr(__import__(custom_array['Xml']['path'] + '.' + custom_array['Xml']['module'],
                               fromlist=[custom_array['Xml']['module']]), custom_array['Xml']['module'])
 
-if 'webservices' not in custom_array:
-    from .classes.WebServices import WebServices as _WebServices
+if 'maarchWebServices' not in custom_array:
+    from .classes.maarchWebServices import maarchWebServices as _maarchWebServices
 else:
-    _WebServices = getattr(__import__(custom_array['WebServices']['path'] + '.' + custom_array['WebServices']['module'],
-                                      fromlist=[custom_array['WebServices']['module']]),
-                           custom_array['WebServices']['module'])
+    _maarchWebServices = getattr(__import__(custom_array['maarchWebServices']['path'] + '.' + custom_array['maarchWebServices']['module'],
+                                      fromlist=[custom_array['maarchWebServices']['module']]),
+                           custom_array['maarchWebServices']['module'])
 
 if 'locale' not in custom_array:
     from .classes.Locale import Locale as _Locale

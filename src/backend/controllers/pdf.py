@@ -1,14 +1,11 @@
 from flask_babel import gettext
-from flask import current_app, Blueprint, flash, redirect, render_template, request, url_for, session, Response
+from flask import current_app, Blueprint, flash, redirect, request, url_for, session, Response
 
 import os
 import pandas as pd
-from datetime import datetime
-from datetime import timedelta
 
 from .db import get_db
-from ..import_classes import _Config, _Log, _Files, _Xml, _WebServices, _Locale, _PyTesseract, _Database, _Spreadsheet, \
-    _Splitter, _SeparatorQR
+from ..import_classes import _Config, _Log, _Files, _Xml, _maarchWebServices, _Locale, _PyTesseract, _Database, _Spreadsheet
 
 bp = Blueprint('pdf', __name__)
 
@@ -35,16 +32,16 @@ def init():
     ocr = _PyTesseract(locale.localeOCR, log, config)
     ws = ''
 
-    if config.cfg['GED']['enabled'] == 'True':
-        ws = _WebServices(
-            config.cfg['GED']['host'],
-            config.cfg['GED']['user'],
-            config.cfg['GED']['password'],
-            log,
-            config
-        )
+    # if config.cfg['GED']['enabled'] == 'True':
+    #     ws = _maarchWebServices(
+    #         config.cfg['GED']['host'],
+    #         config.cfg['GED']['user'],
+    #         config.cfg['GED']['password'],
+    #         log,
+    #         config
+    #     )
 
-    return db, config, locale, ws, xml, files, ocr
+    return db, config, locale, ws, xml, files, ocr, log
 
 
 @bp.route('/validate', methods=['POST'])

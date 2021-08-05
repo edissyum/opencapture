@@ -185,8 +185,11 @@
 		"required": "Champ non obligatoire"
 	},
 	"OUTPUT": {
+		"auth": "Authentification",
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer la chaîne sortante <b>{{ output }}</b> ?",
-		"output_settings_list": "Paramètres de la chaîne sortante"
+		"no_auth_necessary": "Pas d'authentification nécessaire",
+		"output_settings_list": "Paramètres de la chaîne sortante",
+		"specific": "Spécifiques"
 	},
 	"PAGINATOR": {
 		"display": "Affichage",

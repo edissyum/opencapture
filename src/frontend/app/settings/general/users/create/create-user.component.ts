@@ -81,7 +81,7 @@ export class CreateUserComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.serviceSettings.init()
+        this.serviceSettings.init();
         this.http.get(API_URL + '/ws/roles/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 data.roles.forEach((element: any) => {

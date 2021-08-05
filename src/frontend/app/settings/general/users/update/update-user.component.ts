@@ -87,7 +87,7 @@ export class UpdateUserComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.serviceSettings.init()
+        this.serviceSettings.init();
         this.userId = this.route.snapshot.params['id'];
 
         this.http.get(API_URL + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(

@@ -53,11 +53,11 @@ export class CreateRoleComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.serviceSettings.init()
+        this.serviceSettings.init();
 
         this.http.get(API_URL + '/ws/privileges/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.privileges = data
+                this.privileges = data;
             }),
             finalize(() => this.loading = false),
             catchError((err: any) => {

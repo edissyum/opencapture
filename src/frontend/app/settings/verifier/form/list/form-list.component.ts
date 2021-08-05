@@ -53,7 +53,7 @@ export class FormListComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.serviceSettings.init()
+        this.serviceSettings.init();
         let lastUrl = this.routerExtService.getPreviousUrl()
         if (lastUrl.includes('settings/verifier/forms') || lastUrl == '/') {
             if (this.localeStorageService.get('formsPageIndex'))

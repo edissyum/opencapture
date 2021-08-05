@@ -7,12 +7,15 @@
 		"company_number": "",
 		"confirm_delete_customer": "",
 		"confirm_delete_supplier": "",
+		"confirm_delete_supplier_positions": "",
 		"create_customer": "",
 		"create_supplier": "",
 		"customer_name": "",
 		"customer_updated": "",
 		"customers_list": "",
 		"form": "",
+		"get_only_raw_footer": "",
+		"positions_deleted": "",
 		"siren": "",
 		"siret": "",
 		"supplier": "",
@@ -73,12 +76,18 @@
 		"textbox": "",
 		"type": ""
 	},
+	"DISPLAY": {
+		"multi": "",
+		"simple": ""
+	},
 	"ERROR": {
 		"404": "The page you are looking for does not exist",
 		"alphanum_extended_pattern": "",
 		"alphanum_pattern": "",
 		"connection_failed": "Error connecting to server",
 		"date_pattern": "",
+		"field_required": "",
+		"form_not_valid": "",
 		"is_server_up": "Is server up ?",
 		"jwt_error": "Authentification by token error",
 		"number_float_pattern": "",
@@ -111,8 +120,10 @@
 	},
 	"FORMS": {
 		"available_fields": "",
+		"build_form": "",
 		"confirm_delete": "",
 		"confirm_disable": "",
+		"confirm_duplicate": "",
 		"confirm_enable": "",
 		"create": "",
 		"created": "",
@@ -121,12 +132,14 @@
 		"delete": "",
 		"delete_field": "",
 		"disable": "",
+		"duplicate": "",
 		"enable": "",
 		"is_default": "",
 		"label": "",
 		"label_mandatory": "",
 		"modify": "",
 		"other": "",
+		"output_settings": "",
 		"refuse": "",
 		"supplier": "",
 		"updated": "",
@@ -137,7 +150,9 @@
 		"cancel": "Cancel",
 		"confirm": "Confirm",
 		"delete": "Delete",
+		"delete_supplier_positions": "",
 		"disable": "Disable",
+		"duplicate": "",
 		"enable": "Enable",
 		"home": "Home",
 		"language": "Language",
@@ -152,6 +167,7 @@
 		"inactive": "",
 		"label": "",
 		"label_short": "",
+		"output_type": "",
 		"role": "",
 		"status": ""
 	},
@@ -160,7 +176,20 @@
 		"verifier": "Open-Capture verifier"
 	},
 	"INVOICES": {
-		"position_and_data_updated": ""
+		"data_deleted": "",
+		"position_and_data_updated": "",
+		"supplier_infos_updated": ""
+	},
+	"MANDATORY": {
+		"not_required": "",
+		"required": ""
+	},
+	"OUTPUT": {
+		"auth": "",
+		"confirm_delete": "",
+		"no_auth_necessary": "",
+		"output_settings_list": "",
+		"specific": ""
 	},
 	"PAGINATOR": {
 		"display": "",
@@ -180,6 +209,7 @@
 		"add_role": "",
 		"add_user": "",
 		"administration": "",
+		"change_language": "",
 		"create_supplier": "",
 		"custom_fields": "",
 		"customers_list": "",
@@ -213,6 +243,7 @@
 	"SETTINGS": {
 		"abouts_us": "About us",
 		"add_custom_fields": "",
+		"add_output": "",
 		"administration": "Administration",
 		"connector_EDM": "EDM connector",
 		"create_role": "",
@@ -226,6 +257,7 @@
 		"list_forms": "",
 		"roles_list": "Roles list",
 		"splitter": "Splitter",
+		"update_output": "",
 		"users_list": "Users list",
 		"verifier": "Verifier",
 		"version_and_update": "Versions and update"
@@ -280,19 +312,23 @@
 		"username": "Username"
 	},
 	"VERIFIER": {
+		"calculated_footer": "",
 		"collapse_all": "",
 		"colors": "",
 		"confirm_delete_all_invoices": "",
 		"confirm_delete_invoice": "",
 		"delete_all": "",
 		"delete_invoice": "",
+		"display": "",
 		"expand_all": "",
 		"field_settings": "",
 		"format": "",
 		"list": "Invoices",
 		"nb_pages": "",
+		"only_raw_footer": "",
 		"original_file": "",
 		"register_date": "",
+		"required": "",
 		"reset_invoice_list": "",
 		"search": "",
 		"select_all": "",

@@ -415,7 +415,7 @@
                 off("move", "stop");
 
                 // Update the selection origin
-                if (newArea){
+                if (newArea) {
                     area.x = newArea.x;
                     area.y = newArea.y;
                     area.z = newArea.z;

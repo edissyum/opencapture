@@ -185,8 +185,11 @@
 		"required": ""
 	},
 	"OUTPUT": {
+		"auth": "",
 		"confirm_delete": "",
-		"output_settings_list": ""
+		"no_auth_necessary": "",
+		"output_settings_list": "",
+		"specific": ""
 	},
 	"PAGINATOR": {
 		"display": "",

@@ -1,0 +1,7 @@
+::ng-deep .output-tab {
+    & .mat-tab-header {
+        & .mat-tab-label-container > .mat-tab-list > .mat-tab-labels > .mat-tab-label {
+            @apply w-1/2;
+        }
+    }
+}

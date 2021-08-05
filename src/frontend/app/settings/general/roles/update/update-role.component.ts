@@ -77,7 +77,7 @@ export class UpdateRoleComponent implements OnInit {
         marker('PRIVILEGES.create_supplier'),
         marker('PRIVILEGES.update_supplier'),
         marker('PRIVILEGES.change_language')
-    ]
+    ];
     // End translation
     constructor(
         private http: HttpClient,
@@ -94,7 +94,7 @@ export class UpdateRoleComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.serviceSettings.init()
+        this.serviceSettings.init();
         this.roleId = this.route.snapshot.params['id'];
 
         this.http.get(API_URL + '/ws/roles/getById/' + this.roleId, {headers: this.authService.headers}).pipe(
@@ -131,7 +131,7 @@ export class UpdateRoleComponent implements OnInit {
 
         this.http.get(API_URL + '/ws/privileges/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.privileges = data
+                this.privileges = data;
             }),
             finalize(() => this.loading = false),
             catchError((err: any) => {
@@ -164,7 +164,7 @@ export class UpdateRoleComponent implements OnInit {
             this.privileges['privileges'].forEach((element: any) => {
                 this.rolePrivileges.forEach((element2: any) => {
                     if (element['label'] == element2) {
-                        role_privileges.push(element['id'])
+                        role_privileges.push(element['id']);
                     }
                 })
             })
@@ -181,11 +181,11 @@ export class UpdateRoleComponent implements OnInit {
             this.http.put(API_URL + '/ws/roles/updatePrivilege/' + this.roleId, {'privileges': role_privileges}, {headers: this.authService.headers},
             ).pipe(
                 tap(() => {
-                    this.notify.success(this.translate.instant('ROLE.updated'))
-                    this.router.navigate(['/settings/general/roles/'])
+                    this.notify.success(this.translate.instant('ROLE.updated'));
+                    this.router.navigate(['/settings/general/roles/']);
                 }),
                 catchError((err: any) => {
-                    console.debug(err)
+                    console.debug(err);
                     this.notify.handleErrors(err, '/settings/general/roles/');
                     return of(false);
                 })
@@ -202,17 +202,17 @@ export class UpdateRoleComponent implements OnInit {
                 }
             }
         })
-        return error
+        return error;
     }
 
     hasPrivilege(privilege_id: number) {
-        let found = false
+        let found = false;
         this.rolePrivileges.forEach((element: any) => {
             if (privilege_id == element) {
-                found = true
+                found = true;
             }
         })
-        return found
+        return found;
     }
 
     getChildsByParent(parent: any) {
@@ -222,21 +222,21 @@ export class UpdateRoleComponent implements OnInit {
                 data.push(element['label'])
             }
         })
-        return data
+        return data;
     }
 
     changePrivilege(event: any) {
-        let privilege = event.source.name
-        let checked = event.checked
+        let privilege = event.source.name;
+        let checked = event.checked;
         if (!checked) {
             this.rolePrivileges.forEach((element: any) => {
                 if (privilege == element) {
-                    let index = this.rolePrivileges.indexOf(privilege, 0)
-                    this.rolePrivileges.splice(index, 1)
+                    let index = this.rolePrivileges.indexOf(privilege, 0);
+                    this.rolePrivileges.splice(index, 1);
                 }
             })
         }else{
-            this.rolePrivileges.push(privilege)
+            this.rolePrivileges.push(privilege);
         }
     }
 }

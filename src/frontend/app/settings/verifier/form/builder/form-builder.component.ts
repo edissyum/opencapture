@@ -550,7 +550,7 @@ export class FormBuilderComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.serviceSettings.init()
+        this.serviceSettings.init();
         this.formId = this.route.snapshot.params['id'];
         if (this.formId) {
             this.creationMode = false

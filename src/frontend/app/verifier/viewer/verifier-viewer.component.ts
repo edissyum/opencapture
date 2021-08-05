@@ -441,7 +441,7 @@ export class VerifierViewerComponent implements OnInit {
         let _field : any = {};
         for (let category in this.form) {
             this.form[category].forEach((field: any) => {
-                if (field.id.trim() == field_id.trim()){
+                if (field.id.trim() == field_id.trim()) {
                     _field = field;
                 }
             });
@@ -535,7 +535,7 @@ export class VerifierViewerComponent implements OnInit {
                             this.updateFormValue(column, supplier_data[column]);
                         }
 
-                        if (!launchOnInit){
+                        if (!launchOnInit) {
                             this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoiceId + '/update',
                                 {'args': {'supplier_id': supplier_id}},
                                 {headers: this.authService.headers}).pipe(

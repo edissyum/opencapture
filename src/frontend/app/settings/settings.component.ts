@@ -24,7 +24,7 @@ export class SettingsComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        this.serviceSettings.init()
+        this.serviceSettings.init();
         this.selectedSetting = this.serviceSettings.getSelectedSetting();
         this.selectedParentSetting = this.serviceSettings.getSelectedParentSetting();
         this.settings = this.serviceSettings.getSettings();

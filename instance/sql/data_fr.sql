@@ -12,8 +12,8 @@ INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (3, 'user'
 ALTER SEQUENCE "roles_id_seq" RESTART WITH 3;
 
 -- CREATE OUTPUTS
-INSERT INTO "outputs_types" ("id", "type_id", "type_label", "data")VALUES (1, 'export_xml', 'Export XML', '{"options": [{"id": "folder_out", "type": "text", "required": "true", "label": "Dossier de sortie"}]}');
-INSERT INTO "outputs_types" ("id", "type_id", "type_label", "data")VALUES (2, 'export_maarch', 'Export vers Maarch', '{"options": [{"id": "host", "type": "text", "required": "true", "label": "URL de l''hôte"}, {"id": "login", "type": "text", "required": "true", "label": "Pseudo de l''utilisateur WS"}, {"id": "password", "type": "text", "required": "true", "label": "Mot de passe de l''utilisateur WS"}]}');
+INSERT INTO "outputs_types" ("id", "type_id", "type_label", "data") VALUES (1, 'export_xml', 'Export XML', '{"options": [{"id": "folder_out", "type": "text", "required": "true", "label": "Dossier de sortie"}]}');
+INSERT INTO "outputs_types" ("id", "type_id", "type_label", "data") VALUES (2, 'export_maarch', 'Export vers Maarch', '{"options": [{"id": "host", "type": "text", "required": "true", "label": "URL de l''hôte"}, {"id": "login", "type": "text", "required": "true", "label": "Pseudo de l''utilisateur WS"}, {"id": "password", "type": "text", "required": "true", "label": "Mot de passe de l''utilisateur WS"}]}');
 ALTER SEQUENCE "outputs_types_id_seq" RESTART WITH 3;
 
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data") VALUES (1, 'export_xml', 'Export XML par défaut', '{"folder_out" : "/var/share/sortant"}');
