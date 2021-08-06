@@ -5,7 +5,7 @@ import os
 import pandas as pd
 
 from .db import get_db
-from ..import_classes import _Config, _Log, _Files, _Xml, _maarchWebServices, _Locale, _PyTesseract, _Database, _Spreadsheet
+from ..import_classes import _Config, _Log, _Files, _Xml, _Locale, _PyTesseract, _Database, _Spreadsheet
 
 bp = Blueprint('pdf', __name__)
 
@@ -31,15 +31,6 @@ def init():
     locale = _Locale(config)
     ocr = _PyTesseract(locale.localeOCR, log, config)
     ws = ''
-
-    # if config.cfg['GED']['enabled'] == 'True':
-    #     ws = _maarchWebServices(
-    #         config.cfg['GED']['host'],
-    #         config.cfg['GED']['user'],
-    #         config.cfg['GED']['password'],
-    #         log,
-    #         config
-    #     )
 
     return db, config, locale, ws, xml, files, ocr, log
 

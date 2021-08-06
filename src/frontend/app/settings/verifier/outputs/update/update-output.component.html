@@ -141,12 +141,25 @@
                     <mat-tab [label]="'OUTPUT.specific' | translate">
                         <div class="grid grid-cols-4 gap-4 m-5">
                             <ng-container *ngFor="let field of outputsTypesForm[selectedOutputType]['parameters']">
-                                <mat-form-field *ngIf="field.type == 'text' || field.type == 'number'">
+                                <mat-form-field *ngIf="(field.type == 'text' || field.type == 'number') && !field.webservice">
                                     <mat-label>{{ field.label | translate }}</mat-label>
                                     <input matInput [value]="field.control.value"
                                            [formControl]="field.control" [type]="field.type"
                                            [placeholder]="field.placeholder" [required]="field.required">
                                     <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputsTypesForm[selectedOutputType]['parameters']) }}</mat-error>
+                                </mat-form-field>
+                                <mat-form-field (click)="retrieveDataFromWS(field.id)" *ngIf="(field.type == 'text' || field.type == 'number') && field.webservice">
+                                    <mat-label>{{ field.label | translate }}</mat-label>
+                                    <input matInput [formControl]="field.control" [type]="field.type"
+                                           [readonly]="field.webservice && !this.connection"
+                                           [placeholder]="field.placeholder" [required]="field.required" [matAutocomplete]="autocomplete">
+                                    <mat-error *ngIf="field.webservice && !this.connection">{{ 'OUTPUT.check_connection_before' | translate }}</mat-error>
+                                    <mat-autocomplete #autocomplete="matAutocomplete" [displayWith]="displayFn">
+                                        <mat-option *ngFor="let option of field.filteredOptions | async" [value]="option">
+                                            <span [innerHTML]="option.value | highlight: toHighlight"></span>
+                                            <span style="font-size: 12px;" class="text-green-400 ml-3">{{option.extra}}</span>
+                                        </mat-option>
+                                    </mat-autocomplete>
                                 </mat-form-field>
                                 <mat-form-field *ngIf="field.type == 'select'">
                                     <mat-label>{{ field.label | translate }}</mat-label>

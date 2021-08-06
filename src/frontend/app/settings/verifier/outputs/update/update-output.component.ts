@@ -9,9 +9,23 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {FormBuilder, FormControl} from "@angular/forms";
 import {AuthService} from "../../../../../services/auth.service";
 import {API_URL} from "../../../../env";
-import {catchError, finalize, tap} from "rxjs/operators";
+import {catchError, finalize, map, startWith, tap} from "rxjs/operators";
+import { PipeTransform, Pipe } from '@angular/core';
 import {of} from "rxjs";
 
+
+@Pipe({ name: 'highlight' })
+export class HighlightPipe implements PipeTransform {
+    transform(text: string, search:any): string {
+        const pattern = search
+            .replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&")
+            .split(' ')
+            .filter((t:any) => t.length > 0)
+            .join('|');
+        const regex = new RegExp(pattern, 'gi');
+        return search ? text.replace(regex, match => `<b>${match}</b>`) : text;
+    }
+}
 @Component({
     selector: 'app-update',
     templateUrl: './update-output.component.html',
@@ -20,13 +34,15 @@ import {of} from "rxjs";
 export class UpdateOutputComponent implements OnInit {
     headers             : HttpHeaders   = this.authService.headers;
     loading             : boolean       = true;
+    connection          : boolean       = false;
     outputId            : any;
     output              : any;
-    outputsTypes        : any[]          = [];
-    outputsTypesForm    : any[]          = [];
+    outputsTypes        : any[]         = [];
+    outputsTypesForm    : any[]         = [];
     selectedOutputType  : any;
     originalOutputType  : any;
-    outputForm          : any[]          = [
+    toHighlight         : string        = '';
+    outputForm          : any[]         = [
         {
             id: 'output_type_id',
             label: this.translate.instant('HEADER.output_type'),
@@ -43,10 +59,21 @@ export class UpdateOutputComponent implements OnInit {
             required: true,
         }
     ];
-
-    testConnectionMapping : any          = {
-        'export_maarch' : "this.testMaarchConnection()"
+    testConnectionMapping : any         = {
+        'export_maarch' : "testMaarchConnection()"
     }
+
+    /**
+     * Pour ajouter une nouvelle chaine sortante (e.g : Alfresco)
+     * Rajouter une nouvelle ligne dans le tableau testConnectionMapping() contenant l'id de la nouvelle chaine et le nom de la fonction permettant de verifier la connection
+     * Dans le JSON présent dans la table output_types, en se basant sur celui existant (export_maarch), créer vos champs par défaut
+     * Attention à bien garder les clé "auth" et "parameters" présentes
+     * Si un champs "parameters" à besoin de récupérer des données depuis un WS de la solution cible (e.g récupération des utilisateurs Maarch)
+     * Rajouter une ligne dans le JSON 'webservice' avec un nom de fonction (sans mettre les parenthèses)
+     * Créer cette fonction et faites le process permettant de récupérer les données
+     * Les données doivent être formatés comme suit : {'id': XX, 'value': XX} et être mise dans la clé "values" du champ
+     * Regardez la fonction getUsersMaarch() pour voir le fonctionnement
+    **/
 
     constructor(
         private http: HttpClient,
@@ -67,13 +94,16 @@ export class UpdateOutputComponent implements OnInit {
 
         this.http.get(API_URL + '/ws/outputs/getById/' + this.outputId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
+                /**
+                 * Set the output type and output label
+                 **/
                 this.output = data;
                 for (let field in data) {
                     if (data.hasOwnProperty(field)) {
                         this.outputForm.forEach(element => {
                             if (element.id == field) {
                                 if (element.id === 'output_type_id') this.selectedOutputType = this.originalOutputType = data[field];
-                                element.control.setValue(data[field]);
+                                else element.control.setValue(data[field]);
                             }
                         });
                     }
@@ -81,6 +111,9 @@ export class UpdateOutputComponent implements OnInit {
                 this.http.get(API_URL + '/ws/outputs/getOutputsType', {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
                         this.outputsTypes = data.outputs_types;
+                        /**
+                         * Create the form with auth and parameters data
+                         **/
                         for (let _output of this.outputsTypes) {
                             this.outputsTypesForm[_output.type_id] = {
                                 'auth' : [],
@@ -96,23 +129,33 @@ export class UpdateOutputComponent implements OnInit {
                                             placeholder: option.placeholder,
                                             control: new FormControl(),
                                             required: option.required,
+                                            webservice: option.webservice,
                                         });
                                     }
                                 }
                             }
                         }
-
+                        /**
+                         * Fill the form (created with data in output_types) table with the value stored (in outputs table)
+                         **/
                         for (let category in this.outputsTypesForm[this.originalOutputType]) {
                             this.outputsTypesForm[this.originalOutputType][category].forEach((element: any) => {
                                 this.output.data.options[category].forEach((output_element: any) => {
                                     if (element.id == output_element.id) {
                                         if (output_element.value) {
-                                            element.control.setValue(output_element.value);
+                                            if (output_element.webservice) {
+                                                let value = JSON.parse(output_element.value)
+                                                element.values = [value];
+                                                element.control.setValue(value);
+                                            }else{
+                                                element.control.setValue(output_element.value);
+                                            }
                                         }
                                     }
                                 });
                             });
-                        };
+                            this.testConnection();
+                        }
                     }),
                     finalize(() => {this.loading = false}),
                     catchError((err: any) => {
@@ -130,6 +173,10 @@ export class UpdateOutputComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
+    }
+
+    displayFn(option: any) {
+        return option ? option.value : undefined;
     }
 
     getErrorMessage(field: any, form: any) {
@@ -151,10 +198,9 @@ export class UpdateOutputComponent implements OnInit {
     isValidForm(form: any) {
         let state = true;
         form.forEach((element: any) => {
-            if (element.control.status !== 'DISABLED' && element.control.status !== 'VALID') {
+            if ((element.control.status !== 'DISABLED' && element.control.status !== 'VALID') || element.control.value == null) {
                 state = false;
             }
-            element.control.markAsTouched();
         });
         return state;
     }
@@ -178,19 +224,46 @@ export class UpdateOutputComponent implements OnInit {
         return value;
     }
 
+    retrieveDataFromWS(field_id: any) {
+        for (let cpt in this.outputsTypesForm[this.selectedOutputType]['parameters']) {
+            let element = this.outputsTypesForm[this.selectedOutputType]['parameters'][cpt];
+            if (element.id == field_id) {
+                if (!element.values || element.values.length == 1) {
+                    eval("this." + element.webservice + '(' + cpt + ')');
+                }
+            }
+        }
+    }
+
+    private _filter(value: any, array: any) {
+        if (typeof value == 'string') {
+            this.toHighlight = value;
+            const filterValue = value.toLowerCase();
+            return array.filter((option: any) => option.value.toLowerCase().indexOf(filterValue) !== -1);
+        }else {
+            return array;
+        }
+    }
+
+    /**** Maarch Webservices call ****/
     testMaarchConnection() {
         let args = {
             'host' : this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'host'),
             'login' : this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'login'),
             'password' : this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'password'),
         }
-
         this.http.post(API_URL + '/ws/maarch/testConnection', {'args': args}, {headers: this.authService.headers},
         ).pipe(
             tap((data: any) => {
                 let status = data.status;
-                if (status == true) this.notify.success('OUTPUT.maarch_connection_ok');
-                else this.notify.error('OUTPUT.maarch_connection_ko' + ' : ' + status[1]);
+                if (status == true) {
+                    this.notify.success(this.translate.instant('OUTPUT.maarch_connection_ok'));
+                    this.connection = true;
+                }
+                else{
+                    this.notify.error(this.translate.instant('OUTPUT.maarch_connection_ko') + ' : ' + status[1]);
+                    this.connection = false;
+                }
             }),
             catchError((err: any) => {
                 console.debug(err)
@@ -200,10 +273,160 @@ export class UpdateOutputComponent implements OnInit {
         ).subscribe();
     }
 
+    getMaarchConnectionInfo(){
+        return {
+            'host': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'host'),
+            'login': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'login'),
+            'password': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'password'),
+        };
+    }
+
+    getUsersFromMaarch(cpt: any) {
+        if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
+            let args = this.getMaarchConnectionInfo();
+            this.http.post(API_URL + '/ws/maarch/getUsers', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
+                if (_return && _return.users) {
+                    let data = _return.users;
+                    let users = [];
+                    for (let cpt in data) {
+                        users.push({
+                            'id': data[cpt].id,
+                            'value': data[cpt].firstname + ' ' +  data[cpt].lastname,
+                            'extra': data[cpt].user_id
+                        })
+                    }
+                    this.setAutocompleteValues(cpt, users);
+                }
+            });
+        }
+    }
+
+    getEntitiesFromMaarch(cpt: any) {
+        if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
+            let args = this.getMaarchConnectionInfo();
+            this.http.post(API_URL + '/ws/maarch/getEntities', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
+                if (_return && _return.entities) {
+                    let data = _return.entities;
+                    let entities = [];
+                    for (let cpt in data) {
+                        entities.push({
+                            'id': data[cpt].id,
+                            'value': data[cpt].entity_label,
+                            'extra': data[cpt].entity_id
+                        })
+                    }
+                    this.setAutocompleteValues(cpt, entities);
+                }
+            });
+        }
+    }
+
+    getDoctypesFromMaarch(cpt: any) {
+        if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
+            let args = this.getMaarchConnectionInfo();
+            this.http.post(API_URL + '/ws/maarch/getDoctypes', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
+                if (_return && _return.doctypes) {
+                    let data = _return.doctypes;
+                    let doctypes = [];
+                    for (let cpt in data) {
+                        doctypes.push({
+                            'id': data[cpt].type_id,
+                            'value': data[cpt].description,
+                            'extra': data[cpt].type_id
+                        })
+                    }
+                    this.setAutocompleteValues(cpt, doctypes);
+                }
+            });
+        }
+    }
+
+    getPrioritiesFromMaarch(cpt: any) {
+        if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
+            let args = this.getMaarchConnectionInfo();
+            this.http.post(API_URL + '/ws/maarch/getPriorities', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
+                if (_return && _return.priorities) {
+                    let data = _return.priorities;
+                    let priorities = [];
+                    for (let cpt in data) {
+                        priorities.push({
+                            'id': data[cpt].id,
+                            'value': data[cpt].label,
+                            'extra': data[cpt].id
+                        })
+                    }
+                    this.setAutocompleteValues(cpt, priorities);
+                }
+            });
+        }
+    }
+
+    getStatusesFromMaarch(cpt: any) {
+        if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
+            let args = this.getMaarchConnectionInfo();
+            this.http.post(API_URL + '/ws/maarch/getStatuses', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
+                if (_return && _return.statuses) {
+                    let data = _return.statuses;
+                    let statuses = [];
+                    for (let cpt in data) {
+                        statuses.push({
+                            'id': data[cpt].id,
+                            'value': data[cpt].label_status,
+                            'extra': data[cpt].id
+                        })
+                    }
+                    this.setAutocompleteValues(cpt, statuses);
+                }
+            });
+        }
+    }
+
+    getIndexingModelsFromMaarch(cpt: any) {
+        if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
+            let args = this.getMaarchConnectionInfo();
+            this.http.post(API_URL + '/ws/maarch/getIndexingModels', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
+                if (_return && _return.indexingModels) {
+                    let data = _return.indexingModels;
+                    let indexingModels = [];
+                    for (let cpt in data) {
+                        indexingModels.push({
+                            'id': data[cpt].id,
+                            'value': data[cpt].label,
+                            'extra': data[cpt].category
+                        })
+                    }
+                    this.setAutocompleteValues(cpt, indexingModels);
+                }
+            });
+        }
+    }
+    /**** END Maarch Webservices call  ****/
+
+    setAutocompleteValues(cpt: number, array: any) {
+        this.outputsTypesForm[this.selectedOutputType]['parameters'][cpt].values = this.sortArrayAlphab(array);
+        /**
+         * Ces 6 lignes sont obligatoires afin de filter les résultats des champs au fur et à mesure que l'on écrit
+         */
+        let element = this.outputsTypesForm[this.selectedOutputType]['parameters'][cpt];
+        element.filteredOptions = element.control.valueChanges
+            .pipe(
+                startWith(''),
+                map(option => option ? this._filter(option, element.values) : element.values)
+            );
+    }
+
+    sortArrayAlphab(array: any) {
+        return array.sort(function (a:any, b:any) {
+            let x = a.value.toUpperCase(),
+                y = b.value.toUpperCase();
+            return x == y ? 0 : x > y ? 1 : -1;
+        });
+    }
+
     testConnection() {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth)) {
-            let function_name = this.testConnectionMapping[this.selectedOutputType]
-            eval(function_name);
+            let function_name = this.testConnectionMapping[this.selectedOutputType];
+            eval("this." + function_name);
         }
     }
 }

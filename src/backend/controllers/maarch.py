@@ -17,12 +17,12 @@
 
 from flask_babel import gettext
 from ..import_controllers import pdf
-from ..import_classes import _maarchWebServices
+from ..import_classes import _MaarchWebServices
 
 
 def test_connection(args):
     _vars = pdf.init()
-    ws = _maarchWebServices(
+    ws = _MaarchWebServices(
         args['host'],
         args['login'],
         args['password'],
@@ -30,4 +30,82 @@ def test_connection(args):
         _vars[1]
     )
     return ws.status
+
+
+def get_users(args):
+    _vars = pdf.init()
+    ws = _MaarchWebServices(
+        args['host'],
+        args['login'],
+        args['password'],
+        _vars[7],
+        _vars[1]
+    )
+    users = ws.retrieve_users()
+    return users
+
+
+def get_doctypes(args):
+    _vars = pdf.init()
+    ws = _MaarchWebServices(
+        args['host'],
+        args['login'],
+        args['password'],
+        _vars[7],
+        _vars[1]
+    )
+    doctypes = ws.retrieve_doctypes()
+    return doctypes
+
+
+def get_entities(args):
+    _vars = pdf.init()
+    ws = _MaarchWebServices(
+        args['host'],
+        args['login'],
+        args['password'],
+        _vars[7],
+        _vars[1]
+    )
+    entities = ws.retrieve_entities()
+    return entities
+
+
+def get_priorities(args):
+    _vars = pdf.init()
+    ws = _MaarchWebServices(
+        args['host'],
+        args['login'],
+        args['password'],
+        _vars[7],
+        _vars[1]
+    )
+    entities = ws.retrieve_priorities()
+    return entities
+
+
+def get_statuses(args):
+    _vars = pdf.init()
+    ws = _MaarchWebServices(
+        args['host'],
+        args['login'],
+        args['password'],
+        _vars[7],
+        _vars[1]
+    )
+    statuses = ws.retrieve_statuses()
+    return statuses
+
+
+def get_indexing_models(args):
+    _vars = pdf.init()
+    ws = _MaarchWebServices(
+        args['host'],
+        args['login'],
+        args['password'],
+        _vars[7],
+        _vars[1]
+    )
+    indexing_models = ws.retrieve_indexing_models()
+    return indexing_models
 

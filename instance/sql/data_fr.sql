@@ -12,12 +12,112 @@ INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (3, 'user'
 ALTER SEQUENCE "roles_id_seq" RESTART WITH 3;
 
 -- CREATE OUTPUTS
-INSERT INTO "outputs_types" ("id", "type_id", "type_label", "data") VALUES (1, 'export_xml', 'Export XML', '{"options": [{"id": "folder_out", "type": "text", "required": "true", "label": "Dossier de sortie"}]}');
-INSERT INTO "outputs_types" ("id", "type_id", "type_label", "data") VALUES (2, 'export_maarch', 'Export vers Maarch', '{"options": [{"id": "host", "type": "text", "required": "true", "label": "URL de l''hôte"}, {"id": "login", "type": "text", "required": "true", "label": "Pseudo de l''utilisateur WS"}, {"id": "password", "type": "text", "required": "true", "label": "Mot de passe de l''utilisateur WS"}]}');
+INSERT INTO "outputs_types" ("id", "type_id", "type_label", "data") VALUES (1, 'export_xml', 'Export XML', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "label": "Dossier de sortie", "required": "true", "placeholder": "/var/share/sortant"}]}}');
+INSERT INTO "outputs_types" ("id", "type_id", "type_label", "data") VALUES (2, 'export_maarch', 'Export vers Maarch', '{
+    "options": {
+        "auth": [
+            {
+                "id": "host",
+                "type": "text",
+                "required": "true",
+                "label": "URL de l''hôte",
+                "placeholder": "http://localhost/maarch_courrier/rest/"
+            },
+            {
+                "id": "login",
+                "type": "text",
+                "required": "true",
+                "label": "Pseudo de l''utilisateur WS",
+                "placeholder": "edissyumws"
+            },
+            {
+                "id": "password",
+                "type": "text",
+                "required": "true",
+                "placeholder": "maarch",
+                "label": "Mot de passe de l''utilisateur WS"
+            }
+        ],
+        "parameters": [
+            {
+                "id": "status",
+                "type": "text",
+                "required": "true",
+                "label": "Status",
+                "placeholder": "Courrier à qualifier",
+                "webservice": "getStatusesFromMaarch"
+            },
+            {
+                "id": "statusEnd",
+                "type": "text",
+                "required": "true",
+                "label": "Status clos",
+                "placeholder": "Clos / fin du workflow",
+                "webservice": "getStatusesFromMaarch"
+            },
+            {
+                "id": "typeId",
+                "type": "text",
+                "required": "true",
+                "label": "Type de document",
+                "placeholder": "Facture à qualifier",
+                "webservice": "getDoctypesFromMaarch"
+            },
+            {
+                "id": "typist",
+                "type": "text",
+                "required": "true",
+                "label": "Utilisateur Rédacteur",
+                "placeholder": "Bernard BLIER",
+                "webservice": "getUsersFromMaarch"
+            },
+            {
+                "id": "priority",
+                "type": "text",
+                "required": "true",
+                "label": "Priorité",
+                "placeholder": "Normal",
+                "webservice": "getPrioritiesFromMaarch"
+            },
+            {
+                "id": "format",
+                "type": "text",
+                "required": "true",
+                "label": "Format",
+                "placeholder": "pdf"
+            },
+            {
+                "id": "modelId",
+                "type": "text",
+                "required": "true",
+                "label": "Identifiant du modèle d''enregistrement",
+                "placeholder": "Facture",
+                "webservice": "getIndexingModelsFromMaarch"
+            },
+            {
+                "id": "destination",
+                "type": "text",
+                "required": "true",
+                "label": "Identifiant de l''entité destinatrice",
+                "placeholder": "Service Courrier",
+                "webservice": "getEntitiesFromMaarch"
+            },
+            {
+                "id": "destUser",
+                "type": "text",
+                "required": "true",
+                "label": "Identifiant de l''utilisateur destinataire",
+                "placeholder": "Bernard BLIER",
+                "webservice": "getUsersFromMaarch"
+            }
+        ]
+    }
+}');
 ALTER SEQUENCE "outputs_types_id_seq" RESTART WITH 3;
 
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data") VALUES (1, 'export_xml', 'Export XML par défaut', '{"folder_out" : "/var/share/sortant"}');
-ALTER SEQUENCE "outputs_id_seq" RESTART WITH 2;
+INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data") VALUES (2, 'export_maarch', 'Export Maarch par défaut', '');
+ALTER SEQUENCE "outputs_id_seq" RESTART WITH 3;
 
 -- CREATE PRIVILEGES
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (1, 'access_verifier', 'general');

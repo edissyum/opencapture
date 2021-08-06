@@ -187,9 +187,12 @@
 	"OUTPUT": {
 		"auth": "Authentification",
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer la chaîne sortante <b>{{ output }}</b> ?",
+		"maarch_connection_ko": "Erreur lors de la connexion à Maarch",
+		"maarch_connection_ok": "Connexion à Maarch réalisée avec succès",
 		"no_auth_necessary": "Pas d'authentification nécessaire",
 		"output_settings_list": "Paramètres de la chaîne sortante",
-		"specific": "Spécifiques"
+		"specific": "Spécifiques",
+		"test_connection": "Tester la connexion"
 	},
 	"PAGINATOR": {
 		"display": "Affichage",

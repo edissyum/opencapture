@@ -24,7 +24,7 @@ from flask_babel import gettext
 from requests.auth import HTTPBasicAuth
 
 
-class maarchWebServices:
+class MaarchWebServices:
     def __init__(self, host, user, pwd, log, config):
         self.baseUrl = host
         self.auth = HTTPBasicAuth(user, pwd)
@@ -36,19 +36,60 @@ class maarchWebServices:
         try:
             res = requests.get(self.baseUrl + '/priorities', auth=self.auth)
             if res.text:
+                if res.status_code == 404:
+                    return [False, gettext('HOST_NOT_FOUND')]
                 if 'errors' in json.loads(res.text):
                     return [False, json.loads(res.text)['errors']]
             return True
-        except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as e:
+        except (requests.exceptions.ConnectionError, requests.exceptions.Timeout, requests.exceptions.MissingSchema) as e:
             self.Log.error('Error connecting to the host. Exiting program..')
             self.Log.error('More information : ' + str(e))
             return [False, str(e)]
 
     def retrieve_users(self):
-        res = requests.get(self.baseUrl + 'getUsers?group=' + self.Config.cfg['GED']['usergroupid'], auth=self.auth)
-
+        res = requests.get(self.baseUrl + 'users', auth=self.auth)
         if res.status_code != 200:
-            self.Log.error('(' + str(res.status_code) + ') getUsers : ' + str(res.text))
+            self.Log.error('(' + str(res.status_code) + ') getUsersError : ' + str(res.text))
+            return False
+        else:
+            return json.loads(res.text)
+
+    def retrieve_entities(self):
+        res = requests.get(self.baseUrl + 'entities', auth=self.auth)
+        if res.status_code != 200:
+            self.Log.error('(' + str(res.status_code) + ') getEntitiesError : ' + str(res.text))
+            return False
+        else:
+            return json.loads(res.text)
+
+    def retrieve_priorities(self):
+        res = requests.get(self.baseUrl + 'priorities', auth=self.auth)
+        if res.status_code != 200:
+            self.Log.error('(' + str(res.status_code) + ') getPrioritiesError : ' + str(res.text))
+            return False
+        else:
+            return json.loads(res.text)
+
+    def retrieve_statuses(self):
+        res = requests.get(self.baseUrl + 'statuses', auth=self.auth)
+        if res.status_code != 200:
+            self.Log.error('(' + str(res.status_code) + ') getStatusesError : ' + str(res.text))
+            return False
+        else:
+            return json.loads(res.text)
+
+    def retrieve_indexing_models(self):
+        res = requests.get(self.baseUrl + 'indexingModels', auth=self.auth)
+        if res.status_code != 200:
+            self.Log.error('(' + str(res.status_code) + ') getIndexinModelsError : ' + str(res.text))
+            return False
+        else:
+            return json.loads(res.text)
+
+    def retrieve_doctypes(self):
+        res = requests.get(self.baseUrl + '/doctypes/types', auth=self.auth)
+        if res.status_code != 200:
+            self.Log.error('(' + str(res.status_code) + ') getDoctypesError : ' + str(res.text))
             return False
         else:
             return json.loads(res.text)

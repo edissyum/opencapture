@@ -16,7 +16,6 @@ declare var $: any;
 import 'moment/locale/en-gb';
 import 'moment/locale/fr';
 import * as moment from 'moment';
-import {parseName} from "@schematics/angular/utility/parse-name";
 
 @Component({
     selector: 'app-viewer',
@@ -132,7 +131,7 @@ export class VerifierViewerComponent implements OnInit {
 
     private _filter(value: string): string[] {
         const filterValue = value.toLowerCase();
-        return this.suppliers.filter((supplier: any) => supplier.name.toLowerCase().indexOf(filterValue) === 0);
+        return this.suppliers.filter((supplier: any) => supplier.name.toLowerCase().indexOf(filterValue) !== -1);
     }
 
     updateFilteredOption(event: any, control: any) {

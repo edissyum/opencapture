@@ -26,6 +26,52 @@ bp = Blueprint('maarch', __name__, url_prefix='/ws/')
 def test_connection():
     data = request.json['args']
     connection = maarch.test_connection(data)
-    # if type(connection) is not bool:
-    #     connection = connection[1]
     return make_response(jsonify({'status': connection}), 200)
+
+
+@bp.route('maarch/getUsers', methods=['POST'])
+@auth.token_required
+def get_users():
+    data = request.json['args']
+    users = maarch.get_users(data)
+    return make_response(users, 200)
+
+
+@bp.route('maarch/getDoctypes', methods=['POST'])
+@auth.token_required
+def get_doctypes():
+    data = request.json['args']
+    doctypes = maarch.get_doctypes(data)
+    return make_response(doctypes, 200)
+
+
+@bp.route('maarch/getEntities', methods=['POST'])
+@auth.token_required
+def get_entities():
+    data = request.json['args']
+    entities = maarch.get_entities(data)
+    return make_response(entities, 200)
+
+
+@bp.route('maarch/getPriorities', methods=['POST'])
+@auth.token_required
+def get_priorities():
+    data = request.json['args']
+    priorities = maarch.get_priorities(data)
+    return make_response(priorities, 200)
+
+
+@bp.route('maarch/getStatuses', methods=['POST'])
+@auth.token_required
+def get_statuses():
+    data = request.json['args']
+    statuses = maarch.get_statuses(data)
+    return make_response(statuses, 200)
+
+
+@bp.route('maarch/getIndexingModels', methods=['POST'])
+@auth.token_required
+def get_indexing_models():
+    data = request.json['args']
+    indexing_models = maarch.get_indexing_models(data)
+    return make_response(indexing_models, 200)

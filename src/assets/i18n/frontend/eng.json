@@ -187,9 +187,12 @@
 	"OUTPUT": {
 		"auth": "",
 		"confirm_delete": "",
+		"maarch_connection_ko": "",
+		"maarch_connection_ok": "",
 		"no_auth_necessary": "",
 		"output_settings_list": "",
-		"specific": ""
+		"specific": "",
+		"test_connection": ""
 	},
 	"PAGINATOR": {
 		"display": "",
