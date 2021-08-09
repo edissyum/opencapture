@@ -79,14 +79,14 @@ export class RolesListComponent implements OnInit {
                 this.notify.handleErrors(err);
                 return of(false);
             })
-        ).subscribe()
+        ).subscribe();
     }
 
     onPageChange(event: any) {
-        this.pageSize = event.pageSize
-        this.offset = this.pageSize * (event.pageIndex)
-        this.localeStorageService.save('rolesPageIndex', event.pageIndex)
-        this.loadRoles()
+        this.pageSize = event.pageSize;
+        this.offset = this.pageSize * (event.pageIndex);
+        this.localeStorageService.save('rolesPageIndex', event.pageIndex);
+        this.loadRoles();
     }
 
     deleteConfirmDialog(role_id: number, role: string) {
@@ -151,14 +151,14 @@ export class RolesListComponent implements OnInit {
         if (role_id !== undefined) {
             this.http.delete(API_URL + '/ws/roles/delete/' + role_id, {headers: this.authService.headers}).pipe(
                 tap(() => {
-                    this.loadRoles()
+                    this.loadRoles();
                 }),
                 catchError((err: any) => {
                     console.debug(err);
                     this.notify.handleErrors(err);
                     return of(false);
                 })
-            ).subscribe()
+            ).subscribe();
         }
     }
 
@@ -166,14 +166,14 @@ export class RolesListComponent implements OnInit {
         if (role_id !== undefined) {
             this.http.put(API_URL + '/ws/roles/disable/' + role_id, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
-                    this.loadRoles()
+                    this.loadRoles();
                 }),
                 catchError((err: any) => {
                     console.debug(err);
                     this.notify.handleErrors(err);
                     return of(false);
                 })
-            ).subscribe()
+            ).subscribe();
         }
     }
 
@@ -181,21 +181,21 @@ export class RolesListComponent implements OnInit {
         if (role_id !== undefined) {
             this.http.put(API_URL + '/ws/roles/enable/' + role_id, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
-                    this.loadRoles()
+                    this.loadRoles();
                 }),
                 catchError((err: any) => {
                     console.debug(err);
                     this.notify.handleErrors(err);
                     return of(false);
                 })
-            ).subscribe()
+            ).subscribe();
         }
     }
 
     sortData(sort: Sort) {
         let data = this.roles.slice()
         if (!sort.active || sort.direction === '') {
-            this.roles = data
+            this.roles = data;
             return;
         }
 

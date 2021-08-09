@@ -89,6 +89,7 @@
 		"field_required": "Le champ est obligatoire",
 		"form_not_valid": "Formulaire non valide, merci de vérifier les champs",
 		"is_server_up": "Le serveur <b>{{server}}</b> est-il accessible ?",
+		"json_pattern": "Le champ n'est pas au format JSON",
 		"jwt_error": "Erreur lors de l'authentification par token",
 		"number_float_pattern": "La valeur n'est pas au format attendu : nombre flottant",
 		"number_int_pattern": "La valeur n'est pas au format attendu : nombre entier",
@@ -100,6 +101,9 @@
 		"delivery_number": "Numéro de livraison",
 		"facturation": "Facturation",
 		"invoice_date": "Date de la facture",
+		"invoice_date_day": "Jour de la facture",
+		"invoice_date_month": "Mois de la facture",
+		"invoice_date_year": "Année de la facture",
 		"invoice_due_date": "Date d'échéance",
 		"invoice_number": "Numéro de facture",
 		"no_rate_amount": "Montant HT",
@@ -120,7 +124,6 @@
 	},
 	"FORMS": {
 		"available_fields": "Champs disponibles",
-		"build_form": "Construction du formulaire",
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer le formulaire <b>{{ form }}</b> ?",
 		"confirm_disable": "Êtes vous sûr de vouloir désactiver le formulaire <b>{{ form }}</b> ?",
 		"confirm_duplicate": "Êtes vous sûr de vouloir dupliquer le formulaire <b>{{ form }}</b> ?",
@@ -181,18 +184,25 @@
 		"supplier_infos_updated": "Fournisseur paramétré pour cette facture"
 	},
 	"MANDATORY": {
-		"not_required": "Champ obligatoire",
-		"required": "Champ non obligatoire"
+		"not_required": "Champ non obligatoire",
+		"required": "Champ obligatoire"
 	},
 	"OUTPUT": {
 		"auth": "Authentification",
+		"available_fields": "Informations sur les champs disponible",
+		"check_connection_before": "Merci de vérifier la connexion",
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer la chaîne sortante <b>{{ output }}</b> ?",
+		"create": "Créer la chaîne sortante",
+		"created": "Chaîne sortante créée avec succès",
+		"form_updated": "Formulaire mis à jour avec succès",
+		"json_input_erorr": "Le champ <b>{{field}}</b> doit être au format JSON avec des doubles quotes",
 		"maarch_connection_ko": "Erreur lors de la connexion à Maarch",
 		"maarch_connection_ok": "Connexion à Maarch réalisée avec succès",
 		"no_auth_necessary": "Pas d'authentification nécessaire",
 		"output_settings_list": "Paramètres de la chaîne sortante",
-		"specific": "Spécifiques",
-		"test_connection": "Tester la connexion"
+		"parameters": "Spécifiques",
+		"test_connection": "Tester la connexion",
+		"update": "Modifier la chaîne sortante"
 	},
 	"PAGINATOR": {
 		"display": "Affichage",

@@ -75,7 +75,7 @@ export class CustomersListComponent implements OnInit {
                 this.notify.handleErrors(err);
                 return of(false);
             })
-        ).subscribe()
+        ).subscribe();
     }
 
     onPageChange(event: any) {
@@ -115,7 +115,7 @@ export class CustomersListComponent implements OnInit {
                     this.notify.handleErrors(err);
                     return of(false);
                 })
-            ).subscribe()
+            ).subscribe();
         }
     }
 

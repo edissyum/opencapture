@@ -108,4 +108,3 @@ def get_indexing_models(args):
     )
     indexing_models = ws.retrieve_indexing_models()
     return indexing_models
-

@@ -85,7 +85,7 @@ export class FormListComponent implements OnInit {
                 this.notify.handleErrors(err);
                 return of(false);
             })
-        ).subscribe()
+        ).subscribe();
     }
 
     deleteConfirmDialog(form_id: number, form: string) {
@@ -168,14 +168,14 @@ export class FormListComponent implements OnInit {
         if (form_id !== undefined) {
             this.http.delete(API_URL + '/ws/forms/delete/' + form_id, {headers: this.authService.headers}).pipe(
                 tap(() => {
-                    this.loadForms()
+                    this.loadForms();
                 }),
                 catchError((err: any) => {
                     console.debug(err);
                     this.notify.handleErrors(err);
                     return of(false);
                 })
-            ).subscribe()
+            ).subscribe();
         }
     }
 
@@ -190,7 +190,7 @@ export class FormListComponent implements OnInit {
             //         this.notify.handleErrors(err);
             //         return of(false);
             //     })
-            // ).subscribe()
+            // ).subscribe();
         }
     }
 
@@ -198,14 +198,14 @@ export class FormListComponent implements OnInit {
         if (form_id !== undefined) {
             this.http.put(API_URL + '/ws/forms/disable/' + form_id, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
-                    this.loadForms()
+                    this.loadForms();
                 }),
                 catchError((err: any) => {
                     console.debug(err);
                     this.notify.handleErrors(err);
                     return of(false);
                 })
-            ).subscribe()
+            ).subscribe();
         }
     }
 
@@ -213,21 +213,21 @@ export class FormListComponent implements OnInit {
         if (forms_id !== undefined) {
             this.http.put(API_URL + '/ws/forms/enable/' + forms_id, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
-                    this.loadForms()
+                    this.loadForms();
                 }),
                 catchError((err: any) => {
                     console.debug(err);
                     this.notify.handleErrors(err);
                     return of(false);
                 })
-            ).subscribe()
+            ).subscribe();
         }
     }
 
     sortData(sort: Sort) {
-        let data = this.forms.slice()
+        let data = this.forms.slice();
         if(!sort.active || sort.direction === '') {
-            this.forms = data
+            this.forms = data;
             return;
         }
 

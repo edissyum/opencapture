@@ -47,7 +47,7 @@ class MaarchWebServices:
             return [False, str(e)]
 
     def retrieve_users(self):
-        res = requests.get(self.baseUrl + 'users', auth=self.auth)
+        res = requests.get(self.baseUrl + '/users', auth=self.auth)
         if res.status_code != 200:
             self.Log.error('(' + str(res.status_code) + ') getUsersError : ' + str(res.text))
             return False
@@ -55,7 +55,7 @@ class MaarchWebServices:
             return json.loads(res.text)
 
     def retrieve_entities(self):
-        res = requests.get(self.baseUrl + 'entities', auth=self.auth)
+        res = requests.get(self.baseUrl + '/entities', auth=self.auth)
         if res.status_code != 200:
             self.Log.error('(' + str(res.status_code) + ') getEntitiesError : ' + str(res.text))
             return False
@@ -63,7 +63,7 @@ class MaarchWebServices:
             return json.loads(res.text)
 
     def retrieve_priorities(self):
-        res = requests.get(self.baseUrl + 'priorities', auth=self.auth)
+        res = requests.get(self.baseUrl + '/priorities', auth=self.auth)
         if res.status_code != 200:
             self.Log.error('(' + str(res.status_code) + ') getPrioritiesError : ' + str(res.text))
             return False
@@ -71,7 +71,7 @@ class MaarchWebServices:
             return json.loads(res.text)
 
     def retrieve_statuses(self):
-        res = requests.get(self.baseUrl + 'statuses', auth=self.auth)
+        res = requests.get(self.baseUrl + '/statuses', auth=self.auth)
         if res.status_code != 200:
             self.Log.error('(' + str(res.status_code) + ') getStatusesError : ' + str(res.text))
             return False
@@ -79,7 +79,7 @@ class MaarchWebServices:
             return json.loads(res.text)
 
     def retrieve_indexing_models(self):
-        res = requests.get(self.baseUrl + 'indexingModels', auth=self.auth)
+        res = requests.get(self.baseUrl + '/indexingModels', auth=self.auth)
         if res.status_code != 200:
             self.Log.error('(' + str(res.status_code) + ') getIndexinModelsError : ' + str(res.text))
             return False

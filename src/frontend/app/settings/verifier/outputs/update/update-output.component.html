@@ -83,9 +83,13 @@
                 <h3>{{ this.serviceSettings.getTitle() }}</h3>
                 <hr class="border-green-400">
             </div>
+            <button mat-icon-button (click)="sidenav2.toggle();"
+                    class="absolute right-2 top-2">
+                <i [class.transform]="sidenav2.opened" [class.rotate-180]="sidenav2.opened" class="fas fa-stream text-xl text-gray-900"></i>
+            </button>
         </div>
         <div *ngIf="!loading" class="flex justify-center items-center">
-            <form (ngSubmit)="onSubmit()" class="grid grid-cols-2 gap-12 w-full m-10 text-center">
+            <form class="grid grid-cols-2 gap-12 w-full m-10 text-center">
                 <ng-container *ngFor="let field of outputForm">
                     <mat-form-field *ngIf="field.type == 'text'">
                         <mat-label>{{ field.label | translate }}</mat-label>
@@ -105,7 +109,12 @@
             </form>
         </div>
         <mat-divider class="w-1/2 m-auto border-green-400"></mat-divider>
-        <h4 class="text-center mt-10 mb-10">{{ 'OUTPUT.output_settings_list' | translate }}</h4>
+        <h4 class="text-center mt-10 mb-5">{{ 'OUTPUT.output_settings_list' | translate }}</h4>
+        <div class="flex justify-center items-center mb-2">
+            <button mat-button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300">
+                <span class="block" (click)="updateOutput()">{{ "OUTPUT.update" | translate }}</span>
+            </button>
+        </div>
         <div class="flex justify-center items-center ml-10 mr-5">
             <form class="w-full text-center" *ngIf="selectedOutputType && outputsTypesForm[selectedOutputType]">
                 <mat-tab-group class="output-tab">
@@ -115,11 +124,10 @@
                         </span>
                         <div class="grid grid-cols-4 gap-4 m-5">
                             <ng-container *ngFor="let field of outputsTypesForm[selectedOutputType]['auth']">
-                                <mat-form-field *ngIf="field.type == 'text' || field.type == 'number'">
+                                <mat-form-field *ngIf="field.type == 'text' || field.type == 'number' || field.type == 'password'">
                                     <mat-label>{{ field.label | translate }}</mat-label>
-                                    <input matInput [value]="field.control.value"
-                                           [formControl]="field.control" [type]="field.type"
-                                           [placeholder]="field.placeholder" [required]="field.required">
+                                    <input matInput [value]="field.control.value" [formControl]="field.control"
+                                           [type]="field.type" [placeholder]="field.placeholder" [required]="field.required">
                                     <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputsTypesForm[selectedOutputType]['auth']) }}</mat-error>
                                 </mat-form-field>
                                 <mat-form-field *ngIf="field.type == 'select'">
@@ -135,29 +143,30 @@
                         </div>
                         <button *ngIf="outputsTypesForm[selectedOutputType]['auth'].length != 0"
                                 mat-button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300">
-                            <span class="block" (click)="testConnection()">{{ "OUTPUT.test_connection" | translate }}</span>
+                            <span (click)="testConnection()">{{ "OUTPUT.test_connection" | translate }}</span>
                         </button>
                     </mat-tab>
-                    <mat-tab [label]="'OUTPUT.specific' | translate">
+                    <mat-tab [label]="'OUTPUT.parameters' | translate">
                         <div class="grid grid-cols-4 gap-4 m-5">
                             <ng-container *ngFor="let field of outputsTypesForm[selectedOutputType]['parameters']">
                                 <mat-form-field *ngIf="(field.type == 'text' || field.type == 'number') && !field.webservice">
                                     <mat-label>{{ field.label | translate }}</mat-label>
-                                    <input matInput [value]="field.control.value"
-                                           [formControl]="field.control" [type]="field.type"
-                                           [placeholder]="field.placeholder" [required]="field.required">
+                                    <input matInput [value]="field.control.value" [formControl]="field.control"
+                                           [type]="field.type" [placeholder]="field.placeholder" [required]="field.required">
                                     <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputsTypesForm[selectedOutputType]['parameters']) }}</mat-error>
+                                    <mat-hint *ngIf="field.hint">{{ field.hint }}</mat-hint>
                                 </mat-form-field>
-                                <mat-form-field (click)="retrieveDataFromWS(field.id)" *ngIf="(field.type == 'text' || field.type == 'number') && field.webservice">
+                                <mat-form-field (focusin)="retrieveDataFromWS(field.id)" *ngIf="(field.type == 'text' || field.type == 'number') && field.webservice">
                                     <mat-label>{{ field.label | translate }}</mat-label>
                                     <input matInput [formControl]="field.control" [type]="field.type"
                                            [readonly]="field.webservice && !this.connection"
                                            [placeholder]="field.placeholder" [required]="field.required" [matAutocomplete]="autocomplete">
                                     <mat-error *ngIf="field.webservice && !this.connection">{{ 'OUTPUT.check_connection_before' | translate }}</mat-error>
+                                    <mat-hint *ngIf="field.hint">{{ field.hint }}</mat-hint>
                                     <mat-autocomplete #autocomplete="matAutocomplete" [displayWith]="displayFn">
                                         <mat-option *ngFor="let option of field.filteredOptions | async" [value]="option">
                                             <span [innerHTML]="option.value | highlight: toHighlight"></span>
-                                            <span style="font-size: 12px;" class="text-green-400 ml-3">{{option.extra}}</span>
+                                            <span style="font-size: 12px;" class="text-green-400 ml-3">{{ option.extra }}</span>
                                         </mat-option>
                                     </mat-autocomplete>
                                 </mat-form-field>
@@ -169,6 +178,7 @@
                                         </mat-option>
                                     </mat-select>
                                     <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputsTypesForm[selectedOutputType]['parameters'] ) }}</mat-error>
+                                    <mat-hint *ngIf="field.hint">{{ field.hint }}</mat-hint>
                                 </mat-form-field>
                             </ng-container>
                         </div>
@@ -177,4 +187,16 @@
             </form>
         </div>
     </mat-sidenav-content>
+    <mat-sidenav #sidenav2 mode="side" opened position="end" class="available-fields w-1/4 flex flex-col h-full border-r border-green-400">
+        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">{{ "OUTPUT.available_fields" | translate }}</h3>
+        <mat-divider class="border-green-400"></mat-divider>
+        <div *ngFor="let field of availableFields; let cpt = index" class="my-8 ml-2 text-base">
+            <span>
+                {{ field.label | translate }}
+                <span style="font-size: 12px;" class="text-green-400 ml-3">{{ field.id | translate }}</span>
+                <mat-divider class="border-green-400 mt-4" *ngIf="cpt == 0"></mat-divider>
+            </span>
+        </div>
+    </mat-sidenav>
+
 </mat-sidenav-container>

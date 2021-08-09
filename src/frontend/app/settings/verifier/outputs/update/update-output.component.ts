@@ -12,6 +12,7 @@ import {API_URL} from "../../../../env";
 import {catchError, finalize, map, startWith, tap} from "rxjs/operators";
 import { PipeTransform, Pipe } from '@angular/core';
 import {of} from "rxjs";
+import {marker} from "@biesbjerg/ngx-translate-extract-marker";
 
 
 @Pipe({ name: 'highlight' })
@@ -62,6 +63,56 @@ export class UpdateOutputComponent implements OnInit {
     testConnectionMapping : any         = {
         'export_maarch' : "testMaarchConnection()"
     }
+    availableFields     : any           = [
+        {
+            "id": 'HEADER.id',
+            'label': 'HEADER.label'
+        },
+        {
+            "id": 'name',
+            'label': 'ACCOUNTS.supplier_name'
+        },
+        {
+            "id": 'vat_number',
+            'label': 'ACCOUNTS.vat_number'
+        },
+        {
+            "id": 'siret',
+            'label': 'ACCOUNTS.siret'
+        },
+        {
+            "id": 'siren',
+            'label': 'ACCOUNTS.siren'
+        },
+        {
+            "id": 'invoice_number',
+            'label': 'FACTURATION.invoice_number'
+        },
+        {
+            "id": 'invoice_date',
+            'label': 'FACTURATION.invoice_date'
+        },
+        {
+            "id": 'invoice_date_year',
+            'label': marker('FACTURATION.invoice_date_year')
+        },
+        {
+            "id": 'invoice_date_month',
+            'label': marker('FACTURATION.invoice_date_month')
+        },
+        {
+            "id": 'invoice_date_day',
+            'label': marker('FACTURATION.invoice_date_day')
+        },
+        {
+            "id": 'order_number',
+            'label': 'FACTURATION.order_number'
+        },
+        {
+            "id": 'delivery_number',
+            'label': 'FACTURATION.delivery_number'
+        },
+    ];
 
     /**
      * Pour ajouter une nouvelle chaine sortante (e.g : Alfresco)
@@ -76,8 +127,8 @@ export class UpdateOutputComponent implements OnInit {
     **/
 
     constructor(
-        private http: HttpClient,
         public router: Router,
+        private http: HttpClient,
         private route: ActivatedRoute,
         private formBuilder: FormBuilder,
         private authService: AuthService,
@@ -103,7 +154,7 @@ export class UpdateOutputComponent implements OnInit {
                         this.outputForm.forEach(element => {
                             if (element.id == field) {
                                 if (element.id === 'output_type_id') this.selectedOutputType = this.originalOutputType = data[field];
-                                else element.control.setValue(data[field]);
+                                element.control.setValue(data[field]);
                             }
                         });
                     }
@@ -129,6 +180,8 @@ export class UpdateOutputComponent implements OnInit {
                                             placeholder: option.placeholder,
                                             control: new FormControl(),
                                             required: option.required,
+                                            isJson: option.isJson,
+                                            hint: option.hint,
                                             webservice: option.webservice,
                                         });
                                     }
@@ -144,10 +197,10 @@ export class UpdateOutputComponent implements OnInit {
                                     if (element.id == output_element.id) {
                                         if (output_element.value) {
                                             if (output_element.webservice) {
-                                                let value = JSON.parse(output_element.value)
+                                                let value = JSON.parse(output_element.value);
                                                 element.values = [value];
                                                 element.control.setValue(value);
-                                            }else{
+                                            }else {
                                                 element.control.setValue(output_element.value);
                                             }
                                         }
@@ -182,12 +235,16 @@ export class UpdateOutputComponent implements OnInit {
     getErrorMessage(field: any, form: any) {
         let error = undefined;
         form.forEach((element: any) => {
-            if (element.id == field) {
+            if (element.id == field && element.control.invalid) {
                 if (element.required) {
                     error = this.translate.instant('AUTH.field_required');
                 }
+
+                if (element.control.errors.json_error) {
+                    error = this.translate.instant('ERROR.json_pattern');
+                }
             }
-        })
+        });
         return error
     }
 
@@ -203,15 +260,6 @@ export class UpdateOutputComponent implements OnInit {
             }
         });
         return state;
-    }
-
-    onSubmit() {
-        if (this.isValidForm(this.outputForm)) {
-            const output: any = {};
-            this.outputForm.forEach(element => {
-                output[element.id] = element.control.value;
-            });
-        }
     }
 
     getValueFromForm(form: any, field_id: any) {
@@ -247,11 +295,7 @@ export class UpdateOutputComponent implements OnInit {
 
     /**** Maarch Webservices call ****/
     testMaarchConnection() {
-        let args = {
-            'host' : this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'host'),
-            'login' : this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'login'),
-            'password' : this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'password'),
-        }
+        let args = this.getMaarchConnectionInfo();
         this.http.post(API_URL + '/ws/maarch/testConnection', {'args': args}, {headers: this.authService.headers},
         ).pipe(
             tap((data: any) => {
@@ -266,14 +310,14 @@ export class UpdateOutputComponent implements OnInit {
                 }
             }),
             catchError((err: any) => {
-                console.debug(err)
+                console.debug(err);
                 this.notify.handleErrors(err);
                 return of(false);
             })
         ).subscribe();
     }
 
-    getMaarchConnectionInfo(){
+    getMaarchConnectionInfo() {
         return {
             'host': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'host'),
             'login': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'login'),
@@ -400,7 +444,49 @@ export class UpdateOutputComponent implements OnInit {
             });
         }
     }
+
     /**** END Maarch Webservices call  ****/
+
+    updateOutput() {
+        let _array: any = {
+            "options" : {
+                "auth" : [],
+                "parameters": []
+            }
+        };
+
+        for (let category in this.outputsTypesForm[this.selectedOutputType]) {
+            for (let cpt in this.outputsTypesForm[this.selectedOutputType][category]) {
+                let field = this.outputsTypesForm[this.selectedOutputType][category][cpt];
+                if (field.isJson) {
+                    try {
+                        JSON.parse(field.control.value);
+                    } catch (error) {
+                        field.control.setErrors({'json_error': true});
+                        this.notify.error(this.translate.instant('OUTPUT.json_input_erorr', {"field": field.label}));
+                        return;
+                    }
+                }
+                _array['options'][category].push({
+                    id: field.id,
+                    type: field.type,
+                    value: field.value == undefined ? field.control.value : field.value,
+                });
+            }
+        }
+
+        this.http.put(API_URL + '/ws/outputs/update/' + this.outputId, {'args': _array},{headers: this.authService.headers}).pipe(
+            tap(() => {
+                this.notify.success(this.translate.instant('OUTPUT.form_updated'));
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                this.router.navigate(['/settings/verifier/outputs']).then()
+                return of(false);
+            })
+        ).subscribe();
+    }
 
     setAutocompleteValues(cpt: number, array: any) {
         this.outputsTypesForm[this.selectedOutputType]['parameters'][cpt].values = this.sortArrayAlphab(array);

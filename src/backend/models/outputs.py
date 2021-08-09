@@ -80,7 +80,7 @@ def update_output(args):
     return output, error
 
 
-def create_role(args):
+def create_output(args):
     _db = db.get_db()
     error = None
 

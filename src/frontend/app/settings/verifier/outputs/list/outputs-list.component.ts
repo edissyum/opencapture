@@ -23,7 +23,7 @@ import {MatDialog} from "@angular/material/dialog";
 })
 export class OutputsListComponent implements OnInit {
     headers         : HttpHeaders   = this.authService.headers;
-    columnsToDisplay: string[]      = ['id', 'output_type_id', 'output_label', 'actions'];
+    columnsToDisplay: string[]      = ['id', 'output_label', 'output_type_id', 'actions'];
     loading         : boolean       = true;
     outputs         : any           = [];
     pageSize        : number        = 10;
@@ -62,8 +62,8 @@ export class OutputsListComponent implements OnInit {
     loadOutputs(): void {
         this.http.get(API_URL + '/ws/outputs/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                if (data.outputs[0]) this.total = data.outputs[0].total
-                this.outputs = data.outputs
+                if (data.outputs[0]) this.total = data.outputs[0].total;
+                this.outputs = data.outputs;
             }),
             finalize(() => this.loading = false),
             catchError((err: any) => {
@@ -71,7 +71,7 @@ export class OutputsListComponent implements OnInit {
                 this.notify.handleErrors(err);
                 return of(false);
             })
-        ).subscribe()
+        ).subscribe();
     }
 
     onPageChange(event: any) {
@@ -111,14 +111,14 @@ export class OutputsListComponent implements OnInit {
                     this.notify.handleErrors(err);
                     return of(false);
                 })
-            ).subscribe()
+            ).subscribe();
         }
     }
 
     sortData(sort: Sort) {
-        let data = this.outputs.slice()
+        let data = this.outputs.slice();
         if (!sort.active || sort.direction === '') {
-            this.outputs = data
+            this.outputs = data;
             return;
         }
 

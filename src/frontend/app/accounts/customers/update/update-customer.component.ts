@@ -147,7 +147,7 @@ export class UpdateCustomerComponent implements OnInit {
                                             this.notify.handleErrors(err);
                                             return of(false);
                                         })
-                                    ).subscribe()
+                                    ).subscribe();
                                 }else{
                                     this.http.post(API_URL + '/ws/accounts/addresses/create',
                                         {'args': {
@@ -165,14 +165,14 @@ export class UpdateCustomerComponent implements OnInit {
                                             ).pipe(
                                                 finalize(() => this.loading = false),
                                                 catchError((err: any) => {
-                                                    console.debug(err)
+                                                    console.debug(err);
                                                     this.notify.handleErrors(err, '/accounts/customers/list');
                                                     return of(false);
                                                 })
                                             ).subscribe();
                                         }),
                                         catchError((err: any) => {
-                                            console.debug(err)
+                                            console.debug(err);
                                             this.notify.handleErrors(err, '/accounts/customers/list');
                                             return of(false);
                                         })
@@ -188,7 +188,7 @@ export class UpdateCustomerComponent implements OnInit {
                 this.notify.handleErrors(err);
                 return of(false);
             })
-        ).subscribe()
+        ).subscribe();
     }
 
     isValidForm() {
@@ -218,7 +218,7 @@ export class UpdateCustomerComponent implements OnInit {
             this.http.put(API_URL + '/ws/accounts/customers/update/' + this.customerId, {'args': customer}, {headers: this.authService.headers},
             ).pipe(
                 catchError((err: any) => {
-                    console.debug(err)
+                    console.debug(err);
                     this.notify.handleErrors(err, '/accounts/customers/list');
                     return of(false);
                 })
@@ -231,7 +231,7 @@ export class UpdateCustomerComponent implements OnInit {
                     this.router.navigate(['/accounts/customers/list'])
                 }),
                 catchError((err: any) => {
-                    console.debug(err)
+                    console.debug(err);
                     this.notify.handleErrors(err, '/accounts/customers/list');
                     return of(false);
                 })

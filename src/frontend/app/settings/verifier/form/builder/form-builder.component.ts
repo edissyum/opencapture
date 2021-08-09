@@ -20,18 +20,23 @@ import {marker} from "@biesbjerg/ngx-translate-extract-marker";
     styleUrls: ['./form-builder.component.scss'],
 })
 export class FormBuilderComponent implements OnInit {
-    loading                 : boolean = true;
-    form                    : any = {
+    loading                 : boolean   = true;
+    outputsTypes            : any[]     = [];
+    form                    : any       = {
         'label': {
             'control': new FormControl(),
+        },
+        'output_type': {
+            'control': new FormControl(),
+            'values': this.outputsTypes
         },
         'default_form': {
             'control': new FormControl(),
         }
     };
     formId                  : any;
-    creationMode            : boolean = true;
-    labelType               : any [] = [
+    creationMode            : boolean   = true;
+    labelType               : any []    = [
         marker('TYPES.char'),
         marker('TYPES.textarea'),
         marker('TYPES.date'),
@@ -39,7 +44,7 @@ export class FormBuilderComponent implements OnInit {
         marker('VERIFIER.field_settings'),
         marker('FORMS.delete_field'),
     ];
-    fieldCategories         : any [] = [
+    fieldCategories         : any []    = [
         {
             'id': 'supplier',
             'label': marker('FORMS.supplier')
@@ -53,7 +58,7 @@ export class FormBuilderComponent implements OnInit {
             'label': marker('FORMS.other')
         }
     ];
-    availableFieldsParent   : any [] = [
+    availableFieldsParent   : any []    = [
         {
             'id': 'accounts_fields',
             'label': marker('ACCOUNTS.supplier'),
@@ -378,12 +383,12 @@ export class FormBuilderComponent implements OnInit {
             'values': []
         },
     ];
-    fields                  : any = {
+    fields                  : any       = {
         'supplier': [],
         'facturation': [],
         'other': []
     };
-    classList               : any [] = [
+    classList               : any []    = [
         {
             'id': 'w-full',
             'label': '1'
@@ -409,7 +414,7 @@ export class FormBuilderComponent implements OnInit {
             'label': '1/5'
         }
     ];
-    colorsList              : any [] = [
+    colorsList              : any []    = [
         {
             'id': 'yellow',
             'label': marker('COLORS.yellow')
@@ -479,7 +484,7 @@ export class FormBuilderComponent implements OnInit {
             'label': marker('COLORS.green')
         },
     ];
-    formatList              : any [] = [
+    formatList              : any []    = [
         {
             'id': 'date',
             'label': marker('FORMATS.date'),
@@ -511,7 +516,7 @@ export class FormBuilderComponent implements OnInit {
             'icon': 'fas fa-level-up-alt'
         },
     ];
-    displayList             : any [] = [
+    displayList             : any []    = [
         {
             'id': 'simple',
             'label': marker('DISPLAY.simple'),
@@ -523,7 +528,7 @@ export class FormBuilderComponent implements OnInit {
             'icon': 'fas fa-layer-group'
         },
     ];
-    mandatoryList             : any [] = [
+    mandatoryList           : any []    = [
         {
             'id': true,
             'label': marker('MANDATORY.required'),
@@ -553,7 +558,7 @@ export class FormBuilderComponent implements OnInit {
         this.serviceSettings.init();
         this.formId = this.route.snapshot.params['id'];
         if (this.formId) {
-            this.creationMode = false
+            this.creationMode = false;
             this.http.get(API_URL + '/ws/forms/getById/' + this.formId, {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
                     for (let field in this.form) {
@@ -561,7 +566,7 @@ export class FormBuilderComponent implements OnInit {
                             for (let info in data) {
                                 if (data.hasOwnProperty(info)) {
                                     if (info == field) {
-                                        this.form[field].control.value = data[info]
+                                        this.form[field].control.value = data[info];
                                     }
                                 }
                             }
@@ -573,7 +578,17 @@ export class FormBuilderComponent implements OnInit {
                     this.notify.handleErrors(err);
                     return of(false);
                 })
-            ).subscribe()
+            ).subscribe();
+
+            this.http.get(API_URL + '/ws/outputs/getOutputsType', {headers: this.authService.headers}).pipe(
+                tap((data: any) => {
+                    this.outputsTypes = data.outputs_types;
+                }),catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
 
             this.http.get(API_URL + '/ws/customFields/list', {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
@@ -601,34 +616,33 @@ export class FormBuilderComponent implements OnInit {
                         }
                     }
                 }),
-                finalize(() => setTimeout(() => {}, 500)),
                 catchError((err: any) => {
                     console.debug(err);
                     this.notify.handleErrors(err);
                     return of(false);
                 })
-            ).subscribe()
+            ).subscribe();
 
             this.http.get(API_URL + '/ws/forms/getFields/' + this.formId, {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
                     if (data.form_fields.fields) {
                         if(data.form_fields.fields.facturation !== undefined)
-                            this.fields.facturation = data.form_fields.fields.facturation
+                            this.fields.facturation = data.form_fields.fields.facturation;
                         if(data.form_fields.fields.supplier)
-                            this.fields.supplier = data.form_fields.fields.supplier
+                            this.fields.supplier = data.form_fields.fields.supplier;
                         if(data.form_fields.fields.other)
-                            this.fields.other = data.form_fields.fields.other
+                            this.fields.other = data.form_fields.fields.other;
 
                         for (let category in this.fields) {
                             if (this.fields.hasOwnProperty(category)) {
                                 this.fields[category].forEach((current_field: any) => {
                                     this.availableFieldsParent.forEach((parent: any) => {
-                                        let cpt = 0
+                                        let cpt = 0;
                                         parent['values'].forEach((child_fields: any) => {
                                             if (current_field.id == child_fields.id) {
-                                                parent['values'].splice(cpt, 1)
+                                                parent['values'].splice(cpt, 1);
                                             }
-                                            cpt = cpt + 1
+                                            cpt = cpt + 1;
                                         })
                                     })
                                 })
@@ -644,7 +658,7 @@ export class FormBuilderComponent implements OnInit {
                     this.notify.handleErrors(err);
                     return of(false);
                 })
-            ).subscribe()
+            ).subscribe();
         }else{
             this.loading = false;
         }
@@ -756,8 +770,9 @@ export class FormBuilderComponent implements OnInit {
     updateForm() {
         let label = this.form.label.control.value;
         let is_default = this.form.default_form.control.value;
+        let output_type = this.form.output_type.control.value;
         if (label) {
-            this.http.put(API_URL + '/ws/forms/update/' + this.formId, {'args': {'label' : label, 'default_form' : is_default}}, {headers: this.authService.headers},
+            this.http.put(API_URL + '/ws/forms/update/' + this.formId, {'args': {'label' : label, 'default_form' : is_default, 'output_type': output_type}}, {headers: this.authService.headers},
             ).pipe(
                 tap(()=> {
                     this.http.post(API_URL + '/ws/forms/updateFields/' + this.formId, this.fields, {headers: this.authService.headers}).pipe(
@@ -769,7 +784,7 @@ export class FormBuilderComponent implements OnInit {
                             this.notify.handleErrors(err);
                             return of(false);
                         })
-                    ).subscribe()
+                    ).subscribe();
                 }),
                 catchError((err: any) => {
                     console.debug(err);
@@ -795,9 +810,9 @@ export class FormBuilderComponent implements OnInit {
                             this.notify.handleErrors(err);
                             return of(false);
                         })
-                    ).subscribe()
-                    this.notify.success(this.translate.instant('FORMS.created'))
-                    this.router.navigateByUrl('settings/verifier/forms').then()
+                    ).subscribe();
+                    this.notify.success(this.translate.instant('FORMS.created'));
+                    this.router.navigateByUrl('settings/verifier/forms').then();
                 }),
                 catchError((err: any) => {
                     console.debug(err);

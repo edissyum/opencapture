@@ -85,14 +85,14 @@ export class SuppliersListComponent implements OnInit {
                         this.notify.handleErrors(err);
                         return of(false);
                     })
-                ).subscribe()
+                ).subscribe();
             }),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
                 return of(false);
             })
-        ).subscribe()
+        ).subscribe();
     }
 
     onPageChange(event: any) {
@@ -151,7 +151,7 @@ export class SuppliersListComponent implements OnInit {
                     this.notify.handleErrors(err);
                     return of(false);
                 })
-            ).subscribe()
+            ).subscribe();
         }
     }
 
@@ -166,7 +166,7 @@ export class SuppliersListComponent implements OnInit {
                     this.notify.handleErrors(err);
                     return of(false);
                 })
-            ).subscribe()
+            ).subscribe();
         }
     }
 

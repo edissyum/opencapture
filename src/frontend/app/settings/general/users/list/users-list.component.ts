@@ -77,14 +77,14 @@ export class UsersListComponent implements OnInit {
                 this.notify.handleErrors(err);
                 return of(false);
             })
-        ).subscribe()
+        ).subscribe();
     }
 
     onPageChange(event: any) {
-        this.pageSize = event.pageSize
-        this.offset = this.pageSize * (event.pageIndex)
-        this.localeStorageService.save('usersPageIndex', event.pageIndex)
-        this.loadUsers()
+        this.pageSize = event.pageSize;
+        this.offset = this.pageSize * (event.pageIndex);
+        this.localeStorageService.save('usersPageIndex', event.pageIndex);
+        this.loadUsers();
     }
 
     loadUsers(): void {
@@ -107,7 +107,7 @@ export class UsersListComponent implements OnInit {
                 this.notify.handleErrors(err);
                 return of(false);
             })
-        ).subscribe()
+        ).subscribe();
     }
 
     deleteConfirmDialog(user_id: number, user: string) {
@@ -186,14 +186,14 @@ export class UsersListComponent implements OnInit {
         if (user_id !== undefined) {
             this.http.put(API_URL + '/ws/users/disable/' + user_id, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
-                    this.loadUsers()
+                    this.loadUsers();
                 }),
                 catchError((err: any) => {
                     console.debug(err);
                     this.notify.handleErrors(err);
                     return of(false);
                 })
-            ).subscribe()
+            ).subscribe();
         }
     }
 
@@ -201,21 +201,21 @@ export class UsersListComponent implements OnInit {
         if (user_id !== undefined) {
             this.http.put(API_URL + '/ws/users/enable/' + user_id, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
-                    this.loadUsers()
+                    this.loadUsers();
                 }),
                 catchError((err: any) => {
                     console.debug(err);
                     this.notify.handleErrors(err);
                     return of(false);
                 })
-            ).subscribe()
+            ).subscribe();
         }
     }
 
     sortData(sort: Sort) {
-        let data = this.users.slice()
+        let data = this.users.slice();
         if(!sort.active || sort.direction === '') {
-            this.users = data
+            this.users = data;
             return;
         }
 

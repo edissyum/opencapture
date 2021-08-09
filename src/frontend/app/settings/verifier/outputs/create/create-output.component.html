@@ -84,5 +84,30 @@
                 <hr class="border-green-400">
             </div>
         </div>
+        <div *ngIf="!loading" class="flex justify-center items-center">
+            <form class="grid grid-cols-2 gap-12 w-full m-10 text-center">
+                <ng-container *ngFor="let field of outputForm">
+                    <mat-form-field *ngIf="field.type == 'text'">
+                        <mat-label>{{ field.label | translate }}</mat-label>
+                        <input matInput [value]="field.control.value" [formControl]="field.control" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field.required">
+                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputForm) }}</mat-error>
+                    </mat-form-field>
+                    <mat-form-field *ngIf="field.type == 'select'">
+                        <mat-label>{{ field.label | translate }}</mat-label>
+                        <mat-select [id]="field.id" [(ngModel)]="field.control.value" [required]="field.required">
+                            <mat-option *ngFor="let option of outputsTypes" [value]="option.type_id">
+                                {{ option.type_label }}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputForm) }}</mat-error>
+                    </mat-form-field>
+                </ng-container>
+            </form>
+        </div>
+        <div class="flex justify-center items-center mb-2">
+            <button mat-button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300">
+                <span class="block" (click)="createOutput()">{{ "OUTPUT.create" | translate }}</span>
+            </button>
+        </div>
     </mat-sidenav-content>
 </mat-sidenav-container>

@@ -64,45 +64,45 @@ export class LocaleService {
     changeLocale(data: any) {
         this.http.get(API_URL + '/ws/i18n/changeLanguage/' + data.value, {headers: this.authService.headers}).pipe(
             tap(() => {
-                this.getCurrentLocale()
+                this.getCurrentLocale();
             }),
             catchError((err: any) => {
-                console.debug(err)
+                console.debug(err);
                 this.notify.handleErrors(err);
                 return of(false);
             })
-        ).subscribe()
+        ).subscribe();
     }
 
     getCurrentLocale() {
         this.http.get(API_URL + '/ws/i18n/getCurrentLang').pipe(
             tap((data: any) => {
-                this.currentLang = data.lang
+                this.currentLang = data.lang;
                 if (data.moment_lang)
-                    this.dateAdaptaterLocale = data.moment_lang
+                    this.dateAdaptaterLocale = data.moment_lang;
                 this._adapter.setLocale(this.dateAdaptaterLocale);
-                this.translate.use(this.currentLang)
-                moment.locale(this.dateAdaptaterLocale)
+                this.translate.use(this.currentLang);
+                moment.locale(this.dateAdaptaterLocale);
             }),
             catchError((err: any) => {
-                console.debug(err)
+                console.debug(err);
                 this.notify.handleErrors(err);
                 return of(false);
             })
-        ).subscribe()
+        ).subscribe();
     }
 
     getLocales() {
         const headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.authService.getToken())
         this.http.get(API_URL + '/ws/i18n/getAllLang', {headers}).pipe(
             tap((data: any) => {
-                this.langs = data.langs
+                this.langs = data.langs;
             }),
             catchError((err: any) => {
-                console.debug(err)
+                console.debug(err);
                 this.notify.handleErrors(err);
                 return of(false);
             })
-        ).subscribe()
+        ).subscribe();
     }
 }

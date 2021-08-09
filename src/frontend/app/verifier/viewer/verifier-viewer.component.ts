@@ -399,7 +399,7 @@ export class VerifierViewerComponent implements OnInit {
                     this.notify.handleErrors(err);
                     return of(false);
                 })
-        ).subscribe()
+        ).subscribe();
 
         this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/updatePosition',
             {'args': {[this.lastId]: position}},
@@ -409,7 +409,7 @@ export class VerifierViewerComponent implements OnInit {
                     this.notify.handleErrors(err);
                     return of(false);
                 })
-        ).subscribe()
+        ).subscribe();
     }
 
     saveData(data: any, field_id: any = false, show_notif: boolean = false) {
@@ -460,17 +460,17 @@ export class VerifierViewerComponent implements OnInit {
                 this.notify.handleErrors(err);
                 return of(false);
             })
-        ).subscribe()
+        ).subscribe();
     }
 
     getPattern(format: any) {
-        let pattern = ''
+        let pattern = '';
         for (let cpt in this.pattern) {
             if (cpt == format) {
-                pattern = this.pattern[cpt]
+                pattern = this.pattern[cpt];
             }
         }
-        return pattern
+        return pattern;
     }
 
     duplicateField(field_id: any, category_id: any) {

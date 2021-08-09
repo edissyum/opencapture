@@ -89,6 +89,7 @@
 		"field_required": "",
 		"form_not_valid": "",
 		"is_server_up": "Is server up ?",
+		"json_pattern": "",
 		"jwt_error": "Authentification by token error",
 		"number_float_pattern": "",
 		"number_int_pattern": "",
@@ -100,6 +101,9 @@
 		"delivery_number": "",
 		"facturation": "",
 		"invoice_date": "",
+		"invoice_date_day": "",
+		"invoice_date_month": "",
+		"invoice_date_year": "",
 		"invoice_due_date": "",
 		"invoice_number": "",
 		"no_rate_amount": "",
@@ -120,7 +124,6 @@
 	},
 	"FORMS": {
 		"available_fields": "",
-		"build_form": "",
 		"confirm_delete": "",
 		"confirm_disable": "",
 		"confirm_duplicate": "",
@@ -186,13 +189,20 @@
 	},
 	"OUTPUT": {
 		"auth": "",
+		"available_fields": "",
+		"check_connection_before": "",
 		"confirm_delete": "",
+		"create": "",
+		"created": "",
+		"form_updated": "",
+		"json_input_erorr": "",
 		"maarch_connection_ko": "",
 		"maarch_connection_ok": "",
 		"no_auth_necessary": "",
 		"output_settings_list": "",
-		"specific": "",
-		"test_connection": ""
+		"parameters": "",
+		"test_connection": "",
+		"update": ""
 	},
 	"PAGINATOR": {
 		"display": "",

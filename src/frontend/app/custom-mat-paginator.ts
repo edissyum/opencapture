@@ -40,11 +40,11 @@ export class CustomMatPaginatorIntl extends MatPaginatorIntl {
                 this.changes.next();
             }),
             catchError((err: any) => {
-                console.debug(err)
+                console.debug(err);
                 this.notify.handleErrors(err);
                 return of(false);
             })
-        ).subscribe()
+        ).subscribe();
     }
 
     getRangeLabel = (page: number, pageSize: number, length: number) =>  {

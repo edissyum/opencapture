@@ -65,7 +65,7 @@ export class CreateRoleComponent implements OnInit {
                 this.notify.handleErrors(err, '/settings/general/roles');
                 return of(false);
             })
-        ).subscribe()
+        ).subscribe();
     }
 
     isValidForm() {
@@ -106,14 +106,14 @@ export class CreateRoleComponent implements OnInit {
                             this.router.navigate(['/settings/general/roles/'])
                         }),
                         catchError((err: any) => {
-                            console.debug(err)
-                            // this.notify.handleErrors(err, '/settings/general/roles/');
+                            console.debug(err);
+                            this.notify.handleErrors(err, '/settings/general/roles/');
                             return of(false);
                         })
                     ).subscribe();
                 }),
                 catchError((err: any) => {
-                    console.debug(err)
+                    console.debug(err);
                     this.notify.handleErrors(err, '/settings/general/roles/');
                     return of(false);
                 })

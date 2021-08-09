@@ -144,7 +144,7 @@ export class CustomFieldsComponent implements OnInit {
                 this.notify.handleErrors(err);
                 return of(false);
             })
-        ).subscribe()
+        ).subscribe();
     }
 
     addCustomField() {
@@ -170,7 +170,7 @@ export class CustomFieldsComponent implements OnInit {
                 this.notify.handleErrors(err);
                 return of(false);
             })
-        ).subscribe()
+        ).subscribe();
     }
 
     enableCustomField(oldList: any[], newList: any[], oldIndex: number, newIndex: number) {
@@ -200,6 +200,6 @@ export class CustomFieldsComponent implements OnInit {
                 this.notify.handleErrors(err);
                 return of(false);
             })
-        ).subscribe()
+        ).subscribe();
     }
 }

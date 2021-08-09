@@ -165,7 +165,7 @@ export class UpdateSupplierComponent implements OnInit {
                                                     this.notify.handleErrors(err);
                                                     return of(false);
                                                 })
-                                            ).subscribe()
+                                            ).subscribe();
                                         }else{
                                             this.http.post(API_URL + '/ws/accounts/addresses/create',
                                                 {'args': {
@@ -206,14 +206,14 @@ export class UpdateSupplierComponent implements OnInit {
                         this.notify.handleErrors(err);
                         return of(false);
                     })
-                ).subscribe()
+                ).subscribe();
             }),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
                 return of(false);
             })
-        ).subscribe()
+        ).subscribe();
     }
 
     isValidForm() {

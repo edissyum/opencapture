@@ -45,6 +45,6 @@ export class VersionUpdateComponent implements OnInit {
                 this.notify.handleErrors(err);
                 return of(false);
             })
-        ).subscribe()
+        ).subscribe();
     }
 }

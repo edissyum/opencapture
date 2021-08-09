@@ -99,27 +99,27 @@ export class UpdateUserComponent implements OnInit {
                 this.notify.handleErrors(err);
                 return of(false);
             })
-        ).subscribe()
+        ).subscribe();
 
         this.http.get(API_URL + '/ws/users/getCustomersByUserId/' + this.userId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.usersCustomers = data
+                this.usersCustomers = data;
             }),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
                 return of(false);
             })
-        ).subscribe()
+        ).subscribe();
 
         this.http.get(API_URL + '/ws/roles/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 data.roles.forEach((element: any) => {
                     if (element.editable) {
-                        this.roles.push(element)
+                        this.roles.push(element);
                     } else {
                         if ((this.userService.getUser().privileges == '*')) {
-                            this.roles.push(element)
+                            this.roles.push(element);
                         }
                     }
                 });
@@ -129,7 +129,7 @@ export class UpdateUserComponent implements OnInit {
                 this.notify.handleErrors(err);
                 return of(false);
             })
-        ).subscribe()
+        ).subscribe();
 
         this.http.get(API_URL + '/ws/users/getById/' + this.userId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -140,7 +140,7 @@ export class UpdateUserComponent implements OnInit {
                             if (element.id == field) {
                                 element.control.setValue(data[field]);
                                 if (element.id == 'role') {
-                                    element.values = this.roles
+                                    element.values = this.roles;
                                 }
                             }
                         });
@@ -153,7 +153,7 @@ export class UpdateUserComponent implements OnInit {
                 this.notify.handleErrors(err);
                 return of(false);
             })
-        ).subscribe()
+        ).subscribe();
     }
 
     isValidForm() {
@@ -183,7 +183,7 @@ export class UpdateUserComponent implements OnInit {
                     this.router.navigate(['/settings/general/users/'])
                 }),
                 catchError((err: any) => {
-                    console.debug(err)
+                    console.debug(err);
                     this.notify.handleErrors(err, '/settings/general/users/');
                     return of(false);
                 })
@@ -234,7 +234,7 @@ export class UpdateUserComponent implements OnInit {
                 this.notify.success(this.translate.instant('USER.customers_updated'))
             }),
             catchError((err: any) => {
-                console.debug(err)
+                console.debug(err);
                 this.notify.handleErrors(err, '/settings/general/users/');
                 return of(false);
             })

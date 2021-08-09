@@ -15,6 +15,7 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
+import json
 from flask_babel import gettext
 from ..import_controllers import pdf
 from ..import_models import outputs
@@ -50,13 +51,7 @@ def update_output(output_id, data):
     output_info, error = outputs.get_output_by_id({'output_id': output_id})
 
     if error is None:
-        _set = {
-            'label': data['label'],
-            'label_short': data['label_short'],
-            'enabled': data['enabled']
-        }
-
-        res, error = outputs.update_output({'set': _set, 'output_id': output_id})
+        res, error = outputs.update_output({'set': {'data': json.dumps(data)}, 'output_id': output_id})
 
         if error is None:
             return '', 200
@@ -79,8 +74,8 @@ def create_output(data):
     _db = _vars[0]
 
     _columns = {
-        'label': data['label'],
-        'label_short': data['label_short'],
+        'output_type_id': data['output_type_id'],
+        'output_label': data['output_label'],
     }
 
     res, error = outputs.create_output({'columns': _columns})

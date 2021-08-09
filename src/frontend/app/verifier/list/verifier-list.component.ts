@@ -148,15 +148,15 @@ export class VerifierListComponent implements OnInit {
 
         this.http.get(API_URL + '/ws/status/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.status = data.status
+                this.status = data.status;
             }),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
                 return of(false);
             })
-        ).subscribe()
-        this.loadCustomers()
+        ).subscribe();
+        this.loadCustomers();
     }
 
     loadCustomers() {
@@ -184,7 +184,7 @@ export class VerifierListComponent implements OnInit {
                 this.notify.handleErrors(err);
                 return of(false);
             })
-        ).subscribe()
+        ).subscribe();
     }
 
     loadInvoices() {
@@ -268,7 +268,7 @@ export class VerifierListComponent implements OnInit {
                 this.notify.handleErrors(err);
                 return of(false);
             })
-        ).subscribe()
+        ).subscribe();
     }
 
     fillChildren(parent_id: any , parent: any, child_name: any, supplier_name: any, supplier_id: any, id: any, purchase_or_sale: any) {

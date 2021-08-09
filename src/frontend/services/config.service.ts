@@ -25,12 +25,12 @@ export class ConfigService {
                     resolve(true);
                 }),
                 catchError((err: any) => {
-                    console.debug(err)
+                    console.debug(err);
                     resolve(false);
                     this.notify.handleErrors(err);
                     return of(false);
                 })
-            ).subscribe()
+            ).subscribe();
         });
     }
 

@@ -141,7 +141,7 @@ export class CreateSupplierComponent implements OnInit {
                 this.notify.handleErrors(err);
                 return of(false);
             })
-        ).subscribe()
+        ).subscribe();
     }
 
     isValidForm() {
@@ -185,14 +185,14 @@ export class CreateSupplierComponent implements OnInit {
                             this.router.navigate(['/accounts/suppliers/list'])
                         }),
                         catchError((err: any) => {
-                            console.debug(err)
+                            console.debug(err);
                             this.notify.handleErrors(err, '/accounts/suppliers/list');
                             return of(false);
                         })
                     ).subscribe();
                 }),
                 catchError((err: any) => {
-                    console.debug(err)
+                    console.debug(err);
                     this.notify.handleErrors(err, '/accounts/suppliers/list');
                     return of(false);
                 })

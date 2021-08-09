@@ -103,7 +103,7 @@ export class UserProfileComponent implements OnInit {
                 this.notify.handleErrors(err);
                 return of(false);
             })
-        ).subscribe()
+        ).subscribe();
 
         this.http.get(API_URL + '/ws/users/getById/' + this.userId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -127,7 +127,7 @@ export class UserProfileComponent implements OnInit {
                 this.notify.handleErrors(err);
                 return of(false);
             })
-        ).subscribe()
+        ).subscribe();
     }
 
     isValidForm() {

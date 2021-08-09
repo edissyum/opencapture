@@ -116,18 +116,18 @@ export class UpdateRoleComponent implements OnInit {
                 this.router.navigate(['/settings/general/roles']).then()
                 return of(false);
             })
-        ).subscribe()
+        ).subscribe();
 
         this.http.get(API_URL + '/ws/privileges/getbyRoleId/' + this.roleId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.rolePrivileges = data
+                this.rolePrivileges = data;
             }),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err, '/settings/general/roles');
                 return of(false);
             })
-        ).subscribe()
+        ).subscribe();
 
         this.http.get(API_URL + '/ws/privileges/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -139,7 +139,7 @@ export class UpdateRoleComponent implements OnInit {
                 this.notify.handleErrors(err, '/settings/general/roles');
                 return of(false);
             })
-        ).subscribe()
+        ).subscribe();
     }
 
     isValidForm() {
@@ -172,7 +172,7 @@ export class UpdateRoleComponent implements OnInit {
             this.http.put(API_URL + '/ws/roles/update/' + this.roleId, {'args': role}, {headers: this.authService.headers},
             ).pipe(
                 catchError((err: any) => {
-                    console.debug(err)
+                    console.debug(err);
                     this.notify.handleErrors(err, '/settings/general/roles/');
                     return of(false);
                 })

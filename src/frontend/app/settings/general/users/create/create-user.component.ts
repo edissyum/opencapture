@@ -101,7 +101,7 @@ export class CreateUserComponent implements OnInit {
                 this.notify.handleErrors(err);
                 return of(false);
             })
-        ).subscribe()
+        ).subscribe();
     }
 
     isValidForm() {
@@ -137,7 +137,7 @@ export class CreateUserComponent implements OnInit {
                     this.router.navigate(['/settings/general/users/'])
                 }),
                 catchError((err: any) => {
-                    console.debug(err)
+                    console.debug(err);
                     this.notify.handleErrors(err);
                     return of(false);
                 })
