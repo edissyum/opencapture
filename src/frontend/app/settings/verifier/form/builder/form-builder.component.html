@@ -23,7 +23,7 @@
                                            class="absolute text-lg left-4 w-10 h-10 rounded-full flex items-center justify-center {{setting['icon']}}">
                                         </i>
                                         <button mat-button [class.text-green-400]="this.router.url == setting['route']"
-                                                class="font-normal w-full h-20 flex justify-center items-center text-center"
+                                                class="pr-0 font-normal w-full h-20 flex justify-center items-center text-center"
                                                 (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
                                                 routerLink="{{ setting['route'] }}">
                                             <p [class.font-medium]="this.router.url == setting['route']" class="m-0">
@@ -56,7 +56,7 @@
                         <ng-template #noActions>
                             <button *ngIf="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] == '*'"
                                     mat-button [class.text-green-400]="this.router.url == setting['route']"
-                                    class="font-normal w-full h-20 flex justify-center items-center text-center"
+                                    class="pr-0 font-normal w-full h-20 flex justify-center items-center text-center"
                                     (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
                                     routerLink="{{ setting['route'] }}">
                                 <i class="absolute left-4 w-10 h-10 rounded-full flex items-center justify-center fa-lg {{setting['icon']}}"></i>
@@ -89,24 +89,34 @@
             </button>
         </div>
         <div *ngIf="!loading" class="overflow-auto" style="height: calc(100% - 64px)">
-            <div class="grid grid-cols-3 gap-4 mt-6 ml-6">
+            <div class="grid grid-cols-3 gap-4 mt-6 ml-6 mr-6">
                 <mat-form-field>
                     <mat-label>{{ "FORMS.label" | translate }}</mat-label>
                     <input matInput [formControl]="this.form['label'].control" required>
-                </mat-form-field>
-                <mat-form-field>
-                    <mat-label>{{ "HEADER.output_type" | translate }}</mat-label>
-                    <mat-select [(ngModel)]="this.form['output_type'].control.value">
-                        <mat-option *ngFor="let option of outputsTypes" [value]="option.type_id">
-                            {{ option.type_label }}
-                        </mat-option>
-                    </mat-select>
                 </mat-form-field>
                 <div class="flex justify-center mt-4">
                     <mat-slide-toggle [formControl]="this.form['default_form'].control">
                         {{ "FORMS.is_default" | translate }}
                     </mat-slide-toggle>
                 </div>
+                <mat-form-field *ngFor="let field of this.outputTypeForm; let cpt = index">
+                    <mat-label>{{ "HEADER.output_type" | translate }}</mat-label>
+                    <mat-select [(ngModel)]="field.control.value">
+                        <mat-option *ngFor="let option of this.outputsTypes" [value]="option.type_id">
+                            {{ option.type_label }}
+                        </mat-option>
+                    </mat-select>
+                    <span *ngIf="!field.canRemove" (click)="$event.stopPropagation(); addOutputType()"
+                          matTooltip="{{ 'OUTPUT.add' | translate }}"
+                          class="absolute top-1 right-4 cursor-pointer text-gray-900 z-50" style="right: -2.2rem">
+                        <mat-icon class="text-lg">add_circle</mat-icon>
+                    </span>
+                    <span *ngIf="field.canRemove" (click)="$event.stopPropagation(); removeOutputType(cpt)"
+                          matTooltip="{{ 'OUTPUT.remove' | translate }}"
+                          class="absolute top-1 right-4 cursor-pointer text-red-500" style="right: -2.2rem">
+                        <mat-icon class="text-xl">delete_forever</mat-icon>
+                    </span>
+                </mat-form-field>
             </div>
             <ng-container *ngFor="let category of fieldCategories; let i = index">
                 <div class="relative text-xl tracking-wider pl-1.5 pr-1.5 bg-white" style="top: 2.5rem; left:2.5rem;" [style]="'width:calc(3% + ' + this.translate.instant(category['label']).length + '%)'">

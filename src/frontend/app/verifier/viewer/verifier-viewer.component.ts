@@ -28,6 +28,7 @@ export class VerifierViewerComponent implements OnInit {
     loading         : boolean   = true
     imageInvoice    : any;
     isOCRRunning    : boolean   = false;
+    settingsOpen    : boolean       = false;
     invoiceId       : any;
     invoice         : any;
     fields          : any;
@@ -55,6 +56,8 @@ export class VerifierViewerComponent implements OnInit {
         'facturation': [],
         'other': []
     }
+    formList        : any       = {};
+    currentFormFields: any       = {};
     pattern         : any       = {
         'alphanum': '^[0-9a-zA-Z\\s]*$',
         'alphanum_extended': '^[0-9a-zA-Z-/#\\s]*$',
@@ -92,8 +95,6 @@ export class VerifierViewerComponent implements OnInit {
     ) {}
 
     async ngOnInit(): Promise<void> {
-        marker('VERIFIER.only_raw_footer')
-        marker('VERIFIER.calculated_footer')
         this.localeStorageService.save('splitter_or_verifier', 'verifier');
         this.imageInvoice = $('#invoice_image');
 
@@ -111,14 +112,17 @@ export class VerifierViewerComponent implements OnInit {
         this.invoiceId = this.route.snapshot.params['id'];
         this.invoice = await this.getInvoice();
         this.ratio = this.invoice.img_width / this.imageInvoice.width();
-        let form = await this.getForm();
+        if (this.invoice.datas['form_id']) this.currentFormFields = await this.getFormById(this.invoice.datas['form_id']);
+        if (Object.keys(this.currentFormFields).length == 0) this.currentFormFields = await this.getForm();
+        this.formList = await this.getAllForm();
+        this.formList = this.formList.forms;
         this.suppliers = await this.retrieveSuppliers();
         this.suppliers = this.suppliers.suppliers;
         if (this.invoice.supplier_id) {
             this.getSupplierInfo(this.invoice.supplier_id, false, true);
         }
-        await this.fillForm(form);
-        await this.drawPositions(form);
+        await this.fillForm(this.currentFormFields);
+        await this.drawPositions(this.currentFormFields);
         this.loading = false;
         let triggerEvent = $('.trigger');
         triggerEvent.hide();
@@ -144,7 +148,7 @@ export class VerifierViewerComponent implements OnInit {
     async drawPositions(data: any): Promise<any> {
         for (let parent in this.fields) {
             for (let cpt in data.fields[parent]) {
-                let field = data.fields[parent][cpt]
+                let field = data.fields[parent][cpt];
                 let position = this.getPosition(field.id);
                 if (position) {
                     this.lastId = field.id;
@@ -189,12 +193,25 @@ export class VerifierViewerComponent implements OnInit {
 
     async getForm(): Promise<any> {
         if (this.invoice.supplier_id)
-            return await this.http.get(API_URL + '/ws/forms/getBySupplierId/' + this.invoice.supplier_id, {headers: this.authService.headers}).toPromise();
+            return await this.http.get(API_URL + '/ws/forms/fields/getBySupplierId/' + this.invoice.supplier_id, {headers: this.authService.headers}).toPromise();
         else
             return await this.http.get(API_URL + '/ws/forms/getDefault', {headers: this.authService.headers}).toPromise();
     }
 
+    async getAllForm(): Promise<any> {
+        return await this.http.get(API_URL + '/ws/forms/list', {headers: this.authService.headers}).toPromise();
+    }
+
+    async getFormById(form_id: number): Promise<any> {
+        return await this.http.get(API_URL + '/ws/forms/fields/getByFormId/' + form_id, {headers: this.authService.headers}).toPromise();
+    }
+
     async fillForm(data: any): Promise<any> {
+        this.form = {
+            'supplier': [],
+            'facturation': [],
+            'other': []
+        };
         this.fields = data.fields;
         for (let category in this.fields) {
             for (let cpt in this.fields[category]) {
@@ -278,7 +295,7 @@ export class VerifierViewerComponent implements OnInit {
         $('.trigger').show();
         let _this = this;
         this.lastId = event.target.id;
-        this.lastLabel = event.target.labels[0].textContent.trim();
+        this.lastLabel = event.target.labels[0].textContent.replace('*', '').trim();
         this.lastColor = color;
         let imageContainer = $('.image-container');
         let deleteArea = $('.delete-area');
@@ -335,6 +352,7 @@ export class VerifierViewerComponent implements OnInit {
                                         _this.updateFormValue(inputId, data.result);
                                         _this.isOCRRunning = false;
                                         let res = _this.saveData(data.result, _this.lastId, true);
+                                        console.log(res)
                                         if (res) _this.savePosition(_this.getSelectionByCpt(selection, cpt));
                                     }),
                                     catchError((err: any) => {
@@ -347,9 +365,11 @@ export class VerifierViewerComponent implements OnInit {
                     }
                 },
                 onDeleted: function(img: any, cpt: any) {
-                    let inputId = $('#select-area-label_' + cpt).attr('class').replace('input_', '');
+                    let inputId = $('#select-area-label_' + cpt).attr('class').replace('input_', '').replace('select-none', '');
                     if (inputId) {
                         _this.updateFormValue(inputId, '');
+                        _this.deleteData(inputId);
+                        _this.deletePosition(inputId);
                     }
                 }
             });
@@ -363,7 +383,7 @@ export class VerifierViewerComponent implements OnInit {
                     resizeArea.css('display', 'none');
                     deleteArea.css('display', 'none');
                 }
-            }, 50);
+            }, 200);
             $('.outline_' + _this.lastId).removeClass('animate');
         }
     }
@@ -423,6 +443,8 @@ export class VerifierViewerComponent implements OnInit {
                 {'args': data},
                 {headers: this.authService.headers}).pipe(
                 tap(() => {
+                    console.log('here')
+                    console.log(show_notif)
                     if (show_notif) this.notify.success(this.translate.instant('INVOICES.position_and_data_updated', {"input": this.lastLabel}));
                 }),
                 catchError((err: any) => {
@@ -450,11 +472,23 @@ export class VerifierViewerComponent implements OnInit {
 
     deleteData(field_id: any) {
         this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/deleteData',
-            {'args': field_id},
+            {'args': field_id.trim()},
             {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('INVOICES.data_deleted', {"input": this.lastLabel}));
             }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    deletePosition(field_id: any) {
+        this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/deletePosition',
+            {'args': field_id.trim()},
+            {headers: this.authService.headers}).pipe(
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
@@ -499,6 +533,7 @@ export class VerifierViewerComponent implements OnInit {
                 this.form[category].forEach((field: any, cpt:number) => {
                     if (field.id.trim() === field_id.trim()) {
                         this.deleteData(field.id);
+                        this.deletePosition(field.id);
                         this.form[category].splice(cpt, 1);
                     }else if (field.id.trim() === parent_id.trim()) {
                         field.cpt = field.cpt - 1;
@@ -618,6 +653,20 @@ export class VerifierViewerComponent implements OnInit {
         }
         if (!valid) return;
         this.saveData(arrayData);
+    }
 
+    async changeForm(event: any) {
+        this.loading = true;
+        let new_form_id = event.value;
+        for (let cpt in this.formList) {
+            if (this.formList[cpt].id == new_form_id) {
+                this.saveData({'form_id': new_form_id});
+                this.currentFormFields = await this.getFormById(new_form_id);
+                this.imageInvoice.selectAreas('destroy');
+                this.settingsOpen = false;
+                this.notify.success(this.translate.instant('VERIFIER.form_changed'))
+                await this.ngOnInit();
+            }
+        }
     }
 }

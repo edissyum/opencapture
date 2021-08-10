@@ -15,7 +15,7 @@ CREATE TABLE "form_models" (
     "label"   VARCHAR(50),
     "default_form" BOOLEAN DEFAULT false,
     "enabled" BOOLEAN DEFAULT true,
-    "output_type" VARCHAR(255) DEFAULT 'export_xml',
+    "output_type" TEXT[] DEFAULT {'export_xml'},
     "status"  VARCHAR(5) DEFAULT 'OK'
 );
 

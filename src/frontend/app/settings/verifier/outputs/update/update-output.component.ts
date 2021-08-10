@@ -60,9 +60,6 @@ export class UpdateOutputComponent implements OnInit {
             required: true,
         }
     ];
-    testConnectionMapping : any         = {
-        'export_maarch' : "testMaarchConnection()"
-    }
     availableFields     : any           = [
         {
             "id": 'HEADER.id',
@@ -113,6 +110,9 @@ export class UpdateOutputComponent implements OnInit {
             'label': 'FACTURATION.delivery_number'
         },
     ];
+    testConnectionMapping : any         = {
+        'export_maarch' : "testMaarchConnection()"
+    }
 
     /**
      * Pour ajouter une nouvelle chaine sortante (e.g : Alfresco)
@@ -123,7 +123,7 @@ export class UpdateOutputComponent implements OnInit {
      * Rajouter une ligne dans le JSON 'webservice' avec un nom de fonction (sans mettre les parenthèses)
      * Créer cette fonction et faites le process permettant de récupérer les données
      * Les données doivent être formatés comme suit : {'id': XX, 'value': XX} et être mise dans la clé "values" du champ
-     * Regardez la fonction getUsersMaarch() pour voir le fonctionnement
+     * Regarder la fonction getUsersMaarch() pour voir le fonctionnement
     **/
 
     constructor(

@@ -139,10 +139,12 @@
 		"enable": "",
 		"is_default": "",
 		"label": "",
+		"label_and_output_mandatory": "",
 		"label_mandatory": "",
 		"modify": "",
 		"other": "",
 		"output_settings": "",
+		"output_type_mandatory": "",
 		"refuse": "",
 		"supplier": "",
 		"updated": "",
@@ -188,6 +190,7 @@
 		"required": ""
 	},
 	"OUTPUT": {
+		"add": "",
 		"auth": "",
 		"available_fields": "",
 		"check_connection_before": "",
@@ -201,6 +204,7 @@
 		"no_auth_necessary": "",
 		"output_settings_list": "",
 		"parameters": "",
+		"remove": "",
 		"test_connection": "",
 		"update": ""
 	},
@@ -326,6 +330,8 @@
 	},
 	"VERIFIER": {
 		"calculated_footer": "",
+		"change_form": "",
+		"change_form_details": "",
 		"collapse_all": "",
 		"colors": "",
 		"confirm_delete_all_invoices": "",
@@ -335,6 +341,7 @@
 		"display": "",
 		"expand_all": "",
 		"field_settings": "",
+		"form_changed": "",
 		"format": "",
 		"list": "Invoices",
 		"nb_pages": "",

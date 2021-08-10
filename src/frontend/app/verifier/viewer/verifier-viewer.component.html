@@ -8,6 +8,25 @@
         </div>
     </div>
     <div *ngIf="this.fields" class="px-4 overflow-auto" style="height: calc(100vh - 56px) !important">
+        <mat-accordion>
+            <mat-expansion-panel class="mb-4" [(expanded)]="settingsOpen">
+                <mat-expansion-panel-header>
+                    <mat-panel-title class="justify-center">{{ 'GLOBAL.settings' | translate }}</mat-panel-title>
+                </mat-expansion-panel-header>
+                <mat-tab-group class="mx-5">
+                    <mat-tab [label]="'VERIFIER.change_form' | translate">
+                        <p class="mt-2 text-center text-gray-400">{{ 'VERIFIER.change_form_details' | translate }}</p>
+                        <mat-form-field class="w-full">
+                            <mat-select [(value)]="this.currentFormFields.form_id" (selectionChange)="changeForm($event)">
+                                <mat-option *ngFor="let form of this.formList" [value]="form['id']">
+                                    {{ form['label'] }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-tab>
+                </mat-tab-group>
+            </mat-expansion-panel>
+        </mat-accordion>
         <ng-container *ngFor="let category of this.fieldCategories">
             <ng-container *ngIf="this.form[category['id']].length !== 0">
                 <div class="relative text-xl tracking-wider pl-1.5 pr-1.5 bg-white left-6 z-5"
@@ -15,10 +34,10 @@
                     {{ category['label'] | translate }}
                     <span *ngIf="get_only_raw_footer && this.translate.instant(category['label']) == this.translate.instant('FORMS.supplier')"
                           class="cursor-default relative top-1.5 text-red-500 text-3xl"
-                          [matTooltip]="this.translate.instant('VERIFIER.only_raw_footer')">&bull;</span>
+                          matTooltip="{{ 'VERIFIER.only_raw_footer' | translate }}">&bull;</span>
                     <span *ngIf="!get_only_raw_footer && this.translate.instant(category['label']) == this.translate.instant('FORMS.supplier')"
                           class="cursor-default relative top-1.5 text-green-400 text-3xl"
-                          [matTooltip]="this.translate.instant('VERIFIER.calculated_footer')">&bull;</span>
+                          matTooltip="{{ 'VERIFIER.calculated_footer' | translate }}">&bull;</span>
                 </div>
                 <div class="relative border-green-400 border rounded-lg -top-3.5">
                     <div id="{{ category['id'] }}" class="flex flex-wrap w-full my-3" style="min-height: 50px;">

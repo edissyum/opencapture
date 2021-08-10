@@ -119,7 +119,6 @@ export class UpdateCustomerComponent implements OnInit {
         this.customerId = this.route.snapshot.params['id'];
         this.http.get(API_URL + '/ws/accounts/customers/getById/' + this.customerId, {headers: this.authService.headers}).pipe(
             tap((customer: any) => {
-                console.log(customer)
                 this.customer = customer;
                 for (let field in this.customer) {
                     if (customer.hasOwnProperty(field)) {

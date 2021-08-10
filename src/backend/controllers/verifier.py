@@ -187,6 +187,26 @@ def delete_invoice_data_by_invoice_id(invoice_id, field_id):
             return response, 401
 
 
+def delete_invoice_position_by_invoice_id(invoice_id, field_id):
+    _vars = pdf.init()
+    _db = _vars[0]
+    invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
+    if error is None:
+        _set = {}
+        invoice_positions = invoice_info['positions']
+        if field_id in invoice_positions:
+            del(invoice_positions[field_id])
+        res, error = verifier.update_invoice({'set': {"positions": json.dumps(invoice_positions)}, 'invoice_id': invoice_id})
+        if error is None:
+            return '', 200
+        else:
+            response = {
+                "errors": gettext('UPDATE_INVOICE_DATA_ERROR'),
+                "message": error
+            }
+            return response, 401
+
+
 def delete_invoice(invoice_id):
     _vars = pdf.init()
     _db = _vars[0]

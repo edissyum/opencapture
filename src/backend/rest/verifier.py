@@ -76,6 +76,7 @@ def delete_invoice(invoice_id):
 def update_invoice_data(invoice_id):
     data = request.json['args']
     res = verifier.update_invoice_data_by_invoice_id(invoice_id, data)
+    print(res)
     return make_response(res[0], res[1])
 
 
@@ -91,6 +92,14 @@ def export_xml(invoice_id):
 def delete_invoice_data(invoice_id):
     field_id = request.json['args']
     res = verifier.delete_invoice_data_by_invoice_id(invoice_id, field_id)
+    return make_response(res[0], res[1])
+
+
+@bp.route('verifier/invoices/<int:invoice_id>/deletePosition', methods=['PUT'])
+@auth.token_required
+def delete_invoice_position(invoice_id):
+    field_id = request.json['args']
+    res = verifier.delete_invoice_position_by_invoice_id(invoice_id, field_id)
     return make_response(res[0], res[1])
 
 

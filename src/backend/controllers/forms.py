@@ -69,7 +69,7 @@ def get_form_by_id(form_id):
         return response, 401
 
 
-def get_form_by_supplier_id(supplier_id):
+def get_form_fields_by_supplier_id(supplier_id):
     form_id, error = accounts.get_supplier_by_id({'select': ['form_id'], 'supplier_id': supplier_id})
     if error is None:
         form_info, error = forms.get_fields({
@@ -84,6 +84,21 @@ def get_form_by_supplier_id(supplier_id):
                 "message": error
             }
             return response, 401
+
+
+def get_form_fields_by_form_id(form_id):
+    form_info, error = forms.get_fields({
+        'form_id': form_id
+    })
+
+    if error is None:
+        return form_info, 200
+    else:
+        response = {
+            "errors": gettext('GET_FORM_FIELDS_BY_FORM_ID_ERROR'),
+            "message": error
+        }
+        return response, 401
 
 
 def get_default_form():

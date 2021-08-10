@@ -26,14 +26,16 @@ export class FormBuilderComponent implements OnInit {
         'label': {
             'control': new FormControl(),
         },
-        'output_type': {
-            'control': new FormControl(),
-            'values': this.outputsTypes
-        },
         'default_form': {
             'control': new FormControl(),
         }
     };
+    outputTypeForm          : any       = [
+        {
+            control: new FormControl(),
+            cpt: 0
+        }
+    ];
     formId                  : any;
     creationMode            : boolean   = true;
     labelType               : any []    = [
@@ -542,8 +544,8 @@ export class FormBuilderComponent implements OnInit {
     ];
 
     constructor(
-        private http: HttpClient,
         public router: Router,
+        private http: HttpClient,
         private route: ActivatedRoute,
         public userService: UserService,
         private formBuilder: FormBuilder,
@@ -559,36 +561,41 @@ export class FormBuilderComponent implements OnInit {
         this.formId = this.route.snapshot.params['id'];
         if (this.formId) {
             this.creationMode = false;
-            this.http.get(API_URL + '/ws/forms/getById/' + this.formId, {headers: this.authService.headers}).pipe(
+
+            this.http.get(API_URL + '/ws/outputs/getOutputsType', {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
-                    for (let field in this.form) {
-                        if (this.form.hasOwnProperty(field)) {
-                            for (let info in data) {
-                                if (data.hasOwnProperty(info)) {
-                                    if (info == field) {
-                                        this.form[field].control.value = data[info];
+                    this.outputsTypes = data.outputs_types;
+                    this.http.get(API_URL + '/ws/forms/getById/' + this.formId, {headers: this.authService.headers}).pipe(
+                        tap((data: any) => {
+                            for (let field in this.form) {
+                                for (let info in data) {
+                                    if (info == field) this.form[field].control.setValue(data[field]);
+                                }
+                            }
+
+                            if (data.output_type) {
+                                let length = data.output_type.length;
+                                if (length == 1) this.outputTypeForm[0].control.setValue(data.output_type[0]);
+                                if (length > 1) {
+                                    for (let cpt in data.output_type) {
+                                        if (parseInt(cpt) !== 0) this.addOutputType();
+                                        this.outputTypeForm[cpt].control.setValue(data.output_type[cpt]);
                                     }
                                 }
                             }
-                        }
-                    }
-                }),
-                catchError((err: any) => {
+                        }),
+                        catchError((err: any) => {
+                            console.debug(err);
+                            this.notify.handleErrors(err);
+                            return of(false);
+                        })
+                    ).subscribe();
+                }),catchError((err: any) => {
                     console.debug(err);
                     this.notify.handleErrors(err);
                     return of(false);
                 })
             ).subscribe();
-
-            this.http.get(API_URL + '/ws/outputs/getOutputsType', {headers: this.authService.headers}).pipe(
-                tap((data: any) => {
-                    this.outputsTypes = data.outputs_types;
-                }),catchError((err: any) => {
-                        console.debug(err);
-                        this.notify.handleErrors(err);
-                        return of(false);
-                    })
-                ).subscribe();
 
             this.http.get(API_URL + '/ws/customFields/list', {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
@@ -767,16 +774,33 @@ export class FormBuilderComponent implements OnInit {
         this.fields[category_id] = tmpCurrentOrder;
     }
 
+    addOutputType() {
+        this.outputTypeForm[0].cpt = this.outputTypeForm[0].cpt + 1;
+        let cpt = this.outputTypeForm[0].cpt;
+        this.outputTypeForm.push({
+            'control': new FormControl(),
+            'canRemove': true
+        });
+    }
+
+    removeOutputType(cpt: any) {
+        this.outputTypeForm.splice(cpt, 1);
+    }
+
     updateForm() {
         let label = this.form.label.control.value;
         let is_default = this.form.default_form.control.value;
-        let output_type = this.form.output_type.control.value;
-        if (label) {
-            this.http.put(API_URL + '/ws/forms/update/' + this.formId, {'args': {'label' : label, 'default_form' : is_default, 'output_type': output_type}}, {headers: this.authService.headers},
+        let output_types: any[] = [];
+        this.outputTypeForm.forEach((element: any) => {
+            if (element.control.value) output_types.push(element.control.value);
+        });
+
+        if (label !== '' && output_types.length >= 1) {
+            this.http.put(API_URL + '/ws/forms/update/' + this.formId, {'args': {'label' : label, 'default_form' : is_default, 'output_type': output_types}}, {headers: this.authService.headers},
             ).pipe(
                 tap(()=> {
                     this.http.post(API_URL + '/ws/forms/updateFields/' + this.formId, this.fields, {headers: this.authService.headers}).pipe(
-                        tap((data: any) => {
+                        tap(() => {
                             this.notify.success(this.translate.instant('FORMS.updated'));
                         }),
                         catchError((err: any) => {
@@ -792,8 +816,10 @@ export class FormBuilderComponent implements OnInit {
                     return of(false);
                 })
             ).subscribe();
-        }else{
-            this.notify.error(this.translate.instant('FORMS.label_mandatory'));
+        }else {
+            if (!label && output_types.length == 0) this.notify.error(this.translate.instant('FORMS.label_and_output_mandatory'));
+            else if (!label) this.notify.error(this.translate.instant('FORMS.label_mandatory'));
+            else if (output_types.length == 0) this.notify.error(this.translate.instant('FORMS.output_type_mandatory'));
         }
     }
 

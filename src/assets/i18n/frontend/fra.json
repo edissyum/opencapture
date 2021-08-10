@@ -139,10 +139,12 @@
 		"enable": "Activer le formulaire",
 		"is_default": "Formulaire par défaut",
 		"label": "Libellé du formulaire",
+		"label_and_output_mandatory": "Le libellé du formulaire et le type de chaîne sortante sont obligatoire",
 		"label_mandatory": "Le libellé du formulaire est obligatoire",
 		"modify": "Modifier le formulaire",
 		"other": "Autres",
 		"output_settings": "Paramètres des chaînes sortantes",
+		"output_type_mandatory": "Le type de chaîne sortante est obligatoire",
 		"refuse": "Refuser la facture",
 		"supplier": "Fournisseur",
 		"updated": "Formulaire mis à jour avec succès",
@@ -188,6 +190,7 @@
 		"required": "Champ obligatoire"
 	},
 	"OUTPUT": {
+		"add": "Ajouter une chaîne sortante",
 		"auth": "Authentification",
 		"available_fields": "Informations sur les champs disponible",
 		"check_connection_before": "Merci de vérifier la connexion",
@@ -201,6 +204,7 @@
 		"no_auth_necessary": "Pas d'authentification nécessaire",
 		"output_settings_list": "Paramètres de la chaîne sortante",
 		"parameters": "Spécifiques",
+		"remove": "Supprimer une chaîne sortante",
 		"test_connection": "Tester la connexion",
 		"update": "Modifier la chaîne sortante"
 	},
@@ -326,6 +330,8 @@
 	},
 	"VERIFIER": {
 		"calculated_footer": "Contrôle de cohérence du pied de page activé",
+		"change_form": "Changer de formulaire",
+		"change_form_details": "Les données ne sont pas perdus lors du changement de formulaire",
 		"collapse_all": "Replier tous les clients",
 		"colors": "Couleurs",
 		"confirm_delete_all_invoices": "Êtes-vous sûr de vouloir supprimer toutes les factures de la page ?",
@@ -335,6 +341,7 @@
 		"display": "Affichage",
 		"expand_all": "Développer tous les clients",
 		"field_settings": "Paramètres du champ",
+		"form_changed": "Formulaire modifié avec succès",
 		"format": "Format des données",
 		"list": "Factures",
 		"nb_pages": "Nombre de page",

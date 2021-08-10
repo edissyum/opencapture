@@ -50,10 +50,17 @@ def get_form_by_id(form_id):
     return make_response(jsonify(_form[0])), _form[1]
 
 
-@bp.route('forms/getBySupplierId/<int:supplier_id>', methods=['GET'])
+@bp.route('forms/fields/getByFormId/<int:form_id>', methods=['GET'])
+@auth.token_required
+def get_form_fields_by_form_id(form_id):
+    _form = forms.get_form_fields_by_form_id(form_id)
+    return make_response(jsonify(_form[0])), _form[1]
+
+
+@bp.route('forms/fields/getBySupplierId/<int:supplier_id>', methods=['GET'])
 @auth.token_required
 def get_form_by_account_id(supplier_id):
-    _form = forms.get_form_by_supplier_id(supplier_id)
+    _form = forms.get_form_fields_by_supplier_id(supplier_id)
     return make_response(jsonify(_form[0])), _form[1]
 
 
