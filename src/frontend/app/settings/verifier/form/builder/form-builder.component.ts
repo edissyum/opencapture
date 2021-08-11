@@ -21,7 +21,7 @@ import {marker} from "@biesbjerg/ngx-translate-extract-marker";
 })
 export class FormBuilderComponent implements OnInit {
     loading                 : boolean   = true;
-    outputsTypes            : any[]     = [];
+    outputs                 : any[]     = [];
     form                    : any       = {
         'label': {
             'control': new FormControl(),
@@ -30,7 +30,7 @@ export class FormBuilderComponent implements OnInit {
             'control': new FormControl(),
         }
     };
-    outputTypeForm          : any       = [
+    outputForm              : any       = [
         {
             control: new FormControl(),
             cpt: 0
@@ -562,9 +562,9 @@ export class FormBuilderComponent implements OnInit {
         if (this.formId) {
             this.creationMode = false;
 
-            this.http.get(API_URL + '/ws/outputs/getOutputsType', {headers: this.authService.headers}).pipe(
+            this.http.get(API_URL + '/ws/outputs/list', {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
-                    this.outputsTypes = data.outputs_types;
+                    this.outputs = data.outputs;
                     this.http.get(API_URL + '/ws/forms/getById/' + this.formId, {headers: this.authService.headers}).pipe(
                         tap((data: any) => {
                             for (let field in this.form) {
@@ -573,13 +573,13 @@ export class FormBuilderComponent implements OnInit {
                                 }
                             }
 
-                            if (data.output_type) {
-                                let length = data.output_type.length;
-                                if (length == 1) this.outputTypeForm[0].control.setValue(data.output_type[0]);
+                            if (data.outputs) {
+                                let length = data.outputs.length;
+                                if (length == 1) this.outputForm[0].control.setValue(data.outputs[0]);
                                 if (length > 1) {
-                                    for (let cpt in data.output_type) {
-                                        if (parseInt(cpt) !== 0) this.addOutputType();
-                                        this.outputTypeForm[cpt].control.setValue(data.output_type[cpt]);
+                                    for (let cpt in data.outputs) {
+                                        if (parseInt(cpt) !== 0) this.addOutput();
+                                        this.outputForm[cpt].control.setValue(data.outputs[cpt]);
                                     }
                                 }
                             }
@@ -774,29 +774,29 @@ export class FormBuilderComponent implements OnInit {
         this.fields[category_id] = tmpCurrentOrder;
     }
 
-    addOutputType() {
-        this.outputTypeForm[0].cpt = this.outputTypeForm[0].cpt + 1;
-        let cpt = this.outputTypeForm[0].cpt;
-        this.outputTypeForm.push({
+    addOutput() {
+        this.outputForm[0].cpt = this.outputForm[0].cpt + 1;
+        let cpt = this.outputForm[0].cpt;
+        this.outputForm.push({
             'control': new FormControl(),
             'canRemove': true
         });
     }
 
-    removeOutputType(cpt: any) {
-        this.outputTypeForm.splice(cpt, 1);
+    removeOutput(cpt: any) {
+        this.outputForm.splice(cpt, 1);
     }
 
     updateForm() {
         let label = this.form.label.control.value;
         let is_default = this.form.default_form.control.value;
-        let output_types: any[] = [];
-        this.outputTypeForm.forEach((element: any) => {
-            if (element.control.value) output_types.push(element.control.value);
+        let outputs: any[] = [];
+        this.outputForm.forEach((element: any) => {
+            if (element.control.value) outputs.push(element.control.value);
         });
 
-        if (label !== '' && output_types.length >= 1) {
-            this.http.put(API_URL + '/ws/forms/update/' + this.formId, {'args': {'label' : label, 'default_form' : is_default, 'output_type': output_types}}, {headers: this.authService.headers},
+        if (label !== '' && outputs.length >= 1) {
+            this.http.put(API_URL + '/ws/forms/update/' + this.formId, {'args': {'label' : label, 'default_form' : is_default, 'outputs': outputs}}, {headers: this.authService.headers},
             ).pipe(
                 tap(()=> {
                     this.http.post(API_URL + '/ws/forms/updateFields/' + this.formId, this.fields, {headers: this.authService.headers}).pipe(
@@ -817,9 +817,9 @@ export class FormBuilderComponent implements OnInit {
                 })
             ).subscribe();
         }else {
-            if (!label && output_types.length == 0) this.notify.error(this.translate.instant('FORMS.label_and_output_mandatory'));
+            if (!label && outputs.length == 0) this.notify.error(this.translate.instant('FORMS.label_and_output_mandatory'));
             else if (!label) this.notify.error(this.translate.instant('FORMS.label_mandatory'));
-            else if (output_types.length == 0) this.notify.error(this.translate.instant('FORMS.output_type_mandatory'));
+            else if (outputs.length == 0) this.notify.error(this.translate.instant('FORMS.output_type_mandatory'));
         }
     }
 

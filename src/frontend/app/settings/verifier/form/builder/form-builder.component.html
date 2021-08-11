@@ -99,19 +99,19 @@
                         {{ "FORMS.is_default" | translate }}
                     </mat-slide-toggle>
                 </div>
-                <mat-form-field *ngFor="let field of this.outputTypeForm; let cpt = index">
-                    <mat-label>{{ "HEADER.output_type" | translate }}</mat-label>
+                <mat-form-field *ngFor="let field of this.outputForm; let cpt = index">
+                    <mat-label>{{ "HEADER.choose_output" | translate }}</mat-label>
                     <mat-select [(ngModel)]="field.control.value">
-                        <mat-option *ngFor="let option of this.outputsTypes" [value]="option.type_id">
-                            {{ option.type_label }}
+                        <mat-option *ngFor="let option of this.outputs" value="{{option.id}}">
+                            {{ option.output_label }}
                         </mat-option>
                     </mat-select>
-                    <span *ngIf="!field.canRemove" (click)="$event.stopPropagation(); addOutputType()"
+                    <span *ngIf="!field.canRemove" (click)="$event.stopPropagation(); addOutput()"
                           matTooltip="{{ 'OUTPUT.add' | translate }}"
                           class="absolute top-1 right-4 cursor-pointer text-gray-900 z-50" style="right: -2.2rem">
                         <mat-icon class="text-lg">add_circle</mat-icon>
                     </span>
-                    <span *ngIf="field.canRemove" (click)="$event.stopPropagation(); removeOutputType(cpt)"
+                    <span *ngIf="field.canRemove" (click)="$event.stopPropagation(); removeOutput(cpt)"
                           matTooltip="{{ 'OUTPUT.remove' | translate }}"
                           class="absolute top-1 right-4 cursor-pointer text-red-500" style="right: -2.2rem">
                         <mat-icon class="text-xl">delete_forever</mat-icon>

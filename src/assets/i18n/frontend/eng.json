@@ -108,6 +108,9 @@
 		"invoice_number": "",
 		"no_rate_amount": "",
 		"order_number": "",
+		"register_date_day": "",
+		"register_date_month": "",
+		"register_date_year": "",
 		"total_ht": "",
 		"total_ttc": "",
 		"total_vat": "",
@@ -168,6 +171,7 @@
 	},
 	"HEADER": {
 		"active": "",
+		"choose_output": "",
 		"id": "",
 		"inactive": "",
 		"label": "",
@@ -192,7 +196,6 @@
 	"OUTPUT": {
 		"add": "",
 		"auth": "",
-		"available_fields": "",
 		"check_connection_before": "",
 		"confirm_delete": "",
 		"create": "",
@@ -342,6 +345,7 @@
 		"expand_all": "",
 		"field_settings": "",
 		"form_changed": "",
+		"form_validated_and_output_done": "",
 		"format": "",
 		"list": "Invoices",
 		"nb_pages": "",

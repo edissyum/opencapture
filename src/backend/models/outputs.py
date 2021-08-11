@@ -63,6 +63,24 @@ def get_output_by_id(args):
     return output, error
 
 
+def get_output_type_by_id(args):
+    _db = db.get_db()
+    error = None
+    output = _db.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['outputs_types'],
+        'where': ['output_type_id = %s'],
+        'data': [args['output_type_id']]
+    })
+
+    if not output:
+        error = gettext('OUTPUT_TYPE_DOESNT_EXISTS')
+    else:
+        output = output[0]
+
+    return output, error
+
+
 def update_output(args):
     _db = db.get_db()
     error = None

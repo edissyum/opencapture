@@ -33,10 +33,17 @@ def get_outputs():
     return make_response(jsonify(_roles[0])), _roles[1]
 
 
-@bp.route('outputs/getOutputsType', methods=['GET'])
+@bp.route('outputs/getOutputsTypes', methods=['GET'])
 @auth.token_required
 def get_outputs_types():
     _roles = outputs.get_outputs_types()
+    return make_response(jsonify(_roles[0])), _roles[1]
+
+
+@bp.route('outputs/getOutputTypeById/<string:output_type_id>', methods=['GET'])
+@auth.token_required
+def get_output_type_by_id(output_type_id):
+    _roles = outputs.get_output_type_by_id(output_type_id)
     return make_response(jsonify(_roles[0])), _roles[1]
 
 

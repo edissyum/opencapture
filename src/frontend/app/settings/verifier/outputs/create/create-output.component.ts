@@ -53,7 +53,7 @@ export class CreateOutputComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.http.get(API_URL + '/ws/outputs/getOutputsType', {headers: this.authService.headers}).pipe(
+        this.http.get(API_URL + '/ws/outputs/getOutputsTypes', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.outputsTypes = data.outputs_types;
             }),

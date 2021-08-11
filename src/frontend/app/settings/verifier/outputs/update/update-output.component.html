@@ -99,8 +99,8 @@
                     <mat-form-field *ngIf="field.type == 'select'">
                         <mat-label>{{ field.label | translate }}</mat-label>
                         <mat-select [id]="field.id" [(ngModel)]="field.control.value" (selectionChange)="changeOutputType($event)">
-                            <mat-option *ngFor="let option of outputsTypes" [value]="option.type_id">
-                                {{ option.type_label }}
+                            <mat-option *ngFor="let option of outputsTypes" [value]="option.output_type_id">
+                                {{ option.output_type_label }}
                             </mat-option>
                         </mat-select>
                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputForm) }}</mat-error>
@@ -128,15 +128,6 @@
                                     <mat-label>{{ field.label | translate }}</mat-label>
                                     <input matInput [value]="field.control.value" [formControl]="field.control"
                                            [type]="field.type" [placeholder]="field.placeholder" [required]="field.required">
-                                    <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputsTypesForm[selectedOutputType]['auth']) }}</mat-error>
-                                </mat-form-field>
-                                <mat-form-field *ngIf="field.type == 'select'">
-                                    <mat-label>{{ field.label | translate }}</mat-label>
-                                    <mat-select [id]="field.id" [(ngModel)]="field.control.value">
-                                        <mat-option *ngFor="let option of outputsTypes" [value]="option.type_id">
-                                            {{ option.type_label }}
-                                        </mat-option>
-                                    </mat-select>
                                     <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputsTypesForm[selectedOutputType]['auth']) }}</mat-error>
                                 </mat-form-field>
                             </ng-container>
@@ -170,16 +161,6 @@
                                         </mat-option>
                                     </mat-autocomplete>
                                 </mat-form-field>
-                                <mat-form-field *ngIf="field.type == 'select'">
-                                    <mat-label>{{ field.label | translate }}</mat-label>
-                                    <mat-select [id]="field.id" [(ngModel)]="field.control.value">
-                                        <mat-option *ngFor="let option of outputsTypes" [value]="option.type_id">
-                                            {{ option.type_label }}
-                                        </mat-option>
-                                    </mat-select>
-                                    <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputsTypesForm[selectedOutputType]['parameters'] ) }}</mat-error>
-                                    <mat-hint *ngIf="field.hint">{{ field.hint }}</mat-hint>
-                                </mat-form-field>
                             </ng-container>
                         </div>
                     </mat-tab>
@@ -188,7 +169,7 @@
         </div>
     </mat-sidenav-content>
     <mat-sidenav #sidenav2 mode="side" opened position="end" class="available-fields w-1/4 flex flex-col h-full border-r border-green-400">
-        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">{{ "OUTPUT.available_fields" | translate }}</h3>
+        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">{{ "FORMS.available_fields" | translate }}</h3>
         <mat-divider class="border-green-400"></mat-divider>
         <div *ngFor="let field of availableFields; let cpt = index" class="my-8 ml-2 text-base">
             <span>

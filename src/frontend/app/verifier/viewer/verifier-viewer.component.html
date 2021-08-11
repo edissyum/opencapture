@@ -15,7 +15,7 @@
                 </mat-expansion-panel-header>
                 <mat-tab-group class="mx-5">
                     <mat-tab [label]="'VERIFIER.change_form' | translate">
-                        <p class="mt-2 text-center text-gray-400">{{ 'VERIFIER.change_form_details' | translate }}</p>
+                        <p class="mt-3 text-center text-gray-400">{{ 'VERIFIER.change_form_details' | translate }}</p>
                         <mat-form-field class="w-full">
                             <mat-select [(value)]="this.currentFormFields.form_id" (selectionChange)="changeForm($event)">
                                 <mat-option *ngFor="let form of this.formList" [value]="form['id']">
@@ -124,11 +124,12 @@
             </ng-container>
         </ng-container>
         <div class="mt-4 mb-6 grid grid-cols-2 gap-4 h-12 text-gray-900">
-            <button mat-button (click)="validateForm()"
-                    class="border-solid border-green-400 border-opacity-70 border hover:bg-green-400 hover:bg-opacity-70 hover:text-white transition duration-300" type="submit">
+            <button mat-button (click)="validateForm()" type="submit"
+                    class="border-solid border-green-400 border-opacity-70 border hover:bg-green-400 hover:bg-opacity-70 hover:text-white transition duration-300">
                 {{ 'FORMS.validate' | translate }}
             </button>
-            <button mat-button class="border-solid border-red-400 border hover:bg-red-400 hover:text-white transition duration-300" type="submit">
+            <button mat-button (click)="refuseForm()" type="submit"
+                    class="border-solid border-red-400 border hover:bg-red-400 hover:text-white transition duration-300">
                 {{ 'FORMS.refuse' | translate }}
             </button>
         </div>

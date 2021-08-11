@@ -86,10 +86,6 @@ export class UpdateOutputComponent implements OnInit {
             'label': 'FACTURATION.invoice_number'
         },
         {
-            "id": 'invoice_date',
-            'label': 'FACTURATION.invoice_date'
-        },
-        {
             "id": 'invoice_date_year',
             'label': marker('FACTURATION.invoice_date_year')
         },
@@ -100,6 +96,18 @@ export class UpdateOutputComponent implements OnInit {
         {
             "id": 'invoice_date_day',
             'label': marker('FACTURATION.invoice_date_day')
+        },
+        {
+            "id": 'register_date_year',
+            'label': marker('FACTURATION.register_date_year')
+        },
+        {
+            "id": 'register_date_month',
+            'label': marker('FACTURATION.register_date_month')
+        },
+        {
+            "id": 'register_date_day',
+            'label': marker('FACTURATION.register_date_day')
         },
         {
             "id": 'order_number',
@@ -159,21 +167,21 @@ export class UpdateOutputComponent implements OnInit {
                         });
                     }
                 }
-                this.http.get(API_URL + '/ws/outputs/getOutputsType', {headers: this.authService.headers}).pipe(
+                this.http.get(API_URL + '/ws/outputs/getOutputsTypes', {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
                         this.outputsTypes = data.outputs_types;
                         /**
                          * Create the form with auth and parameters data
                          **/
                         for (let _output of this.outputsTypes) {
-                            this.outputsTypesForm[_output.type_id] = {
+                            this.outputsTypesForm[_output.output_type_id] = {
                                 'auth' : [],
                                 'parameters' : [],
                             };
-                            for (let category in this.outputsTypesForm[_output.type_id]) {
+                            for (let category in this.outputsTypesForm[_output.output_type_id]) {
                                 if (_output.data.options[category]) {
                                     for (let option of _output.data.options[category]) {
-                                        this.outputsTypesForm[_output.type_id][category].push({
+                                        this.outputsTypesForm[_output.output_type_id][category].push({
                                             id: option.id,
                                             label: option.label,
                                             type: option.type,

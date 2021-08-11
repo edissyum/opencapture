@@ -106,6 +106,19 @@ def get_output_by_id(output_id):
         return response, 401
 
 
+def get_output_type_by_id(output_type_id):
+    output_type_info, error = outputs.get_output_type_by_id({'output_type_id': output_type_id})
+
+    if error is None:
+        return output_type_info, 200
+    else:
+        response = {
+            "errors": gettext('GET_OUTPUT_TYPE_BY_ID_ERROR'),
+            "message": error
+        }
+        return response, 401
+
+
 def delete_output(output_id):
     _vars = pdf.init()
     _db = _vars[0]

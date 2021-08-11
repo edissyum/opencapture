@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {API_URL} from "../../env";
 import {catchError, map, startWith, tap} from "rxjs/operators";
 import {Observable, of} from "rxjs";
@@ -85,6 +85,7 @@ export class VerifierViewerComponent implements OnInit {
     oldValue            : string    = '';
 
     constructor(
+        private router: Router,
         private http: HttpClient,
         private route: ActivatedRoute,
         private authService: AuthService,
@@ -443,8 +444,6 @@ export class VerifierViewerComponent implements OnInit {
                 {'args': data},
                 {headers: this.authService.headers}).pipe(
                 tap(() => {
-                    console.log('here')
-                    console.log(show_notif)
                     if (show_notif) this.notify.success(this.translate.instant('INVOICES.position_and_data_updated', {"input": this.lastLabel}));
                 }),
                 catchError((err: any) => {
@@ -456,6 +455,18 @@ export class VerifierViewerComponent implements OnInit {
             return true;
         }
         return false;
+    }
+
+    updateInvoice(data: any) {
+        this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoiceId + '/update',
+            {'args': data},
+            {headers: this.authService.headers}).pipe(
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
     }
 
     getField(field_id: any) {
@@ -570,15 +581,7 @@ export class VerifierViewerComponent implements OnInit {
                         }
 
                         if (!launchOnInit) {
-                            this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoiceId + '/update',
-                                {'args': {'supplier_id': supplier_id}},
-                                {headers: this.authService.headers}).pipe(
-                                catchError((err: any) => {
-                                    console.debug(err);
-                                    this.notify.handleErrors(err);
-                                    return of(false);
-                                })
-                            ).subscribe();
+                            this.updateInvoice({'supplier_id': supplier_id})
                             this.saveData(supplier_data)
                             this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/updateData',
                                 {'args': supplier_data},
@@ -618,8 +621,7 @@ export class VerifierViewerComponent implements OnInit {
                     if (pattern) {
                         if (pattern.requiredPattern == this.getPattern('alphanum')) {
                             error = this.translate.instant('ERROR.alphanum_pattern');
-                        }
-                        if (pattern.requiredPattern == this.getPattern('alphanum_extended')) {
+                        }else if (pattern.requiredPattern == this.getPattern('alphanum_extended')) {
                             error = this.translate.instant('ERROR.alphanum_extended_pattern');
                         }else if (pattern.requiredPattern == this.getPattern('number_int')) {
                             error = this.translate.instant('ERROR.number_int_pattern');
@@ -644,7 +646,15 @@ export class VerifierViewerComponent implements OnInit {
         let arrayData: any = {};
         for (let category in this.form) {
             this.form[category].forEach((input: any) => {
-                if (input.control.value) arrayData.push({[input.id] : input.control.value});
+                if (input.control.value) {
+                    let value = input.control.value
+                    if (input.type == 'date') {
+                        let format = moment().localeData().longDateFormat('L');
+                        value = moment(value, format);
+                        value = value.format(format);
+                    }
+                    Object.assign(arrayData, {[input.id] : value});
+                }
                 if (input.control.errors) {
                     valid = false;
                     this.notify.error(this.translate.instant('ERROR.form_not_valid'));
@@ -653,6 +663,52 @@ export class VerifierViewerComponent implements OnInit {
         }
         if (!valid) return;
         this.saveData(arrayData);
+        let form_id = this.currentFormFields.form_id
+        /*
+            Executer les actions paramétrées dans les réglages du formulaires
+         */
+        this.http.get(API_URL + '/ws/forms/getById/' + form_id, {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                let outputs = data.outputs;
+                let outputs_label: any[] = [];
+                outputs.forEach((output_id: any, cpt: number) => {
+                    this.http.get(API_URL + '/ws/outputs/getById/' + output_id, {headers: this.authService.headers}).pipe(
+                        tap((data: any) => {
+                            outputs_label.push(data.output_label);
+                            this.http.post(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/' + data.output_type_id, {'args': data},{headers: this.authService.headers}).pipe(
+                                tap(() => {
+                                    /* Actions à effectuer après le traitement des chaînes sortantes */
+                                    if (cpt + 1 == outputs.length) {
+                                        this.updateInvoice({'status': 'END', 'locked': false, 'locked_by': null});
+                                        this.router.navigate(['/verifier']);
+                                        this.notify.success(this.translate.instant('VERIFIER.form_validated_and_output_done', {outputs: outputs_label.join('<br>')}));
+                                    }
+                                }),
+                                catchError((err: any) => {
+                                    console.debug(err);
+                                    this.notify.handleErrors(err);
+                                    return of(false);
+                                })
+                            ).subscribe();
+                        }),
+                        catchError((err: any) => {
+                            console.debug(err);
+                            this.notify.handleErrors(err);
+                            return of(false);
+                        })
+                    ).subscribe();
+                });
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    refuseForm() {
+
     }
 
     async changeForm(event: any) {

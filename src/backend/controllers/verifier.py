@@ -17,14 +17,17 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 import json
+import datetime
 import os
+from xml.dom import minidom
 
 from flask import current_app
 from flask_babel import gettext
+import xml.etree.ElementTree as ET
+from src.backend.main import launch
 from ..import_classes import _Files
 from ..import_controllers import pdf
 from ..import_models import verifier, accounts
-from src.backend.main import launch
 
 
 def handle_uploaded_file(files, purchase_or_sale, customer_id):
@@ -254,7 +257,76 @@ def update_invoice(invoice_id, data):
         return response, 401
 
 
-def export_xml(invoice_id):
-    print(invoice_id)
+def export_xml(invoice_id, data):
+    _vars = pdf.init()
+    _locale = _vars[2]
+    folder_out = separator = filename = ''
+    parameters = data['data']['options']['parameters']
+    for setting in parameters:
+        if setting['id'] == 'folder_out':
+            folder_out = setting['value']
+        elif setting['id'] == 'separator':
+            separator = setting['value']
+        elif setting['id'] == 'filename':
+            filename = setting['value']
+    invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
 
-    return '', 200
+    if not error:
+        _data = []
+        _technical_data = []
+        # Create the XML filename
+        for column in filename.split('#'):
+            if column in invoice_info['datas']:
+                _data.append(invoice_info['datas'][column])
+            elif column in invoice_info:
+                _data.append(invoice_info[column])
+
+            if column == 'invoice_date_year':
+                _data.append(datetime.datetime.strptime(invoice_info['datas']['invoice_date'], _locale.formatDate).year)
+            if column == 'invoice_date_month':
+                _data.append(datetime.datetime.strptime(invoice_info['datas']['invoice_date'], _locale.formatDate).month)
+            if column == 'invoice_date_day':
+                _data.append(datetime.datetime.strptime(invoice_info['datas']['invoice_date'], _locale.formatDate).day)
+
+            if column == 'register_date_year':
+                _data.append(datetime.datetime.strptime(invoice_info['register_date'], _locale.formatDate).year)
+            if column == 'register_date_month':
+                _data.append(datetime.datetime.strptime(invoice_info['register_date'], _locale.formatDate).month)
+            if column == 'register_date_day':
+                _data.append(datetime.datetime.strptime(invoice_info['register_date'], _locale.formatDate).day)
+        filename = separator.join(str(x) for x in _data) + '.xml'
+        # END create the XML filename
+
+        # Fill XML with invoice informations
+        if os.path.isdir(folder_out):
+            xml_file = open(folder_out + '/' + filename, 'w')
+            root = ET.Element('ROOT')
+            xml_technical = ET.SubElement(root, 'TECHNICAL')
+            xml_datas = ET.SubElement(root, 'DATAS')
+
+            for technical in invoice_info:
+                if technical in ['path', 'filename', 'register_date', 'nb_pages', 'purchase_or_sale']:
+                    new_field = ET.SubElement(xml_technical, technical)
+                    new_field.text = str(invoice_info[technical])
+
+            for data in invoice_info['datas']:
+                new_field = ET.SubElement(xml_datas, data)
+                new_field.text = str(invoice_info['datas'][data])
+
+            xml_root = minidom.parseString(ET.tostring(root, encoding="unicode")).toprettyxml()
+            xml_file.write(xml_root)
+            xml_file.close()
+        # END Fill XML with invoice informations
+            return '', 200
+        else:
+            response = {
+                "errors": gettext('XML_DESTINATION_FOLDER_DOESNT_EXISTS'),
+                "message": folder_out
+            }
+            return response, 401
+    else:
+        response = {
+            "errors": gettext('EXPORT_XML_ERROR'),
+            "message": error
+        }
+    return response, 401

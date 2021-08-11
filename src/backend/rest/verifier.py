@@ -76,14 +76,14 @@ def delete_invoice(invoice_id):
 def update_invoice_data(invoice_id):
     data = request.json['args']
     res = verifier.update_invoice_data_by_invoice_id(invoice_id, data)
-    print(res)
     return make_response(res[0], res[1])
 
 
-@bp.route('verifier/invoices/<int:invoice_id>/exportXML', methods=['POST'])
+@bp.route('verifier/invoices/<int:invoice_id>/export_xml', methods=['POST'])
 @auth.token_required
 def export_xml(invoice_id):
-    res = verifier.export_xml(invoice_id)
+    data = request.json['args']
+    res = verifier.export_xml(invoice_id, data)
     return make_response(res[0], res[1])
 
 

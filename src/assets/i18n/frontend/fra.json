@@ -108,6 +108,9 @@
 		"invoice_number": "Numéro de facture",
 		"no_rate_amount": "Montant HT",
 		"order_number": "Numéro de commande",
+		"register_date_day": "Jour d'enregistrement de la facture",
+		"register_date_month": "Mois d'enregistrement de la facture",
+		"register_date_year": "Année d'enregistrement de la facture",
 		"total_ht": "Total HT",
 		"total_ttc": "Total TTC",
 		"total_vat": "Total TVA",
@@ -168,6 +171,7 @@
 	},
 	"HEADER": {
 		"active": "Actif",
+		"choose_output": "Choisir la chaîne sortante",
 		"id": "Identifiant technique",
 		"inactive": "Inactif",
 		"label": "Libellé",
@@ -192,7 +196,6 @@
 	"OUTPUT": {
 		"add": "Ajouter une chaîne sortante",
 		"auth": "Authentification",
-		"available_fields": "Informations sur les champs disponible",
 		"check_connection_before": "Merci de vérifier la connexion",
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer la chaîne sortante <b>{{ output }}</b> ?",
 		"create": "Créer la chaîne sortante",
@@ -342,6 +345,7 @@
 		"expand_all": "Développer tous les clients",
 		"field_settings": "Paramètres du champ",
 		"form_changed": "Formulaire modifié avec succès",
+		"form_validated_and_output_done": "Formulaire validé et chaîne(s) sortante(s) suivante(s) validée(s) : <br><br> <center>{{ outputs }}</center>",
 		"format": "Format des données",
 		"list": "Factures",
 		"nb_pages": "Nombre de page",

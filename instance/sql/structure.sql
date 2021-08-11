@@ -15,7 +15,7 @@ CREATE TABLE "form_models" (
     "label"   VARCHAR(50),
     "default_form" BOOLEAN DEFAULT false,
     "enabled" BOOLEAN DEFAULT true,
-    "output_type" TEXT[] DEFAULT {'export_xml'},
+    "outputs" TEXT[] DEFAULT {'export_xml'},
     "status"  VARCHAR(5) DEFAULT 'OK'
 );
 
@@ -35,8 +35,8 @@ CREATE TABLE "outputs" (
 
 CREATE TABLE "outputs_types" (
    "id"            SERIAL UNIQUE PRIMARY KEY,
-   "type_id"       VARCHAR(20),
-   "type_label"    VARCHAR(50),
+   "output_type_id"       VARCHAR(20),
+   "output_type_label"    VARCHAR(50),
    "data"          JSONB DEFAULT '{"options" : {"auth" : [],"parameters": []}}'
 )
 
@@ -149,8 +149,7 @@ CREATE TABLE "invoices" (
     "img_width"             INTEGER,
     "register_date"         TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
     "nb_pages"              INTEGER NOT NULL DEFAULT 1,
-    "processed"             INTEGER NOT NULL DEFAULT 0,
-    "locked"                INTEGER NOT NULL DEFAULT 0,
+    "locked"                BOOLEAN DEFAULT false,
     "locked_by"             VARCHAR(20),
     "positions"             JSONB DEFAULT '{}',
     "pages"                 JSONB DEFAULT '{}',
