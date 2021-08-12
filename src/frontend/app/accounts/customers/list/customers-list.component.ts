@@ -50,11 +50,11 @@ export class CustomersListComponent implements OnInit {
 
     ngOnInit(): void {
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
-        let lastUrl = this.routerExtService.getPreviousUrl()
+        let lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('accounts/customers') || lastUrl == '/') {
             if (this.localeStorageService.get('customersPageIndex'))
                 this.pageIndex = parseInt(<string>this.localeStorageService.get('customersPageIndex'))
-            this.offset = this.pageSize * (this.pageIndex)
+            this.offset = this.pageSize * (this.pageIndex);
         }else
             this.localeStorageService.remove('customersPageIndex')
 

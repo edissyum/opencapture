@@ -196,7 +196,7 @@ export class SettingsService {
     ) {}
 
     init() {
-        let lastUrl = this.routerExtService.getPreviousUrl()
+        let lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('roles') || lastUrl == '/' || lastUrl.includes('users')) {
             let selectedSettings = this.localeStorageService.get('selectedSettings')
             let selectedParentSettings = this.localeStorageService.get('selectedParentSettings')

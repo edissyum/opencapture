@@ -49,11 +49,11 @@ export class OutputsListComponent implements OnInit {
     ngOnInit(): void {
         this.serviceSettings.init();
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
-        let lastUrl = this.routerExtService.getPreviousUrl()
+        let lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('outputs/') || lastUrl == '/') {
             if (this.localeStorageService.get('outputsPageIndex'))
                 this.pageIndex = parseInt(<string>this.localeStorageService.get('outputsPageIndex'))
-            this.offset = this.pageSize * (this.pageIndex)
+            this.offset = this.pageSize * (this.pageIndex);
         } else
             this.localeStorageService.remove('outputsPageIndex')
         this.loadOutputs()

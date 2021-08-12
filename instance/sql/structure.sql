@@ -11,18 +11,18 @@ CREATE TABLE "users" (
 );
 
 CREATE TABLE "form_models" (
-    "id"      SERIAL UNIQUE PRIMARY KEY,
-    "label"   VARCHAR(50),
-    "default_form" BOOLEAN DEFAULT false,
-    "enabled" BOOLEAN DEFAULT true,
-    "outputs" TEXT[] DEFAULT {'export_xml'},
-    "status"  VARCHAR(5) DEFAULT 'OK'
+    "id"            SERIAL UNIQUE PRIMARY KEY,
+    "label"         VARCHAR(50),
+    "default_form"  BOOLEAN DEFAULT false,
+    "enabled"       BOOLEAN DEFAULT true,
+    "outputs"       TEXT[] DEFAULT {'export_xml'},
+    "status"        VARCHAR(5) DEFAULT 'OK'
 );
 
 CREATE TABLE "form_models_field" (
     "id"        SERIAL UNIQUE PRIMARY KEY,
     "form_id"   INTEGER,
-    "fields"    JSONB DEFAULT '{}',
+    "fields"    JSONB DEFAULT '{}'
 );
 
 CREATE TABLE "outputs" (
@@ -31,30 +31,38 @@ CREATE TABLE "outputs" (
     "output_label"      VARCHAR,
     "status"            VARCHAR(3) DEFAULT 'OK',
     "data"              JSONB DEFAULT '{"options" : {"auth" : [],"parameters": []}}'
-)
+);
 
 CREATE TABLE "outputs_types" (
-   "id"            SERIAL UNIQUE PRIMARY KEY,
-   "output_type_id"       VARCHAR(20),
-   "output_type_label"    VARCHAR(50),
-   "data"          JSONB DEFAULT '{"options" : {"auth" : [],"parameters": []}}'
-)
+   "id"                 SERIAL UNIQUE PRIMARY KEY,
+   "output_type_id"     VARCHAR(20),
+   "output_type_label"  VARCHAR(50),
+   "data"               JSONB DEFAULT '{"options" : {"auth" : [],"parameters": []}}'
+);
+
+CREATE TABLE "inputs" (
+    "id"                SERIAL UNIQUE PRIMARY KEY,
+    "input_id"          VARCHAR(20),
+    "input_label"       VARCHAR,
+    "default_form_id"   INTEGER,
+    "input_folder"      TEXT
+);
 
 CREATE TABLE "custom_fields" (
-     "id" SERIAL PRIMARY KEY,
-     "label_short" VARCHAR(10),
-     "label" VARCHAR(50),
-     "type" VARCHAR(10),
-     "module" VARCHAR(10),
-     "settings" JSONB DEFAULT '{}',
-     "enabled" BOOLEAN default true,
-     "status" VARCHAR(5) default 'OK'
+     "id"           SERIAL PRIMARY KEY,
+     "label_short"  VARCHAR(10),
+     "label"        VARCHAR(50),
+     "type"         VARCHAR(10),
+     "module"       VARCHAR(10),
+     "settings"     JSONB DEFAULT '{}',
+     "enabled"      BOOLEAN default true,
+     "status"       VARCHAR(5) default 'OK'
 );
 
 CREATE TABLE "users_customers" (
     "id"           SERIAL UNIQUE PRIMARY KEY,
     "user_id"      INTEGER,
-    "customers_id" JSONB DEFAULT '{}',
+    "customers_id" JSONB DEFAULT '{}'
 );
 
 CREATE TABLE "addresses" (
@@ -64,28 +72,28 @@ CREATE TABLE "addresses" (
     "postal_code"   VARCHAR(10),
     "city"          VARCHAR(50),
     "country"       VARCHAR(50),
-    "creation_date" TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
+    "creation_date" TIMESTAMP DEFAULT (CURRENT_TIMESTAMP)
 );
 
 CREATE TABLE "roles" (
-    "id"    SERIAL UNIQUE PRIMARY KEY,
-    "label_short" VARCHAR(10),
-    "label" VARCHAR(20),
-    "status" VARCHAR(3) DEFAULT 'OK',
-    "editable" BOOLEAN DEFAULT true,
-    "enabled" BOOLEAN DEFAULT true,
+    "id"            SERIAL UNIQUE PRIMARY KEY,
+    "label_short"   VARCHAR(10),
+    "label"         VARCHAR(20),
+    "status"        VARCHAR(3) DEFAULT 'OK',
+    "editable"      BOOLEAN DEFAULT true,
+    "enabled"       BOOLEAN DEFAULT true
 );
 
 CREATE TABLE "roles_privileges" (
-    "id"           SERIAL UNIQUE PRIMARY KEY,
-    "role_id"      INTEGER,
-    "privileges_id" JSONB DEFAULT '{}',
+    "id"            SERIAL UNIQUE PRIMARY KEY,
+    "role_id"       INTEGER,
+    "privileges_id" JSONB DEFAULT '{}'
 );
 
 CREATE TABLE "privileges" (
-    "id"    SERIAL UNIQUE PRIMARY KEY,
-    "parent" VARCHAR(20),
-    "label" VARCHAR(50)
+    "id"        SERIAL UNIQUE PRIMARY KEY,
+    "parent"    VARCHAR(20),
+    "label"     VARCHAR(50)
 );
 
 CREATE TABLE "accounts_supplier" (
@@ -100,7 +108,7 @@ CREATE TABLE "accounts_supplier" (
     "status"                VARCHAR(3) DEFAULT 'OK',
     "get_only_raw_footer"   BOOLEAN DEFAULT false,
     "creation_date"         TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
-    "positions"             JSONB DEFAULT '{}',
+    "positions"             JSONB DEFAULT '{}'
 );
 
 CREATE TABLE "accounts_customer" (
@@ -113,7 +121,7 @@ CREATE TABLE "accounts_customer" (
     "accounting_plan" INTEGER,
     "address_id"      INTEGER,
     "status"          VARCHAR(3) DEFAULT 'OK',
-    "creation_date"   TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
+    "creation_date"   TIMESTAMP DEFAULT (CURRENT_TIMESTAMP)
 );
 
 CREATE TABLE "accounting_plan" (

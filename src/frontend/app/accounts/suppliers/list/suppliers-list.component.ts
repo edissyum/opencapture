@@ -51,11 +51,11 @@ export class SuppliersListComponent implements OnInit {
 
     ngOnInit(): void {
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
-        let lastUrl = this.routerExtService.getPreviousUrl()
+        let lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('accounts/suppliers') || lastUrl == '/') {
             if (this.localeStorageService.get('suppliersPageIndex'))
                 this.pageIndex = parseInt(<string>this.localeStorageService.get('suppliersPageIndex'))
-            this.offset = this.pageSize * (this.pageIndex)
+            this.offset = this.pageSize * (this.pageIndex);
         }else
             this.localeStorageService.remove('suppliersPageIndex')
 

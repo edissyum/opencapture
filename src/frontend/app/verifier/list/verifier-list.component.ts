@@ -132,7 +132,7 @@ export class VerifierListComponent implements OnInit {
         marker('VERIFIER.unselect_all') // Needed to get the translation in the JSON file
 
         this.localeStorageService.save('splitter_or_verifier', 'verifier')
-        let lastUrl = this.routerExtService.getPreviousUrl()
+        let lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('verifier/') && !lastUrl.includes('settings') || lastUrl == '/' || lastUrl == '/upload') {
             if (this.localeStorageService.get('invoicesPageIndex'))
                 this.pageIndex = parseInt(<string>this.localeStorageService.get('invoicesPageIndex'))
@@ -140,7 +140,7 @@ export class VerifierListComponent implements OnInit {
                 this.selectedTab = parseInt(<string>this.localeStorageService.get('invoicesTimeIndex'))
                 this.currentTime = this.batchList[this.selectedTab].id
             }
-            this.offset = this.pageSize * (this.pageIndex)
+            this.offset = this.pageSize * (this.pageIndex);
         } else {
             this.localeStorageService.remove('invoicesPageIndex')
             this.localeStorageService.remove('invoicesTimeIndex')

@@ -52,8 +52,8 @@ import { UpdateCustomerComponent } from './accounts/customers/update/update-cust
 import { CreateCustomerComponent } from './accounts/customers/create/create-customer.component';
 import { CreateOutputComponent } from './settings/verifier/outputs/create/create-output.component';
 import { OutputsListComponent } from './settings/verifier/outputs/list/outputs-list.component';
-import {HighlightPipe, UpdateOutputComponent} from './settings/verifier/outputs/update/update-output.component';
-import { CreateComponent } from './app/settings/inputs/create/create.component';
+import { HighlightPipe, UpdateOutputComponent } from './settings/verifier/outputs/update/update-output.component';
+import { CreateInputComponent } from './settings/verifier/inputs/create/create-input.component';
 import { InputsListComponent } from './settings/verifier/inputs/list/inputs-list.component';
 import { UpdateInputComponent } from './settings/verifier/inputs/update/update-input.component';
 
@@ -99,7 +99,7 @@ export function createTranslateLoader(http: HttpClient) {
         CreateOutputComponent,
         OutputsListComponent,
         UpdateOutputComponent,
-        CreateComponent,
+        CreateInputComponent,
         InputsListComponent,
         UpdateInputComponent
     ],

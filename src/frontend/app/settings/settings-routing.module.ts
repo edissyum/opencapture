@@ -18,6 +18,9 @@ import { FormListComponent } from "./verifier/form/list/form-list.component";
 import { OutputsListComponent } from "./verifier/outputs/list/outputs-list.component";
 import { UpdateOutputComponent } from "./verifier/outputs/update/update-output.component";
 import { CreateOutputComponent } from "./verifier/outputs/create/create-output.component";
+import { InputsListComponent } from "./verifier/inputs/list/inputs-list.component";
+import { UpdateInputComponent } from "./verifier/inputs/update/update-input.component";
+import { CreateInputComponent } from "./verifier/inputs/create/create-input.component";
 
 const routes: Routes = [
     {
@@ -110,17 +113,17 @@ const routes: Routes = [
         canActivate: [LoginRequiredService]
     },
     {
-        path: 'settings/verifier/inputs', component: OutputsListComponent,
+        path: 'settings/verifier/inputs', component: InputsListComponent,
         data: {title: marker('FORMS.input_settings'), privileges: ['settings', 'inputs_list']},
         canActivate: [LoginRequiredService]
     },
     {
-        path: 'settings/verifier/inputs/new', component: CreateOutputComponent,
+        path: 'settings/verifier/inputs/new', component: CreateInputComponent,
         data: {title: marker('SETTINGS.add_input'), privileges: ['settings', 'add_input']},
         canActivate: [LoginRequiredService]
     },
     {
-        path: 'settings/verifier/inputs/update/:id', component: UpdateOutputComponent,
+        path: 'settings/verifier/inputs/update/:id', component: UpdateInputComponent,
         data: {title: marker('SETTINGS.update_input'), privileges: ['settings', 'update_input']},
         canActivate: [LoginRequiredService]
     },

@@ -8,7 +8,6 @@ docserverPath               = /var/docservers/OpenCapture/
 fullPath                    = ${GLOBAL:docserverPath}/images/full/
 tiffPath                    = ${GLOBAL:docserverPath}/images/tiff/
 exportAccountingFolder      = ${GLOBAL:docserverPath}/xml/
-exportAccountingFileParser  = ${GLOBAL:projectPath}/instance/config/exported_filename.xml
 errorPath                   = ${GLOBAL:projectPath}/bin/data/error/
 logFile                     = ${GLOBAL:projectPath}/bin/data/log/OCforInvoices.log
 ocrErrorPath                = ${GLOBAL:projectPath}/instance/config/OCR_ERRORS.xml
@@ -26,10 +25,6 @@ allowBypassSupplieBanVerif  = True
 timeDelta                   = -1
 # Number of files uploaded simultaneously
 uploadMaxFiles              = 3
-; Enable autosave of Facturation Informations into form
-enableAutoSave              = True
-; Enable visual indication in view form if data was found automatically
-enableVisualIfPositionsFound = False
 
 [AI-CLASSIFICATION]
 # True or False, python way
@@ -106,37 +101,3 @@ ban-url             = https://api-adresse.data.gouv.fr/search/?q=
 green-ratio         = 95
 orange-ratio        = 50
 total-ratio         = 95
-
-[GED]
-# True or False, python way
-enabled             = False
-# Dont forget to add the WS link. By default for maarch : '/rest'
-host                = http://localhost/cs_maarch/rest/
-user                =
-password            =
-# Split different process with comma
-availableProcess    = OCForMaarch-invoice
-defaultProcess      = OCForMaarch-invoice
-usergroupid         = COURRIER
-
-# Use - and not _
-[OCForMaarch-invoice]
-status               = INIT
-statusEnd            = END
-typeid               = 1202
-typist               = invoice
-priority             = poiuytre1357nbvc
-format               = pdf
-categoryId           = incoming
-defaultDestination   = COU
-defaultDestUser      = bblier
-customInvoiceNumber  = custom_t1
-customVatNumber      = custom_t2
-customOutcome        = custom_t3
-customBudget         = custom_t4
-customHT             = custom_f1
-customTTC            = custom_f2
-customOrderNumber    = custom_t5
-customDeliveryNumber = custom_t6
-contactType          = 100
-contactPurposeId     = 3

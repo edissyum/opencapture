@@ -157,7 +157,10 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (22, 'change_language'
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (23, 'outputs_list', 'verifier');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (24, 'add_output', 'verifier');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (25, 'update_output', 'verifier');
-ALTER SEQUENCE "privileges_id_seq" RESTART WITH 26;
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (26, 'inputs_list', 'verifier');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (27, 'update_input', 'verifier');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (28, 'add_input', 'verifier');
+ALTER SEQUENCE "privileges_id_seq" RESTART WITH 29;
 
 -- AJOUT DES PRIVILEGES LIÉS AUX ROLES
 INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (1, '{"data" : "[''*'']"}');
