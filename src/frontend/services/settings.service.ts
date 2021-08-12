@@ -124,6 +124,29 @@ export class SettingsService {
                 ]
             },
             {
+                "id"        : "input_settings",
+                "label"     : this.translate.instant("FORMS.input_settings"),
+                "icon"      : "fas fa-sign-in-alt",
+                "route"     : "/settings/verifier/inputs",
+                "actions"   : [
+                    {
+                        "id"        : "add_form",
+                        "label"     : this.translate.instant("SETTINGS.add_input"),
+                        "route"     : "/settings/verifier/inputs/new",
+                        "privilege" : "add_input",
+                        "icon"      : "fas fa-plus"
+                    },
+                    {
+                        "id"                : "update_form",
+                        "label"             : this.translate.instant("SETTINGS.update_input"),
+                        "route"             : "/settings/verifier/inputs/update/",
+                        "privilege"         : "update_input",
+                        "icon"              : "fas fa-edit",
+                        "showOnlyIfActive"  : true
+                    }
+                ]
+            },
+            {
                 "id"        : "output_settings",
                 "label"     : this.translate.instant("FORMS.output_settings"),
                 "icon"      : "fas fa-sign-out-alt",

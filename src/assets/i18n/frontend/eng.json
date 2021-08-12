@@ -140,6 +140,7 @@
 		"disable": "",
 		"duplicate": "",
 		"enable": "",
+		"input_settings": "",
 		"is_default": "",
 		"label": "",
 		"label_and_output_mandatory": "",
@@ -263,6 +264,7 @@
 	"SETTINGS": {
 		"abouts_us": "About us",
 		"add_custom_fields": "",
+		"add_input": "",
 		"add_output": "",
 		"administration": "Administration",
 		"connector_EDM": "EDM connector",
@@ -277,6 +279,7 @@
 		"list_forms": "",
 		"roles_list": "Roles list",
 		"splitter": "Splitter",
+		"update_input": "",
 		"update_output": "",
 		"users_list": "Users list",
 		"verifier": "Verifier",

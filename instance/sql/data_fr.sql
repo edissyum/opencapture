@@ -12,7 +12,7 @@ INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (3, 'user'
 ALTER SEQUENCE "roles_id_seq" RESTART WITH 4;
 
 -- CRÉATION DES CHAINES SORTANTES
-INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data") VALUES (1, 'export_xml', 'Export XML', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "label": "Dossier de sortie", "required": "true", "placeholder": "/var/share/sortant"}, {"id": "separator", "type": "text", "label": "Séparateur", "required": "true", "placeholder": "_"}, {"id": "filename", "hint": "Liste des identifiants techniques, séparés par #", "type": "text", "label": "Nom du fichier", "required": "true", "placeholder": "invoice_number#order_number#supplier_name"}]}}');
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data") VALUES (1, 'export_xml', 'Export XML', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "label": "Dossier de sortie", "required": "true", "placeholder": "/var/share/sortant"}, {"id": "separator", "type": "text", "label": "Séparateur", "required": "true", "placeholder": "_"}, {"id": "filename", "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut", "type": "text", "label": "Nom du fichier", "required": "true", "placeholder": "invoice_number#order_number#supplier_name"}]}}');
 INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data") VALUES (2, 'export_maarch', 'Export vers Maarch', '{"options": {
         "auth": [
             {
@@ -45,6 +45,14 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
                 "required": "true",
                 "webservice": "getStatusesFromMaarch",
                 "placeholder": "Courrier à qualifier"
+            },
+            {
+                "id": "subject",
+                "type": "text",
+                "label": "Sujet",
+                "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
+                "required": "true",
+                "placeholder": "Facture n°#invoice_number"
             },
             {
                 "id": "statusEnd",

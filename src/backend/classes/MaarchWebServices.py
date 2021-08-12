@@ -94,72 +94,43 @@ class MaarchWebServices:
         else:
             return json.loads(res.text)
 
-    def insert_with_args(self, args, config):
-        _process = config.cfg['GED']['defaultprocess']
-        custom_invoice_number = config.cfg[_process]['custominvoicenumber']
-        custom_no_rate = config.cfg[_process]['customht']
-        custom_all_rate = config.cfg[_process]['customttc']
-        custom_budget = config.cfg[_process]['custombudget']
-        custom_outcome = config.cfg[_process]['customoutcome']
-        custom_vat_number = config.cfg[_process]['customvatnumber']
-        custom_order_number = config.cfg[_process]['customordernumber']
-        custom_delivery_number = config.cfg[_process]['customdeliverynumber']
-        contact = args['contact']
-        if not contact:
+    def insert_with_args(self, args):
+        if 'contact 'not in args:
             contact = {}
         else:
-            contact = [{'id': contact['id'], 'type': 'contact'}]
+            contact = [{'id': args['contact']['id'], 'type': 'contact'}]
 
         data = {
             'encodedFile': base64.b64encode(args['fileContent']).decode('utf-8'),
-            'priority': config.cfg[_process]['priority'],
+            'priority': args['priority'],
             'status': args['status'],
-            'doctype': config.cfg[_process]['typeid'],
-            'format': config.cfg[_process]['format'],
-            'modelId': config.cfg[_process]['modelid'],
-            'typist': config.cfg[_process]['typist'],
+            'doctype': args['typeId'],
+            'format': args['format'],
+            'modelId': args['modelId'],
+            'typist': args['typist'],
             'subject': args['subject'],
             'destination': args['destination'],
             'senders': contact,
-            'documentDate': args['date'],
-            'chrono': True if config.cfg[_process]['generate_chrono'] == 'True' else '',
+            'documentDate': args['documentDate'],
+            'chrono': True,
             'arrivaldate': str(datetime.now()),
-            'customFields': {},
+            'customFields': args['customFields'] if 'customFields' in args else {},
         }
 
-        if 'dest_user' in args:
-            data['dest_user'] = args['dest_user']
+        if 'destUser' in args:
             data['diffusionList'] = [{
                 'mode': 'dest',
                 'type': 'user',
-                'id': args['dest_user'],
+                'id': args['destUser'],
             }]
-
-        if custom_budget in args:
-            data['customFields'][custom_budget] = args[custom_budget]
-        if custom_no_rate in args:
-            data['customFields'][custom_no_rate] = args[custom_no_rate]
-        if custom_all_rate in args:
-            data['customFields'][custom_all_rate] = args[custom_all_rate]
-        if custom_outcome in args:
-            data['customFields'][custom_outcome] = args[custom_outcome]
-        if custom_vat_number in args:
-            data['customFields'][custom_vat_number] = args[custom_vat_number]
-        if custom_order_number in args:
-            data['customFields'][custom_order_number] = args[custom_order_number]
-        if custom_invoice_number in args:
-            data['customFields'][custom_invoice_number] = args[custom_invoice_number]
-        if custom_delivery_number in args:
-            data['customFields'][custom_delivery_number] = args[custom_delivery_number]
 
         res = requests.post(self.baseUrl + 'resources', auth=self.auth, data=json.dumps(data),
                             headers={'Connection': 'close', 'Content-Type': 'application/json'})
-
         if res.status_code != 200:
             self.Log.error('(' + str(res.status_code) + ') InsertIntoMaarchError : ' + str(res.text))
-            return False
+            return False, json.loads(res.text)
         else:
-            return res.text
+            return True, json.loads(res.text)
 
     def insert_attachment(self, file_content, config, res_id, _process):
         data = {
@@ -185,30 +156,6 @@ class MaarchWebServices:
             return False
         else:
             return res.text
-
-    def insert_attachment_reconciliation(self, file_content, chrono, _process):
-        data = {
-            'chrono': chrono,
-            'encodedFile': base64.b64encode(file_content).decode('utf-8'),
-        }
-
-        res = requests.post(self.baseUrl + 'reconciliation/add', auth=self.auth, data=json.dumps(data),
-                            headers={'Connection': 'close', 'Content-Type': 'application/json'})
-
-        if res.status_code != 200:
-            self.Log.error('(' + str(res.status_code) + ') InsertAttachmentsReconciliationIntoMaarchError : ' +
-                           str(res.text))
-            return False
-        else:
-            return res.text
-
-    def check_attachment(self, chrono):
-        res = requests.get(self.baseUrl + 'reconciliation/check', auth=self.auth, params={'chrono': chrono})
-        if res.status_code != 200:
-            self.Log.error('(' + str(res.status_code) + ') CheckAttachmentError : ' + str(res.text))
-            return False
-        else:
-            return json.loads(res.text)
 
     def retrieve_contact_by_vat_number(self, vat):
         res = requests.get(self.baseUrl + 'getContactByVAT', auth=self.auth, params={'VAT': vat})

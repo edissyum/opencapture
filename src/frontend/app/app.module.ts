@@ -53,6 +53,9 @@ import { CreateCustomerComponent } from './accounts/customers/create/create-cust
 import { CreateOutputComponent } from './settings/verifier/outputs/create/create-output.component';
 import { OutputsListComponent } from './settings/verifier/outputs/list/outputs-list.component';
 import {HighlightPipe, UpdateOutputComponent} from './settings/verifier/outputs/update/update-output.component';
+import { CreateComponent } from './app/settings/inputs/create/create.component';
+import { InputsListComponent } from './settings/verifier/inputs/list/inputs-list.component';
+import { UpdateInputComponent } from './settings/verifier/inputs/update/update-input.component';
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -95,7 +98,10 @@ export function createTranslateLoader(http: HttpClient) {
         UpdateCustomerComponent,
         CreateOutputComponent,
         OutputsListComponent,
-        UpdateOutputComponent
+        UpdateOutputComponent,
+        CreateComponent,
+        InputsListComponent,
+        UpdateInputComponent
     ],
     imports: [
         BrowserModule,

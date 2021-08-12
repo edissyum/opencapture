@@ -109,6 +109,21 @@ const routes: Routes = [
         data: {title: marker('SETTINGS.update_output'), privileges: ['settings', 'update_output']},
         canActivate: [LoginRequiredService]
     },
+    {
+        path: 'settings/verifier/inputs', component: OutputsListComponent,
+        data: {title: marker('FORMS.input_settings'), privileges: ['settings', 'inputs_list']},
+        canActivate: [LoginRequiredService]
+    },
+    {
+        path: 'settings/verifier/inputs/new', component: CreateOutputComponent,
+        data: {title: marker('SETTINGS.add_input'), privileges: ['settings', 'add_input']},
+        canActivate: [LoginRequiredService]
+    },
+    {
+        path: 'settings/verifier/inputs/update/:id', component: UpdateOutputComponent,
+        data: {title: marker('SETTINGS.update_input'), privileges: ['settings', 'update_input']},
+        canActivate: [LoginRequiredService]
+    },
 // -- END Verifier
 ];
 

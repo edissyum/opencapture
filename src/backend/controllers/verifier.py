@@ -16,16 +16,16 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
+import os
 import json
 import datetime
-import os
+import pandas as pd
 from xml.dom import minidom
-
 from flask import current_app
 from flask_babel import gettext
 import xml.etree.ElementTree as ET
 from src.backend.main import launch
-from ..import_classes import _Files
+from ..import_classes import _Files, _MaarchWebServices
 from ..import_controllers import pdf
 from ..import_models import verifier, accounts
 
@@ -257,11 +257,128 @@ def update_invoice(invoice_id, data):
         return response, 401
 
 
-def export_xml(invoice_id, data):
+def export_maarch(invoice_id, data):
+    _vars = pdf.init()
+    host = login = password = ''
+    auth_data = data['options']['auth']
+    for _data in auth_data:
+        if _data['id'] == 'host':
+            host = _data['value']
+        if _data['id'] == 'login':
+            login = _data['value']
+        if _data['id'] == 'password':
+            password = _data['value']
+
+    if host and login and password:
+        ws = _MaarchWebServices(
+            host,
+            login,
+            password,
+            _vars[7],
+            _vars[1]
+        )
+        if ws.status:
+            invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
+            if not error:
+                args = {}
+                ws_data = data['options']['parameters']
+                for _data in ws_data:
+                    value = _data['value']
+                    if 'webservice' in _data:
+                        # Pour le webservices maarch, ce sont les identifiants qui sont utilisés
+                        # et non les valeurs bruts (e.g COU plutôt que Service courrier)
+                        value = _data['value']['id']
+
+                    args.update({
+                        _data['id']: value
+                    })
+
+                    if _data['id'] == 'customFields':
+                        args.update({
+                            'customFields': {}
+                        })
+                        customs = json.loads(_data['value'])
+                        for custom_id in customs:
+                            args['customFields'].update({
+                                custom_id: invoice_info['datas'][customs[custom_id]]
+                            })
+                    elif _data['id'] == 'subject':
+                        subject = construct_with_var(_data['value'], invoice_info)
+                        args.update({
+                            'subject': ''.join(subject)
+                        })
+
+                file = invoice_info['path'] + '/' + invoice_info['filename']
+                if os.path.isfile(file):
+                    args.update({
+                        'fileContent': open(file, 'rb').read(),
+                        'documentDate': str(pd.to_datetime(invoice_info['datas']['invoice_date']).date())
+                    })
+                    res, message = ws.insert_with_args(args)
+                    if res:
+                        return '', 200
+                    else:
+                        response = {
+                            "errors": gettext('EXPORT_MAARCH_ERROR'),
+                            "message": message['errors']
+                        }
+                        return response, 400
+                else:
+                    response = {
+                        "errors": gettext('EXPORT_MAARCH_ERROR'),
+                        "message": gettext('PDF_FILE_NOT_FOUND')
+                    }
+                    return response, 400
+            else:
+                response = {
+                    "errors": gettext('EXPORT_MAARCH_ERROR'),
+                    "message": error
+                }
+                return response, 400
+        else:
+            response = {
+                "errors": gettext('MAARCH_WS_INFO_WRONG'),
+                "message": ws.status[1]
+            }
+            return response, 400
+    else:
+        response = {
+            "errors": gettext('MAARCH_WS_INFO_EMPTY'),
+            "message": ''
+        }
+        return response, 400
+
+
+def construct_with_var(data, invoice_info):
     _vars = pdf.init()
     _locale = _vars[2]
+    _data = []
+    for column in data.split('#'):
+        if column in invoice_info['datas']:
+            _data.append(invoice_info['datas'][column])
+        elif column in invoice_info:
+            _data.append(invoice_info[column])
+        elif column == 'invoice_date_year':
+            _data.append(datetime.datetime.strptime(invoice_info['datas']['invoice_date'], _locale.formatDate).year)
+        elif column == 'invoice_date_month':
+            _data.append(datetime.datetime.strptime(invoice_info['datas']['invoice_date'], _locale.formatDate).month)
+        elif column == 'invoice_date_day':
+            _data.append(datetime.datetime.strptime(invoice_info['datas']['invoice_date'], _locale.formatDate).day)
+        elif column == 'register_date_year':
+            _data.append(datetime.datetime.strptime(invoice_info['register_date'], _locale.formatDate).year)
+        elif column == 'register_date_month':
+            _data.append(datetime.datetime.strptime(invoice_info['register_date'], _locale.formatDate).month)
+        elif column == 'register_date_day':
+            _data.append(datetime.datetime.strptime(invoice_info['register_date'], _locale.formatDate).day)
+        else:
+            _data.append(column)
+    return _data
+
+
+def export_xml(invoice_id, data):
+
     folder_out = separator = filename = ''
-    parameters = data['data']['options']['parameters']
+    parameters = data['options']['parameters']
     for setting in parameters:
         if setting['id'] == 'folder_out':
             folder_out = setting['value']
@@ -272,28 +389,9 @@ def export_xml(invoice_id, data):
     invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
 
     if not error:
-        _data = []
         _technical_data = []
         # Create the XML filename
-        for column in filename.split('#'):
-            if column in invoice_info['datas']:
-                _data.append(invoice_info['datas'][column])
-            elif column in invoice_info:
-                _data.append(invoice_info[column])
-
-            if column == 'invoice_date_year':
-                _data.append(datetime.datetime.strptime(invoice_info['datas']['invoice_date'], _locale.formatDate).year)
-            if column == 'invoice_date_month':
-                _data.append(datetime.datetime.strptime(invoice_info['datas']['invoice_date'], _locale.formatDate).month)
-            if column == 'invoice_date_day':
-                _data.append(datetime.datetime.strptime(invoice_info['datas']['invoice_date'], _locale.formatDate).day)
-
-            if column == 'register_date_year':
-                _data.append(datetime.datetime.strptime(invoice_info['register_date'], _locale.formatDate).year)
-            if column == 'register_date_month':
-                _data.append(datetime.datetime.strptime(invoice_info['register_date'], _locale.formatDate).month)
-            if column == 'register_date_day':
-                _data.append(datetime.datetime.strptime(invoice_info['register_date'], _locale.formatDate).day)
+        _data = construct_with_var(filename, invoice_info)
         filename = separator.join(str(x) for x in _data) + '.xml'
         # END create the XML filename
 

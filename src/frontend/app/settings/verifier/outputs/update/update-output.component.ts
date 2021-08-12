@@ -132,6 +132,8 @@ export class UpdateOutputComponent implements OnInit {
      * Créer cette fonction et faites le process permettant de récupérer les données
      * Les données doivent être formatés comme suit : {'id': XX, 'value': XX} et être mise dans la clé "values" du champ
      * Regarder la fonction getUsersMaarch() pour voir le fonctionnement
+     * Du côté des webservices permettant l'execution des chaînes sortantes, il faut créer un WS dans le fichier rest/verifier.py
+     * La route doit être : verifier/invoices/<int:invoice_id>/output_type_id (e.g : verifier/invoices/<int:invoice_id>/export_maarch)
     **/
 
     constructor(
@@ -204,13 +206,9 @@ export class UpdateOutputComponent implements OnInit {
                                 this.output.data.options[category].forEach((output_element: any) => {
                                     if (element.id == output_element.id) {
                                         if (output_element.value) {
-                                            if (output_element.webservice) {
-                                                let value = JSON.parse(output_element.value);
-                                                element.values = [value];
-                                                element.control.setValue(value);
-                                            }else {
-                                                element.control.setValue(output_element.value);
-                                            }
+                                            if (output_element.webservice) element.values = [output_element.value];
+                                            element.control.setValue(output_element.value);
+
                                         }
                                     }
                                 });
@@ -360,9 +358,10 @@ export class UpdateOutputComponent implements OnInit {
                 if (_return && _return.entities) {
                     let data = _return.entities;
                     let entities = [];
+                    console.log(data)
                     for (let cpt in data) {
                         entities.push({
-                            'id': data[cpt].id,
+                            'id': data[cpt].serialId,
                             'value': data[cpt].entity_label,
                             'extra': data[cpt].entity_id
                         })
@@ -475,9 +474,11 @@ export class UpdateOutputComponent implements OnInit {
                         return;
                     }
                 }
+
                 _array['options'][category].push({
                     id: field.id,
                     type: field.type,
+                    webservice: field.webservice,
                     value: field.value == undefined ? field.control.value : field.value,
                 });
             }
