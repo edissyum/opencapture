@@ -33,6 +33,14 @@ def suppliers_list():
         'limit': request.args['limit'] if 'limit' in request.args else '',
         'order_by': [request.args['order']] if 'order' in request.args else ''
     }
+
+    if 'search' in request.args and request.args['search']:
+        args['where'].append(
+            "LOWER(name) LIKE '%%" + request.args['search'].lower() + "%%' OR "
+            "LOWER(siret) LIKE '%%" + request.args['search'].lower() + "%%' OR "
+            "LOWER(siren) LIKE '%%" + request.args['search'].lower() + "%%' OR "
+            "LOWER(vat_number) LIKE '%%" + request.args['search'].lower() + "%%'"
+        )
     res = accounts.retrieve_suppliers(args)
     return make_response(res[0], res[1])
 
@@ -133,6 +141,15 @@ def customers_list():
         'offset': request.args['offset'] if 'offset' in request.args else '',
         'limit': request.args['limit'] if 'limit' in request.args else ''
     }
+    if 'search' in request.args and request.args['search']:
+        args['where'].append(
+            "LOWER(name) LIKE '%%" + request.args['search'].lower() + "%%' OR "
+            "LOWER(siret) LIKE '%%" + request.args['search'].lower() + "%%' OR "
+            "LOWER(company_number) LIKE '%%" + request.args['search'].lower() + "%%' OR "
+            "LOWER(siren) LIKE '%%" + request.args['search'].lower() + "%%' OR "
+            "LOWER(vat_number) LIKE '%%" + request.args['search'].lower() + "%%'"
+        )
+
     res = accounts.retrieve_customers(args)
     return make_response(res[0], res[1])
 
@@ -164,4 +181,11 @@ def create_customer():
 @auth.token_required
 def delete_customer(customer_id):
     res = accounts.delete_customer(customer_id)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('accounts/customers/getAccountingPlan/<int:customer_id>', methods=['GET'])
+@auth.token_required
+def get_accouting_plan(customer_id):
+    res = accounts.get_accounting_plan_by_customer_id(customer_id)
     return make_response(jsonify(res[0])), res[1]

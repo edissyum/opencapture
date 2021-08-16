@@ -186,6 +186,22 @@ def get_customer_by_id(args):
     return customer, error
 
 
+def get_accounting_plan_by_customer_id(args):
+    _db = db.get_db()
+    error = None
+    accounting_plan = _db.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['accounting_plan'],
+        'where': ['customer_id = %s'],
+        'data': [args['customer_id']]
+    })
+
+    if not accounting_plan:
+        error = gettext('GET_CUSTOMER_BY_ID_ERROR')
+
+    return accounting_plan, error
+
+
 def update_customer(args):
     _db = db.get_db()
     error = None

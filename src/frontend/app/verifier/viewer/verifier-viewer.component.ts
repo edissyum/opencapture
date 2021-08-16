@@ -1,42 +1,44 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
-import {API_URL} from "../../env";
-import {catchError, map, startWith, tap} from "rxjs/operators";
-import {Observable, of} from "rxjs";
-import {HttpClient} from "@angular/common/http";
-import {AuthService} from "../../../services/auth.service";
-import {NotificationService} from "../../../services/notifications/notifications.service";
-import {TranslateService} from "@ngx-translate/core";
-import {marker} from "@biesbjerg/ngx-translate-extract-marker";
-import {FormControl} from "@angular/forms";
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from "@angular/router";
+import { API_URL } from "../../env";
+import { catchError, map, startWith, tap } from "rxjs/operators";
+import { Observable, of } from "rxjs";
+import { HttpClient } from "@angular/common/http";
+import { AuthService } from "../../../services/auth.service";
+import { NotificationService } from "../../../services/notifications/notifications.service";
+import { TranslateService } from "@ngx-translate/core";
+import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import { FormControl } from "@angular/forms";
 import { DatePipe } from '@angular/common';
-import {LocalStorageService} from "../../../services/local-storage.service";
-import {ConfigService} from "../../../services/config.service";
+import { LocalStorageService } from "../../../services/local-storage.service";
+import { ConfigService } from "../../../services/config.service";
+
 declare var $: any;
 import 'moment/locale/en-gb';
 import 'moment/locale/fr';
 import * as moment from 'moment';
 
+
 @Component({
-    selector: 'app-viewer',
+    selector: 'verifier-viewer',
     templateUrl: './verifier-viewer.component.html',
     styleUrls: ['./verifier-viewer.component.scss'],
     providers: [DatePipe]
 })
 
 export class VerifierViewerComponent implements OnInit {
-    loading         : boolean   = true
-    imageInvoice    : any;
-    isOCRRunning    : boolean   = false;
-    settingsOpen    : boolean       = false;
-    invoiceId       : any;
-    invoice         : any;
-    fields          : any;
-    lastLabel       : string    = '';
-    lastId          : string    = '';
-    lastColor       : string    = '';
-    ratio           : number    = 0;
-    fieldCategories : any[]     = [
+    loading             : boolean   = true
+    imageInvoice        : any;
+    isOCRRunning        : boolean   = false;
+    settingsOpen        : boolean   = false;
+    invoiceId           : any;
+    invoice             : any;
+    fields              : any;
+    lastLabel           : string    = '';
+    lastId              : string    = '';
+    lastColor           : string    = '';
+    ratio               : number    = 0;
+    fieldCategories     : any[]     = [
         {
             'id': 'supplier',
             'label': marker('FORMS.supplier')
@@ -50,39 +52,28 @@ export class VerifierViewerComponent implements OnInit {
             'label': marker('FORMS.other')
         }
     ];
-    disableOCR      : boolean   = false;
-    form            : any       = {
+    disableOCR          : boolean   = false;
+    form                : any       = {
         'supplier': [],
         'facturation': [],
         'other': []
     }
-    formList        : any       = {};
-    currentFormFields: any       = {};
-    pattern         : any       = {
+    formList            : any       = {};
+    currentFormFields   : any       = {};
+    pattern             : any       = {
         'alphanum': '^[0-9a-zA-Z\\s]*$',
         'alphanum_extended': '^[0-9a-zA-Z-/#\\s]*$',
         'number_int': '^[0-9]*$',
         'number_float': '^[0-9]*([.][0-9]*)*$',
         'char': '^[A-Za-z\\s]*$',
     }
-    suppliers       : any       = [
-        {
-            'id': 1,
-            'name': 'Edissyum'
-        },
-        {
-            'id': 2,
-            'name': 'Ideal Standard'
-        },
-        {
-            'id': 3,
-            'name': 'ETM'
-        },
-    ]
-    filteredOptions : Observable<any> | undefined;
+    suppliers           : any       = []
+    filteredOptions     : Observable<any> | undefined;
     supplierNamecontrol = new FormControl();
     get_only_raw_footer : boolean   = false;
     oldValue            : string    = '';
+    toHighlight         : string    = '';
+    toHighlight_accounting : string    = '';
 
     constructor(
         private router: Router,
@@ -110,6 +101,7 @@ export class VerifierViewerComponent implements OnInit {
                 ]
             }
         }, true);
+
         this.invoiceId = this.route.snapshot.params['id'];
         this.invoice = await this.getInvoice();
         this.ratio = this.invoice.img_width / this.imageInvoice.width();
@@ -119,9 +111,7 @@ export class VerifierViewerComponent implements OnInit {
         this.formList = this.formList.forms;
         this.suppliers = await this.retrieveSuppliers();
         this.suppliers = this.suppliers.suppliers;
-        if (this.invoice.supplier_id) {
-            this.getSupplierInfo(this.invoice.supplier_id, false, true);
-        }
+        if (this.invoice.supplier_id) this.getSupplierInfo(this.invoice.supplier_id, false, true);
         await this.fillForm(this.currentFormFields);
         await this.drawPositions(this.currentFormFields);
         this.loading = false;
@@ -134,7 +124,8 @@ export class VerifierViewerComponent implements OnInit {
             );
     }
 
-    private _filter(value: string): string[] {
+    private _filter(value: any): string[] {
+        this.toHighlight = value;
         const filterValue = value.toLowerCase();
         return this.suppliers.filter((supplier: any) => supplier.name.toLowerCase().indexOf(filterValue) !== -1);
     }
@@ -233,9 +224,20 @@ export class VerifierViewerComponent implements OnInit {
                     display_icon: field.display_icon,
                     class_label: field.class_label,
                     cpt: 0,
+                    values: ''
                 });
 
-                let _field = this.form[category][this.form[category].length - 1];
+                if (field.id == 'accounting_plan') {
+                    let array = await this.retrieveAccountingPlan();
+                    array = this.sortArray(array);
+                    this.form[category][cpt].values = this.form[category][cpt].control.valueChanges
+                        .pipe(
+                            startWith(''),
+                            map(option => option ? this._filter_accounting(array, option) : array)
+                        );
+                }
+
+                let _field = this.form[category][cpt];
                 if (this.invoice.datas[field.id]) {
                     let value = this.invoice.datas[field.id];
                     if (field.format == 'date' && field.id !== '' && field.id !== undefined && value) {
@@ -253,6 +255,23 @@ export class VerifierViewerComponent implements OnInit {
                 this.findChildren(field.id, _field, category);
             }
         }
+    }
+
+    private _filter_accounting(array: any, value: any): string[] {
+        this.toHighlight_accounting = value;
+        const filterValue = value.toLowerCase();
+        return array.filter((option: any) => option.compte_lib.toLowerCase().indexOf(filterValue) !== -1 || option.compte_num.toLowerCase().indexOf(filterValue) !== -1);
+    }
+
+    sortArray(array: any) {
+        return array.sort(function (a:any, b:any) {
+            let x = a.compte_num, y = b.compte_num;
+            return x == y ? 0 : x > y ? 1 : -1;
+        });
+    }
+
+    async retrieveAccountingPlan() {
+        return await this.http.get(API_URL + '/ws/accounts/customers/getAccountingPlan/' + this.invoice.customer_id, {headers: this.authService.headers}).toPromise();
     }
 
     findChildren(parent_id: any, parent: any, category_id: any) {

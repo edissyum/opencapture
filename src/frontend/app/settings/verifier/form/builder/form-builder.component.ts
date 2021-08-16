@@ -15,7 +15,7 @@ import {of} from "rxjs";
 import {marker} from "@biesbjerg/ngx-translate-extract-marker";
 
 @Component({
-    selector: 'app-create',
+    selector: 'form-builder',
     templateUrl: './form-builder.component.html',
     styleUrls: ['./form-builder.component.scss'],
 })
@@ -328,6 +328,7 @@ export class FormBuilderComponent implements OnInit {
                     unit: 'facturation',
                     type: 'select',
                     required: false,
+                    format: 'select',
                     required_icon: 'fas fa-star',
                     class: "w-1/3",
                     class_label: "1/33",
@@ -516,7 +517,7 @@ export class FormBuilderComponent implements OnInit {
             'id': 'alphanum_extended',
             'label': marker('FORMATS.alphanum_extended'),
             'icon': 'fas fa-level-up-alt'
-        },
+        }
     ];
     displayList             : any []    = [
         {

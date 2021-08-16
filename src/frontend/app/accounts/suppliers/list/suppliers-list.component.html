@@ -4,12 +4,18 @@
             <app-loader></app-loader>
         </div>
         <div class="settings_header">
-            <button routerLink="/accounts/suppliers/create" mat-icon-button class="absolute left-2 top-2">
-                <i class="fas fa-plus text-2xl ml-2"></i>
-                <span class="ml-2 top-0.5">{{ 'ACCOUNTS.create_supplier' | translate }}</span>
-            </button>
+            <div class="absolute left-4 top-0">
+                <mat-form-field>
+                    <mat-label>{{ 'ACCOUNTS.search_supplier' | translate }}</mat-label>
+                    <input matInput type="text" (keyup)="searchSupplier($event)">
+                </mat-form-field>
+            </div>
             <h3 class="text-center">{{ this.serviceSettings.getTitle() }}</h3>
             <hr class="border-green-400">
+            <button routerLink="/accounts/suppliers/create" class="relative float-right -top-12 right-4">
+                <i class="fas fa-plus text-2xl ml-2"></i>
+                <span class="ml-2 relative -top-1">{{ 'ACCOUNTS.create_supplier' | translate }}</span>
+            </button>
         </div>
         <mat-table matSort [dataSource]="suppliers" (matSortChange)="sortData($event)" class="w-full">
             <ng-container matColumnDef="id">

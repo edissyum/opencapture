@@ -97,7 +97,7 @@
                 </mat-expansion-panel-header>
                 <form (ngSubmit)="addCustomField()" [formGroup]="form">
                     <div [formGroup]="form" class="mx-8 grid grid-cols-6 gap-4">
-                        <mat-form-field appearance="outline" class="w-full" *ngFor="let input of addFieldInputs">
+                        <mat-form-field class="w-full" *ngFor="let input of addFieldInputs">
                             <mat-label [attr.for]="input.label_short">{{ input.label | translate }}</mat-label>
                             <div [ngSwitch]="input.controlType">
                                 <input matInput *ngSwitchCase="'textbox'" [formControlName]="input.label_short"

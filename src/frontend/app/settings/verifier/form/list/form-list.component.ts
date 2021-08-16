@@ -60,16 +60,15 @@ export class FormListComponent implements OnInit {
                 this.pageIndex = parseInt(<string>this.localeStorageService.get('formsPageIndex'))
             this.offset = this.pageSize * (this.pageIndex);
         }else
-            this.localeStorageService.remove('formsPageIndex')
-
-        this.loadForms()
+            this.localeStorageService.remove('formsPageIndex');
+        this.loadForms();
     }
 
     onPageChange(event: any) {
-        this.pageSize = event.pageSize
-        this.offset = this.pageSize * (event.pageIndex)
-        this.localeStorageService.save('formsPageIndex', event.pageIndex)
-        this.loadForms()
+        this.pageSize = event.pageSize;
+        this.offset = this.pageSize * (event.pageIndex);
+        this.localeStorageService.save('formsPageIndex', event.pageIndex);
+        this.loadForms();
     }
 
     loadForms(): void {

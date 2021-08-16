@@ -222,6 +222,20 @@ def get_customer_by_id(customer_id):
         return response, 401
 
 
+def get_accounting_plan_by_customer_id(customer_id):
+    customer_info, error = accounts.get_customer_by_id({'customer_id': customer_id})
+
+    if error is None:
+        accounting_plan, error = accounts.get_accounting_plan_by_customer_id({'customer_id': customer_id})
+        return accounting_plan, 200
+    else:
+        response = {
+            "errors": gettext('GET_ACCOUNTING_PLAN_BY_CUSTOMER_ID_ERROR'),
+            "message": error
+        }
+        return response, 401
+
+
 def update_customer(customer_id, data):
     _vars = pdf.init()
     _db = _vars[0]

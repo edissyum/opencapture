@@ -31,6 +31,7 @@ export class CustomersListComponent implements OnInit {
     pageIndex       : number      = 0;
     total           : number      = 0;
     offset          : number      = 0;
+    search          : string      = '';
 
     constructor(
         public router: Router,
@@ -62,7 +63,7 @@ export class CustomersListComponent implements OnInit {
     }
 
     loadCustomers() {
-        this.http.get(API_URL + '/ws/accounts/customers/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
+        this.http.get(API_URL + '/ws/accounts/customers/list?limit=' + this.pageSize + '&offset=' + this.offset + "&search=" + this.search, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.customers = data.customers;
                 if (this.customers.length !== 0) {
@@ -78,11 +79,16 @@ export class CustomersListComponent implements OnInit {
         ).subscribe();
     }
 
+    searchCustomer(event: any) {
+        this.search = event.target.value;
+        this.loadCustomers();
+    }
+
     onPageChange(event: any) {
-        this.pageSize = event.pageSize
-        this.offset = this.pageSize * (event.pageIndex)
-        this.localeStorageService.save('customersPageIndex', event.pageIndex)
-        this.loadCustomers()
+        this.pageSize = event.pageSize;
+        this.offset = this.pageSize * (event.pageIndex);
+        this.localeStorageService.save('customersPageIndex', event.pageIndex);
+        this.loadCustomers();
     }
 
     deleteConfirmDialog(customer_id: number, customer: string) {

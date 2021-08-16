@@ -9,7 +9,7 @@
     </div>
     <div *ngIf="this.fields" class="px-4 overflow-auto" style="height: calc(100vh - 56px) !important">
         <mat-accordion>
-            <mat-expansion-panel class="mb-4" [(expanded)]="settingsOpen">
+            <mat-expansion-panel class="top-2 mb-4" [(expanded)]="settingsOpen">
                 <mat-expansion-panel-header>
                     <mat-panel-title class="justify-center">{{ 'GLOBAL.settings' | translate }}</mat-panel-title>
                 </mat-expansion-panel-header>
@@ -54,7 +54,7 @@
                                     <mat-error class="mt-1" *ngIf="field.control.errors">{{ getErrorMessage(field.id, category['id']) }}</mat-error>
                                     <mat-autocomplete #auto="matAutocomplete" (optionSelected)='getSupplierInfo($event.option.id, true)'>
                                         <mat-option *ngFor="let option of filteredOptions | async" [value]="option.name" [id]="option.id">
-                                            {{ option.name }}
+                                            <span [innerHTML]="option.name | highlight: toHighlight"></span>
                                         </mat-option>
                                     </mat-autocomplete>
                                 </mat-form-field>
@@ -111,11 +111,27 @@
                                 </mat-form-field>
                             </ng-container>
                             <ng-container *ngIf="field.type === 'select'">
-                                <mat-form-field class="right-0 w-full form-viewer">
+                                <mat-form-field class="right-0 w-full form-viewer" *ngIf="field.id == 'accounting_plan'">
                                     <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
                                         {{ field.label | translate }}
                                     </mat-label>
-                                    <mat-select [id]="field.id"></mat-select>
+                                    <input [id]="field.id" matInput type="text" [required]="field.required"
+                                           [formControl]="field.control" [matAutocomplete]="accounting">
+                                    <mat-autocomplete #accounting="matAutocomplete">
+                                        <mat-option *ngFor="let option of field.values | async" [value]="option.compte_lib" [id]="option.compte_num">
+                                            <span [innerHTML]="option.compte_num + ' - ' + option['compte_lib'] | highlight: toHighlight_accounting"></span>
+                                        </mat-option>
+                                    </mat-autocomplete>
+                                </mat-form-field>
+                                <mat-form-field class="right-0 w-full form-viewer" *ngIf="field.id != 'accounting_plan'">
+                                    <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
+                                        {{ field.label | translate }}
+                                    </mat-label>
+                                    <mat-select [id]="field.id" >
+                                        <mat-option *ngFor="let option of field.values" [value]="option['compte_num']">
+                                            {{ option['compte_num'] }} - {{ option['compte_lib'] }}
+                                        </mat-option>
+                                    </mat-select>
                                 </mat-form-field>
                             </ng-container>
                         </div>

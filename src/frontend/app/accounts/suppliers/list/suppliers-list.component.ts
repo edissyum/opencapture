@@ -1,37 +1,38 @@
 import { Component, OnInit } from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {ActivatedRoute, Router} from "@angular/router";
-import {MatDialog} from "@angular/material/dialog";
-import {UserService} from "../../../../services/user.service";
-import {FormBuilder} from "@angular/forms";
-import {AuthService} from "../../../../services/auth.service";
-import {TranslateService} from "@ngx-translate/core";
-import {NotificationService} from "../../../../services/notifications/notifications.service";
-import {SettingsService} from "../../../../services/settings.service";
-import {LastUrlService} from "../../../../services/last-url.service";
-import {PrivilegesService} from "../../../../services/privileges.service";
-import {LocalStorageService} from "../../../../services/local-storage.service";
-import {Sort} from "@angular/material/sort";
-import {API_URL} from "../../../env";
-import {catchError, finalize, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {ConfirmDialogComponent} from "../../../../services/confirm-dialog/confirm-dialog.component";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { ActivatedRoute, Router } from "@angular/router";
+import { MatDialog } from "@angular/material/dialog";
+import { UserService } from "../../../../services/user.service";
+import { FormBuilder } from "@angular/forms";
+import { AuthService } from "../../../../services/auth.service";
+import { TranslateService } from "@ngx-translate/core";
+import { NotificationService } from "../../../../services/notifications/notifications.service";
+import { SettingsService } from "../../../../services/settings.service";
+import { LastUrlService } from "../../../../services/last-url.service";
+import { PrivilegesService } from "../../../../services/privileges.service";
+import { LocalStorageService } from "../../../../services/local-storage.service";
+import { Sort } from "@angular/material/sort";
+import { API_URL } from "../../../env";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { ConfirmDialogComponent } from "../../../../services/confirm-dialog/confirm-dialog.component";
 
 @Component({
-    selector: 'app-list',
+    selector: 'suppliers-list',
     templateUrl: './suppliers-list.component.html',
     styleUrls: ['./suppliers-list.component.scss']
 })
 export class SuppliersListComponent implements OnInit {
-    headers         : HttpHeaders = this.authService.headers;
-    loading         : boolean     = true;
-    columnsToDisplay: string[]    = ['id', 'name', 'vat_number', 'siret', 'siren','form_label', 'actions'];
-    suppliers       : any         = [];
-    pageSize        : number      = 10;
-    pageIndex       : number      = 0;
-    total           : number      = 0;
-    offset          : number      = 0;
-    deletePositionSrc: string     = 'assets/imgs/map-marker-alt-solid-del.svg';
+    headers          : HttpHeaders = this.authService.headers;
+    loading          : boolean     = true;
+    columnsToDisplay : string[]    = ['id', 'name', 'vat_number', 'siret', 'siren','form_label', 'actions'];
+    suppliers        : any         = [];
+    pageSize         : number      = 10;
+    pageIndex        : number      = 0;
+    total            : number      = 0;
+    offset           : number      = 0;
+    search           : string      = '';
+    deletePositionSrc: string      = 'assets/imgs/map-marker-alt-solid-del.svg';
 
     constructor(
         public router: Router,
@@ -63,7 +64,7 @@ export class SuppliersListComponent implements OnInit {
     }
 
     loadSuppliers() {
-        this.http.get(API_URL + '/ws/accounts/suppliers/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
+        this.http.get(API_URL + '/ws/accounts/suppliers/list?limit=' + this.pageSize + '&offset=' + this.offset + "&search=" + this.search, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.suppliers = data.suppliers;
                 if (this.suppliers.length !== 0) {
@@ -95,11 +96,16 @@ export class SuppliersListComponent implements OnInit {
         ).subscribe();
     }
 
+    searchSupplier(event: any) {
+        this.search = event.target.value;
+        this.loadSuppliers();
+    }
+
     onPageChange(event: any) {
-        this.pageSize = event.pageSize
-        this.offset = this.pageSize * (event.pageIndex)
-        this.localeStorageService.save('suppliersPageIndex', event.pageIndex)
-        this.loadSuppliers()
+        this.pageSize = event.pageSize;
+        this.offset = this.pageSize * (event.pageIndex);
+        this.localeStorageService.save('suppliersPageIndex', event.pageIndex);
+        this.loadSuppliers();
     }
 
     deleteConfirmDialog(supplier_id: number, supplier: string) {
@@ -195,5 +201,4 @@ export class SuppliersListComponent implements OnInit {
     compare(a: number | string, b: number | string, isAsc: boolean) {
         return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
     }
-
 }

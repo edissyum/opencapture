@@ -28,7 +28,7 @@ export class HighlightPipe implements PipeTransform {
     }
 }
 @Component({
-    selector: 'app-update',
+    selector: 'update-output',
     templateUrl: './update-output.component.html',
     styleUrls: ['./update-output.component.scss']
 })

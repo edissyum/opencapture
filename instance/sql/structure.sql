@@ -126,6 +126,7 @@ CREATE TABLE "accounts_customer" (
 
 CREATE TABLE "accounting_plan" (
     "id"            SERIAL UNIQUE PRIMARY KEY,
+    "customer_id"   INTEGER,
     "journal_code"  VARCHAR(2),
     "journal_lib"   VARCHAR(10),
     "ecriture_num"  INTEGER,

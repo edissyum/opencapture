@@ -129,12 +129,14 @@
                              ngSortGridGroup="{{ category['id'] }}" ngSortgridItem [ngSortGridItems]="fields[category['id']]" (sorted)="storeNewOrder($event, category['id'])">
                             <mat-form-field class="right-0 w-full form-builder"
                                             [matTooltipClass]="'-mt-3'"
+                                            [matTooltipDisabled]="field.type == 'select'"
                                             [matTooltip]="this.translate.instant(field['label']) + ' (' + this.translate.instant('FORMATS.' + field.format) + ')'">
                                 <i cdkDrag class="fas fa-trash" (click)="deleteField($event, index, category['id'], field.unit)" [matTooltip]="this.translate.instant('FORMS.delete_field')"></i>
                                 <mat-label class="border-r-2 border-green-400 inline-block overflow-ellipsis overflow-hidden whitespace-nowrap w-10/12">
                                     <span *ngIf="field.required" class="text-red-500 mr-2">*</span>
                                     <b>{{ field.label | translate }}</b>
-                                    ({{ 'FORMATS.' + field.format | translate }})
+                                    <span *ngIf="field.type != 'select'"> ({{ 'FORMATS.' + field.format | translate }})</span>
+                                    <span *ngIf="field.type == 'select'"> ({{ 'FORMATS.select' | translate }})</span>
                                 </mat-label>
                                 <input class="cursor-pointer" matInput type="text" readonly>
                                 <div class="absolute top-0 -right-4">
@@ -145,6 +147,7 @@
                                     </button>
                                     <mat-menu #menu="matMenu">
                                         <button mat-menu-item [matMenuTriggerFor]="colors"
+                                                *ngIf="field.type != 'select'"
                                                 [style]="'background-color:' + field.color"
                                                 [class.text-white]="field.color == 'black' || field.color == 'navy'">
                                             {{ "VERIFIER.colors" | translate }}
@@ -152,10 +155,10 @@
                                         <button mat-menu-item [matMenuTriggerFor]="size">
                                             {{ "VERIFIER.size" | translate }} <small class="ml-2">{{ field.class_label }}</small>
                                         </button>
-                                        <button mat-menu-item [matMenuTriggerFor]="format">
+                                        <button mat-menu-item [matMenuTriggerFor]="format" *ngIf="field.type != 'select'">
                                             {{ "VERIFIER.format" | translate }} <small class="ml-2"><i class="text-base {{ field.format_icon }}"></i></small>
                                         </button>
-                                        <button mat-menu-item [matMenuTriggerFor]="display">
+                                        <button mat-menu-item [matMenuTriggerFor]="display" *ngIf="field.type != 'select'">
                                             {{ "VERIFIER.display" | translate }} <small class="ml-2"><i class="text-base {{ field.display_icon }}"></i></small>
                                         </button>
                                         <button mat-menu-item [matMenuTriggerFor]="required">

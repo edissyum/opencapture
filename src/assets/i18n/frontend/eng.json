@@ -16,6 +16,8 @@
 		"form": "",
 		"get_only_raw_footer": "",
 		"positions_deleted": "",
+		"search_customer": "",
+		"search_supplier": "",
 		"siren": "",
 		"siret": "",
 		"supplier": "",
@@ -123,7 +125,8 @@
 		"char": "",
 		"date": "",
 		"number_float": "",
-		"number_int": ""
+		"number_int": "",
+		"select": ""
 	},
 	"FORMS": {
 		"available_fields": "",

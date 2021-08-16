@@ -16,6 +16,8 @@
 		"form": "Nom du formulaire",
 		"get_only_raw_footer": "Contrôle de cohérence du pied de page",
 		"positions_deleted": "Positions du fournisseurs supprimées",
+		"search_customer": "Recherche de client",
+		"search_supplier": "Recherche de fournisseur",
 		"siren": "Numéro de SIREN",
 		"siret": "Numéro de SIRET",
 		"supplier": "Compte Fournisseur",
@@ -123,7 +125,8 @@
 		"char": "Caractères alphabétiques [aA-zZ]",
 		"date": "Date",
 		"number_float": "Caractères numériques flottant [0-90.0-0.9]",
-		"number_int": "Caractères numériques entier [0-9]"
+		"number_int": "Caractères numériques entier [0-9]",
+		"select": "Liste de choix"
 	},
 	"FORMS": {
 		"available_fields": "Champs disponibles",
