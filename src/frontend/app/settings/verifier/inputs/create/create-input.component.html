@@ -84,5 +84,34 @@
                 <hr class="border-green-400">
             </div>
         </div>
+        <form>
+            <div class="grid grid-cols-2 gap-4 w-auto m-5 text-center">
+                <ng-container *ngFor="let field of inputForm">
+                    <mat-form-field class="block" *ngIf="field.type == 'text'">
+                        <mat-label>{{ field.label | translate }}</mat-label>
+                        <input matInput [formControl]="field.control" [readonly]="field.disabled"
+                               [type]="field.type" placeholder="{{ field.placeholder | translate }}"
+                               [required]="field.required">
+                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="block" *ngIf="field.type == 'select'">
+                        <mat-label>{{ field.label | translate }}</mat-label>
+                        <mat-select [formControl]="field.control" [(value)]="field.control.value" [required]="field.required">
+                            <mat-option *ngFor="let option of field.values" [value]="option['id']">{{ option['label'] }}</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
+                    </mat-form-field>
+                    <mat-slide-toggle *ngIf="field.type == 'boolean'" [formControl]="field.control" class="relative top-4 mb-10 col-span-2">
+                        <span class="justify-center">{{ field.label | translate }}</span>
+                    </mat-slide-toggle>
+                </ng-container>
+            </div>
+        </form>
+        <div class="flex justify-center items-center">
+            <button (click)="onSubmit()"  mat-button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300">
+                <span>{{ "INPUT.create" | translate }}</span>
+            </button>
+        </div>
+        <span class="text-gray-400 text-sm mt-2 flex justify-center items-center">{{ "INPUT.create_hint" | translate }}</span>
     </mat-sidenav-content>
 </mat-sidenav-container>

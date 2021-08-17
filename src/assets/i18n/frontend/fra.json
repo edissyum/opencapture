@@ -188,6 +188,20 @@
 		"splitter": "Open-Capture Splitter",
 		"verifier": "Open-Capture Vérificateur"
 	},
+	"INPUT": {
+		"confirm_delete": "Êtes vous sûr de vouloir supprimer la chaîne entrante <b>{{ input }}</b> ?",
+		"create": "Créer la chaîne entrante",
+		"create_hint": "",
+		"created": "Chaîne entrante créée",
+		"default_form_id": "Formulaire par défaut",
+		"incron_and_script_updated": "Script et incron mis à jour",
+		"input_folder": "Chemin de capture des documents",
+		"input_folder_header": "Chemin",
+		"override_supplier_form": "Outrepasser le formulaire par défaut du fournisseur",
+		"update": "Mettre à jour la chaîne entrante",
+		"update_script_and_incron": "Mettre à jour le script et l'incron",
+		"updated": "Chaîne entrante mise à jour"
+	},
 	"INVOICES": {
 		"data_deleted": "Champ supprimé",
 		"position_and_data_updated": "Position et valeur du champ <b>{{ input }}</b> mise à jour",

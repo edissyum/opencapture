@@ -16,8 +16,8 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-name="DEFAULT"
-OCPath="/var/www/html/opencaptureforinvoices/"
+name="§§SCRIPT_NAME§§"
+OCPath="§§OC_PATH§§"
 logFile="$OCPath"bin/data/log/OCforInvoices.log
 errFilepath="$OCPath/bin/data/error/$name/"
 tmpFilepath="$OCPath/bin/data/pdf/"
@@ -38,7 +38,7 @@ then
 
     mv "$filepath" "$tmpFilepath"
 
-    python3 "$OCPath"/launch_worker.py -c "$OCPath"/instance/config.ini -f "$tmpFilepath"/"$filename"
+    python3 "$OCPath"/launch_worker.py -c "$OCPath"/instance/config.ini -f "$tmpFilepath"/"$filename" "§§ARGUMENTS§§"
 
     rm -f $PID
 

@@ -21,7 +21,7 @@ from flask_cors import CORS
 from flask_babel import Babel
 from flask import request, session, Flask
 from .import_rest import auth, locale, config, user, splitter, verifier, roles, privileges, custom_fields, \
-    forms, status, accounts, outputs, maarch
+    forms, status, accounts, outputs, maarch, inputs
 
 
 app = Flask(__name__, instance_relative_config=True)
@@ -44,6 +44,7 @@ app.register_blueprint(auth.bp)
 app.register_blueprint(user.bp)
 app.register_blueprint(roles.bp)
 app.register_blueprint(forms.bp)
+app.register_blueprint(inputs.bp)
 app.register_blueprint(locale.bp)
 app.register_blueprint(status.bp)
 app.register_blueprint(config.bp)

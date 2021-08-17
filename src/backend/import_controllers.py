@@ -79,3 +79,9 @@ if 'maarch' not in custom_array:
     from .controllers import maarch
 else:
     maarch = getattr(__import__(custom_array['maarch']['path'], fromlist=[custom_array['maarch']['module']]), custom_array['maarch']['module'])
+
+
+if 'inputs' not in custom_array:
+    from .controllers import inputs
+else:
+    inputs = getattr(__import__(custom_array['inputs']['path'], fromlist=[custom_array['inputs']['module']]), custom_array['inputs']['module'])

@@ -188,6 +188,20 @@
 		"splitter": "Open-Capture splitter",
 		"verifier": "Open-Capture verifier"
 	},
+	"INPUT": {
+		"confirm_delete": "",
+		"create": "",
+		"create_hint": "",
+		"created": "",
+		"default_form_id": "",
+		"incron_and_script_updated": "",
+		"input_folder": "",
+		"input_folder_header": "",
+		"override_supplier_form": "",
+		"update": "",
+		"update_script_and_incron": "",
+		"updated": ""
+	},
 	"INVOICES": {
 		"data_deleted": "",
 		"position_and_data_updated": "",

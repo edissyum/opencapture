@@ -147,6 +147,14 @@
                                     <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputsTypesForm[selectedOutputType]['parameters']) }}</mat-error>
                                     <mat-hint *ngIf="field.hint">{{ field.hint }}</mat-hint>
                                 </mat-form-field>
+                                <mat-form-field *ngIf="(field.type == 'textarea') && !field.webservice">
+                                    <mat-label>{{ field.label | translate }}</mat-label>
+                                    <textarea cdkTextareaAutosize cdkAutosizeMinRows="1"  matInput [value]="field.control.value"
+                                              [formControl]="field.control" [type]="field.type" [placeholder]="field.placeholder"
+                                              [required]="field.required" ></textarea>
+                                    <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputsTypesForm[selectedOutputType]['parameters']) }}</mat-error>
+                                    <mat-hint *ngIf="field.hint">{{ field.hint }}</mat-hint>
+                                </mat-form-field>
                                 <mat-form-field (focusin)="retrieveDataFromWS(field.id)" *ngIf="(field.type == 'text' || field.type == 'number') && field.webservice">
                                     <mat-label>{{ field.label | translate }}</mat-label>
                                     <input matInput [formControl]="field.control" [type]="field.type"

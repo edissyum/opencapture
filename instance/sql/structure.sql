@@ -41,11 +41,13 @@ CREATE TABLE "outputs_types" (
 );
 
 CREATE TABLE "inputs" (
-    "id"                SERIAL UNIQUE PRIMARY KEY,
-    "input_id"          VARCHAR(20),
-    "input_label"       VARCHAR,
-    "default_form_id"   INTEGER,
-    "input_folder"      TEXT
+    "id"                        SERIAL UNIQUE PRIMARY KEY,
+    "input_id"                  VARCHAR(20),
+    "input_label"               VARCHAR,
+    "default_form_id"           INTEGER,
+    "override_supplier_form"    BOOLEAN DEFAULT False,
+    "status"                    VARCHAR(3) DEFAULT 'OK',
+    "input_folder"              TEXT
 );
 
 CREATE TABLE "custom_fields" (

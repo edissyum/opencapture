@@ -13,26 +13,27 @@ ALTER SEQUENCE "roles_id_seq" RESTART WITH 4;
 
 -- CRÉATION DES CHAINES SORTANTES
 INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data") VALUES (1, 'export_xml', 'Export XML', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "label": "Dossier de sortie", "required": "true", "placeholder": "/var/share/sortant"}, {"id": "separator", "type": "text", "label": "Séparateur", "required": "true", "placeholder": "_"}, {"id": "filename", "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut", "type": "text", "label": "Nom du fichier", "required": "true", "placeholder": "invoice_number#order_number#supplier_name"}]}}');
-INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data") VALUES (2, 'export_maarch', 'Export vers Maarch', '{"options": {
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data") VALUES (2, 'export_maarch', 'Export vers Maarch', '{
+	"options": {
         "auth": [
             {
                 "id": "host",
                 "type": "text",
-                "label": "URL de l''hôte",
+                "label": "URL de l''''hôte",
                 "required": "true",
                 "placeholder": "http://localhost/maarch_courrier/rest/"
             },
             {
                 "id": "login",
                 "type": "text",
-                "label": "Pseudo de l''utilisateur WS",
+                "label": "Pseudo de l''''utilisateur WS",
                 "required": "true",
                 "placeholder": "edissyumws"
             },
             {
                 "id": "password",
                 "type": "password",
-                "label": "Mot de passe de l''utilisateur WS",
+                "label": "Mot de passe de l''''utilisateur WS",
                 "required": "true",
                 "placeholder": "maarch"
             }
@@ -48,9 +49,9 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
             },
             {
                 "id": "subject",
-                "type": "text",
+                "type": "textarea",
                 "label": "Sujet",
-                "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
+                "hint": "Liste des identifiants techniques des champs, séparés par #. Si l''''identifiant technique n''''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
                 "required": "true",
                 "placeholder": "Facture n°#invoice_number"
             },
@@ -96,7 +97,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
             {
                 "id": "modelId",
                 "type": "text",
-                "label": "Identifiant du modèle d''enregistrement",
+                "label": "Identifiant du modèle d''''enregistrement",
                 "required": "true",
                 "webservice": "getIndexingModelsFromMaarch",
                 "placeholder": "Facture"
@@ -104,7 +105,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
             {
                 "id": "destination",
                 "type": "text",
-                "label": "Identifiant de l''entité destinatrice",
+                "label": "Identifiant de l''''entité destinatrice",
                 "required": "true",
                 "webservice": "getEntitiesFromMaarch",
                 "placeholder": "Service Courrier"
@@ -112,25 +113,32 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
             {
                 "id": "destUser",
                 "type": "text",
-                "label": "Identifiant de l''utilisateur destinataire",
+                "label": "Identifiant de l''''utilisateur destinataire",
                 "required": "true",
                 "webservice": "getUsersFromMaarch",
                 "placeholder": "Bernard BLIER"
             },
             {
                 "id": "customFields",
-                "hint": "La valeur doit être de type JSON avec des doubles quotes \". La clé est l''identifiant du custom Maarch, la valeur est l''identifiant du champ Open-Capture",
-                "type": "text",
+                "hint": "La valeur doit être de type JSON avec des doubles quotes \". La clé est l''''identifiant du custom Maarch, la valeur est l''''identifiant du champ Open-Capture",
+                "type": "textarea",
                 "label": "Champs personnalisés",
                 "isJson": "true",
                 "required": "false",
-                "placeholder": "{\"1\": \"invoice_number\", \"2\": \"order_number\"}"}]}}'
-);
+                "placeholder": "{\"1\": \"invoice_number\", \"2\": \"order_number\"}"
+            }
+        ]
+    }
+}');
 ALTER SEQUENCE "outputs_types_id_seq" RESTART WITH 3;
 
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data") VALUES (1, 'export_xml', 'Export XML par défaut');
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data") VALUES (2, 'export_maarch', 'Export Maarch par défaut');
 ALTER SEQUENCE "outputs_id_seq" RESTART WITH 3;
+
+-- CRÉATION DES CHAINES ENTRANTES
+INSERT INTO "inputs" ("id", "input_id", "input_label", "default_form_id", "input_folder") VALUES (1, 'default_input', 'Chaîne entrante par défaut', 1, '/var/share/entrant/')
+ALTER SEQUENCE "inputs_id_seq" RESTART WITH 2;
 
 -- CRÉATION DES PRIVILEGES
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (1, 'access_verifier', 'general');

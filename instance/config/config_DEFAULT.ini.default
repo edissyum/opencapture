@@ -4,6 +4,7 @@ resolution                  = 300
 compressionquality          = 100
 projectPath                 = /var/www/html/opencaptureforinvoices/
 tmpPath                     = ${GLOBAL:projectPath}/bin/data/tmp/
+scriptsPath                 = ${GLOBAL:projectPath}/bin/scripts/
 docserverPath               = /var/docservers/OpenCapture/
 fullPath                    = ${GLOBAL:docserverPath}/images/full/
 tiffPath                    = ${GLOBAL:docserverPath}/images/tiff/
