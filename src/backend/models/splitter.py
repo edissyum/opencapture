@@ -16,11 +16,12 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
-from ..import_controllers import db
+from ..main import create_classes_from_config
 
 
 def retrieve_batches(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
     batches = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -35,12 +36,13 @@ def retrieve_batches(args):
 
 
 def get_batch_by_id(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
     batches = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['splitter_batches'],
-        'where': ['id = ?'],
+        'where': ['id = %s'],
         'data': [args['id']]
     })[0]
 
@@ -51,12 +53,13 @@ def get_batch_by_id(args):
 
 
 def get_batch_pages(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
     pages = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['splitter_pages'],
-        'where': ['batch_id = ?'],
+        'where': ['batch_id = %s'],
         'data': [args['id']]
     })
 
@@ -67,13 +70,14 @@ def get_batch_pages(args):
 
 
 def change_status(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     args = {
         'table': ['splitter_batches'],
         'set': {
             'status': args['status']
         },
-        'where': ['id = ?'],
+        'where': ['id = %s'],
         'data': [args['id']]
     }
     res = _db.update(args)

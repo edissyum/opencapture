@@ -57,6 +57,23 @@ export class UpdateInputComponent implements OnInit {
             required: true,
         },
         {
+            id: 'purchase_or_sale',
+            label: this.translate.instant('INPUT.purchase_or_sale'),
+            type: 'select',
+            control: new FormControl(),
+            values: [
+                {
+                    'id': 'purchase',
+                    'label': 'UPLOAD.purchase_invoice'
+                },
+                {
+                    'id': 'sale',
+                    'label': 'UPLOAD.sale_invoice'
+                }
+            ],
+            required: true,
+        },
+        {
             id: 'override_supplier_form',
             label: this.translate.instant('INPUT.override_supplier_form'),
             type: 'boolean',
@@ -79,6 +96,7 @@ export class UpdateInputComponent implements OnInit {
 
 
     ngOnInit(): void {
+        console.log(this.translate.instant('UPLOAD.purchase_invoice'))
         this.serviceSettings.init();
         this.inputId = this.route.snapshot.params['id'];
 
@@ -93,6 +111,7 @@ export class UpdateInputComponent implements OnInit {
                                 this.http.get(API_URL + '/ws/forms/list', {headers: this.authService.headers}).pipe(
                                     tap((forms: any) => {
                                         element.values = forms.forms;
+                                        console.log(element.values);
                                     }),
                                     catchError((err: any) => {
                                         console.debug(err);
@@ -154,10 +173,10 @@ export class UpdateInputComponent implements OnInit {
             this.inputForm.forEach(element => {
                 input[element.id] = element.control.value;
             });
-            this.onSubmit();
             this.http.post(API_URL + '/ws/inputs/createScriptAndIncron', {'args': input}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.notify.success(this.translate.instant('INPUT.incron_and_script_updated'));
+                    this.onSubmit();
                 }),
                 catchError((err: any) => {
                     console.debug(err);

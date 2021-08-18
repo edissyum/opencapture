@@ -17,11 +17,12 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 from gettext import gettext
-from ..import_controllers import db
+from ..main import create_classes_from_config
 
 
 def get_forms(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
     forms = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -37,7 +38,8 @@ def get_forms(args):
 
 
 def get_form_by_id(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
     form = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -55,7 +57,8 @@ def get_form_by_id(args):
 
 
 def get_default_form(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
     form = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -73,7 +76,8 @@ def get_default_form(args):
 
 
 def update_form(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
 
     res = _db.update({
@@ -90,7 +94,8 @@ def update_form(args):
 
 
 def update_form_fields(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
 
     res = _db.update({
@@ -107,7 +112,8 @@ def update_form_fields(args):
 
 
 def add_form_fields(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     args = {
         'table': 'form_models_field',
         'columns': {
@@ -119,7 +125,8 @@ def add_form_fields(args):
 
 
 def add_form(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     forms_exists, error = get_forms({
         'where': ['label = %s', 'status <> %s'],
         'data': [args['label'], 'DEL']
@@ -145,7 +152,8 @@ def add_form(args):
 
 
 def get_fields(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
     form_fields = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],

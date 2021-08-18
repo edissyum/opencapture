@@ -16,11 +16,12 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 from flask_babel import gettext
-from ..import_controllers import db
+from ..main import create_classes_from_config
 
 
 def get_roles(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     roles = _db.select({
         'select': ["*"] if "select" not in args else args["select"],
         'table': ["roles"],
@@ -35,7 +36,8 @@ def get_roles(args):
 
 
 def get_role_by_id(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
     role = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -53,7 +55,8 @@ def get_role_by_id(args):
 
 
 def update_role(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
 
     role = _db.update({
@@ -70,7 +73,8 @@ def update_role(args):
 
 
 def create_role(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
 
     role = _db.insert({
@@ -85,7 +89,8 @@ def create_role(args):
 
 
 def update_role_privileges(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
 
     role = _db.update({
@@ -102,7 +107,8 @@ def update_role_privileges(args):
 
 
 def create_role_privileges(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
 
     role_privilege = _db.insert({

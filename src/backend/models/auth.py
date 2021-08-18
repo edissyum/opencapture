@@ -15,13 +15,14 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from ..import_controllers import db
 from flask_babel import gettext
+from ..main import create_classes_from_config
 from werkzeug.security import check_password_hash
 
 
 def login(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
     user = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],

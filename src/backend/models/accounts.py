@@ -14,13 +14,14 @@
 # along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
-from flask_babel import gettext
 
-from ..import_controllers import db
+from flask_babel import gettext
+from ..main import create_classes_from_config
 
 
 def retrieve_suppliers(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
 
     suppliers = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -36,7 +37,8 @@ def retrieve_suppliers(args):
 
 
 def get_supplier_by_id(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
     supplier = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -54,7 +56,8 @@ def get_supplier_by_id(args):
 
 
 def get_address_by_id(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
     address = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -72,7 +75,8 @@ def get_address_by_id(args):
 
 
 def update_supplier(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
 
     supplier = _db.update({
@@ -89,7 +93,8 @@ def update_supplier(args):
 
 
 def update_address(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
 
     supplier = _db.update({
@@ -106,7 +111,8 @@ def update_address(args):
 
 
 def create_address(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
 
     supplier = _db.insert({
@@ -121,7 +127,8 @@ def create_address(args):
 
 
 def create_supplier(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
 
     supplier = _db.insert({
@@ -136,7 +143,8 @@ def create_supplier(args):
 
 
 def delete_supplier(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
 
     supplier = _db.update({
@@ -153,7 +161,8 @@ def delete_supplier(args):
 
 
 def retrieve_customers(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
 
     customers = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -169,7 +178,8 @@ def retrieve_customers(args):
 
 
 def get_customer_by_id(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
     customer = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -187,7 +197,8 @@ def get_customer_by_id(args):
 
 
 def get_accounting_plan_by_customer_id(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
     accounting_plan = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -203,7 +214,8 @@ def get_accounting_plan_by_customer_id(args):
 
 
 def update_customer(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
 
     customer = _db.update({
@@ -220,7 +232,8 @@ def update_customer(args):
 
 
 def create_customer(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
 
     customer = _db.insert({
@@ -235,7 +248,8 @@ def create_customer(args):
 
 
 def delete_customer(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
 
     customer = _db.update({

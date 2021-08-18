@@ -39,14 +39,17 @@ class FindDeliveryNumber:
     def run(self):
         if self.supplier and not self.customPage:
             position = self.Database.select({
-                'select': ['delivery_number_1_position'],
-                'table': ['suppliers'],
-                'where': ['vat_number = ?'],
+                'select': [
+                    "positions ->> 'delivery_number' as delivery_number_position",
+                    "pages ->> 'delivery_number' as delivery_number_page"
+                ],
+                'table': ['accounts_supplier'],
+                'where': ['vat_number = %s'],
                 'data': [self.supplier[0]]
             })[0]
 
-            if position and position['delivery_number_1_position'] not in [False, 'NULL', '', None]:
-                data = {'position': position['delivery_number_1_position'], 'regex': None, 'target': 'full', 'page': '1'}
+            if position and position['delivery_number_position'] not in [False, 'NULL', '', None]:
+                data = {'position': position['delivery_number_position'], 'regex': None, 'target': 'full', 'page': position['delivery_number_page']}
                 text, position = search_custom_positions(data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
                 if text is not False:
                     for _delivery in re.finditer(r"" + self.Locale.deliveryNumberRegex + "", str(text.upper())):

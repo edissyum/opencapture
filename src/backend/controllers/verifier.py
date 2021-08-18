@@ -26,7 +26,7 @@ from flask_babel import gettext
 import xml.etree.ElementTree as ET
 from src.backend.main import launch
 from ..import_classes import _Files, _MaarchWebServices
-from ..import_controllers import pdf
+from ..main import create_classes_from_config
 from ..import_models import verifier, accounts
 
 
@@ -122,7 +122,7 @@ def retrieve_invoices(args):
 
 
 def update_position_by_invoice_id(invoice_id, args):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _db = _vars[0]
     invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
     if error is None:
@@ -147,7 +147,7 @@ def update_position_by_invoice_id(invoice_id, args):
 
 
 def update_invoice_data_by_invoice_id(invoice_id, args):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _db = _vars[0]
     invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
     if error is None:
@@ -171,7 +171,7 @@ def update_invoice_data_by_invoice_id(invoice_id, args):
 
 
 def delete_invoice_data_by_invoice_id(invoice_id, field_id):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _db = _vars[0]
     invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
     if error is None:
@@ -191,7 +191,7 @@ def delete_invoice_data_by_invoice_id(invoice_id, field_id):
 
 
 def delete_invoice_position_by_invoice_id(invoice_id, field_id):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _db = _vars[0]
     invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
     if error is None:
@@ -211,7 +211,7 @@ def delete_invoice_position_by_invoice_id(invoice_id, field_id):
 
 
 def delete_invoice(invoice_id):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _db = _vars[0]
 
     user_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
@@ -234,7 +234,7 @@ def delete_invoice(invoice_id):
 
 
 def update_invoice(invoice_id, data):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _db = _vars[0]
     role_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
 
@@ -258,7 +258,7 @@ def update_invoice(invoice_id, data):
 
 
 def export_maarch(invoice_id, data):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     host = login = password = ''
     auth_data = data['options']['auth']
     for _data in auth_data:
@@ -274,7 +274,7 @@ def export_maarch(invoice_id, data):
             host,
             login,
             password,
-            _vars[7],
+            _vars[6],
             _vars[1]
         )
         if ws.status:
@@ -350,7 +350,7 @@ def export_maarch(invoice_id, data):
 
 
 def construct_with_var(data, invoice_info):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _locale = _vars[2]
     _data = []
     for column in data.split('#'):
@@ -428,3 +428,25 @@ def export_xml(invoice_id, data):
             "message": error
         }
     return response, 401
+
+
+def ocr_on_the_fly(file_name, selection, thumb_size):
+    _vars = create_classes_from_config()
+    _cfg = _vars[1].cfg
+    _files = _vars[4]
+    _Ocr = _vars[5]
+
+    if _files.isTiff == 'True':
+        path = _cfg['GLOBAL']['tiffpath'] + (os.path.splitext(file_name)[0]).replace('full_', 'tiff_') + '.tiff'
+        if not os.path.isfile(path):
+            path = _cfg['GLOBAL']['fullpath'] + file_name
+    else:
+        path = _cfg['GLOBAL']['fullpath'] + file_name
+
+    text = _files.ocr_on_fly(path, selection, _Ocr, thumb_size)
+    if text:
+        return text
+    else:
+        _files.improve_image_detection(path)
+        text = _files.ocr_on_fly(path, selection, _Ocr, thumb_size)
+        return text

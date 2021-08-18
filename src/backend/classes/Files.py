@@ -17,30 +17,28 @@
 
 import os
 import re
-import subprocess
-
 import cv2
 import time
 import uuid
 import shutil
 import PyPDF4
 import datetime
+import subprocess
 import numpy as np
+import xml.etree.ElementTree as Et
+
 from PIL import Image
 from PyPDF4 import utils
 from xml.dom import minidom
 from wand.color import Color
 from wand.api import library
-import xml.etree.ElementTree as Et
 from xml.sax.saxutils import escape
 from wand.image import Image as Img
 from werkzeug.utils import secure_filename
+from src.backend.functions import get_custom_array
 from wand.exceptions import PolicyError, CacheError
-from src.backend.functions import get_custom_id, check_python_customized_files, retrieve_custom_positions
-custom_id = get_custom_id()
-custom_array = {}
-if custom_id:
-    custom_array = check_python_customized_files(custom_id[1])
+
+custom_array = get_custom_array()
 
 if 'FindDate' not in custom_array:
     from src.backend.process.FindDate import FindDate
@@ -109,7 +107,8 @@ class Files:
             if open_img:
                 self.img = Image.open(target)
 
-    def pdf_to_tiff(self, pdf_name, output_file, convert_only_first_page=False, open_img=True, crop=False, zone_to_crop=False, last_page=None):
+    def pdf_to_tiff(self, pdf_name, output_file, convert_only_first_page=False, open_img=True, crop=False,
+                    zone_to_crop=False, last_page=None):
         # Convert firstly the PDF to full tiff file
         # It will be used to crop header and footer later
         if not os.path.isfile(output_file):
@@ -119,7 +118,7 @@ class Files:
                 "-dDownScaleFactor=1",
                 "-sDEVICE=tiff32nc",
                 "-sOutputFile=" + output_file,
-                ]
+            ]
 
             if convert_only_first_page:
                 args.extend(["-dFirstPage=1", "-dLastPage=1"])
@@ -280,107 +279,6 @@ class Files:
             position[1][1] = line.position[1][1]
 
         return position
-
-    def export_xml(self, cfg, invoice_number, parent, fill_position=False, db=None, vat_number=False, vat_1_calculated=False, ht_calculated=False, ttc_calculated=False):
-        self.xml.construct_filename(invoice_number, vat_number)
-        filename = cfg.cfg['GLOBAL']['exportaccountingfolder'] + '/' + secure_filename(self.xml.filename)
-        root = Et.Element("ROOT")
-
-        for parentElement in parent:
-            element = Et.SubElement(root, parentElement)
-            for child in parent[parentElement]:
-                for childElement in child:
-                    clean_child = childElement.replace(parentElement + '_', '')
-                    if clean_child not in ['noDelivery', 'noCommands']:
-                        new_field = Et.SubElement(element, escape(clean_child))
-                        new_field.text = child[childElement]['field']
-                        if clean_child == 'vat_1':
-                            new_field = Et.SubElement(element, escape('vat_1_calculated'))
-                            new_field.text = str(vat_1_calculated)
-
-                        if clean_child == 'no_taxes_1':
-                            new_field = Et.SubElement(element, escape('no_taxes_1_calculated'))
-                            new_field.text = str(ht_calculated)
-
-                        if clean_child == 'total_ttc':
-                            new_field = Et.SubElement(element, escape('total_ttc_calculated'))
-                            new_field.text = str(ttc_calculated)
-
-                        if fill_position is not False and db is not False:
-                            # Add position in supplier database
-                            if 'position' in child[childElement]:
-                                clean_child_position = child[childElement]['position']
-                                if clean_child_position not in [None, '']:
-                                    if 'vat_amount' in clean_child or 'total_ttc' in clean_child or 'due_date' in clean_child or 'invoice_date' in clean_child \
-                                            or 'no_taxes' in clean_child or 'invoice_number' in clean_child or 'order_number' in clean_child \
-                                            or 'delivery_number' in clean_child or ('vat' in clean_child and clean_child != 'vat_number'):
-                                        db.update({
-                                            'table': ['suppliers'],
-                                            'set': {
-                                                clean_child + '_position': clean_child_position
-                                            },
-                                            'where': ['vat_number = ?'],
-                                            'data': [vat_number]
-                                        })
-                                        db.conn.commit()
-                                    new_field = Et.SubElement(element, escape(clean_child + '_position'))
-                                    new_field.text = clean_child_position
-
-        xml_root = minidom.parseString(Et.tostring(root, encoding="unicode")).toprettyxml()
-        file = open(filename, 'w')
-        file.write(xml_root)
-        file.close()
-
-        if db:
-            res = db.select({
-                'select': ['typology'],
-                'table': ['suppliers'],
-                'where': ['vat_number = ?'],
-                'data': [vat_number]
-            })
-            if res:
-                root = Et.parse(filename).getroot()
-                typo = res[0]['typology']
-                list_of_fields = retrieve_custom_positions(typo, cfg)
-                select = []
-                if list_of_fields:
-                    for index in list_of_fields:
-                        field = index.split('-')[1]
-                        field_position = field + '_position'
-                        select.append(field_position)
-
-                    if select:
-                        res = db.select({
-                            'select': select,
-                            'table': ['invoices'],
-                            'where': ['invoice_number = ?'],
-                            'data': [invoice_number]
-                        })
-                        if res:
-                            for title in root:
-                                for element in title:
-                                    for position in select:
-                                        if element.tag == position.split('_position')[0]:
-                                            sub_element_to_append = root.find(title.tag)
-                                            new_field = Et.SubElement(sub_element_to_append, position)
-                                            new_field.text = res[0][position]
-                            xml_root = minidom.parseString(Et.tostring(root, encoding="unicode")).toprettyxml().replace('\n\n', '\n')
-                            file = open(filename, 'w')
-                            file.write(xml_root)
-                            file.close()
-
-                            # remove empty lines created by the append of subelement
-                            tmp = open(filename, 'r')
-                            lines = tmp.read().split("\n")
-                            tmp.close()
-                            non_empty_lines = [line for line in lines if line.strip() != ""]
-
-                            file = open(filename, 'w')
-                            string_without_empty_lines = ""
-                            for line in non_empty_lines:
-                                string_without_empty_lines += line + "\n"
-                            file.write(string_without_empty_lines)
-                            file.close()
 
     def get_pages(self, file, config):
         try:
@@ -585,7 +483,8 @@ class Files:
             src = cv2.imread(img)
             gray = cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)
             _, black_and_white = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY_INV)
-            nlabels, labels, stats, centroids = cv2.connectedComponentsWithStats(black_and_white, None, None, None, 8, cv2.CV_32S)
+            nlabels, labels, stats, centroids = cv2.connectedComponentsWithStats(black_and_white, None, None, None, 8,
+                                                                                 cv2.CV_32S)
 
             # get CC_STAT_AREA component
             sizes = stats[1:, -1]
@@ -650,7 +549,6 @@ class Files:
     @staticmethod
     def get_uuid_with_date():
         random_number = uuid.uuid4().hex
-        # date object of today's date
         today = datetime.date.today()
         uuid_with_date = str(today.year) + str(today.month) + str(today.day) + str(random_number)
         return uuid_with_date

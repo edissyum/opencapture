@@ -16,16 +16,17 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import os
-import random
 import re
+import random
+import stat
 import subprocess
 from flask_babel import gettext
 from ..import_models import inputs
-from ..import_controllers import pdf
+from ..main import create_classes_from_config
 
 
 def get_inputs(args):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _config = _vars[1]
 
     _inputs = inputs.get_inputs(args)
@@ -37,7 +38,7 @@ def get_inputs(args):
 
 
 def update_input(input_id, data):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _db = _vars[0]
     input_info, error = inputs.get_input_by_id({'input_id': input_id})
 
@@ -61,7 +62,7 @@ def update_input(input_id, data):
 
 
 def create_input(data):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _db = _vars[0]
 
     _columns = {
@@ -101,7 +102,7 @@ def get_input_by_id(input_id):
 
 
 def delete_input(input_id):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _db = _vars[0]
 
     input_info, error = inputs.get_input_by_id({'input_id': input_id})
@@ -125,7 +126,7 @@ def delete_input(input_id):
 
 
 def delete_script_and_incron(args):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _cfg = _vars[1]
 
     folder_script = _cfg.cfg['GLOBAL']['scriptspath']
@@ -156,14 +157,11 @@ def delete_script_and_incron(args):
 
 
 def create_script_and_incron(args):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _cfg = _vars[1]
 
     folder_script = _cfg.cfg['GLOBAL']['scriptspath']
-    if args['override_supplier_form']:
-        arguments = '-osf True -form ' + str(args['default_form_id'])
-    else:
-        arguments = '-form ' + str(args['default_form_id'])
+    arguments = '-input_id ' + str(args['input_id'])
 
     ######
     # CREATE SCRIPT
@@ -177,17 +175,19 @@ def create_script_and_incron(args):
             new_script_file = open(new_script_filename, 'w+')
             for line in script_sample_content.split('\n'):
                 corrected_line = line.replace('§§SCRIPT_NAME§§', script_name.replace('.sh', ''))
-                corrected_line = corrected_line.replace('§§OC_PATH§§', _cfg.cfg['GLOBAL']['projectpath'])
+                corrected_line = corrected_line.replace('§§OC_PATH§§', _cfg.cfg['GLOBAL']['projectpath'] + '/')
                 corrected_line = corrected_line.replace('"§§ARGUMENTS§§"', arguments)
                 new_script_file.write(corrected_line + '\n')
             script_sample.close()
             new_script_file.close()
+            os.chmod(new_script_filename, os.stat(new_script_filename).st_mode | stat.S_IEXEC)
 
             ######
             # CREATE INCRON
             ######
             process = subprocess.Popen(['incrontab', '-l'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             incron_list, err = process.communicate()
+
             if not err:
                 new_incron = args['input_folder'] + ' IN_CLOSE_WRITE,IN_MOVED_TO ' + new_script_filename + ' $@/$#'
                 incron_list = incron_list.decode('UTF-8')

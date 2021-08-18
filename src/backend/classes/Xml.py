@@ -62,10 +62,10 @@ class Xml:
                 where = ''
                 data = ''
                 if table == 'suppliers':
-                    where = 'vat_number = ?'
+                    where = 'vat_number = %s'
                     data = vat_number
                 elif table == 'invoices':
-                    where = 'invoice_number = ?'
+                    where = 'invoice_number = %s'
                     data = invoice_number
 
                 res = self._db.select({

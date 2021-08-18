@@ -25,6 +25,13 @@ export class CreateSupplierComponent implements OnInit {
     supplier: any;
     supplierForm: any[] = [
         {
+            id: 'get_only_raw_footer',
+            label: marker('ACCOUNTS.get_only_raw_footer'),
+            type: 'mat-slide-toggle',
+            control: new FormControl(),
+            required: true,
+        },
+        {
             id: 'name',
             label: marker('ACCOUNTS.supplier_name'),
             type: 'text',
@@ -177,12 +184,12 @@ export class CreateSupplierComponent implements OnInit {
             this.http.post(API_URL + '/ws/accounts/addresses/create', {'args': address}, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {
-                    supplier['address_id'] = data.id
+                    supplier['address_id'] = data.id;
                     this.http.post(API_URL + '/ws/accounts/suppliers/create', {'args': supplier}, {headers: this.authService.headers},
                     ).pipe(
                         tap(() => {
-                            this.notify.success(this.translate.instant('ACCOUNTS.supplier_created'))
-                            this.router.navigate(['/accounts/suppliers/list'])
+                            this.notify.success(this.translate.instant('ACCOUNTS.supplier_created'));
+                            this.router.navigate(['/accounts/suppliers/list']);
                         }),
                         catchError((err: any) => {
                             console.debug(err);

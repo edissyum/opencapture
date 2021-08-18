@@ -1,9 +1,6 @@
-from .functions import get_custom_id, check_python_customized_files
+from .functions import get_custom_array
 
-custom_id = get_custom_id()
-custom_array = {}
-if custom_id:
-    custom_array = check_python_customized_files(custom_id[1])
+custom_array = get_custom_array()
 
 if 'FindDate' not in custom_array:
     from src.backend.process.FindDate import FindDate

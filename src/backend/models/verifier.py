@@ -14,13 +14,14 @@
 # along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
-from flask_babel import gettext
 
-from ..import_controllers import db
+from flask_babel import gettext
+from ..main import create_classes_from_config
 
 
 def get_invoice_by_id(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
     user = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -38,7 +39,8 @@ def get_invoice_by_id(args):
 
 
 def get_invoices(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
 
     invoices = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -55,7 +57,8 @@ def get_invoices(args):
 
 
 def update_invoice(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
 
     supplier = _db.update({

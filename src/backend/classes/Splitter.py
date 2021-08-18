@@ -164,7 +164,7 @@ class Splitter:
                 args = {
                     'select': ['*'],
                     'table': ['splitter_images'],
-                    'where': ['image_path = ?'],
+                    'where': ['image_path = %s'],
                     'data': [invoice_page]
                 }
                 page_number = self.db.select(args)[0]

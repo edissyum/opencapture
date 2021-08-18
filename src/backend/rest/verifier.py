@@ -16,8 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
 from flask_babel import gettext
-from ..import_controllers import auth
-from ..import_controllers import pdf, verifier
+from ..import_controllers import auth, verifier
 from flask import Blueprint, make_response, request
 
 bp = Blueprint('verifier', __name__, url_prefix='/ws/')
@@ -123,5 +122,5 @@ def update_invoice(invoice_id):
 @auth.token_required
 def ocr_on_fly():
     data = request.json
-    result = pdf.ocr_on_the_fly(data['fileName'], data['selection'], data['thumbSize'])
+    result = verifier.ocr_on_the_fly(data['fileName'], data['selection'], data['thumbSize'])
     return make_response({'result': result}, 200)

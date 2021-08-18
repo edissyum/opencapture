@@ -109,7 +109,7 @@ class FindFooterRaw:
         position = self.Database.select({
             'select': select,
             'table': ['suppliers'],
-            'where': ['vat_number = ?'],
+            'where': ['vat_number = %s'],
             'data': [self.supplier[0]]
         })[0]
 

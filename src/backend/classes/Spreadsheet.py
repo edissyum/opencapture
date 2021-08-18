@@ -56,7 +56,7 @@ class Spreadsheet:
         res = _db.select({
             'select': ['*'],
             'table': ['suppliers'],
-            'where': ['status = ?'],
+            'where': ['status = %s'],
             'data': ['ACTIVE'],
         })
         try:

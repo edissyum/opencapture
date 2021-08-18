@@ -15,12 +15,10 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from flask import flash, g, redirect, render_template, request, url_for
-
 from flask_babel import gettext
-from werkzeug.security import check_password_hash, generate_password_hash
-from ..import_controllers import pdf
 from ..import_models import user
+from ..main import create_classes_from_config
+from werkzeug.security import check_password_hash, generate_password_hash
 
 
 def create_user(args):
@@ -89,7 +87,7 @@ def get_customers_by_user_id(user_id):
 
 
 def update_user(user_id, data):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _db = _vars[0]
     user_info, error = user.get_user_by_id({'user_id': user_id})
 
@@ -133,7 +131,7 @@ def update_user(user_id, data):
 
 
 def delete_user(user_id):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _db = _vars[0]
 
     user_info, error = user.get_user_by_id({'user_id': user_id})
@@ -156,7 +154,7 @@ def delete_user(user_id):
 
 
 def disable_user(user_id):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _db = _vars[0]
 
     user_info, error = user.get_user_by_id({'user_id': user_id})
@@ -179,7 +177,7 @@ def disable_user(user_id):
 
 
 def enable_user(user_id):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _db = _vars[0]
 
     user_info, error = user.get_user_by_id({'user_id': user_id})
@@ -202,7 +200,7 @@ def enable_user(user_id):
 
 
 def update_customers_by_user_id(user_id, customers):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _db = _vars[0]
 
     user_info, error = user.get_user_by_id({'user_id': user_id})

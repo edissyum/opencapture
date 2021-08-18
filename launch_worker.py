@@ -24,9 +24,7 @@ from src.backend.main import launch
 ap = argparse.ArgumentParser()
 ap.add_argument("-f", "--file", required=False, help="Path to file")
 ap.add_argument("-c", "--config", required=True, help="Path to config.xml")
-ap.add_argument("-osf", "--override_supplier_form",
-                required=False, help="If true, we don't take in consideration the default supplier form")
-ap.add_argument("-form", "--form", required=False, help="Id of the default form")
+ap.add_argument("-input_id", "--input_id", required=True, help="Identifier of the input chain")
 args = vars(ap.parse_args())
 
 if args['file'] is None:

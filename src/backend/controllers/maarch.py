@@ -15,30 +15,29 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from flask_babel import gettext
-from ..import_controllers import pdf
+from ..main import create_classes_from_config
 from ..import_classes import _MaarchWebServices
 
 
 def test_connection(args):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     ws = _MaarchWebServices(
         args['host'],
         args['login'],
         args['password'],
-        _vars[7],
+        _vars[6],
         _vars[1]
     )
     return ws.status
 
 
 def get_users(args):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     ws = _MaarchWebServices(
         args['host'],
         args['login'],
         args['password'],
-        _vars[7],
+        _vars[6],
         _vars[1]
     )
     users = ws.retrieve_users()
@@ -46,12 +45,12 @@ def get_users(args):
 
 
 def get_doctypes(args):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     ws = _MaarchWebServices(
         args['host'],
         args['login'],
         args['password'],
-        _vars[7],
+        _vars[6],
         _vars[1]
     )
     doctypes = ws.retrieve_doctypes()
@@ -59,12 +58,12 @@ def get_doctypes(args):
 
 
 def get_entities(args):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     ws = _MaarchWebServices(
         args['host'],
         args['login'],
         args['password'],
-        _vars[7],
+        _vars[6],
         _vars[1]
     )
     entities = ws.retrieve_entities()
@@ -72,12 +71,12 @@ def get_entities(args):
 
 
 def get_priorities(args):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     ws = _MaarchWebServices(
         args['host'],
         args['login'],
         args['password'],
-        _vars[7],
+        _vars[6],
         _vars[1]
     )
     entities = ws.retrieve_priorities()
@@ -85,12 +84,12 @@ def get_priorities(args):
 
 
 def get_statuses(args):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     ws = _MaarchWebServices(
         args['host'],
         args['login'],
         args['password'],
-        _vars[7],
+        _vars[6],
         _vars[1]
     )
     statuses = ws.retrieve_statuses()
@@ -98,12 +97,12 @@ def get_statuses(args):
 
 
 def get_indexing_models(args):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     ws = _MaarchWebServices(
         args['host'],
         args['login'],
         args['password'],
-        _vars[7],
+        _vars[6],
         _vars[1]
     )
     indexing_models = ws.retrieve_indexing_models()

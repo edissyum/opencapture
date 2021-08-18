@@ -17,13 +17,13 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 import json
 from gettext import gettext
+from ..main import create_classes_from_config
 from werkzeug.security import generate_password_hash
-
-from ..import_controllers import db
 
 
 def create_user(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
     user = _db.select({
         'select': ['id'],
@@ -64,7 +64,8 @@ def create_user(args):
 
 
 def get_users(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
     users = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -83,7 +84,8 @@ def get_users(args):
 
 
 def get_user_by_id(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
     user = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -101,7 +103,8 @@ def get_user_by_id(args):
 
 
 def get_customers_by_user_id(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
     customers = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -118,7 +121,8 @@ def get_customers_by_user_id(args):
 
 
 def update_user(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
 
     user = _db.update({
@@ -135,7 +139,8 @@ def update_user(args):
 
 
 def update_customers_by_user_id(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
 
     user = _db.update({

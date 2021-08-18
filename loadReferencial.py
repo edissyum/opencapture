@@ -108,7 +108,7 @@ if __name__ == '__main__':
                         'city': str(spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['adressTown']]),
                         'typology': str(spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['typology']]),
                     },
-                    'where': ['vat_number = ?'],
+                    'where': ['vat_number = %s'],
                     'data': [taxe_number]
                 }
                 res = database.update(args)

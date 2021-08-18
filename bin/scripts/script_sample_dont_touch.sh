@@ -41,7 +41,6 @@ then
     python3 "$OCPath"/launch_worker.py -c "$OCPath"/instance/config.ini -f "$tmpFilepath"/"$filename" "§§ARGUMENTS§§"
 
     rm -f $PID
-
 elif test -f "$filepath" && test "$ext" != 'application/pdf; charset=binary';
 then
     echo "[$name.sh      ] $(date +"%d-%m-%Y %T") ERROR $filename is a not valid PDF file" >> "$logFile"

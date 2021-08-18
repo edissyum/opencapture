@@ -201,6 +201,7 @@
 		"input_folder": "",
 		"input_folder_header": "",
 		"override_supplier_form": "",
+		"purchase_or_sale": "",
 		"update": "",
 		"update_script_and_incron": "",
 		"updated": ""

@@ -57,6 +57,23 @@ export class CreateInputComponent implements OnInit {
             required: true,
         },
         {
+            id: 'purchase_or_sale',
+            label: this.translate.instant('INPUT.purchase_or_sale'),
+            type: 'select',
+            control: new FormControl(),
+            values: [
+                {
+                    'id': 'purchase',
+                    'label': 'UPLOAD.purchase_invoice'
+                },
+                {
+                    'id': 'sale',
+                    'label': 'UPLOAD.sale_invoice'
+                }
+            ],
+            required: true,
+        },
+        {
             id: 'override_supplier_form',
             label: this.translate.instant('INPUT.override_supplier_form'),
             type: 'boolean',

@@ -16,11 +16,12 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 from flask_babel import gettext
-from ..import_controllers import db
+from ..main import create_classes_from_config
 
 
 def get_privileges():
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
     privileges = _db.select({
         'select': ['*'],
@@ -34,7 +35,8 @@ def get_privileges():
 
 
 def get_by_role_id(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
     privileges = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],

@@ -49,9 +49,9 @@ class FindSupplier:
     def search_suplier(self, column, data):
         args = {
             'select': ['*'],
-            'table': ['suppliers'],
-            'where': ['TRIM(' + column + ') = ?', 'status NOT IN (?)', 'company_type = ?'],
-            'data': [data, 'DEL', 'supplier']
+            'table': ['accounts_supplier'],
+            'where': ['TRIM(' + column + ') = %s', 'status NOT IN (%s)'],
+            'data': [data, 'DEL']
         }
         existing_supplier = self.Database.select(args)
         if existing_supplier:

@@ -17,9 +17,9 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 from flask import current_app
-from ..import_controllers import pdf
 from ..import_classes import _Files
 from ..import_models import splitter
+from ..main import create_classes_from_config
 
 import base64
 
@@ -30,7 +30,7 @@ def handle_uploaded_file(files):
 
 
 def retrieve_batches():
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _config = _vars[1]
 
     args = {}
@@ -68,7 +68,7 @@ def change_status(args):
 
 
 def retrieve_pages(page_id):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _cfg = _vars[1]
     page_lists = []
     is_document_added = False

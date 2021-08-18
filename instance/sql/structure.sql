@@ -46,6 +46,7 @@ CREATE TABLE "inputs" (
     "input_label"               VARCHAR,
     "default_form_id"           INTEGER,
     "override_supplier_form"    BOOLEAN DEFAULT False,
+    "purchase_or_sale"          VARCHAR(8) DEFAULT 'purchase',
     "status"                    VARCHAR(3) DEFAULT 'OK',
     "input_folder"              TEXT
 );
@@ -111,7 +112,8 @@ CREATE TABLE "accounts_supplier" (
     "get_only_raw_footer"   BOOLEAN DEFAULT false,
     "skip_auto_validate"    BOOLEAN DEFAULT false,
     "creation_date"         TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
-    "positions"             JSONB DEFAULT '{}'
+    "positions"             JSONB DEFAULT '{}',
+    "pages"                 JSONB DEFAULT '{}'
 );
 
 CREATE TABLE "accounts_customer" (

@@ -1,19 +1,22 @@
-from .functions import get_custom_id, check_python_customized_files
+# This file is part of Open-Capture for Invoices.
 
-custom_id = get_custom_id()
-custom_array = {}
-if custom_id:
-    custom_array = check_python_customized_files(custom_id[1])
+# Open-Capture for Invoices is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 
-if 'db' not in custom_array:
-    from .controllers import db
-else:
-    db = getattr(__import__(custom_array['db']['path'], fromlist=[custom_array['db']['module']]), custom_array['db']['module'])
+# Open-Capture is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 
-if 'pdf' not in custom_array:
-    from .controllers import pdf
-else:
-    pdf = getattr(__import__(custom_array['pdf']['path'], fromlist=[custom_array['pdf']['module']]), custom_array['pdf']['module'])
+# You should have received a copy of the GNU General Public License
+# along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
+
+# @dev : Nathan Cheval <nathan.cheval@edissyum.com>
+
+from .functions import get_custom_array
+custom_array = get_custom_array()
 
 if 'auth' not in custom_array:
     from .controllers import auth

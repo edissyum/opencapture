@@ -18,12 +18,12 @@
 from flask import flash, g, redirect, render_template, request, url_for
 
 from flask_babel import gettext
-from ..import_controllers import pdf
 from ..import_models import status
+from ..main import create_classes_from_config
 
 
 def get_status():
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _config = _vars[1]
 
     _status, error = status.get_status()

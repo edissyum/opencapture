@@ -15,16 +15,15 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
+
 import json
-
 from flask_babel import gettext
-
-from ..import_controllers import pdf
 from ..import_models import accounts
+from ..main import create_classes_from_config
 
 
 def retrieve_suppliers(args):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _config = _vars[1]
 
     suppliers = accounts.retrieve_suppliers(args)
@@ -61,7 +60,7 @@ def get_address_by_id(address_id):
 
 
 def update_supplier(supplier_id, data):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _db = _vars[0]
     supplier_info, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
 
@@ -85,7 +84,7 @@ def update_supplier(supplier_id, data):
 
 
 def update_position_by_supplier_id(supplier_id, data):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _db = _vars[0]
     supplier_info, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
     if error is None:
@@ -111,7 +110,7 @@ def update_position_by_supplier_id(supplier_id, data):
 
 
 def update_address(address_id, data):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _db = _vars[0]
     address_info, error = accounts.get_address_by_id({'address_id': address_id})
 
@@ -143,7 +142,7 @@ def update_address(address_id, data):
 
 
 def create_address(data):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _db = _vars[0]
 
     _columns = {
@@ -170,7 +169,7 @@ def create_address(data):
 
 
 def create_supplier(data):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _db = _vars[0]
 
     _columns = {
@@ -180,7 +179,8 @@ def create_supplier(data):
         'vat_number': data['vat_number'],
         'typology': data['typology'],
         'form_id': data['form_id'],
-        'address_id': data['address_id']
+        'address_id': data['address_id'],
+        'get_only_raw_footer': data['get_only_raw_footer']
     }
 
     res, error = accounts.create_supplier({'columns': _columns})
@@ -199,7 +199,7 @@ def create_supplier(data):
 
 
 def retrieve_customers(args):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _config = _vars[1]
 
     customers = accounts.retrieve_customers(args)
@@ -237,7 +237,7 @@ def get_accounting_plan_by_customer_id(customer_id):
 
 
 def update_customer(customer_id, data):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _db = _vars[0]
     supplier_info, error = accounts.get_customer_by_id({'customer_id': customer_id})
 
@@ -276,7 +276,7 @@ def update_customer(customer_id, data):
 
 
 def create_customer(data):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _db = _vars[0]
 
     _columns = {
@@ -303,7 +303,7 @@ def create_customer(data):
 
 
 def delete_customer(customer_id):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _db = _vars[0]
     customer_info, error = accounts.get_customer_by_id({'customer_id': customer_id})
 
@@ -326,7 +326,7 @@ def delete_customer(customer_id):
 
 
 def delete_supplier(supplier_id):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _db = _vars[0]
     supplier_info, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
 

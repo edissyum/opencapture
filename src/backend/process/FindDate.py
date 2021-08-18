@@ -114,13 +114,18 @@ class FindDate:
 
         if self.supplier:
             position = self.db.select({
-                'select': ['invoice_date_position', 'invoice_date_page', 'due_date_position', 'due_date_page'],
-                'table': ['suppliers'],
-                'where': ['vat_number = ?'],
+                'select': [
+                    "positions ->> 'invoice_date' as invoice_date_position",
+                    "positions ->> 'invoice_due_date' as invoice_due_date_position",
+                    "pages ->> 'invoice_date' as invoice_date_page",
+                    "pages ->> 'invoice_due_date' as invoice_due_date_page",
+                ],
+                'table': ['accounts_supplier'],
+                'where': ['vat_number = %s'],
                 'data': [self.supplier[0]]
             })[0]
-            if position and position['due_date_position'] not in [False, 'NULL', '', None]:
-                data = {'position': position['due_date_position'], 'regex': None, 'target': 'full', 'page': position['due_date_page']}
+            if position and position['invoice_due_date_position'] not in [False, 'NULL', '', None]:
+                data = {'position': position['invoice_due_date_position'], 'regex': None, 'target': 'full', 'page': position['invoice_due_date_page']}
                 _text, _position = search_custom_positions(data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
                 if _text != '':
                     res = self.format_date(_text, _position, True)

@@ -14,21 +14,19 @@
 # along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+
 import os
 import sys
 import time
 import tempfile
 from kuyruk import Kuyruk
+from flask import current_app
 from kuyruk_manager import Manager
-from .functions import recursive_delete
-from .functions import get_custom_id, check_python_customized_files
-from .import_classes import _Database, _PyTesseract, _Locale, _Xml, _Files, _Log, _Config, invoice_classification, \
-    _MaarchWebServices, _SeparatorQR
+from .functions import recursive_delete, get_custom_array
+from .import_classes import _Database, _PyTesseract, _Locale, _Xml, _Files, _Log, _Config, invoice_classification,\
+    _SeparatorQR
 
-custom_id = get_custom_id()
-custom_array = {}
-if custom_id:
-    custom_array = check_python_customized_files(custom_id[1])
+custom_array = get_custom_array()
 
 if 'OCForInvoices' not in custom_array:
     from src.backend.process import OCForInvoices as OCForInvoices_process
@@ -46,8 +44,36 @@ OCforInvoices_worker.config.MANAGER_HTTP_PORT = 16500
 m = Manager(OCforInvoices_worker)
 
 
-def create_classes(config_name):
-    config = _Config(config_name.cfg['PROFILE']['cfgpath'] + '/config_' + config_name.cfg['PROFILE']['id'] + '.ini')
+def create_classes_from_config():
+    config_name = _Config(current_app.config['CONFIG_FILE'])
+    config = _Config(current_app.config['CONFIG_FOLDER'] + '/config_' + config_name.cfg['PROFILE']['id'] + '.ini')
+    log = _Log(config.cfg['GLOBAL']['logfile'])
+    db_user = config.cfg['DATABASE']['postgresuser']
+    db_pwd = config.cfg['DATABASE']['postgrespassword']
+    db_name = config.cfg['DATABASE']['postgresdatabase']
+    db_host = config.cfg['DATABASE']['postgreshost']
+    db_port = config.cfg['DATABASE']['postgresport']
+    database = _Database(log, db_name, db_user, db_pwd, db_host, db_port)
+    xml = _Xml(config, database)
+    file_name = config.cfg['GLOBAL']['tmppath'] + 'tmp'
+    locale = _Locale(config)
+    files = _Files(
+        file_name,
+        int(config.cfg['GLOBAL']['resolution']),
+        int(config.cfg['GLOBAL']['compressionquality']),
+        xml,
+        log,
+        config.cfg['GLOBAL']['convertpdftotiff'],
+        locale,
+        config
+    )
+    locale = _Locale(config)
+    ocr = _PyTesseract(locale.localeOCR, log, config)
+    return database, config, locale, xml, files, ocr, log
+
+
+def create_classes(config_file):
+    config = _Config(config_file)
     locale = _Locale(config)
     log = _Log(config.cfg['GLOBAL']['logfile'])
     ocr = _PyTesseract(locale.localeOCR, log, config)
@@ -114,7 +140,7 @@ def launch(args):
     if not os.path.exists(config_file):
         sys.exit('config file couldn\'t be found')
 
-    config, locale, log, ocr, database, xml = create_classes(config_name)
+    config, locale, log, ocr, database, xml = create_classes(config_file)
     tmp_folder = tempfile.mkdtemp(dir=config.cfg['GLOBAL']['tmppath'])
     filename = tempfile.NamedTemporaryFile(dir=tmp_folder).name
     separator_qr = _SeparatorQR(log, config, tmp_folder)
@@ -155,7 +181,7 @@ def launch(args):
                 if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
                     typo = get_typo(config, path + file, log)
 
-                OCForInvoices_process.process(path + file, log, config, files, ocr, locale, database, webservices, typo)
+                OCForInvoices_process.process(args, path + file, log, config, files, ocr, locale, database, typo)
 
                 try:
                     os.remove(path + file + '.lock')
@@ -177,7 +203,7 @@ def launch(args):
 
                 if check_file(files, path + file, config, log) is not False:
                     # Process the file and send it to Maarch
-                    OCForInvoices_process.process(path + file, log, config, files, ocr, locale, database, typo)
+                    OCForInvoices_process.process(args, path + file, log, config, files, ocr, locale, database, typo)
         elif config.cfg['SEPARATE-BY-DOCUMENT']['enabled'] == 'True':
             list_of_files = separator_qr.split_document_every_two_pages(path)
             for file in list_of_files:
@@ -186,7 +212,7 @@ def launch(args):
 
                 if check_file(files, file, config, log) is not False:
                     # Process the file and send it to Maarch
-                    OCForInvoices_process.process(file, log, config, files, ocr, locale, database, typo)
+                    OCForInvoices_process.process(args, file, log, config, files, ocr, locale, database, typo)
             os.remove(path)
         else:
             if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
@@ -194,7 +220,7 @@ def launch(args):
 
             if check_file(files, path, config, log) is not False:
                 # Process the file and send it to Maarch
-                OCForInvoices_process.process(path, log, config, files, ocr, locale, database, typo)
+                OCForInvoices_process.process(args, path, log, config, files, ocr, locale, database, typo)
 
     # Empty the tmp dir to avoid residual file
     recursive_delete(tmp_folder, log)

@@ -102,27 +102,27 @@ class FindFooter:
         else:
             return False
 
-    def process_footer_with_position(self, select):
+    def process_footer_with_position(self, column, select):
         position = self.Database.select({
             'select': select,
-            'table': ['suppliers'],
-            'where': ['vat_number = ?'],
+            'table': ['accounts_supplier'],
+            'where': ['vat_number = %s'],
             'data': [self.supplier[0]]
         })[0]
 
-        if position and position[select[0]] not in ['((,),(,))', 'NULL', None, '', False]:
-            page = position[select[1]]
+        if position and position[column + '_position'] not in ['((,),(,))', 'NULL', None, '', False]:
+            page = position[column + '_page']
             if self.target == 'full':
                 page = self.nbPage
 
-            data = {'position': position[select[0]], 'regex': None, 'target': 'full', 'page': page}
+            data = {'position': position[column + 'position'], 'regex': None, 'target': 'full', 'page': page}
             text, position = search_custom_positions(data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
             if text:
                 try:
                     # Try if the return string could be convert to float
                     float(text)
                     result = text
-                    if select[0] == 'vat_1_position':  # Fix if we retrieve 2000.0, or 200.0 instead of 20.0 for example
+                    if column == 'vat_rate':  # Fix if we retrieve 2000.0, or 200.0 instead of 20.0 for example
                         tva_amounts = eval(self.Locale.vatRateList)
                         _split = result.split('.')
                         if _split[1] == '0':
@@ -172,13 +172,18 @@ class FindFooter:
         if no_rate_amount in [False, None] or rate_percentage in [False, None]:
             if self.supplier is not False:
                 if no_rate_amount in [False, None]:
-                    no_rate_amount = self.process_footer_with_position(['no_taxes_1_position', 'footer_page'])
+                    no_rate_amount = self.process_footer_with_position('no_rate_amount',
+                                                                       ["positions ->> 'no_rate_amount' as no_rate_amount_position",
+                                                                        "pages ->> 'footer' as no_rate_amount_page"]
+                                                                       )
                     if no_rate_amount:
                         self.noRateAmount = no_rate_amount
                         self.Log.info('noRateAmount found with position : ' + str(no_rate_amount))
 
                 if rate_percentage in [False, None]:
-                    rate_percentage = self.process_footer_with_position(['vat_1_position', 'footer_page'])
+                    rate_percentage = self.process_footer_with_position('vat_rate',
+                                                                        ["positions --> 'vat_rate' as vat_rate_position",
+                                                                         "pages --> 'footer' as vat_rate_page"])
                     if rate_percentage:
                         self.ratePercentage = rate_percentage
                         self.Log.info('ratePercentage found with position : ' + str(rate_percentage))

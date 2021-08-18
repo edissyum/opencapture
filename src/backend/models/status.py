@@ -15,12 +15,13 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from ..import_controllers import db
 from flask_babel import gettext
+from ..main import create_classes_from_config
 
 
 def get_status():
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
     forms = _db.select({
         'select': ['*'],

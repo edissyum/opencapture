@@ -17,8 +17,6 @@
 
 import os
 import uuid
-import shutil
-import datetime
 import mimetypes
 from src.backend.import_process import FindDate, FindFooter, FindInvoiceNumber, FindSupplier, FindCustom, \
     FindOrderNumber, FindDeliveryNumber, FindFooterRaw
@@ -89,14 +87,16 @@ def update_typo_database(database, vat_number, typo, log, config):
         'set': {
             'typology': typo,
         },
-        'where': ['vat_number = ?'],
+        'where': ['vat_number = %s'],
         'data': [vat_number]
     })
 
 
-def process(file, log, config, files, ocr, locale, database, typo):
+def process(args, file, log, config, files, ocr, locale, database, typo):
     log.info('Processing file : ' + file)
-
+    data = {}
+    pages = {}
+    positions = {}
     # get the number of pages into the PDF documents
     nb_pages = files.get_pages(file, config)
 
@@ -176,6 +176,13 @@ def process(file, log, config, files, ocr, locale, database, typo):
             invoice_found_on_first_or_last_page = True
         j += 1
 
+    if invoice_number:
+        data.update({'invoice_number': invoice_number[0]})
+        if invoice_number[1]:
+            positions.update({'invoice_number': invoice_number[1]})
+        if invoice_number[2]:
+            pages.update({'invoice_number': invoice_number[2]})
+
     # Find invoice date number
     if invoice_found_on_first_or_last_page:
         log.info("Search invoice date using the same page as invoice number")
@@ -186,12 +193,18 @@ def process(file, log, config, files, ocr, locale, database, typo):
         page_for_date = 1
 
     date = FindDate(text_custom, log, locale, config, files, ocr, supplier, typo, page_for_date, database, file).run()
-    k = 0
-    tmp_nb_pages = nb_pages
-    while not date:
-        tmp_nb_pages = tmp_nb_pages - 1
-        if k == 3 or int(tmp_nb_pages) - 1 == 0 or nb_pages == 1:
-            break
+    if date:
+        data.update({'invoice_date': date[0]})
+        if date[1]:
+            positions.update({'invoice_date': date[1]})
+        if date[2]:
+            pages.update({'invoice_date': date[2]})
+
+        if date[3]:
+            data.update({'invoice_due_date': date[3][0]})
+            pages.update({'invoice_due_date': date[2]})
+            if len(date[3]) > 1:
+                positions.update({'invoice_due_date': date[3][1]})
 
     # Find footer informations (total amount, no rate amount etc..)
     footer_class = FindFooter(ocr, log, locale, config, files, database, supplier, file, ocr.footer_text, typo)
@@ -229,6 +242,26 @@ def process(file, log, config, files, ocr, locale, database, typo):
             footer = footer_class.run()
             i += 1
 
+    if footer:
+        if footer[0]:
+            data.update({'no_rate_amount': footer[0][0]})
+            if len(footer[2]) > 1:
+                positions.update({'no_rate_amount': footer[0][1]})
+        if footer[1]:
+            data.update({'total_ttc': footer[1][0]})
+            if len(footer[2]) > 1:
+                positions.update({'total_ttc': footer[1][1]})
+        if footer[2]:
+            data.update({'vat_rate': footer[2][0]})
+            if len(footer[2]) > 1:
+                positions.update({'vat_rate': footer[2][1]})
+        if footer[3]:
+            pages.update({'footer': footer[3]})
+        if footer[4]:
+            data.update({'vat_amount': footer[4][0]})
+            if len(footer[2]) > 1:
+                positions.update({'vat_amount': footer[4][1]})
+
     # Find delivery number
     delivery_number_class = FindDeliveryNumber(ocr, files, log, locale, config, database, supplier, file, typo, ocr.header_text, 1, False)
     delivery_number = delivery_number_class.run()
@@ -237,6 +270,13 @@ def process(file, log, config, files, ocr, locale, database, typo):
         delivery_number_class.target = 'footer'
         delivery_number = delivery_number_class.run()
 
+    if delivery_number:
+        data.update({'delivery_number': delivery_number[0]})
+        if delivery_number[1]:
+            positions.update({'delivery_number': delivery_number[1]})
+        if delivery_number[2]:
+            pages.update({'delivery_number': delivery_number[2]})
+
     # Find order number
     order_number_class = FindOrderNumber(ocr, files, log, locale, config, database, supplier, file, typo, ocr.header_text, 1, False)
     order_number = order_number_class.run()
@@ -244,6 +284,13 @@ def process(file, log, config, files, ocr, locale, database, typo):
         order_number_class.text = ocr.footer_text
         order_number_class.target = 'footer'
         order_number = order_number_class.run()
+
+    if order_number:
+        data.update({'order_number': order_number[0]})
+        if order_number[1]:
+            positions.update({'order_number': order_number[1]})
+        if order_number[2]:
+            pages.update({'order_number': order_number[2]})
 
     file_name = str(uuid.uuid4())
     full_jpg_filename = 'full_' + file_name + '-%03d.jpg'
@@ -259,15 +306,23 @@ def process(file, log, config, files, ocr, locale, database, typo):
     # If all informations are found, do not send it to GED
     if supplier and supplier[2]['skip_auto_validate'] == 'False' and date and invoice_number and footer and config.cfg['GLOBAL']['allowautomaticvalidation'] == 'True':
         log.info('All the usefull informations are found. Export the XML and end process')
+        print(data)
+        print(positions)
+        print(pages)
+        print(args)
     else:
+        print(data)
+        print(positions)
+        print(pages)
+        print(args)
         if supplier and supplier[2]['skip_auto_validate'] == 'True':
-            log.info('Skip automatic validation this time')
+            log.info('Skip automatic validation for this supplier this time')
             database.update({
                 'table': ['accounts_suppliers'],
                 'set': {
                     'skip_auto_validate': 'False'
                 },
-                'where': ['vat_number = ?'],
+                'where': ['vat_number = %s'],
                 'data': [supplier[2]['vat_number']]
             })
 

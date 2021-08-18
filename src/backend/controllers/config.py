@@ -1,28 +1,33 @@
+# This file is part of Open-Capture for Invoices.
+
+# Open-Capture for Invoices is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# Open-Capture is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
+
+# @dev : Nathan Cheval <nathan.cheval@edissyum.com>
+
 import git
 import subprocess
 import configparser
-from .db import get_db
 from flask_babel import gettext
 from flask import current_app, Blueprint
-from ..import_classes import _Config, _Log, _Locale, _Database
+from ..main import create_classes_from_config
 
 bp = Blueprint('dashboard', __name__)
 
 
-def init():
-    config_name = _Config(current_app.config['CONFIG_FILE'])
-    config = _Config(current_app.config['CONFIG_FOLDER'] + '/config_' + config_name.cfg['PROFILE']['id'] + '.ini')
-    log = _Log(config.cfg['GLOBAL']['logfile'])
-    db = _Database(log, conn=get_db().conn)
-    locale = _Locale(config)
-    config_file = current_app.config['CONFIG_FOLDER'] + '/config_' + config_name.cfg['PROFILE']['id'] + '.ini'
-
-    return db, config, locale, config_name, config_file
-
-
 def change_locale_in_config(lang):
-    _vars = init()
-    config_file = _vars[4]
+    _vars = create_classes_from_config()
+    config_file = _vars[1]
     languages = current_app.config['LANGUAGES']
     parser = configparser.ConfigParser()
 

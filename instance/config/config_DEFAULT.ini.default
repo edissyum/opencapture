@@ -81,8 +81,8 @@ urlpattern          = fr|com|net|org|gouv
 enabled             = False
 # True or False, python way
 exportpdfa          = False
-outputpdfpath       = ${GLOBAL:projectPath}/data/exported_pdf/
-outputpdfapath      = ${GLOBAL:projectPath}/data/exported_pdfa/
+outputpdfpath       = ${GLOBAL:projectPath}/bin/data/exported_pdf/
+outputpdfapath      = ${GLOBAL:projectPath}/bin/data/exported_pdfa/
 tmppath             = /tmp/
 # _ or - for exemple
 divider             = _

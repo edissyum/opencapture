@@ -47,9 +47,12 @@ class FindInvoiceNumber:
 
         if self.supplier and not self.customPage:
             position = self.Database.select({
-                'select': ['invoice_number_position', 'invoice_number_page'],
-                'table': ['suppliers'],
-                'where': ['vat_number = ?'],
+                'select': [
+                    "positions ->> 'invoice_number' as invoice_number_position",
+                    "pages ->> 'invoice_number' as invoice_number_page"
+                ],
+                'table': ['accounts_supplier'],
+                'where': ['vat_number = %s'],
                 'data': [self.supplier[0]]
             })[0]
 

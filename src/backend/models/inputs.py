@@ -16,11 +16,12 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 from flask_babel import gettext
-from ..import_controllers import db
+from ..main import create_classes_from_config
 
 
 def get_inputs(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     inputs = _db.select({
         'select': ["*"] if "select" not in args else args["select"],
         'table': ["inputs"],
@@ -35,7 +36,8 @@ def get_inputs(args):
 
 
 def get_input_by_id(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
     input = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -53,7 +55,8 @@ def get_input_by_id(args):
 
 
 def update_input(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
 
     input = _db.update({
@@ -70,7 +73,8 @@ def update_input(args):
 
 
 def create_input(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
 
     input = _db.insert({

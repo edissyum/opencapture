@@ -17,11 +17,12 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 from gettext import gettext
-from ..import_controllers import db
+from ..main import create_classes_from_config
 
 
 def add_custom_field(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
     customs_exists, error = retrieve_custom_fields({
         'where': ['label_short = %s', 'module = %s'],
@@ -50,7 +51,8 @@ def add_custom_field(args):
 
 
 def retrieve_custom_fields(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
     custom_fields = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
@@ -63,7 +65,8 @@ def retrieve_custom_fields(args):
 
 
 def update(args):
-    _db = db.get_db()
+    _vars = create_classes_from_config()
+    _db = _vars[0]
     error = None
 
     res = _db.update({

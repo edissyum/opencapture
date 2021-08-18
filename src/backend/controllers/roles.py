@@ -16,13 +16,13 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 from flask_babel import gettext
-from ..import_controllers import pdf
 from ..import_models import roles
+from ..main import create_classes_from_config
 
 
 def get_roles(args):
-    _vars = pdf.init()
-    _config = _vars[1]
+    _vars = create_classes_from_config()
+    _config = _vars[0]
 
     _roles = roles.get_roles(args)
 
@@ -33,7 +33,7 @@ def get_roles(args):
 
 
 def update_role(role_id, data):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _db = _vars[0]
     role_info, error = roles.get_role_by_id({'role_id': role_id})
 
@@ -63,7 +63,7 @@ def update_role(role_id, data):
 
 
 def create_role(data):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _db = _vars[0]
 
     _columns = {
@@ -88,7 +88,7 @@ def create_role(data):
 
 
 def update_role_privilege(role_id, privileges):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _db = _vars[0]
     role_info, error = roles.get_role_by_id({'role_id': role_id})
 
@@ -129,7 +129,7 @@ def get_role_by_id(role_id):
 
 
 def delete_role(role_id):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _db = _vars[0]
 
     role_info, error = roles.get_role_by_id({'role_id': role_id})
@@ -152,7 +152,7 @@ def delete_role(role_id):
 
 
 def disable_role(role_id):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _db = _vars[0]
 
     role_info, error = roles.get_role_by_id({'role_id': role_id})
@@ -175,7 +175,7 @@ def disable_role(role_id):
 
 
 def enable_role(role_id):
-    _vars = pdf.init()
+    _vars = create_classes_from_config()
     _db = _vars[0]
 
     role_info, error = roles.get_role_by_id({'role_id': role_id})
