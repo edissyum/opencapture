@@ -131,6 +131,13 @@ def delete_supplier_positions(supplier_id):
     return make_response(jsonify(res[0])), res[1]
 
 
+@bp.route('accounts/suppliers/skipAutoValidate/<int:supplier_id>', methods=['DELETE'])
+@auth.token_required
+def skip_auto_validate(supplier_id):
+    res = accounts.update_supplier(supplier_id, {'skip_auto_validate': True})
+    return make_response(jsonify(res[0])), res[1]
+
+
 @bp.route('accounts/customers/list', methods=['GET'])
 @auth.token_required
 def customers_list():

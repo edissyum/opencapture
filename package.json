@@ -6,9 +6,8 @@
         "start": "ng serve",
         "build": "ng build",
         "build-watch": "ng build --watch",
-        "test": "ng test",
-        "lint": "ng lint",
         "build:prod": "NODE_ENV=production ng build --prod",
+        "reload-packages": "rm -Rf node_modules && rm package-lock.json && npm cache clean --force && npm i",
         "extract-translations": "ngx-translate-extract --input ./ --output ./src/assets/i18n/frontend/*.json --clean --sort --format namespaced-json --marker _"
     },
     "private": true,

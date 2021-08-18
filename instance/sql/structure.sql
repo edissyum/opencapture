@@ -109,6 +109,7 @@ CREATE TABLE "accounts_supplier" (
     "form_id"               INTEGER,
     "status"                VARCHAR(3) DEFAULT 'OK',
     "get_only_raw_footer"   BOOLEAN DEFAULT false,
+    "skip_auto_validate"    BOOLEAN DEFAULT false,
     "creation_date"         TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
     "positions"             JSONB DEFAULT '{}'
 );

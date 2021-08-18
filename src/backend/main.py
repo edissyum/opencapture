@@ -58,17 +58,8 @@ def create_classes(config_name):
     db_port = config.cfg['DATABASE']['postgresport']
     database = _Database(log, db_name, db_user, db_pwd, db_host, db_port)
     xml = _Xml(config, database)
-    if config.cfg['GED']['enabled'] != 'False':
-        webservices = _MaarchWebServices(
-            config.cfg['GED']['host'],
-            config.cfg['GED']['user'],
-            config.cfg['GED']['password'],
-            log,
-            config
-        )
-    else:
-        webservices = False
-    return config, locale, log, ocr, database, xml, webservices
+
+    return config, locale, log, ocr, database, xml
 
 
 def check_file(files, path, config, log):
@@ -123,7 +114,7 @@ def launch(args):
     if not os.path.exists(config_file):
         sys.exit('config file couldn\'t be found')
 
-    config, locale, log, ocr, database, xml, webservices = create_classes(config_name)
+    config, locale, log, ocr, database, xml = create_classes(config_name)
     tmp_folder = tempfile.mkdtemp(dir=config.cfg['GLOBAL']['tmppath'])
     filename = tempfile.NamedTemporaryFile(dir=tmp_folder).name
     separator_qr = _SeparatorQR(log, config, tmp_folder)
@@ -186,7 +177,7 @@ def launch(args):
 
                 if check_file(files, path + file, config, log) is not False:
                     # Process the file and send it to Maarch
-                    OCForInvoices_process.process(path + file, log, config, files, ocr, locale, database, webservices, typo)
+                    OCForInvoices_process.process(path + file, log, config, files, ocr, locale, database, typo)
         elif config.cfg['SEPARATE-BY-DOCUMENT']['enabled'] == 'True':
             list_of_files = separator_qr.split_document_every_two_pages(path)
             for file in list_of_files:
@@ -195,7 +186,7 @@ def launch(args):
 
                 if check_file(files, file, config, log) is not False:
                     # Process the file and send it to Maarch
-                    OCForInvoices_process.process(file, log, config, files, ocr, locale, database, webservices, typo)
+                    OCForInvoices_process.process(file, log, config, files, ocr, locale, database, typo)
             os.remove(path)
         else:
             if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
@@ -203,7 +194,7 @@ def launch(args):
 
             if check_file(files, path, config, log) is not False:
                 # Process the file and send it to Maarch
-                OCForInvoices_process.process(path, log, config, files, ocr, locale, database, webservices, typo)
+                OCForInvoices_process.process(path, log, config, files, ocr, locale, database, typo)
 
     # Empty the tmp dir to avoid residual file
     recursive_delete(tmp_folder, log)

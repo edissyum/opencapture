@@ -25,76 +25,6 @@ from src.backend.import_process import FindDate, FindFooter, FindInvoiceNumber, 
 from src.backend.import_classes import _Spreadsheet
 
 
-def insert(database, log, files, config, supplier, file, invoice_number, date, footer, nb_pages, full_jpg_filename, tiff_filename, status, custom_columns, original_file, delivery_number, order_number):
-    if files.isTiff == 'True':
-        try:
-            filename = os.path.splitext(files.custom_fileName_tiff)
-            improved_img = filename[0] + '_improved' + filename[1]
-            os.remove(files.custom_fileName_tiff)
-            os.remove(improved_img)
-        except FileNotFoundError:
-            pass
-        path = config.cfg['GLOBAL']['tiffpath'] + '/' + tiff_filename.replace('-%03d', '-001')
-    else:
-        try:
-            filename = os.path.splitext(files.custom_fileName)
-            improved_img = filename[0] + '_improved' + filename[1]
-            os.remove(files.custom_fileName)
-            os.remove(improved_img)
-        except FileNotFoundError:
-            pass
-        path = config.cfg['GLOBAL']['fullpath'] + '/' + full_jpg_filename.replace('-%03d', '-001')
-
-    columns = {
-        'vat_number': supplier[0] if supplier and supplier[0] else '',
-        'vat_number_position': str(supplier[1]) if supplier and supplier[1] else '',
-        'footer_page': str(footer[3]) if footer and footer[3] else '1',
-        'filename': os.path.basename(file),
-        'path': os.path.dirname(file),
-        'img_width': str(files.get_size(path)),
-        'full_jpg_filename': full_jpg_filename.replace('-%03d', '-001'),
-        'tiff_filename': tiff_filename.replace('-%03d', '-001'),
-        'status': status,
-        'nb_pages': str(nb_pages),
-    }
-
-    # Add supplier id to invoice
-    if columns['vat_number'] != '':
-        res = database.select({
-            'select': ['id'],
-            'table': ['suppliers'],
-            'where': ['vat_number = ?'],
-            'data': [columns['vat_number']],
-        })
-        if res:
-            if len(res) > 0:
-                columns['id_supplier'] = str(res[0]['id'])
-
-    if custom_columns:
-        columns.update(custom_columns)
-
-    res = database.insert({
-        'table': 'invoices',
-        'columns': columns
-    })
-
-    # Commit database connection
-    if res:
-        database.conn.commit()
-        log.info('Invoice inserted in database')
-        try:
-            os.remove(files.jpgName_footer)
-            os.remove(files.jpgName_header)
-            os.remove(files.jpgName)
-            os.remove(files.tiffName_footer)
-            os.remove(files.tiffName_header)
-            os.remove(files.tiffName)
-        except FileNotFoundError:
-            pass
-    else:
-        log.error('Error while inserting')
-
-
 def convert(file, files, ocr, nb_pages, custom_pages=False):
     if custom_pages:
         if files.isTiff == 'True':
@@ -164,7 +94,7 @@ def update_typo_database(database, vat_number, typo, log, config):
     })
 
 
-def process(file, log, config, files, ocr, locale, database, webservices, typo):
+def process(file, log, config, files, ocr, locale, database, typo):
     log.info('Processing file : ' + file)
 
     # get the number of pages into the PDF documents
@@ -328,125 +258,17 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
 
     # If all informations are found, do not send it to GED
     if supplier and supplier[2]['skip_auto_validate'] == 'False' and date and invoice_number and footer and config.cfg['GLOBAL']['allowautomaticvalidation'] == 'True':
-        insert(database, log, files, config, supplier, file, invoice_number, date, footer, nb_pages, full_jpg_filename, tiff_filename, 'END', False, original_file, delivery_number, order_number)
         log.info('All the usefull informations are found. Export the XML and end process')
-        now = datetime.datetime.now()
-        xml_custom = {}
-        for custom in custom_fields:
-            field_name = custom.split('-')[1]
-            field_name_position = field_name + '_position'
-            xml_custom.update({
-                field_name: {'field': custom_fields[custom][0]},
-                field_name_position: {'field': custom_fields[custom][1]}
-            })
-
-        parent = {
-            'pdf_creation_date': [{'pdf_creation_date': {'field': str(now.year) + '-' + str('%02d' % now.month) + '-' + str(now.day)}}],
-            'fileInfo': [{'fileInfo_path': {'field': os.path.dirname(file) + '/' + os.path.basename(file)}}],
-            'supplierInfo': [{
-                'supplierInfo_name': {'field': supplier[2]['name']},
-                'supplierInfo_city': {'field': supplier[2]['city']},
-                'supplierInfo_siret_number': {'field': supplier[2]['siret']},
-                'supplierInfo_siren_number': {'field': supplier[2]['siren']},
-                'supplierInfo_address': {'field': supplier[2]['adress1']},
-                'supplierInfo_vat_number': {'field': supplier[2]['vat_number']},
-                'supplierInfo_postal_code': {'field': str(supplier[2]['postal_code'])},
-            }],
-            'facturationInfo': [{
-                'facturationInfo_number_of_tva': {'field': '1'},
-                'facturationInfo_invoice_date': {'field': date[0]},
-                'facturationInfo_due_date': {'field': date[3][0] if date[3] else ''},
-                'facturationInfo_invoice_number': {'field': invoice_number[0]},
-                'facturationInfo_delivery_number_1': {'field': delivery_number[0] if delivery_number and delivery_number[0] else ''},
-                'facturationInfo_order_number_1': {'field': order_number[0] if order_number and order_number[0] else ''},
-                'facturationInfo_no_taxes_1': {'field': str("%.2f" % (float(footer[0][0])))},
-                'facturationInfo_vat_1': {'field': str("%.2f" % (float(footer[2][0])))},
-                'total_vat_1': {'field': str("%.2f" % (float(footer[0][0]) * (float(footer[2][0]) / 100)))},
-                'total_ht': {'field': str("%.2f" % (float(footer[0][0])))},
-                'total_ttc': {'field': str("%.2f" % (float(footer[0][0]) * (float(footer[2][0]) / 100) + float(footer[0][0])))},
-            }],
-            'customInfo': [xml_custom]
-        }
-
-        vat_1_calculated = False
-        ht_calculated = False
-        ttc_calculated = False
-
-        if len(footer[0]) == 3:
-            ht_calculated = footer[0][2]
-        if len(footer[1]) == 3:
-            ttc_calculated = footer[1][2]
-        if len(footer[2]) == 3:
-            vat_1_calculated = footer[2][2]
-
-        files.export_xml(config, invoice_number[0], parent, False, database, supplier[2]['vat_number'], vat_1_calculated, ht_calculated, ttc_calculated)
-
-        if config.cfg['GED']['enabled'] == 'True':
-            default_process = config.cfg['GED']['defaultprocess']
-            invoice_info = database.select({
-                'select': ['*'],
-                'table': ['invoices'],
-                'where': ['invoice_number = ?'],
-                'data': [invoice_number[0]]
-            })
-
-            contact = webservices.retrieve_contact_by_vat_number(supplier[2]['vat_number'])
-            if not contact:
-                contact = {
-                    'contactType': config.cfg[default_process]['contacttype'],
-                    'contactPurposeId': config.cfg[default_process]['contactpurposeid'],
-                    'society': parent['supplierInfo'][0]['supplierInfo_name']['field'],
-                    'addressTown': parent['supplierInfo'][0]['supplierInfo_city']['field'],
-                    'societyShort': parent['supplierInfo'][0]['supplierInfo_name']['field'],
-                    'addressStreet': parent['supplierInfo'][0]['supplierInfo_address']['field'],
-                    'addressPostcode': parent['supplierInfo'][0]['supplierInfo_postal_code']['field'],
-                    'customFields': {},
-                    'email': 'A_renseigner_' + parent['supplierInfo'][0]['supplierInfo_name']['field'].replace(' ', '_') + '@' + parent['supplierInfo'][0]['supplierInfo_vat_number']['field'] + '.fr'
-                }
-                contact['customFields'][config.cfg['GED']['contactvatcustom']] = parent['supplierInfo'][0]['supplierInfo_vat_number']['field']
-
-                res = webservices.create_contact(contact)
-                if res is not False:
-                    contact = {'id': contact['addressId'], 'contact_id': contact['contactId']}
-
-            data = {
-                'date': date[0],
-                'vatNumber': supplier[2]['vat_number'],
-                'creationDate': invoice_info[0]['register_date'],
-                'subject': 'Facture N°' + invoice_number[0],
-                'status': config.cfg[default_process]['statusend'],
-                'destination': config.cfg[default_process]['defaultdestination'],
-                'fileContent': open(parent['fileInfo'][0]['fileInfoPath']['field'], 'rb').read(),
-                config.cfg[default_process]['customvatnumber']: supplier[2]['vat_number'],
-                config.cfg[default_process]['customht']: parent['facturationInfo'][0]['total_ht']['field'],
-                config.cfg[default_process]['customttc']: parent['facturationInfo'][0]['total_ttc']['field'],
-                config.cfg[default_process]['custominvoicenumber']: invoice_number[0],
-                'contact': contact,
-                'dest_user': config.cfg[default_process]['defaultdestuser']
-            }
-            res = webservices.insert_with_args(data, config)
-
-            if res:
-                log.info("Insert OK : " + res)
-                try:
-                    os.remove(file)
-                except FileNotFoundError as e:
-                    log.error('Unable to delete ' + file + ' : ' + str(e))
-                return True
-            else:
-                shutil.move(file, config.cfg['GLOBAL']['errorpath'] + os.path.basename(file))
-                return False
     else:
         if supplier and supplier[2]['skip_auto_validate'] == 'True':
             log.info('Skip automatic validation this time')
             database.update({
-                'table': ['suppliers'],
+                'table': ['accounts_suppliers'],
                 'set': {
                     'skip_auto_validate': 'False'
                 },
                 'where': ['vat_number = ?'],
                 'data': [supplier[2]['vat_number']]
             })
-        insert(database, log, files, config, supplier, file, invoice_number, date, footer, nb_pages, full_jpg_filename, tiff_filename, 'NEW', columns, original_file, delivery_number, order_number)
 
     return True

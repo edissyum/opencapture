@@ -7,7 +7,8 @@
 		"company_number": "Numéro de société",
 		"confirm_delete_customer": "Êtes vous sûr de vouloir supprimer le compte client <b>{{ customer }}</b> ?",
 		"confirm_delete_supplier": "Êtes vous sûr de vouloir supprimer le compte fournisseur <b>{{ supplier }}</b> ?",
-		"confirm_delete_supplier_positions": "Êtes vous sûr de vouloir supprimer les positions du compte fournisseur <b>{{ supplier }}</b> ",
+		"confirm_delete_supplier_positions": "Êtes vous sûr de vouloir supprimer les positions du compte fournisseur <b>{{ supplier }}</b> ?",
+		"confirm_skip_auto_validate": "Êtes vous sûr de vouloir outrepasser la prochaine validation automatique du compte fournisseur <b>{{ supplier }}</b> ?",
 		"create_customer": "Ajouter un compte client",
 		"create_supplier": "Ajouter un compte fournisseur",
 		"customer_name": "Nom du compte client",
@@ -20,6 +21,7 @@
 		"search_supplier": "Recherche de fournisseur",
 		"siren": "Numéro de SIREN",
 		"siret": "Numéro de SIRET",
+		"skip_validated_success": "La prochaine validation automatique sera annulée pour ce fournisseur",
 		"supplier": "Compte Fournisseur",
 		"supplier_created": "Compte fournisseur créé avec succès",
 		"supplier_name": "Nom du compte fournisseur",
@@ -171,6 +173,7 @@
 		"log_out": "Déconnexion",
 		"login": "Connexion",
 		"settings": "Paramètres",
+		"skip_auto_validate": "Outrepasser la prochaine validation automatique",
 		"upload": "Téléversement"
 	},
 	"HEADER": {
@@ -191,7 +194,7 @@
 	"INPUT": {
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer la chaîne entrante <b>{{ input }}</b> ?",
 		"create": "Créer la chaîne entrante",
-		"create_hint": "",
+		"create_hint": "Créer une chaîne crééera automatiquement le script <b>.sh</b> ainsi que l'incron pour la capture automatique des documents",
 		"created": "Chaîne entrante créée",
 		"default_form_id": "Formulaire par défaut",
 		"incron_and_script_updated": "Script et incron mis à jour",

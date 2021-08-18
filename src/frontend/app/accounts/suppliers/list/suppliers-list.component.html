@@ -17,7 +17,7 @@
                 <span class="ml-2 relative -top-1">{{ 'ACCOUNTS.create_supplier' | translate }}</span>
             </button>
         </div>
-        <mat-table matSort [dataSource]="suppliers" (matSortChange)="sortData($event)" class="w-full">
+        <mat-table matSort [dataSource]="suppliers" (matSortChange)="sortData($event)" class="w-full table relative -top-8">
             <ng-container matColumnDef="id">
                 <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.id' | translate }} </mat-header-cell>
                 <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
@@ -54,6 +54,11 @@
                             matTooltip="{{ 'GLOBAL.delete_supplier_positions' | translate }}" mat-icon-button
                             class="inline-block align-text-top">
                         <i class="text-lg icomoon-wrong_location"></i>
+                    </button>
+                    <button (click)="$event.stopPropagation();skipAutoValidateConfirmDialog(element.id, element.name)"
+                            matTooltip="{{ 'GLOBAL.skip_auto_validate' | translate }}" mat-icon-button
+                            class="inline-block align-text-top">
+                        <i class="fas fa-forward fa-lg"></i>
                     </button>
                 </mat-cell>
             </ng-container>

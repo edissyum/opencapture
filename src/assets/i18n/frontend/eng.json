@@ -8,6 +8,7 @@
 		"confirm_delete_customer": "",
 		"confirm_delete_supplier": "",
 		"confirm_delete_supplier_positions": "",
+		"confirm_skip_auto_validate": "",
 		"create_customer": "",
 		"create_supplier": "",
 		"customer_name": "",
@@ -20,6 +21,7 @@
 		"search_supplier": "",
 		"siren": "",
 		"siret": "",
+		"skip_validated_success": "",
 		"supplier": "",
 		"supplier_created": "",
 		"supplier_name": "",
@@ -171,6 +173,7 @@
 		"log_out": "Log out",
 		"login": "Login",
 		"settings": "Settings",
+		"skip_auto_validate": "",
 		"upload": "Upload"
 	},
 	"HEADER": {

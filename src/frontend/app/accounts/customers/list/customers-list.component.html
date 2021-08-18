@@ -17,7 +17,7 @@
                 <span class="ml-2 relative -top-1">{{ 'ACCOUNTS.create_customer' | translate }}</span>
             </button>
         </div>
-        <mat-table matSort [dataSource]="customers" (matSortChange)="sortData($event)" class="w-full">
+        <mat-table matSort [dataSource]="customers" (matSortChange)="sortData($event)" class="w-full table relative -top-8">
             <ng-container matColumnDef="id">
                 <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.id' | translate }} </mat-header-cell>
                 <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>

@@ -146,11 +146,45 @@ export class SuppliersListComponent implements OnInit {
         });
     }
 
+    skipAutoValidateConfirmDialog(supplier_id: number, supplier: string) {
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            data:{
+                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
+                confirmText         : this.translate.instant('ACCOUNTS.confirm_skip_auto_validate', {"supplier": supplier}),
+                confirmButton       : this.translate.instant('GLOBAL.delete'),
+                confirmButtonColor  : "warn",
+                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+            },
+            width: "600px",
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if(result) {
+                this.skipAutoValidate(supplier_id);
+            }
+        });
+    }
+
     deleteSupplier(supplier_id: number) {
         if (supplier_id !== undefined) {
             this.http.delete(API_URL + '/ws/accounts/suppliers/delete/' + supplier_id, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadSuppliers();
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        }
+    }
+
+    skipAutoValidate(supplier_id: number) {
+        if (supplier_id !== undefined) {
+            this.http.delete(API_URL + '/ws/accounts/suppliers/skipAutoValidate/' + supplier_id, {headers: this.authService.headers}).pipe(
+                tap(() => {
+                    this.notify.success(this.translate.instant('ACCOUNTS.skip_validated_success'));
                 }),
                 catchError((err: any) => {
                     console.debug(err);
