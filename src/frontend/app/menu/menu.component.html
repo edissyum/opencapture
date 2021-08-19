@@ -91,7 +91,7 @@
                 <div class="ml-3 mr-2 relative border-l border-green-400 pl-5" *ngIf="this.privilegesService.hasPrivilege('suppliers_list')">
                     <button id="supplier-menu" aria-haspopup="true" mat-mini-fab routerLink="/accounts/suppliers"
                             [class.settings_active]="location.path().includes('accounts/suppliers')"
-                            [matTooltip]="this.translate.instant('ACCOUNTS.suppliers_list')"
+                            [matTooltip]="'ACCOUNTS.suppliers_list' | translate"
                             class="bg-green-400 hover:ring-4 hover:ring-offset-4 hover:ring-green-400 hover:ring-opacity-60">
                         <i class="fas fa-building"></i>
                     </button>
@@ -99,7 +99,7 @@
                 <div class="ml-3 relative" *ngIf="this.privilegesService.hasPrivilege('customers_list')">
                     <button id="customer-menu" aria-haspopup="true" mat-mini-fab routerLink="/accounts/customers"
                             [class.settings_active]="location.path().includes('accounts/customers')"
-                            [matTooltip]="this.translate.instant('ACCOUNTS.customers_list')"
+                            [matTooltip]="'ACCOUNTS.customers_list' | translate"
                             class="bg-green-400 hover:ring-4 hover:ring-offset-4 hover:ring-green-400 hover:ring-opacity-60">
                         <i class="fas fa-user"></i>
                     </button>
