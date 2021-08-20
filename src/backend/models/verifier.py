@@ -48,7 +48,8 @@ def get_invoices(args):
         'left_join': [] if 'left_join' not in args else args['left_join'],
         'where': ['1 = %s'] if 'where' not in args else args['where'],
         'data': ['1'] if 'data' not in args else args['data'],
-        'order_by': [] if 'order_by' not in args else args['order_by'],
+        'order_by': ['id DESC'] if 'order_by' not in args else args['order_by'],
+        'group_by': ['id'] if 'group_by' not in args else args['group_by'],
         'limit': str(args['limit']) if 'limit' in args else [],
         'offset': str(args['offset']) if 'offset' in args else [],
     })

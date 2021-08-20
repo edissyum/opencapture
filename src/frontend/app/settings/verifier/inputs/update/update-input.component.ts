@@ -57,6 +57,13 @@ export class UpdateInputComponent implements OnInit {
             required: true,
         },
         {
+            id: 'customer_id',
+            label: this.translate.instant('INPUT.associated_customer'),
+            type: 'select',
+            control: new FormControl(),
+            required: true,
+        },
+        {
             id: 'purchase_or_sale',
             label: this.translate.instant('INPUT.purchase_or_sale'),
             type: 'select',
@@ -96,7 +103,6 @@ export class UpdateInputComponent implements OnInit {
 
 
     ngOnInit(): void {
-        console.log(this.translate.instant('UPLOAD.purchase_invoice'))
         this.serviceSettings.init();
         this.inputId = this.route.snapshot.params['id'];
 
@@ -111,8 +117,19 @@ export class UpdateInputComponent implements OnInit {
                                 this.http.get(API_URL + '/ws/forms/list', {headers: this.authService.headers}).pipe(
                                     tap((forms: any) => {
                                         element.values = forms.forms;
-                                        console.log(element.values);
                                     }),
+                                    catchError((err: any) => {
+                                        console.debug(err);
+                                        this.notify.handleErrors(err);
+                                        return of(false);
+                                    })
+                                ).subscribe();
+                            } else if (element.id == 'customer_id') {
+                                this.http.get(API_URL + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
+                                    tap((customers: any) => {
+                                        element.values = customers.customers
+                                    }),
+                                    finalize(() => this.loading = false),
                                     catchError((err: any) => {
                                         console.debug(err);
                                         this.notify.handleErrors(err);
@@ -124,7 +141,6 @@ export class UpdateInputComponent implements OnInit {
                     });
                 }
             }),
-            finalize(() => this.loading = false),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);

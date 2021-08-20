@@ -109,7 +109,7 @@ def retrieve_invoices(args):
         'table': args['table'],
         'left_join': args['left_join'],
     })
-    if total_invoices != 0:
+    if total_invoices not in [0, []]:
         invoices_list = verifier.get_invoices(args)
         for invoice in invoices_list:
             if invoice['supplier_id']:
@@ -119,6 +119,7 @@ def retrieve_invoices(args):
             "invoices": invoices_list
         }
         return response, 200
+    return '', 200
 
 
 def update_position_by_invoice_id(invoice_id, args):
@@ -141,6 +142,31 @@ def update_position_by_invoice_id(invoice_id, args):
         else:
             response = {
                 "errors": gettext('UPDATE_INVOICE_POSITIONS_ERROR'),
+                "message": error
+            }
+            return response, 401
+
+
+def update_page_by_invoice_id(invoice_id, args):
+    _vars = create_classes_from_config()
+    _db = _vars[0]
+    invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
+    if error is None:
+        column = page = ''
+        for _page in args:
+            column = _page
+            page = args[_page]
+
+        invoice_pages = invoice_info['pages']
+        invoice_pages.update({
+            column: page
+        })
+        res, error = verifier.update_invoice({'set': {"pages": json.dumps(invoice_pages)}, 'invoice_id': invoice_id})
+        if error is None:
+            return '', 200
+        else:
+            response = {
+                "errors": gettext('UPDATE_INVOICE_PAGES_ERROR'),
                 "message": error
             }
             return response, 401

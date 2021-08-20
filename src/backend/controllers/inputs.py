@@ -188,7 +188,7 @@ def create_script_and_incron(args):
             process = subprocess.Popen(['incrontab', '-l'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             incron_list, err = process.communicate()
 
-            if not err:
+            if not err or 'no table for' in err.decode('UTF-8'):
                 new_incron = args['input_folder'] + ' IN_CLOSE_WRITE,IN_MOVED_TO ' + new_script_filename + ' $@/$#'
                 incron_list = incron_list.decode('UTF-8')
                 incron_exist = False

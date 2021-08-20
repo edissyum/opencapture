@@ -28,12 +28,15 @@ import * as moment from 'moment';
 
 export class VerifierViewerComponent implements OnInit {
     loading             : boolean   = true
-    imageInvoice        : any;
     isOCRRunning        : boolean   = false;
     settingsOpen        : boolean   = false;
+    saveInfo            : boolean   = true;
+    ocr_from_user       : boolean   = false;
+    imageInvoice        : any;
     invoiceId           : any;
     invoice             : any;
     fields              : any;
+    currentPage         : number    = 1;
     lastLabel           : string    = '';
     lastId              : string    = '';
     lastColor           : string    = '';
@@ -69,10 +72,10 @@ export class VerifierViewerComponent implements OnInit {
     }
     suppliers           : any       = []
     filteredOptions     : Observable<any> | undefined;
-    supplierNamecontrol = new FormControl();
     get_only_raw_footer : boolean   = false;
     oldValue            : string    = '';
     toHighlight         : string    = '';
+    supplierNamecontrol = new FormControl();
     toHighlight_accounting : string    = '';
 
     constructor(
@@ -101,7 +104,8 @@ export class VerifierViewerComponent implements OnInit {
                 ]
             }
         }, true);
-
+        this.ocr_from_user = false;
+        this.saveInfo = true;
         this.invoiceId = this.route.snapshot.params['id'];
         this.invoice = await this.getInvoice();
         this.ratio = this.invoice.img_width / this.imageInvoice.width();
@@ -113,7 +117,7 @@ export class VerifierViewerComponent implements OnInit {
         this.suppliers = this.suppliers.suppliers;
         if (this.invoice.supplier_id) this.getSupplierInfo(this.invoice.supplier_id, false, true);
         await this.fillForm(this.currentFormFields);
-        await this.drawPositions(this.currentFormFields);
+        await this.drawPositions();
         this.loading = false;
         let triggerEvent = $('.trigger');
         triggerEvent.hide();
@@ -137,12 +141,13 @@ export class VerifierViewerComponent implements OnInit {
         control.patchValue(value);
     }
 
-    async drawPositions(data: any): Promise<any> {
+    async drawPositions(): Promise<any> {
         for (let parent in this.fields) {
-            for (let cpt in data.fields[parent]) {
-                let field = data.fields[parent][cpt];
+            for (let cpt in this.currentFormFields.fields[parent]) {
+                let field = this.currentFormFields.fields[parent][cpt];
                 let position = this.getPosition(field.id);
-                if (position) {
+                let page = this.getPage(field.id)
+                if (position && page == this.currentPage) {
                     this.lastId = field.id;
                     this.lastLabel = this.translate.instant(field.label).trim();
                     this.lastColor = field.color;
@@ -163,6 +168,24 @@ export class VerifierViewerComponent implements OnInit {
         }
     }
 
+    drawPositionByField(field: any, position: any) {
+        this.lastId = field.id;
+        this.lastLabel = this.translate.instant(field.label).trim();
+        this.lastColor = field.color;
+        this.disableOCR = true;
+        $('#' + field.id).focus();
+        let newArea = {
+            x: position.x / this.ratio,
+            y: position.y / this.ratio,
+            width: position.width / this.ratio,
+            height: position.height / this.ratio
+        };
+        let triggerEvent = $('.trigger');
+        triggerEvent.hide();
+        triggerEvent.trigger('mousedown');
+        triggerEvent.trigger('mouseup', [newArea]);
+    }
+
     getPosition(field_id: any) {
         let position: any;
         if (this.invoice.positions) {
@@ -175,6 +198,18 @@ export class VerifierViewerComponent implements OnInit {
         return position
     }
 
+    getPage(field_id: any) {
+        let page: number = 0;
+        if (this.invoice.pages) {
+            Object.keys(this.invoice.pages).forEach((element: any) => {
+                if (element == field_id) {
+                    page = this.invoice.pages[field_id];
+                }
+            })
+        }
+        return page;
+    }
+
     async retrieveSuppliers(): Promise<any> {
         return await this.http.get(API_URL + '/ws/accounts/suppliers/list?order=name ASC', {headers: this.authService.headers}).toPromise();
     }
@@ -184,6 +219,8 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     async getForm(): Promise<any> {
+        if (this.invoice.form_id)
+            return await this.http.get(API_URL + '/ws/forms/fields/getByFormId/' + this.invoice.form_id, {headers: this.authService.headers}).toPromise();
         if (this.invoice.supplier_id)
             return await this.http.get(API_URL + '/ws/forms/fields/getBySupplierId/' + this.invoice.supplier_id, {headers: this.authService.headers}).toPromise();
         else
@@ -326,7 +363,6 @@ export class VerifierViewerComponent implements OnInit {
         resizeArea.addClass('pointer-events-auto');
         imageContainer.addClass('pointer-events-none');
         imageContainer.addClass('cursor-auto');
-
         if (enable) {
             $('.outline_' + _this.lastId).toggleClass('animate');
             imageContainer.removeClass('pointer-events-none');
@@ -337,51 +373,7 @@ export class VerifierViewerComponent implements OnInit {
                 maxSize: [this.imageInvoice.width(), this.imageInvoice.height() / 8],
                 onChanged: function(img: any, cpt: any, selection: any) {
                     if (selection.length !== 0 && selection['width'] !== 0 && selection['height'] !== 0) {
-                        // Write the label of the input above the selection rectangle
-                        if ($('#select-area-label_' + cpt).length == 0) {
-                            $('#select-areas-label-container_' + cpt).append('<div id="select-area-label_' + cpt + '" class="input_' + _this.lastId + ' select-none">' + _this.lastLabel + '</div>');
-                            $('#select-areas-background-area_' + cpt).css('background-color', _this.lastColor);
-                            $('#select-areas-outline_' + cpt).addClass('outline_' + _this.lastId);
-                        }
-                        // End write
-
-                        let inputId = $('#select-area-label_' + cpt).attr('class').replace('input_', '').replace('select-none', '');
-                        $('#' + inputId).focus();
-
-                        // Test to avoid multi selection for same label. If same label exists, remove the selected areas and replace it by the new one
-                        let label = $('div[id*=select-area-label_]:contains(' + _this.lastLabel + ')');
-                        let labelCount = label.length;
-                        if (labelCount > 1) {
-                            let cptToDelete = label[labelCount - 1].id.split('_')[1]
-                            $('#select-areas-label-container_' + cptToDelete).remove();
-                            $('#select-areas-background-area_' + cptToDelete).remove();
-                            $('#select-areas-outline_' + cptToDelete).remove();
-                            $('#select-areas-delete_' + cptToDelete).remove();
-                            $('.select-areas-resize-handler_' + cptToDelete).remove();
-                        }
-                        if (!_this.isOCRRunning && !_this.loading) {
-                            _this.isOCRRunning = true;
-                            _this.http.post(API_URL + '/ws/verifier/ocrOnFly',
-                                {
-                                    selection: _this.getSelectionByCpt(selection, cpt),
-                                    fileName: _this.imageInvoice[0].src.replace(/^.*[\\\/]/, ''),
-                                    thumbSize: {width: img.currentTarget.width, height: img.currentTarget.height}
-                                },{headers: _this.authService.headers})
-                                .pipe(
-                                    tap((data: any) => {
-                                        _this.updateFormValue(inputId, data.result);
-                                        _this.isOCRRunning = false;
-                                        let res = _this.saveData(data.result, _this.lastId, true);
-                                        console.log(res)
-                                        if (res) _this.savePosition(_this.getSelectionByCpt(selection, cpt));
-                                    }),
-                                    catchError((err: any) => {
-                                        console.debug(err);
-                                        _this.notify.handleErrors(err);
-                                        return of(false);
-                                    })
-                                ).subscribe();
-                        }
+                        _this.ocr_process(img, cpt, selection);
                     }
                 },
                 onDeleted: function(img: any, cpt: any) {
@@ -408,6 +400,74 @@ export class VerifierViewerComponent implements OnInit {
         }
     }
 
+    ocr_process(img: any, cpt: number, selection: any) {
+        // Write the label of the input above the selection rectangle
+        let page = this.getPage(this.lastId);
+        if (this.ocr_from_user || (page == this.currentPage || page == 0)) {
+            if ($('#select-area-label_' + cpt).length == 0) {
+                let outline = $('#select-areas-outline_' + cpt);
+                let background_area = $('#select-areas-background-area_' + cpt);
+                let label_container = $('#select-areas-label-container_' + cpt);
+                label_container.append('<div id="select-area-label_' + cpt + '" class="input_' + this.lastId + ' select-none">' + this.lastLabel + '</div>');
+                background_area.css('background-color', this.lastColor);
+                outline.addClass('outline_' + this.lastId);
+                background_area.addClass('background_' + this.lastId);
+                background_area.data('page', page);
+                label_container.data('page', page);
+                outline.data('page', page);
+            }
+            // End write
+
+            let inputId = $('#select-area-label_' + cpt).attr('class').replace('input_', '').replace('select-none', '');
+            $('#' + inputId).focus();
+
+            // Test to avoid multi selection for same label. If same label exists, remove the selected areas and replace it by the new one
+            let label = $('div[id*=select-area-label_]:contains(' + this.lastLabel + ')');
+            let labelCount = label.length;
+            if (labelCount > 1) {
+                let cptToDelete = label[labelCount - 1].id.split('_')[1];
+                $('#select-areas-label-container_' + cptToDelete).remove();
+                $('#select-areas-background-area_' + cptToDelete).remove();
+                $('#select-areas-outline_' + cptToDelete).remove();
+                $('#select-areas-delete_' + cptToDelete).remove();
+                $('.select-areas-resize-handler_' + cptToDelete).remove();
+            }
+            if (!this.isOCRRunning && !this.loading && this.saveInfo) {
+                this.isOCRRunning = true;
+                this.http.post(API_URL + '/ws/verifier/ocrOnFly',
+                    {
+                        selection: this.getSelectionByCpt(selection, cpt),
+                        fileName: this.imageInvoice[0].src.replace(/^.*[\\\/]/, ''),
+                        thumbSize: {width: img.currentTarget.width, height: img.currentTarget.height}
+                    }, {headers: this.authService.headers})
+                    .pipe(
+                        tap((data: any) => {
+                            this.updateFormValue(inputId, data.result);
+                            this.isOCRRunning = false;
+                            let res = this.saveData(data.result, this.lastId, true);
+                            if (res) {
+                                this.savePosition(this.getSelectionByCpt(selection, cpt));
+                                this.savePages(this.currentPage);
+                            }
+                        }),
+                        catchError((err: any) => {
+                            console.debug(err);
+                            this.notify.handleErrors(err);
+                            return of(false);
+                        })
+                    ).subscribe();
+            }
+            this.saveInfo = true;
+        }else {
+            let input = $('.input_' + this.lastId);
+            let background = $('.background_' + this.lastId);
+            let outline = $('.outline_' + this.lastId);
+            input.remove();
+            background.remove();
+            outline.remove();
+        }
+    }
+
     updateFormValue(input_id: string, value: any) {
         for (let category in this.form) {
             this.form[category].forEach((input: any) => {
@@ -418,6 +478,7 @@ export class VerifierViewerComponent implements OnInit {
                         value = new Date(value._d);
                     }
                     input.control.setValue(value);
+                    input.control.markAsTouched();
                 }
             });
         }
@@ -444,6 +505,34 @@ export class VerifierViewerComponent implements OnInit {
         this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/updatePosition',
             {'args': {[this.lastId]: position}},
             {headers: this.authService.headers}).pipe(
+                tap(() => {
+                    this.invoice.positions[this.lastId] = position;
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+        ).subscribe();
+    }
+
+    async savePages(page: any) {
+        this.http.put(API_URL + '/ws/accounts/supplier/' + this.invoice.supplier_id + '/updatePage',
+            {'args': {[this.lastId]: page}},
+            {headers: this.authService.headers}).pipe(
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+        ).subscribe();
+
+        this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/updatePage',
+            {'args': {[this.lastId]: page}},
+            {headers: this.authService.headers}).pipe(
+                tap(() => {
+                    this.invoice.pages[this.lastId] = page;
+                }),
                 catchError((err: any) => {
                     console.debug(err);
                     this.notify.handleErrors(err);
@@ -744,4 +833,55 @@ export class VerifierViewerComponent implements OnInit {
             }
         }
     }
+
+    nextPage() {
+        if (this.currentPage < this.invoice.nb_pages) {
+            this.currentPage = this.currentPage + 1;
+            this.changeImage(this.currentPage);
+        }else {
+            this.changeImage(1);
+        }
+    }
+
+    previousPage() {
+        if (this.currentPage > 1) {
+            this.currentPage = this.currentPage - 1;
+            this.changeImage(this.currentPage);
+        }else {
+            this.changeImage(this.invoice.nb_pages);
+        }
+    }
+
+    changeImage(pageToShow: number) {
+        if (pageToShow){
+            let image = $('#invoice_image');
+            let currentSrc = image.attr('src');
+            let filename = currentSrc.replace(/^.*[\\\/]/, '');
+            let fileNameArray = filename.split('.');
+            let onlySrc = currentSrc.substr(0, currentSrc.length - filename.length);
+
+            let newFileName = onlySrc + fileNameArray[0].substr(0, fileNameArray[0].length - 1) + (pageToShow).toString() + '.' + fileNameArray[1];
+            image.attr('src', newFileName);
+            this.currentPage = pageToShow;
+            for (let parent in this.fields) {
+                for (let cpt in this.currentFormFields.fields[parent]) {
+                    let field = this.currentFormFields.fields[parent][cpt];
+                    let position = this.getPosition(field.id);
+                    let page = this.getPage(field.id);
+                    if (position) {
+                        let input = $('.input_' + field.id);
+                        let background = $('.background_' + field.id);
+                        let outline = $('.outline_' + field.id);
+                        input.remove();
+                        background.remove();
+                        outline.remove();
+                        this.saveInfo = false;
+                        if (page == this.currentPage) this.drawPositionByField(field, position);
+                    }
+                }
+            }
+            // this.ocr_process(this.currentFormFields);
+        }
+    }
+
 }

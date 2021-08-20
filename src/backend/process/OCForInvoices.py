@@ -14,13 +14,74 @@
 # along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
-
+import json
 import os
 import uuid
 import mimetypes
 from src.backend.import_process import FindDate, FindFooter, FindInvoiceNumber, FindSupplier, FindCustom, \
     FindOrderNumber, FindDeliveryNumber, FindFooterRaw
 from src.backend.import_classes import _Spreadsheet
+
+
+def insert(args, files, config, database, datas, positions, pages, tiff_filename, full_jpg_filename, file, original_file, supplier_id, status):
+    if files.isTiff == 'True':
+        try:
+            filename = os.path.splitext(files.custom_fileName_tiff)
+            improved_img = filename[0] + '_improved' + filename[1]
+            os.remove(files.custom_fileName_tiff)
+            os.remove(improved_img)
+        except FileNotFoundError:
+            pass
+        path = config.cfg['GLOBAL']['tiffpath'] + '/' + tiff_filename.replace('-%03d', '-001')
+    else:
+        try:
+            filename = os.path.splitext(files.custom_fileName)
+            improved_img = filename[0] + '_improved' + filename[1]
+            os.remove(files.custom_fileName)
+            os.remove(improved_img)
+        except FileNotFoundError:
+            pass
+        path = config.cfg['GLOBAL']['fullpath'] + '/' + full_jpg_filename.replace('-%03d', '-001')
+
+    invoice_data = {
+        'supplier_id': supplier_id,
+        'filename': os.path.basename(file),
+        'path': os.path.dirname(file),
+        'img_width': str(files.get_size(path)),
+        'full_jpg_filename': full_jpg_filename.replace('-%03d', '-001'),
+        'tiff_filename': tiff_filename.replace('-%03d', '-001'),
+        'original_filename': original_file,
+        'positions': json.dumps(positions),
+        'datas': json.dumps(datas),
+        'pages': json.dumps(pages),
+        'status': status,
+    }
+
+    input_settings = database.select({
+        'select': ['*'],
+        'table': ['inputs'],
+        'where': ['input_id = %s'],
+        'data': [args['input_id']],
+    })
+
+    if input_settings:
+        if input_settings[0]['purchase_or_sale']:
+            invoice_data.update({
+                'purchase_or_sale': input_settings[0]['purchase_or_sale']
+            })
+        if input_settings[0]['override_supplier_form']:
+            invoice_data.update({
+                'form_id': input_settings[0]['default_form_id']
+            })
+        if input_settings[0]['customer_id']:
+            invoice_data.update({
+                'customer_id': input_settings[0]['customer_id']
+            })
+
+    res = database.insert({
+        'table': 'invoices',
+        'columns': invoice_data
+    })
 
 
 def convert(file, files, ocr, nb_pages, custom_pages=False):
@@ -94,7 +155,7 @@ def update_typo_database(database, vat_number, typo, log, config):
 
 def process(args, file, log, config, files, ocr, locale, database, typo):
     log.info('Processing file : ' + file)
-    data = {}
+    datas = {}
     pages = {}
     positions = {}
     # get the number of pages into the PDF documents
@@ -123,6 +184,15 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
         convert(file, files, ocr, tmp_nb_pages, True)
         supplier = FindSupplier(ocr, log, locale, database, files, nb_pages, tmp_nb_pages, True).run()
         i += 1
+
+    if supplier:
+        print(supplier)
+        datas.update({
+            'name': supplier[2]['name'],
+            'vat_number': supplier[2]['vat_number'],
+            'siret': supplier[2]['siret'],
+            'siren': supplier[2]['siren'],
+        })
 
     if typo:
         update_typo_database(database, supplier[0], typo, log, config)
@@ -177,7 +247,7 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
         j += 1
 
     if invoice_number:
-        data.update({'invoice_number': invoice_number[0]})
+        datas.update({'invoice_number': invoice_number[0]})
         if invoice_number[1]:
             positions.update({'invoice_number': invoice_number[1]})
         if invoice_number[2]:
@@ -194,14 +264,14 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
 
     date = FindDate(text_custom, log, locale, config, files, ocr, supplier, typo, page_for_date, database, file).run()
     if date:
-        data.update({'invoice_date': date[0]})
+        datas.update({'invoice_date': date[0]})
         if date[1]:
             positions.update({'invoice_date': date[1]})
         if date[2]:
             pages.update({'invoice_date': date[2]})
 
         if date[3]:
-            data.update({'invoice_due_date': date[3][0]})
+            datas.update({'invoice_due_date': date[3][0]})
             pages.update({'invoice_due_date': date[2]})
             if len(date[3]) > 1:
                 positions.update({'invoice_due_date': date[3][1]})
@@ -244,21 +314,21 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
 
     if footer:
         if footer[0]:
-            data.update({'no_rate_amount': footer[0][0]})
+            datas.update({'no_rate_amount': footer[0][0]})
             if len(footer[2]) > 1:
                 positions.update({'no_rate_amount': footer[0][1]})
         if footer[1]:
-            data.update({'total_ttc': footer[1][0]})
+            datas.update({'total_ttc': footer[1][0]})
             if len(footer[2]) > 1:
                 positions.update({'total_ttc': footer[1][1]})
         if footer[2]:
-            data.update({'vat_rate': footer[2][0]})
+            datas.update({'vat_rate': footer[2][0]})
             if len(footer[2]) > 1:
                 positions.update({'vat_rate': footer[2][1]})
         if footer[3]:
             pages.update({'footer': footer[3]})
         if footer[4]:
-            data.update({'vat_amount': footer[4][0]})
+            datas.update({'vat_amount': footer[4][0]})
             if len(footer[2]) > 1:
                 positions.update({'vat_amount': footer[4][1]})
 
@@ -271,7 +341,7 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
         delivery_number = delivery_number_class.run()
 
     if delivery_number:
-        data.update({'delivery_number': delivery_number[0]})
+        datas.update({'delivery_number': delivery_number[0]})
         if delivery_number[1]:
             positions.update({'delivery_number': delivery_number[1]})
         if delivery_number[2]:
@@ -286,7 +356,7 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
         order_number = order_number_class.run()
 
     if order_number:
-        data.update({'order_number': order_number[0]})
+        datas.update({'order_number': order_number[0]})
         if order_number[1]:
             positions.update({'order_number': order_number[1]})
         if order_number[2]:
@@ -306,12 +376,14 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
     # If all informations are found, do not send it to GED
     if supplier and supplier[2]['skip_auto_validate'] == 'False' and date and invoice_number and footer and config.cfg['GLOBAL']['allowautomaticvalidation'] == 'True':
         log.info('All the usefull informations are found. Export the XML and end process')
-        print(data)
+        insert(args, files, config, database, datas, positions, pages, tiff_filename, full_jpg_filename, file, original_file, supplier[2]['id'], 'END')
+        print(datas)
         print(positions)
         print(pages)
         print(args)
     else:
-        print(data)
+        insert(args, files, config, database, datas, positions, pages, tiff_filename, full_jpg_filename, file, original_file, supplier[2]['id'], 'NEW')
+        print(datas)
         print(positions)
         print(pages)
         print(args)

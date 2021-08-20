@@ -200,8 +200,10 @@ export class VerifierListComponent implements OnInit {
             {headers: this.authService.headers}
         ).pipe(
             tap((data: any) => {
-                this.total = data.total;
-                this.invoices = data.invoices;
+                if (data) {
+                    this.total = data.total
+                    this.invoices = data.invoices;
+                }
                 /*
                 * Starting from here, we fill the customers tree
                 */

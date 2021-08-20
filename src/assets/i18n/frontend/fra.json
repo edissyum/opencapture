@@ -192,6 +192,7 @@
 		"verifier": "Open-Capture Vérificateur"
 	},
 	"INPUT": {
+		"associated_customer": "Compte client associé",
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer la chaîne entrante <b>{{ input }}</b> ?",
 		"create": "Créer la chaîne entrante",
 		"create_hint": "Créer une chaîne crééera automatiquement le script <b>.sh</b> ainsi que l'incron pour la capture automatique des documents",
@@ -373,8 +374,10 @@
 		"format": "Format des données",
 		"list": "Factures",
 		"nb_pages": "Nombre de page",
+		"on": "sur",
 		"only_raw_footer": "Contrôle de cohérence du pied de page désactivé",
 		"original_file": "Fichier d'origine",
+		"page": "Page",
 		"register_date": "Enregistré le",
 		"required": "Obligatoire ?",
 		"reset_invoice_list": "Réinitialiser la liste des factures",

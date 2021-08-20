@@ -97,11 +97,18 @@
                     <mat-form-field class="block" *ngIf="field.type == 'select'">
                         <mat-label>{{ field.label | translate }}</mat-label>
                         <mat-select [formControl]="field.control" [(value)]="field.control.value" [required]="field.required">
-                            <mat-option *ngFor="let option of field.values" [value]="option['id']">{{ option['label'] | translate }}</mat-option>
+                            <mat-option *ngFor="let option of field.values" [value]="option['id']">
+                                <span *ngIf="option['label']">
+                                    {{ option['label'] | translate}}
+                                </span>
+                                <span *ngIf="option['name']">
+                                    {{ option['name'] | translate}}
+                                </span>
+                            </mat-option>
                         </mat-select>
                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
                     </mat-form-field>
-                    <mat-slide-toggle *ngIf="field.type == 'boolean'" [formControl]="field.control" class="relative top-4 mb-10">
+                    <mat-slide-toggle *ngIf="field.type == 'boolean'" [formControl]="field.control" class="relative top-4 mb-10 col-span-2">
                         <span class="justify-center">{{ field.label | translate }}</span>
                     </mat-slide-toggle>
                 </ng-container>

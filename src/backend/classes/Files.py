@@ -427,7 +427,7 @@ class Files:
 
         cropped_image = Image.open('/tmp/cropped_' + rand + extension)
         text = ocr.text_builder(cropped_image)
-        isNumber = False
+        is_number = False
         if not text or text == '' or text.isspace():
             self.improve_image_detection('/tmp/cropped_' + rand + extension)
             improved_cropped_image = Image.open('/tmp/cropped_' + rand + '_improved' + extension)
@@ -443,18 +443,18 @@ class Files:
                 last_index = splitted_number[len(splitted_number) - 1]
                 if len(last_index) > 2:
                     text = text.replace('.', '')
-                    isNumber = True
+                    is_number = True
                 else:
                     splitted_number.pop(-1)
                     text = ''.join(splitted_number) + '.' + last_index
-                    isNumber = True
+                    is_number = True
         except (ValueError, SyntaxError, TypeError):
             pass
 
-        if not isNumber:
+        if not is_number:
             for res in re.finditer(r"" + self.Locale.dateRegex + "", text):
-                dateClass = FindDate('', self.Log, self.Locale, self.Config, self, ocr, '', '', '', '', '')
-                date = dateClass.format_date(res.group(), (('', ''), ('', '')), True)
+                date_class = FindDate('', self.Log, self.Locale, self.Config, self, ocr, '', '', '', '', '')
+                date = date_class.format_date(res.group(), (('', ''), ('', '')), True)
                 if date:
                     text = date[0]
         if regex:

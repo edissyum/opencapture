@@ -63,6 +63,14 @@ def update_invoice_position(invoice_id):
     return make_response(res[0], res[1])
 
 
+@bp.route('verifier/invoices/<int:invoice_id>/updatePage', methods=['PUT'])
+@auth.token_required
+def update_invoice_page(invoice_id):
+    data = request.json['args']
+    res = verifier.update_page_by_invoice_id(invoice_id, data)
+    return make_response(res[0], res[1])
+
+
 @bp.route('verifier/invoices/delete/<int:invoice_id>', methods=['DELETE'])
 @auth.token_required
 def delete_invoice(invoice_id):

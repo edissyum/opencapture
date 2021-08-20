@@ -84,12 +84,12 @@ class Database:
             if 'group_by' not in args or args['group_by'] in ['', []]:
                 group_by = ''
             else:
-                group_by = ' GROUP BY ' + str(args['group_by'])
+                group_by = ' GROUP BY ' + ', '.join(args['group_by']) + ' '
 
             if 'data' not in args or args['data'] in ['', []]:
                 args['data'] = []
 
-            query = "SELECT " + select + " FROM " + args['table'] + where + order_by + limit + offset + group_by
+            query = "SELECT " + select + " FROM " + args['table'] + where + group_by + order_by + limit + offset
             c = self.conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
             try:

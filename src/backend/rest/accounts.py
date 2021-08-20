@@ -93,6 +93,14 @@ def update_position(supplier_id):
     return make_response(res[0], res[1])
 
 
+@bp.route('accounts/supplier/<int:supplier_id>/updatePage', methods=['PUT'])
+@auth.token_required
+def update_page(supplier_id):
+    data = request.json['args']
+    res = accounts.update_page_by_supplier_id(supplier_id, data)
+    return make_response(res[0], res[1])
+
+
 @bp.route('accounts/addresses/update/<int:supplier_id>', methods=['PUT'])
 @auth.token_required
 def update_address(supplier_id):

@@ -109,6 +109,34 @@ def update_position_by_supplier_id(supplier_id, data):
             return response, 401
 
 
+def update_page_by_supplier_id(supplier_id, data):
+    _vars = create_classes_from_config()
+    _db = _vars[0]
+    supplier_info, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
+    if error is None:
+        column = ''
+        page = ''
+        for _page in data:
+            print(_page)
+            column = _page
+            page = data[_page]
+        print(supplier_info)
+        print(supplier_info['pages'])
+        supplier_pages = supplier_info['pages']
+        supplier_pages.update({
+            column: page
+        })
+        res, error = accounts.update_supplier({'set': {"pages": json.dumps(supplier_pages)}, 'supplier_id': supplier_id})
+        if error is None:
+            return '', 200
+        else:
+            response = {
+                "errors": gettext('UPDATE_SUPPLIER_PAGES_ERROR'),
+                "message": error
+            }
+            return response, 401
+
+
 def update_address(address_id, data):
     _vars = create_classes_from_config()
     _db = _vars[0]

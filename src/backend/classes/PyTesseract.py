@@ -102,13 +102,3 @@ class PyTesseract:
                 fix, misread = list(child)
                 self.OCRErrorsTable[element.tag][fix.text] = misread.text
 
-    @staticmethod
-    def prepare_ocr_on_fly(position):
-        position = eval(position)
-        position_array = {}
-        position_array.update({'x1': position[0][0]})
-        position_array.update({'y1': position[0][1]})
-        position_array.update({'x2': position[1][0]})
-        position_array.update({'y2': position[1][1]})
-
-        return position_array

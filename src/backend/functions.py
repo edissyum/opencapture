@@ -69,7 +69,7 @@ def search_custom_positions(data, ocr, files, locale, file, config):
     position = data['position']
     target_file = ''
     if position:
-        if 'page' not in data or ('page' in data and data['page'] in ['1', '']):
+        if 'page' not in data or ('page' in data and data['page'] in ['1', '', None]):
             if files.isTiff == 'True':
                 if target == 'footer':
                     target_file = files.tiffName_footer
@@ -106,6 +106,7 @@ def search_custom_positions(data, ocr, files, locale, file, config):
                     files.pdf_to_tiff(file, files.custom_fileName_tiff, False, False, True, target, data['page'])
                     target_file = files.custom_fileName_tiff
                 else:
+                    print(data['page'])
                     files.pdf_to_jpg(file + '[' + str(int(data['page']) - 1) + ']', False, True, target, False, True)
                     target_file = files.custom_fileName
         if regex:
@@ -132,16 +133,14 @@ def search_by_positions(supplier, index, config, locale, ocr, files, target_file
 
 
 def search(position, regex, files, ocr, target_file):
-    position_array = ocr.prepare_ocr_on_fly(position)
-    data = files.ocr_on_fly(target_file, position_array, ocr, None, regex)
-
+    data = files.ocr_on_fly(target_file, eval(position), ocr, None, regex)
     if not data:
         target_file_improved = files.improve_image_detection(target_file)
-        data = files.ocr_on_fly(target_file_improved, position_array, ocr, None, regex)
+        data = files.ocr_on_fly(target_file_improved, eval(position), ocr, None, regex)
         if data:
             return [data.replace('\n', ' '), position]
         else:
-            data = files.ocr_on_fly(target_file_improved, position_array, ocr, None, regex, True)
+            data = files.ocr_on_fly(target_file_improved, eval(position), ocr, None, regex, True)
             if data:
                 return [data.replace('\n', ' '), position]
             return [False, (('', ''), ('', ''))]

@@ -192,6 +192,7 @@
 		"verifier": "Open-Capture verifier"
 	},
 	"INPUT": {
+		"associated_customer": "",
 		"confirm_delete": "",
 		"create": "",
 		"create_hint": "",
@@ -373,8 +374,10 @@
 		"format": "",
 		"list": "Invoices",
 		"nb_pages": "",
+		"on": "",
 		"only_raw_footer": "",
 		"original_file": "",
+		"page": "",
 		"register_date": "",
 		"required": "",
 		"reset_invoice_list": "",

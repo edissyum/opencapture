@@ -57,6 +57,13 @@ export class CreateInputComponent implements OnInit {
             required: true,
         },
         {
+            id: 'customer_id',
+            label: this.translate.instant('INPUT.associated_customer'),
+            type: 'select',
+            control: new FormControl(),
+            required: true,
+        },
+        {
             id: 'purchase_or_sale',
             label: this.translate.instant('INPUT.purchase_or_sale'),
             type: 'select',
@@ -90,14 +97,25 @@ export class CreateInputComponent implements OnInit {
         public translate: TranslateService,
         private notify: NotificationService,
         public serviceSettings: SettingsService,
-        private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localeStorageService: LocalStorageService,
     ) {}
 
     ngOnInit(): void {
         this.serviceSettings.init();
-
+        this.http.get(API_URL + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
+            tap((customers: any) => {
+                this.inputForm.forEach((element: any) => {
+                    if (element.id == 'customer_id') {
+                        element.values = customers.customers
+                    }
+                })
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
         this.http.get(API_URL + '/ws/forms/list', {headers: this.authService.headers}).pipe(
             tap((forms: any) => {
                 this.inputForm.forEach((element: any) => {
@@ -123,7 +141,6 @@ export class CreateInputComponent implements OnInit {
             }
             element.control.markAsTouched();
         });
-
         return state;
     }
 
