@@ -14,10 +14,11 @@
 # along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
+import base64
 
 from flask_babel import gettext
 from ..import_controllers import auth, verifier
-from flask import Blueprint, make_response, request
+from flask import Blueprint, make_response, request, jsonify
 
 bp = Blueprint('verifier', __name__, url_prefix='/ws/')
 
@@ -132,3 +133,11 @@ def ocr_on_fly():
     data = request.json
     result = verifier.ocr_on_the_fly(data['fileName'], data['selection'], data['thumbSize'])
     return make_response({'result': result}, 200)
+
+
+@bp.route('verifier/getThumb', methods=['POST'])
+@auth.token_required
+def get_thumb():
+    data = request.json['args']
+    file_content = verifier.get_file_content(data['path'], data['filename'], 'image/jpeg')
+    return make_response({'file': str(base64.b64encode(file_content.get_data()).decode('UTF-8'))}), 200

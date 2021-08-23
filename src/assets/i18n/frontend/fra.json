@@ -12,6 +12,7 @@
 		"create_customer": "Ajouter un compte client",
 		"create_supplier": "Ajouter un compte fournisseur",
 		"customer_name": "Nom du compte client",
+		"customer_not_specified": "Client non spécifié",
 		"customer_updated": "Compte client mis à jour avec succès",
 		"customers_list": "Liste des comptes clients",
 		"form": "Nom du formulaire",
@@ -315,9 +316,10 @@
 		"list": "Liste des status"
 	},
 	"TYPES": {
-		"char": "Chaine de caractères",
+		"char": "",
 		"date": "Date",
 		"select": "Liste de choix",
+		"text": "Chaine de caractères",
 		"textarea": "Multi lignes"
 	},
 	"UPLOAD": {
@@ -357,6 +359,7 @@
 		"username": "Nom d'utilisateur"
 	},
 	"VERIFIER": {
+		"accounting_plan_empty": "Il n'y a pas de compte de charge lié à ce compte client",
 		"calculated_footer": "Contrôle de cohérence du pied de page activé",
 		"change_form": "Changer de formulaire",
 		"change_form_details": "Les données ne sont pas perdus lors du changement de formulaire",

@@ -21,7 +21,7 @@ export class ConfigService {
         return new Promise((resolve) => {
             this.http.get(API_URL + '/ws/config/readConfig', {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
-                    this.setConfig(data.text)
+                    this.setConfig(data.config)
                     resolve(true);
                 }),
                 catchError((err: any) => {

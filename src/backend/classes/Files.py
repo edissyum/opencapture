@@ -14,7 +14,7 @@
 # along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
-
+import json
 import os
 import re
 import cv2
@@ -552,3 +552,24 @@ class Files:
         today = datetime.date.today()
         uuid_with_date = str(today.year) + str(today.month) + str(today.day) + str(random_number)
         return uuid_with_date
+
+    @staticmethod
+    def reformat_positions(positions):
+        if type(positions) == tuple:
+            x1 = positions[0][0]
+            y1 = positions[0][1]
+            x2 = positions[1][0]
+            y2 = positions[1][1]
+            positions = {
+                'x': x1,
+                'y': y1,
+                'width': x2 - x1,
+                'height': y2 - y1,
+            }
+            return positions
+        else:
+            try:
+                positions = json.loads(positions)
+                return positions
+            except TypeError:
+                return ''

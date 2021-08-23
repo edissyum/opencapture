@@ -117,11 +117,8 @@ def update_page_by_supplier_id(supplier_id, data):
         column = ''
         page = ''
         for _page in data:
-            print(_page)
             column = _page
             page = data[_page]
-        print(supplier_info)
-        print(supplier_info['pages'])
         supplier_pages = supplier_info['pages']
         supplier_pages.update({
             column: page

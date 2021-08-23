@@ -23,7 +23,7 @@ from src.backend.import_process import FindDate, FindFooter, FindInvoiceNumber, 
 from src.backend.import_classes import _Spreadsheet
 
 
-def insert(args, files, config, database, datas, positions, pages, tiff_filename, full_jpg_filename, file, original_file, supplier_id, status):
+def insert(args, files, config, database, datas, positions, pages, tiff_filename, full_jpg_filename, file, original_file, supplier_id, status, nb_pages):
     if files.isTiff == 'True':
         try:
             filename = os.path.splitext(files.custom_fileName_tiff)
@@ -54,7 +54,9 @@ def insert(args, files, config, database, datas, positions, pages, tiff_filename
         'positions': json.dumps(positions),
         'datas': json.dumps(datas),
         'pages': json.dumps(pages),
+        'nb_pages': nb_pages,
         'status': status,
+        'customer_id': 0
     }
 
     input_settings = database.select({
@@ -78,7 +80,7 @@ def insert(args, files, config, database, datas, positions, pages, tiff_filename
                 'customer_id': input_settings[0]['customer_id']
             })
 
-    res = database.insert({
+    database.insert({
         'table': 'invoices',
         'columns': invoice_data
     })
@@ -160,7 +162,6 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
     positions = {}
     # get the number of pages into the PDF documents
     nb_pages = files.get_pages(file, config)
-
     splitted_file = os.path.basename(file).split('_')
     if splitted_file[0] == 'SPLITTER':
         original_file = os.path.basename(file).split('_')
@@ -186,12 +187,16 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
         i += 1
 
     if supplier:
-        print(supplier)
         datas.update({
             'name': supplier[2]['name'],
             'vat_number': supplier[2]['vat_number'],
             'siret': supplier[2]['siret'],
             'siren': supplier[2]['siren'],
+            'address1': supplier[2]['address1'],
+            'address2': supplier[2]['address2'],
+            'postal_code': supplier[2]['postal_code'],
+            'city': supplier[2]['city'],
+            'country': supplier[2]['country'],
         })
 
     if typo:
@@ -249,7 +254,7 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
     if invoice_number:
         datas.update({'invoice_number': invoice_number[0]})
         if invoice_number[1]:
-            positions.update({'invoice_number': invoice_number[1]})
+            positions.update({'invoice_number': files.reformat_positions(invoice_number[1])})
         if invoice_number[2]:
             pages.update({'invoice_number': invoice_number[2]})
 
@@ -266,7 +271,7 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
     if date:
         datas.update({'invoice_date': date[0]})
         if date[1]:
-            positions.update({'invoice_date': date[1]})
+            positions.update({'invoice_date': files.reformat_positions(date[1])})
         if date[2]:
             pages.update({'invoice_date': date[2]})
 
@@ -274,7 +279,7 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
             datas.update({'invoice_due_date': date[3][0]})
             pages.update({'invoice_due_date': date[2]})
             if len(date[3]) > 1:
-                positions.update({'invoice_due_date': date[3][1]})
+                positions.update({'invoice_due_date': files.reformat_positions(date[3][1])})
 
     # Find footer informations (total amount, no rate amount etc..)
     footer_class = FindFooter(ocr, log, locale, config, files, database, supplier, file, ocr.footer_text, typo)
@@ -316,21 +321,21 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
         if footer[0]:
             datas.update({'no_rate_amount': footer[0][0]})
             if len(footer[2]) > 1:
-                positions.update({'no_rate_amount': footer[0][1]})
+                positions.update({'no_rate_amount': files.reformat_positions(footer[0][1])})
         if footer[1]:
             datas.update({'total_ttc': footer[1][0]})
             if len(footer[2]) > 1:
-                positions.update({'total_ttc': footer[1][1]})
+                positions.update({'total_ttc': files.reformat_positions(footer[1][1])})
         if footer[2]:
             datas.update({'vat_rate': footer[2][0]})
             if len(footer[2]) > 1:
-                positions.update({'vat_rate': footer[2][1]})
+                positions.update({'vat_rate': files.reformat_positions(footer[2][1])})
         if footer[3]:
             pages.update({'footer': footer[3]})
         if footer[4]:
             datas.update({'vat_amount': footer[4][0]})
             if len(footer[2]) > 1:
-                positions.update({'vat_amount': footer[4][1]})
+                positions.update({'vat_amount': files.reformat_positions(footer[4][1])})
 
     # Find delivery number
     delivery_number_class = FindDeliveryNumber(ocr, files, log, locale, config, database, supplier, file, typo, ocr.header_text, 1, False)
@@ -343,7 +348,7 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
     if delivery_number:
         datas.update({'delivery_number': delivery_number[0]})
         if delivery_number[1]:
-            positions.update({'delivery_number': delivery_number[1]})
+            positions.update({'delivery_number': files.reformat_positions(delivery_number[1])})
         if delivery_number[2]:
             pages.update({'delivery_number': delivery_number[2]})
 
@@ -358,7 +363,7 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
     if order_number:
         datas.update({'order_number': order_number[0]})
         if order_number[1]:
-            positions.update({'order_number': order_number[1]})
+            positions.update({'order_number': files.reformat_positions(order_number[1])})
         if order_number[2]:
             pages.update({'order_number': order_number[2]})
 
@@ -376,17 +381,9 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
     # If all informations are found, do not send it to GED
     if supplier and supplier[2]['skip_auto_validate'] == 'False' and date and invoice_number and footer and config.cfg['GLOBAL']['allowautomaticvalidation'] == 'True':
         log.info('All the usefull informations are found. Export the XML and end process')
-        insert(args, files, config, database, datas, positions, pages, tiff_filename, full_jpg_filename, file, original_file, supplier[2]['id'], 'END')
-        print(datas)
-        print(positions)
-        print(pages)
-        print(args)
+        insert(args, files, config, database, datas, positions, pages, tiff_filename, full_jpg_filename, file, original_file, supplier[2]['supplier_id'], 'END', nb_pages)
     else:
-        insert(args, files, config, database, datas, positions, pages, tiff_filename, full_jpg_filename, file, original_file, supplier[2]['id'], 'NEW')
-        print(datas)
-        print(positions)
-        print(pages)
-        print(args)
+        insert(args, files, config, database, datas, positions, pages, tiff_filename, full_jpg_filename, file, original_file, supplier[2]['supplier_id'], 'NEW', nb_pages)
         if supplier and supplier[2]['skip_auto_validate'] == 'True':
             log.info('Skip automatic validation for this supplier this time')
             database.update({

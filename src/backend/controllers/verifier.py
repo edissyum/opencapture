@@ -15,13 +15,13 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
-
+import base64
 import os
 import json
 import datetime
 import pandas as pd
 from xml.dom import minidom
-from flask import current_app
+from flask import current_app, Response, jsonify
 from flask_babel import gettext
 import xml.etree.ElementTree as ET
 from src.backend.main import launch
@@ -102,18 +102,21 @@ def retrieve_invoices(args):
         args['where'].append('purchase_or_sale = %s')
         args['data'].append(args['purchaseOrSale'])
 
-    total_invoices = verifier.get_invoices({
-        'select': ['count(DISTINCT(invoices.id)) as total'],
+    total_invoices = verifier.get_total_invoices({
+        'select': ['count(invoices.id) as total'],
         'where': args['where'],
         'data': args['data'],
         'table': args['table'],
         'left_join': args['left_join'],
     })
+
     if total_invoices not in [0, []]:
         invoices_list = verifier.get_invoices(args)
         for invoice in invoices_list:
             if invoice['supplier_id']:
-                invoice['supplier_name'] = accounts.get_supplier_by_id({'supplier_id': invoice['supplier_id']})[0]['name']
+                supplier_info, error = accounts.get_supplier_by_id({'supplier_id': invoice['supplier_id']})
+                if not error:
+                    invoice['supplier_name'] = supplier_info['name']
         response = {
             "total": total_invoices[0]['total'],
             "invoices": invoices_list
@@ -476,3 +479,16 @@ def ocr_on_the_fly(file_name, selection, thumb_size):
         _files.improve_image_detection(path)
         text = _files.ocr_on_fly(path, selection, _Ocr, thumb_size)
         return text
+
+
+def get_file_content(path, filename, mime_type):
+    if mime_type == 'image/jpeg':
+        content = open('src/assets/not_found/document_not_found.jpg', 'rb').read()
+    else:
+        content = open('src/assets/not_found/document_not_found.pdf', 'rb').read()
+
+    if path and filename:
+        full_path = path + '/' + filename
+        if os.path.isfile(full_path):
+            content = open(full_path, 'rb').read()
+    return Response(content, mimetype=mime_type)

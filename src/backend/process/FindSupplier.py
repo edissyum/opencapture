@@ -48,9 +48,10 @@ class FindSupplier:
 
     def search_suplier(self, column, data):
         args = {
-            'select': ['*'],
-            'table': ['accounts_supplier'],
-            'where': ['TRIM(' + column + ') = %s', 'status NOT IN (%s)'],
+            'select': ['accounts_supplier.id as supplier_id', '*'],
+            'table': ['accounts_supplier', 'addresses'],
+            'left_join': ['accounts_supplier.address_id = addresses.id'],
+            'where': ['TRIM(' + column + ') = %s', 'accounts_supplier.status NOT IN (%s)'],
             'data': [data, 'DEL']
         }
         existing_supplier = self.Database.select(args)
@@ -100,7 +101,6 @@ class FindSupplier:
 
     def run(self, retry=False, regenerate_ocr=False, target=None, text_as_string=False):
         supplier = self.process(self.Locale.VATNumberRegex, text_as_string, 'vat_number')
-
         if supplier:
             self.regenerate_ocr()
             self.Log.info('Supplier found : ' + supplier[0]['name'] + ' using VAT Number : ' + supplier[0]['vat_number'])

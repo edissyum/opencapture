@@ -3,7 +3,7 @@
 </div>
 <div class="grid grid-cols-2 overflow-auto mt-2">
     <div class="fixed z-50 text-xl left-6 top-4">
-        <ng-container *ngIf="this.invoice && this.invoice.nb_pages > 1">
+        <ng-container *ngIf="!this.loading && this.invoice && this.invoice.nb_pages > 1">
             <i class="fa fa-arrow-left cursor-pointer" (click)="previousPage()"></i>
             {{ 'VERIFIER.page' | translate }}
             {{ currentPage }}
@@ -13,8 +13,8 @@
         </ng-container>
     </div>
     <div class="overflow-auto" style="height: calc(100vh - 64px) !important; direction: rtl">
-        <div class="image-container px-4">
-            <img id="invoice_image" alt="File" src="assets/imgs/thumb-001.jpg">
+        <div class="image-container px-4" *ngIf="this.invoice">
+            <img id="invoice_image" alt="Open-Capture For Invoices" [src]="this.imgSrc">
         </div>
     </div>
     <div *ngIf="this.fields" class="px-4 overflow-auto" style="height: calc(100vh - 56px) !important">
@@ -128,6 +128,10 @@
                                     </mat-label>
                                     <input [id]="field.id" matInput type="text" [required]="field.required"
                                            [formControl]="field.control" [matAutocomplete]="accounting">
+
+                                    <mat-hint *ngIf="accountingPlanEmpty">
+                                        {{ 'VERIFIER.accounting_plan_empty' | translate }}
+                                    </mat-hint>
                                     <mat-autocomplete #accounting="matAutocomplete">
                                         <mat-option *ngFor="let option of field.values | async" [value]="option.compte_lib" [id]="option.compte_num">
                                             <span [innerHTML]="option.compte_num + ' - ' + option['compte_lib'] | highlight: toHighlight_accounting"></span>

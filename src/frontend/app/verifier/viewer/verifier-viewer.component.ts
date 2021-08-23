@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DomSanitizer, SafeHtml, SafeStyle, SafeScript, SafeUrl, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from "@angular/router";
 import { API_URL } from "../../env";
 import { catchError, map, startWith, tap } from "rxjs/operators";
@@ -32,12 +33,17 @@ export class VerifierViewerComponent implements OnInit {
     settingsOpen        : boolean   = false;
     saveInfo            : boolean   = true;
     ocr_from_user       : boolean   = false;
+    accountingPlanEmpty : boolean   = false;
+    deleteDataOnChangeForm: boolean = true;
     imageInvoice        : any;
+    imgSrc              : any;
+    currentFilename     : string    = '';
     invoiceId           : any;
     invoice             : any;
     fields              : any;
     currentPage         : number    = 1;
     lastLabel           : string    = '';
+    config              : any;
     lastId              : string    = '';
     lastColor           : string    = '';
     ratio               : number    = 0;
@@ -82,6 +88,7 @@ export class VerifierViewerComponent implements OnInit {
         private router: Router,
         private http: HttpClient,
         private route: ActivatedRoute,
+        private sanitizer: DomSanitizer,
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
@@ -91,11 +98,24 @@ export class VerifierViewerComponent implements OnInit {
 
     async ngOnInit(): Promise<void> {
         this.localeStorageService.save('splitter_or_verifier', 'verifier');
-        this.imageInvoice = $('#invoice_image');
-
+        this.ocr_from_user = false;
+        this.saveInfo = true;
+        this.config = this.configService.getConfig();
+        this.invoiceId = this.route.snapshot.params['id'];
+        this.invoice = await this.getInvoice();
+        this.currentFilename = this.invoice.full_jpg_filename;
+        await this.getThumb(this.invoice.path, this.invoice.full_jpg_filename);
+        if (this.invoice.datas['form_id']) this.currentFormFields = await this.getFormById(this.invoice.datas['form_id']);
+        if (Object.keys(this.currentFormFields).length == 0) this.currentFormFields = await this.getForm();
+        this.formList = await this.getAllForm();
+        this.formList = this.formList.forms;
+        this.suppliers = await this.retrieveSuppliers();
+        this.suppliers = this.suppliers.suppliers;
         /*
         * Enable library to draw rectangle on load (OCR ON FLY)
         */
+        this.imageInvoice = $('#invoice_image');
+        this.ratio = this.invoice.img_width / this.imageInvoice.width();
         this.ocr({
             'target' : {
                 'id': '',
@@ -104,21 +124,12 @@ export class VerifierViewerComponent implements OnInit {
                 ]
             }
         }, true);
-        this.ocr_from_user = false;
-        this.saveInfo = true;
-        this.invoiceId = this.route.snapshot.params['id'];
-        this.invoice = await this.getInvoice();
-        this.ratio = this.invoice.img_width / this.imageInvoice.width();
-        if (this.invoice.datas['form_id']) this.currentFormFields = await this.getFormById(this.invoice.datas['form_id']);
-        if (Object.keys(this.currentFormFields).length == 0) this.currentFormFields = await this.getForm();
-        this.formList = await this.getAllForm();
-        this.formList = this.formList.forms;
-        this.suppliers = await this.retrieveSuppliers();
-        this.suppliers = this.suppliers.suppliers;
         if (this.invoice.supplier_id) this.getSupplierInfo(this.invoice.supplier_id, false, true);
         await this.fillForm(this.currentFormFields);
-        await this.drawPositions();
-        this.loading = false;
+        setTimeout(() => {
+            this.drawPositions();
+            this.loading = false;
+        }, 500)
         let triggerEvent = $('.trigger');
         triggerEvent.hide();
         this.filteredOptions = this.supplierNamecontrol.valueChanges
@@ -126,6 +137,23 @@ export class VerifierViewerComponent implements OnInit {
                 startWith(''),
                 map(option => option ? this._filter(option) : this.suppliers.slice())
             );
+    }
+
+
+    async getThumb(path:string, filename:string) {
+        this.http.post(API_URL + '/ws/verifier/getThumb',
+            {'args': {'path': this.config['GLOBAL']['fullpath'], 'filename': filename}},
+            {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.imgSrc = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + data.file);
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+        return this.imgSrc;
     }
 
     private _filter(value: any): string[] {
@@ -146,18 +174,18 @@ export class VerifierViewerComponent implements OnInit {
             for (let cpt in this.currentFormFields.fields[parent]) {
                 let field = this.currentFormFields.fields[parent][cpt];
                 let position = this.getPosition(field.id);
-                let page = this.getPage(field.id)
-                if (position && page == this.currentPage) {
+                let page = this.getPage(field.id);
+                if (position && parseInt(String(page)) == parseInt(String(this.currentPage))) {
                     this.lastId = field.id;
                     this.lastLabel = this.translate.instant(field.label).trim();
                     this.lastColor = field.color;
                     this.disableOCR = true;
                     $('#' + field.id).focus();
                     let newArea = {
-                        x: position.x / this.ratio,
-                        y: position.y / this.ratio,
-                        width: position.width / this.ratio,
-                        height: position.height / this.ratio
+                        x: position.ocr_from_user ? position.x / this.ratio : position.x / this.ratio - ((position.x / this.ratio) * 0.1),
+                        y: position.ocr_from_user ? position.y / this.ratio : position.y / this.ratio - ((position.y / this.ratio) * 0.02),
+                        width: position.ocr_from_user ? position.width / this.ratio : position.width / this.ratio + ((position.width / this.ratio) * 0.05),
+                        height: position.ocr_from_user ? position.height / this.ratio : position.height / this.ratio + ((position.height / this.ratio) * 0.5)
                     };
                     let triggerEvent = $('.trigger');
                     triggerEvent.hide();
@@ -267,6 +295,12 @@ export class VerifierViewerComponent implements OnInit {
                 if (field.id == 'accounting_plan') {
                     let array = await this.retrieveAccountingPlan();
                     array = this.sortArray(array);
+                    console.log(array)
+                    console.log(Object.keys(array).length)
+                    this.accountingPlanEmpty = false;
+                    if (Object.keys(array).length == 0) {
+                        this.accountingPlanEmpty = true;
+                    }
                     this.form[category][cpt].values = this.form[category][cpt].control.valueChanges
                         .pipe(
                             startWith(''),
@@ -380,8 +414,10 @@ export class VerifierViewerComponent implements OnInit {
                     let inputId = $('#select-area-label_' + cpt).attr('class').replace('input_', '').replace('select-none', '');
                     if (inputId) {
                         _this.updateFormValue(inputId, '');
-                        _this.deleteData(inputId);
-                        _this.deletePosition(inputId);
+                        if (_this.deleteDataOnChangeForm) {
+                            _this.deleteData(inputId);
+                            _this.deletePosition(inputId);
+                        }
                     }
                 }
             });
@@ -437,7 +473,7 @@ export class VerifierViewerComponent implements OnInit {
                 this.http.post(API_URL + '/ws/verifier/ocrOnFly',
                     {
                         selection: this.getSelectionByCpt(selection, cpt),
-                        fileName: this.imageInvoice[0].src.replace(/^.*[\\\/]/, ''),
+                        fileName: this.invoice.full_jpg_filename,
                         thumbSize: {width: img.currentTarget.width, height: img.currentTarget.height}
                     }, {headers: this.authService.headers})
                     .pipe(
@@ -486,12 +522,12 @@ export class VerifierViewerComponent implements OnInit {
 
     savePosition(position: any) {
         position = {
+            ocr_from_user: true,
             x: position.x * this.ratio,
             y: position.y * this.ratio,
             height: position.height * this.ratio,
             width: position.width * this.ratio
         }
-
         this.http.put(API_URL + '/ws/accounts/supplier/' + this.invoice.supplier_id + '/updatePosition',
             {'args': {[this.lastId]: position}},
             {headers: this.authService.headers}).pipe(
@@ -826,10 +862,12 @@ export class VerifierViewerComponent implements OnInit {
             if (this.formList[cpt].id == new_form_id) {
                 this.saveData({'form_id': new_form_id});
                 this.currentFormFields = await this.getFormById(new_form_id);
+                this.deleteDataOnChangeForm = false;
                 this.imageInvoice.selectAreas('destroy');
                 this.settingsOpen = false;
                 this.notify.success(this.translate.instant('VERIFIER.form_changed'))
                 await this.ngOnInit();
+                this.deleteDataOnChangeForm = true;
             }
         }
     }
@@ -837,31 +875,28 @@ export class VerifierViewerComponent implements OnInit {
     nextPage() {
         if (this.currentPage < this.invoice.nb_pages) {
             this.currentPage = this.currentPage + 1;
-            this.changeImage(this.currentPage);
+            this.changeImage(this.currentPage, this.currentPage - 1);
         }else {
-            this.changeImage(1);
+            this.changeImage(1, this.invoice.nb_pages);
         }
     }
 
     previousPage() {
         if (this.currentPage > 1) {
             this.currentPage = this.currentPage - 1;
-            this.changeImage(this.currentPage);
+            this.changeImage(this.currentPage, this.currentPage + 1);
         }else {
-            this.changeImage(this.invoice.nb_pages);
+            this.changeImage(this.invoice.nb_pages, this.currentPage);
         }
     }
 
-    changeImage(pageToShow: number) {
+    changeImage(pageToShow: number, oldPage: number) {
         if (pageToShow){
-            let image = $('#invoice_image');
-            let currentSrc = image.attr('src');
-            let filename = currentSrc.replace(/^.*[\\\/]/, '');
-            let fileNameArray = filename.split('.');
-            let onlySrc = currentSrc.substr(0, currentSrc.length - filename.length);
-
-            let newFileName = onlySrc + fileNameArray[0].substr(0, fileNameArray[0].length - 1) + (pageToShow).toString() + '.' + fileNameArray[1];
-            image.attr('src', newFileName);
+            let extension = this.currentFilename.split('.').pop();
+            let old_cpt = ('000' + oldPage).substr(-3);
+            let new_cpt = ('000' + pageToShow).substr(-3);
+            let new_filename = this.currentFilename.replace(old_cpt + '.' + extension, new_cpt + '.' + extension);
+            this.getThumb(this.invoice.path, new_filename);
             this.currentPage = pageToShow;
             for (let parent in this.fields) {
                 for (let cpt in this.currentFormFields.fields[parent]) {
@@ -880,7 +915,6 @@ export class VerifierViewerComponent implements OnInit {
                     }
                 }
             }
-            // this.ocr_process(this.currentFormFields);
         }
     }
 

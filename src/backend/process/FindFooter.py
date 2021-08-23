@@ -44,7 +44,6 @@ class FindFooter:
 
     def process(self, regex, text_as_string):
         array_of_data = {}
-
         if text_as_string and not self.splitted:
             self.text = self.text.split('\n')
             self.splitted = True

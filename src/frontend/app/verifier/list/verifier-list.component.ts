@@ -164,6 +164,17 @@ export class VerifierListComponent implements OnInit {
         this.http.get(API_URL + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 let customers = data.customers;
+                this.TREE_DATA.push({
+                    name: this.translate.instant('ACCOUNTS.customer_not_specified'),
+                    id: 0,
+                    parent_id: '',
+                    supplier_id: '',
+                    purchase_or_sale: '',
+                    display: true,
+                    number: 0,
+                    children: []
+                });
+                this.allowedCustomers.push(0); // 0 is used if for some reasons no customer was recover by OC process
                 customers.forEach((customer: any) => {
                     this.allowedCustomers.push(customer.id);
                     this.TREE_DATA.push({
@@ -191,6 +202,7 @@ export class VerifierListComponent implements OnInit {
         this.invoiceToDeleteSelected = false;
         this.totalChecked = 0;
         this.loading = true;
+        this.invoices = [];
         this.http.post(API_URL + '/ws/verifier/invoices/list',
             {
                 'allowedCustomers': this.allowedCustomers, 'status': this.currentStatus, 'allowedSuppliers': this.allowedSuppliers,
@@ -204,6 +216,7 @@ export class VerifierListComponent implements OnInit {
                     this.total = data.total
                     this.invoices = data.invoices;
                 }
+
                 /*
                 * Starting from here, we fill the customers tree
                 */

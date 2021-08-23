@@ -40,6 +40,7 @@ export class FormBuilderComponent implements OnInit {
     creationMode            : boolean   = true;
     labelType               : any []    = [
         marker('TYPES.char'),
+        marker('TYPES.text'),
         marker('TYPES.textarea'),
         marker('TYPES.date'),
         marker('TYPES.select'),

@@ -12,6 +12,7 @@
 		"create_customer": "",
 		"create_supplier": "",
 		"customer_name": "",
+		"customer_not_specified": "",
 		"customer_updated": "",
 		"customers_list": "",
 		"form": "",
@@ -318,6 +319,7 @@
 		"char": "",
 		"date": "",
 		"select": "",
+		"text": "",
 		"textarea": ""
 	},
 	"UPLOAD": {
@@ -357,6 +359,7 @@
 		"username": "Username"
 	},
 	"VERIFIER": {
+		"accounting_plan_empty": "",
 		"calculated_footer": "",
 		"change_form": "",
 		"change_form_details": "",

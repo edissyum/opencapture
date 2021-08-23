@@ -57,6 +57,23 @@ def get_invoices(args):
     return invoices
 
 
+def get_total_invoices(args):
+    _vars = create_classes_from_config()
+    _db = _vars[0]
+
+    invoices = _db.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['invoices'] if 'table' not in args else args['table'],
+        'left_join': [] if 'left_join' not in args else args['left_join'],
+        'where': ['1 = %s'] if 'where' not in args else args['where'],
+        'data': ['1'] if 'data' not in args else args['data'],
+        'limit': str(args['limit']) if 'limit' in args else [],
+        'offset': str(args['offset']) if 'offset' in args else [],
+    })
+
+    return invoices
+
+
 def update_invoice(args):
     _vars = create_classes_from_config()
     _db = _vars[0]

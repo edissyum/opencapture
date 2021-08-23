@@ -14,7 +14,7 @@
 # along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
-
+import json
 import os
 from .classes.Config import Config as _Config
 
@@ -106,7 +106,6 @@ def search_custom_positions(data, ocr, files, locale, file, config):
                     files.pdf_to_tiff(file, files.custom_fileName_tiff, False, False, True, target, data['page'])
                     target_file = files.custom_fileName_tiff
                 else:
-                    print(data['page'])
                     files.pdf_to_jpg(file + '[' + str(int(data['page']) - 1) + ']', False, True, target, False, True)
                     target_file = files.custom_fileName
         if regex:
@@ -133,14 +132,14 @@ def search_by_positions(supplier, index, config, locale, ocr, files, target_file
 
 
 def search(position, regex, files, ocr, target_file):
-    data = files.ocr_on_fly(target_file, eval(position), ocr, None, regex)
+    data = files.ocr_on_fly(target_file, json.loads(position), ocr, None, regex)
     if not data:
         target_file_improved = files.improve_image_detection(target_file)
-        data = files.ocr_on_fly(target_file_improved, eval(position), ocr, None, regex)
+        data = files.ocr_on_fly(target_file_improved, json.loads(position), ocr, None, regex)
         if data:
             return [data.replace('\n', ' '), position]
         else:
-            data = files.ocr_on_fly(target_file_improved, eval(position), ocr, None, regex, True)
+            data = files.ocr_on_fly(target_file_improved, json.loads(position), ocr, None, regex, True)
             if data:
                 return [data.replace('\n', ' '), position]
             return [False, (('', ''), ('', ''))]
