@@ -213,12 +213,12 @@ def get_accounting_plan_by_customer_id(args):
     return accounting_plan, error
 
 
-def get_default_accounting_plan(args):
+def get_default_accounting_plan():
     _vars = create_classes_from_config()
     _db = _vars[0]
     error = None
     accounting_plan = _db.select({
-        'select': ['*'] if 'select' not in args else args['select'],
+        'select': ['*'],
         'table': ['accounting_plan'],
         'where': ['customer_id = %s'],
         'data': [None]

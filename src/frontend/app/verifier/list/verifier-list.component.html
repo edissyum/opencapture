@@ -19,14 +19,19 @@
                     {{node.number}}
                 </span>
             </mat-tree-node>
-            <mat-tree-node style="min-height: 24px" class="parent cursor-pointer hover:bg-black hover:bg-opacity-10" *matTreeNodeDef="let node;when: hasChild; when:isNotLevelOne" matTreeNodeToggle>
-                <button mat-icon-button>
+            <mat-tree-node style="min-height: 24px" class="parent cursor-pointer hover:bg-black hover:bg-opacity-10"
+                           *matTreeNodeDef="let node;when: hasChild; when:isNotLevelOne" matTreeNodeToggle>
+                <button mat-icon-button [class.hidden]="node.number == 0 && node.id == 0">
                     <mat-icon class="mat-icon-rtl-mirror text-gray-900">
                         {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
                     </mat-icon>
                 </button>
-                <span class="select-none" [class.pointer-events-none]="node.number == 0">{{node.name}}</span>
-                <span *ngIf="!treeControl.isExpanded(node)" class="float-right ml-auto select-none mr-4 bg-green-400 rounded-full px-1.5 py-0.5 text-center text-xs text-white">
+                <span class="select-none" [class.pointer-events-none]="node.number == 0"
+                      [class.hidden]="node.number == 0 && node.id == 0">
+                    {{node.name}}
+                </span>
+                <span *ngIf="!treeControl.isExpanded(node)" [class.hidden]="node.number == 0 && node.id == 0"
+                      class="float-right ml-auto select-none mr-4 bg-green-400 rounded-full px-1.5 py-0.5 text-center text-xs text-white">
                     {{node.number}}
                 </span>
             </mat-tree-node>
@@ -80,8 +85,8 @@
                         <div class="list grid grid-cols-4 grid-flow-row gap-12">
                             <mat-card *ngFor="let invoice of this.invoices;" class="cursor-pointer">
                                 <input id="{{ invoice.id }}_checkbox" class="checkBox_list absolute z-40 cursor-pointer" type="checkbox" (click)="checkCheckedInvoices()"/>
-                                <img [routerLink]="'/verifier/viewer/'+ invoice.id"  mat-card-image class="p-3.5 m-auto" src="assets/imgs/thumb-001.jpg">
-                                <mat-card-header class="leading-6" [routerLink]="'/verifier/viewer/'+ invoice.id" >
+                                <img [routerLink]="'/verifier/viewer/'+ invoice.id"  mat-card-image class="m-auto" [src]="invoice.thumb">
+                                <mat-card-header class="leading-6" [routerLink]="'/verifier/viewer/'+ invoice.id">
                                     <mat-card-title>
                                         <span>{{ invoice.supplier_name }}</span>
                                         <span class="absolute right-6 text-green-400 text-base badge badge-secondary badge-pill"

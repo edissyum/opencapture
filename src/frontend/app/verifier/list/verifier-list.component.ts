@@ -15,6 +15,8 @@ import { MatTreeFlatDataSource, MatTreeFlattener } from "@angular/material/tree"
 import { UserService } from "../../../services/user.service";
 import {ConfirmDialogComponent} from "../../../services/confirm-dialog/confirm-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
+import {DomSanitizer} from "@angular/platform-browser";
+import {ConfigService} from "../../../services/config.service";
 declare var $: any;
 
 interface accountsNode {
@@ -50,10 +52,11 @@ interface flatNode {
     ]
 })
 export class VerifierListComponent implements OnInit {
-    loading         : boolean           = true
-    status          : any[]             = []
-    currentStatus   : string            = 'NEW'
-    currentTime     : string            = 'today'
+    loading         : boolean           = true;
+    status          : any[]             = [];
+    config          : any;
+    currentStatus   : string            = 'NEW';
+    currentTime     : string            = 'today';
     batchList       : any[]             = [
         {
             'id': 'today',
@@ -67,7 +70,7 @@ export class VerifierListComponent implements OnInit {
             'id': 'older',
             'label': marker('BATCH.older'),
         }
-    ]
+    ];
     pageSize        : number            = 16;
     pageIndex       : number            = 0;
     pageSizeOptions : any []            = [4, 8, 16, 24, 48];
@@ -80,9 +83,9 @@ export class VerifierListComponent implements OnInit {
     purchaseOrSale  : string            = '';
     search          : string            = '';
     TREE_DATA       : accountsNode[]    = [];
-    expanded        : boolean           = false
-    invoiceToDeleteSelected : boolean   = false
-    totalChecked    : number            = 0
+    expanded        : boolean           = false;
+    invoiceToDeleteSelected : boolean   = false;
+    totalChecked    : number            = 0;
 
     private _transformer = (node: accountsNode, level: number) => {
         return {
@@ -110,10 +113,12 @@ export class VerifierListComponent implements OnInit {
     constructor(
         private http: HttpClient,
         private dialog: MatDialog,
+        private sanitizer: DomSanitizer,
         private authService: AuthService,
         private userService: UserService,
         public translate: TranslateService,
         private notify: NotificationService,
+        private configService: ConfigService,
         private routerExtService: LastUrlService,
         private localeStorageService: LocalStorageService
     ) {}
@@ -131,6 +136,7 @@ export class VerifierListComponent implements OnInit {
         marker('VERIFIER.select_all') // Needed to get the translation in the JSON file
         marker('VERIFIER.unselect_all') // Needed to get the translation in the JSON file
 
+        this.config = this.configService.getConfig();
         this.localeStorageService.save('splitter_or_verifier', 'verifier')
         let lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('verifier/') && !lastUrl.includes('settings') || lastUrl == '/' || lastUrl == '/upload') {
@@ -157,6 +163,9 @@ export class VerifierListComponent implements OnInit {
             })
         ).subscribe();
         this.loadCustomers();
+        this.invoices.forEach((invoice: any) => {
+            console.log(invoice);
+        })
     }
 
     loadCustomers() {
@@ -215,6 +224,10 @@ export class VerifierListComponent implements OnInit {
                 if (data) {
                     this.total = data.total
                     this.invoices = data.invoices;
+                    this.invoices.forEach((invoice: any) => {
+                        invoice.thumb = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + invoice.thumb);
+                        // this.getThumb(invoice)
+                    })
                 }
 
                 /*
@@ -226,9 +239,9 @@ export class VerifierListComponent implements OnInit {
                 this.allowedCustomers.forEach((customer: any) => {
                     this.invoices.forEach((invoice:any) => {
                         if (invoice.purchase_or_sale == 'purchase' && !customersPurchaseToKeep.includes(customer))
-                            customersPurchaseToKeep.push(customer)
+                            customersPurchaseToKeep.push(customer);
                         if (invoice.purchase_or_sale == 'sale' && !customersSaleToKeep.includes(customer))
-                            customersSaleToKeep.push(customer)
+                            customersSaleToKeep.push(customer);
                     })
                 });
 
@@ -285,6 +298,22 @@ export class VerifierListComponent implements OnInit {
             })
         ).subscribe();
     }
+
+    // async getThumb(invoice: any) {
+    //     this.http.post(API_URL + '/ws/verifier/getThumb',
+    //         {'args': {'path': this.config['GLOBAL']['fullpath'], 'filename': invoice.full_jpg_filename}},
+    //         {headers: this.authService.headers}).pipe(
+    //         tap((data: any) => {
+    //             console.log('here');
+    //             invoice.thumb = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + data.file);
+    //         }),
+    //         catchError((err: any) => {
+    //             console.debug(err);
+    //             this.notify.handleErrors(err);
+    //             return of(false);
+    //         })
+    //     ).subscribe();
+    // }
 
     fillChildren(parent_id: any , parent: any, child_name: any, supplier_name: any, supplier_id: any, id: any, purchase_or_sale: any) {
         let child_name_exists = false;

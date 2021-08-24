@@ -57,6 +57,8 @@ def get_invoice_by_id(invoice_id):
 
 
 def retrieve_invoices(args):
+    _vars = create_classes_from_config()
+    _cfg = _vars[1]
     if 'where' not in args:
         args['where'] = []
     if 'data' not in args:
@@ -113,6 +115,8 @@ def retrieve_invoices(args):
     if total_invoices not in [0, []]:
         invoices_list = verifier.get_invoices(args)
         for invoice in invoices_list:
+            thumb = get_file_content(_cfg.cfg['GLOBAL']['fullpath'], invoice['full_jpg_filename'], 'image/jpeg')
+            invoice['thumb'] = str(base64.b64encode(thumb.get_data()).decode('UTF-8'))
             if invoice['supplier_id']:
                 supplier_info, error = accounts.get_supplier_by_id({'supplier_id': invoice['supplier_id']})
                 if not error:

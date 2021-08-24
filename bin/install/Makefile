@@ -105,6 +105,13 @@ su -c "cat > /etc/apache2/sites-available/opencapture.conf << EOF
 EOF"
 
 ####################
+# Disable default Apache2 configuration
+# Enable OpenCapture configuration
+# And restart Apache
+a2ensite opencapture.conf
+systemctl restart apache2
+
+####################
 # Setting up the WSGI path
 sed -i "s#§§PATH§§#$defaultPath#g" "$defaultPath"/wsgi.py
 

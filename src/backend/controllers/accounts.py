@@ -261,8 +261,8 @@ def get_accounting_plan_by_customer_id(customer_id):
         return response, 401
 
 
-def get_default_accounting_plan(customer_id):
-    accounting_plan, error = accounts.get_default_accounting_plan({'customer_id': customer_id})
+def get_default_accounting_plan():
+    accounting_plan, error = accounts.get_default_accounting_plan()
     return accounting_plan, 200
 
 

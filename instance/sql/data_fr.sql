@@ -132,12 +132,12 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
 }');
 ALTER SEQUENCE "outputs_types_id_seq" RESTART WITH 3;
 
-INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data") VALUES (1, 'export_xml', 'Export XML par défaut');
-INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data") VALUES (2, 'export_maarch', 'Export Maarch par défaut');
+INSERT INTO "outputs" ("id", "output_type_id", "output_label") VALUES (1, 'export_xml', 'Export XML par défaut');
+INSERT INTO "outputs" ("id", "output_type_id", "output_label") VALUES (2, 'export_maarch', 'Export Maarch par défaut');
 ALTER SEQUENCE "outputs_id_seq" RESTART WITH 3;
 
 -- CRÉATION DES CHAINES ENTRANTES
-INSERT INTO "inputs" ("id", "input_id", "input_label", "default_form_id", "input_folder") VALUES (1, 'default_input', 'Chaîne entrante par défaut', 1, '/var/share/entrant/')
+INSERT INTO "inputs" ("id", "input_id", "input_label", "default_form_id", "input_folder") VALUES (1, 'default_input', 'Chaîne entrante par défaut', 1, '/var/share/entrant/');
 ALTER SEQUENCE "inputs_id_seq" RESTART WITH 2;
 
 -- CRÉATION DES PRIVILEGES
@@ -186,7 +186,7 @@ ALTER SEQUENCE "form_models_field_id_seq" RESTART WITH 2;
 -- CRÉATION DE L'UTILISATEUR superadmin
 INSERT INTO "users" ("username","firstname", "lastname","password", "role") VALUES ('admin', 'Super', 'ADMIN', 'pbkdf2:sha256:150000$7c8waI7f$c0891ac8e18990db0786d4a49aea8bf7c1ad82796dccd8ae35c12ace7d8ee403', 1);
 
--- CRÉATION DES COMPTE DE CHARGE PAR DÉFAUT
+-- CRÉATION DES COMPTES DE CHARGE PAR DÉFAUT
 INSERT INTO accounting_plan (compte_num, compte_lib) VALUES ('1020 0000', 'Provisions pour travaux décidés');
 INSERT INTO accounting_plan (compte_num, compte_lib) VALUES ('1031 0001', 'Avances de trésorerie');
 INSERT INTO accounting_plan (compte_num, compte_lib) VALUES ('1032 0000', 'Avances travaux');

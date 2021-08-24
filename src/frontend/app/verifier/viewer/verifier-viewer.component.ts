@@ -79,7 +79,6 @@ export class VerifierViewerComponent implements OnInit {
     suppliers           : any       = []
     filteredOptions     : Observable<any> | undefined;
     get_only_raw_footer : boolean   = false;
-    oldValue            : string    = '';
     toHighlight         : string    = '';
     supplierNamecontrol = new FormControl();
     toHighlight_accounting : string    = '';
@@ -104,7 +103,7 @@ export class VerifierViewerComponent implements OnInit {
         this.invoiceId = this.route.snapshot.params['id'];
         this.invoice = await this.getInvoice();
         this.currentFilename = this.invoice.full_jpg_filename;
-        await this.getThumb(this.invoice.path, this.invoice.full_jpg_filename);
+        await this.getThumb(this.invoice.full_jpg_filename);
         if (this.invoice.datas['form_id']) this.currentFormFields = await this.getFormById(this.invoice.datas['form_id']);
         if (Object.keys(this.currentFormFields).length == 0) this.currentFormFields = await this.getForm();
         this.formList = await this.getAllForm();
@@ -139,7 +138,7 @@ export class VerifierViewerComponent implements OnInit {
             );
     }
 
-    async getThumb(path:string, filename:string) {
+    async getThumb(filename:string) {
         this.http.post(API_URL + '/ws/verifier/getThumb',
             {'args': {'path': this.config['GLOBAL']['fullpath'], 'filename': filename}},
             {headers: this.authService.headers}).pipe(
@@ -343,7 +342,7 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     async retrieveDefaultAccountingPlan() {
-        return await this.http.get(API_URL + '/ws/accounts/customers/getDefaultAccountingPlan/' + this.invoice.customer_id, {headers: this.authService.headers}).toPromise();
+        return await this.http.get(API_URL + '/ws/accounts/customers/getDefaultAccountingPlan', {headers: this.authService.headers}).toPromise();
     }
 
     findChildren(parent_id: any, parent: any, category_id: any) {
@@ -582,13 +581,14 @@ export class VerifierViewerComponent implements OnInit {
         if (data) {
             if (field_id) {
                 let field = this.getField(field_id);
-                if (field.control.errors || this.oldValue == data) return false;
+                if (field.control.errors || this.invoice.datas[field_id] == data) return false;
                 data = {[field_id]: data};
             }
             this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/updateData',
                 {'args': data},
                 {headers: this.authService.headers}).pipe(
                 tap(() => {
+                    this.invoice.datas[field_id] = data;
                     if (show_notif) this.notify.success(this.translate.instant('INVOICES.position_and_data_updated', {"input": this.lastLabel}));
                 }),
                 catchError((err: any) => {
@@ -898,7 +898,7 @@ export class VerifierViewerComponent implements OnInit {
             let old_cpt = ('000' + oldPage).substr(-3);
             let new_cpt = ('000' + pageToShow).substr(-3);
             let new_filename = this.currentFilename.replace(old_cpt + '.' + extension, new_cpt + '.' + extension);
-            this.getThumb(this.invoice.path, new_filename);
+            this.getThumb(new_filename);
             this.currentPage = pageToShow;
             for (let parent in this.fields) {
                 for (let cpt in this.currentFormFields.fields[parent]) {

@@ -28,7 +28,7 @@ export class CreateSupplierComponent implements OnInit {
             id: 'get_only_raw_footer',
             label: marker('ACCOUNTS.get_only_raw_footer'),
             type: 'mat-slide-toggle',
-            control: new FormControl(),
+            control: new FormControl(true),
             required: true,
         },
         {

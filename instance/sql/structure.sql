@@ -15,7 +15,7 @@ CREATE TABLE "form_models" (
     "label"         VARCHAR(50),
     "default_form"  BOOLEAN DEFAULT false,
     "enabled"       BOOLEAN DEFAULT true,
-    "outputs"       TEXT[] DEFAULT {'export_xml'},
+    "outputs"       TEXT[] DEFAULT ARRAY['export_xml'::text],
     "status"        VARCHAR(5) DEFAULT 'OK'
 );
 
@@ -124,7 +124,6 @@ CREATE TABLE "accounts_customer" (
     "siret"           VARCHAR(20),
     "siren"           VARCHAR(20),
     "company_number"  VARCHAR(10),
-    "accounting_plan" INTEGER,
     "address_id"      INTEGER,
     "status"          VARCHAR(3) DEFAULT 'OK',
     "creation_date"   TIMESTAMP DEFAULT (CURRENT_TIMESTAMP)
@@ -137,7 +136,7 @@ CREATE TABLE "accounting_plan" (
     "journal_lib"   VARCHAR(10),
     "ecriture_num"  INTEGER,
     "ecriture_date" TIMESTAMP,
-    "compte_num"    INTEGER,
+    "compte_num"    VARCHAR(20),
     "compte_lib"    VARCHAR,
     "comp_aux_num"  VARCHAR,
     "comp_aux_lib"  VARCHAR,
