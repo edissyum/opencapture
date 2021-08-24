@@ -248,17 +248,8 @@ def get_customer_by_id(customer_id):
 
 
 def get_accounting_plan_by_customer_id(customer_id):
-    customer_info, error = accounts.get_customer_by_id({'customer_id': customer_id})
-
-    if error is None:
-        accounting_plan, error = accounts.get_accounting_plan_by_customer_id({'customer_id': customer_id})
-        return accounting_plan, 200
-    else:
-        response = {
-            "errors": gettext('GET_ACCOUNTING_PLAN_BY_CUSTOMER_ID_ERROR'),
-            "message": error
-        }
-        return response, 401
+    accounting_plan, error = accounts.get_accounting_plan_by_customer_id({'customer_id': customer_id})
+    return accounting_plan, 200
 
 
 def get_default_accounting_plan():

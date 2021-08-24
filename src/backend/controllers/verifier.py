@@ -486,13 +486,19 @@ def ocr_on_the_fly(file_name, selection, thumb_size):
 
 
 def get_file_content(path, filename, mime_type):
-    if mime_type == 'image/jpeg':
-        content = open('src/assets/not_found/document_not_found.jpg', 'rb').read()
-    else:
-        content = open('src/assets/not_found/document_not_found.pdf', 'rb').read()
+    _vars = create_classes_from_config()
+    _cfg = _vars[1].cfg
+    content = False
 
     if path and filename:
         full_path = path + '/' + filename
         if os.path.isfile(full_path):
             content = open(full_path, 'rb').read()
+
+    if not content:
+        if mime_type == 'image/jpeg':
+            content = open(_cfg['GLOBAL']['projectpath'] + '/dist/assets/not_found/document_not_found.jpg', 'rb').read()
+        else:
+            content = open(_cfg['GLOBAL']['projectpath'] + '/dist/assets/not_found/document_not_found.pdf', 'rb').read()
+
     return Response(content, mimetype=mime_type)

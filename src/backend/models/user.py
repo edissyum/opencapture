@@ -77,9 +77,6 @@ def get_users(args):
         'offset': str(args['offset']) if 'offset' in args else [],
     })
 
-    if not users:
-        error = gettext('NO_USERS')
-
     return users, error
 
 

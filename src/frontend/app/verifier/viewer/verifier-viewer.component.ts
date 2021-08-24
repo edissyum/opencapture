@@ -815,35 +815,38 @@ export class VerifierViewerComponent implements OnInit {
          */
         this.http.get(API_URL + '/ws/forms/getById/' + form_id, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                let outputs = data.outputs;
                 let outputs_label: any[] = [];
-                outputs.forEach((output_id: any, cpt: number) => {
-                    this.http.get(API_URL + '/ws/outputs/getById/' + output_id, {headers: this.authService.headers}).pipe(
-                        tap((data: any) => {
-                            outputs_label.push(data.output_label);
-                            this.http.post(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/' + data.output_type_id, {'args': data.data},{headers: this.authService.headers}).pipe(
-                                tap(() => {
-                                    /* Actions à effectuer après le traitement des chaînes sortantes */
-                                    if (cpt + 1 == outputs.length) {
-                                        // this.updateInvoice({'status': 'END', 'locked': false, 'locked_by': null});
-                                        // this.router.navigate(['/verifier']);
-                                        this.notify.success(this.translate.instant('VERIFIER.form_validated_and_output_done', {outputs: outputs_label.join('<br>')}));
-                                    }
-                                }),
-                                catchError((err: any) => {
-                                    console.debug(err);
-                                    this.notify.handleErrors(err);
-                                    return of(false);
-                                })
-                            ).subscribe();
-                        }),
-                        catchError((err: any) => {
-                            console.debug(err);
-                            this.notify.handleErrors(err);
-                            return of(false);
-                        })
-                    ).subscribe();
-                });
+                if (data.outputs.length != 0) {
+                    data.outputs.forEach((output_id: any, cpt: number) => {
+                        this.http.get(API_URL + '/ws/outputs/getById/' + output_id, {headers: this.authService.headers}).pipe(
+                            tap((data: any) => {
+                                outputs_label.push(data.output_label);
+                                this.http.post(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/' + data.output_type_id, {'args': data.data},{headers: this.authService.headers}).pipe(
+                                    tap(() => {
+                                        /* Actions à effectuer après le traitement des chaînes sortantes */
+                                        if (cpt + 1 == data.outputs.length) {
+                                            this.updateInvoice({'status': 'END', 'locked': false, 'locked_by': null});
+                                            this.router.navigate(['/verifier']);
+                                            this.notify.success(this.translate.instant('VERIFIER.form_validated_and_output_done', {outputs: outputs_label.join('<br>')}));
+                                        }
+                                    }),
+                                    catchError((err: any) => {
+                                        console.debug(err);
+                                        this.notify.handleErrors(err);
+                                        return of(false);
+                                    })
+                                ).subscribe();
+                            }),
+                            catchError((err: any) => {
+                                console.debug(err);
+                                this.notify.handleErrors(err);
+                                return of(false);
+                            })
+                        ).subscribe();
+                    });
+                }else {
+                    this.notify.error(this.translate.instant('VERIFIER.no_outputs_for_this_form', {'form': data.label}));
+                }
             }),
             catchError((err: any) => {
                 console.debug(err);
@@ -919,5 +922,4 @@ export class VerifierViewerComponent implements OnInit {
             }
         }
     }
-
 }

@@ -378,6 +378,7 @@
 		"format": "Format des données",
 		"list": "Factures",
 		"nb_pages": "Nombre de page",
+		"no_outputs_for_this_form": "Aucune chaîne sortante n'est configurée pour le formulaire <b>{{ form }}</b>",
 		"on": "sur",
 		"only_raw_footer": "Contrôle de cohérence du pied de page désactivé",
 		"original_file": "Fichier d'origine",

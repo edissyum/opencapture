@@ -163,9 +163,6 @@ export class VerifierListComponent implements OnInit {
             })
         ).subscribe();
         this.loadCustomers();
-        this.invoices.forEach((invoice: any) => {
-            console.log(invoice);
-        })
     }
 
     loadCustomers() {
@@ -298,22 +295,6 @@ export class VerifierListComponent implements OnInit {
             })
         ).subscribe();
     }
-
-    // async getThumb(invoice: any) {
-    //     this.http.post(API_URL + '/ws/verifier/getThumb',
-    //         {'args': {'path': this.config['GLOBAL']['fullpath'], 'filename': invoice.full_jpg_filename}},
-    //         {headers: this.authService.headers}).pipe(
-    //         tap((data: any) => {
-    //             console.log('here');
-    //             invoice.thumb = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + data.file);
-    //         }),
-    //         catchError((err: any) => {
-    //             console.debug(err);
-    //             this.notify.handleErrors(err);
-    //             return of(false);
-    //         })
-    //     ).subscribe();
-    // }
 
     fillChildren(parent_id: any , parent: any, child_name: any, supplier_name: any, supplier_id: any, id: any, purchase_or_sale: any) {
         let child_name_exists = false;

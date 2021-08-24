@@ -220,10 +220,8 @@ def get_default_accounting_plan():
     accounting_plan = _db.select({
         'select': ['*'],
         'table': ['accounting_plan'],
-        'where': ['customer_id = %s'],
-        'data': [None]
+        'where': ['customer_id is NULL'],
     })
-    print(accounting_plan)
     if not accounting_plan:
         error = gettext('GET_CUSTOMER_BY_ID_ERROR')
 

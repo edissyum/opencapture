@@ -36,17 +36,11 @@ def create_user(args):
 
 def get_users(args):
     users, error = user.get_users(args)
-    if users:
-        response = {
-            "users": users
-        }
-        return response, 200
-    else:
-        response = {
-            "errors": gettext("RETRIEVES_USERS_ERROR"),
-            "message": error
-        }
-        return response, 401
+
+    response = {
+        "users": users
+    }
+    return response, 200
 
 
 def get_user_by_id(user_id, get_password=False):
