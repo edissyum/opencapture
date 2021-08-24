@@ -157,6 +157,7 @@ CREATE TABLE "invoices" (
     "form_id"               INTEGER DEFAULT null,
     "purchase_or_sale"      VARCHAR(8) DEFAULT 'purchase',
     "filename"              VARCHAR NOT NULL,
+    "original_filename"     VARCHAR(255),
     "path"                  VARCHAR NOT NULL,
     "status"                VARCHAR(20) NOT NULL DEFAULT 'NEW',
     "full_jpg_filename"     VARCHAR,

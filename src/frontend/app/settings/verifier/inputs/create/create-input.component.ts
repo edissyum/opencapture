@@ -7,9 +7,7 @@ import {AuthService} from "../../../../../services/auth.service";
 import {TranslateService} from "@ngx-translate/core";
 import {NotificationService} from "../../../../../services/notifications/notifications.service";
 import {SettingsService} from "../../../../../services/settings.service";
-import {LastUrlService} from "../../../../../services/last-url.service";
 import {PrivilegesService} from "../../../../../services/privileges.service";
-import {LocalStorageService} from "../../../../../services/local-storage.service";
 import {FormControl} from "@angular/forms";
 import {API_URL} from "../../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
@@ -107,6 +105,9 @@ export class CreateInputComponent implements OnInit {
                 this.inputForm.forEach((element: any) => {
                     if (element.id == 'customer_id') {
                         element.values = customers.customers
+                        if (customers.customers.length == 1) {
+                            element.control.setValue(customers.customers[0].id)
+                        }
                     }
                 })
             }),
@@ -121,6 +122,9 @@ export class CreateInputComponent implements OnInit {
                 this.inputForm.forEach((element: any) => {
                     if (element.id == 'default_form_id') {
                         element.values = forms.forms;
+                        if (forms.forms.length == 1) {
+                            element.control.setValue(forms.forms[0].id)
+                        }
                     }
                 })
             }),
