@@ -114,7 +114,7 @@ class FindFooter:
             if self.target == 'full':
                 page = self.nbPage
 
-            data = {'position': position[column + 'position'], 'regex': None, 'target': 'full', 'page': page}
+            data = {'position': position[column + '_position'], 'regex': None, 'target': 'full', 'page': page}
             text, position = search_custom_positions(data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
             if text:
                 try:
