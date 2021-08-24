@@ -57,7 +57,7 @@
                     <div class="verifier-list grid grid-cols-3 grid-flow-row gap-0 mt-4 z-30">
                         <mat-form-field class="left-4 w-1/2" appearance="outline">
                             <mat-label>{{ 'VERIFIER.search' | translate }}</mat-label>
-                            <input matInput type="text" (keyup)="searchInvoice($event)">
+                            <input matInput type="text" [(ngModel)]="search" (keyup)="searchInvoice($event)">
                         </mat-form-field>
                         <mat-form-field class="w-1/2 m-auto" appearance="outline">
                             <mat-label>{{ 'STATUS.list' | translate }}</mat-label>
@@ -100,7 +100,7 @@
                                         {{ 'FACTURATION.invoice_number' | translate }} : {{ invoice.datas.invoice_number }}<br>
                                         {{ 'FACTURATION.invoice_date' | translate }} : {{ invoice.datas.invoice_date }}<br>
                                         {{ 'VERIFIER.register_date' | translate }} : {{ invoice.date }}<br>
-                                        {{ 'VERIFIER.original_file' | translate }} : {{ invoice.filename }}
+                                        {{ 'VERIFIER.original_file' | translate }} : {{ invoice.original_filename }}
                                     </mat-card-subtitle>
                                 </mat-card-header>
                                 <mat-card-actions>

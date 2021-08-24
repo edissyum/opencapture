@@ -27,7 +27,7 @@ bp = Blueprint('dashboard', __name__)
 
 def change_locale_in_config(lang):
     _vars = create_classes_from_config()
-    config_file = _vars[1]
+    config_file = _vars[7]
     languages = current_app.config['LANGUAGES']
     parser = configparser.ConfigParser()
 
@@ -35,7 +35,6 @@ def change_locale_in_config(lang):
     for _l in languages:
         if lang == languages[_l]['lang_code']:
             language = languages[_l]
-
     parser.read(config_file)
     parser.set('LOCALE', 'locale', language['lang_code'])
     parser.set('LOCALE', 'localeocr', language['lang_code'])

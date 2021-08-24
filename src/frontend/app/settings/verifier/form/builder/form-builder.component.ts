@@ -560,12 +560,12 @@ export class FormBuilderComponent implements OnInit {
     ngOnInit(): void {
         this.serviceSettings.init();
         this.formId = this.route.snapshot.params['id'];
-        if (this.formId) {
-            this.creationMode = false;
+        this.creationMode = false;
 
-            this.http.get(API_URL + '/ws/outputs/list', {headers: this.authService.headers}).pipe(
-                tap((data: any) => {
-                    this.outputs = data.outputs;
+        this.http.get(API_URL + '/ws/outputs/list', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.outputs = data.outputs;
+                if (this.formId) {
                     this.http.get(API_URL + '/ws/forms/getById/' + this.formId, {headers: this.authService.headers}).pipe(
                         tap((data: any) => {
                             for (let field in this.form) {
@@ -591,47 +591,48 @@ export class FormBuilderComponent implements OnInit {
                             return of(false);
                         })
                     ).subscribe();
-                }),catchError((err: any) => {
-                    console.debug(err);
-                    this.notify.handleErrors(err);
-                    return of(false);
-                })
-            ).subscribe();
+                }
+            }),catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
 
-            this.http.get(API_URL + '/ws/customFields/list', {headers: this.authService.headers}).pipe(
-                tap((data: any) => {
-                    if (data.customFields) {
-                        for (let field in data.customFields) {
-                            if (data.customFields.hasOwnProperty(field)) {
-                                if(data.customFields[field].module == 'verifier') {
-                                    for (let parent in this.availableFieldsParent) {
-                                        if(this.availableFieldsParent[parent].id == 'custom_fields') {
-                                            this.availableFieldsParent[parent].values.push(
-                                                {
-                                                    id: 'custom_' + data.customFields[field].id,
-                                                    label: data.customFields[field].label,
-                                                    unit: 'custom',
-                                                    type: data.customFields[field].type,
-                                                    format: data.customFields[field].type,
-                                                    required: data.customFields[field].required,
-                                                    class: "w-1/3",
-                                                    class_label: "1/33",
-                                                }
-                                            )
-                                        }
+        this.http.get(API_URL + '/ws/customFields/list', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                if (data.customFields) {
+                    for (let field in data.customFields) {
+                        if (data.customFields.hasOwnProperty(field)) {
+                            if(data.customFields[field].module == 'verifier') {
+                                for (let parent in this.availableFieldsParent) {
+                                    if(this.availableFieldsParent[parent].id == 'custom_fields') {
+                                        this.availableFieldsParent[parent].values.push(
+                                            {
+                                                id: 'custom_' + data.customFields[field].id,
+                                                label: data.customFields[field].label,
+                                                unit: 'custom',
+                                                type: data.customFields[field].type,
+                                                format: data.customFields[field].type,
+                                                required: data.customFields[field].required,
+                                                class: "w-1/3",
+                                                class_label: "1/33",
+                                            }
+                                        )
                                     }
                                 }
                             }
                         }
                     }
-                }),
-                catchError((err: any) => {
-                    console.debug(err);
-                    this.notify.handleErrors(err);
-                    return of(false);
-                })
-            ).subscribe();
-
+                }
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+        if (this.formId) {
             this.http.get(API_URL + '/ws/forms/getFields/' + this.formId, {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
                     if (data.form_fields.fields) {
@@ -668,7 +669,7 @@ export class FormBuilderComponent implements OnInit {
                     return of(false);
                 })
             ).subscribe();
-        }else{
+        }else {
             this.loading = false;
         }
     }

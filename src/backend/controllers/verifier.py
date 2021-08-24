@@ -85,9 +85,10 @@ def retrieve_invoices(args):
     if 'search' in args and args['search']:
         args['table'] = ['invoices', 'accounts_supplier']
         args['left_join'] = ['invoices.supplier_id = accounts_supplier.id']
+        args['group_by'] = ['invoices.id', 'accounts_supplier.id']
         args['where'].append(
-            "LOWER(filename) LIKE '%%" + args['search'].lower() + "%%' OR "
-            "(LOWER((datas -> 'invoice_number')::text) LIKE '%%" + args['search'].lower() + "%%' OR "
+            "(LOWER(original_filename) LIKE '%%" + args['search'].lower() + "%%' OR "
+            "LOWER((datas -> 'invoice_number')::text) LIKE '%%" + args['search'].lower() + "%%' OR "
             "LOWER(accounts_supplier.name) LIKE '%%" + args['search'].lower() + "%%')"
         )
 
@@ -111,7 +112,6 @@ def retrieve_invoices(args):
         'table': args['table'],
         'left_join': args['left_join'],
     })
-
     if total_invoices not in [0, []]:
         invoices_list = verifier.get_invoices(args)
         for invoice in invoices_list:

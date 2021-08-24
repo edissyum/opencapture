@@ -222,7 +222,8 @@ export class VerifierListComponent implements OnInit {
                     this.total = data.total
                     this.invoices = data.invoices;
                     this.invoices.forEach((invoice: any) => {
-                        invoice.thumb = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + invoice.thumb);
+                        if (!invoice.thumb.includes('data:image/jpeg;base64'))
+                            invoice.thumb = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + invoice.thumb);
                     });
                 }
 
@@ -356,6 +357,7 @@ export class VerifierListComponent implements OnInit {
         this.allowedCustomers = [];
         this.allowedSuppliers = [];
         this.purchaseOrSale = '';
+        this.search = '';
         this.resetPaginator();
         this.loadCustomers();
     }

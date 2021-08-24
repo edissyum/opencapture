@@ -25,11 +25,11 @@ export class CustomFieldsComponent implements OnInit {
     parent: any[] = [
         {
             'id': 'verifier',
-            'label': 'Open-Capture Verifier'
+            'label': this.translate.instant('HOME.verifier')
         },
         {
             'id': 'splitter',
-            'label': 'Open-Capture Splitter'
+            'label': this.translate.instant('HOME.splitter')
         }
     ]
     addFieldInputs: any[] = [
