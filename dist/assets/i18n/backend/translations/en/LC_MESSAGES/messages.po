@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2021-04-22 15:51+0200\n"
+"POT-Creation-Date: 2021-08-06 09:34+0200\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: en\n"
@@ -12,138 +12,430 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.8.0\n"
+"Generated-By: Babel 2.9.1\n"
 
-#: src/backend/ws_splitter.py:38
-msgid "FILE_UPLOAD_SUCCESS"
-msgstr "File(s) upload with success"
+#: src/backend/classes/MaarchWebServices.py:40
+msgid "HOST_NOT_FOUND"
+msgstr ""
 
-#: src/backend/controllers/pdf.py:160 src/backend/ws_splitter.py:130
-msgid "NO_RESULTS"
-msgstr "No results"
+#: src/backend/controllers/accounts.py:44 src/backend/models/accounts.py:49
+msgid "GET_SUPPLIER_BY_ID_ERROR"
+msgstr ""
 
-#: src/backend/controllers/pdf.py:162 src/backend/controllers/supplier.py:32
-#: src/backend/controllers/user.py:224 src/backend/ws_splitter.py:132
-msgid "SHOW"
-msgstr "Show"
+#: src/backend/controllers/accounts.py:57 src/backend/models/accounts.py:67
+msgid "GET_ADDRESS_BY_ID_ERROR"
+msgstr ""
 
-#: src/backend/controllers/pdf.py:162 src/backend/controllers/supplier.py:32
-#: src/backend/controllers/user.py:224 src/backend/ws_splitter.py:132
-msgid "OF"
-msgstr "of"
+#: src/backend/controllers/accounts.py:75
+#: src/backend/controllers/accounts.py:81
+msgid "UPDATE_SUPPLIER_ERROR"
+msgstr ""
 
-#: src/backend/classes/WebServices.py:44
-msgid "CONNECTION_ERROR"
-msgstr "Error while trying to connect to the GED"
+#: src/backend/controllers/accounts.py:107
+msgid "UPDATE_SUPPLIER_POSITIONS_ERROR"
+msgstr ""
 
-#: src/backend/controllers/auth.py:57
+#: src/backend/controllers/accounts.py:133
+#: src/backend/controllers/accounts.py:139
+msgid "UPDATE_ADDRESS_ERROR"
+msgstr ""
+
+#: src/backend/controllers/accounts.py:166
+msgid "CREATE_ADDRESS_ERROR"
+msgstr ""
+
+#: src/backend/controllers/accounts.py:195
+msgid "CREATE_SUPPLIER_ERROR"
+msgstr ""
+
+#: src/backend/controllers/accounts.py:219 src/backend/models/accounts.py:182
+msgid "GET_CUSTOMER_BY_ID_ERROR"
+msgstr ""
+
+#: src/backend/controllers/accounts.py:252
+#: src/backend/controllers/accounts.py:258
+msgid "UPDATE_CUSTOMER_ERROR"
+msgstr ""
+
+#: src/backend/controllers/accounts.py:285
+msgid "CREATE_CUSTOMER_ERROR"
+msgstr ""
+
+#: src/backend/controllers/accounts.py:302
+#: src/backend/controllers/accounts.py:308
+msgid "DELETE_CUSTOMER_ERROR"
+msgstr ""
+
+#: src/backend/controllers/accounts.py:325
+#: src/backend/controllers/accounts.py:331
+msgid "DELETE_SUPPLIER_ERROR"
+msgstr ""
+
+#: src/backend/controllers/auth.py:63
 msgid "LOGIN_ERROR"
 msgstr "Login error"
 
-#: src/backend/controllers/auth.py:77
-msgid "REGISTER_ERROR"
-msgstr "Registration error"
-
-#: src/backend/controllers/auth.py:92 src/backend/controllers/auth.py:100
-#: src/backend/controllers/auth.py:102
+#: src/backend/controllers/auth.py:78 src/backend/controllers/auth.py:86
+#: src/backend/controllers/auth.py:88
 msgid "JWT_ERROR"
 msgstr "Authentification by token error"
 
-#: src/backend/controllers/config.py:191
+#: src/backend/controllers/config.py:42
 msgid "CHANGE_LOCALE_ERROR"
 msgstr "Error while changing locale"
 
-#: src/backend/controllers/pdf.py:418
+#: src/backend/controllers/forms.py:66 src/backend/models/forms.py:50
+msgid "GET_FORM_BY_ID_ERROR"
+msgstr ""
+
+#: src/backend/controllers/forms.py:83 src/backend/controllers/forms.py:100
+msgid "GET_FORM_BY_SUPPLIER_ID_ERROR"
+msgstr ""
+
+#: src/backend/controllers/forms.py:146 src/backend/controllers/forms.py:152
+msgid "DELETE_FORM_ERROR"
+msgstr ""
+
+#: src/backend/controllers/forms.py:169 src/backend/controllers/forms.py:175
+msgid "DISABLE_FORM_ERROR"
+msgstr ""
+
+#: src/backend/controllers/forms.py:192 src/backend/controllers/forms.py:198
+msgid "ENABLE_FORM_ERROR"
+msgstr ""
+
+#: src/backend/controllers/forms.py:231 src/backend/controllers/forms.py:237
+msgid "UPDATE_FORMS_FIELDS_ERROR"
+msgstr ""
+
+#: src/backend/controllers/outputs.py:65 src/backend/controllers/outputs.py:71
+msgid "UPDATE_OUTPUT_ERROR"
+msgstr ""
+
+#: src/backend/controllers/outputs.py:95
+msgid "CREATE_OUTPUT_ERROR"
+msgstr ""
+
+#: src/backend/controllers/outputs.py:108
+msgid "GET_OUTPUT_BY_ID_ERROR"
+msgstr ""
+
+#: src/backend/controllers/outputs.py:125
+#: src/backend/controllers/outputs.py:131
+msgid "DELETE_OUTPUT_ERROR"
+msgstr ""
+
+#: src/backend/controllers/pdf.py:205
 msgid "END_LONG"
 msgstr "Invoice validated and closed"
 
-#: src/backend/controllers/pdf.py:420
+#: src/backend/controllers/pdf.py:207
 msgid "ERROR_WHILE_INSERTING_IN_GED"
 msgstr "Error while inserting invoice in GED"
 
-#: src/backend/controllers/user.py:30
-msgid "USER_ERROR"
-msgstr "User error"
+#: src/backend/controllers/privileges.py:36
+msgid "GET_PRIVILEGES_ERROR"
+msgstr ""
 
-#: src/backend/controllers/user.py:31 src/backend/controllers/user.py:79
-#: src/backend/controllers/user.py:92 src/backend/controllers/user.py:154
-#: src/backend/controllers/user.py:184
-msgid "ERROR_WHILE_RETRIEVING_USER"
-msgstr "Error while retrieving user informations"
+#: src/backend/controllers/privileges.py:64
+msgid "GET_PRIVILEGES_BY_ROLE_ERROR"
+msgstr ""
 
-#: src/backend/controllers/user.py:44
-msgid "UPDATE_PROFILE"
-msgstr "Update profile"
-
-#: src/backend/controllers/user.py:45 src/backend/controllers/user.py:138
-msgid "ERROR_OLD_PASSWORD_NOT_MATCH"
-msgstr "The old password do not match"
-
-#: src/backend/controllers/user.py:72 src/backend/controllers/user.py:78
-msgid "PROFILE_UPDATE_ERROR"
-msgstr "Error while updating profile"
-
-#: src/backend/controllers/user.py:126
-msgid "UPDATE_ROLE_OK"
-msgstr "Role updated with success"
-
-#: src/backend/controllers/user.py:128
+#: src/backend/controllers/roles.py:53 src/backend/controllers/roles.py:59
+#: src/backend/controllers/roles.py:112 src/backend/controllers/verifier.py:225
+#: src/backend/controllers/verifier.py:231
 msgid "UPDATE_ROLE_ERROR"
 msgstr "Error while trying to update role"
 
-#: src/backend/controllers/user.py:150 src/backend/controllers/user.py:180
-msgid "UPDATE_OK"
-msgstr "Password updated with success"
+#: src/backend/controllers/roles.py:84
+msgid "CREATE_ROLE_ERROR"
+msgstr ""
 
-#: src/backend/controllers/user.py:152 src/backend/controllers/user.py:182
-msgid "UPDATE_ERROR"
-msgstr "Error while updating password"
+#: src/backend/controllers/roles.py:106
+msgid "UPDATE_ROLE_PRIVILEGE_ERROR"
+msgstr ""
 
-#: src/backend/controllers/user.py:261
-msgid "USER_ENABLED_OK"
-msgstr "User enabled with succes"
+#: src/backend/controllers/roles.py:125
+msgid "GET_ROLE_BY_ID_ERROR"
+msgstr ""
 
-#: src/backend/controllers/user.py:263
-msgid "USER_ENABLED_ERROR"
-msgstr "Error while attempting to enable user"
+#: src/backend/controllers/roles.py:142 src/backend/controllers/roles.py:148
+msgid "DELETE_ROLE_ERROR"
+msgstr ""
 
-#: src/backend/controllers/user.py:291
-msgid "USER_DISABLED_OK"
-msgstr "User disabled with succes"
+#: src/backend/controllers/roles.py:165 src/backend/controllers/roles.py:171
+msgid "DISABLE_ROLE_ERROR"
+msgstr ""
 
-#: src/backend/controllers/user.py:293
-msgid "USER_DISABLED_ERROR"
-msgstr "Error while attempting to disable user"
+#: src/backend/controllers/roles.py:188 src/backend/controllers/roles.py:194
+msgid "ENABLE_ROLE_ERROR"
+msgstr ""
 
-#: src/backend/controllers/user.py:321
-msgid "USER_DELETED_OK"
-msgstr "User deleted with succes"
+#: src/backend/controllers/status.py:37
+msgid "RETRIEVES_STATUS_ERROR"
+msgstr ""
 
-#: src/backend/controllers/user.py:323
-msgid "USER_DELETED_ERROR"
-msgstr "Error while attempting to delete user"
+#: src/backend/controllers/user.py:33
+msgid "USER_NEW_ERROR"
+msgstr ""
 
-#: src/backend/models/auth.py:17 src/backend/models/auth.py:35
-#: src/backend/models/auth.py:67
+#: src/backend/controllers/user.py:48
+msgid "RETRIEVES_USERS_ERROR"
+msgstr ""
+
+#: src/backend/controllers/user.py:68 src/backend/models/user.py:96
+msgid "GET_USER_BY_ID_ERROR"
+msgstr ""
+
+#: src/backend/controllers/user.py:85 src/backend/models/user.py:114
+msgid "GET_CUSTOMERS_BY_USER_ID_ERROR"
+msgstr ""
+
+#: src/backend/controllers/user.py:99
+msgid "UPDATE_PROFILE"
+msgstr "Update profile"
+
+#: src/backend/controllers/user.py:100
+msgid "ERROR_OLD_PASSWORD_NOT_MATCH"
+msgstr "The old password do not match"
+
+#: src/backend/controllers/user.py:123 src/backend/controllers/user.py:129
+msgid "UPDATE_USER_ERROR"
+msgstr ""
+
+#: src/backend/controllers/user.py:146 src/backend/controllers/user.py:152
+msgid "DELETE_USER_ERROR"
+msgstr ""
+
+#: src/backend/controllers/user.py:169 src/backend/controllers/user.py:175
+msgid "DISABLE_USER_ERROR"
+msgstr ""
+
+#: src/backend/controllers/user.py:192 src/backend/controllers/user.py:198
+msgid "ENABLE_USER_ERROR"
+msgstr ""
+
+#: src/backend/controllers/user.py:218 src/backend/controllers/user.py:224
+msgid "UPDATE_CUSTOMERS_USER_ERROR"
+msgstr ""
+
+#: src/backend/controllers/verifier.py:50 src/backend/models/verifier.py:33
+msgid "GET_INVOICE_BY_ID_ERROR"
+msgstr ""
+
+#: src/backend/controllers/verifier.py:140
+msgid "UPDATE_INVOICE_POSITIONS_ERROR"
+msgstr ""
+
+#: src/backend/controllers/verifier.py:164
+#: src/backend/controllers/verifier.py:184
+msgid "UPDATE_INVOICE_DATA_ERROR"
+msgstr ""
+
+#: src/backend/controllers/verifier.py:201
+#: src/backend/controllers/verifier.py:207
+msgid "DELETE_INVOICE_ERROR"
+msgstr ""
+
+#: src/backend/models/accounts.py:86
+msgid "SUPPLIER_UPDATE_ERROR"
+msgstr ""
+
+#: src/backend/models/accounts.py:103
+msgid "ADDRESS_UPDATE_ERROR"
+msgstr ""
+
+#: src/backend/models/accounts.py:118
+msgid "ADDRESS_CREATE_ERROR"
+msgstr ""
+
+#: src/backend/models/accounts.py:133
+msgid "SUPPLIER_CREATE_ERROR"
+msgstr ""
+
+#: src/backend/models/accounts.py:150
+msgid "SUPPLIER_DELETE_ERROR"
+msgstr ""
+
+#: src/backend/models/accounts.py:201
+msgid "CUSTOMER_UPDATE_ERROR"
+msgstr ""
+
+#: src/backend/models/accounts.py:216
+msgid "CUSTOMER_CREATE_ERROR"
+msgstr ""
+
+#: src/backend/models/accounts.py:233
+msgid "CUSTOMER_DELETE_ERROR"
+msgstr ""
+
+#: src/backend/models/auth.py:34 src/backend/models/user.py:36
 msgid "BAD_USERNAME"
 msgstr "Bad username"
 
-#: src/backend/models/auth.py:37 src/backend/models/auth.py:69
+#: src/backend/models/auth.py:36 src/backend/models/user.py:38
 msgid "BAD_PASSWORD"
 msgstr "Bad password"
 
-#: src/backend/models/auth.py:39
-msgid "USER"
-msgstr "User"
-
-#: src/backend/models/auth.py:39
-msgid "ALREADY_REGISTERED"
-msgstr "Already registered"
-
-#: src/backend/models/auth.py:71
+#: src/backend/models/auth.py:38
 msgid "USER_DELETED"
 msgstr "User deleted"
 
-#: src/backend/models/auth.py:73
+#: src/backend/models/auth.py:40
 msgid "USER_DISABLED"
 msgstr "User disabled"
+
+#: src/backend/models/custom_fields.py:44
+msgid "ADD_CUSTOM_FIELD_ERROR"
+msgstr ""
+
+#: src/backend/models/custom_fields.py:47
+msgid "CUSTOM_FIELD_ALREADY_EXIST"
+msgstr ""
+
+#: src/backend/models/custom_fields.py:83
+msgid "UPDATE_CUSTOM_FIELDS_ERROR"
+msgstr ""
+
+#: src/backend/models/forms.py:68
+msgid "GET_DEFAULT_FORM_ERROR"
+msgstr ""
+
+#: src/backend/models/forms.py:87
+msgid "UPDATE_FORM_ERROR"
+msgstr ""
+
+#: src/backend/models/forms.py:104
+msgid "UPDATE_FORM_FIELDS_ERROR"
+msgstr ""
+
+#: src/backend/models/forms.py:139
+msgid "ADD_FORM_ERROR"
+msgstr ""
+
+#: src/backend/models/forms.py:142
+msgid "FORM_LABEL_ALREADY_EXIST"
+msgstr ""
+
+#: src/backend/models/outputs.py:59
+msgid "OUTPUT_DOESNT_EXISTS"
+msgstr ""
+
+#: src/backend/models/outputs.py:78
+msgid "OUTPUT_UPDATE_ERROR"
+msgstr ""
+
+#: src/backend/models/outputs.py:93
+msgid "OUTPUT_CREATE_ERROR"
+msgstr ""
+
+#: src/backend/models/privileges.py:31 src/backend/models/privileges.py:47
+msgid "ERROR_RETRIEVING_PRIVILEGES"
+msgstr ""
+
+#: src/backend/models/roles.py:48
+msgid "ROLE_DOESNT_EXISTS"
+msgstr ""
+
+#: src/backend/models/roles.py:67
+msgid "ROLE_UPDATE_ERROR"
+msgstr ""
+
+#: src/backend/models/roles.py:82
+msgid "ROLE_CREATE_ERROR"
+msgstr ""
+
+#: src/backend/models/roles.py:99
+msgid "ROLE_PRIVILEGES_UPDATE_ERROR"
+msgstr ""
+
+#: src/backend/models/roles.py:116
+msgid "ROLE_PRIVILEGES_CREATE_ERROR"
+msgstr ""
+
+#: src/backend/models/status.py:31
+msgid "NO_STATUS"
+msgstr ""
+
+#: src/backend/models/user.py:40
+msgid "USER"
+msgstr "User"
+
+#: src/backend/models/user.py:40
+msgid "ALREADY_REGISTERED"
+msgstr "Already registered"
+
+#: src/backend/models/user.py:80
+msgid "NO_USERS"
+msgstr ""
+
+#: src/backend/models/user.py:132
+msgid "USERS_UPDATE_ERROR"
+msgstr ""
+
+#: src/backend/models/user.py:149
+msgid "USERS_CUSTOMERS_UPDATE_ERROR"
+msgstr ""
+
+#: src/backend/models/verifier.py:69
+msgid "INVOICE_UPDATE_ERROR"
+msgstr ""
+
+#: src/backend/rest/splitter.py:37 src/backend/rest/verifier.py:41
+msgid "UNKNOW_ERROR"
+msgstr ""
+
+#~ msgid "FILE_UPLOAD_SUCCESS"
+#~ msgstr "File(s) upload with success"
+
+#~ msgid "NO_RESULTS"
+#~ msgstr "No results"
+
+#~ msgid "SHOW"
+#~ msgstr "Show"
+
+#~ msgid "OF"
+#~ msgstr "of"
+
+#~ msgid "CONNECTION_ERROR"
+#~ msgstr "Error while trying to connect to the GED"
+
+#~ msgid "REGISTER_ERROR"
+#~ msgstr "Registration error"
+
+#~ msgid "USER_ERROR"
+#~ msgstr "User error"
+
+#~ msgid "ERROR_WHILE_RETRIEVING_USER"
+#~ msgstr "Error while retrieving user informations"
+
+#~ msgid "PROFILE_UPDATE_ERROR"
+#~ msgstr "Error while updating profile"
+
+#~ msgid "UPDATE_ROLE_OK"
+#~ msgstr "Role updated with success"
+
+#~ msgid "UPDATE_OK"
+#~ msgstr "Password updated with success"
+
+#~ msgid "UPDATE_ERROR"
+#~ msgstr "Error while updating password"
+
+#~ msgid "USER_ENABLED_OK"
+#~ msgstr "User enabled with succes"
+
+#~ msgid "USER_ENABLED_ERROR"
+#~ msgstr "Error while attempting to enable user"
+
+#~ msgid "USER_DISABLED_OK"
+#~ msgstr "User disabled with succes"
+
+#~ msgid "USER_DISABLED_ERROR"
+#~ msgstr "Error while attempting to disable user"
+
+#~ msgid "USER_DELETED_OK"
+#~ msgstr "User deleted with succes"
+
+#~ msgid "USER_DELETED_ERROR"
+#~ msgstr "Error while attempting to delete user"
+

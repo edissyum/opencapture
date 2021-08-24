@@ -261,6 +261,11 @@ def get_accounting_plan_by_customer_id(customer_id):
         return response, 401
 
 
+def get_default_accounting_plan(customer_id):
+    accounting_plan, error = accounts.get_default_accounting_plan({'customer_id': customer_id})
+    return accounting_plan, 200
+
+
 def update_customer(customer_id, data):
     _vars = create_classes_from_config()
     _db = _vars[0]

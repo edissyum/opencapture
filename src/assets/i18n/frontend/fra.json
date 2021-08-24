@@ -129,7 +129,8 @@
 		"date": "Date",
 		"number_float": "Caractères numériques flottant [0-90.0-0.9]",
 		"number_int": "Caractères numériques entier [0-9]",
-		"select": "Liste de choix"
+		"select": "Liste de choix",
+		"textarea": "Multi lignes"
 	},
 	"FORMS": {
 		"available_fields": "Champs disponibles",
@@ -210,6 +211,7 @@
 	},
 	"INVOICES": {
 		"data_deleted": "Champ supprimé",
+		"field_duplicated": "Champ <b>{{ input }}</b> dupliqué",
 		"position_and_data_updated": "Position et valeur du champ <b>{{ input }}</b> mise à jour",
 		"supplier_infos_updated": "Fournisseur paramétré pour cette facture"
 	},
@@ -316,7 +318,6 @@
 		"list": "Liste des status"
 	},
 	"TYPES": {
-		"char": "",
 		"date": "Date",
 		"select": "Liste de choix",
 		"text": "Chaine de caractères",

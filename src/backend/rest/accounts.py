@@ -201,6 +201,13 @@ def delete_customer(customer_id):
 
 @bp.route('accounts/customers/getAccountingPlan/<int:customer_id>', methods=['GET'])
 @auth.token_required
-def get_accouting_plan(customer_id):
+def get_default_accouting_plan(customer_id):
     res = accounts.get_accounting_plan_by_customer_id(customer_id)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('accounts/customers/getDefaultAccountingPlan', methods=['GET'])
+@auth.token_required
+def get_accouting_plan(customer_id):
+    res = accounts.get_default_accounting_plan(customer_id)
     return make_response(jsonify(res[0])), res[1]

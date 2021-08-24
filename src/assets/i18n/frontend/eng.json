@@ -129,7 +129,8 @@
 		"date": "",
 		"number_float": "",
 		"number_int": "",
-		"select": ""
+		"select": "",
+		"textarea": ""
 	},
 	"FORMS": {
 		"available_fields": "",
@@ -210,6 +211,7 @@
 	},
 	"INVOICES": {
 		"data_deleted": "",
+		"field_duplicated": "",
 		"position_and_data_updated": "",
 		"supplier_infos_updated": ""
 	},
@@ -316,7 +318,6 @@
 		"list": ""
 	},
 	"TYPES": {
-		"char": "",
 		"date": "",
 		"select": "",
 		"text": "",

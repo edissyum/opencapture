@@ -213,6 +213,23 @@ def get_accounting_plan_by_customer_id(args):
     return accounting_plan, error
 
 
+def get_default_accounting_plan(args):
+    _vars = create_classes_from_config()
+    _db = _vars[0]
+    error = None
+    accounting_plan = _db.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['accounting_plan'],
+        'where': ['customer_id = %s'],
+        'data': [None]
+    })
+    print(accounting_plan)
+    if not accounting_plan:
+        error = gettext('GET_CUSTOMER_BY_ID_ERROR')
+
+    return accounting_plan, error
+
+
 def update_customer(args):
     _vars = create_classes_from_config()
     _db = _vars[0]

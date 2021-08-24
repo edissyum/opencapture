@@ -39,7 +39,6 @@ export class FormBuilderComponent implements OnInit {
     formId                  : any;
     creationMode            : boolean   = true;
     labelType               : any []    = [
-        marker('TYPES.char'),
         marker('TYPES.text'),
         marker('TYPES.textarea'),
         marker('TYPES.date'),
@@ -243,7 +242,7 @@ export class FormBuilderComponent implements OnInit {
                     class: "w-1/3",
                     class_label: "1/33",
                     color: 'red',
-                    format: 'alphanum',
+                    format: 'alphanum_extended',
                     format_icon: 'fas fa-hashtag',
                     display: 'simple',
                     display_icon:'fas file-alt'
@@ -613,6 +612,7 @@ export class FormBuilderComponent implements OnInit {
                                                     label: data.customFields[field].label,
                                                     unit: 'custom',
                                                     type: data.customFields[field].type,
+                                                    format: data.customFields[field].type,
                                                     required: data.customFields[field].required,
                                                     class: "w-1/3",
                                                     class_label: "1/33",

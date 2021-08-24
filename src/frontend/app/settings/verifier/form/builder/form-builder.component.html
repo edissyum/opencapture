@@ -135,8 +135,9 @@
                                 <mat-label class="border-r-2 border-green-400 inline-block overflow-ellipsis overflow-hidden whitespace-nowrap w-10/12">
                                     <span *ngIf="field.required" class="text-red-500 mr-2">*</span>
                                     <b>{{ field.label | translate }}</b>
-                                    <span *ngIf="field.type != 'select'"> ({{ 'FORMATS.' + field.format | translate }})</span>
+                                    <span *ngIf="field.type != 'select' && field.type != 'textarea'"> ({{ 'FORMATS.' + field.format | translate }})</span>
                                     <span *ngIf="field.type == 'select'"> ({{ 'FORMATS.select' | translate }})</span>
+                                    <span *ngIf="field.type == 'textarea'"> ({{ 'FORMATS.textarea' | translate }})</span>
                                 </mat-label>
                                 <input class="cursor-pointer" matInput type="text" readonly>
                                 <div class="absolute top-0 -right-4">

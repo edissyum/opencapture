@@ -358,7 +358,6 @@ export class UpdateOutputComponent implements OnInit {
                 if (_return && _return.entities) {
                     let data = _return.entities;
                     let entities = [];
-                    console.log(data)
                     for (let cpt in data) {
                         entities.push({
                             'id': data[cpt].serialId,

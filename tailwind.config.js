@@ -1,12 +1,9 @@
-module.exports = (isProd) => ({
+module.exports = {
     important: true,
     prefix: '',
-    purge: {
-        enabled: isProd,
-        content: [
-            '**/*.{html,ts}',
-        ]
-    },
+    purge: [
+        '**/*.{html,ts}'
+    ],
     darkMode: false, // or 'media' or 'class'
     theme: {
         zIndex: {
@@ -57,4 +54,4 @@ module.exports = (isProd) => ({
         }
     },
     plugins: [],
-});
+};

@@ -71,7 +71,7 @@
                                 <ng-template #other>
                                     <mat-form-field class="right-0 w-full form-viewer">
                                         <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
-                                            {{ field.label | translate }} <span *ngIf="isChildField(field.id)">{{ field.cpt }}</span>
+                                            {{ field.label | translate }} <span *ngIf="isChildField(field.id) && !field.id.includes('custom_')">{{ field.cpt }}</span>
                                         </mat-label>
                                         <span *ngIf="field.display == 'multi'" (click)="duplicateField(field.id, category['id'])"
                                               class="absolute -top-2 -right-2.5 cursor-pointer text-gray-900">
@@ -94,7 +94,7 @@
                             <ng-container *ngIf="field.type === 'textarea'">
                                 <mat-form-field class="right-0 w-full form-viewer">
                                     <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
-                                        {{ field.label | translate }} <span *ngIf="isChildField(field.id)">{{ field.cpt }}</span>
+                                        {{ field.label | translate }} <span *ngIf="isChildField(field.id) && !field.id.includes('custom_')">{{ field.cpt }}</span>
                                     </mat-label>
                                     <textarea [id]="field.id" cdkTextareaAutosize cdkAutosizeMinRows="1" matInput
                                               [required]="field.required" [formControl]="field.control" [pattern]="field.pattern"
@@ -128,7 +128,6 @@
                                     </mat-label>
                                     <input [id]="field.id" matInput type="text" [required]="field.required"
                                            [formControl]="field.control" [matAutocomplete]="accounting">
-
                                     <mat-hint *ngIf="accountingPlanEmpty">
                                         {{ 'VERIFIER.accounting_plan_empty' | translate }}
                                     </mat-hint>

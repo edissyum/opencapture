@@ -206,3 +206,4 @@ CREATE TABLE "splitter_images" (
     "image_number" INTEGER,
     "status"       VARCHAR DEFAULT 'NEW'
 );
+

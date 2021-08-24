@@ -139,7 +139,6 @@ export class VerifierViewerComponent implements OnInit {
             );
     }
 
-
     async getThumb(path:string, filename:string) {
         this.http.post(API_URL + '/ws/verifier/getThumb',
             {'args': {'path': this.config['GLOBAL']['fullpath'], 'filename': filename}},
@@ -294,13 +293,11 @@ export class VerifierViewerComponent implements OnInit {
 
                 if (field.id == 'accounting_plan') {
                     let array = await this.retrieveAccountingPlan();
-                    array = this.sortArray(array);
-                    console.log(array)
-                    console.log(Object.keys(array).length)
-                    this.accountingPlanEmpty = false;
-                    if (Object.keys(array).length == 0) {
-                        this.accountingPlanEmpty = true;
+                    this.accountingPlanEmpty = Object.keys(array).length == 0;
+                    if (this.accountingPlanEmpty) {
+                        array = await this.retrieveDefaultAccountingPlan();
                     }
+                    array = this.sortArray(array);
                     this.form[category][cpt].values = this.form[category][cpt].control.valueChanges
                         .pipe(
                             startWith(''),
@@ -343,6 +340,10 @@ export class VerifierViewerComponent implements OnInit {
 
     async retrieveAccountingPlan() {
         return await this.http.get(API_URL + '/ws/accounts/customers/getAccountingPlan/' + this.invoice.customer_id, {headers: this.authService.headers}).toPromise();
+    }
+
+    async retrieveDefaultAccountingPlan() {
+        return await this.http.get(API_URL + '/ws/accounts/customers/getDefaultAccountingPlan/' + this.invoice.customer_id, {headers: this.authService.headers}).toPromise();
     }
 
     findChildren(parent_id: any, parent: any, category_id: any) {
@@ -675,6 +676,7 @@ export class VerifierViewerComponent implements OnInit {
                         new_field.control.value = '';
                         this.form[category].splice(cpt + field.cpt, 0, new_field);
                         this.saveData('', new_field.id);
+                        this.notify.success(this.translate.instant('INVOICES.field_duplicated', {"input": this.translate.instant(field.label)}));
                     }
                 })
             }
@@ -699,7 +701,7 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     isChildField(field_id: any) {
-        let splitted_id = field_id.split('_')
+        let splitted_id = field_id.split('_');
         return Number.isInteger(parseInt(splitted_id[splitted_id.length - 1]));
     }
 
