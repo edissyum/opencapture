@@ -225,7 +225,7 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     getPage(field_id: any) {
-        let page: number = 0;
+        let page: number = 1;
         if (this.invoice.pages) {
             Object.keys(this.invoice.pages).forEach((element: any) => {
                 if (element == field_id) {
@@ -522,7 +522,7 @@ export class VerifierViewerComponent implements OnInit {
 
     savePosition(position: any) {
         position = {
-            ocr_from_user: true,
+            ocr_from_user: this.ocr_from_user,
             x: position.x * this.ratio,
             y: position.y * this.ratio,
             height: position.height * this.ratio,
@@ -814,17 +814,17 @@ export class VerifierViewerComponent implements OnInit {
             Executer les actions paramétrées dans les réglages du formulaires
          */
         this.http.get(API_URL + '/ws/forms/getById/' + form_id, {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
+            tap((form: any) => {
                 let outputs_label: any[] = [];
-                if (data.outputs.length != 0) {
-                    data.outputs.forEach((output_id: any, cpt: number) => {
+                if (form.outputs.length != 0) {
+                    form.outputs.forEach((output_id: any, cpt: number) => {
                         this.http.get(API_URL + '/ws/outputs/getById/' + output_id, {headers: this.authService.headers}).pipe(
                             tap((data: any) => {
                                 outputs_label.push(data.output_label);
                                 this.http.post(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/' + data.output_type_id, {'args': data.data},{headers: this.authService.headers}).pipe(
                                     tap(() => {
                                         /* Actions à effectuer après le traitement des chaînes sortantes */
-                                        if (cpt + 1 == data.outputs.length) {
+                                        if (cpt + 1 == form.outputs.length) {
                                             this.updateInvoice({'status': 'END', 'locked': false, 'locked_by': null});
                                             this.router.navigate(['/verifier']);
                                             this.notify.success(this.translate.instant('VERIFIER.form_validated_and_output_done', {outputs: outputs_label.join('<br>')}));
@@ -845,7 +845,7 @@ export class VerifierViewerComponent implements OnInit {
                         ).subscribe();
                     });
                 }else {
-                    this.notify.error(this.translate.instant('VERIFIER.no_outputs_for_this_form', {'form': data.label}));
+                    this.notify.error(this.translate.instant('VERIFIER.no_outputs_for_this_form', {'form': form.label}));
                 }
             }),
             catchError((err: any) => {

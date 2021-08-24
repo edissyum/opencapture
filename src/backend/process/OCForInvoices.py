@@ -320,22 +320,30 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
     if footer:
         if footer[0]:
             datas.update({'no_rate_amount': footer[0][0]})
-            if len(footer[2]) > 1:
+            datas.update({'total_ht': footer[0][0]})
+            if len(footer[0]) > 1:
                 positions.update({'no_rate_amount': files.reformat_positions(footer[0][1])})
+                if footer[3]:
+                    pages.update({'no_rate_amount': footer[3]})
         if footer[1]:
             datas.update({'total_ttc': footer[1][0]})
-            if len(footer[2]) > 1:
+            if len(footer[1]) > 1:
                 positions.update({'total_ttc': files.reformat_positions(footer[1][1])})
+                if footer[3]:
+                    pages.update({'total_ttc': footer[3]})
         if footer[2]:
             datas.update({'vat_rate': footer[2][0]})
             if len(footer[2]) > 1:
                 positions.update({'vat_rate': files.reformat_positions(footer[2][1])})
-        if footer[3]:
-            pages.update({'footer': footer[3]})
+                if footer[3]:
+                    pages.update({'vat_rate': footer[3]})
         if footer[4]:
             datas.update({'vat_amount': footer[4][0]})
-            if len(footer[2]) > 1:
+            datas.update({'total_vat': footer[4][0]})
+            if len(footer[4]) > 1:
                 positions.update({'vat_amount': files.reformat_positions(footer[4][1])})
+                if footer[3]:
+                    pages.update({'vat_amount': footer[3]})
 
     # Find delivery number
     delivery_number_class = FindDeliveryNumber(ocr, files, log, locale, config, database, supplier, file, typo, ocr.header_text, 1, False)

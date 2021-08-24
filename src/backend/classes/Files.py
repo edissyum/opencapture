@@ -555,18 +555,21 @@ class Files:
 
     @staticmethod
     def reformat_positions(positions):
-        if type(positions) == tuple:
+        if type(positions) in [tuple, dict] and positions:
             x1 = positions[0][0]
             y1 = positions[0][1]
             x2 = positions[1][0]
             y2 = positions[1][1]
-            positions = {
-                'x': x1,
-                'y': y1,
-                'width': x2 - x1,
-                'height': y2 - y1,
-            }
-            return positions
+            if x1 and y1 and x2 and y2:
+                positions = {
+                    'x': x1,
+                    'y': y1,
+                    'width': x2 - x1,
+                    'height': y2 - y1,
+                }
+                return positions
+            else:
+                return ''
         else:
             try:
                 positions = json.loads(positions)

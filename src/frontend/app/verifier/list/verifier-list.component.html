@@ -70,8 +70,10 @@
                         <mat-paginator [length]="this.total" [pageSize]="pageSize" [pageIndex]="pageIndex"
                                        [pageSizeOptions]="this.pageSizeOptions" (page)="onPageChange($event)"></mat-paginator>
                     </div>
-                    <div class="z-40 -mt-2 mb-2 select-none" style="margin-left: 1.2rem">
-                        <span class="cursor-pointer" (click)="selectOrUnselectAllInvoices($event)" [innerHTML]="invoiceToDeleteSelected ? this.translate.instant('VERIFIER.unselect_all') : this.translate.instant('VERIFIER.select_all')"></span>
+                    <div class="z-40 -mt-2 mb-2 select-none" style="margin-left: 1.2rem" *ngIf="invoices.length > 1">
+                        <span class="cursor-pointer" (click)="selectOrUnselectAllInvoices($event)"
+                              [innerHTML]="invoiceToDeleteSelected ? this.translate.instant('VERIFIER.unselect_all') : this.translate.instant('VERIFIER.select_all')">
+                        </span>
                         <span [class.hidden]="this.totalChecked == 0"> ({{ this.totalChecked}})</span>
                         <span [class.hidden]="!invoiceToDeleteSelected" (click)="$event.stopPropagation();deleteAllConfirmDialog()">
                             <i class="fas fa-trash ml-2 text-red-500 cursor-pointer" matTooltip="{{ 'VERIFIER.delete_all' | translate }}"></i>

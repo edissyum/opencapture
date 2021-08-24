@@ -223,8 +223,7 @@ export class VerifierListComponent implements OnInit {
                     this.invoices = data.invoices;
                     this.invoices.forEach((invoice: any) => {
                         invoice.thumb = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + invoice.thumb);
-                        // this.getThumb(invoice)
-                    })
+                    });
                 }
 
                 /*

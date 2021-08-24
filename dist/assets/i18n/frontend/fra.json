@@ -374,7 +374,7 @@
 		"expand_all": "Développer tous les clients",
 		"field_settings": "Paramètres du champ",
 		"form_changed": "Formulaire modifié avec succès",
-		"form_validated_and_output_done": "Formulaire validé et chaîne(s) sortante(s) suivante(s) validée(s) : <br><br> <center>{{ outputs }}</center>",
+		"form_validated_and_output_done": "Formulaire validé et chaîne(s) sortante(s) suivante(s) effectuée(s) : <br><br> <center>{{ outputs }}</center>",
 		"format": "Format des données",
 		"list": "Factures",
 		"nb_pages": "Nombre de page",
