@@ -448,12 +448,14 @@ class ContactController
     }
 
     // NCH01
-    public function getByVAT(Request $request, Response $response)
+   public function getByVAT(Request $request, Response $response)
     {
         $data = $request->getParams();
+        $vat_custom_id = $data['custom_vat_id'];
         $contact = ContactModel::getByVAT([
-            'select'    => ['id', 'contact_id'],
+            'select'    => ['id'],
             'VAT'       => $data['VAT'],
+            'custom_id' => $vat_custom_id
         ]);
         return $response->withJson($contact);
     }

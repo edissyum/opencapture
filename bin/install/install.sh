@@ -1,8 +1,8 @@
 #!/bin/bash
 
-if [ "$EUID" -ne 0 ]
-  then echo "Makefile needed to be launch by user with root privileges"
-  exit 1
+if [ "$EUID" -ne 0 ]; then
+    echo "install.sh needed to be launch by user with root privileges"
+    exit 1
 fi
 
 bold=$(tput bold)
@@ -15,15 +15,13 @@ docserverPath=/var/docservers/
 user=$(who am i | awk '{print $1}')
 group=www-data
 
-if [ -z "$user" ]
-then
- printf "The user variable is empty. Please fill it with your desired user : "
- read -r user
- if [ -z "$user" ]
- then
-   echo 'User remain empty, exiting...'
-   exit
- fi
+if [ -z "$user" ]; then
+    printf "The user variable is empty. Please fill it with your desired user : "
+    read -r user
+    if [ -z "$user" ]; then
+        echo 'User remain empty, exiting...'
+        exit
+    fi
 fi
 
 ####################
@@ -35,42 +33,40 @@ printf "Enter your choice [1/%s] : " "${bold}2${normal}"
 read -r choice
 
 if [[ "$choice" == "" || ("$choice" != 1 && "$choice" != 2) ]]; then
-  finalChoice=2
+    finalChoice=2
 else
-  finalChoice="$choice"
+    finalChoice="$choice"
 fi
 
 if [ "$finalChoice" == 1 ]; then
-  echo 'You choose supervisor, how many processes you want to be run simultaneously ? (default : 3)'
-  printf "Enter your choice [%s] : " "${bold}3${normal}"
-  read -r choice
-  if [ "$choice" == "" ]; then
-    nbProcess=3
-  elif ! [[ "$choice" =~ ^[0-9]+$ ]]; then
-    echo 'The input is not an integer, default value selected (3)'
-    nbProcess=3
-  else
-    nbProcess="$choice"
-  fi
+    echo 'You choose supervisor, how many processes you want to be run simultaneously ? (default : 3)'
+    printf "Enter your choice [%s] : " "${bold}3${normal}"
+    read -r choice
+    if [ "$choice" == "" ]; then
+        nbProcess=3
+    elif ! [[ "$choice" =~ ^[0-9]+$ ]]; then
+        echo 'The input is not an integer, default value selected (3)'
+        nbProcess=3
+    else
+        nbProcess="$choice"
+    fi
 fi
 
 ####################
 # Install packages
-if [[ "$OS" = 'Debian' && "$VER" == *'9'* ]]
-then
-su -c 'cat > /etc/apt/sources.list.d/stretch-backports.list << EOF
+if [[ "$OS" == 'Debian' && "$VER" == *'9'* ]]; then
+    su -c 'cat > /etc/apt/sources.list.d/stretch-backports.list << EOF
 deb http://http.debian.net/debian stretch-backports main contrib non-free
 EOF'
-  apt update
-  apt install -y -t stretch-backports tesseract-ocr
-  apt install -y -t stretch-backports tesseract-ocr-fra
-  apt install -y -t stretch-backports tesseract-ocr-eng
-elif [[ "$OS" = 'Ubuntu' || "$OS" == 'Debian' && $VER == *'10'* ]]
-then
-  apt update
-  apt install -y tesseract-ocr
-  apt install -y tesseract-ocr-fra
-  apt install -y tesseract-ocr-eng
+    apt update
+    apt install -y -t stretch-backports tesseract-ocr
+    apt install -y -t stretch-backports tesseract-ocr-fra
+    apt install -y -t stretch-backports tesseract-ocr-eng
+elif [[ "$OS" == 'Ubuntu' || "$OS" == 'Debian' && $VER == *'10'* ]]; then
+    apt update
+    apt install -y tesseract-ocr
+    apt install -y tesseract-ocr-fra
+    apt install -y tesseract-ocr-eng
 fi
 
 xargs -a apt-requirements.txt apt install -y
@@ -123,8 +119,8 @@ sed -i "s#§§PATH§§#$defaultPath#g" "$defaultPath"/wsgi.py
 ####################
 # Create the service systemd or supervisor
 if [ "$finalChoice" == 2 ]; then
-  touch /etc/systemd/system/OCForInvoices-worker.service
-  su -c "cat > /etc/systemd/system/OCForInvoices-worker.service << EOF
+    touch /etc/systemd/system/OCForInvoices-worker.service
+    su -c "cat > /etc/systemd/system/OCForInvoices-worker.service << EOF
 [Unit]
 Description=Daemon for Open-Capture for Invoices
 
@@ -144,8 +140,8 @@ Restart=on-failure
 WantedBy=multi-user.target
 EOF"
 
-  touch /etc/systemd/system/OCForInvoices_Split-worker.service
-  su -c "cat > /etc/systemd/system/OCForInvoices_Split-worker.service << EOF
+    touch /etc/systemd/system/OCForInvoices_Split-worker.service
+    su -c "cat > /etc/systemd/system/OCForInvoices_Split-worker.service << EOF
 [Unit]
 Description=Splitter Daemon for Open-Capture for Invoices
 
@@ -164,17 +160,17 @@ Restart=on-failure
 WantedBy=multi-user.target
 EOF"
 
-  systemctl daemon-reload && systemctl start OCForInvoices-worker.service
-  systemctl daemon-reload && systemctl start OCForInvoices_Split-worker.service
-  systemctl enable OCForInvoices-worker.service
-  systemctl enable OCForInvoices_Split-worker.service
+    systemctl daemon-reload && systemctl start OCForInvoices-worker.service
+    systemctl daemon-reload && systemctl start OCForInvoices_Split-worker.service
+    systemctl enable OCForInvoices-worker.service
+    systemctl enable OCForInvoices_Split-worker.service
 else
-  apt install -y supervisor
-  mkdir "$defaultPath"/bin/data/log/Supervisor/
-  touch /etc/supervisor/conf.d/OCForInvoices-worker.conf
-  touch /etc/supervisor/conf.d/OCForInvoices_Split-worker.conf
+    apt install -y supervisor
+    mkdir "$defaultPath"/bin/data/log/Supervisor/
+    touch /etc/supervisor/conf.d/OCForInvoices-worker.conf
+    touch /etc/supervisor/conf.d/OCForInvoices_Split-worker.conf
 
-  su -c "cat > /etc/supervisor/conf.d/OCForInvoices-worker.conf << EOF
+    su -c "cat > /etc/supervisor/conf.d/OCForInvoices-worker.conf << EOF
 [program:OCWorker]
 command=$defaultPath/bin/scripts/service_workerOC.sh
 process_name=%(program_name)s_%(process_num)02d
@@ -188,7 +184,7 @@ stopwaitsecs=10
 stderr_logfile=$defaultPath/bin/data/log/Supervisor/OCForInvoices_worker_%(process_num)02d_error.log
 EOF"
 
-  su -c "cat > /etc/supervisor/conf.d/OCForInvoices_Split-worker.conf << EOF
+    su -c "cat > /etc/supervisor/conf.d/OCForInvoices_Split-worker.conf << EOF
 [program:OCWorker]
 command=$defaultPath/bin/scripts/service_workerOC_splitter.sh
 process_name=%(program_name)s_%(process_num)02d
@@ -202,11 +198,11 @@ stopwaitsecs=10
 stderr_logfile=$defaultPath/bin/data/log/Supervisor/OCForInvoices_SPLIT_worker_%(process_num)02d_error.log
 EOF"
 
-  chmod 755 /etc/supervisor/conf.d/OCForInvoices-worker.conf
-  chmod 755 /etc/supervisor/conf.d/OCForInvoices_Split-worker.conf
+    chmod 755 /etc/supervisor/conf.d/OCForInvoices-worker.conf
+    chmod 755 /etc/supervisor/conf.d/OCForInvoices_Split-worker.conf
 
-  systemctl restart supervisor
-  systemctl enable supervisor
+    systemctl restart supervisor
+    systemctl enable supervisor
 fi
 
 ####################
@@ -222,9 +218,9 @@ cp $defaultPath/instance/config/config_DEFAULT.ini.default $defaultPath/instance
 ####################
 # Fix ImageMagick Policies
 if test -f "$imageMagickPolicyFile"; then
-  sudo sed -i 's#<policy domain="coder" rights="none" pattern="PDF" />#<policy domain="coder" rights="read|write" pattern="PDF" />#g' $imageMagickPolicyFile
+    sudo sed -i 's#<policy domain="coder" rights="none" pattern="PDF" />#<policy domain="coder" rights="read|write" pattern="PDF" />#g' $imageMagickPolicyFile
 else
-  echo "We could not fix the ImageMagick policy files because it doesn't exists. Please fix it manually using the informations in the README"
+    echo "We could not fix the ImageMagick policy files because it doesn't exists. Please fix it manually using the informations in the README"
 fi
 
 ####################

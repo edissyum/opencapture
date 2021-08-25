@@ -36,7 +36,7 @@ Please, do not run the following command as root and create a specific user for 
     git clone -b $latest_tag https://github.com/edissyum/opencaptureforinvoices/ /var/www/html/opencaptureforinvoices/
     cd /var/www/html/opencaptureforinvoices/
 
-The `./Makefile` command create the service using `www-data` group (apache2 default group) and the current user. 
+The `./install.sh` command create the service using `www-data` group (apache2 default group) and the current user. 
 
 `Please avoid using root user`
 
@@ -45,8 +45,8 @@ Supervisor is useful if you need to run multiple instance of Open-Capture in par
 Systemd is perfect for one instance
 
     cd bin/install/
-    chmod u+x Makefile
-    sudo ./Makefile
+    chmod u+x install.sh
+    sudo ./install.sh
       # Go grab a coffee ;)
 
 It will install all the needed dependencies and install Tesseract V4.X.X with french and english locale. If you need more locales, just do :
@@ -111,6 +111,7 @@ For now (and for somes files like babel's or webApp/*.py files) it is recommende
 It is possible to use file filled with positions and some stuff to retrieve some informations hard to find with REGEX only.
 In this file you'll find to type of metadata, the default one and the custom one. Normmally you don't have to touch the default one except the <code>position</code>.
 For the custom ones, you'll have some settings to fill :
+
     - regex  : Use regex present in the JSON file (use the index name. exemple : <code>dateRegex</code>) or create a new one into this file (you need to modifiy the Locale file in order to get this working)
     - type   : string, number or date. If number, it could replace some letters by number to avoid error (O will became 0 for exemple)  <code>OCR_ERRORS.xml</code> file. If it's date, it will be formatted
     - column : Column in database, don't forget to add two column (one for name and one for position like 'example' and 'example_position'). Both of the column need to be VARCHAR
