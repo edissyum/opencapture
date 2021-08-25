@@ -129,8 +129,8 @@ export class CreateRoleComponent implements OnInit {
                     error = this.translate.instant('AUTH.field_required');
                 }
             }
-        })
-        return error
+        });
+        return error;
     }
 
     hasPrivilege(privilege_id: number) {

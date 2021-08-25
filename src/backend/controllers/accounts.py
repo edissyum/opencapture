@@ -303,9 +303,10 @@ def create_customer(data):
     _columns = {
         'name': data['name'],
         'siret': data['siret'],
-        'company_number': data['company_number'],
         'siren': data['siren'],
         'vat_number': data['vat_number'],
+        'company_number': data['company_number'],
+        'address_id': data['address_id'],
     }
 
     res, error = accounts.create_customer({'columns': _columns})

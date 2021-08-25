@@ -152,7 +152,7 @@ export class CreateUserComponent implements OnInit {
                 if (element.required) {
                     error = this.translate.instant('AUTH.field_required');
                 }
-        })
-        return error
+        });
+        return error;
     }
 }

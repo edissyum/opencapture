@@ -91,14 +91,10 @@ It will fill the database with the suppliers informations.
 
 ## Set up the incron & the cron to start the service
 
-We want to automatise the capture of document. For that, we'll use incrontab.
-First, add your user into the following file :
+In order to use the Open-Captures inputs automation, you have to add your user into the following file. 
+It allow it to use incrontab (used to capture automatically invoices)
 
-> /etc/incron.allow
-
-Then use <code>incrontab -e</code> and put the following line :
-
-    /path/to/capture/ IN_CLOSE_WRITE,IN_MOVED_TO /var/www/html/opencaptureforinvoices/bin/scripts/launch_DEFAULT.sh $@/$#
+    /etc/incron.allow
 
 ## Custom development
 You can modify a lot of files if needed, without loose everything at every update. For that, you have to modify the <code>custom/custom.ini</code> file to add the id (between the brackets)
@@ -122,7 +118,7 @@ For the custom ones, you'll have some settings to fill :
 
 The positioning mask is named only with the typology number : <code>eg : 1.ini</code>. The typology number has to be mentionned in the default_referencial_supplier for each supplier
 
-## WebServices for Maarch 19.04
+## WebServices for Maarch 21.03
 
 The list of files needed to be modify is in install/Maarch with the correct structure. Each modifications on files are between the following tags :
 
@@ -134,11 +130,12 @@ Just report the modifications onto you Maarch installation
 
 ## Connexion to web client
 
-By default, there is ony one superadmin account. Login is 'admin' and password is 'admin'. You could change it after using the 'My Profile' menu
+By default, there is only one superadmin account. Login is 'admin' and password is 'admin'. 
+You could change it after using the 'My Profile' menu
 
 # Installation Splitter module
 
-Splitter module is a part from OC for invoice project, the goal is to separate invoices automatically.
+Splitter module is a part from OC for invoice project, the purpose is to separate invoices automatically.
 
 It will use a lot of metadata to be able to separate invoices without physical separator : 
     - Invoice number
@@ -162,4 +159,4 @@ Here is an example of incrontab :
     /path/to/capture/ IN_CLOSE_WRITE,IN_MOVED_TO /var/www/html/opencaptureforinvoices/bin/scripts/launch_SPLITTER.sh $@/$#
     
 # LICENSE
-Open-Capture for Maarch is released under the GPL v3.
+Open-Capture for Invoices is released under the GPL v3.

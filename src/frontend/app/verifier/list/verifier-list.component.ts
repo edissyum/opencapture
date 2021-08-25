@@ -387,7 +387,7 @@ export class VerifierListComponent implements OnInit {
         this.http.delete(API_URL + '/ws/verifier/invoices/delete/' + invoice_id, {headers: this.authService.headers}).pipe(
             tap(() => {
                 if (!batch_delete) this.loadCustomers();
-                this.notify.success('VERIFIER.invoice_deleted');
+                this.notify.success(this.translate.instant('VERIFIER.invoices_deleted'));
             }),
             catchError((err: any) => {
                 console.debug(err);

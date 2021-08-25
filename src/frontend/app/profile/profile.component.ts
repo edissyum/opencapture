@@ -177,7 +177,7 @@ export class UserProfileComponent implements OnInit {
                     error = this.translate.instant('AUTH.field_required');
                 }
             }
-        })
-        return error
+        });
+        return error;
     }
 }

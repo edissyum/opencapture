@@ -188,7 +188,7 @@ def update_customer(customer_id):
 @auth.token_required
 def create_customer():
     data = request.json['args']
-    res = accounts.create_supplier(data)
+    res = accounts.create_customer(data)
     return make_response(jsonify(res[0])), res[1]
 
 

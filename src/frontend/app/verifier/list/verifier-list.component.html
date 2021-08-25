@@ -88,7 +88,7 @@
                             <mat-card *ngFor="let invoice of this.invoices;" class="cursor-pointer">
                                 <input id="{{ invoice.id }}_checkbox" class="checkBox_list absolute z-40 cursor-pointer" type="checkbox" (click)="checkCheckedInvoices()"/>
                                 <img [routerLink]="'/verifier/viewer/'+ invoice.id"  mat-card-image class="m-auto" [src]="invoice.thumb">
-                                <mat-card-header class="leading-6" [routerLink]="'/verifier/viewer/'+ invoice.id">
+                                <mat-card-header class="leading-6 relative z-10" [routerLink]="'/verifier/viewer/'+ invoice.id">
                                     <mat-card-title>
                                         <span>{{ invoice.supplier_name }}</span>
                                         <span class="absolute right-6 text-green-400 text-base badge badge-secondary badge-pill"

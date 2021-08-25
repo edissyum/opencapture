@@ -215,8 +215,8 @@ export class CreateSupplierComponent implements OnInit {
                     error = this.translate.instant('AUTH.field_required');
                 }
             }
-        })
-        return error
+        });
+        return error;
     }
 
     getErrorMessageAddress(field: any) {
@@ -227,7 +227,7 @@ export class CreateSupplierComponent implements OnInit {
                     error = this.translate.instant('AUTH.field_required');
                 }
             }
-        })
-        return error
+        });
+        return error;
     }
 }

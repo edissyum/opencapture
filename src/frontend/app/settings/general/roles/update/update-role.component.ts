@@ -201,7 +201,7 @@ export class UpdateRoleComponent implements OnInit {
                     error = this.translate.instant('AUTH.field_required');
                 }
             }
-        })
+        });
         return error;
     }
 

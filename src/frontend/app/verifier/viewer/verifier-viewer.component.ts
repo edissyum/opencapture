@@ -809,7 +809,7 @@ export class VerifierViewerComponent implements OnInit {
         }
         if (!valid) return;
         this.saveData(arrayData);
-        let form_id = this.currentFormFields.form_id
+        let form_id = this.currentFormFields.form_id;
         /*
             Executer les actions paramétrées dans les réglages du formulaires
          */

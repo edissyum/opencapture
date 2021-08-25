@@ -199,8 +199,8 @@ export class UpdateUserComponent implements OnInit {
                     error = this.translate.instant('AUTH.field_required');
                 }
             }
-        })
-        return error
+        });
+        return error;
     }
 
     hasCustomer(customerId: any) {
@@ -208,8 +208,8 @@ export class UpdateUserComponent implements OnInit {
             if(customer_id == customerId) {
                 return true;
             }
-        }
-        return false
+        };
+        return false;
     }
 
     updateUsersCustomers(customerId: any) {

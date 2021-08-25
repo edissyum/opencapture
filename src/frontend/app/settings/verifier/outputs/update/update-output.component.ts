@@ -251,7 +251,7 @@ export class UpdateOutputComponent implements OnInit {
                 }
             }
         });
-        return error
+        return error;
     }
 
     changeOutputType(event: any) {

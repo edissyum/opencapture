@@ -20,13 +20,12 @@ import {of} from "rxjs";
     styleUrls: ['./update-customer.component.scss']
 })
 export class UpdateCustomerComponent implements OnInit {
-
-    headers: HttpHeaders = this.authService.headers;
-    loading: boolean = true;
-    customerId: any;
-    addressId: any;
-    customer: any;
-    customerForm: any[] = [
+    headers     : HttpHeaders   = this.authService.headers;
+    loading     : boolean       = true;
+    customerId  : any;
+    addressId   : any;
+    customer    : any;
+    customerForm: any[]         = [
         {
             id: 'name',
             label: marker('ACCOUNTS.supplier_name'),
@@ -63,7 +62,7 @@ export class UpdateCustomerComponent implements OnInit {
             required: false
         },
     ];
-    addressForm: any [] = [
+    addressForm : any []        = [
         {
             id: 'address1',
             label: marker('ADDRESSES.address_1'),
@@ -238,7 +237,7 @@ export class UpdateCustomerComponent implements OnInit {
         }
     }
 
-    getErrorMessageSupplier(field: any) {
+    getErrorMessageCustomer(field: any) {
         let error = undefined;
         this.customerForm.forEach(element => {
             if (element.id == field) {
@@ -246,8 +245,8 @@ export class UpdateCustomerComponent implements OnInit {
                     error = this.translate.instant('AUTH.field_required');
                 }
             }
-        })
-        return error
+        });
+        return error;
     }
 
     getErrorMessageAddress(field: any) {
@@ -258,8 +257,7 @@ export class UpdateCustomerComponent implements OnInit {
                     error = this.translate.instant('AUTH.field_required');
                 }
             }
-        })
-        return error
+        });
+        return error;
     }
-
 }

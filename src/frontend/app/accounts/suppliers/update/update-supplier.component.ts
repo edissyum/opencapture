@@ -279,7 +279,7 @@ export class UpdateSupplierComponent implements OnInit {
                 }
             }
         });
-        return error
+        return error;
     }
 
     getErrorMessageAddress(field: any) {
@@ -291,6 +291,6 @@ export class UpdateSupplierComponent implements OnInit {
                 }
             }
         });
-        return error
+        return error;
     }
 }
