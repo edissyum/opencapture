@@ -130,7 +130,7 @@ def str2bool(value):
 
 # If needed just run "kuyruk --app src.backend.main.OCforInvoices_worker manager"
 # to have web dashboard of current running worker
-# @OCforInvoices_worker.task(queue='invoices')
+@OCforInvoices_worker.task(queue='invoices')
 def launch(args):
     start = time.time()
 
