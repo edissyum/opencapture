@@ -29,7 +29,6 @@ def upload():
     input_id = None
     if 'inputId' in request.args:
         input_id = request.args['inputId']
-    print(input_id)
     files = request.files
     res = verifier.handle_uploaded_file(files, input_id)
     if res:

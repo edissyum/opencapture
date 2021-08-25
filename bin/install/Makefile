@@ -94,6 +94,7 @@ su -c "cat > /etc/apache2/sites-available/opencapture.conf << EOF
     WSGIScriptAlias /backend_oc /var/www/html/opencaptureforinvoices/wsgi.py
 
     <Directory $defaultPath>
+        AllowOverride All
         WSGIProcessGroup opencapture
         WSGIApplicationGroup %{GLOBAL}
         WSGIPassAuthorization On
@@ -107,8 +108,12 @@ EOF"
 ####################
 # Disable default Apache2 configuration
 # Enable OpenCapture configuration
+# Disable default configuration to avoid conflict
+# Enable mod_rewrite
 # And restart Apache
 a2ensite opencapture.conf
+a2dissite 000-default.conf
+a2enmod rewrite
 systemctl restart apache2
 
 ####################

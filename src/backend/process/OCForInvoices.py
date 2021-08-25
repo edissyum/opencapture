@@ -23,7 +23,7 @@ from src.backend.import_process import FindDate, FindFooter, FindInvoiceNumber, 
 from src.backend.import_classes import _Spreadsheet
 
 
-def insert(args, files, config, database, datas, positions, pages, tiff_filename, full_jpg_filename, file, original_file, supplier_id, status, nb_pages):
+def insert(args, files, config, database, datas, positions, pages, tiff_filename, full_jpg_filename, file, original_file, supplier, status, nb_pages):
     if files.isTiff == 'True':
         try:
             filename = os.path.splitext(files.custom_fileName_tiff)
@@ -44,7 +44,6 @@ def insert(args, files, config, database, datas, positions, pages, tiff_filename
         path = config.cfg['GLOBAL']['fullpath'] + '/' + full_jpg_filename.replace('-%03d', '-001')
 
     invoice_data = {
-        'supplier_id': supplier_id,
         'filename': os.path.basename(file),
         'path': os.path.dirname(file),
         'img_width': str(files.get_size(path)),
@@ -59,8 +58,12 @@ def insert(args, files, config, database, datas, positions, pages, tiff_filename
         'customer_id': 0
     }
 
+    if supplier:
+        invoice_data.update({
+            'supplier_id': supplier[2]['supplier_id'],
+        })
+
     if 'input_id' in args:
-        print(args['input_id'])
         input_settings = database.select({
             'select': ['*'],
             'table': ['inputs'],
@@ -391,9 +394,9 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
     # If all informations are found, do not send it to GED
     if supplier and supplier[2]['skip_auto_validate'] == 'False' and date and invoice_number and footer and config.cfg['GLOBAL']['allowautomaticvalidation'] == 'True':
         log.info('All the usefull informations are found. Export the XML and end process')
-        insert(args, files, config, database, datas, positions, pages, tiff_filename, full_jpg_filename, file, original_file, supplier[2]['supplier_id'], 'END', nb_pages)
+        insert(args, files, config, database, datas, positions, pages, tiff_filename, full_jpg_filename, file, original_file, supplier, 'END', nb_pages)
     else:
-        insert(args, files, config, database, datas, positions, pages, tiff_filename, full_jpg_filename, file, original_file, supplier[2]['supplier_id'], 'NEW', nb_pages)
+        insert(args, files, config, database, datas, positions, pages, tiff_filename, full_jpg_filename, file, original_file, supplier, 'NEW', nb_pages)
         if supplier and supplier[2]['skip_auto_validate'] == 'True':
             log.info('Skip automatic validation for this supplier this time')
             database.update({

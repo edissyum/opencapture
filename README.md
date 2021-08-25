@@ -30,13 +30,15 @@ We recommend using latest stable debian version
 
 Please, do not run the following command as root and create a specific user for Open-Capture For Invoices.
 
-    sudo mkdir /var/www/html/opencaptureforinvoices/ && sudo chmod -R 775 /var/www/html/opencaptureforinvoices/ && sudo chown -R $(whoami):$(whoami) /var/www/html/opencaptureforinvoices/
+    sudo mkdir -p /var/www/html/opencaptureforinvoices/ && sudo chmod -R 775 /var/www/html/opencaptureforinvoices/ && sudo chown -R $(whoami):$(whoami) /var/www/html/opencaptureforinvoices/
     sudo apt install git
     latest_tag=$(git ls-remote --tags --sort="v:refname" https://github.com/edissyum/opencaptureforinvoices.git | tail -n1 |  sed 's/.*\///; s/\^{}//')
     git clone -b $latest_tag https://github.com/edissyum/opencaptureforinvoices/ /var/www/html/opencaptureforinvoices/
     cd /var/www/html/opencaptureforinvoices/
 
-The `./Makefile` command create the service using `www-data` group (nginx default group) and the current user. `Please avoid using root user`
+The `./Makefile` command create the service using `www-data` group (apache2 default group) and the current user. 
+
+`Please avoid using root user`
 
 You have the choice between using supervisor or basic systemd
 Supervisor is useful if you need to run multiple instance of Open-Capture in parallel but it will be very greedy
@@ -53,22 +55,18 @@ It will install all the needed dependencies and install Tesseract V4.X.X with fr
 
 Here is a list of all available languages code : https://www.macports.org/ports.php?by=name&substr=tesseract-
 
-In most cases you had to modify the <code>/etc/ImageMagick-6/policy.xml</code> file to comment the following line (~ line 94) and then restart the OCForInvoices-worker service:
-
-    <policy domain="coder" rights="none" pattern="PDF" />
-
-    sudo systemctl restart OCForInvoices-worker (systemd version)
-    sudo systemctl restart OCForInvoices_Split-worker.service (systemd version)
-
-    sudo supervisorctl restart all (supervisor version)
-
 If you need more informations about the usefull commands for supervisor : http://supervisord.org/running.html#running-supervisorctl
 
-If you plan to upload invoices from the interface, using the upload form, you had to modify NGINX settings to increase the max size of upload.OCForInvoices.
-Go to file <code>/etc/nginx/nginx.conf</code> and add <code>client_max_body_size 100M;</code> into the <code>http</code> bloc
-Then restart the nginx service
+If you plan to upload large invoices from the interface, using the upload form, you had to modify ImageMagick some settings.
+Go to following file : `/etc/ImageMagick-6/policy.xml` and increase the value (to `4GiB` for exemple) of the following line : 
 
-    sudo systemctl restart nginx
+      <policy domain="resource" name="disk" value="1GiB"/>
+
+Then restart apache and workers 
+
+    sudo systemctl restart apache2
+    sudo systemctl restart OCForInvoices-worker
+    sudo systemctl restart OCForInvoices_Split-worker
 
 ## API for SIRET/SIREN
 

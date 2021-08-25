@@ -896,11 +896,13 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     changeImage(pageToShow: number, oldPage: number) {
-        if (pageToShow){
+        if (pageToShow) {
             let extension = this.currentFilename.split('.').pop();
             let old_cpt = ('000' + oldPage).substr(-3);
             let new_cpt = ('000' + pageToShow).substr(-3);
+
             let new_filename = this.currentFilename.replace(old_cpt + '.' + extension, new_cpt + '.' + extension);
+            this.currentFilename = new_filename;
             this.getThumb(new_filename);
             this.currentPage = pageToShow;
             for (let parent in this.fields) {
