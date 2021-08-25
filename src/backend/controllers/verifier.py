@@ -30,7 +30,7 @@ from ..main import create_classes_from_config
 from ..import_models import verifier, accounts
 
 
-def handle_uploaded_file(files, purchase_or_sale, customer_id):
+def handle_uploaded_file(files, input_id):
     path = current_app.config['UPLOAD_FOLDER']
     for file in files:
         f = files[file]
@@ -38,8 +38,7 @@ def handle_uploaded_file(files, purchase_or_sale, customer_id):
         launch({
             'file': filename,
             'config': current_app.config['CONFIG_FILE'],
-            'purchaseOrSale': purchase_or_sale,
-            'customerId': customer_id
+            'input_id': input_id
         })
     return True
 

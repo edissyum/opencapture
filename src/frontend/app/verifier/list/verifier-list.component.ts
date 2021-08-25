@@ -447,6 +447,7 @@ export class VerifierListComponent implements OnInit {
     }
 
     onTabChange(event: any) {
+        this.search = '';
         this.selectedTab = event.index;
         this.localeStorageService.save('invoicesTimeIndex', this.selectedTab);
         this.currentTime = this.batchList[this.selectedTab].id;

@@ -3,7 +3,7 @@
 		"lead_dev": "Lead developer"
 	},
 	"ACCOUNTS": {
-		"choose_customer_upload": "Choix du compte client",
+		"choose_input_upload": "Choix de la chaîne entrante",
 		"company_number": "Numéro de société",
 		"confirm_delete_customer": "Êtes vous sûr de vouloir supprimer le compte client <b>{{ customer }}</b> ?",
 		"confirm_delete_supplier": "Êtes vous sûr de vouloir supprimer le compte fournisseur <b>{{ supplier }}</b> ?",
@@ -327,11 +327,10 @@
 		"extension_unauthorized": "Un ou plusieurs fichiers ne sont pas au format PDF",
 		"no_file": "Aucun fichier à téléverser",
 		"placeholder": "Cliquer pour choisir un document ou faites glisser un document",
-		"please_select_customer": "Merci de sélectionner un compte client avant de téléverser une facture",
+		"please_select_input": "Choisissez une chaîne entrante avant de procéder au téléversement",
 		"purchase_invoice": "Facture d'achat",
 		"sale_invoice": "Facture de vente",
-		"send_purchase_invoice": "Téléverser la facture d'achat",
-		"send_sale_invoice": "Téléverser la facture de vente",
+		"upload_invoice": "Téléverser la facture",
 		"upload_success": "Fichier(s) téléversé(s) avec succès"
 	},
 	"USER": {

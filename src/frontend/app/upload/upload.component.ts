@@ -22,20 +22,19 @@ import {LocalStorageService} from "../../services/local-storage.service";
 })
 
 export class UploadComponent implements OnInit {
-    headers: HttpHeaders = this.authService.headers;
-    selectedCustomer    : any       = '';
-    usersCustomers      : any[]     = [];
-    customers           : any[]     = [];
-    loading             : boolean   = true;
-    purchaseOrSale      : string    = 'purchase';
+    headers             : HttpHeaders   = this.authService.headers;
+    selectedInput       : any           = '';
+    inputs              : any[]         = [];
+    loading             : boolean       = true;
+    sending             : boolean       = false;
 
     constructor(
-        private http: HttpClient,
         private router: Router,
+        private http: HttpClient,
         private route: ActivatedRoute,
+        public userService: UserService,
         private formBuilder: FormBuilder,
         private authService: AuthService,
-        public userService: UserService,
         public translate: TranslateService,
         private notify: NotificationService,
         public localeStorageService: LocalStorageService
@@ -51,17 +50,8 @@ export class UploadComponent implements OnInit {
     );
 
     ngOnInit(): void {
-        this.http.get(API_URL + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
-            tap((data: any) => {this.customers = data.customers;}),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
-
-        this.http.get(API_URL + '/ws/users/getCustomersByUserId/' + this.userService.getUser()['id'], {headers: this.authService.headers}).pipe(
-            tap((data: any) => {this.usersCustomers = data;}),
+        this.http.get(API_URL + '/ws/inputs/list', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {this.inputs = data.inputs;}),
             finalize(() => {this.loading = false;}),
             catchError((err: any) => {
                 console.debug(err);
@@ -69,7 +59,6 @@ export class UploadComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
-
     }
 
     checkFile(data: any): void {
@@ -85,34 +74,12 @@ export class UploadComponent implements OnInit {
         }
     }
 
-    hasCustomer(customerId: any) {
-        let user = this.userService.getUser();
-        if (user.privileges == '*') return true;
-
-        for (let customer_id of this.usersCustomers)
-            if (customer_id == customerId) return true;
-        return false;
-    }
-
-    setCustomer(customerId: any) {
-        this.selectedCustomer = customerId;
-    }
-
-    setPurchaseOrSale(data: any) {
-        this.fileControl = new FormControl(
-            [],
-            [
-                FileValidators.required,
-                FileValidators.fileExtension(['pdf'])
-            ]
-        );
-        if (data.tab.textLabel == this.translate.instant('UPLOAD.sale_invoice'))
-            this.purchaseOrSale = 'sale';
-        else
-            this.purchaseOrSale = 'purchase';
+    setInput(inputId: any) {
+        this.selectedInput = inputId;
     }
 
     uploadInvoice(): void {
+        this.sending = true;
         const formData: FormData = new FormData();
 
         if (this.fileControl.value.length == 0) {
@@ -131,14 +98,16 @@ export class UploadComponent implements OnInit {
         let splitter_or_verifier = this.localeStorageService.get('splitter_or_verifier');
         if (splitter_or_verifier !== undefined || splitter_or_verifier !== '') {
             this.http.post(
-                API_URL + '/ws/' + splitter_or_verifier + '/upload?purchaseOrSale=' + this.purchaseOrSale + '&customerId=' + this.selectedCustomer,
+                API_URL + '/ws/' + splitter_or_verifier + '/upload?inputId=' + this.selectedInput,
                 formData,
                 {
                     headers: this.authService.headers
                 },
             ).pipe(
-                tap((data: any) => {
+                tap(() => {
+                    this.fileControl.setValue('');
                     this.notify.success(this.translate.instant('UPLOAD.upload_success'));
+                    this.sending = false;
                 }),
                 catchError((err: any) => {
                     this.notify.handleErrors(err);

@@ -1,11 +1,11 @@
 <mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem">
     <mat-sidenav #sidenav mode="side" opened class="w-1/6 flex flex-col h-full border-r border-green-400" style="top:0.1rem">
-        <h3 class="text-center text-gray-900 m-0 h-16" style="padding-top: 1.2rem">{{ "ACCOUNTS.choose_customer_upload" | translate }}</h3>
+        <h3 class="text-center text-gray-900 m-0 h-16" style="padding-top: 1.2rem">{{ "ACCOUNTS.choose_input_upload" | translate }}</h3>
         <mat-divider></mat-divider>
         <mat-list>
-            <mat-list-item [class.hidden]="!hasCustomer(customer.id)" *ngFor="let customer of customers" class="hover:bg-green-400 cursor-pointer m-2 w-auto"
-                           [class.bg-green-400]="this.selectedCustomer == customer.id" (click)="setCustomer(customer.id)">
-                {{ customer.name }}
+            <mat-list-item *ngFor="let input of inputs" class="hover:bg-green-400 cursor-pointer m-2 w-auto"
+                           [class.bg-green-400]="this.selectedInput == input.input_id" (click)="setInput(input.input_id)">
+                {{ input.input_label }}
             </mat-list-item>
         </mat-list>
     </mat-sidenav>
@@ -14,54 +14,30 @@
                 class="absolute left-2 top-2" style="z-index: 999">
             <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fas fa-stream text-xl text-gray-900"></i>
         </button>
-        <mat-tab-group class="upload" (selectedTabChange)="setPurchaseOrSale($event)">
-            <mat-tab [label]="'UPLOAD.purchase_invoice' | translate">
-                <div *ngIf="loading">
-                    <app-loader></app-loader>
-                </div>
-                <ngx-file-drag-drop
-                        [formControl]="fileControl"
-                        [activeBorderColor]="'#97BF3D'"
-                        [multiple]="true"
-                        [accept]="'pdf'"
-                        [displayFileSize]="true"
-                        [emptyPlaceholder]="'UPLOAD.placeholder' | translate"
-                        [class]="'max-w-3xl h-56'"
-                        (valueChanged)="checkFile($event)">
-                </ngx-file-drag-drop>
-                <div class="flex justify-center content-center">
-                    <button mat-flat-button [disabled]="this.selectedCustomer == '' || this.fileControl.value.length == 0" (click)="uploadInvoice()"
-                            [class.hover:bg-green-400]="this.selectedCustomer && this.fileControl.value.length != 0" [class.hover:text-white]="this.selectedCustomer && this.fileControl.value.length != 0"
-                            class="mt-5 border-solid border-green-400 border px-3 py-2 text-sm font-medium transition duration-300">
-                        {{ 'UPLOAD.send_purchase_invoice' | translate }}
-                    </button>
-                </div>
-                <span *ngIf="this.selectedCustomer == ''" class="flex justify-center mt-4 text-red-500">
-                    {{ 'UPLOAD.please_select_customer' | translate }}
-                </span>
-            </mat-tab>
-            <mat-tab [label]="'UPLOAD.sale_invoice' | translate">
-                <ngx-file-drag-drop
-                        [formControl]="fileControl"
-                        [activeBorderColor]="'#97BF3D'"
-                        [multiple]="true"
-                        [accept]="'pdf'"
-                        [displayFileSize]="true"
-                        [emptyPlaceholder]="'UPLOAD.placeholder' | translate"
-                        [class]="'max-w-3xl h-56'"
-                        (valueChanged)="checkFile($event)">
-                </ngx-file-drag-drop>
-                <div class="flex justify-center content-center">
-                    <button mat-flat-button [disabled]="this.selectedCustomer == '' || this.fileControl.value.length == 0" (click)="uploadInvoice()"
-                            [class.hover:bg-green-400]="this.selectedCustomer && this.fileControl.value.length != 0" [class.hover:text-white]="this.selectedCustomer && this.fileControl.value.length != 0"
-                            class="mt-5 border-solid border-green-400 border px-3 py-2 text-sm font-medium transition duration-300">
-                        {{ 'UPLOAD.send_sale_invoice' | translate }}
-                    </button>
-                </div>
-                <span *ngIf="this.selectedCustomer == ''" class="flex justify-center mt-4 text-red-500">
-                    {{ 'UPLOAD.please_select_customer' | translate }}
-                </span>
-            </mat-tab>
-        </mat-tab-group>
+        <div *ngIf="loading">
+            <app-loader></app-loader>
+        </div>
+        <ngx-file-drag-drop
+                [formControl]="fileControl"
+                [activeBorderColor]="'#97BF3D'"
+                [multiple]="true"
+                [accept]="'pdf'"
+                [displayFileSize]="true"
+                [emptyPlaceholder]="'UPLOAD.placeholder' | translate"
+                [class]="'max-w-3xl h-56 mt-24'"
+                (valueChanged)="checkFile($event)">
+        </ngx-file-drag-drop>
+        <div class="flex justify-center content-center">
+            <button mat-flat-button
+                    [disabled]="this.sending == true || this.selectedInput == '' || this.fileControl.value.length == 0" (click)="uploadInvoice()"
+                    [class.hover:bg-green-400]="this.sending == false && this.selectedInput && this.fileControl.value.length != 0"
+                    [class.hover:text-white]="this.sending == false && this.selectedInput && this.fileControl.value.length != 0"
+                    class="mt-5 border-solid border-green-400 border px-3 py-2 text-sm font-medium transition duration-300">
+                {{ 'UPLOAD.upload_invoice' | translate }}
+            </button>
+        </div>
+        <span *ngIf="this.selectedInput == ''" class="flex justify-center mt-4 text-red-500">
+            {{ 'UPLOAD.please_select_input' | translate }}
+        </span>
     </mat-sidenav-content>
 </mat-sidenav-container>

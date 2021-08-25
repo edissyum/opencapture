@@ -539,9 +539,16 @@ class Files:
         return Image.open(img)
 
     @staticmethod
+    def save_uploaded_file(f, path):
+        filename, file_ext = os.path.splitext(f.filename)
+        file = filename.replace(' ', '_') + file_ext.lower()
+        new_path = os.path.join(path, secure_filename(file))
+        f.save(new_path)
+        return new_path
+
+    @staticmethod
     def delete_file_with_extension(dir_path, extension):
         files = os.listdir(dir_path)
-
         for item in files:
             if item.endswith(extension):
                 os.remove(os.path.join(dir_path, item))

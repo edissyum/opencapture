@@ -26,15 +26,12 @@ bp = Blueprint('verifier', __name__, url_prefix='/ws/')
 @bp.route('verifier/upload', methods=['POST'])
 @auth.token_required
 def upload():
-    purchase_or_sale = 'purchase'
-    customer_id = None
-    if 'purchaseOrSale' in request.args:
-        purchase_or_sale = request.args['purchaseOrSale']
-    if 'customerId' in request.args:
-        customer_id = request.args['customerId']
-
+    input_id = None
+    if 'inputId' in request.args:
+        input_id = request.args['inputId']
+    print(input_id)
     files = request.files
-    res = verifier.handle_uploaded_file(files, purchase_or_sale, customer_id)
+    res = verifier.handle_uploaded_file(files, input_id)
     if res:
         return make_response('', 200)
     else:
