@@ -100,7 +100,7 @@
 		"jwt_error": "Erreur lors de l'authentification par token",
 		"number_float_pattern": "La valeur n'est pas au format attendu : nombre flottant",
 		"number_int_pattern": "La valeur n'est pas au format attendu : nombre entier",
-		"unauthorized": "Vous n'êtes pas autorisé à visualiser cette page",
+		"unauthorized": "Vous n'êtes pas autorisé à visualiser la page suivante : ",
 		"unknow_error": "Erreur inconnue"
 	},
 	"FACTURATION": {

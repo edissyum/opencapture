@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {PrivilegesService} from "./privileges.service";
-import {ActivatedRouteSnapshot, Router, RouterStateSnapshot} from "@angular/router";
+import {ActivatedRouteSnapshot, Router} from "@angular/router";
 import {TranslateService} from "@ngx-translate/core";
 import {NotificationService} from "./notifications/notifications.service";
 
@@ -24,7 +24,11 @@ export class HasPrivilegeService {
                 let hasPrivilege = this.privilegesService.hasPrivilege(privilege)
                 if (!hasPrivilege) {
                     this.translate.get('ERROR.unauthorized').subscribe((translated: string) => {
-                        this.notify.error(translated)
+                        let label = ''
+                        if (route.routeConfig) {
+                            label = this.translate.instant(route.data['title']);
+                        }
+                        this.notify.error(translated + label)
                         this.router.navigateByUrl('/home')
                     });
                     return_value = false

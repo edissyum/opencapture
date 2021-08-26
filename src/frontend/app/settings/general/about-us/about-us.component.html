@@ -80,7 +80,12 @@
                 <i [class.fa-arrow-right]="!this.serviceSettings.getIsMenuOpen()" class="fas fa-arrow-left text-2xl text-gray-900"></i>
             </button>
             <div class="settings_title text-center">
-                <h3>{{ this.serviceSettings.getTitle() }}</h3>
+                <h3>
+                    Open-Capture for Invoices version <b>{{ git_version }}</b>
+                    <span *ngIf="last_version !== git_version && git_version !== 'dev'">
+                        {{ 'ABOUT-US.new_version_available' | translate }}
+                    </span>
+                </h3>
                 <hr class="border-green-400">
             </div>
         </div>

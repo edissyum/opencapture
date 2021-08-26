@@ -89,7 +89,7 @@ class Spreadsheet:
                             address['city'] if address and address['city'] is not None else '',
                             address['country'] if address and address['country'] is not None else '',
                             supplier['typology'] if supplier['typology'] is not None else '',
-                            str(supplier['get_only_raw_footer']).lower() if supplier['get_only_raw_footer'] is not None else '']
+                            str(not supplier['get_only_raw_footer']).lower() if supplier['get_only_raw_footer'] is not None else '']
                     content_sheet[sheet_name].append(line)
 
         except IndexError:
