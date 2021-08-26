@@ -235,4 +235,23 @@ export class SuppliersListComponent implements OnInit {
     compare(a: number | string, b: number | string, isAsc: boolean) {
         return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
     }
+
+    getReferenceFile() {
+        this.http.get(API_URL + '/ws/accounts/supplier/getReferenceFile', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                let mime_type = data.mime;
+                let reference_file = 'data:' + mime_type + ';base64, ' + data.file;
+                const link = document.createElement("a");
+                link.href = reference_file;
+                link.download = data.filename;
+                link.click();
+            }),
+            finalize(() => this.loading = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
 }
