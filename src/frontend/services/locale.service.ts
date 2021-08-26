@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {API_URL} from "../app/env";
 import {catchError, tap} from "rxjs/operators";
 import {of} from "rxjs";
@@ -93,8 +93,7 @@ export class LocaleService {
     }
 
     getLocales() {
-        const headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.authService.getToken())
-        this.http.get(API_URL + '/ws/i18n/getAllLang', {headers}).pipe(
+        this.http.get(API_URL + '/ws/i18n/getAllLang', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.langs = data.langs;
             }),

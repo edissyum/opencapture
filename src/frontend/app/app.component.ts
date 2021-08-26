@@ -25,13 +25,13 @@ export class AppComponent implements OnInit {
 
     constructor(
         private router: Router,
-        public location: Location,
         private http: HttpClient,
+        public location: Location,
         private titleService: Title,
         private notify:NotificationService,
         private translate: TranslateService,
-        private activatedRoute: ActivatedRoute,
         private localeService: LocaleService,
+        private activatedRoute: ActivatedRoute,
         private localeStorageService: LocalStorageService
     ) {}
 
@@ -41,18 +41,18 @@ export class AppComponent implements OnInit {
             filter(event => event instanceof NavigationEnd),
             map(() => {
                 let child = this.activatedRoute.firstChild;
-                let child_image = 'assets/imgs/logo_opencapture.png'
+                let child_image = 'assets/imgs/logo_opencapture.png';
                 if (child) {
                     while (child.firstChild) {
                         child = child.firstChild;
                     }
                     if (this.router.url != '/home' && !this.router.url.includes('settings')) {
-                        let splitter_or_verifier = this.localeStorageService.get('splitter_or_verifier')
+                        let splitter_or_verifier = this.localeStorageService.get('splitter_or_verifier');
                         if (splitter_or_verifier != undefined) {
                             if (splitter_or_verifier == 'splitter') {
-                                child_image = 'assets/imgs/logo_splitter.png'
+                                child_image = 'assets/imgs/logo_splitter.png';
                             }else{
-                                child_image = 'assets/imgs/logo_verifier.png'
+                                child_image = 'assets/imgs/logo_verifier.png';
                             }
                         }
                     }
@@ -64,12 +64,12 @@ export class AppComponent implements OnInit {
                 return [appTitle, child_image]
             })
         ).subscribe((data: any) => {
-            let ttl = data[0]
-            this.image = data[1]
-            if (this.translate.currentLang == undefined) {
+            let ttl = data[0];
+            this.image = data[1];
+            if (this.localeService.currentLang == undefined) {
                 this.http.get(API_URL + '/ws/i18n/getCurrentLang').pipe(
                     tap((data: any) => {
-                        this.translate.use(data.lang)
+                        this.translate.use(data.lang);
                         this.translate.get(ttl).subscribe((data:any)=> {
                             this.titleService.setTitle(data + ' - ' + this.title);
                         });
@@ -85,7 +85,7 @@ export class AppComponent implements OnInit {
                 this.translate.get(ttl).subscribe((data:any)=> {
                     this.titleService.setTitle(data + ' - ' + this.title);
                 });
-                this.loading = false
+                this.loading = false;
             }
         });
     }
