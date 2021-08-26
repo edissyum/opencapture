@@ -24,7 +24,7 @@ from flask import current_app
 from kuyruk_manager import Manager
 from .functions import recursive_delete, get_custom_array
 from .import_classes import _Database, _PyTesseract, _Locale, _Xml, _Files, _Log, _Config, invoice_classification,\
-    _SeparatorQR
+    _SeparatorQR, _Spreadsheet
 
 custom_array = get_custom_array()
 
@@ -77,6 +77,7 @@ def create_classes(config_file):
     config = _Config(config_file)
     locale = _Locale(config)
     log = _Log(config.cfg['GLOBAL']['logfile'])
+    spreadsheet = _Spreadsheet(log, config)
     ocr = _PyTesseract(locale.localeOCR, log, config)
     db_user = config.cfg['DATABASE']['postgresuser']
     db_pwd = config.cfg['DATABASE']['postgrespassword']
@@ -86,7 +87,7 @@ def create_classes(config_file):
     database = _Database(log, db_name, db_user, db_pwd, db_host, db_port)
     xml = _Xml(config, database)
 
-    return config, locale, log, ocr, database, xml
+    return config, locale, log, ocr, database, xml, spreadsheet
 
 
 def check_file(files, path, config, log):
@@ -141,7 +142,7 @@ def launch(args):
     if not os.path.exists(config_file):
         sys.exit('config file couldn\'t be found')
 
-    config, locale, log, ocr, database, xml = create_classes(config_file)
+    config, locale, log, ocr, database, xml, spreadsheet = create_classes(config_file)
     tmp_folder = tempfile.mkdtemp(dir=config.cfg['GLOBAL']['tmppath'])
     filename = tempfile.NamedTemporaryFile(dir=tmp_folder).name
     separator_qr = _SeparatorQR(log, config, tmp_folder)
