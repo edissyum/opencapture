@@ -5,12 +5,6 @@ INSERT INTO "status" ("id","label","label_long") VALUES ('ERR','Erreur','Erreur 
 INSERT INTO "status" ("id","label","label_long") VALUES ('WAIT_SUP','En attente','En attente validation fournisseur');
 INSERT INTO "status" ("id","label","label_long") VALUES ('DEL','Supprimée','Supprimée');
 
--- CRÉATION DES ROLES
-INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (1, 'superadmin', 'SuperUtilisateur', 'false');
-INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (2, 'admin', 'Administrateur', 'true');
-INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (3, 'user', 'Utilisateur', 'true');
-ALTER SEQUENCE "roles_id_seq" RESTART WITH 4;
-
 -- CRÉATION DES CHAINES SORTANTES
 INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data") VALUES (1, 'export_xml', 'Export XML', '{
     "options": {
@@ -196,7 +190,14 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (25, 'update_output', 
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (26, 'inputs_list', 'verifier');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (27, 'update_input', 'verifier');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (28, 'add_input', 'verifier');
-ALTER SEQUENCE "privileges_id_seq" RESTART WITH 29;
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (29, 'export_suppliers', 'accounts');
+ALTER SEQUENCE "privileges_id_seq" RESTART WITH 30;
+
+-- CRÉATION DES ROLES
+INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (1, 'superadmin', 'SuperUtilisateur', 'false');
+INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (2, 'admin', 'Administrateur', 'true');
+INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (3, 'user', 'Utilisateur', 'true');
+ALTER SEQUENCE "roles_id_seq" RESTART WITH 4;
 
 -- AJOUT DES PRIVILEGES LIÉS AUX ROLES
 INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (1, '{"data" : "[''*'']"}');

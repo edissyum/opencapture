@@ -261,6 +261,8 @@
 		"create_supplier": "Créer un fournisseur",
 		"custom_fields": "Champs personnalisés",
 		"customers_list": "Liste des clients",
+		"export_suppliers": "Exporter les fournisseurs",
+		"form_builder": "Création/modification de formulaire",
 		"forms_list": "Liste des formulaires",
 		"general": "Privilèges globaux",
 		"list": "Liste des privilèges",
