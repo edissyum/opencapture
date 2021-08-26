@@ -1,7 +1,14 @@
 {
 	"ABOUT-US": {
+		"dependency": "",
+		"distributed_under": "",
+		"editor": "",
+		"gnu_license": "",
 		"lead_dev": "",
-		"new_version_available": ""
+		"license": "",
+		"new_version_available": "",
+		"official_website": "",
+		"thanks_to_developers": ""
 	},
 	"ACCOUNTS": {
 		"choose_input_upload": "",
@@ -312,8 +319,7 @@
 		"update_input": "",
 		"update_output": "",
 		"users_list": "Users list",
-		"verifier": "Verifier",
-		"version_and_update": "Versions and update"
+		"verifier": "Verifier"
 	},
 	"SPLITTER": {
 		"list": "List of batches",

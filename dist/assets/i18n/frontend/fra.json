@@ -1,7 +1,14 @@
 {
 	"ABOUT-US": {
+		"dependency": "Dépendances",
+		"distributed_under": "Open-Capture est un logiciel libre et open-source distribué sous",
+		"editor": "Éditeur",
+		"gnu_license": "la license GNU General Public License v3.0",
 		"lead_dev": "Lead developer",
-		"new_version_available": "Une nouvelle version est disponible"
+		"license": "License",
+		"new_version_available": "Une nouvelle version est disponible",
+		"official_website": "Site officiel",
+		"thanks_to_developers": "Merci aux developpeurs de ces solutions"
 	},
 	"ACCOUNTS": {
 		"choose_input_upload": "Choix de la chaîne entrante",
@@ -312,8 +319,7 @@
 		"update_input": "Modifier une chaîne entrante",
 		"update_output": "Modifier une chaîne sortante",
 		"users_list": "Liste des utilisateurs",
-		"verifier": "Paramètres du Vérificateur",
-		"version_and_update": "Version et mise à jour"
+		"verifier": "Paramètres du Vérificateur"
 	},
 	"SPLITTER": {
 		"list": "Liste des lots",
