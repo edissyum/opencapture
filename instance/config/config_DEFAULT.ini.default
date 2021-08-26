@@ -64,11 +64,10 @@ localeocr                = fra
 localepath               = ${GLOBAL:projectPath}/src/assets/locale/
 
 [REFERENCIAL]
-referencialfinancial            = ${GLOBAL:projectPath}/bin/src/referencial/plan_comptable.xlsx
 # ODS or XLSX supported
-referencialSupplierDocumentPath = ${GLOBAL:projectPath}/bin/src/referencial/default_referencial_supplier.ods
-referencialSupplierIndexpath    = ${GLOBAL:projectPath}/bin/src/referencial/default_referencial_supplier_index.json
-referencialPosition             = ${GLOBAL:projectPath}/bin/src/referencial/positions/
+referencialSupplierDocumentPath = ${GLOBAL:projectPath}/src/assets/referencial/default_referencial_supplier.ods
+referencialSupplierIndexpath    = ${GLOBAL:projectPath}/src/assets/referencial/default_referencial_supplier_index.json
+referencialPosition             = ${GLOBAL:projectPath}/src/assets/referencial/positions/
 
 [SEPARATE-BY-DOCUMENT]
 enabled = False

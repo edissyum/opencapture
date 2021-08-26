@@ -140,7 +140,11 @@ export class UpdateSupplierComponent implements OnInit {
                             if (supplier.hasOwnProperty(field)) {
                                 this.supplierForm.forEach(element => {
                                     if (element.id == field) {
-                                        element.control.setValue(this.supplier[field]);
+                                        if (element.id == 'get_only_raw_footer') {
+                                            element.control.setValue(!this.supplier[field])
+                                        }else {
+                                            element.control.setValue(this.supplier[field]);
+                                        }
                                         if (element.id == 'form_id') {
                                             element.values = forms.forms
                                         }
@@ -241,6 +245,9 @@ export class UpdateSupplierComponent implements OnInit {
             const address: any = {};
             this.supplierForm.forEach(element => {
                 supplier[element.id] = element.control.value;
+                if (element.id == 'get_only_raw_footer') {
+                    supplier[element.id] = !element.control.value;
+                }
             });
             this.addressForm.forEach(element => {
                 address[element.id] = element.control.value;

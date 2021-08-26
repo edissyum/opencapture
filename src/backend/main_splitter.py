@@ -46,7 +46,7 @@ def launch(args):
     if not os.path.exists(config_file):
         sys.exit('Config file couldn\'t be found')
 
-    config, locale, log, ocr, database, xml, webservices = create_classes(config_name)
+    config, locale, log, ocr, database, xml, spreadsheet = create_classes(config_name)
     tmp_folder = tempfile.mkdtemp(dir=config.cfg['SPLITTER']['tmpbatchpath']) + '/'
     separator_qr = _SeparatorQR(log, config, tmp_folder)
     splitter = _Splitter(config, database, locale, separator_qr)

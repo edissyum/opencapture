@@ -176,6 +176,9 @@ export class CreateSupplierComponent implements OnInit {
             const address: any = {};
             this.supplierForm.forEach(element => {
                 supplier[element.id] = element.control.value;
+                if (element.id == 'get_only_raw_footer') {
+                    supplier[element.id] = !element.control.value;
+                }
             });
             this.addressForm.forEach(element => {
                 address[element.id] = element.control.value;

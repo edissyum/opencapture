@@ -34,11 +34,13 @@ class Spreadsheet:
             self.referencialSupplierArray['SIRET'] = fp['SIRET']
             self.referencialSupplierArray['SIREN'] = fp['SIREN']
             self.referencialSupplierArray['VATNumber'] = fp['VATNumber']
-            self.referencialSupplierArray['adress1'] = fp['adress1']
-            self.referencialSupplierArray['adress2'] = fp['adress2']
-            self.referencialSupplierArray['adressTown'] = fp['adressTown']
-            self.referencialSupplierArray['adressPostalCode'] = fp['adressPostalCode']
+            self.referencialSupplierArray['address1'] = fp['address1']
+            self.referencialSupplierArray['address2'] = fp['address2']
+            self.referencialSupplierArray['addressTown'] = fp['addressTown']
+            self.referencialSupplierArray['addressPostalCode'] = fp['addressPostalCode']
+            self.referencialSupplierArray['addressCountry'] = fp['addressCountry']
             self.referencialSupplierArray['typology'] = fp['typology']
+            self.referencialSupplierArray['get_only_raw_footer'] = fp['get_only_raw_footer']
 
     def write_typo_ods_sheet(self, vat_number, typo):
         content_sheet = get_data(self.referencialSuppplierSpreadsheet)
@@ -55,9 +57,9 @@ class Spreadsheet:
 
         res = _db.select({
             'select': ['*'],
-            'table': ['suppliers'],
+            'table': ['accounts_supplier'],
             'where': ['status = %s'],
-            'data': ['ACTIVE'],
+            'data': ['OK'],
         })
         try:
             sheet_name = False
@@ -71,11 +73,13 @@ class Spreadsheet:
                             supplier['vat_number'] if supplier['vat_number'] is not None else '',
                             supplier['siret'] if supplier['siret'] is not None else '',
                             supplier['siren'] if supplier['siren'] is not None else '',
-                            supplier['adress1'] if supplier['adress1'] is not None else '',
-                            supplier['adress2'] if supplier['adress2'] is not None else '',
+                            supplier['address1'] if supplier['address1'] is not None else '',
+                            supplier['address2'] if supplier['address2'] is not None else '',
                             supplier['postal_code'] if supplier['postal_code'] is not None else '',
                             supplier['city'] if supplier['city'] is not None else '',
-                            supplier['typology'] if supplier['typology'] is not None else '']
+                            supplier['country'] if supplier['country'] is not None else '',
+                            supplier['typology'] if supplier['typology'] is not None else '',
+                            supplier['get_only_raw_footer'] if supplier['get_only_raw_footer'] is not None else '']
                     content_sheet[sheet_name].append(line)
 
         except IndexError:
@@ -109,23 +113,26 @@ class Spreadsheet:
 
     def read_ods_sheet(self, referencial_spreadsheet):
         content_sheet = get_data(referencial_spreadsheet)
-        content_sheet = content_sheet['Fournisseur']
+        if 'Fournisseur' in content_sheet:
+            content_sheet = content_sheet['Fournisseur']
         content_sheet = pd.DataFrame(content_sheet, columns=[
             self.referencialSupplierArray['name'],
             self.referencialSupplierArray['VATNumber'],
             self.referencialSupplierArray['SIRET'],
             self.referencialSupplierArray['SIREN'],
-            self.referencialSupplierArray['adress1'],
-            self.referencialSupplierArray['adress2'],
-            self.referencialSupplierArray['adressPostalCode'],
-            self.referencialSupplierArray['adressTown'],
+            self.referencialSupplierArray['address1'],
+            self.referencialSupplierArray['address2'],
+            self.referencialSupplierArray['addressPostalCode'],
+            self.referencialSupplierArray['addressTown'],
+            self.referencialSupplierArray['addressCountry'],
             self.referencialSupplierArray['typology'],
-            self.referencialSupplierArray['companyType']
+            self.referencialSupplierArray['get_only_raw_footer']
         ])
         # Drop row 0 because it contains the indexes columns
-        content_sheet = content_sheet.drop(0)
-        # Drop empty rows
-        content_sheet = content_sheet.dropna(axis=0, how='all', thresh=None, subset=None)
+        if not content_sheet.empty:
+            content_sheet = content_sheet.drop(0)
+            # Drop empty rows
+            content_sheet = content_sheet.dropna(axis=0, how='all', thresh=None, subset=None)
 
         return content_sheet
 
@@ -145,6 +152,12 @@ class Spreadsheet:
                 except ValueError:
                     line[self.referencialSupplierArray['typology']] = line[self.referencialSupplierArray['typology']]
 
+            if line[self.referencialSupplierArray['get_only_raw_footer']] == line[self.referencialSupplierArray['get_only_raw_footer']] and line[self.referencialSupplierArray['get_only_raw_footer']]:
+                try:
+                    line[self.referencialSupplierArray['get_only_raw_footer']] = int(line[self.referencialSupplierArray['get_only_raw_footer']])
+                except ValueError:
+                    line[self.referencialSupplierArray['get_only_raw_footer']] = line[self.referencialSupplierArray['get_only_raw_footer']]
+
             if line[self.referencialSupplierArray['SIRET']] == line[self.referencialSupplierArray['SIRET']] and line[self.referencialSupplierArray['SIRET']]:
                 try:
                     line[self.referencialSupplierArray['SIRET']] = int(line[self.referencialSupplierArray['SIRET']])
@@ -157,8 +170,8 @@ class Spreadsheet:
                 except ValueError:
                     line[self.referencialSupplierArray['SIREN']] = line[self.referencialSupplierArray['SIREN']]
 
-            if line[self.referencialSupplierArray['adressPostalCode']] == line[self.referencialSupplierArray['adressPostalCode']] and line[self.referencialSupplierArray['adressPostalCode']]:
-                if len(str(line[self.referencialSupplierArray['adressPostalCode']])) == 4:
-                    line[self.referencialSupplierArray['adressPostalCode']] = '0' + str(
-                        line[self.referencialSupplierArray['adressPostalCode']])
+            if line[self.referencialSupplierArray['addressPostalCode']] == line[self.referencialSupplierArray['addressPostalCode']] and line[self.referencialSupplierArray['addressPostalCode']]:
+                if len(str(line[self.referencialSupplierArray['addressPostalCode']])) == 4:
+                    line[self.referencialSupplierArray['addressPostalCode']] = '0' + str(
+                        line[self.referencialSupplierArray['addressPostalCode']])
             self.referencialSupplierData[line[self.referencialSupplierArray['VATNumber']]].append(line)
