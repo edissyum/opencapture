@@ -1,6 +1,7 @@
 {
 	"ABOUT-US": {
-		"lead_dev": "Lead developer"
+		"lead_dev": "Lead developer",
+		"new_version_available": "Une nouvelle version est disponible"
 	},
 	"ACCOUNTS": {
 		"choose_input_upload": "Choix de la chaîne entrante",

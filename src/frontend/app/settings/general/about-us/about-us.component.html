@@ -81,9 +81,12 @@
             </button>
             <div class="settings_title text-center">
                 <h3>
-                    Open-Capture for Invoices version <b>{{ git_version }}</b>
-                    <span *ngIf="last_version !== git_version && git_version !== 'dev'">
-                        {{ 'ABOUT-US.new_version_available' | translate }}
+                    Open-Capture for Invoices version <b *ngIf="!loading">{{ git_version }}</b>
+                    <span *ngIf="!loading && last_version !== git_version && git_version !== 'dev'">
+                        | {{ 'ABOUT-US.new_version_available' | translate }} (<b>
+                                <a  [href]="'https://github.com/edissyum/opencaptureforinvoices/releases/tag/' + last_version"
+                                    target="_blank">{{last_version}}</a>
+                            </b>)
                     </span>
                 </h3>
                 <hr class="border-green-400">

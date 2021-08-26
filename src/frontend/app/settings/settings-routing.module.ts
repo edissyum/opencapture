@@ -11,7 +11,6 @@ import { AboutUsComponent } from './general/about-us/about-us.component';
 import { UpdateUserComponent } from "./general/users/update/update-user.component";
 import { CreateRoleComponent } from "./general/roles/create/create-role.component";
 import { UpdateRoleComponent } from "./general/roles/update/update-role.component";
-import { VersionUpdateComponent } from "./general/version-update/version-update.component";
 import { CustomFieldsComponent } from "./general/custom-fields/custom-fields.component";
 import { FormBuilderComponent } from "./verifier/form/builder/form-builder.component";
 import { FormListComponent } from "./verifier/form/list/form-list.component";
@@ -68,11 +67,6 @@ const routes: Routes = [
     {
         path: 'settings/general/about-us', component: AboutUsComponent,
         data: {title: marker('SETTINGS.abouts_us')},
-        canActivate: [LoginRequiredService]
-    },
-    {
-        path: 'settings/general/version-update', component: VersionUpdateComponent,
-        data: {title: marker('SETTINGS.version_and_update'), privileges: ['settings', 'version_update']},
         canActivate: [LoginRequiredService]
     },
     {

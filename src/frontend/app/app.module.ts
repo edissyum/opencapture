@@ -33,7 +33,6 @@ import { MatPaginatorIntl } from "@angular/material/paginator";
 import { CustomMatPaginatorIntl } from "./custom-mat-paginator";
 import { LastUrlService } from "../services/last-url.service";
 import { AboutUsComponent } from './settings/general/about-us/about-us.component';
-import { VersionUpdateComponent } from './settings/general/version-update/version-update.component';
 import { CreateUserComponent } from './settings/general/users/create/create-user.component';
 import { UpdateUserComponent } from './settings/general/users/update/update-user.component';
 import { RolesListComponent } from './settings/general/roles/list/roles-list.component';
@@ -79,7 +78,6 @@ export function createTranslateLoader(http: HttpClient) {
         UsersListComponent,
         SettingsComponent,
         AboutUsComponent,
-        VersionUpdateComponent,
         RolesListComponent,
         CreateUserComponent,
         UpdateUserComponent,

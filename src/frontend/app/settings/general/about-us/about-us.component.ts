@@ -32,10 +32,10 @@ export class AboutUsComponent implements OnInit {
     ngOnInit(): void {
         this.http.get(API_URL + '/ws/config/gitInfo', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                if (data.git_current)
+                if (data.git_current && data.git_current !== 'None')
                     this.git_version = data.git_current;
-                if (data.last_version)
-                    this.last_version = data.last_version
+                if (data.git_latest)
+                    this.last_version = data.git_latest;
 
             }),
             finalize(() => this.loading = false),

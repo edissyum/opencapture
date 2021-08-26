@@ -85,13 +85,6 @@ export class SettingsService {
                 "privilege" : "custom_fields",
             },
             {
-                "id"        : "version-update",
-                "label"     : this.translate.instant("SETTINGS.version_and_update"),
-                "route"     : "/settings/general/version-update",
-                "icon"      : "fas fa-sync",
-                "privilege" : "update_app",
-            },
-            {
                 "id"        : "about-us",
                 "label"     : this.translate.instant("SETTINGS.abouts_us"),
                 "icon"      : "fas fa-address-card",

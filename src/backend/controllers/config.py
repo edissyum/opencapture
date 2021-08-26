@@ -49,10 +49,10 @@ def change_locale_in_config(lang):
 def get_current_git_version(cfg):
     repo = git.Repo(cfg['GLOBAL']['projectpath'])
     current_tag = next((tag for tag in repo.tags if tag.commit == repo.head.commit), None)
-    return current_tag
+    return str(current_tag)
 
 
 def get_last_git_version():
     latest_git_version = subprocess.Popen("git ls-remote --tags --sort='v:refname' https://github.com/edissyum/opencaptureforinvoices.git | grep -E '2.+([0-9])$'  | tail -n1 |  sed 's/.*\///; s/\^{}//'", shell=True,
                                           stdout=subprocess.PIPE).stdout.read()
-    return latest_git_version.decode('utf-8').strip()
+    return str(latest_git_version.decode('utf-8').strip())
