@@ -90,6 +90,8 @@ def retrieve_invoices(args):
             "LOWER((datas -> 'invoice_number')::text) LIKE '%%" + args['search'].lower() + "%%' OR "
             "LOWER(accounts_supplier.name) LIKE '%%" + args['search'].lower() + "%%')"
         )
+        args['offset'] = ''
+        args['limit'] = ''
 
     if 'allowedCustomers' in args and args['allowedCustomers']:
         args['where'].append('customer_id IN (' + ','.join(map(str, args['allowedCustomers'])) + ')')

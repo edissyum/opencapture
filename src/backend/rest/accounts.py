@@ -14,7 +14,6 @@
 # along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
-# @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 from flask import Blueprint, request, make_response, jsonify
 from ..import_controllers import auth, accounts
@@ -41,6 +40,8 @@ def suppliers_list():
             "LOWER(siren) LIKE '%%" + request.args['search'].lower() + "%%' OR "
             "LOWER(vat_number) LIKE '%%" + request.args['search'].lower() + "%%'"
         )
+        args['offset'] = ''
+        args['limit'] = ''
     res = accounts.retrieve_suppliers(args)
     return make_response(res[0], res[1])
 
@@ -164,6 +165,8 @@ def customers_list():
             "LOWER(siren) LIKE '%%" + request.args['search'].lower() + "%%' OR "
             "LOWER(vat_number) LIKE '%%" + request.args['search'].lower() + "%%'"
         )
+        args['offset'] = ''
+        args['limit'] = ''
 
     res = accounts.retrieve_customers(args)
     return make_response(res[0], res[1])
