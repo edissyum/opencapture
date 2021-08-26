@@ -12,9 +12,13 @@
             </div>
             <h3 class="text-center">{{ this.serviceSettings.getTitle() }}</h3>
             <hr class="border-green-400">
-            <button routerLink="/accounts/suppliers/create" class="relative float-right -top-12 right-4">
+            <button routerLink="/accounts/suppliers/create" class="relative float-right -top-12 right-4 ml-4">
                 <i class="fas fa-plus text-2xl ml-2"></i>
                 <span class="ml-2 relative -top-1">{{ 'ACCOUNTS.create_supplier' | translate }}</span>
+            </button>
+            <button class="relative float-right -top-12 right-4">
+                <i class="fas fa-file-export text-2xl ml-2"></i>
+                <span class="ml-2 relative -top-1">{{ 'ACCOUNTS.export_suppliers' | translate }}</span>
             </button>
         </div>
         <mat-table matSort [dataSource]="suppliers" (matSortChange)="sortData($event)" class="w-full table relative -top-8">

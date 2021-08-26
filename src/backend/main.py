@@ -49,6 +49,7 @@ def create_classes_from_config():
     config_file = current_app.config['CONFIG_FOLDER'] + '/config_' + config_name.cfg['PROFILE']['id'] + '.ini'
     config = _Config(current_app.config['CONFIG_FOLDER'] + '/config_' + config_name.cfg['PROFILE']['id'] + '.ini')
     log = _Log(config.cfg['GLOBAL']['logfile'])
+    spreadsheet = _Spreadsheet(log, config)
     db_user = config.cfg['DATABASE']['postgresuser']
     db_pwd = config.cfg['DATABASE']['postgrespassword']
     db_name = config.cfg['DATABASE']['postgresdatabase']
@@ -70,7 +71,7 @@ def create_classes_from_config():
     )
     locale = _Locale(config)
     ocr = _PyTesseract(locale.localeOCR, log, config)
-    return database, config, locale, xml, files, ocr, log, config_file
+    return database, config, locale, xml, files, ocr, log, config_file, spreadsheet
 
 
 def create_classes(config_file):

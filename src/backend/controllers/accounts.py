@@ -62,12 +62,14 @@ def get_address_by_id(address_id):
 def update_supplier(supplier_id, data):
     _vars = create_classes_from_config()
     _db = _vars[0]
+    _spreadsheet = _vars[8]
     supplier_info, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
 
     if error is None:
         res, error = accounts.update_supplier({'set': data, 'supplier_id': supplier_id})
 
         if error is None:
+            _spreadsheet.update_supplier_ods_sheet(_db)
             return '', 200
         else:
             response = {
@@ -196,7 +198,7 @@ def create_address(data):
 def create_supplier(data):
     _vars = create_classes_from_config()
     _db = _vars[0]
-
+    _spreadsheet = _vars[8]
     _columns = {
         'name': data['name'],
         'siret': data['siret'],
@@ -211,6 +213,7 @@ def create_supplier(data):
     res, error = accounts.create_supplier({'columns': _columns})
 
     if error is None:
+        _spreadsheet.update_supplier_ods_sheet(_db)
         response = {
             "id": res
         }

@@ -69,17 +69,27 @@ class Spreadsheet:
             if sheet_name:
                 content_sheet[sheet_name] = content_sheet[sheet_name][:1]
                 for supplier in res:
+                    address_id = supplier['address_id']
+                    address = False
+                    if address_id:
+                        address = _db.select({
+                            'select': ['*'],
+                            'table': ['addresses'],
+                            'where': ['id = %s'],
+                            'data': [address_id],
+                        })[0]
+
                     line = [supplier['name'] if supplier['name'] is not None else '',
                             supplier['vat_number'] if supplier['vat_number'] is not None else '',
                             supplier['siret'] if supplier['siret'] is not None else '',
                             supplier['siren'] if supplier['siren'] is not None else '',
-                            supplier['address1'] if supplier['address1'] is not None else '',
-                            supplier['address2'] if supplier['address2'] is not None else '',
-                            supplier['postal_code'] if supplier['postal_code'] is not None else '',
-                            supplier['city'] if supplier['city'] is not None else '',
-                            supplier['country'] if supplier['country'] is not None else '',
+                            address['address1'] if address and address['address1'] is not None else '',
+                            address['address2'] if address and address['address2'] is not None else '',
+                            address['postal_code'] if address and address['postal_code'] is not None else '',
+                            address['city'] if address and address['city'] is not None else '',
+                            address['country'] if address and address['country'] is not None else '',
                             supplier['typology'] if supplier['typology'] is not None else '',
-                            supplier['get_only_raw_footer'] if supplier['get_only_raw_footer'] is not None else '']
+                            str(supplier['get_only_raw_footer']).lower() if supplier['get_only_raw_footer'] is not None else '']
                     content_sheet[sheet_name].append(line)
 
         except IndexError:
