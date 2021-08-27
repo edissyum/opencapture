@@ -239,7 +239,7 @@ export class SuppliersListComponent implements OnInit {
     getReferenceFile() {
         this.http.get(API_URL + '/ws/accounts/supplier/getReferenceFile', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                let mime_type = data.mime;
+                let mime_type = data.mimetype;
                 let reference_file = 'data:' + mime_type + ';base64, ' + data.file;
                 const link = document.createElement("a");
                 link.href = reference_file;
