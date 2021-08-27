@@ -227,10 +227,12 @@ mkdir /tmp/OpenCaptureForInvoices/
 chown -R "$user":"$user" /tmp/OpenCaptureForInvoices
 
 ####################
-# Modify default config
+# Copy file from default one
 cp $defaultPath/instance/config.ini.default $defaultPath/instance/config.ini
 cp $defaultPath/instance/config/config_DEFAULT.ini.default $defaultPath/instance/config/config_DEFAULT.ini
 cp $defaultPath/instance/config/mail.ini.default $defaultPath/instance/config/mail.ini
+cp $defaultPath/src/assets/referencial/default_referencial_supplier_index.json.default $defaultPath/src/assets/referencial/default_referencial_supplier_index.json
+cp $defaultPath/src/assets/referencial/default_referencial_supplier.ods.default $defaultPath/src/assets/referencial/default_referencial_supplier.ods
 
 ####################
 # Fix ImageMagick Policies
