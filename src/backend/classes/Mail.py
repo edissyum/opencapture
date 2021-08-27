@@ -25,13 +25,12 @@ from imap_tools import utils, MailBox, MailBoxUnencrypted
 
 
 class Mail:
-    def __init__(self, host, port, login, pwd, ws):
+    def __init__(self, host, port, login, pwd):
         self.pwd = pwd
         self.conn = None
         self.port = port
         self.host = host
         self.login = login
-        self.ws = ws
 
     def test_connection(self, secured_connection):
         """
@@ -87,14 +86,12 @@ class Mail:
             emails.append(mail)
         return emails
 
-    def construct_dict_before_send_to_maarch(self, msg, cfg, backup_path, log):
+    def construct_dict_before_send_to_maarch(self, msg, backup_path):
         """
         Construct a dict with all the data of a mail (body and attachments)
 
         :param msg: Mailbox object containing all the data of mail
-        :param cfg: Config Object
         :param backup_path: Path to backup of the e-mail
-        :param log: Log object
         :return: dict of Args and file path
         """
         to_str, cc_str, reply_to = ('', '', '')
@@ -142,7 +139,6 @@ class Mail:
         """
         Backup e-mail into path before send it to Maarch
 
-        :param force_utf8: Force HTML UTF-8 encoding
         :param msg: Mail data
         :param backup_path: Backup path
         :return: Boolean

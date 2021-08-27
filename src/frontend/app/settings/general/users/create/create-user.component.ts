@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormBuilder, FormControl} from "@angular/forms";
 import {AuthService} from "../../../../../services/auth.service";
@@ -133,8 +133,8 @@ export class CreateUserComponent implements OnInit {
             this.http.post(API_URL + '/ws/users/new', user, {headers: this.authService.headers},
             ).pipe(
                 tap(() => {
-                    this.notify.success(this.translate.instant('USER.created'))
-                    this.router.navigate(['/settings/general/users/'])
+                    this.notify.success(this.translate.instant('USER.created'));
+                    this.router.navigate(['/settings/general/users/']).then();
                 }),
                 catchError((err: any) => {
                     console.debug(err);

@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { LocalStorageService } from "../../../services/local-storage.service";
 import { API_URL } from "../../env";
 import { catchError, finalize, tap } from "rxjs/operators";

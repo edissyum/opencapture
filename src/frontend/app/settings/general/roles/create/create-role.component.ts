@@ -102,8 +102,8 @@ export class CreateRoleComponent implements OnInit {
                     this.http.put(API_URL + '/ws/roles/updatePrivilege/' + newRoleId, {'privileges': role_privileges}, {headers: this.authService.headers},
                     ).pipe(
                         tap(() => {
-                            this.notify.success(this.translate.instant('ROLE.created'))
-                            this.router.navigate(['/settings/general/roles/'])
+                            this.notify.success(this.translate.instant('ROLE.created'));
+                            this.router.navigate(['/settings/general/roles/']).then();
                         }),
                         catchError((err: any) => {
                             console.debug(err);

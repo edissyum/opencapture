@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {AuthService} from "./auth.service";
-import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from "@angular/router";
+import {ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot} from "@angular/router";
 import {NotificationService} from "./notifications/notifications.service";
 import {TranslateService} from "@ngx-translate/core";
 

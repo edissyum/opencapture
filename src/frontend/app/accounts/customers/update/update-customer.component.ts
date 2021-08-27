@@ -225,8 +225,8 @@ export class UpdateCustomerComponent implements OnInit {
             this.http.put(API_URL + '/ws/accounts/addresses/update/' + this.addressId, {'args': address}, {headers: this.authService.headers},
             ).pipe(
                 tap(() => {
-                    this.notify.success(this.translate.instant('ACCOUNTS.customer_updated'))
-                    this.router.navigate(['/accounts/customers/list'])
+                    this.notify.success(this.translate.instant('ACCOUNTS.customer_updated'));
+                    this.router.navigate(['/accounts/customers/list']).then();
                 }),
                 catchError((err: any) => {
                     console.debug(err);

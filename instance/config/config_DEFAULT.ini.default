@@ -72,9 +72,6 @@ referencialPosition             = ${GLOBAL:projectPath}/src/assets/referencial/p
 [SEPARATE-BY-DOCUMENT]
 enabled = False
 
-[REGEX]
-urlpattern          = fr|com|net|org|gouv
-
 [SEPARATORQR]
 # True or False, python way
 enabled             = False

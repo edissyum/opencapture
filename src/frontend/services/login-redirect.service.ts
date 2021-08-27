@@ -14,7 +14,7 @@ export class LoginRedirectService {
 
     canActivate(): boolean {
         if (this.authService.getToken()) {
-            this.router.navigateByUrl('/home');
+            this.router.navigateByUrl('/home').then();
             return false;
         }
         return true;

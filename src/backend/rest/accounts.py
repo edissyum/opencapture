@@ -20,7 +20,7 @@ import base64
 import mimetypes
 from src.backend.main import create_classes_from_config
 from ..import_controllers import auth, accounts, verifier
-from flask import Blueprint, request, make_response, jsonify, send_file
+from flask import Blueprint, request, make_response, jsonify
 
 bp = Blueprint('accounts', __name__, url_prefix='/ws/')
 

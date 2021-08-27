@@ -63,27 +63,39 @@ def insert(args, files, config, database, datas, positions, pages, tiff_filename
             'supplier_id': supplier[2]['supplier_id'],
         })
 
-    if 'input_id' in args:
-        input_settings = database.select({
-            'select': ['*'],
-            'table': ['inputs'],
-            'where': ['input_id = %s'],
-            'data': [args['input_id']],
-        })
+    if args.get('isMail') is None or args.get('isMail') is False:
+        if 'input_id' in args:
+            input_settings = database.select({
+                'select': ['*'],
+                'table': ['inputs'],
+                'where': ['input_id = %s'],
+                'data': [args['input_id']],
+            })
 
-        if input_settings:
-            if input_settings[0]['purchase_or_sale']:
-                invoice_data.update({
-                    'purchase_or_sale': input_settings[0]['purchase_or_sale']
-                })
-            if input_settings[0]['override_supplier_form']:
-                invoice_data.update({
-                    'form_id': input_settings[0]['default_form_id']
-                })
-            if input_settings[0]['customer_id']:
-                invoice_data.update({
-                    'customer_id': input_settings[0]['customer_id']
-                })
+            if input_settings:
+                if input_settings[0]['purchase_or_sale']:
+                    invoice_data.update({
+                        'purchase_or_sale': input_settings[0]['purchase_or_sale']
+                    })
+                if input_settings[0]['override_supplier_form']:
+                    invoice_data.update({
+                        'form_id': input_settings[0]['default_form_id']
+                    })
+                if input_settings[0]['customer_id']:
+                    invoice_data.update({
+                        'customer_id': input_settings[0]['customer_id']
+                    })
+    else:
+        if 'customer_id' in args and args['customer_id']:
+            print('customer_id')
+            invoice_data.update({
+                'customer_id': args['customer_id']
+            })
+        if 'form_id' in args and args['form_id']:
+            print('form_id')
+            invoice_data.update({
+                'form_id': args['form_id']
+            })
 
     database.insert({
         'table': 'invoices',

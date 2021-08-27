@@ -22,7 +22,7 @@ from ..main import create_classes_from_config
 def get_inputs(args):
     _vars = create_classes_from_config()
     _db = _vars[0]
-    inputs = _db.select({
+    _inputs = _db.select({
         'select': ["*"] if "select" not in args else args["select"],
         'table': ["inputs"],
         'where': ["status NOT IN (%s)"],
@@ -32,14 +32,14 @@ def get_inputs(args):
         'offset': str(args['offset']) if 'offset' in args else [],
     })
 
-    return inputs
+    return _inputs
 
 
 def get_input_by_id(args):
     _vars = create_classes_from_config()
     _db = _vars[0]
     error = None
-    input = _db.select({
+    _input = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['inputs'],
         'where': ['id = %s'],
@@ -49,9 +49,9 @@ def get_input_by_id(args):
     if not input:
         error = gettext('INPUT_DOESNT_EXISTS')
     else:
-        input = input[0]
+        _input = _input[0]
 
-    return input, error
+    return _input, error
 
 
 def update_input(args):
@@ -59,17 +59,17 @@ def update_input(args):
     _db = _vars[0]
     error = None
 
-    input = _db.update({
+    _input = _db.update({
         'table': ['inputs'],
         'set': args['set'],
         'where': ['id = %s'],
         'data': [args['input_id']]
     })
 
-    if input[0] is False:
+    if _input[0] is False:
         error = gettext('INPUT_UPDATE_ERROR')
 
-    return input, error
+    return _input, error
 
 
 def create_input(args):
@@ -77,7 +77,7 @@ def create_input(args):
     _db = _vars[0]
     error = None
 
-    input = _db.insert({
+    _input = _db.insert({
         'table': 'inputs',
         'columns': args['columns'],
     })
@@ -85,4 +85,4 @@ def create_input(args):
     if not input:
         error = gettext('INPUT_CREATE_ERROR')
 
-    return input, error
+    return _input, error

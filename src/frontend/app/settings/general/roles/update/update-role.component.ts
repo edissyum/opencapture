@@ -184,7 +184,7 @@ export class UpdateRoleComponent implements OnInit {
             ).pipe(
                 tap(() => {
                     this.notify.success(this.translate.instant('ROLE.updated'));
-                    this.router.navigate(['/settings/general/roles/']);
+                    this.router.navigate(['/settings/general/roles/']).then();
                 }),
                 catchError((err: any) => {
                     console.debug(err);

@@ -81,8 +81,8 @@ export class UserProfileComponent implements OnInit {
 
         if (this.userId != this.userService.user.id) {
             if (!this.privilegeService.hasPrivilege('update_user')) {
-                this.notify.error('ERROR.unauthorized')
-                this.router.navigateByUrl('/home')
+                this.notify.error('ERROR.unauthorized');
+                this.router.navigateByUrl('/home').then();
             }
         }
 
@@ -90,10 +90,10 @@ export class UserProfileComponent implements OnInit {
             tap((data: any) => {
                 data.roles.forEach((element: any) => {
                     if (element.editable) {
-                        this.roles.push(element)
+                        this.roles.push(element);
                     }else{
                         if((this.userService.getUser().privileges == '*')) {
-                            this.roles.push(element)
+                            this.roles.push(element);
                         }
                     }
                 });

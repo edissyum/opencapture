@@ -178,7 +178,7 @@ export class CreateInputComponent implements OnInit {
 
             this.http.post(API_URL + '/ws/inputs/createScriptAndIncron', {'args': input}, {headers: this.authService.headers}).pipe(
                 tap(() => {
-                    this.router.navigate(['/settings/verifier/inputs'])
+                    this.router.navigate(['/settings/verifier/inputs']).then();
                 }),
                 catchError((err: any) => {
                     console.debug(err);

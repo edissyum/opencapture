@@ -65,6 +65,6 @@ export class AuthService {
     logout() {
         this.userService.setUser({});
         this.clearTokens();
-        this.router.navigateByUrl("/login");
+        this.router.navigateByUrl("/login").then();
     }
 }

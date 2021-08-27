@@ -11,7 +11,7 @@ import {NotificationService} from "../../../../services/notifications/notificati
 import {SettingsService} from "../../../../services/settings.service";
 import {PrivilegesService} from "../../../../services/privileges.service";
 import {API_URL} from "../../../env";
-import {catchError, finalize, tap} from "rxjs/operators";
+import {catchError, tap} from "rxjs/operators";
 import {of} from "rxjs";
 
 @Component({
@@ -149,7 +149,7 @@ export class CreateCustomerComponent implements OnInit {
                     ).pipe(
                         tap(() => {
                             this.notify.success(this.translate.instant('ACCOUNTS.customer_created'));
-                            this.router.navigate(['/accounts/customers/list']);
+                            this.router.navigate(['/accounts/customers/list']).then();
                         }),
                         catchError((err: any) => {
                             console.debug(err);

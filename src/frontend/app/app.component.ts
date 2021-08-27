@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import { Location } from '@angular/common';
 import { Title } from '@angular/platform-browser';
-import {ActivatedRoute, NavigationEnd, NavigationError, NavigationStart, Router} from '@angular/router';
+import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {catchError, filter, map, tap} from 'rxjs/operators';
 import { TranslateService } from "@ngx-translate/core";
 import { HttpClient } from "@angular/common/http";

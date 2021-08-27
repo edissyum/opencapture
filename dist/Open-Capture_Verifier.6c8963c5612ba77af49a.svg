@@ -46,7 +46,7 @@
          rdf:about="">
         <dc:format>image/svg+xml</dc:format>
         <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+           rdf:resource="https://purl.org/dc/dcmitype/StillImage" />
         <dc:title />
       </cc:Work>
     </rdf:RDF>
@@ -77,7 +77,7 @@
        id="text1739"
        y="134.04332"
        x="39.142307"
-       style="font-style:normal;font-weight:normal;font-size:7.60198px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#76b900;fill-opacity:1;stroke:none;stroke-width:0.190051"
+       style="font-style:normal;font-weight:normal;font-size:7.60198px;line-height:1.25;font-family:sans-serif;letter-spacing:0;word-spacing:0;fill:#76b900;fill-opacity:1;stroke:none;stroke-width:0.190051"
        xml:space="preserve"
        transform="scale(1.1032687,0.9063975)"><tspan
          style="font-style:normal;font-variant:normal;font-weight:600;font-stretch:normal;font-size:5.5748px;font-family:'ITC Kabel Std';-inkscape-font-specification:'ITC Kabel Std, Semi-Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#a7a8aa;fill-opacity:1;stroke-width:0.190051"

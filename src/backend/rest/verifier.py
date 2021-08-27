@@ -18,7 +18,7 @@ import base64
 
 from flask_babel import gettext
 from ..import_controllers import auth, verifier
-from flask import Blueprint, make_response, request, jsonify
+from flask import Blueprint, make_response, request
 
 bp = Blueprint('verifier', __name__, url_prefix='/ws/')
 

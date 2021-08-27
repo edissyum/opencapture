@@ -23,7 +23,6 @@ from ..main import create_classes_from_config
 def add_custom_field(args):
     _vars = create_classes_from_config()
     _db = _vars[0]
-    error = None
     customs_exists, error = retrieve_custom_fields({
         'where': ['label_short = %s', 'module = %s'],
         'data': [args['label_short'], args['module']]

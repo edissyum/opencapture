@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {API_URL} from "../app/env";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {NotificationService} from "./notifications/notifications.service";
 import {AuthService} from "./auth.service";
 import {catchError, tap} from "rxjs/operators";

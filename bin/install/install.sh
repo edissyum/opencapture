@@ -230,6 +230,7 @@ chown -R "$user":"$user" /tmp/OpenCaptureForInvoices
 # Modify default config
 cp $defaultPath/instance/config.ini.default $defaultPath/instance/config.ini
 cp $defaultPath/instance/config/config_DEFAULT.ini.default $defaultPath/instance/config/config_DEFAULT.ini
+cp $defaultPath/instance/config/mail.ini.default $defaultPath/instance/config/mail.ini
 
 ####################
 # Fix ImageMagick Policies

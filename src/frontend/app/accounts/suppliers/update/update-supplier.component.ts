@@ -266,7 +266,7 @@ export class UpdateSupplierComponent implements OnInit {
             ).pipe(
                 tap(() => {
                     this.notify.success(this.translate.instant('ACCOUNTS.supplier_updated'));
-                    this.router.navigate(['/accounts/suppliers/list']);
+                    this.router.navigate(['/accounts/suppliers/list']).then();
                 }),
                 catchError((err: any) => {
                     console.debug(err);

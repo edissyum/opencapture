@@ -28,8 +28,8 @@ export class HasPrivilegeService {
                         if (route.routeConfig) {
                             label = this.translate.instant(route.data['title']);
                         }
-                        this.notify.error(translated + label)
-                        this.router.navigateByUrl('/home')
+                        this.notify.error(translated + label);
+                        this.router.navigateByUrl('/home').then();
                     });
                     return_value = false
                 }

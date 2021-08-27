@@ -25,7 +25,7 @@ def test_connection(args):
         args['host'],
         args['login'],
         args['password'],
-        _vars[6],
+        _vars[5],
         _vars[1]
     )
     return ws.status
@@ -37,7 +37,7 @@ def get_users(args):
         args['host'],
         args['login'],
         args['password'],
-        _vars[6],
+        _vars[5],
         _vars[1]
     )
     users = ws.retrieve_users()
@@ -50,7 +50,7 @@ def get_doctypes(args):
         args['host'],
         args['login'],
         args['password'],
-        _vars[6],
+        _vars[5],
         _vars[1]
     )
     doctypes = ws.retrieve_doctypes()
@@ -63,7 +63,7 @@ def get_entities(args):
         args['host'],
         args['login'],
         args['password'],
-        _vars[6],
+        _vars[5],
         _vars[1]
     )
     entities = ws.retrieve_entities()
@@ -76,7 +76,7 @@ def get_priorities(args):
         args['host'],
         args['login'],
         args['password'],
-        _vars[6],
+        _vars[5],
         _vars[1]
     )
     entities = ws.retrieve_priorities()
@@ -89,7 +89,7 @@ def get_statuses(args):
         args['host'],
         args['login'],
         args['password'],
-        _vars[6],
+        _vars[5],
         _vars[1]
     )
     statuses = ws.retrieve_statuses()
@@ -102,7 +102,7 @@ def get_indexing_models(args):
         args['host'],
         args['login'],
         args['password'],
-        _vars[6],
+        _vars[5],
         _vars[1]
     )
     indexing_models = ws.retrieve_indexing_models()

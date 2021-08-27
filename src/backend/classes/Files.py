@@ -25,14 +25,10 @@ import PyPDF4
 import datetime
 import subprocess
 import numpy as np
-import xml.etree.ElementTree as Et
-
 from PIL import Image
 from PyPDF4 import utils
-from xml.dom import minidom
 from wand.color import Color
 from wand.api import library
-from xml.sax.saxutils import escape
 from wand.image import Image as Img
 from werkzeug.utils import secure_filename
 from src.backend.functions import get_custom_array
@@ -48,7 +44,7 @@ else:
 
 
 class Files:
-    def __init__(self, img_name, res, quality, xml, log, is_tiff, locale, config):
+    def __init__(self, img_name, res, quality, log, is_tiff, locale, config):
         self.isTiff = is_tiff
         self.jpgName = img_name + '.jpg'
         self.jpgName_header = img_name + '_header.jpg'
@@ -68,7 +64,6 @@ class Files:
         self.compressionQuality = quality
         self.img = None
         self.heightRatio = ''
-        self.xml = xml
         self.Log = log
         self.Locale = locale
         self.Config = config
@@ -291,16 +286,16 @@ class Files:
                     shutil.move(file, config.cfg['GLOBAL']['errorpath'] + os.path.basename(file))
                     return 1
         except PyPDF4.utils.PdfReadError:
-            pdfreadRewrite = PyPDF4.PdfFileReader(file, strict=False)
+            pdf_read_rewrite = PyPDF4.PdfFileReader(file, strict=False)
             pdfwrite = PyPDF4.PdfFileWriter()
-            for page_count in range(pdfreadRewrite.numPages):
-                pages = pdfreadRewrite.getPage(page_count)
+            for page_count in range(pdf_read_rewrite.numPages):
+                pages = pdf_read_rewrite.getPage(page_count)
                 pdfwrite.addPage(pages)
 
             fileobjfix = open(file, 'wb')
             pdfwrite.write(fileobjfix)
             fileobjfix.close()
-            return pdfreadRewrite.getNumPages()
+            return pdf_read_rewrite.getNumPages()
 
     @staticmethod
     def is_blank_page(image, config):

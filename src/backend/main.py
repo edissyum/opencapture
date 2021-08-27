@@ -23,8 +23,7 @@ from kuyruk import Kuyruk
 from flask import current_app
 from kuyruk_manager import Manager
 from .functions import recursive_delete, get_custom_array
-from .import_classes import _Database, _PyTesseract, _Locale, _Xml, _Files, _Log, _Config, invoice_classification,\
-    _SeparatorQR, _Spreadsheet
+from .import_classes import _Database, _PyTesseract, _Locale, _Files, _Log, _Config, _SeparatorQR, _Spreadsheet
 
 custom_array = get_custom_array()
 
@@ -56,14 +55,12 @@ def create_classes_from_config():
     db_host = config.cfg['DATABASE']['postgreshost']
     db_port = config.cfg['DATABASE']['postgresport']
     database = _Database(log, db_name, db_user, db_pwd, db_host, db_port)
-    xml = _Xml(config, database)
     file_name = config.cfg['GLOBAL']['tmppath'] + 'tmp'
     locale = _Locale(config)
     files = _Files(
         file_name,
         int(config.cfg['GLOBAL']['resolution']),
         int(config.cfg['GLOBAL']['compressionquality']),
-        xml,
         log,
         config.cfg['GLOBAL']['convertpdftotiff'],
         locale,
@@ -71,7 +68,7 @@ def create_classes_from_config():
     )
     locale = _Locale(config)
     ocr = _PyTesseract(locale.localeOCR, log, config)
-    return database, config, locale, xml, files, ocr, log, config_file, spreadsheet
+    return database, config, locale, files, ocr, log, config_file, spreadsheet
 
 
 def create_classes(config_file):
@@ -86,9 +83,8 @@ def create_classes(config_file):
     db_host = config.cfg['DATABASE']['postgreshost']
     db_port = config.cfg['DATABASE']['postgresport']
     database = _Database(log, db_name, db_user, db_pwd, db_host, db_port)
-    xml = _Xml(config, database)
 
-    return config, locale, log, ocr, database, xml, spreadsheet
+    return config, locale, log, ocr, database, spreadsheet
 
 
 def check_file(files, path, config, log):
@@ -102,23 +98,23 @@ def timer(start_time, end_time):
     minutes, seconds = divmod(rem, 60)
     return "{:0>2}:{:0>2}:{:05.2f}".format(int(hours), int(minutes), seconds)
 
-
-def get_typo(config, path, log):
-    invoice_classification.MODEL_PATH = config.cfg['AI-CLASSIFICATION']['modelpath']
-    invoice_classification.PREDICT_IMAGES_PATH = config.cfg['AI-CLASSIFICATION']['trainimagepath']
-    invoice_classification.TRAIN_IMAGES_PATH = config.cfg['AI-CLASSIFICATION']['predictimagepath']
-    typo, confidence = invoice_classification.predict_typo(path)
-
-    if typo:
-        if confidence >= config.cfg['AI-CLASSIFICATION']['confidencemin']:
-            log.info('Typology n°' + typo + ' found using AI with a confidence of ' + confidence + '%')
-            return typo
-        else:
-            log.info('Typology can\'t be found using AI, the confidence is too low : Typo n°' + typo + ', confidence : ' + confidence + '%')
-            return False
-    else:
-        log.info('Typology can\'t be found using AI')
-        return False
+#
+# def get_typo(config, path, log):
+#     invoice_classification.MODEL_PATH = config.cfg['AI-CLASSIFICATION']['modelpath']
+#     invoice_classification.PREDICT_IMAGES_PATH = config.cfg['AI-CLASSIFICATION']['trainimagepath']
+#     invoice_classification.TRAIN_IMAGES_PATH = config.cfg['AI-CLASSIFICATION']['predictimagepath']
+#     typo, confidence = invoice_classification.predict_typo(path)
+#
+#     if typo:
+#         if confidence >= config.cfg['AI-CLASSIFICATION']['confidencemin']:
+#             log.info('Typology n°' + typo + ' found using AI with a confidence of ' + confidence + '%')
+#             return typo
+#         else:
+#             log.info('Typology can\'t be found using AI, the confidence is too low : Typo n°' + typo + ', confidence : ' + confidence + '%')
+#             return False
+#     else:
+#         log.info('Typology can\'t be found using AI')
+#         return False
 
 
 def str2bool(value):
@@ -143,7 +139,7 @@ def launch(args):
     if not os.path.exists(config_file):
         sys.exit('config file couldn\'t be found')
 
-    config, locale, log, ocr, database, xml, spreadsheet = create_classes(config_file)
+    config, locale, log, ocr, database, spreadsheet = create_classes(config_file)
     tmp_folder = tempfile.mkdtemp(dir=config.cfg['GLOBAL']['tmppath'])
     filename = tempfile.NamedTemporaryFile(dir=tmp_folder).name
     separator_qr = _SeparatorQR(log, config, tmp_folder)
@@ -155,7 +151,6 @@ def launch(args):
         filename,
         int(config.cfg['GLOBAL']['resolution']),
         int(config.cfg['GLOBAL']['compressionquality']),
-        xml,
         log,
         config.cfg['GLOBAL']['convertpdftotiff'],
         locale,
@@ -181,8 +176,8 @@ def launch(args):
 
                 # Find file in the wanted folder (default or exported pdf after qrcode separation)
                 typo = ''
-                if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
-                    typo = get_typo(config, path + file, log)
+                # if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
+                #     typo = get_typo(config, path + file, log)
 
                 OCForInvoices_process.process(args, path + file, log, config, files, ocr, locale, database, typo)
 
@@ -201,8 +196,8 @@ def launch(args):
             path = separator_qr.output_dir_pdfa if str2bool(separator_qr.convert_to_pdfa) is True else separator_qr.output_dir
 
             for file in os.listdir(path):
-                if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
-                    typo = get_typo(config, path + file, log)
+                # if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
+                #     typo = get_typo(config, path + file, log)
 
                 if check_file(files, path + file, config, log) is not False:
                     # Process the file and send it to Maarch
@@ -210,16 +205,16 @@ def launch(args):
         elif config.cfg['SEPARATE-BY-DOCUMENT']['enabled'] == 'True':
             list_of_files = separator_qr.split_document_every_two_pages(path)
             for file in list_of_files:
-                if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
-                    typo = get_typo(config, file, log)
+                # if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
+                #     typo = get_typo(config, file, log)
 
                 if check_file(files, file, config, log) is not False:
                     # Process the file and send it to Maarch
                     OCForInvoices_process.process(args, file, log, config, files, ocr, locale, database, typo)
             os.remove(path)
         else:
-            if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
-                typo = get_typo(config, path, log)
+            # if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
+            #     typo = get_typo(config, path, log)
 
             if check_file(files, path, config, log) is not False:
                 # Process the file and send it to Maarch

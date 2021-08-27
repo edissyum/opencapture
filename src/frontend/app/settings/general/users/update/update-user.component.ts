@@ -179,8 +179,8 @@ export class UpdateUserComponent implements OnInit {
             this.http.put(API_URL + '/ws/users/update/' + this.userId, {'args': user}, {headers: this.authService.headers},
             ).pipe(
                 tap(() => {
-                    this.notify.success(this.translate.instant('USER.updated'))
-                    this.router.navigate(['/settings/general/users/'])
+                    this.notify.success(this.translate.instant('USER.updated'));
+                    this.router.navigate(['/settings/general/users/']).then();
                 }),
                 catchError((err: any) => {
                     console.debug(err);
@@ -208,7 +208,7 @@ export class UpdateUserComponent implements OnInit {
             if(customer_id == customerId) {
                 return true;
             }
-        };
+        }
         return false;
     }
 

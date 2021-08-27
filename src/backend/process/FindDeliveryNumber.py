@@ -16,7 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import re
-from ..functions import search_by_positions, search_custom_positions
+from ..functions import search_custom_positions
 
 
 class FindDeliveryNumber:

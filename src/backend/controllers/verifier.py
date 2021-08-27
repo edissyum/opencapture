@@ -21,7 +21,7 @@ import json
 import datetime
 import pandas as pd
 from xml.dom import minidom
-from flask import current_app, Response, jsonify
+from flask import current_app, Response
 from flask_babel import gettext
 import xml.etree.ElementTree as ET
 from src.backend.main import launch
@@ -308,7 +308,7 @@ def export_maarch(invoice_id, data):
             host,
             login,
             password,
-            _vars[6],
+            _vars[5],
             _vars[1]
         )
         if ws.status:
@@ -467,8 +467,8 @@ def export_xml(invoice_id, data):
 def ocr_on_the_fly(file_name, selection, thumb_size):
     _vars = create_classes_from_config()
     _cfg = _vars[1].cfg
-    _files = _vars[4]
-    _Ocr = _vars[5]
+    _files = _vars[3]
+    _Ocr = _vars[4]
 
     if _files.isTiff == 'True':
         path = _cfg['GLOBAL']['tiffpath'] + (os.path.splitext(file_name)[0]).replace('full_', 'tiff_') + '.tiff'

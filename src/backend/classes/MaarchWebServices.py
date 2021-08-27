@@ -18,7 +18,6 @@
 import json
 import base64
 import requests
-from flask import flash
 from datetime import datetime
 from flask_babel import gettext
 from requests.auth import HTTPBasicAuth

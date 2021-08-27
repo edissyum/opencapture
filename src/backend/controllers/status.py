@@ -15,8 +15,6 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from flask import flash, g, redirect, render_template, request, url_for
-
 from flask_babel import gettext
 from ..import_models import status
 from ..main import create_classes_from_config

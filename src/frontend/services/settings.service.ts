@@ -1,4 +1,4 @@
-import {Injectable, OnInit} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {TranslateService} from "@ngx-translate/core";
 import {LocalStorageService} from "./local-storage.service";
 import {LastUrlService} from "./last-url.service";

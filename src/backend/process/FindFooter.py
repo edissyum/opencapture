@@ -20,7 +20,7 @@ from ..functions import search_by_positions, search_custom_positions
 
 
 class FindFooter:
-    def __init__(self, ocr, log, locale, config, files, database, supplier, file, text, typo, target='footer', nbPages=False):
+    def __init__(self, ocr, log, locale, config, files, database, supplier, file, text, typo, target='footer', nb_pages=False):
         self.date = ''
         self.Ocr = ocr
         self.text = text
@@ -39,7 +39,7 @@ class FindFooter:
         self.rerun = False
         self.rerun_as_text = False
         self.splitted = False
-        self.nbPage = 1 if nbPages is False else nbPages
+        self.nbPage = 1 if nb_pages is False else nb_pages
         self.target = target
 
     def process(self, regex, text_as_string):
