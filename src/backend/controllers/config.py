@@ -53,6 +53,6 @@ def get_current_git_version(cfg):
 
 
 def get_last_git_version():
-    latest_git_version = subprocess.Popen("git ls-remote --tags --sort='v:refname' https://github.com/edissyum/opencaptureforinvoices.git | grep -E '2.+([0-9])$'  | tail -n1 |  sed 's/.*\///; s/\^{}//'", shell=True,
+    latest_git_version = subprocess.Popen("git ls-remote --tags --sort='v:refname' https://github.com/edissyum/opencaptureforinvoices.git | tail -n1 |  sed 's/.*\///; s/\^{}//' | grep -E '2.+([0-9])$'", shell=True,
                                           stdout=subprocess.PIPE).stdout.read()
     return str(latest_git_version.decode('utf-8').strip())

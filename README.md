@@ -32,7 +32,7 @@ Please, do not run the following command as root and create a specific user for 
 
     sudo mkdir -p /var/www/html/opencaptureforinvoices/ && sudo chmod -R 775 /var/www/html/opencaptureforinvoices/ && sudo chown -R $(whoami):$(whoami) /var/www/html/opencaptureforinvoices/
     sudo apt install git
-    latest_tag=$(git ls-remote --tags --sort="v:refname" https://github.com/edissyum/opencaptureforinvoices.git | tail -n1 |  sed 's/.*\///; s/\^{}//')
+    latest_tag=$(git ls-remote --tags --sort="v:refname" https://github.com/edissyum/opencaptureforinvoices.git | tail -n1 |  sed 's/.*\///; s/\^{}//' | grep -E '2.+([0-9])$')
     git clone -b $latest_tag https://github.com/edissyum/opencaptureforinvoices/ /var/www/html/opencaptureforinvoices/
     cd /var/www/html/opencaptureforinvoices/
 
