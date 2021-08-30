@@ -1,39 +1,34 @@
 import { Component, OnInit } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
 import {ActivatedRoute, Router} from "@angular/router";
-import {FormBuilder} from "@angular/forms";
-import {AuthService} from "../../../../../services/auth.service";
+import {HttpClient} from "@angular/common/http";
+import {MatDialog} from "@angular/material/dialog";
 import {UserService} from "../../../../../services/user.service";
+import {AuthService} from "../../../../../services/auth.service";
 import {TranslateService} from "@ngx-translate/core";
 import {NotificationService} from "../../../../../services/notifications/notifications.service";
 import {SettingsService} from "../../../../../services/settings.service";
-import {PrivilegesService} from "../../../../../services/privileges.service";
-import {API_URL} from "../../../../env";
-import {catchError, finalize, tap} from "rxjs/operators";
-import {of} from "rxjs";
 import {LastUrlService} from "../../../../../services/last-url.service";
+import {PrivilegesService} from "../../../../../services/privileges.service";
 import {LocalStorageService} from "../../../../../services/local-storage.service";
 import {Sort} from "@angular/material/sort";
 import {ConfirmDialogComponent} from "../../../../../services/confirm-dialog/confirm-dialog.component";
-import {MatDialog} from "@angular/material/dialog";
-import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from "@angular/material/form-field";
+import {API_URL} from "../../../../env";
+import {catchError, finalize, tap} from "rxjs/operators";
+import {of} from "rxjs";
 
 @Component({
-    selector: 'app-list',
-    templateUrl: './form-list.component.html',
-    styleUrls: ['./form-list.component.scss'],
-    providers: [
-        { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } },
-    ]
+    selector: 'positions-mask-list',
+    templateUrl: './positions-mask-list.component.html',
+    styleUrls: ['./positions-mask-list.component.scss']
 })
-export class FormListComponent implements OnInit {
-    loading: boolean            = true;
-    columnsToDisplay: string[]  = ['id', 'label', 'default_form', 'enabled', 'actions'];
-    pageSize : number           = 10;
-    pageIndex: number           = 0;
-    total: number               = 0;
-    offset: number              = 0;
-    forms : any                 = [];
+export class PositionsMaskListComponent implements OnInit {
+    loading         : boolean       = true;
+    columnsToDisplay: string[]      = ['id', 'label', 'supplier_name', 'enabled', 'actions'];
+    pageSize        : number        = 10;
+    pageIndex       : number        = 0;
+    total           : number        = 0;
+    offset          : number        = 0;
+    positions_masks : any           = [];
 
     constructor(
         public router: Router,
@@ -41,7 +36,6 @@ export class FormListComponent implements OnInit {
         private dialog: MatDialog,
         private route: ActivatedRoute,
         public userService: UserService,
-        private formBuilder: FormBuilder,
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
@@ -55,28 +49,22 @@ export class FormListComponent implements OnInit {
     ngOnInit(): void {
         this.serviceSettings.init();
         let lastUrl = this.routerExtService.getPreviousUrl();
-        if (lastUrl.includes('settings/verifier/forms') || lastUrl == '/') {
-            if (this.localeStorageService.get('formsPageIndex'))
-                this.pageIndex = parseInt(<string>this.localeStorageService.get('formsPageIndex'));
+        if (lastUrl.includes('settings/verifier/positions-mask') || lastUrl == '/') {
+            if (this.localeStorageService.get('positionMaskPageIndex'))
+                this.pageIndex = parseInt(<string>this.localeStorageService.get('positionMaskPageIndex'));
             this.offset = this.pageSize * (this.pageIndex);
         }else
-            this.localeStorageService.remove('formsPageIndex');
-        this.loadForms();
+            this.localeStorageService.remove('positionMaskPageIndex');
+        this.loadPositionMask();
     }
 
-    onPageChange(event: any) {
-        this.pageSize = event.pageSize;
-        this.offset = this.pageSize * (event.pageIndex);
-        this.localeStorageService.save('formsPageIndex', event.pageIndex);
-        this.loadForms();
-    }
-
-    loadForms(): void {
+    loadPositionMask() {
         this.loading = true
-        this.http.get(API_URL + '/ws/forms/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
+        this.http.get(API_URL + '/ws/positions_masks/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                if (data.forms[0]) this.total = data.forms[0].total;
-                this.forms = data.forms;
+                console.log(data)
+                // if (data.forms[0]) this.total = data.forms[0].total;
+                // this.forms = data.forms;
             }),
             finalize(() => this.loading = false),
             catchError((err: any) => {
@@ -87,11 +75,18 @@ export class FormListComponent implements OnInit {
         ).subscribe();
     }
 
-    deleteConfirmDialog(form_id: number, form: string) {
+    onPageChange(event: any) {
+        this.pageSize = event.pageSize;
+        this.offset = this.pageSize * (event.pageIndex);
+        this.localeStorageService.save('positionMaskPageIndex', event.pageIndex);
+        this.loadPositionMask();
+    }
+
+    deleteConfirmDialog(position_mask_id: number, positions_mask: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data:{
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
-                confirmText         : this.translate.instant('FORMS.confirm_delete', {"form": form}),
+                confirmText         : this.translate.instant('FORMS.confirm_delete', {"positions_mask": positions_mask}),
                 confirmButton       : this.translate.instant('GLOBAL.delete'),
                 confirmButtonColor  : "warn",
                 cancelButton        : this.translate.instant('GLOBAL.cancel'),
@@ -101,16 +96,16 @@ export class FormListComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
-                this.deleteForm(form_id)
+                this.deletePositionMask(position_mask_id)
             }
         });
     }
 
-    duplicateConfirmDialog(form_id: number, form: string) {
+    duplicateConfirmDialog(position_mask_id: number, positions_mask: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data:{
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
-                confirmText         : this.translate.instant('FORMS.confirm_duplicate', {"form": form}),
+                confirmText         : this.translate.instant('FORMS.confirm_duplicate', {"positions_mask": positions_mask}),
                 confirmButton       : this.translate.instant('GLOBAL.duplicate'),
                 confirmButtonColor  : "warn",
                 cancelButton        : this.translate.instant('GLOBAL.cancel'),
@@ -120,16 +115,16 @@ export class FormListComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
-                this.duplicateForm(form_id)
+                this.duplicatePositionMask(position_mask_id)
             }
         });
     }
 
-    disableConfirmDialog(form_id: number, form: string) {
+    disableConfirmDialog(position_mask_id: number, positions_mask: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data:{
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
-                confirmText         : this.translate.instant('FORMS.confirm_disable', {"form": form}),
+                confirmText         : this.translate.instant('FORMS.confirm_disable', {"positions_mask": positions_mask}),
                 confirmButton       : this.translate.instant('GLOBAL.disable'),
                 confirmButtonColor  : "warn",
                 cancelButton        : this.translate.instant('GLOBAL.cancel'),
@@ -139,16 +134,16 @@ export class FormListComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
-                this.disableForm(form_id)
+                this.disablePositionMask(position_mask_id)
             }
         });
     }
 
-    enableConfirmDialog(form_id: number, form: string) {
+    enableConfirmDialog(position_mask_id: number, positions_mask: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data:{
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
-                confirmText         : this.translate.instant('FORMS.confirm_enable', {"form": form}),
+                confirmText         : this.translate.instant('FORMS.confirm_enable', {"positions_mask": positions_mask}),
                 confirmButton       : this.translate.instant('GLOBAL.enable'),
                 confirmButtonColor  : "warn",
                 cancelButton        : this.translate.instant('GLOBAL.cancel'),
@@ -158,16 +153,16 @@ export class FormListComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
-                this.enableForm(form_id)
+                this.enablePositionMask(position_mask_id)
             }
         });
     }
 
-    deleteForm(form_id: number) {
-        if (form_id !== undefined) {
-            this.http.delete(API_URL + '/ws/forms/delete/' + form_id, {headers: this.authService.headers}).pipe(
+    deletePositionMask(position_mask_id: number) {
+        if (position_mask_id !== undefined) {
+            this.http.delete(API_URL + '/ws/positions_masks/delete/' + position_mask_id, {headers: this.authService.headers}).pipe(
                 tap(() => {
-                    this.loadForms();
+                    this.loadPositionMask();
                 }),
                 catchError((err: any) => {
                     console.debug(err);
@@ -178,11 +173,11 @@ export class FormListComponent implements OnInit {
         }
     }
 
-    duplicateForm(form_id: number) {
-        if (form_id !== undefined) {
-            // this.http.delete(API_URL + '/ws/forms/duplicate/' + form_id, {headers: this.authService.headers}).pipe(
+    duplicatePositionMask(position_mask_id: number) {
+        if (position_mask_id !== undefined) {
+            // this.http.delete(API_URL + '/ws/positions_masks/duplicate/' + position_mask_id, {headers: this.authService.headers}).pipe(
             //     tap(() => {
-            //         this.loadForms()
+            //         this.loadPositionMask()
             //     }),
             //     catchError((err: any) => {
             //         console.debug(err);
@@ -193,11 +188,11 @@ export class FormListComponent implements OnInit {
         }
     }
 
-    disableForm(form_id: number) {
-        if (form_id !== undefined) {
-            this.http.put(API_URL + '/ws/forms/disable/' + form_id, null, {headers: this.authService.headers}).pipe(
+    disablePositionMask(position_mask_id: number) {
+        if (position_mask_id !== undefined) {
+            this.http.put(API_URL + '/ws/positions_masks/disable/' + position_mask_id, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
-                    this.loadForms();
+                    this.loadPositionMask();
                 }),
                 catchError((err: any) => {
                     console.debug(err);
@@ -208,11 +203,11 @@ export class FormListComponent implements OnInit {
         }
     }
 
-    enableForm(forms_id: number) {
+    enablePositionMask(forms_id: number) {
         if (forms_id !== undefined) {
-            this.http.put(API_URL + '/ws/forms/enable/' + forms_id, null, {headers: this.authService.headers}).pipe(
+            this.http.put(API_URL + '/ws/positions_masks/enable/' + forms_id, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
-                    this.loadForms();
+                    this.loadPositionMask();
                 }),
                 catchError((err: any) => {
                     console.debug(err);
@@ -224,13 +219,13 @@ export class FormListComponent implements OnInit {
     }
 
     sortData(sort: Sort) {
-        let data = this.forms.slice();
+        let data = this.positions_masks.slice();
         if(!sort.active || sort.direction === '') {
-            this.forms = data;
+            this.positions_masks = data;
             return;
         }
 
-        this.forms = data.sort((a: any, b: any) => {
+        this.positions_masks = data.sort((a: any, b: any) => {
             const isAsc = sort.direction === 'asc';
             switch (sort.active) {
                 case 'id': return this.compare(a.id, b.id, isAsc);
@@ -246,5 +241,4 @@ export class FormListComponent implements OnInit {
     compare(a: number | string, b: number | string, isAsc: boolean) {
         return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
     }
-
 }

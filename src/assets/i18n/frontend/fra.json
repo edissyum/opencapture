@@ -258,6 +258,13 @@
 		"page": "Page",
 		"previous_page": "Page précédente"
 	},
+	"POSITIONS-MASKS": {
+		"create": "Créer le masque de positionnement",
+		"label": "Libellé du masque de positionnement",
+		"modify": "Mettre à jour le masque de positionnement",
+		"placeholder": "Selectionnez une facture du fournisseur choisi",
+		"supplier_name_associated": "Nom du compte fournisseur associé"
+	},
 	"PRIVILEGES": {
 		"access_splitter": "Accès à Open-Capture Splitter",
 		"access_verifier": "Accès à Open-Capture Verifier",
@@ -314,6 +321,9 @@
 		"form_update": "Modification du formulaire",
 		"general": "Paramètres généraux",
 		"list_forms": "Liste des formulaires",
+		"list_positions_mask": "Masques de positionnement",
+		"positions_mask_builder": "Créer un nouveau masque",
+		"positions_mask_update": "Modification du masque",
 		"roles_list": "Liste des rôles",
 		"splitter": "Paramètres du Splitter",
 		"update_input": "Modifier une chaîne entrante",

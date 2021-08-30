@@ -55,10 +55,10 @@ export class SuppliersListComponent implements OnInit {
         let lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('accounts/suppliers') || lastUrl == '/') {
             if (this.localeStorageService.get('suppliersPageIndex'))
-                this.pageIndex = parseInt(<string>this.localeStorageService.get('suppliersPageIndex'))
+                this.pageIndex = parseInt(<string>this.localeStorageService.get('suppliersPageIndex'));
             this.offset = this.pageSize * (this.pageIndex);
         }else
-            this.localeStorageService.remove('suppliersPageIndex')
+            this.localeStorageService.remove('suppliersPageIndex');
 
         this.loadSuppliers()
     }

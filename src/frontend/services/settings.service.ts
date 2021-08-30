@@ -162,6 +162,29 @@ export class SettingsService {
                     }
                 ]
             },
+            {
+                "id"        : "position_mask_builder",
+                "label"     : this.translate.instant("SETTINGS.list_positions_mask"),
+                "icon"      : "fas fa-map-marker-alt",
+                "route"     : "/settings/verifier/positions-mask",
+                "actions"   : [
+                    {
+                        "id"        : "add_position_mask",
+                        "label"     : this.translate.instant("SETTINGS.positions_mask_builder"),
+                        "route"     : "/settings/verifier/positions-mask/builder/new",
+                        "privilege" : "add_position_mask",
+                        "icon"      : "fas fa-tools"
+                    },
+                    {
+                        "id"                : "update_position_mask",
+                        "label"             : this.translate.instant("SETTINGS.positions_mask_update"),
+                        "route"             : "/settings/verifier/positions-mask/builder/edit/",
+                        "privilege"         : "update_position_mask",
+                        "icon"              : "fas fa-hammer",
+                        "showOnlyIfActive"  : true
+                    }
+                ]
+            }
         ],
         "splitter": [
             {

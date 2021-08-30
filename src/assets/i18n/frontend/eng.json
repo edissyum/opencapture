@@ -258,6 +258,13 @@
 		"page": "Page",
 		"previous_page": "Previous page"
 	},
+	"POSITIONS-MASKS": {
+		"create": "",
+		"label": "",
+		"modify": "",
+		"placeholder": "",
+		"supplier_name_associated": ""
+	},
 	"PRIVILEGES": {
 		"access_splitter": "",
 		"access_verifier": "",
@@ -314,6 +321,9 @@
 		"form_update": "",
 		"general": "General",
 		"list_forms": "",
+		"list_positions_mask": "",
+		"positions_mask_builder": "",
+		"positions_mask_update": "",
 		"roles_list": "Roles list",
 		"splitter": "Splitter",
 		"update_input": "",

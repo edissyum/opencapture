@@ -52,10 +52,10 @@ export class OutputsListComponent implements OnInit {
         let lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('outputs/') || lastUrl == '/') {
             if (this.localeStorageService.get('outputsPageIndex'))
-                this.pageIndex = parseInt(<string>this.localeStorageService.get('outputsPageIndex'))
+                this.pageIndex = parseInt(<string>this.localeStorageService.get('outputsPageIndex'));
             this.offset = this.pageSize * (this.pageIndex);
         } else
-            this.localeStorageService.remove('outputsPageIndex')
+            this.localeStorageService.remove('outputsPageIndex');
         this.loadOutputs()
     }
 

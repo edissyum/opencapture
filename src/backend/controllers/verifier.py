@@ -15,19 +15,20 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
-import base64
+
 import os
 import json
+import base64
 import datetime
 import pandas as pd
 from xml.dom import minidom
-from flask import current_app, Response
 from flask_babel import gettext
 import xml.etree.ElementTree as ET
 from src.backend.main import launch
-from ..import_classes import _Files, _MaarchWebServices
+from flask import current_app, Response
 from ..main import create_classes_from_config
 from ..import_models import verifier, accounts
+from ..import_classes import _Files, _MaarchWebServices
 
 
 def handle_uploaded_file(files, input_id):

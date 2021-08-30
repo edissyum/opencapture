@@ -54,10 +54,10 @@ export class CustomersListComponent implements OnInit {
         let lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('accounts/customers') || lastUrl == '/') {
             if (this.localeStorageService.get('customersPageIndex'))
-                this.pageIndex = parseInt(<string>this.localeStorageService.get('customersPageIndex'))
+                this.pageIndex = parseInt(<string>this.localeStorageService.get('customersPageIndex'));
             this.offset = this.pageSize * (this.pageIndex);
         }else
-            this.localeStorageService.remove('customersPageIndex')
+            this.localeStorageService.remove('customersPageIndex');
 
         this.loadCustomers()
     }

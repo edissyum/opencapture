@@ -20,6 +20,9 @@ import { CreateOutputComponent } from "./verifier/outputs/create/create-output.c
 import { InputsListComponent } from "./verifier/inputs/list/inputs-list.component";
 import { UpdateInputComponent } from "./verifier/inputs/update/update-input.component";
 import { CreateInputComponent } from "./verifier/inputs/create/create-input.component";
+import { CreatePositionsMaskComponent } from "./verifier/positions-mask/create/create-positions-mask.component";
+import { UpdatePositionsMaskComponent } from "./verifier/positions-mask/update/update-positions-mask.component";
+import { PositionsMaskListComponent } from "./verifier/positions-mask/list/positions-mask-list.component";
 
 const routes: Routes = [
     {
@@ -119,6 +122,21 @@ const routes: Routes = [
     {
         path: 'settings/verifier/inputs/update/:id', component: UpdateInputComponent,
         data: {title: marker('SETTINGS.update_input'), privileges: ['settings', 'update_input']},
+        canActivate: [LoginRequiredService]
+    },
+    {
+        path: 'settings/verifier/positions-mask', component: PositionsMaskListComponent,
+        data: {title: marker('SETTINGS.list_positions_mask'), privileges: ['settings', 'positions_mask_list']},
+        canActivate: [LoginRequiredService]
+    },
+    {
+        path: 'settings/verifier/positions-mask/builder/new', component: CreatePositionsMaskComponent,
+        data: {title: marker('SETTINGS.positions_mask_builder'), privileges: ['settings', 'add_positions_mask']},
+        canActivate: [LoginRequiredService]
+    },
+    {
+        path: 'settings/verifier/positions-mask/update/:id', component: UpdatePositionsMaskComponent,
+        data: {title: marker('SETTINGS.positions_mask_update'), privileges: ['settings', 'update_positions_mask']},
         canActivate: [LoginRequiredService]
     },
 // -- END Verifier

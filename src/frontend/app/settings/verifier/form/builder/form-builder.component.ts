@@ -560,12 +560,12 @@ export class FormBuilderComponent implements OnInit {
     ngOnInit(): void {
         this.serviceSettings.init();
         this.formId = this.route.snapshot.params['id'];
-        this.creationMode = false;
 
         this.http.get(API_URL + '/ws/outputs/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.outputs = data.outputs;
                 if (this.formId) {
+                    this.creationMode = false;
                     this.http.get(API_URL + '/ws/forms/getById/' + this.formId, {headers: this.authService.headers}).pipe(
                         tap((data: any) => {
                             for (let field in this.form) {

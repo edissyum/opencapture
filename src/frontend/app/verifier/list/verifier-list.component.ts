@@ -141,15 +141,15 @@ export class VerifierListComponent implements OnInit {
         let lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('verifier/') && !lastUrl.includes('settings') || lastUrl == '/' || lastUrl == '/upload') {
             if (this.localeStorageService.get('invoicesPageIndex'))
-                this.pageIndex = parseInt(<string>this.localeStorageService.get('invoicesPageIndex'))
+                this.pageIndex = parseInt(<string>this.localeStorageService.get('invoicesPageIndex'));
             if (this.localeStorageService.get('invoicesTimeIndex')) {
-                this.selectedTab = parseInt(<string>this.localeStorageService.get('invoicesTimeIndex'))
-                this.currentTime = this.batchList[this.selectedTab].id
+                this.selectedTab = parseInt(<string>this.localeStorageService.get('invoicesTimeIndex'));
+                this.currentTime = this.batchList[this.selectedTab].id;
             }
             this.offset = this.pageSize * (this.pageIndex);
         } else {
-            this.localeStorageService.remove('invoicesPageIndex')
-            this.localeStorageService.remove('invoicesTimeIndex')
+            this.localeStorageService.remove('invoicesPageIndex');
+            this.localeStorageService.remove('invoicesTimeIndex');
         }
 
         this.http.get(API_URL + '/ws/status/list', {headers: this.authService.headers}).pipe(

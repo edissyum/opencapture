@@ -61,10 +61,10 @@ export class UsersListComponent implements OnInit {
         let lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('users/') || lastUrl == '/') {
             if (this.localeStorageService.get('usersPageIndex'))
-                this.pageIndex = parseInt(<string>this.localeStorageService.get('usersPageIndex'))
+                this.pageIndex = parseInt(<string>this.localeStorageService.get('usersPageIndex'));
             this.offset = this.pageSize * (this.pageIndex);
         }else
-            this.localeStorageService.remove('usersPageIndex')
+            this.localeStorageService.remove('usersPageIndex');
 
         this.http.get(API_URL + '/ws/roles/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {

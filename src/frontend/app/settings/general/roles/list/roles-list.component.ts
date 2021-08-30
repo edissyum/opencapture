@@ -60,10 +60,10 @@ export class RolesListComponent implements OnInit {
         let lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('roles/') || lastUrl == '/') {
             if (this.localeStorageService.get('rolesPageIndex'))
-                this.pageIndex = parseInt(<string>this.localeStorageService.get('rolesPageIndex'))
+                this.pageIndex = parseInt(<string>this.localeStorageService.get('rolesPageIndex'));
             this.offset = this.pageSize * (this.pageIndex);
         } else
-            this.localeStorageService.remove('rolesPageIndex')
+            this.localeStorageService.remove('rolesPageIndex');
         this.loadRoles()
     }
 

@@ -55,6 +55,9 @@ import { HighlightPipe, UpdateOutputComponent } from './settings/verifier/output
 import { CreateInputComponent } from './settings/verifier/inputs/create/create-input.component';
 import { InputsListComponent } from './settings/verifier/inputs/list/inputs-list.component';
 import { UpdateInputComponent } from './settings/verifier/inputs/update/update-input.component';
+import { UpdatePositionsMaskComponent } from './settings/verifier/positions-mask/update/update-positions-mask.component';
+import { PositionsMaskListComponent } from './settings/verifier/positions-mask/list/positions-mask-list.component';
+import { CreatePositionsMaskComponent } from './settings/verifier/positions-mask/create/create-positions-mask.component';
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -99,7 +102,10 @@ export function createTranslateLoader(http: HttpClient) {
         UpdateOutputComponent,
         CreateInputComponent,
         InputsListComponent,
-        UpdateInputComponent
+        UpdateInputComponent,
+        UpdatePositionsMaskComponent,
+        PositionsMaskListComponent,
+        CreatePositionsMaskComponent
     ],
     imports: [
         BrowserModule,

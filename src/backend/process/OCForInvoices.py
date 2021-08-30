@@ -46,7 +46,7 @@ def insert(args, files, config, database, datas, positions, pages, tiff_filename
     invoice_data = {
         'filename': os.path.basename(file),
         'path': os.path.dirname(file),
-        'img_width': str(files.get_size(path)),
+        'img_width': str(files.get_width(path)),
         'full_jpg_filename': full_jpg_filename.replace('-%03d', '-001'),
         'tiff_filename': tiff_filename.replace('-%03d', '-001'),
         'original_filename': original_file,

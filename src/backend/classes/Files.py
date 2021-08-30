@@ -466,7 +466,7 @@ class Files:
         return text.replace('\x0c', '').strip()
 
     @staticmethod
-    def get_size(img):
+    def get_width(img):
         im = Image.open(img)
         return im.size[0]
 

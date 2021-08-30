@@ -51,6 +51,12 @@ else:
     forms = getattr(__import__(custom_array['forms']['path'], fromlist=[custom_array['forms']['module']]),
                        custom_array['forms']['module'])
 
+if 'positions_masks' not in custom_array:
+    from .rest import positions_masks
+else:
+    positions_masks = getattr(__import__(custom_array['positions_masks']['path'], fromlist=[custom_array['positions_masks']['module']]),
+                       custom_array['positions_masks']['module'])
+
 if 'status' not in custom_array:
     from .rest import status
 else:

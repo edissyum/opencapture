@@ -19,6 +19,19 @@ CREATE TABLE "form_models" (
     "status"        VARCHAR(5) DEFAULT 'OK'
 );
 
+CREATE TABLE "positions_masks" (
+    "id"            SERIAL UNIQUE PRIMARY KEY,
+    "label"         VARCHAR(50),
+    "enabled"       BOOLEAN DEFAULT true,
+    "supplier_id"   INTEGER,
+    "positions"     JSONB DEFAULT '{}',
+    "pages"         JSONB DEFAULT '{}',
+    "status"        VARCHAR(5) DEFAULT 'OK',
+    "filename"      VARCHAR(255),
+    "width"         VARCHAR(10),
+    "nb_pages"      INTEGER,
+);
+
 CREATE TABLE "form_models_field" (
     "id"        SERIAL UNIQUE PRIMARY KEY,
     "form_id"   INTEGER,

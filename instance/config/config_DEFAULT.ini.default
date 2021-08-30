@@ -8,6 +8,7 @@ scriptsPath                 = ${GLOBAL:projectPath}/bin/scripts/
 docserverPath               = /var/docservers/OpenCapture/
 fullPath                    = ${GLOBAL:docserverPath}/images/full/
 tiffPath                    = ${GLOBAL:docserverPath}/images/tiff/
+positionsMasksPath           = ${GLOBAL:docserverPath}/images/positions_masks/
 exportAccountingFolder      = ${GLOBAL:docserverPath}/xml/
 errorPath                   = ${GLOBAL:projectPath}/bin/data/error/
 logFile                     = ${GLOBAL:projectPath}/bin/data/log/OCforInvoices.log

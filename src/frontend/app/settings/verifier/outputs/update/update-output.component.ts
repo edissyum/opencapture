@@ -203,12 +203,12 @@ export class UpdateOutputComponent implements OnInit {
                          **/
                         for (let category in this.outputsTypesForm[this.originalOutputType]) {
                             this.outputsTypesForm[this.originalOutputType][category].forEach((element: any) => {
+                                console.log(this.output.data.options[category])
                                 this.output.data.options[category].forEach((output_element: any) => {
                                     if (element.id == output_element.id) {
                                         if (output_element.value) {
                                             if (output_element.webservice) element.values = [output_element.value];
                                             element.control.setValue(output_element.value);
-
                                         }
                                     }
                                 });
