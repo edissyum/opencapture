@@ -1,3 +1,20 @@
+/** This file is part of Open-Capture for Invoices.
+
+Open-Capture for Invoices is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Open-Capture is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
+
+@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+
 import { Component, OnInit } from '@angular/core';
 import {FormControl} from "@angular/forms";
 import {Router} from "@angular/router";
@@ -18,7 +35,7 @@ import {Observable, of} from "rxjs";
     styleUrls: ['./create-positions-mask.component.scss']
 })
 export class CreatePositionsMaskComponent implements OnInit {
-    loading             : boolean       = true
+    loading             : boolean   = true;
     suppliers           : any       = [];
     filteredOptions     : Observable<any> | undefined;
     form                : any       = {
@@ -63,33 +80,32 @@ export class CreatePositionsMaskComponent implements OnInit {
 
     isValidForm(form: any) {
         let state = true;
-        for (let key in form) {
+        for (const key in form) {
             if ((form[key].control.status !== 'DISABLED' && form[key].control.status !== 'VALID') || form[key].control.value == null) {
                 state = false;
             }
             form[key].control.markAsTouched();
-        };
+        }
         return state;
     }
 
     createPositionsMask() {
         if (this.isValidForm(this.form)) {
-            let label = this.form['label'].control.value;
-            let supplier_name = this.form['supplier_id'].control.value;
-            let supplier_id = '';
+            const label = this.form['label'].control.value;
+            const supplierName = this.form['supplier_id'].control.value;
+            let supplierId = '';
             this.suppliers.forEach((element: any) => {
-                if (element.name == supplier_name) {
-                    supplier_id = element.id
+                if (element.name === supplierName) {
+                    supplierId = element.id;
                 }
             });
             this.http.post(API_URL + '/ws/positions_masks/add',
                 {'args': {
                         'label': label,
-                        'supplier_id': supplier_id,
+                        'supplier_id': supplierId,
                     }}, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {
-                    console.log(data)
                     this.notify.success(this.translate.instant('POSITIONS-MASKS.created'));
                     this.router.navigate(['/settings/verifier/positions-mask/update/' + data.id]).then();
                 }),
@@ -103,9 +119,9 @@ export class CreatePositionsMaskComponent implements OnInit {
     }
 
     getErrorMessage(field: any, form: any) {
-        let error = undefined;
+        let error : any;
         form.forEach((element: any) => {
-            if (element.id == field) {
+            if (element.id === field) {
                 if (element.required) {
                     error = this.translate.instant('AUTH.field_required');
                 }
@@ -115,15 +131,15 @@ export class CreatePositionsMaskComponent implements OnInit {
     }
 
     sortArrayAlphab(array: any) {
-        return array.sort(function (a:any, b:any) {
-            let x = a.name.toUpperCase(),
+        return array.sort((a: any, b: any) => {
+            const x = a.name.toUpperCase(),
                 y = b.name.toUpperCase();
-            return x == y ? 0 : x > y ? 1 : -1;
+            return x === y ? 0 : x > y ? 1 : -1;
         });
     }
 
     private _filter(value: any) {
-        if (typeof value == 'string') {
+        if (typeof value === 'string') {
             this.toHighlight = value;
             const filterValue = value.toLowerCase();
             return this.suppliers.filter((option: any) => option.name.toLowerCase().indexOf(filterValue) !== -1);
@@ -131,5 +147,4 @@ export class CreatePositionsMaskComponent implements OnInit {
             return this.suppliers;
         }
     }
-
 }

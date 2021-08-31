@@ -1,3 +1,20 @@
+/** This file is part of Open-Capture for Invoices.
+
+Open-Capture for Invoices is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Open-Capture is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
+
+@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
@@ -31,7 +48,7 @@ export class CustomFieldsComponent implements OnInit {
             'id': 'splitter',
             'label': this.translate.instant('HOME.splitter')
         }
-    ]
+    ];
     addFieldInputs: any[] = [
         {
             controlType: 'textbox',
@@ -67,8 +84,8 @@ export class CustomFieldsComponent implements OnInit {
             ],
             required: true,
         },
-    ]
-    loading = true
+    ];
+    loading = true;
 
     constructor(
         private http: HttpClient,
@@ -85,7 +102,7 @@ export class CustomFieldsComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.retrieveCustomFields()
+        this.retrieveCustomFields();
         this.form = this.toFormGroup();
     }
 
@@ -133,10 +150,10 @@ export class CustomFieldsComponent implements OnInit {
                             'label': field.label,
                             'type': field.type,
                             'enabled': field.enabled,
-                        }
+                        };
                         field.enabled ? this.activeFields.push(newField) : this.inactiveFields.push(newField);
                     }
-                )
+                );
             }),
             finalize(() => this.loading = false),
             catchError((err: any) => {
@@ -148,7 +165,7 @@ export class CustomFieldsComponent implements OnInit {
     }
 
     addCustomField() {
-        let newField = this.form.getRawValue()
+        let newField = this.form.getRawValue();
         newField = {
             'label_short': newField.label_short,
             'label': newField.label,

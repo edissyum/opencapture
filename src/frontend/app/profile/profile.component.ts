@@ -1,3 +1,20 @@
+/** This file is part of Open-Capture for Invoices.
+
+Open-Capture for Invoices is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Open-Capture is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
+
+@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {AuthService} from "../../services/auth.service";
@@ -79,7 +96,7 @@ export class UserProfileComponent implements OnInit {
     ngOnInit() {
         this.userId = this.route.snapshot.params['id'];
 
-        if (this.userId != this.userService.user.id) {
+        if (this.userId !== this.userService.user.id) {
             if (!this.privilegeService.hasPrivilege('update_user')) {
                 this.notify.error('ERROR.unauthorized');
                 this.router.navigateByUrl('/home').then();
@@ -92,7 +109,7 @@ export class UserProfileComponent implements OnInit {
                     if (element.editable) {
                         this.roles.push(element);
                     }else{
-                        if((this.userService.getUser().privileges == '*')) {
+                        if((this.userService.getUser().privileges === '*')) {
                             this.roles.push(element);
                         }
                     }
@@ -108,13 +125,13 @@ export class UserProfileComponent implements OnInit {
         this.http.get(API_URL + '/ws/users/getById/' + this.userId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.profile = data;
-                for (let field in this.profile) {
+                for (const field in this.profile) {
                     if (this.profile.hasOwnProperty(field)) {
                         this.profileForm.forEach(element => {
-                            if (element.id == field) {
+                            if (element.id === field) {
                                 element.control.value = this.profile[field];
-                                if (element.id == 'role') {
-                                    element.values = this.roles
+                                if (element.id === 'role') {
+                                    element.values = this.roles;
                                 }
                             }
                         });
@@ -132,14 +149,12 @@ export class UserProfileComponent implements OnInit {
 
     isValidForm() {
         let state = true;
-
         this.profileForm.forEach(element => {
             if (element.control.status !== 'DISABLED' && element.control.status !== 'VALID') {
                 state = false;
             }
             element.control.markAsTouched();
         });
-
         return state;
     }
 
@@ -155,7 +170,7 @@ export class UserProfileComponent implements OnInit {
             ).pipe(
                 tap((data: any) => {
                     this.notify.success(this.translate.instant('USER.profile_updated'));
-                    if (this.userId == this.userService.user.id) {
+                    if (this.userId === this.userService.user.id) {
                         this.userService.setUser(data.user);
                         this.authService.setTokenAuth(btoa(JSON.stringify(this.userService.getUser())), data.days_before_exp);
                     }
@@ -170,9 +185,9 @@ export class UserProfileComponent implements OnInit {
     }
 
     getErrorMessage(field: any) {
-        let error = '';
+        let error: any;
         this.profileForm.forEach(element => {
-            if(element.id == field) {
+            if(element.id === field) {
                 if (element.required) {
                     error = this.translate.instant('AUTH.field_required');
                 }

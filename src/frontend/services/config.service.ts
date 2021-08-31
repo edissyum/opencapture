@@ -21,7 +21,7 @@ export class ConfigService {
         return new Promise((resolve) => {
             this.http.get(API_URL + '/ws/config/readConfig', {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
-                    this.setConfig(data.config)
+                    this.setConfig(data.config);
                     resolve(true);
                 }),
                 catchError((err: any) => {
@@ -39,6 +39,6 @@ export class ConfigService {
     }
 
     getConfig() {
-        return JSON.parse(atob(<string>this.authService.getTokenCustom('OpenCaptureForInvoicesConfig')));
+        return JSON.parse(atob(this.authService.getTokenCustom('OpenCaptureForInvoicesConfig') as string));
     }
 }

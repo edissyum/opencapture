@@ -5,7 +5,7 @@ import {TranslateService} from "@ngx-translate/core";
 import {NotificationService} from "./notifications/notifications.service";
 
 @Injectable({
-        providedIn: 'root'
+    providedIn: 'root'
 })
 export class HasPrivilegeService {
 
@@ -19,24 +19,24 @@ export class HasPrivilegeService {
 
     canActivate(route: ActivatedRouteSnapshot): boolean {
         if (route.data.privileges !== undefined) {
-            let return_value = true
-            route.data.privileges.forEach((privilege:any) => {
-                let hasPrivilege = this.privilegesService.hasPrivilege(privilege)
+            let returnValue = true;
+            route.data.privileges.forEach((privilege: any) => {
+                const hasPrivilege = this.privilegesService.hasPrivilege(privilege);
                 if (!hasPrivilege) {
                     this.translate.get('ERROR.unauthorized').subscribe((translated: string) => {
-                        let label = ''
+                        let label = '';
                         if (route.routeConfig) {
-                            label = this.translate.instant(route.data['title']);
+                            label = '<b>' + this.translate.instant(route.data['title']) + '</b>';
                         }
                         this.notify.error(translated + label);
                         this.router.navigateByUrl('/home').then();
                     });
-                    return_value = false
+                    returnValue = false;
                 }
-            })
-            return return_value
-        }else{
-          return false
+            });
+            return returnValue;
+        } else {
+            return false;
         }
     }
 }

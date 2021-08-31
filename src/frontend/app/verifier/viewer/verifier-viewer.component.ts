@@ -1,3 +1,20 @@
+/** This file is part of Open-Capture for Invoices.
+
+Open-Capture for Invoices is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Open-Capture is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
+
+@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from "@angular/router";
@@ -28,11 +45,11 @@ import * as moment from 'moment';
 })
 
 export class VerifierViewerComponent implements OnInit {
-    loading             : boolean   = true
+    loading             : boolean   = true;
     isOCRRunning        : boolean   = false;
     settingsOpen        : boolean   = false;
     saveInfo            : boolean   = true;
-    ocr_from_user       : boolean   = false;
+    ocrFromUser         : boolean   = false;
     accountingPlanEmpty : boolean   = false;
     deleteDataOnChangeForm: boolean = true;
     imageInvoice        : any;
@@ -66,7 +83,7 @@ export class VerifierViewerComponent implements OnInit {
         'supplier': [],
         'facturation': [],
         'other': []
-    }
+    };
     formList            : any       = {};
     currentFormFields   : any       = {};
     pattern             : any       = {
@@ -75,13 +92,13 @@ export class VerifierViewerComponent implements OnInit {
         'number_int': '^[0-9]*$',
         'number_float': '^[0-9]*([.][0-9]*)*$',
         'char': '^[A-Za-z\\s]*$',
-    }
-    suppliers           : any       = []
+    };
+    suppliers           : any       = [];
     filteredOptions     : Observable<any> | undefined;
-    get_only_raw_footer : boolean   = false;
+    getOnlyRawFooter    : boolean   = false;
     toHighlight         : string    = '';
     supplierNamecontrol = new FormControl();
-    toHighlight_accounting : string    = '';
+    toHighlightAccounting : string    = '';
 
     constructor(
         private router: Router,
@@ -97,7 +114,7 @@ export class VerifierViewerComponent implements OnInit {
 
     async ngOnInit(): Promise<void> {
         this.localeStorageService.save('splitter_or_verifier', 'verifier');
-        this.ocr_from_user = false;
+        this.ocrFromUser = false;
         this.saveInfo = true;
         this.config = this.configService.getConfig();
         this.invoiceId = this.route.snapshot.params['id'];
@@ -105,7 +122,7 @@ export class VerifierViewerComponent implements OnInit {
         this.currentFilename = this.invoice.full_jpg_filename;
         await this.getThumb(this.invoice.full_jpg_filename);
         if (this.invoice.datas['form_id']) this.currentFormFields = await this.getFormById(this.invoice.datas['form_id']);
-        if (Object.keys(this.currentFormFields).length == 0) this.currentFormFields = await this.getForm();
+        if (Object.keys(this.currentFormFields).length === 0) this.currentFormFields = await this.getForm();
         this.formList = await this.getAllForm();
         this.formList = this.formList.forms;
         this.suppliers = await this.retrieveSuppliers();
@@ -128,8 +145,8 @@ export class VerifierViewerComponent implements OnInit {
         setTimeout(() => {
             this.drawPositions();
             this.loading = false;
-        }, 500)
-        let triggerEvent = $('.trigger');
+        }, 500);
+        const triggerEvent = $('.trigger');
         triggerEvent.hide();
         this.filteredOptions = this.supplierNamecontrol.valueChanges
             .pipe(
@@ -168,24 +185,24 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     async drawPositions(): Promise<any> {
-        for (let parent in this.fields) {
-            for (let cpt in this.currentFormFields.fields[parent]) {
-                let field = this.currentFormFields.fields[parent][cpt];
-                let position = this.getPosition(field.id);
-                let page = this.getPage(field.id);
-                if (position && parseInt(String(page)) == parseInt(String(this.currentPage))) {
+        for (const parent in this.fields) {
+            for (const cpt in this.currentFormFields.fields[parent]) {
+                const field = this.currentFormFields.fields[parent][cpt];
+                const position = this.getPosition(field.id);
+                const page = this.getPage(field.id);
+                if (position && parseInt(String(page)) === parseInt(String(this.currentPage))) {
                     this.lastId = field.id;
                     this.lastLabel = this.translate.instant(field.label).trim();
                     this.lastColor = field.color;
                     this.disableOCR = true;
                     $('#' + field.id).focus();
-                    let newArea = {
+                    const newArea = {
                         x: position.ocr_from_user ? position.x / this.ratio : position.x / this.ratio - ((position.x / this.ratio) * 0.1),
                         y: position.ocr_from_user ? position.y / this.ratio : position.y / this.ratio - ((position.y / this.ratio) * 0.02),
                         width: position.ocr_from_user ? position.width / this.ratio : position.width / this.ratio + ((position.width / this.ratio) * 0.05),
                         height: position.ocr_from_user ? position.height / this.ratio : position.height / this.ratio + ((position.height / this.ratio) * 0.5)
                     };
-                    let triggerEvent = $('.trigger');
+                    const triggerEvent = $('.trigger');
                     triggerEvent.hide();
                     triggerEvent.trigger('mousedown');
                     triggerEvent.trigger('mouseup', [newArea]);
@@ -200,38 +217,38 @@ export class VerifierViewerComponent implements OnInit {
         this.lastColor = field.color;
         this.disableOCR = true;
         $('#' + field.id).focus();
-        let newArea = {
+        const newArea = {
             x: position.x / this.ratio,
             y: position.y / this.ratio,
             width: position.width / this.ratio,
             height: position.height / this.ratio
         };
-        let triggerEvent = $('.trigger');
+        const triggerEvent = $('.trigger');
         triggerEvent.hide();
         triggerEvent.trigger('mousedown');
         triggerEvent.trigger('mouseup', [newArea]);
     }
 
-    getPosition(field_id: any) {
+    getPosition(fieldId: any) {
         let position: any;
         if (this.invoice.positions) {
             Object.keys(this.invoice.positions).forEach((element: any) => {
-                if (element == field_id) {
-                    position = this.invoice.positions[field_id];
+                if (element === fieldId) {
+                    position = this.invoice.positions[fieldId];
                 }
-            })
+            });
         }
-        return position
+        return position;
     }
 
-    getPage(field_id: any) {
+    getPage(fieldId: any) {
         let page: number = 1;
         if (this.invoice.pages) {
             Object.keys(this.invoice.pages).forEach((element: any) => {
-                if (element == field_id) {
-                    page = this.invoice.pages[field_id];
+                if (element === fieldId) {
+                    page = this.invoice.pages[fieldId];
                 }
-            })
+            });
         }
         return page;
     }
@@ -257,8 +274,8 @@ export class VerifierViewerComponent implements OnInit {
         return await this.http.get(API_URL + '/ws/forms/list', {headers: this.authService.headers}).toPromise();
     }
 
-    async getFormById(form_id: number): Promise<any> {
-        return await this.http.get(API_URL + '/ws/forms/fields/getByFormId/' + form_id, {headers: this.authService.headers}).toPromise();
+    async getFormById(formId: number): Promise<any> {
+        return await this.http.get(API_URL + '/ws/forms/fields/getByFormId/' + formId, {headers: this.authService.headers}).toPromise();
     }
 
     async fillForm(data: any): Promise<any> {
@@ -268,9 +285,9 @@ export class VerifierViewerComponent implements OnInit {
             'other': []
         };
         this.fields = data.fields;
-        for (let category in this.fields) {
-            for (let cpt in this.fields[category]) {
-                let field = this.fields[category][cpt];
+        for (const category in this.fields) {
+            for (const cpt in this.fields[category]) {
+                const field = this.fields[category][cpt];
                 this.form[category].push({
                     id: field.id,
                     label: field.label,
@@ -290,9 +307,9 @@ export class VerifierViewerComponent implements OnInit {
                     values: ''
                 });
 
-                if (field.id == 'accounting_plan') {
+                if (field.id === 'accounting_plan') {
                     let array = await this.retrieveAccountingPlan();
-                    this.accountingPlanEmpty = Object.keys(array).length == 0;
+                    this.accountingPlanEmpty = Object.keys(array).length === 0;
                     if (this.accountingPlanEmpty) {
                         array = await this.retrieveDefaultAccountingPlan();
                     }
@@ -304,36 +321,36 @@ export class VerifierViewerComponent implements OnInit {
                         );
                 }
 
-                let _field = this.form[category][cpt];
+                const _field = this.form[category][cpt];
                 if (this.invoice.datas[field.id]) {
                     let value = this.invoice.datas[field.id];
-                    if (field.format == 'date' && field.id !== '' && field.id !== undefined && value) {
+                    if (field.format === 'date' && field.id !== '' && field.id !== undefined && value) {
                         value = value.replaceAll('.', '/');
                         value = value.replaceAll(',', '/');
                         value = value.replaceAll(' ', '/');
-                        let format = moment().localeData().longDateFormat('L');
+                        const format = moment().localeData().longDateFormat('L');
                         value = moment(value, format);
                         value = new Date(value._d);
                     }
                     _field.control.setValue(value);
                     _field.control.markAsTouched();
                 }
-                if (field.id == 'name' && category == 'supplier') this.supplierNamecontrol = this.form[category][cpt].control;
+                if (field.id === 'name' && category === 'supplier') this.supplierNamecontrol = this.form[category][cpt].control;
                 this.findChildren(field.id, _field, category);
             }
         }
     }
 
     private _filter_accounting(array: any, value: any): string[] {
-        this.toHighlight_accounting = value;
+        this.toHighlightAccounting = value;
         const filterValue = value.toLowerCase();
         return array.filter((option: any) => option.compte_lib.toLowerCase().indexOf(filterValue) !== -1 || option.compte_num.toLowerCase().indexOf(filterValue) !== -1);
     }
 
     sortArray(array: any) {
-        return array.sort(function (a:any, b:any) {
-            let x = a.compte_num, y = b.compte_num;
-            return x == y ? 0 : x > y ? 1 : -1;
+        return array.sort((a: any, b: any) => {
+            const x = a.compte_num, y = b.compte_num;
+            return x === y ? 0 : x > y ? 1 : -1;
         });
     }
 
@@ -345,13 +362,13 @@ export class VerifierViewerComponent implements OnInit {
         return await this.http.get(API_URL + '/ws/accounts/customers/getDefaultAccountingPlan', {headers: this.authService.headers}).toPromise();
     }
 
-    findChildren(parent_id: any, parent: any, category_id: any) {
-        for (let field in this.invoice.datas) {
-            if (field.includes(parent_id + '_')) {
+    findChildren(parentId: any, parent: any, categoryId: any) {
+        for (const field in this.invoice.datas) {
+            if (field.includes(parentId + '_')) {
                 parent.cpt += 1;
-                let splitted = field.split('_');
-                let cpt = parseInt(splitted[splitted.length - 1]) + 1;
-                this.form[category_id].push({
+                const splitted = field.split('_');
+                const cpt = parseInt(splitted[splitted.length - 1]) + 1;
+                this.form[categoryId].push({
                     id: field,
                     label: parent.label,
                     required: parent.required,
@@ -368,30 +385,30 @@ export class VerifierViewerComponent implements OnInit {
                     class_label: parent.class_label,
                     cpt: cpt,
                 });
-                let value = this.invoice.datas[field];
-                let _field = this.form[category_id][this.form[category_id].length - 1];
+                const value = this.invoice.datas[field];
+                const _field = this.form[categoryId][this.form[categoryId].length - 1];
                 _field.control.setValue(value);
             }
         }
     }
 
     getSelectionByCpt(selection: any, cpt: any) {
-        for (let index in selection) {
-            if (selection[index].id == cpt)
+        for (const index in selection) {
+            if (selection[index].id === cpt)
                 return selection[index];
         }
     }
 
     ocr(event: any, enable: boolean, color = 'green') {
         $('.trigger').show();
-        let _this = this;
+        const _this = this;
         this.lastId = event.target.id;
         this.lastLabel = event.target.labels[0].textContent.replace('*', '').trim();
         this.lastColor = color;
-        let imageContainer = $('.image-container');
-        let deleteArea = $('.delete-area');
-        let backgroundArea = $('.select-areas-background-area');
-        let resizeArea = $('.select-areas-resize-handler');
+        const imageContainer = $('.image-container');
+        const deleteArea = $('.delete-area');
+        const backgroundArea = $('.select-areas-background-area');
+        const resizeArea = $('.select-areas-resize-handler');
         deleteArea.addClass('pointer-events-auto');
         backgroundArea.addClass('pointer-events-auto');
         resizeArea.addClass('pointer-events-auto');
@@ -405,31 +422,32 @@ export class VerifierViewerComponent implements OnInit {
                 allowNudge: false,
                 minSize: [20, 20],
                 maxSize: [this.imageInvoice.width(), this.imageInvoice.height() / 8],
-                onChanged: function(img: any, cpt: any, selection: any) {
+                onChanged(img: any, cpt: any, selection: any) {
                     if (selection.length !== 0 && selection['width'] !== 0 && selection['height'] !== 0) {
                         _this.ocr_process(img, cpt, selection);
                     }
                 },
-                onDeleted: function(img: any, cpt: any) {
-                    let inputId = $('#select-area-label_' + cpt).attr('class').replace('input_', '').replace('select-none', '');
+                onDeleted(img: any, cpt: any) {
+                    const inputId = $('#select-area-label_' + cpt).attr('class').replace('input_', '').replace('select-none', '');
                     if (inputId) {
                         _this.updateFormValue(inputId, '');
                         if (_this.deleteDataOnChangeForm) {
                             _this.deleteData(inputId);
                             _this.deletePosition(inputId);
+                            _this.deletePage(inputId);
                         }
                     }
                 }
             });
-        }else{
+        }else {
             let deleteClicked = false;
-            $(".select-areas-delete-area").click(function() {
+            $(".select-areas-delete-area").click(() => {
                 deleteClicked = true;
             });
-            setTimeout(function () {
+            setTimeout(() => {
                 if (!deleteClicked) {
-                    resizeArea.css('display', 'none');
-                    deleteArea.css('display', 'none');
+                    resizeArea.hide();
+                    deleteArea.hide();
                 }
             }, 200);
             $('.outline_' + _this.lastId).removeClass('animate');
@@ -438,30 +456,30 @@ export class VerifierViewerComponent implements OnInit {
 
     ocr_process(img: any, cpt: number, selection: any) {
         // Write the label of the input above the selection rectangle
-        let page = this.getPage(this.lastId);
-        if (this.ocr_from_user || (page == this.currentPage || page == 0)) {
-            if ($('#select-area-label_' + cpt).length == 0) {
-                let outline = $('#select-areas-outline_' + cpt);
-                let background_area = $('#select-areas-background-area_' + cpt);
-                let label_container = $('#select-areas-label-container_' + cpt);
-                label_container.append('<div id="select-area-label_' + cpt + '" class="input_' + this.lastId + ' select-none">' + this.lastLabel + '</div>');
-                background_area.css('background-color', this.lastColor);
+        const page = this.getPage(this.lastId);
+        if (this.ocrFromUser || (page === this.currentPage || page === 0)) {
+            if ($('#select-area-label_' + cpt).length === 0) {
+                const outline = $('#select-areas-outline_' + cpt);
+                const backgroundArea = $('#select-areas-background-area_' + cpt);
+                const labelContainer = $('#select-areas-label-container_' + cpt);
+                labelContainer.append('<div id="select-area-label_' + cpt + '" class="input_' + this.lastId + ' select-none">' + this.lastLabel + '</div>');
+                backgroundArea.css('background-color', this.lastColor);
                 outline.addClass('outline_' + this.lastId);
-                background_area.addClass('background_' + this.lastId);
-                background_area.data('page', page);
-                label_container.data('page', page);
+                backgroundArea.addClass('background_' + this.lastId);
+                backgroundArea.data('page', page);
+                labelContainer.data('page', page);
                 outline.data('page', page);
             }
             // End write
 
-            let inputId = $('#select-area-label_' + cpt).attr('class').replace('input_', '').replace('select-none', '');
+            const inputId = $('#select-area-label_' + cpt).attr('class').replace('input_', '').replace('select-none', '');
             $('#' + inputId).focus();
 
             // Test to avoid multi selection for same label. If same label exists, remove the selected areas and replace it by the new one
-            let label = $('div[id*=select-area-label_]:contains(' + this.lastLabel + ')');
-            let labelCount = label.length;
+            const label = $('div[id*=select-area-label_]:contains(' + this.lastLabel + ')');
+            const labelCount = label.length;
             if (labelCount > 1) {
-                let cptToDelete = label[labelCount - 1].id.split('_')[1];
+                const cptToDelete = label[labelCount - 1].id.split('_')[1];
                 $('#select-areas-label-container_' + cptToDelete).remove();
                 $('#select-areas-background-area_' + cptToDelete).remove();
                 $('#select-areas-outline_' + cptToDelete).remove();
@@ -480,10 +498,10 @@ export class VerifierViewerComponent implements OnInit {
                         tap((data: any) => {
                             this.updateFormValue(inputId, data.result);
                             this.isOCRRunning = false;
-                            let res = this.saveData(data.result, this.lastId, true);
+                            const res = this.saveData(data.result, this.lastId, true);
                             if (res) {
                                 this.savePosition(this.getSelectionByCpt(selection, cpt));
-                                this.savePages(this.currentPage);
+                                this.savePages(this.currentPage).then();
                             }
                         }),
                         catchError((err: any) => {
@@ -495,21 +513,21 @@ export class VerifierViewerComponent implements OnInit {
             }
             this.saveInfo = true;
         }else {
-            let input = $('.input_' + this.lastId);
-            let background = $('.background_' + this.lastId);
-            let outline = $('.outline_' + this.lastId);
+            const input = $('.input_' + this.lastId);
+            const background = $('.background_' + this.lastId);
+            const outline = $('.outline_' + this.lastId);
             input.remove();
             background.remove();
             outline.remove();
         }
     }
 
-    updateFormValue(input_id: string, value: any) {
-        for (let category in this.form) {
+    updateFormValue(inputId: string, value: any) {
+        for (const category in this.form) {
             this.form[category].forEach((input: any) => {
-                if (input.id.trim() === input_id.trim()) {
-                    if (input.type == 'date') {
-                        let format = moment().localeData().longDateFormat('L');
+                if (input.id.trim() === inputId.trim()) {
+                    if (input.type === 'date') {
+                        const format = moment().localeData().longDateFormat('L');
                         value = moment(value, format);
                         value = new Date(value._d);
                     }
@@ -522,21 +540,24 @@ export class VerifierViewerComponent implements OnInit {
 
     savePosition(position: any) {
         position = {
-            ocr_from_user: this.ocr_from_user,
+            ocr_from_user: this.ocrFromUser,
             x: position.x * this.ratio,
             y: position.y * this.ratio,
             height: position.height * this.ratio,
             width: position.width * this.ratio
-        }
-        this.http.put(API_URL + '/ws/accounts/supplier/' + this.invoice.supplier_id + '/updatePosition',
-            {'args': {[this.lastId]: position}},
-            {headers: this.authService.headers}).pipe(
+        };
+
+        if (this.invoice.supplier_id) {
+            this.http.put(API_URL + '/ws/accounts/supplier/' + this.invoice.supplier_id + '/updatePosition',
+                {'args': {[this.lastId]: position}},
+                {headers: this.authService.headers}).pipe(
                 catchError((err: any) => {
                     console.debug(err);
                     this.notify.handleErrors(err);
                     return of(false);
                 })
-        ).subscribe();
+            ).subscribe();
+        }
 
         this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/updatePosition',
             {'args': {[this.lastId]: position}},
@@ -553,15 +574,17 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     async savePages(page: any) {
-        this.http.put(API_URL + '/ws/accounts/supplier/' + this.invoice.supplier_id + '/updatePage',
-            {'args': {[this.lastId]: page}},
-            {headers: this.authService.headers}).pipe(
+        if (this.invoice.supplier_id) {
+            this.http.put(API_URL + '/ws/accounts/supplier/' + this.invoice.supplier_id + '/updatePage',
+                {'args': {[this.lastId]: page}},
+                {headers: this.authService.headers}).pipe(
                 catchError((err: any) => {
                     console.debug(err);
                     this.notify.handleErrors(err);
                     return of(false);
                 })
-        ).subscribe();
+            ).subscribe();
+        }
 
         this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/updatePage',
             {'args': {[this.lastId]: page}},
@@ -577,19 +600,19 @@ export class VerifierViewerComponent implements OnInit {
         ).subscribe();
     }
 
-    saveData(data: any, field_id: any = false, show_notif: boolean = false) {
+    saveData(data: any, fieldId: any = false, showNotif: boolean = false) {
         if (data) {
-            if (field_id) {
-                let field = this.getField(field_id);
-                if (field.control.errors || this.invoice.datas[field_id] == data) return false;
-                data = {[field_id]: data};
+            if (fieldId) {
+                const field = this.getField(fieldId);
+                if (field.control.errors || this.invoice.datas[fieldId] === data) return false;
+                data = {[fieldId]: data};
             }
             this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/updateData',
                 {'args': data},
                 {headers: this.authService.headers}).pipe(
                 tap(() => {
-                    this.invoice.datas[field_id] = data;
-                    if (show_notif) this.notify.success(this.translate.instant('INVOICES.position_and_data_updated', {"input": this.lastLabel}));
+                    this.invoice.datas[fieldId] = data;
+                    if (showNotif) this.notify.success(this.translate.instant('INVOICES.position_and_data_updated', {"input": this.lastLabel}));
                 }),
                 catchError((err: any) => {
                     console.debug(err);
@@ -614,11 +637,11 @@ export class VerifierViewerComponent implements OnInit {
         ).subscribe();
     }
 
-    getField(field_id: any) {
+    getField(fieldId: any) {
         let _field : any = {};
-        for (let category in this.form) {
+        for (const category in this.form) {
             this.form[category].forEach((field: any) => {
-                if (field.id.trim() == field_id.trim()) {
+                if (field.id.trim() === fieldId.trim()) {
                     _field = field;
                 }
             });
@@ -626,9 +649,9 @@ export class VerifierViewerComponent implements OnInit {
         return _field;
     }
 
-    deleteData(field_id: any) {
+    deleteData(fieldId: any) {
         this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/deleteData',
-            {'args': field_id.trim()},
+            {'args': fieldId.trim()},
             {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('INVOICES.data_deleted', {"input": this.lastLabel}));
@@ -641,9 +664,21 @@ export class VerifierViewerComponent implements OnInit {
         ).subscribe();
     }
 
-    deletePosition(field_id: any) {
+    deletePosition(fieldId: any) {
         this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/deletePosition',
-            {'args': field_id.trim()},
+            {'args': fieldId.trim()},
+            {headers: this.authService.headers}).pipe(
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    deletePage(fieldId: any) {
+        this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/deletePage',
+            {'args': fieldId.trim()},
             {headers: this.authService.headers}).pipe(
             catchError((err: any) => {
                 console.debug(err);
@@ -655,62 +690,62 @@ export class VerifierViewerComponent implements OnInit {
 
     getPattern(format: any) {
         let pattern = '';
-        for (let cpt in this.pattern) {
-            if (cpt == format) {
+        for (const cpt in this.pattern) {
+            if (cpt === format) {
                 pattern = this.pattern[cpt];
             }
         }
         return pattern;
     }
 
-    duplicateField(field_id: any, category_id: any) {
-        for (let category in this.form) {
-            if (category == category_id) {
+    duplicateField(fieldId: any, categoryId: any) {
+        for (const category in this.form) {
+            if (category === categoryId) {
                 this.form[category].forEach((field: any, cpt:number) => {
-                    if (field.id.trim() === field_id.trim()) {
-                        let new_field = Object.assign({}, field);
-                        new_field.id = new_field.id + '_' + field.cpt;
+                    if (field.id.trim() === fieldId.trim()) {
+                        const newField = Object.assign({}, field);
+                        newField.id = newField.id + '_' + field.cpt;
                         field.cpt += 1;
-                        new_field.cpt = field.cpt;
-                        new_field.display = 'simple';
-                        new_field.control.value = '';
-                        this.form[category].splice(cpt + field.cpt, 0, new_field);
-                        this.saveData('', new_field.id);
+                        newField.cpt = field.cpt;
+                        newField.display = 'simple';
+                        newField.control.value = '';
+                        this.form[category].splice(cpt + field.cpt, 0, newField);
+                        this.saveData('', newField.id);
                         this.notify.success(this.translate.instant('INVOICES.field_duplicated', {"input": this.translate.instant(field.label)}));
                     }
-                })
+                });
             }
         }
     }
 
-    removeDuplicateField(field_id: any, category_id: any) {
-        let parent_id = field_id.split('_').slice(0,-1).join('_');
-        for (let category in this.form) {
-            if (category == category_id) {
+    removeDuplicateField(fieldId: any, categoryId: any) {
+        const parentId = fieldId.split('_').slice(0,-1).join('_');
+        for (const category in this.form) {
+            if (category === categoryId) {
                 this.form[category].forEach((field: any, cpt:number) => {
-                    if (field.id.trim() === field_id.trim()) {
+                    if (field.id.trim() === fieldId.trim()) {
                         this.deleteData(field.id);
                         this.deletePosition(field.id);
                         this.form[category].splice(cpt, 1);
-                    }else if (field.id.trim() === parent_id.trim()) {
+                    }else if (field.id.trim() === parentId.trim()) {
                         field.cpt = field.cpt - 1;
                     }
-                })
+                });
             }
         }
     }
 
-    isChildField(field_id: any) {
-        let splitted_id = field_id.split('_');
-        return Number.isInteger(parseInt(splitted_id[splitted_id.length - 1]));
+    isChildField(fieldId: any) {
+        const splittedId = fieldId.split('_');
+        return Number.isInteger(parseInt(splittedId[splittedId.length - 1]));
     }
 
-    getSupplierInfo(supplier_id: any, show_notif = false, launchOnInit = false) {
+    getSupplierInfo(supplierId: any, showNotif = false, launchOnInit = false) {
         this.suppliers.forEach((supplier: any) => {
-            if (supplier.id == supplier_id) {
+            if (supplier.id === supplierId) {
                 this.http.get(API_URL + '/ws/accounts/getAdressById/' + supplier.address_id, {headers: this.authService.headers}).pipe(
                     tap((address: any) => {
-                        let supplier_data : any = {
+                        const supplierData : any = {
                             'name': supplier.name,
                             'address1': address.address1,
                             'address2': address.address2,
@@ -720,20 +755,21 @@ export class VerifierViewerComponent implements OnInit {
                             'siret': supplier.siret,
                             'siren': supplier.siren,
                             'vat_number': supplier.vat_number,
-                        }
-                        this.get_only_raw_footer = supplier.get_only_raw_footer;
-                        for (let column in supplier_data) {
-                            this.updateFormValue(column, supplier_data[column]);
+                        };
+                        this.getOnlyRawFooter = supplier.get_only_raw_footer;
+                        for (const column in supplierData) {
+                            this.updateFormValue(column, supplierData[column]);
                         }
 
                         if (!launchOnInit) {
-                            this.updateInvoice({'supplier_id': supplier_id})
-                            this.saveData(supplier_data)
+                            this.updateInvoice({'supplier_id': supplierId});
+                            this.saveData(supplierData);
                             this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/updateData',
-                                {'args': supplier_data},
+                                {'args': supplierData},
                                 {headers: this.authService.headers}).pipe(
                                 tap(() => {
-                                    if (show_notif) {
+                                    this.invoice.supplier_id = supplierId;
+                                    if (showNotif) {
                                         this.notify.success(this.translate.instant('INVOICES.supplier_infos_updated'));
                                     }
                                 }),
@@ -753,25 +789,25 @@ export class VerifierViewerComponent implements OnInit {
                     })
                 ).subscribe();
             }
-        })
+        });
     }
 
     getErrorMessage(field: any, category: any) {
-        let error = undefined;
+        let error: any;
         this.form[category].forEach((element: any) => {
-            if (element.id == field) {
+            if (element.id === field) {
                 if (element.control.errors) {
-                    let required = element.control.errors.required;
-                    let pattern = element.control.errors.pattern;
-                    let datePickerPattern = element.control.errors.matDatepickerParse;
+                    const required = element.control.errors.required;
+                    const pattern = element.control.errors.pattern;
+                    const datePickerPattern = element.control.errors.matDatepickerParse;
                     if (pattern) {
-                        if (pattern.requiredPattern == this.getPattern('alphanum')) {
+                        if (pattern.requiredPattern === this.getPattern('alphanum')) {
                             error = this.translate.instant('ERROR.alphanum_pattern');
-                        }else if (pattern.requiredPattern == this.getPattern('alphanum_extended')) {
+                        }else if (pattern.requiredPattern === this.getPattern('alphanum_extended')) {
                             error = this.translate.instant('ERROR.alphanum_extended_pattern');
-                        }else if (pattern.requiredPattern == this.getPattern('number_int')) {
+                        }else if (pattern.requiredPattern === this.getPattern('number_int')) {
                             error = this.translate.instant('ERROR.number_int_pattern');
-                        }else if (pattern.requiredPattern == this.getPattern('number_float')) {
+                        }else if (pattern.requiredPattern === this.getPattern('number_float')) {
                             error = this.translate.instant('ERROR.number_float_pattern');
                         }
                     }else if (datePickerPattern) {
@@ -789,13 +825,13 @@ export class VerifierViewerComponent implements OnInit {
 
     validateForm() {
         let valid = true;
-        let arrayData: any = {};
-        for (let category in this.form) {
+        const arrayData: any = {};
+        for (const category in this.form) {
             this.form[category].forEach((input: any) => {
                 if (input.control.value) {
-                    let value = input.control.value
-                    if (input.type == 'date') {
-                        let format = moment().localeData().longDateFormat('L');
+                    let value = input.control.value;
+                    if (input.type === 'date') {
+                        const format = moment().localeData().longDateFormat('L');
                         value = moment(value, format);
                         value = value.format(format);
                     }
@@ -809,25 +845,25 @@ export class VerifierViewerComponent implements OnInit {
         }
         if (!valid) return;
         this.saveData(arrayData);
-        let form_id = this.currentFormFields.form_id;
+        const formId = this.currentFormFields.form_id;
         /*
             Executer les actions paramétrées dans les réglages du formulaires
          */
-        this.http.get(API_URL + '/ws/forms/getById/' + form_id, {headers: this.authService.headers}).pipe(
+        this.http.get(API_URL + '/ws/forms/getById/' + formId, {headers: this.authService.headers}).pipe(
             tap((form: any) => {
-                let outputs_label: any[] = [];
-                if (form.outputs.length != 0) {
-                    form.outputs.forEach((output_id: any, cpt: number) => {
-                        this.http.get(API_URL + '/ws/outputs/getById/' + output_id, {headers: this.authService.headers}).pipe(
+                const outputsLabel: any[] = [];
+                if (form.outputs.length !== 0) {
+                    form.outputs.forEach((outputId: any, cpt: number) => {
+                        this.http.get(API_URL + '/ws/outputs/getById/' + outputId, {headers: this.authService.headers}).pipe(
                             tap((data: any) => {
-                                outputs_label.push(data.output_label);
+                                outputsLabel.push(data.output_label);
                                 this.http.post(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/' + data.output_type_id, {'args': data.data},{headers: this.authService.headers}).pipe(
                                     tap(() => {
                                         /* Actions à effectuer après le traitement des chaînes sortantes */
-                                        if (cpt + 1 == form.outputs.length) {
+                                        if (cpt + 1 === form.outputs.length) {
                                             this.updateInvoice({'status': 'END', 'locked': false, 'locked_by': null});
-                                            this.router.navigate(['/verifier']);
-                                            this.notify.success(this.translate.instant('VERIFIER.form_validated_and_output_done', {outputs: outputs_label.join('<br>')}));
+                                            this.router.navigate(['/verifier']).then();
+                                            this.notify.success(this.translate.instant('VERIFIER.form_validated_and_output_done', {outputs: outputsLabel.join('<br>')}));
                                         }
                                     }),
                                     catchError((err: any) => {
@@ -857,20 +893,20 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     refuseForm() {
-
+        console.log('here');
     }
 
     async changeForm(event: any) {
         this.loading = true;
-        let new_form_id = event.value;
-        for (let cpt in this.formList) {
-            if (this.formList[cpt].id == new_form_id) {
-                this.saveData({'form_id': new_form_id});
-                this.currentFormFields = await this.getFormById(new_form_id);
+        const newFormId = event.value;
+        for (const cpt in this.formList) {
+            if (this.formList[cpt].id === newFormId) {
+                this.saveData({'form_id': newFormId});
+                this.currentFormFields = await this.getFormById(newFormId);
                 this.deleteDataOnChangeForm = false;
                 this.imageInvoice.selectAreas('destroy');
                 this.settingsOpen = false;
-                this.notify.success(this.translate.instant('VERIFIER.form_changed'))
+                this.notify.success(this.translate.instant('VERIFIER.form_changed'));
                 await this.ngOnInit();
                 this.deleteDataOnChangeForm = true;
             }
@@ -897,28 +933,28 @@ export class VerifierViewerComponent implements OnInit {
 
     changeImage(pageToShow: number, oldPage: number) {
         if (pageToShow) {
-            let extension = this.currentFilename.split('.').pop();
-            let old_cpt = ('000' + oldPage).substr(-3);
-            let new_cpt = ('000' + pageToShow).substr(-3);
+            const extension = this.currentFilename.split('.').pop();
+            const oldCpt = ('000' + oldPage).substr(-3);
+            const newCpt = ('000' + pageToShow).substr(-3);
 
-            let new_filename = this.currentFilename.replace(old_cpt + '.' + extension, new_cpt + '.' + extension);
-            this.currentFilename = new_filename;
-            this.getThumb(new_filename);
+            const newFilename = this.currentFilename.replace(oldCpt + '.' + extension, newCpt + '.' + extension);
+            this.currentFilename = newFilename;
+            this.getThumb(newFilename).then();
             this.currentPage = pageToShow;
-            for (let parent in this.fields) {
-                for (let cpt in this.currentFormFields.fields[parent]) {
-                    let field = this.currentFormFields.fields[parent][cpt];
-                    let position = this.getPosition(field.id);
-                    let page = this.getPage(field.id);
+            for (const parent in this.fields) {
+                for (const cpt in this.currentFormFields.fields[parent]) {
+                    const field = this.currentFormFields.fields[parent][cpt];
+                    const position = this.getPosition(field.id);
+                    const page = this.getPage(field.id);
                     if (position) {
-                        let input = $('.input_' + field.id);
-                        let background = $('.background_' + field.id);
-                        let outline = $('.outline_' + field.id);
+                        const input = $('.input_' + field.id);
+                        const background = $('.background_' + field.id);
+                        const outline = $('.outline_' + field.id);
                         input.remove();
                         background.remove();
                         outline.remove();
                         this.saveInfo = false;
-                        if (page == this.currentPage) this.drawPositionByField(field, position);
+                        if (page === this.currentPage) this.drawPositionByField(field, position);
                     }
                 }
             }

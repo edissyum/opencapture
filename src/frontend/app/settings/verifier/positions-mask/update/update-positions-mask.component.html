@@ -107,13 +107,12 @@
                     </mat-autocomplete>
                 </mat-form-field>
                 <span class="cursor-pointer text-sm col-span-2 flex justify-center -mt-8"
-                      *ngIf="invoiceImageSrc"
-                      (click)="deleteImage()">
-                    {{ 'POSITIONS_MASKS.reset_image' | translate }}
+                      *ngIf="invoiceImageSrc" (click)="deleteImage()">
+                    {{ 'POSITIONS-MASKS.reset_image' | translate }}
                 </span>
             </div>
             <div id="invoice_image">
-                <div class="absolute z-50 text-xl left-6" style="top: 9.5rem">
+                <div class="absolute text-xl left-6" style="top: 9.5rem">
                     <ng-container *ngIf="!this.loading && this.invoiceImageSrc && this.invoiceImageNbPages > 1">
                         <i class="fa fa-arrow-left cursor-pointer" (click)="previousPage()"></i>
                         {{ 'VERIFIER.page' | translate }}
@@ -135,8 +134,8 @@
                             (valueChanged)="checkFile($event)">
                     </ngx-file-drag-drop>
                 </div>
-                <div class="image-container px-4">
-                    <img id="invoice_image_src" alt="Open-Capture For Invoices" [src]="invoiceImageSrc">
+                <div class="image-container px-4" [class.hidden]="!this.imageInvoice">
+                    <img id="invoice_image_src" [src]="invoiceImageSrc">
                 </div>
             </div>
             <div class="flex justify-center items-center">
@@ -161,6 +160,7 @@
                                 <mat-form-field class="right-0 w-6/12">
                                     <mat-label>{{ 'TYPES.' + field.type | translate }}</mat-label>
                                     <input [id]='field.id' (focusin)="ocr($event, true, field.color)"
+                                           (click)="this.ocrFromUser = true;" [value]="field.value"
                                            (focusout)="ocr($event, false)" matInput type="text">
                                 </mat-form-field>
                             </ng-container>

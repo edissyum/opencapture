@@ -1,3 +1,20 @@
+/** This file is part of Open-Capture for Invoices.
+
+Open-Capture for Invoices is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Open-Capture is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
+
+@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+
 import { Component, OnInit } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -54,10 +71,10 @@ export class FormListComponent implements OnInit {
 
     ngOnInit(): void {
         this.serviceSettings.init();
-        let lastUrl = this.routerExtService.getPreviousUrl();
-        if (lastUrl.includes('settings/verifier/forms') || lastUrl == '/') {
+        const lastUrl = this.routerExtService.getPreviousUrl();
+        if (lastUrl.includes('settings/verifier/forms') || lastUrl === '/') {
             if (this.localeStorageService.get('formsPageIndex'))
-                this.pageIndex = parseInt(<string>this.localeStorageService.get('formsPageIndex'));
+                this.pageIndex = parseInt(this.localeStorageService.get('formsPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
         }else
             this.localeStorageService.remove('formsPageIndex');
@@ -72,7 +89,7 @@ export class FormListComponent implements OnInit {
     }
 
     loadForms(): void {
-        this.loading = true
+        this.loading = true;
         this.http.get(API_URL + '/ws/forms/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.forms[0]) this.total = data.forms[0].total;
@@ -87,7 +104,7 @@ export class FormListComponent implements OnInit {
         ).subscribe();
     }
 
-    deleteConfirmDialog(form_id: number, form: string) {
+    deleteConfirmDialog(formId: number, form: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data:{
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
@@ -101,12 +118,12 @@ export class FormListComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
-                this.deleteForm(form_id)
+                this.deleteForm(formId);
             }
         });
     }
 
-    duplicateConfirmDialog(form_id: number, form: string) {
+    duplicateConfirmDialog(formId: number, form: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data:{
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
@@ -120,12 +137,12 @@ export class FormListComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
-                this.duplicateForm(form_id)
+                this.duplicateForm(formId);
             }
         });
     }
 
-    disableConfirmDialog(form_id: number, form: string) {
+    disableConfirmDialog(formId: number, form: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data:{
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
@@ -139,12 +156,12 @@ export class FormListComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
-                this.disableForm(form_id)
+                this.disableForm(formId);
             }
         });
     }
 
-    enableConfirmDialog(form_id: number, form: string) {
+    enableConfirmDialog(formId: number, form: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data:{
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
@@ -158,14 +175,14 @@ export class FormListComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
-                this.enableForm(form_id)
+                this.enableForm(formId);
             }
         });
     }
 
-    deleteForm(form_id: number) {
-        if (form_id !== undefined) {
-            this.http.delete(API_URL + '/ws/forms/delete/' + form_id, {headers: this.authService.headers}).pipe(
+    deleteForm(formId: number) {
+        if (formId !== undefined) {
+            this.http.delete(API_URL + '/ws/forms/delete/' + formId, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadForms();
                 }),
@@ -178,9 +195,9 @@ export class FormListComponent implements OnInit {
         }
     }
 
-    duplicateForm(form_id: number) {
-        if (form_id !== undefined) {
-            // this.http.delete(API_URL + '/ws/forms/duplicate/' + form_id, {headers: this.authService.headers}).pipe(
+    duplicateForm(formId: number) {
+        if (formId !== undefined) {
+            // this.http.delete(API_URL + '/ws/forms/duplicate/' + formId, {headers: this.authService.headers}).pipe(
             //     tap(() => {
             //         this.loadForms()
             //     }),
@@ -193,9 +210,9 @@ export class FormListComponent implements OnInit {
         }
     }
 
-    disableForm(form_id: number) {
-        if (form_id !== undefined) {
-            this.http.put(API_URL + '/ws/forms/disable/' + form_id, null, {headers: this.authService.headers}).pipe(
+    disableForm(formId: number) {
+        if (formId !== undefined) {
+            this.http.put(API_URL + '/ws/forms/disable/' + formId, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadForms();
                 }),
@@ -208,9 +225,9 @@ export class FormListComponent implements OnInit {
         }
     }
 
-    enableForm(forms_id: number) {
-        if (forms_id !== undefined) {
-            this.http.put(API_URL + '/ws/forms/enable/' + forms_id, null, {headers: this.authService.headers}).pipe(
+    enableForm(formId: number) {
+        if (formId !== undefined) {
+            this.http.put(API_URL + '/ws/forms/enable/' + formId, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadForms();
                 }),
@@ -224,7 +241,7 @@ export class FormListComponent implements OnInit {
     }
 
     sortData(sort: Sort) {
-        let data = this.forms.slice();
+        const data = this.forms.slice();
         if(!sort.active || sort.direction === '') {
             this.forms = data;
             return;

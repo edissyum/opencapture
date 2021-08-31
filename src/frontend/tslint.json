@@ -1,0 +1,23 @@
+// You can modify the configuration here with your own.
+// Make sure that your json is valid, and if you run into
+// other issues, try checking the console for errors.
+
+{
+    "extends": ["tslint:recommended"],
+    "rules": {
+        "radix": false,
+        "forin": false,
+        "no-eval": false,
+        "no-empty": false,
+        "semicolon": true,
+        "no-console": false,
+        "class-name": false,
+        "jsdoc-format": false,
+        "prefer-for-of": false,
+        "no-string-literal": false,
+        "no-shadowed-variable": false,
+        "max-classes-per-file": false,
+        "object-literal-shorthand": false,
+        "one-variable-per-declaration": false
+    }
+}

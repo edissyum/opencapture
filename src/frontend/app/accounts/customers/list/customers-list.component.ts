@@ -1,3 +1,20 @@
+/** This file is part of Open-Capture for Invoices.
+
+Open-Capture for Invoices is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Open-Capture is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
+
+@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+
 import { Component, OnInit } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -51,15 +68,14 @@ export class CustomersListComponent implements OnInit {
 
     ngOnInit(): void {
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
-        let lastUrl = this.routerExtService.getPreviousUrl();
-        if (lastUrl.includes('accounts/customers') || lastUrl == '/') {
+        const lastUrl = this.routerExtService.getPreviousUrl();
+        if (lastUrl.includes('accounts/customers') || lastUrl === '/') {
             if (this.localeStorageService.get('customersPageIndex'))
-                this.pageIndex = parseInt(<string>this.localeStorageService.get('customersPageIndex'));
+                this.pageIndex = parseInt(this.localeStorageService.get('customersPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
         }else
             this.localeStorageService.remove('customersPageIndex');
-
-        this.loadCustomers()
+        this.loadCustomers();
     }
 
     loadCustomers() {
@@ -67,7 +83,7 @@ export class CustomersListComponent implements OnInit {
             tap((data: any) => {
                 this.customers = data.customers;
                 if (this.customers.length !== 0) {
-                    this.total = data.customers[0].total
+                    this.total = data.customers[0].total;
                 }
             }),
             finalize(() => this.loading = false),
@@ -91,7 +107,7 @@ export class CustomersListComponent implements OnInit {
         this.loadCustomers();
     }
 
-    deleteConfirmDialog(customer_id: number, customer: string) {
+    deleteConfirmDialog(customerId: number, customer: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data:{
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
@@ -105,16 +121,16 @@ export class CustomersListComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
-                this.deleteSupplier(customer_id)
+                this.deleteSupplier(customerId);
             }
         });
     }
 
-    deleteSupplier(supplier_id: number) {
-        if (supplier_id !== undefined) {
-            this.http.delete(API_URL + '/ws/accounts/customers/delete/' + supplier_id, {headers: this.authService.headers}).pipe(
+    deleteSupplier(supplierId: number) {
+        if (supplierId !== undefined) {
+            this.http.delete(API_URL + '/ws/accounts/customers/delete/' + supplierId, {headers: this.authService.headers}).pipe(
                 tap(() => {
-                    this.loadCustomers()
+                    this.loadCustomers();
                 }),
                 catchError((err: any) => {
                     console.debug(err);
@@ -126,9 +142,9 @@ export class CustomersListComponent implements OnInit {
     }
 
     sortData(sort: Sort) {
-        let data = this.customers.slice()
+        const data = this.customers.slice();
         if(!sort.active || sort.direction === '') {
-            this.customers = data
+            this.customers = data;
             return;
         }
 

@@ -1,3 +1,20 @@
+/** This file is part of Open-Capture for Invoices.
+
+Open-Capture for Invoices is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Open-Capture is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
+
+@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+
 import {Component, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -57,21 +74,21 @@ export class RolesListComponent implements OnInit {
     ngOnInit(): void {
         this.serviceSettings.init();
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
-        let lastUrl = this.routerExtService.getPreviousUrl();
-        if (lastUrl.includes('roles/') || lastUrl == '/') {
+        const lastUrl = this.routerExtService.getPreviousUrl();
+        if (lastUrl.includes('roles/') || lastUrl === '/') {
             if (this.localeStorageService.get('rolesPageIndex'))
-                this.pageIndex = parseInt(<string>this.localeStorageService.get('rolesPageIndex'));
+                this.pageIndex = parseInt(this.localeStorageService.get('rolesPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
         } else
             this.localeStorageService.remove('rolesPageIndex');
-        this.loadRoles()
+        this.loadRoles();
     }
 
     loadRoles(): void {
         this.http.get(API_URL + '/ws/roles/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                if (data.roles[0]) this.total = data.roles[0].total
-                this.roles = data.roles
+                if (data.roles[0]) this.total = data.roles[0].total;
+                this.roles = data.roles;
             }),
             finalize(() => this.loading = false),
             catchError((err: any) => {
@@ -89,7 +106,7 @@ export class RolesListComponent implements OnInit {
         this.loadRoles();
     }
 
-    deleteConfirmDialog(role_id: number, role: string) {
+    deleteConfirmDialog(roleId: number, role: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data: {
                 confirmTitle: this.translate.instant('GLOBAL.confirm'),
@@ -103,13 +120,13 @@ export class RolesListComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
-                this.deleteRole(role_id)
+                this.deleteRole(roleId);
             }
         });
     }
 
 
-    disableConfirmDialog(role_id: number, role: string) {
+    disableConfirmDialog(roleId: number, role: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data: {
                 confirmTitle: this.translate.instant('GLOBAL.confirm'),
@@ -123,12 +140,12 @@ export class RolesListComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
-                this.disableRole(role_id)
+                this.disableRole(roleId);
             }
         });
     }
 
-    enableConfirmDialog(role_id: number, role: string) {
+    enableConfirmDialog(roleId: number, role: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data: {
                 confirmTitle: this.translate.instant('GLOBAL.confirm'),
@@ -142,14 +159,14 @@ export class RolesListComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
-                this.enableRole(role_id)
+                this.enableRole(roleId);
             }
         });
     }
 
-    deleteRole(role_id: number) {
-        if (role_id !== undefined) {
-            this.http.delete(API_URL + '/ws/roles/delete/' + role_id, {headers: this.authService.headers}).pipe(
+    deleteRole(roleId: number) {
+        if (roleId !== undefined) {
+            this.http.delete(API_URL + '/ws/roles/delete/' + roleId, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadRoles();
                 }),
@@ -162,9 +179,9 @@ export class RolesListComponent implements OnInit {
         }
     }
 
-    disableRole(role_id: number) {
-        if (role_id !== undefined) {
-            this.http.put(API_URL + '/ws/roles/disable/' + role_id, null, {headers: this.authService.headers}).pipe(
+    disableRole(roleId: number) {
+        if (roleId !== undefined) {
+            this.http.put(API_URL + '/ws/roles/disable/' + roleId, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadRoles();
                 }),
@@ -177,9 +194,9 @@ export class RolesListComponent implements OnInit {
         }
     }
 
-    enableRole(role_id: number) {
-        if (role_id !== undefined) {
-            this.http.put(API_URL + '/ws/roles/enable/' + role_id, null, {headers: this.authService.headers}).pipe(
+    enableRole(roleId: number) {
+        if (roleId !== undefined) {
+            this.http.put(API_URL + '/ws/roles/enable/' + roleId, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadRoles();
                 }),
@@ -193,7 +210,7 @@ export class RolesListComponent implements OnInit {
     }
 
     sortData(sort: Sort) {
-        let data = this.roles.slice()
+        const data = this.roles.slice();
         if (!sort.active || sort.direction === '') {
             this.roles = data;
             return;

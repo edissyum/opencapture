@@ -1,3 +1,20 @@
+/** This file is part of Open-Capture for Invoices.
+
+Open-Capture for Invoices is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Open-Capture is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
+
+@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+
 import { Component, OnInit } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -106,10 +123,10 @@ export class UpdateInputComponent implements OnInit {
 
         this.http.get(API_URL + '/ws/inputs/getById/' + this.inputId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.input = data
-                for (let field in this.input) {
+                this.input = data;
+                for (const field in this.input) {
                     this.inputForm.forEach(element => {
-                        if (element.id == field) {
+                        if (element.id === field) {
                             element.control.setValue(data[field]);
                             if (element.id === 'default_form_id') {
                                 this.http.get(API_URL + '/ws/forms/list', {headers: this.authService.headers}).pipe(
@@ -122,10 +139,10 @@ export class UpdateInputComponent implements OnInit {
                                         return of(false);
                                     })
                                 ).subscribe();
-                            } else if (element.id == 'customer_id') {
+                            } else if (element.id === 'customer_id') {
                                 this.http.get(API_URL + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
                                     tap((customers: any) => {
-                                        element.values = customers.customers
+                                        element.values = customers.customers;
                                     }),
                                     finalize(() => this.loading = false),
                                     catchError((err: any) => {
@@ -142,7 +159,7 @@ export class UpdateInputComponent implements OnInit {
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
-                this.router.navigate(['/settings/verifier/outputs']).then()
+                this.router.navigate(['/settings/verifier/outputs']).then();
                 return of(false);
             })
         ).subscribe();
@@ -163,7 +180,7 @@ export class UpdateInputComponent implements OnInit {
 
     onSubmit() {
         if (this.isValidForm()) {
-            let input : any = {};
+            const input : any = {};
             this.inputForm.forEach(element => {
                 input[element.id] = element.control.value;
             });
@@ -183,7 +200,7 @@ export class UpdateInputComponent implements OnInit {
 
     createScriptAndIncron() {
         if (this.isValidForm()) {
-            let input: any = {};
+            const input: any = {};
             this.inputForm.forEach(element => {
                 input[element.id] = element.control.value;
             });
@@ -202,9 +219,9 @@ export class UpdateInputComponent implements OnInit {
     }
 
     getErrorMessage(field: any) {
-        let error = undefined;
+        let error: any;
         this.inputForm.forEach(element => {
-            if (element.id == field) {
+            if (element.id === field) {
                 if (element.required && !(element.value || element.control.value)) {
                     error = this.translate.instant('AUTH.field_required');
                 }

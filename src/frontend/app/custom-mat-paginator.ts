@@ -1,3 +1,20 @@
+/** This file is part of Open-Capture for Invoices.
+
+Open-Capture for Invoices is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Open-Capture is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
+
+@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+
 import {MatPaginatorIntl} from "@angular/material/paginator";
 import {Injectable} from '@angular/core';
 import {TranslateService} from "@ngx-translate/core";
@@ -21,10 +38,10 @@ export class CustomMatPaginatorIntl extends MatPaginatorIntl {
     }
 
     getAndInitTranslations() {
-        if (this.localeService.currentLang == undefined) {
+        if (this.localeService.currentLang === undefined) {
             this.http.get(API_URL + '/ws/i18n/getCurrentLang').pipe(
                 tap((data: any) => {
-                    this.translate.use(data.lang)
+                    this.translate.use(data.lang);
                     this.translate.get('PAGINATOR.items_per_page').subscribe((translated: string) => {
                         this.itemsPerPageLabel = translated;
                     });
@@ -69,7 +86,7 @@ export class CustomMatPaginatorIntl extends MatPaginatorIntl {
     }
 
     getRangeLabel = (page: number, pageSize: number, length: number) =>  {
-        if (length == 0 || pageSize == 0) { return '0 ' + this.translate.instant('PAGINATOR.of') + ` ${length}`; }
+        if (length === 0 || pageSize === 0) { return '0 ' + this.translate.instant('PAGINATOR.of') + ` ${length}`; }
 
         length = Math.max(length, 0);
 
@@ -81,8 +98,7 @@ export class CustomMatPaginatorIntl extends MatPaginatorIntl {
                 startIndex + pageSize;
 
         const nbPage = Math.ceil(length / pageSize);
-        return this.translate.instant('PAGINATOR.display') + ' ' + this.translate.instant('PAGINATOR.of') + ' ' +
-            ` ${startIndex + 1} - ${endIndex} ` + this.translate.instant('PAGINATOR.on') + ` ${length} ` + '  |  ' +
+        return ` ${startIndex + 1} - ${endIndex} ` + this.translate.instant('PAGINATOR.on') + ` ${length} ` + ' | ' +
             this.translate.instant('PAGINATOR.page') + ` ${page + 1} / ${nbPage}`;
     }
 }

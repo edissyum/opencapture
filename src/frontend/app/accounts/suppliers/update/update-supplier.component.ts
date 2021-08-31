@@ -1,3 +1,20 @@
+/** This file is part of Open-Capture for Invoices.
+
+Open-Capture for Invoices is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Open-Capture is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
+
+@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
@@ -113,7 +130,7 @@ export class UpdateSupplierComponent implements OnInit {
             control: new FormControl(),
             required: true,
         },
-    ]
+    ];
 
     constructor(
         public router: Router,
@@ -136,30 +153,30 @@ export class UpdateSupplierComponent implements OnInit {
                 this.http.get(API_URL + '/ws/accounts/suppliers/getById/' + this.supplierId, {headers: this.authService.headers}).pipe(
                     tap((supplier: any) => {
                         this.supplier = supplier;
-                        for (let field in this.supplier) {
+                        for (const field in this.supplier) {
                             if (supplier.hasOwnProperty(field)) {
                                 this.supplierForm.forEach(element => {
-                                    if (element.id == field) {
-                                        if (element.id == 'get_only_raw_footer') {
-                                            element.control.setValue(!this.supplier[field])
+                                    if (element.id === field) {
+                                        if (element.id === 'get_only_raw_footer') {
+                                            element.control.setValue(!this.supplier[field]);
                                         }else {
                                             element.control.setValue(this.supplier[field]);
                                         }
-                                        if (element.id == 'form_id') {
-                                            element.values = forms.forms
+                                        if (element.id === 'form_id') {
+                                            element.values = forms.forms;
                                         }
-                                    }else if (field == 'address_id') {
+                                    }else if (field === 'address_id') {
                                         this.addressId = this.supplier[field];
                                         if (this.addressId) {
                                             this.http.get(API_URL + '/ws/accounts/getAdressById/' + this.addressId, {headers: this.authService.headers}).pipe(
                                                 tap((address: any) => {
-                                                    for (let field in address) {
+                                                    for (const field in address) {
                                                         if (address.hasOwnProperty(field)) {
                                                             this.addressForm.forEach(element => {
-                                                                if (element.id == field) {
+                                                                if (element.id === field) {
                                                                     element.control.setValue(address[field]);
                                                                 }
-                                                            })
+                                                            });
                                                         }
                                                     }
                                                 }),
@@ -201,7 +218,7 @@ export class UpdateSupplierComponent implements OnInit {
                                             ).subscribe();
                                         }
                                     }
-                                })
+                                });
                             }
                         }
                     }),
@@ -245,7 +262,7 @@ export class UpdateSupplierComponent implements OnInit {
             const address: any = {};
             this.supplierForm.forEach(element => {
                 supplier[element.id] = element.control.value;
-                if (element.id == 'get_only_raw_footer') {
+                if (element.id === 'get_only_raw_footer') {
                     supplier[element.id] = !element.control.value;
                 }
             });
@@ -278,9 +295,9 @@ export class UpdateSupplierComponent implements OnInit {
     }
 
     getErrorMessageSupplier(field: any) {
-        let error = undefined;
+        let error: any;
         this.supplierForm.forEach(element => {
-            if (element.id == field) {
+            if (element.id === field) {
                 if (element.required && !(element.value || element.control.value)) {
                     error = this.translate.instant('AUTH.field_required');
                 }
@@ -290,9 +307,9 @@ export class UpdateSupplierComponent implements OnInit {
     }
 
     getErrorMessageAddress(field: any) {
-        let error = undefined;
+        let error: any;
         this.addressForm.forEach(element => {
-            if (element.id == field) {
+            if (element.id === field) {
                 if (element.required && !(element.value || element.control.value)) {
                     error = this.translate.instant('AUTH.field_required');
                 }

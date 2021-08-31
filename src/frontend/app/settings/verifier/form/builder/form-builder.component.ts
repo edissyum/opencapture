@@ -1,3 +1,20 @@
+/** This file is part of Open-Capture for Invoices.
+
+Open-Capture for Invoices is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Open-Capture is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
+
+@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+
 import {Component, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -568,17 +585,17 @@ export class FormBuilderComponent implements OnInit {
                     this.creationMode = false;
                     this.http.get(API_URL + '/ws/forms/getById/' + this.formId, {headers: this.authService.headers}).pipe(
                         tap((data: any) => {
-                            for (let field in this.form) {
-                                for (let info in data) {
-                                    if (info == field) this.form[field].control.setValue(data[field]);
+                            for (const field in this.form) {
+                                for (const info in data) {
+                                    if (info === field) this.form[field].control.setValue(data[field]);
                                 }
                             }
 
                             if (data.outputs) {
-                                let length = data.outputs.length;
-                                if (length == 1) this.outputForm[0].control.setValue(data.outputs[0]);
+                                const length = data.outputs.length;
+                                if (length === 1) this.outputForm[0].control.setValue(data.outputs[0]);
                                 if (length > 1) {
-                                    for (let cpt in data.outputs) {
+                                    for (const cpt in data.outputs) {
                                         if (parseInt(cpt) !== 0) this.addOutput();
                                         this.outputForm[cpt].control.setValue(data.outputs[cpt]);
                                     }
@@ -602,11 +619,11 @@ export class FormBuilderComponent implements OnInit {
         this.http.get(API_URL + '/ws/customFields/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.customFields) {
-                    for (let field in data.customFields) {
+                    for (const field in data.customFields) {
                         if (data.customFields.hasOwnProperty(field)) {
-                            if(data.customFields[field].module == 'verifier') {
-                                for (let parent in this.availableFieldsParent) {
-                                    if(this.availableFieldsParent[parent].id == 'custom_fields') {
+                            if(data.customFields[field].module === 'verifier') {
+                                for (const parent in this.availableFieldsParent) {
+                                    if(this.availableFieldsParent[parent].id === 'custom_fields') {
                                         this.availableFieldsParent[parent].values.push(
                                             {
                                                 id: 'custom_' + data.customFields[field].id,
@@ -618,7 +635,7 @@ export class FormBuilderComponent implements OnInit {
                                                 class: "w-1/3",
                                                 class_label: "1/33",
                                             }
-                                        )
+                                        );
                                     }
                                 }
                             }
@@ -643,19 +660,19 @@ export class FormBuilderComponent implements OnInit {
                         if(data.form_fields.fields.other)
                             this.fields.other = data.form_fields.fields.other;
 
-                        for (let category in this.fields) {
+                        for (const category in this.fields) {
                             if (this.fields.hasOwnProperty(category)) {
-                                this.fields[category].forEach((current_field: any) => {
+                                this.fields[category].forEach((currentField: any) => {
                                     this.availableFieldsParent.forEach((parent: any) => {
                                         let cpt = 0;
-                                        parent['values'].forEach((child_fields: any) => {
-                                            if (current_field.id == child_fields.id) {
+                                        parent['values'].forEach((childFields: any) => {
+                                            if (currentField.id === childFields.id) {
                                                 parent['values'].splice(cpt, 1);
                                             }
                                             cpt = cpt + 1;
-                                        })
-                                    })
-                                })
+                                        });
+                                    });
+                                });
                             }
                         }
                     }
@@ -675,7 +692,7 @@ export class FormBuilderComponent implements OnInit {
     }
 
     dropFromAvailableFields(event: any) {
-        let unit = event.previousContainer.id;
+        const unit = event.previousContainer.id;
         if (event.previousContainer === event.container) {
             moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
         } else {
@@ -686,58 +703,58 @@ export class FormBuilderComponent implements OnInit {
         }
     }
 
-    changeClass(field_id: any, new_class: any, class_label: any, category: any) {
-        let id = field_id;
+    changeClass(fieldId: any, newClass: any, classLabel: any, category: any) {
+        const id = fieldId;
         this.fields[category].forEach((element: any) => {
-            if (element.id == id) {
-                element.class = new_class;
-                element.class_label = class_label;
+            if (element.id === id) {
+                element.class = newClass;
+                element.class_label = classLabel;
             }
-        })
+        });
     }
 
-    changeFormat(field_id: any, new_format: any, format_icon: any, category: any) {
-        let id = field_id;
+    changeFormat(fieldId: any, newFormat: any, formatIcon: any, category: any) {
+        const id = fieldId;
         this.fields[category].forEach((element: any) => {
-            if (element.id == id) {
-                element.format = new_format;
-                element.format_icon = format_icon;
+            if (element.id === id) {
+                element.format = newFormat;
+                element.format_icon = formatIcon;
             }
-        })
+        });
     }
 
-    changeDisplay(field_id: any, new_display: any, display_icon: any, category: any) {
-        let id = field_id;
+    changeDisplay(fieldId: any, newDisplay: any, displayIcon: any, category: any) {
+        const id = fieldId;
         this.fields[category].forEach((element: any) => {
-            if (element.id == id) {
-                element.display = new_display;
-                element.display_icon = display_icon;
+            if (element.id === id) {
+                element.display = newDisplay;
+                element.display_icon = displayIcon;
             }
-        })
+        });
     }
 
-    changeRequired(field_id: any, new_required: any, required_icon: any, category: any) {
-        let id = field_id;
+    changeRequired(fieldId: any, newRequired: any, requiredIcon: any, category: any) {
+        const id = fieldId;
         this.fields[category].forEach((element: any) => {
-            if (element.id == id) {
-                element.required = new_required;
-                element.required_icon = required_icon;
+            if (element.id === id) {
+                element.required = newRequired;
+                element.required_icon = requiredIcon;
             }
-        })
+        });
     }
 
-    changeColor(field_id: any, new_color: any, category: any) {
-        let id = field_id;
+    changeColor(fieldId: any, newColor: any, category: any) {
+        const id = fieldId;
         this.fields[category].forEach((element: any) => {
-            if (element.id == id) {
-                element.color = new_color;
+            if (element.id === id) {
+                element.color = newColor;
             }
-        })
+        });
     }
 
     dropFromForm(event: any) {
-        let unit = event.container.id;
-        let previousUnit = event.previousContainer.id;
+        const unit = event.container.id;
+        const previousUnit = event.previousContainer.id;
 
         if (event.previousContainer === event.container) {
             moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
@@ -750,36 +767,35 @@ export class FormBuilderComponent implements OnInit {
     }
 
     deleteField(event: any, previousIndex: any, category:any, unit: any) {
-        if (unit == 'addresses')
+        if (unit === 'addresses')
             unit = 'supplier';
-        for(let parent_field in this.availableFieldsParent) {
-            let id = this.availableFieldsParent[parent_field].id.split('_fields')[0];
-            if (id == unit) {
-                let currentIndex = this.availableFieldsParent[parent_field]['values'].length;
+        for (const parentField in this.availableFieldsParent) {
+            const id = this.availableFieldsParent[parentField].id.split('_fields')[0];
+            if (id === unit) {
+                const currentIndex = this.availableFieldsParent[parentField]['values'].length;
                 transferArrayItem(this.fields[category],
-                    this.availableFieldsParent[parent_field]['values'],
+                    this.availableFieldsParent[parentField]['values'],
                     previousIndex,
                     currentIndex);
             }
         }
-
     }
 
-    storeNewOrder(event: any, category_id: any) {
-        let tmpCurrentOrder: any[] = [];
+    storeNewOrder(event: any, categoryId: any) {
+        const tmpCurrentOrder: any[] = [];
         event.currentOrder.forEach((element: any) => {
-            this.fields[category_id].forEach((field: any) => {
-                if (element.id == field.id) {
+            this.fields[categoryId].forEach((field: any) => {
+                if (element.id === field.id) {
                     tmpCurrentOrder.push(element);
                 }
-            })
-        })
-        this.fields[category_id] = tmpCurrentOrder;
+            });
+        });
+        this.fields[categoryId] = tmpCurrentOrder;
     }
 
     addOutput() {
         this.outputForm[0].cpt = this.outputForm[0].cpt + 1;
-        let cpt = this.outputForm[0].cpt;
+        const cpt = this.outputForm[0].cpt;
         this.outputForm.push({
             'control': new FormControl(),
             'canRemove': true
@@ -791,15 +807,15 @@ export class FormBuilderComponent implements OnInit {
     }
 
     updateForm() {
-        let label = this.form.label.control.value;
-        let is_default = this.form.default_form.control.value;
-        let outputs: any[] = [];
+        const label = this.form.label.control.value;
+        const isDefault = this.form.default_form.control.value;
+        const outputs: any[] = [];
         this.outputForm.forEach((element: any) => {
             if (element.control.value) outputs.push(element.control.value);
         });
 
         if (label !== '' && outputs.length >= 1) {
-            this.http.put(API_URL + '/ws/forms/update/' + this.formId, {'args': {'label' : label, 'default_form' : is_default, 'outputs': outputs}}, {headers: this.authService.headers},
+            this.http.put(API_URL + '/ws/forms/update/' + this.formId, {'args': {'label' : label, 'default_form' : isDefault, 'outputs': outputs}}, {headers: this.authService.headers},
             ).pipe(
                 tap(()=> {
                     this.http.post(API_URL + '/ws/forms/updateFields/' + this.formId, this.fields, {headers: this.authService.headers}).pipe(
@@ -820,17 +836,17 @@ export class FormBuilderComponent implements OnInit {
                 })
             ).subscribe();
         }else {
-            if (!label && outputs.length == 0) this.notify.error(this.translate.instant('FORMS.label_and_output_mandatory'));
+            if (!label && outputs.length === 0) this.notify.error(this.translate.instant('FORMS.label_and_output_mandatory'));
             else if (!label) this.notify.error(this.translate.instant('FORMS.label_mandatory'));
-            else if (outputs.length == 0) this.notify.error(this.translate.instant('FORMS.output_type_mandatory'));
+            else if (outputs.length === 0) this.notify.error(this.translate.instant('FORMS.output_type_mandatory'));
         }
     }
 
     createForm() {
-        let label = this.form.label.control.value;
-        let is_default = this.form.default_form.control.value;
+        const label = this.form.label.control.value;
+        const isDefault = this.form.default_form.control.value;
         if (label) {
-            this.http.post(API_URL + '/ws/forms/add', {'args': {'label' : label, 'default_form' : is_default}}, {headers: this.authService.headers},
+            this.http.post(API_URL + '/ws/forms/add', {'args': {'label' : label, 'default_form' : isDefault}}, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {
                     this.http.post(API_URL + '/ws/forms/updateFields/' + data.id, this.fields, {headers: this.authService.headers}).pipe(

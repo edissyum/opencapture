@@ -1,3 +1,20 @@
+/** This file is part of Open-Capture for Invoices.
+
+Open-Capture for Invoices is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Open-Capture is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
+
+@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+
 import { Component, OnInit } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Router} from "@angular/router";
@@ -48,10 +65,10 @@ export class InputsListComponent implements OnInit {
     ngOnInit(): void {
         this.serviceSettings.init();
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
-        let lastUrl = this.routerExtService.getPreviousUrl();
-        if (lastUrl.includes('inputs/') || lastUrl == '/') {
+        const lastUrl = this.routerExtService.getPreviousUrl();
+        if (lastUrl.includes('inputs/') || lastUrl === '/') {
             if (this.localeStorageService.get('inputsPageIndex'))
-                this.pageIndex = parseInt(<string>this.localeStorageService.get('inputsPageIndex'));
+                this.pageIndex = parseInt(this.localeStorageService.get('inputsPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
         } else
             this.localeStorageService.remove('inputsPageIndex');
@@ -80,7 +97,7 @@ export class InputsListComponent implements OnInit {
         this.loadInputs();
     }
 
-    deleteConfirmDialog(input_id: number, input: string) {
+    deleteConfirmDialog(inputId: number, input: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data: {
                 confirmTitle: this.translate.instant('GLOBAL.confirm'),
@@ -94,14 +111,14 @@ export class InputsListComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
-                this.deleteInput(input_id);
+                this.deleteInput(inputId);
             }
         });
     }
 
-    deleteInput(input_id: number) {
-        if (input_id !== undefined) {
-            this.http.delete(API_URL + '/ws/inputs/delete/' + input_id, {headers: this.authService.headers}).pipe(
+    deleteInput(inputId: number) {
+        if (inputId !== undefined) {
+            this.http.delete(API_URL + '/ws/inputs/delete/' + inputId, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadInputs();
                 }),
@@ -115,7 +132,7 @@ export class InputsListComponent implements OnInit {
     }
 
     sortData(sort: Sort) {
-        let data = this.inputs.slice();
+        const data = this.inputs.slice();
         if (!sort.active || sort.direction === '') {
             this.inputs = data;
             return;

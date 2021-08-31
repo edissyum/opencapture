@@ -1,3 +1,20 @@
+/** This file is part of Open-Capture for Invoices.
+
+Open-Capture for Invoices is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Open-Capture is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
+
+@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {UserService} from "../../../../../services/user.service";
@@ -14,7 +31,6 @@ import { PipeTransform, Pipe } from '@angular/core';
 import {of} from "rxjs";
 import {marker} from "@biesbjerg/ngx-translate-extract-marker";
 
-
 @Pipe({ name: 'highlight' })
 export class HighlightPipe implements PipeTransform {
     transform(text: string, search:any): string {
@@ -27,6 +43,7 @@ export class HighlightPipe implements PipeTransform {
         return search ? text.replace(regex, match => `<b>${match}</b>`) : text;
     }
 }
+
 @Component({
     selector: 'update-output',
     templateUrl: './update-output.component.html',
@@ -120,7 +137,7 @@ export class UpdateOutputComponent implements OnInit {
     ];
     testConnectionMapping : any         = {
         'export_maarch' : "testMaarchConnection()"
-    }
+    };
 
     /**
      * Pour ajouter une nouvelle chaine sortante (e.g : Alfresco)
@@ -159,10 +176,10 @@ export class UpdateOutputComponent implements OnInit {
                  * Set the output type and output label
                  **/
                 this.output = data;
-                for (let field in data) {
+                for (const field in data) {
                     if (data.hasOwnProperty(field)) {
                         this.outputForm.forEach(element => {
-                            if (element.id == field) {
+                            if (element.id === field) {
                                 if (element.id === 'output_type_id') this.selectedOutputType = this.originalOutputType = data[field];
                                 element.control.setValue(data[field]);
                             }
@@ -175,14 +192,14 @@ export class UpdateOutputComponent implements OnInit {
                         /**
                          * Create the form with auth and parameters data
                          **/
-                        for (let _output of this.outputsTypes) {
+                        for (const _output of this.outputsTypes) {
                             this.outputsTypesForm[_output.output_type_id] = {
                                 'auth' : [],
                                 'parameters' : [],
                             };
-                            for (let category in this.outputsTypesForm[_output.output_type_id]) {
+                            for (const category in this.outputsTypesForm[_output.output_type_id]) {
                                 if (_output.data.options[category]) {
-                                    for (let option of _output.data.options[category]) {
+                                    for (const option of _output.data.options[category]) {
                                         this.outputsTypesForm[_output.output_type_id][category].push({
                                             id: option.id,
                                             label: option.label,
@@ -201,14 +218,13 @@ export class UpdateOutputComponent implements OnInit {
                         /**
                          * Fill the form (created with data in output_types) table with the value stored (in outputs table)
                          **/
-                        for (let category in this.outputsTypesForm[this.originalOutputType]) {
+                        for (const category in this.outputsTypesForm[this.originalOutputType]) {
                             this.outputsTypesForm[this.originalOutputType][category].forEach((element: any) => {
-                                console.log(this.output.data.options[category])
-                                this.output.data.options[category].forEach((output_element: any) => {
-                                    if (element.id == output_element.id) {
-                                        if (output_element.value) {
-                                            if (output_element.webservice) element.values = [output_element.value];
-                                            element.control.setValue(output_element.value);
+                                this.output.data.options[category].forEach((outputElement: any) => {
+                                    if (element.id === outputElement.id) {
+                                        if (outputElement.value) {
+                                            if (outputElement.webservice) element.values = [outputElement.value];
+                                            element.control.setValue(outputElement.value);
                                         }
                                     }
                                 });
@@ -216,11 +232,11 @@ export class UpdateOutputComponent implements OnInit {
                             this.testConnection();
                         }
                     }),
-                    finalize(() => {this.loading = false}),
+                    finalize(() => {this.loading = false;}),
                     catchError((err: any) => {
                         console.debug(err);
                         this.notify.handleErrors(err);
-                        this.router.navigate(['/settings/verifier/outputs']).then()
+                        this.router.navigate(['/settings/verifier/outputs']).then();
                         return of(false);
                     })
                 ).subscribe();
@@ -228,7 +244,7 @@ export class UpdateOutputComponent implements OnInit {
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
-                this.router.navigate(['/settings/verifier/outputs']).then()
+                this.router.navigate(['/settings/verifier/outputs']).then();
                 return of(false);
             })
         ).subscribe();
@@ -239,9 +255,9 @@ export class UpdateOutputComponent implements OnInit {
     }
 
     getErrorMessage(field: any, form: any) {
-        let error = undefined;
+        let error: any;
         form.forEach((element: any) => {
-            if (element.id == field && element.control.invalid) {
+            if (element.id === field && element.control.invalid) {
                 if (element.required) {
                     error = this.translate.instant('AUTH.field_required');
                 }
@@ -268,21 +284,21 @@ export class UpdateOutputComponent implements OnInit {
         return state;
     }
 
-    getValueFromForm(form: any, field_id: any) {
+    getValueFromForm(form: any, fieldId: any) {
         let value = '';
         form.forEach((element: any) => {
-            if (field_id == element.id) {
+            if (fieldId === element.id) {
                 value = element.control.value;
             }
         });
         return value;
     }
 
-    retrieveDataFromWS(field_id: any) {
-        for (let cpt in this.outputsTypesForm[this.selectedOutputType]['parameters']) {
-            let element = this.outputsTypesForm[this.selectedOutputType]['parameters'][cpt];
-            if (element.id == field_id) {
-                if (!element.values || element.values.length == 1) {
+    retrieveDataFromWS(fieldId: any) {
+        for (const cpt in this.outputsTypesForm[this.selectedOutputType]['parameters']) {
+            const element = this.outputsTypesForm[this.selectedOutputType]['parameters'][cpt];
+            if (element.id === fieldId) {
+                if (!element.values || element.values.length === 1) {
                     eval("this." + element.webservice + '(' + cpt + ')');
                 }
             }
@@ -290,7 +306,7 @@ export class UpdateOutputComponent implements OnInit {
     }
 
     private _filter(value: any, array: any) {
-        if (typeof value == 'string') {
+        if (typeof value === 'string') {
             this.toHighlight = value;
             const filterValue = value.toLowerCase();
             return array.filter((option: any) => option.value.toLowerCase().indexOf(filterValue) !== -1);
@@ -301,12 +317,12 @@ export class UpdateOutputComponent implements OnInit {
 
     /**** Maarch Webservices call ****/
     testMaarchConnection() {
-        let args = this.getMaarchConnectionInfo();
+        const args = this.getMaarchConnectionInfo();
         this.http.post(API_URL + '/ws/maarch/testConnection', {'args': args}, {headers: this.authService.headers},
         ).pipe(
             tap((data: any) => {
-                let status = data.status;
-                if (status == true) {
+                const status = data.status;
+                if (status === true) {
                     this.notify.success(this.translate.instant('OUTPUT.maarch_connection_ok'));
                     this.connection = true;
                 }
@@ -333,17 +349,17 @@ export class UpdateOutputComponent implements OnInit {
 
     getUsersFromMaarch(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
-            let args = this.getMaarchConnectionInfo();
+            const args = this.getMaarchConnectionInfo();
             this.http.post(API_URL + '/ws/maarch/getUsers', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.users) {
-                    let data = _return.users;
-                    let users = [];
-                    for (let cpt in data) {
+                    const data = _return.users;
+                    const users = [];
+                    for (const cpt in data) {
                         users.push({
                             'id': data[cpt].id,
                             'value': data[cpt].firstname + ' ' +  data[cpt].lastname,
                             'extra': data[cpt].user_id
-                        })
+                        });
                     }
                     this.setAutocompleteValues(cpt, users);
                 }
@@ -353,17 +369,17 @@ export class UpdateOutputComponent implements OnInit {
 
     getEntitiesFromMaarch(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
-            let args = this.getMaarchConnectionInfo();
+            const args = this.getMaarchConnectionInfo();
             this.http.post(API_URL + '/ws/maarch/getEntities', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.entities) {
-                    let data = _return.entities;
-                    let entities = [];
-                    for (let cpt in data) {
+                    const data = _return.entities;
+                    const entities = [];
+                    for (const cpt in data) {
                         entities.push({
                             'id': data[cpt].serialId,
                             'value': data[cpt].entity_label,
                             'extra': data[cpt].entity_id
-                        })
+                        });
                     }
                     this.setAutocompleteValues(cpt, entities);
                 }
@@ -373,17 +389,17 @@ export class UpdateOutputComponent implements OnInit {
 
     getDoctypesFromMaarch(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
-            let args = this.getMaarchConnectionInfo();
+            const args = this.getMaarchConnectionInfo();
             this.http.post(API_URL + '/ws/maarch/getDoctypes', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.doctypes) {
-                    let data = _return.doctypes;
-                    let doctypes = [];
-                    for (let cpt in data) {
+                    const data = _return.doctypes;
+                    const doctypes = [];
+                    for (const cpt in data) {
                         doctypes.push({
                             'id': data[cpt].type_id,
                             'value': data[cpt].description,
                             'extra': data[cpt].type_id
-                        })
+                        });
                     }
                     this.setAutocompleteValues(cpt, doctypes);
                 }
@@ -393,17 +409,17 @@ export class UpdateOutputComponent implements OnInit {
 
     getPrioritiesFromMaarch(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
-            let args = this.getMaarchConnectionInfo();
+            const args = this.getMaarchConnectionInfo();
             this.http.post(API_URL + '/ws/maarch/getPriorities', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.priorities) {
-                    let data = _return.priorities;
-                    let priorities = [];
-                    for (let cpt in data) {
+                    const data = _return.priorities;
+                    const priorities = [];
+                    for (const cpt in data) {
                         priorities.push({
                             'id': data[cpt].id,
                             'value': data[cpt].label,
                             'extra': data[cpt].id
-                        })
+                        });
                     }
                     this.setAutocompleteValues(cpt, priorities);
                 }
@@ -413,17 +429,17 @@ export class UpdateOutputComponent implements OnInit {
 
     getStatusesFromMaarch(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
-            let args = this.getMaarchConnectionInfo();
+            const args = this.getMaarchConnectionInfo();
             this.http.post(API_URL + '/ws/maarch/getStatuses', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.statuses) {
-                    let data = _return.statuses;
-                    let statuses = [];
-                    for (let cpt in data) {
+                    const data = _return.statuses;
+                    const statuses = [];
+                    for (const cpt in data) {
                         statuses.push({
                             'id': data[cpt].id,
                             'value': data[cpt].label_status,
                             'extra': data[cpt].id
-                        })
+                        });
                     }
                     this.setAutocompleteValues(cpt, statuses);
                 }
@@ -433,17 +449,17 @@ export class UpdateOutputComponent implements OnInit {
 
     getIndexingModelsFromMaarch(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
-            let args = this.getMaarchConnectionInfo();
+            const args = this.getMaarchConnectionInfo();
             this.http.post(API_URL + '/ws/maarch/getIndexingModels', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.indexingModels) {
-                    let data = _return.indexingModels;
-                    let indexingModels = [];
-                    for (let cpt in data) {
+                    const data = _return.indexingModels;
+                    const indexingModels = [];
+                    for (const cpt in data) {
                         indexingModels.push({
                             'id': data[cpt].id,
                             'value': data[cpt].label,
                             'extra': data[cpt].category
-                        })
+                        });
                     }
                     this.setAutocompleteValues(cpt, indexingModels);
                 }
@@ -454,16 +470,16 @@ export class UpdateOutputComponent implements OnInit {
     /**** END Maarch Webservices call  ****/
 
     updateOutput() {
-        let _array: any = {
+        const _array: any = {
             "options" : {
                 "auth" : [],
                 "parameters": []
             }
         };
 
-        for (let category in this.outputsTypesForm[this.selectedOutputType]) {
-            for (let cpt in this.outputsTypesForm[this.selectedOutputType][category]) {
-                let field = this.outputsTypesForm[this.selectedOutputType][category][cpt];
+        for (const category in this.outputsTypesForm[this.selectedOutputType]) {
+            for (const cpt in this.outputsTypesForm[this.selectedOutputType][category]) {
+                const field = this.outputsTypesForm[this.selectedOutputType][category][cpt];
                 if (field.isJson) {
                     try {
                         JSON.parse(field.control.value);
@@ -478,7 +494,7 @@ export class UpdateOutputComponent implements OnInit {
                     id: field.id,
                     type: field.type,
                     webservice: field.webservice,
-                    value: field.value == undefined ? field.control.value : field.value,
+                    value: field.value === undefined ? field.control.value : field.value,
                 });
             }
         }
@@ -490,7 +506,7 @@ export class UpdateOutputComponent implements OnInit {
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
-                this.router.navigate(['/settings/verifier/outputs']).then()
+                this.router.navigate(['/settings/verifier/outputs']).then();
                 return of(false);
             })
         ).subscribe();
@@ -501,7 +517,7 @@ export class UpdateOutputComponent implements OnInit {
         /**
          * Ces 6 lignes sont obligatoires afin de filter les résultats des champs au fur et à mesure que l'on écrit
          */
-        let element = this.outputsTypesForm[this.selectedOutputType]['parameters'][cpt];
+        const element = this.outputsTypesForm[this.selectedOutputType]['parameters'][cpt];
         element.filteredOptions = element.control.valueChanges
             .pipe(
                 startWith(''),
@@ -510,17 +526,17 @@ export class UpdateOutputComponent implements OnInit {
     }
 
     sortArrayAlphab(array: any) {
-        return array.sort(function (a:any, b:any) {
-            let x = a.value.toUpperCase(),
+        return array.sort((a: any, b: any) => {
+            const x = a.value.toUpperCase(),
                 y = b.value.toUpperCase();
-            return x == y ? 0 : x > y ? 1 : -1;
+            return x === y ? 0 : x > y ? 1 : -1;
         });
     }
 
     testConnection() {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth)) {
-            let function_name = this.testConnectionMapping[this.selectedOutputType];
-            eval("this." + function_name);
+            const functionName = this.testConnectionMapping[this.selectedOutputType];
+            eval("this." + functionName);
         }
     }
 }

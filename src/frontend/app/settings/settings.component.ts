@@ -1,3 +1,20 @@
+/** This file is part of Open-Capture for Invoices.
+
+Open-Capture for Invoices is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Open-Capture is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
+
+@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+
 import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {UserService} from "../../services/user.service";
@@ -10,11 +27,11 @@ import {PrivilegesService} from "../../services/privileges.service";
 })
 
 export class SettingsComponent implements OnInit {
-    isMenuOpen : boolean            = this.serviceSettings.getIsMenuOpen();
-    selectedSetting : string        = this.serviceSettings.getSelectedSetting();
-    selectedParentSetting : string  = this.serviceSettings.getSelectedParentSetting();
-    settingListOpenState : boolean  = this.serviceSettings.getSettingListOpenState();
-    settings : any                  = this.serviceSettings.getSettings()
+    isMenuOpen              : boolean   = this.serviceSettings.getIsMenuOpen();
+    selectedSetting         : string    = this.serviceSettings.getSelectedSetting();
+    selectedParentSetting   : string    = this.serviceSettings.getSelectedParentSetting();
+    settingListOpenState    : boolean   = this.serviceSettings.getSettingListOpenState();
+    settings                : any       = this.serviceSettings.getSettings();
 
     constructor(
         public router: Router,
@@ -29,12 +46,12 @@ export class SettingsComponent implements OnInit {
         this.selectedParentSetting = this.serviceSettings.getSelectedParentSetting();
         this.settings = this.serviceSettings.getSettings();
         this.settings[this.selectedParentSetting].forEach((element: any) => {
-            if (element['id'] == this.selectedSetting) {
-                let routeToGo = element.route;
+            if (element['id'] === this.selectedSetting) {
+                const routeToGo = element.route;
                 if (routeToGo && this.privilegesService.hasPrivilege(element.privilege))
                     this.router.navigateByUrl(routeToGo).then();
             }
-        })
+        });
     }
 
     toggleMenu() {

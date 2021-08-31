@@ -1,3 +1,20 @@
+/** This file is part of Open-Capture for Invoices.
+
+Open-Capture for Invoices is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Open-Capture is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
+
+@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+
 import { Component, OnInit } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {marker} from "@biesbjerg/ngx-translate-extract-marker";
@@ -98,7 +115,7 @@ export class UpdateCustomerComponent implements OnInit {
             control: new FormControl(),
             required: true,
         },
-    ]
+    ];
 
     constructor(
         public router: Router,
@@ -119,23 +136,23 @@ export class UpdateCustomerComponent implements OnInit {
         this.http.get(API_URL + '/ws/accounts/customers/getById/' + this.customerId, {headers: this.authService.headers}).pipe(
             tap((customer: any) => {
                 this.customer = customer;
-                for (let field in this.customer) {
+                for (const field in this.customer) {
                     if (customer.hasOwnProperty(field)) {
                         this.customerForm.forEach(element => {
-                            if (element.id == field) {
+                            if (element.id === field) {
                                 element.control.setValue(this.customer[field]);
-                            }else if (field == 'address_id') {
-                                this.addressId = this.customer[field]
+                            }else if (field === 'address_id') {
+                                this.addressId = this.customer[field];
                                 if (this.addressId) {
                                     this.http.get(API_URL + '/ws/accounts/getAdressById/' + this.addressId, {headers: this.authService.headers}).pipe(
                                         tap((address: any) => {
-                                            for (let field in address) {
+                                            for (const field in address) {
                                                 if (address.hasOwnProperty(field)) {
                                                     this.addressForm.forEach(element => {
-                                                        if (element.id == field) {
+                                                        if (element.id === field) {
                                                             element.control.setValue(address[field]);
                                                         }
-                                                    })
+                                                    });
                                                 }
                                             }
                                         }),
@@ -158,7 +175,7 @@ export class UpdateCustomerComponent implements OnInit {
                                         }, {headers: this.authService.headers},
                                     ).pipe(
                                         tap((data: any) => {
-                                            this.addressId = data.id
+                                            this.addressId = data.id;
                                             this.http.put(API_URL + '/ws/accounts/customers/update/' + this.customerId, {'args': {'address_id' : this.addressId}}, {headers: this.authService.headers},
                                             ).pipe(
                                                 finalize(() => this.loading = false),
@@ -177,7 +194,7 @@ export class UpdateCustomerComponent implements OnInit {
                                     ).subscribe();
                                 }
                             }
-                        })
+                        });
                     }
                 }
             }),
@@ -238,9 +255,9 @@ export class UpdateCustomerComponent implements OnInit {
     }
 
     getErrorMessageCustomer(field: any) {
-        let error = undefined;
+        let error: any;
         this.customerForm.forEach(element => {
-            if (element.id == field) {
+            if (element.id === field) {
                 if (element.required && !(element.value || element.control.value)) {
                     error = this.translate.instant('AUTH.field_required');
                 }
@@ -250,9 +267,9 @@ export class UpdateCustomerComponent implements OnInit {
     }
 
     getErrorMessageAddress(field: any) {
-        let error = undefined;
+        let error: any;
         this.addressForm.forEach(element => {
-            if (element.id == field) {
+            if (element.id === field) {
                 if (element.required && !(element.value || element.control.value)) {
                     error = this.translate.instant('AUTH.field_required');
                 }

@@ -259,11 +259,23 @@
 		"previous_page": "Page précédente"
 	},
 	"POSITIONS-MASKS": {
+		"confirm_delete": "Êtes vous sûr de vouloir supprimer le masque de positionnement <b>{{ positions_mask }}</b> ?",
+		"confirm_disable": "Êtes vous sûr de vouloir désactiver le masque de positionnement <b>{{ positions_mask }}</b> ?",
+		"confirm_duplicate": "Êtes vous sûr de vouloir dupliquer le masque de positionnement <b>{{ positions_mask }}</b> ?",
+		"confirm_enable": "Êtes vous sûr de vouloir réactiver le masque de positionnement <b>{{ positions_mask }}</b> ?",
 		"create": "Créer le masque de positionnement",
+		"created": "Masque de positionnement créé avec succès",
+		"delete": "Supprimer le masque de positionnement",
+		"disable": "Désactiver le masque de positionnement",
+		"duplicate": "Dupliquer le masque de positionnement",
+		"enable": "Activer le masque de positionnement",
 		"label": "Libellé du masque de positionnement",
 		"modify": "Mettre à jour le masque de positionnement",
 		"placeholder": "Selectionnez une facture du fournisseur choisi",
-		"supplier_name_associated": "Nom du compte fournisseur associé"
+		"position_and_page_updated": "Position et page du champ <b>{{ input }}</b> mise à jour",
+		"reset_image": "Supprimer l'image",
+		"supplier_name_associated": "Nom du compte fournisseur associé",
+		"updated": "Masque de positionnement mis à jour avec succès"
 	},
 	"PRIVILEGES": {
 		"access_splitter": "Accès à Open-Capture Splitter",

@@ -19,10 +19,10 @@ export class LoginRequiredService implements CanActivate{
         if (!this.authService.getToken()) {
             this.translate.get('AUTH.not_connected').subscribe((translated: string) => {
                 this.authService.setCachedUrl(state.url.replace(/^\//g, ''));
-                this.notify.error(translated)
-                this.authService.logout()
+                this.notify.error(translated);
+                this.authService.logout();
             });
-            return false
+            return false;
         }
         return true;
     }

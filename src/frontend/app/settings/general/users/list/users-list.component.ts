@@ -1,3 +1,20 @@
+/** This file is part of Open-Capture for Invoices.
+
+Open-Capture for Invoices is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Open-Capture is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
+
+@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { FormBuilder } from "@angular/forms";
@@ -58,18 +75,18 @@ export class UsersListComponent implements OnInit {
     ngOnInit(): void {
         this.serviceSettings.init();
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
-        let lastUrl = this.routerExtService.getPreviousUrl();
-        if (lastUrl.includes('users/') || lastUrl == '/') {
+        const lastUrl = this.routerExtService.getPreviousUrl();
+        if (lastUrl.includes('users/') || lastUrl === '/') {
             if (this.localeStorageService.get('usersPageIndex'))
-                this.pageIndex = parseInt(<string>this.localeStorageService.get('usersPageIndex'));
+                this.pageIndex = parseInt(this.localeStorageService.get('usersPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
         }else
             this.localeStorageService.remove('usersPageIndex');
 
         this.http.get(API_URL + '/ws/roles/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.roles = data.roles
-                this.loadUsers()
+                this.roles = data.roles;
+                this.loadUsers();
             }),
             finalize(() => this.loading = false),
             catchError((err: any) => {
@@ -90,15 +107,15 @@ export class UsersListComponent implements OnInit {
     loadUsers(): void {
         this.http.get(API_URL + '/ws/users/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                if (data.users[0]) this.total = data.users[0].total
+                if (data.users[0]) this.total = data.users[0].total;
                 this.users = data.users;
                 if (this.roles) {
                     this.users.forEach((user: any) => {
                         this.roles.forEach((element: any) => {
-                            if (user.role == element.id) {
-                                user.role_label = element.label
+                            if (user.role === element.id) {
+                                user.role_label = element.label;
                             }
-                        })
+                        });
                     });
                 }
             }),
@@ -110,7 +127,7 @@ export class UsersListComponent implements OnInit {
         ).subscribe();
     }
 
-    deleteConfirmDialog(user_id: number, user: string) {
+    deleteConfirmDialog(userId: number, user: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data:{
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
@@ -124,12 +141,12 @@ export class UsersListComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
-                this.deleteUser(user_id)
+                this.deleteUser(userId);
             }
         });
     }
 
-    disableConfirmDialog(user_id: number, user: string) {
+    disableConfirmDialog(userId: number, user: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data:{
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
@@ -143,12 +160,12 @@ export class UsersListComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
-                this.disableUser(user_id)
+                this.disableUser(userId);
             }
         });
     }
 
-    enableConfirmDialog(user_id: number, user: string) {
+    enableConfirmDialog(userId: number, user: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data:{
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
@@ -162,14 +179,14 @@ export class UsersListComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
-                this.enableUser(user_id)
+                this.enableUser(userId);
             }
         });
     }
 
-    deleteUser(user_id: number) {
-        if (user_id !== undefined) {
-            this.http.delete(API_URL + '/ws/users/delete/' + user_id, {headers: this.authService.headers}).pipe(
+    deleteUser(userId: number) {
+        if (userId !== undefined) {
+            this.http.delete(API_URL + '/ws/users/delete/' + userId, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadUsers();
                 }),
@@ -182,9 +199,9 @@ export class UsersListComponent implements OnInit {
         }
     }
 
-    disableUser(user_id: number) {
-        if (user_id !== undefined) {
-            this.http.put(API_URL + '/ws/users/disable/' + user_id, null, {headers: this.authService.headers}).pipe(
+    disableUser(userId: number) {
+        if (userId !== undefined) {
+            this.http.put(API_URL + '/ws/users/disable/' + userId, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadUsers();
                 }),
@@ -197,9 +214,9 @@ export class UsersListComponent implements OnInit {
         }
     }
 
-    enableUser(user_id: number) {
-        if (user_id !== undefined) {
-            this.http.put(API_URL + '/ws/users/enable/' + user_id, null, {headers: this.authService.headers}).pipe(
+    enableUser(userId: number) {
+        if (userId !== undefined) {
+            this.http.put(API_URL + '/ws/users/enable/' + userId, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadUsers();
                 }),
@@ -213,7 +230,7 @@ export class UsersListComponent implements OnInit {
     }
 
     sortData(sort: Sort) {
-        let data = this.users.slice();
+        const data = this.users.slice();
         if(!sort.active || sort.direction === '') {
             this.users = data;
             return;

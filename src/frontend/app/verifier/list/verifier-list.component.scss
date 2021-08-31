@@ -18,8 +18,8 @@
 
 ::ng-deep .verifier-list .mat-paginator {
     & .mat-paginator-outer-container {
-        width: 110%;
-        @apply -ml-14;
+        width: 120%;
+        @apply -ml-20;
         & .mat-paginator-container {
             flex-wrap: nowrap !important;
             justify-content: flex-start !important;

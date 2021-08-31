@@ -1,3 +1,20 @@
+/** This file is part of Open-Capture for Invoices.
+
+Open-Capture for Invoices is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Open-Capture is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
+
+@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+
 import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
@@ -18,7 +35,7 @@ import {of} from "rxjs";
     styleUrls: ['./create-output.component.scss']
 })
 export class CreateOutputComponent implements OnInit {
-    loading             : boolean       = true
+    loading             : boolean       = true;
     outputsTypes        : any[]         = [];
     outputForm          : any[]         = [
         {
@@ -54,11 +71,11 @@ export class CreateOutputComponent implements OnInit {
             tap((data: any) => {
                 this.outputsTypes = data.outputs_types;
             }),
-            finalize(() => {this.loading = false}),
+            finalize(() => {this.loading = false;}),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
-                this.router.navigate(['/settings/verifier/outputs']).then()
+                this.router.navigate(['/settings/verifier/outputs']).then();
                 return of(false);
             })
         ).subscribe();
@@ -77,12 +94,12 @@ export class CreateOutputComponent implements OnInit {
 
     createOutput() {
         if (this.isValidForm(this.outputForm)) {
-            let output_type_id = this.getValueFromForm(this.outputForm, 'output_type_id');
-            let output_label = this.getValueFromForm(this.outputForm, 'output_label');
+            const outputTypeId = this.getValueFromForm(this.outputForm, 'output_type_id');
+            const outputLabel = this.getValueFromForm(this.outputForm, 'output_label');
             this.http.post(API_URL + '/ws/outputs/create',
                 {'args': {
-                    'output_type_id': output_type_id,
-                    'output_label': output_label,
+                    'output_type_id': outputTypeId,
+                    'output_label': outputLabel,
                 }}, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {
@@ -98,10 +115,10 @@ export class CreateOutputComponent implements OnInit {
         }
     }
 
-    getValueFromForm(form: any, field_id: any) {
+    getValueFromForm(form: any, fieldId: any) {
         let value = '';
         form.forEach((element: any) => {
-            if (field_id == element.id) {
+            if (fieldId === element.id) {
                 value = element.control.value;
             }
         });
@@ -109,9 +126,9 @@ export class CreateOutputComponent implements OnInit {
     }
 
     getErrorMessage(field: any, form: any) {
-        let error = undefined;
+        let error: any;
         form.forEach((element: any) => {
-            if (element.id == field) {
+            if (element.id === field) {
                 if (element.required) {
                     error = this.translate.instant('AUTH.field_required');
                 }

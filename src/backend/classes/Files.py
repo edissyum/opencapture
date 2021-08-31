@@ -326,7 +326,7 @@ class Files:
         try:
             os.mkdir(path)
         except OSError:
-            print("Creation of the directory %s failed" % path)
+            print('Creation of the directory %s failed' % path)
 
     @staticmethod
     def sorted_file(path, extension):
@@ -400,7 +400,6 @@ class Files:
         x2 = (selection['x'] + selection['width']) * ratio
         y2 = (selection['y'] + selection['height']) * ratio
         crop_ratio = (x1, y1, x2, y2)
-
         extension = os.path.splitext(img)[1]
         with Image.open(img) as im2:
             cropped_image = im2.crop(crop_ratio)

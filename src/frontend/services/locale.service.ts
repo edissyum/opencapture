@@ -15,9 +15,9 @@ import * as moment from 'moment';
     providedIn: 'root'
 })
 export class LocaleService {
-    currentLang         : string = 'fra'
-    dateAdaptaterLocale : string = 'fr-FR'
-    langs               : [] = []
+    currentLang         : string = 'fra';
+    dateAdaptaterLocale : string = 'fr-FR';
+    langs               : [] = [];
 
     constructor(
         private http: HttpClient,
@@ -58,7 +58,7 @@ export class LocaleService {
                 dow : 0, // Sunday is the first day of the week.
             }
         });
-        moment.locale(this.dateAdaptaterLocale)
+        moment.locale(this.dateAdaptaterLocale);
     }
 
     changeLocale(data: any) {

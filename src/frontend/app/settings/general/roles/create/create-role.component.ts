@@ -1,3 +1,20 @@
+/** This file is part of Open-Capture for Invoices.
+
+Open-Capture for Invoices is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Open-Capture is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
+
+@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+
 import {Component, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -69,7 +86,7 @@ export class CreateRoleComponent implements OnInit {
     }
 
     isValidForm() {
-        let state = true
+        let state = true;
         this.roleForm.forEach(element => {
             if (element.control.status !== 'DISABLED' && element.control.status !== 'VALID') {
                 state = false;
@@ -86,20 +103,20 @@ export class CreateRoleComponent implements OnInit {
                 role[element.id] = element.control.value;
             });
 
-            let role_privileges: any[] = []
+            const rolePrivileges: any[] = [];
             this.privileges['privileges'].forEach((element: any) => {
                 this.rolePrivileges.forEach((element2: any) => {
-                    if (element['label'] == element2) {
-                        role_privileges.push(element['id'])
+                    if (element['label'] === element2) {
+                        rolePrivileges.push(element['id']);
                     }
-                })
-            })
+                });
+            });
 
             this.http.post(API_URL + '/ws/roles/create', {'args': role}, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {
-                    let newRoleId = data.id
-                    this.http.put(API_URL + '/ws/roles/updatePrivilege/' + newRoleId, {'privileges': role_privileges}, {headers: this.authService.headers},
+                    const newRoleId = data.id;
+                    this.http.put(API_URL + '/ws/roles/updatePrivilege/' + newRoleId, {'privileges': rolePrivileges}, {headers: this.authService.headers},
                     ).pipe(
                         tap(() => {
                             this.notify.success(this.translate.instant('ROLE.created'));
@@ -122,9 +139,9 @@ export class CreateRoleComponent implements OnInit {
     }
 
     getErrorMessage(field: any) {
-        let error = undefined;
+        let error: any;
         this.roleForm.forEach(element => {
-            if (element.id == field) {
+            if (element.id === field) {
                 if (element.required) {
                     error = this.translate.instant('AUTH.field_required');
                 }
@@ -133,40 +150,40 @@ export class CreateRoleComponent implements OnInit {
         return error;
     }
 
-    hasPrivilege(privilege_id: number) {
-        let found = false
+    hasPrivilege(privilegeId: number) {
+        let found = false;
         if (this.rolePrivileges) {
             this.rolePrivileges.forEach((element: any) => {
-                if (privilege_id == element) {
-                    found = true
+                if (privilegeId === element) {
+                    found = true;
                 }
-            })
+            });
         }
-        return found
+        return found;
     }
 
     getChildsByParent(parent: any) {
-        let data: any[] = []
+        const data: any[] = [];
         this.privileges['privileges'].forEach((element: any) => {
-            if (parent == element['parent']) {
-                data.push(element['label'])
+            if (parent === element['parent']) {
+                data.push(element['label']);
             }
-        })
-        return data
+        });
+        return data;
     }
 
     changePrivilege(event: any) {
-        let privilege = event.source.name
-        let checked = event.checked
+        const privilege = event.source.name;
+        const checked = event.checked;
         if (!checked) {
             this.rolePrivileges.forEach((element: any) => {
-                if (privilege == element) {
-                    let index = this.rolePrivileges.indexOf(privilege, 0)
-                    this.rolePrivileges.splice(index, 1)
+                if (privilege === element) {
+                    const index = this.rolePrivileges.indexOf(privilege, 0);
+                    this.rolePrivileges.splice(index, 1);
                 }
-            })
-        }else{
-            this.rolePrivileges.push(privilege)
+            });
+        }else {
+            this.rolePrivileges.push(privilege);
         }
     }
 }

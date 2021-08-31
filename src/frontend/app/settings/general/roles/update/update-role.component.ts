@@ -1,3 +1,20 @@
+/** This file is part of Open-Capture for Invoices.
+
+Open-Capture for Invoices is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Open-Capture is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
+
+@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+
 import {Component, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {FormBuilder, FormControl} from "@angular/forms";
@@ -51,14 +68,14 @@ export class UpdateRoleComponent implements OnInit {
     ];
 
     // Only used to get translation available while running the extract-translations
-    parent_label = [
+    parentLabel = [
         marker('PRIVILEGES.general'),
         marker('PRIVILEGES.administration'),
         marker('PRIVILEGES.verifier'),
         marker('PRIVILEGES.splitter'),
         marker('PRIVILEGES.accounts')
-    ]
-    privileges_label = [
+    ];
+    privilegesLabel = [
         marker('PRIVILEGES.access_verifier'),
         marker('PRIVILEGES.access_splitter'),
         marker('PRIVILEGES.settings'),
@@ -102,10 +119,10 @@ export class UpdateRoleComponent implements OnInit {
         this.http.get(API_URL + '/ws/roles/getById/' + this.roleId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.role = data;
-                for (let field in data) {
+                for (const field in data) {
                     if (data.hasOwnProperty(field)) {
                         this.roleForm.forEach(element => {
-                            if (element.id == field) {
+                            if (element.id === field) {
                                 element.control.setValue(data[field]);
                             }
                         });
@@ -115,7 +132,7 @@ export class UpdateRoleComponent implements OnInit {
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
-                this.router.navigate(['/settings/general/roles']).then()
+                this.router.navigate(['/settings/general/roles']).then();
                 return of(false);
             })
         ).subscribe();
@@ -162,14 +179,14 @@ export class UpdateRoleComponent implements OnInit {
                 role[element.id] = element.control.value;
             });
 
-            let role_privileges: any[] = []
+            const rolePrivileges: any[] = [];
             this.privileges['privileges'].forEach((element: any) => {
                 this.rolePrivileges.forEach((element2: any) => {
-                    if (element['label'] == element2) {
-                        role_privileges.push(element['id']);
+                    if (element['label'] === element2) {
+                        rolePrivileges.push(element['id']);
                     }
-                })
-            })
+                });
+            });
 
             this.http.put(API_URL + '/ws/roles/update/' + this.roleId, {'args': role}, {headers: this.authService.headers},
             ).pipe(
@@ -180,7 +197,7 @@ export class UpdateRoleComponent implements OnInit {
                 })
             ).subscribe();
 
-            this.http.put(API_URL + '/ws/roles/updatePrivilege/' + this.roleId, {'privileges': role_privileges}, {headers: this.authService.headers},
+            this.http.put(API_URL + '/ws/roles/updatePrivilege/' + this.roleId, {'privileges': rolePrivileges}, {headers: this.authService.headers},
             ).pipe(
                 tap(() => {
                     this.notify.success(this.translate.instant('ROLE.updated'));
@@ -196,9 +213,9 @@ export class UpdateRoleComponent implements OnInit {
     }
 
     getErrorMessage(field: any) {
-        let error = undefined;
+        let error: any;
         this.roleForm.forEach(element => {
-            if (element.id == field) {
+            if (element.id === field) {
                 if (element.required) {
                     error = this.translate.instant('AUTH.field_required');
                 }
@@ -207,36 +224,36 @@ export class UpdateRoleComponent implements OnInit {
         return error;
     }
 
-    hasPrivilege(privilege_id: number) {
+    hasPrivilege(privilegeId: number) {
         let found = false;
         this.rolePrivileges.forEach((element: any) => {
-            if (privilege_id == element) {
+            if (privilegeId === element) {
                 found = true;
             }
-        })
+        });
         return found;
     }
 
     getChildsByParent(parent: any) {
-        let data: any[] = []
+        const data: any[] = [];
         this.privileges['privileges'].forEach((element: any) => {
-            if (parent == element['parent']) {
-                data.push(element['label'])
+            if (parent === element['parent']) {
+                data.push(element['label']);
             }
-        })
+        });
         return data;
     }
 
     changePrivilege(event: any) {
-        let privilege = event.source.name;
-        let checked = event.checked;
+        const privilege = event.source.name;
+        const checked = event.checked;
         if (!checked) {
             this.rolePrivileges.forEach((element: any) => {
-                if (privilege == element) {
-                    let index = this.rolePrivileges.indexOf(privilege, 0);
+                if (privilege === element) {
+                    const index = this.rolePrivileges.indexOf(privilege, 0);
                     this.rolePrivileges.splice(index, 1);
                 }
-            })
+            });
         }else{
             this.rolePrivileges.push(privilege);
         }

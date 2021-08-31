@@ -4,8 +4,7 @@ import {Injectable} from '@angular/core';
     providedIn: 'root'
 })
 export class LocalStorageService {
-    constructor() {
-    }
+    constructor() {}
 
     save(id: string, content: any) {
         localStorage.setItem(id, content);
@@ -28,9 +27,9 @@ export class LocalStorageService {
     }
 
     getCookie(cname: string) {
-        let name = cname + "=";
-        let decodedCookie = decodeURIComponent(document.cookie);
-        let ca = decodedCookie.split(';');
+        const name = cname + "=";
+        const decodedCookie = decodeURIComponent(document.cookie);
+        const ca = decodedCookie.split(';');
         for (let i = 0; i < ca.length; i++) {
             let c = ca[i];
             while (c.charAt(0) === ' ') {
@@ -44,10 +43,10 @@ export class LocalStorageService {
     }
 
     setCookie(cname: string, cvalue: string, exdays: number) {
-        let d = new Date();
+        const d = new Date();
         if (exdays !== 0) {
             d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-            let expires = "expires=" + d.toUTCString();
+            const expires = "expires=" + d.toUTCString();
             document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/;SameSite=Strict";
         } else {
             document.cookie = cname + "=" + cvalue + ";path=/;SameSite=Strict";
@@ -55,6 +54,6 @@ export class LocalStorageService {
     }
 
     deleteCookie(cname: string) {
-        this.setCookie(cname, '', -1)
+        this.setCookie(cname, '', -1);
     }
 }

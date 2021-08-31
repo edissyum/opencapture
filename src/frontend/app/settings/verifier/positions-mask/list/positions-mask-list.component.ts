@@ -1,3 +1,20 @@
+/** This file is part of Open-Capture for Invoices.
+
+Open-Capture for Invoices is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Open-Capture is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
+
+@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
@@ -28,7 +45,7 @@ export class PositionsMaskListComponent implements OnInit {
     pageIndex       : number        = 0;
     total           : number        = 0;
     offset          : number        = 0;
-    positions_masks : any           = [];
+    positionsMasks : any           = [];
 
     constructor(
         public router: Router,
@@ -48,23 +65,31 @@ export class PositionsMaskListComponent implements OnInit {
 
     ngOnInit(): void {
         this.serviceSettings.init();
-        let lastUrl = this.routerExtService.getPreviousUrl();
-        if (lastUrl.includes('settings/verifier/positions-mask') || lastUrl == '/') {
+        const lastUrl = this.routerExtService.getPreviousUrl();
+        if (lastUrl.includes('settings/verifier/positions-mask') || lastUrl === '/') {
             if (this.localeStorageService.get('positionMaskPageIndex'))
-                this.pageIndex = parseInt(<string>this.localeStorageService.get('positionMaskPageIndex'));
+                this.pageIndex = parseInt(this.localeStorageService.get('positionMaskPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
         }else
             this.localeStorageService.remove('positionMaskPageIndex');
-        this.loadPositionMask();
+        this.loadPositionMask().then();
     }
 
-    loadPositionMask() {
-        this.loading = true
+    async loadPositionMask() {
+        this.loading = true;
+        const suppliers = await this.retrieveSuppliers();
         this.http.get(API_URL + '/ws/positions_masks/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                console.log(data)
-                // if (data.forms[0]) this.total = data.forms[0].total;
-                // this.forms = data.forms;
+                if (data.total) this.total = data.total;
+                this.positionsMasks = data.positions_masks;
+                suppliers.suppliers.forEach((element: any) => {
+                    this.positionsMasks.forEach((mask: any) => {
+                        if (element.id === mask.supplier_id) {
+                            mask.supplier_name = element.name;
+                        }
+                    });
+                });
+
             }),
             finalize(() => this.loading = false),
             catchError((err: any) => {
@@ -75,18 +100,22 @@ export class PositionsMaskListComponent implements OnInit {
         ).subscribe();
     }
 
+    async retrieveSuppliers(): Promise<any> {
+        return await this.http.get(API_URL + '/ws/accounts/suppliers/list?order=name ASC', {headers: this.authService.headers}).toPromise();
+    }
+
     onPageChange(event: any) {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
         this.localeStorageService.save('positionMaskPageIndex', event.pageIndex);
-        this.loadPositionMask();
+        this.loadPositionMask().then();
     }
 
-    deleteConfirmDialog(position_mask_id: number, positions_mask: string) {
+    deleteConfirmDialog(positionMaskId: number, positionsMask: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data:{
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
-                confirmText         : this.translate.instant('FORMS.confirm_delete', {"positions_mask": positions_mask}),
+                confirmText         : this.translate.instant('POSITIONS-MASKS.confirm_delete', {"positions_mask": positionsMask}),
                 confirmButton       : this.translate.instant('GLOBAL.delete'),
                 confirmButtonColor  : "warn",
                 cancelButton        : this.translate.instant('GLOBAL.cancel'),
@@ -96,16 +125,16 @@ export class PositionsMaskListComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
-                this.deletePositionMask(position_mask_id)
+                this.deletePositionMask(positionMaskId);
             }
         });
     }
 
-    duplicateConfirmDialog(position_mask_id: number, positions_mask: string) {
+    duplicateConfirmDialog(positionMaskId: number, positionsMask: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data:{
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
-                confirmText         : this.translate.instant('FORMS.confirm_duplicate', {"positions_mask": positions_mask}),
+                confirmText         : this.translate.instant('POSITIONS-MASKS.confirm_duplicate', {"positions_mask": positionsMask}),
                 confirmButton       : this.translate.instant('GLOBAL.duplicate'),
                 confirmButtonColor  : "warn",
                 cancelButton        : this.translate.instant('GLOBAL.cancel'),
@@ -115,16 +144,16 @@ export class PositionsMaskListComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
-                this.duplicatePositionMask(position_mask_id)
+                this.duplicatePositionMask(positionMaskId);
             }
         });
     }
 
-    disableConfirmDialog(position_mask_id: number, positions_mask: string) {
+    disableConfirmDialog(positionsMaskId: number, positionsMask: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data:{
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
-                confirmText         : this.translate.instant('FORMS.confirm_disable', {"positions_mask": positions_mask}),
+                confirmText         : this.translate.instant('POSITIONS-MASKS.confirm_disable', {"positions_mask": positionsMask}),
                 confirmButton       : this.translate.instant('GLOBAL.disable'),
                 confirmButtonColor  : "warn",
                 cancelButton        : this.translate.instant('GLOBAL.cancel'),
@@ -134,16 +163,16 @@ export class PositionsMaskListComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
-                this.disablePositionMask(position_mask_id)
+                this.disablePositionMask(positionsMaskId);
             }
         });
     }
 
-    enableConfirmDialog(position_mask_id: number, positions_mask: string) {
+    enableConfirmDialog(positionsMaskId: number, positionsMask: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data:{
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
-                confirmText         : this.translate.instant('FORMS.confirm_enable', {"positions_mask": positions_mask}),
+                confirmText         : this.translate.instant('POSITIONS-MASKS.confirm_enable', {"positions_mask": positionsMask}),
                 confirmButton       : this.translate.instant('GLOBAL.enable'),
                 confirmButtonColor  : "warn",
                 cancelButton        : this.translate.instant('GLOBAL.cancel'),
@@ -153,16 +182,16 @@ export class PositionsMaskListComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
-                this.enablePositionMask(position_mask_id)
+                this.enablePositionMask(positionsMaskId);
             }
         });
     }
 
-    deletePositionMask(position_mask_id: number) {
-        if (position_mask_id !== undefined) {
-            this.http.delete(API_URL + '/ws/positions_masks/delete/' + position_mask_id, {headers: this.authService.headers}).pipe(
+    deletePositionMask(positionsMaskId: number) {
+        if (positionsMaskId !== undefined) {
+            this.http.delete(API_URL + '/ws/positions_masks/delete/' + positionsMaskId, {headers: this.authService.headers}).pipe(
                 tap(() => {
-                    this.loadPositionMask();
+                    this.loadPositionMask().then();
                 }),
                 catchError((err: any) => {
                     console.debug(err);
@@ -173,9 +202,9 @@ export class PositionsMaskListComponent implements OnInit {
         }
     }
 
-    duplicatePositionMask(position_mask_id: number) {
-        if (position_mask_id !== undefined) {
-            // this.http.delete(API_URL + '/ws/positions_masks/duplicate/' + position_mask_id, {headers: this.authService.headers}).pipe(
+    duplicatePositionMask(positionsMaskId: number) {
+        if (positionsMaskId !== undefined) {
+            // this.http.delete(API_URL + '/ws/positions_masks/duplicate/' + positionsMaskId, {headers: this.authService.headers}).pipe(
             //     tap(() => {
             //         this.loadPositionMask()
             //     }),
@@ -188,11 +217,11 @@ export class PositionsMaskListComponent implements OnInit {
         }
     }
 
-    disablePositionMask(position_mask_id: number) {
-        if (position_mask_id !== undefined) {
-            this.http.put(API_URL + '/ws/positions_masks/disable/' + position_mask_id, null, {headers: this.authService.headers}).pipe(
+    disablePositionMask(positionsMaskId: number) {
+        if (positionsMaskId !== undefined) {
+            this.http.put(API_URL + '/ws/positions_masks/disable/' + positionsMaskId, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
-                    this.loadPositionMask();
+                    this.loadPositionMask().then();
                 }),
                 catchError((err: any) => {
                     console.debug(err);
@@ -203,11 +232,11 @@ export class PositionsMaskListComponent implements OnInit {
         }
     }
 
-    enablePositionMask(forms_id: number) {
-        if (forms_id !== undefined) {
-            this.http.put(API_URL + '/ws/positions_masks/enable/' + forms_id, null, {headers: this.authService.headers}).pipe(
+    enablePositionMask(positionsMaskId: number) {
+        if (positionsMaskId !== undefined) {
+            this.http.put(API_URL + '/ws/positions_masks/enable/' + positionsMaskId, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
-                    this.loadPositionMask();
+                    this.loadPositionMask().then();
                 }),
                 catchError((err: any) => {
                     console.debug(err);
@@ -219,13 +248,13 @@ export class PositionsMaskListComponent implements OnInit {
     }
 
     sortData(sort: Sort) {
-        let data = this.positions_masks.slice();
+        const data = this.positionsMasks.slice();
         if(!sort.active || sort.direction === '') {
-            this.positions_masks = data;
+            this.positionsMasks = data;
             return;
         }
 
-        this.positions_masks = data.sort((a: any, b: any) => {
+        this.positionsMasks = data.sort((a: any, b: any) => {
             const isAsc = sort.direction === 'asc';
             switch (sort.active) {
                 case 'id': return this.compare(a.id, b.id, isAsc);

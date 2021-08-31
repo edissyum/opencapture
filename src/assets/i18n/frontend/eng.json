@@ -108,7 +108,7 @@
 		"jwt_error": "Authentification by token error",
 		"number_float_pattern": "",
 		"number_int_pattern": "",
-		"unauthorized": "You are not allowed to see this page",
+		"unauthorized": "You are not allowed to see the following page : ",
 		"unknow_error": "Unknow error"
 	},
 	"FACTURATION": {
@@ -259,11 +259,23 @@
 		"previous_page": "Previous page"
 	},
 	"POSITIONS-MASKS": {
+		"confirm_delete": "",
+		"confirm_disable": "",
+		"confirm_duplicate": "",
+		"confirm_enable": "",
 		"create": "",
+		"created": "",
+		"delete": "",
+		"disable": "",
+		"duplicate": "",
+		"enable": "",
 		"label": "",
 		"modify": "",
 		"placeholder": "",
-		"supplier_name_associated": ""
+		"position_and_page_updated": "",
+		"reset_image": "",
+		"supplier_name_associated": "",
+		"updated": ""
 	},
 	"PRIVILEGES": {
 		"access_splitter": "",

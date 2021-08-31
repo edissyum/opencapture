@@ -84,7 +84,7 @@
                 <hr class="border-green-400">
             </div>
         </div>
-        <mat-table matSort matSortDisableClear [dataSource]="positions_masks" (matSortChange)="sortData($event)" class="w-full">
+        <mat-table matSort matSortDisableClear [dataSource]="positionsMasks" (matSortChange)="sortData($event)" class="w-full">
             <ng-container matColumnDef="id">
                 <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.id' | translate }} </mat-header-cell>
                 <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
@@ -109,23 +109,23 @@
                 <mat-cell *matCellDef="let element">
                     <button *ngIf="element.enabled"
                             (click)="$event.stopPropagation(); disableConfirmDialog(element.id, element.label)"
-                            matTooltip="{{ 'FORMS.disable' | translate }}" mat-icon-button
+                            matTooltip="{{ 'POSITIONS-MASKS.disable' | translate }}" mat-icon-button
                             class="inline-block align-text-top">
                         <i class="fas fa-pause fa-lg"></i>
                     </button>
                     <button *ngIf="!element.enabled"
                             (click)="$event.stopPropagation(); enableConfirmDialog(element.id, element.label)"
-                            matTooltip="{{ 'FORMS.enable' | translate }}" mat-icon-button
+                            matTooltip="{{ 'POSITIONS-MASKS.enable' | translate }}" mat-icon-button
                             class="inline-block align-text-top">
                         <i class="fas fa-play fa-lg"></i>
                     </button>
                     <button (click)="$event.stopPropagation(); duplicateConfirmDialog(element.id, element.label)"
-                            matTooltip="{{ 'FORMS.duplicate' | translate }}" mat-icon-button
+                            matTooltip="{{ 'POSITIONS-MASKS.duplicate' | translate }}" mat-icon-button
                             class="inline-block align-text-top">
                         <i class="fas fa-clone fa-lg"></i>
                     </button>
                     <button (click)="$event.stopPropagation(); deleteConfirmDialog(element.id, element.label)"
-                            matTooltip="{{ 'FORMS.delete' | translate }}" mat-icon-button
+                            matTooltip="{{ 'POSITIONS-MASKS.delete' | translate }}" mat-icon-button
                             class="inline-block align-text-top">
                         <i class="fas fa-trash fa-lg"></i>
                     </button>
@@ -133,7 +133,7 @@
             </ng-container>
             <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
             <mat-row *matRowDef="let row; columns: columnsToDisplay;"
-                     routerLink="/settings/verifier/forms/builder/edit/{{row.id}}"
+                     routerLink="/settings/verifier/positions-mask/update/{{row.id}}"
                      class="cursor-pointer hover:text-green-400 hover:shadow-md transition-colors duration-300"></mat-row>
         </mat-table>
         <mat-paginator showFirstLastButtons

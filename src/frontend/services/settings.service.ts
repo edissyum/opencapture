@@ -171,14 +171,14 @@ export class SettingsService {
                     {
                         "id"        : "add_position_mask",
                         "label"     : this.translate.instant("SETTINGS.positions_mask_builder"),
-                        "route"     : "/settings/verifier/positions-mask/builder/new",
+                        "route"     : "/settings/verifier/positions-mask/create",
                         "privilege" : "add_position_mask",
                         "icon"      : "fas fa-tools"
                     },
                     {
                         "id"                : "update_position_mask",
                         "label"             : this.translate.instant("SETTINGS.positions_mask_update"),
-                        "route"             : "/settings/verifier/positions-mask/builder/edit/",
+                        "route"             : "/settings/verifier/positions-mask/update/",
                         "privilege"         : "update_position_mask",
                         "icon"              : "fas fa-hammer",
                         "showOnlyIfActive"  : true
@@ -212,34 +212,34 @@ export class SettingsService {
     ) {}
 
     init() {
-        let lastUrl = this.routerExtService.getPreviousUrl();
-        if (lastUrl.includes('roles') || lastUrl == '/' || lastUrl.includes('users')) {
-            let selectedSettings = this.localeStorageService.get('selectedSettings')
-            let selectedParentSettings = this.localeStorageService.get('selectedParentSettings')
+        const lastUrl = this.routerExtService.getPreviousUrl();
+        if (lastUrl.includes('roles') || lastUrl === '/' || lastUrl.includes('users')) {
+            const selectedSettings = this.localeStorageService.get('selectedSettings');
+            const selectedParentSettings = this.localeStorageService.get('selectedParentSettings');
             if (selectedSettings)
-                this.setSelectedSettings(selectedSettings)
+                this.setSelectedSettings(selectedSettings);
 
             if (selectedParentSettings)
-                this.setSelectedParentSettings(selectedParentSettings)
+                this.setSelectedParentSettings(selectedParentSettings);
         }else{
-            this.localeStorageService.remove('selectedSettings')
-            this.localeStorageService.remove('selectedParentSettings')
-            this.setSelectedSettings("users")
-            this.setSelectedParentSettings('general')
+            this.localeStorageService.remove('selectedSettings');
+            this.localeStorageService.remove('selectedParentSettings');
+            this.setSelectedSettings("users");
+            this.setSelectedParentSettings('general');
         }
     }
 
     getTitle() {
-        let title = this.titleService.getTitle()
-        title = title.split(' - ')[0]
-        return title
+        let title = this.titleService.getTitle();
+        title = title.split(' - ')[0];
+        return title;
     }
 
     changeSetting(settingId: string, settingParentId: string) {
-        this.setSelectedSettings(settingId)
-        this.setSelectedParentSettings(settingParentId)
-        this.localeStorageService.save('selectedSettings', settingId)
-        this.localeStorageService.save('selectedParentSettings',settingParentId)
+        this.setSelectedSettings(settingId);
+        this.setSelectedParentSettings(settingParentId);
+        this.localeStorageService.save('selectedSettings', settingId);
+        this.localeStorageService.save('selectedParentSettings',settingParentId);
     }
 
     getIsMenuOpen() {
@@ -266,14 +266,14 @@ export class SettingsService {
         return this.settings;
     }
 
-    getSettingsAction(parent_id: any, setting_id: any) {
-        let actions = undefined
-        this.settings[parent_id].forEach((element: any) => {
-            if (element['id'] == setting_id && element['actions']) {
-                actions = element['actions']
+    getSettingsAction(parentId: any, settingId: any) {
+        let actions: any;
+        this.settings[parentId].forEach((element: any) => {
+            if (element['id'] === settingId && element['actions']) {
+                actions = element['actions'];
             }
-        })
-        return actions
+        });
+        return actions;
     }
 
     setSelectedSettings(value: string) {

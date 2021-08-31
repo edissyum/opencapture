@@ -1,3 +1,20 @@
+/** This file is part of Open-Capture for Invoices.
+
+Open-Capture for Invoices is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Open-Capture is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
+
+@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+
 import {Component, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -118,7 +135,7 @@ export class UpdateUserComponent implements OnInit {
                     if (element.editable) {
                         this.roles.push(element);
                     } else {
-                        if ((this.userService.getUser().privileges == '*')) {
+                        if ((this.userService.getUser().privileges === '*')) {
                             this.roles.push(element);
                         }
                     }
@@ -134,12 +151,12 @@ export class UpdateUserComponent implements OnInit {
         this.http.get(API_URL + '/ws/users/getById/' + this.userId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.user = data;
-                for (let field in data) {
+                for (const field in data) {
                     if (data.hasOwnProperty(field)) {
                         this.userForm.forEach(element => {
-                            if (element.id == field) {
+                            if (element.id === field) {
                                 element.control.setValue(data[field]);
-                                if (element.id == 'role') {
+                                if (element.id === 'role') {
                                     element.values = this.roles;
                                 }
                             }
@@ -192,9 +209,9 @@ export class UpdateUserComponent implements OnInit {
     }
 
     getErrorMessage(field: any) {
-        let error = undefined;
+        let error: any;
         this.userForm.forEach(element => {
-            if (element.id == field) {
+            if (element.id === field) {
                 if (element.required && !(element.value || element.control.value)) {
                     error = this.translate.instant('AUTH.field_required');
                 }
@@ -204,8 +221,8 @@ export class UpdateUserComponent implements OnInit {
     }
 
     hasCustomer(customerId: any) {
-        for (let customer_id of this.usersCustomers) {
-            if(customer_id == customerId) {
+        for (const _customerId of this.usersCustomers) {
+            if(_customerId === customerId) {
                 return true;
             }
         }
@@ -213,25 +230,25 @@ export class UpdateUserComponent implements OnInit {
     }
 
     updateUsersCustomers(customerId: any) {
-        let found = false
+        let found = false;
         let cpt = 0;
-        for (let customer_id of this.usersCustomers) {
-            if(customer_id == customerId) {
+        for (const _customerId of this.usersCustomers) {
+            if(_customerId === customerId) {
                 found = true;
-                break
+                break;
             }
-            cpt = cpt + 1
+            cpt = cpt + 1;
         }
         if (!found) {
-            this.usersCustomers.push(customerId)
+            this.usersCustomers.push(customerId);
         }else{
-            this.usersCustomers.splice(cpt, 1)
+            this.usersCustomers.splice(cpt, 1);
         }
 
         this.http.put(API_URL + '/ws/users/customers/update/' + this.userId, {'customers': this.usersCustomers}, {headers: this.authService.headers},
         ).pipe(
             tap(() => {
-                this.notify.success(this.translate.instant('USER.customers_updated'))
+                this.notify.success(this.translate.instant('USER.customers_updated'));
             }),
             catchError((err: any) => {
                 console.debug(err);

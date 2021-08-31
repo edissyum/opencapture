@@ -1,3 +1,20 @@
+/** This file is part of Open-Capture for Invoices.
+
+Open-Capture for Invoices is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Open-Capture is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
+
+@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+
 import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {UserService} from "../../../../../services/user.service";
@@ -49,8 +66,8 @@ export class OutputsListComponent implements OnInit {
     ngOnInit(): void {
         this.serviceSettings.init();
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
-        let lastUrl = this.routerExtService.getPreviousUrl();
-        if (lastUrl.includes('outputs/') || lastUrl == '/') {
+        const lastUrl = this.routerExtService.getPreviousUrl();
+        if (lastUrl.includes('outputs/') || lastUrl === '/') {
             if (this.localeStorageService.get('outputsPageIndex'))
                 this.pageIndex = parseInt(<string>this.localeStorageService.get('outputsPageIndex'));
             this.offset = this.pageSize * (this.pageIndex);
@@ -116,7 +133,7 @@ export class OutputsListComponent implements OnInit {
     }
 
     sortData(sort: Sort) {
-        let data = this.outputs.slice();
+        const data = this.outputs.slice();
         if (!sort.active || sort.direction === '') {
             this.outputs = data;
             return;

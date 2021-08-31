@@ -1,3 +1,20 @@
+/** This file is part of Open-Capture for Invoices.
+
+Open-Capture for Invoices is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Open-Capture is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
+
+@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+
 import {Component, OnInit} from '@angular/core';
 import { LocalStorageService } from "../../../services/local-storage.service";
 import { API_URL } from "../../env";
@@ -25,8 +42,8 @@ interface accountsNode {
     parent_id: any;
     supplier_id: any;
     purchase_or_sale: any;
-    number: number,
-    display: boolean,
+    number: number;
+    display: boolean;
     children: any;
 }
 
@@ -129,21 +146,21 @@ export class VerifierListComponent implements OnInit {
     isNotLevelOne = (_: number, node: flatNode) => node.level !== 1;
 
     async ngOnInit() {
-        marker('VERIFIER.nb_pages') // Needed to get the translation in the JSON file
-        marker('VERIFIER.reset_invoice_list') // Needed to get the translation in the JSON file
-        marker('VERIFIER.expand_all') // Needed to get the translation in the JSON file
-        marker('VERIFIER.collapse_all') // Needed to get the translation in the JSON file
-        marker('VERIFIER.select_all') // Needed to get the translation in the JSON file
-        marker('VERIFIER.unselect_all') // Needed to get the translation in the JSON file
+        marker('VERIFIER.nb_pages'); // Needed to get the translation in the JSON file
+        marker('VERIFIER.reset_invoice_list'); // Needed to get the translation in the JSON file
+        marker('VERIFIER.expand_all'); // Needed to get the translation in the JSON file
+        marker('VERIFIER.collapse_all'); // Needed to get the translation in the JSON file
+        marker('VERIFIER.select_all'); // Needed to get the translation in the JSON file
+        marker('VERIFIER.unselect_all'); // Needed to get the translation in the JSON file
 
         this.config = this.configService.getConfig();
-        this.localeStorageService.save('splitter_or_verifier', 'verifier')
-        let lastUrl = this.routerExtService.getPreviousUrl();
-        if (lastUrl.includes('verifier/') && !lastUrl.includes('settings') || lastUrl == '/' || lastUrl == '/upload') {
+        this.localeStorageService.save('splitter_or_verifier', 'verifier');
+        const lastUrl = this.routerExtService.getPreviousUrl();
+        if (lastUrl.includes('verifier/') && !lastUrl.includes('settings') || lastUrl === '/' || lastUrl === '/upload') {
             if (this.localeStorageService.get('invoicesPageIndex'))
-                this.pageIndex = parseInt(<string>this.localeStorageService.get('invoicesPageIndex'));
+                this.pageIndex = parseInt(this.localeStorageService.get('invoicesPageIndex') as string);
             if (this.localeStorageService.get('invoicesTimeIndex')) {
-                this.selectedTab = parseInt(<string>this.localeStorageService.get('invoicesTimeIndex'));
+                this.selectedTab = parseInt(this.localeStorageService.get('invoicesTimeIndex') as string);
                 this.currentTime = this.batchList[this.selectedTab].id;
             }
             this.offset = this.pageSize * (this.pageIndex);
@@ -166,10 +183,10 @@ export class VerifierListComponent implements OnInit {
     }
 
     loadCustomers() {
-        this.TREE_DATA = []
+        this.TREE_DATA = [];
         this.http.get(API_URL + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                let customers = data.customers;
+                const customers = data.customers;
                 this.TREE_DATA.push({
                     name: this.translate.instant('ACCOUNTS.customer_not_specified'),
                     id: 0,
@@ -219,7 +236,7 @@ export class VerifierListComponent implements OnInit {
         ).pipe(
             tap((data: any) => {
                 if (data) {
-                    this.total = data.total
+                    this.total = data.total;
                     this.invoices = data.invoices;
                     this.invoices.forEach((invoice: any) => {
                         if (!invoice.thumb.includes('data:image/jpeg;base64'))
@@ -231,15 +248,15 @@ export class VerifierListComponent implements OnInit {
                 * Starting from here, we fill the customers tree
                 */
                 // let customersToKeep: any = [];
-                let customersPurchaseToKeep : any = [];
-                let customersSaleToKeep : any = [];
+                const customersPurchaseToKeep : any = [];
+                const customersSaleToKeep : any = [];
                 this.allowedCustomers.forEach((customer: any) => {
                     this.invoices.forEach((invoice:any) => {
-                        if (invoice.purchase_or_sale == 'purchase' && !customersPurchaseToKeep.includes(customer))
+                        if (invoice.purchase_or_sale === 'purchase' && !customersPurchaseToKeep.includes(customer))
                             customersPurchaseToKeep.push(customer);
-                        if (invoice.purchase_or_sale == 'sale' && !customersSaleToKeep.includes(customer))
+                        if (invoice.purchase_or_sale === 'sale' && !customersSaleToKeep.includes(customer))
                             customersSaleToKeep.push(customer);
-                    })
+                    });
                 });
 
                 /*
@@ -253,41 +270,41 @@ export class VerifierListComponent implements OnInit {
 
                 this.TREE_DATA.forEach((data: any, index: number) => {
                     customersSaleToKeep.forEach((customer1: any) => {
-                        if (data.id == customer1) {
-                            let childExists = false
+                        if (data.id === customer1) {
+                            let childExists = false;
                             this.TREE_DATA[index].children.forEach((child: any) => {
-                                if (child.id == 0)
-                                    childExists = true
-                            })
+                                if (child.id === 0)
+                                    childExists = true;
+                            });
                             if (!childExists) {
                                 this.TREE_DATA[index].children.push(
                                     {name: this.translate.instant('UPLOAD.sale_invoice'), id: 0, display: true, number: 0, children: []},
-                                )
-                                this.createChildren('sale', 0, index)
+                                );
+                                this.createChildren('sale', 0, index);
                             }
                         }
-                    })
+                    });
                     customersPurchaseToKeep.forEach((customer2: any) => {
-                        if (data.id == customer2) {
+                        if (data.id === customer2) {
                             if (this.TREE_DATA[index]) {
-                                let childExists = false
+                                let childExists = false;
                                 this.TREE_DATA[index].children.forEach((child: any) => {
-                                    if (child.id == 1)
-                                        childExists = true
-                                })
+                                    if (child.id === 1)
+                                        childExists = true;
+                                });
                                 if (!childExists) {
                                     this.TREE_DATA[index].children.push(
                                         {name: this.translate.instant('UPLOAD.purchase_invoice'), id: 1, display: true, number: 0, children: []},
-                                    )
-                                    this.createChildren('purchase', 1, index)
+                                    );
+                                    this.createChildren('purchase', 1, index);
                                 }
                             }
                         }
-                    })
+                    });
                 });
                 this.dataSource.data = this.TREE_DATA;
             }),
-            finalize(() => {this.loading = false}),
+            finalize(() => {this.loading = false;}),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
@@ -296,56 +313,56 @@ export class VerifierListComponent implements OnInit {
         ).subscribe();
     }
 
-    fillChildren(parent_id: any , parent: any, child_name: any, supplier_name: any, supplier_id: any, id: any, purchase_or_sale: any) {
-        let child_name_exists = false;
+    fillChildren(parentId: any , parent: any, childName: any, supplierName: any, supplierId: any, id: any, purchaseOrSale: any) {
+        let childNameExists = false;
         parent.forEach((child: any) => {
-            if (child.name == child_name) {
-                child_name_exists = true;
+            if (child.name === childName) {
+                childNameExists = true;
                 child.number = child.number + 1;
             }
-        })
+        });
 
-        if (!child_name_exists) {
+        if (!childNameExists) {
             parent.push({
-                name: supplier_name,
-                supplier_id: supplier_id,
+                name: supplierName,
+                supplier_id: supplierId,
                 id: id,
-                parent_id: parent_id,
-                purchase_or_sale: purchase_or_sale,
+                parent_id: parentId,
+                purchase_or_sale: purchaseOrSale,
                 number: 1,
                 display: true
             });
         }
     }
 
-    createChildren(purchase_or_sale: any, id: any, index: any) {
-        this.TREE_DATA[index].children.forEach((child: any, child_index: any) => {
-            if (child.id == id) {
+    createChildren(purchaseOrSale: any, id: any, index: any) {
+        this.TREE_DATA[index].children.forEach((child: any, childIndex: any) => {
+            if (child.id === id) {
                 this.invoices.forEach((invoice: any) => {
-                    if (this.TREE_DATA[index].id == invoice.customer_id && invoice.purchase_or_sale == purchase_or_sale) {
+                    if (this.TREE_DATA[index].id === invoice.customer_id && invoice.purchase_or_sale === purchaseOrSale) {
                         if(invoice.supplier_id) {
-                            this.fillChildren(this.TREE_DATA[index].id, this.TREE_DATA[index].children[child_index].children, invoice.supplier_name, invoice.supplier_name, invoice.supplier_id, invoice.id, purchase_or_sale)
+                            this.fillChildren(this.TREE_DATA[index].id, this.TREE_DATA[index].children[childIndex].children, invoice.supplier_name, invoice.supplier_name, invoice.supplier_id, invoice.id, purchaseOrSale);
                         }else {
-                            this.fillChildren(this.TREE_DATA[index].id, this.TREE_DATA[index].children[child_index].children, invoice.supplier_name, 'Fournisseur inconnu', invoice.supplier_id, invoice.id, purchase_or_sale)
+                            this.fillChildren(this.TREE_DATA[index].id, this.TREE_DATA[index].children[childIndex].children, invoice.supplier_name, 'Fournisseur inconnu', invoice.supplier_id, invoice.id, purchaseOrSale);
                         }
-                        this.TREE_DATA[index].children[child_index].number = this.TREE_DATA[index].children[child_index].number + 1
-                        this.TREE_DATA[index].number = this.TREE_DATA[index].number + 1
+                        this.TREE_DATA[index].children[childIndex].number = this.TREE_DATA[index].children[childIndex].number + 1;
+                        this.TREE_DATA[index].number = this.TREE_DATA[index].number + 1;
                     }
-                })
+                });
             }
-        })
+        });
     }
 
     loadInvoicePerCustomer(node: any) {
-        let parent_id = node.parent_id;
-        let supplier_id = node.supplier_id;
-        let purchase_or_sale = node.purchase_or_sale;
+        const parentId = node.parent_id;
+        const supplierId = node.supplier_id;
+        const purchaseOrSale = node.purchase_or_sale;
         this.TREE_DATA.forEach((element: any) => {
-            if (element.id == parent_id) {
-                let customer_id = element.id;
-                this.allowedCustomers = [customer_id];
-                this.allowedSuppliers = [supplier_id];
-                this.purchaseOrSale = purchase_or_sale;
+            if (element.id === parentId) {
+                const customerId = element.id;
+                this.allowedCustomers = [customerId];
+                this.allowedSuppliers = [supplierId];
+                this.purchaseOrSale = purchaseOrSale;
                 this.resetPaginator();
                 this.loadInvoices();
             }
@@ -363,30 +380,30 @@ export class VerifierListComponent implements OnInit {
     }
 
     selectOrUnselectAllInvoices(event: any) {
-        let label = event.srcElement.textContent
+        const label = event.srcElement.textContent;
         this.invoiceToDeleteSelected = !this.invoiceToDeleteSelected;
-        let checkboxList = $(".checkBox_list")
+        const checkboxList = $(".checkBox_list");
         checkboxList.each((cpt: any) => {
-            checkboxList[cpt].checked = label == this.translate.instant('VERIFIER.select_all');
+            checkboxList[cpt].checked = label === this.translate.instant('VERIFIER.select_all');
         });
         this.totalChecked = $('input.checkBox_list:checked').length;
     }
 
     deleteAllInvoices() {
         this.loading = true;
-        let checkboxList = $(".checkBox_list");
+        const checkboxList = $(".checkBox_list");
         checkboxList.each((cpt: any) => {
-            let invoice_id = checkboxList[cpt].id.split('_')[0];
-            this.deleteInvoice(invoice_id, true);
+            const invoiceId = checkboxList[cpt].id.split('_')[0];
+            this.deleteInvoice(invoiceId, true);
         });
         this.notify.success('VERIFIER.all_invoices_deleted');
         this.loadCustomers();
     }
 
-    deleteInvoice(invoice_id: number, batch_delete = false) {
-        this.http.delete(API_URL + '/ws/verifier/invoices/delete/' + invoice_id, {headers: this.authService.headers}).pipe(
+    deleteInvoice(invoiceId: number, batchDelete = false) {
+        this.http.delete(API_URL + '/ws/verifier/invoices/delete/' + invoiceId, {headers: this.authService.headers}).pipe(
             tap(() => {
-                if (!batch_delete) this.loadCustomers();
+                if (!batchDelete) this.loadCustomers();
                 this.notify.success(this.translate.instant('VERIFIER.invoices_deleted'));
             }),
             catchError((err: any) => {
@@ -402,7 +419,7 @@ export class VerifierListComponent implements OnInit {
         this.invoiceToDeleteSelected = this.totalChecked !== 0;
     }
 
-    deleteConfirmDialog(invoice_id: number) {
+    deleteConfirmDialog(invoiceId: number) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data:{
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
@@ -416,7 +433,7 @@ export class VerifierListComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
-                this.deleteInvoice(invoice_id)
+                this.deleteInvoice(invoiceId);
             }
         });
     }
@@ -474,12 +491,12 @@ export class VerifierListComponent implements OnInit {
     }
 
     expandAll() {
-        this.expanded = !this.expanded
+        this.expanded = !this.expanded;
         /*
         * mat-tree-node.child are clicked twice to be sure they will be close at the second click
          */
-        $('mat-tree-node.child').click()
-        $('mat-tree-node.parent').click()
-        $('mat-tree-node.child').click()
+        $('mat-tree-node.child').click();
+        $('mat-tree-node.parent').click();
+        $('mat-tree-node.child').click();
     }
 }

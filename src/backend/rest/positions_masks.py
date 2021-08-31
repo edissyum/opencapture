@@ -32,7 +32,8 @@ def get_positions_masks():
         'select': ['*', 'count(*) OVER() as total'],
         'offset': request.args['offset'] if 'offset' in request.args else '',
         'limit': request.args['limit'] if 'limit' in request.args else '',
-        'where': ["status <> 'DEL'"]
+        'where': ["status <> 'DEL'"],
+        'order_by': ['id ASC']
     }
     res = positions_masks.get_positions_masks(args)
     return make_response(jsonify(res[0]), res[1])
@@ -103,6 +104,22 @@ def disable_positions_mask(position_mask_id):
 def enable_positions_mask(position_mask_id):
     res = positions_masks.enable_positions_mask(position_mask_id)
     return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('positions_masks/<int:position_mask_id>/deletePosition', methods=['PUT'])
+@auth.token_required
+def delete_position_by_positions_mask_id(position_mask_id):
+    field_id = request.json['args']
+    res = positions_masks.delete_position_by_positions_mask_id(position_mask_id, field_id)
+    return make_response(res[0], res[1])
+
+
+@bp.route('positions_masks/<int:position_mask_id>/deletePage', methods=['PUT'])
+@auth.token_required
+def delete_page_by_positions_mask_id(position_mask_id):
+    field_id = request.json['args']
+    res = positions_masks.delete_page_by_positions_mask_id(position_mask_id, field_id)
+    return make_response(res[0], res[1])
 
 
 @bp.route('positions_masks/getImageFromPdf/<int:positions_mask_id>', methods=['POST'])

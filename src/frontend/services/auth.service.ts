@@ -43,13 +43,13 @@ export class AuthService {
         return this.localStorage.get(name);
     }
 
-    setTokens(token: string, token2: string, days_before_exp: number) {
-        this.localStorage.setCookie('OpenCaptureForInvoicesToken', token, days_before_exp);
-        this.localStorage.setCookie('OpenCaptureForInvoicesToken_2', token2, days_before_exp);
+    setTokens(token: string, token2: string, daysBeforeExp: number) {
+        this.localStorage.setCookie('OpenCaptureForInvoicesToken', token, daysBeforeExp);
+        this.localStorage.setCookie('OpenCaptureForInvoicesToken_2', token2, daysBeforeExp);
     }
 
-    setTokenAuth(token: string, days_before_exp: number) {
-        this.localStorage.setCookie('OpenCaptureForInvoicesToken_2', token, days_before_exp);
+    setTokenAuth(token: string, daysBeforeExp: number) {
+        this.localStorage.setCookie('OpenCaptureForInvoicesToken_2', token, daysBeforeExp);
     }
 
     getToken() {

@@ -1,3 +1,20 @@
+/** This file is part of Open-Capture for Invoices.
+
+Open-Capture for Invoices is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Open-Capture is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
+
+@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+
 import {Component, OnInit} from '@angular/core';
 import {Validators, FormBuilder} from '@angular/forms';
 import {TranslateService} from "@ngx-translate/core";
@@ -41,8 +58,8 @@ export class LoginComponent implements OnInit {
     }
 
     onSubmit() {
-        let password = this.loginForm.get('password').value;
-        let username = this.loginForm.get('username').value;
+        const password = this.loginForm.get('password').value;
+        const username = this.loginForm.get('username').value;
         if (password && username) {
             this.http.post(
                 API_URL + '/ws/auth/login',
@@ -58,7 +75,7 @@ export class LoginComponent implements OnInit {
                 tap((data: any) => {
                     this.userService.setUser(data.body.user);
                     this.authService.setTokens(data.body.auth_token, btoa(JSON.stringify(this.userService.getUser())), data.body.days_before_exp);
-                    this.authService.generateHeaders()
+                    this.authService.generateHeaders();
                     this.notify.success(this.translate.instant('AUTH.authenticated'));
                     this.configService.readConfig().then(() => {
                         if (this.authService.getCachedUrl()) {

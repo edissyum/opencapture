@@ -23,9 +23,9 @@ export class UserService {
     }
 
     getUserFromLocal() {
-        let token = this.getTokenAuth();
+        const token = this.getTokenAuth();
         if (token) {
-            return JSON.parse(atob(<string>token));
+            return JSON.parse(atob(token as string));
         }
     }
 

@@ -21,9 +21,10 @@ import json
 import base64
 import datetime
 import pandas as pd
+from PIL import Image
 from xml.dom import minidom
 from flask_babel import gettext
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as Et
 from src.backend.main import launch
 from flask import current_app, Response
 from ..main import create_classes_from_config
@@ -117,7 +118,7 @@ def retrieve_invoices(args):
     if total_invoices not in [0, []]:
         invoices_list = verifier.get_invoices(args)
         for invoice in invoices_list:
-            thumb = get_file_content(_cfg.cfg['GLOBAL']['fullpath'], invoice['full_jpg_filename'], 'image/jpeg')
+            thumb = get_file_content(_cfg.cfg['GLOBAL']['fullpath'], invoice['full_jpg_filename'], 'image/jpeg', compress=True)
             invoice['thumb'] = str(base64.b64encode(thumb.get_data()).decode('UTF-8'))
             if invoice['supplier_id']:
                 supplier_info, error = accounts.get_supplier_by_id({'supplier_id': invoice['supplier_id']})
@@ -239,7 +240,27 @@ def delete_invoice_position_by_invoice_id(invoice_id, field_id):
             return '', 200
         else:
             response = {
-                "errors": gettext('UPDATE_INVOICE_DATA_ERROR'),
+                "errors": gettext('UPDATE_INVOICE_POSITION_ERROR'),
+                "message": error
+            }
+            return response, 401
+
+
+def delete_invoice_page_by_invoice_id(invoice_id, field_id):
+    _vars = create_classes_from_config()
+    _db = _vars[0]
+    invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
+    if error is None:
+        _set = {}
+        invoice_pages = invoice_info['pages']
+        if field_id in invoice_pages:
+            del(invoice_pages[field_id])
+        res, error = verifier.update_invoice({'set': {"pages": json.dumps(invoice_pages)}, 'invoice_id': invoice_id})
+        if error is None:
+            return '', 200
+        else:
+            response = {
+                "errors": gettext('UPDATE_INVOICE_PAGES_ERROR'),
                 "message": error
             }
             return response, 401
@@ -411,7 +432,6 @@ def construct_with_var(data, invoice_info):
 
 
 def export_xml(invoice_id, data):
-
     folder_out = separator = filename = ''
     parameters = data['options']['parameters']
     for setting in parameters:
@@ -433,20 +453,20 @@ def export_xml(invoice_id, data):
         # Fill XML with invoice informations
         if os.path.isdir(folder_out):
             xml_file = open(folder_out + '/' + filename, 'w')
-            root = ET.Element('ROOT')
-            xml_technical = ET.SubElement(root, 'TECHNICAL')
-            xml_datas = ET.SubElement(root, 'DATAS')
+            root = Et.Element('ROOT')
+            xml_technical = Et.SubElement(root, 'TECHNICAL')
+            xml_datas = Et.SubElement(root, 'DATAS')
 
             for technical in invoice_info:
                 if technical in ['path', 'filename', 'register_date', 'nb_pages', 'purchase_or_sale']:
-                    new_field = ET.SubElement(xml_technical, technical)
+                    new_field = Et.SubElement(xml_technical, technical)
                     new_field.text = str(invoice_info[technical])
 
             for data in invoice_info['datas']:
-                new_field = ET.SubElement(xml_datas, data)
+                new_field = Et.SubElement(xml_datas, data)
                 new_field.text = str(invoice_info['datas'][data])
 
-            xml_root = minidom.parseString(ET.tostring(root, encoding="unicode")).toprettyxml()
+            xml_root = minidom.parseString(Et.tostring(root, encoding="unicode")).toprettyxml()
             xml_file.write(xml_root)
             xml_file.close()
         # END Fill XML with invoice informations
@@ -465,18 +485,21 @@ def export_xml(invoice_id, data):
     return response, 401
 
 
-def ocr_on_the_fly(file_name, selection, thumb_size):
+def ocr_on_the_fly(file_name, selection, thumb_size, positions_masks):
     _vars = create_classes_from_config()
     _cfg = _vars[1].cfg
     _files = _vars[3]
     _Ocr = _vars[4]
 
     if _files.isTiff == 'True':
-        path = _cfg['GLOBAL']['tiffpath'] + (os.path.splitext(file_name)[0]).replace('full_', 'tiff_') + '.tiff'
+        path = _cfg['GLOBAL']['tiffpath'] + '/' +  (os.path.splitext(file_name)[0]).replace('full_', 'tiff_') + '.tiff'
         if not os.path.isfile(path):
-            path = _cfg['GLOBAL']['fullpath'] + file_name
+            path = _cfg['GLOBAL']['fullpath'] + '/' + file_name
     else:
-        path = _cfg['GLOBAL']['fullpath'] + file_name
+        path = _cfg['GLOBAL']['fullpath'] + '/' + file_name
+
+    if positions_masks:
+        path = _cfg['GLOBAL']['positionsmaskspath'] + '/' + file_name
 
     text = _files.ocr_on_fly(path, selection, _Ocr, thumb_size)
     if text:
@@ -487,7 +510,7 @@ def ocr_on_the_fly(file_name, selection, thumb_size):
         return text
 
 
-def get_file_content(path, filename, mime_type):
+def get_file_content(path, filename, mime_type, compress=False):
     _vars = create_classes_from_config()
     _cfg = _vars[1].cfg
     content = False
@@ -495,7 +518,15 @@ def get_file_content(path, filename, mime_type):
     if path and filename:
         full_path = path + '/' + filename
         if os.path.isfile(full_path):
-            content = open(full_path, 'rb').read()
+            if compress and mime_type == 'image/jpeg':
+                thumb_path = _cfg['GLOBAL']['thumbpath'] + '/' + filename
+                if not os.path.isfile(thumb_path):
+                    image = Image.open(full_path)
+                    image.thumbnail((1920, 1080))
+                    image.save(thumb_path, optimize=True, quality=50)
+                content = open(thumb_path, 'rb').read()
+            else:
+                content = open(full_path, 'rb').read()
 
     if not content:
         if mime_type == 'image/jpeg':

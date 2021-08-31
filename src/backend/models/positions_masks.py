@@ -30,7 +30,7 @@ def get_positions_masks(args):
         'where': ['1=%s'] if 'where' not in args else args['where'],
         'data': ['1'] if 'data' not in args else args['data'],
         'limit': str(args['limit']) if 'limit' in args else [],
-        'order_by': ['id ASC'],
+        'order_by': args['order_by'] if 'order_by' in args else [],
         'offset': str(args['offset']) if 'offset' in args else [],
     })
 

@@ -1,3 +1,20 @@
+/** This file is part of Open-Capture for Invoices.
+
+Open-Capture for Invoices is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Open-Capture is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
+
+@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+
 import { Component, Input, OnInit } from '@angular/core';
 import { Location } from "@angular/common";
 import { animate, state, style, transition, trigger } from "@angular/animations";
@@ -50,12 +67,12 @@ export class MenuComponent implements OnInit {
             this.localeService.getLocales();
             this.localeService.getCurrentLocale();
         }
-        let k = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
+        const k = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
         let n = 0;
-        $(document).keydown(function (e: any) {
+        $(document).keydown((e: any) => {
             if (e.keyCode === k[n++]) {
                 if (n === k.length) {
-                    $('#konami').fadeIn("slow").delay(2000).fadeOut()
+                    $('#konami').fadeIn("slow").delay(2000).fadeOut();
                     n = 0;
                 }
             }
@@ -64,12 +81,12 @@ export class MenuComponent implements OnInit {
     }
 
     getSplitterOrVerifier() {
-        return this.localeStorageService.get('splitter_or_verifier')
+        return this.localeStorageService.get('splitter_or_verifier');
     }
 
     toggleProfileDropdown() {
         this.profileDropdownCurrentState = this.profileDropdownCurrentState === 'hide' ? 'show' : 'hide';
-        this.profileSettingsCurrentState = this.profileDropdownCurrentState === 'show' && this.profileSettingsCurrentState == 'show' ? 'hide' : this.profileSettingsCurrentState;
+        this.profileSettingsCurrentState = this.profileDropdownCurrentState === 'show' && this.profileSettingsCurrentState === 'show' ? 'hide' : this.profileSettingsCurrentState;
     }
 
     closeprofileDropDown() {

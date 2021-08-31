@@ -1,3 +1,20 @@
+/** This file is part of Open-Capture for Invoices.
+
+Open-Capture for Invoices is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Open-Capture is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
+
+@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+
 import {Component, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -18,9 +35,9 @@ import {PrivilegesService} from "../../../../../services/privileges.service";
     styleUrls: ['./create-user.component.scss']
 })
 export class CreateUserComponent implements OnInit {
-    loading     : boolean = true
-    roles       : any[] = [];
-    userForm    : any[] = [
+    loading     : boolean   = true;
+    roles       : any[]     = [];
+    userForm    : any[]     = [
         {
             id: 'username',
             label: this.translate.instant('USER.username'),
@@ -86,12 +103,12 @@ export class CreateUserComponent implements OnInit {
             tap((data: any) => {
                 data.roles.forEach((element: any) => {
                     if (element.editable) {
-                        this.roles.push(element)
+                        this.roles.push(element);
                     }
                 });
                 this.userForm.forEach(element => {
-                    if (element.id == 'role') {
-                        element.values = this.roles
+                    if (element.id === 'role') {
+                        element.values = this.roles;
                     }
                 });
             }),
@@ -146,9 +163,9 @@ export class CreateUserComponent implements OnInit {
     }
 
     getErrorMessage(field: any) {
-        let error = undefined;
+        let error: any;
         this.userForm.forEach(element => {
-            if(element.id == field)
+            if(element.id === field)
                 if (element.required) {
                     error = this.translate.instant('AUTH.field_required');
                 }

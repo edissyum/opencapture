@@ -1,3 +1,20 @@
+/** This file is part of Open-Capture for Invoices.
+
+Open-Capture for Invoices is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Open-Capture is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
+
+@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+
 import {Component, OnInit} from '@angular/core';
 import {ViewEncapsulation} from '@angular/core';
 import {FormBuilder, FormControl} from "@angular/forms";
@@ -62,11 +79,11 @@ export class UploadComponent implements OnInit {
     }
 
     checkFile(data: any): void {
-        if (data && data.length != 0) {
+        if (data && data.length !== 0) {
             for (let i = 0; i < data.length; i++) {
-                let file_name = data[i].name;
-                let file_extension = file_name.split('.').pop();
-                if (file_extension.toLowerCase() != 'pdf') {
+                const fileName = data[i].name;
+                const fileExtension = fileName.split('.').pop();
+                if (fileExtension.toLowerCase() !== 'pdf') {
                     this.notify.handleErrors(this.translate.instant('UPLOAD.extension_unauthorized', {count: data.length}));
                     return;
                 }
@@ -82,23 +99,23 @@ export class UploadComponent implements OnInit {
         this.sending = true;
         const formData: FormData = new FormData();
 
-        if (this.fileControl.value.length == 0) {
+        if (this.fileControl.value.length === 0) {
             this.notify.handleErrors(this.translate.instant('UPLOAD.no_file'));
             return;
         }
 
         for (let i = 0; i < this.fileControl.value.length; i++) {
-            if (this.fileControl.status == 'VALID') {
+            if (this.fileControl.status === 'VALID') {
                 formData.append(this.fileControl.value[i].name, this.fileControl.value[i]);
             } else {
                 this.notify.handleErrors(this.translate.instant('UPLOAD.extension_unauthorized'));
                 return;
             }
         }
-        let splitter_or_verifier = this.localeStorageService.get('splitter_or_verifier');
-        if (splitter_or_verifier !== undefined || splitter_or_verifier !== '') {
+        const splitterOrVerifier = this.localeStorageService.get('splitter_or_verifier');
+        if (splitterOrVerifier !== undefined || splitterOrVerifier !== '') {
             this.http.post(
-                API_URL + '/ws/' + splitter_or_verifier + '/upload?inputId=' + this.selectedInput,
+                API_URL + '/ws/' + splitterOrVerifier + '/upload?inputId=' + this.selectedInput,
                 formData,
                 {
                     headers: this.authService.headers

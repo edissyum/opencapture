@@ -87,12 +87,10 @@ def insert(args, files, config, database, datas, positions, pages, tiff_filename
                     })
     else:
         if 'customer_id' in args and args['customer_id']:
-            print('customer_id')
             invoice_data.update({
                 'customer_id': args['customer_id']
             })
         if 'form_id' in args and args['form_id']:
-            print('form_id')
             invoice_data.update({
                 'form_id': args['form_id']
             })

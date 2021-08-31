@@ -1,3 +1,20 @@
+/** This file is part of Open-Capture for Invoices.
+
+Open-Capture for Invoices is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Open-Capture is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
+
+@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -52,15 +69,14 @@ export class SuppliersListComponent implements OnInit {
 
     ngOnInit(): void {
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
-        let lastUrl = this.routerExtService.getPreviousUrl();
-        if (lastUrl.includes('accounts/suppliers') || lastUrl == '/') {
+        const lastUrl = this.routerExtService.getPreviousUrl();
+        if (lastUrl.includes('accounts/suppliers') || lastUrl === '/') {
             if (this.localeStorageService.get('suppliersPageIndex'))
-                this.pageIndex = parseInt(<string>this.localeStorageService.get('suppliersPageIndex'));
+                this.pageIndex = parseInt(this.localeStorageService.get('suppliersPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
         }else
             this.localeStorageService.remove('suppliersPageIndex');
-
-        this.loadSuppliers()
+        this.loadSuppliers();
     }
 
     loadSuppliers() {
@@ -68,14 +84,14 @@ export class SuppliersListComponent implements OnInit {
             tap((data: any) => {
                 this.suppliers = data.suppliers;
                 if (this.suppliers.length !== 0) {
-                    this.total = data.suppliers[0].total
+                    this.total = data.suppliers[0].total;
                 }
                 this.http.get(API_URL + '/ws/forms/list', {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
-                        for (let cpt in this.suppliers) {
-                            for (let form of data.forms) {
-                                if (form.id == this.suppliers[cpt].form_id) {
-                                    this.suppliers[cpt].form_label = form.label
+                        for (const cpt in this.suppliers) {
+                            for (const form of data.forms) {
+                                if (form.id === this.suppliers[cpt].form_id) {
+                                    this.suppliers[cpt].form_label = form.label;
                                 }
                             }
                         }
@@ -108,7 +124,7 @@ export class SuppliersListComponent implements OnInit {
         this.loadSuppliers();
     }
 
-    deleteConfirmDialog(supplier_id: number, supplier: string) {
+    deleteConfirmDialog(supplierId: number, supplier: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data:{
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
@@ -122,12 +138,12 @@ export class SuppliersListComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
-                this.deleteSupplier(supplier_id)
+                this.deleteSupplier(supplierId);
             }
         });
     }
 
-    deletePositionsConfirmDialog(supplier_id: number, supplier: string) {
+    deletePositionsConfirmDialog(supplierId: number, supplier: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data:{
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
@@ -141,12 +157,12 @@ export class SuppliersListComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
-                this.deleteSupplierPositions(supplier_id);
+                this.deleteSupplierPositions(supplierId);
             }
         });
     }
 
-    skipAutoValidateConfirmDialog(supplier_id: number, supplier: string) {
+    skipAutoValidateConfirmDialog(supplierId: number, supplier: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data:{
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
@@ -160,14 +176,14 @@ export class SuppliersListComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
-                this.skipAutoValidate(supplier_id);
+                this.skipAutoValidate(supplierId);
             }
         });
     }
 
-    deleteSupplier(supplier_id: number) {
-        if (supplier_id !== undefined) {
-            this.http.delete(API_URL + '/ws/accounts/suppliers/delete/' + supplier_id, {headers: this.authService.headers}).pipe(
+    deleteSupplier(supplierId: number) {
+        if (supplierId !== undefined) {
+            this.http.delete(API_URL + '/ws/accounts/suppliers/delete/' + supplierId, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadSuppliers();
                 }),
@@ -180,9 +196,9 @@ export class SuppliersListComponent implements OnInit {
         }
     }
 
-    skipAutoValidate(supplier_id: number) {
-        if (supplier_id !== undefined) {
-            this.http.delete(API_URL + '/ws/accounts/suppliers/skipAutoValidate/' + supplier_id, {headers: this.authService.headers}).pipe(
+    skipAutoValidate(supplierId: number) {
+        if (supplierId !== undefined) {
+            this.http.delete(API_URL + '/ws/accounts/suppliers/skipAutoValidate/' + supplierId, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.notify.success(this.translate.instant('ACCOUNTS.skip_validated_success'));
                 }),
@@ -195,9 +211,9 @@ export class SuppliersListComponent implements OnInit {
         }
     }
 
-    deleteSupplierPositions(supplier_id: number) {
-        if (supplier_id !== undefined) {
-            this.http.delete(API_URL + '/ws/accounts/suppliers/deletePositions/' + supplier_id, {headers: this.authService.headers}).pipe(
+    deleteSupplierPositions(supplierId: number) {
+        if (supplierId !== undefined) {
+            this.http.delete(API_URL + '/ws/accounts/suppliers/deletePositions/' + supplierId, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.notify.success(this.translate.instant('ACCOUNTS.positions_deleted'));
                 }),
@@ -211,7 +227,7 @@ export class SuppliersListComponent implements OnInit {
     }
 
     sortData(sort: Sort) {
-        let data = this.suppliers.slice();
+        const data = this.suppliers.slice();
         if(!sort.active || sort.direction === '') {
             this.suppliers = data;
             return;
@@ -239,10 +255,10 @@ export class SuppliersListComponent implements OnInit {
     getReferenceFile() {
         this.http.get(API_URL + '/ws/accounts/supplier/getReferenceFile', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                let mime_type = data.mimetype;
-                let reference_file = 'data:' + mime_type + ';base64, ' + data.file;
+                const mimeType = data.mimetype;
+                const referenceFile = 'data:' + mimeType + ';base64, ' + data.file;
                 const link = document.createElement("a");
-                link.href = reference_file;
+                link.href = referenceFile;
                 link.download = data.filename;
                 link.click();
             }),

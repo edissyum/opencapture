@@ -10,20 +10,20 @@ export class PrivilegesService {
         private userService: UserService
     ) { }
 
-    hasPrivilege(privilege_id: any) {
-        let found = false
-        let user_privileges = this.userService.getUserFromLocal()['privileges']
-        if (user_privileges) {
-            if (user_privileges == '*')
-                return true
+    hasPrivilege(privilegeId: any) {
+        let found = false;
+        const userPrivileges = this.userService.getUserFromLocal()['privileges'];
+        if (userPrivileges) {
+            if (userPrivileges === '*')
+                return true;
 
-            user_privileges.forEach((element: any) => {
-                if (privilege_id == element) {
-                    found = true
+            userPrivileges.forEach((element: any) => {
+                if (privilegeId === element) {
+                    found = true;
                 }
-            })
-            return found
+            });
+            return found;
         }
-        return false
+        return false;
     }
 }

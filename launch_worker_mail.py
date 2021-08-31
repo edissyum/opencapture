@@ -94,7 +94,6 @@ folder_trash = cfg['foldertrash']
 action = cfg['actionafterprocess']
 folder_to_crawl = cfg['foldertocrawl']
 folder_destination = cfg['folderdestination']
-print(cfg)
 Mail.test_connection(secured_connection)
 
 if action == 'delete':

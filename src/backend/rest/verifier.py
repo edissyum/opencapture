@@ -14,8 +14,8 @@
 # along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
-import base64
 
+import base64
 from flask_babel import gettext
 from ..import_controllers import auth, verifier
 from flask import Blueprint, make_response, request
@@ -115,6 +115,14 @@ def delete_invoice_position(invoice_id):
     return make_response(res[0], res[1])
 
 
+@bp.route('verifier/invoices/<int:invoice_id>/deletePage', methods=['PUT'])
+@auth.token_required
+def delete_invoice_page(invoice_id):
+    field_id = request.json['args']
+    res = verifier.delete_invoice_page_by_invoice_id(invoice_id, field_id)
+    return make_response(res[0], res[1])
+
+
 @bp.route('verifier/invoices/<int:invoice_id>/update', methods=['PUT'])
 @auth.token_required
 def update_invoice(invoice_id):
@@ -127,7 +135,10 @@ def update_invoice(invoice_id):
 @auth.token_required
 def ocr_on_fly():
     data = request.json
-    result = verifier.ocr_on_the_fly(data['fileName'], data['selection'], data['thumbSize'])
+    positions_masks = False
+    if 'positionsMasks' in data:
+        positions_masks = data['positionsMasks']
+    result = verifier.ocr_on_the_fly(data['fileName'], data['selection'], data['thumbSize'], positions_masks)
     return make_response({'result': result}, 200)
 
 

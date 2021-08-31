@@ -24,9 +24,14 @@ from ..main import create_classes_from_config
 
 def get_positions_masks(args):
     _positions_masks, error = positions_masks.get_positions_masks(args)
-
+    total_positions_mask = positions_masks.get_positions_masks({
+        'select': ['COUNT(*) as total'],
+        'where': ['status = %s'],
+        'data': ['OK']
+    })
     if error is None:
         response = {
+            "total": total_positions_mask[0][0]['total'],
             "positions_masks": _positions_masks
         }
         return response, 200
@@ -223,6 +228,46 @@ def update_pages_by_positions_mask_id(position_mask_id, args):
         else:
             response = {
                 "errors": gettext('UPDATE_PAGES_BY_POSITIONS_MASK_ID_ERROR'),
+                "message": error
+            }
+            return response, 401
+
+
+def delete_position_by_positions_mask_id(position_mask_id, field_id):
+    _vars = create_classes_from_config()
+    _db = _vars[0]
+    positions_mask_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
+    if error is None:
+        _set = {}
+        positions = positions_mask_info['positions']
+        if field_id in positions:
+            del(positions[field_id])
+        res, error = positions_masks.update_positions_mask({'set': {"positions": json.dumps(positions)}, 'position_mask_id': position_mask_id})
+        if error is None:
+            return '', 200
+        else:
+            response = {
+                "errors": gettext('DELETE_POSITIONS_BY_POSITION_MASK_ID_ERROR'),
+                "message": error
+            }
+            return response, 401
+
+
+def delete_page_by_positions_mask_id(position_mask_id, field_id):
+    _vars = create_classes_from_config()
+    _db = _vars[0]
+    positions_mask_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
+    if error is None:
+        _set = {}
+        pages = positions_mask_info['pages']
+        if field_id in pages:
+            del(pages[field_id])
+        res, error = positions_masks.update_positions_mask({'set': {"pages": json.dumps(pages)}, 'position_mask_id': position_mask_id})
+        if error is None:
+            return '', 200
+        else:
+            response = {
+                "errors": gettext('DELETE_PAGES_BY_POSITION_MASK_ID_ERROR'),
                 "message": error
             }
             return response, 401
