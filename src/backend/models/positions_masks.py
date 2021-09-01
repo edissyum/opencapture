@@ -17,11 +17,11 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 from gettext import gettext
-from ..main import create_classes_from_config
+from ..main import create_classes_from_current_config
 
 
 def get_positions_masks(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
     positions_masks = _db.select({
@@ -38,7 +38,7 @@ def get_positions_masks(args):
 
 
 def get_positions_mask_by_id(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
     position_mask = _db.select({
@@ -57,7 +57,7 @@ def get_positions_mask_by_id(args):
 
 
 def update_positions_mask(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
 
@@ -75,7 +75,7 @@ def update_positions_mask(args):
 
 
 def update_poitions_mask_fields(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
 
@@ -93,7 +93,7 @@ def update_poitions_mask_fields(args):
 
 
 def add_positions_mask(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     positions_masks_exists, error = get_positions_masks({
         'where': ['label = %s', 'status <> %s'],

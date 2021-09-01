@@ -17,7 +17,7 @@
 import base64
 import os
 
-from src.backend.main import create_classes_from_config
+from src.backend.main import create_classes_from_current_config
 from ..import_controllers import auth, positions_masks, verifier
 from flask import Blueprint, request, make_response, jsonify, current_app
 
@@ -125,7 +125,7 @@ def delete_page_by_positions_mask_id(position_mask_id):
 @bp.route('positions_masks/getImageFromPdf/<int:positions_mask_id>', methods=['POST'])
 @auth.token_required
 def get_image_from_pdf(positions_mask_id):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _config = _vars[1]
     _Files = _vars[3]
     file = request.files

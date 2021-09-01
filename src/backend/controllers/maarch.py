@@ -15,12 +15,12 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from ..main import create_classes_from_config
+from ..main import create_classes_from_current_config
 from ..import_classes import _MaarchWebServices
 
 
 def test_connection(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     ws = _MaarchWebServices(
         args['host'],
         args['login'],
@@ -32,7 +32,7 @@ def test_connection(args):
 
 
 def get_users(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     ws = _MaarchWebServices(
         args['host'],
         args['login'],
@@ -45,7 +45,7 @@ def get_users(args):
 
 
 def get_doctypes(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     ws = _MaarchWebServices(
         args['host'],
         args['login'],
@@ -58,7 +58,7 @@ def get_doctypes(args):
 
 
 def get_entities(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     ws = _MaarchWebServices(
         args['host'],
         args['login'],
@@ -71,7 +71,7 @@ def get_entities(args):
 
 
 def get_priorities(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     ws = _MaarchWebServices(
         args['host'],
         args['login'],
@@ -84,7 +84,7 @@ def get_priorities(args):
 
 
 def get_statuses(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     ws = _MaarchWebServices(
         args['host'],
         args['login'],
@@ -97,7 +97,7 @@ def get_statuses(args):
 
 
 def get_indexing_models(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     ws = _MaarchWebServices(
         args['host'],
         args['login'],

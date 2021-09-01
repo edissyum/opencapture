@@ -17,11 +17,11 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 from gettext import gettext
-from ..main import create_classes_from_config
+from ..main import create_classes_from_current_config
 
 
 def add_custom_field(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     customs_exists, error = retrieve_custom_fields({
         'where': ['label_short = %s', 'module = %s'],
@@ -50,7 +50,7 @@ def add_custom_field(args):
 
 
 def retrieve_custom_fields(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
     custom_fields = _db.select({
@@ -64,7 +64,7 @@ def retrieve_custom_fields(args):
 
 
 def update(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
 

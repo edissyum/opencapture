@@ -17,11 +17,11 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 from gettext import gettext
-from ..main import create_classes_from_config
+from ..main import create_classes_from_current_config
 
 
 def get_forms(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
     forms = _db.select({
@@ -38,7 +38,7 @@ def get_forms(args):
 
 
 def get_form_by_id(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
     form = _db.select({
@@ -57,7 +57,7 @@ def get_form_by_id(args):
 
 
 def get_default_form(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
     form = _db.select({
@@ -76,7 +76,7 @@ def get_default_form(args):
 
 
 def update_form(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
 
@@ -94,7 +94,7 @@ def update_form(args):
 
 
 def update_form_fields(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
 
@@ -112,7 +112,7 @@ def update_form_fields(args):
 
 
 def add_form_fields(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     args = {
         'table': 'form_models_field',
@@ -125,7 +125,7 @@ def add_form_fields(args):
 
 
 def add_form(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     forms_exists, error = get_forms({
         'where': ['label = %s', 'status <> %s'],
@@ -152,7 +152,7 @@ def add_form(args):
 
 
 def get_fields(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
     form_fields = _db.select({

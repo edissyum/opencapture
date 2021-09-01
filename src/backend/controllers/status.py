@@ -17,11 +17,11 @@
 
 from flask_babel import gettext
 from ..import_models import status
-from ..main import create_classes_from_config
+from ..main import create_classes_from_current_config
 
 
 def get_status():
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _config = _vars[1]
 
     _status, error = status.get_status()

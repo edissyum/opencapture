@@ -18,7 +18,7 @@
 import os
 import base64
 import mimetypes
-from src.backend.main import create_classes_from_config
+from src.backend.main import create_classes_from_current_config
 from ..import_controllers import auth, accounts, verifier
 from flask import Blueprint, request, make_response, jsonify
 
@@ -223,7 +223,7 @@ def get_accouting_plan():
 @bp.route('accounts/supplier/getReferenceFile', methods=['GET'])
 @auth.token_required
 def get_reference_file():
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _cfg = _vars[1]
     file_path = _cfg.cfg['REFERENCIAL']['referencialsupplierdocumentpath']
     mime = mimetypes.guess_type(file_path)[0]

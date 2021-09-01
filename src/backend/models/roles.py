@@ -16,11 +16,11 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 from flask_babel import gettext
-from ..main import create_classes_from_config
+from ..main import create_classes_from_current_config
 
 
 def get_roles(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     roles = _db.select({
         'select': ["*"] if "select" not in args else args["select"],
@@ -36,7 +36,7 @@ def get_roles(args):
 
 
 def get_role_by_id(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
     role = _db.select({
@@ -55,7 +55,7 @@ def get_role_by_id(args):
 
 
 def update_role(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
 
@@ -73,7 +73,7 @@ def update_role(args):
 
 
 def create_role(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
 
@@ -89,7 +89,7 @@ def create_role(args):
 
 
 def update_role_privileges(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
 
@@ -107,7 +107,7 @@ def update_role_privileges(args):
 
 
 def create_role_privileges(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
 

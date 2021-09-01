@@ -16,11 +16,11 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 from flask_babel import gettext
-from ..main import create_classes_from_config
+from ..main import create_classes_from_current_config
 
 
 def retrieve_suppliers(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
 
     suppliers = _db.select({
@@ -37,7 +37,7 @@ def retrieve_suppliers(args):
 
 
 def get_supplier_by_id(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
     supplier = _db.select({
@@ -56,7 +56,7 @@ def get_supplier_by_id(args):
 
 
 def get_address_by_id(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
     address = _db.select({
@@ -75,7 +75,7 @@ def get_address_by_id(args):
 
 
 def update_supplier(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
 
@@ -93,7 +93,7 @@ def update_supplier(args):
 
 
 def update_address(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
 
@@ -111,7 +111,7 @@ def update_address(args):
 
 
 def create_address(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
 
@@ -127,7 +127,7 @@ def create_address(args):
 
 
 def create_supplier(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
 
@@ -143,7 +143,7 @@ def create_supplier(args):
 
 
 def delete_supplier(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
 
@@ -161,7 +161,7 @@ def delete_supplier(args):
 
 
 def retrieve_customers(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
 
     customers = _db.select({
@@ -178,7 +178,7 @@ def retrieve_customers(args):
 
 
 def get_customer_by_id(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
     customer = _db.select({
@@ -197,7 +197,7 @@ def get_customer_by_id(args):
 
 
 def get_accounting_plan_by_customer_id(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
     accounting_plan = _db.select({
@@ -214,7 +214,7 @@ def get_accounting_plan_by_customer_id(args):
 
 
 def get_default_accounting_plan():
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
     accounting_plan = _db.select({
@@ -229,7 +229,7 @@ def get_default_accounting_plan():
 
 
 def update_customer(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
 
@@ -247,7 +247,7 @@ def update_customer(args):
 
 
 def create_customer(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
 
@@ -263,7 +263,7 @@ def create_customer(args):
 
 
 def delete_customer(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
 

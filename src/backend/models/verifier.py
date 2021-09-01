@@ -16,11 +16,11 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 from flask_babel import gettext
-from ..main import create_classes_from_config
+from ..main import create_classes_from_current_config
 
 
 def get_invoice_by_id(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
     user = _db.select({
@@ -39,7 +39,7 @@ def get_invoice_by_id(args):
 
 
 def get_invoices(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
 
     invoices = _db.select({
@@ -57,7 +57,7 @@ def get_invoices(args):
 
 
 def get_total_invoices(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
 
     total = _db.select({
@@ -71,7 +71,7 @@ def get_total_invoices(args):
 
 
 def update_invoice(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
 

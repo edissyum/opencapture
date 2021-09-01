@@ -43,7 +43,7 @@ OCforInvoices_worker.config.MANAGER_HTTP_PORT = 16500
 m = Manager(OCforInvoices_worker)
 
 
-def create_classes_from_config():
+def create_classes_from_current_config():
     config_name = _Config(current_app.config['CONFIG_FILE'])
     config_file = current_app.config['CONFIG_FOLDER'] + '/config_' + config_name.cfg['PROFILE']['id'] + '.ini'
     config = _Config(current_app.config['CONFIG_FOLDER'] + '/config_' + config_name.cfg['PROFILE']['id'] + '.ini')
@@ -98,7 +98,7 @@ def timer(start_time, end_time):
     minutes, seconds = divmod(rem, 60)
     return "{:0>2}:{:0>2}:{:05.2f}".format(int(hours), int(minutes), seconds)
 
-#
+
 # def get_typo(config, path, log):
 #     invoice_classification.MODEL_PATH = config.cfg['AI-CLASSIFICATION']['modelpath']
 #     invoice_classification.PREDICT_IMAGES_PATH = config.cfg['AI-CLASSIFICATION']['trainimagepath']
@@ -110,7 +110,8 @@ def timer(start_time, end_time):
 #             log.info('Typology n°' + typo + ' found using AI with a confidence of ' + confidence + '%')
 #             return typo
 #         else:
-#             log.info('Typology can\'t be found using AI, the confidence is too low : Typo n°' + typo + ', confidence : ' + confidence + '%')
+#             log.info('Typology can\'t be found using AI, the confidence is too low :'
+#                      ' Typo n°' + typo + ', confidence : ' + confidence + '%')
 #             return False
 #     else:
 #         log.info('Typology can\'t be found using AI')
@@ -164,9 +165,9 @@ def launch(args):
     if 'path' in args and args['path'] is not None:
         path = args['path']
         if separator_qr.enabled:
-            for fileToSep in os.listdir(path):
-                if check_file(files, path + fileToSep, config, log):
-                    separator_qr.run(path + fileToSep)
+            for file_to_sep in os.listdir(path):
+                if check_file(files, path + file_to_sep, config, log):
+                    separator_qr.run(path + file_to_sep)
             path = separator_qr.output_dir_pdfa if str2bool(separator_qr.convert_to_pdfa) is True else separator_qr.output_dir
 
         for file in os.listdir(path):

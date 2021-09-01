@@ -16,11 +16,11 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 from flask_babel import gettext
-from ..main import create_classes_from_config
+from ..main import create_classes_from_current_config
 
 
 def get_outputs(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     outputs = _db.select({
         'select': ["*"] if "select" not in args else args["select"],
@@ -36,7 +36,7 @@ def get_outputs(args):
 
 
 def get_outputs_types():
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     outputs_types = _db.select({
         'select': ["*"],
@@ -48,7 +48,7 @@ def get_outputs_types():
 
 
 def get_output_by_id(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
     output = _db.select({
@@ -67,7 +67,7 @@ def get_output_by_id(args):
 
 
 def get_output_type_by_id(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
     output = _db.select({
@@ -86,7 +86,7 @@ def get_output_type_by_id(args):
 
 
 def update_output(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
 
@@ -104,7 +104,7 @@ def update_output(args):
 
 
 def create_output(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
 

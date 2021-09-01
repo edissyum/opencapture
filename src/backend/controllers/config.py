@@ -20,13 +20,13 @@ import subprocess
 import configparser
 from flask_babel import gettext
 from flask import current_app, Blueprint
-from ..main import create_classes_from_config
+from ..main import create_classes_from_current_config
 
 bp = Blueprint('dashboard', __name__)
 
 
 def change_locale_in_config(lang):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     config_file = _vars[6]
     languages = current_app.config['LANGUAGES']
     parser = configparser.ConfigParser()

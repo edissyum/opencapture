@@ -19,7 +19,7 @@
 from flask import current_app
 from ..import_classes import _Files
 from ..import_models import splitter
-from ..main import create_classes_from_config
+from ..main import create_classes_from_current_config
 
 import base64
 
@@ -30,7 +30,7 @@ def handle_uploaded_file(files):
 
 
 def retrieve_batches():
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _config = _vars[1]
 
     args = {}
@@ -68,7 +68,7 @@ def change_status(args):
 
 
 def retrieve_pages(page_id):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _cfg = _vars[1]
     page_lists = []
     is_document_added = False

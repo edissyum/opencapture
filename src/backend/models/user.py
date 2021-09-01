@@ -17,12 +17,12 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 import json
 from gettext import gettext
-from ..main import create_classes_from_config
+from ..main import create_classes_from_current_config
 from werkzeug.security import generate_password_hash
 
 
 def create_user(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
     user = _db.select({
@@ -64,7 +64,7 @@ def create_user(args):
 
 
 def get_users(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
     users = _db.select({
@@ -81,7 +81,7 @@ def get_users(args):
 
 
 def get_user_by_id(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
     user = _db.select({
@@ -100,7 +100,7 @@ def get_user_by_id(args):
 
 
 def get_customers_by_user_id(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
     customers = _db.select({
@@ -118,7 +118,7 @@ def get_customers_by_user_id(args):
 
 
 def update_user(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
 
@@ -136,7 +136,7 @@ def update_user(args):
 
 
 def update_customers_by_user_id(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
 

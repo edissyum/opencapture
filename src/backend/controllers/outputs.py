@@ -18,11 +18,11 @@
 import json
 from flask_babel import gettext
 from ..import_models import outputs
-from ..main import create_classes_from_config
+from ..main import create_classes_from_current_config
 
 
 def get_outputs(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _config = _vars[1]
 
     _outputs = outputs.get_outputs(args)
@@ -34,7 +34,7 @@ def get_outputs(args):
 
 
 def get_outputs_types():
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _config = _vars[1]
 
     _outputs_types = outputs.get_outputs_types()
@@ -46,7 +46,7 @@ def get_outputs_types():
 
 
 def update_output(output_id, data):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     output_info, error = outputs.get_output_by_id({'output_id': output_id})
 
@@ -70,7 +70,7 @@ def update_output(output_id, data):
 
 
 def create_output(data):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
 
     _columns = {
@@ -120,7 +120,7 @@ def get_output_type_by_id(output_type_id):
 
 
 def delete_output(output_id):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
 
     output_info, error = outputs.get_output_by_id({'output_id': output_id})

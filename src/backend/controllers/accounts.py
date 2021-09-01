@@ -19,11 +19,11 @@
 import json
 from flask_babel import gettext
 from ..import_models import accounts
-from ..main import create_classes_from_config
+from ..main import create_classes_from_current_config
 
 
 def retrieve_suppliers(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _config = _vars[1]
 
     suppliers = accounts.retrieve_suppliers(args)
@@ -60,7 +60,7 @@ def get_address_by_id(address_id):
 
 
 def update_supplier(supplier_id, data):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     _spreadsheet = _vars[7]
     supplier_info, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
@@ -86,7 +86,7 @@ def update_supplier(supplier_id, data):
 
 
 def update_position_by_supplier_id(supplier_id, data):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     supplier_info, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
     if error is None:
@@ -112,7 +112,7 @@ def update_position_by_supplier_id(supplier_id, data):
 
 
 def update_page_by_supplier_id(supplier_id, data):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     supplier_info, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
     if error is None:
@@ -137,7 +137,7 @@ def update_page_by_supplier_id(supplier_id, data):
 
 
 def update_address(address_id, data):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     address_info, error = accounts.get_address_by_id({'address_id': address_id})
 
@@ -169,7 +169,7 @@ def update_address(address_id, data):
 
 
 def create_address(data):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
 
     _columns = {
@@ -196,7 +196,7 @@ def create_address(data):
 
 
 def create_supplier(data):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     _spreadsheet = _vars[7]
     _columns = {
@@ -227,7 +227,7 @@ def create_supplier(data):
 
 
 def retrieve_customers(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _config = _vars[1]
 
     customers = accounts.retrieve_customers(args)
@@ -261,7 +261,7 @@ def get_default_accounting_plan():
 
 
 def update_customer(customer_id, data):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     supplier_info, error = accounts.get_customer_by_id({'customer_id': customer_id})
 
@@ -300,7 +300,7 @@ def update_customer(customer_id, data):
 
 
 def create_customer(data):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
 
     _columns = {
@@ -328,7 +328,7 @@ def create_customer(data):
 
 
 def delete_customer(customer_id):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     customer_info, error = accounts.get_customer_by_id({'customer_id': customer_id})
 
@@ -351,7 +351,7 @@ def delete_customer(customer_id):
 
 
 def delete_supplier(supplier_id):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     supplier_info, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
 

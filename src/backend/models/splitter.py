@@ -16,11 +16,11 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
-from ..main import create_classes_from_config
+from ..main import create_classes_from_current_config
 
 
 def retrieve_batches(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
     batches = _db.select({
@@ -36,7 +36,7 @@ def retrieve_batches(args):
 
 
 def get_batch_by_id(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
     batches = _db.select({
@@ -53,7 +53,7 @@ def get_batch_by_id(args):
 
 
 def get_batch_pages(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
     pages = _db.select({
@@ -70,7 +70,7 @@ def get_batch_pages(args):
 
 
 def change_status(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     args = {
         'table': ['splitter_batches'],

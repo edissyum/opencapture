@@ -19,7 +19,7 @@
 import json
 from flask_babel import gettext
 from ..import_models import forms, accounts
-from ..main import create_classes_from_config
+from ..main import create_classes_from_current_config
 
 
 def get_forms(args):
@@ -149,7 +149,7 @@ def update_form(form_id, args):
 
 
 def delete_form(form_id):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
 
     form_info, error = forms.get_form_by_id({'form_id': form_id})
@@ -172,7 +172,7 @@ def delete_form(form_id):
 
 
 def disable_form(form_id):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
 
     form_info, error = forms.get_form_by_id({'form_id': form_id})
@@ -195,7 +195,7 @@ def disable_form(form_id):
 
 
 def enable_form(form_id):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
 
     form_info, error = forms.get_form_by_id({'form_id': form_id})
@@ -234,7 +234,7 @@ def get_fields(form_id):
 
 
 def update_fields(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
 
     form_info, error = forms.get_form_by_id({'form_id': args['form_id']})

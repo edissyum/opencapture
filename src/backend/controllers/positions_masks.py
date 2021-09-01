@@ -19,7 +19,7 @@ import json
 
 from flask_babel import gettext
 from ..import_models import positions_masks, accounts
-from ..main import create_classes_from_config
+from ..main import create_classes_from_current_config
 
 
 def get_positions_masks(args):
@@ -115,7 +115,7 @@ def update_positions_mask(position_mask_id, args):
 
 
 def delete_positions_mask(position_mask_id):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
 
     form_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
@@ -138,7 +138,7 @@ def delete_positions_mask(position_mask_id):
 
 
 def disable_positions_mask(position_mask_id):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
 
     form_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
@@ -161,7 +161,7 @@ def disable_positions_mask(position_mask_id):
 
 
 def enable_positions_mask(position_mask_id):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
 
     form_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
@@ -184,7 +184,7 @@ def enable_positions_mask(position_mask_id):
 
 
 def update_positions_by_positions_mask_id(position_mask_id, args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     positions_mask_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
     if error is None:
@@ -209,7 +209,7 @@ def update_positions_by_positions_mask_id(position_mask_id, args):
 
 
 def update_pages_by_positions_mask_id(position_mask_id, args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     positions_mask_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
     if error is None:
@@ -234,7 +234,7 @@ def update_pages_by_positions_mask_id(position_mask_id, args):
 
 
 def delete_position_by_positions_mask_id(position_mask_id, field_id):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     positions_mask_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
     if error is None:
@@ -254,7 +254,7 @@ def delete_position_by_positions_mask_id(position_mask_id, field_id):
 
 
 def delete_page_by_positions_mask_id(position_mask_id, field_id):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     positions_mask_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
     if error is None:

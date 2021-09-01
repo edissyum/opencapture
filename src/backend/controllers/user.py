@@ -17,7 +17,7 @@
 
 from flask_babel import gettext
 from ..import_models import user
-from ..main import create_classes_from_config
+from ..main import create_classes_from_current_config
 from werkzeug.security import check_password_hash, generate_password_hash
 
 
@@ -81,7 +81,7 @@ def get_customers_by_user_id(user_id):
 
 
 def update_user(user_id, data):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     user_info, error = user.get_user_by_id({'user_id': user_id})
 
@@ -125,7 +125,7 @@ def update_user(user_id, data):
 
 
 def delete_user(user_id):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
 
     user_info, error = user.get_user_by_id({'user_id': user_id})
@@ -148,7 +148,7 @@ def delete_user(user_id):
 
 
 def disable_user(user_id):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
 
     user_info, error = user.get_user_by_id({'user_id': user_id})
@@ -171,7 +171,7 @@ def disable_user(user_id):
 
 
 def enable_user(user_id):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
 
     user_info, error = user.get_user_by_id({'user_id': user_id})
@@ -194,7 +194,7 @@ def enable_user(user_id):
 
 
 def update_customers_by_user_id(user_id, customers):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
 
     user_info, error = user.get_user_by_id({'user_id': user_id})

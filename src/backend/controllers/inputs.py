@@ -22,11 +22,11 @@ import stat
 import subprocess
 from flask_babel import gettext
 from ..import_models import inputs
-from ..main import create_classes_from_config
+from ..main import create_classes_from_current_config
 
 
 def get_inputs(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _config = _vars[1]
 
     _inputs = inputs.get_inputs(args)
@@ -38,7 +38,7 @@ def get_inputs(args):
 
 
 def update_input(input_id, data):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
     input_info, error = inputs.get_input_by_id({'input_id': input_id})
 
@@ -62,7 +62,7 @@ def update_input(input_id, data):
 
 
 def create_input(data):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
 
     _columns = {
@@ -102,7 +102,7 @@ def get_input_by_id(input_id):
 
 
 def delete_input(input_id):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _db = _vars[0]
 
     input_info, error = inputs.get_input_by_id({'input_id': input_id})
@@ -126,7 +126,7 @@ def delete_input(input_id):
 
 
 def delete_script_and_incron(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _cfg = _vars[1]
 
     folder_script = _cfg.cfg['GLOBAL']['scriptspath']
@@ -157,7 +157,7 @@ def delete_script_and_incron(args):
 
 
 def create_script_and_incron(args):
-    _vars = create_classes_from_config()
+    _vars = create_classes_from_current_config()
     _cfg = _vars[1]
 
     folder_script = _cfg.cfg['GLOBAL']['scriptspath']
