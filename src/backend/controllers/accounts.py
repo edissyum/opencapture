@@ -204,7 +204,6 @@ def create_supplier(data):
         'siret': data['siret'],
         'siren': data['siren'],
         'vat_number': data['vat_number'],
-        'typology': data['typology'],
         'form_id': data['form_id'],
         'address_id': data['address_id'],
         'get_only_raw_footer': data['get_only_raw_footer']

@@ -8,6 +8,6 @@
   "addressTown"       : "VILLE",
   "addressPostalCode" : "CP",
   "addressCountry"    : "PAYS",
-  "typology"          : "Typologie",
+  "positions_mask_id" : "MASQUE DE POSITIONNEMENT",
   "get_only_raw_footer": "CONTROLE DE COHERENCE"
 }

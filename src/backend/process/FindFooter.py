@@ -41,6 +41,7 @@ class FindFooter:
         self.splitted = False
         self.nbPage = 1 if nb_pages is False else nb_pages
         self.target = target
+        self.isLastPage = False
 
     def process(self, regex, text_as_string):
         array_of_data = {}
@@ -171,18 +172,17 @@ class FindFooter:
         if no_rate_amount in [False, None] or rate_percentage in [False, None]:
             if self.supplier is not False:
                 if no_rate_amount in [False, None]:
-                    no_rate_amount = self.process_footer_with_position('no_rate_amount',
-                                                                       ["positions ->> 'no_rate_amount' as no_rate_amount_position",
-                                                                        "pages ->> 'footer' as no_rate_amount_page"]
-                                                                       )
+                    no_rate_amount = self.process_footer_with_position('total_ht',
+                                                                       ["positions ->> 'total_ht' as total_htt_position",
+                                                                        "pages ->> 'footer' as total_ht_page"])
                     if no_rate_amount:
                         self.noRateAmount = no_rate_amount
                         self.Log.info('noRateAmount found with position : ' + str(no_rate_amount))
 
                 if rate_percentage in [False, None]:
                     rate_percentage = self.process_footer_with_position('vat_rate',
-                                                                        ["positions --> 'vat_rate' as vat_rate_position",
-                                                                         "pages --> 'footer' as vat_rate_page"])
+                                                                        ["positions ->> 'vat_rate' as vat_rate_position",
+                                                                         "pages ->> 'footer' as vat_rate_page"])
                     if rate_percentage:
                         self.ratePercentage = rate_percentage
                         self.Log.info('ratePercentage found with position : ' + str(rate_percentage))
@@ -203,25 +203,21 @@ class FindFooter:
         self.ratePercentage = rate_percentage
 
     def run(self, text_as_string=False):
-        if self.Files.isTiff == 'True':
-            target = self.Files.tiffName
-        else:
-            target = self.Files.jpgName
-        all_rate = search_by_positions(self.supplier, 'ttc', self.Config, self.Locale, self.Ocr, self.Files, target, self.typo)
+        all_rate = search_by_positions(self.supplier, 'total_ttc', self.Ocr, self.Files, self.Database)
         all_rate_amount = {}
         if all_rate and all_rate[0]:
             all_rate_amount = {
                 0: re.sub(r"[^0-9\.]|\.(?!\d)", "", all_rate[0].replace(',', '.')),
                 1: all_rate[1]
             }
-        no_rate = search_by_positions(self.supplier, 'no_taxes', self.Config, self.Locale, self.Ocr, self.Files, target, self.typo)
+        no_rate = search_by_positions(self.supplier, 'total_ht', self.Ocr, self.Files, self.Database)
         no_rate_amount = {}
         if no_rate and no_rate[0]:
             no_rate_amount = {
                 0: re.sub(r"[^0-9\.]|\.(?!\d)", "", no_rate[0].replace(',', '.')),
                 1: all_rate[1]
             }
-        percentage = search_by_positions(self.supplier, 'rate_percentage', self.Config, self.Locale, self.Ocr, self.Files, target, self.typo)
+        percentage = search_by_positions(self.supplier, 'vat_rate', self.Ocr, self.Files, self.Database)
         rate_percentage = {}
         if percentage and percentage[0]:
             rate_percentage = {
@@ -279,19 +275,34 @@ class FindFooter:
             if not self.rerun:
                 self.rerun = True
                 if self.Files.isTiff == 'True':
-                    improved_image = self.Files.improve_image_detection(self.Files.tiffName_footer)
+                    if self.isLastPage:
+                        improved_image = self.Files.improve_image_detection(self.Files.tiffName_last_footer)
+                    else:
+                        improved_image = self.Files.improve_image_detection(self.Files.tiffName_footer)
                 else:
-                    improved_image = self.Files.improve_image_detection(self.Files.jpgName_footer)
+                    if self.isLastPage:
+                        improved_image = self.Files.improve_image_detection(self.Files.jpgName_last_footer)
+                    else:
+                        improved_image = self.Files.improve_image_detection(self.Files.jpgName_footer)
                 self.Files.open_img(improved_image)
                 self.text = self.Ocr.line_box_builder(self.Files.img)
                 return self.run()
 
             if self.rerun and not self.rerun_as_text:
                 self.rerun_as_text = True
+                if self.Files.isTiff == 'True':
+                    if self.isLastPage:
+                        improved_image = self.Files.improve_image_detection(self.Files.tiffName_last_footer)
+                    else:
+                        improved_image = self.Files.improve_image_detection(self.Files.tiffName_footer)
+                else:
+                    if self.isLastPage:
+                        improved_image = self.Files.improve_image_detection(self.Files.jpgName_last_footer)
+                    else:
+                        improved_image = self.Files.improve_image_detection(self.Files.jpgName_footer)
+                self.Files.open_img(improved_image)
                 self.text = self.Ocr.text_builder(self.Files.img)
-                return self.run(text_as_string=True)
             return False
-
     @staticmethod
     def return_max(value):
         if value and isinstance(value, dict):

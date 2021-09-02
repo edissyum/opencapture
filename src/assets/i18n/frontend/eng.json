@@ -38,7 +38,6 @@
 		"supplier_name": "",
 		"supplier_updated": "",
 		"suppliers_list": "",
-		"typology": "",
 		"update_customer": "",
 		"update_supplier": "",
 		"vat_number": ""
@@ -248,7 +247,6 @@
 		"update": ""
 	},
 	"PAGINATOR": {
-		"display": "",
 		"first_page": "First page",
 		"items_per_page": "Items per page",
 		"last_page": "Last page",
@@ -273,6 +271,7 @@
 		"modify": "",
 		"placeholder": "",
 		"position_and_page_updated": "",
+		"regex_associated": "",
 		"reset_image": "",
 		"supplier_name_associated": "",
 		"updated": ""

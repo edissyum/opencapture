@@ -37,11 +37,7 @@ class FindInvoiceNumber:
         self.customPage = custom_page
 
     def run(self):
-        if self.Files.isTiff == 'True':
-            target = self.Files.tiffName_header
-        else:
-            target = self.Files.jpgName_header
-        invoice_number = search_by_positions(self.supplier, 'invoice', self.Config, self.Locale, self.Ocr, self.Files, target, self.typo)
+        invoice_number = search_by_positions(self.supplier, 'invoice_number', self.Ocr, self.Files, self.Database)
         if invoice_number and invoice_number[0]:
             return invoice_number
 

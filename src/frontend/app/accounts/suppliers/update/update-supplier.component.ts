@@ -79,13 +79,6 @@ export class UpdateSupplierComponent implements OnInit {
             required: false
         },
         {
-            id: 'typology',
-            label: marker('ACCOUNTS.typology'),
-            type: 'text',
-            control: new FormControl(),
-            required: false
-        },
-        {
             id: 'form_id',
             label: marker('ACCOUNTS.form'),
             type: 'select',

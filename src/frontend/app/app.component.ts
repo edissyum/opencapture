@@ -75,39 +75,39 @@ export class AppComponent implements OnInit {
             filter(event => event instanceof NavigationEnd),
             map(() => {
                 let child = this.activatedRoute.firstChild;
-                let child_image = 'assets/imgs/logo_opencapture.png';
+                let childImage = 'assets/imgs/logo_opencapture.png';
                 if (child) {
                     while (child.firstChild) {
                         child = child.firstChild;
                     }
                     if (this.router.url !== '/home' && !this.router.url.includes('settings')) {
-                        let splitter_or_verifier = this.localeStorageService.get('splitter_or_verifier');
-                        if (splitter_or_verifier !== undefined) {
-                            if (splitter_or_verifier == 'splitter') {
-                                child_image = 'assets/imgs/logo_splitter.png';
-                            }else{
-                                child_image = 'assets/imgs/logo_verifier.png';
+                        const splitterOrVerifier = this.localeStorageService.get('splitter_or_verifier');
+                        if (splitterOrVerifier !== undefined) {
+                            if (splitterOrVerifier === 'splitter') {
+                                childImage = 'assets/imgs/logo_splitter.png';
+                            }else {
+                                childImage = 'assets/imgs/logo_verifier.png';
                             }
                         }
                     }
 
                     if (child.snapshot.data['title']) {
-                        return [child.snapshot.data['title'], child_image];
+                        return [child.snapshot.data['title'], childImage];
                     }
                 }
-                return [appTitle, child_image]
+                return [appTitle, childImage];
             })
         ).subscribe((data: any) => {
-            let ttl = data[0];
+            const ttl = data[0];
             this.image = data[1];
-            if (this.localeService.currentLang == undefined) {
+            if (this.localeService.currentLang === undefined) {
                 this.http.get(API_URL + '/ws/i18n/getCurrentLang').pipe(
                     tap((data: any) => {
                         this.translate.use(data.lang);
                         this.translate.get(ttl).subscribe((data:any)=> {
                             this.titleService.setTitle(data + ' - ' + this.title);
                         });
-                        this.loading = false
+                        this.loading = false;
                     }),
                     catchError((err: any) => {
                         console.debug(err);

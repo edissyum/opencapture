@@ -14,6 +14,7 @@
 # along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+
 import json
 import os
 import uuid
@@ -289,7 +290,6 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
             positions.update({'invoice_date': files.reformat_positions(date[1])})
         if date[2]:
             pages.update({'invoice_date': date[2]})
-
         if date[3]:
             datas.update({'invoice_due_date': date[3][0]})
             pages.update({'invoice_due_date': date[2]})
@@ -298,14 +298,17 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
 
     # Find footer informations (total amount, no rate amount etc..)
     footer_class = FindFooter(ocr, log, locale, config, files, database, supplier, file, ocr.footer_text, typo)
-    if supplier and supplier[2]['get_only_raw_footer'] == 'True':
+    if supplier and supplier[2]['get_only_raw_footer'] in [True, 'True']:
         footer_class = FindFooterRaw(ocr, log, locale, config, files, database, supplier, file, ocr.footer_text, typo)
 
     footer = footer_class.run()
-    if not footer:
+    if not footer and nb_pages > 1:
         footer_class.target = 'full'
         footer_class.text = ocr.last_text
         footer_class.nbPage = nb_pages
+        footer_class.isLastPage = True
+        footer_class.rerun = False
+        footer_class.rerun_as_text = False
         footer = footer_class.run()
         if footer:
             if len(footer) == 4:

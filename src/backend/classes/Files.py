@@ -451,12 +451,16 @@ class Files:
                 date = date_class.format_date(res.group(), (('', ''), ('', '')), True)
                 if date:
                     text = date[0]
+
         if regex:
-            for res in re.finditer(r"" + regex, text):
-                os.remove('/tmp/cropped_' + rand + extension)
-                if os.path.isfile('/tmp/cropped_' + rand + '_improved' + extension):
-                    os.remove('/tmp/cropped_' + rand + '_improved' + extension)
-                return res.group().replace('\x0c', '').strip()
+            regex_list = self.Locale.get()
+            regex = regex_list[regex]
+            if regex:
+                for res in re.finditer(r"" + regex, text):
+                    os.remove('/tmp/cropped_' + rand + extension)
+                    if os.path.isfile('/tmp/cropped_' + rand + '_improved' + extension):
+                        os.remove('/tmp/cropped_' + rand + '_improved' + extension)
+                    return res.group().replace('\x0c', '').strip()
             return False
 
         os.remove('/tmp/cropped_' + rand + extension)
@@ -556,7 +560,7 @@ class Files:
 
     @staticmethod
     def reformat_positions(positions):
-        if type(positions) in [tuple, dict] and positions:
+        if type(positions) in [tuple, dict] and 'x' not in positions and positions:
             x1 = positions[0][0]
             y1 = positions[0][1]
             x2 = positions[1][0]

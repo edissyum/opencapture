@@ -44,8 +44,12 @@ def get_positions_masks(args):
 
 
 def add_positions_mask(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    _spreadsheet = _vars[7]
     res, error = positions_masks.add_positions_mask(args)
     if res:
+        _spreadsheet.update_supplier_ods_sheet(_db)
         response = {
             "id": res
         }
@@ -91,11 +95,15 @@ def get_positions_mask_fields_by_supplier_id(supplier_id):
 
 
 def update_positions_mask(position_mask_id, args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    _spreadsheet = _vars[7]
     form_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
     if error is None:
         res, error = positions_masks.update_positions_mask({'set': args, 'position_mask_id': position_mask_id})
 
         if res:
+            _spreadsheet.update_supplier_ods_sheet(_db)
             response = {
                 "res": res
             }

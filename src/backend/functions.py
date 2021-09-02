@@ -115,36 +115,46 @@ def search_custom_positions(data, ocr, files, locale, file, config):
         return search(position, regex, files, ocr, target_file)
 
 
-def search_by_positions(supplier, index, config, locale, ocr, files, target_file, typo):
-    if typo:
-        typology = typo
-    elif supplier and supplier[2]['typology']:
-        typology = supplier[2]['typology']
-    else:
+def search_by_positions(supplier, index, ocr, files, database):
+    positions_mask = database.select({
+        'select': ['*'],
+        'table': ['positions_masks'],
+        'where': ['supplier_id = %s'],
+        'data': [supplier[2]['supplier_id']]
+    })
+
+    if not positions_mask:
         return False, (('', ''), ('', ''))
 
-    positions = config.read_position(typology, index, locale)
+    positions = positions_mask[0]['positions'][index] if index in positions_mask[0]['positions'] else False
+    pages = positions_mask[0]['pages'][index] if index in positions_mask[0]['pages'] else False
+    regex = positions_mask[0]['regex'][index] if index in positions_mask[0]['regex'] else False
+    if files.isTiff == 'True':
+        file = files.tiffName
+    else:
+        file = files.jpgName
+
     if positions:
-        data = search(positions['position'], positions['regex'], files, ocr, target_file)
-        if 'page' in positions and positions['page']:
-            data.append(positions['page'])
+        data = search(positions, regex, files, ocr, file)
+        if pages:
+            data.append(pages)
         return data
 
 
 def search(position, regex, files, ocr, target_file):
-    data = files.ocr_on_fly(target_file, json.loads(position), ocr, None, regex)
+    data = files.ocr_on_fly(target_file, position, ocr, None, regex)
     if not data:
         target_file_improved = files.improve_image_detection(target_file)
-        data = files.ocr_on_fly(target_file_improved, json.loads(position), ocr, None, regex)
+        data = files.ocr_on_fly(target_file_improved, position, ocr, None, regex)
         if data:
-            return [data.replace('\n', ' '), position]
+            return [data.replace('\n', ' '), json.dumps(position)]
         else:
-            data = files.ocr_on_fly(target_file_improved, json.loads(position), ocr, None, regex, True)
+            data = files.ocr_on_fly(target_file_improved, position, ocr, None, regex, True)
             if data:
-                return [data.replace('\n', ' '), position]
+                return [data.replace('\n', ' '), json.dumps(position)]
             return [False, (('', ''), ('', ''))]
     else:
-        return [data.replace('\n', ' '), position]
+        return [data.replace('\n', ' '), json.dumps(position)]
 
 
 def recursive_delete(folder, log):

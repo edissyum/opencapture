@@ -7,7 +7,7 @@ tmpPath                     = ${GLOBAL:projectPath}/bin/data/tmp/
 scriptsPath                 = ${GLOBAL:projectPath}/bin/scripts/
 docserverPath               = /var/docservers/OpenCapture/
 fullPath                    = ${GLOBAL:docserverPath}/images/full/
-thumbpath                   = ${GLOBAL:docserverPath}/images/thumbs/
+thumbPath                   = ${GLOBAL:docserverPath}/images/thumbs/
 tiffPath                    = ${GLOBAL:docserverPath}/images/tiff/
 positionsMasksPath          = ${GLOBAL:docserverPath}/images/positions_masks/
 exportAccountingFolder      = ${GLOBAL:docserverPath}/xml/
@@ -52,11 +52,11 @@ enabled = False
 blobsRatio = 1E-6
 
 [DATABASE]
-postgresHost = localhost
-postgresPort = 5432
-postgresDatabase = opencapture
-postgresUser =
-postgresPassword =
+postgresHost        = localhost
+postgresPort        = 5432
+postgresDatabase    = opencapture
+postgresUser        =
+postgresPassword    =
 
 [LOCALE]
 # fra or eng by default
@@ -69,7 +69,6 @@ localepath               = ${GLOBAL:projectPath}/src/assets/locale/
 # ODS or XLSX supported
 referencialSupplierDocumentPath = ${GLOBAL:projectPath}/src/assets/referencial/default_referencial_supplier.ods
 referencialSupplierIndexpath    = ${GLOBAL:projectPath}/src/assets/referencial/default_referencial_supplier_index.json
-referencialPosition             = ${GLOBAL:projectPath}/src/assets/referencial/positions/
 
 [SEPARATE-BY-DOCUMENT]
 enabled = False

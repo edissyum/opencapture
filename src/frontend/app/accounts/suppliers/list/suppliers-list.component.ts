@@ -241,7 +241,6 @@ export class SuppliersListComponent implements OnInit {
                 case 'vat_number': return this.compare(a.vat_number, b.vat_number, isAsc);
                 case 'siret': return this.compare(a.siret, b.siret, isAsc);
                 case 'siren': return this.compare(a.siren, b.siren, isAsc);
-                case 'typology': return this.compare(a.typology, b.typology, isAsc);
                 default: return 0;
             }
         });

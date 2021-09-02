@@ -38,7 +38,6 @@
 		"supplier_name": "Nom du compte fournisseur",
 		"supplier_updated": "Compte fournisseur mis à jour avec succès",
 		"suppliers_list": "Liste des comptes fournisseurs",
-		"typology": "Typologie",
 		"update_customer": "Mise à jour du compte client",
 		"update_supplier": "Mise à jour du compte fournisseur",
 		"vat_number": "Numéro de TVA"
@@ -248,7 +247,6 @@
 		"update": "Modifier la chaîne sortante"
 	},
 	"PAGINATOR": {
-		"display": "Affichage",
 		"first_page": "Première page",
 		"items_per_page": "Nombre d'éléments",
 		"last_page": "Dernière page",
@@ -273,6 +271,7 @@
 		"modify": "Mettre à jour le masque de positionnement",
 		"placeholder": "Selectionnez une facture du fournisseur choisi",
 		"position_and_page_updated": "Position et page du champ <b>{{ input }}</b> mise à jour",
+		"regex_associated": "Nom de la regex de vérification (optionnel)",
 		"reset_image": "Supprimer l'image",
 		"supplier_name_associated": "Nom du compte fournisseur associé",
 		"updated": "Masque de positionnement mis à jour avec succès"

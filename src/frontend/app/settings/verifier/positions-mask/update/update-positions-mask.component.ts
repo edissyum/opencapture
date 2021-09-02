@@ -71,7 +71,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                     unit: 'facturation',
                     type: 'text',
                     color: 'yellow',
-                    value: ''
+                    regex: ''
                 },
                 {
                     id: 'delivery_number',
@@ -79,7 +79,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                     unit: 'facturation',
                     type: 'text',
                     color: 'silver',
-                    value: ''
+                    regex: ''
                 },
                 {
                     id: 'invoice_number',
@@ -87,7 +87,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                     unit: 'facturation',
                     type: 'text',
                     color: 'red',
-                    value: ''
+                    regex: ''
                 },
                 {
                     id: 'invoice_date',
@@ -95,7 +95,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                     unit: 'facturation',
                     type: 'date',
                     color: 'yellow',
-                    value: ''
+                    regex: '',
                 },
                 {
                     id: 'invoice_due_date',
@@ -103,7 +103,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                     unit: 'facturation',
                     type: 'date',
                     color: 'blue',
-                    value: ''
+                    regex: '',
                 },
                 {
                     id: 'vat_rate',
@@ -111,7 +111,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                     unit: 'facturation',
                     type: 'text',
                     color: 'pink',
-                    value: ''
+                    regex: ''
                 },
                 {
                     id: 'no_rate_amount',
@@ -119,7 +119,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                     unit: 'facturation',
                     type: 'text',
                     color: 'fuschia',
-                    value: ''
+                    regex: ''
                 },
                 {
                     id: 'vat_amount',
@@ -127,7 +127,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                     unit: 'facturation',
                     type: 'text',
                     color: 'purple',
-                    value: ''
+                    regex: ''
                 },
                 {
                     id: 'total_ttc',
@@ -135,7 +135,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                     unit: 'facturation',
                     type: 'text',
                     color: 'white',
-                    value: ''
+                    regex: ''
                 },
                 {
                     id: 'total_ht',
@@ -143,7 +143,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                     unit: 'facturation',
                     type: 'text',
                     color: 'green',
-                    value: ''
+                    regex: ''
                 },
                 {
                     id: 'total_vat',
@@ -151,7 +151,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                     unit: 'facturation',
                     type: 'text',
                     color: 'lime',
-                    value: ''
+                    regex: ''
                 },
             ]
         },
@@ -195,6 +195,15 @@ export class UpdatePositionsMaskComponent implements OnInit {
         this.positionMaskId = this.route.snapshot.params['id'];
         this.config = this.configService.getConfig();
         this.positionsMask = await this.getPositionMask();
+        for (const cpt in this.availableFieldsParent) {
+            this.availableFieldsParent[cpt]['values'].forEach((element: any) => {
+                for (const key in this.positionsMask.regex) {
+                   if (key === element.id) {
+                       element.regex = this.positionsMask.regex[key];
+                   }
+                }
+            });
+        }
         if (this.positionsMask.filename) {
             this.invoiceImageName = this.positionsMask.filename;
             this.invoiceImageNbPages = this.positionsMask.nb_pages;
@@ -239,7 +248,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                                                 label: data.customFields[field].label,
                                                 type: data.customFields[field].type,
                                                 color: data.customFields[field].color,
-                                                value: ''
+                                                regex: ''
                                             }
                                         );
                                     }
@@ -259,7 +268,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
         setTimeout(() => {
             this.drawPositions();
             this.loading = false;
-        }, 500);
+        }, 1500);
 
         const triggerEvent = $('.trigger');
         triggerEvent.hide();
@@ -333,7 +342,8 @@ export class UpdatePositionsMaskComponent implements OnInit {
 
     updatePositionsMask() {
         const _array = {
-            'label': this.form['label'].control.value
+            'label': this.form['label'].control.value,
+            'regex': {},
         };
         const supplierName = this.form['supplier_id'].control.value;
         this.suppliers.forEach((element: any) => {
@@ -341,6 +351,18 @@ export class UpdatePositionsMaskComponent implements OnInit {
                 Object.assign(_array, {'supplier_id': element.id});
             }
         });
+
+        for (const cpt in this.availableFieldsParent){
+            this.availableFieldsParent[cpt]['values'].forEach((element: any) => {
+                if (element.regex) {
+                    Object.assign(_array['regex'], {[element.id]: element.regex});
+                }
+            });
+        }
+
+        if (_array['regex']) {
+            _array['regex'] = JSON.stringify(_array['regex']);
+        }
         this.http.put(API_URL + '/ws/positions_masks/update/' + this.positionMaskId, {'args': _array},{headers: this.authService.headers}).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('POSITIONS-MASKS.updated'));
@@ -348,7 +370,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
-                this.router.navigate(['/settings/verifier/outputs']).then();
+                this.router.navigate(['/settings/verifier/positions-mask']).then();
                 return of(false);
             })
         ).subscribe();
@@ -462,7 +484,6 @@ export class UpdatePositionsMaskComponent implements OnInit {
                 },
                 onDeleted(img: any, cpt: any) {
                     const inputId = $('#select-area-label_' + cpt).attr('class').replace('input_', '').replace('select-none', '');
-                    _this.updateFormValue(inputId, '');
                     _this.deletePosition(inputId);
                     _this.deletePage(inputId);
                 }
@@ -515,27 +536,8 @@ export class UpdatePositionsMaskComponent implements OnInit {
 
             if (this.imageInvoice) {
                 const _selection = this.getSelectionByCpt(selection, cpt);
-                if (_selection['x'] !== 0 && _selection['y'] !== 0 && _selection['z'] !== 0 && _selection['width'] !== 0 && _selection['height'] !== 0){
-                    this.http.post(API_URL + '/ws/verifier/ocrOnFly',
-                        {
-                            positionsMasks: true,
-                            selection: this.getSelectionByCpt(selection, cpt),
-                            fileName: this.invoiceImageName,
-                            thumbSize: {width: img.currentTarget.width, height: img.currentTarget.height}
-                        }, {headers: this.authService.headers})
-                        .pipe(
-                            tap((data: any) => {
-                                this.updateFormValue(inputId, data.result);
-                            }),
-                            catchError((err: any) => {
-                                console.debug(err);
-                                this.notify.handleErrors(err);
-                                return of(false);
-                            })
-                        ).subscribe();
-                    this.savePosition(_selection);
-                    this.savePage(this.currentPage);
-                }
+                this.savePosition(_selection);
+                this.savePage(this.currentPage);
             }
         }else {
             const input = $('.input_' + this.lastId);
@@ -544,21 +546,6 @@ export class UpdatePositionsMaskComponent implements OnInit {
             input.remove();
             background.remove();
             outline.remove();
-        }
-    }
-
-    updateFormValue(inputId: string, value: any) {
-        for (const cpt in this.availableFieldsParent) {
-            this.availableFieldsParent[cpt]['values'].forEach((element: any) => {
-                if (element.id.trim() === inputId.trim()) {
-                    if (element.type === 'date') {
-                        const format = moment().localeData().longDateFormat('L');
-                        value = moment(value, format);
-                        value = value._i;
-                    }
-                    element.value = value;
-                }
-            });
         }
     }
 

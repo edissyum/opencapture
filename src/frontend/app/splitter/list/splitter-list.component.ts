@@ -28,11 +28,9 @@ export class SplitterListComponent implements OnInit {
 
     constructor(
         private localeStorageService: LocalStorageService
-    ) {
-    }
+    ) {}
 
     ngOnInit(): void {
-        this.localeStorageService.save('splitter_or_verifier', 'splitter')
+        this.localeStorageService.save('splitter_or_verifier', 'splitter');
     }
-
 }

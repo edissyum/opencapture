@@ -69,11 +69,11 @@ export class OutputsListComponent implements OnInit {
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('outputs/') || lastUrl === '/') {
             if (this.localeStorageService.get('outputsPageIndex'))
-                this.pageIndex = parseInt(<string>this.localeStorageService.get('outputsPageIndex'));
+                this.pageIndex = parseInt(this.localeStorageService.get('outputsPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
         } else
             this.localeStorageService.remove('outputsPageIndex');
-        this.loadOutputs()
+        this.loadOutputs();
     }
 
     loadOutputs(): void {
@@ -98,7 +98,7 @@ export class OutputsListComponent implements OnInit {
         this.loadOutputs();
     }
 
-    deleteConfirmDialog(output_id: number, output: string) {
+    deleteConfirmDialog(outputId: number, output: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data: {
                 confirmTitle: this.translate.instant('GLOBAL.confirm'),
@@ -112,14 +112,14 @@ export class OutputsListComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
-                this.deleteOutput(output_id);
+                this.deleteOutput(outputId);
             }
         });
     }
 
-    deleteOutput(output_id: number) {
-        if (output_id !== undefined) {
-            this.http.delete(API_URL + '/ws/outputs/delete/' + output_id, {headers: this.authService.headers}).pipe(
+    deleteOutput(outputId: number) {
+        if (outputId !== undefined) {
+            this.http.delete(API_URL + '/ws/outputs/delete/' + outputId, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadOutputs();
                 }),

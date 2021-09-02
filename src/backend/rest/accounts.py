@@ -79,8 +79,6 @@ def update_supplier(supplier_id):
         _set.update({'siren': data['siren']})
     if 'vat_number' in data:
         _set.update({'vat_number': data['vat_number']})
-    if 'typology' in data:
-        _set.update({'typology': data['typology']})
     if 'form_id' in data:
         _set.update({'form_id': data['form_id']})
     if 'get_only_raw_footer' in data:

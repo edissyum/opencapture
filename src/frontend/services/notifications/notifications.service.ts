@@ -33,7 +33,7 @@ export class NotificationService {
             panelClass: ['success-snackbar', 'mt-20', 'mr-3'],
             verticalPosition : 'top',
             horizontalPosition: 'right',
-            data: { message: message, icon: 'info-circle', close: () => {snackBar.dismiss()} }
+            data: { message: message, icon: 'info-circle', close: () => {snackBar.dismiss();} }
         });
     }
 
@@ -44,13 +44,13 @@ export class NotificationService {
             panelClass: ['error-snackbar', 'mt-20', 'mr-3'],
             verticalPosition : 'top',
             horizontalPosition: 'right',
-            data: { url: url, message: message, icon: 'exclamation-triangle', close: () => {snackBar.dismiss()} }
+            data: { url: url, message: message, icon: 'exclamation-triangle', close: () => {snackBar.dismiss();} }
         });
     }
 
     handleErrors(err: any, route='') {
-        if (err.status === 0 && err.statusText === 'Unknown Error') {
-            let message = this.translate.instant('ERROR.connection_failed') + ' : ' + this.translate.instant('ERROR.is_server_up', {server: API_URL});
+        if (err.status === 0 && err.statusText === 'Unknown Error'){
+            const message =this.translate.instant('ERROR.connection_failed') + ' : ' + this.translate.instant('ERROR.is_server_up', {server: API_URL});
             this.error(message);
             if (this.router.url !== '/login')
                 this.router.navigate(['/logout']).then();
@@ -59,7 +59,7 @@ export class NotificationService {
                 this.error(err.error.errors + ' : ' + err.error.message, err.url);
                 if (err.status === 403 || err.status === 404)
                     this.router.navigate(['/login']).then();
-                else if (err.error.errors == this.translate.instant('ERROR.jwt_error'))
+                else if (err.error.errors === this.translate.instant('ERROR.jwt_error'))
                     this.router.navigate(['/logout']).then();
             } else if (err.error.exception !== undefined)
                 this.error(err.error.exception[0].message, err.url);

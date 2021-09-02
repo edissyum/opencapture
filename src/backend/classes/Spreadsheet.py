@@ -39,7 +39,7 @@ class Spreadsheet:
             self.referencialSupplierArray['addressTown'] = fp['addressTown']
             self.referencialSupplierArray['addressPostalCode'] = fp['addressPostalCode']
             self.referencialSupplierArray['addressCountry'] = fp['addressCountry']
-            self.referencialSupplierArray['typology'] = fp['typology']
+            self.referencialSupplierArray['positions_mas    k_id'] = fp['positions_mask_id']
             self.referencialSupplierArray['get_only_raw_footer'] = fp['get_only_raw_footer']
 
     def write_typo_ods_sheet(self, vat_number, typo):
@@ -61,6 +61,7 @@ class Spreadsheet:
             'where': ['status = %s'],
             'data': ['OK'],
         })
+
         try:
             sheet_name = False
             for sheet in content_sheet:
@@ -79,6 +80,13 @@ class Spreadsheet:
                             'data': [address_id],
                         })[0]
 
+                    positions_mask_id = _db.select({
+                        'select': ['id'],
+                        'table': ['positions_masks'],
+                        'where': ['supplier_id = %s'],
+                        'data': [supplier['id']]
+                    })
+
                     line = [supplier['name'] if supplier['name'] is not None else '',
                             supplier['vat_number'] if supplier['vat_number'] is not None else '',
                             supplier['siret'] if supplier['siret'] is not None else '',
@@ -88,12 +96,11 @@ class Spreadsheet:
                             address['postal_code'] if address and address['postal_code'] is not None else '',
                             address['city'] if address and address['city'] is not None else '',
                             address['country'] if address and address['country'] is not None else '',
-                            supplier['typology'] if supplier['typology'] is not None else '',
+                            positions_mask_id[0]['id'] if positions_mask_id and positions_mask_id[0]['id'] is not None else '',
                             str(not supplier['get_only_raw_footer']).lower() if supplier['get_only_raw_footer'] is not None else '']
                     content_sheet[sheet_name].append(line)
-
-        except IndexError:
-            self.Log.error("IndexError while updating ods reference file.")
+        except IndexError as e:
+            self.Log.error("IndexError while updating ods reference file : " + str(e))
 
         save_data(self.referencialSuppplierSpreadsheet, content_sheet)
 
@@ -135,7 +142,7 @@ class Spreadsheet:
             self.referencialSupplierArray['addressPostalCode'],
             self.referencialSupplierArray['addressTown'],
             self.referencialSupplierArray['addressCountry'],
-            self.referencialSupplierArray['typology'],
+            self.referencialSupplierArray['positions_mask_id'],
             self.referencialSupplierArray['get_only_raw_footer']
         ])
         # Drop row 0 because it contains the indexes columns
@@ -156,11 +163,11 @@ class Spreadsheet:
         # Then go through the Excel document and fill our final array with all infos about the provider and the bill
         tmp_excel_content = pd.DataFrame(content_sheet)
         for line in tmp_excel_content.to_dict(orient='records'):
-            if line[self.referencialSupplierArray['typology']] == line[self.referencialSupplierArray['typology']] and line[self.referencialSupplierArray['typology']]:
+            if line[self.referencialSupplierArray['positions_mask_id']] == line[self.referencialSupplierArray['positions_mask_id']] and line[self.referencialSupplierArray['positions_mask_id']]:
                 try:
-                    line[self.referencialSupplierArray['typology']] = int(line[self.referencialSupplierArray['typology']])
+                    line[self.referencialSupplierArray['positions_mask_id']] = int(line[self.referencialSupplierArray['positions_mask_id']])
                 except ValueError:
-                    line[self.referencialSupplierArray['typology']] = line[self.referencialSupplierArray['typology']]
+                    line[self.referencialSupplierArray['positions_mask_id']] = line[self.referencialSupplierArray['positions_mask_id']]
 
             if line[self.referencialSupplierArray['get_only_raw_footer']] == line[self.referencialSupplierArray['get_only_raw_footer']] and line[self.referencialSupplierArray['get_only_raw_footer']]:
                 try:

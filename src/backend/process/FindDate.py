@@ -95,12 +95,8 @@ class FindDate:
                 return False
 
     def run(self):
-        if self.Files.isTiff == 'True':
-            target = self.Files.tiffName_header
-        else:
-            target = self.Files.jpgName_header
-        date = search_by_positions(self.supplier, 'date', self.Config, self.Locale, self.Ocr, self.Files, target, self.typo)
-        due_date = False
+        date = search_by_positions(self.supplier, 'invoice_date', self.Ocr, self.Files, self.db)
+        due_date = search_by_positions(self.supplier, 'invoice_due_date', self.Ocr, self.Files, self.db)
         if date and date[0]:
             res = self.format_date(date[0], date[1])
             if res:
@@ -108,6 +104,8 @@ class FindDate:
                 self.Log.info('Date found using mask position : ' + str(res[0]))
 
                 if len(date) == 3:
+                    if due_date:
+                        return [res[0], res[1], date[2], due_date]
                     return [res[0], res[1], date[2]]
                 else:
                     return [res[0], res[1], '']

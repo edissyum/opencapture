@@ -64,16 +64,16 @@ if __name__ == '__main__':
         }
         list_existing_supplier = database.select(args)
         # Insert into database all the supplier not existing into the database
-        for taxe_number in spreadsheet.referencialSupplierData:
-            if not any(str(taxe_number) in value['vat_number'] for value in list_existing_supplier):
+        for vat_number in spreadsheet.referencialSupplierData:
+            if not any(str(vat_number) in value['vat_number'] for value in list_existing_supplier):
                 args = {
                     'table': 'addresses',
                     'columns': {
-                        'address1': str(spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['address1']]),
-                        'address2': str(spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['address2']]),
-                        'postal_code': str(spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['addressPostalCode']]),
-                        'city': str(spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['addressTown']]),
-                        'country': str(spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['addressCountry']]),
+                        'address1': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['address1']]),
+                        'address2': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['address2']]),
+                        'postal_code': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['addressPostalCode']]),
+                        'city': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['addressTown']]),
+                        'country': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['addressCountry']]),
                     }
                 }
 
@@ -82,12 +82,11 @@ if __name__ == '__main__':
                 args = {
                     'table': 'accounts_supplier',
                     'columns': {
-                        'vat_number': str(taxe_number),
-                        'name': str(spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['name']]),
-                        'siren': str(spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['SIREN']]),
-                        'siret': str(spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['SIRET']]),
-                        'typology': str(spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['typology']]),
-                        'get_only_raw_footer': not spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['get_only_raw_footer']],
+                        'vat_number': str(vat_number),
+                        'name': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['name']]),
+                        'siren': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['SIREN']]),
+                        'siret': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['SIRET']]),
+                        'get_only_raw_footer': not spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['get_only_raw_footer']],
                         'address_id': str(address_id),
                     }
                 }
@@ -95,36 +94,45 @@ if __name__ == '__main__':
 
                 if res:
                     log.info('The following supplier was successfully added into database : ' +
-                             str(spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['name']]))
+                             str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['name']]))
+                    database.update({
+                        'table': ['positions_masks'],
+                        'set': {
+                            'supplier_id': res
+                        },
+                        'where': ['id = %s'],
+                        'data': [str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['positions_mask_id']])]
+                    })
                 else:
                     log.error('While adding supplier : ' +
-                              str(spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['name']]))
+                              str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['name']]))
             else:
-                address_id = database.select({
-                    'select': ['address_id'],
+                current_supplier = database.select({
+                    'select': ['id', 'address_id'],
                     'table': ['accounts_supplier'],
                     'where': ['vat_number = %s'],
-                    'data': [taxe_number]
-                })[0]['address_id']
+                    'data': [vat_number]
+                })[0]
 
                 get_only_raw_footer = True
-                if spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['get_only_raw_footer']] == 'True':
+                if spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['get_only_raw_footer']] == 'True':
                     get_only_raw_footer = False
 
                 args = {
                     'table': ['addresses'],
                     'set': {
-                        'address1': str(spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['address1']]),
-                        'address2': str(spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['address2']]),
-                        'postal_code': str(spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['addressPostalCode']]),
-                        'city': str(spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['addressTown']]),
-                        'country': str(spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['addressCountry']]),
+                        'address1': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['address1']]),
+                        'address2': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['address2']]),
+                        'postal_code': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['addressPostalCode']]),
+                        'city': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['addressTown']]),
+                        'country': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['addressCountry']]),
                     },
                     'where': ['id = %s'],
-                    'data': [address_id if address_id else 0]
+                    'data': [current_supplier['address_id'] if current_supplier['address_id'] else 0]
                 }
-                if address_id:
+                if current_supplier['address_id']:
                     database.update(args)
+                    address_id = current_supplier['address_id']
                 else:
                     args['columns'] = args['set']
                     args['table'] = args['table'][0]
@@ -136,23 +144,31 @@ if __name__ == '__main__':
                 args = {
                     'table': ['accounts_supplier'],
                     'set': {
-                        'name': str(spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['name']]),
-                        'siren': str(spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['SIREN']]),
-                        'siret': str(spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['SIRET']]),
-                        'typology': str(spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['typology']]),
+                        'name': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['name']]),
+                        'siren': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['SIREN']]),
+                        'siret': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['SIRET']]),
                         'get_only_raw_footer': get_only_raw_footer,
                         'address_id': address_id
                     },
                     'where': ['vat_number = %s'],
-                    'data': [taxe_number]
+                    'data': [vat_number]
                 }
                 res = database.update(args)
+
+                database.update({
+                    'table': ['positions_masks'],
+                    'set': {
+                        'supplier_id': current_supplier['id']
+                    },
+                    'where': ['id = %s'],
+                    'data': [str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['positions_mask_id']])]
+                })
                 if res[0]:
                     log.info('The following supplier was successfully updated into database : ' +
-                             str(spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['name']]))
+                             str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['name']]))
                 else:
                     log.error('While updating supplier : ' +
-                              str(spreadsheet.referencialSupplierData[taxe_number][0][spreadsheet.referencialSupplierArray['name']]))
+                              str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['name']]))
 
         # Commit and close database connection
         database.conn.commit()

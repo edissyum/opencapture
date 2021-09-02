@@ -89,6 +89,11 @@
             </button>
         </div>
         <div class="overflow-auto" style="height: calc(100% - 64px)">
+            <div class="flex justify-center items-center mt-5">
+                <button mat-button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300">
+                    <span class="block" (click)="updatePositionsMask()">{{ "POSITIONS-MASKS.modify" | translate }}</span>
+                </button>
+            </div>
             <div class="grid grid-cols-2 gap-8 mt-6 ml-6 mr-6">
                 <mat-form-field>
                     <mat-label>{{ "POSITIONS-MASKS.label" | translate }}</mat-label>
@@ -138,11 +143,6 @@
                     <img id="invoice_image_src" [src]="invoiceImageSrc">
                 </div>
             </div>
-            <div class="flex justify-center items-center">
-                <button mat-button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300">
-                    <span class="block" (click)="updatePositionsMask()">{{ "POSITIONS-MASKS.modify" | translate }}</span>
-                </button>
-            </div>
         </div>
     </mat-sidenav-content>
     <mat-sidenav #sidenav2 mode="side" opened position="end" class="available-fields w-1/4 flex flex-col h-full border-r border-green-400">
@@ -158,9 +158,9 @@
                                     {{ field.label | translate }}
                                 </div>
                                 <mat-form-field class="right-0 w-6/12">
-                                    <mat-label>{{ 'TYPES.' + field.type | translate }}</mat-label>
+                                    <mat-label>{{ 'POSITIONS-MASKS.regex_associated' | translate }}</mat-label>
                                     <input [id]='field.id' (focusin)="ocr($event, true, field.color)"
-                                           (click)="this.ocrFromUser = true;" [value]="field.value"
+                                           (click)="this.ocrFromUser = true;" [(ngModel)]="field.regex"
                                            (focusout)="ocr($event, false)" matInput type="text">
                                 </mat-form-field>
                             </ng-container>

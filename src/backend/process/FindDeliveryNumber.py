@@ -16,7 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import re
-from ..functions import search_custom_positions
+from ..functions import search_custom_positions, search_by_positions
 
 
 class FindDeliveryNumber:
@@ -37,6 +37,10 @@ class FindDeliveryNumber:
         self.target = target
 
     def run(self):
+        delivery_number = search_by_positions(self.supplier, 'delivery_number', self.Ocr, self.Files, self.Database)
+        if delivery_number and delivery_number[0]:
+            return delivery_number
+
         if self.supplier and not self.customPage:
             position = self.Database.select({
                 'select': [
