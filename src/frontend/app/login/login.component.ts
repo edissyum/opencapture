@@ -54,7 +54,9 @@ export class LoginComponent implements OnInit {
             username: [null, Validators.required],
             password: [null, Validators.required]
         });
-        this.localeService.getCurrentLocale();
+        if (this.localeService.currentLang === undefined) {
+            this.localeService.getCurrentLocale();
+        }
     }
 
     onSubmit() {

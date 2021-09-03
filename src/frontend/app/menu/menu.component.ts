@@ -65,7 +65,9 @@ export class MenuComponent implements OnInit {
         this.userService.user = this.userService.getUserFromLocal();
         if (this.userService.user) {
             this.localeService.getLocales();
-            this.localeService.getCurrentLocale();
+            if (this.localeService.currentLang === undefined) {
+                this.localeService.getCurrentLocale();
+            }
         }
         const k = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
         let n = 0;

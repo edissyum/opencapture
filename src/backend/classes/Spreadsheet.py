@@ -37,9 +37,9 @@ class Spreadsheet:
             self.referencialSupplierArray['address1'] = fp['address1']
             self.referencialSupplierArray['address2'] = fp['address2']
             self.referencialSupplierArray['addressTown'] = fp['addressTown']
-            self.referencialSupplierArray['addressPostalCode'] = fp['addressPostalCode']
             self.referencialSupplierArray['addressCountry'] = fp['addressCountry']
-            self.referencialSupplierArray['positions_mas    k_id'] = fp['positions_mask_id']
+            self.referencialSupplierArray['addressPostalCode'] = fp['addressPostalCode']
+            self.referencialSupplierArray['positions_mask_id'] = fp['positions_mask_id']
             self.referencialSupplierArray['get_only_raw_footer'] = fp['get_only_raw_footer']
 
     def write_typo_ods_sheet(self, vat_number, typo):

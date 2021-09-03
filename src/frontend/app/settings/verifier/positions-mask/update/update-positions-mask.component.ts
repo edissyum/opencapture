@@ -43,6 +43,7 @@ declare var $: any;
 export class UpdatePositionsMaskComponent implements OnInit {
     loading                 : boolean   = true;
     ocrFromUser             : boolean   = false;
+    launchOnInit            : boolean   = false;
     ratio                   : any;
     positionMaskId          : any;
     positionsMask           : any;
@@ -192,6 +193,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
 
     async ngOnInit(): Promise<void>  {
         this.serviceSettings.init();
+        this.launchOnInit = true;
         this.positionMaskId = this.route.snapshot.params['id'];
         this.config = this.configService.getConfig();
         this.positionsMask = await this.getPositionMask();
@@ -268,6 +270,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
         setTimeout(() => {
             this.drawPositions();
             this.loading = false;
+            this.launchOnInit = false;
         }, 1500);
 
         const triggerEvent = $('.trigger');
@@ -534,7 +537,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                 $('.select-areas-resize-handler_' + cptToDelete).remove();
             }
 
-            if (this.imageInvoice) {
+            if (this.imageInvoice && !this.launchOnInit) {
                 const _selection = this.getSelectionByCpt(selection, cpt);
                 this.savePosition(_selection);
                 this.savePage(this.currentPage);
