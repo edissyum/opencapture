@@ -271,7 +271,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
             this.drawPositions();
             this.loading = false;
             this.launchOnInit = false;
-        }, 1500);
+        }, 500);
 
         const triggerEvent = $('.trigger');
         triggerEvent.hide();
@@ -311,12 +311,18 @@ export class UpdatePositionsMaskComponent implements OnInit {
                         });
                     }
                     $('#' + field).focus();
+
+                    if (this.ratio === Infinity) {
+                        this.ratio = this.invoiceImageWidth / this.imageInvoice.width();
+                    }
+
                     const newArea = {
                         x: position.x / this.ratio,
                         y: position.y / this.ratio,
                         width: position.width / this.ratio,
                         height: position.height / this.ratio
                     };
+
                     const triggerEvent = $('.trigger');
                     triggerEvent.hide();
                     triggerEvent.trigger('mousedown');
@@ -482,6 +488,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                 maxSize: [this.imageInvoice.width(), this.imageInvoice.height() / 8],
                 onChanged(img: any, cpt: any, selection: any) {
                     if (selection.length !== 0 && selection['width'] !== 0 && selection['height'] !== 0) {
+                        console.log(selection);
                         _this.ocr_process(img, cpt, selection);
                     }
                 },

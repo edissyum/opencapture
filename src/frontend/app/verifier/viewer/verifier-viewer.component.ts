@@ -30,11 +30,10 @@ import { FormControl } from "@angular/forms";
 import { DatePipe } from '@angular/common';
 import { LocalStorageService } from "../../../services/local-storage.service";
 import { ConfigService } from "../../../services/config.service";
-
-declare var $: any;
 import 'moment/locale/en-gb';
 import 'moment/locale/fr';
 import * as moment from 'moment';
+declare var $: any;
 
 
 @Component({
@@ -45,26 +44,26 @@ import * as moment from 'moment';
 })
 
 export class VerifierViewerComponent implements OnInit {
-    loading             : boolean   = true;
-    isOCRRunning        : boolean   = false;
-    settingsOpen        : boolean   = false;
-    saveInfo            : boolean   = true;
-    ocrFromUser         : boolean   = false;
-    accountingPlanEmpty : boolean   = false;
-    deleteDataOnChangeForm: boolean = true;
-    imageInvoice        : any;
-    imgSrc              : any;
-    currentFilename     : string    = '';
-    invoiceId           : any;
-    invoice             : any;
-    fields              : any;
-    currentPage         : number    = 1;
-    lastLabel           : string    = '';
-    config              : any;
-    lastId              : string    = '';
-    lastColor           : string    = '';
-    ratio               : number    = 0;
-    fieldCategories     : any[]     = [
+    loading                 : boolean   = true;
+    isOCRRunning            : boolean   = false;
+    settingsOpen            : boolean   = false;
+    saveInfo                : boolean   = true;
+    ocrFromUser             : boolean   = false;
+    accountingPlanEmpty     : boolean   = false;
+    deleteDataOnChangeForm  : boolean   = true;
+    currentFilename         : string    = '';
+    currentPage             : number    = 1;
+    lastLabel               : string    = '';
+    lastId                  : string    = '';
+    lastColor               : string    = '';
+    ratio                   : number    = 0;
+    imageInvoice            : any;
+    imgSrc                  : any;
+    invoiceId               : any;
+    invoice                 : any;
+    fields                  : any;
+    config                  : any;
+    fieldCategories         : any[]     = [
         {
             'id': 'supplier',
             'label': marker('FORMS.supplier')
@@ -78,27 +77,27 @@ export class VerifierViewerComponent implements OnInit {
             'label': marker('FORMS.other')
         }
     ];
-    disableOCR          : boolean   = false;
-    form                : any       = {
+    disableOCR              : boolean   = false;
+    form                    : any       = {
         'supplier': [],
         'facturation': [],
         'other': []
     };
-    formList            : any       = {};
-    currentFormFields   : any       = {};
-    pattern             : any       = {
+    formList                : any       = {};
+    currentFormFields       : any       = {};
+    pattern                 : any       = {
         'alphanum': '^[0-9a-zA-Z\\s]*$',
         'alphanum_extended': '^[0-9a-zA-Z-/#\\s]*$',
         'number_int': '^[0-9]*$',
         'number_float': '^[0-9]*([.][0-9]*)*$',
         'char': '^[A-Za-z\\s]*$',
     };
-    suppliers           : any       = [];
-    filteredOptions     : Observable<any> | undefined;
-    getOnlyRawFooter    : boolean   = false;
-    toHighlight         : string    = '';
-    supplierNamecontrol = new FormControl();
-    toHighlightAccounting : string    = '';
+    suppliers               : any       = [];
+    filteredOptions         : Observable<any> | undefined;
+    getOnlyRawFooter        : boolean   = false;
+    toHighlight             : string    = '';
+    supplierNamecontrol     = new FormControl();
+    toHighlightAccounting   : string    = '';
 
     constructor(
         private router: Router,
@@ -531,6 +530,11 @@ export class VerifierViewerComponent implements OnInit {
                         value = moment(value, format);
                         value = new Date(value._d);
                     }
+
+                    if (input.id === 'siren') {
+                        this.checkSiren(value);
+                    }
+
                     input.control.setValue(value);
                     input.control.markAsTouched();
                 }
@@ -779,7 +783,8 @@ export class VerifierViewerComponent implements OnInit {
                                     return of(false);
                                 })
                             ).subscribe();
-
+                        } else {
+                            this.checkSiren(supplier.siren);
                         }
                     }),
                     catchError((err: any) => {
@@ -790,6 +795,23 @@ export class VerifierViewerComponent implements OnInit {
                 ).subscribe();
             }
         });
+    }
+
+    // Function used to verify SIRET or SIREN using the Luhn algorithm
+    verify(value: any, size: any, isVAT = false) {
+        if (isVAT){
+            return value.length === size;
+        }
+
+        if (isNaN(value) || value.length !== size) return false;
+        let bal     = 0;
+        let total   = 0;
+        for (let i = size - 1; i >= 0; i--){
+            const step = (value.charCodeAt(i) - 48) * (bal + 1);
+            total += (step > 9) ? step - 9:step;
+            bal = 1 - bal;
+        }
+        return total % 10 === 0;
     }
 
     getErrorMessage(field: any, category: any) {
@@ -958,6 +980,15 @@ export class VerifierViewerComponent implements OnInit {
                     }
                 }
             }
+        }
+    }
+
+    checkSiren(siren: any) {
+        const sizeSIREN = 9;
+        const apiURL = this.config['API']['siren-url'];
+        if (this.verify(siren, sizeSIREN)) {
+            console.log(apiURL);
+            console.log(siren);
         }
     }
 }

@@ -86,14 +86,13 @@ divider             = _
 
 # VIDEOCODAGE settings
 
-[GENERAL]
+[API]
 siret-consumer      =
 siret-secret        =
 siret-url-token     = https://api.insee.fr/token
 siret-url           = https://api.insee.fr/entreprises/sirene/V3/siret/
 siren-url           = https://api.insee.fr/entreprises/sirene/V3/siren/
 tva-url             = https://ec.europa.eu/taxation_customs/vies/checkVatService.wsdl
-ban-url             = https://api-adresse.data.gouv.fr/search/?q=
 
 [CONTACT]
 green-ratio         = 95
