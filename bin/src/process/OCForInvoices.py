@@ -347,7 +347,7 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
         footerClass = FindFooterRaw(ocr, log, locale, config, files, database, supplier, file, ocr.footer_text, typo)
 
     footer = footerClass.run()
-    if not footer:
+    if not footer and nb_pages > 1:
         footerClass.target = 'full'
         footerClass.text = ocr.last_text
         footerClass.nbPage = nb_pages
