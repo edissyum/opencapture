@@ -531,10 +531,6 @@ export class VerifierViewerComponent implements OnInit {
                         value = new Date(value._d);
                     }
 
-                    if (input.id === 'siren') {
-                        this.checkSiren(value);
-                    }
-
                     input.control.setValue(value);
                     input.control.markAsTouched();
                 }
@@ -783,8 +779,6 @@ export class VerifierViewerComponent implements OnInit {
                                     return of(false);
                                 })
                             ).subscribe();
-                        } else {
-                            this.checkSiren(supplier.siren);
                         }
                     }),
                     catchError((err: any) => {
@@ -983,12 +977,49 @@ export class VerifierViewerComponent implements OnInit {
         }
     }
 
-    checkSiren(siren: any) {
+    checkSirenOrSiret(event: any) {
+        const siretOrSiren = event.originalTarget.id;
+        const value = event.originalTarget.value;
         const sizeSIREN = 9;
-        const apiURL = this.config['API']['siren-url'];
-        if (this.verify(siren, sizeSIREN)) {
-            console.log(apiURL);
-            console.log(siren);
+        const sizeSIRET = 14;
+        const sirenURL = this.config['API']['siren-url'];
+        const siretURL = this.config['API']['siret-url'];
+        if (siretOrSiren === 'siren') {
+            if (this.verify(value, sizeSIREN)) {
+                console.log(value);
+            }else {
+                this.form['supplier'].forEach((element: any) => {
+                    if (element.id === 'siren') {
+                        element.control.setErrors({'siren_error': true});
+                        console.log(element.control)
+                    }
+                });
+            }
+        } else if (siretOrSiren === 'siret') {
+            if (this.verify(value, sizeSIRET)) {
+                console.log(value);
+            }else {
+                this.form['supplier'].forEach((element: any) => {
+                    if (element.id === 'siret') {
+                        element.control.setErrors({'siret_error': true});
+                        console.log(element.control)
+
+                    }
+                });
+            }
         }
+        // if (this.verify(value, sizeSIREN)) {
+        //     console.log(apiURL);
+        //     console.log(siren);
+        // }else {
+        //     console.log(this.form)
+        //     console.log(this.form['supplier'])
+        //     this.form['supplier'].forEach((element: any) => {
+        //         console.log(element)
+        //         if (element.id === 'siren') {
+        //             console.log(element);
+        //         }
+        //     });
+        // }
     }
 }

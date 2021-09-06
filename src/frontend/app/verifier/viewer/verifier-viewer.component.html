@@ -84,7 +84,7 @@
                                         <input [id]="field.id" matInput type="text" [formControl]="field.control" [required]="field.required"
                                                [pattern]="field.pattern" (click)="this.ocrFromUser = true; this.saveInfo = true;"
                                                (focusin)="ocr($event, true, field.color);"
-                                               (focusout)="ocr($event, false); saveData($any($event.target).value, field['id'])">
+                                               (focusout)="ocr($event, false); saveData($any($event.target).value, field['id']); checkSirenOrSiret($event)">
                                         <mat-error class="mt-1" *ngIf="field.control.errors">
                                             {{ getErrorMessage(field.id, category['id']) }}
                                         </mat-error>
