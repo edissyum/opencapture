@@ -122,6 +122,7 @@ export class OutputsListComponent implements OnInit {
             this.http.delete(API_URL + '/ws/outputs/delete/' + outputId, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadOutputs();
+                    this.notify.success(this.translate.instant('OUTPUT.output_deleted'));
                 }),
                 catchError((err: any) => {
                     console.debug(err);

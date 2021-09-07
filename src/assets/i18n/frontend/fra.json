@@ -108,7 +108,10 @@
 		"number_float_pattern": "La valeur n'est pas au format attendu : nombre flottant",
 		"number_int_pattern": "La valeur n'est pas au format attendu : nombre entier",
 		"unauthorized": "Vous n'êtes pas autorisé à visualiser la page suivante : ",
-		"unknow_error": "Erreur inconnue"
+		"unknow_error": "Erreur inconnue",
+		"insee_api_not_up": "L'API de l'INSEE n'est pas disponible",
+		"wrong_siren_format": "Mauvais format du SIREN",
+		"wrong_siret_format": "Mauvais format du SIRET"
 	},
 	"FACTURATION": {
 		"accounting_plan": "Compte de charge",
@@ -167,6 +170,8 @@
 		"output_type_mandatory": "Le type de chaîne sortante est obligatoire",
 		"refuse": "Refuser la facture",
 		"supplier": "Fournisseur",
+		"supplier_verif": "Vérification du fournisseur",
+		"supplier_verif_hint": "Vérification via API des SIRET / SIREN / TVA INTRA",
 		"updated": "Formulaire mis à jour avec succès",
 		"validate": "Valider la facture"
 	},
@@ -279,7 +284,7 @@
 	"PRIVILEGES": {
 		"access_splitter": "Accès à Open-Capture Splitter",
 		"access_verifier": "Accès à Open-Capture Verifier",
-		"accounts": "Fournisseurs & clients",
+		"accounts": "Tiers",
 		"add_role": "Ajouter un rôle",
 		"add_user": "Ajouter un utilisateur",
 		"administration": "Privilèges d'administration",
@@ -358,7 +363,7 @@
 	"UPLOAD": {
 		"extension_unauthorized": "Un ou plusieurs fichiers ne sont pas au format PDF",
 		"no_file": "Aucun fichier à téléverser",
-		"placeholder": "Cliquer pour choisir un document ou faites glisser un document",
+		"placeholder": "Cliquez pour choisir un ou plusieurs documents (3 maximum) ou faites glisser vos documents",
 		"please_select_input": "Choisissez une chaîne entrante avant de procéder au téléversement",
 		"purchase_invoice": "Facture d'achat",
 		"sale_invoice": "Facture de vente",

@@ -74,7 +74,9 @@ export class MenuComponent implements OnInit {
         $(document).keydown((e: any) => {
             if (e.keyCode === k[n++]) {
                 if (n === k.length) {
-                    $('#konami').fadeIn("slow").delay(2000).fadeOut();
+                    const audio = new Audio("assets/imgs/konami.mp3");
+                    $('#konami').fadeIn("slow").delay(3000).fadeOut();
+                    audio.play().then();
                     n = 0;
                 }
             }

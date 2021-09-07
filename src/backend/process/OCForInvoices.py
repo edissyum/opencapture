@@ -284,13 +284,14 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
         page_for_date = 1
 
     date = FindDate(text_custom, log, locale, config, files, ocr, supplier, typo, page_for_date, database, file).run()
+
     if date:
         datas.update({'invoice_date': date[0]})
         if date[1]:
             positions.update({'invoice_date': files.reformat_positions(date[1])})
         if date[2]:
             pages.update({'invoice_date': date[2]})
-        if date[3]:
+        if len(date) > 3 and date[3]:
             datas.update({'invoice_due_date': date[3][0]})
             pages.update({'invoice_due_date': date[2]})
             if len(date[3]) > 1:

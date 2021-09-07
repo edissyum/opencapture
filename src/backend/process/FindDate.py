@@ -97,18 +97,6 @@ class FindDate:
     def run(self):
         date = search_by_positions(self.supplier, 'invoice_date', self.Ocr, self.Files, self.db)
         due_date = search_by_positions(self.supplier, 'invoice_due_date', self.Ocr, self.Files, self.db)
-        if date and date[0]:
-            res = self.format_date(date[0], date[1])
-            if res:
-                self.date = res[0]
-                self.Log.info('Date found using mask position : ' + str(res[0]))
-
-                if len(date) == 3:
-                    if due_date:
-                        return [res[0], res[1], date[2], due_date]
-                    return [res[0], res[1], date[2]]
-                else:
-                    return [res[0], res[1], '']
 
         if self.supplier:
             position = self.db.select({
@@ -130,6 +118,19 @@ class FindDate:
                     if res:
                         due_date = [res[0], res[1]]
                         self.Log.info('Due date found using position : ' + str(res[0]))
+
+        if date and date[0]:
+            res = self.format_date(date[0], date[1])
+            if res:
+                self.date = res[0]
+                self.Log.info('Date found using mask position : ' + str(res[0]))
+
+                if len(date) == 3:
+                    if due_date:
+                        return [res[0], res[1], date[2], due_date]
+                    return [res[0], res[1], date[2]]
+                else:
+                    return [res[0], res[1], '']
 
         if not due_date:
             for line in self.text:

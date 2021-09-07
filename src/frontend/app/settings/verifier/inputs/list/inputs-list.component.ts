@@ -121,6 +121,7 @@ export class InputsListComponent implements OnInit {
             this.http.delete(API_URL + '/ws/inputs/delete/' + inputId, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadInputs();
+                    this.notify.success(this.translate.instant('INPUT.input_deleted'));
                 }),
                 catchError((err: any) => {
                     console.debug(err);

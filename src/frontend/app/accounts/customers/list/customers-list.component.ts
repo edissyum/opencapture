@@ -121,16 +121,17 @@ export class CustomersListComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
-                this.deleteSupplier(customerId);
+                this.deleteCustomer(customerId);
             }
         });
     }
 
-    deleteSupplier(supplierId: number) {
-        if (supplierId !== undefined) {
-            this.http.delete(API_URL + '/ws/accounts/customers/delete/' + supplierId, {headers: this.authService.headers}).pipe(
+    deleteCustomer(customerId: number) {
+        if (customerId !== undefined) {
+            this.http.delete(API_URL + '/ws/accounts/customers/delete/' + customerId, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadCustomers();
+                    this.notify.success(this.translate.instant('ACCOUNTS.customer_deleted'));
                 }),
                 catchError((err: any) => {
                     console.debug(err);

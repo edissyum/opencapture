@@ -110,6 +110,11 @@
 		"unauthorized": "You are not allowed to see the following page : ",
 		"unknow_error": "Unknow error"
 	},
+	"ERRORS": {
+		"api_not_up": "",
+		"wrong_siren_format": "",
+		"wrong_siret_format": ""
+	},
 	"FACTURATION": {
 		"accounting_plan": "",
 		"delivery_number": "",
@@ -167,6 +172,8 @@
 		"output_type_mandatory": "",
 		"refuse": "",
 		"supplier": "",
+		"supplier_verif": "",
+		"supplier_verif_hint": "",
 		"updated": "",
 		"validate": ""
 	},

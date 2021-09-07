@@ -186,6 +186,7 @@ export class SuppliersListComponent implements OnInit {
             this.http.delete(API_URL + '/ws/accounts/suppliers/delete/' + supplierId, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadSuppliers();
+                    this.notify.success(this.translate.instant('ACCOUNTS.supplier_deleted'));
                 }),
                 catchError((err: any) => {
                     console.debug(err);

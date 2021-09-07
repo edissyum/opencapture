@@ -262,7 +262,6 @@ class FindFooterRaw:
                 0: re.sub(r"[^0-9\.]|\.(?!\d)", "", _vat_amount[0].replace(',', '.')),
                 1: _vat_amount[1]
             }
-        print(total_ht, vat_rate, total_ttc, vat_amount)
 
         if not self.test_amount(total_ht, total_ttc, vat_rate, vat_amount):
             total_ht = self.process(self.Locale.noRatesRegex, text_as_string)

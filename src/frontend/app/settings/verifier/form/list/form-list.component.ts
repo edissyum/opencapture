@@ -185,6 +185,7 @@ export class FormListComponent implements OnInit {
             this.http.delete(API_URL + '/ws/forms/delete/' + formId, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadForms();
+                    this.notify.success(this.translate.instant('FORMS.form_deleted'));
                 }),
                 catchError((err: any) => {
                     console.debug(err);

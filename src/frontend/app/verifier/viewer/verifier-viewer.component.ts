@@ -57,6 +57,7 @@ export class VerifierViewerComponent implements OnInit {
     lastId                  : string    = '';
     lastColor               : string    = '';
     ratio                   : number    = 0;
+    token                   : any;
     imageInvoice            : any;
     imgSrc                  : any;
     invoiceId               : any;
@@ -83,6 +84,7 @@ export class VerifierViewerComponent implements OnInit {
         'facturation': [],
         'other': []
     };
+    formSettings            : any       = {};
     formList                : any       = {};
     currentFormFields       : any       = {};
     pattern                 : any       = {
@@ -120,12 +122,23 @@ export class VerifierViewerComponent implements OnInit {
         this.invoice = await this.getInvoice();
         this.currentFilename = this.invoice.full_jpg_filename;
         await this.getThumb(this.invoice.full_jpg_filename);
-        if (this.invoice.datas['form_id']) this.currentFormFields = await this.getFormById(this.invoice.datas['form_id']);
+        if (this.invoice.form_id) {
+            this.currentFormFields = await this.getFormFieldsById(this.invoice.form_id);
+            this.formSettings = await this.getFormById(this.invoice.form_id);
+            if (this.formSettings.supplier_verif && !this.token) {
+                let token: any;
+                token = await this.generateTokenInsee();
+                if (token['token']) {
+                    this.token = token['token'];
+                }
+            }
+        }
         if (Object.keys(this.currentFormFields).length === 0) this.currentFormFields = await this.getForm();
         this.formList = await this.getAllForm();
         this.formList = this.formList.forms;
         this.suppliers = await this.retrieveSuppliers();
         this.suppliers = this.suppliers.suppliers;
+
         /*
         * Enable library to draw rectangle on load (OCR ON FLY)
         */
@@ -152,6 +165,10 @@ export class VerifierViewerComponent implements OnInit {
                 startWith(''),
                 map(option => option ? this._filter(option) : this.suppliers.slice())
             );
+    }
+
+    async generateTokenInsee(){
+        return await this.http.get(API_URL + '/ws/verifier/getTokenINSEE', {headers: this.authService.headers}).toPromise();
     }
 
     async getThumb(filename:string) {
@@ -273,8 +290,12 @@ export class VerifierViewerComponent implements OnInit {
         return await this.http.get(API_URL + '/ws/forms/list', {headers: this.authService.headers}).toPromise();
     }
 
-    async getFormById(formId: number): Promise<any> {
+    async getFormFieldsById(formId: number): Promise<any> {
         return await this.http.get(API_URL + '/ws/forms/fields/getByFormId/' + formId, {headers: this.authService.headers}).toPromise();
+    }
+
+    async getFormById(formId: number): Promise<any> {
+        return await this.http.get(API_URL + '/ws/forms/getById/' + formId, {headers: this.authService.headers}).toPromise();
     }
 
     async fillForm(data: any): Promise<any> {
@@ -333,6 +354,14 @@ export class VerifierViewerComponent implements OnInit {
                     }
                     _field.control.setValue(value);
                     _field.control.markAsTouched();
+
+                    if (field.id === 'siret' || field.id === 'siren') {
+                        this.checkSirenOrSiret(field.id, value);
+                    }
+
+                    if (field.id === 'vat_number') {
+                        this.checkVAT(field.id, value);
+                    }
                 }
                 if (field.id === 'name' && category === 'supplier') this.supplierNamecontrol = this.form[category][cpt].control;
                 this.findChildren(field.id, _field, category);
@@ -816,6 +845,9 @@ export class VerifierViewerComponent implements OnInit {
                     const required = element.control.errors.required;
                     const pattern = element.control.errors.pattern;
                     const datePickerPattern = element.control.errors.matDatepickerParse;
+                    const siret_error = element.control.errors.siret_error;
+                    const siren_error = element.control.errors.siren_error;
+                    const vat_error = element.control.errors.vat_error;
                     if (pattern) {
                         if (pattern.requiredPattern === this.getPattern('alphanum')) {
                             error = this.translate.instant('ERROR.alphanum_pattern');
@@ -830,6 +862,12 @@ export class VerifierViewerComponent implements OnInit {
                         error = this.translate.instant('ERROR.date_pattern');
                     }else if (required) {
                         error = this.translate.instant('ERROR.field_required');
+                    }else if (siret_error) {
+                        error = siret_error;
+                    }else if (siren_error) {
+                        error = siren_error;
+                    }else if (vat_error) {
+                        error = vat_error;
                     }else {
                         error = this.translate.instant('ERROR.unknow_error');
                     }
@@ -917,8 +955,8 @@ export class VerifierViewerComponent implements OnInit {
         const newFormId = event.value;
         for (const cpt in this.formList) {
             if (this.formList[cpt].id === newFormId) {
-                this.saveData({'form_id': newFormId});
-                this.currentFormFields = await this.getFormById(newFormId);
+                this.updateInvoice({'form_id': newFormId});
+                this.currentFormFields = await this.getFormFieldsById(newFormId);
                 this.deleteDataOnChangeForm = false;
                 this.imageInvoice.selectAreas('destroy');
                 this.settingsOpen = false;
@@ -977,49 +1015,108 @@ export class VerifierViewerComponent implements OnInit {
         }
     }
 
-    checkSirenOrSiret(event: any) {
-        const siretOrSiren = event.originalTarget.id;
-        const value = event.originalTarget.value;
-        const sizeSIREN = 9;
-        const sizeSIRET = 14;
-        const sirenURL = this.config['API']['siren-url'];
-        const siretURL = this.config['API']['siret-url'];
-        if (siretOrSiren === 'siren') {
-            if (this.verify(value, sizeSIREN)) {
-                console.log(value);
-            }else {
-                this.form['supplier'].forEach((element: any) => {
-                    if (element.id === 'siren') {
-                        element.control.setErrors({'siren_error': true});
-                        console.log(element.control)
-                    }
-                });
+    checkSirenOrSiret(siretOrSiren: any, value: any) {
+        if (this.formSettings.supplier_verif) {
+            const sizeSIREN = 9;
+            const sizeSIRET = 14;
+            if (siretOrSiren === 'siren') {
+                if (this.verify(value, sizeSIREN) && this.token) {
+                    this.http.post(API_URL + '/ws/verifier/verifySIREN', {'token': this.token, 'siren': value}, {headers: this.authService.headers}).pipe(
+                        tap(),
+                        catchError((err: any) => {
+                            this.form['supplier'].forEach((element: any) => {
+                                if (element.id === 'siren') {
+                                    setTimeout(() => {
+                                        element.control.setErrors({'siren_error': err.error.status});
+                                        element.control.markAsTouched();
+                                    }, 100);
+                                }
+                            });
+                            return of(false);
+                        })
+                    ).subscribe();
+                }
+                else {
+                    this.form['supplier'].forEach((element: any) => {
+                        if (element.id === 'siren') {
+                            setTimeout(() => {
+                                if (!this.token) {
+                                    element.control.setErrors({'siren_error': this.translate.instant('ERROR.insee_api_not_up')});
+                                }else {
+                                    element.control.setErrors({'siren_error': this.translate.instant('ERROR.wrong_siren_format')});
+                                }
+                                element.control.markAsTouched();
+                            }, 100);
+                        }
+                    });
+                }
+            } else if (siretOrSiren === 'siret') {
+                if (this.verify(value, sizeSIRET) && this.token) {
+                    this.http.post(API_URL + '/ws/verifier/verifySIRET', {'token': this.token, 'siret': value}, {headers: this.authService.headers}).pipe(
+                        tap(),
+                        catchError((err: any) => {
+                            this.form['supplier'].forEach((element: any) => {
+                                if (element.id === 'siret') {
+                                    setTimeout(() => {
+                                        element.control.setErrors({'siret_error': err.error.status});
+                                        element.control.markAsTouched();
+                                    }, 100);
+                                }
+                            });
+                            return of(false);
+                        })
+                    ).subscribe();
+                }
+                else {
+                    this.form['supplier'].forEach((element: any) => {
+                        if (element.id === 'siret') {
+                            setTimeout(() => {
+                                if (!this.token) {
+                                    element.control.setErrors({'siret_error': this.translate.instant('ERROR.insee_api_not_up')});
+                                }else {
+                                    element.control.setErrors({'siret_error': this.translate.instant('ERROR.wrong_siret_format')});
+                                }
+                                element.control.markAsTouched();
+                            }, 100);
+                        }
+                    });
+                }
             }
-        } else if (siretOrSiren === 'siret') {
-            if (this.verify(value, sizeSIRET)) {
-                console.log(value);
+        }
+    }
+
+    checkVAT(id: any, value: any) {
+        if (id === 'vat_number' && this.formSettings.supplier_verif) {
+            const sizeVAT = 13;
+            if (this.verify(value, sizeVAT, true)) {
+                this.http.post(API_URL + '/ws/verifier/verifyVATNumber', {'vat_number': value}, {headers: this.authService.headers}).pipe(
+                    tap(),
+                    catchError((err: any) => {
+                        this.form['supplier'].forEach((element: any) => {
+                            if (element.id === 'vat_number') {
+                                setTimeout(() => {
+                                    element.control.setErrors({'vat_error': err.error.status});
+                                    element.control.markAsTouched();
+                                }, 100);
+                            }
+                        });
+                        return of(false);
+                    })
+                ).subscribe();
             }else {
                 this.form['supplier'].forEach((element: any) => {
-                    if (element.id === 'siret') {
-                        element.control.setErrors({'siret_error': true});
-                        console.log(element.control)
-
+                    if (element.id === 'vat_number') {
+                        setTimeout(() => {
+                            if (!this.token) {
+                                element.control.setErrors({'vat_error': this.translate.instant('ERROR.ecu_api_not_up')});
+                            }else {
+                                element.control.setErrors({'vat_error': this.translate.instant('ERROR.wrong_vat_number_format')});
+                            }
+                            element.control.markAsTouched();
+                        }, 100);
                     }
                 });
             }
         }
-        // if (this.verify(value, sizeSIREN)) {
-        //     console.log(apiURL);
-        //     console.log(siren);
-        // }else {
-        //     console.log(this.form)
-        //     console.log(this.form['supplier'])
-        //     this.form['supplier'].forEach((element: any) => {
-        //         console.log(element)
-        //         if (element.id === 'siren') {
-        //             console.log(element);
-        //         }
-        //     });
-        // }
     }
 }

@@ -6,7 +6,7 @@
         "start": "ng serve",
         "build-watch": "ng build --watch",
         "build:prod": "NODE_ENV=production ng build --prod",
-        "reload-packages": "rm -Rf node_modules && rm package-lock.json && npm cache clean --force && npm i",
+        "reload-packages": "rm -Rf node_modules && rm package-lock.json && npm cache clean --force && npm i --force",
         "extract-translations": "ngx-translate-extract --input ./ --output ./src/assets/i18n/frontend/*.json --clean --sort --format namespaced-json --marker _"
     },
     "private": true,
@@ -54,6 +54,7 @@
         "protractor": "~7.0.0",
         "ts-node": "^9.1.1",
         "tslint": "~6.1.0",
-        "typescript": "~4.1.5"
+        "typescript": "~4.1.5",
+        "zone.js": "^0.11.4"
     }
 }

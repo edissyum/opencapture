@@ -45,6 +45,9 @@ export class FormBuilderComponent implements OnInit {
         },
         'default_form': {
             'control': new FormControl(),
+        },
+        'supplier_verif': {
+            'control': new FormControl(),
         }
     };
     outputForm              : any       = [
@@ -809,13 +812,16 @@ export class FormBuilderComponent implements OnInit {
     updateForm() {
         const label = this.form.label.control.value;
         const isDefault = this.form.default_form.control.value;
+        const supplierVerif = this.form.supplier_verif.control.value;
         const outputs: any[] = [];
         this.outputForm.forEach((element: any) => {
             if (element.control.value) outputs.push(element.control.value);
         });
 
         if (label !== '' && outputs.length >= 1) {
-            this.http.put(API_URL + '/ws/forms/update/' + this.formId, {'args': {'label' : label, 'default_form' : isDefault, 'outputs': outputs}}, {headers: this.authService.headers},
+            this.http.put(API_URL + '/ws/forms/update/' + this.formId, {
+                'args': {'label' : label, 'default_form' : isDefault, 'supplier_verif': supplierVerif, 'outputs': outputs}
+                }, {headers: this.authService.headers},
             ).pipe(
                 tap(()=> {
                     this.http.post(API_URL + '/ws/forms/updateFields/' + this.formId, this.fields, {headers: this.authService.headers}).pipe(
@@ -845,8 +851,9 @@ export class FormBuilderComponent implements OnInit {
     createForm() {
         const label = this.form.label.control.value;
         const isDefault = this.form.default_form.control.value;
+        const supplierVerif = this.form.supplier_verif.control.value;
         if (label) {
-            this.http.post(API_URL + '/ws/forms/add', {'args': {'label' : label, 'default_form' : isDefault}}, {headers: this.authService.headers},
+            this.http.post(API_URL + '/ws/forms/add', {'args': {'label' : label, 'default_form' : isDefault, 'supplier_verif': supplierVerif}}, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {
                     this.http.post(API_URL + '/ws/forms/updateFields/' + data.id, this.fields, {headers: this.authService.headers}).pipe(

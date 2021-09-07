@@ -14,6 +14,7 @@ CREATE TABLE "form_models" (
     "id"            SERIAL UNIQUE PRIMARY KEY,
     "label"         VARCHAR(50),
     "default_form"  BOOLEAN DEFAULT false,
+    "supplier_verif"BOOLEAN DEFAULT true,
     "enabled"       BOOLEAN DEFAULT true,
     "outputs"       TEXT[] DEFAULT ARRAY['export_xml'::text],
     "status"        VARCHAR(5) DEFAULT 'OK'

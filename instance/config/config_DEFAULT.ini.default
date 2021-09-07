@@ -10,7 +10,6 @@ fullPath                    = ${GLOBAL:docserverPath}/images/full/
 thumbPath                   = ${GLOBAL:docserverPath}/images/thumbs/
 tiffPath                    = ${GLOBAL:docserverPath}/images/tiff/
 positionsMasksPath          = ${GLOBAL:docserverPath}/images/positions_masks/
-exportAccountingFolder      = ${GLOBAL:docserverPath}/xml/
 errorPath                   = ${GLOBAL:projectPath}/bin/data/error/
 logFile                     = ${GLOBAL:projectPath}/bin/data/log/OCforInvoices.log
 ocrErrorPath                = ${GLOBAL:projectPath}/instance/config/OCR_ERRORS.xml
@@ -26,8 +25,6 @@ allowBypassSupplieBanVerif  = True
 # Delta between date found and today date, in days
 # -1 to disable
 timeDelta                   = -1
-# Number of files uploaded simultaneously
-uploadMaxFiles              = 3
 
 [AI-CLASSIFICATION]
 # True or False, python way

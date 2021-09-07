@@ -169,6 +169,7 @@ export class RolesListComponent implements OnInit {
             this.http.delete(API_URL + '/ws/roles/delete/' + roleId, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadRoles();
+                    this.notify.success(this.translate.instant('ROLE.role_deleted'));
                 }),
                 catchError((err: any) => {
                     console.debug(err);

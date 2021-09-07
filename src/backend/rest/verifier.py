@@ -148,3 +148,37 @@ def get_thumb():
     data = request.json['args']
     file_content = verifier.get_file_content(data['path'], data['filename'], 'image/jpeg')
     return make_response({'file': str(base64.b64encode(file_content.get_data()).decode('UTF-8'))}), 200
+
+
+@bp.route('verifier/getTokenINSEE', methods=['GET'])
+@auth.token_required
+def get_token_insee():
+    token = verifier.get_token_insee()
+    return make_response({'token': token[0]}, token[1])
+
+
+@bp.route('verifier/verifySIREN', methods=['POST'])
+@auth.token_required
+def verify_siren():
+    token = request.json['token']
+    siren = request.json['siren']
+    status = verifier.verify_siren(token, siren)
+    return make_response({'status': status[0]}, status[1])
+
+
+@bp.route('verifier/verifySIRET', methods=['POST'])
+@auth.token_required
+def verify_siret():
+    token = request.json['token']
+    siret = request.json['siret']
+    status = verifier.verify_siret(token, siret)
+    return make_response({'status': status[0]}, status[1])
+
+
+@bp.route('verifier/verifyVATNumber', methods=['POST'])
+@auth.token_required
+def verify_vat_number():
+    vat_number = request.json['vat_number']
+    status = verifier.verify_vat_number(vat_number)
+    return make_response({'status': status[0]}, status[1])
+

@@ -1,5 +1,6 @@
 wand==0.6.7
 flask==2.0.1
+zeep==4.1.0
 PyJWT==2.1.0
 pyocr==0.6
 pyPdf2==1.26.0

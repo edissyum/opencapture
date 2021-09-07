@@ -15,16 +15,20 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
-
+import logging
 import os
 import json
 import base64
 import datetime
 import pandas as pd
+import requests
 from PIL import Image
 from xml.dom import minidom
 from flask_babel import gettext
 import xml.etree.ElementTree as Et
+
+from zeep import Client, exceptions
+
 from src.backend.main import launch
 from flask import current_app, Response
 from ..main import create_classes_from_current_config
@@ -535,3 +539,62 @@ def get_file_content(path, filename, mime_type, compress=False):
             content = open(_cfg['GLOBAL']['projectpath'] + '/dist/assets/not_found/document_not_found.pdf', 'rb').read()
 
     return Response(content, mimetype=mime_type)
+
+
+def get_token_insee():
+    _vars = create_classes_from_current_config()
+    _cfg = _vars[1]
+    credentials = base64.b64encode((_cfg.cfg['API']['siret-consumer'] + ':' + _cfg.cfg['API']['siret-secret']).encode('UTF-8')).decode('UTF-8')
+    res = requests.post(_cfg.cfg['API']['siret-url-token'],
+                        data={'grant_type': 'client_credentials'},
+                        headers={"Authorization": "Basic %s" % str(credentials)})
+    if 'Maintenance - INSEE' in res.text or res.status_code != 200:
+        return res.text, 400
+    else:
+        return json.loads(res.text)['access_token'], 200
+
+
+def verify_siren(token, siren):
+    _vars = create_classes_from_current_config()
+    _cfg = _vars[1]
+    res = requests.get(_cfg.cfg['API']['siren-url'] + siren,
+                        headers={"Authorization": "Bearer %s" % token, "Accept": "application/json"})
+    _return = json.loads(res.text)['header']
+    if _return['statut'] != 200:
+        return _return['message'], 400
+    else:
+        return _return['message'], 200
+
+
+def verify_siret(token, siret):
+    _vars = create_classes_from_current_config()
+    _cfg = _vars[1]
+    res = requests.get(_cfg.cfg['API']['siret-url'] + siret,
+                        headers={"Authorization": "Bearer %s" % token, "Accept": "application/json"})
+    _return = json.loads(res.text)['header']
+    if _return['statut'] != 200:
+        return _return['message'], 400
+    else:
+        return _return['message'], 200
+
+
+def verify_vat_number(vat_number):
+    _vars = create_classes_from_current_config()
+    _cfg = _vars[1]
+    url = _cfg.cfg['API']['tva-url']
+    country_code = vat_number[:2]
+    vat_number = vat_number[2:]
+
+    logging.getLogger('zeep').setLevel(logging.ERROR)
+    client = Client(url)
+    try:
+        res = client.service.checkVat(country_code, vat_number)
+        text = res['valid']
+        if res['valid'] is False:
+            text = gettext('VAT_NOT_VALID')
+            return text, 400
+        return text, 200
+    except exceptions.Fault as e:
+        text = gettext('VAT_API_ERROR') + ' : ' + str(e)
+        return text, 400
+

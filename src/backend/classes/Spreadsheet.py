@@ -16,6 +16,8 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import json
+import os
+
 import pandas as pd
 from pyexcel_ods3 import get_data, save_data
 
@@ -53,56 +55,59 @@ class Spreadsheet:
         save_data(self.referencialSuppplierSpreadsheet, content_sheet)
 
     def update_supplier_ods_sheet(self, _db):
-        content_sheet = get_data(self.referencialSuppplierSpreadsheet)
+        if os.path.isfile(self.referencialSuppplierSpreadsheet):
+            content_sheet = get_data(self.referencialSuppplierSpreadsheet)
 
-        res = _db.select({
-            'select': ['*'],
-            'table': ['accounts_supplier'],
-            'where': ['status = %s'],
-            'data': ['OK'],
-        })
+            res = _db.select({
+                'select': ['*'],
+                'table': ['accounts_supplier'],
+                'where': ['status = %s'],
+                'data': ['OK'],
+            })
 
-        try:
-            sheet_name = False
-            for sheet in content_sheet:
-                sheet_name = sheet
+            try:
+                sheet_name = False
+                for sheet in content_sheet:
+                    sheet_name = sheet
 
-            if sheet_name:
-                content_sheet[sheet_name] = content_sheet[sheet_name][:1]
-                for supplier in res:
-                    address_id = supplier['address_id']
-                    address = False
-                    if address_id:
-                        address = _db.select({
-                            'select': ['*'],
-                            'table': ['addresses'],
-                            'where': ['id = %s'],
-                            'data': [address_id],
-                        })[0]
+                if sheet_name:
+                    content_sheet[sheet_name] = content_sheet[sheet_name][:1]
+                    for supplier in res:
+                        address_id = supplier['address_id']
+                        address = False
+                        if address_id:
+                            address = _db.select({
+                                'select': ['*'],
+                                'table': ['addresses'],
+                                'where': ['id = %s'],
+                                'data': [address_id],
+                            })[0]
 
-                    positions_mask_id = _db.select({
-                        'select': ['id'],
-                        'table': ['positions_masks'],
-                        'where': ['supplier_id = %s'],
-                        'data': [supplier['id']]
-                    })
+                        positions_mask_id = _db.select({
+                            'select': ['id'],
+                            'table': ['positions_masks'],
+                            'where': ['supplier_id = %s'],
+                            'data': [supplier['id']]
+                        })
 
-                    line = [supplier['name'] if supplier['name'] is not None else '',
-                            supplier['vat_number'] if supplier['vat_number'] is not None else '',
-                            supplier['siret'] if supplier['siret'] is not None else '',
-                            supplier['siren'] if supplier['siren'] is not None else '',
-                            address['address1'] if address and address['address1'] is not None else '',
-                            address['address2'] if address and address['address2'] is not None else '',
-                            address['postal_code'] if address and address['postal_code'] is not None else '',
-                            address['city'] if address and address['city'] is not None else '',
-                            address['country'] if address and address['country'] is not None else '',
-                            positions_mask_id[0]['id'] if positions_mask_id and positions_mask_id[0]['id'] is not None else '',
-                            str(not supplier['get_only_raw_footer']).lower() if supplier['get_only_raw_footer'] is not None else '']
-                    content_sheet[sheet_name].append(line)
-        except IndexError as e:
-            self.Log.error("IndexError while updating ods reference file : " + str(e))
+                        line = [supplier['name'] if supplier['name'] is not None else '',
+                                supplier['vat_number'] if supplier['vat_number'] is not None else '',
+                                supplier['siret'] if supplier['siret'] is not None else '',
+                                supplier['siren'] if supplier['siren'] is not None else '',
+                                address['address1'] if address and address['address1'] is not None else '',
+                                address['address2'] if address and address['address2'] is not None else '',
+                                address['postal_code'] if address and address['postal_code'] is not None else '',
+                                address['city'] if address and address['city'] is not None else '',
+                                address['country'] if address and address['country'] is not None else '',
+                                positions_mask_id[0]['id'] if positions_mask_id and positions_mask_id[0]['id'] is not None else '',
+                                str(not supplier['get_only_raw_footer']).lower() if supplier['get_only_raw_footer'] is not None else '']
+                        content_sheet[sheet_name].append(line)
+            except IndexError as e:
+                self.Log.error("IndexError while updating ods reference file : " + str(e))
 
-        save_data(self.referencialSuppplierSpreadsheet, content_sheet)
+            save_data(self.referencialSuppplierSpreadsheet, content_sheet)
+        else:
+            self.Log.error('The referencial file doesn\'t exist : ' + self.referencialSuppplierSpreadsheet)
 
     def write_typo_excel_sheet(self, vat_number, typo):
         content_sheet = pd.read_excel(self.referencialSuppplierSpreadsheet, engine='openpyxl')

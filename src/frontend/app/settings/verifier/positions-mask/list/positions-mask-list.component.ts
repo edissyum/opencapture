@@ -192,6 +192,7 @@ export class PositionsMaskListComponent implements OnInit {
             this.http.delete(API_URL + '/ws/positions_masks/delete/' + positionsMaskId, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadPositionMask().then();
+                    this.notify.success(this.translate.instant('POSITIONS-MASK.positions_mask_deleted'));
                 }),
                 catchError((err: any) => {
                     console.debug(err);

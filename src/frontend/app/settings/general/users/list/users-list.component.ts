@@ -189,6 +189,7 @@ export class UsersListComponent implements OnInit {
             this.http.delete(API_URL + '/ws/users/delete/' + userId, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadUsers();
+                    this.notify.success(this.translate.instant('USER.user_deleted'));
                 }),
                 catchError((err: any) => {
                     console.debug(err);

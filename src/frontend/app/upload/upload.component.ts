@@ -68,7 +68,12 @@ export class UploadComponent implements OnInit {
 
     ngOnInit(): void {
         this.http.get(API_URL + '/ws/inputs/list', {headers: this.authService.headers}).pipe(
-            tap((data: any) => {this.inputs = data.inputs;}),
+            tap((data: any) => {
+                this.inputs = data.inputs;
+                if (this.inputs.length === 1) {
+                    this.selectedInput = data.inputs[0].input_id;
+                }
+             }),
             finalize(() => {this.loading = false;}),
             catchError((err: any) => {
                 console.debug(err);
