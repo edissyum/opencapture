@@ -58,9 +58,7 @@
                                         {{ field.label | translate }}
                                     </mat-label>
                                     <input [id]="field.id" matInput type="text" [required]="field.required"
-                                           [formControl]="field.control" [pattern]="field.pattern"
-                                           (focusin)="ocr($event, true, field.color)"
-                                           (focusout)="ocr($event, false)" [matAutocomplete]="auto">
+                                           [formControl]="field.control" [pattern]="field.pattern" [matAutocomplete]="auto">
                                     <mat-error class="mt-1" *ngIf="field.control.errors">{{ getErrorMessage(field.id, category['id']) }}</mat-error>
                                     <mat-autocomplete #auto="matAutocomplete" (optionSelected)='getSupplierInfo($event.option.id, true)'>
                                         <mat-option *ngFor="let option of filteredOptions | async" [value]="option.name" [id]="option.id">

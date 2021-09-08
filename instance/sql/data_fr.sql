@@ -2,7 +2,6 @@
 INSERT INTO "status" ("id","label","label_long") VALUES ('NEW','À valider','À valider');
 INSERT INTO "status" ("id","label","label_long") VALUES ('END','Cloturée','Facture validée et cloturée');
 INSERT INTO "status" ("id","label","label_long") VALUES ('ERR','Erreur','Erreur lors de la qualification');
-INSERT INTO "status" ("id","label","label_long") VALUES ('WAIT_SUP','En attente','En attente validation fournisseur');
 INSERT INTO "status" ("id","label","label_long") VALUES ('DEL','Supprimée','Supprimée');
 
 -- CRÉATION DES CHAINES SORTANTES

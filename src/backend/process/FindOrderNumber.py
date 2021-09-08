@@ -14,7 +14,7 @@
 # along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
-
+import json
 import re
 from ..functions import search_custom_positions, search_by_positions
 
@@ -55,6 +55,12 @@ class FindOrderNumber:
             if position and position['order_number_position'] not in [False, 'NULL', '', None]:
                 data = {'position': position['order_number_position'], 'regex': None, 'target': 'full', 'page': position['order_number_page']}
                 text, position = search_custom_positions(data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
+
+                try:
+                    position = json.loads(position)
+                except TypeError:
+                    pass
+
                 if text is not False:
                     for _order in re.finditer(r"" + self.Locale.orderNumberRegex + "", str(text).upper()):
                         order_res = _order.group()

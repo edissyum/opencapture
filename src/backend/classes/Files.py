@@ -395,6 +395,11 @@ class Files:
         else:
             ratio = 1
 
+        try:
+            selection = json.loads(selection)
+        except TypeError:
+            pass
+
         x1 = selection['x'] * ratio
         y1 = selection['y'] * ratio
         x2 = (selection['x'] + selection['width']) * ratio

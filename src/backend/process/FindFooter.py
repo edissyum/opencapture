@@ -173,7 +173,7 @@ class FindFooter:
             if self.supplier is not False:
                 if no_rate_amount in [False, None]:
                     no_rate_amount = self.process_footer_with_position('total_ht',
-                                                                       ["positions ->> 'total_ht' as total_htt_position",
+                                                                       ["positions ->> 'total_ht' as total_ht_position",
                                                                         "pages ->> 'footer' as total_ht_page"])
                     if no_rate_amount:
                         self.noRateAmount = no_rate_amount

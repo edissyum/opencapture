@@ -485,7 +485,7 @@ export class VerifierViewerComponent implements OnInit {
     ocr_process(img: any, cpt: number, selection: any) {
         // Write the label of the input above the selection rectangle
         const page = this.getPage(this.lastId);
-        if (this.ocrFromUser || (page === this.currentPage || page === 0)) {
+        if (this.ocrFromUser || (parseInt(String(page)) === this.currentPage || page === 0)) {
             if ($('#select-area-label_' + cpt).length === 0) {
                 const outline = $('#select-areas-outline_' + cpt);
                 const backgroundArea = $('#select-areas-background-area_' + cpt);
@@ -947,7 +947,9 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     refuseForm() {
-        console.log('here');
+        this.updateInvoice({'status': 'ERR', 'locked': false, 'locked_by': null});
+        this.notify.error(this.translate.instant('VERIFIER.invoice_refused'));
+        this.router.navigate(['/verifier/list']);
     }
 
     async changeForm(event: any) {
@@ -1008,7 +1010,7 @@ export class VerifierViewerComponent implements OnInit {
                         background.remove();
                         outline.remove();
                         this.saveInfo = false;
-                        if (page === this.currentPage) this.drawPositionByField(field, position);
+                        if (parseInt(String(page)) === this.currentPage) this.drawPositionByField(field, position);
                     }
                 }
             }

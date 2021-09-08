@@ -14,7 +14,7 @@
 # along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
-
+import json
 import re
 from datetime import datetime
 from ..functions import search_by_positions, search_custom_positions
@@ -113,6 +113,10 @@ class FindDate:
             if position and position['invoice_due_date_position'] not in [False, 'NULL', '', None]:
                 data = {'position': position['invoice_due_date_position'], 'regex': None, 'target': 'full', 'page': position['invoice_due_date_page']}
                 _text, _position = search_custom_positions(data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
+                try:
+                    _position = json.loads(_position)
+                except TypeError:
+                    pass
                 if _text != '':
                     res = self.format_date(_text, _position, True)
                     if res:

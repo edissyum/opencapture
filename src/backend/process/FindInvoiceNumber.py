@@ -14,7 +14,7 @@
 # along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
-
+import json
 import re
 from ..functions import search_by_positions, search_custom_positions
 
@@ -55,6 +55,11 @@ class FindInvoiceNumber:
             if position and position['invoice_number_position'] not in [False, 'NULL', '', None]:
                 data = {'position': position['invoice_number_position'], 'regex': None, 'target': 'full', 'page': position['invoice_number_page']}
                 text, position = search_custom_positions(data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
+
+                try:
+                    position = json.loads(position)
+                except TypeError:
+                    pass
 
                 if text != '':
                     self.Log.info('Invoice number found with position : ' + str(text))
