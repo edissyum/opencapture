@@ -45,6 +45,7 @@ class PyTesseract:
         try:
             text = pytesseract.image_to_string(
                 img,
+                config='--psm 6',
                 lang=self.lang
             )
             return text
@@ -57,17 +58,6 @@ class PyTesseract:
                 img,
                 lang=self.lang,
                 builder=pyocr.builders.LineBoxBuilder()
-            )
-
-        except pytesseract.pytesseract.TesseractError as t:
-            self.Log.error('Tesseract ERROR : ' + str(t))
-
-    def word_box_builder(self, img):
-        try:
-            self.text = self.tool.image_to_string(
-                img,
-                lang=self.lang,
-                builder=pyocr.builders.WordBoxBuilder()
             )
 
         except pytesseract.pytesseract.TesseractError as t:

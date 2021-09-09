@@ -37,9 +37,10 @@ class FindOrderNumber:
         self.target = target
 
     def run(self):
-        order_number = search_by_positions(self.supplier, 'order_number', self.Ocr, self.Files, self.Database)
-        if order_number and order_number[0]:
-            return order_number
+        if self.supplier:
+            order_number = search_by_positions(self.supplier, 'order_number', self.Ocr, self.Files, self.Database)
+            if order_number and order_number[0]:
+                return order_number
 
         if self.supplier and not self.customPage:
             position = self.Database.select({

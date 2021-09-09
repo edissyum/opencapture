@@ -38,6 +38,7 @@
 		"supplier_created": "Compte fournisseur créé avec succès",
 		"supplier_deleted": "Compte fournisseur supprimé",
 		"supplier_name": "Nom du compte fournisseur",
+		"supplier_unknow": "Fournisseur inconnu",
 		"supplier_updated": "Compte fournisseur mis à jour avec succès",
 		"suppliers_list": "Liste des comptes fournisseurs",
 		"update_customer": "Mise à jour du compte client",

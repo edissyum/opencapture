@@ -32,9 +32,9 @@ class FindFooter:
         self.Database = database
         self.supplier = supplier
         self.file = file
-        self.noRateAmount = {}
-        self.allRateAmount = {}
-        self.ratePercentage = {}
+        self.totalHT = {}
+        self.totalTTC = {}
+        self.vatRate = {}
         self.typo = typo
         self.rerun = False
         self.rerun_as_text = False
@@ -54,7 +54,6 @@ class FindFooter:
                 content = line
             else:
                 content = line.content
-
             for res in re.finditer(r"" + regex + "", content.upper()):
                 # Retrieve only the number and add it in array
                 # In case of multiple no rates amount found, take the higher
@@ -168,107 +167,105 @@ class FindFooter:
         else:
             return False
 
-    def test_amount(self, no_rate_amount, all_rate_amount, rate_percentage):
-        if no_rate_amount in [False, None] or rate_percentage in [False, None]:
+    def test_amount(self, total_ht, total_ttc, vat_rate):
+        if total_ht in [False, None] or vat_rate in [False, None]:
             if self.supplier is not False:
-                if no_rate_amount in [False, None]:
-                    no_rate_amount = self.process_footer_with_position('total_ht',
+                if total_ht in [False, None]:
+                    total_ht = self.process_footer_with_position('total_ht',
                                                                        ["positions ->> 'total_ht' as total_ht_position",
                                                                         "pages ->> 'footer' as total_ht_page"])
-                    if no_rate_amount:
-                        self.noRateAmount = no_rate_amount
-                        self.Log.info('noRateAmount found with position : ' + str(no_rate_amount))
+                    if total_ht:
+                        self.totalHT = total_ht
+                        self.Log.info('noRateAmount found with position : ' + str(total_ht))
 
-                if rate_percentage in [False, None]:
-                    rate_percentage = self.process_footer_with_position('vat_rate',
+                if vat_rate in [False, None]:
+                    vat_rate = self.process_footer_with_position('vat_rate',
                                                                         ["positions ->> 'vat_rate' as vat_rate_position",
                                                                          "pages ->> 'footer' as vat_rate_page"])
-                    if rate_percentage:
-                        self.ratePercentage = rate_percentage
-                        self.Log.info('ratePercentage found with position : ' + str(rate_percentage))
+                    if vat_rate:
+                        self.vatRate = vat_rate
+                        self.Log.info('ratePercentage found with position : ' + str(vat_rate))
 
-            if no_rate_amount and rate_percentage:
-                self.noRateAmount = no_rate_amount
-                self.ratePercentage = rate_percentage
+            if total_ht and vat_rate:
+                self.totalHT = total_ht
+                self.vatRate = vat_rate
                 return True
-            elif no_rate_amount and all_rate_amount:
-                self.noRateAmount = no_rate_amount
-                self.allRateAmount = all_rate_amount
+            elif total_ht and total_ttc:
+                self.totalHT = total_ht
+                self.totalTTC = total_ttc
                 return True
             else:
                 return False
 
-        self.noRateAmount = no_rate_amount
-        self.allRateAmount = all_rate_amount
-        self.ratePercentage = rate_percentage
+        self.totalHT = total_ht
+        self.totalTTC = total_ttc
+        self.vatRate = vat_rate
 
     def run(self, text_as_string=False):
-        all_rate = search_by_positions(self.supplier, 'total_ttc', self.Ocr, self.Files, self.Database)
-        all_rate_amount = {}
-        if all_rate and all_rate[0]:
-            all_rate_amount = {
-                0: re.sub(r"[^0-9\.]|\.(?!\d)", "", all_rate[0].replace(',', '.')),
-                1: all_rate[1]
-            }
-        no_rate = search_by_positions(self.supplier, 'total_ht', self.Ocr, self.Files, self.Database)
-        no_rate_amount = {}
-        if no_rate and no_rate[0]:
-            no_rate_amount = {
-                0: re.sub(r"[^0-9\.]|\.(?!\d)", "", no_rate[0].replace(',', '.')),
-                1: all_rate[1]
-            }
-        percentage = search_by_positions(self.supplier, 'vat_rate', self.Ocr, self.Files, self.Database)
-        rate_percentage = {}
-        if percentage and percentage[0]:
-            rate_percentage = {
-                0: re.sub(r"[^0-9\.]|\.(?!\d)", "", percentage[0].replace(',', '.')),
-                1: all_rate[1]
-            }
+        total_ttc, total_ht, vat_rate = {}, {}, {}
+        if self.supplier:
+            all_rate = search_by_positions(self.supplier, 'total_ttc', self.Ocr, self.Files, self.Database)
+            if all_rate and all_rate[0]:
+                total_ttc = {
+                    0: re.sub(r"[^0-9\.]|\.(?!\d)", "", all_rate[0].replace(',', '.')),
+                    1: all_rate[1]
+                }
+            no_rate = search_by_positions(self.supplier, 'total_ht', self.Ocr, self.Files, self.Database)
+            if no_rate and no_rate[0]:
+                total_ht = {
+                    0: re.sub(r"[^0-9\.]|\.(?!\d)", "", no_rate[0].replace(',', '.')),
+                    1: all_rate[1]
+                }
+            percentage = search_by_positions(self.supplier, 'vat_rate', self.Ocr, self.Files, self.Database)
+            if percentage and percentage[0]:
+                vat_rate = {
+                    0: re.sub(r"[^0-9\.]|\.(?!\d)", "", percentage[0].replace(',', '.')),
+                    1: all_rate[1]
+                }
 
         vat_amount = False
 
-        if not self.test_amount(no_rate_amount, all_rate_amount, rate_percentage):
-            no_rate_amount = self.process(self.Locale.noRatesRegex, text_as_string)
-            rate_percentage = self.process(self.Locale.vatRateRegex, text_as_string)
-            all_rate_amount = self.process(self.Locale.allRatesRegex, text_as_string)
+        if not self.test_amount(total_ht, total_ttc, vat_rate):
+            total_ht = self.process(self.Locale.noRatesRegex, text_as_string)
+            vat_rate = self.process(self.Locale.vatRateRegex, text_as_string)
+            total_ttc = self.process(self.Locale.allRatesRegex, text_as_string)
 
-        if all_rate_amount and no_rate_amount:
-            vat_amount = float("%.2f" % (self.return_max(all_rate_amount)[0] - self.return_max(no_rate_amount)[0]))
+        if total_ttc and total_ht:
+            vat_amount = float("%.2f" % (self.return_max(total_ttc)[0] - self.return_max(total_ht)[0]))
 
-        if all_rate_amount and vat_amount and not no_rate_amount:
-            no_rate_amount = [float("%.2f" % self.return_max(all_rate_amount)[0] - self.return_max(vat_amount)[0]), (('', ''), ('', ''))]
+        if total_ttc and vat_amount and not total_ht:
+            total_ht = [float("%.2f" % self.return_max(total_ttc)[0] - self.return_max(vat_amount)[0]), (('', ''), ('', ''))]
 
-        if all_rate_amount and rate_percentage and not no_rate_amount:
-            no_rate_amount = [float("%.2f" % (self.return_max(all_rate_amount)[0] / (1 + float(self.return_max(rate_percentage)[0] / 100)))), (('', ''), ('', ''))]
+        if total_ttc and vat_rate and not total_ht:
+            total_ht = [float("%.2f" % (self.return_max(total_ttc)[0] / (1 + float(self.return_max(vat_rate)[0] / 100)))), (('', ''), ('', ''))]
 
         # Test all amounts. If some are false, try to search them with position. If not, pass
-        if self.test_amount(no_rate_amount, all_rate_amount, rate_percentage) is not False:
+        if self.test_amount(total_ht, total_ttc, vat_rate) is not False:
             # First args is amount, second is position
-            no_rate_amount = self.return_max(self.noRateAmount)
-            all_rate_amount = self.return_max(self.allRateAmount)
-            rate_percentage = self.return_max(self.ratePercentage)
-
-            if no_rate_amount is False and all_rate_amount and rate_percentage:
-                no_rate_amount = [float("%.2f" % (float(all_rate_amount[0]) / (1 + float(rate_percentage[0] / 100)))), (('', ''), ('', '')), True]
-            elif all_rate_amount is False and no_rate_amount and rate_percentage:
-                all_rate_amount = [float("%.2f" % (float(no_rate_amount[0]) + (float(no_rate_amount[0]) * float(float(rate_percentage[0]) / 100)))), (('', ''), ('', '')), True]
-            elif rate_percentage is False and no_rate_amount and all_rate_amount:
-                vat_amount = float("%.2f" % (float(all_rate_amount[0]) - float(no_rate_amount[0])))
-                rate_percentage = [float("%.2f" % (float(vat_amount) / float(no_rate_amount[0]) * 100)), (('', ''), ('', '')), True]
+            total_ht = self.return_max(self.totalHT)
+            total_ttc = self.return_max(self.totalTTC)
+            vat_rate = self.return_max(self.vatRate)
+            if total_ht is False and total_ttc and vat_rate:
+                total_ht = [float("%.2f" % (float(total_ttc[0]) / (1 + float(vat_rate[0] / 100)))), (('', ''), ('', '')), True]
+            elif total_ttc is False and total_ht and vat_rate:
+                total_ttc = [float("%.2f" % (float(total_ht[0]) + (float(total_ht[0]) * float(float(vat_rate[0]) / 100)))), (('', ''), ('', '')), True]
+            elif vat_rate is False and total_ht and total_ttc:
+                vat_amount = float("%.2f" % (float(total_ttc[0]) - float(total_ht[0])))
+                vat_rate = [float("%.2f" % (float(vat_amount) / float(total_ht[0]) * 100)), (('', ''), ('', '')), True]
 
             # Test if the three var's are good by simple math operation
             # Round up value with 2 decimals
             try:
-                total = "%.2f" % (float(no_rate_amount[0]) + (float(no_rate_amount[0]) * float(rate_percentage[0]) / 100))
+                total = "%.2f" % (float(total_ht[0]) + (float(total_ht[0]) * float(vat_rate[0]) / 100))
             except TypeError:
                 return False
 
-            if float(total) == float(all_rate_amount[0]):
-                self.Log.info('Footer informations found : [TOTAL : ' + str(total) + '] - [HT : ' + str(no_rate_amount[0]) + '] - [VATRATE : ' + str(rate_percentage[0]) + ']')
-                return [no_rate_amount, all_rate_amount, rate_percentage, self.nbPage, ["%.2f" % float(float(no_rate_amount[0]) * (float(rate_percentage[0]) / 100))]]
-            elif float(all_rate_amount[0]) == float(vat_amount + no_rate_amount[0]):
-                self.Log.info('Footer informations found : [TOTAL : ' + str(total) + '] - [HT : ' + str(no_rate_amount[0]) + '] - [VATRATE : ' + str(rate_percentage[0]) + ']')
-                return [no_rate_amount, all_rate_amount, rate_percentage, self.nbPage, ["%.2f" % float(float(no_rate_amount[0]) * (float(rate_percentage[0]) / 100))]]
+            if float(total) == float(total_ttc[0]):
+                self.Log.info('Footer informations found : [TOTAL : ' + str(total) + '] - [HT : ' + str(total_ht[0]) + '] - [VATRATE : ' + str(vat_rate[0]) + ']')
+                return [total_ht, total_ttc, vat_rate, self.nbPage, ["%.2f" % float(float(total_ht[0]) * (float(vat_rate[0]) / 100))]]
+            elif float(total_ttc[0]) == float(vat_amount + total_ht[0]):
+                self.Log.info('Footer informations found : [TOTAL : ' + str(total) + '] - [HT : ' + str(total_ht[0]) + '] - [VATRATE : ' + str(vat_rate[0]) + ']')
+                return [total_ht, total_ttc, vat_rate, self.nbPage, ["%.2f" % float(float(total_ht[0]) * (float(vat_rate[0]) / 100))]]
             else:
                 return False
         else:
@@ -302,7 +299,9 @@ class FindFooter:
                         improved_image = self.Files.improve_image_detection(self.Files.jpgName_footer)
                 self.Files.open_img(improved_image)
                 self.text = self.Ocr.text_builder(self.Files.img)
-            return False
+                return self.run(text_as_string=True)
+        return False
+
     @staticmethod
     def return_max(value):
         if value and isinstance(value, dict):

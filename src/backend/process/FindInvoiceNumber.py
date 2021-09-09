@@ -37,9 +37,10 @@ class FindInvoiceNumber:
         self.customPage = custom_page
 
     def run(self):
-        invoice_number = search_by_positions(self.supplier, 'invoice_number', self.Ocr, self.Files, self.Database)
-        if invoice_number and invoice_number[0]:
-            return invoice_number
+        if self.supplier:
+            invoice_number = search_by_positions(self.supplier, 'invoice_number', self.Ocr, self.Files, self.Database)
+            if invoice_number and invoice_number[0]:
+                return invoice_number
 
         if self.supplier and not self.customPage:
             position = self.Database.select({

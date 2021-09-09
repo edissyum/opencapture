@@ -95,8 +95,10 @@ class FindDate:
                 return False
 
     def run(self):
-        date = search_by_positions(self.supplier, 'invoice_date', self.Ocr, self.Files, self.db)
-        due_date = search_by_positions(self.supplier, 'invoice_due_date', self.Ocr, self.Files, self.db)
+        date, due_date = None, None
+        if self.supplier:
+            date = search_by_positions(self.supplier, 'invoice_date', self.Ocr, self.Files, self.db)
+            due_date = search_by_positions(self.supplier, 'invoice_due_date', self.Ocr, self.Files, self.db)
 
         if self.supplier:
             position = self.db.select({

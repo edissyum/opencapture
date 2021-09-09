@@ -200,29 +200,44 @@ export class VerifierViewerComponent implements OnInit {
         control.patchValue(value);
     }
 
-    async drawPositions(): Promise<any> {
+    getFieldInfo(fieldId: any) {
         for (const parent in this.fields) {
             for (const cpt in this.currentFormFields.fields[parent]) {
                 const field = this.currentFormFields.fields[parent][cpt];
-                const position = this.getPosition(field.id);
-                const page = this.getPage(field.id);
-                if (position && parseInt(String(page)) === parseInt(String(this.currentPage))) {
-                    this.lastId = field.id;
-                    this.lastLabel = this.translate.instant(field.label).trim();
-                    this.lastColor = field.color;
-                    this.disableOCR = true;
-                    $('#' + field.id).focus();
-                    const newArea = {
-                        x: position.ocr_from_user ? position.x / this.ratio : position.x / this.ratio - ((position.x / this.ratio) * 0.1),
-                        y: position.ocr_from_user ? position.y / this.ratio : position.y / this.ratio - ((position.y / this.ratio) * 0.02),
-                        width: position.ocr_from_user ? position.width / this.ratio : position.width / this.ratio + ((position.width / this.ratio) * 0.05),
-                        height: position.ocr_from_user ? position.height / this.ratio : position.height / this.ratio + ((position.height / this.ratio) * 0.5)
-                    };
-                    const triggerEvent = $('.trigger');
-                    triggerEvent.hide();
-                    triggerEvent.trigger('mousedown');
-                    triggerEvent.trigger('mouseup', [newArea]);
+                if (field.id === fieldId) {
+                    return field;
                 }
+            }
+        }
+    }
+
+    async drawPositions(): Promise<any> {
+        for (const fieldId in this.invoice.datas) {
+            const page = this.invoice.pages[fieldId];
+            const position = this.invoice.positions[fieldId];
+            if (position && parseInt(String(page)) === parseInt(String(this.currentPage))) {
+                this.lastId = fieldId;
+                const splittedFieldId = fieldId.split('_');
+                let field = this.getFieldInfo(fieldId);
+                if (!isNaN(parseInt(splittedFieldId[splittedFieldId.length - 1]))) {
+                    const cpt = splittedFieldId[splittedFieldId.length - 1];
+                    const tmpFieldId = splittedFieldId.join('_').replace('_' + cpt, '');
+                    field = this.getFieldInfo(tmpFieldId);
+                }
+                this.lastLabel = this.translate.instant(field.label).trim();
+                this.lastColor = field.color;
+                this.disableOCR = true;
+                $('#' + fieldId).focus();
+                const newArea = {
+                    x: position.ocr_from_user ? position.x / this.ratio : position.x / this.ratio - ((position.x / this.ratio) * 0.1),
+                    y: position.ocr_from_user ? position.y / this.ratio : position.y / this.ratio - ((position.y / this.ratio) * 0.02),
+                    width: position.ocr_from_user ? position.width / this.ratio : position.width / this.ratio + ((position.width / this.ratio) * 0.05),
+                    height: position.ocr_from_user ? position.height / this.ratio : position.height / this.ratio + ((position.height / this.ratio) * 0.5)
+                };
+                const triggerEvent = $('.trigger');
+                triggerEvent.hide();
+                triggerEvent.trigger('mousedown');
+                triggerEvent.trigger('mouseup', [newArea]);
             }
         }
     }
@@ -243,18 +258,6 @@ export class VerifierViewerComponent implements OnInit {
         triggerEvent.hide();
         triggerEvent.trigger('mousedown');
         triggerEvent.trigger('mouseup', [newArea]);
-    }
-
-    getPosition(fieldId: any) {
-        let position: any;
-        if (this.invoice.positions) {
-            Object.keys(this.invoice.positions).forEach((element: any) => {
-                if (element === fieldId) {
-                    position = this.invoice.positions[fieldId];
-                }
-            });
-        }
-        return position;
     }
 
     getPage(fieldId: any) {
@@ -305,6 +308,7 @@ export class VerifierViewerComponent implements OnInit {
             'other': []
         };
         this.fields = data.fields;
+
         for (const category in this.fields) {
             for (const cpt in this.fields[category]) {
                 const field = this.fields[category][cpt];
@@ -327,6 +331,8 @@ export class VerifierViewerComponent implements OnInit {
                     values: ''
                 });
 
+                const _field = this.form[category][this.form[category].length - 1];
+
                 if (field.id === 'accounting_plan') {
                     let array = await this.retrieveAccountingPlan();
                     this.accountingPlanEmpty = Object.keys(array).length === 0;
@@ -341,7 +347,6 @@ export class VerifierViewerComponent implements OnInit {
                         );
                 }
 
-                const _field = this.form[category][cpt];
                 if (this.invoice.datas[field.id]) {
                     let value = this.invoice.datas[field.id];
                     if (field.format === 'date' && field.id !== '' && field.id !== undefined && value) {
@@ -355,14 +360,10 @@ export class VerifierViewerComponent implements OnInit {
                     _field.control.setValue(value);
                     _field.control.markAsTouched();
 
-                    if (field.id === 'siret' || field.id === 'siren') {
-                        this.checkSirenOrSiret(field.id, value);
-                    }
-
-                    if (field.id === 'vat_number') {
-                        this.checkVAT(field.id, value);
-                    }
+                    if (field.id === 'siret' || field.id === 'siren') this.checkSirenOrSiret(field.id, value);
+                    if (field.id === 'vat_number') this.checkVAT(field.id, value);
                 }
+
                 if (field.id === 'name' && category === 'supplier') this.supplierNamecontrol = this.form[category][cpt].control;
                 this.findChildren(field.id, _field, category);
             }
@@ -490,10 +491,14 @@ export class VerifierViewerComponent implements OnInit {
                 const outline = $('#select-areas-outline_' + cpt);
                 const backgroundArea = $('#select-areas-background-area_' + cpt);
                 const labelContainer = $('#select-areas-label-container_' + cpt);
+                const deleteContainer = $('#select-areas-delete_' + cpt);
+                const resizeHandler = $('.select-areas-resize-handler_' + cpt);
                 labelContainer.append('<div id="select-area-label_' + cpt + '" class="input_' + this.lastId + ' select-none">' + this.lastLabel + '</div>');
                 backgroundArea.css('background-color', this.lastColor);
                 outline.addClass('outline_' + this.lastId);
                 backgroundArea.addClass('background_' + this.lastId);
+                resizeHandler.addClass('resize_' + this.lastId);
+                deleteContainer.addClass('delete_' + this.lastId);
                 backgroundArea.data('page', page);
                 labelContainer.data('page', page);
                 outline.data('page', page);
@@ -569,7 +574,7 @@ export class VerifierViewerComponent implements OnInit {
 
     savePosition(position: any) {
         position = {
-            ocr_from_user: this.ocrFromUser,
+            ocr_from_user: true,
             x: position.x * this.ratio,
             y: position.y * this.ratio,
             height: position.height * this.ratio,
@@ -737,7 +742,7 @@ export class VerifierViewerComponent implements OnInit {
                         field.cpt += 1;
                         newField.cpt = field.cpt;
                         newField.display = 'simple';
-                        newField.control.value = '';
+                        newField.control = new FormControl();
                         this.form[category].splice(cpt + field.cpt, 0, newField);
                         this.saveData('', newField.id);
                         this.notify.success(this.translate.instant('INVOICES.field_duplicated', {"input": this.translate.instant(field.label)}));
@@ -992,23 +997,34 @@ export class VerifierViewerComponent implements OnInit {
             const extension = this.currentFilename.split('.').pop();
             const oldCpt = ('000' + oldPage).substr(-3);
             const newCpt = ('000' + pageToShow).substr(-3);
-
             const newFilename = this.currentFilename.replace(oldCpt + '.' + extension, newCpt + '.' + extension);
             this.currentFilename = newFilename;
             this.getThumb(newFilename).then();
             this.currentPage = pageToShow;
-            for (const parent in this.fields) {
-                for (const cpt in this.currentFormFields.fields[parent]) {
-                    const field = this.currentFormFields.fields[parent][cpt];
-                    const position = this.getPosition(field.id);
-                    const page = this.getPage(field.id);
-                    if (position) {
-                        const input = $('.input_' + field.id);
-                        const background = $('.background_' + field.id);
-                        const outline = $('.outline_' + field.id);
-                        input.remove();
-                        background.remove();
-                        outline.remove();
+            for (const fieldId in this.invoice.datas) {
+                const page = this.invoice.pages[fieldId];
+                const position = this.invoice.positions[fieldId];
+                if (position) {
+                    const input = $('.input_' + fieldId);
+                    const background = $('.background_' + fieldId);
+                    const outline = $('.outline_' + fieldId);
+                    const resizeHandler = $('.resize_' + fieldId);
+                    const deleteContainer = $('.delete_' + fieldId);
+                    input.remove();
+                    background.remove();
+                    outline.remove();
+                    resizeHandler.remove();
+                    deleteContainer.remove();
+                    if (parseInt(String(page)) === parseInt(String(this.currentPage))) {
+                        this.lastId = fieldId;
+                        const splittedFieldId = fieldId.split('_');
+                        let field = this.getFieldInfo(fieldId);
+                        if (!isNaN(parseInt(splittedFieldId[splittedFieldId.length - 1]))) {
+                            const cpt = splittedFieldId[splittedFieldId.length - 1];
+                            const tmpFieldId = splittedFieldId.join('_').replace('_' + cpt, '');
+                            field = this.getFieldInfo(tmpFieldId);
+                            field.label = this.translate.instant(field.label) + ' ' + (parseInt(cpt) + 1);
+                        }
                         this.saveInfo = false;
                         if (parseInt(String(page)) === this.currentPage) this.drawPositionByField(field, position);
                     }

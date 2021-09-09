@@ -343,7 +343,7 @@ export class VerifierListComponent implements OnInit {
                         if(invoice.supplier_id) {
                             this.fillChildren(this.TREE_DATA[index].id, this.TREE_DATA[index].children[childIndex].children, invoice.supplier_name, invoice.supplier_name, invoice.supplier_id, invoice.id, purchaseOrSale);
                         }else {
-                            this.fillChildren(this.TREE_DATA[index].id, this.TREE_DATA[index].children[childIndex].children, invoice.supplier_name, 'Fournisseur inconnu', invoice.supplier_id, invoice.id, purchaseOrSale);
+                            this.fillChildren(this.TREE_DATA[index].id, this.TREE_DATA[index].children[childIndex].children, invoice.supplier_name, this.translate.instant('ACCOUNTS.supplier_unknow'), invoice.supplier_id, invoice.id, purchaseOrSale);
                         }
                         this.TREE_DATA[index].children[childIndex].number = this.TREE_DATA[index].children[childIndex].number + 1;
                         this.TREE_DATA[index].number = this.TREE_DATA[index].number + 1;

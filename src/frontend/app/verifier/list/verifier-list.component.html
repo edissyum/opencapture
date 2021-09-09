@@ -92,7 +92,7 @@
                                 <img [routerLink]="'/verifier/viewer/'+ invoice.id"  mat-card-image class="m-auto" [src]="invoice.thumb">
                                 <mat-card-header class="leading-6 relative z-10" [routerLink]="'/verifier/viewer/'+ invoice.id">
                                     <mat-card-title>
-                                        <span>{{ invoice.supplier_name }}</span>
+                                        <span>{{ invoice.supplier_name ? invoice.supplier_name : 'ACCOUNTS.supplier_unknow' | translate }}</span>
                                         <span class="absolute right-6 text-green-400 text-base badge badge-secondary badge-pill"
                                               [matTooltip]="this.translate.instant('VERIFIER.nb_pages') + ' : ' + invoice.nb_pages">
                                         {{ invoice.nb_pages }}<i class="far fa-file-alt ml-1"></i>

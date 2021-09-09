@@ -37,9 +37,10 @@ class FindDeliveryNumber:
         self.target = target
 
     def run(self):
-        delivery_number = search_by_positions(self.supplier, 'delivery_number', self.Ocr, self.Files, self.Database)
-        if delivery_number and delivery_number[0]:
-            return delivery_number
+        if self.supplier:
+            delivery_number = search_by_positions(self.supplier, 'delivery_number', self.Ocr, self.Files, self.Database)
+            if delivery_number and delivery_number[0]:
+                return delivery_number
 
         if self.supplier and not self.customPage:
             position = self.Database.select({
