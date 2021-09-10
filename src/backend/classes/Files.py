@@ -584,5 +584,5 @@ class Files:
             try:
                 positions = json.loads(positions)
                 return positions
-            except TypeError:
+            except (TypeError, json.decoder.JSONDecodeError):
                 return ''

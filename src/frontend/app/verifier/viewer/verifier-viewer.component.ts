@@ -33,6 +33,7 @@ import { ConfigService } from "../../../services/config.service";
 import 'moment/locale/en-gb';
 import 'moment/locale/fr';
 import * as moment from 'moment';
+import {UserService} from "../../../services/user.service";
 declare var $: any;
 
 
@@ -107,6 +108,7 @@ export class VerifierViewerComponent implements OnInit {
         private route: ActivatedRoute,
         private sanitizer: DomSanitizer,
         private authService: AuthService,
+        private userService: UserService,
         public translate: TranslateService,
         private notify: NotificationService,
         private configService: ConfigService,
@@ -119,6 +121,10 @@ export class VerifierViewerComponent implements OnInit {
         this.saveInfo = true;
         this.config = this.configService.getConfig();
         this.invoiceId = this.route.snapshot.params['id'];
+        this.updateInvoice({
+            'locked': true,
+            'locked_by': this.userService.user.username
+        })
         this.invoice = await this.getInvoice();
         this.currentFilename = this.invoice.full_jpg_filename;
         await this.getThumb(this.invoice.full_jpg_filename);
@@ -213,7 +219,7 @@ export class VerifierViewerComponent implements OnInit {
 
     async drawPositions(): Promise<any> {
         for (const fieldId in this.invoice.datas) {
-            const page = this.invoice.pages[fieldId];
+            const page = this.getPage(fieldId);
             const position = this.invoice.positions[fieldId];
             if (position && parseInt(String(page)) === parseInt(String(this.currentPage))) {
                 this.lastId = fieldId;
@@ -229,10 +235,10 @@ export class VerifierViewerComponent implements OnInit {
                 this.disableOCR = true;
                 $('#' + fieldId).focus();
                 const newArea = {
-                    x: position.ocr_from_user ? position.x / this.ratio : position.x / this.ratio - ((position.x / this.ratio) * 0.1),
-                    y: position.ocr_from_user ? position.y / this.ratio : position.y / this.ratio - ((position.y / this.ratio) * 0.02),
+                    x: position.ocr_from_user ? position.x / this.ratio : position.x / this.ratio - ((position.x / this.ratio) * 0.005),
+                    y: position.ocr_from_user ? position.y / this.ratio : position.y / this.ratio - ((position.y / this.ratio) * 0.003),
                     width: position.ocr_from_user ? position.width / this.ratio : position.width / this.ratio + ((position.width / this.ratio) * 0.05),
-                    height: position.ocr_from_user ? position.height / this.ratio : position.height / this.ratio + ((position.height / this.ratio) * 0.5)
+                    height: position.ocr_from_user ? position.height / this.ratio : position.height / this.ratio + ((position.height / this.ratio) * 0.6)
                 };
                 const triggerEvent = $('.trigger');
                 triggerEvent.hide();

@@ -296,7 +296,7 @@ def delete_invoice(invoice_id):
 def update_invoice(invoice_id, data):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
-    role_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
+    invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
 
     if error is None:
         res, error = verifier.update_invoice({'set': data, 'invoice_id': invoice_id})
@@ -305,13 +305,33 @@ def update_invoice(invoice_id, data):
             return '', 200
         else:
             response = {
-                "errors": gettext('UPDATE_ROLE_ERROR'),
+                "errors": gettext('UPDATE_INVOICE_ERROR'),
                 "message": error
             }
             return response, 401
     else:
         response = {
-            "errors": gettext('UPDATE_ROLE_ERROR'),
+            "errors": gettext('UPDATE_INVOICE_ERROR'),
+            "message": error
+        }
+        return response, 401
+
+
+def remove_lock_by_user_id(user_id):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+
+    res, error = verifier.update_invoices({
+        'set': {"locked":  False},
+        'where': ['locked_by = %s'],
+        'data': [user_id]
+    })
+
+    if error is None:
+        return '', 200
+    else:
+        response = {
+            "errors": gettext('REMOVE_LOCK_BY_USER_ID'),
             "message": error
         }
         return response, 401

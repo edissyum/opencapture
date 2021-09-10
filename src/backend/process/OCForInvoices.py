@@ -214,6 +214,14 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
             'city': supplier[2]['city'],
             'country': supplier[2]['country'],
         })
+        if supplier[1]:
+            positions.update({
+                'vat_number': files.reformat_positions(supplier[1])
+            })
+        if supplier[3]:
+            pages.update({
+                'vat_number': supplier[3]
+            })
 
     if typo:
         update_typo_database(database, supplier[0], typo, log, config)

@@ -193,7 +193,8 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (29, 'export_suppliers
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (30, 'position_mask_list', 'verifier');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (31, 'add_position_mask', 'verifier');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (32, 'update_position_mask', 'verifier');
-ALTER SEQUENCE "privileges_id_seq" RESTART WITH 33;
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (33, 'history', 'general');
+ALTER SEQUENCE "privileges_id_seq" RESTART WITH 34;
 
 -- CRÉATION DES ROLES
 INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (1, 'superadmin', 'SuperUtilisateur', 'false');

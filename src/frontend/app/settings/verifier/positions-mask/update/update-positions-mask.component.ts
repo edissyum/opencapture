@@ -488,7 +488,6 @@ export class UpdatePositionsMaskComponent implements OnInit {
                 maxSize: [this.imageInvoice.width(), this.imageInvoice.height() / 8],
                 onChanged(img: any, cpt: any, selection: any) {
                     if (selection.length !== 0 && selection['width'] !== 0 && selection['height'] !== 0) {
-                        console.log(selection);
                         _this.ocr_process(img, cpt, selection);
                     }
                 },

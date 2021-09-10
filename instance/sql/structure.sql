@@ -24,7 +24,7 @@ CREATE TABLE "positions_masks" (
     "id"            SERIAL UNIQUE PRIMARY KEY,
     "label"         VARCHAR(50),
     "enabled"       BOOLEAN DEFAULT true,
-    "supplier_id"  VARCHAR(20),
+    "supplier_id"   VARCHAR(20),
     "positions"     JSONB DEFAULT '{}',
     "pages"         JSONB DEFAULT '{}',
     "regex"         JSONB DEFAULT '{}',
@@ -187,14 +187,13 @@ CREATE TABLE "invoices" (
 );
 
 CREATE TABLE "history" (
-    "id"                 SERIAL UNIQUE PRIMARY KEY,
-    "user_id"            INTEGER,
-    "history_type"       VARCHAR(20),
-    "history_id"         INTEGER,
-    "history_invoice_id" INTEGER,
-    "history_date"       TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
-    "history_desc"       VARCHAR(255),
-    "user_ip"            VARCHAR(12)
+    "id"                    SERIAL UNIQUE PRIMARY KEY,
+    "user_id"               INTEGER,
+    "splitter_or_verifier"  VARCHAR(8) NOT NULL,
+    "history_date"          TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
+    "history_desc"          VARCHAR(255),
+    "history_module"        VARCHAR(20),
+    "user_ip"               VARCHAR(20)
 );
 
 CREATE TABLE "status" (

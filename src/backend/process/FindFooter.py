@@ -90,6 +90,7 @@ class FindFooter:
                     result = result_split[0] + '.' + result_split[1][0:2]
 
                 if result:
+                    result = result.replace('-', '').replace('/', '').replace('(', '').replace(')', '')
                     if text_as_string:
                         array_of_data.update({float(result.replace(',', '.')): (('', ''), ('', ''))})
                     else:

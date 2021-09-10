@@ -147,14 +147,13 @@ export class VerifierListComponent implements OnInit {
 
     async ngOnInit() {
         marker('VERIFIER.nb_pages'); // Needed to get the translation in the JSON file
-        marker('VERIFIER.reset_invoice_list'); // Needed to get the translation in the JSON file
         marker('VERIFIER.expand_all'); // Needed to get the translation in the JSON file
         marker('VERIFIER.collapse_all'); // Needed to get the translation in the JSON file
         marker('VERIFIER.select_all'); // Needed to get the translation in the JSON file
         marker('VERIFIER.unselect_all'); // Needed to get the translation in the JSON file
-
         this.config = this.configService.getConfig();
         this.localeStorageService.save('splitter_or_verifier', 'verifier');
+        this.removeLockByUserId(this.userService.user.username);
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('verifier/') && !lastUrl.includes('settings') || lastUrl === '/' || lastUrl === '/upload') {
             if (this.localeStorageService.get('invoicesPageIndex'))
@@ -180,6 +179,18 @@ export class VerifierListComponent implements OnInit {
             })
         ).subscribe();
         this.loadCustomers();
+    }
+
+    removeLockByUserId(userId: any) {
+        this.http.put(API_URL + '/ws/verifier/invoices/removeLockByUserId/' + userId, {}, {headers: this.authService.headers}).pipe(
+            tap(() => {}),
+            finalize(() => this.loading = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
     }
 
     loadCustomers() {
@@ -341,9 +352,9 @@ export class VerifierListComponent implements OnInit {
                 this.invoices.forEach((invoice: any) => {
                     if (this.TREE_DATA[index].id === invoice.customer_id && invoice.purchase_or_sale === purchaseOrSale) {
                         if(invoice.supplier_id) {
-                            this.fillChildren(this.TREE_DATA[index].id, this.TREE_DATA[index].children[childIndex].children, invoice.supplier_name, invoice.supplier_name, invoice.supplier_id, invoice.id, purchaseOrSale);
+                            this.fillChildren(this.TREE_DATA[index].id, this.TREE_DATA[index].children[childIndex].children, invoice.supplier_name, invoice.supplier_name, invoice.supplier_id, invoice.invoice_id, purchaseOrSale);
                         }else {
-                            this.fillChildren(this.TREE_DATA[index].id, this.TREE_DATA[index].children[childIndex].children, invoice.supplier_name, this.translate.instant('ACCOUNTS.supplier_unknow'), invoice.supplier_id, invoice.id, purchaseOrSale);
+                            this.fillChildren(this.TREE_DATA[index].id, this.TREE_DATA[index].children[childIndex].children, invoice.supplier_name, this.translate.instant('ACCOUNTS.supplier_unknow'), invoice.supplier_id, invoice.invoice_id, purchaseOrSale);
                         }
                         this.TREE_DATA[index].children[childIndex].number = this.TREE_DATA[index].children[childIndex].number + 1;
                         this.TREE_DATA[index].number = this.TREE_DATA[index].number + 1;
@@ -435,6 +446,18 @@ export class VerifierListComponent implements OnInit {
             if(result) {
                 this.deleteInvoice(invoiceId);
             }
+        });
+    }
+
+    displayInvoiceLocked(lockedBy: any) {
+        this.dialog.open(ConfirmDialogComponent, {
+            data:{
+                confirmTitle        : this.translate.instant('VERIFIER.invoice_locked'),
+                confirmText         : this.translate.instant('VERIFIER.invoice_locked_by', {'locked_by': lockedBy}),
+                confirmButton       : this.translate.instant('GLOBAL.confirm'),
+                confirmButtonColor  : "warn"
+            },
+            width: "600px",
         });
     }
 
