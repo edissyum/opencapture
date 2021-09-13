@@ -6,6 +6,7 @@ pyocr
 pyPdf2
 pyPdf4
 pandas
+
 pillow
 kuyruk
 deskew
