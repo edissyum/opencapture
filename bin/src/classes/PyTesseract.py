@@ -45,6 +45,7 @@ class PyTesseract:
         try:
             text = pytesseract.image_to_string(
                 img,
+                config='--psm 6',
                 lang=self.lang
             )
             return text
