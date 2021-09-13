@@ -28,6 +28,7 @@ import {API_URL} from "../../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {PrivilegesService} from "../../../../../services/privileges.service";
+import {HistoryService} from "../../../../../services/history.service";
 
 @Component({
     selector: 'app-update',
@@ -98,6 +99,7 @@ export class UpdateUserComponent implements OnInit {
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,
+        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService
     ) {
@@ -197,6 +199,8 @@ export class UpdateUserComponent implements OnInit {
             ).pipe(
                 tap(() => {
                     this.notify.success(this.translate.instant('USER.updated'));
+                    const _user = user['lastname'] + ' ' + user['firstname'];
+                    this.historyService.addHistory('general', 'update_user', this.translate.instant('HISTORY-DESC.update-user', {user: _user}));
                     this.router.navigate(['/settings/general/users/']).then();
                 }),
                 catchError((err: any) => {

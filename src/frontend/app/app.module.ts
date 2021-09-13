@@ -75,6 +75,7 @@ import { UpdateInputComponent } from './settings/verifier/inputs/update/update-i
 import { UpdatePositionsMaskComponent } from './settings/verifier/positions-mask/update/update-positions-mask.component';
 import { PositionsMaskListComponent } from './settings/verifier/positions-mask/list/positions-mask-list.component';
 import { CreatePositionsMaskComponent } from './settings/verifier/positions-mask/create/create-positions-mask.component';
+import { HistoryComponent } from './history/history.component';
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -122,7 +123,8 @@ export function createTranslateLoader(http: HttpClient) {
         UpdateInputComponent,
         UpdatePositionsMaskComponent,
         PositionsMaskListComponent,
-        CreatePositionsMaskComponent
+        CreatePositionsMaskComponent,
+        HistoryComponent
     ],
     imports: [
         BrowserModule,

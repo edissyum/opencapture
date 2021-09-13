@@ -45,15 +45,15 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 })
 
 export class UsersListComponent implements OnInit {
-    headers: HttpHeaders          = this.authService.headers;
-    loading : boolean             = true;
+    headers         : HttpHeaders = this.authService.headers;
+    loading         : boolean     = true;
     columnsToDisplay: string[]    = ['id', 'username', 'firstname', 'lastname', 'role','status', 'actions'];
-    users : any                   = [];
-    pageSize : number             = 10;
-    pageIndex: number             = 0;
-    total: number                 = 0;
-    offset: number                = 0;
-    roles : any                   = [];
+    users           : any         = [];
+    pageSize        : number      = 10;
+    pageIndex       : number      = 0;
+    total           : number      = 0;
+    offset          : number      = 0;
+    roles           : any         = [];
 
     constructor(
         public router: Router,
@@ -249,7 +249,6 @@ export class UsersListComponent implements OnInit {
                 default: return 0;
             }
         });
-
     }
 
     compare(a: number | string, b: number | string, isAsc: boolean) {

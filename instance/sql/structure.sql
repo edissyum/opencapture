@@ -188,12 +188,13 @@ CREATE TABLE "invoices" (
 
 CREATE TABLE "history" (
     "id"                    SERIAL UNIQUE PRIMARY KEY,
-    "user_id"               INTEGER,
     "splitter_or_verifier"  VARCHAR(8) NOT NULL,
     "history_date"          TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
+    "history_module"        VARCHAR(50),
     "history_desc"          VARCHAR(255),
-    "history_module"        VARCHAR(20),
-    "user_ip"               VARCHAR(20)
+    "user_ip"               VARCHAR(20),
+    "user_info"             VARCHAR(255),
+    "user_id"               INTEGER
 );
 
 CREATE TABLE "status" (

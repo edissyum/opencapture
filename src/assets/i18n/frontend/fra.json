@@ -182,6 +182,7 @@
 		"validate": "Valider la facture"
 	},
 	"GLOBAL": {
+		"at": "à",
 		"batches": "Lots",
 		"cancel": "Annuler",
 		"confirm": "Confirmation",
@@ -209,6 +210,25 @@
 		"output_type": "Type de chaîne sortante",
 		"role": "Rôle",
 		"status": "Status"
+	},
+	"HISTORY-DESC": {
+		"create-role": "Création du rôle&nbsp;<b>{{ role }}</b>",
+		"create-user": "Création de l'utilisateur&nbsp;<b>{{ user }}</b>",
+		"login": "Connexion de l'utilisateur",
+		"logout": "Déconnexion de l'utilisateur",
+		"update-role": "Mise à jour du rôle&nbsp;<b>{{ role }}</b>",
+		"update-user": "Mise à jour de l'utilisateur&nbsp;<b>{{ user }}</b>"
+	},
+	"HISTORY": {
+		"filter": "Filtre",
+		"general": "Général",
+		"history_date": "",
+		"history_desc": "Description",
+		"module": "Module",
+		"submodule": "Sous-module",
+		"user": "Utilisateur",
+		"user_info": "Informations utilisateurs",
+		"user_ip": "Adresse IP"
 	},
 	"HOME": {
 		"splitter": "Open-Capture Splitter",

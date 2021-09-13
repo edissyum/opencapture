@@ -38,6 +38,7 @@ import { CreateSupplierComponent } from "./accounts/suppliers/create/create-supp
 import { CustomersListComponent } from "./accounts/customers/list/customers-list.component";
 import { UpdateCustomerComponent } from "./accounts/customers/update/update-customer.component";
 import { CreateCustomerComponent } from "./accounts/customers/create/create-customer.component";
+import { HistoryComponent } from "./history/history.component";
 import { HasPrivilegeService } from "../services/has-privilege.service";
 
 const routes: Routes = [
@@ -70,9 +71,17 @@ const routes: Routes = [
 
     },
     {path: 'verifier', redirectTo: 'verifier/list', pathMatch: 'full'},
+
     {
         path: 'upload', component: UploadComponent,
         data: {title: marker('GLOBAL.upload'), privileges: ['upload']},
+        canActivate: [LoginRequiredService, HasPrivilegeService]
+
+    },
+
+    {
+        path: 'history', component: HistoryComponent,
+        data: {title: marker('GLOBAL.history'), privileges: ['history']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
 
     },

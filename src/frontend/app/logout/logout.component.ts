@@ -20,6 +20,7 @@ import {TranslateService} from "@ngx-translate/core";
 import {NotificationService} from "../../services/notifications/notifications.service";
 import {AuthService} from "../../services/auth.service";
 import {Router} from "@angular/router";
+import {HistoryService} from "../../services/history.service";
 
 @Component({
     selector: 'app-logout',
@@ -29,13 +30,15 @@ import {Router} from "@angular/router";
 export class LogoutComponent implements OnInit {
     constructor(
         private router: Router,
+        private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,
-        private authService: AuthService
+        private historyService: HistoryService,
     ) {
     }
 
     ngOnInit(): void {
+        this.historyService.addHistory('general', 'logout', this.translate.instant('HISTORY-DESC.logout'));
         this.authService.logout();
     }
 }

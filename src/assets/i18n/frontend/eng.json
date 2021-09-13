@@ -182,6 +182,7 @@
 		"validate": ""
 	},
 	"GLOBAL": {
+		"at": "",
 		"batches": "Batches",
 		"cancel": "Cancel",
 		"confirm": "Confirm",
@@ -209,6 +210,25 @@
 		"output_type": "",
 		"role": "",
 		"status": ""
+	},
+	"HISTORY-DESC": {
+		"create-role": "",
+		"create-user": "",
+		"login": "",
+		"logout": "",
+		"update-role": "",
+		"update-user": ""
+	},
+	"HISTORY": {
+		"filter": "",
+		"general": "",
+		"history_date": "",
+		"history_desc": "",
+		"module": "",
+		"submodule": "",
+		"user": "",
+		"user_info": "",
+		"user_ip": ""
 	},
 	"HOME": {
 		"splitter": "Open-Capture splitter",

@@ -48,7 +48,7 @@ def get_privileges_by_role_id(args):
         role_privileges = privilege_info['privileges_id']['data']
         if type(eval(role_privileges)) == list:
             role_privileges = eval(role_privileges)
-            if role_privileges[0] == '*':
+            if role_privileges and role_privileges[0] == '*':
                 return '*', 200
             else:
                 all_privileges, error = privileges.get_privileges()
