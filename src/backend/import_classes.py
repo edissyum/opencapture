@@ -66,6 +66,12 @@ else:
     _Splitter = getattr(__import__(custom_array['Splitter']['path'] + '.' + custom_array['Splitter']['module'],
                                    fromlist=[custom_array['Splitter']['module']]), custom_array['Splitter']['module'])
 
+if 'CMIS' not in custom_array:
+    from src.backend.classes.CMIS import CMIS as _CMIS
+else:
+    CMIS = getattr(__import__(custom_array['CMIS']['path'] + '.' + custom_array['CMIS']['module'],
+                                   fromlist=[custom_array['CMIS']['module']]), custom_array['CMIS']['module'])
+
 if 'SeparatorQR' not in custom_array:
     from .classes.SeparatorQR import SeparatorQR as _SeparatorQR
 else:

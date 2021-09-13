@@ -143,7 +143,7 @@ def launch(args):
     config, locale, log, ocr, database, spreadsheet = create_classes(config_file)
     tmp_folder = tempfile.mkdtemp(dir=config.cfg['GLOBAL']['tmppath'])
     filename = tempfile.NamedTemporaryFile(dir=tmp_folder).name
-    separator_qr = _SeparatorQR(log, config, tmp_folder)
+    separator_qr = _SeparatorQR(log, config, tmp_folder, 'verifier')
 
     if args.get('isMail') is None or args.get('isMail') is False:
         separator_qr.enabled = str2bool(config.cfg['SEPARATORQR']['enabled'])

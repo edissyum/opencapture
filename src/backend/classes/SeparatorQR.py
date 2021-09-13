@@ -30,7 +30,7 @@ import pdf2image
 
 
 class SeparatorQR:
-    def __init__(self, log, config, tmp_folder):
+    def __init__(self, log, config, tmp_folder, splitter_or_verifier):
         self.Log = log
         self.Config = config
         self.pages = []
@@ -45,6 +45,7 @@ class SeparatorQR:
         self.tmp_dir = config.cfg['SEPARATORQR']['tmppath'] + '/' + tmp_folder_name + '/'
         self.output_dir = config.cfg['SEPARATORQR']['outputpdfpath'] + '/' + tmp_folder_name + '/'
         self.output_dir_pdfa = config.cfg['SEPARATORQR']['outputpdfapath'] + '/' + tmp_folder_name + '/'
+        self.splitter_or_verifier = splitter_or_verifier
 
         os.mkdir(self.output_dir)
         os.mkdir(self.output_dir_pdfa)
@@ -137,15 +138,21 @@ class SeparatorQR:
         self.Log.info('Start page separation using QR CODE')
         self.pages = []
         try:
-            if self.Config.cfg['REMOVE-BLANK-PAGES']['enabled'] == 'True':
-                self.remove_blank_page(file)
             pdf = PyPDF4.PdfFileReader(open(file, 'rb'))
             self.nb_pages = pdf.getNumPages()
             self.get_xml_qr_code(file)
-            self.parse_xml()
-            self.check_empty_docs()
-            self.set_doc_ends()
-            self.extract_and_convert_docs(file)
+
+            if self.splitter_or_verifier == 'verifier':
+                if self.Config.cfg['REMOVE-BLANK-PAGES']['enabled'] == 'True':
+                    self.remove_blank_page(file)
+                self.parse_xml()
+                self.check_empty_docs()
+                self.set_doc_ends()
+                self.extract_and_convert_docs(file)
+
+            elif self.splitter_or_verifier == 'splitter':
+                self.parse_xml_multi()
+
         except Exception as e:
             self.error = True
             self.Log.error("INIT : " + str(e))
@@ -167,6 +174,16 @@ class SeparatorQR:
         except subprocess.CalledProcessError as cpe:
             if cpe.returncode != 4:
                 self.Log.error("ZBARIMG : \nreturn code: %s\ncmd: %s\noutput: %s\nglobal : %s" % (cpe.returncode, cpe.cmd, cpe.output, cpe))
+
+    def parse_xml_multi(self):
+        if self.qrList is None:
+            return
+
+        for index in self.qrList[0]:
+            self.pages.append({
+                "qr_code": index[0][0].text,
+                "num": index.attrib['num']
+            })
 
     def parse_xml(self):
         if self.qrList is None:

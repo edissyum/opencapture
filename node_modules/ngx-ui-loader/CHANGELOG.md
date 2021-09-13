@@ -1,0 +1,1 @@
+CHANGELOG can be seen [here](https://github.com/t-ho/ngx-ui-loader/wiki/Changelog)

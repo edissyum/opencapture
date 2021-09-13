@@ -1,0 +1,1 @@
+{"version":3,"file":"module.d.ts","sources":["module.d.ts"],"names":[],"mappings":"AAAA;AACA;AACA;AACA;AACA;;;;;;;AACA;;;;AACA","sourcesContent":["/**\n * *****************************************************************\n * Define module for the Extended API\n * *****************************************************************\n */\nexport declare class ExtendedModule {\n}\n"]}

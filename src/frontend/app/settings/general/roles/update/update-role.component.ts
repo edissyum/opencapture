@@ -95,7 +95,21 @@ export class UpdateRoleComponent implements OnInit {
         marker('PRIVILEGES.update_supplier'),
         marker('PRIVILEGES.change_language'),
         marker('PRIVILEGES.form_builder'),
-        marker('PRIVILEGES.export_suppliers')
+        marker('PRIVILEGES.export_suppliers'),
+        marker('PRIVILEGES.history'),
+        marker('PRIVILEGES.add_output'),
+        marker('PRIVILEGES.add_input'),
+        marker('PRIVILEGES.add_form'),
+        marker('PRIVILEGES.update_output'),
+        marker('PRIVILEGES.update_input'),
+        marker('PRIVILEGES.position_mask_list'),
+        marker('PRIVILEGES.update_form'),
+        marker('PRIVILEGES.inputs_list'),
+        marker('PRIVILEGES.outputs_list'),
+        marker('PRIVILEGES.add_position_mask'),
+        marker('PRIVILEGES.update_position_mask'),
+        marker('PRIVILEGES.create_customer'),
+        marker('PRIVILEGES.update_customer'),
     ];
     // End translation
     constructor(

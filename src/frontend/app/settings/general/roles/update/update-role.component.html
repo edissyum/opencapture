@@ -105,7 +105,7 @@
         <div class="flex justify-center items-center ml-10 mr-5">
             <mat-tab-group *ngIf="this.privileges && this.rolePrivileges" dynamicHeight>
                 <mat-tab *ngFor="let parent of this.privileges['parent']" [label]="this.translate.instant('PRIVILEGES.' + parent)">
-                    <div class="grid grid-cols-4 gap-x-60 gap-y-10 mt-10">
+                    <div class="grid grid-cols-4 gap-x-40 gap-y-10 mt-10">
                         <mat-slide-toggle *ngFor="let privilege of this.getChildsByParent(parent)"
                                           [name]="privilege"
                                           [checked]="this.hasPrivilege(privilege)"

@@ -11,178 +11,200 @@
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+# along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
-# @dev : Oussama Brich <oussama.brich@edissyum.com>
-
 
 import os
-import re
-import PyPDF2
-import shutil
-from src.backend.import_classes import _Files
+import uuid
+
+from datetime import date
+from src.backend.classes.Files import Files
+import xml.etree.cElementTree as ET
+from xml.dom import minidom
+import datetime
+import random
+
+
+def get_lot_name():
+    random_number = uuid.uuid4().hex
+    # date object of today's date
+    today = date.today()
+    lot_name = str(today.year) + str(today.month) + str(today.day) + str(random_number)
+    return lot_name
 
 
 class Splitter:
-    def __init__(self, config, database, locale):
+    def __init__(self, config, database, locale, separator_qr, log):
         self.Config = config
         self.db = database
         self.Locale = locale
+        self.separator_qr = separator_qr
+        self.log = log
+        self.result_batches = []
+        self.qr_pages = []
+        self.bundle_start = self.Config.cfg['SPLITTER']['bundlestart']
+        self.doc_start = self.Config.cfg['SPLITTER']['docstart']
 
-    # Separate by page number
-    def is_next_page(self, text_array, current_page):
-        next_page = current_page + 1
-        # Delete \n (if we keep it regex won't work well)
-        text_array[current_page] = text_array[current_page].replace('\n', ' ').replace('\r', '')
-        for match_number_current_page in re.finditer(self.Locale.pageNumber, text_array[current_page].replace(' ', '')):
-            if match_number_current_page:
-                split_text_array_current_page = match_number_current_page.group().split()
-                # split index found (A/B) (result is ['A','/','B']
-                current_page_index = split_text_array_current_page[0]
-                current_page_index_max = split_text_array_current_page[1]
+    def split(self, pages):
+        for index, path in pages:
+            qrcode = ""
+            is_separator = list(filter(lambda separator: int(separator['num']) + 1 == int(index),
+                                       self.separator_qr.pages))
+            if is_separator:
+                if self.doc_start in is_separator[0]['qr_code']:
+                    qrcode = self.doc_start
 
-                # If next page exist
-                if current_page + 1 < len(text_array):
-                    for match_number_next_page in re.finditer(self.Locale.pageNumber, text_array[next_page].replace(' ', '')):
-                        split_text_array_next_page = match_number_next_page.group().split()
-                        # Split
-                        # Index found (A/B) (result is ['A','/','B']
-                        next_page_index = split_text_array_next_page[1]
-                        next_page_index_max = split_text_array_next_page[3]
-                        if int(current_page_index) + 1 != int(next_page_index) or int(current_page_index_max) != int(
-                                next_page_index_max):
-                            return False
-        return True
+                elif self.bundle_start in is_separator[0]['qr_code']:
+                    qrcode = self.bundle_start
 
-    @staticmethod
-    def is_same_reference(text_array, current_page, regex):
-        # regroup the functions
-        # regex in the parameters
-        # if reference info (siret, siren, vatn, number of page)
-        is_same_refrence = True
-        next_page = current_page + 1
-        is_found = False
-        # delete \n (if we keep it regex won't work well)
-        text_array[current_page] = text_array[current_page].replace('\n', ' ').replace('\r', '')
-        for match_siren_current_page in re.finditer(regex, text_array[current_page].replace(' ', '')):
-            if match_siren_current_page:
-                if is_found:
-                    break
-                # verify if next page exit
-                if current_page + 1 < len(text_array):
-                    for match_siren_next_page in re.finditer(regex, text_array[next_page].replace(' ', '')):
-                        if match_siren_next_page:
-                            if match_siren_current_page.group() != match_siren_next_page.group():
-                                is_same_refrence = False
-                            else:
-                                is_same_refrence = True
-                                is_found = True
-                                break
-        return is_same_refrence
+            self.log.info("QR code in page " + str(index) + " : " + qrcode)
+            self.qr_pages.append({
+                'source_page': index,
+                'qrcode': qrcode,
+                'path': path,
+            })
 
-    def get_page_separate_order(self, pages_text_array):
-        invoices = []
-        # start from 0 and append the fist page
-        invoice_index = 0
-        invoices.append([])
-        invoices[0].append(0)
+    def get_result_documents(self, blank_pages):
+        documents_count = 1
+        self.result_batches.append([])
+        is_previous_code_qr = False
 
-        # loop without the last page (number page -1)
-        for page in range(len(pages_text_array) - 1):
-            is_next_page_different_vatn = self.is_same_reference(pages_text_array, page, self.Locale.VATNumberRegex)
-            is_next_page_different_siren = self.is_same_reference(pages_text_array, page, self.Locale.SIRENRegex)
-            is_next_page_different_siret = self.is_same_reference(pages_text_array, page, self.Locale.SIRETRegex)
-            is_next_page_different_invoice_number = self.is_same_reference(pages_text_array, page, self.Locale.invoiceRegex)
-            # is_next_page_by_page_number             = self.is_next_page(self, pages_text_array, page)
-            if is_next_page_different_vatn and is_next_page_different_siren and is_next_page_different_siret \
-                    and is_next_page_different_invoice_number:
-                invoices[invoice_index].append(page + 1)
+        for index, page in enumerate(self.qr_pages):
+            if int(index) in blank_pages:
+                if self.Config.cfg['REMOVE-BLANK-PAGES']['enabled'] == 'True' or is_previous_code_qr:
+                    continue
+
+            if page['qrcode'] == self.bundle_start:
+                if len(self.result_batches[-1]) != 0:
+                    self.result_batches.append([])
+                documents_count = 1
+                is_previous_code_qr = True
+
+            elif page['qrcode'] == self.doc_start:
+                if len(self.result_batches[-1]) != 0:
+                    documents_count += 1
+                is_previous_code_qr = True
+
             else:
-                invoice_index += 1
-                invoices.append([])
-                invoices[invoice_index].append(page + 1)
-        return invoices
+                self.result_batches[-1].append({
+                    'source_page': page['source_page'],
+                    'path': page['path'],
+                    'document': documents_count
+                })
+                is_previous_code_qr = False
 
-    def save_image_from_pdf(self, path_output_image, invoices_order, batch_folder, orig_file):
-        invoice_index = 0
-        invoice_page_index = 0
-        batch_name = os.path.basename(os.path.normpath(batch_folder))
-        for invoice_order in invoices_order:
-            new_directory_path = batch_folder + '/' + 'invoice_' + str(invoice_index) + '/'
-            _Files.create_directory(new_directory_path)
-            for invoice_page_item in invoice_order:
-                for page_index, page in path_output_image:
-                    image = _Files.open_image_return(page)
-                    save_path = new_directory_path + 'page' + str(invoice_page_index) + '.jpg'
-
-                    if int(page_index) != 0:
-                        page_index = int(page_index) - 1
-
-                    if int(invoice_page_item) == int(page_index):
-                        args = {
-                            'table': 'splitter_images',
-                            'columns': {
-                                'batch_name': batch_name,
-                                'image_path': batch_name + '/invoice_' + str(invoice_index) + "/page" + str(invoice_page_index) + ".jpg",
-                                'image_number': str(page_index),
-                            }
-                        }
-                        self.db.insert(args)
-
-                        image.save(save_path, 'JPEG')
-                        invoice_page_index += 1
-            invoice_page_index = 0
-            invoice_index += 1
-        # Save new file in database
-        args = {
-            'table': 'splitter_batches',
-            'columns': {
-                'dir_name': orig_file.rsplit('/')[-1],  # getting the file name from path
-                'image_folder_name': batch_name,
-                'first_page': batch_name + "/invoice_0/page0.jpg",
-                'page_number': str(invoice_index)
+    def save_documents(self, batch_folder, orig_file):
+        for index, batch in enumerate(self.result_batches):
+            batch_name = os.path.basename(os.path.normpath(batch_folder))
+            args = {
+                'table': 'splitter_batches',
+                'columns': {
+                    'file_name': orig_file.rsplit('/')[-1],
+                    'batch_folder': batch_name,
+                    'first_page': batch[0]['path'],
+                    'page_number': str(max((node['document'] for node in batch)))
+                }
             }
-        }
-        self.db.insert(args)
-        self.db.conn.commit()
-        _Files.delete_file_with_extension(self.Config.cfg['SPLITTER']['tmpbatchpath'] + batch_name, '.jpg')
-        return batch_folder
+            batch_id = self.db.insert(args)
+            for page in batch:
+                image = Files.open_image_return(page['path'])
+                args = {
+                    'table': 'splitter_pages',
+                    'columns': {
+                        'batch_id': str(batch_id),
+                        'image_path': page['path'],
+                        'source_page': page['source_page'],
+                        'split_document': str(page['document']),
+                    }
+                }
+                self.db.insert(args)
+                image.save(page['path'], 'JPEG')
+            self.db.conn.commit()
+
+        return {'OK': True}
 
     @staticmethod
-    def delete_invoices_hist(path):
-        file_list = [f for f in os.listdir(path)]
-        for f in file_list:
-            shutil.rmtree(path + '/' + f)
+    def get_split_pages(documents):
+        pages = []
+        for document in documents:
+            pages.append([])
+            for page in document['pages']:
+                pages[-1].append(page['sourcePage'])
+        return pages
 
-    def get_page_order_after_user_change(self, images_order, pdf_path_input, pdf_path_output):
-        pages_order_result = []
-        for invoice_index, invoice_pages in enumerate(images_order):
-            pages_order_result.append([])
-            for invoice_page in invoice_pages:
-                # Append page number in original file if image path equal to path saved
-                args = {
-                    'select': ['*'],
-                    'table': ['splitter_images'],
-                    'where': ['image_path = %s'],
-                    'data': [invoice_page]
-                }
-                page_number = self.db.select(args)[0]
-                if page_number['image_path'] == str(invoice_page):
-                    pages_order_result[invoice_index].append(int(page_number['image_number']))
-        self.save_pdf_result_after_separate(pages_order_result, pdf_path_input, pdf_path_output)
+    @staticmethod
+    def add_files_names(documents, metadata):
+        now = datetime.datetime.now()
+        year = str(now.year)
+        day = str('%02d' % now.day)
+        month = str('%02d' % now.month)
+        hour = str('%02d' % now.hour)
+        minute = str('%02d' % now.minute)
+        seconds = str('%02d' % now.second)
+        date = year + month + day
+        random_num = str(random.randint(0, 99999)).zfill(5)
+        for index, document in enumerate(documents):
+            joiner = "_"
+            first_name = metadata['firstName']
+            if len(first_name) != 0: first_name = first_name[0]
+            file_name = joiner.join([
+                date.replace(' ', joiner),
+                metadata['lastName'].replace(' ', joiner),
+                first_name.replace(' ', joiner),
+                metadata['matricule'].replace(' ', joiner),
+                document['documentTypeKey'].replace(' ', joiner),
+                random_num.replace(' ', joiner)
+            ])
+            documents[index]['fileName'] = file_name + ".pdf"
+        return documents
 
-    # Save result after user separate in pdf (pdf for every invoice)
-    def save_pdf_result_after_separate(self, pages_list, pdf_path_input, pdf_path_output):
-        pdf_writer = PyPDF2.PdfFileWriter()
-        pdf_reader = PyPDF2.PdfFileReader(self.Config.cfg['SPLITTER']['pdforiginpath'] + pdf_path_input, strict=False)
-        pdf_origin_file_name = pdf_path_input.split('/')[-1].replace('.pdf', '').replace('_', '-')
-        lot_name = _Files.get_uuid_with_date()
+    @staticmethod
+    def export_xml(documents, metadata, output):
+        year = str(datetime.date.today().year)
+        month = str(datetime.date.today().month).zfill(2)
+        day = str(datetime.date.today().day).zfill(2)
+        hour = str(datetime.datetime.now().hour).zfill(2)
+        minute = str(datetime.datetime.now().minute).zfill(2)
+        second = str(datetime.datetime.now().second).zfill(2)
+        random_num = str(random.randint(0, 99999)).zfill(5)
+        bundle_name = year + month + day + "_" + hour + minute + second + "_" + random_num
 
-        for invoice_index, pages in enumerate(pages_list):
-            for page in pages:
-                pdf_writer.addPage(pdf_reader.getPage(page))
-            with open(pdf_path_output + '/SPLITTER_' + pdf_origin_file_name + '_' + "%03d" % (invoice_index + 1) + '_' + lot_name + '.pdf', 'wb') as fh:
-                pdf_writer.write(fh)
-            # Init writer
-            pdf_writer = PyPDF2.PdfFileWriter()
+        root = ET.Element("OPENCAPTURESPLITTER")
+        bundle_tag = ET.SubElement(root, "BUNDLE")
+        ET.SubElement(bundle_tag, "BUNDLEINDEX").text = "1"
+        ET.SubElement(bundle_tag, "FILENAME").text = bundle_name + ".xml"
+        ET.SubElement(bundle_tag, "DATE").text = day + "-" + month + "-" + year
+        ET.SubElement(bundle_tag, "BUNDLE_NUMBER").text = bundle_name
+        ET.SubElement(bundle_tag, "NBDOC").text = str(len(documents))
+        ET.SubElement(bundle_tag, "USER_ID_OC").text = metadata['userName']
+        ET.SubElement(bundle_tag, "USER_NAME_OC").text = metadata['userLastName']
+        ET.SubElement(bundle_tag, "USER_SURNAME_OC").text = metadata['userFirstName']
+
+        header_tag = ET.SubElement(root, "HEADER")
+        ET.SubElement(header_tag, "NAME").text = metadata['lastName']
+        ET.SubElement(header_tag, "SURNAME").text = metadata['firstName']
+        ET.SubElement(header_tag, "MATRICULE").text = str(metadata['matricule'])
+        ET.SubElement(header_tag, "COMMENT").text = metadata['comment']
+
+        documents_tag = ET.SubElement(root, "Documents")
+        for index, document in enumerate(documents):
+            document_tag = ET.SubElement(documents_tag, "Document")
+            file_tag = ET.SubElement(document_tag, "File")
+            ET.SubElement(file_tag, "FILEINDEX").text = str(index + 1)
+            ET.SubElement(file_tag, "FILENAME").text = document['fileName']
+            ET.SubElement(file_tag, "FORMAT").text = "PDF"
+
+            fields_tag = ET.SubElement(document_tag, "FIELDS")
+            ET.SubElement(fields_tag, "DOCTYPE").text = document['documentTypeKey']
+
+        xmlstr = minidom.parseString(ET.tostring(root)).toprettyxml(indent="    ")
+
+        xml_file_path = output + bundle_name + ".xml"
+        try:
+            with open(xml_file_path, "w", encoding="utf-8") as f:
+                f.write(xmlstr)
+        except IOError:
+            return {'OK': False, 'error': "Unable to create file on disk."}
+
+        return {'OK': True, 'path': xml_file_path}

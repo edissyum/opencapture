@@ -1,0 +1,1 @@
+{"version":3,"file":"index.d.ts","sources":["index.d.ts"],"names":[],"mappings":"AAAA;AACA","sourcesContent":["export { ClickOutsideDirective } from './click-outside.directive';\nexport { ClickOutsideModule } from './click-outside.module';\n"]}

@@ -1,0 +1,40 @@
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+import { ElementRef, OnChanges } from '@angular/core';
+import { BaseDirective2, StyleBuilder, StyleDefinition, StyleUtils, MediaMarshaller } from '@angular/flex-layout/core';
+import * as ɵngcc0 from '@angular/core';
+export declare class LayoutStyleBuilder extends StyleBuilder {
+    buildStyles(input: string): {
+        display: string;
+        'box-sizing': string;
+        'flex-direction': string;
+        'flex-wrap': string | null;
+    };
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<LayoutStyleBuilder, never>;
+}
+/**
+ * 'layout' flexbox styling directive
+ * Defines the positioning flow direction for the child elements: row or column
+ * Optional values: column or row (default)
+ * @see https://css-tricks.com/almanac/properties/f/flex-direction/
+ *
+ */
+export declare class LayoutDirective extends BaseDirective2 implements OnChanges {
+    protected DIRECTIVE_KEY: string;
+    constructor(elRef: ElementRef, styleUtils: StyleUtils, styleBuilder: LayoutStyleBuilder, marshal: MediaMarshaller);
+    protected styleCache: Map<string, StyleDefinition>;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<LayoutDirective, never>;
+    static ɵdir: ɵngcc0.ɵɵDirectiveDefWithMeta<LayoutDirective, never, never, {}, {}, never>;
+}
+export declare class DefaultLayoutDirective extends LayoutDirective {
+    protected inputs: string[];
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<DefaultLayoutDirective, never>;
+    static ɵdir: ɵngcc0.ɵɵDirectiveDefWithMeta<DefaultLayoutDirective, "  [fxLayout], [fxLayout.xs], [fxLayout.sm], [fxLayout.md],  [fxLayout.lg], [fxLayout.xl], [fxLayout.lt-sm], [fxLayout.lt-md],  [fxLayout.lt-lg], [fxLayout.lt-xl], [fxLayout.gt-xs], [fxLayout.gt-sm],  [fxLayout.gt-md], [fxLayout.gt-lg]", never, { "fxLayout": "fxLayout"; "fxLayout.xs": "fxLayout.xs"; "fxLayout.sm": "fxLayout.sm"; "fxLayout.md": "fxLayout.md"; "fxLayout.lg": "fxLayout.lg"; "fxLayout.xl": "fxLayout.xl"; "fxLayout.lt-sm": "fxLayout.lt-sm"; "fxLayout.lt-md": "fxLayout.lt-md"; "fxLayout.lt-lg": "fxLayout.lt-lg"; "fxLayout.lt-xl": "fxLayout.lt-xl"; "fxLayout.gt-xs": "fxLayout.gt-xs"; "fxLayout.gt-sm": "fxLayout.gt-sm"; "fxLayout.gt-md": "fxLayout.gt-md"; "fxLayout.gt-lg": "fxLayout.gt-lg"; }, {}, never>;
+}
+
+//# sourceMappingURL=layout.d.ts.map

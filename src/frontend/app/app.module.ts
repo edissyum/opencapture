@@ -36,6 +36,14 @@ import { VerifierViewerComponent } from './verifier/viewer/verifier-viewer.compo
 import { VerifierListComponent } from './verifier/list/verifier-list.component';
 import { SplitterViewerComponent } from './splitter/viewer/splitter-viewer.component';
 import { SplitterListComponent } from './splitter/list/splitter-list.component';
+
+import { FilterPipe } from '../services/pipes/filter.pipe';
+import { NgxFileDragDropModule } from "ngx-file-drag-drop";
+import {FlexLayoutModule} from "@angular/flex-layout";
+import { ClickOutsideModule } from 'ng-click-outside';
+
+import { DocumentTypeFactoryComponent } from './splitter/document-type-factory/document-type-factory.component';
+import { DocumentTreeComponent } from './splitter/document-tree/document-tree.component';
 import { LoginComponent } from './login/login.component';
 import { LogoutComponent } from "./logout/logout.component";
 import { HomeComponent } from './home/home.component';
@@ -43,7 +51,6 @@ import { MenuComponent } from './menu/menu.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { UserProfileComponent } from './profile/profile.component';
 import { UploadComponent } from './upload/upload.component';
-import { NgxFileDragDropModule } from "ngx-file-drag-drop";
 import { UsersListComponent } from './settings/general/users/list/users-list.component';
 import { SettingsComponent } from './settings/settings.component';
 import { MatPaginatorIntl } from "@angular/material/paginator";
@@ -75,6 +82,8 @@ import { UpdateInputComponent } from './settings/verifier/inputs/update/update-i
 import { UpdatePositionsMaskComponent } from './settings/verifier/positions-mask/update/update-positions-mask.component';
 import { PositionsMaskListComponent } from './settings/verifier/positions-mask/list/positions-mask-list.component';
 import { CreatePositionsMaskComponent } from './settings/verifier/positions-mask/create/create-positions-mask.component';
+import {NgxUiLoaderModule} from "ngx-ui-loader";
+import {NgxMatSelectSearchModule} from "ngx-mat-select-search";
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -88,6 +97,8 @@ export function createTranslateLoader(http: HttpClient) {
         VerifierListComponent,
         SplitterListComponent,
         SplitterViewerComponent,
+        DocumentTypeFactoryComponent,
+        DocumentTreeComponent,
         LoginComponent,
         LogoutComponent,
         HomeComponent,
@@ -122,7 +133,8 @@ export function createTranslateLoader(http: HttpClient) {
         UpdateInputComponent,
         UpdatePositionsMaskComponent,
         PositionsMaskListComponent,
-        CreatePositionsMaskComponent
+        CreatePositionsMaskComponent,
+        FilterPipe
     ],
     imports: [
         BrowserModule,
@@ -144,7 +156,11 @@ export function createTranslateLoader(http: HttpClient) {
         ReactiveFormsModule,
         FormsModule,
         NgxFileDragDropModule,
+        ClickOutsideModule,
         DragDropModule,
+        FlexLayoutModule,
+        NgxUiLoaderModule,
+        NgxMatSelectSearchModule,
     ],
     providers: [
         Title,
