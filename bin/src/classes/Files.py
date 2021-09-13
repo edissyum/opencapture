@@ -476,7 +476,7 @@ class Files:
                 time.sleep(1)
                 size2 = os.path.getsize(file)
                 if size2 == size:
-                    if file.endswith(".pdf"):
+                    if file.lower().endswith(".pdf"):
                         try:
                             PyPDF4.PdfFileReader(doc)
                         except PyPDF4.utils.PdfReadError:
@@ -484,7 +484,7 @@ class Files:
                             return False
                         else:
                             return True
-                    elif file.endswith(tuple(['.jpg', '.tiff'])):
+                    elif file.lower().endswith(tuple(['.jpg', '.tiff'])):
                         try:
                             Image.open(file)
                         except OSError:

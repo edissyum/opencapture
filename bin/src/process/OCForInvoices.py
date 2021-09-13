@@ -347,10 +347,13 @@ def process(file, log, config, files, ocr, locale, database, webservices, typo):
         footerClass = FindFooterRaw(ocr, log, locale, config, files, database, supplier, file, ocr.footer_text, typo)
 
     footer = footerClass.run()
-    if not footer:
+    if not footer and nb_pages > 1:
         footerClass.target = 'full'
         footerClass.text = ocr.last_text
         footerClass.nbPage = nb_pages
+        footerClass.isLastPage = True
+        footerClass.rerun = False
+        footerClass.rerun_as_text = False
         footer = footerClass.run()
         if footer:
             if len(footer) == 4:

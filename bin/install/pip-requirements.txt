@@ -1,8 +1,8 @@
+setuptools>=41.0.0
 xlrd
 wand
 flask
 zeep
-odfpy
 pyocr
 pyPdf2
 pyPdf4
@@ -32,5 +32,4 @@ opencv-python
 kuyruk_manager
 flask_paginate
 flask_multistatic
-setuptools>=41.0.0
 numpy<1.19.0,>=1.16.0
