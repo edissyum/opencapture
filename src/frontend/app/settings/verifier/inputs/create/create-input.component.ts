@@ -29,6 +29,7 @@ import {FormControl} from "@angular/forms";
 import {API_URL} from "../../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
+import {HistoryService} from "../../../../../services/history.service";
 
 @Component({
     selector: 'app-create-input',
@@ -111,6 +112,7 @@ export class CreateInputComponent implements OnInit {
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
+        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService,
     ) {}
@@ -176,6 +178,7 @@ export class CreateInputComponent implements OnInit {
                 tap(() => {
                     this.createScriptAndIncron();
                     this.notify.success(this.translate.instant('INPUT.created'));
+                    this.historyService.addHistory('verifier', 'create_input', this.translate.instant('HISTORY-DESC.create-input', {input: input['input_label']}));
                 }),
                 catchError((err: any) => {
                     console.debug(err);

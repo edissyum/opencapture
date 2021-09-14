@@ -30,6 +30,7 @@ import {PrivilegesService} from "../../../../services/privileges.service";
 import {API_URL} from "../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
+import {HistoryService} from "../../../../services/history.service";
 
 @Component({
     selector: 'app-create',
@@ -133,6 +134,7 @@ export class CreateSupplierComponent implements OnInit {
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,
+        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService,
     ) {
@@ -201,6 +203,7 @@ export class CreateSupplierComponent implements OnInit {
                     this.http.post(API_URL + '/ws/accounts/suppliers/create', {'args': supplier}, {headers: this.authService.headers},
                     ).pipe(
                         tap(() => {
+                            this.historyService.addHistory('accounts', 'create_supplier', this.translate.instant('HISTORY-DESC.create-supplier', {supplier: supplier['name']}));
                             this.notify.success(this.translate.instant('ACCOUNTS.supplier_created'));
                             this.router.navigate(['/accounts/suppliers/list']).then();
                         }),

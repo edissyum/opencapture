@@ -43,6 +43,8 @@ def get_history(args):
     _history = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['history'],
+        'where': args['where'] if 'where' in args else [],
+        'data': args['data'] if 'data' in args else [],
         'order_by': args['order_by'] if 'limit' in args else [],
         'limit': str(args['limit']) if 'limit' in args else [],
         'offset': str(args['offset']) if 'offset' in args else [],

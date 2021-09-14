@@ -16,8 +16,8 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 from flask import Blueprint, request, make_response, jsonify
+from ..main import create_classes_from_current_config
 from ..import_controllers import auth, history
-
 
 bp = Blueprint('history', __name__, url_prefix='/ws/')
 
@@ -33,12 +33,34 @@ def add_history():
 @bp.route('history/list', methods=['GET'])
 @auth.token_required
 def get_history():
+    _vars = create_classes_from_current_config()
+    _cfg = _vars[1]
+
+    if _cfg.cfg['LOCALE']['locale'] == 'fra':
+        _format = 'DD/MM/YYYY HH24:MI:SS'
+    else:
+        _format = 'MM/DD/YYYY HH12:MI:SS'
+
     args = {
-        'select': ['*', 'count(*) OVER() as total'],
+        'select': ['*', 'count(*) OVER() as total', "to_char(history_date, '" + _format + "') as date"],
         'offset': request.args['offset'] if 'offset' in request.args else '',
         'limit': request.args['limit'] if 'limit' in request.args else '',
-        'order_by': ['id ASC']
+        'order_by': ['id DESC']
     }
+    where = []
+    data = []
+    if 'user' in request.args and request.args['user']:
+        where.append('user_id = %s')
+        data.append(request.args['user'])
+    if 'submodule' in request.args and request.args['submodule']:
+        where.append('history_submodule = %s')
+        data.append(request.args['submodule'])
+    if 'module' in request.args and request.args['module']:
+        where.append('history_module = %s')
+        data.append(request.args['module'])
+
+    if where:
+        args.update({'where': where, 'data': data})
     _history = history.get_history(args)
     return make_response(jsonify(_history[0])), _history[1]
 
@@ -49,6 +71,9 @@ def get_history_submodules():
     args = {
         'select': ['DISTINCT(history_submodule)'],
     }
+
+    if 'module' in request.args and request.args['module']:
+        args.update({'where':  ['history_module = %s'], 'data': [request.args['module']]})
     _history = history.get_history(args)
     return make_response(jsonify(_history[0])), _history[1]
 

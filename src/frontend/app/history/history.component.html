@@ -11,7 +11,7 @@
         </div>
         <div class="flex justify-center">
             <div class="m-auto w-1/12 text-center">{{ 'HISTORY.filter' | translate }} : </div>
-            <form class="grid grid-cols-3 gap-6 w-full m-5 mb-0 text-center">
+            <form class="grid grid-cols-3 gap-6 w-full mt-5 mb-0 text-center">
                 <ng-container *ngFor="let field of form">
                     <mat-form-field class="block" *ngIf="field.type == 'text'">
                         <mat-label>{{ field.label | translate }}</mat-label>
@@ -19,13 +19,15 @@
                     </mat-form-field>
                     <mat-form-field class="block" *ngIf="field.id == 'submodule'">
                         <mat-label>{{ field.label | translate }}</mat-label>
-                        <mat-select [formControl]="field.control" [(value)]="field.control.value" [required]="field.required">
+                        <mat-select [formControl]="field.control" [(value)]="field.control.value"
+                                    [required]="field.required" (selectionChange)="setSelectedSubModule($event.value)">
                             <mat-option *ngFor="let option of field.values" [value]="option['history_submodule']">{{ option['history_submodule'] }}</mat-option>
                         </mat-select>
                     </mat-form-field>
                     <mat-form-field class="block" *ngIf="field.id == 'module'">
                         <mat-label>{{ field.label | translate }}</mat-label>
-                        <mat-select [formControl]="field.control" [(value)]="field.control.value" [required]="field.required">
+                        <mat-select [formControl]="field.control" [(value)]="field.control.value"
+                                    [required]="field.required" (selectionChange)="setSelectedModule($event.value)">
                             <mat-option *ngFor="let option of field.values" [value]="option['id']">{{ option['label'] | translate }}</mat-option>
                         </mat-select>
                     </mat-form-field>
@@ -33,53 +35,57 @@
                         <mat-label>{{ field.label | translate }}</mat-label>
                         <input matInput [formControl]="field.control" [type]="field.type" [matAutocomplete]="autocomplete">
                         <mat-hint *ngIf="field.hint">{{ field.hint }}</mat-hint>
-                        <mat-autocomplete #autocomplete="matAutocomplete" [displayWith]="displayFn">
-                            <mat-option *ngFor="let option of filteredUsers | async" [value]="option">
+                        <mat-autocomplete #autocomplete="matAutocomplete" [displayWith]="displayFn"
+                                          (optionSelected)="setSelectedUser($event.option.id)">
+                            <mat-option *ngFor="let option of filteredUsers | async" [value]="option" [id]="option.id">
                                 <span [innerHTML]="option.lastname + ' ' + option.firstname + ' (' + option.username + ')' | highlight: toHighlight"></span>
                             </mat-option>
                         </mat-autocomplete>
                     </mat-form-field>
                 </ng-container>
             </form>
+            <div class="m-auto w-1/12 text-center text-xl cursor-pointer" (click)="resetFilter()"
+                 [matTooltip]="'HISTORY.refresh_filter' | translate">
+                <i class="fas fa-sync-alt"></i>
+            </div>
         </div>
         <div class="flex justify-center">
             <mat-table matSort [dataSource]="history" (matSortChange)="sortData($event)" class="w-full">
                 <ng-container matColumnDef="id">
-                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.id' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{ element.id }} </mat-cell>
+                    <mat-header-cell mat-sort-header *matHeaderCellDef style="flex: 0 0 180px!important;"> {{ 'HEADER.id' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element" style="flex: 0 0 180px!important;"> {{ element.id }} </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="history_module">
-                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HISTORY.module' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{ element.history_module }} </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="history_date">
-                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HISTORY.history_date' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{ element.history_date }} </mat-cell>
+                    <mat-header-cell mat-sort-header *matHeaderCellDef style="flex: 0 0 220px!important;"> {{ 'HISTORY.module' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element" style="flex: 0 0 220px!important;"> {{ element.history_module }} </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="history_submodule">
-                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HISTORY.submodule' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{ element.history_submodule }} </mat-cell>
+                    <mat-header-cell mat-sort-header *matHeaderCellDef style="flex: 0 0 190px!important;"> {{ 'HISTORY.submodule' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element" style="flex: 0 0 190px!important;"> {{ element.history_submodule }} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="history_date">
+                    <mat-header-cell mat-sort-header *matHeaderCellDef style="flex: 0 0 220px!important;"> {{ 'HISTORY.history_date' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element" style="flex: 0 0 220px!important;"> {{ element.date }} </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="user_info">
-                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HISTORY.user_info' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{ element.user_info }} </mat-cell>
+                    <mat-header-cell mat-sort-header *matHeaderCellDef style="flex: 0 0 220px!important;"> {{ 'HISTORY.user_info' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element" style="flex: 0 0 220px!important;"> {{ element.user_info }} </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="history_desc">
                     <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HISTORY.history_desc' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element" [innerHTML]="element.history_desc"></mat-cell>
+                    <mat-cell *matCellDef="let element" [innerHTML]="'<span>' + element.history_desc + '</span>'"></mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="user_ip">
-                    <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HISTORY.user_ip' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{ element.user_ip }} </mat-cell>
+                    <mat-header-cell mat-sort-header *matHeaderCellDef style="flex: 0 0 350px !important"> {{ 'HISTORY.user_ip' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element" style="flex: 0 0 350px !important"> {{ element.user_ip }} </mat-cell>
                 </ng-container>
                 <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
                 <mat-row *matRowDef="let row; columns: columnsToDisplay;"
-                         routerLink="/settings/general/users/update/{{row.id}}"
-                         class="cursor-pointer hover:text-green-400 hover:shadow-md transition-colors duration-300"></mat-row>
+                         class="hover:text-green-400 select-none hover:shadow-md transition-colors duration-300"></mat-row>
             </mat-table>
         </div>
         <mat-paginator showFirstLastButtons
-                       [length]="this.total"
+                       [length]="total"
                        [pageSize]="pageSize"
                        [pageIndex]="pageIndex"
                        [pageSizeOptions]="[5, 10, 15, 20, 50]"

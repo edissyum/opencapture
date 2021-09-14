@@ -33,6 +33,7 @@ import { API_URL } from "../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { ConfirmDialogComponent } from "../../../../services/confirm-dialog/confirm-dialog.component";
+import {HistoryService} from "../../../../services/history.service";
 
 @Component({
     selector: 'suppliers-list',
@@ -40,16 +41,16 @@ import { ConfirmDialogComponent } from "../../../../services/confirm-dialog/conf
     styleUrls: ['./suppliers-list.component.scss']
 })
 export class SuppliersListComponent implements OnInit {
+    columnsToDisplay : string[]    = ['id', 'name', 'vat_number', 'siret', 'siren','form_label', 'actions'];
+    deletePositionSrc: string      = 'assets/imgs/map-marker-alt-solid-del.svg';
     headers          : HttpHeaders = this.authService.headers;
     loading          : boolean     = true;
-    columnsToDisplay : string[]    = ['id', 'name', 'vat_number', 'siret', 'siren','form_label', 'actions'];
     suppliers        : any         = [];
     pageSize         : number      = 10;
     pageIndex        : number      = 0;
     total            : number      = 0;
     offset           : number      = 0;
     search           : string      = '';
-    deletePositionSrc: string      = 'assets/imgs/map-marker-alt-solid-del.svg';
 
     constructor(
         public router: Router,
@@ -61,6 +62,7 @@ export class SuppliersListComponent implements OnInit {
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,
+        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
@@ -139,6 +141,7 @@ export class SuppliersListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
                 this.deleteSupplier(supplierId);
+                this.historyService.addHistory('accounts', 'delete_supplier', this.translate.instant('HISTORY-DESC.delete-supplier', {supplier: supplier}));
             }
         });
     }
@@ -158,13 +161,14 @@ export class SuppliersListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
                 this.deleteSupplierPositions(supplierId);
+                this.historyService.addHistory('accounts', 'delete_supplier_positions', this.translate.instant('HISTORY-DESC.delete-supplier-positions', {supplier: supplier}));
             }
         });
     }
 
     skipAutoValidateConfirmDialog(supplierId: number, supplier: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('ACCOUNTS.confirm_skip_auto_validate', {"supplier": supplier}),
                 confirmButton       : this.translate.instant('GLOBAL.delete'),
@@ -177,6 +181,7 @@ export class SuppliersListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
                 this.skipAutoValidate(supplierId);
+                this.historyService.addHistory('accounts', 'skip_auto_validate', this.translate.instant('HISTORY-DESC.skip-auto-validate', {supplier: supplier}));
             }
         });
     }

@@ -10,6 +10,7 @@ import {DateAdapter} from "@angular/material/core";
 import 'moment/locale/en-gb';
 import 'moment/locale/fr';
 import * as moment from 'moment';
+import {HistoryService} from "./history.service";
 
 @Injectable({
     providedIn: 'root'
@@ -22,9 +23,10 @@ export class LocaleService {
     constructor(
         private http: HttpClient,
         private authService: AuthService,
+        private _adapter: DateAdapter<any>,
         private translate: TranslateService,
         private notify: NotificationService,
-        private _adapter: DateAdapter<any>
+        private historyService: HistoryService
     ) {
         this._adapter.setLocale('fr-FR');
         moment.updateLocale('fr-FR', {
@@ -64,6 +66,8 @@ export class LocaleService {
     changeLocale(data: any) {
         this.http.get(API_URL + '/ws/i18n/changeLanguage/' + data.value, {headers: this.authService.headers}).pipe(
             tap(() => {
+                const label = data.source._elementRef.nativeElement.textContent;
+                this.historyService.addHistory('general', 'language_changed', this.translate.instant('HISTORY-DESC.language_changed', {lang: label}));
                 this.getCurrentLocale();
             }),
             catchError((err: any) => {

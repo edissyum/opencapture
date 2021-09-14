@@ -30,6 +30,7 @@ import {PrivilegesService} from "../../../../services/privileges.service";
 import {API_URL} from "../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
+import {HistoryService} from "../../../../services/history.service";
 
 @Component({
     selector: 'app-update',
@@ -127,6 +128,7 @@ export class UpdateCustomerComponent implements OnInit {
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,
+        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService,
     ) { }
@@ -242,6 +244,7 @@ export class UpdateCustomerComponent implements OnInit {
             this.http.put(API_URL + '/ws/accounts/addresses/update/' + this.addressId, {'args': address}, {headers: this.authService.headers},
             ).pipe(
                 tap(() => {
+                    this.historyService.addHistory('accounts', 'update_customer', this.translate.instant('HISTORY-DESC.update-customer', {customer: customer['name']}));
                     this.notify.success(this.translate.instant('ACCOUNTS.customer_updated'));
                     this.router.navigate(['/accounts/customers/list']).then();
                 }),

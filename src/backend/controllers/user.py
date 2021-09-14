@@ -43,6 +43,15 @@ def get_users(args):
     return response, 200
 
 
+def get_users_full(args):
+    users, error = user.get_users_full(args)
+
+    response = {
+        "users": users
+    }
+    return response, 200
+
+
 def get_user_by_id(user_id, get_password=False):
     _select = ['id', 'username', 'firstname', 'lastname', 'role', 'status', 'creation_date', 'enabled']
     if get_password:
@@ -86,7 +95,7 @@ def update_user(user_id, data):
     user_info, error = user.get_user_by_id({'user_id': user_id})
 
     if error is None:
-        if 'new_password' in data and 'old_password' in data and not check_password_hash(user_info[0]['password'], data['old_password']):
+        if 'new_password' in data and 'old_password' in data and data['new_password'] and data['old_password'] and not check_password_hash(user_info[0]['password'], data['old_password']):
             response = {
                 "errors": gettext('UPDATE_PROFILE'),
                 "message": gettext('ERROR_OLD_PASSWORD_NOT_MATCH')

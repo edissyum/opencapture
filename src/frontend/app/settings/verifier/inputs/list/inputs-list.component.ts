@@ -32,6 +32,7 @@ import {ConfirmDialogComponent} from "../../../../../services/confirm-dialog/con
 import {API_URL} from "../../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
+import {HistoryService} from "../../../../../services/history.service";
 
 @Component({
     selector: 'inputs-list',
@@ -56,6 +57,7 @@ export class InputsListComponent implements OnInit {
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
+        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
@@ -112,6 +114,7 @@ export class InputsListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.deleteInput(inputId);
+                this.historyService.addHistory('verifier', 'delete_input', this.translate.instant('HISTORY-DESC.delete-input', {input: input}));
             }
         });
     }

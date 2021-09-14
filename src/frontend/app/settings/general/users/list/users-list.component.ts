@@ -34,6 +34,7 @@ import { Sort } from "@angular/material/sort";
 import { SettingsService } from "../../../../../services/settings.service";
 import { PrivilegesService } from "../../../../../services/privileges.service";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
+import {HistoryService} from "../../../../../services/history.service";
 
 @Component({
     selector: 'app-users-list',
@@ -65,11 +66,12 @@ export class UsersListComponent implements OnInit {
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,
+        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
         private localeStorageService: LocalStorageService,
-    ) { }
+    ) {}
 
 
     ngOnInit(): void {
@@ -142,6 +144,7 @@ export class UsersListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
                 this.deleteUser(userId);
+                this.historyService.addHistory('general', 'delete_user', this.translate.instant('HISTORY-DESC.delete-user', {user: user}));
             }
         });
     }
@@ -161,6 +164,7 @@ export class UsersListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
                 this.disableUser(userId);
+                this.historyService.addHistory('general', 'disable_user', this.translate.instant('HISTORY-DESC.disable-user', {user: user}));
             }
         });
     }
@@ -180,6 +184,7 @@ export class UsersListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
                 this.enableUser(userId);
+                this.historyService.addHistory('general', 'enable_user', this.translate.instant('HISTORY-DESC.enable-user', {user: user}));
             }
         });
     }

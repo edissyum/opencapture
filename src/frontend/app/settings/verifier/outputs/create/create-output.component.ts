@@ -28,6 +28,7 @@ import {PrivilegesService} from "../../../../../services/privileges.service";
 import {API_URL} from "../../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
+import {HistoryService} from "../../../../../services/history.service";
 
 @Component({
     selector: 'app-output-create',
@@ -62,6 +63,7 @@ export class CreateOutputComponent implements OnInit {
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
+        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService,
     ) {}
@@ -104,6 +106,7 @@ export class CreateOutputComponent implements OnInit {
             ).pipe(
                 tap((data: any) => {
                     this.notify.success(this.translate.instant('OUTPUT.created'));
+                    this.historyService.addHistory('verifier', 'create_output', this.translate.instant('HISTORY-DESC.create-output', {output: outputLabel}));
                     this.router.navigate(['/settings/verifier/outputs/update/' + data.id]).then();
                 }),
                 catchError((err: any) => {

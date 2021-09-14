@@ -32,6 +32,7 @@ import {of} from "rxjs";
 import {Sort} from "@angular/material/sort";
 import {ConfirmDialogComponent} from "../../../../../services/confirm-dialog/confirm-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
+import {HistoryService} from "../../../../../services/history.service";
 
 @Component({
     selector: 'app-output-list',
@@ -56,6 +57,7 @@ export class OutputsListComponent implements OnInit {
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
+        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
@@ -113,6 +115,7 @@ export class OutputsListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.deleteOutput(outputId);
+                this.historyService.addHistory('verifier', 'delete_output', this.translate.instant('HISTORY-DESC.delete-output', {output: output}));
             }
         });
     }

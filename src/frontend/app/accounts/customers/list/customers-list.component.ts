@@ -33,6 +33,7 @@ import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {ConfirmDialogComponent} from "../../../../services/confirm-dialog/confirm-dialog.component";
 import {Sort} from "@angular/material/sort";
+import {HistoryService} from "../../../../services/history.service";
 
 @Component({
     selector: 'app-list',
@@ -60,6 +61,7 @@ export class CustomersListComponent implements OnInit {
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,
+        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
@@ -122,6 +124,7 @@ export class CustomersListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
                 this.deleteCustomer(customerId);
+                this.historyService.addHistory('accounts', 'delete_customer', this.translate.instant('HISTORY-DESC.delete-customer', {customer: customer}));
             }
         });
     }

@@ -30,6 +30,7 @@ import {catchError, finalize, map, startWith, tap} from "rxjs/operators";
 import { PipeTransform, Pipe } from '@angular/core';
 import {of} from "rxjs";
 import {marker} from "@biesbjerg/ngx-translate-extract-marker";
+import {HistoryService} from "../../../../../services/history.service";
 
 @Pipe({ name: 'highlight' })
 export class HighlightPipe implements PipeTransform {
@@ -157,11 +158,12 @@ export class UpdateOutputComponent implements OnInit {
         public router: Router,
         private http: HttpClient,
         private route: ActivatedRoute,
+        public userService: UserService,
         private formBuilder: FormBuilder,
         private authService: AuthService,
-        public userService: UserService,
         public translate: TranslateService,
         private notify: NotificationService,
+        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService
     ) {}
@@ -471,9 +473,13 @@ export class UpdateOutputComponent implements OnInit {
 
     updateOutput() {
         const _array: any = {
-            "options" : {
-                "auth" : [],
-                "parameters": []
+            "output_type_id": "",
+            "output_label": "",
+            "data": {
+                "options": {
+                    "auth": [],
+                    "parameters": []
+                }
             }
         };
 
@@ -490,7 +496,7 @@ export class UpdateOutputComponent implements OnInit {
                     }
                 }
 
-                _array['options'][category].push({
+                _array['data']['options'][category].push({
                     id: field.id,
                     type: field.type,
                     webservice: field.webservice,
@@ -499,9 +505,14 @@ export class UpdateOutputComponent implements OnInit {
             }
         }
 
+        this.outputForm.forEach(element => {
+            _array[element.id] = element.control.value;
+        });
+
         this.http.put(API_URL + '/ws/outputs/update/' + this.outputId, {'args': _array},{headers: this.authService.headers}).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('OUTPUT.form_updated'));
+                this.historyService.addHistory('verifier', 'update_output', this.translate.instant('HISTORY-DESC.update-output', {output: _array['output_label']}));
             }),
             catchError((err: any) => {
                 console.debug(err);

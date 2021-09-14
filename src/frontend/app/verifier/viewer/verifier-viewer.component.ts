@@ -34,6 +34,7 @@ import 'moment/locale/en-gb';
 import 'moment/locale/fr';
 import * as moment from 'moment';
 import {UserService} from "../../../services/user.service";
+import {HistoryService} from "../../../services/history.service";
 declare var $: any;
 
 
@@ -112,6 +113,7 @@ export class VerifierViewerComponent implements OnInit {
         public translate: TranslateService,
         private notify: NotificationService,
         private configService: ConfigService,
+        private historyService: HistoryService,
         private localeStorageService: LocalStorageService
     ) {}
 
@@ -121,10 +123,11 @@ export class VerifierViewerComponent implements OnInit {
         this.saveInfo = true;
         this.config = this.configService.getConfig();
         this.invoiceId = this.route.snapshot.params['id'];
+        this.historyService.addHistory('verifier', 'viewer', this.translate.instant('HISTORY-DESC.viewer', {invoice_id: this.invoiceId}));
         this.updateInvoice({
             'locked': true,
             'locked_by': this.userService.user.username
-        })
+        });
         this.invoice = await this.getInvoice();
         this.currentFilename = this.invoice.full_jpg_filename;
         await this.getThumb(this.invoice.full_jpg_filename);

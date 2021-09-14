@@ -34,6 +34,7 @@ import {Sort} from "@angular/material/sort";
 import {ConfirmDialogComponent} from "../../../../../services/confirm-dialog/confirm-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from "@angular/material/form-field";
+import {HistoryService} from "../../../../../services/history.service";
 
 @Component({
     selector: 'app-list',
@@ -62,6 +63,7 @@ export class FormListComponent implements OnInit {
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
+        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
@@ -119,6 +121,7 @@ export class FormListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
                 this.deleteForm(formId);
+                this.historyService.addHistory('verifier', 'delete_form', this.translate.instant('HISTORY-DESC.delete-form', {form: form}));
             }
         });
     }

@@ -42,6 +42,18 @@ def get_users():
     return make_response(jsonify(_users[0])), _users[1]
 
 
+@bp.route('users/list_full', methods=['GET'])
+@auth.token_required
+def get_users_full():
+    args = {
+        'select': ['*', 'count(*) OVER() as total'],
+        'offset': request.args['offset'] if 'offset' in request.args else '',
+        'limit': request.args['limit'] if 'limit' in request.args else ''
+    }
+    _users = user.get_users_full(args)
+    return make_response(jsonify(_users[0])), _users[1]
+
+
 @bp.route('users/getById/<int:user_id>', methods=['GET'])
 @auth.token_required
 def get_user_by_id(user_id):

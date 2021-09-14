@@ -80,6 +80,23 @@ def get_users(args):
     return users, error
 
 
+def get_users_full(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    error = None
+    users = _db.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['users'],
+        'where': ['status NOT IN (%s)'],
+        'data': ['DEL'],
+        'order_by': ['id ASC'],
+        'limit': str(args['limit']) if 'limit' in args else [],
+        'offset': str(args['offset']) if 'offset' in args else [],
+    })
+
+    return users, error
+
+
 def get_user_by_id(args):
     _vars = create_classes_from_current_config()
     _db = _vars[0]

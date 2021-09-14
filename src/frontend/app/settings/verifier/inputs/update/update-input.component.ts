@@ -29,6 +29,7 @@ import {API_URL} from "../../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {FormControl} from "@angular/forms";
 import {of} from "rxjs";
+import {HistoryService} from "../../../../../services/history.service";
 
 @Component({
     selector: 'app-update',
@@ -112,6 +113,7 @@ export class UpdateInputComponent implements OnInit {
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
+        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService,
     ) {}
@@ -187,6 +189,7 @@ export class UpdateInputComponent implements OnInit {
 
             this.http.put(API_URL + '/ws/inputs/update/' + this.inputId, {'args': input}, {headers: this.authService.headers}).pipe(
                 tap(() => {
+                    this.historyService.addHistory('verifier', 'update_input', this.translate.instant('HISTORY-DESC.update-input', {input: input['input_label']}));
                     this.notify.success(this.translate.instant('INPUT.updated'));
                 }),
                 catchError((err: any) => {

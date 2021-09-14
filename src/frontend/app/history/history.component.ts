@@ -19,16 +19,20 @@ import * as moment from "moment";
     providers: [DatePipe]
 })
 export class HistoryComponent implements OnInit {
-    filteredUsers   : Observable<any> | undefined;
-    columnsToDisplay: string[] = ['id', 'history_module', 'history_submodule', 'history_date', 'user_info', 'history_desc', 'user_ip'];
-    loading         : boolean  = true;
-    toHighlight     : string   = '';
-    pageSize        : number   = 10;
-    pageIndex       : number   = 0;
-    total           : number   = 0;
-    offset          : number   = 0;
-    history         : any;
-    form            : any[]    = [
+    filteredUsers       : Observable<any> | undefined;
+    columnsToDisplay    : string[] = ['id', 'history_module', 'history_submodule', 'history_date', 'user_info', 'history_desc', 'user_ip'];
+    loading             : boolean  = true;
+    toHighlight         : string   = '';
+    pageSize            : number   = 10;
+    pageIndex           : number   = 0;
+    total               : number   = 0;
+    offset              : number   = 0;
+    history             : any;
+    users               : any;
+    userSelected        : string = '';
+    moduleSelected      : string = '';
+    subModuleSelected   : string = '';
+    form                : any[]    = [
         {
             'id': 'user_id',
             'type': 'autocomplete',
@@ -45,6 +49,10 @@ export class HistoryComponent implements OnInit {
                 {
                     'id': 'general',
                     'label': this.translate.instant('HISTORY.general')
+                },
+                {
+                    'id': 'accounts',
+                    'label': this.translate.instant('HISTORY.accounts')
                 },
                 {
                     'id': 'verifier',
@@ -85,14 +93,31 @@ export class HistoryComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.http.get(API_URL + '/ws/users/list', {headers: this.authService.headers}).pipe(
+        this.http.get(API_URL + '/ws/users/list_full', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
+                this.users = [];
                 this.form.forEach((element: any) => {
                     if (element.id === 'user_id') {
+                        this.http.get(API_URL + '/ws/history/users', {headers: this.authService.headers}).pipe(
+                            tap((userHistory: any) => {
+                                userHistory.history.forEach((_user: any) => {
+                                    data.users.forEach((user: any) => {
+                                        if (_user.user_id === user.id) {
+                                            this.users.push(user);
+                                        }
+                                    });
+                                });
+                            }),
+                            catchError((err: any) => {
+                                console.debug(err);
+                                this.notify.handleErrors(err);
+                                return of(false);
+                            })
+                        ).subscribe();
                         this.filteredUsers = element.control.valueChanges
                             .pipe(
                                 startWith(''),
-                                map(option => option ? this._filter(option, data.users) : data.users)
+                                map(option => option ? this._filter(option, this.users) : this.users)
                             );
                     } else if (element.id === 'submodule') {
                         this.http.get(API_URL + '/ws/history/submodules', {headers: this.authService.headers}).pipe(
@@ -118,7 +143,9 @@ export class HistoryComponent implements OnInit {
     }
 
     loadHistory() {
-        this.http.get(API_URL + '/ws/history/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
+        this.http.get(
+            API_URL + '/ws/history/list?limit=' + this.pageSize + '&offset=' + this.offset + '&user=' + this.userSelected + '&submodule=' + this.subModuleSelected + '&module=' + this.moduleSelected,
+            {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.history[0]) this.total = data.history[0].total;
                 this.history = data.history;
@@ -132,11 +159,23 @@ export class HistoryComponent implements OnInit {
                             });
                         });
                     }
+                    if (element.id === 'submodule') {
+                        this.http.get(API_URL + '/ws/history/submodules?module=' + this.moduleSelected, {headers: this.authService.headers}).pipe(
+                            tap((data: any) => {
+                                element.values = data['history'];
+                            }),
+                            catchError((err: any) => {
+                                console.debug(err);
+                                this.notify.handleErrors(err);
+                                return of(false);
+                            })
+                        ).subscribe();
+                    }
                 });
 
                 this.history.forEach((element: any) => {
                     const format = moment().localeData().longDateFormat('L');
-                    element.history_date = this.datePipe.transform(element.history_date, format + ' ' + this.translate.instant('GLOBAL.at') + ' HH:MM');
+                    element.history_date = this.datePipe.transform(element.history_date, format + ' HH:mm:ss');
                 });
             }),
             finalize(() => {this.loading = false;}),
@@ -146,6 +185,42 @@ export class HistoryComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
+    }
+
+    resetPaginator() {
+        this.loading = true;
+        this.total = 0;
+        this.offset = 0;
+        this.pageIndex = 0;
+    }
+
+    setSelectedUser(userId: any) {
+        this.userSelected = userId;
+        this.pageIndex = 0;
+        this.resetPaginator();
+        this.loadHistory();
+    }
+
+    setSelectedModule(module: any) {
+        this.moduleSelected = module;
+        this.resetPaginator();
+        this.loadHistory();
+    }
+
+    setSelectedSubModule(subModule: any) {
+        this.subModuleSelected = subModule;
+        this.resetPaginator();
+        this.loadHistory();
+    }
+
+    resetFilter() {
+        this.subModuleSelected = '';
+        this.moduleSelected = '';
+        this.userSelected = '';
+        this.form.forEach((element: any) => {
+            element.control.setValue('');
+        });
+        this.loadHistory();
     }
 
     onPageChange(event: any) {

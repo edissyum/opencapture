@@ -45,13 +45,20 @@ def get_outputs_types():
     return response, 200
 
 
-def update_output(output_id, data):
+def update_output(output_id, args):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
     output_info, error = outputs.get_output_by_id({'output_id': output_id})
 
     if error is None:
-        res, error = outputs.update_output({'set': {'data': json.dumps(data)}, 'output_id': output_id})
+        res, error = outputs.update_output({
+            'set': {
+                'output_type_id': args['output_type_id'],
+                'output_label': args['output_label'],
+                'data': json.dumps(args['data'])
+            },
+            'output_id': output_id
+        })
 
         if error is None:
             return '', 200

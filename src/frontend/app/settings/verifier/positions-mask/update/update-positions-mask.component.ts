@@ -33,6 +33,7 @@ import {FileValidators} from "ngx-file-drag-drop";
 import {DomSanitizer} from "@angular/platform-browser";
 import {ConfigService} from "../../../../../services/config.service";
 import * as moment from "moment";
+import {HistoryService} from "../../../../../services/history.service";
 declare var $: any;
 
 @Component({
@@ -187,6 +188,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
         public translate: TranslateService,
         private notify: NotificationService,
         private configService: ConfigService,
+        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService
     ) { }
@@ -374,6 +376,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
         }
         this.http.put(API_URL + '/ws/positions_masks/update/' + this.positionMaskId, {'args': _array},{headers: this.authService.headers}).pipe(
             tap(() => {
+                this.historyService.addHistory('verifier', 'update_positions_masks', this.translate.instant('HISTORY-DESC.update-positions-masks', {positions_masks: _array['label']}));
                 this.notify.success(this.translate.instant('POSITIONS-MASKS.updated'));
             }),
             catchError((err: any) => {

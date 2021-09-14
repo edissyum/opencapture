@@ -30,6 +30,7 @@ import {PrivilegesService} from "../../../../services/privileges.service";
 import {API_URL} from "../../../env";
 import {catchError, tap} from "rxjs/operators";
 import {of} from "rxjs";
+import {HistoryService} from "../../../../services/history.service";
 
 @Component({
     selector: 'app-create',
@@ -39,7 +40,6 @@ import {of} from "rxjs";
 export class CreateCustomerComponent implements OnInit {
     headers     : HttpHeaders   = this.authService.headers;
     loading     : boolean       = true;
-    addressId   : any;
     customer    : any;
     customerForm: any[]         = [
         {
@@ -126,6 +126,7 @@ export class CreateCustomerComponent implements OnInit {
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,
+        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService,
     ) { }
@@ -165,6 +166,7 @@ export class CreateCustomerComponent implements OnInit {
                     this.http.post(API_URL + '/ws/accounts/customers/create', {'args': customer}, {headers: this.authService.headers},
                     ).pipe(
                         tap(() => {
+                            this.historyService.addHistory('accounts', 'create_customer', this.translate.instant('HISTORY-DESC.create-customer', {customer: customer['name']}));
                             this.notify.success(this.translate.instant('ACCOUNTS.customer_created'));
                             this.router.navigate(['/accounts/customers/list']).then();
                         }),
