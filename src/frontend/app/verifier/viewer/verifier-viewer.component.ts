@@ -233,7 +233,6 @@ export class VerifierViewerComponent implements OnInit {
                     const tmpFieldId = splittedFieldId.join('_').replace('_' + cpt, '');
                     field = this.getFieldInfo(tmpFieldId);
                 }
-                console.log(field, fieldId);
                 this.lastLabel = this.translate.instant(field.label).trim();
                 this.lastColor = field.color;
                 this.disableOCR = true;
@@ -318,7 +317,6 @@ export class VerifierViewerComponent implements OnInit {
             'other': []
         };
         this.fields = data.fields;
-        console.log(this.fields);
         for (const category in this.fields) {
             for (const cpt in this.fields[category]) {
                 const field = this.fields[category][cpt];
