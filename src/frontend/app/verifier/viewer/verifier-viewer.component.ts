@@ -928,6 +928,7 @@ export class VerifierViewerComponent implements OnInit {
                                     tap(() => {
                                         /* Actions à effectuer après le traitement des chaînes sortantes */
                                         if (cpt + 1 === form.outputs.length) {
+                                            this.historyService.addHistory('verifier', 'invoice_validated', this.translate.instant('HISTORY-DESC.invoice_validated', {invoice_id: this.invoiceId, outputs: outputsLabel.join(', ')}));
                                             this.updateInvoice({'status': 'END', 'locked': false, 'locked_by': null});
                                             this.router.navigate(['/verifier']).then();
                                             this.notify.success(this.translate.instant('VERIFIER.form_validated_and_output_done', {outputs: outputsLabel.join('<br>')}));
@@ -960,6 +961,7 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     refuseForm() {
+        this.historyService.addHistory('verifier', 'invoice_refused', this.translate.instant('HISTORY-DESC.invoice_refused', {invoice_id: this.invoiceId}));
         this.updateInvoice({'status': 'ERR', 'locked': false, 'locked_by': null});
         this.notify.error(this.translate.instant('VERIFIER.invoice_refused'));
         this.router.navigate(['/verifier/list']);

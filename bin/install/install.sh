@@ -254,11 +254,27 @@ chmod -R g+s $defaultPath
 chown -R "$user":"$group" $defaultPath
 
 ####################
+# Create default input script (based on default input created in data_fr.sql)
+defaultScriptFile=$defaultPath/bin/scripts/default_input.sh
+if ! test -f "$defaultScriptFile"; then
+    cp $defaultPath/bin/scripts/script_sample_dont_touch.sh $defaultPath/bin/scripts/default_input.sh
+    sed -i "s#§§SCRIPT_NAME§§#default_input#g" $defaultPath/bin/scripts/default_input.sh
+    sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultPath/bin/scripts/default_input.sh
+    sed -i 's#"§§ARGUMENTS§§"#-input_id default_input#g' $defaultPath/bin/scripts/default_input.sh
+fi
+
+####################
 # Create docservers
 mkdir -p $docserverPath/{OpenCapture,OpenCapture_Splitter}
-mkdir -p $docserverPath/OpenCapture/images/{tiff,full}
+mkdir -p $docserverPath/OpenCapture/images/{tiff,full,thumbs}
 mkdir -p $docserverPath/OpenCapture_Splitter/{batches,separated_pdf}
 mkdir -p $docserverPath/OpenCapture/xml/
 chmod -R 775 $docserverPath/{OpenCapture,OpenCapture_Splitter}/
 chmod -R g+s $docserverPath/{OpenCapture,OpenCapture_Splitter}/
 chown -R "$user":"$group" $docserverPath/{OpenCapture,OpenCapture_Splitter}/
+
+####################
+# Create XML folder
+mkdir -p /var/share/export/
+chmod -R 775 /var/share/export/
+chown -R "$user":"$group" /var/share/export/

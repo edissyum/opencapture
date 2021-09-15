@@ -258,7 +258,6 @@ export class VerifierListComponent implements OnInit {
                 /*
                 * Starting from here, we fill the customers tree
                 */
-                // let customersToKeep: any = [];
                 const customersPurchaseToKeep : any = [];
                 const customersSaleToKeep : any = [];
                 this.allowedCustomers.forEach((customer: any) => {

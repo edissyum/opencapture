@@ -230,6 +230,8 @@
 		"delete-user": "",
 		"disable-user": "",
 		"enable-user": "",
+		"invoice_refused": "",
+		"invoice_validated": "",
 		"language_changed": "",
 		"login": "",
 		"logout": "",

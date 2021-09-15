@@ -153,7 +153,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
 }');
 ALTER SEQUENCE "outputs_types_id_seq" RESTART WITH 3;
 
-INSERT INTO "outputs" ("id", "output_type_id", "output_label") VALUES (1, 'export_xml', 'Export XML par défaut');
+INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data") VALUES (1, 'export_xml', 'Export XML par défaut', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "filename", "type": "text", "value": "invoice_number#F#invoice_date_year#vat_number"}]}}');
 INSERT INTO "outputs" ("id", "output_type_id", "output_label") VALUES (2, 'export_maarch', 'Export Maarch par défaut');
 ALTER SEQUENCE "outputs_id_seq" RESTART WITH 3;
 
@@ -219,7 +219,7 @@ ALTER SEQUENCE "form_models_field_id_seq" RESTART WITH 2;
 INSERT INTO "users" ("username","firstname", "lastname","password", "role") VALUES ('admin', 'Super', 'ADMIN', 'pbkdf2:sha256:150000$7c8waI7f$c0891ac8e18990db0786d4a49aea8bf7c1ad82796dccd8ae35c12ace7d8ee403', 1);
 
 -- CRÉATION D'UN MASQUE DE POSITIONNEMENT D'EXEMPLE
-INSERT INTO "positions_masks" (id, label, positions, pages, regex) VALUES (1, 'Masque par défaut', '{}', '{}', '{"invoice_date": "dateRegex", "invoice_due_date": "dateRegex"}');
+INSERT INTO "positions_masks" (id, label, regex) VALUES (1, 'Masque par défaut', '{"invoice_date": "dateRegex", "invoice_due_date": "dateRegex"}');
 ALTER SEQUENCE "positions_masks_id_seq" RESTART WITH 2;
 
 -- CRÉATION DES COMPTES DE CHARGE PAR DÉFAUT

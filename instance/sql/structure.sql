@@ -167,7 +167,7 @@ CREATE TABLE "journals" (
 CREATE TABLE "invoices" (
     "id"                    SERIAL UNIQUE PRIMARY KEY,
     "supplier_id"           INTEGER,
-    "customer_id"           INTEGER,
+    "customer_id"           INTEGER DEFAULT 0,
     "form_id"               INTEGER DEFAULT null,
     "purchase_or_sale"      VARCHAR(8) DEFAULT 'purchase',
     "filename"              VARCHAR NOT NULL,
