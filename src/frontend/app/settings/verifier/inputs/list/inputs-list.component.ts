@@ -76,7 +76,7 @@ export class InputsListComponent implements OnInit {
     }
 
     loadInputs() {
-        this.http.get(API_URL + '/ws/inputs/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
+        this.http.get(API_URL + '/ws/inputs/list?module=verifier&limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.inputs[0]) this.total = data.inputs[0].total;
                 this.inputs = data.inputs;

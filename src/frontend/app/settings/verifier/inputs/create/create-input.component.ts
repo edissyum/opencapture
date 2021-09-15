@@ -134,7 +134,7 @@ export class CreateInputComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
-        this.http.get(API_URL + '/ws/forms/list', {headers: this.authService.headers}).pipe(
+        this.http.get(API_URL + '/ws/forms/list&module=splitter', {headers: this.authService.headers}).pipe(
             tap((forms: any) => {
                 this.inputForm.forEach((element: any) => {
                     if (element.id === 'default_form_id') {

@@ -77,7 +77,7 @@ export class OutputsListComponent implements OnInit {
     }
 
     loadOutputs(): void {
-        this.http.get(API_URL + '/ws/outputs/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
+        this.http.get(API_URL + '/ws/outputs/list?module=verifier&limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.outputs[0]) this.total = data.outputs[0].total;
                 this.outputs = data.outputs;

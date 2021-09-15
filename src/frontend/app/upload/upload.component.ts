@@ -67,7 +67,8 @@ export class UploadComponent implements OnInit {
     );
 
     ngOnInit(): void {
-        this.http.get(API_URL + '/ws/inputs/list', {headers: this.authService.headers}).pipe(
+        const splitterOrVerifier = this.localeStorageService.get('splitter_or_verifier');
+        this.http.get(API_URL + '/ws/inputs/list?module=' + splitterOrVerifier, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.inputs = data.inputs;
                 if (this.inputs.length === 1) {
@@ -104,7 +105,7 @@ export class UploadComponent implements OnInit {
         this.sending = true;
         const formData: FormData = new FormData();
 
-        if (this.fileControl.value.length === 0) {
+        if(this.fileControl.value.length === 0) {
             this.notify.handleErrors(this.translate.instant('UPLOAD.no_file'));
             return;
         }

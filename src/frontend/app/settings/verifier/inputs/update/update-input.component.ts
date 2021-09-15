@@ -129,7 +129,7 @@ export class UpdateInputComponent implements OnInit {
                         if (element.id === field) {
                             element.control.setValue(data[field]);
                             if (element.id === 'default_form_id') {
-                                this.http.get(API_URL + '/ws/forms/list', {headers: this.authService.headers}).pipe(
+                                this.http.get(API_URL + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
                                     tap((forms: any) => {
                                         element.values = forms.forms;
                                     }),
