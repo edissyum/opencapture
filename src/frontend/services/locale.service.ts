@@ -35,8 +35,8 @@ export class LocaleService {
             longDateFormat : {
                 LT : 'HH:mm',
                 LTS : 'HH:mm:ss',
-                L : 'dd/MM/YYYY',
-                l : 'dd/MM/YYYY',
+                L : 'DD/MM/YYYY',
+                l : 'DD/MM/YYYY',
                 LL : 'D MMMM YYYY',
                 LLL : 'D MMMM YYYY HH:mm',
                 LLLL : 'dddd D MMMM YYYY HH:mm'
@@ -49,8 +49,8 @@ export class LocaleService {
             longDateFormat : {
                 LT: "h:mm A",
                 LTS: "h:mm:ss A",
-                L: "MM/dd/YYYY",
-                l: "MM/dd/YYYY",
+                L: "MM/DD/YYYY",
+                l: "MM/DD/YYYY",
                 LL: "MMMM Do YYYY",
                 LLL: "MMMM Do YYYY LT",
                 LLLL: "dddd, MMMM Do YYYY LT",
