@@ -46,9 +46,6 @@ export class SplitterFormBuilderComponent implements OnInit {
         'default_form': {
             'control': new FormControl(),
         },
-        'supplier_verif': {
-            'control': new FormControl(),
-        }
     };
     outputForm              : any       = [
         {
@@ -68,7 +65,7 @@ export class SplitterFormBuilderComponent implements OnInit {
     ];
     fieldCategories         : any []    = [
         {
-            'id': 'supplier',
+            'id': 'metadata',
             'label': marker('SPLITTER.meta_data')
         },
     ];
@@ -76,50 +73,7 @@ export class SplitterFormBuilderComponent implements OnInit {
         {
             'id': 'custom_fields',
             'label': marker('FORMS.custom_fields'),
-            'values': [
-                {
-                    id: 'postal_code',
-                    label: "Numéro de demande",
-                    unit: 'addresses',
-                    type: 'text',
-                    required: true,
-                    required_icon: 'fas fa-star',
-                    class: "w-1/3",
-                    class_label: "1/33",
-                    format: 'number_int',
-                    format_icon:'text-lg icomoon-numbers',
-                    display: 'simple',
-                    display_icon:'fas file-alt'
-                },
-                {
-                    id: 'city',
-                    label: 'Matricule',
-                    unit: 'addresses',
-                    type: 'text',
-                    required: true,
-                    required_icon: 'fas fa-star',
-                    class: "w-1/3",
-                    class_label: "1/33",
-                    format: 'char',
-                    format_icon:'fas fa-font',
-                    display: 'simple',
-                    display_icon:'fas file-alt'
-                },
-                {
-                    id: 'country',
-                    label: 'Type de demande',
-                    unit: 'addresses',
-                    type: 'text',
-                    required: true,
-                    required_icon: 'fas fa-star',
-                    class: "w-1/3",
-                    class_label: "1/33",
-                    format: 'char',
-                    format_icon:'fas fa-font',
-                    display: 'simple',
-                    display_icon:'fas file-alt'
-                },
-            ]
+            'values': []
         },
     ];
     fields                  : any       = {
@@ -193,7 +147,7 @@ export class SplitterFormBuilderComponent implements OnInit {
         this.serviceSettings.init();
         this.formId = this.route.snapshot.params['id'];
 
-        this.http.get(API_URL + '/ws/outputs/list', {headers: this.authService.headers}).pipe(
+        this.http.get(API_URL + '/ws/outputs/list?module=splitter', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.outputs = data.outputs;
                 if (this.formId) {
@@ -236,13 +190,15 @@ export class SplitterFormBuilderComponent implements OnInit {
                 if (data.customFields) {
                     for (const field in data.customFields) {
                         if (data.customFields.hasOwnProperty(field)) {
-                            if(data.customFields[field].module === 'verifier') {
+                            if(data.customFields[field].module === 'splitter' && data.customFields[field].enabled) {
                                 for (const parent in this.availableFieldsParent) {
                                     if(this.availableFieldsParent[parent].id === 'custom_fields') {
                                         this.availableFieldsParent[parent].values.push(
                                             {
                                                 id: 'custom_' + data.customFields[field].id,
                                                 label: data.customFields[field].label,
+                                                label_short: data.customFields[field].label_short,
+                                                metadata_key: data.customFields[field].metadata_key,
                                                 unit: 'custom',
                                                 type: data.customFields[field].type,
                                                 format: data.customFields[field].type,
@@ -268,12 +224,8 @@ export class SplitterFormBuilderComponent implements OnInit {
             this.http.get(API_URL + '/ws/forms/getFields/' + this.formId, {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
                     if (data.form_fields.fields) {
-                        if(data.form_fields.fields.facturation !== undefined)
-                            this.fields.facturation = data.form_fields.fields.facturation;
-                        if(data.form_fields.fields.supplier)
-                            this.fields.supplier = data.form_fields.fields.supplier;
-                        if(data.form_fields.fields.other)
-                            this.fields.other = data.form_fields.fields.other;
+                        if(data.form_fields.fields.metadata)
+                            this.fields.metadata = data.form_fields.fields.metadata;
 
                         for (const category in this.fields) {
                             if (this.fields.hasOwnProperty(category)) {
@@ -424,7 +376,6 @@ export class SplitterFormBuilderComponent implements OnInit {
     updateForm() {
         const label = this.form.label.control.value;
         const isDefault = this.form.default_form.control.value;
-        const supplierVerif = this.form.supplier_verif.control.value;
         const outputs: any[] = [];
         this.outputForm.forEach((element: any) => {
             if (element.control.value) outputs.push(element.control.value);
@@ -432,7 +383,7 @@ export class SplitterFormBuilderComponent implements OnInit {
 
         if (label !== '' && outputs.length >= 1) {
             this.http.put(API_URL + '/ws/forms/update/' + this.formId, {
-                'args': {'label' : label, 'default_form' : isDefault, 'supplier_verif': supplierVerif, 'outputs': outputs}
+                'args': {'label' : label, 'default_form' : isDefault, 'outputs': outputs}
                 }, {headers: this.authService.headers},
             ).pipe(
                 tap(()=> {
@@ -463,9 +414,8 @@ export class SplitterFormBuilderComponent implements OnInit {
     createForm() {
         const label = this.form.label.control.value;
         const isDefault = this.form.default_form.control.value;
-        const supplierVerif = this.form.supplier_verif.control.value;
         if (label) {
-            this.http.post(API_URL + '/ws/forms/add', {'args': {'label' : label, 'default_form' : isDefault, 'supplier_verif': supplierVerif}}, {headers: this.authService.headers},
+            this.http.post(API_URL + '/ws/forms/add', {'args': {'label' : label, 'default_form' : isDefault}}, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {
                     this.http.post(API_URL + '/ws/forms/updateFields/' + data.id, this.fields, {headers: this.authService.headers}).pipe(

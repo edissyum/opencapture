@@ -72,7 +72,7 @@ export class SplitterFormListComponent implements OnInit {
     ngOnInit(): void {
         this.serviceSettings.init();
         const lastUrl = this.routerExtService.getPreviousUrl();
-        if (lastUrl.includes('settings/verifier/forms') || lastUrl === '/') {
+        if (lastUrl.includes('settings/splitter/forms') || lastUrl === '/') {
             if (this.localeStorageService.get('formsPageIndex'))
                 this.pageIndex = parseInt(this.localeStorageService.get('formsPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
@@ -90,7 +90,7 @@ export class SplitterFormListComponent implements OnInit {
 
     loadForms(): void {
         this.loading = true;
-        this.http.get(API_URL + '/ws/forms/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
+        this.http.get(API_URL + '/ws/forms/list?module=splitter&limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.forms[0]) this.total = data.forms[0].total;
                 this.forms = data.forms;
@@ -103,6 +103,7 @@ export class SplitterFormListComponent implements OnInit {
             })
         ).subscribe();
     }
+
 
     deleteConfirmDialog(formId: number, form: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
