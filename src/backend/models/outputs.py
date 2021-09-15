@@ -25,8 +25,8 @@ def get_outputs(args):
     outputs = _db.select({
         'select': ["*"] if "select" not in args else args["select"],
         'table': ["outputs"],
-        'where': ["status NOT IN (%s)"],
-        'data': ["DEL"],
+        'where': args['where'],
+        'data': args['data'],
         'order_by': ["id ASC"],
         'limit': str(args['limit']) if 'limit' in args else [],
         'offset': str(args['offset']) if 'offset' in args else [],

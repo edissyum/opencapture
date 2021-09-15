@@ -853,7 +853,14 @@ export class FormBuilderComponent implements OnInit {
         const isDefault = this.form.default_form.control.value;
         const supplierVerif = this.form.supplier_verif.control.value;
         if (label) {
-            this.http.post(API_URL + '/ws/forms/add', {'args': {'label' : label, 'default_form' : isDefault, 'supplier_verif': supplierVerif}}, {headers: this.authService.headers},
+            this.http.post(API_URL + '/ws/forms/add',
+                {
+                    'args': {
+                        'label'         : label,
+                        'default_form'  : isDefault,
+                        'supplier_verif': supplierVerif,
+                        'module'        : 'verifier'
+                    }}, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {
                     this.http.post(API_URL + '/ws/forms/updateFields/' + data.id, this.fields, {headers: this.authService.headers}).pipe(

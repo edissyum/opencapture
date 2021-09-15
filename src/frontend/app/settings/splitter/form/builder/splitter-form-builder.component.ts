@@ -415,7 +415,14 @@ export class SplitterFormBuilderComponent implements OnInit {
         const label = this.form.label.control.value;
         const isDefault = this.form.default_form.control.value;
         if (label) {
-            this.http.post(API_URL + '/ws/forms/add', {'args': {'label' : label, 'default_form' : isDefault}}, {headers: this.authService.headers},
+            this.http.post(API_URL + '/ws/forms/add',
+                {
+                    'args': {
+                        'label'         : label,
+                        'default_form'  : isDefault,
+                        'module'        : "splitter"
+                    }
+                    }, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {
                     this.http.post(API_URL + '/ws/forms/updateFields/' + data.id, this.fields, {headers: this.authService.headers}).pipe(
@@ -426,7 +433,7 @@ export class SplitterFormBuilderComponent implements OnInit {
                         })
                     ).subscribe();
                     this.notify.success(this.translate.instant('FORMS.created'));
-                    this.router.navigateByUrl('settings/verifier/forms').then();
+                    this.router.navigateByUrl('settings/splitter/forms').then();
                 }),
                 catchError((err: any) => {
                     console.debug(err);

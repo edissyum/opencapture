@@ -137,7 +137,8 @@ def add_form(args):
             'table': 'form_models',
             'columns': {
                 'label': args['label'],
-                'default': args['default_form'],
+                'default_form': args['default_form'],
+                'module': args['module'],
             }
         }
         res = _db.insert(args)
