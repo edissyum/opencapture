@@ -50,6 +50,7 @@ export class UsersListComponent implements OnInit {
     loading         : boolean     = true;
     columnsToDisplay: string[]    = ['id', 'username', 'firstname', 'lastname', 'role','status', 'actions'];
     users           : any         = [];
+    allUsers        : any         = [];
     pageSize        : number      = 10;
     pageIndex       : number      = 0;
     total           : number      = 0;
@@ -85,12 +86,22 @@ export class UsersListComponent implements OnInit {
         }else
             this.localeStorageService.remove('usersPageIndex');
 
-        this.http.get(API_URL + '/ws/roles/list', {headers: this.authService.headers}).pipe(
+        this.http.get(API_URL + '/ws/users/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.roles = data.roles;
-                this.loadUsers();
+                this.allUsers = data.users;
+                this.http.get(API_URL + '/ws/roles/list', {headers: this.authService.headers}).pipe(
+                    tap((data: any) => {
+                        this.roles = data.roles;
+                        this.loadUsers();
+                    }),
+                    finalize(() => this.loading = false),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
             }),
-            finalize(() => this.loading = false),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
@@ -236,9 +247,9 @@ export class UsersListComponent implements OnInit {
     }
 
     sortData(sort: Sort) {
-        const data = this.users.slice();
+        const data = this.allUsers.slice();
         if(!sort.active || sort.direction === '') {
-            this.users = data;
+            this.users = data.splice(this.pageSize + 1, this.users.length).reverse();
             return;
         }
 
@@ -254,6 +265,7 @@ export class UsersListComponent implements OnInit {
                 default: return 0;
             }
         });
+        this.users = this.users.splice(this.pageSize + 1, this.users.length).reverse();
     }
 
     compare(a: number | string, b: number | string, isAsc: boolean) {
