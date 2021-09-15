@@ -1,0 +1,3 @@
+/**
+ * Interface for range navigator
+ */
