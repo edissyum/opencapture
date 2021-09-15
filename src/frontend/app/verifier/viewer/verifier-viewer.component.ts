@@ -318,7 +318,7 @@ export class VerifierViewerComponent implements OnInit {
             'other': []
         };
         this.fields = data.fields;
-
+        console.log(this.fields);
         for (const category in this.fields) {
             for (const cpt in this.fields[category]) {
                 const field = this.fields[category][cpt];
