@@ -24,14 +24,14 @@ CREATE TABLE "positions_masks" (
     "id"            SERIAL UNIQUE PRIMARY KEY,
     "label"         VARCHAR(50),
     "enabled"       BOOLEAN DEFAULT true,
-    "supplier_id"   VARCHAR(20),
+    "supplier_id"   INTEGER,
     "positions"     JSONB DEFAULT '{}',
     "pages"         JSONB DEFAULT '{}',
     "regex"         JSONB DEFAULT '{}',
     "status"        VARCHAR(5) DEFAULT 'OK',
     "filename"      VARCHAR(255),
     "width"         VARCHAR(10),
-    "nb_pages"      INTEGER,
+    "nb_pages"      INTEGER
 );
 
 CREATE TABLE "form_models_field" (
@@ -188,9 +188,9 @@ CREATE TABLE "invoices" (
 
 CREATE TABLE "history" (
     "id"                    SERIAL UNIQUE PRIMARY KEY,
-    "splitter_or_verifier"  VARCHAR(8) NOT NULL,
     "history_date"          TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
     "history_module"        VARCHAR(50),
+    "history_submodule"     VARCHAR(50),
     "history_desc"          VARCHAR(255),
     "user_ip"               VARCHAR(20),
     "user_info"             VARCHAR(255),

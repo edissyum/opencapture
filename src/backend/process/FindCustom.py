@@ -50,8 +50,8 @@ class FindCustom:
         list_of_fields = {}
         if self.typo:
             list_of_fields = retrieve_custom_positions(self.typo, self.Config)
-        elif self.supplier and self.supplier[2]['typology']:
-            list_of_fields = retrieve_custom_positions(self.supplier[2]['typology'], self.Config)
+        # elif self.supplier and self.supplier[2]['typology']:
+        #     list_of_fields = retrieve_custom_positions(self.supplier[2]['typology'], self.Config)
 
         if list_of_fields:
             for index in list_of_fields:

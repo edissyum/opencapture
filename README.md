@@ -34,7 +34,7 @@ Please, do not run the following command as root and create a specific user for 
     sudo apt install git
     latest_tag=$(git ls-remote --tags --sort="v:refname" https://github.com/edissyum/opencaptureforinvoices.git | tail -n1 |  sed 's/.*\///; s/\^{}//' | grep -E '2.+([0-9])$')
     git clone -b $latest_tag https://github.com/edissyum/opencaptureforinvoices/ /var/www/html/opencaptureforinvoices/
-    cd /var/www/html/opencaptureforinvoices/
+    cd /var/www/html/opencaptureforinvoices/bin/install/
 
 The `./install.sh` command create the service using `www-data` group (apache2 default group) and the current user. 
 
@@ -44,7 +44,6 @@ You have the choice between using supervisor or basic systemd
 Supervisor is useful if you need to run multiple instance of Open-Capture in parallel but it will be very greedy
 Systemd is perfect for one instance
 
-    cd bin/install/
     chmod u+x install.sh
     sudo ./install.sh
       # Go grab a coffee ;)
