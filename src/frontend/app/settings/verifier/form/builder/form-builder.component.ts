@@ -629,18 +629,24 @@ export class FormBuilderComponent implements OnInit {
                             if(data.customFields[field].module === 'verifier') {
                                 for (const parent in this.availableFieldsParent) {
                                     if(this.availableFieldsParent[parent].id === 'custom_fields') {
-                                        this.availableFieldsParent[parent].values.push(
-                                            {
-                                                id: 'custom_' + data.customFields[field].id,
-                                                label: data.customFields[field].label,
-                                                unit: 'custom',
-                                                type: data.customFields[field].type,
-                                                format: data.customFields[field].type,
-                                                required: data.customFields[field].required,
-                                                class: "w-1/3",
-                                                class_label: "1/33",
-                                            }
-                                        );
+                                        this.availableFieldsParent[parent].values.push({
+                                            id: 'custom_' + data.customFields[field].id,
+                                            label: data.customFields[field].label,
+                                            unit: 'custom',
+                                            type: data.customFields[field].type,
+                                            required: data.customFields[field].required,
+                                            class: "w-1/3",
+                                            class_label: "1/33",
+                                        });
+                                        let format = '';
+                                        if (data.customFields[field].type === 'text') {
+                                            format = 'char';
+                                        }else if (data.customFields[field].type === 'select') {
+                                            format = 'select';
+                                        }else if (data.customFields[field].type === 'textarea') {
+                                            format = 'char';
+                                        }
+                                        this.availableFieldsParent[parent].values[this.availableFieldsParent[parent].values.length - 1]['format'] = format;
                                     }
                                 }
                             }

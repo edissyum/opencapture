@@ -90,11 +90,14 @@
                                 </ng-template>
                             </ng-container>
                             <ng-container *ngIf="field.type === 'textarea'">
-                                <mat-form-field class="right-0 w-full form-viewer">
+                                <mat-form-field class="right-0 w-full pt-5">
                                     <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
                                         {{ field.label | translate }} <span *ngIf="isChildField(field.id) && !field.id.includes('custom_')">{{ field.cpt }}</span>
                                     </mat-label>
-                                    <textarea [id]="field.id" cdkTextareaAutosize cdkAutosizeMinRows="1" matInput
+                                    <textarea [id]="field.id" matInput cdkTextareaAutosize
+                                              #autosize="cdkTextareaAutosize"
+                                              cdkAutosizeMinRows="1"
+                                              cdkAutosizeMaxRows="5"
                                               [required]="field.required" [formControl]="field.control" [pattern]="field.pattern"
                                               (focusin)="ocr($event, true, field.color)"
                                               (focusout)="ocr($event, false); saveData($any($event.target).value, field['id'])"></textarea>

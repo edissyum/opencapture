@@ -51,13 +51,13 @@ export class CustomFieldsComponent implements OnInit {
     ];
     addFieldInputs: any[] = [
         {
-            controlType: 'textbox',
+            controlType: 'text',
             label_short: 'label_short',
             label: this.translate.instant('HEADER.label_short'),
             required: true,
         },
         {
-            controlType: 'textbox',
+            controlType: 'text',
             label_short: 'label',
             label: this.translate.instant('HEADER.label'),
             required: true,
@@ -67,7 +67,7 @@ export class CustomFieldsComponent implements OnInit {
             label_short: 'type',
             label: this.translate.instant('CUSTOM-FIELDS.type'),
             options: [
-                {key: 'textbox', value: this.translate.instant('CUSTOM-FIELDS.textbox')},
+                {key: 'text', value: this.translate.instant('CUSTOM-FIELDS.text')},
                 {key: 'textarea', value: this.translate.instant('CUSTOM-FIELDS.textarea')},
                 {key: 'select', value: this.translate.instant('CUSTOM-FIELDS.select')},
                 {key: 'checkBok', value: this.translate.instant('CUSTOM-FIELDS.checkbox')},

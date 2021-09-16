@@ -54,15 +54,6 @@ def check_python_customized_files(path):
     return array_of_import
 
 
-def retrieve_custom_positions(typology, config):
-    if typology:
-        file = config.cfg['REFERENCIAL']['referencialposition'] + str(typology) + '.ini'
-        if os.path.isfile(file):
-            positions = config.read_custom_position(file)
-            return positions
-    return False
-
-
 def search_custom_positions(data, ocr, files, locale, file, config):
     regex = data['regex']
     target = data['target'].lower()
@@ -106,7 +97,8 @@ def search_custom_positions(data, ocr, files, locale, file, config):
                     files.pdf_to_tiff(file, files.custom_fileName_tiff, False, False, True, target, data['page'])
                     target_file = files.custom_fileName_tiff
                 else:
-                    files.pdf_to_jpg(file + '[' + str(int(data['page']) - 1) + ']', False, True, target, False, True)
+
+                    files.pdf_to_jpg(file + '[' + str(int(data['page']) - 1) + ']', False, False, False, False, True)
                     target_file = files.custom_fileName
         if regex:
             locale_list = locale.get()

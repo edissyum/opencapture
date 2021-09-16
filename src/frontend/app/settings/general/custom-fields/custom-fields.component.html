@@ -100,7 +100,7 @@
                         <mat-form-field class="w-full" *ngFor="let input of addFieldInputs">
                             <mat-label [attr.for]="input.label_short">{{ input.label | translate }}</mat-label>
                             <div [ngSwitch]="input.controlType">
-                                <input matInput *ngSwitchCase="'textbox'" [formControlName]="input.label_short"
+                                <input matInput *ngSwitchCase="'text'" [formControlName]="input.label_short"
                                        [id]="input.label_short" [type]="input.type"/>
                                 <mat-select [id]="input.label_short" *ngSwitchCase="'dropdown'"
                                             [formControlName]="input.label_short">

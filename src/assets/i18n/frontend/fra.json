@@ -89,8 +89,8 @@
 		"field_updated": "Champ personnalisé modifié avec succès",
 		"module": "Module",
 		"select": "Liste à choix",
+		"text": "Texte",
 		"textarea": "Multi lignes",
-		"textbox": "Texte",
 		"type": "Type"
 	},
 	"DISPLAY": {
@@ -101,6 +101,7 @@
 		"404": "La page demandée n'existe pas",
 		"alphanum_extended_pattern": "La valeur n'est pas au format attendu : alphanumérique avec caractères spéciaux",
 		"alphanum_pattern": "La valeur n'est pas au format attendu : alphanumérique",
+		"char_pattern": "La valeur n'est pas au format attendu : alphabétique",
 		"connection_failed": "Erreur lors de la connexion au serveur",
 		"date_pattern": "La valeur n'est pas au format attendu : date",
 		"ecu_api_not_up": "Erreur lors de la connexion à l'API de vérification du numéro de TVA intra",

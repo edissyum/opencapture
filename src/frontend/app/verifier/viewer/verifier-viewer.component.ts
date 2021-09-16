@@ -15,7 +15,7 @@ along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from "@angular/router";
 import { API_URL } from "../../env";
@@ -35,6 +35,7 @@ import 'moment/locale/fr';
 import * as moment from 'moment';
 import {UserService} from "../../../services/user.service";
 import {HistoryService} from "../../../services/history.service";
+import {CdkTextareaAutosize} from "@angular/cdk/text-field";
 declare var $: any;
 
 
@@ -220,6 +221,27 @@ export class VerifierViewerComponent implements OnInit {
         }
     }
 
+    fieldExistsInForm(fieldId: any) {
+        let _return = false;
+        for (const parent in this.fields) {
+            // @ts-ignore
+            this.fields[parent].forEach((element: any) => {
+                if (fieldId === element.id) {
+                    _return = true;
+                }
+                const splittedFieldId = fieldId.split('_');
+                if (!isNaN(parseInt(splittedFieldId[splittedFieldId.length - 1])) && !fieldId.includes('custom_')) {
+                    const cpt = splittedFieldId[splittedFieldId.length - 1];
+                    const field = splittedFieldId.join('_').replace('_' + cpt, '');
+                    if (field === element.id) {
+                        _return = true;
+                    }
+                }
+            });
+        }
+        return _return;
+    }
+
     async drawPositions(): Promise<any> {
         for (const fieldId in this.invoice.datas) {
             const page = this.getPage(fieldId);
@@ -228,25 +250,28 @@ export class VerifierViewerComponent implements OnInit {
                 this.lastId = fieldId;
                 const splittedFieldId = fieldId.split('_');
                 let field = this.getFieldInfo(fieldId);
-                if (!isNaN(parseInt(splittedFieldId[splittedFieldId.length - 1]))) {
+                if (!isNaN(parseInt(splittedFieldId[splittedFieldId.length - 1])) && !fieldId.includes('custom_')) {
                     const cpt = splittedFieldId[splittedFieldId.length - 1];
                     const tmpFieldId = splittedFieldId.join('_').replace('_' + cpt, '');
                     field = this.getFieldInfo(tmpFieldId);
                 }
-                this.lastLabel = this.translate.instant(field.label).trim();
-                this.lastColor = field.color;
-                this.disableOCR = true;
-                $('#' + fieldId).focus();
-                const newArea = {
-                    x: position.ocr_from_user ? position.x / this.ratio : position.x / this.ratio - ((position.x / this.ratio) * 0.005),
-                    y: position.ocr_from_user ? position.y / this.ratio : position.y / this.ratio - ((position.y / this.ratio) * 0.003),
-                    width: position.ocr_from_user ? position.width / this.ratio : position.width / this.ratio + ((position.width / this.ratio) * 0.05),
-                    height: position.ocr_from_user ? position.height / this.ratio : position.height / this.ratio + ((position.height / this.ratio) * 0.6)
-                };
-                const triggerEvent = $('.trigger');
-                triggerEvent.hide();
-                triggerEvent.trigger('mousedown');
-                triggerEvent.trigger('mouseup', [newArea]);
+
+                if (field) {
+                    this.lastLabel = this.translate.instant(field.label).trim();
+                    this.lastColor = field.color;
+                    this.disableOCR = true;
+                    $('#' + fieldId).focus();
+                    const newArea = {
+                        x: position.ocr_from_user ? position.x / this.ratio : position.x / this.ratio - ((position.x / this.ratio) * 0.005),
+                        y: position.ocr_from_user ? position.y / this.ratio : position.y / this.ratio - ((position.y / this.ratio) * 0.003),
+                        width: position.ocr_from_user ? position.width / this.ratio : position.width / this.ratio + ((position.width / this.ratio) * 0.05),
+                        height: position.ocr_from_user ? position.height / this.ratio : position.height / this.ratio + ((position.height / this.ratio) * 0.6)
+                    };
+                    const triggerEvent = $('.trigger');
+                    triggerEvent.hide();
+                    triggerEvent.trigger('mousedown');
+                    triggerEvent.trigger('mouseup', [newArea]);
+                }
             }
         }
     }
@@ -779,7 +804,7 @@ export class VerifierViewerComponent implements OnInit {
 
     isChildField(fieldId: any) {
         const splittedId = fieldId.split('_');
-        return Number.isInteger(parseInt(splittedId[splittedId.length - 1]));
+        return Number.isInteger(parseInt(splittedId[splittedId.length - 1])) && !fieldId.includes('custom_');
     }
 
     getSupplierInfo(supplierId: any, showNotif = false, launchOnInit = false) {
@@ -870,6 +895,8 @@ export class VerifierViewerComponent implements OnInit {
                             error = this.translate.instant('ERROR.number_int_pattern');
                         }else if (pattern.requiredPattern === this.getPattern('number_float')) {
                             error = this.translate.instant('ERROR.number_float_pattern');
+                        }else if (pattern.requiredPattern === this.getPattern('char')) {
+                            error = this.translate.instant('ERROR.char_pattern');
                         }
                     }else if (datePickerPattern) {
                         error = this.translate.instant('ERROR.date_pattern');
@@ -1012,7 +1039,7 @@ export class VerifierViewerComponent implements OnInit {
             this.getThumb(newFilename).then();
             this.currentPage = pageToShow;
             for (const fieldId in this.invoice.datas) {
-                const page = this.invoice.pages[fieldId];
+                const page = this.getPage(fieldId);
                 const position = this.invoice.positions[fieldId];
                 if (position) {
                     const input = $('.input_' + fieldId);
@@ -1029,14 +1056,16 @@ export class VerifierViewerComponent implements OnInit {
                         this.lastId = fieldId;
                         const splittedFieldId = fieldId.split('_');
                         let field = this.getFieldInfo(fieldId);
-                        if (!isNaN(parseInt(splittedFieldId[splittedFieldId.length - 1]))) {
+                        if (!isNaN(parseInt(splittedFieldId[splittedFieldId.length - 1])) && !fieldId.includes('custom_')) {
                             const cpt = splittedFieldId[splittedFieldId.length - 1];
                             const tmpFieldId = splittedFieldId.join('_').replace('_' + cpt, '');
                             field = this.getFieldInfo(tmpFieldId);
                             field.label = this.translate.instant(field.label) + ' ' + (parseInt(cpt) + 1);
                         }
                         this.saveInfo = false;
-                        if (parseInt(String(page)) === this.currentPage) this.drawPositionByField(field, position);
+                        if (field) {
+                            if (parseInt(String(page)) === this.currentPage) this.drawPositionByField(field, position);
+                        }
                     }
                 }
             }

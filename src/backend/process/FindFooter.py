@@ -14,6 +14,7 @@
 # along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+import json
 import re
 import operator
 from ..functions import search_by_positions, search_custom_positions
@@ -54,7 +55,7 @@ class FindFooter:
                 content = line
             else:
                 content = line.content
-            for res in re.finditer(r"" + regex + "", content.upper()):
+            for res in re.finditer(r"" + regex + "", content.upper().replace(' ', '')):
                 # Retrieve only the number and add it in array
                 # In case of multiple no rates amount found, take the higher
                 tmp = re.finditer(r'[-+]?\d*[.,]+\d+([.,]+\d+)?|\d+', res.group())
@@ -134,7 +135,7 @@ class FindFooter:
                                 break
                 except (ValueError, SyntaxError, TypeError):
                     # If results isn't a float, transform it
-                    text = re.finditer(r'[-+]?\d*[.,]+\d+([.,]+\d+)?|\d+', text)
+                    text = re.finditer(r'[-+]?\d*[.,]+\d+([.,]+\d+)?|\d+', text.replace(' ', ''))
                     result = ''
                     for t in text:
                         result += t.group()
@@ -160,6 +161,10 @@ class FindFooter:
                 if result != '':
                     result = re.sub('\s*', '', result).replace(',', '.')
                     self.nbPage = data['page']
+                    try:
+                        position = json.loads(position)
+                    except (TypeError, json.decoder.JSONDecodeError):
+                        pass
                     return [result, position, data['page']]
                 else:
                     return False

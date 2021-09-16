@@ -227,16 +227,14 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
         update_typo_database(database, supplier[0], typo, log, config)
 
     # Find custom informations using mask
-    custom_fields = FindCustom(ocr.header_text, log, locale, config, ocr, files, supplier, typo, file).run()
-    columns = {}
+    custom_fields = FindCustom(ocr.header_text, log, locale, config, ocr, files, supplier, file, database).run()
     if custom_fields:
         for field in custom_fields:
-            field_name = field.split('-')[1]
-            field_name_position = field_name + '_position'
-            columns.update({
-                field_name: custom_fields[field][0],
-                field_name_position: str(custom_fields[field][1])
-            })
+            datas.update({field: custom_fields[field][0]})
+            if custom_fields[field][1]:
+                positions.update({field: files.reformat_positions(custom_fields[field][1])})
+            if custom_fields[field][2]:
+                pages.update({field: custom_fields[field][2]})
 
     # Find invoice number
     invoice_number_class = FindInvoiceNumber(ocr, files, log, locale, config, database, supplier, file, typo, ocr.header_text, 1, False, ocr.footer_text)
@@ -350,8 +348,10 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
             datas.update({'total_ht': footer[0][0]})
             if len(footer[0]) > 1:
                 positions.update({'no_rate_amount': files.reformat_positions(footer[0][1])})
+                positions.update({'total_ht': files.reformat_positions(footer[0][1])})
                 if footer[3]:
                     pages.update({'no_rate_amount': footer[3]})
+                    pages.update({'total_ht': footer[3]})
         if footer[1]:
             datas.update({'total_ttc': footer[1][0]})
             if len(footer[1]) > 1:
@@ -369,9 +369,11 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
             datas.update({'total_vat': footer[4][0]})
             if len(footer[4]) > 1:
                 positions.update({'vat_amount': files.reformat_positions(footer[4][1])})
+                positions.update({'total_vat': files.reformat_positions(footer[4][1])})
                 if footer[3]:
                     pages.update({'vat_amount': footer[3]})
-
+                    pages.update({'total_vat': footer[3]})
+    print(positions)
     # Find delivery number
     delivery_number_class = FindDeliveryNumber(ocr, files, log, locale, config, database, supplier, file, typo, ocr.header_text, 1, False)
     delivery_number = delivery_number_class.run()
