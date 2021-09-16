@@ -373,7 +373,7 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
                 if footer[3]:
                     pages.update({'vat_amount': footer[3]})
                     pages.update({'total_vat': footer[3]})
-    print(positions)
+
     # Find delivery number
     delivery_number_class = FindDeliveryNumber(ocr, files, log, locale, config, database, supplier, file, typo, ocr.header_text, 1, False)
     delivery_number = delivery_number_class.run()
