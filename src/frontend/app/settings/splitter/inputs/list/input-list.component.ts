@@ -36,8 +36,8 @@ import {Sort} from "@angular/material/sort";
 
 @Component({
   selector: 'app-splitter-input-list',
-  templateUrl: './splitter-input-list.component.html',
-  styleUrls: ['./splitter-input-list.component.scss']
+  templateUrl: './input-list.component.html',
+  styleUrls: ['./input-list.component.scss']
 })
 export class SplitterInputListComponent implements OnInit {
     headers         : HttpHeaders   = this.authService.headers;

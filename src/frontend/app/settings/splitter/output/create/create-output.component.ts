@@ -32,8 +32,8 @@ import {of} from "rxjs";
 
 @Component({
   selector: 'app-splitter-create-output',
-  templateUrl: './splitter-create-output.component.html',
-  styleUrls: ['./splitter-create-output.component.scss']
+  templateUrl: './create-output.component.html',
+  styleUrls: ['./create-output.component.scss']
 })
 export class SplitterCreateOutputComponent implements OnInit {
     loading             : boolean       = true;
@@ -98,18 +98,20 @@ export class SplitterCreateOutputComponent implements OnInit {
             const outputTypeId = this.getValueFromForm(this.outputForm, 'output_type_id');
             const outputLabel = this.getValueFromForm(this.outputForm, 'output_label');
             this.http.post(API_URL + '/ws/outputs/create',
-                {'args': {
+                {
+                    'args': {
                     'output_type_id': outputTypeId,
-                    'output_label': outputLabel,
+                    'output_label'  : outputLabel,
+                    'module'        : 'splitter',
                 }}, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {
                     this.notify.success(this.translate.instant('OUTPUT.created'));
-                    this.router.navigate(['/settings/verifier/outputs/update/' + data.id]).then();
+                    this.router.navigate(['/settings/splitter/outputs/update/' + data.id]).then();
                 }),
                 catchError((err: any) => {
                     console.debug(err);
-                    this.notify.handleErrors(err, '/settings/verifier/outputs');
+                    this.notify.handleErrors(err, '/settings/splitter/outputs');
                     return of(false);
                 })
             ).subscribe();

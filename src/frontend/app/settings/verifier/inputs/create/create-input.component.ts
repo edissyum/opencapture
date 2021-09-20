@@ -167,7 +167,9 @@ export class CreateInputComponent implements OnInit {
 
     onSubmit() {
         if (this.isValidForm()) {
-            const input : any = {};
+            const input : any = {
+                'module': 'verifier'
+            };
             this.inputForm.forEach(element => {
                 input[element.id] = element.control.value;
             });

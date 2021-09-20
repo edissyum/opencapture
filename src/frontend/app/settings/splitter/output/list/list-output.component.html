@@ -84,39 +84,35 @@
                 <hr class="border-green-400">
             </div>
         </div>
-        <mat-table matSort [dataSource]="inputs" (matSortChange)="sortData($event)" class="w-full">
-        <ng-container matColumnDef="id">
-            <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.id' | translate }} </mat-header-cell>
-            <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
-        </ng-container>
-        <ng-container matColumnDef="input_id">
-            <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.label_short' | translate }} </mat-header-cell>
-            <mat-cell *matCellDef="let element"> {{element.input_id}} </mat-cell>
-        </ng-container>
-        <ng-container matColumnDef="input_label">
-            <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.label' | translate }} </mat-header-cell>
-            <mat-cell *matCellDef="let element"> {{element.input_label}} </mat-cell>
-        </ng-container>
-        <ng-container matColumnDef="input_folder">
-            <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'INPUT.input_folder_header' | translate }} </mat-header-cell>
-            <mat-cell *matCellDef="let element"> {{element.input_folder}} </mat-cell>
-        </ng-container>
-        <ng-container matColumnDef="actions">
-            <mat-header-cell *matHeaderCellDef> </mat-header-cell>
-            <mat-cell *matCellDef="let element">
-                <button mat-icon-button
-                        (click)="$event.stopPropagation();deleteConfirmDialog(element.id, element.input_label)"
-                        matTooltip="{{ 'GLOBAL.delete' | translate }}"
-                        class="inline-block align-text-top">
-                    <i class="fas fa-trash fa-lg"></i>
-                </button>
-            </mat-cell>
-        </ng-container>
-        <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: columnsToDisplay;"
-                 routerLink="/settings/verifier/inputs/update/{{row.id}}"
-                 class="cursor-pointer hover:text-green-400 hover:shadow-md transition-colors duration-300"></mat-row>
-    </mat-table>
+        <mat-table matSort [dataSource]="outputs" (matSortChange)="sortData($event)" class="w-full">
+            <ng-container matColumnDef="id">
+                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.id' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="output_type_id">
+                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.output_type' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.output_type_id}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="output_label">
+                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.label' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.output_label}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="actions">
+                <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <button mat-icon-button
+                            (click)="$event.stopPropagation();deleteConfirmDialog(element.id, element.output_label)"
+                            matTooltip="{{ 'GLOBAL.delete' | translate }}"
+                            class="inline-block align-text-top">
+                        <i class="fas fa-trash fa-lg"></i>
+                    </button>
+                </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: columnsToDisplay;"
+                     routerLink="/settings/splitter/outputs/update/{{row.id}}"
+                     class="cursor-pointer hover:text-green-400 hover:shadow-md transition-colors duration-300"></mat-row>
+        </mat-table>
         <mat-paginator showFirstLastButtons
                        [length]="this.total"
                        [pageSize]="pageSize"

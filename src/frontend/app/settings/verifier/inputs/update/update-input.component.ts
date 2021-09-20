@@ -42,55 +42,55 @@ export class UpdateInputComponent implements OnInit {
     input           : any;
     inputForm       : any[]         = [
         {
-            id: 'input_id',
-            label: this.translate.instant('HEADER.label_short'),
-            type: 'text',
-            control: new FormControl(),
+            id      : 'input_id',
+            label   : this.translate.instant('HEADER.label_short'),
+            type    : 'text',
+            control : new FormControl(),
             disabled: true,
             required: true,
         },
         {
-            id: 'input_label',
-            label: this.translate.instant('HEADER.label'),
-            type: 'text',
-            control: new FormControl(),
+            id      : 'input_label',
+            label   : this.translate.instant('HEADER.label'),
+            type    : 'text',
+            control : new FormControl(),
             required: true,
         },
         {
-            id: 'input_folder',
-            label: this.translate.instant('INPUT.input_folder'),
-            type: 'text',
-            control: new FormControl(),
-            placeholder: "/var/share/sortant",
+            id          : 'input_folder',
+            label       : this.translate.instant('INPUT.input_folder'),
+            type        : 'text',
+            control     : new FormControl(),
+            placeholder : "/var/share/sortant",
+            required    : true,
+        },
+        {
+            id      : 'default_form_id',
+            label   : this.translate.instant('INPUT.default_form_id'),
+            type    : 'select',
+            control : new FormControl(),
             required: true,
         },
         {
-            id: 'default_form_id',
-            label: this.translate.instant('INPUT.default_form_id'),
-            type: 'select',
-            control: new FormControl(),
+            id      : 'customer_id',
+            label   : this.translate.instant('INPUT.associated_customer'),
+            type    : 'select',
+            control : new FormControl(),
             required: true,
         },
         {
-            id: 'customer_id',
-            label: this.translate.instant('INPUT.associated_customer'),
-            type: 'select',
-            control: new FormControl(),
-            required: true,
-        },
-        {
-            id: 'purchase_or_sale',
-            label: this.translate.instant('INPUT.purchase_or_sale'),
-            type: 'select',
-            control: new FormControl(),
-            values: [
+            id      : 'purchase_or_sale',
+            label   : this.translate.instant('INPUT.purchase_or_sale'),
+            type    : 'select',
+            control : new FormControl(),
+            values  : [
                 {
-                    'id': 'purchase',
-                    'label': 'UPLOAD.purchase_invoice'
+                    'id'    : 'purchase',
+                    'label' : 'UPLOAD.purchase_invoice'
                 },
                 {
-                    'id': 'sale',
-                    'label': 'UPLOAD.sale_invoice'
+                    'id'    : 'sale',
+                    'label' : 'UPLOAD.sale_invoice'
                 }
             ],
             required: true,

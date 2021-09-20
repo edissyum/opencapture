@@ -1,10 +1,10 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {LocalStorageService} from "../../../services/local-storage.service";
 import {API_URL} from "../../env";
 import {catchError, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {AuthService} from "../../../services/auth.service";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormBuilder} from "@angular/forms";
 import {UserService} from "../../../services/user.service";
@@ -50,7 +50,7 @@ export class SplitterListComponent implements OnInit {
         ) { }
 
     ngOnInit(): void {
-        this.localeStorageService.save('splitter_or_verifier', 'splitter')
+        this.localeStorageService.save('splitter_or_verifier', 'splitter');
         this.loadBatches();
     }
 
@@ -85,14 +85,8 @@ export class SplitterListComponent implements OnInit {
         return this._sanitizer.bypassSecurityTrustUrl('data:image/jpg;base64,' + url);
     }
 
-    adaptImagesUrl(): void {
-        for (let i = 0; i < this.batches.length; i++) {
-            this.batches[i]['image_url'] = this._sanitizer.bypassSecurityTrustResourceUrl(this.batches[i]['image_url']);
-        }
-    }
-
     onPageChange($event: PageEvent) {
-        this.batches = []
+        this.batches = [];
         this.paginationInfos.pageIndex  = $event.pageIndex + 1;
         this.paginationInfos.pageSize   = $event.pageSize;
         this.loadBatches();

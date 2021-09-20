@@ -15,8 +15,8 @@ import {of} from "rxjs";
 
 @Component({
   selector: 'app-splitter-create-input',
-  templateUrl: './splitter-create-input.component.html',
-  styleUrls: ['./splitter-create-input.component.scss']
+  templateUrl: './create-input.component.html',
+  styleUrls: ['./create-input.component.scss']
 })
 export class SplitterCreateInputComponent implements OnInit {
     headers         : HttpHeaders   = this.authService.headers;
@@ -53,36 +53,6 @@ export class SplitterCreateInputComponent implements OnInit {
             type: 'select',
             control: new FormControl(),
             required: true,
-        },
-        {
-            id: 'customer_id',
-            label: this.translate.instant('INPUT.associated_customer'),
-            type: 'select',
-            control: new FormControl(),
-            required: true,
-        },
-        {
-            id: 'purchase_or_sale',
-            label: this.translate.instant('INPUT.purchase_or_sale'),
-            type: 'select',
-            control: new FormControl(),
-            values: [
-                {
-                    'id': 'purchase',
-                    'label': 'UPLOAD.purchase_invoice'
-                },
-                {
-                    'id': 'sale',
-                    'label': 'UPLOAD.sale_invoice'
-                }
-            ],
-            required: true,
-        },
-        {
-            id: 'override_supplier_form',
-            label: this.translate.instant('INPUT.override_supplier_form'),
-            type: 'boolean',
-            control: new FormControl()
         },
     ];
 
@@ -150,7 +120,9 @@ export class SplitterCreateInputComponent implements OnInit {
 
     onSubmit() {
         if (this.isValidForm()) {
-            const input : any = {};
+            const input : any = {
+                'module': 'splitter'
+            };
             this.inputForm.forEach(element => {
                 input[element.id] = element.control.value;
             });
@@ -178,7 +150,7 @@ export class SplitterCreateInputComponent implements OnInit {
 
             this.http.post(API_URL + '/ws/inputs/createScriptAndIncron', {'args': input}, {headers: this.authService.headers}).pipe(
                 tap(() => {
-                    this.router.navigate(['/settings/verifier/inputs']).then();
+                    this.router.navigate(['/settings/splitter/inputs']).then();
                 }),
                 catchError((err: any) => {
                     console.debug(err);

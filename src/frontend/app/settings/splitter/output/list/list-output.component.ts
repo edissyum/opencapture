@@ -36,8 +36,8 @@ import {Sort} from "@angular/material/sort";
 
 @Component({
   selector: 'app-splitter-list-output',
-  templateUrl: './splitter-list-output.component.html',
-  styleUrls: ['./splitter-list-output.component.scss']
+  templateUrl: './list-output.component.html',
+  styleUrls: ['./list-output.component.scss']
 })
 export class SplitterListOutputComponent implements OnInit {
     headers         : HttpHeaders   = this.authService.headers;
@@ -78,7 +78,7 @@ export class SplitterListOutputComponent implements OnInit {
     }
 
     loadOutputs(): void {
-        this.http.get(API_URL + '/ws/outputs/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
+        this.http.get(API_URL + '/ws/outputs/list?module=splitter&limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.outputs[0]) this.total = data.outputs[0].total;
                 this.outputs = data.outputs;

@@ -188,20 +188,91 @@ export class SettingsService {
         ],
         "splitter": [
             {
+                "id"        : "splitter_form_builder",
+                "label"     : this.translate.instant("SETTINGS.list_forms"),
+                "icon"      : "fab fa-wpforms",
+                "route"     : "/settings/splitter/forms",
+                "actions"   : [
+                    {
+                        "id"        : "splitter_add_form",
+                        "label"     : this.translate.instant("SETTINGS.form_builder"),
+                        "route"     : "/settings/splitter/forms/builder/new",
+                        "privilege" : "add_form",
+                        "icon"      : "fas fa-tools"
+                    },
+                    {
+                        "id"                : "splitter_update_form",
+                        "label"             : this.translate.instant("SETTINGS.form_update"),
+                        "route"             : "/settings/splitter/forms/builder/edit/",
+                        "privilege"         : "update_form",
+                        "icon"              : "fas fa-hammer",
+                        "showOnlyIfActive"  : true
+                    }
+                ]
+            },
+            {
+                "id"        : "splitter_input_settings",
+                "label"     : this.translate.instant("FORMS.input_settings"),
+                "icon"      : "fas fa-sign-in-alt",
+                "route"     : "/settings/splitter/inputs",
+                "actions"   : [
+                    {
+                        "id"        : "splitter_add_input",
+                        "label"     : this.translate.instant("SETTINGS.add_input"),
+                        "route"     : "/settings/splitter/inputs/new",
+                        "privilege" : "splitter_add_input",
+                        "icon"      : "fas fa-plus"
+                    },
+                    {
+                        "id"                : "splitter_update_input",
+                        "label"             : this.translate.instant("SETTINGS.update_input"),
+                        "route"             : "/settings/splitter/inputs/update/",
+                        "privilege"         : "update_input",
+                        "icon"              : "fas fa-edit",
+                        "showOnlyIfActive"  : true
+                    }
+                ]
+            },
+            {
+                "id"        : "splitter_output_settings",
+                "label"     : this.translate.instant("FORMS.output_settings"),
+                "icon"      : "fas fa-sign-out-alt",
+                "route"     : "/settings/splitter/outputs",
+                "actions"   : [
+                    {
+                        "id"        : "splitter_add_output",
+                        "label"     : this.translate.instant("SETTINGS.add_output"),
+                        "route"     : "/settings/splitter/outputs/new",
+                        "privilege" : "add_output",
+                        "icon"      : "fas fa-plus"
+                    },
+                    {
+                        "id"                : "splitter_update_output",
+                        "label"             : this.translate.instant("SETTINGS.update_output"),
+                        "route"             : "/settings/splitter/outputs/update/",
+                        "privilege"         : "update_output",
+                        "icon"              : "fas fa-edit",
+                        "showOnlyIfActive"  : true
+                    }
+                ]
+            },
+            {
                 "id": "separator",
                 "label": this.translate.instant("SETTINGS.document_separator"),
                 "icon": "fas fa-qrcode",
+                "route"   : "/settings/splitter/separator",
             },
             {
                 "id": "document-type",
                 "label": this.translate.instant("SETTINGS.document_type"),
                 "icon": "fas fa-file",
+                "route"     : "/settings/splitter/documentType",
             },
             {
                 "id": "connector",
                 "label": this.translate.instant("SETTINGS.connector_EDM"),
                 "icon": "fas fa-link",
-            }
+            },
         ]
     };
     constructor(

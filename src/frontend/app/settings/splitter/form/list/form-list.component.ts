@@ -37,8 +37,8 @@ import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from "@angular/material/form-field";
 
 @Component({
     selector: 'app-list',
-    templateUrl: './splitter-form-list.component.html',
-    styleUrls: ['./splitter-form-list.component.scss'],
+    templateUrl: './form-list.component.html',
+    styleUrls: ['./form-list.component.scss'],
     providers: [
         { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } },
     ]

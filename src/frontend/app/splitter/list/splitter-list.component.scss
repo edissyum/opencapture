@@ -28,7 +28,6 @@ mat-card-title{
     transition: all .4s cubic-bezier(0.175, 0.885, 0, 1);
     background-color: #fff;
     border-radius: 12px;
-    overflow: hidden;
 }
 
 .card-title > a:after {
@@ -106,10 +105,6 @@ mat-paginator{
 
 mat-card-content{
     margin-top: 20px;
-}
-
-.content{
-    padding: 20px;
 }
 
 .file-count{

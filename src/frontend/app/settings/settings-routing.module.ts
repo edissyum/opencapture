@@ -42,13 +42,14 @@ import { UpdatePositionsMaskComponent } from "./verifier/positions-mask/update/u
 import { PositionsMaskListComponent } from "./verifier/positions-mask/list/positions-mask-list.component";
 import {DocumentTypeComponent} from "./splitter/document-type/document-type.component";
 import {SeparatorComponent} from "./splitter/separator/separator.component";
-import {SplitterCreateInputComponent} from "./splitter/inputs/create/splitter-create-input.component";
-import {SplitterInputListComponent} from "./splitter/inputs/list/splitter-input-list.component";
-import {SplitterUpdateInputComponent} from "./splitter/inputs/update/splitter-update-input.component";
-import {SplitterUpdateOutputComponent} from "./splitter/output/update/splitter-update-output.component";
-import {SplitterCreateOutputComponent} from "./splitter/output/create/splitter-create-output.component";
-import {SplitterFormListComponent} from "./splitter/form/list/splitter-form-list.component";
-import {SplitterFormBuilderComponent} from "./splitter/form/builder/splitter-form-builder.component";
+import {SplitterCreateInputComponent} from "./splitter/inputs/create/create-input.component";
+import {SplitterInputListComponent} from "./splitter/inputs/list/input-list.component";
+import {SplitterUpdateInputComponent} from "./splitter/inputs/update/update-input.component";
+import {SplitterUpdateOutputComponent} from "./splitter/output/update/update-output.component";
+import {SplitterCreateOutputComponent} from "./splitter/output/create/create-output.component";
+import {SplitterFormListComponent} from "./splitter/form/list/form-list.component";
+import {SplitterFormBuilderComponent} from "./splitter/form/builder/form-builder.component";
+import {SplitterListOutputComponent} from "./splitter/output/list/list-output.component";
 
 const routes: Routes = [
     {
@@ -210,7 +211,7 @@ const routes: Routes = [
         ]
     },
     {
-        path: 'settings/splitter/outputs', component: SplitterInputListComponent,
+        path: 'settings/splitter/outputs', component: SplitterListOutputComponent,
         data: {title: marker('FORMS.output_settings'), privileges: ['settings', 'outputs_list']},
         canActivate: [LoginRequiredService]
     },

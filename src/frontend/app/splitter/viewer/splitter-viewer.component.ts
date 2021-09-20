@@ -15,26 +15,25 @@ import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag
 import {MatDialog} from "@angular/material/dialog";
 import {DocumentTreeComponent} from "../document-tree/document-tree.component";
 import {remove} from 'remove-accents';
-import { NgxUiLoaderService } from "ngx-ui-loader";
+import {NgxUiLoaderService} from "ngx-ui-loader";
 
 export interface Batch {
     id              : number,
+    input_id        : number,
     image_url       : any,
     file_name       : string,
     page_number     : number,
     creation_date   : string,
 }
 
-export interface CustomField {
-    label_short     : string;
+export interface Field {
     id              : number;
-    module          : string;
+    label_short     : string;
     label           : string;
     type            : string;
-    enabled         : boolean;
     metadata_key    : string;
-    settings        : any;
-    value           : string;
+    class           : string;
+    required        : string;
 }
 
 export interface Metadata {
@@ -53,12 +52,11 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
     @ViewChild('cdkStepper') cdkDropList: CdkDragDrop<any> | undefined;
 
     form: FormGroup                 = new FormGroup({});
-    formSearchControl: FormControl  = new FormControl();
     metaDataOpenState: boolean      = true;
     showZoomPage: boolean           = false;
-    batchId : number                = -1;
+    currentBatch: any               = {id: -1, inputId: -1};
     batches: Batch[]                = [];
-    customFields: CustomField[]     = [];
+    fields: Field[]                 = [];
     documents: any                  = [];
     pagesImageUrls: any             = [];
     documentsIds :string[]          = [];
@@ -66,10 +64,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
     zoomImageUrl: string            = "";
     toolSelectedOption: string      = "";
     selectedItemName: string        = "";
-    protected searchStr: string     = "";
+    searchStr: string               = "";
     selectedMetadata: Metadata      = {id: -1, nom_usage: "", prenom: "", matricule: ""};
     autoCompleteResult!: Metadata;
-    currentBatch!: Batch;
     autoCompleteSlideColor: string  = "#97bf3d";
     inputMode: string               = "Auto"
 
@@ -100,18 +97,37 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
 
     ngOnInit(): void {
         this.userService.user   = this.userService.getUserFromLocal();
-        this.batchId            = this.route.snapshot.params['id'];
+        this.currentBatch.id    = this.route.snapshot.params['id'];
         this.loadBatches();
-        this.loadPages();
-        this.loadCustomFields();
+        this.loadSelectedBatch();
         this.loadMetadata();
-        console.log(this.customFields);
+        console.log(this.fields);
     }
 
-    loadSelectedBatch(id: number): void{
-        this.batchId        = id;
-        this.documents      = [];
+    loadSelectedBatch(): void{
+        this.documents       = [];
         this.loadPages();
+        this.loadBatchById();
+    }
+
+    loadBatchById(): void{
+        let headers = this.authService.headers;
+        this.ngxService.startBackground("load-current-batch");
+        setTimeout(() => {
+          this.ngxService.stopBackground("load-current-batch");
+        }, 10000);
+
+        this.http.get(API_URL + '/ws/splitter/batches/' + this.currentBatch.id, {headers}).pipe(
+          tap((data: any) => {
+            this.currentBatch.formId    = data.batches[0].form_id;
+            this.loadFormFields(this.currentBatch.formId);
+            this.ngxService.stopBackground("load-current-batch");
+          }),
+          catchError((err: any) => {
+              this.notify.error(err);
+              return of(false);
+          })
+        ).subscribe()
     }
 
     loadBatches(): void{
@@ -131,6 +147,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
                         file_name       : batch.file_name,
                         page_number     : batch.page_number,
                         creation_date   : batch.creation_date,
+                        input_id        : batch.input_id,
                     }
                 )
             );
@@ -149,7 +166,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
           this.ngxService.stopBackground("load-pages");
         }, 10000);
         let headers = this.authService.headers;
-        this.http.get(API_URL + '/ws/splitter/pages/' + this.batchId, {headers}).pipe(
+        this.http.get(API_URL + '/ws/splitter/pages/' + this.currentBatch.id, {headers}).pipe(
           tap((data: any) => {
             for (let i=0; i < data['page_lists'].length; i++) {
                 this.documents[i] = {
@@ -170,7 +187,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
                     this.pagesImageUrls.push({
                         pageId          : page['id'],
                         url             : this.sanitize(page['image_url'])
-                    })
+                    });
                 }
             }
             this.ngxService.stopBackground("load-pages");
@@ -185,7 +202,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
     getPageUrlById(pageId: number): any{
         for(let pageImage of this.pagesImageUrls){
             if(pageImage.pageId === pageId)
-                return pageImage.url
+                return pageImage.url;
         }
         return "";
     }
@@ -198,7 +215,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
             'nom_usage' : "",
             'matricule' : "",
             'prenom'    : "",
-        })
+        });
     }
 
 
@@ -290,7 +307,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
 
     fillData(selectedMetadata: any) {
         this.selectedMetadata   = selectedMetadata;
-        let optionId            =  this.selectedMetadata['id']
+        let optionId            =  this.selectedMetadata['id'];
         // @ts-ignore
         this.form.get('prenom').setValue(optionId);
         // @ts-ignore
@@ -299,40 +316,38 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
         this.form.get('nom_usage').setValue(optionId);
     }
 
-    loadCustomFields(){
+    loadFormFields(formId: number){
         this.ngxService.startBackground("load-custom-fields");
         setTimeout(() => {
           this.ngxService.stopBackground("load-custom-fields");
         }, 10000);
 
         let headers = this.authService.headers;
-        let newField;
-        this.http.get(API_URL + '/ws/customFields/list',{headers}).pipe(
+        this.http.get(API_URL + '/ws/forms/fields/getByFormId/' + formId,{headers}).pipe(
         tap((data: any) => {
-            data.customFields.forEach((field: CustomField) =>{
-                newField = {
+            data.fields.metadata.forEach((field: Field) =>{
+                this.fields.push({
                     'id'            : field.id,
                     'label_short'   : field.label_short,
-                    'module'        : field.module,
                     'label'         : field.label,
                     'type'          : field.type,
-                    'enabled'       : field.enabled,
                     'metadata_key'  : field.metadata_key,
-                    'settings'      : field.settings,
-                    'value'         : '',
-                }
-                if(field.enabled) {
-                    this.customFields.push(newField);
-                    let control         = new FormControl();
+                    'class'         : field.class,
+                    'required'      : field.required,
+                });
+
+                let control             = new FormControl();
+                this.form.addControl(field.label_short, control);
+
+                if(field.metadata_key){ // used to control autocomplete search fields
                     let controlSearch   = new FormControl();
-                    this.form.addControl(field.label_short, control);
                     this.form.addControl("search_" + field.label_short, controlSearch);
                 }
             })
             this.form = this.toFormGroup();
             // listen for search field value changes
             // @ts-ignore
-            this.customFields.forEach((field: CustomField) => {
+            data.fields.metadata.forEach((field: Field) => {
                 if(!field.metadata_key)
                     return;
                  // @ts-ignore
@@ -378,17 +393,12 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
 
     toFormGroup(){
         const group: any = {};
-            this.customFields.forEach((input: CustomField) => {
-                if(input.enabled) {
-                    let control = input.settings.required ?
-                        new FormControl(input.value || '', Validators.required) :
-                        new FormControl(input.value || '');
-                    if(!input.settings.editable)
-                        control.disable()
-                    group[input.label_short] = control;
-                    if(input.metadata_key)
-                        group['search_' + input.label_short] = new FormControl('')
-                }
+            this.fields.forEach((input: Field) => {
+                group[input.label_short] = input.required ?
+                        new FormControl('', Validators.required) :
+                        new FormControl('');
+                if(input.metadata_key)
+                    group['search_' + input.label_short] = new FormControl('')
             });
         return new FormGroup(group);
     }
@@ -482,7 +492,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
         }
     }
 
-    changeBatch(batchId: number) {
+    changeBatch(id: number) {
         this.fillDataValues({
             'nom_usage' : "",
             'matricule' : "",
@@ -491,8 +501,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
         // @ts-ignore
         this.form.get('commentaire').setValue("");
         this.selectedMetadata = {id: -1, nom_usage: "", prenom: "", matricule: ""};
-        window.location.href = "/dist/#/splitter/viewer/" + batchId;
-        this.loadSelectedBatch(batchId);
+        window.location.href = "/dist/#/splitter/viewer/" + id;
+        this.currentBatch.id = id;
+        this.loadSelectedBatch();
     }
 
     addDocument() {
@@ -510,7 +521,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
             documentTypeKey     : "",
             pages               : [],
             class               : "",
-        })
+        });
     }
 
     isElementInViewport(el: any) {
@@ -531,25 +542,25 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
 
         if(this.inputMode == 'Manual'){
             // @ts-ignore
-            let prenom  = this.form.get('prenom').value;
+            let prenom      = this.form.get('prenom').value;
 
             // @ts-ignore
-            let nom_usage     = this.form.get('nom_usage').value;
+            let nom_usage   = this.form.get('nom_usage').value;
 
             // @ts-ignore
-            let matricule = this.form.get('matricule').value;
+            let matricule   = this.form.get('matricule').value;
 
             this.selectedMetadata = {
-                nom_usage     : nom_usage,
-                matricule  : matricule,
-                prenom  : prenom,
-                id      : 0
-            }
+                nom_usage   : nom_usage,
+                matricule   : matricule,
+                prenom      : prenom,
+                id          : 0
+            };
         }
 
         if(this.selectedMetadata['id'] == -1){
             this.notify.error(this.translate.instant('SPLITTER.error_no_metadata'));
-            this.ngxService.stopBackground("validate")
+            this.ngxService.stopBackground("validate");
             return;
         }
 
@@ -557,7 +568,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
             if(!document.documentTypeKey){
                 document.class = "text-red-500";
                 this.notify.error(this.translate.instant('SPLITTER.error_no_doc_type'));
-                this.ngxService.stopBackground("validate")
+                this.ngxService.stopBackground("validate");
                 return;
             }
             else
@@ -566,7 +577,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
 
         let headers     = this.authService.headers;
         let metadata    = {
-            'id'            : this.batchId,
+            'id'            : this.currentBatch.id,
             'firstName'     : this.selectedMetadata['prenom'],
             'lastName'      : this.selectedMetadata['nom_usage'],
             'matricule'     : this.selectedMetadata['matricule'],

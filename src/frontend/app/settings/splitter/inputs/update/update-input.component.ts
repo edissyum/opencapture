@@ -33,8 +33,8 @@ import {of} from "rxjs";
 
 @Component({
   selector: 'app-splitter-update-input',
-  templateUrl: './splitter-update-input.component.html',
-  styleUrls: ['./splitter-update-input.component.scss']
+  templateUrl: './update-input.component.html',
+  styleUrls: ['./update-input.component.scss']
 })
 export class SplitterUpdateInputComponent implements OnInit {
     headers         : HttpHeaders   = this.authService.headers;
@@ -72,36 +72,6 @@ export class SplitterUpdateInputComponent implements OnInit {
             control: new FormControl(),
             required: true,
         },
-        {
-            id: 'customer_id',
-            label: this.translate.instant('INPUT.associated_customer'),
-            type: 'select',
-            control: new FormControl(),
-            required: true,
-        },
-        {
-            id: 'purchase_or_sale',
-            label: this.translate.instant('INPUT.purchase_or_sale'),
-            type: 'select',
-            control: new FormControl(),
-            values: [
-                {
-                    'id': 'purchase',
-                    'label': 'UPLOAD.purchase_invoice'
-                },
-                {
-                    'id': 'sale',
-                    'label': 'UPLOAD.sale_invoice'
-                }
-            ],
-            required: true,
-        },
-        {
-            id: 'override_supplier_form',
-            label: this.translate.instant('INPUT.override_supplier_form'),
-            type: 'boolean',
-            control: new FormControl()
-        },
     ];
 
     constructor(
@@ -134,17 +104,6 @@ export class SplitterUpdateInputComponent implements OnInit {
                                     tap((forms: any) => {
                                         element.values = forms.forms;
                                     }),
-                                    catchError((err: any) => {
-                                        console.debug(err);
-                                        this.notify.handleErrors(err);
-                                        return of(false);
-                                    })
-                                ).subscribe();
-                            } else if (element.id === 'customer_id') {
-                                this.http.get(API_URL + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
-                                    tap((customers: any) => {
-                                        element.values = customers.customers;
-                                    }),
                                     finalize(() => this.loading = false),
                                     catchError((err: any) => {
                                         console.debug(err);
@@ -160,7 +119,7 @@ export class SplitterUpdateInputComponent implements OnInit {
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
-                this.router.navigate(['/settings/verifier/outputs']).then();
+                this.router.navigate(['/settings/splitter/outputs']).then();
                 return of(false);
             })
         ).subscribe();
@@ -192,7 +151,7 @@ export class SplitterUpdateInputComponent implements OnInit {
                 }),
                 catchError((err: any) => {
                     console.debug(err);
-                    this.notify.handleErrors(err, '/verifier/inputs');
+                    this.notify.handleErrors(err, '/splitter/inputs');
                     return of(false);
                 })
             ).subscribe();
