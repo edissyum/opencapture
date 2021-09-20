@@ -7,11 +7,11 @@
 
 # Open-Capture is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+# along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 import os
@@ -20,9 +20,9 @@ import time
 import tempfile
 from kuyruk import Kuyruk
 from kuyruk_manager import Manager
-from .main import timer, check_file, create_classes
-from import_classes import _Files, _Config, _Splitter, _SeparatorQR
-from import_process import OCForInvoices_splitter
+from src.backend.main import timer, check_file, create_classes
+from src.backend.import_classes import _Files, _Config, _Splitter, _SeparatorQR
+from src.backend.import_process import OCForInvoices_splitter
 
 OCforInvoices = Kuyruk()
 

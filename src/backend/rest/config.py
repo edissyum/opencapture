@@ -7,17 +7,17 @@
 
 # Open-Capture is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+# along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
 from flask import Blueprint, request, jsonify, make_response
-from ..import_controllers import auth, config
-from ..main import create_classes_from_current_config
+from src.backend.import_controllers import auth, config
+from src.backend.main import create_classes_from_current_config
 
 bp = Blueprint('config', __name__,  url_prefix='/ws/')
 

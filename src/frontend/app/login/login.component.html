@@ -10,7 +10,7 @@
             <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
                 <mat-form-field class="block">
                     <mat-label>{{ 'USER.username' | translate }}</mat-label>
-                    <input matInput formControlName="username"  type="text" placeholder="{{ 'USER.username' | translate }}" required>
+                    <input matInput formControlName="username" type="text" placeholder="{{ 'USER.username' | translate }}" required>
                     <mat-error *ngIf="loginForm.controls.username.invalid">{{ getErrorMessage('username') }}</mat-error>
                 </mat-form-field>
                 <mat-form-field class="block">
