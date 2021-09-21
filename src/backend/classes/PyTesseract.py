@@ -57,7 +57,7 @@ class PyTesseract:
             return self.tool.image_to_string(
                 img,
                 lang=self.lang,
-                builder=pyocr.builders.LineBoxBuilder(6) # argument is the choosen PSM
+                builder=pyocr.builders.LineBoxBuilder(6)  # Argument is the choosen PSM
             )
 
         except pytesseract.pytesseract.TesseractError as t:
