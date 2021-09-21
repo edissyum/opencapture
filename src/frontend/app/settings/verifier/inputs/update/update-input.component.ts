@@ -77,7 +77,7 @@ export class UpdateInputComponent implements OnInit {
             label: this.translate.instant('INPUT.associated_customer'),
             type: 'select',
             control: new FormControl(),
-            required: true,
+            required: false,
         },
         {
             id: 'purchase_or_sale',
