@@ -95,6 +95,7 @@ find . -name ".gitkeep" -delete
 ####################
 # Makes scripts executable
 chmod u+x $defaultPath/bin/scripts/*.sh
+chown -R "$user":"$user" $defaultPath/bin/scripts/*.sh
 
 ####################
 # Create the Apache service for backend

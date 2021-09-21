@@ -53,8 +53,9 @@ class FindCustom:
                 'table': ['positions_masks'],
                 'where': ['supplier_id = %s'],
                 'data': [self.supplier[2]['supplier_id']]
-            })[0]
+            })
             if list_of_fields:
+                list_of_fields = list_of_fields[0]
                 for index in list_of_fields['positions']:
                     if 'custom_' in index:
                         _data = {
