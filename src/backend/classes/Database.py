@@ -14,6 +14,7 @@
 # along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+
 import psycopg2
 import psycopg2.extras
 

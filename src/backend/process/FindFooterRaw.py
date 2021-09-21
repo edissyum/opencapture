@@ -14,6 +14,7 @@
 # along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+
 import json
 import re
 import operator
@@ -284,32 +285,20 @@ class FindFooterRaw:
         else:
             if not self.rerun:
                 self.rerun = True
-                if self.Files.isTiff == 'True':
-                    if self.isLastPage:
-                        improved_image = self.Files.improve_image_detection(self.Files.tiffName_last_footer)
-                    else:
-                        improved_image = self.Files.improve_image_detection(self.Files.tiffName_footer)
+                if self.isLastPage:
+                    improved_image = self.Files.improve_image_detection(self.Files.jpgName_last_footer)
                 else:
-                    if self.isLastPage:
-                        improved_image = self.Files.improve_image_detection(self.Files.jpgName_last_footer)
-                    else:
-                        improved_image = self.Files.improve_image_detection(self.Files.jpgName_footer)
+                    improved_image = self.Files.improve_image_detection(self.Files.jpgName_footer)
                 self.Files.open_img(improved_image)
                 self.text = self.Ocr.line_box_builder(self.Files.img)
                 return self.run()
 
             if self.rerun and not self.rerun_as_text:
                 self.rerun_as_text = True
-                if self.Files.isTiff == 'True':
-                    if self.isLastPage:
-                        improved_image = self.Files.improve_image_detection(self.Files.tiffName_last_footer)
-                    else:
-                        improved_image = self.Files.improve_image_detection(self.Files.tiffName_footer)
+                if self.isLastPage:
+                    improved_image = self.Files.improve_image_detection(self.Files.jpgName_last_footer)
                 else:
-                    if self.isLastPage:
-                        improved_image = self.Files.improve_image_detection(self.Files.jpgName_last_footer)
-                    else:
-                        improved_image = self.Files.improve_image_detection(self.Files.jpgName_footer)
+                    improved_image = self.Files.improve_image_detection(self.Files.jpgName_footer)
                 self.Files.open_img(improved_image)
                 self.text = self.Ocr.text_builder(self.Files.img)
                 return self.run(text_as_string=True)

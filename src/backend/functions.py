@@ -14,8 +14,9 @@
 # along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
-import json
+
 import os
+import json
 from .classes.Config import Config as _Config
 
 
@@ -61,45 +62,24 @@ def search_custom_positions(data, ocr, files, locale, file, config):
     target_file = ''
     if position:
         if 'page' not in data or ('page' in data and data['page'] in ['1', '', None]):
-            if files.isTiff == 'True':
-                if target == 'footer':
-                    target_file = files.tiffName_footer
-                elif target == 'header':
-                    target_file = files.tiffName_header
-                else:
-                    target_file = files.tiffName
+            if target == 'footer':
+                target_file = files.jpgName_footer
+            elif target == 'header':
+                target_file = files.jpgName_header
             else:
-                if target == 'footer':
-                    target_file = files.jpgName_footer
-                elif target == 'header':
-                    target_file = files.jpgName_header
-                else:
-                    target_file = files.jpgName
+                target_file = files.jpgName
         elif data['page'] != '1':
             nb_pages = files.get_pages(file, config)
             if str(nb_pages) == str(data['page']):
-                if files.isTiff == 'True':
-                    if target == 'footer':
-                        target_file = files.tiffName_last_footer
-                    elif target == 'header':
-                        target_file = files.tiffName_last_header
-                    else:
-                        target_file = files.tiffName_last
+                if target == 'footer':
+                    target_file = files.jpgName_last_footer
+                elif target == 'header':
+                    target_file = files.jpgName_last_header
                 else:
-                    if target == 'footer':
-                        target_file = files.jpgName_last_footer
-                    elif target == 'header':
-                        target_file = files.jpgName_last_header
-                    else:
-                        target_file = files.jpgName_last
+                    target_file = files.jpgName_last
             else:
-                if files.isTiff == 'True':
-                    files.pdf_to_tiff(file, files.custom_fileName_tiff, False, False, True, target, data['page'])
-                    target_file = files.custom_fileName_tiff
-                else:
-
-                    files.pdf_to_jpg(file + '[' + str(int(data['page']) - 1) + ']', False, False, False, False, True)
-                    target_file = files.custom_fileName
+               files.pdf_to_jpg(file + '[' + str(int(data['page']) - 1) + ']', False, False, False, False, True)
+               target_file = files.custom_fileName
         if regex:
             locale_list = locale.get()
             regex = locale_list[regex]
@@ -120,10 +100,7 @@ def search_by_positions(supplier, index, ocr, files, database):
     positions = positions_mask[0]['positions'][index] if index in positions_mask[0]['positions'] else None
     pages = positions_mask[0]['pages'][index] if index in positions_mask[0]['pages'] else False
     regex = positions_mask[0]['regex'][index] if index in positions_mask[0]['regex'] else False
-    if files.isTiff == 'True':
-        file = files.tiffName
-    else:
-        file = files.jpgName
+    file = files.jpgName
 
     if positions:
         positions['ocr_from_user'] = True

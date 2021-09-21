@@ -175,7 +175,6 @@ CREATE TABLE "invoices" (
     "path"                  VARCHAR NOT NULL,
     "status"                VARCHAR(20) NOT NULL DEFAULT 'NEW',
     "full_jpg_filename"     VARCHAR,
-    "tiff_filename"         VARCHAR,
     "img_width"             INTEGER,
     "register_date"         TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
     "nb_pages"              INTEGER NOT NULL DEFAULT 1,

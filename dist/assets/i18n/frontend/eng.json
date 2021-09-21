@@ -89,8 +89,8 @@
 		"field_updated": "",
 		"module": "",
 		"select": "",
+		"text": "",
 		"textarea": "",
-		"textbox": "",
 		"type": ""
 	},
 	"DISPLAY": {
@@ -101,6 +101,7 @@
 		"404": "The page you are looking for does not exist",
 		"alphanum_extended_pattern": "",
 		"alphanum_pattern": "",
+		"char_pattern": "",
 		"connection_failed": "Error connecting to server",
 		"date_pattern": "",
 		"ecu_api_not_up": "",
@@ -230,6 +231,8 @@
 		"delete-user": "",
 		"disable-user": "",
 		"enable-user": "",
+		"invoice_refused": "",
+		"invoice_validated": "",
 		"language_changed": "",
 		"login": "",
 		"logout": "",

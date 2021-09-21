@@ -24,32 +24,21 @@ from src.backend.import_process import FindDate, FindFooter, FindInvoiceNumber, 
 from src.backend.import_classes import _Spreadsheet
 
 
-def insert(args, files, config, database, datas, positions, pages, tiff_filename, full_jpg_filename, file, original_file, supplier, status, nb_pages):
-    if files.isTiff == 'True':
-        try:
-            filename = os.path.splitext(files.custom_fileName_tiff)
-            improved_img = filename[0] + '_improved' + filename[1]
-            os.remove(files.custom_fileName_tiff)
-            os.remove(improved_img)
-        except FileNotFoundError:
-            pass
-        path = config.cfg['GLOBAL']['tiffpath'] + '/' + tiff_filename.replace('-%03d', '-001')
-    else:
-        try:
-            filename = os.path.splitext(files.custom_fileName)
-            improved_img = filename[0] + '_improved' + filename[1]
-            os.remove(files.custom_fileName)
-            os.remove(improved_img)
-        except FileNotFoundError:
-            pass
-        path = config.cfg['GLOBAL']['fullpath'] + '/' + full_jpg_filename.replace('-%03d', '-001')
+def insert(args, files, config, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier, status, nb_pages):
+    try:
+        filename = os.path.splitext(files.custom_fileName)
+        improved_img = filename[0] + '_improved' + filename[1]
+        os.remove(files.custom_fileName)
+        os.remove(improved_img)
+    except FileNotFoundError:
+        pass
+    path = config.cfg['GLOBAL']['fullpath'] + '/' + full_jpg_filename.replace('-%03d', '-001')
 
     invoice_data = {
         'filename': os.path.basename(file),
         'path': os.path.dirname(file),
         'img_width': str(files.get_width(path)),
         'full_jpg_filename': full_jpg_filename.replace('-%03d', '-001'),
-        'tiff_filename': tiff_filename.replace('-%03d', '-001'),
         'original_filename': original_file,
         'positions': json.dumps(positions),
         'datas': json.dumps(datas),
@@ -104,53 +93,28 @@ def insert(args, files, config, database, datas, positions, pages, tiff_filename
 
 def convert(file, files, ocr, nb_pages, custom_pages=False):
     if custom_pages:
-        if files.isTiff == 'True':
-            try:
-                filename = os.path.splitext(files.custom_fileName_tiff)
-                improved_img = filename[0] + '_improved' + filename[1]
-                os.remove(files.custom_fileName_tiff)
-                os.remove(improved_img)
-            except FileNotFoundError:
-                pass
-            files.pdf_to_tiff(file, files.custom_fileName_tiff, open_img=False, last_page=nb_pages)
-        else:
-            try:
-                filename = os.path.splitext(files.custom_fileName)
-                improved_img = filename[0] + '_improved' + filename[1]
-                os.remove(files.custom_fileName)
-                os.remove(improved_img)
-            except FileNotFoundError:
-                pass
-            files.pdf_to_jpg(file + '[' + str(int(nb_pages - 1)) + ']', open_img=False, is_custom=True)
+        try:
+            filename = os.path.splitext(files.custom_fileName)
+            improved_img = filename[0] + '_improved' + filename[1]
+            os.remove(files.custom_fileName)
+            os.remove(improved_img)
+        except FileNotFoundError:
+            pass
+        files.pdf_to_jpg(file + '[' + str(int(nb_pages - 1)) + ']', open_img=False, is_custom=True)
     else:
-        if files.isTiff == 'True':
-            files.pdf_to_tiff(file, files.tiffName, True, True, True, 'header')
-            ocr.header_text = ocr.line_box_builder(files.img)
-            files.pdf_to_tiff(file, files.tiffName, True, True, True, 'footer')
-            ocr.footer_text = ocr.line_box_builder(files.img)
-            files.pdf_to_tiff(file, files.tiffName, True)
-            ocr.text = ocr.line_box_builder(files.img)
-            if nb_pages > 1:
-                files.pdf_to_tiff(file, files.tiffName_last, False, True, True, 'header', nb_pages)
-                ocr.header_last_text = ocr.line_box_builder(files.img)
-                files.pdf_to_tiff(file, files.tiffName_last, False, True, True, 'footer', nb_pages)
-                ocr.footer_last_text = ocr.line_box_builder(files.img)
-                files.pdf_to_tiff(file, files.tiffName_last, last_page=nb_pages)
-                ocr.last_text = ocr.line_box_builder(files.img)
-        else:
-            files.pdf_to_jpg(file + '[0]', True, True, 'header')
-            ocr.header_text = ocr.line_box_builder(files.img)
-            files.pdf_to_jpg(file + '[0]', True, True, 'footer')
-            ocr.footer_text = ocr.line_box_builder(files.img)
-            files.pdf_to_jpg(file + '[0]')
-            ocr.text = ocr.line_box_builder(files.img)
-            if nb_pages > 1:
-                files.pdf_to_jpg(file + '[' + str(nb_pages - 1) + ']', True, True, 'header', True)
-                ocr.header_last_text = ocr.line_box_builder(files.img)
-                files.pdf_to_jpg(file + '[' + str(nb_pages - 1) + ']', True, True, 'footer', True)
-                ocr.footer_last_text = ocr.line_box_builder(files.img)
-                files.pdf_to_jpg(file + '[' + str(nb_pages - 1) + ']', last_image=True)
-                ocr.last_text = ocr.line_box_builder(files.img)
+        files.pdf_to_jpg(file + '[0]', True, True, 'header')
+        ocr.header_text = ocr.line_box_builder(files.img)
+        files.pdf_to_jpg(file + '[0]', True, True, 'footer')
+        ocr.footer_text = ocr.line_box_builder(files.img)
+        files.pdf_to_jpg(file + '[0]')
+        ocr.text = ocr.line_box_builder(files.img)
+        if nb_pages > 1:
+            files.pdf_to_jpg(file + '[' + str(nb_pages - 1) + ']', True, True, 'header', True)
+            ocr.header_last_text = ocr.line_box_builder(files.img)
+            files.pdf_to_jpg(file + '[' + str(nb_pages - 1) + ']', True, True, 'footer', True)
+            ocr.footer_last_text = ocr.line_box_builder(files.img)
+            files.pdf_to_jpg(file + '[' + str(nb_pages - 1) + ']', last_image=True)
+            ocr.last_text = ocr.line_box_builder(files.img)
 
 
 def update_typo_database(database, vat_number, typo, log, config):
@@ -185,7 +149,7 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
     else:
         original_file = os.path.basename(file)
 
-    # Convert files to JPG or TIFF
+    # Convert files to JPG
     convert(file, files, ocr, nb_pages)
 
     # Find supplier in document
@@ -257,11 +221,7 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
             break
         convert(file, files, ocr, tmp_nb_pages, True)
 
-        if files.isTiff == 'True':
-            _file = files.custom_fileName_tiff
-        else:
-            _file = files.custom_fileName
-
+        _file = files.custom_fileName
         image = files.open_image_return(_file)
 
         invoice_number_class.text = ocr.line_box_builder(image)
@@ -329,10 +289,7 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
             if i == 3 or int(tmp_nb_pages) == 1 or nb_pages == 1:
                 break
             convert(file, files, ocr, tmp_nb_pages, True)
-            if files.isTiff == 'True':
-                _file = files.custom_fileName_tiff
-            else:
-                _file = files.custom_fileName
+            _file = files.custom_fileName
 
             image = files.open_image_return(_file)
             text = ocr.line_box_builder(image)
@@ -406,21 +363,16 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
 
     file_name = str(uuid.uuid4())
     full_jpg_filename = 'full_' + file_name + '-%03d.jpg'
-    tiff_filename = 'tiff_' + file_name + '-%03d.tiff'
-
     file = files.move_to_docservers(config.cfg, file)
     # Convert all the pages to JPG (used to full web interface)
     files.save_img_with_wand(file, config.cfg['GLOBAL']['fullpath'] + '/' + full_jpg_filename)
-    # If tiff support enabled, save all the pages to TIFF (used for OCR ON FLY)
-    if files.isTiff == 'True':
-        files.save_pdf_to_tiff_in_docserver(file, config.cfg['GLOBAL']['tiffpath'] + '/' + tiff_filename)
 
     # If all informations are found, do not send it to GED
     if supplier and supplier[2]['skip_auto_validate'] == 'False' and date and invoice_number and footer and config.cfg['GLOBAL']['allowautomaticvalidation'] == 'True':
         log.info('All the usefull informations are found. Export the XML and end process')
-        insert(args, files, config, database, datas, positions, pages, tiff_filename, full_jpg_filename, file, original_file, supplier, 'END', nb_pages)
+        insert(args, files, config, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier, 'END', nb_pages)
     else:
-        insert(args, files, config, database, datas, positions, pages, tiff_filename, full_jpg_filename, file, original_file, supplier, 'NEW', nb_pages)
+        insert(args, files, config, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier, 'NEW', nb_pages)
         if supplier and supplier[2]['skip_auto_validate'] == 'True':
             log.info('Skip automatic validation for this supplier this time')
             database.update({

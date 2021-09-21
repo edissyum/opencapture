@@ -14,6 +14,7 @@
 # along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+
 import json
 import os
 import re
@@ -44,21 +45,13 @@ else:
 
 
 class Files:
-    def __init__(self, img_name, res, quality, log, is_tiff, locale, config):
-        self.isTiff = is_tiff
+    def __init__(self, img_name, res, quality, log, locale, config):
         self.jpgName = img_name + '.jpg'
         self.jpgName_header = img_name + '_header.jpg'
         self.jpgName_footer = img_name + '_footer.jpg'
-        self.tiffName = img_name + '.tiff'
-        self.tiffName_header = img_name + '_header.tiff'
-        self.tiffName_footer = img_name + '_footer.tiff'
         self.jpgName_last = img_name + '_last.jpg'
         self.jpgName_last_header = img_name + '_last_header.jpg'
         self.jpgName_last_footer = img_name + '_last_footer.jpg'
-        self.tiffName_last = img_name + '_last.tiff'
-        self.tiffName_last_header = img_name + '_last_header.tiff'
-        self.tiffName_last_footer = img_name + '_last_footer.tiff'
-        self.custom_fileName_tiff = img_name + '_custom.tiff'
         self.custom_fileName = img_name + '_custom.jpg'
         self.resolution = res
         self.compressionQuality = quality
@@ -73,9 +66,9 @@ class Files:
         if crop:
             if zone_to_crop == 'header':
                 if is_custom:
-                    self.crop_image_header(pdf_name, False, last_image, self.custom_fileName)
+                    self.crop_image_header(pdf_name, last_image, self.custom_fileName)
                 else:
-                    self.crop_image_header(pdf_name, False, last_image)
+                    self.crop_image_header(pdf_name, last_image)
                 if open_img:
                     if last_image:
                         self.img = Image.open(self.jpgName_last_header)
@@ -83,9 +76,9 @@ class Files:
                         self.img = Image.open(self.jpgName_header)
             elif zone_to_crop == 'footer':
                 if is_custom:
-                    self.crop_image_footer(pdf_name, False, last_image, self.custom_fileName)
+                    self.crop_image_footer(pdf_name, last_image, self.custom_fileName)
                 else:
-                    self.crop_image_footer(pdf_name, False, last_image)
+                    self.crop_image_footer(pdf_name, last_image)
                 if open_img:
                     if last_image:
                         self.img = Image.open(self.jpgName_last_footer)
@@ -101,65 +94,6 @@ class Files:
             self.save_img_with_wand(pdf_name, target)
             if open_img:
                 self.img = Image.open(target)
-
-    def pdf_to_tiff(self, pdf_name, output_file, convert_only_first_page=False, open_img=True, crop=False,
-                    zone_to_crop=False, last_page=None):
-        # Convert firstly the PDF to full tiff file
-        # It will be used to crop header and footer later
-        if not os.path.isfile(output_file):
-            args = [
-                "gs", "-q", "-dNOPAUSE", "-dBATCH",
-                "-r" + str(self.resolution), "-sCompression=lzw",
-                "-dDownScaleFactor=1",
-                "-sDEVICE=tiff32nc",
-                "-sOutputFile=" + output_file,
-            ]
-
-            if convert_only_first_page:
-                args.extend(["-dFirstPage=1", "-dLastPage=1"])
-            elif last_page:
-                args.extend(["-dFirstPage=" + str(last_page), "-dLastPage=" + str(last_page)])
-
-            args.extend([pdf_name])
-            subprocess.call(args)
-        if crop:
-            if zone_to_crop == 'header':
-                if output_file == self.custom_fileName_tiff:
-                    self.crop_image_header(pdf_name, True, last_page, output_file)
-                else:
-                    self.crop_image_header(pdf_name, True, last_page)
-            elif zone_to_crop == 'footer':
-                if output_file == self.custom_fileName_tiff:
-                    self.crop_image_footer(pdf_name, True, last_page, output_file)
-                else:
-                    self.crop_image_footer(pdf_name, True, last_page)
-
-        if open_img:
-            if zone_to_crop == 'header':
-                if last_page:
-                    self.img = Image.open(self.tiffName_last_header)
-                else:
-                    self.img = Image.open(self.tiffName_header)
-            elif zone_to_crop == 'footer':
-                if last_page:
-                    self.img = Image.open(self.tiffName_last_footer)
-                else:
-                    self.img = Image.open(self.tiffName_footer)
-            else:
-                if last_page:
-                    self.img = Image.open(self.tiffName_last)
-                else:
-                    self.img = Image.open(self.tiffName)
-
-    def save_pdf_to_tiff_in_docserver(self, pdf_name, output):
-        args = [
-            "gs", "-q", "-dNOPAUSE", "-dBATCH",
-            "-r" + str(self.resolution), "-sCompression=lzw",
-            "-sDEVICE=tiff32nc",
-            "-sOutputFile=" + output,
-            " -f" + pdf_name
-        ]
-        subprocess.call(args)
 
     # Simply open an image
     def open_img(self, img):
@@ -180,81 +114,39 @@ class Files:
 
     # Crop the file to get the header
     # 1/3 + 10% is the ratio we used
-    def crop_image_header(self, pdf_name, is_tiff, last_image, output_name=None):
+    def crop_image_header(self, pdf_name, last_image, output_name=None):
         try:
-            if not is_tiff:
-                with Img(filename=pdf_name, resolution=self.resolution) as pic:
-                    pic.compression_quality = self.compressionQuality
-                    pic.background_color = Color("white")
-                    pic.alpha_channel = 'remove'
-                    self.heightRatio = int(pic.height / 3 + pic.height * 0.1)
-                    pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='north')
-                    if output_name:
-                        pic.save(filename=output_name)
-                    if last_image:
-                        pic.save(filename=self.jpgName_last_header)
-                    else:
-                        pic.save(filename=self.jpgName_header)
-            else:
+            with Img(filename=pdf_name, resolution=self.resolution) as pic:
+                pic.compression_quality = self.compressionQuality
+                pic.background_color = Color("white")
+                pic.alpha_channel = 'remove'
+                self.heightRatio = int(pic.height / 3 + pic.height * 0.1)
+                pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='north')
                 if output_name:
-                    target = output_name
-                elif last_image:
-                    target = self.tiffName_last
+                    pic.save(filename=output_name)
+                if last_image:
+                    pic.save(filename=self.jpgName_last_header)
                 else:
-                    target = self.tiffName
-
-                with Img(filename=target, resolution=self.resolution) as pic:
-                    pic.compression_quality = self.compressionQuality
-                    pic.background_color = Color("white")
-                    pic.alpha_channel = 'remove'
-                    self.heightRatio = int(pic.height / 3 + pic.height * 0.1)
-                    pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='north')
-                    if output_name:
-                        pic.save(filename=output_name)
-                    elif last_image:
-                        pic.save(filename=self.tiffName_last_header)
-                    else:
-                        pic.save(filename=self.tiffName_header)
+                    pic.save(filename=self.jpgName_header)
         except (PolicyError, CacheError) as e:
             self.Log.error('Error during WAND conversion : ' + str(e))
 
     # Crop the file to get the footer
     # 1/3 + 10% is the ratio we used
-    def crop_image_footer(self, img, is_tiff=False, last_image=False, output_name=None):
+    def crop_image_footer(self, img, last_image=False, output_name=None):
         try:
-            if not is_tiff:
-                with Img(filename=img, resolution=self.resolution) as pic:
-                    pic.compression_quality = self.compressionQuality
-                    pic.background_color = Color("white")
-                    pic.alpha_channel = 'remove'
-                    self.heightRatio = int(pic.height / 3 + pic.height * 0.1)
-                    pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='south')
-                    if output_name:
-                        pic.save(filename=output_name)
-                    if last_image:
-                        pic.save(filename=self.jpgName_last_footer)
-                    else:
-                        pic.save(filename=self.jpgName_footer)
-
-            else:
+            with Img(filename=img, resolution=self.resolution) as pic:
+                pic.compression_quality = self.compressionQuality
+                pic.background_color = Color("white")
+                pic.alpha_channel = 'remove'
+                self.heightRatio = int(pic.height / 3 + pic.height * 0.1)
+                pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='south')
                 if output_name:
-                    target = output_name
-                elif last_image:
-                    target = self.tiffName_last
+                    pic.save(filename=output_name)
+                if last_image:
+                    pic.save(filename=self.jpgName_last_footer)
                 else:
-                    target = self.tiffName
-                with Img(filename=target, resolution=self.resolution) as pic:
-                    pic.compression_quality = self.compressionQuality
-                    pic.background_color = Color("white")
-                    pic.alpha_channel = 'remove'
-                    self.heightRatio = int(pic.height / 3 + pic.height * 0.1)
-                    pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='south')
-                    if output_name:
-                        pic.save(filename=output_name)
-                    elif last_image:
-                        pic.save(filename=self.tiffName_last_footer)
-                    else:
-                        pic.save(filename=self.tiffName_footer)
+                    pic.save(filename=self.jpgName_footer)
         except (PolicyError, CacheError) as e:
             self.Log.error('Error during WAND conversion : ' + str(e))
 
@@ -375,7 +267,7 @@ class Files:
                             return False
                         else:
                             return True
-                    elif file.lower().endswith(tuple(['.jpg', '.tiff'])):
+                    elif file.lower().endswith(tuple(['.jpg'])):
                         try:
                             Image.open(file)
                         except OSError:

@@ -94,10 +94,7 @@ class FindSupplier:
         return []
 
     def regenerate_ocr(self):
-        if self.Files.isTiff == 'True':
-            self.Files.open_img(self.Files.tiffName_header)
-        else:
-            self.Files.open_img(self.Files.jpgName_header)
+        self.Files.open_img(self.Files.jpgName_header)
 
     def run(self, retry=False, regenerate_ocr=False, target=None, text_as_string=False):
         supplier = self.process(self.Locale.VATNumberRegex, text_as_string, 'vat_number')
@@ -153,10 +150,7 @@ class FindSupplier:
 
         if self.customPage:
             self.Log.info('No supplier informations found in the first and last page. Try last page - 1')
-            if self.Files.isTiff == 'True':
-                file = self.Files.custom_fileName_tiff
-            else:
-                file = self.Files.custom_fileName
+            file = self.Files.custom_fileName
             image = self.Files.open_image_return(file)
             self.text = self.Ocr.line_box_builder(image)
             return self.run(retry=True, regenerate_ocr=True, target='footer')
@@ -165,10 +159,7 @@ class FindSupplier:
         # First apply image correction
         if not retry and not self.found_first:
             self.Log.info('No supplier informations found in the header, improve image and retry...')
-            if self.Files.isTiff == 'True':
-                improved_image = self.Files.improve_image_detection(self.Files.tiffName_header)
-            else:
-                improved_image = self.Files.improve_image_detection(self.Files.jpgName_header)
+            improved_image = self.Files.improve_image_detection(self.Files.jpgName_header)
             self.Files.open_img(improved_image)
             self.text = self.Ocr.line_box_builder(self.Files.img)
             return self.run(retry=True, target=None)
@@ -183,10 +174,7 @@ class FindSupplier:
         # Apply image improvment
         if retry and not self.found_third and self.found_fourth:
             self.Log.info('No supplier informations found in the footer, improve image and retry...')
-            if self.Files.isTiff == 'True':
-                improved_image = self.Files.improve_image_detection(self.Files.tiffName_footer)
-            else:
-                improved_image = self.Files.improve_image_detection(self.Files.jpgName_footer)
+            improved_image = self.Files.improve_image_detection(self.Files.jpgName_footer)
             self.Files.open_img(improved_image)
             self.text = self.Ocr.line_box_builder(self.Files.img)
             return self.run(retry=True, target='footer')
@@ -195,10 +183,7 @@ class FindSupplier:
         # Try using another tesseract function to extract text on the header
         if retry and not self.found_fourth and self.found_fifth:
             self.Log.info('No supplier informations found in the footer, change Tesseract function to retrieve text and retry on header...')
-            if self.Files.isTiff == 'True':
-                improved_image = self.Files.improve_image_detection(self.Files.tiffName_header)
-            else:
-                improved_image = self.Files.improve_image_detection(self.Files.jpgName_header)
+            improved_image = self.Files.improve_image_detection(self.Files.jpgName_header)
             self.Files.open_img(improved_image)
             self.text = self.Ocr.text_builder(self.Files.img)
             return self.run(retry=True, target='header', text_as_string=True)
@@ -206,10 +191,7 @@ class FindSupplier:
         if retry and not self.found_fifth and self.found_last_first:
             self.splitted = False
             self.Log.info('No supplier informations found in the header as string, change Tesseract function to retrieve text and retry on footer...')
-            if self.Files.isTiff == 'True':
-                improved_image = self.Files.improve_image_detection(self.Files.tiffName_footer)
-            else:
-                improved_image = self.Files.improve_image_detection(self.Files.jpgName_footer)
+            improved_image = self.Files.improve_image_detection(self.Files.jpgName_footer)
             self.Files.open_img(improved_image)
             self.text = self.Ocr.text_builder(self.Files.img)
             self.current_page = 1
@@ -224,10 +206,7 @@ class FindSupplier:
 
         if retry and not self.found_last_second and self.found_last_three:
             self.Log.info('No supplier informations found in the header last page, try with the improved last page header')
-            if self.Files.isTiff == 'True':
-                improved_image = self.Files.improve_image_detection(self.Files.tiffName_last_header)
-            else:
-                improved_image = self.Files.improve_image_detection(self.Files.jpgName_last_header)
+            improved_image = self.Files.improve_image_detection(self.Files.jpgName_last_header)
             self.Files.open_img(improved_image)
             self.text = self.Ocr.line_box_builder(self.Files.img)
             self.current_page = self.nbPages

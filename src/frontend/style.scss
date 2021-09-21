@@ -30,7 +30,6 @@ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/
 }
 
 [class^="icomoon-"], [class*="icomoon-"] {
-    /* use !important to prevent issues with browser extensions that change fonts */
     font-family: 'icomoon', serif !important;
     speak: never;
     font-style: normal;
@@ -38,8 +37,6 @@ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/
     font-variant: normal;
     text-transform: none;
     line-height: 1;
-
-    /* Better Font Rendering =========== */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
@@ -67,18 +64,17 @@ mat-expansion-panel-header.settings_expansion {
     @apply bg-gray-900;
     box-shadow: 0 1px 5px 4px gray;
 
-    & .mat-content mat-panel-title{
+    & .mat-content mat-panel-title {
         @apply text-white #{!important};
     }
 
-    &:hover,
-    &:focus{
-        background: none !important;
+    &:hover, &:focus {
+        @apply bg-none #{!important};
         @apply bg-gray-900 #{!important};
     }
 }
 
-/** **/
+/** END **/
 
 /*** Image area select ***/
 
@@ -157,7 +153,7 @@ div[id*="select-area-label_"] {
 }
 
 .mat-form-field-appearance-outline .mat-focused .mat-form-field-outline-thick,
-.mat-datepicker-toggle-active{
+.mat-datepicker-toggle-active {
     @apply text-green-400 #{!important};
 }
 

@@ -34,14 +34,6 @@ else:
                                                fromlist=[custom_array['OCForInvoices']['module']]),
                                     custom_array['OCForInvoices']['module'])
 
-OCforInvoices_worker = Kuyruk()
-
-OCforInvoices_worker.config.MANAGER_HOST = "127.0.0.1"
-OCforInvoices_worker.config.MANAGER_PORT = 16501
-OCforInvoices_worker.config.MANAGER_HTTP_PORT = 16500
-
-m = Manager(OCforInvoices_worker)
-
 
 def create_classes_from_current_config():
     config_name = _Config(current_app.config['CONFIG_FILE'])
@@ -62,7 +54,6 @@ def create_classes_from_current_config():
         int(config.cfg['GLOBAL']['resolution']),
         int(config.cfg['GLOBAL']['compressionquality']),
         log,
-        config.cfg['GLOBAL']['convertpdftotiff'],
         locale,
         config
     )
@@ -83,7 +74,6 @@ def create_classes(config_file):
     db_host = config.cfg['DATABASE']['postgreshost']
     db_port = config.cfg['DATABASE']['postgresport']
     database = _Database(log, db_name, db_user, db_pwd, db_host, db_port)
-
     return config, locale, log, ocr, database, spreadsheet
 
 
@@ -127,8 +117,9 @@ def str2bool(value):
     return value.lower() in "true"
 
 
-# If needed just run "kuyruk --app src.backend.main.OCforInvoices_worker manager"
-# to have web dashboard of current running worker
+OCforInvoices_worker = Kuyruk()
+
+
 # @OCforInvoices_worker.task(queue='invoices')
 def launch(args):
     start = time.time()
@@ -153,7 +144,6 @@ def launch(args):
         int(config.cfg['GLOBAL']['resolution']),
         int(config.cfg['GLOBAL']['compressionquality']),
         log,
-        config.cfg['GLOBAL']['convertpdftotiff'],
         locale,
         config
     )

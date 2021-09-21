@@ -15,6 +15,7 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
+
 import logging
 import os
 import json
@@ -515,12 +516,7 @@ def ocr_on_the_fly(file_name, selection, thumb_size, positions_masks):
     _files = _vars[3]
     _Ocr = _vars[4]
 
-    if _files.isTiff == 'True':
-        path = _cfg['GLOBAL']['tiffpath'] + '/' +  (os.path.splitext(file_name)[0]).replace('full_', 'tiff_') + '.tiff'
-        if not os.path.isfile(path):
-            path = _cfg['GLOBAL']['fullpath'] + '/' + file_name
-    else:
-        path = _cfg['GLOBAL']['fullpath'] + '/' + file_name
+    path = _cfg['GLOBAL']['fullpath'] + '/' + file_name
 
     if positions_masks:
         path = _cfg['GLOBAL']['positionsmaskspath'] + '/' + file_name

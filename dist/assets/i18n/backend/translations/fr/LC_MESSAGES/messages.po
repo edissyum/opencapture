@@ -1,6 +1,6 @@
 # French translations for .
 # Copyright (C) 2019 ORGANIZATION
-# This file is distributed under the same license as the  project.
+# This file is distributed under the same license as the project
 # FIRST AUTHOR <nathan.cheval@edissyum.com>, 2019.
 #
 msgid ""

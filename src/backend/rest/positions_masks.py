@@ -14,12 +14,12 @@
 # along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
-import base64
-import os
 
+import os
+import base64
 from src.backend.main import create_classes_from_current_config
-from src.backend.import_controllers import auth, positions_masks, verifier
 from flask import Blueprint, request, make_response, jsonify, current_app
+from src.backend.import_controllers import auth, positions_masks, verifier
 
 
 bp = Blueprint('positions_masks', __name__, url_prefix='/ws/')

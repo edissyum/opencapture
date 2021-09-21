@@ -53,7 +53,6 @@ export class AboutUsComponent implements OnInit {
                     this.gitVersion = data.git_current;
                 if (data.git_latest)
                     this.lastVersion = data.git_latest;
-
             }),
             finalize(() => this.loading = false),
             catchError((err: any) => {

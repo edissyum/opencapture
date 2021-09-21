@@ -18,7 +18,6 @@ The functionnalities of Open-Capture for Invoices are :
    - Multiple ADR (LAD) profile, using INI file
    - SIRET/SIREN & Adress verification (Only FR for now, could be disabled in settings)
    - Complex locale REGEX used. Easy to improve and modify
-   - You have the choice to convert PDF to TIFF or JPG.
    - POSTGRESQL database support
   
 # Installation

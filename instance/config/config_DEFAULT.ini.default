@@ -1,5 +1,5 @@
 [GLOBAL]
-# Use ${GLOBAL:projectPath} to specify once for all the path of the project
+; Use ${GLOBAL:projectPath} to specify once for all the path of the project
 resolution                  = 300
 compressionquality          = 100
 projectPath                 = /var/www/html/opencaptureforinvoices/
@@ -8,32 +8,27 @@ scriptsPath                 = ${GLOBAL:projectPath}/bin/scripts/
 docserverPath               = /var/docservers/OpenCapture/
 fullPath                    = ${GLOBAL:docserverPath}/images/full/
 thumbPath                   = ${GLOBAL:docserverPath}/images/thumbs/
-tiffPath                    = ${GLOBAL:docserverPath}/images/tiff/
 positionsMasksPath          = ${GLOBAL:docserverPath}/images/positions_masks/
 errorPath                   = ${GLOBAL:projectPath}/bin/data/error/
 logFile                     = ${GLOBAL:projectPath}/bin/data/log/OCforInvoices.log
 ocrErrorPath                = ${GLOBAL:projectPath}/instance/config/OCR_ERRORS.xml
-# True or False, python way
+; True or False, python way
 allowDuplicate              = False
-# True or False, python way
+; True or False, python way
 allowAutomaticValidation    = False
 defaultPassword             = Open-CaptureForInvoices
-# True or False, python way
-convertPdfToTiff            = True
-# True or False, python way
-allowBypassSupplieBanVerif  = True
-# Delta between date found and today date, in days
-# -1 to disable
+; Delta between date found and today date, in days
+; -1 to disable
 timeDelta                   = -1
 
 [AI-CLASSIFICATION]
-# True or False, python way
+; True or False, python way
 enabled = False
 iaPath = ${GLOBAL:projectPath}/bin/src/invoice_classification/
 modelPath = ${AI-CLASSIFICATION:iaPath}/invoice_classification.model
 trainImagePath = ${AI-CLASSIFICATION:iaPath}/images/training-images/
 predictImagePath = ${AI-CLASSIFICATION:iaPath}/images/predict-images/
-# Percentage minimum to keep the typology found by the AI
+; Percentage minimum to keep the typology found by the AI
 confidenceMin = 80
 
 [SPLITTER]
@@ -43,9 +38,9 @@ pdfOutputPath = ${SPLITTER:splitterpath}/separated_pdf/
 pdfOriginPath = ${GLOBAL:projectPath}/bin/data/OC_Splitter/pdf_sources/
 
 [REMOVE-BLANK-PAGES]
-# True or False
+; True or False
 enabled = False
-# Float type
+; Float type
 blobsRatio = 1E-6
 
 [DATABASE]
@@ -56,14 +51,14 @@ postgresUser        =
 postgresPassword    =
 
 [LOCALE]
-# fra or eng by default
+; fra or eng by default
 locale                   = fra
-# fra or eng by default
+; fra or eng by default
 localeocr                = fra
 localepath               = ${GLOBAL:projectPath}/src/assets/locale/
 
 [REFERENCIAL]
-# ODS or XLSX supported
+; ODS or XLSX supported
 referencialSupplierDocumentPath = ${GLOBAL:projectPath}/src/assets/referencial/default_referencial_supplier.ods
 referencialSupplierIndexpath    = ${GLOBAL:projectPath}/src/assets/referencial/default_referencial_supplier_index.json
 
@@ -71,17 +66,15 @@ referencialSupplierIndexpath    = ${GLOBAL:projectPath}/src/assets/referencial/d
 enabled = False
 
 [SEPARATORQR]
-# True or False, python way
+; True or False, python way
 enabled             = False
-# True or False, python way
+; True or False, python way
 exportpdfa          = False
 outputpdfpath       = ${GLOBAL:projectPath}/bin/data/exported_pdf/
 outputpdfapath      = ${GLOBAL:projectPath}/bin/data/exported_pdfa/
 tmppath             = /tmp/
-# _ or - for exemple
+; _ or - for exemple
 divider             = _
-
-# VIDEOCODAGE settings
 
 [API]
 siret-consumer      =
@@ -90,8 +83,3 @@ siret-url-token     = https://api.insee.fr/token
 siret-url           = https://api.insee.fr/entreprises/sirene/V3/siret/
 siren-url           = https://api.insee.fr/entreprises/sirene/V3/siren/
 tva-url             = https://ec.europa.eu/taxation_customs/vies/checkVatService.wsdl
-
-[CONTACT]
-green-ratio         = 95
-orange-ratio        = 50
-total-ratio         = 95

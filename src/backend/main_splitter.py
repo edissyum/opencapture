@@ -14,6 +14,7 @@
 # along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+
 import os
 import sys
 import time
@@ -57,7 +58,6 @@ def launch(args):
         int(config.cfg['GLOBAL']['resolution']),
         int(config.cfg['GLOBAL']['compressionquality']),
         log,
-        config.cfg['GLOBAL']['convertpdftotiff'],
         locale,
         config
     )

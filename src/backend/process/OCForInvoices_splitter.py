@@ -24,15 +24,8 @@ def process(file, log, splitter, files, ocr, tmp_folder, config):
     log.info('Processing file for separation : ' + file)
 
     # Get the OCR of the file as a list of line content and position
-    if files.isTiff == "False":
-        files.pdf_to_jpg(file, open_img=False)
-        extension = 'jpg'
-    else:
-        tiff_filename = files.jpgName.replace('.jpg', '') + '-%03d.tiff'
-        files.save_pdf_to_tiff_in_docserver(file, tiff_filename)
-        extension = 'tiff'
-
-    list_files = files.sorted_file(tmp_folder, extension)
+    files.pdf_to_jpg(file, open_img=False)
+    list_files = files.sorted_file(tmp_folder, 'jpg')
 
     text_extracted = []
 
@@ -65,20 +58,8 @@ def process(file, log, splitter, files, ocr, tmp_folder, config):
         text = ocr.text_builder(img)
         text = text.replace('-\n', '')
         text_extracted.append(text)
-        # Remove temporary files
-        if files.isTiff == "True":
-            try:
-                os.remove(f[1])
-            except OSError:
-                pass
 
     invoices_separated = splitter.get_page_separate_order(text_extracted)
-
-    # get jpg format which is used to display images
-    if files.isTiff == "True":
-        extension = 'jpg'
-        files.pdf_to_jpg(file, False)
-        list_files = files.sorted_file(tmp_folder, extension)
 
     # Delete blank page from original PDF file
     if config.cfg['REMOVE-BLANK-PAGES']['enabled'] == 'True' and blank_pages_exists:
