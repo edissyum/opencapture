@@ -1,5 +1,4 @@
 setuptools==58.0.4
-pyocr==0.6
 wand==0.6.7
 zeep==4.1.0
 PyJWT==2.1.0
@@ -24,3 +23,4 @@ pytesseract==0.3.8
 pyexcel_ods3==0.6.0
 configparser==5.0.2
 opencv-python==4.5.3.56
+pyocr==0.8
