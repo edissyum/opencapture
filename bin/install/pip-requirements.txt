@@ -19,7 +19,7 @@ tensorflow==2.6.0
 xlsxwriter==3.0.1
 flask_cors==3.0.10
 Flask-Babel==2.0.0
-imap-tools==0.46.0
+imap-tools==0.48.1
 pytesseract==0.3.8
 pyexcel_ods3==0.6.0
 configparser==5.0.2
