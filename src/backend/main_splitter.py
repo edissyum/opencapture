@@ -20,18 +20,11 @@ import sys
 import time
 import tempfile
 from kuyruk import Kuyruk
-from kuyruk_manager import Manager
 from src.backend.main import timer, check_file, create_classes
 from src.backend.import_classes import _Files, _Config, _Splitter, _SeparatorQR
 from src.backend.import_process import OCForInvoices_splitter
 
 OCforInvoices = Kuyruk()
-
-OCforInvoices.config.MANAGER_HOST = "127.0.0.1"
-OCforInvoices.config.MANAGER_PORT = 16502
-OCforInvoices.config.MANAGER_HTTP_PORT = 16503
-
-m = Manager(OCforInvoices)
 
 
 # If needed just run "kuyruk --app src.backend.main_splitter.OCforInvoices_Sep manager"

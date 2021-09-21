@@ -21,7 +21,6 @@ import time
 import tempfile
 from kuyruk import Kuyruk
 from flask import current_app
-from kuyruk_manager import Manager
 from .functions import recursive_delete, get_custom_array
 from .import_classes import _Database, _PyTesseract, _Locale, _Files, _Log, _Config, _SeparatorQR, _Spreadsheet
 
@@ -120,7 +119,7 @@ def str2bool(value):
 OCforInvoices_worker = Kuyruk()
 
 
-# @OCforInvoices_worker.task(queue='invoices')
+@OCforInvoices_worker.task(queue='invoices')
 def launch(args):
     start = time.time()
 
