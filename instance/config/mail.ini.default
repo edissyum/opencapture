@@ -1,5 +1,5 @@
 [GLOBAL]
-batchPath           = /opt/OpenCaptureForInvoices/bin/data/MailCollect/
+batchPath           = /var/www/html/opencaptureforinvoices/bin/data/MailCollect/
 
 [MAIL_1]
 host                = imap.gmail.com

@@ -16,6 +16,16 @@
     }
 }
 
+.ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; /* number of lines to show */
+    line-height: 1.5em;        /* fallback */
+    max-height: 1.5*2;       /* fallback */
+}
+
 ::ng-deep .verifier-list .mat-paginator {
     & .mat-paginator-outer-container {
         width: 120%;
@@ -28,6 +38,13 @@
 }
 
 ::ng-deep .list > mat-card {
+        @apply flex;
+        @apply flex-col;
+
+        & .mat-card-header {
+            @apply flex-shrink-0;
+        }
+
         & .mat-card-image {
             transform: scale(1);
             @apply transition-all;

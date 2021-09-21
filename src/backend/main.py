@@ -136,6 +136,12 @@ def launch(args):
     filename = tempfile.NamedTemporaryFile(dir=tmp_folder).name
     separator_qr = _SeparatorQR(log, config, tmp_folder)
 
+    if args.get('isMail') is not None and args['isMail'] is True:
+        log = _Log((args['log']))
+        log.info('Process attachment n°' + args['cpt'] + '/' + args['nb_of_attachments'])
+    else:
+        log = _Log(config.cfg['GLOBAL']['logfile'])
+
     if args.get('isMail') is None or args.get('isMail') is False:
         separator_qr.enabled = str2bool(config.cfg['SEPARATORQR']['enabled'])
 

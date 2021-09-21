@@ -47,28 +47,28 @@ class FindCustom:
 
     def run(self):
         data_to_return = {}
-        list_of_fields = self.database.select({
-            'select': ['positions', 'regex', 'pages'],
-            'table': ['positions_masks'],
-            'where': ['supplier_id = %s'],
-            'data': [self.supplier[2]['supplier_id']]
-        })[0]
+        if self.supplier:
+            list_of_fields = self.database.select({
+                'select': ['positions', 'regex', 'pages'],
+                'table': ['positions_masks'],
+                'where': ['supplier_id = %s'],
+                'data': [self.supplier[2]['supplier_id']]
+            })[0]
+            if list_of_fields:
+                for index in list_of_fields['positions']:
+                    if 'custom_' in index:
+                        _data = {
+                            'position': list_of_fields['positions'][index],
+                            'regex': list_of_fields['regex'][index] if index in list_of_fields['regex'] else '',
+                            'target': 'full',
+                            'page': list_of_fields['pages'][index] if index in list_of_fields['pages'] else ''
+                        }
 
-        if list_of_fields:
-            for index in list_of_fields['positions']:
-                if 'custom_' in index:
-                    _data = {
-                        'position': list_of_fields['positions'][index],
-                        'regex': list_of_fields['regex'][index] if index in list_of_fields['regex'] else '',
-                        'target': 'full',
-                        'page': list_of_fields['pages'][index] if index in list_of_fields['pages'] else ''
-                    }
-
-                    data, position = search_custom_positions(_data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
-                    if not data and list_of_fields[index]['regex'] is not False:
-                        data_to_return[index] = [self.process(list_of_fields[index]), position, list_of_fields['pages'][index]]
-                        if index in data_to_return and data_to_return[index][0]:
+                        data, position = search_custom_positions(_data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
+                        if not data and list_of_fields[index]['regex'] is not False:
+                            data_to_return[index] = [self.process(list_of_fields[index]), position, list_of_fields['pages'][index]]
+                            if index in data_to_return and data_to_return[index][0]:
+                                data_to_return[index] = [data, position, list_of_fields['pages'][index]]
+                        else:
                             data_to_return[index] = [data, position, list_of_fields['pages'][index]]
-                    else:
-                        data_to_return[index] = [data, position, list_of_fields['pages'][index]]
         return data_to_return
