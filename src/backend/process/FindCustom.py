@@ -66,7 +66,7 @@ class FindCustom:
                         }
 
                         data, position = search_custom_positions(_data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
-                        if not data and list_of_fields[index]['regex'] is not False:
+                        if not data and index in list_of_fields['regex'] and list_of_fields[index]['regex'] is not False:
                             data_to_return[index] = [self.process(list_of_fields[index]), position, list_of_fields['pages'][index]]
                             if index in data_to_return and data_to_return[index][0]:
                                 data_to_return[index] = [data, position, list_of_fields['pages'][index]]

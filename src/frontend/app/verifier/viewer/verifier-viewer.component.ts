@@ -92,7 +92,7 @@ export class VerifierViewerComponent implements OnInit {
     currentFormFields       : any       = {};
     pattern                 : any       = {
         'alphanum': '^[0-9a-zA-Z\\s]*$',
-        'alphanum_extended': '^[0-9a-zA-Z-/#\\s]*$',
+        'alphanum_extended': '^[0-9a-zA-Z-/#,\\.\\s]*$',
         'number_int': '^[0-9]*$',
         'number_float': '^[0-9]*([.][0-9]*)*$',
         'char': '^[A-Za-z\\s]*$',

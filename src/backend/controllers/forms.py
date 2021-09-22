@@ -188,7 +188,7 @@ def duplicate_form(form_id):
             'label': new_label,
             'default_form': False,
             'outputs': new_outputs,
-            'supplier_verif': form_info['supplier_verif'],
+            'supplier_verif': form_info['supplier_verif']
         }
         res, error = forms.add_form(args)
         if error is None:

@@ -92,6 +92,13 @@ def delete_positions_mask(position_mask_id):
     return make_response(jsonify(res[0])), res[1]
 
 
+@bp.route('positions_masks/duplicate/<int:position_mask_id>', methods=['POST'])
+@auth.token_required
+def duplicate_positions_mask(position_mask_id):
+    res = positions_masks.duplicate_positions_mask(position_mask_id)
+    return make_response(jsonify(res[0])), res[1]
+
+
 @bp.route('positions_masks/disable/<int:position_mask_id>', methods=['PUT'])
 @auth.token_required
 def disable_positions_mask(position_mask_id):

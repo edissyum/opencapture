@@ -155,7 +155,7 @@ export class FormBuilderComponent implements OnInit {
                     required_icon: 'fas fa-star',
                     class: "w-1/3",
                     class_label: "1/33",
-                    format: 'alphanum',
+                    format: 'alphanum_extend',
                     format_icon:'fas fas fa-hashtag',
                     display: 'simple',
                     display_icon:'fas file-alt'
@@ -169,7 +169,7 @@ export class FormBuilderComponent implements OnInit {
                     required_icon: 'fas fa-star',
                     class: "w-1/3",
                     class_label: "1/33",
-                    format: 'alphanum',
+                    format: 'alphanum_extend',
                     format_icon:'fas fas fa-hashtag',
                     display: 'simple',
                     display_icon:'fas file-alt'

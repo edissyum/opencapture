@@ -380,9 +380,10 @@ def export_maarch(invoice_id, data):
                         })
                         customs = json.loads(_data['value'])
                         for custom_id in customs:
-                            args['customFields'].update({
-                                custom_id: invoice_info['datas'][customs[custom_id]]
-                            })
+                            if custom_id in customs and customs[custom_id] in invoice_info['datas']:
+                                args['customFields'].update({
+                                    custom_id: invoice_info['datas'][customs[custom_id]]
+                                })
                     elif _data['id'] == 'subject':
                         subject = construct_with_var(_data['value'], invoice_info)
                         args.update({

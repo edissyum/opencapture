@@ -208,16 +208,16 @@ export class PositionsMaskListComponent implements OnInit {
 
     duplicatePositionMask(positionsMaskId: number) {
         if (positionsMaskId !== undefined) {
-            // this.http.delete(API_URL + '/ws/positions_masks/duplicate/' + positionsMaskId, {headers: this.authService.headers}).pipe(
-            //     tap(() => {
-            //         this.loadPositionMask()
-            //     }),
-            //     catchError((err: any) => {
-            //         console.debug(err);
-            //         this.notify.handleErrors(err);
-            //         return of(false);
-            //     })
-            // ).subscribe();
+            this.http.post(API_URL + '/ws/positions_masks/duplicate/' + positionsMaskId, {}, {headers: this.authService.headers}).pipe(
+                tap(() => {
+                    this.loadPositionMask().then();
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
         }
     }
 
