@@ -86,6 +86,7 @@ elif [[ "$OS" == 'Ubuntu' || "$OS" == 'Debian' && $VER == *'10'* ]]; then
 fi
 
 xargs -a apt-requirements.txt apt install -y
+python3 -m pip install setuptools==58.0.4
 python3 -m pip install --upgrade pip
 python3 -m pip install -r pip-requirements.txt
 

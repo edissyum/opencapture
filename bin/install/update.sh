@@ -58,6 +58,7 @@ find . -name ".gitkeep" -delete
 chmod -R 775 $OCForInvoicesPath
 chown -R "$user":"$user" $OCForInvoicesPath
 chmod u+x $OCForInvoicesPath/bin/scripts/*.sh
+chown -R "$user":"$user" $OCForInvoicesPath/bin/scripts/*.sh
 
 # Restart worker
 systemctl restart apache2
