@@ -15,13 +15,13 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-import json
 import os
+import json
 import uuid
 import mimetypes
+from src.backend.import_classes import _Spreadsheet
 from src.backend.import_process import FindDate, FindFooter, FindInvoiceNumber, FindSupplier, FindCustom, \
     FindOrderNumber, FindDeliveryNumber, FindFooterRaw
-from src.backend.import_classes import _Spreadsheet
 
 
 def insert(args, files, config, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier, status, nb_pages):

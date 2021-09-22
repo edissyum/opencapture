@@ -457,7 +457,6 @@ class Files:
 
     @staticmethod
     def reformat_positions(positions):
-
         if type(positions) in [tuple, dict] and 'x' not in positions and positions:
             x1 = positions[0][0]
             y1 = positions[0][1]
