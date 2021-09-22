@@ -124,7 +124,9 @@ export class VerifierViewerComponent implements OnInit {
         this.saveInfo = true;
         this.config = this.configService.getConfig();
         this.invoiceId = this.route.snapshot.params['id'];
-        this.historyService.addHistory('verifier', 'viewer', this.translate.instant('HISTORY-DESC.viewer', {invoice_id: this.invoiceId}));
+        this.translate.get('HISTORY-DESC.viewer', {invoice_id: this.invoiceId}).subscribe((translated: string) => {
+            this.historyService.addHistory('verifier', 'viewer', translated);
+        });
         this.updateInvoice({
             'locked': true,
             'locked_by': this.userService.user.username
@@ -221,33 +223,11 @@ export class VerifierViewerComponent implements OnInit {
         }
     }
 
-    fieldExistsInForm(fieldId: any) {
-        let _return = false;
-        for (const parent in this.fields) {
-            // @ts-ignore
-            this.fields[parent].forEach((element: any) => {
-                if (fieldId === element.id) {
-                    _return = true;
-                }
-                const splittedFieldId = fieldId.split('_');
-                if (!isNaN(parseInt(splittedFieldId[splittedFieldId.length - 1])) && !fieldId.includes('custom_')) {
-                    const cpt = splittedFieldId[splittedFieldId.length - 1];
-                    const field = splittedFieldId.join('_').replace('_' + cpt, '');
-                    if (field === element.id) {
-                        _return = true;
-                    }
-                }
-            });
-        }
-        return _return;
-    }
-
     async drawPositions(): Promise<any> {
         for (const fieldId in this.invoice.datas) {
             const page = this.getPage(fieldId);
             const position = this.invoice.positions[fieldId];
             if (position && parseInt(String(page)) === parseInt(String(this.currentPage))) {
-                this.lastId = fieldId;
                 const splittedFieldId = fieldId.split('_');
                 let field = this.getFieldInfo(fieldId);
                 if (!isNaN(parseInt(splittedFieldId[splittedFieldId.length - 1])) && !fieldId.includes('custom_')) {
@@ -257,20 +237,7 @@ export class VerifierViewerComponent implements OnInit {
                 }
 
                 if (field) {
-                    this.lastLabel = this.translate.instant(field.label).trim();
-                    this.lastColor = field.color;
-                    this.disableOCR = true;
-                    $('#' + fieldId).focus();
-                    const newArea = {
-                        x: position.ocr_from_user ? position.x / this.ratio : position.x / this.ratio - ((position.x / this.ratio) * 0.005),
-                        y: position.ocr_from_user ? position.y / this.ratio : position.y / this.ratio - ((position.y / this.ratio) * 0.003),
-                        width: position.ocr_from_user ? position.width / this.ratio : position.width / this.ratio + ((position.width / this.ratio) * 0.05),
-                        height: position.ocr_from_user ? position.height / this.ratio : position.height / this.ratio + ((position.height / this.ratio) * 0.6)
-                    };
-                    const triggerEvent = $('.trigger');
-                    triggerEvent.hide();
-                    triggerEvent.trigger('mousedown');
-                    triggerEvent.trigger('mouseup', [newArea]);
+                    this.drawPositionByField(field, position);
                 }
             }
         }
@@ -283,10 +250,10 @@ export class VerifierViewerComponent implements OnInit {
         this.disableOCR = true;
         $('#' + field.id).focus();
         const newArea = {
-            x: position.x / this.ratio,
-            y: position.y / this.ratio,
-            width: position.width / this.ratio,
-            height: position.height / this.ratio
+            x: position.ocr_from_user ? position.x / this.ratio : position.x / this.ratio - ((position.x / this.ratio) * 0.005),
+            y: position.ocr_from_user ? position.y / this.ratio : position.y / this.ratio - ((position.y / this.ratio) * 0.003),
+            width: position.ocr_from_user ? position.width / this.ratio : position.width / this.ratio + ((position.width / this.ratio) * 0.05),
+            height: position.ocr_from_user ? position.height / this.ratio : position.height / this.ratio + ((position.height / this.ratio) * 0.6)
         };
         const triggerEvent = $('.trigger');
         triggerEvent.hide();
@@ -991,7 +958,7 @@ export class VerifierViewerComponent implements OnInit {
         this.historyService.addHistory('verifier', 'invoice_refused', this.translate.instant('HISTORY-DESC.invoice_refused', {invoice_id: this.invoiceId}));
         this.updateInvoice({'status': 'ERR', 'locked': false, 'locked_by': null});
         this.notify.error(this.translate.instant('VERIFIER.invoice_refused'));
-        this.router.navigate(['/verifier/list']);
+        this.router.navigate(['/verifier/list']).then();
     }
 
     async changeForm(event: any) {
