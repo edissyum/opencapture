@@ -173,6 +173,44 @@ def delete_form(form_id):
         return response, 401
 
 
+def duplicate_form(form_id):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+
+    form_info, error = forms.get_form_by_id({'form_id': form_id})
+    if error is None:
+        new_outputs = '{'
+        for outputs in form_info['outputs']:
+            new_outputs += outputs + ','
+        new_outputs = new_outputs[:-1] + '}'
+        new_label = gettext('COPY_OF') + ' ' + form_info['label']
+        args = {
+            'label': new_label,
+            'default_form': False,
+            'outputs': new_outputs,
+            'supplier_verif': form_info['supplier_verif'],
+        }
+        res, error = forms.add_form(args)
+        if error is None:
+            fields, error = get_fields(form_info['id'])
+            if error is 200:
+                forms.add_form_fields(res)
+                update_fields({'data': fields['form_fields']['fields'], 'form_id': res})
+                return '', 200
+        else:
+            response = {
+                "errors": gettext('DUPLICATE_FORM_ERROR'),
+                "message": error
+            }
+            return response, 401
+    else:
+        response = {
+            "errors": gettext('DUPLICATE_FORM_ERROR'),
+            "message": error
+        }
+        return response, 401
+
+
 def disable_form(form_id):
     _vars = create_classes_from_current_config()
     _db = _vars[0]

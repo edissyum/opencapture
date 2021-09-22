@@ -16,7 +16,7 @@ CREATE TABLE "form_models" (
     "default_form"  BOOLEAN DEFAULT false,
     "supplier_verif"BOOLEAN DEFAULT true,
     "enabled"       BOOLEAN DEFAULT true,
-    "outputs"       TEXT[] DEFAULT ARRAY['export_xml'::text],
+    "outputs"       TEXT[],
     "status"        VARCHAR(5) DEFAULT 'OK'
 );
 

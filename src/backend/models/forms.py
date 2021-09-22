@@ -137,7 +137,9 @@ def add_form(args):
             'table': 'form_models',
             'columns': {
                 'label': args['label'],
-                'default': args['default_form'],
+                'default_form': args['default_form'],
+                'supplier_verif': args['supplier_verif'],
+                'outputs': args['outputs'] if 'outputs' in args and args['outputs'] else {}
             }
         }
         res = _db.insert(args)

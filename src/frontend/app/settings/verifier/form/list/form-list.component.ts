@@ -201,16 +201,16 @@ export class FormListComponent implements OnInit {
 
     duplicateForm(formId: number) {
         if (formId !== undefined) {
-            // this.http.delete(API_URL + '/ws/forms/duplicate/' + formId, {headers: this.authService.headers}).pipe(
-            //     tap(() => {
-            //         this.loadForms()
-            //     }),
-            //     catchError((err: any) => {
-            //         console.debug(err);
-            //         this.notify.handleErrors(err);
-            //         return of(false);
-            //     })
-            // ).subscribe();
+            this.http.post(API_URL + '/ws/forms/duplicate/' + formId, {}, {headers: this.authService.headers}).pipe(
+                tap(() => {
+                    this.loadForms();
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
         }
     }
 

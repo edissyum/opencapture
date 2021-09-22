@@ -86,6 +86,13 @@ def delete_form(form_id):
     return make_response(jsonify(res[0])), res[1]
 
 
+@bp.route('forms/duplicate/<int:form_id>', methods=['POST'])
+@auth.token_required
+def duplicate_form(form_id):
+    res = forms.duplicate_form(form_id)
+    return make_response(jsonify(res[0])), res[1]
+
+
 @bp.route('forms/disable/<int:form_id>', methods=['PUT'])
 @auth.token_required
 def disable_form(form_id):
