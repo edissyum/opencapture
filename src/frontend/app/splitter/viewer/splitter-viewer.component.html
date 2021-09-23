@@ -184,25 +184,27 @@
                     </button>
                     <mat-form-field class="inline-block pt-6">
                         <mat-label>{{ 'SPLITTER.send_to' | translate }}</mat-label>
-                        <select [(ngModel)]="toolSelectedOption" matNativeControl>
-                            <option *ngFor="let document of documents;" [value]="document['id']">
+                        <mat-select [(ngModel)]="toolSelectedOption" matNativeControl>
+                            <mat-option *ngFor="let document of documents;" [value]="document['id']">
                                 {{document['documentTypeName']}}
-                            </option>
-                        </select>
+                            </mat-option>
+                        </mat-select>
                     </mat-form-field>
                     <button (click)="sendSelectedPages()" mat-button class="inline-block"
                         title="{{ 'SPLITTER.send' | translate }}">
                         <i class="fa fa-paper-plane fa-lg"></i>
                     </button>
-                    <div class="inline-block w-96 float-right py-8">
-                        <button mat-button (click)="validate()" class="btn-validate-splitter rounded-full bg-green-400 text-white
-                         text-sm font-medium transition duration-300 mx-2 float-right" >
-                            {{ 'GLOBAL.validate' | translate }}
-                        </button>
-                        <button mat-button class="btn-validate-splitter text-gray-500 bg-gray-300 rounded-full
-                         text-sm font-medium transition duration-300 mx-2 float-right" routerLink="/splitter/list">
-                            {{ 'GLOBAL.cancel' | translate }}
-                        </button>
+                    <div class="inline-block w-auto float-right py-8 mx-4 grid-rows-2">
+                        <div>
+                            <button mat-button (click)="validate()" class="btn-validate-splitter rounded-full bg-green-400 text-white
+                             text-sm font-medium transition duration-300 ml-2 float-right" style="border-right: 1px dotted white !important;">
+                                {{ 'GLOBAL.validate' | translate }}
+                            </button>
+                            <button mat-button class="btn-validate-splitter text-gray-500 bg-gray-300 rounded-full
+                             text-sm font-medium transition duration-300 float-right" routerLink="/splitter/list">
+                                {{ 'GLOBAL.cancel' | translate }}
+                            </button>
+                        </div>
                     </div>
                 </mat-card-content>
             </mat-card>

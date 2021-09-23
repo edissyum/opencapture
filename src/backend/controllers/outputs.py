@@ -76,6 +76,7 @@ def create_output(data):
     _columns = {
         'output_type_id': data['output_type_id'],
         'output_label': data['output_label'],
+        'module': data['module'],
     }
 
     res, error = outputs.create_output({'columns': _columns})

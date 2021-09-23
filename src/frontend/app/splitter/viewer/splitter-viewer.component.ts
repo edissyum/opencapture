@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {API_URL} from "../../env";
-import {catchError, debounceTime, delay, filter, map, takeUntil, tap} from "rxjs/operators";
+import {catchError, debounceTime, delay, filter, finalize, map, takeUntil, tap} from "rxjs/operators";
 import {of, ReplaySubject, Subject} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {LocalStorageService} from "../../../services/local-storage.service";
@@ -36,20 +36,13 @@ export interface Field {
     required        : string;
 }
 
-export interface Metadata {
-    id              : number,
-    nom_usage       : string,
-    prenom          : string,
-    matricule       : string,
-}
-
 @Component({
   selector: 'app-viewer',
   templateUrl: './splitter-viewer.component.html',
   styleUrls: ['./splitter-viewer.component.scss'],
 })
 export class SplitterViewerComponent implements OnInit, OnDestroy{
-    @ViewChild('cdkStepper') cdkDropList: CdkDragDrop<any> | undefined;
+    @ViewChild(`cdkStepper`) cdkDropList: CdkDragDrop<any> | undefined;
 
     form: FormGroup                 = new FormGroup({});
     metaDataOpenState: boolean      = true;
@@ -60,21 +53,26 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
     documents: any                  = [];
     pagesImageUrls: any             = [];
     documentsIds :string[]          = [];
-    metadata: Metadata[]            = [];
+    metadata: any[]            = [];
     zoomImageUrl: string            = "";
     toolSelectedOption: string      = "";
     selectedItemName: string        = "";
     searchStr: string               = "";
-    selectedMetadata: Metadata      = {id: -1, nom_usage: "", prenom: "", matricule: ""};
-    autoCompleteResult!: Metadata;
+    selectedMetadata: any           = {id: -1};
+    autoCompleteResult!: any;
     autoCompleteSlideColor: string  = "#97bf3d";
-    inputMode: string               = "Auto"
+    inputMode: string               = "Auto";
+    exportList: any                 = [
+        {label: 'Export de Fichiers et XML de métadonnées', id: 1},
+        {label: 'Export de Fichiers PDF', id: 2}
+    ];
+    outputs: any;
 
     /** indicate search operation is in progress */
     public searching: boolean = false;
 
     /** list of banks filtered after simulating server side search */
-    public  filteredServerSideMetadata: ReplaySubject<Metadata[]> = new ReplaySubject<Metadata[]>(1);
+    public  filteredServerSideMetadata: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
 
     /** Subject that emits when the component has been destroyed. */
     protected _onDestroy = new Subject<void>();
@@ -101,13 +99,54 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
         this.loadBatches();
         this.loadSelectedBatch();
         this.loadMetadata();
-        console.log(this.fields);
+        this.loadOutputs();
     }
 
     loadSelectedBatch(): void{
         this.documents       = [];
         this.loadPages();
         this.loadBatchById();
+    }
+
+    loadOutputs(): void {
+        this.http.get(API_URL + '/ws/outputs/list?module=splitter', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                console.log("this.outputs : " + this.outputs);
+                this.outputs = data.outputs;
+            }),
+            finalize(() => {}),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    loadDefaultOutPut(): void{
+        // this.http.get(API_URL + '/ws/forms/getById/' + this.currentBatch.formId, {headers: this.authService.headers}).pipe(
+        //     tap((data: any) => {
+        //         if (data.outputs) {
+        //             const length = data.outputs.length;
+        //             if (length === 1) this.control.setValue(data.outputs[0]);
+        //             if (length > 1) {
+        //                 for (const cpt in data.outputs) {
+        //                     if (parseInt(cpt) !== 0) this.addOutput();
+        //                     this.outputForm[cpt].control.setValue(data.outputs[cpt]);
+        //                 }
+        //             }
+        //         }
+        //     }),
+        //     catchError((err: any) => {
+        //         console.debug(err);
+        //         this.notify.handleErrors(err);
+        //         return of(false);
+        //     })
+        // ).subscribe();
+    }
+
+    getOutPutData(): void{
+
     }
 
     loadBatchById(): void{
@@ -279,14 +318,14 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
         this.http.get(API_URL + '/ws/splitter/metadata', {headers}).pipe(
           tap((data: any) => {
             data.metadata.forEach((metadataItem: any) => {
-            this.metadata.push(
-                {
-                    id              : metadataItem.id,
-                    prenom          : metadataItem.data.prenom,
-                    nom_usage       : metadataItem.data.nom_usage,
-                    matricule       : metadataItem.data.matricule,
-                }
-            );
+                this.metadata.push(
+                    {
+                        id              : metadataItem.id,
+                        prenom          : metadataItem.data.prenom,
+                        nom_usage       : metadataItem.data.nom_usage,
+                        matricule       : metadataItem.data.matricule,
+                    }
+                );
             }
             );
             this.ngxService.stopBackground("load-metadata");
@@ -343,7 +382,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
                     let controlSearch   = new FormControl();
                     this.form.addControl("search_" + field.label_short, controlSearch);
                 }
-            })
+            });
             this.form = this.toFormGroup();
             // listen for search field value changes
             // @ts-ignore
@@ -472,7 +511,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
     }
 
     undoAll(){
-        window.location.reload();
+        this.fields = []
+        this.loadSelectedBatch();
+        this.loadMetadata();
     }
 
     sendSelectedPages(){
@@ -524,15 +565,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
         });
     }
 
-    isElementInViewport(el: any) {
-        let rect = el.getBoundingClientRect();
-        return (
-            rect.bottom >= 0 &&
-            rect.right >= 0 &&
-            rect.top <= (window.innerHeight || document.documentElement.clientHeight) &&
-            rect.left <= (window.innerWidth || document.documentElement.clientWidth)
-        );
-    }
 
     validate() {
         this.ngxService.startBackground("validate");
@@ -575,24 +607,18 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
                 document.class = "";
         }
 
-        let headers     = this.authService.headers;
-        let metadata    = {
-            'id'            : this.currentBatch.id,
-            'firstName'     : this.selectedMetadata['prenom'],
-            'lastName'      : this.selectedMetadata['nom_usage'],
-            'matricule'     : this.selectedMetadata['matricule'],
-            'userName'      : this.userService.user['username'],
-            'userFirstName' : this.userService.user['firstname'],
-            'userLastName'  : this.userService.user['lastname'],
-        }
-
-        // @ts-ignore
-        metadata['comment'] = this.form.get('commentaire').value
+        let headers                 = this.authService.headers;
+        let metadata                = this.selectedMetadata;
+        metadata['id']              = this.currentBatch.id;
+        metadata['userName']        = this.userService.user['username'];
+        metadata['userFirstName']   = this.userService.user['firstname'];
+        metadata['userLastName']    = this.userService.user['lastname'];
 
         this.http.post(API_URL + '/ws/splitter/validate',
             {
                 'documents' : this.documents,
                 'metadata'  : metadata,
+                'formId'    : this.currentBatch.formId,
             },
             {headers}).pipe(
           tap((data: any) => {

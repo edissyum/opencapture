@@ -48,6 +48,11 @@ if 'positions_masks' not in custom_array:
 else:
     positions_masks = getattr(__import__(custom_array['positions_masks']['path'], fromlist=[custom_array['positions_masks']['module']]), custom_array['positions_masks']['module'])
 
+if 'outputs' not in custom_array:
+    from .controllers import outputs
+else:
+    outputs = getattr(__import__(custom_array['outputs']['path'], fromlist=[custom_array['outputs']['module']]), custom_array['outputs']['module'])
+
 if 'splitter' not in custom_array:
     from .controllers import splitter
 else:
@@ -77,11 +82,6 @@ if 'custom_fields' not in custom_array:
     from .controllers import custom_fields
 else:
     custom_fields = getattr(__import__(custom_array['custom_fields']['path'], fromlist=[custom_array['custom_fields']['module']]), custom_array['custom_fields']['module'])
-
-if 'outputs' not in custom_array:
-    from .controllers import outputs
-else:
-    outputs = getattr(__import__(custom_array['outputs']['path'], fromlist=[custom_array['outputs']['module']]), custom_array['outputs']['module'])
 
 if 'maarch' not in custom_array:
     from .controllers import maarch

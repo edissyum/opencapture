@@ -17,6 +17,8 @@
 import json
 import os
 import re
+
+import PyPDF2
 import cv2
 import time
 import uuid
@@ -581,3 +583,23 @@ class Files:
                 return positions
             except TypeError:
                 return ''
+
+    @staticmethod
+    def save_pdf_result_after_separate(pages_lists, documents, input_file, output_file, reduce_index=0):
+        pdf_writer = PyPDF2.PdfFileWriter()
+        pdf_reader = PyPDF2.PdfFileReader(input_file)
+        try:
+            for index, pages in enumerate(pages_lists):
+                for page in pages:
+                    pdf_writer.addPage(pdf_reader.getPage(page - reduce_index))
+
+                with open(output_file + '/' + documents[index]['fileName'], 'wb') as fh:
+                    pdf_writer.write(fh)
+                # Init writer
+                pdf_writer = PyPDF2.PdfFileWriter()
+
+        except Exception as e:
+            print(e)
+            return {'OK': False}
+
+        return {'OK': True}
