@@ -438,15 +438,19 @@ export class VerifierViewerComponent implements OnInit {
         const deleteArea = $('.delete-area');
         const backgroundArea = $('.select-areas-background-area');
         const resizeArea = $('.select-areas-resize-handler');
-        deleteArea.addClass('pointer-events-auto');
-        backgroundArea.addClass('pointer-events-auto');
-        resizeArea.addClass('pointer-events-auto');
+        if (this.invoice.status !== 'END') {
+            deleteArea.addClass('pointer-events-auto');
+            backgroundArea.addClass('pointer-events-auto');
+            resizeArea.addClass('pointer-events-auto');
+        }
         imageContainer.addClass('pointer-events-none');
         imageContainer.addClass('cursor-auto');
         if (enable) {
             $('.outline_' + _this.lastId).toggleClass('animate');
-            imageContainer.removeClass('pointer-events-none');
-            imageContainer.removeClass('cursor-auto');
+            if (this.invoice.status !== 'END') {
+                imageContainer.removeClass('pointer-events-none');
+                imageContainer.removeClass('cursor-auto');
+            }
             this.imageInvoice.selectAreas({
                 allowNudge: false,
                 minSize: [20, 20],
@@ -502,6 +506,13 @@ export class VerifierViewerComponent implements OnInit {
                 backgroundArea.data('page', page);
                 labelContainer.data('page', page);
                 outline.data('page', page);
+                if (this.invoice.status === 'END') {
+                    outline.addClass('pointer-events-none');
+                    backgroundArea.addClass('pointer-events-none');
+                    resizeHandler.addClass('pointer-events-none');
+                    deleteContainer.addClass('pointer-events-none');
+                    // imageContainer.removeClass('cursor-auto');
+                }
             }
             // End write
 
@@ -635,7 +646,7 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     saveData(data: any, fieldId: any = false, showNotif: boolean = false) {
-        if (data) {
+        if (data && this.invoice.status !== 'END') {
             if (fieldId) {
                 const field = this.getField(fieldId);
                 if (field.control.errors || this.invoice.datas[fieldId] === data) return false;
@@ -1040,7 +1051,7 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     checkSirenOrSiret(siretOrSiren: any, value: any) {
-        if (this.formSettings.supplier_verif) {
+        if (this.formSettings.supplier_verif && this.invoice.status !== 'END') {
             const sizeSIREN = 9;
             const sizeSIRET = 14;
             if (siretOrSiren === 'siren') {
@@ -1110,7 +1121,7 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     checkVAT(id: any, value: any) {
-        if (id === 'vat_number' && this.formSettings.supplier_verif) {
+        if (id === 'vat_number' && this.formSettings.supplier_verif && this.invoice.status !== 'END') {
             const sizeVAT = 13;
             if (this.verify(value, sizeVAT, true)) {
                 this.http.post(API_URL + '/ws/verifier/verifyVATNumber', {'vat_number': value}, {headers: this.authService.headers}).pipe(

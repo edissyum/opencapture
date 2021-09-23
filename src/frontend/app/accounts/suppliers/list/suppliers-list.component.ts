@@ -41,10 +41,11 @@ import {HistoryService} from "../../../../services/history.service";
     styleUrls: ['./suppliers-list.component.scss']
 })
 export class SuppliersListComponent implements OnInit {
-    columnsToDisplay : string[]    = ['id', 'name', 'vat_number', 'siret', 'siren','form_label', 'actions'];
+    columnsToDisplay : string[]    = ['id', 'name', 'vat_number', 'siret', 'siren', 'iban', 'form_label', 'actions'];
     deletePositionSrc: string      = 'assets/imgs/map-marker-alt-solid-del.svg';
     headers          : HttpHeaders = this.authService.headers;
     loading          : boolean     = true;
+    allSuppliers     : any         = [];
     suppliers        : any         = [];
     pageSize         : number      = 10;
     pageIndex        : number      = 0;
@@ -78,11 +79,22 @@ export class SuppliersListComponent implements OnInit {
             this.offset = this.pageSize * (this.pageIndex);
         }else
             this.localeStorageService.remove('suppliersPageIndex');
+
+        this.http.get(API_URL + '/ws/accounts/suppliers/list', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.allSuppliers = data.suppliers;
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
         this.loadSuppliers();
     }
 
     loadSuppliers() {
-        this.http.get(API_URL + '/ws/accounts/suppliers/list?limit=' + this.pageSize + '&offset=' + this.offset + "&search=" + this.search, {headers: this.authService.headers}).pipe(
+        this.http.get(API_URL + '/ws/accounts/suppliers/list?order=name&limit=' + this.pageSize + '&offset=' + this.offset + "&search=" + this.search, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.suppliers = data.suppliers;
                 if (this.suppliers.length !== 0) {
@@ -233,9 +245,9 @@ export class SuppliersListComponent implements OnInit {
     }
 
     sortData(sort: Sort) {
-        const data = this.suppliers.slice();
+        const data = this.allSuppliers.slice();
         if(!sort.active || sort.direction === '') {
-            this.suppliers = data;
+            this.suppliers = data.splice(0, this.pageSize);
             return;
         }
 
@@ -247,10 +259,11 @@ export class SuppliersListComponent implements OnInit {
                 case 'vat_number': return this.compare(a.vat_number, b.vat_number, isAsc);
                 case 'siret': return this.compare(a.siret, b.siret, isAsc);
                 case 'siren': return this.compare(a.siren, b.siren, isAsc);
+                case 'iban': return this.compare(a.iban, b.iban, isAsc);
                 default: return 0;
             }
         });
-
+        this.suppliers = this.suppliers.splice(0, this.pageSize);
     }
 
     compare(a: number | string, b: number | string, isAsc: boolean) {

@@ -70,11 +70,18 @@ export class UpdateSupplierComponent implements OnInit {
             label: marker('ACCOUNTS.siret'),
             type: 'text',
             control: new FormControl(),
-            required: true
+            required: false
         },
         {
             id: 'siren',
             label: marker('ACCOUNTS.siren'),
+            type: 'text',
+            control: new FormControl(),
+            required: false
+        },
+        {
+            id: 'iban',
+            label: marker('ACCOUNTS.iban'),
             type: 'text',
             control: new FormControl(),
             required: false

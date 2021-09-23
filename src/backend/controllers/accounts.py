@@ -203,6 +203,7 @@ def create_supplier(data):
         'name': data['name'],
         'siret': data['siret'],
         'siren': data['siren'],
+        'iban': data['iban'],
         'vat_number': data['vat_number'],
         'form_id': data['form_id'],
         'address_id': data['address_id'],

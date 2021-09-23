@@ -249,7 +249,7 @@ export class UsersListComponent implements OnInit {
     sortData(sort: Sort) {
         const data = this.allUsers.slice();
         if(!sort.active || sort.direction === '') {
-            this.users = data.splice(this.pageSize + 1, this.users.length).reverse();
+            this.users = data.splice(0, this.pageSize);
             return;
         }
 
@@ -265,7 +265,7 @@ export class UsersListComponent implements OnInit {
                 default: return 0;
             }
         });
-        this.users = this.users.splice(this.pageSize + 1, this.users.length).reverse();
+        this.users = this.users.splice(0, this.pageSize);
     }
 
     compare(a: number | string, b: number | string, isAsc: boolean) {

@@ -18,6 +18,11 @@
 import re
 
 
+def validate_luhn(n):
+    r = [int(ch) for ch in str(n)][::-1]
+    return (sum(r[0::2]) + sum(sum(divmod(d * 2, 10)) for d in r[1::2])) % 10 == 0
+
+
 class FindSupplier:
     def __init__(self, ocr, log, locale, database, files, nb_pages, current_page, custom_page):
         self.Ocr = ocr
@@ -41,17 +46,16 @@ class FindSupplier:
         self.current_page = current_page
         self.customPage = custom_page
 
-    @staticmethod
-    def validate_luhn(n):
-        r = [int(ch) for ch in str(n)][::-1]
-        return (sum(r[0::2]) + sum(sum(divmod(d * 2, 10)) for d in r[1::2])) % 10 == 0
-
     def search_suplier(self, column, data):
+        if column.lower() in ['siret', 'siren']:
+            if not validate_luhn(data):
+                return False
+
         args = {
             'select': ['accounts_supplier.id as supplier_id', '*'],
             'table': ['accounts_supplier', 'addresses'],
             'left_join': ['accounts_supplier.address_id = addresses.id'],
-            'where': ['TRIM(' + column + ') = %s', 'accounts_supplier.status NOT IN (%s)'],
+            'where': ["TRIM(REPLACE(" + column + ", ' ', '')) = %s", 'accounts_supplier.status NOT IN (%s)'],
             'data': [data, 'DEL']
         }
         existing_supplier = self.Database.select(args)
@@ -106,21 +110,43 @@ class FindSupplier:
                 position = (('', ''), ('', ''))
             else:
                 position = self.Files.return_position_with_ratio(line, target)
-            data = [supplier[0]['vat_number'], position, supplier[0], self.current_page]
+            data = [supplier[0]['vat_number'], position, supplier[0], self.current_page, 'vat_number']
             return data
 
         supplier = self.process(self.Locale.SIRETRegex, text_as_string, 'siret')
         if supplier:
             self.regenerate_ocr()
             self.Log.info('Supplier found : ' + supplier[0]['name'] + ' using SIRET : ' + supplier[0]['siret'])
-            data = [supplier[0]['vat_number'], (('', ''), ('', '')), supplier[0], self.current_page]
+            line = supplier[1]
+            if text_as_string:
+                position = (('', ''), ('', ''))
+            else:
+                position = self.Files.return_position_with_ratio(line, target)
+            data = [supplier[0]['vat_number'], position, supplier[0], self.current_page, 'siret']
             return data
 
         supplier = self.process(self.Locale.SIRENRegex, text_as_string, 'siren')
         if supplier:
             self.regenerate_ocr()
             self.Log.info('Supplier found : ' + supplier[0]['name'] + ' using SIREN : ' + supplier[0]['siren'])
-            data = [supplier[0]['vat_number'], (('', ''), ('', '')), supplier[0], self.current_page]
+            line = supplier[1]
+            if text_as_string:
+                position = (('', ''), ('', ''))
+            else:
+                position = self.Files.return_position_with_ratio(line, target)
+            data = [supplier[0]['vat_number'], position, supplier[0], self.current_page, 'siren']
+            return data
+
+        supplier = self.process(self.Locale.IBANRegex, text_as_string, 'iban')
+        if supplier:
+            self.regenerate_ocr()
+            self.Log.info('Supplier found : ' + supplier[0]['name'] + ' using IBAN : ' + supplier[0]['iban'])
+            line = supplier[1]
+            if text_as_string:
+                position = (('', ''), ('', ''))
+            else:
+                position = self.Files.return_position_with_ratio(line, target)
+            data = [supplier[0]['vat_number'], position, supplier[0], self.current_page, 'iban']
             return data
         else:
             if not retry:

@@ -44,6 +44,7 @@ export class CustomersListComponent implements OnInit {
     headers         : HttpHeaders = this.authService.headers;
     loading         : boolean     = true;
     columnsToDisplay: string[]    = ['id', 'name', 'company_number', 'vat_number', 'siret', 'siren', 'actions'];
+    allCustomers    : any         = [];
     customers       : any         = [];
     pageSize        : number      = 10;
     pageIndex       : number      = 0;
@@ -77,6 +78,17 @@ export class CustomersListComponent implements OnInit {
             this.offset = this.pageSize * (this.pageIndex);
         }else
             this.localeStorageService.remove('customersPageIndex');
+
+        this.http.get(API_URL + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.allCustomers = data.customers;
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
         this.loadCustomers();
     }
 
@@ -146,9 +158,9 @@ export class CustomersListComponent implements OnInit {
     }
 
     sortData(sort: Sort) {
-        const data = this.customers.slice();
+        const data = this.allCustomers.slice();
         if(!sort.active || sort.direction === '') {
-            this.customers = data;
+            this.customers = data.splice(0, this.pageSize);
             return;
         }
 
@@ -164,7 +176,7 @@ export class CustomersListComponent implements OnInit {
                 default: return 0;
             }
         });
-
+        this.customers = this.customers.splice(0, this.pageSize);
     }
 
     compare(a: number | string, b: number | string, isAsc: boolean) {

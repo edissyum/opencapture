@@ -180,11 +180,11 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
         })
         if supplier[1]:
             positions.update({
-                'vat_number': files.reformat_positions(supplier[1])
+                supplier[4]: files.reformat_positions(supplier[1])
             })
         if supplier[3]:
             pages.update({
-                'vat_number': supplier[3]
+                supplier[4]: supplier[3]
             })
 
     if typo:

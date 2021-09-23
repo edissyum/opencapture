@@ -28,6 +28,7 @@
 		"export_suppliers": "Exporter les fournisseurs",
 		"form": "Nom du formulaire",
 		"get_only_raw_footer": "Contrôle de cohérence du pied de page",
+		"iban": "Numéro d'IBAN",
 		"positions_deleted": "Positions du fournisseurs supprimées",
 		"search_customer": "Recherche de client",
 		"search_supplier": "Recherche de fournisseur",

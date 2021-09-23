@@ -121,6 +121,7 @@ CREATE TABLE "accounts_supplier" (
     "vat_number"            VARCHAR(20),
     "siret"                 VARCHAR(20),
     "siren"                 VARCHAR(20),
+    "iban"                  VARCHAR(50),
     "address_id"            INTEGER,
     "form_id"               INTEGER,
     "status"                VARCHAR(3) DEFAULT 'OK',

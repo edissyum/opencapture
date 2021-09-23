@@ -3,6 +3,7 @@
   "VATNumber"         : "TVA INTRA",
   "SIRET"             : "SIRET",
   "SIREN"             : "SIREN",
+  "IBAN"              : "IBAN",
   "address1"          : "Adresse 1",
   "address2"          : "Adresse 2",
   "addressTown"       : "VILLE",
