@@ -15,7 +15,7 @@ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from "@angular/router";
 import { API_URL } from "../../env";
@@ -35,7 +35,6 @@ import 'moment/locale/fr';
 import * as moment from 'moment';
 import {UserService} from "../../../services/user.service";
 import {HistoryService} from "../../../services/history.service";
-import {CdkTextareaAutosize} from "@angular/cdk/text-field";
 declare var $: any;
 
 
@@ -51,6 +50,7 @@ export class VerifierViewerComponent implements OnInit {
     isOCRRunning            : boolean   = false;
     settingsOpen            : boolean   = false;
     saveInfo                : boolean   = true;
+    supplierExists          : boolean   = true;
     ocrFromUser             : boolean   = false;
     accountingPlanEmpty     : boolean   = false;
     deleteDataOnChangeForm  : boolean   = true;
@@ -93,6 +93,7 @@ export class VerifierViewerComponent implements OnInit {
     pattern                 : any       = {
         'alphanum': '^[0-9a-zA-Z\\s]*$',
         'alphanum_extended': '^[0-9a-zA-Z-/#,\\.\\s]*$',
+        'alphanum_extended_with_accent': '^[0-9a-zA-Z\\u00C0-\\u017F-/#,\\.\\s]*$',
         'number_int': '^[0-9]*$',
         'number_float': '^[0-9]*([.][0-9]*)*$',
         'char': '^[A-Za-z\\s]*$',
@@ -164,8 +165,8 @@ export class VerifierViewerComponent implements OnInit {
                 ]
             }
         }, true);
-        if (this.invoice.supplier_id) this.getSupplierInfo(this.invoice.supplier_id, false, true);
         await this.fillForm(this.currentFormFields);
+        if (this.invoice.supplier_id) this.getSupplierInfo(this.invoice.supplier_id, false, true);
         setTimeout(() => {
             this.drawPositions();
             this.loading = false;
@@ -179,7 +180,7 @@ export class VerifierViewerComponent implements OnInit {
             );
     }
 
-    async generateTokenInsee(){
+    async generateTokenInsee() {
         return await this.http.get(API_URL + '/ws/verifier/getTokenINSEE', {headers: this.authService.headers}).toPromise();
     }
 
@@ -202,7 +203,9 @@ export class VerifierViewerComponent implements OnInit {
     private _filter(value: any): string[] {
         this.toHighlight = value;
         const filterValue = value.toLowerCase();
-        return this.suppliers.filter((supplier: any) => supplier.name.toLowerCase().indexOf(filterValue) !== -1);
+        const _return = this.suppliers.filter((supplier: any) => supplier.name.toLowerCase().indexOf(filterValue) !== -1);
+        this.supplierExists = _return.length !== 0;
+        return _return;
     }
 
     updateFilteredOption(event: any, control: any) {
@@ -248,7 +251,6 @@ export class VerifierViewerComponent implements OnInit {
         this.lastLabel = this.translate.instant(field.label).trim();
         this.lastColor = field.color;
         this.disableOCR = true;
-        $('#' + field.id).focus();
         const newArea = {
             x: position.ocr_from_user ? position.x / this.ratio : position.x / this.ratio - ((position.x / this.ratio) * 0.005),
             y: position.ocr_from_user ? position.y / this.ratio : position.y / this.ratio - ((position.y / this.ratio) * 0.003),
@@ -457,7 +459,9 @@ export class VerifierViewerComponent implements OnInit {
                 maxSize: [this.imageInvoice.width(), this.imageInvoice.height() / 8],
                 onChanged(img: any, cpt: any, selection: any) {
                     if (selection.length !== 0 && selection['width'] !== 0 && selection['height'] !== 0) {
-                        _this.ocr_process(img, cpt, selection);
+                        if (_this.lastId) {
+                            _this.ocr_process(img, cpt, selection);
+                        }
                     }
                 },
                 onDeleted(img: any, cpt: any) {
@@ -511,13 +515,11 @@ export class VerifierViewerComponent implements OnInit {
                     backgroundArea.addClass('pointer-events-none');
                     resizeHandler.addClass('pointer-events-none');
                     deleteContainer.addClass('pointer-events-none');
-                    // imageContainer.removeClass('cursor-auto');
                 }
             }
             // End write
 
             const inputId = $('#select-area-label_' + cpt).attr('class').replace('input_', '').replace('select-none', '');
-            $('#' + inputId).focus();
 
             // Test to avoid multi selection for same label. If same label exists, remove the selected areas and replace it by the new one
             const label = $('div[id*=select-area-label_]:contains(' + this.lastLabel + ')');
@@ -575,7 +577,6 @@ export class VerifierViewerComponent implements OnInit {
                         value = moment(value, format);
                         value = new Date(value._d);
                     }
-
                     input.control.setValue(value);
                     input.control.markAsTouched();
                 }
@@ -646,7 +647,7 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     saveData(data: any, fieldId: any = false, showNotif: boolean = false) {
-        if (data && this.invoice.status !== 'END') {
+        if (this.invoice.status !== 'END') {
             if (fieldId) {
                 const field = this.getField(fieldId);
                 if (field.control.errors || this.invoice.datas[fieldId] === data) return false;
@@ -668,6 +669,76 @@ export class VerifierViewerComponent implements OnInit {
             return true;
         }
         return false;
+    }
+
+    createSupplier() {
+        const addressData: any = {};
+        const supplierData: any = {};
+        this.fields.supplier.forEach((element: any) => {
+            const field = this.getField(element.id);
+            if (element.unit === 'supplier') supplierData[element.id] = field.control.value;
+            if (element.unit === 'addresses') addressData[element.id] = field.control.value;
+            this.saveData(field.control.value, element.id);
+        });
+
+        this.http.post(API_URL + '/ws/accounts/addresses/create', {'args': addressData}, {headers: this.authService.headers},
+        ).pipe(
+            tap((data: any) => {
+                supplierData['address_id'] = data.id;
+                this.http.post(API_URL + '/ws/accounts/suppliers/create', {'args': supplierData}, {headers: this.authService.headers},
+                ).pipe(
+                    tap((data: any) => {
+                        this.historyService.addHistory('accounts', 'create_supplier', this.translate.instant('HISTORY-DESC.create-supplier', {supplier: supplierData['name']}));
+                        this.notify.success(this.translate.instant('ACCOUNTS.supplier_created'));
+                        this.updateInvoice({'supplier_id': data['id']});
+                        this.invoice.supplier_id = data['id'];
+                    }),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    editSupplier() {
+        const supplierData: any = {};
+        const addressData: any = {};
+        this.fields.supplier.forEach((element: any) => {
+            const field = this.getField(element.id);
+            if (element.unit === 'supplier') supplierData[element.id] = field.control.value;
+            if (element.unit === 'addresses') addressData[element.id] = field.control.value;
+            this.saveData(field.control.value, element.id);
+        });
+
+        this.http.put(API_URL + '/ws/accounts/suppliers/update/' + this.invoice.supplier_id, {'args': supplierData}, {headers: this.authService.headers},
+        ).pipe(
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
+        this.http.put(API_URL + '/ws/accounts/addresses/updateBySupplierId/' + this.invoice.supplier_id, {'args': addressData}, {headers: this.authService.headers},
+        ).pipe(
+            tap(() => {
+                this.historyService.addHistory('accounts', 'update_supplier', this.translate.instant('HISTORY-DESC.update-supplier', {supplier: supplierData['name']}));
+                this.notify.success(this.translate.instant('ACCOUNTS.supplier_updated'));
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
     }
 
     updateInvoice(data: any) {

@@ -106,11 +106,19 @@ def update_page(supplier_id):
     return make_response(res[0], res[1])
 
 
-@bp.route('accounts/addresses/update/<int:supplier_id>', methods=['PUT'])
+@bp.route('accounts/addresses/update/<int:address_id>', methods=['PUT'])
 @auth.token_required
-def update_address(supplier_id):
+def update_address(address_id):
     data = request.json['args']
-    res = accounts.update_address(supplier_id, data)
+    res = accounts.update_address(address_id, data)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('accounts/addresses/updateBySupplierId/<int:suplier_id>', methods=['PUT'])
+@auth.token_required
+def update_address_by_supplier_id(suplier_id):
+    data = request.json['args']
+    res = accounts.update_address_by_supplier_id(suplier_id, data)
     return make_response(jsonify(res[0])), res[1]
 
 

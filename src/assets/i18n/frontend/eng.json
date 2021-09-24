@@ -144,6 +144,7 @@
 	"FORMATS": {
 		"alphanum": "",
 		"alphanum_extended": "",
+		"alphanum_extended_with_accent": "",
 		"char": "",
 		"date": "",
 		"number_float": "",

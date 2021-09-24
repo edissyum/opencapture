@@ -94,7 +94,7 @@ class MaarchWebServices:
             return json.loads(res.text)
 
     def insert_with_args(self, args):
-        if 'contact 'not in args:
+        if 'contact' not in args:
             contact = {}
         else:
             contact = [{'id': args['contact']['id'], 'type': 'contact'}]
@@ -155,15 +155,6 @@ class MaarchWebServices:
             return False
         else:
             return res.text
-
-    def retrieve_contact_by_vat_number(self, vat):
-        res = requests.get(self.baseUrl + 'getContactByVAT', auth=self.auth, params={'VAT': vat})
-
-        if res.status_code != 200:
-            self.Log.error('(' + str(res.status_code) + ') GetContactByVATError : ' + str(res.text))
-            return False
-        else:
-            return json.loads(res.text)
 
     def create_contact(self, contact):
         res = requests.post(self.baseUrl + '/contacts', auth=self.auth, data=json.dumps(contact),

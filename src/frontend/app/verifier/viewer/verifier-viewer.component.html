@@ -41,7 +41,7 @@
         <ng-container *ngFor="let category of this.fieldCategories">
             <ng-container *ngIf="this.form[category['id']].length !== 0">
                 <div class="relative text-xl tracking-wider pl-1.5 pr-1.5 bg-white left-6 z-5"
-                     [style]="'width:calc(3% + ' + (this.translate.instant(category['label']).length + 2)+ '%)'">
+                     [style]="'width:calc(3% + ' + (this.translate.instant(category['label']).length + 5)+ '%)'">
                     {{ category['label'] | translate }}
                     <span *ngIf="getOnlyRawFooter && this.translate.instant(category['label']) == this.translate.instant('FORMS.supplier')"
                           class="cursor-default relative top-1.5 text-red-500 text-3xl"
@@ -49,6 +49,11 @@
                     <span *ngIf="!getOnlyRawFooter && this.translate.instant(category['label']) == this.translate.instant('FORMS.supplier')"
                           class="cursor-default relative top-1.5 text-green-400 text-3xl"
                           matTooltip="{{ 'VERIFIER.calculated_footer' | translate }}">&bull;</span>
+                    <span *ngIf="this.translate.instant(category['label']) == this.translate.instant('FORMS.supplier')"
+                          class="text-sm cursor-pointer ml-2">
+                        <i *ngIf="this.invoice.supplier_id && supplierExists" (click)="editSupplier()" class="fas fa-edit"></i>
+                        <i *ngIf="!this.invoice.supplier_id || !supplierExists" (click)="createSupplier()" class="fas fa-plus"></i>
+                    </span>
                 </div>
                 <div class="relative border-green-400 border rounded-lg -top-3.5">
                     <div id="{{ category['id'] }}" class="flex flex-wrap w-full my-3" style="min-height: 50px;">

@@ -33,7 +33,7 @@ from zeep import Client, exceptions
 from src.backend.main import launch
 from flask import current_app, Response
 from src.backend.main import create_classes_from_current_config
-from src.backend.import_models import verifier, accounts
+from src.backend.import_models import verifier, accounts, accounts
 from src.backend.import_classes import _Files, _MaarchWebServices
 
 
@@ -362,11 +362,30 @@ def export_maarch(invoice_id, data):
             invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
             if not error:
                 args = {}
+                supplier = accounts.get_supplier_by_id({'supplier_id': invoice_info['supplier_id']})
+                if supplier and supplier[0]['address_id']:
+                    address = accounts.get_address_by_id({'address_id': supplier[0]['address_id']})
+                    if address:
+                        supplier[0].update(address[0])
+
+                contact = {
+                    'company': supplier[0]['name'],
+                    'addressTown': supplier[0]['city'],
+                    'societyShort': supplier[0]['name'],
+                    'addressStreet': supplier[0]['address1'],
+                    'addressPostcode': supplier[0]['postal_code'],
+                    'customFields': {},
+                    'email': 'A_renseigner_' + supplier[0]['name'].replace(' ', '_') + '@' + supplier[0]['vat_number'] + '.fr'
+                }
+                res = ws.create_contact(contact)
+                if res is not False:
+                    args['contact'] = {'id': res['id'], 'type': 'contact'}
+
                 ws_data = data['options']['parameters']
                 for _data in ws_data:
                     value = _data['value']
                     if 'webservice' in _data:
-                        # Pour le webservices maarch, ce sont les identifiants qui sont utilisés
+                        # Pour le webservices Maarch, ce sont les identifiants qui sont utilisés
                         # et non les valeurs bruts (e.g COU plutôt que Service courrier)
                         value = _data['value']['id']
 
