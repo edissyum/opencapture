@@ -270,7 +270,6 @@ fi
 mkdir -p $docserverPath/{OpenCapture,OpenCapture_Splitter}
 mkdir -p $docserverPath/OpenCapture/images/{full,thumbs}
 mkdir -p $docserverPath/OpenCapture_Splitter/{batches,separated_pdf}
-mkdir -p $docserverPath/OpenCapture/xml/
 chmod -R 775 $docserverPath/{OpenCapture,OpenCapture_Splitter}/
 chmod -R g+s $docserverPath/{OpenCapture,OpenCapture_Splitter}/
 chown -R "$user":"$group" $docserverPath/{OpenCapture,OpenCapture_Splitter}/
