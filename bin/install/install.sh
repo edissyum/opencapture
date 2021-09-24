@@ -276,7 +276,7 @@ chmod -R g+s $docserverPath/{OpenCapture,OpenCapture_Splitter}/
 chown -R "$user":"$group" $docserverPath/{OpenCapture,OpenCapture_Splitter}/
 
 ####################
-# Create XML folder
+# Create default XML folder
 mkdir -p /var/share/export/
 chmod -R 775 /var/share/export/
 chown -R "$user":"$group" /var/share/export/

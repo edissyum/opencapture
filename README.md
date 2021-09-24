@@ -1,8 +1,8 @@
 ![Logo Open-Capture](https://edissyum.com/wp-content/uploads/2019/08/OpenCaptureForInvoices.png)
 
-# Open-Capture for Invoices by Edissyum
- 
-Version 2.0.0
+# Open-Capture for Invoices by Edissyum V2
+
+Link to the full documentation : https://kutt.it/DocumentationV2
 
 Open-Capture is a **free and Open Source** software under **GNU General Public License v3.0**.
   

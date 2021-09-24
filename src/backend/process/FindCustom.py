@@ -21,16 +21,16 @@ from ..functions import search_custom_positions
 
 class FindCustom:
     def __init__(self, text, log, locale, config, ocr, files, supplier, file, database):
-        self.text = text
         self.Ocr = ocr
         self.Log = log
+        self.text = text
+        self.file = file
+        self.Files = files
         self.Locale = locale
         self.Config = config
-        self.Files = files
-        self.OCRErrorsTable = ocr.OCRErrorsTable
         self.supplier = supplier
-        self.file = file
         self.database = database
+        self.OCRErrorsTable = ocr.OCRErrorsTable
 
     def process(self, data):
         for line in self.text:
