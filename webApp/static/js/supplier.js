@@ -72,6 +72,7 @@ function addSupplier() {
     let VAT = $('#vat_number').val();
     let SIRET = $('#siret_number').val();
     let SIREN = $('#siren_number').val();
+    let IBAN = $('#iban_number').val();
     let city = $('#city').val();
     let adress = $('#address').val();
     let adress2 = $('#address2').val();
@@ -108,6 +109,7 @@ function addSupplier() {
             VAT : VAT,
             SIRET : SIRET,
             SIREN : SIREN,
+            IBAN : IBAN,
             city : city,
             adress : adress,
             adress2 : adress2,
@@ -129,6 +131,7 @@ function editSupplier() {
     let VAT = $('#vat_number').val();
     let SIRET = $('#siret_number').val();
     let SIREN = $('#siren_number').val();
+    let IBAN = $('#iban_number').val();
     let city = $('#city').val();
     let adress = $('#address').val();
     let adress2 = $('#address2').val();
@@ -166,6 +169,7 @@ function editSupplier() {
             VAT : VAT,
             SIRET : SIRET,
             SIREN : SIREN,
+            IBAN : IBAN,
             city : city,
             adress : adress,
             adress2 : adress2,
@@ -210,6 +214,7 @@ function openSupplierAddModal() {
     $('#city').val('');
     $('#siret_number').val('');
     $('#siren_number').val('');
+    $('#iban_number').val('');
     $('#address').val('');
     $('#address2').val('');
 
@@ -252,6 +257,7 @@ function openSupplierEditModal(event){
                 $('#city').val(supplier.city);
                 $('#siret_number').val(supplier.siret);
                 $('#siren_number').val(supplier.siren);
+                $('#iban_number').val(supplier.iban);
                 $('#address').val(supplier.adress1);
                 $('#address2').val(supplier.adress2);
                 $('#company-type option')

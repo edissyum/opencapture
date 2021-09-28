@@ -3,10 +3,11 @@
   "VATNumber"         : "TVA INTRA",
   "SIRET"             : "SIRET",
   "SIREN"             : "SIREN",
+  "IBAN"              : "IBAN",
   "adress1"           : "Adresse 1",
   "adress2"           : "Adresse 2",
   "adressTown"        : "VILLE",
   "adressPostalCode"  : "CP",
-  "typology"          : "Typologie",
-  "companyType"       : "Type"
+  "typology"          : "TYPOLOGIE",
+  "companyType"       : "TYPE"
 }

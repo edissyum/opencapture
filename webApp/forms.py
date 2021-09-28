@@ -124,6 +124,16 @@ class SupplierForm(Form):
             'onfocusin': "ocrOnFly(false, this, true, true)"
         }
     )
+    iban_number = CustomStringField(
+        lazy_gettext('IBAN_NUMBER'),
+        table='suppliers',
+        column='iban',
+        is_position=False,
+        render_kw={
+            'onfocusout': "ocrOnFly(true, this); removeRectangle()",
+            'onfocusin': "ocrOnFly(false, this, true, true)"
+        }
+    )
 
 
 class FacturationForm(Form):

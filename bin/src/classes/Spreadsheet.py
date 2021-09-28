@@ -33,6 +33,7 @@ class Spreadsheet:
             self.referencialSupplierArray['name'] = fp['name']
             self.referencialSupplierArray['SIRET'] = fp['SIRET']
             self.referencialSupplierArray['SIREN'] = fp['SIREN']
+            self.referencialSupplierArray['IBAN'] = fp['IBAN']
             self.referencialSupplierArray['VATNumber'] = fp['VATNumber']
             self.referencialSupplierArray['adress1'] = fp['adress1']
             self.referencialSupplierArray['adress2'] = fp['adress2']
@@ -53,7 +54,6 @@ class Spreadsheet:
 
     def update_supplier_ods_sheet(self, _db):
         content_sheet = get_data(self.referencialSuppplierSpreadsheet)
-
         res = _db.select({
             'select': ['*'],
             'table': ['suppliers'],
@@ -72,6 +72,7 @@ class Spreadsheet:
                             supplier['vat_number'] if supplier['vat_number'] is not None else '',
                             supplier['siret'] if supplier['siret'] is not None else '',
                             supplier['siren'] if supplier['siren'] is not None else '',
+                            supplier['iban'] if supplier['iban'] is not None else '',
                             supplier['adress1'] if supplier['adress1'] is not None else '',
                             supplier['adress2'] if supplier['adress2'] is not None else '',
                             supplier['postal_code'] if supplier['postal_code'] is not None else '',
@@ -79,7 +80,6 @@ class Spreadsheet:
                             supplier['typology'] if supplier['typology'] is not None else '',
                             supplier['company_type'] if supplier['company_type'] is not None else '']
                     content_sheet[sheet_name].append(line)
-
         except IndexError:
             self.Log.error("IndexError while updating ods reference file.")
 
@@ -117,6 +117,7 @@ class Spreadsheet:
             self.referencialSupplierArray['VATNumber'],
             self.referencialSupplierArray['SIRET'],
             self.referencialSupplierArray['SIREN'],
+            self.referencialSupplierArray['IBAN'],
             self.referencialSupplierArray['adress1'],
             self.referencialSupplierArray['adress2'],
             self.referencialSupplierArray['adressPostalCode'],
@@ -158,6 +159,12 @@ class Spreadsheet:
                     line[self.referencialSupplierArray['SIREN']] = int(line[self.referencialSupplierArray['SIREN']])
                 except ValueError:
                     line[self.referencialSupplierArray['SIREN']] = line[self.referencialSupplierArray['SIREN']]
+
+            if line[self.referencialSupplierArray['IBAN']] == line[self.referencialSupplierArray['IBAN']] and line[self.referencialSupplierArray['IBAN']]:
+                try:
+                    line[self.referencialSupplierArray['IBAN']] = int(line[self.referencialSupplierArray['IBAN']])
+                except ValueError:
+                    line[self.referencialSupplierArray['IBAN']] = line[self.referencialSupplierArray['IBAN']]
 
             if line[self.referencialSupplierArray['adressPostalCode']] == line[self.referencialSupplierArray['adressPostalCode']] and line[self.referencialSupplierArray['adressPostalCode']]:
                 if len(str(line[self.referencialSupplierArray['adressPostalCode']])) == 4:
