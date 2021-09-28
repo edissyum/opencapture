@@ -14,6 +14,7 @@ CREATE TABLE if NOT EXISTS suppliers(
     name                       VARCHAR NOT NULL,
     siret                      VARCHAR(20),
     siren                      VARCHAR(20),
+    iban                       VARCHAR(50),
     adress1                    VARCHAR,
     adress2                    VARCHAR,
     postal_code                VARCHAR,

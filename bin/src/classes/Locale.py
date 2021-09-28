@@ -29,6 +29,7 @@ class Locale:
         self.formatDate = ''
         self.SIRETRegex = ''
         self.SIRENRegex = ''
+        self.IBANRegex = ''
         self.VATNumberRegex = ''
         self.dateTimeFormat = ''
         self.invoiceRegex = ''
@@ -51,6 +52,7 @@ class Locale:
             self.dateTimeFormat = fp['dateTimeFormat'] if 'dateTimeFormat' in fp else ''
             self.SIRETRegex = fp['SIRETRegex'] if 'SIRETRegex' in fp else ''
             self.SIRENRegex = fp['SIRENRegex'] if 'SIRENRegex' in fp else ''
+            self.IBANRegex = fp['IBANRegex'] if 'IBANRegex' in fp else ''
             self.invoiceRegex = fp['invoiceRegex'] if 'invoiceRegex' in fp else ''
             self.invoiceSizeMin = fp['invoiceSizeMin'] if 'invoiceSizeMin' in fp else ''
             self.allRatesRegex = fp['allRatesRegex'] if 'allRatesRegex' in fp else ''
@@ -71,6 +73,7 @@ class Locale:
             'dateTimeFormat': self.dateTimeFormat,
             'SIRETRegex': self.SIRETRegex,
             'SIRENRegex': self.SIRENRegex,
+            'IBANRegex': self.IBANRegex,
             'invoiceRegex': self.invoiceRegex,
             'invoiceSizeMin': self.invoiceSizeMin,
             'allRatesRegex': self.allRatesRegex,

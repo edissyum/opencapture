@@ -50,7 +50,7 @@ class FindSupplier:
         args = {
             'select': ['*'],
             'table': ['suppliers'],
-            'where': ['TRIM(' + column + ') = ?', 'status NOT IN (?)', 'company_type = ?'],
+            'where': ["TRIM(REPLACE(" + column + ", ' ', '')) = ?", 'status NOT IN (?)', 'company_type = ?'],
             'data': [data, 'DEL', 'supplier']
         }
         existing_supplier = self.Database.select(args)
@@ -123,6 +123,13 @@ class FindSupplier:
         if supplier:
             self.regenerate_ocr()
             self.Log.info('Supplier found : ' + supplier[0]['name'] + ' using SIREN : ' + supplier[0]['siren'])
+            data = [supplier[0]['vat_number'], (('', ''), ('', '')), supplier[0], self.current_page]
+            return data
+
+        supplier = self.process(self.Locale.IBANRegex, text_as_string, 'iban')
+        if supplier:
+            self.regenerate_ocr()
+            self.Log.info('Supplier found : ' + supplier[0]['name'] + ' using IBAN : ' + supplier[0]['iban'])
             data = [supplier[0]['vat_number'], (('', ''), ('', '')), supplier[0], self.current_page]
             return data
         else:

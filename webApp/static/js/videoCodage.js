@@ -50,6 +50,7 @@ function searchSupplier(){
     let inputVAT = $('#vat_number');
     let inputSIRET = $('#siret_number');
     let inputSIREN = $('#siren_number');
+    let inputIBAN = $('#iban_number');
     let inputCity = $('#city');
     let inputAdress = $('#address');
     let inputAdressCompletement = $('#address2');
@@ -78,6 +79,7 @@ function searchSupplier(){
                 inputCity.val('');
                 inputSIRET.val('');
                 inputSIREN.val('');
+                inputIBAN.val('');
                 inputAdress.val('');
 
                 $('.is-valid').each(function(){
@@ -109,6 +111,7 @@ function searchSupplier(){
             let city = data['city'];
             let SIRET = data['siret'];
             let SIREN = data['siren'];
+            let IBAN = data['iban'];
             let adress1 = data['adress1'];
             let adress2 = data['adress2'];
 
@@ -151,6 +154,12 @@ function searchSupplier(){
                 inputSIREN.val(SIREN).prev().fadeOut();
             }else if(SIREN === 'nan'){
                 inputSIREN.val('').prev().fadeOut();
+            }
+
+            if(IBAN !== 'nan' && (inputIBAN.val() === '' || inputIBAN.val() !== IBAN)){
+                inputIBAN.val(IBAN).prev().fadeOut();
+            }else if(IBAN === 'nan'){
+                inputIBAN.val('').prev().fadeOut();
             }
 
             checkAdress();
