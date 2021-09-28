@@ -81,6 +81,11 @@ export class InputsListComponent implements OnInit {
         this.http.get(API_URL + '/ws/inputs/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.inputs[0]) this.total = data.inputs[0].total;
+                else if (this.pageIndex !== 0) {
+                    this.pageIndex = this.pageIndex - 1;
+                    this.offset = this.pageSize * (this.pageIndex);
+                    this.loadInputs();
+                }
                 this.inputs = data.inputs;
             }),
             finalize(() => this.loading = false),
@@ -95,6 +100,7 @@ export class InputsListComponent implements OnInit {
     onPageChange(event: any) {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
+        this.pageIndex = event.pageIndex;
         this.localeStorageService.save('inputsPageIndex', event.pageIndex);
         this.loadInputs();
     }

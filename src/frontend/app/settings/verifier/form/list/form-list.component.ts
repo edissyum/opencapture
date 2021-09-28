@@ -86,6 +86,7 @@ export class FormListComponent implements OnInit {
     onPageChange(event: any) {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
+        this.pageIndex = event.pageIndex;
         this.localeStorageService.save('formsPageIndex', event.pageIndex);
         this.loadForms();
     }
@@ -95,6 +96,11 @@ export class FormListComponent implements OnInit {
         this.http.get(API_URL + '/ws/forms/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.forms[0]) this.total = data.forms[0].total;
+                else if (this.pageIndex !== 0) {
+                    this.pageIndex = this.pageIndex - 1;
+                    this.offset = this.pageSize * (this.pageIndex);
+                    this.loadForms();
+                }
                 this.forms = data.forms;
             }),
             finalize(() => this.loading = false),

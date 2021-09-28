@@ -113,6 +113,7 @@ export class UsersListComponent implements OnInit {
     onPageChange(event: any) {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
+        this.pageIndex = event.pageIndex;
         this.localeStorageService.save('usersPageIndex', event.pageIndex);
         this.loadUsers();
     }
@@ -121,6 +122,11 @@ export class UsersListComponent implements OnInit {
         this.http.get(API_URL + '/ws/users/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.users[0]) this.total = data.users[0].total;
+                else if (this.pageIndex !== 0) {
+                    this.pageIndex = this.pageIndex - 1;
+                    this.offset = this.pageSize * (this.pageIndex);
+                    this.loadUsers();
+                }
                 this.users = data.users;
                 if (this.roles) {
                     this.users.forEach((user: any) => {

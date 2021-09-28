@@ -83,6 +83,11 @@ export class PositionsMaskListComponent implements OnInit {
         this.http.get(API_URL + '/ws/positions_masks/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.total) this.total = data.total;
+                else if (this.pageIndex !== 0) {
+                    this.pageIndex = this.pageIndex - 1;
+                    this.offset = this.pageSize * (this.pageIndex);
+                    this.loadPositionMask();
+                }
                 this.positionsMasks = data.positions_masks;
                 suppliers.suppliers.forEach((element: any) => {
                     this.positionsMasks.forEach((mask: any) => {
@@ -109,6 +114,7 @@ export class PositionsMaskListComponent implements OnInit {
     onPageChange(event: any) {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
+        this.pageIndex = event.pageIndex;
         this.localeStorageService.save('positionMaskPageIndex', event.pageIndex);
         this.loadPositionMask().then();
     }

@@ -231,6 +231,7 @@
 		"delete-supplier": "",
 		"delete-supplier-positions": "",
 		"delete-user": "",
+		"delete_invoice": "",
 		"disable-user": "",
 		"enable-user": "",
 		"invoice_refused": "",
@@ -476,6 +477,7 @@
 	},
 	"VERIFIER": {
 		"accounting_plan_empty": "",
+		"all_invoices_checked_deleted": "",
 		"calculated_footer": "",
 		"change_form": "",
 		"change_form_details": "",
@@ -484,6 +486,7 @@
 		"confirm_delete_all_invoices": "",
 		"confirm_delete_invoice": "",
 		"delete_all": "",
+		"delete_all_checked": "",
 		"delete_invoice": "",
 		"display": "",
 		"expand_all": "",

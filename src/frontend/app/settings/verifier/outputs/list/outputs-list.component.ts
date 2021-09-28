@@ -82,6 +82,11 @@ export class OutputsListComponent implements OnInit {
         this.http.get(API_URL + '/ws/outputs/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.outputs[0]) this.total = data.outputs[0].total;
+                else if (this.pageIndex !== 0) {
+                    this.pageIndex = this.pageIndex - 1;
+                    this.offset = this.pageSize * (this.pageIndex);
+                    this.loadOutputs();
+                }
                 this.outputs = data.outputs;
             }),
             finalize(() => this.loading = false),
@@ -96,6 +101,7 @@ export class OutputsListComponent implements OnInit {
     onPageChange(event: any) {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
+        this.pageIndex = event.pageIndex;
         this.localeStorageService.save('outputsPageIndex', event.pageIndex);
         this.loadOutputs();
     }

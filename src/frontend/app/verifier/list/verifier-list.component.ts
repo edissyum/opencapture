@@ -34,6 +34,7 @@ import {ConfirmDialogComponent} from "../../../services/confirm-dialog/confirm-d
 import {MatDialog} from "@angular/material/dialog";
 import {DomSanitizer} from "@angular/platform-browser";
 import {ConfigService} from "../../../services/config.service";
+import {HistoryService} from "../../../services/history.service";
 declare var $: any;
 
 interface accountsNode {
@@ -136,6 +137,7 @@ export class VerifierListComponent implements OnInit {
         public translate: TranslateService,
         private notify: NotificationService,
         private configService: ConfigService,
+        private historyService: HistoryService,
         private routerExtService: LastUrlService,
         private localeStorageService: LocalStorageService
     ) {}
@@ -247,7 +249,12 @@ export class VerifierListComponent implements OnInit {
         ).pipe(
             tap((data: any) => {
                 if (data) {
-                    this.total = data.total;
+                    if (data.invoices.length !== 0) this.total = data.total;
+                    else if (this.pageIndex !== 0) {
+                        this.pageIndex = this.pageIndex - 1;
+                        this.offset = this.pageSize * (this.pageIndex);
+                        this.loadInvoices();
+                    }
                     this.invoices = data.invoices;
                     this.invoices.forEach((invoice: any) => {
                         if (!invoice.thumb.includes('data:image/jpeg;base64'))
@@ -403,18 +410,23 @@ export class VerifierListComponent implements OnInit {
         this.loading = true;
         const checkboxList = $(".checkBox_list");
         checkboxList.each((cpt: any) => {
-            const invoiceId = checkboxList[cpt].id.split('_')[0];
-            this.deleteInvoice(invoiceId, true);
+            if (checkboxList[cpt].checked) {
+                const invoiceId = checkboxList[cpt].id.split('_')[0];
+                this.deleteInvoice(invoiceId, true);
+            }
         });
-        this.notify.success('VERIFIER.all_invoices_deleted');
+        this.notify.success(this.translate.instant('VERIFIER.all_invoices_checked_deleted'));
         this.loadCustomers();
     }
 
     deleteInvoice(invoiceId: number, batchDelete = false) {
         this.http.delete(API_URL + '/ws/verifier/invoices/delete/' + invoiceId, {headers: this.authService.headers}).pipe(
             tap(() => {
-                if (!batchDelete) this.loadCustomers();
-                this.notify.success(this.translate.instant('VERIFIER.invoices_deleted'));
+                if (!batchDelete) {
+                    this.loadCustomers();
+                    this.notify.success(this.translate.instant('VERIFIER.invoices_deleted'));
+                }
+                this.historyService.addHistory('verifier', 'delete_invoice', this.translate.instant('HISTORY-DESC.delete_invoice', {invoice_id: invoiceId}));
             }),
             catchError((err: any) => {
                 console.debug(err);
@@ -496,6 +508,7 @@ export class VerifierListComponent implements OnInit {
     onPageChange(event: any) {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
+        this.pageIndex = event.pageIndex;
         this.localeStorageService.save('invoicesPageIndex', event.pageIndex);
         this.loadInvoices();
     }

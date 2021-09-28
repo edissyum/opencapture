@@ -90,6 +90,11 @@ export class RolesListComponent implements OnInit {
         this.http.get(API_URL + '/ws/roles/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.roles[0]) this.total = data.roles[0].total;
+                else if (this.pageIndex !== 0) {
+                    this.pageIndex = this.pageIndex - 1;
+                    this.offset = this.pageSize * (this.pageIndex);
+                    this.loadRoles();
+                }
                 this.roles = data.roles;
             }),
             finalize(() => this.loading = false),
@@ -104,6 +109,7 @@ export class RolesListComponent implements OnInit {
     onPageChange(event: any) {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
+        this.pageIndex = event.pageIndex;
         this.localeStorageService.save('rolesPageIndex', event.pageIndex);
         this.loadRoles();
     }
