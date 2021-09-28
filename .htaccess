@@ -1,6 +1,6 @@
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    RewriteCond %{REQUEST_URI} !^/backend_oc.*
-    RewriteCond %{REQUEST_URI} !^/opencaptureforinvoices/dist/
-    RewriteRule (.*) /opencaptureforinvoices/dist/#/login [R=301,NE]
-</IfModule>
+#<IfModule mod_rewrite.c>
+#    RewriteEngine On
+#    RewriteCond %{REQUEST_URI} !^/backend_oc.*
+#    RewriteCond %{REQUEST_URI} !^/opencaptureforinvoices/dist/
+#    RewriteRule (.*) /opencaptureforinvoices/dist/#/login [R=301,NE]
+#</IfModule>
