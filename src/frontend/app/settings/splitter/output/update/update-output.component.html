@@ -182,7 +182,7 @@
         <div *ngFor="let field of availableFields; let cpt = index" class="my-8 ml-2 text-base">
             <span>
                 {{ field.label | translate }}
-                <span style="font-size: 12px;" class="text-green-400 ml-3">{{ field.id | translate }}</span>
+                <span style="font-size: 12px;" class="text-green-400 ml-3">{{ field.labelShort | translate }}</span>
                 <mat-divider class="border-green-400 mt-4" *ngIf="cpt == 0"></mat-divider>
             </span>
         </div>

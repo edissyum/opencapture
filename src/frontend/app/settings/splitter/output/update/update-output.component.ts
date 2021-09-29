@@ -80,16 +80,16 @@ export class SplitterUpdateOutputComponent implements OnInit {
     ];
     availableFields     : any           = [
         {
-            "id": 'lastname',
-            'label': 'Nom'
+            "labelShort"    : 'HEADER.id',
+            'label'         : 'HEADER.label'
         },
         {
-            "id": 'FirstName',
-            'label': 'Prénom'
+            "labelShort"    : 'doctype',
+            'label'         : 'SETTINGS.document_type'
         },
         {
-            "id": 'data',
-            'label': 'Date de Naissance'
+            "labelShort"    : 'date',
+            'label'         : 'TYPES.date'
         },
     ];
     testConnectionMapping : any         = {
@@ -129,7 +129,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
                         });
                     }
                 }
-                this.http.get(API_URL + '/ws/outputs/getOutputsTypes', {headers: this.authService.headers}).pipe(
+                this.http.get(API_URL + '/ws/outputs/getOutputsTypes?module=splitter', {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
                         this.outputsTypes = data.outputs_types;
                         /**
@@ -188,6 +188,39 @@ export class SplitterUpdateOutputComponent implements OnInit {
                 console.debug(err);
                 this.notify.handleErrors(err);
                 this.router.navigate(['/settings/splitter/outputs']).then();
+                return of(false);
+            })
+        ).subscribe();
+
+         /**
+        * Get custom fields
+         **/
+        this.http.get(API_URL + '/ws/customFields/list', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                let newField;
+                data.customFields.forEach((field: {
+                        id: any;
+                        label_short: string;
+                        module: string;
+                        label: string;
+                        type: string;
+                        enabled: boolean;
+                    }) => {
+                        newField = {
+                            'id': field.id,
+                            'labelShort': field.label_short,
+                            'label': field.label,
+                            'enabled': field.enabled,
+                        };
+                        if(field.enabled)
+                            this.availableFields.push(newField);
+                    }
+                );
+            }),
+            finalize(() => this.loading = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
                 return of(false);
             })
         ).subscribe();

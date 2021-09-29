@@ -43,7 +43,6 @@ export interface Field {
 })
 export class SplitterViewerComponent implements OnInit, OnDestroy{
     @ViewChild(`cdkStepper`) cdkDropList: CdkDragDrop<any> | undefined;
-
     form: FormGroup                 = new FormGroup({});
     metaDataOpenState: boolean      = true;
     showZoomPage: boolean           = false;
@@ -53,19 +52,11 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
     documents: any                  = [];
     pagesImageUrls: any             = [];
     documentsIds :string[]          = [];
-    metadata: any[]            = [];
+    metadata: any[]                 = [];
     zoomImageUrl: string            = "";
     toolSelectedOption: string      = "";
-    selectedItemName: string        = "";
-    searchStr: string               = "";
     selectedMetadata: any           = {id: -1};
-    autoCompleteResult!: any;
-    autoCompleteSlideColor: string  = "#97bf3d";
-    inputMode: string               = "Auto";
-    exportList: any                 = [
-        {label: 'Export de Fichiers et XML de métadonnées', id: 1},
-        {label: 'Export de Fichiers PDF', id: 2}
-    ];
+    inputMode: string               = "Manual";
     outputs: any;
 
     /** indicate search operation is in progress */
@@ -111,7 +102,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
     loadOutputs(): void {
         this.http.get(API_URL + '/ws/outputs/list?module=splitter', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                console.log("this.outputs : " + this.outputs);
                 this.outputs = data.outputs;
             }),
             finalize(() => {}),
@@ -121,32 +111,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
                 return of(false);
             })
         ).subscribe();
-    }
-
-    loadDefaultOutPut(): void{
-        // this.http.get(API_URL + '/ws/forms/getById/' + this.currentBatch.formId, {headers: this.authService.headers}).pipe(
-        //     tap((data: any) => {
-        //         if (data.outputs) {
-        //             const length = data.outputs.length;
-        //             if (length === 1) this.control.setValue(data.outputs[0]);
-        //             if (length > 1) {
-        //                 for (const cpt in data.outputs) {
-        //                     if (parseInt(cpt) !== 0) this.addOutput();
-        //                     this.outputForm[cpt].control.setValue(data.outputs[cpt]);
-        //                 }
-        //             }
-        //         }
-        //     }),
-        //     catchError((err: any) => {
-        //         console.debug(err);
-        //         this.notify.handleErrors(err);
-        //         return of(false);
-        //     })
-        // ).subscribe();
-    }
-
-    getOutPutData(): void{
-
     }
 
     loadBatchById(): void{
@@ -249,40 +213,18 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
     /* -- Metadata -- */
     changeInputMode($event: any) {
         this.inputMode = $event.checked ? "Auto": "Manual";
-        this.selectedMetadata = {nom_usage: "", id: -1, prenom: "", matricule: ""};
-        this.fillDataValues({
-            'nom_usage' : "",
-            'matricule' : "",
-            'prenom'    : "",
-        });
+        this.selectedMetadata = null;
+        this.fillDataValues({});
     }
 
 
     fillDataValues(data: any): void{
-        // @ts-ignore
-        this.form.get('nom_usage').setValue(data['nom_usage']);
-        // @ts-ignore
-        this.form.get('prenom').setValue(data['prenom']);
-        // @ts-ignore
-        this.form.get('matricule').setValue(data['matricule']);
-    }
-
-    private static _normalizeValue(value: string): string {
-        return value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    }
-
-    formChange(labelShort: string) {
-        if (labelShort!='nom_usage')
-            return;
-
-        // @ts-ignore
-        let newValue = SplitterViewerComponent._normalizeValue(this.form.get('nom_usage').value);
-        if(newValue.length < 3){
-            return;
-        }
-
-        if (newValue.length > 4){
-            this.fillData("");
+        console.log(JSON.stringify(this.fields))
+        for (let field of this.fields) {
+            let key = field['metadata_key'];
+            let new_value = data.hasOwnProperty(key) ? data[key] : '';
+            // @ts-ignore
+            this.form.get(key).setValue(new_value);
         }
     }
 
@@ -317,17 +259,12 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
         let headers     = this.authService.headers;
         this.http.get(API_URL + '/ws/splitter/metadata', {headers}).pipe(
           tap((data: any) => {
+            let cpt = 0;
             data.metadata.forEach((metadataItem: any) => {
-                this.metadata.push(
-                    {
-                        id              : metadataItem.id,
-                        prenom          : metadataItem.data.prenom,
-                        nom_usage       : metadataItem.data.nom_usage,
-                        matricule       : metadataItem.data.matricule,
-                    }
-                );
-            }
-            );
+                metadataItem.data['id'] = cpt;
+                this.metadata.push(metadataItem.data);
+                cpt++;
+            });
             this.ngxService.stopBackground("load-metadata");
             this.notify.success(this.translate.instant('SPLITTER.referential_updated'))
           }),
@@ -346,13 +283,13 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
 
     fillData(selectedMetadata: any) {
         this.selectedMetadata   = selectedMetadata;
-        let optionId            =  this.selectedMetadata['id'];
-        // @ts-ignore
-        this.form.get('prenom').setValue(optionId);
-        // @ts-ignore
-        this.form.get('matricule').setValue(optionId);
-        // @ts-ignore
-        this.form.get('nom_usage').setValue(optionId);
+        let optionId            = this.selectedMetadata['id'];
+        for (let field of this.fields){
+            if (field['metadata_key']){
+                // @ts-ignore
+                this.form.get(field['metadata_key']).setValue(optionId);
+            }
+        }
     }
 
     loadFormFields(formId: number){
@@ -485,7 +422,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
 
     /* Begin tools bar */
     deleteItemFromList(list: any[], index: number){
-
         delete list[index];
         list = list.filter((x: any): x is any => x !== null);
         return list;
@@ -534,15 +470,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
     }
 
     changeBatch(id: number) {
-        this.fillDataValues({
-            'nom_usage' : "",
-            'matricule' : "",
-            'prenom'    : "",
-        })
-        // @ts-ignore
-        this.form.get('commentaire').setValue("");
-        this.selectedMetadata = {id: -1, nom_usage: "", prenom: "", matricule: ""};
-        window.location.href = "/dist/#/splitter/viewer/" + id;
+        this.fillDataValues({})
+        this.selectedMetadata = {id: -1};
+        window.location.href = "/#/splitter/viewer/" + id;
         this.currentBatch.id = id;
         this.loadSelectedBatch();
     }
@@ -573,21 +503,10 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
         }, 10000);
 
         if(this.inputMode == 'Manual'){
-            // @ts-ignore
-            let prenom      = this.form.get('prenom').value;
-
-            // @ts-ignore
-            let nom_usage   = this.form.get('nom_usage').value;
-
-            // @ts-ignore
-            let matricule   = this.form.get('matricule').value;
-
-            this.selectedMetadata = {
-                nom_usage   : nom_usage,
-                matricule   : matricule,
-                prenom      : prenom,
-                id          : 0
-            };
+            for (let field of this.fields) {
+                // @ts-ignore
+                this.selectedMetadata[field.label_short] = this.form.get(field.label_short).value
+            }
         }
 
         if(this.selectedMetadata['id'] == -1){
@@ -630,7 +549,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
           })
         ).subscribe(
             x => {
-                window.location.href = "/dist/#/splitter/list";
+                // window.location.href = "/#/splitter/list";
                 this.notify.success("Lot validé avec succès");
             }
         )

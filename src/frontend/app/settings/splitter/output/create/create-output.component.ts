@@ -68,7 +68,7 @@ export class SplitterCreateOutputComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.http.get(API_URL + '/ws/outputs/getOutputsTypes', {headers: this.authService.headers}).pipe(
+        this.http.get(API_URL + '/ws/outputs/getOutputsTypes?module=splitter', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.outputsTypes = data.outputs_types;
             }),

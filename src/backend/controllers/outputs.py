@@ -33,11 +33,15 @@ def get_outputs(args):
     return response, 200
 
 
-def get_outputs_types():
+def get_outputs_types(module):
     _vars = create_classes_from_current_config()
     _config = _vars[1]
 
-    _outputs_types = outputs.get_outputs_types()
+    args = {
+        'where': ['module = %s'],
+        'data': [module],
+    }
+    _outputs_types = outputs.get_outputs_types(args)
 
     response = {
         "outputs_types": _outputs_types

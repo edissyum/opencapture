@@ -71,30 +71,10 @@
                                   <mat-option *ngFor="let metadata of filteredServerSideMetadata | async"
                                               [value]="metadata['id']"
                                               (click)="fillData(metadata)">
-                                      <div [ngSwitch]="input.label_short">
-                                        <span *ngSwitchCase="'nom_usage'">
-                                            <span>{{metadata['nom_usage']}}</span>
-                                            <span class="text-gray-400 sm" *ngIf="!selectedMetadata || selectedMetadata['id'] != metadata['id']">
-                                                {{metadata['prenom']}}
-                                                 (N°: {{metadata['matricule']}})
-                                            </span>
+                                        <span>{{metadata[input.label_short]}}</span>
+                                        <span *ngFor="let metadataItem of metadata">
+                                            metadata
                                         </span>
-                                        <span *ngSwitchCase="'prenom'">
-                                            <span class="text-gray-400 sm" *ngIf="!selectedMetadata || selectedMetadata['id'] != metadata['id']">
-                                                {{metadata['nom_usage']}}
-                                            </span>
-                                            <span> {{metadata['prenom']}}</span>
-                                            <span class="text-gray-400 sm" *ngIf="!selectedMetadata || selectedMetadata['id'] != metadata['id']">
-                                                 (N°: {{metadata['matricule']}})
-                                            </span>
-                                        </span>
-                                        <span *ngSwitchCase="'matricule'">
-                                            <span> {{metadata['matricule']}}</span>
-                                            <span class="text-gray-400 sm" *ngIf="!selectedMetadata || selectedMetadata['id'] != metadata['id']">
-                                                 ({{metadata['nom_usage']}} {{metadata['prenom']}})
-                                            </span>
-                                        </span>
-                                      </div>
                                   </mat-option>
                                 </mat-select>
                             </mat-form-field>
@@ -120,14 +100,14 @@
                 </div>
             </mat-expansion-panel>
         </mat-accordion>
-        <mat-card class="document" *ngFor="let document of documents; let indexOfDocument = index;">
+        <mat-card class="document" *ngFor="let document of documents; let documentIndex = index;">
           <mat-card-title class="metadata-title {{document['class']}}">
             <button class="absolute top-4 hover:text-green-400" (click)="openDocumentTypeDialog(document)" title="{{ 'SPLITTER.edit' | translate }}">
                 <i class="fas fa-edit hover:text-green-400 w-full">
                     {{document['documentTypeName'] }}
                 </i>
             </button>
-            <button mat-button class="absolute top-4 right-6" (click)="deleteDocument(indexOfDocument)"
+            <button mat-button class="absolute top-4 right-6" (click)="deleteDocument(documentIndex)"
                     title="{{ 'GLOBAL.delete' | translate }}">
                 <i class="fas fa-trash-alt fa-lg"></i>
             </button>
@@ -140,7 +120,7 @@
                     (cdkDropListDropped)="drop($event)"
                     cdkDropList id="{{ addId(document['id']) }}" [cdkDropListData]="document['pages']"
                     [cdkDropListConnectedTo]="documentsIds">
-                <div class="page bg-gray-200 m-1.5 rounded-md" *ngFor="let page of document['pages']"
+                <div class="page bg-gray-200 m-1.5 rounded-md" *ngFor="let page of document['pages']; let pageIndex = index;"
                      (click)="page['checkBox'] = !page['checkBox']" cdkDrag>
                     <div class="custom-placeholder m-1.5" *cdkDragPlaceholder></div>
                     <div class="page-header">

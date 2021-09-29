@@ -110,6 +110,8 @@ export class UpdateRoleComponent implements OnInit {
         marker('PRIVILEGES.update_position_mask'),
         marker('PRIVILEGES.create_customer'),
         marker('PRIVILEGES.update_customer'),
+        marker('PRIVILEGES.document_type_splitter'),
+        marker('PRIVILEGES.separator_splitter'),
     ];
     // End translation
     constructor(
@@ -197,6 +199,7 @@ export class UpdateRoleComponent implements OnInit {
             this.privileges['privileges'].forEach((element: any) => {
                 this.rolePrivileges.forEach((element2: any) => {
                     if (element['label'] === element2) {
+                        console.log('element[\'label\'] : ' + element['label']);
                         rolePrivileges.push(element['id']);
                     }
                 });
@@ -210,6 +213,8 @@ export class UpdateRoleComponent implements OnInit {
                     return of(false);
                 })
             ).subscribe();
+
+            console.log("Onsubmit sirolePrivileges : " + rolePrivileges);
 
             this.http.put(API_URL + '/ws/roles/updatePrivilege/' + this.roleId, {'privileges': rolePrivileges}, {headers: this.authService.headers},
             ).pipe(

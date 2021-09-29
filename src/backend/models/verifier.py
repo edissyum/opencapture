@@ -86,3 +86,20 @@ def update_invoice(args):
         error = gettext('INVOICE_UPDATE_ERROR')
 
     return supplier, error
+
+
+def update_invoices(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    error = None
+    supplier = _db.update({
+        'table': ['invoices'],
+        'set': args['set'],
+        'where': args['where'],
+        'data': args['data']
+    })
+
+    if supplier[0] is False:
+        error = gettext('INVOICES_UPDATE_ERROR')
+
+    return supplier, error

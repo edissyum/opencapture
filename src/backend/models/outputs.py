@@ -35,13 +35,15 @@ def get_outputs(args):
     return outputs
 
 
-def get_outputs_types():
+def get_outputs_types(args):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
     outputs_types = _db.select({
         'select': ["*"],
         'table': ["outputs_types"],
         'order_by': ["id ASC"],
+        'where': args['where'],
+        'data': args['data'],
     })
 
     return outputs_types

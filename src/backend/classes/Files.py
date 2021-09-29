@@ -554,11 +554,9 @@ class Files:
                 os.remove(os.path.join(dir_path, item))
 
     @staticmethod
-    def get_uuid_with_date():
-        random_number = uuid.uuid4().hex
-        today = datetime.date.today()
-        uuid_with_date = str(today.year) + str(today.month) + str(today.day) + str(random_number)
-        return uuid_with_date
+    def get_now_date():
+        now = datetime.datetime.now()
+        return now
 
     @staticmethod
     def reformat_positions(positions):
@@ -585,7 +583,7 @@ class Files:
                 return ''
 
     @staticmethod
-    def save_pdf_result_after_separate(pages_lists, documents, input_file, output_file, reduce_index=0):
+    def export_pdf(pages_lists, documents, input_file, output_file, reduce_index=0):
         pdf_writer = PyPDF2.PdfFileWriter()
         pdf_reader = PyPDF2.PdfFileReader(input_file)
         try:

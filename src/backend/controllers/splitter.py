@@ -162,8 +162,26 @@ def retrieve_pages(page_id):
     return response, 200
 
 
+def get_output_parameters(parameters):
+    data = {}
+    for parameter in parameters:
+        if parameter['id'] == 'folder_out':
+            data['folder_out'] = parameter['value']
+
+        if parameter['id'] == 'separator':
+            data['separator'] = parameter['value']
+
+        if parameter['id'] == 'folder_out':
+            data['folder_out'] = parameter['value']
+
+        if parameter['id'] == 'filename':
+            data['filename'] = parameter['value']
+
+    return data
+
+
 def validate(documents, metadata):
-    print(metadata)
+    now = _Files.get_now_date()
     _vars = create_classes_from_current_config()
     _cfg = _vars[1]
 
@@ -174,23 +192,48 @@ def validate(documents, metadata):
     })[0]
 
     form = forms.get_form_by_id(batch[0]['form_id'])
+    """
+        Split document
+    """
     pages = _Splitter.get_split_pages(documents)
-    documents = _Splitter.add_files_names(documents, metadata)
 
     if 'outputs' in form[0]:
         for output_id in form[0]['outputs']:
-            print("output : " + str(output_id))
             output = outputs.get_output_by_id(output_id)
+            parameters = get_output_parameters(output[0]['data']['options']['parameters'])
+            """
+                Add PDF file names using masks
+            """
+            for index, document in enumerate(documents):
+                documents[index]['fileName'] = _Splitter.get_file_name(document, metadata, parameters, now, 'pdf')
+
             if output:
-                res_file = _Files.save_pdf_result_after_separate(pages, documents, _cfg.cfg['SPLITTER']['uploadpath']
-                                                                + str(batch[0]['file_name']),
-                                                                _cfg.cfg['SPLITTER']['pdfoutputpath'], 1)
-                if res_file['OK'] and output[0]['output_type_id'] == 'export_xml':
-                    res_xml = _Splitter.export_xml(documents, metadata, _cfg.cfg['SPLITTER']['pdfoutputpath'])
-                    if res_xml['OK']:
-                        splitter.change_status({
-                            'id': metadata['id'],
-                            'status': 'END'
-                        })
+                is_export_ok = True
+                """
+                    Export PDF files
+                """
+                if output[0]['output_type_id'] == 'export_pdf':
+                    res_file = _Files.export_pdf(pages, documents,
+                                                 _cfg.cfg['SPLITTER']['uploadpath']
+                                                 + str(batch[0]['file_name']),
+                                                 parameters['folder_out'], 1)
+                    is_export_ok = res_file['OK']
+                """
+                    Export XML file
+                """
+                if output[0]['output_type_id'] == 'export_xml':
+                    file_name = _Splitter.get_file_name(None, metadata, parameters, now, 'xml')
+                    res_xml = _Splitter.export_xml(documents, metadata, parameters['folder_out'], file_name, now)
+                    is_export_ok = res_xml['OK']
+                """
+                    Change status to END
+                """
+                if is_export_ok:
+                    splitter.change_status({
+                        'id': metadata['id'],
+                        'status': 'NEW'
+                    })
+                else:
+                    return {"OK": False}, 500
 
     return {"OK": True}, 200

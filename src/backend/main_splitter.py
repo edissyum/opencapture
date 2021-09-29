@@ -21,8 +21,8 @@ import tempfile
 from kuyruk import Kuyruk
 from kuyruk_manager import Manager
 from .main import timer, check_file, create_classes
-from import_classes import _Files, _Config, _Splitter, _SeparatorQR
-from import_process import OCForInvoices_splitter
+from .import_classes import _Files, _Config, _Splitter, _SeparatorQR
+from .import_process import OCForInvoices_splitter
 
 OCforInvoices = Kuyruk()
 
@@ -46,10 +46,10 @@ def launch(args):
     if not os.path.exists(config_file):
         sys.exit('Config file couldn\'t be found')
 
-    config, locale, log, ocr, database, spreadsheet = create_classes(config_name)
-    tmp_folder = tempfile.mkdtemp(dir=config.cfg['SPLITTER']['tmpbatchpath']) + '/'
-    separator_qr = _SeparatorQR(log, config, tmp_folder)
-    splitter = _Splitter(config, database, locale, separator_qr)
+    config, locale, log, ocr, database, spreadsheet = create_classes(config_file)
+    tmp_folder = tempfile.mkdtemp(dir=config.cfg['SPLITTER']['batchpath']) + '/'
+    separator_qr = _SeparatorQR(log, config, tmp_folder, 'splitter')
+    splitter = _Splitter(config, database, locale, separator_qr, log)
 
     file_name = tempfile.NamedTemporaryFile(dir=tmp_folder).name
     files = _Files(
@@ -70,7 +70,7 @@ def launch(args):
         path = args['file']
         if check_file(files, path, config, log) is not False:
             # Process the file and send it to Maarch
-            OCForInvoices_splitter.process(path, log, splitter, files, ocr, tmp_folder, config)
+            OCForInvoices_splitter.process(args, path, log, splitter, files, tmp_folder, config)
 
     # Close database
     database.conn.close()

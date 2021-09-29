@@ -94,18 +94,26 @@ class Splitter:
                 })
                 is_previous_code_qr = False
 
-    def save_documents(self, batch_folder, orig_file):
+    def save_documents(self, batch_folder, orig_file, input_id):
         for index, batch in enumerate(self.result_batches):
             batch_name = os.path.basename(os.path.normpath(batch_folder))
+            input_settings = self.db.select({
+                'select': ['*'],
+                'table': ['inputs'],
+                'where': ['id = %s'],
+                'data': [input_id],
+            })
             args = {
                 'table': 'splitter_batches',
                 'columns': {
                     'file_name': orig_file.rsplit('/')[-1],
                     'batch_folder': batch_name,
                     'first_page': batch[0]['path'],
-                    'page_number': str(max((node['document'] for node in batch)))
+                    'page_number': str(max((node['document'] for node in batch))),
+                    'form_id': str(input_settings[0]['default_form_id'])
                 }
             }
+
             batch_id = self.db.insert(args)
             for page in batch:
                 image = Files.open_image_return(page['path'])
@@ -134,58 +142,76 @@ class Splitter:
         return pages
 
     @staticmethod
-    def add_files_names(documents, metadata):
-        now = datetime.datetime.now()
-        year = str(now.year)
-        day = str('%02d' % now.day)
-        month = str('%02d' % now.month)
-        hour = str('%02d' % now.hour)
-        minute = str('%02d' % now.minute)
-        seconds = str('%02d' % now.second)
-        date = year + month + day
+    def get_file_name(document, metadata, parameters, now_date, extension):
+        file_name = ''
+
+        year = str(now_date.year)
+        day = str('%02d' % now_date.day)
+        month = str('%02d' % now_date.month)
+        hour = str('%02d' % now_date.hour)
+        minute = str('%02d' % now_date.minute)
+        seconds = str('%02d' % now_date.second)
+        date = year + month + day + hour + minute + seconds
         random_num = str(random.randint(0, 99999)).zfill(5)
-        for index, document in enumerate(documents):
-            joiner = "_"
-            first_name = metadata['firstName']
-            if len(first_name) != 0: first_name = first_name[0]
-            file_name = joiner.join([
-                date.replace(' ', joiner),
-                metadata['lastName'].replace(' ', joiner),
-                first_name.replace(' ', joiner),
-                metadata['matricule'].replace(' ', joiner),
-                document['documentTypeKey'].replace(' ', joiner),
-                random_num.replace(' ', joiner)
-            ])
-            documents[index]['fileName'] = file_name + ".pdf"
-        return documents
+        filename_parameters = parameters['filename'].split('#')
+        joiner = parameters['separator'] if parameters['separator'] else ''
+        for filename_parameter in filename_parameters:
+            if filename_parameter in metadata:
+                file_name = joiner.join([
+                    file_name,
+                    metadata[filename_parameter].replace(' ', joiner),
+                ])
+
+            elif filename_parameter == 'doctype' and document:
+                file_name = joiner.join([
+                    file_name,
+                    document['documentTypeKey'].replace(' ', joiner),
+                ])
+
+            elif filename_parameter == 'date':
+                file_name = joiner.join([
+                    file_name,
+                    date.replace(' ', joiner),
+                ])
+
+            elif filename_parameter == 'random':
+                file_name = joiner.join([
+                    file_name,
+                    random_num.replace(' ', joiner)
+                ])
+            else:
+                file_name = joiner.join([
+                    file_name,
+                    filename_parameter.replace(' ', joiner)
+                ])
+        file_name = file_name + '.' + extension
+
+        return file_name
 
     @staticmethod
-    def export_xml(documents, metadata, output):
-        year = str(datetime.date.today().year)
-        month = str(datetime.date.today().month).zfill(2)
-        day = str(datetime.date.today().day).zfill(2)
-        hour = str(datetime.datetime.now().hour).zfill(2)
-        minute = str(datetime.datetime.now().minute).zfill(2)
-        second = str(datetime.datetime.now().second).zfill(2)
+    def export_xml(documents, metadata, output_dir, filename, now):
+        year = str(now.year)
+        month = str(now.month).zfill(2)
+        day = str(now.day).zfill(2)
+        hour = str(now.hour).zfill(2)
+        minute = str(now.minute).zfill(2)
+        second = str(now.second).zfill(2)
         random_num = str(random.randint(0, 99999)).zfill(5)
-        bundle_name = year + month + day + "_" + hour + minute + second + "_" + random_num
 
         root = ET.Element("OPENCAPTURESPLITTER")
         bundle_tag = ET.SubElement(root, "BUNDLE")
         ET.SubElement(bundle_tag, "BUNDLEINDEX").text = "1"
-        ET.SubElement(bundle_tag, "FILENAME").text = bundle_name + ".xml"
+        ET.SubElement(bundle_tag, "FILENAME").text = filename
         ET.SubElement(bundle_tag, "DATE").text = day + "-" + month + "-" + year
-        ET.SubElement(bundle_tag, "BUNDLE_NUMBER").text = bundle_name
+        ET.SubElement(bundle_tag, "BUNDLE_NUMBER").text = filename.split('.')[0]
         ET.SubElement(bundle_tag, "NBDOC").text = str(len(documents))
         ET.SubElement(bundle_tag, "USER_ID_OC").text = metadata['userName']
         ET.SubElement(bundle_tag, "USER_NAME_OC").text = metadata['userLastName']
         ET.SubElement(bundle_tag, "USER_SURNAME_OC").text = metadata['userFirstName']
 
         header_tag = ET.SubElement(root, "HEADER")
-        ET.SubElement(header_tag, "NAME").text = metadata['lastName']
-        ET.SubElement(header_tag, "SURNAME").text = metadata['firstName']
-        ET.SubElement(header_tag, "MATRICULE").text = str(metadata['matricule'])
-        ET.SubElement(header_tag, "COMMENT").text = metadata['comment']
+        for key in metadata:
+            ET.SubElement(header_tag, key).text = metadata[key]
 
         documents_tag = ET.SubElement(root, "Documents")
         for index, document in enumerate(documents):
@@ -200,7 +226,7 @@ class Splitter:
 
         xmlstr = minidom.parseString(ET.tostring(root)).toprettyxml(indent="    ")
 
-        xml_file_path = output + bundle_name + ".xml"
+        xml_file_path = output_dir + filename
         try:
             with open(xml_file_path, "w", encoding="utf-8") as f:
                 f.write(xmlstr)

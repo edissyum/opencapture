@@ -170,23 +170,23 @@ const routes: Routes = [
 // -- Splitter
     {
         path: 'settings/splitter/forms', component: SplitterFormListComponent,
-        data: {title: marker('SETTINGS.list_forms'), privileges: ['settings', 'forms_list']},
+        data: {title: marker('SETTINGS.list_forms'), privileges: ['settings', 'forms_list_splitter']},
         canActivate: [LoginRequiredService]
     },
     {
         path: 'settings/splitter/forms/builder/new', component: SplitterFormBuilderComponent,
-        data: {title: marker('SETTINGS.form_builder'), privileges: ['settings', 'add_form']},
+        data: {title: marker('SETTINGS.form_builder'), privileges: ['settings', 'add_form_splitter']},
         canActivate: [LoginRequiredService]
     },
     {
         path: 'settings/splitter/forms/builder/edit/:id', component: SplitterFormBuilderComponent,
-        data: {title: marker('SETTINGS.form_update'), privileges: ['settings', 'update_form']},
+        data: {title: marker('SETTINGS.form_update'), privileges: ['settings', 'update_form_splitter']},
         canActivate: [LoginRequiredService]
     },
     {
         path: 'settings/splitter/separator',
         component: SeparatorComponent,
-        data: {title: marker('SETTINGS.custom_fields'), privileges: ['settings', 'separator']},
+        data: {title: marker('SETTINGS.custom_fields'), privileges: ['settings', 'separator_splitter']},
         canActivate: [
             LoginRequiredService,
             HasPrivilegeService
@@ -195,16 +195,7 @@ const routes: Routes = [
     {
         path: 'settings/splitter/documentType',
         component: DocumentTypeComponent,
-        data: {title: marker('SETTINGS.document_type'), privileges: ['settings', 'docuement_type']},
-        canActivate: [
-            LoginRequiredService,
-            HasPrivilegeService
-        ]
-    },
-    {
-        path: 'settings/splitter/documentType',
-        component: DocumentTypeComponent,
-        data: {title: marker('SETTINGS.document_type'), privileges: ['settings', 'docuement_type']},
+        data: {title: marker('SETTINGS.document_type'), privileges: ['settings', 'document_type_splitter']},
         canActivate: [
             LoginRequiredService,
             HasPrivilegeService
@@ -212,32 +203,32 @@ const routes: Routes = [
     },
     {
         path: 'settings/splitter/outputs', component: SplitterListOutputComponent,
-        data: {title: marker('FORMS.output_settings'), privileges: ['settings', 'outputs_list']},
+        data: {title: marker('FORMS.output_settings'), privileges: ['settings', 'outputs_list_splitter']},
         canActivate: [LoginRequiredService]
     },
     {
         path: 'settings/splitter/outputs/new', component: SplitterCreateOutputComponent,
-        data: {title: marker('SETTINGS.add_output'), privileges: ['settings', 'add_output']},
+        data: {title: marker('SETTINGS.add_output'), privileges: ['settings', 'add_output_splitter']},
         canActivate: [LoginRequiredService]
     },
     {
         path: 'settings/splitter/outputs/update/:id', component: SplitterUpdateOutputComponent,
-        data: {title: marker('SETTINGS.update_output'), privileges: ['settings', 'update_output']},
+        data: {title: marker('SETTINGS.update_output'), privileges: ['settings', 'update_output_splitter']},
         canActivate: [LoginRequiredService]
     },
     {
         path: 'settings/splitter/inputs', component: SplitterInputListComponent,
-        data: {title: marker('FORMS.input_settings'), privileges: ['settings', 'inputs_list']},
+        data: {title: marker('FORMS.input_settings'), privileges: ['settings', 'inputs_list_splitter']},
         canActivate: [LoginRequiredService]
     },
     {
         path: 'settings/splitter/inputs/new', component: SplitterCreateInputComponent,
-        data: {title: marker('SETTINGS.add_input'), privileges: ['settings', 'add_input']},
+        data: {title: marker('SETTINGS.add_input'), privileges: ['settings', 'add_input_splitter']},
         canActivate: [LoginRequiredService]
     },
     {
         path: 'settings/splitter/inputs/update/:id', component: SplitterUpdateInputComponent,
-        data: {title: marker('SETTINGS.update_input'), privileges: ['settings', 'update_input']},
+        data: {title: marker('SETTINGS.update_input'), privileges: ['settings', 'update_input_splitter']},
         canActivate: [LoginRequiredService]
     },
 // -- END Splitter
