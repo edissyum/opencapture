@@ -267,7 +267,7 @@ class FindFooter:
             if float(total) == float(all_rate_amount[0]):
                 self.Log.info('Footer informations found : [TOTAL : ' + str(total) + '] - [HT : ' + str(no_rate_amount[0]) + '] - [VATRATE : ' + str(rate_percentage[0]) + ']')
                 return [no_rate_amount, all_rate_amount, rate_percentage, self.nbPage, ["%.2f" % float(float(no_rate_amount[0]) * (float(rate_percentage[0]) / 100))]]
-            elif float(all_rate_amount[0]) == float(vat_amount + no_rate_amount[0]):
+            elif float(all_rate_amount[0]) == float("%.2f" % float(vat_amount + no_rate_amount[0])):
                 self.Log.info('Footer informations found : [TOTAL : ' + str(total) + '] - [HT : ' + str(no_rate_amount[0]) + '] - [VATRATE : ' + str(rate_percentage[0]) + ']')
                 return [no_rate_amount, all_rate_amount, rate_percentage, self.nbPage, ["%.2f" % float(float(no_rate_amount[0]) * (float(rate_percentage[0]) / 100))]]
             else:
@@ -303,6 +303,7 @@ class FindFooter:
                         improved_image = self.Files.improve_image_detection(self.Files.jpgName_footer)
                 self.Files.open_img(improved_image)
                 self.text = self.Ocr.text_builder(self.Files.img)
+                return self.run(text_as_string=True)
             return False
 
     @staticmethod
