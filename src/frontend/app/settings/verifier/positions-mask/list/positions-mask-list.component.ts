@@ -154,6 +154,7 @@ export class PositionsMaskListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
                 this.duplicatePositionMask(positionMaskId);
+                this.historyService.addHistory('verifier', 'duplicate_positions_masks', this.translate.instant('HISTORY-DESC.duplicate-positions-masks', {positions_masks: positionsMask}));
             }
         });
     }

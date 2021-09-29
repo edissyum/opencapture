@@ -233,6 +233,8 @@
 		"delete-user": "Suppression de l'utilisateur&nbsp;<b>{{ user }}</b>",
 		"delete_invoice": "Suppression de la facture n°&nbsp;<b>{{ invoice_id }}</b>",
 		"disable-user": "Désactivation de l'utilisateur&nbsp;<b>{{ user }}</b>",
+		"duplicate-form": "Duplication du formulaire&nbsp;<b>{{ form }}</b>",
+		"duplicate-positions-masks": "Duplication du masque de positionnement&nbsp;<b>{{ positions_masks }}</b>",
 		"enable-user": "Activation de l'utilisateur&nbsp;<b>{{ user }}</b>",
 		"invoice_refused": "Facture n°<b>{{ invoice_id }}</b> refusée",
 		"invoice_validated": "Facture n°<b>{{ invoice_id }}</b> validée et chaîne sortante suivante effectuée :&nbsp;<b>{{ outputs }}</b>",
@@ -512,7 +514,6 @@
 		"size": "Taille",
 		"suppliers_by_customer": "Liste des fournisseurs par client",
 		"unselect_all": "Tout désélectionner",
-		"user_in_charge": "Utilisateur en charge",
 		"viewer": "Visualisation du PDF"
 	}
 }
