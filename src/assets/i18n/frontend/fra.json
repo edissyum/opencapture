@@ -485,8 +485,7 @@
 		"colors": "Couleurs",
 		"confirm_delete_all_invoices": "Êtes-vous sûr de vouloir supprimer toutes les factures de la page ?",
 		"confirm_delete_invoice": "Êtes-vous sûr de vouloir supprimer cette facture ?",
-		"delete_all": "Supprimer toutes les factures selectionnées de la page",
-		"delete_all_checked": "",
+		"delete_all_checked": "Supprimer toutes les factures selectionnées de la page",
 		"delete_invoice": "Supprimer la facture",
 		"display": "Affichage",
 		"expand_all": "Développer tous les clients",
@@ -513,6 +512,7 @@
 		"size": "Taille",
 		"suppliers_by_customer": "Liste des fournisseurs par client",
 		"unselect_all": "Tout désélectionner",
+		"user_in_charge": "Utilisateur en charge",
 		"viewer": "Visualisation du PDF"
 	}
 }

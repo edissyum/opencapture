@@ -46,14 +46,14 @@ import {HistoryService} from "../../../../../services/history.service";
 })
 
 export class RolesListComponent implements OnInit {
-    headers: HttpHeaders = this.authService.headers;
     columnsToDisplay: string[] = ['id', 'label_short', 'label', 'status', 'actions'];
-    loading: boolean = true;
-    roles: any = [];
-    pageSize: number = 10;
-    pageIndex: number = 0;
-    total: number = 0;
-    offset: number = 0;
+    headers         : HttpHeaders = this.authService.headers;
+    loading         : boolean = true;
+    roles           : any = [];
+    pageSize        : number = 10;
+    pageIndex       : number = 0;
+    total           : number = 0;
+    offset          : number = 0;
 
     constructor(
         public router: Router,
@@ -77,7 +77,7 @@ export class RolesListComponent implements OnInit {
         this.serviceSettings.init();
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
         const lastUrl = this.routerExtService.getPreviousUrl();
-        if (lastUrl.includes('roles/') || lastUrl === '/') {
+        if (lastUrl.includes('settings/general/roles') || lastUrl === '/') {
             if (this.localeStorageService.get('rolesPageIndex'))
                 this.pageIndex = parseInt(this.localeStorageService.get('rolesPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);

@@ -34,7 +34,7 @@ import { Sort } from "@angular/material/sort";
 import { SettingsService } from "../../../../../services/settings.service";
 import { PrivilegesService } from "../../../../../services/privileges.service";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
-import {HistoryService} from "../../../../../services/history.service";
+import { HistoryService } from "../../../../../services/history.service";
 
 @Component({
     selector: 'app-users-list',
@@ -46,16 +46,16 @@ import {HistoryService} from "../../../../../services/history.service";
 })
 
 export class UsersListComponent implements OnInit {
+    columnsToDisplay: string[]    = ['id', 'username', 'firstname', 'lastname', 'role','status', 'actions'];
     headers         : HttpHeaders = this.authService.headers;
     loading         : boolean     = true;
-    columnsToDisplay: string[]    = ['id', 'username', 'firstname', 'lastname', 'role','status', 'actions'];
     users           : any         = [];
     allUsers        : any         = [];
+    roles           : any         = [];
     pageSize        : number      = 10;
     pageIndex       : number      = 0;
     total           : number      = 0;
     offset          : number      = 0;
-    roles           : any         = [];
 
     constructor(
         public router: Router,
@@ -79,7 +79,7 @@ export class UsersListComponent implements OnInit {
         this.serviceSettings.init();
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
         const lastUrl = this.routerExtService.getPreviousUrl();
-        if (lastUrl.includes('users/') || lastUrl === '/') {
+        if (lastUrl.includes('settings/general/users') || lastUrl === '/') {
             if (this.localeStorageService.get('usersPageIndex'))
                 this.pageIndex = parseInt(this.localeStorageService.get('usersPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
