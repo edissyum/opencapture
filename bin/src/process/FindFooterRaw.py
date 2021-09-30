@@ -55,7 +55,7 @@ class FindFooterRaw:
                 content = line
             else:
                 content = line.content
-            for res in re.finditer(r"" + regex + "", content.upper()):
+            for res in re.finditer(r"" + regex + "", content.upper().replace(' ', '')):
                 # Retrieve only the number and add it in array
                 # In case of multiple no rates amount found, take the higher
                 data = res.group()
