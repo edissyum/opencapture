@@ -29,7 +29,8 @@ def get_forms():
         'select': ['*', 'count(*) OVER() as total'],
         'offset': request.args['offset'] if 'offset' in request.args else '',
         'limit': request.args['limit'] if 'limit' in request.args else '',
-        'where': ["status <> 'DEL'"]
+        'where': ["status <> 'DEL'", "module like %s"],
+        'data': [request.args['module']] if 'module' in request.args else '%'
     }
     res = forms.get_forms(args)
     return make_response(jsonify(res[0]), res[1])

@@ -21,7 +21,7 @@ from flask_cors import CORS
 from flask_babel import Babel
 from flask import request, session, Flask
 from .import_rest import auth, locale, config, user, splitter, verifier, roles, privileges, custom_fields, \
-    forms, status, accounts, outputs, maarch, inputs, positions_masks
+    forms, status, accounts, outputs, maarch, inputs, positions_masks, history
 
 
 app = Flask(__name__, instance_relative_config=True)
@@ -29,7 +29,7 @@ babel = Babel(app)
 CORS(app, supports_credentials=True)
 
 app.config.from_mapping(
-    SECRET_KEY='§§SECRET§s§',
+    SECRET_KEY='237a5b487d1dfb461aefcca41b789aee',
     CONFIG_FILE=os.path.join(app.instance_path, 'config.ini'),
     CONFIG_FOLDER=os.path.join(app.instance_path, 'config/'),
     LANG_FILE=os.path.join(app.instance_path, 'lang.json'),
@@ -50,6 +50,7 @@ app.register_blueprint(status.bp)
 app.register_blueprint(config.bp)
 app.register_blueprint(maarch.bp)
 app.register_blueprint(outputs.bp)
+app.register_blueprint(history.bp)
 app.register_blueprint(splitter.bp)
 app.register_blueprint(accounts.bp)
 app.register_blueprint(verifier.bp)

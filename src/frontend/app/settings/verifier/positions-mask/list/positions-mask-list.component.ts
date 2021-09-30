@@ -7,11 +7,11 @@ the Free Software Foundation, either version 3 of the License, or
 
 Open-Capture is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
@@ -32,6 +32,7 @@ import {ConfirmDialogComponent} from "../../../../../services/confirm-dialog/con
 import {API_URL} from "../../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
+import {HistoryService} from "../../../../../services/history.service";
 
 @Component({
     selector: 'positions-mask-list',
@@ -56,6 +57,7 @@ export class PositionsMaskListComponent implements OnInit {
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
+        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
@@ -81,6 +83,11 @@ export class PositionsMaskListComponent implements OnInit {
         this.http.get(API_URL + '/ws/positions_masks/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.total) this.total = data.total;
+                else if (this.pageIndex !== 0) {
+                    this.pageIndex = this.pageIndex - 1;
+                    this.offset = this.pageSize * (this.pageIndex);
+                    this.loadPositionMask();
+                }
                 this.positionsMasks = data.positions_masks;
                 suppliers.suppliers.forEach((element: any) => {
                     this.positionsMasks.forEach((mask: any) => {
@@ -107,6 +114,7 @@ export class PositionsMaskListComponent implements OnInit {
     onPageChange(event: any) {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
+        this.pageIndex = event.pageIndex;
         this.localeStorageService.save('positionMaskPageIndex', event.pageIndex);
         this.loadPositionMask().then();
     }
@@ -126,6 +134,7 @@ export class PositionsMaskListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
                 this.deletePositionMask(positionMaskId);
+                this.historyService.addHistory('verifier', 'delete_positions_masks', this.translate.instant('HISTORY-DESC.delete-positions-masks', {positions_masks: positionsMask}));
             }
         });
     }
@@ -145,6 +154,7 @@ export class PositionsMaskListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
                 this.duplicatePositionMask(positionMaskId);
+                this.historyService.addHistory('verifier', 'duplicate_positions_masks', this.translate.instant('HISTORY-DESC.duplicate-positions-masks', {positions_masks: positionsMask}));
             }
         });
     }
@@ -192,7 +202,7 @@ export class PositionsMaskListComponent implements OnInit {
             this.http.delete(API_URL + '/ws/positions_masks/delete/' + positionsMaskId, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadPositionMask().then();
-                    this.notify.success(this.translate.instant('POSITIONS-MASK.positions_mask_deleted'));
+                    this.notify.success(this.translate.instant('POSITIONS-MASKS.positions_mask_deleted'));
                 }),
                 catchError((err: any) => {
                     console.debug(err);
@@ -205,16 +215,16 @@ export class PositionsMaskListComponent implements OnInit {
 
     duplicatePositionMask(positionsMaskId: number) {
         if (positionsMaskId !== undefined) {
-            // this.http.delete(API_URL + '/ws/positions_masks/duplicate/' + positionsMaskId, {headers: this.authService.headers}).pipe(
-            //     tap(() => {
-            //         this.loadPositionMask()
-            //     }),
-            //     catchError((err: any) => {
-            //         console.debug(err);
-            //         this.notify.handleErrors(err);
-            //         return of(false);
-            //     })
-            // ).subscribe();
+            this.http.post(API_URL + '/ws/positions_masks/duplicate/' + positionsMaskId, {}, {headers: this.authService.headers}).pipe(
+                tap(() => {
+                    this.loadPositionMask().then();
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
         }
     }
 

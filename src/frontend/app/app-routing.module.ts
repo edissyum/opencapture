@@ -39,6 +39,7 @@ import { CustomersListComponent } from "./accounts/customers/list/customers-list
 import { UpdateCustomerComponent } from "./accounts/customers/update/update-customer.component";
 import { CreateCustomerComponent } from "./accounts/customers/create/create-customer.component";
 import { HasPrivilegeService } from "../services/has-privilege.service";
+import { HistoryComponent } from "./history/history.component";
 
 const routes: Routes = [
     {path: '', redirectTo: 'home', pathMatch: 'full'},
@@ -76,7 +77,12 @@ const routes: Routes = [
         canActivate: [LoginRequiredService, HasPrivilegeService]
 
     },
+    {
+        path: 'history', component: HistoryComponent,
+        data: {title: marker('GLOBAL.history'), privileges: ['history']},
+        canActivate: [LoginRequiredService, HasPrivilegeService]
 
+    },
     {path: 'accounts/suppliers', redirectTo: 'accounts/suppliers/list', pathMatch: 'full'},
     {
         path: 'accounts/suppliers/list', component: SuppliersListComponent,

@@ -27,7 +27,9 @@ def get_outputs():
     args = {
         'select': ['*', 'count(*) OVER() as total'],
         'offset': request.args['offset'] if 'offset' in request.args else '',
-        'limit': request.args['limit'] if 'limit' in request.args else ''
+        'limit': request.args['limit'] if 'limit' in request.args else '',
+        'where': ["status <> 'DEL'", "module = %s"],
+        'data': [request.args['module'] if 'module' in request.args else '']
     }
     _roles = outputs.get_outputs(args)
     return make_response(jsonify(_roles[0])), _roles[1]
@@ -36,7 +38,8 @@ def get_outputs():
 @bp.route('outputs/getOutputsTypes', methods=['GET'])
 @auth.token_required
 def get_outputs_types():
-    _roles = outputs.get_outputs_types()
+    module = request.args['module']
+    _roles = outputs.get_outputs_types(module)
     return make_response(jsonify(_roles[0])), _roles[1]
 
 

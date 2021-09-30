@@ -7,11 +7,11 @@ the Free Software Foundation, either version 3 of the License, or
 
 Open-Capture is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
@@ -33,6 +33,7 @@ import { API_URL } from "../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { ConfirmDialogComponent } from "../../../../services/confirm-dialog/confirm-dialog.component";
+import {HistoryService} from "../../../../services/history.service";
 
 @Component({
     selector: 'suppliers-list',
@@ -40,16 +41,17 @@ import { ConfirmDialogComponent } from "../../../../services/confirm-dialog/conf
     styleUrls: ['./suppliers-list.component.scss']
 })
 export class SuppliersListComponent implements OnInit {
+    columnsToDisplay : string[]    = ['id', 'name', 'vat_number', 'siret', 'siren', 'iban', 'form_label', 'actions'];
+    deletePositionSrc: string      = 'assets/imgs/map-marker-alt-solid-del.svg';
     headers          : HttpHeaders = this.authService.headers;
     loading          : boolean     = true;
-    columnsToDisplay : string[]    = ['id', 'name', 'vat_number', 'siret', 'siren','form_label', 'actions'];
+    allSuppliers     : any         = [];
     suppliers        : any         = [];
     pageSize         : number      = 10;
     pageIndex        : number      = 0;
     total            : number      = 0;
     offset           : number      = 0;
     search           : string      = '';
-    deletePositionSrc: string      = 'assets/imgs/map-marker-alt-solid-del.svg';
 
     constructor(
         public router: Router,
@@ -61,6 +63,7 @@ export class SuppliersListComponent implements OnInit {
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,
+        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
@@ -76,11 +79,22 @@ export class SuppliersListComponent implements OnInit {
             this.offset = this.pageSize * (this.pageIndex);
         }else
             this.localeStorageService.remove('suppliersPageIndex');
+
+        this.http.get(API_URL + '/ws/accounts/suppliers/list', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.allSuppliers = data.suppliers;
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
         this.loadSuppliers();
     }
 
     loadSuppliers() {
-        this.http.get(API_URL + '/ws/accounts/suppliers/list?limit=' + this.pageSize + '&offset=' + this.offset + "&search=" + this.search, {headers: this.authService.headers}).pipe(
+        this.http.get(API_URL + '/ws/accounts/suppliers/list?order=name&limit=' + this.pageSize + '&offset=' + this.offset + "&search=" + this.search, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.suppliers = data.suppliers;
                 if (this.suppliers.length !== 0) {
@@ -139,6 +153,7 @@ export class SuppliersListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
                 this.deleteSupplier(supplierId);
+                this.historyService.addHistory('accounts', 'delete_supplier', this.translate.instant('HISTORY-DESC.delete-supplier', {supplier: supplier}));
             }
         });
     }
@@ -158,13 +173,14 @@ export class SuppliersListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
                 this.deleteSupplierPositions(supplierId);
+                this.historyService.addHistory('accounts', 'delete_supplier_positions', this.translate.instant('HISTORY-DESC.delete-supplier-positions', {supplier: supplier}));
             }
         });
     }
 
     skipAutoValidateConfirmDialog(supplierId: number, supplier: string) {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
+            data: {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('ACCOUNTS.confirm_skip_auto_validate', {"supplier": supplier}),
                 confirmButton       : this.translate.instant('GLOBAL.delete'),
@@ -177,6 +193,7 @@ export class SuppliersListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
                 this.skipAutoValidate(supplierId);
+                this.historyService.addHistory('accounts', 'skip_auto_validate', this.translate.instant('HISTORY-DESC.skip-auto-validate', {supplier: supplier}));
             }
         });
     }
@@ -228,9 +245,9 @@ export class SuppliersListComponent implements OnInit {
     }
 
     sortData(sort: Sort) {
-        const data = this.suppliers.slice();
+        const data = this.allSuppliers.slice();
         if(!sort.active || sort.direction === '') {
-            this.suppliers = data;
+            this.suppliers = data.splice(0, this.pageSize);
             return;
         }
 
@@ -242,10 +259,11 @@ export class SuppliersListComponent implements OnInit {
                 case 'vat_number': return this.compare(a.vat_number, b.vat_number, isAsc);
                 case 'siret': return this.compare(a.siret, b.siret, isAsc);
                 case 'siren': return this.compare(a.siren, b.siren, isAsc);
+                case 'iban': return this.compare(a.iban, b.iban, isAsc);
                 default: return 0;
             }
         });
-
+        this.suppliers = this.suppliers.splice(0, this.pageSize);
     }
 
     compare(a: number | string, b: number | string, isAsc: boolean) {

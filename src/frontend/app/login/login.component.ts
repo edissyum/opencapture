@@ -7,11 +7,11 @@ the Free Software Foundation, either version 3 of the License, or
 
 Open-Capture is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
@@ -28,6 +28,7 @@ import {Router} from "@angular/router";
 import {ConfigService} from "../../services/config.service";
 import {LocaleService} from "../../services/locale.service";
 import {UserService} from "../../services/user.service";
+import {HistoryService} from "../../services/history.service";
 
 @Component({
     selector: 'app-login',
@@ -46,8 +47,9 @@ export class LoginComponent implements OnInit {
         private translate: TranslateService,
         private notify: NotificationService,
         private configService: ConfigService,
-        private localeService: LocaleService
-) {}
+        private localeService: LocaleService,
+        private historyService: HistoryService,
+    ) {}
 
     ngOnInit(): void {
         this.loginForm = this.formBuilder.group({
@@ -80,6 +82,7 @@ export class LoginComponent implements OnInit {
                     this.authService.generateHeaders();
                     this.notify.success(this.translate.instant('AUTH.authenticated'));
                     this.configService.readConfig().then(() => {
+                        this.historyService.addHistory('general', 'login', this.translate.instant('HISTORY-DESC.login'));
                         if (this.authService.getCachedUrl()) {
                             this.router.navigate([this.authService.getCachedUrl()]).then();
                             this.authService.cleanCachedUrl();

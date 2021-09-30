@@ -27,7 +27,9 @@ def get_inputs():
     args = {
         'select': ['*', 'count(*) OVER() as total'],
         'offset': request.args['offset'] if 'offset' in request.args else '',
-        'limit': request.args['limit'] if 'limit' in request.args else ''
+        'limit': request.args['limit'] if 'limit' in request.args else '',
+        'where': ["status <> 'DEL'", "module = %s"],
+        'data': [request.args['module'] if 'module' in request.args else '']
     }
     _roles = inputs.get_inputs(args)
     return make_response(jsonify(_roles[0])), _roles[1]
@@ -69,4 +71,3 @@ def create_script_and_incron():
     data = request.json['args']
     res = inputs.create_script_and_incron(data)
     return make_response(jsonify(res[0])), res[1]
-

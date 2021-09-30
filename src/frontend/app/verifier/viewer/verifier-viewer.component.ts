@@ -7,16 +7,16 @@ the Free Software Foundation, either version 3 of the License, or
 
 Open-Capture is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Component, OnInit } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
+import {Component, OnInit} from '@angular/core';
+import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import { ActivatedRoute, Router } from "@angular/router";
 import { API_URL } from "../../env";
 import { catchError, map, startWith, tap } from "rxjs/operators";
@@ -26,14 +26,15 @@ import { AuthService } from "../../../services/auth.service";
 import { NotificationService } from "../../../services/notifications/notifications.service";
 import { TranslateService } from "@ngx-translate/core";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
-import { FormControl } from "@angular/forms";
+import { FormControl} from "@angular/forms";
 import { DatePipe } from '@angular/common';
 import { LocalStorageService } from "../../../services/local-storage.service";
 import { ConfigService } from "../../../services/config.service";
 import 'moment/locale/en-gb';
 import 'moment/locale/fr';
 import * as moment from 'moment';
-import {UserService} from "../../../services/user.service";
+import { UserService } from "../../../services/user.service";
+import { HistoryService } from "../../../services/history.service";
 declare var $: any;
 
 
@@ -45,22 +46,35 @@ declare var $: any;
 })
 
 export class VerifierViewerComponent implements OnInit {
-    loading                 : boolean   = true;
     isOCRRunning            : boolean   = false;
     settingsOpen            : boolean   = false;
-    saveInfo                : boolean   = true;
     ocrFromUser             : boolean   = false;
     accountingPlanEmpty     : boolean   = false;
+    getOnlyRawFooter        : boolean   = false;
+    disableOCR              : boolean   = false;
+    saveInfo                : boolean   = true;
+    loading                 : boolean   = true;
+    supplierExists          : boolean   = true;
     deleteDataOnChangeForm  : boolean   = true;
+    oldVAT                  : string    = '';
+    oldSIRET                : string    = '';
+    oldSIREN                : string    = '';
     currentFilename         : string    = '';
-    currentPage             : number    = 1;
     lastLabel               : string    = '';
     lastId                  : string    = '';
     lastColor               : string    = '';
+    toHighlight             : string    = '';
+    toHighlightAccounting   : string    = '';
+    token                   : string    = '';
+    imgSrc                  : SafeUrl   = '';
     ratio                   : number    = 0;
-    token                   : any;
+    currentPage             : number    = 1;
+    formSettings            : any       = {};
+    formList                : any       = {};
+    currentFormFields       : any       = {};
+    suppliers               : any       = [];
+    outputsLabel            : any       = [];
     imageInvoice            : any;
-    imgSrc                  : any;
     invoiceId               : any;
     invoice                 : any;
     fields                  : any;
@@ -79,28 +93,21 @@ export class VerifierViewerComponent implements OnInit {
             'label': marker('FORMS.other')
         }
     ];
-    disableOCR              : boolean   = false;
     form                    : any       = {
         'supplier': [],
         'facturation': [],
         'other': []
     };
-    formSettings            : any       = {};
-    formList                : any       = {};
-    currentFormFields       : any       = {};
     pattern                 : any       = {
         'alphanum': '^[0-9a-zA-Z\\s]*$',
-        'alphanum_extended': '^[0-9a-zA-Z-/#\\s]*$',
+        'alphanum_extended': '^[0-9a-zA-Z-/#,\\.\\s]*$',
+        'alphanum_extended_with_accent': '^[0-9a-zA-Z\\u00C0-\\u017F-/#,\\.\\s]*$',
         'number_int': '^[0-9]*$',
         'number_float': '^[0-9]*([.][0-9]*)*$',
         'char': '^[A-Za-z\\s]*$',
     };
-    suppliers               : any       = [];
-    filteredOptions         : Observable<any> | undefined;
-    getOnlyRawFooter        : boolean   = false;
-    toHighlight             : string    = '';
+    filteredOptions         : Observable<any> | any;
     supplierNamecontrol     = new FormControl();
-    toHighlightAccounting   : string    = '';
 
     constructor(
         private router: Router,
@@ -112,6 +119,7 @@ export class VerifierViewerComponent implements OnInit {
         public translate: TranslateService,
         private notify: NotificationService,
         private configService: ConfigService,
+        private historyService: HistoryService,
         private localeStorageService: LocalStorageService
     ) {}
 
@@ -121,16 +129,25 @@ export class VerifierViewerComponent implements OnInit {
         this.saveInfo = true;
         this.config = this.configService.getConfig();
         this.invoiceId = this.route.snapshot.params['id'];
+        this.translate.get('HISTORY-DESC.viewer', {invoice_id: this.invoiceId}).subscribe((translated: string) => {
+            this.historyService.addHistory('verifier', 'viewer', translated);
+        });
         this.updateInvoice({
             'locked': true,
             'locked_by': this.userService.user.username
-        })
+        });
         this.invoice = await this.getInvoice();
         this.currentFilename = this.invoice.full_jpg_filename;
         await this.getThumb(this.invoice.full_jpg_filename);
         if (this.invoice.form_id) {
             this.currentFormFields = await this.getFormFieldsById(this.invoice.form_id);
             this.formSettings = await this.getFormById(this.invoice.form_id);
+            if (this.formSettings.outputs.length !== 0) {
+                for (const outputId in this.formSettings.outputs) {
+                    const output = await this.getOutputs(this.formSettings.outputs[outputId]);
+                    this.outputsLabel.push(output.output_label);
+                }
+            }
             if (this.formSettings.supplier_verif && !this.token) {
                 let token: any;
                 token = await this.generateTokenInsee();
@@ -158,8 +175,8 @@ export class VerifierViewerComponent implements OnInit {
                 ]
             }
         }, true);
-        if (this.invoice.supplier_id) this.getSupplierInfo(this.invoice.supplier_id, false, true);
         await this.fillForm(this.currentFormFields);
+        if (this.invoice.supplier_id) this.getSupplierInfo(this.invoice.supplier_id, false, true);
         setTimeout(() => {
             this.drawPositions();
             this.loading = false;
@@ -173,7 +190,11 @@ export class VerifierViewerComponent implements OnInit {
             );
     }
 
-    async generateTokenInsee(){
+    displayFn(option: any) {
+        return option ? option.lastname + ' ' + option.firstname : '';
+    }
+
+    async generateTokenInsee() {
         return await this.http.get(API_URL + '/ws/verifier/getTokenINSEE', {headers: this.authService.headers}).toPromise();
     }
 
@@ -196,7 +217,9 @@ export class VerifierViewerComponent implements OnInit {
     private _filter(value: any): string[] {
         this.toHighlight = value;
         const filterValue = value.toLowerCase();
-        return this.suppliers.filter((supplier: any) => supplier.name.toLowerCase().indexOf(filterValue) !== -1);
+        const _return = this.suppliers.filter((supplier: any) => supplier.name.toLowerCase().indexOf(filterValue) !== -1);
+        this.supplierExists = _return.length !== 0;
+        return _return;
     }
 
     updateFilteredOption(event: any, control: any) {
@@ -222,28 +245,17 @@ export class VerifierViewerComponent implements OnInit {
             const page = this.getPage(fieldId);
             const position = this.invoice.positions[fieldId];
             if (position && parseInt(String(page)) === parseInt(String(this.currentPage))) {
-                this.lastId = fieldId;
                 const splittedFieldId = fieldId.split('_');
                 let field = this.getFieldInfo(fieldId);
-                if (!isNaN(parseInt(splittedFieldId[splittedFieldId.length - 1]))) {
+                if (!isNaN(parseInt(splittedFieldId[splittedFieldId.length - 1])) && !fieldId.includes('custom_')) {
                     const cpt = splittedFieldId[splittedFieldId.length - 1];
                     const tmpFieldId = splittedFieldId.join('_').replace('_' + cpt, '');
                     field = this.getFieldInfo(tmpFieldId);
                 }
-                this.lastLabel = this.translate.instant(field.label).trim();
-                this.lastColor = field.color;
-                this.disableOCR = true;
-                $('#' + fieldId).focus();
-                const newArea = {
-                    x: position.ocr_from_user ? position.x / this.ratio : position.x / this.ratio - ((position.x / this.ratio) * 0.005),
-                    y: position.ocr_from_user ? position.y / this.ratio : position.y / this.ratio - ((position.y / this.ratio) * 0.003),
-                    width: position.ocr_from_user ? position.width / this.ratio : position.width / this.ratio + ((position.width / this.ratio) * 0.05),
-                    height: position.ocr_from_user ? position.height / this.ratio : position.height / this.ratio + ((position.height / this.ratio) * 0.6)
-                };
-                const triggerEvent = $('.trigger');
-                triggerEvent.hide();
-                triggerEvent.trigger('mousedown');
-                triggerEvent.trigger('mouseup', [newArea]);
+
+                if (field) {
+                    this.drawPositionByField(field, position);
+                }
             }
         }
     }
@@ -253,12 +265,11 @@ export class VerifierViewerComponent implements OnInit {
         this.lastLabel = this.translate.instant(field.label).trim();
         this.lastColor = field.color;
         this.disableOCR = true;
-        $('#' + field.id).focus();
         const newArea = {
-            x: position.x / this.ratio,
-            y: position.y / this.ratio,
-            width: position.width / this.ratio,
-            height: position.height / this.ratio
+            x: position.ocr_from_user ? position.x / this.ratio : position.x / this.ratio - ((position.x / this.ratio) * 0.005),
+            y: position.ocr_from_user ? position.y / this.ratio : position.y / this.ratio - ((position.y / this.ratio) * 0.003),
+            width: position.ocr_from_user ? position.width / this.ratio : position.width / this.ratio + ((position.width / this.ratio) * 0.05),
+            height: position.ocr_from_user ? position.height / this.ratio : position.height / this.ratio + ((position.height / this.ratio) * 0.6)
         };
         const triggerEvent = $('.trigger');
         triggerEvent.hide();
@@ -314,7 +325,6 @@ export class VerifierViewerComponent implements OnInit {
             'other': []
         };
         this.fields = data.fields;
-
         for (const category in this.fields) {
             for (const cpt in this.fields[category]) {
                 const field = this.fields[category][cpt];
@@ -374,6 +384,10 @@ export class VerifierViewerComponent implements OnInit {
                 this.findChildren(field.id, _field, category);
             }
         }
+    }
+
+    async getOutputs(outputId: any): Promise<any> {
+        return await this.http.get(API_URL + '/ws/outputs/getById/' + outputId, {headers: this.authService.headers}).toPromise();
     }
 
     private _filter_accounting(array: any, value: any): string[] {
@@ -444,22 +458,28 @@ export class VerifierViewerComponent implements OnInit {
         const deleteArea = $('.delete-area');
         const backgroundArea = $('.select-areas-background-area');
         const resizeArea = $('.select-areas-resize-handler');
-        deleteArea.addClass('pointer-events-auto');
-        backgroundArea.addClass('pointer-events-auto');
-        resizeArea.addClass('pointer-events-auto');
+        if (this.invoice.status !== 'END') {
+            deleteArea.addClass('pointer-events-auto');
+            backgroundArea.addClass('pointer-events-auto');
+            resizeArea.addClass('pointer-events-auto');
+        }
         imageContainer.addClass('pointer-events-none');
         imageContainer.addClass('cursor-auto');
         if (enable) {
             $('.outline_' + _this.lastId).toggleClass('animate');
-            imageContainer.removeClass('pointer-events-none');
-            imageContainer.removeClass('cursor-auto');
+            if (this.invoice.status !== 'END') {
+                imageContainer.removeClass('pointer-events-none');
+                imageContainer.removeClass('cursor-auto');
+            }
             this.imageInvoice.selectAreas({
                 allowNudge: false,
                 minSize: [20, 20],
                 maxSize: [this.imageInvoice.width(), this.imageInvoice.height() / 8],
                 onChanged(img: any, cpt: any, selection: any) {
                     if (selection.length !== 0 && selection['width'] !== 0 && selection['height'] !== 0) {
-                        _this.ocr_process(img, cpt, selection);
+                        if (_this.lastId) {
+                            _this.ocr_process(img, cpt, selection);
+                        }
                     }
                 },
                 onDeleted(img: any, cpt: any) {
@@ -508,11 +528,16 @@ export class VerifierViewerComponent implements OnInit {
                 backgroundArea.data('page', page);
                 labelContainer.data('page', page);
                 outline.data('page', page);
+                if (this.invoice.status === 'END') {
+                    outline.addClass('pointer-events-none');
+                    backgroundArea.addClass('pointer-events-none');
+                    resizeHandler.addClass('pointer-events-none');
+                    deleteContainer.addClass('pointer-events-none');
+                }
             }
             // End write
 
             const inputId = $('#select-area-label_' + cpt).attr('class').replace('input_', '').replace('select-none', '');
-            $('#' + inputId).focus();
 
             // Test to avoid multi selection for same label. If same label exists, remove the selected areas and replace it by the new one
             const label = $('div[id*=select-area-label_]:contains(' + this.lastLabel + ')');
@@ -570,7 +595,6 @@ export class VerifierViewerComponent implements OnInit {
                         value = moment(value, format);
                         value = new Date(value._d);
                     }
-
                     input.control.setValue(value);
                     input.control.markAsTouched();
                 }
@@ -641,7 +665,8 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     saveData(data: any, fieldId: any = false, showNotif: boolean = false) {
-        if (data) {
+        if (this.invoice.status !== 'END') {
+            const oldData = data;
             if (fieldId) {
                 const field = this.getField(fieldId);
                 if (field.control.errors || this.invoice.datas[fieldId] === data) return false;
@@ -651,7 +676,7 @@ export class VerifierViewerComponent implements OnInit {
                 {'args': data},
                 {headers: this.authService.headers}).pipe(
                 tap(() => {
-                    this.invoice.datas[fieldId] = data;
+                    this.invoice.datas[fieldId] = oldData;
                     if (showNotif) this.notify.success(this.translate.instant('INVOICES.position_and_data_updated', {"input": this.lastLabel}));
                 }),
                 catchError((err: any) => {
@@ -663,6 +688,76 @@ export class VerifierViewerComponent implements OnInit {
             return true;
         }
         return false;
+    }
+
+    createSupplier() {
+        const addressData: any = {};
+        const supplierData: any = {};
+        this.fields.supplier.forEach((element: any) => {
+            const field = this.getField(element.id);
+            if (element.unit === 'supplier') supplierData[element.id] = field.control.value;
+            if (element.unit === 'addresses') addressData[element.id] = field.control.value;
+            this.saveData(field.control.value, element.id);
+        });
+
+        this.http.post(API_URL + '/ws/accounts/addresses/create', {'args': addressData}, {headers: this.authService.headers},
+        ).pipe(
+            tap((data: any) => {
+                supplierData['address_id'] = data.id;
+                this.http.post(API_URL + '/ws/accounts/suppliers/create', {'args': supplierData}, {headers: this.authService.headers},
+                ).pipe(
+                    tap((data: any) => {
+                        this.historyService.addHistory('accounts', 'create_supplier', this.translate.instant('HISTORY-DESC.create-supplier', {supplier: supplierData['name']}));
+                        this.notify.success(this.translate.instant('ACCOUNTS.supplier_created'));
+                        this.updateInvoice({'supplier_id': data['id']});
+                        this.invoice.supplier_id = data['id'];
+                    }),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    editSupplier() {
+        const supplierData: any = {};
+        const addressData: any = {};
+        this.fields.supplier.forEach((element: any) => {
+            const field = this.getField(element.id);
+            if (element.unit === 'supplier') supplierData[element.id] = field.control.value;
+            if (element.unit === 'addresses') addressData[element.id] = field.control.value;
+            this.saveData(field.control.value, element.id);
+        });
+
+        this.http.put(API_URL + '/ws/accounts/suppliers/update/' + this.invoice.supplier_id, {'args': supplierData}, {headers: this.authService.headers},
+        ).pipe(
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
+        this.http.put(API_URL + '/ws/accounts/addresses/updateBySupplierId/' + this.invoice.supplier_id, {'args': addressData}, {headers: this.authService.headers},
+        ).pipe(
+            tap(() => {
+                this.historyService.addHistory('accounts', 'update_supplier', this.translate.instant('HISTORY-DESC.update-supplier', {supplier: supplierData['name']}));
+                this.notify.success(this.translate.instant('ACCOUNTS.supplier_updated'));
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
     }
 
     updateInvoice(data: any) {
@@ -777,7 +872,7 @@ export class VerifierViewerComponent implements OnInit {
 
     isChildField(fieldId: any) {
         const splittedId = fieldId.split('_');
-        return Number.isInteger(parseInt(splittedId[splittedId.length - 1]));
+        return Number.isInteger(parseInt(splittedId[splittedId.length - 1])) && !fieldId.includes('custom_');
     }
 
     getSupplierInfo(supplierId: any, showNotif = false, launchOnInit = false) {
@@ -868,6 +963,8 @@ export class VerifierViewerComponent implements OnInit {
                             error = this.translate.instant('ERROR.number_int_pattern');
                         }else if (pattern.requiredPattern === this.getPattern('number_float')) {
                             error = this.translate.instant('ERROR.number_float_pattern');
+                        }else if (pattern.requiredPattern === this.getPattern('char')) {
+                            error = this.translate.instant('ERROR.char_pattern');
                         }
                     }else if (datePickerPattern) {
                         error = this.translate.instant('ERROR.date_pattern');
@@ -904,39 +1001,29 @@ export class VerifierViewerComponent implements OnInit {
                 }
                 if (input.control.errors) {
                     valid = false;
+                    input.control.markAsTouched();
                     this.notify.error(this.translate.instant('ERROR.form_not_valid'));
                 }
             });
         }
         if (!valid) return;
         this.saveData(arrayData);
-        const formId = this.currentFormFields.form_id;
         /*
             Executer les actions paramétrées dans les réglages du formulaires
          */
-        this.http.get(API_URL + '/ws/forms/getById/' + formId, {headers: this.authService.headers}).pipe(
-            tap((form: any) => {
-                const outputsLabel: any[] = [];
-                if (form.outputs.length !== 0) {
-                    form.outputs.forEach((outputId: any, cpt: number) => {
-                        this.http.get(API_URL + '/ws/outputs/getById/' + outputId, {headers: this.authService.headers}).pipe(
-                            tap((data: any) => {
-                                outputsLabel.push(data.output_label);
-                                this.http.post(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/' + data.output_type_id, {'args': data.data},{headers: this.authService.headers}).pipe(
-                                    tap(() => {
-                                        /* Actions à effectuer après le traitement des chaînes sortantes */
-                                        if (cpt + 1 === form.outputs.length) {
-                                            this.updateInvoice({'status': 'END', 'locked': false, 'locked_by': null});
-                                            this.router.navigate(['/verifier']).then();
-                                            this.notify.success(this.translate.instant('VERIFIER.form_validated_and_output_done', {outputs: outputsLabel.join('<br>')}));
-                                        }
-                                    }),
-                                    catchError((err: any) => {
-                                        console.debug(err);
-                                        this.notify.handleErrors(err);
-                                        return of(false);
-                                    })
-                                ).subscribe();
+        if (this.formSettings.outputs.length !== 0) {
+            this.formSettings.outputs.forEach((outputId: any, cpt: number) => {
+                this.http.get(API_URL + '/ws/outputs/getById/' + outputId, {headers: this.authService.headers}).pipe(
+                    tap((data: any) => {
+                        this.http.post(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/' + data.output_type_id, {'args': data.data},{headers: this.authService.headers}).pipe(
+                            tap(() => {
+                                /* Actions à effectuer après le traitement des chaînes sortantes */
+                                if (cpt + 1 === this.formSettings.outputs.length) {
+                                    this.historyService.addHistory('verifier', 'invoice_validated', this.translate.instant('HISTORY-DESC.invoice_validated', {invoice_id: this.invoiceId, outputs: this.outputsLabel.join(', ')}));
+                                    this.updateInvoice({'status': 'END', 'locked': false, 'locked_by': null});
+                                    this.router.navigate(['/verifier']).then();
+                                    this.notify.success(this.translate.instant('VERIFIER.form_validated_and_output_done', {outputs: this.outputsLabel.join('<br>')}));
+                                }
                             }),
                             catchError((err: any) => {
                                 console.debug(err);
@@ -944,23 +1031,24 @@ export class VerifierViewerComponent implements OnInit {
                                 return of(false);
                             })
                         ).subscribe();
-                    });
-                }else {
-                    this.notify.error(this.translate.instant('VERIFIER.no_outputs_for_this_form', {'form': form.label}));
-                }
-            }),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
+                    }),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
+            });
+        }else {
+            this.notify.error(this.translate.instant('VERIFIER.no_outputs_for_this_form', {'form': this.formSettings.label}));
+        }
     }
 
     refuseForm() {
+        this.historyService.addHistory('verifier', 'invoice_refused', this.translate.instant('HISTORY-DESC.invoice_refused', {invoice_id: this.invoiceId}));
         this.updateInvoice({'status': 'ERR', 'locked': false, 'locked_by': null});
         this.notify.error(this.translate.instant('VERIFIER.invoice_refused'));
-        this.router.navigate(['/verifier/list']);
+        this.router.navigate(['/verifier/list']).then();
     }
 
     async changeForm(event: any) {
@@ -1008,7 +1096,7 @@ export class VerifierViewerComponent implements OnInit {
             this.getThumb(newFilename).then();
             this.currentPage = pageToShow;
             for (const fieldId in this.invoice.datas) {
-                const page = this.invoice.pages[fieldId];
+                const page = this.getPage(fieldId);
                 const position = this.invoice.positions[fieldId];
                 if (position) {
                     const input = $('.input_' + fieldId);
@@ -1025,14 +1113,16 @@ export class VerifierViewerComponent implements OnInit {
                         this.lastId = fieldId;
                         const splittedFieldId = fieldId.split('_');
                         let field = this.getFieldInfo(fieldId);
-                        if (!isNaN(parseInt(splittedFieldId[splittedFieldId.length - 1]))) {
+                        if (!isNaN(parseInt(splittedFieldId[splittedFieldId.length - 1])) && !fieldId.includes('custom_')) {
                             const cpt = splittedFieldId[splittedFieldId.length - 1];
                             const tmpFieldId = splittedFieldId.join('_').replace('_' + cpt, '');
                             field = this.getFieldInfo(tmpFieldId);
                             field.label = this.translate.instant(field.label) + ' ' + (parseInt(cpt) + 1);
                         }
                         this.saveInfo = false;
-                        if (parseInt(String(page)) === this.currentPage) this.drawPositionByField(field, position);
+                        if (field) {
+                            if (parseInt(String(page)) === this.currentPage) this.drawPositionByField(field, position);
+                        }
                     }
                 }
             }
@@ -1040,13 +1130,13 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     checkSirenOrSiret(siretOrSiren: any, value: any) {
-        if (this.formSettings.supplier_verif) {
+        if (this.formSettings.supplier_verif && this.invoice.status !== 'END') {
             const sizeSIREN = 9;
             const sizeSIRET = 14;
-            if (siretOrSiren === 'siren') {
+            if (siretOrSiren === 'siren' && this.oldSIREN !== value) {
                 if (this.verify(value, sizeSIREN) && this.token) {
+                    this.oldSIREN = value;
                     this.http.post(API_URL + '/ws/verifier/verifySIREN', {'token': this.token, 'siren': value}, {headers: this.authService.headers}).pipe(
-                        tap(),
                         catchError((err: any) => {
                             this.form['supplier'].forEach((element: any) => {
                                 if (element.id === 'siren') {
@@ -1074,10 +1164,10 @@ export class VerifierViewerComponent implements OnInit {
                         }
                     });
                 }
-            } else if (siretOrSiren === 'siret') {
+            } else if (siretOrSiren === 'siret'  && this.oldSIRET !== value) {
                 if (this.verify(value, sizeSIRET) && this.token) {
+                    this.oldSIRET = value;
                     this.http.post(API_URL + '/ws/verifier/verifySIRET', {'token': this.token, 'siret': value}, {headers: this.authService.headers}).pipe(
-                        tap(),
                         catchError((err: any) => {
                             this.form['supplier'].forEach((element: any) => {
                                 if (element.id === 'siret') {
@@ -1110,36 +1200,38 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     checkVAT(id: any, value: any) {
-        if (id === 'vat_number' && this.formSettings.supplier_verif) {
-            const sizeVAT = 13;
-            if (this.verify(value, sizeVAT, true)) {
-                this.http.post(API_URL + '/ws/verifier/verifyVATNumber', {'vat_number': value}, {headers: this.authService.headers}).pipe(
-                    tap(),
-                    catchError((err: any) => {
-                        this.form['supplier'].forEach((element: any) => {
-                            if (element.id === 'vat_number') {
-                                setTimeout(() => {
-                                    element.control.setErrors({'vat_error': err.error.status});
-                                    element.control.markAsTouched();
-                                }, 100);
-                            }
-                        });
-                        return of(false);
-                    })
-                ).subscribe();
-            }else {
-                this.form['supplier'].forEach((element: any) => {
+        if (id === 'vat_number' && this.formSettings.supplier_verif && this.invoice.status !== 'END') {
+            if (this.oldVAT !== value) {
+                const sizeVAT = 13;
+                if (this.verify(value, sizeVAT, true)) {
+                    this.oldVAT = value;
+                    this.http.post(API_URL + '/ws/verifier/verifyVATNumber', {'vat_number': value}, {headers: this.authService.headers}).pipe(
+                        catchError((err: any) => {
+                            this.form['supplier'].forEach((element: any) => {
+                                if (element.id === 'vat_number') {
+                                    setTimeout(() => {
+                                        element.control.setErrors({'vat_error': err.error.status});
+                                        element.control.markAsTouched();
+                                    }, 100);
+                                }
+                            });
+                            return of(false);
+                        })
+                    ).subscribe();
+                } else {
+                    this.form['supplier'].forEach((element: any) => {
                     if (element.id === 'vat_number') {
                         setTimeout(() => {
                             if (!this.token) {
                                 element.control.setErrors({'vat_error': this.translate.instant('ERROR.ecu_api_not_up')});
-                            }else {
+                            } else {
                                 element.control.setErrors({'vat_error': this.translate.instant('ERROR.wrong_vat_number_format')});
                             }
                             element.control.markAsTouched();
                         }, 100);
                     }
                 });
+                }
             }
         }
     }

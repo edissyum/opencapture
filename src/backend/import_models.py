@@ -37,6 +37,11 @@ if 'accounts' not in custom_array:
 else:
     accounts = getattr(__import__(custom_array['accounts']['path'], fromlist=[custom_array['accounts']['module']]), custom_array['accounts']['module'])
 
+if 'history' or 'models' not in custom_array['history']['path']:
+    from .models import history
+elif 'models' in custom_array['history']['path']:
+    history = getattr(__import__(custom_array['history']['path'], fromlist=[custom_array['history']['module']]), custom_array['history']['module'])
+
 if 'verifier' not in custom_array:
     from .models import verifier
 else:

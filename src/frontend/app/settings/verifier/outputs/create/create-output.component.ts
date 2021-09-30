@@ -7,11 +7,11 @@ the Free Software Foundation, either version 3 of the License, or
 
 Open-Capture is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
@@ -28,6 +28,7 @@ import {PrivilegesService} from "../../../../../services/privileges.service";
 import {API_URL} from "../../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
+import {HistoryService} from "../../../../../services/history.service";
 
 @Component({
     selector: 'app-output-create',
@@ -62,12 +63,13 @@ export class CreateOutputComponent implements OnInit {
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
+        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService,
     ) {}
 
     ngOnInit(): void {
-        this.http.get(API_URL + '/ws/outputs/getOutputsTypes', {headers: this.authService.headers}).pipe(
+        this.http.get(API_URL + '/ws/outputs/getOutputsTypes?module=verifier', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.outputsTypes = data.outputs_types;
             }),
@@ -104,6 +106,7 @@ export class CreateOutputComponent implements OnInit {
             ).pipe(
                 tap((data: any) => {
                     this.notify.success(this.translate.instant('OUTPUT.created'));
+                    this.historyService.addHistory('verifier', 'create_output', this.translate.instant('HISTORY-DESC.create-output', {output: outputLabel}));
                     this.router.navigate(['/settings/verifier/outputs/update/' + data.id]).then();
                 }),
                 catchError((err: any) => {

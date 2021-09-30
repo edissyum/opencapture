@@ -28,19 +28,37 @@ bp = Blueprint('splitter', __name__, url_prefix='/ws/')
 @bp.route('splitter/upload', methods=['POST'])
 @auth.token_required
 def upload():
-    if request.method == 'POST':
-        files = request.files
-        res = splitter.handle_uploaded_file(files)
-        if res:
-            return make_response('', 200)
-        else:
-            return make_response(gettext('UNKNOW_ERROR'), 400)
+    input_id = None
+    if 'inputId' in request.args:
+        input_id = request.args['inputId']
+        print("input_id")
+        print(input_id)
+    files = request.files
+    res = splitter.handle_uploaded_file(files, input_id)
+    if res:
+        return make_response('', 200)
+    else:
+        return make_response(gettext('UNKNOW_ERROR'), 400)
 
 
-@bp.route('splitter/batches', methods=['GET'])
+@bp.route('splitter/batches', defaults={'id': None, 'size': None, 'page': None}, methods=['GET'])
+@bp.route('splitter/batches/<int:id>', defaults={'size': None, 'page': None}, methods=['GET'])
+@bp.route('splitter/batches/<int:page>/<int:size>', defaults={'id': None}, methods=['GET'])
 @auth.token_required
-def retrieve_splitter_batches():
-    res = splitter.retrieve_batches()
+def retrieve_splitter_batches(id, page, size):
+    args = {
+        'id': id,
+        'size': size,
+        'page': page
+    }
+    res = splitter.retrieve_batches(args)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('splitter/metadata', methods=['GET'])
+@auth.token_required
+def retrieve_splitter_metadata():
+    res = splitter.retrieve_metadata()
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -69,4 +87,5 @@ def retrieve_batch_pages(batch_id):
 def validate():
     data = request.data
     data = json.loads(data)
-    return make_response(jsonify({})), 200
+    response, status = splitter.validate(data['documents'], data['metadata'])
+    return make_response(jsonify(response)), 200

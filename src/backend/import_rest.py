@@ -51,6 +51,12 @@ else:
     forms = getattr(__import__(custom_array['forms']['path'], fromlist=[custom_array['forms']['module']]),
                        custom_array['forms']['module'])
 
+if 'history' not in custom_array or 'rest' not in custom_array['history']['path']:
+    from .rest import history
+elif 'rest' in custom_array['history']['path']:
+    history = getattr(__import__(custom_array['history']['path'], fromlist=[custom_array['history']['module']]),
+                       custom_array['history']['module'])
+
 if 'positions_masks' not in custom_array:
     from .rest import positions_masks
 else:

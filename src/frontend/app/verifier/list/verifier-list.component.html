@@ -78,7 +78,7 @@
                         </span>
                         <span [class.hidden]="this.totalChecked == 0"> ({{ this.totalChecked}})</span>
                         <span [class.hidden]="!invoiceToDeleteSelected" (click)="$event.stopPropagation();deleteAllConfirmDialog()">
-                            <i class="fas fa-trash ml-2 text-red-500 cursor-pointer" matTooltip="{{ 'VERIFIER.delete_all' | translate }}"></i>
+                            <i class="fas fa-trash ml-2 text-red-500 cursor-pointer" matTooltip="{{ 'VERIFIER.delete_all_checked' | translate }}"></i>
                         </span>
                     </div>
                     <hr class="w-1/2 m-auto mb-4 border-green-400 relative z-30">
@@ -106,10 +106,10 @@
                                         </span>
                                     </mat-card-title>
                                     <mat-card-subtitle class="mt-2 -mb-1 break-all">
-                                        <b>{{ 'FACTURATION.invoice_number' | translate }}</b> : {{ invoice.datas.invoice_number }}<br>
+                                        <span class="ellipsis"><b>{{ 'FACTURATION.invoice_number' | translate }}</b> : {{ invoice.datas.invoice_number }}<br></span>
                                         <b>{{ 'FACTURATION.invoice_date' | translate }}</b> : {{ invoice.datas.invoice_date }}<br>
                                         <b>{{ 'VERIFIER.register_date' | translate }}</b> : {{ invoice.date }}<br>
-                                        <b>{{ 'VERIFIER.original_file' | translate }}</b> : {{ invoice.original_filename }}
+                                        <span class="ellipsis"><b>{{ 'VERIFIER.original_file' | translate }}</b> : {{ invoice.original_filename }}</span>
                                     </mat-card-subtitle>
                                 </mat-card-header>
                                 <mat-card-actions class="pb-4 pl-4">

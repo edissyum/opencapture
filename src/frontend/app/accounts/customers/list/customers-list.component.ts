@@ -7,11 +7,11 @@ the Free Software Foundation, either version 3 of the License, or
 
 Open-Capture is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
@@ -33,6 +33,7 @@ import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {ConfirmDialogComponent} from "../../../../services/confirm-dialog/confirm-dialog.component";
 import {Sort} from "@angular/material/sort";
+import {HistoryService} from "../../../../services/history.service";
 
 @Component({
     selector: 'app-list',
@@ -43,6 +44,7 @@ export class CustomersListComponent implements OnInit {
     headers         : HttpHeaders = this.authService.headers;
     loading         : boolean     = true;
     columnsToDisplay: string[]    = ['id', 'name', 'company_number', 'vat_number', 'siret', 'siren', 'actions'];
+    allCustomers    : any         = [];
     customers       : any         = [];
     pageSize        : number      = 10;
     pageIndex       : number      = 0;
@@ -60,6 +62,7 @@ export class CustomersListComponent implements OnInit {
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,
+        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
@@ -75,6 +78,17 @@ export class CustomersListComponent implements OnInit {
             this.offset = this.pageSize * (this.pageIndex);
         }else
             this.localeStorageService.remove('customersPageIndex');
+
+        this.http.get(API_URL + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.allCustomers = data.customers;
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
         this.loadCustomers();
     }
 
@@ -122,6 +136,7 @@ export class CustomersListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
                 this.deleteCustomer(customerId);
+                this.historyService.addHistory('accounts', 'delete_customer', this.translate.instant('HISTORY-DESC.delete-customer', {customer: customer}));
             }
         });
     }
@@ -143,9 +158,9 @@ export class CustomersListComponent implements OnInit {
     }
 
     sortData(sort: Sort) {
-        const data = this.customers.slice();
+        const data = this.allCustomers.slice();
         if(!sort.active || sort.direction === '') {
-            this.customers = data;
+            this.customers = data.splice(0, this.pageSize);
             return;
         }
 
@@ -161,11 +176,10 @@ export class CustomersListComponent implements OnInit {
                 default: return 0;
             }
         });
-
+        this.customers = this.customers.splice(0, this.pageSize);
     }
 
     compare(a: number | string, b: number | string, isAsc: boolean) {
         return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
     }
-
 }

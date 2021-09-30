@@ -28,6 +28,7 @@ import {PrivilegesService} from "../../../../../services/privileges.service";
 import {API_URL} from "../../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
+import {HistoryService} from "../../../../../services/history.service";
 
 @Component({
     selector: 'app-create',
@@ -65,7 +66,8 @@ export class CreateRoleComponent implements OnInit {
         public translate: TranslateService,
         private notify: NotificationService,
         public serviceSettings: SettingsService,
-        public privilegesService: PrivilegesService
+        public privilegesService: PrivilegesService,
+        private historyService: HistoryService,
     ) {
     }
 
@@ -119,6 +121,7 @@ export class CreateRoleComponent implements OnInit {
                     this.http.put(API_URL + '/ws/roles/updatePrivilege/' + newRoleId, {'privileges': rolePrivileges}, {headers: this.authService.headers},
                     ).pipe(
                         tap(() => {
+                            this.historyService.addHistory('general', 'create_role', this.translate.instant('HISTORY-DESC.create-role', {role: role['label']}));
                             this.notify.success(this.translate.instant('ROLE.created'));
                             this.router.navigate(['/settings/general/roles/']).then();
                         }),

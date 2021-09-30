@@ -4,7 +4,7 @@
         <mat-divider></mat-divider>
         <mat-list>
             <mat-list-item *ngFor="let input of inputs" class="hover:bg-green-400 cursor-pointer m-2 w-auto"
-                           [class.bg-green-400]="this.selectedInput == input.input_id" (click)="setInput(input.input_id)">
+                           [class.bg-green-400]="this.selectedInput == input.id" (click)="setInput(input.id)">
                 {{ input.input_label }}
             </mat-list-item>
         </mat-list>

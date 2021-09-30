@@ -7,11 +7,11 @@ the Free Software Foundation, either version 3 of the License, or
 
 Open-Capture is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
@@ -30,6 +30,7 @@ import {API_URL} from "../../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {marker} from "@biesbjerg/ngx-translate-extract-marker";
+import {HistoryService} from "../../../../../services/history.service";
 
 @Component({
     selector: 'form-builder',
@@ -146,6 +147,21 @@ export class FormBuilderComponent implements OnInit {
                     display_icon:'fas file-alt'
                 },
                 {
+                    id: 'iban',
+                    label: marker('ACCOUNTS.iban'),
+                    unit: 'supplier',
+                    type: 'text',
+                    required: false,
+                    required_icon: 'far fa-star',
+                    class: "w-1/3",
+                    class_label: "1/33",
+                    color: 'green',
+                    format: 'alphanum',
+                    format_icon:'fas fas fa-hashtag',
+                    display: 'simple',
+                    display_icon:'fas file-alt'
+                },
+                {
                     id: 'address1',
                     label: marker('ADDRESSES.address_1'),
                     unit: 'addresses',
@@ -154,7 +170,7 @@ export class FormBuilderComponent implements OnInit {
                     required_icon: 'fas fa-star',
                     class: "w-1/3",
                     class_label: "1/33",
-                    format: 'alphanum',
+                    format: 'alphanum_extended_with_accent',
                     format_icon:'fas fas fa-hashtag',
                     display: 'simple',
                     display_icon:'fas file-alt'
@@ -168,7 +184,7 @@ export class FormBuilderComponent implements OnInit {
                     required_icon: 'fas fa-star',
                     class: "w-1/3",
                     class_label: "1/33",
-                    format: 'alphanum',
+                    format: 'alphanum_extended_with_accent',
                     format_icon:'fas fas fa-hashtag',
                     display: 'simple',
                     display_icon:'fas file-alt'
@@ -537,6 +553,11 @@ export class FormBuilderComponent implements OnInit {
             'id': 'alphanum_extended',
             'label': marker('FORMATS.alphanum_extended'),
             'icon': 'fas fa-level-up-alt'
+        },
+        {
+            'id': 'alphanum_extended_with_accent',
+            'label': marker('FORMATS.alphanum_extended_with_accent'),
+            'icon': 'fas fa-level-up-alt'
         }
     ];
     displayList             : any []    = [
@@ -573,6 +594,7 @@ export class FormBuilderComponent implements OnInit {
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
+        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService
     ) {}
@@ -581,7 +603,7 @@ export class FormBuilderComponent implements OnInit {
         this.serviceSettings.init();
         this.formId = this.route.snapshot.params['id'];
 
-        this.http.get(API_URL + '/ws/outputs/list?module=verifier', {headers: this.authService.headers}).pipe(
+        this.http.get(API_URL + '/ws/outputs/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.outputs = data.outputs;
                 if (this.formId) {
@@ -627,18 +649,24 @@ export class FormBuilderComponent implements OnInit {
                             if(data.customFields[field].module === 'verifier') {
                                 for (const parent in this.availableFieldsParent) {
                                     if(this.availableFieldsParent[parent].id === 'custom_fields') {
-                                        this.availableFieldsParent[parent].values.push(
-                                            {
-                                                id: 'custom_' + data.customFields[field].id,
-                                                label: data.customFields[field].label,
-                                                unit: 'custom',
-                                                type: data.customFields[field].type,
-                                                format: data.customFields[field].type,
-                                                required: data.customFields[field].required,
-                                                class: "w-1/3",
-                                                class_label: "1/33",
-                                            }
-                                        );
+                                        this.availableFieldsParent[parent].values.push({
+                                            id: 'custom_' + data.customFields[field].id,
+                                            label: data.customFields[field].label,
+                                            unit: 'custom',
+                                            type: data.customFields[field].type,
+                                            required: data.customFields[field].required,
+                                            class: "w-1/3",
+                                            class_label: "1/33",
+                                        });
+                                        let format = '';
+                                        if (data.customFields[field].type === 'text') {
+                                            format = 'char';
+                                        }else if (data.customFields[field].type === 'select') {
+                                            format = 'select';
+                                        }else if (data.customFields[field].type === 'textarea') {
+                                            format = 'char';
+                                        }
+                                        this.availableFieldsParent[parent].values[this.availableFieldsParent[parent].values.length - 1]['format'] = format;
                                     }
                                 }
                             }
@@ -826,6 +854,7 @@ export class FormBuilderComponent implements OnInit {
                 tap(()=> {
                     this.http.post(API_URL + '/ws/forms/updateFields/' + this.formId, this.fields, {headers: this.authService.headers}).pipe(
                         tap(() => {
+                            this.historyService.addHistory('verifier', 'update_form', this.translate.instant('HISTORY-DESC.update-form', {form: label}));
                             this.notify.success(this.translate.instant('FORMS.updated'));
                         }),
                         catchError((err: any) => {
@@ -851,16 +880,16 @@ export class FormBuilderComponent implements OnInit {
     createForm() {
         const label = this.form.label.control.value;
         const isDefault = this.form.default_form.control.value;
-        const supplierVerif = this.form.supplier_verif.control.value;
+        let supplierVerif = this.form.supplier_verif.control.value;
+        if (!supplierVerif) supplierVerif = false;
+        const outputs: any[] = [];
+        this.outputForm.forEach((element: any) => {
+            if (element.control.value) outputs.push(element.control.value);
+        });
         if (label) {
-            this.http.post(API_URL + '/ws/forms/add',
-                {
-                    'args': {
-                        'label'         : label,
-                        'default_form'  : isDefault,
-                        'supplier_verif': supplierVerif,
-                        'module'        : 'verifier'
-                    }}, {headers: this.authService.headers},
+            this.http.post(API_URL + '/ws/forms/add', {
+                'args': {'label' : label, 'default_form' : isDefault, 'supplier_verif': supplierVerif, 'outputs': outputs}
+                }, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {
                     this.http.post(API_URL + '/ws/forms/updateFields/' + data.id, this.fields, {headers: this.authService.headers}).pipe(
@@ -870,6 +899,7 @@ export class FormBuilderComponent implements OnInit {
                             return of(false);
                         })
                     ).subscribe();
+                    this.historyService.addHistory('verifier', 'create_form', this.translate.instant('HISTORY-DESC.create-form', {form: label}));
                     this.notify.success(this.translate.instant('FORMS.created'));
                     this.router.navigateByUrl('settings/verifier/forms').then();
                 }),

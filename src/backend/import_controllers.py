@@ -43,6 +43,11 @@ if 'forms' not in custom_array:
 else:
     forms = getattr(__import__(custom_array['forms']['path'], fromlist=[custom_array['forms']['module']]), custom_array['forms']['module'])
 
+if 'history' or 'controllers' not in custom_array['history']['path']:
+    from .controllers import history
+elif 'controllers' in custom_array['history']['path']:
+    history = getattr(__import__(custom_array['history']['path'], fromlist=[custom_array['history']['module']]), custom_array['history']['module'])
+
 if 'positions_masks' not in custom_array:
     from .controllers import positions_masks
 else:

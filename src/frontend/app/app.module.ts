@@ -43,6 +43,9 @@ import { NgxFileDragDropModule } from "ngx-file-drag-drop";
 import {FlexLayoutModule} from "@angular/flex-layout";
 import { ClickOutsideModule } from 'ng-click-outside';
 import { PdfJsViewerModule } from 'ng2-pdfjs-viewer';
+import { NgxUiLoaderModule } from "ngx-ui-loader";
+import { NgxMatSelectSearchModule } from "ngx-mat-select-search";
+import { NgsgModule } from 'ng-sortgrid';
 
 import { DocumentTypeFactoryComponent } from './splitter/document-type-factory/document-type-factory.component';
 import { DocumentTreeComponent } from './splitter/document-tree/document-tree.component';
@@ -68,7 +71,6 @@ import { LoaderComponent } from './loader.component';
 import { CustomFieldsComponent } from './settings/general/custom-fields/custom-fields.component';
 import { FormListComponent } from './settings/verifier/form/list/form-list.component';
 import { FormBuilderComponent } from './settings/verifier/form/builder/form-builder.component';
-import { NgsgModule } from 'ng-sortgrid';
 import { SuppliersListComponent } from './accounts/suppliers/list/suppliers-list.component';
 import { UpdateSupplierComponent } from './accounts/suppliers/update/update-supplier.component';
 import { CreateSupplierComponent } from './accounts/suppliers/create/create-supplier.component';
@@ -85,16 +87,16 @@ import { UpdatePositionsMaskComponent } from './settings/verifier/positions-mask
 import { PositionsMaskListComponent } from './settings/verifier/positions-mask/list/positions-mask-list.component';
 import { CreatePositionsMaskComponent } from './settings/verifier/positions-mask/create/create-positions-mask.component';
 import { SeparatorComponent } from './settings/splitter/separator/separator.component';
-import { NgxUiLoaderModule } from "ngx-ui-loader";
-import { NgxMatSelectSearchModule } from "ngx-mat-select-search";
-import { SplitterCreateInputComponent } from './settings/splitter/inputs/create/splitter-create-input.component';
-import { SplitterUpdateInputComponent } from './settings/splitter/inputs/update/splitter-update-input.component';
-import { SplitterInputListComponent } from './settings/splitter/inputs/list/splitter-input-list.component';
-import { SplitterUpdateOutputComponent } from './settings/splitter/output/update/splitter-update-output.component';
-import { SplitterCreateOutputComponent } from './settings/splitter/output/create/splitter-create-output.component';
-import { SplitterListOutputComponent } from './settings/splitter/output/list/splitter-list-output.component';
-import { SplitterFormBuilderComponent } from "./settings/splitter/form/builder/splitter-form-builder.component";
-import { SplitterFormListComponent } from "./settings/splitter/form/list/splitter-form-list.component";
+import { HistoryComponent } from './history/history.component';
+
+import { SplitterCreateInputComponent } from './settings/splitter/inputs/create/create-input.component';
+import { SplitterUpdateInputComponent } from './settings/splitter/inputs/update/update-input.component';
+import { SplitterInputListComponent } from './settings/splitter/inputs/list/input-list.component';
+import { SplitterUpdateOutputComponent } from './settings/splitter/output/update/update-output.component';
+import { SplitterCreateOutputComponent } from './settings/splitter/output/create/create-output.component';
+import { SplitterListOutputComponent } from './settings/splitter/output/list/list-output.component';
+import { SplitterFormBuilderComponent } from "./settings/splitter/form/builder/form-builder.component";
+import { SplitterFormListComponent } from "./settings/splitter/form/list/form-list.component";
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -154,7 +156,8 @@ export function createTranslateLoader(http: HttpClient) {
         SplitterInputListComponent,
         SplitterUpdateOutputComponent,
         SplitterCreateOutputComponent,
-        SplitterListOutputComponent
+        SplitterListOutputComponent,
+        HistoryComponent
     ],
     imports: [
         BrowserModule,

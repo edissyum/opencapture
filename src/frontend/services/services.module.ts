@@ -6,20 +6,23 @@ import { AppMaterialModule } from '../app/app-material.module';
 import { CustomSnackbarComponent, NotificationService } from './notifications/notifications.service';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 import { LastUrlService } from './last-url.service';
+import {TranslateModule} from "@ngx-translate/core";
 
 @NgModule({
     imports: [
         AppMaterialModule,
-        CommonModule
+        CommonModule,
+        TranslateModule
     ],
     declarations: [
         CustomSnackbarComponent,
         ConfirmDialogComponent,
     ],
-    exports: [],
+    exports: [
+    ],
     entryComponents: [
         CustomSnackbarComponent,
-        ConfirmDialogComponent
+        ConfirmDialogComponent,
     ],
     providers: [NotificationService, LastUrlService]
 })

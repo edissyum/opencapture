@@ -42,6 +42,10 @@
                 <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ACCOUNTS.siren' | translate }} </mat-header-cell>
                 <mat-cell *matCellDef="let element"> {{element.siren}} </mat-cell>
             </ng-container>
+            <ng-container matColumnDef="iban">
+                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ACCOUNTS.iban' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.iban}} </mat-cell>
+            </ng-container>
             <ng-container matColumnDef="form_label">
                 <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ACCOUNTS.form' | translate }} </mat-header-cell>
                 <mat-cell *matCellDef="let element"> {{element.form_label}} </mat-cell>

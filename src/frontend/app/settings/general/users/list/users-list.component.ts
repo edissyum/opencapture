@@ -7,11 +7,11 @@ the Free Software Foundation, either version 3 of the License, or
 
 Open-Capture is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
@@ -34,6 +34,7 @@ import { Sort } from "@angular/material/sort";
 import { SettingsService } from "../../../../../services/settings.service";
 import { PrivilegesService } from "../../../../../services/privileges.service";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
+import { HistoryService } from "../../../../../services/history.service";
 
 @Component({
     selector: 'app-users-list',
@@ -45,15 +46,16 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 })
 
 export class UsersListComponent implements OnInit {
-    headers: HttpHeaders          = this.authService.headers;
-    loading : boolean             = true;
     columnsToDisplay: string[]    = ['id', 'username', 'firstname', 'lastname', 'role','status', 'actions'];
-    users : any                   = [];
-    pageSize : number             = 10;
-    pageIndex: number             = 0;
-    total: number                 = 0;
-    offset: number                = 0;
-    roles : any                   = [];
+    headers         : HttpHeaders = this.authService.headers;
+    loading         : boolean     = true;
+    users           : any         = [];
+    allUsers        : any         = [];
+    roles           : any         = [];
+    pageSize        : number      = 10;
+    pageIndex       : number      = 0;
+    total           : number      = 0;
+    offset          : number      = 0;
 
     constructor(
         public router: Router,
@@ -65,30 +67,41 @@ export class UsersListComponent implements OnInit {
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,
+        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
         private localeStorageService: LocalStorageService,
-    ) { }
+    ) {}
 
 
     ngOnInit(): void {
         this.serviceSettings.init();
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
         const lastUrl = this.routerExtService.getPreviousUrl();
-        if (lastUrl.includes('users/') || lastUrl === '/') {
+        if (lastUrl.includes('settings/general/users') || lastUrl === '/') {
             if (this.localeStorageService.get('usersPageIndex'))
                 this.pageIndex = parseInt(this.localeStorageService.get('usersPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
         }else
             this.localeStorageService.remove('usersPageIndex');
 
-        this.http.get(API_URL + '/ws/roles/list', {headers: this.authService.headers}).pipe(
+        this.http.get(API_URL + '/ws/users/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.roles = data.roles;
-                this.loadUsers();
+                this.allUsers = data.users;
+                this.http.get(API_URL + '/ws/roles/list', {headers: this.authService.headers}).pipe(
+                    tap((data: any) => {
+                        this.roles = data.roles;
+                        this.loadUsers();
+                    }),
+                    finalize(() => this.loading = false),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
             }),
-            finalize(() => this.loading = false),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
@@ -100,6 +113,7 @@ export class UsersListComponent implements OnInit {
     onPageChange(event: any) {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
+        this.pageIndex = event.pageIndex;
         this.localeStorageService.save('usersPageIndex', event.pageIndex);
         this.loadUsers();
     }
@@ -108,6 +122,11 @@ export class UsersListComponent implements OnInit {
         this.http.get(API_URL + '/ws/users/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.users[0]) this.total = data.users[0].total;
+                else if (this.pageIndex !== 0) {
+                    this.pageIndex = this.pageIndex - 1;
+                    this.offset = this.pageSize * (this.pageIndex);
+                    this.loadUsers();
+                }
                 this.users = data.users;
                 if (this.roles) {
                     this.users.forEach((user: any) => {
@@ -142,6 +161,7 @@ export class UsersListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
                 this.deleteUser(userId);
+                this.historyService.addHistory('general', 'delete_user', this.translate.instant('HISTORY-DESC.delete-user', {user: user}));
             }
         });
     }
@@ -161,6 +181,7 @@ export class UsersListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
                 this.disableUser(userId);
+                this.historyService.addHistory('general', 'disable_user', this.translate.instant('HISTORY-DESC.disable-user', {user: user}));
             }
         });
     }
@@ -180,6 +201,7 @@ export class UsersListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
                 this.enableUser(userId);
+                this.historyService.addHistory('general', 'enable_user', this.translate.instant('HISTORY-DESC.enable-user', {user: user}));
             }
         });
     }
@@ -231,9 +253,9 @@ export class UsersListComponent implements OnInit {
     }
 
     sortData(sort: Sort) {
-        const data = this.users.slice();
+        const data = this.allUsers.slice();
         if(!sort.active || sort.direction === '') {
-            this.users = data;
+            this.users = data.splice(0, this.pageSize);
             return;
         }
 
@@ -249,7 +271,7 @@ export class UsersListComponent implements OnInit {
                 default: return 0;
             }
         });
-
+        this.users = this.users.splice(0, this.pageSize);
     }
 
     compare(a: number | string, b: number | string, isAsc: boolean) {

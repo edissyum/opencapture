@@ -131,6 +131,13 @@ def update_invoice(invoice_id):
     return make_response(res[0], res[1])
 
 
+@bp.route('verifier/invoices/removeLockByUserId/<string:user_id>', methods=['PUT'])
+@auth.token_required
+def remove_lock_by_user_id(user_id):
+    res = verifier.remove_lock_by_user_id(user_id)
+    return make_response(res[0], res[1])
+
+
 @bp.route('verifier/ocrOnFly', methods=['POST'])
 @auth.token_required
 def ocr_on_fly():

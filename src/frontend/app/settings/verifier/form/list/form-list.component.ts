@@ -7,11 +7,11 @@ the Free Software Foundation, either version 3 of the License, or
 
 Open-Capture is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
@@ -34,6 +34,7 @@ import {Sort} from "@angular/material/sort";
 import {ConfirmDialogComponent} from "../../../../../services/confirm-dialog/confirm-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from "@angular/material/form-field";
+import {HistoryService} from "../../../../../services/history.service";
 
 @Component({
     selector: 'app-list',
@@ -62,6 +63,7 @@ export class FormListComponent implements OnInit {
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
+        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
@@ -84,6 +86,7 @@ export class FormListComponent implements OnInit {
     onPageChange(event: any) {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
+        this.pageIndex = event.pageIndex;
         this.localeStorageService.save('formsPageIndex', event.pageIndex);
         this.loadForms();
     }
@@ -93,6 +96,11 @@ export class FormListComponent implements OnInit {
         this.http.get(API_URL + '/ws/forms/list?module=verifier&limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.forms[0]) this.total = data.forms[0].total;
+                else if (this.pageIndex !== 0) {
+                    this.pageIndex = this.pageIndex - 1;
+                    this.offset = this.pageSize * (this.pageIndex);
+                    this.loadForms();
+                }
                 this.forms = data.forms;
             }),
             finalize(() => this.loading = false),
@@ -119,6 +127,7 @@ export class FormListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
                 this.deleteForm(formId);
+                this.historyService.addHistory('verifier', 'delete_form', this.translate.instant('HISTORY-DESC.delete-form', {form: form}));
             }
         });
     }
@@ -138,6 +147,7 @@ export class FormListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
                 this.duplicateForm(formId);
+                this.historyService.addHistory('verifier', 'duplicate_form', this.translate.instant('HISTORY-DESC.duplicate-form', {form: form}));
             }
         });
     }
@@ -198,16 +208,16 @@ export class FormListComponent implements OnInit {
 
     duplicateForm(formId: number) {
         if (formId !== undefined) {
-            // this.http.delete(API_URL + '/ws/forms/duplicate/' + formId, {headers: this.authService.headers}).pipe(
-            //     tap(() => {
-            //         this.loadForms()
-            //     }),
-            //     catchError((err: any) => {
-            //         console.debug(err);
-            //         this.notify.handleErrors(err);
-            //         return of(false);
-            //     })
-            // ).subscribe();
+            this.http.post(API_URL + '/ws/forms/duplicate/' + formId, {}, {headers: this.authService.headers}).pipe(
+                tap(() => {
+                    this.loadForms();
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
         }
     }
 

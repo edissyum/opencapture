@@ -7,11 +7,11 @@ the Free Software Foundation, either version 3 of the License, or
 
 Open-Capture is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
@@ -32,6 +32,7 @@ import {ConfirmDialogComponent} from "../../../../../services/confirm-dialog/con
 import {API_URL} from "../../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
+import {HistoryService} from "../../../../../services/history.service";
 
 @Component({
     selector: 'inputs-list',
@@ -56,6 +57,7 @@ export class InputsListComponent implements OnInit {
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
+        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
@@ -66,7 +68,7 @@ export class InputsListComponent implements OnInit {
         this.serviceSettings.init();
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
         const lastUrl = this.routerExtService.getPreviousUrl();
-        if (lastUrl.includes('inputs/') || lastUrl === '/') {
+        if (lastUrl.includes('settings/verifier/inputs') || lastUrl === '/') {
             if (this.localeStorageService.get('inputsPageIndex'))
                 this.pageIndex = parseInt(this.localeStorageService.get('inputsPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
@@ -79,6 +81,11 @@ export class InputsListComponent implements OnInit {
         this.http.get(API_URL + '/ws/inputs/list?module=verifier&limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.inputs[0]) this.total = data.inputs[0].total;
+                else if (this.pageIndex !== 0) {
+                    this.pageIndex = this.pageIndex - 1;
+                    this.offset = this.pageSize * (this.pageIndex);
+                    this.loadInputs();
+                }
                 this.inputs = data.inputs;
             }),
             finalize(() => this.loading = false),
@@ -93,6 +100,7 @@ export class InputsListComponent implements OnInit {
     onPageChange(event: any) {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
+        this.pageIndex = event.pageIndex;
         this.localeStorageService.save('inputsPageIndex', event.pageIndex);
         this.loadInputs();
     }
@@ -112,6 +120,7 @@ export class InputsListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.deleteInput(inputId);
+                this.historyService.addHistory('verifier', 'delete_input', this.translate.instant('HISTORY-DESC.delete-input', {input: input}));
             }
         });
     }
