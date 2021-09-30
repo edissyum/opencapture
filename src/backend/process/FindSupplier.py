@@ -244,5 +244,5 @@ class FindSupplier:
             self.current_page = self.nbPages
             return self.run(retry=True, regenerate_ocr=True, target='footer')
 
-        self.Log.error('No supplier found...')
+        self.Log.info('No supplier found...')
         return False

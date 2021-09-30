@@ -207,7 +207,7 @@ class Mail:
             self.conn.move(msg.uid, destination)
             return True
         except utils.UnexpectedCommandStatusError as e:
-            log.error('Error while moving mail to ' + destination + ' folder : ' + str(e))
+            log.error('Error while moving mail to ' + destination + ' folder : ' + str(e), False)
             pass
 
     def delete_mail(self, msg, trash_folder, log):
@@ -225,7 +225,7 @@ class Mail:
             else:
                 self.move_to_destination_folder(msg, trash_folder, log)
         except utils.UnexpectedCommandStatusError as e:
-            log.error('Error while deleting mail : ' + str(e))
+            log.error('Error while deleting mail : ' + str(e), False)
             pass
 
     @staticmethod

@@ -1,5 +1,20 @@
 [GLOBAL]
-batchPath           = /var/www/html/opencaptureforinvoices/bin/data/MailCollect/
+batchPath             = /var/www/html/opencaptureforinvoices/bin/data/MailCollect/
+# True or False
+smtp_notif_on_error   = True
+smtp_auth             = False
+smtp_host             = gmail-smtp-in.l.google.com
+smtp_port             = 25
+smtp_login            =
+smtp_pwd              =
+#True or False
+smtp_ssl              = False
+#True or False
+smtp_starttls         = True
+smtp_from_mail        =
+smtp_dest_admin_mail  =
+# Delay before send another email, in minutes. 0 to disable it
+smtp_delay            = 30
 
 [MAIL_1]
 host                = imap.gmail.com

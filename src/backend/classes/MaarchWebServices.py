@@ -41,8 +41,8 @@ class MaarchWebServices:
                     return [False, json.loads(res.text)['errors']]
             return True
         except (requests.exceptions.ConnectionError, requests.exceptions.Timeout, requests.exceptions.MissingSchema) as e:
-            self.Log.error('Error connecting to the host. Exiting program..')
-            self.Log.error('More information : ' + str(e))
+            self.Log.error('Error connecting to the host. Exiting program..', False)
+            self.Log.error('More information : ' + str(e), False)
             return [False, str(e)]
 
     def retrieve_users(self):

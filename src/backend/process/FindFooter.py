@@ -67,6 +67,7 @@ class FindFooter:
                         # If two amounts are found, separate them
                         continue
                     number_formatted = t.group()
+                    print(number_formatted)
                     if regex != self.Locale.vatRateRegex:
                         try:
                             text = t.group().replace(' ', '.')
