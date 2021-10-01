@@ -12,6 +12,7 @@ positionsMasksPath          = ${GLOBAL:docserverPath}/images/positions_masks/
 errorPath                   = ${GLOBAL:projectPath}/bin/data/error/
 logFile                     = ${GLOBAL:projectPath}/bin/data/log/OCforInvoices.log
 ocrErrorPath                = ${GLOBAL:projectPath}/instance/config/OCR_ERRORS.xml
+configMail                 = ${GLOBAL:projectPath}/instance/config/mail.ini
 ; True or False, python way
 allowDuplicate              = False
 ; True or False, python way

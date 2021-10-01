@@ -106,7 +106,7 @@ if __name__ == '__main__':
                     })
                 else:
                     log.error('While adding supplier : ' +
-                              str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['name']]))
+                              str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['name']]), False)
             else:
                 current_supplier = database.select({
                     'select': ['id', 'address_id'],
@@ -170,7 +170,7 @@ if __name__ == '__main__':
                              str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['name']]))
                 else:
                     log.error('While updating supplier : ' +
-                              str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['name']]))
+                              str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['name']]), False)
 
         # Commit and close database connection
         database.conn.commit()

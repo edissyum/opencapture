@@ -67,6 +67,7 @@ class FindFooter:
                         # If two amounts are found, separate them
                         continue
                     number_formatted = t.group()
+                    print(number_formatted)
                     if regex != self.Locale.vatRateRegex:
                         try:
                             text = t.group().replace(' ', '.')
@@ -270,7 +271,7 @@ class FindFooter:
             if float(total) == float(total_ttc[0]):
                 self.Log.info('Footer informations found : [TOTAL : ' + str(total) + '] - [HT : ' + str(total_ht[0]) + '] - [VATRATE : ' + str(vat_rate[0]) + ']')
                 return [total_ht, total_ttc, vat_rate, self.nbPage, ["%.2f" % float(float(total_ht[0]) * (float(vat_rate[0]) / 100))]]
-            elif float(total_ttc[0]) == float(vat_amount + total_ht[0]):
+            elif float(total_ttc[0]) == float("%.2f" % float(vat_amount + total_ht[0])):
                 self.Log.info('Footer informations found : [TOTAL : ' + str(total) + '] - [HT : ' + str(total_ht[0]) + '] - [VATRATE : ' + str(vat_rate[0]) + ']')
                 return [total_ht, total_ttc, vat_rate, self.nbPage, ["%.2f" % float(float(total_ht[0]) * (float(vat_rate[0]) / 100))]]
             else:

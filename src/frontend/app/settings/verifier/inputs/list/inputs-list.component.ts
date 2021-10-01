@@ -68,7 +68,7 @@ export class InputsListComponent implements OnInit {
         this.serviceSettings.init();
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
         const lastUrl = this.routerExtService.getPreviousUrl();
-        if (lastUrl.includes('inputs/') || lastUrl === '/') {
+        if (lastUrl.includes('settings/verifier/inputs') || lastUrl === '/') {
             if (this.localeStorageService.get('inputsPageIndex'))
                 this.pageIndex = parseInt(this.localeStorageService.get('inputsPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);

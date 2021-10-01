@@ -131,8 +131,8 @@ def recursive_delete(folder, log):
         try:
             os.remove(folder + '/' + file)
         except FileNotFoundError as e:
-            log.error('Unable to delete ' + folder + '/' + file + ' on temp folder: ' + str(e))
+            log.error('Unable to delete ' + folder + '/' + file + ' on temp folder: ' + str(e), False)
     try:
         os.rmdir(folder)
     except FileNotFoundError as e:
-        log.error('Unable to delete ' + folder + ' on temp folder: ' + str(e))
+        log.error('Unable to delete ' + folder + ' on temp folder: ' + str(e), False)

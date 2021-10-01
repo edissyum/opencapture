@@ -16,7 +16,7 @@ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import {Component, OnInit} from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
+import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import { ActivatedRoute, Router } from "@angular/router";
 import { API_URL } from "../../env";
 import { catchError, map, startWith, tap } from "rxjs/operators";
@@ -26,15 +26,15 @@ import { AuthService } from "../../../services/auth.service";
 import { NotificationService } from "../../../services/notifications/notifications.service";
 import { TranslateService } from "@ngx-translate/core";
 import { marker } from "@biesbjerg/ngx-translate-extract-marker";
-import { FormControl } from "@angular/forms";
+import { FormControl} from "@angular/forms";
 import { DatePipe } from '@angular/common';
 import { LocalStorageService } from "../../../services/local-storage.service";
 import { ConfigService } from "../../../services/config.service";
 import 'moment/locale/en-gb';
 import 'moment/locale/fr';
 import * as moment from 'moment';
-import {UserService} from "../../../services/user.service";
-import {HistoryService} from "../../../services/history.service";
+import { UserService } from "../../../services/user.service";
+import { HistoryService } from "../../../services/history.service";
 declare var $: any;
 
 
@@ -46,23 +46,35 @@ declare var $: any;
 })
 
 export class VerifierViewerComponent implements OnInit {
-    loading                 : boolean   = true;
     isOCRRunning            : boolean   = false;
     settingsOpen            : boolean   = false;
-    saveInfo                : boolean   = true;
-    supplierExists          : boolean   = true;
     ocrFromUser             : boolean   = false;
     accountingPlanEmpty     : boolean   = false;
+    getOnlyRawFooter        : boolean   = false;
+    disableOCR              : boolean   = false;
+    saveInfo                : boolean   = true;
+    loading                 : boolean   = true;
+    supplierExists          : boolean   = true;
     deleteDataOnChangeForm  : boolean   = true;
+    oldVAT                  : string    = '';
+    oldSIRET                : string    = '';
+    oldSIREN                : string    = '';
     currentFilename         : string    = '';
-    currentPage             : number    = 1;
     lastLabel               : string    = '';
     lastId                  : string    = '';
     lastColor               : string    = '';
+    toHighlight             : string    = '';
+    toHighlightAccounting   : string    = '';
+    token                   : string    = '';
+    imgSrc                  : SafeUrl   = '';
     ratio                   : number    = 0;
-    token                   : any;
+    currentPage             : number    = 1;
+    formSettings            : any       = {};
+    formList                : any       = {};
+    currentFormFields       : any       = {};
+    suppliers               : any       = [];
+    outputsLabel            : any       = [];
     imageInvoice            : any;
-    imgSrc                  : any;
     invoiceId               : any;
     invoice                 : any;
     fields                  : any;
@@ -81,15 +93,11 @@ export class VerifierViewerComponent implements OnInit {
             'label': marker('FORMS.other')
         }
     ];
-    disableOCR              : boolean   = false;
     form                    : any       = {
         'supplier': [],
         'facturation': [],
         'other': []
     };
-    formSettings            : any       = {};
-    formList                : any       = {};
-    currentFormFields       : any       = {};
     pattern                 : any       = {
         'alphanum': '^[0-9a-zA-Z\\s]*$',
         'alphanum_extended': '^[0-9a-zA-Z-/#,\\.\\s]*$',
@@ -98,12 +106,8 @@ export class VerifierViewerComponent implements OnInit {
         'number_float': '^[0-9]*([.][0-9]*)*$',
         'char': '^[A-Za-z\\s]*$',
     };
-    suppliers               : any       = [];
-    filteredOptions         : Observable<any> | undefined;
-    getOnlyRawFooter        : boolean   = false;
-    toHighlight             : string    = '';
+    filteredOptions         : Observable<any> | any;
     supplierNamecontrol     = new FormControl();
-    toHighlightAccounting   : string    = '';
 
     constructor(
         private router: Router,
@@ -138,6 +142,12 @@ export class VerifierViewerComponent implements OnInit {
         if (this.invoice.form_id) {
             this.currentFormFields = await this.getFormFieldsById(this.invoice.form_id);
             this.formSettings = await this.getFormById(this.invoice.form_id);
+            if (this.formSettings.outputs.length !== 0) {
+                for (const outputId in this.formSettings.outputs) {
+                    const output = await this.getOutputs(this.formSettings.outputs[outputId]);
+                    this.outputsLabel.push(output.output_label);
+                }
+            }
             if (this.formSettings.supplier_verif && !this.token) {
                 let token: any;
                 token = await this.generateTokenInsee();
@@ -178,6 +188,10 @@ export class VerifierViewerComponent implements OnInit {
                 startWith(''),
                 map(option => option ? this._filter(option) : this.suppliers.slice())
             );
+    }
+
+    displayFn(option: any) {
+        return option ? option.lastname + ' ' + option.firstname : '';
     }
 
     async generateTokenInsee() {
@@ -370,6 +384,10 @@ export class VerifierViewerComponent implements OnInit {
                 this.findChildren(field.id, _field, category);
             }
         }
+    }
+
+    async getOutputs(outputId: any): Promise<any> {
+        return await this.http.get(API_URL + '/ws/outputs/getById/' + outputId, {headers: this.authService.headers}).toPromise();
     }
 
     private _filter_accounting(array: any, value: any): string[] {
@@ -648,6 +666,7 @@ export class VerifierViewerComponent implements OnInit {
 
     saveData(data: any, fieldId: any = false, showNotif: boolean = false) {
         if (this.invoice.status !== 'END') {
+            const oldData = data;
             if (fieldId) {
                 const field = this.getField(fieldId);
                 if (field.control.errors || this.invoice.datas[fieldId] === data) return false;
@@ -657,7 +676,7 @@ export class VerifierViewerComponent implements OnInit {
                 {'args': data},
                 {headers: this.authService.headers}).pipe(
                 tap(() => {
-                    this.invoice.datas[fieldId] = data;
+                    this.invoice.datas[fieldId] = oldData;
                     if (showNotif) this.notify.success(this.translate.instant('INVOICES.position_and_data_updated', {"input": this.lastLabel}));
                 }),
                 catchError((err: any) => {
@@ -982,40 +1001,29 @@ export class VerifierViewerComponent implements OnInit {
                 }
                 if (input.control.errors) {
                     valid = false;
+                    input.control.markAsTouched();
                     this.notify.error(this.translate.instant('ERROR.form_not_valid'));
                 }
             });
         }
         if (!valid) return;
         this.saveData(arrayData);
-        const formId = this.currentFormFields.form_id;
         /*
             Executer les actions paramétrées dans les réglages du formulaires
          */
-        this.http.get(API_URL + '/ws/forms/getById/' + formId, {headers: this.authService.headers}).pipe(
-            tap((form: any) => {
-                const outputsLabel: any[] = [];
-                if (form.outputs.length !== 0) {
-                    form.outputs.forEach((outputId: any, cpt: number) => {
-                        this.http.get(API_URL + '/ws/outputs/getById/' + outputId, {headers: this.authService.headers}).pipe(
-                            tap((data: any) => {
-                                outputsLabel.push(data.output_label);
-                                this.http.post(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/' + data.output_type_id, {'args': data.data},{headers: this.authService.headers}).pipe(
-                                    tap(() => {
-                                        /* Actions à effectuer après le traitement des chaînes sortantes */
-                                        if (cpt + 1 === form.outputs.length) {
-                                            this.historyService.addHistory('verifier', 'invoice_validated', this.translate.instant('HISTORY-DESC.invoice_validated', {invoice_id: this.invoiceId, outputs: outputsLabel.join(', ')}));
-                                            this.updateInvoice({'status': 'END', 'locked': false, 'locked_by': null});
-                                            this.router.navigate(['/verifier']).then();
-                                            this.notify.success(this.translate.instant('VERIFIER.form_validated_and_output_done', {outputs: outputsLabel.join('<br>')}));
-                                        }
-                                    }),
-                                    catchError((err: any) => {
-                                        console.debug(err);
-                                        this.notify.handleErrors(err);
-                                        return of(false);
-                                    })
-                                ).subscribe();
+        if (this.formSettings.outputs.length !== 0) {
+            this.formSettings.outputs.forEach((outputId: any, cpt: number) => {
+                this.http.get(API_URL + '/ws/outputs/getById/' + outputId, {headers: this.authService.headers}).pipe(
+                    tap((data: any) => {
+                        this.http.post(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/' + data.output_type_id, {'args': data.data},{headers: this.authService.headers}).pipe(
+                            tap(() => {
+                                /* Actions à effectuer après le traitement des chaînes sortantes */
+                                if (cpt + 1 === this.formSettings.outputs.length) {
+                                    this.historyService.addHistory('verifier', 'invoice_validated', this.translate.instant('HISTORY-DESC.invoice_validated', {invoice_id: this.invoiceId, outputs: this.outputsLabel.join(', ')}));
+                                    this.updateInvoice({'status': 'END', 'locked': false, 'locked_by': null});
+                                    this.router.navigate(['/verifier']).then();
+                                    this.notify.success(this.translate.instant('VERIFIER.form_validated_and_output_done', {outputs: this.outputsLabel.join('<br>')}));
+                                }
                             }),
                             catchError((err: any) => {
                                 console.debug(err);
@@ -1023,17 +1031,17 @@ export class VerifierViewerComponent implements OnInit {
                                 return of(false);
                             })
                         ).subscribe();
-                    });
-                }else {
-                    this.notify.error(this.translate.instant('VERIFIER.no_outputs_for_this_form', {'form': form.label}));
-                }
-            }),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
+                    }),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
+            });
+        }else {
+            this.notify.error(this.translate.instant('VERIFIER.no_outputs_for_this_form', {'form': this.formSettings.label}));
+        }
     }
 
     refuseForm() {
@@ -1125,10 +1133,10 @@ export class VerifierViewerComponent implements OnInit {
         if (this.formSettings.supplier_verif && this.invoice.status !== 'END') {
             const sizeSIREN = 9;
             const sizeSIRET = 14;
-            if (siretOrSiren === 'siren') {
+            if (siretOrSiren === 'siren' && this.oldSIREN !== value) {
                 if (this.verify(value, sizeSIREN) && this.token) {
+                    this.oldSIREN = value;
                     this.http.post(API_URL + '/ws/verifier/verifySIREN', {'token': this.token, 'siren': value}, {headers: this.authService.headers}).pipe(
-                        tap(),
                         catchError((err: any) => {
                             this.form['supplier'].forEach((element: any) => {
                                 if (element.id === 'siren') {
@@ -1156,10 +1164,10 @@ export class VerifierViewerComponent implements OnInit {
                         }
                     });
                 }
-            } else if (siretOrSiren === 'siret') {
+            } else if (siretOrSiren === 'siret'  && this.oldSIRET !== value) {
                 if (this.verify(value, sizeSIRET) && this.token) {
+                    this.oldSIRET = value;
                     this.http.post(API_URL + '/ws/verifier/verifySIRET', {'token': this.token, 'siret': value}, {headers: this.authService.headers}).pipe(
-                        tap(),
                         catchError((err: any) => {
                             this.form['supplier'].forEach((element: any) => {
                                 if (element.id === 'siret') {
@@ -1193,35 +1201,37 @@ export class VerifierViewerComponent implements OnInit {
 
     checkVAT(id: any, value: any) {
         if (id === 'vat_number' && this.formSettings.supplier_verif && this.invoice.status !== 'END') {
-            const sizeVAT = 13;
-            if (this.verify(value, sizeVAT, true)) {
-                this.http.post(API_URL + '/ws/verifier/verifyVATNumber', {'vat_number': value}, {headers: this.authService.headers}).pipe(
-                    tap(),
-                    catchError((err: any) => {
-                        this.form['supplier'].forEach((element: any) => {
-                            if (element.id === 'vat_number') {
-                                setTimeout(() => {
-                                    element.control.setErrors({'vat_error': err.error.status});
-                                    element.control.markAsTouched();
-                                }, 100);
-                            }
-                        });
-                        return of(false);
-                    })
-                ).subscribe();
-            }else {
-                this.form['supplier'].forEach((element: any) => {
+            if (this.oldVAT !== value) {
+                const sizeVAT = 13;
+                if (this.verify(value, sizeVAT, true)) {
+                    this.oldVAT = value;
+                    this.http.post(API_URL + '/ws/verifier/verifyVATNumber', {'vat_number': value}, {headers: this.authService.headers}).pipe(
+                        catchError((err: any) => {
+                            this.form['supplier'].forEach((element: any) => {
+                                if (element.id === 'vat_number') {
+                                    setTimeout(() => {
+                                        element.control.setErrors({'vat_error': err.error.status});
+                                        element.control.markAsTouched();
+                                    }, 100);
+                                }
+                            });
+                            return of(false);
+                        })
+                    ).subscribe();
+                } else {
+                    this.form['supplier'].forEach((element: any) => {
                     if (element.id === 'vat_number') {
                         setTimeout(() => {
                             if (!this.token) {
                                 element.control.setErrors({'vat_error': this.translate.instant('ERROR.ecu_api_not_up')});
-                            }else {
+                            } else {
                                 element.control.setErrors({'vat_error': this.translate.instant('ERROR.wrong_vat_number_format')});
                             }
                             element.control.markAsTouched();
                         }, 100);
                     }
                 });
+                }
             }
         }
     }

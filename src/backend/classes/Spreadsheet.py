@@ -105,11 +105,11 @@ class Spreadsheet:
                                 str(not supplier['get_only_raw_footer']).lower() if supplier['get_only_raw_footer'] is not None else '']
                         content_sheet[sheet_name].append(line)
             except IndexError as e:
-                self.Log.error("IndexError while updating ods reference file : " + str(e))
+                self.Log.error("IndexError while updating ods reference file : " + str(e), False)
 
             save_data(self.referencialSuppplierSpreadsheet, content_sheet)
         else:
-            self.Log.error('The referencial file doesn\'t exist : ' + self.referencialSuppplierSpreadsheet)
+            self.Log.error('The referencial file doesn\'t exist : ' + self.referencialSuppplierSpreadsheet, False)
 
     def write_typo_excel_sheet(self, vat_number, typo):
         content_sheet = pd.read_excel(self.referencialSuppplierSpreadsheet, engine='openpyxl')

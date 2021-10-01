@@ -22,7 +22,7 @@ import tempfile
 from kuyruk import Kuyruk
 from flask import current_app
 from .functions import recursive_delete, get_custom_array
-from .import_classes import _Database, _PyTesseract, _Locale, _Files, _Log, _Config, _SeparatorQR, _Spreadsheet
+from .import_classes import _Database, _PyTesseract, _Locale, _Files, _Log, _Config, _SeparatorQR, _Spreadsheet, _SMTP
 
 custom_array = get_custom_array()
 
@@ -38,7 +38,21 @@ def create_classes_from_current_config():
     config_name = _Config(current_app.config['CONFIG_FILE'])
     config_file = current_app.config['CONFIG_FOLDER'] + '/config_' + config_name.cfg['PROFILE']['id'] + '.ini'
     config = _Config(current_app.config['CONFIG_FOLDER'] + '/config_' + config_name.cfg['PROFILE']['id'] + '.ini')
-    log = _Log(config.cfg['GLOBAL']['logfile'])
+    config_mail = _Config(config.cfg['GLOBAL']['configmail'])
+    smtp = _SMTP(
+        config_mail.cfg['GLOBAL']['smtp_notif_on_error'],
+        config_mail.cfg['GLOBAL']['smtp_host'],
+        config_mail.cfg['GLOBAL']['smtp_port'],
+        config_mail.cfg['GLOBAL']['smtp_login'],
+        config_mail.cfg['GLOBAL']['smtp_pwd'],
+        config_mail.cfg['GLOBAL']['smtp_ssl'],
+        config_mail.cfg['GLOBAL']['smtp_starttls'],
+        config_mail.cfg['GLOBAL']['smtp_dest_admin_mail'],
+        config_mail.cfg['GLOBAL']['smtp_delay'],
+        config_mail.cfg['GLOBAL']['smtp_auth'],
+        config_mail.cfg['GLOBAL']['smtp_from_mail'],
+    )
+    log = _Log(config.cfg['GLOBAL']['logfile'], smtp)
     spreadsheet = _Spreadsheet(log, config)
     db_user = config.cfg['DATABASE']['postgresuser']
     db_pwd = config.cfg['DATABASE']['postgrespassword']
@@ -58,13 +72,27 @@ def create_classes_from_current_config():
     )
     locale = _Locale(config)
     ocr = _PyTesseract(locale.localeOCR, log, config)
-    return database, config, locale, files, ocr, log, config_file, spreadsheet
+    return database, config, locale, files, ocr, log, config_file, spreadsheet, smtp
 
 
 def create_classes(config_file):
     config = _Config(config_file)
     locale = _Locale(config)
-    log = _Log(config.cfg['GLOBAL']['logfile'])
+    config_mail = _Config(config.cfg['GLOBAL']['configmail'])
+    smtp = _SMTP(
+        config_mail.cfg['GLOBAL']['smtp_notif_on_error'],
+        config_mail.cfg['GLOBAL']['smtp_host'],
+        config_mail.cfg['GLOBAL']['smtp_port'],
+        config_mail.cfg['GLOBAL']['smtp_login'],
+        config_mail.cfg['GLOBAL']['smtp_pwd'],
+        config_mail.cfg['GLOBAL']['smtp_ssl'],
+        config_mail.cfg['GLOBAL']['smtp_starttls'],
+        config_mail.cfg['GLOBAL']['smtp_dest_admin_mail'],
+        config_mail.cfg['GLOBAL']['smtp_delay'],
+        config_mail.cfg['GLOBAL']['smtp_auth'],
+        config_mail.cfg['GLOBAL']['smtp_from_mail'],
+    )
+    log = _Log(config.cfg['GLOBAL']['logfile'], smtp)
     spreadsheet = _Spreadsheet(log, config)
     ocr = _PyTesseract(locale.localeOCR, log, config)
     db_user = config.cfg['DATABASE']['postgresuser']
@@ -73,11 +101,11 @@ def create_classes(config_file):
     db_host = config.cfg['DATABASE']['postgreshost']
     db_port = config.cfg['DATABASE']['postgresport']
     database = _Database(log, db_name, db_user, db_pwd, db_host, db_port)
-    return config, locale, log, ocr, database, spreadsheet
+    return config, locale, log, ocr, database, spreadsheet, smtp
 
 
 def check_file(files, path, config, log):
-    if not files.check_file_integrity(path, config):
+    if files.check_file_integrity(path, config):
         log.error('The integrity of file could\'nt be verified : ' + str(path))
         return False
 
@@ -130,16 +158,14 @@ def launch(args):
     if not os.path.exists(config_file):
         sys.exit('config file couldn\'t be found')
 
-    config, locale, log, ocr, database, spreadsheet = create_classes(config_file)
+    config, locale, log, ocr, database, spreadsheet, smtp = create_classes(config_file)
     tmp_folder = tempfile.mkdtemp(dir=config.cfg['GLOBAL']['tmppath'])
     filename = tempfile.NamedTemporaryFile(dir=tmp_folder).name
     separator_qr = _SeparatorQR(log, config, tmp_folder)
 
     if args.get('isMail') is not None and args['isMail'] is True:
-        log = _Log((args['log']))
+        log = _Log((args['log']), smtp)
         log.info('Process attachment n°' + args['cpt'] + '/' + args['nb_of_attachments'])
-    else:
-        log = _Log(config.cfg['GLOBAL']['logfile'])
 
     if args.get('isMail') is None or args.get('isMail') is False:
         separator_qr.enabled = str2bool(config.cfg['SEPARATORQR']['enabled'])
@@ -166,6 +192,7 @@ def launch(args):
             path = separator_qr.output_dir_pdfa if str2bool(separator_qr.convert_to_pdfa) is True else separator_qr.output_dir
 
         for file in os.listdir(path):
+            log.filename = os.path.basename(file)
             if check_file(files, path + file, config, log) is not False and not os.path.isfile(path + file + '.lock'):
                 os.mknod(path + file + '.lock')
                 log.info('Lock file created : ' + path + file + '.lock')
@@ -185,6 +212,7 @@ def launch(args):
 
     elif 'file' in args and args['file'] is not None:
         path = args['file']
+        log.filename = os.path.basename(path)
         typo = ''
         if separator_qr.enabled:
             if check_file(files, path, config, log) is not False:

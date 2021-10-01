@@ -69,6 +69,14 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
         ],
         "parameters": [
             {
+                "id": "destUser",
+                "type": "text",
+                "label": "Utilisateur destinataire",
+                "required": "true",
+                "webservice": "getUsersFromMaarch",
+                "placeholder": "Bernard BLIER"
+            },
+            {
                 "id": "status",
                 "type": "text",
                 "label": "Status",
@@ -126,7 +134,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
             {
                 "id": "modelId",
                 "type": "text",
-                "label": "Identifiant du modèle d''''enregistrement",
+                "label": "Modèle d''''enregistrement",
                 "required": "true",
                 "webservice": "getIndexingModelsFromMaarch",
                 "placeholder": "Facture"
@@ -134,18 +142,10 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
             {
                 "id": "destination",
                 "type": "text",
-                "label": "Identifiant de l''''entité destinatrice",
+                "label": "Entité destinatrice",
                 "required": "true",
                 "webservice": "getEntitiesFromMaarch",
                 "placeholder": "Service Courrier"
-            },
-            {
-                "id": "destUser",
-                "type": "text",
-                "label": "Identifiant de l''''utilisateur destinataire",
-                "required": "true",
-                "webservice": "getUsersFromMaarch",
-                "placeholder": "Bernard BLIER"
             },
             {
                 "id": "customFields",

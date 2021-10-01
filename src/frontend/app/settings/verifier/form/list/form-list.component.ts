@@ -147,6 +147,7 @@ export class FormListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if(result) {
                 this.duplicateForm(formId);
+                this.historyService.addHistory('verifier', 'duplicate_form', this.translate.instant('HISTORY-DESC.duplicate-form', {form: form}));
             }
         });
     }
