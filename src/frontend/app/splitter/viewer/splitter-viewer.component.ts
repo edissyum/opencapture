@@ -554,7 +554,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
           })
         ).subscribe(
             x => {
-                // window.location.href = "/#/splitter/list";
+                window.location.href = "/#/splitter/list";
                 this.notify.success("Lot validé avec succès");
             }
         )

@@ -265,7 +265,7 @@ def validate(documents, metadata):
                 if is_export_pdf_ok and is_export_xml_ok:
                     splitter.change_status({
                         'id': metadata['id'],
-                        'status': 'NEW'
+                        'status': 'END'
                     })
                 else:
                     return {"OK": False}, 500
