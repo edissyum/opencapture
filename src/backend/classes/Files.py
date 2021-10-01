@@ -586,13 +586,15 @@ class Files:
     def export_pdf(pages_lists, documents, input_file, output_file, reduce_index=0):
         pdf_writer = PyPDF2.PdfFileWriter()
         pdf_reader = PyPDF2.PdfFileReader(input_file)
+        paths = []
         try:
             for index, pages in enumerate(pages_lists):
                 for page in pages:
                     pdf_writer.addPage(pdf_reader.getPage(page - reduce_index))
-
+                file_path = output_file + '/' + documents[index]['fileName']
                 with open(output_file + '/' + documents[index]['fileName'], 'wb') as fh:
                     pdf_writer.write(fh)
+                    paths.append(file_path)
                 # Init writer
                 pdf_writer = PyPDF2.PdfFileWriter()
 
@@ -600,4 +602,4 @@ class Files:
             print(e)
             return {'OK': False}
 
-        return {'OK': True}
+        return {'OK': True, 'paths': paths}

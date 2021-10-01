@@ -3,7 +3,7 @@ from cmislib.model import CmisClient
 from cmislib.browser.binding import BrowserBinding
 
 
-class CMIS:
+class Cmis:
     def __init__(self, repository_url, cmisUsername, cmisPassword, base_dir):
         self.cmis_username = cmisUsername
         self.cmis_password = cmisPassword
