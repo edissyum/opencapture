@@ -64,13 +64,13 @@ def update_input(input_id, data):
 def create_input(data):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
-
     _columns = {
         'input_id': data['input_id'],
+        'customer_id': data['customer_id'],
         'input_label': data['input_label'],
+        'input_folder': data['input_folder'],
         'default_form_id': data['default_form_id'],
         'override_supplier_form': data['override_supplier_form'],
-        'input_folder': data['input_folder'],
     }
 
     res, error = inputs.create_input({'columns': _columns})
