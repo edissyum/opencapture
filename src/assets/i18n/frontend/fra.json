@@ -309,6 +309,7 @@
 		"maarch_connection_ko": "Erreur lors de la connexion à Maarch",
 		"maarch_connection_ok": "Connexion à Maarch réalisée avec succès",
 		"no_auth_necessary": "Pas d'authentification nécessaire",
+		"no_parameters_necessary": "Pas de paramètres de spécifiques nécessaire",
 		"output_deleted": "Chaîne sortante supprimée",
 		"output_settings_list": "Paramètres de la chaîne sortante",
 		"parameters": "Spécifiques",
