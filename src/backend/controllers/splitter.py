@@ -23,7 +23,7 @@ from ..import_classes import _Files
 from ..import_models import splitter
 from ..models import splitter
 from ..main import create_classes_from_current_config
-from ..import_classes import _Splitter, _CMIS
+from ..import_classes import _Splitter, _Cmis
 from ..import_controllers import forms, outputs
 
 import base64
@@ -177,6 +177,27 @@ def get_output_parameters(parameters):
         if parameter['id'] == 'filename':
             data['filename'] = parameter['value']
 
+        if parameter['id'] == 'extension':
+            data['extension'] = parameter['value']
+
+    return data
+
+
+def get_output_auth(auths):
+    data = {}
+    for auth in auths:
+        if auth['id'] == 'cmis_ws':
+            data['cmis_ws'] = auth['value']
+
+        if auth['id'] == 'folder':
+            data['folder'] = auth['value']
+
+        if auth['id'] == 'login':
+            data['login'] = auth['value']
+
+        if auth['id'] == 'password':
+            data['password'] = auth['value']
+
     return data
 
 
@@ -201,34 +222,47 @@ def validate(documents, metadata):
         for output_id in form[0]['outputs']:
             output = outputs.get_output_by_id(output_id)
             parameters = get_output_parameters(output[0]['data']['options']['parameters'])
-            """
-                Add PDF file names using masks
-            """
-            for index, document in enumerate(documents):
-                documents[index]['fileName'] = _Splitter.get_file_name(document, metadata, parameters, now, 'pdf')
 
             if output:
-                is_export_ok = True
+                is_export_pdf_ok = True
+                is_export_xml_ok = True
                 """
                     Export PDF files
                 """
                 if output[0]['output_type_id'] == 'export_pdf':
+                    """
+                        Add PDF file names using masks
+                    """
+                    for index, document in enumerate(documents):
+                        documents[index]['fileName'] = _Splitter.get_file_name(document, metadata, parameters, now)
                     res_file = _Files.export_pdf(pages, documents,
                                                  _cfg.cfg['SPLITTER']['uploadpath']
                                                  + str(batch[0]['file_name']),
                                                  parameters['folder_out'], 1)
-                    is_export_ok = res_file['OK']
+                    is_export_pdf_ok = res_file['OK']
                 """
                     Export XML file
                 """
                 if output[0]['output_type_id'] == 'export_xml':
-                    file_name = _Splitter.get_file_name(None, metadata, parameters, now, 'xml')
+                    file_name = _Splitter.get_file_name(None, metadata, parameters, now)
                     res_xml = _Splitter.export_xml(documents, metadata, parameters['folder_out'], file_name, now)
-                    is_export_ok = res_xml['OK']
+                    is_export_xml_ok = res_xml['OK']
+
+                if output[0]['output_type_id'] == 'alfresco':
+                    auths = get_output_auth(output[0]['data']['options']['auth'])
+                    cmis = _Cmis(auths['cmis_ws'], auths['login'], auths['password'], auths['folder'])
+
+                    if is_export_pdf_ok:
+                        for path in res_file['paths']:
+                            cmis.create_document(path, 'application/pdf')
+
+                    if is_export_xml_ok:
+                        cmis.create_document(res_xml['path'], 'text/xml')
+
                 """
                     Change status to END
                 """
-                if is_export_ok:
+                if is_export_pdf_ok and is_export_xml_ok:
                     splitter.change_status({
                         'id': metadata['id'],
                         'status': 'NEW'

@@ -142,7 +142,7 @@ class Splitter:
         return pages
 
     @staticmethod
-    def get_file_name(document, metadata, parameters, now_date, extension):
+    def get_file_name(document, metadata, parameters, now_date):
         file_name = ''
 
         year = str(now_date.year)
@@ -184,7 +184,7 @@ class Splitter:
                     file_name,
                     filename_parameter.replace(' ', joiner)
                 ])
-        file_name = file_name + '.' + extension
+        file_name = file_name + '.' + parameters['extension']
 
         return file_name
 
@@ -196,13 +196,12 @@ class Splitter:
         hour = str(now.hour).zfill(2)
         minute = str(now.minute).zfill(2)
         second = str(now.second).zfill(2)
-        random_num = str(random.randint(0, 99999)).zfill(5)
 
         root = ET.Element("OPENCAPTURESPLITTER")
         bundle_tag = ET.SubElement(root, "BUNDLE")
         ET.SubElement(bundle_tag, "BUNDLEINDEX").text = "1"
         ET.SubElement(bundle_tag, "FILENAME").text = filename
-        ET.SubElement(bundle_tag, "DATE").text = day + "-" + month + "-" + year
+        ET.SubElement(bundle_tag, "DATE").text = day + "-" + month + "-" + year + " " + hour + ":" + minute + ":" + second
         ET.SubElement(bundle_tag, "BUNDLE_NUMBER").text = filename.split('.')[0]
         ET.SubElement(bundle_tag, "NBDOC").text = str(len(documents))
         ET.SubElement(bundle_tag, "USER_ID_OC").text = metadata['userName']
