@@ -30,6 +30,14 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
                 "label": "Nom du fichier",
                 "required": "true",
                 "placeholder": "invoice_number#order_number#supplier_name"
+            },
+            {
+                "id": "extension",
+                "type": "text",
+                "hint": "Ne pas mettre de point dans l''extension",
+                "label": "Extension du fichier",
+                "required": "true",
+                "placeholder": "xml"
             }
         ]
     }
@@ -153,7 +161,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
 }');
 ALTER SEQUENCE "outputs_types_id_seq" RESTART WITH 3;
 
-INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data") VALUES (1, 'export_xml', 'Export XML par défaut', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "filename", "type": "text", "value": "invoice_number#F#invoice_date_year#vat_number"}]}}');
+INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data") VALUES (1, 'export_xml', 'Export XML par défaut', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "filename", "type": "text", "value": "invoice_number#F#invoice_date_year#vat_number"}, {"id": "extension", "type": "text", "value": "xml"}]}}');
 INSERT INTO "outputs" ("id", "output_type_id", "output_label") VALUES (2, 'export_maarch', 'Export Maarch par défaut');
 ALTER SEQUENCE "outputs_id_seq" RESTART WITH 3;
 

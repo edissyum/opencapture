@@ -477,7 +477,7 @@ def construct_with_var(data, invoice_info):
 
 
 def export_xml(invoice_id, data):
-    folder_out = separator = filename = ''
+    folder_out = separator = filename = extension = ''
     parameters = data['options']['parameters']
     for setting in parameters:
         if setting['id'] == 'folder_out':
@@ -486,13 +486,16 @@ def export_xml(invoice_id, data):
             separator = setting['value']
         elif setting['id'] == 'filename':
             filename = setting['value']
+        elif setting['id'] == 'extension':
+            extension = setting['value']
+
     invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
 
     if not error:
         _technical_data = []
         # Create the XML filename
         _data = construct_with_var(filename, invoice_info)
-        filename = separator.join(str(x) for x in _data) + '.xml'
+        filename = separator.join(str(x) for x in _data) + '.' + extension
         # END create the XML filename
 
         # Fill XML with invoice informations
