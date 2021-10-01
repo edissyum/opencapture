@@ -20,13 +20,17 @@ from logging.handlers import RotatingFileHandler
 
 
 class Log:
-    def __init__(self, path):
+    def __init__(self, path, smtp):
+        self.smtp = smtp
+        self.filename = ''
         self.LOGGER = logging.getLogger('Open-Capture')
         if self.LOGGER.hasHandlers():
             self.LOGGER.handlers.clear()  # Clear the handlers to avoid double logs
 
-        log_file = RotatingFileHandler(path, mode='a', maxBytes=5 * 1024 * 1024, backupCount=2, encoding=None, delay=False)
-        formatter = logging.Formatter('[%(name)-14s] %(asctime)s %(levelname)s %(message)s', datefmt='%d-%m-%Y %H:%M:%S')
+        log_file = RotatingFileHandler(path, mode='a', maxBytes=5 * 1024 * 1024,
+                                       backupCount=2, encoding=None, delay=False)
+        formatter = logging.Formatter('[%(name)-14s] %(asctime)s %(levelname)s %(message)s',
+                                      datefmt='%d-%m-%Y %H:%M:%S')
         log_file.setFormatter(formatter)
         self.LOGGER.addHandler(log_file)
         self.LOGGER.setLevel(logging.DEBUG)
@@ -34,5 +38,7 @@ class Log:
     def info(self, msg):
         self.LOGGER.info(msg)
 
-    def error(self, msg):
+    def error(self, msg, send_notif=True):
+        if self.smtp.enabled and send_notif:
+            self.smtp.send_notification(msg, self.filename)
         self.LOGGER.error(msg)

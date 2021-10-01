@@ -7,11 +7,11 @@ the Free Software Foundation, either version 3 of the License, or
 
 Open-Capture is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
@@ -46,14 +46,14 @@ import {HistoryService} from "../../../../../services/history.service";
 })
 
 export class RolesListComponent implements OnInit {
-    headers: HttpHeaders = this.authService.headers;
     columnsToDisplay: string[] = ['id', 'label_short', 'label', 'status', 'actions'];
-    loading: boolean = true;
-    roles: any = [];
-    pageSize: number = 10;
-    pageIndex: number = 0;
-    total: number = 0;
-    offset: number = 0;
+    headers         : HttpHeaders = this.authService.headers;
+    loading         : boolean = true;
+    roles           : any = [];
+    pageSize        : number = 10;
+    pageIndex       : number = 0;
+    total           : number = 0;
+    offset          : number = 0;
 
     constructor(
         public router: Router,
@@ -77,7 +77,7 @@ export class RolesListComponent implements OnInit {
         this.serviceSettings.init();
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
         const lastUrl = this.routerExtService.getPreviousUrl();
-        if (lastUrl.includes('roles/') || lastUrl === '/') {
+        if (lastUrl.includes('settings/general/roles') || lastUrl === '/') {
             if (this.localeStorageService.get('rolesPageIndex'))
                 this.pageIndex = parseInt(this.localeStorageService.get('rolesPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
@@ -90,6 +90,11 @@ export class RolesListComponent implements OnInit {
         this.http.get(API_URL + '/ws/roles/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.roles[0]) this.total = data.roles[0].total;
+                else if (this.pageIndex !== 0) {
+                    this.pageIndex = this.pageIndex - 1;
+                    this.offset = this.pageSize * (this.pageIndex);
+                    this.loadRoles();
+                }
                 this.roles = data.roles;
             }),
             finalize(() => this.loading = false),
@@ -104,6 +109,7 @@ export class RolesListComponent implements OnInit {
     onPageChange(event: any) {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
+        this.pageIndex = event.pageIndex;
         this.localeStorageService.save('rolesPageIndex', event.pageIndex);
         this.loadRoles();
     }

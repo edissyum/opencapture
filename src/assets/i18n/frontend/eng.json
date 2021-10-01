@@ -28,6 +28,7 @@
 		"export_suppliers": "",
 		"form": "",
 		"get_only_raw_footer": "",
+		"iban": "",
 		"positions_deleted": "",
 		"search_customer": "",
 		"search_supplier": "",
@@ -38,6 +39,7 @@
 		"supplier_created": "",
 		"supplier_deleted": "",
 		"supplier_name": "",
+		"supplier_unknow": "",
 		"supplier_updated": "",
 		"suppliers_list": "",
 		"update_customer": "",
@@ -88,8 +90,8 @@
 		"field_updated": "",
 		"module": "",
 		"select": "",
+		"text": "",
 		"textarea": "",
-		"textbox": "",
 		"type": ""
 	},
 	"DISPLAY": {
@@ -100,6 +102,7 @@
 		"404": "The page you are looking for does not exist",
 		"alphanum_extended_pattern": "",
 		"alphanum_pattern": "",
+		"char_pattern": "",
 		"connection_failed": "Error connecting to server",
 		"date_pattern": "",
 		"ecu_api_not_up": "",
@@ -141,6 +144,7 @@
 	"FORMATS": {
 		"alphanum": "",
 		"alphanum_extended": "",
+		"alphanum_extended_with_accent": "",
 		"char": "",
 		"date": "",
 		"number_float": "",
@@ -190,6 +194,7 @@
 		"disable": "Disable",
 		"duplicate": "",
 		"enable": "Enable",
+		"history": "",
 		"home": "Home",
 		"language": "Language",
 		"log_out": "Log out",
@@ -210,7 +215,7 @@
 		"role": "",
 		"status": ""
 	},
-		"HISTORY-DESC": {
+	"HISTORY-DESC": {
 		"create-customer": "",
 		"create-form": "",
 		"create-input": "",
@@ -307,13 +312,13 @@
 		"maarch_connection_ko": "",
 		"maarch_connection_ok": "",
 		"no_auth_necessary": "",
+		"no_parameters_necessary": "",
 		"output_deleted": "",
 		"output_settings_list": "",
 		"parameters": "",
 		"remove": "",
 		"test_connection": "",
-		"update": "",
-		"no_parameters_necessary": ""
+		"update": ""
 	},
 	"PAGINATOR": {
 		"first_page": "First page",
@@ -484,6 +489,7 @@
 	},
 	"VERIFIER": {
 		"accounting_plan_empty": "",
+		"all_invoices_checked_deleted": "",
 		"calculated_footer": "",
 		"change_form": "",
 		"change_form_details": "",
@@ -491,7 +497,7 @@
 		"colors": "",
 		"confirm_delete_all_invoices": "",
 		"confirm_delete_invoice": "",
-		"delete_all": "",
+		"delete_all_checked": "",
 		"delete_invoice": "",
 		"display": "",
 		"expand_all": "",
@@ -499,6 +505,8 @@
 		"form_changed": "",
 		"form_validated_and_output_done": "",
 		"format": "",
+		"invoice_locked": "",
+		"invoice_locked_by": "",
 		"invoice_refused": "",
 		"invoices_deleted": "",
 		"list": "Invoices",

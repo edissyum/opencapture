@@ -18,6 +18,7 @@
             <app-loader></app-loader>
         </div>
         <ngx-file-drag-drop
+                [disabled]="this.sending"
                 [formControl]="fileControl"
                 [activeBorderColor]="'#97BF3D'"
                 [multiple]="true"
@@ -29,9 +30,9 @@
         </ngx-file-drag-drop>
         <div class="flex justify-center content-center">
             <button mat-flat-button
-                    [disabled]="this.sending == true || this.selectedInput == '' || this.fileControl.value.length == 0" (click)="uploadInvoice()"
-                    [class.hover:bg-green-400]="this.sending == false && this.selectedInput && this.fileControl.value.length != 0"
-                    [class.hover:text-white]="this.sending == false && this.selectedInput && this.fileControl.value.length != 0"
+                    [disabled]="this.sending || this.selectedInput == '' || this.fileControl.value.length == 0" (click)="uploadInvoice()"
+                    [class.hover:bg-green-400]="!this.sending && this.selectedInput && this.fileControl.value.length != 0"
+                    [class.hover:text-white]="!this.sending&& this.selectedInput && this.fileControl.value.length != 0"
                     class="mt-5 border-solid border-green-400 border px-3 py-2 text-sm font-medium transition duration-300">
                 {{ 'UPLOAD.upload_invoice' | translate }}
             </button>

@@ -1,3 +1,18 @@
+/* Open-Capture for Invoices is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Open-Capture is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+
+@dev : Oussama BRICH <oussama.brich@edissyum.com> */
+
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {API_URL} from "../../env";
 import {catchError, debounceTime, delay, filter, finalize, map, takeUntil, tap} from "rxjs/operators";
@@ -82,7 +97,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
         private _sanitizer          : DomSanitizer,
         public dialog               : MatDialog,
         private ngxService          : NgxUiLoaderService,
-        private historyService: HistoryService,
+        private historyService      : HistoryService,
     ) {
     }
 
@@ -224,7 +239,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
 
 
     fillDataValues(data: any): void{
-        console.log(JSON.stringify(this.fields))
         for (let field of this.fields) {
             let key = field['metadata_key'];
             let new_value = data.hasOwnProperty(key) ? data[key] : '';

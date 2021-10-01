@@ -7,18 +7,18 @@
 
 # Open-Capture is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+# along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import json
 from flask_babel import gettext
-from ..import_models import outputs
-from ..main import create_classes_from_current_config
+from src.backend.import_models import outputs
+from src.backend.main import create_classes_from_current_config
 
 
 def get_outputs(args):
@@ -49,13 +49,20 @@ def get_outputs_types(module):
     return response, 200
 
 
-def update_output(output_id, data):
+def update_output(output_id, args):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
     output_info, error = outputs.get_output_by_id({'output_id': output_id})
 
     if error is None:
-        res, error = outputs.update_output({'set': {'data': json.dumps(data)}, 'output_id': output_id})
+        res, error = outputs.update_output({
+            'set': {
+                'output_type_id': args['output_type_id'],
+                'output_label': args['output_label'],
+                'data': json.dumps(args['data'])
+            },
+            'output_id': output_id
+        })
 
         if error is None:
             return '', 200

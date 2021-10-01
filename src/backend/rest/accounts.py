@@ -7,11 +7,11 @@
 
 # Open-Capture is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+# along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
@@ -19,7 +19,7 @@ import os
 import base64
 import mimetypes
 from src.backend.main import create_classes_from_current_config
-from ..import_controllers import auth, accounts, verifier
+from src.backend.import_controllers import auth, accounts, verifier
 from flask import Blueprint, request, make_response, jsonify
 
 bp = Blueprint('accounts', __name__, url_prefix='/ws/')
@@ -77,6 +77,8 @@ def update_supplier(supplier_id):
         _set.update({'siret': data['siret']})
     if 'siren' in data:
         _set.update({'siren': data['siren']})
+    if 'iban' in data:
+        _set.update({'iban': data['iban']})
     if 'vat_number' in data:
         _set.update({'vat_number': data['vat_number']})
     if 'form_id' in data:
@@ -104,11 +106,19 @@ def update_page(supplier_id):
     return make_response(res[0], res[1])
 
 
-@bp.route('accounts/addresses/update/<int:supplier_id>', methods=['PUT'])
+@bp.route('accounts/addresses/update/<int:address_id>', methods=['PUT'])
 @auth.token_required
-def update_address(supplier_id):
+def update_address(address_id):
     data = request.json['args']
-    res = accounts.update_address(supplier_id, data)
+    res = accounts.update_address(address_id, data)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('accounts/addresses/updateBySupplierId/<int:suplier_id>', methods=['PUT'])
+@auth.token_required
+def update_address_by_supplier_id(suplier_id):
+    data = request.json['args']
+    res = accounts.update_address_by_supplier_id(suplier_id, data)
     return make_response(jsonify(res[0])), res[1]
 
 

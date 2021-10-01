@@ -7,11 +7,11 @@ the Free Software Foundation, either version 3 of the License, or
 
 Open-Capture is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
@@ -28,6 +28,7 @@ import {of} from "rxjs";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {NotificationService} from "../../services/notifications/notifications.service";
 import {PrivilegesService} from "../../services/privileges.service";
+import {HistoryService} from "../../services/history.service";
 
 @Component({
     selector: 'app-user-profile',
@@ -89,6 +90,7 @@ export class UserProfileComponent implements OnInit {
         private translate: TranslateService,
         private notify: NotificationService,
         private localeService: LocaleService,
+        private historyService: HistoryService,
         private privilegeService: PrivilegesService
     ) {
     }
@@ -169,6 +171,7 @@ export class UserProfileComponent implements OnInit {
                 API_URL + '/ws/users/update/' + this.userId,{'args': user}, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {
+                    this.historyService.addHistory('general', 'profile_updated', this.translate.instant('HISTORY-DESC.profile-updated', {user: user['lastname'] + ' ' + user['firstname']}));
                     this.notify.success(this.translate.instant('USER.profile_updated'));
                     if (this.userId === this.userService.user.id) {
                         this.userService.setUser(data.user);

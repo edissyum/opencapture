@@ -7,11 +7,11 @@
 
 # Open-Capture is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+# along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
@@ -21,9 +21,8 @@ import time
 import tempfile
 from kuyruk import Kuyruk
 from flask import current_app
-from kuyruk_manager import Manager
 from .functions import recursive_delete, get_custom_array
-from .import_classes import _Database, _PyTesseract, _Locale, _Files, _Log, _Config, _SeparatorQR, _Spreadsheet
+from .import_classes import _Database, _PyTesseract, _Locale, _Files, _Log, _Config, _SeparatorQR, _Spreadsheet, _SMTP
 
 custom_array = get_custom_array()
 
@@ -34,20 +33,26 @@ else:
                                                fromlist=[custom_array['OCForInvoices']['module']]),
                                     custom_array['OCForInvoices']['module'])
 
-OCforInvoices_worker = Kuyruk()
-
-OCforInvoices_worker.config.MANAGER_HOST = "127.0.0.1"
-OCforInvoices_worker.config.MANAGER_PORT = 16501
-OCforInvoices_worker.config.MANAGER_HTTP_PORT = 16500
-
-m = Manager(OCforInvoices_worker)
-
 
 def create_classes_from_current_config():
     config_name = _Config(current_app.config['CONFIG_FILE'])
     config_file = current_app.config['CONFIG_FOLDER'] + '/config_' + config_name.cfg['PROFILE']['id'] + '.ini'
     config = _Config(current_app.config['CONFIG_FOLDER'] + '/config_' + config_name.cfg['PROFILE']['id'] + '.ini')
-    log = _Log(config.cfg['GLOBAL']['logfile'])
+    config_mail = _Config(config.cfg['GLOBAL']['configmail'])
+    smtp = _SMTP(
+        config_mail.cfg['GLOBAL']['smtp_notif_on_error'],
+        config_mail.cfg['GLOBAL']['smtp_host'],
+        config_mail.cfg['GLOBAL']['smtp_port'],
+        config_mail.cfg['GLOBAL']['smtp_login'],
+        config_mail.cfg['GLOBAL']['smtp_pwd'],
+        config_mail.cfg['GLOBAL']['smtp_ssl'],
+        config_mail.cfg['GLOBAL']['smtp_starttls'],
+        config_mail.cfg['GLOBAL']['smtp_dest_admin_mail'],
+        config_mail.cfg['GLOBAL']['smtp_delay'],
+        config_mail.cfg['GLOBAL']['smtp_auth'],
+        config_mail.cfg['GLOBAL']['smtp_from_mail'],
+    )
+    log = _Log(config.cfg['GLOBAL']['logfile'], smtp)
     spreadsheet = _Spreadsheet(log, config)
     db_user = config.cfg['DATABASE']['postgresuser']
     db_pwd = config.cfg['DATABASE']['postgrespassword']
@@ -62,19 +67,32 @@ def create_classes_from_current_config():
         int(config.cfg['GLOBAL']['resolution']),
         int(config.cfg['GLOBAL']['compressionquality']),
         log,
-        config.cfg['GLOBAL']['convertpdftotiff'],
         locale,
         config
     )
     locale = _Locale(config)
     ocr = _PyTesseract(locale.localeOCR, log, config)
-    return database, config, locale, files, ocr, log, config_file, spreadsheet
+    return database, config, locale, files, ocr, log, config_file, spreadsheet, smtp
 
 
 def create_classes(config_file):
     config = _Config(config_file)
     locale = _Locale(config)
-    log = _Log(config.cfg['GLOBAL']['logfile'])
+    config_mail = _Config(config.cfg['GLOBAL']['configmail'])
+    smtp = _SMTP(
+        config_mail.cfg['GLOBAL']['smtp_notif_on_error'],
+        config_mail.cfg['GLOBAL']['smtp_host'],
+        config_mail.cfg['GLOBAL']['smtp_port'],
+        config_mail.cfg['GLOBAL']['smtp_login'],
+        config_mail.cfg['GLOBAL']['smtp_pwd'],
+        config_mail.cfg['GLOBAL']['smtp_ssl'],
+        config_mail.cfg['GLOBAL']['smtp_starttls'],
+        config_mail.cfg['GLOBAL']['smtp_dest_admin_mail'],
+        config_mail.cfg['GLOBAL']['smtp_delay'],
+        config_mail.cfg['GLOBAL']['smtp_auth'],
+        config_mail.cfg['GLOBAL']['smtp_from_mail'],
+    )
+    log = _Log(config.cfg['GLOBAL']['logfile'], smtp)
     spreadsheet = _Spreadsheet(log, config)
     ocr = _PyTesseract(locale.localeOCR, log, config)
     db_user = config.cfg['DATABASE']['postgresuser']
@@ -83,8 +101,7 @@ def create_classes(config_file):
     db_host = config.cfg['DATABASE']['postgreshost']
     db_port = config.cfg['DATABASE']['postgresport']
     database = _Database(log, db_name, db_user, db_pwd, db_host, db_port)
-
-    return config, locale, log, ocr, database, spreadsheet
+    return config, locale, log, ocr, database, spreadsheet, smtp
 
 
 def check_file(files, path, config, log):
@@ -127,9 +144,10 @@ def str2bool(value):
     return value.lower() in "true"
 
 
-# If needed just run "kuyruk --app src.backend.main.OCforInvoices_worker manager"
-# to have web dashboard of current running worker
-@OCforInvoices_worker.task(queue='invoices')
+OCforInvoices_worker = Kuyruk()
+
+
+# @OCforInvoices_worker.task(queue='invoices')
 def launch(args):
     start = time.time()
 
@@ -140,10 +158,14 @@ def launch(args):
     if not os.path.exists(config_file):
         sys.exit('config file couldn\'t be found')
 
-    config, locale, log, ocr, database, spreadsheet = create_classes(config_file)
+    config, locale, log, ocr, database, spreadsheet, smtp = create_classes(config_file)
     tmp_folder = tempfile.mkdtemp(dir=config.cfg['GLOBAL']['tmppath'])
     filename = tempfile.NamedTemporaryFile(dir=tmp_folder).name
     separator_qr = _SeparatorQR(log, config, tmp_folder, 'verifier')
+
+    if args.get('isMail') is not None and args['isMail'] is True:
+        log = _Log((args['log']), smtp)
+        log.info('Process attachment n°' + args['cpt'] + '/' + args['nb_of_attachments'])
 
     if args.get('isMail') is None or args.get('isMail') is False:
         separator_qr.enabled = str2bool(config.cfg['SEPARATORQR']['enabled'])
@@ -153,7 +175,6 @@ def launch(args):
         int(config.cfg['GLOBAL']['resolution']),
         int(config.cfg['GLOBAL']['compressionquality']),
         log,
-        config.cfg['GLOBAL']['convertpdftotiff'],
         locale,
         config
     )
@@ -171,6 +192,7 @@ def launch(args):
             path = separator_qr.output_dir_pdfa if str2bool(separator_qr.convert_to_pdfa) is True else separator_qr.output_dir
 
         for file in os.listdir(path):
+            log.filename = os.path.basename(file)
             if check_file(files, path + file, config, log) is not False and not os.path.isfile(path + file + '.lock'):
                 os.mknod(path + file + '.lock')
                 log.info('Lock file created : ' + path + file + '.lock')
@@ -190,6 +212,7 @@ def launch(args):
 
     elif 'file' in args and args['file'] is not None:
         path = args['file']
+        log.filename = os.path.basename(path)
         typo = ''
         if separator_qr.enabled:
             if check_file(files, path, config, log) is not False:

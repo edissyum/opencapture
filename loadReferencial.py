@@ -7,11 +7,11 @@
 
 # Open-Capture is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+# along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
@@ -86,6 +86,7 @@ if __name__ == '__main__':
                         'name': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['name']]),
                         'siren': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['SIREN']]),
                         'siret': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['SIRET']]),
+                        'iban': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['IBAN']]),
                         'get_only_raw_footer': not spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['get_only_raw_footer']],
                         'address_id': str(address_id),
                     }
@@ -105,7 +106,7 @@ if __name__ == '__main__':
                     })
                 else:
                     log.error('While adding supplier : ' +
-                              str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['name']]))
+                              str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['name']]), False)
             else:
                 current_supplier = database.select({
                     'select': ['id', 'address_id'],
@@ -147,6 +148,7 @@ if __name__ == '__main__':
                         'name': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['name']]),
                         'siren': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['SIREN']]),
                         'siret': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['SIRET']]),
+                        'iban': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['IBAN']]),
                         'get_only_raw_footer': get_only_raw_footer,
                         'address_id': address_id
                     },
@@ -168,7 +170,7 @@ if __name__ == '__main__':
                              str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['name']]))
                 else:
                     log.error('While updating supplier : ' +
-                              str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['name']]))
+                              str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['name']]), False)
 
         # Commit and close database connection
         database.conn.commit()

@@ -7,13 +7,14 @@ the Free Software Foundation, either version 3 of the License, or
 
 Open-Capture is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
-@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+@dev : Nathan Cheval <nathan.cheval@outlook.fr>
+@dev : Oussama BRICH <oussama.brich@edissyum.com> */
 
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -86,9 +87,8 @@ import { UpdateInputComponent } from './settings/verifier/inputs/update/update-i
 import { UpdatePositionsMaskComponent } from './settings/verifier/positions-mask/update/update-positions-mask.component';
 import { PositionsMaskListComponent } from './settings/verifier/positions-mask/list/positions-mask-list.component';
 import { CreatePositionsMaskComponent } from './settings/verifier/positions-mask/create/create-positions-mask.component';
-import { SeparatorComponent } from './settings/splitter/separator/separator.component';
 import { HistoryComponent } from './history/history.component';
-
+import { SeparatorComponent } from './settings/splitter/separator/separator.component';
 import { SplitterCreateInputComponent } from './settings/splitter/inputs/create/create-input.component';
 import { SplitterUpdateInputComponent } from './settings/splitter/inputs/update/update-input.component';
 import { SplitterInputListComponent } from './settings/splitter/inputs/list/input-list.component';

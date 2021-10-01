@@ -7,19 +7,19 @@
 
 # Open-Capture is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+# along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 import json
 from flask_babel import gettext
-from ..import_models import accounts
-from ..main import create_classes_from_current_config
+from src.backend.import_models import accounts
+from src.backend.main import create_classes_from_current_config
 
 
 def retrieve_suppliers(args):
@@ -168,6 +168,38 @@ def update_address(address_id, data):
         return response, 401
 
 
+def update_address_by_supplier_id(supplier_id, data):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    address_info, error = accounts.get_supplier_by_id({'select': ['address_id'], 'supplier_id': supplier_id})
+
+    if error is None:
+        _set = {
+            'address1': data['address1'],
+            'address2': data['address2'],
+            'postal_code': data['postal_code'],
+            'city': data['city'],
+            'country': data['country']
+        }
+
+        res, error = accounts.update_address({'set': _set, 'address_id': address_info['address_id']})
+
+        if error is None:
+            return '', 200
+        else:
+            response = {
+                "errors": gettext('UPDATE_ADDRESS_BY_SUPPLIER_ID_ERROR'),
+                "message": error
+            }
+            return response, 401
+    else:
+        response = {
+            "errors": gettext('UPDATE_ADDRESS_BY_SUPPLIER_ID_ERROR'),
+            "message": error
+        }
+        return response, 401
+
+
 def create_address(data):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
@@ -201,12 +233,13 @@ def create_supplier(data):
     _spreadsheet = _vars[7]
     _columns = {
         'name': data['name'],
-        'siret': data['siret'],
-        'siren': data['siren'],
-        'vat_number': data['vat_number'],
-        'form_id': data['form_id'],
+        'siret': data['siret'] if 'siret' in data else None,
+        'siren': data['siren'] if 'siren' in data else None,
+        'iban': data['iban'] if 'iban' in data else None,
+        'vat_number': data['vat_number'] if 'vat_number' in data else None,
+        'form_id': data['form_id'] if 'form_id' in data else None,
         'address_id': data['address_id'],
-        'get_only_raw_footer': data['get_only_raw_footer']
+        'get_only_raw_footer': data['get_only_raw_footer'] if 'get_only_raw_footer' in data else False,
     }
 
     res, error = accounts.create_supplier({'columns': _columns})

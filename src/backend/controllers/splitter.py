@@ -7,24 +7,21 @@
 
 # Open-Capture is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+# along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 from flask import current_app
-
 import worker_splitter_from_python
-from ..import_classes import _Files
-from ..import_models import splitter
-from ..models import splitter
-from ..main import create_classes_from_current_config
-from ..import_classes import _Splitter, _Cmis
-from ..import_controllers import forms, outputs
+from src.backend.import_models import splitter
+from src.backend.import_controllers import forms, outputs
+from src.backend.main import create_classes_from_current_config
+from src.backend.import_classes import _Files, _Splitter, _CMIS
 
 import base64
 import requests
@@ -250,7 +247,7 @@ def validate(documents, metadata):
 
                 if output[0]['output_type_id'] == 'alfresco':
                     auths = get_output_auth(output[0]['data']['options']['auth'])
-                    cmis = _Cmis(auths['cmis_ws'], auths['login'], auths['password'], auths['folder'])
+                    cmis = _CMIS(auths['cmis_ws'], auths['login'], auths['password'], auths['folder'])
 
                     if is_export_pdf_ok:
                         for path in res_file['paths']:

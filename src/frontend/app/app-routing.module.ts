@@ -7,13 +7,15 @@ the Free Software Foundation, either version 3 of the License, or
 
 Open-Capture is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
-@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+@dev : Nathan Cheval <nathan.cheval@outlook.fr>
+@dev : Oussama BRICH <oussama.brich@edissyum.com> */
+
 
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
@@ -71,6 +73,7 @@ const routes: Routes = [
 
     },
     {path: 'verifier', redirectTo: 'verifier/list', pathMatch: 'full'},
+
     {
         path: 'upload', component: UploadComponent,
         data: {title: marker('GLOBAL.upload'), privileges: ['upload']},
@@ -81,7 +84,6 @@ const routes: Routes = [
         path: 'history', component: HistoryComponent,
         data: {title: marker('GLOBAL.history'), privileges: ['history']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
-
     },
     {path: 'accounts/suppliers', redirectTo: 'accounts/suppliers/list', pathMatch: 'full'},
     {

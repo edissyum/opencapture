@@ -7,17 +7,17 @@
 
 # Open-Capture is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+# along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 from gettext import gettext
-from ..main import create_classes_from_current_config
+from src.backend.main import create_classes_from_current_config
 
 
 def get_positions_masks(args):
@@ -106,6 +106,12 @@ def add_positions_mask(args):
             'columns': {
                 'label': args['label'],
                 'supplier_id': args['supplier_id'],
+                'pages': args['pages'] if 'pages' in args else {},
+                'regex': args['regex'] if 'regex' in args else {},
+                'width': args['width'] if 'width' in args else None,
+                'nb_pages': args['nb_pages'] if 'nb_pages' in args else None,
+                'filename': args['filename'] if 'filename' in args else None,
+                'positions': args['positions'] if 'positions' in args else {},
             }
         }
         res = _db.insert(args)

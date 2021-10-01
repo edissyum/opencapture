@@ -1,7 +1,7 @@
 import json
 from flask import Blueprint, request, make_response, jsonify
-from ..import_controllers import auth
-from ..import_controllers import custom_fields
+from src.backend.import_controllers import auth
+from src.backend.import_controllers import custom_fields
 
 bp = Blueprint('customFields', __name__, url_prefix='/ws/')
 

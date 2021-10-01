@@ -7,11 +7,11 @@
 
 # Open-Capture is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+# along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
@@ -21,8 +21,8 @@ import random
 import stat
 import subprocess
 from flask_babel import gettext
-from ..import_models import inputs
-from ..main import create_classes_from_current_config
+from src.backend.import_models import inputs
+from src.backend.main import create_classes_from_current_config
 
 
 def get_inputs(args):
@@ -64,15 +64,14 @@ def update_input(input_id, data):
 def create_input(data):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
-
     _columns = {
+        'module': data['module'],
         'input_id': data['input_id'],
         'customer_id': data['customer_id'],
         'input_label': data['input_label'],
+        'input_folder': data['input_folder'],
         'default_form_id': data['default_form_id'],
         'override_supplier_form': data['override_supplier_form'] if 'override_supplier_form' in data else False,
-        'input_folder': data['input_folder'],
-        'module': data['module'],
     }
 
     res, error = inputs.create_input({'columns': _columns})

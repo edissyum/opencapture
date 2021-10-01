@@ -7,11 +7,11 @@
 
 # Open-Capture is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+# along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
@@ -35,6 +35,7 @@ class Spreadsheet:
             self.referencialSupplierArray['name'] = fp['name']
             self.referencialSupplierArray['SIRET'] = fp['SIRET']
             self.referencialSupplierArray['SIREN'] = fp['SIREN']
+            self.referencialSupplierArray['IBAN'] = fp['IBAN']
             self.referencialSupplierArray['VATNumber'] = fp['VATNumber']
             self.referencialSupplierArray['address1'] = fp['address1']
             self.referencialSupplierArray['address2'] = fp['address2']
@@ -94,6 +95,7 @@ class Spreadsheet:
                                 supplier['vat_number'] if supplier['vat_number'] is not None else '',
                                 supplier['siret'] if supplier['siret'] is not None else '',
                                 supplier['siren'] if supplier['siren'] is not None else '',
+                                supplier['iban'] if supplier['iban'] is not None else '',
                                 address['address1'] if address and address['address1'] is not None else '',
                                 address['address2'] if address and address['address2'] is not None else '',
                                 address['postal_code'] if address and address['postal_code'] is not None else '',
@@ -103,11 +105,11 @@ class Spreadsheet:
                                 str(not supplier['get_only_raw_footer']).lower() if supplier['get_only_raw_footer'] is not None else '']
                         content_sheet[sheet_name].append(line)
             except IndexError as e:
-                self.Log.error("IndexError while updating ods reference file : " + str(e))
+                self.Log.error("IndexError while updating ods reference file : " + str(e), False)
 
             save_data(self.referencialSuppplierSpreadsheet, content_sheet)
         else:
-            self.Log.error('The referencial file doesn\'t exist : ' + self.referencialSuppplierSpreadsheet)
+            self.Log.error('The referencial file doesn\'t exist : ' + self.referencialSuppplierSpreadsheet, False)
 
     def write_typo_excel_sheet(self, vat_number, typo):
         content_sheet = pd.read_excel(self.referencialSuppplierSpreadsheet, engine='openpyxl')
@@ -142,6 +144,7 @@ class Spreadsheet:
             self.referencialSupplierArray['VATNumber'],
             self.referencialSupplierArray['SIRET'],
             self.referencialSupplierArray['SIREN'],
+            self.referencialSupplierArray['IBAN'],
             self.referencialSupplierArray['address1'],
             self.referencialSupplierArray['address2'],
             self.referencialSupplierArray['addressPostalCode'],

@@ -7,19 +7,19 @@
 
 # Open-Capture is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+# along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 import json
 from flask_babel import gettext
-from ..import_models import forms, accounts
-from ..main import create_classes_from_current_config
+from src.backend.import_models import forms, accounts
+from src.backend.main import create_classes_from_current_config
 
 
 def get_forms(args):
@@ -71,7 +71,7 @@ def get_form_by_id(form_id):
 
 def get_form_fields_by_supplier_id(supplier_id):
     form_id, error = accounts.get_supplier_by_id({'select': ['form_id'], 'supplier_id': supplier_id})
-    if error is None:
+    if error is None and form_id['form_id'] is not None:
         form_info, error = forms.get_fields({
             'form_id': form_id['form_id']
         })
@@ -84,6 +84,8 @@ def get_form_fields_by_supplier_id(supplier_id):
                 "message": error
             }
             return response, 401
+    else:
+        return get_default_form()
 
 
 def get_form_fields_by_form_id(form_id):
@@ -166,6 +168,44 @@ def delete_form(form_id):
     else:
         response = {
             "errors": gettext('DELETE_FORM_ERROR'),
+            "message": error
+        }
+        return response, 401
+
+
+def duplicate_form(form_id):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+
+    form_info, error = forms.get_form_by_id({'form_id': form_id})
+    if error is None:
+        new_outputs = '{'
+        for outputs in form_info['outputs']:
+            new_outputs += outputs + ','
+        new_outputs = new_outputs[:-1] + '}'
+        new_label = gettext('COPY_OF') + ' ' + form_info['label']
+        args = {
+            'label': new_label,
+            'default_form': False,
+            'outputs': new_outputs,
+            'supplier_verif': form_info['supplier_verif']
+        }
+        res, error = forms.add_form(args)
+        if error is None:
+            fields, error = get_fields(form_info['id'])
+            if error is 200:
+                forms.add_form_fields(res)
+                update_fields({'data': fields['form_fields']['fields'], 'form_id': res})
+                return '', 200
+        else:
+            response = {
+                "errors": gettext('DUPLICATE_FORM_ERROR'),
+                "message": error
+            }
+            return response, 401
+    else:
+        response = {
+            "errors": gettext('DUPLICATE_FORM_ERROR'),
             "message": error
         }
         return response, 401

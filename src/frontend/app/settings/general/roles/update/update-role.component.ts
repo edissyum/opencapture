@@ -7,11 +7,11 @@ the Free Software Foundation, either version 3 of the License, or
 
 Open-Capture is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
@@ -124,9 +124,9 @@ export class UpdateRoleComponent implements OnInit {
         public userService: UserService,
         public translate: TranslateService,
         private notify: NotificationService,
+        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService,
-        public historyService: HistoryService
     ) {
     }
 
@@ -201,7 +201,6 @@ export class UpdateRoleComponent implements OnInit {
             this.privileges['privileges'].forEach((element: any) => {
                 this.rolePrivileges.forEach((element2: any) => {
                     if (element['label'] === element2) {
-                        console.log('element[\'label\'] : ' + element['label']);
                         rolePrivileges.push(element['id']);
                     }
                 });
@@ -215,8 +214,6 @@ export class UpdateRoleComponent implements OnInit {
                     return of(false);
                 })
             ).subscribe();
-
-            console.log("Onsubmit sirolePrivileges : " + rolePrivileges);
 
             this.http.put(API_URL + '/ws/roles/updatePrivilege/' + this.roleId, {'privileges': rolePrivileges}, {headers: this.authService.headers},
             ).pipe(

@@ -7,13 +7,14 @@
 
 # Open-Capture is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+# along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+
 import psycopg2
 import psycopg2.extras
 
@@ -40,19 +41,19 @@ class Database:
                     " port      =" + self.port)
                 self.conn.autocommit = True
             except (psycopg2.OperationalError, psycopg2.ProgrammingError) as e:
-                self.Log.error('PGSQL connection error : ' + str(e))
+                self.Log.error('PGSQL connection error : ' + str(e), False)
                 exit()
 
     def select(self, args):
         if 'table' not in args or 'select' not in args:
-            self.Log.error('One or more required args are empty')
+            self.Log.error('One or more required args are empty', False)
         else:
             tmp_table = args['table']
             args['table'] = args['table'][0]
             if 'left_join' in args:
                 if (len(tmp_table) - 1) != len(args['left_join']):
-                    self.Log.error("Number of tables doesn't match with number of joins")
-                    self.Log.error(str(args))
+                    self.Log.error("Number of tables doesn't match with number of joins", False)
+                    self.Log.error(str(args), False)
                 else:
                     cpt = 1
                     for joins in args['left_join']:
@@ -96,12 +97,12 @@ class Database:
                 c.execute(query, args['data'])
                 return c.fetchall()
             except psycopg2.OperationalError as e:
-                self.Log.error('Error while querying SELECT : ' + str(e))
+                self.Log.error('Error while querying SELECT : ' + str(e), False)
                 return False
 
     def insert(self, args):
         if 'table' not in args:
-            self.Log.error('One or more required args are empty')
+            self.Log.error('One or more required args are empty', False)
         else:
             columns_list = []
             values_list = []
@@ -121,12 +122,12 @@ class Database:
                 self.conn.commit()
                 return new_row_id
             except psycopg2.OperationalError as e:
-                self.Log.error('Error while querying INSERT : ' + str(e))
+                self.Log.error('Error while querying INSERT : ' + str(e), False)
                 return False
 
     def update(self, args):
         if args['table'] == [] or args['set'] == []:
-            self.Log.error('One or more required args are empty')
+            self.Log.error('One or more required args are empty', False)
         else:
             query_list = []
             data = []
@@ -146,5 +147,5 @@ class Database:
                 self.conn.commit()
                 return True, ''
             except (psycopg2.OperationalError, psycopg2.errors.InvalidTextRepresentation) as e:
-                self.Log.error('Error while querying UPDATE : ' + str(e))
+                self.Log.error('Error while querying UPDATE : ' + str(e), False)
                 return False, e

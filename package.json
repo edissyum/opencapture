@@ -34,7 +34,6 @@
         "ngx-file-drag-drop": "^5.1.2",
         "postcss": "^8.3.8",
         "rxjs": "~6.6.7",
-        "tailwindcss": "^2.2.16",
         "ng-click-outside": "^8.0.0",
         "ng2-pdfjs-viewer": "^6.0.2",
         "ngx-mat-select-search": "^3.3.0",
@@ -43,7 +42,8 @@
         "@types/pdfjs-dist": "2.1.7",
         "remove-accents": "^0.4.2",
         "@syncfusion/ej2": "^19.2.60",
-        "@angular/flex-layout": "^11.0.0-beta.33"
+        "@angular/flex-layout": "^11.0.0-beta.33",
+        "tailwindcss": "^2.2.16"
     },
     "devDependencies": {
         "@angular-builders/custom-webpack": "^11.1.1",

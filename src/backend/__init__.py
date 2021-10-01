@@ -7,11 +7,11 @@
 
 # Open-Capture is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+# along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
@@ -20,7 +20,7 @@ import json
 from flask_cors import CORS
 from flask_babel import Babel
 from flask import request, session, Flask
-from .import_rest import auth, locale, config, user, splitter, verifier, roles, privileges, custom_fields, \
+from src.backend.import_rest import auth, locale, config, user, splitter, verifier, roles, privileges, custom_fields, \
     forms, status, accounts, outputs, maarch, inputs, positions_masks, history
 
 

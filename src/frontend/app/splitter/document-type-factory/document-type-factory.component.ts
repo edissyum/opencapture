@@ -72,7 +72,6 @@ export class ChecklistDatabase {
   public filter(filterText: string) {
     let filteredTreeData: any[];
     if (filterText) {
-      console.log(this.treeData);
       filteredTreeData = this.treeData.filter(d => d.text.toLocaleLowerCase().indexOf(filterText.toLocaleLowerCase()) > -1);
       Object.assign([], filteredTreeData).forEach(ftd => {
         // @ts-ignore

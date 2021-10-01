@@ -7,40 +7,40 @@
 
 # Open-Capture is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+# along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
 from .functions import get_custom_array
 custom_array = get_custom_array()
 
-if 'auth' not in custom_array:
+if 'auth' or 'controllers' not in custom_array['auth']['path']:
     from .controllers import auth
-else:
+elif 'controllers' in custom_array['auth']['path']:
     auth = getattr(__import__(custom_array['auth']['path'], fromlist=[custom_array['auth']['module']]), custom_array['auth']['module'])
 
-if 'user' not in custom_array:
+if 'user' or 'controllers' not in custom_array['user']['path']:
     from .controllers import user
-else:
+elif 'controllers' in custom_array['user']['path']:
     user = getattr(__import__(custom_array['user']['path'], fromlist=[custom_array['user']['module']]), custom_array['user']['module'])
 
-if 'roles' not in custom_array:
+if 'roles' or 'controllers' not in custom_array['roles']['path']:
     from .controllers import roles
-else:
+elif 'controllers' in custom_array['roles']['path']:
     roles = getattr(__import__(custom_array['roles']['path'], fromlist=[custom_array['user']['module']]), custom_array['roles']['module'])
 
-if 'config' not in custom_array:
+if 'config' or 'controllers' not in custom_array['config']['path']:
     from .controllers import config
-else:
+elif 'controllers' in custom_array['config']['path']:
     config = getattr(__import__(custom_array['config']['path'], fromlist=[custom_array['config']['module']]), custom_array['config']['module'])
 
-if 'forms' not in custom_array:
+if 'forms' or 'controllers' not in custom_array['forms']['path']:
     from .controllers import forms
-else:
+elif 'controllers' in custom_array['forms']['path']:
     forms = getattr(__import__(custom_array['forms']['path'], fromlist=[custom_array['forms']['module']]), custom_array['forms']['module'])
 
 if 'history' or 'controllers' not in custom_array['history']['path']:
@@ -48,53 +48,52 @@ if 'history' or 'controllers' not in custom_array['history']['path']:
 elif 'controllers' in custom_array['history']['path']:
     history = getattr(__import__(custom_array['history']['path'], fromlist=[custom_array['history']['module']]), custom_array['history']['module'])
 
-if 'positions_masks' not in custom_array:
+if 'positions_masks' or 'controllers' not in custom_array['positions_masks']['path']:
     from .controllers import positions_masks
-else:
+elif 'controllers' in custom_array['positions_masks']['path']:
     positions_masks = getattr(__import__(custom_array['positions_masks']['path'], fromlist=[custom_array['positions_masks']['module']]), custom_array['positions_masks']['module'])
 
-if 'outputs' not in custom_array:
+if 'outputs' or 'controllers' not in custom_array['outputs']['path']:
     from .controllers import outputs
 else:
     outputs = getattr(__import__(custom_array['outputs']['path'], fromlist=[custom_array['outputs']['module']]), custom_array['outputs']['module'])
 
-if 'splitter' not in custom_array:
+if 'splitter' or 'controllers' not in custom_array['splitter']['path']:
     from .controllers import splitter
-else:
+elif 'controllers' in custom_array['splitter']['path']:
     splitter = getattr(__import__(custom_array['splitter']['path'], fromlist=[custom_array['splitter']['module']]), custom_array['splitter']['module'])
 
-if 'accounts' not in custom_array:
+if 'accounts' or 'controllers' not in custom_array['accounts']['path']:
     from .controllers import accounts
-else:
+elif 'controllers' in custom_array['accounts']['path']:
     accounts = getattr(__import__(custom_array['accounts']['path'], fromlist=[custom_array['accounts']['module']]), custom_array['accounts']['module'])
 
-if 'verifier' not in custom_array:
+if 'verifier' or 'controllers' not in custom_array['verifier']['path']:
     from .controllers import verifier
-else:
+elif 'controllers' in custom_array['verifier']['path']:
     verifier = getattr(__import__(custom_array['verifier']['path'], fromlist=[custom_array['verifier']['module']]), custom_array['verifier']['module'])
 
-if 'status' not in custom_array:
+if 'status' or 'controllers' not in custom_array['status']['path']:
     from .controllers import status
-else:
+elif 'controllers' in custom_array['status']['path']:
     status = getattr(__import__(custom_array['status']['path'], fromlist=[custom_array['status']['module']]), custom_array['status']['module'])
 
-if 'privileges' not in custom_array:
+if 'privileges' or 'controllers' not in custom_array['privileges']['path']:
     from .controllers import privileges
-else:
+elif 'controllers' in custom_array['privileges']['path']:
     privileges = getattr(__import__(custom_array['privileges']['path'], fromlist=[custom_array['privileges']['module']]), custom_array['privileges']['module'])
 
-if 'custom_fields' not in custom_array:
+if 'custom_fields' or 'controllers' not in custom_array['custom_fields']['path']:
     from .controllers import custom_fields
-else:
+elif 'controllers' in custom_array['custom_fields']['path']:
     custom_fields = getattr(__import__(custom_array['custom_fields']['path'], fromlist=[custom_array['custom_fields']['module']]), custom_array['custom_fields']['module'])
 
-if 'maarch' not in custom_array:
+if 'maarch' or 'controllers' not in custom_array['maarch']['path']:
     from .controllers import maarch
-else:
+elif 'controllers' in custom_array['maarch']['path']:
     maarch = getattr(__import__(custom_array['maarch']['path'], fromlist=[custom_array['maarch']['module']]), custom_array['maarch']['module'])
 
-
-if 'inputs' not in custom_array:
+if 'inputs' or 'controllers' not in custom_array['inputs']['path']:
     from .controllers import inputs
-else:
+elif 'controllers' in custom_array['inputs']['path']:
     inputs = getattr(__import__(custom_array['inputs']['path'], fromlist=[custom_array['inputs']['module']]), custom_array['inputs']['module'])

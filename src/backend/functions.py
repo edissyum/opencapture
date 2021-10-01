@@ -7,15 +7,16 @@
 
 # Open-Capture is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+# along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
-import json
+
 import os
+import json
 from .classes.Config import Config as _Config
 
 
@@ -54,15 +55,6 @@ def check_python_customized_files(path):
     return array_of_import
 
 
-def retrieve_custom_positions(typology, config):
-    if typology:
-        file = config.cfg['REFERENCIAL']['referencialposition'] + str(typology) + '.ini'
-        if os.path.isfile(file):
-            positions = config.read_custom_position(file)
-            return positions
-    return False
-
-
 def search_custom_positions(data, ocr, files, locale, file, config):
     regex = data['regex']
     target = data['target'].lower()
@@ -70,44 +62,24 @@ def search_custom_positions(data, ocr, files, locale, file, config):
     target_file = ''
     if position:
         if 'page' not in data or ('page' in data and data['page'] in ['1', '', None]):
-            if files.isTiff == 'True':
-                if target == 'footer':
-                    target_file = files.tiffName_footer
-                elif target == 'header':
-                    target_file = files.tiffName_header
-                else:
-                    target_file = files.tiffName
+            if target == 'footer':
+                target_file = files.jpgName_footer
+            elif target == 'header':
+                target_file = files.jpgName_header
             else:
-                if target == 'footer':
-                    target_file = files.jpgName_footer
-                elif target == 'header':
-                    target_file = files.jpgName_header
-                else:
-                    target_file = files.jpgName
+                target_file = files.jpgName
         elif data['page'] != '1':
             nb_pages = files.get_pages(file, config)
             if str(nb_pages) == str(data['page']):
-                if files.isTiff == 'True':
-                    if target == 'footer':
-                        target_file = files.tiffName_last_footer
-                    elif target == 'header':
-                        target_file = files.tiffName_last_header
-                    else:
-                        target_file = files.tiffName_last
+                if target == 'footer':
+                    target_file = files.jpgName_last_footer
+                elif target == 'header':
+                    target_file = files.jpgName_last_header
                 else:
-                    if target == 'footer':
-                        target_file = files.jpgName_last_footer
-                    elif target == 'header':
-                        target_file = files.jpgName_last_header
-                    else:
-                        target_file = files.jpgName_last
+                    target_file = files.jpgName_last
             else:
-                if files.isTiff == 'True':
-                    files.pdf_to_tiff(file, files.custom_fileName_tiff, False, False, True, target, data['page'])
-                    target_file = files.custom_fileName_tiff
-                else:
-                    files.pdf_to_jpg(file + '[' + str(int(data['page']) - 1) + ']', False, True, target, False, True)
-                    target_file = files.custom_fileName
+               files.pdf_to_jpg(file + '[' + str(int(data['page']) - 1) + ']', False, False, False, False, True)
+               target_file = files.custom_fileName
         if regex:
             locale_list = locale.get()
             regex = locale_list[regex]
@@ -128,10 +100,7 @@ def search_by_positions(supplier, index, ocr, files, database):
     positions = positions_mask[0]['positions'][index] if index in positions_mask[0]['positions'] else None
     pages = positions_mask[0]['pages'][index] if index in positions_mask[0]['pages'] else False
     regex = positions_mask[0]['regex'][index] if index in positions_mask[0]['regex'] else False
-    if files.isTiff == 'True':
-        file = files.tiffName
-    else:
-        file = files.jpgName
+    file = files.jpgName
 
     if positions:
         positions['ocr_from_user'] = True
@@ -162,8 +131,8 @@ def recursive_delete(folder, log):
         try:
             os.remove(folder + '/' + file)
         except FileNotFoundError as e:
-            log.error('Unable to delete ' + folder + '/' + file + ' on temp folder: ' + str(e))
+            log.error('Unable to delete ' + folder + '/' + file + ' on temp folder: ' + str(e), False)
     try:
         os.rmdir(folder)
     except FileNotFoundError as e:
-        log.error('Unable to delete ' + folder + ' on temp folder: ' + str(e))
+        log.error('Unable to delete ' + folder + ' on temp folder: ' + str(e), False)

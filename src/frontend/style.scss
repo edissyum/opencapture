@@ -9,6 +9,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 @tailwind base;
@@ -26,7 +27,6 @@ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/
 }
 
 [class^="icomoon-"], [class*="icomoon-"] {
-    /* use !important to prevent issues with browser extensions that change fonts */
     font-family: 'icomoon', serif !important;
     speak: never;
     font-style: normal;
@@ -34,8 +34,6 @@ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/
     font-variant: normal;
     text-transform: none;
     line-height: 1;
-
-    /* Better Font Rendering =========== */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
@@ -67,14 +65,13 @@ mat-expansion-panel-header.settings_expansion {
         @apply text-white #{!important};
     }
 
-    &:hover,
-    &:focus{
-        background: none !important;
+    &:hover, &:focus {
+        @apply bg-none #{!important};
         @apply bg-gray-900 #{!important};
     }
 }
 
-/** **/
+/** END **/
 
 /*** Image area select ***/
 
@@ -153,7 +150,7 @@ div[id*="select-area-label_"] {
 }
 
 .mat-form-field-appearance-outline .mat-focused .mat-form-field-outline-thick,
-.mat-datepicker-toggle-active{
+.mat-datepicker-toggle-active {
     @apply text-green-400 #{!important};
 }
 

@@ -7,14 +7,15 @@
 
 # Open-Capture is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+# along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
+
 import logging
 import os
 import json
@@ -31,9 +32,9 @@ from zeep import Client, exceptions
 
 from src.backend.main import launch
 from flask import current_app, Response
-from ..main import create_classes_from_current_config
-from ..import_models import verifier, accounts
-from ..import_classes import _Files, _MaarchWebServices
+from src.backend.main import create_classes_from_current_config
+from src.backend.import_models import verifier, accounts, accounts
+from src.backend.import_classes import _Files, _MaarchWebServices
 
 
 def handle_uploaded_file(files, input_id):
@@ -361,11 +362,30 @@ def export_maarch(invoice_id, data):
             invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
             if not error:
                 args = {}
+                supplier = accounts.get_supplier_by_id({'supplier_id': invoice_info['supplier_id']})
+                if supplier and supplier[0]['address_id']:
+                    address = accounts.get_address_by_id({'address_id': supplier[0]['address_id']})
+                    if address:
+                        supplier[0].update(address[0])
+
+                contact = {
+                    'company': supplier[0]['name'],
+                    'addressTown': supplier[0]['city'],
+                    'societyShort': supplier[0]['name'],
+                    'addressStreet': supplier[0]['address1'],
+                    'addressPostcode': supplier[0]['postal_code'],
+                    'customFields': {},
+                    'email': 'A_renseigner_' + supplier[0]['name'].replace(' ', '_') + '@' + supplier[0]['vat_number'] + '.fr'
+                }
+                res = ws.create_contact(contact)
+                if res is not False:
+                    args['contact'] = {'id': res['id'], 'type': 'contact'}
+
                 ws_data = data['options']['parameters']
                 for _data in ws_data:
                     value = _data['value']
                     if 'webservice' in _data:
-                        # Pour le webservices maarch, ce sont les identifiants qui sont utilisés
+                        # Pour le webservices Maarch, ce sont les identifiants qui sont utilisés
                         # et non les valeurs bruts (e.g COU plutôt que Service courrier)
                         value = _data['value']['id']
 
@@ -379,9 +399,10 @@ def export_maarch(invoice_id, data):
                         })
                         customs = json.loads(_data['value'])
                         for custom_id in customs:
-                            args['customFields'].update({
-                                custom_id: invoice_info['datas'][customs[custom_id]]
-                            })
+                            if custom_id in customs and customs[custom_id] in invoice_info['datas']:
+                                args['customFields'].update({
+                                    custom_id: invoice_info['datas'][customs[custom_id]]
+                                })
                     elif _data['id'] == 'subject':
                         subject = construct_with_var(_data['value'], invoice_info)
                         args.update({
@@ -456,7 +477,7 @@ def construct_with_var(data, invoice_info):
 
 
 def export_xml(invoice_id, data):
-    folder_out = separator = filename = ''
+    folder_out = separator = filename = extension = ''
     parameters = data['options']['parameters']
     for setting in parameters:
         if setting['id'] == 'folder_out':
@@ -465,13 +486,16 @@ def export_xml(invoice_id, data):
             separator = setting['value']
         elif setting['id'] == 'filename':
             filename = setting['value']
+        elif setting['id'] == 'extension':
+            extension = setting['value']
+
     invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
 
     if not error:
         _technical_data = []
         # Create the XML filename
         _data = construct_with_var(filename, invoice_info)
-        filename = separator.join(str(x) for x in _data) + '.xml'
+        filename = separator.join(str(x) for x in _data) + '.' + extension
         # END create the XML filename
 
         # Fill XML with invoice informations
@@ -515,12 +539,7 @@ def ocr_on_the_fly(file_name, selection, thumb_size, positions_masks):
     _files = _vars[3]
     _Ocr = _vars[4]
 
-    if _files.isTiff == 'True':
-        path = _cfg['GLOBAL']['tiffpath'] + '/' +  (os.path.splitext(file_name)[0]).replace('full_', 'tiff_') + '.tiff'
-        if not os.path.isfile(path):
-            path = _cfg['GLOBAL']['fullpath'] + '/' + file_name
-    else:
-        path = _cfg['GLOBAL']['fullpath'] + '/' + file_name
+    path = _cfg['GLOBAL']['fullpath'] + '/' + file_name
 
     if positions_masks:
         path = _cfg['GLOBAL']['positionsmaskspath'] + '/' + file_name

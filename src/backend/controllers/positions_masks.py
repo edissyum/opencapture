@@ -7,19 +7,20 @@
 
 # Open-Capture is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+# along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
+
 import json
 
 from flask_babel import gettext
-from ..import_models import positions_masks, accounts
-from ..main import create_classes_from_current_config
+from src.backend.import_models import positions_masks, accounts
+from src.backend.main import create_classes_from_current_config
 
 
 def get_positions_masks(args):
@@ -63,12 +64,12 @@ def add_positions_mask(args):
 
 
 def get_positions_mask_by_id(position_mask_id):
-    form_info, error = positions_masks.get_positions_mask_by_id({
+    positions_masks_info, error = positions_masks.get_positions_mask_by_id({
         'position_mask_id': position_mask_id
     })
 
     if error is None:
-        return form_info, 200
+        return positions_masks_info, 200
     else:
         response = {
             "errors": gettext('GET_POSITION_MASK_BY_ID_ERROR'),
@@ -80,12 +81,12 @@ def get_positions_mask_by_id(position_mask_id):
 def get_positions_mask_fields_by_supplier_id(supplier_id):
     position_mask_id, error = accounts.get_supplier_by_id({'select': ['position_mask_id'], 'supplier_id': supplier_id})
     if error is None:
-        form_info, error = positions_masks.get_fields({
+        positions_masks_info, error = positions_masks.get_fields({
             'position_mask_id': position_mask_id['position_mask_id']
         })
 
         if error is None:
-            return form_info, 200
+            return positions_masks_info, 200
         else:
             response = {
                 "errors": gettext('GET_POSITION_MASK_BY_SUPPLIER_ID_ERROR'),
@@ -98,7 +99,7 @@ def update_positions_mask(position_mask_id, args):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
     _spreadsheet = _vars[7]
-    form_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
+    positions_masks_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
     if error is None:
         res, error = positions_masks.update_positions_mask({'set': args, 'position_mask_id': position_mask_id})
 
@@ -126,7 +127,7 @@ def delete_positions_mask(position_mask_id):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
 
-    form_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
+    positions_masks_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
     if error is None:
         res, error = positions_masks.update_positions_mask({'set': {'status': 'DEL', 'enabled': False}, 'position_mask_id': position_mask_id})
         if error is None:
@@ -145,11 +146,44 @@ def delete_positions_mask(position_mask_id):
         return response, 401
 
 
+def duplicate_positions_mask(position_mask_id):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    positions_masks_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
+    if error is None:
+        new_label = gettext('COPY_OF') + ' ' + positions_masks_info['label']
+        args = {
+            'label': new_label,
+            'supplier_id': positions_masks_info['supplier_id'],
+            'pages': json.dumps(positions_masks_info['pages']),
+            'regex': json.dumps(positions_masks_info['regex']),
+            'width': positions_masks_info['width'],
+            'nb_pages': positions_masks_info['nb_pages'],
+            'filename': positions_masks_info['filename'],
+            'positions': json.dumps(positions_masks_info['positions'])
+        }
+        res, error = positions_masks.add_positions_mask(args)
+        if error is None:
+            return '', 200
+        else:
+            response = {
+                "errors": gettext('DUPLICATE_POSITIONS_MASKS_ERROR'),
+                "message": error
+            }
+            return response, 401
+    else:
+        response = {
+            "errors": gettext('DUPLICATE_POSITIONS_MASKS_ERROR'),
+            "message": error
+        }
+        return response, 401
+
+
 def disable_positions_mask(position_mask_id):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
 
-    form_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
+    positions_masks_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
     if error is None:
         res, error = positions_masks.update_positions_mask({'set': {'enabled': False}, 'position_mask_id': position_mask_id})
         if error is None:
@@ -172,7 +206,7 @@ def enable_positions_mask(position_mask_id):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
 
-    form_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
+    positions_masks_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
     if error is None:
         res, error = positions_masks.update_positions_mask({'set': {'enabled': True}, 'position_mask_id': position_mask_id})
         if error is None:
