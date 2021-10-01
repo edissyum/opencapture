@@ -7,13 +7,15 @@
 
 # Open-Capture is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+# along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+
+import json
 import re
 import operator
 from ..functions import search_by_positions, search_custom_positions
@@ -55,7 +57,7 @@ class FindFooterRaw:
                 content = line
             else:
                 content = line.content
-            for res in re.finditer(r"" + regex + "", content.upper()):
+            for res in re.finditer(r"" + regex + "", content.upper().replace(' ', '')):
                 # Retrieve only the number and add it in array
                 # In case of multiple no rates amount found, take the higher
                 data = res.group()
@@ -95,6 +97,7 @@ class FindFooterRaw:
                     result = result_split[0] + '.' + result_split[1][0:2]
 
                 if result:
+                    result = result.replace('-', '').replace('/', '').replace('(', '').replace(')', '')
                     if text_as_string:
                         array_of_data.update({float(result.replace(',', '.')): (('', ''), ('', ''))})
                     else:
@@ -139,7 +142,7 @@ class FindFooterRaw:
                                 break
                 except (ValueError, SyntaxError, TypeError):
                     # If results isn't a float, transform it
-                    text = re.finditer(r'[-+]?\d*[.,]+\d+([.,]+\d+)?|\d+', text)
+                    text = re.finditer(r'[-+]?\d*[.,]+\d+([.,]+\d+)?|\d+', text.replace(' ', ''))
                     result = ''
                     for t in text:
                         result += t.group()
@@ -165,6 +168,10 @@ class FindFooterRaw:
                 if result != '':
                     result = re.sub('\s*', '', result).replace(',', '.')
                     self.nbPage = data['page']
+                    try:
+                        position = json.loads(position)
+                    except (TypeError, json.decoder.JSONDecodeError):
+                        pass
                     return [result, position, data['page']]
                 else:
                     return False
@@ -234,40 +241,39 @@ class FindFooterRaw:
         self.vatAmount = vat_amount
 
     def run(self, text_as_string=False):
-        all_rate = search_by_positions(self.supplier, 'total_ttc', self.Ocr, self.Files, self.Database)
-        total_ttc = {}
-        if all_rate and all_rate[0]:
-            total_ttc = {
-                0: re.sub(r"[^0-9\.]|\.(?!\d)", "", all_rate[0].replace(',', '.')),
-                1: all_rate[1]
-            }
-        no_rate = search_by_positions(self.supplier, 'total_ht', self.Ocr, self.Files, self.Database)
-        total_ht = {}
-        if no_rate and no_rate[0]:
-            total_ht = {
-                0: re.sub(r"[^0-9\.]|\.(?!\d)", "", no_rate[0].replace(',', '.')),
-                1: no_rate[1]
-            }
-        percentage = search_by_positions(self.supplier, 'vat_rate', self.Ocr, self.Files, self.Database)
-        vat_rate = {}
-        if percentage and percentage[0]:
-            vat_rate = {
-                0: re.sub(r"[^0-9\.]|\.(?!\d)", "", percentage[0].replace(',', '.')),
-                1: percentage[1]
-            }
-        _vat_amount = search_by_positions(self.supplier, 'vat_amount', self.Ocr, self.Files, self.Database)
-        vat_amount = {}
-        if _vat_amount and _vat_amount[0]:
-            vat_amount = {
-                0: re.sub(r"[^0-9\.]|\.(?!\d)", "", _vat_amount[0].replace(',', '.')),
-                1: _vat_amount[1]
-            }
+        total_ttc, total_ht, vat_rate, vat_amount = {}, {}, {}, {}
+        if self.supplier:
+            all_rate = search_by_positions(self.supplier, 'total_ttc', self.Ocr, self.Files, self.Database)
+            if all_rate and all_rate[0]:
+                total_ttc = {
+                    0: re.sub(r"[^0-9\.]|\.(?!\d)", "", all_rate[0].replace(',', '.')),
+                    1: all_rate[1]
+                }
+            no_rate = search_by_positions(self.supplier, 'total_ht', self.Ocr, self.Files, self.Database)
+            if no_rate and no_rate[0]:
+                total_ht = {
+                    0: re.sub(r"[^0-9\.]|\.(?!\d)", "", no_rate[0].replace(',', '.')),
+                    1: no_rate[1]
+                }
+            percentage = search_by_positions(self.supplier, 'vat_rate', self.Ocr, self.Files, self.Database)
+            if percentage and percentage[0]:
+                vat_rate = {
+                    0: re.sub(r"[^0-9\.]|\.(?!\d)", "", percentage[0].replace(',', '.')),
+                    1: percentage[1]
+                }
+            _vat_amount = search_by_positions(self.supplier, 'vat_amount', self.Ocr, self.Files, self.Database)
+            if _vat_amount and _vat_amount[0]:
+                vat_amount = {
+                    0: re.sub(r"[^0-9\.]|\.(?!\d)", "", _vat_amount[0].replace(',', '.')),
+                    1: _vat_amount[1]
+                }
 
         if not self.test_amount(total_ht, total_ttc, vat_rate, vat_amount):
             total_ht = self.process(self.Locale.noRatesRegex, text_as_string)
             vat_rate = self.process(self.Locale.vatRateRegex, text_as_string)
             total_ttc = self.process(self.Locale.allRatesRegex, text_as_string)
             vat_amount = self.process(self.Locale.vatAmountRegex, text_as_string)
+
         # Test all amounts. If some are false, try to search them with position. If not, pass
         if self.test_amount(total_ht, total_ttc, vat_rate, vat_amount) is not False:
             total_ht = self.return_max(self.totalHT)
@@ -279,34 +285,23 @@ class FindFooterRaw:
         else:
             if not self.rerun:
                 self.rerun = True
-                if self.Files.isTiff == 'True':
-                    if self.isLastPage:
-                        improved_image = self.Files.improve_image_detection(self.Files.tiffName_last_footer)
-                    else:
-                        improved_image = self.Files.improve_image_detection(self.Files.tiffName_footer)
+                if self.isLastPage:
+                    improved_image = self.Files.improve_image_detection(self.Files.jpgName_last_footer)
                 else:
-                    if self.isLastPage:
-                        improved_image = self.Files.improve_image_detection(self.Files.jpgName_last_footer)
-                    else:
-                        improved_image = self.Files.improve_image_detection(self.Files.jpgName_footer)
+                    improved_image = self.Files.improve_image_detection(self.Files.jpgName_footer)
                 self.Files.open_img(improved_image)
                 self.text = self.Ocr.line_box_builder(self.Files.img)
                 return self.run()
 
             if self.rerun and not self.rerun_as_text:
                 self.rerun_as_text = True
-                if self.Files.isTiff == 'True':
-                    if self.isLastPage:
-                        improved_image = self.Files.improve_image_detection(self.Files.tiffName_last_footer)
-                    else:
-                        improved_image = self.Files.improve_image_detection(self.Files.tiffName_footer)
+                if self.isLastPage:
+                    improved_image = self.Files.improve_image_detection(self.Files.jpgName_last_footer)
                 else:
-                    if self.isLastPage:
-                        improved_image = self.Files.improve_image_detection(self.Files.jpgName_last_footer)
-                    else:
-                        improved_image = self.Files.improve_image_detection(self.Files.jpgName_footer)
+                    improved_image = self.Files.improve_image_detection(self.Files.jpgName_footer)
                 self.Files.open_img(improved_image)
                 self.text = self.Ocr.text_builder(self.Files.img)
+                return self.run(text_as_string=True)
             return False
 
     @staticmethod

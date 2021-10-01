@@ -122,11 +122,10 @@ def search_by_positions(supplier, index, ocr, files, database):
         'where': ['supplier_id = %s'],
         'data': [supplier[2]['supplier_id']]
     })
-
     if not positions_mask:
         return False, (('', ''), ('', ''))
 
-    positions = positions_mask[0]['positions'][index] if index in positions_mask[0]['positions'] else False
+    positions = positions_mask[0]['positions'][index] if index in positions_mask[0]['positions'] else None
     pages = positions_mask[0]['pages'][index] if index in positions_mask[0]['pages'] else False
     regex = positions_mask[0]['regex'][index] if index in positions_mask[0]['regex'] else False
     if files.isTiff == 'True':
@@ -135,6 +134,7 @@ def search_by_positions(supplier, index, ocr, files, database):
         file = files.jpgName
 
     if positions:
+        positions['ocr_from_user'] = True
         data = search(positions, regex, files, ocr, file)
         if pages:
             data.append(pages)

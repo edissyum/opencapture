@@ -7,30 +7,30 @@
 
 # Open-Capture is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+# along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import re
-from ..functions import search_custom_positions, retrieve_custom_positions
+from ..functions import search_custom_positions
 
 
 class FindCustom:
-    def __init__(self, text, log, locale, config, ocr, files, supplier, typo, file):
-        self.text = text
+    def __init__(self, text, log, locale, config, ocr, files, supplier, file, database):
         self.Ocr = ocr
         self.Log = log
+        self.text = text
+        self.file = file
+        self.Files = files
         self.Locale = locale
         self.Config = config
-        self.Files = files
-        self.OCRErrorsTable = ocr.OCRErrorsTable
         self.supplier = supplier
-        self.typo = typo
-        self.file = file
+        self.database = database
+        self.OCRErrorsTable = ocr.OCRErrorsTable
 
     def process(self, data):
         for line in self.text:
@@ -47,29 +47,29 @@ class FindCustom:
 
     def run(self):
         data_to_return = {}
-        list_of_fields = {}
-        if self.typo:
-            list_of_fields = retrieve_custom_positions(self.typo, self.Config)
-        elif self.supplier and self.supplier[2]['typology']:
-            list_of_fields = retrieve_custom_positions(self.supplier[2]['typology'], self.Config)
+        if self.supplier:
+            list_of_fields = self.database.select({
+                'select': ['positions', 'regex', 'pages'],
+                'table': ['positions_masks'],
+                'where': ['supplier_id = %s'],
+                'data': [self.supplier[2]['supplier_id']]
+            })
+            if list_of_fields:
+                list_of_fields = list_of_fields[0]
+                for index in list_of_fields['positions']:
+                    if 'custom_' in index:
+                        _data = {
+                            'position': list_of_fields['positions'][index],
+                            'regex': list_of_fields['regex'][index] if index in list_of_fields['regex'] else '',
+                            'target': 'full',
+                            'page': list_of_fields['pages'][index] if index in list_of_fields['pages'] else ''
+                        }
 
-        if list_of_fields:
-            for index in list_of_fields:
-                data, position = search_custom_positions(list_of_fields[index], self.Ocr, self.Files, self.Locale, self.file, self.Config)
-                if not data and list_of_fields[index]['regex'] is not False:
-                    data_to_return[index] = [self.process(list_of_fields[index]), position, list_of_fields[index]['column']]
-                    if list_of_fields[index]['type'] == 'date':
-                        if index in data_to_return and data_to_return[index][0]:
-                            for date in re.finditer(r"" + self.Locale.dateRegex, data_to_return[index][0]):
-                                data_to_return[index] = [date.group(), position, list_of_fields[index]['column']]
-                        elif list_of_fields[index]['type'] == 'number':
+                        data, position = search_custom_positions(_data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
+                        if not data and index in list_of_fields['regex'] and list_of_fields[index]['regex'] is not False:
+                            data_to_return[index] = [self.process(list_of_fields[index]), position, list_of_fields['pages'][index]]
                             if index in data_to_return and data_to_return[index][0]:
-                                data_to_return[index] = [data, position, list_of_fields[index]['column']]
-                else:
-                    if list_of_fields[index]['type'] == 'date':
-                        for date in re.finditer(r"" + self.Locale.dateRegex, data):
-                            data = date.group()
-                    elif list_of_fields[index]['type'] == 'number':
-                        data = re.sub('[^0-9]', '', data)
-                    data_to_return[index] = [data, position, list_of_fields[index]['column']]
+                                data_to_return[index] = [data, position, list_of_fields['pages'][index]]
+                        else:
+                            data_to_return[index] = [data, position, list_of_fields['pages'][index]]
         return data_to_return

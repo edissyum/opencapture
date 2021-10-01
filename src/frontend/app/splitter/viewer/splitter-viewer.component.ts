@@ -99,7 +99,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
     }
 
     loadSelectedBatch(): void{
-        this.documents       = [];
+        this.documents = [];
         this.loadPages();
         this.loadBatchById();
     }
@@ -204,7 +204,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
               this.notify.error(err);
               return of(false);
           })
-        ).subscribe()
+        ).subscribe();
     }
 
     getPageUrlById(pageId: number): any{
@@ -271,7 +271,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
                 cpt++;
             });
             this.ngxService.stopBackground("load-metadata");
-            this.notify.success(this.translate.instant('SPLITTER.referential_updated'))
+            this.notify.success(this.translate.instant('SPLITTER.referential_updated'));
           }),
           catchError((data: any) => {
               this.ngxService.stopBackground("load-metadata");
@@ -379,7 +379,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
                         new FormControl('', Validators.required) :
                         new FormControl('');
                 if(input.metadata_key)
-                    group['search_' + input.label_short] = new FormControl('')
+                    group['search_' + input.label_short] = new FormControl('');
             });
         return new FormGroup(group);
     }
@@ -452,7 +452,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
     }
 
     undoAll(){
-        this.fields = []
+        this.fields = [];
         this.loadSelectedBatch();
         this.loadMetadata();
     }
@@ -510,7 +510,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
         if(this.inputMode == 'Manual'){
             for (let field of this.fields) {
                 // @ts-ignore
-                this.selectedMetadata[field.label_short] = this.form.get(field.label_short).value
+                this.selectedMetadata[field.label_short] = this.form.get(field.label_short).value;
             }
         }
 

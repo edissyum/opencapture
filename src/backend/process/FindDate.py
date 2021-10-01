@@ -7,15 +7,16 @@
 
 # Open-Capture is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+# along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import re
+import json
 from datetime import datetime
 from ..functions import search_by_positions, search_custom_positions
 
@@ -95,8 +96,10 @@ class FindDate:
                 return False
 
     def run(self):
-        date = search_by_positions(self.supplier, 'invoice_date', self.Ocr, self.Files, self.db)
-        due_date = search_by_positions(self.supplier, 'invoice_due_date', self.Ocr, self.Files, self.db)
+        date, due_date = None, None
+        if self.supplier:
+            date = search_by_positions(self.supplier, 'invoice_date', self.Ocr, self.Files, self.db)
+            due_date = search_by_positions(self.supplier, 'invoice_due_date', self.Ocr, self.Files, self.db)
 
         if self.supplier:
             position = self.db.select({
@@ -113,6 +116,10 @@ class FindDate:
             if position and position['invoice_due_date_position'] not in [False, 'NULL', '', None]:
                 data = {'position': position['invoice_due_date_position'], 'regex': None, 'target': 'full', 'page': position['invoice_due_date_page']}
                 _text, _position = search_custom_positions(data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
+                try:
+                    _position = json.loads(_position)
+                except TypeError:
+                    pass
                 if _text != '':
                     res = self.format_date(_text, _position, True)
                     if res:

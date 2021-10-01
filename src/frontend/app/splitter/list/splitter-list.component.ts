@@ -106,7 +106,7 @@ export class SplitterListComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if(result){
-                this.deleteBatch(id)
+                this.deleteBatch(id);
             }
         });
     }
