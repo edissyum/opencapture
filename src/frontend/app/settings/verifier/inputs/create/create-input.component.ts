@@ -119,7 +119,7 @@ export class CreateInputComponent implements OnInit {
 
     ngOnInit(): void {
         this.serviceSettings.init();
-        this.http.get(API_URL + '/ws/forms/list&module=verifier', {headers: this.authService.headers}).pipe(
+        this.http.get(API_URL + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
             tap((customers: any) => {
                 this.inputForm.forEach((element: any) => {
                     if (element.id === 'customer_id') {
@@ -136,7 +136,7 @@ export class CreateInputComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
-        this.http.get(API_URL + '/ws/forms/list', {headers: this.authService.headers}).pipe(
+        this.http.get(API_URL + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
             tap((forms: any) => {
                 this.inputForm.forEach((element: any) => {
                     if (element.id === 'default_form_id') {

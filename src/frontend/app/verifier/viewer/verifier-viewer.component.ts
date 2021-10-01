@@ -307,7 +307,7 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     async getAllForm(): Promise<any> {
-        return await this.http.get(API_URL + '/ws/forms/list', {headers: this.authService.headers}).toPromise();
+        return await this.http.get(API_URL + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).toPromise();
     }
 
     async getFormFieldsById(formId: number): Promise<any> {

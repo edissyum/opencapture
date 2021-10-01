@@ -16,6 +16,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {DocumentTreeComponent} from "../document-tree/document-tree.component";
 import {remove} from 'remove-accents';
 import {NgxUiLoaderService} from "ngx-ui-loader";
+import {HistoryService} from "../../../services/history.service";
 
 export interface Batch {
     id              : number,
@@ -81,6 +82,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
         private _sanitizer          : DomSanitizer,
         public dialog               : MatDialog,
         private ngxService          : NgxUiLoaderService,
+        private historyService: HistoryService,
     ) {
     }
 
@@ -91,6 +93,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
         this.loadSelectedBatch();
         this.loadMetadata();
         this.loadOutputs();
+        this.translate.get('HISTORY-DESC.viewer_splitter', {batch_id: this.currentBatch.id}).subscribe((translated: string) => {
+            this.historyService.addHistory('splitter', 'viewer', translated);
+        });
     }
 
     loadSelectedBatch(): void{
@@ -509,7 +514,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
             }
         }
 
-        if(this.selectedMetadata['id'] == -1){
+        if(this.selectedMetadata['id'] == -1 && this.inputMode == 'Auto'){
             this.notify.error(this.translate.instant('SPLITTER.error_no_metadata'));
             this.ngxService.stopBackground("validate");
             return;

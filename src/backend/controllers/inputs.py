@@ -67,6 +67,7 @@ def create_input(data):
 
     _columns = {
         'input_id': data['input_id'],
+        'customer_id': data['customer_id'],
         'input_label': data['input_label'],
         'default_form_id': data['default_form_id'],
         'override_supplier_form': data['override_supplier_form'] if 'override_supplier_form' in data else False,

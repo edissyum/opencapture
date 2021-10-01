@@ -102,6 +102,7 @@ export class CreateOutputComponent implements OnInit {
                 {'args': {
                     'output_type_id': outputTypeId,
                     'output_label': outputLabel,
+                    'module': 'verifier',
                 }}, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {

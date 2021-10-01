@@ -1,10 +1,15 @@
 import {Component, Injectable, EventEmitter, OnInit, Output} from '@angular/core';
 import {FlatTreeControl} from '@angular/cdk/tree';
 import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject, of} from "rxjs";
 import {SelectionModel} from "@angular/cdk/collections";
 import {TREE_DATA} from "./document-tree"
 import {SettingsService} from "../../../services/settings.service";
+import {API_URL} from "../../env";
+import {catchError, finalize, tap} from "rxjs/operators";
+import {AuthService} from "../../../services/auth.service";
+import {HttpClient} from "@angular/common/http";
+import {NotificationService} from "../../../services/notifications/notifications.service";
 
 export class TreeItemNode {
   key!      : string;
@@ -129,8 +134,11 @@ export class DocumentTypeFactoryComponent implements OnInit {
   checklistSelection = new SelectionModel<TreeItemFlatNode>(false /* multiple */);
 
   constructor(
-      private database: ChecklistDatabase,
-      public serviceSettings: SettingsService,
+      private database        : ChecklistDatabase,
+      public serviceSettings  : SettingsService,
+      private authService     : AuthService,
+      private http            : HttpClient,
+      private notify          : NotificationService,
   ) {
     this.treeFlattener  = new MatTreeFlattener(this.transformer, this.getLevel,
       this.isExpandable, this.getChildren);

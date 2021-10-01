@@ -8,11 +8,11 @@
 
 # Open-Capture is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with Open-Capture.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+# along with Open-Capture. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
@@ -86,6 +86,7 @@ elif [[ "$OS" == 'Ubuntu' || "$OS" == 'Debian' && $VER == *'10'* ]]; then
 fi
 
 xargs -a apt-requirements.txt apt install -y
+python3 -m pip install --upgrade setuptools
 python3 -m pip install --upgrade pip
 python3 -m pip install -r pip-requirements.txt
 
@@ -95,6 +96,7 @@ find . -name ".gitkeep" -delete
 ####################
 # Makes scripts executable
 chmod u+x $defaultPath/bin/scripts/*.sh
+chown -R "$user":"$user" $defaultPath/bin/scripts/*.sh
 
 ####################
 # Create the Apache service for backend
@@ -102,6 +104,7 @@ touch /etc/apache2/sites-available/opencapture.conf
 su -c "cat > /etc/apache2/sites-available/opencapture.conf << EOF
 <VirtualHost *:80>
     ServerName localhost
+    DocumentRoot $defaultPath/dist/
     WSGIDaemonProcess opencapture user=$user group=$group threads=5
     WSGIScriptAlias /backend_oc /var/www/html/opencaptureforinvoices/wsgi.py
 
@@ -176,10 +179,10 @@ Restart=on-failure
 WantedBy=multi-user.target
 EOF"
 
-    systemctl daemon-reload && systemctl start OCForInvoices-worker.service
-    systemctl daemon-reload && systemctl start OCForInvoices_Split-worker.service
-    systemctl enable OCForInvoices-worker.service
-    systemctl enable OCForInvoices_Split-worker.service
+    sudo systemctl daemon-reload && systemctl start OCForInvoices-worker.service
+    sudo systemctl daemon-reload && systemctl start OCForInvoices_Split-worker.service
+    sudo systemctl enable OCForInvoices-worker.service
+    sudo systemctl enable OCForInvoices_Split-worker.service
 else
     apt install -y supervisor
     mkdir "$defaultPath"/bin/data/log/Supervisor/
@@ -254,11 +257,26 @@ chmod -R g+s $defaultPath
 chown -R "$user":"$group" $defaultPath
 
 ####################
+# Create default input script (based on default input created in data_fr.sql)
+defaultScriptFile=$defaultPath/bin/scripts/default_input.sh
+if ! test -f "$defaultScriptFile"; then
+    cp $defaultPath/bin/scripts/script_sample_dont_touch.sh $defaultPath/bin/scripts/default_input.sh
+    sed -i "s#§§SCRIPT_NAME§§#default_input#g" $defaultPath/bin/scripts/default_input.sh
+    sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultPath/bin/scripts/default_input.sh
+    sed -i 's#"§§ARGUMENTS§§"#-input_id default_input#g' $defaultPath/bin/scripts/default_input.sh
+fi
+
+####################
 # Create docservers
 mkdir -p $docserverPath/{OpenCapture,OpenCapture_Splitter}
-mkdir -p $docserverPath/OpenCapture/images/{tiff,full}
+mkdir -p $docserverPath/OpenCapture/images/{full,thumbs}
 mkdir -p $docserverPath/OpenCapture_Splitter/{batches,separated_pdf}
-mkdir -p $docserverPath/OpenCapture/xml/
 chmod -R 775 $docserverPath/{OpenCapture,OpenCapture_Splitter}/
 chmod -R g+s $docserverPath/{OpenCapture,OpenCapture_Splitter}/
 chown -R "$user":"$group" $docserverPath/{OpenCapture,OpenCapture_Splitter}/
+
+####################
+# Create default XML folder
+mkdir -p /var/share/export/
+chmod -R 775 /var/share/export/
+chown -R "$user":"$group" /var/share/export/

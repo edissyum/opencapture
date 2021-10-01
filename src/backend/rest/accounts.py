@@ -171,6 +171,7 @@ def customers_list():
         args['limit'] = ''
 
     res = accounts.retrieve_customers(args)
+    print(res)
     return make_response(res[0], res[1])
 
 

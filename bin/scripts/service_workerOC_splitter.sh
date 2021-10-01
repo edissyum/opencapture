@@ -12,13 +12,14 @@
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+# along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+# @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 export LD_LIBRARY_PATH=/usr/local/lib/
-export MAGICK_TMPDIR=/tmp/OpenCaptureForInvoices/
+export MAGICK_TMPDIR=/tmp/opencaptureforinvoices/
 export TESSDATA_PREFIX=/usr/share/tesseract-ocr/4.00/tessdata/
 
 cd /var/www/html/opencaptureforinvoices/ || exit
-/usr/local/bin/kuyruk --app bin.src.main_splitter.OCforInvoices worker --queue splitter
+/usr/local/bin/kuyruk --app src.backend.main_splitter.OCforInvoices worker --queue splitter

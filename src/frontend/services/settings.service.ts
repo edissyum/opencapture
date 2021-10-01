@@ -268,11 +268,6 @@ export class SettingsService {
                 "icon": "fas fa-file",
                 "route"     : "/settings/splitter/documentType",
             },
-            {
-                "id": "connector",
-                "label": this.translate.instant("SETTINGS.connector_EDM"),
-                "icon": "fas fa-link",
-            },
         ]
     };
     constructor(
