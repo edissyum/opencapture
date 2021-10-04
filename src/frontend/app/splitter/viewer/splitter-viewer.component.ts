@@ -34,12 +34,12 @@ import {NgxUiLoaderService} from "ngx-ui-loader";
 import {HistoryService} from "../../../services/history.service";
 
 export interface Batch {
-    id              : number,
-    input_id        : number,
-    image_url       : any,
-    file_name       : string,
-    page_number     : number,
-    creation_date   : string,
+    id              : number;
+    input_id        : number;
+    image_url       : any;
+    file_name       : string;
+    page_number     : number;
+    batch_date      : string;
 }
 
 export interface Field {
@@ -134,13 +134,12 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
     }
 
     loadBatchById(): void{
-        let headers = this.authService.headers;
         this.ngxService.startBackground("load-current-batch");
         setTimeout(() => {
           this.ngxService.stopBackground("load-current-batch");
         }, 10000);
 
-        this.http.get(API_URL + '/ws/splitter/batches/' + this.currentBatch.id, {headers}).pipe(
+        this.http.get(API_URL + '/ws/splitter/batches/' + this.currentBatch.id, {headers: this.authService.headers}).pipe(
           tap((data: any) => {
             this.currentBatch.formId    = data.batches[0].form_id;
             this.loadFormFields(this.currentBatch.formId);
@@ -150,17 +149,16 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
               this.notify.error(err);
               return of(false);
           })
-        ).subscribe()
+        ).subscribe();
     }
 
     loadBatches(): void{
-        let headers = this.authService.headers;
         this.ngxService.startBackground("load-batch");
         setTimeout(() => {
           this.ngxService.stopBackground("load-batch");
         }, 10000);
 
-        this.http.get(API_URL + '/ws/splitter/batches/0/5', {headers}).pipe(
+        this.http.get(API_URL + '/ws/splitter/batches/0/5', {headers: this.authService.headers}).pipe(
           tap((data: any) => {
             data.batches.forEach((batch: Batch) =>
                 this.batches.push(
@@ -169,7 +167,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
                         image_url       : this.sanitize(batch.image_url),
                         file_name       : batch.file_name,
                         page_number     : batch.page_number,
-                        creation_date   : batch.creation_date,
+                        batch_date      : batch.batch_date,
                         input_id        : batch.input_id,
                     }
                 )
@@ -180,7 +178,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
               this.notify.error(err);
               return of(false);
           })
-        ).subscribe()
+        ).subscribe();
     }
 
     loadPages(): void{
@@ -188,8 +186,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
         setTimeout(() => {
           this.ngxService.stopBackground("load-pages");
         }, 10000);
-        let headers = this.authService.headers;
-        this.http.get(API_URL + '/ws/splitter/pages/' + this.currentBatch.id, {headers}).pipe(
+        this.http.get(API_URL + '/ws/splitter/pages/' + this.currentBatch.id, {headers: this.authService.headers}).pipe(
           tap((data: any) => {
             for (let i=0; i < data['page_lists'].length; i++) {
                 this.documents[i] = {
@@ -199,7 +196,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
                     pages               : [],
                     class               : "",
                 };
-                for (let page of data['page_lists'][i]) {
+                for (const page of data['page_lists'][i]) {
                     this.documents[i].pages.push({
                         id              : page['id'],
                         sourcePage      : page['source_page'],
@@ -223,7 +220,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
     }
 
     getPageUrlById(pageId: number): any{
-        for(let pageImage of this.pagesImageUrls){
+        for (const pageImage of this.pagesImageUrls) {
             if(pageImage.pageId === pageId)
                 return pageImage.url;
         }
@@ -239,11 +236,11 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
 
 
     fillDataValues(data: any): void{
-        for (let field of this.fields) {
-            let key = field['metadata_key'];
-            let new_value = data.hasOwnProperty(key) ? data[key] : '';
+        for (const field of this.fields) {
+            const key = field['metadata_key'];
+            const newValue = data.hasOwnProperty(key) ? data[key] : '';
             // @ts-ignore
-            this.form.get(key).setValue(new_value);
+            this.form.get(key).setValue(newValue);
         }
     }
 
@@ -253,9 +250,8 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
           this.ngxService.stopBackground("load-referential");
         }, 10000);
 
-        let headers = this.authService.headers;
-        this.http.get(API_URL + '/ws/splitter/referential', {headers}).pipe(
-          tap((data: any) => {
+        this.http.get(API_URL + '/ws/splitter/referential', {headers: this.authService.headers}).pipe(
+          tap(() => {
               this.ngxService.stopBackground("load-referential");
               this.loadMetadata();
           }),
@@ -268,15 +264,14 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
 
     loadMetadata(): void{
         this.ngxService.startBackground("load-metadata");
-        this.metadata = []
+        this.metadata = [];
         setTimeout(() => {
           this.ngxService.stopBackground("load-metadata");
         }, 10000);
 
         this.metadata   = [];
 
-        let headers     = this.authService.headers;
-        this.http.get(API_URL + '/ws/splitter/metadata', {headers}).pipe(
+        this.http.get(API_URL + '/ws/splitter/metadata', {headers: this.authService.headers}).pipe(
           tap((data: any) => {
             let cpt = 0;
             data.metadata.forEach((metadataItem: any) => {
@@ -302,9 +297,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
 
     fillData(selectedMetadata: any) {
         this.selectedMetadata   = selectedMetadata;
-        let optionId            = this.selectedMetadata['id'];
-        for (let field of this.fields){
-            if (field['metadata_key']){
+        const optionId          = this.selectedMetadata['id'];
+        for (const field of this.fields) {
+            if (field['metadata_key']) {
                 // @ts-ignore
                 this.form.get(field['metadata_key']).setValue(optionId);
             }
@@ -317,8 +312,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
           this.ngxService.stopBackground("load-custom-fields");
         }, 10000);
 
-        let headers = this.authService.headers;
-        this.http.get(API_URL + '/ws/forms/fields/getByFormId/' + formId,{headers}).pipe(
+        this.http.get(API_URL + '/ws/forms/fields/getByFormId/' + formId,{headers: this.authService.headers}).pipe(
         tap((data: any) => {
             data.fields.metadata.forEach((field: Field) =>{
                 this.fields.push({
@@ -331,11 +325,11 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
                     'required'      : field.required,
                 });
 
-                let control             = new FormControl();
+                const control = new FormControl();
                 this.form.addControl(field.label_short, control);
 
                 if(field.metadata_key){ // used to control autocomplete search fields
-                    let controlSearch   = new FormControl();
+                    const controlSearch = new FormControl();
                     this.form.addControl("search_" + field.label_short, controlSearch);
                 }
             });
@@ -357,7 +351,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
                         if (!this.metadata || search.length < 3) {
                             return [];
                         }
-                        this.searching = true
+                        this.searching = true;
                         // simulate server fetching and filtering data
                         return this.metadata.filter(
                             // @ts-ignore
@@ -383,7 +377,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
             console.debug(err);
             return of(false);
         })
-        ).subscribe()
+        ).subscribe();
     }
 
     toFormGroup(){
@@ -447,9 +441,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
     }
 
     deleteSelectedPages(){
-        for(let document of this.documents){
-            for(let i=0; i<document.pages.length; i++){
-                if(document.pages[i].checkBox){
+        for (const document of this.documents) {
+            for(let i=0; i<document.pages.length; i++) {
+                if(document.pages[i].checkBox) {
                     document.pages = this.deleteItemFromList(document.pages, i);
                     i--;
                 }
@@ -458,27 +452,27 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
     }
 
     setAllPagesTo(check: boolean){
-        for(let document of this.documents){
-            for(let page of document.pages){
+        for (const document of this.documents) {
+            for (const page of document.pages) {
                 page.checkBox = check;
             }
         }
     }
 
-    undoAll(){
+    undoAll() {
         this.fields = [];
         this.loadSelectedBatch();
         this.loadMetadata();
     }
 
-    sendSelectedPages(){
-        let selectedDoc         = this.documents.filter((doc: any) => doc.id === this.toolSelectedOption);
+    sendSelectedPages() {
+        const selectedDoc = this.documents.filter((doc: any) => doc.id === this.toolSelectedOption);
         if (!selectedDoc) {
             return;
         }
-        let selectedDocIndex    = this.documents.indexOf(selectedDoc[0]);
-        for(let document of this.documents){
-            for(let i = document.pages.length - 1; i>=0; i--){
+        const selectedDocIndex = this.documents.indexOf(selectedDoc[0]);
+        for (const document of this.documents) {
+            for(let i = document.pages.length - 1; i>=0; i--) {
                 if(document.pages[i].checkBox) {
                     transferArrayItem(document.pages,
                         this.documents[selectedDocIndex].pages, i,
@@ -489,7 +483,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
     }
 
     changeBatch(id: number) {
-        this.fillDataValues({})
+        this.fillDataValues({});
         this.selectedMetadata = {id: -1};
         window.location.href = "/#/splitter/viewer/" + id;
         this.currentBatch.id = id;
@@ -498,9 +492,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
 
     addDocument() {
         let newId = 0;
-        for(let document of this.documents){
-            let id = parseInt(document.id.split('-')[1]);
-            if(id > newId){
+        for (const document of this.documents) {
+            const id = parseInt(document.id.split('-')[1]);
+            if(id > newId) {
                 newId= id;
             }
             newId++;
@@ -521,21 +515,21 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
           this.ngxService.stopBackground("validate");
         }, 10000);
 
-        if(this.inputMode == 'Manual'){
-            for (let field of this.fields) {
+        if(this.inputMode === 'Manual'){
+            for (const field of this.fields) {
                 // @ts-ignore
                 this.selectedMetadata[field.label_short] = this.form.get(field.label_short).value;
             }
         }
 
-        if(this.selectedMetadata['id'] == -1 && this.inputMode == 'Auto'){
+        if(this.selectedMetadata['id'] === -1 && this.inputMode === 'Auto'){
             this.notify.error(this.translate.instant('SPLITTER.error_no_metadata'));
             this.ngxService.stopBackground("validate");
             return;
         }
 
-        for(let document of this.documents){
-            if(!document.documentTypeKey){
+        for (const document of this.documents) {
+            if (!document.documentTypeKey) {
                 document.class = "text-red-500";
                 this.notify.error(this.translate.instant('SPLITTER.error_no_doc_type'));
                 this.ngxService.stopBackground("validate");
@@ -545,8 +539,8 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
                 document.class = "";
         }
 
-        let headers                 = this.authService.headers;
-        let metadata                = this.selectedMetadata;
+        const headers               = this.authService.headers;
+        const metadata              = this.selectedMetadata;
         metadata['id']              = this.currentBatch.id;
         metadata['userName']        = this.userService.user['username'];
         metadata['userFirstName']   = this.userService.user['firstname'];
@@ -566,12 +560,10 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
               this.notify.error(err);
               return of(false);
           })
-        ).subscribe(
-            x => {
-                window.location.href = "/#/splitter/list";
-                this.notify.success("Lot validé avec succès");
-            }
-        )
+        ).subscribe(() => {
+            window.location.href = "/#/splitter/list";
+            this.notify.success("Lot validé avec succès");
+        });
     }
     /* -- End tools bar -- */
 }

@@ -130,7 +130,7 @@ def delete_script_and_incron(args):
     _vars = create_classes_from_current_config()
     _cfg = _vars[1]
 
-    folder_script = _cfg.cfg['GLOBAL']['scriptspath']
+    folder_script = _cfg.cfg['GLOBAL']['scriptspath'] + args['module'] + '_inputs/'
     script_name = args['input_id'] + '.sh'
     old_script_filename = folder_script + '/' + script_name
     if os.path.isdir(folder_script):
@@ -155,12 +155,13 @@ def delete_script_and_incron(args):
             tmp_incron_file.write(new_incron_without_old_one)
             tmp_incron_file.close()
             subprocess.Popen(['incrontab', tmp_incron_filename], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            os.remove(tmp_incron_filename)
 
 
 def create_script_and_incron(args):
     _vars = create_classes_from_current_config()
     _cfg = _vars[1]
-    folder_script = _cfg.cfg['GLOBAL']['scriptspath'] + args['module'] + '_inputs/'
+    folder_script = _cfg.cfg['GLOBAL']['scriptspath'] + '/' + args['module'] + '_inputs/'
     arguments = '-input_id ' + str(args['input_id'])
 
     ######
@@ -202,6 +203,7 @@ def create_script_and_incron(args):
                     tmp_incron_file = open(tmp_incron_filename, 'w+')
                     tmp_incron_file.write(incron_list)
                     tmp_incron_file.close()
+                    os.remove(tmp_incron_filename)
                     subprocess.Popen(['incrontab', tmp_incron_filename], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 return '', 200
             else:

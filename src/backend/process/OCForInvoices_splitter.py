@@ -21,7 +21,7 @@ def process(args, file, log, splitter, files, tmp_folder, config):
 
     # Get the OCR of the file as a list of line content and position
     files.pdf_to_jpg(file, open_img=False)
-    list_files = files.sorted_file(tmp_folder, '.jpg')
+    list_files = files.sorted_file(tmp_folder, 'jpg')
     blank_pages = []
 
     # Remove blank pages

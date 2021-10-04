@@ -73,7 +73,7 @@ def retrieve_invoices(args):
         args['select'] = []
 
     args['select'].append("DISTINCT(invoices.id) as invoice_id")
-    args['select'].append("to_char(register_date, 'DD-MM-YYY à HH24:MI:SS') as date")
+    args['select'].append("to_char(register_date, 'DD-MM-YYY " + gettext('AT') + " HH24:MI:SS') as date")
     args['select'].append("*")
     args['table'] = ['invoices']
     args['left_join'] = []
