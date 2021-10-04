@@ -67,7 +67,7 @@ class Mail:
         """
         folders = self.conn.folder.list()
         for f in folders:
-            if folder == f['name']:
+            if folder == f.name:
                 return True
         return False
 
