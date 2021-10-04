@@ -67,7 +67,7 @@ def create_input(data):
     _columns = {
         'module': data['module'],
         'input_id': data['input_id'],
-        'customer_id': data['customer_id'],
+        'customer_id': data['customer_id'] if data['module'] == 'verifier' else None,
         'input_label': data['input_label'],
         'input_folder': data['input_folder'],
         'default_form_id': data['default_form_id'],
@@ -160,8 +160,7 @@ def delete_script_and_incron(args):
 def create_script_and_incron(args):
     _vars = create_classes_from_current_config()
     _cfg = _vars[1]
-
-    folder_script = _cfg.cfg['GLOBAL']['scriptspath']
+    folder_script = _cfg.cfg['GLOBAL']['scriptspath'] + args['module'] + '_inputs/'
     arguments = '-input_id ' + str(args['input_id'])
 
     ######

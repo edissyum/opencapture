@@ -15,5 +15,5 @@ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-export const API_URL = 'http://127.0.0.1:4242';
+export const API_URL = 'http://192.168.10.60:5000';
 // export const API_URL = '../../backend_oc';

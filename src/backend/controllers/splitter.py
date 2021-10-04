@@ -31,7 +31,7 @@ from requests.auth import HTTPBasicAuth
 def handle_uploaded_file(files, input_id):
     _vars = create_classes_from_current_config()
     _config = _vars[1]
-    path = _config.cfg['SPLITTER']['uploadpath']
+    path = current_app.config['UPLOAD_FOLDER_SPLITTER']
     for file in files:
         f = files[file]
         filename = _Files.save_uploaded_file(f, path)
@@ -233,7 +233,7 @@ def validate(documents, metadata):
                     for index, document in enumerate(documents):
                         documents[index]['fileName'] = _Splitter.get_file_name(document, metadata, parameters, now)
                     res_file = _Files.export_pdf(pages, documents,
-                                                 _cfg.cfg['SPLITTER']['uploadpath']
+                                                 current_app.config['UPLOAD_FOLDER_SPLITTER']
                                                  + str(batch[0]['file_name']),
                                                  parameters['folder_out'], 1)
                     is_export_pdf_ok = res_file['OK']

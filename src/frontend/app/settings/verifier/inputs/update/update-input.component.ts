@@ -182,7 +182,10 @@ export class UpdateInputComponent implements OnInit {
 
     onSubmit() {
         if (this.isValidForm()) {
-            const input : any = {};
+            const input : any = {
+                'module': 'verifier'
+            };
+
             this.inputForm.forEach(element => {
                 input[element.id] = element.control.value;
             });
@@ -203,7 +206,10 @@ export class UpdateInputComponent implements OnInit {
 
     createScriptAndIncron() {
         if (this.isValidForm()) {
-            const input: any = {};
+            const input : any = {
+                'module': 'verifier'
+            };
+
             this.inputForm.forEach(element => {
                 input[element.id] = element.control.value;
             });

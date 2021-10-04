@@ -191,13 +191,17 @@ export class CreateInputComponent implements OnInit {
         }
     }
 
-
     createScriptAndIncron() {
         if (this.isValidForm()) {
-            const input: any = {};
+            const input : any = {
+                'module': 'verifier'
+            };
+
             this.inputForm.forEach(element => {
                 input[element.id] = element.control.value;
             });
+
+            input['module'] = 'verifier';
 
             this.http.post(API_URL + '/ws/inputs/createScriptAndIncron', {'args': input}, {headers: this.authService.headers}).pipe(
                 tap(() => {

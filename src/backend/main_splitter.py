@@ -29,7 +29,7 @@ OCforInvoices = Kuyruk()
 
 # If needed just run "kuyruk --app src.backend.main_splitter.OCforInvoices_Sep manager"
 # to have web dashboard of current running worker
-@OCforInvoices.task(queue='splitter')
+# @OCforInvoices.task(queue='splitter')
 def launch(args):
     start = time.time()
 
@@ -40,7 +40,7 @@ def launch(args):
     if not os.path.exists(config_file):
         sys.exit('Config file couldn\'t be found')
 
-    config, locale, log, ocr, database, spreadsheet = create_classes(config_file)
+    config, locale, log, ocr, database, spreadsheet, smtp = create_classes(config_file)
     tmp_folder = tempfile.mkdtemp(dir=config.cfg['SPLITTER']['batchpath']) + '/'
     separator_qr = _SeparatorQR(log, config, tmp_folder, 'splitter')
     splitter = _Splitter(config, database, locale, separator_qr, log)

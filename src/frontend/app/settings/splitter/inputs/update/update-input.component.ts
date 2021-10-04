@@ -140,7 +140,10 @@ export class SplitterUpdateInputComponent implements OnInit {
 
     onSubmit() {
         if (this.isValidForm()) {
-            const input : any = {};
+            const input : any = {
+                'module': 'splitter'
+            };
+
             this.inputForm.forEach(element => {
                 input[element.id] = element.control.value;
             });
@@ -160,10 +163,14 @@ export class SplitterUpdateInputComponent implements OnInit {
 
     createScriptAndIncron() {
         if (this.isValidForm()) {
-            const input: any = {};
+            const input : any = {
+                'module': 'splitter'
+            };
+
             this.inputForm.forEach(element => {
                 input[element.id] = element.control.value;
             });
+
             this.http.post(API_URL + '/ws/inputs/createScriptAndIncron', {'args': input}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.notify.success(this.translate.instant('INPUT.incron_and_script_updated'));

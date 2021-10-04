@@ -5,7 +5,7 @@ INSERT INTO "status" ("id","label","label_long") VALUES ('ERR','Erreur','Erreur 
 INSERT INTO "status" ("id","label","label_long") VALUES ('DEL','Supprimée','Supprimée');
 
 -- CRÉATION DES CHAINES SORTANTES
-INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data") VALUES (1, 'export_xml', 'Export XML', '{
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "module", "data") VALUES (1, 'export_xml', 'Export XML', 'verifier', '{
     "options": {
         "auth": [],
         "parameters": [
@@ -42,7 +42,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
         ]
     }
 }');
-INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data") VALUES (2, 'export_maarch', 'Export vers Maarch', '{
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "module", "data") VALUES (2, 'export_maarch', 'Export vers Maarch', 'verifier', '{
 	"options": {
         "auth": [
             {
@@ -161,12 +161,12 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data"
 }');
 ALTER SEQUENCE "outputs_types_id_seq" RESTART WITH 3;
 
-INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data") VALUES (1, 'export_xml', 'Export XML par défaut', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "filename", "type": "text", "value": "invoice_number#F#invoice_date_year#vat_number"}, {"id": "extension", "type": "text", "value": "xml"}]}}');
-INSERT INTO "outputs" ("id", "output_type_id", "output_label") VALUES (2, 'export_maarch', 'Export Maarch par défaut');
+INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module", "data") VALUES (1, 'export_xml', 'Export XML par défaut', 'verifier', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "filename", "type": "text", "value": "invoice_number#F#invoice_date_year#vat_number"}, {"id": "extension", "type": "text", "value": "xml"}]}}');
+INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module") VALUES (2, 'export_maarch', 'Export Maarch par défaut', 'verifier');
 ALTER SEQUENCE "outputs_id_seq" RESTART WITH 3;
 
 -- CRÉATION DES CHAINES ENTRANTES
-INSERT INTO "inputs" ("id", "input_id", "input_label", "default_form_id", "input_folder") VALUES (1, 'default_input', 'Chaîne entrante par défaut', 1, '/var/share/entrant/');
+INSERT INTO "inputs" ("id", "input_id", "input_label", "default_form_id", "input_folder", "module") VALUES (1, 'default_input', 'Chaîne entrante par défaut', 1, '/var/share/entrant/', 'verifier');
 ALTER SEQUENCE "inputs_id_seq" RESTART WITH 2;
 
 -- CRÉATION DES PRIVILEGES
@@ -259,7 +259,7 @@ INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (2, '{"data" 
 INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (3, '{"data" : "[2, 3, 6, 7, 8, 9]"}');
 
 -- CRÉATION DU FORMMULAIRE PAR DÉFAUT
-INSERT INTO "form_models" (id, label, default_form, enabled) VALUES (1, 'Formulaire par défaut', true, true);
+INSERT INTO "form_models" (id, label, default_form, enabled, module) VALUES (1, 'Formulaire par défaut', true, true, 'verifier');
 ALTER SEQUENCE "form_models_id_seq" RESTART WITH 2;
 
 -- CRÉATION DES CHAMPS POUR LE FORMULAIRE PAR DÉFAUT

@@ -193,7 +193,7 @@ def duplicate_form(form_id):
         res, error = forms.add_form(args)
         if error is None:
             fields, error = get_fields(form_info['id'])
-            if error is 200:
+            if error == 200:
                 forms.add_form_fields(res)
                 update_fields({'data': fields['form_fields']['fields'], 'form_id': res})
                 return '', 200

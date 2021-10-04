@@ -16,11 +16,11 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-name="SPLITTER"
-OCPath="/var/www/html/opencaptureforinvoices/"
+name="§§SCRIPT_NAME§§"
+OCPath="§§OC_PATH§§"
 logFile="$OCPath"bin/data/log/OCforInvoices.log
-errFilepath="$OCPath/bin/data/error/"
-tmpFilepath="$OCPath/bin/data/OC_Splitter/pdf_sources/"
+errFilepath="$OCPath/bin/data/error/$name/"
+tmpFilepath="$OCPath/bin/data/pdf/"
 PID=/tmp/securite-$name-$$.pid
 
 echo "[$name.sh      ] $(date +"%d-%m-%Y %T") INFO Launching $name.sh script" >> "$logFile"
@@ -40,7 +40,6 @@ then
     python3 "$OCPath"/launch_worker_splitter.py -c "$OCPath"/instance/config.ini -f "$tmpFilepath"/"$filename"
 
     rm -f $PID
-
 elif test -f "$filepath" && test "$ext" != 'application/pdf; charset=binary';
 then
     echo "[$name.sh      ] $(date +"%d-%m-%Y %T") ERROR $filename is a not valid PDF file" >> "$logFile"

@@ -33,7 +33,8 @@ app.config.from_mapping(
     CONFIG_FILE=os.path.join(app.instance_path, 'config.ini'),
     CONFIG_FOLDER=os.path.join(app.instance_path, 'config/'),
     LANG_FILE=os.path.join(app.instance_path, 'lang.json'),
-    UPLOAD_FOLDER=os.path.join(app.instance_path, 'upload/'),
+    UPLOAD_FOLDER=os.path.join(app.instance_path, 'upload/verifier/'),
+    UPLOAD_FOLDER_SPLITTER=os.path.join(app.instance_path, 'upload/splitter/'),
     BABEL_TRANSLATION_DIRECTORIES=app.root_path.replace('backend', 'assets') + '/i18n/backend/translations/'
 )
 

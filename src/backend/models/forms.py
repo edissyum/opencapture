@@ -139,8 +139,8 @@ def add_form(args):
                 'label': args['label'],
                 'module': args['module'],
                 'default_form': args['default_form'],
-                'supplier_verif': args['supplier_verif'],
-                'outputs': args['outputs'] if 'outputs' in args and args['outputs'] else {}
+                'outputs': args['outputs'] if 'outputs' in args and args['outputs'] else {},
+                'supplier_verif': args['supplier_verif'] if 'supplier_verif' in args else False
             }
         }
         res = _db.insert(args)

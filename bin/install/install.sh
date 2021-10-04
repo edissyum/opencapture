@@ -257,13 +257,13 @@ chmod -R g+s $defaultPath
 chown -R "$user":"$group" $defaultPath
 
 ####################
-# Create default input script (based on default input created in data_fr.sql)
-defaultScriptFile=$defaultPath/bin/scripts/default_input.sh
+# Create default verifier input script (based on default input created in data_fr.sql)
+defaultScriptFile=$defaultPath/bin/scripts/verifier_inputs/default_input.sh
 if ! test -f "$defaultScriptFile"; then
-    cp $defaultPath/bin/scripts/script_sample_dont_touch.sh $defaultPath/bin/scripts/default_input.sh
-    sed -i "s#§§SCRIPT_NAME§§#default_input#g" $defaultPath/bin/scripts/default_input.sh
-    sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultPath/bin/scripts/default_input.sh
-    sed -i 's#"§§ARGUMENTS§§"#-input_id default_input#g' $defaultPath/bin/scripts/default_input.sh
+    cp $defaultPath/bin/scripts/verifier_inputs/script_sample_dont_touch.sh $defaultScriptFile
+    sed -i "s#§§SCRIPT_NAME§§#default_input#g" $defaultScriptFile
+    sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultScriptFile
+    sed -i 's#"§§ARGUMENTS§§"#-input_id default_input#g' $defaultScriptFile
 fi
 
 ####################

@@ -31,18 +31,18 @@ trainImagePath = ${AI-CLASSIFICATION:iaPath}/images/training-images/
 predictImagePath = ${AI-CLASSIFICATION:iaPath}/images/predict-images/
 ; Percentage minimum to keep the typology found by the AI
 confidenceMin = 80
-
 [SPLITTER]
-splitterpath = /var/docservers/OpenCapture_Splitter/
-tmpBatchPath = ${SPLITTER:splitterpath}/batches/
-pdfOutputPath = ${SPLITTER:splitterpath}/separated_pdf/
-pdfOriginPath = ${GLOBAL:projectPath}/bin/data/OC_Splitter/pdf_sources/
+docserverpath = /var/docservers/OpenCapture_Splitter/
+batchpath     = ${SPLITTER:docserverpath}/batches/
+pdfoutputpath = ${SPLITTER:docserverpath}/separated_pdf/
+docstart      = DOCSTART
+bundlestart   = BUNDLESTART
 
 [REMOVE-BLANK-PAGES]
 ; True or False
-enabled = False
+enabled     = False
 ; Float type
-blobsRatio = 1E-6
+blobsRatio  = 1E-6
 
 [DATABASE]
 postgresHost        = localhost

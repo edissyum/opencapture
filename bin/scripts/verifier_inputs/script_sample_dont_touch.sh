@@ -29,7 +29,6 @@ filepath=$1
 filename=$(basename "$filepath")
 ext=$(file -b -i "$filepath")
 
-
 if ! test -e $PID && test "$ext" = 'application/pdf; charset=binary' && test -f "$filepath";
 then
     touch $PID

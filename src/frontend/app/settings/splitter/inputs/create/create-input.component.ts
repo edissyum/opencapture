@@ -143,7 +143,10 @@ export class SplitterCreateInputComponent implements OnInit {
 
     createScriptAndIncron() {
         if (this.isValidForm()) {
-            const input: any = {};
+            const input : any = {
+                'module': 'splitter'
+            };
+
             this.inputForm.forEach(element => {
                 input[element.id] = element.control.value;
             });

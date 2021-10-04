@@ -208,29 +208,29 @@ CREATE TABLE "status" (
 );
 
 CREATE TABLE "splitter_batches" (
-    "id" SERIAL UNIQUE PRIMARY KEY,
-    "file_name" VARCHAR,
-    "first_page" VARCHAR,
-    "batch_folder" VARCHAR,
+    "id"            SERIAL UNIQUE PRIMARY KEY,
+    "file_name"     VARCHAR,
+    "first_page"    VARCHAR,
+    "batch_folder"  VARCHAR,
     "creation_date" TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
-    "status" VARCHAR DEFAULT ''NEW''::VARCHAR,
-    "page_number" integer,
-    "custom_fields" jsonb DEFAULT ''{}''::jsonb NOT NULL,
-    "form_id" integer
+    "status"        VARCHAR DEFAULT 'NEW',
+    "page_number"   INTEGER,
+    "custom_fields" JSONB DEFAULT '{}',
+    "form_id"       INTEGER
 );
 
 CREATE TABLE "splitter_pages" (
-    "id" SERIAL UNIQUE PRIMARY KEY,
-    "batch_id" integer,
-    "image_path" VARCHAR,
-    "source_page" integer,
-    "split_document" integer,
-    "status" VARCHAR DEFAULT ''NEW''::VARCHAR
+    "id"                SERIAL UNIQUE PRIMARY KEY,
+    "batch_id"          INTEGER,
+    "image_path"        VARCHAR,
+    "source_page"       INTEGER,
+    "split_document"    INTEGER,
+    "status"            VARCHAR DEFAULT 'NEW'
 );
 
 CREATE TABLE "metadata" (
-    "id" SERIAL UNIQUE PRIMARY KEY,
-    "last_edit" date DEFAULT now(),
-    "key" VARCHAR(20),
-    "data" jsonb
+    "id"        SERIAL UNIQUE PRIMARY KEY,
+    "last_edit" DATE DEFAULT now(),
+    "key"       VARCHAR(20),
+    "data"      JSONB
 );
