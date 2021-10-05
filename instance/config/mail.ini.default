@@ -1,7 +1,7 @@
 [GLOBAL]
 batchPath             = /var/www/html/opencaptureforinvoices/bin/data/MailCollect/
 # True or False
-smtp_notif_on_error   = True
+smtp_notif_on_error   = False
 smtp_auth             = False
 smtp_host             = gmail-smtp-in.l.google.com
 smtp_port             = 25
