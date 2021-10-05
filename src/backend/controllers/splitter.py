@@ -96,33 +96,6 @@ def change_status(args):
         return res, 401
 
 
-def load_referential():
-    _vars = create_classes_from_current_config()
-    _cfg = _vars[1]
-
-    demand = splitter.get_demand_number()
-    demand_number = int(demand[0]['demand_number']) + 1
-
-    url = _cfg.cfg['GED']['host'] + "alfresco/s/org/cd46/pmi/getReferentiel"
-    params = {'num_requete': demand_number, 'type_referentiel': _cfg.cfg['GED']['referentialmode']}
-    r = requests.get(url=url, params=params, auth=HTTPBasicAuth(_cfg.cfg['GED']['user'], _cfg.cfg['GED']['password']),
-                     verify=False)
-    try:
-        data = r.json()
-    except:
-        return {}, 200
-
-    if data:
-        if 'referentiel' in data:
-            splitter.insert_referential(data['referentiel'])
-            splitter.set_demand_number(demand_number)
-        else:
-            data['referentiel'] = []
-        return data, 200
-    else:
-        return data, 401
-
-
 def retrieve_pages(page_id):
     _vars = create_classes_from_current_config()
     _cfg = _vars[1]
@@ -241,7 +214,7 @@ def validate(documents, metadata):
                     res_xml = _Splitter.export_xml(documents, metadata, parameters['folder_out'], file_name, now)
                     is_export_xml_ok = res_xml['OK']
 
-                if output[0]['output_type_id'] == 'alfresco':
+                if output[0]['output_type_id'] == 'export_alfresco':
                     auths = get_output_auth(output[0]['data']['options']['auth'])
                     cmis = _CMIS(auths['cmis_ws'], auths['login'], auths['password'], auths['folder'])
 

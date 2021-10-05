@@ -47,11 +47,11 @@ export class SeparatorComponent implements AfterViewInit {
     separators        : any[]   = [
         {
             id  : 'bundleSeparator',
-            name: "SPLITTER.bundle_separator",
+            name: this.translate.instant("SPLITTER.bundle_separator"),
         },
         {
             id  : 'documentSeparator',
-            name: "SPLITTER.document_separator",
+            name: this.translate.instant("SPLITTER.document_separator"),
         },
     ];
 

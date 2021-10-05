@@ -246,7 +246,7 @@ else
 fi
 
 ####################
-# Generate secret key for Flask and replace it in webbAp/__init.py file
+# Generate secret key for Flask and replace it in src/backend/__init.py file
 secret=$(python3 -c 'import secrets; print(secrets.token_hex(16))')
 sed -i "s#§§SECRET§§#$secret#g" "$defaultPath"/src/backend/__init__.py
 
@@ -267,6 +267,16 @@ if ! test -f "$defaultScriptFile"; then
 fi
 
 ####################
+# Create default splitter input script (based on default input created in data_fr.sql)
+defaultScriptFile=$defaultPath/bin/scripts/splitter_inputs/default_input.sh
+if ! test -f "$defaultScriptFile"; then
+    cp $defaultPath/bin/scripts/splitter_inputs/script_sample_dont_touch.sh $defaultScriptFile
+    sed -i "s#§§SCRIPT_NAME§§#default_input#g" $defaultScriptFile
+    sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultScriptFile
+    sed -i 's#"§§ARGUMENTS§§"#-input_id default_input#g' $defaultScriptFile
+fi
+
+####################
 # Create docservers
 mkdir -p $docserverPath/{OpenCapture,OpenCapture_Splitter}
 mkdir -p $docserverPath/OpenCapture/images/{full,thumbs}
@@ -277,6 +287,6 @@ chown -R "$user":"$group" $docserverPath/{OpenCapture,OpenCapture_Splitter}/
 
 ####################
 # Create default export XML folder
-mkdir -p /var/share/export/
+mkdir -p /var/share/export/{verifier,splitter}/
 chmod -R 775 /var/share/export/
 chown -R "$user":"$group" /var/share/export/

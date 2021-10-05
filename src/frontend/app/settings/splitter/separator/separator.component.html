@@ -88,9 +88,9 @@
                 <hr class="border-green-400">
             </div>
         </div>
-        <div class="w-full flex flex-wrap content-center">
+        <div class="w-full flex flex-wrap content-center mt-2">
            <mat-form-field appearance="outline" class="w-1/4 mx-auto">
-            <mat-label>{{ 'GLOBAL.type'| translate }}</mat-label>
+            <mat-label>{{ 'CUSTOM-FIELDS.type'| translate }}</mat-label>
             <mat-select [(ngModel)]="selectedSeparator" (ngModelChange)="onChangeType()">
               <mat-option  *ngFor="let separator of separators" [id]="separator.id" [value]="separator.id">
                   {{ separator.name| translate }}
