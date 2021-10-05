@@ -31,20 +31,6 @@ import {API_URL} from "../../../../env";
 import {catchError, finalize, map, startWith, tap} from "rxjs/operators";
 import {of} from "rxjs";
 
-
-@Pipe({ name: 'highlight' })
-export class HighlightPipe implements PipeTransform {
-    transform(text: string, search:any): string {
-        const pattern = search
-            .replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&")
-            .split(' ')
-            .filter((t:any) => t.length > 0)
-            .join('|');
-        const regex = new RegExp(pattern, 'gi');
-        return search ? text.replace(regex, match => `<b>${match}</b>`) : text;
-    }
-}
-
 @Component({
   selector: 'app-splitter-update-output',
   templateUrl: './update-output.component.html',

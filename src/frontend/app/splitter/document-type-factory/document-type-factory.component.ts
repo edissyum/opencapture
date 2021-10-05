@@ -1,12 +1,27 @@
+/** This file is part of Open-Capture for Invoices.
+
+ Open-Capture for Invoices is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ Open-Capture is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+
+ @dev : Oussama Brich <oussama.brich@edissyum.com> */
+
 import {Component, Injectable, EventEmitter, OnInit, Output} from '@angular/core';
 import {FlatTreeControl} from '@angular/cdk/tree';
 import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
 import {BehaviorSubject, of} from "rxjs";
 import {SelectionModel} from "@angular/cdk/collections";
-import {TREE_DATA} from "./document-tree"
+import {TREE_DATA} from "./document-tree";
 import {SettingsService} from "../../../services/settings.service";
-import {API_URL} from "../../env";
-import {catchError, finalize, tap} from "rxjs/operators";
 import {AuthService} from "../../../services/auth.service";
 import {HttpClient} from "@angular/common/http";
 import {NotificationService} from "../../../services/notifications/notifications.service";
@@ -53,7 +68,7 @@ export class ChecklistDatabase {
 
   buildFileTree(obj: any[], level: string): TreeItemNode[] {
     return obj.filter(o =>
-      (<string>o.code).startsWith(level + '.')
+      (o.code as string).startsWith(level + '.')
       && (o.code.match(/\./g) || []).length === (level.match(/\./g) || []).length + 1
     )
       .map(o => {
@@ -61,7 +76,7 @@ export class ChecklistDatabase {
         node.key        = o.key;
         node.item       = o.text;
         node.code       = o.code;
-        const children  = obj.filter(so => (<string>so.code).startsWith(level + '.'));
+        const children  = obj.filter(so => (so.code as string).startsWith(level + '.'));
         if (children && children.length > 0) {
           node.children = this.buildFileTree(children, o.code);
         }
@@ -75,7 +90,7 @@ export class ChecklistDatabase {
       filteredTreeData = this.treeData.filter(d => d.text.toLocaleLowerCase().indexOf(filterText.toLocaleLowerCase()) > -1);
       Object.assign([], filteredTreeData).forEach(ftd => {
         // @ts-ignore
-        let str = (<string>ftd.code);
+        let str = (ftd.code as string);
         while (str.lastIndexOf('.') > -1) {
           const index = str.lastIndexOf('.');
           str = str.substring(0, index);
@@ -187,7 +202,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
     } else {
       this.treeControl.collapseAll();
     }
-    this.treeControl.expandAll()
+    this.treeControl.expandAll();
   }
 
   selectNode(node: any) {
