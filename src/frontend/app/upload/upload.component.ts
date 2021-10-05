@@ -72,7 +72,7 @@ export class UploadComponent implements OnInit {
             tap((data: any) => {
                 this.inputs = data.inputs;
                 if (this.inputs.length === 1) {
-                    this.selectedInput = data.inputs[0].input_id;
+                    this.selectedInput = data.inputs[0].id;
                 }
              }),
             finalize(() => {this.loading = false;}),

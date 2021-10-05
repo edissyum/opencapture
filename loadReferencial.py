@@ -96,14 +96,15 @@ if __name__ == '__main__':
                 if res:
                     log.info('The following supplier was successfully added into database : ' +
                              str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['name']]))
-                    database.update({
-                        'table': ['positions_masks'],
-                        'set': {
-                            'supplier_id': res
-                        },
-                        'where': ['id = %s'],
-                        'data': [str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['positions_mask_id']])]
-                    })
+                    if spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['positions_mask_id']]:
+                        database.update({
+                            'table': ['positions_masks'],
+                            'set': {
+                                'supplier_id': res
+                            },
+                            'where': ['id = %s'],
+                            'data': [str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['positions_mask_id']])]
+                        })
                 else:
                     log.error('While adding supplier : ' +
                               str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['name']]), False)
@@ -157,14 +158,15 @@ if __name__ == '__main__':
                 }
                 res = database.update(args)
 
-                database.update({
-                    'table': ['positions_masks'],
-                    'set': {
-                        'supplier_id': current_supplier['id']
-                    },
-                    'where': ['id = %s'],
-                    'data': [str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['positions_mask_id']])]
-                })
+                if str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['positions_mask_id']]):
+                    database.update({
+                        'table': ['positions_masks'],
+                        'set': {
+                            'supplier_id': current_supplier['id']
+                        },
+                        'where': ['id = %s'],
+                        'data': [str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['positions_mask_id']])]
+                    })
                 if res[0]:
                     log.info('The following supplier was successfully updated into database : ' +
                              str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['name']]))

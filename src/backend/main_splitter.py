@@ -27,9 +27,7 @@ from src.backend.import_process import OCForInvoices_splitter
 OCforInvoices = Kuyruk()
 
 
-# If needed just run "kuyruk --app src.backend.main_splitter.OCforInvoices_Sep manager"
-# to have web dashboard of current running worker
-# @OCforInvoices.task(queue='splitter')
+@OCforInvoices.task(queue='splitter')
 def launch(args):
     start = time.time()
 
