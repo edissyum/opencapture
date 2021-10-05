@@ -32,8 +32,6 @@ def retrieve_metadata(args):
         'data': ['referential'],
     })
 
-    if not metadata:
-        error = "ERROR : While getting metadata"
     return metadata, error
 
 

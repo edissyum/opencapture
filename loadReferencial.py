@@ -34,7 +34,7 @@ if __name__ == '__main__':
 
     config_name = _Config(args['config'])
     config_file = config_name.cfg['PROFILE']['cfgpath'] + '/config_' + config_name.cfg['PROFILE']['id'] + '.ini'
-    config, locale, log, ocr, database, spreadsheet = create_classes(config_file)
+    config, locale, log, ocr, database, spreadsheet, smtp = create_classes(config_file)
 
     file = spreadsheet.referencialSuppplierSpreadsheet
     if args['file']:

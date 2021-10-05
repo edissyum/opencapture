@@ -51,17 +51,10 @@ def retrieve_metadata():
     args = {}
     metadata, error = splitter.retrieve_metadata(args)
 
-    if metadata:
-        response = {
-            "metadata": metadata
-        }
-        return response, 200
-
     response = {
-        "errors": "ERROR",
-        "message": error
+        "metadata": metadata
     }
-    return response, 401
+    return response, 200
 
 
 def retrieve_batches(args):
