@@ -49,7 +49,7 @@ export class NotificationService {
     }
 
     handleErrors(err: any, route='') {
-        if (err.status === 0 && err.statusText === 'Unknown Error'){
+        if (err.status === 0 && err.statusText === 'Unknown Error') {
             const message =this.translate.instant('ERROR.connection_failed') + ' : ' + this.translate.instant('ERROR.is_server_up', {server: API_URL});
             this.error(message);
             if (this.router.url !== '/login')

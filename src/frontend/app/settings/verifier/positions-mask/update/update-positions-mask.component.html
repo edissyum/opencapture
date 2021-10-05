@@ -118,7 +118,7 @@
             </div>
             <div id="invoice_image">
                 <div class="absolute text-xl left-6" style="top: 13.5rem">
-                    <ng-container *ngIf="!this.loading && this.invoiceImageSrc && this.invoiceImageNbPages > 1">
+                    <ng-container *ngIf="!this.loading && this.invoiceImageSrc && this.invoiceImageNbPages> 1">
                         <i class="fa fa-arrow-left cursor-pointer" (click)="previousPage()"></i>
                         {{ 'VERIFIER.page' | translate }}
                         {{ currentPage }}

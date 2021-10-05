@@ -928,14 +928,14 @@ export class VerifierViewerComponent implements OnInit {
 
     // Function used to verify SIRET or SIREN using the Luhn algorithm
     verify(value: any, size: any, isVAT = false) {
-        if (isVAT){
+        if (isVAT) {
             return value.length === size;
         }
 
         if (isNaN(value) || value.length !== size) return false;
         let bal     = 0;
         let total   = 0;
-        for (let i = size - 1; i >= 0; i--){
+        for (let i = size - 1; i >= 0; i--) {
             const step = (value.charCodeAt(i) - 48) * (bal + 1);
             total += (step > 9) ? step - 9:step;
             bal = 1 - bal;

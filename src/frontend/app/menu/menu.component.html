@@ -62,7 +62,7 @@
                     </div>
                     <div [@toggle]="profileDropdownCurrentState" class="origin-top-right absolute md:right-0 mt-2 w-56 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-50"
                          role="menu" aria-orientation="vertical" aria-labelledby="user-menu" *ngIf="userService.user">
-                        <span class="block text-center mb-2 text-gray-900" >
+                        <span class="block text-center mb-2 text-gray-900">
                             <b>{{ userService.user['lastname'] }}</b> {{ userService.user['firstname'] }} ({{ userService.user['username'] }})
                             <i>{{ userService.user['role']['label'] }}</i>
                             <hr>

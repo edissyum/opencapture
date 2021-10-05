@@ -190,7 +190,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
     this.treeControl.expandAll()
   }
 
-  selectNode(node: any){
+  selectNode(node: any) {
       this.selectedItemName = node;
       this.output.emit(this.selectedItemName);
   }

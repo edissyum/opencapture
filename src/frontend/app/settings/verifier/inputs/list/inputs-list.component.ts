@@ -57,6 +57,7 @@ export class InputsListComponent implements OnInit {
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
+
         private historyService: HistoryService,
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,

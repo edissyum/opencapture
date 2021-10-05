@@ -143,7 +143,7 @@ class Splitter:
 
     @staticmethod
     def get_file_name(document, metadata, parameters, now_date):
-        file_name = ''
+        file_name = []
 
         year = str(now_date.year)
         day = str('%02d' % now_date.day)
@@ -154,38 +154,20 @@ class Splitter:
         date = year + month + day + hour + minute + seconds
         random_num = str(random.randint(0, 99999)).zfill(5)
         filename_parameters = parameters['filename'].split('#')
-        joiner = parameters['separator'] if parameters['separator'] else ''
+        separator = parameters['separator'] if parameters['separator'] else ''
         for filename_parameter in filename_parameters:
             if filename_parameter in metadata:
-                file_name = joiner.join([
-                    file_name,
-                    metadata[filename_parameter].replace(' ', joiner),
-                ])
-
+                file_name.append(metadata[filename_parameter].replace(' ', separator))
             elif filename_parameter == 'doctype' and document:
-                file_name = joiner.join([
-                    file_name,
-                    document['documentTypeKey'].replace(' ', joiner),
-                ])
-
+                file_name.append(document['documentTypeKey'].replace(' ', separator))
             elif filename_parameter == 'date':
-                file_name = joiner.join([
-                    file_name,
-                    date.replace(' ', joiner),
-                ])
-
+                file_name.append(date.replace(' ', separator))
             elif filename_parameter == 'random':
-                file_name = joiner.join([
-                    file_name,
-                    random_num.replace(' ', joiner)
-                ])
+                file_name.append(random_num.replace(' ', separator))
             else:
-                file_name = joiner.join([
-                    file_name,
-                    filename_parameter.replace(' ', joiner)
-                ])
-        file_name = file_name + '.' + parameters['extension']
+                file_name.append(filename_parameter.replace(' ', separator))
 
+        file_name = separator.join(str(x) for x in file_name) + '.' + parameters['extension']
         return file_name
 
     @staticmethod

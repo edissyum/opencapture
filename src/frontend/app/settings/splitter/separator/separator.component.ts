@@ -55,17 +55,17 @@ export class SeparatorComponent implements AfterViewInit {
     this.refreshPdfView();
   }
 
-  refreshPdfView(): void{
+  refreshPdfView(): void {
     this.pdfFile = this.convertDataURIToBinary(this.base64);
     this.pdfViewerAutoLoad.pdfSrc = this.pdfFile;
     this.pdfViewerAutoLoad.refresh();
   }
 
   onChangeType() {
-    if(this.selectedSeparator == "bundleSeparator"){
+    if(this.selectedSeparator == "bundleSeparator") {
       this.base64 = BUNDLE_SEPARATOR
     }
-    else if(this.selectedSeparator == "documentSeparator"){
+    else if(this.selectedSeparator == "documentSeparator") {
       this.base64 = DOC_SEPARATOR
     }
     this.refreshPdfView();

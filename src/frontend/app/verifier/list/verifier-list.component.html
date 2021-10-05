@@ -72,7 +72,7 @@
                                            [pageSizeOptions]="this.pageSizeOptions" (page)="onPageChange($event)"></mat-paginator>
                         </span>
                     </div>
-                    <div class="z-40 -mt-2 mb-2 select-none" style="margin-left: 1.2rem" *ngIf="invoices.length > 1">
+                    <div class="z-40 -mt-2 mb-2 select-none" style="margin-left: 1.2rem" *ngIf="invoices.length> 1">
                         <span class="cursor-pointer" (click)="selectOrUnselectAllInvoices($event)"
                               [innerHTML]="invoiceToDeleteSelected ? this.translate.instant('VERIFIER.unselect_all') : this.translate.instant('VERIFIER.select_all')">
                         </span>

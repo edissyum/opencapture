@@ -33,6 +33,7 @@ import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {ConfirmDialogComponent} from "../../../../../services/confirm-dialog/confirm-dialog.component";
 import {Sort} from "@angular/material/sort";
+import {HistoryService} from "../../../../../services/history.service";
 
 @Component({
   selector: 'app-splitter-list-output',
@@ -57,6 +58,7 @@ export class SplitterListOutputComponent implements OnInit {
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
+        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
@@ -114,6 +116,7 @@ export class SplitterListOutputComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.deleteOutput(outputId);
+                this.historyService.addHistory('splitter', 'delete_output', this.translate.instant('HISTORY-DESC.delete-output', {output: output}));
             }
         });
     }

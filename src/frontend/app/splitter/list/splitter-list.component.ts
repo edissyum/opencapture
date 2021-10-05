@@ -75,7 +75,7 @@ export class SplitterListComponent implements OnInit {
         this.gridColumns = this.gridColumns === 3 ? 4 : 3;
     }
 
-    loadBatches(): void{
+    loadBatches(): void {
         this.ngxService.startBackground("load-batch");
         setTimeout(() => {
           this.ngxService.stopBackground("load-batch");
@@ -98,7 +98,7 @@ export class SplitterListComponent implements OnInit {
         ).subscribe()
     }
 
-    sanitize(url:string){
+    sanitize(url:string) {
         return this._sanitizer.bypassSecurityTrustUrl('data:image/jpg;base64,' + url);
     }
 
@@ -122,13 +122,14 @@ export class SplitterListComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if(result){
+            if(result) {
                 this.deleteBatch(id);
+
             }
         });
     }
 
-    deleteBatch(id: number): void{
+    deleteBatch(id: number): void {
         let headers = this.authService.headers;
         this.http.put(API_URL + '/ws/splitter/status', {
             'id'    : id,

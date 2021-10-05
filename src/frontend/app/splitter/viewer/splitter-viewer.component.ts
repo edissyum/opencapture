@@ -113,7 +113,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
         });
     }
 
-    loadSelectedBatch(): void{
+    loadSelectedBatch(): void {
         this.documents = [];
         this.loadPages();
         this.loadBatchById();
@@ -133,7 +133,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
         ).subscribe();
     }
 
-    loadBatchById(): void{
+    loadBatchById(): void {
         this.ngxService.startBackground("load-current-batch");
         setTimeout(() => {
           this.ngxService.stopBackground("load-current-batch");
@@ -152,7 +152,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
         ).subscribe();
     }
 
-    loadBatches(): void{
+    loadBatches(): void {
         this.ngxService.startBackground("load-batch");
         setTimeout(() => {
           this.ngxService.stopBackground("load-batch");
@@ -181,7 +181,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
         ).subscribe();
     }
 
-    loadPages(): void{
+    loadPages(): void {
         this.ngxService.startBackground("load-pages");
         setTimeout(() => {
           this.ngxService.stopBackground("load-pages");
@@ -235,7 +235,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
     }
 
 
-    fillDataValues(data: any): void{
+    fillDataValues(data: any): void {
         for (const field of this.fields) {
             const key = field['metadata_key'];
             const newValue = data.hasOwnProperty(key) ? data[key] : '';
@@ -244,7 +244,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
         }
     }
 
-    loadReferential(): void{
+    loadReferential(): void {
         this.ngxService.startBackground("load-referential");
         setTimeout(() => {
           this.ngxService.stopBackground("load-referential");
@@ -262,7 +262,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
         ).subscribe();
     }
 
-    loadMetadata(): void{
+    loadMetadata(): void {
         this.ngxService.startBackground("load-metadata");
         this.metadata = [];
         setTimeout(() => {
@@ -301,12 +301,12 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
         for (const field of this.fields) {
             if (field['metadata_key']) {
                 // @ts-ignore
-                this.form.get(field['metadata_key']).setValue(optionId);
+                this.form.get!(field['metadata_key']).setValue(optionId);
             }
         }
     }
 
-    loadFormFields(formId: number){
+    loadFormFields(formId: number) {
         this.ngxService.startBackground("load-custom-fields");
         setTimeout(() => {
           this.ngxService.stopBackground("load-custom-fields");
@@ -328,7 +328,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
                 const control = new FormControl();
                 this.form.addControl(field.label_short, control);
 
-                if(field.metadata_key){ // used to control autocomplete search fields
+                if(field.metadata_key) { // used to control autocomplete search fields
                     const controlSearch = new FormControl();
                     this.form.addControl("search_" + field.label_short, controlSearch);
                 }
@@ -380,7 +380,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
         ).subscribe();
     }
 
-    toFormGroup(){
+    toFormGroup() {
         const group: any = {};
             this.fields.forEach((input: Field) => {
                 group[input.label_short] = input.required ?
@@ -400,7 +400,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
         return id;
     }
 
-    sanitize(url:string){
+    sanitize(url:string) {
         return this._sanitizer.bypassSecurityTrustUrl('data:image/jpg;base64,' + url);
     }
 
@@ -434,13 +434,13 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
     /* End documents control */
 
     /* Begin tools bar */
-    deleteItemFromList(list: any[], index: number){
+    deleteItemFromList(list: any[], index: number) {
         delete list[index];
         list = list.filter((x: any): x is any => x !== null);
         return list;
     }
 
-    deleteSelectedPages(){
+    deleteSelectedPages() {
         for (const document of this.documents) {
             for(let i=0; i<document.pages.length; i++) {
                 if(document.pages[i].checkBox) {
@@ -451,7 +451,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
         }
     }
 
-    setAllPagesTo(check: boolean){
+    setAllPagesTo(check: boolean) {
         for (const document of this.documents) {
             for (const page of document.pages) {
                 page.checkBox = check;
@@ -485,7 +485,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
     changeBatch(id: number) {
         this.fillDataValues({});
         this.selectedMetadata = {id: -1};
-        window.location.href = "/#/splitter/viewer/" + id;
+        this.router.navigate(['splitter/viewer/' + id]);
         this.currentBatch.id = id;
         this.loadSelectedBatch();
     }
@@ -515,14 +515,14 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
           this.ngxService.stopBackground("validate");
         }, 10000);
 
-        if(this.inputMode === 'Manual'){
+        if(this.inputMode === 'Manual') {
             for (const field of this.fields) {
                 // @ts-ignore
                 this.selectedMetadata[field.label_short] = this.form.get(field.label_short).value;
             }
         }
 
-        if(this.selectedMetadata['id'] === -1 && this.inputMode === 'Auto'){
+        if(this.selectedMetadata['id'] === -1 && this.inputMode === 'Auto') {
             this.notify.error(this.translate.instant('SPLITTER.error_no_metadata'));
             this.ngxService.stopBackground("validate");
             return;
@@ -553,7 +553,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
                 'formId'    : this.currentBatch.formId,
             },
             {headers}).pipe(
-          tap((data: any) => {
+          tap(() => {
             this.ngxService.stopBackground("validate");
           }),
           catchError((err: any) => {
@@ -561,7 +561,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy{
               return of(false);
           })
         ).subscribe(() => {
-            window.location.href = "/#/splitter/list";
+            this.router.navigate(['splitter/list']);
             this.notify.success("Lot validé avec succès");
         });
     }

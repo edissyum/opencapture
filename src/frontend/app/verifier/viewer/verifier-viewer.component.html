@@ -3,7 +3,7 @@
 </div>
 <div class="grid grid-cols-2 overflow-auto mt-2">
     <div class="fixed z-50 text-xl left-6 top-4">
-        <ng-container *ngIf="!this.loading && this.invoice && this.invoice.nb_pages > 1">
+        <ng-container *ngIf="!this.loading && this.invoice && this.invoice.nb_pages> 1">
             <i class="fa fa-arrow-left cursor-pointer" (click)="previousPage()"></i>
             {{ 'VERIFIER.page' | translate }}
             {{ currentPage }}

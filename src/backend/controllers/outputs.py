@@ -55,6 +55,7 @@ def update_output(output_id, args):
     output_info, error = outputs.get_output_by_id({'output_id': output_id})
 
     if error is None:
+        print(args)
         res, error = outputs.update_output({
             'set': {
                 'output_type_id': args['output_type_id'],

@@ -22,6 +22,5 @@ export class DocumentTypeComponent implements OnInit {
   ) {
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 }

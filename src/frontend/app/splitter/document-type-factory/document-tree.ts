@@ -22,7 +22,7 @@ export const TREE_DATA = [
   },
   {
     'key':'SITUATION_MILITAIRE',
-    'text': "Situtation militaire",
+    'text': "Situation militaire",
     'code': '0.1.1'
   },
   {

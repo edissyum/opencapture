@@ -447,9 +447,13 @@ export class SplitterUpdateOutputComponent implements OnInit {
 
     updateOutput() {
         const _array: any = {
-            "options" : {
-                "auth" : [],
-                "parameters": []
+            "output_type_id": "",
+            "output_label": "",
+            "data": {
+                "options": {
+                    "auth": [],
+                    "parameters": []
+                }
             }
         };
 
@@ -466,7 +470,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
                     }
                 }
 
-                _array['options'][category].push({
+                _array['data']['options'][category].push({
                     id: field.id,
                     type: field.type,
                     webservice: field.webservice,
@@ -474,6 +478,10 @@ export class SplitterUpdateOutputComponent implements OnInit {
                 });
             }
         }
+
+        this.outputForm.forEach(element => {
+            _array[element.id] = element.control.value;
+        });
 
         this.http.put(API_URL + '/ws/outputs/update/' + this.outputId, {'args': _array},{headers: this.authService.headers}).pipe(
             tap(() => {

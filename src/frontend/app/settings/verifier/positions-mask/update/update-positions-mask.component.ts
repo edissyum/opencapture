@@ -363,7 +363,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
             }
         });
 
-        for (const cpt in this.availableFieldsParent){
+        for (const cpt in this.availableFieldsParent) {
             this.availableFieldsParent[cpt]['values'].forEach((element: any) => {
                 if (element.regex) {
                     Object.assign(_array['regex'], {[element.id]: element.regex});
