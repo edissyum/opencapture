@@ -1,36 +1,35 @@
 [GLOBAL]
 ; Use ${GLOBAL:projectPath} to specify once for all the path of the project
-resolution                  = 300
-compressionquality          = 100
-projectPath                 = /var/www/html/opencaptureforinvoices/
-tmpPath                     = ${GLOBAL:projectPath}/bin/data/tmp/
-scriptsPath                 = ${GLOBAL:projectPath}/bin/scripts/
-docserverPath               = /var/docservers/OpenCapture/
-fullPath                    = ${GLOBAL:docserverPath}/images/full/
-thumbPath                   = ${GLOBAL:docserverPath}/images/thumbs/
-positionsMasksPath          = ${GLOBAL:docserverPath}/images/positions_masks/
-errorPath                   = ${GLOBAL:projectPath}/bin/data/error/
-logFile                     = ${GLOBAL:projectPath}/bin/data/log/OCforInvoices.log
-ocrErrorPath                = ${GLOBAL:projectPath}/instance/config/OCR_ERRORS.xml
-configMail                  = ${GLOBAL:projectPath}/instance/config/mail.ini
+resolution               = 300
+compressionquality       = 100
+projectPath              = /var/www/html/opencaptureforinvoices/
+tmpPath                  = ${GLOBAL:projectPath}/bin/data/tmp/
+scriptsPath              = ${GLOBAL:projectPath}/bin/scripts/
+docserverPath            = /var/docservers/OpenCapture/
+fullPath                 = ${GLOBAL:docserverPath}/images/full/
+thumbPath                = ${GLOBAL:docserverPath}/images/thumbs/
+positionsMasksPath       = ${GLOBAL:docserverPath}/images/positions_masks/
+errorPath                = ${GLOBAL:projectPath}/bin/data/error/
+logFile                  = ${GLOBAL:projectPath}/bin/data/log/OCforInvoices.log
+ocrErrorPath             = ${GLOBAL:projectPath}/instance/config/OCR_ERRORS.xml
+configMail               = ${GLOBAL:projectPath}/instance/config/mail.ini
 ; True or False, python way
-allowDuplicate              = False
-; True or False, python way
-allowAutomaticValidation    = False
-defaultPassword             = Open-CaptureForInvoices
-; Delta between date found and today date, in days
-; -1 to disable
-timeDelta                   = -1
+allowDuplicate           = False
+allowAutomaticValidation = False
+defaultPassword          = Open-CaptureForInvoices
+; Delta between date found and today date, in days. -1 to disable
+timeDelta                = -1
 
 [AI-CLASSIFICATION]
 ; True or False, python way
-enabled = False
-iaPath = ${GLOBAL:projectPath}/bin/src/invoice_classification/
-modelPath = ${AI-CLASSIFICATION:iaPath}/invoice_classification.model
-trainImagePath = ${AI-CLASSIFICATION:iaPath}/images/training-images/
+enabled          = False
+iaPath           = ${GLOBAL:projectPath}/bin/src/invoice_classification/
+modelPath        = ${AI-CLASSIFICATION:iaPath}/invoice_classification.model
+trainImagePath   = ${AI-CLASSIFICATION:iaPath}/images/training-images/
 predictImagePath = ${AI-CLASSIFICATION:iaPath}/images/predict-images/
 ; Percentage minimum to keep the typology found by the AI
-confidenceMin = 80
+confidenceMin    = 80
+
 [SPLITTER]
 docserverpath = /var/docservers/OpenCapture_Splitter/
 batchpath     = ${SPLITTER:docserverpath}/batches/
@@ -45,18 +44,17 @@ enabled     = False
 blobsRatio  = 1E-6
 
 [DATABASE]
-postgresHost        = localhost
-postgresPort        = 5432
-postgresDatabase    = opencapture
-postgresUser        =
-postgresPassword    =
+postgresHost     = localhost
+postgresPort     = 5432
+postgresDatabase = opencapture
+postgresUser     =
+postgresPassword =
 
 [LOCALE]
 ; fra or eng by default
-locale                   = fra
-; fra or eng by default
-localeocr                = fra
-localepath               = ${GLOBAL:projectPath}/src/assets/locale/
+locale           = fra
+localeocr        = fra
+localepath       = ${GLOBAL:projectPath}/src/assets/locale/
 
 [REFERENCIAL]
 ; ODS or XLSX supported
@@ -68,19 +66,18 @@ enabled = False
 
 [SEPARATORQR]
 ; True or False, python way
-enabled             = False
-; True or False, python way
-exportpdfa          = False
-outputpdfpath       = ${GLOBAL:projectPath}/bin/data/exported_pdf/
-outputpdfapath      = ${GLOBAL:projectPath}/bin/data/exported_pdfa/
-tmppath             = /tmp/
+enabled        = False
+exportpdfa     = False
+outputpdfpath  = ${GLOBAL:projectPath}/bin/data/exported_pdf/
+outputpdfapath = ${GLOBAL:projectPath}/bin/data/exported_pdfa/
+tmppath        = /tmp/
 ; _ or - for exemple
-divider             = _
+divider        = _
 
 [API]
-siret-consumer      =
-siret-secret        =
-siret-url-token     = https://api.insee.fr/token
-siret-url           = https://api.insee.fr/entreprises/sirene/V3/siret/
-siren-url           = https://api.insee.fr/entreprises/sirene/V3/siren/
-tva-url             = https://ec.europa.eu/taxation_customs/vies/checkVatService.wsdl
+siret-consumer  =
+siret-secret    =
+siret-url-token = https://api.insee.fr/token
+siret-url       = https://api.insee.fr/entreprises/sirene/V3/siret/
+siren-url       = https://api.insee.fr/entreprises/sirene/V3/siren/
+tva-url         = https://ec.europa.eu/taxation_customs/vies/checkVatService.wsdl
