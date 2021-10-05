@@ -150,8 +150,7 @@
 		"number_float": "",
 		"number_int": "",
 		"select": "",
-		"textarea": "",
-		"text": ""
+		"textarea": ""
 	},
 	"FORMS": {
 		"available_fields": "",
@@ -201,6 +200,7 @@
 		"login": "Login",
 		"settings": "Settings",
 		"skip_auto_validate": "",
+		"type": "",
 		"upload": "Upload",
 		"validate": "Validate"
 	},
@@ -367,6 +367,7 @@
 		"create_supplier": "",
 		"custom_fields": "",
 		"customers_list": "",
+		"document_type_splitter": "",
 		"export_suppliers": "",
 		"form_builder": "",
 		"forms_list": "",
@@ -377,6 +378,7 @@
 		"outputs_list": "",
 		"position_mask_list": "",
 		"roles_list": "",
+		"separator_splitter": "",
 		"settings": "",
 		"splitter": "",
 		"suppliers_list": "",
@@ -391,13 +393,7 @@
 		"upload": "",
 		"users_list": "",
 		"verifier": "",
-		"version_update": "",
-		"outputs_list_splitter": "",
-		"forms_list_splitter": "",
-		"inputs_list_splitter": "",
-		"update_form_splitter": "",
-		"update_input_splitter": "",
-		"update_output_splitter": ""
+		"version_update": ""
 	},
 	"ROLE": {
 		"add": "Add role",
@@ -418,7 +414,6 @@
 		"add_input": "",
 		"add_output": "",
 		"administration": "Administration",
-		"connector_EDM": "EDM connector",
 		"create_role": "",
 		"create_user": "Create user",
 		"custom_fields": "Custom fields",
@@ -439,8 +434,34 @@
 		"verifier": "Verifier"
 	},
 	"SPLITTER": {
+		"add_document": "",
+		"auto_complete": "",
+		"batch_deleted": "",
+		"confirm_batch_delete": "",
+		"delete_selected_pages": "",
+		"document_number": "",
+		"edit": "",
+		"error_no_doc_type": "",
+		"error_no_metadata": "",
 		"list": "List of batches",
-		"viewer": "Batch view"
+		"loadReferential": "",
+		"meta_data": "",
+		"min_3_letter": "",
+		"no_batch_found": "",
+		"no_result": "",
+		"referential_updated": "",
+		"reset": "",
+		"saved_the": "",
+		"search": "",
+		"search_for": "",
+		"select": "",
+		"select_all": "",
+		"send": "",
+		"send_to": "",
+		"to_validate": "",
+		"unselect_all": "",
+		"viewer": "Batch view",
+		"zoom": ""
 	},
 	"STATUS": {
 		"list": ""
