@@ -451,15 +451,21 @@ def export_maarch(invoice_id, data):
         return response, 400
 
 
-def construct_with_var(data, invoice_info, separator):
+def construct_with_var(data, invoice_info, separator=False):
     _vars = create_classes_from_current_config()
     _locale = _vars[2]
     _data = []
     for column in data.split('#'):
         if column in invoice_info['datas']:
-            _data.append(invoice_info['datas'][column].replace(' ', separator))
+            if separator:
+                _data.append(invoice_info['datas'][column].replace(' ', separator))
+            else:
+                _data.append(invoice_info['datas'][column])
         elif column in invoice_info:
-            _data.append(invoice_info[column].replace(' ', separator))
+            if separator:
+                _data.append(invoice_info[column].replace(' ', separator))
+            else:
+                _data.append(invoice_info[column])
         elif column == 'invoice_date_year':
             _data.append(datetime.datetime.strptime(invoice_info['datas']['invoice_date'], _locale.formatDate).year)
         elif column == 'invoice_date_month':
@@ -473,7 +479,10 @@ def construct_with_var(data, invoice_info, separator):
         elif column == 'register_date_day':
             _data.append(datetime.datetime.strptime(invoice_info['register_date'], _locale.formatDate).day)
         else:
-            _data.append(column.replace(' ', separator))
+            if separator:
+                _data.append(column.replace(' ', separator))
+            else:
+                _data.append(column)
     return _data
 
 

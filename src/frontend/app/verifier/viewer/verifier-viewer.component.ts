@@ -140,28 +140,54 @@ export class VerifierViewerComponent implements OnInit {
         this.currentFilename = this.invoice.full_jpg_filename;
         await this.getThumb(this.invoice.full_jpg_filename);
         if (this.invoice.form_id) {
-            this.currentFormFields = await this.getFormFieldsById(this.invoice.form_id);
-            this.formSettings = await this.getFormById(this.invoice.form_id);
-            if (this.formSettings.outputs.length !== 0) {
-                for (const outputId in this.formSettings.outputs) {
-                    const output = await this.getOutputs(this.formSettings.outputs[outputId]);
-                    this.outputsLabel.push(output.output_label);
-                }
-            }
-            if (this.formSettings.supplier_verif && !this.token) {
-                let token: any;
-                token = await this.generateTokenInsee();
-                if (token['token']) {
-                    this.token = token['token'];
-                }
-            }
+           await this.generateOutputs(this.invoice.form_id);
+            // this.currentFormFields = await this.getFormFieldsById(this.invoice.form_id);
+            // this.formSettings = await this.getFormById(this.invoice.form_id);
+            // if (this.formSettings.outputs.length !== 0) {
+            //     for (const outputId in this.formSettings.outputs) {
+            //         const output = await this.getOutputs(this.formSettings.outputs[outputId]);
+            //         this.outputsLabel.push(output.output_label);
+            //     }
+            // }
+            // if (this.formSettings.supplier_verif && !this.token) {
+            //     let token: any;
+            //     token = await this.generateTokenInsee();
+            //     if (token['token']) {
+            //         this.token = token['token'];
+            //     }
+            // }
         }
-        if (Object.keys(this.currentFormFields).length === 0) this.currentFormFields = await this.getForm();
+
         this.formList = await this.getAllForm();
         this.formList = this.formList.forms;
         this.suppliers = await this.retrieveSuppliers();
         this.suppliers = this.suppliers.suppliers;
-
+        if (Object.keys(this.currentFormFields).length === 0) {
+            this.currentFormFields = await this.getForm();
+            let supplierFormFound = false;
+            if (this.invoice.supplier_id) {
+                for (const element of this.suppliers) {
+                    if (element.id === this.invoice.supplier_id) {
+                        if (element.form_id) {
+                            supplierFormFound = element.form_id;
+                        }
+                    }
+                }
+            }
+            if (supplierFormFound) {
+                await this.generateOutputs(supplierFormFound);
+            }else {
+                let defaultFormFound = false;
+                for (const element of this.formList) {
+                    if (element.default_form) {
+                        defaultFormFound = element.id;
+                    }
+                }
+                if (defaultFormFound) {
+                    await this.generateOutputs(defaultFormFound);
+                }
+            }
+        }
         /*
         * Enable library to draw rectangle on load (OCR ON FLY)
         */
@@ -188,6 +214,24 @@ export class VerifierViewerComponent implements OnInit {
                 startWith(''),
                 map(option => option ? this._filter(option) : this.suppliers.slice())
             );
+    }
+
+    async generateOutputs(formId: any) {
+        this.currentFormFields = await this.getFormFieldsById(formId);
+        this.formSettings = await this.getFormById(formId);
+        if (this.formSettings.outputs.length !== 0) {
+            for (const outputId in this.formSettings.outputs) {
+                const output = await this.getOutputs(this.formSettings.outputs[outputId]);
+                this.outputsLabel.push(output.output_label);
+            }
+        }
+        if (this.formSettings.supplier_verif && !this.token) {
+            let token: any;
+            token = await this.generateTokenInsee();
+            if (token['token']) {
+                this.token = token['token'];
+            }
+        }
     }
 
     displayFn(option: any) {
