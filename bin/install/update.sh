@@ -56,9 +56,12 @@ find . -name ".gitkeep" -delete
 
 # Fix rights on folder and files
 chmod -R 775 $OCForInvoicesPath
-chown -R "$user":"$user" $OCForInvoicesPath
 chmod u+x $OCForInvoicesPath/bin/scripts/*.sh
 chown -R "$user":"$user" $OCForInvoicesPath/bin/scripts/*.sh
+chmod u+x $OCForInvoicesPath/bin/scripts/verifier_inputs/*.sh
+chown -R "$user":"$user" $OCForInvoicesPath/bin/scripts/verifier_inputs/*.sh
+chmod u+x $OCForInvoicesPath/bin/scripts/splitter_inputs/*.sh
+chown -R "$user":"$user" $OCForInvoicesPath/bin/scripts/splitter_inputs/*.sh
 
 # Restart worker
 systemctl restart apache2
