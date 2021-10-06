@@ -63,8 +63,8 @@ def get_default_form(args):
     form = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['form_models'],
-        'where': ['default_form = %s', 'status <> %s'],
-        'data': [True, 'DEL']
+        'where': ['default_form = %s', 'status <> %s', 'module = %s'],
+        'data': [True, 'DEL', 'verifier']
     })
 
     if not form:

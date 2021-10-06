@@ -73,17 +73,15 @@ def get_form_fields_by_supplier_id(supplier_id):
     form_id, error = accounts.get_supplier_by_id({'select': ['form_id'], 'supplier_id': supplier_id})
     if error is None and form_id['form_id'] is not None:
         form_info, error = forms.get_fields({
-            'form_id': form_id['form_id']
+            'form_id': form_id['form_id'],
+            'module': 'verifier'
         })
 
         if error is None:
             return form_info, 200
         else:
-            response = {
-                "errors": gettext('GET_FORM_BY_SUPPLIER_ID_ERROR'),
-                "message": error
-            }
-            return response, 401
+            form_info = get_default_form()
+            return form_info[0], form_info[1]
     else:
         return get_default_form()
 
