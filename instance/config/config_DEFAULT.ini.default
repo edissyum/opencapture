@@ -58,8 +58,8 @@ localepath       = ${GLOBAL:projectPath}/src/assets/locale/
 
 [REFERENCIAL]
 ; ODS or XLSX supported
-referencialSupplierDocumentPath = ${GLOBAL:projectPath}/src/assets/referencial/default_referencial_supplier.ods
-referencialSupplierIndexpath    = ${GLOBAL:projectPath}/src/assets/referencial/default_referencial_supplier_index.json
+referencialSupplierDocumentPath = ${GLOBAL:projectPath}/instance/referencial/default_referencial_supplier.ods
+referencialSupplierIndexpath    = ${GLOBAL:projectPath}/instance/referencial/default_referencial_supplier_index.json
 
 [SEPARATE-BY-DOCUMENT]
 enabled = False

@@ -39,11 +39,12 @@ import {LocalStorageService} from "../../services/local-storage.service";
 })
 
 export class UploadComponent implements OnInit {
-    headers             : HttpHeaders   = this.authService.headers;
-    selectedInput       : any           = '';
-    inputs              : any[]         = [];
-    loading             : boolean       = true;
-    sending             : boolean       = false;
+    headers                  : HttpHeaders   = this.authService.headers;
+    selectedInput            : any           = '';
+    selectedInputTechnicalId : any           = '';
+    inputs                   : any[]         = [];
+    loading                  : boolean       = true;
+    sending                  : boolean       = false;
 
     constructor(
         private router: Router,
@@ -73,6 +74,7 @@ export class UploadComponent implements OnInit {
                 this.inputs = data.inputs;
                 if (this.inputs.length === 1) {
                     this.selectedInput = data.inputs[0].id;
+                    this.selectedInputTechnicalId = data.inputs[0].input_id;
                 }
              }),
             finalize(() => {this.loading = false;}),
@@ -98,6 +100,11 @@ export class UploadComponent implements OnInit {
     }
 
     setInput(inputId: any) {
+        this.inputs.forEach((element: any) => {
+            if (element.id === inputId) {
+                this.selectedInputTechnicalId = element.input_id;
+            }
+        });
         this.selectedInput = inputId;
     }
 
@@ -121,7 +128,7 @@ export class UploadComponent implements OnInit {
         const splitterOrVerifier = this.localeStorageService.get('splitter_or_verifier');
         if (splitterOrVerifier !== undefined || splitterOrVerifier !== '') {
             this.http.post(
-                API_URL + '/ws/' + splitterOrVerifier + '/upload?inputId=' + this.selectedInput,
+                API_URL + '/ws/' + splitterOrVerifier + '/upload?inputId=' + this.selectedInputTechnicalId,
                 formData,
                 {
                     headers: this.authService.headers

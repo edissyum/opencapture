@@ -58,8 +58,8 @@ def insert(args, files, config, database, datas, positions, pages, full_jpg_file
             input_settings = database.select({
                 'select': ['*'],
                 'table': ['inputs'],
-                'where': ['input_id = %s'],
-                'data': [args['input_id']],
+                'where': ['input_id = %s', 'module = %s'],
+                'data': [args['input_id'], 'verifier'],
             })
 
             if input_settings:

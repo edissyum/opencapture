@@ -57,8 +57,8 @@ class Splitter:
 
                 elif self.bundle_start in is_separator[0]['qr_code']:
                     qrcode = self.bundle_start
-
-            self.log.info("QR code in page " + str(index) + " : " + qrcode)
+            if qrcode:
+                self.log.info("QR code in page " + str(index) + " : " + qrcode)
             self.qr_pages.append({
                 'source_page': index,
                 'qrcode': qrcode,
@@ -100,9 +100,10 @@ class Splitter:
             input_settings = self.db.select({
                 'select': ['*'],
                 'table': ['inputs'],
-                'where': ['id = %s'],
-                'data': [input_id],
+                'where': ['input_id = %s', 'module = %s'],
+                'data': [input_id, 'splitter'],
             })
+
             args = {
                 'table': 'splitter_batches',
                 'columns': {
