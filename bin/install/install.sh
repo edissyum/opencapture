@@ -94,11 +94,6 @@ cd $defaultPath || exit 1
 find . -name ".gitkeep" -delete
 
 ####################
-# Makes scripts executable
-chmod u+x $defaultPath/bin/scripts/*.sh
-chown -R "$user":"$user" $defaultPath/bin/scripts/*.sh
-
-####################
 # Create the Apache service for backend
 touch /etc/apache2/sites-available/opencapture.conf
 su -c "cat > /etc/apache2/sites-available/opencapture.conf << EOF
@@ -277,6 +272,15 @@ if ! test -f "$defaultScriptFile"; then
 fi
 
 ####################
+# Makes scripts executable
+chmod u+x $defaultPath/bin/scripts/*.sh
+chown -R "$user":"$user" $defaultPath/bin/scripts/*.sh
+chmod u+x $defaultPath/bin/scripts/verifier_inputs/*.sh
+chown -R "$user":"$user" $defaultPath/bin/scripts/verifier_inputs/*.sh
+chmod u+x $defaultPath/bin/scripts/splitter_inputs/*.sh
+chown -R "$user":"$user" $defaultPath/bin/scripts/splitter_inputs/*.sh
+
+####################
 # Create docservers
 mkdir -p $docserverPath/{OpenCapture,OpenCapture_Splitter}
 mkdir -p $docserverPath/OpenCapture/images/{full,thumbs}
@@ -288,5 +292,5 @@ chown -R "$user":"$group" $docserverPath/{OpenCapture,OpenCapture_Splitter}/
 ####################
 # Create default export and input XML and PDF folder
 mkdir -p /var/share/{entrant,export}/{verifier,splitter}/
-chmod -R 775 /var/share/export/
-chown -R "$user":"$group" /var/share/export/
+chmod -R 775 /var/share/
+chown -R "$user":"$group" /var/share/
