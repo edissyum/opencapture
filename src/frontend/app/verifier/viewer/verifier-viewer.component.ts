@@ -154,7 +154,6 @@ export class VerifierViewerComponent implements OnInit {
             if (this.invoice.supplier_id) {
                 for (const element of this.suppliers) {
                     if (element.id === this.invoice.supplier_id) {
-                        console.log(element)
                         if (element.form_id) {
                             supplierFormFound = element.form_id;
                         }

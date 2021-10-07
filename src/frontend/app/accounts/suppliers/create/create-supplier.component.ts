@@ -148,7 +148,7 @@ export class CreateSupplierComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.http.get(API_URL + '/ws/forms/list', {headers: this.authService.headers}).pipe(
+        this.http.get(API_URL + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 const forms = data.forms;
                 for (const cpt in forms) {
