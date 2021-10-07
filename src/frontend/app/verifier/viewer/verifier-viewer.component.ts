@@ -149,11 +149,12 @@ export class VerifierViewerComponent implements OnInit {
         this.suppliers = await this.retrieveSuppliers();
         this.suppliers = this.suppliers.suppliers;
         if (Object.keys(this.currentFormFields).length === 0) {
-            this.currentFormFields = await this.getForm();
             let supplierFormFound = false;
+            let defaultFormFound = false;
             if (this.invoice.supplier_id) {
                 for (const element of this.suppliers) {
                     if (element.id === this.invoice.supplier_id) {
+                        console.log(element)
                         if (element.form_id) {
                             supplierFormFound = element.form_id;
                         }
@@ -163,7 +164,6 @@ export class VerifierViewerComponent implements OnInit {
             if (supplierFormFound) {
                 await this.generateOutputs(supplierFormFound);
             }else {
-                let defaultFormFound = false;
                 for (const element of this.formList) {
                     if (element.default_form) {
                         defaultFormFound = element.id;
@@ -172,6 +172,12 @@ export class VerifierViewerComponent implements OnInit {
                 if (defaultFormFound) {
                     await this.generateOutputs(defaultFormFound);
                 }
+            }
+            if (defaultFormFound || supplierFormFound) {
+                this.currentFormFields = await this.getForm();
+            } else {
+                this.notify.error(this.translate.instant('VERIFIER.no_form_available'));
+                this.router.navigate(['/verifier/list']);
             }
         }
         /*
@@ -214,7 +220,6 @@ export class VerifierViewerComponent implements OnInit {
         if (this.formSettings.supplier_verif && !this.token) {
             let token: any;
             token = await this.generateTokenInsee();
-            console.log(token);
             if (token['token']) {
                 if (token['token'].includes('ERROR')) {
                     this.tokenError = true;

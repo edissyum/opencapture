@@ -533,6 +533,7 @@
 		"invoices_deleted": "Facture(s) supprimée(s)",
 		"list": "Factures",
 		"nb_pages": "Nombre de page(s)",
+		"no_form_available": "Aucun formulaire n'est disponible",
 		"no_outputs_for_this_form": "Aucune chaîne sortante n'est configurée pour le formulaire <b>{{ form }}</b>",
 		"on": "sur",
 		"only_raw_footer": "Contrôle de cohérence du pied de page désactivé",

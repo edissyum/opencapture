@@ -100,7 +100,7 @@ export class SuppliersListComponent implements OnInit {
                 if (this.suppliers.length !== 0) {
                     this.total = data.suppliers[0].total;
                 }
-                this.http.get(API_URL + '/ws/forms/list', {headers: this.authService.headers}).pipe(
+                this.http.get(API_URL + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
                         for (const cpt in this.suppliers) {
                             for (const form of data.forms) {

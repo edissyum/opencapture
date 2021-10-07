@@ -63,17 +63,18 @@ def insert(args, files, config, database, datas, positions, pages, full_jpg_file
             })
 
             if input_settings:
-                if input_settings[0]['purchase_or_sale']:
+                input_settings = input_settings[0]
+                if input_settings['purchase_or_sale']:
                     invoice_data.update({
-                        'purchase_or_sale': input_settings[0]['purchase_or_sale']
+                        'purchase_or_sale': input_settings['purchase_or_sale']
                     })
-                if input_settings[0]['override_supplier_form']:
+                if input_settings['override_supplier_form'] or not supplier or supplier[2]['form_id'] in ['', [], None]:
                     invoice_data.update({
-                        'form_id': input_settings[0]['default_form_id']
+                        'form_id': input_settings['default_form_id']
                     })
-                if input_settings[0]['customer_id']:
+                if input_settings['customer_id']:
                     invoice_data.update({
-                        'customer_id': input_settings[0]['customer_id']
+                        'customer_id': input_settings['customer_id']
                     })
     else:
         if 'customer_id' in args and args['customer_id']:

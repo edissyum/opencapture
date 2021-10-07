@@ -150,7 +150,7 @@ export class UpdateSupplierComponent implements OnInit {
 
     ngOnInit(): void {
         this.supplierId = this.route.snapshot.params['id'];
-        this.http.get(API_URL + '/ws/forms/list', {headers: this.authService.headers}).pipe(
+        this.http.get(API_URL + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
             tap((forms: any) => {
                 this.http.get(API_URL + '/ws/accounts/suppliers/getById/' + this.supplierId, {headers: this.authService.headers}).pipe(
                     tap((supplier: any) => {
