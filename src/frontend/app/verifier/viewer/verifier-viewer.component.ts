@@ -52,6 +52,7 @@ export class VerifierViewerComponent implements OnInit {
     accountingPlanEmpty     : boolean   = false;
     getOnlyRawFooter        : boolean   = false;
     disableOCR              : boolean   = false;
+    tokenError              : boolean   = false;
     saveInfo                : boolean   = true;
     loading                 : boolean   = true;
     supplierExists          : boolean   = true;
@@ -141,21 +142,6 @@ export class VerifierViewerComponent implements OnInit {
         await this.getThumb(this.invoice.full_jpg_filename);
         if (this.invoice.form_id) {
            await this.generateOutputs(this.invoice.form_id);
-            // this.currentFormFields = await this.getFormFieldsById(this.invoice.form_id);
-            // this.formSettings = await this.getFormById(this.invoice.form_id);
-            // if (this.formSettings.outputs.length !== 0) {
-            //     for (const outputId in this.formSettings.outputs) {
-            //         const output = await this.getOutputs(this.formSettings.outputs[outputId]);
-            //         this.outputsLabel.push(output.output_label);
-            //     }
-            // }
-            // if (this.formSettings.supplier_verif && !this.token) {
-            //     let token: any;
-            //     token = await this.generateTokenInsee();
-            //     if (token['token']) {
-            //         this.token = token['token'];
-            //     }
-            // }
         }
 
         this.formList = await this.getAllForm();
@@ -228,8 +214,15 @@ export class VerifierViewerComponent implements OnInit {
         if (this.formSettings.supplier_verif && !this.token) {
             let token: any;
             token = await this.generateTokenInsee();
+            console.log(token);
             if (token['token']) {
-                this.token = token['token'];
+                if (token['token'].includes('ERROR')) {
+                    this.tokenError = true;
+                    this.token = token['token'].replace('ERROR : ', '');
+                }else{
+                    this.tokenError = false;
+                    this.token = token['token'];
+                }
             }
         }
     }
@@ -1020,6 +1013,8 @@ export class VerifierViewerComponent implements OnInit {
                         error = siren_error;
                     }else if (vat_error) {
                         error = vat_error;
+                    }else if (this.tokenError) {
+                        error = this.token;
                     }else {
                         error = this.translate.instant('ERROR.unknow_error');
                     }

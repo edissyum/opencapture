@@ -598,7 +598,7 @@ def get_token_insee():
                         data={'grant_type': 'client_credentials'},
                         headers={"Authorization": "Basic %s" % str(credentials)})
     if 'Maintenance - INSEE' in res.text or res.status_code != 200:
-        return res.text, 400
+        return 'ERROR : ' + json.loads(res.text)['error_description'], 201
     else:
         return json.loads(res.text)['access_token'], 200
 
@@ -607,24 +607,26 @@ def verify_siren(token, siren):
     _vars = create_classes_from_current_config()
     _cfg = _vars[1]
     res = requests.get(_cfg.cfg['API']['siren-url'] + siren,
-                        headers={"Authorization": "Bearer %s" % token, "Accept": "application/json"})
-    _return = json.loads(res.text)['header']
-    if _return['statut'] != 200:
-        return _return['message'], 400
+                       headers={"Authorization": "Bearer %s" % token, "Accept": "application/json"})
+
+    _return = json.loads(res.text)
+    if 'header' not in res.text:
+        return _return['fault']['message'], 201
     else:
-        return _return['message'], 200
+        return _return['header']['message'], 200
 
 
 def verify_siret(token, siret):
     _vars = create_classes_from_current_config()
     _cfg = _vars[1]
     res = requests.get(_cfg.cfg['API']['siret-url'] + siret,
-                        headers={"Authorization": "Bearer %s" % token, "Accept": "application/json"})
-    _return = json.loads(res.text)['header']
-    if _return['statut'] != 200:
-        return _return['message'], 400
+                       headers={"Authorization": "Bearer %s" % token, "Accept": "application/json"})
+
+    _return = json.loads(res.text)
+    if 'header' not in res.text:
+        return _return['fault']['message'], 201
     else:
-        return _return['message'], 200
+        return _return['header']['message'], 200
 
 
 def verify_vat_number(vat_number):

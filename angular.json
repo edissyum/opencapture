@@ -69,6 +69,12 @@
                                     "maximumWarning": "3kb",
                                     "maximumError": "4kb"
                                 }
+                            ],
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/frontend/app/env.ts",
+                                    "with": "src/frontend/app/env.prod.ts"
+                                }
                             ]
                         }
                     }
