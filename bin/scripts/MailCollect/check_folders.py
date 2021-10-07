@@ -42,4 +42,4 @@ except (gaierror, IMAP4_SSL.error) as e:
 
 folders = conn.folder.list()
 for f in folders:
-    print(f['name'])
+    print(f.name)

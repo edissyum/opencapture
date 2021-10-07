@@ -387,7 +387,7 @@ class Files:
     def get_pages(self, file, config):
         try:
             with open(file, 'rb') as doc:
-                pdf = PyPDF4.PdfFileReader(doc)
+                pdf = PyPDF4.PdfFileReader(doc, strict=False)
                 try:
                     return pdf.getNumPages()
                 except ValueError as e:
