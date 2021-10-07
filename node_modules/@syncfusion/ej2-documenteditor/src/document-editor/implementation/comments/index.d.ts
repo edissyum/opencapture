@@ -1,4 +1,0 @@
-/**
- * Comments
- */
-export * from './comment';

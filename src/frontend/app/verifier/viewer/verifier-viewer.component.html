@@ -138,7 +138,7 @@
                                     </mat-label>
                                     <input [id]="field.id" matInput type="text" [required]="field.required"
                                            [formControl]="field.control" [matAutocomplete]="accounting" [readonly]="invoice.status == 'END'">
-                                    <mat-hint *ngIf="accountingPlanEmpty">
+                                    <mat-hint *ngIf="accountingPlanEmpty" class="mt-1 h-6">
                                         {{ 'VERIFIER.accounting_plan_empty' | translate }}
                                     </mat-hint>
                                     <mat-autocomplete #accounting="matAutocomplete">

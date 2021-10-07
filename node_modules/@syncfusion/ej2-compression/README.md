@@ -1,1 +1,0 @@
-A common package of Essential Javascript 2 compression libraries, methods and class definitions.

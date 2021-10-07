@@ -1,3 +1,0 @@
-/**
- * Specifies common enumerations
- */

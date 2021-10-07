@@ -1,4 +1,0 @@
-/**
- * Grid classes
- * @hidden
- */
