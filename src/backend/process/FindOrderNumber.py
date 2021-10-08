@@ -50,8 +50,8 @@ class FindOrderNumber:
                     "pages ->> 'order_number' as order_number_page"
                 ],
                 'table': ['accounts_supplier'],
-                'where': ['vat_number = %s'],
-                'data': [self.supplier[0]]
+                'where': ['vat_number = %s', 'status <> %s'],
+                'data': [self.supplier[0], 'DEL']
             })[0]
 
             if position and position['order_number_position'] not in [False, 'NULL', '', None]:

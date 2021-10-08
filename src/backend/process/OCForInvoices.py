@@ -131,8 +131,8 @@ def update_typo_database(database, vat_number, typo, log, config):
         'set': {
             'typology': typo,
         },
-        'where': ['vat_number = %s'],
-        'data': [vat_number]
+        'where': ['vat_number = %s', 'status <> %s'],
+        'data': [vat_number, 'DEL']
     })
 
 
@@ -381,8 +381,8 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
                 'set': {
                     'skip_auto_validate': 'False'
                 },
-                'where': ['vat_number = %s'],
-                'data': [supplier[2]['vat_number']]
+                'where': ['vat_number = %s', 'status <> %s'],
+                'data': [supplier[2]['vat_number'], 'DEL']
             })
 
     return True

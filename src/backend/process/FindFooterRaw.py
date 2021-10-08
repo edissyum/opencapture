@@ -114,8 +114,8 @@ class FindFooterRaw:
         position = self.Database.select({
             'select': select,
             'table': ['accounts_supplier'],
-            'where': ['vat_number = %s'],
-            'data': [self.supplier[0]]
+            'where': ['vat_number = %s', 'status <> %s'],
+            'data': [self.supplier[0], 'DEL']
         })[0]
 
         if position and position[column + '_position'] not in ['((,),(,))', 'NULL', None, '', False]:
