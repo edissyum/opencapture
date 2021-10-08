@@ -1,0 +1,9 @@
+{
+  "name": "@angular/cdk/a11y",
+  "main": "../bundles/cdk-a11y.umd.js",
+  "fesm2015": "../fesm2015/a11y.js",
+  "esm2015": "../esm2015/a11y/index.js",
+  "typings": "./index.d.ts",
+  "module": "../fesm2015/a11y.js",
+  "es2015": "../fesm2015/a11y.js"
+}

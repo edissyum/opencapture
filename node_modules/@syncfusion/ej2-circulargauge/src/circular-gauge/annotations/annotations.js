@@ -1,0 +1,136 @@
+import { getTemplateFunction, getElement, stringToNumber, getFontStyle, getLocationFromAngle, removeElement } from '../utils/helper-common';
+import { annotationRender } from '../model/constants';
+import { createElement, isNullOrUndefined } from '@syncfusion/ej2-base';
+/**
+ * Annotation Module handles the Annotation of the axis.
+ */
+var Annotations = /** @class */ (function () {
+    /**
+     * Constructor for Annotation module.
+     *
+     * @param {CircularGauge} gauge - Specifies the instance of the gauge.
+     * @private.
+     */
+    // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
+    function Annotations(gauge) {
+        this.gauge = gauge;
+        this.elementId = gauge.element.id;
+    }
+    // eslint-disable-next-line valid-jsdoc
+    /**
+     * Method to render the annotation for circular gauge.
+     */
+    Annotations.prototype.renderAnnotation = function (axis, index) {
+        var _this = this;
+        var width = this.gauge.availableSize.width;
+        var element = createElement('div', {
+            id: this.elementId + '_Annotations_' + index
+        });
+        var parentElement = getElement(this.elementId + '_Secondary_Element');
+        if (!isNullOrUndefined(document.getElementById(this.elementId + '_Secondary_Element'))) {
+            document.getElementById(this.elementId + '_Secondary_Element').style.width = width + 'px';
+        }
+        axis.annotations.map(function (annotation, annotationIndex) {
+            if (annotation.content !== null) {
+                _this.createTemplate(element, annotationIndex, index);
+            }
+        });
+        if (parentElement && element.childElementCount) {
+            parentElement.appendChild(element);
+        }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        this.gauge.renderReactTemplates();
+    };
+    // eslint-disable-next-line valid-jsdoc
+    /**
+     * Method to create annotation template for circular gauge.
+     */
+    Annotations.prototype.createTemplate = function (element, annotationIndex, axisIndex) {
+        var _this = this;
+        var axis = this.gauge.axes[axisIndex];
+        var annotation = axis.annotations[annotationIndex];
+        var childElement = createElement('div', {
+            id: this.elementId + '_Axis_' + axisIndex + '_Annotation_' + annotationIndex,
+            styles: 'position: absolute; z-index:' + annotation.zIndex + ';transform:' +
+                (annotation.autoAngle ? 'rotate(' + (annotation.angle - 90) + 'deg)' : 'rotate(0deg)') + ';'
+        });
+        var argsData = {
+            cancel: false, name: annotationRender, content: annotation.content,
+            axis: axis, annotation: annotation, textStyle: annotation.textStyle
+        };
+        this.gauge.trigger('annotationRender', argsData, function (observedArgs) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            var templateFn;
+            var templateElement;
+            if (!argsData.cancel) {
+                templateFn = getTemplateFunction(argsData.content, _this.gauge);
+                if (templateFn && templateFn(axis, _this.gauge, argsData.content, _this.gauge.element.id + '_Axis' + axisIndex + '_ContentTemplate' + annotationIndex).length) {
+                    templateElement = Array.prototype.slice.call(templateFn(axis, _this.gauge, argsData.content, _this.gauge.element.id + '_Axis' + axisIndex + '_ContentTemplate' + annotationIndex));
+                    var length_1 = templateElement.length;
+                    for (var i = 0; i < length_1; i++) {
+                        childElement.appendChild(templateElement[i]);
+                    }
+                }
+                else {
+                    childElement.appendChild(createElement('div', {
+                        innerHTML: argsData.content,
+                        id: 'StringTemplate',
+                        styles: getFontStyle(argsData.textStyle)
+                    }));
+                }
+                _this.updateLocation(childElement, axis, annotation);
+                element.appendChild(childElement);
+                var parentElement = document.getElementById(_this.elementId + '_Secondary_Element');
+            }
+        });
+    };
+    /**
+     * Method to update the annotation location for circular gauge.
+     *
+     * @param {HTMLElement} element - Specifies the element.
+     * @param {Axis} axis - Specifies the axis.
+     * @param {Annotation} annotation - Specifies the annotation.
+     * @returns {void}
+     */
+    Annotations.prototype.updateLocation = function (element, axis, annotation) {
+        var location = getLocationFromAngle(annotation.angle - 90, stringToNumber(annotation.radius, axis.currentRadius), this.gauge.midPoint);
+        var elementRect = this.measureElementRect(element);
+        element.style.left = (location.x - (elementRect.width / 2)) + 'px';
+        element.style.top = (location.y - (elementRect.height / 2)) + 'px';
+        element.setAttribute('aria-label', annotation.description || 'Annotation');
+    };
+    /**
+     * Get module name.
+     *
+     * @returns {string} - Returns the module name
+     */
+    Annotations.prototype.getModuleName = function () {
+        // Returns te module name
+        return 'Annotations';
+    };
+    /**
+     * To destroy the annotation.
+     *
+     * @param {CircularGauge} gauge - Specifies the instance of the gauge.
+     * @returns {void}
+     * @private
+     */
+    Annotations.prototype.destroy = function (gauge) {
+        // Destroy method performed here
+    };
+    /**
+    * Function to measure the element rect.
+    *
+    * @param {HTMLElement} element - Specifies the html element.
+    * @returns {ClientRect} - Returns the client rect.
+    * @private
+    */
+    Annotations.prototype.measureElementRect = function (element) {
+        document.body.appendChild(element);
+        var bounds = element.getBoundingClientRect();
+        removeElement(element.id);
+        return bounds;
+    };
+    return Annotations;
+}());
+export { Annotations };

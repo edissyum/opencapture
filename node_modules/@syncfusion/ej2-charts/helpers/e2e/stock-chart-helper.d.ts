@@ -1,0 +1,32 @@
+import { TestHelper } from '@syncfusion/ej2-base/helpers/e2e';
+export declare class StockChartHelper extends TestHelper {
+    id: string;
+    wrapperFn: Function;
+    constructor(id: string, wrapperFn: Function);
+    getStockContainer(): any;
+    getStockBorder(): any;
+    getStockSecondaryElement(): any;
+    getStockTitle(): any;
+    getStockRangeLeftTooltip(): any;
+    getStockRangeRightTooltip(): any;
+    getStockToolbar(): any;
+    getStockTooltip(): any;
+    getStockSvgElement(): any;
+    getStockChartElement(): any;
+    getStockChartBorder(): any;
+    getStockChartAxisInsideCollection(): any;
+    getStockChartAxisOutsideCollection(): any;
+    getStockChartSeriesCollection(): any;
+    getStockChartUserInteraction(): any;
+    getStockRangeElement(): any;
+    getStockRangeBorder(): any;
+    getStockRangeGridLines(): any;
+    getStockRangeAxisLabels(): any;
+    getStockRangeChart(): any;
+    getStockRangeSliders(): any;
+    getStockRangeLeftUnselectedArea(): any;
+    getStockRangeRightUnselectedArea(): any;
+    getStockRangeSelectedArea(): any;
+    getStockRangeLeftSlider(): any;
+    getStockRangeRightSlider(): any;
+}

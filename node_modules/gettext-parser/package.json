@@ -1,0 +1,48 @@
+{
+  "name": "gettext-parser",
+  "description": "Parse and compile gettext po and mo files to/from json, nothing more, nothing less",
+  "version": "4.0.4",
+  "author": "Andris Reinman",
+  "contributors": [
+    {
+      "name": "Sam Hauglustaine"
+    }
+  ],
+  "homepage": "http://github.com/smhg/gettext-parser",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/smhg/gettext-parser.git"
+  },
+  "scripts": {
+    "lint": "eslint lib/*.js test/*.js index.js",
+    "test-generate-mo": "msgfmt test/fixtures/latin13.po -o test/fixtures/latin13.mo & msgfmt test/fixtures/utf8.po -o test/fixtures/utf8.mo",
+    "test": "mocha",
+    "preversion": "npm run lint && npm test",
+    "postversion": "git push && git push --tags"
+  },
+  "main": "./index",
+  "license": "MIT",
+  "dependencies": {
+    "content-type": "^1.0.4",
+    "encoding": "^0.1.13",
+    "readable-stream": "^3.6.0",
+    "safe-buffer": "^5.2.1"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "eslint": "^7.4.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "mocha": "^8.0.1"
+  },
+  "keywords": [
+    "i18n",
+    "l10n",
+    "gettext",
+    "mo",
+    "po"
+  ]
+}

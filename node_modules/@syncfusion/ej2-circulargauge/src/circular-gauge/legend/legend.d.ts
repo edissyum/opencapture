@@ -1,0 +1,457 @@
+import { CircularGauge } from '../circular-gauge';
+import { Size, GaugeLocation, Rect, TextOption } from '../utils/helper-common';
+import { ChildProperty } from '@syncfusion/ej2-base';
+import { BorderModel, FontModel, MarginModel } from '../model/base-model';
+import { Border } from '../model/base';
+import { LegendPosition, Alignment, GaugeShape } from '../utils/enum';
+import { Axis } from '../axes/axis';
+import { LegendSettingsModel } from './legend-model';
+import { LocationModel } from './legend-model';
+import { ILegendRegions } from '../model/interface';
+/**
+ * Sets and gets the location of the legend in circular gauge.
+ */
+export declare class Location extends ChildProperty<Location> {
+    /**
+     * Sets and gets the X coordinate of the legend in the circular gauge.
+     *
+     * @default 0
+     */
+    x: number;
+    /**
+     * Sets and gets the Y coordinate of the legend in the circular gauge.
+     *
+     * @default 0
+     */
+    y: number;
+}
+/**
+ * Sets and gets the options to customize the legend for the ranges in the circular gauge.
+ */
+export declare class LegendSettings extends ChildProperty<LegendSettings> {
+    /**
+     * Enable and disables the visibility of the legend in circular gauge.
+     *
+     * @default false
+     */
+    visible: boolean;
+    /**
+     * Enables and disables the ranges visibility collapses based on the legend visibility.
+     *
+     * @default true
+     */
+    toggleVisibility: boolean;
+    /**
+     * Sets and gets the alignment of the legend in the circular gauge.
+     *
+     * @default 'Center'
+     */
+    alignment: Alignment;
+    /**
+     * Sets and gets the options to customize the border settings of the legend.
+     *
+     */
+    border: BorderModel;
+    /**
+     * Sets and gets the options to customize the border for the shape of the legend in the circular gauge.
+     */
+    shapeBorder: BorderModel;
+    /**
+     * Sets and gets the options to customize the padding between legend items.
+     *
+     * @default 8
+     */
+    padding: number;
+    /**
+     * Sets and gets the opacity of the legend.
+     *
+     * @default 1
+     */
+    opacity: number;
+    /**
+     * Sets and gets the position of the legend in the circular gauge.
+     *
+     * @default 'Auto'
+     */
+    position: LegendPosition;
+    /**
+     * Sets and gets the shape of the legend in circular gauge.
+     *
+     * @default Circle
+     */
+    shape: GaugeShape;
+    /**
+     * Sets and gets the height of the legend in the circular gauge.
+     *
+     * @default null
+     */
+    height: string;
+    /**
+     * Sets and gets the width of the legend in the circular gauge.
+     *
+     * @default null
+     */
+    width: string;
+    /**
+     * Sets and gets the options to customize the text of the legend.
+     */
+    textStyle: FontModel;
+    /**
+     * Sets and gets the height of the legend shape in circular gauge.
+     *
+     * @default 10
+     */
+    shapeHeight: number;
+    /**
+     * Sets and gets the width of the legend shape in circular gauge.
+     *
+     * @default 10
+     */
+    shapeWidth: number;
+    /**
+     * Sets and gets the padding for the legend shape in circular gauge.
+     *
+     * @default 5
+     */
+    shapePadding: number;
+    /**
+     * Sets and gets the location of the legend, relative to the circular gauge.
+     * If x is 20, legend moves by 20 pixels to the right of the gauge. It requires the `position` to be `Custom`.
+     * ```html
+     * <div id='Gauge'></div>
+     * ```
+     * ```typescript
+     * let gauge: CircularGauge = new CircularGauge({
+     * ...
+     *   legendSettings: {
+     *     visible: true,
+     *     position: 'Custom',
+     *     location: { x: 100, y: 150 },
+     *   },
+     * ...
+     * });
+     * this.gauge.appendTo('#Gauge');
+     * ```
+     */
+    location: LocationModel;
+    /**
+     * Sets and gets the background color of the legend in circular gauge.
+     *
+     * @default 'transparent'
+     */
+    background: string;
+    /**
+     * Sets and gets the options to customize the legend margin.
+     */
+    margin: MarginModel;
+}
+export declare class Legend {
+    legendCollection: LegendOptions[];
+    legendRenderingCollections: any[];
+    protected legendRegions: ILegendRegions[];
+    titleRect: Rect;
+    private totalRowCount;
+    private maxColumnWidth;
+    protected maxItemHeight: number;
+    protected isPaging: boolean;
+    protected isVertical: boolean;
+    private rowCount;
+    private pageButtonSize;
+    protected pageXCollections: number[];
+    protected maxColumns: number;
+    maxWidth: number;
+    private clipRect;
+    private legendTranslateGroup;
+    protected currentPage: number;
+    private gauge;
+    private totalPages;
+    private legend;
+    private legendID;
+    protected pagingRegions: Rect[];
+    private clipPathHeight;
+    private toggledIndexes;
+    /**
+     * Sets and gets the legend bounds in circular gauge.
+     *
+     * @private
+     */
+    legendBounds: Rect;
+    /**
+     * @private
+     */
+    position: LegendPosition;
+    constructor(gauge: CircularGauge);
+    /**
+     * Binding events for legend module.
+     *
+     * @returns {void}
+     */
+    private addEventListener;
+    /**
+     * UnBinding events for legend module.
+     *
+     * @returns {void}
+     */
+    private removeEventListener;
+    /**
+     * Get the legend options.
+     *
+     * @param {Axis[]} axes - Specifies the axes.
+     * @returns {void}
+     * @private
+     */
+    getLegendOptions(axes: Axis[]): void;
+    calculateLegendBounds(rect: Rect, availableSize: Size): void;
+    /**
+     * To find legend alignment for chart and accumulation chart
+     *
+     * @param {number} start - Specifies the start.
+     * @param {number} size - Specifies the size.
+     * @param {number} legendSize - Specifies the  legendSize.
+     * @param {Alignment} alignment - Specifies the alignment.
+     * @returns {number} - Returns the start value.
+     */
+    private alignLegend;
+    /**
+     * To find legend location based on position, alignment for chart and accumulation chart
+     *
+     * @param {LegendPosition} position - Specifies the position.
+     * @param {Alignment} alignment - Specifies the alignment.
+     * @param {Rect} legendBounds - Specifies the legendBounds.
+     * @param {Rect} rect - Specifies the rect.
+     * @param {Size} availableSize - Specifies the availableSize.
+     * @returns {void}
+     */
+    private getLocation;
+    /**
+     * Renders the legend.
+     *
+     * @param {LegendSettingsModel} legend - Specifies the legend.
+     * @param {Rect} legendBounds - Specifies the legendBounds.
+     * @param {boolean} redraw - Specifies the redraw.
+     * @returns {void}
+     * @private
+     */
+    renderLegend(legend: LegendSettingsModel, legendBounds: Rect, redraw?: boolean): void;
+    /**
+     * To render legend paging elements for chart and accumulation chart
+     *
+     * @param {Rect} bounds - Specifies the bounds.
+     * @param {TextOption} textOption - Specifies the textOption.
+     * @param {Element} legendGroup - Specifies the legendGroup.
+     * @returns {void}
+     */
+    private renderPagingElements;
+    /**
+     * To translate legend pages for chart and accumulation chart
+     *
+     * @param {Element} pagingText - Specifies the pagingText.
+     * @param {number} page - Specifies the page.
+     * @param {number} pageNumber - Specifies the pageNumber.
+     * @returns {number} - Returns the size.
+     */
+    protected translatePage(pagingText: Element, page: number, pageNumber: number): number;
+    /**
+     * To render legend text for chart and accumulation chart
+     *
+     * @param {LegendOptions} legendOption - Specifies the legendOption.
+     * @param {Element} group - Specifies the group.
+     * @param {TextOption} textOptions - Specifies the textOptions.
+     * @param {number} axisIndex - Specifies the axisIndex.
+     * @param {number} rangeIndex - Specifies the rangeIndex.
+     * @returns {void}
+     */
+    protected renderText(legendOption: LegendOptions, group: Element, textOptions: TextOption, axisIndex: number, rangeIndex: number): void;
+    /**
+     * To render legend symbols for chart and accumulation chart
+     *
+     * @param {LegendOptions} legendOption - Specifies the legendOption.
+     * @param {Element} group - Specifies the group.
+     * @param {number} axisIndex - Specifies the axisIndex.
+     * @param {number} rangeIndex - Specifies the rangeIndex.
+     * @returns {void}
+     */
+    protected renderSymbol(legendOption: LegendOptions, group: Element, axisIndex: number, rangeIndex: number): void;
+    /**
+     * To find legend rendering locations from legend options.
+     *
+     * @param {LegendOptions} legendOption - Specifies the legendOption.
+     * @param {GaugeLocation} start - Specifies the start.
+     * @param {number} textPadding - Specifies the textPadding.
+     * @param {LegendOptions} prevLegend - Specifies the prevLegend.
+     * @param {Rect} rect - Specifies the rect.
+     * @param {number} count - Specifies the count.
+     * @param {number} firstLegend - Specifies the firstLegend.
+     * @returns {void}
+     * @private
+     */
+    getRenderPoint(legendOption: LegendOptions, start: GaugeLocation, textPadding: number, prevLegend: LegendOptions, rect: Rect, count: number, firstLegend: number): void;
+    /**
+     * To show or hide the legend on clicking the legend.
+     *
+     * @returns {void}
+     */
+    click(event: Event): void;
+    /**
+     * Set toggled legend styles.
+     *
+     * @param {Index[]} toggledIndexes - Specifies the toggledIndexes.
+     * @returns {void}
+     */
+    private setStyles;
+    /**
+     * To get legend by index
+     *
+     * @param {number} axisIndex - Specifies the axisIndex.
+     * @param {number} rangeIndex - Specifies the rangeIndex.
+     * @param {LegendOptions[]} legendCollections - Specifies the legendCollections.
+     * @returns {LegendOptions} - Specifies the LegendOptions.
+     */
+    private legendByIndex;
+    /**
+     * To change legend pages for chart and accumulation chart
+     *
+     * @param {Event} event - Specifies the event.
+     * @param {boolean} pageUp - Specifies the pageUp.
+     * @returns {void}
+     */
+    protected changePage(event: Event, pageUp: boolean): void;
+    /**
+     * To find available width from legend x position.
+     *
+     * @param {number} tx - Specifies the tx value.
+     * @param {number} width - Specifies the width.
+     * @param {number} legendX - Specifies the legendX.
+     * @returns {number} - Returns the number.
+     */
+    private getAvailWidth;
+    /**
+     * To create legend rendering elements for chart and accumulation chart
+     *
+     * @param {Rect} legendBounds - Specifies the legendBounds.
+     * @param {Element} legendGroup - Specifies the legendGroup.
+     * @param {LegendSettingsModel} legend - Specifies the legend.
+     * @param {string} id - Specifies the id.
+     * @param {boolean} redraw - Specifies the redraw.
+     * @returns {Element} - Returns the element.
+     */
+    private createLegendElements;
+    /**
+     * Method to append child element
+     *
+     * @param {Element} parent - Specifies the element.
+     * @param {Element} childElement - Specifies the child element.
+     * @param {boolean} redraw - Specifies the boolean value.
+     * @param {boolean} isAnimate - Specifies the boolean value.
+     * @param {string} x - Specifies the x value.
+     * @param {string} y - Specifies the y value.
+     * @param {GaugeLocation} start - Specifies the start value.
+     * @param {string} direction - Specifies the direction.
+     * @param {boolean} forceAnimate - Specifies the boolean value.
+     * @param {boolean} isRect - Specifies the rect value.
+     * @param {Rect} previousRect - Specifies the previous rect value.
+     * @param {number} animateDuration - Specifies the animate duration.
+     * @returns {void}
+     */
+    private appendChildElement;
+    /**
+     * To find first valid legend text index for chart and accumulation chart
+     *
+     * @param {LegendOptions[]} legendCollection - Specifies the legend collection.
+     * @returns {number} - Returns the count.
+     */
+    private findFirstLegendPosition;
+    /**
+     * To find legend bounds for accumulation chart.
+     *
+     * @param {Size} availableSize - Specifies the availableSize.
+     * @param {Rect} legendBounds - Specifies the legendBounds.
+     * @param {LegendSettingsModel} legend - Specifies the legend.
+     * @returns {void}
+     * @private
+     */
+    getLegendBounds(availableSize: Size, legendBounds: Rect, legend: LegendSettingsModel): void;
+    /**
+     * @param {Rect} rect - Specifies the rect.
+     * @param {number} left - Specifies the left.
+     * @param {number} right - Specifies the right.
+     * @param {number} top - Specifies the top.
+     * @param {number} bottom - Specifies the bottom.
+     * @returns {Rect} - Returns the rect.
+     * @private
+     */
+    private subtractThickness;
+    /**
+     * To set bounds for chart and accumulation chart
+     *
+     * @param {number} computedWidth - Specifies compute width.
+     * @param {number} computedHeight - Specifies compute height.
+     * @param {LegendSettingsModel} legend - Specifies the legend.
+     * @param {Rect} legendBounds - Specifies the legend bounds.
+     * @returns {void}
+     */
+    protected setBounds(computedWidth: number, computedHeight: number, legend: LegendSettingsModel, legendBounds: Rect): void;
+    /**
+     * To find maximum column size for legend
+     *
+     * @param {number[]} columns - Specifies the columns
+     * @param {number} width - Specifies the width
+     * @param {number} padding - Specifies the padding
+     * @param {number} rowWidth - Specifies the row width
+     * @returns {number} - Returns the number
+     */
+    private getMaxColumn;
+    /**
+     * To show or hide trimmed text tooltip for legend.
+     *
+     * @param {Event} event - Specifies the event.
+     * @returns {void}
+     * @private
+     */
+    move(event: Event): void;
+    /**
+     * Get module name.
+     *
+     * @returns {string} - Returns the module name.
+     */
+    protected getModuleName(): string;
+    /**
+     * To destroy the legend.
+     *
+     * @param {CircularGauge} circulargauge - Specifies the instance of the gauge
+     * @returns {void}
+     * @private
+     */
+    destroy(circulargauge: CircularGauge): void;
+}
+/**
+ * @private
+ */
+export declare class Index {
+    axisIndex: number;
+    rangeIndex: number;
+    isToggled: boolean;
+    constructor(axisIndex: number, rangeIndex?: number, isToggled?: boolean);
+}
+/**
+ * Class for legend options
+ *
+ * @private
+ */
+export declare class LegendOptions {
+    render: boolean;
+    text: string;
+    originalText: string;
+    fill: string;
+    shape: GaugeShape;
+    visible: boolean;
+    textSize: Size;
+    location: GaugeLocation;
+    border: Border;
+    shapeBorder: Border;
+    shapeWidth: number;
+    shapeHeight: number;
+    rangeIndex?: number;
+    axisIndex?: number;
+    constructor(text: string, originalText: string, fill: string, shape: GaugeShape, visible: boolean, border: Border, shapeBorder: Border, shapeWidth: number, shapeHeight: number, rangeIndex?: number, axisIndex?: number);
+}

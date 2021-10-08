@@ -1,0 +1,22 @@
+import { Schedule } from '../base/schedule';
+import { VerticalView } from './vertical-view';
+/**
+ * week view
+ */
+export declare class Week extends VerticalView {
+    viewClass: string;
+    /**
+     * Constructor for week view
+     *
+     * @param {Schedule} parent Accepts the schedule instance
+     */
+    constructor(parent: Schedule);
+    startDate(): Date;
+    endDate(): Date;
+    /**
+     * Get module name.
+     *
+     * @returns {string} Returns the module name.
+     */
+    protected getModuleName(): string;
+}

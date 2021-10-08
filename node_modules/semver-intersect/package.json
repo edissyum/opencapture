@@ -1,0 +1,35 @@
+{
+    "author": "Suneil Nyamathi <snyamathi@gmail.com>",
+    "bugs": "https://github.com/snyamathi/semver-intersect/issues",
+    "contributors": [],
+    "dependencies": {
+        "semver": "^5.0.0"
+    },
+    "description": "Get the intersection of multiple semver ranges",
+    "devDependencies": {
+        "babel-cli": "^6.26.0",
+        "babel-preset-env": "^1.6.1",
+        "babel-register": "^6.26.0",
+        "chai": "^4.0.0",
+        "eslint": "^5.0.0",
+        "jenkins-mocha": "^6.0.0"
+    },
+    "keywords": [
+        "semver"
+    ],
+    "license": "MIT",
+    "main": "semver-intersect.js",
+    "name": "semver-intersect",
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:snyamathi/semver-intersect.git"
+    },
+    "scripts": {
+        "build": "babel src -d .",
+        "lint": "eslint .",
+        "prepublish": "npm run build",
+        "pretest": "npm run build",
+        "test": "jenkins-mocha tests/unit --recursive --compilers js:babel-register"
+    },
+    "version": "1.4.0"
+}

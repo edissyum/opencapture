@@ -1,0 +1,4 @@
+/**
+ * StructuredElements classes
+ * @hidden
+ */
