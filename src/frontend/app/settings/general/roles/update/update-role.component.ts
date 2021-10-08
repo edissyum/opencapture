@@ -118,10 +118,10 @@ export class UpdateRoleComponent implements OnInit {
         marker('PRIVILEGES.inputs_list_splitter'),
         marker('PRIVILEGES.update_output_splitter'),
         marker('PRIVILEGES.add_output_splitter'),
-        marker('PRIVILEGES.output_list_splitter'),
+        marker('PRIVILEGES.outputs_list_splitter'),
         marker('PRIVILEGES.update_form_splitter'),
         marker('PRIVILEGES.add_form_splitter'),
-        marker('PRIVILEGES.form_list_splitter'),
+        marker('PRIVILEGES.forms_list_splitter'),
     ];
     // End translation
     constructor(
