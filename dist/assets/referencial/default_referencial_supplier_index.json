@@ -1,0 +1,14 @@
+{
+    "name"                : "Nom Fournisseur",
+    "VATNumber"           : "TVA INTRA",
+    "SIRET"               : "SIRET",
+    "SIREN"               : "SIREN",
+    "IBAN"                : "IBAN",
+    "address1"            : "Adresse 1",
+    "address2"            : "Adresse 2",
+    "addressTown"         : "VILLE",
+    "addressPostalCode"   : "CP",
+    "addressCountry"      : "PAYS",
+    "positions_mask_id"   : "MASQUE DE POSITIONNEMENT",
+    "get_only_raw_footer" : "CONTROLE DE COHERENCE"
+}
