@@ -1,3 +1,0 @@
-/**
- * Sparkline Enum
- */
