@@ -32,10 +32,11 @@ def add_custom_field(args):
         args = {
             'table': 'custom_fields',
             'columns': {
-                'label_short': args['label_short'],
-                'label': args['label'],
                 'type': args['type'],
+                'label': args['label'],
                 'module': args['module'],
+                'label_short': args['label_short'],
+                'metadata_key': args['metadata_key'],
             }
         }
         res = _db.insert(args)
