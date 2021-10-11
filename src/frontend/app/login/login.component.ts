@@ -36,7 +36,8 @@ import {HistoryService} from "../../services/history.service";
     styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-    loginForm: any;
+    loginForm   : any;
+    processLogin: boolean = false;
 
     constructor(
         private router: Router,
@@ -65,6 +66,7 @@ export class LoginComponent implements OnInit {
         const password = this.loginForm.get('password').value;
         const username = this.loginForm.get('username').value;
         if (password && username) {
+            this.processLogin = true;
             this.http.post(
                 API_URL + '/ws/auth/login',
                 {
@@ -92,6 +94,7 @@ export class LoginComponent implements OnInit {
                     });
                 }),
                 catchError((err: any) => {
+                    this.processLogin = false;
                     console.debug(err);
                     this.notify.handleErrors(err);
                     return of(false);

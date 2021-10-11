@@ -90,6 +90,7 @@
 		"field_updated": "Champ personnalisé modifié avec succès",
 		"module": "Module",
 		"select": "Liste à choix",
+		"text": "Chaîne de caractères",
 		"textarea": "Multi lignes",
 		"type": "Type"
 	},
