@@ -2,3 +2,4 @@
 bin/data/*.pdf
 /package-lock.json
 node_modules/
+custom/
