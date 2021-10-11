@@ -131,7 +131,7 @@ class SupplierForm(Form):
         is_position=False,
         render_kw={
             'onfocusout': "ocrOnFly(true, this); removeRectangle()",
-            'onfocusin': "ocrOnFly(false, this, true, true)"
+            'onfocusin': "ocrOnFly(false, this, true)"
         }
     )
 
