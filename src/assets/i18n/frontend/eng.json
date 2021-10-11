@@ -90,7 +90,6 @@
 		"field_updated": "",
 		"module": "",
 		"select": "",
-		"text": "",
 		"textarea": "",
 		"type": ""
 	},
@@ -150,6 +149,7 @@
 		"number_float": "",
 		"number_int": "",
 		"select": "",
+		"text": "",
 		"textarea": ""
 	},
 	"FORMS": {
@@ -423,6 +423,7 @@
 		"add_input": "",
 		"add_output": "",
 		"administration": "Administration",
+		"autocomplete": "",
 		"create_role": "",
 		"create_user": "Create user",
 		"custom_fields": "Custom fields",
@@ -455,7 +456,6 @@
 		"error_no_doc_type": "",
 		"error_no_metadata": "",
 		"list": "List of batches",
-		"loadReferential": "",
 		"meta_data": "",
 		"min_3_letter": "",
 		"no_batch_found": "",

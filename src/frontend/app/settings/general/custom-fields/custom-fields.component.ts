@@ -67,10 +67,10 @@ export class CustomFieldsComponent implements OnInit {
             label_short: 'type',
             label: this.translate.instant('CUSTOM-FIELDS.type'),
             options: [
-                {key: 'text', value: this.translate.instant('CUSTOM-FIELDS.text')},
+                {key: 'text', value: this.translate.instant('FORMATS.text')},
                 {key: 'textarea', value: this.translate.instant('CUSTOM-FIELDS.textarea')},
                 {key: 'select', value: this.translate.instant('CUSTOM-FIELDS.select')},
-                {key: 'checkBok', value: this.translate.instant('CUSTOM-FIELDS.checkbox')},
+                {key: 'checkbox', value: this.translate.instant('CUSTOM-FIELDS.checkbox')},
             ],
             required: true,
         },
@@ -83,6 +83,13 @@ export class CustomFieldsComponent implements OnInit {
                 {key: 'splitter', value: this.translate.instant('HOME.splitter')}
             ],
             required: true,
+        },
+        {
+            controlType : 'text',
+            label_short : 'metadata_key',
+            label       : this.translate.instant('SETTINGS.autocomplete'),
+            required    : false,
+            class       : "",
         },
     ];
     loading = true;
@@ -168,6 +175,7 @@ export class CustomFieldsComponent implements OnInit {
         let newField = this.form.getRawValue();
         newField = {
             'label_short': newField.label_short,
+            'metadata_key': newField.metadata_key,
             'label': newField.label,
             'type': newField.type,
             'module': newField.module,

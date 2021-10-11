@@ -73,7 +73,8 @@ CREATE TABLE "inputs" (
 
 CREATE TABLE "custom_fields" (
     "id"           SERIAL PRIMARY KEY,
-    "label_short"  VARCHAR(10),
+    "label_short"  VARCHAR(50),
+    "metadata_key" VARCHAR(50),
     "label"        VARCHAR(50),
     "type"         VARCHAR(10),
     "module"       VARCHAR(10),
