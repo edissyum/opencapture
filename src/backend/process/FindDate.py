@@ -109,9 +109,9 @@ class FindDate:
                     "pages ->> 'invoice_date' as invoice_date_page",
                     "pages ->> 'invoice_due_date' as invoice_due_date_page",
                 ],
-                'table': ['accounts_supplier', 'status <> %s'],
-                'where': ['vat_number = %s', 'DEL'],
-                'data': [self.supplier[0]]
+                'table': ['accounts_supplier'],
+                'where': ['vat_number = %s', 'status <> %s'],
+                'data': [self.supplier[0], 'DEL']
             })[0]
             if position and position['invoice_due_date_position'] not in [False, 'NULL', '', None]:
                 data = {'position': position['invoice_due_date_position'], 'regex': None, 'target': 'full', 'page': position['invoice_due_date_page']}

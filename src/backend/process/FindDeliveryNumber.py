@@ -49,9 +49,9 @@ class FindDeliveryNumber:
                     "positions ->> 'delivery_number' as delivery_number_position",
                     "pages ->> 'delivery_number' as delivery_number_page"
                 ],
-                'table': ['accounts_supplier', 'status <> %s'],
-                'where': ['vat_number = %s', 'DEL'],
-                'data': [self.supplier[0]]
+                'table': ['accounts_supplier'],
+                'where': ['vat_number = %s', 'status <> %s'],
+                'data': [self.supplier[0], 'DEL']
             })[0]
 
             if position and position['delivery_number_position'] not in [False, 'NULL', '', None]:
