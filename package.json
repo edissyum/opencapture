@@ -37,7 +37,6 @@
         "ng-click-outside": "^8.0.0",
         "ng2-pdfjs-viewer": "^6.0.2",
         "ngx-mat-select-search": "^3.3.0",
-        "ngx-ui-loader": "^11.0.0",
         "pdfjs-dist": "^2.9.359",
         "@types/pdfjs-dist": "2.1.7",
         "remove-accents": "^0.4.2",

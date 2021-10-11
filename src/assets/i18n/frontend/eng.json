@@ -232,6 +232,7 @@
 		"delete-supplier": "",
 		"delete-supplier-positions": "",
 		"delete-user": "",
+		"delete_batch": "",
 		"delete_invoice": "",
 		"disable-user": "",
 		"duplicate-form": "",
@@ -470,6 +471,7 @@
 		"send_to": "",
 		"to_validate": "",
 		"unselect_all": "",
+		"validate_batch": "",
 		"viewer": "Batch view",
 		"zoom": ""
 	},

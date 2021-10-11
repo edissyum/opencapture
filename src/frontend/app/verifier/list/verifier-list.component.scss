@@ -26,17 +26,6 @@
     max-height: 1.5*2;       /* fallback */
 }
 
-::ng-deep .verifier-list .mat-paginator {
-    & .mat-paginator-outer-container {
-        width: 120%;
-        @apply -ml-20;
-        & .mat-paginator-container {
-            flex-wrap: nowrap !important;
-            justify-content: flex-start !important;
-        }
-    }
-}
-
 ::ng-deep .list > mat-card {
         @apply flex;
         @apply flex-col;

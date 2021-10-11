@@ -103,7 +103,6 @@
                                         {{ field.label | translate }} <span *ngIf="isChildField(field.id) && !field.id.includes('custom_')">{{ field.cpt }}</span>
                                     </mat-label>
                                     <textarea [id]="field.id" matInput cdkTextareaAutosize
-                                              #autosize="cdkTextareaAutosize"
                                               cdkAutosizeMinRows="1"
                                               cdkAutosizeMaxRows="5"
                                               [required]="field.required" [formControl]="field.control" [pattern]="field.pattern"

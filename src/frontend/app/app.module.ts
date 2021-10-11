@@ -44,7 +44,6 @@ import { NgxFileDragDropModule } from "ngx-file-drag-drop";
 import {FlexLayoutModule} from "@angular/flex-layout";
 import { ClickOutsideModule } from 'ng-click-outside';
 import { PdfJsViewerModule } from 'ng2-pdfjs-viewer';
-import { NgxUiLoaderModule } from "ngx-ui-loader";
 import { NgxMatSelectSearchModule } from "ngx-mat-select-search";
 import { NgsgModule } from 'ng-sortgrid';
 
@@ -182,7 +181,6 @@ export function createTranslateLoader(http: HttpClient) {
         ClickOutsideModule,
         DragDropModule,
         FlexLayoutModule,
-        NgxUiLoaderModule,
         NgxMatSelectSearchModule,
         PdfJsViewerModule,
     ],
