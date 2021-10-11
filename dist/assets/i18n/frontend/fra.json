@@ -172,7 +172,7 @@
 		"input_settings": "Chaînes entrantes",
 		"is_default": "Formulaire par défaut",
 		"label": "Libellé du formulaire",
-		"label_and_output_mandatory": "Le libellé du formulaire et le type de chaîne sortante sont obligatoire",
+		"label_and_output_mandatory": "Le libellé du formulaire et le type de chaîne sortante sont obligatoires",
 		"label_mandatory": "Le libellé du formulaire est obligatoire",
 		"modify": "Modifier le formulaire",
 		"other": "Autres",
