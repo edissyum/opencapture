@@ -75,6 +75,7 @@ export class VerifierViewerComponent implements OnInit {
     currentFormFields       : any       = {};
     suppliers               : any       = [];
     outputsLabel            : any       = [];
+    imgArray                : any       = {};
     imageInvoice            : any;
     invoiceId               : any;
     invoice                 : any;
@@ -240,18 +241,24 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     async getThumb(filename:string) {
-        this.http.post(API_URL + '/ws/verifier/getThumb',
-            {'args': {'path': this.config['GLOBAL']['fullpath'], 'filename': filename}},
-            {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                this.imgSrc = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + data.file);
-            }),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
+        const cpt = filename.split('-')[filename.split('-').length -1].split('.')[0];
+        if (this.imgArray[cpt]) {
+            this.imgSrc = this.imgArray[cpt];
+        }else {
+            this.http.post(API_URL + '/ws/verifier/getThumb',
+                {'args': {'path': this.config['GLOBAL']['fullpath'], 'filename': filename}},
+                {headers: this.authService.headers}).pipe(
+                tap((data: any) => {
+                    this.imgSrc = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + data.file);
+                    this.imgArray[cpt] = this.imgSrc;
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        }
         return this.imgSrc;
     }
 
