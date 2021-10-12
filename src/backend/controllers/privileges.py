@@ -61,7 +61,7 @@ def get_privileges_by_role_id(args):
                 return list_role_privileges, 200
     else:
         response = {
-            "errors": gettext('GET_PRIVILEGES_BY_ROLE_ERROR'),
+            "errors": gettext('GET_PRIVILEGES_ERROR'),
             "message": error
         }
         return response, 401

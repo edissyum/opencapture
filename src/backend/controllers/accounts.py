@@ -188,13 +188,13 @@ def update_address_by_supplier_id(supplier_id, data):
             return '', 200
         else:
             response = {
-                "errors": gettext('UPDATE_ADDRESS_BY_SUPPLIER_ID_ERROR'),
+                "errors": gettext('UPDATE_ADDRESS_ERROR'),
                 "message": error
             }
             return response, 401
     else:
         response = {
-            "errors": gettext('UPDATE_ADDRESS_BY_SUPPLIER_ID_ERROR'),
+            "errors": gettext('UPDATE_ADDRESS_ERROR'),
             "message": error
         }
         return response, 401

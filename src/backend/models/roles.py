@@ -67,7 +67,7 @@ def update_role(args):
     })
 
     if role[0] is False:
-        error = gettext('ROLE_UPDATE_ERROR')
+        error = gettext('UPDATE_ROLE_ERROR')
 
     return role, error
 
@@ -83,7 +83,7 @@ def create_role(args):
     })
 
     if not role:
-        error = gettext('ROLE_CREATE_ERROR')
+        error = gettext('CREATE_ROLE_ERROR')
 
     return role, error
 

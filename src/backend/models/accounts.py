@@ -105,7 +105,7 @@ def update_address(args):
     })
 
     if supplier[0] is False:
-        error = gettext('ADDRESS_UPDATE_ERROR')
+        error = gettext('UPDATE_ADDRESS_ERROR')
 
     return supplier, error
 
@@ -121,7 +121,7 @@ def create_address(args):
     })
 
     if not supplier:
-        error = gettext('ADDRESS_CREATE_ERROR')
+        error = gettext('CREATE_ADDRESS_ERROR')
 
     return supplier, error
 
@@ -137,7 +137,7 @@ def create_supplier(args):
     })
 
     if not supplier:
-        error = gettext('SUPPLIER_CREATE_ERROR')
+        error = gettext('CREATE_SUPPLIER_ERROR')
 
     return supplier, error
 
@@ -155,7 +155,7 @@ def delete_supplier(args):
     })
 
     if not supplier:
-        error = gettext('SUPPLIER_DELETE_ERROR')
+        error = gettext('DELETE_SUPPLIER_ERROR')
 
     return supplier, error
 
@@ -241,7 +241,7 @@ def update_customer(args):
     })
 
     if customer[0] is False:
-        error = gettext('CUSTOMER_UPDATE_ERROR')
+        error = gettext('UPDATE_CUSTOMER_ERROR')
 
     return customer, error
 
@@ -257,7 +257,7 @@ def create_customer(args):
     })
 
     if not customer:
-        error = gettext('CUSTOMER_CREATE_ERROR')
+        error = gettext('CREATE_CUSTOMER_ERROR')
 
     return customer, error
 
@@ -275,6 +275,6 @@ def delete_customer(args):
     })
 
     if not customer:
-        error = gettext('CUSTOMER_DELETE_ERROR')
+        error = gettext('DELETE_CUSTOMER_ERROR')
 
     return customer, error

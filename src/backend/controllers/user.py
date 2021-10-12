@@ -28,7 +28,7 @@ def create_user(args):
         return '', 200
     else:
         response = {
-            "errors": gettext('USER_NEW_ERROR'),
+            "errors": gettext('CREATE_USER_ERROR'),
             "message": error
         }
         return response, 401
@@ -83,7 +83,7 @@ def get_customers_by_user_id(user_id):
         return customers, 200
     else:
         response = {
-            "errors": gettext('GET_CUSTOMERS_BY_USER_ID_ERROR'),
+            "errors": gettext('GET_CUSTOMER_BY_ID_ERROR'),
             "message": error
         }
         return response, 401

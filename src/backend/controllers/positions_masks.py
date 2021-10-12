@@ -89,7 +89,7 @@ def get_positions_mask_fields_by_supplier_id(supplier_id):
             return positions_masks_info, 200
         else:
             response = {
-                "errors": gettext('GET_POSITION_MASK_BY_SUPPLIER_ID_ERROR'),
+                "errors": gettext('GET_POSITION_MASK_BY_ID_ERROR'),
                 "message": error
             }
             return response, 401

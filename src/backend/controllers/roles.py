@@ -103,7 +103,7 @@ def update_role_privilege(role_id, privileges):
             return '', 200
         else:
             response = {
-                "errors": gettext('UPDATE_ROLE_PRIVILEGE_ERROR'),
+                "errors": gettext('UPDATE_ROLE_ERROR'),
                 "message": error
             }
             return response, 401

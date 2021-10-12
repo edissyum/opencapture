@@ -112,7 +112,7 @@ def get_default_form():
             return form_info, 200
         else:
             response = {
-                "errors": gettext('GET_FORM_BY_SUPPLIER_ID_ERROR'),
+                "errors": gettext('GET_FORM_BY_ID_ERROR'),
                 "message": error
             }
             return response, 401

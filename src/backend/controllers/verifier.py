@@ -245,7 +245,7 @@ def delete_invoice_position_by_invoice_id(invoice_id, field_id):
             return '', 200
         else:
             response = {
-                "errors": gettext('UPDATE_INVOICE_POSITION_ERROR'),
+                "errors": gettext('UPDATE_INVOICE_POSITIONS_ERROR'),
                 "message": error
             }
             return response, 401
@@ -332,7 +332,7 @@ def remove_lock_by_user_id(user_id):
         return '', 200
     else:
         response = {
-            "errors": gettext('REMOVE_LOCK_BY_USER_ID'),
+            "errors": gettext('REMOVE_LOCK_BY_USER_ID_ERROR'),
             "message": error
         }
         return response, 401

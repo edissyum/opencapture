@@ -100,6 +100,6 @@ def update_invoices(args):
     })
 
     if supplier[0] is False:
-        error = gettext('INVOICES_UPDATE_ERROR')
+        error = gettext('INVOICE_UPDATE_ERROR')
 
     return supplier, error

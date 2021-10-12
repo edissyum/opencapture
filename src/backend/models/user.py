@@ -129,7 +129,7 @@ def get_customers_by_user_id(args):
     })
 
     if not customers:
-        error = gettext('GET_CUSTOMERS_BY_USER_ID_ERROR')
+        error = gettext('GET_CUSTOMER_BY_ID_ERROR')
     else:
         customers = customers[0]
     return customers, error
@@ -148,7 +148,7 @@ def update_user(args):
     })
 
     if user[0] is False:
-        error = gettext('USERS_UPDATE_ERROR')
+        error = gettext('UPDATE_USER_ERROR')
 
     return user, error
 
@@ -166,6 +166,6 @@ def update_customers_by_user_id(args):
     })
 
     if user[0] is False:
-        error = gettext('USERS_CUSTOMERS_UPDATE_ERROR')
+        error = gettext('UPDATE_CUSTOMERS_USER_ERROR')
 
     return user, error
