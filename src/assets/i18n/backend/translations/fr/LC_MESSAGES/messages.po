@@ -504,4 +504,3 @@ msgstr "Erreur lors de la mise à jour de la facture"
 #: src/backend/rest/splitter.py:39 src/backend/rest/verifier.py:37
 msgid "UNKNOW_ERROR"
 msgstr "Erreur inconnue"
-
