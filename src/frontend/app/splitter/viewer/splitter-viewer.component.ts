@@ -64,6 +64,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     metaDataOpenState   : boolean = true;
     showZoomPage        : boolean = false;
     isLoading           : boolean = true;
+    isLoadingPages      : boolean = true;
     currentBatch        : any = {id: -1, inputId: -1};
     batches             : Batch[] = [];
     fields              : Field[] = [];
@@ -196,6 +197,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     }
                 }
             }),
+            finalize(() => this.isLoadingPages = false),
             catchError((err: any) => {
                 this.notify.error(err);
                 return of(false);

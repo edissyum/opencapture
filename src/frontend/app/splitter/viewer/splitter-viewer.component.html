@@ -1,12 +1,11 @@
 <mat-drawer-container class="viewer-container" hasBackdrop="false">
     <mat-drawer #drawer mode="side" opened>
-        <div *ngIf="isLoading">
+        <div *ngIf="isLoading || isLoadingPages">
             <app-loader></app-loader>
         </div>
-        <div fxLayout="row wrap" fxLayoutGap="16px grid" class="mt-1">
-            <div class="card" [fxFlex]="100 + '%'" fxFlex.xs="100%" fxFlex.sm="33%"
-                 *ngFor="let batch of batches| slice: 0 : 10">
-                <mat-card class="mat-elevation-z4"
+        <div class="mt-1">
+            <div class="card" *ngFor="let batch of batches| slice: 0 : 10">
+                <mat-card class="mat-elevation-z4 my-2"
                           [ngClass]="{'border-4 border-green-400': currentBatch.id == batch.id}">
                     <a class="image-link" (click)="changeBatch(batch['id'])">
                         <mat-card-header>
@@ -14,15 +13,16 @@
                         </mat-card-header>
                     </a>
                     <mat-card-content>
-                        <mat-card-title class="card-title text-lg break-words"><a>{{batch['file_name']}}</a>
+                        <mat-card-title class="card-title text-lg break-words">
+                            <a>{{batch['file_name']}}</a>
                         </mat-card-title>
                         <span title="{{ 'SPLITTER.document_number' | translate }} : {{ batch['page_number'] }}"
                               class="file-count absolute right-4 text-green-400">
                             {{ batch['page_number'] }} <i class="far fa-file"></i>
-                    </span>
+                        </span>
                         <span class="text-gray-500 block w-11/12">
-                        {{ 'SPLITTER.saved_the' | translate }} : {{ batch['batch_date'] }} <br>
-                    </span>
+                            {{ 'VERIFIER.register_date' | translate }} : {{ batch['batch_date'] }} <br>
+                        </span>
                     </mat-card-content>
                 </mat-card>
             </div>
@@ -30,10 +30,10 @@
     </mat-drawer>
     <mat-drawer-content>
         <button class="btn-show-batches left-0" mat-raised-button (click)="drawer.toggle()">
-    <span>
-        <i *ngIf="drawer.opened" class="fas fa-angle-left"></i>
-        <i *ngIf="!drawer.opened" class="fas fa-angle-right"></i>
-    </span>
+            <span>
+                <i *ngIf="drawer.opened" class="fas fa-angle-left"></i>
+                <i *ngIf="!drawer.opened" class="fas fa-angle-right"></i>
+            </span>
         </button>
         <img class="zoom-image border-2"
              *ngIf="showZoomPage" mat-card-image
@@ -41,7 +41,7 @@
              (clickOutside)="showZoomPage = false"
              [exclude]="'.btn-page-zoom'" alt="Zoom Image"/>
         <div class="w-10/12 absolute top-0 mx-32">
-            <mat-accordion class="metadata">
+            <mat-accordion class="metadata" *ngIf="isLoadingPages == false">
                 <mat-expansion-panel class="my-10 bg-gray-20" [expanded]="true" (opened)="metaDataOpenState = true"
                                      (closed)="metaDataOpenState = false" #panelH>
                     <mat-expansion-panel-header>
@@ -55,8 +55,6 @@
                                 </mat-slide-toggle>
                             </div>
                         </mat-panel-title>
-                        <mat-panel-description>
-                        </mat-panel-description>
                     </mat-expansion-panel-header>
                     <form [formGroup]="form" class="mx-8 grid grid-cols-3 gap-4">
                         <div *ngFor="let input of fields">
@@ -101,10 +99,10 @@
                         </div>
                     </form>
                     <div class="text-right p-4">
-<!--                        <button mat-button class="my-2" (click)="loadReferential()"-->
-<!--                                title="{{ 'SPLITTER.loadReferential' | translate }}">-->
-<!--                            <i class="fas fa-sync fa-3x"></i>-->
-<!--                        </button>-->
+                        <!--                        <button mat-button class="my-2" (click)="loadReferential()"-->
+                        <!--                                title="{{ 'SPLITTER.loadReferential' | translate }}">-->
+                        <!--                            <i class="fas fa-sync fa-3x"></i>-->
+                        <!--                        </button>-->
                     </div>
                 </mat-expansion-panel>
             </mat-accordion>
@@ -200,8 +198,7 @@
                     </div>
                 </mat-card-content>
             </mat-card>
-            <div class="splitter-tools-place">
-            </div>
+            <div class="splitter-tools-place"></div>
         </div>
     </mat-drawer-content>
 </mat-drawer-container>

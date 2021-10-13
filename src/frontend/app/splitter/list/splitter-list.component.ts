@@ -32,11 +32,15 @@ import {PageEvent} from "@angular/material/paginator";
 import {ConfirmDialogComponent} from "../../../services/confirm-dialog/confirm-dialog.component";
 import {MatDialog} from '@angular/material/dialog';
 import {HistoryService} from "../../../services/history.service";
+import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from "@angular/material/form-field";
 
 @Component({
     selector: 'app-list',
     templateUrl: './splitter-list.component.html',
-    styleUrls: ['./splitter-list.component.scss']
+    styleUrls: ['./splitter-list.component.scss'],
+    providers: [
+        { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'fill' } },
+    ]
 })
 
 export class SplitterListComponent implements OnInit {
@@ -60,7 +64,7 @@ export class SplitterListComponent implements OnInit {
         private formBuilder: FormBuilder,
         private authService: AuthService,
         private _sanitizer: DomSanitizer,
-        private translate: TranslateService,
+        public translate: TranslateService,
         private notify: NotificationService,
         private historyService: HistoryService,
         private localeStorageService: LocalStorageService,

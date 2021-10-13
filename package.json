@@ -41,7 +41,6 @@
         "@types/pdfjs-dist": "2.1.7",
         "remove-accents": "^0.4.2",
         "@syncfusion/ej2": "^19.2.60",
-        "@angular/flex-layout": "^11.0.0-beta.33",
         "tailwindcss": "^2.2.16"
     },
     "devDependencies": {
