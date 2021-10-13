@@ -202,6 +202,7 @@
 		"settings": "Paramètres",
 		"skip_auto_validate": "Outrepasser la prochaine validation automatique",
 		"upload": "Téléversement",
+		"utilisation_guide": "Accéder au guide d'utilisation d'Open-Capture For Invoices",
 		"validate": "Valider"
 	},
 	"HEADER": {
@@ -469,7 +470,6 @@
 		"select_all": "Sélectionner tout",
 		"send": "Envoyer",
 		"send_to": "Envoyé à",
-		"to_validate": "À valider",
 		"unselect_all": "Désélectionner tout",
 		"validate_batch": "Lot validé avec succès",
 		"viewer": "Visualisation du lot",
