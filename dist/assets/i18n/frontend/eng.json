@@ -202,6 +202,7 @@
 		"settings": "Settings",
 		"skip_auto_validate": "Skip auto validation",
 		"upload": "Upload",
+		"utilisation_guide": "Access to user guide of Open-Capture for Invoices",
 		"validate": "Validate"
 	},
 	"HEADER": {
@@ -469,7 +470,6 @@
 		"select_all": "Select all",
 		"send": "Send",
 		"send_to": "Send to",
-		"to_validate": "To validate",
 		"unselect_all": "Unselect all",
 		"validate_batch": "Batch validated",
 		"viewer": "Batch view",
