@@ -61,10 +61,10 @@
             "Dec."
         ]
     },
-    "dateRegex"         : "(\\d{4}\\s?|[/,-]\\d{1,2}[/,-]\\d{1,2}|\\d{1,2}\\s?[JFMASONDjfmasond][a-zA-Z_À-ÿ]*\\s?\\d{2,4})",
+    "dateRegex"         : "(^(1[0-2]|0?[1-9])|\\d{1}\\w{2})\\s?([JFMASONDjfmasond][a-zA-Z_À-ÿ\\.,-]{2,9}|[/,-\\.](3[01]|[12][0-9]|0?[1-9])[/,-\\.])\\s?((1|2|3){1}\\d{1,3}|(1|2|3))",
     "VATNumberRegex"    : "(GB)?([0-9]{9}([0-9]{3})?|[A-Z]{2}[0-9]{3})",
-    "dateTimeFormat"    : "%Y %m %d",
-    "formatDate"        : "%Y-%m-%d",
+    "dateTimeFormat"    : "%m %d %Y",
+    "formatDate"        : "%m-%d-%Y",
     "SIRETRegex"        : "[0-9]{14}",
     "SIRENRegex"        : "[0-9]{9}",
     "invoiceRegex"      : "",

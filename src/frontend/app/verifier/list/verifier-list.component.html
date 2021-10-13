@@ -54,7 +54,7 @@
         <mat-tab-group [selectedIndex]="selectedTab" (selectedTabChange)="onTabChange($event)" class="batches overflow-auto" animationDuration="0ms">
             <mat-tab *ngFor="let batch of batchList" [label]="this.translate.instant(batch.label)" [id]="batch.id">
                 <div class="flex flex-col">
-                    <div class="verifier-list grid grid-cols-3 grid-flow-row gap-0 mt-4 z-30">
+                    <div class="grid grid-cols-3 grid-flow-row gap-0 mt-4 z-30">
                         <mat-form-field class="left-4 w-1/2" appearance="outline">
                             <mat-label>{{ 'VERIFIER.search' | translate }}</mat-label>
                             <input matInput type="text" [(ngModel)]="search" (keyup)="searchInvoice($event)">
@@ -113,7 +113,7 @@
                                     </mat-card-subtitle>
                                 </mat-card-header>
                                 <mat-card-actions class="pb-4 pl-4">
-                                    <i class="fas fa-trash cursor-pointer text-red-500 " (click)="$event.stopPropagation();deleteConfirmDialog(invoice.invoice_id)">
+                                    <i class="fas fa-trash cursor-pointer text-red-500" (click)="$event.stopPropagation();deleteConfirmDialog(invoice.invoice_id)">
                                         <span class="font-medium mat-typography">{{ 'VERIFIER.delete_invoice' | translate }}</span>
                                     </i>
                                 </mat-card-actions>

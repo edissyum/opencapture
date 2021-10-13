@@ -492,11 +492,8 @@ class Files:
                 with open(output_file + '/' + documents[index]['fileName'], 'wb') as fh:
                     pdf_writer.write(fh)
                     paths.append(file_path)
-                # Init writer
                 pdf_writer = PyPDF2.PdfFileWriter()
-
         except Exception as e:
-            print(e)
             return {'OK': False}
 
         return {'OK': True, 'paths': paths}

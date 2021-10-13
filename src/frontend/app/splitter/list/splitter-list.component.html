@@ -3,53 +3,52 @@
         <app-loader></app-loader>
     </div>
     <mat-sidenav-content class="bg-white overflow-x-hidden" *ngIf="!isLoading">
-        <mat-toolbar style="background-color:transparent; height: 80px;">
-            <div class="search-input">
-                <mat-form-field class="w-72" appearance="outline">
-                    <mat-label>{{ 'SPLITTER.search' | translate }}</mat-label>
-                    <input matInput [(ngModel)]="searchText">
-                </mat-form-field>
-            </div>
-            <mat-paginator class="absolute right-0"
-                           [length] = "paginationInfos.length"
-                           [pageSize]="paginationInfos.pageSize"
-                           [pageSizeOptions]="[5, 10, 25, 100]"
-                           (page)="onPageChange($event)">
-            </mat-paginator>
-        </mat-toolbar>
-        <div class="flex flex-col">
-            <div fxLayout="row wrap" fxLayoutGap="16px grid" class="p-4">
+        <div class="grid grid-cols-3 grid-flow-row gap-0 mt-4 z-30">
+            <mat-form-field class="left-4 w-1/2" appearance="outline">
+                <mat-label>{{ 'SPLITTER.search' | translate }}</mat-label>
+                <input matInput type="text" [(ngModel)]="searchText">
+            </mat-form-field>
+<!--            <mat-form-field class="w-1/2 m-auto" appearance="outline">-->
+<!--                <mat-label>{{ 'STATUS.list' | translate }}</mat-label>-->
+<!--                <mat-select [(value)]="currentStatus" (selectionChange)="changeStatus($event)">-->
+<!--                    <mat-option *ngFor="let option of status" [value]="option['id']">-->
+<!--                        {{ option['label'] }}-->
+<!--                    </mat-option>-->
+<!--                </mat-select>-->
+<!--            </mat-form-field>-->
+            <span class="absolute right-0">
+                <mat-paginator [length] = "paginationInfos.length"
+                               [pageSize]="paginationInfos.pageSize"
+                               [pageSizeOptions]="[5, 10, 25, 100]"
+                               (page)="onPageChange($event)">
+                </mat-paginator>
+            </span>
+        </div>
+        <div class="flex flex-col mx-10 mt-3">
+            <div class="list grid grid-cols-4 grid-flow-row gap-12">
                 <span *ngIf="(batches | filter : 'file_name' : searchText).length == 0 && !isLoading" class="text-gray-800">{{ 'SPLITTER.no_batch_found' | translate }}</span>
-                <div [fxFlex]="(100/gridColumns) + '%'" fxFlex.xs="100%" fxFlex.sm="33%" *ngFor="let batch of batches | filter : 'file_name' : searchText">
-                    <mat-card class="batch-card mat-elevation-z4 border-2">
-                        <div class="w-full items-stretch ribbon {{ batch['status'] }}" *ngIf="batch['status'] == 'NEW'">
-                            <span class="absolute left-4" data-toggle="tooltip" data-placement="left" title="{{ 'SPLITTER.to_validate' | translate }}">
-                                {{ 'SPLITTER.to_validate' | translate }}
-                            </span>
-                            <div class="absolute right-4 actions">
-                                <button title="{{ 'GLOBAL.delete' | translate }}" (click)="openConfirmDialog(batch['id'])" mat-icon-button class="btn-action inline-block align-text-top">
-                                    <i class="btn-action-icon fas fa-trash fa-lg"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="px-4">
-                            <a class="image-link"  routerLink="/splitter/viewer/{{batch['id']}}">
-                                <mat-card-header>
-                                    <img class="page-image" mat-card-image [src]="sanitize(batch['image_url'])">
-                                </mat-card-header>
-                            </a>
-                        </div>
-                        <mat-card-content class="px-4">
-                            <mat-card-title class="card-title text-lg break-words"><a>{{batch['file_name']}}</a></mat-card-title>
-                            <span title="{{ 'SPLITTER.document_number' | translate }} : {{ batch['page_number'] }}" class="file-count absolute right-4 text-green-400">
-                                {{ batch['page_number'] }} <i class="far fa-file"></i>
-                            </span>
-                            <i class="text-gray-500">
-                                {{ 'SPLITTER.saved_the' | translate }} : {{ batch['batch_date'] }}
-                            </i>
-                        </mat-card-content>
-                    </mat-card>
-                </div>
+                <mat-card class="batch-card cursor-pointer p-0 mb-0" *ngFor="let batch of batches | filter : 'file_name' : searchText">
+                    <input id="{{ batch['id'] }}_checkbox" class="checkBox_list absolute z-40 ml-2 mt-2 cursor-pointer" type="checkbox"/>
+                    <img [routerLink]="'/splitter/viewer/' + batch['id']" class="m-auto p-4" mat-card-image [src]="sanitize(batch['image_url'])">
+                    <mat-card-header class="leading-6 relative z-10 bg-white pt-4 pl-4 pr-4"
+                                     [routerLink]="'/splitter/viewer/' + batch['id']">
+                        <span class="absolute right-6 text-green-400 text-base badge badge-secondary badge-pill"
+                              [matTooltip]="this.translate.instant('VERIFIER.nb_pages') + ' : ' +  batch['page_number']">
+                                {{ batch['page_number'] }}<i class="far fa-file ml-1"></i>
+                        </span>
+                        <mat-card-title class="card-title text-lg break-words">
+                            <span>{{batch['file_name']}}</span>
+                        </mat-card-title>
+                        <mat-card-subtitle class="mt-2 -mb-1 break-all">
+                            <b>{{ 'VERIFIER.register_date' | translate }}</b> : {{ batch['batch_date'] }}<br>
+                        </mat-card-subtitle>
+                    </mat-card-header>
+                    <mat-card-actions class="pb-4 pl-4">
+                        <i class="fas fa-trash cursor-pointer text-red-500" (click)="$event.stopPropagation();openConfirmDialog(batch['id'])">
+                            <span class="font-medium mat-typography">{{ 'GLOBAL.delete' | translate }}</span>
+                        </i>
+                    </mat-card-actions>
+                </mat-card>
             </div>
         </div>
     </mat-sidenav-content>

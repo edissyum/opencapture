@@ -41,7 +41,6 @@ import { DocumentTypeComponent } from './settings/splitter/document-type/documen
 
 import { FilterPipe } from '../services/pipes/filter.pipe';
 import { NgxFileDragDropModule } from "ngx-file-drag-drop";
-import {FlexLayoutModule} from "@angular/flex-layout";
 import { ClickOutsideModule } from 'ng-click-outside';
 import { PdfJsViewerModule } from 'ng2-pdfjs-viewer';
 import { NgxMatSelectSearchModule } from "ngx-mat-select-search";
@@ -180,7 +179,6 @@ export function createTranslateLoader(http: HttpClient) {
         NgxFileDragDropModule,
         ClickOutsideModule,
         DragDropModule,
-        FlexLayoutModule,
         NgxMatSelectSearchModule,
         PdfJsViewerModule,
     ],

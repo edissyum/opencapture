@@ -39,7 +39,7 @@ def get_history():
     if _cfg.cfg['LOCALE']['locale'] == 'fra':
         _format = 'DD/MM/YYYY HH24:MI:SS'
     else:
-        _format = 'MM/DD/YYYY HH12:MI:SS'
+        _format = 'MM/DD/YYYY HH24:MI:SS'
 
     args = {
         'select': ['*', 'count(*) OVER() as total', "to_char(history_date, '" + _format + "') as date"],
