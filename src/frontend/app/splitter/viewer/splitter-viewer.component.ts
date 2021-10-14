@@ -33,6 +33,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {DocumentTreeComponent} from "../document-tree/document-tree.component";
 import {remove} from 'remove-accents';
 import {HistoryService} from "../../../services/history.service";
+import {TREE_DATA} from "../document-type-factory/document-tree";
 
 export interface Batch {
     id: number;
@@ -61,22 +62,23 @@ export interface Field {
 export class SplitterViewerComponent implements OnInit, OnDestroy {
     @ViewChild(`cdkStepper`) cdkDropList: CdkDragDrop<any> | undefined;
     form                : FormGroup = new FormGroup({});
-    metaDataOpenState   : boolean = true;
-    showZoomPage        : boolean = false;
-    isLoading           : boolean = true;
-    isLoadingPages      : boolean = true;
-    currentBatch        : any = {id: -1, inputId: -1};
-    batches             : Batch[] = [];
-    fields              : Field[] = [];
-    documents           : any = [];
-    pagesImageUrls      : any = [];
-    documentsIds        : string[] = [];
-    metadata            : any[] = [];
-    zoomImageUrl        : string = "";
-    toolSelectedOption  : string = "";
-    selectedMetadata    : any = {id: -1};
-    inputMode           : string = "Manual";
+    metaDataOpenState   : boolean   = true;
+    showZoomPage        : boolean   = false;
+    isLoading           : boolean   = true;
+    isLoadingPages      : boolean   = true;
+    currentBatch        : any       = {id: -1, inputId: -1};
+    batches             : Batch[]   = [];
+    fields              : Field[]   = [];
+    documents           : any       = [];
+    pagesImageUrls      : any       = [];
+    documentsIds        : string[]  = [];
+    metadata            : any[]     = [];
+    zoomImageUrl        : string    = "";
+    toolSelectedOption  : string    = "";
+    selectedMetadata    : any       = {id: -1};
+    inputMode           : string    = "Manual";
     outputs             : any;
+    defaultDocType      : any;
 
     /** indicate search operation is in progress */
     public searching: boolean = false;
@@ -107,6 +109,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.userService.user = this.userService.getUserFromLocal();
         this.currentBatch.id = this.route.snapshot.params['id'];
         this.loadBatches();
+        this.loadDefaultDocType();
         this.loadSelectedBatch();
         this.loadMetadata();
         this.loadOutputs();
@@ -140,7 +143,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 this.currentBatch.formId = data.batches[0].form_id;
                 this.loadFormFields(this.currentBatch.formId);
             }),
-            finalize(() => this.isLoading = false),
             catchError((err: any) => {
                 this.notify.error(err);
                 return of(false);
@@ -177,10 +179,10 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 for (let i = 0; i < data['page_lists'].length; i++) {
                     this.documents[i] = {
                         id: "document-" + i,
-                        documentTypeName: "Document " + (i + 1),
-                        documentTypeKey: "",
-                        pages: [],
-                        class: "",
+                        documentTypeName: this.defaultDocType.documentTypeName,
+                        documentTypeKey : this.defaultDocType.documentTypeKey,
+                        pages           : [],
+                        class           : "",
                     };
                     for (const page of data['page_lists'][i]) {
                         this.documents[i].pages.push({
@@ -214,6 +216,16 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     /* -- Metadata -- */
+    loadDefaultDocType(){
+        for (const docType of TREE_DATA){
+            if(docType.isDefault)
+                this.defaultDocType = {
+                    "documentTypeKey": docType.key,
+                    "documentTypeName": docType.label,
+                };
+        }
+    }
+
     changeInputMode($event: any) {
         this.inputMode = $event.checked ? "Auto" : "Manual";
         this.selectedMetadata = null;
@@ -332,7 +344,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                             });
                     }
                 });
-            }),
+            }), finalize(() => this.isLoading = false),
             catchError((err: any) => {
                 console.debug(err);
                 return of(false);
@@ -380,18 +392,23 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         const dialogRef = this.dialog.open(DocumentTreeComponent, {
             width: '800px',
             height: '900px',
-            data: {}
+            data: {
+                selectedDocType: {
+                    key: document.documentTypeKey  ? document.documentTypeKey  : "",
+                },
+            }
         });
         dialogRef.afterClosed().subscribe((result: any) => {
-            document.documentTypeName = result.item;
-            document.documentTypeKey = result.key;
+            if(result){
+                document.documentTypeName = result.item;
+                document.documentTypeKey = result.key;
+            }
         });
     }
 
     deleteDocument(documentIndex: number) {
         this.documents = this.deleteItemFromList(this.documents, documentIndex);
     }
-
     /* End documents control */
 
     /* Begin tools bar */
@@ -464,10 +481,10 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         }
         this.documents.push({
             id: "document-" + newId,
-            documentTypeName: "Document " + (newId + 1),
-            documentTypeKey: "",
-            pages: [],
-            class: "",
+            documentTypeName    : this.defaultDocType.documentTypeName,
+            documentTypeKey     : this.defaultDocType.documentTypeKey,
+            pages               : [],
+            class               : "",
         });
     }
 
@@ -501,7 +518,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         metadata['userName'] = this.userService.user['username'];
         metadata['userFirstName'] = this.userService.user['firstname'];
         metadata['userLastName'] = this.userService.user['lastname'];
-
+        this.isLoading = true;
         this.http.post(API_URL + '/ws/splitter/validate',
             {
                 'documents': this.documents,
@@ -512,6 +529,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             tap(() => {
             }),
             catchError((err: any) => {
+                this.isLoading = false;
                 this.notify.error(err);
                 return of(false);
             })

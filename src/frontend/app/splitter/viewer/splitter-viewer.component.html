@@ -50,18 +50,26 @@
                             <div (click)="panelH.toggle()" class="mx-8">
                                 <mat-slide-toggle color="#97BF3D"
                                                   [checked]="inputMode == 'Auto'"
-                                                  (change)="changeInputMode($event);">
+                                                  (change)="changeInputMode($event);"
+                                                  [disabled]="fields.length == 0">
                                     {{ 'SPLITTER.auto_complete' | translate }}
                                 </mat-slide-toggle>
                             </div>
                         </mat-panel-title>
                     </mat-expansion-panel-header>
+                    <div class="text-gray-400 text-center w-full" *ngIf="fields.length == 0">
+                        <i class="block fas fa-check fa-3x"></i>
+                        <span class="block">{{ 'SPLITTER.no_metadata_required' | translate }}</span>
+                    </div>
                     <form [formGroup]="form" class="mx-8 grid grid-cols-3 gap-4">
                         <div *ngFor="let input of fields">
                             <div *ngIf="input.type == 'text' && inputMode == 'Auto' && input.metadata_key" class="h-12">
                                 <mat-form-field class="w-full">
-                                    <mat-label><span
-                                            *ngIf="!selectedMetadata">{{ 'SPLITTER.search_for' | translate }}</span> {{input.label}}
+                                    <mat-label>
+                                        <span *ngIf="!selectedMetadata">
+                                            {{ 'SPLITTER.search_for' | translate }}
+                                        </span>
+                                        {{input.label}}
                                     </mat-label>
                                     <mat-select [formControlName]="input.label_short">
                                         <mat-option *ngIf="input.metadata_key">

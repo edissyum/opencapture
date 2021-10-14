@@ -7,7 +7,7 @@
 <mat-card class="overflow-auto" style="height: 700px;">
   <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
     <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
-    <button mat-button class="h-8" [ngClass]="selectedItemName === node ? 'text-green-400' : ''"
+    <button mat-button class="h-8" [ngClass]="selectedDocType.key === node.key ? 'text-green-400' : ''"
             (click)="selectNode(node)">
       <i class="fas fa-file fw"></i>
       <span class="pl-1 font-normal">{{node.item}}</span>

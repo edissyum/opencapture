@@ -2,12 +2,11 @@
 # Copyright (C) 2019 ORGANIZATION
 # This file is distributed under the same license as the project
 # FIRST AUTHOR <nathan.cheval@edissyum.com>, 2021.
-
 msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2021-10-12 10:53+0200\n"
+"POT-Creation-Date: 2021-10-14 15:56+0200\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: en\n"
@@ -361,6 +360,10 @@ msgstr "Destination folder for XML doesn't exists"
 msgid "EXPORT_XML_ERROR"
 msgstr "Error while exporting XML"
 
+#: src/backend/controllers/verifier.py:601
+msgid "API_INSEE_ERROR_CONNEXION"
+msgstr "Error while connecting to INSEE API"
+
 #: src/backend/controllers/verifier.py:645
 msgid "VAT_NOT_VALID"
 msgstr "VAT number not valid"
@@ -504,3 +507,4 @@ msgstr "Error while updating invoice"
 #: src/backend/rest/splitter.py:39 src/backend/rest/verifier.py:37
 msgid "UNKNOW_ERROR"
 msgstr "Unknow error"
+

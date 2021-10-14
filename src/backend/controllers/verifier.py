@@ -597,8 +597,9 @@ def get_token_insee():
     res = requests.post(_cfg.cfg['API']['siret-url-token'],
                         data={'grant_type': 'client_credentials'},
                         headers={"Authorization": "Basic %s" % str(credentials)})
+
     if 'Maintenance - INSEE' in res.text or res.status_code != 200:
-        return 'ERROR : ' + json.loads(res.text)['error_description'], 201
+        return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
     else:
         return json.loads(res.text)['access_token'], 200
 

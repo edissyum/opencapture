@@ -502,6 +502,7 @@ export class VerifierListComponent implements OnInit {
         this.selectedTab = event.index;
         this.localeStorageService.save('invoicesTimeIndex', this.selectedTab);
         this.currentTime = this.batchList[this.selectedTab].id;
+        this.resetPaginator();
         this.loadInvoices();
     }
 

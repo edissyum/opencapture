@@ -1,33 +1,58 @@
 export const TREE_DATA = [
-  // ---------------------- //
-  {
-    'key':'',
-    'text': "Pièces à classer",
-    'code': '0.1'
-  },
-  {
-    'key':'CV',
-    'text': "Curriculum Vitae",
-    'code': '0.1.1'
-  },
-  {
-    'key':'CONTRAT',
-    'text': "Contrat de travail",
-    'code': '0.1.1'
-  },
-  {
-    'key':'ARRETE',
-    'text': "Arrêté de disponibilité détachement",
-    'code': '0.1.1'
-  },
-  {
-    'key':'SITUATION_MILITAIRE',
-    'text': "Situation militaire",
-    'code': '0.1.1'
-  },
-  {
-    'key':'SUIVI_MEDICAL',
-    'text': "Visite médical",
-    'code': '0.1.1'
-  }
-]
+    // ---------------------- //
+    {
+        'key'       : 'facturation',
+        'label'     : "Facturation",
+        'code'      : '0.1',
+        'isDefault' : false,
+    },
+    {
+        'key'       : 'FACTURE',
+        'label'     : "Facture",
+        'code'      : '0.1.1',
+        'isDefault' : true,
+    },
+    {
+        'key'       : 'FACTURE_ACHAT',
+        'label'     : "Facture d'achat",
+        'code'      : '0.1.1',
+        'isDefault' : false,
+    },
+    {
+        'key'       : 'FACTURE_VENTE',
+        'label'     : "Facture de vente",
+        'code'      : '0.1.1',
+        'isDefault' : false,
+    },
+    {
+        'key'       : 'RIB',
+        'label'     : "Relevé d'identité bancaire (RIB)",
+        'code'      : '0.1.1',
+        'isDefault' : false,
+    },
+    // ---------------------- //
+    {
+        'key'       : '',
+        'label'     : "Identité",
+        'code'      : '0.2',
+        'isDefault' : false,
+    },
+    {
+        'key'       : 'CI',
+        'label'     : "Carte d'identité (CI)",
+        'code'      : '0.2.1',
+        'isDefault' : false,
+    },
+    {
+        'key'       : 'PASSEPORT',
+        'label'     : "Passeport",
+        'code'      : '0.2.1',
+        'isDefault' : false,
+    },
+    {
+        'key'       : 'JUSTIFICATIF_DOMICILE',
+        'label'     : "Justificatif de domicile",
+        'code'      : '0.2.1',
+        'isDefault' : false,
+    },
+];

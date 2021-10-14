@@ -15,7 +15,7 @@
 
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
-import {Component, Injectable, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, Injectable, EventEmitter, OnInit, Output, Input} from '@angular/core';
 import {FlatTreeControl} from '@angular/cdk/tree';
 import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
 import {BehaviorSubject, of} from "rxjs";
@@ -27,10 +27,11 @@ import {HttpClient} from "@angular/common/http";
 import {NotificationService} from "../../../services/notifications/notifications.service";
 
 export class TreeItemNode {
-  key!      : string;
-  item!     : string;
-  children! : TreeItemNode[];
-  code!     : string;
+  key!        : string;
+  item!       : string;
+  children!   : TreeItemNode[];
+  code!       : string;
+  isDefault!  : boolean;
 }
 
 /** Flat item node with expandable and level information */
@@ -74,8 +75,9 @@ export class ChecklistDatabase {
       .map(o => {
         const node      = new TreeItemNode();
         node.key        = o.key;
-        node.item       = o.text;
+        node.item       = o.label;
         node.code       = o.code;
+        node.isDefault  = o.isDefault;
         const children  = obj.filter(so => (so.code as string).startsWith(level + '.'));
         if (children && children.length > 0) {
           node.children = this.buildFileTree(children, o.code);
@@ -87,7 +89,7 @@ export class ChecklistDatabase {
   public filter(filterText: string) {
     let filteredTreeData: any[];
     if (filterText) {
-      filteredTreeData = this.treeData.filter(d => d.text.toLocaleLowerCase().indexOf(filterText.toLocaleLowerCase()) > -1);
+      filteredTreeData = this.treeData.filter(d => d.label.toLocaleLowerCase().indexOf(filterText.toLocaleLowerCase()) > -1);
       Object.assign([], filteredTreeData).forEach(ftd => {
         // @ts-ignore
         let str = (ftd.code as string);
@@ -122,9 +124,10 @@ export class ChecklistDatabase {
   providers: [ChecklistDatabase]
 })
 export class DocumentTypeFactoryComponent implements OnInit {
-  searchText: string        = "";
+  @Input() selectDocType   : any;
+  @Input() selectedDocType : any;
+  searchText      : string  = "";
   @Output() output          = new EventEmitter < string > ();
-  selectedItemName: string  = "";
 
   /** Map from flat node to nested node. This helps us finding the nested node to be modified */
   flatNodeMap               = new Map<TreeItemFlatNode, TreeItemNode>();
@@ -150,9 +153,6 @@ export class DocumentTypeFactoryComponent implements OnInit {
   constructor(
       private database        : ChecklistDatabase,
       public serviceSettings  : SettingsService,
-      private authService     : AuthService,
-      private http            : HttpClient,
-      private notify          : NotificationService,
   ) {
     this.treeFlattener  = new MatTreeFlattener(this.transformer, this.getLevel,
       this.isExpandable, this.getChildren);
@@ -170,6 +170,8 @@ export class DocumentTypeFactoryComponent implements OnInit {
   getChildren   = (node: TreeItemNode): TreeItemNode[]      => node.children;
   hasChild      = (_: number, _nodeData: TreeItemFlatNode)  => _nodeData.expandable;
 
+  ngOnInit(): void {
+  }
   /**
    * Transformer to convert nested node to flat node. Record the nodes in maps for later use.
    */
@@ -206,10 +208,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
   }
 
   selectNode(node: any) {
-      this.selectedItemName = node;
-      this.output.emit(this.selectedItemName);
-  }
-
-  ngOnInit(): void {
+      this.selectedDocType = node;
+      this.output.emit(this.selectedDocType);
   }
 }
