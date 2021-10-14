@@ -50,12 +50,17 @@
                             <div (click)="panelH.toggle()" class="mx-8">
                                 <mat-slide-toggle color="#97BF3D"
                                                   [checked]="inputMode == 'Auto'"
-                                                  (change)="changeInputMode($event);">
+                                                  (change)="changeInputMode($event);"
+                                                  [disabled]="fields.length == 0">
                                     {{ 'SPLITTER.auto_complete' | translate }}
                                 </mat-slide-toggle>
                             </div>
                         </mat-panel-title>
                     </mat-expansion-panel-header>
+                    <div class="text-gray-400 text-center w-full" *ngIf="fields.length == 0 && !isLoadingFields">
+                            <i class="block fas fa-check fa-3x"></i>
+                            <span class="block">{{ 'SPLITTER.no_metadata_required' | translate }}</span>
+                    </div>
                     <form [formGroup]="form" class="mx-8 grid grid-cols-3 gap-4">
                         <div *ngFor="let input of fields">
                             <div *ngIf="input.type == 'text' && inputMode == 'Auto' && input.metadata_key" class="h-12">

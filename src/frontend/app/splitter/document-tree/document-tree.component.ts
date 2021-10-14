@@ -15,8 +15,9 @@
 
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
-import { Component, OnInit } from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import { Router } from "@angular/router";
+import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 
 @Component({
     selector: 'app-document-tree',
@@ -27,7 +28,8 @@ export class DocumentTreeComponent implements OnInit {
     selectedItem:any;
 
     constructor(
-        public router: Router
+        public router: Router,
+        @Inject(MAT_DIALOG_DATA) public data: any
     ) {
     }
 
