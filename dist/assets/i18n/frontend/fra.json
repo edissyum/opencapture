@@ -473,7 +473,8 @@
 		"unselect_all": "Désélectionner tout",
 		"validate_batch": "Lot validé avec succès",
 		"viewer": "Visualisation du lot",
-		"zoom": "Agrandir"
+		"zoom": "Agrandir",
+		"no_metadata_required": "Aucune métadonnée requise"
 	},
 	"STATUS": {
 		"list": "Liste des status"

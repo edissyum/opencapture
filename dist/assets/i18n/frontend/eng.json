@@ -473,7 +473,8 @@
 		"unselect_all": "Unselect all",
 		"validate_batch": "Batch validated",
 		"viewer": "Batch view",
-		"zoom": "Zoom"
+		"zoom": "Zoom",
+		"no_metadata_required": "No metadata required "
 	},
 	"STATUS": {
 		"list": "List of status"
