@@ -2,12 +2,13 @@
 # Copyright (C) 2021 ORGANIZATION
 # This file is distributed under the same license as the PROJECT project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
-
+#
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-10-12 10:53+0200\n"
+"POT-Creation-Date: 2021-10-14 15:56+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -359,6 +360,10 @@ msgstr ""
 msgid "EXPORT_XML_ERROR"
 msgstr ""
 
+#: src/backend/controllers/verifier.py:601
+msgid "API_INSEE_ERROR_CONNEXION"
+msgstr ""
+
 #: src/backend/controllers/verifier.py:645
 msgid "VAT_NOT_VALID"
 msgstr ""
@@ -502,3 +507,4 @@ msgstr ""
 #: src/backend/rest/splitter.py:39 src/backend/rest/verifier.py:37
 msgid "UNKNOW_ERROR"
 msgstr ""
+

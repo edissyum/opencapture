@@ -62,22 +62,21 @@ export interface Field {
 export class SplitterViewerComponent implements OnInit, OnDestroy {
     @ViewChild(`cdkStepper`) cdkDropList: CdkDragDrop<any> | undefined;
     form                : FormGroup = new FormGroup({});
-    metaDataOpenState   : boolean = true;
-    showZoomPage        : boolean = false;
-    isLoading           : boolean = true;
-    isLoadingPages      : boolean = true;
-    isLoadingFields     : boolean = true;
-    currentBatch        : any = {id: -1, inputId: -1};
-    batches             : Batch[] = [];
-    fields              : Field[] = [];
-    documents           : any = [];
-    pagesImageUrls      : any = [];
-    documentsIds        : string[] = [];
-    metadata            : any[] = [];
-    zoomImageUrl        : string = "";
-    toolSelectedOption  : string = "";
-    selectedMetadata    : any = {id: -1};
-    inputMode           : string = "Manual";
+    metaDataOpenState   : boolean   = true;
+    showZoomPage        : boolean   = false;
+    isLoading           : boolean   = true;
+    isLoadingPages      : boolean   = true;
+    currentBatch        : any       = {id: -1, inputId: -1};
+    batches             : Batch[]   = [];
+    fields              : Field[]   = [];
+    documents           : any       = [];
+    pagesImageUrls      : any       = [];
+    documentsIds        : string[]  = [];
+    metadata            : any[]     = [];
+    zoomImageUrl        : string    = "";
+    toolSelectedOption  : string    = "";
+    selectedMetadata    : any       = {id: -1};
+    inputMode           : string    = "Manual";
     outputs             : any;
     defaultDocType      : any;
 
@@ -144,7 +143,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 this.currentBatch.formId = data.batches[0].form_id;
                 this.loadFormFields(this.currentBatch.formId);
             }),
-            finalize(() => this.isLoading = false),
             catchError((err: any) => {
                 this.notify.error(err);
                 return of(false);
@@ -346,7 +344,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                             });
                     }
                 });
-            }), finalize(() => this.isLoadingFields = false),
+            }), finalize(() => this.isLoading = false),
             catchError((err: any) => {
                 console.debug(err);
                 return of(false);

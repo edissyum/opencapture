@@ -461,6 +461,7 @@
 		"meta_data": "Métadonnées de documents",
 		"min_3_letter": "Au moins 3 letters",
 		"no_batch_found": "Aucun lot à afficher",
+		"no_metadata_required": "Aucune métadonnée requise",
 		"no_result": "0 Résultat",
 		"referential_updated": "Référentiel mis à jour avec succès",
 		"reset": "Réinitialiser",
@@ -473,8 +474,7 @@
 		"unselect_all": "Désélectionner tout",
 		"validate_batch": "Lot validé avec succès",
 		"viewer": "Visualisation du lot",
-		"zoom": "Agrandir",
-		"no_metadata_required": "Aucune métadonnée requise"
+		"zoom": "Agrandir"
 	},
 	"STATUS": {
 		"list": "Liste des status"

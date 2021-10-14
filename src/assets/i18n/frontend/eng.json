@@ -461,6 +461,7 @@
 		"meta_data": "Metada",
 		"min_3_letter": "3 letters min",
 		"no_batch_found": "No batch found",
+		"no_metadata_required": "No metadata required ",
 		"no_result": "No result",
 		"referential_updated": "Referential updated",
 		"reset": "Reset",
@@ -473,8 +474,7 @@
 		"unselect_all": "Unselect all",
 		"validate_batch": "Batch validated",
 		"viewer": "Batch view",
-		"zoom": "Zoom",
-		"no_metadata_required": "No metadata required "
+		"zoom": "Zoom"
 	},
 	"STATUS": {
 		"list": "List of status"
