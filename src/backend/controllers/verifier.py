@@ -617,8 +617,12 @@ def get_token_insee():
 def verify_siren(token, siren):
     _vars = create_classes_from_current_config()
     _cfg = _vars[1]
-    res = requests.get(_cfg.cfg['API']['siren-url'] + siren,
-                       headers={"Authorization": "Bearer %s" % token, "Accept": "application/json"})
+
+    try:
+        res = requests.get(_cfg.cfg['API']['siren-url'] + siren,
+                           headers={"Authorization": "Bearer %s" % token, "Accept": "application/json"})
+    except requests.exceptions.SSLError:
+        return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
 
     _return = json.loads(res.text)
     if 'header' not in res.text:
@@ -630,8 +634,12 @@ def verify_siren(token, siren):
 def verify_siret(token, siret):
     _vars = create_classes_from_current_config()
     _cfg = _vars[1]
-    res = requests.get(_cfg.cfg['API']['siret-url'] + siret,
-                       headers={"Authorization": "Bearer %s" % token, "Accept": "application/json"})
+
+    try:
+        res = requests.get(_cfg.cfg['API']['siret-url'] + siret,
+                           headers={"Authorization": "Bearer %s" % token, "Accept": "application/json"})
+    except requests.exceptions.SSLError:
+        return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
 
     _return = json.loads(res.text)
     if 'header' not in res.text:
@@ -648,14 +656,14 @@ def verify_vat_number(vat_number):
     vat_number = vat_number[2:]
 
     logging.getLogger('zeep').setLevel(logging.ERROR)
-    client = Client(url)
     try:
+        client = Client(url)
         res = client.service.checkVat(country_code, vat_number)
         text = res['valid']
         if res['valid'] is False:
             text = gettext('VAT_NOT_VALID')
             return text, 400
         return text, 200
-    except exceptions.Fault as e:
-        text = gettext('VAT_API_ERROR') + ' : ' + str(e)
-        return text, 400
+    except (exceptions.Fault, requests.exceptions.SSLError):
+        text = gettext('VAT_API_ERROR')
+        return text, 201
