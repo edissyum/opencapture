@@ -87,7 +87,7 @@ class Mail:
             emails.append(mail)
         return emails
 
-    def construct_dict_before_send_to_maarch(self, msg, backup_path):
+    def construct_dict(self, msg, backup_path):
         """
         Construct a dict with all the data of a mail (body and attachments)
 
@@ -138,7 +138,7 @@ class Mail:
 
     def backup_email(self, msg, backup_path):
         """
-        Backup e-mail into path before send it to Maarch
+        Backup e-mail into path
 
         :param msg: Mail data
         :param backup_path: Backup path
@@ -252,41 +252,39 @@ class Mail:
             })
         return args
 
+    @staticmethod
+    def move_batch_to_error(batch_path, error_path, smtp, process, msg, res):
+        """
+        If error in batch process, move the batch folder into error folder
 
-def move_batch_to_error(batch_path, error_path, smtp, process, msg, res):
-    """
-    If error in batch process, move the batch folder into error folder
+        :param res: return of Open-Capture process
+        :param process: Process name
+        :param msg: Contain the msg metadata
+        :param smtp: instance of SMTP class
+        :param batch_path: Path to the actual batch
+        :param error_path: path to the error path
+        """
 
-    :param res: return of Maarch WS
-    :param process: Process name
-    :param msg: Contain the msg metadata
-    :param smtp: instance of SMTP class
-    :param batch_path: Path to the actual batch
-    :param error_path: path to the error path
-    """
-    try:
-        os.makedirs(error_path)
-    except FileExistsError:
-        pass
+        try:
+            os.makedirs(error_path)
+        except FileExistsError:
+            pass
 
-    try:
-        shutil.move(batch_path, error_path)
-        if smtp.enabled is not False:
-            error = ''
-            if res:
-                error = res['errors']
-            smtp.send_email(
-                message='    - Nom du batch : ' + os.path.basename(batch_path) + '/ \n' +
-                        '    - Nom du process : ' + process + '\n' +
-                        '    - Chemin vers le batch en erreur : _ERROR/' + process + '/' + os.path.basename(error_path) + '/' + os.path.basename(batch_path) + ' \n' +
-                        '    - Sujet du mail : ' + msg['subject'] + '\n' +
-                        '    - Date du mail : ' + msg['date'] + '\n' +
-                        '    - UID du mail : ' + msg['uid'] + '\n' +
-                        '\n\n'
-                        '    - Informations sur l\'erreur : ' + error + '\n',
-                step='du traitement du mail suivant')
-    except (FileNotFoundError, FileExistsError, shutil.Error):
-        pass
+        try:
+            shutil.move(batch_path, error_path)
+            if smtp.enabled is not False:
+                smtp.send_email(
+                    message='    - Nom du batch : ' + os.path.basename(batch_path) + '/ \n' +
+                            '    - Nom du process : ' + process + '\n' +
+                            '    - Chemin vers le batch en erreur : _ERROR/' + process + '/' + os.path.basename(error_path) + '/' + os.path.basename(batch_path) + ' \n' +
+                            '    - Sujet du mail : ' + msg['subject'] + '\n' +
+                            '    - Date du mail : ' + msg['date'] + '\n' +
+                            '    - UID du mail : ' + msg['uid'] + '\n' +
+                            '\n\n'
+                            '    - Informations sur l\'erreur : ' + res + '\n',
+                    step='du traitement du mail suivant')
+        except (FileNotFoundError, FileExistsError, shutil.Error):
+            pass
 
 
 def str2bool(value):

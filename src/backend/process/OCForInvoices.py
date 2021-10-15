@@ -141,7 +141,6 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
     datas = {}
     pages = {}
     positions = {}
-    # get the number of pages into the PDF documents
     nb_pages = files.get_pages(file, config)
     splitted_file = os.path.basename(file).split('_')
     if splitted_file[0] == 'SPLITTER':
@@ -202,7 +201,8 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
                 pages.update({field: custom_fields[field][2]})
 
     # Find invoice number
-    invoice_number_class = FindInvoiceNumber(ocr, files, log, locale, config, database, supplier, file, typo, ocr.header_text, 1, False, ocr.footer_text)
+    invoice_number_class = FindInvoiceNumber(ocr, files, log, locale, config, database, supplier, file, typo,
+                                             ocr.header_text, 1, False, ocr.footer_text)
     invoice_number = invoice_number_class.run()
     if not invoice_number:
         invoice_number_class.text = ocr.header_last_text
@@ -333,7 +333,8 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
                     pages.update({'total_vat': footer[3]})
 
     # Find delivery number
-    delivery_number_class = FindDeliveryNumber(ocr, files, log, locale, config, database, supplier, file, typo, ocr.header_text, 1, False)
+    delivery_number_class = FindDeliveryNumber(ocr, files, log, locale, config, database, supplier, file, typo,
+                                               ocr.header_text, 1, False)
     delivery_number = delivery_number_class.run()
     if not delivery_number:
         delivery_number_class.text = ocr.footer_text
@@ -348,7 +349,8 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
             pages.update({'delivery_number': delivery_number[2]})
 
     # Find order number
-    order_number_class = FindOrderNumber(ocr, files, log, locale, config, database, supplier, file, typo, ocr.header_text, 1, False)
+    order_number_class = FindOrderNumber(ocr, files, log, locale, config, database, supplier, file, typo,
+                                         ocr.header_text, 1, False)
     order_number = order_number_class.run()
     if not order_number:
         order_number_class.text = ocr.footer_text
@@ -371,9 +373,12 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
     # If all informations are found, do not send it to GED
     if supplier and supplier[2]['skip_auto_validate'] == 'False' and date and invoice_number and footer and config.cfg['GLOBAL']['allowautomaticvalidation'] == 'True':
         log.info('All the usefull informations are found. Export the XML and end process')
-        insert(args, files, config, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier, 'END', nb_pages)
+        insert(args, files, config, database, datas, positions, pages, full_jpg_filename, file, original_file,
+               supplier, 'END', nb_pages)
     else:
-        insert(args, files, config, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier, 'NEW', nb_pages)
+        insert(args, files, config, database, datas, positions, pages, full_jpg_filename, file, original_file,
+               supplier, 'NEW', nb_pages)
+
         if supplier and supplier[2]['skip_auto_validate'] == 'True':
             log.info('Skip automatic validation for this supplier this time')
             database.update({

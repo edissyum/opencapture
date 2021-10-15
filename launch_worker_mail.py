@@ -20,7 +20,7 @@ import sys
 import argparse
 import tempfile
 import datetime
-from src.backend.main import launch
+from src.backend.main import launch, create_classes
 from src.backend.import_classes import _Log, _Mail, _Config
 
 
@@ -66,15 +66,15 @@ process = args['process']
 print('Start process : ' + process)
 
 config_name = _Config(args['config'])
-config = config_name.cfg['PROFILE']['cfgpath'] + '/config_' + config_name.cfg['PROFILE']['id'] + '.ini'
-config = _Config(config)
+config_file = config_name.cfg['PROFILE']['cfgpath'] + '/config_' + config_name.cfg['PROFILE']['id'] + '.ini'
+config, locale, log, ocr, database, spreadsheet, smtp = create_classes(config_file)
 
 config_mail = _Config(args['config_mail'])
 
 if config_mail.cfg.get(process) is None:
     sys.exit('Process ' + process + ' is not set into ' + args['config_mail'] + ' file')
 
-global_log = _Log(config.cfg['GLOBAL']['logfile'])
+global_log = _Log(config.cfg['GLOBAL']['logfile'], smtp)
 
 now = datetime.datetime.now()
 path = config_mail.cfg['GLOBAL']['batchpath'] + '/' + process + '/' + str('%02d' % now.year) + str('%02d' % now.month) + str('%02d' % now.day) + '/'
@@ -123,7 +123,7 @@ if check:
         print('Batch name : bin/data/MailCollect' + batch_path.split('/MailCollect')[1].replace('//', '/'))
         print('Batch error name : bin/data/MailCollect/_ERROR/' + batch_path.split('/MailCollect')[1].replace('//', '/'))
 
-        Log = _Log(batch_path + '/' + date_batch + '.log')
+        Log = _Log(batch_path + '/' + date_batch + '.log', smtp)
         Log.info('Start following batch : ' + os.path.basename(os.path.normpath(batch_path)))
         Log.info('Action after processing e-mail is : ' + action)
         Log.info('Number of e-mail to process : ' + str(len(emails)))
@@ -132,7 +132,7 @@ if check:
         for msg in emails:
             # Backup all the e-mail into batch path
             Mail.backup_email(msg, batch_path)
-            ret = Mail.construct_dict_before_send_to_maarch(msg, batch_path)
+            ret = Mail.construct_dict(msg, batch_path)
             Log.info('Start to process only attachments')
             Log.info('Process e-mail n°' + str(cpt_mail) + '/' + str(len(emails)))
             if len(ret['attachments']) > 0:
@@ -142,14 +142,22 @@ if check:
                     if attachment['format'].lower() == 'pdf':
                         launch({
                             'cpt': str(cpt),
-                            'log': batch_path + '/' + date_batch + '.log',
                             'isMail': True,
-                            'config_mail': args['config_mail'],
-                            'file': attachment['file'],
+                            'process': process,
                             'config': args['config'],
-                            'customer_id': cfg['customer_id'],
+                            'batch_path': batch_path,
                             'form_id': cfg['form_id'],
+                            'file': attachment['file'],
+                            'customer_id': cfg['customer_id'],
+                            'config_mail': args['config_mail'],
+                            'log': batch_path + '/' + date_batch + '.log',
                             'nb_of_attachments': str(len(ret['attachments'])),
+                            'error_path': path_without_time + '/_ERROR/' + process + '/' + year + month + day,
+                            'msg': {
+                                'uid': msg.uid,
+                                'subject': msg.subject,
+                                'date': msg.date.strftime('%d/%m/%Y %H:%M:%S')
+                            },
                         })
                     else:
                         Log.info('Attachment n°' + str(cpt) + ' is not a PDF file')
