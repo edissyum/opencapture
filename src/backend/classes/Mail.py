@@ -98,19 +98,19 @@ class Mail:
         to_str, cc_str, reply_to = ('', '', '')
         try:
             for to in msg.to_values:
-                to_str += to['full'] + ';'
+                to_str += to.full + ';'
         except TypeError:
             pass
 
         try:
             for cc in msg.cc_values:
-                cc_str += cc['full'] + ';'
+                cc_str += cc.full + ';'
         except TypeError:
             pass
 
         try:
             for rp_to in msg.reply_to_values:
-                reply_to += rp_to['full'] + ';'
+                reply_to += rp_to.full + ';'
         except TypeError:
             pass
 
@@ -253,11 +253,10 @@ class Mail:
         return args
 
     @staticmethod
-    def move_batch_to_error(batch_path, error_path, smtp, process, msg, res):
+    def move_batch_to_error(batch_path, error_path, smtp, process, msg, config):
         """
         If error in batch process, move the batch folder into error folder
 
-        :param res: return of Open-Capture process
         :param process: Process name
         :param msg: Contain the msg metadata
         :param smtp: instance of SMTP class
@@ -276,12 +275,14 @@ class Mail:
                 smtp.send_email(
                     message='    - Nom du batch : ' + os.path.basename(batch_path) + '/ \n' +
                             '    - Nom du process : ' + process + '\n' +
-                            '    - Chemin vers le batch en erreur : _ERROR/' + process + '/' + os.path.basename(error_path) + '/' + os.path.basename(batch_path) + ' \n' +
+                            '    - Chemin vers le batch en erreur : ' + config.cfg['GLOBAL']['projectpath'] +
+                            'bin/data/MailCollect/_ERROR/' + process + '/' + os.path.basename(error_path) + '/' +
+                            os.path.basename(batch_path) + ' \n' +
                             '    - Sujet du mail : ' + msg['subject'] + '\n' +
                             '    - Date du mail : ' + msg['date'] + '\n' +
                             '    - UID du mail : ' + msg['uid'] + '\n' +
                             '\n\n'
-                            '    - Informations sur l\'erreur : ' + res + '\n',
+                            '    - Pour plus d\'informations sur l\'erreur, veuillez regarder le fichier d\'erreur.\n',
                     step='du traitement du mail suivant')
         except (FileNotFoundError, FileExistsError, shutil.Error):
             pass
