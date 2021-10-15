@@ -29,6 +29,7 @@ import {UserService} from "../../services/user.service";
 import {TranslateService} from "@ngx-translate/core";
 import {NotificationService} from "../../services/notifications/notifications.service";
 import {LocalStorageService} from "../../services/local-storage.service";
+import {HistoryService} from "../../services/history.service";
 
 
 @Component({
@@ -55,6 +56,7 @@ export class UploadComponent implements OnInit {
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
+        private historyService: HistoryService,
         public localeStorageService: LocalStorageService
     ) {
     }
@@ -138,6 +140,7 @@ export class UploadComponent implements OnInit {
                     this.fileControl.setValue('');
                     this.notify.success(this.translate.instant('UPLOAD.upload_success'));
                     this.sending = false;
+                    this.historyService.addHistory(splitterOrVerifier!, 'upload_file', this.translate.instant('HISTORY-DESC.file_uploaded', {input: this.selectedInputTechnicalId}));
                 }),
                 catchError((err: any) => {
                     this.notify.handleErrors(err);

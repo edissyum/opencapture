@@ -240,6 +240,7 @@
 		"duplicate-form": "Form duplicated&nbsp;<b>{{ form }}</b>",
 		"duplicate-positions-masks": "Positions mask duplicated&nbsp;<b>{{ positions_masks }}</b>",
 		"enable-user": "User enabled&nbsp;<b>{{ user }}</b>",
+		"file_uploaded": "File(s) uploaded successfully with input&nbsp;<b>{{ input }}</b>",
 		"invoice_refused": "Invoice n°&nbsp;<b>{{ invoice_id }}</b> refused",
 		"invoice_validated": "Invoice n°&nbsp;<b>{{ invoice_id }}</b> validated and following outputs executed :&nbsp;<b>{{ outputs }}</b>",
 		"language_changed": "Change lang to <b>{{ lang }}",

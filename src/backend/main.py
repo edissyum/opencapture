@@ -21,8 +21,10 @@ import time
 import tempfile
 from kuyruk import Kuyruk
 from flask import current_app
+
 from .functions import recursive_delete, get_custom_array
-from .import_classes import _Database, _PyTesseract, _Locale, _Files, _Log, _Config, _SeparatorQR, _Spreadsheet, _SMTP
+from .import_classes import _Database, _PyTesseract, _Locale, _Files, _Log, _Config, _SeparatorQR, _Spreadsheet,\
+    _SMTP, _Mail
 
 custom_array = get_custom_array()
 
@@ -70,7 +72,6 @@ def create_classes_from_current_config():
         locale,
         config
     )
-    locale = _Locale(config)
     ocr = _PyTesseract(locale.localeOCR, log, config)
     return database, config, locale, files, ocr, log, config_file, spreadsheet, smtp
 
@@ -162,8 +163,15 @@ def launch(args):
     tmp_folder = tempfile.mkdtemp(dir=config.cfg['GLOBAL']['tmppath'])
     filename = tempfile.NamedTemporaryFile(dir=tmp_folder).name
     separator_qr = _SeparatorQR(log, config, tmp_folder, 'verifier')
-
+    mail_class = None
     if args.get('isMail') is not None and args['isMail'] is True:
+        config_mail = _Config(args['config_mail'])
+        mail_class = _Mail(
+            config_mail.cfg[args['process']]['host'],
+            config_mail.cfg[args['process']]['port'],
+            config_mail.cfg[args['process']]['login'],
+            config_mail.cfg[args['process']]['password']
+        )
         log = _Log((args['log']), smtp)
         log.info('Process attachment n°' + args['cpt'] + '/' + args['nb_of_attachments'])
 
@@ -183,34 +191,7 @@ def launch(args):
     database.connect()
 
     # Start process
-    if 'path' in args and args['path'] is not None:
-        path = args['path']
-        if separator_qr.enabled:
-            for file_to_sep in os.listdir(path):
-                if check_file(files, path + file_to_sep, config, log):
-                    separator_qr.run(path + file_to_sep)
-            path = separator_qr.output_dir_pdfa if str2bool(separator_qr.convert_to_pdfa) is True else separator_qr.output_dir
-
-        for file in os.listdir(path):
-            log.filename = os.path.basename(file)
-            if check_file(files, path + file, config, log) is not False and not os.path.isfile(path + file + '.lock'):
-                os.mknod(path + file + '.lock')
-                log.info('Lock file created : ' + path + file + '.lock')
-
-                # Find file in the wanted folder (default or exported pdf after qrcode separation)
-                typo = ''
-                # if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
-                #     typo = get_typo(config, path + file, log)
-
-                OCForInvoices_process.process(args, path + file, log, config, files, ocr, locale, database, typo)
-
-                try:
-                    os.remove(path + file + '.lock')
-                    log.info('Lock file removed : ' + path + file + '.lock')
-                except FileNotFoundError:
-                    pass
-
-    elif 'file' in args and args['file'] is not None:
+    if 'file' in args and args['file'] is not None:
         path = args['file']
         log.filename = os.path.basename(path)
         typo = ''
@@ -225,7 +206,11 @@ def launch(args):
 
                 if check_file(files, path + file, config, log) is not False:
                     # Process the file and send it to Maarch
-                    OCForInvoices_process.process(args, path + file, log, config, files, ocr, locale, database, typo)
+                    res = OCForInvoices_process.process(args, path + file, log, config, files, ocr, locale, database, typo)
+                    if args.get('isMail') is not None and args.get('isMail') is True:
+                        if not res[0]:
+                            mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'], args['msg'], config)
+                            log.error('Error while processing e-mail : ' + str(res[1]), False)
         elif config.cfg['SEPARATE-BY-DOCUMENT']['enabled'] == 'True':
             list_of_files = separator_qr.split_document_every_two_pages(path)
             for file in list_of_files:
@@ -234,7 +219,10 @@ def launch(args):
 
                 if check_file(files, file, config, log) is not False:
                     # Process the file and send it to Maarch
-                    OCForInvoices_process.process(args, file, log, config, files, ocr, locale, database, typo)
+                    res = OCForInvoices_process.process(args, file, log, config, files, ocr, locale, database, typo)
+                    if not res[0]:
+                        mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'], args['msg'], config)
+                        log.error('Error while processing e-mail : ' + str(res[1]), False)
             os.remove(path)
         else:
             # if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
@@ -242,7 +230,10 @@ def launch(args):
 
             if check_file(files, path, config, log) is not False:
                 # Process the file and send it to Maarch
-                OCForInvoices_process.process(args, path, log, config, files, ocr, locale, database, typo)
+                res = OCForInvoices_process.process(args, path, log, config, files, ocr, locale, database, typo)
+                if not res:
+                    mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'], args['msg'], config)
+                    log.error('Error while processing e-mail', False)
 
     # Empty the tmp dir to avoid residual file
     recursive_delete(tmp_folder, log)

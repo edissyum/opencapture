@@ -240,6 +240,7 @@
 		"duplicate-form": "Duplication du formulaire&nbsp;<b>{{ form }}</b>",
 		"duplicate-positions-masks": "Duplication du masque de positionnement&nbsp;<b>{{ positions_masks }}</b>",
 		"enable-user": "Activation de l'utilisateur&nbsp;<b>{{ user }}</b>",
+		"file_uploaded": "Fichier(s) téléversé(s) avec la chaîne entrante&nbsp;<b>{{ input }}</b>",
 		"invoice_refused": "Facture n°<b>{{ invoice_id }}</b> refusée",
 		"invoice_validated": "Facture n°<b>{{ invoice_id }}</b> validée et chaîne sortante suivante effectuée :&nbsp;<b>{{ outputs }}</b>",
 		"language_changed": "Changemement de la langue vers <b>{{ lang }}</b>",
