@@ -1,8 +1,9 @@
 .idea/
 custom/
+bin/data/tmp/
 node_modules/
 bin/data/*.pdf
-bin/data/tmp/
+last_mail.lock
 bin/data/error/
 bin/scripts/*.sh
 /package-lock.json
