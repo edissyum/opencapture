@@ -70,7 +70,6 @@ def create_classes_from_current_config():
         locale,
         config
     )
-    locale = _Locale(config)
     ocr = _PyTesseract(locale.localeOCR, log, config)
     return database, config, locale, files, ocr, log, config_file, spreadsheet, smtp
 
