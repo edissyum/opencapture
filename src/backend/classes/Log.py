@@ -43,7 +43,7 @@ class Log:
         log_file = RotatingFileHandler(path, mode='a', maxBytes=5 * 1024 * 1024,
                                        backupCount=2, encoding=None, delay=False)
         formatter = logging.Formatter(
-            '[%(name)-17s] [%(file)-22sline %(line_n)-3s] %(asctime)s %(levelname)s %(message)s',
+            '[%(name)-17s] [%(file)-26sline %(line_n)-3s] %(asctime)s %(levelname)s %(message)s',
             datefmt='%d-%m-%Y %H:%M:%S')
         log_file.setFormatter(formatter)
         self.LOGGER.addHandler(log_file)

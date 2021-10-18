@@ -47,7 +47,7 @@ else:
 
 
 class Files:
-    def __init__(self, img_name, res, quality, log, locale, config):
+    def __init__(self, img_name, log, locale, config):
         self.jpgName = img_name + '.jpg'
         self.jpgName_header = img_name + '_header.jpg'
         self.jpgName_footer = img_name + '_footer.jpg'
@@ -55,8 +55,8 @@ class Files:
         self.jpgName_last_header = img_name + '_last_header.jpg'
         self.jpgName_last_footer = img_name + '_last_footer.jpg'
         self.custom_fileName = img_name + '_custom.jpg'
-        self.resolution = res
-        self.compressionQuality = quality
+        self.resolution = int(config.cfg['GLOBAL']['resolution'])
+        self.compressionQuality = int(config.cfg['GLOBAL']['compressionquality'])
         self.img = None
         self.heightRatio = ''
         self.Log = log

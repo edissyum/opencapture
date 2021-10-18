@@ -24,7 +24,9 @@ securedConnection   = True
 login               = test@gmail.com
 ; If you have $ in your password, you must double it
 password            = test
-
+; True or False
+isSplitter          = True
+splitterTechnicalInputId = test
 folderToCrawl       = _MAARCH
 folderDestination   = _MAARCH_ARCHIVES
 ; If folderTrash is empty, mail will be deleted and cannot be retrieve (even in default IMAP trash folder)

@@ -20,9 +20,9 @@ import sys
 import time
 import tempfile
 from kuyruk import Kuyruk
-from src.backend.main import timer, check_file, create_classes
-from src.backend.import_classes import _Files, _Config, _Splitter, _SeparatorQR
 from src.backend.import_process import OCForInvoices_splitter
+from src.backend.main import timer, check_file, create_classes
+from src.backend.import_classes import _Files, _Config, _Splitter, _SeparatorQR, _Log, _Mail
 
 OCforInvoices = Kuyruk()
 
@@ -43,15 +43,19 @@ def launch(args):
     separator_qr = _SeparatorQR(log, config, tmp_folder, 'splitter')
     splitter = _Splitter(config, database, locale, separator_qr, log)
 
-    file_name = tempfile.NamedTemporaryFile(dir=tmp_folder).name
-    files = _Files(
-        file_name,
-        int(config.cfg['GLOBAL']['resolution']),
-        int(config.cfg['GLOBAL']['compressionquality']),
-        log,
-        locale,
-        config
-    )
+    filename = tempfile.NamedTemporaryFile(dir=tmp_folder).name
+    files = _Files(filename, log, locale, config)
+
+    if args.get('isMail') is not None and args['isMail'] is True:
+        config_mail = _Config(args['config_mail'])
+        mail_class = _Mail(
+            config_mail.cfg[args['process']]['host'],
+            config_mail.cfg[args['process']]['port'],
+            config_mail.cfg[args['process']]['login'],
+            config_mail.cfg[args['process']]['password']
+        )
+        log = _Log((args['log']), smtp)
+        log.info('Process attachment n°' + args['cpt'] + '/' + args['nb_of_attachments'])
 
     # Connect to database
     database.connect()
