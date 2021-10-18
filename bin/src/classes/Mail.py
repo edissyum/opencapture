@@ -145,7 +145,6 @@ class Mail:
         """
         Backup e-mail into path before send it to Maarch
 
-        :param force_utf8: Force HTML UTF-8 encoding
         :param msg: Mail data
         :param backup_path: Backup path
         :return: Boolean

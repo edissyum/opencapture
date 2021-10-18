@@ -124,7 +124,8 @@ def launch(args):
         xml,
         log,
         config.cfg['GLOBAL']['convertpdftotiff'],
-        locale
+        locale,
+        config
     )
 
     # Connect to database
