@@ -175,8 +175,6 @@ def launch(args):
 
     files = _Files(filename, log, locale, config)
 
-
-    # Connect to database
     database.connect()
 
     # Start process
@@ -194,7 +192,6 @@ def launch(args):
                 #     typo = get_typo(config, path + file, log)
 
                 if check_file(files, path + file, config, log) is not False:
-                    # Process the file and send it to Maarch
                     res = OCForInvoices_process.process(args, path + file, log, config, files, ocr, locale, database, typo)
                     if args.get('isMail') is not None and args.get('isMail') is True:
                         if not res[0]:
@@ -207,7 +204,6 @@ def launch(args):
                 #     typo = get_typo(config, file, log)
 
                 if check_file(files, file, config, log) is not False:
-                    # Process the file and send it to Maarch
                     res = OCForInvoices_process.process(args, file, log, config, files, ocr, locale, database, typo)
                     if not res[0]:
                         mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'], args['msg'], config)
@@ -218,17 +214,12 @@ def launch(args):
             #     typo = get_typo(config, path, log)
 
             if check_file(files, path, config, log) is not False:
-                # Process the file and send it to Maarch
                 res = OCForInvoices_process.process(args, path, log, config, files, ocr, locale, database, typo)
                 if not res:
                     mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'], args['msg'], config)
                     log.error('Error while processing e-mail', False)
 
-    # Empty the tmp dir to avoid residual file
     recursive_delete(tmp_folder, log)
-
-    # Close database
     database.conn.close()
-
     end = time.time()
     log.info('Process end after ' + timer(start, end) + '')

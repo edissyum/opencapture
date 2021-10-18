@@ -57,18 +57,11 @@ def launch(args):
         log = _Log((args['log']), smtp)
         log.info('Process attachment n°' + args['cpt'] + '/' + args['nb_of_attachments'])
 
-    # Connect to database
     database.connect()
-
-    # Start process
     if args['file'] is not None:
         path = args['file']
         if check_file(files, path, config, log) is not False:
-            # Process the file and send it to Maarch
             OCForInvoices_splitter.process(args, path, log, splitter, files, tmp_folder, config)
-
-    # Close database
     database.conn.close()
-
     end = time.time()
     log.info('Process end after ' + timer(start, end) + '')
