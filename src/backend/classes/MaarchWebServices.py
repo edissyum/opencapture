@@ -25,7 +25,7 @@ from requests.auth import HTTPBasicAuth
 
 class MaarchWebServices:
     def __init__(self, host, user, pwd, log, config):
-        self.baseUrl = host
+        self.baseUrl = host + '/'
         self.auth = HTTPBasicAuth(user, pwd)
         self.Log = log
         self.Config = config
