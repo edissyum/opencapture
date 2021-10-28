@@ -62,16 +62,10 @@ def create_classes_from_current_config():
     db_host = config.cfg['DATABASE']['postgreshost']
     db_port = config.cfg['DATABASE']['postgresport']
     database = _Database(log, db_name, db_user, db_pwd, db_host, db_port)
-    file_name = config.cfg['GLOBAL']['tmppath'] + 'tmp'
+    filename = config.cfg['GLOBAL']['tmppath'] + 'tmp'
     locale = _Locale(config)
-    files = _Files(
-        file_name,
-        int(config.cfg['GLOBAL']['resolution']),
-        int(config.cfg['GLOBAL']['compressionquality']),
-        log,
-        locale,
-        config
-    )
+    files = _Files(filename, log, locale, config)
+
     ocr = _PyTesseract(locale.localeOCR, log, config)
     return database, config, locale, files, ocr, log, config_file, spreadsheet, smtp
 
@@ -164,6 +158,7 @@ def launch(args):
     filename = tempfile.NamedTemporaryFile(dir=tmp_folder).name
     separator_qr = _SeparatorQR(log, config, tmp_folder, 'verifier')
     mail_class = None
+
     if args.get('isMail') is not None and args['isMail'] is True:
         config_mail = _Config(args['config_mail'])
         mail_class = _Mail(
@@ -178,16 +173,8 @@ def launch(args):
     if args.get('isMail') is None or args.get('isMail') is False:
         separator_qr.enabled = str2bool(config.cfg['SEPARATORQR']['enabled'])
 
-    files = _Files(
-        filename,
-        int(config.cfg['GLOBAL']['resolution']),
-        int(config.cfg['GLOBAL']['compressionquality']),
-        log,
-        locale,
-        config
-    )
+    files = _Files(filename, log, locale, config)
 
-    # Connect to database
     database.connect()
 
     # Start process
@@ -205,7 +192,6 @@ def launch(args):
                 #     typo = get_typo(config, path + file, log)
 
                 if check_file(files, path + file, config, log) is not False:
-                    # Process the file and send it to Maarch
                     res = OCForInvoices_process.process(args, path + file, log, config, files, ocr, locale, database, typo)
                     if args.get('isMail') is not None and args.get('isMail') is True:
                         if not res[0]:
@@ -218,7 +204,6 @@ def launch(args):
                 #     typo = get_typo(config, file, log)
 
                 if check_file(files, file, config, log) is not False:
-                    # Process the file and send it to Maarch
                     res = OCForInvoices_process.process(args, file, log, config, files, ocr, locale, database, typo)
                     if not res[0]:
                         mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'], args['msg'], config)
@@ -229,17 +214,12 @@ def launch(args):
             #     typo = get_typo(config, path, log)
 
             if check_file(files, path, config, log) is not False:
-                # Process the file and send it to Maarch
                 res = OCForInvoices_process.process(args, path, log, config, files, ocr, locale, database, typo)
                 if not res:
                     mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'], args['msg'], config)
                     log.error('Error while processing e-mail', False)
 
-    # Empty the tmp dir to avoid residual file
     recursive_delete(tmp_folder, log)
-
-    # Close database
     database.conn.close()
-
     end = time.time()
     log.info('Process end after ' + timer(start, end) + '')

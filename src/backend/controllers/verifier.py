@@ -16,24 +16,22 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
-import logging
 import os
 import json
 import base64
+import logging
 import datetime
-import pandas as pd
 import requests
+import pandas as pd
 from PIL import Image
 from xml.dom import minidom
 from flask_babel import gettext
 import xml.etree.ElementTree as Et
-
 from zeep import Client, exceptions
-
 from src.backend.main import launch
 from flask import current_app, Response
 from src.backend.main import create_classes_from_current_config
-from src.backend.import_models import verifier, accounts, accounts
+from src.backend.import_models import verifier, accounts
 from src.backend.import_classes import _Files, _MaarchWebServices
 
 
@@ -80,7 +78,8 @@ def retrieve_invoices(args):
 
     if 'time' in args:
         if args['time'] in ['today', 'yesterday']:
-            args['where'].append("to_char(register_date, 'YYYY-MM-DD') = to_char(TIMESTAMP '" + args['time'] + "', 'YYYY-MM-DD')")
+            args['where'].append(
+                "to_char(register_date, 'YYYY-MM-DD') = to_char(TIMESTAMP '" + args['time'] + "', 'YYYY-MM-DD')")
         else:
             args['where'].append("to_char(register_date, 'YYYY-MM-DD') < to_char(TIMESTAMP 'yesterday', 'YYYY-MM-DD')")
 
@@ -93,9 +92,9 @@ def retrieve_invoices(args):
         args['left_join'] = ['invoices.supplier_id = accounts_supplier.id']
         args['group_by'] = ['invoices.id', 'accounts_supplier.id']
         args['where'].append(
-            "(LOWER(original_filename) LIKE '%%" + args['search'].lower() + "%%' OR "
-            "LOWER((datas -> 'invoice_number')::text) LIKE '%%" + args['search'].lower() + "%%' OR "
-            "LOWER(accounts_supplier.name) LIKE '%%" + args['search'].lower() + "%%')"
+            "(LOWER(original_filename) LIKE '%%" + args['search'].lower() +
+            "%%' OR LOWER((datas -> 'invoice_number')::text) LIKE '%%" + args['search'].lower() +
+            "%%' OR LOWER(accounts_supplier.name) LIKE '%%" + args['search'].lower() + "%%')"
         )
         args['offset'] = ''
         args['limit'] = ''
@@ -123,7 +122,8 @@ def retrieve_invoices(args):
     if total_invoices not in [0, []]:
         invoices_list = verifier.get_invoices(args)
         for invoice in invoices_list:
-            thumb = get_file_content(_cfg.cfg['GLOBAL']['fullpath'], invoice['full_jpg_filename'], 'image/jpeg', compress=True)
+            thumb = get_file_content(_cfg.cfg['GLOBAL']['fullpath'], invoice['full_jpg_filename'], 'image/jpeg',
+                                     compress=True)
             invoice['thumb'] = str(base64.b64encode(thumb.get_data()).decode('UTF-8'))
             if invoice['supplier_id']:
                 supplier_info, error = accounts.get_supplier_by_id({'supplier_id': invoice['supplier_id']})
@@ -151,7 +151,8 @@ def update_position_by_invoice_id(invoice_id, args):
         invoice_positions.update({
             column: position
         })
-        res, error = verifier.update_invoice({'set': {"positions": json.dumps(invoice_positions)}, 'invoice_id': invoice_id})
+        res, error = verifier.update_invoice(
+            {'set': {"positions": json.dumps(invoice_positions)}, 'invoice_id': invoice_id})
         if error is None:
             return '', 200
         else:
@@ -219,7 +220,7 @@ def delete_invoice_data_by_invoice_id(invoice_id, field_id):
         _set = {}
         invoice_data = invoice_info['datas']
         if field_id in invoice_data:
-            del(invoice_data[field_id])
+            del (invoice_data[field_id])
         res, error = verifier.update_invoice({'set': {"datas": json.dumps(invoice_data)}, 'invoice_id': invoice_id})
         if error is None:
             return '', 200
@@ -239,8 +240,9 @@ def delete_invoice_position_by_invoice_id(invoice_id, field_id):
         _set = {}
         invoice_positions = invoice_info['positions']
         if field_id in invoice_positions:
-            del(invoice_positions[field_id])
-        res, error = verifier.update_invoice({'set': {"positions": json.dumps(invoice_positions)}, 'invoice_id': invoice_id})
+            del (invoice_positions[field_id])
+        res, error = verifier.update_invoice(
+            {'set': {"positions": json.dumps(invoice_positions)}, 'invoice_id': invoice_id})
         if error is None:
             return '', 200
         else:
@@ -259,7 +261,7 @@ def delete_invoice_page_by_invoice_id(invoice_id, field_id):
         _set = {}
         invoice_pages = invoice_info['pages']
         if field_id in invoice_pages:
-            del(invoice_pages[field_id])
+            del (invoice_pages[field_id])
         res, error = verifier.update_invoice({'set': {"pages": json.dumps(invoice_pages)}, 'invoice_id': invoice_id})
         if error is None:
             return '', 200
@@ -323,7 +325,7 @@ def remove_lock_by_user_id(user_id):
     _db = _vars[0]
 
     res, error = verifier.update_invoices({
-        'set': {"locked":  False},
+        'set': {"locked": False},
         'where': ['locked_by = %s'],
         'data': [user_id]
     })
@@ -375,7 +377,8 @@ def export_maarch(invoice_id, data):
                     'addressStreet': supplier[0]['address1'],
                     'addressPostcode': supplier[0]['postal_code'],
                     'customFields': {},
-                    'email': 'A_renseigner_' + supplier[0]['name'].replace(' ', '_') + '@' + supplier[0]['vat_number'] + '.fr'
+                    'email': 'A_renseigner_' + supplier[0]['name'].replace(' ', '_') + '@' + supplier[0][
+                        'vat_number'] + '.fr'
                 }
                 res = ws.create_contact(contact)
                 if res is not False:
@@ -392,6 +395,15 @@ def export_maarch(invoice_id, data):
                     args.update({
                         _data['id']: value
                     })
+
+                    if _data['id'] == 'priority':
+                        priority = ws.retrieve_priority(value)
+                        if priority:
+                            delays = priority['priority']['delays']
+                            process_limit_date = datetime.date.today() + datetime.timedelta(days=delays)
+                            args.update({
+                                'processLimitDate': str(process_limit_date)
+                            })
 
                     if _data['id'] == 'customFields':
                         args.update({
@@ -527,7 +539,7 @@ def export_xml(invoice_id, data):
             xml_root = minidom.parseString(Et.tostring(root, encoding="unicode")).toprettyxml()
             xml_file.write(xml_root)
             xml_file.close()
-        # END Fill XML with invoice informations
+            # END Fill XML with invoice informations
             return '', 200
         else:
             response = {
@@ -593,10 +605,15 @@ def get_file_content(path, filename, mime_type, compress=False):
 def get_token_insee():
     _vars = create_classes_from_current_config()
     _cfg = _vars[1]
-    credentials = base64.b64encode((_cfg.cfg['API']['siret-consumer'] + ':' + _cfg.cfg['API']['siret-secret']).encode('UTF-8')).decode('UTF-8')
-    res = requests.post(_cfg.cfg['API']['siret-url-token'],
-                        data={'grant_type': 'client_credentials'},
-                        headers={"Authorization": "Basic %s" % str(credentials)})
+    credentials = base64.b64encode(
+        (_cfg.cfg['API']['siret-consumer'] + ':' + _cfg.cfg['API']['siret-secret']).encode('UTF-8')).decode('UTF-8')
+
+    try:
+        res = requests.post(_cfg.cfg['API']['siret-url-token'],
+                            data={'grant_type': 'client_credentials'},
+                            headers={"Authorization": "Basic %s" % str(credentials)})
+    except requests.exceptions.SSLError:
+        return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
 
     if 'Maintenance - INSEE' in res.text or res.status_code != 200:
         return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
@@ -607,8 +624,12 @@ def get_token_insee():
 def verify_siren(token, siren):
     _vars = create_classes_from_current_config()
     _cfg = _vars[1]
-    res = requests.get(_cfg.cfg['API']['siren-url'] + siren,
-                       headers={"Authorization": "Bearer %s" % token, "Accept": "application/json"})
+
+    try:
+        res = requests.get(_cfg.cfg['API']['siren-url'] + siren,
+                           headers={"Authorization": "Bearer %s" % token, "Accept": "application/json"})
+    except requests.exceptions.SSLError:
+        return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
 
     _return = json.loads(res.text)
     if 'header' not in res.text:
@@ -620,8 +641,12 @@ def verify_siren(token, siren):
 def verify_siret(token, siret):
     _vars = create_classes_from_current_config()
     _cfg = _vars[1]
-    res = requests.get(_cfg.cfg['API']['siret-url'] + siret,
-                       headers={"Authorization": "Bearer %s" % token, "Accept": "application/json"})
+
+    try:
+        res = requests.get(_cfg.cfg['API']['siret-url'] + siret,
+                           headers={"Authorization": "Bearer %s" % token, "Accept": "application/json"})
+    except requests.exceptions.SSLError:
+        return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
 
     _return = json.loads(res.text)
     if 'header' not in res.text:
@@ -638,15 +663,14 @@ def verify_vat_number(vat_number):
     vat_number = vat_number[2:]
 
     logging.getLogger('zeep').setLevel(logging.ERROR)
-    client = Client(url)
     try:
+        client = Client(url)
         res = client.service.checkVat(country_code, vat_number)
         text = res['valid']
         if res['valid'] is False:
             text = gettext('VAT_NOT_VALID')
             return text, 400
         return text, 200
-    except exceptions.Fault as e:
-        text = gettext('VAT_API_ERROR') + ' : ' + str(e)
-        return text, 400
-
+    except (exceptions.Fault, requests.exceptions.SSLError):
+        text = gettext('VAT_API_ERROR')
+        return text, 201

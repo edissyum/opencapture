@@ -25,7 +25,7 @@ from requests.auth import HTTPBasicAuth
 
 class MaarchWebServices:
     def __init__(self, host, user, pwd, log, config):
-        self.baseUrl = host
+        self.baseUrl = host + '/'
         self.auth = HTTPBasicAuth(user, pwd)
         self.Log = log
         self.Config = config
@@ -69,6 +69,14 @@ class MaarchWebServices:
         else:
             return json.loads(res.text)
 
+    def retrieve_priority(self, priority):
+        res = requests.get(self.baseUrl + '/priorities/' + priority, auth=self.auth)
+        if res.status_code != 200:
+            self.Log.error('(' + str(res.status_code) + ') getPriorityByIdError : ' + str(res.text))
+            return False
+        else:
+            return json.loads(res.text)
+
     def retrieve_statuses(self):
         res = requests.get(self.baseUrl + '/statuses', auth=self.auth)
         if res.status_code != 200:
@@ -99,6 +107,8 @@ class MaarchWebServices:
         else:
             contact = [{'id': args['contact']['id'], 'type': 'contact'}]
 
+        today = datetime.today().strftime('%Y-%m-%d')
+
         data = {
             'encodedFile': base64.b64encode(args['fileContent']).decode('utf-8'),
             'priority': args['priority'],
@@ -111,8 +121,9 @@ class MaarchWebServices:
             'destination': args['destination'],
             'senders': contact,
             'documentDate': args['documentDate'],
+            'processLimitDate': args['processLimitDate'],
             'chrono': True,
-            'arrivaldate': str(datetime.now()),
+            'arrivalDate': str(today),
             'customFields': args['customFields'] if 'customFields' in args else {},
         }
 

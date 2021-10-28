@@ -20,7 +20,8 @@ import sys
 import argparse
 import tempfile
 import datetime
-from src.backend.main import launch, create_classes
+from src.backend.main import launch as launch_verifier, create_classes
+from src.backend.main_splitter import launch as launch_splitter
 from src.backend.import_classes import _Log, _Mail, _Config
 
 
@@ -70,6 +71,7 @@ config_file = config_name.cfg['PROFILE']['cfgpath'] + '/config_' + config_name.c
 config, locale, log, ocr, database, spreadsheet, smtp = create_classes(config_file)
 
 config_mail = _Config(args['config_mail'])
+cfg = config_mail.cfg[process]
 
 if config_mail.cfg.get(process) is None:
     sys.exit('Process ' + process + ' is not set into ' + args['config_mail'] + ' file')
@@ -87,13 +89,16 @@ Mail = _Mail(
     config_mail.cfg[process]['password']
 )
 
-cfg = config_mail.cfg[process]
-
 secured_connection = str2bool(cfg['securedconnection'])
 folder_trash = cfg['foldertrash']
 action = cfg['actionafterprocess']
 folder_to_crawl = cfg['foldertocrawl']
 folder_destination = cfg['folderdestination']
+isSplitter = str2bool(cfg['issplitter'])
+splitterInputId = cfg['splittertechnicalinputid']
+verifierFormId = cfg['verifierformid']
+verifierCustomerId = cfg['verifiercustomerid']
+
 Mail.test_connection(secured_connection)
 
 if action == 'delete':
@@ -140,25 +145,45 @@ if check:
                 cpt = 1
                 for attachment in ret['attachments']:
                     if attachment['format'].lower() == 'pdf':
-                        launch({
-                            'cpt': str(cpt),
-                            'isMail': True,
-                            'process': process,
-                            'config': args['config'],
-                            'batch_path': batch_path,
-                            'form_id': cfg['form_id'],
-                            'file': attachment['file'],
-                            'customer_id': cfg['customer_id'],
-                            'config_mail': args['config_mail'],
-                            'log': batch_path + '/' + date_batch + '.log',
-                            'nb_of_attachments': str(len(ret['attachments'])),
-                            'error_path': path_without_time + '/_ERROR/' + process + '/' + year + month + day,
-                            'msg': {
-                                'uid': msg.uid,
-                                'subject': msg.subject,
-                                'date': msg.date.strftime('%d/%m/%Y %H:%M:%S')
-                            },
-                        })
+                        if not isSplitter:
+                            launch_verifier({
+                                'cpt': str(cpt),
+                                'isMail': True,
+                                'process': process,
+                                'config': args['config'],
+                                'batch_path': batch_path,
+                                'form_id': verifierFormId,
+                                'file': attachment['file'],
+                                'customer_id': verifierCustomerId,
+                                'config_mail': args['config_mail'],
+                                'log': batch_path + '/' + date_batch + '.log',
+                                'nb_of_attachments': str(len(ret['attachments'])),
+                                'error_path': path_without_time + '/_ERROR/' + process + '/' + year + month + day,
+                                'msg': {
+                                    'uid': msg.uid,
+                                    'subject': msg.subject,
+                                    'date': msg.date.strftime('%d/%m/%Y %H:%M:%S')
+                                },
+                            })
+                        else:
+                            launch_splitter({
+                                'isMail': True,
+                                'cpt': str(cpt),
+                                'process': process,
+                                'batch_path': batch_path,
+                                'config': args['config'],
+                                'file': attachment['file'],
+                                'input_id': splitterInputId,
+                                'config_mail': args['config_mail'],
+                                'log': batch_path + '/' + date_batch + '.log',
+                                'nb_of_attachments': str(len(ret['attachments'])),
+                                'error_path': path_without_time + '/_ERROR/' + process + '/' + year + month + day,
+                                'msg': {
+                                    'uid': msg.uid,
+                                    'subject': msg.subject,
+                                    'date': msg.date.strftime('%d/%m/%Y %H:%M:%S')
+                                },
+                            })
                     else:
                         Log.info('Attachment n°' + str(cpt) + ' is not a PDF file')
                     cpt = cpt + 1

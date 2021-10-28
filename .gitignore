@@ -10,6 +10,7 @@ bin/scripts/*.sh
 bin/data/log/*.log
 bin/scripts/*/*.sh
 instance/config/*.ini
+last_notification.lock
 instance/upload/*/*.pdf
 instance/referencial/*.ods
 instance/referencial/*.json

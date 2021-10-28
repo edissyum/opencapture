@@ -224,16 +224,12 @@ export class VerifierViewerComponent implements OnInit {
                 if (token['token'].includes('ERROR')) {
                     this.tokenError = true;
                     this.token = token['token'].replace('ERROR : ', '');
-                }else{
+                }else {
                     this.tokenError = false;
                     this.token = token['token'];
                 }
             }
         }
-    }
-
-    displayFn(option: any) {
-        return option ? option.lastname + ' ' + option.firstname : '';
     }
 
     async generateTokenInsee() {

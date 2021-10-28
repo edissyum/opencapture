@@ -108,6 +108,18 @@ export class UpdateOutputComponent implements OnInit {
             'label': marker('FACTURATION.invoice_date_year')
         },
         {
+            "id": 'total_ht',
+            'label': marker('FACTURATION.total_ht')
+        },
+        {
+            "id": 'total_ttc',
+            'label': marker('FACTURATION.total_ttc')
+        },
+        {
+            "id": 'total_vat',
+            'label': marker('FACTURATION.total_vat')
+        },
+        {
             "id": 'invoice_date_month',
             'label': marker('FACTURATION.invoice_date_month')
         },
