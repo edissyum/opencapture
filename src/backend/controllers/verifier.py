@@ -16,20 +16,18 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
-import logging
 import os
 import json
 import base64
+import logging
 import datetime
-import pandas as pd
 import requests
+import pandas as pd
 from PIL import Image
 from xml.dom import minidom
 from flask_babel import gettext
 import xml.etree.ElementTree as Et
-
 from zeep import Client, exceptions
-
 from src.backend.main import launch
 from flask import current_app, Response
 from src.backend.main import create_classes_from_current_config
@@ -397,6 +395,15 @@ def export_maarch(invoice_id, data):
                     args.update({
                         _data['id']: value
                     })
+
+                    if _data['id'] == 'priority':
+                        priority = ws.retrieve_priority(value)
+                        if priority:
+                            delays = priority['priority']['delays']
+                            process_limit_date = datetime.date.today() + datetime.timedelta(days=delays)
+                            args.update({
+                                'processLimitDate': str(process_limit_date)
+                            })
 
                     if _data['id'] == 'customFields':
                         args.update({
