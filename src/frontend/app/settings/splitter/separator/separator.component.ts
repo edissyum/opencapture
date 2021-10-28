@@ -68,6 +68,10 @@ export class SeparatorComponent implements AfterViewInit {
         return array;
     }
 
+    ngOnInit(): void {
+        this.serviceSettings.init();
+    }
+
     ngAfterViewInit(): void {
         this.refreshPdfView();
     }

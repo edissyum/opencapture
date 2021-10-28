@@ -3,6 +3,7 @@ import {TranslateService} from "@ngx-translate/core";
 import {LocalStorageService} from "./local-storage.service";
 import {LastUrlService} from "./last-url.service";
 import {Title} from "@angular/platform-browser";
+import {Router} from "@angular/router";
 
 @Injectable({
     providedIn: 'root'
@@ -10,21 +11,24 @@ import {Title} from "@angular/platform-browser";
 
 export class SettingsService {
     isMenuOpen: boolean = true;
-    selectedSetting: string = "users";
-    selectedParentSetting: string = "general";
+    selectedSetting: any = "users";
+    selectedParentSetting: any = "general";
     settingListOpenState: boolean = true;
     settingsParent: any[] = [
         {
             "id": "general",
             "label": this.translate.instant("SETTINGS.general"),
+            "opened": false
         },
         {
             "id": "verifier",
             "label": this.translate.instant("SETTINGS.verifier"),
+            "opened": false
         },
         {
             "id": "splitter",
             "label": this.translate.instant("SETTINGS.splitter"),
+            "opened": false
         },
     ];
     settings: any = {
@@ -270,7 +274,9 @@ export class SettingsService {
             },
         ]
     };
+    closeAllParent : boolean = false;
     constructor(
+        private router: Router,
         private titleService: Title,
         private translate: TranslateService,
         private routerExtService: LastUrlService,
@@ -278,21 +284,23 @@ export class SettingsService {
     ) {}
 
     init() {
-        const lastUrl = this.routerExtService.getPreviousUrl();
-        if (lastUrl.includes('roles') || lastUrl === '/' || lastUrl.includes('users')) {
-            const selectedSettings = this.localeStorageService.get('selectedSettings');
-            const selectedParentSettings = this.localeStorageService.get('selectedParentSettings');
-            if (selectedSettings)
-                this.setSelectedSettings(selectedSettings);
+        const selectedParentSetting = this.localeStorageService.get('selectedParentSettings');
+        const selectedSetting = this.localeStorageService.get('selectedSettings');
 
-            if (selectedParentSettings)
-                this.setSelectedParentSettings(selectedParentSettings);
-        }else{
-            this.localeStorageService.remove('selectedSettings');
-            this.localeStorageService.remove('selectedParentSettings');
-            this.setSelectedSettings("users");
-            this.setSelectedParentSettings('general');
+        if (selectedSetting)
+            this.setSelectedSettings(selectedSetting);
+        if (selectedParentSetting)
+            this.setSelectedParentSettings(selectedParentSetting);
+
+        if (selectedParentSetting == null && selectedSetting == null) {
+            this.settingsParent.forEach((parent: any) => {
+                if (this.router.url.includes(parent['id'])) {
+                    this.setSelectedParentSettings(parent['id']);
+                }
+            });
         }
+
+        this.closeOtherParent('', this.selectedParentSetting);
     }
 
     getTitle() {
@@ -304,8 +312,6 @@ export class SettingsService {
     changeSetting(settingId: string, settingParentId: string) {
         this.setSelectedSettings(settingId);
         this.setSelectedParentSettings(settingParentId);
-        this.localeStorageService.save('selectedSettings', settingId);
-        this.localeStorageService.save('selectedParentSettings',settingParentId);
     }
 
     getIsMenuOpen() {
@@ -328,6 +334,12 @@ export class SettingsService {
         return this.settingsParent;
     }
 
+    closeOtherParent(url: any, parentId: any) {
+        this.settingsParent.forEach((parent: any) => {
+            parent.opened = parentId === parent['id'];
+        });
+    }
+
     getSettings() {
         return this.settings;
     }
@@ -344,10 +356,12 @@ export class SettingsService {
 
     setSelectedSettings(value: string) {
         this.selectedSetting = value;
+        this.localeStorageService.save('selectedSettings', value);
     }
 
     setSelectedParentSettings(value: string) {
         this.selectedParentSetting = value;
+        this.localeStorageService.save('selectedParentSettings', value);
     }
 
     setSettingListOpenState(value: boolean) {
