@@ -124,10 +124,9 @@ export class ChecklistDatabase {
   providers: [ChecklistDatabase]
 })
 export class DocumentTypeFactoryComponent implements OnInit {
-  @Input() selectDocType   : any;
-  @Input() selectedDocType : any;
-  searchText      : string  = "";
-  @Output() output          = new EventEmitter < string > ();
+  searchText: string                = "";
+  @Input() selectedDocType: any     = {"key": undefined};
+  @Output() output                  = new EventEmitter < string > ();
 
   /** Map from flat node to nested node. This helps us finding the nested node to be modified */
   flatNodeMap               = new Map<TreeItemFlatNode, TreeItemNode>();
