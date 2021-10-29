@@ -558,7 +558,7 @@
 		"search": "Rechercher une facture",
 		"select_all": "Tout sélectionner",
 		"size": "Taille",
-		"suppliers_by_customer": "Liste des fournisseurs par client",
+		"suppliers_by_customer": "Liste des tiers par client",
 		"unselect_all": "Tout désélectionner",
 		"viewer": "Visualisation du PDF"
 	}
