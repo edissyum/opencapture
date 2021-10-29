@@ -7,7 +7,7 @@
                      [expanded]="parent.opened" (opened)="this.serviceSettings.closeOtherParent(this.router.url, parent['id'])">
                 <mat-expansion-panel-header class="settings_expansion">
                     <mat-panel-title>
-                        {{ parent['label'] | translate }} {{parent.opened}} {{this.router.url.includes(parent['id'])}}
+                        {{ parent['label'] | translate }}
                     </mat-panel-title>
                 </mat-expansion-panel-header>
                 <div class="w-full border-t-2 border-gray-600">
