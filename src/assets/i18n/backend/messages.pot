@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-10-14 15:56+0200\n"
+"POT-Creation-Date: 2021-10-29 15:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -53,32 +53,42 @@ msgstr ""
 msgid "CREATE_ADDRESS_ERROR"
 msgstr ""
 
-#: src/backend/controllers/accounts.py:255 src/backend/models/accounts.py:140
+#: src/backend/controllers/accounts.py:258
+#: src/backend/controllers/accounts.py:264 src/backend/models/accounts.py:140
 msgid "CREATE_SUPPLIER_ERROR"
 msgstr ""
 
-#: src/backend/controllers/accounts.py:279 src/backend/controllers/user.py:86
+#: src/backend/controllers/accounts.py:265
+msgid "SUPPLIER_VAT_NUMBER_ALREADY_EXISTS"
+msgstr ""
+
+#: src/backend/controllers/accounts.py:288 src/backend/controllers/user.py:86
 #: src/backend/models/accounts.py:192 src/backend/models/accounts.py:211
 #: src/backend/models/accounts.py:226 src/backend/models/user.py:132
 msgid "GET_CUSTOMER_BY_ID_ERROR"
 msgstr ""
 
-#: src/backend/controllers/accounts.py:322
-#: src/backend/controllers/accounts.py:328 src/backend/models/accounts.py:244
+#: src/backend/controllers/accounts.py:331
+#: src/backend/controllers/accounts.py:337 src/backend/models/accounts.py:244
 msgid "UPDATE_CUSTOMER_ERROR"
 msgstr ""
 
-#: src/backend/controllers/accounts.py:356 src/backend/models/accounts.py:260
+#: src/backend/controllers/accounts.py:368
+#: src/backend/controllers/accounts.py:374 src/backend/models/accounts.py:260
 msgid "CREATE_CUSTOMER_ERROR"
 msgstr ""
 
-#: src/backend/controllers/accounts.py:373
-#: src/backend/controllers/accounts.py:379 src/backend/models/accounts.py:278
+#: src/backend/controllers/accounts.py:375
+msgid "CUSTOMER_VAT_NUMBER_ALREADY_EXISTS"
+msgstr ""
+
+#: src/backend/controllers/accounts.py:391
+#: src/backend/controllers/accounts.py:397 src/backend/models/accounts.py:278
 msgid "DELETE_CUSTOMER_ERROR"
 msgstr ""
 
-#: src/backend/controllers/accounts.py:396
-#: src/backend/controllers/accounts.py:402 src/backend/models/accounts.py:158
+#: src/backend/controllers/accounts.py:414
+#: src/backend/controllers/accounts.py:420 src/backend/models/accounts.py:158
 msgid "DELETE_SUPPLIER_ERROR"
 msgstr ""
 
@@ -254,8 +264,8 @@ msgstr ""
 msgid "ENABLE_ROLE_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:64
-#: src/backend/controllers/verifier.py:76
+#: src/backend/controllers/splitter.py:61
+#: src/backend/controllers/verifier.py:73
 msgid "AT"
 msgstr ""
 
@@ -301,17 +311,17 @@ msgstr ""
 msgid "UPDATE_CUSTOMERS_USER_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:59 src/backend/models/verifier.py:34
+#: src/backend/controllers/verifier.py:56 src/backend/models/verifier.py:34
 msgid "GET_INVOICE_BY_ID_ERROR"
 msgstr ""
 
 #: src/backend/controllers/verifier.py:159
-#: src/backend/controllers/verifier.py:248
+#: src/backend/controllers/verifier.py:249
 msgid "UPDATE_INVOICE_POSITIONS_ERROR"
 msgstr ""
 
 #: src/backend/controllers/verifier.py:184
-#: src/backend/controllers/verifier.py:268
+#: src/backend/controllers/verifier.py:269
 msgid "UPDATE_INVOICE_PAGES_ERROR"
 msgstr ""
 
@@ -320,55 +330,58 @@ msgstr ""
 msgid "UPDATE_INVOICE_DATA_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:285
-#: src/backend/controllers/verifier.py:291
+#: src/backend/controllers/verifier.py:286
+#: src/backend/controllers/verifier.py:292
 msgid "DELETE_INVOICE_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:309
-#: src/backend/controllers/verifier.py:315
+#: src/backend/controllers/verifier.py:310
+#: src/backend/controllers/verifier.py:316
 msgid "UPDATE_INVOICE_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:335
+#: src/backend/controllers/verifier.py:336
 msgid "REMOVE_LOCK_BY_USER_ID_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:424
-#: src/backend/controllers/verifier.py:430
-#: src/backend/controllers/verifier.py:436
+#: src/backend/controllers/verifier.py:435
+#: src/backend/controllers/verifier.py:441
+#: src/backend/controllers/verifier.py:447
 msgid "EXPORT_MAARCH_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:431
+#: src/backend/controllers/verifier.py:442
 msgid "PDF_FILE_NOT_FOUND"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:442
+#: src/backend/controllers/verifier.py:453
 msgid "MAARCH_WS_INFO_WRONG"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:448
+#: src/backend/controllers/verifier.py:459
 msgid "MAARCH_WS_INFO_EMPTY"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:534
+#: src/backend/controllers/verifier.py:545
 msgid "XML_DESTINATION_FOLDER_DOESNT_EXISTS"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:540
+#: src/backend/controllers/verifier.py:551
 msgid "EXPORT_XML_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:601
+#: src/backend/controllers/verifier.py:615
+#: src/backend/controllers/verifier.py:618
+#: src/backend/controllers/verifier.py:631
+#: src/backend/controllers/verifier.py:648
 msgid "API_INSEE_ERROR_CONNEXION"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:645
+#: src/backend/controllers/verifier.py:670
 msgid "VAT_NOT_VALID"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:649
+#: src/backend/controllers/verifier.py:674
 msgid "VAT_API_ERROR"
 msgstr ""
 

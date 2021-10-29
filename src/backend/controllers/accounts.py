@@ -242,18 +242,27 @@ def create_supplier(data):
         'get_only_raw_footer': data['get_only_raw_footer'] if 'get_only_raw_footer' in data else False,
     }
 
-    res, error = accounts.create_supplier({'columns': _columns})
+    supplier = accounts.retrieve_suppliers({'where': ['vat_number = %s'], 'data': [data['vat_number']]})
 
-    if error is None:
-        _spreadsheet.update_supplier_ods_sheet(_db)
-        response = {
-            "id": res
-        }
-        return response, 200
+    if not supplier:
+        res, error = accounts.create_supplier({'columns': _columns})
+
+        if error is None:
+            _spreadsheet.update_supplier_ods_sheet(_db)
+            response = {
+                "id": res
+            }
+            return response, 200
+        else:
+            response = {
+                "errors": gettext('CREATE_SUPPLIER_ERROR'),
+                "message": error
+            }
+            return response, 401
     else:
         response = {
             "errors": gettext('CREATE_SUPPLIER_ERROR'),
-            "message": error
+            "message": gettext('SUPPLIER_VAT_NUMBER_ALREADY_EXISTS')
         }
         return response, 401
 
@@ -344,19 +353,28 @@ def create_customer(data):
         'address_id': data['address_id'],
     }
 
-    res, error = accounts.create_customer({'columns': _columns})
+    customer = accounts.retrieve_customers({'where': ['vat_number = %s'], 'data': [data['vat_number']]})
 
-    if error is None:
-        response = {
-            "id": res
-        }
-        return response, 200
+    if not customer:
+        res, error = accounts.create_customer({'columns': _columns})
+
+        if error is None:
+            response = {
+                "id": res
+            }
+            return response, 200
+        else:
+            response = {
+                "errors": gettext('CREATE_CUSTOMER_ERROR'),
+                "message": error
+            }
+            return response, 401
     else:
         response = {
             "errors": gettext('CREATE_CUSTOMER_ERROR'),
-            "message": error
+            "message": gettext('CUSTOMER_VAT_NUMBER_ALREADY_EXISTS')
         }
-        return response, 401
+    return response, 401
 
 
 def delete_customer(customer_id):
