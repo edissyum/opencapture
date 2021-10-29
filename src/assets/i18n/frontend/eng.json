@@ -310,7 +310,6 @@
 		"confirm_delete": "Are you sure you want to delete output <b>{{ output }}</b> ?",
 		"create": "Create output",
 		"created": "Output created successfully",
-		"form_updated": "Form updated successfully",
 		"json_input_erorr": "The field <b>{{ field }}</b> have to be JSON with double quotes",
 		"maarch_connection_ko": "Error while connecting to Maarch",
 		"maarch_connection_ok": "Connexion to Maarch successfull",
@@ -318,6 +317,7 @@
 		"no_parameters_necessary": "No specific parameters necessary",
 		"output_deleted": "Output deleted successfully",
 		"output_settings_list": "Settings of outputs",
+		"output_updated": "Output updated successfully",
 		"parameters": "Specific",
 		"remove": "Remove output",
 		"test_connection": "Test connection",
@@ -551,6 +551,7 @@
 		"on": "on",
 		"only_raw_footer": "Get only raw footer is enabled",
 		"original_file": "Original file",
+		"outputs_list": "Outputs list",
 		"page": "Page",
 		"register_date": "Register date",
 		"required": "Required",
@@ -558,7 +559,7 @@
 		"search": "Search invoice",
 		"select_all": "Select all",
 		"size": "Size",
-		"suppliers_by_customer": "Supplier list by customer",
+		"suppliers_by_customer": "Accounts list by customer",
 		"unselect_all": "Unselect all",
 		"viewer": "View PDF"
 	}

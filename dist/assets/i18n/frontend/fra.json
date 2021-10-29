@@ -310,7 +310,6 @@
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer la chaîne sortante <b>{{ output }}</b> ?",
 		"create": "Créer la chaîne sortante",
 		"created": "Chaîne sortante créée avec succès",
-		"form_updated": "Formulaire mis à jour avec succès",
 		"json_input_erorr": "Le champ <b>{{field}}</b> doit être au format JSON avec des doubles quotes",
 		"maarch_connection_ko": "Erreur lors de la connexion à Maarch",
 		"maarch_connection_ok": "Connexion à Maarch réalisée avec succès",
@@ -318,6 +317,7 @@
 		"no_parameters_necessary": "Pas de paramètres de spécifiques nécessaire",
 		"output_deleted": "Chaîne sortante supprimée",
 		"output_settings_list": "Paramètres de la chaîne sortante",
+		"output_updated": "Chaîne sortante mis à jour avec succès",
 		"parameters": "Spécifiques",
 		"remove": "Supprimer une chaîne sortante",
 		"test_connection": "Tester la connexion",
@@ -551,6 +551,7 @@
 		"on": "sur",
 		"only_raw_footer": "Contrôle de cohérence du pied de page désactivé",
 		"original_file": "Fichier d'origine",
+		"outputs_list": "Liste des chaînes sortantes",
 		"page": "Page",
 		"register_date": "Enregistré le",
 		"required": "Obligatoire ?",
@@ -558,7 +559,7 @@
 		"search": "Rechercher une facture",
 		"select_all": "Tout sélectionner",
 		"size": "Taille",
-		"suppliers_by_customer": "Liste des fournisseurs par client",
+		"suppliers_by_customer": "Liste des tiers par client",
 		"unselect_all": "Tout désélectionner",
 		"viewer": "Visualisation du PDF"
 	}

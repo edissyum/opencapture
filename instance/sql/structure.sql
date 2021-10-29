@@ -43,7 +43,7 @@ CREATE TABLE "form_models_field" (
 
 CREATE TABLE "outputs" (
     "id"                SERIAL UNIQUE PRIMARY KEY,
-    "output_type_id"    VARCHAR(20),
+    "output_type_id"    VARCHAR(255),
     "output_label"      VARCHAR,
     "module"            VARCHAR(10),
     "status"            VARCHAR(3) DEFAULT 'OK',
@@ -52,7 +52,7 @@ CREATE TABLE "outputs" (
 
 CREATE TABLE "outputs_types" (
     "id"                 SERIAL UNIQUE PRIMARY KEY,
-    "output_type_id"     VARCHAR(20),
+    "output_type_id"     VARCHAR(255),
     "output_type_label"  VARCHAR(50),
     "module"             VARCHAR(10),
     "data"               JSONB DEFAULT '{"options" : {"auth" : [],"parameters": []}}'
@@ -60,7 +60,7 @@ CREATE TABLE "outputs_types" (
 
 CREATE TABLE "inputs" (
     "id"                     SERIAL UNIQUE PRIMARY KEY,
-    "input_id"               VARCHAR(20),
+    "input_id"               VARCHAR(255),
     "input_label"            VARCHAR,
     "default_form_id"        INTEGER,
     "customer_id"            INTEGER,
@@ -123,7 +123,7 @@ CREATE TABLE "privileges" (
 CREATE TABLE "accounts_supplier" (
     "id"                  SERIAL UNIQUE PRIMARY KEY,
     "name"                VARCHAR NOT NULL,
-    "vat_number"          VARCHAR(20),
+    "vat_number"          VARCHAR(20) UNIQUE,
     "siret"               VARCHAR(20),
     "siren"               VARCHAR(20),
     "iban"                VARCHAR(50),
@@ -140,7 +140,7 @@ CREATE TABLE "accounts_supplier" (
 CREATE TABLE "accounts_customer" (
     "id"              SERIAL UNIQUE PRIMARY KEY,
     "name"            VARCHAR(255),
-    "vat_number"      VARCHAR(20),
+    "vat_number"      VARCHAR(20) UNIQUE,
     "siret"           VARCHAR(20),
     "siren"           VARCHAR(20),
     "company_number"  VARCHAR(10),

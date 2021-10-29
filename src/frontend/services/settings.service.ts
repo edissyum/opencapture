@@ -280,12 +280,12 @@ export class SettingsService {
         private titleService: Title,
         private translate: TranslateService,
         private routerExtService: LastUrlService,
-        private localeStorageService: LocalStorageService
+        private localStorage: LocalStorageService
     ) {}
 
     init() {
-        const selectedParentSetting = this.localeStorageService.get('selectedParentSettings');
-        const selectedSetting = this.localeStorageService.get('selectedSettings');
+        const selectedParentSetting = this.localStorage.get('selectedParentSettings');
+        const selectedSetting = this.localStorage.get('selectedSettings');
 
         if (selectedSetting)
             this.setSelectedSettings(selectedSetting);
@@ -356,12 +356,12 @@ export class SettingsService {
 
     setSelectedSettings(value: string) {
         this.selectedSetting = value;
-        this.localeStorageService.save('selectedSettings', value);
+        this.localStorage.save('selectedSettings', value);
     }
 
     setSelectedParentSettings(value: string) {
         this.selectedParentSetting = value;
-        this.localeStorageService.save('selectedParentSettings', value);
+        this.localStorage.save('selectedParentSettings', value);
     }
 
     setSettingListOpenState(value: boolean) {

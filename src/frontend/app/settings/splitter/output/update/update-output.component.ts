@@ -471,7 +471,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
 
         this.http.put(API_URL + '/ws/outputs/update/' + this.outputId, {'args': _array},{headers: this.authService.headers}).pipe(
             tap(() => {
-                this.notify.success(this.translate.instant('OUTPUT.form_updated'));
+                this.notify.success(this.translate.instant('OUTPUT.output_updated'));
             }),
             catchError((err: any) => {
                 console.debug(err);

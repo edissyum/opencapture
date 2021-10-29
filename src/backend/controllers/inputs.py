@@ -203,8 +203,8 @@ def create_script_and_incron(args):
                     tmp_incron_file = open(tmp_incron_filename, 'w+')
                     tmp_incron_file.write(incron_list)
                     tmp_incron_file.close()
-                    os.remove(tmp_incron_filename)
                     subprocess.Popen(['incrontab', tmp_incron_filename], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    os.remove(tmp_incron_filename)
                 return '', 200
             else:
                 response = {

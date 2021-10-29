@@ -13,15 +13,12 @@
 # You should have received a copy of the GNU General Public License
 # along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
-# @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 import base64
-import requests
 from flask import current_app
 from flask_babel import gettext
 import worker_splitter_from_python
-from requests.auth import HTTPBasicAuth
 from src.backend.import_models import splitter
 from src.backend.import_controllers import forms, outputs
 from src.backend.main import create_classes_from_current_config
