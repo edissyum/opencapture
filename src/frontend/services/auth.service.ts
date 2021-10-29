@@ -3,6 +3,7 @@ import {LocalStorageService} from "./local-storage.service";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {UserService} from "./user.service";
+import {SettingsService} from "./settings.service";
 
 @Injectable({
     providedIn: 'root'
@@ -14,6 +15,7 @@ export class AuthService {
         private router: Router,
         private http: HttpClient,
         private userService: UserService,
+        public serviceSettings: SettingsService,
         private localStorage: LocalStorageService,
     ) {
         this.headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.getToken());
@@ -63,8 +65,10 @@ export class AuthService {
     }
 
     logout() {
-        this.userService.setUser({});
         this.clearTokens();
+        this.userService.setUser({});
+        this.localStorage.remove('selectedSettings');
+        this.localStorage.remove('selectedParentSettings');
         this.router.navigateByUrl("/login").then();
     }
 }

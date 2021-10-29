@@ -523,7 +523,7 @@ export class UpdateOutputComponent implements OnInit {
 
         this.http.put(API_URL + '/ws/outputs/update/' + this.outputId, {'args': _array},{headers: this.authService.headers}).pipe(
             tap(() => {
-                this.notify.success(this.translate.instant('OUTPUT.form_updated'));
+                this.notify.success(this.translate.instant('OUTPUT.output_updated'));
                 this.historyService.addHistory('verifier', 'update_output', this.translate.instant('HISTORY-DESC.update-output', {output: _array['output_label']}));
             }),
             catchError((err: any) => {
