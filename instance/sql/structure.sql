@@ -43,7 +43,7 @@ CREATE TABLE "form_models_field" (
 
 CREATE TABLE "outputs" (
     "id"                SERIAL UNIQUE PRIMARY KEY,
-    "output_type_id"    VARCHAR(20),
+    "output_type_id"    VARCHAR(255),
     "output_label"      VARCHAR,
     "module"            VARCHAR(10),
     "status"            VARCHAR(3) DEFAULT 'OK',
@@ -52,7 +52,7 @@ CREATE TABLE "outputs" (
 
 CREATE TABLE "outputs_types" (
     "id"                 SERIAL UNIQUE PRIMARY KEY,
-    "output_type_id"     VARCHAR(20),
+    "output_type_id"     VARCHAR(255),
     "output_type_label"  VARCHAR(50),
     "module"             VARCHAR(10),
     "data"               JSONB DEFAULT '{"options" : {"auth" : [],"parameters": []}}'
@@ -60,7 +60,7 @@ CREATE TABLE "outputs_types" (
 
 CREATE TABLE "inputs" (
     "id"                     SERIAL UNIQUE PRIMARY KEY,
-    "input_id"               VARCHAR(20),
+    "input_id"               VARCHAR(255),
     "input_label"            VARCHAR,
     "default_form_id"        INTEGER,
     "customer_id"            INTEGER,
