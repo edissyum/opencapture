@@ -123,7 +123,7 @@ CREATE TABLE "privileges" (
 CREATE TABLE "accounts_supplier" (
     "id"                  SERIAL UNIQUE PRIMARY KEY,
     "name"                VARCHAR NOT NULL,
-    "vat_number"          VARCHAR(20),
+    "vat_number"          VARCHAR(20) UNIQUE,
     "siret"               VARCHAR(20),
     "siren"               VARCHAR(20),
     "iban"                VARCHAR(50),
@@ -140,7 +140,7 @@ CREATE TABLE "accounts_supplier" (
 CREATE TABLE "accounts_customer" (
     "id"              SERIAL UNIQUE PRIMARY KEY,
     "name"            VARCHAR(255),
-    "vat_number"      VARCHAR(20),
+    "vat_number"      VARCHAR(20) UNIQUE,
     "siret"           VARCHAR(20),
     "siren"           VARCHAR(20),
     "company_number"  VARCHAR(10),
