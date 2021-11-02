@@ -15,18 +15,16 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-import json
 import os
 import re
-
-import PyPDF2
 import cv2
+import json
 import time
 import uuid
 import shutil
 import PyPDF4
+import PyPDF2
 import datetime
-import subprocess
 import numpy as np
 from PIL import Image
 from PyPDF4 import utils
@@ -48,20 +46,20 @@ else:
 
 class Files:
     def __init__(self, img_name, log, locale, config):
-        self.jpgName = img_name + '.jpg'
-        self.jpgName_header = img_name + '_header.jpg'
-        self.jpgName_footer = img_name + '_footer.jpg'
-        self.jpgName_last = img_name + '_last.jpg'
-        self.jpgName_last_header = img_name + '_last_header.jpg'
-        self.jpgName_last_footer = img_name + '_last_footer.jpg'
-        self.custom_fileName = img_name + '_custom.jpg'
-        self.resolution = int(config.cfg['GLOBAL']['resolution'])
-        self.compressionQuality = int(config.cfg['GLOBAL']['compressionquality'])
-        self.img = None
-        self.heightRatio = ''
         self.Log = log
+        self.img = None
         self.Locale = locale
         self.Config = config
+        self.heightRatio = ''
+        self.jpgName = img_name + '.jpg'
+        self.jpgName_last = img_name + '_last.jpg'
+        self.jpgName_header = img_name + '_header.jpg'
+        self.jpgName_footer = img_name + '_footer.jpg'
+        self.custom_fileName = img_name + '_custom.jpg'
+        self.jpgName_last_header = img_name + '_last_header.jpg'
+        self.jpgName_last_footer = img_name + '_last_footer.jpg'
+        self.resolution = int(config.cfg['GLOBAL']['resolution'])
+        self.compressionQuality = int(config.cfg['GLOBAL']['compressionquality'])
 
     # Convert the first page of PDF to JPG and open the image
     def pdf_to_jpg(self, pdf_name, open_img=True, crop=False, zone_to_crop=False, last_image=False, is_custom=False):

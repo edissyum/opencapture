@@ -15,7 +15,6 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-import os
 import pyocr
 import pytesseract
 import pyocr.builders
@@ -25,17 +24,17 @@ import xml.etree.ElementTree as Et
 class PyTesseract:
     def __init__(self, locale, log, config):
         self.Log = log
+        self.tool = ''
         self.text = ''
+        self.lang = locale
+        self.last_text = ''
+        self.Config = config
         self.footer_text = ''
         self.header_text = ''
-        self.last_text = ''
-        self.footer_last_text = ''
-        self.header_last_text = ''
-        self.tool = ''
-        self.lang = locale
-        self.Config = config
         self.searchablePdf = ''
         self.OCRErrorsTable = {}
+        self.footer_last_text = ''
+        self.header_last_text = ''
 
         tools = pyocr.get_available_tools()
         self.tool = tools[0]
@@ -63,25 +62,6 @@ class PyTesseract:
         except pytesseract.pytesseract.TesseractError as t:
             self.Log.error('Tesseract ERROR : ' + str(t))
 
-    def generate_searchable_pdf(self, pdf, files, config):
-        tmp_path = config.cfg['GLOBAL']['tmppath']
-        files.save_img_with_wand(pdf, tmp_path + 'tmp.jpg')
-        i = 0
-        sorted_img_list = files.sorted_file(tmp_path, 'jpg')
-        for img in sorted_img_list:
-            tmp_searchable_pdf = pytesseract.image_to_pdf_or_hocr(
-                img[1],
-                extension='pdf'
-            )
-            f = open(tmp_path + 'tmp-' + str(i) + '.pdf', 'wb')
-            f.write(bytearray(tmp_searchable_pdf))
-            f.close()
-            i = i + 1
-            os.remove(img[1])
-
-        sorted_pdf_list = files.sorted_file(tmp_path, 'pdf')
-        self.searchablePdf = files.merge_pdf(sorted_pdf_list, tmp_path)
-
     def get_ocr_errors_table(self):
         config_path = self.Config.cfg['GLOBAL']['ocrerrorpath']
         root = Et.parse(config_path).getroot()
@@ -91,4 +71,3 @@ class PyTesseract:
             for child in element.findall('.//ELEMENT'):
                 fix, misread = list(child)
                 self.OCRErrorsTable[element.tag][fix.text] = misread.text
-
