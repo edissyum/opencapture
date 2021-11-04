@@ -102,6 +102,12 @@ def get_input_by_id(input_id):
         return response, 401
 
 
+def get_input_by_form_id(form_id):
+    input_info, error = inputs.get_input_by_form_id({'form_id': form_id})
+
+    return input_info, 200
+
+
 def delete_input(input_id):
     _vars = create_classes_from_current_config()
     _db = _vars[0]

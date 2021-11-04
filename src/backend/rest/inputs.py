@@ -42,6 +42,13 @@ def get_input_by_id(input_id):
     return make_response(jsonify(_role[0])), _role[1]
 
 
+@bp.route('inputs/getByFormId/<int:form_id>', methods=['GET'])
+@auth.token_required
+def get_input_by_form_id(form_id):
+    _role = inputs.get_input_by_form_id(form_id)
+    return make_response(jsonify(_role[0])), _role[1]
+
+
 @bp.route('inputs/update/<int:input_id>', methods=['PUT'])
 @auth.token_required
 def update_input(input_id):
