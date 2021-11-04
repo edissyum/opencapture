@@ -111,7 +111,7 @@ export class UserProfileComponent implements OnInit {
                     if (element.editable) {
                         this.roles.push(element);
                     }else{
-                        if((this.userService.getUser().privileges === '*')) {
+                        if ((this.userService.getUser().privileges === '*')) {
                             this.roles.push(element);
                         }
                     }
@@ -161,7 +161,7 @@ export class UserProfileComponent implements OnInit {
     }
 
     onSubmit() {
-        if(this.isValidForm()) {
+        if (this.isValidForm()) {
             const user : any = {};
             this.profileForm.forEach(element => {
                 user[element.id] = element.control.value;
@@ -190,7 +190,7 @@ export class UserProfileComponent implements OnInit {
     getErrorMessage(field: any) {
         let error: any;
         this.profileForm.forEach(element => {
-            if(element.id === field) {
+            if (element.id === field) {
                 if (element.required) {
                     error = this.translate.instant('AUTH.field_required');
                 }

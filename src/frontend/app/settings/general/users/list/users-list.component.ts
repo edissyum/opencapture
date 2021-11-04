@@ -159,7 +159,7 @@ export class UsersListComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if(result) {
+            if (result) {
                 this.deleteUser(userId);
                 this.historyService.addHistory('general', 'delete_user', this.translate.instant('HISTORY-DESC.delete-user', {user: user}));
             }
@@ -179,7 +179,7 @@ export class UsersListComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if(result) {
+            if (result) {
                 this.disableUser(userId);
                 this.historyService.addHistory('general', 'disable_user', this.translate.instant('HISTORY-DESC.disable-user', {user: user}));
             }
@@ -199,7 +199,7 @@ export class UsersListComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if(result) {
+            if (result) {
                 this.enableUser(userId);
                 this.historyService.addHistory('general', 'enable_user', this.translate.instant('HISTORY-DESC.enable-user', {user: user}));
             }
@@ -254,7 +254,7 @@ export class UsersListComponent implements OnInit {
 
     sortData(sort: Sort) {
         const data = this.allUsers.slice();
-        if(!sort.active || sort.direction === '') {
+        if (!sort.active || sort.direction === '') {
             this.users = data.splice(0, this.pageSize);
             return;
         }

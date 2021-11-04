@@ -226,7 +226,7 @@ export class UpdateUserComponent implements OnInit {
 
     hasCustomer(customerId: any) {
         for (const _customerId of this.usersCustomers) {
-            if(_customerId === customerId) {
+            if (_customerId === customerId) {
                 return true;
             }
         }
@@ -237,7 +237,7 @@ export class UpdateUserComponent implements OnInit {
         let found = false;
         let cpt = 0;
         for (const _customerId of this.usersCustomers) {
-            if(_customerId === customerId) {
+            if (_customerId === customerId) {
                 found = true;
                 break;
             }

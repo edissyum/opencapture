@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2021-10-29 15:48+0200\n"
+"POT-Creation-Date: 2021-11-04 16:14+0100\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: fr\n"
@@ -155,19 +155,19 @@ msgstr "Erreur lors de la création de la chaîne entrante"
 msgid "GET_INPUT_BY_ID_ERROR"
 msgstr "Erreur lors de récupération de la chaîne entrante"
 
-#: src/backend/controllers/inputs.py:117 src/backend/controllers/inputs.py:123
+#: src/backend/controllers/inputs.py:123 src/backend/controllers/inputs.py:129
 msgid "DELETE_INPUT_ERROR"
 msgstr "Erreur lors de le suppression de la chaîne entrante"
 
-#: src/backend/controllers/inputs.py:211
+#: src/backend/controllers/inputs.py:217
 msgid "INCRON_CREATION_ERROR"
 msgstr "Erreur lors de la création de l'incron"
 
-#: src/backend/controllers/inputs.py:217
+#: src/backend/controllers/inputs.py:223
 msgid "SCRIPT_SAMPLE_DOESNT_EXISTS"
 msgstr "Le script d'exemple n'existe pas"
 
-#: src/backend/controllers/inputs.py:223
+#: src/backend/controllers/inputs.py:229
 msgid "SCRIPT_FOLDER_DOESNT_EXISTS"
 msgstr "Le dossier des scripts n'existe pas"
 
@@ -441,11 +441,11 @@ msgstr "Le libellé de formulaire existe déjà"
 msgid "INPUT_DOESNT_EXISTS"
 msgstr "La chaîne entrante n'existe pas"
 
-#: src/backend/models/inputs.py:70
+#: src/backend/models/inputs.py:84
 msgid "INPUT_UPDATE_ERROR"
 msgstr "Erreur lors de la mise à jour de la chaîne entrante"
 
-#: src/backend/models/inputs.py:86
+#: src/backend/models/inputs.py:100
 msgid "INPUT_CREATE_ERROR"
 msgstr "Erreur lors de la création de la chaîne entrante"
 

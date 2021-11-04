@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-10-29 15:48+0200\n"
+"POT-Creation-Date: 2021-11-04 16:14+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -155,19 +155,19 @@ msgstr ""
 msgid "GET_INPUT_BY_ID_ERROR"
 msgstr ""
 
-#: src/backend/controllers/inputs.py:117 src/backend/controllers/inputs.py:123
+#: src/backend/controllers/inputs.py:123 src/backend/controllers/inputs.py:129
 msgid "DELETE_INPUT_ERROR"
 msgstr ""
 
-#: src/backend/controllers/inputs.py:211
+#: src/backend/controllers/inputs.py:217
 msgid "INCRON_CREATION_ERROR"
 msgstr ""
 
-#: src/backend/controllers/inputs.py:217
+#: src/backend/controllers/inputs.py:223
 msgid "SCRIPT_SAMPLE_DOESNT_EXISTS"
 msgstr ""
 
-#: src/backend/controllers/inputs.py:223
+#: src/backend/controllers/inputs.py:229
 msgid "SCRIPT_FOLDER_DOESNT_EXISTS"
 msgstr ""
 
@@ -441,11 +441,11 @@ msgstr ""
 msgid "INPUT_DOESNT_EXISTS"
 msgstr ""
 
-#: src/backend/models/inputs.py:70
+#: src/backend/models/inputs.py:84
 msgid "INPUT_UPDATE_ERROR"
 msgstr ""
 
-#: src/backend/models/inputs.py:86
+#: src/backend/models/inputs.py:100
 msgid "INPUT_CREATE_ERROR"
 msgstr ""
 

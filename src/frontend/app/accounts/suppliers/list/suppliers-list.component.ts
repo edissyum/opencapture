@@ -151,7 +151,7 @@ export class SuppliersListComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if(result) {
+            if (result) {
                 this.deleteSupplier(supplierId);
                 this.historyService.addHistory('accounts', 'delete_supplier', this.translate.instant('HISTORY-DESC.delete-supplier', {supplier: supplier}));
             }
@@ -171,7 +171,7 @@ export class SuppliersListComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if(result) {
+            if (result) {
                 this.deleteSupplierPositions(supplierId);
                 this.historyService.addHistory('accounts', 'delete_supplier_positions', this.translate.instant('HISTORY-DESC.delete-supplier-positions', {supplier: supplier}));
             }
@@ -191,7 +191,7 @@ export class SuppliersListComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if(result) {
+            if (result) {
                 this.skipAutoValidate(supplierId);
                 this.historyService.addHistory('accounts', 'skip_auto_validate', this.translate.instant('HISTORY-DESC.skip-auto-validate', {supplier: supplier}));
             }
@@ -246,7 +246,7 @@ export class SuppliersListComponent implements OnInit {
 
     sortData(sort: Sort) {
         const data = this.allSuppliers.slice();
-        if(!sort.active || sort.direction === '') {
+        if (!sort.active || sort.direction === '') {
             this.suppliers = data.splice(0, this.pageSize);
             return;
         }

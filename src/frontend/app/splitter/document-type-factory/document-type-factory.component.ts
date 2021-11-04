@@ -197,7 +197,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
 
   filterChanged() {
     this.database.filter(this.searchText);
-    if(this.searchText)
+    if (this.searchText)
     {
       this.treeControl.expandAll();
     } else {

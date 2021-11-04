@@ -83,10 +83,10 @@ export class SeparatorComponent implements AfterViewInit {
     }
 
     onChangeType() {
-        if(this.selectedSeparator === "bundleSeparator") {
+        if (this.selectedSeparator === "bundleSeparator") {
             this.base64 = BUNDLE_SEPARATOR;
         }
-        else if(this.selectedSeparator === "documentSeparator") {
+        else if (this.selectedSeparator === "documentSeparator") {
             this.base64 = DOC_SEPARATOR;
         }
         this.refreshPdfView();

@@ -120,7 +120,7 @@ export class SplitterFormListComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if(result) {
+            if (result) {
                 this.deleteForm(formId);
                 this.historyService.addHistory('splitter', 'delete_form', this.translate.instant('HISTORY-DESC.delete-form', {form: form}));
             }
@@ -140,7 +140,7 @@ export class SplitterFormListComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if(result) {
+            if (result) {
                 this.duplicateForm(formId);
                 this.historyService.addHistory('splitter', 'duplicate_form', this.translate.instant('HISTORY-DESC.duplicate-form', {form: form}));
             }
@@ -160,7 +160,7 @@ export class SplitterFormListComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if(result) {
+            if (result) {
                 this.disableForm(formId);
             }
         });
@@ -179,7 +179,7 @@ export class SplitterFormListComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if(result) {
+            if (result) {
                 this.enableForm(formId);
             }
         });
@@ -248,7 +248,7 @@ export class SplitterFormListComponent implements OnInit {
 
     sortData(sort: Sort) {
         const data = this.forms.slice();
-        if(!sort.active || sort.direction === '') {
+        if (!sort.active || sort.direction === '') {
             this.forms = data;
             return;
         }

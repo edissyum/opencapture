@@ -134,7 +134,7 @@ export class CustomersListComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if(result) {
+            if (result) {
                 this.deleteCustomer(customerId);
                 this.historyService.addHistory('accounts', 'delete_customer', this.translate.instant('HISTORY-DESC.delete-customer', {customer: customer}));
             }
@@ -159,7 +159,7 @@ export class CustomersListComponent implements OnInit {
 
     sortData(sort: Sort) {
         const data = this.allCustomers.slice();
-        if(!sort.active || sort.direction === '') {
+        if (!sort.active || sort.direction === '') {
             this.customers = data.splice(0, this.pageSize);
             return;
         }

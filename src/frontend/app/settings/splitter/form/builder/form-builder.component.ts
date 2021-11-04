@@ -191,9 +191,9 @@ export class SplitterFormBuilderComponent implements OnInit {
                 if (data.customFields) {
                     for (const field in data.customFields) {
                         if (data.customFields.hasOwnProperty(field)) {
-                            if(data.customFields[field].module === 'splitter' && data.customFields[field].enabled) {
+                            if (data.customFields[field].module === 'splitter' && data.customFields[field].enabled) {
                                 for (const parent in this.availableFieldsParent) {
-                                    if(this.availableFieldsParent[parent].id === 'custom_fields') {
+                                    if (this.availableFieldsParent[parent].id === 'custom_fields') {
                                         this.availableFieldsParent[parent].values.push(
                                             {
                                                 id: 'custom_' + data.customFields[field].id,
@@ -225,7 +225,7 @@ export class SplitterFormBuilderComponent implements OnInit {
             this.http.get(API_URL + '/ws/forms/getFields/' + this.formId, {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
                     if (data.form_fields.fields) {
-                        if(data.form_fields.fields.metadata)
+                        if (data.form_fields.fields.metadata)
                             this.fields.metadata = data.form_fields.fields.metadata;
 
                         for (const category in this.fields) {
