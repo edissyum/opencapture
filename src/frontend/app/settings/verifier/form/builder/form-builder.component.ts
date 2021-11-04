@@ -826,7 +826,6 @@ export class FormBuilderComponent implements OnInit {
 
     addOutput() {
         this.outputForm[0].cpt = this.outputForm[0].cpt + 1;
-        const cpt = this.outputForm[0].cpt;
         this.outputForm.push({
             'control': new FormControl(),
             'canRemove': true
@@ -888,7 +887,7 @@ export class FormBuilderComponent implements OnInit {
         });
         if (label) {
             this.http.post(API_URL + '/ws/forms/add', {
-                'args': {'label' : label, 'default_form' : isDefault, 'supplier_verif': supplierVerif, 'outputs': outputs}
+                'args': {'label' : label, 'default_form' : isDefault, 'supplier_verif': supplierVerif, 'outputs': outputs, 'module': 'verifier'}
                 }, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {

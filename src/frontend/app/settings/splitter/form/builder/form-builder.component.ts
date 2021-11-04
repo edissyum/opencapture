@@ -423,7 +423,7 @@ export class SplitterFormBuilderComponent implements OnInit {
                         'default_form'  : isDefault,
                         'module'        : "splitter"
                     }
-                    }, {headers: this.authService.headers},
+                }, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {
                     this.http.post(API_URL + '/ws/forms/updateFields/' + data.id, this.fields, {headers: this.authService.headers}).pipe(
