@@ -112,24 +112,65 @@ export class FormListComponent implements OnInit {
         ).subscribe();
     }
 
-    deleteConfirmDialog(formId: number, form: string) {
-        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-            data:{
-                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
-                confirmText         : this.translate.instant('FORMS.confirm_delete', {"form": form}),
-                confirmButton       : this.translate.instant('GLOBAL.delete'),
-                confirmButtonColor  : "warn",
-                cancelButton        : this.translate.instant('GLOBAL.cancel'),
-            },
-            width: "600px",
-        });
+    async getInputs(formId: any) {
+        return await this.http.get(API_URL + '/ws/inputs/getByFormId/' + formId, {headers: this.authService.headers}).toPromise();
+    }
 
-        dialogRef.afterClosed().subscribe(result => {
-            if(result) {
-                this.deleteForm(formId);
-                this.historyService.addHistory('verifier', 'delete_form', this.translate.instant('HISTORY-DESC.delete-form', {form: form}));
-            }
-        });
+    async deleteConfirmDialog(formId: number, form: string) {
+        let inputs: any;
+        inputs = await this.getInputs(formId);
+        if (inputs.length !== 0) {
+            const forms = this.forms;
+            forms.forEach((form: any, cpt: number) => {
+                if (form.id === formId) {
+                    forms.splice(cpt, 1);
+                }
+            });
+            const inputList: any = [];
+            const inputListLabel: any = [];
+            inputs.forEach((input: any) => {
+                inputList.push({'id': input.id, 'label': input.input_label});
+                inputListLabel.push(input.input_label);
+            });
+            const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+                data:{
+                    confirmTitle        : this.translate.instant('GLOBAL.new_input_link'),
+                    confirmText         : this.translate.instant('FORMS.inputs_list_already_linked', {"inputsList": inputListLabel.join('<br>')}),
+                    selectValues        : forms,
+                    selectLabel         : this.translate.instant('FORMS.choose_form'),
+                    confirmButton       : this.translate.instant('GLOBAL.delete_form_and_reassign_input'),
+                    confirmButtonColor  : "warn",
+                    cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                },
+                width: "600px",
+            });
+
+            dialogRef.afterClosed().subscribe(result => {
+                if (result) {
+                    this.updateInputsDefaultForm(result, inputList);
+                    this.deleteForm(formId);
+                    this.historyService.addHistory('verifier', 'delete_form', this.translate.instant('HISTORY-DESC.delete-form', {form: form}));
+                }
+            });
+        } else {
+            const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+                data:{
+                    confirmTitle        : this.translate.instant('GLOBAL.confirm'),
+                    confirmText         : this.translate.instant('FORMS.confirm_delete', {"form": form}),
+                    confirmButton       : this.translate.instant('GLOBAL.delete'),
+                    confirmButtonColor  : "warn",
+                    cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                },
+                width: "600px",
+            });
+
+            dialogRef.afterClosed().subscribe(result => {
+                if (result) {
+                    this.deleteForm(formId);
+                    this.historyService.addHistory('verifier', 'delete_form', this.translate.instant('HISTORY-DESC.delete-form', {form: form}));
+                }
+            });
+        }
     }
 
     duplicateConfirmDialog(formId: number, form: string) {
@@ -145,7 +186,7 @@ export class FormListComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if(result) {
+            if (result) {
                 this.duplicateForm(formId);
                 this.historyService.addHistory('verifier', 'duplicate_form', this.translate.instant('HISTORY-DESC.duplicate-form', {form: form}));
             }
@@ -165,7 +206,7 @@ export class FormListComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if(result) {
+            if (result) {
                 this.disableForm(formId);
             }
         });
@@ -184,7 +225,7 @@ export class FormListComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if(result) {
+            if (result) {
                 this.enableForm(formId);
             }
         });
@@ -203,6 +244,21 @@ export class FormListComponent implements OnInit {
                     return of(false);
                 })
             ).subscribe();
+        }
+    }
+
+    updateInputsDefaultForm(newFormId: number, inputs: any) {
+        if (newFormId !== undefined) {
+            for (const cpt in inputs) {
+                const args = {'default_form_id': newFormId};
+                this.http.put(API_URL + '/ws/inputs/update/' + inputs[cpt].id, {'args': args}, {headers: this.authService.headers}).pipe(
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
+            }
         }
     }
 
@@ -253,7 +309,7 @@ export class FormListComponent implements OnInit {
 
     sortData(sort: Sort) {
         const data = this.forms.slice();
-        if(!sort.active || sort.direction === '') {
+        if (!sort.active || sort.direction === '') {
             this.forms = data;
             return;
         }

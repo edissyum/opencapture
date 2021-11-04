@@ -646,9 +646,9 @@ export class FormBuilderComponent implements OnInit {
                 if (data.customFields) {
                     for (const field in data.customFields) {
                         if (data.customFields.hasOwnProperty(field)) {
-                            if(data.customFields[field].module === 'verifier') {
+                            if (data.customFields[field].module === 'verifier') {
                                 for (const parent in this.availableFieldsParent) {
-                                    if(this.availableFieldsParent[parent].id === 'custom_fields') {
+                                    if (this.availableFieldsParent[parent].id === 'custom_fields') {
                                         this.availableFieldsParent[parent].values.push({
                                             id: 'custom_' + data.customFields[field].id,
                                             label: data.customFields[field].label,
@@ -684,11 +684,11 @@ export class FormBuilderComponent implements OnInit {
             this.http.get(API_URL + '/ws/forms/getFields/' + this.formId, {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
                     if (data.form_fields.fields) {
-                        if(data.form_fields.fields.facturation !== undefined)
+                        if (data.form_fields.fields.facturation !== undefined)
                             this.fields.facturation = data.form_fields.fields.facturation;
-                        if(data.form_fields.fields.supplier)
+                        if (data.form_fields.fields.supplier)
                             this.fields.supplier = data.form_fields.fields.supplier;
-                        if(data.form_fields.fields.other)
+                        if (data.form_fields.fields.other)
                             this.fields.other = data.form_fields.fields.other;
 
                         for (const category in this.fields) {
