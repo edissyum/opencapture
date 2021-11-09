@@ -8,9 +8,14 @@ pkg-config
 imagemagick
 python3-pip
 poppler-utils
+python3-daemon
+python3-chardet
+python3-future
 rabbitmq-server
 libgl1-mesa-glx
+python3-lockfile
 libtesseract-dev
 libleptonica-dev
 libmagickwand-dev
+python3-pyinotify
 libapache2-mod-wsgi-py3

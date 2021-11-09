@@ -15,9 +15,8 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-import json
 import os
-
+import json
 import pandas as pd
 from pyexcel_ods3 import get_data, save_data
 

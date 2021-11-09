@@ -88,13 +88,6 @@ Then, just launch :
     
 It will fill the database with the supplier information.
 
-## Set up the incron & the cron to start the service
-
-In order to use the Open-Captures inputs automation, you have to add your user into the following file. 
-It allow it to use incrontab (used to capture automatically invoices)
-
-    /etc/incron.allow
-
 ## Custom development
 
 You can modify a lot of files if needed, without loose everything at every update. For that, you have to modify the <code>custom/custom.ini</code> file to add the id (between the brackets)
@@ -142,13 +135,6 @@ In the default <code>config_DEFAULT.ini</code> file there is a SPLITTER part :
     - pdfOutputPath : Path for the separated PDF. Need to be a folder currently watching by Open-Capture For Invoices 
     - pdfOriginPath : Path to keep the original PDF files (without any separation)
     - allowedExtensions : Files extensions allowed, JSON format  
-    
-## Launch manually
-
-Obviously you could launch the separation by the web using the "Download" page. But you also could launch separation using bash script combined with incron.
-Here is an example of incrontab : 
-
-    /path/to/capture/ IN_CLOSE_WRITE,IN_MOVED_TO /var/www/html/opencaptureforinvoices/bin/scripts/launch_SPLITTER.sh $@/$#
     
 # LICENSE
 

@@ -87,5 +87,5 @@ elif 'classes' in custom_array['Spreadsheet']['path']:
 if 'SMTP' or 'classes' not in custom_array['SMTP']['path']:
     from .classes.SMTP import SMTP as _SMTP
 elif 'classes' in custom_array['SMTP']['path']:
-    _Spreadsheet = getattr(__import__(custom_array['SMTP']['path'] + '.' + custom_array['SMTP']['module'],
+    _SMTP = getattr(__import__(custom_array['SMTP']['path'] + '.' + custom_array['SMTP']['module'],
                                       fromlist=[custom_array['SMTP']['module']]), custom_array['SMTP']['module'])

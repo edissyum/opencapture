@@ -174,8 +174,9 @@ Restart=on-failure
 WantedBy=multi-user.target
 EOF"
 
-    sudo systemctl daemon-reload && systemctl start OCForInvoices-worker.service
-    sudo systemctl daemon-reload && systemctl start OCForInvoices_Split-worker.service
+    systemctl daemon-reload
+    systemctl start OCForInvoices-worker.service
+    systemctl start OCForInvoices_Split-worker.service
     sudo systemctl enable OCForInvoices-worker.service
     sudo systemctl enable OCForInvoices_Split-worker.service
 else
@@ -227,10 +228,38 @@ chown -R "$user":"$user" /tmp/OpenCaptureForInvoices
 ####################
 # Copy file from default one
 cp $defaultPath/instance/config.ini.default $defaultPath/instance/config.ini
-cp $defaultPath/instance/config/config_DEFAULT.ini.default $defaultPath/instance/config/config_DEFAULT.ini
 cp $defaultPath/instance/config/mail.ini.default $defaultPath/instance/config/mail.ini
-cp $defaultPath/instance/referencial/default_referencial_supplier_index.json.default $defaultPath/instance/referencial/default_referencial_supplier_index.json
+cp $defaultPath/instance/config/config_DEFAULT.ini.default $defaultPath/instance/config/config_DEFAULT.ini
 cp $defaultPath/instance/referencial/default_referencial_supplier.ods.default $defaultPath/instance/referencial/default_referencial_supplier.ods
+cp $defaultPath/instance/referencial/default_referencial_supplier_index.json.default $defaultPath/instance/referencial/default_referencial_supplier_index.json
+
+####################
+# Setting up fs-watcher service (to replace incron)
+mkdir /var/log/watcher/
+touch /var/log/watcher/daemon.log
+chmod -R 775 /var/log/watcher/
+cp $defaultPath/instance/config/watcher.ini.default $defaultPath/instance/config/watcher.ini
+
+touch /etc/systemd/system/fs-watcher.service
+su -c "cat > /etc/systemd/system/fs-watcher.service << EOF
+[Unit]
+Description=filesystem watcher
+After=basic.target
+
+[Service]
+ExecStart=/usr/local/bin/watcher -c $defaultPath/instance/config/watcher.ini start
+ExecStop=/usr/local/bin/watcher -c $defaultPath/instance/config/watcher.ini stop
+Type=simple
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+EOF"
+
+systemctl daemon-reload
+systemctl enable fs-watcher
+systemctl start fs-watcher
 
 ####################
 # Fix ImageMagick Policies
