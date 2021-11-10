@@ -31,7 +31,6 @@ class PyTesseract:
         self.Config = config
         self.footer_text = ''
         self.header_text = ''
-        self.searchablePdf = ''
         self.OCRErrorsTable = {}
         self.footer_last_text = ''
         self.header_last_text = ''

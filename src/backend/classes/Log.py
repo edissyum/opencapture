@@ -17,8 +17,8 @@
 
 import os
 import logging
-from logging.handlers import RotatingFileHandler
 from inspect import getframeinfo, stack
+from logging.handlers import RotatingFileHandler
 
 
 def caller_reader(f):
@@ -29,7 +29,6 @@ def caller_reader(f):
         self._filter.file = os.path.basename(caller.filename)
         self._filter.line_n = caller.lineno
         return f(self, *args)
-
     return wrapper
 
 

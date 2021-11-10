@@ -214,13 +214,6 @@ class Files:
         return False
 
     @staticmethod
-    def create_directory(path):
-        try:
-            os.mkdir(path)
-        except OSError:
-            print('Creation of the directory %s failed' % path)
-
-    @staticmethod
     def sorted_file(path, extension):
         file_json = []
         for file in os.listdir(path):
@@ -234,21 +227,6 @@ class Files:
                     file_json.append(('000', path + '/' + file))
         sorted_file = sorted(file_json, key=lambda file_cpt: file_cpt[0])
         return sorted_file
-
-    @staticmethod
-    def merge_pdf(file_sorted, tmp_path, _return=False):
-        merger = PyPDF4.PdfFileMerger()
-        for pdf in file_sorted:
-            merger.append(pdf[1])
-            os.remove(pdf[1])
-        merger.write(tmp_path + '/result.pdf')
-        file_to_return = open(tmp_path + '/result.pdf', 'rb').read()
-
-        if _return:
-            return tmp_path + '/result.pdf'
-        else:
-            os.remove(tmp_path + '/result.pdf')
-            return file_to_return
 
     @staticmethod
     def check_file_integrity(file, config):
@@ -440,13 +418,6 @@ class Files:
         new_path = os.path.join(path, secure_filename(file))
         f.save(new_path)
         return new_path
-
-    @staticmethod
-    def delete_file_with_extension(dir_path, extension):
-        files = os.listdir(dir_path)
-        for item in files:
-            if item.endswith(extension):
-                os.remove(os.path.join(dir_path, item))
 
     @staticmethod
     def get_now_date():

@@ -40,11 +40,10 @@ def launch(args):
 
     config, locale, log, ocr, database, spreadsheet, smtp = create_classes(config_file)
     tmp_folder = tempfile.mkdtemp(dir=config.cfg['SPLITTER']['batchpath']) + '/'
-    separator_qr = _SeparatorQR(log, config, tmp_folder, 'splitter')
-    splitter = _Splitter(config, database, locale, separator_qr, log)
-
     filename = tempfile.NamedTemporaryFile(dir=tmp_folder).name
     files = _Files(filename, log, locale, config)
+    separator_qr = _SeparatorQR(log, config, tmp_folder, 'splitter', files)
+    splitter = _Splitter(config, database, locale, separator_qr, log)
 
     if args.get('isMail') is not None and args['isMail'] is True:
         config_mail = _Config(args['config_mail'])
