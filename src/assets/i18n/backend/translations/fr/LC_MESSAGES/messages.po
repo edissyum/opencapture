@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2021-11-10 09:30+0100\n"
+"POT-Creation-Date: 2021-11-10 11:09+0100\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: fr\n"
@@ -147,39 +147,43 @@ msgstr "Erreur lors de l'ajout dans l'historique"
 msgid "UPDATE_INPUT_ERROR"
 msgstr "Erreur lors de la mise à jour de la chaîne entrante"
 
-#: src/backend/controllers/inputs.py:84
+#: src/backend/controllers/inputs.py:81 src/backend/controllers/inputs.py:94
 msgid "CREATE_INPUT_ERROR"
 msgstr "Erreur lors de la création de la chaîne entrante"
 
-#: src/backend/controllers/inputs.py:97
+#: src/backend/controllers/inputs.py:82
+msgid "INPUT_ID_ALREADY_EXISTS"
+msgstr "Le libellé technique de la chaîne entrante existe déjà"
+
+#: src/backend/controllers/inputs.py:107
 msgid "GET_INPUT_BY_ID_ERROR"
 msgstr "Erreur lors de récupération de la chaîne entrante"
 
-#: src/backend/controllers/inputs.py:121 src/backend/controllers/inputs.py:127
+#: src/backend/controllers/inputs.py:131 src/backend/controllers/inputs.py:137
 msgid "DELETE_INPUT_ERROR"
 msgstr "Erreur lors de le suppression de la chaîne entrante"
 
-#: src/backend/controllers/inputs.py:155
+#: src/backend/controllers/inputs.py:165
 msgid "FS_WATCHER_DELETION_ERROR"
 msgstr "Erreur lors de la suppression des paramètres du fs watcher"
 
-#: src/backend/controllers/inputs.py:156 src/backend/controllers/inputs.py:210
+#: src/backend/controllers/inputs.py:166 src/backend/controllers/inputs.py:220
 msgid "FS_WATCHER_CONFIG_DOESNT_EXIST"
 msgstr "La configuration du fs watcher est introuvable"
 
-#: src/backend/controllers/inputs.py:192 src/backend/controllers/inputs.py:209
+#: src/backend/controllers/inputs.py:201 src/backend/controllers/inputs.py:219
 msgid "FS_WATCHER_CREATION_ERROR"
 msgstr "Erreur lors de la création des paramètres du fs watcher"
 
-#: src/backend/controllers/inputs.py:193
+#: src/backend/controllers/inputs.py:202
 msgid "INPUT_FOLDER_DOESNT_EXISTS_OR_NOT_WRITEABLE"
 msgstr "Le dossier spécifié n'existe pas ou n'est pas accessible"
 
-#: src/backend/controllers/inputs.py:215
+#: src/backend/controllers/inputs.py:225
 msgid "SCRIPT_SAMPLE_DOESNT_EXISTS"
 msgstr "Le script d'exemple n'existe pas"
 
-#: src/backend/controllers/inputs.py:221
+#: src/backend/controllers/inputs.py:231
 msgid "SCRIPT_FOLDER_DOESNT_EXISTS"
 msgstr "Le dossier des scripts n'existe pas"
 

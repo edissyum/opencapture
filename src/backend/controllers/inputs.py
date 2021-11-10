@@ -72,8 +72,18 @@ def create_input(data):
         'override_supplier_form': data['override_supplier_form'] if 'override_supplier_form' in data else False,
     }
 
-    res, error = inputs.create_input({'columns': _columns})
+    input_info, error = get_inputs({
+        'where': ['module = %s', 'input_id = %s'],
+        'data': [data['module'], data['input_id']]
+    })
+    if input_info['inputs']:
+        response = {
+            "errors": gettext('CREATE_INPUT_ERROR'),
+            "message": gettext('INPUT_ID_ALREADY_EXISTS')
+        }
+        return response, 401
 
+    res, error = inputs.create_input({'columns': _columns})
     if error is None:
         response = {
             "id": res
@@ -170,7 +180,7 @@ def create_script_and_incron(args):
     if os.path.isdir(folder_script):
         script_name = args['input_id'] + '.sh'
         if os.path.isfile(folder_script + '/script_sample_dont_touch.sh'):
-            script_sample = open(folder_script + '/script_sample_dont_touch.sh', 'r')
+            script_sample = open(folder_script + '/script_sample_dont_touch.sh', 'r', encoding='utf-8')
             script_sample_content = script_sample.read()
             new_script_filename = folder_script + '/' + script_name
             new_script_file = open(new_script_filename, 'w+')
@@ -186,7 +196,6 @@ def create_script_and_incron(args):
             ######
             # CREATE OR UPDATE FS WATCHER CONFIG
             ######
-
             if not os.path.exists(args['input_folder']) or not os.access(args['input_folder'], os.W_OK):
                 response = {
                     "errors": gettext('FS_WATCHER_CREATION_ERROR'),
