@@ -18,7 +18,6 @@
 
 import os
 import re
-import cv2
 import uuid
 import shutil
 import PyPDF4
