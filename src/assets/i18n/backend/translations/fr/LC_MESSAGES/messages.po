@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2021-11-04 16:14+0100\n"
+"POT-Creation-Date: 2021-11-10 09:30+0100\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: fr\n"
@@ -143,31 +143,43 @@ msgstr "Erreur lors de la mise à jour des champs du formulaire"
 msgid "ADD_HISTORY_ERROR"
 msgstr "Erreur lors de l'ajout dans l'historique"
 
-#: src/backend/controllers/inputs.py:52 src/backend/controllers/inputs.py:58
+#: src/backend/controllers/inputs.py:50 src/backend/controllers/inputs.py:56
 msgid "UPDATE_INPUT_ERROR"
 msgstr "Erreur lors de la mise à jour de la chaîne entrante"
 
-#: src/backend/controllers/inputs.py:86
+#: src/backend/controllers/inputs.py:84
 msgid "CREATE_INPUT_ERROR"
 msgstr "Erreur lors de la création de la chaîne entrante"
 
-#: src/backend/controllers/inputs.py:99
+#: src/backend/controllers/inputs.py:97
 msgid "GET_INPUT_BY_ID_ERROR"
 msgstr "Erreur lors de récupération de la chaîne entrante"
 
-#: src/backend/controllers/inputs.py:123 src/backend/controllers/inputs.py:129
+#: src/backend/controllers/inputs.py:121 src/backend/controllers/inputs.py:127
 msgid "DELETE_INPUT_ERROR"
 msgstr "Erreur lors de le suppression de la chaîne entrante"
 
-#: src/backend/controllers/inputs.py:217
-msgid "INCRON_CREATION_ERROR"
-msgstr "Erreur lors de la création de l'incron"
+#: src/backend/controllers/inputs.py:155
+msgid "FS_WATCHER_DELETION_ERROR"
+msgstr "Erreur lors de la suppression des paramètres du fs watcher"
 
-#: src/backend/controllers/inputs.py:223
+#: src/backend/controllers/inputs.py:156 src/backend/controllers/inputs.py:210
+msgid "FS_WATCHER_CONFIG_DOESNT_EXIST"
+msgstr "La configuration du fs watcher est introuvable"
+
+#: src/backend/controllers/inputs.py:192 src/backend/controllers/inputs.py:209
+msgid "FS_WATCHER_CREATION_ERROR"
+msgstr "Erreur lors de la création des paramètres du fs watcher"
+
+#: src/backend/controllers/inputs.py:193
+msgid "INPUT_FOLDER_DOESNT_EXISTS_OR_NOT_WRITEABLE"
+msgstr "Le dossier spécifié n'existe pas ou n'est pas accessible"
+
+#: src/backend/controllers/inputs.py:215
 msgid "SCRIPT_SAMPLE_DOESNT_EXISTS"
 msgstr "Le script d'exemple n'existe pas"
 
-#: src/backend/controllers/inputs.py:229
+#: src/backend/controllers/inputs.py:221
 msgid "SCRIPT_FOLDER_DOESNT_EXISTS"
 msgstr "Le dossier des scripts n'existe pas"
 
@@ -520,4 +532,7 @@ msgstr "Erreur lors de la mise à jour de la facture"
 #: src/backend/rest/splitter.py:39 src/backend/rest/verifier.py:37
 msgid "UNKNOW_ERROR"
 msgstr "Erreur inconnue"
+
+#~ msgid "INCRON_CREATION_ERROR"
+#~ msgstr "Erreur lors de la création de l'incron"
 

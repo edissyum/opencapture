@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2021-11-04 16:14+0100\n"
+"POT-Creation-Date: 2021-11-10 09:30+0100\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: en\n"
@@ -143,31 +143,43 @@ msgstr "Error updating form fields"
 msgid "ADD_HISTORY_ERROR"
 msgstr "Error while adding new history"
 
-#: src/backend/controllers/inputs.py:52 src/backend/controllers/inputs.py:58
+#: src/backend/controllers/inputs.py:50 src/backend/controllers/inputs.py:56
 msgid "UPDATE_INPUT_ERROR"
 msgstr "Error while updating input"
 
-#: src/backend/controllers/inputs.py:86
+#: src/backend/controllers/inputs.py:84
 msgid "CREATE_INPUT_ERROR"
 msgstr "Error while creating input"
 
-#: src/backend/controllers/inputs.py:99
+#: src/backend/controllers/inputs.py:97
 msgid "GET_INPUT_BY_ID_ERROR"
 msgstr "Error while retrieving input"
 
-#: src/backend/controllers/inputs.py:123 src/backend/controllers/inputs.py:129
+#: src/backend/controllers/inputs.py:121 src/backend/controllers/inputs.py:127
 msgid "DELETE_INPUT_ERROR"
 msgstr "Error while deleting input"
 
-#: src/backend/controllers/inputs.py:217
-msgid "INCRON_CREATION_ERROR"
-msgstr "Error while creating incron"
+#: src/backend/controllers/inputs.py:155
+msgid "FS_WATCHER_DELETION_ERROR"
+msgstr "Error while deleting fs watcher settings"
 
-#: src/backend/controllers/inputs.py:223
+#: src/backend/controllers/inputs.py:156 src/backend/controllers/inputs.py:210
+msgid "FS_WATCHER_CONFIG_DOESNT_EXIST"
+msgstr "Fs watcher config doesnt exists"
+
+#: src/backend/controllers/inputs.py:192 src/backend/controllers/inputs.py:209
+msgid "FS_WATCHER_CREATION_ERROR"
+msgstr "Error while creating fs watcher settings"
+
+#: src/backend/controllers/inputs.py:193
+msgid "INPUT_FOLDER_DOESNT_EXISTS_OR_NOT_WRITEABLE"
+msgstr "Input folder doesnt exists or it's not writeable"
+
+#: src/backend/controllers/inputs.py:215
 msgid "SCRIPT_SAMPLE_DOESNT_EXISTS"
 msgstr "Script sample doesn't exists"
 
-#: src/backend/controllers/inputs.py:229
+#: src/backend/controllers/inputs.py:221
 msgid "SCRIPT_FOLDER_DOESNT_EXISTS"
 msgstr "Script folder doesn't exists"
 
@@ -520,4 +532,7 @@ msgstr "Error while updating invoice"
 #: src/backend/rest/splitter.py:39 src/backend/rest/verifier.py:37
 msgid "UNKNOW_ERROR"
 msgstr "Unknow error"
+
+#~ msgid "INCRON_CREATION_ERROR"
+#~ msgstr "Error while creating incron"
 
