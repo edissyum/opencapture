@@ -198,7 +198,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
                             'label': field.label,
                             'enabled': field.enabled,
                         };
-                        if(field.enabled)
+                        if (field.enabled)
                             this.availableFields.push(newField);
                     }
                 );

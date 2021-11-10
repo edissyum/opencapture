@@ -45,13 +45,19 @@ export class SettingsComponent implements OnInit {
         this.selectedSetting = this.serviceSettings.getSelectedSetting();
         this.selectedParentSetting = this.serviceSettings.getSelectedParentSetting();
         this.settings = this.serviceSettings.getSettings();
+        let settingsFound = false;
         this.settings[this.selectedParentSetting].forEach((element: any) => {
             if (element['id'] === this.selectedSetting) {
+                settingsFound = true;
                 const routeToGo = element.route;
                 if (routeToGo && this.privilegesService.hasPrivilege(element.privilege))
                     this.router.navigateByUrl(routeToGo).then();
             }
         });
+
+        if (!settingsFound) {
+            this.router.navigateByUrl('/settings/general/users').then();
+        }
     }
 
     toggleMenu() {

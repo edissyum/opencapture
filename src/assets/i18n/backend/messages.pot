@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-10-29 15:48+0200\n"
+"POT-Creation-Date: 2021-11-10 11:09+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -143,31 +143,47 @@ msgstr ""
 msgid "ADD_HISTORY_ERROR"
 msgstr ""
 
-#: src/backend/controllers/inputs.py:52 src/backend/controllers/inputs.py:58
+#: src/backend/controllers/inputs.py:50 src/backend/controllers/inputs.py:56
 msgid "UPDATE_INPUT_ERROR"
 msgstr ""
 
-#: src/backend/controllers/inputs.py:86
+#: src/backend/controllers/inputs.py:81 src/backend/controllers/inputs.py:94
 msgid "CREATE_INPUT_ERROR"
 msgstr ""
 
-#: src/backend/controllers/inputs.py:99
+#: src/backend/controllers/inputs.py:82
+msgid "INPUT_ID_ALREADY_EXISTS"
+msgstr ""
+
+#: src/backend/controllers/inputs.py:107
 msgid "GET_INPUT_BY_ID_ERROR"
 msgstr ""
 
-#: src/backend/controllers/inputs.py:117 src/backend/controllers/inputs.py:123
+#: src/backend/controllers/inputs.py:131 src/backend/controllers/inputs.py:137
 msgid "DELETE_INPUT_ERROR"
 msgstr ""
 
-#: src/backend/controllers/inputs.py:211
-msgid "INCRON_CREATION_ERROR"
+#: src/backend/controllers/inputs.py:165
+msgid "FS_WATCHER_DELETION_ERROR"
 msgstr ""
 
-#: src/backend/controllers/inputs.py:217
+#: src/backend/controllers/inputs.py:166 src/backend/controllers/inputs.py:220
+msgid "FS_WATCHER_CONFIG_DOESNT_EXIST"
+msgstr ""
+
+#: src/backend/controllers/inputs.py:201 src/backend/controllers/inputs.py:219
+msgid "FS_WATCHER_CREATION_ERROR"
+msgstr ""
+
+#: src/backend/controllers/inputs.py:202
+msgid "INPUT_FOLDER_DOESNT_EXISTS_OR_NOT_WRITEABLE"
+msgstr ""
+
+#: src/backend/controllers/inputs.py:225
 msgid "SCRIPT_SAMPLE_DOESNT_EXISTS"
 msgstr ""
 
-#: src/backend/controllers/inputs.py:223
+#: src/backend/controllers/inputs.py:231
 msgid "SCRIPT_FOLDER_DOESNT_EXISTS"
 msgstr ""
 
@@ -441,11 +457,11 @@ msgstr ""
 msgid "INPUT_DOESNT_EXISTS"
 msgstr ""
 
-#: src/backend/models/inputs.py:70
+#: src/backend/models/inputs.py:84
 msgid "INPUT_UPDATE_ERROR"
 msgstr ""
 
-#: src/backend/models/inputs.py:86
+#: src/backend/models/inputs.py:100
 msgid "INPUT_CREATE_ERROR"
 msgstr ""
 

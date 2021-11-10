@@ -218,7 +218,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     /* -- Metadata -- */
     loadDefaultDocType(){
         for (const docType of TREE_DATA){
-            if(docType.isDefault)
+            if (docType.isDefault)
                 this.defaultDocType = {
                     "documentTypeKey": docType.key,
                     "documentTypeName": docType.label,
@@ -399,7 +399,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             }
         });
         dialogRef.afterClosed().subscribe((result: any) => {
-            if(result){
+            if (result){
                 document.documentTypeName = result.item;
                 document.documentTypeKey = result.key;
             }

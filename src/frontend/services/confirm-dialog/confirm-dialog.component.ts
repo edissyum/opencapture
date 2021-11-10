@@ -5,6 +5,8 @@ export interface ConfirmData {
     confirmTitle : string;
     confirmText : string;
     confirmButton : string;
+    selectValues: any;
+    selectLabel : string;
     confirmButtonColor : string;
     cancelButton : string;
 }
@@ -16,6 +18,7 @@ export interface ConfirmData {
 })
 
 export class ConfirmDialogComponent implements OnInit {
+    selectData: any;
 
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: ConfirmData,

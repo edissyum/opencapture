@@ -20,40 +20,52 @@ from configparser import ConfigParser, ExtendedInterpolation
 
 
 class Config:
-    def __init__(self, path):
+    def __init__(self, path, interpolation=True):
         self.cfg = {}
-        # ExtendedInterpolation is needed to use var into the config.ini file
-        parser = ConfigParser(interpolation=ExtendedInterpolation())
+        self.file = path
+        if interpolation:
+            # ExtendedInterpolation is needed to use var into the config.ini file
+            parser = ConfigParser(interpolation=ExtendedInterpolation())
+        else:
+            parser = ConfigParser()
         parser.read(path)
         for section in parser.sections():
             self.cfg[section] = {}
             for info in parser[section]:
                 self.cfg[section][info] = parser[section][info]
 
-    def read_position(self, typology, key, locale):
-        file = self.cfg['REFERENCIAL']['referencialposition'] + str(typology) + '.ini'
-        res = {}
-        if os.path.isfile(file):
-            parser = ConfigParser(interpolation=ExtendedInterpolation())
-            parser.read(file)
-            for section in parser.sections():
-                if section == key:
-                    for info in parser[section]:
-                        res[info] = parser[section][info]
-        if res and res['regex']:
-            locale_list = locale.get()
-            res['regex'] = locale_list[res['regex']]
-        return res
+    @staticmethod
+    def fswatcher_update_watch(file, job, data):
+        config = ConfigParser()
+        config.read(file)
+        config[job]['watch'] = data
+        with open(file, 'w') as configfile:
+            config.write(configfile)
 
     @staticmethod
-    def read_custom_position(file):
-        if os.path.isfile(file):
-            parser = ConfigParser(interpolation=ExtendedInterpolation())
-            parser.read(file)
-            cfg = {}
-            for section in parser.sections():
-                if section.split('-')[0] == 'custom':
-                    cfg[section] = {}
-                    for info in parser[section]:
-                        cfg[section][info] = parser[section][info]
-            return cfg
+    def fswatcher_update_command(file, job, data):
+        config = ConfigParser()
+        config.read(file)
+        config[job]['command'] = data
+        with open(file, 'w') as configfile:
+            config.write(configfile)
+
+    @staticmethod
+    def fswatcher_add_section(file, job, command, watch):
+        config = ConfigParser()
+        config.read(file)
+        config.add_section(job)
+        config[job]['watch'] = watch
+        config[job]['events'] = 'close,move'
+        config[job]['include_extensions'] = 'pdf'
+        config[job]['command'] = command
+        with open(file, 'w') as configfile:
+            config.write(configfile)
+
+    @staticmethod
+    def fswatcher_remove_section(file, job):
+        config = ConfigParser()
+        config.read(file)
+        config.remove_section(job)
+        with open(file, 'w') as configfile:
+            config.write(configfile)

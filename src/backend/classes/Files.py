@@ -15,18 +15,16 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-import json
 import os
 import re
-
-import PyPDF2
 import cv2
+import json
 import time
 import uuid
 import shutil
 import PyPDF4
+import PyPDF2
 import datetime
-import subprocess
 import numpy as np
 from PIL import Image
 from PyPDF4 import utils
@@ -48,20 +46,20 @@ else:
 
 class Files:
     def __init__(self, img_name, log, locale, config):
-        self.jpgName = img_name + '.jpg'
-        self.jpgName_header = img_name + '_header.jpg'
-        self.jpgName_footer = img_name + '_footer.jpg'
-        self.jpgName_last = img_name + '_last.jpg'
-        self.jpgName_last_header = img_name + '_last_header.jpg'
-        self.jpgName_last_footer = img_name + '_last_footer.jpg'
-        self.custom_fileName = img_name + '_custom.jpg'
-        self.resolution = int(config.cfg['GLOBAL']['resolution'])
-        self.compressionQuality = int(config.cfg['GLOBAL']['compressionquality'])
-        self.img = None
-        self.heightRatio = ''
         self.Log = log
+        self.img = None
         self.Locale = locale
         self.Config = config
+        self.heightRatio = ''
+        self.jpgName = img_name + '.jpg'
+        self.jpgName_last = img_name + '_last.jpg'
+        self.jpgName_header = img_name + '_header.jpg'
+        self.jpgName_footer = img_name + '_footer.jpg'
+        self.custom_fileName = img_name + '_custom.jpg'
+        self.jpgName_last_header = img_name + '_last_header.jpg'
+        self.jpgName_last_footer = img_name + '_last_footer.jpg'
+        self.resolution = int(config.cfg['GLOBAL']['resolution'])
+        self.compressionQuality = int(config.cfg['GLOBAL']['compressionquality'])
 
     # Convert the first page of PDF to JPG and open the image
     def pdf_to_jpg(self, pdf_name, open_img=True, crop=False, zone_to_crop=False, last_image=False, is_custom=False):
@@ -216,13 +214,6 @@ class Files:
         return False
 
     @staticmethod
-    def create_directory(path):
-        try:
-            os.mkdir(path)
-        except OSError:
-            print('Creation of the directory %s failed' % path)
-
-    @staticmethod
     def sorted_file(path, extension):
         file_json = []
         for file in os.listdir(path):
@@ -236,21 +227,6 @@ class Files:
                     file_json.append(('000', path + '/' + file))
         sorted_file = sorted(file_json, key=lambda file_cpt: file_cpt[0])
         return sorted_file
-
-    @staticmethod
-    def merge_pdf(file_sorted, tmp_path, _return=False):
-        merger = PyPDF4.PdfFileMerger()
-        for pdf in file_sorted:
-            merger.append(pdf[1])
-            os.remove(pdf[1])
-        merger.write(tmp_path + '/result.pdf')
-        file_to_return = open(tmp_path + '/result.pdf', 'rb').read()
-
-        if _return:
-            return tmp_path + '/result.pdf'
-        else:
-            os.remove(tmp_path + '/result.pdf')
-            return file_to_return
 
     @staticmethod
     def check_file_integrity(file, config):
@@ -442,13 +418,6 @@ class Files:
         new_path = os.path.join(path, secure_filename(file))
         f.save(new_path)
         return new_path
-
-    @staticmethod
-    def delete_file_with_extension(dir_path, extension):
-        files = os.listdir(dir_path)
-        for item in files:
-            if item.endswith(extension):
-                os.remove(os.path.join(dir_path, item))
 
     @staticmethod
     def get_now_date():

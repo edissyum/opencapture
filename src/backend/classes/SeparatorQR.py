@@ -18,60 +18,37 @@
 
 import os
 import re
-
 import cv2
 import uuid
 import shutil
-import subprocess
-import xml.etree.ElementTree as Et
 import PyPDF4
 import PyPDF2
 import pdf2image
+import subprocess
+import xml.etree.ElementTree as Et
 
 
 class SeparatorQR:
-    def __init__(self, log, config, tmp_folder, splitter_or_verifier):
+    def __init__(self, log, config, tmp_folder, splitter_or_verifier, files):
         self.Log = log
-        self.Config = config
         self.pages = []
         self.nb_doc = 0
         self.nb_pages = 0
         self.error = False
         self.qrList = None
+        self.Files = files
+        self.Config = config
         self.enabled = False
+        self.splitter_or_verifier = splitter_or_verifier
         self.divider = config.cfg['SEPARATORQR']['divider']
         self.convert_to_pdfa = config.cfg['SEPARATORQR']['exportpdfa']
         tmp_folder_name = os.path.basename(os.path.normpath(tmp_folder))
         self.tmp_dir = config.cfg['SEPARATORQR']['tmppath'] + '/' + tmp_folder_name + '/'
         self.output_dir = config.cfg['SEPARATORQR']['outputpdfpath'] + '/' + tmp_folder_name + '/'
         self.output_dir_pdfa = config.cfg['SEPARATORQR']['outputpdfapath'] + '/' + tmp_folder_name + '/'
-        self.splitter_or_verifier = splitter_or_verifier
 
         os.mkdir(self.output_dir)
         os.mkdir(self.output_dir_pdfa)
-
-    @staticmethod
-    def is_blank_page(image, config):
-        params = cv2.SimpleBlobDetector_Params()
-        params.minThreshold = 10
-        params.maxThreshold = 200
-        params.filterByArea = True
-        params.minArea = 20
-        params.filterByCircularity = True
-        params.minCircularity = 0.1
-        params.filterByConvexity = True
-        params.minConvexity = 0.87
-        params.filterByInertia = True
-        params.minInertiaRatio = 0.01
-
-        detector = cv2.SimpleBlobDetector_create(params)
-        im = cv2.imread(image)
-        keypoints = detector.detect(im)
-        rows, cols, channel = im.shape
-        blobs_ratio = len(keypoints) / (1.0 * rows * cols)
-        if blobs_ratio < float(config['REMOVE-BLANK-PAGES']['blobsratio']):
-            return True
-        return False
 
     @staticmethod
     def sorted_files(data):
@@ -90,7 +67,7 @@ class SeparatorQR:
         pages_to_keep = []
         for _file in self.sorted_files(os.listdir(self.output_dir)):
             if _file.endswith('.jpg'):
-                if not self.is_blank_page(self.output_dir + '/' + _file, self.Config.cfg):
+                if not self.Files.is_blank_page(self.output_dir + '/' + _file, self.Config.cfg['REMOVE-BLANK-PAGES']):
                     pages_to_keep.append(os.path.splitext(_file)[0].split('-')[1])
                 else:
                     blank_page_exists = True

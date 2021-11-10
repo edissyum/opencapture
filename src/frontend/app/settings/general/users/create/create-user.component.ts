@@ -169,7 +169,7 @@ export class CreateUserComponent implements OnInit {
     getErrorMessage(field: any) {
         let error: any;
         this.userForm.forEach(element => {
-            if(element.id === field)
+            if (element.id === field)
                 if (element.required) {
                     error = this.translate.instant('AUTH.field_required');
                 }

@@ -263,6 +263,14 @@ export class VerifierViewerComponent implements OnInit {
         const filterValue = value.toLowerCase();
         const _return = this.suppliers.filter((supplier: any) => supplier.name.toLowerCase().indexOf(filterValue) !== -1);
         this.supplierExists = _return.length !== 0;
+        if (!this.supplierExists) {
+            this.form['supplier'].forEach((element: any) => {
+                if (element.id !== 'name') {
+                    element.control.setValue('');
+                    element.control.setErrors(null);
+                }
+            });
+        }
         return _return;
     }
 
@@ -750,11 +758,13 @@ export class VerifierViewerComponent implements OnInit {
                 supplierData['address_id'] = data.id;
                 this.http.post(API_URL + '/ws/accounts/suppliers/create', {'args': supplierData}, {headers: this.authService.headers},
                 ).pipe(
-                    tap((data: any) => {
+                    tap(async (data: any) => {
                         this.historyService.addHistory('accounts', 'create_supplier', this.translate.instant('HISTORY-DESC.create-supplier', {supplier: supplierData['name']}));
                         this.notify.success(this.translate.instant('ACCOUNTS.supplier_created'));
                         this.updateInvoice({'supplier_id': data['id']});
                         this.invoice.supplier_id = data['id'];
+                        this.suppliers = await this.retrieveSuppliers();
+                        this.suppliers = this.suppliers.suppliers;
                     }),
                     catchError((err: any) => {
                         console.debug(err);

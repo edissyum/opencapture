@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2021-10-14 15:56+0200\n"
+"POT-Creation-Date: 2021-11-04 16:14+0100\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: en\n"
@@ -53,32 +53,42 @@ msgstr "Error updating address"
 msgid "CREATE_ADDRESS_ERROR"
 msgstr "Error creating address"
 
-#: src/backend/controllers/accounts.py:255 src/backend/models/accounts.py:140
+#: src/backend/controllers/accounts.py:258
+#: src/backend/controllers/accounts.py:264 src/backend/models/accounts.py:140
 msgid "CREATE_SUPPLIER_ERROR"
 msgstr "Error creating supplier"
 
-#: src/backend/controllers/accounts.py:279 src/backend/controllers/user.py:86
+#: src/backend/controllers/accounts.py:265
+msgid "SUPPLIER_VAT_NUMBER_ALREADY_EXISTS"
+msgstr "A supplier already exists with this vat number"
+
+#: src/backend/controllers/accounts.py:288 src/backend/controllers/user.py:86
 #: src/backend/models/accounts.py:192 src/backend/models/accounts.py:211
 #: src/backend/models/accounts.py:226 src/backend/models/user.py:132
 msgid "GET_CUSTOMER_BY_ID_ERROR"
 msgstr "Error retrieving customer"
 
-#: src/backend/controllers/accounts.py:322
-#: src/backend/controllers/accounts.py:328 src/backend/models/accounts.py:244
+#: src/backend/controllers/accounts.py:331
+#: src/backend/controllers/accounts.py:337 src/backend/models/accounts.py:244
 msgid "UPDATE_CUSTOMER_ERROR"
 msgstr "Error updating customer"
 
-#: src/backend/controllers/accounts.py:356 src/backend/models/accounts.py:260
+#: src/backend/controllers/accounts.py:368
+#: src/backend/controllers/accounts.py:374 src/backend/models/accounts.py:260
 msgid "CREATE_CUSTOMER_ERROR"
 msgstr "Error creating customer"
 
-#: src/backend/controllers/accounts.py:373
-#: src/backend/controllers/accounts.py:379 src/backend/models/accounts.py:278
+#: src/backend/controllers/accounts.py:375
+msgid "CUSTOMER_VAT_NUMBER_ALREADY_EXISTS"
+msgstr "A customer already exists with this vat number"
+
+#: src/backend/controllers/accounts.py:391
+#: src/backend/controllers/accounts.py:397 src/backend/models/accounts.py:278
 msgid "DELETE_CUSTOMER_ERROR"
 msgstr "Error deleting customer"
 
-#: src/backend/controllers/accounts.py:396
-#: src/backend/controllers/accounts.py:402 src/backend/models/accounts.py:158
+#: src/backend/controllers/accounts.py:414
+#: src/backend/controllers/accounts.py:420 src/backend/models/accounts.py:158
 msgid "DELETE_SUPPLIER_ERROR"
 msgstr "Error deleting supplier"
 
@@ -145,19 +155,19 @@ msgstr "Error while creating input"
 msgid "GET_INPUT_BY_ID_ERROR"
 msgstr "Error while retrieving input"
 
-#: src/backend/controllers/inputs.py:117 src/backend/controllers/inputs.py:123
+#: src/backend/controllers/inputs.py:123 src/backend/controllers/inputs.py:129
 msgid "DELETE_INPUT_ERROR"
 msgstr "Error while deleting input"
 
-#: src/backend/controllers/inputs.py:211
+#: src/backend/controllers/inputs.py:217
 msgid "INCRON_CREATION_ERROR"
 msgstr "Error while creating incron"
 
-#: src/backend/controllers/inputs.py:217
+#: src/backend/controllers/inputs.py:223
 msgid "SCRIPT_SAMPLE_DOESNT_EXISTS"
 msgstr "Script sample doesn't exists"
 
-#: src/backend/controllers/inputs.py:223
+#: src/backend/controllers/inputs.py:229
 msgid "SCRIPT_FOLDER_DOESNT_EXISTS"
 msgstr "Script folder doesn't exists"
 
@@ -254,8 +264,8 @@ msgstr "Error while disabling role"
 msgid "ENABLE_ROLE_ERROR"
 msgstr "Error while enabling role"
 
-#: src/backend/controllers/splitter.py:64
-#: src/backend/controllers/verifier.py:76
+#: src/backend/controllers/splitter.py:61
+#: src/backend/controllers/verifier.py:73
 msgid "AT"
 msgstr "at"
 
@@ -301,17 +311,17 @@ msgstr "Error while enabling user"
 msgid "UPDATE_CUSTOMERS_USER_ERROR"
 msgstr "Error while updating user customers"
 
-#: src/backend/controllers/verifier.py:59 src/backend/models/verifier.py:34
+#: src/backend/controllers/verifier.py:56 src/backend/models/verifier.py:34
 msgid "GET_INVOICE_BY_ID_ERROR"
 msgstr "Error while retrieving invoice"
 
 #: src/backend/controllers/verifier.py:159
-#: src/backend/controllers/verifier.py:248
+#: src/backend/controllers/verifier.py:249
 msgid "UPDATE_INVOICE_POSITIONS_ERROR"
 msgstr "Error while updating invoice positions"
 
 #: src/backend/controllers/verifier.py:184
-#: src/backend/controllers/verifier.py:268
+#: src/backend/controllers/verifier.py:269
 msgid "UPDATE_INVOICE_PAGES_ERROR"
 msgstr "Error while updating invoice pages"
 
@@ -320,55 +330,58 @@ msgstr "Error while updating invoice pages"
 msgid "UPDATE_INVOICE_DATA_ERROR"
 msgstr "Error while updating invoice datas"
 
-#: src/backend/controllers/verifier.py:285
-#: src/backend/controllers/verifier.py:291
+#: src/backend/controllers/verifier.py:286
+#: src/backend/controllers/verifier.py:292
 msgid "DELETE_INVOICE_ERROR"
 msgstr "Error while deleting invoice"
 
-#: src/backend/controllers/verifier.py:309
-#: src/backend/controllers/verifier.py:315
+#: src/backend/controllers/verifier.py:310
+#: src/backend/controllers/verifier.py:316
 msgid "UPDATE_INVOICE_ERROR"
 msgstr "Error while updating invoice"
 
-#: src/backend/controllers/verifier.py:335
+#: src/backend/controllers/verifier.py:336
 msgid "REMOVE_LOCK_BY_USER_ID_ERROR"
 msgstr "Error while removing lock on invoice"
 
-#: src/backend/controllers/verifier.py:424
-#: src/backend/controllers/verifier.py:430
-#: src/backend/controllers/verifier.py:436
+#: src/backend/controllers/verifier.py:435
+#: src/backend/controllers/verifier.py:441
+#: src/backend/controllers/verifier.py:447
 msgid "EXPORT_MAARCH_ERROR"
 msgstr "Error during Maarch export"
 
-#: src/backend/controllers/verifier.py:431
+#: src/backend/controllers/verifier.py:442
 msgid "PDF_FILE_NOT_FOUND"
 msgstr "PDF file not found"
 
-#: src/backend/controllers/verifier.py:442
+#: src/backend/controllers/verifier.py:453
 msgid "MAARCH_WS_INFO_WRONG"
 msgstr "Maarch informations are wrong"
 
-#: src/backend/controllers/verifier.py:448
+#: src/backend/controllers/verifier.py:459
 msgid "MAARCH_WS_INFO_EMPTY"
 msgstr "Maarch informations are empty"
 
-#: src/backend/controllers/verifier.py:534
+#: src/backend/controllers/verifier.py:545
 msgid "XML_DESTINATION_FOLDER_DOESNT_EXISTS"
 msgstr "Destination folder for XML doesn't exists"
 
-#: src/backend/controllers/verifier.py:540
+#: src/backend/controllers/verifier.py:551
 msgid "EXPORT_XML_ERROR"
 msgstr "Error while exporting XML"
 
-#: src/backend/controllers/verifier.py:601
+#: src/backend/controllers/verifier.py:615
+#: src/backend/controllers/verifier.py:618
+#: src/backend/controllers/verifier.py:631
+#: src/backend/controllers/verifier.py:648
 msgid "API_INSEE_ERROR_CONNEXION"
 msgstr "Error while connecting to INSEE API"
 
-#: src/backend/controllers/verifier.py:645
+#: src/backend/controllers/verifier.py:670
 msgid "VAT_NOT_VALID"
 msgstr "VAT number not valid"
 
-#: src/backend/controllers/verifier.py:649
+#: src/backend/controllers/verifier.py:674
 msgid "VAT_API_ERROR"
 msgstr "API for VAT number unreachable"
 
@@ -428,11 +441,11 @@ msgstr "Form label already exist"
 msgid "INPUT_DOESNT_EXISTS"
 msgstr "Input doesn't exists"
 
-#: src/backend/models/inputs.py:70
+#: src/backend/models/inputs.py:84
 msgid "INPUT_UPDATE_ERROR"
 msgstr "Error while updating input"
 
-#: src/backend/models/inputs.py:86
+#: src/backend/models/inputs.py:100
 msgid "INPUT_CREATE_ERROR"
 msgstr "Error while creating input"
 

@@ -142,31 +142,6 @@ class MaarchWebServices:
         else:
             return True, json.loads(res.text)
 
-    def insert_attachment(self, file_content, config, res_id, _process):
-        data = {
-            'resId': res_id,
-            'status': config.cfg[_process]['status'],
-            'collId': 'letterbox_coll',
-            'table': 'res_attachments',
-            'data': [
-                {'column': 'title', 'value': 'Rapprochement note interne', 'type': 'string'},
-                {'column': 'attachment_type', 'value': config.cfg[_process]['attachment_type'], 'type': 'string'},
-                {'column': 'coll_id', 'value': 'letterbox_coll', 'type': 'string'},
-                {'column': 'res_id_master', 'value': res_id, 'type': 'string'}
-            ],
-            'encodedFile': base64.b64encode(file_content).decode('utf-8'),
-            'fileFormat': config.cfg[_process]['format'],
-        }
-
-        res = requests.post(self.baseUrl + 'attachments', auth=self.auth, data=json.dumps(data),
-                            headers={'Connection': 'close', 'Content-Type': 'application/json'})
-
-        if res.status_code != 200:
-            self.Log.error('(' + str(res.status_code) + ') InsertAttachmentsIntoMaarchError : ' + str(res.text))
-            return False
-        else:
-            return res.text
-
     def create_contact(self, contact):
         res = requests.post(self.baseUrl + '/contacts', auth=self.auth, data=json.dumps(contact),
                             headers={'Connection': 'close', 'Content-Type': 'application/json'})

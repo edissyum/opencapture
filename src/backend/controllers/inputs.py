@@ -16,12 +16,10 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import os
-import re
-import random
 import stat
-import subprocess
 from flask_babel import gettext
 from src.backend.import_models import inputs
+from src.backend.import_classes import _Config
 from src.backend.main import create_classes_from_current_config
 
 
@@ -74,8 +72,18 @@ def create_input(data):
         'override_supplier_form': data['override_supplier_form'] if 'override_supplier_form' in data else False,
     }
 
-    res, error = inputs.create_input({'columns': _columns})
+    input_info, error = get_inputs({
+        'where': ['module = %s', 'input_id = %s'],
+        'data': [data['module'], data['input_id']]
+    })
+    if input_info['inputs']:
+        response = {
+            "errors": gettext('CREATE_INPUT_ERROR'),
+            "message": gettext('INPUT_ID_ALREADY_EXISTS')
+        }
+        return response, 401
 
+    res, error = inputs.create_input({'columns': _columns})
     if error is None:
         response = {
             "id": res
@@ -100,6 +108,12 @@ def get_input_by_id(input_id):
             "message": error
         }
         return response, 401
+
+
+def get_input_by_form_id(form_id):
+    input_info, error = inputs.get_input_by_form_id({'form_id': form_id})
+
+    return input_info, 200
 
 
 def delete_input(input_id):
@@ -137,25 +151,21 @@ def delete_script_and_incron(args):
         if os.path.isfile(old_script_filename):
             os.remove(old_script_filename)
 
-    process = subprocess.Popen(['incrontab', '-l'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    incron_list, err = process.communicate()
-    if not err:
-        old_incron = args['input_folder'] + ' IN_CLOSE_WRITE,IN_MOVED_TO ' + old_script_filename + ' $@/$#'
-        incron_list = incron_list.decode('UTF-8')
-        incron_exist = False
-        new_incron_without_old_one = ''
-        for incron in incron_list.split('\n'):
-            if re.sub('\s+', '', incron) != re.sub('\s+', '', old_incron):
-                incron_exist = True
-                new_incron_without_old_one += incron + '\n'
-
-        if incron_exist:
-            tmp_incron_filename = '/tmp/incron_' + str(random.randint(0, 99999))
-            tmp_incron_file = open(tmp_incron_filename, 'w+')
-            tmp_incron_file.write(new_incron_without_old_one)
-            tmp_incron_file.close()
-            subprocess.Popen(['incrontab', tmp_incron_filename], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            os.remove(tmp_incron_filename)
+    ######
+    # REMOVE FS WATCHER CONFIG
+    ######
+    if os.path.isfile(_cfg.cfg['GLOBAL']['watcherconfig']):
+        fs_watcher_config = _Config(_cfg.cfg['GLOBAL']['watcherconfig'], interpolation=False).cfg
+        fs_watcher_job = args['module'] + '_' + args['input_id']
+        if fs_watcher_job in fs_watcher_config:
+            _Config.fswatcher_remove_section(_cfg.cfg['GLOBAL']['watcherconfig'], fs_watcher_job)
+        return '', 200
+    else:
+        response = {
+            "errors": gettext('FS_WATCHER_DELETION_ERROR'),
+            "message": gettext('FS_WATCHER_CONFIG_DOESNT_EXIST')
+        }
+        return response, 501
 
 
 def create_script_and_incron(args):
@@ -170,7 +180,7 @@ def create_script_and_incron(args):
     if os.path.isdir(folder_script):
         script_name = args['input_id'] + '.sh'
         if os.path.isfile(folder_script + '/script_sample_dont_touch.sh'):
-            script_sample = open(folder_script + '/script_sample_dont_touch.sh', 'r')
+            script_sample = open(folder_script + '/script_sample_dont_touch.sh', 'r', encoding='utf-8')
             script_sample_content = script_sample.read()
             new_script_filename = folder_script + '/' + script_name
             new_script_file = open(new_script_filename, 'w+')
@@ -184,34 +194,32 @@ def create_script_and_incron(args):
             os.chmod(new_script_filename, os.stat(new_script_filename).st_mode | stat.S_IEXEC)
 
             ######
-            # CREATE INCRON
+            # CREATE OR UPDATE FS WATCHER CONFIG
             ######
-            process = subprocess.Popen(['incrontab', '-l'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            incron_list, err = process.communicate()
+            if not os.path.exists(args['input_folder']) or not os.access(args['input_folder'], os.W_OK):
+                response = {
+                    "errors": gettext('FS_WATCHER_CREATION_ERROR'),
+                    "message": gettext('INPUT_FOLDER_DOESNT_EXISTS_OR_NOT_WRITEABLE')
+                }
+                return response, 501
 
-            if not err or 'no table for' in err.decode('UTF-8'):
-                new_incron = args['input_folder'] + ' IN_CLOSE_WRITE,IN_MOVED_TO ' + new_script_filename + ' $@/$#'
-                incron_list = incron_list.decode('UTF-8')
-                incron_exist = False
-                for incron in incron_list.split('\n'):
-                    if re.sub('\s+', '', incron) == re.sub('\s+', '', new_incron):
-                        incron_exist = True
-
-                if not incron_exist:
-                    incron_list += '\n' + new_incron
-                    tmp_incron_filename = '/tmp/incron_' + str(random.randint(0, 99999))
-                    tmp_incron_file = open(tmp_incron_filename, 'w+')
-                    tmp_incron_file.write(incron_list)
-                    tmp_incron_file.close()
-                    subprocess.Popen(['incrontab', tmp_incron_filename], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                    os.remove(tmp_incron_filename)
+            if os.path.isfile(_cfg.cfg['GLOBAL']['watcherconfig']):
+                fs_watcher_config = _Config(_cfg.cfg['GLOBAL']['watcherconfig'], interpolation=False)
+                fs_watcher_job = args['module'] + '_' + args['input_id']
+                fs_watcher_command = new_script_filename + ' $filename'
+                if fs_watcher_job in fs_watcher_config.cfg:
+                    _Config.fswatcher_update_command(fs_watcher_config.file, fs_watcher_job, fs_watcher_command)
+                    _Config.fswatcher_update_watch(fs_watcher_config.file, fs_watcher_job, args['input_folder'])
+                else:
+                    _Config.fswatcher_add_section(fs_watcher_config.file, fs_watcher_job, fs_watcher_command,
+                                                  args['input_folder'])
                 return '', 200
             else:
                 response = {
-                    "errors": gettext('INCRON_CREATION_ERROR'),
-                    "message": err.decode('UTF-8')
+                    "errors": gettext('FS_WATCHER_CREATION_ERROR'),
+                    "message": gettext('FS_WATCHER_CONFIG_DOESNT_EXIST')
                 }
-            return response, 501
+                return response, 501
         else:
             response = {
                 "errors": gettext('SCRIPT_SAMPLE_DOESNT_EXISTS'),

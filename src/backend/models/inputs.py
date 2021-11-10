@@ -26,7 +26,7 @@ def get_inputs(args):
         'select': ["*"] if "select" not in args else args["select"],
         'table': ["inputs"],
         'where': args['where'],
-        'data': args["data"],
+        'data': [] if "data" not in args else args["data"],
         'order_by': ["id ASC"],
         'limit': str(args['limit']) if 'limit' in args else [],
         'offset': str(args['offset']) if 'offset' in args else [],
@@ -46,10 +46,24 @@ def get_input_by_id(args):
         'data': [args['input_id']]
     })
 
-    if not input:
+    if not _input:
         error = gettext('INPUT_DOESNT_EXISTS')
     else:
         _input = _input[0]
+
+    return _input, error
+
+
+def get_input_by_form_id(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    error = None
+    _input = _db.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['inputs'],
+        'where': ['default_form_id = %s', 'status <> %s'],
+        'data': [args['form_id'], 'DEL']
+    })
 
     return _input, error
 

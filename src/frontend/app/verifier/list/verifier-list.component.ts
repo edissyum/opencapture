@@ -357,7 +357,7 @@ export class VerifierListComponent implements OnInit {
             if (child.id === id) {
                 this.invoices.forEach((invoice: any) => {
                     if (this.TREE_DATA[index].id === invoice.customer_id && invoice.purchase_or_sale === purchaseOrSale) {
-                        if(invoice.supplier_id) {
+                        if (invoice.supplier_id) {
                             this.fillChildren(this.TREE_DATA[index].id, this.TREE_DATA[index].children[childIndex].children, invoice.supplier_name, invoice.supplier_name, invoice.supplier_id, invoice.invoice_id, purchaseOrSale);
                         }else {
                             this.fillChildren(this.TREE_DATA[index].id, this.TREE_DATA[index].children[childIndex].children, invoice.supplier_name, this.translate.instant('ACCOUNTS.supplier_unknow'), invoice.supplier_id, invoice.invoice_id, purchaseOrSale);
@@ -454,7 +454,7 @@ export class VerifierListComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if(result) {
+            if (result) {
                 this.deleteInvoice(invoiceId);
             }
         });
@@ -485,7 +485,7 @@ export class VerifierListComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if(result) {
+            if (result) {
                 this.deleteAllInvoices();
             }
         });

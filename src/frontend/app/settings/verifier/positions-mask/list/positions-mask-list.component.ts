@@ -132,7 +132,7 @@ export class PositionsMaskListComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if(result) {
+            if (result) {
                 this.deletePositionMask(positionMaskId);
                 this.historyService.addHistory('verifier', 'delete_positions_masks', this.translate.instant('HISTORY-DESC.delete-positions-masks', {positions_masks: positionsMask}));
             }
@@ -152,7 +152,7 @@ export class PositionsMaskListComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if(result) {
+            if (result) {
                 this.duplicatePositionMask(positionMaskId);
                 this.historyService.addHistory('verifier', 'duplicate_positions_masks', this.translate.instant('HISTORY-DESC.duplicate-positions-masks', {positions_masks: positionsMask}));
             }
@@ -172,7 +172,7 @@ export class PositionsMaskListComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if(result) {
+            if (result) {
                 this.disablePositionMask(positionsMaskId);
             }
         });
@@ -191,7 +191,7 @@ export class PositionsMaskListComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if(result) {
+            if (result) {
                 this.enablePositionMask(positionsMaskId);
             }
         });
@@ -260,7 +260,7 @@ export class PositionsMaskListComponent implements OnInit {
 
     sortData(sort: Sort) {
         const data = this.positionsMasks.slice();
-        if(!sort.active || sort.direction === '') {
+        if (!sort.active || sort.direction === '') {
             this.positionsMasks = data;
             return;
         }

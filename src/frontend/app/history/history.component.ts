@@ -235,7 +235,7 @@ export class HistoryComponent implements OnInit {
 
     sortData(sort: Sort) {
         const data = this.history.slice();
-        if(!sort.active || sort.direction === '') {
+        if (!sort.active || sort.direction === '') {
             this.history = data;
             return;
         }

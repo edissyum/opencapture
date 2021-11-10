@@ -26,25 +26,17 @@ import datetime
 import random
 
 
-def get_lot_name():
-    random_number = uuid.uuid4().hex
-    # date object of today's date
-    today = date.today()
-    lot_name = str(today.year) + str(today.month) + str(today.day) + str(random_number)
-    return lot_name
-
-
 class Splitter:
     def __init__(self, config, database, locale, separator_qr, log):
-        self.Config = config
-        self.db = database
-        self.Locale = locale
-        self.separator_qr = separator_qr
         self.log = log
-        self.result_batches = []
+        self.db = database
         self.qr_pages = []
-        self.bundle_start = self.Config.cfg['SPLITTER']['bundlestart']
+        self.Config = config
+        self.Locale = locale
+        self.result_batches = []
+        self.separator_qr = separator_qr
         self.doc_start = self.Config.cfg['SPLITTER']['docstart']
+        self.bundle_start = self.Config.cfg['SPLITTER']['bundlestart']
 
     def split(self, pages):
         for index, path in pages:

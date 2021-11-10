@@ -156,7 +156,8 @@ def launch(args):
     config, locale, log, ocr, database, spreadsheet, smtp = create_classes(config_file)
     tmp_folder = tempfile.mkdtemp(dir=config.cfg['GLOBAL']['tmppath'])
     filename = tempfile.NamedTemporaryFile(dir=tmp_folder).name
-    separator_qr = _SeparatorQR(log, config, tmp_folder, 'verifier')
+    files = _Files(filename, log, locale, config)
+    separator_qr = _SeparatorQR(log, config, tmp_folder, 'verifier', files)
     mail_class = None
 
     if args.get('isMail') is not None and args['isMail'] is True:
@@ -173,7 +174,6 @@ def launch(args):
     if args.get('isMail') is None or args.get('isMail') is False:
         separator_qr.enabled = str2bool(config.cfg['SEPARATORQR']['enabled'])
 
-    files = _Files(filename, log, locale, config)
 
     database.connect()
 

@@ -243,9 +243,9 @@ export class UpdatePositionsMaskComponent implements OnInit {
                 if (data.customFields) {
                     for (const field in data.customFields) {
                         if (data.customFields.hasOwnProperty(field)) {
-                            if(data.customFields[field].module === 'verifier') {
+                            if (data.customFields[field].module === 'verifier') {
                                 for (const parent in this.availableFieldsParent) {
-                                    if(this.availableFieldsParent[parent].id === 'custom_fields') {
+                                    if (this.availableFieldsParent[parent].id === 'custom_fields') {
                                         this.availableFieldsParent[parent].values.push(
                                             {
                                                 id: 'custom_' + data.customFields[field].id,
