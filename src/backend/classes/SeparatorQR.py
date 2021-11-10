@@ -21,7 +21,6 @@ import re
 import uuid
 import shutil
 import PyPDF4
-import PyPDF2
 import pdf2image
 import subprocess
 import xml.etree.ElementTree as Et
@@ -91,14 +90,14 @@ class SeparatorQR:
         path = os.path.dirname(file)
         file_without_extention = os.path.splitext(os.path.basename(file))[0]
 
-        pdf = PyPDF2.PdfFileReader(open(file, 'rb'))
+        pdf = PyPDF4.PdfFileReader(open(file, 'rb'), strict=False)
         nb_pages = pdf.getNumPages()
 
         array_of_files = []
         cpt = 1
         for i in range(nb_pages):
             if i % 2 == 0:
-                output = PyPDF2.PdfFileWriter()
+                output = PyPDF4.PdfFileWriter()
                 output.addPage(pdf.getPage(i))
                 if i + 1 < nb_pages:
                     output.addPage(pdf.getPage(i + 1))
