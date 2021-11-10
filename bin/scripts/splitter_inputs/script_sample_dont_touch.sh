@@ -46,5 +46,5 @@ then
     mkdir -p "$errFilepath"
     mv "$filepath" "$errFilepath"
 else
-    echo "[$name    ] [Script Open-Capture For Invoices  ] $(date +"%d-%m-%Y %T") WARNING capture on $filepath aready active : PID exists : $PID" >> "$logFile"
+    echo "[$name    ] [Script Open-Capture For Invoices  ] $(date +"%d-%m-%Y %T") WARNING capture on $filepath already active : PID exists : $PID" >> "$logFile"
 fi
