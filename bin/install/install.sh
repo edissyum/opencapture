@@ -78,7 +78,7 @@ EOF'
     apt install -y -t stretch-backports tesseract-ocr
     apt install -y -t stretch-backports tesseract-ocr-fra
     apt install -y -t stretch-backports tesseract-ocr-eng
-elif [[ "$OS" == 'Ubuntu' || "$OS" == 'Debian' && $VER == *'10'* ]]; then
+elif [[ "$OS" == 'Ubuntu' || "$OS" == 'Debian' && ($VER == *'10'* || $VER == *'11'*) ]]; then
     apt update
     apt install -y tesseract-ocr
     apt install -y tesseract-ocr-fra
@@ -222,7 +222,7 @@ fi
 
 ####################
 # Create a custom temp directory to cron the delete of the ImageMagick temp content
-mkdir /tmp/OpenCaptureForInvoices/
+mkdir -p /tmp/OpenCaptureForInvoices/
 chown -R "$user":"$user" /tmp/OpenCaptureForInvoices
 
 ####################
@@ -235,7 +235,7 @@ cp $defaultPath/instance/referencial/default_referencial_supplier_index.json.def
 
 ####################
 # Setting up fs-watcher service (to replace incron)
-mkdir /var/log/watcher/
+mkdir -p /var/log/watcher/
 touch /var/log/watcher/daemon.log
 chmod -R 775 /var/log/watcher/
 cp $defaultPath/instance/config/watcher.ini.default $defaultPath/instance/config/watcher.ini

@@ -195,10 +195,10 @@ def create_script_and_incron(args):
                 return response, 501
 
             if os.path.isfile(_cfg.cfg['GLOBAL']['watcherconfig']):
-                fs_watcher_config = _Config(_cfg.cfg['GLOBAL']['watcherconfig'], interpolation=False).cfg
+                fs_watcher_config = _Config(_cfg.cfg['GLOBAL']['watcherconfig'], interpolation=False)
                 fs_watcher_job = args['module'] + '_' + args['input_id']
                 fs_watcher_command = new_script_filename + ' $filename'
-                if fs_watcher_job in fs_watcher_config:
+                if fs_watcher_job in fs_watcher_config.cfg:
                     _Config.fswatcher_update_command(fs_watcher_config.file, fs_watcher_job, fs_watcher_command)
                     _Config.fswatcher_update_watch(fs_watcher_config.file, fs_watcher_job, args['input_folder'])
                 else:

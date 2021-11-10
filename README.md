@@ -22,10 +22,6 @@ The functionnalities of Open-Capture for Invoices are :
    - Complex locale REGEX used. Easy to improve and modify
 
 # Installation
-## Linux Distributions
-
-We recommend using the latest stable debian 10.X version (Debian 11 is not recommended for now because of incron package not available)
-
 ## Install Open-Capture for Invoices
 
 Please, do not run the following command as root and create a specific user for Open-Capture For Invoices.
