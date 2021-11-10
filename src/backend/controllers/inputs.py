@@ -83,6 +83,17 @@ def create_input(data):
         }
         return response, 401
 
+    input_info, error = get_inputs({
+        'where': ['input_folder = %s'],
+        'data': [data['input_folder']]
+    })
+    if input_info['inputs']:
+        response = {
+            "errors": gettext('CREATE_INPUT_ERROR'),
+            "message": gettext('INPUT_FOLDER_ALREADY_EXISTS')
+        }
+        return response, 401
+
     res, error = inputs.create_input({'columns': _columns})
     if error is None:
         response = {
