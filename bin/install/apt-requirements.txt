@@ -8,8 +8,8 @@ imagemagick
 python3-pip
 poppler-utils
 python3-daemon
-python3-chardet
 python3-future
+python3-chardet
 rabbitmq-server
 libgl1-mesa-glx
 python3-lockfile

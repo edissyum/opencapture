@@ -97,6 +97,7 @@ export class UpdateRoleComponent implements OnInit {
         marker('PRIVILEGES.change_language'),
         marker('PRIVILEGES.form_builder'),
         marker('PRIVILEGES.export_suppliers'),
+        marker('PRIVILEGES.import_suppliers'),
         marker('PRIVILEGES.history'),
         marker('PRIVILEGES.add_output'),
         marker('PRIVILEGES.add_input'),

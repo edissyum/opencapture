@@ -798,8 +798,8 @@ export class FormBuilderComponent implements OnInit {
     }
 
     deleteField(event: any, previousIndex: any, category:any, unit: any) {
-        if (unit === 'addresses')
-            unit = 'supplier';
+        if (unit === 'addresses' || unit === 'supplier')
+            unit = 'accounts';
         for (const parentField in this.availableFieldsParent) {
             const id = this.availableFieldsParent[parentField].id.split('_fields')[0];
             if (id === unit) {
