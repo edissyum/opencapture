@@ -6,6 +6,17 @@ i.cdk-drag {
     @apply mb-1;
 }
 
+.ng-sg-placeholder,
+.cdk-drag-placeholder {
+    @apply border;
+    @apply border-green-400;
+    @apply rounded-sm;
+    @apply bg-gray-200;
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
 ::ng-deep .form-builder > .mat-form-field-wrapper {
     @apply pb-3;
     @apply pt-3;
