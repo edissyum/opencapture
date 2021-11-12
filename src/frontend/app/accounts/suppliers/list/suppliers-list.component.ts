@@ -288,4 +288,25 @@ export class SuppliersListComponent implements OnInit {
             })
         ).subscribe();
     }
+
+    importSuppliers(event: any) {
+        const file:File = event.target.files[0];
+        if (file) {
+            const formData: FormData = new FormData();
+            formData.append(file.name, file);
+            this.http.post(API_URL + '/ws/accounts/supplier/importSuppliers', formData, {headers: this.authService.headers},
+            ).pipe(
+                tap(() => {
+                    this.notify.success(this.translate.instant('ACCOUNTS.suppliers_referencial_loaded'));
+                    this.loading = true;
+                    this.loadSuppliers();
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err, '/accounts/suppliers/list');
+                    return of(false);
+                })
+            ).subscribe();
+        }
+    }
 }

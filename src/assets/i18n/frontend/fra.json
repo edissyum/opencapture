@@ -29,6 +29,7 @@
 		"form": "Nom du formulaire",
 		"get_only_raw_footer": "Contrôle de cohérence du pied de page",
 		"iban": "Numéro d'IBAN",
+		"import_suppliers": "Importer les fournisseurs",
 		"positions_deleted": "Positions du fournisseurs supprimées",
 		"search_customer": "Recherche de client",
 		"search_supplier": "Recherche de fournisseur",
@@ -42,6 +43,7 @@
 		"supplier_unknow": "Fournisseur inconnu",
 		"supplier_updated": "Compte fournisseur mis à jour avec succès",
 		"suppliers_list": "Liste des comptes fournisseurs",
+		"suppliers_referencial_loaded": "Référenciel des fournisseurs chargé avec succès",
 		"update_customer": "Mise à jour du compte client",
 		"update_supplier": "Mise à jour du compte fournisseur",
 		"vat_number": "Numéro de TVA"
@@ -384,6 +386,7 @@
 		"forms_list_splitter": "Liste des formulaires",
 		"general": "Privilèges globaux",
 		"history": "Historique",
+		"import_suppliers": "Importer les fournisseurs",
 		"inputs_list": "Liste des chaînes entrantes",
 		"inputs_list_splitter": "Liste des chaînes entrantes",
 		"list": "Liste des privilèges",

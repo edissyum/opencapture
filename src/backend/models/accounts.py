@@ -278,3 +278,4 @@ def delete_customer(args):
         error = gettext('DELETE_CUSTOMER_ERROR')
 
     return customer, error
+

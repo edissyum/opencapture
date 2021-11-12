@@ -29,6 +29,7 @@
 		"form": "Form name",
 		"get_only_raw_footer": "Get only raw footer",
 		"iban": "IBAN",
+		"import_suppliers": "Import suppliers",
 		"positions_deleted": "Supplier positions deleted",
 		"search_customer": "Search customer",
 		"search_supplier": "Search supplier",
@@ -42,6 +43,7 @@
 		"supplier_unknow": "Unknow supplier",
 		"supplier_updated": "Supplier updated successfully",
 		"suppliers_list": "Suppliers list",
+		"suppliers_referencial_loaded": "Suppliers referencial loaded successfully",
 		"update_customer": "Update customer",
 		"update_supplier": "Update supplier",
 		"vat_number": "VAT number"
@@ -384,6 +386,7 @@
 		"forms_list_splitter": "Forms list",
 		"general": "Global privileges",
 		"history": "History",
+		"import_suppliers": "Import suppliers",
 		"inputs_list": "Inputs list",
 		"inputs_list_splitter": "Inputs list",
 		"list": "Privileges list",

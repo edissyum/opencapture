@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2021-11-10 11:34+0100\n"
+"POT-Creation-Date: 2021-11-12 11:06+0100\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: fr\n"
@@ -21,76 +21,80 @@ msgstr ""
 msgid "HOST_NOT_FOUND"
 msgstr "L'URL de l'hôte n'existe pas"
 
-#: src/backend/controllers/accounts.py:43 src/backend/models/accounts.py:51
+#: src/backend/controllers/accounts.py:46 src/backend/models/accounts.py:51
 msgid "GET_SUPPLIER_BY_ID_ERROR"
 msgstr "Erreur lors de la récupération du compte fournisseur"
 
-#: src/backend/controllers/accounts.py:56 src/backend/models/accounts.py:70
+#: src/backend/controllers/accounts.py:59 src/backend/models/accounts.py:70
 msgid "GET_ADDRESS_BY_ID_ERROR"
 msgstr "Erreur lors de la récupération de l'adresse"
 
-#: src/backend/controllers/accounts.py:76
-#: src/backend/controllers/accounts.py:82
+#: src/backend/controllers/accounts.py:79
+#: src/backend/controllers/accounts.py:85
 msgid "UPDATE_SUPPLIER_ERROR"
 msgstr "Erreur lors de la mise à jour du fournisseur"
 
-#: src/backend/controllers/accounts.py:108
+#: src/backend/controllers/accounts.py:111
 msgid "UPDATE_SUPPLIER_POSITIONS_ERROR"
 msgstr "Erreur lors de la mise à jour des positions du compte fournisseur"
 
-#: src/backend/controllers/accounts.py:133
+#: src/backend/controllers/accounts.py:136
 msgid "UPDATE_SUPPLIER_PAGES_ERROR"
 msgstr "Erreur lors de la mise à jour des pages du compte fournisseur"
 
-#: src/backend/controllers/accounts.py:159
-#: src/backend/controllers/accounts.py:165
-#: src/backend/controllers/accounts.py:191
-#: src/backend/controllers/accounts.py:197 src/backend/models/accounts.py:108
+#: src/backend/controllers/accounts.py:162
+#: src/backend/controllers/accounts.py:168
+#: src/backend/controllers/accounts.py:194
+#: src/backend/controllers/accounts.py:200 src/backend/models/accounts.py:108
 msgid "UPDATE_ADDRESS_ERROR"
 msgstr "Erreur lors de la mise à jour de l'adresse"
 
-#: src/backend/controllers/accounts.py:224 src/backend/models/accounts.py:124
+#: src/backend/controllers/accounts.py:227 src/backend/models/accounts.py:124
 msgid "CREATE_ADDRESS_ERROR"
 msgstr "Erreur lors de la création de l'adresse"
 
-#: src/backend/controllers/accounts.py:258
-#: src/backend/controllers/accounts.py:264 src/backend/models/accounts.py:140
+#: src/backend/controllers/accounts.py:261
+#: src/backend/controllers/accounts.py:267 src/backend/models/accounts.py:140
 msgid "CREATE_SUPPLIER_ERROR"
 msgstr "Erreur lors de la création du compte fournisseur"
 
-#: src/backend/controllers/accounts.py:265
+#: src/backend/controllers/accounts.py:268
 msgid "SUPPLIER_VAT_NUMBER_ALREADY_EXISTS"
 msgstr "Un compte fournisseur existe déjà avec ce numéro de TVA"
 
-#: src/backend/controllers/accounts.py:288 src/backend/controllers/user.py:86
+#: src/backend/controllers/accounts.py:291 src/backend/controllers/user.py:86
 #: src/backend/models/accounts.py:192 src/backend/models/accounts.py:211
 #: src/backend/models/accounts.py:226 src/backend/models/user.py:132
 msgid "GET_CUSTOMER_BY_ID_ERROR"
 msgstr "Erreur lors de la récupération du compte client"
 
-#: src/backend/controllers/accounts.py:331
-#: src/backend/controllers/accounts.py:337 src/backend/models/accounts.py:244
+#: src/backend/controllers/accounts.py:334
+#: src/backend/controllers/accounts.py:340 src/backend/models/accounts.py:244
 msgid "UPDATE_CUSTOMER_ERROR"
 msgstr "Erreur lors de la mise à jour du compte client"
 
-#: src/backend/controllers/accounts.py:368
-#: src/backend/controllers/accounts.py:374 src/backend/models/accounts.py:260
+#: src/backend/controllers/accounts.py:371
+#: src/backend/controllers/accounts.py:377 src/backend/models/accounts.py:260
 msgid "CREATE_CUSTOMER_ERROR"
 msgstr "Erreur lors de la création du compte client"
 
-#: src/backend/controllers/accounts.py:375
+#: src/backend/controllers/accounts.py:378
 msgid "CUSTOMER_VAT_NUMBER_ALREADY_EXISTS"
 msgstr "Un compte client existe déjà avec ce numéro de TVA"
 
-#: src/backend/controllers/accounts.py:391
-#: src/backend/controllers/accounts.py:397 src/backend/models/accounts.py:278
+#: src/backend/controllers/accounts.py:394
+#: src/backend/controllers/accounts.py:400 src/backend/models/accounts.py:278
 msgid "DELETE_CUSTOMER_ERROR"
 msgstr "Erreur lors de la suppression du compte client"
 
-#: src/backend/controllers/accounts.py:414
-#: src/backend/controllers/accounts.py:420 src/backend/models/accounts.py:158
+#: src/backend/controllers/accounts.py:417
+#: src/backend/controllers/accounts.py:423 src/backend/models/accounts.py:158
 msgid "DELETE_SUPPLIER_ERROR"
 msgstr "Erreur lors de la suppression du compte fournisseur"
+
+#: src/backend/controllers/accounts.py:440
+msgid "LOAD_SUPPLIER_REFERENCIAL_ERROR"
+msgstr "Erreur lors du chargement du référentiel fournisseur"
 
 #: src/backend/controllers/auth.py:80
 msgid "LOGIN_ERROR"

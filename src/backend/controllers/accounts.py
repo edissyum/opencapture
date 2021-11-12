@@ -16,8 +16,12 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
+import os
 import json
+import subprocess
+from flask import current_app
 from flask_babel import gettext
+from src.backend.import_classes import _Files
 from src.backend.import_models import accounts
 from src.backend.main import create_classes_from_current_config
 
@@ -421,3 +425,26 @@ def delete_supplier(supplier_id):
             "message": error
         }
         return response, 401
+
+
+def import_suppliers(file):
+    _vars = create_classes_from_current_config()
+    _cfg = _vars[1]
+
+    filename = _Files.save_uploaded_file(file, current_app.config['UPLOAD_FOLDER'])
+    res = subprocess.Popen('python3 ' + _cfg.cfg['GLOBAL']['projectpath'] + "/loadReferencial.py -f " +
+                           filename + " -c " + current_app.instance_path + '/config.ini',
+                           shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out, err = res.communicate()
+    if err.decode('utf-8'):
+        response = {
+            "errors": gettext('LOAD_SUPPLIER_REFERENCIAL_ERROR'),
+            "message": ''
+        }
+        return response, 401
+
+    try:
+        os.remove(filename)
+    except FileNotFoundError:
+        pass
+    return '', 200
