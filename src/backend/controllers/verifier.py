@@ -359,7 +359,7 @@ def export_maarch(invoice_id, data):
             _vars[5],
             _vars[1]
         )
-        if ws.status:
+        if ws.status[0]:
             invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
             if not error:
                 args = {}
