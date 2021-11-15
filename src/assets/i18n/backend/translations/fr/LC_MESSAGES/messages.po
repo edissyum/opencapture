@@ -381,7 +381,7 @@ msgstr "Le fichier PDF est introuvable"
 
 #: src/backend/controllers/verifier.py:453
 msgid "MAARCH_WS_INFO_WRONG"
-msgstr "Les informations de connexion à Maarch sont erronnées"
+msgstr "Les informations de connexion à Maarch sont erronées"
 
 #: src/backend/controllers/verifier.py:459
 msgid "MAARCH_WS_INFO_EMPTY"
