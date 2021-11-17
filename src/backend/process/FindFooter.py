@@ -209,6 +209,29 @@ class FindFooter:
         self.vatRate = vat_rate
         return True
 
+    def get_data_with_positions(self, name):
+        position = self.Database.select({
+            'select': [
+                "positions ->> '" + name + "' as " + name + "_position",
+                "pages ->> '" + name + "' as " + name + "_page"
+            ],
+            'table': ['accounts_supplier'],
+            'where': ['vat_number = %s', 'status <> %s'],
+            'data': [self.supplier[0], 'DEL']
+        })[0]
+
+        if position and position[name + '_position'] not in [False, 'NULL', '', None]:
+            data = {'position': position[name + '_position'], 'regex': None, 'target': 'full', 'page': position[name + '_page']}
+            res = search_custom_positions(data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
+            if res[0]:
+                _return = {
+                    0: re.sub(r"[^0-9\.]|\.(?!\d)", "", res[0].replace(',', '.')),
+                    1: json.loads(res[1]),
+                    "from_position": True
+                }
+                return _return
+        return False
+
     def run(self, text_as_string=False):
         total_ttc, total_ht, vat_rate = {}, {}, {}
         if self.supplier:
@@ -219,24 +242,8 @@ class FindFooter:
                     1: all_rate[1]
                 }
             else:
-                position = self.Database.select({
-                    'select': [
-                        "positions ->> 'total_ttc' as total_ttc_position",
-                        "pages ->> 'total_ttc' as total_ttc_page"
-                    ],
-                    'table': ['accounts_supplier'],
-                    'where': ['vat_number = %s', 'status <> %s'],
-                    'data': [self.supplier[0], 'DEL']
-                })[0]
-                if position and position['total_ttc_position'] not in [False, 'NULL', '', None]:
-                    data = {'position': position['total_ttc_position'], 'regex': None, 'target': 'full', 'page': position['total_ttc_page']}
-                    all_rate = search_custom_positions(data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
-                    if all_rate[0]:
-                        total_ttc = {
-                            0: re.sub(r"[^0-9\.]|\.(?!\d)", "", all_rate[0].replace(',', '.')),
-                            1: json.loads(all_rate[1]),
-                            "from_position": True
-                        }
+                res = self.get_data_with_positions('total_ttc')
+                total_ttc = res if res else False
 
             no_rate = search_by_positions(self.supplier, 'total_ht', self.Ocr, self.Files, self.Database)
             if no_rate and no_rate[0]:
@@ -245,24 +252,8 @@ class FindFooter:
                     1: all_rate[1]
                 }
             else:
-                position = self.Database.select({
-                    'select': [
-                        "positions ->> 'total_ht' as total_ht_position",
-                        "pages ->> 'total_ht' as total_ht_page"
-                    ],
-                    'table': ['accounts_supplier'],
-                    'where': ['vat_number = %s', 'status <> %s'],
-                    'data': [self.supplier[0], 'DEL']
-                })[0]
-                if position and position['total_ht_position'] not in [False, 'NULL', '', None]:
-                    data = {'position': position['total_ht_position'], 'regex': None, 'target': 'full', 'page': position['total_ht_page']}
-                    no_rate = search_custom_positions(data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
-                    if no_rate[0]:
-                        total_ht = {
-                            0: re.sub(r"[^0-9\.]|\.(?!\d)", "", no_rate[0].replace(',', '.')),
-                            1: json.loads(no_rate[1]),
-                            "from_position": True
-                        }
+                res = self.get_data_with_positions('total_ht')
+                total_ht = res if res else False
 
             percentage = search_by_positions(self.supplier, 'vat_rate', self.Ocr, self.Files, self.Database)
             if percentage and percentage[0]:
@@ -271,24 +262,8 @@ class FindFooter:
                     1: all_rate[1]
                 }
             else:
-                position = self.Database.select({
-                    'select': [
-                        "positions ->> 'vat_rate' as vat_rate_position",
-                        "pages ->> 'vat_rate' as vat_rate_page"
-                    ],
-                    'table': ['accounts_supplier'],
-                    'where': ['vat_number = %s', 'status <> %s'],
-                    'data': [self.supplier[0], 'DEL']
-                })[0]
-                if position and position['vat_rate_position'] not in [False, 'NULL', '', None]:
-                    data = {'position': position['vat_rate_position'], 'regex': None, 'target': 'full', 'page': position['vat_rate_page']}
-                    percentage = search_custom_positions(data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
-                    if percentage[0]:
-                        vat_rate = {
-                            0: re.sub(r"[^0-9\.]|\.(?!\d)", "", percentage[0].replace(',', '.')),
-                            1: json.loads(percentage[1]),
-                            "from_position": True
-                        }
+                res = self.get_data_with_positions('vat_rate')
+                vat_rate = res if res else False
 
         vat_amount = False
 
