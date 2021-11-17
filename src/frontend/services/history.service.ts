@@ -1,5 +1,4 @@
-import { Injectable } from '@angular/core';
-import {splitAtColon} from "@angular/compiler/src/util";
+import {Injectable} from '@angular/core';
 import {API_URL} from "../app/env";
 import {catchError, tap} from "rxjs/operators";
 import {of} from "rxjs";
@@ -29,9 +28,6 @@ export class HistoryService {
             'user_id': this.userService.user.id
         };
         this.http.post(API_URL + '/ws/history/add', data, {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-
-            }),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);

@@ -43,9 +43,9 @@ def upload():
 @bp.route('splitter/batches/<int:id>', defaults={'size': None, 'page': None}, methods=['GET'])
 @bp.route('splitter/batches/<int:page>/<int:size>', defaults={'id': None}, methods=['GET'])
 @auth.token_required
-def retrieve_splitter_batches(id, page, size):
+def retrieve_splitter_batches(batch_id, page, size):
     args = {
-        'id': id,
+        'id': batch_id,
         'size': size,
         'page': page
     }

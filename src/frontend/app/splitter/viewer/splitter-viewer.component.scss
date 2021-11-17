@@ -167,7 +167,12 @@ a:hover {
     transform: scale(4);
 }
 
-::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-background, .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background, .mat-accent .mat-pseudo-checkbox-checked, .mat-accent .mat-pseudo-checkbox-indeterminate, .mat-pseudo-checkbox-checked, .mat-pseudo-checkbox-indeterminate {
+::ng-deep .mat-checkbox-checked.mat-accent .mat-checkbox-background,
+.mat-checkbox-indeterminate.mat-accent .mat-checkbox-background,
+.mat-accent .mat-pseudo-checkbox-checked,
+.mat-accent .mat-pseudo-checkbox-indeterminate,
+.mat-pseudo-checkbox-checked,
+.mat-pseudo-checkbox-indeterminate {
     background-color: rgba(151, 191, 61, 1) !important;
 }
 

@@ -9,7 +9,7 @@
                           [ngClass]="{'border-4 border-green-400': currentBatch.id == batch.id}">
                     <a class="image-link" (click)="changeBatch(batch['id'])">
                         <mat-card-header>
-                            <img class="page-image" mat-card-image [src]="batch['image_url']">
+                            <img class="page-image" mat-card-image [src]="batch['image_url']" alt="Open-Capture Splitter image">
                         </mat-card-header>
                     </a>
                     <mat-card-content>
@@ -39,7 +39,7 @@
              *ngIf="showZoomPage" mat-card-image
              [src]="zoomImageUrl"
              (clickOutside)="showZoomPage = false"
-             [exclude]="'.btn-page-zoom'" alt="Zoom Image"/>
+             [exclude]="'.btn-page-zoom'" alt="Zoom Image">
         <div class="w-10/12 absolute top-0 mx-32">
             <mat-accordion class="metadata" *ngIf="isLoadingPages == false">
                 <mat-expansion-panel class="my-10 bg-gray-20" [expanded]="true" (opened)="metaDataOpenState = true"
@@ -150,7 +150,7 @@
                                               class="page-check-box float-left mt-4" id="page-check-box-{{page['id']}}">
                                 </mat-checkbox>
                             </div>
-                            <img class="page-image" mat-card-image [src]="getPageUrlById(page['id'])"/>
+                            <img class="page-image" mat-card-image [src]="getPageUrlById(page['id'])" alt="Open-Capture Splitter image">
                         </div>
                     </div>
                 </mat-card-content>

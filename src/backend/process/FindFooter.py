@@ -59,7 +59,11 @@ class FindFooter:
             for res in re.finditer(r"" + regex + "", content.upper().replace(' ', '')):
                 # Retrieve only the number and add it in array
                 # In case of multiple no rates amount found, take the higher
-                tmp = re.finditer(r'[-+]?\d*[.,]+\d+([.,]+\d+)?|\d+', res.group())
+                data = res.group()
+                if regex == self.Locale.vatAmountRegex:
+                    data = re.sub(r"" + self.Locale.vatAmountRegex[:-2] + "", '', res.group())  # Delete the delivery number keyword
+
+                tmp = re.finditer(r'[-+]?\d*[.,]+\d+([.,]+\d+)?|\d+', data)
                 result = ''
                 i = 0
                 for t in tmp:

@@ -172,13 +172,13 @@ export class CreateSupplierComponent implements OnInit {
 
     isValidForm() {
         let state = true;
-
         this.supplierForm.forEach(element => {
             if (element.control.status !== 'DISABLED' && element.control.status !== 'VALID') {
                 state = false;
             }
             element.control.markAsTouched();
         });
+
         this.addressForm.forEach(element => {
             if (element.control.status !== 'DISABLED' && element.control.status !== 'VALID') {
                 state = false;

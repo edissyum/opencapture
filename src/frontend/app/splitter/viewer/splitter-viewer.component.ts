@@ -339,7 +339,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                             .subscribe(filteredMetadata => {
                                 this.filteredServerSideMetadata.next(filteredMetadata);
                                 this.searching = false;
-                            }, error => {
+                            }, () => {
                                 this.searching = false;
                             });
                     }
@@ -465,7 +465,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.fields = [];
         this.fillDataValues({});
         this.selectedMetadata = {id: -1};
-        this.router.navigate(['splitter/viewer/' + id]);
+        this.router.navigate(['splitter/viewer/' + id]).then();
         this.currentBatch.id = id;
         this.loadSelectedBatch();
     }
@@ -534,7 +534,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 return of(false);
             })
         ).subscribe(() => {
-            this.router.navigate(['splitter/list']);
+            this.router.navigate(['splitter/list']).then();
             this.notify.success(this.translate.instant('SPLITTER.validate_batch'));
         });
     }

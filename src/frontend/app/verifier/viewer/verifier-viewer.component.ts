@@ -177,7 +177,7 @@ export class VerifierViewerComponent implements OnInit {
                 this.currentFormFields = await this.getForm();
             } else {
                 this.notify.error(this.translate.instant('VERIFIER.no_form_available'));
-                this.router.navigate(['/verifier/list']);
+                await this.router.navigate(['/verifier/list']);
             }
         }
         /*
@@ -565,7 +565,8 @@ export class VerifierViewerComponent implements OnInit {
         // Write the label of the input above the selection rectangle
         const page = this.getPage(this.lastId);
         if (this.ocrFromUser || (parseInt(String(page)) === this.currentPage || page === 0)) {
-            if ($('#select-area-label_' + cpt).length === 0) {
+            const selectAreaLabel = $('#select-area-label_' + cpt)
+            if (selectAreaLabel.length === 0) {
                 const outline = $('#select-areas-outline_' + cpt);
                 const backgroundArea = $('#select-areas-background-area_' + cpt);
                 const labelContainer = $('#select-areas-label-container_' + cpt);
@@ -589,7 +590,7 @@ export class VerifierViewerComponent implements OnInit {
             }
             // End write
 
-            const inputId = $('#select-area-label_' + cpt).attr('class').replace('input_', '').replace('select-none', '');
+            const inputId = selectAreaLabel.attr('class').replace('input_', '').replace('select-none', '');
 
             // Test to avoid multi selection for same label. If same label exists, remove the selected areas and replace it by the new one
             const label = $('div[id*=select-area-label_]:contains(' + this.lastLabel + ')');

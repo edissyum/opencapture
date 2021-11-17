@@ -15,7 +15,6 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-import os
 from configparser import ConfigParser, ExtendedInterpolation
 
 

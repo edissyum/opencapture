@@ -175,7 +175,6 @@ def get_batch_pages(args):
 def change_status(args):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
-    error = None
 
     args = {
         'table': ['splitter_batches'],
