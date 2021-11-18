@@ -1,8 +1,11 @@
 -- CRÉATION DES STATUS
-INSERT INTO "status" ("id","label","label_long") VALUES ('NEW','À valider','À valider');
-INSERT INTO "status" ("id","label","label_long") VALUES ('END','Cloturée','Facture validée et cloturée');
-INSERT INTO "status" ("id","label","label_long") VALUES ('ERR','Erreur','Erreur lors de la qualification');
-INSERT INTO "status" ("id","label","label_long") VALUES ('DEL','Supprimée','Supprimée');
+INSERT INTO "status" ("id","label","label_long", "module") VALUES ('NEW', 'À valider', 'À valider', 'verifier');
+INSERT INTO "status" ("id","label","label_long", "module") VALUES ('END', 'Cloturée', 'Facture validée et cloturée', 'verifier');
+INSERT INTO "status" ("id","label","label_long", "module") VALUES ('ERR', 'Erreur', 'Erreur lors de la qualification', 'verifier');
+INSERT INTO "status" ("id","label","label_long", "module") VALUES ('DEL', 'Supprimée', 'Supprimée', 'verifier');
+INSERT INTO "status" ("id","label","label_long", "module") VALUES ('NEW', 'À valider', 'À valider', 'splitter');
+INSERT INTO "status" ("id","label","label_long", "module") VALUES ('END', 'Clotûré', 'Lot clôturé', 'splitter');
+INSERT INTO "status" ("id","label","label_long", "module") VALUES ('ERR', 'Supprimé', 'Supprimé', 'splitter');
 
 -- CRÉATION DES CHAINES SORTANTES DU MODULE VERIFIER
 INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "module", "data") VALUES (1, 'export_xml', 'Export XML', 'verifier', '{

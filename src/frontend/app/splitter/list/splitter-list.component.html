@@ -1,54 +1,61 @@
 <mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem">
-    <div *ngIf="isLoading">
-        <app-loader></app-loader>
-    </div>
-    <mat-sidenav-content class="bg-white overflow-x-hidden" *ngIf="!isLoading">
-        <div class="grid grid-cols-3 grid-flow-row gap-0 mt-4 z-30">
-            <mat-form-field class="left-4 w-1/2" appearance="outline">
-                <mat-label>{{ 'SPLITTER.search' | translate }}</mat-label>
-                <input matInput type="text" [(ngModel)]="searchText">
-            </mat-form-field>
-<!--            <mat-form-field class="w-1/2 m-auto" appearance="outline">-->
-<!--                <mat-label>{{ 'STATUS.list' | translate }}</mat-label>-->
-<!--                <mat-select [(value)]="currentStatus" (selectionChange)="changeStatus($event)">-->
-<!--                    <mat-option *ngFor="let option of status" [value]="option['id']">-->
-<!--                        {{ option['label'] }}-->
-<!--                    </mat-option>-->
-<!--                </mat-select>-->
-<!--            </mat-form-field>-->
-            <span class="absolute right-0">
-                <mat-paginator [length] = "paginationInfos.length"
-                               [pageSize]="paginationInfos.pageSize"
-                               [pageSizeOptions]="[5, 10, 25, 100]"
-                               (page)="onPageChange($event)">
-                </mat-paginator>
-            </span>
-        </div>
-        <div class="flex flex-col mx-10 mt-3">
-            <div class="list grid grid-cols-4 grid-flow-row gap-12">
-                <span *ngIf="(batches | filter : 'file_name' : searchText).length == 0 && !isLoading" class="text-gray-800">{{ 'SPLITTER.no_batch_found' | translate }}</span>
-                <mat-card class="batch-card cursor-pointer p-0 mb-0" *ngFor="let batch of batches | filter : 'file_name' : searchText">
-                    <img [routerLink]="'/splitter/viewer/' + batch['id']" class="m-auto p-4" mat-card-image [src]="sanitize(batch['image_url'])" alt="Open-Capture Splitter image">
-                    <mat-card-header class="leading-6 relative z-10 bg-white pt-4 pl-4 pr-4"
-                                     [routerLink]="'/splitter/viewer/' + batch['id']">
-                        <span class="absolute right-6 text-green-400 text-base badge badge-secondary badge-pill"
-                              [matTooltip]="this.translate.instant('VERIFIER.nb_pages') + ' : ' +  batch['page_number']">
-                                {{ batch['page_number'] }}<i class="far fa-file ml-1"></i>
+
+    <mat-sidenav-content class="bg-white overflow-hidden">
+        <mat-tab-group [selectedIndex]="selectedTab" (selectedTabChange)="onTabChange($event)" class="batches overflow-auto" animationDuration="0ms">
+            <mat-tab *ngFor="let batch of batchList" [label]="this.translate.instant(batch.label)" [id]="batch.id">
+                <div class="flex flex-col">
+                    <div class="grid grid-cols-3 grid-flow-row gap-0 mt-4 z-30">
+                        <mat-form-field class="left-4 w-1/2" appearance="outline">
+                            <mat-label>{{ 'SPLITTER.search' | translate }}</mat-label>
+                            <input matInput type="text" [(ngModel)]="searchText">
+                        </mat-form-field>
+                        <mat-form-field class="w-1/2 m-auto" appearance="outline">
+                            <mat-label>{{ 'STATUS.list' | translate }}</mat-label>
+                            <mat-select [(value)]="currentStatus" (selectionChange)="changeStatus($event)">
+                                <mat-option *ngFor="let option of status" [value]="option['id']">
+                                    {{ option['label'] }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <span [class.hidden]="isLoading" class="relative right-0">
+                            <mat-paginator [length] = "paginationInfos.length"
+                                           [pageSize]="paginationInfos.pageSize"
+                                           [pageSizeOptions]="[5, 10, 25, 100]"
+                                           (page)="onPageChange($event)">
+                            </mat-paginator>
                         </span>
-                        <mat-card-title class="card-title text-lg break-words">
-                            <span>{{batch['file_name']}}</span>
-                        </mat-card-title>
-                        <mat-card-subtitle class="mt-2 -mb-1 break-all">
-                            <b>{{ 'VERIFIER.register_date' | translate }}</b> : {{ batch['batch_date'] }}<br>
-                        </mat-card-subtitle>
-                    </mat-card-header>
-                    <mat-card-actions class="pb-4 pl-4">
-                        <i class="fas fa-trash cursor-pointer text-red-500" (click)="$event.stopPropagation();openConfirmDialog(batch['id'])">
-                            <span class="font-medium mat-typography">{{ 'GLOBAL.delete' | translate }}</span>
-                        </i>
-                    </mat-card-actions>
-                </mat-card>
-            </div>
-        </div>
+                    </div>
+                    <div *ngIf="isLoading">
+                        <app-loader></app-loader>
+                    </div>
+                    <div class="content mx-10 mt-3" *ngIf="!isLoading">
+                        <div class="list grid grid-cols-4 grid-flow-row gap-12">
+                            <span *ngIf="(batches | filter : 'file_name' : searchText).length == 0 && !isLoading" class="text-gray-800">{{ 'SPLITTER.no_batch_found' | translate }}</span>
+                            <mat-card class="batch-card cursor-pointer p-0 mb-0" *ngFor="let batch of batches | filter : 'file_name' : searchText">
+                                <img [routerLink]="'/splitter/viewer/' + batch['id']" class="m-auto p-4" mat-card-image [src]="sanitize(batch['image_url'])" alt="Open-Capture Splitter image">
+                                <mat-card-header class="leading-6 relative z-10 bg-white pt-4 pl-4 pr-4"
+                                                 [routerLink]="'/splitter/viewer/' + batch['id']">
+                                    <span class="absolute right-6 text-green-400 text-base badge badge-secondary badge-pill"
+                                          [matTooltip]="this.translate.instant('VERIFIER.nb_pages') + ' : ' +  batch['page_number']">
+                                            {{ batch['page_number'] }}<i class="far fa-file ml-1"></i>
+                                    </span>
+                                    <mat-card-title class="card-title text-lg break-words">
+                                        <span>{{batch['file_name']}}</span>
+                                    </mat-card-title>
+                                    <mat-card-subtitle class="mt-2 -mb-1 break-all">
+                                        <b>{{ 'VERIFIER.register_date' | translate }}</b> : {{ batch['batch_date'] }}<br>
+                                    </mat-card-subtitle>
+                                </mat-card-header>
+                                <mat-card-actions class="pb-4 pl-4">
+                                    <i class="fas fa-trash cursor-pointer text-red-500" (click)="$event.stopPropagation();openConfirmDialog(batch['id'])">
+                                        <span class="font-medium mat-typography">{{ 'GLOBAL.delete' | translate }}</span>
+                                    </i>
+                                </mat-card-actions>
+                            </mat-card>
+                        </div>
+                    </div>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
     </mat-sidenav-content>
 </mat-sidenav-container>

@@ -151,7 +151,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     loadBatches(): void {
-        this.http.get(API_URL + '/ws/splitter/batches/0/5', {headers: this.authService.headers}).pipe(
+        this.http.get(API_URL + '/ws/splitter/batches/0/5/None/NEW', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 data.batches.forEach((batch: Batch) =>
                     this.batches.push(

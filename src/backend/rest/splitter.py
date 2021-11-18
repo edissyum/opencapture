@@ -39,15 +39,17 @@ def upload():
         return make_response(gettext('UNKNOW_ERROR'), 400)
 
 
-@bp.route('splitter/batches', defaults={'batch_id': None, 'size': None, 'page': None}, methods=['GET'])
-@bp.route('splitter/batches/<int:batch_id>', defaults={'size': None, 'page': None}, methods=['GET'])
-@bp.route('splitter/batches/<int:page>/<int:size>', defaults={'batch_id': None}, methods=['GET'])
+@bp.route('splitter/batches', defaults={'time': None, 'status': None, 'batch_id': None, 'size': None, 'page': None}, methods=['GET'])
+@bp.route('splitter/batches/<int:batch_id>', defaults={'time': None, 'status': None, 'size': None, 'page': None}, methods=['GET'])
+@bp.route('splitter/batches/<int:page>/<int:size>/<string:time>/<string:status>', defaults={'batch_id': None}, methods=['GET'])
 @auth.token_required
-def retrieve_splitter_batches(batch_id, page, size):
+def retrieve_splitter_batches(batch_id, page, size, time, status):
     args = {
-        'id': batch_id,
+        'batch_id': batch_id,
         'size': size,
-        'page': page
+        'page': page,
+        'time': time if time != 'None' else None,
+        'status': status
     }
     res = splitter.retrieve_batches(args)
     return make_response(jsonify(res[0])), res[1]
