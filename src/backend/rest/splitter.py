@@ -39,9 +39,9 @@ def upload():
         return make_response(gettext('UNKNOW_ERROR'), 400)
 
 
-@bp.route('splitter/batches', defaults={'id': None, 'size': None, 'page': None}, methods=['GET'])
-@bp.route('splitter/batches/<int:id>', defaults={'size': None, 'page': None}, methods=['GET'])
-@bp.route('splitter/batches/<int:page>/<int:size>', defaults={'id': None}, methods=['GET'])
+@bp.route('splitter/batches', defaults={'batch_id': None, 'size': None, 'page': None}, methods=['GET'])
+@bp.route('splitter/batches/<int:batch_id>', defaults={'size': None, 'page': None}, methods=['GET'])
+@bp.route('splitter/batches/<int:page>/<int:size>', defaults={'batch_id': None}, methods=['GET'])
 @auth.token_required
 def retrieve_splitter_batches(batch_id, page, size):
     args = {
