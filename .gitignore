@@ -12,7 +12,10 @@ bin/scripts/*/*.sh
 instance/config/*.ini
 last_notification.lock
 instance/upload/*/*.pdf
+instance/upload/*/*.csv
+instance/upload/*/*.ods
 instance/referencial/*.ods
+instance/referencial/*.csv
 instance/referencial/*.json
 bin/data/MailCollect/MAIL_1/
 bin/data/MailCollect/_ERROR/MAIL_1/
