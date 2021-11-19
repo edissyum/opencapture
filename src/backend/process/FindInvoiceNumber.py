@@ -38,7 +38,7 @@ class FindInvoiceNumber:
         self.customPage = custom_page
 
     def sanitize_invoice_number(self, data):
-        invoice_res = ''
+        invoice_res = data
         # If the regex return a date, remove it
         for _date in re.finditer(r"" + self.Locale.dateRegex + "", data):
             if _date.group():

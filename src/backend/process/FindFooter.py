@@ -271,10 +271,13 @@ class FindFooter:
 
         vat_amount = False
 
-        if not self.test_amount(total_ht, total_ttc, vat_rate):
-            total_ht = self.process(self.Locale.noRatesRegex, text_as_string)
-            vat_rate = self.process(self.Locale.vatRateRegex, text_as_string)
-            total_ttc = self.process(self.Locale.allRatesRegex, text_as_string)
+        if not self.test_amount(total_ht, total_ttc, vat_rate) or not total_ht or not total_ttc or not vat_rate:
+            if not total_ht:
+                total_ht = self.process(self.Locale.noRatesRegex, text_as_string)
+            if not vat_rate:
+                vat_rate = self.process(self.Locale.vatRateRegex, text_as_string)
+            if not total_ttc:
+                total_ttc = self.process(self.Locale.allRatesRegex, text_as_string)
 
         if total_ttc and total_ht:
             ttc = self.return_max(total_ttc)[0]

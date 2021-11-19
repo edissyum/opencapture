@@ -38,7 +38,7 @@ class FindDeliveryNumber:
         self.target = target
 
     def sanitize_delivery_number(self, data):
-        delivery_res = ''
+        delivery_res = data
         # If the regex return a date, remove it
         for _date in re.finditer(r"" + self.Locale.dateRegex + "", data):
             if _date.group():
