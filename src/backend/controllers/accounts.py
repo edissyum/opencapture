@@ -312,7 +312,6 @@ def update_customer(customer_id, data):
 
     if error is None:
         _set = {}
-
         if 'address_id' in data:
             _set.update({'address_id': data['address_id']})
         if 'name' in data:

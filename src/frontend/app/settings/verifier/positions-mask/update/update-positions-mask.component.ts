@@ -32,7 +32,6 @@ import {marker} from "@biesbjerg/ngx-translate-extract-marker";
 import {FileValidators} from "ngx-file-drag-drop";
 import {DomSanitizer} from "@angular/platform-browser";
 import {ConfigService} from "../../../../../services/config.service";
-import * as moment from "moment";
 import {HistoryService} from "../../../../../services/history.service";
 declare var $: any;
 
@@ -213,7 +212,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
             this.invoiceImageNbPages = this.positionsMask.nb_pages;
             this.invoiceImageWidth = this.positionsMask.width;
             this.imageInvoice = $('#invoice_image_src');
-            let thumbB64: any = {};
+            let thumbB64: any;
             thumbB64 = await this.getThumb(this.positionsMask.filename);
             this.invoiceImageSrc = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + thumbB64.file);
         }
@@ -468,7 +467,8 @@ export class UpdatePositionsMaskComponent implements OnInit {
         $('.trigger').show();
         const _this = this;
         this.lastId = event.target.id;
-        this.lastLabel = $('#label_' + this.lastId).length !== 0 ? $('#label_' + this.lastId)[0].innerText : '';
+        const lastLabel = $('#label_' + this.lastId);
+        this.lastLabel = lastLabel.length !== 0 ? lastLabel[0].innerText : '';
         this.lastColor = color;
         const imageContainer = $('.image-container');
         const deleteArea = $('.delete-area');
@@ -518,7 +518,8 @@ export class UpdatePositionsMaskComponent implements OnInit {
     ocr_process(img: any, cpt: number, selection: any) {
         const page = this.getPage(this.lastId);
         if (this.ocrFromUser || (page === this.currentPage || page === 0)) {
-            if ($('#select-area-label_' + cpt).length === 0) {
+            const selectAreaLabel = $('#select-area-label_' + cpt);
+            if (selectAreaLabel.length === 0) {
                 const outline = $('#select-areas-outline_' + cpt);
                 const backgroundArea = $('#select-areas-background-area_' + cpt);
                 const labelContainer = $('#select-areas-label-container_' + cpt);
@@ -531,7 +532,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                 outline.data('page', page);
             }
 
-            const inputId = $('#select-area-label_' + cpt).attr('class').replace('input_', '').replace('select-none', '');
+            const inputId = selectAreaLabel.attr('class').replace('input_', '').replace('select-none', '');
             $('#' + inputId).focus();
 
             // Test to avoid multi selection for same label. If same label exists, remove the selected areas and replace it by the new one

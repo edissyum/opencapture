@@ -59,9 +59,21 @@ def retrieve_batches(args):
     _config = _vars[1]
 
     args['select'] = ['*', "to_char(creation_date, 'DD-MM-YYY " + gettext('AT') + " HH24:MI:SS') as batch_date"]
+    args['where'] = ['status <> %s']
+    args['data'] = ['DEL']
 
+    if 'status' in args and args['status'] is not None:
+        args['where'].append("status = %s")
+        args['data'].append(args['status'])
+
+    if 'time' in args and args['time'] is not None:
+        if args['time'] in ['today', 'yesterday']:
+            args['where'].append(
+                "to_char(creation_date, 'YYYY-MM-DD') = to_char(TIMESTAMP '" + args['time'] + "', 'YYYY-MM-DD')")
+        else:
+            args['where'].append("to_char(creation_date, 'YYYY-MM-DD') < to_char(TIMESTAMP 'yesterday', 'YYYY-MM-DD')")
     batches, error_batches = splitter.retrieve_batches(args)
-    count, error_count = splitter.count_batches()
+    count, error_count = splitter.count_batches(args)
     if not error_batches and not error_count:
         for index, batch in enumerate(batches):
             try:

@@ -211,7 +211,7 @@ export class CustomFieldsComponent implements OnInit {
         };
 
         this.http.post(API_URL + '/ws/customFields/update', updatedField, {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
+            tap(() => {
                 transferArrayItem(
                     oldList,
                     newList,

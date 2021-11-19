@@ -16,14 +16,10 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import os
-import uuid
-
-from datetime import date
-from src.backend.classes.Files import Files
-import xml.etree.cElementTree as ET
-from xml.dom import minidom
-import datetime
 import random
+from xml.dom import minidom
+import xml.etree.cElementTree as ET
+from src.backend.classes.Files import Files
 
 
 class Splitter:
@@ -144,7 +140,7 @@ class Splitter:
         hour = str('%02d' % now_date.hour)
         minute = str('%02d' % now_date.minute)
         seconds = str('%02d' % now_date.second)
-        date = year + month + day + hour + minute + seconds
+        _date = year + month + day + hour + minute + seconds
         random_num = str(random.randint(0, 99999)).zfill(5)
         filename_parameters = parameters['filename'].split('#')
         separator = parameters['separator'] if parameters['separator'] else ''
@@ -154,7 +150,7 @@ class Splitter:
             elif filename_parameter == 'doctype' and document:
                 file_name.append(document['documentTypeKey'].replace(' ', separator))
             elif filename_parameter == 'date':
-                file_name.append(date.replace(' ', separator))
+                file_name.append(_date.replace(' ', separator))
             elif filename_parameter == 'random':
                 file_name.append(random_num.replace(' ', separator))
             else:

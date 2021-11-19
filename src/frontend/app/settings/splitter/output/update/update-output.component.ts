@@ -16,10 +16,9 @@ along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses
 @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
-import {Component, OnInit, Pipe, PipeTransform} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {FormBuilder, FormControl} from "@angular/forms";
-import {marker} from "@biesbjerg/ngx-translate-extract-marker";
 import {ActivatedRoute, Router} from "@angular/router";
 import {AuthService} from "../../../../../services/auth.service";
 import {UserService} from "../../../../../services/user.service";

@@ -37,6 +37,18 @@ class FindInvoiceNumber:
         self.nbPages = nb_pages
         self.customPage = custom_page
 
+    def sanitize_invoice_number(self, data):
+        invoice_res = ''
+        # If the regex return a date, remove it
+        for _date in re.finditer(r"" + self.Locale.dateRegex + "", data):
+            if _date.group():
+                invoice_res = data.replace(_date.group(), '')
+
+        # Delete the invoice keyword
+        tmp_invoice_number = re.sub(r"" + self.Locale.invoiceRegex[:-2] + "", '', invoice_res)
+        invoice_number = tmp_invoice_number.lstrip().split(' ')[0]
+        return invoice_number
+
     def run(self):
         if self.supplier:
             invoice_number = search_by_positions(self.supplier, 'invoice_number', self.Ocr, self.Files, self.Database)
@@ -69,32 +81,14 @@ class FindInvoiceNumber:
 
         for line in self.text:
             for _invoice in re.finditer(r"" + self.Locale.invoiceRegex + "", line.content.upper()):
-                invoice_res = _invoice.group()
-                # If the regex return a date, remove it
-                for _date in re.finditer(r"" + self.Locale.dateRegex + "", _invoice.group()):
-                    if _date.group():
-                        invoice_res = _invoice.group().replace(_date.group(), '')
-
-                # Delete the invoice keyword
-                tmp_invoice_number = re.sub(r"" + self.Locale.invoiceRegex[:-2] + "", '', invoice_res)
-                invoice_number = tmp_invoice_number.lstrip().split(' ')[0]
-
+                invoice_number = self.sanitize_invoice_number(_invoice.group())
                 if len(invoice_number) >= int(self.Locale.invoiceSizeMin):
                     self.Log.info('Invoice number found : ' + invoice_number)
                     return [invoice_number, line.position, self.nbPages]
 
         for line in self.footer_text:
             for _invoice in re.finditer(r"" + self.Locale.invoiceRegex + "", line.content.upper()):
-                invoice_res = _invoice.group()
-                # If the regex return a date, remove it
-                for _date in re.finditer(r"" + self.Locale.dateRegex + "", _invoice.group()):
-                    if _date.group():
-                        invoice_res = _invoice.group().replace(_date.group(), '')
-
-                # Delete the invoice keyword
-                tmp_invoice_number = re.sub(r"" + self.Locale.invoiceRegex[:-2] + "", '', invoice_res)
-                invoice_number = tmp_invoice_number.lstrip().split(' ')[0]
-
+                invoice_number = self.sanitize_invoice_number(_invoice.group())
                 if len(invoice_number) >= int(self.Locale.invoiceSizeMin):
                     self.Log.info('Invoice number found : ' + invoice_number)
                     position = self.Files.return_position_with_ratio(line, 'footer')

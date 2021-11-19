@@ -46,13 +46,6 @@ def launch(args):
     splitter = _Splitter(config, database, locale, separator_qr, log)
 
     if args.get('isMail') is not None and args['isMail'] is True:
-        config_mail = _Config(args['config_mail'])
-        mail_class = _Mail(
-            config_mail.cfg[args['process']]['host'],
-            config_mail.cfg[args['process']]['port'],
-            config_mail.cfg[args['process']]['login'],
-            config_mail.cfg[args['process']]['password']
-        )
         log = _Log((args['log']), smtp)
         log.info('Process attachment n°' + args['cpt'] + '/' + args['nb_of_attachments'])
 

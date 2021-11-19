@@ -19,13 +19,15 @@ from flask_babel import gettext
 from src.backend.main import create_classes_from_current_config
 
 
-def get_status():
+def get_status(module):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
     forms = _db.select({
         'select': ['*'],
         'table': ['status'],
+        'where': ['module = %s'],
+        'data': [module]
     })
 
     if not forms:

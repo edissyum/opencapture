@@ -150,8 +150,10 @@ def update_position_by_invoice_id(invoice_id, args):
         invoice_positions.update({
             column: position
         })
-        res, error = verifier.update_invoice(
-            {'set': {"positions": json.dumps(invoice_positions)}, 'invoice_id': invoice_id})
+        res, error = verifier.update_invoice({
+            'set': {"positions": json.dumps(invoice_positions)},
+            'invoice_id': invoice_id
+        })
         if error is None:
             return '', 200
         else:
@@ -359,7 +361,7 @@ def export_maarch(invoice_id, data):
             _vars[5],
             _vars[1]
         )
-        if ws.status:
+        if ws.status[0]:
             invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
             if not error:
                 args = {}

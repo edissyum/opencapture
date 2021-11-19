@@ -18,7 +18,7 @@
 import {Component, OnInit} from '@angular/core';
 import {LocalStorageService} from "../../../services/local-storage.service";
 import {API_URL} from "../../env";
-import {catchError, tap} from "rxjs/operators";
+import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {AuthService} from "../../../services/auth.service";
 import {HttpClient} from "@angular/common/http";
@@ -33,6 +33,7 @@ import {ConfirmDialogComponent} from "../../../services/confirm-dialog/confirm-d
 import {MatDialog} from '@angular/material/dialog';
 import {HistoryService} from "../../../services/history.service";
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from "@angular/material/form-field";
+import {marker} from "@biesbjerg/ngx-translate-extract-marker";
 
 @Component({
     selector: 'app-list',
@@ -44,16 +45,34 @@ import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from "@angular/material/form-field";
 })
 
 export class SplitterListComponent implements OnInit {
-    isLoading = true;
-    batches = [] as any;
-    gridColumns = 4;
-    page = 1;
-    searchText: string = "";
-    paginationInfos = {
+    batches         : any;
+    isLoading       : boolean = true;
+    status          : any[]   = [];
+    gridColumns     : number  = 4;
+    page            : number  = 1;
+    selectedTab     : number  = 0;
+    searchText      : string  = "";
+    paginationInfos : any     = {
         length: 0,
         pageSize: 10,
         pageIndex: 1,
     };
+    batchList       : any[]   = [
+        {
+            'id': 'today',
+            'label': marker('BATCH.today'),
+        },
+        {
+            'id': 'yesterday',
+            'label': marker('BATCH.yesterday'),
+        },
+        {
+            'id': 'older',
+            'label': marker('BATCH.older'),
+        }
+    ];
+    currentTime     : string  = 'today';
+    currentStatus   : string  = 'NEW';
 
     constructor(
         private router: Router,
@@ -68,11 +87,20 @@ export class SplitterListComponent implements OnInit {
         private notify: NotificationService,
         private historyService: HistoryService,
         private localeStorageService: LocalStorageService,
-    ) {
-    }
+    ) {}
 
     ngOnInit(): void {
         this.localeStorageService.save('splitter_or_verifier', 'splitter');
+        this.http.get(API_URL + '/ws/status/list?module=splitter', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.status = data.status;
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
         this.loadBatches();
     }
 
@@ -81,13 +109,17 @@ export class SplitterListComponent implements OnInit {
     }
 
     loadBatches(): void {
-        this.http.get(API_URL + '/ws/splitter/batches/' + (this.paginationInfos['pageIndex'] - 1) + "/" +
-            this.paginationInfos['pageSize'], {headers: this.authService.headers}).pipe(
+        this.isLoading = true;
+        this.http.get(API_URL + '/ws/splitter/batches/' +
+            (this.paginationInfos['pageIndex'] - 1) + '/' +
+            this.paginationInfos['pageSize'] + '/' +
+            this.currentTime + '/' + this.currentStatus
+            , {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.batches = data.batches;
                 this.paginationInfos.length = data.count;
-                this.isLoading = false;
             }),
+            finalize(() => this.isLoading = false),
             catchError((err: any) => {
                 console.debug(err);
                 return of(false);
@@ -142,5 +174,27 @@ export class SplitterListComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
+    }
+
+    resetPaginator() {
+        this.paginationInfos.length = 0;
+        this.paginationInfos.offset = 0;
+        this.paginationInfos.pageIndex = 1;
+    }
+
+
+    onTabChange(event: any) {
+        // this.search = '';
+        this.selectedTab = event.index;
+        // this.localeStorageService.save('invoicesTimeIndex', this.selectedTab);
+        this.currentTime = this.batchList[this.selectedTab].id;
+        this.resetPaginator();
+        this.loadBatches();
+    }
+
+    changeStatus(event: any) {
+        this.currentStatus = event.value;
+        this.resetPaginator();
+        this.loadBatches();
     }
 }

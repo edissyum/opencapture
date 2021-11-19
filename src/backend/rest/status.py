@@ -15,8 +15,8 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from flask import Blueprint, make_response, jsonify
 from src.backend.import_controllers import status
+from flask import Blueprint, make_response, jsonify, request
 
 
 bp = Blueprint('status', __name__, url_prefix='/ws/')
@@ -24,6 +24,7 @@ bp = Blueprint('status', __name__, url_prefix='/ws/')
 
 @bp.route('status/list', methods=['GET'])
 def status_list():
-    _status = status.get_status()
+    module = request.args['module']
+    _status = status.get_status(module)
     return make_response(jsonify(_status[0])), _status[1]
 

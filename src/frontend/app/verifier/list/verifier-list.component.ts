@@ -170,7 +170,7 @@ export class VerifierListComponent implements OnInit {
             this.localeStorageService.remove('invoicesTimeIndex');
         }
 
-        this.http.get(API_URL + '/ws/status/list', {headers: this.authService.headers}).pipe(
+        this.http.get(API_URL + '/ws/status/list?module=verifier', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.status = data.status;
             }),

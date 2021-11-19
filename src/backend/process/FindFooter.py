@@ -59,7 +59,11 @@ class FindFooter:
             for res in re.finditer(r"" + regex + "", content.upper().replace(' ', '')):
                 # Retrieve only the number and add it in array
                 # In case of multiple no rates amount found, take the higher
-                tmp = re.finditer(r'[-+]?\d*[.,]+\d+([.,]+\d+)?|\d+', res.group())
+                data = res.group()
+                if regex == self.Locale.vatAmountRegex:
+                    data = re.sub(r"" + self.Locale.vatAmountRegex[:-2] + "", '', res.group())  # Delete the delivery number keyword
+
+                tmp = re.finditer(r'[-+]?\d*[.,]+\d+([.,]+\d+)?|\d+', data)
                 result = ''
                 i = 0
                 for t in tmp:
@@ -207,6 +211,30 @@ class FindFooter:
         self.totalHT = total_ht
         self.totalTTC = total_ttc
         self.vatRate = vat_rate
+        return True
+
+    def get_data_with_positions(self, name):
+        position = self.Database.select({
+            'select': [
+                "positions ->> '" + name + "' as " + name + "_position",
+                "pages ->> '" + name + "' as " + name + "_page"
+            ],
+            'table': ['accounts_supplier'],
+            'where': ['vat_number = %s', 'status <> %s'],
+            'data': [self.supplier[0], 'DEL']
+        })[0]
+
+        if position and position[name + '_position'] not in [False, 'NULL', '', None]:
+            data = {'position': position[name + '_position'], 'regex': None, 'target': 'full', 'page': position[name + '_page']}
+            res = search_custom_positions(data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
+            if res[0]:
+                _return = {
+                    0: re.sub(r"[^0-9\.]|\.(?!\d)", "", res[0].replace(',', '.')),
+                    1: json.loads(res[1]),
+                    "from_position": True
+                }
+                return _return
+        return False
 
     def run(self, text_as_string=False):
         total_ttc, total_ht, vat_rate = {}, {}, {}
@@ -217,18 +245,29 @@ class FindFooter:
                     0: re.sub(r"[^0-9\.]|\.(?!\d)", "", all_rate[0].replace(',', '.')),
                     1: all_rate[1]
                 }
+            else:
+                res = self.get_data_with_positions('total_ttc')
+                total_ttc = res if res else False
+
             no_rate = search_by_positions(self.supplier, 'total_ht', self.Ocr, self.Files, self.Database)
             if no_rate and no_rate[0]:
                 total_ht = {
                     0: re.sub(r"[^0-9\.]|\.(?!\d)", "", no_rate[0].replace(',', '.')),
                     1: all_rate[1]
                 }
+            else:
+                res = self.get_data_with_positions('total_ht')
+                total_ht = res if res else False
+
             percentage = search_by_positions(self.supplier, 'vat_rate', self.Ocr, self.Files, self.Database)
             if percentage and percentage[0]:
                 vat_rate = {
                     0: re.sub(r"[^0-9\.]|\.(?!\d)", "", percentage[0].replace(',', '.')),
                     1: all_rate[1]
                 }
+            else:
+                res = self.get_data_with_positions('vat_rate')
+                vat_rate = res if res else False
 
         vat_amount = False
 
@@ -238,13 +277,29 @@ class FindFooter:
             total_ttc = self.process(self.Locale.allRatesRegex, text_as_string)
 
         if total_ttc and total_ht:
-            vat_amount = float("%.2f" % (self.return_max(total_ttc)[0] - self.return_max(total_ht)[0]))
+            ttc = self.return_max(total_ttc)[0]
+            ht = self.return_max(total_ht)[0]
+            if 'from_position' in total_ttc and total_ttc['from_position']:
+                ttc = total_ttc[0]
+            if 'from_position' in total_ht and total_ht['from_position']:
+                ht = total_ht[0]
+            vat_amount = float("%.2f" % (float(ttc) - float(ht)))
 
         if total_ttc and vat_amount and not total_ht:
-            total_ht = [float("%.2f" % self.return_max(total_ttc)[0] - self.return_max(vat_amount)[0]), (('', ''), ('', ''))]
+            ttc = self.return_max(total_ttc)[0]
+            vat = vat_amount
+            if 'from_position' in total_ttc and total_ttc['from_position']:
+                ttc = total_ttc[0]
+            total_ht = [float("%.2f" % (float(ttc) - float(vat))), (('', ''), ('', ''))]
 
         if total_ttc and vat_rate and not total_ht:
-            total_ht = [float("%.2f" % (self.return_max(total_ttc)[0] / (1 + float(self.return_max(vat_rate)[0] / 100)))), (('', ''), ('', ''))]
+            ttc = self.return_max(total_ttc)[0]
+            percentage = self.return_max(vat_rate)[0]
+            if 'from_position' in total_ttc and total_ttc['from_position']:
+                ttc = total_ttc[0]
+            if 'from_position' in vat_rate and vat_rate['from_position']:
+                percentage = vat_rate[0]
+            total_ht = [float("%.2f" % (float(ttc) / float(1 + (float(percentage) / 100)))), (('', ''), ('', ''))]
 
         # Test all amounts. If some are false, try to search them with position. If not, pass
         if self.test_amount(total_ht, total_ttc, vat_rate) is not False:
@@ -252,6 +307,7 @@ class FindFooter:
             total_ht = self.return_max(self.totalHT)
             total_ttc = self.return_max(self.totalTTC)
             vat_rate = self.return_max(self.vatRate)
+
             if total_ht is False and total_ttc and vat_rate:
                 total_ht = [float("%.2f" % (float(total_ttc[0]) / (1 + float(vat_rate[0] / 100)))), (('', ''), ('', '')), True]
             elif total_ttc is False and total_ht and vat_rate:
@@ -299,7 +355,9 @@ class FindFooter:
 
     @staticmethod
     def return_max(value):
-        if value and isinstance(value, dict):
+        if 'from_position' in value and value['from_position']:
+            result = value
+        elif value and isinstance(value, dict):
             result = float(max(value.items(), key=operator.itemgetter(0))[0]), max(value.items(), key=operator.itemgetter(0))[1]
         elif value:
             result = value

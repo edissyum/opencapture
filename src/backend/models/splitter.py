@@ -105,13 +105,14 @@ def retrieve_batches(args):
     query_args = {
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['splitter_batches'],
-        'where': ['status <> %s', 'status <> %s'],
-        'data': ['DEL', 'END'],
+        'where': ['*'] if 'where' not in args else args['where'],
+        'data': ['*'] if 'data' not in args else args['data'],
         'order_by': ['creation_date DESC']
     }
-    if args['id']:
+
+    if args['batch_id']:
         query_args['where'].append('id = %s')
-        query_args['data'].append(str(args['id']))
+        query_args['data'].append(str(args['batch_id']))
     if args['size']:
         query_args['limit'] = str(args['size'])
     if args['size'] and args['page']:
@@ -121,15 +122,15 @@ def retrieve_batches(args):
     return batches, error
 
 
-def count_batches():
+def count_batches(args):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
     query_args = {
         'select': ['count(*)'],
         'table': ['splitter_batches'],
-        'where': ['status <> %s', 'status <> %s'],
-        'data': ['DEL', 'END'],
+        'where': ['*'] if 'select' not in args else args['where'],
+        'data': ['*'] if 'select' not in args else args['data'],
     }
 
     count = _db.select(query_args)
@@ -175,7 +176,6 @@ def get_batch_pages(args):
 def change_status(args):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
-    error = None
 
     args = {
         'table': ['splitter_batches'],

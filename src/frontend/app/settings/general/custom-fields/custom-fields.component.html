@@ -101,7 +101,7 @@
                             <mat-label [attr.for]="input.label_short">{{ input.label | translate }}</mat-label>
                             <div [ngSwitch]="input.controlType">
                                 <input matInput *ngSwitchCase="'text'" [formControlName]="input.label_short"
-                                       [id]="input.label_short" [type]="input.type"/>
+                                       [id]="input.label_short" [type]="input.type">
                                 <mat-select [id]="input.label_short" *ngSwitchCase="'dropdown'"
                                             [formControlName]="input.label_short">
                                     <mat-option *ngFor="let opt of input.options" [value]="opt.key">

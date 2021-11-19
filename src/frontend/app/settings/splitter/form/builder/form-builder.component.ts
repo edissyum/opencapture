@@ -363,7 +363,6 @@ export class SplitterFormBuilderComponent implements OnInit {
 
     addOutput() {
         this.outputForm[0].cpt = this.outputForm[0].cpt + 1;
-        const cpt = this.outputForm[0].cpt;
         this.outputForm.push({
             'control': new FormControl(),
             'canRemove': true

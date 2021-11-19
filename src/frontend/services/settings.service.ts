@@ -274,7 +274,7 @@ export class SettingsService {
             },
         ]
     };
-    closeAllParent : boolean = false;
+
     constructor(
         private router: Router,
         private titleService: Title,

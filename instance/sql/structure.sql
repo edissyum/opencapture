@@ -205,7 +205,8 @@ CREATE TABLE "history" (
 CREATE TABLE "status" (
     "id"         VARCHAR(20),
     "label"      VARCHAR(200),
-    "label_long" VARCHAR(200)
+    "label_long" VARCHAR(200),
+    "module"     VARCHAR(10)
 );
 
 CREATE TABLE "splitter_batches" (
