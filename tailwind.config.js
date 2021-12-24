@@ -21,7 +21,7 @@ module.exports = {
     purge: [
         '**/*.{html,ts}'
     ],
-    darkMode: false, // or 'media' or 'class'
+    darkMode: 'media', // or 'media' or 'class'
     theme: {
         zIndex: {
             '5': 5,
