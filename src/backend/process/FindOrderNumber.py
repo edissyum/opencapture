@@ -38,7 +38,7 @@ class FindOrderNumber:
         self.target = target
 
     def sanitize_order_number(self, data):
-        order_res = ''
+        order_res = data
         # If the regex return a date, remove it
         for _date in re.finditer(r"" + self.Locale.dateRegex + "", data):
             if _date.group():

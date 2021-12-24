@@ -8,7 +8,7 @@
                [matTooltip]="!this.expanded ? this.translate.instant('VERIFIER.expand_all') : this.translate.instant('VERIFIER.collapse_all') "></i>
         </h3>
         <mat-divider></mat-divider>
-        <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+        <mat-tree [dataSource]="dataSource" [treeControl]="this.treeControl">
             <mat-tree-node style="min-height: 24px" class="pl-12 cursor-pointer hover:bg-black hover:bg-opacity-20"
                            *matTreeNodeDef="let node; when:isLevelTwo" (click)="loadInvoicePerCustomer(node)">
                 <button mat-icon-button disabled>
@@ -23,24 +23,24 @@
                            *matTreeNodeDef="let node;when: hasChild; when:isNotLevelOne" matTreeNodeToggle>
                 <button mat-icon-button [class.hidden]="node.number == 0 && node.id == 0">
                     <mat-icon class="mat-icon-rtl-mirror text-gray-900">
-                        {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                        {{this.treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
                     </mat-icon>
                 </button>
                 <span class="select-none" [class.pointer-events-none]="node.number == 0"
                       [class.hidden]="node.number == 0 && node.id == 0">
                     {{node.name}}
                 </span>
-                <span *ngIf="!treeControl.isExpanded(node)" [class.hidden]="node.number == 0 && node.id == 0"
+                <span *ngIf="!this.treeControl.isExpanded(node)" [class.hidden]="node.number == 0 && node.id == 0"
                       class="float-right ml-auto select-none mr-4 bg-green-400 rounded-full px-1.5 py-0.5 text-center text-xs text-white">
                     {{node.number}}
                 </span>
             </mat-tree-node>
             <mat-tree-node [class.hidden]="node.number == 0" style="min-height: 24px" class="child pl-6 cursor-pointer hover:bg-black hover:bg-opacity-10" *matTreeNodeDef="let node;when: isLevelOne" matTreeNodeToggle>
                 <button mat-icon-button>
-                    <i [class.fa-folder-open]="treeControl.isExpanded(node)" class="text-gray-600 ml-4 fas fa-folder pb-0.5"></i>
+                    <i [class.fa-folder-open]="this.treeControl.isExpanded(node)" class="text-gray-600 ml-4 fas fa-folder pb-0.5"></i>
                 </button>
                 <span class="pl-2 font-normal select-none">{{node.name}}</span>
-                <span *ngIf="!treeControl.isExpanded(node)" class="float-right ml-auto select-none mr-12 bottom-1 bg-green-400 rounded-full px-1.5 py-0.5 text-center text-xs text-white">
+                <span *ngIf="!this.treeControl.isExpanded(node)" class="float-right ml-auto select-none mr-12 bottom-1 bg-green-400 rounded-full px-1.5 py-0.5 text-center text-xs text-white">
                     {{node.number}}
                 </span>
             </mat-tree-node>
@@ -57,7 +57,9 @@
                     <div class="grid grid-cols-3 grid-flow-row gap-0 mt-4 z-30">
                         <mat-form-field class="left-4 w-1/2" appearance="outline">
                             <mat-label>{{ 'VERIFIER.search' | translate }}</mat-label>
-                            <input matInput type="text" [(ngModel)]="search" (keyup)="searchInvoice($event)">
+                            <input matInput type="text" [(ngModel)]="search"
+                                   [disabled]="total == 0"
+                                   (keyup)="searchInvoice($event)">
                         </mat-form-field>
                         <mat-form-field class="w-1/2 m-auto" appearance="outline">
                             <mat-label>{{ 'STATUS.list' | translate }}</mat-label>
@@ -68,16 +70,16 @@
                             </mat-select>
                         </mat-form-field>
                         <span [class.hidden]="loading" class="relative right-0">
-                            <mat-paginator [length]="this.total" [pageSize]="pageSize" [pageIndex]="pageIndex"
+                            <mat-paginator [length]="this.total" [pageSize]="this.pageSize" [pageIndex]="this.pageIndex"
                                            [pageSizeOptions]="this.pageSizeOptions" (page)="onPageChange($event)"></mat-paginator>
                         </span>
                     </div>
-                    <div class="z-40 -mt-2 mb-2 select-none" style="margin-left: 1.2rem" *ngIf="invoices.length> 1">
+                    <div class="z-40 -mt-2 mb-2 select-none" style="margin-left: 1.2rem" *ngIf="this.invoices.length> 1">
                         <span class="cursor-pointer" (click)="selectOrUnselectAllInvoices($event)"
-                              [innerHTML]="invoiceToDeleteSelected ? this.translate.instant('VERIFIER.unselect_all') : this.translate.instant('VERIFIER.select_all')">
+                              [innerHTML]="this.invoiceToDeleteSelected ? this.translate.instant('VERIFIER.unselect_all') : this.translate.instant('VERIFIER.select_all')">
                         </span>
                         <span [class.hidden]="this.totalChecked == 0"> ({{ this.totalChecked}})</span>
-                        <span [class.hidden]="!invoiceToDeleteSelected" (click)="$event.stopPropagation();deleteAllConfirmDialog()">
+                        <span [class.hidden]="!this.invoiceToDeleteSelected" (click)="$event.stopPropagation();deleteAllConfirmDialog()">
                             <i class="fas fa-trash ml-2 text-red-500 cursor-pointer" matTooltip="{{ 'VERIFIER.delete_all_checked' | translate }}"></i>
                         </span>
                     </div>

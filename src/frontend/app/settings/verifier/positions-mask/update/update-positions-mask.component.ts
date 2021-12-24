@@ -518,8 +518,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
     ocr_process(img: any, cpt: number, selection: any) {
         const page = this.getPage(this.lastId);
         if (this.ocrFromUser || (page === this.currentPage || page === 0)) {
-            const selectAreaLabel = $('#select-area-label_' + cpt);
-            if (selectAreaLabel.length === 0) {
+            if ($('#select-area-label_' + cpt).length === 0) {
                 const outline = $('#select-areas-outline_' + cpt);
                 const backgroundArea = $('#select-areas-background-area_' + cpt);
                 const labelContainer = $('#select-areas-label-container_' + cpt);
@@ -532,7 +531,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                 outline.data('page', page);
             }
 
-            const inputId = selectAreaLabel.attr('class').replace('input_', '').replace('select-none', '');
+            const inputId = $('#select-area-label_' + cpt).attr('class').replace('input_', '').replace('select-none', '');
             $('#' + inputId).focus();
 
             // Test to avoid multi selection for same label. If same label exists, remove the selected areas and replace it by the new one

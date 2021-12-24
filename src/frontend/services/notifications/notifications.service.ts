@@ -50,13 +50,13 @@ export class NotificationService {
 
     handleErrors(err: any, route='') {
         if (err.status === 0 && err.statusText === 'Unknown Error') {
-            const message =this.translate.instant('ERROR.connection_failed') + ' : ' + this.translate.instant('ERROR.is_server_up', {server: API_URL});
+            const message = '<b>' + this.translate.instant('ERROR.connection_failed') + '</b> : ' + this.translate.instant('ERROR.is_server_up', {server: API_URL});
             this.error(message);
             if (this.router.url !== '/login')
                 this.router.navigate(['/logout']).then();
         } else if (err.error !== undefined) {
             if (err.error.errors !== undefined) {
-                this.error(err.error.errors + ' : ' + err.error.message, err.url);
+                this.error('<b>' + err.error.errors + '</b> : ' + err.error.message, err.url);
                 if (err.status === 403 || err.status === 404)
                     this.router.navigate(['/login']).then();
                 else if (err.error.errors === this.translate.instant('ERROR.jwt_error'))
