@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2021-11-12 11:06+0100\n"
+"POT-Creation-Date: 2021-12-24 16:32+0100\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: fr\n"
@@ -21,48 +21,48 @@ msgstr ""
 msgid "HOST_NOT_FOUND"
 msgstr "L'URL de l'hôte n'existe pas"
 
-#: src/backend/controllers/accounts.py:46 src/backend/models/accounts.py:51
+#: src/backend/controllers/accounts.py:47 src/backend/models/accounts.py:51
 msgid "GET_SUPPLIER_BY_ID_ERROR"
 msgstr "Erreur lors de la récupération du compte fournisseur"
 
-#: src/backend/controllers/accounts.py:59 src/backend/models/accounts.py:70
+#: src/backend/controllers/accounts.py:60 src/backend/models/accounts.py:70
 msgid "GET_ADDRESS_BY_ID_ERROR"
 msgstr "Erreur lors de la récupération de l'adresse"
 
-#: src/backend/controllers/accounts.py:79
-#: src/backend/controllers/accounts.py:85
+#: src/backend/controllers/accounts.py:80
+#: src/backend/controllers/accounts.py:86
 msgid "UPDATE_SUPPLIER_ERROR"
 msgstr "Erreur lors de la mise à jour du fournisseur"
 
-#: src/backend/controllers/accounts.py:111
+#: src/backend/controllers/accounts.py:112
 msgid "UPDATE_SUPPLIER_POSITIONS_ERROR"
 msgstr "Erreur lors de la mise à jour des positions du compte fournisseur"
 
-#: src/backend/controllers/accounts.py:136
+#: src/backend/controllers/accounts.py:137
 msgid "UPDATE_SUPPLIER_PAGES_ERROR"
 msgstr "Erreur lors de la mise à jour des pages du compte fournisseur"
 
-#: src/backend/controllers/accounts.py:162
-#: src/backend/controllers/accounts.py:168
-#: src/backend/controllers/accounts.py:194
-#: src/backend/controllers/accounts.py:200 src/backend/models/accounts.py:108
+#: src/backend/controllers/accounts.py:163
+#: src/backend/controllers/accounts.py:169
+#: src/backend/controllers/accounts.py:195
+#: src/backend/controllers/accounts.py:201 src/backend/models/accounts.py:108
 msgid "UPDATE_ADDRESS_ERROR"
 msgstr "Erreur lors de la mise à jour de l'adresse"
 
-#: src/backend/controllers/accounts.py:227 src/backend/models/accounts.py:124
+#: src/backend/controllers/accounts.py:228 src/backend/models/accounts.py:124
 msgid "CREATE_ADDRESS_ERROR"
 msgstr "Erreur lors de la création de l'adresse"
 
-#: src/backend/controllers/accounts.py:261
-#: src/backend/controllers/accounts.py:267 src/backend/models/accounts.py:140
+#: src/backend/controllers/accounts.py:262
+#: src/backend/controllers/accounts.py:268 src/backend/models/accounts.py:140
 msgid "CREATE_SUPPLIER_ERROR"
 msgstr "Erreur lors de la création du compte fournisseur"
 
-#: src/backend/controllers/accounts.py:268
+#: src/backend/controllers/accounts.py:269
 msgid "SUPPLIER_VAT_NUMBER_ALREADY_EXISTS"
 msgstr "Un compte fournisseur existe déjà avec ce numéro de TVA"
 
-#: src/backend/controllers/accounts.py:291 src/backend/controllers/user.py:86
+#: src/backend/controllers/accounts.py:292 src/backend/controllers/user.py:86
 #: src/backend/models/accounts.py:192 src/backend/models/accounts.py:211
 #: src/backend/models/accounts.py:226 src/backend/models/user.py:132
 msgid "GET_CUSTOMER_BY_ID_ERROR"
@@ -340,73 +340,73 @@ msgstr "Erreur lors de la mise à jour des comptes clients de l'utilisateur"
 msgid "GET_INVOICE_BY_ID_ERROR"
 msgstr "Erreur lors de la récupération de la facture"
 
-#: src/backend/controllers/verifier.py:159
-#: src/backend/controllers/verifier.py:249
+#: src/backend/controllers/verifier.py:161
+#: src/backend/controllers/verifier.py:251
 msgid "UPDATE_INVOICE_POSITIONS_ERROR"
 msgstr "Erreur lors de la mise à jour des positions de la facture"
 
-#: src/backend/controllers/verifier.py:184
-#: src/backend/controllers/verifier.py:269
+#: src/backend/controllers/verifier.py:186
+#: src/backend/controllers/verifier.py:271
 msgid "UPDATE_INVOICE_PAGES_ERROR"
 msgstr "Erreur lors de la mise à jour des pages de la facture"
 
-#: src/backend/controllers/verifier.py:208
-#: src/backend/controllers/verifier.py:228
+#: src/backend/controllers/verifier.py:210
+#: src/backend/controllers/verifier.py:230
 msgid "UPDATE_INVOICE_DATA_ERROR"
 msgstr "Erreur lors de la mise à jour des données de la facture"
 
-#: src/backend/controllers/verifier.py:286
-#: src/backend/controllers/verifier.py:292
+#: src/backend/controllers/verifier.py:288
+#: src/backend/controllers/verifier.py:294
 msgid "DELETE_INVOICE_ERROR"
 msgstr "Erreur lors de la suppression de la facture"
 
-#: src/backend/controllers/verifier.py:310
-#: src/backend/controllers/verifier.py:316
+#: src/backend/controllers/verifier.py:312
+#: src/backend/controllers/verifier.py:318
 msgid "UPDATE_INVOICE_ERROR"
 msgstr "Erreur lors de la mise à jour de la facture"
 
-#: src/backend/controllers/verifier.py:336
+#: src/backend/controllers/verifier.py:338
 msgid "REMOVE_LOCK_BY_USER_ID_ERROR"
 msgstr "Erreur lors de la suppression du verrou sur la facture"
 
-#: src/backend/controllers/verifier.py:435
-#: src/backend/controllers/verifier.py:441
-#: src/backend/controllers/verifier.py:447
+#: src/backend/controllers/verifier.py:437
+#: src/backend/controllers/verifier.py:443
+#: src/backend/controllers/verifier.py:449
 msgid "EXPORT_MAARCH_ERROR"
 msgstr "Erreur lors de l'export vers Maarch"
 
-#: src/backend/controllers/verifier.py:442
+#: src/backend/controllers/verifier.py:444
 msgid "PDF_FILE_NOT_FOUND"
 msgstr "Le fichier PDF est introuvable"
 
-#: src/backend/controllers/verifier.py:453
+#: src/backend/controllers/verifier.py:455
 msgid "MAARCH_WS_INFO_WRONG"
 msgstr "Les informations de connexion à Maarch sont erronées"
 
-#: src/backend/controllers/verifier.py:459
+#: src/backend/controllers/verifier.py:461
 msgid "MAARCH_WS_INFO_EMPTY"
 msgstr "Les informations de connexion à Maarch sont vides"
 
-#: src/backend/controllers/verifier.py:545
+#: src/backend/controllers/verifier.py:547
 msgid "XML_DESTINATION_FOLDER_DOESNT_EXISTS"
 msgstr "Le dossier de destination XML n'existe pas"
 
-#: src/backend/controllers/verifier.py:551
+#: src/backend/controllers/verifier.py:553
 msgid "EXPORT_XML_ERROR"
 msgstr "Erreur lors de l'export XML"
 
-#: src/backend/controllers/verifier.py:615
-#: src/backend/controllers/verifier.py:618
-#: src/backend/controllers/verifier.py:631
-#: src/backend/controllers/verifier.py:648
+#: src/backend/controllers/verifier.py:617
+#: src/backend/controllers/verifier.py:620
+#: src/backend/controllers/verifier.py:633
+#: src/backend/controllers/verifier.py:650
 msgid "API_INSEE_ERROR_CONNEXION"
 msgstr "Erreur lors de la connexion à l'api de l'INSEE"
 
-#: src/backend/controllers/verifier.py:670
+#: src/backend/controllers/verifier.py:672
 msgid "VAT_NOT_VALID"
 msgstr "Numéro de TVA invalide"
 
-#: src/backend/controllers/verifier.py:674
+#: src/backend/controllers/verifier.py:676
 msgid "VAT_API_ERROR"
 msgstr "Impossible de joindre l'API de vérification du numéro de TVA"
 
@@ -526,7 +526,7 @@ msgstr "Erreur lors de la mise à jour des privilèges du rôle"
 msgid "ROLE_PRIVILEGES_CREATE_ERROR"
 msgstr "Erreur lors de la création des privilèges du rôle"
 
-#: src/backend/models/status.py:32
+#: src/backend/models/status.py:34
 msgid "NO_STATUS"
 msgstr "Aucun status existant"
 
@@ -542,10 +542,10 @@ msgstr "est déjà enregistré"
 msgid "INVOICE_UPDATE_ERROR"
 msgstr "Erreur lors de la mise à jour de la facture"
 
+#: src/backend/rest/auth.py:44
+msgid "PGSQL_ERROR"
+msgstr "Erreur lors de la connexion à la base de donnée"
+
 #: src/backend/rest/splitter.py:39 src/backend/rest/verifier.py:37
 msgid "UNKNOW_ERROR"
 msgstr "Erreur inconnue"
-
-#~ msgid "INCRON_CREATION_ERROR"
-#~ msgstr "Erreur lors de la création de l'incron"
-
