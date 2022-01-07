@@ -42,6 +42,7 @@ import { UpdateCustomerComponent } from "./accounts/customers/update/update-cust
 import { CreateCustomerComponent } from "./accounts/customers/create/create-customer.component";
 import { HasPrivilegeService } from "../services/has-privilege.service";
 import { HistoryComponent } from "./history/history.component";
+import { StatisticsComponent } from "./statistics/statistics.component";
 
 const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -78,11 +79,15 @@ const routes: Routes = [
         path: 'upload', component: UploadComponent,
         data: { title: marker('GLOBAL.upload'), privileges: ['upload'] },
         canActivate: [LoginRequiredService, HasPrivilegeService]
-
     },
     {
         path: 'history', component: HistoryComponent,
         data: { title: marker('GLOBAL.history'), privileges: ['history'] },
+        canActivate: [LoginRequiredService, HasPrivilegeService]
+    },
+    {
+        path: 'statistics', component: StatisticsComponent,
+        data: { title: marker('GLOBAL.statistics'), privileges: ['statistics'] },
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     { path: 'accounts/suppliers', redirectTo: 'accounts/suppliers/list', pathMatch: 'full' },

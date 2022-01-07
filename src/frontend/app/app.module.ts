@@ -95,6 +95,7 @@ import { SplitterCreateOutputComponent } from './settings/splitter/output/create
 import { SplitterListOutputComponent } from './settings/splitter/output/list/list-output.component';
 import { SplitterFormBuilderComponent } from "./settings/splitter/form/builder/form-builder.component";
 import { SplitterFormListComponent } from "./settings/splitter/form/list/form-list.component";
+import { StatisticsComponent } from './statistics/statistics.component';
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -155,7 +156,8 @@ export function createTranslateLoader(http: HttpClient) {
         SplitterUpdateOutputComponent,
         SplitterCreateOutputComponent,
         SplitterListOutputComponent,
-        HistoryComponent
+        HistoryComponent,
+        StatisticsComponent
     ],
     imports: [
         BrowserModule,

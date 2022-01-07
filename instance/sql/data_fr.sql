@@ -244,6 +244,7 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (42, 'update_form_spli
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (43, 'add_form_splitter', 'splitter');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (44, 'forms_list_splitter', 'splitter');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (45, 'import_suppliers', 'accounts');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (46, 'statistics', 'general');
 
 ALTER SEQUENCE "privileges_id_seq" RESTART WITH 46;
 
