@@ -207,6 +207,7 @@
 		"new_input_link": "Reassign inputs",
 		"settings": "Settings",
 		"skip_auto_validate": "Skip auto validation",
+		"statistics": "Statistics",
 		"upload": "Upload",
 		"utilisation_guide": "Access to user guide of Open-Capture for Invoices",
 		"validate": "Validate"
@@ -483,6 +484,9 @@
 		"validate_batch": "Batch validated",
 		"viewer": "Batch view",
 		"zoom": "Zoom"
+	},
+	"STATISTICS": {
+		"invoices_validated_per_user": "Number of invoice validated per user"
 	},
 	"STATUS": {
 		"list": "List of status"

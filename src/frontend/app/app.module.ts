@@ -45,6 +45,7 @@ import { ClickOutsideModule } from 'ng-click-outside';
 import { PdfJsViewerModule } from 'ng2-pdfjs-viewer';
 import { NgxMatSelectSearchModule } from "ngx-mat-select-search";
 import { NgsgModule } from 'ng-sortgrid';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 import { DocumentTypeFactoryComponent } from './splitter/document-type-factory/document-type-factory.component';
 import { DocumentTreeComponent } from './splitter/document-tree/document-tree.component';
@@ -168,6 +169,7 @@ export function createTranslateLoader(http: HttpClient) {
         HttpClientModule,
         ServicesModule,
         NgsgModule,
+        NgxChartsModule,
         TranslateModule.forRoot({
             defaultLanguage: 'fra',
             loader: {
