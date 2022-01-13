@@ -47,20 +47,21 @@ class FindSupplier:
         self.customPage = custom_page
 
     def search_suplier(self, column, data):
-        if column.lower() in ['siret', 'siren']:
-            if not validate_luhn(data):
-                return False
+        if data:
+            if column.lower() in ['siret', 'siren']:
+                if not validate_luhn(data):
+                    return False
 
-        args = {
-            'select': ['accounts_supplier.id as supplier_id', '*'],
-            'table': ['accounts_supplier', 'addresses'],
-            'left_join': ['accounts_supplier.address_id = addresses.id'],
-            'where': ["TRIM(REPLACE(" + column + ", ' ', '')) = %s", 'accounts_supplier.status NOT IN (%s)'],
-            'data': [data, 'DEL']
-        }
-        existing_supplier = self.Database.select(args)
-        if existing_supplier:
-            return existing_supplier[0]
+            args = {
+                'select': ['accounts_supplier.id as supplier_id', '*'],
+                'table': ['accounts_supplier', 'addresses'],
+                'left_join': ['accounts_supplier.address_id = addresses.id'],
+                'where': ["TRIM(REPLACE(" + column + ", ' ', '')) = %s", 'accounts_supplier.status NOT IN (%s)'],
+                'data': [data, 'DEL']
+            }
+            existing_supplier = self.Database.select(args)
+            if existing_supplier:
+                return existing_supplier[0]
         return False
 
     def process(self, regex, text_as_string, column):
