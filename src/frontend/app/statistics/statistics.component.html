@@ -1,0 +1,35 @@
+<mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem">
+    <mat-sidenav-content class="bg-white">
+        <div *ngIf="loading">
+            <app-loader></app-loader>
+        </div>
+        <div class="settings_header">
+            <div class="settings_title text-center">
+                <h3>{{ this.serviceSettings.getTitle() }}</h3>
+                <hr class="border-green-400">
+            </div>
+        </div>
+        <div class="flex justify-center">
+            <div class="w-full h-1 absolute text-center mt-2">
+                <mat-form-field class="w-1/3">
+                    <mat-select (selectionChange)="changeStatistic($event)" placeholder="{{ 'STATISTICS.choose_statistic_report' | translate }}">
+                        <mat-option *ngFor="let option of options" [value]="option['id']">{{ option['label'] | translate}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="relative mt-20 w-full" style="height: 80vh">
+                <ngx-charts-bar-vertical
+                        *ngIf="!loading && this.selectedStatistic"
+                        [results]="data"
+                        [xAxis]="true"
+                        [yAxis]="true"
+                        [legend]="true"
+                        [legendTitle]="this.selectedStatistic.label | translate"
+                        [showXAxisLabel]="true"
+                        [showYAxisLabel]="true">
+                </ngx-charts-bar-vertical>
+            </div>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>
+

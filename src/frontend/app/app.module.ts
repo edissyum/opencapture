@@ -45,6 +45,7 @@ import { ClickOutsideModule } from 'ng-click-outside';
 import { PdfJsViewerModule } from 'ng2-pdfjs-viewer';
 import { NgxMatSelectSearchModule } from "ngx-mat-select-search";
 import { NgsgModule } from 'ng-sortgrid';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 import { DocumentTypeFactoryComponent } from './splitter/document-type-factory/document-type-factory.component';
 import { DocumentTreeComponent } from './splitter/document-tree/document-tree.component';
@@ -95,6 +96,7 @@ import { SplitterCreateOutputComponent } from './settings/splitter/output/create
 import { SplitterListOutputComponent } from './settings/splitter/output/list/list-output.component';
 import { SplitterFormBuilderComponent } from "./settings/splitter/form/builder/form-builder.component";
 import { SplitterFormListComponent } from "./settings/splitter/form/list/form-list.component";
+import { StatisticsComponent } from './statistics/statistics.component';
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -155,7 +157,8 @@ export function createTranslateLoader(http: HttpClient) {
         SplitterUpdateOutputComponent,
         SplitterCreateOutputComponent,
         SplitterListOutputComponent,
-        HistoryComponent
+        HistoryComponent,
+        StatisticsComponent
     ],
     imports: [
         BrowserModule,
@@ -166,6 +169,7 @@ export function createTranslateLoader(http: HttpClient) {
         HttpClientModule,
         ServicesModule,
         NgsgModule,
+        NgxChartsModule,
         TranslateModule.forRoot({
             defaultLanguage: 'fra',
             loader: {

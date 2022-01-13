@@ -207,6 +207,7 @@
 		"new_input_link": "Réattribution des chaînes entrantes",
 		"settings": "Paramètres",
 		"skip_auto_validate": "Outrepasser la prochaine validation automatique",
+		"statistics": "Statistiques",
 		"upload": "Téléversement",
 		"utilisation_guide": "Accéder au guide d'utilisation d'Open-Capture For Invoices",
 		"validate": "Valider"
@@ -483,6 +484,9 @@
 		"validate_batch": "Lot validé avec succès",
 		"viewer": "Visualisation du lot",
 		"zoom": "Agrandir"
+	},
+	"STATISTICS": {
+		"invoices_validated_per_user": "Nombres de factures validées par utilisateur"
 	},
 	"STATUS": {
 		"list": "Liste des status"
