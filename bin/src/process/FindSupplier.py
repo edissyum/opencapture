@@ -47,15 +47,16 @@ class FindSupplier:
         return (sum(r[0::2]) + sum(sum(divmod(d * 2, 10)) for d in r[1::2])) % 10 == 0
 
     def search_suplier(self, column, data):
-        args = {
-            'select': ['*'],
-            'table': ['suppliers'],
-            'where': ["TRIM(REPLACE(" + column + ", ' ', '')) = ?", 'status NOT IN (?)', 'company_type = ?'],
-            'data': [data, 'DEL', 'supplier']
-        }
-        existing_supplier = self.Database.select(args)
-        if existing_supplier:
-            return existing_supplier[0]
+        if data:
+            args = {
+                'select': ['*'],
+                'table': ['suppliers'],
+                'where': ["TRIM(REPLACE(" + column + ", ' ', '')) = ?", 'status NOT IN (?)', 'company_type = ?'],
+                'data': [data, 'DEL', 'supplier']
+            }
+            existing_supplier = self.Database.select(args)
+            if existing_supplier:
+                return existing_supplier[0]
         return False
 
     def process(self, regex, text_as_string, column):
