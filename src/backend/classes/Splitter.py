@@ -27,12 +27,12 @@ class Splitter:
         self.log = log
         self.db = database
         self.qr_pages = []
-        self.Config = config
-        self.Locale = locale
+        self.config = config
+        self.locale = locale
         self.result_batches = []
         self.separator_qr = separator_qr
-        self.doc_start = self.Config.cfg['SPLITTER']['docstart']
-        self.bundle_start = self.Config.cfg['SPLITTER']['bundlestart']
+        self.doc_start = self.config.cfg['SPLITTER']['docstart']
+        self.bundle_start = self.config.cfg['SPLITTER']['bundlestart']
 
     def split(self, pages):
         for index, path in pages:
@@ -60,7 +60,7 @@ class Splitter:
 
         for index, page in enumerate(self.qr_pages):
             if int(index) in blank_pages:
-                if self.Config.cfg['REMOVE-BLANK-PAGES']['enabled'] == 'True' or is_previous_code_qr:
+                if self.config.cfg['REMOVE-BLANK-PAGES']['enabled'] == 'True' or is_previous_code_qr:
                     continue
 
             if page['qrcode'] == self.bundle_start:

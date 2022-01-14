@@ -26,9 +26,9 @@ from src.backend.import_process import FindDate, FindFooter, FindInvoiceNumber, 
 
 def insert(args, files, config, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier, status, nb_pages):
     try:
-        filename = os.path.splitext(files.custom_fileName)
+        filename = os.path.splitext(files.custom_file_name)
         improved_img = filename[0] + '_improved' + filename[1]
-        os.remove(files.custom_fileName)
+        os.remove(files.custom_file_name)
         os.remove(improved_img)
     except FileNotFoundError:
         pass
@@ -95,9 +95,9 @@ def insert(args, files, config, database, datas, positions, pages, full_jpg_file
 def convert(file, files, ocr, nb_pages, custom_pages=False):
     if custom_pages:
         try:
-            filename = os.path.splitext(files.custom_fileName)
+            filename = os.path.splitext(files.custom_file_name)
             improved_img = filename[0] + '_improved' + filename[1]
-            os.remove(files.custom_fileName)
+            os.remove(files.custom_file_name)
             os.remove(improved_img)
         except FileNotFoundError:
             pass
@@ -222,7 +222,7 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
             break
         convert(file, files, ocr, tmp_nb_pages, True)
 
-        _file = files.custom_fileName
+        _file = files.custom_file_name
         image = files.open_image_return(_file)
 
         invoice_number_class.text = ocr.line_box_builder(image)
@@ -290,7 +290,7 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
             if i == 3 or int(tmp_nb_pages) == 1 or nb_pages == 1:
                 break
             convert(file, files, ocr, tmp_nb_pages, True)
-            _file = files.custom_fileName
+            _file = files.custom_file_name
 
             image = files.open_image_return(_file)
             text = ocr.line_box_builder(image)

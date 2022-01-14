@@ -43,8 +43,8 @@ class Mail:
                 self.conn = MailBox(host=self.host, port=self.port)
             else:
                 self.conn = MailBoxUnencrypted(host=self.host, port=self.port)
-        except (gaierror, SSLError) as e:
-            error = 'IMAP Host ' + self.host + ' on port ' + self.port + ' is unreachable : ' + str(e)
+        except (gaierror, SSLError) as mail_error:
+            error = 'IMAP Host ' + self.host + ' on port ' + self.port + ' is unreachable : ' + str(mail_error)
             print(error)
             sys.exit()
 
@@ -63,8 +63,8 @@ class Mail:
         :return: Boolean
         """
         folders = self.conn.folder.list()
-        for f in folders:
-            if folder == f.name:
+        for fold in folders:
+            if folder == fold.name:
                 return True
         return False
 
@@ -120,17 +120,17 @@ class Mail:
 
         attachments = self.retrieve_attachment(msg)
         attachments_path = backup_path + '/mail_' + str(msg.uid) + '/attachments/'
-        for pj in attachments:
-            path = attachments_path + sanitize_filename(pj['filename']) + pj['format']
+        for attachment in attachments:
+            path = attachments_path + sanitize_filename(attachment['filename']) + attachment['format']
             if not os.path.isfile(path):
-                pj['format'] = '.txt'
-                f = open(path, 'w')
-                f.write('Erreur lors de la remontée de cette pièce jointe')
-                f.close()
+                attachment['format'] = '.txt'
+                with open(path, 'w', encoding='UTF-8') as file:
+                    file.write('Erreur lors de la remontée de cette pièce jointe')
+                file.close()
 
             data['attachments'].append({
-                'filename': sanitize_filename(pj['filename']),
-                'format': pj['format'][1:],
+                'filename': sanitize_filename(attachment['filename']),
+                'format': attachment['format'][1:],
                 'file': path,
             })
 
@@ -149,36 +149,34 @@ class Mail:
         os.makedirs(primary_mail_path)
 
         # Start with headers
-        fp = open(primary_mail_path + 'header.txt', 'w')
-        for header in msg.headers:
-            try:
-                fp.write(header + ' : ' + msg.headers[header][0] + '\n')
-            except UnicodeEncodeError:
-                fp.write(header + ' : ' + msg.headers[header][0].encode('utf-8', 'surrogateescape').decode('utf-8', 'replace') + '\n')
-        fp.close()
+        with open(primary_mail_path + 'header.txt', 'w', encoding='UTF-8') as file:
+            for header in msg.headers:
+                try:
+                    file.write(header + ' : ' + msg.headers[header][0] + '\n')
+                except UnicodeEncodeError:
+                    file.write(header + ' : ' + msg.headers[header][0].encode('utf-8', 'surrogateescape').decode('utf-8', 'replace') + '\n')
+        file.close()
 
         # Then body
         if len(msg.html) == 0:
-            fp = open(primary_mail_path + 'body.txt', 'w')
-            if len(msg.text) != 0:
-                fp.write(msg.text)
-            else:
-                fp.write(' ')
+            with open(primary_mail_path + 'body.txt', 'w', encoding='UTF-8') as body_file:
+                if len(msg.text) != 0:
+                    body_file.write(msg.text)
+                else:
+                    body_file.write(' ')
         else:
-            fp = open(primary_mail_path + 'body.html', 'w')
-            fp.write(msg.html)
-        fp.close()
+            with open(primary_mail_path + 'body.html', 'w', encoding='UTF-8') as body_file:
+                body_file.write(msg.html)
+        body_file.close()
 
         # For safety, backup original stream retrieve from IMAP directly
-        fp = open(primary_mail_path + 'orig.txt', 'w')
-
-        for payload in msg.obj.get_payload():
-            try:
-                fp.write(str(payload))
-            except KeyError:
-                break
-
-        fp.close()
+        with open(primary_mail_path + 'orig.txt', 'w', encoding='UTF-8') as orig_file:
+            for payload in msg.obj.get_payload():
+                try:
+                    orig_file.write(str(payload))
+                except KeyError:
+                    break
+        orig_file.close()
 
         # Backup attachments
         attachments = self.retrieve_attachment(msg)
@@ -189,9 +187,9 @@ class Mail:
             for file in attachments:
                 file_path = os.path.join(attachment_path + sanitize_filename(file['filename']) + file['format'])
                 if not os.path.isfile(file_path) and file['format'] and not os.path.isdir(file_path):
-                    fp = open(file_path, 'wb')
-                    fp.write(file['content'])
-                    fp.close()
+                    with open(file_path, 'wb') as attach:
+                        attach.write(file['content'])
+                    attach.close()
         return True
 
     def move_to_destination_folder(self, msg, destination, log):
@@ -206,8 +204,8 @@ class Mail:
         try:
             self.conn.move(msg.uid, destination)
             return True
-        except utils.UnexpectedCommandStatusError as e:
-            log.error('Error while moving mail to ' + destination + ' folder : ' + str(e), False)
+        except utils.UnexpectedCommandStatusError as mail_error:
+            log.error('Error while moving mail to ' + destination + ' folder : ' + str(mail_error), False)
             pass
 
     def delete_mail(self, msg, trash_folder, log):
@@ -224,8 +222,8 @@ class Mail:
                 self.conn.delete(msg.uid)
             else:
                 self.move_to_destination_folder(msg, trash_folder, log)
-        except utils.UnexpectedCommandStatusError as e:
-            log.error('Error while deleting mail : ' + str(e), False)
+        except utils.UnexpectedCommandStatusError as mail_error:
+            log.error('Error while deleting mail : ' + str(mail_error), False)
             pass
 
     @staticmethod

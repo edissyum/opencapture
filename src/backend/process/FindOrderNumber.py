@@ -25,10 +25,10 @@ class FindOrderNumber:
         self.vatNumber = ''
         self.Ocr = ocr
         self.text = text
-        self.Log = log
+        self.log = log
         self.Files = files
-        self.Locale = locale
-        self.Config = config
+        self.locale = locale
+        self.config = config
         self.supplier = supplier
         self.Database = database
         self.typo = typo
@@ -40,12 +40,12 @@ class FindOrderNumber:
     def sanitize_order_number(self, data):
         order_res = data
         # If the regex return a date, remove it
-        for _date in re.finditer(r"" + self.Locale.dateRegex + "", data):
+        for _date in re.finditer(r"" + self.locale.dateRegex + "", data):
             if _date.group():
                 order_res = data.replace(_date.group(), '')
 
         # Delete the delivery number keyword
-        tmp_order_number = re.sub(r"" + self.Locale.orderNumberRegex[:-2] + "", '', order_res)
+        tmp_order_number = re.sub(r"" + self.locale.orderNumberRegex[:-2] + "", '', order_res)
         order_number = tmp_order_number.lstrip().split(' ')[0]
         return order_number
 
@@ -68,7 +68,7 @@ class FindOrderNumber:
 
             if position and position['order_number_position'] not in [False, 'NULL', '', None]:
                 data = {'position': position['order_number_position'], 'regex': None, 'target': 'full', 'page': position['order_number_page']}
-                text, position = search_custom_positions(data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
+                text, position = search_custom_positions(data, self.Ocr, self.Files, self.locale, self.file, self.config)
 
                 try:
                     position = json.loads(position)
@@ -76,20 +76,20 @@ class FindOrderNumber:
                     pass
 
                 if text is not False:
-                    for _order in re.finditer(r"" + self.Locale.orderNumberRegex + "", str(text).upper()):
+                    for _order in re.finditer(r"" + self.locale.orderNumberRegex + "", str(text).upper()):
                         order_number = self.sanitize_order_number(_order.group())
                         if order_number != '':
-                            self.Log.info('Order number found with position : ' + str(order_number))
+                            self.log.info('Order number found with position : ' + str(order_number))
                             return [order_number, position, data['page']]
                     if text != "":
-                        self.Log.info('Order number found with position : ' + str(text))
+                        self.log.info('Order number found with position : ' + str(text))
                         return [text, position, data['page']]
 
         for line in self.text:
-            for _order in re.finditer(r"" + self.Locale.orderNumberRegex + "", line.content.upper()):
+            for _order in re.finditer(r"" + self.locale.orderNumberRegex + "", line.content.upper()):
                 order_number = self.sanitize_order_number(_order.group())
-                if len(order_number) >= int(self.Locale.invoiceSizeMin):
-                    self.Log.info('Order number found : ' + order_number)
+                if len(order_number) >= int(self.locale.invoiceSizeMin):
+                    self.log.info('Order number found : ' + order_number)
                     position = line.position
                     if self.target != 'header':
                         position = self.Files.return_position_with_ratio(line, self.target)

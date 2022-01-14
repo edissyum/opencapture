@@ -30,7 +30,7 @@ class SMTP:
         self.conn = None
         self.port = port
         self.host = host
-        self.isUp = False
+        self.is_up = False
         self.login = login
         self.delay = int(delay)
         self.ssl = str2bool(ssl)
@@ -55,8 +55,8 @@ class SMTP:
                 if self.starttls:
                     self.conn.starttls()
                     self.conn.ehlo()
-            except (smtplib.SMTPException, OSError) as e:
-                print('SMTP Host ' + self.host + ' on port ' + self.port + ' is unreachable : ' + str(e))
+            except (smtplib.SMTPException, OSError) as smtp_error:
+                print('SMTP Host ' + self.host + ' on port ' + self.port + ' is unreachable : ' + str(smtp_error))
                 sys.exit()
         else:
             try:
@@ -65,17 +65,17 @@ class SMTP:
                 if self.starttls:
                     self.conn.starttls()
                     self.conn.ehlo()
-            except (smtplib.SMTPException, OSError) as e:
-                print('SMTP Host ' + self.host + ' on port ' + self.port + ' is unreachable : ' + str(e))
+            except (smtplib.SMTPException, OSError) as smtp_error:
+                print('SMTP Host ' + self.host + ' on port ' + self.port + ' is unreachable : ' + str(smtp_error))
                 sys.exit()
         try:
             if self.auth:
                 self.conn.login(self.login, self.pwd)
-        except (smtplib.SMTPException, OSError) as err:
-            print('Error while trying to login to ' + self.host + ' using ' + self.login + '/' + self.pwd + ' as login/password : ' + str(err))
+        except (smtplib.SMTPException, OSError) as smtp_error:
+            print('Error while trying to login to ' + self.host + ' using ' + self.login + '/' + self.pwd + ' as login/password : ' + str(smtp_error))
             sys.exit()
 
-        self.isUp = True
+        self.is_up = True
 
     def send_notification(self, error, file_name):
         """
@@ -88,9 +88,9 @@ class SMTP:
         diff_minutes = False
 
         if os.path.exists(file) and pathlib.Path(file).stat().st_size != 0:
-            f = open(file, 'r')
-            last_mail_send = datetime.strptime(f.read(), '%d/%m/%Y %H:%M')
-            f.close()
+            with open(file, 'r', encoding='UTF-8') as last_notif:
+                last_mail_send = datetime.strptime(last_notif.read(), '%d/%m/%Y %H:%M')
+            last_notif.close()
 
             now = datetime.strptime(datetime.now().strftime('%d/%m/%Y %H:%M'), '%d/%m/%Y %H:%M')
             diff = now - last_mail_send
@@ -117,11 +117,11 @@ class SMTP:
                 pass
             else:
                 self.conn.sendmail(from_addr=msg['From'], to_addrs=msg['To'], msg=msg.as_string())
-                f = open(file, 'w')
-                f.write(datetime.now().strftime('%d/%m/%Y %H:%M'))
-                f.close()
-        except smtplib.SMTPException as e:
-            print('Erreur lors de l\'envoi du mail : ' + str(e))
+                with open(file, 'w', encoding='UTF-8') as last_notif:
+                    last_notif.write(datetime.now().strftime('%d/%m/%Y %H:%M'))
+                last_notif.close()
+        except smtplib.SMTPException as smtp_error:
+            print('Erreur lors de l\'envoi du mail : ' + str(smtp_error))
 
     def send_email(self, message, step):
         """
@@ -134,9 +134,9 @@ class SMTP:
         diff_minutes = False
 
         if os.path.exists(file) and pathlib.Path(file).stat().st_size != 0:
-            f = open(file, 'r')
-            last_mail_send = datetime.strptime(f.read(), '%d/%m/%Y %H:%M')
-            f.close()
+            with open(file, 'r', encoding='UTF-8') as last_notif:
+                last_mail_send = datetime.strptime(last_notif.read(), '%d/%m/%Y %H:%M')
+            last_notif.close()
 
             now = datetime.strptime(datetime.now().strftime('%d/%m/%Y %H:%M'), '%d/%m/%Y %H:%M')
             diff = now - last_mail_send
@@ -162,11 +162,11 @@ class SMTP:
                 pass
             else:
                 self.conn.sendmail(from_addr=msg['From'], to_addrs=msg['To'], msg=msg.as_string())
-                f = open(file, 'w')
-                f.write(datetime.now().strftime('%d/%m/%Y %H:%M'))
-                f.close()
-        except smtplib.SMTPException as e:
-            print('Erreur lors de l\'envoi du mail : ' + str(e))
+                with open(file, 'w', encoding='UTF-8') as last_notif:
+                    last_notif.write(datetime.now().strftime('%d/%m/%Y %H:%M'))
+                last_notif.close()
+        except smtplib.SMTPException as smtp_error:
+            print('Erreur lors de l\'envoi du mail : ' + str(smtp_error))
 
 
 def str2bool(value):

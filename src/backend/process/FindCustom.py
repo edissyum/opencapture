@@ -22,12 +22,12 @@ from ..functions import search_custom_positions
 class FindCustom:
     def __init__(self, text, log, locale, config, ocr, files, supplier, file, database):
         self.Ocr = ocr
-        self.Log = log
+        self.log = log
         self.text = text
         self.file = file
         self.Files = files
-        self.Locale = locale
-        self.Config = config
+        self.locale = locale
+        self.config = config
         self.supplier = supplier
         self.database = database
         self.OCRErrorsTable = ocr.OCRErrorsTable
@@ -65,7 +65,7 @@ class FindCustom:
                             'page': list_of_fields['pages'][index] if index in list_of_fields['pages'] else ''
                         }
 
-                        data, position = search_custom_positions(_data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
+                        data, position = search_custom_positions(_data, self.Ocr, self.Files, self.locale, self.file, self.config)
                         if not data and index in list_of_fields['regex'] and list_of_fields[index]['regex'] is not False:
                             data_to_return[index] = [self.process(list_of_fields[index]), position, list_of_fields['pages'][index]]
                             if index in data_to_return and data_to_return[index][0]:

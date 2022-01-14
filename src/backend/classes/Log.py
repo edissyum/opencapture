@@ -36,31 +36,31 @@ class Log:
     def __init__(self, path, smtp):
         self.smtp = smtp
         self.filename = ''
-        self.LOGGER = logging.getLogger('Open-Capture')
-        if self.LOGGER.hasHandlers():
-            self.LOGGER.handlers.clear()  # Clear the handlers to avoid double logs
+        self.logger = logging.getLogger('Open-Capture')
+        if self.logger.hasHandlers():
+            self.logger.handlers.clear()  # Clear the handlers to avoid double logs
         log_file = RotatingFileHandler(path, mode='a', maxBytes=5 * 1024 * 1024,
                                        backupCount=2, encoding=None, delay=False)
         formatter = logging.Formatter(
             '[%(name)-17s] [%(file)-26sline %(line_n)-3s] %(asctime)s %(levelname)s %(message)s',
             datefmt='%d-%m-%Y %H:%M:%S')
         log_file.setFormatter(formatter)
-        self.LOGGER.addHandler(log_file)
+        self.logger.addHandler(log_file)
 
-        self.LOGGER.filters.clear()
+        self.logger.filters.clear()
         self._filter = CallerFilter()
-        self.LOGGER.addFilter(self._filter)
-        self.LOGGER.setLevel(logging.DEBUG)
+        self.logger.addFilter(self._filter)
+        self.logger.setLevel(logging.DEBUG)
 
     @caller_reader
     def info(self, msg):
-        self.LOGGER.info(msg)
+        self.logger.info(msg)
 
     @caller_reader
     def error(self, msg, send_notif=True):
         if self.smtp.enabled and send_notif:
             self.smtp.send_notification(msg, self.filename)
-        self.LOGGER.error(msg)
+        self.logger.error(msg)
 
 
 class CallerFilter(logging.Filter):
