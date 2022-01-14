@@ -1,6 +1,7 @@
 .idea/
 custom/
 bin/data/tmp/
+bin/data/pdf/*.pdf
 node_modules/
 bin/data/*.pdf
 last_mail.lock
