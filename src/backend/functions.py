@@ -63,23 +63,23 @@ def search_custom_positions(data, ocr, files, locale, file, config):
     if position:
         if 'page' not in data or ('page' in data and data['page'] in ['1', '', None]):
             if target == 'footer':
-                target_file = files.jpgName_footer
+                target_file = files.jpg_name_footer
             elif target == 'header':
-                target_file = files.jpgName_header
+                target_file = files.jpg_name_header
             else:
-                target_file = files.jpgName
+                target_file = files.jpg_name
         elif data['page'] != '1':
             nb_pages = files.get_pages(file, config)
             if str(nb_pages) == str(data['page']):
                 if target == 'footer':
-                    target_file = files.jpgName_last_footer
+                    target_file = files.jpg_name_last_footer
                 elif target == 'header':
-                    target_file = files.jpgName_last_header
+                    target_file = files.jpg_name_last_header
                 else:
-                    target_file = files.jpgName_last
+                    target_file = files.jpg_name_last
             else:
                files.pdf_to_jpg(file + '[' + str(int(data['page']) - 1) + ']', False, False, False, False, True)
-               target_file = files.custom_fileName
+               target_file = files.custom_file_name
         if regex:
             locale_list = locale.get()
             regex = locale_list[regex]
@@ -100,7 +100,7 @@ def search_by_positions(supplier, index, ocr, files, database):
     positions = positions_mask[0]['positions'][index] if index in positions_mask[0]['positions'] else None
     pages = positions_mask[0]['pages'][index] if index in positions_mask[0]['pages'] else False
     regex = positions_mask[0]['regex'][index] if index in positions_mask[0]['regex'] else False
-    file = files.jpgName
+    file = files.jpg_name
 
     if positions:
         positions['ocr_from_user'] = True

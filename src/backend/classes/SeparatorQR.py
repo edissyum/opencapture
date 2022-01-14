@@ -28,14 +28,14 @@ import xml.etree.ElementTree as Et
 
 class SeparatorQR:
     def __init__(self, log, config, tmp_folder, splitter_or_verifier, files):
-        self.Log = log
+        self.log = log
         self.pages = []
         self.nb_doc = 0
         self.nb_pages = 0
         self.error = False
         self.qrList = None
         self.Files = files
-        self.Config = config
+        self.config = config
         self.enabled = False
         self.splitter_or_verifier = splitter_or_verifier
         self.divider = config.cfg['SEPARATORQR']['divider']
@@ -65,7 +65,7 @@ class SeparatorQR:
         pages_to_keep = []
         for _file in self.sorted_files(os.listdir(self.output_dir)):
             if _file.endswith('.jpg'):
-                if not self.Files.is_blank_page(self.output_dir + '/' + _file, self.Config.cfg['REMOVE-BLANK-PAGES']):
+                if not self.Files.is_blank_page(self.output_dir + '/' + _file, self.config.cfg['REMOVE-BLANK-PAGES']):
                     pages_to_keep.append(os.path.splitext(_file)[0].split('-')[1])
                 else:
                     blank_page_exists = True
@@ -110,7 +110,7 @@ class SeparatorQR:
         return array_of_files
 
     def run(self, file):
-        self.Log.info('Start page separation using QR CODE')
+        self.log.info('Start page separation using QR CODE')
         self.pages = []
         try:
             pdf = PyPDF4.PdfFileReader(open(file, 'rb'))
@@ -118,7 +118,7 @@ class SeparatorQR:
             self.get_xml_qr_code(file)
 
             if self.splitter_or_verifier == 'verifier':
-                if self.Config.cfg['REMOVE-BLANK-PAGES']['enabled'] == 'True':
+                if self.config.cfg['REMOVE-BLANK-PAGES']['enabled'] == 'True':
                     self.remove_blank_page(file)
                 self.parse_xml()
                 self.check_empty_docs()
@@ -130,7 +130,7 @@ class SeparatorQR:
 
         except Exception as e:
             self.error = True
-            self.Log.error("INIT : " + str(e))
+            self.log.error("INIT : " + str(e))
 
     def get_xml_qr_code(self, file):
         try:
@@ -144,11 +144,11 @@ class SeparatorQR:
             ], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             out, err = xml.communicate()
             if err.decode('utf-8'):
-                self.Log.error('ZBARIMG : ' + str(err))
+                self.log.error('ZBARIMG : ' + str(err))
             self.qrList = Et.fromstring(out)
         except subprocess.CalledProcessError as cpe:
             if cpe.returncode != 4:
-                self.Log.error("ZBARIMG : \nreturn code: %s\ncmd: %s\noutput: %s\nglobal : %s" % (cpe.returncode, cpe.cmd, cpe.output, cpe))
+                self.log.error("ZBARIMG : \nreturn code: %s\ncmd: %s\noutput: %s\nglobal : %s" % (cpe.returncode, cpe.cmd, cpe.output, cpe))
 
     def parse_xml_multi(self):
         if self.qrList is None:
@@ -203,7 +203,7 @@ class SeparatorQR:
             try:
                 shutil.move(file, self.output_dir)
             except shutil.Error as e:
-                self.Log.error('Moving file ' + file + ' error : ' + str(e))
+                self.log.error('Moving file ' + file + ' error : ' + str(e))
             return
         try:
             for page in self.pages:
@@ -217,7 +217,7 @@ class SeparatorQR:
                     self.convert_to_pdfa(page['pdfa_filename'], page['pdf_filename'])
             os.remove(file)
         except Exception as e:
-            self.Log.error("EACD: " + str(e))
+            self.log.error("EACD: " + str(e))
 
     @staticmethod
     def convert_to_pdfa(pdfa_filename, pdf_filename):

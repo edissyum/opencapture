@@ -1,0 +1,2 @@
+[MESSAGES CONTROL]
+disable=missing-function-docstring,missing-class-docstring,missing-module-docstring,line-too-long,consider-using-sys-exit,too-few-public-methods,too-many-instance-attributes,too-many-arguments

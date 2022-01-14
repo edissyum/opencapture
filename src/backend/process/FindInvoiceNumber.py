@@ -26,10 +26,10 @@ class FindInvoiceNumber:
         self.Ocr = ocr
         self.text = text
         self.footer_text = footer_text
-        self.Log = log
+        self.log = log
         self.Files = files
-        self.Locale = locale
-        self.Config = config
+        self.locale = locale
+        self.config = config
         self.supplier = supplier
         self.Database = database
         self.typo = typo
@@ -40,12 +40,12 @@ class FindInvoiceNumber:
     def sanitize_invoice_number(self, data):
         invoice_res = data
         # If the regex return a date, remove it
-        for _date in re.finditer(r"" + self.Locale.dateRegex + "", data):
+        for _date in re.finditer(r"" + self.locale.dateRegex + "", data):
             if _date.group():
                 invoice_res = data.replace(_date.group(), '')
 
         # Delete the invoice keyword
-        tmp_invoice_number = re.sub(r"" + self.Locale.invoiceRegex[:-2] + "", '', invoice_res)
+        tmp_invoice_number = re.sub(r"" + self.locale.invoiceRegex[:-2] + "", '', invoice_res)
         invoice_number = tmp_invoice_number.lstrip().split(' ')[0]
         return invoice_number
 
@@ -68,7 +68,7 @@ class FindInvoiceNumber:
 
             if position and position['invoice_number_position'] not in [False, 'NULL', '', None]:
                 data = {'position': position['invoice_number_position'], 'regex': None, 'target': 'full', 'page': position['invoice_number_page']}
-                text, position = search_custom_positions(data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
+                text, position = search_custom_positions(data, self.Ocr, self.Files, self.locale, self.file, self.config)
 
                 try:
                     position = json.loads(position)
@@ -76,20 +76,20 @@ class FindInvoiceNumber:
                     pass
 
                 if text != '':
-                    self.Log.info('Invoice number found with position : ' + str(text))
+                    self.log.info('Invoice number found with position : ' + str(text))
                     return [text, position, data['page']]
 
         for line in self.text:
-            for _invoice in re.finditer(r"" + self.Locale.invoiceRegex + "", line.content.upper()):
+            for _invoice in re.finditer(r"" + self.locale.invoiceRegex + "", line.content.upper()):
                 invoice_number = self.sanitize_invoice_number(_invoice.group())
-                if len(invoice_number) >= int(self.Locale.invoiceSizeMin):
-                    self.Log.info('Invoice number found : ' + invoice_number)
+                if len(invoice_number) >= int(self.locale.invoiceSizeMin):
+                    self.log.info('Invoice number found : ' + invoice_number)
                     return [invoice_number, line.position, self.nbPages]
 
         for line in self.footer_text:
-            for _invoice in re.finditer(r"" + self.Locale.invoiceRegex + "", line.content.upper()):
+            for _invoice in re.finditer(r"" + self.locale.invoiceRegex + "", line.content.upper()):
                 invoice_number = self.sanitize_invoice_number(_invoice.group())
-                if len(invoice_number) >= int(self.Locale.invoiceSizeMin):
-                    self.Log.info('Invoice number found : ' + invoice_number)
+                if len(invoice_number) >= int(self.locale.invoiceSizeMin):
+                    self.log.info('Invoice number found : ' + invoice_number)
                     position = self.Files.return_position_with_ratio(line, 'footer')
                     return [invoice_number, position, self.nbPages]

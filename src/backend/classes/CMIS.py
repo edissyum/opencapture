@@ -31,9 +31,9 @@ class CMIS:
 
     def create_document(self, path, content_type):
         try:
-            with open(path, "rb") as f:
+            with open(path, "rb") as file:
                 file_name = path.split('/')[-1]
-                file_content = f.read().decode('ISO-8859-1')
+                file_content = file.read().decode('ISO-8859-1')
                 self._root_folder.createDocumentFromString(file_name, contentString=file_content, contentType=content_type)
         except IOError:
             print("Error : Unable to create CMIS file")

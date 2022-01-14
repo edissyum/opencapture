@@ -22,38 +22,38 @@ import psycopg2.extras
 class Database:
     def __init__(self, log, db_name=None, user=None, pwd=None, host=None, port=None, conn=None):
         self.conn = conn
-        self.Log = log
+        self.log = log
         self.host = host
         self.port = port
         self.user = user
         self.pwd = pwd
-        self.dbName = db_name
+        self.db_name = db_name
         self.connect()
 
     def connect(self):
         if self.conn is None:
             try:
                 self.conn = psycopg2.connect(
-                    "dbname     =" + self.dbName +
+                    "dbname     =" + self.db_name +
                     " user      =" + self.user +
                     " password  =" + self.pwd +
                     " host      =" + self.host +
                     " port      =" + self.port)
                 self.conn.autocommit = True
-            except (psycopg2.OperationalError, psycopg2.ProgrammingError) as e:
-                self.Log.error('PGSQL connection error : ' + str(e), False)
+            except (psycopg2.OperationalError, psycopg2.ProgrammingError) as pgsql_error:
+                self.log.error('PGSQL connection error : ' + str(pgsql_error), False)
                 exit()
 
     def select(self, args):
         if 'table' not in args or 'select' not in args:
-            self.Log.error('One or more required args are empty', False)
+            self.log.error('One or more required args are empty', False)
         else:
             tmp_table = args['table']
             args['table'] = args['table'][0]
             if 'left_join' in args:
                 if (len(tmp_table) - 1) != len(args['left_join']):
-                    self.Log.error("Number of tables doesn't match with number of joins", False)
-                    self.Log.error(str(args), False)
+                    self.log.error("Number of tables doesn't match with number of joins", False)
+                    self.log.error(str(args), False)
                 else:
                     cpt = 1
                     for joins in args['left_join']:
@@ -91,18 +91,18 @@ class Database:
                 args['data'] = []
 
             query = "SELECT " + select + " FROM " + args['table'] + where + group_by + order_by + limit + offset
-            c = self.conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+            cursor = self.conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
             try:
-                c.execute(query, args['data'])
-                return c.fetchall()
-            except psycopg2.OperationalError as e:
-                self.Log.error('Error while querying SELECT : ' + str(e), False)
+                cursor.execute(query, args['data'])
+                return cursor.fetchall()
+            except psycopg2.OperationalError as pgsql_error:
+                self.log.error('Error while querying SELECT : ' + str(pgsql_error), False)
                 return False
 
     def insert(self, args):
         if 'table' not in args:
-            self.Log.error('One or more required args are empty', False)
+            self.log.error('One or more required args are empty', False)
         else:
             columns_list = []
             values_list = []
@@ -115,19 +115,19 @@ class Database:
             values = "'" + "', '".join(values_list) + "'"
 
             query = "INSERT INTO " + args['table'] + " (" + columns + ") VALUES (" + values + ") RETURNING id"
-            c = self.conn.cursor()
+            cursor = self.conn.cursor()
             try:
-                c.execute(query)
-                new_row_id = c.fetchone()[0]
+                cursor.execute(query)
+                new_row_id = cursor.fetchone()[0]
                 self.conn.commit()
                 return new_row_id
-            except psycopg2.OperationalError as e:
-                self.Log.error('Error while querying INSERT : ' + str(e), False)
+            except psycopg2.OperationalError as pgsql_error:
+                self.log.error('Error while querying INSERT : ' + str(pgsql_error), False)
                 return False
 
     def update(self, args):
         if args['table'] == [] or args['set'] == []:
-            self.Log.error('One or more required args are empty', False)
+            self.log.error('One or more required args are empty', False)
         else:
             query_list = []
             data = []
@@ -141,11 +141,11 @@ class Database:
             where = ' AND '.join(args['where'][0].split(','))
 
             query = "UPDATE " + args['table'][0] + " SET " + _set + " WHERE " + where
-            c = self.conn.cursor()
+            cursor = self.conn.cursor()
             try:
-                c.execute(query, args['data'])
+                cursor.execute(query, args['data'])
                 self.conn.commit()
                 return True, ''
-            except (psycopg2.OperationalError, psycopg2.errors.InvalidTextRepresentation) as e:
-                self.Log.error('Error while querying UPDATE : ' + str(e), False)
+            except (psycopg2.OperationalError, psycopg2.errors.InvalidTextRepresentation) as pgsql_error:
+                self.log.error('Error while querying UPDATE : ' + str(pgsql_error), False)
                 return False, e

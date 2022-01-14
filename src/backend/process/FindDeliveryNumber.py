@@ -25,10 +25,10 @@ class FindDeliveryNumber:
         self.vatNumber = ''
         self.Ocr = ocr
         self.text = text
-        self.Log = log
+        self.log = log
         self.Files = files
-        self.Locale = locale
-        self.Config = config
+        self.locale = locale
+        self.config = config
         self.supplier = supplier
         self.Database = database
         self.typo = typo
@@ -40,11 +40,11 @@ class FindDeliveryNumber:
     def sanitize_delivery_number(self, data):
         delivery_res = data
         # If the regex return a date, remove it
-        for _date in re.finditer(r"" + self.Locale.dateRegex + "", data):
+        for _date in re.finditer(r"" + self.locale.dateRegex + "", data):
             if _date.group():
                 delivery_res = data.replace(_date.group(), '')
         # Delete the delivery number keyword
-        tmp_delivery_number = re.sub(r"" + self.Locale.deliveryNumberRegex[:-2] + "", '', delivery_res)
+        tmp_delivery_number = re.sub(r"" + self.locale.deliveryNumberRegex[:-2] + "", '', delivery_res)
         delivery_number = tmp_delivery_number.lstrip().split(' ')[0]
         return delivery_number
 
@@ -67,7 +67,7 @@ class FindDeliveryNumber:
 
             if position and position['delivery_number_position'] not in [False, 'NULL', '', None]:
                 data = {'position': position['delivery_number_position'], 'regex': None, 'target': 'full', 'page': position['delivery_number_page']}
-                text, position = search_custom_positions(data, self.Ocr, self.Files, self.Locale, self.file, self.Config)
+                text, position = search_custom_positions(data, self.Ocr, self.Files, self.locale, self.file, self.config)
 
                 try:
                     position = json.loads(position)
@@ -75,20 +75,20 @@ class FindDeliveryNumber:
                     pass
 
                 if text is not False:
-                    for _delivery in re.finditer(r"" + self.Locale.deliveryNumberRegex + "", str(text.upper())):
+                    for _delivery in re.finditer(r"" + self.locale.deliveryNumberRegex + "", str(text.upper())):
                         delivery_number = self.sanitize_delivery_number(_delivery.group())
                         if delivery_number != '':
-                            self.Log.info('Delivery number found with position : ' + str(delivery_number))
+                            self.log.info('Delivery number found with position : ' + str(delivery_number))
                             return [delivery_number, position, data['page']]
                     if text != "":
-                        self.Log.info('Delivery number found with position : ' + str(text))
+                        self.log.info('Delivery number found with position : ' + str(text))
                         return [text, position, data['page']]
 
         for line in self.text:
-            for _delivery in re.finditer(r"" + self.Locale.deliveryNumberRegex + "", line.content.upper()):
+            for _delivery in re.finditer(r"" + self.locale.deliveryNumberRegex + "", line.content.upper()):
                 delivery_number = self.sanitize_delivery_number(_delivery.group())
-                if len(delivery_number) >= int(self.Locale.invoiceSizeMin):
-                    self.Log.info('Delivery number found : ' + delivery_number)
+                if len(delivery_number) >= int(self.locale.invoiceSizeMin):
+                    self.log.info('Delivery number found : ' + delivery_number)
                     position = line.position
                     if self.target != 'header':
                         position = self.Files.return_position_with_ratio(line, self.target)

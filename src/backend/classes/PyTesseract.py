@@ -23,12 +23,12 @@ import xml.etree.ElementTree as Et
 
 class PyTesseract:
     def __init__(self, locale, log, config):
-        self.Log = log
+        self.log = log
         self.tool = ''
         self.text = ''
         self.lang = locale
         self.last_text = ''
-        self.Config = config
+        self.config = config
         self.footer_text = ''
         self.header_text = ''
         self.OCRErrorsTable = {}
@@ -48,7 +48,7 @@ class PyTesseract:
             )
             return text
         except pytesseract.pytesseract.TesseractError as t:
-            self.Log.error('Tesseract ERROR : ' + str(t))
+            self.log.error('Tesseract ERROR : ' + str(t))
 
     def line_box_builder(self, img):
         try:
@@ -59,10 +59,10 @@ class PyTesseract:
             )
 
         except pytesseract.pytesseract.TesseractError as t:
-            self.Log.error('Tesseract ERROR : ' + str(t))
+            self.log.error('Tesseract ERROR : ' + str(t))
 
     def get_ocr_errors_table(self):
-        config_path = self.Config.cfg['GLOBAL']['ocrerrorpath']
+        config_path = self.config.cfg['GLOBAL']['ocrerrorpath']
         root = Et.parse(config_path).getroot()
 
         for element in root:

@@ -45,51 +45,51 @@ else:
 
 class Files:
     def __init__(self, img_name, log, locale, config):
-        self.Log = log
+        self.log = log
         self.img = None
-        self.Locale = locale
-        self.Config = config
-        self.heightRatio = ''
-        self.jpgName = img_name + '.jpg'
-        self.jpgName_last = img_name + '_last.jpg'
-        self.jpgName_header = img_name + '_header.jpg'
-        self.jpgName_footer = img_name + '_footer.jpg'
-        self.custom_fileName = img_name + '_custom.jpg'
-        self.jpgName_last_header = img_name + '_last_header.jpg'
-        self.jpgName_last_footer = img_name + '_last_footer.jpg'
+        self.locale = locale
+        self.config = config
+        self.height_ratio = ''
+        self.jpg_name = img_name + '.jpg'
+        self.jpg_name_last = img_name + '_last.jpg'
+        self.jpg_name_header = img_name + '_header.jpg'
+        self.jpg_name_footer = img_name + '_footer.jpg'
+        self.custom_file_name = img_name + '_custom.jpg'
+        self.jpg_name_last_header = img_name + '_last_header.jpg'
+        self.jpg_name_last_footer = img_name + '_last_footer.jpg'
         self.resolution = int(config.cfg['GLOBAL']['resolution'])
-        self.compressionQuality = int(config.cfg['GLOBAL']['compressionquality'])
+        self.compression_quality = int(config.cfg['GLOBAL']['compressionquality'])
 
     # Convert the first page of PDF to JPG and open the image
     def pdf_to_jpg(self, pdf_name, open_img=True, crop=False, zone_to_crop=False, last_image=False, is_custom=False):
         if crop:
             if zone_to_crop == 'header':
                 if is_custom:
-                    self.crop_image_header(pdf_name, last_image, self.custom_fileName)
+                    self.crop_image_header(pdf_name, last_image, self.custom_file_name)
                 else:
                     self.crop_image_header(pdf_name, last_image)
                 if open_img:
                     if last_image:
-                        self.img = Image.open(self.jpgName_last_header)
+                        self.img = Image.open(self.jpg_name_last_header)
                     else:
-                        self.img = Image.open(self.jpgName_header)
+                        self.img = Image.open(self.jpg_name_header)
             elif zone_to_crop == 'footer':
                 if is_custom:
-                    self.crop_image_footer(pdf_name, last_image, self.custom_fileName)
+                    self.crop_image_footer(pdf_name, last_image, self.custom_file_name)
                 else:
                     self.crop_image_footer(pdf_name, last_image)
                 if open_img:
                     if last_image:
-                        self.img = Image.open(self.jpgName_last_footer)
+                        self.img = Image.open(self.jpg_name_last_footer)
                     else:
-                        self.img = Image.open(self.jpgName_footer)
+                        self.img = Image.open(self.jpg_name_footer)
         else:
             if last_image:
-                target = self.jpgName_last
+                target = self.jpg_name_last
             elif is_custom:
-                target = self.custom_fileName
+                target = self.custom_file_name
             else:
-                target = self.jpgName
+                target = self.jpg_name
             self.save_img_with_wand(pdf_name, target)
             if open_img:
                 self.img = Image.open(target)
@@ -104,53 +104,53 @@ class Files:
             with Img(filename=pdf_name, resolution=self.resolution) as pic:
                 library.MagickResetIterator(pic.wand)
                 pic.scene = 1  # Start cpt of filename at 1 instead of 0
-                pic.compression_quality = self.compressionQuality
+                pic.compression_quality = self.compression_quality
                 pic.background_color = Color("white")
                 pic.alpha_channel = 'remove'
                 pic.save(filename=output)
-        except (PolicyError, CacheError) as e:
-            self.Log.error('Error during WAND conversion : ' + str(e))
+        except (PolicyError, CacheError) as file_error:
+            self.log.error('Error during WAND conversion : ' + str(file_error))
 
     # Crop the file to get the header
     # 1/3 + 10% is the ratio we used
     def crop_image_header(self, pdf_name, last_image, output_name=None):
         try:
             with Img(filename=pdf_name, resolution=self.resolution) as pic:
-                pic.compression_quality = self.compressionQuality
+                pic.compression_quality = self.compression_quality
                 pic.background_color = Color("white")
                 pic.alpha_channel = 'remove'
-                self.heightRatio = int(pic.height / 3 + pic.height * 0.1)
-                pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='north')
+                self.height_ratio = int(pic.height / 3 + pic.height * 0.1)
+                pic.crop(width=pic.width, height=int(pic.height - self.height_ratio), gravity='north')
                 if output_name:
                     pic.save(filename=output_name)
                 if last_image:
-                    pic.save(filename=self.jpgName_last_header)
+                    pic.save(filename=self.jpg_name_last_header)
                 else:
-                    pic.save(filename=self.jpgName_header)
-        except (PolicyError, CacheError) as e:
-            self.Log.error('Error during WAND conversion : ' + str(e))
+                    pic.save(filename=self.jpg_name_header)
+        except (PolicyError, CacheError) as file_error:
+            self.log.error('Error during WAND conversion : ' + str(file_error))
 
     # Crop the file to get the footer
     # 1/3 + 10% is the ratio we used
     def crop_image_footer(self, img, last_image=False, output_name=None):
         try:
             with Img(filename=img, resolution=self.resolution) as pic:
-                pic.compression_quality = self.compressionQuality
+                pic.compression_quality = self.compression_quality
                 pic.background_color = Color("white")
                 pic.alpha_channel = 'remove'
-                self.heightRatio = int(pic.height / 3 + pic.height * 0.1)
-                pic.crop(width=pic.width, height=int(pic.height - self.heightRatio), gravity='south')
+                self.height_ratio = int(pic.height / 3 + pic.height * 0.1)
+                pic.crop(width=pic.width, height=int(pic.height - self.height_ratio), gravity='south')
                 if output_name:
                     pic.save(filename=output_name)
                 if last_image:
-                    pic.save(filename=self.jpgName_last_footer)
+                    pic.save(filename=self.jpg_name_last_footer)
                 else:
-                    pic.save(filename=self.jpgName_footer)
-        except (PolicyError, CacheError) as e:
-            self.Log.error('Error during WAND conversion : ' + str(e))
+                    pic.save(filename=self.jpg_name_footer)
+        except (PolicyError, CacheError) as file_error:
+            self.log.error('Error during WAND conversion : ' + str(file_error))
 
     # When we crop footer we need to rearrange the position of founded text
-    # So we add the heightRatio we used (by default 1/3 + 10% of the full image)
+    # So we add the height_ratio we used (by default 1/3 + 10% of the full image)
     # And also add the position found on the cropped section divided by 2.8
     def return_position_with_ratio(self, line, target):
         position = {0: {}, 1: {}}
@@ -158,8 +158,8 @@ class Files:
         position[1][0] = line.position[1][0]
 
         if target == 'footer':
-            position[0][1] = line.position[0][1] + self.heightRatio
-            position[1][1] = line.position[1][1] + self.heightRatio
+            position[0][1] = line.position[0][1] + self.height_ratio
+            position[1][1] = line.position[1][1] + self.height_ratio
         else:
             position[0][1] = line.position[0][1]
             position[1][1] = line.position[1][1]
@@ -172,8 +172,8 @@ class Files:
                 pdf = PyPDF4.PdfFileReader(doc)
                 try:
                     return pdf.getNumPages()
-                except ValueError as e:
-                    self.Log.error(e)
+                except ValueError as file_error:
+                    self.log.error(file_error)
                     shutil.move(file, config.cfg['GLOBAL']['errorpath'] + os.path.basename(file))
                     return 1
         except PyPDF4.utils.PdfReadError:
@@ -183,8 +183,8 @@ class Files:
                 pages = pdf_read_rewrite.getPage(page_count)
                 pdfwrite.addPage(pages)
 
-            fileobjfix = open(file, 'wb')
-            pdfwrite.write(fileobjfix)
+            with open(file, 'wb') as fileobjfix:
+                pdfwrite.write(fileobjfix)
             fileobjfix.close()
             return pdf_read_rewrite.getNumPages()
 
@@ -203,9 +203,9 @@ class Files:
         params.minInertiaRatio = 0.01
 
         detector = cv2.SimpleBlobDetector_create(params)
-        im = cv2.imread(image)
-        keypoints = detector.detect(im)
-        rows, cols, channel = im.shape
+        image = cv2.imread(image)
+        keypoints = detector.detect(image)
+        rows, cols, channel = image.shape
         blobs_ratio = len(keypoints) / (1.0 * rows * cols)
 
         if blobs_ratio < float(config['blobsratio']):
@@ -259,8 +259,8 @@ class Files:
     def ocr_on_fly(self, img, selection, ocr, thumb_size=None, regex=None, remove_line=False):
         rand = str(uuid.uuid4())
         if thumb_size is not None:
-            with Image.open(img) as im:
-                ratio = im.size[0] / thumb_size['width']
+            with Image.open(img) as image:
+                ratio = image.size[0] / thumb_size['width']
         else:
             ratio = 1
 
@@ -287,8 +287,8 @@ class Files:
             detected_lines = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, horizontal_kernel, iterations=2)
             cnts = cv2.findContours(detected_lines, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
             cnts = cnts[0] if len(cnts) == 2 else cnts[1]
-            for c in cnts:
-                cv2.drawContours(image, [c], -1, (255, 255, 255), 3)
+            for contour in cnts:
+                cv2.drawContours(image, [contour], -1, (255, 255, 255), 3)
             repair_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
             result = 255 - cv2.morphologyEx(255 - image, cv2.MORPH_CLOSE, repair_kernel, iterations=1)
             cv2.imwrite('/tmp/cropped_' + rand + extension, result)
@@ -320,14 +320,14 @@ class Files:
             pass
 
         if not is_number:
-            for res in re.finditer(r"" + self.Locale.dateRegex + "", text):
-                date_class = FindDate('', self.Log, self.Locale, self.Config, self, ocr, '', '', '', '', '')
+            for res in re.finditer(r"" + self.locale.dateRegex + "", text):
+                date_class = FindDate('', self.log, self.locale, self.config, self, ocr, '', '', '', '', '')
                 date = date_class.format_date(res.group(), (('', ''), ('', '')), True)
                 if date:
                     text = date[0]
 
         if regex:
-            regex_list = self.Locale.get()
+            regex_list = self.locale.get()
             regex = regex_list[regex]
             if regex:
                 for res in re.finditer(r"" + regex, text):
@@ -344,8 +344,8 @@ class Files:
 
     @staticmethod
     def get_width(img):
-        im = Image.open(img)
-        return im.size[0]
+        image = Image.open(img)
+        return image.size[0]
 
     @staticmethod
     def improve_image_detection(img):
@@ -411,11 +411,11 @@ class Files:
         return Image.open(img)
 
     @staticmethod
-    def save_uploaded_file(f, path):
-        filename, file_ext = os.path.splitext(f.filename)
-        file = filename.replace(' ', '_') + file_ext.lower()
-        new_path = os.path.join(path, secure_filename(file))
-        f.save(new_path)
+    def save_uploaded_file(file, path):
+        filename, file_ext = os.path.splitext(file.filename)
+        filename = filename.replace(' ', '_') + file_ext.lower()
+        new_path = os.path.join(path, secure_filename(filename))
+        file.save(new_path)
         return new_path
 
     @staticmethod
@@ -438,8 +438,7 @@ class Files:
                     'height': y2 - y1,
                 }
                 return positions
-            else:
-                return ''
+            return ''
         else:
             try:
                 positions = json.loads(positions)
@@ -457,8 +456,8 @@ class Files:
                 for page in pages:
                     pdf_writer.addPage(pdf_reader.getPage(page - reduce_index))
                 file_path = output_file + '/' + documents[index]['fileName']
-                with open(output_file + '/' + documents[index]['fileName'], 'wb') as fh:
-                    pdf_writer.write(fh)
+                with open(output_file + '/' + documents[index]['fileName'], 'wb') as file:
+                    pdf_writer.write(file)
                     paths.append(file_path)
                 pdf_writer = PyPDF4.PdfFileWriter()
         except Exception:

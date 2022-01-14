@@ -17,89 +17,82 @@
 
 import json
 import base64
-import requests
 from datetime import datetime
+import requests
 from flask_babel import gettext
 from requests.auth import HTTPBasicAuth
 
 
 class MaarchWebServices:
     def __init__(self, host, user, pwd, log, config):
-        self.baseUrl = host + '/'
+        self.base_url = host + '/'
         self.auth = HTTPBasicAuth(user, pwd)
-        self.Log = log
-        self.Config = config
+        self.log = log
+        self.config = config
         self.status = self.check_connection()
 
     def check_connection(self):
         try:
-            res = requests.get(self.baseUrl + '/priorities', auth=self.auth)
+            res = requests.get(self.base_url + '/priorities', auth=self.auth)
             if res.text:
                 if res.status_code == 404:
                     return [False, gettext('HOST_NOT_FOUND')]
                 if 'errors' in json.loads(res.text):
                     return [False, json.loads(res.text)['errors']]
             return True
-        except (requests.exceptions.ConnectionError, requests.exceptions.Timeout, requests.exceptions.MissingSchema) as e:
-            self.Log.error('Error connecting to the host. Exiting program..', False)
-            self.Log.error('More information : ' + str(e), False)
-            return [False, str(e)]
+        except (requests.exceptions.ConnectionError, requests.exceptions.Timeout, requests.exceptions.MissingSchema) as request_error:
+            self.log.error('Error connecting to the host. Exiting program..', False)
+            self.log.error('More information : ' + str(request_error), False)
+            return [False, str(request_error)]
 
     def retrieve_users(self):
-        res = requests.get(self.baseUrl + '/users', auth=self.auth)
+        res = requests.get(self.base_url + '/users', auth=self.auth)
         if res.status_code != 200:
-            self.Log.error('(' + str(res.status_code) + ') getUsersError : ' + str(res.text))
+            self.log.error('(' + str(res.status_code) + ') getUsersError : ' + str(res.text))
             return False
-        else:
-            return json.loads(res.text)
+        return json.loads(res.text)
 
     def retrieve_entities(self):
-        res = requests.get(self.baseUrl + '/entities', auth=self.auth)
+        res = requests.get(self.base_url + '/entities', auth=self.auth)
         if res.status_code != 200:
-            self.Log.error('(' + str(res.status_code) + ') getEntitiesError : ' + str(res.text))
+            self.log.error('(' + str(res.status_code) + ') getEntitiesError : ' + str(res.text))
             return False
-        else:
-            return json.loads(res.text)
+        return json.loads(res.text)
 
     def retrieve_priorities(self):
-        res = requests.get(self.baseUrl + '/priorities', auth=self.auth)
+        res = requests.get(self.base_url + '/priorities', auth=self.auth)
         if res.status_code != 200:
-            self.Log.error('(' + str(res.status_code) + ') getPrioritiesError : ' + str(res.text))
+            self.log.error('(' + str(res.status_code) + ') getPrioritiesError : ' + str(res.text))
             return False
-        else:
-            return json.loads(res.text)
+        return json.loads(res.text)
 
     def retrieve_priority(self, priority):
-        res = requests.get(self.baseUrl + '/priorities/' + priority, auth=self.auth)
+        res = requests.get(self.base_url + '/priorities/' + priority, auth=self.auth)
         if res.status_code != 200:
-            self.Log.error('(' + str(res.status_code) + ') getPriorityByIdError : ' + str(res.text))
+            self.log.error('(' + str(res.status_code) + ') getPriorityByIdError : ' + str(res.text))
             return False
-        else:
-            return json.loads(res.text)
+        return json.loads(res.text)
 
     def retrieve_statuses(self):
-        res = requests.get(self.baseUrl + '/statuses', auth=self.auth)
+        res = requests.get(self.base_url + '/statuses', auth=self.auth)
         if res.status_code != 200:
-            self.Log.error('(' + str(res.status_code) + ') getStatusesError : ' + str(res.text))
+            self.log.error('(' + str(res.status_code) + ') getStatusesError : ' + str(res.text))
             return False
-        else:
-            return json.loads(res.text)
+        return json.loads(res.text)
 
     def retrieve_indexing_models(self):
-        res = requests.get(self.baseUrl + '/indexingModels', auth=self.auth)
+        res = requests.get(self.base_url + '/indexingModels', auth=self.auth)
         if res.status_code != 200:
-            self.Log.error('(' + str(res.status_code) + ') getIndexinModelsError : ' + str(res.text))
+            self.log.error('(' + str(res.status_code) + ') getIndexinModelsError : ' + str(res.text))
             return False
-        else:
-            return json.loads(res.text)
+        return json.loads(res.text)
 
     def retrieve_doctypes(self):
-        res = requests.get(self.baseUrl + '/doctypes/types', auth=self.auth)
+        res = requests.get(self.base_url + '/doctypes/types', auth=self.auth)
         if res.status_code != 200:
-            self.Log.error('(' + str(res.status_code) + ') getDoctypesError : ' + str(res.text))
+            self.log.error('(' + str(res.status_code) + ') getDoctypesError : ' + str(res.text))
             return False
-        else:
-            return json.loads(res.text)
+        return json.loads(res.text)
 
     def insert_with_args(self, args):
         if 'contact' not in args:
@@ -134,19 +127,17 @@ class MaarchWebServices:
                 'id': args['destUser'],
             }]
 
-        res = requests.post(self.baseUrl + 'resources', auth=self.auth, data=json.dumps(data),
+        res = requests.post(self.base_url + 'resources', auth=self.auth, data=json.dumps(data),
                             headers={'Connection': 'close', 'Content-Type': 'application/json'})
         if res.status_code != 200:
-            self.Log.error('(' + str(res.status_code) + ') InsertIntoMaarchError : ' + str(res.text))
+            self.log.error('(' + str(res.status_code) + ') InsertIntoMaarchError : ' + str(res.text))
             return False, json.loads(res.text)
-        else:
-            return True, json.loads(res.text)
+        return True, json.loads(res.text)
 
     def create_contact(self, contact):
-        res = requests.post(self.baseUrl + '/contacts', auth=self.auth, data=json.dumps(contact),
+        res = requests.post(self.base_url + '/contacts', auth=self.auth, data=json.dumps(contact),
                             headers={'Connection': 'close', 'Content-Type': 'application/json'})
         if res.status_code != 200:
-            self.Log.error('(' + str(res.status_code) + ') CreateContactError : ' + str(res.text))
+            self.log.error('(' + str(res.status_code) + ') CreateContactError : ' + str(res.text))
             return False
-        else:
-            return json.loads(res.text)
+        return json.loads(res.text)
