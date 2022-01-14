@@ -486,7 +486,7 @@
 		"zoom": "Agrandir"
 	},
 	"STATISTICS": {
-		"invoices_validated_per_user": "Nombres de factures validées par utilisateur"
+		"choose_statistic_report": "Choisissez un rapport de statistiques"
 	},
 	"STATUS": {
 		"list": "Liste des status"

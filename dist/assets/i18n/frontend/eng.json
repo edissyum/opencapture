@@ -486,7 +486,7 @@
 		"zoom": "Zoom"
 	},
 	"STATISTICS": {
-		"invoices_validated_per_user": "Number of invoice validated per user"
+		"choose_statistic_report": "Choose a statistic report"
 	},
 	"STATUS": {
 		"list": "List of status"
