@@ -88,19 +88,24 @@
                 <hr class="border-green-400">
             </div>
         </div>
-        <div class="w-full flex flex-wrap content-center mt-2">
-           <mat-form-field appearance="outline" class="w-1/4 mx-auto">
-            <mat-label>{{ 'CUSTOM-FIELDS.type'| translate }}</mat-label>
-            <mat-select [(ngModel)]="selectedSeparator" (ngModelChange)="onChangeType()">
-              <mat-option  *ngFor="let separator of separators" [id]="separator.id" [value]="separator.id">
-                  {{ separator.name| translate }}
-              </mat-option>
-            </mat-select>
-           </mat-form-field>
-        </div>
-        <div style="height: 780px">
-          <ng2-pdfjs-viewer #pdfViewerAutoLoad></ng2-pdfjs-viewer>
-        </div>
+        <app-document-type-factory (output)="getOutPut($event)" class="pl-4"></app-document-type-factory>
     </mat-sidenav-content>
+    <mat-sidenav #sidenav2 mode="side" opened position="end" class="available-fields w-1/4 flex flex-col h-full border-r border-green-400">
+        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">{{ 'DOCTYPE.add_doctype' | translate }}</h3>
+        <mat-divider class="border-green-400"></mat-divider>
+        <div class="w-full flex flex-wrap content-center mt-2">
+            <mat-form-field appearance="outline" class="w-1/2 mx-auto">
+                <mat-label>{{ 'CUSTOM-FIELDS.type'| translate }}</mat-label>
+                <mat-select [(ngModel)]="selectedSeparator" (ngModelChange)="onChangeType()">
+                    <mat-option *ngFor="let separator of separators" [id]="separator.id" [value]="separator.id " [disabled]="separator.disabled">
+                        {{ separator.name| translate }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div style="height: 680px">
+            <ng2-pdfjs-viewer #pdfViewerAutoLoad></ng2-pdfjs-viewer>
+        </div>
+    </mat-sidenav>
 </mat-sidenav-container>
 
