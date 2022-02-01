@@ -51,7 +51,6 @@ import {SplitterFormBuilderComponent} from "./splitter/form/builder/form-builder
 import {SplitterListOutputComponent} from "./splitter/output/list/list-output.component";
 import {ListDocTypeComponent} from "./splitter/doc-types/list/list-doc-type.component";
 import {CreateDocTypeComponent} from "./splitter/doc-types/create/create-doc-type.component";
-import {UpdateDocTypeComponent} from "./splitter/doc-types/update/update-doc-type.component";
 import {CreateFolderDocTypeComponent} from "./splitter/doc-types/create-folder/create-folder-doc-type.component";
 
 const routes: Routes = [
@@ -216,15 +215,6 @@ const routes: Routes = [
     {
         path: 'settings/splitter/documentType/createFolder',
         component: CreateFolderDocTypeComponent,
-        data: {title: marker('SETTINGS.document_type'), privileges: ['settings', 'document_type_splitter']},
-        canActivate: [
-            LoginRequiredService,
-            HasPrivilegeService
-        ]
-    },
-    {
-        path: 'settings/splitter/documentType/update',
-        component: UpdateDocTypeComponent,
         data: {title: marker('SETTINGS.document_type'), privileges: ['settings', 'document_type_splitter']},
         canActivate: [
             LoginRequiredService,
