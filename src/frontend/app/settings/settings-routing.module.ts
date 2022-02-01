@@ -1,19 +1,19 @@
 /** This file is part of Open-Capture for Invoices.
 
-Open-Capture for Invoices is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+ Open-Capture for Invoices is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-Open-Capture is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
+ Open-Capture is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+ You should have received a copy of the GNU General Public License
+ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
-@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+ @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
@@ -40,7 +40,6 @@ import { CreateInputComponent } from "./verifier/inputs/create/create-input.comp
 import { CreatePositionsMaskComponent } from "./verifier/positions-mask/create/create-positions-mask.component";
 import { UpdatePositionsMaskComponent } from "./verifier/positions-mask/update/update-positions-mask.component";
 import { PositionsMaskListComponent } from "./verifier/positions-mask/list/positions-mask-list.component";
-import {DocumentTypeComponent} from "./splitter/document-type/document-type.component";
 import {SeparatorComponent} from "./splitter/separator/separator.component";
 import {SplitterCreateInputComponent} from "./splitter/inputs/create/create-input.component";
 import {SplitterInputListComponent} from "./splitter/inputs/list/input-list.component";
@@ -50,6 +49,10 @@ import {SplitterCreateOutputComponent} from "./splitter/output/create/create-out
 import {SplitterFormListComponent} from "./splitter/form/list/form-list.component";
 import {SplitterFormBuilderComponent} from "./splitter/form/builder/form-builder.component";
 import {SplitterListOutputComponent} from "./splitter/output/list/list-output.component";
+import {ListDocTypeComponent} from "./splitter/doc-types/list/list-doc-type.component";
+import {CreateDocTypeComponent} from "./splitter/doc-types/create/create-doc-type.component";
+import {UpdateDocTypeComponent} from "./splitter/doc-types/update/update-doc-type.component";
+import {CreateFolderDocTypeComponent} from "./splitter/doc-types/create-folder/create-folder-doc-type.component";
 
 const routes: Routes = [
     {
@@ -194,7 +197,34 @@ const routes: Routes = [
     },
     {
         path: 'settings/splitter/documentType',
-        component: DocumentTypeComponent,
+        component: ListDocTypeComponent,
+        data: {title: marker('SETTINGS.document_type'), privileges: ['settings', 'document_type_splitter']},
+        canActivate: [
+            LoginRequiredService,
+            HasPrivilegeService
+        ]
+    },
+    {
+        path: 'settings/splitter/documentType/new',
+        component: CreateDocTypeComponent,
+        data: {title: marker('SETTINGS.document_type'), privileges: ['settings', 'document_type_splitter']},
+        canActivate: [
+            LoginRequiredService,
+            HasPrivilegeService
+        ]
+    },
+    {
+        path: 'settings/splitter/documentType/createFolder',
+        component: CreateFolderDocTypeComponent,
+        data: {title: marker('SETTINGS.document_type'), privileges: ['settings', 'document_type_splitter']},
+        canActivate: [
+            LoginRequiredService,
+            HasPrivilegeService
+        ]
+    },
+    {
+        path: 'settings/splitter/documentType/update',
+        component: UpdateDocTypeComponent,
         data: {title: marker('SETTINGS.document_type'), privileges: ['settings', 'document_type_splitter']},
         canActivate: [
             LoginRequiredService,

@@ -1,20 +1,20 @@
 /** This file is part of Open-Capture for Invoices.
 
-Open-Capture for Invoices is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+ Open-Capture for Invoices is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-Open-Capture is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
+ Open-Capture is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+ You should have received a copy of the GNU General Public License
+ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
-@dev : Nathan Cheval <nathan.cheval@outlook.fr>
-@dev : Oussama BRICH <oussama.brich@edissyum.com> */
+ @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+ @dev : Oussama BRICH <oussama.brich@edissyum.com> */
 
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -37,7 +37,6 @@ import { VerifierViewerComponent } from './verifier/viewer/verifier-viewer.compo
 import { VerifierListComponent } from './verifier/list/verifier-list.component';
 import { SplitterViewerComponent } from './splitter/viewer/splitter-viewer.component';
 import { SplitterListComponent } from './splitter/list/splitter-list.component';
-import { DocumentTypeComponent } from './settings/splitter/document-type/document-type.component';
 
 import { FilterPipe } from '../services/pipes/filter.pipe';
 import { NgxFileDragDropModule } from "ngx-file-drag-drop";
@@ -97,6 +96,10 @@ import { SplitterListOutputComponent } from './settings/splitter/output/list/lis
 import { SplitterFormBuilderComponent } from "./settings/splitter/form/builder/form-builder.component";
 import { SplitterFormListComponent } from "./settings/splitter/form/list/form-list.component";
 import { StatisticsComponent } from './statistics/statistics.component';
+import { CreateDocTypeComponent } from './settings/splitter/doc-types/create/create-doc-type.component';
+import { ListDocTypeComponent } from './settings/splitter/doc-types/list/list-doc-type.component';
+import { UpdateDocTypeComponent } from './settings/splitter/doc-types/update/update-doc-type.component';
+import { CreateFolderDocTypeComponent } from './settings/splitter/doc-types/create-folder/create-folder-doc-type.component';
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -129,7 +132,6 @@ export function createTranslateLoader(http: HttpClient) {
         CreateRoleComponent,
         LoaderComponent,
         CustomFieldsComponent,
-        DocumentTypeComponent,
         SeparatorComponent,
         FormBuilderComponent,
         FormListComponent,
@@ -158,7 +160,11 @@ export function createTranslateLoader(http: HttpClient) {
         SplitterCreateOutputComponent,
         SplitterListOutputComponent,
         HistoryComponent,
-        StatisticsComponent
+        StatisticsComponent,
+        CreateDocTypeComponent,
+        ListDocTypeComponent,
+        UpdateDocTypeComponent,
+        CreateFolderDocTypeComponent
     ],
     imports: [
         BrowserModule,

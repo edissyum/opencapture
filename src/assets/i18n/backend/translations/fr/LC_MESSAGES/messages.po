@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2021-12-24 16:32+0100\n"
+"POT-Creation-Date: 2022-02-01 10:30+0100\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: fr\n"
@@ -108,6 +108,18 @@ msgstr "Erreur lors de l'authentification par token"
 #: src/backend/controllers/config.py:46
 msgid "CHANGE_LOCALE_ERROR"
 msgstr "Erreur lors du changement de langue"
+
+#: src/backend/controllers/doc_types.py:79
+msgid "DOCTYPESEPARATOR"
+msgstr "SEPARATEUR AVEC TYPE DE DOCUMENT / SEPARATOR WITH DOCUMENT TYPE"
+
+#: src/backend/controllers/doc_types.py:83
+msgid "DOCUMENTSEPARATOR"
+msgstr "SEPARATEUR DE DOCUMENT / DOCUMENT SEPARATOR"
+
+#: src/backend/controllers/doc_types.py:87
+msgid "BUNDLESEPARATOR"
+msgstr "SEPARATEUR DE LOT / BUNDLE SEPARATOR"
 
 #: src/backend/controllers/forms.py:66 src/backend/controllers/forms.py:115
 #: src/backend/models/forms.py:52
@@ -289,7 +301,7 @@ msgstr "Erreur lors de la désactivation du rôle"
 msgid "ENABLE_ROLE_ERROR"
 msgstr "Erreur lors de l'activation du rôle"
 
-#: src/backend/controllers/splitter.py:61
+#: src/backend/controllers/splitter.py:63
 #: src/backend/controllers/verifier.py:73
 msgid "AT"
 msgstr "à"
@@ -442,6 +454,18 @@ msgstr "Le champ custom existe déjà"
 msgid "UPDATE_CUSTOM_FIELDS_ERROR"
 msgstr "Erreur lors de la mise à jour du champ custom"
 
+#: src/backend/models/doc_types.py:43
+msgid "ADD_DOC_TYPE_ERROR"
+msgstr "Error while adding document type"
+
+#: src/backend/models/doc_types.py:46
+msgid "DOCTYPE_ALREADY_EXIST"
+msgstr "Document type already exist"
+
+#: src/backend/models/doc_types.py:81
+msgid "UPDATE_DOCTYPE_ERROR"
+msgstr "Error while updating document type"
+
 #: src/backend/models/forms.py:71
 msgid "GET_DEFAULT_FORM_ERROR"
 msgstr "Erreur lors de la récupération du formulaire par défaut"
@@ -542,10 +566,11 @@ msgstr "est déjà enregistré"
 msgid "INVOICE_UPDATE_ERROR"
 msgstr "Erreur lors de la mise à jour de la facture"
 
-#: src/backend/rest/auth.py:44
+#: src/backend/rest/auth.py:36
 msgid "PGSQL_ERROR"
 msgstr "Erreur lors de la connexion à la base de donnée"
 
 #: src/backend/rest/splitter.py:39 src/backend/rest/verifier.py:37
 msgid "UNKNOW_ERROR"
 msgstr "Erreur inconnue"
+

@@ -100,6 +100,20 @@
 		"multi": "Multiple",
 		"simple": "Simple"
 	},
+	"DOCTYPE": {
+		"add": "Ajouter",
+		"add_doctype": "Ajouter un type de document",
+		"add_folder": "Ajouter un type une chemise",
+		"confirm_delete": "Êtes vous sûr de vouloir supprimer le type de document <b>{{ doctypeLabel }}</b> ?",
+		"delete": "Supprimer",
+		"doctype_added": "Type de document ajouté",
+		"doctype_edited": "Type de document Modifié",
+		"edit": "Modifier",
+		"edit_doctype": "Modifier un type de document",
+		"folder": "Chemise",
+		"folder_added": "Chemise ajouté",
+		"no_master": "(Ajouter dans la racine)"
+	},
 	"ERROR": {
 		"404": "La page demandée n'existe pas",
 		"alphanum_extended_pattern": "La valeur n'est pas au format attendu : alphanumérique avec caractères spéciaux",
@@ -296,6 +310,7 @@
 		"input_folder_header": "Chemin",
 		"override_supplier_form": "Outrepasser le formulaire par défaut du fournisseur",
 		"purchase_or_sale": "Type de facture",
+		"split_scripts": "Script de séparation",
 		"update": "Mettre à jour la chaîne entrante",
 		"update_script_and_incron": "Mettre à jour le script et l'incron",
 		"updated": "Chaîne entrante mise à jour"
@@ -431,6 +446,8 @@
 	"SETTINGS": {
 		"abouts_us": "À propos",
 		"add_custom_fields": "Ajout de champ personnalisés",
+		"add_doc_type": "Ajouter un type de document",
+		"add_doc_type_folder": "Ajouter une chemise",
 		"add_input": "Ajouter une chaîne entrante",
 		"add_output": "Ajouter une chaîne sortante",
 		"administration": "Panneau d'administration",
@@ -449,6 +466,7 @@
 		"positions_mask_update": "Modification du masque",
 		"roles_list": "Liste des rôles",
 		"splitter": "Paramètres du Splitter",
+		"update_doc_type": "",
 		"update_input": "Modifier une chaîne entrante",
 		"update_output": "Modifier une chaîne sortante",
 		"users_list": "Liste des utilisateurs",
@@ -461,6 +479,7 @@
 		"bundle_separator": "Séparateur de lots",
 		"confirm_batch_delete": "Voulez-vous vraiment supprimer ce lot ?",
 		"delete_selected_pages": "Supprimer la sélection",
+		"doc_type_separator": "Séparateur avec type de document",
 		"document_number": "Nombre de document",
 		"document_separator": "Séparateur de documents",
 		"edit": "Éditer",
