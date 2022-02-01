@@ -17,6 +17,8 @@
 
 import os
 import re
+from os import listdir
+
 import cv2
 import json
 import time
@@ -464,3 +466,7 @@ class Files:
             return {'OK': False}
 
         return {'OK': True, 'paths': paths}
+
+    @staticmethod
+    def list_files(directory, extension):
+        return [f for f in listdir(directory) if f.endswith('.' + extension)]

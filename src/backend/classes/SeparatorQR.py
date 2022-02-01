@@ -24,6 +24,9 @@ import PyPDF4
 import pdf2image
 import subprocess
 import xml.etree.ElementTree as Et
+from fpdf import Template
+import qrcode
+import base64
 
 
 class SeparatorQR:
@@ -148,7 +151,8 @@ class SeparatorQR:
             self.qrList = Et.fromstring(out)
         except subprocess.CalledProcessError as cpe:
             if cpe.returncode != 4:
-                self.log.error("ZBARIMG : \nreturn code: %s\ncmd: %s\noutput: %s\nglobal : %s" % (cpe.returncode, cpe.cmd, cpe.output, cpe))
+                self.log.error("ZBARIMG : \nreturn code: %s\ncmd: %s\noutput: %s\nglobal : %s" % (
+                cpe.returncode, cpe.cmd, cpe.output, cpe))
 
     def parse_xml_multi(self):
         if self.qrList is None:
@@ -237,3 +241,85 @@ class SeparatorQR:
 
         with open(output_path, "wb") as stream:
             output_pdf.write(stream)
+
+    @staticmethod
+    def generate_separator(qr_code_value, doctype_label, separator_type_label):
+        """
+        Generate separator file
+        :param qr_code_value: QR code value
+        :param doctype_label: doctype label (empty if no doctype selected)
+        :param separator_type_label: separator type label
+        :return: base64 encoded separator file
+        """
+
+        """ Defining the ELEMENTS that will compose the template"""
+        elements = [
+            {'name': 'border_1', 'type': 'B', 'x1': 10.0, 'y1': 10.0, 'x2': 200.0, 'y2': 285.0, 'font': 'Arial',
+             'size': 2.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'I',
+             'text': None, 'priority': 0, },
+            {'name': 'border_2', 'type': 'B', 'x1': 12.0, 'y1': 12.0, 'x2': 198.0, 'y2': 283.0, 'font': 'Arial',
+             'size': 0.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'I',
+             'text': None, 'priority': 0, },
+            {'name': 'logo', 'type': 'I', 'x1': 20.0, 'y1': 17.0, 'x2': 78.0, 'y2': 30.0, 'font': None, 'size': 0.0,
+             'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'I', 'text': 'logo',
+             'priority': 2, },
+            {'name': 'icon_loop', 'type': 'I', 'x1': 183.0, 'y1': 18.0, 'x2': 195.0, 'y2': 28.0, 'font': None, 'size': 0.0,
+             'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'I', 'text': 'logo',
+             'priority': 2, },
+            {'name': 'title', 'type': 'T', 'x1': 15.0, 'y1': 32.5, 'x2': 200.0, 'y2': 37.5, 'font': 'Arial',
+             'size': 12.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'C',
+             'text': '', 'priority': 2, },
+            {'name': 'type', 'type': 'T', 'x1': 15.0, 'y1': 60.5, 'x2': 200.0, 'y2': 37.5, 'font': 'Arial',
+             'size': 12.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'C',
+             'text': '', 'priority': 2, },
+            {'name': 'label', 'type': 'T', 'x1': 15.00, 'y1': 80.0, 'x2': 200, 'y2': 85.0, 'font': 'Arial',
+             'size': 16.0, 'bold': 1, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'C',
+             'text': '', 'priority': 2, },
+            {'name': 'code_qr', 'type': 'I', 'x1': 80.0, 'y1': 120.0, 'x2': 140.0, 'y2': 120.0, 'font': None,
+             'size': 0.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'I',
+             'text': 'logo', 'priority': 2, },
+            {'name': 'qr_code_value', 'type': 'T', 'x1': 15.00, 'y1': 260.0, 'x2': 200, 'y2': 120.0, 'font': 'Arial',
+             'size': 12.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'C',
+             'text': '', 'priority': 2, },
+            {'name': 'powered_by', 'type': 'T', 'x1': 20.0, 'y1': 515.0, 'x2': 150.0, 'y2': 37.5, 'font': 'Arial',
+             'size': 12.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'I',
+             'text': 'Banner page powered by', 'priority': 2, },
+            {'name': 'company_logo', 'type': 'I', 'x1': 70.0, 'y1': 271.0, 'x2': 100.0, 'y2': 280.0, 'font': None,
+             'size': 0.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'I',
+             'text': 'logo', 'priority': 2, },
+            {'name': 'open_capture_website', 'type': 'T', 'x1': 140.0, 'y1': 505.0, 'x2': 150.0, 'y2': 37.5, 'font': 'Arial',
+             'size': 12.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'I',
+             'text': 'https://open-capture.com', 'priority': 2, },
+            {'name': 'company_website', 'type': 'T', 'x1': 140.0, 'y1': 515.0, 'x2': 150.0, 'y2': 37.5, 'font': 'Arial',
+             'size': 12.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'I',
+             'text': 'https://edissyum.com', 'priority': 2, },
+        ]
+
+        " Instantiating the template and defining the HEADER"
+        f = Template(format="A4", elements=elements,
+                     title="Separator file")
+        f.add_page()
+
+        " We FILL some of the fields of the template with the information we want"
+        " Note we access the elements treating the template instance as a dict"
+        f["type"] = separator_type_label
+        f["label"] = doctype_label
+        f["qr_code_value"] = qr_code_value
+        f["icon_loop"] = "src/assets/imgs/Open-Capture_Splitter.png"
+        f["logo"] = "src/assets/imgs/logo_opencapture.png"
+        f["company_logo"] = "src/assets/imgs/logo_company.png"
+
+        img = qrcode.make(qr_code_value)
+
+        qrcode_path = "bin/data/tmp/last_generated_doctype_code_qr.png"
+        img.save(qrcode_path)
+        f["code_qr"] = qrcode_path
+
+        " Rendering the page"
+        file_path = "bin/data/tmp/last_generated_doctype_file.pdf"
+        f.render(file_path)
+
+        with open(file_path, "rb") as pdf_file:
+            encoded_string = base64.b64encode(pdf_file.read()).decode('utf-8')
+        return encoded_string
+
