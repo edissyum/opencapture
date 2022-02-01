@@ -68,7 +68,8 @@ CREATE TABLE "inputs" (
     "override_supplier_form" BOOLEAN DEFAULT False,
     "purchase_or_sale"       VARCHAR(8) DEFAULT 'purchase',
     "status"                 VARCHAR(3) DEFAULT 'OK',
-    "input_folder"           TEXT
+    "input_folder"           TEXT,
+    "splitter_method_id"     VARCHAR(20) DEFAULT 'OK'
 );
 
 CREATE TABLE "custom_fields" (
@@ -228,6 +229,17 @@ CREATE TABLE "splitter_pages" (
     "source_page"       INTEGER,
     "split_document"    INTEGER,
     "status"            VARCHAR DEFAULT 'NEW'
+);
+
+create table doc_types
+(
+    "id"        SERIAL UNIQUE PRIMARY KEY,
+    "key"       varchar(255) not null,
+    "label"     varchar(255),
+    "code"      varchar(10),
+    "default"   boolean    default false,
+    "status"    varchar(3) default 'OK'::character varying,
+    "type"      varchar(10)
 );
 
 CREATE TABLE "metadata" (
