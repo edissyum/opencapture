@@ -271,6 +271,30 @@ export class SettingsService {
                 "label": this.translate.instant("SETTINGS.document_type"),
                 "icon": "fas fa-file",
                 "route"     : "/settings/splitter/documentType",
+                "actions"   : [
+                    {
+                        "id"        : "splitter_add_doc_type",
+                        "label"     : this.translate.instant("SETTINGS.add_doc_type"),
+                        "route"     : "/settings/splitter/documentType/new",
+                        "privilege" : "add_output",
+                        "icon"      : "fas fa-plus"
+                    },
+                    {
+                        "id"                : "splitter_add_folder_doc_type",
+                        "label"             : this.translate.instant("SETTINGS.add_doc_type_folder"),
+                        "route"             : "/settings/splitter/documentType/createFolder",
+                        "privilege"         : "update_output",
+                        "icon"              : "fas fa-folder-plus",
+                    },
+                    {
+                        "id"                : "splitter_update_doc_type",
+                        "label"             : this.translate.instant("SETTINGS.update_doc_type"),
+                        "route"             : "/settings/splitter/documentType/update/",
+                        "privilege"         : "update_output",
+                        "icon"              : "fas fa-edit",
+                        "showOnlyIfActive"  : true
+                    }
+                ]
             },
         ]
     };
