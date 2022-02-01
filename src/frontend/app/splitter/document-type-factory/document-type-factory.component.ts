@@ -18,16 +18,25 @@
 import {Component, Injectable, EventEmitter, OnInit, Output, Input} from '@angular/core';
 import {FlatTreeControl} from '@angular/cdk/tree';
 import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
-import {BehaviorSubject} from "rxjs";
-import {SelectionModel} from "@angular/cdk/collections";
-import {TREE_DATA} from "./document-tree";
+import {BehaviorSubject, of} from "rxjs";
 import {SettingsService} from "../../../services/settings.service";
+import {API_URL} from "../../env";
+import {catchError, finalize, tap} from "rxjs/operators";
+import {HttpClient} from "@angular/common/http";
+import {ActivatedRoute, Router} from "@angular/router";
+import {FormBuilder} from "@angular/forms";
+import {AuthService} from "../../../services/auth.service";
+import {UserService} from "../../../services/user.service";
+import {TranslateService} from "@ngx-translate/core";
+import {NotificationService} from "../../../services/notifications/notifications.service";
+import {PrivilegesService} from "../../../services/privileges.service";
 
 export class TreeItemNode {
     key!        : string;
     item!       : string;
     children!   : TreeItemNode[];
     code!       : string;
+    type!       : string;
     isDefault!  : boolean;
 }
 
@@ -36,6 +45,7 @@ export class TreeItemFlatNode {
     item!       : string;
     key!        : string;
     level!      : number;
+    type!       : string;
     expandable! : boolean;
     code!       : string;
 }
@@ -43,18 +53,71 @@ export class TreeItemFlatNode {
 @Injectable()
 export class ChecklistDatabase {
     dataChange = new BehaviorSubject<TreeItemNode[]>([]);
-    treeData! : any[];
+    treeData : any[] = [];
     get data(): TreeItemNode[] { return this.dataChange.value; }
-
-    constructor() {
+    loading = true;
+    constructor(
+        private http: HttpClient,
+        public router: Router,
+        private route: ActivatedRoute,
+        private formBuilder: FormBuilder,
+        private authService: AuthService,
+        public userService: UserService,
+        public translate: TranslateService,
+        private notify: NotificationService,
+        public serviceSettings: SettingsService,
+        public privilegesService: PrivilegesService
+    ) {
+        this.retrieveDocTypes();
+    }
+    reloadTree(){
+        this.retrieveDocTypes();
         this.initialize();
+    }
+    retrieveDocTypes() {
+        this.treeData = [];
+        this.http.get(API_URL + '/ws/docTypes/list', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                let newDoctype;
+                data.docTypes.forEach((field: {
+                        id      : any;
+                        key     : string;
+                        code    : string;
+                        label   : string;
+                        type    : string;
+                        status  : string;
+                        default : boolean;
+                    }) => {
+                        newDoctype = {
+                            'id'        : field.id,
+                            'key'       : field.key,
+                            'code'      : field.code,
+                            'label'     : field.label,
+                            'type'      : field.type,
+                            'status'    : field.status,
+                            'default'   : field.default,
+                        };
+                        this.treeData.push(newDoctype);
+                    }
+                );
+            }),
+            finalize(() => {
+                this.initialize();
+                this.loading = false;
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
     }
 
     initialize() {
-        this.treeData = TREE_DATA;
-        // Build the tree nodes from Json object. The result is a list of `DocumentItemNode` with nested
-        //     file node as children.
-        const data    = this.buildFileTree(TREE_DATA, '0');
+        /** Build the tree nodes from Database. The result is a list of `DocumentItemNode` with nested
+         * file node as children.
+         */
+        const data    = this.buildFileTree(this.treeData, '0');
         // Notify the change.
         this.dataChange.next(data);
     }
@@ -74,6 +137,7 @@ export class ChecklistDatabase {
                 node.key        = o.key;
                 node.item       = o.label;
                 node.code       = o.code;
+                node.type       = o.type;
                 node.isDefault  = o.isDefault;
                 const children  = obj.filter(so => (so.code as string).startsWith(level + '.'));
                 if (children && children.length > 0) {
@@ -106,8 +170,9 @@ export class ChecklistDatabase {
             filteredTreeData = this.treeData;
         }
 
-        // Build the tree nodes from Json object. The result is a list of `DocumentItemNode` with nested
-        // file node as children.
+        /** Build the tree nodes from Json object. The result is a list of `DocumentItemNode` with nested
+         * file node as children.
+         */
         const data = this.buildFileTree(filteredTreeData, '0');
         // Notify the change.
         this.dataChange.next(data);
@@ -138,7 +203,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
     dataSource    : MatTreeFlatDataSource<TreeItemNode, TreeItemFlatNode>;
 
     constructor(
-        private database        : ChecklistDatabase,
+        public treeDataObj         : ChecklistDatabase,
         public serviceSettings  : SettingsService,
     ) {
         this.treeFlattener  = new MatTreeFlattener(this.transformer, this.getLevel,
@@ -146,16 +211,16 @@ export class DocumentTypeFactoryComponent implements OnInit {
         this.treeControl    = new FlatTreeControl<TreeItemFlatNode>(this.getLevel, this.isExpandable);
         this.dataSource     = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
-        database.dataChange.subscribe(data => {
+        treeDataObj.dataChange.subscribe(data => {
             this.dataSource.data = data;
+            this.treeControl.expandAll();
         });
-        this.treeControl.expandAll();
     }
 
     getLevel      = (node: TreeItemFlatNode)                  => node.level;
     isExpandable  = (node: TreeItemFlatNode)                  => node.expandable;
     getChildren   = (node: TreeItemNode): TreeItemNode[]      => node.children;
-    hasChild      = (_: number, _nodeData: TreeItemFlatNode)  => _nodeData.expandable;
+    hasChild      = (_: number, _nodeData: TreeItemFlatNode)  => _nodeData.type === 'folder';
 
     ngOnInit(): void {
     }
@@ -169,16 +234,17 @@ export class DocumentTypeFactoryComponent implements OnInit {
             : new TreeItemFlatNode();
         flatNode.item       = node.item;
         flatNode.level      = level;
+        flatNode.type       = node.type;
         flatNode.code       = node.code;
         flatNode.key        = node.key;
-        flatNode.expandable = node.children && node.children.length > 0;
+        flatNode.expandable = (node.type === 'folder');
         this.flatNodeMap.set(flatNode, node);
         this.nestedNodeMap.set(node, flatNode);
         return flatNode;
     }
 
     filterChanged() {
-        this.database.filter(this.searchText);
+        this.treeDataObj.filter(this.searchText);
         if (this.searchText)
         {
             this.treeControl.expandAll();
