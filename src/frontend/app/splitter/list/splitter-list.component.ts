@@ -34,6 +34,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {HistoryService} from "../../../services/history.service";
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from "@angular/material/form-field";
 import {marker} from "@biesbjerg/ngx-translate-extract-marker";
+declare var $: any;
 
 @Component({
     selector: 'app-list',
@@ -45,7 +46,7 @@ import {marker} from "@biesbjerg/ngx-translate-extract-marker";
 })
 
 export class SplitterListComponent implements OnInit {
-    batches         : any;
+    batches         : any     = [];
     isLoading       : boolean = true;
     status          : any[]   = [];
     gridColumns     : number  = 4;
@@ -54,7 +55,7 @@ export class SplitterListComponent implements OnInit {
     searchText      : string  = "";
     paginationInfos : any     = {
         length: 0,
-        pageSize: 10,
+        pageSize: 16,
         pageIndex: 1,
     };
     batchList       : any[]   = [
@@ -73,6 +74,8 @@ export class SplitterListComponent implements OnInit {
     ];
     currentTime     : string  = 'today';
     currentStatus   : string  = 'NEW';
+    batchesSelected : boolean = false;
+    totalChecked    : number = 0;
 
     constructor(
         private router: Router,
@@ -131,6 +134,56 @@ export class SplitterListComponent implements OnInit {
         return this._sanitizer.bypassSecurityTrustUrl('data:image/jpg;base64,' + url);
     }
 
+    checkSelectedBatch() {
+        this.totalChecked = $('input.checkBox_list:checked').length;
+        this.batchesSelected = this.totalChecked !== 0;
+    }
+
+    mergeAllConfirmDialog(parentId: number) {
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            data:{
+                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
+                confirmText         : this.translate.instant('SPLITTER.confirm_merge_all_checked_batches'),
+                confirmButton       : this.translate.instant('SPLITTER.merge'),
+                confirmButtonColor  : "green",
+                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+            },
+            width: "600px",
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.mergeAllBatches(parentId);
+            }
+        });
+    }
+
+    mergeAllBatches(parentId: number) {
+        const checkboxList = $(".checkBox_list");
+        checkboxList.each((cpt: any) => {
+            console.log(checkboxList[cpt].checked);
+        });
+    }
+
+    deleteAllConfirmDialog() {
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            data:{
+                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
+                confirmText         : this.translate.instant('SPLITTER.confirm_delete_all_batches'),
+                confirmButton       : this.translate.instant('SPLITTER.delete_all_checked'),
+                confirmButtonColor  : "warn",
+                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+            },
+            width: "600px",
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.deleteAllBatches();
+            }
+        });
+    }
+
     onPageChange($event: PageEvent) {
         this.batches = [];
         this.paginationInfos.pageIndex = $event.pageIndex + 1;
@@ -158,16 +211,35 @@ export class SplitterListComponent implements OnInit {
         });
     }
 
-    deleteBatch(id: number): void {
-        this.http.put(API_URL + '/ws/splitter/status', {
-            'id': id,
-            'status': 'DEL',
-        }, {headers: this.authService.headers}).pipe(
+    selectOrUnselectAllBatches(event: any) {
+        const label = event.srcElement.textContent;
+        this.batchesSelected = !this.batchesSelected;
+        const checkboxList = $(".checkBox_list");
+        checkboxList.each((cpt: any) => {
+            checkboxList[cpt].checked = label === this.translate.instant('VERIFIER.select_all');
+        });
+        this.totalChecked = $('input.checkBox_list:checked').length;
+    }
+
+    deleteAllBatches() {
+        this.isLoading = true;
+        const checkboxList = $(".checkBox_list");
+        checkboxList.each((cpt: any) => {
+            if (checkboxList[cpt].checked) {
+                const batchId = checkboxList[cpt].id.split('_')[0];
+                this.deleteBatch(batchId, true);
+            }
+        });
+        this.notify.success(this.translate.instant('SPLITTER.all_batches_checked_deleted'));
+    }
+
+    deleteBatch(id: number, batchDelete = false): void {
+        this.http.put(API_URL + '/ws/splitter/status', {'id': id, 'status': 'DEL', }, {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.batches.forEach((batch: any, index: number) => {
                     if (batch.id === id) this.batches.splice(index, 1);
                 });
-                this.notify.success(this.translate.instant('SPLITTER.batch_deleted'));
+                if (!batchDelete) this.notify.success(this.translate.instant('SPLITTER.batch_deleted'));
             }),
             catchError((err: any) => {
                 console.debug(err);
@@ -181,7 +253,6 @@ export class SplitterListComponent implements OnInit {
         this.paginationInfos.offset = 0;
         this.paginationInfos.pageIndex = 1;
     }
-
 
     onTabChange(event: any) {
         // this.search = '';

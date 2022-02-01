@@ -17,6 +17,9 @@
 }
 
 ::ng-deep .list > mat-card {
+    @apply flex;
+    @apply flex-col;
+
     & .mat-card-header {
         @apply flex-shrink-0;
     }
