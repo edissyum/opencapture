@@ -17,6 +17,9 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 from src.backend.import_models import doc_types
+from src.backend.import_classes import _SeparatorQR
+from src.backend.main import create_classes_from_current_config
+from flask_babel import gettext
 
 
 def add_doc_type(args):
@@ -52,6 +55,36 @@ def retrieve_doc_types(args):
 
 def update(args):
     res, error = doc_types.update(args)
+    if res:
+        response = {
+            "res": res
+        }
+        return response, 200
+    else:
+        response = {
+            "errors": "DOC_TYPE_ERROR",
+            "message": error
+        }
+        return response, 401
+
+
+def generate_separator(args):
+    _vars = create_classes_from_current_config()
+    _cfg = _vars[1]
+    qr_code_value = ""
+    separator_type_label = ""
+    if args['type'] == "docTypeSeparator":
+        qr_code_value = f"DOCSTART|DOCTYPE|{args['key']}"
+        separator_type_label = gettext('DOCTYPESEPARATOR')
+    elif args['type'] == "documentSeparator":
+        qr_code_value = "DOCSTART|GEN"
+        separator_type_label = gettext('DOCUMENTSEPARATOR')
+    elif args['type'] == "bundleSeparator":
+        qr_code_value = "BUNDLESTART|META1"
+        separator_type_label = gettext('BUNDLESEPARATOR')
+
+    encoded_file = _SeparatorQR.generate_separator(qr_code_value, args['label'], separator_type_label)
+    res, error = encoded_file, None
     if res:
         response = {
             "res": res

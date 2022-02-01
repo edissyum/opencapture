@@ -39,9 +39,12 @@ def upload():
         return make_response(gettext('UNKNOW_ERROR'), 400)
 
 
-@bp.route('splitter/batches', defaults={'time': None, 'status': None, 'batch_id': None, 'size': None, 'page': None}, methods=['GET'])
-@bp.route('splitter/batches/<int:batch_id>', defaults={'time': None, 'status': None, 'size': None, 'page': None}, methods=['GET'])
-@bp.route('splitter/batches/<int:page>/<int:size>/<string:time>/<string:status>', defaults={'batch_id': None}, methods=['GET'])
+@bp.route('splitter/batches', defaults={'time': None, 'status': None, 'batch_id': None, 'size': None, 'page': None},
+          methods=['GET'])
+@bp.route('splitter/batches/<int:batch_id>', defaults={'time': None, 'status': None, 'size': None, 'page': None},
+          methods=['GET'])
+@bp.route('splitter/batches/<int:page>/<int:size>/<string:time>/<string:status>', defaults={'batch_id': None},
+          methods=['GET'])
 @auth.token_required
 def retrieve_splitter_batches(batch_id, page, size, time, status):
     args = {
@@ -88,4 +91,14 @@ def validate():
     data = request.data
     data = json.loads(data)
     response, status = splitter.validate(data['documents'], data['metadata'])
-    return make_response(jsonify(response)), 200
+    return make_response(jsonify(response)), status
+
+
+@bp.route('splitter/methods', methods=['GET'])
+@auth.token_required
+def get_split_methods():
+    split_scripts, status = splitter.get_split_methods()
+    response = {
+        'split_scripts': split_scripts
+    }
+    return make_response(jsonify(response)), status

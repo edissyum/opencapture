@@ -16,6 +16,8 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 import base64
+import json
+
 from flask import current_app
 from flask_babel import gettext
 import worker_splitter_from_python
@@ -246,3 +248,13 @@ def validate(documents, metadata):
                     return {"OK": False}, 500
 
     return {"OK": True}, 200
+
+
+def get_split_methods():
+    with open('bin/scripts/splitter_methods/splitter_methods.json') as methods_json:
+        methods = json.load(methods_json)
+    if len(methods) > 0:
+        return methods, 200
+    else:
+        return methods, 401
+

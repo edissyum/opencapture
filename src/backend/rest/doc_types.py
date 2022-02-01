@@ -52,3 +52,11 @@ def update_doc_type():
     data = json.loads(request.data)
     res = doc_types.update(data)
     return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('docTypes/generateSeparator', methods=['POST'])
+@auth.token_required
+def generate_separator():
+    data = json.loads(request.data)
+    res = doc_types.generate_separator(data)
+    return make_response(jsonify(res[0])), res[1]
