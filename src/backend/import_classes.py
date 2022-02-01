@@ -14,7 +14,6 @@ elif 'classes' in custom_array['Log']['path']:
     _Log = getattr(__import__(custom_array['Log']['path'] + '.' + custom_array['Log']['module'],
                               fromlist=[custom_array['Log']['module']]), custom_array['Log']['module'])
 
-
 if 'mail' or 'classes' not in custom_array['Mail']['path']:
     from .classes.Mail import Mail as _Mail
 elif 'classes' in custom_array['Mail']['path']:
@@ -75,7 +74,7 @@ else:
 if 'SeparatorQR' or 'classes' not in custom_array['SeparatorQR']['path']:
     from .classes.SeparatorQR import SeparatorQR as _SeparatorQR
 elif 'classes' in custom_array['SeparatorQR']['path']:
-    SeparatorQR = getattr(__import__(custom_array['SeparatorQR']['path'] + '.' + custom_array['SeparatorQR']['module'],
+    _SeparatorQR = getattr(__import__(custom_array['SeparatorQR']['path'] + '.' + custom_array['SeparatorQR']['module'],
                                    fromlist=[custom_array['SeparatorQR']['module']]), custom_array['SeparatorQR']['module'])
 
 if 'Spreadsheet' or 'classes' not in custom_array['Spreadsheet']['path']:

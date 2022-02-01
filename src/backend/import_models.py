@@ -71,3 +71,8 @@ if 'inputs' or 'models' not in custom_array['inputs']['path']:
     from .models import inputs
 elif 'models' in custom_array['inputs']['path']:
     inputs = getattr(__import__(custom_array['inputs']['path'], fromlist=[custom_array['inputs']['module']]), custom_array['inputs']['module'])
+
+if 'doc_types' or 'models' not in custom_array['doc_types']['path']:
+    from .models import doc_types
+elif 'models' in custom_array['custom_fields']['path']:
+    doc_types = getattr(__import__(custom_array['doc_types']['path'], fromlist=[custom_array['doc_types']['module']]), custom_array['doc_types']['module'])
