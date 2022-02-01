@@ -54,6 +54,14 @@ export class SplitterCreateInputComponent implements OnInit {
             control: new FormControl(),
             required: true,
         },
+        {
+            id: 'splitter_method_id',
+            label: this.translate.instant('INPUT.splitter_method'),
+            type: 'select',
+            control: new FormControl(),
+            required: true,
+            values: [],
+        },
     ];
 
     constructor(
@@ -105,6 +113,26 @@ export class SplitterCreateInputComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
+        this.inputForm.forEach(element => {
+            if (element.id === 'splitter_method_id') {
+                this.http.get(API_URL + '/ws/splitter/methods', {headers: this.authService.headers}).pipe(
+                    tap((data: any) => {
+                        data.split_methods.forEach((option: any) => {
+                            element.values.push({
+                                id      : option.id,
+                                label   : option.label,
+                            });
+                        });
+                    }),
+                    finalize(() => this.loading = false),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
+            }
+        });
     }
 
     isValidForm() {

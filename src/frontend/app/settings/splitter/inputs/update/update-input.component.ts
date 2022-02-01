@@ -73,8 +73,8 @@ export class SplitterUpdateInputComponent implements OnInit {
             required: true,
         },
         {
-            id: 'split_scripts',
-            label: this.translate.instant('INPUT.split_scripts'),
+            id: 'splitter_method_id',
+            label: this.translate.instant('INPUT.splitter_method'),
             type: 'select',
             control: new FormControl(),
             required: true,
@@ -132,10 +132,10 @@ export class SplitterUpdateInputComponent implements OnInit {
             })
         ).subscribe();
         this.inputForm.forEach(element => {
-            if (element.id === 'split_scripts') {
+            if (element.id === 'splitter_method_id') {
                 this.http.get(API_URL + '/ws/splitter/methods', {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
-                        data.split_scripts.forEach((option: any) => {
+                        data.split_methods.forEach((option: any) => {
                             element.values.push({
                                 id      : option.id,
                                 label   : option.label,
