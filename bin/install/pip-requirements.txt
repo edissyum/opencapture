@@ -24,3 +24,5 @@ pytesseract==0.3.8
 pyexcel_ods3==0.6.0
 configparser==5.2.0
 opencv-python==4.5.4.60
+qrcode==7.3.1
+fpdf==1.7.2
