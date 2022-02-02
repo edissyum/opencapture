@@ -17,7 +17,11 @@
 
 import base64
 import json
+import os.path
+import re
+import shutil
 
+import PyPDF4
 from flask import current_app
 from flask_babel import gettext
 import worker_splitter_from_python
@@ -251,10 +255,60 @@ def validate(documents, metadata):
 
 
 def get_split_methods():
-    with open('bin/scripts/splitter_methods/splitter_methods.json') as methods_json:
-        methods = json.load(methods_json)
-    if len(methods) > 0:
-        return methods, 200
+    split_methods = _Splitter.get_split_methods()
+    if len(split_methods) > 0:
+        return split_methods, 200
     else:
-        return methods, 401
+        return split_methods, 401
 
+
+def merge_batches(parent_id, batches):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    _config = _vars[1]
+
+    parent_info = splitter.get_batch_by_id({'id': parent_id})[0]
+    parent_filename = current_app.config['UPLOAD_FOLDER_SPLITTER'] + parent_info['file_name']
+    parent_batch_pages = int(parent_info['page_number'])
+    batch_folder = _config.cfg['SPLITTER']['docserverpath'] + '/batches/' + parent_info['batch_folder']
+    parent_max_split_document = splitter.get_batch_pages({'select': ['MAX(split_document) as split_document'], 'id': parent_id})[0][0]['split_document']
+
+    parent_pdf = PyPDF4.PdfFileReader(parent_filename)
+    merged_pdf = PyPDF4.PdfFileWriter()
+    for page in range(parent_pdf.numPages):
+        merged_pdf.addPage(parent_pdf.getPage(page))
+
+    batches_info = []
+    for batch in batches:
+        batch_info = splitter.get_batch_by_id({'id': batch})[0]
+        parent_batch_pages += batch_info['page_number']
+        batches_info.append(batch_info)
+        pdf = PyPDF4.PdfFileReader(current_app.config['UPLOAD_FOLDER_SPLITTER'] + batch_info['file_name'])
+        for page in range(pdf.numPages):
+            merged_pdf.addPage(pdf.getPage(page))
+
+        pages = splitter.get_batch_pages({'id': batch})
+        total_split = cpt = 0
+        for page in pages[0]:
+            if page:
+                new_path = batch_folder + '/' + os.path.basename(page['image_path'])
+                shutil.copy(page['image_path'], new_path)
+                args = {
+                    'table': 'splitter_pages',
+                    'columns': {
+                        'batch_id': str(parent_id),
+                        'image_path': new_path,
+                        'source_page': page['source_page'],
+                        'split_document': str(parent_max_split_document + page['split_document']),
+                    }
+                }
+                _db.insert(args)
+                total_split += page['split_document']
+                cpt += 1
+                if total_split > cpt:
+                    parent_max_split_document += 1
+        parent_max_split_document += 1
+    splitter.update_batch_page_number({'id': parent_id, 'number': parent_batch_pages})
+
+# with open(parent_filename, 'wb') as file:
+#     merged_pdf.write(file)

@@ -34,6 +34,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {HistoryService} from "../../../services/history.service";
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from "@angular/material/form-field";
 import {marker} from "@biesbjerg/ngx-translate-extract-marker";
+import {LastUrlService} from "../../../services/last-url.service";
 declare var $: any;
 
 @Component({
@@ -53,11 +54,12 @@ export class SplitterListComponent implements OnInit {
     page            : number  = 1;
     selectedTab     : number  = 0;
     searchText      : string  = "";
-    paginationInfos : any     = {
-        length: 0,
-        pageSize: 16,
-        pageIndex: 1,
-    };
+    pageSize        : number  = 16;
+    pageIndex       : number  = 1;
+    offset          : number  = 0;
+    pageSizeOptions : any []  = [4, 8, 12, 16, 24, 48];
+    total           : number  = 0;
+
     batchList       : any[]   = [
         {
             'id': 'today',
@@ -89,11 +91,27 @@ export class SplitterListComponent implements OnInit {
         public translate: TranslateService,
         private notify: NotificationService,
         private historyService: HistoryService,
+        private routerExtService: LastUrlService,
         private localeStorageService: LocalStorageService,
     ) {}
 
     ngOnInit(): void {
         this.localeStorageService.save('splitter_or_verifier', 'splitter');
+
+        const lastUrl = this.routerExtService.getPreviousUrl();
+        if (lastUrl.includes('splitter/') && !lastUrl.includes('settings') || lastUrl === '/' || lastUrl === '/upload') {
+            if (this.localeStorageService.get('splitterPageIndex'))
+                this.pageIndex = parseInt(this.localeStorageService.get('splitterPageIndex') as string);
+            if (this.localeStorageService.get('splitterTimeIndex')) {
+                this.selectedTab = parseInt(this.localeStorageService.get('splitterTimeIndex') as string);
+                this.currentTime = this.batchList[this.selectedTab].id;
+            }
+            this.offset = this.pageSize * (this.pageIndex);
+        } else {
+            this.localeStorageService.remove('splitterPageIndex');
+            this.localeStorageService.remove('splitterTimeIndex');
+        }
+
         this.http.get(API_URL + '/ws/status/list?module=splitter', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.status = data.status;
@@ -114,13 +132,11 @@ export class SplitterListComponent implements OnInit {
     loadBatches(): void {
         this.isLoading = true;
         this.http.get(API_URL + '/ws/splitter/batches/' +
-            (this.paginationInfos['pageIndex'] - 1) + '/' +
-            this.paginationInfos['pageSize'] + '/' +
-            this.currentTime + '/' + this.currentStatus
-            , {headers: this.authService.headers}).pipe(
+            (this.pageIndex - 1) + '/' + this.pageSize + '/' + this.currentTime + '/' + this.currentStatus,
+            {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.batches = data.batches;
-                this.paginationInfos.length = data.count;
+                this.total = data.count;
             }),
             finalize(() => this.isLoading = false),
             catchError((err: any) => {
@@ -160,9 +176,24 @@ export class SplitterListComponent implements OnInit {
 
     mergeAllBatches(parentId: number) {
         const checkboxList = $(".checkBox_list");
+        const listOfBatchToMerge: any[] = [];
         checkboxList.each((cpt: any) => {
-            console.log(checkboxList[cpt].checked);
+            const batchId = checkboxList[cpt].id.split('_')[0];
+            if (batchId !== parentId.toString())
+                listOfBatchToMerge.push(batchId);
         });
+
+        this.http.post(API_URL + '/ws/splitter/merge/' + parentId, {'batches': listOfBatchToMerge}, {headers: this.authService.headers},
+        ).pipe(
+            tap(() => {
+                this.notify.success(this.translate.instant('SPLITTER.merge_success'));
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
     }
 
     deleteAllConfirmDialog() {
@@ -186,8 +217,9 @@ export class SplitterListComponent implements OnInit {
 
     onPageChange($event: PageEvent) {
         this.batches = [];
-        this.paginationInfos.pageIndex = $event.pageIndex + 1;
-        this.paginationInfos.pageSize = $event.pageSize;
+        this.pageIndex = $event.pageIndex + 1;
+        this.pageSize = $event.pageSize;
+        this.localeStorageService.save('splitterPageIndex', $event.pageIndex);
         this.loadBatches();
     }
 
@@ -249,15 +281,16 @@ export class SplitterListComponent implements OnInit {
     }
 
     resetPaginator() {
-        this.paginationInfos.length = 0;
-        this.paginationInfos.offset = 0;
-        this.paginationInfos.pageIndex = 1;
+        this.total = 0;
+        this.offset = 0;
+        this.pageIndex = 1;
+        this.localeStorageService.save('splitterPageIndex', this.pageIndex);
     }
 
     onTabChange(event: any) {
         // this.search = '';
         this.selectedTab = event.index;
-        // this.localeStorageService.save('invoicesTimeIndex', this.selectedTab);
+        this.localeStorageService.save('splitterTimeIndex', this.selectedTab);
         this.currentTime = this.batchList[this.selectedTab].id;
         this.resetPaginator();
         this.loadBatches();

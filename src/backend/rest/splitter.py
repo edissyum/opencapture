@@ -97,8 +97,16 @@ def validate():
 @bp.route('splitter/methods', methods=['GET'])
 @auth.token_required
 def get_split_methods():
-    split_scripts, status = splitter.get_split_methods()
+    split_methods, status = splitter.get_split_methods()
     response = {
-        'split_scripts': split_scripts
+        'split_methods': split_methods
     }
     return make_response(jsonify(response)), status
+
+
+@bp.route('splitter/merge/<int:parent_id>', methods=['POST'])
+@auth.token_required
+def merge_batches(parent_id):
+    data = json.loads(request.data)['batches']
+    splitter.merge_batches(parent_id, data)
+    return make_response(jsonify('')), 200

@@ -1,5 +1,4 @@
 <mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem">
-
     <mat-sidenav-content class="bg-white overflow-hidden">
         <mat-tab-group [selectedIndex]="selectedTab" (selectedTabChange)="onTabChange($event)" class="batches overflow-auto" animationDuration="0ms">
             <mat-tab *ngFor="let batch of batchList" [label]="this.translate.instant(batch.label)" [id]="batch.id">
@@ -7,7 +6,7 @@
                     <div class="grid grid-cols-3 grid-flow-row gap-0 mt-4 z-30">
                         <mat-form-field class="left-4 w-1/2" appearance="outline">
                             <mat-label>{{ 'SPLITTER.search' | translate }}</mat-label>
-                            <input matInput type="text" [(ngModel)]="searchText" [disabled]="paginationInfos.length == 0">
+                            <input matInput type="text" [(ngModel)]="searchText" [disabled]="this.total == 0">
                         </mat-form-field>
                         <mat-form-field class="w-1/2 m-auto" appearance="outline">
                             <mat-label>{{ 'STATUS.list' | translate }}</mat-label>
@@ -18,9 +17,9 @@
                             </mat-select>
                         </mat-form-field>
                         <span [class.hidden]="isLoading" class="relative right-0">
-                            <mat-paginator [length] = "paginationInfos.length"
-                                           [pageSize]="paginationInfos.pageSize"
-                                           [pageSizeOptions]="[5, 10, 25, 100]"
+                            <mat-paginator [length] = "this.total"
+                                           [pageSize]="this.pageSize"
+                                           [pageSizeOptions]="this.pageSizeOptions"
                                            (page)="onPageChange($event)">
                             </mat-paginator>
                         </span>
@@ -36,6 +35,7 @@
                                matTooltip="{{ 'SPLITTER.delete_all_checked' | translate }}"></i>
                         </span>
                     </div>
+                    <hr class="w-1/2 m-auto mb-4 border-green-400 relative z-30">
                     <div *ngIf="isLoading">
                         <app-loader></app-loader>
                     </div>
@@ -66,7 +66,9 @@
                                     <i [class.hidden]="this.totalChecked < 2"
                                        class="fas fa-object-group cursor-pointer text-green-400 relative float-right"
                                        (click)="$event.stopPropagation();mergeAllConfirmDialog(batch['id'])">
-                                        <span class="font-medium mat-typography">{{ 'SPLITTER.merge' | translate }}</span>
+                                        <span class="font-medium mat-typography float-left mr-3 relative bottom-1">
+                                            {{ 'SPLITTER.merge' | translate }} {{ this.totalChecked }} {{ 'SPLITTER.batches' | translate }}
+                                        </span>
                                     </i>
                                 </mat-card-actions>
                             </mat-card>

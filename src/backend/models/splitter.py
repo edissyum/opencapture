@@ -188,3 +188,20 @@ def change_status(args):
     res = _db.update(args)
 
     return res
+
+
+def update_batch_page_number(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+
+    args = {
+        'table': ['splitter_batches'],
+        'set': {
+            'page_number': args['number']
+        },
+        'where': ['id = %s'],
+        'data': [args['id']]
+    }
+    res = _db.update(args)
+
+    return res
