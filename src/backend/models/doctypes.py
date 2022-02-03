@@ -19,17 +19,17 @@ from gettext import gettext
 from src.backend.main import create_classes_from_current_config
 
 
-def add_doc_type(args):
+def add_doctype(args):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
-    doc_types, error = retrieve_doc_types({
+    doctypes, error = retrieve_doctypes({
         'where': ['key = %s', 'status = %s'],
         'data': [args['key'], 'OK']
     })
 
-    if not doc_types:
+    if not doctypes:
         args = {
-            'table': 'doc_types',
+            'table': 'doctypes',
             'columns': {
                 'type': args['type'],
                 'key': args['key'],
@@ -40,7 +40,7 @@ def add_doc_type(args):
         res = _db.insert(args)
 
         if not res:
-            error = gettext('ADD_DOC_TYPE_ERROR')
+            error = gettext('ADD_DOCTYPE_ERROR')
         return res, error
     else:
         error = gettext('DOCTYPE_ALREADY_EXIST')
@@ -48,18 +48,18 @@ def add_doc_type(args):
     return '', error
 
 
-def retrieve_doc_types(args):
+def retrieve_doctypes(args):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
-    doc_types = _db.select({
+    doctypes = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
-        'table': ['doc_types'],
+        'table': ['doctypes'],
         'where': ['status=%s'] if 'where' not in args else args['where'],
         'data': ['OK'] if 'data' not in args else args['data']
     })
 
-    return doc_types, error
+    return doctypes, error
 
 
 def update(args):
@@ -67,7 +67,7 @@ def update(args):
     _db = _vars[0]
     error = None
     res = _db.update({
-        'table': ['doc_types'],
+        'table': ['doctypes'],
         'set': {
             'label': args['label'],
             'code': args['code'],

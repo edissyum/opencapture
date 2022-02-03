@@ -98,7 +98,7 @@ if 'inputs' or 'controllers' not in custom_array['inputs']['path']:
 elif 'controllers' in custom_array['inputs']['path']:
     inputs = getattr(__import__(custom_array['inputs']['path'], fromlist=[custom_array['inputs']['module']]), custom_array['inputs']['module'])
 
-if 'doc_types' or 'controllers' not in custom_array['doc_types']['path']:
-    from .controllers import doc_types
-elif 'controllers' in custom_array['doc_types']['path']:
-    inputs = getattr(__import__(custom_array['doc_types']['path'], fromlist=[custom_array['doc_types']['module']]), custom_array['doc_types']['module'])
+if 'doctypes' or 'controllers' not in custom_array['doctypes']['path']:
+    from .controllers import doctypes
+elif 'controllers' in custom_array['doctypes']['path']:
+    inputs = getattr(__import__(custom_array['doctypes']['path'], fromlist=[custom_array['doctypes']['module']]), custom_array['doctypes']['module'])

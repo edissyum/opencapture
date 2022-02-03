@@ -14,7 +14,7 @@
 # along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
-
+import json
 import os
 import random
 from xml.dom import minidom
@@ -204,3 +204,9 @@ class Splitter:
             return {'OK': False, 'error': "Unable to create file on disk."}
 
         return {'OK': True, 'path': xml_file_path}
+
+    @staticmethod
+    def get_split_methods():
+        with open('bin/scripts/splitter_methods/splitter_methods.json') as methods_json:
+            methods = json.load(methods_json)
+            return methods['methods']

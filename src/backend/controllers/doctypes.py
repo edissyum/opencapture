@@ -16,14 +16,14 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
-from src.backend.import_models import doc_types
+from src.backend.import_models import doctypes
 from src.backend.import_classes import _SeparatorQR
 from src.backend.main import create_classes_from_current_config
 from flask_babel import gettext
 
 
-def add_doc_type(args):
-    res, error = doc_types.add_doc_type(args)
+def add_doctype(args):
+    res, error = doctypes.add_doctype(args)
     if res:
         response = {
             "id": res
@@ -37,12 +37,12 @@ def add_doc_type(args):
         return response, 401
 
 
-def retrieve_doc_types(args):
-    doc_types_res, error = doc_types.retrieve_doc_types(args)
+def retrieve_doctypes(args):
+    doctypes_res, error = doctypes.retrieve_doctypes(args)
 
     if error is None:
         response = {
-            "docTypes": doc_types_res
+            "docTypes": doctypes_res
         }
         return response, 200
 
@@ -54,7 +54,7 @@ def retrieve_doc_types(args):
 
 
 def update(args):
-    res, error = doc_types.update(args)
+    res, error = doctypes.update(args)
     if res:
         response = {
             "res": res
