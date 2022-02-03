@@ -1,0 +1,14 @@
+{
+  "methods": [
+    {
+      "id": "metadata",
+      "label": "Separation par métadonnées",
+      "path": "/var/www/html/opencaptureforinvoices/bin/scripts/splitter_methods/metadata.py"
+    },
+    {
+      "id": "qr_code",
+      "label": "Séparation par code QR",
+      "path": "/var/www/html/opencaptureforinvoices/bin/scripts/splitter_methods/qr_code.py"
+    }
+  ]
+}

@@ -17,4 +17,22 @@
 # @dev : Oussama BRICH <oussama.brich@edissyum.com>
 
 def process(args, file, log, splitter, files, tmp_folder, config):
-    log.info('Separation Method is not implemented.')
+    log.info('Processing file for separation : ' + file)
+
+    # Get the OCR of the file as a list of line content and position
+    files.pdf_to_jpg(file, open_img=False)
+    list_files = files.sorted_file(tmp_folder, 'jpg')
+    blank_pages = []
+
+    # Remove blank pages
+    cpt = 0
+    tmp_list_files = list_files
+    for f in tmp_list_files:
+        if files.is_blank_page(f[1], config.cfg['REMOVE-BLANK-PAGES']):
+            blank_pages.append(cpt)
+        cpt = cpt + 1
+
+    splitter.separator_qr.run(file)
+    splitter.split(list_files)
+    splitter.get_result_documents(blank_pages)
+    splitter.save_documents(tmp_folder, file, args['input_id'])
