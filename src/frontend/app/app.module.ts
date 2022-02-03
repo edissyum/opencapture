@@ -98,7 +98,6 @@ import { SplitterFormListComponent } from "./settings/splitter/form/list/form-li
 import { StatisticsComponent } from './statistics/statistics.component';
 import { CreateDocTypeComponent } from './settings/splitter/doc-types/create/create-doc-type.component';
 import { ListDocTypeComponent } from './settings/splitter/doc-types/list/list-doc-type.component';
-import { UpdateDocTypeComponent } from './settings/splitter/doc-types/update/update-doc-type.component';
 import { CreateFolderDocTypeComponent } from './settings/splitter/doc-types/create-folder/create-folder-doc-type.component';
 
 export function createTranslateLoader(http: HttpClient) {
@@ -163,7 +162,6 @@ export function createTranslateLoader(http: HttpClient) {
         StatisticsComponent,
         CreateDocTypeComponent,
         ListDocTypeComponent,
-        UpdateDocTypeComponent,
         CreateFolderDocTypeComponent
     ],
     imports: [
