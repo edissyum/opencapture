@@ -14,11 +14,13 @@
 # along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
-
+import json
 import os
 import sys
 import time
 import tempfile
+from symbol import import_from
+
 from kuyruk import Kuyruk
 from src.backend.import_process import OCForInvoices_splitter
 from src.backend.main import timer, check_file, create_classes
@@ -53,7 +55,34 @@ def launch(args):
     if args['file'] is not None:
         path = args['file']
         if check_file(files, path, config, log) is not False:
-            OCForInvoices_splitter.process(args, path, log, splitter, files, tmp_folder, config)
+            splitter_method = database.select({
+                'select': ['splitter_method_id'],
+                'table': ['inputs'],
+                'where': ['status <> %s and input_id = %s'],
+                'data': ['DEL', args['input_id']]
+            })[0]
+            available_split_methods_path = "bin/scripts/splitter_methods/splitter_methods.json"
+            if len(splitter_method) > 0 and os.path.isfile(available_split_methods_path):
+                with open(available_split_methods_path) as json_file:
+                    available_split_methods = json.load(json_file)
+                    for available_split_method in available_split_methods['methods']:
+                        print(available_split_method)
+                        if available_split_method['id'] == splitter_method['splitter_method_id']:
+                            split_method = import_from(available_split_method['path'], available_split_method['method'])
+                            log.info('Split using method : {}'.format(available_split_method['id']))
+                            split_method(args, path, log, splitter, files, tmp_folder, config)
     database.conn.close()
     end = time.time()
     log.info('Process end after ' + timer(start, end) + '')
+
+
+def import_from(path, method):
+    """
+    Import an attribute, function or class from a module.
+    :param method: Method to call
+    :param path: A path descriptor in the form of 'pkg.module.submodule:attribute'
+    :type path: str
+    """
+    path = path.replace('/', '.').replace('.py', '')
+    module = __import__(path, fromlist=method)
+    return getattr(module, method)

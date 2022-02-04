@@ -13,10 +13,19 @@
 # You should have received a copy of the GNU General Public License
 # along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/>.
 
-# @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama BRICH <oussama.brich@edissyum.com>
 
 def process(args, file, log, splitter, files, tmp_folder, config):
+    """
+    :param args:
+    :param file: File path to split
+    :param log: log object
+    :param splitter: Splitter object
+    :param files: Files object
+    :param tmp_folder: tmp folder path
+    :param config: Config object
+    :return: N/A
+    """
     log.info('Processing file for separation : ' + file)
 
     # Get the OCR of the file as a list of line content and position
