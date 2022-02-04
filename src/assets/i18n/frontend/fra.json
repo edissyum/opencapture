@@ -87,6 +87,7 @@
 	},
 	"CUSTOM-FIELDS": {
 		"add": "Ajouter le champ personnalisé",
+		"associated_to": "Associé au",
 		"checkbox": "Case à cocher",
 		"field_added": "Champ personnalisé créé avec succès",
 		"field_updated": "Champ personnalisé modifié avec succès",
@@ -204,6 +205,7 @@
 		"validate": "Valider la facture"
 	},
 	"GLOBAL": {
+		"batch": "Lot",
 		"batches": "Lots",
 		"cancel": "Annuler",
 		"confirm": "Confirmation",
@@ -211,6 +213,7 @@
 		"delete_form_and_reassign_input": "Supprimer le formulaire et réassigner les chaînes entrantes",
 		"delete_supplier_positions": "Supprimer les positions du compte fournisseur",
 		"disable": "Désactiver",
+		"document": "Document",
 		"duplicate": "Dupliquer",
 		"enable": "Activer",
 		"history": "Historique",
@@ -466,7 +469,6 @@
 		"positions_mask_update": "Modification du masque",
 		"roles_list": "Liste des rôles",
 		"splitter": "Paramètres du Splitter",
-		"update_doc_type": "Modifier un type de document",
 		"update_input": "Modifier une chaîne entrante",
 		"update_output": "Modifier une chaîne sortante",
 		"users_list": "Liste des utilisateurs",
@@ -493,6 +495,7 @@
 		"form_label": "Libellé du formulaire",
 		"list": "Liste des lots",
 		"merge": "Fusionner",
+		"merge_error_form_not_match": "",
 		"merge_success": "Fusion des lots effectué avec succès",
 		"meta_data": "Métadonnées de documents",
 		"min_3_letter": "Au moins 3 letters",
