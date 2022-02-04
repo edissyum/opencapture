@@ -1,5 +1,5 @@
 <mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem">
-    <mat-sidenav #sidenav mode="side" opened class="w-1/6 flex flex-col h-full border-r border-green-400" style="top:0.1rem">
+    <mat-sidenav #sidenav mode="side" opened class="w-96 flex flex-col h-full border-r border-green-400" style="top:0.1rem">
         <h3 class="text-center text-gray-900 m-0 h-16" style="padding-top: 1.2rem">
             <i class="fas fa-sync-alt mr-4 cursor-pointer" (click)="resetInvoices()"
                [matTooltip]="'VERIFIER.reset_invoice_list' | translate"></i>
@@ -52,7 +52,7 @@
             <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fas fa-stream text-xl text-gray-900"></i>
         </button>
         <mat-tab-group [selectedIndex]="selectedTab" (selectedTabChange)="onTabChange($event)" class="batches overflow-auto" animationDuration="0ms">
-            <mat-tab *ngFor="let batch of batchList" [label]="this.translate.instant(batch.label)" [id]="batch.id">
+            <mat-tab *ngFor="let batch of batchList" [label]="this.translate.instant(batch.label)" [id]="batch.id" [disabled]="loading">
                 <div class="flex flex-col">
                     <div class="grid grid-cols-3 grid-flow-row gap-0 mt-4 z-30">
                         <mat-form-field class="left-4 w-1/2" appearance="outline">
@@ -63,13 +63,13 @@
                         </mat-form-field>
                         <mat-form-field class="w-1/2 m-auto" appearance="outline">
                             <mat-label>{{ 'STATUS.list' | translate }}</mat-label>
-                            <mat-select [(value)]="currentStatus" (selectionChange)="changeStatus($event)">
+                            <mat-select [(value)]="currentStatus" (selectionChange)="changeStatus($event)" [disabled]="loading">
                                 <mat-option *ngFor="let option of status" [value]="option['id']">
                                     {{ option['label'] }}
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
-                        <span [class.hidden]="loading" class="relative right-0">
+                        <span [class.hidden]="loading || total == 0" class="relative right-0">
                             <mat-paginator [length]="this.total" [pageSize]="this.pageSize" [pageIndex]="this.pageIndex"
                                            [pageSizeOptions]="this.pageSizeOptions" (page)="onPageChange($event)"></mat-paginator>
                         </span>

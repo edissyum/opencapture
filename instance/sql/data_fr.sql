@@ -5,7 +5,8 @@ INSERT INTO "status" ("id","label","label_long", "module") VALUES ('ERR', 'Erreu
 INSERT INTO "status" ("id","label","label_long", "module") VALUES ('DEL', 'Supprimée', 'Supprimée', 'verifier');
 INSERT INTO "status" ("id","label","label_long", "module") VALUES ('NEW', 'À valider', 'À valider', 'splitter');
 INSERT INTO "status" ("id","label","label_long", "module") VALUES ('END', 'Clotûré', 'Lot clôturé', 'splitter');
-INSERT INTO "status" ("id","label","label_long", "module") VALUES ('ERR', 'Supprimé', 'Supprimé', 'splitter');
+INSERT INTO "status" ("id","label","label_long", "module") VALUES ('DEL', 'Supprimé', 'Supprimé', 'splitter');
+INSERT INTO "status" ("id","label","label_long", "module") VALUES ('MERG', 'Fusionné', 'Fusionné', 'splitter');
 
 -- CRÉATION DES CHAINES SORTANTES DU MODULE VERIFIER
 INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "module", "data") VALUES (1, 'export_xml', 'Export XML', 'verifier', '{

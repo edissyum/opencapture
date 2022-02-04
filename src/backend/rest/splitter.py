@@ -47,6 +47,7 @@ def upload():
           methods=['GET'])
 @auth.token_required
 def retrieve_splitter_batches(batch_id, page, size, time, status):
+    print(status)
     args = {
         'batch_id': batch_id,
         'size': size,

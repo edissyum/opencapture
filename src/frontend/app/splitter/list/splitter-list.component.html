@@ -1,35 +1,35 @@
 <mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem">
     <mat-sidenav-content class="bg-white overflow-hidden">
         <mat-tab-group [selectedIndex]="selectedTab" (selectedTabChange)="onTabChange($event)" class="batches overflow-auto" animationDuration="0ms">
-            <mat-tab *ngFor="let batch of batchList" [label]="this.translate.instant(batch.label)" [id]="batch.id">
+            <mat-tab *ngFor="let batch of batchList" [label]="translate.instant(batch.label)" [id]="batch.id" [disabled]="isLoading">
                 <div class="flex flex-col">
                     <div class="grid grid-cols-3 grid-flow-row gap-0 mt-4 z-30">
                         <mat-form-field class="left-4 w-1/2" appearance="outline">
                             <mat-label>{{ 'SPLITTER.search' | translate }}</mat-label>
-                            <input matInput type="text" [(ngModel)]="searchText" [disabled]="this.total == 0">
+                            <input matInput type="text" [(ngModel)]="searchText" [disabled]="total == 0">
                         </mat-form-field>
                         <mat-form-field class="w-1/2 m-auto" appearance="outline">
                             <mat-label>{{ 'STATUS.list' | translate }}</mat-label>
-                            <mat-select [(value)]="currentStatus" (selectionChange)="changeStatus($event)">
+                            <mat-select [(value)]="currentStatus" (selectionChange)="changeStatus($event)" [disabled]="isLoading">
                                 <mat-option *ngFor="let option of status" [value]="option['id']">
                                     {{ option['label'] }}
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
-                        <span [class.hidden]="isLoading" class="relative right-0">
-                            <mat-paginator [length] = "this.total"
-                                           [pageSize]="this.pageSize"
-                                           [pageSizeOptions]="this.pageSizeOptions"
+                        <span [class.hidden]="isLoading || total == 0" class="relative right-0">
+                            <mat-paginator [length] = "total"
+                                           [pageSize]="pageSize"
+                                           [pageSizeOptions]="pageSizeOptions"
                                            (page)="onPageChange($event)">
                             </mat-paginator>
                         </span>
                     </div>
-                    <div class="z-40 -mt-2 mb-2 select-none" style="margin-left: 1.2rem" *ngIf="this.batches.length > 1 && !isLoading">
+                    <div class="z-40 -mt-2 mb-2 select-none" style="margin-left: 1.2rem" *ngIf="batches.length > 1 && !isLoading">
                         <span class="cursor-pointer" (click)="selectOrUnselectAllBatches($event)"
-                              [innerHTML]="this.batchesSelected ? this.translate.instant('VERIFIER.unselect_all') : this.translate.instant('VERIFIER.select_all')">
+                              [innerHTML]="batchesSelected ? translate.instant('VERIFIER.unselect_all') : translate.instant('VERIFIER.select_all')">
                         </span>
-                        <span [class.hidden]="this.totalChecked == 0"> ({{ this.totalChecked}})</span>
-                        <span [class.hidden]="!this.batchesSelected">
+                        <span [class.hidden]="totalChecked == 0"> ({{ totalChecked}})</span>
+                        <span [class.hidden]="!batchesSelected">
                             <i class="fas fa-trash ml-5 text-red-500 cursor-pointer"
                                (click)="$event.stopPropagation(); deleteAllConfirmDialog()"
                                matTooltip="{{ 'SPLITTER.delete_all_checked' | translate }}"></i>
@@ -56,6 +56,7 @@
                                     </mat-card-title>
                                     <mat-card-subtitle class="mt-2 -mb-1 break-all">
                                         <b>{{ 'VERIFIER.register_date' | translate }}</b> : {{ batch['batch_date'] }}<br>
+                                        <b>{{ 'SPLITTER.form_label' | translate }}</b> : {{ batch['form_label'] }}<br>
                                     </mat-card-subtitle>
                                 </mat-card-header>
                                 <mat-card-actions class="pb-4">
@@ -63,11 +64,11 @@
                                        (click)="$event.stopPropagation();openConfirmDialog(batch['id'])">
                                         <span class="font-medium mat-typography">{{ 'GLOBAL.delete' | translate }}</span>
                                     </i>
-                                    <i [class.hidden]="this.totalChecked < 2"
+                                    <i [class.hidden]="totalChecked < 2"
                                        class="fas fa-object-group cursor-pointer text-green-400 relative float-right"
                                        (click)="$event.stopPropagation();mergeAllConfirmDialog(batch['id'])">
                                         <span class="font-medium mat-typography float-left mr-3 relative bottom-1">
-                                            {{ 'SPLITTER.merge' | translate }} {{ this.totalChecked }} {{ 'SPLITTER.batches' | translate }}
+                                            {{ 'SPLITTER.merge' | translate }} {{ totalChecked }} {{ 'SPLITTER.batches' | translate }}
                                         </span>
                                     </i>
                                 </mat-card-actions>

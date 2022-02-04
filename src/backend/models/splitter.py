@@ -97,6 +97,28 @@ def insert_referential(data):
     return {'OK': True}, error
 
 
+def insert_page(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+
+    error = None
+    args = {
+        'table': 'splitter_pages',
+        'columns': {
+            'batch_id': str(args['batch_id']),
+            'image_path': args['path'],
+            'source_page': args['source_page'],
+            'split_document': str(args['count']),
+        }
+    }
+    res = _db.insert(args)
+    if not res:
+        error = "ERROR : While inserting new page"
+        return res, error
+
+    return {'OK': True}, error
+
+
 def retrieve_batches(args):
     _vars = create_classes_from_current_config()
     _db = _vars[0]

@@ -177,23 +177,39 @@ export class SplitterListComponent implements OnInit {
     mergeAllBatches(parentId: number) {
         const checkboxList = $(".checkBox_list");
         const listOfBatchToMerge: any[] = [];
+        const listOfBatchFormId: any[] = [];
         checkboxList.each((cpt: any) => {
             const batchId = checkboxList[cpt].id.split('_')[0];
             if (batchId !== parentId.toString())
                 listOfBatchToMerge.push(batchId);
         });
 
-        this.http.post(API_URL + '/ws/splitter/merge/' + parentId, {'batches': listOfBatchToMerge}, {headers: this.authService.headers},
-        ).pipe(
-            tap(() => {
-                this.notify.success(this.translate.instant('SPLITTER.merge_success'));
-            }),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
+        this.batches.forEach((batch: any) => {
+            listOfBatchToMerge.forEach((batchId: any) => {
+                if (parseInt(batch.id) === parseInt(batchId)) {
+                    listOfBatchFormId.push(batch.form_id);
+                }
+            });
+        });
+
+        const uniqueFormId = listOfBatchFormId.filter((item, i, ar) => ar.indexOf(item) === i);
+        if (uniqueFormId.length === 1) {
+            this.isLoading = true;
+            this.http.post(API_URL + '/ws/splitter/merge/' + parentId, {'batches': listOfBatchToMerge}, {headers: this.authService.headers},
+            ).pipe(
+                tap(() => {
+                    this.loadBatches();
+                    this.notify.success(this.translate.instant('SPLITTER.merge_success'));
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        } else {
+            this.notify.error(this.translate.instant('SPLITTER.merge_error_form_not_match'));
+        }
     }
 
     deleteAllConfirmDialog() {

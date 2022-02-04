@@ -65,8 +65,8 @@ def retrieve_batches(args):
     _config = _vars[1]
 
     args['select'] = ['*', "to_char(creation_date, 'DD-MM-YYY " + gettext('AT') + " HH24:MI:SS') as batch_date"]
-    args['where'] = ['status <> %s']
-    args['data'] = ['DEL']
+    args['where'] = []
+    args['data'] = []
 
     if 'status' in args and args['status'] is not None:
         args['where'].append("status = %s")
@@ -82,6 +82,7 @@ def retrieve_batches(args):
     count, error_count = splitter.count_batches(args)
     if not error_batches and not error_count:
         for index, batch in enumerate(batches):
+            batches[index]['form_label'] = forms.get_form_by_id(batch['form_id'])[0]['label']
             try:
                 with open(batches[index]['first_page'], "rb") as image_file:
                     encoded_string = base64.b64encode(image_file.read())
@@ -188,11 +189,12 @@ def validate(documents, metadata):
     _cfg = _vars[1]
 
     batch = splitter.retrieve_batches({
-        'id': metadata['id'],
+        'batch_id': None,
         'page': None,
-        'size': None
+        'size': None,
+        'where': ['id = %s'],
+        'data': [metadata['id']]
     })[0]
-
     form = forms.get_form_by_id(batch[0]['form_id'])
     """
         Split document
@@ -203,7 +205,6 @@ def validate(documents, metadata):
         for output_id in form[0]['outputs']:
             output = outputs.get_output_by_id(output_id)
             parameters = get_output_parameters(output[0]['data']['options']['parameters'])
-
             if output:
                 is_export_pdf_ok = True
                 is_export_xml_ok = True
@@ -243,6 +244,7 @@ def validate(documents, metadata):
                 """
                     Change status to END
                 """
+
                 if is_export_pdf_ok and is_export_xml_ok:
                     splitter.change_status({
                         'id': metadata['id'],
@@ -272,6 +274,7 @@ def merge_batches(parent_id, batches):
     parent_batch_pages = int(parent_info['page_number'])
     batch_folder = _config.cfg['SPLITTER']['docserverpath'] + '/batches/' + parent_info['batch_folder']
     parent_max_split_document = splitter.get_batch_pages({'select': ['MAX(split_document) as split_document'], 'id': parent_id})[0][0]['split_document']
+    parent_max_source_page = splitter.get_batch_pages({'select': ['MAX(source_page) as split_document'], 'id': parent_id})[0][0]['split_document']
 
     parent_pdf = PyPDF4.PdfFileReader(parent_filename)
     merged_pdf = PyPDF4.PdfFileWriter()
@@ -291,24 +294,29 @@ def merge_batches(parent_id, batches):
         total_split = cpt = 0
         for page in pages[0]:
             if page:
+                parent_max_source_page = parent_max_source_page + 1
                 new_path = batch_folder + '/' + os.path.basename(page['image_path'])
-                shutil.copy(page['image_path'], new_path)
-                args = {
-                    'table': 'splitter_pages',
-                    'columns': {
-                        'batch_id': str(parent_id),
-                        'image_path': new_path,
-                        'source_page': page['source_page'],
-                        'split_document': str(parent_max_split_document + page['split_document']),
-                    }
-                }
-                _db.insert(args)
+                if not os.path.isfile(new_path):
+                    shutil.copy(page['image_path'], new_path)
+
+                splitter.insert_page({
+                    'batch_id': parent_id,
+                    'path': new_path,
+                    'source_page': parent_max_source_page,
+                    'count': parent_max_split_document + page['split_document']
+                })
+
+                splitter.change_status({
+                    'id': batch,
+                    'status': 'MERG'
+                })
+
                 total_split += page['split_document']
                 cpt += 1
                 if total_split > cpt:
                     parent_max_split_document += 1
         parent_max_split_document += 1
-    splitter.update_batch_page_number({'id': parent_id, 'number': parent_batch_pages})
 
-# with open(parent_filename, 'wb') as file:
-#     merged_pdf.write(file)
+    splitter.update_batch_page_number({'id': parent_id, 'number': parent_batch_pages})
+    with open(parent_filename, 'wb') as file:
+        merged_pdf.write(file)

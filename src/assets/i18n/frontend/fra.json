@@ -490,6 +490,7 @@
 		"edit": "Éditer",
 		"error_no_doc_type": "Veuillez sélectionner les types de documents",
 		"error_no_metadata": "Veuillez sélectionner les metadonnées de documents",
+		"form_label": "Libellé du formulaire",
 		"list": "Liste des lots",
 		"merge": "Fusionner",
 		"merge_success": "Fusion des lots effectué avec succès",
