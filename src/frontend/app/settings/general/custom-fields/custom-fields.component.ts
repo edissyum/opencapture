@@ -127,7 +127,36 @@ export class CustomFieldsComponent implements OnInit {
             group[input.label_short] = input.required ? new FormControl(input.value || '', Validators.required)
                 : new FormControl(input.value || '');
         });
-        return new FormGroup(group);
+        const form = new FormGroup(group);
+        if (form.get('module') && form.get('module')) {
+            form.get('module')!.valueChanges.subscribe(x => {
+                if(form.get('module')!.value === "splitter"){
+                    if (this.addFieldInputs.filter(e => e.label_short === 'associated_to').length === 0) {
+                        this.addFieldInputs.push(
+                            {
+                                controlType: 'dropdown',
+                                label_short: 'associated_to',
+                                label: this.translate.instant('CUSTOM-FIELDS.associated_to'),
+                                options: [
+                                    {key: 'verifier', value: this.translate.instant('GLOBAL.batch')},
+                                    {key: 'splitter', value: this.translate.instant('GLOBAL.document')}
+                                ],
+                                required: true,
+                            },
+                        );
+                    }
+                }
+                else {
+                    for (let i = this.addFieldInputs.length - 1; i >= 0; --i) {
+                        if (this.addFieldInputs[i].label_short === "associated_to") {
+                            this.addFieldInputs.splice(i,1);
+                        }
+                    }
+                }
+                this.form = this.toFormGroup();
+            });
+        }
+        return form;
     }
 
     moveToActive(index: number) {
@@ -143,20 +172,20 @@ export class CustomFieldsComponent implements OnInit {
         this.http.get(API_URL + '/ws/customFields/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 data.customFields.forEach((field: {
-                        id: any;
-                        label_short: string;
-                        module: string;
-                        label: string;
-                        type: string;
-                        enabled: boolean;
+                        id          : any;
+                        label_short : string;
+                        module      : string;
+                        label       : string;
+                        type        : string;
+                        enabled     : boolean;
                     }) => {
                         newField = {
-                            'id': field.id,
-                            'label_short': field.label_short,
-                            'module': field.module,
-                            'label': field.label,
-                            'type': field.type,
-                            'enabled': field.enabled,
+                            'id'            : field.id,
+                            'label_short'   : field.label_short,
+                            'module'        : field.module,
+                            'label'         : field.label,
+                            'type'          : field.type,
+                            'enabled'       : field.enabled,
                         };
                         field.enabled ? this.activeFields.push(newField) : this.inactiveFields.push(newField);
                     }
@@ -185,7 +214,6 @@ export class CustomFieldsComponent implements OnInit {
         this.http.post(API_URL + '/ws/customFields/add', newField, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 newField['id'] = data.id;
-
                 this.activeFields.push(newField);
                 this.notify.success(this.translate.instant('CUSTOM-FIELDS.field_added'));
                 this.form.reset();
