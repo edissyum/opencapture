@@ -175,7 +175,7 @@ export class SplitterListComponent implements OnInit {
     }
 
     mergeAllBatches(parentId: number) {
-        const checkboxList = $(".checkBox_list");
+        const checkboxList = $(".checkBox_list:checked");
         const listOfBatchToMerge: any[] = [];
         const listOfBatchFormId: any[] = [];
         checkboxList.each((cpt: any) => {
@@ -271,12 +271,10 @@ export class SplitterListComponent implements OnInit {
 
     deleteAllBatches() {
         this.isLoading = true;
-        const checkboxList = $(".checkBox_list");
+        const checkboxList = $(".checkBox_list:checked");
         checkboxList.each((cpt: any) => {
-            if (checkboxList[cpt].checked) {
-                const batchId = checkboxList[cpt].id.split('_')[0];
-                this.deleteBatch(batchId, true);
-            }
+            const batchId = checkboxList[cpt].id.split('_')[0];
+            this.deleteBatch(batchId, true);
         });
         this.notify.success(this.translate.instant('SPLITTER.all_batches_checked_deleted'));
     }
@@ -288,6 +286,7 @@ export class SplitterListComponent implements OnInit {
                     if (batch.id === id) this.batches.splice(index, 1);
                 });
                 if (!batchDelete) this.notify.success(this.translate.instant('SPLITTER.batch_deleted'));
+                else this.isLoading = false;
             }),
             catchError((err: any) => {
                 console.debug(err);

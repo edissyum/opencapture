@@ -97,8 +97,8 @@
                                 <mat-card-header class="leading-6 relative z-10 bg-white pt-4 pl-4 pr-4"
                                                  [routerLink]="invoice.locked ? '/verifier/list' : '/verifier/viewer/'+ invoice.invoice_id"
                                                  (click)="invoice.locked ? displayInvoiceLocked(invoice.locked_by) : ''">
-                                    <mat-card-title>
-                                        <span>
+                                    <mat-card-title class="break-all">
+                                        <span class="leading-7">
                                             <i [matTooltip]="'VERIFIER.invoice_locked_by' | translate" class="fas fa-lock text-base mb-2 relative" style="bottom: 0.1rem" *ngIf="invoice.locked"></i>
                                             {{ invoice.supplier_name ? invoice.supplier_name : 'ACCOUNTS.supplier_unknow' | translate }}
                                         </span>
@@ -107,7 +107,7 @@
                                             {{ invoice.nb_pages }}<i class="far fa-file-alt ml-1"></i>
                                         </span>
                                     </mat-card-title>
-                                    <mat-card-subtitle class="mt-2 -mb-1 break-all">
+                                    <mat-card-subtitle class="mt-2 -mb-1">
                                         <span class="ellipsis"><b>{{ 'FACTURATION.invoice_number' | translate }}</b> : {{ invoice.datas.invoice_number }}<br></span>
                                         <b>{{ 'FACTURATION.invoice_date' | translate }}</b> : {{ invoice.datas.invoice_date }}<br>
                                         <b>{{ 'VERIFIER.register_date' | translate }}</b> : {{ invoice.date }}<br>
