@@ -66,7 +66,11 @@ export class SplitterFormBuilderComponent implements OnInit {
     ];
     fieldCategories         : any []    = [
         {
-            'id': 'metadata',
+            'id': 'batch_metadata',
+            'label': marker('SPLITTER.meta_data')
+        },
+        {
+            'id': 'document_metadata',
             'label': marker('SPLITTER.meta_data')
         },
     ];
@@ -78,7 +82,8 @@ export class SplitterFormBuilderComponent implements OnInit {
         },
     ];
     fields                  : any       = {
-        'metadata': []
+        'batch_metadata'    : [],
+        'document_metadata' : []
     };
     classList               : any []    = [
         {
@@ -225,8 +230,10 @@ export class SplitterFormBuilderComponent implements OnInit {
             this.http.get(API_URL + '/ws/forms/getFields/' + this.formId, {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
                     if (data.form_fields.fields) {
-                        if (data.form_fields.fields.metadata)
-                            this.fields.metadata = data.form_fields.fields.metadata;
+                        if (data.form_fields.fields.batch_metadata)
+                            this.fields.batch_metadata = data.form_fields.fields.batch_metadata;
+                        if (data.form_fields.fields.document_metadata)
+                            this.fields.document_metadata = data.form_fields.fields.document_metadata;
 
                         for (const category in this.fields) {
                             if (this.fields.hasOwnProperty(category)) {

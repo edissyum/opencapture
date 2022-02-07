@@ -47,6 +47,8 @@ class Splitter:
                     qrcode = self.bundle_start
             if qrcode:
                 self.log.info("QR code in page " + str(index) + " : " + qrcode)
+
+            # if 'DIC'
             self.qr_pages.append({
                 'source_page': index,
                 'qrcode': qrcode,
@@ -193,13 +195,15 @@ class Splitter:
 
             fields_tag = ET.SubElement(document_tag, "FIELDS")
             ET.SubElement(fields_tag, "DOCTYPE").text = document['documentTypeKey']
+            for key in document['metadata']:
+                ET.SubElement(fields_tag, key).text = document['metadata'][key]
 
-        xmlstr = minidom.parseString(ET.tostring(root)).toprettyxml(indent="    ")
+        xml_str = minidom.parseString(ET.tostring(root)).toprettyxml(indent="    ")
 
         xml_file_path = output_dir + filename
         try:
             with open(xml_file_path, "w", encoding="utf-8") as f:
-                f.write(xmlstr)
+                f.write(xml_str)
         except IOError:
             return {'OK': False, 'error': "Unable to create file on disk."}
 

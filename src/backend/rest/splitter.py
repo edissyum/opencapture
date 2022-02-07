@@ -91,7 +91,7 @@ def retrieve_batch_pages(batch_id):
 def validate():
     data = request.data
     data = json.loads(data)
-    response, status = splitter.validate(data['documents'], data['metadata'])
+    response, status = splitter.validate(data['documents'], data['batchMetadata'])
     return make_response(jsonify(response)), status
 
 

@@ -128,34 +128,6 @@ export class CustomFieldsComponent implements OnInit {
                 : new FormControl(input.value || '');
         });
         const form = new FormGroup(group);
-        if (form.get('module') && form.get('module')) {
-            form.get('module')!.valueChanges.subscribe(x => {
-                if(form.get('module')!.value === "splitter"){
-                    if (this.addFieldInputs.filter(e => e.label_short === 'associated_to').length === 0) {
-                        this.addFieldInputs.push(
-                            {
-                                controlType: 'dropdown',
-                                label_short: 'associated_to',
-                                label: this.translate.instant('CUSTOM-FIELDS.associated_to'),
-                                options: [
-                                    {key: 'verifier', value: this.translate.instant('GLOBAL.batch')},
-                                    {key: 'splitter', value: this.translate.instant('GLOBAL.document')}
-                                ],
-                                required: true,
-                            },
-                        );
-                    }
-                }
-                else {
-                    for (let i = this.addFieldInputs.length - 1; i >= 0; --i) {
-                        if (this.addFieldInputs[i].label_short === "associated_to") {
-                            this.addFieldInputs.splice(i,1);
-                        }
-                    }
-                }
-                this.form = this.toFormGroup();
-            });
-        }
         return form;
     }
 
