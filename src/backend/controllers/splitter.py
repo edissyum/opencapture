@@ -16,9 +16,7 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 import base64
-import json
 import os.path
-import re
 import shutil
 
 import PyPDF4
@@ -291,9 +289,14 @@ def merge_batches(parent_id, batches):
             merged_pdf.addPage(pdf.getPage(page))
 
         pages = splitter.get_batch_pages({'id': batch})
-        total_split = cpt = 0
+        cpt = 0
         for page in pages[0]:
             if page:
+                if cpt >= 1:
+                    previous_split_document = pages[0][cpt - 1]['split_document']
+                    if previous_split_document != page['split_document']:
+                        parent_max_split_document += 1
+
                 parent_max_source_page = parent_max_source_page + 1
                 new_path = batch_folder + '/' + os.path.basename(page['image_path'])
                 if not os.path.isfile(new_path):
@@ -311,10 +314,7 @@ def merge_batches(parent_id, batches):
                     'status': 'MERG'
                 })
 
-                total_split += page['split_document']
                 cpt += 1
-                if total_split > cpt:
-                    parent_max_split_document += 1
         parent_max_split_document += 1
 
     splitter.update_batch_page_number({'id': parent_id, 'number': parent_batch_pages})

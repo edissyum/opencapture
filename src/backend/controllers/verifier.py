@@ -675,3 +675,18 @@ def verify_vat_number(vat_number):
     except (exceptions.Fault, requests.exceptions.SSLError):
         text = gettext('VAT_API_ERROR')
         return text, 201
+
+
+def get_totals():
+    totals = {}
+    totals['today'], error = verifier.get_totals({'time': 'today'})
+    totals['yesterday'], error = verifier.get_totals({'time': 'yesterday'})
+    totals['older'], error = verifier.get_totals({'time': 'older'})
+    if error is None:
+        return totals, 200
+    else:
+        response = {
+            "errors": gettext('GET_TOTALS_ERROR'),
+            "message": error
+        }
+        return response, 401

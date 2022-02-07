@@ -52,7 +52,10 @@
             <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fas fa-stream text-xl text-gray-900"></i>
         </button>
         <mat-tab-group [selectedIndex]="selectedTab" (selectedTabChange)="onTabChange($event)" class="batches overflow-auto" animationDuration="0ms">
-            <mat-tab *ngFor="let batch of batchList" [label]="this.translate.instant(batch.label)" [id]="batch.id" [disabled]="loading">
+            <mat-tab *ngFor="let batch of batchList"  [id]="batch.id" [disabled]="loading">
+                <ng-template mat-tab-label>
+                    <span matBadge="{{ totals[batch.id] }}" matBadgeSize="small" matBadgeOverlap="false">{{ this.translate.instant(batch.label) }}</span>
+                </ng-template>
                 <div class="flex flex-col">
                     <div class="grid grid-cols-3 grid-flow-row gap-0 mt-4 z-30">
                         <mat-form-field class="left-4 w-1/2" appearance="outline">

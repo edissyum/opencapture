@@ -93,6 +93,7 @@ export class VerifierListComponent implements OnInit {
     pageIndex       : number            = 0;
     pageSizeOptions : any []            = [4, 8, 12, 16, 24, 48];
     total           : number            = 0;
+    totals          : any               = {};
     offset          : number            = 0;
     selectedTab     : number            = 0;
     invoices        : any []            = [];
@@ -260,6 +261,16 @@ export class VerifierListComponent implements OnInit {
                         if (!invoice.thumb.includes('data:image/jpeg;base64'))
                             invoice.thumb = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + invoice.thumb);
                     });
+                    this.http.get(API_URL + '/ws/verifier/invoices/totals', {headers: this.authService.headers}).pipe(
+                        tap((data: any) => {
+                            this.totals = data.totals;
+                        }),
+                        catchError((err: any) => {
+                            console.debug(err);
+                            this.notify.handleErrors(err);
+                            return of(false);
+                        })
+                    ).subscribe();
                 }
 
                 /*
