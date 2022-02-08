@@ -23,7 +23,7 @@ import PyPDF4
 from flask import current_app
 from flask_babel import gettext
 import worker_splitter_from_python
-from src.backend.import_models import splitter
+from src.backend.import_models import splitter, doctypes
 from src.backend.import_controllers import forms, outputs
 from src.backend.main import create_classes_from_current_config
 from src.backend.import_classes import _Files, _Splitter, _CMIS
@@ -110,34 +110,50 @@ def change_status(args):
         return res, 401
 
 
-def retrieve_pages(page_id):
+def retrieve_documents(batch_id):
     _vars = create_classes_from_current_config()
     _cfg = _vars[1]
-    page_lists = []
-    previous_page = 0
+    res_documents = []
 
     args = {
-        'id': page_id
+        'id': batch_id
     }
-    pages, error = splitter.get_batch_pages(args)
-    if pages:
-        for page_index, page in enumerate(pages):
-            with open(pages[page_index]['image_path'], "rb") as image_file:
-                encoded_string = base64.b64encode(image_file.read())
-                pages[page_index]['image_url'] = encoded_string.decode("utf-8")
+    documents, error = splitter.get_batch_documents(args)
+    if documents:
+        for document in documents:
+            document_pages = []
+            doctype_key = None
+            doctype_label = None
 
-                if page_index == 0:
-                    page_lists.append([pages[page_index]])
+            args = {
+                'id': document['id']
+            }
+            pages, error = splitter.get_documents_pages(args)
+            if pages:
+                for page_index, page in enumerate(pages):
+                    with open(pages[page_index]['thumbnail'], "rb") as image_file:
+                        encoded_string = base64.b64encode(image_file.read())
+                        pages[page_index]['image_url'] = encoded_string.decode("utf-8")
+                        document_pages.append(pages[page_index])
 
-                elif previous_page == pages[page_index]['split_document']:
-                    page_lists[-1].append(pages[page_index])
+            dotypes = doctypes.retrieve_doctypes(
+                {
+                    'where': ['status = %s', 'key = %s'],
+                    'data': ['OK', document['doctype_key']]
+                }
+            )[0]
+            if len(dotypes[0]) > 0:
+                doctype_key = dotypes[0]['key'] if dotypes[0]['key'] else None
+                doctype_label = dotypes[0]['label'] if dotypes[0]['label'] else None
 
-                else:
-                    page_lists.append([pages[page_index]])
+            res_documents.append({
+                'data': document['data'],
+                'pages': document_pages,
+                'doctype_key': doctype_key,
+                'doctype_label': doctype_label
+            })
 
-                previous_page = pages[page_index]['split_document']
-
-    response = {"page_lists": page_lists}
+    response = {"documents": res_documents}
 
     return response, 200
 
@@ -271,8 +287,8 @@ def merge_batches(parent_id, batches):
     parent_filename = current_app.config['UPLOAD_FOLDER_SPLITTER'] + parent_info['file_name']
     parent_batch_pages = int(parent_info['page_number'])
     batch_folder = _config.cfg['SPLITTER']['docserverpath'] + '/batches/' + parent_info['batch_folder']
-    parent_max_split_document = splitter.get_batch_pages({'select': ['MAX(split_document) as split_document'], 'id': parent_id})[0][0]['split_document']
-    parent_max_source_page = splitter.get_batch_pages({'select': ['MAX(source_page) as split_document'], 'id': parent_id})[0][0]['split_document']
+    parent_max_split_document = splitter.get_documents_pages({'select': ['MAX(split_document) as split_document'], 'id': parent_id})[0][0]['split_document']
+    parent_max_source_page = splitter.get_documents_pages({'select': ['MAX(source_page) as split_document'], 'id': parent_id})[0][0]['split_document']
 
     parent_pdf = PyPDF4.PdfFileReader(parent_filename)
     merged_pdf = PyPDF4.PdfFileWriter()
@@ -288,7 +304,7 @@ def merge_batches(parent_id, batches):
         for page in range(pdf.numPages):
             merged_pdf.addPage(pdf.getPage(page))
 
-        pages = splitter.get_batch_pages({'id': batch})
+        pages = splitter.get_documents_pages({'id': batch})
         cpt = 0
         for page in pages[0]:
             if page:
@@ -298,9 +314,9 @@ def merge_batches(parent_id, batches):
                         parent_max_split_document += 1
 
                 parent_max_source_page = parent_max_source_page + 1
-                new_path = batch_folder + '/' + os.path.basename(page['image_path'])
+                new_path = batch_folder + '/' + os.path.basename(page['thumbnail'])
                 if not os.path.isfile(new_path):
-                    shutil.copy(page['image_path'], new_path)
+                    shutil.copy(page['thumbnail'], new_path)
 
                 splitter.insert_page({
                     'batch_id': parent_id,

@@ -69,7 +69,7 @@ CREATE TABLE "inputs" (
                           "purchase_or_sale"       VARCHAR(8) DEFAULT 'purchase',
                           "status"                 VARCHAR(3) DEFAULT 'OK',
                           "input_folder"           TEXT,
-                          "splitter_method_id"     VARCHAR(20) DEFAULT 'OK'
+                          "splitter_method_id"     VARCHAR(20)
 );
 
 CREATE TABLE "custom_fields" (
@@ -218,16 +218,24 @@ CREATE TABLE "splitter_batches" (
                                     "creation_date" TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
                                     "status"        VARCHAR DEFAULT 'NEW',
                                     "page_number"   INTEGER,
-                                    "custom_fields" JSONB DEFAULT '{}',
                                     "form_id"       INTEGER
 );
 
+CREATE TABLE splitter_documents(
+                                    "id"          SERIAL UNIQUE PRIMARY KEY,
+                                    "batch_id"    INTEGER NOT NULL,
+                                    "split_index" INTEGER NOT NULL,
+                                    "status"      VARCHAR(10) DEFAULT 'NEW'::CHARACTER VARYING,
+                                    "doctype_key" VARCHAR(200),
+                                    "data"        json        DEFAULT '{}'::json
+);
+
+
 CREATE TABLE "splitter_pages" (
                                   "id"                SERIAL UNIQUE PRIMARY KEY,
-                                  "batch_id"          INTEGER,
-                                  "image_path"        VARCHAR,
+                                  "document_id"       INTEGER,
+                                  "thumbnail"         VARCHAR,
                                   "source_page"       INTEGER,
-                                  "split_document"    INTEGER,
                                   "status"            VARCHAR DEFAULT 'NEW'
 );
 

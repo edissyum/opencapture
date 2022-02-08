@@ -35,28 +35,39 @@ class Splitter:
         self.bundle_start = self.config.cfg['SPLITTER']['bundlestart']
 
     def split(self, pages):
+        doctype = None
         for index, path in pages:
-            qrcode = ""
+            separator_type = None
             is_separator = list(filter(lambda separator: int(separator['num']) + 1 == int(index),
                                        self.separator_qr.pages))
             if is_separator:
-                if self.doc_start in is_separator[0]['qr_code']:
-                    qrcode = self.doc_start
+                qr_code = is_separator[0]['qr_code']
+                if self.doc_start in qr_code:
+                    separator_type = self.doc_start
+                    if 'DOCTYPE' in qr_code:
+                        doctype = qr_code.split("|")[2]
+                    else:
+                        doctype = None
 
-                elif self.bundle_start in is_separator[0]['qr_code']:
-                    qrcode = self.bundle_start
-            if qrcode:
-                self.log.info("QR code in page " + str(index) + " : " + qrcode)
+                elif self.bundle_start in qr_code:
+                    separator_type = self.bundle_start
+                    doctype = None
 
-            # if 'DIC'
+                if separator_type:
+                    self.log.info("QR code in page " + str(index) + " : " + separator_type)
+
+                if separator_type:
+                    self.log.info("Doctype in page " + str(index) + " : " + doctype)
+
             self.qr_pages.append({
                 'source_page': index,
-                'qrcode': qrcode,
+                'separator_type': separator_type,
+                'doctype': doctype,
                 'path': path,
             })
 
     def get_result_documents(self, blank_pages):
-        documents_count = 1
+        split_document = 1
         self.result_batches.append([])
         is_previous_code_qr = False
 
@@ -65,22 +76,23 @@ class Splitter:
                 if self.config.cfg['REMOVE-BLANK-PAGES']['enabled'] == 'True' or is_previous_code_qr:
                     continue
 
-            if page['qrcode'] == self.bundle_start:
+            if page['separator_type'] == self.bundle_start:
                 if len(self.result_batches[-1]) != 0:
                     self.result_batches.append([])
-                documents_count = 1
+                split_document = 1
                 is_previous_code_qr = True
 
-            elif page['qrcode'] == self.doc_start:
+            elif page['separator_type'] == self.doc_start:
                 if len(self.result_batches[-1]) != 0:
-                    documents_count += 1
+                    split_document += 1
                 is_previous_code_qr = True
 
             else:
                 self.result_batches[-1].append({
                     'source_page': page['source_page'],
-                    'path': page['path'],
-                    'document': documents_count
+                    'doctype': page['doctype'],
+                    'split_document': split_document,
+                    'path': page['path']
                 })
                 is_previous_code_qr = False
 
@@ -100,21 +112,34 @@ class Splitter:
                     'file_name': orig_file.rsplit('/')[-1],
                     'batch_folder': batch_name,
                     'first_page': batch[0]['path'],
-                    'page_number': str(max((node['document'] for node in batch))),
+                    'page_number': str(max((node['split_document'] for node in batch))),
                     'form_id': str(input_settings[0]['default_form_id'])
                 }
             }
 
             batch_id = self.db.insert(args)
+            documents_id = 0
+            previous_split_document = 0
             for page in batch:
+                if page['split_document'] != previous_split_document:
+                    args = {
+                        'table': 'splitter_documents',
+                        'columns': {
+                            'batch_id': str(batch_id),
+                            'split_index': page['split_document'],
+                            'doctype_key': page['doctype'],
+                            'data': '{}',
+                        }
+                    }
+                    documents_id = self.db.insert(args)
+                previous_split_document = page['split_document']
                 image = Files.open_image_return(page['path'])
                 args = {
                     'table': 'splitter_pages',
                     'columns': {
-                        'batch_id': str(batch_id),
-                        'image_path': page['path'],
+                        'document_id': str(documents_id),
+                        'thumbnail': page['path'],
                         'source_page': page['source_page'],
-                        'split_document': str(page['document']),
                     }
                 }
                 self.db.insert(args)
@@ -174,7 +199,8 @@ class Splitter:
         bundle_tag = ET.SubElement(root, "BUNDLE")
         ET.SubElement(bundle_tag, "BUNDLEINDEX").text = "1"
         ET.SubElement(bundle_tag, "FILENAME").text = filename
-        ET.SubElement(bundle_tag, "DATE").text = day + "-" + month + "-" + year + " " + hour + ":" + minute + ":" + second
+        ET.SubElement(bundle_tag,
+                      "DATE").text = day + "-" + month + "-" + year + " " + hour + ":" + minute + ":" + second
         ET.SubElement(bundle_tag, "BUNDLE_NUMBER").text = filename.split('.')[0]
         ET.SubElement(bundle_tag, "NBDOC").text = str(len(documents))
         ET.SubElement(bundle_tag, "USER_ID_OC").text = metadata['userName']

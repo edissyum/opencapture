@@ -35,6 +35,42 @@ def retrieve_metadata(args):
     return metadata, error
 
 
+def add_document(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    args = {
+        'table': 'splitter_documents',
+        'columns': {
+            'batch_id': args['batch_id'],
+            'split_index': args['split_index'],
+            'status': args['status'],
+            'doctype_key': args['doctype_key'],
+            'data': args['data'],
+        }
+    }
+    _db.insert(args)
+    return True, ''
+
+
+def add_batch(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    args = {
+        'table': 'splitter_batches',
+        'columns': {
+            'batch_folder': args['batch_folder'],
+            'creation_date': args['creation_date'],
+            'page_number': args['page_number'],
+            'first_page': args['first_page'],
+            'file_name': args['file_name'],
+            'form_id': args['form_id'],
+            'status': args['status'],
+        }
+    }
+    _db.insert(args)
+    return True, ''
+
+
 def get_demand_number():
     _vars = create_classes_from_current_config()
     _db = _vars[0]
@@ -106,7 +142,7 @@ def insert_page(args):
         'table': 'splitter_pages',
         'columns': {
             'batch_id': str(args['batch_id']),
-            'image_path': args['path'],
+            'thumbnail': args['path'],
             'source_page': args['source_page'],
             'split_document': str(args['count']),
         }
@@ -176,7 +212,26 @@ def get_batch_by_id(args):
     return batches, error
 
 
-def get_batch_pages(args):
+def get_batch_documents(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    error = None
+
+    pages = _db.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['splitter_documents'],
+        'where': ['status = %s', 'batch_id = %s'],
+        'data': ['NEW', args['id']],
+        'order_by': ['split_index']
+    })
+
+    if not pages:
+        error = "ERROR : While getting documents"
+
+    return pages, error
+
+
+def get_documents_pages(args):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
@@ -184,9 +239,9 @@ def get_batch_pages(args):
     pages = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['splitter_pages'],
-        'where': ['batch_id = %s'],
-        'data': [args['id']],
-        'order_by': ['split_document']
+        'where': ['status = %s', 'document_id = %s'],
+        'data': ['NEW', args['id']],
+        'order_by': ['document_id']
     })
 
     if not pages:

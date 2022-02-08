@@ -33,7 +33,6 @@ import {MatDialog} from "@angular/material/dialog";
 import {DocumentTreeComponent} from "../document-tree/document-tree.component";
 import {remove} from 'remove-accents';
 import {HistoryService} from "../../../services/history.service";
-import {TREE_DATA} from "../document-type-factory/document-tree";
 
 export interface Batch {
     id: number;
@@ -182,24 +181,24 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     loadDocuments(): void {
         this.http.get(API_URL + '/ws/splitter/pages/' + this.currentBatch.id, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                for (let i = 0; i < data['page_lists'].length; i++) {
+                for (let i = 0; i < data['documents'].length; i++) {
                     this.documents[i] = {
-                        id: "document-" + i,
-                        documentTypeName: this.defaultDocType.documentTypeName,
-                        documentTypeKey : this.defaultDocType.documentTypeKey,
+                        id              : "document-" + i,
+                        documentTypeName: data['documents'][i]['doctype_label'] ? data['documents'][i]['doctype_label'] : "Facture",
+                        documentTypeKey : data['documents'][i]['doctype_key'] ? data['documents'][i]['doctype_key'] : "Facture",
                         pages           : [],
                         class           : "",
                     };
-                    for (const page of data['page_lists'][i]) {
+                    for (const page of data['documents'][i]['pages']) {
                         this.documents[i].pages.push({
-                            id: page['id'],
-                            sourcePage: page['source_page'],
-                            showZoomButton: false,
-                            checkBox: false,
+                            id              : page['id'],
+                            sourcePage      : page['source_page'],
+                            showZoomButton  : false,
+                            checkBox        : false,
                         });
                         this.pagesImageUrls.push({
-                            pageId: page['id'],
-                            url: this.sanitize(page['image_url'])
+                            pageId  : page['id'],
+                            url     : this.sanitize(page['image_url'])
                         });
                     }
                 }
@@ -222,9 +221,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             newId++;
         }
         this.documents.push({
-            id: "document-" + newId,
-            documentTypeName    : this.defaultDocType.documentTypeName,
-            documentTypeKey     : this.defaultDocType.documentTypeKey,
+            id                  : "document-" + newId,
+            documentTypeName    : "Facture",
+            documentTypeKey     : "Facture",
             pages               : [],
             class               : "",
         });
@@ -261,13 +260,13 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     /* -- Metadata -- */
     loadDefaultDocType(){
-        for (const docType of TREE_DATA){
-            if (docType.isDefault)
-                this.defaultDocType = {
-                    "documentTypeKey": docType.key,
-                    "documentTypeName": docType.label,
-                };
-        }
+        // for (const docType of TREE_DATA){
+        //     if (docType.isDefault)
+        //         this.defaultDocType = {
+        //             "documentTypeKey": docType.key,
+        //             "documentTypeName": docType.label,
+        //         };
+        // }
     }
 
     changeInputMode($event: any) {

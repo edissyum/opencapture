@@ -82,7 +82,7 @@ def change_batch_status():
 @bp.route('splitter/pages/<int:batch_id>', methods=['GET'])
 @auth.token_required
 def retrieve_batch_pages(batch_id):
-    res = splitter.retrieve_pages(batch_id)
+    res = splitter.retrieve_documents(batch_id)
     return make_response(jsonify(res[0])), res[1]
 
 
