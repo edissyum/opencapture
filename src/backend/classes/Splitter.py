@@ -54,7 +54,7 @@ class Splitter:
                     doctype = None
 
                 if separator_type:
-                    self.log.info("QR code in page " + str(index) + " : " + separator_type)
+                    self.log.info("Separator type in page " + str(index) + " : " + separator_type)
 
                 if doctype:
                     self.log.info("Doctype in page " + str(index) + " : " + doctype)
