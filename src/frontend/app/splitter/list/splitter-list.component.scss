@@ -1,3 +1,9 @@
+.mat-badge-content {
+    @apply bg-gray-900;
+    @apply text-green-400;
+    @apply font-bold;
+}
+
 ::ng-deep .batches {
     & .mat-tab-header {
         @apply z-20;

@@ -261,7 +261,7 @@ export class VerifierListComponent implements OnInit {
                         if (!invoice.thumb.includes('data:image/jpeg;base64'))
                             invoice.thumb = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + invoice.thumb);
                     });
-                    this.http.get(API_URL + '/ws/verifier/invoices/totals', {headers: this.authService.headers}).pipe(
+                    this.http.get(API_URL + '/ws/verifier/invoices/totals/' + this.currentStatus, {headers: this.authService.headers}).pipe(
                         tap((data: any) => {
                             this.totals = data.totals;
                         }),

@@ -59,7 +59,7 @@ export class SplitterListComponent implements OnInit {
     offset          : number  = 0;
     pageSizeOptions : any []  = [4, 8, 12, 16, 24, 48];
     total           : number  = 0;
-
+    totals          : any     = {};
     batchList       : any[]   = [
         {
             'id': 'today',
@@ -137,6 +137,16 @@ export class SplitterListComponent implements OnInit {
             tap((data: any) => {
                 this.batches = data.batches;
                 this.total = data.count;
+                this.http.get(API_URL + '/ws/splitter/invoices/totals/' + this.currentStatus, {headers: this.authService.headers}).pipe(
+                    tap((data: any) => {
+                        this.totals = data.totals;
+                    }),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
             }),
             finalize(() => this.isLoading = false),
             catchError((err: any) => {

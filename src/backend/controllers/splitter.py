@@ -278,6 +278,21 @@ def get_split_methods():
         return split_methods, 401
 
 
+def get_totals(status):
+    totals = {}
+    totals['today'], error = splitter.get_totals({'time': 'today', 'status': status})
+    totals['yesterday'], error = splitter.get_totals({'time': 'yesterday', 'status': status})
+    totals['older'], error = splitter.get_totals({'time': 'older', 'status': status})
+    if error is None:
+        return totals, 200
+    else:
+        response = {
+            "errors": gettext('GET_TOTALS_ERROR'),
+            "message": error
+        }
+        return response, 401
+
+
 def merge_batches(parent_id, batches):
     _vars = create_classes_from_current_config()
     _db = _vars[0]

@@ -677,11 +677,11 @@ def verify_vat_number(vat_number):
         return text, 201
 
 
-def get_totals():
+def get_totals(status):
     totals = {}
-    totals['today'], error = verifier.get_totals({'time': 'today'})
-    totals['yesterday'], error = verifier.get_totals({'time': 'yesterday'})
-    totals['older'], error = verifier.get_totals({'time': 'older'})
+    totals['today'], error = verifier.get_totals({'time': 'today', 'status': status})
+    totals['yesterday'], error = verifier.get_totals({'time': 'yesterday', 'status': status})
+    totals['older'], error = verifier.get_totals({'time': 'older', 'status': status})
     if error is None:
         return totals, 200
     else:

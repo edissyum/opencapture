@@ -111,3 +111,11 @@ def merge_batches(parent_id):
     data = json.loads(request.data)['batches']
     splitter.merge_batches(parent_id, data)
     return make_response(jsonify('')), 200
+
+
+@bp.route('splitter/invoices/totals', defaults={'status': None}, methods=['GET'])
+@bp.route('splitter/invoices/totals/<string:status>', methods=['GET'])
+@auth.token_required
+def get_totals(status):
+    totals = splitter.get_totals(status)
+    return make_response({'totals': totals[0]}, totals[1])

@@ -18,6 +18,7 @@
 
 import json
 from src.backend.main import create_classes_from_current_config
+from flask_babel import gettext
 
 
 def retrieve_metadata(args):
@@ -282,3 +283,34 @@ def update_batch_page_number(args):
     res = _db.update(args)
 
     return res
+
+
+def get_totals(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    error = None
+    select = data = []
+    if 'status' in args and args['status']:
+        where = ["status = %s"]
+        data = [args['status']]
+    else:
+        where = ["status <> 'DEL'"]
+
+    if args['time'] in ['today', 'yesterday']:
+        select = ['COUNT(id) as ' + args['time']]
+        where.append("to_char(creation_date, 'YYYY-MM-DD') = to_char(TIMESTAMP '" + args['time'] + "', 'YYYY-MM-DD')")
+    elif args['time'] == 'older':
+        select = ['COUNT(id) as older']
+        where.append("to_char(creation_date, 'YYYY-MM-DD') < to_char(TIMESTAMP 'yesterday', 'YYYY-MM-DD')")
+
+    total = _db.select({
+        'select': select,
+        'table': ['splitter_batches'],
+        'where': where,
+        'data': data
+    })[0]
+
+    if not total:
+        error = gettext('GET_TOTALS_ERROR')
+
+    return total[args['time']], error
