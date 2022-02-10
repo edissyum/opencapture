@@ -240,6 +240,16 @@ export class VerifierListComponent implements OnInit {
         this.totalChecked = 0;
         this.loading = true;
         this.invoices = [];
+        this.http.get(API_URL + '/ws/verifier/invoices/totals/' + this.currentStatus, {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.totals = data.totals;
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
         this.http.post(API_URL + '/ws/verifier/invoices/list',
             {
                 'allowedCustomers': this.allowedCustomers, 'status': this.currentStatus, 'allowedSuppliers': this.allowedSuppliers,
@@ -261,16 +271,6 @@ export class VerifierListComponent implements OnInit {
                         if (!invoice.thumb.includes('data:image/jpeg;base64'))
                             invoice.thumb = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + invoice.thumb);
                     });
-                    this.http.get(API_URL + '/ws/verifier/invoices/totals/' + this.currentStatus, {headers: this.authService.headers}).pipe(
-                        tap((data: any) => {
-                            this.totals = data.totals;
-                        }),
-                        catchError((err: any) => {
-                            console.debug(err);
-                            this.notify.handleErrors(err);
-                            return of(false);
-                        })
-                    ).subscribe();
                 }
 
                 /*
