@@ -18,15 +18,17 @@
 import base64
 import os.path
 import shutil
+import datetime
 
 import PyPDF4
+import pandas as pd
 from flask import current_app
 from flask_babel import gettext
 import worker_splitter_from_python
 from src.backend.import_models import splitter, doctypes
 from src.backend.import_controllers import forms, outputs
 from src.backend.main import create_classes_from_current_config
-from src.backend.import_classes import _Files, _Splitter, _CMIS
+from src.backend.import_classes import _Files, _Splitter, _CMIS, _MaarchWebServices
 
 
 def handle_uploaded_file(files, input_id):
@@ -142,7 +144,8 @@ def retrieve_documents(batch_id):
                     'data': ['OK', document['doctype_key']]
                 }
             )[0]
-            if len(dotypes[0]) > 0:
+
+            if dotypes and len(dotypes[0]) > 0:
                 doctype_key = dotypes[0]['key'] if dotypes[0]['key'] else None
                 doctype_label = dotypes[0]['label'] if dotypes[0]['label'] else None
 
@@ -161,47 +164,102 @@ def retrieve_documents(batch_id):
 def get_output_parameters(parameters):
     data = {}
     for parameter in parameters:
-        if parameter['id'] == 'folder_out':
-            data['folder_out'] = parameter['value']
-
-        if parameter['id'] == 'separator':
-            data['separator'] = parameter['value']
-
-        if parameter['id'] == 'folder_out':
-            data['folder_out'] = parameter['value']
-
-        if parameter['id'] == 'filename':
-            data['filename'] = parameter['value']
-
-        if parameter['id'] == 'extension':
-            data['extension'] = parameter['value']
-
+        if type(parameter['value']) is dict and 'id' in parameter['value']:
+            data[parameter['id']] = parameter['value']['id']
+        else:
+            data[parameter['id']] = parameter['value']
     return data
 
 
-def get_output_auth(auths):
-    data = {}
-    for auth in auths:
-        if auth['id'] == 'cmis_ws':
-            data['cmis_ws'] = auth['value']
+def export_maarch(auth_data, file_path, args, batch):
+    _vars = create_classes_from_current_config()
+    print(auth_data)
+    host = auth_data['host']
+    login = auth_data['login']
+    password = auth_data['password']
+    if host and login and password:
+        ws = _MaarchWebServices(
+            host,
+            login,
+            password,
+            _vars[5],
+            _vars[1]
+        )
+        if os.path.isfile(file_path):
+            args.update({
+                'fileContent': open(file_path, 'rb').read(),
+                'documentDate': str(pd.to_datetime(batch[0]['creation_date']).date())
+            })
+            priority = ws.retrieve_priority(args['priority'])
+            if priority:
+                delays = priority['priority']['delays']
+                process_limit_date = datetime.date.today() + datetime.timedelta(days=delays)
+                args.update({
+                    'processLimitDate': str(process_limit_date)
+                })
+            args.update({
+                'customFields': {}
+            })
+            res, message = ws.insert_with_args(args)
+            print("message : ")
+            print(message)
+            if res:
+                return '', 200
+            else:
+                response = {
+                    "errors": gettext('EXPORT_MAARCH_ERROR'),
+                    "message": message['errors']
+                }
+                return response, 400
+        else:
+            response = {
+                "errors": gettext('EXPORT_MAARCH_ERROR'),
+                "message": gettext('PDF_FILE_NOT_FOUND')
+            }
+            return response, 400
+    else:
+        response = {
+            "errors": gettext('MAARCH_WS_INFO_EMPTY'),
+            "message": ''
+        }
+        return response, 400
 
-        if auth['id'] == 'folder':
-            data['folder'] = auth['value']
 
-        if auth['id'] == 'login':
-            data['login'] = auth['value']
+def export_pdf(batch, documents, parameters, metadata, pages, now):
+    for index, document in enumerate(documents):
+        """
+            Add PDF file names using masks
+        """
+        mask_args = {
+            'mask': parameters['filename'] if 'filename' in parameters else _Files.get_random_string(10),
+            'separator': parameters['separator'],
+            'extension': parameters['extension']
+        }
+        documents[index]['fileName'] = _Splitter.get_mask_result(document, metadata, now, mask_args)
+    res_export_pdf = _Files.export_pdf(pages, documents,
+                                 current_app.config['UPLOAD_FOLDER_SPLITTER']
+                                 + str(batch[0]['file_name']),
+                                 parameters['folder_out'], 1)
+    return res_export_pdf
 
-        if auth['id'] == 'password':
-            data['password'] = auth['value']
 
-    return data
+def export_xml(documents, parameters, metadata, now):
+    mask_args = {
+        'mask': parameters['filename'],
+        'separator': parameters['separator'],
+        'extension': parameters['extension']
+    }
+    file_name = _Splitter.get_mask_result(None, metadata, now, mask_args)
+    res_xml = _Splitter.export_xml(documents, metadata, parameters['folder_out'], file_name, now)
+    return res_xml
 
 
 def validate(documents, metadata):
     now = _Files.get_now_date()
     _vars = create_classes_from_current_config()
     _cfg = _vars[1]
-
+    print("documents")
+    print(documents)
     batch = splitter.retrieve_batches({
         'batch_id': None,
         'page': None,
@@ -223,46 +281,70 @@ def validate(documents, metadata):
                 is_export_pdf_ok = True
                 is_export_xml_ok = True
                 """
-                    Export PDF files
+                    Export PDF files if required by output
                 """
-                if output[0]['output_type_id'] == 'export_pdf':
+                if output[0]['output_type_id'] in ['export_pdf']:
+                    res_export_pdf = export_pdf(batch, documents, parameters, metadata, pages, now)
+                """
+                    Export XML file if required by output
+                """
+                if output[0]['output_type_id'] in ['export_xml']:
+                    res_export_xml = export_xml(documents, parameters, metadata, now)
+                """
+                    Export to Alfresco
+                """
+                if output[0]['output_type_id'] in ['export_alfresco']:
+                    alfresco_auth = get_output_parameters(output[0]['data']['options']['auth'])
+                    cmis = _CMIS(alfresco_auth['cmis_ws'],
+                                 alfresco_auth['login'],
+                                 alfresco_auth['password'],
+                                 alfresco_auth['folder'])
                     """
-                        Add PDF file names using masks
+                        Export pdf for Alfresco
                     """
-                    for index, document in enumerate(documents):
-                        documents[index]['fileName'] = _Splitter.get_file_name(document, metadata, parameters, now)
-                    res_file = _Files.export_pdf(pages, documents,
-                                                 current_app.config['UPLOAD_FOLDER_SPLITTER']
-                                                 + str(batch[0]['file_name']),
-                                                 parameters['folder_out'], 1)
-                    is_export_pdf_ok = res_file['OK']
+                    pdf_output = outputs.get_output_by_id(3)
+                    pdf_export_parameters = get_output_parameters(pdf_output[0]['data']['options']['parameters'])
+                    res_export_pdf = export_pdf(batch, documents, pdf_export_parameters, metadata, pages, now)
+
+                    if res_export_pdf['OK']:
+                        for file_path in res_export_pdf['paths']:
+                            cmis.create_document(file_path, 'application/pdf')
+
+                        """
+                            Export xml for Alfresco
+                        """
+                        xml_output = outputs.get_output_by_id(4)
+                        pdf_export_parameters = get_output_parameters(xml_output[0]['data']['options']['parameters'])
+                        res_export_xml = export_xml(documents, pdf_export_parameters, metadata, now)
+
                 """
-                    Export XML file
+                    Export to Maarch
                 """
-                if output[0]['output_type_id'] == 'export_xml':
-                    file_name = _Splitter.get_file_name(None, metadata, parameters, now)
-                    res_xml = _Splitter.export_xml(documents, metadata, parameters['folder_out'], file_name, now)
-                    is_export_xml_ok = res_xml['OK']
+                if output[0]['output_type_id'] in ['export_maarch']:
+                    maarch_auth = get_output_parameters(output[0]['data']['options']['auth'])
+                    pdf_output = outputs.get_output_by_id(3)
+                    pdf_export_parameters = get_output_parameters(pdf_output[0]['data']['options']['parameters'])
+                    res_export_pdf = export_pdf(batch, documents, pdf_export_parameters, metadata, pages, now)
 
-                if output[0]['output_type_id'] == 'export_alfresco':
-                    auths = get_output_auth(output[0]['data']['options']['auth'])
-                    cmis = _CMIS(auths['cmis_ws'], auths['login'], auths['password'], auths['folder'])
-
-                    if is_export_pdf_ok:
-                        for path in res_file['paths']:
-                            cmis.create_document(path, 'application/pdf')
-
-                    if is_export_xml_ok:
-                        cmis.create_document(res_xml['path'], 'text/xml')
+                    if res_export_pdf['OK']:
+                        subject_mask = parameters['subject']
+                        for index, file_path in enumerate(res_export_pdf['paths']):
+                            mask_args = {
+                                'mask': subject_mask,
+                                'separator': ' ',
+                                'format': parameters['format']
+                            }
+                            parameters['subject'] = _Splitter.get_mask_result(documents[index], metadata,
+                                                                              now, mask_args)
+                            export_maarch(maarch_auth, file_path, parameters, batch)
 
                 """
                     Change status to END
                 """
-
                 if is_export_pdf_ok and is_export_xml_ok:
                     splitter.change_status({
                         'id': metadata['id'],
-                        'status': 'END'
+                        'status': 'NEW'
                     })
                 else:
                     return {"OK": False}, 500
@@ -274,8 +356,7 @@ def get_split_methods():
     split_methods = _Splitter.get_split_methods()
     if len(split_methods) > 0:
         return split_methods, 200
-    else:
-        return split_methods, 401
+    return split_methods, 401
 
 
 def get_totals(status):
@@ -283,14 +364,15 @@ def get_totals(status):
     totals['today'], error = splitter.get_totals({'time': 'today', 'status': status})
     totals['yesterday'], error = splitter.get_totals({'time': 'yesterday', 'status': status})
     totals['older'], error = splitter.get_totals({'time': 'older', 'status': status})
+
     if error is None:
         return totals, 200
-    else:
-        response = {
-            "errors": gettext('GET_TOTALS_ERROR'),
-            "message": error
-        }
-        return response, 401
+
+    response = {
+        "errors": gettext('GET_TOTALS_ERROR'),
+        "message": error
+    }
+    return response, 401
 
 
 def merge_batches(parent_id, batches):
@@ -302,8 +384,9 @@ def merge_batches(parent_id, batches):
     parent_filename = current_app.config['UPLOAD_FOLDER_SPLITTER'] + parent_info['file_name']
     parent_batch_pages = int(parent_info['page_number'])
     batch_folder = _config.cfg['SPLITTER']['docserverpath'] + '/batches/' + parent_info['batch_folder']
-    parent_max_split_document = splitter.get_documents_pages({'select': ['MAX(split_document) as split_document'], 'id': parent_id})[0][0]['split_document']
-    parent_max_source_page = splitter.get_documents_pages({'select': ['MAX(source_page) as split_document'], 'id': parent_id})[0][0]['split_document']
+    parent_document_id = splitter.get_documents({'id': parent_id})[0][0]['id']
+    parent_max_split_index = splitter.get_documents_max_split_index({'id': parent_id})[0][0]['split_index']
+    parent_max_source_page = splitter.get_max_source_page({'id': parent_document_id})[0][0]['source_page']
 
     parent_pdf = PyPDF4.PdfFileReader(parent_filename)
     merged_pdf = PyPDF4.PdfFileWriter()
@@ -319,26 +402,34 @@ def merge_batches(parent_id, batches):
         for page in range(pdf.numPages):
             merged_pdf.addPage(pdf.getPage(page))
 
-        pages = splitter.get_documents_pages({'id': batch})
+        documents = splitter.get_documents({'id': batch})
         cpt = 0
-        for page in pages[0]:
-            if page:
+        for doc in documents[0]:
+            if doc:
                 if cpt >= 1:
-                    previous_split_document = pages[0][cpt - 1]['split_document']
-                    if previous_split_document != page['split_document']:
-                        parent_max_split_document += 1
+                    previous_split_index = documents[0][cpt - 1]['split_index']
+                    if previous_split_index != doc['split_index']:
+                        parent_max_split_index += 1
 
-                parent_max_source_page = parent_max_source_page + 1
-                new_path = batch_folder + '/' + os.path.basename(page['thumbnail'])
-                if not os.path.isfile(new_path):
-                    shutil.copy(page['thumbnail'], new_path)
-
-                splitter.insert_page({
+                document_id = splitter.add_document({
                     'batch_id': parent_id,
-                    'path': new_path,
-                    'source_page': parent_max_source_page,
-                    'count': parent_max_split_document + page['split_document']
+                    'doctype_key': doc['doctype_key'],
+                    'data': doc['data'],
+                    'status': 'NEW',
+                    'split_index': parent_max_split_index + doc['split_index']
                 })
+
+                for page in splitter.get_documents_pages({'id': doc['id']})[0]:
+                    new_path = batch_folder + '/' + os.path.basename(page['thumbnail'])
+                    parent_max_source_page = parent_max_source_page + 1
+                    if not os.path.isfile(new_path):
+                        shutil.copy(page['thumbnail'], new_path)
+
+                    splitter.insert_page({
+                        'document_id': document_id,
+                        'path': new_path,
+                        'source_page': parent_max_source_page
+                    })
 
                 splitter.change_status({
                     'id': batch,
@@ -346,7 +437,7 @@ def merge_batches(parent_id, batches):
                 })
 
                 cpt += 1
-        parent_max_split_document += 1
+        parent_max_split_index += 1
 
     splitter.update_batch_page_number({'id': parent_id, 'number': parent_batch_pages})
     with open(parent_filename, 'wb') as file:

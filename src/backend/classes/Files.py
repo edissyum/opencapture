@@ -17,7 +17,9 @@
 
 import os
 import re
+import string
 from os import listdir
+import random
 
 import cv2
 import json
@@ -470,3 +472,8 @@ class Files:
     @staticmethod
     def list_files(directory, extension):
         return [f for f in listdir(directory) if f.endswith('.' + extension)]
+
+    @staticmethod
+    def get_random_string(length):
+        letters = string.ascii_uppercase
+        return ''.join(random.choice(letters) for i in range(length))

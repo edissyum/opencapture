@@ -70,7 +70,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     documentMetadataOpenState   : boolean       = false;
     showZoomPage                : boolean       = false;
     isLoading                   : boolean       = true;
-    isLoadingPages              : boolean       = true;
     currentBatch                : any           = {id: -1, inputId: -1};
     batches                     : Batch[]       = [];
     metadata                    : any[]         = [];
@@ -79,13 +78,13 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     documentsIds                : string[]      = [];
     zoomImageUrl                : string        = "";
     toolSelectedOption          : string        = "";
-    batchMetadataValues            : any           = {id: -1};
+    batchMetadataValues         : any           = {id: -1};
     inputMode                   : string        = "Manual";
     outputs                     : any;
     defaultDocType              : any;
 
     /** indicate search operation is in progress */
-    public searching: boolean = false;
+    public searching        : boolean   = false;
 
     /** list of banks filtered after simulating server side search */
     public filteredServerSideMetadata: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
@@ -113,8 +112,8 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.userService.user = this.userService.getUserFromLocal();
         this.currentBatch.id = this.route.snapshot.params['id'];
         this.loadBatches();
-        this.loadDefaultDocType();
         this.loadSelectedBatch();
+        this.loadDefaultDocType();
         this.loadMetadata();
         this.loadOutputs();
         this.translate.get('HISTORY-DESC.viewer_splitter', {batch_id: this.currentBatch.id}).subscribe((translated: string) => {
@@ -125,7 +124,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     loadSelectedBatch(): void {
         this.documents      = [];
         this.documentsForms = [];
-        this.loadDocuments();
         this.loadBatchById();
     }
 
@@ -135,8 +133,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 this.outputs = data.outputs;
             }),
             catchError((err: any) => {
-                console.debug(err);
+                this.isLoading = false;
                 this.notify.handleErrors(err);
+                console.debug(err);
                 return of(false);
             })
         ).subscribe();
@@ -146,13 +145,20 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.http.get(API_URL + '/ws/splitter/batches/' + this.currentBatch.id, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.currentBatch.formId = data.batches[0].form_id;
-                this.loadFormFields(this.currentBatch.formId);
             }),
             catchError((err: any) => {
+                this.isLoading = false;
                 this.notify.error(err);
+                console.debug(err);
                 return of(false);
             })
-        ).subscribe();
+        ).subscribe(
+            x => {
+                this.loadDocuments();
+            }, (err: any) => {
+                console.debug(err);
+            }
+        );
     }
 
     loadBatches(): void {
@@ -161,12 +167,12 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 data.batches.forEach((batch: Batch) =>
                     this.batches.push(
                         {
-                            id: batch.id,
-                            image_url: this.sanitize(batch.image_url),
-                            file_name: batch.file_name,
-                            page_number: batch.page_number,
-                            batch_date: batch.batch_date,
-                            input_id: batch.input_id,
+                            id          : batch.id,
+                            image_url   : this.sanitize(batch.image_url),
+                            file_name   : batch.file_name,
+                            page_number : batch.page_number,
+                            batch_date  : batch.batch_date,
+                            input_id    : batch.input_id,
                         }
                     )
                 );
@@ -202,10 +208,12 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                         });
                     }
                 }
+                this.loadFormFields(this.currentBatch.formId);
             }),
-            finalize(() => this.isLoadingPages = false),
             catchError((err: any) => {
+                this.isLoading = false;
                 this.notify.error(err);
+                console.debug(err);
                 return of(false);
             })
         ).subscribe();
@@ -301,6 +309,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             }),
             catchError((err: any) => {
                 this.notify.error(err);
+                console.debug(err);
                 return of(false);
             })
         ).subscribe();
@@ -366,12 +375,11 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     });
                 }
                 this.batchForm = this.toBatchFormGroup();
+
                 // listen for search field value changes
                 for (const fieldCategory in this.fieldsCategories) {
                     data.fields[fieldCategory].forEach((field: Field) => {
-                        if (!field.metadata_key)
-                            return;
-                        if (this.batchForm.get('search_' + field.label_short)) {
+                        if (field.metadata_key && this.batchForm.get('search_' + field.label_short)) {
                             this.batchForm.get('search_' + field.label_short)!.valueChanges
                                 .pipe(
                                     filter((search: string) => !!search),
@@ -400,17 +408,15 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                         }
                     });
                 }
+                this.loadDocumentsForms();
             }), finalize(() => this.isLoading = false),
             catchError((err: any) => {
+                this.isLoading = false;
+                this.notify.error(err);
                 console.debug(err);
                 return of(false);
             })
-        ).subscribe(x => {
-            this.loadDocumentsForms();
-            this.searching = false;
-        }, () => {
-            this.searching = false;
-        });
+        ).subscribe();
     }
 
     toBatchFormGroup() {
@@ -587,6 +593,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             catchError((err: any) => {
                 this.isLoading = false;
                 this.notify.error(err);
+                console.debug(err);
                 return of(false);
             })
         ).subscribe(() => {

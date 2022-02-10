@@ -131,22 +131,22 @@ export class SplitterListComponent implements OnInit {
 
     loadBatches(): void {
         this.isLoading = true;
+        this.http.get(API_URL + '/ws/splitter/invoices/totals/' + this.currentStatus, {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.totals = data.totals;
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
         this.http.get(API_URL + '/ws/splitter/batches/' +
             (this.pageIndex - 1) + '/' + this.pageSize + '/' + this.currentTime + '/' + this.currentStatus,
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.batches = data.batches;
                 this.total = data.count;
-                this.http.get(API_URL + '/ws/splitter/invoices/totals/' + this.currentStatus, {headers: this.authService.headers}).pipe(
-                    tap((data: any) => {
-                        this.totals = data.totals;
-                    }),
-                    catchError((err: any) => {
-                        console.debug(err);
-                        this.notify.handleErrors(err);
-                        return of(false);
-                    })
-                ).subscribe();
             }),
             finalize(() => this.isLoading = false),
             catchError((err: any) => {

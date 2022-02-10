@@ -158,8 +158,8 @@ class Splitter:
         return pages
 
     @staticmethod
-    def get_file_name(document, metadata, parameters, now_date):
-        file_name = []
+    def get_mask_result(document, metadata, now_date, mask_args):
+        mask_result = []
 
         year = str(now_date.year)
         day = str('%02d' % now_date.day)
@@ -169,22 +169,24 @@ class Splitter:
         seconds = str('%02d' % now_date.second)
         _date = year + month + day + hour + minute + seconds
         random_num = str(random.randint(0, 99999)).zfill(5)
-        filename_parameters = parameters['filename'].split('#')
-        separator = parameters['separator'] if parameters['separator'] else ''
-        for filename_parameter in filename_parameters:
-            if filename_parameter in metadata:
-                file_name.append(metadata[filename_parameter].replace(' ', separator))
-            elif filename_parameter == 'doctype' and document:
-                file_name.append(document['documentTypeKey'].replace(' ', separator))
-            elif filename_parameter == 'date':
-                file_name.append(_date.replace(' ', separator))
-            elif filename_parameter == 'random':
-                file_name.append(random_num.replace(' ', separator))
+        mask_values = mask_args['mask'].split('#')
+        separator = mask_args['separator'] if mask_args['separator'] else ''
+        for mask_value in mask_values:
+            if mask_value in metadata:
+                mask_result.append(metadata[mask_value].replace(' ', separator))
+            elif mask_value == 'doctype':
+                mask_result.append(document['documentTypeName'].replace(' ', separator))
+            elif mask_value == 'date':
+                mask_result.append(_date.replace(' ', separator))
+            elif mask_value == 'random':
+                mask_result.append(random_num.replace(' ', separator))
             else:
-                file_name.append(filename_parameter.replace(' ', separator))
+                mask_result.append(mask_value.replace(' ', separator))
 
-        file_name = separator.join(str(x) for x in file_name) + '.' + parameters['extension']
-        return file_name
+        mask_result = separator.join(str(x) for x in mask_result)
+        if 'extension' in mask_args:
+            mask_result += '.{}'.format(mask_args['extension'])
+        return mask_result
 
     @staticmethod
     def export_xml(documents, metadata, output_dir, filename, now):

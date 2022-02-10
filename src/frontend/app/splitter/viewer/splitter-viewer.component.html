@@ -1,8 +1,8 @@
-<mat-drawer-container class="viewer-container" hasBackdrop="false">
+<div *ngIf="isLoading">
+    <app-loader></app-loader>
+</div>
+<mat-drawer-container *ngIf="!isLoading" class="viewer-container" hasBackdrop="false">
     <mat-drawer #drawer mode="side" opened>
-        <div *ngIf="isLoading || isLoadingPages">
-            <app-loader></app-loader>
-        </div>
         <div class="mt-1">
             <div class="card" *ngFor="let batch of batches| slice: 0 : 10">
                 <mat-card class="mat-elevation-z4 my-2"
@@ -41,7 +41,7 @@
              (clickOutside)="showZoomPage = false"
              [exclude]="'.btn-page-zoom'" alt="Zoom Image">
         <div class="w-10/12 absolute top-0 mx-32">
-            <mat-accordion class="metadata" *ngIf="isLoadingPages == false">
+            <mat-accordion class="metadata">
                 <mat-expansion-panel class="my-10 bg-gray-20" [expanded]="true" (opened)="batchMetadataOpenState = true"
                                      (closed)="batchMetadataOpenState = false" #batchMetadata>
                     <mat-expansion-panel-header>
@@ -116,7 +116,7 @@
             </mat-accordion>
             <mat-card class="document" *ngFor="let document of documents; let documentIndex = index;">
                 <mat-card-title>
-                    <mat-accordion *ngIf="isLoadingPages == false">
+                    <mat-accordion>
                         <mat-expansion-panel class="bg-gray-20" [expanded]="false" (opened)="documentMetadataOpenState = true"
                                              (closed)="documentMetadataOpenState = false" #documentMetadata>
                             <mat-expansion-panel-header>
@@ -136,7 +136,7 @@
                                     <i class="fas fa-trash-alt fa-lg"></i>
                                 </button>
                             </mat-expansion-panel-header>
-                            <div class="text-gray-400 text-center w-full" *ngIf="fieldsCategories['document_metadata'].length == 0">
+                            <div class="text-gray-400 text-center w-full" *ngIf="fieldsCategories['document_metadata'].length === 0">
                                 <i class="block fas fa-check fa-3x"></i>
                                 <span class="block">{{ 'SPLITTER.no_metadata_required' | translate }}</span>
                             </div>
@@ -145,9 +145,6 @@
                                     <div *ngIf="input.type == 'text' && inputMode == 'Auto' && input.metadata_key">
                                         <mat-form-field class="w-full">
                                             <mat-label>
-                                        <span *ngIf="!batchMetadataValues">
-                                            {{ 'SPLITTER.search_for' | translate }}
-                                        </span>
                                                 {{input.label}}
                                             </mat-label>
                                             <mat-select [formControlName]="input.label_short">
