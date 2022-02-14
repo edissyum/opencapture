@@ -36,9 +36,13 @@ import {PrivilegesService} from "../../../../services/privileges.service";
     styleUrls: ['./custom-fields.component.scss'],
 })
 export class CustomFieldsComponent implements OnInit {
+    loading                     = true;
+    inactiveFields: any[]       = [];
+    activeFields: any[]         = [];
+    inactiveOrActive: string    = '';
+    update          : boolean   = false;
+    updateCustomId  : any ;
     form!: FormGroup;
-    inactiveFields: any[] = [];
-    activeFields: any[] = [];
     parent: any[] = [
         {
             'id': 'verifier',
@@ -97,7 +101,6 @@ export class CustomFieldsComponent implements OnInit {
             class       : "",
         },
     ];
-    loading = true;
 
     constructor(
         private http: HttpClient,
@@ -261,9 +264,6 @@ export class CustomFieldsComponent implements OnInit {
             })
         ).subscribe();
     }
-    updateCustomId  : any ;
-    inactiveOrActive: string = '';
-    update          : boolean = false;
 
     updateCustomOnSubmit() {
         const updatedField : any = {};

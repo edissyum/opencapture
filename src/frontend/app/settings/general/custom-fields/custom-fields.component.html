@@ -136,7 +136,7 @@
                             <h2>{{ 'HEADER.inactive' | translate }}</h2>
                             <div cdkDropList [cdkDropListData]="inactiveFields" (cdkDropListDropped)="drop($event)"
                                  class="custom-fields-list"
-                                 style="height:47vh; overflow:auto;">
+                                 style="max-height:47vh; overflow:auto;">
                                 <span *ngFor="let item of inactiveFields; let i = index;">
                                     <div cdkDrag class="custom-field-box" *ngIf="item.module == parent['id']">
                                         <div class="text-left">
@@ -169,7 +169,7 @@
                             <h2>{{ 'HEADER.active' | translate }}</h2>
                             <div cdkDropList [cdkDropListData]="activeFields" (cdkDropListDropped)="drop($event)"
                                  class="custom-fields-list"
-                                 style="height:47vh; overflow:auto;">
+                                 style="max-height:47vh; overflow:auto;">
                                 <span *ngFor="let item of activeFields; let i = index;">
                                     <div cdkDrag class="custom-field-box" *ngIf="item.module == parent['id']">
                                         <div class="text-left">
