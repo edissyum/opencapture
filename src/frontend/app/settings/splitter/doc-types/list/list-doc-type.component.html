@@ -92,19 +92,27 @@
                 class="absolute right-2 top-2">
             <i [class.transform]="sidenav2.opened" [class.rotate-180]="sidenav2.opened" class="fas fa-stream text-xl text-gray-900"></i>
         </button>
-        <app-document-type-factory (output)="getOutPut($event)" class="pl-4"></app-document-type-factory>
+        <app-document-type-factory [data]="{canFolderBeSelected: true}"
+                                   (selectedFormOutput)="getSelectedForm($event)"
+                                   (selectedDoctypeOutput)="getOutPut($event)" class="pl-4"></app-document-type-factory>
     </mat-sidenav-content>
     <mat-sidenav #sidenav2 mode="side" opened position="end" class="available-fields w-1/4 flex flex-col h-full border-r border-green-400">
         <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">{{ 'DOCTYPE.edit_doctype' | translate }}</h3>
         <mat-divider class="border-green-400"></mat-divider>
-        <form (ngSubmit)="edit()" [formGroup]="form">
+        <form (ngSubmit)="update()" [formGroup]="form">
             <div class="grid grid-cols-1 gap-x-2 gap-y-2 m-2">
                 <mat-form-field>
                     <mat-label>{{ 'DOCTYPE.folder' | translate }}</mat-label>
                     <mat-select id='folder' [formControlName]="'folder'">
-                        <div *ngFor="let folder of documentTypeFactoryComponent.treeDataObj.treeData" >
-                            <mat-option *ngIf="folder.type == 'folder'" [value]="folder.code" >
-                                {{ folder.label | translate }}
+                        <mat-option [value]="noMasterFolder" >
+                            {{ 'DOCTYPE.no_master' | translate }}
+                        </mat-option>
+                        <div *ngFor="let folder of documentTypeFactoryComponent.treeDataObj.doctypesData" >
+                            <mat-option *ngIf="folder.type == 'folder'"
+                                        [disabled]="folder.code.startsWith(this.selectedDocType.code + '.')
+                                                        || folder.key === selectedDocType.key"
+                                        [value]="folder.code" >
+                                {{ folder.label}}
                             </mat-option>
                         </div>
                     </mat-select>

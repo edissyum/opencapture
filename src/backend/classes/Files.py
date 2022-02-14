@@ -465,9 +465,8 @@ class Files:
                     paths.append(file_path)
                 pdf_writer = PyPDF4.PdfFileWriter()
         except Exception:
-            return {'OK': False}
-
-        return {'OK': True, 'paths': paths}
+            return False
+        return paths
 
     @staticmethod
     def list_files(directory, extension):

@@ -35,34 +35,56 @@ class Splitter:
         self.bundle_start = self.config.cfg['SPLITTER']['bundlestart']
 
     def split(self, pages):
-        doctype = None
+        doctype_value = None
+        maarch_value = None
         for index, path in pages:
             separator_type = None
             is_separator = list(filter(lambda separator: int(separator['num']) + 1 == int(index),
                                        self.separator_qr.pages))
             if is_separator:
                 qr_code = is_separator[0]['qr_code']
+                self.log.info("QR Code in page " + str(index) + " : " + str(qr_code))
+
+                """
+                    Maarch separator
+                """
+                if 'MAARCH' in qr_code and '|' not in qr_code:
+                    maarch_value = qr_code
+                    separator_type = self.doc_start
+                else:
+                    maarch_value = None
+                    separator_type = None
+
+                """
+                    Open-Capture separator
+                """
                 if self.doc_start in qr_code:
                     separator_type = self.doc_start
+
                     if 'DOCTYPE' in qr_code:
-                        doctype = qr_code.split("|")[2]
+                        doctype_value = qr_code.split("|")[2]
                     else:
-                        doctype = None
+                        doctype_value = None
 
                 elif self.bundle_start in qr_code:
                     separator_type = self.bundle_start
-                    doctype = None
+                    doctype_value = None
+                    maarch_value = None
 
                 if separator_type:
                     self.log.info("Separator type in page " + str(index) + " : " + separator_type)
 
-                if doctype:
-                    self.log.info("Doctype in page " + str(index) + " : " + doctype)
+                if doctype_value:
+                    self.log.info("Doctype in page " + str(index) + " : " + doctype_value)
+
+                if maarch_value:
+                    self.log.info("Maarch value in page " + str(index) + " : " + maarch_value)
 
             self.qr_pages.append({
                 'source_page': index,
                 'separator_type': separator_type,
-                'doctype': doctype,
+                'doctype_value': doctype_value,
+                'maarch_value': maarch_value,
                 'path': path,
             })
 
@@ -90,7 +112,8 @@ class Splitter:
             else:
                 self.result_batches[-1].append({
                     'source_page': page['source_page'],
-                    'doctype': page['doctype'],
+                    'doctype_value': page['doctype_value'],
+                    'maarch_value': page['maarch_value'],
                     'split_document': split_document,
                     'path': page['path']
                 })
@@ -127,11 +150,34 @@ class Splitter:
                         'columns': {
                             'batch_id': str(batch_id),
                             'split_index': page['split_document'],
-                            'doctype_key': page['doctype'],
                             'data': '{}',
                         }
                     }
+                    """
+                        Open-Capture separator
+                    """
+                    if page['doctype_value']:
+                        args['doctype_key'] = page['doctype_value']
+                    """
+                        Maarch entity separator
+                    """
+                    if page['maarch_value']:
+                        maarch_value_split = page['maarch_value'].split('_')
+                        if len(maarch_value_split) == 2:
+                            entity = maarch_value_split[1]
+                            documents_data = {}
+                            custom_fields = self.db.select({
+                                'select': ['*'],
+                                'table': ['custom_fields'],
+                                'where': ['metadata_key = %s', 'status <> %s'],
+                                'data': ['SEPARATOR_MAARCH', 'DEL'],
+                            })
+                            documents_data['custom_fields'] = {}
+                            for custom_field in custom_fields:
+                                documents_data['custom_fields'][custom_field['label_short']] = entity
+                                args['columns']['data'] = json.dumps(documents_data)
                     documents_id = self.db.insert(args)
+
                 previous_split_document = page['split_document']
                 image = Files.open_image_return(page['path'])
                 args = {
@@ -159,6 +205,7 @@ class Splitter:
 
     @staticmethod
     def get_mask_result(document, metadata, now_date, mask_args):
+        print(document)
         mask_result = []
 
         year = str(now_date.year)
@@ -172,8 +219,13 @@ class Splitter:
         mask_values = mask_args['mask'].split('#')
         separator = mask_args['separator'] if mask_args['separator'] else ''
         for mask_value in mask_values:
+            if not mask_value:
+                continue
             if mask_value in metadata:
                 mask_result.append(metadata[mask_value].replace(' ', separator))
+            if mask_value in document['metadata']:
+                mask_result.append((document['metadata'][mask_value] if document['metadata'][mask_value] else '')
+                                   .replace(' ', separator))
             elif mask_value == 'doctype':
                 mask_result.append(document['documentTypeName'].replace(' ', separator))
             elif mask_value == 'date':
@@ -233,7 +285,7 @@ class Splitter:
             with open(xml_file_path, "w", encoding="utf-8") as f:
                 f.write(xml_str)
         except IOError:
-            return {'OK': False, 'error': "Unable to create file on disk."}
+            return False
 
         return {'OK': True, 'path': xml_file_path}
 

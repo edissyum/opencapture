@@ -67,11 +67,11 @@ export class SplitterFormBuilderComponent implements OnInit {
     fieldCategories         : any []    = [
         {
             'id': 'batch_metadata',
-            'label': marker('SPLITTER.meta_data')
+            'label': marker('SPLITTER.batch_metadata')
         },
         {
             'id': 'document_metadata',
-            'label': marker('SPLITTER.meta_data')
+            'label': marker('SPLITTER.document_metadata')
         },
     ];
     availableFieldsParent   : any []    = [

@@ -20,13 +20,12 @@ import { Router } from "@angular/router";
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 
 @Component({
-    selector: 'app-document-tree',
-    templateUrl: './document-tree.component.html',
-    styleUrls: ['./document-tree.component.scss']
+    selector: 'app-document-type',
+    templateUrl: './document-type.component.html',
+    styleUrls: ['./document-type.component.scss']
 })
-export class DocumentTreeComponent implements OnInit {
+export class DocumentTypeComponent implements OnInit {
     selectedItem:any;
-
     constructor(
         public router: Router,
         @Inject(MAT_DIALOG_DATA) public data: any

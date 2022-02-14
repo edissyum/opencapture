@@ -20,17 +20,17 @@ from flask import Blueprint, request, make_response, jsonify
 from src.backend.import_controllers import auth
 from src.backend.import_controllers import doctypes
 
-bp = Blueprint('docTypes', __name__, url_prefix='/ws/')
+bp = Blueprint('doctypes', __name__, url_prefix='/ws/')
 
 
-@bp.route('docTypes/list', defaults={'type': None}, methods=['GET'])
-@bp.route('docTypes/list/<string:type>', methods=['GET'])
+@bp.route('doctypes/list', defaults={'type': None}, methods=['GET'])
+@bp.route('doctypes/list/<int:form_id>', methods=['GET'])
 @auth.token_required
-def retrieve_doctypes(type):
+def retrieve_doctypes(form_id):
     if type:
         args = {
-            'where': ['type = %s'],
-            'data': [type]
+            'where': ['form_id = %s'],
+            'data': [str(form_id)]
         }
     else:
         args = {}
@@ -38,7 +38,7 @@ def retrieve_doctypes(type):
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('docTypes/add', methods=['POST'])
+@bp.route('doctypes/add', methods=['POST'])
 @auth.token_required
 def add_doctype():
     data = json.loads(request.data)
@@ -46,7 +46,7 @@ def add_doctype():
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('docTypes/edit', methods=['POST'])
+@bp.route('doctypes/update', methods=['POST'])
 @auth.token_required
 def update_doctype():
     data = json.loads(request.data)
@@ -54,7 +54,7 @@ def update_doctype():
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('docTypes/generateSeparator', methods=['POST'])
+@bp.route('doctypes/generateSeparator', methods=['POST'])
 @auth.token_required
 def generate_separator():
     data = json.loads(request.data)

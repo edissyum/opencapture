@@ -39,9 +39,9 @@ import {MatDialog} from "@angular/material/dialog";
 })
 export class ListDocTypeComponent implements OnInit {
   @ViewChild(DocumentTypeFactoryComponent, {static : true}) documentTypeFactoryComponent! : DocumentTypeFactoryComponent;
+  selectedFormId: number | undefined;
   loading: boolean        = false;
-  noMasterValue: string   = '_NO_MASTER';
-  folderSelectControl     = new FormControl();
+  noMasterFolder: string  = '_NO_MASTER';
   form!: FormGroup;
   fields: any = [
     {
@@ -61,7 +61,11 @@ export class ListDocTypeComponent implements OnInit {
       disabled  : false,
     },
   ];
-  public selectedDocType: any;
+  public selectedDocType: any = {
+    item  : '',
+    key   : '',
+    code  : '',
+  };
 
   constructor(
       private http: HttpClient,
@@ -88,15 +92,18 @@ export class ListDocTypeComponent implements OnInit {
       group[field.id] = field.required ? new FormControl({value:"", disabled: field.disabled}, [Validators.required])
           : new FormControl({value:"", disabled: field.disabled});
     });
-    group['folder'] =  new FormControl(this.noMasterValue, Validators.required);
+    group['folder'] =  new FormControl(this.noMasterFolder, Validators.required);
     return new FormGroup(group);
   }
 
-  edit() {
+  update() {
     let newDocType = this.form.getRawValue();
+    if(newDocType.folder === '_NO_MASTER')
+      newDocType.folder = "0";
+    const lastIndexInFolder = this.getLastFolderIndex(newDocType.folder);
     newDocType = {
       'key': newDocType.key,
-      'code': newDocType.folder + '.1',
+      'code': newDocType.folder + "." + lastIndexInFolder.toString(),
       'label': newDocType.label,
       'status': 'OK',
     };
@@ -105,6 +112,7 @@ export class ListDocTypeComponent implements OnInit {
 
   getOutPut($event: any) {
     this.selectedDocType = $event;
+    console.log(this.selectedDocType);
     const code = this.selectedDocType.code.split('.');
     code.pop();
     this.form.controls['folder'].setValue(code.join('.'));
@@ -141,11 +149,39 @@ export class ListDocTypeComponent implements OnInit {
     });
   }
 
+  getSelectedForm($event: any) {
+    this.selectedFormId = $event.formId;
+  }
+
+  getLastFolderIndex(codeSelected: string){
+    let lastIndex = 0;
+    if(codeSelected !== this.noMasterFolder){
+      this.documentTypeFactoryComponent.treeDataObj.doctypesData.forEach((docType:any) => {
+        if(docType.code.startsWith(codeSelected)
+            && docType.code.split('.').length === codeSelected.split('.').length + 1){
+          const currentIdx = Number(docType.code.split('.').pop());
+          lastIndex = (currentIdx > lastIndex) ? currentIdx: lastIndex;
+        }
+      });
+    }
+    else{
+      this.documentTypeFactoryComponent.treeDataObj.doctypesData.forEach((docType:any) => {
+        if(docType.code.split('.').length === 2){
+          const currentIdx = Number(docType.code.split('.').pop());
+          lastIndex = (currentIdx > lastIndex) ? currentIdx: lastIndex;
+        }
+      });
+    }
+    return lastIndex + 1;
+  }
+
   updateDoctype(newDocType: any) {
-    this.http.post(API_URL + '/ws/docTypes/edit', newDocType, {headers: this.authService.headers}).pipe(
+    this.http.post(API_URL + '/ws/doctypes/update', newDocType, {headers: this.authService.headers}).pipe(
         tap((data: any) => {
           this.notify.success(this.translate.instant('DOCTYPE.doctype_edited'));
-          this.documentTypeFactoryComponent.treeDataObj.reloadTree();
+          if (this.selectedFormId)
+            this.documentTypeFactoryComponent.treeDataObj.loadTree(this.selectedFormId);
+          this.selectedDocType.code = newDocType.code;
         }),
         catchError((err: any) => {
           console.debug(err);

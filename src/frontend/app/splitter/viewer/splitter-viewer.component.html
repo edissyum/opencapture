@@ -117,7 +117,7 @@
             <mat-card class="document" *ngFor="let document of documents; let documentIndex = index;">
                 <mat-card-title>
                     <mat-accordion>
-                        <mat-expansion-panel class="bg-gray-20" [expanded]="false" (opened)="documentMetadataOpenState = true"
+                        <mat-expansion-panel class="bg-gray-20" [expanded]="true" (opened)="documentMetadataOpenState = true"
                                              (closed)="documentMetadataOpenState = false" #documentMetadata>
                             <mat-expansion-panel-header>
                                 <mat-panel-title class="w-4/12">

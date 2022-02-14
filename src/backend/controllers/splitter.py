@@ -201,8 +201,6 @@ def export_maarch(auth_data, file_path, args, batch):
                 'customFields': {}
             })
             res, message = ws.insert_with_args(args)
-            print("message : ")
-            print(message)
             if res:
                 return '', 200
             else:
@@ -214,13 +212,13 @@ def export_maarch(auth_data, file_path, args, batch):
         else:
             response = {
                 "errors": gettext('EXPORT_MAARCH_ERROR'),
-                "message": gettext('PDF_FILE_NOT_FOUND')
+                "message": gettext('EXPORT_MAARCH_ERROR')
             }
             return response, 400
     else:
         response = {
             "errors": gettext('MAARCH_WS_INFO_EMPTY'),
-            "message": ''
+            "message": gettext('MAARCH_WS_INFO_EMPTY')
         }
         return response, 400
 
@@ -236,11 +234,17 @@ def export_pdf(batch, documents, parameters, metadata, pages, now):
             'extension': parameters['extension']
         }
         documents[index]['fileName'] = _Splitter.get_mask_result(document, metadata, now, mask_args)
-    res_export_pdf = _Files.export_pdf(pages, documents,
+    paths = _Files.export_pdf(pages, documents,
                                  current_app.config['UPLOAD_FOLDER_SPLITTER']
                                  + str(batch[0]['file_name']),
                                  parameters['folder_out'], 1)
-    return res_export_pdf
+    if not paths:
+        response = {
+            "errors": gettext('EXPORT_PDF_ERROR'),
+            "message": gettext('EXPORT_PDF_ERROR')
+        }
+        return response, 400
+    return {'paths': paths}, 200
 
 
 def export_xml(documents, parameters, metadata, now):
@@ -251,7 +255,13 @@ def export_xml(documents, parameters, metadata, now):
     }
     file_name = _Splitter.get_mask_result(None, metadata, now, mask_args)
     res_xml = _Splitter.export_xml(documents, metadata, parameters['folder_out'], file_name, now)
-    return res_xml
+    if not res_xml:
+        response = {
+            "errors": gettext('EXPORT_XML_ERROR'),
+            "message": ''
+        }
+        return response, 400
+    return True, 200
 
 
 def validate(documents, metadata):
@@ -278,18 +288,20 @@ def validate(documents, metadata):
             output = outputs.get_output_by_id(output_id)
             parameters = get_output_parameters(output[0]['data']['options']['parameters'])
             if output:
-                is_export_pdf_ok = True
-                is_export_xml_ok = True
                 """
                     Export PDF files if required by output
                 """
                 if output[0]['output_type_id'] in ['export_pdf']:
                     res_export_pdf = export_pdf(batch, documents, parameters, metadata, pages, now)
+                    if res_export_pdf[1] != 200:
+                        return res_export_pdf
                 """
                     Export XML file if required by output
                 """
                 if output[0]['output_type_id'] in ['export_xml']:
                     res_export_xml = export_xml(documents, parameters, metadata, now)
+                    if res_export_xml[1] != 200:
+                        return res_export_xml
                 """
                     Export to Alfresco
                 """
@@ -305,18 +317,18 @@ def validate(documents, metadata):
                     pdf_output = outputs.get_output_by_id(3)
                     pdf_export_parameters = get_output_parameters(pdf_output[0]['data']['options']['parameters'])
                     res_export_pdf = export_pdf(batch, documents, pdf_export_parameters, metadata, pages, now)
-
-                    if res_export_pdf['OK']:
-                        for file_path in res_export_pdf['paths']:
-                            cmis.create_document(file_path, 'application/pdf')
-
+                    if res_export_pdf[1] != 200:
+                        return res_export_pdf
+                    for file_path in res_export_pdf[0]['paths']:
                         """
                             Export xml for Alfresco
                         """
+                        cmis.create_document(file_path, 'application/pdf')
                         xml_output = outputs.get_output_by_id(4)
                         pdf_export_parameters = get_output_parameters(xml_output[0]['data']['options']['parameters'])
                         res_export_xml = export_xml(documents, pdf_export_parameters, metadata, now)
-
+                        if res_export_xml[1] != 200:
+                            return res_export_xml
                 """
                     Export to Maarch
                 """
@@ -325,29 +337,27 @@ def validate(documents, metadata):
                     pdf_output = outputs.get_output_by_id(3)
                     pdf_export_parameters = get_output_parameters(pdf_output[0]['data']['options']['parameters'])
                     res_export_pdf = export_pdf(batch, documents, pdf_export_parameters, metadata, pages, now)
-
-                    if res_export_pdf['OK']:
-                        subject_mask = parameters['subject']
-                        for index, file_path in enumerate(res_export_pdf['paths']):
-                            mask_args = {
-                                'mask': subject_mask,
-                                'separator': ' ',
-                                'format': parameters['format']
-                            }
-                            parameters['subject'] = _Splitter.get_mask_result(documents[index], metadata,
-                                                                              now, mask_args)
-                            export_maarch(maarch_auth, file_path, parameters, batch)
-
+                    if res_export_pdf[1] != 200:
+                        return res_export_pdf
+                    subject_mask = parameters['subject']
+                    for index, file_path in enumerate(res_export_pdf[0]['paths']):
+                        mask_args = {
+                            'mask': subject_mask,
+                            'separator': ' ',
+                            'format': parameters['format']
+                        }
+                        parameters['subject'] = _Splitter.get_mask_result(documents[index], metadata,
+                                                                          now, mask_args)
+                        res_export_maarch = export_maarch(maarch_auth, file_path, parameters, batch)
+                        if res_export_maarch[1] != 200:
+                            return res_export_maarch
                 """
                     Change status to END
                 """
-                if is_export_pdf_ok and is_export_xml_ok:
-                    splitter.change_status({
-                        'id': metadata['id'],
-                        'status': 'NEW'
-                    })
-                else:
-                    return {"OK": False}, 500
+                splitter.change_status({
+                    'id': metadata['id'],
+                    'status': 'END'
+                })
 
     return {"OK": True}, 200
 

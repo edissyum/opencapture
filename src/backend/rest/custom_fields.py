@@ -27,3 +27,10 @@ def update_custom_field():
     data = json.loads(request.data)
     res = custom_fields.update(data)
     return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('customFields/delete/<int:custom_field_id>', methods=['DELETE'])
+@auth.token_required
+def delete_custom_field(custom_field_id):
+    res = custom_fields.delete({'custom_field_id': custom_field_id})
+    return make_response(jsonify(res[0])), res[1]

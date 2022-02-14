@@ -23,7 +23,7 @@ import {SettingsService} from "../../../../../services/settings.service";
 import {PrivilegesService} from "../../../../../services/privileges.service";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {API_URL} from "../../../../env";
-import {catchError, finalize, tap} from "rxjs/operators";
+import {catchError, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {AuthService} from "../../../../../services/auth.service";
@@ -37,9 +37,10 @@ import {DocumentTypeFactoryComponent} from "../../../../splitter/document-type-f
 })
 export class CreateDocTypeComponent implements OnInit {
     @ViewChild(DocumentTypeFactoryComponent, {static : true}) documentTypeFactoryComponent! : DocumentTypeFactoryComponent;
-    loading: boolean    = false;
-    addTypes: any       = [];
-    folderSelectControl = new FormControl();
+    selectedFormId: number | undefined;
+    loading: boolean        = false;
+    forms: any[]            = [];
+    noMasterFolder: string  = '_NO_MASTER';
     form!: FormGroup;
     fields: any = [
         {
@@ -76,6 +77,10 @@ export class CreateDocTypeComponent implements OnInit {
         this.form = this.toFormGroup();
     }
 
+    getSelectedForm($event: any) {
+        this.selectedFormId = $event.formId;
+    }
+
     toFormGroup() {
         const group: any = {};
         this.fields.forEach((field: { id: string; required: boolean;}) => {
@@ -86,18 +91,43 @@ export class CreateDocTypeComponent implements OnInit {
         return new FormGroup(group);
     }
 
+    getLastFolderIndex(codeSelected: string){
+        let lastIndex = 0;
+        if(codeSelected !== this.noMasterFolder){
+            this.documentTypeFactoryComponent.treeDataObj.doctypesData.forEach((docType:any) => {
+                if(docType.code.startsWith(codeSelected)
+                    && docType.code.split('.').length === codeSelected.split('.').length + 1){
+                    const currentIdx = Number(docType.code.split('.').pop());
+                    lastIndex = (currentIdx > lastIndex) ? currentIdx: lastIndex;
+                }
+            });
+        }
+        else{
+            this.documentTypeFactoryComponent.treeDataObj.doctypesData.forEach((docType:any) => {
+                if(docType.code.split('.').length === 2){
+                    const currentIdx = Number(docType.code.split('.').pop());
+                    lastIndex = (currentIdx > lastIndex) ? currentIdx: lastIndex;
+                }
+            });
+        }
+        return lastIndex + 1;
+    }
+
     addDocType() {
         let newDocType = this.form.getRawValue();
+        const lastIndexInFolder = this.getLastFolderIndex(newDocType.folder);
         newDocType = {
-            'key'   : newDocType.key,
-            'code'  : newDocType.folder + '.1',
-            'label' : newDocType.label,
-            'type'  : 'document',
+            'key'       : newDocType.key,
+            'code'      : newDocType.folder + "." + lastIndexInFolder.toString(),
+            'label'     : newDocType.label,
+            'type'      : 'document',
+            'form_id'   : this.selectedFormId,
         };
-        this.http.post(API_URL + '/ws/docTypes/add', newDocType, {headers: this.authService.headers}).pipe(
+        this.http.post(API_URL + '/ws/doctypes/add', newDocType, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.notify.success(this.translate.instant('DOCTYPE.doctype_added'));
-                this.documentTypeFactoryComponent.treeDataObj.reloadTree();
+                if (this.selectedFormId)
+                    this.documentTypeFactoryComponent.treeDataObj.loadTree(this.selectedFormId);
                 this.form.reset();
                 Object.keys(this.form.controls).forEach(key => {
                     this.form.controls[key].setErrors(null);

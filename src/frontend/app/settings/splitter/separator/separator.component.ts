@@ -108,7 +108,7 @@ export class SeparatorComponent implements AfterViewInit {
     }
 
     getSeparatorBase64(args: any) {
-        this.http.post(API_URL + '/ws/docTypes/generateSeparator',  args,{headers: this.authService.headers}).pipe(
+        this.http.post(API_URL + '/ws/doctypes/generateSeparator',  args,{headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 console.log(data);
                 this.base64 = "data:application/pdf;base64," + data.res;

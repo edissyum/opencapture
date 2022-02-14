@@ -221,7 +221,7 @@ CREATE TABLE "splitter_batches" (
                                     "form_id"       INTEGER
 );
 
-CREATE TABLE splitter_documents(
+CREATE TABLE "splitter_documents"(
                                     "id"          SERIAL UNIQUE PRIMARY KEY,
                                     "batch_id"    INTEGER NOT NULL,
                                     "split_index" INTEGER NOT NULL,
@@ -239,15 +239,16 @@ CREATE TABLE "splitter_pages" (
                                   "status"            VARCHAR DEFAULT 'NEW'
 );
 
-create table doctypes
+create table "doctypes"
 (
     "id"        SERIAL UNIQUE PRIMARY KEY,
-    "key"       varchar(255) not null,
-    "label"     varchar(255),
-    "code"      varchar(10),
-    "default"   boolean    default false,
-    "status"    varchar(3) default 'OK'::character varying,
-    "type"      varchar(10)
+    "key"       VARCHAR(255) NOT NULL,
+    "label"     VARCHAR(255),
+    "code"      VARCHAR(255),
+    "default"   BOOLEAN    DEFAULT FALSE,
+    "status"    VARCHAR(3) DEFAULT 'OK'::CHARACTER VARYING,
+    "type"      VARCHAR(10),
+    "form_id"   INTEGER
 );
 
 CREATE TABLE "metadata" (

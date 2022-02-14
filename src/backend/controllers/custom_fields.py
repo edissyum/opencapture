@@ -63,3 +63,15 @@ def update(args):
             "message": error
         }
         return response, 401
+
+
+def delete(args):
+    res, error = custom_fields.delete(args)
+    if res:
+        return '', 200
+    else:
+        response = {
+            "errors": "CUSTOM_FIELDS_DELETE_ERROR",
+            "message": error
+        }
+        return response, 401

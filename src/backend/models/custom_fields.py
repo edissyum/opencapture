@@ -57,8 +57,8 @@ def retrieve_custom_fields(args):
     custom_fields = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['custom_fields'],
-        'where': ['1=%s'] if 'where' not in args else args['where'],
-        'data': ['1'] if 'data' not in args else args['data']
+        'where': ['status <> %s'] if 'where' not in args else args['where'],
+        'data': ['DEL'] if 'data' not in args else args['data']
     })
 
     return custom_fields, error
@@ -84,5 +84,25 @@ def update(args):
 
     if not res:
         error = gettext('UPDATE_CUSTOM_FIELDS_ERROR')
+
+    return res, error
+
+
+def delete(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    error = None
+
+    res = _db.update({
+        'table': ['custom_fields'],
+        'set': {
+            'status': 'DEL'
+        },
+        'where': ['id = %s'],
+        'data': [args['custom_field_id']]
+    })
+
+    if not res:
+        error = gettext('DELETE_CUSTOM_FIELDS_ERROR')
 
     return res, error

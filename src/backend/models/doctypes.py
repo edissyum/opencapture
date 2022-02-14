@@ -35,6 +35,7 @@ def add_doctype(args):
                 'key': args['key'],
                 'label': args['label'],
                 'code': args['code'],
+                'form_id': args['form_id'],
             }
         }
         res = _db.insert(args)

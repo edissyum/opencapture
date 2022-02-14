@@ -49,8 +49,8 @@ def add_document(args):
             'data': args['data'],
         }
     }
-    _db.insert(args)
-    return True, ''
+    res = _db.insert(args)
+    return res
 
 
 def add_batch(args):
@@ -142,10 +142,9 @@ def insert_page(args):
     args = {
         'table': 'splitter_pages',
         'columns': {
-            'batch_id': str(args['batch_id']),
+            'document_id': str(args['document_id']),
             'thumbnail': args['path'],
-            'source_page': args['source_page'],
-            'split_document': str(args['count']),
+            'source_page': args['source_page']
         }
     }
     res = _db.insert(args)
@@ -247,6 +246,61 @@ def get_documents_pages(args):
 
     if not pages:
         error = "ERROR : While getting pages"
+
+    return pages, error
+
+
+def get_max_source_page(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    error = None
+
+    pages = _db.select({
+        'select': ['MAX(source_page) as source_page'],
+        'table': ['splitter_pages'],
+        'where': ['status = %s', 'document_id = %s'],
+        'data': ['NEW', args['id']],
+    })
+
+    if not pages:
+        error = "ERROR : While getting pages"
+
+    return pages, error
+
+
+def get_documents(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    error = None
+
+    pages = _db.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['splitter_documents'],
+        'where': ['status = %s', 'batch_id = %s'],
+        'data': ['NEW', args['id']],
+        'order_by': ['batch_id']
+    })
+
+    if not pages:
+        error = "ERROR : While getting documents"
+
+    return pages, error
+
+
+def get_documents_max_split_index(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    error = None
+
+    pages = _db.select({
+        'select': ['MAX(split_index) as split_index'],
+        'table': ['splitter_documents'],
+        'where': ['status = %s', 'batch_id = %s'],
+        'data': ['NEW', args['id']],
+    })
+
+    if not pages:
+        error = "ERROR : While getting documents"
 
     return pages, error
 

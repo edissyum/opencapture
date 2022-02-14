@@ -1,0 +1,20 @@
+.xBorder{
+  border-bottom: 1px dotted black;
+  width: 24px;
+  height: 0px;
+  position: relative;
+  left: 5px;
+  top: 0px;
+  border-left: 1px solid black;
+}
+.yBorder{
+  border-left: 1px dotted black;
+  position: relative;
+  height: 40px;
+  left: 5px;
+  bottom: 20px;
+  border-block-start: 5px;
+}
+mat-tree-node{
+  border-left: 1px dotted black;
+}

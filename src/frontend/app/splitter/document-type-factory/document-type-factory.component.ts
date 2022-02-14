@@ -24,12 +24,13 @@ import {API_URL} from "../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {HttpClient} from "@angular/common/http";
 import {ActivatedRoute, Router} from "@angular/router";
-import {FormBuilder} from "@angular/forms";
+import {FormBuilder, FormControl} from "@angular/forms";
 import {AuthService} from "../../../services/auth.service";
 import {UserService} from "../../../services/user.service";
 import {TranslateService} from "@ngx-translate/core";
 import {NotificationService} from "../../../services/notifications/notifications.service";
 import {PrivilegesService} from "../../../services/privileges.service";
+import {LocalStorageService} from "../../../services/local-storage.service";
 
 export class TreeItemNode {
     key!        : string;
@@ -52,10 +53,12 @@ export class TreeItemFlatNode {
 
 @Injectable()
 export class ChecklistDatabase {
-    dataChange = new BehaviorSubject<TreeItemNode[]>([]);
-    treeData : any[] = [];
+    doctypesData : any[]    = [];
+    dataChange              = new BehaviorSubject<TreeItemNode[]>([]);
+    loading                 = false;
+
     get data(): TreeItemNode[] { return this.dataChange.value; }
-    loading = true;
+
     constructor(
         private http: HttpClient,
         public router: Router,
@@ -67,19 +70,22 @@ export class ChecklistDatabase {
         private notify: NotificationService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService
-    ) {
-        this.retrieveDocTypes();
+) {}
+
+    loadTree(formId: number){
+        if(formId){
+            this.retrieveDocTypes(formId);
+            this.initialize();
+        }
     }
-    reloadTree(){
-        this.retrieveDocTypes();
-        this.initialize();
-    }
-    retrieveDocTypes() {
-        this.treeData = [];
-        this.http.get(API_URL + '/ws/docTypes/list', {headers: this.authService.headers}).pipe(
+
+    retrieveDocTypes(formId: number) {
+        this.loading      = true;
+        this.doctypesData = [];
+        this.http.get(API_URL + '/ws/doctypes/list/' + (formId).toString(), {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 let newDoctype;
-                data.docTypes.forEach((field: {
+                data.doctypes.forEach((field: {
                         id      : any;
                         key     : string;
                         code    : string;
@@ -97,7 +103,7 @@ export class ChecklistDatabase {
                             'status'    : field.status,
                             'default'   : field.default,
                         };
-                        this.treeData.push(newDoctype);
+                        this.doctypesData.push(newDoctype);
                     }
                 );
             }),
@@ -117,7 +123,7 @@ export class ChecklistDatabase {
         /** Build the tree nodes from Database. The result is a list of `DocumentItemNode` with nested
          * file node as children.
          */
-        const data    = this.buildFileTree(this.treeData, '0');
+        const data    = this.buildFileTree(this.doctypesData, '0');
         // Notify the change.
         this.dataChange.next(data);
     }
@@ -150,7 +156,7 @@ export class ChecklistDatabase {
     public filter(filterText: string) {
         let filteredTreeData: any[];
         if (filterText) {
-            filteredTreeData = this.treeData.filter(d => d.label.toLocaleLowerCase().indexOf(filterText.toLocaleLowerCase()) > -1);
+            filteredTreeData = this.doctypesData.filter(d => d.label.toLocaleLowerCase().indexOf(filterText.toLocaleLowerCase()) > -1);
             Object.assign([], filteredTreeData).forEach(ftd => {
                 // @ts-ignore
                 let str = (ftd.code as string);
@@ -158,7 +164,7 @@ export class ChecklistDatabase {
                     const index = str.lastIndexOf('.');
                     str = str.substring(0, index);
                     if (filteredTreeData.findIndex(t => t.code === str) === -1) {
-                        const obj = this.treeData.find(d => d.code === str);
+                        const obj = this.doctypesData.find(d => d.code === str);
                         if (obj) {
                             filteredTreeData.push(obj);
                         }
@@ -167,7 +173,7 @@ export class ChecklistDatabase {
             });
 
         } else {
-            filteredTreeData = this.treeData;
+            filteredTreeData = this.doctypesData;
         }
 
         /** Build the tree nodes from Json object. The result is a list of `DocumentItemNode` with nested
@@ -186,35 +192,38 @@ export class ChecklistDatabase {
     providers: [ChecklistDatabase]
 })
 export class DocumentTypeFactoryComponent implements OnInit {
-    searchText: string                = "";
-    @Input() selectedDocType: any     = {"key": undefined};
-    @Output() output                  = new EventEmitter < string > ();
+    loading: boolean                        = false;
+    searchText: string                      = "";
+    forms: any[]                            = [];
+    @Input() selectedDocTypeInput: any      = {"key": undefined};
+    @Output() selectedDoctypeOutput: any    = new EventEmitter < string > ();
+    @Output() selectedFormOutput: any       = new EventEmitter < string > ();
+    selectFormControl: FormControl          =  new FormControl();
+    @Input() data:any;
 
     /** Map from flat node to nested node. This helps us finding the nested node to be modified */
-    flatNodeMap               = new Map<TreeItemFlatNode, TreeItemNode>();
+    flatNodeMap    = new Map<TreeItemFlatNode, TreeItemNode>();
 
     /** Map from nested node to flattened node. This helps us to keep the same object for selection */
-    nestedNodeMap             = new Map<TreeItemNode, TreeItemFlatNode>();
-
-    treeControl   : FlatTreeControl<TreeItemFlatNode>;
-
-    treeFlattener : MatTreeFlattener<TreeItemNode, TreeItemFlatNode>;
-
-    dataSource    : MatTreeFlatDataSource<TreeItemNode, TreeItemFlatNode>;
+    nestedNodeMap  = new Map<TreeItemNode, TreeItemFlatNode>();
+    treeControl!   : FlatTreeControl<TreeItemFlatNode>;
+    treeFlattener! : MatTreeFlattener<TreeItemNode, TreeItemFlatNode>;
+    dataSource!    : MatTreeFlatDataSource<TreeItemNode, TreeItemFlatNode>;
 
     constructor(
         public treeDataObj         : ChecklistDatabase,
         public serviceSettings  : SettingsService,
+        private http: HttpClient,
+        public router: Router,
+        private route: ActivatedRoute,
+        private formBuilder: FormBuilder,
+        private authService: AuthService,
+        public userService: UserService,
+        public translate: TranslateService,
+        private notify: NotificationService,
+        public privilegesService: PrivilegesService,
+        private localeStorageService: LocalStorageService
     ) {
-        this.treeFlattener  = new MatTreeFlattener(this.transformer, this.getLevel,
-            this.isExpandable, this.getChildren);
-        this.treeControl    = new FlatTreeControl<TreeItemFlatNode>(this.getLevel, this.isExpandable);
-        this.dataSource     = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
-
-        treeDataObj.dataChange.subscribe(data => {
-            this.dataSource.data = data;
-            this.treeControl.expandAll();
-        });
     }
 
     getLevel      = (node: TreeItemFlatNode)                  => node.level;
@@ -223,7 +232,43 @@ export class DocumentTypeFactoryComponent implements OnInit {
     hasChild      = (_: number, _nodeData: TreeItemFlatNode)  => _nodeData.type === 'folder';
 
     ngOnInit(): void {
+        this.treeFlattener  = new MatTreeFlattener(this.transformer, this.getLevel,
+            this.isExpandable, this.getChildren);
+        this.treeControl    = new FlatTreeControl<TreeItemFlatNode>(this.getLevel, this.isExpandable);
+        this.dataSource     = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+
+        this.treeDataObj.dataChange.subscribe(data => {
+            this.dataSource.data = data;
+            this.treeControl.expandAll();
+        });
+        this.selectFormControl.valueChanges.subscribe(formId => {
+            this.localeStorageService.save('doctypeFormId', formId);
+            this.treeDataObj.loadTree(formId);
+            this.selectedFormOutput.emit({'formId': formId});
+        });
+        this.data.hasOwnProperty('formId') ? this.treeDataObj.loadTree(this.data.formId): this.loadForms();
     }
+
+    loadForms(): void {
+        this.loading = true;
+        this.http.get(API_URL + '/ws/forms/list?module=splitter', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.forms = data.forms;
+                if(this.forms.length > 0){
+                    const defaultFormId = this.localeStorageService.get('doctypeFormId') ?
+                        this.localeStorageService.get('doctypeFormId') : this.forms[0].id;
+                    this.selectFormControl.setValue(Number(defaultFormId));
+                }
+            }),
+            finalize(() => this.loading = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
     /**
      * Transformer to convert nested node to flat node. Record the nodes in maps for later use.
      */
@@ -255,7 +300,14 @@ export class DocumentTypeFactoryComponent implements OnInit {
     }
 
     selectNode(node: any) {
-        this.selectedDocType = node;
-        this.output.emit(this.selectedDocType);
+        this.selectedDocTypeInput = node;
+        this.selectedDoctypeOutput.emit(this.selectedDocTypeInput);
+    }
+
+    selectFolder(node: any) {
+        if(this.data.canFolderBeSelected){
+            this.selectedDocTypeInput = node;
+            this.selectedDoctypeOutput.emit(this.selectedDocTypeInput);
+        }
     }
 }

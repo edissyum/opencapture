@@ -38,11 +38,11 @@ def add_doctype(args):
 
 
 def retrieve_doctypes(args):
-    doctypes_res, error = doctypes.retrieve_doctypes(args)
+    _doctypes, error = doctypes.retrieve_doctypes(args)
 
     if error is None:
         response = {
-            "docTypes": doctypes_res
+            "doctypes": _doctypes
         }
         return response, 200
 
@@ -54,6 +54,28 @@ def retrieve_doctypes(args):
 
 
 def update(args):
+    doctype_old_data, _ = doctypes.retrieve_doctypes({
+        'where': ['key = %s'],
+        'data': [args['key']]
+    })
+    doctype_childs, _ = doctypes.retrieve_doctypes({
+        'where': ['code like %s'],
+        'data': ['{}.%'.format(doctype_old_data[0]['code'])]
+    })
+    for doctype_child in doctype_childs:
+        res, error = doctypes.update({
+            'key': doctype_child['key'],
+            'code': doctype_child['code'].replace(doctype_old_data[0]['code'], args['code']),
+            'label': doctype_child['label'],
+            'status': doctype_child['status']
+        })
+        if not res:
+            response = {
+                "errors": "DOC_TYPE_ERROR",
+                "message": error
+            }
+            return response, 401
+
     res, error = doctypes.update(args)
     if res:
         response = {

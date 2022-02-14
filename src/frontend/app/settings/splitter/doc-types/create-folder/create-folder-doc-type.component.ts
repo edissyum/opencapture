@@ -20,9 +20,9 @@ import {DocumentTypeFactoryComponent} from "../../../../splitter/document-type-f
 })
 export class CreateFolderDocTypeComponent implements OnInit {
     @ViewChild(DocumentTypeFactoryComponent, {static : true}) documentTypeFactoryComponent! : DocumentTypeFactoryComponent;
+    selectedFormId: number | undefined;
     loading: boolean        = false;
-    noMasterValue: string   = '_NO_MASTER';
-    folderSelectControl     = new FormControl();
+    noMasterFolder: string  = '_NO_MASTER';
     form!: FormGroup;
     fields: any = [
         {
@@ -65,15 +65,15 @@ export class CreateFolderDocTypeComponent implements OnInit {
           group[field.id] = field.required ? new FormControl('', Validators.required)
               : new FormControl(field.id || '');
         });
-        group['folder'] =  new FormControl(this.noMasterValue, Validators.required);
+        group['folder'] =  new FormControl(this.noMasterFolder, Validators.required);
         return new FormGroup(group);
     }
 
     getLastFolderIndex(codeSelected: string){
         let lastIndex = 0;
-        if(codeSelected !== this.noMasterValue){
-            this.documentTypeFactoryComponent.treeDataObj.treeData.forEach((docType:any) => {
-                if(docType.type === 'folder' && docType.code.startsWith(codeSelected)
+        if(codeSelected !== this.noMasterFolder){
+            this.documentTypeFactoryComponent.treeDataObj.doctypesData.forEach((docType:any) => {
+                if(docType.code.startsWith(codeSelected)
                     && docType.code.split('.').length === codeSelected.split('.').length + 1){
                     const currentIdx = Number(docType.code.split('.').pop());
                     lastIndex = (currentIdx > lastIndex) ? currentIdx: lastIndex;
@@ -81,8 +81,8 @@ export class CreateFolderDocTypeComponent implements OnInit {
             });
         }
         else{
-            this.documentTypeFactoryComponent.treeDataObj.treeData.forEach((docType:any) => {
-                if(docType.type === 'folder' && docType.code.split('.').length === 2){
+            this.documentTypeFactoryComponent.treeDataObj.doctypesData.forEach((docType:any) => {
+                if(docType.code.split('.').length === 2){
                     const currentIdx = Number(docType.code.split('.').pop());
                     lastIndex = (currentIdx > lastIndex) ? currentIdx: lastIndex;
                 }
@@ -91,23 +91,29 @@ export class CreateFolderDocTypeComponent implements OnInit {
         return lastIndex + 1;
     }
 
+    getSelectedForm($event: any) {
+        this.selectedFormId = $event.formId;
+    }
+
     addFolder() {
         let newFolder = this.form.getRawValue();
         const lastIndex = this.getLastFolderIndex(newFolder.folder);
         newFolder = {
           'key'     : newFolder.key,
-          'code'    : newFolder.folder !== this.noMasterValue ? newFolder.folder + '.' + lastIndex: '0.' + lastIndex,
+          'code'    : newFolder.folder !== this.noMasterFolder ? newFolder.folder + '.' + lastIndex: '0.' + lastIndex,
           'label'   : newFolder.label,
           'type'    : 'folder',
+          'form_id' : this.selectedFormId,
         };
-        this.http.post(API_URL + '/ws/docTypes/add', newFolder, {headers: this.authService.headers}).pipe(
+        this.http.post(API_URL + '/ws/doctypes/add', newFolder, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.notify.success(this.translate.instant('DOCTYPE.folder_added'));
                 this.form.reset();
                 Object.keys(this.form.controls).forEach(key => {
                     this.form.controls[key].setErrors(null) ;
                 });
-                this.documentTypeFactoryComponent.treeDataObj.reloadTree();
+                if (this.selectedFormId)
+                    this.documentTypeFactoryComponent.treeDataObj.loadTree(this.selectedFormId);
             }),
             catchError((err: any) => {
               console.debug(err);
