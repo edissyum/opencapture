@@ -305,10 +305,7 @@ export class CustomFieldsComponent implements OnInit {
         if (customField) {
             this.updateCustomId = customField.id;
             this.inactiveOrActive = activeOrInactive;
-            console.log(this.addFieldInputs);
-
             this.addFieldInputs.forEach((element: any) => {
-                console.log(element);
                 element.control.setValue(customField[element.field_id]);
             });
         }
