@@ -47,7 +47,7 @@ import { NgsgModule } from 'ng-sortgrid';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 import { DocumentTypeFactoryComponent } from './splitter/document-type-factory/document-type-factory.component';
-import { DocumentTreeComponent } from './splitter/document-tree/document-tree.component';
+import { DocumentTypeComponent } from './splitter/document-type/document-type.component';
 import { LoginComponent } from './login/login.component';
 import { LogoutComponent } from "./logout/logout.component";
 import { HomeComponent } from './home/home.component';
@@ -113,7 +113,7 @@ export function createTranslateLoader(http: HttpClient) {
         SplitterListComponent,
         SplitterViewerComponent,
         DocumentTypeFactoryComponent,
-        DocumentTreeComponent,
+        DocumentTypeComponent,
         LoginComponent,
         LogoutComponent,
         HomeComponent,
