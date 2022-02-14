@@ -87,15 +87,19 @@
 	},
 	"CUSTOM-FIELDS": {
 		"add": "Add custom field",
-		"associated_to": "Associated to",
 		"checkbox": "Checkbox",
+		"confirm_delete": "Are you sure you want to delete the document type <b>{{ doctypeLabel }}</b> ?",
+		"custom_exists": "Custom field already exist",
+		"deleted": "Deleted",
 		"field_added": "Field added successfully",
 		"field_updated": "Field updated successfully",
 		"module": "Module",
+		"reset": "Reset",
 		"select": "List of choices",
 		"text": "String",
 		"textarea": "Textarea",
-		"type": "Type"
+		"type": "Type",
+		"update": "Update"
 	},
 	"DISPLAY": {
 		"multi": "Multi",
@@ -113,6 +117,7 @@
 		"edit_doctype": "Edit a document type",
 		"folder": "Folder",
 		"folder_added": "Folder added",
+		"no_doctype_to_show": "No document type to show",
 		"no_master": "(No master folder)"
 	},
 	"ERROR": {
@@ -205,7 +210,6 @@
 		"validate": "Validate invoice"
 	},
 	"GLOBAL": {
-		"batch": "Batch",
 		"batches": "Batches",
 		"cancel": "Cancel",
 		"confirm": "Confirm",
@@ -213,7 +217,6 @@
 		"delete_form_and_reassign_input": "Delete form and reassign input",
 		"delete_supplier_positions": "Delete supplier positions",
 		"disable": "Disable",
-		"document": "Document",
 		"duplicate": "Duplicate",
 		"enable": "Enable",
 		"history": "History",
@@ -221,6 +224,8 @@
 		"language": "Language",
 		"log_out": "Log out",
 		"login": "Login",
+		"move_to_active": "Move to active",
+		"move_to_inactive": "Move to inactive",
 		"new_input_link": "Reassign inputs",
 		"settings": "Settings",
 		"skip_auto_validate": "Skip auto validation",
@@ -475,10 +480,12 @@
 		"verifier": "Verifier"
 	},
 	"SPLITTER": {
+		"Other": "",
 		"add_document": "Add document",
 		"all_batches_checked_deleted": "All checked batches was successfully deleted",
 		"auto_complete": "Autocomplete",
 		"batch_deleted": "Batch deleted",
+		"batch_metadata": "Batch metadata",
 		"batches": "batch",
 		"bundle_separator": "Batches separator",
 		"confirm_batch_delete": "Are you sure you want to delete this batch ?",
@@ -487,6 +494,7 @@
 		"delete_all_checked": "Delete all checked batches",
 		"delete_selected_pages": "Delete selection",
 		"doc_type_separator": "Separator with doctype",
+		"document_metadata": "Document metadata",
 		"document_number": "Number of documents",
 		"document_separator": "Document separator",
 		"edit": "Edit",
@@ -495,9 +503,8 @@
 		"form_label": "Form label",
 		"list": "List of batches",
 		"merge": "Merge",
-		"merge_error_form_not_match": "",
+		"merge_error_form_not_match": "Error while merge batches. Form do not match",
 		"merge_success": "Batches merged successfully",
-		"meta_data": "Metada",
 		"min_3_letter": "3 letters min",
 		"no_batch_found": "No batch found",
 		"no_metadata_required": "No metadata required ",
@@ -510,6 +517,10 @@
 		"select_all": "Select all",
 		"send": "Send",
 		"send_to": "Send to",
+		"separator_maarch": "Separator Maarch",
+		"separator_meta1": "Separator Meta 1",
+		"separator_meta2": "Separator Meta 2",
+		"separator_meta3": "Separator Meta 3",
 		"unselect_all": "Unselect all",
 		"validate_batch": "Batch validated",
 		"viewer": "Batch view",

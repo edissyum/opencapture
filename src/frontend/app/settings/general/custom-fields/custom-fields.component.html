@@ -96,15 +96,15 @@
                     </mat-panel-title>
                 </mat-expansion-panel-header>
                 <form [formGroup]="form">
-                    <div [formGroup]="form" class="mx-8 grid grid-cols-6 gap-4">
+                    <div class="mx-8 grid grid-cols-6 gap-4">
                         <mat-form-field class="w-full" *ngFor="let input of addFieldInputs">
                             <mat-label [attr.for]="input.field_id">{{ input.label | translate }}</mat-label>
                             <div [ngSwitch]="input.controlType">
                                 <div *ngSwitchCase="'text'">
-                                    <input matInput [formControl]="input.control"
-                                           [id]="input.field_id" [type]="input.type" [matAutocomplete]="autocomplete">
+                                    <input matInput [formControl]="input.control" [id]="input.field_id"
+                                           [type]="input.type" [matAutocomplete]="autocomplete">
                                     <mat-autocomplete #autocomplete="matAutocomplete">
-                                        <div *ngIf="input.control.value === null">
+                                        <div *ngIf="input.control.value === null || input.control.value === '' || input.control.value === undefined">
                                             <mat-option *ngFor="let option of input.autoComplete" [value]="option.key">
                                                 <span style="font-size: 12px;" [innerHTML]="option.value"></span>
                                                 <span style="font-size: 10px;" class="text-green-400 ml-3">{{ option.key }}</span>

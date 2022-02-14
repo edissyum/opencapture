@@ -88,13 +88,18 @@
 	"CUSTOM-FIELDS": {
 		"add": "Ajouter le champ personnalisé",
 		"checkbox": "Case à cocher",
+		"confirm_delete": "Êtes vous sûr de vouloir supprimer l'utilisateur <b>{{ user }}</b> ?",
+		"custom_exists": "Champ personnalisé déjà ajouté",
+		"deleted": "Supprimé",
 		"field_added": "Champ personnalisé créé avec succès",
 		"field_updated": "Champ personnalisé modifié avec succès",
 		"module": "Module",
+		"reset": "réinitialiser",
 		"select": "Liste à choix",
 		"text": "Chaîne de caractères",
 		"textarea": "Multi lignes",
-		"type": "Type"
+		"type": "Type",
+		"update": "Modifier"
 	},
 	"DISPLAY": {
 		"multi": "Multiple",
@@ -112,6 +117,7 @@
 		"edit_doctype": "Modifier un type de document",
 		"folder": "Chemise",
 		"folder_added": "Chemise ajouté",
+		"no_doctype_to_show": "Aucun type de document à afficher",
 		"no_master": "(Ajouter dans la racine)"
 	},
 	"ERROR": {
@@ -218,6 +224,8 @@
 		"language": "Langage",
 		"log_out": "Déconnexion",
 		"login": "Connexion",
+		"move_to_active": "Déplacer vers les actifs",
+		"move_to_inactive": "Déplacer vers les inactifs",
 		"new_input_link": "Réattribution des chaînes entrantes",
 		"settings": "Paramètres",
 		"skip_auto_validate": "Outrepasser la prochaine validation automatique",
@@ -445,7 +453,7 @@
 	},
 	"SETTINGS": {
 		"abouts_us": "À propos",
-		"add_custom_fields": "Ajout de champ personnalisés",
+		"add_custom_fields": "Ajout de champs personnalisés",
 		"add_doc_type": "Ajouter un type de document",
 		"add_doc_type_folder": "Ajouter une chemise",
 		"add_input": "Ajouter une chaîne entrante",
@@ -472,6 +480,7 @@
 		"verifier": "Paramètres du Vérificateur"
 	},
 	"SPLITTER": {
+		"Other": "(Autre)",
 		"add_document": "Ajouter un document",
 		"all_batches_checked_deleted": "Tous les lots selectionnés supprimés avec succès",
 		"auto_complete": "Auto-complétion",
@@ -494,9 +503,8 @@
 		"form_label": "Libellé du formulaire",
 		"list": "Liste des lots",
 		"merge": "Fusionner",
-		"merge_error_form_not_match": "",
+		"merge_error_form_not_match": "Erreur lors de la fusion, les formulaires associés diffèrent",
 		"merge_success": "Fusion des lots effectué avec succès",
-		"meta_data": "Métadonnées de documents",
 		"min_3_letter": "Au moins 3 letters",
 		"no_batch_found": "Aucun lot à afficher",
 		"no_metadata_required": "Aucune métadonnée requise",
@@ -509,6 +517,10 @@
 		"select_all": "Sélectionner tout",
 		"send": "Envoyer",
 		"send_to": "Envoyé à",
+		"separator_maarch": "Séparateur Maarch",
+		"separator_meta1": "Séparateur Meta 1",
+		"separator_meta2": "Séparateur Meta 2",
+		"separator_meta3": "Séparateur Meta 3",
 		"unselect_all": "Désélectionner tout",
 		"validate_batch": "Lot validé avec succès",
 		"viewer": "Visualisation du lot",

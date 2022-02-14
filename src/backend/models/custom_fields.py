@@ -104,5 +104,4 @@ def delete(args):
 
     if not res:
         error = gettext('DELETE_CUSTOM_FIELDS_ERROR')
-
     return res, error

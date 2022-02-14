@@ -17,6 +17,7 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 from src.backend.import_models import custom_fields
+from src.backend.import_controllers import forms
 
 
 def add_custom_field(args):
@@ -53,10 +54,8 @@ def retrieve_custom_fields(args):
 def update(args):
     res, error = custom_fields.update(args)
     if res:
-        response = {
-            "res": res
-        }
-        return response, 200
+        forms.update_custom_field_from_forms(args)
+        return '', 200
     else:
         response = {
             "errors": "CUSTOM_FIELDS_ERROR",
@@ -67,7 +66,8 @@ def update(args):
 
 def delete(args):
     res, error = custom_fields.delete(args)
-    if res:
+    if not error:
+        forms.delete_custom_field_from_forms(args)
         return '', 200
     else:
         response = {

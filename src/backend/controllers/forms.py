@@ -298,7 +298,6 @@ def delete_custom_field_from_forms(args):
     _forms, error = forms.get_forms({'where': ['status <> %s'], 'data': ['DEL']})
     if not error:
         for form in _forms:
-            print(form)
             fields = forms.get_fields({'form_id': form['id']})
             for tmp_field in fields[0]['fields']:
                 cpt = 0
@@ -309,22 +308,13 @@ def delete_custom_field_from_forms(args):
                             del fields[0]['fields'][tmp_field][cpt]
                     cpt += 1
             forms.update_form_fields({'set': {'fields': json.dumps(fields[0]['fields'])}, 'form_id': form['id']})
-            return '', 200
-    else:
-        response = {
-            "errors": gettext('DELETE_CUSTOM_FIELDS_FROM_FORMS_ERROR'),
-            "message": error
-        }
-        return response, 401
+    return '', 200
 
 
 def update_custom_field_from_forms(args):
-    print(args)
     _forms, error = forms.get_forms({'where': ['status <> %s'], 'data': ['DEL']})
     if not error:
         for form in _forms:
-            print(form)
-            print('-------')
             fields = forms.get_fields({'form_id': form['id']})
             for tmp_field in fields[0]['fields']:
                 cpt = 0
@@ -339,10 +329,19 @@ def update_custom_field_from_forms(args):
                             fields[0]['fields'][tmp_field][cpt]['enabled'] = args['enabled']
                     cpt += 1
             forms.update_form_fields({'set': {'fields': json.dumps(fields[0]['fields'])}, 'form_id': form['id']})
-        return '', 200
-    else:
-        response = {
-            "errors": gettext('UPDATE_CUSTOM_FIELDS_FROM_FORMS_ERROR'),
-            "message": error
-        }
-        return response, 401
+    return '', 200
+
+
+def custom_present_in_form(args):
+    custom_present = False
+    _forms, error = forms.get_forms({'where': ['status <> %s'], 'data': ['DEL']})
+    if not error:
+        for form in _forms:
+            fields = forms.get_fields({'form_id': form['id']})
+            for tmp_field in fields[0]['fields']:
+                for field in fields[0]['fields'][tmp_field]:
+                    if field['unit'] == 'custom':
+                        custom_id = field['id'].split('_')[1]
+                        if int(custom_id) == int(args['custom_id']):
+                            custom_present = True
+    return custom_present, 200
