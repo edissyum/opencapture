@@ -59,6 +59,7 @@ export class CustomFieldsComponent implements OnInit {
             controlType : 'text',
             control     : new FormControl(),
             label       : this.translate.instant('HEADER.label_short'),
+            autoComplete: [],
             required    : true,
         },
         {
@@ -66,6 +67,7 @@ export class CustomFieldsComponent implements OnInit {
             controlType : 'text',
             control     : new FormControl(),
             label       : this.translate.instant('HEADER.label'),
+            autoComplete: [],
             required    : true,
         },
         {
@@ -79,6 +81,7 @@ export class CustomFieldsComponent implements OnInit {
                 {key: 'select', value: this.translate.instant('CUSTOM-FIELDS.select')},
                 {key: 'checkbox', value: this.translate.instant('CUSTOM-FIELDS.checkbox')},
             ],
+            autoComplete: [],
             required: true,
         },
         {
@@ -91,12 +94,20 @@ export class CustomFieldsComponent implements OnInit {
                 {key: 'splitter', value: this.translate.instant('HOME.splitter')}
             ],
             required: true,
+            autoComplete: [],
         },
         {
             field_id    : 'metadata_key',
             controlType : 'text',
             control     : new FormControl(),
             label       : this.translate.instant('SETTINGS.autocomplete'),
+            autoComplete: [
+                {key: '', value: this.translate.instant('SPLITTER.Other')},
+                {key: 'SEPARATOR_MAARCH', value: this.translate.instant('SPLITTER.separator_maarch')},
+                {key: 'SEPARATOR_META1', value: this.translate.instant('SPLITTER.separator_meta1')},
+                {key: 'SEPARATOR_META2', value: this.translate.instant('SPLITTER.separator_meta2')},
+                {key: 'SEPARATOR_META3', value: this.translate.instant('SPLITTER.separator_meta3')},
+            ],
             required    : false,
             class       : "",
         },
