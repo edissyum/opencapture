@@ -22,8 +22,9 @@
     min-height: 200px;
     background: white;
     border-radius: 4px;
-    overflow: hidden;
+    overflow:auto;
     display: block;
+    max-height:47vh;
 }
 
 .custom-field-box {

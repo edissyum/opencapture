@@ -15,20 +15,20 @@ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { API_URL } from "../../../env";
-import { catchError, finalize, tap } from "rxjs/operators";
-import { of } from "rxjs";
-import { HttpClient } from "@angular/common/http";
-import { ActivatedRoute, Router } from "@angular/router";
-import { AuthService } from "../../../../services/auth.service";
-import { UserService } from "../../../../services/user.service";
-import { TranslateService } from "@ngx-translate/core";
-import { NotificationService } from "../../../../services/notifications/notifications.service";
-import { SettingsService } from "../../../../services/settings.service";
-import { PrivilegesService } from "../../../../services/privileges.service";
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
+import {API_URL} from "../../../env";
+import {catchError, finalize, map, startWith, tap} from "rxjs/operators";
+import {of} from "rxjs";
+import {HttpClient} from "@angular/common/http";
+import {ActivatedRoute, Router} from "@angular/router";
+import {AuthService} from "../../../../services/auth.service";
+import {UserService} from "../../../../services/user.service";
+import {TranslateService} from "@ngx-translate/core";
+import {NotificationService} from "../../../../services/notifications/notifications.service";
+import {SettingsService} from "../../../../services/settings.service";
+import {PrivilegesService} from "../../../../services/privileges.service";
 
 @Component({
     selector: 'app-custom-fields',
@@ -49,24 +49,27 @@ export class CustomFieldsComponent implements OnInit {
             'label': this.translate.instant('HOME.splitter')
         }
     ];
-    addFieldInputs: any[] = [
+    addFieldInputs  : any[] = [
         {
-            controlType: 'text',
-            label_short: 'label_short',
-            label: this.translate.instant('HEADER.label_short'),
-            required: true,
+            field_id    : 'label_short',
+            controlType : 'text',
+            control     : new FormControl(),
+            label       : this.translate.instant('HEADER.label_short'),
+            required    : true,
         },
         {
-            controlType: 'text',
-            label_short: 'label',
-            label: this.translate.instant('HEADER.label'),
-            required: true,
+            field_id    : 'label',
+            controlType : 'text',
+            control     : new FormControl(),
+            label       : this.translate.instant('HEADER.label'),
+            required    : true,
         },
         {
-            controlType: 'dropdown',
-            label_short: 'type',
-            label: this.translate.instant('CUSTOM-FIELDS.type'),
-            options: [
+            field_id    : 'type',
+            controlType : 'dropdown',
+            control     : new FormControl(),
+            label       : this.translate.instant('CUSTOM-FIELDS.type'),
+            options     : [
                 {key: 'text', value: this.translate.instant('CUSTOM-FIELDS.text')},
                 {key: 'textarea', value: this.translate.instant('CUSTOM-FIELDS.textarea')},
                 {key: 'select', value: this.translate.instant('CUSTOM-FIELDS.select')},
@@ -75,18 +78,20 @@ export class CustomFieldsComponent implements OnInit {
             required: true,
         },
         {
-            controlType: 'dropdown',
-            label_short: 'module',
-            label: this.translate.instant('CUSTOM-FIELDS.module'),
-            options: [
+            field_id    : 'module',
+            controlType : 'dropdown',
+            control     : new FormControl(),
+            label       : this.translate.instant('CUSTOM-FIELDS.module'),
+            options     : [
                 {key: 'verifier', value: this.translate.instant('HOME.verifier')},
                 {key: 'splitter', value: this.translate.instant('HOME.splitter')}
             ],
             required: true,
         },
         {
+            field_id    : 'metadata_key',
             controlType : 'text',
-            label_short : 'metadata_key',
+            control     : new FormControl(),
             label       : this.translate.instant('SETTINGS.autocomplete'),
             required    : false,
             class       : "",
@@ -109,6 +114,7 @@ export class CustomFieldsComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.serviceSettings.init();
         this.retrieveCustomFields();
         this.form = this.toFormGroup();
     }
@@ -124,11 +130,10 @@ export class CustomFieldsComponent implements OnInit {
     toFormGroup() {
         const group: any = {};
         this.addFieldInputs.forEach(input => {
-            group[input.label_short] = input.required ? new FormControl(input.value || '', Validators.required)
+            group[input.field_id] = input.required ? new FormControl(input.value || '', Validators.required)
                 : new FormControl(input.value || '');
         });
-        const form = new FormGroup(group);
-        return form;
+        return new FormGroup(group);
     }
 
     moveToActive(index: number) {
@@ -198,6 +203,35 @@ export class CustomFieldsComponent implements OnInit {
         ).subscribe();
     }
 
+    deleteCustomField(customFieldId: number, activeOrInactive: string) {
+        if (customFieldId) {
+            this.http.delete(API_URL + '/ws/customFields/delete/' + customFieldId, {headers: this.authService.headers}).pipe(
+                tap(() => {
+                    this.notify.success(this.translate.instant('CUSTOM-FIELDS.deleted'));
+
+                    if (activeOrInactive === 'active') {
+                        this.activeFields.forEach((element:any, index, object) => {
+                            if (element.id === customFieldId) {
+                                object.splice(index, 1);
+                            }
+                        });
+                    } else {
+                        this.inactiveFields.forEach((element:any, index, object) => {
+                            if (element.id === customFieldId) {
+                                object.splice(index, 1);
+                            }
+                        });
+                    }
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        }
+    }
+
     enableCustomField(oldList: any[], newList: any[], oldIndex: number, newIndex: number) {
         let updatedField = oldList[oldIndex];
 
@@ -226,5 +260,66 @@ export class CustomFieldsComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
+    }
+    updateCustomId  : any ;
+    inactiveOrActive: string = '';
+    update          : boolean = false;
+
+    updateCustomOnSubmit() {
+        const updatedField : any = {};
+        updatedField['id'] = this.updateCustomId;
+        if (this.inactiveOrActive === 'active') {
+            this.addFieldInputs.forEach((field: any) => {
+                this.activeFields.forEach((element: any) => {
+                    if (this.updateCustomId === element.id) {
+                        element[field.field_id] = updatedField[field.field_id] = field.control.value;
+                    }
+                });
+            });
+            updatedField['enabled'] = true;
+        } else {
+            this.addFieldInputs.forEach((field: any) => {
+                this.inactiveFields.forEach((element: any) => {
+                    if (this.updateCustomId === element.id) {
+                        element[field.field_id] = updatedField[field.field_id] = field.control.value;
+                    }
+                });
+            });
+            updatedField['enabled'] = false;
+        }
+        this.http.post(API_URL + '/ws/customFields/update', updatedField, {headers: this.authService.headers}).pipe(
+            tap(() => {
+                this.notify.success(this.translate.instant('CUSTOM-FIELDS.field_updated'));
+                this.resetForm();
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    updateCustomField(customField: any, activeOrInactive: string) {
+        this.update = true;
+        if (customField) {
+            this.updateCustomId = customField.id;
+            this.inactiveOrActive = activeOrInactive;
+            console.log(this.addFieldInputs);
+
+            this.addFieldInputs.forEach((element: any) => {
+                console.log(element);
+                element.control.setValue(customField[element.field_id]);
+            });
+        }
+    }
+
+    resetForm() {
+        this.addFieldInputs.forEach((element: any) => {
+            element.control.setValue('');
+        });
+        this.update = false;
+        this.inactiveOrActive = '';
+        this.updateCustomId = '';
     }
 }
