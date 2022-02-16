@@ -99,7 +99,7 @@
 		"text": "String",
 		"textarea": "Textarea",
 		"type": "Type",
-		"update": "Update"
+		"update": "Update custom field"
 	},
 	"DISPLAY": {
 		"multi": "Multi",

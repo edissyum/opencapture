@@ -123,9 +123,10 @@
                                 <mat-panel-title class="w-4/12">
                                     <button  class="text-lg text-left hover:text-green-400" (click)="documentMetadata.toggle(); openDocumentTypeDialog(document);"
                                             title="{{ 'SPLITTER.edit' | translate }}">
-                                        <i class="fas fa-edit hover:text-green-400 w-full">
-                                            {{document['documentTypeName'] }}
-                                        </i>
+                                        <span class="w-full">
+                                            <i class="fas fa-edit"></i>
+                                            {{ document['documentTypeName'] }}
+                                        </span>
                                     </button>
                                 </mat-panel-title>
                                 <mat-panel-description class="top-4">

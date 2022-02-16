@@ -80,6 +80,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     toolSelectedOption          : string        = "";
     batchMetadataValues         : any           = {id: -1};
     inputMode                   : string        = "Manual";
+    defautlDoctype              : any;
     outputs                     : any;
     defaultDocType              : any;
 
@@ -271,13 +272,40 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     /* -- Metadata -- */
     loadDefaultDocType(){
-        // for (const docType of TREE_DATA){
-        //     if (docType.isDefault)
-        //         this.defaultDocType = {
-        //             "documentTypeKey": docType.key,
-        //             "documentTypeName": docType.label,
-        //         };
-        // }
+        this.isLoading      = true;
+        this.http.get(API_URL + '/ws/doctypes/list/' + (this.currentBatch.formId).toString(), {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                data.doctypes.forEach((doctype: {
+                        id          : any;
+                        key         : string;
+                        label       : string;
+                        type        : string;
+                        is_default  : boolean;
+                    }) => {
+                    if(doctype.is_default && doctype.type === 'document'){
+                        this.defautlDoctype = {
+                            'id'        : doctype.id,
+                            'key'       : doctype.key,
+                            'label'     : doctype.label,
+                            'isDefault' : doctype.is_default,
+                        };
+                    }
+                    }
+                );
+            }),
+            finalize(() => {
+                this.isLoading = false;
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    retrieveDocTypes(formId: number) {
+
     }
 
     changeInputMode($event: any) {
@@ -482,7 +510,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         });
         dialogRef.afterClosed().subscribe((result: any) => {
             if (result){
-                document.documentTypeName = result.item;
+                document.documentTypeName = result.label;
                 document.documentTypeKey = result.key;
             }
         });

@@ -1,19 +1,19 @@
 /** This file is part of Open-Capture for Invoices.
 
-Open-Capture for Invoices is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+ Open-Capture for Invoices is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-Open-Capture is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
+ Open-Capture is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+ You should have received a copy of the GNU General Public License
+ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
-@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+ @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import {Component, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
@@ -112,7 +112,7 @@ export class FormBuilderComponent implements OnInit {
                     class_label: "1/33",
                     color: 'green',
                     format: 'number_int',
-                    format_icon:'text-lg icomoon-numbers',
+                    format_icon:'fas fa-calculator',
                     display: 'simple',
                     display_icon:'fas file-alt'
                 },
@@ -127,7 +127,7 @@ export class FormBuilderComponent implements OnInit {
                     class_label: "1/33",
                     color: 'lime',
                     format: 'number_int',
-                    format_icon:'text-lg icomoon-numbers',
+                    format_icon:'fas fa-calculator',
                     display: 'simple',
                     display_icon:'fas file-alt'
                 },
@@ -142,7 +142,7 @@ export class FormBuilderComponent implements OnInit {
                     class_label: "1/33",
                     color: 'olive',
                     format: 'alphanum',
-                    format_icon:'fas fas fa-hashtag',
+                    format_icon:'fas fa-hashtag',
                     display: 'simple',
                     display_icon:'fas file-alt'
                 },
@@ -157,7 +157,7 @@ export class FormBuilderComponent implements OnInit {
                     class_label: "1/33",
                     color: 'green',
                     format: 'alphanum',
-                    format_icon:'fas fas fa-hashtag',
+                    format_icon:'fas fa-hashtag',
                     display: 'simple',
                     display_icon:'fas file-alt'
                 },
@@ -171,7 +171,7 @@ export class FormBuilderComponent implements OnInit {
                     class: "w-1/3",
                     class_label: "1/33",
                     format: 'alphanum_extended_with_accent',
-                    format_icon:'fas fas fa-hashtag',
+                    format_icon:'fas fa-hashtag',
                     display: 'simple',
                     display_icon:'fas file-alt'
                 },
@@ -185,7 +185,7 @@ export class FormBuilderComponent implements OnInit {
                     class: "w-1/3",
                     class_label: "1/33",
                     format: 'alphanum_extended_with_accent',
-                    format_icon:'fas fas fa-hashtag',
+                    format_icon:'fas fa-hashtag',
                     display: 'simple',
                     display_icon:'fas file-alt'
                 },
@@ -199,7 +199,7 @@ export class FormBuilderComponent implements OnInit {
                     class: "w-1/3",
                     class_label: "1/33",
                     format: 'number_int',
-                    format_icon:'text-lg icomoon-numbers',
+                    format_icon:'fas fa-calculator',
                     display: 'simple',
                     display_icon:'fas file-alt'
                 },
@@ -324,7 +324,7 @@ export class FormBuilderComponent implements OnInit {
                     class_label: "1/33",
                     color: 'pink',
                     format: 'number_float',
-                    format_icon:'text-lg icomoon-numbers',
+                    format_icon:'fas fa-calculator',
                     display: 'multi',
                     display_icon:'fas fa-layer-group'
                 },
@@ -339,7 +339,7 @@ export class FormBuilderComponent implements OnInit {
                     class_label: "1/33",
                     color: 'fuschia',
                     format: 'number_float',
-                    format_icon:'text-lg icomoon-numbers',
+                    format_icon:'fas fa-calculator',
                     display: 'multi',
                     display_icon:'fas fa-layer-group'
                 },
@@ -354,7 +354,7 @@ export class FormBuilderComponent implements OnInit {
                     class_label: "1/33",
                     color: 'purple',
                     format: 'number_float',
-                    format_icon:'text-lg icomoon-numbers',
+                    format_icon:'fas fa-calculator',
                     display: 'multi',
                     display_icon:'fas fa-layer-group'
                 },
@@ -381,7 +381,7 @@ export class FormBuilderComponent implements OnInit {
                     class: "w-1/3",
                     class_label: "1/33",
                     format: 'number_float',
-                    format_icon:'text-lg icomoon-numbers',
+                    format_icon:'fas fa-calculator',
                     display: 'simple',
                     display_icon:'fas file-alt'
                 },
@@ -395,7 +395,7 @@ export class FormBuilderComponent implements OnInit {
                     class: "w-1/3",
                     class_label: "1/33",
                     format: 'number_float',
-                    format_icon:'text-lg icomoon-numbers',
+                    format_icon:'fas fa-calculator',
                     display: 'simple',
                     display_icon:'fas file-alt'
                 },
@@ -410,7 +410,7 @@ export class FormBuilderComponent implements OnInit {
                     class_label: "1/33",
                     color: '',
                     format: 'number_float',
-                    format_icon:'text-lg icomoon-numbers',
+                    format_icon:'fas fa-calculator',
                     display: 'simple',
                     display_icon:'fas file-alt'
                 },
@@ -532,12 +532,12 @@ export class FormBuilderComponent implements OnInit {
         {
             'id': 'number_float',
             'label': marker('FORMATS.number_float'),
-            'icon': 'text-lg icomoon-numbers'
+            'icon': 'fas fa-calculator'
         },
         {
             'id': 'number_int',
             'label': marker('FORMATS.number_int'),
-            'icon': 'text-lg icomoon-numbers'
+            'icon': 'fas fa-calculator'
         },
         {
             'id': 'char',
@@ -847,7 +847,7 @@ export class FormBuilderComponent implements OnInit {
 
         if (label !== '' && outputs.length >= 1) {
             this.http.put(API_URL + '/ws/forms/update/' + this.formId, {
-                'args': {'label' : label, 'default_form' : isDefault, 'supplier_verif': supplierVerif, 'outputs': outputs}
+                    'args': {'label' : label, 'default_form' : isDefault, 'supplier_verif': supplierVerif, 'outputs': outputs}
                 }, {headers: this.authService.headers},
             ).pipe(
                 tap(()=> {
@@ -887,7 +887,7 @@ export class FormBuilderComponent implements OnInit {
         });
         if (label) {
             this.http.post(API_URL + '/ws/forms/add', {
-                'args': {'label' : label, 'default_form' : isDefault, 'supplier_verif': supplierVerif, 'outputs': outputs, 'module': 'verifier'}
+                    'args': {'label' : label, 'default_form' : isDefault, 'supplier_verif': supplierVerif, 'outputs': outputs, 'module': 'verifier'}
                 }, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {

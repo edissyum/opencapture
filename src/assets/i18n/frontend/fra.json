@@ -99,7 +99,7 @@
 		"text": "Chaîne de caractères",
 		"textarea": "Multi lignes",
 		"type": "Type",
-		"update": "Modifier"
+		"update": "Modifier le champ personnalisé"
 	},
 	"DISPLAY": {
 		"multi": "Multiple",

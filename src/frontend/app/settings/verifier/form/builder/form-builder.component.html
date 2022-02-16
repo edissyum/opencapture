@@ -4,7 +4,7 @@
         <mat-divider class="border-green-400"></mat-divider>
         <mat-nav-list class="pt-0">
             <mat-expansion-panel *ngFor="let parent of this.serviceSettings.getSettingsParent()"
-                     [expanded]="parent.opened" (opened)="this.serviceSettings.closeOtherParent(this.router.url, parent['id'])">
+                                 [expanded]="parent.opened" (opened)="this.serviceSettings.closeOtherParent(this.router.url, parent['id'])">
                 <mat-expansion-panel-header class="settings_expansion">
                     <mat-panel-title>
                         {{ parent['label'] | translate }}
@@ -163,13 +163,13 @@
                                             {{ "VERIFIER.size" | translate }} <small class="ml-2">{{ field.class_label }}</small>
                                         </button>
                                         <button mat-menu-item [matMenuTriggerFor]="format" *ngIf="field.type != 'select'">
-                                            {{ "VERIFIER.format" | translate }} <small class="ml-2"><i class="text-base {{ field.format_icon }}"></i></small>
+                                            {{ "VERIFIER.format" | translate }} <small class="ml-2"><i class="text-base text-green-400 {{ field.format_icon }}"></i></small>
                                         </button>
                                         <button mat-menu-item [matMenuTriggerFor]="display" *ngIf="field.type != 'select'">
-                                            {{ "VERIFIER.display" | translate }} <small class="ml-2"><i class="text-base {{ field.display_icon }}"></i></small>
+                                            {{ "VERIFIER.display" | translate }} <small class="ml-2"><i class="text-base text-green-400 {{ field.display_icon }}"></i></small>
                                         </button>
                                         <button mat-menu-item [matMenuTriggerFor]="required">
-                                            {{ "VERIFIER.required" | translate }} <small class="ml-2"><i class="text-base {{ field.required_icon }}"></i></small>
+                                            {{ "VERIFIER.required" | translate }} <small class="ml-2"><i class="text-base text-green-400 {{ field.required_icon }}"></i></small>
                                         </button>
                                     </mat-menu>
                                     <mat-menu #size="matMenu">
