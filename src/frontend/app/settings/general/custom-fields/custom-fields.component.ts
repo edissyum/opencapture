@@ -38,9 +38,9 @@ import {MatDialog} from "@angular/material/dialog";
     styleUrls: ['./custom-fields.component.scss'],
 })
 export class CustomFieldsComponent implements OnInit {
-    loading                     = true;
-    inactiveFields: any[]       = [];
-    activeFields: any[]         = [];
+    loading         : boolean   = true;
+    inactiveFields  : any[]     = [];
+    activeFields    : any[]     = [];
     inactiveOrActive: string    = '';
     update          : boolean   = false;
     updateCustomId  : any ;
@@ -165,25 +165,18 @@ export class CustomFieldsComponent implements OnInit {
         let newField;
         this.http.get(API_URL + '/ws/customFields/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                data.customFields.forEach((field: {
-                        id          : any;
-                        label_short : string;
-                        module      : string;
-                        label       : string;
-                        type        : string;
-                        enabled     : boolean;
-                    }) => {
-                        newField = {
-                            'id'            : field.id,
-                            'label_short'   : field.label_short,
-                            'module'        : field.module,
-                            'label'         : field.label,
-                            'type'          : field.type,
-                            'enabled'       : field.enabled,
-                        };
-                        field.enabled ? this.activeFields.push(newField) : this.inactiveFields.push(newField);
-                    }
-                );
+                data.customFields.forEach((field: any) => {
+                    newField = {
+                        'id'            : field.id,
+                        'label_short'   : field.label_short,
+                        'module'        : field.module,
+                        'label'         : field.label,
+                        'type'          : field.type,
+                        'enabled'       : field.enabled,
+                        'metadata_key'  : field.metadata_key,
+                    };
+                    field.enabled ? this.activeFields.push(newField) : this.inactiveFields.push(newField);
+                });
             }),
             finalize(() => this.loading = false),
             catchError((err: any) => {
@@ -213,10 +206,6 @@ export class CustomFieldsComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
-    }
-
-    test(value: any) {
-        console.log(value);
     }
 
     deleteCustom(customFieldId: number, activeOrInactive: string) {
@@ -289,7 +278,8 @@ export class CustomFieldsComponent implements OnInit {
             'module': updatedField['module'],
             'label': updatedField['label'],
             'type': updatedField['type'],
-            'enabled': !updatedField['enabled']
+            'enabled': !updatedField['enabled'],
+            'metadata_key': updatedField['metadata_key']
         };
 
         this.http.post(API_URL + '/ws/customFields/update', updatedField, {headers: this.authService.headers}).pipe(
@@ -332,6 +322,7 @@ export class CustomFieldsComponent implements OnInit {
             });
             updatedField['enabled'] = false;
         }
+
         this.http.post(API_URL + '/ws/customFields/update', updatedField, {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('CUSTOM-FIELDS.field_updated'));

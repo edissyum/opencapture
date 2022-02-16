@@ -17,7 +17,6 @@
 
 module.exports = {
     important: true,
-    prefix: '',
     content: [
         '**/*.{html,ts}'
     ],

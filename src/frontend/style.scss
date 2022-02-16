@@ -22,10 +22,6 @@ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/
 
 /** Style réglages **/
 
-input[type=checkbox] {
-    accent-color: #97BF3D;
-}
-
 mat-expansion-panel {
     @apply rounded-none #{!important};
 }

@@ -47,7 +47,7 @@
                             <span *ngIf="(batches | filter : 'file_name' : searchText).length == 0 && !isLoading" class="text-gray-800">{{ 'SPLITTER.no_batch_found' | translate }}</span>
                             <mat-card class="batch-card cursor-pointer p-0 mb-0" *ngFor="let batch of batches | filter : 'file_name' : searchText">
                                 <label class="p-5 absolute z-40 cursor-pointer">
-                                    <input id="{{ batch.id }}_checkbox" class="checkBox_list cursor-pointer" type="checkbox" (click)="checkSelectedBatch()">
+                                    <input id="{{ batch.id }}_checkbox" class="accent-green-400 checkBox_list cursor-pointer" type="checkbox" (click)="checkSelectedBatch()">
                                 </label>
                                 <img [routerLink]="'/splitter/viewer/' + batch['id']" class="m-auto p-4" mat-card-image [src]="sanitize(batch['image_url'])" alt="Open-Capture Splitter image">
                                 <mat-card-header class="leading-6 relative z-10 bg-white pt-4 pl-4 pr-4"

@@ -77,6 +77,7 @@ def update(args):
             'module': args['module'],
             'enabled': args['enabled'],
             'label_short': args['label_short'],
+            'metadata_key': args['metadata_key'],
         },
         'where': ['id = %s'],
         'data': [args['id']]

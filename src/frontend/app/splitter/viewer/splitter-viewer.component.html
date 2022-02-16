@@ -121,9 +121,10 @@
                                              (closed)="documentMetadataOpenState = false" #documentMetadata>
                             <mat-expansion-panel-header>
                                 <mat-panel-title class="w-4/12">
-                                    <button  class="text-lg text-left hover:text-green-400" (click)="documentMetadata.toggle(); openDocumentTypeDialog(document);"
+                                    <button class="text-lg text-left hover:text-green-400"
+                                            (click)="documentMetadata.toggle(); openDocumentTypeDialog(document);"
                                             title="{{ 'SPLITTER.edit' | translate }}">
-                                        <span class="w-full">
+                                        <span style="font-family: cursive; font-weight: bold;" class="w-full">
                                             <i class="fas fa-edit"></i>
                                             {{ document['documentTypeName'] }}
                                         </span>
