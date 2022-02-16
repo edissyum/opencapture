@@ -110,6 +110,7 @@
 		"add_doctype": "Add a document type",
 		"add_folder": "Add a folder",
 		"confirm_delete": "Are you sure you want to delete the document type <b>{{ doctypeLabel }}</b> ?",
+		"default_doctype": "Default document type",
 		"delete": "Delete",
 		"doctype_added": "Folder added",
 		"doctype_edited": "Document types edited",
@@ -480,7 +481,7 @@
 		"verifier": "Verifier"
 	},
 	"SPLITTER": {
-		"Other": "",
+		"Other": "(Autre)",
 		"add_document": "Add document",
 		"all_batches_checked_deleted": "All checked batches was successfully deleted",
 		"auto_complete": "Autocomplete",
@@ -527,7 +528,8 @@
 		"zoom": "Zoom"
 	},
 	"STATISTICS": {
-		"choose_statistic_report": "Choose a statistic report"
+		"choose_statistic_report": "Choose a statistic report",
+		"invoices_validated_per_user": "Invoices validated per user"
 	},
 	"STATUS": {
 		"list": "List of status"

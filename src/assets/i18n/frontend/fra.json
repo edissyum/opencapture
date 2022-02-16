@@ -110,6 +110,7 @@
 		"add_doctype": "Ajouter un type de document",
 		"add_folder": "Ajouter un type une chemise",
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer le type de document <b>{{ doctypeLabel }}</b> ?",
+		"default_doctype": "Type de document par défaut",
 		"delete": "Supprimer",
 		"doctype_added": "Type de document ajouté",
 		"doctype_edited": "Type de document Modifié",
@@ -527,7 +528,8 @@
 		"zoom": "Agrandir"
 	},
 	"STATISTICS": {
-		"choose_statistic_report": "Choisissez un rapport de statistiques"
+		"choose_statistic_report": "Choisissez un rapport de statistiques",
+		"invoices_validated_per_user": "Factures validées par utilisateur"
 	},
 	"STATUS": {
 		"list": "Liste des status"
