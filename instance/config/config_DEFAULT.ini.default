@@ -32,9 +32,8 @@ predictImagePath = ${AI-CLASSIFICATION:iaPath}/images/predict-images/
 confidenceMin    = 80
 
 [SPLITTER]
-docserverpath = /var/docservers/OpenCapture_Splitter/
-batchpath     = ${SPLITTER:docserverpath}/batches/
-pdfoutputpath = ${SPLITTER:docserverpath}/separated_pdf/
+batchpath = ${GLOBAL:docserverpath}/splitter/batches/
+pdfoutputpath = ${GLOBAL:docserverpath}/splitter/separated_pdf/
 docstart      = DOCSTART
 bundlestart   = BUNDLESTART
 

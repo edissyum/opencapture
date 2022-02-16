@@ -44,4 +44,5 @@ def process(args, file, log, splitter, files, tmp_folder, config):
     splitter.separator_qr.run(file)
     splitter.split(list_files)
     splitter.get_result_documents(blank_pages)
+    file = files.move_to_docservers(config.cfg, file, 'splitter')
     splitter.save_documents(tmp_folder, file, args['input_id'])
