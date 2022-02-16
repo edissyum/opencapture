@@ -37,6 +37,10 @@ class Splitter:
     def split(self, pages):
         doctype_value = None
         maarch_value = None
+        metadata_1 = None
+        metadata_2 = None
+        metadata_3 = None
+
         for index, path in pages:
             separator_type = None
             is_separator = list(filter(lambda separator: int(separator['num']) + 1 == int(index),
@@ -53,16 +57,26 @@ class Splitter:
                     separator_type = self.doc_start
                 else:
                     maarch_value = None
-                    separator_type = None
 
                 """
                     Open-Capture separator
                 """
                 if self.doc_start in qr_code:
                     separator_type = self.doc_start
-
-                    if 'DOCTYPE' in qr_code:
-                        doctype_value = qr_code.split("|")[2]
+                    if len(qr_code.split('|')) > 1:
+                        doctype_value = qr_code.split("|")[1] if qr_code.split("|")[1] else None
+                        if len(qr_code.split('|')) > 2:
+                            metadata_1 = qr_code.split("|")[2] if qr_code.split("|")[2] else None
+                            if len(qr_code.split('|')) > 3:
+                                metadata_2 = qr_code.split("|")[3] if qr_code.split("|")[3] else None
+                                if len(qr_code.split('|')) > 4:
+                                    metadata_3 = qr_code.split("|")[4] if qr_code.split("|")[4] else None
+                                else:
+                                    metadata_3 = None
+                            else:
+                                metadata_2 = None
+                        else:
+                            metadata_1 = None
                     else:
                         doctype_value = None
 
@@ -71,20 +85,16 @@ class Splitter:
                     doctype_value = None
                     maarch_value = None
 
-                if separator_type:
-                    self.log.info("Separator type in page " + str(index) + " : " + separator_type)
-
-                if doctype_value:
-                    self.log.info("Doctype in page " + str(index) + " : " + doctype_value)
-
-                if maarch_value:
-                    self.log.info("Maarch value in page " + str(index) + " : " + maarch_value)
+                self.log.info("Code QR in page " + str(index) + " : " + qr_code)
 
             self.qr_pages.append({
                 'source_page': index,
                 'separator_type': separator_type,
                 'doctype_value': doctype_value,
                 'maarch_value': maarch_value,
+                'metadata_1': metadata_1,
+                'metadata_2': metadata_2,
+                'metadata_3': metadata_3,
                 'path': path,
             })
 
@@ -114,12 +124,16 @@ class Splitter:
                     'source_page': page['source_page'],
                     'doctype_value': page['doctype_value'],
                     'maarch_value': page['maarch_value'],
+                    'metadata_1': page['metadata_1'],
+                    'metadata_2': page['metadata_2'],
+                    'metadata_3': page['metadata_3'],
                     'split_document': split_document,
                     'path': page['path']
                 })
                 is_previous_code_qr = False
 
-    def save_documents(self, batch_folder, orig_file, input_id):
+    def save_documents(self, batch_folder, file, input_id, original_filename):
+        docserver = self.config.cfg['GLOBAL']['docserverpath'] + '/splitter/original_pdf/'
         for index, batch in enumerate(self.result_batches):
             batch_name = os.path.basename(os.path.normpath(batch_folder))
             input_settings = self.db.select({
@@ -132,7 +146,8 @@ class Splitter:
             args = {
                 'table': 'splitter_batches',
                 'columns': {
-                    'file_name': orig_file.rsplit('/')[-1],
+                    'file_path': file.replace(docserver, ''),
+                    'file_name': os.path.basename(original_filename),
                     'batch_folder': batch_name,
                     'first_page': batch[0]['path'],
                     'page_number': str(max((node['split_document'] for node in batch))),
@@ -145,6 +160,7 @@ class Splitter:
             previous_split_document = 0
             for page in batch:
                 if page['split_document'] != previous_split_document:
+                    documents_data = {'custom_fields': {}}
                     args = {
                         'table': 'splitter_documents',
                         'columns': {
@@ -157,7 +173,31 @@ class Splitter:
                         Open-Capture separator
                     """
                     if page['doctype_value']:
-                        args['doctype_key'] = page['doctype_value']
+                        args['columns']['doctype_key'] = page['doctype_value']
+                    else:
+                        default_doctype = self.db.select({
+                            'select': ['*'],
+                            'table': ['doctypes'],
+                            'where': ['status <> %s', 'form_id = %s', 'is_default = %s'],
+                            'data': ['DEL', input_settings[0]['default_form_id'], 'true'],
+                        })
+                        if default_doctype:
+                            args['columns']['doctype_key'] = default_doctype[0]['key']
+                    if page['metadata_1'] or page['metadata_2'] or page['metadata_3']:
+                        custom_fields = self.db.select({
+                            'select': ['*'],
+                            'table': ['custom_fields'],
+                            'where': ['module = %s', 'status <> %s'],
+                            'data': ['splitter', 'DEL'],
+                        })
+                        for custom_field in custom_fields:
+                            if page['metadata_1'] and custom_field['metadata_key'] == 'SEPARATOR_META1':
+                                documents_data['custom_fields'][custom_field['label_short']] = page['metadata_1']
+                            if page['metadata_2'] and custom_field['metadata_key'] == 'SEPARATOR_META2':
+                                documents_data['custom_fields'][custom_field['label_short']] = page['metadata_2']
+                            if page['metadata_3'] and custom_field['metadata_key'] == 'SEPARATOR_META3':
+                                documents_data['custom_fields'][custom_field['label_short']] = page['metadata_3']
+                    args['columns']['data'] = json.dumps(documents_data)
                     """
                         Maarch entity separator
                     """
@@ -176,6 +216,8 @@ class Splitter:
                             for custom_field in custom_fields:
                                 documents_data['custom_fields'][custom_field['label_short']] = entity
                                 args['columns']['data'] = json.dumps(documents_data)
+                    print("args : ")
+                    print(args)
                     documents_id = self.db.insert(args)
 
                 previous_split_document = page['split_document']
@@ -205,9 +247,7 @@ class Splitter:
 
     @staticmethod
     def get_mask_result(document, metadata, now_date, mask_args):
-        print(document)
         mask_result = []
-
         year = str(now_date.year)
         day = str('%02d' % now_date.day)
         month = str('%02d' % now_date.month)
@@ -221,18 +261,34 @@ class Splitter:
         for mask_value in mask_values:
             if not mask_value:
                 continue
+            """
+                PDF or XML masks value
+            """
             if mask_value in metadata:
                 mask_result.append(metadata[mask_value].replace(' ', separator))
-            if mask_value in document['metadata']:
-                mask_result.append((document['metadata'][mask_value] if document['metadata'][mask_value] else '')
-                                   .replace(' ', separator))
-            elif mask_value == 'doctype':
-                mask_result.append(document['documentTypeName'].replace(' ', separator))
             elif mask_value == 'date':
                 mask_result.append(_date.replace(' ', separator))
             elif mask_value == 'random':
                 mask_result.append(random_num.replace(' ', separator))
+            elif document:
+                """
+                    PDF masks value
+                """
+                if document:
+                    if mask_value in document['metadata']:
+                        mask_result.append((document['metadata'][mask_value] if document['metadata'][mask_value] else '')
+                                           .replace(' ', separator))
+                    elif mask_value == 'doctype':
+                        mask_result.append(document['documentTypeKey'].replace(' ', separator))
+                else:
+                    """
+                        PDF value when mask value not found in metadata
+                    """
+                    mask_result.append(mask_value.replace(' ', separator))
             else:
+                """
+                    XML value when mask value not found in metadata
+                """
                 mask_result.append(mask_value.replace(' ', separator))
 
         mask_result = separator.join(str(x) for x in mask_result)

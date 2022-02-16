@@ -381,7 +381,7 @@ class Files:
         return improved_img
 
     @staticmethod
-    def move_to_docservers(cfg, file):
+    def move_to_docservers(cfg, file, module='verifier'):
         now = datetime.datetime.now()
         year = str(now.year)
         day = str('%02d' % now.day)
@@ -389,8 +389,7 @@ class Files:
         hour = str('%02d' % now.hour)
         minute = str('%02d' % now.minute)
         seconds = str('%02d' % now.second)
-        docserver_path = cfg['GLOBAL']['docserverpath']
-
+        docserver_path = cfg['GLOBAL']['docserverpath'] + '/' + module + '/original_pdf'
         # Check if docserver folder exists, if not, create it
         if not os.path.exists(docserver_path):
             os.mkdir(docserver_path)
@@ -407,7 +406,6 @@ class Files:
         final_directory = docserver_path + '/' + year + '/' + month + '/' + new_filename
 
         shutil.move(file, final_directory)
-
         return final_directory
 
     @staticmethod
@@ -457,6 +455,8 @@ class Files:
         paths = []
         try:
             for index, pages in enumerate(pages_lists):
+                if not pages:
+                    continue
                 for page in pages:
                     pdf_writer.addPage(pdf_reader.getPage(page - reduce_index))
                 file_path = output_file + '/' + documents[index]['fileName']

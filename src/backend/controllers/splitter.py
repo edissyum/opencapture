@@ -224,6 +224,10 @@ def export_maarch(auth_data, file_path, args, batch):
 
 
 def export_pdf(batch, documents, parameters, metadata, pages, now):
+    _vars = create_classes_from_current_config()
+    _cfg = _vars[1]
+    filename = _cfg.cfg['GLOBAL']['docserverpath'] + '/splitter/original_pdf/' + batch[0]['file_path']
+
     for index, document in enumerate(documents):
         """
             Add PDF file names using masks
@@ -234,10 +238,8 @@ def export_pdf(batch, documents, parameters, metadata, pages, now):
             'extension': parameters['extension']
         }
         documents[index]['fileName'] = _Splitter.get_mask_result(document, metadata, now, mask_args)
-    paths = _Files.export_pdf(pages, documents,
-                                 current_app.config['UPLOAD_FOLDER_SPLITTER']
-                                 + str(batch[0]['file_name']),
-                                 parameters['folder_out'], 1)
+    paths = _Files.export_pdf(pages, documents, filename, parameters['folder_out'], 1)
+
     if not paths:
         response = {
             "errors": gettext('EXPORT_PDF_ERROR'),
@@ -268,8 +270,8 @@ def validate(documents, metadata):
     now = _Files.get_now_date()
     _vars = create_classes_from_current_config()
     _cfg = _vars[1]
-    print("documents")
-    print(documents)
+    print("metadata")
+    print(metadata)
     batch = splitter.retrieve_batches({
         'batch_id': None,
         'page': None,
@@ -314,8 +316,12 @@ def validate(documents, metadata):
                     """
                         Export pdf for Alfresco
                     """
-                    pdf_output = outputs.get_output_by_id(3)
-                    pdf_export_parameters = get_output_parameters(pdf_output[0]['data']['options']['parameters'])
+                    pdf_export_parameters = {
+                        'filename': 'TMP_PDF_EXPORT_TO_MAARCH',
+                        'separator': '_',
+                        'extension': 'pdf',
+                        'folder_out': _cfg.cfg['GLOBAL']['tmppath'],
+                    }
                     res_export_pdf = export_pdf(batch, documents, pdf_export_parameters, metadata, pages, now)
                     if res_export_pdf[1] != 200:
                         return res_export_pdf
@@ -324,18 +330,26 @@ def validate(documents, metadata):
                             Export xml for Alfresco
                         """
                         cmis.create_document(file_path, 'application/pdf')
-                        xml_output = outputs.get_output_by_id(4)
-                        pdf_export_parameters = get_output_parameters(xml_output[0]['data']['options']['parameters'])
-                        res_export_xml = export_xml(documents, pdf_export_parameters, metadata, now)
-                        if res_export_xml[1] != 200:
-                            return res_export_xml
+                    xml_export_parameters = {
+                        'filename': 'TMP_XML_EXPORT_TO_MAARCH',
+                        'separator': '_',
+                        'extension': 'xml',
+                        'folder_out': _cfg.cfg['GLOBAL']['tmppath'],
+                    }
+                    res_export_xml = export_xml(documents, xml_export_parameters, metadata, now)
+                    if res_export_xml[1] != 200:
+                        return res_export_xml
                 """
                     Export to Maarch
                 """
                 if output[0]['output_type_id'] in ['export_maarch']:
                     maarch_auth = get_output_parameters(output[0]['data']['options']['auth'])
-                    pdf_output = outputs.get_output_by_id(3)
-                    pdf_export_parameters = get_output_parameters(pdf_output[0]['data']['options']['parameters'])
+                    pdf_export_parameters = {
+                        'filename': 'TMP_PDF_EXPORT_TO_MAARCH',
+                        'separator': '_',
+                        'extension': 'pdf',
+                        'folder_out': _cfg.cfg['GLOBAL']['tmppath'],
+                    }
                     res_export_pdf = export_pdf(batch, documents, pdf_export_parameters, metadata, pages, now)
                     if res_export_pdf[1] != 200:
                         return res_export_pdf

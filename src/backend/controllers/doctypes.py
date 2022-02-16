@@ -25,16 +25,24 @@ from flask_babel import gettext
 def add_doctype(args):
     res, error = doctypes.add_doctype(args)
     if res:
-        response = {
-            "id": res
-        }
-        return response, 200
+        if args['is_default']:
+            res, error = doctypes.set_default(args)
+            if not res:
+                response = {
+                    "errors": "SET_DEFAULT_DOCTYPE_ERROR",
+                    "message": error
+                }
+                return response, 401
     else:
         response = {
-            "errors": "DOC_TYPE_ERROR",
+            "errors": "ADD_DOCTYPE_ERROR",
             "message": error
         }
         return response, 401
+    response = {
+        "id": res
+    }
+    return response, 200
 
 
 def retrieve_doctypes(args):
@@ -47,7 +55,7 @@ def retrieve_doctypes(args):
         return response, 200
 
     response = {
-        "errors": "DOC_TYPE_ERROR",
+        "errors": "DOCTYPE_ERROR",
         "message": error
     }
     return response, 401
@@ -55,26 +63,36 @@ def retrieve_doctypes(args):
 
 def update(args):
     doctype_old_data, _ = doctypes.retrieve_doctypes({
-        'where': ['key = %s'],
-        'data': [args['key']]
+        'where': ['key = %s', 'form_id = %s'],
+        'data': [args['key'], args['form_id']]
     })
-    doctype_childs, _ = doctypes.retrieve_doctypes({
-        'where': ['code like %s'],
-        'data': ['{}.%'.format(doctype_old_data[0]['code'])]
-    })
-    for doctype_child in doctype_childs:
-        res, error = doctypes.update({
-            'key': doctype_child['key'],
-            'code': doctype_child['code'].replace(doctype_old_data[0]['code'], args['code']),
-            'label': doctype_child['label'],
-            'status': doctype_child['status']
+    if doctype_old_data:
+        if args['is_default']:
+            res, error = doctypes.set_default(args)
+            if not res:
+                response = {
+                    "errors": error,
+                    "message": "SET_DEFAULT_DOCTYPE_ERROR"
+                }
+                return response, 401
+        doctype_childs, _ = doctypes.retrieve_doctypes({
+            'where': ['status <> %s', 'form_id = %s', 'code like %s'],
+            'data': ['DEL', args['form_id'], '{}.%'.format(doctype_old_data[0]['code'])]
         })
-        if not res:
-            response = {
-                "errors": "DOC_TYPE_ERROR",
-                "message": error
-            }
-            return response, 401
+        for doctype_child in doctype_childs:
+            res, error = doctypes.update({
+                'key': doctype_child['key'],
+                'code': doctype_child['code'].replace(doctype_old_data[0]['code'], args['code'])
+                if args['status'] != 'DEL' else doctype_child['code'],
+                'label': doctype_child['label'],
+                'status': args['status']
+            })
+            if not res:
+                response = {
+                    "errors": error,
+                    "message": "DOCTYPE_ERROR"
+                }
+                return response, 401
 
     res, error = doctypes.update(args)
     if res:
@@ -84,7 +102,7 @@ def update(args):
         return response, 200
     else:
         response = {
-            "errors": "DOC_TYPE_ERROR",
+            "errors": "DOCTYPE_ERROR",
             "message": error
         }
         return response, 401
@@ -96,13 +114,13 @@ def generate_separator(args):
     qr_code_value = ""
     separator_type_label = ""
     if args['type'] == "docTypeSeparator":
-        qr_code_value = f"DOCSTART|DOCTYPE|{args['key']}"
+        qr_code_value = f"DOCSTART|{args['key']}"
         separator_type_label = gettext('DOCTYPESEPARATOR')
     elif args['type'] == "documentSeparator":
-        qr_code_value = "DOCSTART|GEN"
+        qr_code_value = "DOCSTART"
         separator_type_label = gettext('DOCUMENTSEPARATOR')
     elif args['type'] == "bundleSeparator":
-        qr_code_value = "BUNDLESTART|META1"
+        qr_code_value = "BUNDLESTART"
         separator_type_label = gettext('BUNDLESEPARATOR')
 
     encoded_file = _SeparatorQR.generate_separator(qr_code_value, args['label'], separator_type_label)
@@ -114,7 +132,7 @@ def generate_separator(args):
         return response, 200
     else:
         response = {
-            "errors": "DOC_TYPE_ERROR",
+            "errors": "DOCTYPE_ERROR",
             "message": error
         }
         return response, 401

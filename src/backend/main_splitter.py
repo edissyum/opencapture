@@ -66,7 +66,6 @@ def launch(args):
                 with open(available_split_methods_path) as json_file:
                     available_split_methods = json.load(json_file)
                     for available_split_method in available_split_methods['methods']:
-                        print(available_split_method)
                         if available_split_method['id'] == splitter_method['splitter_method_id']:
                             split_method = import_from(available_split_method['path'], available_split_method['method'])
                             log.info('Split using method : {}'.format(available_split_method['id']))

@@ -36,7 +36,6 @@ def get_inputs(args):
 
 
 def update_input(input_id, data):
-    print(data)
     _vars = create_classes_from_current_config()
     _db = _vars[0]
     input_info, error = inputs.get_input_by_id({'input_id': input_id})
