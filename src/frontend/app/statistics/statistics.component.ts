@@ -1,3 +1,20 @@
+/** This file is part of Open-Capture for Invoices.
+
+ Open-Capture for Invoices is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ Open-Capture is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+
+ @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
+
 import { Component, OnInit } from '@angular/core';
 import {API_URL} from "../env";
 import {catchError, tap} from "rxjs/operators";
@@ -7,7 +24,6 @@ import {AuthService} from "../../services/auth.service";
 import {NotificationService} from "../../services/notifications/notifications.service";
 import {SettingsService} from "../../services/settings.service";
 import {TranslateService} from "@ngx-translate/core";
-import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from "@angular/material/form-field";
 
 @Component({
     selector: 'app-statistics',
@@ -22,7 +38,7 @@ export class StatisticsComponent implements OnInit {
     options : any = [
         {
             'id': 'invoices_validated_per_user',
-            'label': 'STATISTICS.invoices_validated_per_user'
+            'label': this.translate.instant('STATISTICS.invoices_validated_per_user')
         }
     ];
     selectedStatistic : any;
