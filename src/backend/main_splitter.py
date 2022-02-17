@@ -29,7 +29,7 @@ from src.backend.import_classes import _Files, _Config, _Splitter, _SeparatorQR,
 OCforInvoices = Kuyruk()
 
 
-@OCforInvoices.task(queue='splitter')
+# @OCforInvoices.task(queue='splitter')
 def launch(args):
     start = time.time()
 
@@ -63,7 +63,7 @@ def launch(args):
             })[0]
             available_split_methods_path = config.cfg['SPLITTER']['methodspath'] + "/splitter_methods.json"
             if len(splitter_method) > 0 and os.path.isfile(available_split_methods_path):
-                with open(available_split_methods_path) as json_file:
+                with open(available_split_methods_path, encoding='utf-8') as json_file:
                     available_split_methods = json.load(json_file)
                     for available_split_method in available_split_methods['methods']:
                         if available_split_method['id'] == splitter_method['splitter_method_id']:
@@ -82,6 +82,8 @@ def import_from(config, script, method):
     :param path: A path descriptor in the form of 'pkg.module.submodule:attribute'
     :type path: str
     """
-
-    module = __import__(config.cfg['SPLITTER']['methodspath'] + script, fromlist=method)
+    import sys
+    sys.path.append(config.cfg['SPLITTER']['methodspath'])
+    script = script.replace('.py', '')
+    module = __import__(script, fromlist=method)
     return getattr(module, method)
