@@ -47,7 +47,6 @@ def upload():
           methods=['GET'])
 @auth.token_required
 def retrieve_splitter_batches(batch_id, page, size, time, status):
-    print(status)
     args = {
         'batch_id': batch_id,
         'size': size,
@@ -84,6 +83,15 @@ def change_batch_status():
 def retrieve_batch_documents(batch_id):
     res = splitter.retrieve_documents(batch_id)
     return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('splitter/saveInfo', methods=['POST'])
+@auth.token_required
+def save_info():
+    data = request.data
+    data = json.loads(data)
+    response, status = splitter.save_infos(data['documents'], data['batchMetadata'])
+    return make_response(jsonify(response)), status
 
 
 @bp.route('splitter/validate', methods=['POST'])

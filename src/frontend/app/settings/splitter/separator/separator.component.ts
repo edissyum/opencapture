@@ -102,7 +102,7 @@ export class SeparatorComponent implements AfterViewInit {
         const args = {
             'type': 'docTypeSeparator',
             'key': this.selectedDocType.key,
-            'label': this.selectedDocType.item
+            'label': this.selectedDocType.label
         };
         this.getSeparatorBase64(args);
     }

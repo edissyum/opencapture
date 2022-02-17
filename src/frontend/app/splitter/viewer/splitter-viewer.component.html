@@ -238,7 +238,7 @@
                             title="{{ 'SPLITTER.add_document' | translate }}">
                         <i class="fas fa-plus-circle fa-lg"></i>
                     </button>
-                    <mat-form-field class="inline-block pt-6">
+                    <mat-form-field class="inline-block pt-6 top-1">
                         <mat-label>{{ 'SPLITTER.send_to' | translate }}</mat-label>
                         <mat-select [(ngModel)]="toolSelectedOption" matNativeControl>
                             <mat-option *ngFor="let document of documents;" [value]="document['id']">
@@ -246,9 +246,13 @@
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
-                    <button (click)="sendSelectedPages()" mat-button class="inline-block"
+                    <button (click)="sendSelectedPages()" mat-button class="btn-icon border-r-2 border-black inline-block"
                             title="{{ 'SPLITTER.send' | translate }}">
                         <i class="fa fa-paper-plane fa-lg"></i>
+                    </button>
+                    <button (click)="saveInfo()" mat-button class="inline-block"
+                            title="{{ 'SPLITTER.save' | translate }}">
+                        <i class="fa fa-save fa-lg"></i>
                     </button>
                     <div class="inline-block w-auto float-right py-8 mx-4 grid-rows-2">
                         <div>

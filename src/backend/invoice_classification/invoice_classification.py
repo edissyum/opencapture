@@ -51,9 +51,9 @@ def convert_pdf_dir_to_images(pdfs_path):
 def get_pdf_first_page(pdf_path):
     pages = convert_from_path(pdf_path, size=(IMG_WIDTH, IMG_HEIGHT))
     file_name = pdf_path.split("/")[-1].replace('pdf', 'jpg')
-    image_path = PREDICT_IMAGES_PATH + file_name
-    pages[0].save(image_path, 'JPEG')
-    return image_path
+    thumbnail = PREDICT_IMAGES_PATH + file_name
+    pages[0].save(thumbnail, 'JPEG')
+    return thumbnail
 
 
 # Train and save tensorFlow model

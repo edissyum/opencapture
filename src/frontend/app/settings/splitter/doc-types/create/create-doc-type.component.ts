@@ -40,22 +40,28 @@ export class CreateDocTypeComponent implements OnInit {
     selectedFormId: number | undefined;
     loading: boolean        = false;
     forms: any[]            = [];
-    noMasterFolder: string  = '_NO_MASTER';
     form!: FormGroup;
     fields: any = [
         {
             id      : 'key',
             type    : 'text',
+            value   : '',
             label   : this.translate.instant('HEADER.id'),
-            control : new FormControl(),
             required: true,
         },
         {
             id      : 'label',
             type    : 'text',
+            value   : '',
             label   : this.translate.instant('HEADER.label'),
-            control : new FormControl(),
             required: true,
+        },
+        {
+            id      : 'isDefault',
+            type    : 'slide',
+            value   : false,
+            label   : this.translate.instant('DOCTYPE.default_doctype'),
+            required: false,
         },
     ];
 
@@ -83,45 +89,37 @@ export class CreateDocTypeComponent implements OnInit {
 
     toFormGroup() {
         const group: any = {};
-        this.fields.forEach((field: { id: string; required: boolean;}) => {
-            group[field.id] = field.required ? new FormControl('', Validators.required)
-                : new FormControl(field.id || '');
+        this.fields.forEach((field: { id: string; required: boolean;disabled: boolean; value: any;}) => {
+            group[field.id] = field.required ? new FormControl({value:"", disabled: field.disabled}, [Validators.required])
+                : new FormControl({value: field.value, disabled: field.disabled});
         });
-        group['folder'] =  new FormControl('', Validators.required);
+        group['folder'] =  new FormControl({value:"", disabled: false}, Validators.required);
         return new FormGroup(group);
     }
 
     getLastFolderIndex(codeSelected: string){
         let lastIndex = 0;
-        if(codeSelected !== this.noMasterFolder){
-            this.documentTypeFactoryComponent.treeDataObj.doctypesData.forEach((docType:any) => {
-                if(docType.code.startsWith(codeSelected)
-                    && docType.code.split('.').length === codeSelected.split('.').length + 1){
-                    const currentIdx = Number(docType.code.split('.').pop());
-                    lastIndex = (currentIdx > lastIndex) ? currentIdx: lastIndex;
-                }
-            });
-        }
-        else{
-            this.documentTypeFactoryComponent.treeDataObj.doctypesData.forEach((docType:any) => {
-                if(docType.code.split('.').length === 2){
-                    const currentIdx = Number(docType.code.split('.').pop());
-                    lastIndex = (currentIdx > lastIndex) ? currentIdx: lastIndex;
-                }
-            });
-        }
+        this.documentTypeFactoryComponent.treeDataObj.doctypesData.forEach((docType:any) => {
+            if(docType.code.startsWith(codeSelected)
+                && docType.code.split('.').length === codeSelected.split('.').length + 1){
+                const currentIdx = Number(docType.code.split('.').pop());
+                lastIndex = (currentIdx > lastIndex) ? currentIdx: lastIndex;
+            }
+        });
         return lastIndex + 1;
     }
 
     addDocType() {
         let newDocType = this.form.getRawValue();
+        console.log(newDocType);
         const lastIndexInFolder = this.getLastFolderIndex(newDocType.folder);
         newDocType = {
-            'key'       : newDocType.key,
-            'code'      : newDocType.folder + "." + lastIndexInFolder.toString(),
-            'label'     : newDocType.label,
-            'type'      : 'document',
-            'form_id'   : this.selectedFormId,
+            'key'           : newDocType.key,
+            'code'          : newDocType.folder + "." + lastIndexInFolder.toString(),
+            'label'         : newDocType.label,
+            'is_default'    : newDocType['isDefault'],
+            'type'          : 'document',
+            'form_id'       : this.selectedFormId,
         };
         this.http.post(API_URL + '/ws/doctypes/add', newDocType, {headers: this.authService.headers}).pipe(
             tap((data: any) => {

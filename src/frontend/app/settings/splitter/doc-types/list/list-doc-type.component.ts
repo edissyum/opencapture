@@ -48,7 +48,6 @@ export class ListDocTypeComponent implements OnInit {
       id        : 'key',
       type      : 'text',
       label     : this.translate.instant('HEADER.id'),
-      control   : new FormControl(),
       required  : true,
       disabled  : true,
     },
@@ -56,15 +55,21 @@ export class ListDocTypeComponent implements OnInit {
       id        : 'label',
       type      : 'text',
       label     : this.translate.instant('HEADER.label'),
-      control   : new FormControl(),
       required  : true,
       disabled  : false,
     },
+    {
+      id      : 'isDefault',
+      type    : 'slide',
+      label   : this.translate.instant('DOCTYPE.default_doctype'),
+      required: false,
+      disabled: false,
+    },
   ];
   public selectedDocType: any = {
-    item  : '',
-    key   : '',
-    code  : '',
+    label   : '',
+    key     : '',
+    code    : '',
   };
 
   constructor(
@@ -98,14 +103,16 @@ export class ListDocTypeComponent implements OnInit {
 
   update() {
     let newDocType = this.form.getRawValue();
+    const lastIndexInFolder = this.getLastFolderIndex(newDocType.folder);
     if(newDocType.folder === '_NO_MASTER')
       newDocType.folder = "0";
-    const lastIndexInFolder = this.getLastFolderIndex(newDocType.folder);
     newDocType = {
-      'key': newDocType.key,
-      'code': newDocType.folder + "." + lastIndexInFolder.toString(),
-      'label': newDocType.label,
-      'status': 'OK',
+      'key'       : newDocType.key,
+      'code'      : newDocType.folder + "." + lastIndexInFolder.toString(),
+      'label'     : newDocType.label,
+      'is_default': newDocType.isDefault,
+      'form_id' : this.selectedFormId,
+      'status'  : 'OK',
     };
     this.updateDoctype(newDocType);
   }
@@ -117,14 +124,15 @@ export class ListDocTypeComponent implements OnInit {
     code.pop();
     this.form.controls['folder'].setValue(code.join('.'));
     this.form.controls['key'].setValue(this.selectedDocType.key);
-    this.form.controls['label'].setValue(this.selectedDocType.item);
+    this.form.controls['label'].setValue(this.selectedDocType.label);
+    this.form.controls['isDefault'].setValue(this.selectedDocType.isDefault);
   }
 
   deleteDoctype() {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
         confirmTitle: this.translate.instant('GLOBAL.confirm'),
-        confirmText: this.translate.instant('DOCTYPE.confirm_delete', {"doctypeLabel": this.selectedDocType.item}),
+        confirmText: this.translate.instant('DOCTYPE.confirm_delete', {"doctypeLabel": this.selectedDocType.label}),
         confirmButton: this.translate.instant('GLOBAL.delete'),
         confirmButtonColor: "warn",
         cancelButton: this.translate.instant('GLOBAL.cancel'),
@@ -135,10 +143,12 @@ export class ListDocTypeComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
         const updateValue = {
-          'key': this.form.controls['key'].value,
-          'code': this.form.controls['folder'].value,
-          'label': this.form.controls['label'].value,
-          'status': 'DEL',
+          'key'       : this.form.controls['key'].value,
+          'code'      : this.form.controls['folder'].value,
+          'label'     : this.form.controls['label'].value,
+          'is_default': this.form.controls['isDefault'].value,
+          'form_id'   : this.selectedFormId,
+          'status'    : 'DEL',
         };
         this.updateDoctype(updateValue);
         this.form.reset();

@@ -34,70 +34,6 @@ class Splitter:
         self.doc_start = self.config.cfg['SPLITTER']['docstart']
         self.bundle_start = self.config.cfg['SPLITTER']['bundlestart']
 
-    def split(self, pages):
-        doctype_value = None
-        maarch_value = None
-        metadata_1 = None
-        metadata_2 = None
-        metadata_3 = None
-
-        for index, path in pages:
-            separator_type = None
-            is_separator = list(filter(lambda separator: int(separator['num']) + 1 == int(index),
-                                       self.separator_qr.pages))
-            if is_separator:
-                qr_code = is_separator[0]['qr_code']
-                self.log.info("QR Code in page " + str(index) + " : " + str(qr_code))
-
-                """
-                    Maarch separator
-                """
-                if 'MAARCH' in qr_code and '|' not in qr_code:
-                    maarch_value = qr_code
-                    separator_type = self.doc_start
-                else:
-                    maarch_value = None
-
-                """
-                    Open-Capture separator
-                """
-                if self.doc_start in qr_code:
-                    separator_type = self.doc_start
-                    if len(qr_code.split('|')) > 1:
-                        doctype_value = qr_code.split("|")[1] if qr_code.split("|")[1] else None
-                        if len(qr_code.split('|')) > 2:
-                            metadata_1 = qr_code.split("|")[2] if qr_code.split("|")[2] else None
-                            if len(qr_code.split('|')) > 3:
-                                metadata_2 = qr_code.split("|")[3] if qr_code.split("|")[3] else None
-                                if len(qr_code.split('|')) > 4:
-                                    metadata_3 = qr_code.split("|")[4] if qr_code.split("|")[4] else None
-                                else:
-                                    metadata_3 = None
-                            else:
-                                metadata_2 = None
-                        else:
-                            metadata_1 = None
-                    else:
-                        doctype_value = None
-
-                elif self.bundle_start in qr_code:
-                    separator_type = self.bundle_start
-                    doctype_value = None
-                    maarch_value = None
-
-                self.log.info("Code QR in page " + str(index) + " : " + qr_code)
-
-            self.qr_pages.append({
-                'source_page': index,
-                'separator_type': separator_type,
-                'doctype_value': doctype_value,
-                'maarch_value': maarch_value,
-                'metadata_1': metadata_1,
-                'metadata_2': metadata_2,
-                'metadata_3': metadata_3,
-                'path': path,
-            })
-
     def get_result_documents(self, blank_pages):
         split_document = 1
         self.result_batches.append([])
@@ -202,20 +138,20 @@ class Splitter:
                         Maarch entity separator
                     """
                     if page['maarch_value']:
-                        maarch_value_split = page['maarch_value'].split('_')
-                        if len(maarch_value_split) == 2:
-                            entity = maarch_value_split[1]
-                            documents_data = {}
-                            custom_fields = self.db.select({
-                                'select': ['*'],
-                                'table': ['custom_fields'],
-                                'where': ['metadata_key = %s', 'status <> %s'],
-                                'data': ['SEPARATOR_MAARCH', 'DEL'],
-                            })
-                            documents_data['custom_fields'] = {}
-                            for custom_field in custom_fields:
-                                documents_data['custom_fields'][custom_field['label_short']] = entity
-                                args['columns']['data'] = json.dumps(documents_data)
+                        entity = page['maarch_value']
+                        if len(entity.split('_')) == 2:
+                            entity = entity.split('_')[1]
+                        documents_data = {}
+                        custom_fields = self.db.select({
+                            'select': ['*'],
+                            'table': ['custom_fields'],
+                            'where': ['metadata_key = %s', 'status <> %s'],
+                            'data': ['SEPARATOR_MAARCH', 'DEL'],
+                        })
+                        documents_data['custom_fields'] = {}
+                        for custom_field in custom_fields:
+                            documents_data['custom_fields'][custom_field['label_short']] = entity
+                            args['columns']['data'] = json.dumps(documents_data)
                     print("args : ")
                     print(args)
                     documents_id = self.db.insert(args)

@@ -26,18 +26,28 @@ export class CreateFolderDocTypeComponent implements OnInit {
     form!: FormGroup;
     fields: any = [
         {
-          id      : 'key',
-          type    : 'text',
-          label   : this.translate.instant('HEADER.id'),
-          control : new FormControl(),
-          required: true,
+            id      : 'key',
+            type    : 'text',
+            label   : this.translate.instant('HEADER.id'),
+            control : new FormControl(),
+            required: true,
+            disabled  : false,
         },
         {
-          id      : 'label',
-          type    : 'text',
-          label   : this.translate.instant('HEADER.label'),
-          control : new FormControl(),
-          required: true,
+            id      : 'label',
+            type    : 'text',
+            label   : this.translate.instant('HEADER.label'),
+            control : new FormControl(),
+            required: true,
+            disabled  : false,
+        },
+        {
+            id      : 'isDefault',
+            type    : 'slide',
+            label   : this.translate.instant('DOCTYPE.default_doctype'),
+            control : new FormControl(),
+            required: false,
+            disabled: true,
         },
     ];
 
@@ -61,9 +71,9 @@ export class CreateFolderDocTypeComponent implements OnInit {
 
     toFormGroup() {
         const group: any = {};
-        this.fields.forEach((field: { id: string; required: boolean;}) => {
-          group[field.id] = field.required ? new FormControl('', Validators.required)
-              : new FormControl(field.id || '');
+        this.fields.forEach((field: { id: string; required: boolean;disabled: boolean;}) => {
+            group[field.id] = field.required ? new FormControl({value:"", disabled: field.disabled}, [Validators.required])
+                : new FormControl({value:"", disabled: field.disabled});
         });
         group['folder'] =  new FormControl(this.noMasterFolder, Validators.required);
         return new FormGroup(group);
@@ -99,26 +109,32 @@ export class CreateFolderDocTypeComponent implements OnInit {
         let newFolder = this.form.getRawValue();
         const lastIndex = this.getLastFolderIndex(newFolder.folder);
         newFolder = {
-          'key'     : newFolder.key,
-          'code'    : newFolder.folder !== this.noMasterFolder ? newFolder.folder + '.' + lastIndex: '0.' + lastIndex,
-          'label'   : newFolder.label,
-          'type'    : 'folder',
-          'form_id' : this.selectedFormId,
+            'key'       : newFolder.key,
+            'code'      : newFolder.folder !== this.noMasterFolder ? newFolder.folder + '.' + lastIndex: '0.' + lastIndex,
+            'label'     : newFolder.label,
+            'is_default': false,
+            'type'      : 'folder',
+            'form_id'   : this.selectedFormId,
         };
+        this.loading = true;
         this.http.post(API_URL + '/ws/doctypes/add', newFolder, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.notify.success(this.translate.instant('DOCTYPE.folder_added'));
                 this.form.reset();
+                console.log(this.form.controls['folder']);
+                this.form.controls['folder'].setValue(this.noMasterFolder);
                 Object.keys(this.form.controls).forEach(key => {
                     this.form.controls[key].setErrors(null) ;
                 });
                 if (this.selectedFormId)
                     this.documentTypeFactoryComponent.treeDataObj.loadTree(this.selectedFormId);
             }),
+            finalize(() => this.loading = false),
             catchError((err: any) => {
-              console.debug(err);
-              this.notify.handleErrors(err);
-              return of(false);
+                this.loading = false;
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
             })
         ).subscribe();
     }

@@ -80,7 +80,10 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     toolSelectedOption          : string        = "";
     batchMetadataValues         : any           = {id: -1};
     inputMode                   : string        = "Manual";
-    defautlDoctype              : any;
+    defautlDoctype              : any           = {
+        label: null,
+        key: null
+    };
     outputs                     : any;
     defaultDocType              : any;
 
@@ -114,7 +117,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.currentBatch.id = this.route.snapshot.params['id'];
         this.loadBatches();
         this.loadSelectedBatch();
-        this.loadDefaultDocType();
         this.loadMetadata();
         this.loadOutputs();
         this.translate.get('HISTORY-DESC.viewer_splitter', {batch_id: this.currentBatch.id}).subscribe((translated: string) => {
@@ -147,6 +149,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             tap((data: any) => {
                 this.currentBatch.formId = data.batches[0].form_id;
                 this.loadDocuments();
+                this.loadDefaultDocType();
             }),
             catchError((err: any) => {
                 this.isLoading = false;
@@ -185,9 +188,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             tap((data: any) => {
                 for (let i = 0; i < data['documents'].length; i++) {
                     this.documents[i] = {
-                        id                  : "document-" + i,
-                        documentTypeName    : data['documents'][i]['doctype_label'] ? data['documents'][i]['doctype_label'] : "Facture",
-                        documentTypeKey     : data['documents'][i]['doctype_key'] ? data['documents'][i]['doctype_key'] : "Facture",
+                        id                  : "document-" + data['documents'][i]['id'],
+                        documentTypeName    : data['documents'][i]['doctype_label'] ? data['documents'][i]['doctype_label'] : (this.defautlDoctype.label || ""),
+                        documentTypeKey     : data['documents'][i]['doctype_key'] ? data['documents'][i]['doctype_key'] : (this.defautlDoctype.label || ""),
                         pages               : [],
                         class               : "",
                         customFieldsValues  : {},
@@ -223,36 +226,41 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     addDocument() {
         let newId = 0;
         for (const document of this.documents) {
-            const id = parseInt(document.id.split('-')[1]);
-            if (id > newId) {
-                newId = id;
+            if (document.id > newId) {
+                newId = document.id;
             }
             newId++;
         }
         this.documents.push({
-            id                  : "document-" + newId,
+            id                  : "ADDED-document-" + newId,
             documentTypeName    : "Facture",
             documentTypeKey     : "Facture",
             pages               : [],
+            customFieldsValues  : {},
             class               : "",
         });
-        this.addFormForDocument({});
+        this.addFormForDocument({}, newId);
     }
 
     loadDocumentsForms(){
+        let cpt = 0;
         this.documentsForms = [];
         for (const document of this.documents) {
-            this.addFormForDocument(document.customFieldsValues);
+            this.addFormForDocument(document.customFieldsValues, cpt);
+            cpt++;
         }
     }
 
-    addFormForDocument(customFieldsValues: any){
+    addFormForDocument(customFieldsValues: any, documentIndex: number){
         const newForm = new FormGroup({});
         for (let fieldsIndex = 0; fieldsIndex < this.fieldsCategories['document_metadata'].length; fieldsIndex++) {
             const control = new FormControl();
             const labelShort = this.fieldsCategories['document_metadata'][fieldsIndex].label_short;
             if(customFieldsValues.hasOwnProperty(labelShort))
                 control.setValue(customFieldsValues[labelShort]);
+            control.valueChanges.subscribe(value => {
+                this.documents[documentIndex]['customFieldsValues'][labelShort] = value;
+            });
             newForm.addControl(labelShort, control);
             if (this.fieldsCategories['document_metadata'][fieldsIndex].metadata_key) { // used to control autocomplete search fields
                 const controlSearch = new FormControl();
@@ -287,6 +295,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                             'id'        : doctype.id,
                             'key'       : doctype.key,
                             'label'     : doctype.label,
+                            'type'      : doctype.type,
                             'isDefault' : doctype.is_default,
                         };
                     }
@@ -302,10 +311,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 return of(false);
             })
         ).subscribe();
-    }
-
-    retrieveDocTypes(formId: number) {
-
     }
 
     changeInputMode($event: any) {
@@ -623,6 +628,29 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             tap(() => {
                 this.router.navigate(['splitter/list']).then();
                 this.notify.success(this.translate.instant('SPLITTER.validate_batch'));
+            }),
+            catchError((err: any) => {
+                this.isLoading = false;
+                this.notify.error(err.error.message);
+                console.debug(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    saveInfo() {
+        const headers = this.authService.headers;
+        const batchMetadata = this.batchMetadataValues;
+
+        this.http.post(API_URL + '/ws/splitter/saveInfo',
+        {
+            'documents'     : this.documents,
+            'batchMetadata' : batchMetadata,
+            'formId'        : this.currentBatch.formId,
+        },
+            {headers}).pipe(
+            tap(() => {
+                this.notify.success(this.translate.instant('SPLITTER.batch_info_saved'));
             }),
             catchError((err: any) => {
                 this.isLoading = false;

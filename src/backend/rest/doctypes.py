@@ -29,8 +29,8 @@ bp = Blueprint('doctypes', __name__, url_prefix='/ws/')
 def retrieve_doctypes(form_id):
     if type:
         args = {
-            'where': ['form_id = %s'],
-            'data': [str(form_id)]
+            'where': ['form_id = %s', 'status <> %s'],
+            'data': [form_id, 'DEL']
         }
     else:
         args = {}

@@ -150,6 +150,7 @@ def retrieve_documents(batch_id):
                 doctype_label = dotypes[0]['label'] if dotypes[0]['label'] else None
 
             res_documents.append({
+                'id': document['id'],
                 'data': document['data'],
                 'pages': document_pages,
                 'doctype_key': doctype_key,
@@ -263,6 +264,28 @@ def export_xml(documents, parameters, metadata, now):
             "message": ''
         }
         return response, 400
+    return True, 200
+
+
+def save_infos(documents, metadata):
+    _vars = create_classes_from_current_config()
+    _cfg = _vars[1]
+    for document in documents:
+        if 'ADDED' in document['id']:
+            continue
+        document['id'] = document['id'].split('-')[-1]
+        res = splitter.save_infos({
+            'document_id': document['id'],
+            'doctype_key': document['documentTypeKey'],
+            'custom_fields_values': document['customFieldsValues'],
+        })[0]
+        if not res:
+            response = {
+                "errors": gettext('SAVE_DOCUMENT_ERROR'),
+                "message": gettext('SAVE_DOCUMENT_ERROR')
+            }
+            return response, 401
+
     return True, 200
 
 

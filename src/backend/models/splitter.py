@@ -322,6 +322,26 @@ def change_status(args):
     return res
 
 
+def save_infos(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+
+    args = {
+        'table': ['splitter_documents'],
+        'set': {
+            'doctype_key': args['doctype_key'],
+            'data': json.dumps({
+                "custom_fields": args['custom_fields_values']
+            })
+        },
+        'where': ['id = %s'],
+        'data': [args['document_id']]
+    }
+    res = _db.update(args)
+
+    return res
+
+
 def update_batch_page_number(args):
     _vars = create_classes_from_current_config()
     _db = _vars[0]

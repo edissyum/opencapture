@@ -23,8 +23,8 @@ def add_doctype(args):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
     doctypes, error = retrieve_doctypes({
-        'where': ['key = %s', 'status = %s'],
-        'data': [args['key'], 'OK']
+        'where': ['key = %s', 'form_id = %s', 'status <> %s'],
+        'data': [args['key'], args['form_id'], 'DEL']
     })
 
     if not doctypes:
@@ -36,6 +36,7 @@ def add_doctype(args):
                 'label': args['label'],
                 'code': args['code'],
                 'form_id': args['form_id'],
+                'is_default': args['is_default'],
             }
         }
         res = _db.insert(args)
@@ -56,8 +57,9 @@ def retrieve_doctypes(args):
     doctypes = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['doctypes'],
-        'where': ['status=%s'] if 'where' not in args else args['where'],
-        'data': ['OK'] if 'data' not in args else args['data']
+        'where': ['status<>%s'] if 'where' not in args else args['where'],
+        'data': ['DEL'] if 'data' not in args else args['data'],
+        'order_by': ["id ASC"],
     })
 
     return doctypes, error
@@ -81,4 +83,33 @@ def update(args):
     if not res:
         error = gettext('UPDATE_DOCTYPE_ERROR')
 
+    return res, error
+
+
+def set_default(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    error = None
+    res = _db.update({
+        'table': ['doctypes'],
+        'set': {
+            'is_default': False
+        },
+        'where': ['form_id = %s'],
+        'data': [args['form_id']]
+    })
+    if res:
+        res = _db.update({
+            'table': ['doctypes'],
+            'set': {
+                'is_default': True
+            },
+            'where': ['key = %s', 'form_id = %s'],
+            'data': [args['key'], args['form_id']]
+        })
+        if not res:
+            error = gettext('SET_DEFAULT_DOCTYPE_ERROR')
+            return '', error
+    else:
+        error = gettext('SET_DEFAULT_DOCTYPE_ERROR')
     return res, error
