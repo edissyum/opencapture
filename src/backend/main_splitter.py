@@ -67,7 +67,7 @@ def launch(args):
                     available_split_methods = json.load(json_file)
                     for available_split_method in available_split_methods['methods']:
                         if available_split_method['id'] == splitter_method['splitter_method_id']:
-                            split_method = import_from(config, available_split_method['path'], available_split_method['method'])
+                            split_method = import_from(available_split_method['path'], available_split_method['method'])
                             log.info('Split using method : {}'.format(available_split_method['id']))
                             split_method(args, path, log, splitter, files, tmp_folder, config)
     database.conn.close()
@@ -75,7 +75,7 @@ def launch(args):
     log.info('Process end after ' + timer(start, end) + '')
 
 
-def import_from(config, path, method):
+def import_from(path, method):
     """
     Import an attribute, function or class from a module.
     :param method: Method to call
