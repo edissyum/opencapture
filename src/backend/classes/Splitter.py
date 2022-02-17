@@ -282,7 +282,7 @@ class Splitter:
         return {'OK': True, 'path': xml_file_path}
 
     @staticmethod
-    def get_split_methods():
-        with open('bin/scripts/splitter_methods/splitter_methods.json') as methods_json:
+    def get_split_methods(config):
+        with open(config.cfg['GLOBAL']['scriptspath'] + '/splitter_methods/splitter_methods.json') as methods_json:
             methods = json.load(methods_json)
             return methods['methods']
