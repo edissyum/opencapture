@@ -58,8 +58,8 @@ def launch(args):
             splitter_method = database.select({
                 'select': ['splitter_method_id'],
                 'table': ['inputs'],
-                'where': ['status <> %s and input_id = %s'],
-                'data': ['DEL', args['input_id']]
+                'where': ['status <> %s', 'input_id = %s', 'module = %s'],
+                'data': ['DEL', args['input_id'], 'splitter']
             })[0]
             available_split_methods_path = config.cfg['GLOBAL']['scriptspath'] + "/splitter_methods/splitter_methods.json"
             if len(splitter_method) > 0 and os.path.isfile(available_split_methods_path):
@@ -67,7 +67,7 @@ def launch(args):
                     available_split_methods = json.load(json_file)
                     for available_split_method in available_split_methods['methods']:
                         if available_split_method['id'] == splitter_method['splitter_method_id']:
-                            split_method = import_from(available_split_method['path'], available_split_method['method'])
+                            split_method = import_from(config, available_split_method['path'], available_split_method['method'])
                             log.info('Split using method : {}'.format(available_split_method['id']))
                             split_method(args, path, log, splitter, files, tmp_folder, config)
     database.conn.close()
@@ -75,14 +75,12 @@ def launch(args):
     log.info('Process end after ' + timer(start, end) + '')
 
 
-def import_from(path, method):
+def import_from(config, path, method):
     """
     Import an attribute, function or class from a module.
     :param method: Method to call
     :param path: A path descriptor in the form of 'pkg.module.submodule:attribute'
     :type path: str
     """
-    path = path.replace('/', '.').replace('.py', '')
-
     module = __import__(path, fromlist=method)
     return getattr(module, method)
