@@ -61,13 +61,13 @@ def launch(args):
                 'where': ['status <> %s', 'input_id = %s', 'module = %s'],
                 'data': ['DEL', args['input_id'], 'splitter']
             })[0]
-            available_split_methods_path = config.cfg['GLOBAL']['scriptspath'] + "/splitter_methods/splitter_methods.json"
+            available_split_methods_path = config.cfg['SPLITTER']['methodspath'] + "/splitter_methods.json"
             if len(splitter_method) > 0 and os.path.isfile(available_split_methods_path):
                 with open(available_split_methods_path) as json_file:
                     available_split_methods = json.load(json_file)
                     for available_split_method in available_split_methods['methods']:
                         if available_split_method['id'] == splitter_method['splitter_method_id']:
-                            split_method = import_from(available_split_method['path'], available_split_method['method'])
+                            split_method = import_from(config, available_split_method['script'], available_split_method['method'])
                             log.info('Split using method : {}'.format(available_split_method['id']))
                             split_method(args, path, log, splitter, files, tmp_folder, config)
     database.conn.close()
@@ -75,12 +75,13 @@ def launch(args):
     log.info('Process end after ' + timer(start, end) + '')
 
 
-def import_from(path, method):
+def import_from(config, script, method):
     """
     Import an attribute, function or class from a module.
     :param method: Method to call
     :param path: A path descriptor in the form of 'pkg.module.submodule:attribute'
     :type path: str
     """
-    module = __import__(path, fromlist=method)
+
+    module = __import__(config.cfg['SPLITTER']['methodspath'] + script, fromlist=method)
     return getattr(module, method)

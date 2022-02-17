@@ -36,6 +36,7 @@ batchpath = ${GLOBAL:docserverpath}/splitter/batches/
 pdfoutputpath = ${GLOBAL:docserverpath}/splitter/separated_pdf/
 docstart      = DOCSTART
 bundlestart   = BUNDLESTART
+methodspath   = ${GLOBAL:scriptspath}/splitter_methods/
 
 [REMOVE-BLANK-PAGES]
 ; True or False
