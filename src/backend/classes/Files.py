@@ -27,6 +27,7 @@ import time
 import uuid
 import shutil
 import PyPDF4
+import PyPDF2
 import datetime
 import numpy as np
 from PIL import Image
@@ -450,8 +451,8 @@ class Files:
 
     @staticmethod
     def export_pdf(pages_lists, documents, input_file, output_file, reduce_index=0):
-        pdf_writer = PyPDF4.PdfFileWriter()
-        pdf_reader = PyPDF4.PdfFileReader(input_file, strict=False)
+        pdf_writer = PyPDF2.PdfFileWriter()
+        pdf_reader = PyPDF2.PdfFileReader(input_file, strict=False)
         paths = []
         try:
             for index, pages in enumerate(pages_lists):
@@ -463,7 +464,7 @@ class Files:
                 with open(output_file + '/' + documents[index]['fileName'], 'wb') as file:
                     pdf_writer.write(file)
                     paths.append(file_path)
-                pdf_writer = PyPDF4.PdfFileWriter()
+                pdf_writer = PyPDF2.PdfFileWriter()
         except Exception as e:
             return False, str(e)
         return paths
