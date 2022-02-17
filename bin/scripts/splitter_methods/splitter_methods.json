@@ -3,19 +3,19 @@
     {
       "id"    : "metadata",
       "label" : "Separation par métadonnées",
-      "path"  : "/bin/scripts/splitter_methods/metadata.py",
+      "script": "metadata.py",
       "method": "process"
     },
     {
       "id"    : "qr_code_OC",
       "label" : "Séparation par code QR Open-Capture",
-      "path"  : "bin/scripts/splitter_methods/qr_code_OC.py",
+      "script": "qr_code_OC.py",
       "method": "process"
     },
     {
       "id"    : "qr_code_Maarch",
       "label" : "Séparation par code QR Maarch",
-      "path"  : "bin/scripts/splitter_methods/qr_code_Maarch.py",
+      "script": "qr_code_Maarch.py",
       "method": "process"
     }
   ]
