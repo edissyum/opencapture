@@ -245,7 +245,7 @@ def export_pdf(batch, documents, parameters, metadata, pages, now):
     if not paths:
         response = {
             "errors": gettext('EXPORT_PDF_ERROR'),
-            "message": gettext('EXPORT_PDF_ERROR')
+            "message": paths[1]
         }
         return response, 400
     return {'paths': paths}, 200

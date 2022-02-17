@@ -464,8 +464,8 @@ class Files:
                     pdf_writer.write(file)
                     paths.append(file_path)
                 pdf_writer = PyPDF4.PdfFileWriter()
-        except Exception:
-            return False
+        except Exception as e:
+            return False, str(e)
         return paths
 
     @staticmethod
