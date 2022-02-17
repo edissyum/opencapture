@@ -16,6 +16,7 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 import base64
+import json
 import os.path
 import shutil
 import datetime
@@ -430,9 +431,9 @@ def merge_batches(parent_id, batches):
     _config = _vars[1]
 
     parent_info = splitter.get_batch_by_id({'id': parent_id})[0]
-    parent_filename = current_app.config['UPLOAD_FOLDER_SPLITTER'] + parent_info['file_name']
+    parent_filename = _config.cfg['GLOBAL']['docserverpath'] + '/splitter/original_pdf/' + parent_info['file_path']
     parent_batch_pages = int(parent_info['page_number'])
-    batch_folder = _config.cfg['SPLITTER']['docserverpath'] + '/batches/' + parent_info['batch_folder']
+    batch_folder = _config.cfg['GLOBAL']['docserverpath'] + '/splitter/batches/' + parent_info['batch_folder']
     parent_document_id = splitter.get_documents({'id': parent_id})[0][0]['id']
     parent_max_split_index = splitter.get_documents_max_split_index({'id': parent_id})[0][0]['split_index']
     parent_max_source_page = splitter.get_max_source_page({'id': parent_document_id})[0][0]['source_page']
@@ -447,7 +448,7 @@ def merge_batches(parent_id, batches):
         batch_info = splitter.get_batch_by_id({'id': batch})[0]
         parent_batch_pages += batch_info['page_number']
         batches_info.append(batch_info)
-        pdf = PyPDF4.PdfFileReader(current_app.config['UPLOAD_FOLDER_SPLITTER'] + batch_info['file_name'])
+        pdf = PyPDF4.PdfFileReader(_config.cfg['GLOBAL']['docserverpath'] + '/splitter/original_pdf/' + batch_info['file_path'])
         for page in range(pdf.numPages):
             merged_pdf.addPage(pdf.getPage(page))
 
@@ -463,7 +464,7 @@ def merge_batches(parent_id, batches):
                 document_id = splitter.add_document({
                     'batch_id': parent_id,
                     'doctype_key': doc['doctype_key'],
-                    'data': doc['data'],
+                    'data': json.dumps(doc['data']),
                     'status': 'NEW',
                     'split_index': parent_max_split_index + doc['split_index']
                 })
