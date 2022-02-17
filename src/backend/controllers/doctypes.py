@@ -123,7 +123,7 @@ def generate_separator(args):
         qr_code_value = "BUNDLESTART"
         separator_type_label = gettext('BUNDLESEPARATOR')
 
-    encoded_file = _SeparatorQR.generate_separator(qr_code_value, args['label'], separator_type_label)
+    encoded_file = _SeparatorQR.generate_separator(_cfg.cfg, qr_code_value, args['label'], separator_type_label)
     res, error = encoded_file, None
     if res:
         response = {

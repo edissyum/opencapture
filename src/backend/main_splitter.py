@@ -61,7 +61,7 @@ def launch(args):
                 'where': ['status <> %s and input_id = %s'],
                 'data': ['DEL', args['input_id']]
             })[0]
-            available_split_methods_path = "bin/scripts/splitter_methods/splitter_methods.json"
+            available_split_methods_path = config.cfg['GLOBAL']['scriptspath'] + "/splitter_methods/splitter_methods.json"
             if len(splitter_method) > 0 and os.path.isfile(available_split_methods_path):
                 with open(available_split_methods_path) as json_file:
                     available_split_methods = json.load(json_file)
@@ -83,5 +83,6 @@ def import_from(path, method):
     :type path: str
     """
     path = path.replace('/', '.').replace('.py', '')
+
     module = __import__(path, fromlist=method)
     return getattr(module, method)

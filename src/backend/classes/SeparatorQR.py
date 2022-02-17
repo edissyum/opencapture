@@ -243,7 +243,7 @@ class SeparatorQR:
             output_pdf.write(stream)
 
     @staticmethod
-    def generate_separator(qr_code_value, doctype_label, separator_type_label):
+    def generate_separator(config, qr_code_value, doctype_label, separator_type_label):
         """
         Generate separator file
         :param qr_code_value: QR code value
@@ -305,21 +305,21 @@ class SeparatorQR:
         f["type"] = separator_type_label
         f["label"] = doctype_label
         f["qr_code_value"] = qr_code_value
-        f["icon_loop"] = "src/assets/imgs/Open-Capture_Splitter.png"
-        f["logo"] = "src/assets/imgs/logo_opencapture.png"
-        f["company_logo"] = "src/assets/imgs/logo_company.png"
+        f["icon_loop"] = config['GLOBAL']['projectpath'] + "/src/assets/imgs/Open-Capture_Splitter.png"
+        f["logo"] = config['GLOBAL']['projectpath'] + "/src/assets/imgs/logo_opencapture.png"
+        f["company_logo"] = config['GLOBAL']['projectpath'] + "/src/assets/imgs/logo_company.png"
 
         img = qrcode.make(qr_code_value)
 
-        qrcode_path = "bin/data/tmp/last_generated_doctype_code_qr.png"
+        qrcode_path = config['GLOBAL']['tmppath'] + "/last_generated_doctype_code_qr.png"
         img.save(qrcode_path)
         f["code_qr"] = qrcode_path
 
         " Rendering the page"
-        file_path = "bin/data/tmp/last_generated_doctype_file.pdf"
+
+        file_path = config['GLOBAL']['tmppath'] + "/last_generated_doctype_file.pdf"
         f.render(file_path)
 
         with open(file_path, "rb") as pdf_file:
             encoded_string = base64.b64encode(pdf_file.read()).decode('utf-8')
         return encoded_string
-
