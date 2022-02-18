@@ -76,8 +76,8 @@ def update(args):
             'code': args['code'],
             'status': args['status'],
         },
-        'where': ['status <> %s', 'key = %s'],
-        'data': ['DEL', args['key']]
+        'where': ['status <> %s', 'key = %s', 'form_id = %s'],
+        'data': ['DEL', args['key'], args['form_id']]
     })
 
     if not res:

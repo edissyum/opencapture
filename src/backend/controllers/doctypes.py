@@ -85,7 +85,8 @@ def update(args):
                 'code': doctype_child['code'].replace(doctype_old_data[0]['code'], args['code'])
                 if args['status'] != 'DEL' else doctype_child['code'],
                 'label': doctype_child['label'],
-                'status': args['status']
+                'status': args['status'],
+                'form_id': args['form_id']
             })
             if not res:
                 response = {
