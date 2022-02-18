@@ -46,12 +46,6 @@ def change_locale_in_config(lang):
         return {'errors': gettext("CHANGE_LOCALE_ERROR"), 'message': str(e)}, 500
 
 
-def get_current_git_version(cfg):
-    repo = git.Repo(cfg['GLOBAL']['projectpath'])
-    current_tag = next((tag for tag in repo.tags if tag.commit == repo.head.commit), None)
-    return str(current_tag)
-
-
 def get_last_git_version():
     latest_git_version = subprocess.Popen("git ls-remote --tags --sort='v:refname' https://github.com/edissyum/opencaptureforinvoices.git | tail -n1 |  sed 's/.*\///; s/\^{}//' | grep -E '2.+([0-9])$'", shell=True,
                                           stdout=subprocess.PIPE).stdout.read()
