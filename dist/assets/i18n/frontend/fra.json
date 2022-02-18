@@ -475,6 +475,7 @@
 		"positions_mask_update": "Modification du masque",
 		"roles_list": "Liste des rôles",
 		"splitter": "Paramètres du Splitter",
+		"update_doc_type": "",
 		"update_input": "Modifier une chaîne entrante",
 		"update_output": "Modifier une chaîne sortante",
 		"users_list": "Liste des utilisateurs",
@@ -550,7 +551,7 @@
 		"please_select_input": "Choisissez une chaîne entrante avant de procéder au téléversement",
 		"purchase_invoice": "Facture d'achat",
 		"sale_invoice": "Facture de vente",
-		"upload_invoice": "Téléverser la facture",
+		"upload_file": "Téléverser le fichier",
 		"upload_success": "Fichier(s) téléversé(s) avec succès"
 	},
 	"USER": {

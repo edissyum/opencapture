@@ -22,9 +22,8 @@ import tempfile
 from symbol import import_from
 
 from kuyruk import Kuyruk
-from src.backend.import_process import OCForInvoices_splitter
 from src.backend.main import timer, check_file, create_classes
-from src.backend.import_classes import _Files, _Config, _Splitter, _SeparatorQR, _Log, _Mail
+from src.backend.import_classes import _Files, _Config, _Splitter, _SeparatorQR, _Log
 
 OCforInvoices = Kuyruk()
 

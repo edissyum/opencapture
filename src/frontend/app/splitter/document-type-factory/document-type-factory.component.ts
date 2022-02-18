@@ -47,6 +47,7 @@ export class TreeItemFlatNode {
     key!        : string;
     level!      : number;
     type!       : string;
+    isDefault!  : boolean;
     expandable! : boolean;
     code!       : string;
 }
@@ -285,6 +286,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
         flatNode.type       = node.type;
         flatNode.code       = node.code;
         flatNode.key        = node.key;
+        flatNode.isDefault  = node.isDefault;
         flatNode.expandable = (node.type === 'folder');
         this.flatNodeMap.set(flatNode, node);
         this.nestedNodeMap.set(node, flatNode);

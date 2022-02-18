@@ -26,7 +26,10 @@
       <button mat-button class="h-8" [ngClass]="selectedDocTypeInput.key === node.key ? 'text-green-400' : ''"
             (click)="selectNode(node)">
         <i class="fas fa-file fw"></i>
-        <span class="pl-1 font-normal">{{node.label}}</span>
+        <span class="pl-1 font-normal">
+            <span *ngIf="node.isDefault"  class="absolute top-4 right-4" matBadge="0" matBadgeSize="small" matBadgeOverlap="false"></span>
+            {{node.label}}
+        </span>
       </button>
     </mat-tree-node>
     <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>

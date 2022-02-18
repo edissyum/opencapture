@@ -63,8 +63,8 @@ def retrieve_doctypes(args):
 
 def update(args):
     doctype_old_data, _ = doctypes.retrieve_doctypes({
-        'where': ['key = %s', 'form_id = %s'],
-        'data': [args['key'], args['form_id']]
+        'where': ['key = %s', 'form_id = %s', 'status <> %s'],
+        'data': [args['key'], args['form_id'], 'DEL']
     })
     if doctype_old_data:
         if args['is_default']:

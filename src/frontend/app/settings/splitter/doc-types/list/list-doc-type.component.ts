@@ -150,6 +150,7 @@ export class ListDocTypeComponent implements OnInit {
           'form_id'   : this.selectedFormId,
           'status'    : 'DEL',
         };
+        console.log(updateValue);
         this.updateDoctype(updateValue);
         this.form.reset();
         Object.keys(this.form.controls).forEach(key => {

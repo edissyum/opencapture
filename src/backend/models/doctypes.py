@@ -76,8 +76,8 @@ def update(args):
             'code': args['code'],
             'status': args['status'],
         },
-        'where': ['key = %s'],
-        'data': [args['key']]
+        'where': ['status <> %s', 'key = %s'],
+        'data': ['DEL', args['key']]
     })
 
     if not res:
@@ -95,8 +95,8 @@ def set_default(args):
         'set': {
             'is_default': False
         },
-        'where': ['form_id = %s'],
-        'data': [args['form_id']]
+        'where': ['status <> %s', 'form_id = %s'],
+        'data': ['DEL', args['form_id']]
     })
     if res:
         res = _db.update({
@@ -104,8 +104,8 @@ def set_default(args):
             'set': {
                 'is_default': True
             },
-            'where': ['key = %s', 'form_id = %s'],
-            'data': [args['key'], args['form_id']]
+            'where': ['status <> %s', 'key = %s', 'form_id = %s'],
+            'data': ['DEL', args['key'], args['form_id']]
         })
         if not res:
             error = gettext('SET_DEFAULT_DOCTYPE_ERROR')
