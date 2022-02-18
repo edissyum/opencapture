@@ -142,7 +142,7 @@ def str2bool(value):
 OCforInvoices_worker = Kuyruk()
 
 
-# @OCforInvoices_worker.task(queue='invoices')
+@OCforInvoices_worker.task(queue='invoices')
 def launch(args):
     start = time.time()
 
@@ -193,10 +193,9 @@ def launch(args):
 
                 if check_file(files, path + file, config, log) is not False:
                     res = OCForInvoices_process.process(args, path + file, log, config, files, ocr, locale, database, typo)
-                    if args.get('isMail') is not None and args.get('isMail') is True:
-                        if not res[0]:
-                            mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'], args['msg'], config)
-                            log.error('Error while processing e-mail : ' + str(res[1]), False)
+                    if not res[0]:
+                        mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'], args['msg'], config)
+                        log.error('Error while processing e-mail : ' + str(res[1]), False)
         elif config.cfg['SEPARATE-BY-DOCUMENT']['enabled'] == 'True':
             list_of_files = separator_qr.split_document_every_two_pages(path)
             for file in list_of_files:
