@@ -35,6 +35,5 @@ def read_config():
 def get_git_info():
     _vars = create_classes_from_current_config()
     return make_response({
-        'git_current': config.get_current_git_version(_vars[1].cfg),
         'git_latest': config.get_last_git_version()
     }), 200
