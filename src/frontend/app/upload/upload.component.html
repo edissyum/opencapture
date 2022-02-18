@@ -34,7 +34,7 @@
                     [class.hover:bg-green-400]="!this.sending && this.selectedInput && this.fileControl.value.length != 0"
                     [class.hover:text-white]="!this.sending&& this.selectedInput && this.fileControl.value.length != 0"
                     class="mt-5 border-solid border-green-400 border px-3 py-2 text-sm font-medium transition duration-300">
-                {{ 'UPLOAD.upload_invoice' | translate }}
+                {{ 'UPLOAD.upload_file' | translate }}
             </button>
         </div>
         <span *ngIf="this.selectedInput == ''" class="flex justify-center mt-4 text-red-500">

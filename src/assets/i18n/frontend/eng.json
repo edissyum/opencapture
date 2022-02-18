@@ -475,6 +475,7 @@
 		"positions_mask_update": "Update positiions mask",
 		"roles_list": "Roles list",
 		"splitter": "Splitter",
+		"update_doc_type": "",
 		"update_input": "Update input",
 		"update_output": "Update output",
 		"users_list": "Users list",
@@ -550,7 +551,7 @@
 		"please_select_input": "Please select input",
 		"purchase_invoice": "Purchase invoice",
 		"sale_invoice": "Sale invoice",
-		"upload_invoice": "Upload invoice",
+		"upload_file": "Upload file",
 		"upload_success": "File upload successfully"
 	},
 	"USER": {
