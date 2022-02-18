@@ -233,8 +233,8 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         }
         this.documents.push({
             id                  : "ADDED-document-" + newId,
-            documentTypeName    : "Facture",
-            documentTypeKey     : "Facture",
+            documentTypeName    : this.defautlDoctype.label,
+            documentTypeKey     : this.defautlDoctype.key,
             pages               : [],
             customFieldsValues  : {},
             class               : "",
