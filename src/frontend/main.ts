@@ -15,9 +15,12 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
+import { environment } from "./app/env";
+import { AppModule } from './app/app.module';
 import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { AppModule } from './app/app.module';
 
-enableProdMode();
+if (environment.production) {
+    enableProdMode();
+}
 platformBrowserDynamic().bootstrapModule(AppModule).then();

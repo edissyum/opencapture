@@ -282,21 +282,29 @@ export class SplitterListComponent implements OnInit {
     deleteAllBatches() {
         this.isLoading = true;
         const checkboxList = $(".checkBox_list:checked");
+        let lastBatch = false;
         checkboxList.each((cpt: any) => {
+            if (cpt === checkboxList.length - 1)
+                lastBatch = true;
             const batchId = checkboxList[cpt].id.split('_')[0];
-            this.deleteBatch(batchId, true);
+            this.deleteBatch(batchId, true, lastBatch);
         });
         this.notify.success(this.translate.instant('SPLITTER.all_batches_checked_deleted'));
     }
 
-    deleteBatch(id: number, batchDelete = false): void {
+    deleteBatch(id: number, batchDelete = false, lastBatch = true): void {
         this.http.put(API_URL + '/ws/splitter/status', {'id': id, 'status': 'DEL', }, {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.batches.forEach((batch: any, index: number) => {
                     if (batch.id === id) this.batches.splice(index, 1);
                 });
-                if (!batchDelete) this.notify.success(this.translate.instant('SPLITTER.batch_deleted'));
-                else this.isLoading = false;
+                if (!batchDelete) {
+                    this.notify.success(this.translate.instant('SPLITTER.batch_deleted'));
+                    this.isLoading = false;
+                } else {
+                    if (lastBatch)
+                        this.loadBatches();
+                }
             }),
             catchError((err: any) => {
                 console.debug(err);
