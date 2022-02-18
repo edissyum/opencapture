@@ -15,7 +15,7 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-export const API_URL = '../../backend_oc';
+export const API_URL = 'http://localhost:5000';
 export const environment = {
     production: false,
     VERSION: require('../../../package.json').version + ' (development mode)'

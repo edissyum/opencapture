@@ -311,11 +311,11 @@ chown -R "$user":"$user" $defaultPath/bin/scripts/splitter_inputs/*.sh
 
 ####################
 # Create docservers
-mkdir -p $docserverPath/{OpenCapture,OpenCapture_Splitter}
-mkdir -p $docserverPath/OpenCapture/images/{full,thumbs,positions_masks}
-mkdir -p $docserverPath/OpenCapture_Splitter/{batches,separated_pdf}
-chmod -R 775 $docserverPath/{OpenCapture,OpenCapture_Splitter}/
-chmod -R g+s $docserverPath/{OpenCapture,OpenCapture_Splitter}/
+mkdir -p $docserverPath/OpenCapture/{verifier,splitter}
+mkdir -p $docserverPath/OpenCapture/verifier/images/{original_pdf,full,thumbs,positions_masks}
+mkdir -p $docserverPath/OpenCapture/splitter/{original_pdf,batches,separated_pdf}
+chmod -R 775 $docserverPath/OpenCapture/
+chmod -R g+s $docserverPath/OpenCapture/
 chown -R "$user":"$group" $docserverPath/{OpenCapture,OpenCapture_Splitter}/
 
 ####################
