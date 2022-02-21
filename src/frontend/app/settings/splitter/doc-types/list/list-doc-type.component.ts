@@ -111,21 +111,21 @@ export class ListDocTypeComponent implements OnInit {
       'code'      : newDocType.folder + "." + lastIndexInFolder.toString(),
       'label'     : newDocType.label,
       'is_default': newDocType.isDefault,
-      'form_id' : this.selectedFormId,
-      'status'  : 'OK',
+      'form_id'   : this.selectedFormId,
+      'status'    : 'OK',
     };
     this.updateDoctype(newDocType);
   }
 
   getOutPut($event: any) {
     this.selectedDocType = $event;
-    console.log(this.selectedDocType);
     const code = this.selectedDocType.code.split('.');
     code.pop();
     this.form.controls['folder'].setValue(code.join('.'));
     this.form.controls['key'].setValue(this.selectedDocType.key);
     this.form.controls['label'].setValue(this.selectedDocType.label);
     this.form.controls['isDefault'].setValue(this.selectedDocType.isDefault);
+    this.selectedDocType.type === 'document' ? this.form.controls['isDefault'].enable(): this.form.controls['isDefault'].disable();
   }
 
   deleteDoctype() {
@@ -150,7 +150,6 @@ export class ListDocTypeComponent implements OnInit {
           'form_id'   : this.selectedFormId,
           'status'    : 'DEL',
         };
-        console.log(updateValue);
         this.updateDoctype(updateValue);
         this.form.reset();
         Object.keys(this.form.controls).forEach(key => {

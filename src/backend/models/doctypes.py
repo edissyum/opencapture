@@ -75,6 +75,7 @@ def update(args):
             'label': args['label'],
             'code': args['code'],
             'status': args['status'],
+            'is_default': args['is_default'],
         },
         'where': ['status <> %s', 'key = %s', 'form_id = %s'],
         'data': ['DEL', args['key'], args['form_id']]
