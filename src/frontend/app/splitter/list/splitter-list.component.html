@@ -71,7 +71,7 @@
                                        (click)="$event.stopPropagation();openConfirmDialog(batch['id'])">
                                         <span class="font-medium mat-typography">{{ 'GLOBAL.delete' | translate }}</span>
                                     </i>
-                                    <i [class.hidden]="totalChecked < 2"
+                                    <i *ngIf="totalChecked >= 2 && isCheckboxChecked(batch['id'])"
                                        class="fas fa-object-group cursor-pointer text-green-400 relative float-right"
                                        (click)="$event.stopPropagation();mergeAllConfirmDialog(batch['id'])">
                                         <span class="font-medium mat-typography float-left mr-3 relative bottom-1">

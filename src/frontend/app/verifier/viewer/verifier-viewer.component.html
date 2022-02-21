@@ -41,7 +41,7 @@
         </mat-accordion>
         <ng-container *ngFor="let category of this.fieldCategories">
             <ng-container *ngIf="this.form[category['id']].length !== 0">
-                <div class="relative text-xl tracking-wider pl-1.5 pr-1.5 bg-white left-6 z-5"
+                <div class="relative text-xl tracking-wider pl-1.5 pr-1.5 bg-white left-6 z-10"
                      [style]="'width:calc(3% + ' + (this.translate.instant(category['label']).length + 5)+ '%)'">
                     {{ category['label'] | translate }}
                     <span *ngIf="getOnlyRawFooter && this.translate.instant(category['label']) == this.translate.instant('FORMS.supplier')"

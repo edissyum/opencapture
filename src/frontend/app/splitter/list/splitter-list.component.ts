@@ -184,6 +184,18 @@ export class SplitterListComponent implements OnInit {
         });
     }
 
+    isCheckboxChecked(batchId: number) {
+        let checked = false;
+        const checkboxList = $(".checkBox_list:checked");
+        checkboxList.each((cpt: any) => {
+            const checkboxId = checkboxList[cpt].id.split('_')[0];
+            if (parseInt(checkboxId) === batchId) {
+                checked = true;
+            }
+        });
+        return checked;
+    }
+
     mergeAllBatches(parentId: number) {
         const checkboxList = $(".checkBox_list:checked");
         const listOfBatchToMerge: any[] = [];
@@ -200,9 +212,11 @@ export class SplitterListComponent implements OnInit {
                     listOfBatchFormId.push(batch.form_id);
                 }
             });
+            if(parentId === batch.id) listOfBatchFormId.push(batch.form_id);
         });
 
         const uniqueFormId = listOfBatchFormId.filter((item, i, ar) => ar.indexOf(item) === i);
+
         if (uniqueFormId.length === 1) {
             this.isLoading = true;
             this.http.post(API_URL + '/ws/splitter/merge/' + parentId, {'batches': listOfBatchToMerge}, {headers: this.authService.headers},
