@@ -14,9 +14,9 @@ import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 
 @Component({
-  selector: 'app-splitter-create-input',
-  templateUrl: './create-input.component.html',
-  styleUrls: ['./create-input.component.scss']
+    selector: 'app-splitter-create-input',
+    templateUrl: './create-input.component.html',
+    styleUrls: ['./create-input.component.scss']
 })
 export class SplitterCreateInputComponent implements OnInit {
     headers         : HttpHeaders   = this.authService.headers;
@@ -61,6 +61,12 @@ export class SplitterCreateInputComponent implements OnInit {
             control: new FormControl(),
             required: true,
             values: [],
+        },
+        {
+            id: 'remove_blank_pages',
+            label: this.translate.instant('INPUT.remove_blank_pages'),
+            type: 'boolean',
+            control: new FormControl()
         },
     ];
 
