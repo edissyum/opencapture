@@ -82,6 +82,7 @@ CREATE TABLE "inputs"
     "default_form_id"        INTEGER,
     "customer_id"            INTEGER,
     "module"                 VARCHAR(10),
+    "remove_blank_pages"     BOOLEAN    DEFAULT False,
     "override_supplier_form" BOOLEAN    DEFAULT False,
     "purchase_or_sale"       VARCHAR(8) DEFAULT 'purchase',
     "status"                 VARCHAR(3) DEFAULT 'OK',
