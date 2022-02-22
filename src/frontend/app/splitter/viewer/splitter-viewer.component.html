@@ -257,8 +257,9 @@
                     </button>
                     <div class="inline-block w-auto float-right py-8 mx-4 grid-rows-2">
                         <div>
-                            <button mat-button (click)="validate()" class="btn-validate-splitter rounded-full bg-green-400 text-white
-                         text-sm font-medium transition duration-300 ml-2 float-right"
+                            <button mat-button (click)="validate()" [disabled]="outputs.length === 0"
+                                    class="btn-validate-splitter rounded-full bg-green-400 text-white
+                                            text-sm font-medium transition duration-300 ml-2 float-right"
                                     style="border-right: 1px dotted white !important;">
                                 {{ 'GLOBAL.validate' | translate }}
                             </button>
@@ -266,6 +267,10 @@
                          text-sm font-medium transition duration-300 float-right" routerLink="/splitter/list">
                                 {{ 'GLOBAL.cancel' | translate }}
                             </button>
+                            <div class="top-4 text-center text-gray-400">
+                                <span>{{outputs.join(', ')}}</span>
+                                <span class="text-red-500" *ngIf="outputs.length === 0">{{ 'OUTPUT.no_output_configured' | translate }}</span>
+                            </div>
                         </div>
                     </div>
                 </mat-card-content>

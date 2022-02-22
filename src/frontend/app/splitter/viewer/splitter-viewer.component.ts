@@ -65,26 +65,26 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         'document_metadata' : []
     };
     batchForm                   : FormGroup     = new FormGroup({});
-    documentsForms              : FormGroup[]   = [];
-    batchMetadataOpenState      : boolean       = true;
     documentMetadataOpenState   : boolean       = false;
     showZoomPage                : boolean       = false;
     isLoading                   : boolean       = true;
+    batchMetadataOpenState      : boolean       = true;
     currentBatch                : any           = {id: -1, inputId: -1};
+    batchMetadataValues         : any           = {id: -1};
+    documentsForms              : FormGroup[]   = [];
     batches                     : Batch[]       = [];
+    outputs                     : any           = [];
     metadata                    : any[]         = [];
     documents                   : any           = [];
     pagesImageUrls              : any           = [];
     documentsIds                : string[]      = [];
     zoomImageUrl                : string        = "";
     toolSelectedOption          : string        = "";
-    batchMetadataValues         : any           = {id: -1};
     inputMode                   : string        = "Manual";
     defautlDoctype              : any           = {
         label: null,
         key: null
     };
-    outputs                     : any;
     defaultDocType              : any;
 
     /** indicate search operation is in progress */
@@ -118,7 +118,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.loadBatches();
         this.loadSelectedBatch();
         this.loadMetadata();
-        this.loadOutputs();
         this.translate.get('HISTORY-DESC.viewer_splitter', {batch_id: this.currentBatch.id}).subscribe((translated: string) => {
             this.historyService.addHistory('splitter', 'viewer', translated);
         });
@@ -130,26 +129,40 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.loadBatchById();
     }
 
-    loadOutputs(): void {
-        this.http.get(API_URL + '/ws/outputs/list?module=splitter', {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                this.outputs = data.outputs;
-            }),
-            catchError((err: any) => {
-                this.isLoading = false;
-                this.notify.handleErrors(err);
-                console.debug(err);
-                return of(false);
-            })
-        ).subscribe();
-    }
-
     loadBatchById(): void {
         this.http.get(API_URL + '/ws/splitter/batches/' + this.currentBatch.id, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.currentBatch.formId = data.batches[0].form_id;
                 this.loadDocuments();
                 this.loadDefaultDocType();
+                this.loadOutputsData();
+            }),
+            catchError((err: any) => {
+                this.isLoading = false;
+                this.notify.error(err);
+                console.debug(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    loadOutputsData(): void {
+        this.isLoading = true;
+        this.http.get(API_URL + '/ws/forms/getById/' + this.currentBatch.formId, {headers: this.authService.headers}).pipe(
+            tap((formData: any) => {
+                for(const outputsId of formData['outputs']) {
+                    this.http.get(API_URL + '/ws/outputs/getById/' + outputsId, {headers: this.authService.headers}).pipe(
+                        tap((outputsData: any) => {
+                            this.outputs.push(outputsData['output_label']);
+                        }),
+                        catchError((err: any) => {
+                            this.isLoading = false;
+                            this.notify.error(err);
+                            console.debug(err);
+                            return of(false);
+                        })
+                    ).subscribe();
+                }
             }),
             catchError((err: any) => {
                 this.isLoading = false;
