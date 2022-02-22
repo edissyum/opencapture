@@ -41,7 +41,7 @@ class Splitter:
 
         for index, page in enumerate(self.qr_pages):
             if int(index) in blank_pages:
-                if self.config.cfg['REMOVE-BLANK-PAGES']['enabled'] == 'True' or is_previous_code_qr:
+                if self.separator_qr.remove_blank_pages or is_previous_code_qr:
                     continue
 
             if page['separator_type'] == self.bundle_start:

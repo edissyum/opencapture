@@ -23,7 +23,7 @@ from kuyruk import Kuyruk
 from flask import current_app
 
 from .functions import recursive_delete, get_custom_array
-from .import_classes import _Database, _PyTesseract, _Locale, _Files, _Log, _Config, _SeparatorQR, _Spreadsheet,\
+from .import_classes import _Database, _PyTesseract, _Locale, _Files, _Log, _Config, _SeparatorQR, _Spreadsheet, \
     _SMTP, _Mail
 
 custom_array = get_custom_array()
@@ -157,7 +157,19 @@ def launch(args):
     tmp_folder = tempfile.mkdtemp(dir=config.cfg['GLOBAL']['tmppath'])
     filename = tempfile.NamedTemporaryFile(dir=tmp_folder).name
     files = _Files(filename, log, locale, config)
-    separator_qr = _SeparatorQR(log, config, tmp_folder, 'verifier', files)
+
+    remove_blank_pages = False
+    if 'input_id' in args:
+        input_settings = database.select({
+            'select': ['*'],
+            'table': ['inputs'],
+            'where': ['input_id = %s', 'module = %s'],
+            'data': [args['input_id'], 'verifier'],
+        })
+        if input_settings:
+            remove_blank_pages = input_settings[0]['remove_blank_pages']
+
+    separator_qr = _SeparatorQR(log, config, tmp_folder, 'verifier', files, remove_blank_pages)
     mail_class = None
 
     if args.get('isMail') is not None and args['isMail'] is True:

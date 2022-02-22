@@ -194,7 +194,7 @@ class Files:
             return pdf_read_rewrite.getNumPages()
 
     @staticmethod
-    def is_blank_page(image, config):
+    def is_blank_page(image):
         params = cv2.SimpleBlobDetector_Params()
         params.minThreshold = 10
         params.maxThreshold = 200
@@ -213,7 +213,7 @@ class Files:
         rows, cols, channel = image.shape
         blobs_ratio = len(keypoints) / (1.0 * rows * cols)
 
-        if blobs_ratio < float(config['blobsratio']):
+        if blobs_ratio < float(1E-6):
             return True
         return False
 

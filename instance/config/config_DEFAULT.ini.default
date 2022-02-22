@@ -38,12 +38,6 @@ docstart      = DOCSTART
 bundlestart   = BUNDLESTART
 methodspath   = ${GLOBAL:scriptspath}/splitter_methods/
 
-[REMOVE-BLANK-PAGES]
-; True or False
-enabled     = False
-; Float type
-blobsRatio  = 1E-6
-
 [DATABASE]
 postgresHost     = localhost
 postgresPort     = 5432

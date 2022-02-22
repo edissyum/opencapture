@@ -30,7 +30,7 @@ import base64
 
 
 class SeparatorQR:
-    def __init__(self, log, config, tmp_folder, splitter_or_verifier, files):
+    def __init__(self, log, config, tmp_folder, splitter_or_verifier, files, remove_blank_pages):
         self.log = log
         self.pages = []
         self.nb_doc = 0
@@ -40,6 +40,7 @@ class SeparatorQR:
         self.Files = files
         self.config = config
         self.enabled = False
+        self.remove_blank_pages = remove_blank_pages
         self.splitter_or_verifier = splitter_or_verifier
         self.divider = config.cfg['SEPARATORQR']['divider']
         self.convert_to_pdfa = config.cfg['SEPARATORQR']['exportpdfa']
@@ -68,7 +69,7 @@ class SeparatorQR:
         pages_to_keep = []
         for _file in self.sorted_files(os.listdir(self.output_dir)):
             if _file.endswith('.jpg'):
-                if not self.Files.is_blank_page(self.output_dir + '/' + _file, self.config.cfg['REMOVE-BLANK-PAGES']):
+                if not self.Files.is_blank_page(self.output_dir + '/' + _file):
                     pages_to_keep.append(os.path.splitext(_file)[0].split('-')[1])
                 else:
                     blank_page_exists = True
@@ -121,7 +122,7 @@ class SeparatorQR:
             self.get_xml_qr_code(file)
 
             if self.splitter_or_verifier == 'verifier':
-                if self.config.cfg['REMOVE-BLANK-PAGES']['enabled'] == 'True':
+                if self.remove_blank_pages:
                     self.remove_blank_page(file)
                 self.parse_xml()
                 self.check_empty_docs()
@@ -152,7 +153,7 @@ class SeparatorQR:
         except subprocess.CalledProcessError as cpe:
             if cpe.returncode != 4:
                 self.log.error("ZBARIMG : \nreturn code: %s\ncmd: %s\noutput: %s\nglobal : %s" % (
-                cpe.returncode, cpe.cmd, cpe.output, cpe))
+                    cpe.returncode, cpe.cmd, cpe.output, cpe))
 
     def parse_xml_multi(self):
         if self.qrList is None:

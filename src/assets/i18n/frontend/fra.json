@@ -319,6 +319,7 @@
 		"input_folder_header": "Chemin",
 		"override_supplier_form": "Outrepasser le formulaire par défaut du fournisseur",
 		"purchase_or_sale": "Type de facture",
+		"remove_blank_pages": "Suppression de pages blanches",
 		"splitter_method": "Méthode de séparation",
 		"update": "Mettre à jour la chaîne entrante",
 		"update_script_and_incron": "Mettre à jour le script et l'incron",

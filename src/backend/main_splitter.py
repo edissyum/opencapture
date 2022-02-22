@@ -43,7 +43,19 @@ def launch(args):
     tmp_folder = tempfile.mkdtemp(dir=config.cfg['SPLITTER']['batchpath']) + '/'
     filename = tempfile.NamedTemporaryFile(dir=tmp_folder).name
     files = _Files(filename, log, locale, config)
-    separator_qr = _SeparatorQR(log, config, tmp_folder, 'splitter', files)
+
+    remove_blank_pages = False
+    if 'input_id' in args:
+        input_settings = database.select({
+            'select': ['*'],
+            'table': ['inputs'],
+            'where': ['input_id = %s', 'module = %s'],
+            'data': [args['input_id'], 'verifier'],
+        })
+        if input_settings:
+            remove_blank_pages = input_settings[0]['remove_blank_pages']
+
+    separator_qr = _SeparatorQR(log, config, tmp_folder, 'splitter', files, remove_blank_pages)
     splitter = _Splitter(config, database, locale, separator_qr, log)
 
     if args.get('isMail') is not None and args['isMail'] is True:

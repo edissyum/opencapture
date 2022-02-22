@@ -34,12 +34,13 @@ def process(args, file, log, splitter, files, tmp_folder, config):
     blank_pages = []
 
     # Remove blank pages
-    cpt = 0
-    tmp_list_files = list_files
-    for f in tmp_list_files:
-        if files.is_blank_page(f[1], config.cfg['REMOVE-BLANK-PAGES']):
-            blank_pages.append(cpt)
-        cpt = cpt + 1
+    if splitter.separator_qr.remove_blank_pages:
+        cpt = 0
+        tmp_list_files = list_files
+        for f in tmp_list_files:
+            if files.is_blank_page(f[1]):
+                blank_pages.append(cpt)
+            cpt = cpt + 1
 
     splitter.separator_qr.run(file)
     split(splitter, list_files)
