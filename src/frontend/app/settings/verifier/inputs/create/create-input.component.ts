@@ -97,6 +97,27 @@ export class CreateInputComponent implements OnInit {
             required: true,
         },
         {
+            id: 'splitter_method_id',
+            label: this.translate.instant('INPUT.splitter_method'),
+            type: 'select',
+            control: new FormControl(),
+            required: false,
+            values: [
+                {
+                    'id': 'no_sep',
+                    'label': this.translate.instant('INPUT.no_separation')
+                },
+                {
+                    'id': 'qr_code',
+                    'label': this.translate.instant('INPUT.qr_code_separation')
+                },
+                {
+                    'id': 'separate_by_document',
+                    'label': this.translate.instant('INPUT.separate_by_document')
+                }
+            ],
+        },
+        {
             id: 'override_supplier_form',
             label: this.translate.instant('INPUT.override_supplier_form'),
             type: 'boolean',
@@ -133,6 +154,9 @@ export class CreateInputComponent implements OnInit {
                         if (customers.customers.length === 1) {
                             element.control.setValue(customers.customers[0].id);
                         }
+                    }
+                    if (element.id === 'splitter_method_id') {
+                        element.control.setValue('no_sep');
                     }
                 });
             }),

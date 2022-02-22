@@ -104,9 +104,10 @@ export class UpdateInputComponent implements OnInit {
             required: false,
             values: [
                 {
-                    'id': '',
+                    'id': 'no_sep',
                     'label': this.translate.instant('INPUT.no_separation')
-                },                {
+                },
+                {
                     'id': 'qr_code',
                     'label': this.translate.instant('INPUT.qr_code_separation')
                 },
@@ -179,6 +180,9 @@ export class UpdateInputComponent implements OnInit {
                                         return of(false);
                                     })
                                 ).subscribe();
+                            }
+                            else if (element.id === 'splitter_method_id' && (element.control.value === null || element.control.value === '' || element.control.value === undefined)) {
+                                element.control.setValue('no_sep');
                             }
                         }
                     });

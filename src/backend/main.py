@@ -159,6 +159,7 @@ def launch(args):
     files = _Files(filename, log, locale, config)
 
     remove_blank_pages = False
+    splitter_method = False
     if 'input_id' in args:
         input_settings = database.select({
             'select': ['*'],
@@ -167,6 +168,7 @@ def launch(args):
             'data': [args['input_id'], 'verifier'],
         })
         if input_settings:
+            splitter_method = input_settings[0]['splitter_method_id']
             remove_blank_pages = input_settings[0]['remove_blank_pages']
 
     separator_qr = _SeparatorQR(log, config, tmp_folder, 'verifier', files, remove_blank_pages)
@@ -184,8 +186,8 @@ def launch(args):
         log.info('Process attachment n°' + args['cpt'] + '/' + args['nb_of_attachments'])
 
     if args.get('isMail') is None or args.get('isMail') is False:
-        separator_qr.enabled = str2bool(config.cfg['SEPARATORQR']['enabled'])
-
+        if splitter_method and splitter_method == 'qr_code':
+            separator_qr.enabled = True
 
     database.connect()
 
@@ -205,10 +207,11 @@ def launch(args):
 
                 if check_file(files, path + file, config, log) is not False:
                     res = OCForInvoices_process.process(args, path + file, log, config, files, ocr, locale, database, typo)
-                    if not res[0]:
+                    print(res)
+                    if not res:
                         mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'], args['msg'], config)
-                        log.error('Error while processing e-mail : ' + str(res[1]), False)
-        elif config.cfg['SEPARATE-BY-DOCUMENT']['enabled'] == 'True':
+                        log.error('Error while processing e-mail', False)
+        elif splitter_method == 'separate_by_document':
             list_of_files = separator_qr.split_document_every_two_pages(path)
             for file in list_of_files:
                 # if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
@@ -216,9 +219,9 @@ def launch(args):
 
                 if check_file(files, file, config, log) is not False:
                     res = OCForInvoices_process.process(args, file, log, config, files, ocr, locale, database, typo)
-                    if not res[0]:
+                    if not res:
                         mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'], args['msg'], config)
-                        log.error('Error while processing e-mail : ' + str(res[1]), False)
+                        log.error('Error while processing e-mail', False)
             os.remove(path)
         else:
             # if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
