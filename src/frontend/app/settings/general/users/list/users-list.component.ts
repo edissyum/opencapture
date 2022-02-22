@@ -1,19 +1,19 @@
 /** This file is part of Open-Capture for Invoices.
 
-Open-Capture for Invoices is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+ Open-Capture for Invoices is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-Open-Capture is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
+ Open-Capture is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+ You should have received a copy of the GNU General Public License
+ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
-@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+ @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
@@ -56,6 +56,7 @@ export class UsersListComponent implements OnInit {
     pageIndex       : number      = 0;
     total           : number      = 0;
     offset          : number      = 0;
+    search          : string      = '';
 
     constructor(
         public router: Router,
@@ -110,6 +111,11 @@ export class UsersListComponent implements OnInit {
         ).subscribe();
     }
 
+    searchUser(event: any) {
+        this.search = event.target.value;
+        this.loadUsers();
+    }
+
     onPageChange(event: any) {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
@@ -119,7 +125,7 @@ export class UsersListComponent implements OnInit {
     }
 
     loadUsers(): void {
-        this.http.get(API_URL + '/ws/users/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
+        this.http.get(API_URL + '/ws/users/list?limit=' + this.pageSize + '&offset=' + this.offset + "&search=" + this.search, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.users[0]) this.total = data.users[0].total;
                 else if (this.pageIndex !== 0) {

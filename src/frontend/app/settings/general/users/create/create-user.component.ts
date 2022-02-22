@@ -1,19 +1,19 @@
 /** This file is part of Open-Capture for Invoices.
 
-Open-Capture for Invoices is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+ Open-Capture for Invoices is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-Open-Capture is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
+ Open-Capture is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+ You should have received a copy of the GNU General Public License
+ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
-@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+ @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import {Component, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
@@ -36,9 +36,9 @@ import {HistoryService} from "../../../../../services/history.service";
     styleUrls: ['./create-user.component.scss']
 })
 export class CreateUserComponent implements OnInit {
-    loading     : boolean   = true;
-    roles       : any[]     = [];
-    userForm    : any[]     = [
+    loading         : boolean   = true;
+    roles           : any[]     = [];
+    userForm        : any[]     = [
         {
             id: 'username',
             label: this.translate.instant('USER.username'),
@@ -83,6 +83,8 @@ export class CreateUserComponent implements OnInit {
             required: true
         }
     ];
+    customers       : any[]     = [];
+    usersCustomers  : any[]     = [];
 
     constructor(
         public router: Router,
@@ -101,6 +103,18 @@ export class CreateUserComponent implements OnInit {
 
     ngOnInit(): void {
         this.serviceSettings.init();
+
+        this.http.get(API_URL + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.customers = data.customers;
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
         this.http.get(API_URL + '/ws/roles/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 data.roles.forEach((element: any) => {
@@ -121,6 +135,32 @@ export class CreateUserComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
+    }
+
+    hasCustomer(customerId: any) {
+        for (const _customerId of this.usersCustomers) {
+            if (_customerId === customerId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    updateUsersCustomers(customerId: any) {
+        let found = false;
+        let cpt = 0;
+        for (const _customerId of this.usersCustomers) {
+            if (_customerId === customerId) {
+                found = true;
+                break;
+            }
+            cpt = cpt + 1;
+        }
+        if (!found) {
+            this.usersCustomers.push(customerId);
+        }else {
+            this.usersCustomers.splice(cpt, 1);
+        }
     }
 
     isValidForm() {
@@ -148,7 +188,7 @@ export class CreateUserComponent implements OnInit {
                 this.notify.handleErrors('USER.password_mismatch');
                 return of(false);
             }
-
+            user['customers'] = this.usersCustomers;
             this.http.post(API_URL + '/ws/users/new', user, {headers: this.authService.headers},
             ).pipe(
                 tap(() => {

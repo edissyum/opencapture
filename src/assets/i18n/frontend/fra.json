@@ -483,7 +483,6 @@
 	},
 	"SPLITTER": {
 		"Other": "(Autre)",
-		"aaaa": "",
 		"add_document": "Ajouter un document",
 		"all_batches_checked_deleted": "Tous les lots selectionnés supprimés avec succès",
 		"auto_complete": "Auto-complétion",
@@ -509,6 +508,7 @@
 		"merge": "Fusionner",
 		"merge_error_form_not_match": "Erreur lors de la fusion, les formulaires associés diffèrent",
 		"merge_success": "Fusion des lots effectué avec succès",
+		"meta_data": "",
 		"min_3_letter": "Au moins 3 letters",
 		"no_batch_found": "Aucun lot à afficher",
 		"no_metadata_required": "Aucune métadonnée requise",
@@ -575,6 +575,7 @@
 		"password": "Mot de passe",
 		"password_check": "Vérification du mot de passe",
 		"profile_updated": "Profil mis à jour",
+		"search_user": "Rechercher un utilisateur",
 		"update": "Modifier l'utilisateur",
 		"updated": "Utilisateur mis à jour",
 		"user_deleted": "Utilisateur supprimé",

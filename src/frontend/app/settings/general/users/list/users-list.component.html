@@ -4,7 +4,7 @@
         <mat-divider class="border-green-400"></mat-divider>
         <mat-nav-list class="pt-0">
             <mat-expansion-panel *ngFor="let parent of this.serviceSettings.getSettingsParent()"
-                     [expanded]="parent.opened" (opened)="this.serviceSettings.closeOtherParent(this.router.url, parent['id'])">
+                                 [expanded]="parent.opened" (opened)="this.serviceSettings.closeOtherParent(this.router.url, parent['id'])">
                 <mat-expansion-panel-header class="settings_expansion">
                     <mat-panel-title>
                         {{ parent['label'] | translate }}
@@ -80,6 +80,12 @@
                 <i [class.fa-arrow-right]="!this.serviceSettings.getIsMenuOpen()" class="fas fa-arrow-left text-2xl text-gray-900"></i>
             </button>
             <h3 class="text-center">{{ this.serviceSettings.getTitle() }}</h3>
+            <div class="absolute right-4 top-0">
+                <mat-form-field appearance="outline">
+                    <mat-label>{{ 'USER.search_user' | translate }}</mat-label>
+                    <input matInput type="text" (keyup)="searchUser($event)">
+                </mat-form-field>
+            </div>
             <hr class="border-green-400">
         </div>
         <mat-table matSort [dataSource]="users" (matSortChange)="sortData($event)" class="w-full">
@@ -134,8 +140,8 @@
             </ng-container>
             <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
             <mat-row *matRowDef="let row; columns: columnsToDisplay;"
-                 routerLink="/settings/general/users/update/{{row.id}}"
-                 class="cursor-pointer hover:text-green-400 hover:shadow-md transition-colors duration-300"></mat-row>
+                     routerLink="/settings/general/users/update/{{row.id}}"
+                     class="cursor-pointer hover:text-green-400 hover:shadow-md transition-colors duration-300"></mat-row>
         </mat-table>
         <mat-paginator showFirstLastButtons
                        [length]="this.total"
