@@ -483,6 +483,7 @@
 	},
 	"SPLITTER": {
 		"Other": "(Autre)",
+		"aaaa": "",
 		"add_document": "Add document",
 		"all_batches_checked_deleted": "All checked batches was successfully deleted",
 		"auto_complete": "Autocomplete",
@@ -508,7 +509,6 @@
 		"merge": "Merge",
 		"merge_error_form_not_match": "Error while merge batches. Form do not match",
 		"merge_success": "Batches merged successfully",
-		"meta_data": "",
 		"min_3_letter": "3 letters min",
 		"no_batch_found": "No batch found",
 		"no_metadata_required": "No metadata required ",

@@ -122,6 +122,7 @@
                             <mat-expansion-panel-header>
                                 <mat-panel-title class="w-4/12">
                                     <button class="text-lg text-left hover:text-green-400"
+                                            [ngClass]="!document['documentTypeName'] ? 'text-red-500':''"
                                             (click)="documentMetadata.toggle(); openDocumentTypeDialog(document);"
                                             title="{{ 'SPLITTER.edit' | translate }}">
                                         <span style="font-family: cursive; font-weight: bold;" class="w-full">
