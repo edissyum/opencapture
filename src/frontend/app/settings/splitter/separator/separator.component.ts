@@ -15,7 +15,7 @@
 
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
-import {AfterViewInit, Component, ViewChild} from '@angular/core';
+import {AfterViewInit, Component} from '@angular/core';
 import {TranslateService} from "@ngx-translate/core";
 import {SettingsService} from "../../../../services/settings.service";
 
@@ -35,22 +35,15 @@ import {NotificationService} from "../../../../services/notifications/notificati
     styleUrls: ['./separator.component.scss']
 })
 export class SeparatorComponent implements AfterViewInit {
-    @ViewChild('pdfViewerAutoLoad') pdfViewerAutoLoad : any;
     private selectedDocType: any;
-    constructor(
-        public router: Router,
-        public userService: UserService,
-        public translate: TranslateService,
-        public serviceSettings: SettingsService,
-        public privilegesService: PrivilegesService,
-        private http: HttpClient,
-        private authService: AuthService,
-        private notify:NotificationService,
-    ) { }
-
+    public separator: any      = {
+        'fileUrl': '',
+        'thumbnailUrl': ''
+    };
     pdfFile           : any;
     loading           : boolean = false;
-    base64            : string  = "";
+    loadingSeparator  : boolean = false;
+    separatorFileUrl  : string  = "";
     selectedSeparator : string  = "bundleSeparator";
     separators        : any[]   = [
         {
@@ -70,20 +63,31 @@ export class SeparatorComponent implements AfterViewInit {
         },
     ];
 
+    constructor(
+        public router: Router,
+        public userService: UserService,
+        public translate: TranslateService,
+        public serviceSettings: SettingsService,
+        public privilegesService: PrivilegesService,
+        private http: HttpClient,
+        private authService: AuthService,
+        private notify:NotificationService,
+    ) { }
+
     onChangeType() {
         let args = {};
         if (this.selectedSeparator === "bundleSeparator") {
             args = {
-                'type': 'bundleSeparator',
-                'key': '',
-                'label': ''
+                'type'  : 'bundleSeparator',
+                'key'   : '',
+                'label' : ''
             };
         }
         else if (this.selectedSeparator === "documentSeparator") {
             args = {
-                'type': 'documentSeparator',
-                'key': '',
-                'label': ''
+                'type'  : 'documentSeparator',
+                'key'   : '',
+                'label' : ''
             };
         }
         else{
@@ -93,35 +97,36 @@ export class SeparatorComponent implements AfterViewInit {
                 'label' : this.selectedDocType ? this.selectedDocType.label : ''
             };
         }
-        this.getSeparatorBase64(args);
+        this.generateSeparator(args);
     }
 
     getOutPut($event: any) {
-        this.selectedSeparator = 'docTypeSeparator';
-        this.selectedDocType = $event;
+        this.selectedSeparator  = 'docTypeSeparator';
+        this.selectedDocType    = $event;
         const args = {
             'type': 'docTypeSeparator',
             'key': this.selectedDocType.key,
             'label': this.selectedDocType.label
         };
-        this.getSeparatorBase64(args);
+        this.generateSeparator(args);
     }
 
-    getSeparatorBase64(args: any) {
+    generateSeparator(args: any) {
+        this.loadingSeparator = true;
         this.http.post(API_URL + '/ws/doctypes/generateSeparator',  args,{headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                console.log(data);
-                this.base64 = "data:application/pdf;base64," + data.res;
-                this.refreshPdfView();
+                this.separator.fileUrl = "data:application/pdf;base64," + data.encoded_file;
+                this.separator.thumbnailUrl = "data:image/jpeg;base64," + data.encoded_thumbnail;
+                this.loadingSeparator = false;
             }),
             catchError((err: any) => {
                 console.debug(err);
+                this.loadingSeparator = false;
                 this.notify.handleErrors(err);
                 return of(false);
             })
         ).subscribe();
     }
-
 
     convertDataURIToBinary(dataURI: string) {
         const base64Index = dataURI.indexOf(';base64,') + ';base64,'.length;
@@ -138,10 +143,10 @@ export class SeparatorComponent implements AfterViewInit {
 
     ngOnInit(): void {
         this.serviceSettings.init();
-        this.getSeparatorBase64( {
-            'type': 'bundleSeparator',
-            'key': '',
-            'label': ''
+        this.generateSeparator( {
+            'type'  : 'bundleSeparator',
+            'key'   : '',
+            'label' : ''
         });
     }
 
@@ -149,8 +154,22 @@ export class SeparatorComponent implements AfterViewInit {
     }
 
     refreshPdfView(): void {
-        this.pdfFile = this.convertDataURIToBinary(this.base64);
-        this.pdfViewerAutoLoad.pdfSrc = this.pdfFile;
-        this.pdfViewerAutoLoad.refresh();
+        this.pdfFile = this.convertDataURIToBinary(this.separatorFileUrl);
+    }
+
+    downloadSeparator() {
+        const fileName = this.selectedSeparator + (this.selectedDocType ? '_' + this.selectedDocType.key: '');
+        this.downloadPdf(this.separator.fileUrl,fileName);
+    }
+
+    downloadPdf(base64String: any, fileName:any) {
+        const link = document.createElement("a");
+        link.href = base64String;
+        link.download = `${fileName}.pdf`;
+        link.click();
+    }
+
+    onClickDownloadPdf(){
+
     }
 }

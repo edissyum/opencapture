@@ -25,6 +25,7 @@ import pdf2image
 import subprocess
 import xml.etree.ElementTree as Et
 from fpdf import Template
+from io import BytesIO
 import qrcode
 import base64
 
@@ -254,6 +255,8 @@ class SeparatorQR:
         """
 
         """ Defining the ELEMENTS that will compose the template"""
+        encoded_file = ''
+        encoded_thumbnail = ''
         elements = [
             {'name': 'border_1', 'type': 'B', 'x1': 10.0, 'y1': 10.0, 'x2': 200.0, 'y2': 285.0, 'font': 'Arial',
              'size': 2.0, 'bold': 0, 'italic': 0, 'underline': 0, 'foreground': 0, 'background': 0, 'align': 'I',
@@ -316,11 +319,16 @@ class SeparatorQR:
         img.save(qrcode_path)
         f["code_qr"] = qrcode_path
 
-        " Rendering the page"
-
         file_path = config['GLOBAL']['tmppath'] + "/last_generated_doctype_file.pdf"
         f.render(file_path)
+        try:
+            with open(file_path, "rb") as pdf_file:
+                encoded_file = base64.b64encode(pdf_file.read()).decode('utf-8')
+            pages = pdf2image.convert_from_path(file_path, 500)
 
-        with open(file_path, "rb") as pdf_file:
-            encoded_string = base64.b64encode(pdf_file.read()).decode('utf-8')
-        return encoded_string
+            buffered = BytesIO()
+            pages[0].save(buffered, format="JPEG")
+            encoded_thumbnail = base64.b64encode(buffered.getvalue()).decode('utf-8')
+        except Exception as e:
+            return False, str(e)
+        return encoded_file, encoded_thumbnail

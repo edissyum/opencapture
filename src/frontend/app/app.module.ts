@@ -41,7 +41,6 @@ import { SplitterListComponent } from './splitter/list/splitter-list.component';
 import { FilterPipe } from '../services/pipes/filter.pipe';
 import { NgxFileDragDropModule } from "ngx-file-drag-drop";
 import { ClickOutsideModule } from 'ng-click-outside';
-import { PdfJsViewerModule } from 'ng2-pdfjs-viewer';
 import { NgxMatSelectSearchModule } from "ngx-mat-select-search";
 import { NgsgModule } from 'ng-sortgrid';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
@@ -188,7 +187,6 @@ export function createTranslateLoader(http: HttpClient) {
         ClickOutsideModule,
         DragDropModule,
         NgxMatSelectSearchModule,
-        PdfJsViewerModule,
     ],
     providers: [
         Title,
