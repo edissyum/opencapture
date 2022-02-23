@@ -12,6 +12,7 @@ import {PrivilegesService} from "../../../../../services/privileges.service";
 import {API_URL} from "../../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
+import {HistoryService} from "../../../../../services/history.service";
 
 @Component({
     selector: 'app-splitter-create-input',
@@ -78,6 +79,7 @@ export class SplitterCreateInputComponent implements OnInit {
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
+        private historyService: HistoryService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService,
     ) {}
@@ -154,28 +156,17 @@ export class SplitterCreateInputComponent implements OnInit {
 
     onSubmit() {
         if (this.isValidForm()) {
-            const input : any = {
+            const input: any = {
                 'module': 'splitter'
             };
             this.inputForm.forEach(element => {
                 input[element.id] = element.control.value;
             });
-
-            this.http.post(API_URL + '/ws/inputs/create', {'args': input}, {headers: this.authService.headers}).pipe(
-                tap(() => {
-                    this.createScriptAndIncron();
-                    this.notify.success(this.translate.instant('INPUT.created'));
-                }),
-                catchError((err: any) => {
-                    console.debug(err);
-                    this.notify.handleErrors(err);
-                    return of(false);
-                })
-            ).subscribe();
+            this.createInputAndScriptAndIncron();
         }
     }
 
-    createScriptAndIncron() {
+    createInputAndScriptAndIncron() {
         if (this.isValidForm()) {
             const input : any = {
                 'module': 'splitter'
@@ -187,7 +178,18 @@ export class SplitterCreateInputComponent implements OnInit {
 
             this.http.post(API_URL + '/ws/inputs/createScriptAndIncron', {'args': input}, {headers: this.authService.headers}).pipe(
                 tap(() => {
-                    this.router.navigate(['/settings/splitter/inputs']).then();
+                    this.http.post(API_URL + '/ws/inputs/create', {'args': input}, {headers: this.authService.headers}).pipe(
+                        tap(() => {
+                            this.historyService.addHistory('splitter', 'create_input', this.translate.instant('HISTORY-DESC.create-input', {input: input['input_label']}));
+                            this.router.navigate(['/settings/splitter/inputs']).then();
+                            this.notify.success(this.translate.instant('INPUT.created'));
+                        }),
+                        catchError((err: any) => {
+                            console.debug(err);
+                            this.notify.handleErrors(err);
+                            return of(false);
+                        })
+                    ).subscribe();
                 }),
                 catchError((err: any) => {
                     console.debug(err);
