@@ -254,32 +254,39 @@ class Splitter:
         ET.SubElement(bundle_tag, "USER_SURNAME_OC").text = metadata['userFirstName']
 
         header_tag = ET.SubElement(root, "HEADER")
+        """
+            Add batch metadata ignoring search values
+        """
         for key in metadata:
-            ET.SubElement(header_tag, key).text = metadata[key]
+            if 'search_' not in key:
+                ET.SubElement(header_tag, key.replace(' ', '')).text = str(metadata[key])
 
         documents_tag = ET.SubElement(root, "Documents")
         for index, document in enumerate(documents):
             document_tag = ET.SubElement(documents_tag, "Document")
             file_tag = ET.SubElement(document_tag, "File")
             ET.SubElement(file_tag, "FILEINDEX").text = str(index + 1)
-            ET.SubElement(file_tag, "FILENAME").text = document['fileName']
+            ET.SubElement(file_tag, "FILENAME").text = document['fileName'] if 'fileName' in document else ''
             ET.SubElement(file_tag, "FORMAT").text = "PDF"
 
             fields_tag = ET.SubElement(document_tag, "FIELDS")
             ET.SubElement(fields_tag, "DOCTYPE").text = document['documentTypeKey']
             for key in document['metadata']:
-                ET.SubElement(fields_tag, key).text = document['metadata'][key]
-
-        xml_str = minidom.parseString(ET.tostring(root)).toprettyxml(indent="    ")
-
+                """
+                    Add document metadata ignoring search values
+                """
+                if 'search_' not in key:
+                    ET.SubElement(fields_tag, key.replace(' ', '')).text = str(document['metadata'][key])
         xml_file_path = output_dir + filename
         try:
+            xml_str = minidom.parseString(ET.tostring(root)).toprettyxml(indent="    ")
             with open(xml_file_path, "w", encoding="utf-8") as f:
                 f.write(xml_str)
-        except IOError:
-            return False
+        except Exception as e:
+            print(str(e))
+            return False, str(e)
 
-        return {'OK': True, 'path': xml_file_path}
+        return True, xml_file_path
 
     @staticmethod
     def get_split_methods(config):

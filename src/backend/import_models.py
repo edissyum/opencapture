@@ -42,6 +42,11 @@ if 'history' or 'models' not in custom_array['history']['path']:
 elif 'models' in custom_array['history']['path']:
     history = getattr(__import__(custom_array['history']['path'], fromlist=[custom_array['history']['module']]), custom_array['history']['module'])
 
+if 'config' or 'models' not in custom_array['config']['path']:
+    from .models import config
+elif 'models' in custom_array['config']['path']:
+    history = getattr(__import__(custom_array['config']['path'], fromlist=[custom_array['config']['module']]), custom_array['config']['module'])
+
 if 'verifier' or 'models' not in custom_array['verifier']['path']:
     from .models import verifier
 elif 'models' in custom_array['verifier']['path']:

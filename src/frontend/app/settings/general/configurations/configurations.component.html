@@ -81,42 +81,50 @@
             </button>
             <div class="settings_title text-center">
                 <h3>{{ this.serviceSettings.getTitle() }}</h3>
+                <div class="absolute right-4 top-0">
+                    <mat-form-field appearance="outline">
+                        <mat-label>{{ 'CONFIGURATIONS.search_config' | translate }}</mat-label>
+                        <input matInput type="text" (keyup)="searchConfiguration($event)">
+                    </mat-form-field>
+                </div>
                 <hr class="border-green-400">
             </div>
         </div>
-        <div *ngIf="!loading" class="flex justify-center items-center">
-            <form class="grid grid-cols-2 gap-12 w-full m-10 text-center">
-                <ng-container *ngFor="let field of outputForm">
-                    <mat-form-field *ngIf="field.type == 'text'">
-                        <mat-label>{{ field.label | translate }}</mat-label>
-                        <input matInput [value]="field.control.value" [formControl]="field.control" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field.required">
-                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputForm) }}</mat-error>
-                    </mat-form-field>
-                    <mat-form-field *ngIf="field.type == 'select' && field.id == 'output_type_id'">
-                        <mat-label>{{ field.label | translate }}</mat-label>
-                        <mat-select [name]="field.id" [id]="field.id" [(ngModel)]="field.control.value" (selectionChange)="changeOutputType($event)" [required]="field.required">
-                            <mat-option *ngFor="let option of outputsTypes" [value]="option.output_type_id">
-                                {{ option.output_type_label }}
-                            </mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputForm) }}</mat-error>
-                    </mat-form-field>
-                    <mat-form-field *ngIf="field.type == 'select' && field.id == 'compress_type' && this.selectedOutputType == 'export_pdf'">
-                        <mat-label>{{ field.label | translate }}</mat-label>
-                        <mat-select [name]="field.id" [id]="field.id" [(ngModel)]="field.control.value">
-                            <mat-option *ngFor="let option of field.values" [value]="option.id">
-                                {{ option.label }}
-                            </mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputForm) }}</mat-error>
-                    </mat-form-field>
+        <div *ngIf="!loading" class="w-full">
+            <mat-table matSort [dataSource]="configurations" (matSortChange)="sortData($event)">
+                <ng-container matColumnDef="id">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'HEADER.id' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
                 </ng-container>
-            </form>
-        </div>
-        <div class="flex justify-center items-center mb-2">
-            <button mat-button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300">
-                <span class="block" (click)="createOutput()">{{ "OUTPUT.create" | translate }}</span>
-            </button>
+                <ng-container matColumnDef="label">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'HEADER.label' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.label}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="description">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'HEADER.description' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.data.description}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="type">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'HEADER.type' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.data.label_type | translate }} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="value">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'HEADER.value' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.data.value}} </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: columnsToDisplay;"
+                         routerLink="/settings/general/configurations/{{row.id}}"
+                         class="cursor-pointer hover:text-green-400 hover:shadow-md transition-colors duration-300"></mat-row>
+            </mat-table>
+            <mat-paginator showFirstLastButtons
+                           *ngIf="this.total > 0"
+                           [length]="this.total"
+                           [pageSize]="pageSize"
+                           [pageIndex]="pageIndex"
+                           [pageSizeOptions]="[5, 10, 15, 20, 50]"
+                           (page)="onPageChange($event)">
+            </mat-paginator>
         </div>
     </mat-sidenav-content>
 </mat-sidenav-container>

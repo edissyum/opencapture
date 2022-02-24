@@ -1,7 +1,7 @@
-<div *ngIf="isLoading">
+<div *ngIf="loading || documentsLoading">
     <app-loader></app-loader>
 </div>
-<mat-drawer-container *ngIf="!isLoading" class="viewer-container" hasBackdrop="false">
+<mat-drawer-container *ngIf="!loading" class="viewer-container" hasBackdrop="false">
     <mat-drawer #drawer mode="side" opened>
         <div class="mt-1">
             <div class="card" *ngFor="let batch of batches| slice: 0 : 10">

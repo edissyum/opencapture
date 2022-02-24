@@ -52,6 +52,7 @@ import {SplitterListOutputComponent} from "./splitter/output/list/list-output.co
 import {ListDocTypeComponent} from "./splitter/doc-types/list/list-doc-type.component";
 import {CreateDocTypeComponent} from "./splitter/doc-types/create/create-doc-type.component";
 import {CreateFolderDocTypeComponent} from "./splitter/doc-types/create-folder/create-folder-doc-type.component";
+import {ConfigurationsComponent} from "./general/configurations/configurations.component";
 
 const routes: Routes = [
     {
@@ -61,6 +62,12 @@ const routes: Routes = [
     },
 
 // --- General
+    // Configurations
+    {
+        path: 'settings/general/configurations', component: ConfigurationsComponent,
+        data: {title: marker('SETTINGS.configurations'), privileges: ['settings', 'configurations']},
+        canActivate: [LoginRequiredService, HasPrivilegeService]
+    },
     // Users
     {
         path: 'settings/general/users', component: UsersListComponent,
@@ -99,157 +106,145 @@ const routes: Routes = [
     {
         path: 'settings/general/about-us', component: AboutUsComponent,
         data: {title: marker('SETTINGS.abouts_us')},
-        canActivate: [LoginRequiredService]
+        canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
         path: 'settings/general/custom-fields', component: CustomFieldsComponent,
         data: {title: marker('SETTINGS.custom_fields'), privileges: ['settings', 'custom_fields']},
-        canActivate: [LoginRequiredService]
+        canActivate: [LoginRequiredService, HasPrivilegeService]
     },
 // --- END General
 // --- Verifier
     {
         path: 'settings/verifier/forms', component: FormListComponent,
         data: {title: marker('SETTINGS.list_forms'), privileges: ['settings', 'forms_list']},
-        canActivate: [LoginRequiredService]
+        canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
         path: 'settings/verifier/forms/builder/new', component: FormBuilderComponent,
         data: {title: marker('SETTINGS.form_builder'), privileges: ['settings', 'add_form']},
-        canActivate: [LoginRequiredService]
+        canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
         path: 'settings/verifier/forms/builder/edit/:id', component: FormBuilderComponent,
         data: {title: marker('SETTINGS.form_update'), privileges: ['settings', 'update_form']},
-        canActivate: [LoginRequiredService]
+        canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
         path: 'settings/verifier/outputs', component: OutputsListComponent,
         data: {title: marker('FORMS.output_settings'), privileges: ['settings', 'outputs_list']},
-        canActivate: [LoginRequiredService]
+        canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
         path: 'settings/verifier/outputs/new', component: CreateOutputComponent,
         data: {title: marker('SETTINGS.add_output'), privileges: ['settings', 'add_output']},
-        canActivate: [LoginRequiredService]
+        canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
         path: 'settings/verifier/outputs/update/:id', component: UpdateOutputComponent,
         data: {title: marker('SETTINGS.update_output'), privileges: ['settings', 'update_output']},
-        canActivate: [LoginRequiredService]
+        canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
         path: 'settings/verifier/inputs', component: InputsListComponent,
         data: {title: marker('FORMS.input_settings'), privileges: ['settings', 'inputs_list']},
-        canActivate: [LoginRequiredService]
+        canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
         path: 'settings/verifier/inputs/new', component: CreateInputComponent,
         data: {title: marker('SETTINGS.add_input'), privileges: ['settings', 'add_input']},
-        canActivate: [LoginRequiredService]
+        canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
         path: 'settings/verifier/inputs/update/:id', component: UpdateInputComponent,
         data: {title: marker('SETTINGS.update_input'), privileges: ['settings', 'update_input']},
-        canActivate: [LoginRequiredService]
+        canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
         path: 'settings/verifier/positions-mask', component: PositionsMaskListComponent,
         data: {title: marker('SETTINGS.list_positions_mask'), privileges: ['settings', 'positions_mask_list']},
-        canActivate: [LoginRequiredService]
+        canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
         path: 'settings/verifier/positions-mask/create', component: CreatePositionsMaskComponent,
         data: {title: marker('SETTINGS.positions_mask_builder'), privileges: ['settings', 'add_positions_mask']},
-        canActivate: [LoginRequiredService]
+        canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
         path: 'settings/verifier/positions-mask/update/:id', component: UpdatePositionsMaskComponent,
         data: {title: marker('SETTINGS.positions_mask_update'), privileges: ['settings', 'update_positions_mask']},
-        canActivate: [LoginRequiredService]
+        canActivate: [LoginRequiredService, HasPrivilegeService]
     },
 // -- END Verifier
 // -- Splitter
     {
         path: 'settings/splitter/forms', component: SplitterFormListComponent,
         data: {title: marker('SETTINGS.list_forms'), privileges: ['settings', 'forms_list_splitter']},
-        canActivate: [LoginRequiredService]
+        canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
         path: 'settings/splitter/forms/builder/new', component: SplitterFormBuilderComponent,
         data: {title: marker('SETTINGS.form_builder'), privileges: ['settings', 'add_form_splitter']},
-        canActivate: [LoginRequiredService]
+        canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
         path: 'settings/splitter/forms/builder/edit/:id', component: SplitterFormBuilderComponent,
         data: {title: marker('SETTINGS.form_update'), privileges: ['settings', 'update_form_splitter']},
-        canActivate: [LoginRequiredService]
+        canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
         path: 'settings/splitter/separator',
         component: SeparatorComponent,
         data: {title: marker('SETTINGS.custom_fields'), privileges: ['settings', 'separator_splitter']},
-        canActivate: [
-            LoginRequiredService,
-            HasPrivilegeService
-        ]
+        canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
         path: 'settings/splitter/documentType',
         component: ListDocTypeComponent,
         data: {title: marker('SETTINGS.document_type'), privileges: ['settings', 'document_type_splitter']},
-        canActivate: [
-            LoginRequiredService,
-            HasPrivilegeService
-        ]
+        canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
         path: 'settings/splitter/documentType/new',
         component: CreateDocTypeComponent,
         data: {title: marker('SETTINGS.document_type'), privileges: ['settings', 'document_type_splitter']},
-        canActivate: [
-            LoginRequiredService,
-            HasPrivilegeService
-        ]
+        canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
         path: 'settings/splitter/documentType/createFolder',
         component: CreateFolderDocTypeComponent,
         data: {title: marker('SETTINGS.document_type'), privileges: ['settings', 'document_type_splitter']},
-        canActivate: [
-            LoginRequiredService,
-            HasPrivilegeService
-        ]
+        canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
         path: 'settings/splitter/outputs', component: SplitterListOutputComponent,
         data: {title: marker('FORMS.output_settings'), privileges: ['settings', 'outputs_list_splitter']},
-        canActivate: [LoginRequiredService]
+        canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
         path: 'settings/splitter/outputs/new', component: SplitterCreateOutputComponent,
         data: {title: marker('SETTINGS.add_output'), privileges: ['settings', 'add_output_splitter']},
-        canActivate: [LoginRequiredService]
+        canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
         path: 'settings/splitter/outputs/update/:id', component: SplitterUpdateOutputComponent,
         data: {title: marker('SETTINGS.update_output'), privileges: ['settings', 'update_output_splitter']},
-        canActivate: [LoginRequiredService]
+        canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
         path: 'settings/splitter/inputs', component: SplitterInputListComponent,
         data: {title: marker('FORMS.input_settings'), privileges: ['settings', 'inputs_list_splitter']},
-        canActivate: [LoginRequiredService]
+        canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
         path: 'settings/splitter/inputs/new', component: SplitterCreateInputComponent,
         data: {title: marker('SETTINGS.add_input'), privileges: ['settings', 'add_input_splitter']},
-        canActivate: [LoginRequiredService]
+        canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
         path: 'settings/splitter/inputs/update/:id', component: SplitterUpdateInputComponent,
         data: {title: marker('SETTINGS.update_input'), privileges: ['settings', 'update_input_splitter']},
-        canActivate: [LoginRequiredService]
+        canActivate: [LoginRequiredService, HasPrivilegeService]
     },
 // -- END Splitter
 ];

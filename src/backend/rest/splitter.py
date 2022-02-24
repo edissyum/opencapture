@@ -90,7 +90,7 @@ def retrieve_batch_documents(batch_id):
 def save_info():
     data = request.data
     data = json.loads(data)
-    response, status = splitter.save_infos(data['documents'], data['batchMetadata'])
+    response, status = splitter.save_infos(data['batchId'], data['documents'], data['batchMetadata'])
     return make_response(jsonify(response)), status
 
 
@@ -127,3 +127,12 @@ def merge_batches(parent_id):
 def get_totals(status):
     totals = splitter.get_totals(status)
     return make_response({'totals': totals[0]}, totals[1])
+
+
+@bp.route('splitter/cmis/testConnection', methods=['POST'])
+@auth.token_required
+def test_connection():
+    data = request.data
+    data = json.loads(data)
+    response, status = splitter.test_cmis_connection(data['args'])
+    return make_response(jsonify(response)), status

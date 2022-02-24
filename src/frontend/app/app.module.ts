@@ -98,6 +98,7 @@ import { StatisticsComponent } from './statistics/statistics.component';
 import { CreateDocTypeComponent } from './settings/splitter/doc-types/create/create-doc-type.component';
 import { ListDocTypeComponent } from './settings/splitter/doc-types/list/list-doc-type.component';
 import { CreateFolderDocTypeComponent } from './settings/splitter/doc-types/create-folder/create-folder-doc-type.component';
+import { ConfigurationsComponent } from './settings/general/configurations/configurations.component';
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -161,7 +162,8 @@ export function createTranslateLoader(http: HttpClient) {
         StatisticsComponent,
         CreateDocTypeComponent,
         ListDocTypeComponent,
-        CreateFolderDocTypeComponent
+        CreateFolderDocTypeComponent,
+        ConfigurationsComponent
     ],
     imports: [
         BrowserModule,

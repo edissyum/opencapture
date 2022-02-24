@@ -15,11 +15,11 @@
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
-import git
 import subprocess
 import configparser
 from flask_babel import gettext
 from flask import current_app, Blueprint
+from src.backend.import_models import config
 from src.backend.main import create_classes_from_current_config
 
 bp = Blueprint('dashboard', __name__)
@@ -44,6 +44,22 @@ def change_locale_in_config(lang):
         return {}, 200
     except configparser.Error as e:
         return {'errors': gettext("CHANGE_LOCALE_ERROR"), 'message': str(e)}, 500
+
+
+def retrieve_configurations(args):
+    custom_fields_res, error = config.retrieve_configurations(args)
+
+    if error is None:
+        response = {
+            "configurations": custom_fields_res
+        }
+        return response, 200
+
+    response = {
+        "errors": "RETRIEVE_CONFIGURATIONS_ERRORS",
+        "message": error
+    }
+    return response, 401
 
 
 def get_last_git_version():

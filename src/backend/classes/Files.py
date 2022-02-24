@@ -17,10 +17,10 @@
 
 import os
 import re
+import subprocess
 import string
 from os import listdir
 import random
-
 import cv2
 import json
 import time
@@ -450,7 +450,7 @@ class Files:
                 return ''
 
     @staticmethod
-    def export_pdf(pages_lists, documents, input_file, output_file, reduce_index=0):
+    def export_pdf(pages_lists, documents, input_file, output_file, compress_type, reduce_index=0):
         pdf_writer = PyPDF2.PdfFileWriter()
         pdf_reader = PyPDF2.PdfFileReader(input_file, strict=False)
         paths = []
@@ -461,10 +461,16 @@ class Files:
                 for page in pages:
                     pdf_writer.addPage(pdf_reader.getPage(page - reduce_index))
                 file_path = output_file + '/' + documents[index]['fileName']
-                with open(output_file + '/' + documents[index]['fileName'], 'wb') as file:
+                with open(file_path, 'wb') as file:
                     pdf_writer.write(file)
                     paths.append(file_path)
                 pdf_writer = PyPDF2.PdfFileWriter()
+
+                if compress_type:
+                    compressed_file_path = output_file + '/min_' + documents[index]['fileName']
+                    compress_pdf(file_path, compressed_file_path, compress_type)
+                    shutil.move(compressed_file_path, file_path)
+
         except Exception as e:
             return False, str(e)
         return paths
@@ -477,3 +483,10 @@ class Files:
     def get_random_string(length):
         letters = string.ascii_uppercase
         return ''.join(random.choice(letters) for i in range(length))
+
+
+def compress_pdf(input_file, output_file, compress_id):
+    gs_command = 'gs#-sDEVICE=pdfwrite#-dCompatibilityLevel=1.4#-dPDFSETTINGS=/%s#-dNOPAUSE#-dQUIET#-o#%s#%s' \
+                 % (compress_id, output_file, input_file)
+    gs_args = gs_command.split('#')
+    subprocess.check_call(gs_args)

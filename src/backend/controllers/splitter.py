@@ -225,7 +225,7 @@ def export_maarch(auth_data, file_path, args, batch):
         return response, 400
 
 
-def export_pdf(batch, documents, parameters, metadata, pages, now):
+def export_pdf(batch, documents, parameters, metadata, pages, now, compress_type):
     _vars = create_classes_from_current_config()
     _cfg = _vars[1]
     filename = _cfg.cfg['GLOBAL']['docserverpath'] + '/splitter/original_pdf/' + batch[0]['file_path']
@@ -240,7 +240,9 @@ def export_pdf(batch, documents, parameters, metadata, pages, now):
             'extension': parameters['extension']
         }
         documents[index]['fileName'] = _Splitter.get_mask_result(document, metadata, now, mask_args)
-    paths = _Files.export_pdf(pages, documents, filename, parameters['folder_out'], 1)
+        print("documents[index]['fileName'] : ")
+        print(documents[index]['fileName'])
+    paths = _Files.export_pdf(pages, documents, filename, parameters['folder_out'], compress_type, 1)
 
     if not paths:
         response = {
@@ -259,43 +261,64 @@ def export_xml(documents, parameters, metadata, now):
     }
     file_name = _Splitter.get_mask_result(None, metadata, now, mask_args)
     res_xml = _Splitter.export_xml(documents, metadata, parameters['folder_out'], file_name, now)
-    if not res_xml:
+    if not res_xml[0]:
         response = {
             "errors": gettext('EXPORT_XML_ERROR'),
-            "message": ''
+            "message": res_xml[1]
         }
         return response, 400
-    return True, 200
+    return {'path': res_xml[1]}, 200
 
 
-def save_infos(documents, metadata):
+def save_infos(batch_id, documents, batch_metadata):
     _vars = create_classes_from_current_config()
     _cfg = _vars[1]
+    res = splitter.update_batch({
+        'batch_id': batch_id,
+        'batch_metadata': batch_metadata,
+    })[0]
+    if not res:
+        response = {
+            "errors": gettext('UPDATE_BATCH_ERROR'),
+            "message": gettext('UPDATE_BATCH_ERROR')
+        }
+        return response, 401
+
     for document in documents:
         if 'ADDED' in document['id']:
             continue
         document['id'] = document['id'].split('-')[-1]
-        res = splitter.save_infos({
+        res = splitter.update_document({
             'document_id': document['id'],
             'doctype_key': document['documentTypeKey'],
-            'custom_fields_values': document['customFieldsValues'],
+            'document_metadata': document['metadata'],
         })[0]
         if not res:
             response = {
-                "errors": gettext('SAVE_DOCUMENT_ERROR'),
-                "message": gettext('SAVE_DOCUMENT_ERROR')
+                "errors": gettext('UPDATE_DOCUMENT_ERROR'),
+                "message": gettext('UPDATE_DOCUMENT_ERROR')
             }
             return response, 401
-
     return True, 200
+
+
+def test_cmis_connection(args):
+    try:
+        _CMIS(args['cmis_ws'], args['login'], args['password'], args['folder'])
+    except Exception as e:
+        response = {
+            'status': False,
+            "errors": gettext('CMIS_CONNECTION_ERROR'),
+            "message": str(e)
+        }
+        return response, 200
+    return {'status': True}, 200
 
 
 def validate(documents, metadata):
     now = _Files.get_now_date()
     _vars = create_classes_from_current_config()
     _cfg = _vars[1]
-    print("metadata")
-    print(metadata)
     batch = splitter.retrieve_batches({
         'batch_id': None,
         'page': None,
@@ -318,7 +341,7 @@ def validate(documents, metadata):
                     Export PDF files if required by output
                 """
                 if output[0]['output_type_id'] in ['export_pdf']:
-                    res_export_pdf = export_pdf(batch, documents, parameters, metadata, pages, now)
+                    res_export_pdf = export_pdf(batch, documents, parameters, metadata, pages, now, output[0]['compress_type'])
                     if res_export_pdf[1] != 200:
                         return res_export_pdf
                 """
@@ -329,52 +352,67 @@ def validate(documents, metadata):
                     if res_export_xml[1] != 200:
                         return res_export_xml
                 """
-                    Export to Alfresco
+                    Export to CMIS
                 """
-                if output[0]['output_type_id'] in ['export_alfresco']:
-                    alfresco_auth = get_output_parameters(output[0]['data']['options']['auth'])
-                    cmis = _CMIS(alfresco_auth['cmis_ws'],
-                                 alfresco_auth['login'],
-                                 alfresco_auth['password'],
-                                 alfresco_auth['folder'])
+                if output[0]['output_type_id'] in ['export_cmis']:
+                    cmis_auth = get_output_parameters(output[0]['data']['options']['auth'])
+                    cmis_params = get_output_parameters(output[0]['data']['options']['parameters'])
+                    cmis = _CMIS(cmis_auth['cmis_ws'],
+                                 cmis_auth['login'],
+                                 cmis_auth['password'],
+                                 cmis_auth['folder'])
                     """
                         Export pdf for Alfresco
                     """
                     pdf_export_parameters = {
-                        'filename': 'TMP_PDF_EXPORT_TO_MAARCH',
-                        'separator': '_',
                         'extension': 'pdf',
                         'folder_out': _cfg.cfg['GLOBAL']['tmppath'],
+                        'separator': cmis_params['separator'],
+                        'filename': cmis_params['pdf_filename'],
                     }
-                    res_export_pdf = export_pdf(batch, documents, pdf_export_parameters, metadata, pages, now)
+                    res_export_pdf = export_pdf(batch, documents, pdf_export_parameters, metadata, pages, now, output[0]['compress_type'])
                     if res_export_pdf[1] != 200:
                         return res_export_pdf
                     for file_path in res_export_pdf[0]['paths']:
-                        """
-                            Export xml for Alfresco
-                        """
-                        cmis.create_document(file_path, 'application/pdf')
+                        cmis_res = cmis.create_document(file_path, 'application/pdf')
+                        if not cmis_res[0]:
+                            response = {
+                                "errors": gettext('EXPORT_XML_ERROR'),
+                                "message": cmis_res[1]
+                            }
+                            return response, 500
+                    """
+                        Export xml for Alfresco
+                    """
                     xml_export_parameters = {
-                        'filename': 'TMP_XML_EXPORT_TO_MAARCH',
-                        'separator': '_',
+                        'separator': cmis_params['separator'],
+                        'filename': cmis_params['xml_filename'],
                         'extension': 'xml',
                         'folder_out': _cfg.cfg['GLOBAL']['tmppath'],
                     }
                     res_export_xml = export_xml(documents, xml_export_parameters, metadata, now)
                     if res_export_xml[1] != 200:
                         return res_export_xml
+                    cmis_res = cmis.create_document(res_export_xml[0]['path'], 'text/xml')
+                    if not cmis_res[0]:
+                        response = {
+                            "errors": gettext('EXPORT_XML_ERROR'),
+                            "message": cmis_res[1]
+                        }
+                        return response, 500
                 """
                     Export to Maarch
                 """
                 if output[0]['output_type_id'] in ['export_maarch']:
+                    cmis_params = get_output_parameters(output[0]['data']['options']['parameters'])
                     maarch_auth = get_output_parameters(output[0]['data']['options']['auth'])
                     pdf_export_parameters = {
                         'filename': 'TMP_PDF_EXPORT_TO_MAARCH',
-                        'separator': '_',
                         'extension': 'pdf',
-                        'folder_out': _cfg.cfg['GLOBAL']['tmppath'],
+                        'separator': cmis_params['separator'],
+                        'file_name': cmis_params['filename'],
                     }
-                    res_export_pdf = export_pdf(batch, documents, pdf_export_parameters, metadata, pages, now)
+                    res_export_pdf = export_pdf(batch, documents, pdf_export_parameters, metadata, pages, now, output[0]['compress_type'])
                     if res_export_pdf[1] != 200:
                         return res_export_pdf
                     subject_mask = parameters['subject']
@@ -448,7 +486,8 @@ def merge_batches(parent_id, batches):
         batch_info = splitter.get_batch_by_id({'id': batch})[0]
         parent_batch_pages += batch_info['page_number']
         batches_info.append(batch_info)
-        pdf = PyPDF4.PdfFileReader(_config.cfg['GLOBAL']['docserverpath'] + '/splitter/original_pdf/' + batch_info['file_path'])
+        pdf = PyPDF4.PdfFileReader(
+            _config.cfg['GLOBAL']['docserverpath'] + '/splitter/original_pdf/' + batch_info['file_path'])
         for page in range(pdf.numPages):
             merged_pdf.addPage(pdf.getPage(page))
 

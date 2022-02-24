@@ -322,22 +322,36 @@ def change_status(args):
     return res
 
 
-def save_infos(args):
+def update_document(args):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
-
-    args = {
+    res = _db.update({
         'table': ['splitter_documents'],
         'set': {
             'doctype_key': args['doctype_key'],
             'data': json.dumps({
-                "custom_fields": args['custom_fields_values']
+                "custom_fields": args['document_metadata']
             })
         },
         'where': ['id = %s'],
         'data': [args['document_id']]
-    }
-    res = _db.update(args)
+    })
+    return res
+
+
+def update_batch(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    res = _db.update({
+        'table': ['splitter_batches'],
+        'set': {
+            'data': json.dumps({
+                "custom_fields": args['batch_metadata']
+            })
+        },
+        'where': ['id = %s'],
+        'data': [args['batch_id']]
+    })
 
     return res
 

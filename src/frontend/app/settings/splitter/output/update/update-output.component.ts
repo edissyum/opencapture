@@ -1,20 +1,20 @@
 /** This file is part of Open-Capture for Invoices.
 
-Open-Capture for Invoices is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+ Open-Capture for Invoices is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-Open-Capture is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+ Open-Capture is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+ You should have received a copy of the GNU General Public License
+ along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
-@dev : Nathan Cheval <nathan.cheval@outlook.fr>
-@dev : Oussama Brich <oussama.brich@edissyum.com> */
+ @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+ @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
 import {Component, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
@@ -29,11 +29,12 @@ import {PrivilegesService} from "../../../../../services/privileges.service";
 import {API_URL} from "../../../../env";
 import {catchError, finalize, map, startWith, tap} from "rxjs/operators";
 import {of} from "rxjs";
+import {marker} from "@biesbjerg/ngx-translate-extract-marker";
 
 @Component({
-  selector: 'app-splitter-update-output',
-  templateUrl: './update-output.component.html',
-  styleUrls: ['./update-output.component.scss']
+    selector: 'app-splitter-update-output',
+    templateUrl: './update-output.component.html',
+    styleUrls: ['./update-output.component.scss']
 })
 export class SplitterUpdateOutputComponent implements OnInit {
     headers             : HttpHeaders   = this.authService.headers;
@@ -61,7 +62,40 @@ export class SplitterUpdateOutputComponent implements OnInit {
             type: 'text',
             control: new FormControl(),
             required: true,
-        }
+        },
+        {
+            id: 'compress_type',
+            label: this.translate.instant('OUTPUT.compress_type'),
+            type: 'select',
+            control: new FormControl(),
+            values: [
+                {
+                    'id': '',
+                    'label': marker('OUTPUT.no_compress')
+                },
+                {
+                    'id': 'screen',
+                    'label': marker('OUTPUT.compress_screen')
+                },
+                {
+                    'id': 'ebook',
+                    'label': marker('OUTPUT.compress_ebook')
+                },
+                {
+                    'id': 'prepress',
+                    'label': marker('OUTPUT.compress_prepress')
+                },
+                {
+                    'id': 'printer',
+                    'label': marker('OUTPUT.compress_printer')
+                },
+                {
+                    'id': 'default',
+                    'label': marker('OUTPUT.compress_default')
+                }
+            ],
+            required: false,
+        },
     ];
     availableFields     : any           = [
         {
@@ -110,6 +144,9 @@ export class SplitterUpdateOutputComponent implements OnInit {
                             if (element.id === field) {
                                 if (element.id === 'output_type_id') this.selectedOutputType = this.originalOutputType = data[field];
                                 element.control.setValue(data[field]);
+                                if (element.id === 'compress_type')
+                                    if (data[field] === null || data[field] === undefined)
+                                        element.control.setValue('');
                             }
                         });
                     }
@@ -177,8 +214,8 @@ export class SplitterUpdateOutputComponent implements OnInit {
             })
         ).subscribe();
 
-         /**
-        * Get custom fields
+        /**
+         * Get custom fields
          **/
         this.http.get(API_URL + '/ws/customFields/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
