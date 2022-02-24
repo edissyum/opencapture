@@ -85,6 +85,13 @@
 		"white": "White",
 		"yellow": "Yellow"
 	},
+	"CONFIGURATIONS": {
+		"bool": "Boolean",
+		"float": "Float",
+		"int": "Integer",
+		"search_config": "Search configuration",
+		"string": "String"
+	},
 	"CUSTOM-FIELDS": {
 		"add": "Add custom field",
 		"checkbox": "Checkbox",
@@ -114,10 +121,12 @@
 		"delete": "Delete",
 		"doctype_added": "Folder added",
 		"doctype_edited": "Document types edited",
+		"download_separator": "Download separator",
 		"edit": "Edit",
 		"edit_doctype": "Edit a document type",
 		"folder": "Folder",
 		"folder_added": "Folder added",
+		"generating_separator": "Generating separator",
 		"no_doctype_to_show": "No document type to show",
 		"no_master": "(No master folder)"
 	},
@@ -238,13 +247,16 @@
 	"HEADER": {
 		"active": "Active",
 		"choose_output": "Choose output",
+		"description": "Description",
 		"id": "Technical id",
 		"inactive": "Inactive",
 		"label": "Label",
 		"label_short": "Label short",
 		"output_type": "Output type",
 		"role": "Role",
-		"status": "Status "
+		"status": "Status ",
+		"type": "Type",
+		"value": "Value"
 	},
 	"HISTORY-DESC": {
 		"create-customer": "New customer created&nbsp;<b>{{ customer }}</b>",
@@ -342,6 +354,12 @@
 		"add": "Add output",
 		"auth": "Authentification",
 		"check_connection_before": "Please check connection",
+		"compress_default": "Very low compression",
+		"compress_ebook": "High compression",
+		"compress_prepress": "Medium compression",
+		"compress_printer": "Low compression",
+		"compress_screen": "Very high compression",
+		"compress_type": "Compression type",
 		"confirm_delete": "Are you sure you want to delete output <b>{{ output }}</b> ?",
 		"create": "Create output",
 		"created": "Output created successfully",
@@ -349,7 +367,8 @@
 		"maarch_connection_ko": "Error while connecting to Maarch",
 		"maarch_connection_ok": "Connexion to Maarch successfull",
 		"no_auth_necessary": "No authentification necessary",
-		"no_output_configured": "",
+		"no_compress": "No compression",
+		"no_output_configured": "No output configured",
 		"no_parameters_necessary": "No specific parameters necessary",
 		"output_deleted": "Output deleted successfully",
 		"output_settings_list": "Settings of outputs",
@@ -466,6 +485,7 @@
 		"add_output": "Add ouput",
 		"administration": "Administration",
 		"autocomplete": "Autocomplete id",
+		"configurations": "Configurations",
 		"create_role": "Create role",
 		"create_user": "Create user",
 		"custom_fields": "Custom fields",
@@ -507,7 +527,6 @@
 		"document_separator": "Document separator",
 		"edit": "Edit",
 		"error_no_doc_type": "Please choose document types",
-		"error_no_metadata": "Please choose document metadata",
 		"form_label": "Form label",
 		"list": "List of batches",
 		"merge": "Merge",
