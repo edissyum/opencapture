@@ -1,6 +1,6 @@
 {
     "name": "open-capture-for-invoices",
-    "version": "2.0.5",
+    "version": "2.1.0",
     "scripts": {
         "ng": "ng",
         "start": "ng serve",
@@ -29,7 +29,6 @@
         "@schematics/angular": "^11.2.15",
         "@swimlane/ngx-charts": "19.2.0",
         "@syncfusion/ej2": "^19.2.60",
-        "@types/pdfjs-dist": "2.1.7",
         "jquery": "^3.6.0",
         "moment": "^2.29.1",
         "ng-click-outside": "^8.0.0",
@@ -37,7 +36,6 @@
         "ng2-datepicker": "^12.0.0",
         "ngx-file-drag-drop": "^4.0.4",
         "ngx-mat-select-search": "^3.3.3",
-        "pdfjs-dist": "^2.9.359",
         "remove-accents": "^0.4.2",
         "rxjs": "~6.6.7"
     },
