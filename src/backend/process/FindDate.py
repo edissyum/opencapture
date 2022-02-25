@@ -35,6 +35,7 @@ class FindDate:
         self.nbPages = nb_pages
         self.db = db
         self.file = file
+        self.maxTimeDelta = -1
 
     def format_date(self, date, position, convert=False):
         if date:
@@ -65,9 +66,9 @@ class FindDate:
                 doc_date = datetime.strptime(date, self.locale.formatDate)
                 timedelta = today - doc_date
 
-                if int(self.config.cfg['GLOBAL']['timedelta']) not in [-1, 0]:
-                    if timedelta.days > int(self.config.cfg['GLOBAL']['timedelta']) or timedelta.days < 0:
-                        self.log.info("Date is older than " + str(self.config.cfg['GLOBAL']['timedelta']) +
+                if int(self.maxTimeDelta) not in [-1, 0]:
+                    if timedelta.days > int(self.maxTimeDelta) or timedelta.days < 0:
+                        self.log.info("Date is older than " + str(self.maxTimeDelta) +
                                       " days or in the future : " + date)
                         date = False
                 return date, position

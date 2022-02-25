@@ -17,18 +17,17 @@
 
 import os
 import re
-import subprocess
-import string
-from os import listdir
-import random
 import cv2
 import json
 import time
 import uuid
+import string
+import random
 import shutil
 import PyPDF4
 import PyPDF2
 import datetime
+import subprocess
 import numpy as np
 from PIL import Image
 from PyPDF4 import utils
@@ -62,8 +61,8 @@ class Files:
         self.custom_file_name = img_name + '_custom.jpg'
         self.jpg_name_last_header = img_name + '_last_header.jpg'
         self.jpg_name_last_footer = img_name + '_last_footer.jpg'
-        self.resolution = int(config.cfg['GLOBAL']['resolution'])
-        self.compression_quality = int(config.cfg['GLOBAL']['compressionquality'])
+        self.resolution = 300
+        self.compression_quality = 100
 
     # Convert the first page of PDF to JPG and open the image
     def pdf_to_jpg(self, pdf_name, open_img=True, crop=False, zone_to_crop=False, last_image=False, is_custom=False):
@@ -477,7 +476,7 @@ class Files:
 
     @staticmethod
     def list_files(directory, extension):
-        return [f for f in listdir(directory) if f.endswith('.' + extension)]
+        return [f for f in os.listdir(directory) if f.endswith('.' + extension)]
 
     @staticmethod
     def get_random_string(length):

@@ -1,7 +1,5 @@
 [GLOBAL]
 ; Use ${GLOBAL:projectPath} to specify once for all the path of the project
-resolution              = 300
-compressionquality      = 100
 projectPath             = /var/www/html/opencaptureforinvoices/
 tmpPath                 = ${GLOBAL:projectPath}/bin/data/tmp/
 scriptsPath             = ${GLOBAL:projectPath}/bin/scripts/
@@ -13,10 +11,7 @@ errorPath               = ${GLOBAL:projectPath}/bin/data/error/
 logFile                 = ${GLOBAL:projectPath}/bin/data/log/OCforInvoices.log
 ocrErrorPath            = ${GLOBAL:projectPath}/instance/config/OCR_ERRORS.xml
 configMail              = ${GLOBAL:projectPath}/instance/config/mail.ini
-; True or False, python way
-allowAutomaticValidation= False
 ; Delta between date found and today date, in days. -1 to disable
-timeDelta               = -1
 watcherConfig           = ${GLOBAL:projectPath}/instance/config/watcher.ini
 
 [AI-CLASSIFICATION]
