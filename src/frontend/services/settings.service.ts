@@ -115,8 +115,7 @@ export class SettingsService {
                 "id"        : "about-us",
                 "label"     : this.translate.instant("SETTINGS.abouts_us"),
                 "icon"      : "fas fa-address-card",
-                "route"     : "/settings/general/about-us",
-                "privilege" : "*"
+                "route"     : "/settings/general/about-us"
             }
         ],
         "verifier": [

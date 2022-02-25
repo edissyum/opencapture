@@ -1,19 +1,19 @@
 /** This file is part of Open-Capture for Invoices.
 
-Open-Capture for Invoices is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+ Open-Capture for Invoices is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-Open-Capture is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
+ Open-Capture is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+ You should have received a copy of the GNU General Public License
+ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
-@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+ @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import {Component, OnInit} from '@angular/core';
 import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
@@ -142,7 +142,7 @@ export class VerifierViewerComponent implements OnInit {
         this.currentFilename = this.invoice.full_jpg_filename;
         await this.getThumb(this.invoice.full_jpg_filename);
         if (this.invoice.form_id) {
-           await this.generateOutputs(this.invoice.form_id);
+            await this.generateOutputs(this.invoice.form_id);
         }
 
         this.formList = await this.getAllForm();
@@ -402,7 +402,8 @@ export class VerifierViewerComponent implements OnInit {
                 const _field = this.form[category][this.form[category].length - 1];
 
                 if (field.id === 'accounting_plan') {
-                    let array = await this.retrieveAccountingPlan();
+                    let array : any = {};
+                    array = await this.retrieveAccountingPlan();
                     this.accountingPlanEmpty = Object.keys(array).length === 0;
                     if (this.accountingPlanEmpty) {
                         array = await this.retrieveDefaultAccountingPlan();
@@ -678,14 +679,14 @@ export class VerifierViewerComponent implements OnInit {
         this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/updatePosition',
             {'args': {[this.lastId]: position}},
             {headers: this.authService.headers}).pipe(
-                tap(() => {
-                    this.invoice.positions[this.lastId] = position;
-                }),
-                catchError((err: any) => {
-                    console.debug(err);
-                    this.notify.handleErrors(err);
-                    return of(false);
-                })
+            tap(() => {
+                this.invoice.positions[this.lastId] = position;
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
         ).subscribe();
     }
 
@@ -705,14 +706,14 @@ export class VerifierViewerComponent implements OnInit {
         this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/updatePage',
             {'args': {[this.lastId]: page}},
             {headers: this.authService.headers}).pipe(
-                tap(() => {
-                    this.invoice.pages[this.lastId] = page;
-                }),
-                catchError((err: any) => {
-                    console.debug(err);
-                    this.notify.handleErrors(err);
-                    return of(false);
-                })
+            tap(() => {
+                this.invoice.pages[this.lastId] = page;
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
         ).subscribe();
     }
 
@@ -1276,17 +1277,17 @@ export class VerifierViewerComponent implements OnInit {
                     ).subscribe();
                 } else {
                     this.form['supplier'].forEach((element: any) => {
-                    if (element.id === 'vat_number') {
-                        setTimeout(() => {
-                            if (!this.token) {
-                                element.control.setErrors({'vat_error': this.translate.instant('ERROR.ecu_api_not_up')});
-                            } else {
-                                element.control.setErrors({'vat_error': this.translate.instant('ERROR.wrong_vat_number_format')});
-                            }
-                            element.control.markAsTouched();
-                        }, 100);
-                    }
-                });
+                        if (element.id === 'vat_number') {
+                            setTimeout(() => {
+                                if (!this.token) {
+                                    element.control.setErrors({'vat_error': this.translate.instant('ERROR.ecu_api_not_up')});
+                                } else {
+                                    element.control.setErrors({'vat_error': this.translate.instant('ERROR.wrong_vat_number_format')});
+                                }
+                                element.control.markAsTouched();
+                            }, 100);
+                        }
+                    });
                 }
             }
         }

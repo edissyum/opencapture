@@ -105,7 +105,7 @@ const routes: Routes = [
     // END Roles
     {
         path: 'settings/general/about-us', component: AboutUsComponent,
-        data: {title: marker('SETTINGS.abouts_us')},
+        data: {title: marker('SETTINGS.abouts_us'), privileges: ['settings']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {

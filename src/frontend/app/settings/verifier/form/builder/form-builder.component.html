@@ -145,7 +145,7 @@
                                     <span *ngIf="field.type == 'select'"> ({{ 'FORMATS.select' | translate }})</span>
                                     <span *ngIf="field.type == 'textarea'"> ({{ 'FORMATS.textarea' | translate }})</span>
                                 </mat-label>
-                                <input class="cursor-pointer" matInput type="text" readonly>
+                                <input class="cursor-pointer" matInput type="text" disabled>
                                 <div class="absolute top-0 -right-4">
                                     <button mat-button [matMenuTriggerFor]="menu"
                                             [matTooltip]="this.translate.instant('VERIFIER.field_settings')"

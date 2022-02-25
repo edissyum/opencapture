@@ -48,6 +48,7 @@ export class AboutUsComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
+        this.serviceSettings.init();
         this.isProd = environment.production;
         this.gitVersion = environment.VERSION;
         this.http.get(API_URL + '/ws/config/gitInfo', {headers: this.authService.headers}).pipe(
