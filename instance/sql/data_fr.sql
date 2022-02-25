@@ -8,6 +8,12 @@ INSERT INTO "status" ("id","label","label_long", "module") VALUES ('END', 'Clot�
 INSERT INTO "status" ("id","label","label_long", "module") VALUES ('DEL', 'Supprimé', 'Supprimé', 'splitter');
 INSERT INTO "status" ("id","label","label_long", "module") VALUES ('MERG', 'Fusionné', 'Fusionné', 'splitter');
 
+-- INSERTION DES PARAMÈTRES
+INSERT INTO "configurations" ("label", "data") VALUES ('timeDelta', '{"type": "int", "value": "-1", "description": "Delta maximum pour remonter une date de facture, en jours. -1 pour désactiver"}');
+INSERT INTO "configurations" ("label", "data") VALUES ('resolution', '{"type": "int", "value": "300", "description": "Résolution utilisée pour la conversion PDF en JPG. En DPI"}');
+INSERT INTO "configurations" ("label", "data") VALUES ('compressionQuality', '{"type": "int", "value": "100", "description": "Qualité de compression utilisée pour la conversion PDF en JPG. En pourcentage"}');
+INSERT INTO "configurations" ("label", "data") VALUES ('allowAutomaticValidation', '{"type": "bool", "value": "False", "description": "Autoriser la validation automatique si toutes les informations d''une facture sont trouvées"}');
+
 -- CRÉATION DES CHAINES SORTANTES DU MODULE VERIFIER
 INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "module", "data") VALUES (1, 'export_xml', 'Export XML', 'verifier', '{
     "options": {
@@ -246,8 +252,8 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (43, 'add_form_splitte
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (44, 'forms_list_splitter', 'splitter');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (45, 'import_suppliers', 'accounts');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (46, 'statistics', 'general');
-
-ALTER SEQUENCE "privileges_id_seq" RESTART WITH 46;
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (47, 'configurations', 'general');
+ALTER SEQUENCE "privileges_id_seq" RESTART WITH 48;
 
 -- CRÉATION DES ROLES
 INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (1, 'superadmin', 'SuperUtilisateur', 'false');

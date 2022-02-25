@@ -14,9 +14,7 @@ logFile                 = ${GLOBAL:projectPath}/bin/data/log/OCforInvoices.log
 ocrErrorPath            = ${GLOBAL:projectPath}/instance/config/OCR_ERRORS.xml
 configMail              = ${GLOBAL:projectPath}/instance/config/mail.ini
 ; True or False, python way
-allowDuplicate          = False
 allowAutomaticValidation= False
-defaultPassword         = Open-CaptureForInvoices
 ; Delta between date found and today date, in days. -1 to disable
 timeDelta               = -1
 watcherConfig           = ${GLOBAL:projectPath}/instance/config/watcher.ini
