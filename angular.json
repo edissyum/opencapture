@@ -22,10 +22,10 @@
             "prefix": "app",
             "architect": {
                 "build": {
-                    "builder": "@angular-builders/custom-webpack:browser",
+                    "builder": "@angular-devkit/build-angular:browser",
                     "options": {
                         "allowedCommonJsDependencies": [
-                            "moment"
+                            "clone-deep"
                         ],
                         "outputPath": "dist/",
                         "index": "src/frontend/index.html",
@@ -85,18 +85,6 @@
                         }
                     }
                 },
-                "serve": {
-                    "builder": "@angular-builders/custom-webpack:dev-server",
-                    "options": {
-                        "disableHostCheck": true,
-                        "browserTarget": "OpenCaptureForInvoices:build"
-                    },
-                    "configurations": {
-                        "production": {
-                            "browserTarget": "OpenCaptureForInvoices:build:production"
-                        }
-                    }
-                },
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
                     "options": {
@@ -104,7 +92,7 @@
                     }
                 },
                 "test": {
-                    "builder": "@angular-builders/custom-webpack:karma",
+                    "builder": "@angular-devkit/build-angular:karma",
                     "options": {
                         "main": "src/test.ts",
                         "assets": [

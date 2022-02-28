@@ -288,16 +288,6 @@ export class SplitterFormBuilderComponent implements OnInit {
         });
     }
 
-    changeFormat(fieldId: any, newFormat: any, formatIcon: any, category: any) {
-        const id = fieldId;
-        this.fields[category].forEach((element: any) => {
-            if (element.id === id) {
-                element.format = newFormat;
-                element.format_icon = formatIcon;
-            }
-        });
-    }
-
     changeDisplay(fieldId: any, newDisplay: any, displayIcon: any, category: any) {
         const id = fieldId;
         this.fields[category].forEach((element: any) => {
@@ -314,15 +304,6 @@ export class SplitterFormBuilderComponent implements OnInit {
             if (element.id === id) {
                 element.required = newRequired;
                 element.required_icon = requiredIcon;
-            }
-        });
-    }
-
-    changeColor(fieldId: any, newColor: any, category: any) {
-        const id = fieldId;
-        this.fields[category].forEach((element: any) => {
-            if (element.id === id) {
-                element.color = newColor;
             }
         });
     }

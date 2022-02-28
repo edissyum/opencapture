@@ -30,12 +30,10 @@ import { FormControl} from "@angular/forms";
 import { DatePipe } from '@angular/common';
 import { LocalStorageService } from "../../../services/local-storage.service";
 import { ConfigService } from "../../../services/config.service";
-import 'moment/locale/en-gb';
-import 'moment/locale/fr';
 import * as moment from 'moment';
 import { UserService } from "../../../services/user.service";
 import { HistoryService } from "../../../services/history.service";
-declare var $: any;
+declare const $: any;
 
 
 @Component({
@@ -87,8 +85,8 @@ export class VerifierViewerComponent implements OnInit {
             'label': marker('FORMS.supplier')
         },
         {
-            'id': 'facturation',
-            'label': marker('FACTURATION.facturation')
+            id: 'facturation',
+            label: marker('FACTURATION.facturation')
         },
         {
             'id': 'other',
@@ -987,7 +985,9 @@ export class VerifierViewerComponent implements OnInit {
             return value.length === size;
         }
 
-        if (isNaN(value) || value.length !== size) return false;
+        if (isNaN(value) || value.length !== size) {
+            return false;
+        }
         let bal     = 0;
         let total   = 0;
         for (let i = size - 1; i >= 0; i--) {
@@ -1063,7 +1063,9 @@ export class VerifierViewerComponent implements OnInit {
                 }
             });
         }
-        if (!valid) return;
+        if (!valid) {
+            return;
+        }
         this.saveData(arrayData);
         /*
             Executer les actions paramétrées dans les réglages du formulaires
@@ -1178,7 +1180,9 @@ export class VerifierViewerComponent implements OnInit {
                         }
                         this.saveInfo = false;
                         if (field) {
-                            if (parseInt(String(page)) === this.currentPage) this.drawPositionByField(field, position);
+                            if (parseInt(String(page)) === this.currentPage) {
+                                this.drawPositionByField(field, position);
+                            }
                         }
                     }
                 }

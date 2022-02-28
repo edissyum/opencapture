@@ -10,8 +10,7 @@
             ],
             "parserOptions": {
                 "project": [
-                    "tsconfig.json",
-                    "e2e/tsconfig.json"
+                    "src/frontend/tsconfig.json"
                 ],
                 "createDefaultProgram": true
             },
@@ -21,6 +20,8 @@
                 "plugin:@angular-eslint/template/process-inline-templates"
             ],
             "rules": {
+                "@angular-eslint/component-selector": "off",
+                "@typescript-eslint/quotes": "off",
                 "@typescript-eslint/array-type": [
                     "error",
                     {
@@ -50,18 +51,26 @@
                 ],
                 "@typescript-eslint/no-var-requires": "error",
                 "@typescript-eslint/prefer-for-of": "off",
-                "guard-for-in": "off",
-                "jsdoc/check-alignment": "off",
-                "jsdoc/newline-after-description": "off",
+                "@typescript-eslint/member-ordering": "off",
+                "@typescript-eslint/no-inferrable-types": "off",
+                "@typescript-eslint/type-annotation-spacing": "off",
+                "radix": "off",
+                "curly": "off",
                 "no-eval": "off",
-                "prefer-arrow/prefer-arrow-functions": "off",
+                "max-len": "off",
+                "no-console": "off",
+                "quote-props": "off",
+                "guard-for-in": "off",
                 "no-fallthrough": "off",
                 "object-shorthand": "off",
+                "no-underscore-dangle": "off",
+                "jsdoc/check-alignment": "off",
+                "jsdoc/newline-after-description": "off",
+                "prefer-arrow/prefer-arrow-functions": "off",
                 "one-var": [
                     "off",
                     "never"
-                ],
-                "radix": "off"
+                ]
             }
         },
         {
@@ -70,9 +79,7 @@
             ],
             "extends": [
                 "plugin:@angular-eslint/template/recommended"
-            ],
-            "rules": {
-            }
+            ]
         }
     ]
 }
