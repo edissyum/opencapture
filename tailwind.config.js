@@ -18,7 +18,7 @@
 module.exports = {
     important: true,
     content: [
-        '**/*.{html,ts}'
+        'src/frontend/**/*.{html,ts}'
     ],
     darkMode: 'media', // or 'media' or 'class'
     theme: {
