@@ -20,15 +20,15 @@ import { BrowserModule, Title } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppMaterialModule } from './app-material.module';
 import { ServicesModule } from '../services/services.module';
-import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
-import { DragDropModule } from "@angular/cdk/drag-drop";
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { TranslateLoader, TranslateModule, TranslateService } from "@ngx-translate/core";
-import { HttpClient } from "@angular/common/http";
-import { HttpClientModule } from "@angular/common/http";
-import { TranslateHttpLoader } from "@ngx-translate/http-loader";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
+import { HttpClient } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { SettingsRoutingModule } from './settings/settings-routing.module';
@@ -39,16 +39,16 @@ import { SplitterViewerComponent } from './splitter/viewer/splitter-viewer.compo
 import { SplitterListComponent } from './splitter/list/splitter-list.component';
 
 import { FilterPipe } from '../services/pipes/filter.pipe';
-import { NgxFileDragDropModule } from "ngx-file-drag-drop";
-import { ClickOutsideModule } from 'ng-click-outside';
-import { NgxMatSelectSearchModule } from "ngx-mat-select-search";
+import { NgxFileDragDropModule } from 'ngx-file-drag-drop';
+import { NgClickOutsideModule } from 'ng-click-outside2';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { NgsgModule } from 'ng-sortgrid';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 import { DocumentTypeFactoryComponent } from './splitter/document-type-factory/document-type-factory.component';
 import { DocumentTypeComponent } from './splitter/document-type/document-type.component';
 import { LoginComponent } from './login/login.component';
-import { LogoutComponent } from "./logout/logout.component";
+import { LogoutComponent } from './logout/logout.component';
 import { HomeComponent } from './home/home.component';
 import { MenuComponent } from './menu/menu.component';
 import { NotFoundComponent } from './not-found/not-found.component';
@@ -56,9 +56,9 @@ import { UserProfileComponent } from './profile/profile.component';
 import { UploadComponent } from './upload/upload.component';
 import { UsersListComponent } from './settings/general/users/list/users-list.component';
 import { SettingsComponent } from './settings/settings.component';
-import { MatPaginatorIntl } from "@angular/material/paginator";
-import { CustomMatPaginatorIntl } from "./custom-mat-paginator";
-import { LastUrlService } from "../services/last-url.service";
+import { MatPaginatorIntl } from '@angular/material/paginator';
+import { CustomMatPaginatorIntl } from './custom-mat-paginator';
+import { LastUrlService } from '../services/last-url.service';
 import { AboutUsComponent } from './settings/general/about-us/about-us.component';
 import { CreateUserComponent } from './settings/general/users/create/create-user.component';
 import { UpdateUserComponent } from './settings/general/users/update/update-user.component';
@@ -92,8 +92,8 @@ import { SplitterInputListComponent } from './settings/splitter/inputs/list/inpu
 import { SplitterUpdateOutputComponent } from './settings/splitter/output/update/update-output.component';
 import { SplitterCreateOutputComponent } from './settings/splitter/output/create/create-output.component';
 import { SplitterListOutputComponent } from './settings/splitter/output/list/list-output.component';
-import { SplitterFormBuilderComponent } from "./settings/splitter/form/builder/form-builder.component";
-import { SplitterFormListComponent } from "./settings/splitter/form/list/form-list.component";
+import { SplitterFormBuilderComponent } from './settings/splitter/form/builder/form-builder.component';
+import { SplitterFormListComponent } from './settings/splitter/form/list/form-list.component';
 import { StatisticsComponent } from './statistics/statistics.component';
 import { CreateDocTypeComponent } from './settings/splitter/doc-types/create/create-doc-type.component';
 import { ListDocTypeComponent } from './settings/splitter/doc-types/list/list-doc-type.component';
@@ -186,7 +186,7 @@ export function createTranslateLoader(http: HttpClient) {
         ReactiveFormsModule,
         FormsModule,
         NgxFileDragDropModule,
-        ClickOutsideModule,
+        NgClickOutsideModule,
         DragDropModule,
         NgxMatSelectSearchModule,
     ],

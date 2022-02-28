@@ -18,9 +18,9 @@ export class HasPrivilegeService {
     }
 
     canActivate(route: ActivatedRouteSnapshot): boolean {
-        if (route.data.privileges !== undefined) {
+        if (route.data['privileges'] !== undefined) {
             let returnValue = true;
-            route.data.privileges.forEach((privilege: any) => {
+            route.data['privileges'].forEach((privilege: any) => {
                 const hasPrivilege = this.privilegesService.hasPrivilege(privilege);
                 if (!hasPrivilege) {
                     this.translate.get('ERROR.unauthorized').subscribe((translated: string) => {
