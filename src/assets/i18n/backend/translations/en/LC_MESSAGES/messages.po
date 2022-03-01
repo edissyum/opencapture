@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2022-02-01 10:30+0100\n"
+"POT-Creation-Date: 2022-03-01 15:57+0100\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: en\n"
@@ -109,15 +109,15 @@ msgstr "Authentification by token error"
 msgid "CHANGE_LOCALE_ERROR"
 msgstr "Error while changing locale"
 
-#: src/backend/controllers/doc_types.py:79
+#: src/backend/controllers/doctypes.py:120
 msgid "DOCTYPESEPARATOR"
 msgstr "SEPARATEUR AVEC TYPE DE DOCUMENT / SEPARATOR WITH DOCUMENT TYPE"
 
-#: src/backend/controllers/doc_types.py:83
+#: src/backend/controllers/doctypes.py:123
 msgid "DOCUMENTSEPARATOR"
 msgstr "SEPARATEUR DE DOCUMENT / DOCUMENT SEPARATOR"
 
-#: src/backend/controllers/doc_types.py:87
+#: src/backend/controllers/doctypes.py:126
 msgid "BUNDLESEPARATOR"
 msgstr "SEPARATEUR DE LOT / BUNDLE SEPARATOR"
 
@@ -163,69 +163,69 @@ msgstr "Error while adding new history"
 msgid "UPDATE_INPUT_ERROR"
 msgstr "Error while updating input"
 
-#: src/backend/controllers/inputs.py:81 src/backend/controllers/inputs.py:92
-#: src/backend/controllers/inputs.py:105
+#: src/backend/controllers/inputs.py:83 src/backend/controllers/inputs.py:94
+#: src/backend/controllers/inputs.py:107
 msgid "CREATE_INPUT_ERROR"
 msgstr "Error while creating input"
 
-#: src/backend/controllers/inputs.py:82
+#: src/backend/controllers/inputs.py:84
 msgid "INPUT_ID_ALREADY_EXISTS"
 msgstr "The label short already exists"
 
-#: src/backend/controllers/inputs.py:93
+#: src/backend/controllers/inputs.py:95
 msgid "INPUT_FOLDER_ALREADY_EXISTS"
 msgstr "The document capture path is already set in another input"
 
-#: src/backend/controllers/inputs.py:118
+#: src/backend/controllers/inputs.py:120
 msgid "GET_INPUT_BY_ID_ERROR"
 msgstr "Error while retrieving input"
 
-#: src/backend/controllers/inputs.py:142 src/backend/controllers/inputs.py:148
+#: src/backend/controllers/inputs.py:144 src/backend/controllers/inputs.py:150
 msgid "DELETE_INPUT_ERROR"
 msgstr "Error while deleting input"
 
-#: src/backend/controllers/inputs.py:176
+#: src/backend/controllers/inputs.py:178
 msgid "FS_WATCHER_DELETION_ERROR"
 msgstr "Error while deleting fs watcher settings"
 
-#: src/backend/controllers/inputs.py:177 src/backend/controllers/inputs.py:231
+#: src/backend/controllers/inputs.py:179 src/backend/controllers/inputs.py:233
 msgid "FS_WATCHER_CONFIG_DOESNT_EXIST"
 msgstr "Fs watcher config doesnt exists"
 
-#: src/backend/controllers/inputs.py:212 src/backend/controllers/inputs.py:230
+#: src/backend/controllers/inputs.py:214 src/backend/controllers/inputs.py:232
 msgid "FS_WATCHER_CREATION_ERROR"
 msgstr "Error while creating fs watcher settings"
 
-#: src/backend/controllers/inputs.py:213
+#: src/backend/controllers/inputs.py:215
 msgid "INPUT_FOLDER_DOESNT_EXISTS_OR_NOT_WRITEABLE"
 msgstr "Input folder doesnt exists or it's not writeable"
 
-#: src/backend/controllers/inputs.py:236
+#: src/backend/controllers/inputs.py:238
 msgid "SCRIPT_SAMPLE_DOESNT_EXISTS"
 msgstr "Script sample doesn't exists"
 
-#: src/backend/controllers/inputs.py:242
+#: src/backend/controllers/inputs.py:244
 msgid "SCRIPT_FOLDER_DOESNT_EXISTS"
 msgstr "Script folder doesn't exists"
 
-#: src/backend/controllers/outputs.py:71 src/backend/controllers/outputs.py:77
+#: src/backend/controllers/outputs.py:72 src/backend/controllers/outputs.py:78
 msgid "UPDATE_OUTPUT_ERROR"
 msgstr "Error while updating output"
 
-#: src/backend/controllers/outputs.py:102
+#: src/backend/controllers/outputs.py:104
 msgid "CREATE_OUTPUT_ERROR"
 msgstr "Error while creating output"
 
-#: src/backend/controllers/outputs.py:115
+#: src/backend/controllers/outputs.py:117
 msgid "GET_OUTPUT_BY_ID_ERROR"
 msgstr "Error while retrieving output"
 
-#: src/backend/controllers/outputs.py:128
+#: src/backend/controllers/outputs.py:130
 msgid "GET_OUTPUT_TYPE_BY_ID_ERROR"
 msgstr "Error while retrieving output type"
 
-#: src/backend/controllers/outputs.py:145
-#: src/backend/controllers/outputs.py:151
+#: src/backend/controllers/outputs.py:147
+#: src/backend/controllers/outputs.py:153
 msgid "DELETE_OUTPUT_ERROR"
 msgstr "Error while deleting output"
 
@@ -301,10 +301,56 @@ msgstr "Error while disabling role"
 msgid "ENABLE_ROLE_ERROR"
 msgstr "Error while enabling role"
 
-#: src/backend/controllers/splitter.py:63
+#: src/backend/controllers/splitter.py:68
 #: src/backend/controllers/verifier.py:73
 msgid "AT"
 msgstr "at"
+
+#: src/backend/controllers/splitter.py:210
+#: src/backend/controllers/splitter.py:216
+#: src/backend/controllers/splitter.py:217
+#: src/backend/controllers/verifier.py:437
+#: src/backend/controllers/verifier.py:443
+#: src/backend/controllers/verifier.py:449
+msgid "EXPORT_MAARCH_ERROR"
+msgstr "Error during Maarch export"
+
+#: src/backend/controllers/splitter.py:222
+#: src/backend/controllers/splitter.py:223
+#: src/backend/controllers/verifier.py:461
+msgid "MAARCH_WS_INFO_EMPTY"
+msgstr "Maarch informations are empty"
+
+#: src/backend/controllers/splitter.py:249
+msgid "EXPORT_PDF_ERROR"
+msgstr "Error while exporting PDF"
+
+#: src/backend/controllers/splitter.py:266
+#: src/backend/controllers/splitter.py:380
+#: src/backend/controllers/splitter.py:399
+#: src/backend/controllers/verifier.py:553
+msgid "EXPORT_XML_ERROR"
+msgstr "Error while exporting XML"
+
+#: src/backend/controllers/splitter.py:282
+#: src/backend/controllers/splitter.py:283
+msgid "UPDATE_BATCH_ERROR"
+msgstr "Error while updating batch"
+
+#: src/backend/controllers/splitter.py:298
+#: src/backend/controllers/splitter.py:299
+msgid "UPDATE_DOCUMENT_ERROR"
+msgstr "Error while updating document"
+
+#: src/backend/controllers/splitter.py:311
+msgid "CMIS_CONNECTION_ERROR"
+msgstr "Errur while connecting to CMIS"
+
+#: src/backend/controllers/splitter.py:460
+#: src/backend/controllers/verifier.py:689 src/backend/models/splitter.py:402
+#: src/backend/models/verifier.py:134
+msgid "GET_TOTALS_ERROR"
+msgstr "Error while retrievings totals"
 
 #: src/backend/controllers/status.py:35
 msgid "RETRIEVES_STATUS_ERROR"
@@ -381,12 +427,6 @@ msgstr "Error while updating invoice"
 msgid "REMOVE_LOCK_BY_USER_ID_ERROR"
 msgstr "Error while removing lock on invoice"
 
-#: src/backend/controllers/verifier.py:437
-#: src/backend/controllers/verifier.py:443
-#: src/backend/controllers/verifier.py:449
-msgid "EXPORT_MAARCH_ERROR"
-msgstr "Error during Maarch export"
-
 #: src/backend/controllers/verifier.py:444
 msgid "PDF_FILE_NOT_FOUND"
 msgstr "PDF file not found"
@@ -395,17 +435,9 @@ msgstr "PDF file not found"
 msgid "MAARCH_WS_INFO_WRONG"
 msgstr "Maarch informations are wrong"
 
-#: src/backend/controllers/verifier.py:461
-msgid "MAARCH_WS_INFO_EMPTY"
-msgstr "Maarch informations are empty"
-
 #: src/backend/controllers/verifier.py:547
 msgid "XML_DESTINATION_FOLDER_DOESNT_EXISTS"
 msgstr "Destination folder for XML doesn't exists"
-
-#: src/backend/controllers/verifier.py:553
-msgid "EXPORT_XML_ERROR"
-msgstr "Error while exporting XML"
 
 #: src/backend/controllers/verifier.py:617
 #: src/backend/controllers/verifier.py:620
@@ -450,21 +482,29 @@ msgstr "Error while creating custom field"
 msgid "CUSTOM_FIELD_ALREADY_EXIST"
 msgstr "Custom field already exist"
 
-#: src/backend/models/custom_fields.py:86
+#: src/backend/models/custom_fields.py:87
 msgid "UPDATE_CUSTOM_FIELDS_ERROR"
 msgstr "Error while updating custom fields"
 
-#: src/backend/models/doc_types.py:43
-msgid "ADD_DOC_TYPE_ERROR"
-msgstr "Error lors de l'ajout du type de document"
+#: src/backend/models/custom_fields.py:107
+msgid "DELETE_CUSTOM_FIELDS_ERROR"
+msgstr "Error while deleting custom field"
 
-#: src/backend/models/doc_types.py:46
+#: src/backend/models/doctypes.py:45
+msgid "ADD_DOCTYPE_ERROR"
+msgstr "Error while adding doctype"
+
+#: src/backend/models/doctypes.py:48
 msgid "DOCTYPE_ALREADY_EXIST"
 msgstr "Un type de document existe "
 
-#: src/backend/models/doc_types.py:81
+#: src/backend/models/doctypes.py:85
 msgid "UPDATE_DOCTYPE_ERROR"
 msgstr "Error lors de l'édition du type de document"
+
+#: src/backend/models/doctypes.py:112 src/backend/models/doctypes.py:115
+msgid "SET_DEFAULT_DOCTYPE_ERROR"
+msgstr "Error while updating default doctype"
 
 #: src/backend/models/forms.py:71
 msgid "GET_DEFAULT_FORM_ERROR"
@@ -573,4 +613,7 @@ msgstr "Error while connecting to database"
 #: src/backend/rest/splitter.py:39 src/backend/rest/verifier.py:37
 msgid "UNKNOW_ERROR"
 msgstr "Unknow error"
+
+#~ msgid "ADD_DOC_TYPE_ERROR"
+#~ msgstr "Error lors de l'ajout du type de document"
 
