@@ -60,9 +60,7 @@ export class StatisticsComponent implements OnInit {
         },
 
     ];
-    colorScheme = {
-        domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
-    };
+
     selectedStatistic : any;
     selectedDiagramType : string = 'vertical-bar';
 

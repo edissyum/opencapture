@@ -20,8 +20,13 @@
                 "plugin:@angular-eslint/template/process-inline-templates"
             ],
             "rules": {
-                "@angular-eslint/component-selector": "off",
                 "@typescript-eslint/quotes": "off",
+                "@typescript-eslint/no-shadow": [
+                    "off",
+                    {
+                        "hoist": "all"
+                    }
+                ],
                 "@typescript-eslint/array-type": [
                     "error",
                     {
@@ -29,6 +34,12 @@
                     }
                 ],
                 "@typescript-eslint/dot-notation": "off",
+                "@typescript-eslint/prefer-for-of": "off",
+                "@angular-eslint/component-selector": "off",
+                "@typescript-eslint/member-ordering": "off",
+                "@typescript-eslint/no-var-requires": "error",
+                "@typescript-eslint/naming-convention": "off",
+                "@typescript-eslint/no-inferrable-types": "off",
                 "@typescript-eslint/member-delimiter-style": [
                     "error",
                     {
@@ -42,20 +53,13 @@
                         }
                     }
                 ],
-                "@typescript-eslint/naming-convention": "off",
-                "@typescript-eslint/no-shadow": [
-                    "off",
-                    {
-                        "hoist": "all"
-                    }
-                ],
-                "@typescript-eslint/no-var-requires": "error",
-                "@typescript-eslint/prefer-for-of": "off",
-                "@typescript-eslint/member-ordering": "off",
-                "@typescript-eslint/no-inferrable-types": "off",
                 "@typescript-eslint/type-annotation-spacing": "off",
                 "radix": "off",
                 "curly": "off",
+                "one-var": [
+                    "off",
+                    "never"
+                ],
                 "no-eval": "off",
                 "max-len": "off",
                 "no-console": "off",
@@ -66,11 +70,7 @@
                 "no-underscore-dangle": "off",
                 "jsdoc/check-alignment": "off",
                 "jsdoc/newline-after-description": "off",
-                "prefer-arrow/prefer-arrow-functions": "off",
-                "one-var": [
-                    "off",
-                    "never"
-                ]
+                "prefer-arrow/prefer-arrow-functions": "off"
             }
         },
         {

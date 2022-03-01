@@ -38,27 +38,27 @@ import {HistoryService} from "../../../services/history.service";
 declare const $: any;
 
 interface accountsNode {
-    name: string;
-    id: number;
-    parent_id: any;
-    supplier_id: any;
-    purchase_or_sale: any;
-    number: number;
-    display: boolean;
-    children: any;
+    name: string
+    id: number
+    parent_id: any
+    supplier_id: any
+    purchase_or_sale: any
+    count: number
+    display: boolean
+    children: any
 }
 
 interface flatNode {
-    expandable: boolean;
-    name: string;
-    id: number;
-    parent_id: any;
-    supplier_id: any;
-    purchase_or_sale: any;
-    display: boolean;
-    number: number;
-    level: number;
-    children: any;
+    expandable: boolean
+    name: string
+    id: number
+    parent_id: any
+    supplier_id: any
+    purchase_or_sale: any
+    display: boolean
+    count: number
+    level: number
+    children: any
 }
 
 @Component({
@@ -106,20 +106,18 @@ export class VerifierListComponent implements OnInit {
     invoiceToDeleteSelected : boolean   = false;
     totalChecked    : number            = 0;
 
-    private _transformer = (node: accountsNode, level: number) => {
-        return {
-            expandable: !!node.children && node.children.length > 0,
-            name: node.name,
-            supplier_id: node.supplier_id,
-            id: node.id,
-            parent_id: node.parent_id,
-            purchase_or_sale: node.purchase_or_sale,
-            display: node.display,
-            number: node.number,
-            level: level,
-            children: node.children
-        };
-    }
+    private _transformer = (node: accountsNode, level: number) => ({
+        expandable: !!node.children && node.children.length > 0,
+        name: node.name,
+        supplier_id: node.supplier_id,
+        id: node.id,
+        parent_id: node.parent_id,
+        purchase_or_sale: node.purchase_or_sale,
+        display: node.display,
+        count: node.count,
+        level: level,
+        children: node.children
+    });
 
     treeControl = new FlatTreeControl<flatNode>(
         node => node.level, node => node.expandable);
@@ -208,7 +206,7 @@ export class VerifierListComponent implements OnInit {
                     supplier_id: '',
                     purchase_or_sale: '',
                     display: true,
-                    number: 0,
+                    count: 0,
                     children: []
                 });
                 this.allowedCustomers.push(0); // 0 is used if for some reasons no customer was recover by OC process
@@ -221,7 +219,7 @@ export class VerifierListComponent implements OnInit {
                         supplier_id: '',
                         purchase_or_sale: '',
                         display: true,
-                        number: 0,
+                        count: 0,
                         children: []
                     });
                 });
@@ -292,7 +290,7 @@ export class VerifierListComponent implements OnInit {
                 */
                 this.TREE_DATA.forEach((data: any, index: number) => {
                     this.TREE_DATA[index].display = true;
-                    this.TREE_DATA[index].number = 0;
+                    this.TREE_DATA[index].count = 0;
                     this.TREE_DATA[index].children = [];
                 });
 
@@ -306,7 +304,7 @@ export class VerifierListComponent implements OnInit {
                             });
                             if (!childExists) {
                                 this.TREE_DATA[index].children.push(
-                                    {name: this.translate.instant('UPLOAD.sale_invoice'), id: 0, display: true, number: 0, children: []},
+                                    {name: this.translate.instant('UPLOAD.sale_invoice'), id: 0, display: true, count: 0, children: []},
                                 );
                                 this.createChildren('sale', 0, index);
                             }
@@ -322,7 +320,7 @@ export class VerifierListComponent implements OnInit {
                                 });
                                 if (!childExists) {
                                     this.TREE_DATA[index].children.push(
-                                        {name: this.translate.instant('UPLOAD.purchase_invoice'), id: 1, display: true, number: 0, children: []},
+                                        {name: this.translate.instant('UPLOAD.purchase_invoice'), id: 1, display: true, count: 0, children: []},
                                     );
                                     this.createChildren('purchase', 1, index);
                                 }
@@ -346,7 +344,7 @@ export class VerifierListComponent implements OnInit {
         parent.forEach((child: any) => {
             if (child.name === childName) {
                 childNameExists = true;
-                child.number = child.number + 1;
+                child.count = child.number + 1;
             }
         });
 
@@ -357,7 +355,7 @@ export class VerifierListComponent implements OnInit {
                 id: id,
                 parent_id: parentId,
                 purchase_or_sale: purchaseOrSale,
-                number: 1,
+                count: 1,
                 display: true
             });
         }
@@ -373,8 +371,8 @@ export class VerifierListComponent implements OnInit {
                         }else {
                             this.fillChildren(this.TREE_DATA[index].id, this.TREE_DATA[index].children[childIndex].children, invoice.supplier_name, this.translate.instant('ACCOUNTS.supplier_unknow'), invoice.supplier_id, invoice.invoice_id, purchaseOrSale);
                         }
-                        this.TREE_DATA[index].children[childIndex].number = this.TREE_DATA[index].children[childIndex].number + 1;
-                        this.TREE_DATA[index].number = this.TREE_DATA[index].number + 1;
+                        this.TREE_DATA[index].children[childIndex].count = this.TREE_DATA[index].children[childIndex].count + 1;
+                        this.TREE_DATA[index].count = this.TREE_DATA[index].count + 1;
                     }
                 });
             }
@@ -447,7 +445,7 @@ export class VerifierListComponent implements OnInit {
         ).subscribe();
     }
 
-    checkCheckedInvoices () {
+    checkCheckedInvoices() {
         this.totalChecked = $('input.checkBox_list:checked').length;
         this.invoiceToDeleteSelected = this.totalChecked !== 0;
     }

@@ -26,7 +26,7 @@
         "@ngx-translate/core": "^14.0.0",
         "@ngx-translate/http-loader": "^7.0.0",
         "@schematics/angular": "^13.2.5",
-        "@swimlane/ngx-charts": "20.0.1",
+        "@swimlane/ngx-charts": "^20.1.0",
         "@syncfusion/ej2": "^19.4.53",
         "jquery": "^3.6.0",
         "moment": "^2.29.1",

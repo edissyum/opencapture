@@ -48,6 +48,15 @@
                         *ngIf="this.selectedDiagramType === 'pie-grid'"
                         [results]="data">
                 </ngx-charts-pie-grid>
+                <ngx-charts-line-chart
+                        *ngIf="this.selectedDiagramType === 'line-charts'"
+                        [results]="data"
+                        [xAxis]="true"
+                        [yAxis]="true"
+                        [legend]="false"
+                        [showXAxisLabel]="true"
+                        [showYAxisLabel]="true">
+                </ngx-charts-line-chart>
             </div>
         </div>
     </mat-sidenav-content>
