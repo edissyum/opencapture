@@ -1,3 +1,20 @@
+/** This file is part of Open-Capture for Invoices.
+
+ Open-Capture for Invoices is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ Open-Capture is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+
+ @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+
 import {Injectable} from '@angular/core';
 import {TranslateService} from "@ngx-translate/core";
 import {LocalStorageService} from "./local-storage.service";
@@ -11,9 +28,8 @@ import {Router} from "@angular/router";
 
 export class SettingsService {
     isMenuOpen: boolean = true;
-    selectedSetting: any = "users";
+    selectedSetting: any = "configurations";
     selectedParentSetting: any = "general";
-    settingListOpenState: boolean = true;
     settingsParent: any[] = [
         {
             "id": "general",
@@ -33,6 +49,13 @@ export class SettingsService {
     ];
     settings: any = {
         "general": [
+            {
+                "id"        : "configurations",
+                "label"     : this.translate.instant("SETTINGS.configurations"),
+                "icon"      : "fas fa-sliders",
+                "route"     : '/settings/general/configurations',
+                "privilege" : "configurations",
+            },
             {
                 "id"        : "users",
                 "label"     : this.translate.instant("SETTINGS.users_list"),
@@ -92,8 +115,7 @@ export class SettingsService {
                 "id"        : "about-us",
                 "label"     : this.translate.instant("SETTINGS.abouts_us"),
                 "icon"      : "fas fa-address-card",
-                "route"     : "/settings/general/about-us",
-                "privilege" : "*"
+                "route"     : "/settings/general/about-us"
             }
         ],
         "verifier": [
@@ -271,6 +293,30 @@ export class SettingsService {
                 "label": this.translate.instant("SETTINGS.document_type"),
                 "icon": "fas fa-file",
                 "route"     : "/settings/splitter/documentType",
+                "actions"   : [
+                    {
+                        "id"        : "splitter_add_doc_type",
+                        "label"     : this.translate.instant("SETTINGS.add_doc_type"),
+                        "route"     : "/settings/splitter/documentType/new",
+                        "privilege" : "add_output",
+                        "icon"      : "fas fa-plus"
+                    },
+                    {
+                        "id"                : "splitter_add_folder_doc_type",
+                        "label"             : this.translate.instant("SETTINGS.add_doc_type_folder"),
+                        "route"             : "/settings/splitter/documentType/createFolder",
+                        "privilege"         : "update_output",
+                        "icon"              : "fas fa-folder-plus",
+                    },
+                    {
+                        "id"                : "splitter_update_doc_type",
+                        "label"             : this.translate.instant("SETTINGS.update_doc_type"),
+                        "route"             : "/settings/splitter/documentType/update/",
+                        "privilege"         : "update_output",
+                        "icon"              : "fas fa-edit",
+                        "showOnlyIfActive"  : true
+                    }
+                ]
             },
         ]
     };
@@ -326,10 +372,6 @@ export class SettingsService {
         return this.selectedParentSetting;
     }
 
-    getSettingListOpenState() {
-        return this.settingListOpenState;
-    }
-
     getSettingsParent() {
         return this.settingsParent;
     }
@@ -362,10 +404,6 @@ export class SettingsService {
     setSelectedParentSettings(value: string) {
         this.selectedParentSetting = value;
         this.localStorage.save('selectedParentSettings', value);
-    }
-
-    setSettingListOpenState(value: boolean) {
-        this.settingListOpenState = value;
     }
 
     toggleMenu() {

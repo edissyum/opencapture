@@ -138,7 +138,7 @@ class Database:
 
             args['data'] = data + args['data']
             _set = ", ".join(query_list)
-            where = ' AND '.join(args['where'][0].split(','))
+            where = ' AND '.join(args['where'])
 
             query = "UPDATE " + args['table'][0] + " SET " + _set + " WHERE " + where
             cursor = self.conn.cursor()

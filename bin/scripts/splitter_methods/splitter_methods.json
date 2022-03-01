@@ -1,0 +1,22 @@
+{
+  "methods": [
+    {
+      "id"    : "metadata",
+      "label" : "Separation par métadonnées",
+      "script": "metadata.py",
+      "method": "process"
+    },
+    {
+      "id"    : "qr_code_OC",
+      "label" : "Séparation par code QR Open-Capture",
+      "script": "qr_code_OC.py",
+      "method": "process"
+    },
+    {
+      "id"    : "qr_code_Maarch",
+      "label" : "Séparation par code QR Maarch",
+      "script": "qr_code_Maarch.py",
+      "method": "process"
+    }
+  ]
+}

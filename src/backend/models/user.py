@@ -55,7 +55,7 @@ def create_user(args):
             'table': 'users_customers',
             'columns': {
                 'user_id': user_id,
-                'customers_id': json.dumps({"data": "[]"})
+                'customers_id': json.dumps({"data": str(args['customers'])})
             }
         })
 
@@ -71,8 +71,8 @@ def get_users(args):
     users = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['users'],
-        'where': ['status NOT IN (%s)', "role <> 1"],
-        'data': ['DEL'],
+        'where': ['status NOT IN (%s)', "role <> 1"] if 'where' not in args else args['where'],
+        'data': ['DEL'] if 'data' not in args else args['data'],
         'order_by': ['id ASC'],
         'limit': str(args['limit']) if 'limit' in args else [],
         'offset': str(args['offset']) if 'offset' in args else [],

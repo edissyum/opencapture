@@ -58,6 +58,7 @@ def update_output(output_id, args):
         res, error = outputs.update_output({
             'set': {
                 'output_type_id': args['output_type_id'],
+                'compress_type': args['compress_type'] if 'compress_type' in args else None,
                 'output_label': args['output_label'],
                 'data': json.dumps(args['data'])
             },
@@ -87,6 +88,7 @@ def create_output(data):
     _columns = {
         'output_type_id': data['output_type_id'],
         'output_label': data['output_label'],
+        'compress_type': data['compress_type'] if 'compress_type' in data else None,
         'module': data['module'],
     }
 

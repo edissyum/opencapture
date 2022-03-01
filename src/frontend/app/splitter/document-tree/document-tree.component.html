@@ -1,9 +1,0 @@
-<button class="float-right" [mat-dialog-close]="">
-    <i class="fa fa-times fa-2x hover:text-green-400"></i>
-</button>
-<app-document-type-factory [selectedDocType]="data.selectedDocType" (output)="getOutPut($event)"></app-document-type-factory>
-<div class="w-max mx-auto my-4">
-    <button mat-button class="mx-auto h-12 w-48 bg-green-400 text-white" [mat-dialog-close]="selectedItem">
-        {{ 'GLOBAL.validate' | translate }}
-    </button>
-</div>

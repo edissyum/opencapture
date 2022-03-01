@@ -1,19 +1,19 @@
 /** This file is part of Open-Capture for Invoices.
 
-Open-Capture for Invoices is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+ Open-Capture for Invoices is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-Open-Capture is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
+ Open-Capture is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+ You should have received a copy of the GNU General Public License
+ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
-@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+ @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import {Component, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
@@ -97,8 +97,35 @@ export class CreateInputComponent implements OnInit {
             required: true,
         },
         {
+            id: 'splitter_method_id',
+            label: this.translate.instant('INPUT.splitter_method'),
+            type: 'select',
+            control: new FormControl(),
+            required: false,
+            values: [
+                {
+                    'id': 'no_sep',
+                    'label': this.translate.instant('INPUT.no_separation')
+                },
+                {
+                    'id': 'qr_code',
+                    'label': this.translate.instant('INPUT.qr_code_separation')
+                },
+                {
+                    'id': 'separate_by_document',
+                    'label': this.translate.instant('INPUT.separate_by_document')
+                }
+            ],
+        },
+        {
             id: 'override_supplier_form',
             label: this.translate.instant('INPUT.override_supplier_form'),
+            type: 'boolean',
+            control: new FormControl()
+        },
+        {
+            id: 'remove_blank_pages',
+            label: this.translate.instant('INPUT.remove_blank_pages'),
             type: 'boolean',
             control: new FormControl()
         },
@@ -127,6 +154,9 @@ export class CreateInputComponent implements OnInit {
                         if (customers.customers.length === 1) {
                             element.control.setValue(customers.customers[0].id);
                         }
+                    }
+                    if (element.id === 'splitter_method_id') {
+                        element.control.setValue('no_sep');
                     }
                 });
             }),

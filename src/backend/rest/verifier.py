@@ -189,3 +189,10 @@ def verify_vat_number():
     status = verifier.verify_vat_number(vat_number)
     return make_response({'status': status[0]}, status[1])
 
+
+@bp.route('verifier/invoices/totals', defaults={'status': None}, methods=['GET'])
+@bp.route('verifier/invoices/totals/<string:status>', methods=['GET'])
+@auth.token_required
+def get_totals(status):
+    totals = verifier.get_totals(status)
+    return make_response({'totals': totals[0]}, totals[1])

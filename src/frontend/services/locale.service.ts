@@ -1,16 +1,14 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {API_URL} from "../app/env";
-import {catchError, tap} from "rxjs/operators";
 import {of} from "rxjs";
-import {AuthService} from "./auth.service";
-import {NotificationService} from "./notifications/notifications.service";
-import {TranslateService} from "@ngx-translate/core";
-import {DateAdapter} from "@angular/material/core";
-import 'moment/locale/en-gb';
-import 'moment/locale/fr';
 import * as moment from 'moment';
+import {API_URL} from "../app/env";
+import {Injectable} from '@angular/core';
+import {AuthService} from "./auth.service";
+import {catchError, tap} from "rxjs/operators";
+import {HttpClient} from "@angular/common/http";
 import {HistoryService} from "./history.service";
+import {DateAdapter} from "@angular/material/core";
+import {TranslateService} from "@ngx-translate/core";
+import {NotificationService} from "./notifications/notifications.service";
 
 @Injectable({
     providedIn: 'root'
@@ -23,12 +21,12 @@ export class LocaleService {
     constructor(
         private http: HttpClient,
         private authService: AuthService,
-        private _adapter: DateAdapter<any>,
+        private dateAdapter: DateAdapter<any>,
         private translate: TranslateService,
         private notify: NotificationService,
         private historyService: HistoryService
     ) {
-        this._adapter.setLocale('fr-FR');
+        this.dateAdapter.setLocale('fr-FR');
         moment.updateLocale('fr-FR', {
             monthsShort : 'janv._févr._mars_avr._mai_juin_juil._août_sept._oct._nov._déc.'.split('_'),
             weekdaysMin : 'Di_Lu_Ma_Me_Je_Ve_Sa'.split('_'),
@@ -82,9 +80,10 @@ export class LocaleService {
         this.http.get(API_URL + '/ws/i18n/getCurrentLang').pipe(
             tap((data: any) => {
                 this.currentLang = data.lang;
-                if (data.moment_lang)
+                if (data.moment_lang) {
                     this.dateAdaptaterLocale = data.moment_lang;
-                this._adapter.setLocale(this.dateAdaptaterLocale);
+                }
+                this.dateAdapter.setLocale(this.dateAdaptaterLocale);
                 this.translate.use(this.currentLang);
                 moment.locale(this.dateAdaptaterLocale);
             }),

@@ -105,3 +105,9 @@ if 'inputs' not in custom_array or 'rest' not in custom_array['inputs']['path']:
 elif 'rest' in custom_array['inputs']['path']:
     inputs = getattr(__import__(custom_array['inputs']['path'], fromlist=[custom_array['inputs']['module']]),
                        custom_array['inputs']['module'])
+
+if 'doctypes' not in custom_array or 'rest' not in custom_array['doctypes']['path']:
+    from .rest import doctypes
+elif 'rest' in custom_array['doctypes']['path']:
+    doctypes = getattr(__import__(custom_array['doctypes']['path'], fromlist=[custom_array['doctypes']['module']]),
+                     custom_array['doctypes']['module'])

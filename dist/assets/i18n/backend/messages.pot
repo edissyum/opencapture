@@ -1,14 +1,14 @@
 # Translations template for PROJECT.
-# Copyright (C) 2021 ORGANIZATION
+# Copyright (C) 2022 ORGANIZATION
 # This file is distributed under the same license as the PROJECT project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-12-24 16:32+0100\n"
+"POT-Creation-Date: 2022-02-01 10:30+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -107,6 +107,18 @@ msgstr ""
 
 #: src/backend/controllers/config.py:46
 msgid "CHANGE_LOCALE_ERROR"
+msgstr ""
+
+#: src/backend/controllers/doc_types.py:79
+msgid "DOCTYPESEPARATOR"
+msgstr ""
+
+#: src/backend/controllers/doc_types.py:83
+msgid "DOCUMENTSEPARATOR"
+msgstr ""
+
+#: src/backend/controllers/doc_types.py:87
+msgid "BUNDLESEPARATOR"
 msgstr ""
 
 #: src/backend/controllers/forms.py:66 src/backend/controllers/forms.py:115
@@ -289,7 +301,7 @@ msgstr ""
 msgid "ENABLE_ROLE_ERROR"
 msgstr ""
 
-#: src/backend/controllers/splitter.py:61
+#: src/backend/controllers/splitter.py:63
 #: src/backend/controllers/verifier.py:73
 msgid "AT"
 msgstr ""
@@ -442,6 +454,18 @@ msgstr ""
 msgid "UPDATE_CUSTOM_FIELDS_ERROR"
 msgstr ""
 
+#: src/backend/models/doc_types.py:43
+msgid "ADD_DOC_TYPE_ERROR"
+msgstr ""
+
+#: src/backend/models/doc_types.py:46
+msgid "DOCTYPE_ALREADY_EXIST"
+msgstr ""
+
+#: src/backend/models/doc_types.py:81
+msgid "UPDATE_DOCTYPE_ERROR"
+msgstr ""
+
 #: src/backend/models/forms.py:71
 msgid "GET_DEFAULT_FORM_ERROR"
 msgstr ""
@@ -542,7 +566,7 @@ msgstr ""
 msgid "INVOICE_UPDATE_ERROR"
 msgstr ""
 
-#: src/backend/rest/auth.py:44
+#: src/backend/rest/auth.py:36
 msgid "PGSQL_ERROR"
 msgstr ""
 

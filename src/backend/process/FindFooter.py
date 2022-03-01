@@ -183,16 +183,16 @@ class FindFooter:
             if self.supplier is not False:
                 if total_ht in [False, None]:
                     total_ht = self.process_footer_with_position('total_ht',
-                                                                       ["positions ->> 'total_ht' as total_ht_position",
-                                                                        "pages ->> 'footer' as total_ht_page"])
+                                                                 ["positions ->> 'total_ht' as total_ht_position",
+                                                                  "pages ->> 'footer' as total_ht_page"])
                     if total_ht:
                         self.totalHT = total_ht
                         self.log.info('noRateAmount found with position : ' + str(total_ht))
 
                 if vat_rate in [False, None]:
                     vat_rate = self.process_footer_with_position('vat_rate',
-                                                                        ["positions ->> 'vat_rate' as vat_rate_position",
-                                                                         "pages ->> 'footer' as vat_rate_page"])
+                                                                 ["positions ->> 'vat_rate' as vat_rate_position",
+                                                                  "pages ->> 'footer' as vat_rate_page"])
                     if vat_rate:
                         self.vatRate = vat_rate
                         self.log.info('ratePercentage found with position : ' + str(vat_rate))
@@ -286,7 +286,8 @@ class FindFooter:
                 ttc = total_ttc[0]
             if 'from_position' in total_ht and total_ht['from_position']:
                 ht = total_ht[0]
-            vat_amount = float("%.2f" % (float(ttc) - float(ht)))
+            if ttc and ht:
+                vat_amount = float("%.2f" % (float(ttc) - float(ht)))
 
         if total_ttc and vat_amount and not total_ht:
             ttc = self.return_max(total_ttc)[0]
@@ -323,7 +324,7 @@ class FindFooter:
             # Round up value with 2 decimals
             try:
                 total = "%.2f" % (float(total_ht[0]) + (float(total_ht[0]) * float(vat_rate[0]) / 100))
-            except TypeError:
+            except (TypeError, ValueError):
                 return False
 
             if float(total) == float(total_ttc[0]):

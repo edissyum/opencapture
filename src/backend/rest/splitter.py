@@ -39,9 +39,12 @@ def upload():
         return make_response(gettext('UNKNOW_ERROR'), 400)
 
 
-@bp.route('splitter/batches', defaults={'time': None, 'status': None, 'batch_id': None, 'size': None, 'page': None}, methods=['GET'])
-@bp.route('splitter/batches/<int:batch_id>', defaults={'time': None, 'status': None, 'size': None, 'page': None}, methods=['GET'])
-@bp.route('splitter/batches/<int:page>/<int:size>/<string:time>/<string:status>', defaults={'batch_id': None}, methods=['GET'])
+@bp.route('splitter/batches', defaults={'time': None, 'status': None, 'batch_id': None, 'size': None, 'page': None},
+          methods=['GET'])
+@bp.route('splitter/batches/<int:batch_id>', defaults={'time': None, 'status': None, 'size': None, 'page': None},
+          methods=['GET'])
+@bp.route('splitter/batches/<int:page>/<int:size>/<string:time>/<string:status>', defaults={'batch_id': None},
+          methods=['GET'])
 @auth.token_required
 def retrieve_splitter_batches(batch_id, page, size, time, status):
     args = {
@@ -75,11 +78,40 @@ def change_batch_status():
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('splitter/pages/<int:batch_id>', methods=['GET'])
+@bp.route('splitter/documents/<int:batch_id>', methods=['GET'])
 @auth.token_required
-def retrieve_batch_pages(batch_id):
-    res = splitter.retrieve_pages(batch_id)
+def retrieve_batch_documents(batch_id):
+    res = splitter.retrieve_documents(batch_id)
     return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('splitter/addDocument', methods=['POST'])
+@auth.token_required
+def create_document():
+    data = request.data
+    data = json.loads(data)
+    args = {
+        'batch_id': data['batchId'],
+        'split_index': data['splitIndex']
+    }
+    res = splitter.create_document(args)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('splitter/saveInfo', methods=['POST'])
+@auth.token_required
+def save_info():
+    data = request.data
+    data = json.loads(data)
+    response, status = splitter.save_infos({
+        'documents': data['documents'],
+        'batch_id': data['batchId'],
+        'moved_pages': data['movedPages'],
+        'batch_metadata': data['batchMetadata'],
+        'deleted_pages_ids': data['deletedPagesIds'],
+        'deleted_documents_ids': data['deletedDocumentsIds']
+    })
+    return make_response(jsonify(response)), status
 
 
 @bp.route('splitter/validate', methods=['POST'])
@@ -87,5 +119,40 @@ def retrieve_batch_pages(batch_id):
 def validate():
     data = request.data
     data = json.loads(data)
-    response, status = splitter.validate(data['documents'], data['metadata'])
-    return make_response(jsonify(response)), 200
+    response, status = splitter.validate(data)
+    return make_response(jsonify(response)), status
+
+
+@bp.route('splitter/methods', methods=['GET'])
+@auth.token_required
+def get_split_methods():
+    split_methods, status = splitter.get_split_methods()
+    response = {
+        'split_methods': split_methods
+    }
+    return make_response(jsonify(response)), status
+
+
+@bp.route('splitter/merge/<int:parent_id>', methods=['POST'])
+@auth.token_required
+def merge_batches(parent_id):
+    data = json.loads(request.data)['batches']
+    splitter.merge_batches(parent_id, data)
+    return make_response(jsonify('')), 200
+
+
+@bp.route('splitter/invoices/totals', defaults={'status': None}, methods=['GET'])
+@bp.route('splitter/invoices/totals/<string:status>', methods=['GET'])
+@auth.token_required
+def get_totals(status):
+    totals = splitter.get_totals(status)
+    return make_response({'totals': totals[0]}, totals[1])
+
+
+@bp.route('splitter/cmis/testConnection', methods=['POST'])
+@auth.token_required
+def test_connection():
+    data = request.data
+    data = json.loads(data)
+    response, status = splitter.test_cmis_connection(data['args'])
+    return make_response(jsonify(response)), status

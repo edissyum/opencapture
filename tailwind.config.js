@@ -17,20 +17,11 @@
 
 module.exports = {
     important: true,
-    prefix: '',
-    purge: [
-        '**/*.{html,ts}'
+    content: [
+        'src/frontend/**/*.{html,ts}'
     ],
     darkMode: 'media', // or 'media' or 'class'
     theme: {
-        zIndex: {
-            '5': 5,
-            '10': 10,
-            '20': 20,
-            '30': 30,
-            '40': 40,
-            '50': 50,
-        },
         backgroundSize: {
             'auto': 'auto',
             'cover': 'cover',
@@ -59,16 +50,6 @@ module.exports = {
                 }
             }
         },
-    },
-    variants: {
-        extend: {
-            backgroundColor: ['hover'],
-            ringOffsetColor: ['hover'],
-            ringOffsetWidth: ['hover'],
-            ringOpacity: ['hover'],
-            ringColor: ['hover'],
-            ringWidth: ['hover']
-        }
     },
     plugins: [],
 };

@@ -1,24 +1,17 @@
 [GLOBAL]
 ; Use ${GLOBAL:projectPath} to specify once for all the path of the project
-resolution              = 300
-compressionquality      = 100
 projectPath             = /var/www/html/opencaptureforinvoices/
 tmpPath                 = ${GLOBAL:projectPath}/bin/data/tmp/
 scriptsPath             = ${GLOBAL:projectPath}/bin/scripts/
 docserverPath           = /var/docservers/OpenCapture/
-fullPath                = ${GLOBAL:docserverPath}/images/full/
-thumbPath               = ${GLOBAL:docserverPath}/images/thumbs/
-positionsMasksPath      = ${GLOBAL:docserverPath}/images/positions_masks/
+fullPath                = ${GLOBAL:docserverPath}/verifier/images/full/
+thumbPath               = ${GLOBAL:docserverPath}/verifier/images/thumbs/
+positionsMasksPath      = ${GLOBAL:docserverPath}/verifier/images/positions_masks/
 errorPath               = ${GLOBAL:projectPath}/bin/data/error/
 logFile                 = ${GLOBAL:projectPath}/bin/data/log/OCforInvoices.log
 ocrErrorPath            = ${GLOBAL:projectPath}/instance/config/OCR_ERRORS.xml
 configMail              = ${GLOBAL:projectPath}/instance/config/mail.ini
-; True or False, python way
-allowDuplicate          = False
-allowAutomaticValidation= False
-defaultPassword         = Open-CaptureForInvoices
 ; Delta between date found and today date, in days. -1 to disable
-timeDelta               = -1
 watcherConfig           = ${GLOBAL:projectPath}/instance/config/watcher.ini
 
 [AI-CLASSIFICATION]
@@ -32,17 +25,11 @@ predictImagePath = ${AI-CLASSIFICATION:iaPath}/images/predict-images/
 confidenceMin    = 80
 
 [SPLITTER]
-docserverpath = /var/docservers/OpenCapture_Splitter/
-batchpath     = ${SPLITTER:docserverpath}/batches/
-pdfoutputpath = ${SPLITTER:docserverpath}/separated_pdf/
+batchpath = ${GLOBAL:docserverpath}/splitter/batches/
+pdfoutputpath = ${GLOBAL:docserverpath}/splitter/separated_pdf/
 docstart      = DOCSTART
 bundlestart   = BUNDLESTART
-
-[REMOVE-BLANK-PAGES]
-; True or False
-enabled     = False
-; Float type
-blobsRatio  = 1E-6
+methodspath   = ${GLOBAL:scriptspath}/splitter_methods/
 
 [DATABASE]
 postgresHost     = localhost

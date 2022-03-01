@@ -14,22 +14,22 @@
                 </mat-expansion-panel-header>
                 <div class="w-full border-t-2 border-gray-600">
                     <div *ngFor="let setting of this.serviceSettings.getSettings()[parent['id']];"
-                         [class.border-b]="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] == '*'"
-                         [class.border-gray-400]="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] == '*'">
+                         [class.border-b]="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] === '*'"
+                         [class.border-gray-400]="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] === '*'">
                         <div *ngIf="this.serviceSettings.getSettingsAction(parent['id'], setting['id']) else noActions">
                             <mat-expansion-panel
-                                    *ngIf="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] == '*'"
+                                    *ngIf="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] === '*'"
                                     [expanded]="this.router.url.includes(setting['route'])">
                                 <mat-expansion-panel-header class="font-normal w-full h-20">
                                     <mat-panel-title class="font-normal justify-center items-center text-center">
-                                        <i [class.text-green-400]="this.router.url == setting['route']"
+                                        <i [class.text-green-400]="this.router.url === setting['route']"
                                            class="absolute text-lg left-4 w-10 h-10 rounded-full flex items-center justify-center {{setting['icon']}}">
                                         </i>
-                                        <button mat-button [class.text-green-400]="this.router.url == setting['route']"
+                                        <button mat-button [class.text-green-400]="this.router.url === setting['route']"
                                                 class="pr-0 font-normal w-full h-20 flex justify-center items-center text-center"
                                                 (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
                                                 routerLink="{{ setting['route'] }}">
-                                            <p [class.font-medium]="this.router.url == setting['route']" class="m-0">
+                                            <p [class.font-medium]="this.router.url === setting['route']" class="m-0">
                                                 {{ setting['label'] | translate }}
                                             </p>
                                         </button>
@@ -40,7 +40,7 @@
                                      [class.border-t]="!action['showOnlyIfActive']"
                                      [class.w-full]="!action['showOnlyIfActive']">
                                     <div class="border-b border-gray-400"
-                                         *ngIf="(this.privilegesService.hasPrivilege(action['privilege']) || setting['privilege'] == '*') && (!action['showOnlyIfActive'] || (action['showOnlyIfActive'] && this.router.url.includes(action['route'])))">
+                                         *ngIf="(this.privilegesService.hasPrivilege(action['privilege']) || setting['privilege'] === '*') && (!action['showOnlyIfActive'] || (action['showOnlyIfActive'] && this.router.url.includes(action['route'])))">
                                         <button mat-button
                                                 [class.text-green-400]="this.router.url.includes(action['route'])"
                                                 class="font-normal w-full h-12 ml-12 flex items-center text-center"
@@ -57,13 +57,13 @@
                             </mat-expansion-panel>
                         </div>
                         <ng-template #noActions>
-                            <button *ngIf="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] == '*'"
-                                    mat-button [class.text-green-400]="this.router.url == setting['route']"
+                            <button *ngIf="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] === '*'"
+                                    mat-button [class.text-green-400]="this.router.url === setting['route']"
                                     class="pr-0 font-normal w-full h-20 flex justify-center items-center text-center"
                                     (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
                                     routerLink="{{ setting['route'] }}">
                                 <i class="absolute left-4 w-10 h-10 rounded-full flex items-center justify-center fa-lg {{setting['icon']}}"></i>
-                                <p [class.font-medium]="this.router.url == setting['route']" class="m-0">
+                                <p [class.font-medium]="this.router.url === setting['route']" class="m-0">
                                     {{ setting['label'] | translate }}
                                 </p>
                             </button>
@@ -73,10 +73,7 @@
             </mat-expansion-panel>
         </mat-nav-list>
     </mat-sidenav>
-    <mat-sidenav-content class="bg-white">
-        <div *ngIf="loading">
-            <app-loader></app-loader>
-        </div>
+    <mat-sidenav-content class="bg-white overflow-hidden">
         <div class="settings_header">
             <button mat-icon-button (click)="sidenav.toggle(); this.serviceSettings.toggleMenu();"
                     class="absolute left-2 top-2">
@@ -88,19 +85,35 @@
                 <hr class="border-green-400">
             </div>
         </div>
-        <div class="w-full flex flex-wrap content-center mt-2">
-           <mat-form-field appearance="outline" class="w-1/4 mx-auto">
-            <mat-label>{{ 'CUSTOM-FIELDS.type'| translate }}</mat-label>
-            <mat-select [(ngModel)]="selectedSeparator" (ngModelChange)="onChangeType()">
-              <mat-option  *ngFor="let separator of separators" [id]="separator.id" [value]="separator.id">
-                  {{ separator.name| translate }}
-              </mat-option>
-            </mat-select>
-           </mat-form-field>
-        </div>
-        <div style="height: 780px">
-          <ng2-pdfjs-viewer #pdfViewerAutoLoad></ng2-pdfjs-viewer>
-        </div>
+        <app-document-type-factory [data]="{canFolderBeSelected: false}" (selectedDoctypeOutput)="getOutPut($event)" class="pl-4"></app-document-type-factory>
     </mat-sidenav-content>
+    <mat-sidenav #sidenav2 mode="side" opened position="end" class="overflow-auto w-1/4 flex flex-col h-full border-r border-green-400">
+        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">{{ 'DOCTYPE.add_doctype' | translate }}</h3>
+        <mat-divider class="border-green-400"></mat-divider>
+        <div class="w-full grid grid-cols-2 m-2">
+            <mat-form-field appearance="outline">
+                <mat-label>{{ 'DOCTYPE.download_separator'| translate }}</mat-label>
+                <mat-select [disabled]="loadingSeparator" [(ngModel)]="selectedSeparator" (ngModelChange)="onChangeType()">
+                    <mat-option *ngFor="let separator of separators" [id]="separator.id" [value]="separator.id " [disabled]="separator.disabled">
+                        {{ separator.name| translate }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <div class="text-right">
+                <button mat-button [disabled]="loadingSeparator" (click)="downloadSeparator()" class="w-10 h-12">
+                    <i class="fa-solid fa-file-arrow-down fa-2x"></i>
+                </button>
+            </div>
+        </div>
+        <div class="text-center text-gray-400">
+            <div *ngIf="loadingSeparator">
+                <i class="fa-solid fa-qrcode fa-4x w-full"></i>
+                <span class="w-full">
+                    {{ 'DOCTYPE.generating_separator' | translate }}
+                </span>
+            </div>
+            <img *ngIf="!loadingSeparator" [src]="separator.thumbnailUrl" alt="Separator thumbnail">
+        </div>
+    </mat-sidenav>
 </mat-sidenav-container>
 

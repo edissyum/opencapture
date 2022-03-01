@@ -1,12 +1,12 @@
-<mat-drawer-container class="viewer-container" hasBackdrop="false">
+<div *ngIf="loading || documentsLoading">
+    <app-loader></app-loader>
+</div>
+<mat-drawer-container *ngIf="!loading" class="viewer-container" hasBackdrop="false">
     <mat-drawer #drawer mode="side" opened>
-        <div *ngIf="isLoading || isLoadingPages">
-            <app-loader></app-loader>
-        </div>
         <div class="mt-1">
             <div class="card" *ngFor="let batch of batches| slice: 0 : 10">
                 <mat-card class="mat-elevation-z4 my-2"
-                          [ngClass]="{'border-4 border-green-400': currentBatch.id == batch.id}">
+                          [ngClass]="{'border-4 border-green-400': currentBatch.id === batch.id}">
                     <a class="image-link" (click)="changeBatch(batch['id'])">
                         <mat-card-header>
                             <img class="page-image" mat-card-image [src]="batch['image_url']" alt="Open-Capture Splitter image">
@@ -41,32 +41,32 @@
              (clickOutside)="showZoomPage = false"
              [exclude]="'.btn-page-zoom'" alt="Zoom Image">
         <div class="w-10/12 absolute top-0 mx-32">
-            <mat-accordion class="metadata" *ngIf="isLoadingPages == false">
-                <mat-expansion-panel class="my-10 bg-gray-20" [expanded]="true" (opened)="metaDataOpenState = true"
-                                     (closed)="metaDataOpenState = false" #panelH>
+            <mat-accordion class="metadata">
+                <mat-expansion-panel class="my-10 bg-gray-20" [expanded]="true" (opened)="batchMetadataOpenState = true"
+                                     (closed)="batchMetadataOpenState = false" #batchMetadata>
                     <mat-expansion-panel-header>
                         <mat-panel-title class="metadata-title">
-                            {{ 'SPLITTER.meta_data' | translate }}
-                            <div (click)="panelH.toggle()" class="mx-8">
+                            {{ 'SPLITTER.batch_metadata' | translate }}
+                            <div (click)="batchMetadata.toggle()" class="mx-8">
                                 <mat-slide-toggle color="#97BF3D"
-                                                  [checked]="inputMode == 'Auto'"
+                                                  [checked]="inputMode === 'Auto'"
                                                   (change)="changeInputMode($event);"
-                                                  [disabled]="fields.length == 0">
+                                                  [disabled]="fieldsCategories['batch_metadata'].length === 0">
                                     {{ 'SPLITTER.auto_complete' | translate }}
                                 </mat-slide-toggle>
                             </div>
                         </mat-panel-title>
                     </mat-expansion-panel-header>
-                    <div class="text-gray-400 text-center w-full" *ngIf="fields.length == 0">
+                    <div class="text-gray-400 text-center w-full" *ngIf="fieldsCategories['batch_metadata'].length === 0">
                         <i class="block fas fa-check fa-3x"></i>
                         <span class="block">{{ 'SPLITTER.no_metadata_required' | translate }}</span>
                     </div>
-                    <form [formGroup]="form" class="mx-8 grid grid-cols-3 gap-4">
-                        <div *ngFor="let input of fields">
-                            <div *ngIf="input.type == 'text' && inputMode == 'Auto' && input.metadata_key" class="h-12">
+                    <form [formGroup]="batchForm" class="mx-8 grid grid-cols-3 gap-4">
+                        <div *ngFor="let input of fieldsCategories['batch_metadata']">
+                            <div *ngIf="input.type === 'text' && inputMode === 'Auto' && input.metadata_key" class="h-12">
                                 <mat-form-field class="w-full">
                                     <mat-label>
-                                        <span *ngIf="!selectedMetadata">
+                                        <span *ngIf="!batchMetadataValues">
                                             {{ 'SPLITTER.search_for' | translate }}
                                         </span>
                                         {{input.label}}
@@ -88,7 +88,7 @@
                                     </mat-select>
                                 </mat-form-field>
                             </div>
-                            <div *ngIf="input.type == 'textarea'">
+                            <div *ngIf="input.type === 'textarea'">
                                 <mat-form-field class="w-full">
                                     <mat-label>{{input.label}}</mat-label>
                                     <textarea matInput formControlName="{{input.label_short}}"
@@ -97,7 +97,7 @@
                                               cdkAutosizeMaxRows="5"></textarea>
                                 </mat-form-field>
                             </div>
-                            <div *ngIf="input.type == 'text' && (!input.metadata_key || inputMode == 'Manual')"
+                            <div *ngIf="input.type === 'text' && (!input.metadata_key || inputMode === 'Manual')"
                                  class="h-12">
                                 <mat-form-field class="w-full">
                                     <mat-label>{{input.label}}</mat-label>
@@ -115,24 +115,84 @@
                 </mat-expansion-panel>
             </mat-accordion>
             <mat-card class="document" *ngFor="let document of documents; let documentIndex = index;">
-                <mat-card-title class="metadata-title {{document['class']}}">
-                    <button class="absolute top-4 hover:text-green-400" (click)="openDocumentTypeDialog(document)"
-                            title="{{ 'SPLITTER.edit' | translate }}">
-                        <i class="fas fa-edit hover:text-green-400 w-full">
-                            {{document['documentTypeName'] }}
-                        </i>
-                    </button>
-                    <button mat-button class="absolute top-4 right-6" (click)="deleteDocument(documentIndex)"
-                            title="{{ 'GLOBAL.delete' | translate }}">
-                        <i class="fas fa-trash-alt fa-lg"></i>
-                    </button>
+                <mat-card-title>
+                    <mat-accordion>
+                        <mat-expansion-panel class="bg-gray-20" [expanded]="true" (opened)="documentMetadataOpenState = true"
+                                             (closed)="documentMetadataOpenState = false" #documentMetadata>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title class="w-4/12">
+                                    <button class="text-lg text-left hover:text-green-400"
+                                            [ngClass]="!document['documentTypeName'] ? 'text-red-500':''"
+                                            (click)="documentMetadata.toggle(); openDocumentTypeDialog(document);"
+                                            title="{{ 'SPLITTER.edit' | translate }}">
+                                        <span style="font-family: cursive; font-weight: bold;" class="w-full">
+                                            <i class="fas fa-edit"></i>
+                                            {{ document['documentTypeName'] }}
+                                        </span>
+                                    </button>
+                                </mat-panel-title>
+                                <mat-panel-description class="top-4">
+                                    {{ 'SPLITTER.document_metadata' | translate }}
+                                </mat-panel-description>
+                                <button mat-button class="right-2" (click)="deleteDocument(documentIndex)"
+                                        title="{{ 'GLOBAL.delete' | translate }}">
+                                    <i class="fas fa-trash-alt fa-lg"></i>
+                                </button>
+                            </mat-expansion-panel-header>
+                            <div class="text-gray-400 text-center w-full" *ngIf="fieldsCategories['document_metadata'].length === 0">
+                                <i class="block fas fa-check fa-3x"></i>
+                                <span class="block">{{ 'SPLITTER.no_metadata_required' | translate }}</span>
+                            </div>
+                            <form [formGroup]="this.documentsForms[documentIndex]" class="mx-8 grid grid-cols-5 gap-4">
+                                <div *ngFor="let input of fieldsCategories['document_metadata']">
+                                    <div *ngIf="input.type === 'text' && inputMode === 'Auto' && input.metadata_key">
+                                        <mat-form-field class="w-full">
+                                            <mat-label>
+                                                {{input.label}}
+                                            </mat-label>
+                                            <mat-select [formControlName]="input.label_short">
+                                                <mat-option *ngIf="input.metadata_key">
+                                                    <ngx-mat-select-search
+                                                            [formControlName]="'search_' + input.label_short"
+                                                            placeholderLabel="{{ 'SPLITTER.min_3_letter' | translate }}"
+                                                            [searching]="searching"
+                                                            noEntriesFoundLabel="{{ 'SPLITTER.no_result' | translate }}">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option *ngFor="let metadata of filteredServerSideMetadata | async"
+                                                            [value]="metadata['id']"
+                                                            (click)="fillData(metadata)">
+                                                    <span>{{metadata[input.label_short]}}</span>
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                    <div *ngIf="input.type === 'textarea'">
+                                        <mat-form-field class="w-full">
+                                            <mat-label>{{input.label}}</mat-label>
+                                            <textarea matInput formControlName="{{input.label_short}}"
+                                                      cdkTextareaAutosize
+                                                      cdkAutosizeMinRows="1"
+                                                      cdkAutosizeMaxRows="5"></textarea>
+                                        </mat-form-field>
+                                    </div>
+                                    <div *ngIf="input.type === 'text' && (!input.metadata_key || inputMode === 'Manual')">
+                                        <mat-form-field class="w-full">
+                                            <mat-label>{{input.label}}</mat-label>
+                                            <input matInput formControlName="{{input.label_short}}">
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </form>
+                        </mat-expansion-panel>
+                    </mat-accordion>
                 </mat-card-title>
                 <mat-card-content class="document-content">
                     <div cdkDropListOrientation="horizontal" class="drop-list"
-                         style="background-image: url('assets/imgs/dots.jpg');
-                width:100%;
-                overflow:scroll!important;"
-                         (cdkDropListDropped)="drop($event)"
+                            style="background-image: url('assets/imgs/dots.jpg');
+                            width:100%;
+                            overflow:scroll!important;"
+                         (cdkDropListDropped)="drop($event, document)"
                          cdkDropList id="{{ addId(document['id']) }}" [cdkDropListData]="document['pages']"
                          [cdkDropListConnectedTo]="documentsIds">
                         <div class="page bg-gray-200 m-1.5 rounded-md"
@@ -175,11 +235,12 @@
                         <i class="fas fa-undo fa-lg"></i>
                     </button>
                     <button mat-button class="inline-block my-4"
-                            (click)="addDocument()"
+                            (click)="createDocument()"
                             title="{{ 'SPLITTER.add_document' | translate }}">
-                        <i class="fas fa-plus-circle fa-lg"></i>
+                        <i class="fas fa-plus-circle fa-lg" *ngIf="!addDocumentLoading"></i>
+                        <i class="fas fa-circle-notch fa-spin fa-lg my-4" *ngIf="addDocumentLoading"></i>
                     </button>
-                    <mat-form-field class="inline-block pt-6">
+                    <mat-form-field class="inline-block pt-6 top-1">
                         <mat-label>{{ 'SPLITTER.send_to' | translate }}</mat-label>
                         <mat-select [(ngModel)]="toolSelectedOption" matNativeControl>
                             <mat-option *ngFor="let document of documents;" [value]="document['id']">
@@ -187,14 +248,19 @@
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
-                    <button (click)="sendSelectedPages()" mat-button class="inline-block"
+                    <button (click)="sendSelectedPages()" mat-button class="btn-icon border-r-2 border-black inline-block"
                             title="{{ 'SPLITTER.send' | translate }}">
                         <i class="fa fa-paper-plane fa-lg"></i>
                     </button>
+                    <button (click)="saveInfo()" mat-button class="inline-block"
+                            title="{{ 'SPLITTER.save' | translate }}">
+                        <i class="fa fa-save fa-lg"></i>
+                    </button>
                     <div class="inline-block w-auto float-right py-8 mx-4 grid-rows-2">
                         <div>
-                            <button mat-button (click)="validate()" class="btn-validate-splitter rounded-full bg-green-400 text-white
-                         text-sm font-medium transition duration-300 ml-2 float-right"
+                            <button mat-button (click)="validate()" [disabled]="outputs.length === 0"
+                                    class="btn-validate-splitter rounded-full bg-green-400 text-white
+                                            text-sm font-medium transition duration-300 ml-2 float-right"
                                     style="border-right: 1px dotted white !important;">
                                 {{ 'GLOBAL.validate' | translate }}
                             </button>
@@ -202,6 +268,10 @@
                          text-sm font-medium transition duration-300 float-right" routerLink="/splitter/list">
                                 {{ 'GLOBAL.cancel' | translate }}
                             </button>
+                            <div class="top-4 text-center text-gray-400">
+                                <span>{{outputs.join(', ')}}</span>
+                                <span class="text-red-500" *ngIf="outputs.length === 0">{{ 'OUTPUT.no_output_configured' | translate }}</span>
+                            </div>
                         </div>
                     </div>
                 </mat-card-content>

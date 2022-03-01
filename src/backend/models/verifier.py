@@ -103,3 +103,34 @@ def update_invoices(args):
         error = gettext('INVOICE_UPDATE_ERROR')
 
     return supplier, error
+
+
+def get_totals(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    error = None
+    select = data = []
+    if 'status' in args and args['status']:
+        where = ["status = %s"]
+        data = [args['status']]
+    else:
+        where = ["status <> 'DEL'"]
+
+    if args['time'] in ['today', 'yesterday']:
+        select = ['COUNT(id) as ' + args['time']]
+        where.append("to_char(register_date, 'YYYY-MM-DD') = to_char(TIMESTAMP '" + args['time'] + "', 'YYYY-MM-DD')")
+    elif args['time'] == 'older':
+        select = ['COUNT(id) as older']
+        where.append("to_char(register_date, 'YYYY-MM-DD') < to_char(TIMESTAMP 'yesterday', 'YYYY-MM-DD')")
+
+    total = _db.select({
+        'select': select,
+        'table': ['invoices'],
+        'where': where,
+        'data': data
+    })[0]
+
+    if not total:
+        error = gettext('GET_TOTALS_ERROR')
+
+    return total[args['time']], error

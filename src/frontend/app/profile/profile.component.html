@@ -1,20 +1,20 @@
 <div *ngIf="!loading" class="flex justify-center items-center" style="height: 85vh">
     <mat-card class="text-center w-full lg:w-1/4">
         <mat-card-title class="mb-10">
-            <span *ngIf="this.userId == this.userService.user.id">{{ 'USER.modify_my_profile' | translate }}</span>
-            <span *ngIf="this.userId != this.userService.user.id">{{ 'USER.modify_profile_of' | translate }} {{this.profile['username']}}</span>
+            <span *ngIf="this.userId === this.userService.user.id">{{ 'USER.modify_my_profile' | translate }}</span>
+            <span *ngIf="this.userId !== this.userService.user.id">{{ 'USER.modify_profile_of' | translate }} {{this.profile['username']}}</span>
         </mat-card-title>
         <mat-card-content>
             <form (ngSubmit)="onSubmit()">
                 <ng-container *ngFor="let field of profileForm">
-                    <mat-form-field class="block" *ngIf="field.type != 'select'">
+                    <mat-form-field class="block" *ngIf="field.type !== 'select'">
                         <mat-label>{{ field.label | translate }}</mat-label>
                         <input matInput [formControl]="field.control" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field.required">
                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
                     </mat-form-field>
-                    <mat-form-field class="block" *ngIf="field.type == 'select'">
+                    <mat-form-field class="block" *ngIf="field.type === 'select'">
                         <mat-label>{{ field.label | translate }}</mat-label>
-                        <mat-select [disabled]="this.userService.getUserFromLocal()['privileges'] != '*'" [(value)]="field.control.value">
+                        <mat-select [disabled]="this.userService.getUserFromLocal()['privileges'] !== '*'" [(value)]="field.control.value">
                             <mat-option *ngFor="let option of field.values" [value]="option['id']">{{ option['label'] }}</mat-option>
                         </mat-select>
                     </mat-form-field>

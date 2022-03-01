@@ -138,9 +138,23 @@ def update_typo_database(database, vat_number, typo, log, config):
 
 def process(args, file, log, config, files, ocr, locale, database, typo):
     log.info('Processing file : ' + file)
+
+    configurations = {}
     datas = {}
     pages = {}
     positions = {}
+
+    _config = database.select({
+        'select': ['*'],
+        'table': ['configurations'],
+    })
+
+    for _c in _config:
+        configurations[_c['label']] = _c['data']['value']
+
+    files.resolution = int(configurations['resolution'])
+    files.compression_quality = int(configurations['compressionQuality'])
+
     nb_pages = files.get_pages(file, config)
     splitted_file = os.path.basename(file).split('_')
     if splitted_file[0] == 'SPLITTER':
@@ -250,7 +264,9 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
         text_custom = ocr.text
         page_for_date = 1
 
-    date = FindDate(text_custom, log, locale, config, files, ocr, supplier, typo, page_for_date, database, file).run()
+    dateClass = FindDate(text_custom, log, locale, config, files, ocr, supplier, typo, page_for_date, database, file)
+    dateClass.maxTimeDelta = configurations['timeDelta']
+    date = dateClass.run()
 
     if date:
         datas.update({'invoice_date': date[0]})
@@ -371,7 +387,8 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
     files.save_img_with_wand(file, config.cfg['GLOBAL']['fullpath'] + '/' + full_jpg_filename)
 
     # If all informations are found, do not send it to GED
-    if supplier and supplier[2]['skip_auto_validate'] == 'False' and date and invoice_number and footer and config.cfg['GLOBAL']['allowautomaticvalidation'] == 'True':
+    if supplier and supplier[2]['skip_auto_validate'] == 'False' and date and invoice_number \
+            and footer and configurations['allowAutomaticValidation'] == 'True':
         log.info('All the usefull informations are found. Export the XML and end process')
         insert(args, files, config, database, datas, positions, pages, full_jpg_filename, file, original_file,
                supplier, 'END', nb_pages)

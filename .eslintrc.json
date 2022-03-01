@@ -1,0 +1,85 @@
+{
+    "root": true,
+    "ignorePatterns": [
+        "projects/**/*"
+    ],
+    "overrides": [
+        {
+            "files": [
+                "*.ts"
+            ],
+            "parserOptions": {
+                "project": [
+                    "src/frontend/tsconfig.json"
+                ],
+                "createDefaultProgram": true
+            },
+            "extends": [
+                "plugin:@angular-eslint/ng-cli-compat",
+                "plugin:@angular-eslint/ng-cli-compat--formatting-add-on",
+                "plugin:@angular-eslint/template/process-inline-templates"
+            ],
+            "rules": {
+                "@typescript-eslint/quotes": "off",
+                "@typescript-eslint/no-shadow": [
+                    "off",
+                    {
+                        "hoist": "all"
+                    }
+                ],
+                "@typescript-eslint/array-type": [
+                    "error",
+                    {
+                        "default": "array"
+                    }
+                ],
+                "@typescript-eslint/dot-notation": "off",
+                "@typescript-eslint/prefer-for-of": "off",
+                "@angular-eslint/component-selector": "off",
+                "@typescript-eslint/member-ordering": "off",
+                "@typescript-eslint/no-var-requires": "error",
+                "@typescript-eslint/naming-convention": "off",
+                "@typescript-eslint/no-inferrable-types": "off",
+                "@typescript-eslint/member-delimiter-style": [
+                    "error",
+                    {
+                        "multiline": {
+                            "delimiter": "none",
+                            "requireLast": true
+                        },
+                        "singleline": {
+                            "delimiter": "semi",
+                            "requireLast": false
+                        }
+                    }
+                ],
+                "@typescript-eslint/type-annotation-spacing": "off",
+                "radix": "off",
+                "curly": "off",
+                "one-var": [
+                    "off",
+                    "never"
+                ],
+                "no-eval": "off",
+                "max-len": "off",
+                "no-console": "off",
+                "quote-props": "off",
+                "guard-for-in": "off",
+                "no-fallthrough": "off",
+                "object-shorthand": "off",
+                "no-underscore-dangle": "off",
+                "jsdoc/check-alignment": "off",
+                "jsdoc/newline-after-description": "off",
+                "prefer-arrow/prefer-arrow-functions": "off"
+            }
+        },
+        {
+            "files": [
+                "*.html"
+            ],
+            "extends": [
+                "plugin:@angular-eslint/template/recommended"
+            ]
+        }
+    ]
+}

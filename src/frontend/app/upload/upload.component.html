@@ -4,7 +4,7 @@
         <mat-divider></mat-divider>
         <mat-list>
             <mat-list-item *ngFor="let input of inputs" class="hover:bg-green-400 cursor-pointer m-2 w-auto"
-                           [class.bg-green-400]="this.selectedInput == input.id" (click)="setInput(input.id)">
+                           [class.bg-green-400]="this.selectedInput === input.id" (click)="setInput(input.id)">
                 {{ input.input_label }}
             </mat-list-item>
         </mat-list>
@@ -30,14 +30,14 @@
         </ngx-file-drag-drop>
         <div class="flex justify-center content-center">
             <button mat-flat-button
-                    [disabled]="this.sending || this.selectedInput == '' || this.fileControl.value.length == 0" (click)="uploadInvoice()"
-                    [class.hover:bg-green-400]="!this.sending && this.selectedInput && this.fileControl.value.length != 0"
-                    [class.hover:text-white]="!this.sending&& this.selectedInput && this.fileControl.value.length != 0"
+                    [disabled]="this.sending || this.selectedInput === '' || this.fileControl.value.length === 0" (click)="uploadInvoice()"
+                    [class.hover:bg-green-400]="!this.sending && this.selectedInput && this.fileControl.value.length !== 0"
+                    [class.hover:text-white]="!this.sending&& this.selectedInput && this.fileControl.value.length !== 0"
                     class="mt-5 border-solid border-green-400 border px-3 py-2 text-sm font-medium transition duration-300">
-                {{ 'UPLOAD.upload_invoice' | translate }}
+                {{ 'UPLOAD.upload_file' | translate }}
             </button>
         </div>
-        <span *ngIf="this.selectedInput == ''" class="flex justify-center mt-4 text-red-500">
+        <span *ngIf="this.selectedInput === ''" class="flex justify-center mt-4 text-red-500">
             {{ 'UPLOAD.please_select_input' | translate }}
         </span>
     </mat-sidenav-content>

@@ -30,28 +30,27 @@ import {NotificationService} from "../../../services/notifications/notifications
 import {DomSanitizer} from "@angular/platform-browser";
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 import {MatDialog} from "@angular/material/dialog";
-import {DocumentTreeComponent} from "../document-tree/document-tree.component";
+import {DocumentTypeComponent} from "../document-type/document-type.component";
 import {remove} from 'remove-accents';
 import {HistoryService} from "../../../services/history.service";
-import {TREE_DATA} from "../document-type-factory/document-tree";
 
 export interface Batch {
-    id: number;
-    input_id: number;
-    image_url: any;
-    file_name: string;
-    page_number: number;
-    batch_date: string;
+    id: number
+    input_id: number
+    image_url: any
+    file_name: string
+    page_number: number
+    batch_date: string
 }
 
 export interface Field {
-    id: number;
-    label_short: string;
-    label: string;
-    type: string;
-    metadata_key: string;
-    class: string;
-    required: string;
+    id: number
+    label_short: string
+    label: string
+    type: string
+    metadata_key: string
+    class: string
+    required: string
 }
 
 @Component({
@@ -61,27 +60,40 @@ export interface Field {
 })
 export class SplitterViewerComponent implements OnInit, OnDestroy {
     @ViewChild(`cdkStepper`) cdkDropList: CdkDragDrop<any> | undefined;
-    form                : FormGroup = new FormGroup({});
-    metaDataOpenState   : boolean   = true;
-    showZoomPage        : boolean   = false;
-    isLoading           : boolean   = true;
-    isLoadingPages      : boolean   = true;
-    currentBatch        : any       = {id: -1, inputId: -1};
-    batches             : Batch[]   = [];
-    fields              : Field[]   = [];
-    documents           : any       = [];
-    pagesImageUrls      : any       = [];
-    documentsIds        : string[]  = [];
-    metadata            : any[]     = [];
-    zoomImageUrl        : string    = "";
-    toolSelectedOption  : string    = "";
-    selectedMetadata    : any       = {id: -1};
-    inputMode           : string    = "Manual";
-    outputs             : any;
-    defaultDocType      : any;
+    fieldsCategories              : any       = {
+        'batch_metadata'    : [],
+        'document_metadata' : []
+    };
+    batchForm                   : FormGroup     = new FormGroup({});
+    documentMetadataOpenState   : boolean       = false;
+    showZoomPage                : boolean       = false;
+    loading                     : boolean       = true;
+    addDocumentLoading          : boolean       = false;
+    documentsLoading            : boolean       = false;
+    batchMetadataOpenState      : boolean       = true;
+    currentBatch                : any           = {id: -1, inputId: -1, maxSplitIndex: 0};
+    batchMetadataValues         : any           = {};
+    documentsForms              : FormGroup[]   = [];
+    batches                     : Batch[]       = [];
+    deletedPagesIds             : number[]      = [];
+    movedPages                  : any[]         = [];
+    deletedDocumentsIds         : number[]      = [];
+    outputs                     : any           = [];
+    metadata                    : any[]         = [];
+    documents                   : any           = [];
+    pagesImageUrls              : any           = [];
+    documentsIds                : string[]      = [];
+    zoomImageUrl                : string        = "";
+    toolSelectedOption          : string        = "";
+    inputMode                   : string        = "Manual";
+    defaultDoctype              : any           = {
+        label   : null,
+        key     : null
+    };
+    defaultDocType              : any;
 
     /** indicate search operation is in progress */
-    public searching: boolean = false;
+    public searching        : boolean   = false;
 
     /** list of banks filtered after simulating server side search */
     public filteredServerSideMetadata: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
@@ -106,45 +118,69 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.localeStorageService.save('splitter_or_verifier', 'splitter');
-        this.userService.user = this.userService.getUserFromLocal();
-        this.currentBatch.id = this.route.snapshot.params['id'];
+        this.userService.user   = this.userService.getUserFromLocal();
+        this.currentBatch.id    = this.route.snapshot.params['id'];
         this.loadBatches();
-        this.loadDefaultDocType();
         this.loadSelectedBatch();
         this.loadMetadata();
-        this.loadOutputs();
         this.translate.get('HISTORY-DESC.viewer_splitter', {batch_id: this.currentBatch.id}).subscribe((translated: string) => {
             this.historyService.addHistory('splitter', 'viewer', translated);
         });
     }
 
     loadSelectedBatch(): void {
-        this.documents = [];
-        this.loadPages();
+        this.documents      = [];
+        this.documentsForms = [];
         this.loadBatchById();
     }
 
-    loadOutputs(): void {
-        this.http.get(API_URL + '/ws/outputs/list?module=splitter', {headers: this.authService.headers}).pipe(
+    loadBatchById(): void {
+        this.loading = true;
+        this.http.get(API_URL + '/ws/splitter/batches/' + this.currentBatch.id, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.outputs = data.outputs;
+                this.currentBatch = {
+                    maxSplitIndex      : 0,
+                    id                 : data.batches[0]['id'],
+                    formId             : data.batches[0]['form_id'],
+                    customFieldsValues : data.batches[0]['data'].hasOwnProperty('custom_fields') ? data.batches[0]['data']['custom_fields'] : {},
+                };
+                this.loadFormFields();
+                this.loadDocuments();
+                this.loadDefaultDocType();
+                this.loadOutputsData();
             }),
             catchError((err: any) => {
+                this.loading = false;
+                this.notify.error(err);
                 console.debug(err);
-                this.notify.handleErrors(err);
                 return of(false);
             })
         ).subscribe();
     }
 
-    loadBatchById(): void {
-        this.http.get(API_URL + '/ws/splitter/batches/' + this.currentBatch.id, {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                this.currentBatch.formId = data.batches[0].form_id;
-                this.loadFormFields(this.currentBatch.formId);
+    loadOutputsData(): void {
+        this.loading = true;
+        this.outputs = [];
+        this.http.get(API_URL + '/ws/forms/getById/' + this.currentBatch.formId, {headers: this.authService.headers}).pipe(
+            tap((formData: any) => {
+                for(const outputsId of formData['outputs']) {
+                    this.http.get(API_URL + '/ws/outputs/getById/' + outputsId, {headers: this.authService.headers}).pipe(
+                        tap((outputsData: any) => {
+                            this.outputs.push(outputsData['output_label']);
+                        }),
+                        catchError((err: any) => {
+                            this.loading = false;
+                            this.notify.error(err);
+                            console.debug(err);
+                            return of(false);
+                        })
+                    ).subscribe();
+                }
             }),
             catchError((err: any) => {
+                this.loading = false;
                 this.notify.error(err);
+                console.debug(err);
                 return of(false);
             })
         ).subscribe();
@@ -156,12 +192,12 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 data.batches.forEach((batch: Batch) =>
                     this.batches.push(
                         {
-                            id: batch.id,
-                            image_url: this.sanitize(batch.image_url),
-                            file_name: batch.file_name,
-                            page_number: batch.page_number,
-                            batch_date: batch.batch_date,
-                            input_id: batch.input_id,
+                            id          : batch.id,
+                            image_url   : this.sanitize(batch.image_url),
+                            file_name   : batch.file_name,
+                            page_number : batch.page_number,
+                            batch_date  : batch.batch_date,
+                            input_id    : batch.input_id,
                         }
                     )
                 );
@@ -173,38 +209,115 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         ).subscribe();
     }
 
-    loadPages(): void {
-        this.http.get(API_URL + '/ws/splitter/pages/' + this.currentBatch.id, {headers: this.authService.headers}).pipe(
+    loadDocuments(): void {
+        this.documentsLoading = true;
+        this.http.get(API_URL + '/ws/splitter/documents/' + this.currentBatch.id, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                for (let i = 0; i < data['page_lists'].length; i++) {
+                for (let i = 0; i < data['documents'].length; i++) {
+                    // -- Add documents metadata --
                     this.documents[i] = {
-                        id: "document-" + i,
-                        documentTypeName: this.defaultDocType.documentTypeName,
-                        documentTypeKey : this.defaultDocType.documentTypeKey,
-                        pages           : [],
-                        class           : "",
+                        id                  : "document-" + data['documents'][i]['id'],
+                        documentTypeName    : data['documents'][i]['doctype_label'] ? data['documents'][i]['doctype_label'] : (this.defaultDoctype.label || ""),
+                        documentTypeKey     : data['documents'][i]['doctype_key'] ? data['documents'][i]['doctype_key'] : (this.defaultDoctype.label || ""),
+                        status              : data['documents'][i]['status'],
+                        splitIndex          : data['documents'][i]['split_index'],
+                        pages               : [],
+                        class               : "",
+                        customFieldsValues  : {},
                     };
-                    for (const page of data['page_lists'][i]) {
+                    // -- Get max split index, used when adding a new document --
+                    if (this.documents[i].splitIndex > this.currentBatch.maxSplitIndex) {
+                        this.currentBatch.maxSplitIndex = this.documents[i].splitIndex;
+                    }
+                    if (data['documents'][i]['data'].hasOwnProperty('custom_fields')){
+                        this.documents[i].customFieldsValues = data['documents'][i]['data']['custom_fields'];
+                    }
+                    // -- Add documents pages --
+                    for (const page of data['documents'][i]['pages']) {
                         this.documents[i].pages.push({
-                            id: page['id'],
-                            sourcePage: page['source_page'],
-                            showZoomButton: false,
-                            zoomImage: false,
-                            checkBox: false,
+                            id              : page['id'],
+                            sourcePage      : page['source_page'],
+                            showZoomButton  : false,
+                            checkBox        : false,
                         });
                         this.pagesImageUrls.push({
-                            pageId: page['id'],
-                            url: this.sanitize(page['image_url'])
+                            pageId  : page['id'],
+                            url     : this.sanitize(page['image_url'])
                         });
                     }
+
                 }
+                // -- Add document forms --
+                this.loadDocumentsForms();
+                this.documentsLoading = false;
             }),
-            finalize(() => this.isLoadingPages = false),
             catchError((err: any) => {
                 this.notify.error(err);
+                console.debug(err);
+                this.documentsLoading = false;
                 return of(false);
             })
         ).subscribe();
+    }
+
+    createDocument() {
+        if(this.addDocumentLoading){ return; }
+        const headers = this.authService.headers;
+        this.http.post(API_URL + '/ws/splitter/addDocument',
+            {
+                'batchId'       : this.currentBatch.id,
+                'splitIndex'    : this.currentBatch.maxSplitIndex + 1,
+            },
+            {headers}).pipe(
+            tap((data: any) => {
+                this.documents.push({
+                    id                  : "document-" + data.newDocumentId,
+                    status              : "NEW",
+                    documentTypeName    : this.defaultDoctype.label,
+                    documentTypeKey     : this.defaultDoctype.key,
+                    pages               : [],
+                    customFieldsValues  : {},
+                    class               : "",
+                });
+                this.addFormForDocument({}, this.documents.length);
+                this.currentBatch.maxSplitIndex++;
+                this.addDocumentLoading = false;
+            }),
+            catchError((err: any) => {
+                this.addDocumentLoading = false;
+                this.notify.error(err.message);
+                console.debug(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    loadDocumentsForms(){
+        let cpt = 0;
+        this.documentsForms = [];
+        for (const document of this.documents) {
+            this.addFormForDocument(document.customFieldsValues, cpt);
+            cpt++;
+        }
+    }
+
+    addFormForDocument(customFieldsValues: any, documentIndex: number){
+        const newForm = new FormGroup({});
+        for (let fieldsIndex = 0; fieldsIndex < this.fieldsCategories['document_metadata'].length; fieldsIndex++) {
+            const control = new FormControl();
+            const labelShort = this.fieldsCategories['document_metadata'][fieldsIndex].label_short;
+            if(customFieldsValues.hasOwnProperty(labelShort))
+                control.setValue(customFieldsValues[labelShort]);
+            control.valueChanges.subscribe(value => {
+                this.documents[documentIndex]['customFieldsValues'][labelShort] = value;
+            });
+            newForm.addControl(labelShort, control);
+            if (this.fieldsCategories['document_metadata'][fieldsIndex].metadata_key) { // used to control autocomplete search fields
+                const controlSearch = new FormControl();
+                newForm.addControl("search_" + labelShort, controlSearch);
+            }
+        }
+        this.documentsForms.push(newForm);
     }
 
     getPageUrlById(pageId: number): any {
@@ -217,27 +330,59 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     /* -- Metadata -- */
     loadDefaultDocType(){
-        for (const docType of TREE_DATA){
-            if (docType.isDefault)
-                this.defaultDocType = {
-                    "documentTypeKey": docType.key,
-                    "documentTypeName": docType.label,
-                };
-        }
+        this.loading      = true;
+        this.http.get(API_URL + '/ws/doctypes/list/' + (this.currentBatch.formId).toString(), {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                data.doctypes.forEach((doctype: {
+                        id          : any
+                        key         : string
+                        label       : string
+                        type        : string
+                        is_default  : boolean
+                    }) => {
+                    if(doctype.is_default && doctype.type === 'document'){
+                        this.defaultDoctype = {
+                            'id'        : doctype.id,
+                            'key'       : doctype.key,
+                            'label'     : doctype.label,
+                            'type'      : doctype.type,
+                            'isDefault' : doctype.is_default,
+                        };
+                    }
+                    }
+                );
+                this.loading = false;
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.loading = false;
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
     }
 
     changeInputMode($event: any) {
         this.inputMode = $event.checked ? "Auto" : "Manual";
-        this.selectedMetadata = null;
+        this.batchMetadataValues = null;
         this.fillDataValues({});
     }
 
     fillDataValues(data: any): void {
-        for (const field of this.fields) {
+        for (const field of this.fieldsCategories['batch_metadata']) {
             const key = field['metadata_key'];
             const newValue = data.hasOwnProperty(key) ? data[key] : '';
-            if (key && this.form.get(key)) {
-                this.form.get(key)!.setValue(newValue);
+            if (key && this.batchForm.get(key)) {
+                this.batchForm.get(key)?.setValue(newValue);
+            }
+        }
+        for (const field of this.fieldsCategories['document_metadata']) {
+            const key = field['metadata_key'];
+            const newValue = data.hasOwnProperty(key) ? data[key] : '';
+            for (let i = 0; i < this.documentsForms.length; i++) {
+                if (key && this.documentsForms[i].get(key)) {
+                    this.documentsForms[i].get(key)?.setValue(newValue);
+                }
             }
         }
     }
@@ -249,6 +394,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             }),
             catchError((err: any) => {
                 this.notify.error(err);
+                console.debug(err);
                 return of(false);
             })
         ).subscribe();
@@ -256,7 +402,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     loadMetadata(): void {
         this.metadata = [];
-
         this.http.get(API_URL + '/ws/splitter/metadata', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 let cpt = 0;
@@ -280,90 +425,91 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     fillData(selectedMetadata: any) {
-        this.selectedMetadata = selectedMetadata;
-        const optionId = this.selectedMetadata['id'];
-        for (const field of this.fields) {
+        this.batchMetadataValues = selectedMetadata;
+        const optionId = this.batchMetadataValues['id'];
+        for (const field of this.fieldsCategories['batch_metadata']) {
             if (field['metadata_key']) {
-                this.form.get(field['metadata_key'])!.setValue(optionId);
+                this.batchForm.get(field['metadata_key'])?.setValue(optionId);
             }
         }
     }
 
-    loadFormFields(formId: number) {
-        this.http.get(API_URL + '/ws/forms/fields/getByFormId/' + formId, {headers: this.authService.headers}).pipe(
+    loadFormFields() {
+        this.http.get(API_URL + '/ws/forms/fields/getByFormId/' + this.currentBatch.formId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                data.fields.metadata.forEach((field: Field) => {
-                    this.fields.push({
-                        'id': field.id,
-                        'label_short': field.label_short,
-                        'label': field.label,
-                        'type': field.type,
-                        'metadata_key': field.metadata_key,
-                        'class': field.class,
-                        'required': field.required,
+                for (const fieldCategory in this.fieldsCategories) {
+                    this.fieldsCategories[fieldCategory] = [];
+                    data.fields[fieldCategory].forEach((field: Field) => {
+                        this.fieldsCategories[fieldCategory].push({
+                            'id'            : field.id,
+                            'label_short'   : field.label_short,
+                            'label'         : field.label,
+                            'type'          : field.type,
+                            'metadata_key'  : field.metadata_key,
+                            'class'         : field.class,
+                            'required'      : field.required,
+                        });
                     });
+                }
+                this.batchForm = this.toBatchFormGroup();
 
-                    const control = new FormControl();
-                    this.form.addControl(field.label_short, control);
-
-                    if (field.metadata_key) { // used to control autocomplete search fields
-                        const controlSearch = new FormControl();
-                        this.form.addControl("search_" + field.label_short, controlSearch);
-                    }
-                });
-                this.form = this.toFormGroup();
                 // listen for search field value changes
-                data.fields.metadata.forEach((field: Field) => {
-                    if (!field.metadata_key)
-                        return;
-                    if (this.form.get('search_' + field.label_short)) {
-                        this.form.get('search_' + field.label_short)!.valueChanges
-                            .pipe(
-                                filter((search: string) => !!search),
-                                tap(() => {
-                                }),
-                                takeUntil(this._onDestroy),
-                                debounceTime(200),
-                                map(search => {
-                                    if (!this.metadata || search.length < 3) {
-                                        return [];
-                                    }
-                                    this.searching = true;
-                                    return this.metadata.filter(
-                                        metadataItem => remove(metadataItem[field.label_short].toString())
-                                            .toLowerCase()
-                                            .indexOf(remove(search.toString().toLowerCase())) > -1);
-                                }),
-                                delay(500)
-                            )
-                            .subscribe(filteredMetadata => {
-                                this.filteredServerSideMetadata.next(filteredMetadata);
-                                this.searching = false;
-                            }, () => {
-                                this.searching = false;
-                            });
-                    }
-                });
-            }), finalize(() => this.isLoading = false),
+                for (const fieldCategory in this.fieldsCategories) {
+                    data.fields[fieldCategory].forEach((field: Field) => {
+                        if (field.metadata_key && this.batchForm.get('search_' + field.label_short)) {
+                            this.batchForm.get('search_' + field.label_short)?.valueChanges
+                                .pipe(
+                                    filter((search: string) => !!search),
+                                    tap(() => {
+                                    }),
+                                    takeUntil(this._onDestroy),
+                                    debounceTime(200),
+                                    map(search => {
+                                        if (!this.metadata || search.length < 3) {
+                                            return [];
+                                        }
+                                        this.searching = true;
+                                        return this.metadata.filter(
+                                            metadataItem => remove(metadataItem[field.label_short].toString())
+                                                .toLowerCase()
+                                                .indexOf(remove(search.toString().toLowerCase())) > -1
+                                        );
+                                    }),
+                                    delay(500)
+                                )
+                                .subscribe(filteredMetadata => {
+                                    this.filteredServerSideMetadata.next(filteredMetadata);
+                                    this.searching = false;
+                                }, () => {
+                                    this.searching = false;
+                                });
+                        }
+                    });
+                }
+            }), finalize(() => this.loading = false),
             catchError((err: any) => {
+                this.loading = false;
+                this.notify.error(err);
                 console.debug(err);
                 return of(false);
             })
         ).subscribe();
     }
 
-    toFormGroup() {
+    toBatchFormGroup() {
         const group: any = {};
-        this.fields.forEach((input: Field) => {
+        this.fieldsCategories['batch_metadata'].forEach((input: Field) => {
             group[input.label_short] = input.required ?
                 new FormControl('', Validators.required) :
                 new FormControl('');
+            if(this.currentBatch.customFieldsValues.hasOwnProperty(input.label_short)){
+                group[input.label_short].setValue(this.currentBatch.customFieldsValues[input.label_short]);
+            }
             if (input.metadata_key)
                 group['search_' + input.label_short] = new FormControl('');
         });
         return new FormGroup(group);
     }
-
     /* -- End Metadata -- */
 
     /* -- Begin documents control -- */
@@ -377,7 +523,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         return this._sanitizer.bypassSecurityTrustUrl('data:image/jpg;base64,' + url);
     }
 
-    drop(event: CdkDragDrop<any[]>) {
+    drop(event: CdkDragDrop<any[]>, document: any) {
         if (event.previousContainer === event.container) {
             moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
         } else {
@@ -385,28 +531,35 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 event.container.data,
                 event.previousIndex,
                 event.currentIndex);
+            this.movedPages.push({
+                'pageId'        : event.container.data[event.currentIndex].id,
+                'newDocumentId' : Number(document['id'].split('-')[1]),
+                'isAddInNewDoc' : (document.status === 'USERADD')
+            });
         }
     }
 
     openDocumentTypeDialog(document: any): void {
-        const dialogRef = this.dialog.open(DocumentTreeComponent, {
+        const dialogRef = this.dialog.open(DocumentTypeComponent, {
             width: '800px',
             height: '900px',
             data: {
                 selectedDocType: {
                     key: document.documentTypeKey  ? document.documentTypeKey  : "",
                 },
+                formId: this.currentBatch.formId
             }
         });
         dialogRef.afterClosed().subscribe((result: any) => {
             if (result){
-                document.documentTypeName = result.item;
+                document.documentTypeName = result.label;
                 document.documentTypeKey = result.key;
             }
         });
     }
 
     deleteDocument(documentIndex: number) {
+        this.deletedDocumentsIds.push(this.documents[documentIndex].id);
         this.documents = this.deleteItemFromList(this.documents, documentIndex);
     }
     /* End documents control */
@@ -420,10 +573,11 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     deleteSelectedPages() {
         for (const document of this.documents) {
-            for (let i = 0; i < document.pages.length; i++) {
-                if (document.pages[i].checkBox) {
-                    document.pages = this.deleteItemFromList(document.pages, i);
-                    i--;
+            for (let pageIndex = 0; pageIndex < document.pages.length; pageIndex++) {
+                if (document.pages[pageIndex].checkBox) {
+                    this.deletedPagesIds.push(document.pages[pageIndex].id);
+                    document.pages = this.deleteItemFromList(document.pages, pageIndex);
+                    pageIndex--;
                 }
             }
         }
@@ -438,7 +592,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     undoAll() {
-        this.fields = [];
+        this.fieldsCategories['batch_metadata'] = [];
         this.loadSelectedBatch();
         this.loadMetadata();
     }
@@ -452,55 +606,41 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         for (const document of this.documents) {
             for (let i = document.pages.length - 1; i >= 0; i--) {
                 if (document.pages[i].checkBox) {
+                    const newPosition = this.documents[selectedDocIndex].pages.length;
                     transferArrayItem(document.pages,
                         this.documents[selectedDocIndex].pages, i,
-                        this.documents[selectedDocIndex].pages.length);
+                        newPosition);
+                    this.movedPages.push({
+                        'pageId'        : this.documents[selectedDocIndex].pages[newPosition].id,
+                        'newDocumentId' : Number(this.documents[selectedDocIndex].id.split('-')[1]),
+                        'isAddInNewDoc' : (this.documents[selectedDocIndex].status === 'USERADD')
+                    });
                 }
             }
         }
     }
 
     changeBatch(id: number) {
-        this.isLoading = true;
-        this.fields = [];
+        this.loading                            = true;
+        this.fieldsCategories['batch_metadata'] = [];
+        this.batchMetadataValues                = {};
         this.fillDataValues({});
-        this.selectedMetadata = {id: -1};
         this.router.navigate(['splitter/viewer/' + id]).then();
         this.currentBatch.id = id;
         this.loadSelectedBatch();
     }
 
-    addDocument() {
-        let newId = 0;
-        for (const document of this.documents) {
-            const id = parseInt(document.id.split('-')[1]);
-            if (id > newId) {
-                newId = id;
-            }
-            newId++;
-        }
-        this.documents.push({
-            id: "document-" + newId,
-            documentTypeName    : this.defaultDocType.documentTypeName,
-            documentTypeKey     : this.defaultDocType.documentTypeKey,
-            pages               : [],
-            class               : "",
-        });
-    }
-
-
     validate() {
+        this.loading = true;
         if (this.inputMode === 'Manual') {
-            for (const field of this.fields) {
-                if (this.form.get(field.label_short)) {
-                    this.selectedMetadata[field.label_short] = this.form.get(field.label_short)!.value;
+            for (const field of this.fieldsCategories['batch_metadata']) {
+                if (this.batchForm.get(field.label_short)) {
+                    this.batchMetadataValues[field.label_short] = this.batchForm.get(field.label_short)?.value;
                 }
             }
         }
-
-        if (this.selectedMetadata['id'] === -1 && this.inputMode === 'Auto') {
-            this.notify.error(this.translate.instant('SPLITTER.error_no_metadata'));
-            return;
+        for (let documentIndex = 0; documentIndex < this.documents.length; documentIndex++) {
+            this.documents[documentIndex]['metadata'] = this.documentsForms[documentIndex].getRawValue();
         }
 
         for (const document of this.documents) {
@@ -512,32 +652,70 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 document.class = "";
         }
 
-        const headers = this.authService.headers;
-        const metadata = this.selectedMetadata;
-        metadata['id'] = this.currentBatch.id;
-        metadata['userName'] = this.userService.user['username'];
-        metadata['userFirstName'] = this.userService.user['firstname'];
-        metadata['userLastName'] = this.userService.user['lastname'];
-        this.isLoading = true;
+        const headers                   = this.authService.headers;
+        const batchMetadata             = this.batchMetadataValues;
+        batchMetadata['id']             = this.currentBatch.id;
+        batchMetadata['userName']       = this.userService.user['username'];
+        batchMetadata['userFirstName']  = this.userService.user['firstname'];
+        batchMetadata['userLastName']   = this.userService.user['lastname'];
+        this.loading = true;
         this.http.post(API_URL + '/ws/splitter/validate',
             {
-                'documents': this.documents,
-                'metadata': metadata,
-                'formId': this.currentBatch.formId,
+                'formId'                : this.currentBatch.formId,
+                'batchId'               : this.currentBatch.id,
+                'documents'             : this.documents,
+                'movedPages'            : this.movedPages,
+                'deletedPagesIds'       : this.deletedPagesIds,
+                'deletedDocumentsIds'   : this.deletedDocumentsIds,
+                'batchMetadata'         : batchMetadata,
             },
             {headers}).pipe(
             tap(() => {
+                this.router.navigate(['splitter/list']).then();
+                this.notify.success(this.translate.instant('SPLITTER.validate_batch'));
+                this.loading = true;
             }),
             catchError((err: any) => {
-                this.isLoading = false;
-                this.notify.error(err);
+                this.loading = false;
+                this.notify.error(err.message);
+                console.debug(err);
                 return of(false);
             })
-        ).subscribe(() => {
-            this.router.navigate(['splitter/list']).then();
-            this.notify.success(this.translate.instant('SPLITTER.validate_batch'));
-        });
+        ).subscribe();
     }
 
+    saveInfo() {
+        const headers = this.authService.headers;
+        if (this.inputMode === 'Manual') {
+            for (const field of this.fieldsCategories['batch_metadata']) {
+                if (this.batchForm.get(field.label_short)) {
+                    this.batchMetadataValues[field.label_short] = this.batchForm.get(field.label_short)?.value;
+                }
+            }
+        }
+        for (let documentIndex = 0; documentIndex < this.documents.length; documentIndex++) {
+            this.documents[documentIndex]['metadata'] = this.documentsForms[documentIndex].getRawValue();
+        }
+        this.http.post(API_URL + '/ws/splitter/saveInfo',
+        {
+            'documents'             : this.documents,
+            'batchId'               : this.currentBatch.id,
+            'batchMetadata'         : this.batchMetadataValues,
+            'deletedPagesIds'       : this.deletedPagesIds,
+            'deletedDocumentsIds'   : this.deletedDocumentsIds,
+            'movedPages'            : this.movedPages,
+        },
+            {headers}).pipe(
+            tap(() => {
+                this.notify.success(this.translate.instant('SPLITTER.batch_info_saved'));
+            }),
+            catchError((err: any) => {
+                this.loading = false;
+                this.notify.error(err.error.message);
+                console.debug(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
     /* -- End tools bar -- */
 }

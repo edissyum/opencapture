@@ -1,3 +1,9 @@
+.mat-badge-content {
+    @apply bg-gray-900;
+    @apply text-green-400;
+    @apply font-bold;
+}
+
 ::ng-deep .batches {
     & .mat-tab-header {
         @apply z-20;
@@ -10,7 +16,7 @@
     & .mat-tab-body-wrapper > .mat-tab-body > .mat-tab-body-content {
         height: calc(100vh - 8rem) !important;
         @apply overflow-x-hidden;
-        & .flex > .content > .list > .mat-card:nth-last-child(-n+4) {
+        & .verifier-container > .content > .list > .mat-card:nth-last-child(-n+4) {
             @apply mb-5
         }
     }

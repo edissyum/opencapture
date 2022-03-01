@@ -34,12 +34,6 @@ elif 'process' in custom_array['FindInvoiceNumber']['path']:
                                            custom_array['FindInvoiceNumber']['module'],
                                            fromlist=[custom_array['FindInvoiceNumber']['module']]), custom_array['FindInvoiceNumber']['module'])
 
-if 'OCForInvoices_splitter' or 'process' not in custom_array['OCForInvoices_splitter']['path']:
-    from src.backend.process import OCForInvoices_splitter
-elif 'process' in custom_array['OCForInvoices_splitter']['path']:
-    OCForInvoices_splitter = getattr(__import__(custom_array['OCForInvoices_splitter']['path'],
-                                                fromlist=[custom_array['OCForInvoices_splitter']['module']]), custom_array['OCForInvoices_splitter']['module'])
-
 if 'FindDeliveryNumber' or 'process' not in custom_array['FindDeliveryNumber']['path']:
     from src.backend.process.FindDeliveryNumber import FindDeliveryNumber
 elif 'process' in custom_array['FindDeliveryNumber']['path']:

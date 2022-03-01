@@ -11,7 +11,7 @@
         </div>
         <div class="flex justify-center m-10">
             <ng-container *ngFor="let field of supplierForm">
-                <mat-slide-toggle *ngIf="field.type == 'mat-slide-toggle'" [formControl]="field.control">
+                <mat-slide-toggle *ngIf="field.type === 'mat-slide-toggle'" [formControl]="field.control">
                     {{ field.label | translate }}
                 </mat-slide-toggle>
             </ng-container>
@@ -19,12 +19,12 @@
         <div class="flex justify-center items-center">
             <form (ngSubmit)="onSubmit()" class="grid grid-cols-6 gap-2 w-full m-5 text-center">
                 <ng-container *ngFor="let field of supplierForm">
-                    <mat-form-field class="block" *ngIf="field.type == 'text'">
+                    <mat-form-field class="block" *ngIf="field.type === 'text'">
                         <mat-label>{{ field.label | translate }}</mat-label>
                         <input matInput [formControl]="field.control" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field.required">
                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessageSupplier(field.id) }}</mat-error>
                     </mat-form-field>
-                    <mat-form-field class="block" *ngIf="field.type == 'select'">
+                    <mat-form-field class="block" *ngIf="field.type === 'select'">
                         <mat-label>{{ field.label | translate }}</mat-label>
                         <mat-select [formControl]="field.control" [(value)]="field.control.value" [required]="field.required">
                             <mat-option *ngFor="let option of field.values" [value]="option['id']">{{ option['label'] }}</mat-option>
@@ -33,7 +33,7 @@
                     </mat-form-field>
                 </ng-container>
                 <ng-container *ngFor="let field of addressForm">
-                    <mat-form-field [class.col-span-2]="field.id == 'address1'" class="block" *ngIf="field.type != 'select'">
+                    <mat-form-field [class.col-span-2]="field.id === 'address1'" class="block" *ngIf="field.type !== 'select'">
                         <mat-label>{{ field.label | translate }}</mat-label>
                         <input matInput [formControl]="field.control" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field.required">
                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessageAddress(field.id) }}</mat-error>

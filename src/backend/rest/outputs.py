@@ -31,30 +31,30 @@ def get_outputs():
         'where': ["status <> 'DEL'", "module = %s"],
         'data': [request.args['module'] if 'module' in request.args else '']
     }
-    _roles = outputs.get_outputs(args)
-    return make_response(jsonify(_roles[0])), _roles[1]
+    _outputs = outputs.get_outputs(args)
+    return make_response(jsonify(_outputs[0])), _outputs[1]
 
 
 @bp.route('outputs/getOutputsTypes', methods=['GET'])
 @auth.token_required
 def get_outputs_types():
     module = request.args['module']
-    _roles = outputs.get_outputs_types(module)
-    return make_response(jsonify(_roles[0])), _roles[1]
+    _outputs = outputs.get_outputs_types(module)
+    return make_response(jsonify(_outputs[0])), _outputs[1]
 
 
 @bp.route('outputs/getOutputTypeById/<string:output_type_id>', methods=['GET'])
 @auth.token_required
 def get_output_type_by_id(output_type_id):
-    _roles = outputs.get_output_type_by_id(output_type_id)
-    return make_response(jsonify(_roles[0])), _roles[1]
+    _outputs = outputs.get_output_type_by_id(output_type_id)
+    return make_response(jsonify(_outputs[0])), _outputs[1]
 
 
 @bp.route('outputs/getById/<int:output_id>', methods=['GET'])
 @auth.token_required
 def get_output_by_id(output_id):
-    _role = outputs.get_output_by_id(output_id)
-    return make_response(jsonify(_role[0])), _role[1]
+    _output = outputs.get_output_by_id(output_id)
+    return make_response(jsonify(_output[0])), _output[1]
 
 
 @bp.route('outputs/update/<int:output_id>', methods=['PUT'])
@@ -76,5 +76,6 @@ def delete_output(output_id):
 @auth.token_required
 def create_output():
     data = request.json['args']
+    print(data)
     res = outputs.create_output(data)
     return make_response(jsonify(res[0])), res[1]

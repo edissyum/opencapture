@@ -33,9 +33,18 @@ def register():
 def get_users():
     args = {
         'select': ['*', 'count(*) OVER() as total'],
+        'where': ['status NOT IN (%s)', "role <> 1"],
+        'data': ['DEL'],
         'offset': request.args['offset'] if 'offset' in request.args else '',
         'limit': request.args['limit'] if 'limit' in request.args else ''
     }
+
+    if 'search' in request.args and request.args['search']:
+        args['where'].append(
+            "LOWER(username) LIKE '%%" + request.args['search'].lower() + "%%' OR "
+                                                                          "LOWER(firstname) LIKE '%%" + request.args['search'].lower() + "%%' OR "
+                                                                                                                                         "LOWER(lastname) LIKE '%%" + request.args['search'].lower() + "%%'"
+        )
     _users = user.get_users(args)
     return make_response(jsonify(_users[0])), _users[1]
 

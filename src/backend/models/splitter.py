@@ -18,6 +18,7 @@
 
 import json
 from src.backend.main import create_classes_from_current_config
+from flask_babel import gettext
 
 
 def retrieve_metadata(args):
@@ -33,6 +34,61 @@ def retrieve_metadata(args):
     })
 
     return metadata, error
+
+
+def create_document(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    args = {
+        'table': 'splitter_documents',
+        'columns': {
+            'batch_id': args['batch_id'],
+            'split_index': args['split_index'],
+            'status': args['status'],
+            'doctype_key': args['doctype_key'],
+            'data': args['data'],
+        }
+    }
+    res = _db.insert(args)
+    return res
+
+
+def get_next_splitter_index(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+
+    res = _db.select({
+        'select': ['max(split_index) as max_split_index'],
+        'table': ['splitter_documents'],
+        'where': ['batch_id = %s'],
+        'data': [args['batch_id']]
+    })
+    if res:
+        split_index = res[0]['max_split_index']
+
+    else:
+        error = gettext('GET_MAX_SPLIT_INDEX_ERROR')
+        return False, error
+    return {'split_index': split_index + 1}, None
+
+
+def add_batch(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    args = {
+        'table': 'splitter_batches',
+        'columns': {
+            'batch_folder': args['batch_folder'],
+            'creation_date': args['creation_date'],
+            'page_number': args['page_number'],
+            'first_page': args['first_page'],
+            'file_name': args['file_name'],
+            'form_id': args['form_id'],
+            'status': args['status'],
+        }
+    }
+    _db.insert(args)
+    return True, ''
 
 
 def get_demand_number():
@@ -51,7 +107,7 @@ def get_demand_number():
         demand_number = settings[0]['value']
 
     else:
-        error = "ERROR : While getting settings"
+        error = gettext('GET_DEMAND_NUMBER_ERROR')
     return {'demand_number': demand_number}, error
 
 
@@ -70,7 +126,7 @@ def set_demand_number(demand_number):
     }
     res = _db.update(args)
     if not res:
-        error = "ERROR : While updating settings"
+        error = gettext('UPDATE_SETTINGS_ERROR')
         return res, error
 
     return {'OK': True}, error
@@ -91,8 +147,29 @@ def insert_referential(data):
         }
         res = _db.insert(args)
         if not res:
-            error = "ERROR : While inserting referential"
+            error = gettext('INSERT_REFERENTIAL_ERROR')
             return res, error
+
+    return {'OK': True}, error
+
+
+def insert_page(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+
+    error = None
+    args = {
+        'table': 'splitter_pages',
+        'columns': {
+            'document_id': str(args['document_id']),
+            'thumbnail': args['path'],
+            'source_page': args['source_page']
+        }
+    }
+    res = _db.insert(args)
+    if not res:
+        error = gettext('INSERT_PAGE_ERROR')
+        return res, error
 
     return {'OK': True}, error
 
@@ -149,12 +226,31 @@ def get_batch_by_id(args):
     })[0]
 
     if not batches:
-        error = "ERROR : While getting batch"
+        error = gettext('GET_BATCH_ERROR')
 
     return batches, error
 
 
-def get_batch_pages(args):
+def get_batch_documents(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    error = None
+
+    pages = _db.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['splitter_documents'],
+        'where': ['status = %s', 'batch_id = %s'],
+        'data': ['NEW', args['id']],
+        'order_by': ['split_index']
+    })
+
+    if not pages:
+        error = gettext('GET_DOCUMENTS_ERROR')
+
+    return pages, error
+
+
+def get_documents_pages(args):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
@@ -162,13 +258,68 @@ def get_batch_pages(args):
     pages = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['splitter_pages'],
-        'where': ['batch_id = %s'],
-        'data': [args['id']],
-        'order_by': ['split_document']
+        'where': ['status = %s', 'document_id = %s'],
+        'data': ['NEW', args['id']],
+        'order_by': ['document_id']
     })
 
     if not pages:
-        error = "ERROR : While getting pages"
+        error = gettext('GET_PAGES_ERROR')
+
+    return pages, error
+
+
+def get_max_source_page(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    error = None
+
+    pages = _db.select({
+        'select': ['MAX(source_page) as source_page'],
+        'table': ['splitter_pages'],
+        'where': ['status = %s', 'document_id = %s'],
+        'data': ['NEW', args['id']],
+    })
+
+    if not pages:
+        error = gettext('GET_MAX_SOURCE_PAGE_VALUE_ERROR')
+
+    return pages, error
+
+
+def get_documents(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    error = None
+
+    pages = _db.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['splitter_documents'],
+        'where': ['status = %s', 'batch_id = %s'],
+        'data': ['NEW', args['id']],
+        'order_by': ['batch_id']
+    })
+
+    if not pages:
+        error = gettext('GET_DOCUMENT_ERROR')
+
+    return pages, error
+
+
+def get_documents_max_split_index(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    error = None
+
+    pages = _db.select({
+        'select': ['MAX(split_index) as split_index'],
+        'table': ['splitter_documents'],
+        'where': ['status = %s', 'batch_id = %s'],
+        'data': ['NEW', args['id']],
+    })
+
+    if not pages:
+        error = gettext('GET_DOCUMENT_MAX_SPLIT_INDEX_ERROR')
 
     return pages, error
 
@@ -188,3 +339,107 @@ def change_status(args):
     res = _db.update(args)
 
     return res
+
+
+def update_document(data):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    args = {
+        'table': ['splitter_documents'],
+        'where': ['id = %s'],
+        'set': {},
+        'data': [data['document_id']]
+    }
+    if 'status' in data:
+        args['set']['status'] = data['status']
+    if 'doctype_key' in data:
+        args['set']['doctype_key'] = data['doctype_key']
+    if 'document_metadata' in data:
+        args['set']['data'] = json.dumps({
+            "custom_fields": data['document_metadata']
+        })
+    res = _db.update(args)
+    return res
+
+
+def update_page(data):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    args = {
+        'table': ['splitter_pages'],
+        'set': {},
+        'where': ['id = %s'],
+        'data': [data['page_id']]
+    }
+    if 'status' in data:
+        args['set']['status'] = data['status']
+    if 'document_id' in data:
+        args['set']['document_id'] = data['document_id']
+    print(args)
+    res = _db.update(args)
+    return res
+
+
+def update_batch(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    res = _db.update({
+        'table': ['splitter_batches'],
+        'set': {
+            'data': json.dumps({
+                "custom_fields": args['batch_metadata']
+            })
+        },
+        'where': ['id = %s'],
+        'data': [args['batch_id']]
+    })
+
+    return res
+
+
+def update_batch_page_number(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+
+    args = {
+        'table': ['splitter_batches'],
+        'set': {
+            'page_number': args['number']
+        },
+        'where': ['id = %s'],
+        'data': [args['id']]
+    }
+    res = _db.update(args)
+
+    return res
+
+
+def get_totals(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    error = None
+    select = data = []
+    if 'status' in args and args['status']:
+        where = ["status = %s"]
+        data = [args['status']]
+    else:
+        where = ["status <> 'DEL'"]
+
+    if args['time'] in ['today', 'yesterday']:
+        select = ['COUNT(id) as ' + args['time']]
+        where.append("to_char(creation_date, 'YYYY-MM-DD') = to_char(TIMESTAMP '" + args['time'] + "', 'YYYY-MM-DD')")
+    elif args['time'] == 'older':
+        select = ['COUNT(id) as older']
+        where.append("to_char(creation_date, 'YYYY-MM-DD') < to_char(TIMESTAMP 'yesterday', 'YYYY-MM-DD')")
+
+    total = _db.select({
+        'select': select,
+        'table': ['splitter_batches'],
+        'where': where,
+        'data': data
+    })[0]
+
+    if not total:
+        error = gettext('GET_TOTALS_ERROR')
+
+    return total[args['time']], error

@@ -1,3 +1,9 @@
+.mat-badge-content {
+    @apply bg-gray-900;
+    @apply text-green-400;
+    @apply font-bold;
+}
+
 ::ng-deep .batches {
     & .mat-tab-header {
         @apply z-20;
@@ -10,13 +16,16 @@
     & .mat-tab-body-wrapper > .mat-tab-body > .mat-tab-body-content {
         height: calc(100vh - 8rem) !important;
         @apply overflow-x-hidden #{!important};
-        & .flex > .content > .list > .mat-card:nth-last-child(-n+4) {
+        & .splitter-container > .content > .list > .mat-card:nth-last-child(-n+4) {
             @apply mb-5
         }
     }
 }
 
 ::ng-deep .list > mat-card {
+    @apply flex;
+    @apply flex-col;
+
     & .mat-card-header {
         @apply flex-shrink-0;
     }

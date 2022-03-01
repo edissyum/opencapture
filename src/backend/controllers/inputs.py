@@ -65,10 +65,12 @@ def create_input(data):
     _columns = {
         'module': data['module'],
         'input_id': data['input_id'],
-        'customer_id': data['customer_id'] if data['module'] == 'verifier' else None,
         'input_label': data['input_label'],
         'input_folder': data['input_folder'],
         'default_form_id': data['default_form_id'],
+        'customer_id': data['customer_id'] if data['module'] == 'verifier' else None,
+        'splitter_method_id': data['splitter_method_id'] if 'splitter_method_id' in data else False,
+        'remove_blank_pages': data['remove_blank_pages'] if 'remove_blank_pages' in data else False,
         'override_supplier_form': data['override_supplier_form'] if 'override_supplier_form' in data else False,
     }
 
@@ -84,8 +86,8 @@ def create_input(data):
         return response, 401
 
     input_info, error = get_inputs({
-        'where': ['input_folder = %s'],
-        'data': [data['input_folder']]
+        'where': ['input_folder = %s', 'module = %s'],
+        'data': [data['input_folder'], data['module']]
     })
     if input_info['inputs']:
         response = {
@@ -133,7 +135,7 @@ def delete_input(input_id):
 
     input_info, error = inputs.get_input_by_id({'input_id': input_id})
     if error is None:
-        res, error = inputs.update_input({'set': {'status': 'DEL'}, 'input_id': input_id})
+        _, error = inputs.update_input({'set': {'status': 'DEL'}, 'input_id': input_id})
         if error is None:
             delete_script_and_incron(input_info)
             return '', 200

@@ -21,9 +21,13 @@ import cv2
 import json
 import time
 import uuid
+import string
+import random
 import shutil
 import PyPDF4
+import PyPDF2
 import datetime
+import subprocess
 import numpy as np
 from PIL import Image
 from PyPDF4 import utils
@@ -57,8 +61,8 @@ class Files:
         self.custom_file_name = img_name + '_custom.jpg'
         self.jpg_name_last_header = img_name + '_last_header.jpg'
         self.jpg_name_last_footer = img_name + '_last_footer.jpg'
-        self.resolution = int(config.cfg['GLOBAL']['resolution'])
-        self.compression_quality = int(config.cfg['GLOBAL']['compressionquality'])
+        self.resolution = 300
+        self.compression_quality = 100
 
     # Convert the first page of PDF to JPG and open the image
     def pdf_to_jpg(self, pdf_name, open_img=True, crop=False, zone_to_crop=False, last_image=False, is_custom=False):
@@ -189,7 +193,7 @@ class Files:
             return pdf_read_rewrite.getNumPages()
 
     @staticmethod
-    def is_blank_page(image, config):
+    def is_blank_page(image):
         params = cv2.SimpleBlobDetector_Params()
         params.minThreshold = 10
         params.maxThreshold = 200
@@ -208,7 +212,7 @@ class Files:
         rows, cols, channel = image.shape
         blobs_ratio = len(keypoints) / (1.0 * rows * cols)
 
-        if blobs_ratio < float(config['blobsratio']):
+        if blobs_ratio < float(1E-6):
             return True
         return False
 
@@ -377,7 +381,7 @@ class Files:
         return improved_img
 
     @staticmethod
-    def move_to_docservers(cfg, file):
+    def move_to_docservers(cfg, file, module='verifier'):
         now = datetime.datetime.now()
         year = str(now.year)
         day = str('%02d' % now.day)
@@ -385,8 +389,7 @@ class Files:
         hour = str('%02d' % now.hour)
         minute = str('%02d' % now.minute)
         seconds = str('%02d' % now.second)
-        docserver_path = cfg['GLOBAL']['docserverpath']
-
+        docserver_path = cfg['GLOBAL']['docserverpath'] + '/' + module + '/original_pdf'
         # Check if docserver folder exists, if not, create it
         if not os.path.exists(docserver_path):
             os.mkdir(docserver_path)
@@ -403,7 +406,6 @@ class Files:
         final_directory = docserver_path + '/' + year + '/' + month + '/' + new_filename
 
         shutil.move(file, final_directory)
-
         return final_directory
 
     @staticmethod
@@ -447,20 +449,43 @@ class Files:
                 return ''
 
     @staticmethod
-    def export_pdf(pages_lists, documents, input_file, output_file, reduce_index=0):
-        pdf_writer = PyPDF4.PdfFileWriter()
-        pdf_reader = PyPDF4.PdfFileReader(input_file, strict=False)
+    def export_pdf(pages_lists, documents, input_file, output_file, compress_type, reduce_index=0):
+        pdf_writer = PyPDF2.PdfFileWriter()
+        pdf_reader = PyPDF2.PdfFileReader(input_file, strict=False)
         paths = []
         try:
             for index, pages in enumerate(pages_lists):
+                if not pages:
+                    continue
                 for page in pages:
                     pdf_writer.addPage(pdf_reader.getPage(page - reduce_index))
                 file_path = output_file + '/' + documents[index]['fileName']
-                with open(output_file + '/' + documents[index]['fileName'], 'wb') as file:
+                with open(file_path, 'wb') as file:
                     pdf_writer.write(file)
                     paths.append(file_path)
-                pdf_writer = PyPDF4.PdfFileWriter()
-        except Exception:
-            return {'OK': False}
+                pdf_writer = PyPDF2.PdfFileWriter()
 
-        return {'OK': True, 'paths': paths}
+                if compress_type:
+                    compressed_file_path = output_file + '/min_' + documents[index]['fileName']
+                    compress_pdf(file_path, compressed_file_path, compress_type)
+                    shutil.move(compressed_file_path, file_path)
+
+        except Exception as e:
+            return False, str(e)
+        return paths
+
+    @staticmethod
+    def list_files(directory, extension):
+        return [f for f in os.listdir(directory) if f.endswith('.' + extension)]
+
+    @staticmethod
+    def get_random_string(length):
+        letters = string.ascii_uppercase
+        return ''.join(random.choice(letters) for i in range(length))
+
+
+def compress_pdf(input_file, output_file, compress_id):
+    gs_command = 'gs#-sDEVICE=pdfwrite#-dCompatibilityLevel=1.4#-dPDFSETTINGS=/%s#-dNOPAUSE#-dQUIET#-o#%s#%s' \
+                 % (compress_id, output_file, input_file)
+    gs_args = gs_command.split('#')
+    subprocess.check_call(gs_args)

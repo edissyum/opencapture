@@ -1,24 +1,47 @@
-<div class="search-input">
+<div *ngIf="treeDataObj.loading">
+  <app-loader></app-loader>
+</div>
+<div class="search-input w-full">
     <mat-form-field class="w-60 pl-4">
       <mat-label>{{ 'SPLITTER.search' | translate }}</mat-label>
       <input matInput [(ngModel)]="searchText" (input)="filterChanged()">
     </mat-form-field>
+    <mat-form-field *ngIf="!data.hasOwnProperty('formId')" class="absolute right-4 w-60">
+      <mat-label>{{ 'FORMS.choose_form' | translate }}</mat-label>
+      <mat-select id='folder' [formControl]="selectFormControl">
+        <div *ngFor="let form of forms" >
+          <mat-option [value]="form.id" >
+            {{ form.label | translate }}
+          </mat-option>
+        </div>
+      </mat-select>
+  </mat-form-field>
 </div>
 <mat-card class="overflow-auto" style="height: 700px;">
+  <div *ngIf="treeDataObj.doctypesData.length === 0" class="text-gray-400">{{ 'DOCTYPE.no_doctype_to_show' | translate }}</div>
   <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
     <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
-    <button mat-button class="h-8" [ngClass]="selectedDocType.key === node.key ? 'text-green-400' : ''"
+<!--      <div *ngIf="node.code.split('.').length != 2" class="yBorder"></div>-->
+<!--      <div class="xBorder"></div>-->
+      <button mat-button class="h-8" [ngClass]="selectedDocTypeInput.key === node.key ? 'text-green-400' : ''"
             (click)="selectNode(node)">
-      <i class="fas fa-file fw"></i>
-      <span class="pl-1 font-normal">{{node.item}}</span>
-    </button>
+        <i class="fas fa-file fw"></i>
+        <span class="pl-1 font-normal">
+            <span *ngIf="node.isDefault"  class="absolute top-4 right-4" matBadge="0" matBadgeSize="small" matBadgeOverlap="false"></span>
+            {{node.label}}
+        </span>
+      </button>
     </mat-tree-node>
     <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
+<!--      <div *ngIf="node.code.split('.').length != 2" class="yBorder"></div>-->
+<!--      <div class="xBorder"></div>-->
       <button mat-button matTreeNodeToggle
-              [attr.aria-label]="'Toggle ' + node.item">
+              [ngClass]="selectedDocTypeInput.key === node.key ? 'text-green-400' : ''"
+              [attr.aria-label]="'Toggle ' + node.label"
+              (click)="selectFolder(node)">
         <i [ngClass]="treeControl.isExpanded(node) ? 'fa fa-minus-square' : 'fa fa-plus-square'">
         </i>
-        <span class="pl-1 font-normal">{{node.item}}</span>
+        <span class="pl-1 font-normal">{{node.label}}</span>
       </button>
     </mat-tree-node>
   </mat-tree>

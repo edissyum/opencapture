@@ -140,7 +140,7 @@ export class UploadComponent implements OnInit {
                     this.fileControl.setValue('');
                     this.notify.success(this.translate.instant('UPLOAD.upload_success'));
                     this.sending = false;
-                    this.historyService.addHistory(splitterOrVerifier!, 'upload_file', this.translate.instant('HISTORY-DESC.file_uploaded', {input: this.selectedInputTechnicalId}));
+                    this.historyService.addHistory(splitterOrVerifier, 'upload_file', this.translate.instant('HISTORY-DESC.file_uploaded', {input: this.selectedInputTechnicalId}));
                 }),
                 catchError((err: any) => {
                     this.notify.handleErrors(err);

@@ -5,8 +5,8 @@
             style="padding-top: 0.9rem">{{ "SETTINGS.administration" | translate }}</h3>
         <mat-divider class="border-green-400"></mat-divider>
         <mat-nav-list class="pt-0">
-                        <mat-expansion-panel *ngFor="let parent of this.serviceSettings.getSettingsParent()"
-                     [expanded]="parent.opened" (opened)="this.serviceSettings.closeOtherParent(this.router.url, parent['id'])">
+            <mat-expansion-panel *ngFor="let parent of this.serviceSettings.getSettingsParent()"
+                                 [expanded]="parent.opened" (opened)="this.serviceSettings.closeOtherParent(this.router.url, parent['id'])">
                 <mat-expansion-panel-header class="settings_expansion">
                     <mat-panel-title>
                         {{ parent['label'] | translate }}
@@ -14,22 +14,22 @@
                 </mat-expansion-panel-header>
                 <div class="w-full border-t-2 border-gray-600">
                     <div *ngFor="let setting of this.serviceSettings.getSettings()[parent['id']];"
-                         [class.border-b]="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] == '*'"
-                         [class.border-gray-400]="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] == '*'">
+                         [class.border-b]="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] === '*'"
+                         [class.border-gray-400]="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] === '*'">
                         <div *ngIf="this.serviceSettings.getSettingsAction(parent['id'], setting['id']) else noActions">
                             <mat-expansion-panel
-                                    *ngIf="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] == '*'"
+                                    *ngIf="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] === '*'"
                                     [expanded]="this.router.url.includes(setting['route'])">
                                 <mat-expansion-panel-header class="font-normal w-full h-20">
                                     <mat-panel-title class="font-normal justify-center items-center text-center">
-                                        <i [class.text-green-400]="this.router.url == setting['route']"
+                                        <i [class.text-green-400]="this.router.url === setting['route']"
                                            class="absolute text-lg left-4 w-10 h-10 rounded-full flex items-center justify-center {{setting['icon']}}">
                                         </i>
-                                        <button mat-button [class.text-green-400]="this.router.url == setting['route']"
+                                        <button mat-button [class.text-green-400]="this.router.url === setting['route']"
                                                 class="pr-0 font-normal w-full h-20 flex justify-center items-center text-center"
                                                 (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
                                                 routerLink="{{ setting['route'] }}">
-                                            <p [class.font-medium]="this.router.url == setting['route']" class="m-0">
+                                            <p [class.font-medium]="this.router.url === setting['route']" class="m-0">
                                                 {{ setting['label'] | translate }}
                                             </p>
                                         </button>
@@ -40,7 +40,7 @@
                                      [class.border-t]="!action['showOnlyIfActive']"
                                      [class.w-full]="!action['showOnlyIfActive']">
                                     <div class="border-b border-gray-400"
-                                         *ngIf="(this.privilegesService.hasPrivilege(action['privilege']) || setting['privilege'] == '*') && (!action['showOnlyIfActive'] || (action['showOnlyIfActive'] && this.router.url.includes(action['route'])))">
+                                         *ngIf="(this.privilegesService.hasPrivilege(action['privilege']) || setting['privilege'] === '*') && (!action['showOnlyIfActive'] || (action['showOnlyIfActive'] && this.router.url.includes(action['route'])))">
                                         <button mat-button
                                                 [class.text-green-400]="this.router.url.includes(action['route'])"
                                                 class="font-normal w-full h-12 ml-12 flex items-center text-center"
@@ -57,13 +57,13 @@
                             </mat-expansion-panel>
                         </div>
                         <ng-template #noActions>
-                            <button *ngIf="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] == '*'"
-                                    mat-button [class.text-green-400]="this.router.url == setting['route']"
+                            <button *ngIf="this.privilegesService.hasPrivilege(setting['privilege']) || setting['privilege'] === '*'"
+                                    mat-button [class.text-green-400]="this.router.url === setting['route']"
                                     class="pr-0 font-normal w-full h-20 flex justify-center items-center text-center"
                                     (click)="this.serviceSettings.changeSetting(setting['id'], parent['id'])"
                                     routerLink="{{ setting['route'] }}">
                                 <i class="absolute left-4 w-10 h-10 rounded-full flex items-center justify-center fa-lg {{setting['icon']}}"></i>
-                                <p [class.font-medium]="this.router.url == setting['route']" class="m-0">
+                                <p [class.font-medium]="this.router.url === setting['route']" class="m-0">
                                     {{ setting['label'] | translate }}
                                 </p>
                             </button>
@@ -95,27 +95,46 @@
                         {{ 'SETTINGS.add_custom_fields' | translate }}
                     </mat-panel-title>
                 </mat-expansion-panel-header>
-                <form (ngSubmit)="addCustomField()" [formGroup]="form">
-                    <div [formGroup]="form" class="mx-8 grid grid-cols-6 gap-4">
+                <form [formGroup]="form">
+                    <div class="mx-8 grid grid-cols-6 gap-4">
                         <mat-form-field class="w-full" *ngFor="let input of addFieldInputs">
-                            <mat-label [attr.for]="input.label_short">{{ input.label | translate }}</mat-label>
+                            <mat-label [attr.for]="input.field_id">{{ input.label | translate }}</mat-label>
                             <div [ngSwitch]="input.controlType">
-                                <input matInput *ngSwitchCase="'text'" [formControlName]="input.label_short"
-                                       [id]="input.label_short" [type]="input.type">
-                                <mat-select [id]="input.label_short" *ngSwitchCase="'dropdown'"
-                                            [formControlName]="input.label_short">
-                                    <mat-option *ngFor="let opt of input.options" [value]="opt.key">
-                                        {{ opt.value | translate }}
-                                    </mat-option>
-                                </mat-select>
+                                <div *ngSwitchCase="'text'">
+                                    <input matInput [formControl]="input.control" [id]="input.field_id"
+                                           [type]="input.type" [matAutocomplete]="autocomplete">
+                                    <mat-autocomplete #autocomplete="matAutocomplete">
+                                        <div *ngIf="input.control.value === null || input.control.value === '' || input.control.value === undefined">
+                                            <mat-option *ngFor="let option of input.autoComplete" [value]="option.key">
+                                                <span style="font-size: 12px;" [innerHTML]="option.value"></span>
+                                                <span style="font-size: 10px;" class="text-green-400 ml-3">{{ option.key }}</span>
+                                            </mat-option>
+                                        </div>
+                                    </mat-autocomplete>
+                                </div>
+                                <div *ngSwitchCase="'dropdown'">
+                                    <mat-select [id]="input.field_id"
+                                                [formControl]="input.control">
+                                        <mat-option *ngFor="let opt of input.options" [value]="opt.key">
+                                            {{ opt.value | translate }}
+                                        </mat-option>
+                                    </mat-select>
+                                </div>
                             </div>
                         </mat-form-field>
+                        <div class="cursor-pointer flex ml-1 -mt-6 w-1/12" matTooltip="{{ 'CUSTOM-FIELDS.reset' | translate }}"
+                             (click)="resetForm()">
+                            <i class="self-center fas fa-sync fa-lg hover:text-green-400"></i>
+                        </div>
                     </div>
                     <div class="flex justify-center m-5">
-                        <button mat-button
-                                class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300"
-                                type="submit">
+                        <button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300"
+                                mat-button (click)="addCustomField()" *ngIf="!update">
                             {{ 'CUSTOM-FIELDS.add' | translate }}
+                        </button>
+                        <button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300"
+                                mat-button (click)="$event.stopPropagation();updateCustomOnSubmit()" *ngIf="update">
+                            {{ 'CUSTOM-FIELDS.update' | translate }}
                         </button>
                     </div>
                 </form>
@@ -127,32 +146,66 @@
                     <div cdkDropListGroup class="w-max mx-auto">
                         <div class="list-container">
                             <h2>{{ 'HEADER.inactive' | translate }}</h2>
-                            <div cdkDropList [cdkDropListData]="inactiveFields" (cdkDropListDropped)="drop($event)" class="custom-fields-list overflow-auto">
+                            <div cdkDropList [cdkDropListData]="inactiveFields" (cdkDropListDropped)="drop($event)"
+                                 class="custom-fields-list"
+                                 style="max-height:47vh; overflow:auto;">
                                 <span *ngFor="let item of inactiveFields; let i = index;">
-                                    <div cdkDrag class="custom-field-box" *ngIf="item.module == parent['id']">
+                                    <div cdkDrag class="custom-field-box" *ngIf="item.module === parent['id']">
                                         <div class="text-left">
-                                            {{item.label}}
-                                            <span class="text-gray-400">
+                                            <div>{{item.label}}</div>
+                                            <div class="text-gray-400">
                                                 ({{ 'CUSTOM-FIELDS.' + item.type | translate }})
-                                            </span>
+                                            </div>
                                         </div>
-                                        <button mat-button (click)="moveToActive(i)"><i class="fa fa-plus"></i></button>
+                                        <div class="actions">
+                                            <button matTooltip="{{ 'GLOBAL.move_to_active' | translate }}" mat-icon-button
+                                                    class="hover:text-green-400" (click)="moveToActive(i)">
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                            <button matTooltip="{{ 'DOCTYPE.edit' | translate }}" mat-icon-button
+                                                    class="hover:text-green-400"
+                                                    (click)="updateCustomField(item, 'inactive')">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button matTooltip="{{ 'GLOBAL.delete' | translate }}" mat-icon-button
+                                                    class="hover:text-green-400"
+                                                    (click)="deleteCustomField(item.id, 'inactive')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 </span>
                             </div>
                         </div>
                         <div class="list-container">
                             <h2>{{ 'HEADER.active' | translate }}</h2>
-                            <div cdkDropList [cdkDropListData]="activeFields" (cdkDropListDropped)="drop($event)" class="custom-fields-list overflow-auto">
+                            <div cdkDropList [cdkDropListData]="activeFields" (cdkDropListDropped)="drop($event)"
+                                 class="custom-fields-list"
+                                 style="max-height:47vh; overflow:auto;">
                                 <span *ngFor="let item of activeFields; let i = index;">
-                                    <div cdkDrag class="custom-field-box" *ngIf="item.module == parent['id']">
+                                    <div cdkDrag class="custom-field-box" *ngIf="item.module === parent['id']">
                                         <div class="text-left">
-                                            {{item.label}}
-                                            <span class="text-gray-400">
+                                            <div>{{item.label}}</div>
+                                            <div class="text-gray-400">
                                                 ({{ 'CUSTOM-FIELDS.' + item.type | translate }})
-                                            </span>
+                                            </div>
                                         </div>
-                                        <button mat-button (click)="moveToInactive(i)"><i class="fa fa-minus"></i></button>
+                                        <div class="actions">
+                                            <button matTooltip="{{ 'GLOBAL.move_to_inactive' | translate }}" mat-icon-button
+                                                    class="hover:text-green-400" (click)="moveToInactive(i)">
+                                                <i class="fa fa-minus"></i>
+                                            </button>
+                                            <button matTooltip="{{ 'DOCTYPE.edit' | translate }}" mat-icon-button
+                                                    class="hover:text-green-400"
+                                                    (click)="updateCustomField(item, 'active')">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button matTooltip="{{ 'GLOBAL.delete' | translate }}" mat-icon-button
+                                                    class="hover:text-green-400"
+                                                    (click)="deleteCustomField(item.id, 'active')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 </span>
                             </div>

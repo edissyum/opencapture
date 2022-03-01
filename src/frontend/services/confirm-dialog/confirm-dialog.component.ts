@@ -2,13 +2,13 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 
 export interface ConfirmData {
-    confirmTitle : string;
-    confirmText : string;
-    confirmButton : string;
-    selectValues: any;
-    selectLabel : string;
-    confirmButtonColor : string;
-    cancelButton : string;
+    confirmTitle : string
+    confirmText : string
+    confirmButton : string
+    selectValues: any
+    selectLabel : string
+    confirmButtonColor : string
+    cancelButton : string
 }
 
 @Component({

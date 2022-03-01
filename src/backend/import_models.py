@@ -42,6 +42,11 @@ if 'history' or 'models' not in custom_array['history']['path']:
 elif 'models' in custom_array['history']['path']:
     history = getattr(__import__(custom_array['history']['path'], fromlist=[custom_array['history']['module']]), custom_array['history']['module'])
 
+if 'config' or 'models' not in custom_array['config']['path']:
+    from .models import config
+elif 'models' in custom_array['config']['path']:
+    history = getattr(__import__(custom_array['config']['path'], fromlist=[custom_array['config']['module']]), custom_array['config']['module'])
+
 if 'verifier' or 'models' not in custom_array['verifier']['path']:
     from .models import verifier
 elif 'models' in custom_array['verifier']['path']:
@@ -71,3 +76,8 @@ if 'inputs' or 'models' not in custom_array['inputs']['path']:
     from .models import inputs
 elif 'models' in custom_array['inputs']['path']:
     inputs = getattr(__import__(custom_array['inputs']['path'], fromlist=[custom_array['inputs']['module']]), custom_array['inputs']['module'])
+
+if 'doctypes' or 'models' not in custom_array['doctypes']['path']:
+    from .models import doctypes
+elif 'models' in custom_array['doctypes']['path']:
+    doctypes = getattr(__import__(custom_array['doctypes']['path'], fromlist=[custom_array['doctypes']['module']]), custom_array['doctypes']['module'])

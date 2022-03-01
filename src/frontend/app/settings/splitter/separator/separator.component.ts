@@ -15,80 +15,135 @@
 
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
-import {AfterViewInit, Component, ViewChild} from '@angular/core';
+import {OnInit, Component} from '@angular/core';
 import {TranslateService} from "@ngx-translate/core";
 import {SettingsService} from "../../../../services/settings.service";
 
-import {DOC_SEPARATOR} from "./urls/docUrl";
-import {BUNDLE_SEPARATOR} from "./urls/bundleUrl";
 import {Router} from "@angular/router";
 import {UserService} from "../../../../services/user.service";
 import {PrivilegesService} from "../../../../services/privileges.service";
+import {API_URL} from "../../../env";
+import {catchError, tap} from "rxjs/operators";
+import {of} from "rxjs";
+import {HttpClient} from "@angular/common/http";
+import {AuthService} from "../../../../services/auth.service";
+import {NotificationService} from "../../../../services/notifications/notifications.service";
 
 @Component({
     selector: 'app-separator',
     templateUrl: './separator.component.html',
     styleUrls: ['./separator.component.scss']
 })
-export class SeparatorComponent implements AfterViewInit {
-    @ViewChild('pdfViewerAutoLoad') pdfViewerAutoLoad : any;
+export class SeparatorComponent implements OnInit {
+    private selectedDocType: any;
+    public separator: any      = {
+        'fileUrl': '',
+        'thumbnailUrl': ''
+    };
+    loading           : boolean = false;
+    loadingSeparator  : boolean = false;
+    selectedSeparator : string  = "bundleSeparator";
+    separators        : any[]   = [
+        {
+            id          : 'bundleSeparator',
+            name        : this.translate.instant("SPLITTER.bundle_separator"),
+            disabled    : false
+        },
+        {
+            id          : 'documentSeparator',
+            name        : this.translate.instant("SPLITTER.document_separator"),
+            disabled    : false
+        },
+        {
+            id          : 'docTypeSeparator',
+            name        : this.translate.instant("SPLITTER.doc_type_separator"),
+            disabled    : true
+        },
+    ];
+
     constructor(
         public router: Router,
         public userService: UserService,
         public translate: TranslateService,
         public serviceSettings: SettingsService,
-        public privilegesService: PrivilegesService
+        public privilegesService: PrivilegesService,
+        private http: HttpClient,
+        private authService: AuthService,
+        private notify:NotificationService,
     ) { }
-
-    loading           : boolean = false;
-    pdfFile           : any;
-    selectedSeparator : string  = "bundleSeparator";
-    base64            : string  = BUNDLE_SEPARATOR;
-    separators        : any[]   = [
-        {
-            id  : 'bundleSeparator',
-            name: this.translate.instant("SPLITTER.bundle_separator"),
-        },
-        {
-            id  : 'documentSeparator',
-            name: this.translate.instant("SPLITTER.document_separator"),
-        },
-    ];
-
-    convertDataURIToBinary(dataURI: string) {
-        const base64Index = dataURI.indexOf(';base64,') + ';base64,'.length;
-        const base64      = dataURI.substring(base64Index);
-        const raw         = window.atob(base64);
-        const rawLength   = raw.length;
-        const array       = new Uint8Array(new ArrayBuffer(rawLength));
-
-        for(let i = 0; i < rawLength; i++) {
-            array[i]      = raw.charCodeAt(i);
-        }
-        return array;
-    }
 
     ngOnInit(): void {
         this.serviceSettings.init();
-    }
-
-    ngAfterViewInit(): void {
-        this.refreshPdfView();
-    }
-
-    refreshPdfView(): void {
-        this.pdfFile = this.convertDataURIToBinary(this.base64);
-        this.pdfViewerAutoLoad.pdfSrc = this.pdfFile;
-        this.pdfViewerAutoLoad.refresh();
+        this.generateSeparator( {
+            'type'  : 'bundleSeparator',
+            'key'   : '',
+            'label' : ''
+        });
     }
 
     onChangeType() {
+        let args = {};
         if (this.selectedSeparator === "bundleSeparator") {
-            this.base64 = BUNDLE_SEPARATOR;
+            args = {
+                'type'  : 'bundleSeparator',
+                'key'   : '',
+                'label' : ''
+            };
         }
         else if (this.selectedSeparator === "documentSeparator") {
-            this.base64 = DOC_SEPARATOR;
+            args = {
+                'type'  : 'documentSeparator',
+                'key'   : '',
+                'label' : ''
+            };
         }
-        this.refreshPdfView();
+        else{
+            args = {
+                'type'  : 'docTypeSeparator',
+                'key'   : this.selectedDocType ? this.selectedDocType.key : '',
+                'label' : this.selectedDocType ? this.selectedDocType.label : ''
+            };
+        }
+        this.generateSeparator(args);
+    }
+
+    getOutPut($event: any) {
+        this.selectedSeparator  = 'docTypeSeparator';
+        this.selectedDocType    = $event;
+        const args = {
+            'type': 'docTypeSeparator',
+            'key': this.selectedDocType.key,
+            'label': this.selectedDocType.label
+        };
+        this.generateSeparator(args);
+    }
+
+    generateSeparator(args: any) {
+        this.loadingSeparator = true;
+        this.http.post(API_URL + '/ws/doctypes/generateSeparator',  args,{headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.separator.fileUrl = "data:application/pdf;base64," + data.encoded_file;
+                this.separator.thumbnailUrl = "data:image/jpeg;base64," + data.encoded_thumbnail;
+                this.loadingSeparator = false;
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.loadingSeparator = false;
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    downloadSeparator() {
+        const fileName = this.selectedSeparator + (this.selectedDocType ? '_' + this.selectedDocType.key: '');
+        this.downloadPdf(this.separator.fileUrl,fileName);
+    }
+
+    downloadPdf(base64String: any, fileName:any) {
+        const link = document.createElement("a");
+        link.href = base64String;
+        link.download = `${fileName}.pdf`;
+        link.click();
     }
 }

@@ -1,19 +1,19 @@
 /** This file is part of Open-Capture for Invoices.
 
-Open-Capture for Invoices is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+ Open-Capture for Invoices is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-Open-Capture is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+ Open-Capture is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+ You should have received a copy of the GNU General Public License
+ along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
-@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+ @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import {Component, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
@@ -66,8 +66,12 @@ export class SplitterFormBuilderComponent implements OnInit {
     ];
     fieldCategories         : any []    = [
         {
-            'id': 'metadata',
-            'label': marker('SPLITTER.meta_data')
+            'id': 'batch_metadata',
+            'label': marker('SPLITTER.batch_metadata')
+        },
+        {
+            'id': 'document_metadata',
+            'label': marker('SPLITTER.document_metadata')
         },
     ];
     availableFieldsParent   : any []    = [
@@ -78,7 +82,8 @@ export class SplitterFormBuilderComponent implements OnInit {
         },
     ];
     fields                  : any       = {
-        'metadata': []
+        'batch_metadata'    : [],
+        'document_metadata' : []
     };
     classList               : any []    = [
         {
@@ -225,8 +230,10 @@ export class SplitterFormBuilderComponent implements OnInit {
             this.http.get(API_URL + '/ws/forms/getFields/' + this.formId, {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
                     if (data.form_fields.fields) {
-                        if (data.form_fields.fields.metadata)
-                            this.fields.metadata = data.form_fields.fields.metadata;
+                        if (data.form_fields.fields.batch_metadata)
+                            this.fields.batch_metadata = data.form_fields.fields.batch_metadata;
+                        if (data.form_fields.fields.document_metadata)
+                            this.fields.document_metadata = data.form_fields.fields.document_metadata;
 
                         for (const category in this.fields) {
                             if (this.fields.hasOwnProperty(category)) {
@@ -281,16 +288,6 @@ export class SplitterFormBuilderComponent implements OnInit {
         });
     }
 
-    changeFormat(fieldId: any, newFormat: any, formatIcon: any, category: any) {
-        const id = fieldId;
-        this.fields[category].forEach((element: any) => {
-            if (element.id === id) {
-                element.format = newFormat;
-                element.format_icon = formatIcon;
-            }
-        });
-    }
-
     changeDisplay(fieldId: any, newDisplay: any, displayIcon: any, category: any) {
         const id = fieldId;
         this.fields[category].forEach((element: any) => {
@@ -307,15 +304,6 @@ export class SplitterFormBuilderComponent implements OnInit {
             if (element.id === id) {
                 element.required = newRequired;
                 element.required_icon = requiredIcon;
-            }
-        });
-    }
-
-    changeColor(fieldId: any, newColor: any, category: any) {
-        const id = fieldId;
-        this.fields[category].forEach((element: any) => {
-            if (element.id === id) {
-                element.color = newColor;
             }
         });
     }
@@ -383,7 +371,7 @@ export class SplitterFormBuilderComponent implements OnInit {
 
         if (label !== '' && outputs.length >= 1) {
             this.http.put(API_URL + '/ws/forms/update/' + this.formId, {
-                'args': {'label' : label, 'default_form' : isDefault, 'outputs': outputs}
+                    'args': {'label' : label, 'default_form' : isDefault, 'outputs': outputs}
                 }, {headers: this.authService.headers},
             ).pipe(
                 tap(()=> {

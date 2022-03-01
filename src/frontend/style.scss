@@ -16,40 +16,12 @@ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-    font-family: 'icomoon';
-    src: url('../assets/fonts/icomoon.ttf?f4zyht') format('truetype'),
-         url('../assets/fonts/icomoon.woff?f4zyht') format('woff'),
-         url('../assets/fonts/icomoon.svg?f4zyht#icomoon') format('svg');
-    font-weight: normal;
-    font-style: normal;
-    font-display: block;
-}
-
-[class^="icomoon-"], [class*="icomoon-"] {
-    font-family: 'icomoon', serif !important;
-    speak: never;
-    font-style: normal;
-    font-weight: normal;
-    font-variant: normal;
-    text-transform: none;
-    line-height: 1;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-.icomoon-numbers:before {
-    content: "\e901";
-}
-.icomoon-wrong_location:before {
-    content: "\e900";
-}
-
 :focus {
     outline: none !important;
 }
 
-/** Style rélgages **/
+/** Style réglages **/
+
 mat-expansion-panel {
     @apply rounded-none #{!important};
 }
@@ -135,6 +107,26 @@ div[id*="select-area-label_"] {
 }
 
 /*** END image area select ***/
+
+.settings_header {
+    & .mat-form-field-wrapper {
+        @apply pt-1;
+        @apply pb-1;
+
+        & .mat-form-field-infix {
+            max-height: 5vh !important;
+
+            & .mat-form-field-label-wrapper {
+                @apply -top-4;
+            }
+
+            & .mat-input-element {
+                @apply relative;
+                @apply -top-2;
+            }
+        }
+    }
+}
 
 .mat-menu-panel {
     max-width:fit-content !important;
