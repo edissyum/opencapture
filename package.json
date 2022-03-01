@@ -5,7 +5,7 @@
         "build-watch": "ng build --watch --configuration development",
         "build:prod": "NODE_ENV=production ng build --configuration production",
         "reload-packages": "rm -Rf node_modules && rm -f package-lock.json && npm cache clean --force && npm i --force",
-        "extract-translations": "ngx-translate-extract --input ./ --output ./src/assets/i18n/frontend/*.json --clean --sort --format namespaced-json --marker _",
+        "extract-translations": "ngx-translate-extract --input ./src/frontend/ --output ./src/assets/i18n/frontend/*.json --clean --sort --format namespaced-json --marker _",
         "lint": "ng lint"
     },
     "private": true,
@@ -39,8 +39,8 @@
         "rxjs": "~7.5.4"
     },
     "devDependencies": {
-        "@angular-devkit/build-webpack": "^0.1302.5",
         "@angular-devkit/build-angular": "^13.2.5",
+        "@angular-devkit/build-webpack": "^0.1302.5",
         "@angular-eslint/builder": "13.1.0",
         "@angular-eslint/eslint-plugin": "13.1.0",
         "@angular-eslint/eslint-plugin-template": "13.1.0",
@@ -48,7 +48,7 @@
         "@angular-eslint/template-parser": "13.1.0",
         "@angular/cli": "~13.2.5",
         "@angular/compiler-cli": "~13.2.4",
-        "@biesbjerg/ngx-translate-extract": "^7.0.4",
+        "@bartholomej/ngx-translate-extract": "^8.0.2",
         "@types/d3-scale": "^4.0.2",
         "@types/d3-selection": "^3.0.2",
         "@types/node": "^17.0.21",

@@ -555,7 +555,11 @@
 		"zoom": "Zoom"
 	},
 	"STATISTICS": {
+		"choose_diagram": "Choose a diagram type",
 		"choose_statistic_report": "Choose a statistic report",
+		"diagram_pie_chart": "Pie chart diagram",
+		"diagram_pie_grid": "Pie grid diagram",
+		"diagram_vertical_bar": "Vertical bar diagram",
 		"invoices_validated_per_user": "Invoices validated per user"
 	},
 	"STATUS": {

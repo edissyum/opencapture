@@ -35,7 +35,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {DomSanitizer} from "@angular/platform-browser";
 import {ConfigService} from "../../../services/config.service";
 import {HistoryService} from "../../../services/history.service";
-declare var $: any;
+declare const $: any;
 
 interface accountsNode {
     name: string;

@@ -24,6 +24,7 @@ import {AuthService} from "../../services/auth.service";
 import {NotificationService} from "../../services/notifications/notifications.service";
 import {SettingsService} from "../../services/settings.service";
 import {TranslateService} from "@ngx-translate/core";
+import {marker} from "@biesbjerg/ngx-translate-extract-marker";
 
 @Component({
     selector: 'app-statistics',
@@ -41,7 +42,29 @@ export class StatisticsComponent implements OnInit {
             'label': this.translate.instant('STATISTICS.invoices_validated_per_user')
         }
     ];
+    diagramTypes : any = [
+        {
+            'id': 'vertical-bar',
+            'label': marker('STATISTICS.diagram_vertical_bar'),
+            'logo': 'fa-chart-column'
+        },
+        {
+            'id': 'pie-chart',
+            'label': marker('STATISTICS.diagram_pie_chart'),
+            'logo': 'fa-chart-pie'
+        },
+        {
+            'id': 'pie-grid',
+            'label': marker('STATISTICS.diagram_pie_grid'),
+            'logo': 'fa-grip'
+        },
+
+    ];
+    colorScheme = {
+        domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
+    };
     selectedStatistic : any;
+    selectedDiagramType : string = 'vertical-bar';
 
     constructor(
         private http: HttpClient,
@@ -82,7 +105,6 @@ export class StatisticsComponent implements OnInit {
                                         'value': historyCpt
                                     });
                                 });
-                                console.log(this.data);
                                 this.loading = false;
                             }),
                             catchError((err: any) => {
@@ -112,6 +134,16 @@ export class StatisticsComponent implements OnInit {
             this.options.forEach((option: any) => {
                 if (option.id === event.value) {
                     this.selectedStatistic = option;
+                }
+            });
+        }
+    }
+
+    changeDiagramType(event: any) {
+        if (event.value) {
+            this.diagramTypes.forEach((option: any) => {
+                if (option.id === event.value) {
+                    this.selectedDiagramType = option.id;
                 }
             });
         }

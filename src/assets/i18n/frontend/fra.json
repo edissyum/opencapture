@@ -555,7 +555,11 @@
 		"zoom": "Agrandir"
 	},
 	"STATISTICS": {
+		"choose_diagram": "Choisissez un type de diagramme",
 		"choose_statistic_report": "Choisissez un rapport de statistiques",
+		"diagram_pie_chart": "Diagramme circulaire",
+		"diagram_pie_grid": "Diagramme circulaire en grille",
+		"diagram_vertical_bar": "Diagramme en bâton",
 		"invoices_validated_per_user": "Factures validées par utilisateur"
 	},
 	"STATUS": {
