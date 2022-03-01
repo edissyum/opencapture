@@ -15,7 +15,7 @@
 
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
-import {AfterViewInit, Component} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {TranslateService} from "@ngx-translate/core";
 import {SettingsService} from "../../../../services/settings.service";
 
@@ -34,7 +34,7 @@ import {NotificationService} from "../../../../services/notifications/notificati
     templateUrl: './separator.component.html',
     styleUrls: ['./separator.component.scss']
 })
-export class SeparatorComponent implements AfterViewInit {
+export class SeparatorComponent implements OnInit {
     private selectedDocType: any;
     public separator: any      = {
         'fileUrl': '',
@@ -128,19 +128,6 @@ export class SeparatorComponent implements AfterViewInit {
         ).subscribe();
     }
 
-    convertDataURIToBinary(dataURI: string) {
-        const base64Index = dataURI.indexOf(';base64,') + ';base64,'.length;
-        const base64      = dataURI.substring(base64Index);
-        const raw         = window.atob(base64);
-        const rawLength   = raw.length;
-        const array       = new Uint8Array(new ArrayBuffer(rawLength));
-
-        for(let i = 0; i < rawLength; i++) {
-            array[i]      = raw.charCodeAt(i);
-        }
-        return array;
-    }
-
     ngOnInit(): void {
         this.serviceSettings.init();
         this.generateSeparator( {
@@ -148,13 +135,6 @@ export class SeparatorComponent implements AfterViewInit {
             'key'   : '',
             'label' : ''
         });
-    }
-
-    ngAfterViewInit(): void {
-    }
-
-    refreshPdfView(): void {
-        this.pdfFile = this.convertDataURIToBinary(this.separatorFileUrl);
     }
 
     downloadSeparator() {
@@ -167,9 +147,5 @@ export class SeparatorComponent implements AfterViewInit {
         link.href = base64String;
         link.download = `${fileName}.pdf`;
         link.click();
-    }
-
-    onClickDownloadPdf(){
-
     }
 }
