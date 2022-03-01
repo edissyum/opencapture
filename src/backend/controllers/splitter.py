@@ -176,7 +176,7 @@ def create_document(args):
     if not res:
         response = {
             "errors": gettext('ADD_DOCUMENT_ERROR'),
-            "message": gettext('ADD_DOCUMENT_ERROR')
+            "message": ''
         }
         return response, 400
 
@@ -233,13 +233,13 @@ def export_maarch(auth_data, file_path, args, batch):
         else:
             response = {
                 "errors": gettext('EXPORT_MAARCH_ERROR'),
-                "message": gettext('EXPORT_MAARCH_ERROR')
+                "message": ''
             }
             return response, 400
     else:
         response = {
             "errors": gettext('MAARCH_WS_INFO_EMPTY'),
-            "message": gettext('MAARCH_WS_INFO_EMPTY')
+            "message": ''
         }
         return response, 400
 
@@ -301,7 +301,7 @@ def save_infos(args):
     if not res:
         response = {
             "errors": gettext('UPDATE_BATCH_ERROR'),
-            "message": gettext('UPDATE_BATCH_ERROR')
+            "message": ''
         }
         return response, 401
 
