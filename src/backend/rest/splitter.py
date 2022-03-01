@@ -106,7 +106,7 @@ def save_info():
     response, status = splitter.save_infos({
         'documents': data['documents'],
         'batch_id': data['batchId'],
-        'movedPages': data['movedPages'],
+        'moved_pages': data['movedPages'],
         'batch_metadata': data['batchMetadata'],
         'deleted_pages_ids': data['deletedPagesIds'],
         'deleted_documents_ids': data['deletedDocumentsIds']
@@ -119,7 +119,7 @@ def save_info():
 def validate():
     data = request.data
     data = json.loads(data)
-    response, status = splitter.validate(data['documents'], data['batchMetadata'])
+    response, status = splitter.validate(data)
     return make_response(jsonify(response)), status
 
 

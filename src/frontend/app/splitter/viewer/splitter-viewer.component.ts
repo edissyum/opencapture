@@ -661,9 +661,13 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.loading = true;
         this.http.post(API_URL + '/ws/splitter/validate',
             {
-                'documents'     : this.documents,
-                'batchMetadata' : batchMetadata,
-                'formId'        : this.currentBatch.formId,
+                'formId'                : this.currentBatch.formId,
+                'batchId'               : this.currentBatch.id,
+                'documents'             : this.documents,
+                'movedPages'            : this.movedPages,
+                'deletedPagesIds'       : this.deletedPagesIds,
+                'deletedDocumentsIds'   : this.deletedDocumentsIds,
+                'batchMetadata'         : batchMetadata,
             },
             {headers}).pipe(
             tap(() => {
