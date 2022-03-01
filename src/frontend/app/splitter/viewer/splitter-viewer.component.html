@@ -235,9 +235,10 @@
                         <i class="fas fa-undo fa-lg"></i>
                     </button>
                     <button mat-button class="inline-block my-4"
-                            (click)="addDocument()"
+                            (click)="createDocument()"
                             title="{{ 'SPLITTER.add_document' | translate }}">
-                        <i class="fas fa-plus-circle fa-lg"></i>
+                        <i class="fas fa-plus-circle fa-lg" *ngIf="!addDocumentLoading"></i>
+                        <i class="fas fa-circle-notch fa-spin fa-lg my-4" *ngIf="addDocumentLoading"></i>
                     </button>
                     <mat-form-field class="inline-block pt-6 top-1">
                         <mat-label>{{ 'SPLITTER.send_to' | translate }}</mat-label>

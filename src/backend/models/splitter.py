@@ -36,7 +36,7 @@ def retrieve_metadata(args):
     return metadata, error
 
 
-def add_document(args):
+def create_document(args):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
     args = {
@@ -51,6 +51,25 @@ def add_document(args):
     }
     res = _db.insert(args)
     return res
+
+
+def get_next_splitter_index(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+
+    res = _db.select({
+        'select': ['max(split_index) as max_split_index'],
+        'table': ['splitter_documents'],
+        'where': ['batch_id = %s'],
+        'data': [args['batch_id']]
+    })
+    if res:
+        split_index = res[0]['max_split_index']
+
+    else:
+        error = gettext('GET_MAX_SPLIT_INDEX_ERROR')
+        return False, error
+    return {'split_index': split_index + 1}, None
 
 
 def add_batch(args):
@@ -88,7 +107,7 @@ def get_demand_number():
         demand_number = settings[0]['value']
 
     else:
-        error = "ERROR : While getting settings"
+        error = gettext('GET_DEMAND_NUMBER_ERROR')
     return {'demand_number': demand_number}, error
 
 
@@ -107,7 +126,7 @@ def set_demand_number(demand_number):
     }
     res = _db.update(args)
     if not res:
-        error = "ERROR : While updating settings"
+        error = gettext('UPDATE_SETTINGS_ERROR')
         return res, error
 
     return {'OK': True}, error
@@ -128,7 +147,7 @@ def insert_referential(data):
         }
         res = _db.insert(args)
         if not res:
-            error = "ERROR : While inserting referential"
+            error = gettext('INSERT_REFERENTIAL_ERROR')
             return res, error
 
     return {'OK': True}, error
@@ -149,7 +168,7 @@ def insert_page(args):
     }
     res = _db.insert(args)
     if not res:
-        error = "ERROR : While inserting new page"
+        error = gettext('INSERT_PAGE_ERROR')
         return res, error
 
     return {'OK': True}, error
@@ -207,7 +226,7 @@ def get_batch_by_id(args):
     })[0]
 
     if not batches:
-        error = "ERROR : While getting batch"
+        error = gettext('GET_BATCH_ERROR')
 
     return batches, error
 
@@ -226,7 +245,7 @@ def get_batch_documents(args):
     })
 
     if not pages:
-        error = "ERROR : While getting documents"
+        error = gettext('GET_DOCUMENTS_ERROR')
 
     return pages, error
 
@@ -245,7 +264,7 @@ def get_documents_pages(args):
     })
 
     if not pages:
-        error = "ERROR : While getting pages"
+        error = gettext('GET_PAGES_ERROR')
 
     return pages, error
 
@@ -263,7 +282,7 @@ def get_max_source_page(args):
     })
 
     if not pages:
-        error = "ERROR : While getting pages"
+        error = gettext('GET_MAX_SOURCE_PAGE_VALUE_ERROR')
 
     return pages, error
 
@@ -282,7 +301,7 @@ def get_documents(args):
     })
 
     if not pages:
-        error = "ERROR : While getting documents"
+        error = gettext('GET_DOCUMENT_ERROR')
 
     return pages, error
 
@@ -300,7 +319,7 @@ def get_documents_max_split_index(args):
     })
 
     if not pages:
-        error = "ERROR : While getting documents"
+        error = gettext('GET_DOCUMENT_MAX_SPLIT_INDEX_ERROR')
 
     return pages, error
 
@@ -322,20 +341,42 @@ def change_status(args):
     return res
 
 
-def update_document(args):
+def update_document(data):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
-    res = _db.update({
+    args = {
         'table': ['splitter_documents'],
-        'set': {
-            'doctype_key': args['doctype_key'],
-            'data': json.dumps({
-                "custom_fields": args['document_metadata']
-            })
-        },
         'where': ['id = %s'],
-        'data': [args['document_id']]
-    })
+        'set': {},
+        'data': [data['document_id']]
+    }
+    if 'status' in data:
+        args['set']['status'] = data['status']
+    if 'doctype_key' in data:
+        args['set']['doctype_key'] = data['doctype_key']
+    if 'document_metadata' in data:
+        args['set']['data'] = json.dumps({
+            "custom_fields": data['document_metadata']
+        })
+    res = _db.update(args)
+    return res
+
+
+def update_page(data):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    args = {
+        'table': ['splitter_pages'],
+        'set': {},
+        'where': ['id = %s'],
+        'data': [data['page_id']]
+    }
+    if 'status' in data:
+        args['set']['status'] = data['status']
+    if 'document_id' in data:
+        args['set']['document_id'] = data['document_id']
+    print(args)
+    res = _db.update(args)
     return res
 
 

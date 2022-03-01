@@ -151,16 +151,36 @@ def retrieve_documents(batch_id):
                 doctype_label = dotypes[0]['label'] if dotypes[0]['label'] else None
 
             res_documents.append({
-                'id': document['id'],
-                'data': document['data'],
                 'pages': document_pages,
                 'doctype_key': doctype_key,
-                'doctype_label': doctype_label
+                'doctype_label': doctype_label,
+                'id': document['id'],
+                'data': document['data'],
+                'status': document['status'],
+                'split_index': document['split_index']
             })
 
     response = {"documents": res_documents}
 
     return response, 200
+
+
+def create_document(args):
+    res = splitter.create_document({
+        'data': '{}',
+        'status': 'NEW',
+        'doctype_key': None,
+        'batch_id': args['batch_id'],
+        'split_index': args['split_index'],
+    })
+    if not res:
+        response = {
+            "errors": gettext('ADD_DOCUMENT_ERROR'),
+            "message": gettext('ADD_DOCUMENT_ERROR')
+        }
+        return response, 400
+
+    return {"newDocumentId": res}, 200
 
 
 def get_output_parameters(parameters):
@@ -175,7 +195,6 @@ def get_output_parameters(parameters):
 
 def export_maarch(auth_data, file_path, args, batch):
     _vars = create_classes_from_current_config()
-    print(auth_data)
     host = auth_data['host']
     login = auth_data['login']
     password = auth_data['password']
@@ -240,8 +259,6 @@ def export_pdf(batch, documents, parameters, metadata, pages, now, compress_type
             'extension': parameters['extension']
         }
         documents[index]['fileName'] = _Splitter.get_mask_result(document, metadata, now, mask_args)
-        print("documents[index]['fileName'] : ")
-        print(documents[index]['fileName'])
     paths = _Files.export_pdf(pages, documents, filename, parameters['folder_out'], compress_type, 1)
 
     if not paths:
@@ -270,12 +287,16 @@ def export_xml(documents, parameters, metadata, now):
     return {'path': res_xml[1]}, 200
 
 
-def save_infos(batch_id, documents, batch_metadata):
+def save_infos(args):
     _vars = create_classes_from_current_config()
     _cfg = _vars[1]
+    new_documents = []
+    """
+        Save batch metadata
+    """
     res = splitter.update_batch({
-        'batch_id': batch_id,
-        'batch_metadata': batch_metadata,
+        'batch_id': args['batch_id'],
+        'batch_metadata': args['batch_metadata'],
     })[0]
     if not res:
         response = {
@@ -284,12 +305,37 @@ def save_infos(batch_id, documents, batch_metadata):
         }
         return response, 401
 
-    for document in documents:
-        if 'ADDED' in document['id']:
-            continue
+    for document in args['documents']:
+        """
+            Save user added documents
+        """
+        if document['status'] == 'USERADD':
+            res_splitter_index = splitter.get_next_splitter_index({'batch_id': args['batch_id']})
+            if res_splitter_index[0]:
+                new_document_id = splitter.create_document({
+                    'batch_id': args['batch_id'],
+                    'doctype_key': document['documentTypeKey'],
+                    'split_index': res_splitter_index[0]['split_index'],
+                    'data': json.dumps({'custom_fields': document['metadata']}),
+                    'status': 'NEW',
+                })
+                new_documents.append({
+                    'tmp_id': document['id'],
+                    'id': new_document_id
+                })
+            else:
+                response = {
+                    "errors": gettext('ADD_DOCUMENT_ERROR'),
+                    "message": gettext('ADD_DOCUMENT_ERROR')
+                }
+                return response, 401
+
+        """
+            Save documents metadata
+        """
         document['id'] = document['id'].split('-')[-1]
         res = splitter.update_document({
-            'document_id': document['id'],
+            'document_id': document['id'].split('-')[-1],
             'doctype_key': document['documentTypeKey'],
             'document_metadata': document['metadata'],
         })[0]
@@ -297,6 +343,55 @@ def save_infos(batch_id, documents, batch_metadata):
             response = {
                 "errors": gettext('UPDATE_DOCUMENT_ERROR'),
                 "message": gettext('UPDATE_DOCUMENT_ERROR')
+            }
+            return response, 401
+    """
+        move pages
+    """
+    for movedPage in args['movedPages']:
+        """ Check if page is added in a new document """
+        if movedPage['isAddInNewDoc']:
+            for new_document_item in new_documents:
+                if new_document_item['tmp_id'] == movedPage['newDocumentId']:
+                    movedPage['newDocumentId'] = new_document_item['id']
+
+        res = splitter.update_page({
+            'page_id': movedPage['pageId'],
+            'document_id': movedPage['newDocumentId'],
+        })[0]
+        if not res:
+            response = {
+                "errors": gettext('UPDATE_PAGES_ERROR'),
+                "message": gettext('UPDATE_PAGES_ERROR')
+            }
+            return response, 401
+
+    """
+        Delete documents
+    """
+    for deleted_documents_id in args['deleted_documents_ids']:
+        res = splitter.update_document({
+            'document_id': deleted_documents_id.split('-')[-1],
+            'status': 'DEL',
+        })[0]
+    if not res:
+        response = {
+            "errors": gettext('UPDATE_PAGES_ERROR'),
+            "message": gettext('UPDATE_PAGES_ERROR')
+        }
+        return response, 401
+    """
+        Delete pages
+    """
+    for deleted_pages_id in args['deleted_pages_ids']:
+        res = splitter.update_page({
+            'page_id': deleted_pages_id,
+            'status': 'DEL',
+        })[0]
+        if not res:
+            response = {
+                "errors": gettext('UPDATE_PAGES_ERROR'),
+                "message": gettext('UPDATE_PAGES_ERROR')
             }
             return response, 401
     return True, 200
@@ -500,10 +595,10 @@ def merge_batches(parent_id, batches):
                     if previous_split_index != doc['split_index']:
                         parent_max_split_index += 1
 
-                document_id = splitter.add_document({
+                document_id = splitter.create_document({
                     'batch_id': parent_id,
                     'doctype_key': doc['doctype_key'],
-                    'data': json.dumps(doc['data']),
+                    'data': json.dumps({'custom_fields': doc['data']}),
                     'status': 'NEW',
                     'split_index': parent_max_split_index + doc['split_index']
                 })

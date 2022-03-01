@@ -85,12 +85,32 @@ def retrieve_batch_documents(batch_id):
     return make_response(jsonify(res[0])), res[1]
 
 
+@bp.route('splitter/addDocument', methods=['POST'])
+@auth.token_required
+def create_document():
+    data = request.data
+    data = json.loads(data)
+    args = {
+        'batch_id': data['batchId'],
+        'split_index': data['splitIndex']
+    }
+    res = splitter.create_document(args)
+    return make_response(jsonify(res[0])), res[1]
+
+
 @bp.route('splitter/saveInfo', methods=['POST'])
 @auth.token_required
 def save_info():
     data = request.data
     data = json.loads(data)
-    response, status = splitter.save_infos(data['batchId'], data['documents'], data['batchMetadata'])
+    response, status = splitter.save_infos({
+        'documents': data['documents'],
+        'batch_id': data['batchId'],
+        'movedPages': data['movedPages'],
+        'batch_metadata': data['batchMetadata'],
+        'deleted_pages_ids': data['deletedPagesIds'],
+        'deleted_documents_ids': data['deletedDocumentsIds']
+    })
     return make_response(jsonify(response)), status
 
 
