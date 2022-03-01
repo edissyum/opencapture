@@ -87,10 +87,13 @@
 	},
 	"CONFIGURATIONS": {
 		"bool": "Booléen",
+		"configuration_updated": "Configuration mise à jour avec succès",
 		"float": "Nombre flottant",
 		"int": "Nombre entier",
 		"search_config": "Chercher une configuration",
-		"string": "Chaîne de caractères"
+		"string": "Chaîne de caractères",
+		"update": "Modifier la configuration",
+		"validate": "Valider la modification"
 	},
 	"CUSTOM-FIELDS": {
 		"add": "Ajouter le champ personnalisé",
@@ -424,6 +427,7 @@
 		"add_user": "Ajouter un utilisateur",
 		"administration": "Privilèges d'administration",
 		"change_language": "Modifier la langue",
+		"configurations": "Modifier les configurations",
 		"create_customer": "Ajouter un compte client",
 		"create_supplier": "Créer un fournisseur",
 		"custom_fields": "Champs personnalisés",

@@ -20,7 +20,7 @@ import { Component, OnInit } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {SettingsService} from "../../../../services/settings.service";
 import {AuthService} from "../../../../services/auth.service";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {PrivilegesService} from "../../../../services/privileges.service";
 import {LocalStorageService} from "../../../../services/local-storage.service";
 import {LastUrlService} from "../../../../services/last-url.service";
@@ -42,9 +42,10 @@ import {marker} from "@biesbjerg/ngx-translate-extract-marker";
     ]
 })
 export class ConfigurationsComponent implements OnInit {
-    columnsToDisplay    : string[]      = ['id', 'label', 'description', 'type', 'value'];
+    columnsToDisplay    : string[]      = ['id', 'label', 'description', 'type', 'value', 'actions'];
     headers             : HttpHeaders   = this.authService.headers;
     loading             : boolean       = true;
+    updateLoading       : boolean       = false;
     configurations      : any           = [];
     allConfigurations   : any           = [];
     pageSize            : number        = 10;
@@ -56,6 +57,7 @@ export class ConfigurationsComponent implements OnInit {
     constructor(
         public router: Router,
         private http: HttpClient,
+        private route: ActivatedRoute,
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,
@@ -76,17 +78,17 @@ export class ConfigurationsComponent implements OnInit {
         }else
             this.localeStorageService.remove('configurationsPageIndex');
 
-        this.loadConfiguration();
+        this.loadConfigurations();
     }
 
-    loadConfiguration() {
+    loadConfigurations() {
         this.http.get(API_URL + '/ws/config/getConfigurations?limit=' + this.pageSize + '&offset=' + this.offset + "&search=" + this.search, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.configurations[0]) this.total = data.configurations[0].total;
                 else if (this.pageIndex !== 0) {
                     this.pageIndex = this.pageIndex - 1;
                     this.offset = this.pageSize * (this.pageIndex);
-                    this.loadConfiguration();
+                    this.loadConfigurations();
                 }
                 this.configurations = data.configurations;
                 this.configurations.forEach((element: any) => {
@@ -117,9 +119,31 @@ export class ConfigurationsComponent implements OnInit {
         ).subscribe();
     }
 
+    updateValue(event: any, id: number) {
+        this.updateLoading = true;
+        const value = event.target ? event.target.value : event.value;
+        this.configurations.forEach((element: any) => {
+            if (element.id === id) {
+                element.data.value = value;
+                this.http.put(API_URL + '/ws/config/updateConfiguration/' + element.id, element, {headers: this.authService.headers}).pipe(
+                    tap(() => {
+                        this.notify.success(this.translate.instant('CONFIGURATIONS.configuration_updated'));
+                        element.updateMode = false;
+                        this.updateLoading = false;
+                    }),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
+            }
+        });
+    }
+
     searchConfiguration(event: any) {
         this.search = event.target.value;
-        this.loadConfiguration();
+        this.loadConfigurations();
     }
 
     onPageChange(event: any) {
@@ -127,11 +151,7 @@ export class ConfigurationsComponent implements OnInit {
         this.offset = this.pageSize * (event.pageIndex);
         this.pageIndex = event.pageIndex;
         this.localeStorageService.save('configurationsPageIndex', event.pageIndex);
-        this.loadConfiguration();
-    }
-
-    deleteParameter(elementId: any) {
-        console.log(elementId);
+        this.loadConfigurations();
     }
 
     sortData(sort: Sort) {

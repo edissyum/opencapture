@@ -87,10 +87,13 @@
 	},
 	"CONFIGURATIONS": {
 		"bool": "Boolean",
+		"configuration_updated": "Configuration updated successfully",
 		"float": "Float",
 		"int": "Integer",
 		"search_config": "Search configuration",
-		"string": "String"
+		"string": "String",
+		"update": "Update configuration",
+		"validate": "Validate value"
 	},
 	"CUSTOM-FIELDS": {
 		"add": "Add custom field",
@@ -424,6 +427,7 @@
 		"add_user": "Add user",
 		"administration": "Administration access",
 		"change_language": "Change language",
+		"configurations": "Change configurations",
 		"create_customer": "Create customer",
 		"create_supplier": "Create supplier",
 		"custom_fields": "Custom fields",

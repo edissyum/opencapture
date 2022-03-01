@@ -55,8 +55,8 @@ export class TreeItemFlatNode {
 @Injectable()
 export class ChecklistDatabase {
     doctypesData : any[]    = [];
+    loading      : boolean  = true;
     dataChange              = new BehaviorSubject<TreeItemNode[]>([]);
-    loading                 = false;
 
     get data(): TreeItemNode[] { return this.dataChange.value; }
 

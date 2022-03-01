@@ -108,6 +108,26 @@ div[id*="select-area-label_"] {
 
 /*** END image area select ***/
 
+.settings_header {
+    & .mat-form-field-wrapper {
+        @apply pt-1;
+        @apply pb-1;
+
+        & .mat-form-field-infix {
+            max-height: 5vh !important;
+
+            & .mat-form-field-label-wrapper {
+                @apply -top-4;
+            }
+
+            & .mat-input-element {
+                @apply relative;
+                @apply -top-2;
+            }
+        }
+    }
+}
+
 .mat-menu-panel {
     max-width:fit-content !important;
 }

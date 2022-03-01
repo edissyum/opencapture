@@ -1,6 +1,3 @@
-<div *ngIf="documentTypeFactoryComponent.treeDataObj.loading">
-    <app-loader></app-loader>
-</div>
 <mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem">
     <mat-sidenav #sidenav mode="side" opened class="w-1/6 flex flex-col h-full border-r border-green-400"
                  style="top:0.1rem">
@@ -77,6 +74,9 @@
         </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content class="bg-white">
+        <div *ngIf="documentTypeFactoryComponent.treeDataObj.loading">
+            <app-loader></app-loader>
+        </div>
         <div class="settings_header">
             <button mat-icon-button (click)="sidenav.toggle(); this.serviceSettings.toggleMenu();"
                     class="absolute left-2 top-2">
