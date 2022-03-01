@@ -250,8 +250,8 @@ CREATE TABLE "splitter_batches"
     "creation_date" TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
     "status"        VARCHAR   DEFAULT '' NEW '',
     "page_number"   INTEGER,
-    "form_id"       INTEGER
-);
+    "form_id"       INTEGER,
+    "data"          JSON DEFAULT ''{}''::json);
 
 CREATE TABLE "splitter_documents"
 (
@@ -260,7 +260,7 @@ CREATE TABLE "splitter_documents"
     "split_index" INTEGER NOT NULL,
     "status"      VARCHAR(10) DEFAULT '' NEW '':: CHARACTER VARYING,
     "doctype_key" VARCHAR(200),
-    "data"        json        DEFAULT ''{}''::json
+    "data"        JSON        DEFAULT ''{}''::json
 );
 
 
