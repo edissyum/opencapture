@@ -18,7 +18,7 @@ export class HistoryService {
         private notify: NotificationService
     ) { }
 
-    addHistory(module: string, submodule: string, desc: string) {
+    addHistory(module: any, submodule: string, desc: string) {
         const user = this.userService.user.lastname + ' ' + this.userService.user.firstname + ' (' + this.userService.user.username + ')';
         const data = {
             'module': module,

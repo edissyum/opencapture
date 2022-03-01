@@ -100,5 +100,5 @@ export class CustomMatPaginatorIntl extends MatPaginatorIntl {
         const nbPage = Math.ceil(length / pageSize);
         return ` ${startIndex + 1} - ${endIndex} ` + this.translate.instant('PAGINATOR.on') + ` ${length} ` + ' | ' +
             this.translate.instant('PAGINATOR.page') + ` ${page + 1} / ${nbPage}`;
-    }
+    };
 }

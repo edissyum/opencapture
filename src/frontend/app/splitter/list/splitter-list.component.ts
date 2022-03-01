@@ -35,7 +35,7 @@ import {HistoryService} from "../../../services/history.service";
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from "@angular/material/form-field";
 import {marker} from "@biesbjerg/ngx-translate-extract-marker";
 import {LastUrlService} from "../../../services/last-url.service";
-declare var $: any;
+declare const $: any;
 
 @Component({
     selector: 'app-list',

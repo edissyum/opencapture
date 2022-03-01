@@ -24,7 +24,7 @@ import { LocalStorageService } from "../../services/local-storage.service";
 import { PrivilegesService } from "../../services/privileges.service";
 import { Router } from "@angular/router";
 import {TranslateService} from "@ngx-translate/core";
-declare var $: any;
+declare const $: any;
 
 @Component({
     selector: 'app-menu',

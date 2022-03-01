@@ -13,6 +13,6 @@
     <button mat-button [mat-dialog-close]="">{{ data.cancelButton }}</button>
     <button *ngIf="data.selectValues" mat-button [mat-dialog-close]="this.selectData" color="{{ data.confirmButtonColor }}" cdkFocusInitial>{{ data.confirmButton }}</button>
     <button *ngIf="!data.selectValues" mat-button [mat-dialog-close]="true" color="{{ data.confirmButtonColor }}"
-            cdkFocusInitial [class.text-green-400]="data.confirmButtonColor == 'green'">{{ data.confirmButton }}
+            cdkFocusInitial [class.text-green-400]="data.confirmButtonColor === 'green'">{{ data.confirmButton }}
     </button>
 </mat-dialog-actions>

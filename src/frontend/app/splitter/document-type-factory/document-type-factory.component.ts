@@ -87,14 +87,14 @@ export class ChecklistDatabase {
             tap((data: any) => {
                 let newDoctype;
                 data.doctypes.forEach((doctype: {
-                        id          : any;
-                        key         : string;
-                        code        : string;
-                        label       : string;
-                        type        : string;
-                        status      : string;
-                        is_default  : boolean;
-                        form_id     : boolean;
+                        id          : anys
+                        key         : string
+                        code        : string
+                        label       : string
+                        type        : string
+                        status      : string
+                        is_default  : boolean
+                        form_id     : boolean
                     }) => {
                         newDoctype = {
                             'id'        : doctype.id,
@@ -291,7 +291,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
         this.flatNodeMap.set(flatNode, node);
         this.nestedNodeMap.set(node, flatNode);
         return flatNode;
-    }
+    };
 
     filterChanged() {
         this.treeDataObj.filter(this.searchText);

@@ -89,7 +89,7 @@ export class CreateDocTypeComponent implements OnInit {
 
     toFormGroup() {
         const group: any = {};
-        this.fields.forEach((field: { id: string; required: boolean;disabled: boolean; value: any;}) => {
+        this.fields.forEach((field: { id: string; required: boolean;disabled: boolean; value: any}) => {
             group[field.id] = field.required ? new FormControl({value:"", disabled: field.disabled}, [Validators.required])
                 : new FormControl({value: field.value, disabled: field.disabled});
         });

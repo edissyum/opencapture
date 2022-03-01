@@ -221,12 +221,12 @@ export class SplitterUpdateOutputComponent implements OnInit {
             tap((data: any) => {
                 let newField;
                 data.customFields.forEach((field: {
-                        id: any;
-                        label_short: string;
-                        module: string;
-                        label: string;
-                        type: string;
-                        enabled: boolean;
+                        id: any
+                        label_short: string
+                        module: string
+                        label: string
+                        type: string
+                        enabled: boolean
                     }) => {
                         newField = {
                             'id': field.id,
