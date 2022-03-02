@@ -15,6 +15,8 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
+declare const require: any;
+
 export const API_URL = '../../backend_oc';
 export const environment = {
     production: true,
