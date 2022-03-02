@@ -411,7 +411,6 @@ def test_cmis_connection(args):
 
 
 def validate(args):
-    print(args)
     now = _Files.get_now_date()
     _vars = create_classes_from_current_config()
     _cfg = _vars[1]

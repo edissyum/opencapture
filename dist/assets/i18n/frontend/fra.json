@@ -131,7 +131,8 @@
 		"folder_added": "Chemise ajouté",
 		"generating_separator": "Génération du séparateur...",
 		"no_doctype_to_show": "Aucun type de document à afficher",
-		"no_master": "(Ajouter dans la racine)"
+		"no_master": "(Ajouter dans la racine)",
+		"separator_choice ": "Choix de séparateur"
 	},
 	"ERROR": {
 		"404": "La page demandée n'existe pas",
@@ -357,6 +358,8 @@
 		"add": "Ajouter une chaîne sortante",
 		"auth": "Authentification",
 		"check_connection_before": "Merci de vérifier la connexion",
+		"cmis_connection_ko": "Erreur lors de la connexion CMIS",
+		"cmis_connection_ok": "Connexion CMIS réalisée avec succès",
 		"compress_default": "Compression très faible",
 		"compress_ebook": "Compression élevée",
 		"compress_prepress": "Compression moyenne",

@@ -283,15 +283,15 @@ export class SettingsService {
                 ]
             },
             {
-                "id": "separator",
-                "label": this.translate.instant("SETTINGS.document_separator"),
-                "icon": "fas fa-qrcode",
-                "route"   : "/settings/splitter/separator",
+                "id"    : "separator",
+                "label" : this.translate.instant("SETTINGS.document_separator"),
+                "icon"  : "fas fa-qrcode",
+                "route" : "/settings/splitter/separator",
             },
             {
-                "id": "document-type",
-                "label": this.translate.instant("SETTINGS.document_type"),
-                "icon": "fas fa-file",
+                "id"        : "document-type",
+                "label"     : this.translate.instant("SETTINGS.document_type"),
+                "icon"      : "fas fa-file",
                 "route"     : "/settings/splitter/documentType",
                 "actions"   : [
                     {
@@ -302,11 +302,11 @@ export class SettingsService {
                         "icon"      : "fas fa-plus"
                     },
                     {
-                        "id"                : "splitter_add_folder_doc_type",
-                        "label"             : this.translate.instant("SETTINGS.add_doc_type_folder"),
-                        "route"             : "/settings/splitter/documentType/createFolder",
-                        "privilege"         : "update_output",
-                        "icon"              : "fas fa-folder-plus",
+                        "id"        : "splitter_add_folder_doc_type",
+                        "label"     : this.translate.instant("SETTINGS.add_doc_type_folder"),
+                        "route"     : "/settings/splitter/documentType/createFolder",
+                        "privilege" : "update_output",
+                        "icon"      : "fas fa-folder-plus",
                     },
                     {
                         "id"                : "splitter_update_doc_type",

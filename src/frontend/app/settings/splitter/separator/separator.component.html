@@ -85,14 +85,14 @@
                 <hr class="border-green-400">
             </div>
         </div>
-        <app-document-type-factory [data]="{canFolderBeSelected: false}" (selectedDoctypeOutput)="getOutPut($event)" class="pl-4"></app-document-type-factory>
+        <app-document-type-factory [data]="{canFolderBeSelected: false}" (selectedDoctypeOutput)="getOutPut($event)"></app-document-type-factory>
     </mat-sidenav-content>
     <mat-sidenav #sidenav2 mode="side" opened position="end" class="overflow-auto w-1/4 flex flex-col h-full border-r border-green-400">
-        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">{{ 'DOCTYPE.add_doctype' | translate }}</h3>
+        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">{{ 'DOCTYPE.download_separator' | translate }}</h3>
         <mat-divider class="border-green-400"></mat-divider>
-        <div class="w-full grid grid-cols-2 m-2">
+        <div class="w-full grid grid-cols-2 m-2 mt-4">
             <mat-form-field appearance="outline">
-                <mat-label>{{ 'DOCTYPE.download_separator'| translate }}</mat-label>
+                <mat-label>{{ 'DOCTYPE.separator_choice '| translate }}</mat-label>
                 <mat-select [disabled]="loadingSeparator" [(ngModel)]="selectedSeparator" (ngModelChange)="onChangeType()">
                     <mat-option *ngFor="let separator of separators" [id]="separator.id" [value]="separator.id " [disabled]="separator.disabled">
                         {{ separator.name| translate }}
