@@ -107,7 +107,7 @@ class SeparatorQR:
                 if i + 1 < nb_pages:
                     output.addPage(pdf.getPage(i + 1))
                 newname = path + '/' + file_without_extention + "-" + str(cpt) + ".pdf"
-                with open(newname, "wb", encoding='UTF-8') as outputStream:
+                with open(newname, 'wb') as outputStream:
                     output.write(outputStream)
                 array_of_files.append(newname)
                 outputStream.close()
@@ -241,7 +241,7 @@ class SeparatorQR:
         for page in pages:
             output_pdf.addPage(input_pdf.getPage(page - 1))
 
-        with open(output_path, "wb", encoding='UTF-8') as stream:
+        with open(output_path, 'wb') as stream:
             output_pdf.write(stream)
 
     @staticmethod
@@ -322,7 +322,7 @@ class SeparatorQR:
         file_path = config['GLOBAL']['tmppath'] + "/last_generated_doctype_file.pdf"
         f.render(file_path)
         try:
-            with open(file_path, "rb", encoding='UTF-8') as pdf_file:
+            with open(file_path, 'rb') as pdf_file:
                 encoded_file = base64.b64encode(pdf_file.read()).decode('utf-8')
             pages = pdf2image.convert_from_path(file_path, 500)
 
