@@ -187,7 +187,7 @@ class Mail:
             for file in attachments:
                 file_path = os.path.join(attachment_path + sanitize_filename(file['filename']) + file['format'])
                 if not os.path.isfile(file_path) and file['format'] and not os.path.isdir(file_path):
-                    with open(file_path, 'wb', encoding='UTF-8') as attach:
+                    with open(file_path, 'wb') as attach:
                         attach.write(file['content'])
                     attach.close()
         return True

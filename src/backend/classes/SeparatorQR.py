@@ -84,11 +84,11 @@ class SeparatorQR:
             infile = PyPDF4.PdfFileReader(file)
             output = PyPDF4.PdfFileWriter()
             for i in self.sorted_files(pages_to_keep):
-                p = infile.getPage(int(i) - 1)
-                output.addPage(p)
+                _page = infile.getPage(int(i) - 1)
+                output.addPage(_page)
 
-            with open(file, 'wb', encoding='UTF-8') as f:
-                output.write(f)
+            with open(file, 'wb') as binary_f:
+                output.write(binary_f)
 
     @staticmethod
     def split_document_every_two_pages(file):

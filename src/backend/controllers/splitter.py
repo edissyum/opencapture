@@ -641,5 +641,5 @@ def merge_batches(parent_id, batches):
         parent_max_split_index += 1
 
     splitter.update_batch_page_number({'id': parent_id, 'number': parent_batch_pages})
-    with open(parent_filename, 'wb', encoding='UTF-8') as file:
+    with open(parent_filename, 'wb') as file:
         merged_pdf.write(file)
