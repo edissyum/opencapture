@@ -7,9 +7,6 @@ import {PipeTransform, Pipe, Injectable} from '@angular/core';
 export class FilterPipe implements PipeTransform {
     transform(items: any[], field : string, value : string): any[] {
         if (!items) return [];
-        console.log(items);
-        console.log(field);
-        console.log(value);
         if (!value || value.length === 0) return items;
         return items.filter(it =>
         it[field].toLowerCase().indexOf(value.toLowerCase()) !== -1);
