@@ -87,7 +87,7 @@ export class ChecklistDatabase {
             tap((data: any) => {
                 let newDoctype;
                 data.doctypes.forEach((doctype: {
-                        id          : anys
+                        id          : any
                         key         : string
                         code        : string
                         label       : string

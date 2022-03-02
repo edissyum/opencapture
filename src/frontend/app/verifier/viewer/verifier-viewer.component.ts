@@ -216,7 +216,7 @@ export class VerifierViewerComponent implements OnInit {
             }
         }
         if (this.formSettings.supplier_verif && !this.token) {
-            const token: any;
+            let token: any;
             token = await this.generateTokenInsee();
             if (token['token']) {
                 if (token['token'].includes('ERROR')) {
