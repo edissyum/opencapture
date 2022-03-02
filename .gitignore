@@ -1,4 +1,5 @@
 .idea/
+.angular/
 custom/
 bin/data/tmp/
 bin/data/pdf/*.pdf
