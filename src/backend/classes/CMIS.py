@@ -32,7 +32,7 @@ class CMIS:
     def create_document(self, path, content_type):
         try:
             print(path)
-            with open(path, "rb", encoding='UTF-8') as file:
+            with open(path, 'rb') as file:
                 file_name = path.split('/')[-1]
                 file_content = file.read().decode('ISO-8859-1')
                 self._root_folder.createDocumentFromString(file_name, contentString=file_content, contentType=content_type)

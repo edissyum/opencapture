@@ -85,7 +85,7 @@ def retrieve_batches(args):
         for index, batch in enumerate(batches):
             batches[index]['form_label'] = forms.get_form_by_id(batch['form_id'])[0]['label']
             try:
-                with open(batches[index]['first_page'], "rb", encoding='UTF-8') as image_file:
+                with open(batches[index]['first_page'], 'rb') as image_file:
                     encoded_string = base64.b64encode(image_file.read())
                     batches[index]['image_url'] = encoded_string.decode("utf-8")
             except IOError:
@@ -134,7 +134,7 @@ def retrieve_documents(batch_id):
             pages, error = splitter.get_documents_pages(args)
             if pages:
                 for page_index, page in enumerate(pages):
-                    with open(pages[page_index]['thumbnail'], "rb", encoding='UTF-8') as image_file:
+                    with open(pages[page_index]['thumbnail'], 'rb') as image_file:
                         encoded_string = base64.b64encode(image_file.read())
                         pages[page_index]['image_url'] = encoded_string.decode("utf-8")
                         document_pages.append(pages[page_index])
