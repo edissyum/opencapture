@@ -112,7 +112,8 @@ export class SplitterUpdateOutputComponent implements OnInit {
         },
     ];
     testConnectionMapping : any         = {
-        'export_maarch' : "testMaarchConnection()"
+        'export_maarch' : "testMaarchConnection()",
+        'export_cmis'   : "testCmisConnection()"
     };
 
     constructor(
@@ -311,6 +312,39 @@ export class SplitterUpdateOutputComponent implements OnInit {
         }else {
             return array;
         }
+    }
+
+    /**** CMIS Webservices call ****/
+    testCmisConnection() {
+        const args = this.getCmisConnectionInfo();
+        this.http.post(API_URL + '/ws/splitter/cmis/testConnection', {'args': args}, {headers: this.authService.headers},
+        ).pipe(
+            tap((data: any) => {
+                const status = data.status;
+                if (status === true) {
+                    this.notify.success(this.translate.instant('OUTPUT.cmis_connection_ok'));
+                    this.connection = true;
+                }
+                else{
+                    this.notify.error(this.translate.instant('OUTPUT.cmis_connection_ko') + ' : ' + data.message);
+                    this.connection = false;
+                }
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    getCmisConnectionInfo() {
+        return {
+            'cmis_ws': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'cmis_ws'),
+            'login': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'login'),
+            'password': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'password'),
+            'folder': this.getValueFromForm(this.outputsTypesForm[this.selectedOutputType].auth, 'folder'),
+        };
     }
 
     /**** Maarch Webservices call ****/
