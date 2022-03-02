@@ -172,7 +172,7 @@ class Files:
 
     def get_pages(self, file, config):
         try:
-            with open(file, 'rb') as doc:
+            with open(file, 'rb', encoding='UTF-8') as doc:
                 pdf = PyPDF4.PdfFileReader(doc)
                 try:
                     return pdf.getNumPages()
@@ -187,7 +187,7 @@ class Files:
                 pages = pdf_read_rewrite.getPage(page_count)
                 pdfwrite.addPage(pages)
 
-            with open(file, 'wb') as fileobjfix:
+            with open(file, 'wb', encoding='UTF-8') as fileobjfix:
                 pdfwrite.write(fileobjfix)
             fileobjfix.close()
             return pdf_read_rewrite.getNumPages()
@@ -235,7 +235,7 @@ class Files:
     def check_file_integrity(file, config):
         is_full = False
         while not is_full:
-            with open(file, 'rb') as doc:
+            with open(file, 'rb', encoding='UTF-8') as doc:
                 size = os.path.getsize(file)
                 time.sleep(1)
                 size2 = os.path.getsize(file)
@@ -460,7 +460,7 @@ class Files:
                 for page in pages:
                     pdf_writer.addPage(pdf_reader.getPage(page - reduce_index))
                 file_path = output_file + '/' + documents[index]['fileName']
-                with open(file_path, 'wb') as file:
+                with open(file_path, 'wb', encoding='UTF-8') as file:
                     pdf_writer.write(file)
                     paths.append(file_path)
                 pdf_writer = PyPDF2.PdfFileWriter()

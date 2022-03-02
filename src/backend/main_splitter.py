@@ -74,7 +74,7 @@ def launch(args):
             })[0]
             available_split_methods_path = config.cfg['SPLITTER']['methodspath'] + "/splitter_methods.json"
             if len(splitter_method) > 0 and os.path.isfile(available_split_methods_path):
-                with open(available_split_methods_path, encoding='utf-8') as json_file:
+                with open(available_split_methods_path, encoding='UTF-8') as json_file:
                     available_split_methods = json.load(json_file)
                     for available_split_method in available_split_methods['methods']:
                         if available_split_method['id'] == splitter_method['splitter_method_id']:

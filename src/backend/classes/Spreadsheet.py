@@ -29,7 +29,7 @@ class Spreadsheet:
         self.referencialSupplierArray = {}
         self.referencialSupplierData = {}
 
-        with open(self.referencialSuppplierIndex) as file:
+        with open(self.referencialSuppplierIndex, encoding='UTF-8') as file:
             fp = json.load(file)
             self.referencialSupplierArray['name'] = fp['name']
             self.referencialSupplierArray['SIRET'] = fp['SIRET']
