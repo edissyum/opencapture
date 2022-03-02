@@ -76,6 +76,5 @@ def delete_output(output_id):
 @auth.token_required
 def create_output():
     data = request.json['args']
-    print(data)
     res = outputs.create_output(data)
     return make_response(jsonify(res[0])), res[1]

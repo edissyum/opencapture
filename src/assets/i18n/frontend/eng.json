@@ -131,7 +131,8 @@
 		"folder_added": "Folder added",
 		"generating_separator": "Generating separator",
 		"no_doctype_to_show": "No document type to show",
-		"no_master": "(No master folder)"
+		"no_master": "(No master folder)",
+		"separator_choice ": "Separator choice"
 	},
 	"ERROR": {
 		"404": "The page you are looking for does not exist",
@@ -357,6 +358,8 @@
 		"add": "Add output",
 		"auth": "Authentification",
 		"check_connection_before": "Please check connection",
+		"cmis_connection_ko": "Error while connecting CMIS",
+		"cmis_connection_ok": "Connection CMIS successfull",
 		"compress_default": "Very low compression",
 		"compress_ebook": "High compression",
 		"compress_prepress": "Medium compression",
@@ -368,7 +371,7 @@
 		"created": "Output created successfully",
 		"json_input_erorr": "The field <b>{{ field }}</b> have to be JSON with double quotes",
 		"maarch_connection_ko": "Error while connecting to Maarch",
-		"maarch_connection_ok": "Connexion to Maarch successfull",
+		"maarch_connection_ok": "Connection to Maarch successfull",
 		"no_auth_necessary": "No authentification necessary",
 		"no_compress": "No compression",
 		"no_output_configured": "No output configured",
@@ -450,6 +453,7 @@
 		"separator_splitter": "Document separator",
 		"settings": "Access to administration panel",
 		"splitter": "Open-Capture Splitter",
+		"statistics": "Statistics access",
 		"suppliers_list": "Suppliers list",
 		"update_customer": "Update customer",
 		"update_form": "Update form",

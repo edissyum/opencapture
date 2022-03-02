@@ -152,8 +152,6 @@ class Splitter:
                         for custom_field in custom_fields:
                             documents_data['custom_fields'][custom_field['label_short']] = entity
                             args['columns']['data'] = json.dumps(documents_data)
-                    print("args : ")
-                    print(args)
                     documents_id = self.db.insert(args)
 
                 previous_split_document = page['split_document']
@@ -283,13 +281,12 @@ class Splitter:
             with open(xml_file_path, "w", encoding="utf-8") as f:
                 f.write(xml_str)
         except Exception as e:
-            print(str(e))
             return False, str(e)
 
         return True, xml_file_path
 
     @staticmethod
     def get_split_methods(config):
-        with open(config.cfg['SPLITTER']['methodspath'] + '/splitter_methods.json') as methods_json:
+        with open(config.cfg['SPLITTER']['methodspath'] + '/splitter_methods.json', encoding="UTF-8") as methods_json:
             methods = json.load(methods_json)
             return methods['methods']

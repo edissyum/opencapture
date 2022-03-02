@@ -36,7 +36,6 @@ export class DocumentTypeComponent implements OnInit {
     }
 
     getOutPut($event: any) {
-        console.log(this.selectedItem);
         this.selectedItem = $event;
     }
 }

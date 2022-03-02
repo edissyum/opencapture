@@ -97,11 +97,11 @@ export class CreateDocTypeComponent implements OnInit {
         return new FormGroup(group);
     }
 
-    getLastFolderIndex(codeSelected: string){
+    getLastFolderIndex(codeSelected: string) {
         let lastIndex = 0;
         this.documentTypeFactoryComponent.treeDataObj.doctypesData.forEach((docType:any) => {
             if(docType.code.startsWith(codeSelected)
-                && docType.code.split('.').length === codeSelected.split('.').length + 1){
+                && docType.code.split('.').length === codeSelected.split('.').length + 1) {
                 const currentIdx = Number(docType.code.split('.').pop());
                 lastIndex = (currentIdx > lastIndex) ? currentIdx: lastIndex;
             }
@@ -111,7 +111,6 @@ export class CreateDocTypeComponent implements OnInit {
 
     addDocType() {
         let newDocType = this.form.getRawValue();
-        console.log(newDocType);
         const lastIndexInFolder = this.getLastFolderIndex(newDocType.folder);
         newDocType = {
             'key'           : newDocType.key,

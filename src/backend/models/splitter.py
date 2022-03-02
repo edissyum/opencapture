@@ -375,7 +375,6 @@ def update_page(data):
         args['set']['status'] = data['status']
     if 'document_id' in data:
         args['set']['document_id'] = data['document_id']
-    print(args)
     res = _db.update(args)
     return res
 

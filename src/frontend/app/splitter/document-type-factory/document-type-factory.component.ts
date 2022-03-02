@@ -73,8 +73,8 @@ export class ChecklistDatabase {
         public privilegesService: PrivilegesService
     ) {}
 
-    loadTree(formId: number){
-        if(formId){
+    loadTree(formId: number) {
+        if(formId) {
             this.retrieveDocTypes(formId);
             this.initialize();
         }
@@ -87,7 +87,7 @@ export class ChecklistDatabase {
             tap((data: any) => {
                 let newDoctype;
                 data.doctypes.forEach((doctype: {
-                        id          : anys
+                        id          : any
                         key         : string
                         code        : string
                         label       : string
@@ -258,7 +258,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
         this.http.get(API_URL + '/ws/forms/list?module=splitter', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.forms = data.forms;
-                if(this.forms.length > 0){
+                if(this.forms.length > 0) {
                     const defaultFormId = this.localeStorageService.get('doctypeFormId') ?
                         this.localeStorageService.get('doctypeFormId') : this.forms[0].id;
                     this.selectFormControl.setValue(Number(defaultFormId));
@@ -310,7 +310,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
     }
 
     selectFolder(node: any) {
-        if(this.data.canFolderBeSelected){
+        if(this.data.canFolderBeSelected) {
             this.selectedDocTypeInput = node;
             this.selectedDoctypeOutput.emit(this.selectedDocTypeInput);
         }
@@ -318,7 +318,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
 
     loadDefaultDocType() {
         this.treeDataObj.doctypesData.forEach((doctype: any) => {
-            if(doctype.isDefault){
+            if(doctype.isDefault) {
                 this.selectedDocTypeInput = doctype;
                 this.selectedDoctypeOutput.emit(doctype);
             }

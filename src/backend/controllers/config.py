@@ -39,7 +39,7 @@ def change_locale_in_config(lang):
     parser.set('LOCALE', 'locale', language['lang_code'])
     parser.set('LOCALE', 'localeocr', language['lang_code'])
     try:
-        with open(config_file, 'w') as configfile:
+        with open(config_file, 'w', encoding='UTF-8') as configfile:
             parser.write(configfile)
         return {}, 200
     except configparser.Error as e:

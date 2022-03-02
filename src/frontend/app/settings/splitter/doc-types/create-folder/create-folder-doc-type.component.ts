@@ -79,12 +79,12 @@ export class CreateFolderDocTypeComponent implements OnInit {
         return new FormGroup(group);
     }
 
-    getLastFolderIndex(codeSelected: string){
+    getLastFolderIndex(codeSelected: string) {
         let lastIndex = 0;
-        if(codeSelected !== this.noMasterFolder){
+        if(codeSelected !== this.noMasterFolder) {
             this.documentTypeFactoryComponent.treeDataObj.doctypesData.forEach((docType:any) => {
                 if(docType.code.startsWith(codeSelected)
-                    && docType.code.split('.').length === codeSelected.split('.').length + 1){
+                    && docType.code.split('.').length === codeSelected.split('.').length + 1) {
                     const currentIdx = Number(docType.code.split('.').pop());
                     lastIndex = (currentIdx > lastIndex) ? currentIdx: lastIndex;
                 }
@@ -92,7 +92,7 @@ export class CreateFolderDocTypeComponent implements OnInit {
         }
         else{
             this.documentTypeFactoryComponent.treeDataObj.doctypesData.forEach((docType:any) => {
-                if(docType.code.split('.').length === 2){
+                if(docType.code.split('.').length === 2) {
                     const currentIdx = Number(docType.code.split('.').pop());
                     lastIndex = (currentIdx > lastIndex) ? currentIdx: lastIndex;
                 }
@@ -121,7 +121,6 @@ export class CreateFolderDocTypeComponent implements OnInit {
             tap((data: any) => {
                 this.notify.success(this.translate.instant('DOCTYPE.folder_added'));
                 this.form.reset();
-                console.log(this.form.controls['folder']);
                 this.form.controls['folder'].setValue(this.noMasterFolder);
                 Object.keys(this.form.controls).forEach(key => {
                     this.form.controls[key].setErrors(null) ;

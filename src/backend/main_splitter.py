@@ -66,21 +66,24 @@ def launch(args):
     if args['file'] is not None:
         path = args['file']
         if check_file(files, path, config, log) is not False:
-            splitter_method = database.select({
-                'select': ['splitter_method_id'],
-                'table': ['inputs'],
-                'where': ['status <> %s', 'input_id = %s', 'module = %s'],
-                'data': ['DEL', args['input_id'], 'splitter']
-            })[0]
-            available_split_methods_path = config.cfg['SPLITTER']['methodspath'] + "/splitter_methods.json"
-            if len(splitter_method) > 0 and os.path.isfile(available_split_methods_path):
-                with open(available_split_methods_path, encoding='utf-8') as json_file:
-                    available_split_methods = json.load(json_file)
-                    for available_split_method in available_split_methods['methods']:
-                        if available_split_method['id'] == splitter_method['splitter_method_id']:
-                            split_method = import_from(config, available_split_method['script'], available_split_method['method'])
-                            log.info('Split using method : {}'.format(available_split_method['id']))
-                            split_method(args, path, log, splitter, files, tmp_folder, config)
+            if 'input_id' in args and args['input_id']:
+                splitter_method = database.select({
+                    'select': ['splitter_method_id'],
+                    'table': ['inputs'],
+                    'where': ['status <> %s', 'input_id = %s', 'module = %s'],
+                    'data': ['DEL', args['input_id'], 'splitter']
+                })[0]
+                available_split_methods_path = config.cfg['SPLITTER']['methodspath'] + "/splitter_methods.json"
+                if len(splitter_method) > 0 and os.path.isfile(available_split_methods_path):
+                    with open(available_split_methods_path, encoding='UTF-8') as json_file:
+                        available_split_methods = json.load(json_file)
+                        for available_split_method in available_split_methods['methods']:
+                            if available_split_method['id'] == splitter_method['splitter_method_id']:
+                                split_method = import_from(config, available_split_method['script'], available_split_method['method'])
+                                log.info('Split using method : {}'.format(available_split_method['id']))
+                                split_method(args, path, log, splitter, files, tmp_folder, config)
+            else:
+                log.error("The input_id doesn't exists in database")
     database.conn.close()
     end = time.time()
     log.info('Process end after ' + timer(start, end) + '')

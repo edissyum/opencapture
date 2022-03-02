@@ -117,8 +117,7 @@ export class FormListComponent implements OnInit {
     }
 
     async deleteConfirmDialog(formId: number, form: string) {
-        let inputs: any;
-        inputs = await this.getInputs(formId);
+        const inputs: any = await this.getInputs(formId);
         if (inputs.length !== 0) {
             const forms = this.forms;
             forms.forEach((form: any, cpt: number) => {

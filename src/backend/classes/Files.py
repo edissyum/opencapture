@@ -209,7 +209,7 @@ class Files:
         detector = cv2.SimpleBlobDetector_create(params)
         image = cv2.imread(image)
         keypoints = detector.detect(image)
-        rows, cols, channel = image.shape
+        rows, cols, _ = image.shape
         blobs_ratio = len(keypoints) / (1.0 * rows * cols)
 
         if blobs_ratio < float(1E-6):

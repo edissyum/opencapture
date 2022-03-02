@@ -229,7 +229,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     if (this.documents[i].splitIndex > this.currentBatch.maxSplitIndex) {
                         this.currentBatch.maxSplitIndex = this.documents[i].splitIndex;
                     }
-                    if (data['documents'][i]['data'].hasOwnProperty('custom_fields')){
+                    if (data['documents'][i]['data'].hasOwnProperty('custom_fields')) {
                         this.documents[i].customFieldsValues = data['documents'][i]['data']['custom_fields'];
                     }
                     // -- Add documents pages --
@@ -261,14 +261,13 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     createDocument() {
-        if(this.addDocumentLoading){ return; }
-        const headers = this.authService.headers;
+        if(this.addDocumentLoading) { return; }
         this.http.post(API_URL + '/ws/splitter/addDocument',
             {
                 'batchId'       : this.currentBatch.id,
                 'splitIndex'    : this.currentBatch.maxSplitIndex + 1,
             },
-            {headers}).pipe(
+            {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.documents.push({
                     id                  : "document-" + data.newDocumentId,
@@ -292,7 +291,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         ).subscribe();
     }
 
-    loadDocumentsForms(){
+    loadDocumentsForms() {
         let cpt = 0;
         this.documentsForms = [];
         for (const document of this.documents) {
@@ -301,7 +300,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         }
     }
 
-    addFormForDocument(customFieldsValues: any, documentIndex: number){
+    addFormForDocument(customFieldsValues: any, documentIndex: number) {
         const newForm = new FormGroup({});
         for (let fieldsIndex = 0; fieldsIndex < this.fieldsCategories['document_metadata'].length; fieldsIndex++) {
             const control = new FormControl();
@@ -329,7 +328,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     /* -- Metadata -- */
-    loadDefaultDocType(){
+    loadDefaultDocType() {
         this.loading      = true;
         this.http.get(API_URL + '/ws/doctypes/list/' + (this.currentBatch.formId).toString(), {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -340,15 +339,15 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                         type        : string
                         is_default  : boolean
                     }) => {
-                    if(doctype.is_default && doctype.type === 'document'){
-                        this.defaultDoctype = {
-                            'id'        : doctype.id,
-                            'key'       : doctype.key,
-                            'label'     : doctype.label,
-                            'type'      : doctype.type,
-                            'isDefault' : doctype.is_default,
-                        };
-                    }
+                        if(doctype.is_default && doctype.type === 'document') {
+                            this.defaultDoctype = {
+                                'id'        : doctype.id,
+                                'key'       : doctype.key,
+                                'label'     : doctype.label,
+                                'type'      : doctype.type,
+                                'isDefault' : doctype.is_default,
+                            };
+                        }
                     }
                 );
                 this.loading = false;
@@ -439,52 +438,56 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             tap((data: any) => {
                 for (const fieldCategory in this.fieldsCategories) {
                     this.fieldsCategories[fieldCategory] = [];
-                    data.fields[fieldCategory].forEach((field: Field) => {
-                        this.fieldsCategories[fieldCategory].push({
-                            'id'            : field.id,
-                            'label_short'   : field.label_short,
-                            'label'         : field.label,
-                            'type'          : field.type,
-                            'metadata_key'  : field.metadata_key,
-                            'class'         : field.class,
-                            'required'      : field.required,
+                    if(data.fields.hasOwnProperty(fieldCategory)) {
+                        data.fields[fieldCategory].forEach((field: Field) => {
+                            this.fieldsCategories[fieldCategory].push({
+                                'id'            : field.id,
+                                'label_short'   : field.label_short,
+                                'label'         : field.label,
+                                'type'          : field.type,
+                                'metadata_key'  : field.metadata_key,
+                                'class'         : field.class,
+                                'required'      : field.required,
+                            });
                         });
-                    });
+                    }
                 }
                 this.batchForm = this.toBatchFormGroup();
 
                 // listen for search field value changes
                 for (const fieldCategory in this.fieldsCategories) {
-                    data.fields[fieldCategory].forEach((field: Field) => {
-                        if (field.metadata_key && this.batchForm.get('search_' + field.label_short)) {
-                            this.batchForm.get('search_' + field.label_short)?.valueChanges
-                                .pipe(
-                                    filter((search: string) => !!search),
-                                    tap(() => {
-                                    }),
-                                    takeUntil(this._onDestroy),
-                                    debounceTime(200),
-                                    map(search => {
-                                        if (!this.metadata || search.length < 3) {
-                                            return [];
-                                        }
-                                        this.searching = true;
-                                        return this.metadata.filter(
-                                            metadataItem => remove(metadataItem[field.label_short].toString())
-                                                .toLowerCase()
-                                                .indexOf(remove(search.toString().toLowerCase())) > -1
-                                        );
-                                    }),
-                                    delay(500)
-                                )
-                                .subscribe(filteredMetadata => {
-                                    this.filteredServerSideMetadata.next(filteredMetadata);
-                                    this.searching = false;
-                                }, () => {
-                                    this.searching = false;
-                                });
-                        }
-                    });
+                    if(data.fields.hasOwnProperty(fieldCategory)) {
+                        data.fields[fieldCategory].forEach((field: Field) => {
+                            if (field.metadata_key && this.batchForm.get('search_' + field.label_short)) {
+                                this.batchForm.get('search_' + field.label_short)?.valueChanges
+                                    .pipe(
+                                        filter((search: string) => !!search),
+                                        tap(() => {
+                                        }),
+                                        takeUntil(this._onDestroy),
+                                        debounceTime(200),
+                                        map(search => {
+                                            if (!this.metadata || search.length < 3) {
+                                                return [];
+                                            }
+                                            this.searching = true;
+                                            return this.metadata.filter(
+                                                metadataItem => remove(metadataItem[field.label_short].toString())
+                                                    .toLowerCase()
+                                                    .indexOf(remove(search.toString().toLowerCase())) > -1
+                                            );
+                                        }),
+                                        delay(500)
+                                    )
+                                    .subscribe(filteredMetadata => {
+                                        this.filteredServerSideMetadata.next(filteredMetadata);
+                                        this.searching = false;
+                                    }, () => {
+                                        this.searching = false;
+                                    });
+                            }
+                        });
+                    }
                 }
             }), finalize(() => this.loading = false),
             catchError((err: any) => {
@@ -502,7 +505,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             group[input.label_short] = input.required ?
                 new FormControl('', Validators.required) :
                 new FormControl('');
-            if(this.currentBatch.customFieldsValues.hasOwnProperty(input.label_short)){
+            if(this.currentBatch.customFieldsValues.hasOwnProperty(input.label_short)) {
                 group[input.label_short].setValue(this.currentBatch.customFieldsValues[input.label_short]);
             }
             if (input.metadata_key)
@@ -551,7 +554,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             }
         });
         dialogRef.afterClosed().subscribe((result: any) => {
-            if (result){
+            if (result) {
                 document.documentTypeName = result.label;
                 document.documentTypeKey = result.key;
             }
@@ -652,7 +655,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 document.class = "";
         }
 
-        const headers                   = this.authService.headers;
         const batchMetadata             = this.batchMetadataValues;
         batchMetadata['id']             = this.currentBatch.id;
         batchMetadata['userName']       = this.userService.user['username'];
@@ -669,7 +671,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 'deletedDocumentsIds'   : this.deletedDocumentsIds,
                 'batchMetadata'         : batchMetadata,
             },
-            {headers}).pipe(
+            {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.router.navigate(['splitter/list']).then();
                 this.notify.success(this.translate.instant('SPLITTER.validate_batch'));
@@ -685,7 +687,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     saveInfo() {
-        const headers = this.authService.headers;
         if (this.inputMode === 'Manual') {
             for (const field of this.fieldsCategories['batch_metadata']) {
                 if (this.batchForm.get(field.label_short)) {
@@ -697,15 +698,15 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             this.documents[documentIndex]['metadata'] = this.documentsForms[documentIndex].getRawValue();
         }
         this.http.post(API_URL + '/ws/splitter/saveInfo',
-        {
-            'documents'             : this.documents,
-            'batchId'               : this.currentBatch.id,
-            'batchMetadata'         : this.batchMetadataValues,
-            'deletedPagesIds'       : this.deletedPagesIds,
-            'deletedDocumentsIds'   : this.deletedDocumentsIds,
-            'movedPages'            : this.movedPages,
-        },
-            {headers}).pipe(
+            {
+                'documents'             : this.documents,
+                'batchId'               : this.currentBatch.id,
+                'batchMetadata'         : this.batchMetadataValues,
+                'deletedPagesIds'       : this.deletedPagesIds,
+                'deletedDocumentsIds'   : this.deletedDocumentsIds,
+                'movedPages'            : this.movedPages,
+            },
+            {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('SPLITTER.batch_info_saved'));
             }),

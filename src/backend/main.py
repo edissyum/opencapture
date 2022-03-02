@@ -207,7 +207,6 @@ def launch(args):
 
                 if check_file(files, path + file, config, log) is not False:
                     res = OCForInvoices_process.process(args, path + file, log, config, files, ocr, locale, database, typo)
-                    print(res)
                     if not res:
                         mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'], args['msg'], config)
                         log.error('Error while processing e-mail', False)

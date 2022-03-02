@@ -195,7 +195,7 @@ const routes: Routes = [
     {
         path: 'settings/splitter/separator',
         component: SeparatorComponent,
-        data: {title: marker('SETTINGS.custom_fields'), privileges: ['settings', 'separator_splitter']},
+        data: {title: marker('SETTINGS.document_separator'), privileges: ['settings', 'separator_splitter']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
