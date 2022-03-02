@@ -212,8 +212,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
             this.invoiceImageNbPages = this.positionsMask.nb_pages;
             this.invoiceImageWidth = this.positionsMask.width;
             this.imageInvoice = $('#invoice_image_src');
-            let thumbB64: any;
-            thumbB64 = await this.getThumb(this.positionsMask.filename);
+            const thumbB64 : any = await this.getThumb(this.positionsMask.filename);
             this.invoiceImageSrc = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + thumbB64.file);
         }
         this.suppliers = await this.retrieveSuppliers();
@@ -700,8 +699,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
 
             const newFilename = this.invoiceImageName.replace(oldCpt + '.' + extension, newCpt + '.' + extension);
             this.invoiceImageName = newFilename;
-            let thumbB64: any;
-            thumbB64 = await this.getThumb(newFilename);
+            const thumbB64: any = await this.getThumb(newFilename);
             this.invoiceImageSrc = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + thumbB64.file);
             this.currentPage = pageToShow;
             for (const parentCpt in this.availableFieldsParent) {

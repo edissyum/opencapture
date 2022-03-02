@@ -43,7 +43,7 @@
                             {{ 'GLOBAL.batches' | translate }}
                         </button>
                         <button mat-flat-button routerLink="/upload" [routerLinkActive]="'bg-gray-900 text-green-400'"
-                                *ngIf="location.path() !== '/home' && getSplitterOrVerifier() != undefined && getSplitterOrVerifier() != ''"
+                                *ngIf="location.path() !== '/home' && getSplitterOrVerifier() !== undefined && getSplitterOrVerifier() !== ''"
                                 [disabled]="!privilegesService.hasPrivilege('upload')"
                                 [class.cursor-not-allowed]="!privilegesService.hasPrivilege('upload')"
                                 [class.hover:bg-gray-500]="privilegesService.hasPrivilege('upload')"
