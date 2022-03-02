@@ -33,13 +33,10 @@ module.exports = {
             '100': '100%',
         },
         extend: {
-            zIndex: {
-                'none': '-1',
-            },
-            backgroundImage: () => ({
+            backgroundImage: {
                 'verifier': "url('../assets/imgs/Open-Capture_Verifier.svg')",
                 'splitter': "url('../assets/imgs/Open-Capture_Splitter.svg')",
-            }),
+            },
             width: {
                 '30': '30%'
             },

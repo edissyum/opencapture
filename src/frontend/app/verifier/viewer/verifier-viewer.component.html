@@ -56,7 +56,7 @@
                         <i *ngIf="!this.invoice.supplier_id || !supplierExists && invoice.status !== 'END'" (click)="createSupplier()" class="fas fa-plus"></i>
                     </span>
                 </div>
-                <div class="relative border-green-400 border rounded-lg -top-3.5 z-none">
+                <div class="relative border-green-400 border rounded-lg -top-3.5 z-[-1]">
                     <div id="{{ category['id'] }}" class="flex flex-wrap w-full my-3" style="min-height: 50px;">
                         <div *ngFor="let field of this.form[category['id']];" class="flex items-center px-3" [class]="field.class">
                             <ng-container *ngIf="field.type === 'text'">
