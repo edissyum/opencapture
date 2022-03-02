@@ -20,7 +20,7 @@ import {Component, OnInit} from '@angular/core';
 @Component({
     selector: 'app-loader',
     template:
-        '<div id="preloader" class="fixed inset-0 bg-white z-10">' +
+        '<div id="preloader" class="fixed inset-0 bg-white z-20">' +
         '        <div id="status" class="flex absolute items-center justify-center w-full h-0 top-1/2">' +
         '            <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 74.4 81.9" width="300"' +
         '                 height="300" xml:space="preserve">' +

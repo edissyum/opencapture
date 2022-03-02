@@ -650,6 +650,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             if (!document.documentTypeKey) {
                 document.class = "text-red-500";
                 this.notify.error(this.translate.instant('SPLITTER.error_no_doc_type'));
+                this.loading = false;
                 return;
             } else
                 document.class = "";
