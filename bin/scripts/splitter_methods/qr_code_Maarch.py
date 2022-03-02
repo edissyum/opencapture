@@ -58,8 +58,6 @@ def split(splitter, pages):
     :return: N/A
     """
     maarch_value = None
-    print("splitter.separator_qr.pages : ")
-    print(splitter.separator_qr.pages)
     for index, path in pages:
         separator_type = None
         is_separator = list(filter(lambda separator: int(separator['num']) + 1 == int(index),

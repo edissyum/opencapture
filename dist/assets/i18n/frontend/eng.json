@@ -131,7 +131,8 @@
 		"folder_added": "Folder added",
 		"generating_separator": "Generating separator",
 		"no_doctype_to_show": "No document type to show",
-		"no_master": "(No master folder)"
+		"no_master": "(No master folder)",
+		"separator_choice ": "Separator choice"
 	},
 	"ERROR": {
 		"404": "The page you are looking for does not exist",

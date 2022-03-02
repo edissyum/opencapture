@@ -93,8 +93,7 @@
                    class="fas fa-stream text-xl text-gray-900"></i>
             </button>
         </div>
-        <app-document-type-factory class="pl-4"
-                                   [data]="{canFolderBeSelected: false}"
+        <app-document-type-factory [data]="{canFolderBeSelected: false}"
                                    (selectedFormOutput)="getSelectedForm($event)"></app-document-type-factory>
     </mat-sidenav-content>
     <mat-sidenav #sidenav2 mode="side" opened position="end" class="available-fields w-1/4 flex flex-col h-full border-r border-green-400">
@@ -105,9 +104,9 @@
                     <mat-form-field>
                         <mat-label>{{ 'DOCTYPE.folder' | translate }}</mat-label>
                         <mat-select id='folder' [formControlName]="'folder'">
-                            <div *ngFor="let folder of documentTypeFactoryComponent.treeDataObj.doctypesData" >
+                            <div *ngFor="let folder of documentTypeFactoryComponent.treeDataObj.doctypesData">
                                 <mat-option *ngIf="folder.type === 'folder' && folder.formId === selectedFormId"
-                                            [value]="folder.code" >
+                                            [value]="folder.code">
                                     {{ folder.label}}
                                 </mat-option>
                             </div>
