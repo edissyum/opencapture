@@ -205,6 +205,7 @@ INSERT INTO custom_fields ("id", "label_short", "metadata_key", "label", "type",
 INSERT INTO custom_fields ("id", "label_short", "metadata_key", "label", "type", "module") VALUES (3, 'contrat', 'contrat', 'Contrat', 'text', 'splitter');
 INSERT INTO custom_fields ("id", "label_short", "metadata_key", "label", "type", "module") VALUES (4, 'date_naissance', 'date_naissance', 'Date de naissance', 'text', 'splitter');
 INSERT INTO custom_fields ("id", "label_short", "metadata_key", "label", "type", "module") VALUES (5, 'matricule', 'matricule', 'Matricule', 'text', 'splitter');
+ALTER SEQUENCE "custom_fields_id_seq" RESTART WITH 6;
 
 -- CRÉATION DES PRIVILEGES
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (1, 'access_verifier', 'general');
