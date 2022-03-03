@@ -94,9 +94,9 @@ export class VerifierViewerComponent implements OnInit {
         }
     ];
     form                    : any       = {
-        'supplier': [],
-        'facturation': [],
-        'other': []
+        'supplier'      : [],
+        'facturation'   : [],
+        'other'         : []
     };
     pattern                 : any       = {
         'alphanum': '^[0-9a-zA-Z\\s]*$',
