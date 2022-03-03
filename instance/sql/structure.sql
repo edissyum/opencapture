@@ -53,11 +53,12 @@ CREATE TABLE "outputs"
     "compress_type"  VARCHAR(8),
     "module"         VARCHAR(10),
     "status"         VARCHAR(3) DEFAULT 'OK',
-    "data"           JSONB      DEFAULT '{ "options": {
-        "auth": [],
-    "parameters": []
+    "data"           JSONB      DEFAULT '{
+        "options": {
+            "auth": [],
+            "parameters": []
         }
-        }'
+    }'
 );
 
 CREATE TABLE "outputs_types"
@@ -66,11 +67,12 @@ CREATE TABLE "outputs_types"
     "output_type_id"    VARCHAR(255),
     "output_type_label" VARCHAR(50),
     "module"            VARCHAR(10),
-    "data"              JSONB DEFAULT '{ "options": {
-        "auth": [],
-    "parameters": []
+    "data"              JSONB DEFAULT '{
+        "options": {
+            "auth": [],
+            "parameters": []
         }
-        }'
+    }'
 );
 
 CREATE TABLE "inputs"
