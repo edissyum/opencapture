@@ -50,10 +50,11 @@ class Config:
             config.write(configfile)
 
     @staticmethod
-    def fswatcher_add_section(file, job, command, watch):
-        config = ConfigParser()
+    def fswatcher_add_section(file, job, command, watch, input_label):
+        config = ConfigParser(allow_no_value=True)
         config.read(file)
         config.add_section(job)
+        config.set(job, '; ' + input_label)
         config[job]['watch'] = watch
         config[job]['events'] = 'close,move'
         config[job]['include_extensions'] = 'pdf'
