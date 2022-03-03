@@ -36,3 +36,37 @@ def retrieve_configurations(args):
     })
 
     return configurations, error
+
+
+def retrieve_configuration_by_id(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    error = None
+    configurations = _db.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['configurations'],
+        'where': ['id = %s'],
+        'data': [args['configuration_id']]
+    })
+
+    return configurations, error
+
+
+def update_configuration(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    error = None
+
+    configuration = _db.update({
+        'table': ['configurations'],
+        'set': {
+            'data': json.dumps(args['data'])
+        },
+        'where': ['id = %s'],
+        'data': [args['configuration_id']]
+    })
+
+    if configuration[0] is False:
+        error = gettext('UPDATE_CONFIGURATION_ERROR')
+
+    return configuration, error

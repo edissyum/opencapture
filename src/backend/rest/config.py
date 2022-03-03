@@ -48,6 +48,14 @@ def get_configurations():
     return make_response(jsonify(res[0])), res[1]
 
 
+@bp.route('config/updateConfiguration/<int:configuration_id>', methods=['PUT'])
+@auth.token_required
+def update_configuration(configuration_id):
+    data = request.json['data']
+    res = config.update_configuration(data, configuration_id)
+    return make_response(jsonify(res[0])), res[1]
+
+
 @bp.route('config/gitInfo', methods=['GET'])
 @auth.token_required
 def get_git_info():
