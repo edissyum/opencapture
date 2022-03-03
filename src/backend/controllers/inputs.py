@@ -225,7 +225,7 @@ def create_script_and_incron(args):
                     _Config.fswatcher_update_watch(fs_watcher_config.file, fs_watcher_job, args['input_folder'])
                 else:
                     _Config.fswatcher_add_section(fs_watcher_config.file, fs_watcher_job, fs_watcher_command,
-                                                  args['input_folder'])
+                                                  args['input_folder'], args['input_label'])
                 return '', 200
             else:
                 response = {
