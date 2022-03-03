@@ -206,22 +206,11 @@ export class CreateInputComponent implements OnInit {
                 input[element.id] = element.control.value;
             });
 
-            this.http.post(API_URL + '/ws/inputs/create', {'args': input}, {headers: this.authService.headers}).pipe(
-                tap(() => {
-                    this.createScriptAndIncron();
-                    this.notify.success(this.translate.instant('INPUT.created'));
-                    this.historyService.addHistory('verifier', 'create_input', this.translate.instant('HISTORY-DESC.create-input', {input: input['input_label']}));
-                }),
-                catchError((err: any) => {
-                    console.debug(err);
-                    this.notify.handleErrors(err);
-                    return of(false);
-                })
-            ).subscribe();
+            this.createInputAndScriptAndIncron();
         }
     }
 
-    createScriptAndIncron() {
+    createInputAndScriptAndIncron() {
         if (this.isValidForm()) {
             const input : any = {
                 'module': 'verifier'
@@ -235,7 +224,18 @@ export class CreateInputComponent implements OnInit {
 
             this.http.post(API_URL + '/ws/inputs/createScriptAndIncron', {'args': input}, {headers: this.authService.headers}).pipe(
                 tap(() => {
-                    this.router.navigate(['/settings/verifier/inputs']).then();
+                    this.http.post(API_URL + '/ws/inputs/create', {'args': input}, {headers: this.authService.headers}).pipe(
+                        tap(() => {
+                            this.historyService.addHistory('verifier', 'create_input', this.translate.instant('HISTORY-DESC.create-input', {input: input['input_label']}));
+                            this.router.navigate(['/settings/verifier/inputs']).then();
+                            this.notify.success(this.translate.instant('INPUT.created'));
+                        }),
+                        catchError((err: any) => {
+                            console.debug(err);
+                            this.notify.handleErrors(err);
+                            return of(false);
+                        })
+                    ).subscribe();
                 }),
                 catchError((err: any) => {
                     console.debug(err);
