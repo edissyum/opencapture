@@ -81,30 +81,30 @@ export class VerifierViewerComponent implements OnInit {
     config                  : any;
     fieldCategories         : any[]     = [
         {
-            'id': 'supplier',
-            'label': marker('FORMS.supplier')
+            id: 'supplier',
+            label: this.translate.instant('FORMS.supplier')
         },
         {
             id: 'facturation',
-            label: marker('FACTURATION.facturation')
+            label: this.translate.instant('FACTURATION.facturation')
         },
         {
-            'id': 'other',
-            'label': marker('FORMS.other')
+            id: 'other',
+            label: this.translate.instant('FORMS.other')
         }
     ];
     form                    : any       = {
-        'supplier'      : [],
-        'facturation'   : [],
-        'other'         : []
+        supplier      : [],
+        facturation   : [],
+        other         : []
     };
     pattern                 : any       = {
-        'alphanum': '^[0-9a-zA-Z\\s]*$',
-        'alphanum_extended': '^[0-9a-zA-Z-/#,\\.\\s]*$',
-        'alphanum_extended_with_accent': '^[0-9a-zA-Z\\u00C0-\\u017F-/#,\\.\\s]*$',
-        'number_int': '^[0-9]*$',
-        'number_float': '^[0-9]*([.][0-9]*)*$',
-        'char': '^[A-Za-z\\s]*$',
+        alphanum                        : '^[0-9a-zA-Z\\s]*$',
+        alphanum_extended               : '^[0-9a-zA-Z-/#,\\.\\s]*$',
+        alphanum_extended_with_accent   : '^[0-9a-zA-Z\\u00C0-\\u017F-/#,\\.\\s]*$',
+        number_int                      : '^[0-9]*$',
+        number_float                    : '^[0-9]*([.][0-9]*)*$',
+        char                            : '^[A-Za-z\\s]*$',
     };
     filteredOptions         : Observable<any> | any;
     supplierNamecontrol     = new FormControl();

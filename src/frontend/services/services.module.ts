@@ -1,12 +1,10 @@
 import { NgModule } from '@angular/core';
-
 import { CommonModule } from '@angular/common';
-
-import { AppMaterialModule } from '../app/app-material.module';
-import { CustomSnackbarComponent, NotificationService } from './notifications/notifications.service';
-import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 import { LastUrlService } from './last-url.service';
-import {TranslateModule} from "@ngx-translate/core";
+import { TranslateModule } from "@ngx-translate/core";
+import { AppMaterialModule } from '../app/app-material.module';
+import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
+import { CustomSnackbarComponent, NotificationService } from './notifications/notifications.service';
 
 @NgModule({
     imports: [

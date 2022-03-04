@@ -19,35 +19,33 @@ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/
 
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-
-import { LoginRedirectService } from '../services/login-redirect.service';
-import { LoginRequiredService } from '../services/login-required.service';
-
+import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { LogoutComponent } from './logout/logout.component';
-import { HomeComponent } from './home/home.component';
-import { NotFoundComponent } from "./not-found/not-found.component";
-import { UserProfileComponent } from "./profile/profile.component";
-import { SplitterViewerComponent } from "./splitter/viewer/splitter-viewer.component";
-import { SplitterListComponent } from "./splitter/list/splitter-list.component";
-import { VerifierViewerComponent } from './verifier/viewer/verifier-viewer.component';
-import { VerifierListComponent } from './verifier/list/verifier-list.component';
 import { UploadComponent } from "./upload/upload.component";
+import { HistoryComponent } from "./history/history.component";
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { UserProfileComponent } from "./profile/profile.component";
+import { NotFoundComponent } from "./not-found/not-found.component";
+import { HasPrivilegeService } from "../services/has-privilege.service";
+import { StatisticsComponent } from "./statistics/statistics.component";
+import { LoginRedirectService } from '../services/login-redirect.service';
+import { LoginRequiredService } from '../services/login-required.service';
+import { VerifierListComponent } from './verifier/list/verifier-list.component';
+import { SplitterListComponent } from "./splitter/list/splitter-list.component";
+import { SplitterViewerComponent } from "./splitter/viewer/splitter-viewer.component";
+import { VerifierViewerComponent } from './verifier/viewer/verifier-viewer.component';
+import { CustomersListComponent } from "./accounts/customers/list/customers-list.component";
 import { SuppliersListComponent } from "./accounts/suppliers/list/suppliers-list.component";
 import { UpdateSupplierComponent } from "./accounts/suppliers/update/update-supplier.component";
 import { CreateSupplierComponent } from "./accounts/suppliers/create/create-supplier.component";
-import { CustomersListComponent } from "./accounts/customers/list/customers-list.component";
 import { UpdateCustomerComponent } from "./accounts/customers/update/update-customer.component";
 import { CreateCustomerComponent } from "./accounts/customers/create/create-customer.component";
-import { HasPrivilegeService } from "../services/has-privilege.service";
-import { HistoryComponent } from "./history/history.component";
-import { StatisticsComponent } from "./statistics/statistics.component";
 
 const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
-    { path: 'home', component: HomeComponent , data: { title: marker('GLOBAL.home') }, canActivate: [LoginRequiredService] },
-    { path: 'login', component: LoginComponent , data: { title: marker('GLOBAL.login') }, canActivate: [LoginRedirectService] },
+    { path: 'home', component: HomeComponent , data: { title: 'GLOBAL.home' }, canActivate: [LoginRequiredService] },
+    { path: 'login', component: LoginComponent , data: { title: 'GLOBAL.login' }, canActivate: [LoginRedirectService] },
     { path: 'logout', component: LogoutComponent , canActivate: [LoginRequiredService] },
     { path: 'profile/:id', component: UserProfileComponent, canActivate: [LoginRequiredService] },
     {
