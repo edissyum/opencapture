@@ -148,7 +148,12 @@
     <mat-sidenav #sidenav2 mode="side" opened position="end" class="available-fields w-1/4 flex flex-col h-full border-r border-green-400">
         <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">{{ "FORMS.available_fields" | translate }}</h3>
         <mat-divider class="border-green-400"></mat-divider>
-        <mat-tab-group style="height: calc(100% - 64px)">
+        <div *ngIf="loadingFields" class="relative" style="top: 40%">
+            <span class="text-center overflow-hidden">
+                <i class="fa-solid fa-circle-notch fa-spin fa-4x w-full text-gray-900" style="--fa-animation-duration: 1.5s;"></i>
+            </span>
+        </div>
+        <mat-tab-group style="height: calc(100% - 64px)" *ngIf="!loadingFields">
             <mat-tab *ngFor="let availableFields of this.availableFieldsParent" label="{{ availableFields['label'] | translate }}">
                 <div class="min-w-full" style="min-height: 500px">
                     <div *ngFor="let field of availableFields['values']">

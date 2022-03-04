@@ -42,6 +42,7 @@ declare const $: any;
 })
 export class UpdatePositionsMaskComponent implements OnInit {
     loading                 : boolean   = true;
+    loadingFields           : boolean   = true;
     ocrFromUser             : boolean   = false;
     launchOnInit            : boolean   = false;
     ratio                   : any;
@@ -259,6 +260,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                         }
                     }
                 }
+                this.loadingFields = false;
             }),
             catchError((err: any) => {
                 console.debug(err);
