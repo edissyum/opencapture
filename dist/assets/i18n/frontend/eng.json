@@ -472,11 +472,10 @@
 		"version_update": "Version and update"
 	},
 	"ROLE": {
-		"add": "Add role",
 		"confirm_delete": "Are you sure you want to delete role <b>{{ role }}</b> ?",
 		"confirm_disable": "Are you sure you want to disable role <b>{{ role }}</b> ?",
 		"confirm_enable": "Are you sure you want to enable role <b>{{ role }}</b> ?",
-		"create": "Create role",
+		"create_role": "Create role",
 		"created": "Role created successfully",
 		"disable": "Role disabled successfully",
 		"enable": "Enable role",
@@ -494,8 +493,6 @@
 		"administration": "Administration",
 		"autocomplete": "Autocomplete id",
 		"configurations": "Configurations",
-		"create_role": "Create role",
-		"create_user": "Create user",
 		"custom_fields": "Custom fields",
 		"document_separator": "Document separator",
 		"document_type": "Document type",
@@ -590,11 +587,10 @@
 		"upload_success": "File upload successfully"
 	},
 	"USER": {
-		"add": "Add user",
 		"confirm_delete": "Are you sure you want to delete user <b>{{ user }}</b> ?",
 		"confirm_disable": "Are you sure you want to delete user <b>{{ user }}</b> ?",
 		"confirm_enable": "Are you sure you want to delete user <b>{{ user }}</b> ?",
-		"create": "Create user",
+		"create_user": "Create user",
 		"created": "User created successfully",
 		"customers_updated": "Customers list of the user updated successfully",
 		"disable": "Disable user",

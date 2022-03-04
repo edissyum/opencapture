@@ -245,7 +245,7 @@ class SeparatorQR:
             output_pdf.write(stream)
 
     @staticmethod
-    def generate_separator(config, qr_code_value, doctype_label, separator_type_label):
+    def generate_separator(config, db_config, qr_code_value, doctype_label, separator_type_label):
         """
         Generate separator file
         :param qr_code_value: QR code value
@@ -324,7 +324,7 @@ class SeparatorQR:
         try:
             with open(file_path, 'rb') as pdf_file:
                 encoded_file = base64.b64encode(pdf_file.read()).decode('utf-8')
-            pages = pdf2image.convert_from_path(file_path, 500)
+            pages = pdf2image.convert_from_path(file_path, db_config['resolution'])
 
             buffered = BytesIO()
             pages[0].save(buffered, format="JPEG")
