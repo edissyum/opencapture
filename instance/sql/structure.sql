@@ -49,7 +49,7 @@ CREATE TABLE "outputs"
 (
     "id"             SERIAL UNIQUE PRIMARY KEY,
     "output_type_id" VARCHAR(255),
-    "output_label"   VARCHAR,
+    "output_label"   VARCHAR(255),
     "compress_type"  VARCHAR(8),
     "module"         VARCHAR(10),
     "status"         VARCHAR(3) DEFAULT 'OK',
@@ -79,7 +79,7 @@ CREATE TABLE "inputs"
 (
     "id"                     SERIAL UNIQUE PRIMARY KEY,
     "input_id"               VARCHAR(255),
-    "input_label"            VARCHAR,
+    "input_label"            VARCHAR(255),
     "default_form_id"        INTEGER,
     "customer_id"            INTEGER,
     "module"                 VARCHAR(10),
@@ -149,7 +149,7 @@ CREATE TABLE "privileges"
 CREATE TABLE "accounts_supplier"
 (
     "id"                  SERIAL UNIQUE PRIMARY KEY,
-    "name"                VARCHAR NOT NULL,
+    "name"                VARCHAR(255) NOT NULL,
     "vat_number"          VARCHAR(20) UNIQUE,
     "siret"               VARCHAR(20),
     "siren"               VARCHAR(20),
@@ -207,11 +207,11 @@ CREATE TABLE "invoices"
     "customer_id"       INTEGER              DEFAULT 0,
     "form_id"           INTEGER              DEFAULT null,
     "purchase_or_sale"  VARCHAR(8)           DEFAULT 'purchase',
-    "filename"          VARCHAR     NOT NULL,
+    "filename"          VARCHAR(255)     NOT NULL,
     "original_filename" VARCHAR(255),
-    "path"              VARCHAR     NOT NULL,
+    "path"              VARCHAR(255)     NOT NULL,
     "status"            VARCHAR(20) NOT NULL DEFAULT 'NEW',
-    "full_jpg_filename" VARCHAR,
+    "full_jpg_filename" VARCHAR(255),
     "img_width"         INTEGER,
     "register_date"     TIMESTAMP            DEFAULT (CURRENT_TIMESTAMP),
     "nb_pages"          INTEGER     NOT NULL DEFAULT 1,
@@ -245,12 +245,12 @@ CREATE TABLE "status"
 CREATE TABLE "splitter_batches"
 (
     "id"            SERIAL UNIQUE PRIMARY KEY,
-    "file_path"     VARCHAR,
-    "file_name"     VARCHAR,
-    "first_page"    VARCHAR,
-    "batch_folder"  VARCHAR,
+    "file_path"     VARCHAR(255),
+    "file_name"     VARCHAR(255),
+    "first_page"    VARCHAR(255),
+    "batch_folder"  VARCHAR(255),
     "creation_date" TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
-    "status"        VARCHAR   DEFAULT 'NEW',
+    "status"        VARCHAR(20)   DEFAULT 'NEW',
     "page_number"   INTEGER,
     "form_id"       INTEGER,
     "data"          JSON DEFAULT '{}'::json);
@@ -270,9 +270,9 @@ CREATE TABLE "splitter_pages"
 (
     "id"          SERIAL UNIQUE PRIMARY KEY,
     "document_id" INTEGER,
-    "thumbnail"   VARCHAR,
+    "thumbnail"   VARCHAR(255),
     "source_page" INTEGER,
-    "status"      VARCHAR DEFAULT 'NEW'
+    "status"      VARCHAR(255) DEFAULT 'NEW'
 );
 
 create table "doctypes"
