@@ -25,7 +25,7 @@ predictImagePath = ${AI-CLASSIFICATION:iaPath}/images/predict-images/
 confidenceMin    = 80
 
 [SPLITTER]
-batchpath = ${GLOBAL:docserverpath}/splitter/batches/
+batchpath     = ${GLOBAL:docserverpath}/splitter/batches/
 pdfoutputpath = ${GLOBAL:docserverpath}/splitter/separated_pdf/
 docstart      = DOCSTART
 bundlestart   = BUNDLESTART

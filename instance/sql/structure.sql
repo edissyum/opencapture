@@ -53,11 +53,12 @@ CREATE TABLE "outputs"
     "compress_type"  VARCHAR(8),
     "module"         VARCHAR(10),
     "status"         VARCHAR(3) DEFAULT 'OK',
-    "data"           JSONB      DEFAULT '{ "options": {
-        "auth": [],
-    "parameters": []
+    "data"           JSONB      DEFAULT '{
+        "options": {
+            "auth": [],
+            "parameters": []
         }
-        }'
+    }'
 );
 
 CREATE TABLE "outputs_types"
@@ -66,11 +67,12 @@ CREATE TABLE "outputs_types"
     "output_type_id"    VARCHAR(255),
     "output_type_label" VARCHAR(50),
     "module"            VARCHAR(10),
-    "data"              JSONB DEFAULT '{ "options": {
-        "auth": [],
-    "parameters": []
+    "data"              JSONB DEFAULT '{
+        "options": {
+            "auth": [],
+            "parameters": []
         }
-        }'
+    }'
 );
 
 CREATE TABLE "inputs"
@@ -86,7 +88,7 @@ CREATE TABLE "inputs"
     "purchase_or_sale"       VARCHAR(8) DEFAULT 'purchase',
     "status"                 VARCHAR(3) DEFAULT 'OK',
     "input_folder"           TEXT,
-    "splitter_method_id"     VARCHAR(20)
+    "splitter_method_id"     VARCHAR(20) DEFAULT 'qr_code'
 );
 
 CREATE TABLE "custom_fields"

@@ -47,16 +47,38 @@ def change_locale_in_config(lang):
 
 
 def retrieve_configurations(args):
-    custom_fields_res, error = config.retrieve_configurations(args)
+    configurations, error = config.retrieve_configurations(args)
 
     if error is None:
         response = {
-            "configurations": custom_fields_res
+            "configurations": configurations
         }
         return response, 200
 
     response = {
         "errors": "RETRIEVE_CONFIGURATIONS_ERRORS",
+        "message": error
+    }
+    return response, 401
+
+
+def update_configuration(args, configuration_id):
+    _, error = config.retrieve_configuration_by_id({'configuration_id': configuration_id})
+
+    if error is None:
+        args = {
+            'configuration_id': configuration_id,
+            'data': {
+                'type': args['type'],
+                'value': args['value'],
+                'description': args['description']
+            }
+        }
+        config.update_configuration(args)
+        return '', 200
+
+    response = {
+        "errors": "UPDATE_CONFIGURATION_ERROR",
         "message": error
     }
     return response, 401

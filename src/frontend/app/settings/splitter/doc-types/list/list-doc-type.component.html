@@ -74,10 +74,7 @@
         </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content class="bg-white">
-        <div *ngIf="documentTypeFactoryComponent.treeDataObj.loading">
-            <app-loader></app-loader>
-        </div>
-        <div class="settings_header">
+        <div class="settings_header z-30">
             <button mat-icon-button (click)="sidenav.toggle(); this.serviceSettings.toggleMenu();"
                     class="absolute left-2 top-2">
                 <i [class.fa-arrow-right]="!this.serviceSettings.getIsMenuOpen()"
