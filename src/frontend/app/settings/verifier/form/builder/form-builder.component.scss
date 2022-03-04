@@ -17,6 +17,11 @@ i.cdk-drag {
     0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
 
+::ng-deep .mat-focused .mat-form-field-label-wrapper label {
+    @apply transform-none #{!important};
+    @apply w-full #{!important};
+}
+
 ::ng-deep .form-builder > .mat-form-field-wrapper {
     @apply pb-3;
     @apply pt-3;
@@ -32,7 +37,7 @@ i.cdk-drag {
         @apply left-0;
     }
 
-    &:hover > .mat-form-field-flex > .mat-form-field-infix > .mat-form-field-label-wrapper > .mat-form-field-label > mat-label {
+    &:hover > .mat-form-field-flex > .mat-form-field-infix > .input-label {
         @apply pl-6;
     }
 
@@ -60,11 +65,11 @@ i.cdk-drag {
                 @apply left-0.5;
                 @apply transition-all;
                 @apply duration-500;
-                @apply top-0.5;
+                @apply top-1;
                 top: 7px;
             }
 
-            & .mat-form-field-label-wrapper > .mat-form-field-label > mat-label {
+            & .input-label {
                 @apply ml-0;
                 @apply transition-all;
                 @apply duration-500;

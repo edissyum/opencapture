@@ -127,19 +127,16 @@
                          class="flex flex-wrap cursor-pointer w-full my-3" style="min-height: 50px;">
                         <div *ngFor="let field of this.fields[category['id']]; let index = index" class="flex items-center px-3 overflow-hidden" [class]="field.class"
                              ngSortGridGroup="{{ category['id'] }}" ngSortgridItem [ngSortGridItems]="fields[category['id']]" (sorted)="storeNewOrder($event, category['id'])">
-                            <mat-form-field class="right-0 w-full form-builder"
-                                            [matTooltipClass]="'-mt-3'"
-                                            [matTooltipDisabled]="field.type === 'select'"
-                                            [matTooltip]="this.translate.instant(field['label']) + ' (' + this.translate.instant('FORMATS.' + field.format) + ')'">
+                            <mat-form-field class="right-0 w-full form-builder">
                                 <i cdkDrag class="fas fa-trash" (click)="deleteField($event, index, category['id'], field.unit)" [matTooltip]="this.translate.instant('FORMS.delete_field')"></i>
-                                <mat-label class="border-r-2 border-green-400 inline-block overflow-ellipsis overflow-hidden whitespace-nowrap w-10/12">
-                                    <span *ngIf="field.required" class="text-red-500 mr-2">*</span>
+                                <span class="input-label relative -top-1 border-r-2 border-green-400 inline-block overflow-ellipsis overflow-hidden whitespace-nowrap w-10/12">
+                                    <span *ngIf="field.required" class="text-red-500 mr-2 relative top-0.5">*</span>
                                     <b>{{ field.label | translate }}</b>
-                                    <span *ngIf="field.type === 'select' && field.type === 'textarea'"> ({{ 'FORMATS.' + field.format | translate }})</span>
+                                    <span *ngIf="field.type !== 'select' && field.type !== 'textarea'"> ({{ 'FORMATS.' + field.format | translate }})</span>
                                     <span *ngIf="field.type === 'select'"> ({{ 'FORMATS.select' | translate }})</span>
                                     <span *ngIf="field.type === 'textarea'"> ({{ 'FORMATS.textarea' | translate }})</span>
-                                </mat-label>
-                                <input class="cursor-pointer" matInput type="text" disabled>
+                                </span>
+                                <input class="cursor-pointer" matInput type="text" readonly>
                                 <div class="absolute top-0 -right-4">
                                     <button mat-button [matMenuTriggerFor]="menu"
                                             [matTooltip]="this.translate.instant('VERIFIER.field_settings')"
