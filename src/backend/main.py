@@ -186,7 +186,7 @@ def launch(args):
         log.info('Process attachment n°' + args['cpt'] + '/' + args['nb_of_attachments'])
 
     if args.get('isMail') is None or args.get('isMail') is False:
-        if splitter_method and splitter_method == 'qr_code':
+        if splitter_method and splitter_method == 'qr_code_OC':
             separator_qr.enabled = True
 
     database.connect()

@@ -108,7 +108,7 @@ export class CreateInputComponent implements OnInit {
                     'label': this.translate.instant('INPUT.no_separation')
                 },
                 {
-                    'id': 'qr_code',
+                    'id': 'qr_code_OC',
                     'label': this.translate.instant('INPUT.qr_code_separation')
                 },
                 {

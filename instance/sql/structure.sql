@@ -88,7 +88,7 @@ CREATE TABLE "inputs"
     "purchase_or_sale"       VARCHAR(8) DEFAULT 'purchase',
     "status"                 VARCHAR(3) DEFAULT 'OK',
     "input_folder"           TEXT,
-    "splitter_method_id"     VARCHAR(20) DEFAULT 'qr_code'
+    "splitter_method_id"     VARCHAR(20) DEFAULT 'qr_code_OC'
 );
 
 CREATE TABLE "custom_fields"
