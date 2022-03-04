@@ -103,6 +103,7 @@ def check_file(files, path, config, log):
     if not files.check_file_integrity(path, config):
         log.error('The integrity of file could\'nt be verified : ' + str(path))
         return False
+    return True
 
 
 def timer(start_time, end_time):
@@ -153,7 +154,7 @@ def launch(args):
     if not os.path.exists(config_file):
         sys.exit('config file couldn\'t be found')
 
-    config, locale, log, ocr, database, spreadsheet, smtp = create_classes(config_file)
+    config, locale, log, ocr, database, _, smtp = create_classes(config_file)
     tmp_folder = tempfile.mkdtemp(dir=config.cfg['GLOBAL']['tmppath'])
     filename = tempfile.NamedTemporaryFile(dir=tmp_folder).name
     files = _Files(filename, log, locale, config)
@@ -186,7 +187,7 @@ def launch(args):
         log.info('Process attachment n°' + args['cpt'] + '/' + args['nb_of_attachments'])
 
     if args.get('isMail') is None or args.get('isMail') is False:
-        if splitter_method and splitter_method == 'qr_code':
+        if splitter_method and splitter_method == 'qr_code_OC':
             separator_qr.enabled = True
 
     database.connect()

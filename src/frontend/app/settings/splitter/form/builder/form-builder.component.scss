@@ -21,7 +21,7 @@ i.cdk-drag {
         @apply left-0;
     }
 
-    &:hover > .mat-form-field-flex > .mat-form-field-infix > .mat-form-field-label-wrapper > .mat-form-field-label > mat-label {
+    &:hover > .mat-form-field-flex > .mat-form-field-infix > .input-label {
         @apply pl-6;
     }
 
@@ -53,7 +53,7 @@ i.cdk-drag {
                 top: 7px;
             }
 
-            & .mat-form-field-label-wrapper > .mat-form-field-label > mat-label {
+            & .input-label {
                 @apply ml-0;
                 @apply transition-all;
                 @apply duration-500;

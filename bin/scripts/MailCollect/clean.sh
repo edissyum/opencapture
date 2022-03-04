@@ -19,5 +19,14 @@
 # Bash script to clean MailCollect batches and log
 batch_path='/var/www/html/opencaptureforinvoices/bin/data/MailCollect/'
 conservation_time=7
+conservation_time_error_folder=14
 
-find $batch_path -mindepth 1 -maxdepth 2 -type d -not -name '_ERROR' -ctime +$conservation_time -exec rm -rf {} ';'
+for dir in "$batch_path"/*/; do
+  if [ -d "$dir" ]; then
+    if [[ $dir != *"_ERROR"* ]]; then
+      find "$dir" -mindepth 1 -maxdepth 1 -type d -mtime +$conservation_time -exec rm -rf {} ';'
+    else
+      find "$dir" -mindepth 2 -maxdepth 2 -type d -mtime +$conservation_time_error_folder -exec rm -rf {} ';'
+    fi
+  fi
+done
