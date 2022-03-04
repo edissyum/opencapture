@@ -37,6 +37,7 @@ import {HistoryService} from "../../../../../services/history.service";
 })
 export class CreateUserComponent implements OnInit {
     loading         : boolean   = true;
+    loadingCustomers: boolean   = true;
     roles           : any[]     = [];
     userForm        : any[]     = [
         {
@@ -107,6 +108,7 @@ export class CreateUserComponent implements OnInit {
         this.http.get(API_URL + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.customers = data.customers;
+                this.loadingCustomers = false;
             }),
             catchError((err: any) => {
                 console.debug(err);

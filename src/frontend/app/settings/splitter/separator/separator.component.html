@@ -87,7 +87,7 @@
         </div>
         <app-document-type-factory [data]="{canFolderBeSelected: false}" (selectedDoctypeOutput)="getOutPut($event)"></app-document-type-factory>
     </mat-sidenav-content>
-    <mat-sidenav #sidenav2 mode="side" opened position="end" class="overflow-auto w-1/4 flex flex-col h-full border-r border-green-400">
+    <mat-sidenav #sidenav2 mode="side" opened position="end" class="overflow-hidden w-1/4 flex flex-col h-full border-r border-green-400">
         <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">{{ 'DOCTYPE.download_separator' | translate }}</h3>
         <mat-divider class="border-green-400"></mat-divider>
         <div class="w-full grid grid-cols-2 m-2 mt-4">
@@ -105,9 +105,9 @@
                 </button>
             </div>
         </div>
-        <div class="text-center text-gray-400">
+        <div class="text-center text-gray-400 object-contain">
             <div *ngIf="loadingSeparator">
-                <i class="fa-solid fa-qrcode fa-4x w-full"></i>
+                <i class="fa-solid fa-qrcode fa-4x fa-beat-fade w-full mb-1" style="--fa-animation-duration: 1.5s;"></i>
                 <span class="w-full">
                     {{ 'DOCTYPE.generating_separator' | translate }}
                 </span>

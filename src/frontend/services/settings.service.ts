@@ -65,7 +65,7 @@ export class SettingsService {
                 "actions"   : [
                     {
                         "id"        : 'add_user',
-                        "label"     : this.translate.instant("USER.add"),
+                        "label"     : this.translate.instant("USER.create_user"),
                         "route"     : "/settings/general/users/new",
                         "privilege" : "add_user",
                         "icon"      : "fas fa-plus"
@@ -89,7 +89,7 @@ export class SettingsService {
                 "actions"   : [
                     {
                         "id"        : "add_role",
-                        "label"     : this.translate.instant("ROLE.add"),
+                        "label"     : this.translate.instant("ROLE.create_role"),
                         "route"     : "/settings/general/roles/new",
                         "privilege" : "add_role",
                         "icon"      : "fas fa-plus"

@@ -39,6 +39,7 @@ import {HistoryService} from "../../../../../services/history.service";
 })
 export class FormBuilderComponent implements OnInit {
     loading                 : boolean   = true;
+    loadingCustomFields     : boolean   = true;
     outputs                 : any[]     = [];
     form                    : any       = {
         'label': {
@@ -673,6 +674,7 @@ export class FormBuilderComponent implements OnInit {
                         }
                     }
                 }
+                this.loadingCustomFields = false;
             }),
             catchError((err: any) => {
                 console.debug(err);

@@ -472,11 +472,10 @@
 		"version_update": "Version et mise à jour"
 	},
 	"ROLE": {
-		"add": "Ajouter un rôle",
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer le rôle <b>{{ role }}</b> ?",
 		"confirm_disable": "Êtes vous sûr de vouloir désactiver le rôle <b>{{ role }}</b> ?",
 		"confirm_enable": "Êtes vous sûr de vouloir réactiver le rôle <b>{{ role }}</b> ?",
-		"create": "Créer un rôle",
+		"create_role": "Ajouter un rôle",
 		"created": "Rôle créé avec succès",
 		"disable": "Désactiver le rôle",
 		"enable": "Activer le rôle",
@@ -494,8 +493,6 @@
 		"administration": "Panneau d'administration",
 		"autocomplete": "Identifiant d'autocomplétion",
 		"configurations": "Configurations",
-		"create_role": "Créer un rôle",
-		"create_user": "Créer un utilisateur",
 		"custom_fields": "Champs personnalisés",
 		"document_separator": "Séparateur de document",
 		"document_type": "Type de documents",
@@ -590,11 +587,10 @@
 		"upload_success": "Fichier(s) téléversé(s) avec succès"
 	},
 	"USER": {
-		"add": "Ajouter un utilisateur",
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer l'utilisateur <b>{{ user }}</b> ?",
 		"confirm_disable": "Êtes vous sûr de vouloir désactiver l'utilisateur <b>{{ user }}</b> ?",
 		"confirm_enable": "Êtes vous sûr de vouloir ré-activer l'utilisateur <b>{{ user }}</b> ?",
-		"create": "Créer l'utilisateur",
+		"create_user": "Ajouter un utilisateur",
 		"created": "Utilisateur créé avec succès",
 		"customers_updated": "Liste des comptes clients de l'utilisateur mis à jour",
 		"disable": "Désactiver l'utilisateur",

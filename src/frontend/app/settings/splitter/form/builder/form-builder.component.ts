@@ -38,6 +38,7 @@ import {marker} from "@biesbjerg/ngx-translate-extract-marker";
 })
 export class SplitterFormBuilderComponent implements OnInit {
     loading                 : boolean   = true;
+    loadingCustomFields     : boolean   = true;
     outputs                 : any[]     = [];
     form                    : any       = {
         'label': {
@@ -219,6 +220,7 @@ export class SplitterFormBuilderComponent implements OnInit {
                         }
                     }
                 }
+                this.loadingCustomFields = false;
             }),
             catchError((err: any) => {
                 console.debug(err);
