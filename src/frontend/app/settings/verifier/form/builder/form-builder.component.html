@@ -134,7 +134,7 @@
                         <div *ngFor="let field of this.fields[category['id']]; let index = index" class="flex items-center px-3 overflow-hidden" [class]="field.class"
                              ngSortGridGroup="{{ category['id'] }}" ngSortgridItem [ngSortGridItems]="fields[category['id']]" (sorted)="storeNewOrder($event, category['id'])">
                             <mat-form-field class="right-0 w-full form-builder">
-                                <i cdkDrag class="fas fa-trash" (click)="deleteField($event, index, category['id'], field.unit)" [matTooltip]="this.translate.instant('FORMS.delete_field')"></i>
+                                <i cdkDrag class="fas fa-trash z-10" (click)="deleteField($event, index, category['id'], field.unit)" [matTooltip]="this.translate.instant('FORMS.delete_field')"></i>
                                 <span class="input-label relative -top-1 border-r-2 border-green-400 inline-block overflow-ellipsis overflow-hidden whitespace-nowrap w-10/12">
                                     <span *ngIf="field.required" class="text-red-500 mr-2 relative top-0.5">*</span>
                                     <b>{{ field.label | translate }}</b>
@@ -244,8 +244,8 @@
                                     {{ field.label | translate }}
                                 </div>
                                 <mat-form-field class="right-0 w-5/12">
-                                    <mat-label>{{ 'TYPES.' + field.type | translate }} TEST</mat-label>
-                                    <input class="cursor-pointer" matInput type="text" readonly>
+                                    <mat-label>{{ 'TYPES.' + field.type | translate }} </mat-label>
+                                    <input class="cursor-pointer" matInput type="text" disabled>
                                 </mat-form-field>
                             </ng-container>
                             <ng-container *ngIf="field.type === 'textarea'">
