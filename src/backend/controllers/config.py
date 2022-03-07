@@ -62,6 +62,22 @@ def retrieve_configurations(args):
     return response, 401
 
 
+def retrieve_docservers(args):
+    docservers, error = config.retrieve_docservers(args)
+
+    if error is None:
+        response = {
+            "docservers": docservers
+        }
+        return response, 200
+
+    response = {
+        "errors": "RETRIEVE_DOCSERVERS_ERRORS",
+        "message": error
+    }
+    return response, 401
+
+
 def update_configuration(args, configuration_id):
     _, error = config.retrieve_configuration_by_id({'configuration_id': configuration_id})
 
@@ -79,6 +95,26 @@ def update_configuration(args, configuration_id):
 
     response = {
         "errors": "UPDATE_CONFIGURATION_ERROR",
+        "message": error
+    }
+    return response, 401
+
+
+def update_docserver(args, docserver_id):
+    _, error = config.retrieve_docserver_by_id({'docserver_id': docserver_id})
+
+    if error is None:
+        args = {
+            'id': args['id'],
+            'path': args['path'],
+            'description': args['description'],
+            'docserver_id': args['docserver_id']
+        }
+        config.update_docserver(args)
+        return '', 200
+
+    response = {
+        "errors": "UPDATE_DOCSERVER_ERROR",
         "message": error
     }
     return response, 401

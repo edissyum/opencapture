@@ -301,3 +301,11 @@ CREATE TABLE "configurations"
     "label" VARCHAR(64) UNIQUE,
     "data"  JSONB DEFAULT '{}'
 );
+
+CREATE TABLE "docservers"
+(
+    "id"            SERIAL UNIQUE PRIMARY KEY,
+    "description"   VARCHAR(255),
+    "docserver_id"  VARCHAR(32) UNIQUE,
+    "path"          VARCHAR(255) UNIQUE
+);

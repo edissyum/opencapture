@@ -57,6 +57,13 @@ export class SettingsService {
                 "privilege" : "configurations",
             },
             {
+                "id"        : "docservers",
+                "label"     : this.translate.instant("SETTINGS.docservers"),
+                "icon"      : "fas fa-hard-drive",
+                "route"     : '/settings/general/docservers',
+                "privilege" : "docservers",
+            },
+            {
                 "id"        : "users",
                 "label"     : this.translate.instant("SETTINGS.users_list"),
                 "icon"      : "fas fa-user",

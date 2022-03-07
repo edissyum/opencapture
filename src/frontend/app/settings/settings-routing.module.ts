@@ -20,12 +20,12 @@ import { RouterModule, Routes } from "@angular/router";
 import { SettingsComponent } from "./settings.component";
 import { AboutUsComponent } from './general/about-us/about-us.component';
 import { HasPrivilegeService } from "../../services/has-privilege.service";
-import {SeparatorComponent} from "./splitter/separator/separator.component";
+import { SeparatorComponent } from "./splitter/separator/separator.component";
 import { LoginRequiredService } from "../../services/login-required.service";
 import { FormListComponent } from "./verifier/form/list/form-list.component";
 import { UsersListComponent } from "./general/users/list/users-list.component";
 import { RolesListComponent } from "./general/roles/list/roles-list.component";
-import {SplitterFormListComponent} from "./splitter/form/list/form-list.component";
+import { SplitterFormListComponent } from "./splitter/form/list/form-list.component";
 import { CreateUserComponent } from "./general/users/create/create-user.component";
 import { UpdateUserComponent } from "./general/users/update/update-user.component";
 import { CreateRoleComponent } from "./general/roles/create/create-role.component";
@@ -34,24 +34,25 @@ import { InputsListComponent } from "./verifier/inputs/list/inputs-list.componen
 import { FormBuilderComponent } from "./verifier/form/builder/form-builder.component";
 import { OutputsListComponent } from "./verifier/outputs/list/outputs-list.component";
 import { UpdateInputComponent } from "./verifier/inputs/update/update-input.component";
-import {SplitterInputListComponent} from "./splitter/inputs/list/input-list.component";
+import { SplitterInputListComponent } from "./splitter/inputs/list/input-list.component";
 import { CreateInputComponent } from "./verifier/inputs/create/create-input.component";
-import {ListDocTypeComponent} from "./splitter/doc-types/list/list-doc-type.component";
+import { ListDocTypeComponent } from "./splitter/doc-types/list/list-doc-type.component";
 import { CustomFieldsComponent } from "./general/custom-fields/custom-fields.component";
-import {SplitterListOutputComponent} from "./splitter/output/list/list-output.component";
+import { SplitterListOutputComponent } from "./splitter/output/list/list-output.component";
 import { UpdateOutputComponent } from "./verifier/outputs/update/update-output.component";
-import {ConfigurationsComponent} from "./general/configurations/configurations.component";
+import { ConfigurationsComponent } from "./general/configurations/configurations.component";
+import { DocserversComponent } from "./general/docservers/docservers.component";
 import { CreateOutputComponent } from "./verifier/outputs/create/create-output.component";
-import {SplitterFormBuilderComponent} from "./splitter/form/builder/form-builder.component";
-import {SplitterCreateInputComponent} from "./splitter/inputs/create/create-input.component";
-import {SplitterUpdateInputComponent} from "./splitter/inputs/update/update-input.component";
-import {CreateDocTypeComponent} from "./splitter/doc-types/create/create-doc-type.component";
-import {SplitterUpdateOutputComponent} from "./splitter/output/update/update-output.component";
-import {SplitterCreateOutputComponent} from "./splitter/output/create/create-output.component";
+import { SplitterFormBuilderComponent } from "./splitter/form/builder/form-builder.component";
+import { SplitterCreateInputComponent } from "./splitter/inputs/create/create-input.component";
+import { SplitterUpdateInputComponent } from "./splitter/inputs/update/update-input.component";
+import { CreateDocTypeComponent } from "./splitter/doc-types/create/create-doc-type.component";
+import { SplitterUpdateOutputComponent } from "./splitter/output/update/update-output.component";
+import { SplitterCreateOutputComponent } from "./splitter/output/create/create-output.component";
 import { PositionsMaskListComponent } from "./verifier/positions-mask/list/positions-mask-list.component";
 import { CreatePositionsMaskComponent } from "./verifier/positions-mask/create/create-positions-mask.component";
 import { UpdatePositionsMaskComponent } from "./verifier/positions-mask/update/update-positions-mask.component";
-import {CreateFolderDocTypeComponent} from "./splitter/doc-types/create-folder/create-folder-doc-type.component";
+import { CreateFolderDocTypeComponent } from "./splitter/doc-types/create-folder/create-folder-doc-type.component";
 
 const routes: Routes = [
     {
@@ -65,6 +66,11 @@ const routes: Routes = [
     {
         path: 'settings/general/configurations', component: ConfigurationsComponent,
         data: {title: 'SETTINGS.configurations', privileges: ['settings', 'configurations']},
+        canActivate: [LoginRequiredService, HasPrivilegeService]
+    },
+    {
+        path: 'settings/general/docservers', component: DocserversComponent,
+        data: {title: 'SETTINGS.docservers', privileges: ['settings', 'docservers']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     // Users
