@@ -196,4 +196,3 @@ def verify_vat_number():
 def get_totals(status):
     totals = verifier.get_totals(status)
     return make_response({'totals': totals[0]}, totals[1])
-
