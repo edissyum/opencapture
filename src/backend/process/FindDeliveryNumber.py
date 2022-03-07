@@ -21,7 +21,7 @@ from ..functions import search_custom_positions, search_by_positions
 
 
 class FindDeliveryNumber:
-    def __init__(self, ocr, files, log, locale, config, database, supplier, file, typo, text, nb_pages, custom_page, target='header'):
+    def __init__(self, ocr, files, log, locale, config, database, supplier, file, typo, text, nb_pages, custom_page, docservers, target='header'):
         self.vatNumber = ''
         self.Ocr = ocr
         self.text = text
@@ -29,6 +29,7 @@ class FindDeliveryNumber:
         self.Files = files
         self.locale = locale
         self.config = config
+        self.docservers = docservers
         self.supplier = supplier
         self.Database = database
         self.typo = typo
@@ -67,7 +68,7 @@ class FindDeliveryNumber:
 
             if position and position['delivery_number_position'] not in [False, 'NULL', '', None]:
                 data = {'position': position['delivery_number_position'], 'regex': None, 'target': 'full', 'page': position['delivery_number_page']}
-                text, position = search_custom_positions(data, self.Ocr, self.Files, self.locale, self.file, self.config)
+                text, position = search_custom_positions(data, self.Ocr, self.Files, self.locale, self.file, self.docservers)
 
                 try:
                     position = json.loads(position)

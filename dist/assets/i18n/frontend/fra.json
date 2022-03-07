@@ -115,6 +115,11 @@
 		"multi": "Multiple",
 		"simple": "Simple"
 	},
+	"DOCSERVERS": {
+		"docserver_updated": "Zone de stockage mise à jour avec succès",
+		"search_docserver": "Chercher une zone de stockage",
+		"update": "Mettre à jour la zone de stockage"
+	},
 	"DOCTYPE": {
 		"add": "Ajouter",
 		"add_doctype": "Ajouter un type de document",
@@ -257,6 +262,7 @@
 		"label": "Libellé",
 		"label_short": "Libellé technique",
 		"output_type": "Type de chaîne sortante",
+		"path": "Chemin",
 		"role": "Rôle",
 		"status": "Status",
 		"type": "Type de donnée",
@@ -435,6 +441,7 @@
 		"create_supplier": "Créer un fournisseur",
 		"custom_fields": "Champs personnalisés",
 		"customers_list": "Liste des clients",
+		"docservers": "Zones de stockage",
 		"document_type_splitter": "Type de documents",
 		"export_suppliers": "Exporter les fournisseurs",
 		"form_builder": "Création/modification de formulaire",
@@ -494,6 +501,7 @@
 		"autocomplete": "Identifiant d'autocomplétion",
 		"configurations": "Configurations",
 		"custom_fields": "Champs personnalisés",
+		"docservers": "Zones de stockage",
 		"document_separator": "Séparateur de document",
 		"document_type": "Type de documents",
 		"form_builder": "Création de formulaire",

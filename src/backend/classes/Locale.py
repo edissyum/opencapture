@@ -19,10 +19,10 @@ import json
 
 
 class Locale:
-    def __init__(self, config):
+    def __init__(self, config, docservers):
         self.locale = config.cfg['LOCALE']['locale']
         self.localeOCR = config.cfg['LOCALE']['localeocr']
-        self.date_path = config.cfg['LOCALE']['localepath']
+        self.date_path = docservers['LOCALE_PATH']
         self.arrayDate = []
         self.dateRegex = ''
         self.dueDateRegex = ''

@@ -22,13 +22,14 @@ from ..functions import search_by_positions, search_custom_positions
 
 
 class FindFooterRaw:
-    def __init__(self, ocr, log, locale, config, files, database, supplier, file, text, typo, target='footer', nb_pages=False):
+    def __init__(self, ocr, log, locale, config, files, database, supplier, file, text, typo, docservers, target='footer', nb_pages=False):
         self.date = ''
         self.Ocr = ocr
         self.text = text
         self.log = log
         self.locale = locale
         self.config = config
+        self.docservers = docservers
         self.Files = files
         self.Database = database
         self.supplier = supplier
@@ -124,7 +125,7 @@ class FindFooterRaw:
                 page = self.nbPage
 
             data = {'position': position[column + '_position'], 'regex': None, 'target': 'full', 'page': page}
-            text, position = search_custom_positions(data, self.Ocr, self.Files, self.locale, self.file, self.config)
+            text, position = search_custom_positions(data, self.Ocr, self.Files, self.locale, self.file, self.docservers)
             if text:
                 try:
                     # Try if the return string could be convert to float

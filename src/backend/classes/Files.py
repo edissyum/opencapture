@@ -170,7 +170,7 @@ class Files:
 
         return position
 
-    def get_pages(self, file, config):
+    def get_pages(self, docservers, file):
         try:
             with open(file, 'rb') as doc:
                 pdf = PyPDF4.PdfFileReader(doc)
@@ -178,7 +178,7 @@ class Files:
                     return pdf.getNumPages()
                 except ValueError as file_error:
                     self.log.error(file_error)
-                    shutil.move(file, config.cfg['GLOBAL']['errorpath'] + os.path.basename(file))
+                    shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
                     return 1
         except PyPDF4.utils.PdfReadError:
             pdf_read_rewrite = PyPDF4.PdfFileReader(file, strict=False)

@@ -65,7 +65,7 @@ def launch(args):
     database.connect()
     if args['file'] is not None:
         path = args['file']
-        if check_file(files, path, config, log) is not False:
+        if check_file(files, path, config, log, docservers) is not False:
             if 'input_id' in args and args['input_id']:
                 splitter_method = database.select({
                     'select': ['splitter_method_id'],
@@ -73,13 +73,13 @@ def launch(args):
                     'where': ['status <> %s', 'input_id = %s', 'module = %s'],
                     'data': ['DEL', args['input_id'], 'splitter']
                 })[0]
-                available_split_methods_path = config.cfg['SPLITTER']['methodspath'] + "/splitter_methods.json"
+                available_split_methods_path = docservers['SPLITTER_METHODS_PATH'] + "/splitter_methods.json"
                 if len(splitter_method) > 0 and os.path.isfile(available_split_methods_path):
                     with open(available_split_methods_path, encoding='UTF-8') as json_file:
                         available_split_methods = json.load(json_file)
                         for available_split_method in available_split_methods['methods']:
                             if available_split_method['id'] == splitter_method['splitter_method_id']:
-                                split_method = import_from(config, available_split_method['script'], available_split_method['method'])
+                                split_method = import_from(docservers, available_split_method['script'], available_split_method['method'])
                                 log.info('Split using method : {}'.format(available_split_method['id']))
                                 split_method(args, path, log, splitter, files, tmp_folder, config, docservers)
             else:
@@ -89,7 +89,7 @@ def launch(args):
     log.info('Process end after ' + timer(start, end) + '')
 
 
-def import_from(config, script, method):
+def import_from(docservers, script, method):
     """
     Import an attribute, function or class from a module.
     :param method: Method to call
@@ -97,7 +97,7 @@ def import_from(config, script, method):
     :type path: str
     """
     import sys
-    sys.path.append(config.cfg['SPLITTER']['methodspath'])
+    sys.path.append(docservers['SPLITTER_METHODS_PATH'])
     script = script.replace('.py', '')
     module = __import__(script, fromlist=method)
     return getattr(module, method)

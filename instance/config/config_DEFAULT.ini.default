@@ -1,10 +1,8 @@
 [GLOBAL]
-docserverPath           = /var/docservers/OpenCapture/
+projectpath             = /var/www/html/opencaptureforinvoices/
 fullPath                = ${GLOBAL:docserverPath}/verifier/images/full/
-errorPath               = ${GLOBAL:projectPath}/bin/data/error/
 logFile                 = ${GLOBAL:projectPath}/bin/data/log/OCforInvoices.log
 configMail              = ${GLOBAL:projectPath}/instance/config/mail.ini
-; Delta between date found and today date, in days. -1 to disable
 watcherConfig           = ${GLOBAL:projectPath}/instance/config/watcher.ini
 
 [AI-CLASSIFICATION]
@@ -20,7 +18,6 @@ confidenceMin    = 80
 [SPLITTER]
 docstart      = DOCSTART
 bundlestart   = BUNDLESTART
-methodspath   = ${GLOBAL:scriptspath}/splitter_methods/
 
 [DATABASE]
 postgresHost     = localhost
@@ -33,7 +30,6 @@ postgresPassword =
 ; fra or eng by default
 locale           = fra
 localeocr        = fra
-localepath       = ${GLOBAL:projectPath}/src/assets/locale/
 
 [REFERENCIAL]
 ; ODS or XLSX supported

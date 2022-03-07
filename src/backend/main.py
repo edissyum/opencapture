@@ -72,7 +72,7 @@ def create_classes_from_current_config():
         docservers[_d['docserver_id']] = _d['path']
 
     filename = docservers['TMP_PATH'] + '/tmp/'
-    locale = _Locale(config)
+    locale = _Locale(config, docservers)
     files = _Files(filename, log, locale, config)
     ocr = _PyTesseract(locale.localeOCR, log, config, docservers)
 
@@ -81,7 +81,6 @@ def create_classes_from_current_config():
 
 def create_classes(config_file):
     config = _Config(config_file)
-    locale = _Locale(config)
     config_mail = _Config(config.cfg['GLOBAL']['configmail'])
     smtp = _SMTP(
         config_mail.cfg['GLOBAL']['smtp_notif_on_error'],
@@ -111,6 +110,8 @@ def create_classes(config_file):
     })
     for _d in _ds:
         docservers[_d['docserver_id']] = _d['path']
+
+    locale = _Locale(config, docservers)
     ocr = _PyTesseract(locale.localeOCR, log, config, docservers)
 
     return config, locale, log, ocr, database, spreadsheet, smtp, docservers
@@ -160,7 +161,7 @@ def str2bool(value):
 OCforInvoices_worker = Kuyruk()
 
 
-@OCforInvoices_worker.task(queue='invoices')
+# @OCforInvoices_worker.task(queue='invoices')
 def launch(args):
     start = time.time()
 
@@ -189,7 +190,7 @@ def launch(args):
             splitter_method = input_settings[0]['splitter_method_id']
             remove_blank_pages = input_settings[0]['remove_blank_pages']
 
-    separator_qr = _SeparatorQR(log, config, tmp_folder, 'verifier', files, remove_blank_pages)
+    separator_qr = _SeparatorQR(log, config, tmp_folder, 'verifier', files, remove_blank_pages, docservers)
     mail_class = None
 
     if args.get('isMail') is not None and args['isMail'] is True:

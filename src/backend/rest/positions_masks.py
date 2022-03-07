@@ -147,8 +147,8 @@ def get_image_from_pdf(positions_mask_id):
         tmp_filename = filename.replace('.pdf', '-001.jpg')
         _Files.save_img_with_wand(filename_after_upload, docserver_path + filename.replace('.pdf', '-%03d.jpg'))
         img_wdith = str(_Files.get_width(docserver_path + tmp_filename))
-        file_content = verifier.get_file_content(docserver_path, tmp_filename, 'image/jpeg')
-        nb_pages = _Files.get_pages(filename_after_upload, _config)
+        file_content = verifier.get_file_content('positions_masks', tmp_filename, 'image/jpeg')
+        nb_pages = _Files.get_pages(filename_after_upload, _docservers['ERROR_PATH'])
 
         positions_masks.update_positions_mask(positions_mask_id, {
             'filename': filename.replace('.pdf', '-001.jpg'),

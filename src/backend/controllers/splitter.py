@@ -553,8 +553,8 @@ def validate(args):
 
 def get_split_methods():
     _vars = create_classes_from_current_config()
-    _config = _vars[1]
-    split_methods = _Splitter.get_split_methods(_config)
+    _docservers = _vars[9]
+    split_methods = _Splitter.get_split_methods(_docservers)
     if len(split_methods) > 0:
         return split_methods, 200
     return split_methods, 401

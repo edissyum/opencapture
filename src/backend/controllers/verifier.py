@@ -123,7 +123,7 @@ def retrieve_invoices(args):
     if total_invoices not in [0, []]:
         invoices_list = verifier.get_invoices(args)
         for invoice in invoices_list:
-            thumb = get_file_content(_docservers['VERIFIER_IMAGE_FULL'], invoice['full_jpg_filename'], 'image/jpeg',
+            thumb = get_file_content('full', invoice['full_jpg_filename'], 'image/jpeg',
                                      compress=True)
             invoice['thumb'] = str(base64.b64encode(thumb.get_data()).decode('UTF-8'))
             if invoice['supplier_id']:
@@ -579,11 +579,21 @@ def ocr_on_the_fly(file_name, selection, thumb_size, positions_masks):
         return text
 
 
-def get_file_content(path, filename, mime_type, compress=False):
+def get_file_content(file_type, filename, mime_type, compress=False):
     _vars = create_classes_from_current_config()
     _cfg = _vars[1].cfg
     _docservers = _vars[9]
     content = False
+    path = ''
+
+    if file_type == 'thumb':
+        path = _docservers['VERIFIER_THUMB']
+    elif file_type == 'full':
+        path = _docservers['VERIFIER_IMAGE_FULL']
+    elif file_type == 'positions_masks':
+        path = _docservers['VERIFIER_POSITIONS_MASKS']
+    elif file_type == 'referential_supplier':
+        path = _cfg.cfg['REFERENCIAL']['referencialsupplierdocumentpath']
 
     if path and filename:
         full_path = path + '/' + filename

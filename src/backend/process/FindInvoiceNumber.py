@@ -21,7 +21,7 @@ from ..functions import search_by_positions, search_custom_positions
 
 
 class FindInvoiceNumber:
-    def __init__(self, ocr, files, log, locale, config, database, supplier, file, typo, text, nb_pages, custom_page, footer_text):
+    def __init__(self, ocr, files, log, locale, config, database, supplier, file, typo, text, nb_pages, custom_page, footer_text, docservers):
         self.vatNumber = ''
         self.Ocr = ocr
         self.text = text
@@ -30,6 +30,7 @@ class FindInvoiceNumber:
         self.Files = files
         self.locale = locale
         self.config = config
+        self.docservers = docservers
         self.supplier = supplier
         self.Database = database
         self.typo = typo
@@ -68,7 +69,7 @@ class FindInvoiceNumber:
 
             if position and position['invoice_number_position'] not in [False, 'NULL', '', None]:
                 data = {'position': position['invoice_number_position'], 'regex': None, 'target': 'full', 'page': position['invoice_number_page']}
-                text, position = search_custom_positions(data, self.Ocr, self.Files, self.locale, self.file, self.config)
+                text, position = search_custom_positions(data, self.Ocr, self.Files, self.locale, self.file, self.docservers)
 
                 try:
                     position = json.loads(position)

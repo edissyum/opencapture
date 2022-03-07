@@ -22,12 +22,13 @@ from ..functions import search_by_positions, search_custom_positions
 
 
 class FindDate:
-    def __init__(self, text, log, locale, config, files, ocr, supplier, typo, nb_pages, db, file):
+    def __init__(self, text, log, locale, config, files, ocr, supplier, typo, nb_pages, db, file, docservers):
         self.date = ''
         self.text = text
         self.log = log
         self.locale = locale
         self.config = config
+        self.docservers = docservers
         self.Files = files
         self.Ocr = ocr
         self.supplier = supplier
@@ -116,7 +117,7 @@ class FindDate:
             })[0]
             if position and position['invoice_due_date_position'] not in [False, 'NULL', '', None]:
                 data = {'position': position['invoice_due_date_position'], 'regex': None, 'target': 'full', 'page': position['invoice_due_date_page']}
-                _text, _position = search_custom_positions(data, self.Ocr, self.Files, self.locale, self.file, self.config)
+                _text, _position = search_custom_positions(data, self.Ocr, self.Files, self.locale, self.file, self.docservers)
                 try:
                     _position = json.loads(_position)
                 except TypeError:
@@ -149,7 +150,7 @@ class FindDate:
         if self.supplier:
             if position and position['invoice_date_position'] not in [False, 'NULL', '', None]:
                 data = {'position': position['invoice_date_position'], 'regex': None, 'target': 'full', 'page': position['invoice_date_page']}
-                text, position = search_custom_positions(data, self.Ocr, self.Files, self.locale, self.file, self.config)
+                text, position = search_custom_positions(data, self.Ocr, self.Files, self.locale, self.file, self.docservers)
                 if text != '':
                     res = self.format_date(text, position, True)
                     if res:
