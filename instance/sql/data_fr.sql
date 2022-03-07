@@ -17,14 +17,19 @@ INSERT INTO "configurations" ("label", "data") VALUES ('allowAutomaticValidation
 -- CRÉATION DES DOCSERVERS
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('PROJECT_PATH', 'Chemin vers l''instance d''Open-Capture For Invoices', '/var/www/html/opencaptureforinvoices/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('ERROR_PATH', 'Chemin vers le dossier des batches en erreur', '/var/www/html/opencaptureforinvoices/bin/data/error/');
-INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('LOG_PATH', 'Chemin vers le dossier contenant le log principal d''Open-Capture For Invoices', '/var/www/html/opencaptureforinvoices/bin/data/log/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('TMP_PATH', 'Chemin vers le dossier temporaires utilisé lors du traitement des documents', '/var/www/html/opencaptureforinvoices/bin/data/tmp/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SCRIPTS_PATH', 'Chemin vers le dossier contenant les différents scripts', '/var/www/html/opencaptureforinvoices/bin/scripts/');
-INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_FULL_IMAGE', '[VERIFIER] Chemin pour le stockage des images', '/var/docservers/OpenCapture/verifier/images/full/');
-INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_THUMB_IMAGE', '[VERIFIER] Chemin pour le stockage des miniatures', '/var/docservers/OpenCapture/verifier/images/thumbs/');
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('CONFIG_PATH', 'Chemin vers le dossier contenant les différents fichiers de configurations', '/var/www/html/opencaptureforinvoices/instance/config/');
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('DOCSERVERS_PATH', 'Chemin vers la zone de stockage', '/var/docservers/OpenCapture/');
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SEPARATOR_QR_TMP', '[SÉPARATION PAR QR CODE] Chemin vers le dossier temporaire pour la séparation par QR Code', '/tmp/');
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SEPARATOR_OUTPUT_PDF', '[SÉPARATION PAR QR CODE] Chemin vers le dossier de sortie des PDF', '/var/www/html/opencaptureforinvoices//bin/data/exported_pdf/');
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SEPARATOR_OUTPUT_PDFA', '[SÉPARATION PAR QR CODE] Chemin vers le dossier de sortie des PDF/A', '/var/www/html/opencaptureforinvoices//bin/data/exported_pdfa/');
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_IMAGE_FULL', '[VERIFIER] Chemin pour le stockage des images', '/var/docservers/OpenCapture/verifier/images/full/');
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_THUMB', '[VERIFIER] Chemin pour le stockage des miniatures', '/var/docservers/OpenCapture/verifier/images/thumbs/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_POSITIONS_MASKS', '[VERIFIER] Chemin pour le stockage des images nécessaire aux masques de positionnement', '/var/docservers/OpenCapture/verifier/images/positions_masks/');
-INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_BACH_PATH', '[SPLITTER] Chemin vers le dossier de stockage des dossiers de batch après traitement', '/var/docservers/OpenCapture/splitter/batches/');
-INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_OUTPUT_PATH', '[SPLITTER] Chemin vers le dossier de sortie des PDF après traitement', '/var/docservers/OpenCapture/splitter/separated_pdf/');
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_BATCHES', '[SPLITTER] Chemin vers le dossier de stockage des dossiers de batch après traitement', '/var/docservers/OpenCapture/splitter/batches/');
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_OUTPUT', '[SPLITTER] Chemin vers le dossier de sortie des PDF après traitement', '/var/docservers/OpenCapture/splitter/separated_pdf/');
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_ORIGINAL_PDF', '[SPLITTER] Chemin vers le dossier contenant les PDF originaux', '/var/docservers/OpenCapture/splitter/original_pdf/');
 
 -- CRÉATION DES CHAINES SORTANTES DU MODULE VERIFIER
 INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "module", "data") VALUES (1, 'export_xml', 'Export XML', 'verifier', '{

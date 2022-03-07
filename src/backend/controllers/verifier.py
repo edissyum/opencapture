@@ -62,6 +62,8 @@ def get_invoice_by_id(invoice_id):
 def retrieve_invoices(args):
     _vars = create_classes_from_current_config()
     _cfg = _vars[1]
+    _docservers = _vars[9]
+
     if 'where' not in args:
         args['where'] = []
     if 'data' not in args:
@@ -121,7 +123,7 @@ def retrieve_invoices(args):
     if total_invoices not in [0, []]:
         invoices_list = verifier.get_invoices(args)
         for invoice in invoices_list:
-            thumb = get_file_content(_cfg.cfg['GLOBAL']['fullpath'], invoice['full_jpg_filename'], 'image/jpeg',
+            thumb = get_file_content(_docservers['VERIFIER_IMAGE_FULL'], invoice['full_jpg_filename'], 'image/jpeg',
                                      compress=True)
             invoice['thumb'] = str(base64.b64encode(thumb.get_data()).decode('UTF-8'))
             if invoice['supplier_id']:
@@ -561,11 +563,12 @@ def ocr_on_the_fly(file_name, selection, thumb_size, positions_masks):
     _cfg = _vars[1].cfg
     _files = _vars[3]
     _Ocr = _vars[4]
+    _docservers = _vars[9]
 
-    path = _cfg['GLOBAL']['fullpath'] + '/' + file_name
+    path = _docservers['VERIFIER_IMAGE_FULL'] + '/' + file_name
 
     if positions_masks:
-        path = _cfg['GLOBAL']['positionsmaskspath'] + '/' + file_name
+        path = _docservers['VERIFIER_POSITIONS_MASKS'] + '/' + file_name
 
     text = _files.ocr_on_fly(path, selection, _Ocr, thumb_size)
     if text:
@@ -579,13 +582,14 @@ def ocr_on_the_fly(file_name, selection, thumb_size, positions_masks):
 def get_file_content(path, filename, mime_type, compress=False):
     _vars = create_classes_from_current_config()
     _cfg = _vars[1].cfg
+    _docservers = _vars[9]
     content = False
 
     if path and filename:
         full_path = path + '/' + filename
         if os.path.isfile(full_path):
             if compress and mime_type == 'image/jpeg':
-                thumb_path = _cfg['GLOBAL']['thumbpath'] + '/' + filename
+                thumb_path = _docservers['VERIFIER_THUMB'] + '/' + filename
                 if not os.path.isfile(thumb_path):
                     image = Image.open(full_path)
                     image.thumbnail((1920, 1080))
@@ -596,9 +600,9 @@ def get_file_content(path, filename, mime_type, compress=False):
 
     if not content:
         if mime_type == 'image/jpeg':
-            content = open(_cfg['GLOBAL']['projectpath'] + '/dist/assets/not_found/document_not_found.jpg', 'rb').read()
+            content = open(_docservers['PROJECT_PATH'] + '/dist/assets/not_found/document_not_found.jpg', 'rb').read()
         else:
-            content = open(_cfg['GLOBAL']['projectpath'] + '/dist/assets/not_found/document_not_found.pdf', 'rb').read()
+            content = open(_docservers['PROJECT_PATH'] + '/dist/assets/not_found/document_not_found.pdf', 'rb').read()
 
     return Response(content, mimetype=mime_type)
 

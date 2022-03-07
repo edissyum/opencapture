@@ -55,19 +55,28 @@ def create_classes_from_current_config():
         config_mail.cfg['GLOBAL']['smtp_from_mail'],
     )
     log = _Log(config.cfg['GLOBAL']['logfile'], smtp)
-    spreadsheet = _Spreadsheet(log, config)
     db_user = config.cfg['DATABASE']['postgresuser']
     db_pwd = config.cfg['DATABASE']['postgrespassword']
     db_name = config.cfg['DATABASE']['postgresdatabase']
     db_host = config.cfg['DATABASE']['postgreshost']
     db_port = config.cfg['DATABASE']['postgresport']
     database = _Database(log, db_name, db_user, db_pwd, db_host, db_port)
-    filename = config.cfg['GLOBAL']['tmppath'] + 'tmp'
+    spreadsheet = _Spreadsheet(log, config)
+
+    docservers = {}
+    _ds = database.select({
+        'select': ['*'],
+        'table': ['docservers'],
+    })
+    for _d in _ds:
+        docservers[_d['docserver_id']] = _d['path']
+
+    filename = docservers['TMP_PATH'] + '/tmp/'
     locale = _Locale(config)
     files = _Files(filename, log, locale, config)
+    ocr = _PyTesseract(locale.localeOCR, log, config, docservers)
 
-    ocr = _PyTesseract(locale.localeOCR, log, config)
-    return database, config, locale, files, ocr, log, config_file, spreadsheet, smtp
+    return database, config, locale, files, ocr, log, config_file, spreadsheet, smtp, docservers
 
 
 def create_classes(config_file):
@@ -89,18 +98,26 @@ def create_classes(config_file):
     )
     log = _Log(config.cfg['GLOBAL']['logfile'], smtp)
     spreadsheet = _Spreadsheet(log, config)
-    ocr = _PyTesseract(locale.localeOCR, log, config)
     db_user = config.cfg['DATABASE']['postgresuser']
     db_pwd = config.cfg['DATABASE']['postgrespassword']
     db_name = config.cfg['DATABASE']['postgresdatabase']
     db_host = config.cfg['DATABASE']['postgreshost']
     db_port = config.cfg['DATABASE']['postgresport']
     database = _Database(log, db_name, db_user, db_pwd, db_host, db_port)
-    return config, locale, log, ocr, database, spreadsheet, smtp
+    docservers = {}
+    _ds = database.select({
+        'select': ['*'],
+        'table': ['docservers'],
+    })
+    for _d in _ds:
+        docservers[_d['docserver_id']] = _d['path']
+    ocr = _PyTesseract(locale.localeOCR, log, config, docservers)
+
+    return config, locale, log, ocr, database, spreadsheet, smtp, docservers
 
 
-def check_file(files, path, config, log):
-    if not files.check_file_integrity(path, config):
+def check_file(files, path, config, log, docservers):
+    if not files.check_file_integrity(path, config, docservers):
         log.error('The integrity of file could\'nt be verified : ' + str(path))
         return False
     return True
@@ -154,8 +171,8 @@ def launch(args):
     if not os.path.exists(config_file):
         sys.exit('config file couldn\'t be found')
 
-    config, locale, log, ocr, database, _, smtp = create_classes(config_file)
-    tmp_folder = tempfile.mkdtemp(dir=config.cfg['GLOBAL']['tmppath'])
+    config, locale, log, ocr, database, _, smtp, docservers = create_classes(config_file)
+    tmp_folder = tempfile.mkdtemp(dir=docservers['TMP_PATH'])
     filename = tempfile.NamedTemporaryFile(dir=tmp_folder).name
     files = _Files(filename, log, locale, config)
 
@@ -198,7 +215,7 @@ def launch(args):
         log.filename = os.path.basename(path)
         typo = ''
         if separator_qr.enabled:
-            if check_file(files, path, config, log) is not False:
+            if check_file(files, path, config, log, docservers) is not False:
                 separator_qr.run(path)
             path = separator_qr.output_dir_pdfa if str2bool(separator_qr.convert_to_pdfa) is True else separator_qr.output_dir
 
@@ -206,10 +223,10 @@ def launch(args):
                 # if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
                 #     typo = get_typo(config, path + file, log)
 
-                if check_file(files, path + file, config, log) is not False:
-                    res = OCForInvoices_process.process(args, path + file, log, config, files, ocr, locale, database, typo)
+                if check_file(files, path + file, config, log, docservers) is not False:
+                    res = OCForInvoices_process.process(args, path + file, log, config, files, ocr, locale, database, typo, docservers)
                     if not res:
-                        mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'], args['msg'], config)
+                        mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'], args['msg'], config, docservers)
                         log.error('Error while processing e-mail', False)
         elif splitter_method == 'separate_by_document':
             list_of_files = separator_qr.split_document_every_two_pages(path)
@@ -217,20 +234,20 @@ def launch(args):
                 # if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
                 #     typo = get_typo(config, file, log)
 
-                if check_file(files, file, config, log) is not False:
-                    res = OCForInvoices_process.process(args, file, log, config, files, ocr, locale, database, typo)
+                if check_file(files, file, config, log, docservers) is not False:
+                    res = OCForInvoices_process.process(args, file, log, config, files, ocr, locale, database, typo, docservers)
                     if not res:
-                        mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'], args['msg'], config)
+                        mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'], args['msg'], config, docservers)
                         log.error('Error while processing e-mail', False)
             os.remove(path)
         else:
             # if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
             #     typo = get_typo(config, path, log)
 
-            if check_file(files, path, config, log) is not False:
-                res = OCForInvoices_process.process(args, path, log, config, files, ocr, locale, database, typo)
+            if check_file(files, path, config, log, docservers) is not False:
+                res = OCForInvoices_process.process(args, path, log, config, files, ocr, locale, database, typo, docservers)
                 if not res:
-                    mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'], args['msg'], config)
+                    mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'], args['msg'], config, docservers)
                     log.error('Error while processing e-mail', False)
 
     recursive_delete(tmp_folder, log)

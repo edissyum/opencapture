@@ -1,15 +1,8 @@
 [GLOBAL]
-; Use ${GLOBAL:projectPath} to specify once for all the path of the project
-projectPath             = /var/www/html/opencaptureforinvoices/
-tmpPath                 = ${GLOBAL:projectPath}/bin/data/tmp/
-scriptsPath             = ${GLOBAL:projectPath}/bin/scripts/
 docserverPath           = /var/docservers/OpenCapture/
 fullPath                = ${GLOBAL:docserverPath}/verifier/images/full/
-thumbPath               = ${GLOBAL:docserverPath}/verifier/images/thumbs/
-positionsMasksPath      = ${GLOBAL:docserverPath}/verifier/images/positions_masks/
 errorPath               = ${GLOBAL:projectPath}/bin/data/error/
 logFile                 = ${GLOBAL:projectPath}/bin/data/log/OCforInvoices.log
-ocrErrorPath            = ${GLOBAL:projectPath}/instance/config/OCR_ERRORS.xml
 configMail              = ${GLOBAL:projectPath}/instance/config/mail.ini
 ; Delta between date found and today date, in days. -1 to disable
 watcherConfig           = ${GLOBAL:projectPath}/instance/config/watcher.ini
@@ -25,8 +18,6 @@ predictImagePath = ${AI-CLASSIFICATION:iaPath}/images/predict-images/
 confidenceMin    = 80
 
 [SPLITTER]
-batchpath     = ${GLOBAL:docserverpath}/splitter/batches/
-pdfoutputpath = ${GLOBAL:docserverpath}/splitter/separated_pdf/
 docstart      = DOCSTART
 bundlestart   = BUNDLESTART
 methodspath   = ${GLOBAL:scriptspath}/splitter_methods/
@@ -56,8 +47,6 @@ enabled = False
 ; True or False, python way
 enabled        = False
 exportpdfa     = False
-outputpdfpath  = ${GLOBAL:projectPath}/bin/data/exported_pdf/
-outputpdfapath = ${GLOBAL:projectPath}/bin/data/exported_pdfa/
 tmppath        = /tmp/
 ; _ or - for exemple
 divider        = _

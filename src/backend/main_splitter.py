@@ -39,8 +39,8 @@ def launch(args):
     if not os.path.exists(config_file):
         sys.exit('Config file couldn\'t be found')
 
-    config, locale, log, ocr, database, spreadsheet, smtp = create_classes(config_file)
-    tmp_folder = tempfile.mkdtemp(dir=config.cfg['SPLITTER']['batchpath']) + '/'
+    config, locale, log, _, database, _, smtp, docservers = create_classes(config_file)
+    tmp_folder = tempfile.mkdtemp(dir=docservers['SPLITTER_BATCHES']) + '/'
     filename = tempfile.NamedTemporaryFile(dir=tmp_folder).name
     files = _Files(filename, log, locale, config)
 
@@ -55,8 +55,8 @@ def launch(args):
         if input_settings:
             remove_blank_pages = input_settings[0]['remove_blank_pages']
 
-    separator_qr = _SeparatorQR(log, config, tmp_folder, 'splitter', files, remove_blank_pages)
-    splitter = _Splitter(config, database, locale, separator_qr, log)
+    separator_qr = _SeparatorQR(log, config, tmp_folder, 'splitter', files, remove_blank_pages, docservers)
+    splitter = _Splitter(config, database, locale, separator_qr, log, docservers)
 
     if args.get('isMail') is not None and args['isMail'] is True:
         log = _Log((args['log']), smtp)
@@ -81,7 +81,7 @@ def launch(args):
                             if available_split_method['id'] == splitter_method['splitter_method_id']:
                                 split_method = import_from(config, available_split_method['script'], available_split_method['method'])
                                 log.info('Split using method : {}'.format(available_split_method['id']))
-                                split_method(args, path, log, splitter, files, tmp_folder, config)
+                                split_method(args, path, log, splitter, files, tmp_folder, config, docservers)
             else:
                 log.error("The input_id doesn't exists in database")
     database.conn.close()

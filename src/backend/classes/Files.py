@@ -232,7 +232,7 @@ class Files:
         return sorted_file
 
     @staticmethod
-    def check_file_integrity(file, config):
+    def check_file_integrity(file, config, docservers):
         is_full = False
         while not is_full:
             with open(file, 'rb') as doc:
@@ -244,7 +244,7 @@ class Files:
                         try:
                             PyPDF4.PdfFileReader(doc)
                         except PyPDF4.utils.PdfReadError:
-                            shutil.move(file, config.cfg['GLOBAL']['errorpath'] + os.path.basename(file))
+                            shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
                             return False
                         else:
                             return True
@@ -381,7 +381,7 @@ class Files:
         return improved_img
 
     @staticmethod
-    def move_to_docservers(cfg, file, module='verifier'):
+    def move_to_docservers(cfg, docservers, file, module='verifier'):
         now = datetime.datetime.now()
         year = str(now.year)
         day = str('%02d' % now.day)
@@ -389,7 +389,7 @@ class Files:
         hour = str('%02d' % now.hour)
         minute = str('%02d' % now.minute)
         seconds = str('%02d' % now.second)
-        docserver_path = cfg['GLOBAL']['docserverpath'] + '/' + module + '/original_pdf'
+        docserver_path = docservers['DOCSERVERS_PATH'] + '/' + module + '/original_pdf'
         # Check if docserver folder exists, if not, create it
         if not os.path.exists(docserver_path):
             os.mkdir(docserver_path)

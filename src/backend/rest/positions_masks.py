@@ -135,9 +135,10 @@ def get_image_from_pdf(positions_mask_id):
     _vars = create_classes_from_current_config()
     _config = _vars[1]
     _Files = _vars[3]
+    _docservers = _vars[9]
     file = request.files
     path = current_app.config['UPLOAD_FOLDER']
-    docserver_path = _config.cfg['GLOBAL']['positionsmaskspath'] + '/'
+    docserver_path = _docservers['VERIFIER_POSITIONS_MASKS'] + '/'
     file_content = tmp_filename = img_wdith = nb_pages = None
 
     for filename in file:

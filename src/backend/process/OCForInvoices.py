@@ -24,7 +24,7 @@ from src.backend.import_process import FindDate, FindFooter, FindInvoiceNumber, 
     FindOrderNumber, FindDeliveryNumber, FindFooterRaw
 
 
-def insert(args, files, config, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier, status, nb_pages):
+def insert(args, files, config, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier, status, nb_pages, docservers):
     try:
         filename = os.path.splitext(files.custom_file_name)
         improved_img = filename[0] + '_improved' + filename[1]
@@ -32,7 +32,7 @@ def insert(args, files, config, database, datas, positions, pages, full_jpg_file
         os.remove(improved_img)
     except FileNotFoundError:
         pass
-    path = config.cfg['GLOBAL']['fullpath'] + '/' + full_jpg_filename.replace('-%03d', '-001')
+    path = docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename.replace('-%03d', '-001')
 
     invoice_data = {
         'filename': os.path.basename(file),
@@ -136,7 +136,7 @@ def update_typo_database(database, vat_number, typo, log, config):
     })
 
 
-def process(args, file, log, config, files, ocr, locale, database, typo):
+def process(args, file, log, config, files, ocr, locale, database, typo, docservers):
     log.info('Processing file : ' + file)
 
     configurations = {}
@@ -155,7 +155,7 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
     files.resolution = int(configurations['resolution'])
     files.compression_quality = int(configurations['compressionQuality'])
 
-    nb_pages = files.get_pages(file, config)
+    nb_pages = files.get_pages(file, config, docservers)
     splitted_file = os.path.basename(file).split('_')
     if splitted_file[0] == 'SPLITTER':
         original_file = os.path.basename(file).split('_')
@@ -382,19 +382,19 @@ def process(args, file, log, config, files, ocr, locale, database, typo):
 
     file_name = str(uuid.uuid4())
     full_jpg_filename = 'full_' + file_name + '-%03d.jpg'
-    file = files.move_to_docservers(config.cfg, file)
+    file = files.move_to_docservers(config.cfg, docservers, file)
     # Convert all the pages to JPG (used to full web interface)
-    files.save_img_with_wand(file, config.cfg['GLOBAL']['fullpath'] + '/' + full_jpg_filename)
+    files.save_img_with_wand(file, docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename)
 
     # If all informations are found, do not send it to GED
     if supplier and supplier[2]['skip_auto_validate'] == 'False' and date and invoice_number \
             and footer and configurations['allowAutomaticValidation'] == 'True':
         log.info('All the usefull informations are found. Export the XML and end process')
         insert(args, files, config, database, datas, positions, pages, full_jpg_filename, file, original_file,
-               supplier, 'END', nb_pages)
+               supplier, 'END', nb_pages, docservers)
     else:
         insert(args, files, config, database, datas, positions, pages, full_jpg_filename, file, original_file,
-               supplier, 'NEW', nb_pages)
+               supplier, 'NEW', nb_pages, docservers)
 
         if supplier and supplier[2]['skip_auto_validate'] == 'True':
             log.info('Skip automatic validation for this supplier this time')

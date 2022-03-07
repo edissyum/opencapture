@@ -23,11 +23,12 @@ from src.backend.classes.Files import Files
 
 
 class Splitter:
-    def __init__(self, config, database, locale, separator_qr, log):
+    def __init__(self, config, database, locale, separator_qr, log, docservers):
         self.log = log
         self.db = database
         self.qr_pages = []
         self.config = config
+        self.docservers = docservers
         self.locale = locale
         self.result_batches = []
         self.separator_qr = separator_qr
@@ -69,7 +70,6 @@ class Splitter:
                 is_previous_code_qr = False
 
     def save_documents(self, batch_folder, file, input_id, original_filename):
-        docserver = self.config.cfg['GLOBAL']['docserverpath'] + '/splitter/original_pdf/'
         for index, batch in enumerate(self.result_batches):
             batch_name = os.path.basename(os.path.normpath(batch_folder))
             input_settings = self.db.select({
@@ -82,7 +82,7 @@ class Splitter:
             args = {
                 'table': 'splitter_batches',
                 'columns': {
-                    'file_path': file.replace(docserver, ''),
+                    'file_path': file.replace(self.docservers['SPLITTER_ORIGINAL_PDF'], ''),
                     'file_name': os.path.basename(original_filename),
                     'batch_folder': batch_name,
                     'first_page': batch[0]['path'],
