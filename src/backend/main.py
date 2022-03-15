@@ -61,7 +61,6 @@ def create_classes_from_current_config():
     db_host = config.cfg['DATABASE']['postgreshost']
     db_port = config.cfg['DATABASE']['postgresport']
     database = _Database(log, db_name, db_user, db_pwd, db_host, db_port)
-    spreadsheet = _Spreadsheet(log, config)
 
     docservers = {}
     _ds = database.select({
@@ -71,6 +70,7 @@ def create_classes_from_current_config():
     for _d in _ds:
         docservers[_d['docserver_id']] = _d['path']
 
+    spreadsheet = _Spreadsheet(log, docservers, config)
     filename = docservers['TMP_PATH'] + '/tmp/'
     locale = _Locale(config, docservers)
     files = _Files(filename, log, locale, config)
@@ -96,7 +96,6 @@ def create_classes(config_file):
         config_mail.cfg['GLOBAL']['smtp_from_mail'],
     )
     log = _Log(config.cfg['GLOBAL']['logfile'], smtp)
-    spreadsheet = _Spreadsheet(log, config)
     db_user = config.cfg['DATABASE']['postgresuser']
     db_pwd = config.cfg['DATABASE']['postgrespassword']
     db_name = config.cfg['DATABASE']['postgresdatabase']
@@ -111,6 +110,7 @@ def create_classes(config_file):
     for _d in _ds:
         docservers[_d['docserver_id']] = _d['path']
 
+    spreadsheet = _Spreadsheet(log, docservers, config)
     locale = _Locale(config, docservers)
     ocr = _PyTesseract(locale.localeOCR, log, config, docservers)
 
@@ -161,7 +161,7 @@ def str2bool(value):
 OCforInvoices_worker = Kuyruk()
 
 
-# @OCforInvoices_worker.task(queue='invoices')
+@OCforInvoices_worker.task(queue='invoices')
 def launch(args):
     start = time.time()
 

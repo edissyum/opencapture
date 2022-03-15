@@ -22,6 +22,7 @@ INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('TMP_PA
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SCRIPTS_PATH', 'Chemin vers le dossier contenant les différents scripts', '/var/www/html/opencaptureforinvoices/bin/scripts/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('CONFIG_PATH', 'Chemin vers le dossier contenant les différents fichiers de configurations', '/var/www/html/opencaptureforinvoices/instance/config/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('DOCSERVERS_PATH', 'Chemin vers la zone de stockage', '/var/docservers/OpenCapture/');
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('REFERENTIALS_PATH', 'Chemin vers le dossier contenant les fichiers de référentiel', '/var/www/html/opencaptureforinvoices/instance/referencial/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SEPARATOR_QR_TMP', '[SÉPARATION PAR QR CODE] Chemin vers le dossier temporaire pour la séparation par QR Code', '/tmp/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SEPARATOR_OUTPUT_PDF', '[SÉPARATION PAR QR CODE] Chemin vers le dossier de sortie des PDF', '/var/www/html/opencaptureforinvoices//bin/data/exported_pdf/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SEPARATOR_OUTPUT_PDFA', '[SÉPARATION PAR QR CODE] Chemin vers le dossier de sortie des PDF/A', '/var/www/html/opencaptureforinvoices//bin/data/exported_pdfa/');

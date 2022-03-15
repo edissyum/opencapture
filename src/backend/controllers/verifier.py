@@ -593,7 +593,7 @@ def get_file_content(file_type, filename, mime_type, compress=False):
     elif file_type == 'positions_masks':
         path = _docservers['VERIFIER_POSITIONS_MASKS']
     elif file_type == 'referential_supplier':
-        path = _cfg.cfg['REFERENCIAL']['referencialsupplierdocumentpath']
+        path = _docservers['REFERENTIALS_PATH']
 
     if path and filename:
         full_path = path + '/' + filename

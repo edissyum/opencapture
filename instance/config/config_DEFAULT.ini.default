@@ -1,7 +1,7 @@
 [GLOBAL]
-logFile          = /var/www/html/opencaptureforinvoices/bin/data/log/OCforInvoices.log
 configMail       = /var/www/html/opencaptureforinvoices/instance/config/mail.ini
 watcherConfig    = /var/www/html/opencaptureforinvoices/instance/config/watcher.ini
+logFile          = /var/www/html/opencaptureforinvoices/bin/data/log/OCforInvoices.log
 
 [AI-CLASSIFICATION]
 ; True or False, python way
@@ -31,8 +31,9 @@ localeocr        = fra
 
 [REFERENCIAL]
 ; ODS or XLSX supported
-referencialSupplierDocumentPath = /var/www/html/opencaptureforinvoices/instance/referencial/default_referencial_supplier.ods
-referencialSupplierIndexpath    = /var/www/html/opencaptureforinvoices/instance/referencial/default_referencial_supplier_index.json
+; Path is set up in docservers table (REFERENTIALS_PATH)
+referencialSupplierDocument = default_referencial_supplier.ods
+referencialSupplierIndex    = default_referencial_supplier_index.json
 
 [SEPARATE-BY-DOCUMENT]
 enabled         = False
