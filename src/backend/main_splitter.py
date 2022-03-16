@@ -15,14 +15,13 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-import json
 import os
 import sys
 import time
+import json
 import tempfile
-from symbol import import_from
-
 from kuyruk import Kuyruk
+from symbol import import_from
 from src.backend.main import timer, check_file, create_classes
 from src.backend.import_classes import _Files, _Config, _Splitter, _SeparatorQR, _Log
 
