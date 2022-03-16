@@ -389,7 +389,7 @@ class Files:
         hour = str('%02d' % now.hour)
         minute = str('%02d' % now.minute)
         seconds = str('%02d' % now.second)
-        docserver_path = docservers['DOCSERVERS_PATH'] + '/' + module + '/original_pdf'
+        docserver_path = docservers['DOCSERVERS_PATH'] + '/' + module + '/original_pdf/'
         # Check if docserver folder exists, if not, create it
         if not os.path.exists(docserver_path):
             os.mkdir(docserver_path)

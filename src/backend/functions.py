@@ -69,7 +69,7 @@ def search_custom_positions(data, ocr, files, locale, file, docservers):
             else:
                 target_file = files.jpg_name
         elif data['page'] != '1':
-            nb_pages = files.get_pages(file, docservers)
+            nb_pages = files.get_pages(docservers, file)
             if str(nb_pages) == str(data['page']):
                 if target == 'footer':
                     target_file = files.jpg_name_last_footer

@@ -146,7 +146,7 @@ def process(args, file, log, config, files, ocr, locale, database, typo, docserv
     files.resolution = int(configurations['resolution'])
     files.compression_quality = int(configurations['compressionQuality'])
 
-    nb_pages = files.get_pages(file, docservers)
+    nb_pages = files.get_pages(docservers, file)
     splitted_file = os.path.basename(file).split('_')
     if splitted_file[0] == 'SPLITTER':
         original_file = os.path.basename(file).split('_')

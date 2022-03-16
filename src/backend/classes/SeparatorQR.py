@@ -245,7 +245,7 @@ class SeparatorQR:
             output_pdf.write(stream)
 
     @staticmethod
-    def generate_separator(config, db_config, docservers, qr_code_value, doctype_label, separator_type_label):
+    def generate_separator(db_config, docservers, qr_code_value, doctype_label, separator_type_label):
         """
         Generate separator file
         :param qr_code_value: QR code value
@@ -299,13 +299,13 @@ class SeparatorQR:
              'text': 'https://edissyum.com', 'priority': 2, },
         ]
 
-        " Instantiating the template and defining the HEADER"
+        # Instantiating the template and defining the HEADER
         f = Template(format="A4", elements=elements,
                      title="Separator file")
         f.add_page()
 
-        " We FILL some of the fields of the template with the information we want"
-        " Note we access the elements treating the template instance as a dict"
+        # We FILL some of the fields of the template with the information we want
+        # Note we access the elements treating the template instance as a dict
         f["type"] = separator_type_label
         f["label"] = doctype_label
         f["qr_code_value"] = qr_code_value
