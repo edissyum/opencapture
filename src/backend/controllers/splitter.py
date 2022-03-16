@@ -247,7 +247,8 @@ def export_maarch(auth_data, file_path, args, batch):
 def export_pdf(batch, documents, parameters, metadata, pages, now, compress_type):
     _vars = create_classes_from_current_config()
     _cfg = _vars[1]
-    filename = _cfg.cfg['GLOBAL']['docserverpath'] + '/splitter/original_pdf/' + batch[0]['file_path']
+    _docservers = _vars[9]
+    filename = _docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch[0]['file_path']
 
     for index, document in enumerate(documents):
         """
@@ -414,6 +415,7 @@ def validate(args):
     now = _Files.get_now_date()
     _vars = create_classes_from_current_config()
     _cfg = _vars[1]
+    _docservers = _vars[9]
 
     """
     Save data before validate
@@ -477,7 +479,7 @@ def validate(args):
                     """
                     pdf_export_parameters = {
                         'extension': 'pdf',
-                        'folder_out': _cfg.cfg['GLOBAL']['tmppath'],
+                        'folder_out': _docservers['TMP_PATH'],
                         'separator': cmis_params['separator'],
                         'filename': cmis_params['pdf_filename'],
                     }
@@ -499,7 +501,7 @@ def validate(args):
                         'separator': cmis_params['separator'],
                         'filename': cmis_params['xml_filename'],
                         'extension': 'xml',
-                        'folder_out': _cfg.cfg['GLOBAL']['tmppath'],
+                        'folder_out': _docservers['TMP_PATH'],
                     }
                     res_export_xml = export_xml(args['documents'], xml_export_parameters, args['batchMetadata'], now)
                     if res_export_xml[1] != 200:
@@ -551,8 +553,8 @@ def validate(args):
 
 def get_split_methods():
     _vars = create_classes_from_current_config()
-    _config = _vars[1]
-    split_methods = _Splitter.get_split_methods(_config)
+    _docservers = _vars[9]
+    split_methods = _Splitter.get_split_methods(_docservers)
     if len(split_methods) > 0:
         return split_methods, 200
     return split_methods, 401
@@ -578,11 +580,12 @@ def merge_batches(parent_id, batches):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
     _config = _vars[1]
+    _docservers = _vars[9]
 
     parent_info = splitter.get_batch_by_id({'id': parent_id})[0]
-    parent_filename = _config.cfg['GLOBAL']['docserverpath'] + '/splitter/original_pdf/' + parent_info['file_path']
+    parent_filename = _docservers['SPLITTER_ORIGINAL_PDF'] + '/' + parent_info['file_path']
     parent_batch_pages = int(parent_info['page_number'])
-    batch_folder = _config.cfg['GLOBAL']['docserverpath'] + '/splitter/batches/' + parent_info['batch_folder']
+    batch_folder = _docservers['SPLITTER_BATCHES'] + '/' +  parent_info['batch_folder']
     parent_document_id = splitter.get_documents({'id': parent_id})[0][0]['id']
     parent_max_split_index = splitter.get_documents_max_split_index({'id': parent_id})[0][0]['split_index']
     parent_max_source_page = splitter.get_max_source_page({'id': parent_document_id})[0][0]['source_page']
@@ -597,8 +600,7 @@ def merge_batches(parent_id, batches):
         batch_info = splitter.get_batch_by_id({'id': batch})[0]
         parent_batch_pages += batch_info['page_number']
         batches_info.append(batch_info)
-        pdf = PyPDF4.PdfFileReader(
-            _config.cfg['GLOBAL']['docserverpath'] + '/splitter/original_pdf/' + batch_info['file_path'])
+        pdf = PyPDF4.PdfFileReader(_docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch_info['file_path'])
         for page in range(pdf.numPages):
             merged_pdf.addPage(pdf.getPage(page))
 

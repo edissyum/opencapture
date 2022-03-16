@@ -102,7 +102,7 @@ class FindSupplier:
         self.Files.open_img(self.Files.jpg_name_header)
 
     def run(self, retry=False, regenerate_ocr=False, target=None, text_as_string=False):
-        supplier = self.process(self.locale.VATNumberRegex, text_as_string, 'vat_number')
+        supplier = self.process(self.locale.vat_number_regex, text_as_string, 'vat_number')
         if supplier:
             self.regenerate_ocr()
             self.log.info('Supplier found : ' + supplier[0]['name'] + ' using VAT Number : ' + supplier[0]['vat_number'])
@@ -114,7 +114,7 @@ class FindSupplier:
             data = [supplier[0]['vat_number'], position, supplier[0], self.current_page, 'vat_number']
             return data
 
-        supplier = self.process(self.locale.SIRETRegex, text_as_string, 'siret')
+        supplier = self.process(self.locale.siret_regex, text_as_string, 'siret')
         if supplier:
             self.regenerate_ocr()
             self.log.info('Supplier found : ' + supplier[0]['name'] + ' using SIRET : ' + supplier[0]['siret'])
@@ -126,7 +126,7 @@ class FindSupplier:
             data = [supplier[0]['vat_number'], position, supplier[0], self.current_page, 'siret']
             return data
 
-        supplier = self.process(self.locale.SIRENRegex, text_as_string, 'siren')
+        supplier = self.process(self.locale.siren_regex, text_as_string, 'siren')
         if supplier:
             self.regenerate_ocr()
             self.log.info('Supplier found : ' + supplier[0]['name'] + ' using SIREN : ' + supplier[0]['siren'])
@@ -138,7 +138,7 @@ class FindSupplier:
             data = [supplier[0]['vat_number'], position, supplier[0], self.current_page, 'siren']
             return data
 
-        supplier = self.process(self.locale.IBANRegex, text_as_string, 'iban')
+        supplier = self.process(self.locale.iban_regex, text_as_string, 'iban')
         if supplier:
             self.regenerate_ocr()
             self.log.info('Supplier found : ' + supplier[0]['name'] + ' using IBAN : ' + supplier[0]['iban'])

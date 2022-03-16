@@ -148,4 +148,4 @@ class Database:
                 return True, ''
             except (psycopg2.OperationalError, psycopg2.errors.InvalidTextRepresentation) as pgsql_error:
                 self.log.error('Error while querying UPDATE : ' + str(pgsql_error), False)
-                return False, e
+                return False, pgsql_error

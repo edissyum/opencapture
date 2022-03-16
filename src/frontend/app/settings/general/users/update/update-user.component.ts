@@ -37,12 +37,13 @@ import {HistoryService} from "../../../../../services/history.service";
 })
 
 export class UpdateUserComponent implements OnInit {
-    headers: HttpHeaders = this.authService.headers;
-    loading: boolean = true;
-    userId: any;
-    user: any;
-    roles: any[] = [];
-    userForm: any[] = [
+    headers         : HttpHeaders = this.authService.headers;
+    loading         : boolean = true;
+    loadingCustomers: boolean = true;
+    userId          : any;
+    user            : any;
+    roles           : any[] = [];
+    userForm        : any[] = [
         {
             id: 'username',
             label: this.translate.instant('USER.username'),
@@ -87,8 +88,8 @@ export class UpdateUserComponent implements OnInit {
             required: true
         }
     ];
-    customers: any[] = [];
-    usersCustomers: any[] = [];
+    customers       : any[] = [];
+    usersCustomers  : any[] = [];
 
     constructor(
         public router: Router,
@@ -112,17 +113,17 @@ export class UpdateUserComponent implements OnInit {
         this.http.get(API_URL + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.customers = data.customers;
-            }),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
-
-        this.http.get(API_URL + '/ws/users/getCustomersByUserId/' + this.userId, {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                this.usersCustomers = data;
+                this.http.get(API_URL + '/ws/users/getCustomersByUserId/' + this.userId, {headers: this.authService.headers}).pipe(
+                    tap((data: any) => {
+                        this.usersCustomers = data;
+                        this.loadingCustomers = false;
+                    }),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
             }),
             catchError((err: any) => {
                 console.debug(err);

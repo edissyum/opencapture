@@ -1,23 +1,12 @@
 [GLOBAL]
-; Use ${GLOBAL:projectPath} to specify once for all the path of the project
-projectPath             = /var/www/html/opencaptureforinvoices/
-tmpPath                 = ${GLOBAL:projectPath}/bin/data/tmp/
-scriptsPath             = ${GLOBAL:projectPath}/bin/scripts/
-docserverPath           = /var/docservers/OpenCapture/
-fullPath                = ${GLOBAL:docserverPath}/verifier/images/full/
-thumbPath               = ${GLOBAL:docserverPath}/verifier/images/thumbs/
-positionsMasksPath      = ${GLOBAL:docserverPath}/verifier/images/positions_masks/
-errorPath               = ${GLOBAL:projectPath}/bin/data/error/
-logFile                 = ${GLOBAL:projectPath}/bin/data/log/OCforInvoices.log
-ocrErrorPath            = ${GLOBAL:projectPath}/instance/config/OCR_ERRORS.xml
-configMail              = ${GLOBAL:projectPath}/instance/config/mail.ini
-; Delta between date found and today date, in days. -1 to disable
-watcherConfig           = ${GLOBAL:projectPath}/instance/config/watcher.ini
+configMail       = /var/www/html/opencaptureforinvoices/instance/config/mail.ini
+watcherConfig    = /var/www/html/opencaptureforinvoices/instance/config/watcher.ini
+logFile          = /var/www/html/opencaptureforinvoices/bin/data/log/OCforInvoices.log
 
 [AI-CLASSIFICATION]
 ; True or False, python way
 enabled          = False
-iaPath           = ${GLOBAL:projectPath}/bin/src/invoice_classification/
+iaPath           = /var/www/html/opencaptureforinvoices/bin/src/invoice_classification/
 modelPath        = ${AI-CLASSIFICATION:iaPath}/invoice_classification.model
 trainImagePath   = ${AI-CLASSIFICATION:iaPath}/images/training-images/
 predictImagePath = ${AI-CLASSIFICATION:iaPath}/images/predict-images/
@@ -25,11 +14,8 @@ predictImagePath = ${AI-CLASSIFICATION:iaPath}/images/predict-images/
 confidenceMin    = 80
 
 [SPLITTER]
-batchpath     = ${GLOBAL:docserverpath}/splitter/batches/
-pdfoutputpath = ${GLOBAL:docserverpath}/splitter/separated_pdf/
-docstart      = DOCSTART
-bundlestart   = BUNDLESTART
-methodspath   = ${GLOBAL:scriptspath}/splitter_methods/
+docstart         = DOCSTART
+bundlestart      = BUNDLESTART
 
 [DATABASE]
 postgresHost     = localhost
@@ -38,29 +24,18 @@ postgresDatabase = opencapture
 postgresUser     =
 postgresPassword =
 
-[LOCALE]
-; fra or eng by default
-locale           = fra
-localeocr        = fra
-localepath       = ${GLOBAL:projectPath}/src/assets/locale/
-
 [REFERENCIAL]
 ; ODS or XLSX supported
-referencialSupplierDocumentPath = ${GLOBAL:projectPath}/instance/referencial/default_referencial_supplier.ods
-referencialSupplierIndexpath    = ${GLOBAL:projectPath}/instance/referencial/default_referencial_supplier_index.json
-
-[SEPARATE-BY-DOCUMENT]
-enabled = False
+; Path is set up in docservers table (REFERENTIALS_PATH)
+referencialSupplierDocument = default_referencial_supplier.ods
+referencialSupplierIndex    = default_referencial_supplier_index.json
 
 [SEPARATORQR]
 ; True or False, python way
-enabled        = False
-exportpdfa     = False
-outputpdfpath  = ${GLOBAL:projectPath}/bin/data/exported_pdf/
-outputpdfapath = ${GLOBAL:projectPath}/bin/data/exported_pdfa/
-tmppath        = /tmp/
+enabled         = False
+exportpdfa      = False
 ; _ or - for exemple
-divider        = _
+divider         = _
 
 [API]
 siret-consumer  =

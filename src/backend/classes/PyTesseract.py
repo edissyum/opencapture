@@ -22,13 +22,14 @@ import xml.etree.ElementTree as Et
 
 
 class PyTesseract:
-    def __init__(self, locale, log, config):
+    def __init__(self, locale, log, config, docservers):
         self.log = log
         self.tool = ''
         self.text = ''
         self.lang = locale
         self.last_text = ''
         self.config = config
+        self.docservers = docservers
         self.footer_text = ''
         self.header_text = ''
         self.OCRErrorsTable = {}
@@ -62,7 +63,7 @@ class PyTesseract:
             self.log.error('Tesseract ERROR : ' + str(t))
 
     def get_ocr_errors_table(self):
-        config_path = self.config.cfg['GLOBAL']['ocrerrorpath']
+        config_path = self.docservers['CONFIG_PATH'] + '/OCR_ERRORS.xml'
         root = Et.parse(config_path).getroot()
 
         for element in root:

@@ -16,8 +16,6 @@
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
 import subprocess
-import configparser
-from flask_babel import gettext
 from flask import current_app, Blueprint
 from src.backend.import_models import config
 from src.backend.main import create_classes_from_current_config
@@ -27,23 +25,37 @@ bp = Blueprint('dashboard', __name__)
 
 def change_locale_in_config(lang):
     _vars = create_classes_from_current_config()
-    config_file = _vars[6]
     languages = current_app.config['LANGUAGES']
-    parser = configparser.ConfigParser()
 
     language = {'label': 'Francais', 'lang_code': 'fra'}
     for _l in languages:
         if lang == languages[_l]['lang_code']:
             language = languages[_l]
-    parser.read(config_file)
-    parser.set('LOCALE', 'locale', language['lang_code'])
-    parser.set('LOCALE', 'localeocr', language['lang_code'])
-    try:
-        with open(config_file, 'w', encoding='UTF-8') as configfile:
-            parser.write(configfile)
-        return {}, 200
-    except configparser.Error as e:
-        return {'errors': gettext("CHANGE_LOCALE_ERROR"), 'message': str(e)}, 500
+
+    locale_configuration = retrieve_configuration_by_label('locale')[0]['configuration'][0]
+    update_configuration({
+        'value': language['lang_code'],
+        'type': locale_configuration['data']['type'],
+        'description': locale_configuration['data']['description']
+    }, locale_configuration['id'])
+
+    return {}, 200
+
+
+def retrieve_configuration_by_label(label):
+    configuration, error = config.retrieve_configurations({"where": ['label = %s'], 'data': [label]})
+
+    if error is None:
+        response = {
+            "configuration": configuration
+        }
+        return response, 200
+
+    response = {
+        "errors": "RETRIEVE_CONFIGURATION_ERRORS",
+        "message": error
+    }
+    return response, 401
 
 
 def retrieve_configurations(args):
@@ -57,6 +69,22 @@ def retrieve_configurations(args):
 
     response = {
         "errors": "RETRIEVE_CONFIGURATIONS_ERRORS",
+        "message": error
+    }
+    return response, 401
+
+
+def retrieve_docservers(args):
+    docservers, error = config.retrieve_docservers(args)
+
+    if error is None:
+        response = {
+            "docservers": docservers
+        }
+        return response, 200
+
+    response = {
+        "errors": "RETRIEVE_DOCSERVERS_ERRORS",
         "message": error
     }
     return response, 401
@@ -84,7 +112,29 @@ def update_configuration(args, configuration_id):
     return response, 401
 
 
+def update_docserver(args, docserver_id):
+    _, error = config.retrieve_docserver_by_id({'docserver_id': docserver_id})
+
+    if error is None:
+        args = {
+            'id': args['id'],
+            'path': args['path'],
+            'description': args['description'],
+            'docserver_id': args['docserver_id']
+        }
+        config.update_docserver(args)
+        return '', 200
+
+    response = {
+        "errors": "UPDATE_DOCSERVER_ERROR",
+        "message": error
+    }
+    return response, 401
+
+
 def get_last_git_version():
-    latest_git_version = subprocess.Popen("git ls-remote --tags --sort='v:refname' https://github.com/edissyum/opencaptureforinvoices.git | tail -n1 |  sed 's/.*\///; s/\^{}//' | grep -E '2.+([0-9])$'", shell=True,
+    latest_git_version = subprocess.Popen("git ls-remote --tags --sort='v:refname' "
+                                          "https://github.com/edissyum/opencaptureforinvoices.git | "
+                                          "tail -n1 |  sed 's/.*\///; s/\^{}//' | grep -E '2.+([0-9])$'", shell=True,
                                           stdout=subprocess.PIPE).stdout.read()
     return str(latest_git_version.decode('utf-8').strip())

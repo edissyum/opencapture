@@ -39,6 +39,8 @@ import {HistoryService} from "../../../../../services/history.service";
 })
 export class FormBuilderComponent implements OnInit {
     loading                 : boolean   = true;
+    loadingCustomFields     : boolean   = true;
+    creationMode            : boolean   = true;
     outputs                 : any[]     = [];
     form                    : any       = {
         'label': {
@@ -57,16 +59,12 @@ export class FormBuilderComponent implements OnInit {
             cpt: 0
         }
     ];
+    fields                  : any       = {
+        'supplier': [],
+        'facturation': [],
+        'other': []
+    };
     formId                  : any;
-    creationMode            : boolean   = true;
-    labelType               : any []    = [
-        marker('TYPES.text'),
-        marker('TYPES.textarea'),
-        marker('TYPES.date'),
-        marker('TYPES.select'),
-        marker('VERIFIER.field_settings'),
-        marker('FORMS.delete_field'),
-    ];
     fieldCategories         : any []    = [
         {
             'id': 'supplier',
@@ -422,11 +420,6 @@ export class FormBuilderComponent implements OnInit {
             'values': []
         },
     ];
-    fields                  : any       = {
-        'supplier': [],
-        'facturation': [],
-        'other': []
-    };
     classList               : any []    = [
         {
             'id': 'w-full',
@@ -673,6 +666,7 @@ export class FormBuilderComponent implements OnInit {
                         }
                     }
                 }
+                this.loadingCustomFields = false;
             }),
             catchError((err: any) => {
                 console.debug(err);
@@ -788,7 +782,7 @@ export class FormBuilderComponent implements OnInit {
         const previousUnit = event.previousContainer.id;
 
         if (event.previousContainer === event.container) {
-            moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+            if (event.container.data) moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
         } else {
             transferArrayItem(event.previousContainer.data ? event.previousContainer.data : this.fields[previousUnit],
                 event.container.data ? event.container.data : this.fields[unit],

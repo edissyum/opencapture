@@ -34,6 +34,22 @@ def retrieve_configurations(args):
         'limit': str(args['limit']) if 'limit' in args else [],
         'offset': str(args['offset']) if 'offset' in args else [],
     })
+    return configurations, error
+
+
+def retrieve_docservers(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    error = None
+    configurations = _db.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['docservers'],
+        'where': ['1=%s'] if 'where' not in args else args['where'],
+        'data': ['1'] if 'data' not in args else args['data'],
+        'order_by': ['id ASC'],
+        'limit': str(args['limit']) if 'limit' in args else [],
+        'offset': str(args['offset']) if 'offset' in args else [],
+    })
 
     return configurations, error
 
@@ -47,6 +63,20 @@ def retrieve_configuration_by_id(args):
         'table': ['configurations'],
         'where': ['id = %s'],
         'data': [args['configuration_id']]
+    })
+
+    return configurations, error
+
+
+def retrieve_docserver_by_id(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    error = None
+    configurations = _db.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['docservers'],
+        'where': ['id = %s'],
+        'data': [args['docserver_id']]
     })
 
     return configurations, error
@@ -70,3 +100,25 @@ def update_configuration(args):
         error = gettext('UPDATE_CONFIGURATION_ERROR')
 
     return configuration, error
+
+
+def update_docserver(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    error = None
+
+    docserver = _db.update({
+        'table': ['docservers'],
+        'set': {
+            'path': args['path'],
+            'description': args['description'],
+            'docserver_id': args['docserver_id']
+        },
+        'where': ['id = %s'],
+        'data': [args['id']]
+    })
+
+    if docserver[0] is False:
+        error = gettext('UPDATE_DOCSERVER_ERROR')
+
+    return docserver, error

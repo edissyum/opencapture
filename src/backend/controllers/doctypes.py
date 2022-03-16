@@ -114,6 +114,7 @@ def generate_separator(args):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
     _cfg = _vars[1]
+    _docservers = _vars[9]
     _db_config = {}
     _config = _db.select({
         'select': ['*'],
@@ -135,7 +136,7 @@ def generate_separator(args):
         qr_code_value = "BUNDLESTART"
         separator_type_label = gettext('BUNDLESEPARATOR')
 
-    res_separators = _SeparatorQR.generate_separator(_cfg.cfg, _db_config, qr_code_value, args['label'], separator_type_label)
+    res_separators = _SeparatorQR.generate_separator(_db_config, _docservers, qr_code_value, args['label'], separator_type_label)
     if not res_separators[0]:
         response = {
             "errors": "DOCTYPE_ERROR",

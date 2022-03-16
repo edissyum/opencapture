@@ -22,13 +22,14 @@ from ..functions import search_by_positions, search_custom_positions
 
 
 class FindFooterRaw:
-    def __init__(self, ocr, log, locale, config, files, database, supplier, file, text, typo, target='footer', nb_pages=False):
+    def __init__(self, ocr, log, locale, config, files, database, supplier, file, text, typo, docservers, target='footer', nb_pages=False):
         self.date = ''
         self.Ocr = ocr
         self.text = text
         self.log = log
         self.locale = locale
         self.config = config
+        self.docservers = docservers
         self.Files = files
         self.Database = database
         self.supplier = supplier
@@ -62,8 +63,8 @@ class FindFooterRaw:
                 # Retrieve only the number and add it in array
                 # In case of multiple no rates amount found, take the higher
                 data = res.group()
-                if regex == self.locale.vatAmountRegex:
-                    data = re.sub(r"" + self.locale.vatAmountRegex[:-2] + "", '', res.group())  # Delete the delivery number keyword
+                if regex == self.locale.vat_amount_regex:
+                    data = re.sub(r"" + self.locale.vat_amount_regex[:-2] + "", '', res.group())  # Delete the delivery number keyword
 
                 tmp = re.finditer(r'[-+]?\d*[.,]+\d+([.,]+\d+)?|\d+', data)
                 result = ''
@@ -73,7 +74,7 @@ class FindFooterRaw:
                         # If two amounts are found, separate them
                         continue
                     number_formatted = t.group()
-                    if regex != self.locale.vatRateRegex:
+                    if regex != self.locale.vat_rate_regex:
                         try:
                             text = t.group().replace(' ', '.')
                             text = text.replace('\x0c', '')
@@ -124,14 +125,14 @@ class FindFooterRaw:
                 page = self.nbPage
 
             data = {'position': position[column + '_position'], 'regex': None, 'target': 'full', 'page': page}
-            text, position = search_custom_positions(data, self.Ocr, self.Files, self.locale, self.file, self.config)
+            text, position = search_custom_positions(data, self.Ocr, self.Files, self.locale, self.file, self.docservers)
             if text:
                 try:
                     # Try if the return string could be convert to float
                     float(text)
                     result = text
                     if select[0] == 'vat_1_position':  # Fix if we retrieve 2000.0, or 200.0 instead of 20.0 for example
-                        tva_amounts = eval(self.locale.vatRateList)
+                        tva_amounts = eval(self.locale.vat_rate_list)
                         _split = result.split('.')
                         if len(_split) > 1:
                             if _split[1] == '0':
@@ -270,10 +271,10 @@ class FindFooterRaw:
                 }
 
         if not self.test_amount(total_ht, total_ttc, vat_rate, vat_amount):
-            total_ht = self.process(self.locale.noRatesRegex, text_as_string)
-            vat_rate = self.process(self.locale.vatRateRegex, text_as_string)
-            total_ttc = self.process(self.locale.allRatesRegex, text_as_string)
-            vat_amount = self.process(self.locale.vatAmountRegex, text_as_string)
+            total_ht = self.process(self.locale.no_rates_regex, text_as_string)
+            vat_rate = self.process(self.locale.vat_rate_regex, text_as_string)
+            total_ttc = self.process(self.locale.all_rates_regex, text_as_string)
+            vat_amount = self.process(self.locale.vat_amount_regex, text_as_string)
 
         # Test all amounts. If some are false, try to search them with position. If not, pass
         if self.test_amount(total_ht, total_ttc, vat_rate, vat_amount) is not False:

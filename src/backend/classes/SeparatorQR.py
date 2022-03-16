@@ -31,7 +31,7 @@ import base64
 
 
 class SeparatorQR:
-    def __init__(self, log, config, tmp_folder, splitter_or_verifier, files, remove_blank_pages):
+    def __init__(self, log, config, tmp_folder, splitter_or_verifier, files, remove_blank_pages, docservers):
         self.log = log
         self.pages = []
         self.nb_doc = 0
@@ -46,9 +46,9 @@ class SeparatorQR:
         self.divider = config.cfg['SEPARATORQR']['divider']
         self.convert_to_pdfa = config.cfg['SEPARATORQR']['exportpdfa']
         tmp_folder_name = os.path.basename(os.path.normpath(tmp_folder))
-        self.tmp_dir = config.cfg['SEPARATORQR']['tmppath'] + '/' + tmp_folder_name + '/'
-        self.output_dir = config.cfg['SEPARATORQR']['outputpdfpath'] + '/' + tmp_folder_name + '/'
-        self.output_dir_pdfa = config.cfg['SEPARATORQR']['outputpdfapath'] + '/' + tmp_folder_name + '/'
+        self.tmp_dir = docservers['SEPARATOR_QR_TMP'] + '/' + tmp_folder_name + '/'
+        self.output_dir = docservers['SEPARATOR_OUTPUT_PDF'] + '/' + tmp_folder_name + '/'
+        self.output_dir_pdfa = docservers['SEPARATOR_OUTPUT_PDFA'] + '/' + tmp_folder_name + '/'
 
         os.mkdir(self.output_dir)
         os.mkdir(self.output_dir_pdfa)
@@ -245,7 +245,7 @@ class SeparatorQR:
             output_pdf.write(stream)
 
     @staticmethod
-    def generate_separator(config, db_config, qr_code_value, doctype_label, separator_type_label):
+    def generate_separator(db_config, docservers, qr_code_value, doctype_label, separator_type_label):
         """
         Generate separator file
         :param qr_code_value: QR code value
@@ -299,27 +299,27 @@ class SeparatorQR:
              'text': 'https://edissyum.com', 'priority': 2, },
         ]
 
-        " Instantiating the template and defining the HEADER"
+        # Instantiating the template and defining the HEADER
         f = Template(format="A4", elements=elements,
                      title="Separator file")
         f.add_page()
 
-        " We FILL some of the fields of the template with the information we want"
-        " Note we access the elements treating the template instance as a dict"
+        # We FILL some of the fields of the template with the information we want
+        # Note we access the elements treating the template instance as a dict
         f["type"] = separator_type_label
         f["label"] = doctype_label
         f["qr_code_value"] = qr_code_value
-        f["icon_loop"] = config['GLOBAL']['projectpath'] + "/src/assets/imgs/Open-Capture_Splitter.png"
-        f["logo"] = config['GLOBAL']['projectpath'] + "/src/assets/imgs/logo_opencapture.png"
-        f["company_logo"] = config['GLOBAL']['projectpath'] + "/src/assets/imgs/logo_company.png"
+        f["icon_loop"] = docservers['PROJECT_PATH'] + "/src/assets/imgs/Open-Capture_Splitter.png"
+        f["logo"] = docservers['PROJECT_PATH'] + "/src/assets/imgs/logo_opencapture.png"
+        f["company_logo"] = docservers['PROJECT_PATH'] + "/src/assets/imgs/logo_company.png"
 
         img = qrcode.make(qr_code_value)
 
-        qrcode_path = config['GLOBAL']['tmppath'] + "/last_generated_doctype_code_qr.png"
+        qrcode_path = docservers['TMP_PATH'] + "/last_generated_doctype_code_qr.png"
         img.save(qrcode_path)
         f["code_qr"] = qrcode_path
 
-        file_path = config['GLOBAL']['tmppath'] + "/last_generated_doctype_file.pdf"
+        file_path = docservers['TMP_PATH'] + "/last_generated_doctype_file.pdf"
         f.render(file_path)
         try:
             with open(file_path, 'rb') as pdf_file:

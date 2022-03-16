@@ -156,8 +156,9 @@ def delete_input(input_id):
 def delete_script_and_incron(args):
     _vars = create_classes_from_current_config()
     _cfg = _vars[1]
+    _docservers = _vars[9]
 
-    folder_script = _cfg.cfg['GLOBAL']['scriptspath'] + args['module'] + '_inputs/'
+    folder_script = _docservers['SCRIPTS_PATH'] + args['module'] + '_inputs/'
     script_name = args['input_id'] + '.sh'
     old_script_filename = folder_script + '/' + script_name
     if os.path.isdir(folder_script):
@@ -184,7 +185,8 @@ def delete_script_and_incron(args):
 def create_script_and_incron(args):
     _vars = create_classes_from_current_config()
     _cfg = _vars[1]
-    folder_script = _cfg.cfg['GLOBAL']['scriptspath'] + '/' + args['module'] + '_inputs/'
+    _docservers = _vars[9]
+    folder_script = _docservers['SCRIPTS_PATH'] + '/' + args['module'] + '_inputs/'
     arguments = '-input_id ' + str(args['input_id'])
 
     ######
@@ -199,7 +201,7 @@ def create_script_and_incron(args):
             new_script_file = open(new_script_filename, 'w+')
             for line in script_sample_content.split('\n'):
                 corrected_line = line.replace('§§SCRIPT_NAME§§', script_name.replace('.sh', ''))
-                corrected_line = corrected_line.replace('§§OC_PATH§§', _cfg.cfg['GLOBAL']['projectpath'] + '/')
+                corrected_line = corrected_line.replace('§§OC_PATH§§', _docservers['PROJECT_PATH'] + '/')
                 corrected_line = corrected_line.replace('"§§ARGUMENTS§§"', arguments)
                 new_script_file.write(corrected_line + '\n')
             script_sample.close()

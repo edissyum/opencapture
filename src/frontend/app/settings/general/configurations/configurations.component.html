@@ -112,7 +112,7 @@
                     <mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'HEADER.value' | translate }} </mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         <ng-container *ngIf="!element.updateMode else update">
-                            {{element.data.value}}
+                            {{ element.data.value }}
                         </ng-container>
                         <ng-template #update>
                             <mat-form-field appearance="outline" *ngIf="element.data.type === 'bool'">

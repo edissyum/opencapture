@@ -45,7 +45,8 @@ def get_all_lang():
 @bp.route('i18n/getCurrentLang', methods=['GET'])
 def get_current_lang():
     _vars = create_classes_from_current_config()
-    current_lang = _vars[1].cfg['LOCALE']['locale']
+    _configurations = _vars[10]
+    current_lang = _configurations['locale']
     languages = current_app.config['LANGUAGES']
     angular_moment_lang = ''
     for _l in languages:

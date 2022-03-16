@@ -429,9 +429,10 @@ def delete_supplier(supplier_id):
 def import_suppliers(file):
     _vars = create_classes_from_current_config()
     _cfg = _vars[1]
+    _docservers = _vars[9]
 
     filename = _Files.save_uploaded_file(file, current_app.config['UPLOAD_FOLDER'])
-    res = subprocess.Popen('python3 ' + _cfg.cfg['GLOBAL']['projectpath'] + "/loadReferencial.py -f " +
+    res = subprocess.Popen('python3 ' + _docservers['PROJECT_PATH'] + "/loadReferencial.py -f " +
                            filename + " -c " + current_app.instance_path + '/config.ini',
                            shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = res.communicate()
