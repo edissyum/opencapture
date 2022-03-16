@@ -29,7 +29,7 @@ from src.backend.import_classes import _Files, _Config, _Splitter, _SeparatorQR,
 OCforInvoices = Kuyruk()
 
 
-@OCforInvoices.task(queue='splitter')
+# @OCforInvoices.task(queue='splitter')
 def launch(args):
     start = time.time()
 
@@ -40,7 +40,7 @@ def launch(args):
     if not os.path.exists(config_file):
         sys.exit('Config file couldn\'t be found')
 
-    config, locale, log, _, database, _, smtp, docservers = create_classes(config_file)
+    config, locale, log, _, database, _, smtp, docservers, _ = create_classes(config_file)
     tmp_folder = tempfile.mkdtemp(dir=docservers['SPLITTER_BATCHES']) + '/'
     filename = tempfile.NamedTemporaryFile(dir=tmp_folder).name
     files = _Files(filename, log, locale, config)
