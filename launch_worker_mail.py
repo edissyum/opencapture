@@ -68,7 +68,7 @@ print('Start process : ' + process)
 
 config_name = _Config(args['config'])
 config_file = config_name.cfg['PROFILE']['cfgpath'] + '/config_' + config_name.cfg['PROFILE']['id'] + '.ini'
-config, locale, log, ocr, database, spreadsheet, smtp = create_classes(config_file)
+config, locale, log, ocr, database, spreadsheet, smtp, _, _ = create_classes(config_file)
 
 config_mail = _Config(args['config_mail'])
 cfg = config_mail.cfg[process]

@@ -65,7 +65,6 @@ app.register_blueprint(doctypes.bp)
 def get_locale():
     if 'lang' not in session:
         session['lang'] = request.accept_languages.best_match(app.config['LANGUAGES'].keys())
-    print(session['lang'])
 
     return session['lang']
 
