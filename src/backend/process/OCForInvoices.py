@@ -136,21 +136,12 @@ def update_typo_database(database, vat_number, typo, log, config):
     })
 
 
-def process(args, file, log, config, files, ocr, locale, database, typo, docservers):
+def process(args, file, log, config, files, ocr, locale, database, typo, docservers, configurations):
     log.info('Processing file : ' + file)
 
-    configurations = {}
     datas = {}
     pages = {}
     positions = {}
-
-    _config = database.select({
-        'select': ['*'],
-        'table': ['configurations'],
-    })
-
-    for _c in _config:
-        configurations[_c['label']] = _c['data']['value']
 
     files.resolution = int(configurations['resolution'])
     files.compression_quality = int(configurations['compressionQuality'])

@@ -34,9 +34,9 @@ def add_history():
 @auth.token_required
 def get_history():
     _vars = create_classes_from_current_config()
-    _cfg = _vars[1]
+    _configurations = _vars[10]
 
-    if _cfg.cfg['LOCALE']['locale'] == 'fra':
+    if _configurations['locale'] == 'fra':
         _format = 'DD/MM/YYYY HH24:MI:SS'
     else:
         _format = 'MM/DD/YYYY HH24:MI:SS'

@@ -6,7 +6,7 @@ logFile          = /var/www/html/opencaptureforinvoices/bin/data/log/OCforInvoic
 [AI-CLASSIFICATION]
 ; True or False, python way
 enabled          = False
-iaPath           = ${GLOBAL:projectPath}/bin/src/invoice_classification/
+iaPath           = /var/www/html/opencaptureforinvoices/bin/src/invoice_classification/
 modelPath        = ${AI-CLASSIFICATION:iaPath}/invoice_classification.model
 trainImagePath   = ${AI-CLASSIFICATION:iaPath}/images/training-images/
 predictImagePath = ${AI-CLASSIFICATION:iaPath}/images/predict-images/
@@ -24,25 +24,16 @@ postgresDatabase = opencapture
 postgresUser     =
 postgresPassword =
 
-[LOCALE]
-; fra or eng by default
-locale           = fra
-localeocr        = fra
-
 [REFERENCIAL]
 ; ODS or XLSX supported
 ; Path is set up in docservers table (REFERENTIALS_PATH)
 referencialSupplierDocument = default_referencial_supplier.ods
 referencialSupplierIndex    = default_referencial_supplier_index.json
 
-[SEPARATE-BY-DOCUMENT]
-enabled         = False
-
 [SEPARATORQR]
 ; True or False, python way
 enabled         = False
 exportpdfa      = False
-tmppath         = /tmp/
 ; _ or - for exemple
 divider         = _
 

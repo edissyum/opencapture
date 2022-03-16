@@ -34,7 +34,6 @@ def retrieve_configurations(args):
         'limit': str(args['limit']) if 'limit' in args else [],
         'offset': str(args['offset']) if 'offset' in args else [],
     })
-
     return configurations, error
 
 

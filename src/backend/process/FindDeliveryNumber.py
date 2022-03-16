@@ -41,11 +41,11 @@ class FindDeliveryNumber:
     def sanitize_delivery_number(self, data):
         delivery_res = data
         # If the regex return a date, remove it
-        for _date in re.finditer(r"" + self.locale.dateRegex + "", data):
+        for _date in re.finditer(r"" + self.locale.date_regex + "", data):
             if _date.group():
                 delivery_res = data.replace(_date.group(), '')
         # Delete the delivery number keyword
-        tmp_delivery_number = re.sub(r"" + self.locale.deliveryNumberRegex[:-2] + "", '', delivery_res)
+        tmp_delivery_number = re.sub(r"" + self.locale.delivery_number_regex[:-2] + "", '', delivery_res)
         delivery_number = tmp_delivery_number.lstrip().split(' ')[0]
         return delivery_number
 
@@ -76,7 +76,7 @@ class FindDeliveryNumber:
                     pass
 
                 if text is not False:
-                    for _delivery in re.finditer(r"" + self.locale.deliveryNumberRegex + "", str(text.upper())):
+                    for _delivery in re.finditer(r"" + self.locale.delivery_number_regex + "", str(text.upper())):
                         delivery_number = self.sanitize_delivery_number(_delivery.group())
                         if delivery_number != '':
                             self.log.info('Delivery number found with position : ' + str(delivery_number))
@@ -86,9 +86,9 @@ class FindDeliveryNumber:
                         return [text, position, data['page']]
 
         for line in self.text:
-            for _delivery in re.finditer(r"" + self.locale.deliveryNumberRegex + "", line.content.upper()):
+            for _delivery in re.finditer(r"" + self.locale.delivery_number_regex + "", line.content.upper()):
                 delivery_number = self.sanitize_delivery_number(_delivery.group())
-                if len(delivery_number) >= int(self.locale.invoiceSizeMin):
+                if len(delivery_number) >= int(self.locale.invoice_size_min):
                     self.log.info('Delivery number found : ' + delivery_number)
                     position = line.position
                     if self.target != 'header':

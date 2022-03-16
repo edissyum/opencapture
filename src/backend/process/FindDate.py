@@ -47,7 +47,7 @@ class FindDate:
             date = date.replace('.', ' ')  # Replace some possible inconvenient char
 
             if convert:
-                date_convert = self.locale.arrayDate
+                date_convert = self.locale.array_date
                 for key in date_convert:
                     for month in date_convert[key]:
                         if month.lower() in date.lower():
@@ -57,14 +57,14 @@ class FindDate:
                 # Fix to handle date with 2 digits year
                 length_of_year = len(date.split(' ')[2])
                 if length_of_year == 2:
-                    regex = self.locale.dateTimeFormat.replace('%Y', '%y')
+                    regex = self.locale.date_time_format.replace('%Y', '%y')
                 else:
-                    regex = self.locale.dateTimeFormat
+                    regex = self.locale.date_time_format
 
-                date = datetime.strptime(date, regex).strftime(self.locale.formatDate)
+                date = datetime.strptime(date, regex).strftime(self.locale.format_date)
                 # Check if the date of the document isn't too old. 62 (default value) is equivalent of 2 months
                 today = datetime.now()
-                doc_date = datetime.strptime(date, self.locale.formatDate)
+                doc_date = datetime.strptime(date, self.locale.format_date)
                 timedelta = today - doc_date
 
                 if int(self.maxTimeDelta) not in [-1, 0]:
@@ -80,7 +80,7 @@ class FindDate:
             return False
 
     def process(self, line, position):
-        for _date in re.finditer(r"" + self.locale.dateRegex + "", line):
+        for _date in re.finditer(r"" + self.locale.date_regex + "", line):
             date = self.format_date(_date.group(), position, True)
             if date and date[0]:
                 self.date = date[0]
@@ -88,9 +88,9 @@ class FindDate:
             return False
 
     def process_due_date(self, line, position):
-        regex = self.locale.dueDateRegex + self.locale.dateRegex
+        regex = self.locale.due_date_regex + self.locale.date_regex
         for _date in re.finditer(r"" + regex + "", line):
-            for res in re.finditer(r"" + self.locale.dateRegex + "", line):
+            for res in re.finditer(r"" + self.locale.date_regex + "", line):
                 date = self.format_date(res.group(), position, True)
                 if date and date[0]:
                     self.log.info('Due date found : ' + str(date[0]))

@@ -324,7 +324,7 @@ class Files:
             pass
 
         if not is_number:
-            for res in re.finditer(r"" + self.locale.dateRegex + "", text):
+            for res in re.finditer(r"" + self.locale.date_regex + "", text):
                 date_class = FindDate('', self.log, self.locale, self.config, self, ocr, '', '', '', '', '')
                 date = date_class.format_date(res.group(), (('', ''), ('', '')), True)
                 if date:

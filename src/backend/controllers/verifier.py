@@ -482,17 +482,17 @@ def construct_with_var(data, invoice_info, separator=False):
             else:
                 _data.append(invoice_info[column])
         elif column == 'invoice_date_year':
-            _data.append(datetime.datetime.strptime(invoice_info['datas']['invoice_date'], _locale.formatDate).year)
+            _data.append(datetime.datetime.strptime(invoice_info['datas']['invoice_date'], _locale.format_date).year)
         elif column == 'invoice_date_month':
-            _data.append(datetime.datetime.strptime(invoice_info['datas']['invoice_date'], _locale.formatDate).month)
+            _data.append(datetime.datetime.strptime(invoice_info['datas']['invoice_date'], _locale.format_date).month)
         elif column == 'invoice_date_day':
-            _data.append(datetime.datetime.strptime(invoice_info['datas']['invoice_date'], _locale.formatDate).day)
+            _data.append(datetime.datetime.strptime(invoice_info['datas']['invoice_date'], _locale.format_date).day)
         elif column == 'register_date_year':
-            _data.append(datetime.datetime.strptime(invoice_info['register_date'], _locale.formatDate).year)
+            _data.append(datetime.datetime.strptime(invoice_info['register_date'], _locale.format_date).year)
         elif column == 'register_date_month':
-            _data.append(datetime.datetime.strptime(invoice_info['register_date'], _locale.formatDate).month)
+            _data.append(datetime.datetime.strptime(invoice_info['register_date'], _locale.format_date).month)
         elif column == 'register_date_day':
-            _data.append(datetime.datetime.strptime(invoice_info['register_date'], _locale.formatDate).day)
+            _data.append(datetime.datetime.strptime(invoice_info['register_date'], _locale.format_date).day)
         else:
             if separator:
                 _data.append(column.replace(' ', separator))
