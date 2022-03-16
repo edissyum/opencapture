@@ -115,6 +115,11 @@
 		"multi": "Multi",
 		"simple": "Simple"
 	},
+	"DOCSERVERS": {
+		"docserver_updated": "Docserver updated successfully",
+		"search_docserver": "Search docserver",
+		"update": "Update docserver"
+	},
 	"DOCTYPE": {
 		"add": "Add",
 		"add_doctype": "Add a document type",
@@ -257,6 +262,7 @@
 		"label": "Label",
 		"label_short": "Label short",
 		"output_type": "Output type",
+		"path": "Path",
 		"role": "Role",
 		"status": "Status ",
 		"type": "Type",
@@ -435,6 +441,7 @@
 		"create_supplier": "Create supplier",
 		"custom_fields": "Custom fields",
 		"customers_list": "Customer list",
+		"docservers": "Docservers",
 		"document_type_splitter": "Documents type",
 		"export_suppliers": "Export suppliers",
 		"form_builder": "Create/modify form",
@@ -494,6 +501,7 @@
 		"autocomplete": "Autocomplete id",
 		"configurations": "Configurations",
 		"custom_fields": "Custom fields",
+		"docservers": "Docservers",
 		"document_separator": "Document separator",
 		"document_type": "Document type",
 		"form_builder": "Create form",

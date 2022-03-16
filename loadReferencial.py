@@ -34,7 +34,7 @@ if __name__ == '__main__':
 
     config_name = _Config(args['config'])
     config_file = config_name.cfg['PROFILE']['cfgpath'] + '/config_' + config_name.cfg['PROFILE']['id'] + '.ini'
-    config, locale, log, ocr, database, spreadsheet, smtp = create_classes(config_file)
+    config, locale, log, ocr, database, spreadsheet, smtp, docservers = create_classes(config_file)
 
     file = spreadsheet.referencialSuppplierSpreadsheet
     if args['file']:
@@ -42,20 +42,20 @@ if __name__ == '__main__':
             file = args['file']
 
     mime = mimetypes.guess_type(file)[0]
-    contentSupplierSheet = None
-    existingMimeType = False
+    CONTENT_SUPPLIER_SHEET = None
+    EXISTING_MIME_TYPE = False
     if mime in ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']:
-        contentSupplierSheet = spreadsheet.read_excel_sheet(file)
-        existingMimeType = True
+        CONTENT_SUPPLIER_SHEET = spreadsheet.read_excel_sheet(file)
+        EXISTING_MIME_TYPE = True
     elif mime in ['application/vnd.oasis.opendocument.spreadsheet']:
-        contentSupplierSheet = spreadsheet.read_ods_sheet(file)
-        existingMimeType = True
+        CONTENT_SUPPLIER_SHEET = spreadsheet.read_ods_sheet(file)
+        EXISTING_MIME_TYPE = True
     elif mime in ['text/csv']:
-        contentSupplierSheet = spreadsheet.read_csv_sheet(file)
-        existingMimeType = True
+        CONTENT_SUPPLIER_SHEET = spreadsheet.read_csv_sheet(file)
+        EXISTING_MIME_TYPE = True
 
-    if existingMimeType:
-        spreadsheet.construct_supplier_array(contentSupplierSheet)
+    if EXISTING_MIME_TYPE:
+        spreadsheet.construct_supplier_array(CONTENT_SUPPLIER_SHEET)
 
         # Retrieve the list of existing suppliers in the database
         args = {
@@ -118,9 +118,9 @@ if __name__ == '__main__':
                         'data': [vat_number]
                     })[0]
 
-                    get_only_raw_footer = True
+                    GET_ONLY_RAW_FOOTER = True
                     if spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['get_only_raw_footer']] == 'True':
-                        get_only_raw_footer = False
+                        GET_ONLY_RAW_FOOTER = False
 
                     args = {
                         'table': ['addresses'],
@@ -152,7 +152,7 @@ if __name__ == '__main__':
                             'siren': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['SIREN']]),
                             'siret': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['SIRET']]),
                             'iban': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['IBAN']]),
-                            'get_only_raw_footer': get_only_raw_footer,
+                            'get_only_raw_footer': GET_ONLY_RAW_FOOTER,
                             'address_id': address_id
                         },
                         'where': ['vat_number = %s'],

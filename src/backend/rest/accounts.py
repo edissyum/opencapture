@@ -230,9 +230,10 @@ def get_accouting_plan():
 def get_reference_file():
     _vars = create_classes_from_current_config()
     _cfg = _vars[1]
-    file_path = _cfg.cfg['REFERENCIAL']['referencialsupplierdocumentpath']
+    _docservers = _vars[9]
+    file_path = _docservers['REFERENTIALS_PATH'] + '/' + _cfg.cfg['REFERENCIAL']['referencialsupplierdocument']
     mime = mimetypes.guess_type(file_path)[0]
-    file_content = verifier.get_file_content(os.path.dirname(file_path), os.path.basename(file_path), mime)
+    file_content = verifier.get_file_content('referential_supplier', os.path.basename(file_path), mime)
     return make_response({'filename': os.path.basename(file_path), 'mimetype': mime, 'file': str(base64.b64encode(file_content.get_data()).decode('UTF-8'))}), 200
 
 
@@ -243,6 +244,6 @@ def import_suppliers():
     res = '', 200
     if files:
         for file in files:
-            f = files[file]
-            res = accounts.import_suppliers(f)
+            _f = files[file]
+            res = accounts.import_suppliers(_f)
     return res

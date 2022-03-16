@@ -19,69 +19,68 @@ import json
 
 
 class Locale:
-    def __init__(self, config):
-        self.locale = config.cfg['LOCALE']['locale']
-        self.localeOCR = config.cfg['LOCALE']['localeocr']
-        self.date_path = config.cfg['LOCALE']['localepath']
-        self.arrayDate = []
-        self.dateRegex = ''
-        self.dueDateRegex = ''
-        self.formatDate = ''
-        self.SIRETRegex = ''
-        self.SIRENRegex = ''
-        self.IBANRegex = ''
-        self.VATNumberRegex = ''
-        self.dateTimeFormat = ''
-        self.invoiceRegex = ''
-        self.invoiceSizeMin = ''
-        self.allRatesRegex = ''
-        self.noRatesRegex = ''
-        self.vatRateRegex = ''
-        self.deliveryNumberRegex = ''
-        self.orderNumberRegex = ''
-        self.vatRateList = ''
-        self.vatAmountRegex = ''
+    def __init__(self, configurations, docservers):
+        self.locale = configurations['locale']
+        self.date_path = docservers['LOCALE_PATH']
+        self.array_date = []
+        self.date_regex = ''
+        self.due_date_regex = ''
+        self.format_date = ''
+        self.siret_regex = ''
+        self.siren_regex = ''
+        self.iban_regex = ''
+        self.vat_number_regex = ''
+        self.date_time_format = ''
+        self.invoice_regex = ''
+        self.invoice_size_min = ''
+        self.all_rates_regex = ''
+        self.no_rates_regex = ''
+        self.vat_rate_regex = ''
+        self.delivery_number_regex = ''
+        self.order_number_regex = ''
+        self.vat_rate_list = ''
+        self.vat_amount_regex = ''
 
         with open(self.date_path + self.locale + '.json', encoding='UTF-8') as file:
-            fp = json.load(file)
-            self.arrayDate = fp['dateConvert'] if 'dateConvert' in fp else ''
-            self.dateRegex = fp['dateRegex'] if 'dateRegex' in fp else ''
-            self.dueDateRegex = fp['dueDateRegex'] if 'dueDateRegex' in fp else ''
-            self.VATNumberRegex = fp['VATNumberRegex'] if 'VATNumberRegex' in fp else ''
-            self.formatDate = fp['formatDate'] if 'formatDate' in fp else ''
-            self.dateTimeFormat = fp['dateTimeFormat'] if 'dateTimeFormat' in fp else ''
-            self.SIRETRegex = fp['SIRETRegex'] if 'SIRETRegex' in fp else ''
-            self.SIRENRegex = fp['SIRENRegex'] if 'SIRENRegex' in fp else ''
-            self.IBANRegex = fp['IBANRegex'] if 'IBANRegex' in fp else ''
-            self.invoiceRegex = fp['invoiceRegex'] if 'invoiceRegex' in fp else ''
-            self.invoiceSizeMin = fp['invoiceSizeMin'] if 'invoiceSizeMin' in fp else ''
-            self.allRatesRegex = fp['allRatesRegex'] if 'allRatesRegex' in fp else ''
-            self.noRatesRegex = fp['noRatesRegex'] if 'noRatesRegex' in fp else ''
-            self.vatRateRegex = fp['vatRateRegex'] if 'vatRateRegex' in fp else ''
-            self.deliveryNumberRegex = fp['deliveryNumberRegex'] if 'deliveryNumberRegex' in fp else ''
-            self.orderNumberRegex = fp['orderNumberRegex'] if 'orderNumberRegex' in fp else ''
-            self.vatRateList = fp['vatRateList'] if 'vatRateList' in fp else ''
-            self.vatAmountRegex = fp['vatAmountRegex'] if 'vatAmountRegex' in fp else ''
+            _fp = json.load(file)
+            self.array_date = _fp['dateConvert'] if 'dateConvert' in _fp else ''
+            self.date_regex = _fp['dateRegex'] if 'dateRegex' in _fp else ''
+            self.due_date_regex = _fp['dueDateRegex'] if 'dueDateRegex' in _fp else ''
+            self.vat_number_regex = _fp['VATNumberRegex'] if 'VATNumberRegex' in _fp else ''
+            self.format_date = _fp['formatDate'] if 'formatDate' in _fp else ''
+            self.date_time_format = _fp['dateTimeFormat'] if 'dateTimeFormat' in _fp else ''
+            self.siret_regex = _fp['SIRETRegex'] if 'SIRETRegex' in _fp else ''
+            self.siren_regex = _fp['SIRENRegex'] if 'SIRENRegex' in _fp else ''
+            self.iban_regex = _fp['IBANRegex'] if 'IBANRegex' in _fp else ''
+            self.invoice_regex = _fp['invoiceRegex'] if 'invoiceRegex' in _fp else ''
+            self.invoice_size_min = _fp['invoiceSizeMin'] if 'invoiceSizeMin' in _fp else ''
+            self.all_rates_regex = _fp['allRatesRegex'] if 'allRatesRegex' in _fp else ''
+            self.no_rates_regex = _fp['noRatesRegex'] if 'noRatesRegex' in _fp else ''
+            self.vat_rate_regex = _fp['vatRateRegex'] if 'vatRateRegex' in _fp else ''
+            self.delivery_number_regex = _fp['deliveryNumberRegex'] if 'deliveryNumberRegex' in _fp else ''
+            self.order_number_regex = _fp['orderNumberRegex'] if 'orderNumberRegex' in _fp else ''
+            self.vat_rate_list = _fp['vatRateList'] if 'vatRateList' in _fp else ''
+            self.vat_amount_regex = _fp['vatAmountRegex'] if 'vatAmountRegex' in _fp else ''
 
     def get(self):
         array_locale = {
-            'arrayDate': self.arrayDate,
-            'dateRegex': self.dateRegex,
-            'dueDateRegex': self.dueDateRegex,
-            'VATNumberRegex': self.VATNumberRegex,
-            'formatDate': self.formatDate,
-            'dateTimeFormat': self.dateTimeFormat,
-            'SIRETRegex': self.SIRETRegex,
-            'SIRENRegex': self.SIRENRegex,
-            'IBANRegex': self.IBANRegex,
-            'invoiceRegex': self.invoiceRegex,
-            'invoiceSizeMin': self.invoiceSizeMin,
-            'allRatesRegex': self.allRatesRegex,
-            'noRatesRegex': self.noRatesRegex,
-            'vatRateRegex': self.vatRateRegex,
-            'deliveryNumberRegex': self.deliveryNumberRegex,
-            'orderNumberRegex': self.orderNumberRegex,
-            'vatRateList': self.vatRateList,
-            'vatAmountRegex': self.vatAmountRegex,
+            'arrayDate': self.array_date,
+            'dateRegex': self.date_regex,
+            'dueDateRegex': self.due_date_regex,
+            'VATNumberRegex': self.vat_number_regex,
+            'formatDate': self.format_date,
+            'dateTimeFormat': self.date_time_format,
+            'SIRETRegex': self.siret_regex,
+            'SIRENRegex': self.siren_regex,
+            'IBANRegex': self.iban_regex,
+            'invoiceRegex': self.invoice_regex,
+            'invoiceSizeMin': self.invoice_size_min,
+            'allRatesRegex': self.all_rates_regex,
+            'noRatesRegex': self.no_rates_regex,
+            'vatRateRegex': self.vat_rate_regex,
+            'deliveryNumberRegex': self.delivery_number_regex,
+            'orderNumberRegex': self.order_number_regex,
+            'vatRateList': self.vat_rate_list,
+            'vatAmountRegex': self.vat_amount_regex,
         }
         return array_locale

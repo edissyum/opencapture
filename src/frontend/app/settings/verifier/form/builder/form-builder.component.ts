@@ -782,7 +782,7 @@ export class FormBuilderComponent implements OnInit {
         const previousUnit = event.previousContainer.id;
 
         if (event.previousContainer === event.container) {
-            moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+            if (event.container.data) moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
         } else {
             transferArrayItem(event.previousContainer.data ? event.previousContainer.data : this.fields[previousUnit],
                 event.container.data ? event.container.data : this.fields[unit],

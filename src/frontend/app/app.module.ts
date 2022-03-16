@@ -99,6 +99,7 @@ import { CreateDocTypeComponent } from './settings/splitter/doc-types/create/cre
 import { ListDocTypeComponent } from './settings/splitter/doc-types/list/list-doc-type.component';
 import { CreateFolderDocTypeComponent } from './settings/splitter/doc-types/create-folder/create-folder-doc-type.component';
 import { ConfigurationsComponent } from './settings/general/configurations/configurations.component';
+import { DocserversComponent } from './settings/general/docservers/docservers.component';
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -163,7 +164,8 @@ export function createTranslateLoader(http: HttpClient) {
         CreateDocTypeComponent,
         ListDocTypeComponent,
         CreateFolderDocTypeComponent,
-        ConfigurationsComponent
+        ConfigurationsComponent,
+        DocserversComponent
     ],
     imports: [
         BrowserModule,

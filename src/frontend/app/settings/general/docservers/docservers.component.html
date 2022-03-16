@@ -83,51 +83,36 @@
                 <h3>{{ this.serviceSettings.getTitle() }}</h3>
                 <div class="absolute right-4 top-0">
                     <mat-form-field appearance="outline">
-                        <mat-label>{{ 'CONFIGURATIONS.search_config' | translate }}</mat-label>
-                        <input matInput type="text" (keyup)="searchConfiguration($event)">
+                        <mat-label>{{ 'DOCSERVERS.search_docserver' | translate }}</mat-label>
+                        <input matInput type="text" (keyup)="searchDocservers($event)">
                     </mat-form-field>
                 </div>
                 <hr class="border-green-400">
             </div>
         </div>
         <div *ngIf="!loading" class="w-full">
-            <mat-table matSort [dataSource]="configurations" (matSortChange)="sortData($event)">
+            <mat-table matSort [dataSource]="docservers" (matSortChange)="sortData($event)">
                 <ng-container matColumnDef="id">
                     <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'HEADER.id' | translate }} </mat-header-cell>
                     <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="label">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'HEADER.label' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{element.label}} </mat-cell>
+                <ng-container matColumnDef="docserver_id">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'HEADER.label_short' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.docserver_id}} </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="description">
                     <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'HEADER.description' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{element.data.description}} </mat-cell>
+                    <mat-cell *matCellDef="let element"> {{element.description}} </mat-cell>
                 </ng-container>
-                <ng-container matColumnDef="type">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'HEADER.type' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element"> {{element.data.label_type | translate }} </mat-cell>
-                </ng-container>
-                <ng-container matColumnDef="value">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'HEADER.value' | translate }} </mat-header-cell>
+                <ng-container matColumnDef="path">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'HEADER.path' | translate }} </mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         <ng-container *ngIf="!element.updateMode else update">
-                            {{ element.data.value }}
+                            {{ element.path }}
                         </ng-container>
                         <ng-template #update>
-                            <mat-form-field appearance="outline" *ngIf="element.data.type === 'bool'">
-                                <mat-select class="relative -top-2" [(ngModel)]="element.data.value"
-                                            (selectionChange)="updateValue($event, element.id)">
-                                    <mat-option [value]="'True'">True</mat-option>
-                                    <mat-option [value]="'False'">False</mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                            <mat-form-field appearance="outline" *ngIf="element.data.type === 'int' || element.data.type === 'float'">
-                                <input matInput type="number" [value]="element.data.value"
-                                       class="relative -top-2.5" (focusout)="updateValue($event, element.id)">
-                            </mat-form-field>
-                            <mat-form-field appearance="outline" *ngIf="element.data.type === 'string'">
-                                <input matInput [value]="element.data.value"
+                            <mat-form-field appearance="outline" class="w-full">
+                                <input matInput [value]="element.path"
                                        class="relative -top-2.5" (focusout)="updateValue($event, element.id)">
                             </mat-form-field>
                         </ng-template>
@@ -138,7 +123,7 @@
                     <mat-cell *matCellDef="let element">
                         <button *ngIf="!element.updateMode"
                                 (click)="element.updateMode = true"
-                                matTooltip="{{ 'CONFIGURATIONS.update' | translate }}" mat-icon-button
+                                matTooltip="{{ 'DOCSERVERS.update' | translate }}" mat-icon-button
                                 class="inline-block align-text-top">
                             <i class="fas fa-edit fa-lg"></i>
                         </button>

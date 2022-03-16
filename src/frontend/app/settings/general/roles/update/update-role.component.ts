@@ -125,6 +125,7 @@ export class UpdateRoleComponent implements OnInit {
         marker('PRIVILEGES.forms_list_splitter'),
         marker('PRIVILEGES.statistics'),
         marker('PRIVILEGES.configurations'),
+        marker('PRIVILEGES.docservers')
     ];
     // End translation
     constructor(

@@ -55,7 +55,7 @@ def check_python_customized_files(path):
     return array_of_import
 
 
-def search_custom_positions(data, ocr, files, locale, file, config):
+def search_custom_positions(data, ocr, files, locale, file, docservers):
     regex = data['regex']
     target = data['target'].lower()
     position = data['position']
@@ -69,7 +69,7 @@ def search_custom_positions(data, ocr, files, locale, file, config):
             else:
                 target_file = files.jpg_name
         elif data['page'] != '1':
-            nb_pages = files.get_pages(file, config)
+            nb_pages = files.get_pages(file, docservers)
             if str(nb_pages) == str(data['page']):
                 if target == 'footer':
                     target_file = files.jpg_name_last_footer

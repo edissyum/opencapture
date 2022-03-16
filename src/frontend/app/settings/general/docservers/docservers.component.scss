@@ -1,0 +1,31 @@
+.mat-column-actions {
+    flex: 0 0 5%;
+}
+
+.mat-column-id {
+    flex: 0 0 10%;
+}
+
+.mat-column-docserver_id {
+    flex: 0 0 15%;
+}
+
+.mat-column-description {
+    flex: 0 0 40%;
+}
+
+.mat-column-path {
+    & ::ng-deep .mat-form-field-wrapper {
+        @apply pt-2;
+        @apply pb-2;
+
+        & .mat-form-field-infix {
+            max-height: 1vh !important;
+
+            & .mat-select-value {
+                @apply relative;
+                @apply -top-0.5;
+            }
+        }
+    }
+}

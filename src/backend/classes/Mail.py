@@ -251,7 +251,7 @@ class Mail:
         return args
 
     @staticmethod
-    def move_batch_to_error(batch_path, error_path, smtp, process, msg, config):
+    def move_batch_to_error(batch_path, error_path, smtp, process, msg, config, docservers):
         """
         If error in batch process, move the batch folder into error folder
 
@@ -274,7 +274,7 @@ class Mail:
                 smtp.send_email(
                     message='    - Nom du batch : ' + os.path.basename(batch_path) + '/ \n' +
                             '    - Nom du process : ' + process + '\n' +
-                            '    - Chemin vers le batch en erreur : ' + config.cfg['GLOBAL']['projectpath'] +
+                            '    - Chemin vers le batch en erreur : ' + docservers['PROJECT_PATH'] +
                             'bin/data/MailCollect/_ERROR/' + process + '/' + os.path.basename(error_path) + '/' +
                             os.path.basename(batch_path) + ' \n' +
                             '    - Sujet du mail : ' + msg['subject'] + '\n' +

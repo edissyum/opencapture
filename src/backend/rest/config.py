@@ -42,9 +42,28 @@ def get_configurations():
     if 'search' in request.args and request.args['search']:
         args['where'].append(
             "LOWER(label) LIKE '%%" + request.args['search'].lower() + "%%' OR "
-                                                                       "LOWER(data ->> 'description') LIKE '%%" + request.args['search'].lower() + "%%'"
+            "LOWER(data ->> 'description') LIKE '%%" + request.args['search'].lower() + "%%'"
         )
     res = config.retrieve_configurations(args)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('config/getDocservers', methods=['GET'])
+@auth.token_required
+def get_docservers():
+    args = {
+        'select': ['*', 'count(*) OVER() as total'],
+        'where': [],
+        'offset': request.args['offset'] if 'offset' in request.args else '',
+        'limit': request.args['limit'] if 'limit' in request.args else ''
+    }
+
+    if 'search' in request.args and request.args['search']:
+        args['where'].append(
+            "LOWER(label) LIKE '%%" + request.args['search'].lower() + "%%' OR "
+            "LOWER(data ->> 'description') LIKE '%%" + request.args['search'].lower() + "%%'"
+        )
+    res = config.retrieve_docservers(args)
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -53,6 +72,14 @@ def get_configurations():
 def update_configuration(configuration_id):
     data = request.json['data']
     res = config.update_configuration(data, configuration_id)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('config/updateDocserver/<int:docserver_id>', methods=['PUT'])
+@auth.token_required
+def update_docserver(docserver_id):
+    data = request.json['data']
+    res = config.update_docserver(data, docserver_id)
     return make_response(jsonify(res[0])), res[1]
 
 

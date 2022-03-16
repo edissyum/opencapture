@@ -22,10 +22,10 @@ from pyexcel_ods3 import get_data, save_data
 
 
 class Spreadsheet:
-    def __init__(self, log, config):
+    def __init__(self, log, docservers, config):
         self.log = log
-        self.referencialSuppplierSpreadsheet = config.cfg['REFERENCIAL']['referencialsupplierdocumentpath']
-        self.referencialSuppplierIndex = config.cfg['REFERENCIAL']['referencialsupplierindexpath']
+        self.referencialSuppplierSpreadsheet = docservers['REFERENTIALS_PATH'] + '/' + config.cfg['REFERENCIAL']['referencialsupplierdocument']
+        self.referencialSuppplierIndex = docservers['REFERENTIALS_PATH'] + '/' + config.cfg['REFERENCIAL']['referencialsupplierindex']
         self.referencialSupplierArray = {}
         self.referencialSupplierData = {}
 
