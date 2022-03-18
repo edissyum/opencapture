@@ -13,7 +13,7 @@
 	"ACCOUNTS": {
 		"choose_input_upload": "Choose input upload",
 		"company_number": "Company number",
-		"confirm_delete_customer": "Are you sure you want to delete the custom account <b>{{ customer }}</b> ?",
+		"confirm_delete_customer": "Are you sure you want to delete the customer account <b>{{ customer }}</b> ?",
 		"confirm_delete_supplier": "Are you sure you want to delete the supplier customer <b>{{ supplier }}</b> ?",
 		"confirm_delete_supplier_positions": "Are you sure you want to delete the supplier customer <b>{{ supplier }}</b> ?",
 		"confirm_skip_auto_validate": "Are you sure you want to skip the next automatic validation <b>{{ supplier }}</b> ?",
@@ -643,6 +643,7 @@
 		"invoice_refused": "Invoice refused",
 		"invoices_deleted": "Invoice(s) deleted successfully",
 		"list": "Invoices",
+		"loading_customers": "Loading customers accounts",
 		"nb_pages": "Number of pages",
 		"no_form_available": "No form available",
 		"no_outputs_for_this_form": "No outputs for this form",
