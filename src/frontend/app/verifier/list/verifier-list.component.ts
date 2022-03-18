@@ -148,8 +148,6 @@ export class VerifierListComponent implements OnInit {
     isNotLevelOne = (_: number, node: flatNode) => node.level !== 1;
 
     async ngOnInit() {
-        console.log(this.dataSource);
-        console.log(this.dataSource.data.length);
         marker('VERIFIER.nb_pages'); // Needed to get the translation in the JSON file
         marker('VERIFIER.expand_all'); // Needed to get the translation in the JSON file
         marker('VERIFIER.collapse_all'); // Needed to get the translation in the JSON file
