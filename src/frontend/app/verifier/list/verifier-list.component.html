@@ -89,7 +89,7 @@
                         <span class="cursor-pointer" (click)="selectOrUnselectAllInvoices($event)"
                               [innerHTML]="this.invoiceToDeleteSelected ? this.translate.instant('VERIFIER.unselect_all') : this.translate.instant('VERIFIER.select_all')">
                         </span>
-                        <span [class.hidden]="this.totalChecked === 0"> ({{ this.totalChecked}})</span>
+                        <span [class.hidden]="this.totalChecked === 0"> ({{ this.totalChecked }})</span>
                         <span [class.hidden]="!this.invoiceToDeleteSelected" (click)="$event.stopPropagation();deleteAllConfirmDialog()">
                             <i class="fas fa-trash ml-2 text-red-500 cursor-pointer" matTooltip="{{ 'VERIFIER.delete_all_checked' | translate }}"></i>
                         </span>

@@ -29,7 +29,7 @@
                 <span class="pl-1 font-normal">
                 <span *ngIf="node.isDefault" class="absolute top-4 right-4" matBadge="0" matBadgeSize="small"
                       matBadgeOverlap="false"></span>
-                        {{node.label}}
+                        {{ node.label }}
                 </span>
             </button>
         </mat-tree-node>
@@ -40,7 +40,7 @@
                     (click)="selectFolder(node)">
                 <i [ngClass]="treeControl.isExpanded(node) ? 'fa fa-minus-square' : 'fa fa-plus-square'">
                 </i>
-                <span class="pl-1 font-normal">{{node.label}}</span>
+                <span class="pl-1 font-normal">{{ node.label }}</span>
             </button>
         </mat-tree-node>
     </mat-tree>

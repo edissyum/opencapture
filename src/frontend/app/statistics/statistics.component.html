@@ -14,7 +14,7 @@
                 <mat-form-field class="w-1/4">
                     <mat-select (selectionChange)="changeStatistic($event)"
                                 [placeholder]="'STATISTICS.choose_statistic_report' | translate">
-                        <mat-option *ngFor="let option of options" [value]="option['id']">{{ option['label'] | translate}}</mat-option>
+                        <mat-option *ngFor="let option of options" [value]="option['id']">{{ option['label'] | translate }}</mat-option>
                     </mat-select>
                 </mat-form-field>
                 <mat-form-field class="ml-4 w-1/4">
@@ -22,7 +22,7 @@
                                 (selectionChange)="changeDiagramType($event)"
                                 [placeholder]="'STATISTICS.choose_diagram' | translate">
                         <mat-option *ngFor="let option of diagramTypes" [value]="option['id']">
-                            {{ option['label'] | translate}} <i class="fas {{ option['logo'] }} ml-2"></i>
+                            {{ option['label'] | translate }} <i class="fas {{ option['logo'] }} ml-2"></i>
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
