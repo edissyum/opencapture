@@ -18,7 +18,8 @@
             <app-loader></app-loader>
         </div>
         <ngx-file-drag-drop
-                [disabled]="this.sending"
+                [class.pointer-events-none]="this.sending"
+                [class.disabled]="this.sending"
                 [formControl]="fileControl"
                 [activeBorderColor]="'#97BF3D'"
                 [multiple]="true"

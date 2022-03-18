@@ -117,7 +117,7 @@
                             [class.settings_active]="location.path().includes('accounts/suppliers')"
                             [matTooltip]="'ACCOUNTS.suppliers_list' | translate"
                             class="bg-green-400 hover:ring-4 hover:ring-offset-4 hover:ring-green-400 hover:ring-opacity-60">
-                        <i class="fas fa-building"></i>
+                        <i class="fas fa-city"></i>
                     </button>
                 </div>
                 <div class="ml-3 relative" *ngIf="this.privilegesService.hasPrivilege('customers_list')">
@@ -125,7 +125,7 @@
                             [class.settings_active]="location.path().includes('accounts/customers')"
                             [matTooltip]="'ACCOUNTS.customers_list' | translate"
                             class="bg-green-400 hover:ring-4 hover:ring-offset-4 hover:ring-green-400 hover:ring-opacity-60">
-                        <i class="fas fa-user"></i>
+                        <i class="fas fa-users"></i>
                     </button>
                 </div>
                 <div class="ml-3 relative" *ngIf="this.privilegesService.hasPrivilege('change_language')">

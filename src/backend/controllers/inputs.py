@@ -14,7 +14,6 @@
 # along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
-
 import os
 import stat
 from flask_babel import gettext
@@ -38,10 +37,10 @@ def get_inputs(args):
 def update_input(input_id, data):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
-    input_info, error = inputs.get_input_by_id({'input_id': input_id})
+    _, error = inputs.get_input_by_id({'input_id': input_id})
 
     if error is None:
-        res, error = inputs.update_input({'set': data, 'input_id': input_id})
+        _, error = inputs.update_input({'set': data, 'input_id': input_id})
 
         if error is None:
             return '', 200
@@ -124,7 +123,7 @@ def get_input_by_id(input_id):
 
 
 def get_input_by_form_id(form_id):
-    input_info, error = inputs.get_input_by_form_id({'form_id': form_id})
+    input_info, _ = inputs.get_input_by_form_id({'form_id': form_id})
 
     return input_info, 200
 
@@ -195,28 +194,30 @@ def create_script_and_incron(args):
     if os.path.isdir(folder_script):
         script_name = args['input_id'] + '.sh'
         if os.path.isfile(folder_script + '/script_sample_dont_touch.sh'):
-            script_sample = open(folder_script + '/script_sample_dont_touch.sh', 'r', encoding='utf-8')
-            script_sample_content = script_sample.read()
             new_script_filename = folder_script + '/' + script_name
-            new_script_file = open(new_script_filename, 'w+')
-            for line in script_sample_content.split('\n'):
-                corrected_line = line.replace('§§SCRIPT_NAME§§', script_name.replace('.sh', ''))
-                corrected_line = corrected_line.replace('§§OC_PATH§§', _docservers['PROJECT_PATH'] + '/')
-                corrected_line = corrected_line.replace('"§§ARGUMENTS§§"', arguments)
-                new_script_file.write(corrected_line + '\n')
-            script_sample.close()
-            new_script_file.close()
+            with open(folder_script + '/script_sample_dont_touch.sh', 'r', encoding='utf-8') as script_sample:
+                script_sample_content = script_sample.read()
+            with open(new_script_filename, 'w+', encoding='utf-8') as new_script_file:
+                for line in script_sample_content.split('\n'):
+                    corrected_line = line.replace('§§SCRIPT_NAME§§', script_name.replace('.sh', ''))
+                    corrected_line = corrected_line.replace('§§OC_PATH§§', _docservers['PROJECT_PATH'] + '/')
+                    corrected_line = corrected_line.replace('"§§ARGUMENTS§§"', arguments)
+                    new_script_file.write(corrected_line + '\n')
             os.chmod(new_script_filename, os.stat(new_script_filename).st_mode | stat.S_IEXEC)
 
             ######
             # CREATE OR UPDATE FS WATCHER CONFIG
             ######
-            if not os.path.exists(args['input_folder']) or not os.access(args['input_folder'], os.W_OK):
-                response = {
-                    "errors": gettext('FS_WATCHER_CREATION_ERROR'),
-                    "message": gettext('INPUT_FOLDER_DOESNT_EXISTS_OR_NOT_WRITEABLE')
-                }
-                return response, 501
+
+            if not os.path.exists(args['input_folder']):
+                try:
+                    os.mkdir(args['input_folder'], mode=0o777)
+                except PermissionError:
+                    response = {
+                        "errors": gettext('FS_WATCHER_CREATION_ERROR'),
+                        "message": gettext('CAN_NOT_CREATE_FOLDER_PERMISSION_ERROR')
+                    }
+                    return response, 501
 
             if os.path.isfile(_cfg.cfg['GLOBAL']['watcherconfig']):
                 fs_watcher_config = _Config(_cfg.cfg['GLOBAL']['watcherconfig'], interpolation=False)

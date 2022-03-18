@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2022-03-01 15:57+0100\n"
+"POT-Creation-Date: 2022-03-18 10:18+0100\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: en\n"
@@ -92,7 +92,7 @@ msgstr "Error deleting customer"
 msgid "DELETE_SUPPLIER_ERROR"
 msgstr "Error deleting supplier"
 
-#: src/backend/controllers/accounts.py:440
+#: src/backend/controllers/accounts.py:441
 msgid "LOAD_SUPPLIER_REFERENCIAL_ERROR"
 msgstr "Error while loading supplier referencial"
 
@@ -105,19 +105,15 @@ msgstr "Login error"
 msgid "JWT_ERROR"
 msgstr "Authentification by token error"
 
-#: src/backend/controllers/config.py:46
-msgid "CHANGE_LOCALE_ERROR"
-msgstr "Error while changing locale"
-
-#: src/backend/controllers/doctypes.py:120
+#: src/backend/controllers/doctypes.py:131
 msgid "DOCTYPESEPARATOR"
 msgstr "SEPARATEUR AVEC TYPE DE DOCUMENT / SEPARATOR WITH DOCUMENT TYPE"
 
-#: src/backend/controllers/doctypes.py:123
+#: src/backend/controllers/doctypes.py:134
 msgid "DOCUMENTSEPARATOR"
 msgstr "SEPARATEUR DE DOCUMENT / DOCUMENT SEPARATOR"
 
-#: src/backend/controllers/doctypes.py:126
+#: src/backend/controllers/doctypes.py:137
 msgid "BUNDLESEPARATOR"
 msgstr "SEPARATEUR DE LOT / BUNDLE SEPARATOR"
 
@@ -159,52 +155,52 @@ msgstr "Error updating form fields"
 msgid "ADD_HISTORY_ERROR"
 msgstr "Error while adding new history"
 
-#: src/backend/controllers/inputs.py:50 src/backend/controllers/inputs.py:56
+#: src/backend/controllers/inputs.py:52 src/backend/controllers/inputs.py:58
 msgid "UPDATE_INPUT_ERROR"
 msgstr "Error while updating input"
 
-#: src/backend/controllers/inputs.py:83 src/backend/controllers/inputs.py:94
-#: src/backend/controllers/inputs.py:107
+#: src/backend/controllers/inputs.py:85 src/backend/controllers/inputs.py:96
+#: src/backend/controllers/inputs.py:109
 msgid "CREATE_INPUT_ERROR"
 msgstr "Error while creating input"
 
-#: src/backend/controllers/inputs.py:84
+#: src/backend/controllers/inputs.py:86
 msgid "INPUT_ID_ALREADY_EXISTS"
 msgstr "The label short already exists"
 
-#: src/backend/controllers/inputs.py:95
+#: src/backend/controllers/inputs.py:97
 msgid "INPUT_FOLDER_ALREADY_EXISTS"
 msgstr "The document capture path is already set in another input"
 
-#: src/backend/controllers/inputs.py:120
+#: src/backend/controllers/inputs.py:122
 msgid "GET_INPUT_BY_ID_ERROR"
 msgstr "Error while retrieving input"
 
-#: src/backend/controllers/inputs.py:144 src/backend/controllers/inputs.py:150
+#: src/backend/controllers/inputs.py:146 src/backend/controllers/inputs.py:152
 msgid "DELETE_INPUT_ERROR"
 msgstr "Error while deleting input"
 
-#: src/backend/controllers/inputs.py:178
+#: src/backend/controllers/inputs.py:181
 msgid "FS_WATCHER_DELETION_ERROR"
 msgstr "Error while deleting fs watcher settings"
 
-#: src/backend/controllers/inputs.py:179 src/backend/controllers/inputs.py:233
+#: src/backend/controllers/inputs.py:182 src/backend/controllers/inputs.py:241
 msgid "FS_WATCHER_CONFIG_DOESNT_EXIST"
 msgstr "Fs watcher config doesnt exists"
 
-#: src/backend/controllers/inputs.py:214 src/backend/controllers/inputs.py:232
+#: src/backend/controllers/inputs.py:222 src/backend/controllers/inputs.py:240
 msgid "FS_WATCHER_CREATION_ERROR"
 msgstr "Error while creating fs watcher settings"
 
-#: src/backend/controllers/inputs.py:215
-msgid "INPUT_FOLDER_DOESNT_EXISTS_OR_NOT_WRITEABLE"
-msgstr "Input folder doesnt exists or it's not writeable"
+#: src/backend/controllers/inputs.py:223
+msgid "CAN_NOT_CREATE_FOLDER_PERMISSION_ERROR"
+msgstr "Cannot create folder because of permission issue"
 
-#: src/backend/controllers/inputs.py:238
+#: src/backend/controllers/inputs.py:246
 msgid "SCRIPT_SAMPLE_DOESNT_EXISTS"
 msgstr "Script sample doesn't exists"
 
-#: src/backend/controllers/inputs.py:244
+#: src/backend/controllers/inputs.py:252
 msgid "SCRIPT_FOLDER_DOESNT_EXISTS"
 msgstr "Script folder doesn't exists"
 
@@ -302,52 +298,59 @@ msgid "ENABLE_ROLE_ERROR"
 msgstr "Error while enabling role"
 
 #: src/backend/controllers/splitter.py:68
-#: src/backend/controllers/verifier.py:73
+#: src/backend/controllers/verifier.py:75
 msgid "AT"
 msgstr "at"
 
-#: src/backend/controllers/splitter.py:210
-#: src/backend/controllers/splitter.py:216
-#: src/backend/controllers/splitter.py:217
-#: src/backend/controllers/verifier.py:437
-#: src/backend/controllers/verifier.py:443
-#: src/backend/controllers/verifier.py:449
+#: src/backend/controllers/splitter.py:178
+#: src/backend/controllers/splitter.py:329
+msgid "ADD_DOCUMENT_ERROR"
+msgstr "Error while adding document"
+
+#: src/backend/controllers/splitter.py:229
+#: src/backend/controllers/splitter.py:235
+#: src/backend/controllers/verifier.py:439
+#: src/backend/controllers/verifier.py:445
+#: src/backend/controllers/verifier.py:451
 msgid "EXPORT_MAARCH_ERROR"
 msgstr "Error during Maarch export"
 
-#: src/backend/controllers/splitter.py:222
-#: src/backend/controllers/splitter.py:223
-#: src/backend/controllers/verifier.py:461
+#: src/backend/controllers/splitter.py:241
+#: src/backend/controllers/verifier.py:463
 msgid "MAARCH_WS_INFO_EMPTY"
 msgstr "Maarch informations are empty"
 
-#: src/backend/controllers/splitter.py:249
+#: src/backend/controllers/splitter.py:267
 msgid "EXPORT_PDF_ERROR"
 msgstr "Error while exporting PDF"
 
-#: src/backend/controllers/splitter.py:266
-#: src/backend/controllers/splitter.py:380
-#: src/backend/controllers/splitter.py:399
-#: src/backend/controllers/verifier.py:553
+#: src/backend/controllers/splitter.py:284
+#: src/backend/controllers/splitter.py:493
+#: src/backend/controllers/splitter.py:512
+#: src/backend/controllers/verifier.py:555
 msgid "EXPORT_XML_ERROR"
 msgstr "Error while exporting XML"
 
-#: src/backend/controllers/splitter.py:282
-#: src/backend/controllers/splitter.py:283
+#: src/backend/controllers/splitter.py:304
 msgid "UPDATE_BATCH_ERROR"
 msgstr "Error while updating batch"
 
-#: src/backend/controllers/splitter.py:298
-#: src/backend/controllers/splitter.py:299
+#: src/backend/controllers/splitter.py:345
 msgid "UPDATE_DOCUMENT_ERROR"
 msgstr "Error while updating document"
 
-#: src/backend/controllers/splitter.py:311
+#: src/backend/controllers/splitter.py:365
+#: src/backend/controllers/splitter.py:380
+#: src/backend/controllers/splitter.py:394
+msgid "UPDATE_PAGES_ERROR"
+msgstr "Error while updating pages"
+
+#: src/backend/controllers/splitter.py:407
 msgid "CMIS_CONNECTION_ERROR"
 msgstr "Errur while connecting to CMIS"
 
-#: src/backend/controllers/splitter.py:460
-#: src/backend/controllers/verifier.py:689 src/backend/models/splitter.py:402
+#: src/backend/controllers/splitter.py:573
+#: src/backend/controllers/verifier.py:703 src/backend/models/splitter.py:442
 #: src/backend/models/verifier.py:134
 msgid "GET_TOTALS_ERROR"
 msgstr "Error while retrievings totals"
@@ -398,59 +401,59 @@ msgstr "Error while updating user customers"
 msgid "GET_INVOICE_BY_ID_ERROR"
 msgstr "Error while retrieving invoice"
 
-#: src/backend/controllers/verifier.py:161
-#: src/backend/controllers/verifier.py:251
+#: src/backend/controllers/verifier.py:163
+#: src/backend/controllers/verifier.py:253
 msgid "UPDATE_INVOICE_POSITIONS_ERROR"
 msgstr "Error while updating invoice positions"
 
-#: src/backend/controllers/verifier.py:186
-#: src/backend/controllers/verifier.py:271
+#: src/backend/controllers/verifier.py:188
+#: src/backend/controllers/verifier.py:273
 msgid "UPDATE_INVOICE_PAGES_ERROR"
 msgstr "Error while updating invoice pages"
 
-#: src/backend/controllers/verifier.py:210
-#: src/backend/controllers/verifier.py:230
+#: src/backend/controllers/verifier.py:212
+#: src/backend/controllers/verifier.py:232
 msgid "UPDATE_INVOICE_DATA_ERROR"
 msgstr "Error while updating invoice datas"
 
-#: src/backend/controllers/verifier.py:288
-#: src/backend/controllers/verifier.py:294
+#: src/backend/controllers/verifier.py:290
+#: src/backend/controllers/verifier.py:296
 msgid "DELETE_INVOICE_ERROR"
 msgstr "Error while deleting invoice"
 
-#: src/backend/controllers/verifier.py:312
-#: src/backend/controllers/verifier.py:318
+#: src/backend/controllers/verifier.py:314
+#: src/backend/controllers/verifier.py:320
 msgid "UPDATE_INVOICE_ERROR"
 msgstr "Error while updating invoice"
 
-#: src/backend/controllers/verifier.py:338
+#: src/backend/controllers/verifier.py:340
 msgid "REMOVE_LOCK_BY_USER_ID_ERROR"
 msgstr "Error while removing lock on invoice"
 
-#: src/backend/controllers/verifier.py:444
+#: src/backend/controllers/verifier.py:446
 msgid "PDF_FILE_NOT_FOUND"
 msgstr "PDF file not found"
 
-#: src/backend/controllers/verifier.py:455
+#: src/backend/controllers/verifier.py:457
 msgid "MAARCH_WS_INFO_WRONG"
 msgstr "Maarch informations are wrong"
 
-#: src/backend/controllers/verifier.py:547
+#: src/backend/controllers/verifier.py:549
 msgid "XML_DESTINATION_FOLDER_DOESNT_EXISTS"
 msgstr "Destination folder for XML doesn't exists"
 
-#: src/backend/controllers/verifier.py:617
-#: src/backend/controllers/verifier.py:620
-#: src/backend/controllers/verifier.py:633
-#: src/backend/controllers/verifier.py:650
+#: src/backend/controllers/verifier.py:631
+#: src/backend/controllers/verifier.py:634
+#: src/backend/controllers/verifier.py:647
+#: src/backend/controllers/verifier.py:664
 msgid "API_INSEE_ERROR_CONNEXION"
 msgstr "Error while connecting to INSEE API"
 
-#: src/backend/controllers/verifier.py:672
+#: src/backend/controllers/verifier.py:686
 msgid "VAT_NOT_VALID"
 msgstr "VAT number not valid"
 
-#: src/backend/controllers/verifier.py:676
+#: src/backend/controllers/verifier.py:690
 msgid "VAT_API_ERROR"
 msgstr "API for VAT number unreachable"
 
@@ -473,6 +476,14 @@ msgstr "User deleted"
 #: src/backend/models/auth.py:41
 msgid "USER_DISABLED"
 msgstr "User disabled"
+
+#: src/backend/models/config.py:100
+msgid "UPDATE_CONFIGURATION_ERROR"
+msgstr "Error while updating configuration"
+
+#: src/backend/models/config.py:122
+msgid "UPDATE_DOCSERVER_ERROR"
+msgstr "Error while updating docserver"
 
 #: src/backend/models/custom_fields.py:45
 msgid "ADD_CUSTOM_FIELD_ERROR"
@@ -590,6 +601,46 @@ msgstr "Error while updating role privileges"
 msgid "ROLE_PRIVILEGES_CREATE_ERROR"
 msgstr "Error while creating role privileges"
 
+#: src/backend/models/splitter.py:70
+msgid "GET_MAX_SPLIT_INDEX_ERROR"
+msgstr "Error while getting splitter index"
+
+#: src/backend/models/splitter.py:110
+msgid "GET_DEMAND_NUMBER_ERROR"
+msgstr "Error while getting splitter demand number"
+
+#: src/backend/models/splitter.py:129
+msgid "UPDATE_SETTINGS_ERROR"
+msgstr "Error while updating splitter settings"
+
+#: src/backend/models/splitter.py:150
+msgid "INSERT_REFERENTIAL_ERROR"
+msgstr "Error while inserting splitter referential"
+
+#: src/backend/models/splitter.py:171
+msgid "INSERT_PAGE_ERROR"
+msgstr "Error while inserting splitter pages"
+
+#: src/backend/models/splitter.py:229
+msgid "GET_BATCH_ERROR"
+msgstr "Error while getting splitter batches"
+
+#: src/backend/models/splitter.py:248
+msgid "GET_DOCUMENTS_ERROR"
+msgstr "Error while getting splitter documents"
+
+#: src/backend/models/splitter.py:267
+msgid "GET_PAGES_ERROR"
+msgstr "Error while getting splitter pages"
+
+#: src/backend/models/splitter.py:285
+msgid "GET_MAX_SOURCE_PAGE_VALUE_ERROR"
+msgstr "Error while getting splitter source pages value"
+
+#: src/backend/models/splitter.py:322
+msgid "GET_DOCUMENT_MAX_SPLIT_INDEX_ERROR"
+msgstr "Error while getting splitter maximum index"
+
 #: src/backend/models/status.py:34
 msgid "NO_STATUS"
 msgstr "No status"
@@ -616,4 +667,10 @@ msgstr "Unknow error"
 
 #~ msgid "ADD_DOC_TYPE_ERROR"
 #~ msgstr "Error lors de l'ajout du type de document"
+
+#~ msgid "CHANGE_LOCALE_ERROR"
+#~ msgstr "Error while changing locale"
+
+#~ msgid "INPUT_FOLDER_DOESNT_EXISTS_OR_NOT_WRITEABLE"
+#~ msgstr "Input folder doesnt exists or it's not writeable"
 
