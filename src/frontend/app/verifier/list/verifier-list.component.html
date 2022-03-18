@@ -8,7 +8,15 @@
                [matTooltip]="!this.expanded ? this.translate.instant('VERIFIER.expand_all') : this.translate.instant('VERIFIER.collapse_all') "></i>
         </h3>
         <mat-divider></mat-divider>
-        <mat-tree [dataSource]="dataSource" [treeControl]="this.treeControl">
+        <div *ngIf="loadingCustomers || this.dataSource.data.length === 0" class="flex text-gray-400 object-contain" style="height: calc(100% - 68px)">
+            <div class="m-auto text-center">
+                <i class="fa-solid fa-users fa-4x fa-beat-fade w-full mb-2" style="--fa-animation-duration: 1.5s;"></i>
+                <span class="w-full">
+                    {{ 'VERIFIER.loading_customers' | translate }}
+                </span>
+            </div>
+        </div>
+        <mat-tree *ngIf="!loadingCustomers && this.dataSource.data.length !== 0" [dataSource]="dataSource" [treeControl]="this.treeControl">
             <mat-tree-node style="min-height: 24px" class="pl-12 cursor-pointer hover:bg-black hover:bg-opacity-20"
                            *matTreeNodeDef="let node; when:isLevelTwo" (click)="loadInvoicePerCustomer(node)">
                 <button mat-icon-button disabled>

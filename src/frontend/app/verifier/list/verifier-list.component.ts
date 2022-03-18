@@ -71,6 +71,7 @@ interface flatNode {
 })
 export class VerifierListComponent implements OnInit {
     loading         : boolean           = true;
+    loadingCustomers: boolean           = true;
     status          : any[]             = [];
     config          : any;
     currentStatus   : string            = 'NEW';
@@ -147,6 +148,8 @@ export class VerifierListComponent implements OnInit {
     isNotLevelOne = (_: number, node: flatNode) => node.level !== 1;
 
     async ngOnInit() {
+        console.log(this.dataSource);
+        console.log(this.dataSource.data.length);
         marker('VERIFIER.nb_pages'); // Needed to get the translation in the JSON file
         marker('VERIFIER.expand_all'); // Needed to get the translation in the JSON file
         marker('VERIFIER.collapse_all'); // Needed to get the translation in the JSON file
@@ -224,6 +227,7 @@ export class VerifierListComponent implements OnInit {
                 });
                 this.loadInvoices();
             }),
+            finalize(() => this.loadingCustomers = false),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
@@ -236,6 +240,7 @@ export class VerifierListComponent implements OnInit {
         this.invoiceToDeleteSelected = false;
         this.totalChecked = 0;
         this.loading = true;
+        this.loadingCustomers = true;
         this.invoices = [];
         this.http.get(API_URL + '/ws/verifier/invoices/totals/' + this.currentStatus, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -329,7 +334,10 @@ export class VerifierListComponent implements OnInit {
                 });
                 this.dataSource.data = this.TREE_DATA;
             }),
-            finalize(() => {this.loading = false;}),
+            finalize(() => {
+                this.loading = false;
+                this.loadingCustomers = false;
+            }),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
@@ -396,6 +404,7 @@ export class VerifierListComponent implements OnInit {
 
     resetInvoices() {
         this.loading = true;
+        this.loadingCustomers = true;
         this.allowedCustomers = [];
         this.allowedSuppliers = [];
         this.purchaseOrSale = '';
@@ -416,6 +425,7 @@ export class VerifierListComponent implements OnInit {
 
     deleteAllInvoices() {
         this.loading = true;
+        this.loadingCustomers = true;
         const checkboxList = $(".checkBox_list");
         checkboxList.each((cpt: any) => {
             if (checkboxList[cpt].checked) {
@@ -464,6 +474,7 @@ export class VerifierListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.loading = true;
+                this.loadingCustomers = true;
                 this.deleteInvoice(invoiceId);
             }
         });
