@@ -161,7 +161,7 @@ export class SplitterListComponent implements OnInit {
     }
 
     checkSelectedBatch() {
-        this.totalChecked = $('input.checkBox_list:checked').length;
+        this.totalChecked = document.querySelectorAll('.checkBox_list:checked').length;
         this.batchesSelected = this.totalChecked !== 0;
     }
 
@@ -186,9 +186,9 @@ export class SplitterListComponent implements OnInit {
 
     isCheckboxChecked(batchId: number) {
         let checked = false;
-        const checkboxList = $(".checkBox_list:checked");
-        checkboxList.each((cpt: any) => {
-            const checkboxId = checkboxList[cpt].id.split('_')[0];
+        const checkboxList = document.getElementsByClassName('checkBox_list');
+        Array.from(checkboxList).forEach((element: any) => {
+            const checkboxId = element.id.split('_')[0];
             if (parseInt(checkboxId) === batchId) {
                 checked = true;
             }
