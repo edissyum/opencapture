@@ -343,7 +343,7 @@ export class VerifierListComponent implements OnInit {
         parent.forEach((child: any) => {
             if (child.name === childName) {
                 childNameExists = true;
-                child.count = child.number + 1;
+                child.count = child.count + 1;
             }
         });
 
@@ -361,16 +361,16 @@ export class VerifierListComponent implements OnInit {
     }
 
     createChildren(purchaseOrSale: any, id: any, index: any) {
-        this.TREE_DATA[index].children.forEach((child: any, childIndex: any) => {
+        this.TREE_DATA[index].children.forEach((child: any) => {
             if (child.id === id) {
                 this.invoices.forEach((invoice: any) => {
                     if (this.TREE_DATA[index].id === invoice.customer_id && invoice.purchase_or_sale === purchaseOrSale) {
                         if (invoice.supplier_id) {
-                            this.fillChildren(this.TREE_DATA[index].id, this.TREE_DATA[index].children[childIndex].children, invoice.supplier_name, invoice.supplier_name, invoice.supplier_id, invoice.invoice_id, purchaseOrSale);
+                            this.fillChildren(this.TREE_DATA[index].id, child.children, invoice.supplier_name, invoice.supplier_name, invoice.supplier_id, invoice.invoice_id, purchaseOrSale);
                         }else {
-                            this.fillChildren(this.TREE_DATA[index].id, this.TREE_DATA[index].children[childIndex].children, invoice.supplier_name, this.translate.instant('ACCOUNTS.supplier_unknow'), invoice.supplier_id, invoice.invoice_id, purchaseOrSale);
+                            this.fillChildren(this.TREE_DATA[index].id, child.children, invoice.supplier_name, this.translate.instant('ACCOUNTS.supplier_unknow'), invoice.supplier_id, invoice.invoice_id, purchaseOrSale);
                         }
-                        this.TREE_DATA[index].children[childIndex].count = this.TREE_DATA[index].children[childIndex].count + 1;
+                        child.count = child.count + 1;
                         this.TREE_DATA[index].count = this.TREE_DATA[index].count + 1;
                     }
                 });
