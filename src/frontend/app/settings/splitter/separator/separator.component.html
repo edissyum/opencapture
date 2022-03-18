@@ -105,14 +105,16 @@
                 </button>
             </div>
         </div>
-        <div class="text-center text-gray-400 object-contain">
-            <div *ngIf="loadingSeparator">
+        <div *ngIf="loadingSeparator" class="flex text-gray-400 object-contain" style="height: calc(100% - 230px)">
+            <div class="m-auto text-center">
                 <i class="fa-solid fa-qrcode fa-4x fa-beat-fade w-full mb-1" style="--fa-animation-duration: 1.5s;"></i>
                 <span class="w-full">
                     {{ 'DOCTYPE.generating_separator' | translate }}
                 </span>
             </div>
-            <img *ngIf="!loadingSeparator" [src]="separator.thumbnailUrl" alt="Separator thumbnail">
+        </div>
+        <div *ngIf="!loadingSeparator" class="text-center text-gray-400 object-contain">
+            <img [src]="separator.thumbnailUrl" alt="Separator thumbnail">
         </div>
     </mat-sidenav>
 </mat-sidenav-container>
