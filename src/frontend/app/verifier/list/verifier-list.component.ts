@@ -35,7 +35,6 @@ import {MatDialog} from "@angular/material/dialog";
 import {DomSanitizer} from "@angular/platform-browser";
 import {ConfigService} from "../../../services/config.service";
 import {HistoryService} from "../../../services/history.service";
-declare const $: any;
 
 interface accountsNode {
     name: string
@@ -414,20 +413,20 @@ export class VerifierListComponent implements OnInit {
     selectOrUnselectAllInvoices(event: any) {
         const label = event.srcElement.textContent;
         this.invoiceToDeleteSelected = !this.invoiceToDeleteSelected;
-        const checkboxList = $(".checkBox_list");
-        checkboxList.each((cpt: any) => {
-            checkboxList[cpt].checked = label === this.translate.instant('VERIFIER.select_all');
+        const checkboxList = document.getElementsByClassName('checkBox_list');
+        Array.from(checkboxList).forEach((element: any) => {
+            element.checked = (label === this.translate.instant('VERIFIER.select_all'));
         });
-        this.totalChecked = $('input.checkBox_list:checked').length;
+        this.totalChecked = document.querySelectorAll('.checkBox_list:checked').length;
     }
 
     deleteAllInvoices() {
         this.loading = true;
         this.loadingCustomers = true;
-        const checkboxList = $(".checkBox_list");
-        checkboxList.each((cpt: any) => {
-            if (checkboxList[cpt].checked) {
-                const invoiceId = checkboxList[cpt].id.split('_')[0];
+        const checkboxList = document.getElementsByClassName('checkBox_list');
+        Array.from(checkboxList).forEach((element: any) => {
+            if (element.checked) {
+                const invoiceId = element.id.split('_')[0];
                 this.deleteInvoice(invoiceId, true);
             }
         });
@@ -453,7 +452,7 @@ export class VerifierListComponent implements OnInit {
     }
 
     checkCheckedInvoices() {
-        this.totalChecked = $('input.checkBox_list:checked').length;
+        this.totalChecked = document.querySelectorAll('.checkBox_list:checked').length;
         this.invoiceToDeleteSelected = this.totalChecked !== 0;
     }
 
@@ -545,12 +544,8 @@ export class VerifierListComponent implements OnInit {
     }
 
     expandAll() {
+        if (!this.expanded) this.treeControl.expandAll();
+        else this.treeControl.collapseAll();
         this.expanded = !this.expanded;
-        /*
-        * mat-tree-node.child are clicked twice to be sure they will be close at the second click
-         */
-        $('mat-tree-node.child').click();
-        $('mat-tree-node.parent').click();
-        $('mat-tree-node.child').click();
     }
 }

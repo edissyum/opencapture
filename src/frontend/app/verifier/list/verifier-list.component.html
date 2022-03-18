@@ -43,7 +43,10 @@
                     {{ node.count }}
                 </span>
             </mat-tree-node>
-            <mat-tree-node [class.hidden]="node.count === 0" style="min-height: 24px" class="child pl-6 cursor-pointer hover:bg-black hover:bg-opacity-10" *matTreeNodeDef="let node;when: isLevelOne" matTreeNodeToggle>
+            <mat-tree-node [class.hidden]="node.count === 0"
+                           style="min-height: 24px"
+                           class="child pl-6 cursor-pointer hover:bg-black hover:bg-opacity-10"
+                           *matTreeNodeDef="let node;when: isLevelOne" matTreeNodeToggle>
                 <button mat-icon-button>
                     <i [class.fa-folder-open]="this.treeControl.isExpanded(node)" class="text-gray-600 ml-4 fas fa-folder pb-0.5"></i>
                 </button>
