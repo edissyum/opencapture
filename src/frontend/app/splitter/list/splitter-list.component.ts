@@ -35,7 +35,6 @@ import {HistoryService} from "../../../services/history.service";
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from "@angular/material/form-field";
 import {marker} from "@biesbjerg/ngx-translate-extract-marker";
 import {LastUrlService} from "../../../services/last-url.service";
-declare const $: any;
 
 @Component({
     selector: 'app-list',
@@ -197,11 +196,11 @@ export class SplitterListComponent implements OnInit {
     }
 
     mergeAllBatches(parentId: number) {
-        const checkboxList = $(".checkBox_list:checked");
+        const checkboxList = document.getElementsByClassName('checkBox_list:checked');
         const listOfBatchToMerge: any[] = [];
         const listOfBatchFormId: any[] = [];
-        checkboxList.each((cpt: any) => {
-            const batchId = checkboxList[cpt].id.split('_')[0];
+        Array.from(checkboxList).forEach((element: any) => {
+            const batchId = element.id.split('_')[0];
             if (batchId !== parentId.toString())
                 listOfBatchToMerge.push(batchId);
         });
@@ -286,21 +285,21 @@ export class SplitterListComponent implements OnInit {
     selectOrUnselectAllBatches(event: any) {
         const label = event.srcElement.textContent;
         this.batchesSelected = !this.batchesSelected;
-        const checkboxList = $(".checkBox_list");
-        checkboxList.each((cpt: any) => {
-            checkboxList[cpt].checked = label === this.translate.instant('VERIFIER.select_all');
+        const checkboxList = document.getElementsByClassName('checkBox_list');
+        Array.from(checkboxList).forEach((element: any) => {
+            element.checked = (label === this.translate.instant('VERIFIER.select_all'));
         });
-        this.totalChecked = $('input.checkBox_list:checked').length;
+        this.totalChecked = document.querySelectorAll('.checkBox_list:checked').length;
     }
 
     deleteAllBatches() {
         this.isLoading = true;
-        const checkboxList = $(".checkBox_list:checked");
         let lastBatch = false;
-        checkboxList.each((cpt: any) => {
+        const checkboxList = document.querySelectorAll('.checkBox_list:checked');
+        Array.from(checkboxList).forEach((element: any, cpt: number) => {
             if (cpt === checkboxList.length - 1)
                 lastBatch = true;
-            const batchId = checkboxList[cpt].id.split('_')[0];
+            const batchId = element.id.split('_')[0];
             this.deleteBatch(batchId, true, lastBatch);
         });
         this.notify.success(this.translate.instant('SPLITTER.all_batches_checked_deleted'));

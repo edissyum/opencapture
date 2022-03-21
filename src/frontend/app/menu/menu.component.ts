@@ -24,7 +24,6 @@ import { LocalStorageService } from "../../services/local-storage.service";
 import { PrivilegesService } from "../../services/privileges.service";
 import { Router } from "@angular/router";
 import {TranslateService} from "@ngx-translate/core";
-declare const $: any;
 
 @Component({
     selector: 'app-menu',
@@ -69,11 +68,21 @@ export class MenuComponent implements OnInit {
         }
         const k = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
         let n = 0;
-        $(document).keydown((e: any) => {
+        document.addEventListener('keydown', (e) => {
             if (e.keyCode === k[n++]) {
                 if (n === k.length) {
                     const audio = new Audio("assets/imgs/konami.mp3");
-                    $('#konami').fadeIn("slow").delay(3000).fadeOut();
+                    const konami = document.getElementById('konami'); //.fadeIn("slow").delay(3000).fadeOut();
+                    konami!.style.display = "block";
+                    konami!.style.transition = "opacity .5s";
+                    konami!.style.opacity = "1";
+                    setTimeout(() => {
+                        konami!.style.transition = "opacity 1s";
+                        konami!.style.opacity = "0";
+                        setTimeout(() => {
+                            konami!.style.display = "none";
+                        },1000);
+                    }, 3000);
                     audio.play().then();
                     n = 0;
                 }
