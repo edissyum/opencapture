@@ -76,7 +76,7 @@ export class SplitterListComponent implements OnInit {
     currentTime     : string  = 'today';
     currentStatus   : string  = 'NEW';
     batchesSelected : boolean = false;
-    totalChecked    : number = 0;
+    totalChecked    : number  = 0;
 
     constructor(
         private router: Router,
