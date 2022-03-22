@@ -232,7 +232,7 @@ class Files:
         return sorted_file
 
     @staticmethod
-    def check_file_integrity(file, config, docservers):
+    def check_file_integrity(file, docservers):
         is_full = False
         while not is_full:
             with open(file, 'rb') as doc:
