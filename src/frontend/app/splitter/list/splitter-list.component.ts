@@ -124,10 +124,6 @@ export class SplitterListComponent implements OnInit {
         this.loadBatches();
     }
 
-    toggleGridColumns() {
-        this.gridColumns = this.gridColumns === 3 ? 4 : 3;
-    }
-
     loadBatches(): void {
         this.isLoading = true;
         this.http.get(API_URL + '/ws/splitter/invoices/totals/' + this.currentStatus, {headers: this.authService.headers}).pipe(
@@ -308,16 +304,12 @@ export class SplitterListComponent implements OnInit {
     deleteBatch(id: number, batchDelete = false, lastBatch = true): void {
         this.http.put(API_URL + '/ws/splitter/status', {'id': id, 'status': 'DEL', }, {headers: this.authService.headers}).pipe(
             tap(() => {
-                this.batches.forEach((batch: any, index: number) => {
-                    if (batch.id === id) this.batches.splice(index, 1);
-                });
                 if (!batchDelete) {
                     this.notify.success(this.translate.instant('SPLITTER.batch_deleted'));
                     this.isLoading = false;
-                } else {
-                    if (lastBatch)
-                        this.loadBatches();
                 }
+                if (lastBatch)
+                    this.loadBatches();
             }),
             catchError((err: any) => {
                 console.debug(err);
