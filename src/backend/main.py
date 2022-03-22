@@ -135,8 +135,8 @@ def create_classes(config_file):
     return config, locale, log, ocr, database, spreadsheet, smtp, docservers, configurations
 
 
-def check_file(files, path, config, log, docservers):
-    if not files.check_file_integrity(path, config, docservers):
+def check_file(files, path, log, docservers):
+    if not files.check_file_integrity(path, docservers):
         log.error('The integrity of file could\'nt be verified : ' + str(path))
         return False
     return True
@@ -234,7 +234,7 @@ def launch(args):
         log.filename = os.path.basename(path)
         typo = ''
         if separator_qr.enabled:
-            if check_file(files, path, config, log, docservers) is not False:
+            if check_file(files, path, log, docservers) is not False:
                 separator_qr.run(path)
             path = separator_qr.output_dir_pdfa if str2bool(separator_qr.convert_to_pdfa) is True else separator_qr.output_dir
 
@@ -242,7 +242,7 @@ def launch(args):
                 # if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
                 #     typo = get_typo(config, path + file, log)
 
-                if check_file(files, path + file, config, log, docservers) is not False:
+                if check_file(files, path + file, log, docservers) is not False:
                     res = OCForInvoices_process.process(args, path + file, log, config, files, ocr, locale, database, typo, docservers, configurations)
                     if not res:
                         mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'], args['msg'], config, docservers)
@@ -253,7 +253,7 @@ def launch(args):
                 # if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
                 #     typo = get_typo(config, file, log)
 
-                if check_file(files, file, config, log, docservers) is not False:
+                if check_file(files, file, log, docservers) is not False:
                     res = OCForInvoices_process.process(args, file, log, config, files, ocr, locale, database, typo, docservers, configurations)
                     if not res:
                         mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'], args['msg'], config, docservers)
@@ -263,7 +263,7 @@ def launch(args):
             # if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
             #     typo = get_typo(config, path, log)
 
-            if check_file(files, path, config, log, docservers) is not False:
+            if check_file(files, path, log, docservers) is not False:
                 res = OCForInvoices_process.process(args, path, log, config, files, ocr, locale, database, typo, docservers, configurations)
                 if not res:
                     mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'], args['msg'], config, docservers)

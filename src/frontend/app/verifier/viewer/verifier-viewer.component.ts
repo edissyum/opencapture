@@ -44,42 +44,42 @@ declare const $: any;
 })
 
 export class VerifierViewerComponent implements OnInit {
-    isOCRRunning            : boolean   = false;
-    settingsOpen            : boolean   = false;
-    ocrFromUser             : boolean   = false;
-    accountingPlanEmpty     : boolean   = false;
-    getOnlyRawFooter        : boolean   = false;
-    disableOCR              : boolean   = false;
-    tokenError              : boolean   = false;
-    saveInfo                : boolean   = true;
-    loading                 : boolean   = true;
-    supplierExists          : boolean   = true;
-    deleteDataOnChangeForm  : boolean   = true;
-    oldVAT                  : string    = '';
-    oldSIRET                : string    = '';
-    oldSIREN                : string    = '';
-    currentFilename         : string    = '';
-    lastLabel               : string    = '';
-    lastId                  : string    = '';
-    lastColor               : string    = '';
-    toHighlight             : string    = '';
-    toHighlightAccounting   : string    = '';
-    token                   : string    = '';
-    imgSrc                  : SafeUrl   = '';
-    ratio                   : number    = 0;
-    currentPage             : number    = 1;
-    formSettings            : any       = {};
-    formList                : any       = {};
-    currentFormFields       : any       = {};
-    suppliers               : any       = [];
-    outputsLabel            : any       = [];
-    imgArray                : any       = {};
+    isOCRRunning            : boolean     = false;
+    settingsOpen            : boolean     = false;
+    ocrFromUser             : boolean     = false;
+    accountingPlanEmpty     : boolean     = false;
+    getOnlyRawFooter        : boolean     = false;
+    disableOCR              : boolean     = false;
+    tokenError              : boolean     = false;
+    saveInfo                : boolean     = true;
+    loading                 : boolean     = true;
+    supplierExists          : boolean     = true;
+    deleteDataOnChangeForm  : boolean     = true;
+    oldVAT                  : string      = '';
+    oldSIRET                : string      = '';
+    oldSIREN                : string      = '';
+    currentFilename         : string      = '';
+    lastLabel               : string      = '';
+    lastId                  : string      = '';
+    lastColor               : string      = '';
+    toHighlight             : string      = '';
+    toHighlightAccounting   : string      = '';
+    token                   : string      = '';
+    imgSrc                  : SafeUrl     = '';
+    ratio                   : number      = 0;
+    currentPage             : number      = 1;
+    formSettings            : any         = {};
+    formList                : any         = {};
+    currentFormFields       : any         = {};
+    suppliers               : any         = [];
+    outputsLabel            : any         = [];
+    imgArray                : any         = {};
     imageInvoice            : any;
     invoiceId               : any;
     invoice                 : any;
     fields                  : any;
     config                  : any;
-    fieldCategories         : any[]     = [
+    fieldCategories         : any[]       = [
         {
             id: 'supplier',
             label: this.translate.instant('FORMS.supplier')
@@ -93,12 +93,12 @@ export class VerifierViewerComponent implements OnInit {
             label: this.translate.instant('FORMS.other')
         }
     ];
-    form                    : any       = {
+    form                    : any         = {
         supplier      : [],
         facturation   : [],
         other         : []
     };
-    pattern                 : any       = {
+    pattern                 : any         = {
         alphanum                        : '^[0-9a-zA-Z\\s]*$',
         alphanum_extended               : '^[0-9a-zA-Z-/#,\\.\\s]*$',
         alphanum_extended_with_accent   : '^[0-9a-zA-Z\\u00C0-\\u017F-/#,\\.\\s]*$',
@@ -106,8 +106,8 @@ export class VerifierViewerComponent implements OnInit {
         number_float                    : '^[0-9]*([.][0-9]*)*$',
         char                            : '^[A-Za-z\\s]*$',
     };
+    supplierNamecontrol     : FormControl =  new FormControl();
     filteredOptions         : Observable<any> | any;
-    supplierNamecontrol     = new FormControl();
 
     constructor(
         private router: Router,

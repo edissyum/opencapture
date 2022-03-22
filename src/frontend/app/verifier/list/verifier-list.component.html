@@ -43,7 +43,10 @@
                     {{ node.count }}
                 </span>
             </mat-tree-node>
-            <mat-tree-node [class.hidden]="node.count === 0" style="min-height: 24px" class="child pl-6 cursor-pointer hover:bg-black hover:bg-opacity-10" *matTreeNodeDef="let node;when: isLevelOne" matTreeNodeToggle>
+            <mat-tree-node [class.hidden]="node.count === 0"
+                           style="min-height: 24px"
+                           class="child pl-6 cursor-pointer hover:bg-black hover:bg-opacity-10"
+                           *matTreeNodeDef="let node;when: isLevelOne" matTreeNodeToggle>
                 <button mat-icon-button>
                     <i [class.fa-folder-open]="this.treeControl.isExpanded(node)" class="text-gray-600 ml-4 fas fa-folder pb-0.5"></i>
                 </button>
@@ -89,7 +92,7 @@
                         <span class="cursor-pointer" (click)="selectOrUnselectAllInvoices($event)"
                               [innerHTML]="this.invoiceToDeleteSelected ? this.translate.instant('VERIFIER.unselect_all') : this.translate.instant('VERIFIER.select_all')">
                         </span>
-                        <span [class.hidden]="this.totalChecked === 0"> ({{ this.totalChecked}})</span>
+                        <span [class.hidden]="this.totalChecked === 0"> ({{ this.totalChecked }})</span>
                         <span [class.hidden]="!this.invoiceToDeleteSelected" (click)="$event.stopPropagation();deleteAllConfirmDialog()">
                             <i class="fas fa-trash ml-2 text-red-500 cursor-pointer" matTooltip="{{ 'VERIFIER.delete_all_checked' | translate }}"></i>
                         </span>

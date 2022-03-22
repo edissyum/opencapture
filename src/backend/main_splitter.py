@@ -65,7 +65,7 @@ def launch(args):
     database.connect()
     if args['file'] is not None:
         path = args['file']
-        if check_file(files, path, config, log, docservers) is not False:
+        if check_file(files, path, log, docservers) is not False:
             if 'input_id' in args and args['input_id']:
                 splitter_method = database.select({
                     'select': ['splitter_method_id'],

@@ -17,6 +17,7 @@
 import json
 import os
 import random
+import re
 from xml.dom import minidom
 import xml.etree.cElementTree as ET
 from src.backend.classes.Files import Files
@@ -70,7 +71,7 @@ class Splitter:
                 is_previous_code_qr = False
 
     def save_documents(self, batch_folder, file, input_id, original_filename):
-        for index, batch in enumerate(self.result_batches):
+        for _, batch in enumerate(self.result_batches):
             batch_name = os.path.basename(os.path.normpath(batch_folder))
             input_settings = self.db.select({
                 'select': ['*'],
@@ -79,10 +80,13 @@ class Splitter:
                 'data': [input_id, 'splitter'],
             })
 
+            clean_path = re.sub(r"/+", "/", file)
+            clean_ds = re.sub(r"/+", "/", self.docservers['SPLITTER_ORIGINAL_PDF'])
+
             args = {
                 'table': 'splitter_batches',
                 'columns': {
-                    'file_path': file.replace(self.docservers['SPLITTER_ORIGINAL_PDF'], ''),
+                    'file_path': clean_path.replace(clean_ds, ''),
                     'file_name': os.path.basename(original_filename),
                     'batch_folder': batch_name,
                     'first_page': batch[0]['path'],

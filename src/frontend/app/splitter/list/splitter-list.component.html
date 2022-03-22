@@ -31,7 +31,7 @@
                         <span class="cursor-pointer" (click)="selectOrUnselectAllBatches($event)"
                               [innerHTML]="batchesSelected ? translate.instant('VERIFIER.unselect_all') : translate.instant('VERIFIER.select_all')">
                         </span>
-                        <span [class.hidden]="totalChecked === 0"> ({{ totalChecked}})</span>
+                        <span [class.hidden]="totalChecked === 0"> ({{ totalChecked }})</span>
                         <span [class.hidden]="!batchesSelected">
                             <i class="fas fa-trash ml-5 text-red-500 cursor-pointer"
                                (click)="$event.stopPropagation(); deleteAllConfirmDialog()"
