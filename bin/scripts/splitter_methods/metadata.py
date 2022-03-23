@@ -15,7 +15,7 @@
 
 # @dev : Oussama BRICH <oussama.brich@edissyum.com>
 
-def process(args, file, log, splitter, files, tmp_folder, config):
+def process(args, file, log, splitter, files, tmp_folder, config, docservers):
     """
     :param args:
     :param file: File path to split
