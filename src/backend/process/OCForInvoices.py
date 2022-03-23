@@ -208,7 +208,7 @@ def process(args, file, log, config, files, ocr, locale, database, typo, docserv
 
     # Find invoice number
     invoice_number_class = FindInvoiceNumber(ocr, files, log, locale, config, database, supplier, file, typo,
-                                             ocr.header_text, 1, False, ocr.footer_text, ocr.header_text, docservers)
+                                             ocr.header_text, 1, False, ocr.footer_text, docservers)
     invoice_number = invoice_number_class.run()
     if not invoice_number:
         invoice_number_class.text = ocr.header_last_text

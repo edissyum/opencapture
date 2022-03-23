@@ -21,12 +21,11 @@ from ..functions import search_by_positions, search_custom_positions
 
 
 class FindInvoiceNumber:
-    def __init__(self, ocr, files, log, locale, config, database, supplier, file, typo, text, nb_pages, custom_page, footer_text, header_text, docservers):
+    def __init__(self, ocr, files, log, locale, config, database, supplier, file, typo, text, nb_pages, custom_page, footer_text, docservers):
         self.vatNumber = ''
         self.Ocr = ocr
         self.text = text
         self.footer_text = footer_text
-        self.header_text = header_text
         self.log = log
         self.Files = files
         self.locale = locale
@@ -97,7 +96,8 @@ class FindInvoiceNumber:
                     return [invoice_number, position, self.nbPages]
 
         # Search specific keywords that's not working with the main REGEX. e.g "FACTURE 123"
-        for line in self.header_text:
+        # self.text is the header part of the invoice
+        for line in self.text:
             regex = "\\s*FACTURE.*"
             for _invoice in re.finditer(r"" + regex + "", line.content.upper()):
                 invoice_number = self.sanitize_invoice_number(regex, _invoice.group())
