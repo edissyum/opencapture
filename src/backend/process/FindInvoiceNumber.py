@@ -22,7 +22,6 @@ from ..functions import search_by_positions, search_custom_positions
 
 class FindInvoiceNumber:
     def __init__(self, ocr, files, log, locale, config, database, supplier, file, typo, text, nb_pages, custom_page, footer_text, docservers):
-        self.vatNumber = ''
         self.Ocr = ocr
         self.text = text
         self.footer_text = footer_text
