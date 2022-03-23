@@ -379,9 +379,8 @@ def process(args, file, log, config, files, ocr, locale, database, typo, docserv
     files.save_img_with_wand(file, docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename)
 
     # If all informations are found, do not send it to GED
-    skip_auto = supplier[2]['skip_auto_validate']
     allow_auto = configurations['allowAutomaticValidation']
-    if supplier and skip_auto == 'False' and date and invoice_number and footer and allow_auto == 'True':
+    if supplier and supplier[2]['skip_auto_validate'] == 'False' and date and invoice_number and footer and allow_auto == 'True':
         log.info('All the usefull informations are found. Export the XML and end process')
         insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier,
                'END', nb_pages, docservers)
