@@ -616,11 +616,21 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 if (this.documents[documentIndex].pages[pageIndex].checkBox) {
 
                     const currentDegree = this.documents[documentIndex].pages[pageIndex].rotation;
-                    if(currentDegree === 270){
-                        this.documents[documentIndex].pages[pageIndex].rotation = 0;
+                    switch(currentDegree) {
+                        case -90: {
+                            this.documents[documentIndex].pages[pageIndex].rotation = 0;
+                            break;
+                        }
+                        case 180: {
+                            this.documents[documentIndex].pages[pageIndex].rotation = -90;
+                            break;
+                        }
+                        default: {
+                            this.documents[documentIndex].pages[pageIndex].rotation += 90;
+                            break;
+                        }
                     }
-                    else
-                        this.documents[documentIndex].pages[pageIndex].rotation += 90;
+
                     if(this.zoomPage.pageId === this.documents[documentIndex].pages[pageIndex].id){
                         this.zoomPage.rotation = this.documents[documentIndex].pages[pageIndex].rotation;
                     }

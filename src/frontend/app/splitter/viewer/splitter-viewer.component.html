@@ -45,7 +45,7 @@
                     (zoomPage['rotation'] === 0)   ? 'rotate-0 h-full w-4/5 mr-6':
                     (zoomPage['rotation'] === 90)  ? 'rotate-90 h-full w-4/5 mr-36':
                     (zoomPage['rotation'] === 180) ? 'rotate-180 h-full w-4/5 mr-6':
-                    (zoomPage['rotation'] === 270) ? '-rotate-90 h-full w-4/5 mr-36':
+                    (zoomPage['rotation'] === -90) ? '-rotate-90 h-full w-4/5 mr-36':
                     ''"
                 alt="Zoom Image"/>
         </div>
@@ -208,22 +208,27 @@
                              *ngFor="let page of document['pages']; let pageIndex = index;"
                              (click)="page['checkBox'] = !page['checkBox']" cdkDrag>
                             <div class="custom-placeholder bg-gray-200 m-1.5" *cdkDragPlaceholder></div>
-                            <div class="page-header">
-                                <button mat-button class="btn-page-zoom max-w-xs float-right text-center bg-gray-100"
-                                        title="{{ 'SPLITTER.zoom' | translate }}"
-                                        (click)="getZoomPage(page); $event.stopPropagation();">
-                                    <i class="fas fa-search-plus"></i>
-                                </button>
+                            <div class="flex justify-between">
                                 <mat-checkbox [(ngModel)]="page['checkBox']" (click)="$event.stopPropagation()"
                                               title="{{ 'SPLITTER.select' | translate }}"
                                               class="page-check-box float-left mt-4" id="page-check-box-{{page['id']}}">
                                 </mat-checkbox>
+                                <div class="align-text-bottom text-gray-400" *ngIf="page['rotation'] != 0">
+                                    <span *ngIf="page['rotation'] != 0">
+                                    {{ page['rotation']}}
+                                    </span>
+                                </div>
+                                <button mat-button class="btn-page-zoom max-w-xs float-right bg-gray-100"
+                                        title="{{ 'SPLITTER.zoom' | translate }}"
+                                        (click)="getZoomPage(page); $event.stopPropagation();">
+                                    <i class="fas fa-search-plus"></i>
+                                </button>
                             </div>
                             <img [ngClass]="
                                      (page['rotation'] === 0)   ? 'rotate-0 m-auto':
                                      (page['rotation'] === 90)  ? 'rotate-90 m-auto scale-75 px-2':
                                      (page['rotation'] === 180) ? 'rotate-180 m-auto':
-                                     (page['rotation'] === 270) ? '-rotate-90 m-auto scale-75 px-2':
+                                     (page['rotation'] === -90) ? '-rotate-90 m-auto scale-75 px-2':
                                  ''"
                                  [src]="page['thumbnailUrl']"
                                  alt="Open-Capture Splitter image">
