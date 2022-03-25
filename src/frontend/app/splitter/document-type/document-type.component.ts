@@ -17,7 +17,7 @@
 
 import {Component, Inject, OnInit} from '@angular/core';
 import { Router } from "@angular/router";
-import {MAT_DIALOG_DATA} from "@angular/material/dialog";
+import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 
 @Component({
     selector: 'app-document-type',
@@ -28,6 +28,7 @@ export class DocumentTypeComponent implements OnInit {
     selectedItem:any;
     constructor(
         public router: Router,
+        private dialogRef: MatDialogRef<DocumentTypeComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any
     ) {
     }
@@ -37,5 +38,6 @@ export class DocumentTypeComponent implements OnInit {
 
     getOutPut($event: any) {
         this.selectedItem = $event;
+        this.selectedItem.isDblClick ? this.dialogRef.close(this.selectedItem) : '';
     }
 }

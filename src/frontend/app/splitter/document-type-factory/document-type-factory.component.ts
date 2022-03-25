@@ -304,8 +304,9 @@ export class DocumentTypeFactoryComponent implements OnInit {
         this.treeControl.expandAll();
     }
 
-    selectNode(node: any) {
+    selectNode(node: any, isDblClick:boolean) {
         this.selectedDocTypeInput = node;
+        this.selectedDocTypeInput.isDblClick =isDblClick;
         this.selectedDoctypeOutput.emit(this.selectedDocTypeInput);
     }
 
