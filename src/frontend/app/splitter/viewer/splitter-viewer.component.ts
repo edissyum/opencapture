@@ -76,6 +76,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     documentsForms              : FormGroup[]   = [];
     batches                     : Batch[]       = [];
     deletedPagesIds             : number[]      = [];
+    rotatedPages                : any[]         = [];
     movedPages                  : any[]         = [];
     deletedDocumentsIds         : number[]      = [];
     outputs                     : any           = [];
@@ -84,6 +85,10 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     pagesImageUrls              : any           = [];
     documentsIds                : string[]      = [];
     zoomImageUrl                : string        = "";
+    zoomPage                    : any           = {
+        thumbnailUrl    : "",
+        rotation        : 0,
+    };
     toolSelectedOption          : string        = "";
     inputMode                   : string        = "Manual";
     defaultDoctype              : any           = {
@@ -237,12 +242,10 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                         this.documents[i].pages.push({
                             id              : page['id'],
                             sourcePage      : page['source_page'],
+                            thumbnailUrl    : this.sanitize(page['image_url']),
                             showZoomButton  : false,
                             checkBox        : false,
-                        });
-                        this.pagesImageUrls.push({
-                            pageId  : page['id'],
-                            url     : this.sanitize(page['image_url'])
+                            rotation        : page['rotation'],
                         });
                     }
 
@@ -327,6 +330,14 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         return "";
     }
 
+    getZoomPage(page: any) {
+        this.showZoomPage = true;
+        this.zoomPage = {
+            pageId       : page.id,
+            thumbnailUrl : page.thumbnailUrl,
+            rotation     : page.rotation,
+        };
+    }
     /* -- Metadata -- */
     loadDefaultDocType() {
         this.loading      = true;
@@ -600,6 +611,29 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.loadMetadata();
     }
 
+    rotateSelectedPages() {
+        for (let documentIndex = 0; documentIndex < this.documents.length; documentIndex++) {
+            for (let pageIndex = 0; pageIndex < this.documents[documentIndex].pages.length; pageIndex++) {
+                if (this.documents[documentIndex].pages[pageIndex].checkBox) {
+
+                    const currentDegree = this.documents[documentIndex].pages[pageIndex].rotation;
+                    if(currentDegree === 270){
+                        this.documents[documentIndex].pages[pageIndex].rotation = 0;
+                    }
+                    else
+                        this.documents[documentIndex].pages[pageIndex].rotation += 90;
+                    if(this.zoomPage.pageId === this.documents[documentIndex].pages[pageIndex].id){
+                        this.zoomPage.rotation = this.documents[documentIndex].pages[pageIndex].rotation;
+                    }
+                    this.rotatedPages.push({
+                        'pageId'    : this.documents[documentIndex].pages[pageIndex].id,
+                        'rotation'  : this.documents[documentIndex].pages[pageIndex].rotation
+                    });
+                }
+            }
+        }
+    }
+
     sendSelectedPages() {
         const selectedDoc = this.documents.filter((doc: any) => doc.id === this.toolSelectedOption);
         if (!selectedDoc) {
@@ -668,6 +702,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 'batchId'               : this.currentBatch.id,
                 'documents'             : this.documents,
                 'movedPages'            : this.movedPages,
+                'rotatedPages'          : this.rotatedPages,
                 'deletedPagesIds'       : this.deletedPagesIds,
                 'deletedDocumentsIds'   : this.deletedDocumentsIds,
                 'batchMetadata'         : batchMetadata,
@@ -706,6 +741,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 'deletedPagesIds'       : this.deletedPagesIds,
                 'deletedDocumentsIds'   : this.deletedDocumentsIds,
                 'movedPages'            : this.movedPages,
+                'rotatedPages'          : this.rotatedPages,
             },
             {headers: this.authService.headers}).pipe(
             tap(() => {

@@ -180,7 +180,11 @@ class Splitter:
         for document in documents:
             pages.append([])
             for page in document['pages']:
-                pages[-1].append(page['sourcePage'])
+                pages[-1].append({
+                    'page_id': page['id'],
+                    'rotation': page['rotation'],
+                    'source_page': page['sourcePage'],
+                })
         return pages
 
     @staticmethod

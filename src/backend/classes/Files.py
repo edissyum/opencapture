@@ -458,7 +458,10 @@ class Files:
                 if not pages:
                     continue
                 for page in pages:
-                    pdf_writer.addPage(pdf_reader.getPage(page - reduce_index))
+                    pdf_page = pdf_reader.getPage(page['source_page'] - reduce_index)
+                    if page['rotation'] != 0:
+                        pdf_page.rotateCounterClockwise(-page['rotation'])
+                    pdf_writer.addPage(pdf_page)
                 file_path = output_file + '/' + documents[index]['fileName']
                 with open(file_path, 'wb') as file:
                     pdf_writer.write(file)

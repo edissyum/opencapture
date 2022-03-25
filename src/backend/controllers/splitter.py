@@ -292,6 +292,7 @@ def save_infos(args):
     _vars = create_classes_from_current_config()
     _cfg = _vars[1]
     new_documents = []
+
     """
         Save batch metadata
     """
@@ -346,6 +347,7 @@ def save_infos(args):
                 "message": ''
             }
             return response, 401
+
     """
         move pages
     """
@@ -381,6 +383,7 @@ def save_infos(args):
             "message": ''
         }
         return response, 401
+
     """
         Delete pages
     """
@@ -388,6 +391,21 @@ def save_infos(args):
         res = splitter.update_page({
             'page_id': deleted_pages_id,
             'status': 'DEL',
+        })[0]
+        if not res:
+            response = {
+                "errors": gettext('UPDATE_PAGES_ERROR'),
+                "message": ''
+            }
+            return response, 401
+
+    """
+        Save pages rotation
+    """
+    for rotated_page in args['rotated_pages']:
+        res = splitter.update_page({
+            'page_id': rotated_page['pageId'],
+            'rotation':  rotated_page['rotation'],
         })[0]
         if not res:
             response = {
@@ -418,12 +436,13 @@ def validate(args):
     _docservers = _vars[9]
 
     """
-    Save data before validate
+        Save data before validate
     """
     save_response = save_infos({
         'documents': args['documents'],
         'batch_id': args['batchMetadata']['id'],
         'moved_pages': args['movedPages'],
+        'rotated_pages': args['rotatedPages'],
         'batch_metadata': args['batchMetadata'],
         'deleted_pages_ids': args['deletedPagesIds'],
         'deleted_documents_ids': args['deletedDocumentsIds']
@@ -454,7 +473,8 @@ def validate(args):
                     Export PDF files if required by output
                 """
                 if output[0]['output_type_id'] in ['export_pdf']:
-                    res_export_pdf = export_pdf(batch, args['documents'], parameters, args['batchMetadata'], pages, now, output[0]['compress_type'])
+                    res_export_pdf = export_pdf(batch, args['documents'], parameters, args['batchMetadata'], pages, now,
+                                                output[0]['compress_type'])
                     if res_export_pdf[1] != 200:
                         return res_export_pdf
                 """
@@ -483,7 +503,8 @@ def validate(args):
                         'separator': cmis_params['separator'],
                         'filename': cmis_params['pdf_filename'],
                     }
-                    res_export_pdf = export_pdf(batch, args['documents'], pdf_export_parameters, args['batchMetadata'], pages, now, output[0]['compress_type'])
+                    res_export_pdf = export_pdf(batch, args['documents'], pdf_export_parameters, args['batchMetadata'],
+                                                pages, now, output[0]['compress_type'])
                     if res_export_pdf[1] != 200:
                         return res_export_pdf
                     for file_path in res_export_pdf[0]['paths']:
@@ -525,7 +546,8 @@ def validate(args):
                         'separator': cmis_params['separator'],
                         'file_name': cmis_params['filename'],
                     }
-                    res_export_pdf = export_pdf(batch, args['documents'], pdf_export_parameters, args['batchMetadata'], pages, now, output[0]['compress_type'])
+                    res_export_pdf = export_pdf(batch, args['documents'], pdf_export_parameters, args['batchMetadata'],
+                                                pages, now, output[0]['compress_type'])
                     if res_export_pdf[1] != 200:
                         return res_export_pdf
                     subject_mask = parameters['subject']
@@ -545,7 +567,7 @@ def validate(args):
                 """
                 splitter.change_status({
                     'id': args['batchMetadata']['id'],
-                    'status': 'END'
+                    'status': 'NEW'
                 })
 
     return {"OK": True}, 200

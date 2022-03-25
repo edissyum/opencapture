@@ -268,11 +268,12 @@ CREATE TABLE "splitter_documents"
 
 CREATE TABLE "splitter_pages"
 (
-    "id"          SERIAL UNIQUE PRIMARY KEY,
-    "document_id" INTEGER,
-    "thumbnail"   VARCHAR(255),
-    "source_page" INTEGER,
-    "status"      VARCHAR(255) DEFAULT 'NEW'
+    "id"            SERIAL UNIQUE PRIMARY KEY,
+    "document_id"   INTEGER,
+    "thumbnail"     VARCHAR(255),
+    "source_page"   INTEGER,
+    "rotation"      INTEGER DEFAULT 0,
+    "status"        VARCHAR(255) DEFAULT 'NEW'
 );
 
 create table "doctypes"
