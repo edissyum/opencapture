@@ -84,7 +84,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     documents                   : any           = [];
     pagesImageUrls              : any           = [];
     documentsIds                : string[]      = [];
-    zoomImageUrl                : string        = "";
     zoomPage                    : any           = {
         thumbnailUrl    : "",
         rotation        : 0,
