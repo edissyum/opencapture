@@ -348,6 +348,21 @@ def save_infos(args):
             }
             return response, 401
 
+        """
+            Save pages rotation
+        """
+        for page in document['pages']:
+            res = splitter.update_page({
+                'page_id': page['id'],
+                'rotation':  page['rotation'],
+            })[0]
+            if not res:
+                response = {
+                    "errors": gettext('UPDATE_PAGES_ERROR'),
+                    "message": ''
+                }
+                return response, 401
+
     """
         move pages
     """
@@ -399,20 +414,6 @@ def save_infos(args):
             }
             return response, 401
 
-    """
-        Save pages rotation
-    """
-    for rotated_page in args['rotated_pages']:
-        res = splitter.update_page({
-            'page_id': rotated_page['pageId'],
-            'rotation':  rotated_page['rotation'],
-        })[0]
-        if not res:
-            response = {
-                "errors": gettext('UPDATE_PAGES_ERROR'),
-                "message": ''
-            }
-            return response, 401
     return True, 200
 
 
@@ -442,7 +443,6 @@ def validate(args):
         'documents': args['documents'],
         'batch_id': args['batchMetadata']['id'],
         'moved_pages': args['movedPages'],
-        'rotated_pages': args['rotatedPages'],
         'batch_metadata': args['batchMetadata'],
         'deleted_pages_ids': args['deletedPagesIds'],
         'deleted_documents_ids': args['deletedDocumentsIds']

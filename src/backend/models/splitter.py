@@ -359,6 +359,7 @@ def update_document(data):
             "custom_fields": data['document_metadata']
         })
     res = _db.update(args)
+
     return res
 
 
@@ -375,7 +376,10 @@ def update_page(data):
         args['set']['status'] = data['status']
     if 'document_id' in data:
         args['set']['document_id'] = data['document_id']
+    if 'rotation' in data:
+        args['set']['rotation'] = data['rotation']
     res = _db.update(args)
+
     return res
 
 

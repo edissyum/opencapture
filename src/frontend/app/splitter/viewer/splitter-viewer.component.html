@@ -213,14 +213,15 @@
                                               title="{{ 'SPLITTER.select' | translate }}"
                                               class="page-check-box float-left mt-4" id="page-check-box-{{page['id']}}">
                                 </mat-checkbox>
-                                <div class="align-text-bottom text-gray-400 m-1" *ngIf="page['rotation'] !== 0"
-                                     title="{{ 'SPLITTER.pageRotated' | translate }} {{ ' ' + page['rotation'] + ' ' + ('SPLITTER.degrees' | translate)}}">
+                                <button mat-button class="page-header-btn text-gray-400 m-1"
+                                        (click)="rotatePage(documentIndex, pageIndex); $event.stopPropagation()"
+                                        title="{{ 'SPLITTER.pageRotated' | translate }} {{ ' ' + page['rotation'] + ' ' + ('SPLITTER.degrees' | translate)}}">
                                     <span *ngIf="page['rotation'] !== 0">
                                         {{ page['rotation']}}
                                     </span>
                                     <i class="fa-solid fa-rotate-right"></i>
-                                </div>
-                                <button mat-button class="btn-page-zoom max-w-xs float-right bg-gray-100"
+                                </button>
+                                <button mat-button class="page-header-btn float-right bg-gray-100"
                                         title="{{ 'SPLITTER.zoom' | translate }}"
                                         (click)="getZoomPage(page); $event.stopPropagation();">
                                     <i class="fas fa-search-plus"></i>

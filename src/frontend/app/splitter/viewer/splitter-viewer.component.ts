@@ -610,34 +610,33 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.loadMetadata();
     }
 
+    rotatePage(documentIndex: number, pageIndex: number){
+        const currentDegree = this.documents[documentIndex].pages[pageIndex].rotation;
+        switch(currentDegree) {
+            case -90: {
+                this.documents[documentIndex].pages[pageIndex].rotation = 0;
+                break;
+            }
+            case 180: {
+                this.documents[documentIndex].pages[pageIndex].rotation = -90;
+                break;
+            }
+            default: {
+                this.documents[documentIndex].pages[pageIndex].rotation += 90;
+                break;
+            }
+        }
+
+        if(this.zoomPage.pageId === this.documents[documentIndex].pages[pageIndex].id){
+            this.zoomPage.rotation = this.documents[documentIndex].pages[pageIndex].rotation;
+        }
+    }
+
     rotateSelectedPages() {
         for (let documentIndex = 0; documentIndex < this.documents.length; documentIndex++) {
             for (let pageIndex = 0; pageIndex < this.documents[documentIndex].pages.length; pageIndex++) {
                 if (this.documents[documentIndex].pages[pageIndex].checkBox) {
-
-                    const currentDegree = this.documents[documentIndex].pages[pageIndex].rotation;
-                    switch(currentDegree) {
-                        case -90: {
-                            this.documents[documentIndex].pages[pageIndex].rotation = 0;
-                            break;
-                        }
-                        case 180: {
-                            this.documents[documentIndex].pages[pageIndex].rotation = -90;
-                            break;
-                        }
-                        default: {
-                            this.documents[documentIndex].pages[pageIndex].rotation += 90;
-                            break;
-                        }
-                    }
-
-                    if(this.zoomPage.pageId === this.documents[documentIndex].pages[pageIndex].id){
-                        this.zoomPage.rotation = this.documents[documentIndex].pages[pageIndex].rotation;
-                    }
-                    this.rotatedPages.push({
-                        'pageId'    : this.documents[documentIndex].pages[pageIndex].id,
-                        'rotation'  : this.documents[documentIndex].pages[pageIndex].rotation
-                    });
+                    this.rotatePage(documentIndex, pageIndex);
                 }
             }
         }
@@ -711,7 +710,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 'batchId'               : this.currentBatch.id,
                 'documents'             : this.documents,
                 'movedPages'            : this.movedPages,
-                'rotatedPages'          : this.rotatedPages,
                 'deletedPagesIds'       : this.deletedPagesIds,
                 'deletedDocumentsIds'   : this.deletedDocumentsIds,
                 'batchMetadata'         : batchMetadata,
@@ -750,7 +748,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 'deletedPagesIds'       : this.deletedPagesIds,
                 'deletedDocumentsIds'   : this.deletedDocumentsIds,
                 'movedPages'            : this.movedPages,
-                'rotatedPages'          : this.rotatedPages,
             },
             {headers: this.authService.headers}).pipe(
             tap(() => {
