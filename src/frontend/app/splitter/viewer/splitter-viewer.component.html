@@ -54,8 +54,10 @@
                 <mat-expansion-panel class="my-10 bg-gray-20" [expanded]="true" (opened)="batchMetadataOpenState = true"
                                      (closed)="batchMetadataOpenState = false" #batchMetadata>
                     <mat-expansion-panel-header>
-                        <mat-panel-title class="metadata-title">
-                            {{ 'SPLITTER.batch_metadata' | translate }}
+                        <mat-panel-title>
+                            <span>
+                                {{ 'SPLITTER.batch_metadata' | translate }}
+                            </span>
                             <div (click)="batchMetadata.toggle()" class="mx-8">
                                 <mat-slide-toggle color="#97BF3D"
                                                   [checked]="inputMode === 'Auto'"
@@ -64,6 +66,9 @@
                                     {{ 'SPLITTER.auto_complete' | translate }}
                                 </mat-slide-toggle>
                             </div>
+                            <span class="text-gray-400 absolute right-12">
+                                {{ 'SPLITTER.identifier' | translate }} : {{ currentBatch.id }}
+                            </span>
                         </mat-panel-title>
                     </mat-expansion-panel-header>
                     <div class="text-gray-400 text-center w-full" *ngIf="fieldsCategories['batch_metadata'].length === 0">
@@ -234,6 +239,7 @@
                                      (page['rotation'] === -90) ? '-rotate-90 m-auto scale-75 px-2':
                                  ''"
                                  [src]="page['thumbnailUrl']"
+                                 title="{{ 'SPLITTER.moveToAnotherDoc' | translate }}"
                                  alt="Open-Capture Splitter image">
                         </div>
                     </div>

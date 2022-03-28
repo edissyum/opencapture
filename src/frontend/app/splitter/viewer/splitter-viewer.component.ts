@@ -247,7 +247,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                             rotation        : page['rotation'],
                         });
                     }
-
                 }
                 // -- Add document forms --
                 this.loadDocumentsForms();
