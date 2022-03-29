@@ -446,7 +446,9 @@ class Files:
                 positions = json.loads(positions)
                 return positions
             except (TypeError, json.decoder.JSONDecodeError):
-                return ''
+                if 'page' in positions:
+                    del positions['page']
+                return positions
 
     @staticmethod
     def export_pdf(pages_lists, documents, input_file, output_file, compress_type, reduce_index=0):
