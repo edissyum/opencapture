@@ -604,7 +604,7 @@ export class VerifierViewerComponent implements OnInit {
                 this.http.post(API_URL + '/ws/verifier/ocrOnFly',
                     {
                         selection: this.getSelectionByCpt(selection, cpt),
-                        fileName: this.invoice.full_jpg_filename,
+                        fileName: this.currentFilename,
                         thumbSize: {width: img.currentTarget.width, height: img.currentTarget.height}
                     }, {headers: this.authService.headers})
                     .pipe(
