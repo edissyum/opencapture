@@ -185,7 +185,7 @@ class FindFooter:
                 if total_ht in [False, None]:
                     total_ht = self.process_footer_with_position('total_ht',
                                                                  ["positions ->> 'total_ht' as total_ht_position",
-                                                                  "pages ->> 'footer' as total_ht_page"])
+                                                                  "pages ->> 'total_ht' as total_ht_page"])
                     if total_ht:
                         self.total_ht = total_ht
                         self.log.info('noRateAmount found with position : ' + str(total_ht))
@@ -193,7 +193,7 @@ class FindFooter:
                 if vat_rate in [False, None]:
                     vat_rate = self.process_footer_with_position('vat_rate',
                                                                  ["positions ->> 'vat_rate' as vat_rate_position",
-                                                                  "pages ->> 'footer' as vat_rate_page"])
+                                                                  "pages ->> 'vat_rate' as vat_rate_page"])
                     if vat_rate:
                         self.vat_rate = vat_rate
                         self.log.info('ratePercentage found with position : ' + str(vat_rate))
@@ -226,6 +226,7 @@ class FindFooter:
         })[0]
 
         if position and position[name + '_position'] not in [False, 'NULL', '', None]:
+            self.nbPage = position[name + '_page']
             data = {'position': position[name + '_position'], 'regex': None, 'target': 'full', 'page': position[name + '_page']}
             res = search_custom_positions(data, self.Ocr, self.Files, self.locale, self.file, self.docservers)
             if res[0]:
@@ -271,7 +272,6 @@ class FindFooter:
                 vat_rate = res if res else False
 
         vat_amount = False
-
         if not self.test_amount(total_ht, total_ttc, vat_rate) or not total_ht or not total_ttc or not vat_rate:
             if not total_ht:
                 total_ht = self.process(self.locale.no_rates_regex, text_as_string)

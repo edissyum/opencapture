@@ -24,7 +24,8 @@ from src.backend.import_process import FindDate, FindFooter, FindInvoiceNumber, 
     FindOrderNumber, FindDeliveryNumber, FindFooterRaw
 
 
-def insert(args, files, config, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier, status, nb_pages, docservers):
+def insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier, status,
+           nb_pages, docservers):
     try:
         filename = os.path.splitext(files.custom_file_name)
         improved_img = filename[0] + '_improved' + filename[1]
@@ -118,8 +119,8 @@ def convert(file, files, ocr, nb_pages, custom_pages=False):
             ocr.last_text = ocr.line_box_builder(files.img)
 
 
-def update_typo_database(database, vat_number, typo, log, config):
-    spreadsheet = _Spreadsheet(log, config)
+def update_typo_database(database, vat_number, typo, log, config, docservers):
+    spreadsheet = _Spreadsheet(log, docservers, config)
     mime = mimetypes.guess_type(spreadsheet.referencialSuppplierSpreadsheet)[0]
     if mime in ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']:
         spreadsheet.write_typo_excel_sheet(vat_number, typo)
@@ -193,7 +194,7 @@ def process(args, file, log, config, files, ocr, locale, database, typo, docserv
             })
 
     if typo:
-        update_typo_database(database, supplier[0], typo, log, config)
+        update_typo_database(database, supplier[0], typo, log, config, docservers)
 
     # Find custom informations using mask
     custom_fields = FindCustom(ocr.header_text, log, locale, config, ocr, files, supplier, file, database, docservers).run()
@@ -314,20 +315,40 @@ def process(args, file, log, config, files, ocr, locale, database, typo, docserv
             if len(footer[0]) > 1:
                 positions.update({'no_rate_amount': files.reformat_positions(footer[0][1])})
                 positions.update({'total_ht': files.reformat_positions(footer[0][1])})
-                if footer[3]:
+                if 'page' in footer[0][1]:
+                    try:
+                        pages.update({'no_rate_amount': footer[0][1]['page']})
+                        pages.update({'total_ht': footer[0][1]['page']})
+                    except (TypeError, json.decoder.JSONDecodeError):
+                        if footer[3]:
+                            pages.update({'no_rate_amount': footer[3]})
+                            pages.update({'total_ht': footer[3]})
+                elif footer[3]:
                     pages.update({'no_rate_amount': footer[3]})
                     pages.update({'total_ht': footer[3]})
         if footer[1]:
             datas.update({'total_ttc': footer[1][0]})
             if len(footer[1]) > 1:
                 positions.update({'total_ttc': files.reformat_positions(footer[1][1])})
-                if footer[3]:
+                if 'page' in footer[1][1]:
+                    try:
+                        pages.update({'total_ttc': footer[1][1]['page']})
+                    except (TypeError, json.decoder.JSONDecodeError):
+                        if footer[3]:
+                            pages.update({'total_ttc': footer[3]})
+                elif footer[3]:
                     pages.update({'total_ttc': footer[3]})
         if footer[2]:
             datas.update({'vat_rate': footer[2][0]})
             if len(footer[2]) > 1:
                 positions.update({'vat_rate': files.reformat_positions(footer[2][1])})
-                if footer[3]:
+                if 'page' in footer[2][1]:
+                    try:
+                        pages.update({'vat_rate': footer[2][1]['page']})
+                    except (TypeError, json.decoder.JSONDecodeError):
+                        if footer[3]:
+                            pages.update({'vat_rate': footer[3]})
+                elif footer[3]:
                     pages.update({'vat_rate': footer[3]})
         if footer[4]:
             datas.update({'vat_amount': footer[4][0]})
@@ -335,7 +356,15 @@ def process(args, file, log, config, files, ocr, locale, database, typo, docserv
             if len(footer[4]) > 1:
                 positions.update({'vat_amount': files.reformat_positions(footer[4][1])})
                 positions.update({'total_vat': files.reformat_positions(footer[4][1])})
-                if footer[3]:
+                if 'page' in footer[4][1]:
+                    try:
+                        pages.update({'vat_amount': footer[4][1]['page']})
+                        pages.update({'total_vat': footer[4][1]['page']})
+                    except (TypeError, json.decoder.JSONDecodeError):
+                        if footer[3]:
+                            pages.update({'vat_amount': footer[3]})
+                            pages.update({'total_vat': footer[3]})
+                elif footer[3]:
                     pages.update({'vat_amount': footer[3]})
                     pages.update({'total_vat': footer[3]})
 
@@ -378,14 +407,14 @@ def process(args, file, log, config, files, ocr, locale, database, typo, docserv
     files.save_img_with_wand(file, docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename)
 
     # If all informations are found, do not send it to GED
-    if supplier and supplier[2]['skip_auto_validate'] == 'False' and date and invoice_number \
-            and footer and configurations['allowAutomaticValidation'] == 'True':
+    allow_auto = configurations['allowAutomaticValidation']
+    if supplier and supplier[2]['skip_auto_validate'] == 'False' and date and invoice_number and footer and allow_auto == 'True':
         log.info('All the usefull informations are found. Export the XML and end process')
-        insert(args, files, config, database, datas, positions, pages, full_jpg_filename, file, original_file,
-               supplier, 'END', nb_pages, docservers)
+        insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier,
+               'END', nb_pages, docservers)
     else:
-        insert(args, files, config, database, datas, positions, pages, full_jpg_filename, file, original_file,
-               supplier, 'NEW', nb_pages, docservers)
+        insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier,
+               'NEW', nb_pages, docservers)
 
         if supplier and supplier[2]['skip_auto_validate'] == 'True':
             log.info('Skip automatic validation for this supplier this time')
@@ -397,5 +426,4 @@ def process(args, file, log, config, files, ocr, locale, database, typo, docserv
                 'where': ['vat_number = %s', 'status <> %s'],
                 'data': [supplier[2]['vat_number'], 'DEL']
             })
-
     return True

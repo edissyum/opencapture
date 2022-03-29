@@ -14,7 +14,7 @@
 # along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
-
+import ast
 import os
 import json
 from .classes.Config import Config as _Config
@@ -58,7 +58,8 @@ def check_python_customized_files(path):
 def search_custom_positions(data, ocr, files, locale, file, docservers):
     regex = data['regex']
     target = data['target'].lower()
-    position = data['position']
+    position = json.loads(data['position'])
+
     target_file = ''
     if position:
         if 'page' not in data or ('page' in data and data['page'] in ['1', '', None]):
@@ -69,6 +70,7 @@ def search_custom_positions(data, ocr, files, locale, file, docservers):
             else:
                 target_file = files.jpg_name
         elif data['page'] != '1':
+            position.update({"page": data['page']})
             nb_pages = files.get_pages(docservers, file)
             if str(nb_pages) == str(data['page']):
                 if target == 'footer':
@@ -78,8 +80,8 @@ def search_custom_positions(data, ocr, files, locale, file, docservers):
                 else:
                     target_file = files.jpg_name_last
             else:
-               files.pdf_to_jpg(file + '[' + str(int(data['page']) - 1) + ']', False, False, False, False, True)
-               target_file = files.custom_file_name
+                files.pdf_to_jpg(file + '[' + str(int(data['page']) - 1) + ']', False, False, False, False, True)
+                target_file = files.custom_file_name
         if regex:
             locale_list = locale.get()
             regex = locale_list[regex]
