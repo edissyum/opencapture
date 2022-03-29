@@ -22,7 +22,6 @@ from ..functions import search_custom_positions, search_by_positions
 
 class FindDeliveryNumber:
     def __init__(self, ocr, files, log, locale, config, database, supplier, file, typo, text, nb_pages, custom_page, docservers, target='header'):
-        self.vatNumber = ''
         self.Ocr = ocr
         self.text = text
         self.log = log

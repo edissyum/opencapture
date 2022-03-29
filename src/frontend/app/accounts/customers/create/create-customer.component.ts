@@ -78,7 +78,7 @@ export class CreateCustomerComponent implements OnInit {
             required: false
         },
     ];
-    addressForm : any []        = [
+    addressForm : any[]        = [
         {
             id: 'address1',
             label: marker('ADDRESSES.address_1'),

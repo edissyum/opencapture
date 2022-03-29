@@ -22,7 +22,6 @@ from ..functions import search_by_positions, search_custom_positions
 
 class FindInvoiceNumber:
     def __init__(self, ocr, files, log, locale, config, database, supplier, file, typo, text, nb_pages, custom_page, footer_text, docservers):
-        self.vatNumber = ''
         self.Ocr = ocr
         self.text = text
         self.footer_text = footer_text
@@ -38,7 +37,7 @@ class FindInvoiceNumber:
         self.nbPages = nb_pages
         self.customPage = custom_page
 
-    def sanitize_invoice_number(self, data):
+    def sanitize_invoice_number(self, regex, data):
         invoice_res = data
         # If the regex return a date, remove it
         for _date in re.finditer(r"" + self.locale.date_regex + "", data):
@@ -46,7 +45,7 @@ class FindInvoiceNumber:
                 invoice_res = data.replace(_date.group(), '')
 
         # Delete the invoice keyword
-        tmp_invoice_number = re.sub(r"" + self.locale.invoice_regex[:-2] + "", '', invoice_res)
+        tmp_invoice_number = re.sub(r"" + regex[:-2] + "", '', invoice_res)
         invoice_number = tmp_invoice_number.lstrip().split(' ')[0]
         return invoice_number
 
@@ -82,15 +81,26 @@ class FindInvoiceNumber:
 
         for line in self.text:
             for _invoice in re.finditer(r"" + self.locale.invoice_regex + "", line.content.upper()):
-                invoice_number = self.sanitize_invoice_number(_invoice.group())
+                invoice_number = self.sanitize_invoice_number(self.locale.invoice_regex, _invoice.group())
                 if len(invoice_number) >= int(self.locale.invoice_size_min):
                     self.log.info('Invoice number found : ' + invoice_number)
                     return [invoice_number, line.position, self.nbPages]
 
         for line in self.footer_text:
             for _invoice in re.finditer(r"" + self.locale.invoice_regex + "", line.content.upper()):
-                invoice_number = self.sanitize_invoice_number(_invoice.group())
+                invoice_number = self.sanitize_invoice_number(self.locale.invoice_regex, _invoice.group())
                 if len(invoice_number) >= int(self.locale.invoice_size_min):
                     self.log.info('Invoice number found : ' + invoice_number)
                     position = self.Files.return_position_with_ratio(line, 'footer')
+                    return [invoice_number, position, self.nbPages]
+
+        # Search specific keywords that's not working with the main REGEX. e.g "FACTURE 123"
+        # self.text is the header part of the invoice
+        for line in self.text:
+            regex = "\\s*FACTURE.*"
+            for _invoice in re.finditer(r"" + regex + "", line.content.upper()):
+                invoice_number = self.sanitize_invoice_number(regex, _invoice.group())
+                if len(invoice_number) >= int(self.locale.invoice_size_min):
+                    self.log.info('Invoice number found : ' + invoice_number)
+                    position = self.Files.return_position_with_ratio(line, 'header')
                     return [invoice_number, position, self.nbPages]

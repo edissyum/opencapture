@@ -646,6 +646,7 @@
 		"loading_customers": "Loading customers accounts",
 		"nb_pages": "Number of pages",
 		"no_form_available": "No form available",
+		"no_invoices_found": "No invoices found",
 		"no_outputs_for_this_form": "No outputs for this form",
 		"on": "on",
 		"only_raw_footer": "Get only raw footer is enabled",
