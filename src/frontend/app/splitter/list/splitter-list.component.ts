@@ -141,6 +141,9 @@ export class SplitterListComponent implements OnInit {
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.batches = data.batches;
+                for (let batchIndex = 0; batchIndex < this.batches.length; batchIndex++) {
+                    this.batches[batchIndex]['thumbnail'] = this.sanitize(this.batches[batchIndex]['thumbnail']);
+                }
                 this.total = data.count;
             }),
             finalize(() => this.isLoading = false),
