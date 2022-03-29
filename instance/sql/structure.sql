@@ -247,7 +247,7 @@ CREATE TABLE "splitter_batches"
     "id"            SERIAL UNIQUE PRIMARY KEY,
     "file_path"     VARCHAR(255),
     "file_name"     VARCHAR(255),
-    "first_page"    VARCHAR(255),
+    "thumbnail"     VARCHAR(255),
     "batch_folder"  VARCHAR(255),
     "creation_date" TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
     "status"        VARCHAR(20)   DEFAULT 'NEW',
@@ -257,12 +257,13 @@ CREATE TABLE "splitter_batches"
 
 CREATE TABLE "splitter_documents"
 (
-    "id"          SERIAL UNIQUE PRIMARY KEY,
-    "batch_id"    INTEGER NOT NULL,
-    "split_index" INTEGER NOT NULL,
-    "status"      VARCHAR(10) DEFAULT 'NEW':: CHARACTER VARYING,
-    "doctype_key" VARCHAR(200),
-    "data"        JSON        DEFAULT '{}'::json
+    "id"            SERIAL UNIQUE PRIMARY KEY,
+    "batch_id"      INTEGER NOT NULL,
+    "split_index"   INTEGER NOT NULL,
+    "display_order" INTEGER,
+    "status"        VARCHAR(10) DEFAULT 'NEW':: CHARACTER VARYING,
+    "doctype_key"   VARCHAR(200),
+    "data"          JSON        DEFAULT '{}'::json
 );
 
 

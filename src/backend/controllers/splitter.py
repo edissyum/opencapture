@@ -85,9 +85,9 @@ def retrieve_batches(args):
         for index, batch in enumerate(batches):
             batches[index]['form_label'] = forms.get_form_by_id(batch['form_id'])[0]['label']
             try:
-                with open(batches[index]['first_page'], 'rb') as image_file:
+                with open(batches[index]['thumbnail'], 'rb') as image_file:
                     encoded_string = base64.b64encode(image_file.read())
-                    batches[index]['image_url'] = encoded_string.decode("utf-8")
+                    batches[index]['thumbnail'] = encoded_string.decode("utf-8")
             except IOError:
                 continue
 
@@ -136,7 +136,7 @@ def retrieve_documents(batch_id):
                 for page_index, page in enumerate(pages):
                     with open(pages[page_index]['thumbnail'], 'rb') as image_file:
                         encoded_string = base64.b64encode(image_file.read())
-                        pages[page_index]['image_url'] = encoded_string.decode("utf-8")
+                        pages[page_index]['thumbnail'] = encoded_string.decode("utf-8")
                         document_pages.append(pages[page_index])
 
             dotypes = doctypes.retrieve_doctypes(

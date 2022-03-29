@@ -81,7 +81,7 @@ def add_batch(args):
             'batch_folder': args['batch_folder'],
             'creation_date': args['creation_date'],
             'page_number': args['page_number'],
-            'first_page': args['first_page'],
+            'thumbnail': args['thumbnail'],
             'file_name': args['file_name'],
             'form_id': args['form_id'],
             'status': args['status'],

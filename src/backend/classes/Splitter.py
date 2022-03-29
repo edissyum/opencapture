@@ -89,7 +89,7 @@ class Splitter:
                     'file_path': clean_path.replace(clean_ds, ''),
                     'file_name': os.path.basename(original_filename),
                     'batch_folder': batch_name,
-                    'first_page': batch[0]['path'],
+                    'thumbnail': batch[0]['path'],
                     'page_number': str(max((node['split_document'] for node in batch))),
                     'form_id': str(input_settings[0]['default_form_id'])
                 }

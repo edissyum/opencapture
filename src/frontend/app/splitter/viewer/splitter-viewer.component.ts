@@ -37,7 +37,7 @@ import {HistoryService} from "../../../services/history.service";
 export interface Batch {
     id: number
     input_id: number
-    image_url: any
+    thumbnail: any
     file_name: string
     page_number: number
     batch_date: string
@@ -72,6 +72,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     documentsLoading            : boolean       = false;
     batchMetadataOpenState      : boolean       = true;
     currentBatch                : any           = {id: -1, inputId: -1, maxSplitIndex: 0};
+    selectedDocument            : any           = {id: 'document-330', displayOrder: 0};
     batchMetadataValues         : any           = {};
     documentsForms              : FormGroup[]   = [];
     batches                     : Batch[]       = [];
@@ -85,7 +86,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     pagesImageUrls              : any           = [];
     documentsIds                : string[]      = [];
     zoomPage                    : any           = {
-        thumbnailUrl    : "",
+        thumbnail    : "",
         rotation        : 0,
     };
     toolSelectedOption          : string        = "";
@@ -197,7 +198,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     this.batches.push(
                         {
                             id          : batch.id,
-                            image_url   : this.sanitize(batch.image_url),
+                            thumbnail   : this.sanitize(batch.thumbnail),
                             file_name   : batch.file_name,
                             page_number : batch.page_number,
                             batch_date  : batch.batch_date,
@@ -241,7 +242,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                         this.documents[i].pages.push({
                             id              : page['id'],
                             sourcePage      : page['source_page'],
-                            thumbnailUrl    : this.sanitize(page['image_url']),
+                            thumbnail       : this.sanitize(page['thumbnail']),
                             showZoomButton  : false,
                             checkBox        : false,
                             rotation        : page['rotation'],
@@ -331,9 +332,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     getZoomPage(page: any) {
         this.showZoomPage = true;
         this.zoomPage = {
-            pageId       : page.id,
-            thumbnailUrl : page.thumbnailUrl,
-            rotation     : page.rotation,
+            pageId      : page.id,
+            thumbnail   : page.thumbnail,
+            rotation    : page.rotation,
         };
     }
     /* -- Metadata -- */
@@ -568,6 +569,10 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 document.documentTypeKey = result.key;
             }
         });
+    }
+
+    selectDocument(document: any){
+        this.selectedDocument = {'id': document.id, 'documentOrder': 0};
     }
 
     deleteDocument(documentIndex: number) {

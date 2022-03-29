@@ -9,7 +9,7 @@
                           [ngClass]="{'border-4 border-green-400': currentBatch.id === batch.id}">
                     <a class="image-link" (click)="changeBatch(batch['id'])">
                         <mat-card-header>
-                            <img class="page-image" mat-card-image [src]="batch['image_url']" alt="Open-Capture Splitter image">
+                            <img mat-card-image [src]="batch['thumbnail']" alt="Open-Capture Splitter image">
                         </mat-card-header>
                     </a>
                     <mat-card-content>
@@ -38,7 +38,7 @@
         <div *ngIf="showZoomPage" class="fixed z-10 w-4/12 h-5/6 grid justify-items-stretch right-0 top-20">
             <img class="justify-self-end border-2 zoom-image"
                 mat-card-image
-                [src]="zoomPage.thumbnailUrl"
+                [src]="zoomPage.thumbnail"
                 (clickOutside)="showZoomPage = false"
                 [exclude]="'.btn-page-zoom, .btn-rotate'"
                 [ngClass]="
@@ -202,8 +202,13 @@
                     </mat-accordion>
                 </mat-card-title>
                 <mat-card-content class="document-content">
-                    <div cdkDropListOrientation="horizontal" class="drop-list"
-                         style="background-image: url('assets/imgs/dots.jpg');
+                    <div cdkDropListOrientation="horizontal"
+                         (click)="selectDocument(document)"
+                         class="drop-list"
+                         [ngClass]="selectedDocument.id === document.id ? 'border-2 border-green-400':
+                         'border-2 border-gray-200 hover:cursor-pointer'"
+                         style="
+                            background-image: url('assets/imgs/dots.jpg');
                             width:100%;
                             overflow:scroll!important;"
                          (cdkDropListDropped)="drop($event, document)"
@@ -238,7 +243,7 @@
                                      (page['rotation'] === 180) ? 'rotate-180 m-auto':
                                      (page['rotation'] === -90) ? '-rotate-90 m-auto scale-75 px-2':
                                  ''"
-                                 [src]="page['thumbnailUrl']"
+                                 [src]="page['thumbnail']"
                                  title="{{ 'SPLITTER.moveToAnotherDoc' | translate }}"
                                  alt="Open-Capture Splitter image">
                         </div>
@@ -296,7 +301,7 @@
                                 {{ 'GLOBAL.validate' | translate }}
                             </button>
                             <button mat-button class="btn-validate-splitter text-gray-500 bg-gray-300 rounded-full
-                         text-sm font-medium transition duration-300 float-right" routerLink="/splitter/list">
+                                text-sm font-medium transition duration-300 float-right" routerLink="/splitter/list">
                                 {{ 'GLOBAL.cancel' | translate }}
                             </button>
                             <div class="top-4 text-center text-gray-400">
