@@ -70,7 +70,7 @@
     "VATNumberRegex": "(FR|BE(0)?)[0-9A-Z]{2}[0-9]{7,9}",
     "invoiceRegex": "(((?P<r1>NUMERO|N(O|°|º|R.))?\\s*(DE)?\\s*(FACTURE|PI(E|È)CE|DOCUMENT)(\\s*:)?\\s*(?(r1)()|(NUMERO|N(O|°|º|R.)?))(\\s*:)?)|(FACTURE(/)?(DATE)?)\\s*(ACQUIT(T)?(E|É)E)?\\s*(:|#){1}).*",
     "deliveryNumberRegex": "((NUM(E|É)RO|N(O|°|º|R.)?|R(E|É)F(\\.)?((E|É)RENCE)?)?\\s*(DE)?\\s*(BON)?\\s*(DE)?\\s*(LIVRAISON)|NOTE\\s*D(')?ENVOI|(BON|BULLETIN)\\s*DE\\s*LIVR(\\.))\\s*:?.*",
-    "orderNumberRegex": "(VO(TRE|S)|V\\./)?\\s*(NUM(E|É)RO|N(O|°|º|R.)?|R(E|É)F(\\.)?((E|É)RENCE)?)?\\s*(DE)?\\s*(COMMANDE|COM(\\.)|CDE|DOCUMENT\\s*EXTERNE)\\s*(CLIENT)?\\s*:?.*",
+    "orderNumberRegex": "(VO(TRE|S)|V\\\\./)?\\\\s*(NUM(E|É)RO|N(O|°|º|R.)?|R(E|É)F(\\\\.)?((E|É)RENCE)?)?\\\\s*(DE)?\\\\s*(COMMANDE|COM(\\\\.)|CDE\\\\s*(INTERNET|WEB)?|DOCUMENT\\\\s*EXTERNE)\\\\s*(CLIENT)?\\\\s*:?.*",
     "invoiceSizeMin": "6",
     "dateTimeFormat": "%d %m %Y",
     "formatDate": "%d/%m/%Y",
