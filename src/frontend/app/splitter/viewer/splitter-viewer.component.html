@@ -219,7 +219,8 @@
                              (click)="page['checkBox'] = !page['checkBox']" cdkDrag>
                             <div class="custom-placeholder bg-gray-200 m-1.5" *cdkDragPlaceholder></div>
                             <div class="flex justify-between">
-                                <mat-checkbox [(ngModel)]="page['checkBox']" (click)="$event.stopPropagation()"
+                                <mat-checkbox [(ngModel)]="page['checkBox']"
+                                              (click)="$event.stopPropagation(); countSelectedPages();"
                                               title="{{ 'SPLITTER.select' | translate }}"
                                               class="page-check-box float-left mt-4" id="page-check-box-{{page['id']}}">
                                 </mat-checkbox>
@@ -252,6 +253,9 @@
             </mat-card>
             <mat-card class="splitter-tools divide-x divide-green-500 border-gray-300 py-0">
                 <mat-card-content style="display: block; overflow: auto;">
+                    <span class="absolute top-2 left-4 text-gray-500">
+                        {{ currentBatch.selectedPagesCount }} {{ 'SPLITTER.selected_pages' | translate }}
+                    </span>
                     <button mat-button (click)="deleteSelectedPages()" class="btn-icon inline-block"
                             title="{{ 'SPLITTER.delete_selected_pages' | translate }}">
                         <i class="fas fa-trash-alt fa-lg"></i>

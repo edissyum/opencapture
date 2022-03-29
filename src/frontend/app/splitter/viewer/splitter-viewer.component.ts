@@ -71,8 +71,13 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     addDocumentLoading          : boolean       = false;
     documentsLoading            : boolean       = false;
     batchMetadataOpenState      : boolean       = true;
-    currentBatch                : any           = {id: -1, inputId: -1, maxSplitIndex: 0};
-    selectedDocument            : any           = {id: 'document-330', displayOrder: 0};
+    currentBatch                : any           = {
+        id                  : -1,
+        inputId             : -1,
+        maxSplitIndex       : 0,
+        selectedPagesCount  : 0,
+    };
+    selectedDocument            : any           = {id: '', displayOrder: 0};
     batchMetadataValues         : any           = {};
     documentsForms              : FormGroup[]   = [];
     batches                     : Batch[]       = [];
@@ -87,7 +92,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     documentsIds                : string[]      = [];
     zoomPage                    : any           = {
         thumbnail    : "",
-        rotation        : 0,
+        rotation     : 0,
     };
     toolSelectedOption          : string        = "";
     inputMode                   : string        = "Manual";
@@ -144,10 +149,11 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.http.get(API_URL + '/ws/splitter/batches/' + this.currentBatch.id, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.currentBatch = {
-                    maxSplitIndex      : 0,
                     id                 : data.batches[0]['id'],
                     formId             : data.batches[0]['form_id'],
                     customFieldsValues : data.batches[0]['data'].hasOwnProperty('custom_fields') ? data.batches[0]['data']['custom_fields'] : {},
+                    selectedPagesCount : 0,
+                    maxSplitIndex      : 0,
                 };
                 this.loadFormFields();
                 this.loadDocuments();
@@ -588,6 +594,18 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         return list;
     }
 
+    countSelectedPages(){
+        let selectedPageCount = 0;
+        for (const document of this.documents) {
+            for (const page of document.pages) {
+                if (page.checkBox) {
+                    selectedPageCount++;
+                }
+            }
+        }
+        this.currentBatch.selectedPagesCount = selectedPageCount;
+    }
+
     deleteSelectedPages() {
         for (const document of this.documents) {
             for (let pageIndex = 0; pageIndex < document.pages.length; pageIndex++) {
@@ -601,11 +619,14 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     setAllPagesTo(check: boolean) {
+        let selectPagesCount = 0;
         for (const document of this.documents) {
             for (const page of document.pages) {
                 page.checkBox = check;
+                selectPagesCount++;
             }
         }
+        this.currentBatch.selectedPagesCount = check ? selectPagesCount : 0;
     }
 
     undoAll() {
