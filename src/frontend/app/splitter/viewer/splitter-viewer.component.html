@@ -216,11 +216,12 @@
                          [cdkDropListConnectedTo]="documentsIds">
                         <div class="page m-1.5 bg-gray-200 rounded-md"
                              *ngFor="let page of document['pages']; let pageIndex = index;"
-                             (click)="page['checkBox'] = !page['checkBox']" cdkDrag>
+                             (click)="page['checkBox'] = !page['checkBox']; countSelectedPages();" cdkDrag>
                             <div class="custom-placeholder bg-gray-200 m-1.5" *cdkDragPlaceholder></div>
                             <div class="flex justify-between">
                                 <mat-checkbox [(ngModel)]="page['checkBox']"
-                                              (click)="$event.stopPropagation(); countSelectedPages();"
+                                              (click)="$event.stopPropagation();"
+                                              (change)="countSelectedPages();"
                                               title="{{ 'SPLITTER.select' | translate }}"
                                               class="page-check-box float-left mt-4" id="page-check-box-{{page['id']}}">
                                 </mat-checkbox>
