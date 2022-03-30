@@ -598,9 +598,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         let selectedPageCount = 0;
         for (const document of this.documents) {
             for (const page of document.pages) {
-                if (page.checkBox) {
-                    selectedPageCount++;
-                }
+                page.checkBox ? selectedPageCount++ : '';
             }
         }
         this.currentBatch.selectedPagesCount = selectedPageCount;

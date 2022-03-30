@@ -97,7 +97,7 @@
                                         <mat-option *ngFor="let metadata of filteredServerSideMetadata | async"
                                                     [value]="metadata['id']"
                                                     (click)="fillData(metadata)">
-                                            <span>{{metadata[input.label_short]}}</span>
+                                            <span>{{ metadata[input.label_short] }}</span>
                                         </mat-option>
                                     </mat-select>
                                 </mat-form-field>
@@ -131,10 +131,10 @@
             <mat-card class="document" *ngFor="let document of documents; let documentIndex = index;">
                 <mat-card-title>
                     <mat-accordion>
-                        <mat-expansion-panel class="bg-gray-20" [expanded]="true" (opened)="documentMetadataOpenState = true"
+                        <mat-expansion-panel class="bg-gray-20" [expanded]="fieldsCategories['document_metadata'].length !== 0" (opened)="documentMetadataOpenState = true"
                                              (closed)="documentMetadataOpenState = false" #documentMetadata>
                             <mat-expansion-panel-header>
-                                <mat-panel-title class="w-4/12">
+                                <mat-panel-title>
                                     <button class="text-lg text-left hover:text-green-400"
                                             [ngClass]="!document['documentTypeName'] ? 'text-red-500':''"
                                             (click)="documentMetadata.toggle(); openDocumentTypeDialog(document);"
@@ -145,19 +145,22 @@
                                         </span>
                                     </button>
                                 </mat-panel-title>
-                                <mat-panel-description class="top-4">
-                                    {{ 'SPLITTER.document_metadata' | translate }}
-                                </mat-panel-description>
                                 <button mat-button class="right-2" (click)="deleteDocument(documentIndex)"
                                         title="{{ 'GLOBAL.delete' | translate }}">
                                     <i class="fas fa-trash-alt fa-lg"></i>
                                 </button>
                             </mat-expansion-panel-header>
-                            <div class="text-gray-400 text-center w-full" *ngIf="fieldsCategories['document_metadata'].length === 0">
-                                <i class="block fas fa-check fa-3x"></i>
-                                <span class="block">{{ 'SPLITTER.no_metadata_required' | translate }}</span>
+                            <div class="text-gray-400 w-full">
+                                <span class="m-6 w-11/12">{{ 'SPLITTER.document_metadata' | translate }}</span>
+                                <mat-divider class="mx-6" style="width: 96%;"></mat-divider>
+                                <div *ngIf="fieldsCategories['document_metadata'].length === 0">
+                                    <i class="text-center block fas fa-check fa-3x"></i>
+                                    <span class="block text-center" >
+                                        {{ 'SPLITTER.no_metadata_required' | translate }}
+                                    </span>
+                                </div>
                             </div>
-                            <form [formGroup]="this.documentsForms[documentIndex]" class="mx-8 grid grid-cols-5 gap-4">
+                            <form [formGroup]="this.documentsForms[documentIndex]" class="mx-6 mt-4 grid grid-cols-5 gap-4">
                                 <div *ngFor="let input of fieldsCategories['document_metadata']">
                                     <div *ngIf="input.type === 'text' && inputMode === 'Auto' && input.metadata_key">
                                         <mat-form-field class="w-full">
