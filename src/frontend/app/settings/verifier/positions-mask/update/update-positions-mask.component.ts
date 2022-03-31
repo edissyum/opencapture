@@ -1,19 +1,19 @@
 /** This file is part of Open-Capture for Invoices.
 
-Open-Capture for Invoices is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+ Open-Capture for Invoices is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-Open-Capture is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
+ Open-Capture is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+ You should have received a copy of the GNU General Public License
+ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
-@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+ @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
@@ -202,9 +202,9 @@ export class UpdatePositionsMaskComponent implements OnInit {
         for (const cpt in this.availableFieldsParent) {
             this.availableFieldsParent[cpt]['values'].forEach((element: any) => {
                 for (const key in this.positionsMask.regex) {
-                   if (key === element.id) {
-                       element.regex = this.positionsMask.regex[key];
-                   }
+                    if (key === element.id) {
+                        element.regex = this.positionsMask.regex[key];
+                    }
                 }
             });
         }
@@ -706,9 +706,9 @@ export class UpdatePositionsMaskComponent implements OnInit {
             this.currentPage = pageToShow;
             for (const parentCpt in this.availableFieldsParent) {
                 for (const cpt in this.availableFieldsParent[parentCpt]['values']) {
-                   const field = this.availableFieldsParent[parentCpt]['values'][cpt];
-                   const position = this.positionsMask.positions[field.id];
-                   const page = this.positionsMask.pages[field.id];
+                    const field = this.availableFieldsParent[parentCpt]['values'][cpt];
+                    const position = this.positionsMask.positions[field.id];
+                    const page = this.positionsMask.pages[field.id];
                     if (position) {
                         const input = $('.input_' + field.id);
                         const background = $('.background_' + field.id);
@@ -724,6 +724,11 @@ export class UpdatePositionsMaskComponent implements OnInit {
     }
 
     async getThumb(filename:string) {
-        return await this.http.post(API_URL + '/ws/verifier/getThumb',{'args': {'path': this.config['GLOBAL']['positionsmaskspath'], 'filename': filename}}, {headers: this.authService.headers}).toPromise();
+        return await this.http.post(API_URL + '/ws/verifier/getThumb',{
+            'args': {
+                'type': 'positions_masks',
+                'filename': filename
+            }
+        }, {headers: this.authService.headers}).toPromise();
     }
 }

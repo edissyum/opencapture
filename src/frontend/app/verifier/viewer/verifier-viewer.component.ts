@@ -238,7 +238,7 @@ export class VerifierViewerComponent implements OnInit {
         if (this.imgArray[cpt]) {
             this.imgSrc = this.imgArray[cpt];
         }else {
-            this.http.post(API_URL + '/ws/verifier/getThumb',{'args': {'filename': filename}},
+            this.http.post(API_URL + '/ws/verifier/getThumb',{'args': {'type': 'full', 'filename': filename}},
                 {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
                     this.imgSrc = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + data.file);

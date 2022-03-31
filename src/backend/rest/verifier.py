@@ -153,7 +153,7 @@ def ocr_on_fly():
 @auth.token_required
 def get_thumb():
     data = request.json['args']
-    file_content = verifier.get_file_content('full', data['filename'], 'image/jpeg')
+    file_content = verifier.get_file_content(data['type'], data['filename'], 'image/jpeg')
     return make_response({'file': str(base64.b64encode(file_content.get_data()).decode('UTF-8'))}), 200
 
 
