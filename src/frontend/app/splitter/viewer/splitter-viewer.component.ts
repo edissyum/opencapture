@@ -15,7 +15,7 @@
 
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild, Renderer2} from '@angular/core';
 import {API_URL} from "../../env";
 import {catchError, debounceTime, delay, filter, finalize, map, takeUntil, tap} from "rxjs/operators";
 import {of, ReplaySubject, Subject} from "rxjs";
@@ -33,6 +33,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {DocumentTypeComponent} from "../document-type/document-type.component";
 import {remove} from 'remove-accents';
 import {HistoryService} from "../../../services/history.service";
+declare const $: any;
 
 export interface Batch {
     id: number
@@ -60,7 +61,8 @@ export interface Field {
 })
 export class SplitterViewerComponent implements OnInit, OnDestroy {
     @ViewChild(`cdkStepper`) cdkDropList: CdkDragDrop<any> | undefined;
-    fieldsCategories              : any       = {
+
+    fieldsCategories            : any           = {
         'batch_metadata'    : [],
         'document_metadata' : []
     };
@@ -76,8 +78,11 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         inputId             : -1,
         maxSplitIndex       : 0,
         selectedPagesCount  : 0,
+        selectedDocument    : {
+            id              : '',
+            displayOrder    : -1
+        }
     };
-    selectedDocument            : any           = {id: '', displayOrder: 0};
     batchMetadataValues         : any           = {};
     documentsForms              : FormGroup[]   = [];
     batches                     : Batch[]       = [];
@@ -91,16 +96,15 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     pagesImageUrls              : any           = [];
     documentsIds                : string[]      = [];
     zoomPage                    : any           = {
-        thumbnail    : "",
-        rotation     : 0,
+        thumbnail   : "",
+        rotation    : 0,
     };
     toolSelectedOption          : string        = "";
     inputMode                   : string        = "Manual";
     defaultDoctype              : any           = {
-        label   : null,
-        key     : null
+        label       : null,
+        key         : null
     };
-    defaultDocType              : any;
 
     /** indicate search operation is in progress */
     public searching        : boolean   = false;
@@ -166,7 +170,12 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 console.debug(err);
                 return of(false);
             })
-        ).subscribe();
+        ).subscribe((x)=>{
+            // TODO
+            const newDocumentElement = document.querySelector(`#document-425`);
+            if(newDocumentElement)
+            newDocumentElement.scrollIntoView();
+        });
     }
 
     loadOutputsData(): void {
@@ -232,6 +241,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                         documentTypeKey     : data['documents'][i]['doctype_key'] ? data['documents'][i]['doctype_key'] : (this.defaultDoctype.label || ""),
                         status              : data['documents'][i]['status'],
                         splitIndex          : data['documents'][i]['split_index'],
+                        displayOrder        : data['documents'][i]['display_order'],
                         pages               : [],
                         class               : "",
                         customFieldsValues  : {},
@@ -257,6 +267,8 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 }
                 // -- Add document forms --
                 this.loadDocumentsForms();
+                // -- Select first document --
+                this.selectDocument(this.documents[0]);
                 this.documentsLoading = false;
             }),
             catchError((err: any) => {
@@ -268,20 +280,32 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         ).subscribe();
     }
 
+    sortDocumentList() {
+        for (let documentIndex = 0; documentIndex < this.documents.length - 1; documentIndex++){
+            const documentDisplayOrder = this.documents[documentIndex].displayOrder;
+            if(documentDisplayOrder >= this.currentBatch.selectedDocument.displayOrder)
+                this.documents[documentIndex].displayOrder = documentDisplayOrder + 1;
+        }
+        this.documents.sort((a:any, b:any) => (a.displayOrder > b.displayOrder) ? 1 : -1);
+    }
+
     createDocument() {
         if(this.addDocumentLoading) { return; }
         this.http.post(API_URL + '/ws/splitter/addDocument',
             {
                 'batchId'       : this.currentBatch.id,
                 'splitIndex'    : this.currentBatch.maxSplitIndex + 1,
+                'displayOrder'  : this.currentBatch.selectedDocument.displayOrder + 1,
             },
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {
+                const newId = `document-${data.newDocumentId}`;
                 this.documents.push({
-                    id                  : "document-" + data.newDocumentId,
+                    id                  : newId,
                     status              : "NEW",
                     documentTypeName    : this.defaultDoctype.label,
                     documentTypeKey     : this.defaultDoctype.key,
+                    displayOrder        : this.currentBatch.selectedDocument.displayOrder + 1,
                     pages               : [],
                     customFieldsValues  : {},
                     class               : "",
@@ -289,6 +313,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 this.addFormForDocument({}, this.documents.length);
                 this.currentBatch.maxSplitIndex++;
                 this.addDocumentLoading = false;
+                this.sortDocumentList();
             }),
             catchError((err: any) => {
                 this.addDocumentLoading = false;
@@ -578,7 +603,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     selectDocument(document: any){
-        this.selectedDocument = {'id': document.id, 'documentOrder': 0};
+        this.currentBatch.selectedDocument = {'id': document.id, 'displayOrder': document.displayOrder};
     }
 
     deleteDocument(documentIndex: number) {

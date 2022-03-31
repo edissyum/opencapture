@@ -204,11 +204,11 @@
                         </mat-expansion-panel>
                     </mat-accordion>
                 </mat-card-title>
-                <mat-card-content class="document-content">
+                <mat-card-content class="document-content" #document.id>
                     <div cdkDropListOrientation="horizontal"
                          (click)="selectDocument(document)"
                          class="drop-list"
-                         [ngClass]="selectedDocument.id === document.id ? 'border-2 border-green-400':
+                         [ngClass]="currentBatch.selectedDocument.id === document.id ? 'border-2 border-green-400':
                          'border-2 border-gray-200 hover:cursor-pointer'"
                          style="
                             background-image: url('assets/imgs/dots.jpg');
