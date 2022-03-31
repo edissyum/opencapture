@@ -76,6 +76,8 @@ def get_default_form(args):
 
 
 def update_form(args):
+    print(args['set']['outputs'])
+    print(type(args['set']['outputs']))
     _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
@@ -133,13 +135,21 @@ def add_form(args):
     })
 
     if not forms_exists:
+        if 'outputs' in args and args['outputs']:
+            outputs = '{'
+            for output in args['outputs']:
+                outputs += output + ','
+            outputs = outputs.rstrip(',')
+            outputs += '}'
+        else:
+            outputs = {}
         args = {
             'table': 'form_models',
             'columns': {
                 'label': args['label'],
                 'module': args['module'],
                 'default_form': args['default_form'],
-                'outputs': args['outputs'] if 'outputs' in args and args['outputs'] else {},
+                'outputs': outputs,
                 'supplier_verif': args['supplier_verif'] if 'supplier_verif' in args else False
             }
         }
