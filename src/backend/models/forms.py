@@ -76,8 +76,6 @@ def get_default_form(args):
 
 
 def update_form(args):
-    print(args['set']['outputs'])
-    print(type(args['set']['outputs']))
     _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
