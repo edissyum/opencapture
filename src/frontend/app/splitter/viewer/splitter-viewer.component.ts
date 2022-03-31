@@ -15,7 +15,7 @@
 
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
-import {Component, OnDestroy, OnInit, ViewChild, Renderer2} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {API_URL} from "../../env";
 import {catchError, debounceTime, delay, filter, finalize, map, takeUntil, tap} from "rxjs/operators";
 import {of, ReplaySubject, Subject} from "rxjs";
@@ -33,7 +33,6 @@ import {MatDialog} from "@angular/material/dialog";
 import {DocumentTypeComponent} from "../document-type/document-type.component";
 import {remove} from 'remove-accents';
 import {HistoryService} from "../../../services/history.service";
-declare const $: any;
 
 export interface Batch {
     id: number
