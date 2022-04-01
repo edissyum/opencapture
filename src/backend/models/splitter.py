@@ -41,13 +41,7 @@ def create_document(args):
     _db = _vars[0]
     args = {
         'table': 'splitter_documents',
-        'columns': {
-            'batch_id': args['batch_id'],
-            'split_index': args['split_index'],
-            'status': args['status'],
-            'doctype_key': args['doctype_key'],
-            'data': args['data'],
-        }
+        'columns': args
     }
     res = _db.insert(args)
     return res
@@ -241,7 +235,7 @@ def get_batch_documents(args):
         'table': ['splitter_documents'],
         'where': ['status = %s', 'batch_id = %s'],
         'data': ['NEW', args['id']],
-        'order_by': ['split_index']
+        'order_by': ['display_order'],
     })
 
     if not pages:
@@ -348,12 +342,14 @@ def update_document(data):
         'table': ['splitter_documents'],
         'where': ['id = %s'],
         'set': {},
-        'data': [data['document_id']]
+        'data': [data['id']]
     }
     if 'status' in data:
         args['set']['status'] = data['status']
     if 'doctype_key' in data:
         args['set']['doctype_key'] = data['doctype_key']
+    if 'display_order' in data:
+        args['set']['display_order'] = data['display_order']
     if 'document_metadata' in data:
         args['set']['data'] = json.dumps({
             "custom_fields": data['document_metadata']

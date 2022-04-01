@@ -90,11 +90,7 @@ def retrieve_batch_documents(batch_id):
 def create_document():
     data = request.data
     data = json.loads(data)
-    args = {
-        'batch_id': data['batchId'],
-        'split_index': data['splitIndex']
-    }
-    res = splitter.create_document(args)
+    res = splitter.create_document(data)
     return make_response(jsonify(res[0])), res[1]
 
 

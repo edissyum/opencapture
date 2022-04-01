@@ -149,7 +149,6 @@ def retrieve_documents(batch_id):
             if dotypes and len(dotypes[0]) > 0:
                 doctype_key = dotypes[0]['key'] if dotypes[0]['key'] else None
                 doctype_label = dotypes[0]['label'] if dotypes[0]['label'] else None
-
             res_documents.append({
                 'pages': document_pages,
                 'doctype_key': doctype_key,
@@ -157,7 +156,8 @@ def retrieve_documents(batch_id):
                 'id': document['id'],
                 'data': document['data'],
                 'status': document['status'],
-                'split_index': document['split_index']
+                'split_index': document['split_index'],
+                'display_order': document['display_order']
             })
 
     response = {"documents": res_documents}
@@ -170,10 +170,17 @@ def create_document(args):
         'data': '{}',
         'status': 'NEW',
         'doctype_key': None,
-        'batch_id': args['batch_id'],
-        'split_index': args['split_index'],
+        'batch_id': args['batchId'],
+        'split_index': args['splitIndex'],
+        'display_order': args['displayOrder'],
     })
-    if not res:
+    if res:
+        for update_data in args['updatedDocuments']:
+            splitter.update_document({
+                'id': update_data['id'],
+                'display_order': update_data['displayOrder']
+            })
+    else:
         response = {
             "errors": gettext('ADD_DOCUMENT_ERROR'),
             "message": ''
@@ -337,7 +344,7 @@ def save_infos(args):
         """
         document['id'] = document['id'].split('-')[-1]
         res = splitter.update_document({
-            'document_id': document['id'].split('-')[-1],
+            'id': document['id'].split('-')[-1],
             'doctype_key': document['documentTypeKey'],
             'document_metadata': document['metadata'],
         })[0]
@@ -389,7 +396,7 @@ def save_infos(args):
     """
     for deleted_documents_id in args['deleted_documents_ids']:
         res = splitter.update_document({
-            'document_id': deleted_documents_id.split('-')[-1],
+            'id': deleted_documents_id.split('-')[-1],
             'status': 'DEL',
         })[0]
     if not res:

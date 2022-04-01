@@ -106,6 +106,7 @@ class Splitter:
                         'columns': {
                             'batch_id': str(batch_id),
                             'split_index': page['split_document'],
+                            'display_order': page['split_document'],
                             'data': '{}',
                         }
                     }

@@ -128,6 +128,7 @@
                     </div>
                 </mat-expansion-panel>
             </mat-accordion>
+            <span *ngIf="documents.length === 0" class="block align-text-top text-center text-red-600">{{ 'SPLITTER.noDocumentToShow' | translate }}</span>
             <mat-card class="document" *ngFor="let document of documents; let documentIndex = index;">
                 <mat-card-title>
                     <mat-accordion>
@@ -160,7 +161,7 @@
                                     </span>
                                 </div>
                             </div>
-                            <form [formGroup]="this.documentsForms[documentIndex]" class="mx-6 mt-4 grid grid-cols-5 gap-4">
+                            <form [formGroup]="document.form" class="mx-6 mt-4 grid grid-cols-5 gap-4">
                                 <div *ngFor="let input of fieldsCategories['document_metadata']">
                                     <div *ngIf="input.type === 'text' && inputMode === 'Auto' && input.metadata_key">
                                         <mat-form-field class="w-full">

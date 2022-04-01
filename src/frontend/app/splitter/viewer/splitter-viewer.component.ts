@@ -83,7 +83,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         }
     };
     batchMetadataValues         : any           = {};
-    documentsForms              : FormGroup[]   = [];
+    documentsForms              : any[]   = [];
     batches                     : Batch[]       = [];
     deletedPagesIds             : number[]      = [];
     rotatedPages                : any[]         = [];
@@ -143,7 +143,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     loadSelectedBatch(): void {
         this.documents      = [];
-        this.documentsForms = [];
         this.loadBatchById();
     }
 
@@ -169,12 +168,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 console.debug(err);
                 return of(false);
             })
-        ).subscribe((x)=>{
-            // TODO
-            const newDocumentElement = document.querySelector(`#document-425`);
-            if(newDocumentElement)
-            newDocumentElement.scrollIntoView();
-        });
+        ).subscribe();
     }
 
     loadOutputsData(): void {
@@ -232,29 +226,31 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.documentsLoading = true;
         this.http.get(API_URL + '/ws/splitter/documents/' + this.currentBatch.id, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                for (let i = 0; i < data['documents'].length; i++) {
+                for (let documentIndex = 0; documentIndex < data['documents'].length; documentIndex++) {
                     // -- Add documents metadata --
-                    this.documents[i] = {
-                        id                  : "document-" + data['documents'][i]['id'],
-                        documentTypeName    : data['documents'][i]['doctype_label'] ? data['documents'][i]['doctype_label'] : (this.defaultDoctype.label || ""),
-                        documentTypeKey     : data['documents'][i]['doctype_key'] ? data['documents'][i]['doctype_key'] : (this.defaultDoctype.label || ""),
-                        status              : data['documents'][i]['status'],
-                        splitIndex          : data['documents'][i]['split_index'],
-                        displayOrder        : data['documents'][i]['display_order'],
+                    this.documents[documentIndex] = {
+                        id                  : "document-" + data['documents'][documentIndex]['id'],
+                        documentTypeName    : data['documents'][documentIndex]['doctype_label'] ? data['documents'][documentIndex]['doctype_label'] : (this.defaultDoctype.label || ""),
+                        documentTypeKey     : data['documents'][documentIndex]['doctype_key'] ? data['documents'][documentIndex]['doctype_key'] : (this.defaultDoctype.label || ""),
+                        status              : data['documents'][documentIndex]['status'],
+                        splitIndex          : data['documents'][documentIndex]['split_index'],
+                        displayOrder        : data['documents'][documentIndex]['display_order'],
                         pages               : [],
                         class               : "",
                         customFieldsValues  : {},
                     };
                     // -- Get max split index, used when adding a new document --
-                    if (this.documents[i].splitIndex > this.currentBatch.maxSplitIndex) {
-                        this.currentBatch.maxSplitIndex = this.documents[i].splitIndex;
+                    if (this.documents[documentIndex].splitIndex > this.currentBatch.maxSplitIndex) {
+                        this.currentBatch.maxSplitIndex = this.documents[documentIndex].splitIndex;
                     }
-                    if (data['documents'][i]['data'].hasOwnProperty('custom_fields')) {
-                        this.documents[i].customFieldsValues = data['documents'][i]['data']['custom_fields'];
+                    if (data['documents'][documentIndex]['data'].hasOwnProperty('custom_fields')) {
+                        this.documents[documentIndex].customFieldsValues = data['documents'][documentIndex]['data']['custom_fields'];
                     }
+                    // -- Add document forms --
+                    this.documents[documentIndex].form = this.getFormForDocument(documentIndex);
                     // -- Add documents pages --
-                    for (const page of data['documents'][i]['pages']) {
-                        this.documents[i].pages.push({
+                    for (const page of data['documents'][documentIndex]['pages']) {
+                        this.documents[documentIndex].pages.push({
                             id              : page['id'],
                             sourcePage      : page['source_page'],
                             thumbnail       : this.sanitize(page['thumbnail']),
@@ -264,8 +260,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                         });
                     }
                 }
-                // -- Add document forms --
-                this.loadDocumentsForms();
                 // -- Select first document --
                 this.selectDocument(this.documents[0]);
                 this.documentsLoading = false;
@@ -279,22 +273,36 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         ).subscribe();
     }
 
-    sortDocumentList() {
-        for (let documentIndex = 0; documentIndex < this.documents.length - 1; documentIndex++){
-            const documentDisplayOrder = this.documents[documentIndex].displayOrder;
-            if(documentDisplayOrder >= this.currentBatch.selectedDocument.displayOrder)
-                this.documents[documentIndex].displayOrder = documentDisplayOrder + 1;
+    updateDocumentDisplayOrder() {
+        const updatedDocuments = [];
+        for (const document of this.documents){
+            const currentDisplayOrder   = document.displayOrder;
+            const newDisplayOrder       = currentDisplayOrder + 1;
+            if(currentDisplayOrder > this.currentBatch.selectedDocument.displayOrder){
+                document.displayOrder = newDisplayOrder;
+                updatedDocuments.push({
+                    'id': Number(document.id.split('-').pop()),
+                    'displayOrder': newDisplayOrder
+                });
+            }
         }
+        return updatedDocuments;
+    }
+
+    sortDocumentsByDisplayOrder(){
         this.documents.sort((a:any, b:any) => (a.displayOrder > b.displayOrder) ? 1 : -1);
     }
 
     createDocument() {
         if(this.addDocumentLoading) { return; }
+        const updatedDocuments  = this.updateDocumentDisplayOrder();
+        this.addDocumentLoading = true;
         this.http.post(API_URL + '/ws/splitter/addDocument',
             {
-                'batchId'       : this.currentBatch.id,
-                'splitIndex'    : this.currentBatch.maxSplitIndex + 1,
-                'displayOrder'  : this.currentBatch.selectedDocument.displayOrder + 1,
+                'batchId'           : this.currentBatch.id,
+                'splitIndex'        : this.currentBatch.maxSplitIndex + 1,
+                'displayOrder'      : this.currentBatch.selectedDocument.displayOrder + 1,
+                'updatedDocuments'  : updatedDocuments,
             },
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -309,10 +317,10 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     customFieldsValues  : {},
                     class               : "",
                 });
-                this.addFormForDocument({}, this.documents.length);
+                this.documents[this.documents.length - 1].form = this.getFormForDocument(this.documents.length - 1);
+                this.sortDocumentsByDisplayOrder();
                 this.currentBatch.maxSplitIndex++;
                 this.addDocumentLoading = false;
-                this.sortDocumentList();
             }),
             catchError((err: any) => {
                 this.addDocumentLoading = false;
@@ -323,32 +331,23 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         ).subscribe();
     }
 
-    loadDocumentsForms() {
-        let cpt = 0;
-        this.documentsForms = [];
-        for (const document of this.documents) {
-            this.addFormForDocument(document.customFieldsValues, cpt);
-            cpt++;
-        }
-    }
-
-    addFormForDocument(customFieldsValues: any, documentIndex: number) {
+    getFormForDocument(documentIndex: number) {
         const newForm = new FormGroup({});
-        for (let fieldsIndex = 0; fieldsIndex < this.fieldsCategories['document_metadata'].length; fieldsIndex++) {
+        for (const field of this.fieldsCategories['document_metadata']) {
             const control = new FormControl();
-            const labelShort = this.fieldsCategories['document_metadata'][fieldsIndex].label_short;
-            if(customFieldsValues.hasOwnProperty(labelShort))
-                control.setValue(customFieldsValues[labelShort]);
+            const labelShort = field.label_short;
+            if(this.documents[documentIndex]['customFieldsValues'].hasOwnProperty(labelShort))
+                control.setValue(this.documents[documentIndex]['customFieldsValues'][labelShort]);
             control.valueChanges.subscribe(value => {
                 this.documents[documentIndex]['customFieldsValues'][labelShort] = value;
             });
             newForm.addControl(labelShort, control);
-            if (this.fieldsCategories['document_metadata'][fieldsIndex].metadata_key) { // used to control autocomplete search fields
+            if (field.metadata_key) { // used to control autocomplete search fields
                 const controlSearch = new FormControl();
                 newForm.addControl("search_" + labelShort, controlSearch);
             }
         }
-        this.documentsForms.push(newForm);
+        return newForm;
     }
 
     getPageUrlById(pageId: number): any {
@@ -418,9 +417,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         for (const field of this.fieldsCategories['document_metadata']) {
             const key = field['metadata_key'];
             const newValue = data.hasOwnProperty(key) ? data[key] : '';
-            for (let i = 0; i < this.documentsForms.length; i++) {
-                if (key && this.documentsForms[i].get(key)) {
-                    this.documentsForms[i].get(key)?.setValue(newValue);
+            for (const document of this.documents) {
+                if (key && document.form.get(key)) {
+                    document.form.get(key)?.setValue(newValue);
                 }
             }
         }
@@ -502,8 +501,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                                 this.batchForm.get('search_' + field.label_short)?.valueChanges
                                     .pipe(
                                         filter((search: string) => !!search),
-                                        tap(() => {
-                                        }),
+                                        tap(() => {}),
                                         takeUntil(this._onDestroy),
                                         debounceTime(200),
                                         map(search => {
@@ -731,8 +729,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 }
             }
         }
-        for (let documentIndex = 0; documentIndex < this.documents.length; documentIndex++) {
-            this.documents[documentIndex]['metadata'] = this.documentsForms[documentIndex].getRawValue();
+
+        for (const document of this.documents) {
+            document['metadata'] = document.form.getRawValue();
         }
 
         for (const document of this.documents) {
@@ -750,12 +749,21 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         batchMetadata['userName']       = this.userService.user['username'];
         batchMetadata['userFirstName']  = this.userService.user['firstname'];
         batchMetadata['userLastName']   = this.userService.user['lastname'];
+
         this.loading = true;
+
+        // Remove unnecessary arguments
+        const _documents = this.documents;
+        for (const document of _documents){
+            delete document.class;
+            delete document.form;
+        }
+
         this.http.post(API_URL + '/ws/splitter/validate',
             {
                 'formId'                : this.currentBatch.formId,
                 'batchId'               : this.currentBatch.id,
-                'documents'             : this.documents,
+                'documents'             : _documents,
                 'movedPages'            : this.movedPages,
                 'deletedPagesIds'       : this.deletedPagesIds,
                 'deletedDocumentsIds'   : this.deletedDocumentsIds,
@@ -784,8 +792,8 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 }
             }
         }
-        for (let documentIndex = 0; documentIndex < this.documents.length; documentIndex++) {
-            this.documents[documentIndex]['metadata'] = this.documentsForms[documentIndex].getRawValue();
+        for (const document of this.documents) {
+            document['metadata'] = document.form.getRawValue();
         }
         this.http.post(API_URL + '/ws/splitter/saveInfo',
             {
