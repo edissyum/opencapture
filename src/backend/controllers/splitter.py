@@ -564,7 +564,7 @@ def validate(args):
                 """
                 splitter.change_status({
                     'id': args['batchMetadata']['id'],
-                    'status': 'NEW'
+                    'status': 'END'
                 })
 
     return {"OK": True}, 200
