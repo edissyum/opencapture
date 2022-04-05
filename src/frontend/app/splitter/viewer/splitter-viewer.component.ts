@@ -567,7 +567,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         return this._sanitizer.bypassSecurityTrustUrl('data:image/jpg;base64,' + url);
     }
 
-    drop(event: CdkDragDrop<any[]>, document: any) {
+    dropPage(event: CdkDragDrop<any[]>, document: any) {
         if (event.previousContainer === event.container) {
             moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
         } else {
@@ -583,11 +583,24 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         }
     }
 
+    dropDocument(event: CdkDragDrop<string[]>) {
+        moveItemInArray(this.documents, event.previousIndex, event.currentIndex);
+        this.OrderDisplayDocumentValues();
+    }
+
+    OrderDisplayDocumentValues(){
+        let cpt = 1;
+        for(const document of this.documents){
+            document.displayOrder = cpt;
+            cpt++;
+        }
+    }
+
     openDocumentTypeDialog(document: any): void {
         const dialogRef = this.dialog.open(DocumentTypeComponent, {
-            width: '800px',
-            height: '900px',
-            data: {
+            width   : '800px',
+            height  : '900px',
+            data    : {
                 selectedDocType: {
                     key: document.documentTypeKey  ? document.documentTypeKey  : "",
                 },

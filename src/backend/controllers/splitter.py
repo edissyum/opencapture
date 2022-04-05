@@ -316,28 +316,18 @@ def save_infos(args):
 
     for document in args['documents']:
         """
-            Save user added documents
+        moved documents
         """
-        if document['status'] == 'USERADD':
-            res_splitter_index = splitter.get_next_splitter_index({'batch_id': args['batch_id']})
-            if res_splitter_index[0]:
-                new_document_id = splitter.create_document({
-                    'batch_id': args['batch_id'],
-                    'doctype_key': document['documentTypeKey'],
-                    'split_index': res_splitter_index[0]['split_index'],
-                    'data': json.dumps({'custom_fields': document['metadata']}),
-                    'status': 'NEW',
-                })
-                new_documents.append({
-                    'tmp_id': document['id'],
-                    'id': new_document_id
-                })
-            else:
-                response = {
-                    "errors": gettext('ADD_DOCUMENT_ERROR'),
-                    "message": ''
-                }
-                return response, 401
+        res = splitter.update_document({
+            'id': document['id'].split('-')[-1],
+            'display_order': document['displayOrder'],
+        })[0]
+        if not res:
+            response = {
+                "errors": gettext('UPDATE_DOCUMENTS_ERROR'),
+                "message": ''
+            }
+            return response, 401
 
         """
             Save documents metadata
