@@ -299,7 +299,8 @@
                     </button>
                     <button (click)="saveInfo()" mat-button class="inline-block"
                             title="{{ 'SPLITTER.save' | translate }}">
-                        <i class="fa fa-save fa-lg"></i>
+                        <i class="fa fa-save fa-lg" *ngIf="!saveInfosLoading"></i>
+                        <i class="fas fa-circle-notch fa-spin fa-lg my-4" *ngIf="saveInfosLoading"></i>
                     </button>
                     <div class="inline-block w-auto float-right py-8 mx-4 grid-rows-2">
                         <div>

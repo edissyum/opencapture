@@ -70,6 +70,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     showZoomPage                : boolean       = false;
     loading                     : boolean       = true;
     addDocumentLoading          : boolean       = false;
+    saveInfosLoading            : boolean       = false;
     documentsLoading            : boolean       = false;
     batchMetadataOpenState      : boolean       = true;
     currentBatch                : any           = {
@@ -294,24 +295,26 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     createDocument() {
+        console.log(this.documents);
         if(this.addDocumentLoading) { return; }
-        const updatedDocuments  = this.updateDocumentDisplayOrder();
+        const documentDisplayOrder  = this.updateDocumentDisplayOrder();
         this.addDocumentLoading = true;
         this.http.post(API_URL + '/ws/splitter/addDocument',
             {
                 'batchId'           : this.currentBatch.id,
                 'splitIndex'        : this.currentBatch.maxSplitIndex + 1,
                 'displayOrder'      : this.currentBatch.selectedDocument.displayOrder + 1,
-                'updatedDocuments'  : updatedDocuments,
+                'updatedDocuments'  : documentDisplayOrder,
             },
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 const newId = `document-${data.newDocumentId}`;
                 this.documents.push({
                     id                  : newId,
-                    status              : "NEW",
                     documentTypeName    : this.defaultDoctype.label,
                     documentTypeKey     : this.defaultDoctype.key,
+                    status              : "NEW",
+                    splitIndex          : this.currentBatch.maxSplitIndex + 1,
                     displayOrder        : this.currentBatch.selectedDocument.displayOrder + 1,
                     pages               : [],
                     customFieldsValues  : {},
@@ -731,10 +734,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         }
 
         for (const document of this.documents) {
-            document['metadata'] = document.form.getRawValue();
-        }
-
-        for (const document of this.documents) {
             if (!document.documentTypeKey) {
                 document.class = "text-red-500";
                 this.notify.error(this.translate.instant('SPLITTER.error_no_doc_type'));
@@ -750,13 +749,14 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         batchMetadata['userFirstName']  = this.userService.user['firstname'];
         batchMetadata['userLastName']   = this.userService.user['lastname'];
 
-        this.loading = true;
-
-        // Remove unnecessary arguments
-        const _documents = this.documents;
-        for (const document of _documents){
-            delete document.class;
-            delete document.form;
+        // Add metadata arguments and Remove unnecessary ones
+        const _documents = [];
+        for (const document of this.documents){
+            const _document = Object.assign({}, document);
+            _document['metadata'] = document.form.getRawValue();
+            delete _document.class;
+            delete _document.form;
+            _documents.push(_document);
         }
 
         this.http.post(API_URL + '/ws/splitter/validate',
@@ -785,6 +785,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     saveInfo() {
+        this.saveInfosLoading = true;
         if (this.inputMode === 'Manual') {
             for (const field of this.fieldsCategories['batch_metadata']) {
                 if (this.batchForm.get(field.label_short)) {
@@ -792,12 +793,20 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 }
             }
         }
-        for (const document of this.documents) {
-            document['metadata'] = document.form.getRawValue();
+
+        // Add arguments and Remove unnecessary ones
+        const _documents = [];
+        for (const document of this.documents){
+            const _document = Object.assign({}, document);
+            _document['metadata'] = document.form.getRawValue();
+            delete _document.class;
+            delete _document.form;
+            _documents.push(_document);
         }
+
         this.http.post(API_URL + '/ws/splitter/saveInfo',
             {
-                'documents'             : this.documents,
+                'documents'             : _documents,
                 'batchId'               : this.currentBatch.id,
                 'batchMetadata'         : this.batchMetadataValues,
                 'deletedPagesIds'       : this.deletedPagesIds,
@@ -806,10 +815,11 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             },
             {headers: this.authService.headers}).pipe(
             tap(() => {
+                this.saveInfosLoading = false;
                 this.notify.success(this.translate.instant('SPLITTER.batch_info_saved'));
             }),
             catchError((err: any) => {
-                this.loading = false;
+                this.saveInfosLoading = false;
                 this.notify.error(err.error.message);
                 console.debug(err);
                 return of(false);

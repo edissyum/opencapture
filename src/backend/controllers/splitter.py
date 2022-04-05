@@ -373,16 +373,16 @@ def save_infos(args):
     """
         move pages
     """
-    for movedPage in args['moved_pages']:
+    for moved_page in args['moved_pages']:
         """ Check if page is added in a new document """
-        if movedPage['isAddInNewDoc']:
+        if moved_page['isAddInNewDoc']:
             for new_document_item in new_documents:
-                if new_document_item['tmp_id'] == movedPage['newDocumentId']:
-                    movedPage['newDocumentId'] = new_document_item['id']
+                if new_document_item['tmp_id'] == moved_page['newDocumentId']:
+                    moved_page['newDocumentId'] = new_document_item['id']
 
         res = splitter.update_page({
-            'page_id': movedPage['pageId'],
-            'document_id': movedPage['newDocumentId'],
+            'page_id': moved_page['pageId'],
+            'document_id': moved_page['newDocumentId'],
         })[0]
         if not res:
             response = {
