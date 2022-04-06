@@ -162,7 +162,7 @@
                                             </span>
                                         </button>
                                     </mat-panel-title>
-                                    <button mat-button class="right-2" (click)="deleteDocument(documentIndex)"
+                                    <button mat-button class="right-2" (click)="deleteDocument(documentIndex); $event.stopPropagation();"
                                             title="{{ 'GLOBAL.delete' | translate }}">
                                         <i class="fas fa-trash-alt fa-lg"></i>
                                     </button>
@@ -232,8 +232,8 @@
                                 width:100%;
                                 overflow:scroll!important;"
                              (cdkDropListDropped)="dropPage($event, document)"
-                             cdkDropList id="{{ addId(document['id']) }}" [cdkDropListData]="document['pages']"
-                             [cdkDropListConnectedTo]="documentsIds">
+                             cdkDropList id="{{ addDocumentIdToDropList(document['id']) }}" [cdkDropListData]="document['pages']"
+                             [cdkDropListConnectedTo]="DropListDocumentsIds">
                             <div class="page m-1.5 bg-gray-200 rounded-md"
                                  *ngFor="let page of document['pages']; let pageIndex = index;"
                                  (click)="page['checkBox'] = !page['checkBox']; countSelectedPages();" cdkDrag>
@@ -321,15 +321,15 @@
                     </button>
                     <div class="inline-block w-auto float-right py-8 mx-4 grid-rows-2">
                         <div>
-                            <button mat-button (click)="validate()" [disabled]="outputs.length === 0"
+                            <button mat-button (click)="validateWithConfirmation()" [disabled]="outputs.length === 0"
                                     class="btn-validate-splitter rounded-full bg-green-400 text-white
                                             text-sm font-medium transition duration-300 ml-2 float-right"
                                     style="border-right: 1px dotted white !important;">
                                 {{ 'GLOBAL.validate' | translate }}
                             </button>
                             <button mat-button class="btn-validate-splitter text-gray-500 bg-gray-300 rounded-full
-                                text-sm font-medium transition duration-300 float-right" routerLink="/splitter/list">
-                                {{ 'GLOBAL.cancel' | translate }}
+                                text-sm font-medium transition duration-300 float-right" (click)="cancel()">
+                                {{ 'GLOBAL.quit' | translate }}
                             </button>
                             <div class="top-4 text-center text-gray-400">
                                 <span>{{outputs.join(', ')}}</span>

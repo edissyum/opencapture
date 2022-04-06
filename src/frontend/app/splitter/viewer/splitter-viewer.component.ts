@@ -15,7 +15,7 @@
 
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {API_URL} from "../../env";
 import {catchError, debounceTime, delay, filter, finalize, map, takeUntil, tap} from "rxjs/operators";
 import {of, ReplaySubject, Subject} from "rxjs";
@@ -33,6 +33,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {DocumentTypeComponent} from "../document-type/document-type.component";
 import {remove} from 'remove-accents';
 import {HistoryService} from "../../../services/history.service";
+import {ConfirmDialogComponent} from "../../../services/confirm-dialog/confirm-dialog.component";
 
 export interface Batch {
     id: number
@@ -59,14 +60,21 @@ export interface Field {
     styleUrls: ['./splitter-viewer.component.scss'],
 })
 export class SplitterViewerComponent implements OnInit, OnDestroy {
-    @ViewChild(`cdkStepper`) cdkDropList: CdkDragDrop<any> | undefined;
+    @HostListener('window:beforeunload', ['$event'])
+    beforeunloadHandler($event: any) {
+        if(this.isDataEdited){
+            $event.returnValue =true;
+        }
+    }
 
+    @ViewChild(`cdkStepper`) cdkDropList: CdkDragDrop<any> | undefined;
     fieldsCategories            : any           = {
         'batch_metadata'    : [],
         'document_metadata' : []
     };
     batchForm                   : FormGroup     = new FormGroup({});
     documentMetadataOpenState   : boolean       = false;
+    isDataEdited                : boolean       = false;
     showZoomPage                : boolean       = false;
     loading                     : boolean       = true;
     addDocumentLoading          : boolean       = false;
@@ -84,7 +92,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         }
     };
     batchMetadataValues         : any           = {};
-    documentsForms              : any[]   = [];
+    documentsForms              : any[]         = [];
     batches                     : Batch[]       = [];
     deletedPagesIds             : number[]      = [];
     rotatedPages                : any[]         = [];
@@ -94,7 +102,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     metadata                    : any[]         = [];
     documents                   : any           = [];
     pagesImageUrls              : any           = [];
-    documentsIds                : string[]      = [];
+    DropListDocumentsIds        : string[]      = [];
     zoomPage                    : any           = {
         thumbnail   : "",
         rotation    : 0,
@@ -295,8 +303,8 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     createDocument() {
-        console.log(this.documents);
         if(this.addDocumentLoading) { return; }
+        this.isDataEdited = true;
         const documentDisplayOrder  = this.updateDocumentDisplayOrder();
         this.addDocumentLoading = true;
         this.http.post(API_URL + '/ws/splitter/addDocument',
@@ -324,6 +332,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 this.sortDocumentsByDisplayOrder();
                 this.currentBatch.maxSplitIndex++;
                 this.addDocumentLoading = false;
+                this.notify.success(this.translate.instant('SPLITTER.document_added_with_success'));
             }),
             catchError((err: any) => {
                 this.addDocumentLoading = false;
@@ -557,9 +566,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     /* -- End Metadata -- */
 
     /* -- Begin documents control -- */
-    addId(id: string) {
-        if (!this.documentsIds.includes(id))
-            this.documentsIds.push(id);
+    addDocumentIdToDropList(id: string) {
+        if (!this.DropListDocumentsIds.includes(id))
+            this.DropListDocumentsIds.push(id);
         return id;
     }
 
@@ -568,6 +577,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     dropPage(event: CdkDragDrop<any[]>, document: any) {
+        this.isDataEdited = true;
         if (event.previousContainer === event.container) {
             moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
         } else {
@@ -584,6 +594,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     dropDocument(event: CdkDragDrop<string[]>) {
+        this.isDataEdited = true;
         moveItemInArray(this.documents, event.previousIndex, event.currentIndex);
         this.OrderDisplayDocumentValues();
     }
@@ -611,6 +622,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             if (result) {
                 document.documentTypeName = result.label;
                 document.documentTypeKey = result.key;
+                this.isDataEdited = true;
             }
         });
     }
@@ -620,8 +632,29 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     deleteDocument(documentIndex: number) {
-        this.deletedDocumentsIds.push(this.documents[documentIndex].id);
-        this.documents = this.deleteItemFromList(this.documents, documentIndex);
+        const pagesCount = this.documents[documentIndex].pages.length;
+        const confirmMessage = pagesCount > 0 ?
+            this.translate.instant('SPLITTER.confirm_delete_document_not_empty', {"pagesCount": pagesCount}):
+            this.translate.instant('SPLITTER.confirm_delete_document_empty');
+
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            data:{
+                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
+                confirmText         : confirmMessage,
+                confirmButton       : this.translate.instant('SPLITTER.delete'),
+                confirmButtonColor  : "warn",
+                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+            },
+            width: "600px",
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.deletedDocumentsIds.push(this.documents[documentIndex].id);
+                this.documents = this.deleteItemFromList(this.documents, documentIndex);
+                this.isDataEdited = true;
+            }
+        });
     }
     /* End documents control */
 
@@ -643,15 +676,34 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     deleteSelectedPages() {
-        for (const document of this.documents) {
-            for (let pageIndex = 0; pageIndex < document.pages.length; pageIndex++) {
-                if (document.pages[pageIndex].checkBox) {
-                    this.deletedPagesIds.push(document.pages[pageIndex].id);
-                    document.pages = this.deleteItemFromList(document.pages, pageIndex);
-                    pageIndex--;
+        if(this.currentBatch.selectedPagesCount === 0)
+            return;
+
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            data:{
+                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
+                confirmText         : this.translate.instant('SPLITTER.confirm_delete_pages', {"pagesCount": this.currentBatch.selectedPagesCount}),
+                confirmButton       : this.translate.instant('SPLITTER.delete'),
+                confirmButtonColor  : "warn",
+                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+            },
+            width: "600px",
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                for (const document of this.documents) {
+                    for (let pageIndex = 0; pageIndex < document.pages.length; pageIndex++) {
+                        if (document.pages[pageIndex].checkBox) {
+                            this.deletedPagesIds.push(document.pages[pageIndex].id);
+                            document.pages = this.deleteItemFromList(document.pages, pageIndex);
+                            pageIndex--;
+                        }
+                    }
                 }
+                this.isDataEdited = true;
             }
-        }
+        });
     }
 
     setAllPagesTo(check: boolean) {
@@ -669,10 +721,12 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.fieldsCategories['batch_metadata'] = [];
         this.loadSelectedBatch();
         this.loadMetadata();
+        this.isDataEdited = false;
     }
 
     rotatePage(documentIndex: number, pageIndex: number){
         const currentDegree = this.documents[documentIndex].pages[pageIndex].rotation;
+        this.isDataEdited = true;
         switch(currentDegree) {
             case -90: {
                 this.documents[documentIndex].pages[pageIndex].rotation = 0;
@@ -724,6 +778,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 }
             }
         }
+        this.isDataEdited = true;
     }
 
     changeBatch(id: number) {
@@ -734,6 +789,50 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.router.navigate(['splitter/viewer/' + id]).then();
         this.currentBatch.id = id;
         this.loadSelectedBatch();
+        this.isDataEdited = false;
+    }
+
+    cancel(){
+        if(this.isDataEdited){
+            const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+                data:{
+                    confirmTitle        : this.translate.instant('GLOBAL.confirm'),
+                    confirmText         : this.translate.instant('SPLITTER.quit_without_saving_modifications'),
+                    confirmButton       : this.translate.instant('SPLITTER.quit_without_saving'),
+                    confirmButtonColor  : "warn",
+                    cancelButton        : this.translate.instant('GLOBAL.cancel'),
+                },
+                width: "600px",
+            });
+
+            dialogRef.afterClosed().subscribe(result => {
+                if (result) {
+                    this.router.navigate(["/splitter/list"]).then();
+                }
+            });
+        }
+        else{
+            this.router.navigate(["/splitter/list"]).then();
+        }
+    }
+
+    validateWithConfirmation(){
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            data:{
+                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
+                confirmText         : this.translate.instant('SPLITTER.confirm_validate'),
+                confirmButton       : this.translate.instant('SPLITTER.validateBatch'),
+                confirmButtonColor  : "green",
+                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+            },
+            width: "600px",
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.validate();
+            }
+        });
     }
 
     validate() {
@@ -828,8 +927,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             },
             {headers: this.authService.headers}).pipe(
             tap(() => {
-                this.saveInfosLoading = false;
-                this.notify.success(this.translate.instant('SPLITTER.batch_info_saved'));
+                this.saveInfosLoading   = false;
+                this.isDataEdited       = false;
+                this.notify.success(this.translate.instant('SPLITTER.batch_modification_saved'));
             }),
             catchError((err: any) => {
                 this.saveInfosLoading = false;
