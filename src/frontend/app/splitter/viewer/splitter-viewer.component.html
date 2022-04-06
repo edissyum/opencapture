@@ -31,8 +31,8 @@
     <mat-drawer-content>
         <button class="btn-show-batches left-0" mat-raised-button (click)="drawer.toggle()">
             <span>
-                <i *ngIf="drawer.opened" class="fas fa-angle-left"></i>
-                <i *ngIf="!drawer.opened" class="fas fa-angle-right"></i>
+                <i *ngIf="drawer.opened" class="fa-solid fa-angle-left"></i>
+                <i *ngIf="!drawer.opened" class="fa-solid fa-angle-right"></i>
             </span>
         </button>
         <div *ngIf="showZoomPage" class="fixed z-10 w-4/12 h-5/6 grid justify-items-stretch right-0 top-20">
@@ -72,7 +72,7 @@
                         </mat-panel-title>
                     </mat-expansion-panel-header>
                     <div class="text-gray-400 text-center w-full" *ngIf="fieldsCategories['batch_metadata'].length === 0">
-                        <i class="block fas fa-check fa-3x"></i>
+                        <i class="block fa-solid fa-check fa-3x"></i>
                         <span class="block">{{ 'SPLITTER.no_metadata_required' | translate }}</span>
                     </div>
                     <form [formGroup]="batchForm" class="mx-8 grid grid-cols-3 gap-4">
@@ -123,7 +123,7 @@
                     <div class="text-right p-4">
                         <!--                        <button mat-button class="my-2" (click)="loadReferential()"-->
                         <!--                                title="{{ 'SPLITTER.loadReferential' | translate }}">-->
-                        <!--                            <i class="fas fa-sync fa-3x"></i>-->
+                        <!--                            <i class="fa-solid fa-sync fa-3x"></i>-->
                         <!--                        </button>-->
                     </div>
                 </mat-expansion-panel>
@@ -157,21 +157,21 @@
                                                 (click)="documentMetadata.toggle(); openDocumentTypeDialog(document);"
                                                 title="{{ 'SPLITTER.edit' | translate }}">
                                             <span style="font-family: cursive; font-weight: bold;" class="w-full">
-                                                <i class="fas fa-edit"></i>
+                                                <i class="fa-solid fa-edit"></i>
                                                 {{ document['documentTypeName'] }}
                                             </span>
                                         </button>
                                     </mat-panel-title>
                                     <button mat-button class="right-2" (click)="deleteDocument(documentIndex); $event.stopPropagation();"
                                             title="{{ 'GLOBAL.delete' | translate }}">
-                                        <i class="fas fa-trash-alt fa-lg"></i>
+                                        <i class="fa-solid fa-trash-alt fa-lg"></i>
                                     </button>
                                 </mat-expansion-panel-header>
                                 <div class="text-gray-400 w-full">
                                     <span class="m-6 w-11/12">{{ 'SPLITTER.document_metadata' | translate }}</span>
                                     <mat-divider class="mx-6" style="width: 96%;"></mat-divider>
                                     <div *ngIf="fieldsCategories['document_metadata'].length === 0">
-                                        <i class="text-center block fas fa-check fa-3x"></i>
+                                        <i class="text-center block fa-solid fa-check fa-3x"></i>
                                         <span class="block text-center" >
                                             {{ 'SPLITTER.no_metadata_required' | translate }}
                                         </span>
@@ -256,7 +256,7 @@
                                     <button mat-button class="page-header-btn float-right bg-gray-100"
                                             title="{{ 'SPLITTER.zoom' | translate }}"
                                             (click)="getZoomPage(page); $event.stopPropagation();">
-                                        <i class="fas fa-search-plus"></i>
+                                        <i class="fa-solid fa-search-plus"></i>
                                     </button>
                                 </div>
                                 <img [ngClass]="
@@ -280,27 +280,27 @@
                     </span>
                     <button mat-button (click)="deleteSelectedPages()" class="btn-icon inline-block"
                             title="{{ 'SPLITTER.delete_selected_pages' | translate }}">
-                        <i class="fas fa-trash-alt fa-lg"></i>
+                        <i class="fa-solid fa-trash-alt fa-lg"></i>
                     </button>
                     <button mat-button (click)="setAllPagesTo(true)" class="btn-icon btn-splitter-check inline-block"
                             title="{{ 'SPLITTER.select_all' | translate }}">
-                        <i class="fas fa-check-circle fa-lg"></i>
+                        <i class="fa-solid fa-check-circle fa-lg"></i>
                     </button>
                     <button mat-button (click)="setAllPagesTo(false)"
                             class="btn-icon border-r-2 border-black inline-block"
                             title="{{ 'SPLITTER.unselect_all' | translate }}">
-                        <i class="fas fa-ban fa-lg"></i>
+                        <i class="fa-solid fa-ban fa-lg"></i>
                     </button>
                     <button mat-button (click)="rotateSelectedPages()"
                             class="btn-icon btn-rotate border-r-10 border-gray-400 inline-block"
                             title="{{ 'SPLITTER.rotatePage' | translate }}">
-                        <i class="fas fa-rotate-right fa-lg"></i>
+                        <i class="fa-solid fa-rotate-right fa-lg"></i>
                     </button>
                     <button mat-button class="inline-block my-4"
                             (click)="createDocument()"
                             title="{{ 'SPLITTER.add_document' | translate }}">
-                        <i class="fas fa-plus-circle fa-lg" *ngIf="!addDocumentLoading"></i>
-                        <i class="fas fa-circle-notch fa-spin fa-lg my-4" *ngIf="addDocumentLoading"></i>
+                        <i class="fa-solid fa-plus-circle fa-lg" *ngIf="!addDocumentLoading"></i>
+                        <i class="fa-solid fa-circle-notch fa-spin fa-lg my-4" *ngIf="addDocumentLoading"></i>
                     </button>
                     <mat-form-field class="inline-block pt-6 top-1">
                         <mat-label>{{ 'SPLITTER.send_to' | translate }}</mat-label>
@@ -317,7 +317,7 @@
                     <button (click)="saveInfo()" mat-button class="inline-block"
                             title="{{ 'SPLITTER.save' | translate }}">
                         <i class="fa fa-save fa-lg" *ngIf="!saveInfosLoading"></i>
-                        <i class="fas fa-circle-notch fa-spin fa-lg my-4" *ngIf="saveInfosLoading"></i>
+                        <i class="fa-solid fa-circle-notch fa-spin fa-lg my-4" *ngIf="saveInfosLoading"></i>
                     </button>
                     <div class="inline-block w-auto float-right py-8 mx-4 grid-rows-2">
                         <div>

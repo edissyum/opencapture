@@ -78,7 +78,7 @@
             <button mat-icon-button (click)="sidenav.toggle(); this.serviceSettings.toggleMenu();"
                     class="absolute left-2 top-2">
                 <i [class.fa-arrow-right]="!this.serviceSettings.getIsMenuOpen()"
-                   class="fas fa-arrow-left text-2xl text-gray-900"></i>
+                   class="fa-solid fa-arrow-left text-2xl text-gray-900"></i>
             </button>
             <div class="settings_title text-center">
                 <h3>{{ this.serviceSettings.getTitle() }}</h3>
@@ -86,7 +86,7 @@
             </div>
             <button mat-icon-button (click)="sidenav2.toggle();"
                     class="absolute right-2 top-2">
-                <i  class="fas fa-stream text-xl text-gray-900"
+                <i  class="fa-solid fa-stream text-xl text-gray-900"
                     [class.transform]="sidenav2.opened" [class.rotate-180]="sidenav2.opened"></i>
             </button>
         </div>

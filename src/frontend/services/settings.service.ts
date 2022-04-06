@@ -52,21 +52,28 @@ export class SettingsService {
             {
                 "id"        : "configurations",
                 "label"     : this.translate.instant("SETTINGS.configurations"),
-                "icon"      : "fas fa-sliders",
+                "icon"      : "fa-solid fa-sliders",
                 "route"     : '/settings/general/configurations',
                 "privilege" : "configurations",
             },
             {
                 "id"        : "docservers",
                 "label"     : this.translate.instant("SETTINGS.docservers"),
-                "icon"      : "fas fa-hard-drive",
+                "icon"      : "fa-solid fa-hard-drive",
                 "route"     : '/settings/general/docservers',
                 "privilege" : "docservers",
             },
             {
+                "id"        : "regex",
+                "label"     : this.translate.instant("SETTINGS.regex"),
+                "icon"      : "fa-solid fa-star-of-life",
+                "route"     : '/settings/general/regex',
+                "privilege" : "regex",
+            },
+            {
                 "id"        : "users",
                 "label"     : this.translate.instant("SETTINGS.users_list"),
-                "icon"      : "fas fa-user",
+                "icon"      : "fa-solid fa-user",
                 "route"     : '/settings/general/users',
                 "privilege" : "users_list",
                 "actions"   : [
@@ -75,13 +82,13 @@ export class SettingsService {
                         "label"     : this.translate.instant("USER.create_user"),
                         "route"     : "/settings/general/users/new",
                         "privilege" : "add_user",
-                        "icon"      : "fas fa-plus"
+                        "icon"      : "fa-solid fa-plus"
                     },
                     {
                         "id"                : 'update_user',
                         "label"             : this.translate.instant("USER.update"),
                         "route"             : "/settings/general/users/update/",
-                        "icon"              : "fas fa-edit",
+                        "icon"              : "fa-solid fa-edit",
                         "privilege"         : "update_user",
                         "showOnlyIfActive"  : true
                     }
@@ -90,7 +97,7 @@ export class SettingsService {
             {
                 "id"        : "roles",
                 "label"     : this.translate.instant("SETTINGS.roles_list"),
-                "icon"      : "fas fa-users",
+                "icon"      : "fa-solid fa-users",
                 "route"     : "/settings/general/roles",
                 "privilege" : "roles_list",
                 "actions"   : [
@@ -99,13 +106,13 @@ export class SettingsService {
                         "label"     : this.translate.instant("ROLE.create_role"),
                         "route"     : "/settings/general/roles/new",
                         "privilege" : "add_role",
-                        "icon"      : "fas fa-plus"
+                        "icon"      : "fa-solid fa-plus"
                     },
                     {
                         "id"                : 'update_role',
                         "label"             : this.translate.instant("ROLE.update"),
                         "route"             : "/settings/general/roles/update/",
-                        "icon"              : "fas fa-edit",
+                        "icon"              : "fa-solid fa-edit",
                         "privilege"         : "update_role",
                         "showOnlyIfActive"  : true
                     }
@@ -115,13 +122,13 @@ export class SettingsService {
                 "id"        : "custom-fields",
                 "label"     : this.translate.instant("SETTINGS.custom_fields"),
                 "route"     : "/settings/general/custom-fields",
-                "icon"      : "fas fa-code",
+                "icon"      : "fa-solid fa-code",
                 "privilege" : "custom_fields",
             },
             {
                 "id"        : "about-us",
                 "label"     : this.translate.instant("SETTINGS.abouts_us"),
-                "icon"      : "fas fa-address-card",
+                "icon"      : "fa-solid fa-address-card",
                 "route"     : "/settings/general/about-us"
             }
         ],
@@ -129,7 +136,7 @@ export class SettingsService {
             {
                 "id"        : "form_builder",
                 "label"     : this.translate.instant("SETTINGS.list_forms"),
-                "icon"      : "fab fa-wpforms",
+                "icon"      : "fa-brands fa-wpforms",
                 "route"     : "/settings/verifier/forms",
                 "actions"   : [
                     {
@@ -137,14 +144,14 @@ export class SettingsService {
                         "label"     : this.translate.instant("SETTINGS.form_builder"),
                         "route"     : "/settings/verifier/forms/builder/new",
                         "privilege" : "add_form",
-                        "icon"      : "fas fa-tools"
+                        "icon"      : "fa-solid fa-tools"
                     },
                     {
                         "id"                : "update_form",
                         "label"             : this.translate.instant("SETTINGS.form_update"),
                         "route"             : "/settings/verifier/forms/builder/edit/",
                         "privilege"         : "update_form",
-                        "icon"              : "fas fa-hammer",
+                        "icon"              : "fa-solid fa-hammer",
                         "showOnlyIfActive"  : true
                     }
                 ]
@@ -152,7 +159,7 @@ export class SettingsService {
             {
                 "id"        : "input_settings",
                 "label"     : this.translate.instant("FORMS.input_settings"),
-                "icon"      : "fas fa-sign-in-alt",
+                "icon"      : "fa-solid fa-sign-in-alt",
                 "route"     : "/settings/verifier/inputs",
                 "actions"   : [
                     {
@@ -160,14 +167,14 @@ export class SettingsService {
                         "label"     : this.translate.instant("SETTINGS.add_input"),
                         "route"     : "/settings/verifier/inputs/new",
                         "privilege" : "add_input",
-                        "icon"      : "fas fa-plus"
+                        "icon"      : "fa-solid fa-plus"
                     },
                     {
                         "id"                : "update_form",
                         "label"             : this.translate.instant("SETTINGS.update_input"),
                         "route"             : "/settings/verifier/inputs/update/",
                         "privilege"         : "update_input",
-                        "icon"              : "fas fa-edit",
+                        "icon"              : "fa-solid fa-edit",
                         "showOnlyIfActive"  : true
                     }
                 ]
@@ -175,7 +182,7 @@ export class SettingsService {
             {
                 "id"        : "output_settings",
                 "label"     : this.translate.instant("FORMS.output_settings"),
-                "icon"      : "fas fa-sign-out-alt",
+                "icon"      : "fa-solid fa-sign-out-alt",
                 "route"     : "/settings/verifier/outputs",
                 "actions"   : [
                     {
@@ -183,14 +190,14 @@ export class SettingsService {
                         "label"     : this.translate.instant("SETTINGS.add_output"),
                         "route"     : "/settings/verifier/outputs/new",
                         "privilege" : "add_output",
-                        "icon"      : "fas fa-plus"
+                        "icon"      : "fa-solid fa-plus"
                     },
                     {
                         "id"                : "update_form",
                         "label"             : this.translate.instant("SETTINGS.update_output"),
                         "route"             : "/settings/verifier/outputs/update/",
                         "privilege"         : "update_output",
-                        "icon"              : "fas fa-edit",
+                        "icon"              : "fa-solid fa-edit",
                         "showOnlyIfActive"  : true
                     }
                 ]
@@ -198,7 +205,7 @@ export class SettingsService {
             {
                 "id"        : "position_mask_builder",
                 "label"     : this.translate.instant("SETTINGS.list_positions_mask"),
-                "icon"      : "fas fa-map-marker-alt",
+                "icon"      : "fa-solid fa-map-marker-alt",
                 "route"     : "/settings/verifier/positions-mask",
                 "actions"   : [
                     {
@@ -206,14 +213,14 @@ export class SettingsService {
                         "label"     : this.translate.instant("SETTINGS.positions_mask_builder"),
                         "route"     : "/settings/verifier/positions-mask/create",
                         "privilege" : "add_position_mask",
-                        "icon"      : "fas fa-tools"
+                        "icon"      : "fa-solid fa-tools"
                     },
                     {
                         "id"                : "update_position_mask",
                         "label"             : this.translate.instant("SETTINGS.positions_mask_update"),
                         "route"             : "/settings/verifier/positions-mask/update/",
                         "privilege"         : "update_position_mask",
-                        "icon"              : "fas fa-hammer",
+                        "icon"              : "fa-solid fa-hammer",
                         "showOnlyIfActive"  : true
                     }
                 ]
@@ -223,7 +230,7 @@ export class SettingsService {
             {
                 "id"        : "splitter_form_builder",
                 "label"     : this.translate.instant("SETTINGS.list_forms"),
-                "icon"      : "fab fa-wpforms",
+                "icon"      : "fa-brands fa-wpforms",
                 "route"     : "/settings/splitter/forms",
                 "actions"   : [
                     {
@@ -231,14 +238,14 @@ export class SettingsService {
                         "label"     : this.translate.instant("SETTINGS.form_builder"),
                         "route"     : "/settings/splitter/forms/builder/new",
                         "privilege" : "add_form",
-                        "icon"      : "fas fa-tools"
+                        "icon"      : "fa-solid fa-tools"
                     },
                     {
                         "id"                : "splitter_update_form",
                         "label"             : this.translate.instant("SETTINGS.form_update"),
                         "route"             : "/settings/splitter/forms/builder/edit/",
                         "privilege"         : "update_form",
-                        "icon"              : "fas fa-hammer",
+                        "icon"              : "fa-solid fa-hammer",
                         "showOnlyIfActive"  : true
                     }
                 ]
@@ -246,7 +253,7 @@ export class SettingsService {
             {
                 "id"        : "splitter_input_settings",
                 "label"     : this.translate.instant("FORMS.input_settings"),
-                "icon"      : "fas fa-sign-in-alt",
+                "icon"      : "fa-solid fa-sign-in-alt",
                 "route"     : "/settings/splitter/inputs",
                 "actions"   : [
                     {
@@ -254,14 +261,14 @@ export class SettingsService {
                         "label"     : this.translate.instant("SETTINGS.add_input"),
                         "route"     : "/settings/splitter/inputs/new",
                         "privilege" : "splitter_add_input",
-                        "icon"      : "fas fa-plus"
+                        "icon"      : "fa-solid fa-plus"
                     },
                     {
                         "id"                : "splitter_update_input",
                         "label"             : this.translate.instant("SETTINGS.update_input"),
                         "route"             : "/settings/splitter/inputs/update/",
                         "privilege"         : "update_input",
-                        "icon"              : "fas fa-edit",
+                        "icon"              : "fa-solid fa-edit",
                         "showOnlyIfActive"  : true
                     }
                 ]
@@ -269,7 +276,7 @@ export class SettingsService {
             {
                 "id"        : "splitter_output_settings",
                 "label"     : this.translate.instant("FORMS.output_settings"),
-                "icon"      : "fas fa-sign-out-alt",
+                "icon"      : "fa-solid fa-sign-out-alt",
                 "route"     : "/settings/splitter/outputs",
                 "actions"   : [
                     {
@@ -277,14 +284,14 @@ export class SettingsService {
                         "label"     : this.translate.instant("SETTINGS.add_output"),
                         "route"     : "/settings/splitter/outputs/new",
                         "privilege" : "add_output",
-                        "icon"      : "fas fa-plus"
+                        "icon"      : "fa-solid fa-plus"
                     },
                     {
                         "id"                : "splitter_update_output",
                         "label"             : this.translate.instant("SETTINGS.update_output"),
                         "route"             : "/settings/splitter/outputs/update/",
                         "privilege"         : "update_output",
-                        "icon"              : "fas fa-edit",
+                        "icon"              : "fa-solid fa-edit",
                         "showOnlyIfActive"  : true
                     }
                 ]
@@ -292,13 +299,13 @@ export class SettingsService {
             {
                 "id"    : "separator",
                 "label" : this.translate.instant("SETTINGS.document_separator"),
-                "icon"  : "fas fa-qrcode",
+                "icon"  : "fa-solid fa-qrcode",
                 "route" : "/settings/splitter/separator",
             },
             {
                 "id"        : "document-type",
                 "label"     : this.translate.instant("SETTINGS.document_type"),
-                "icon"      : "fas fa-file",
+                "icon"      : "fa-solid fa-file",
                 "route"     : "/settings/splitter/documentType",
                 "actions"   : [
                     {
@@ -306,21 +313,21 @@ export class SettingsService {
                         "label"     : this.translate.instant("SETTINGS.add_doc_type"),
                         "route"     : "/settings/splitter/documentType/new",
                         "privilege" : "add_output",
-                        "icon"      : "fas fa-plus"
+                        "icon"      : "fa-solid fa-plus"
                     },
                     {
                         "id"        : "splitter_add_folder_doc_type",
                         "label"     : this.translate.instant("SETTINGS.add_doc_type_folder"),
                         "route"     : "/settings/splitter/documentType/createFolder",
                         "privilege" : "update_output",
-                        "icon"      : "fas fa-folder-plus",
+                        "icon"      : "fa-solid fa-folder-plus",
                     },
                     {
                         "id"                : "splitter_update_doc_type",
                         "label"             : this.translate.instant("SETTINGS.update_doc_type"),
                         "route"             : "/settings/splitter/documentType/update/",
                         "privilege"         : "update_output",
-                        "icon"              : "fas fa-edit",
+                        "icon"              : "fa-solid fa-edit",
                         "showOnlyIfActive"  : true
                     }
                 ]

@@ -116,19 +116,19 @@ export class SplitterFormBuilderComponent implements OnInit {
         {
             'id': 'simple',
             'label': marker('DISPLAY.simple'),
-            'icon': 'fas fa-file-alt'
+            'icon': 'fa-solid fa-file-alt'
         },
         {
             'id': 'multi',
             'label': marker('DISPLAY.multi'),
-            'icon': 'fas fa-layer-group'
+            'icon': 'fa-solid fa-layer-group'
         },
     ];
     mandatoryList           : any []    = [
         {
             'id': true,
             'label': marker('MANDATORY.required'),
-            'icon': 'fas fa-star'
+            'icon': 'fa-solid fa-star'
         },
         {
             'id': false,

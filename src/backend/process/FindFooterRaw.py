@@ -63,8 +63,8 @@ class FindFooterRaw:
                 # Retrieve only the number and add it in array
                 # In case of multiple no rates amount found, take the higher
                 data = res.group()
-                if regex == self.locale.vat_amount_regex:
-                    data = re.sub(r"" + self.locale.vat_amount_regex[:-2] + "", '', res.group())  # Delete the delivery number keyword
+                if regex == self.locale.regex['vatAmountRegex']:
+                    data = re.sub(r"" + self.locale.regex['vatAmountRegex'][:-2] + "", '', res.group())  # Delete the delivery number keyword
 
                 tmp = re.finditer(r'[-+]?\d*[.,]+\d+([.,]+\d+)?|\d+', data)
                 result = ''
@@ -74,7 +74,7 @@ class FindFooterRaw:
                         # If two amounts are found, separate them
                         continue
                     number_formatted = t.group()
-                    if regex != self.locale.vat_rate_regex:
+                    if regex != self.locale.regex['vatRateRegex']:
                         try:
                             text = t.group().replace(' ', '.')
                             text = text.replace('\x0c', '')
@@ -271,10 +271,10 @@ class FindFooterRaw:
                 }
 
         if not self.test_amount(total_ht, total_ttc, vat_rate, vat_amount):
-            total_ht = self.process(self.locale.no_rates_regex, text_as_string)
-            vat_rate = self.process(self.locale.vat_rate_regex, text_as_string)
-            total_ttc = self.process(self.locale.all_rates_regex, text_as_string)
-            vat_amount = self.process(self.locale.vat_amount_regex, text_as_string)
+            total_ht = self.process(self.locale.regex['noRatesRegex'], text_as_string)
+            vat_rate = self.process(self.locale.regex['vatRateRegex'], text_as_string)
+            total_ttc = self.process(self.locale.regex['allRatesRegex'], text_as_string)
+            vat_amount = self.process(self.locale.regex['vatAmountRegex'], text_as_string)
 
         # Test all amounts. If some are false, try to search them with position. If not, pass
         if self.test_amount(total_ht, total_ttc, vat_rate, vat_amount) is not False:

@@ -83,8 +83,7 @@ def search_custom_positions(data, ocr, files, locale, file, docservers):
                 files.pdf_to_jpg(file + '[' + str(int(data['page']) - 1) + ']', False, False, False, False, True)
                 target_file = files.custom_file_name
         if regex:
-            locale_list = locale.get()
-            regex = locale_list[regex]
+            regex = locale.regex[regex]
 
         return search(position, regex, files, ocr, target_file)
 

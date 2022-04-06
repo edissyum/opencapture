@@ -78,6 +78,16 @@ export class DocserversComponent implements OnInit {
         }else
             this.localeStorageService.remove('docserversPageIndex');
 
+        this.http.get(API_URL + '/ws/config/getDocservers', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.allDocservers = data.docservers;
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
         this.loadDocservers();
     }
 
@@ -147,9 +157,8 @@ export class DocserversComponent implements OnInit {
             const isAsc = sort.direction === 'asc';
             switch (sort.active) {
                 case 'id': return this.compare(a.id, b.id, isAsc);
-                case 'label': return this.compare(a.label, b.label, isAsc);
-                case 'type': return this.compare(a.type, b.type, isAsc);
-                case 'value': return this.compare(a.value, b.value, isAsc);
+                case 'docserver_id': return this.compare(a.label, b.label, isAsc);
+                case 'description': return this.compare(a.type, b.type, isAsc);
                 default: return 0;
             }
         });

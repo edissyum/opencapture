@@ -62,8 +62,10 @@ def create_classes_from_current_config():
     db_port = config.cfg['DATABASE']['postgresport']
     database = _Database(log, db_name, db_user, db_pwd, db_host, db_port)
 
+    regex = {}
     docservers = {}
     configurations = {}
+
     _ds = database.select({
         'select': ['*'],
         'table': ['docservers'],
@@ -79,9 +81,17 @@ def create_classes_from_current_config():
     for _c in _config:
         configurations[_c['label']] = _c['data']['value']
 
+    _regex = database.select({
+        'select': ['*'],
+        'table': ['regex'],
+    })
+
+    for _r in _regex:
+        regex[_r['id']] = _r['content']
+
     spreadsheet = _Spreadsheet(log, docservers, config)
     filename = docservers['TMP_PATH'] + '/tmp/'
-    locale = _Locale(configurations, docservers)
+    locale = _Locale(configurations, docservers, regex)
     files = _Files(filename, log, locale, config)
     ocr = _PyTesseract(configurations['locale'], log, config, docservers)
 
@@ -111,8 +121,11 @@ def create_classes(config_file):
     db_host = config.cfg['DATABASE']['postgreshost']
     db_port = config.cfg['DATABASE']['postgresport']
     database = _Database(log, db_name, db_user, db_pwd, db_host, db_port)
+
+    regex = {}
     docservers = {}
     configurations = {}
+
     _ds = database.select({
         'select': ['*'],
         'table': ['docservers'],
@@ -128,8 +141,16 @@ def create_classes(config_file):
     for _c in _config:
         configurations[_c['label']] = _c['data']['value']
 
+    _regex = database.select({
+        'select': ['*'],
+        'table': ['regex'],
+    })
+
+    for _r in _regex:
+        regex[_r['id']] = _r['content']
+
     spreadsheet = _Spreadsheet(log, docservers, config)
-    locale = _Locale(configurations, docservers)
+    locale = _Locale(configurations, docservers, regex)
     ocr = _PyTesseract(configurations['locale'], log, config, docservers)
 
     return config, locale, log, ocr, database, spreadsheet, smtp, docservers, configurations

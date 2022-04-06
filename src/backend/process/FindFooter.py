@@ -61,8 +61,8 @@ class FindFooter:
                 # Retrieve only the number and add it in array
                 # In case of multiple no rates amount found, take the higher
                 data = res.group()
-                if regex == self.locale.vat_amount_regex:
-                    data = re.sub(r"" + self.locale.vat_amount_regex[:-2] + "", '', res.group())  # Delete the delivery number keyword
+                if regex == self.locale.regex['vatAmountRegex']:
+                    data = re.sub(r"" + self.locale.regex['vatAmountRegex'][:-2] + "", '', res.group())  # Delete the delivery number keyword
 
                 tmp = re.finditer(r'[-+]?\d*[.,]+\d+([.,]+\d+)?|\d+', data)
                 result = ''
@@ -72,7 +72,7 @@ class FindFooter:
                         # If two amounts are found, separate them
                         continue
                     number_formatted = t.group()
-                    if regex != self.locale.vat_rate_regex:
+                    if regex != self.locale.regex['vatRateRegex']:
                         try:
                             text = t.group().replace(' ', '.')
                             text = text.replace('\x0c', '')
@@ -274,11 +274,11 @@ class FindFooter:
         vat_amount = False
         if not self.test_amount(total_ht, total_ttc, vat_rate) or not total_ht or not total_ttc or not vat_rate:
             if not total_ht:
-                total_ht = self.process(self.locale.no_rates_regex, text_as_string)
+                total_ht = self.process(self.locale.regex['noRatesRegex'], text_as_string)
             if not vat_rate:
-                vat_rate = self.process(self.locale.vat_rate_regex, text_as_string)
+                vat_rate = self.process(self.locale.regex['vatRateRegex'], text_as_string)
             if not total_ttc:
-                total_ttc = self.process(self.locale.all_rates_regex, text_as_string)
+                total_ttc = self.process(self.locale.regex['allRatesRegex'], text_as_string)
 
         if total_ttc and total_ht:
             ttc = self.return_max(total_ttc)[0]

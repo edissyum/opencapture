@@ -41,12 +41,12 @@ class FindOrderNumber:
     def sanitize_order_number(self, data):
         order_res = data
         # If the regex return a date, remove it
-        for _date in re.finditer(r"" + self.locale.date_regex + "", data):
+        for _date in re.finditer(r"" + self.locale.regex['dateRegex'] + "", data):
             if _date.group():
                 order_res = data.replace(_date.group(), '')
 
         # Delete the delivery number keyword
-        tmp_order_number = re.sub(r"" + self.locale.order_number_regex[:-2] + "", '', order_res)
+        tmp_order_number = re.sub(r"" + self.locale.regex['orderNumberRegex'][:-2] + "", '', order_res)
         order_number = tmp_order_number.lstrip().split(' ')[0]
         return order_number
 
@@ -77,7 +77,7 @@ class FindOrderNumber:
                     pass
 
                 if text is not False:
-                    for _order in re.finditer(r"" + self.locale.order_number_regex + "", str(text).upper()):
+                    for _order in re.finditer(r"" + self.locale.regex['orderNumberRegex'] + "", str(text).upper()):
                         order_number = self.sanitize_order_number(_order.group())
                         if order_number != '':
                             self.log.info('Order number found with position : ' + str(order_number))
@@ -87,7 +87,7 @@ class FindOrderNumber:
                         return [text, position, data['page']]
 
         for line in self.text:
-            for _order in re.finditer(r"" + self.locale.order_number_regex + "", line.content.upper()):
+            for _order in re.finditer(r"" + self.locale.regex['orderNumberRegex'] + "", line.content.upper()):
                 order_number = self.sanitize_order_number(_order.group())
                 if len(order_number) >= int(self.locale.invoice_size_min):
                     self.log.info('Order number found : ' + order_number)

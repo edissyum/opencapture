@@ -80,7 +80,7 @@ class FindDate:
             return False
 
     def process(self, line, position):
-        for _date in re.finditer(r"" + self.locale.date_regex + "", line):
+        for _date in re.finditer(r"" + self.locale.regex['dateRegex'] + "", line):
             date = self.format_date(_date.group(), position, True)
             if date and date[0]:
                 self.date = date[0]
@@ -88,9 +88,9 @@ class FindDate:
             return False
 
     def process_due_date(self, line, position):
-        regex = self.locale.due_date_regex + self.locale.date_regex
+        regex = self.locale.regex['dueDateRegex'] + self.locale.regex['dateRegex']
         for _date in re.finditer(r"" + regex + "", line):
-            for res in re.finditer(r"" + self.locale.date_regex + "", line):
+            for res in re.finditer(r"" + self.locale.regex['dateRegex'] + "", line):
                 date = self.format_date(res.group(), position, True)
                 if date and date[0]:
                     self.log.info('Due date found : ' + str(date[0]))

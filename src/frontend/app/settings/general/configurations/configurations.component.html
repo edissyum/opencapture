@@ -77,7 +77,7 @@
         <div class="settings_header">
             <button mat-icon-button (click)="sidenav.toggle(); this.serviceSettings.toggleMenu();"
                     class="absolute left-2 top-2">
-                <i [class.fa-arrow-right]="!this.serviceSettings.getIsMenuOpen()" class="fas fa-arrow-left text-2xl text-gray-900"></i>
+                <i [class.fa-arrow-right]="!this.serviceSettings.getIsMenuOpen()" class="fa-solid fa-arrow-left text-2xl text-gray-900"></i>
             </button>
             <div class="settings_title text-center">
                 <h3>{{ this.serviceSettings.getTitle() }}</h3>
@@ -140,13 +140,13 @@
                                 (click)="element.updateMode = true"
                                 matTooltip="{{ 'CONFIGURATIONS.update' | translate }}" mat-icon-button
                                 class="inline-block align-text-top">
-                            <i class="fas fa-edit fa-lg"></i>
+                            <i class="fa-solid fa-edit fa-lg"></i>
                         </button>
                         <button *ngIf="element.updateMode"
                                 matTooltip="{{ 'CONFIGURATIONS.validate' | translate }}" mat-icon-button
                                 class="inline-block align-text-top">
-                            <i *ngIf="!this.updateLoading" class="fas fa-check fa-lg"></i>
-                            <i *ngIf="this.updateLoading" class="fas fa-circle-notch fa-spin fa-lg"></i>
+                            <i *ngIf="!this.updateLoading" class="fa-solid fa-check fa-lg"></i>
+                            <i *ngIf="this.updateLoading" class="fa-solid fa-circle-notch fa-spin fa-lg"></i>
                         </button>
                     </mat-cell>
                 </ng-container>

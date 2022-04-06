@@ -324,21 +324,18 @@ class Files:
             pass
 
         if not is_number:
-            for res in re.finditer(r"" + self.locale.date_regex + "", text):
+            for res in re.finditer(r"" + self.locale.regex['dateRegex'] + "", text):
                 date_class = FindDate('', self.log, self.locale, self.config, self, ocr, '', '', '', '', '')
                 date = date_class.format_date(res.group(), (('', ''), ('', '')), True)
                 if date:
                     text = date[0]
 
         if regex:
-            regex_list = self.locale.get()
-            regex = regex_list[regex]
-            if regex:
-                for res in re.finditer(r"" + regex, text):
-                    os.remove('/tmp/cropped_' + rand + extension)
-                    if os.path.isfile('/tmp/cropped_' + rand + '_improved' + extension):
-                        os.remove('/tmp/cropped_' + rand + '_improved' + extension)
-                    return res.group().replace('\x0c', '').strip()
+            for res in re.finditer(r"" + regex, text):
+                os.remove('/tmp/cropped_' + rand + extension)
+                if os.path.isfile('/tmp/cropped_' + rand + '_improved' + extension):
+                    os.remove('/tmp/cropped_' + rand + '_improved' + extension)
+                return res.group().replace('\x0c', '').strip()
             return False
 
         os.remove('/tmp/cropped_' + rand + extension)

@@ -457,6 +457,7 @@
 		"outputs_list": "Outputs list",
 		"outputs_list_splitter": "Outputs list",
 		"position_mask_list": "Positions masks list",
+		"regex": "Regex list",
 		"roles_list": "Roles list",
 		"separator_splitter": "Document separator",
 		"settings": "Access to administration panel",
@@ -478,6 +479,11 @@
 		"users_list": "Users list",
 		"verifier": "Open-Capture Verifier",
 		"version_update": "Version and update"
+	},
+	"REGEX": {
+		"regex_updated": "Regex updated",
+		"search_regex": "Search regex",
+		"update": "Update regex"
 	},
 	"ROLE": {
 		"confirm_delete": "Are you sure you want to delete role <b>{{ role }}</b> ?",
@@ -512,6 +518,7 @@
 		"list_positions_mask": "Positions masks list",
 		"positions_mask_builder": "Create positions mask",
 		"positions_mask_update": "Update positiions mask",
+		"regex": "Regex list",
 		"roles_list": "Roles list",
 		"splitter": "Splitter",
 		"update_doc_type": "Update doctype",

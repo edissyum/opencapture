@@ -457,6 +457,7 @@
 		"outputs_list": "Liste des chaînes sortantes",
 		"outputs_list_splitter": "Liste des chaînes sortantes",
 		"position_mask_list": "Liste des chaînes masques de positionnements",
+		"regex": "Liste des REGEX",
 		"roles_list": "Visualiser la liste des rôles",
 		"separator_splitter": "Séparateur de document",
 		"settings": "Accès au panneau d'administration",
@@ -478,6 +479,11 @@
 		"users_list": "Visualiser la liste des utilisateurs",
 		"verifier": "Open-Capture Vérificateur",
 		"version_update": "Version et mise à jour"
+	},
+	"REGEX": {
+		"regex_updated": "Regex mise à jour",
+		"search_regex": "Chercher une regex",
+		"update": "Mettre à jour la regex"
 	},
 	"ROLE": {
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer le rôle <b>{{ role }}</b> ?",
@@ -512,6 +518,7 @@
 		"list_positions_mask": "Masques de positionnement",
 		"positions_mask_builder": "Créer un nouveau masque",
 		"positions_mask_update": "Modification du masque",
+		"regex": "Liste des regex",
 		"roles_list": "Liste des rôles",
 		"splitter": "Paramètres du Splitter",
 		"update_doc_type": "Modifier le type de document",

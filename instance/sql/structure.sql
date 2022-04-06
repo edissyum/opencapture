@@ -311,3 +311,11 @@ CREATE TABLE "docservers"
     "docserver_id"  VARCHAR(32) UNIQUE,
     "path"          VARCHAR(255) UNIQUE
 );
+
+CREATE TABLE "regex"
+(
+    "id"            VARCHAR(20) UNIQUE PRIMARY KEY,
+    "label"         VARCHAR(255),
+    "content"       TEXT,
+    "lang"          VARCHAR(10) DEFAULT 'fra'
+);

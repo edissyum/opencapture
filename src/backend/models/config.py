@@ -54,6 +54,23 @@ def retrieve_docservers(args):
     return configurations, error
 
 
+def retrieve_regex(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    error = None
+    configurations = _db.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['regex'],
+        'where': ['1=%s'] if 'where' not in args else args['where'],
+        'data': ['1'] if 'data' not in args else args['data'],
+        'order_by': ['id ASC'],
+        'limit': str(args['limit']) if 'limit' in args else [],
+        'offset': str(args['offset']) if 'offset' in args else [],
+    })
+
+    return configurations, error
+
+
 def retrieve_configuration_by_id(args):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
@@ -66,6 +83,20 @@ def retrieve_configuration_by_id(args):
     })
 
     return configurations, error
+
+
+def retrieve_regex_by_id(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    error = None
+    regex = _db.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['regex'],
+        'where': ['id = %s'],
+        'data': [args['regex_id']]
+    })
+
+    return regex, error
 
 
 def retrieve_docserver_by_id(args):
@@ -98,6 +129,24 @@ def update_configuration(args):
 
     if configuration[0] is False:
         error = gettext('UPDATE_CONFIGURATION_ERROR')
+
+    return configuration, error
+
+
+def update_regex(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    error = None
+
+    configuration = _db.update({
+        'table': ['regex'],
+        'set': args['data'],
+        'where': ['id = %s'],
+        'data': [args['regex_id']]
+    })
+
+    if configuration[0] is False:
+        error = gettext('UPDATE_REGEX_ERROR')
 
     return configuration, error
 

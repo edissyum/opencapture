@@ -276,7 +276,8 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (45, 'import_suppliers
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (46, 'statistics', 'general');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (47, 'configurations', 'general');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (48, 'docservers', 'general');
-ALTER SEQUENCE "privileges_id_seq" RESTART WITH 49;
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (49, 'regex', 'general');
+ALTER SEQUENCE "privileges_id_seq" RESTART WITH 50;
 
 -- CRÉATION DES ROLES
 INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (1, 'superadmin', 'SuperUtilisateur', 'false');
