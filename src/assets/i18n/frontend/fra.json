@@ -141,6 +141,7 @@
 	},
 	"ERROR": {
 		"404": "La page demandée n'existe pas",
+		"500": "Une erreur technique est apparue de notre côté. <br> Merci de réessayer ultérieurement",
 		"alphanum_extended_pattern": "La valeur n'est pas au format attendu : alphanumérique avec caractères spéciaux",
 		"alphanum_pattern": "La valeur n'est pas au format attendu : alphanumérique",
 		"char_pattern": "La valeur n'est pas au format attendu : alphabétique",

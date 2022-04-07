@@ -68,9 +68,11 @@ export class NotificationService {
     handleErrors(err: any, route='') {
         if (err.status === 0 && err.statusText === 'Unknown Error') {
             const message = '<b>' + this.translate.instant('ERROR.connection_failed') + '</b> : ' + this.translate.instant('ERROR.is_server_up', {server: API_URL});
-            this.error(message);
-            if (this.router.url !== '/login')
-                this.router.navigate(['/logout']).then();
+            if (this.router.url !== '/login') {
+                this.router.navigate(['/500']).then(() => {
+                    this.error(message);
+                });
+            }
         } else if (err.error !== undefined) {
             if (err.error.errors !== undefined) {
                 this.error('<b>' + err.error.errors + '</b> : ' + err.error.message, err.url);

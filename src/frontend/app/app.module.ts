@@ -102,6 +102,7 @@ import { ConfigurationsComponent } from './settings/general/configurations/confi
 import { DocserversComponent } from './settings/general/docservers/docservers.component';
 import { RegexComponent } from './settings/general/regex/regex.component';
 import { HintServiceComponent } from "../services/hint/hint.service";
+import { Error500Component } from './errors/error-500/error-500.component';
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -169,7 +170,8 @@ export function createTranslateLoader(http: HttpClient) {
         ConfigurationsComponent,
         DocserversComponent,
         RegexComponent,
-        HintServiceComponent
+        HintServiceComponent,
+        Error500Component
     ],
     imports: [
         BrowserModule,
