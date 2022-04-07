@@ -48,11 +48,12 @@ else:
 
 
 class Files:
-    def __init__(self, img_name, log, locale, config):
+    def __init__(self, img_name, log, docservers, configurations, regex):
         self.log = log
         self.img = None
-        self.locale = locale
-        self.config = config
+        self.docservers = docservers
+        self.regex = regex
+        self.configurations = configurations
         self.height_ratio = ''
         self.jpg_name = img_name + '.jpg'
         self.jpg_name_last = img_name + '_last.jpg'
@@ -324,8 +325,8 @@ class Files:
             pass
 
         if not is_number:
-            for res in re.finditer(r"" + self.locale.regex['dateRegex'] + "", text):
-                date_class = FindDate('', self.log, self.locale, self.config, self, ocr, '', '', '', '', '')
+            for res in re.finditer(r"" + self.regex['dateRegex'] + "", text):
+                date_class = FindDate('', self.log, self.regex, self.configurations, self, ocr, '', '', '', '', '', self.docservers)
                 date = date_class.format_date(res.group(), (('', ''), ('', '')), True)
                 if date:
                     text = date[0]

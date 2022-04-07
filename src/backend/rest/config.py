@@ -90,11 +90,11 @@ def get_regex():
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('config/updateRegex/<string:regex_id>', methods=['PUT'])
+@bp.route('config/updateRegex/<int:_id>', methods=['PUT'])
 @auth.token_required
-def update_regex(regex_id):
+def update_regex(_id):
     data = request.json['data']
-    res = config.update_regex(data, regex_id)
+    res = config.update_regex(data, _id)
     return make_response(jsonify(res[0])), res[1]
 
 

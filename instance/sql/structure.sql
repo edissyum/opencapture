@@ -314,7 +314,8 @@ CREATE TABLE "docservers"
 
 CREATE TABLE "regex"
 (
-    "id"            VARCHAR(20) UNIQUE PRIMARY KEY,
+    "id"            SERIAL UNIQUE PRIMARY KEY,
+    "regex_id"      VARCHAR(20),
     "label"         VARCHAR(255),
     "content"       TEXT,
     "lang"          VARCHAR(10) DEFAULT 'fra'

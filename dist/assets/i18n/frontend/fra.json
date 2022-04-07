@@ -236,6 +236,7 @@
 		"delete_form_and_reassign_input": "Supprimer le formulaire et réassigner les chaînes entrantes",
 		"delete_supplier_positions": "Supprimer les positions du compte fournisseur",
 		"disable": "Désactiver",
+		"dont_touch": "Ne touchez pas à ces paramètres si vous ne savez pas ce que vous faites !",
 		"duplicate": "Dupliquer",
 		"enable": "Activer",
 		"history": "Historique",

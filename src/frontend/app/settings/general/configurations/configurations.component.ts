@@ -78,6 +78,16 @@ export class ConfigurationsComponent implements OnInit {
         }else
             this.localeStorageService.remove('configurationsPageIndex');
 
+        this.http.get(API_URL + '/ws/config/getConfigurations', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.allConfigurations = data.configurations;
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
         this.loadConfigurations();
     }
 
@@ -162,12 +172,12 @@ export class ConfigurationsComponent implements OnInit {
         }
 
         this.configurations = data.sort((a: any, b: any) => {
+            console.log(a);
             const isAsc = sort.direction === 'asc';
             switch (sort.active) {
                 case 'id': return this.compare(a.id, b.id, isAsc);
                 case 'label': return this.compare(a.label, b.label, isAsc);
-                case 'type': return this.compare(a.type, b.type, isAsc);
-                case 'value': return this.compare(a.value, b.value, isAsc);
+                case 'description': return this.compare(a.data.description, b.data.description, isAsc);
                 default: return 0;
             }
         });

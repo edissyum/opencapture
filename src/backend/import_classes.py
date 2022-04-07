@@ -33,12 +33,6 @@ elif 'classes' in custom_array['MaarchWebServices']['path']:
                                       fromlist=[custom_array['MaarchWebServices']['module']]),
                            custom_array['MaarchWebServices']['module'])
 
-if 'locale' or 'classes' not in custom_array['Locale']['path']:
-    from .classes.Locale import Locale as _Locale
-elif 'classes' in custom_array['Locale']['path']:
-    _Locale = getattr(__import__(custom_array['Locale']['path'] + '.' + custom_array['Locale']['module'],
-                                 fromlist=[custom_array['Locale']['module']]), custom_array['Locale']['module'])
-
 if 'PyTesseract' or 'classes' not in custom_array['PyTesseract']['path']:
     from .classes.PyTesseract import PyTesseract as _PyTesseract
 elif 'classes' in custom_array['PyTesseract']['path']:

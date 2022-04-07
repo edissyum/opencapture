@@ -93,7 +93,7 @@ def retrieve_regex_by_id(args):
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['regex'],
         'where': ['id = %s'],
-        'data': [args['regex_id']]
+        'data': [args['id']]
     })
 
     return regex, error
@@ -142,7 +142,7 @@ def update_regex(args):
         'table': ['regex'],
         'set': args['data'],
         'where': ['id = %s'],
-        'data': [args['regex_id']]
+        'data': [args['id']]
     })
 
     if configuration[0] is False:

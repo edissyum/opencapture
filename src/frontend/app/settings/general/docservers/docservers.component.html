@@ -91,28 +91,29 @@
             </div>
         </div>
         <div *ngIf="!loading" class="w-full">
+            <app-hint [message]="'GLOBAL.dont_touch' | translate"></app-hint>
             <mat-table matSort [dataSource]="docservers" (matSortChange)="sortData($event)">
                 <ng-container matColumnDef="id">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'HEADER.id' | translate }} </mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef mat-sort-header="id"> {{ 'HEADER.id' | translate }} </mat-header-cell>
                     <mat-cell *matCellDef="let element"> {{ element.id }} </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="docserver_id">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'HEADER.label_short' | translate }} </mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef mat-sort-header="docserver_id"> {{ 'HEADER.label_short' | translate }} </mat-header-cell>
                     <mat-cell *matCellDef="let element"> {{ element.docserver_id }} </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="description">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'HEADER.description' | translate }} </mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef mat-sort-header="description"> {{ 'HEADER.description' | translate }} </mat-header-cell>
                     <mat-cell *matCellDef="let element"> {{ element.description }} </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="path">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'HEADER.path' | translate }} </mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef> {{ 'HEADER.path' | translate }} </mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         <ng-container *ngIf="!element.updateMode else update">
                             {{ element.path }}
                         </ng-container>
                         <ng-template #update>
                             <mat-form-field appearance="outline" class="w-full">
-                                <input matInput [value]="element.path"
+                                <input matInput [value]="element.path" (keyup.enter)="updateValue($event, element.id)"
                                        class="relative -top-2.5" (focusout)="updateValue($event, element.id)">
                             </mat-form-field>
                         </ng-template>

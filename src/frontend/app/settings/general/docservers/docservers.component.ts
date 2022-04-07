@@ -157,8 +157,8 @@ export class DocserversComponent implements OnInit {
             const isAsc = sort.direction === 'asc';
             switch (sort.active) {
                 case 'id': return this.compare(a.id, b.id, isAsc);
-                case 'docserver_id': return this.compare(a.label, b.label, isAsc);
-                case 'description': return this.compare(a.type, b.type, isAsc);
+                case 'docserver_id': return this.compare(a.docserver_id, b.docserver_id, isAsc);
+                case 'description': return this.compare(a.description, b.description, isAsc);
                 default: return 0;
             }
         });

@@ -65,8 +65,5 @@
             "Dec."
         ]
     },
-    "invoiceSizeMin": "6",
-    "dateTimeFormat": "%d %m %Y",
-    "formatDate": "%d/%m/%Y",
-    "vatRateList": "[20, 19.6, 10, 5.5, 2.1]"
+    "dateTimeFormat": "%d %m %Y"
 }

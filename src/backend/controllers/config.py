@@ -128,12 +128,12 @@ def update_configuration(args, configuration_id):
     return response, 401
 
 
-def update_regex(args, regex_id):
-    _, error = config.retrieve_regex_by_id({'regex_id': regex_id})
+def update_regex(args, id):
+    _, error = config.retrieve_regex_by_id({'id': id})
 
     if error is None:
         args = {
-            'regex_id': regex_id,
+            'id': id,
             'data': {
                 'label': args['label'],
                 'content': args['content'],

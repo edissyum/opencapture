@@ -61,7 +61,5 @@
             "Dec."
         ]
     },
-    "dateTimeFormat"    : "%m %d %Y",
-    "formatDate"        : "%m-%d-%Y",
-    "invoiceSizeMin"    : "6"
+    "dateTimeFormat"    : "%m %d %Y"
 }

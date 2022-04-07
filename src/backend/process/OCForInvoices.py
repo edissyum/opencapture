@@ -137,7 +137,7 @@ def update_typo_database(database, vat_number, typo, log, config, docservers):
     })
 
 
-def process(args, file, log, config, files, ocr, locale, database, typo, docservers, configurations):
+def process(args, file, log, config, files, ocr, regex, database, typo, docservers, configurations):
     log.info('Processing file : ' + file)
 
     datas = {}
@@ -159,7 +159,7 @@ def process(args, file, log, config, files, ocr, locale, database, typo, docserv
     convert(file, files, ocr, nb_pages)
 
     # Find supplier in document
-    supplier = FindSupplier(ocr, log, locale, database, files, nb_pages, 1, False).run()
+    supplier = FindSupplier(ocr, log, regex, database, files, nb_pages, 1, False).run()
 
     i = 0
     tmp_nb_pages = nb_pages
@@ -169,7 +169,7 @@ def process(args, file, log, config, files, ocr, locale, database, typo, docserv
             break
 
         convert(file, files, ocr, tmp_nb_pages, True)
-        supplier = FindSupplier(ocr, log, locale, database, files, nb_pages, tmp_nb_pages, True).run()
+        supplier = FindSupplier(ocr, log, regex, database, files, nb_pages, tmp_nb_pages, True).run()
         i += 1
 
     if supplier:
@@ -197,7 +197,7 @@ def process(args, file, log, config, files, ocr, locale, database, typo, docserv
         update_typo_database(database, supplier[0], typo, log, config, docservers)
 
     # Find custom informations using mask
-    custom_fields = FindCustom(ocr.header_text, log, locale, config, ocr, files, supplier, file, database, docservers).run()
+    custom_fields = FindCustom(ocr.header_text, log, regex, config, ocr, files, supplier, file, database, docservers).run()
     if custom_fields:
         for field in custom_fields:
             datas.update({field: custom_fields[field][0]})
@@ -207,8 +207,8 @@ def process(args, file, log, config, files, ocr, locale, database, typo, docserv
                 pages.update({field: custom_fields[field][2]})
 
     # Find invoice number
-    invoice_number_class = FindInvoiceNumber(ocr, files, log, locale, config, database, supplier, file, typo,
-                                             ocr.header_text, 1, False, ocr.footer_text, docservers)
+    invoice_number_class = FindInvoiceNumber(ocr, files, log, regex, config, database, supplier, file, typo,
+                                             ocr.header_text, 1, False, ocr.footer_text, docservers, configurations)
     invoice_number = invoice_number_class.run()
     if not invoice_number:
         invoice_number_class.text = ocr.header_last_text
@@ -256,9 +256,8 @@ def process(args, file, log, config, files, ocr, locale, database, typo, docserv
         text_custom = ocr.text
         page_for_date = 1
 
-    dateClass = FindDate(text_custom, log, locale, config, files, ocr, supplier, typo, page_for_date, database, file, docservers)
-    dateClass.maxTimeDelta = configurations['timeDelta']
-    date = dateClass.run()
+    date_class = FindDate(text_custom, log, regex, configurations, files, ocr, supplier, typo, page_for_date, database, file, docservers)
+    date = date_class.run()
 
     if date:
         datas.update({'invoice_date': date[0]})
@@ -273,9 +272,9 @@ def process(args, file, log, config, files, ocr, locale, database, typo, docserv
                 positions.update({'invoice_due_date': files.reformat_positions(date[3][1])})
 
     # Find footer informations (total amount, no rate amount etc..)
-    footer_class = FindFooter(ocr, log, locale, config, files, database, supplier, file, ocr.footer_text, typo, docservers)
+    footer_class = FindFooter(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text, typo, docservers)
     if supplier and supplier[2]['get_only_raw_footer'] in [True, 'True']:
-        footer_class = FindFooterRaw(ocr, log, locale, config, files, database, supplier, file, ocr.footer_text, typo, docservers)
+        footer_class = FindFooterRaw(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text, typo, docservers)
 
     footer = footer_class.run()
     if not footer and nb_pages > 1:
@@ -369,8 +368,8 @@ def process(args, file, log, config, files, ocr, locale, database, typo, docserv
                     pages.update({'total_vat': footer[3]})
 
     # Find delivery number
-    delivery_number_class = FindDeliveryNumber(ocr, files, log, locale, config, database, supplier, file, typo,
-                                               ocr.header_text, 1, False, docservers)
+    delivery_number_class = FindDeliveryNumber(ocr, files, log, regex, config, database, supplier, file, typo,
+                                               ocr.header_text, 1, False, docservers, configurations)
     delivery_number = delivery_number_class.run()
     if not delivery_number:
         delivery_number_class.text = ocr.footer_text
@@ -385,8 +384,8 @@ def process(args, file, log, config, files, ocr, locale, database, typo, docserv
             pages.update({'delivery_number': delivery_number[2]})
 
     # Find order number
-    order_number_class = FindOrderNumber(ocr, files, log, locale, config, database, supplier, file, typo,
-                                         ocr.header_text, 1, False, docservers)
+    order_number_class = FindOrderNumber(ocr, files, log, regex, config, database, supplier, file, typo,
+                                         ocr.header_text, 1, False, docservers, configurations)
     order_number = order_number_class.run()
     if not order_number:
         order_number_class.text = ocr.footer_text

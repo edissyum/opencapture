@@ -91,25 +91,26 @@
             </div>
         </div>
         <div *ngIf="!loading" class="w-full">
+            <app-hint [message]="'GLOBAL.dont_touch' | translate"></app-hint>
             <mat-table matSort [dataSource]="configurations" (matSortChange)="sortData($event)">
                 <ng-container matColumnDef="id">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'HEADER.id' | translate }} </mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef mat-sort-header="id"> {{ 'HEADER.id' | translate }} </mat-header-cell>
                     <mat-cell *matCellDef="let element"> {{ element.id }} </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="label">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'HEADER.label' | translate }} </mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef mat-sort-header="label"> {{ 'HEADER.label' | translate }} </mat-header-cell>
                     <mat-cell *matCellDef="let element"> {{ element.label }} </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="description">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'HEADER.description' | translate }} </mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef mat-sort-header="description"> {{ 'HEADER.description' | translate }} </mat-header-cell>
                     <mat-cell *matCellDef="let element"> {{ element.data.description }} </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="type">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'HEADER.type' | translate }} </mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef> {{ 'HEADER.type' | translate }} </mat-header-cell>
                     <mat-cell *matCellDef="let element"> {{ element.data.label_type | translate }} </mat-cell>
                 </ng-container>
                 <ng-container matColumnDef="value">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'HEADER.value' | translate }} </mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef>{{ 'HEADER.value' | translate }} </mat-header-cell>
                     <mat-cell *matCellDef="let element">
                         <ng-container *ngIf="!element.updateMode else update">
                             {{ element.data.value }}
@@ -123,11 +124,11 @@
                                 </mat-select>
                             </mat-form-field>
                             <mat-form-field appearance="outline" *ngIf="element.data.type === 'int' || element.data.type === 'float'">
-                                <input matInput type="number" [value]="element.data.value"
+                                <input matInput type="number" [value]="element.data.value" (keyup.enter)="updateValue($event, element.id)"
                                        class="relative -top-2.5" (focusout)="updateValue($event, element.id)">
                             </mat-form-field>
                             <mat-form-field appearance="outline" *ngIf="element.data.type === 'string'">
-                                <input matInput [value]="element.data.value"
+                                <input matInput [value]="element.data.value" (keyup.enter)="updateValue($event, element.id)"
                                        class="relative -top-2.5" (focusout)="updateValue($event, element.id)">
                             </mat-form-field>
                         </ng-template>

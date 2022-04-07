@@ -24,13 +24,13 @@ def validate_luhn(n):
 
 
 class FindSupplier:
-    def __init__(self, ocr, log, locale, database, files, nb_pages, current_page, custom_page):
+    def __init__(self, ocr, log, regex, database, files, nb_pages, current_page, custom_page):
         self.Ocr = ocr
         self.text = ocr.header_text
         self.log = log
         self.Files = files
         self.Database = database
-        self.locale = locale
+        self.regex = regex
         self.OCRErrorsTable = ocr.OCRErrorsTable
         self.found_first = True
         self.found_second = True
@@ -102,7 +102,7 @@ class FindSupplier:
         self.Files.open_img(self.Files.jpg_name_header)
 
     def run(self, retry=False, regenerate_ocr=False, target=None, text_as_string=False):
-        supplier = self.process(self.locale.regex['VATNumberRegex'], text_as_string, 'vat_number')
+        supplier = self.process(self.regex['VATNumberRegex'], text_as_string, 'vat_number')
         if supplier:
             self.regenerate_ocr()
             self.log.info('Supplier found : ' + supplier[0]['name'] + ' using VAT Number : ' + supplier[0]['vat_number'])
@@ -114,7 +114,7 @@ class FindSupplier:
             data = [supplier[0]['vat_number'], position, supplier[0], self.current_page, 'vat_number']
             return data
 
-        supplier = self.process(self.locale.regex['SIRETRegex'], text_as_string, 'siret')
+        supplier = self.process(self.regex['SIRETRegex'], text_as_string, 'siret')
         if supplier:
             self.regenerate_ocr()
             self.log.info('Supplier found : ' + supplier[0]['name'] + ' using SIRET : ' + supplier[0]['siret'])
@@ -126,7 +126,7 @@ class FindSupplier:
             data = [supplier[0]['vat_number'], position, supplier[0], self.current_page, 'siret']
             return data
 
-        supplier = self.process(self.locale.regex['SIRENRegex'], text_as_string, 'siren')
+        supplier = self.process(self.regex['SIRENRegex'], text_as_string, 'siren')
         if supplier:
             self.regenerate_ocr()
             self.log.info('Supplier found : ' + supplier[0]['name'] + ' using SIREN : ' + supplier[0]['siren'])
@@ -138,7 +138,7 @@ class FindSupplier:
             data = [supplier[0]['vat_number'], position, supplier[0], self.current_page, 'siren']
             return data
 
-        supplier = self.process(self.locale.regex['IBANRegex'], text_as_string, 'iban')
+        supplier = self.process(self.regex['IBANRegex'], text_as_string, 'iban')
         if supplier:
             self.regenerate_ocr()
             self.log.info('Supplier found : ' + supplier[0]['name'] + ' using IBAN : ' + supplier[0]['iban'])

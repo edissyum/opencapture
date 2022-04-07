@@ -20,13 +20,13 @@ from ..functions import search_custom_positions
 
 
 class FindCustom:
-    def __init__(self, text, log, locale, config, ocr, files, supplier, file, database, docservers):
+    def __init__(self, text, log, regex, config, ocr, files, supplier, file, database, docservers):
         self.Ocr = ocr
         self.log = log
         self.text = text
         self.file = file
         self.Files = files
-        self.locale = locale
+        self.regex = regex
         self.config = config
         self.docservers = docservers
         self.supplier = supplier
@@ -66,7 +66,7 @@ class FindCustom:
                             'page': list_of_fields['pages'][index] if index in list_of_fields['pages'] else ''
                         }
 
-                        data, position = search_custom_positions(_data, self.Ocr, self.Files, self.locale, self.file, self.docservers)
+                        data, position = search_custom_positions(_data, self.Ocr, self.Files, self.regex, self.file, self.docservers)
                         if not data and index in list_of_fields['regex'] and list_of_fields[index]['regex'] is not False:
                             data_to_return[index] = [self.process(list_of_fields[index]), position, list_of_fields['pages'][index]]
                             if index in data_to_return and data_to_return[index][0]:
