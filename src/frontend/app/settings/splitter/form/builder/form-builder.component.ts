@@ -40,11 +40,15 @@ export class SplitterFormBuilderComponent implements OnInit {
     loading                 : boolean   = true;
     loadingCustomFields     : boolean   = true;
     outputs                 : any[]     = [];
+    metadataMethods         : any[]     = [];
     form                    : any       = {
         'label': {
             'control': new FormControl(),
         },
         'default_form': {
+            'control': new FormControl(),
+        },
+        'metadata_method': {
             'control': new FormControl(),
         },
     };
@@ -186,6 +190,23 @@ export class SplitterFormBuilderComponent implements OnInit {
                     ).subscribe();
                 }
             }),catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
+        this.http.get(API_URL + '/ws/splitter/metadataMethods', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                data.metadataMethods.forEach((option: any) => {
+                    this.metadataMethods.push({
+                        id      : option.id,
+                        label   : option.label,
+                    });
+                });
+            }),
+            finalize(() => this.loading = false),
+            catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
                 return of(false);
@@ -364,16 +385,17 @@ export class SplitterFormBuilderComponent implements OnInit {
     }
 
     updateForm() {
-        const label = this.form.label.control.value;
-        const isDefault = this.form.default_form.control.value;
-        const outputs: any[] = [];
+        const label             = this.form.label.control.value;
+        const isDefault         = this.form.default_form.control.value;
+        const metadataMethod    = this.form.metadata_method.control.value;
+        const outputs: any[]    = [];
         this.outputForm.forEach((element: any) => {
             if (element.control.value) outputs.push(element.control.value);
         });
 
         if (label !== '' && outputs.length >= 1) {
             this.http.put(API_URL + '/ws/forms/update/' + this.formId, {
-                    'args': {'label' : label, 'default_form' : isDefault, 'outputs': outputs}
+                    'args': {'label' : label, 'default_form' : isDefault, 'outputs': outputs, 'metadata_method': metadataMethod}
                 }, {headers: this.authService.headers},
             ).pipe(
                 tap(()=> {

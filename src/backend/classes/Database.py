@@ -149,3 +149,24 @@ class Database:
             except (psycopg2.OperationalError, psycopg2.errors.InvalidTextRepresentation) as pgsql_error:
                 self.log.error('Error while querying UPDATE : ' + str(pgsql_error), False)
                 return False, pgsql_error
+
+    def get_sequence_value(self, name):
+        query = f"SELECT last_value FROM {name}"
+        cursor = self.conn.cursor()
+        try:
+            cursor.execute(query, {})
+            return cursor.fetchall()
+        except psycopg2.OperationalError as pgsql_error:
+            self.log.error('Error while querying SELECT : ' + str(pgsql_error), False)
+            return False
+
+    def set_sequence_value(self, name, value):
+        query = f"SELECT setval('{name}', {value})"
+        print(query)
+        cursor = self.conn.cursor()
+        try:
+            cursor.execute(query, {})
+            return cursor.fetchall()
+        except psycopg2.OperationalError as pgsql_error:
+            self.log.error('Error while querying SELECT : ' + str(pgsql_error), False)
+            return False

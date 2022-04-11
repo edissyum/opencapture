@@ -99,6 +99,14 @@
                         {{ "FORMS.is_default" | translate }}
                     </mat-slide-toggle>
                 </div>
+                <mat-form-field>
+                    <mat-label>{{ "HEADER.choose_metadata_method" | translate }}</mat-label>
+                    <mat-select [formControl]="this.form['metadata_method'].control">
+                        <mat-option *ngFor="let option of this.metadataMethods" value="{{ option.id }}">
+                            {{ option.label }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
                 <mat-form-field *ngFor="let field of this.outputForm; let cpt = index">
                     <mat-label>{{ "HEADER.choose_output" | translate }}</mat-label>
                     <mat-select [(ngModel)]="field.control.value">

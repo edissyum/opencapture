@@ -48,12 +48,54 @@ def handle_uploaded_file(files, input_id):
     return True
 
 
-def retrieve_metadata():
+def launch_referential_update(form_data):
     _vars = create_classes_from_current_config()
-    _config = _vars[1]
+    _db = _vars[0]
+    _log = _vars[5]
+    _conf = _vars[10]
+    _docservers = _vars[9]
 
-    args = {}
-    metadata, error = splitter.retrieve_metadata(args)
+    available_methods = _docservers['SPLITTER_METADATA_PATH'] + "/metadata_methods.json"
+    try:
+        with open(available_methods, encoding='UTF-8') as json_file:
+            available_methods = json.load(json_file)
+            for available_method in available_methods['methods']:
+                if available_method['id'] == form_data['metadata_method']:
+                    args = {
+                        'log': _log,
+                        'database': _db,
+                        'config': _conf,
+                        'docservers': _docservers,
+                        'form_id': form_data['form_id'],
+                        'method_data': available_method
+                    }
+                    metadata_load = _Splitter.import_method_from_script(_docservers['SPLITTER_METADATA_PATH'],
+                                                                        available_method['script'],
+                                                                        available_method['method'])
+                    metadata_load(args)
+    except Exception as e:
+        response = {
+            'status': False,
+            "errors": gettext('LOAD_METADATA_ERROR'),
+            "message": str(e)
+        }
+        return response, 500
+    return {'OK': True}, 200
+
+
+def retrieve_referential(form_id):
+    form = forms.get_form_by_id(form_id)
+    if form and form[0]['metadata_method']:
+        res = launch_referential_update({
+            'form_id': form[0]['id'],
+            'metadata_method': form[0]['metadata_method']
+        })
+        if res[1] != 200:
+            return res
+    metadata, error = splitter.retrieve_metadata({
+        'type': 'referential',
+        'form_id': str(form[0]['id'])
+    })
 
     response = {
         "metadata": metadata
@@ -62,9 +104,6 @@ def retrieve_metadata():
 
 
 def retrieve_batches(args):
-    _vars = create_classes_from_current_config()
-    _config = _vars[1]
-
     args['select'] = ['*', "to_char(creation_date, 'DD-MM-YYY " + gettext('AT') + " HH24:MI:SS') as batch_date"]
     args['where'] = []
     args['data'] = []
@@ -577,6 +616,15 @@ def get_split_methods():
     if len(split_methods) > 0:
         return split_methods, 200
     return split_methods, 401
+
+
+def get_metadata_methods():
+    _vars = create_classes_from_current_config()
+    _docservers = _vars[9]
+    metadata_methods = _Splitter.get_metadata_methods(_docservers)
+    if len(metadata_methods) > 0:
+        return metadata_methods, 200
+    return metadata_methods, 401
 
 
 def get_totals(status):

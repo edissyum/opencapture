@@ -13,14 +13,15 @@ CREATE TABLE "users"
 
 CREATE TABLE "form_models"
 (
-    "id"             SERIAL UNIQUE PRIMARY KEY,
-    "label"          VARCHAR(50),
-    "default_form"   BOOLEAN    DEFAULT false,
-    "supplier_verif" BOOLEAN    DEFAULT true,
-    "enabled"        BOOLEAN    DEFAULT true,
-    "outputs"        TEXT[],
-    "status"         VARCHAR(5) DEFAULT 'OK',
-    "module"         VARCHAR(10)
+    "id"              SERIAL UNIQUE PRIMARY KEY,
+    "label"           VARCHAR(50),
+    "default_form"    BOOLEAN    DEFAULT false,
+    "supplier_verif"  BOOLEAN    DEFAULT true,
+    "enabled"         BOOLEAN    DEFAULT true,
+    "outputs"         TEXT[],
+    "status"          VARCHAR(5) DEFAULT 'OK',
+    "module"          VARCHAR(10),
+    "metadata_method" VARCHAR(50)
 );
 
 CREATE TABLE "positions_masks"
@@ -291,10 +292,12 @@ create table "doctypes"
 
 CREATE TABLE "metadata"
 (
-    "id"        SERIAL UNIQUE PRIMARY KEY,
-    "last_edit" DATE DEFAULT now(),
-    "key"       VARCHAR(20),
-    "data"      JSONB
+    "id"            SERIAL UNIQUE PRIMARY KEY,
+    "external_id"   VARCHAR(20),
+    "last_edit"     DATE DEFAULT now(),
+    "type"          VARCHAR(20),
+    "form_id"       INTEGER,
+    "data"          JSONB
 );
 
 CREATE TABLE "configurations"
@@ -311,3 +314,6 @@ CREATE TABLE "docservers"
     "docserver_id"  VARCHAR(32) UNIQUE,
     "path"          VARCHAR(255) UNIQUE
 );
+
+create sequence splitter_referential_call_count as INTEGER;
+comment on sequence splitter_referential_call_count is 'Splitter referential demand number count';

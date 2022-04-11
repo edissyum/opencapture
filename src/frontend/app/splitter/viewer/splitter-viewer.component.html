@@ -315,7 +315,7 @@
                         <i class="fa fa-paper-plane fa-lg"></i>
                     </button>
                     <button (click)="saveInfo()" mat-button class="inline-block"
-                            title="{{ 'SPLITTER.save' | translate }}">
+                            title="{{ 'SPLITTER.save' | translate }}" [ngClass]="{'text-green-400': isDataEdited}">
                         <i class="fa fa-save fa-lg" *ngIf="!saveInfosLoading"></i>
                         <i class="fas fa-circle-notch fa-spin fa-lg my-4" *ngIf="saveInfosLoading"></i>
                     </button>

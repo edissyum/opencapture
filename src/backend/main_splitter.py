@@ -79,7 +79,9 @@ def launch(args):
                         available_split_methods = json.load(json_file)
                         for available_split_method in available_split_methods['methods']:
                             if available_split_method['id'] == splitter_method['splitter_method_id']:
-                                split_method = import_from(docservers, available_split_method['script'], available_split_method['method'])
+                                split_method = _Splitter.import_method_from_script(docservers['SPLITTER_METHODS_PATH'],
+                                                                                   available_split_method['script'],
+                                                                                   available_split_method['method'])
                                 log.info('Split using method : {}'.format(available_split_method['id']))
                                 split_method(args, path, log, splitter, files, tmp_folder, config, docservers)
             else:
@@ -87,17 +89,3 @@ def launch(args):
     database.conn.close()
     end = time.time()
     log.info('Process end after ' + timer(start, end) + '')
-
-
-def import_from(docservers, script, method):
-    """
-    Import an attribute, function or class from a module.
-    :param method: Method to call
-    :param path: A path descriptor in the form of 'pkg.module.submodule:attribute'
-    :type path: str
-    """
-    import sys
-    sys.path.append(docservers['SPLITTER_METHODS_PATH'])
-    script = script.replace('.py', '')
-    module = __import__(script, fromlist=method)
-    return getattr(module, method)

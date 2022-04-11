@@ -58,10 +58,10 @@ def retrieve_splitter_batches(batch_id, page, size, time, status):
     return make_response(jsonify(res[0])), res[1]
 
 
-@bp.route('splitter/metadata', methods=['GET'])
+@bp.route('splitter/loadReferential/<int:form_id>', methods=['GET'])
 @auth.token_required
-def retrieve_splitter_metadata():
-    res = splitter.retrieve_metadata()
+def retrieve_referential(form_id):
+    res = splitter.retrieve_referential(form_id)
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -119,12 +119,22 @@ def validate():
     return make_response(jsonify(response)), status
 
 
-@bp.route('splitter/methods', methods=['GET'])
+@bp.route('splitter/splitMethods', methods=['GET'])
 @auth.token_required
 def get_split_methods():
     split_methods, status = splitter.get_split_methods()
     response = {
-        'split_methods': split_methods
+        'splitMethods': split_methods
+    }
+    return make_response(jsonify(response)), status
+
+
+@bp.route('splitter/metadataMethods', methods=['GET'])
+@auth.token_required
+def get_metadata_methods():
+    split_methods, status = splitter.get_metadata_methods()
+    response = {
+        'metadataMethods': split_methods
     }
     return make_response(jsonify(response)), status
 

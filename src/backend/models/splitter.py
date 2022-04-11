@@ -29,8 +29,8 @@ def retrieve_metadata(args):
     metadata = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['metadata'],
-        'where': ['key = %s'],
-        'data': ['referential'],
+        'where': ['type = %s', 'form_id = %s'],
+        'data': [args['type'], args['form_id']],
     })
 
     return metadata, error
@@ -85,26 +85,6 @@ def add_batch(args):
     return True, ''
 
 
-def get_demand_number():
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
-
-    error = None
-    demand_number = 0
-    settings = _db.select({
-        'select': ['value'],
-        'table': ['settings'],
-        'where': ['key = %s'],
-        'data': ['ref_demand_number']
-    })
-    if settings:
-        demand_number = settings[0]['value']
-
-    else:
-        error = gettext('GET_DEMAND_NUMBER_ERROR')
-    return {'demand_number': demand_number}, error
-
-
 def set_demand_number(demand_number):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
@@ -122,27 +102,6 @@ def set_demand_number(demand_number):
     if not res:
         error = gettext('UPDATE_SETTINGS_ERROR')
         return res, error
-
-    return {'OK': True}, error
-
-
-def insert_referential(data):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
-
-    error = None
-    for referential in data:
-        args = {
-            'table': 'metadata',
-            'columns': {
-                'key': "referential",
-                'data': json.dumps(referential),
-            }
-        }
-        res = _db.insert(args)
-        if not res:
-            error = gettext('INSERT_REFERENTIAL_ERROR')
-            return res, error
 
     return {'OK': True}, error
 

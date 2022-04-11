@@ -84,12 +84,13 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     currentBatch                : any           = {
         id                  : -1,
         inputId             : -1,
+        formId              : -1,
         maxSplitIndex       : 0,
         selectedPagesCount  : 0,
         selectedDocument    : {
             id              : '',
-            displayOrder    : -1
-        }
+            displayOrder    : -1,
+        },
     };
     batchMetadataValues         : any           = {};
     documentsForms              : any[]         = [];
@@ -111,7 +112,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     inputMode                   : string        = "Manual";
     defaultDoctype              : any           = {
         label       : null,
-        key         : null
+        key         : null,
     };
 
     /** indicate search operation is in progress */
@@ -144,7 +145,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.currentBatch.id    = this.route.snapshot.params['id'];
         this.loadBatches();
         this.loadSelectedBatch();
-        this.loadMetadata();
         this.translate.get('HISTORY-DESC.viewer_splitter', {batch_id: this.currentBatch.id}).subscribe((translated: string) => {
             this.historyService.addHistory('splitter', 'viewer', translated);
         });
@@ -160,20 +160,25 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.http.get(API_URL + '/ws/splitter/batches/' + this.currentBatch.id, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.currentBatch = {
-                    id                 : data.batches[0]['id'],
-                    formId             : data.batches[0]['form_id'],
-                    customFieldsValues : data.batches[0]['data'].hasOwnProperty('custom_fields') ? data.batches[0]['data']['custom_fields'] : {},
-                    selectedPagesCount : 0,
-                    maxSplitIndex      : 0,
+                    id                  : data.batches[0]['id'],
+                    formId              : data.batches[0]['form_id'],
+                    customFieldsValues  : data.batches[0]['data'].hasOwnProperty('custom_fields') ? data.batches[0]['data']['custom_fields'] : {},
+                    selectedPagesCount  : 0,
+                    maxSplitIndex       : 0,
+                    selectedDocument    : {
+                        id              : '',
+                        displayOrder    : -1,
+                    }
                 };
                 this.loadFormFields();
                 this.loadDocuments();
                 this.loadDefaultDocType();
                 this.loadOutputsData();
+                this.loadMetadata();
             }),
             catchError((err: any) => {
                 this.loading = false;
-                this.notify.error(err);
+                this.notify.handleErrors(err);
                 console.debug(err);
                 return of(false);
             })
@@ -192,7 +197,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                         }),
                         catchError((err: any) => {
                             this.loading = false;
-                            this.notify.error(err);
+                            this.notify.handleErrors(err);
                             console.debug(err);
                             return of(false);
                         })
@@ -201,7 +206,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             }),
             catchError((err: any) => {
                 this.loading = false;
-                this.notify.error(err);
+                this.notify.handleErrors(err);
                 console.debug(err);
                 return of(false);
             })
@@ -225,7 +230,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 );
             }),
             catchError((err: any) => {
-                this.notify.error(err);
+                this.notify.handleErrors(err);
                 return of(false);
             })
         ).subscribe();
@@ -274,7 +279,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 this.documentsLoading = false;
             }),
             catchError((err: any) => {
-                this.notify.error(err);
+                this.notify.handleErrors(err);
                 console.debug(err);
                 this.documentsLoading = false;
                 return of(false);
@@ -336,7 +341,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             }),
             catchError((err: any) => {
                 this.addDocumentLoading = false;
-                this.notify.error(err.message);
+                this.notify.handleErrors(err);
                 console.debug(err);
                 return of(false);
             })
@@ -438,12 +443,13 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     loadReferential(): void {
-        this.http.get(API_URL + '/ws/splitter/referential', {headers: this.authService.headers}).pipe(
+        this.http.get(API_URL + `/ws/splitter/loadReferential/${this.currentBatch.formId}`,
+            {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.loadMetadata();
             }),
             catchError((err: any) => {
-                this.notify.error(err);
+                this.notify.handleErrors(err);
                 console.debug(err);
                 return of(false);
             })
@@ -452,7 +458,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     loadMetadata(): void {
         this.metadata = [];
-        this.http.get(API_URL + '/ws/splitter/metadata', {headers: this.authService.headers}).pipe(
+        this.http.get(API_URL + `/ws/splitter/loadReferential/${this.currentBatch.formId}`, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 let cpt = 0;
                 data.metadata.forEach((metadataItem: any) => {
@@ -462,8 +468,10 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 });
                 this.notify.success(this.translate.instant('SPLITTER.referential_updated'));
             }),
-            catchError((data: any) => {
-                this.notify.error(data['message']);
+            catchError((err: any) => {
+                this.loading = false;
+                this.notify.handleErrors(err);
+                console.debug(err);
                 return of(false);
             })
         ).subscribe();
@@ -542,7 +550,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             }), finalize(() => this.loading = false),
             catchError((err: any) => {
                 this.loading = false;
-                this.notify.error(err);
+                this.notify.handleErrors(err);
                 console.debug(err);
                 return of(false);
             })
@@ -821,7 +829,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             data:{
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('SPLITTER.confirm_validate'),
-                confirmButton       : this.translate.instant('SPLITTER.validateBatch'),
+                confirmButton       : this.translate.instant('SPLITTER.validate_batch'),
                 confirmButtonColor  : "green",
                 cancelButton        : this.translate.instant('GLOBAL.cancel'),
             },
@@ -884,12 +892,12 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.router.navigate(['splitter/list']).then();
-                this.notify.success(this.translate.instant('SPLITTER.validate_batch'));
+                this.notify.success(this.translate.instant('SPLITTER.validate_batch_success'));
                 this.loading = true;
             }),
             catchError((err: any) => {
                 this.loading = false;
-                this.notify.error(err.message);
+                this.notify.handleErrors(err);
                 console.debug(err);
                 return of(false);
             })
@@ -933,7 +941,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             }),
             catchError((err: any) => {
                 this.saveInfosLoading = false;
-                this.notify.error(err.error.message);
+                this.notify.handleErrors(err);
                 console.debug(err);
                 return of(false);
             })

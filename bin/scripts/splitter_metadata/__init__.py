@@ -14,16 +14,3 @@
 # along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/>.
 
 # @dev : Oussama BRICH <oussama.brich@edissyum.com>
-
-def process(args, file, log, splitter, files, tmp_folder, config, docservers):
-    """
-    :param args:
-    :param file: File path to split
-    :param log: log object
-    :param splitter: Splitter object
-    :param files: Files object
-    :param tmp_folder: tmp folder path
-    :param config: Config object
-    :return: N/A
-    """
-    log.info('Separation Method is not implemented.')
