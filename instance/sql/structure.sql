@@ -254,7 +254,8 @@ CREATE TABLE "splitter_batches"
     "status"        VARCHAR(20)   DEFAULT 'NEW',
     "page_number"   INTEGER,
     "form_id"       INTEGER,
-    "data"          JSON DEFAULT '{}'::json);
+    "data"          JSON DEFAULT '{}'::json
+);
 
 CREATE TABLE "splitter_documents"
 (
