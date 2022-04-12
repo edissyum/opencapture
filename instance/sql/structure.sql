@@ -13,14 +13,15 @@ CREATE TABLE "users"
 
 CREATE TABLE "form_models"
 (
-    "id"             SERIAL UNIQUE PRIMARY KEY,
-    "label"          VARCHAR(50),
-    "default_form"   BOOLEAN    DEFAULT false,
-    "supplier_verif" BOOLEAN    DEFAULT true,
-    "enabled"        BOOLEAN    DEFAULT true,
-    "outputs"        TEXT[],
-    "status"         VARCHAR(5) DEFAULT 'OK',
-    "module"         VARCHAR(10)
+    "id"              SERIAL UNIQUE PRIMARY KEY,
+    "label"           VARCHAR(50),
+    "default_form"    BOOLEAN    DEFAULT false,
+    "supplier_verif"  BOOLEAN    DEFAULT true,
+    "enabled"         BOOLEAN    DEFAULT true,
+    "outputs"         TEXT[],
+    "status"          VARCHAR(5) DEFAULT 'OK',
+    "module"          VARCHAR(10),
+    "metadata_method" VARCHAR(50)
 );
 
 CREATE TABLE "positions_masks"
@@ -253,7 +254,8 @@ CREATE TABLE "splitter_batches"
     "status"        VARCHAR(20)   DEFAULT 'NEW',
     "page_number"   INTEGER,
     "form_id"       INTEGER,
-    "data"          JSON DEFAULT '{}'::json);
+    "data"          JSON DEFAULT '{}'::json
+);
 
 CREATE TABLE "splitter_documents"
 (
@@ -291,10 +293,12 @@ create table "doctypes"
 
 CREATE TABLE "metadata"
 (
-    "id"        SERIAL UNIQUE PRIMARY KEY,
-    "last_edit" DATE DEFAULT now(),
-    "key"       VARCHAR(20),
-    "data"      JSONB
+    "id"            SERIAL UNIQUE PRIMARY KEY,
+    "external_id"   VARCHAR(20),
+    "last_edit"     DATE DEFAULT now(),
+    "type"          VARCHAR(20),
+    "form_id"       INTEGER,
+    "data"          JSONB
 );
 
 CREATE TABLE "configurations"
@@ -320,3 +324,6 @@ CREATE TABLE "regex"
     "content"       TEXT,
     "lang"          VARCHAR(10) DEFAULT 'fra'
 );
+
+CREATE SEQUENCE splitter_referential_call_count AS INTEGER;
+COMMENT ON SEQUENCE splitter_referential_call_count IS 'Splitter referential demand number count';

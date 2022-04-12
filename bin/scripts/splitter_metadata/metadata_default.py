@@ -14,3 +14,10 @@
 # along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/>.
 
 # @dev : Oussama BRICH <oussama.brich@edissyum.com>
+
+def load_referential(args):
+    """
+    :param args: arguments to use (log, database, config, form_id, method_id, docservers)
+    :return: N/A
+    """
+    pass

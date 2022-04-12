@@ -258,6 +258,7 @@
 	},
 	"HEADER": {
 		"active": "Actif",
+		"choose_metadata_method": "Choisir la méthode de récupération de métadonnées",
 		"choose_output": "Choisir la chaîne sortante",
 		"description": "Description",
 		"id": "Identifiant technique",
@@ -590,8 +591,8 @@
 		"separator_meta2": "Séparateur Meta 2",
 		"separator_meta3": "Séparateur Meta 3",
 		"unselect_all": "Désélectionner tout",
-		"validateBatch": "Valider le lot",
-		"validate_batch": "Lot validé avec succès",
+		"validate_batch": "Valider le lot",
+		"validate_batch_success": "Lot validé avec succès",
 		"viewer": "Visualisation du lot",
 		"zoom": "Agrandir"
 	},

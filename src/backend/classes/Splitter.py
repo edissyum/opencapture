@@ -298,3 +298,23 @@ class Splitter:
         with open(docservers['SPLITTER_METHODS_PATH'] + '/splitter_methods.json', encoding="UTF-8") as methods_json:
             methods = json.load(methods_json)
             return methods['methods']
+
+    @staticmethod
+    def get_metadata_methods(docservers):
+        with open(docservers['SPLITTER_METADATA_PATH'] + '/metadata_methods.json', encoding="UTF-8") as methods_json:
+            methods = json.load(methods_json)
+            return methods['methods']
+
+    @staticmethod
+    def import_method_from_script(script_path, script_name, method):
+        """
+        Import an attribute, function or class from a module.
+        :param script_path: path to script to launch
+        :param script_name: script name to launch
+        :param method: method name to call
+        """
+        import sys
+        sys.path.append(script_path)
+        script = script_name.replace('.py', '')
+        module = __import__(script, fromlist=method)
+        return getattr(module, method)

@@ -258,6 +258,7 @@
 	},
 	"HEADER": {
 		"active": "Active",
+		"choose_metadata_method": "",
 		"choose_output": "Choose output",
 		"description": "Description",
 		"id": "Technical id",
@@ -590,8 +591,8 @@
 		"separator_meta2": "Separator Meta 2",
 		"separator_meta3": "Separator Meta 3",
 		"unselect_all": "Unselect all",
-		"validateBatch": "Validate batch",
-		"validate_batch": "Batch validated",
+		"validate_batch": "Validate batch",
+		"validate_batch_success": "Batch validated",
 		"viewer": "Batch view",
 		"zoom": "Zoom"
 	},
