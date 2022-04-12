@@ -1,0 +1,22 @@
+.hint {
+    @apply my-3;
+    @apply flex;
+    @apply w-1/2;
+    @apply mx-auto;
+    @apply border-l-8;
+    @apply rounded-sm;
+    @apply text-gray-900;
+    @apply justify-center;
+    @apply bg-green-400/40;
+    @apply border-l-gray-900/50;
+
+    & i {
+        @apply flex;
+        @apply items-center;
+        @apply text-green-400;
+    }
+
+    & .message {
+        @apply m-6;
+    }
+}

@@ -18,25 +18,26 @@
 import re
 import json
 from datetime import datetime
+from flask import current_app
 from ..functions import search_by_positions, search_custom_positions
 
 
 class FindDate:
-    def __init__(self, text, log, locale, config, files, ocr, supplier, typo, nb_pages, db, file, docservers):
+    def __init__(self, text, log, regex, configurations, files, ocr, supplier, typo, nb_pages, database, file, docservers):
         self.date = ''
         self.text = text
         self.log = log
-        self.locale = locale
-        self.config = config
+        self.configurations = configurations
         self.docservers = docservers
-        self.Files = files
-        self.Ocr = ocr
+        self.regex = regex
+        self.files = files
+        self.ocr = ocr
         self.supplier = supplier
         self.typo = typo
-        self.nbPages = nb_pages
-        self.db = db
+        self.nb_pages = nb_pages
+        self.database = database
         self.file = file
-        self.maxTimeDelta = -1
+        self.max_time_delta = configurations['timeDelta']
 
     def format_date(self, date, position, convert=False):
         if date:
@@ -47,7 +48,10 @@ class FindDate:
             date = date.replace('.', ' ')  # Replace some possible inconvenient char
 
             if convert:
-                date_convert = self.locale.array_date
+                date_file = self.docservers['LOCALE_PATH'] + '/' + self.configurations['locale'] + '.json'
+                with open(date_file, encoding='UTF-8') as file:
+                    _fp = json.load(file)
+                    date_convert = _fp['dateConvert'] if 'dateConvert' in _fp else ''
                 for key in date_convert:
                     for month in date_convert[key]:
                         if month.lower() in date.lower():
@@ -56,20 +60,24 @@ class FindDate:
             try:
                 # Fix to handle date with 2 digits year
                 length_of_year = len(date.split(' ')[2])
-                if length_of_year == 2:
-                    regex = self.locale.date_time_format.replace('%Y', '%y')
-                else:
-                    regex = self.locale.date_time_format
+                languages = current_app.config['LANGUAGES']
+                date_format = "%d %m %Y"
+                for _l in languages:
+                    if self.configurations['locale'] == languages[_l]['lang_code']:
+                        date_format = languages[_l]['date_format']
 
-                date = datetime.strptime(date, regex).strftime(self.locale.format_date)
+                if length_of_year == 2:
+                    date_format = date_format.replace('%Y', '%y')
+
+                date = datetime.strptime(date, date_format).strftime(self.regex['formatDate'])
                 # Check if the date of the document isn't too old. 62 (default value) is equivalent of 2 months
                 today = datetime.now()
-                doc_date = datetime.strptime(date, self.locale.format_date)
+                doc_date = datetime.strptime(date, self.regex['formatDate'])
                 timedelta = today - doc_date
 
-                if int(self.maxTimeDelta) not in [-1, 0]:
-                    if timedelta.days > int(self.maxTimeDelta) or timedelta.days < 0:
-                        self.log.info("Date is older than " + str(self.maxTimeDelta) +
+                if int(self.max_time_delta) not in [-1, 0]:
+                    if timedelta.days > int(self.max_time_delta) or timedelta.days < 0:
+                        self.log.info("Date is older than " + str(self.max_time_delta) +
                                       " days or in the future : " + date)
                         date = False
                 return date, position
@@ -80,7 +88,7 @@ class FindDate:
             return False
 
     def process(self, line, position):
-        for _date in re.finditer(r"" + self.locale.date_regex + "", line):
+        for _date in re.finditer(r"" + self.regex['dateRegex'] + "", line):
             date = self.format_date(_date.group(), position, True)
             if date and date[0]:
                 self.date = date[0]
@@ -88,9 +96,9 @@ class FindDate:
             return False
 
     def process_due_date(self, line, position):
-        regex = self.locale.due_date_regex + self.locale.date_regex
+        regex = self.regex['dueDateRegex'] + self.regex['dateRegex']
         for _date in re.finditer(r"" + regex + "", line):
-            for res in re.finditer(r"" + self.locale.date_regex + "", line):
+            for res in re.finditer(r"" + self.regex['dateRegex'] + "", line):
                 date = self.format_date(res.group(), position, True)
                 if date and date[0]:
                     self.log.info('Due date found : ' + str(date[0]))
@@ -100,11 +108,11 @@ class FindDate:
     def run(self):
         date, due_date = None, None
         if self.supplier:
-            date = search_by_positions(self.supplier, 'invoice_date', self.Ocr, self.Files, self.db)
-            due_date = search_by_positions(self.supplier, 'invoice_due_date', self.Ocr, self.Files, self.db)
+            date = search_by_positions(self.supplier, 'invoice_date', self.ocr, self.files, self.database)
+            due_date = search_by_positions(self.supplier, 'invoice_due_date', self.ocr, self.files, self.database)
 
         if self.supplier:
-            position = self.db.select({
+            position = self.database.select({
                 'select': [
                     "positions ->> 'invoice_date' as invoice_date_position",
                     "positions ->> 'invoice_due_date' as invoice_due_date_position",
@@ -117,7 +125,7 @@ class FindDate:
             })[0]
             if position and position['invoice_due_date_position'] not in [False, 'NULL', '', None]:
                 data = {'position': position['invoice_due_date_position'], 'regex': None, 'target': 'full', 'page': position['invoice_due_date_page']}
-                _text, _position = search_custom_positions(data, self.Ocr, self.Files, self.locale, self.file, self.docservers)
+                _text, _position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
                 try:
                     _position = json.loads(_position)
                 except TypeError:
@@ -150,7 +158,7 @@ class FindDate:
         if self.supplier:
             if position and position['invoice_date_position'] not in [False, 'NULL', '', None]:
                 data = {'position': position['invoice_date_position'], 'regex': None, 'target': 'full', 'page': position['invoice_date_page']}
-                text, position = search_custom_positions(data, self.Ocr, self.Files, self.locale, self.file, self.docservers)
+                text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
                 if text != '':
                     res = self.format_date(text, position, True)
                     if res:
@@ -162,13 +170,13 @@ class FindDate:
             res = self.process(line.content.upper(), line.position)
             if res:
                 self.log.info('Invoice date found : ' + res[0])
-                return [res[0], res[1], self.nbPages, due_date]
+                return [res[0], res[1], self.nb_pages, due_date]
 
         for line in self.text:
             res = self.process(re.sub(r'(\d)\s+(\d)', r'\1\2', line.content), line.position)
             if not res:
                 res = self.process(line.content, line.position)
                 if res:
-                    return [res[0], res[1], self.nbPages, due_date]
+                    return [res[0], res[1], self.nb_pages, due_date]
             else:
-                return [res[0], res[1], self.nbPages, due_date]
+                return [res[0], res[1], self.nb_pages, due_date]

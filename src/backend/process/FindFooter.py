@@ -22,13 +22,13 @@ from ..functions import search_by_positions, search_custom_positions
 
 
 class FindFooter:
-    def __init__(self, ocr, log, locale, config, files, database, supplier, file, text, typo, docservers, target='footer', nb_pages=False):
+    def __init__(self, ocr, log, regex, config, files, database, supplier, file, text, typo, docservers, target='footer', nb_pages=False):
         self.date = ''
         self.Ocr = ocr
         self.text = text
         self.tmp_text = text
         self.log = log
-        self.locale = locale
+        self.regex = regex
         self.config = config
         self.docservers = docservers
         self.Files = files
@@ -61,8 +61,8 @@ class FindFooter:
                 # Retrieve only the number and add it in array
                 # In case of multiple no rates amount found, take the higher
                 data = res.group()
-                if regex == self.locale.vat_amount_regex:
-                    data = re.sub(r"" + self.locale.vat_amount_regex[:-2] + "", '', res.group())  # Delete the delivery number keyword
+                if regex == self.regex['vatAmountRegex']:
+                    data = re.sub(r"" + self.regex['vatAmountRegex'][:-2] + "", '', res.group())  # Delete the delivery number keyword
 
                 tmp = re.finditer(r'[-+]?\d*[.,]+\d+([.,]+\d+)?|\d+', data)
                 result = ''
@@ -72,7 +72,7 @@ class FindFooter:
                         # If two amounts are found, separate them
                         continue
                     number_formatted = t.group()
-                    if regex != self.locale.vat_rate_regex:
+                    if regex != self.regex['vatRateRegex']:
                         try:
                             text = t.group().replace(' ', '.')
                             text = text.replace('\x0c', '')
@@ -123,14 +123,14 @@ class FindFooter:
                 page = self.nbPage
 
             data = {'position': position[column + '_position'], 'regex': None, 'target': 'full', 'page': page}
-            text, position = search_custom_positions(data, self.Ocr, self.Files, self.locale, self.file, self.docservers)
+            text, position = search_custom_positions(data, self.Ocr, self.Files, self.regex, self.file, self.docservers)
             if text:
                 try:
                     # Try if the return string could be convert to float
                     float(text)
                     result = text
                     if column == 'vat_rate':  # Fix if we retrieve 2000.0, or 200.0 instead of 20.0 for example
-                        tva_amounts = eval(self.locale.vat_rate_list)
+                        tva_amounts = eval(self.regex['vatRateList'])
                         _split = result.split('.')
                         if _split[1] == '0':
                             result = _split[0]
@@ -228,7 +228,7 @@ class FindFooter:
         if position and position[name + '_position'] not in [False, 'NULL', '', None]:
             self.nbPage = position[name + '_page']
             data = {'position': position[name + '_position'], 'regex': None, 'target': 'full', 'page': position[name + '_page']}
-            res = search_custom_positions(data, self.Ocr, self.Files, self.locale, self.file, self.docservers)
+            res = search_custom_positions(data, self.Ocr, self.Files, self.regex, self.file, self.docservers)
             if res[0]:
                 _return = {
                     0: re.sub(r"[^0-9\.]|\.(?!\d)", "", res[0].replace(',', '.')),
@@ -274,11 +274,11 @@ class FindFooter:
         vat_amount = False
         if not self.test_amount(total_ht, total_ttc, vat_rate) or not total_ht or not total_ttc or not vat_rate:
             if not total_ht:
-                total_ht = self.process(self.locale.no_rates_regex, text_as_string)
+                total_ht = self.process(self.regex['noRatesRegex'], text_as_string)
             if not vat_rate:
-                vat_rate = self.process(self.locale.vat_rate_regex, text_as_string)
+                vat_rate = self.process(self.regex['vatRateRegex'], text_as_string)
             if not total_ttc:
-                total_ttc = self.process(self.locale.all_rates_regex, text_as_string)
+                total_ttc = self.process(self.regex['allRatesRegex'], text_as_string)
 
         if total_ttc and total_ht:
             ttc = self.return_max(total_ttc)[0]

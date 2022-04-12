@@ -22,7 +22,7 @@
                                 (selectionChange)="changeDiagramType($event)"
                                 [placeholder]="'STATISTICS.choose_diagram' | translate">
                         <mat-option *ngFor="let option of diagramTypes" [value]="option['id']">
-                            {{ option['label'] | translate }} <i class="fas {{ option['logo'] }} ml-2"></i>
+                            {{ option['label'] | translate }} <i class="fa-solid {{ option['logo'] }} ml-2"></i>
                         </mat-option>
                     </mat-select>
                 </mat-form-field>

@@ -316,5 +316,14 @@ CREATE TABLE "docservers"
     "path"          VARCHAR(255) UNIQUE
 );
 
-create sequence splitter_referential_call_count as INTEGER;
-comment on sequence splitter_referential_call_count is 'Splitter referential demand number count';
+CREATE TABLE "regex"
+(
+    "id"            SERIAL UNIQUE PRIMARY KEY,
+    "regex_id"      VARCHAR(20),
+    "label"         VARCHAR(255),
+    "content"       TEXT,
+    "lang"          VARCHAR(10) DEFAULT 'fra'
+);
+
+CREATE SEQUENCE splitter_referential_call_count AS INTEGER;
+COMMENT ON SEQUENCE splitter_referential_call_count IS 'Splitter referential demand number count';

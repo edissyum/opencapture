@@ -100,6 +100,9 @@ import { ListDocTypeComponent } from './settings/splitter/doc-types/list/list-do
 import { CreateFolderDocTypeComponent } from './settings/splitter/doc-types/create-folder/create-folder-doc-type.component';
 import { ConfigurationsComponent } from './settings/general/configurations/configurations.component';
 import { DocserversComponent } from './settings/general/docservers/docservers.component';
+import { RegexComponent } from './settings/general/regex/regex.component';
+import { HintServiceComponent } from "../services/hint/hint.service";
+import { Error500Component } from './errors/error-500/error-500.component';
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -165,7 +168,10 @@ export function createTranslateLoader(http: HttpClient) {
         ListDocTypeComponent,
         CreateFolderDocTypeComponent,
         ConfigurationsComponent,
-        DocserversComponent
+        DocserversComponent,
+        RegexComponent,
+        HintServiceComponent,
+        Error500Component
     ],
     imports: [
         BrowserModule,
@@ -196,6 +202,7 @@ export function createTranslateLoader(http: HttpClient) {
         Title,
         TranslateService,
         LastUrlService,
+        HintServiceComponent,
         {provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: {appearance: 'outline'}},
         {
             provide: MatPaginatorIntl,

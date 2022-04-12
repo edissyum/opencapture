@@ -39,10 +39,10 @@ def launch(args):
     if not os.path.exists(config_file):
         sys.exit('Config file couldn\'t be found')
 
-    config, locale, log, _, database, _, smtp, docservers, _ = create_classes(config_file)
+    config, regex, log, _, database, _, smtp, docservers, configurations = create_classes(config_file)
     tmp_folder = tempfile.mkdtemp(dir=docservers['SPLITTER_BATCHES']) + '/'
     filename = tempfile.NamedTemporaryFile(dir=tmp_folder).name
-    files = _Files(filename, log, locale, config)
+    files = _Files(filename, log, docservers, configurations, regex)
 
     remove_blank_pages = False
     if 'input_id' in args:
@@ -56,7 +56,7 @@ def launch(args):
             remove_blank_pages = input_settings[0]['remove_blank_pages']
 
     separator_qr = _SeparatorQR(log, config, tmp_folder, 'splitter', files, remove_blank_pages, docservers)
-    splitter = _Splitter(config, database, locale, separator_qr, log, docservers)
+    splitter = _Splitter(config, database, separator_qr, log, docservers)
 
     if args.get('isMail') is not None and args['isMail'] is True:
         log = _Log((args['log']), smtp)

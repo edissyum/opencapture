@@ -62,7 +62,7 @@ export interface Field {
 export class SplitterViewerComponent implements OnInit, OnDestroy {
     @HostListener('window:beforeunload', ['$event'])
     beforeunloadHandler($event: any) {
-        if(this.isDataEdited){
+        if(this.isDataEdited) {
             $event.returnValue =true;
         }
     }
@@ -311,10 +311,10 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     updateDocumentDisplayOrder() {
         const updatedDocuments = [];
-        for (const document of this.documents){
+        for (const document of this.documents) {
             const currentDisplayOrder   = document.displayOrder;
             const newDisplayOrder       = currentDisplayOrder + 1;
-            if(currentDisplayOrder > this.currentBatch.selectedDocument.displayOrder){
+            if(currentDisplayOrder > this.currentBatch.selectedDocument.displayOrder) {
                 document.displayOrder = newDisplayOrder;
                 updatedDocuments.push({
                     'id': Number(document.id.split('-').pop()),
@@ -325,7 +325,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         return updatedDocuments;
     }
 
-    sortDocumentsByDisplayOrder(){
+    sortDocumentsByDisplayOrder() {
         this.documents.sort((a:any, b:any) => (a.displayOrder > b.displayOrder) ? 1 : -1);
     }
 
@@ -629,9 +629,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.OrderDisplayDocumentValues();
     }
 
-    OrderDisplayDocumentValues(){
+    OrderDisplayDocumentValues() {
         let cpt = 1;
-        for(const document of this.documents){
+        for(const document of this.documents) {
             document.displayOrder = cpt;
             cpt++;
         }
@@ -657,7 +657,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         });
     }
 
-    selectDocument(document: any){
+    selectDocument(document: any) {
         this.currentBatch.selectedDocument = {'id': document.id, 'displayOrder': document.displayOrder};
     }
 
@@ -695,7 +695,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         return list;
     }
 
-    countSelectedPages(){
+    countSelectedPages() {
         let selectedPageCount = 0;
         for (const document of this.documents) {
             for (const page of document.pages) {
@@ -754,7 +754,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.isDataEdited = false;
     }
 
-    rotatePage(documentIndex: number, pageIndex: number){
+    rotatePage(documentIndex: number, pageIndex: number) {
         const currentDegree = this.documents[documentIndex].pages[pageIndex].rotation;
         this.isDataEdited = true;
         switch(currentDegree) {
@@ -772,7 +772,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             }
         }
 
-        if(this.zoomPage.pageId === this.documents[documentIndex].pages[pageIndex].id){
+        if(this.zoomPage.pageId === this.documents[documentIndex].pages[pageIndex].id) {
             this.zoomPage.rotation = this.documents[documentIndex].pages[pageIndex].rotation;
         }
     }
@@ -822,8 +822,8 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.isDataEdited = false;
     }
 
-    cancel(){
-        if(this.isDataEdited){
+    cancel() {
+        if(this.isDataEdited) {
             const dialogRef = this.dialog.open(ConfirmDialogComponent, {
                 data:{
                     confirmTitle        : this.translate.instant('GLOBAL.confirm'),
@@ -846,7 +846,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         }
     }
 
-    validateWithConfirmation(){
+    validateWithConfirmation() {
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data:{
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
@@ -893,7 +893,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
         // Add metadata arguments and Remove unnecessary ones
         const _documents = [];
-        for (const document of this.documents){
+        for (const document of this.documents) {
             const _document = Object.assign({}, document);
             _document['metadata'] = document.form.getRawValue();
             delete _document.class;
@@ -938,7 +938,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
         // Add arguments and Remove unnecessary ones
         const _documents = [];
-        for (const document of this.documents){
+        for (const document of this.documents) {
             const _document = Object.assign({}, document);
             _document['metadata'] = document.form.getRawValue();
             delete _document.class;

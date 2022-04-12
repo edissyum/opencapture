@@ -90,6 +90,22 @@ def retrieve_docservers(args):
     return response, 401
 
 
+def retrieve_regex(args):
+    regex, error = config.retrieve_regex(args)
+
+    if error is None:
+        response = {
+            "regex": regex
+        }
+        return response, 200
+
+    response = {
+        "errors": "RETRIEVE_REGEX_ERRORS",
+        "message": error
+    }
+    return response, 401
+
+
 def update_configuration(args, configuration_id):
     _, error = config.retrieve_configuration_by_id({'configuration_id': configuration_id})
 
@@ -107,6 +123,27 @@ def update_configuration(args, configuration_id):
 
     response = {
         "errors": "UPDATE_CONFIGURATION_ERROR",
+        "message": error
+    }
+    return response, 401
+
+
+def update_regex(args, id):
+    _, error = config.retrieve_regex_by_id({'id': id})
+
+    if error is None:
+        args = {
+            'id': id,
+            'data': {
+                'label': args['label'],
+                'content': args['content'],
+            }
+        }
+        config.update_regex(args)
+        return '', 200
+
+    response = {
+        "errors": "UPDATE_REGEX_ERROR",
         "message": error
     }
     return response, 401

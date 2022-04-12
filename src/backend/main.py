@@ -23,7 +23,7 @@ from kuyruk import Kuyruk
 from flask import current_app
 
 from .functions import recursive_delete, get_custom_array
-from .import_classes import _Database, _PyTesseract, _Locale, _Files, _Log, _Config, _SeparatorQR, _Spreadsheet, \
+from .import_classes import _Database, _PyTesseract, _Files, _Log, _Config, _SeparatorQR, _Spreadsheet, \
     _SMTP, _Mail
 
 custom_array = get_custom_array()
@@ -62,8 +62,10 @@ def create_classes_from_current_config():
     db_port = config.cfg['DATABASE']['postgresport']
     database = _Database(log, db_name, db_user, db_pwd, db_host, db_port)
 
+    regex = {}
     docservers = {}
     configurations = {}
+
     _ds = database.select({
         'select': ['*'],
         'table': ['docservers'],
@@ -79,13 +81,22 @@ def create_classes_from_current_config():
     for _c in _config:
         configurations[_c['label']] = _c['data']['value']
 
+    _regex = database.select({
+        'select': ['regex_id', 'content'],
+        'table': ['regex'],
+        'where': ['lang = %s'],
+        'data': [configurations['locale']],
+    })
+
+    for _r in _regex:
+        regex[_r['regex_id']] = _r['content']
+
     spreadsheet = _Spreadsheet(log, docservers, config)
     filename = docservers['TMP_PATH'] + '/tmp/'
-    locale = _Locale(configurations, docservers)
-    files = _Files(filename, log, locale, config)
+    files = _Files(filename, log, docservers, configurations, regex)
     ocr = _PyTesseract(configurations['locale'], log, config, docservers)
 
-    return database, config, locale, files, ocr, log, config_file, spreadsheet, smtp, docservers, configurations
+    return database, config, regex, files, ocr, log, config_file, spreadsheet, smtp, docservers, configurations
 
 
 def create_classes(config_file):
@@ -111,8 +122,11 @@ def create_classes(config_file):
     db_host = config.cfg['DATABASE']['postgreshost']
     db_port = config.cfg['DATABASE']['postgresport']
     database = _Database(log, db_name, db_user, db_pwd, db_host, db_port)
+
+    regex = {}
     docservers = {}
     configurations = {}
+
     _ds = database.select({
         'select': ['*'],
         'table': ['docservers'],
@@ -128,11 +142,20 @@ def create_classes(config_file):
     for _c in _config:
         configurations[_c['label']] = _c['data']['value']
 
+    _regex = database.select({
+        'select': ['regex_id', 'content'],
+        'table': ['regex'],
+        'where': ['lang = %s'],
+        'data': [configurations['locale']],
+    })
+
+    for _r in _regex:
+        regex[_r['regex_id']] = _r['content']
+
     spreadsheet = _Spreadsheet(log, docservers, config)
-    locale = _Locale(configurations, docservers)
     ocr = _PyTesseract(configurations['locale'], log, config, docservers)
 
-    return config, locale, log, ocr, database, spreadsheet, smtp, docservers, configurations
+    return config, regex, log, ocr, database, spreadsheet, smtp, docservers, configurations
 
 
 def check_file(files, path, log, docservers):
@@ -190,10 +213,10 @@ def launch(args):
     if not os.path.exists(config_file):
         sys.exit('config file couldn\'t be found')
 
-    config, locale, log, ocr, database, _, smtp, docservers, configurations = create_classes(config_file)
+    config, regex, log, ocr, database, _, smtp, docservers, configurations = create_classes(config_file)
     tmp_folder = tempfile.mkdtemp(dir=docservers['TMP_PATH'])
     filename = tempfile.NamedTemporaryFile(dir=tmp_folder).name
-    files = _Files(filename, log, locale, config)
+    files = _Files(filename, log, docservers, configurations, regex)
 
     remove_blank_pages = False
     splitter_method = False
@@ -243,7 +266,7 @@ def launch(args):
                 #     typo = get_typo(config, path + file, log)
 
                 if check_file(files, path + file, log, docservers) is not False:
-                    res = OCForInvoices_process.process(args, path + file, log, config, files, ocr, locale, database, typo, docservers, configurations)
+                    res = OCForInvoices_process.process(args, path + file, log, config, files, ocr, regex, database, typo, docservers, configurations)
                     if not res:
                         mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'], args['msg'], config, docservers)
                         log.error('Error while processing e-mail', False)
@@ -254,7 +277,7 @@ def launch(args):
                 #     typo = get_typo(config, file, log)
 
                 if check_file(files, file, log, docservers) is not False:
-                    res = OCForInvoices_process.process(args, file, log, config, files, ocr, locale, database, typo, docservers, configurations)
+                    res = OCForInvoices_process.process(args, file, log, config, files, ocr, regex, database, typo, docservers, configurations)
                     if not res:
                         mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'], args['msg'], config, docservers)
                         log.error('Error while processing e-mail', False)
@@ -264,7 +287,7 @@ def launch(args):
             #     typo = get_typo(config, path, log)
 
             if check_file(files, path, log, docservers) is not False:
-                res = OCForInvoices_process.process(args, path, log, config, files, ocr, locale, database, typo, docservers, configurations)
+                res = OCForInvoices_process.process(args, path, log, config, files, ocr, regex, database, typo, docservers, configurations)
                 if not res:
                     mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'], args['msg'], config, docservers)
                     log.error('Error while processing e-mail', False)

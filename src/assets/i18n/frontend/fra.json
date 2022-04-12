@@ -141,6 +141,7 @@
 	},
 	"ERROR": {
 		"404": "La page demandée n'existe pas",
+		"500": "Une erreur technique est apparue de notre côté. <br> Merci de réessayer ultérieurement",
 		"alphanum_extended_pattern": "La valeur n'est pas au format attendu : alphanumérique avec caractères spéciaux",
 		"alphanum_pattern": "La valeur n'est pas au format attendu : alphanumérique",
 		"char_pattern": "La valeur n'est pas au format attendu : alphabétique",
@@ -236,6 +237,7 @@
 		"delete_form_and_reassign_input": "Supprimer le formulaire et réassigner les chaînes entrantes",
 		"delete_supplier_positions": "Supprimer les positions du compte fournisseur",
 		"disable": "Désactiver",
+		"dont_touch": "Ne touchez pas à ces paramètres si vous ne savez pas ce que vous faites !",
 		"duplicate": "Dupliquer",
 		"enable": "Activer",
 		"history": "Historique",
@@ -458,6 +460,7 @@
 		"outputs_list": "Liste des chaînes sortantes",
 		"outputs_list_splitter": "Liste des chaînes sortantes",
 		"position_mask_list": "Liste des chaînes masques de positionnements",
+		"regex": "Liste des REGEX",
 		"roles_list": "Visualiser la liste des rôles",
 		"separator_splitter": "Séparateur de document",
 		"settings": "Accès au panneau d'administration",
@@ -479,6 +482,11 @@
 		"users_list": "Visualiser la liste des utilisateurs",
 		"verifier": "Open-Capture Vérificateur",
 		"version_update": "Version et mise à jour"
+	},
+	"REGEX": {
+		"regex_updated": "Regex mise à jour",
+		"search_regex": "Chercher une regex",
+		"update": "Mettre à jour la regex"
 	},
 	"ROLE": {
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer le rôle <b>{{ role }}</b> ?",
@@ -513,6 +521,7 @@
 		"list_positions_mask": "Masques de positionnement",
 		"positions_mask_builder": "Créer un nouveau masque",
 		"positions_mask_update": "Modification du masque",
+		"regex": "Liste des regex",
 		"roles_list": "Liste des rôles",
 		"splitter": "Paramètres du Splitter",
 		"update_doc_type": "Modifier le type de document",

@@ -13,20 +13,20 @@
             <h3 class="text-center">{{ this.serviceSettings.getTitle() }}</h3>
             <hr class="border-green-400">
             <button routerLink="/accounts/suppliers/create" class="relative float-right -top-12 right-4 ml-4">
-                <i class="fas fa-plus text-2xl ml-2"></i>
+                <i class="fa-solid fa-plus text-2xl ml-2"></i>
                 <span class="ml-2 relative -top-1">{{ 'ACCOUNTS.create_supplier' | translate }}</span>
             </button>
             <button [class.hidden]="!this.privilegesService.hasPrivilege('export_suppliers')"
                     (click)="getReferenceFile()" class="relative float-right -top-12 right-4 ml-4"
                     [matTooltip]="'ACCOUNTS.export_suppliers' | translate">
-                <i class="fas fa-file-export text-2xl ml-2"></i>
+                <i class="fa-solid fa-file-export text-2xl ml-2"></i>
             </button>
             <input type="file" class="hidden" accept=".csv, .ods, .xlsx" (change)="importSuppliers($event)" #suppliersUpload>
             <button [class.hidden]="!this.privilegesService.hasPrivilege('import_suppliers')"
                     [matTooltip]="'ACCOUNTS.import_suppliers' | translate"
                     class="relative float-right -top-12 right-4 ml-4"
                     (click)="suppliersUpload.click()">
-                <i class="fas fa-file-import text-2xl ml-2"></i>
+                <i class="fa-solid fa-file-import text-2xl ml-2"></i>
             </button>
         </div>
         <mat-table matSort [dataSource]="suppliers" (matSortChange)="sortData($event)" class="w-full table relative -top-8">
@@ -64,17 +64,17 @@
                     <button (click)="$event.stopPropagation();deleteConfirmDialog(element.id, element.name)"
                             matTooltip="{{ 'GLOBAL.delete' | translate }}" mat-icon-button
                             class="inline-block align-text-top">
-                        <i class="fas fa-trash fa-lg"></i>
+                        <i class="fa-solid fa-trash fa-lg"></i>
                     </button>
                     <button (click)="$event.stopPropagation();deletePositionsConfirmDialog(element.id, element.name)"
                             matTooltip="{{ 'GLOBAL.delete_supplier_positions' | translate }}" mat-icon-button
                             class="inline-block align-text-top">
-                        <i class="text-lg icomoon-wrong_location"></i>
+                        <i class="fa-solid fa-circle-xmark"></i>
                     </button>
                     <button (click)="$event.stopPropagation();skipAutoValidateConfirmDialog(element.id, element.name)"
                             matTooltip="{{ 'GLOBAL.skip_auto_validate' | translate }}" mat-icon-button
                             class="inline-block align-text-top">
-                        <i class="fas fa-forward fa-lg"></i>
+                        <i class="fa-solid fa-forward fa-lg"></i>
                     </button>
                 </mat-cell>
             </ng-container>

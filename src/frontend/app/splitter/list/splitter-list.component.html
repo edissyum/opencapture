@@ -33,7 +33,7 @@
                         </span>
                         <span [class.hidden]="totalChecked === 0"> ({{ totalChecked }})</span>
                         <span [class.hidden]="!batchesSelected">
-                            <i class="fas fa-trash ml-5 text-red-500 cursor-pointer"
+                            <i class="fa-solid fa-trash ml-5 text-red-500 cursor-pointer"
                                (click)="$event.stopPropagation(); deleteAllConfirmDialog()"
                                matTooltip="{{ 'SPLITTER.delete_all_checked' | translate }}"></i>
                         </span>
@@ -67,12 +67,12 @@
                                     </mat-card-subtitle>
                                 </mat-card-header>
                                 <mat-card-actions class="pb-4">
-                                    <i class="fas fa-trash cursor-pointer text-red-500 pl-4"
+                                    <i class="fa-solid fa-trash cursor-pointer text-red-500 pl-4"
                                        (click)="$event.stopPropagation();openConfirmDialog(batch['id'])">
                                         <span class="font-medium mat-typography">{{ 'GLOBAL.delete' | translate }}</span>
                                     </i>
                                     <i *ngIf="totalChecked >= 2 && isCheckboxChecked(batch['id'])"
-                                       class="fas fa-object-group cursor-pointer text-green-400 relative float-right"
+                                       class="fa-solid fa-object-group cursor-pointer text-green-400 relative float-right"
                                        (click)="$event.stopPropagation();mergeAllConfirmDialog(batch['id'])">
                                         <span class="font-medium mat-typography float-left mr-3 relative bottom-1">
                                             {{ 'SPLITTER.merge' | translate }} {{ totalChecked }} {{ 'SPLITTER.batches' | translate }}

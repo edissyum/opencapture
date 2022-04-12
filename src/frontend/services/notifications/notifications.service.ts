@@ -1,3 +1,20 @@
+/** This file is part of Open-Capture for Invoices.
+
+ Open-Capture for Invoices is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ Open-Capture is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+
+ @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Injectable, Component, Inject } from '@angular/core';
 import { MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
@@ -51,9 +68,11 @@ export class NotificationService {
     handleErrors(err: any, route='') {
         if (err.status === 0 && err.statusText === 'Unknown Error') {
             const message = '<b>' + this.translate.instant('ERROR.connection_failed') + '</b> : ' + this.translate.instant('ERROR.is_server_up', {server: API_URL});
-            this.error(message);
-            if (this.router.url !== '/login')
-                this.router.navigate(['/logout']).then();
+            if (this.router.url !== '/login') {
+                this.router.navigate(['/500']).then(() => {
+                    this.error(message);
+                });
+            }
         } else if (err.error !== undefined) {
             if (err.error.errors !== undefined) {
                 this.error('<b>' + err.error.errors + '</b> : ' + err.error.message, err.url);

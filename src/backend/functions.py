@@ -55,8 +55,7 @@ def check_python_customized_files(path):
     return array_of_import
 
 
-def search_custom_positions(data, ocr, files, locale, file, docservers):
-    regex = data['regex']
+def search_custom_positions(data, ocr, files, regex, file, docservers):
     target = data['target'].lower()
     position = json.loads(data['position'])
 
@@ -82,11 +81,10 @@ def search_custom_positions(data, ocr, files, locale, file, docservers):
             else:
                 files.pdf_to_jpg(file + '[' + str(int(data['page']) - 1) + ']', False, False, False, False, True)
                 target_file = files.custom_file_name
-        if regex:
-            locale_list = locale.get()
-            regex = locale_list[regex]
+        if data['regex']:
+            data['regex'] = regex[data['regex']]
 
-        return search(position, regex, files, ocr, target_file)
+        return search(position, data['regex'], files, ocr, target_file)
 
 
 def search_by_positions(supplier, index, ocr, files, database):

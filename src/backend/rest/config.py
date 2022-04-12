@@ -67,6 +67,37 @@ def get_docservers():
     return make_response(jsonify(res[0])), res[1]
 
 
+@bp.route('config/getRegex', methods=['GET'])
+@auth.token_required
+def get_regex():
+    _vars = create_classes_from_current_config()
+    _configurations = _vars[10]
+
+    args = {
+        'select': ['*', 'count(*) OVER() as total'],
+        'where': ['lang = %s'],
+        'data': [_configurations['locale']],
+        'offset': request.args['offset'] if 'offset' in request.args else '',
+        'limit': request.args['limit'] if 'limit' in request.args else ''
+    }
+
+    if 'search' in request.args and request.args['search']:
+        args['where'].append(
+            "LOWER(id) LIKE '%%" + request.args['search'].lower() + "%%' OR "
+            "LOWER(label) LIKE '%%" + request.args['search'].lower() + "%%' "
+        )
+    res = config.retrieve_regex(args)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('config/updateRegex/<int:_id>', methods=['PUT'])
+@auth.token_required
+def update_regex(_id):
+    data = request.json['data']
+    res = config.update_regex(data, _id)
+    return make_response(jsonify(res[0])), res[1]
+
+
 @bp.route('config/updateConfiguration/<int:configuration_id>', methods=['PUT'])
 @auth.token_required
 def update_configuration(configuration_id):

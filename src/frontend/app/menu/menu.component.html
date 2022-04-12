@@ -43,7 +43,7 @@
                             {{ 'GLOBAL.batches' | translate }}
                         </button>
                         <button mat-flat-button routerLink="/upload" [routerLinkActive]="'bg-gray-900 text-green-400'"
-                                *ngIf="location.path() !== '/home' && getSplitterOrVerifier() !== undefined && getSplitterOrVerifier() !== ''"
+                                *ngIf="location.path() !== '/home' && getSplitterOrVerifier() !== undefined && getSplitterOrVerifier() !== '' && getSplitterOrVerifier() !== null"
                                 [disabled]="!privilegesService.hasPrivilege('upload')"
                                 [class.cursor-not-allowed]="!privilegesService.hasPrivilege('upload')"
                                 [class.hover:bg-gray-500]="privilegesService.hasPrivilege('upload')"
@@ -65,7 +65,7 @@
                                 [matTooltip]="this.translate.instant('USER.my_profile')"
                                 (clickOutside)="closeprofileDropDown()"
                                 class="bg-green-400 hover:ring-4 hover:ring-offset-4 hover:ring-green-400 hover:ring-opacity-60">
-                            <i class="fas fa-users-cog"></i>
+                            <i class="fa-solid fa-users-cog"></i>
                         </button>
                     </div>
                     <div [@toggle]="profileDropdownCurrentState" class="origin-top-right absolute md:right-0 mt-2 w-56 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-50"
@@ -93,7 +93,7 @@
                             [class.settings_active]="location.path().includes('settings')"
                             [matTooltip]="this.translate.instant('GLOBAL.settings')"
                             class="bg-green-400 hover:ring-4 hover:ring-offset-4 hover:ring-green-400 hover:ring-opacity-60">
-                        <i class="fas fa-cog"></i>
+                        <i class="fa-solid fa-cog"></i>
                     </button>
                 </div>
                 <div class="ml-3 mr-2 relative" *ngIf="this.privilegesService.hasPrivilege('history')">
@@ -101,7 +101,7 @@
                             [class.settings_active]="location.path().includes('history')"
                             [matTooltip]="'GLOBAL.history' | translate"
                             class="bg-green-400 hover:ring-4 hover:ring-offset-4 hover:ring-green-400 hover:ring-opacity-60">
-                        <i class="fas fa-history"></i>
+                        <i class="fa-solid fa-history"></i>
                     </button>
                 </div>
                 <div class="ml-3 mr-2 relative" *ngIf="this.privilegesService.hasPrivilege('statistics')">
@@ -109,7 +109,7 @@
                             [class.settings_active]="location.path().includes('statistics')"
                             [matTooltip]="'GLOBAL.statistics' | translate"
                             class="bg-green-400 hover:ring-4 hover:ring-offset-4 hover:ring-green-400 hover:ring-opacity-60">
-                        <i class="fas fa-chart-bar"></i>
+                        <i class="fa-solid fa-chart-bar"></i>
                     </button>
                 </div>
                 <div class="ml-3 mr-2 relative border-l border-green-400 pl-5" *ngIf="this.privilegesService.hasPrivilege('suppliers_list')">
@@ -117,7 +117,7 @@
                             [class.settings_active]="location.path().includes('accounts/suppliers')"
                             [matTooltip]="'ACCOUNTS.suppliers_list' | translate"
                             class="bg-green-400 hover:ring-4 hover:ring-offset-4 hover:ring-green-400 hover:ring-opacity-60">
-                        <i class="fas fa-city"></i>
+                        <i class="fa-solid fa-city"></i>
                     </button>
                 </div>
                 <div class="ml-3 relative" *ngIf="this.privilegesService.hasPrivilege('customers_list')">
@@ -125,7 +125,7 @@
                             [class.settings_active]="location.path().includes('accounts/customers')"
                             [matTooltip]="'ACCOUNTS.customers_list' | translate"
                             class="bg-green-400 hover:ring-4 hover:ring-offset-4 hover:ring-green-400 hover:ring-opacity-60">
-                        <i class="fas fa-users"></i>
+                        <i class="fa-solid fa-users"></i>
                     </button>
                 </div>
                 <div class="ml-3 relative" *ngIf="this.privilegesService.hasPrivilege('change_language')">

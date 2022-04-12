@@ -29,12 +29,12 @@ class PyTesseract:
         self.lang = locale
         self.last_text = ''
         self.config = config
-        self.docservers = docservers
         self.footer_text = ''
         self.header_text = ''
-        self.OCRErrorsTable = {}
+        self.ocr_errors_table = {}
         self.footer_last_text = ''
         self.header_last_text = ''
+        self.docservers = docservers
 
         tools = pyocr.get_available_tools()
         self.tool = tools[0]
@@ -48,8 +48,8 @@ class PyTesseract:
                 lang=self.lang
             )
             return text
-        except pytesseract.pytesseract.TesseractError as t:
-            self.log.error('Tesseract ERROR : ' + str(t))
+        except pytesseract.pytesseract.TesseractError as _t:
+            self.log.error('Tesseract ERROR : ' + str(_t))
 
     def line_box_builder(self, img):
         try:
@@ -59,15 +59,15 @@ class PyTesseract:
                 builder=pyocr.builders.LineBoxBuilder(6)  # Argument is the choosen PSM
             )
 
-        except pytesseract.pytesseract.TesseractError as t:
-            self.log.error('Tesseract ERROR : ' + str(t))
+        except pytesseract.pytesseract.TesseractError as _t:
+            self.log.error('Tesseract ERROR : ' + str(_t))
 
     def get_ocr_errors_table(self):
         config_path = self.docservers['CONFIG_PATH'] + '/OCR_ERRORS.xml'
         root = Et.parse(config_path).getroot()
 
         for element in root:
-            self.OCRErrorsTable[element.tag] = {}
+            self.ocr_errors_table[element.tag] = {}
             for child in element.findall('.//ELEMENT'):
                 fix, misread = list(child)
-                self.OCRErrorsTable[element.tag][fix.text] = misread.text
+                self.ocr_errors_table[element.tag][fix.text] = misread.text

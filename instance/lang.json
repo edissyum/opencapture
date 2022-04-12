@@ -2,11 +2,13 @@
     "fr": {
         "label" : "Francais",
         "lang_code": "fra",
-        "moment_lang_code": "fr-FR"
+        "moment_lang_code": "fr-FR",
+        "date_format": "%d %m %Y"
     },
     "en": {
         "label" : "English",
         "lang_code": "eng",
-        "moment_lang_code": "en-GB"
+        "moment_lang_code": "en-GB",
+        "date_format": "%m %d %Y"
     }
 }

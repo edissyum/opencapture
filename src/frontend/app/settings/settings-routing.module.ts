@@ -42,6 +42,7 @@ import { SplitterListOutputComponent } from "./splitter/output/list/list-output.
 import { UpdateOutputComponent } from "./verifier/outputs/update/update-output.component";
 import { ConfigurationsComponent } from "./general/configurations/configurations.component";
 import { DocserversComponent } from "./general/docservers/docservers.component";
+import { RegexComponent } from "./general/regex/regex.component";
 import { CreateOutputComponent } from "./verifier/outputs/create/create-output.component";
 import { SplitterFormBuilderComponent } from "./splitter/form/builder/form-builder.component";
 import { SplitterCreateInputComponent } from "./splitter/inputs/create/create-input.component";
@@ -71,6 +72,11 @@ const routes: Routes = [
     {
         path: 'settings/general/docservers', component: DocserversComponent,
         data: {title: 'SETTINGS.docservers', privileges: ['settings', 'docservers']},
+        canActivate: [LoginRequiredService, HasPrivilegeService]
+    },
+    {
+        path: 'settings/general/regex', component: RegexComponent,
+        data: {title: 'SETTINGS.regex', privileges: ['settings', 'regex']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     // Users

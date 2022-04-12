@@ -24,13 +24,12 @@ from src.backend.classes.Files import Files
 
 
 class Splitter:
-    def __init__(self, config, database, locale, separator_qr, log, docservers):
+    def __init__(self, config, database, separator_qr, log, docservers):
         self.log = log
         self.db = database
         self.qr_pages = []
         self.config = config
         self.docservers = docservers
-        self.locale = locale
         self.result_batches = []
         self.separator_qr = separator_qr
         self.doc_start = self.config.cfg['SPLITTER']['docstart']

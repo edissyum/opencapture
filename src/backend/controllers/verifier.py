@@ -468,7 +468,7 @@ def export_maarch(invoice_id, data):
 
 def construct_with_var(data, invoice_info, separator=False):
     _vars = create_classes_from_current_config()
-    _locale = _vars[2]
+    _regex = _vars[2]
     _data = []
     for column in data.split('#'):
         if column in invoice_info['datas']:
@@ -482,17 +482,17 @@ def construct_with_var(data, invoice_info, separator=False):
             else:
                 _data.append(invoice_info[column])
         elif column == 'invoice_date_year':
-            _data.append(datetime.datetime.strptime(invoice_info['datas']['invoice_date'], _locale.format_date).year)
+            _data.append(datetime.datetime.strptime(invoice_info['datas']['invoice_date'], _regex['formatDate']).year)
         elif column == 'invoice_date_month':
-            _data.append(datetime.datetime.strptime(invoice_info['datas']['invoice_date'], _locale.format_date).month)
+            _data.append(datetime.datetime.strptime(invoice_info['datas']['invoice_date'], _regex['formatDate']).month)
         elif column == 'invoice_date_day':
-            _data.append(datetime.datetime.strptime(invoice_info['datas']['invoice_date'], _locale.format_date).day)
+            _data.append(datetime.datetime.strptime(invoice_info['datas']['invoice_date'], _regex['formatDate']).day)
         elif column == 'register_date_year':
-            _data.append(datetime.datetime.strptime(invoice_info['register_date'], _locale.format_date).year)
+            _data.append(datetime.datetime.strptime(invoice_info['register_date'], _regex['formatDate']).year)
         elif column == 'register_date_month':
-            _data.append(datetime.datetime.strptime(invoice_info['register_date'], _locale.format_date).month)
+            _data.append(datetime.datetime.strptime(invoice_info['register_date'], _regex['formatDate']).month)
         elif column == 'register_date_day':
-            _data.append(datetime.datetime.strptime(invoice_info['register_date'], _locale.format_date).day)
+            _data.append(datetime.datetime.strptime(invoice_info['register_date'], _regex['formatDate']).day)
         else:
             if separator:
                 _data.append(column.replace(' ', separator))

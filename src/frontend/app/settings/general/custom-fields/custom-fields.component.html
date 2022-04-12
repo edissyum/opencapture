@@ -81,7 +81,7 @@
             <button mat-icon-button (click)="sidenav.toggle(); this.serviceSettings.toggleMenu();"
                     class="absolute left-2 top-2">
                 <i [class.fa-arrow-right]="!this.serviceSettings.getIsMenuOpen()"
-                   class="fas fa-arrow-left text-2xl text-gray-900"></i>
+                   class="fa-solid fa-arrow-left text-2xl text-gray-900"></i>
             </button>
             <div class="settings_title text-center">
                 <h3>{{ this.serviceSettings.getTitle() }}</h3>
@@ -124,7 +124,7 @@
                         </mat-form-field>
                         <div class="cursor-pointer flex ml-1 -mt-6 w-1/12" matTooltip="{{ 'CUSTOM-FIELDS.reset' | translate }}"
                              (click)="resetForm()">
-                            <i class="self-center fas fa-sync fa-lg hover:text-green-400"></i>
+                            <i class="self-center fa-solid fa-sync fa-lg hover:text-green-400"></i>
                         </div>
                     </div>
                     <div class="flex justify-center m-5">
@@ -165,12 +165,12 @@
                                             <button matTooltip="{{ 'DOCTYPE.edit' | translate }}" mat-icon-button
                                                     class="hover:text-green-400"
                                                     (click)="updateCustomField(item, 'inactive')">
-                                                <i class="fas fa-edit"></i>
+                                                <i class="fa-solid fa-edit"></i>
                                             </button>
                                             <button matTooltip="{{ 'GLOBAL.delete' | translate }}" mat-icon-button
                                                     class="hover:text-green-400"
                                                     (click)="deleteCustomField(item.id, 'inactive')">
-                                                <i class="fas fa-trash"></i>
+                                                <i class="fa-solid fa-trash"></i>
                                             </button>
                                         </div>
                                     </div>
@@ -198,12 +198,12 @@
                                             <button matTooltip="{{ 'DOCTYPE.edit' | translate }}" mat-icon-button
                                                     class="hover:text-green-400"
                                                     (click)="updateCustomField(item, 'active')">
-                                                <i class="fas fa-edit"></i>
+                                                <i class="fa-solid fa-edit"></i>
                                             </button>
                                             <button matTooltip="{{ 'GLOBAL.delete' | translate }}" mat-icon-button
                                                     class="hover:text-green-400"
                                                     (click)="deleteCustomField(item.id, 'active')">
-                                                <i class="fas fa-trash"></i>
+                                                <i class="fa-solid fa-trash"></i>
                                             </button>
                                         </div>
                                     </div>
