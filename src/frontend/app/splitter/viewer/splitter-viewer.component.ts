@@ -95,6 +95,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     batchMetadataValues         : any           = {};
     documentsForms              : any[]         = [];
     batches                     : Batch[]       = [];
+    status                      : any[]         = [];
     deletedPagesIds             : number[]      = [];
     rotatedPages                : any[]         = [];
     movedPages                  : any[]         = [];
@@ -162,6 +163,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 this.currentBatch = {
                     id                  : data.batches[0]['id'],
                     formId              : data.batches[0]['form_id'],
+                    status              : data.batches[0]['status'],
                     customFieldsValues  : data.batches[0]['data'].hasOwnProperty('custom_fields') ? data.batches[0]['data']['custom_fields'] : {},
                     selectedPagesCount  : 0,
                     maxSplitIndex       : 0,
@@ -170,6 +172,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                         displayOrder    : -1,
                     }
                 };
+                this.loadStatus();
                 this.loadFormFields();
                 this.loadDocuments();
                 this.loadDefaultDocType();
@@ -183,6 +186,25 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 return of(false);
             })
         ).subscribe();
+    }
+
+    getStatusLabel(statusId: string){
+        const statusFound = this.status.find(status => status.id === statusId);
+        return statusFound ? statusFound.label: undefined;
+    }
+
+    loadStatus(): void{
+        this.http.get(API_URL + '/ws/status/list?module=splitter', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.status = data.status;
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+        this.loadBatches();
     }
 
     loadOutputsData(): void {

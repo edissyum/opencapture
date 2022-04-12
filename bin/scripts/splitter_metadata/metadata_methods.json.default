@@ -11,9 +11,9 @@
       "label"           : "Référentiel depuis Alfresco",
       "script"          : "load_referential.py",
       "method"          : "load_referential",
-      "ws_url"          : "http://localhost:3000/alfresco/s/org/cd46/pmi/getReferentiel",
-      "user"            : "opencapture",
-      "password"        : "opencapture",
+      "ws_url"          : "",
+      "user"            : "",
+      "password"        : "",
       "referentialMode" : 1
     }
   ]

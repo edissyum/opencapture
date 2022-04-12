@@ -57,11 +57,7 @@ def split(splitter, pages):
     :param pages: pages list
     :return: N/A
     """
-    doctype_value = None
-    metadata_1 = None
-    metadata_2 = None
-    metadata_3 = None
-
+    maarch_value = None
     for index, path in pages:
         separator_type = None
         is_separator = list(filter(lambda separator: int(separator['num']) + 1 == int(index),
@@ -71,40 +67,24 @@ def split(splitter, pages):
             splitter.log.info("QR Code in page " + str(index) + " : " + str(qr_code))
 
             """
-                Open-Capture separator
+                Maarch separator (MAARCH_ is a Maarch prefix)
             """
-            if splitter.doc_start in qr_code:
+            if 'MAARCH_' in qr_code and '|' not in qr_code:
+                maarch_value = qr_code
                 separator_type = splitter.doc_start
-                if len(qr_code.split('|')) > 1:
-                    doctype_value = qr_code.split("|")[1] if qr_code.split("|")[1] else None
-                    if len(qr_code.split('|')) > 2:
-                        metadata_1 = qr_code.split("|")[2] if qr_code.split("|")[2] else None
-                        if len(qr_code.split('|')) > 3:
-                            metadata_2 = qr_code.split("|")[3] if qr_code.split("|")[3] else None
-                            if len(qr_code.split('|')) > 4:
-                                metadata_3 = qr_code.split("|")[4] if qr_code.split("|")[4] else None
-                            else:
-                                metadata_3 = None
-                        else:
-                            metadata_2 = None
-                    else:
-                        metadata_1 = None
-                else:
-                    doctype_value = None
-
-            elif splitter.bundle_start in qr_code:
-                separator_type = splitter.bundle_start
-                doctype_value = None
+            else:
+                if splitter.bundle_start in qr_code:
+                    separator_type = splitter.bundle_start
 
             splitter.log.info("Code QR in page " + str(index) + " : " + qr_code)
 
         splitter.qr_pages.append({
             'source_page': index,
             'separator_type': separator_type,
-            'doctype_value': doctype_value,
-            'maarch_value': None,
-            'metadata_1': metadata_1,
-            'metadata_2': metadata_2,
-            'metadata_3': metadata_3,
+            'doctype_value': None,
+            'maarch_value': maarch_value,
+            'metadata_1': None,
+            'metadata_2': None,
+            'metadata_3': None,
             'path': path,
         })

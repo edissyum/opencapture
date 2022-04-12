@@ -54,7 +54,7 @@
                 <mat-expansion-panel class="my-10 bg-gray-20" [expanded]="true" (opened)="batchMetadataOpenState = true"
                                      (closed)="batchMetadataOpenState = false" #batchMetadata>
                     <mat-expansion-panel-header>
-                        <mat-panel-title>
+                        <mat-panel-title class="w-full">
                             <span>
                                 {{ 'SPLITTER.batch_metadata' | translate }}
                             </span>
@@ -66,9 +66,16 @@
                                     {{ 'SPLITTER.auto_complete' | translate }}
                                 </mat-slide-toggle>
                             </div>
-                            <span class="text-gray-400 absolute right-12">
-                                {{ 'SPLITTER.identifier' | translate }} : {{ currentBatch.id }}
-                            </span>
+                            <div class="text-gray-400 absolute right-12 divide-x-2">
+                                <span class="mx-2" title="{{ 'HEADER.status' | translate }}">
+                                    <i class="fa-solid fa-flag"></i>
+                                    {{ getStatusLabel(currentBatch.status) }}
+                                </span>
+                                <span>
+                                    <i class="fa-solid fa-pipe"></i>
+                                    {{ 'SPLITTER.identifier' | translate }} : {{ currentBatch.id }}
+                                </span>
+                            </div>
                         </mat-panel-title>
                     </mat-expansion-panel-header>
                     <div class="text-gray-400 text-center w-full" *ngIf="fieldsCategories['batch_metadata'].length === 0">
@@ -267,74 +274,81 @@
                                      ''"
                                      [src]="page['thumbnail']"
                                      title="{{ 'SPLITTER.moveToAnotherDoc' | translate }}"
-                                     alt="Open-Capture Splitter image">
+                                     alt="Open-Capture Splitter image"/>
                             </div>
                         </div>
                     </mat-card-content>
                 </mat-card>
             </div>
             <mat-card class="splitter-tools divide-x divide-green-500 border-gray-300 py-0">
-                <mat-card-content style="display: block; overflow: auto;">
-                    <span class="absolute top-2 left-4 text-gray-500">
-                        {{ currentBatch.selectedPagesCount }} {{ 'SPLITTER.selected_pages' | translate }}
-                    </span>
-                    <button mat-button (click)="deleteSelectedPages()" class="btn-icon inline-block"
-                            title="{{ 'SPLITTER.delete_selected_pages' | translate }}">
-                        <i class="fas fa-trash-alt fa-lg"></i>
-                    </button>
-                    <button mat-button (click)="setAllPagesTo(true)" class="btn-icon btn-splitter-check inline-block"
-                            title="{{ 'SPLITTER.select_all' | translate }}">
-                        <i class="fas fa-check-circle fa-lg"></i>
-                    </button>
-                    <button mat-button (click)="setAllPagesTo(false)"
-                            class="btn-icon border-r-2 border-black inline-block"
-                            title="{{ 'SPLITTER.unselect_all' | translate }}">
-                        <i class="fas fa-ban fa-lg"></i>
-                    </button>
-                    <button mat-button (click)="rotateSelectedPages()"
-                            class="btn-icon btn-rotate border-r-10 border-gray-400 inline-block"
-                            title="{{ 'SPLITTER.rotatePage' | translate }}">
-                        <i class="fas fa-rotate-right fa-lg"></i>
-                    </button>
-                    <button mat-button class="inline-block my-4"
-                            (click)="createDocument()"
-                            title="{{ 'SPLITTER.add_document' | translate }}">
-                        <i class="fas fa-plus-circle fa-lg" *ngIf="!addDocumentLoading"></i>
-                        <i class="fas fa-circle-notch fa-spin fa-lg my-4" *ngIf="addDocumentLoading"></i>
-                    </button>
-                    <mat-form-field class="inline-block pt-6 top-1">
-                        <mat-label>{{ 'SPLITTER.send_to' | translate }}</mat-label>
-                        <mat-select [(ngModel)]="toolSelectedOption" matNativeControl>
-                            <mat-option *ngFor="let document of documents;" [value]="document['id']">
-                                {{document['documentTypeName']}}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                    <button (click)="sendSelectedPages()" mat-button class="btn-icon border-r-2 border-black inline-block"
+                <mat-card-content style="overflow: auto;" class="grid grid-rows-1 grid-cols-3">
+                    <div class="absolute top-2 left-8 text-gray-500 bg-white px-2"
+                         title="{{ currentBatch.selectedPagesCount }} {{ 'SPLITTER.selected_pages' | translate }}">
+                        <span class="font-medium mx-1">{{ currentBatch.selectedPagesCount }}</span>
+                        <i class="fa-solid fa-file"></i>
+                    </div>
+                    <div class="border border-gray-600 rounded-lg flex justify-center h-20 col-span-2 py-4 my-4 overflow-x-auto overflow-y-hidden">
+                        <button mat-button (click)="deleteSelectedPages()" class="btn-icon w-8"
+                                title="{{ 'SPLITTER.delete_selected_pages' | translate }}"
+                                [disabled]="currentBatch.selectedPagesCount === 0">
+                            <i class="fas fa-trash-alt fa-lg"></i>
+                        </button>
+                        <button mat-button (click)="setAllPagesTo(true)" class="btn-icon w-8"
+                                title="{{ 'SPLITTER.select_all' | translate }}">
+                            <i class="fas fa-check-circle fa-lg"></i>
+                        </button>
+                        <button mat-button (click)="setAllPagesTo(false)"
+                                class="btn-icon border-r-2 border-black w-8"
+                                title="{{ 'SPLITTER.unselect_all' | translate }}">
+                            <i class="fas fa-ban fa-lg"></i>
+                        </button>
+                        <button mat-button (click)="rotateSelectedPages()"
+                                [disabled]="currentBatch.selectedPagesCount === 0"
+                                class="btn-icon btn-rotate border-r-10 border-gray-400 w-8"
+                                title="{{ 'SPLITTER.rotatePage' | translate }}">
+                            <i class="fas fa-rotate-right fa-lg"></i>
+                        </button>
+                        <button mat-button (click)="createDocument()"
+                                title="{{ 'SPLITTER.add_document' | translate }}">
+                            <i class="fas fa-plus-circle fa-lg" *ngIf="!addDocumentLoading"></i>
+                            <i class="fas fa-circle-notch fa-spin fa-lg my-4" *ngIf="addDocumentLoading"></i>
+                        </button>
+                        <mat-form-field class="-top-2">
+                            <mat-label>{{ 'SPLITTER.send_to' | translate }}</mat-label>
+                            <mat-select [(ngModel)]="toolSelectedOption" matNativeControl>
+                                <mat-option *ngFor="let document of documents;" [value]="document['id']">
+                                    {{document['documentTypeName']}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <button (click)="sendSelectedPages()" mat-button class="btn-icon w-8"
                             title="{{ 'SPLITTER.send' | translate }}">
-                        <i class="fa fa-paper-plane fa-lg"></i>
-                    </button>
-                    <button (click)="saveInfo()" mat-button class="inline-block"
-                            title="{{ 'SPLITTER.save' | translate }}" [ngClass]="{'text-green-400': isDataEdited}">
-                        <i class="fa fa-save fa-lg" *ngIf="!saveInfosLoading"></i>
-                        <i class="fas fa-circle-notch fa-spin fa-lg my-4" *ngIf="saveInfosLoading"></i>
-                    </button>
-                    <div class="inline-block w-auto float-right py-8 mx-4 grid-rows-2">
-                        <div>
-                            <button mat-button (click)="validateWithConfirmation()" [disabled]="outputs.length === 0"
-                                    class="btn-validate-splitter rounded-full bg-green-400 text-white
-                                            text-sm font-medium transition duration-300 ml-2 float-right"
+                            <i class="fa fa-paper-plane fa-lg"></i>
+                        </button>
+                        <button (click)="saveInfo()" mat-button class="w-8"
+                                title="{{ 'SPLITTER.save' | translate }}" [ngClass]="{'text-green-400': isDataEdited}">
+                            <i class="fa fa-save fa-lg" *ngIf="!saveInfosLoading"></i>
+                            <i class="fas fa-circle-notch fa-spin fa-lg my-4" *ngIf="saveInfosLoading"></i>
+                        </button>
+                    </div>
+                    <div class="grid grid-rows-4 py-2">
+                        <div class="row-span-3 overflow-y-auto">
+                            <button mat-button (click)="validateWithConfirmation()"
+                                    [disabled]="outputs.length === 0 || currentBatch.status !== 'NEW' || documents.length === 0"
+                                    [ngClass]="{'cursor-not-allowed': outputs.length === 0 || currentBatch.status !== 'NEW' || documents.length === 0}"
+                                    class="btn-validate-splitter rounded-full bg-green-400 text-white text-sm
+                                    font-medium transition duration-300 mt-2 ml-2 float-right top-4"
                                     style="border-right: 1px dotted white !important;">
                                 {{ 'GLOBAL.validate' | translate }}
                             </button>
                             <button mat-button class="btn-validate-splitter text-gray-500 bg-gray-300 rounded-full
-                                text-sm font-medium transition duration-300 float-right" (click)="cancel()">
+                                text-sm font-medium transition duration-300 mt-2 float-right top-4" (click)="cancel()">
                                 {{ 'GLOBAL.quit' | translate }}
                             </button>
-                            <div class="top-4 text-center text-gray-400">
-                                <span>{{outputs.join(', ')}}</span>
-                                <span class="text-red-500" *ngIf="outputs.length === 0">{{ 'OUTPUT.no_output_configured' | translate }}</span>
-                            </div>
+                        </div>
+                        <div class="text-right text-gray-400">
+                            <span>{{outputs.join(', ')}}</span>
+                            <span class="text-red-500" *ngIf="outputs.length === 0">{{ 'OUTPUT.no_output_configured' | translate }}</span>
                         </div>
                     </div>
                 </mat-card-content>
