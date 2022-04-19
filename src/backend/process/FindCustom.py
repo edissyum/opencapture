@@ -31,14 +31,14 @@ class FindCustom:
         self.docservers = docservers
         self.supplier = supplier
         self.database = database
-        self.OCRErrorsTable = ocr.OCRErrorsTable
+        self.ocr_errors_table = ocr.ocr_errors_table
 
     def process(self, data):
         for line in self.text:
             line = line.content
             if data['type'] == 'number':
-                for item in self.OCRErrorsTable['NUMBERS']:
-                    pattern = r'[%s]' % self.OCRErrorsTable['NUMBERS'][item]
+                for item in self.ocr_errors_table['NUMBERS']:
+                    pattern = r'[%s]' % self.ocr_errors_table['NUMBERS'][item]
                     line = re.sub(pattern, item, line)
             else:
                 line = line.upper()
