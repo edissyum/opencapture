@@ -70,21 +70,6 @@ fi
 
 ####################
 # Install packages
-if [[ "$OS" == 'Debian' && "$VER" == *'9'* ]]; then
-    su -c 'cat > /etc/apt/sources.list.d/stretch-backports.list << EOF
-deb http://http.debian.net/debian stretch-backports main contrib non-free
-EOF'
-    apt update
-    apt install -y -t stretch-backports tesseract-ocr
-    apt install -y -t stretch-backports tesseract-ocr-fra
-    apt install -y -t stretch-backports tesseract-ocr-eng
-elif [[ "$OS" == 'Ubuntu' || "$OS" == 'Debian' && ($VER == *'10'* || $VER == *'11'*) ]]; then
-    apt update
-    apt install -y tesseract-ocr
-    apt install -y tesseract-ocr-fra
-    apt install -y tesseract-ocr-eng
-fi
-
 xargs -a apt-requirements.txt apt install -y
 python3 -m pip install --upgrade setuptools
 python3 -m pip install --upgrade pip

@@ -32,6 +32,9 @@ user=$(who am i | awk '{print $1}')
 # Backup all the Open-Capture path
 cp -r "$OCForInvoicesPath" "$backupPath"
 
+# Retrieve the secret key
+SECRET_KEY=$(grep "SECRET_KEY=" $OCForInvoicesPath/src/backend/__init__.py | awk -F"=" '{ print $2 }' | cut -d \' -f2)
+
 # Retrieve the last tags from gitlab
 cd "$OCForInvoicesPath" || exit 1
 git config --global user.email "update@ocforinvoices"
@@ -53,6 +56,9 @@ pip3 install --upgrade -r pip-requirements.txt
 
 cd $OCForInvoicesPath || exit 2
 find . -name ".gitkeep" -delete
+
+# Put secret key
+sed -i "s/§§SECRET§§/$SECRET_KEY/g" "/var/www/html/opencaptureforinvoices/src/backend/__init__.py"
 
 # Fix rights on folder and files
 chmod -R 775 $OCForInvoicesPath

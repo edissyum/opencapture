@@ -29,8 +29,8 @@ import xml.etree.ElementTree as Et
 from zeep import Client, exceptions
 from src.backend.main import launch
 from flask import current_app, Response
-from src.backend.main import create_classes_from_current_config
 from src.backend.import_models import verifier, accounts
+from src.backend.main import create_classes_from_current_config
 from src.backend.import_classes import _Files, _MaarchWebServices
 
 
@@ -41,6 +41,7 @@ def handle_uploaded_file(files, input_id):
         filename = _Files.save_uploaded_file(f, path)
         launch({
             'file': filename,
+            'languages': current_app.config['LANGUAGES'],
             'config': current_app.config['CONFIG_FILE'],
             'input_id': input_id
         })
