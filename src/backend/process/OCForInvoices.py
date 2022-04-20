@@ -137,7 +137,7 @@ def update_typo_database(database, vat_number, typo, log, config, docservers):
     })
 
 
-def process(args, file, log, config, files, ocr, regex, database, typo, docservers, configurations):
+def process(args, file, log, config, files, ocr, regex, database, typo, docservers, configurations, languages):
     log.info('Processing file : ' + file)
 
     datas = {}
@@ -256,7 +256,7 @@ def process(args, file, log, config, files, ocr, regex, database, typo, docserve
         text_custom = ocr.text
         page_for_date = 1
 
-    date_class = FindDate(text_custom, log, regex, configurations, files, ocr, supplier, typo, page_for_date, database, file, docservers)
+    date_class = FindDate(text_custom, log, regex, configurations, files, ocr, supplier, typo, page_for_date, database, file, docservers, languages)
     date = date_class.run()
 
     if date:

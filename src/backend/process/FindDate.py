@@ -18,15 +18,15 @@
 import re
 import json
 from datetime import datetime
-from flask import current_app
 from ..functions import search_by_positions, search_custom_positions
 
 
 class FindDate:
-    def __init__(self, text, log, regex, configurations, files, ocr, supplier, typo, nb_pages, database, file, docservers):
+    def __init__(self, text, log, regex, configurations, files, ocr, supplier, typo, nb_pages, database, file, docservers, languages):
         self.date = ''
         self.text = text
         self.log = log
+        self.languages = languages
         self.configurations = configurations
         self.docservers = docservers
         self.regex = regex
@@ -60,11 +60,10 @@ class FindDate:
             try:
                 # Fix to handle date with 2 digits year
                 length_of_year = len(date.split(' ')[2])
-                languages = current_app.config['LANGUAGES']
                 date_format = "%d %m %Y"
-                for _l in languages:
-                    if self.configurations['locale'] == languages[_l]['lang_code']:
-                        date_format = languages[_l]['date_format']
+                for _l in self.languages:
+                    if self.configurations['locale'] == self.languages[_l]['lang_code']:
+                        date_format = self.languages[_l]['date_format']
 
                 if length_of_year == 2:
                     date_format = date_format.replace('%Y', '%y')

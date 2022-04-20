@@ -21,10 +21,8 @@ import time
 import tempfile
 from kuyruk import Kuyruk
 from flask import current_app
-
 from .functions import recursive_delete, get_custom_array
-from .import_classes import _Database, _PyTesseract, _Files, _Log, _Config, _SeparatorQR, _Spreadsheet, \
-    _SMTP, _Mail
+from .import_classes import _Database, _PyTesseract, _Files, _Log, _Config, _SeparatorQR, _Spreadsheet, _SMTP, _Mail
 
 custom_array = get_custom_array()
 
@@ -218,6 +216,11 @@ def launch(args):
     filename = tempfile.NamedTemporaryFile(dir=tmp_folder).name
     files = _Files(filename, log, docservers, configurations, regex)
 
+    if 'languages' in args:
+        languages = args['languages']
+    else:
+        languages = current_app.config['LANGUAGES']
+
     remove_blank_pages = False
     splitter_method = False
     if 'input_id' in args:
@@ -266,7 +269,7 @@ def launch(args):
                 #     typo = get_typo(config, path + file, log)
 
                 if check_file(files, path + file, log, docservers) is not False:
-                    res = OCForInvoices_process.process(args, path + file, log, config, files, ocr, regex, database, typo, docservers, configurations)
+                    res = OCForInvoices_process.process(args, path + file, log, config, files, ocr, regex, database, typo, docservers, configurations, languages)
                     if not res:
                         mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'], args['msg'], config, docservers)
                         log.error('Error while processing e-mail', False)
@@ -277,7 +280,7 @@ def launch(args):
                 #     typo = get_typo(config, file, log)
 
                 if check_file(files, file, log, docservers) is not False:
-                    res = OCForInvoices_process.process(args, file, log, config, files, ocr, regex, database, typo, docservers, configurations)
+                    res = OCForInvoices_process.process(args, file, log, config, files, ocr, regex, database, typo, docservers, configurations, languages)
                     if not res:
                         mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'], args['msg'], config, docservers)
                         log.error('Error while processing e-mail', False)
@@ -287,7 +290,7 @@ def launch(args):
             #     typo = get_typo(config, path, log)
 
             if check_file(files, path, log, docservers) is not False:
-                res = OCForInvoices_process.process(args, path, log, config, files, ocr, regex, database, typo, docservers, configurations)
+                res = OCForInvoices_process.process(args, path, log, config, files, ocr, regex, database, typo, docservers, configurations, languages)
                 if not res:
                     mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'], args['msg'], config, docservers)
                     log.error('Error while processing e-mail', False)

@@ -20,9 +20,10 @@ import sys
 import argparse
 import tempfile
 import datetime
-from src.backend.main import launch as launch_verifier, create_classes
-from src.backend.main_splitter import launch as launch_splitter
+from src.backend import app
 from src.backend.import_classes import _Log, _Mail, _Config
+from src.backend.main_splitter import launch as launch_splitter
+from src.backend.main import launch as launch_verifier, create_classes
 
 
 def str2bool(value):
@@ -146,25 +147,26 @@ if check:
                 for attachment in ret['attachments']:
                     if attachment['format'].lower() == 'pdf':
                         if not isSplitter:
-                            launch_verifier({
-                                'cpt': str(cpt),
-                                'isMail': True,
-                                'process': process,
-                                'config': args['config'],
-                                'batch_path': batch_path,
-                                'form_id': verifierFormId,
-                                'file': attachment['file'],
-                                'customer_id': verifierCustomerId,
-                                'config_mail': args['config_mail'],
-                                'log': batch_path + '/' + date_batch + '.log',
-                                'nb_of_attachments': str(len(ret['attachments'])),
-                                'error_path': path_without_time + '/_ERROR/' + process + '/' + year + month + day,
-                                'msg': {
-                                    'uid': msg.uid,
-                                    'subject': msg.subject,
-                                    'date': msg.date.strftime('%d/%m/%Y %H:%M:%S')
-                                },
-                            })
+                            with app.app_context():
+                                launch_verifier({
+                                    'cpt': str(cpt),
+                                    'isMail': True,
+                                    'process': process,
+                                    'config': args['config'],
+                                    'batch_path': batch_path,
+                                    'form_id': verifierFormId,
+                                    'file': attachment['file'],
+                                    'customer_id': verifierCustomerId,
+                                    'config_mail': args['config_mail'],
+                                    'log': batch_path + '/' + date_batch + '.log',
+                                    'nb_of_attachments': str(len(ret['attachments'])),
+                                    'error_path': path_without_time + '/_ERROR/' + process + '/' + year + month + day,
+                                    'msg': {
+                                        'uid': msg.uid,
+                                        'subject': msg.subject,
+                                        'date': msg.date.strftime('%d/%m/%Y %H:%M:%S')
+                                    },
+                                })
                         else:
                             launch_splitter({
                                 'isMail': True,
