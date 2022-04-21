@@ -639,6 +639,10 @@ export class VerifierViewerComponent implements OnInit {
         for (const category in this.form) {
             this.form[category].forEach((input: any) => {
                 if (input.id.trim() === inputId.trim()) {
+                    if (input.format === 'number_int' || input.format === 'number_float') {
+                        value = value.replace(/[A-Za-z€%$]/g,'');
+                    }
+
                     if (input.type === 'date') {
                         const format = moment().localeData().longDateFormat('L');
                         value = moment(value, format);
@@ -718,6 +722,7 @@ export class VerifierViewerComponent implements OnInit {
             const oldData = data;
             if (fieldId) {
                 const field = this.getField(fieldId);
+                if (field.unit === 'addresses' || field.unit === 'supplier') showNotif = false;
                 if (field.control.errors || this.invoice.datas[fieldId] === data) return false;
                 data = {[fieldId]: data};
             }

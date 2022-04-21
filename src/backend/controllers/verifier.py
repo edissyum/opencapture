@@ -29,6 +29,7 @@ import xml.etree.ElementTree as Et
 from zeep import Client, exceptions
 from src.backend.main import launch
 from flask import current_app, Response
+from src.backend.import_controllers import user
 from src.backend.import_models import verifier, accounts
 from src.backend.main import create_classes_from_current_config
 from src.backend.import_classes import _Files, _MaarchWebServices
@@ -692,11 +693,12 @@ def verify_vat_number(vat_number):
         return text, 201
 
 
-def get_totals(status):
+def get_totals(status, user_id):
     totals = {}
-    totals['today'], error = verifier.get_totals({'time': 'today', 'status': status})
-    totals['yesterday'], error = verifier.get_totals({'time': 'yesterday', 'status': status})
-    totals['older'], error = verifier.get_totals({'time': 'older', 'status': status})
+    allowed_customers, _ = user.get_customers_by_user_id(user_id)
+    totals['today'], error = verifier.get_totals({'time': 'today', 'status': status, 'allowedCustomers': allowed_customers})
+    totals['yesterday'], error = verifier.get_totals({'time': 'yesterday', 'status': status, 'allowedCustomers': allowed_customers})
+    totals['older'], error = verifier.get_totals({'time': 'older', 'status': status, 'allowedCustomers': allowed_customers})
     if error is None:
         return totals, 200
     else:

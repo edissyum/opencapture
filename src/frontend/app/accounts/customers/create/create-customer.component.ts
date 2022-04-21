@@ -31,6 +31,7 @@ import {API_URL} from "../../../env";
 import {catchError, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {HistoryService} from "../../../../services/history.service";
+import {Country} from "@angular-material-extensions/select-country";
 
 @Component({
     selector: 'app-create',
@@ -110,11 +111,19 @@ export class CreateCustomerComponent implements OnInit {
         {
             id: 'country',
             label: marker('ADDRESSES.country'),
-            type: 'text',
+            type: 'country',
             control: new FormControl(),
             required: true,
         },
     ];
+
+    defaultValue: Country = {
+        name: 'France',
+        alpha2Code: 'FR',
+        alpha3Code: 'FRA',
+        numericCode: '250',
+        callingCode: '+33'
+    };
 
     constructor(
         public router: Router,
@@ -133,6 +142,14 @@ export class CreateCustomerComponent implements OnInit {
 
     ngOnInit(): void {
         this.loading = false;
+    }
+
+    onCountrySelected(country: Country) {
+        this.addressForm.forEach((element: any) => {
+            if (element.id === 'country') {
+                element.control.setValue(country['name']);
+            }
+        });
     }
 
     isValidForm() {

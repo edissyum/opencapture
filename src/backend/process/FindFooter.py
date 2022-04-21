@@ -327,11 +327,10 @@ class FindFooter:
                 total = "%.2f" % (float(total_ht[0]) + (float(total_ht[0]) * float(vat_rate[0]) / 100))
             except (TypeError, ValueError):
                 return False
-
             if float(total) == float(total_ttc[0]):
                 self.log.info('Footer informations found : [TOTAL : ' + str(total) + '] - [HT : ' + str(total_ht[0]) + '] - [VATRATE : ' + str(vat_rate[0]) + ']')
                 return [total_ht, total_ttc, vat_rate, self.nbPage, ["%.2f" % float(float(total_ht[0]) * (float(vat_rate[0]) / 100))]]
-            elif float(total_ttc[0]) == float("%.2f" % float(vat_amount + total_ht[0])):
+            elif float(total_ttc[0]) == float("%.2f" % float(float(vat_amount) + float(total_ht[0]))):
                 self.log.info('Footer informations found : [TOTAL : ' + str(total) + '] - [HT : ' + str(total_ht[0]) + '] - [VATRATE : ' + str(vat_rate[0]) + ']')
                 return [total_ht, total_ttc, vat_rate, self.nbPage, ["%.2f" % float(float(total_ht[0]) * (float(vat_rate[0]) / 100))]]
             else:

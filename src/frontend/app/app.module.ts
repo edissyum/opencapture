@@ -103,6 +103,7 @@ import { DocserversComponent } from './settings/general/docservers/docservers.co
 import { RegexComponent } from './settings/general/regex/regex.component';
 import { HintServiceComponent } from "../services/hint/hint.service";
 import { Error500Component } from './errors/error-500/error-500.component';
+import { MatSelectCountryModule } from "@angular-material-extensions/select-country";
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -197,6 +198,7 @@ export function createTranslateLoader(http: HttpClient) {
         NgClickOutsideModule,
         DragDropModule,
         NgxMatSelectSearchModule,
+        MatSelectCountryModule.forRoot('fr')
     ],
     providers: [
         Title,

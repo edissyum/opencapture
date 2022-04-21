@@ -57,7 +57,7 @@ def login(username, password, lang):
         encoded_token = encode_auth_token(user_info['id'])
 
         returned_user = user.get_user_by_id({
-            'select': ['id', 'username', 'firstname', 'lastname', 'role', 'status', 'creation_date', 'enabled'],
+            'select': ['users.id', 'username', 'firstname', 'lastname', 'role', 'users.status', 'creation_date', 'users.enabled'],
             'user_id': user_info['id']
         })[0]
 
@@ -95,7 +95,7 @@ def token_required(view):
                 return jsonify({"errors": gettext("JWT_ERROR"), "message": str(e)}), 500
 
             user_info, error = user.get_user_by_id({
-                'select': ['id'],
+                'select': ['users.id'],
                 'user_id': token['sub']
             })
 

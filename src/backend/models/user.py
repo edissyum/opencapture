@@ -104,8 +104,9 @@ def get_user_by_id(args):
     error = None
     user = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
-        'table': ['users'],
-        'where': ['id = %s'],
+        'table': ['users', 'roles'],
+        'left_join': ['users.role = roles.id'],
+        'where': ['users.id = %s'],
         'data': [args['user_id']]
     })
 

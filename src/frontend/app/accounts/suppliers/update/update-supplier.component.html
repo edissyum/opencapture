@@ -33,11 +33,16 @@
                     </mat-form-field>
                 </ng-container>
                 <ng-container *ngFor="let field of addressForm">
-                    <mat-form-field [class.col-span-2]="field.id === 'address1'" class="block" *ngIf="field.type !== 'select'">
+                    <mat-form-field [class.col-span-2]="field.id === 'address1'" class="block" *ngIf="field.type !== 'country'">
                         <mat-label>{{ field.label | translate }}</mat-label>
                         <input matInput [formControl]="field.control" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field.required">
                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessageAddress(field.id) }}</mat-error>
                     </mat-form-field>
+                    <mat-select-country class="w-full" *ngIf="field.type === 'country'"
+                                        [label]="field.label | translate"
+                                        [value]="defaultValue"
+                                        (onCountrySelected)="onCountrySelected($event)">
+                    </mat-select-country>
                 </ng-container>
                 <div class="button col-span-6">
                     <button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300" type="submit" mat-button>
