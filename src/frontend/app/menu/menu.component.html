@@ -1,5 +1,5 @@
 <nav style="background: #f8f9fa" class="shadow-md relative z-30">
-    <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+    <div class="mx-auto px-2 sm:px-6 lg:px-8" style="max-width: 100rem">
         <div class="relative flex items-center justify-between h-16 z-50">
             <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
                 <!-- Mobile menu button-->
@@ -20,7 +20,7 @@
                 <div class="flex-shrink-0 flex items-center">
                     <img class="hidden lg:block h-10 w-auto" [src]="this.image" alt="Open-Capture logo">
                 </div>
-                <div class="hidden sm:block sm:ml-6">
+                <div class="hidden sm:block sm:ml-3">
                     <div class="flex space-x-4">
                         <button mat-flat-button routerLink="/home" [routerLinkActive]="'bg-gray-900 text-green-400'"
                                 [class.text-gray-500]="!location.path().includes('/home')"
@@ -136,7 +136,7 @@
                         </mat-select>
                     </mat-form-field>
                 </div>
-                <div class="ml-12 relative">
+                <div class="ml-6 relative">
                     <span class="text-gray-600">
                         <b>{{ userService.user['lastname'] }}</b> {{ userService.user['firstname'] }} ({{ userService.user['username'] }})
                     </span>
