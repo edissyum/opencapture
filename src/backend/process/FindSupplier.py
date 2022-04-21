@@ -31,7 +31,7 @@ class FindSupplier:
         self.Files = files
         self.Database = database
         self.regex = regex
-        self.OCRErrorsTable = ocr.OCRErrorsTable
+        self.ocr_errors_table = ocr.ocr_errors_table
         self.found_first = True
         self.found_second = True
         self.found_third = True
@@ -71,8 +71,8 @@ class FindSupplier:
 
         for line in self.text:
             corrected_line = ''
-            for item in self.OCRErrorsTable['NUMBERS']:
-                pattern = r'[%s]' % self.OCRErrorsTable['NUMBERS'][item]
+            for item in self.ocr_errors_table['NUMBERS']:
+                pattern = r'[%s]' % self.ocr_errors_table['NUMBERS'][item]
                 if text_as_string:
                     content = line
                 else:

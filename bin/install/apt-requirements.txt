@@ -7,11 +7,14 @@ pkg-config
 imagemagick
 python3-pip
 poppler-utils
+tesseract-ocr
 python3-chardet
 rabbitmq-server
 libgl1-mesa-glx
 libtesseract-dev
 libleptonica-dev
+tesseract-ocr-fra
+tesseract-ocr-eng
 libmagickwand-dev
 python3-pyinotify
 libapache2-mod-wsgi-py3

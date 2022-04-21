@@ -18,6 +18,7 @@
 import os
 import sys
 import argparse
+from src.backend import app
 from src.backend.main import launch
 
 # construct the argument parse and parse the arguments
@@ -33,4 +34,5 @@ if args['file'] is None:
 if not os.path.exists(args['config']):
     sys.exit('Config file couldn\'t be found')
 
-launch(args)
+with app.app_context():
+    launch(args)
