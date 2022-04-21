@@ -123,12 +123,16 @@ def get_totals(args):
         select = ['COUNT(id) as older']
         where.append("to_char(register_date, 'YYYY-MM-DD') < to_char(TIMESTAMP 'yesterday', 'YYYY-MM-DD')")
 
+    if 'allowedCustomers' in args and args['allowedCustomers']:
+        where.append('customer_id IN (' + ','.join(map(str, args['allowedCustomers'])) + ')')
+
     total = _db.select({
         'select': select,
         'table': ['invoices'],
         'where': where,
         'data': data
     })[0]
+    print(total)
 
     if not total:
         error = gettext('GET_TOTALS_ERROR')

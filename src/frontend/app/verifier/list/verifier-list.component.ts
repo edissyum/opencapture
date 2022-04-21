@@ -209,22 +209,35 @@ export class VerifierListComponent implements OnInit {
                     children: []
                 });
                 this.allowedCustomers.push(0); // 0 is used if for some reasons no customer was recover by OC process
-                customers.forEach((customer: any) => {
-                    this.allowedCustomers.push(customer.id);
-                    this.TREE_DATA.push({
-                        name: customer.name,
-                        id: customer.id,
-                        parent_id: '',
-                        supplier_id: '',
-                        purchase_or_sale: '',
-                        display: true,
-                        count: 0,
-                        children: []
-                    });
-                });
-                this.loadInvoices();
+                this.http.get(API_URL + '/ws/users/getCustomersByUserId/' + this.userService.user.id, {headers: this.authService.headers}).pipe(
+                    tap((data: any) => {
+                        customers.forEach((customer: any) => {
+                            data.forEach((customer_id: any) => {
+                                if (customer_id === customer.id) {
+                                    this.allowedCustomers.push(customer.id);
+                                    this.TREE_DATA.push({
+                                        name: customer.name,
+                                        id: customer.id,
+                                        parent_id: '',
+                                        supplier_id: '',
+                                        purchase_or_sale: '',
+                                        display: true,
+                                        count: 0,
+                                        children: []
+                                    });
+                                }
+                            });
+                        });
+                        this.loadInvoices();
+                    }),
+                    finalize(() => this.loadingCustomers = false),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
             }),
-            finalize(() => this.loadingCustomers = false),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
@@ -239,7 +252,7 @@ export class VerifierListComponent implements OnInit {
         this.loading = true;
         this.loadingCustomers = true;
         this.invoices = [];
-        this.http.get(API_URL + '/ws/verifier/invoices/totals/' + this.currentStatus, {headers: this.authService.headers}).pipe(
+        this.http.get(API_URL + '/ws/verifier/invoices/totals/' + this.currentStatus + '/' + this.userService.user.id, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.totals = data.totals;
             }),
