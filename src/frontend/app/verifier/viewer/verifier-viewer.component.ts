@@ -722,6 +722,7 @@ export class VerifierViewerComponent implements OnInit {
             const oldData = data;
             if (fieldId) {
                 const field = this.getField(fieldId);
+                if (field.unit === 'addresses' || field.unit === 'supplier') showNotif = false;
                 if (field.control.errors || this.invoice.datas[fieldId] === data) return false;
                 data = {[fieldId]: data};
             }
