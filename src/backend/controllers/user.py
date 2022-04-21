@@ -95,7 +95,7 @@ def update_user(user_id, data):
     user_info, error = user.get_user_by_id({'user_id': user_id})
 
     if error is None:
-        if 'new_password' in data and 'old_password' in data and data['new_password'] and data['old_password'] and not check_password_hash(user_info[0]['password'], data['old_password']):
+        if 'password_check' in data and 'old_password' in data and data['password_check'] and data['old_password'] and not check_password_hash(user_info[0]['password'], data['old_password']):
             response = {
                 "errors": gettext('UPDATE_PROFILE'),
                 "message": gettext('ERROR_OLD_PASSWORD_NOT_MATCH')
@@ -108,9 +108,9 @@ def update_user(user_id, data):
             'role': data['role']
         }
 
-        if 'new_password' in data and data['new_password']:
+        if 'password_check' in data and data['password_check']:
             _set.update({
-                'password': generate_password_hash(data['new_password'])
+                'password': generate_password_hash(data['password_check'])
             })
 
         res, error = user.update_user({'set': _set, 'user_id': user_id})
