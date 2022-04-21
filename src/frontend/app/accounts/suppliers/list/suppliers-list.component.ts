@@ -42,7 +42,6 @@ import {HistoryService} from "../../../../services/history.service";
 })
 export class SuppliersListComponent implements OnInit {
     columnsToDisplay : string[]    = ['id', 'name', 'vat_number', 'siret', 'siren', 'iban', 'form_label', 'actions'];
-    deletePositionSrc: string      = 'assets/imgs/map-marker-alt-solid-del.svg';
     headers          : HttpHeaders = this.authService.headers;
     loading          : boolean     = true;
     allSuppliers     : any         = [];
