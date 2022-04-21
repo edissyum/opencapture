@@ -162,7 +162,6 @@ class Database:
 
     def set_sequence_value(self, name, value):
         query = f"SELECT setval('{name}', {value})"
-        print(query)
         cursor = self.conn.cursor()
         try:
             cursor.execute(query, {})

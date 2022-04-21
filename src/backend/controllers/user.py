@@ -16,7 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 from flask_babel import gettext
-from src.backend.import_models import user
+from src.backend.import_models import user, accounts
 from src.backend.main import create_classes_from_current_config
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -53,7 +53,7 @@ def get_users_full(args):
 
 
 def get_user_by_id(user_id, get_password=False):
-    _select = ['id', 'username', 'firstname', 'lastname', 'role', 'status', 'creation_date', 'enabled']
+    _select = ['users.id', 'username', 'firstname', 'lastname', 'role', 'users.status', 'creation_date', 'users.enabled']
     if get_password:
         _select.append('password')
 
@@ -74,12 +74,25 @@ def get_user_by_id(user_id, get_password=False):
 
 def get_customers_by_user_id(user_id):
     user_info, error = user.get_user_by_id({'user_id': user_id})
-
     if error is None:
-        customers, error = user.get_customers_by_user_id({'user_id': user_id})
+        if user_info['label_short'] == 'superadmin':
+            customers = accounts.retrieve_customers({
+                'select': ['id'],
+                'where': ['status <> %s'],
+                'data': ['DEL'],
+            })
+        else:
+            customers, error = user.get_customers_by_user_id({'user_id': user_id})
+
         if error is None:
-            if type(eval(customers['customers_id']['data'])) == list:
-                customers = eval(customers['customers_id']['data'])
+            if user_info['label_short'] == 'superadmin':
+                _customers = []
+                for _c in customers:
+                    _customers.append(_c['id'])
+                customers = _customers
+            else:
+                if type(eval(customers['customers_id']['data'])) == list:
+                    customers = eval(customers['customers_id']['data'])
         return customers, 200
     else:
         response = {
@@ -95,7 +108,7 @@ def update_user(user_id, data):
     user_info, error = user.get_user_by_id({'user_id': user_id})
 
     if error is None:
-        if 'new_password' in data and 'old_password' in data and data['new_password'] and data['old_password'] and not check_password_hash(user_info[0]['password'], data['old_password']):
+        if 'password_check' in data and 'old_password' in data and data['password_check'] and data['old_password'] and not check_password_hash(user_info[0]['password'], data['old_password']):
             response = {
                 "errors": gettext('UPDATE_PROFILE'),
                 "message": gettext('ERROR_OLD_PASSWORD_NOT_MATCH')
@@ -108,9 +121,9 @@ def update_user(user_id, data):
             'role': data['role']
         }
 
-        if 'new_password' in data and data['new_password']:
+        if 'password_check' in data and data['password_check']:
             _set.update({
-                'password': generate_password_hash(data['new_password'])
+                'password': generate_password_hash(data['password_check'])
             })
 
         res, error = user.update_user({'set': _set, 'user_id': user_id})

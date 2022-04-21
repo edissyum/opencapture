@@ -31,6 +31,7 @@ import {API_URL} from "../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {HistoryService} from "../../../../services/history.service";
+import {Country} from "@angular-material-extensions/select-country";
 
 @Component({
     selector: 'app-update',
@@ -127,11 +128,19 @@ export class UpdateSupplierComponent implements OnInit {
         {
             id: 'country',
             label: marker('ADDRESSES.country'),
-            type: 'text',
-            control: new FormControl(),
+            type: 'country',
+            control: new FormControl('France'),
             required: true,
         },
     ];
+
+    defaultValue: Country = {
+        name: 'France',
+        alpha2Code: '',
+        alpha3Code: '',
+        numericCode: '',
+        callingCode: ''
+    };
 
     constructor(
         public router: Router,
@@ -176,6 +185,9 @@ export class UpdateSupplierComponent implements OnInit {
                                                         if (address.hasOwnProperty(field)) {
                                                             this.addressForm.forEach(element => {
                                                                 if (element.id === field) {
+                                                                    if (field === 'country') {
+                                                                        this.defaultValue.name = address[field];
+                                                                    }
                                                                     element.control.setValue(address[field]);
                                                                 }
                                                             });
@@ -237,6 +249,14 @@ export class UpdateSupplierComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
+    }
+
+    onCountrySelected(country: Country) {
+        this.addressForm.forEach((element: any) => {
+            if (element.id === 'country') {
+                element.control.setValue(country['name']);
+            }
+        });
     }
 
     isValidForm() {
