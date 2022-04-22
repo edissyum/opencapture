@@ -206,7 +206,7 @@ export class UpdateUserComponent implements OnInit {
                 }),
                 catchError((err: any) => {
                     console.debug(err);
-                    this.notify.handleErrors(err, '/settings/general/users/');
+                    this.notify.handleErrors(err);
                     return of(false);
                 })
             ).subscribe();
