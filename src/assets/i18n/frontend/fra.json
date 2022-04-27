@@ -97,6 +97,7 @@
 	},
 	"CUSTOM-FIELDS": {
 		"add": "Ajouter le champ personnalisé",
+		"add_choice": "Ajouter une option",
 		"checkbox": "Case à cocher",
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer l'utilisateur <b>{{ user }}</b> ?",
 		"custom_exists": "Champ personnalisé déjà ajouté",
@@ -104,8 +105,10 @@
 		"field_added": "Champ personnalisé créé avec succès",
 		"field_updated": "Champ personnalisé modifié avec succès",
 		"module": "Module",
+		"no_option_added": "Aucune option ajoutée",
 		"reset": "réinitialiser",
 		"select": "Liste à choix",
+		"select_options": "Liste des choix",
 		"text": "Chaîne de caractères",
 		"textarea": "Multi lignes",
 		"type": "Type",

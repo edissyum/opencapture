@@ -186,6 +186,14 @@
                                             {{ required.label | translate }}
                                         </button>
                                     </mat-menu>
+                                    <mat-menu #required="matMenu">
+                                        <button mat-menu-item [id]="field.id"
+                                                *ngFor="let required of mandatoryList"
+                                                (click)="changeRequired(field.id, required.id, required.icon, category['id'])"
+                                                [class.bg-green-400]="required.id === field.required">
+                                            {{ required.label | translate }}
+                                        </button>
+                                    </mat-menu>
                                 </div>
                             </mat-form-field>
                         </div>
@@ -254,6 +262,13 @@
                                     <mat-label>{{ 'TYPES.' + field.type | translate }}</mat-label>
                                     <mat-select></mat-select>
                                 </mat-form-field>
+                            </ng-container>
+                            <ng-container *ngIf="field.type === 'checkbox'">
+                                <div>
+                                    <i class="relative fa-solid fa-arrows-alt text-xl top-0.5 mr-2 text-green-400"></i>
+                                    {{ field.label | translate }}
+                                </div>
+                                <mat-checkbox formControlName="test">{{ 'TYPES.' + field.type | translate }}</mat-checkbox>
                             </ng-container>
                         </div>
                     </div>
