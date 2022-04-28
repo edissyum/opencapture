@@ -622,20 +622,23 @@ def get_file_content(file_type, filename, mime_type, compress=False):
 def get_token_insee():
     _vars = create_classes_from_current_config()
     _cfg = _vars[1]
-    credentials = base64.b64encode(
-        (_cfg.cfg['API']['siret-consumer'] + ':' + _cfg.cfg['API']['siret-secret']).encode('UTF-8')).decode('UTF-8')
+    if _cfg.cfg['API']['siret-consumer'] and _cfg.cfg['API']['siret-secret']:
+        credentials = base64.b64encode(
+            (_cfg.cfg['API']['siret-consumer'] + ':' + _cfg.cfg['API']['siret-secret']).encode('UTF-8')).decode('UTF-8')
 
-    try:
-        res = requests.post(_cfg.cfg['API']['siret-url-token'],
-                            data={'grant_type': 'client_credentials'},
-                            headers={"Authorization": "Basic %s" % str(credentials)})
-    except requests.exceptions.SSLError:
-        return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
+        try:
+            res = requests.post(_cfg.cfg['API']['siret-url-token'],
+                                data={'grant_type': 'client_credentials'},
+                                headers={"Authorization": "Basic %s" % str(credentials)})
+        except requests.exceptions.SSLError:
+            return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
 
-    if 'Maintenance - INSEE' in res.text or res.status_code != 200:
-        return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
+        if 'Maintenance - INSEE' in res.text or res.status_code != 200:
+            return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
+        else:
+            return json.loads(res.text)['access_token'], 200
     else:
-        return json.loads(res.text)['access_token'], 200
+        return '', 200
 
 
 def verify_siren(token, siren):
