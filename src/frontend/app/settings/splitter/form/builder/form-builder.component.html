@@ -202,10 +202,9 @@
                                     </mat-menu>
                                     <mat-menu #autoCompleteMasksMenu="matMenu">
                                         <div *ngFor="let autoCompleteMask of autoCompleteMasks">
-                                            <mat-form-field class="w-64 mx-2"(click)="$event.stopPropagation()">
+                                            <mat-form-field class="w-64 mx-2"(click)="$event.stopPropagation()" style="font-size: 12px;">
                                                 <mat-label>{{ autoCompleteMask.placeholder | translate }}</mat-label>
-                                                <input matInput [formControl]="autoCompleteMask.control" type="text"
-                                                       (ngModelChange)="maskChangeValue($event, autoCompleteMask.id, field)">
+                                                <input matInput [(ngModel)]="field[autoCompleteMask['id']]" type="text">
                                             </mat-form-field>
                                         </div>
                                     </mat-menu>

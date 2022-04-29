@@ -409,6 +409,10 @@ export class SplitterFormBuilderComponent implements OnInit {
         this.outputForm.splice(cpt, 1);
     }
 
+    maskChangeValue(newValue: string, fieldKey: string, field: any) {
+        field[fieldKey] = newValue;
+    }
+
     updateForm() {
         const label             = this.form.label.control.value;
         const isDefault         = this.form.default_form.control.value;
@@ -483,7 +487,9 @@ export class SplitterFormBuilderComponent implements OnInit {
         }
     }
 
-    maskChangeValue(newValue: string, fieldKey: string, field: any) {
-        field[fieldKey] = newValue;
+    fillMaskControlValue(control: FormControl, value: string) {
+        console.log(value);
+        control.setValue(value);
+        return control;
     }
 }

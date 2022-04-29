@@ -445,7 +445,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     getPlaceholderFromResultMask(mask: string, metadata: any){
-        const maskVariables = mask ? mask.split(' ') : [];
+        const maskVariables = mask ? mask.split('#') : [];
         const result        = [];
         for(const maskVariable of maskVariables!){
             result.push(metadata.hasOwnProperty(maskVariable) ? metadata[maskVariable]: maskVariable);
