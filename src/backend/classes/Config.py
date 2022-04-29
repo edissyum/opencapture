@@ -15,6 +15,7 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
+import unidecode
 from configparser import ConfigParser, ExtendedInterpolation
 
 
@@ -54,7 +55,7 @@ class Config:
         config = ConfigParser(allow_no_value=True)
         config.read(file)
         config.add_section(job)
-        config.set(job, '; ' + input_label)
+        config.set(job, '; ' + unidecode.unidecode(input_label))
         config[job]['watch'] = watch
         config[job]['events'] = 'close,move'
         config[job]['include_extensions'] = 'pdf'
