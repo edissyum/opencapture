@@ -288,7 +288,6 @@ export class SplitterFormBuilderComponent implements OnInit {
                                 this.fields[category].forEach((currentField: any) => {
                                     this.availableFieldsParent.forEach((parent: any) => {
                                         let cpt = 0;
-                                        console.log(parent['values']);
                                         parent['values'].forEach((childFields: any) => {
                                             if (currentField.id === childFields.id) {
                                                 parent['values'].splice(cpt, 1);
@@ -419,7 +418,6 @@ export class SplitterFormBuilderComponent implements OnInit {
             if (element.control.value) outputs.push(element.control.value);
         });
 
-        console.log(this.fields);
         if (label !== '' && outputs.length >= 1) {
             this.http.put(API_URL + '/ws/forms/update/' + this.formId, {
                     'args': {'label' : label, 'default_form' : isDefault, 'outputs': outputs, 'metadata_method': metadataMethod}
