@@ -622,23 +622,20 @@ def get_file_content(file_type, filename, mime_type, compress=False):
 def get_token_insee():
     _vars = create_classes_from_current_config()
     _cfg = _vars[1]
-    if _cfg.cfg['API']['siret-consumer'] and _cfg.cfg['API']['siret-secret']:
-        credentials = base64.b64encode(
-            (_cfg.cfg['API']['siret-consumer'] + ':' + _cfg.cfg['API']['siret-secret']).encode('UTF-8')).decode('UTF-8')
+    credentials = base64.b64encode(
+        (_cfg.cfg['API']['siret-consumer'] + ':' + _cfg.cfg['API']['siret-secret']).encode('UTF-8')).decode('UTF-8')
 
-        try:
-            res = requests.post(_cfg.cfg['API']['siret-url-token'],
-                                data={'grant_type': 'client_credentials'},
-                                headers={"Authorization": "Basic %s" % str(credentials)})
-        except requests.exceptions.SSLError:
-            return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
+    try:
+        res = requests.post(_cfg.cfg['API']['siret-url-token'],
+                            data={'grant_type': 'client_credentials'},
+                            headers={"Authorization": "Basic %s" % str(credentials)})
+    except requests.exceptions.SSLError:
+        return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
 
-        if 'Maintenance - INSEE' in res.text or res.status_code != 200:
-            return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
-        else:
-            return json.loads(res.text)['access_token'], 200
+    if 'Maintenance - INSEE' in res.text or res.status_code != 200:
+        return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
     else:
-        return '', 200
+        return json.loads(res.text)['access_token'], 200
 
 
 def verify_siren(token, siren):
@@ -648,7 +645,7 @@ def verify_siren(token, siren):
     try:
         res = requests.get(_cfg.cfg['API']['siren-url'] + siren,
                            headers={"Authorization": "Bearer %s" % token, "Accept": "application/json"})
-    except requests.exceptions.SSLError:
+    except (requests.exceptions.SSLError, requests.exceptions.ConnectionError):
         return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
 
     _return = json.loads(res.text)
@@ -665,7 +662,7 @@ def verify_siret(token, siret):
     try:
         res = requests.get(_cfg.cfg['API']['siret-url'] + siret,
                            headers={"Authorization": "Bearer %s" % token, "Accept": "application/json"})
-    except requests.exceptions.SSLError:
+    except (requests.exceptions.SSLError, requests.exceptions.ConnectionError):
         return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
 
     _return = json.loads(res.text)
@@ -691,9 +688,8 @@ def verify_vat_number(vat_number):
             text = gettext('VAT_NOT_VALID')
             return text, 400
         return text, 200
-    except (exceptions.Fault, requests.exceptions.SSLError):
-        text = gettext('VAT_API_ERROR')
-        return text, 201
+    except (exceptions.Fault, requests.exceptions.SSLError, requests.exceptions.ConnectionError):
+        return gettext('VAT_API_ERROR'), 201
 
 
 def get_totals(status, user_id):
