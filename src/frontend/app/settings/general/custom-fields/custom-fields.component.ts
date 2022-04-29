@@ -164,6 +164,9 @@ export class CustomFieldsComponent implements OnInit {
     }
 
     retrieveCustomFields() {
+        this.loading        = true;
+        this.activeFields   = [];
+        this.inactiveFields = [];
         let newField;
         this.http.get(API_URL + '/ws/customFields/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -225,7 +228,7 @@ export class CustomFieldsComponent implements OnInit {
         this.http.post(API_URL + '/ws/customFields/add', newField, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 newField['id'] = data.id;
-                this.activeFields.push(newField);
+                this.retrieveCustomFields();
                 this.notify.success(this.translate.instant('CUSTOM-FIELDS.field_added'));
                 this.resetForm();
             }),
@@ -357,6 +360,7 @@ export class CustomFieldsComponent implements OnInit {
             tap(() => {
                 this.notify.success(this.translate.instant('CUSTOM-FIELDS.field_updated'));
                 this.resetForm();
+                this.retrieveCustomFields();
             }),
             catchError((err: any) => {
                 console.debug(err);
@@ -390,8 +394,9 @@ export class CustomFieldsComponent implements OnInit {
         this.addFieldInputs.forEach((element: any) => {
             element.control.setValue('');
         });
-        this.update = false;
-        this.inactiveOrActive = '';
-        this.updateCustomId = '';
+        this.selectOptions      = [];
+        this.inactiveOrActive   = '';
+        this.updateCustomId     = '';
+        this.update             = false;
     }
 }

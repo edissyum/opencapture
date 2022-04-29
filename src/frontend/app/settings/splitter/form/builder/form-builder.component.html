@@ -161,6 +161,12 @@
                                         <button mat-menu-item [matMenuTriggerFor]="required">
                                             {{ "VERIFIER.required" | translate }} <small class="ml-2"><i class="text-base {{ field.required_icon }}"></i></small>
                                         </button>
+                                        <button mat-menu-item [matMenuTriggerFor]="disabled">
+                                            {{ "FORMS.disable" | translate }} <small class="ml-2"><i class="text-base {{ field.required_icon }}"></i></small>
+                                        </button>
+                                        <button mat-menu-item [matMenuTriggerFor]="autoCompleteMasksMenu">
+                                            {{ "FORMS.AutocompleteMasks" | translate }}
+                                        </button>
                                     </mat-menu>
                                     <mat-menu #size="matMenu">
                                         <button mat-menu-item [id]="field.id"
@@ -186,13 +192,22 @@
                                             {{ required.label | translate }}
                                         </button>
                                     </mat-menu>
-                                    <mat-menu #required="matMenu">
+                                    <mat-menu #disabled="matMenu">
                                         <button mat-menu-item [id]="field.id"
-                                                *ngFor="let required of mandatoryList"
-                                                (click)="changeRequired(field.id, required.id, required.icon, category['id'])"
-                                                [class.bg-green-400]="required.id === field.required">
-                                            {{ required.label | translate }}
+                                                *ngFor="let disabled of disabledList"
+                                                (click)="changeRequired(field.id, disabled.id, disabled.icon, category['id'])"
+                                                [class.bg-green-400]="disabled.id === field.required">
+                                            {{ disabled.label | translate }}
                                         </button>
+                                    </mat-menu>
+                                    <mat-menu #autoCompleteMasksMenu="matMenu">
+                                        <div *ngFor="let autoCompleteMask of autoCompleteMasks">
+                                            <mat-form-field class="w-64 mx-2"(click)="$event.stopPropagation()">
+                                                <mat-label>{{ autoCompleteMask.placeholder }}</mat-label>
+                                                <input matInput [formControl]="autoCompleteMask.control" type="text"
+                                                       (ngModelChange)="maskChangeValue($event, autoCompleteMask.id, field)">
+                                            </mat-form-field>
+                                        </div>
                                     </mat-menu>
                                 </div>
                             </mat-form-field>

@@ -39,7 +39,7 @@ class MaarchWebServices:
                     return [False, gettext('HOST_NOT_FOUND')]
                 if 'errors' in json.loads(res.text):
                     return [False, json.loads(res.text)['errors']]
-            return True
+            return [True, '']
         except (requests.exceptions.ConnectionError, requests.exceptions.Timeout, requests.exceptions.MissingSchema) as request_error:
             self.log.error('Error connecting to the host. Exiting program..', False)
             self.log.error('More information : ' + str(request_error), False)
@@ -49,8 +49,7 @@ class MaarchWebServices:
         res = requests.get(self.base_url + '/users', auth=self.auth)
         if res.status_code != 200:
             self.log.error('(' + str(res.status_code) + ') getUsersError : ' + str(res.text))
-            return False
-        return json.loads(res.text)
+        return json.loads(res.text), res.status_code
 
     def retrieve_entities(self):
         res = requests.get(self.base_url + '/entities', auth=self.auth)
