@@ -38,33 +38,40 @@ def load_referential(args):
     data = r.json()
 
     for referential in data['referentiel']:
-        metadata = args['database'].select({
-            'select': ['*'],
-            'table': ['metadata'],
-            'where': ['external_id = %s'],
-            'data': [str(referential['numero_dossier'])],
-        })
-        if not metadata:
-            args['database'].insert({
-                'table': 'metadata',
-                'columns': {
-                    'type': "referential",
-                    'form_id': args['form_id'],
-                    'external_id': referential['numero_dossier'],
-                    'data': json.dumps(referential),
-                }
-            })
-            args['log'].info(f"Inserted metadata external_id : {referential['numero_dossier']}")
-        else:
-            args['database'].update({
-                'table': ['metadata'],
-                'set': {
-                    'last_edit': datetime.now(),
-                    'data': json.dumps(referential),
-                },
-                'where': ['external_id = %s'],
-                'data': [str(referential['numero_dossier'])]
-            })
-            args['log'].info(f"Upated metadata external_id : {referential['numero_dossier']}")
+        if 'demandes' in referential:
+            for demand_index, demand in enumerate(referential['demandes']):
+                external_id = '-'.join([str(referential['numero_dossier']), str(demand_index)])
+                for key in demand:
+                    referential[key] = demand[key]
+            # del referential['demandes']
+
+                metadata = args['database'].select({
+                    'select': ['*'],
+                    'table': ['metadata'],
+                    'where': ['external_id = %s'],
+                    'data': [external_id],
+                })
+                if not metadata:
+                    args['database'].insert({
+                        'table': 'metadata',
+                        'columns': {
+                            'type': "referential",
+                            'form_id': args['form_id'],
+                            'external_id': external_id,
+                            'data': json.dumps(referential),
+                        }
+                    })
+                    args['log'].info(f"Inserted metadata external_id : {referential['numero_dossier']}")
+                else:
+                    args['database'].update({
+                        'table': ['metadata'],
+                        'set': {
+                            'last_edit': datetime.now(),
+                            'data': json.dumps(referential),
+                        },
+                        'where': ['external_id = %s'],
+                        'data': [external_id]
+                    })
+                    args['log'].info(f"Upated metadata external_id : {referential['numero_dossier']}")
 
     args['database'].set_sequence_value('splitter_referential_call_count', next_demand_number + 1)
