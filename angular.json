@@ -39,7 +39,7 @@
                             {
                                 "glob": "**/*",
                                 "input": "./node_modules/svg-country-flags/svg",
-                                "output": "src/assets/svg-country-flags/svg"
+                                "output": "assets/svg-country-flags/svg"
                             }
                         ],
                         "styles": [
