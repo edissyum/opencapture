@@ -139,9 +139,9 @@ export class SplitterUpdateInputComponent implements OnInit {
         ).subscribe();
         this.inputForm.forEach(element => {
             if (element.id === 'splitter_method_id') {
-                this.http.get(API_URL + '/ws/splitter/methods', {headers: this.authService.headers}).pipe(
+                this.http.get(API_URL + '/ws/splitter/splitMethods', {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
-                        data.split_methods.forEach((option: any) => {
+                        data.splitMethods.forEach((option: any) => {
                             element.values.push({
                                 id      : option.id,
                                 label   : option.label,
