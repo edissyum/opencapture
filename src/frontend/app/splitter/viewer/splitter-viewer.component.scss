@@ -53,10 +53,14 @@ a:hover {
 }
 
 .mat-search{
-    min-width: calc(100% + 250px);
+    min-width: calc(100% + 250px) !important;
 }
 
-.mat-select-value{
+::ng-deep .mat-search > .mat-select-trigger > .mat-select-arrow-wrapper{
+    display: none;
+}
+
+.mat-select-arrow-wrapper{
     display: none !important;
 }
 
@@ -64,6 +68,7 @@ a:hover {
     width: calc(100% - 250px) !important;
 }
 /* documents list */
+
 .document{
     margin: 10px auto;
     width: 100%;
