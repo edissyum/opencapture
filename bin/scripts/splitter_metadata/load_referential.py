@@ -37,8 +37,12 @@ def load_referential(args):
                      verify=False)
     data = r.json()
 
-    if 'referentiel' not in data:
+    if 'referentiel' not in data or 'code_erreur' not in data :
         args['log'].error(f"Alfresco returned response : {str(data)}")
+        return
+
+    if not data['referentiel'] and data['code_erreur'] == 0:
+        return
 
     for referential in data['referentiel']:
         if 'demandes' in referential:
