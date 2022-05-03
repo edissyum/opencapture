@@ -36,6 +36,7 @@ def load_referential(args):
                                                                                        args['method_data']['password']),
                      verify=False)
     data = r.json()
+    args['log'].info(f"Alfresco returned response : {str(data)}")
 
     for referential in data['referentiel']:
         if 'demandes' in referential:
