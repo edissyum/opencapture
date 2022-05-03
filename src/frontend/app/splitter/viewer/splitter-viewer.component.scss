@@ -56,6 +56,13 @@ a:hover {
     min-width: calc(100% + 250px);
 }
 
+.mat-select-value{
+    display: none !important;
+}
+
+.mat-select-placeholder{
+    width: calc(100% - 250px) !important;
+}
 /* documents list */
 .document{
     margin: 10px auto;
@@ -73,6 +80,7 @@ a:hover {
     height: 300px;
     box-shadow: 1px 2px 10px 0 #c5c5c5 !important;
 }
+
 
 .btn-icon{
     border-right:1px solid rgb(75 85 99)!important;
