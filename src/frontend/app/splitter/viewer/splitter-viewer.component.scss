@@ -52,6 +52,10 @@ a:hover {
     height: 200px !important;
 }
 
+.mat-search{
+    min-width: calc(100% + 250px);
+}
+
 /* documents list */
 .document{
     margin: 10px auto;

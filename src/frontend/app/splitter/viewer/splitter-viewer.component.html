@@ -89,7 +89,7 @@
                                     <mat-label>
                                         <span [innerHTML]="getPlaceholderFromSearchMask(input.searchMask, input.label)"></span>
                                     </mat-label>
-                                    <mat-select [formControlName]="input.label_short">
+                                    <mat-select [formControlName]="input.label_short" class="mat-search">
                                         <mat-option *ngIf="input.metadata_key">
                                             <ngx-mat-select-search
                                                     [formControlName]="'search_' + input.label_short"
