@@ -44,8 +44,9 @@ def load_referential(args):
         if 'demandes' in referential:
             for demand_index, demand in enumerate(referential['demandes']):
                 external_id = '-'.join([str(demand['numero_dossier']), str(demand['numero_demande'])])
-                referential['numero_dossier'] = demand['numero_dossier']
                 referential['numero_demande'] = demand['numero_demande']
+                if 'type_demande' in demand:
+                    referential['type_demande'] = demand['type_demande']
 
                 metadata = args['database'].select({
                     'select': ['*'],
