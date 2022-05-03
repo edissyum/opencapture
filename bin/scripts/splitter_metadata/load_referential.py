@@ -45,6 +45,8 @@ def load_referential(args):
         return
 
     for referential in data['referentiel']:
+        referential['date_naissance'] = referential['date_naissance'] if 'date_naissance' in referential else 'N/A'
+
         if 'demandes' in referential:
             for demand_index, demand in enumerate(referential['demandes']):
                 external_id = '-'.join([str(referential['numero_dossier']), str(demand['numero_demande'])])
