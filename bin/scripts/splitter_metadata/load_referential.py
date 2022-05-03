@@ -43,7 +43,7 @@ def load_referential(args):
     for referential in data['referentiel']:
         if 'demandes' in referential:
             for demand_index, demand in enumerate(referential['demandes']):
-                external_id = '-'.join([str(referential['numero_dossier']), str(demand_index)])
+                external_id = '-'.join([str(referential['numero_dossier']), str(referential['numero_demande'])])
                 for key in demand:
                     referential[key] = demand[key]
             # del referential['demandes']
