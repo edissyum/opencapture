@@ -101,6 +101,7 @@
 		"checkbox": "Checkbox",
 		"confirm_delete": "Are you sure you want to delete the document type <b>{{ doctypeLabel }}</b> ?",
 		"custom_exists": "Custom field already exist",
+		"delete_choice": "",
 		"deleted": "Deleted",
 		"field_added": "Field added successfully",
 		"field_updated": "Field updated successfully",
@@ -113,6 +114,12 @@
 		"textarea": "Textarea",
 		"type": "Type",
 		"update": "Update custom field"
+	},
+	"DISABLED": {
+		"disabled": "Disabled",
+		"not_disabled": "Not disabled",
+		"resultMask": "Result mask",
+		"searchMask": "Search mask"
 	},
 	"DISPLAY": {
 		"multi": "Multi",
@@ -199,6 +206,7 @@
 		"textarea": "Textarea"
 	},
 	"FORMS": {
+		"AutocompleteMasks": "Autocomplete mask",
 		"available_fields": "Fields available",
 		"choose_form": "Choose a new form",
 		"confirm_delete": "Are you sure you want to delete the form <b>{{ form }}</b> ?",
@@ -564,6 +572,7 @@
 		"drop_document_in_position": "Drop document in wanted position",
 		"edit": "Edit",
 		"error_no_doc_type": "Please choose document types",
+		"error_no_metadata": "Please fill the batch metadata",
 		"form_label": "Form label",
 		"identifier": "Identifier",
 		"list": "List of batches",
@@ -583,7 +592,6 @@
 		"rotatePage": "Rotate page with",
 		"save": "Save",
 		"search": "Search",
-		"search_for": "Search for ",
 		"select": "Select",
 		"select_all": "Select all",
 		"selected_pages": "selected page(s)",

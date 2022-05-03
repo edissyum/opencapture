@@ -109,6 +109,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         id                  : -1,
         inputId             : -1,
         formId              : -1,
+        status              : '',
         maxSplitIndex       : 0,
         selectedPagesCount  : 0,
         selectedDocument    : {
@@ -869,6 +870,19 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     validateWithConfirmation() {
+        if(this.inputMode === 'Auto' && !this.batchMetadataValues.metadataId){
+            this.notify.error(this.translate.instant('SPLITTER.error_no_metadata'));
+            return;
+        }
+        for (const document of this.documents) {
+            if (!document.documentTypeKey) {
+                document.class = "text-red-500";
+                this.notify.error(this.translate.instant('SPLITTER.error_no_doc_type'));
+                this.loading = false;
+                return;
+            } else
+                document.class = "";
+        }
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data:{
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
@@ -901,16 +915,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 }
             }
             this.batchMetadataValues['metadataId'] = '';
-        }
-
-        for (const document of this.documents) {
-            if (!document.documentTypeKey) {
-                document.class = "text-red-500";
-                this.notify.error(this.translate.instant('SPLITTER.error_no_doc_type'));
-                this.loading = false;
-                return;
-            } else
-                document.class = "";
         }
 
         const batchMetadata             = this.batchMetadataValues;

@@ -101,6 +101,7 @@
 		"checkbox": "Case à cocher",
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer l'utilisateur <b>{{ user }}</b> ?",
 		"custom_exists": "Champ personnalisé déjà ajouté",
+		"delete_choice": "Supprimer l'option",
 		"deleted": "Supprimé",
 		"field_added": "Champ personnalisé créé avec succès",
 		"field_updated": "Champ personnalisé modifié avec succès",
@@ -113,6 +114,12 @@
 		"textarea": "Multi lignes",
 		"type": "Type",
 		"update": "Modifier le champ personnalisé"
+	},
+	"DISABLED": {
+		"disabled": "Désactiver",
+		"not_disabled": "Activer",
+		"resultMask": "Masque de résultat",
+		"searchMask": "Masque de recherche"
 	},
 	"DISPLAY": {
 		"multi": "Multiple",
@@ -199,6 +206,7 @@
 		"textarea": "Multi lignes"
 	},
 	"FORMS": {
+		"AutocompleteMasks": "Masque d'autocompletion",
 		"available_fields": "Champs disponibles",
 		"choose_form": "Selection du formulaire",
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer le formulaire <b>{{ form }}</b> ?",
@@ -564,6 +572,7 @@
 		"drop_document_in_position": "Déposez le document dans la position souhaitée",
 		"edit": "Éditer",
 		"error_no_doc_type": "Veuillez sélectionner les types de documents",
+		"error_no_metadata": "Veuillez remplir les métadonnées du lot",
 		"form_label": "Libellé du formulaire",
 		"identifier": "Idenfiant",
 		"list": "Liste des lots",
@@ -583,7 +592,6 @@
 		"rotatePage": "Tourner les pages sélectionnées",
 		"save": "Enregistrer",
 		"search": "Recherche",
-		"search_for": "Recherchez un ",
 		"select": "Sélectionner",
 		"select_all": "Sélectionner tout",
 		"selected_pages": "page(s) sélectionnée(s)",
