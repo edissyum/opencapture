@@ -82,9 +82,9 @@
                         <i class="block fa-solid fa-check fa-3x"></i>
                         <span class="block">{{ 'SPLITTER.no_metadata_required' | translate }}</span>
                     </div>
-                    <form [formGroup]="batchForm" class="mx-8 grid grid-cols-3 gap-4">
+                    <form [formGroup]="batchForm" class="mx-8 grid grid-cols-3 gap-x-4">
                         <div *ngFor="let input of fieldsCategories['batch_metadata']">
-                            <div *ngIf="input.type === 'text' && inputMode === 'Auto' && input.metadata_key" class="h-12">
+                            <div *ngIf="input.type === 'text' && inputMode === 'Auto' && input.metadata_key">
                                 <mat-form-field class="w-full">
                                     <mat-label>
                                         <span [innerHTML]="getPlaceholderFromSearchMask(input.searchMask, input.label)"></span>
@@ -111,7 +111,7 @@
                                     </mat-select>
                                 </mat-form-field>
                             </div>
-                            <div *ngIf="input.type === 'textarea'">
+                            <div *ngIf="input.type === 'textarea'" class="my-2">
                                 <mat-form-field class="w-full">
                                     <mat-label>{{input.label}}</mat-label>
                                     <textarea matInput formControlName="{{input.label_short}}"></textarea>

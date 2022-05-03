@@ -209,7 +209,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 return of(false);
             })
         ).subscribe();
-        this.loadBatches();
     }
 
     loadOutputsData(): void {
