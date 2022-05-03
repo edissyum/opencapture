@@ -64,7 +64,7 @@ def load_referential(args):
                             'data': json.dumps(referential),
                         }
                     })
-                    args['log'].info(f"Inserted metadata external_id : {referential['numero_dossier']}")
+                    args['log'].info(f"Inserted metadata external_id : {external_id}")
                 else:
                     args['database'].update({
                         'table': ['metadata'],
@@ -75,6 +75,17 @@ def load_referential(args):
                         'where': ['external_id = %s'],
                         'data': [external_id]
                     })
-                    args['log'].info(f"Upated metadata external_id : {referential['numero_dossier']}")
+                    args['log'].info(f"Upated metadata external_id : {external_id}")
+        else:
+            args['database'].insert({
+                'table': 'metadata',
+                'columns': {
+                    'type': "referential",
+                    'form_id': args['form_id'],
+                    'external_id': referential['numero_dossier'],
+                    'data': json.dumps(referential),
+                }
+            })
+        args['log'].info(f"Inserted metadata external_id : {referential['numero_dossier']}")
 
     args['database'].set_sequence_value('splitter_referential_call_count', next_demand_number + 1)
