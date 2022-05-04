@@ -21,14 +21,13 @@ import time
 import json
 import tempfile
 from kuyruk import Kuyruk
-from symbol import import_from
 from src.backend.main import timer, check_file, create_classes
 from src.backend.import_classes import _Files, _Config, _Splitter, _SeparatorQR, _Log
 
 OCforInvoices = Kuyruk()
 
 
-@OCforInvoices.task(queue='splitter')
+# @OCforInvoices.task(queue='splitter')
 def launch(args):
     start = time.time()
 
@@ -50,7 +49,7 @@ def launch(args):
             'select': ['*'],
             'table': ['inputs'],
             'where': ['input_id = %s', 'module = %s'],
-            'data': [args['input_id'], 'verifier'],
+            'data': [args['input_id'], 'splitter'],
         })
         if input_settings:
             remove_blank_pages = input_settings[0]['remove_blank_pages']
