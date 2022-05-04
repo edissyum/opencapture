@@ -20,6 +20,8 @@ import random
 import re
 from xml.dom import minidom
 import xml.etree.cElementTree as ET
+from unidecode import unidecode
+
 from src.backend.classes.Files import Files
 
 
@@ -234,6 +236,7 @@ class Splitter:
                 mask_result.append(mask_value.replace(' ', separator))
 
         mask_result = separator.join(str(x) for x in mask_result)
+        mask_result = unidecode(mask_result)
         if 'extension' in mask_args:
             mask_result += '.{}'.format(mask_args['extension'])
         return mask_result
