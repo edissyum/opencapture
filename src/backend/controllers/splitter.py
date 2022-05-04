@@ -547,7 +547,7 @@ def validate(args):
                         cmis_res = cmis.create_document(file_path, 'application/pdf')
                         if not cmis_res[0]:
                             response = {
-                                "errors": gettext('EXPORT_XML_ERROR'),
+                                "errors": gettext('EXPORT_PDF_ERROR'),
                                 "message": cmis_res[1]
                             }
                             return response, 500
