@@ -119,25 +119,7 @@ def convert(file, files, ocr, nb_pages, custom_pages=False):
             ocr.last_text = ocr.line_box_builder(files.img)
 
 
-def update_typo_database(database, vat_number, typo, log, config, docservers):
-    spreadsheet = _Spreadsheet(log, docservers, config)
-    mime = mimetypes.guess_type(spreadsheet.referencialSuppplierSpreadsheet)[0]
-    if mime in ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']:
-        spreadsheet.write_typo_excel_sheet(vat_number, typo)
-    else:
-        spreadsheet.write_typo_ods_sheet(vat_number, typo)
-
-    database.update({
-        'table': ['suppliers'],
-        'set': {
-            'typology': typo,
-        },
-        'where': ['vat_number = %s', 'status <> %s'],
-        'data': [vat_number, 'DEL']
-    })
-
-
-def process(args, file, log, config, files, ocr, regex, database, typo, docservers, configurations, languages):
+def process(args, file, log, config, files, ocr, regex, database, docservers, configurations, languages):
     log.info('Processing file : ' + file)
 
     datas = {}
@@ -193,9 +175,6 @@ def process(args, file, log, config, files, ocr, regex, database, typo, docserve
                 supplier[4]: supplier[3]
             })
 
-    if typo:
-        update_typo_database(database, supplier[0], typo, log, config, docservers)
-
     # Find custom informations using mask
     custom_fields = FindCustom(ocr.header_text, log, regex, config, ocr, files, supplier, file, database, docservers).run()
     if custom_fields:
@@ -207,7 +186,7 @@ def process(args, file, log, config, files, ocr, regex, database, typo, docserve
                 pages.update({field: custom_fields[field][2]})
 
     # Find invoice number
-    invoice_number_class = FindInvoiceNumber(ocr, files, log, regex, config, database, supplier, file, typo,
+    invoice_number_class = FindInvoiceNumber(ocr, files, log, regex, config, database, supplier, file,
                                              ocr.header_text, 1, False, ocr.footer_text, docservers, configurations)
     invoice_number = invoice_number_class.run()
     if not invoice_number:
@@ -277,7 +256,7 @@ def process(args, file, log, config, files, ocr, regex, database, typo, docserve
         text_custom = ocr.text
         page_for_date = 1
 
-    date_class = FindDate(text_custom, log, regex, configurations, files, ocr, supplier, typo, page_for_date, database, file, docservers, languages)
+    date_class = FindDate(text_custom, log, regex, configurations, files, ocr, supplier, page_for_date, database, file, docservers, languages)
     date = date_class.run()
 
     if date:
@@ -293,7 +272,7 @@ def process(args, file, log, config, files, ocr, regex, database, typo, docserve
                 positions.update({'invoice_due_date': files.reformat_positions(date[3][1])})
 
         # Find quotation number
-    quotation_number_class = FindQuotationNumber(ocr, files, log, regex, config, database, supplier, file, typo,
+    quotation_number_class = FindQuotationNumber(ocr, files, log, regex, config, database, supplier, file,
                                                  ocr.header_text, 1, False, ocr.footer_text, docservers, configurations)
     quotation_number = quotation_number_class.run()
     if not quotation_number:
@@ -313,9 +292,9 @@ def process(args, file, log, config, files, ocr, regex, database, typo, docserve
             pages.update({'quotation_number': quotation_number[2]})
 
     # Find footer informations (total amount, no rate amount etc..)
-    footer_class = FindFooter(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text, typo, docservers)
+    footer_class = FindFooter(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text, docservers)
     if supplier and supplier[2]['get_only_raw_footer'] in [True, 'True']:
-        footer_class = FindFooterRaw(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text, typo, docservers)
+        footer_class = FindFooterRaw(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text, docservers)
 
     footer = footer_class.run()
     if not footer and nb_pages > 1:
@@ -409,7 +388,7 @@ def process(args, file, log, config, files, ocr, regex, database, typo, docserve
                     pages.update({'total_vat': footer[3]})
 
     # Find delivery number
-    delivery_number_class = FindDeliveryNumber(ocr, files, log, regex, config, database, supplier, file, typo,
+    delivery_number_class = FindDeliveryNumber(ocr, files, log, regex, config, database, supplier, file,
                                                ocr.header_text, 1, False, docservers, configurations)
     delivery_number = delivery_number_class.run()
     if not delivery_number:
@@ -425,7 +404,7 @@ def process(args, file, log, config, files, ocr, regex, database, typo, docserve
             pages.update({'delivery_number': delivery_number[2]})
 
     # Find order number
-    order_number_class = FindOrderNumber(ocr, files, log, regex, config, database, supplier, file, typo,
+    order_number_class = FindOrderNumber(ocr, files, log, regex, config, database, supplier, file,
                                          ocr.header_text, 1, False, docservers, configurations)
     order_number = order_number_class.run()
     if not order_number:

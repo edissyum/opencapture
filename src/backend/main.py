@@ -200,7 +200,7 @@ def str2bool(value):
 OCforInvoices_worker = Kuyruk()
 
 
-# @OCforInvoices_worker.task(queue='invoices')
+@OCforInvoices_worker.task(queue='invoices')
 def launch(args):
     start = time.time()
 
@@ -258,7 +258,6 @@ def launch(args):
     if 'file' in args and args['file'] is not None:
         path = args['file']
         log.filename = os.path.basename(path)
-        typo = ''
         if separator_qr.enabled:
             if check_file(files, path, log, docservers) is not False:
                 separator_qr.run(path)
@@ -269,7 +268,7 @@ def launch(args):
                 #     typo = get_typo(config, path + file, log)
 
                 if check_file(files, path + file, log, docservers) is not False:
-                    res = OCForInvoices_process.process(args, path + file, log, config, files, ocr, regex, database, typo, docservers, configurations, languages)
+                    res = OCForInvoices_process.process(args, path + file, log, config, files, ocr, regex, database, docservers, configurations, languages)
                     if not res:
                         mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'], args['msg'], config, docservers)
                         log.error('Error while processing e-mail', False)
@@ -280,7 +279,7 @@ def launch(args):
                 #     typo = get_typo(config, file, log)
 
                 if check_file(files, file, log, docservers) is not False:
-                    res = OCForInvoices_process.process(args, file, log, config, files, ocr, regex, database, typo, docservers, configurations, languages)
+                    res = OCForInvoices_process.process(args, file, log, config, files, ocr, regex, database, docservers, configurations, languages)
                     if not res:
                         mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'], args['msg'], config, docservers)
                         log.error('Error while processing e-mail', False)
@@ -290,7 +289,7 @@ def launch(args):
             #     typo = get_typo(config, path, log)
 
             if check_file(files, path, log, docservers) is not False:
-                res = OCForInvoices_process.process(args, path, log, config, files, ocr, regex, database, typo, docservers, configurations, languages)
+                res = OCForInvoices_process.process(args, path, log, config, files, ocr, regex, database, docservers, configurations, languages)
                 if not res:
                     mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'], args['msg'], config, docservers)
                     log.error('Error while processing e-mail', False)
