@@ -98,7 +98,7 @@
                     </mat-form-field>
                     <mat-form-field *ngIf="field.type === 'select'">
                         <mat-label>{{ field.label | translate }}</mat-label>
-                        <mat-select [id]="field.id" [(ngModel)]="field.control.value" (selectionChange)="changeOutputType($event)">
+                        <mat-select [name]="field.id" [id]="field.id" [(ngModel)]="field.control.value" (selectionChange)="changeOutputType($event)">
                             <mat-option *ngFor="let option of outputsTypes" [value]="option.output_type_id">
                                 {{ option.output_type_label }}
                             </mat-option>
@@ -159,6 +159,41 @@
                                     <mat-hint *ngIf="field.hint">{{ field.hint }}</mat-hint>
                                 </mat-form-field>
                                 <mat-form-field (focusin)="retrieveDataFromWS(field.id)" *ngIf="(field.type === 'text' || field.type === 'number') && field.webservice">
+                                    <mat-label>{{ field.label | translate }}</mat-label>
+                                    <input matInput [formControl]="field.control" [type]="field.type"
+                                           [readonly]="field.webservice && !this.connection"
+                                           [placeholder]="field.placeholder" [required]="field.required" [matAutocomplete]="autocomplete">
+                                    <mat-error *ngIf="field.webservice && !this.connection">{{ 'OUTPUT.check_connection_before' | translate }}</mat-error>
+                                    <mat-hint *ngIf="field.hint">{{ field.hint }}</mat-hint>
+                                    <mat-autocomplete #autocomplete="matAutocomplete" [displayWith]="displayFn">
+                                        <mat-option *ngFor="let option of field.filteredOptions | async" [value]="option">
+                                            <span [innerHTML]="option.value | highlight: toHighlight"></span>
+                                            <span style="font-size: 12px;" class="text-green-400 ml-3">{{ option.extra }}</span>
+                                        </mat-option>
+                                    </mat-autocomplete>
+                                </mat-form-field>
+                            </ng-container>
+                        </div>
+                    </mat-tab>
+                    <mat-tab [label]="'OUTPUT.links' | translate" *ngIf="outputsTypesForm[selectedOutputType]['links']">
+                        <app-hint [message]="'OUTPUT.links_hint' | translate" specificClass="w-3/4"></app-hint>
+                        <div class="flex justify-center m-10">
+                            <ng-container *ngFor="let field of outputsTypesForm[selectedOutputType]['links']">
+                                <mat-slide-toggle *ngIf="field.type === 'boolean'" [formControl]="field.control">
+                                    {{ field.label | translate }}
+                                </mat-slide-toggle>
+                            </ng-container>
+                        </div>
+                        <div class="grid grid-cols-4 gap-x-4 gap-y-10 m-5">
+                            <ng-container *ngFor="let field of outputsTypesForm[selectedOutputType]['links']">
+                                <mat-form-field *ngIf="(field.type === 'text' || field.type === 'number') && !field.webservice">
+                                    <mat-label>{{ field.label | translate }}</mat-label>
+                                    <input matInput [value]="field.control.value" [formControl]="field.control"
+                                           [type]="field.type" [placeholder]="field.placeholder" [required]="field.required">
+                                    <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputsTypesForm[selectedOutputType]['links']) }}</mat-error>
+                                    <mat-hint *ngIf="field.hint">{{ field.hint }}</mat-hint>
+                                </mat-form-field>
+                                <mat-form-field (focusin)="retrieveDataFromWS(field.id, 'links')" *ngIf="(field.type === 'text' || field.type === 'number') && field.webservice">
                                     <mat-label>{{ field.label | translate }}</mat-label>
                                     <input matInput [formControl]="field.control" [type]="field.type"
                                            [readonly]="field.webservice && !this.connection"

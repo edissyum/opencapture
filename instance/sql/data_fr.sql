@@ -100,6 +100,34 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "placeholder": "maarch"
             }
         ],
+        "links": [
+            {
+                "id": "enabled",
+                "type": "boolean",
+                "label": "Activer la liaison avec un document dans Maarch",
+                "required": "true",
+                "webservice": "",
+                "placeholder": ""
+            },
+            {
+                "id": "maarchCustomField",
+                "type": "text",
+                "label": "Champ personnalisé à récupérer",
+                "required": "true",
+                "webservice": "getCustomFieldsFromMaarch",
+                "placeholder": "Numéro de devis",
+                "hint": "Champ personnalisé Maarch dans lequel est stocké la donnée nécessaire à la liaison avec un document"
+            },
+            {
+                "id": "openCaptureField",
+                "type": "text",
+                "label": "Champ à comparer dans Open-Capture",
+                "required": "true",
+                "webservice": "",
+                "placeholder": "quotation_number",
+                "hint": "Identifiant du champ dans Open-Capture"
+            }
+        ],
         "parameters": [
             {
                 "id": "destUser",

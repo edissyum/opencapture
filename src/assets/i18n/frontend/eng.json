@@ -392,6 +392,8 @@
 		"create": "Create output",
 		"created": "Output created successfully",
 		"json_input_erorr": "The field <b>{{ field }}</b> have to be JSON with double quotes",
+		"links": "Links",
+		"links_hint": "",
 		"maarch_connection_ko": "Error while connecting to Maarch",
 		"maarch_connection_ok": "Connection to Maarch successfull",
 		"no_auth_necessary": "No authentification necessary",

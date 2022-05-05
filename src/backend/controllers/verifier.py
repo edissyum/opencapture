@@ -389,6 +389,18 @@ def export_maarch(invoice_id, data):
                 if res is not False:
                     args['contact'] = {'id': res['id'], 'type': 'contact'}
 
+                link_resource = False
+                opencapture_field = None
+                maarch_custom_field = None
+                if 'links' in data['options']:
+                    for _links in data['options']['links']:
+                        if _links['id'] == 'enabled' and _links['value']:
+                            link_resource = True
+                        if _links['id'] == 'maarchCustomField' and _links['value']:
+                            maarch_custom_field = _links['value']
+                        if _links['id'] == 'openCaptureField' and _links['value']:
+                            opencapture_field = _links['value']
+
                 ws_data = data['options']['parameters']
                 for _data in ws_data:
                     value = _data['value']
@@ -431,10 +443,19 @@ def export_maarch(invoice_id, data):
                 if os.path.isfile(file):
                     args.update({
                         'fileContent': open(file, 'rb').read(),
-                        'documentDate': str(pd.to_datetime(invoice_info['datas']['invoice_date']).date())
+                        'documentDate': str(pd.to_datetime(invoice_info['datas']['invoice_date'],
+                                                           infer_datetime_format=True).date())
                     })
                     res, message = ws.insert_with_args(args)
                     if res:
+                        if link_resource:
+                            if opencapture_field:
+                                opencapture_field = ''.join(construct_with_var(opencapture_field, invoice_info))
+                                if maarch_custom_field:
+                                    docs = ws.retrieve_doc_with_custom(maarch_custom_field['id'], opencapture_field)
+                                    if docs:
+                                        res_id = docs['resources'][0]['res_id']
+                                        ws.link_documents(str(res_id), message['resId'])
                         return '', 200
                     else:
                         response = {

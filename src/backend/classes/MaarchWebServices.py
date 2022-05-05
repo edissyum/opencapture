@@ -58,6 +58,13 @@ class MaarchWebServices:
             return False
         return json.loads(res.text)
 
+    def retrieve_custom_fields(self):
+        res = requests.get(self.base_url + '/customFields', auth=self.auth)
+        if res.status_code != 200:
+            self.log.error('(' + str(res.status_code) + ') getCustomFieldsError : ' + str(res.text))
+            return False
+        return json.loads(res.text)
+
     def retrieve_priorities(self):
         res = requests.get(self.base_url + '/priorities', auth=self.auth)
         if res.status_code != 200:
@@ -69,6 +76,19 @@ class MaarchWebServices:
         res = requests.get(self.base_url + '/priorities/' + priority, auth=self.auth)
         if res.status_code != 200:
             self.log.error('(' + str(res.status_code) + ') getPriorityByIdError : ' + str(res.text))
+            return False
+        return json.loads(res.text)
+
+    def retrieve_doc_with_custom(self, custom_id, data):
+        data = {
+            'select': 'res_id',
+            'clause': "custom_fields ->> '" + str(custom_id) + "' = '" + str(data) + "'"
+        }
+
+        res = requests.post(self.base_url + '/res/list', auth=self.auth, data=json.dumps(data),
+                            headers={'Connection': 'close', 'Content-Type': 'application/json'})
+        if res.status_code != 200:
+            self.log.error('(' + str(res.status_code) + ') getDocumentWithCustomField : ' + str(res.text))
             return False
         return json.loads(res.text)
 
@@ -88,6 +108,19 @@ class MaarchWebServices:
 
     def retrieve_doctypes(self):
         res = requests.get(self.base_url + '/doctypes/types', auth=self.auth)
+        if res.status_code != 200:
+            self.log.error('(' + str(res.status_code) + ') getDoctypesError : ' + str(res.text))
+            return False
+        return json.loads(res.text)
+
+    def link_documents(self, res_id_master, res_id):
+        data = {
+            'linkedResources': [res_id]
+        }
+        res = requests.post(self.base_url + '/resources/' + res_id_master + '/linkedResources', auth=self.auth,
+                            data=json.dumps(data), headers={'Connection': 'close', 'Content-Type': 'application/json'})
+        print(res.status_code)
+        print(res.text)
         if res.status_code != 200:
             self.log.error('(' + str(res.status_code) + ') getDoctypesError : ' + str(res.text))
             return False
