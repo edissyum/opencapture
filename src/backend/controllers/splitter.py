@@ -470,6 +470,7 @@ def validate(args):
     now = _Files.get_now_date()
     _vars = create_classes_from_current_config()
     _cfg = _vars[1]
+    _log = _vars[5]
     _docservers = _vars[9]
 
     """
@@ -546,8 +547,10 @@ def validate(args):
                     for file_path in res_export_pdf[0]['paths']:
                         cmis_res = cmis.create_document(file_path, 'application/pdf')
                         if not cmis_res[0]:
+                            _log.error(f'File not sent : {file_path}')
+                            _log.error(f'CMIS Response : {str(cmis_res)}')
                             response = {
-                                "errors": gettext('EXPORT_XML_ERROR'),
+                                "errors": gettext('EXPORT_PDF_ERROR'),
                                 "message": cmis_res[1]
                             }
                             return response, 500
@@ -603,7 +606,7 @@ def validate(args):
                 """
                 splitter.change_status({
                     'id': args['batchMetadata']['id'],
-                    'status': 'END'
+                    'status': 'NEW'
                 })
 
     return {"OK": True}, 200

@@ -36,22 +36,25 @@ import {HistoryService} from "../../../services/history.service";
 import {ConfirmDialogComponent} from "../../../services/confirm-dialog/confirm-dialog.component";
 
 export interface Batch {
-    id: number
-    input_id: number
-    thumbnail: any
-    file_name: string
-    page_number: number
-    batch_date: string
+    id          : number
+    input_id    : number
+    thumbnail   : any
+    file_name   : string
+    batch_date  : string
+    page_number : number
 }
 
 export interface Field {
-    id: number
-    label_short: string
-    label: string
-    type: string
+    id          : number
+    type        : string
+    label       : string
+    class       : string
+    settings    : any
+    required    : string
+    resultMask  : string
+    searchMask  : string
+    label_short : string
     metadata_key: string
-    class: string
-    required: string
 }
 
 @Component({
@@ -68,23 +71,45 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     @ViewChild(`cdkStepper`) cdkDropList: CdkDragDrop<any> | undefined;
-    fieldsCategories            : any           = {
-        'batch_metadata'    : [],
-        'document_metadata' : []
-    };
-    batchForm                   : FormGroup     = new FormGroup({});
-    documentMetadataOpenState   : boolean       = false;
-    isDataEdited                : boolean       = false;
-    showZoomPage                : boolean       = false;
+
     loading                     : boolean       = true;
-    addDocumentLoading          : boolean       = false;
+    showZoomPage                : boolean       = false;
+    isDataEdited                : boolean       = false;
     saveInfosLoading            : boolean       = false;
     documentsLoading            : boolean       = false;
+    addDocumentLoading          : boolean       = false;
     batchMetadataOpenState      : boolean       = true;
+    documentMetadataOpenState   : boolean       = false;
+
+    batchForm                   : FormGroup     = new FormGroup({});
+    batches                     : Batch[]       = [];
+    status                      : any[]         = [];
+    outputs                     : any           = [];
+    metadata                    : any[]         = [];
+    documents                   : any           = [];
+    movedPages                  : any[]         = [];
+    rotatedPages                : any[]         = [];
+    pagesImageUrls              : any           = [];
+    documentsForms              : any[]         = [];
+    deletedPagesIds             : number[]      = [];
+    deletedDocumentsIds         : number[]      = [];
+    DropListDocumentsIds        : string[]      = [];
+    toolSelectedOption          : string        = "";
+    batchMetadataValues         : any           = {};
+    inputMode                   : string        = "Auto";
+    defaultDoctype              : any           = {
+        label       : null,
+        key         : null,
+    };
+    zoomPage                    : any           = {
+        thumbnail   : "",
+        rotation    : 0,
+    };
     currentBatch                : any           = {
         id                  : -1,
         inputId             : -1,
         formId              : -1,
+        status              : '',
         maxSplitIndex       : 0,
         selectedPagesCount  : 0,
         selectedDocument    : {
@@ -92,28 +117,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             displayOrder    : -1,
         },
     };
-    batchMetadataValues         : any           = {};
-    documentsForms              : any[]         = [];
-    batches                     : Batch[]       = [];
-    status                      : any[]         = [];
-    deletedPagesIds             : number[]      = [];
-    rotatedPages                : any[]         = [];
-    movedPages                  : any[]         = [];
-    deletedDocumentsIds         : number[]      = [];
-    outputs                     : any           = [];
-    metadata                    : any[]         = [];
-    documents                   : any           = [];
-    pagesImageUrls              : any           = [];
-    DropListDocumentsIds        : string[]      = [];
-    zoomPage                    : any           = {
-        thumbnail   : "",
-        rotation    : 0,
-    };
-    toolSelectedOption          : string        = "";
-    inputMode                   : string        = "Manual";
-    defaultDoctype              : any           = {
-        label       : null,
-        key         : null,
+    fieldsCategories            : any           = {
+        'batch_metadata'    : [],
+        'document_metadata' : []
     };
 
     /** indicate search operation is in progress */
@@ -204,7 +210,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 return of(false);
             })
         ).subscribe();
-        this.loadBatches();
     }
 
     loadOutputsData(): void {
@@ -439,9 +444,22 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         ).subscribe();
     }
 
+    getPlaceholderFromResultMask(mask: string, metadata: any){
+        const maskVariables = mask ? mask.split('#') : [];
+        const result        = [];
+        for(const maskVariable of maskVariables!){
+            result.push(metadata.hasOwnProperty(maskVariable) ? metadata[maskVariable]: maskVariable);
+        }
+        return result.join(' ');
+    }
+
+    getPlaceholderFromSearchMask(mask: string, label: string){
+        return mask ? mask.replace('#label', label):'';
+    }
+
     changeInputMode($event: any) {
         this.inputMode = $event.checked ? "Auto" : "Manual";
-        this.batchMetadataValues = null;
+        this.batchMetadataValues = {};
         this.fillDataValues({});
     }
 
@@ -482,11 +500,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.metadata = [];
         this.http.get(API_URL + `/ws/splitter/loadReferential/${this.currentBatch.formId}`, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                let cpt = 0;
                 data.metadata.forEach((metadataItem: any) => {
-                    metadataItem.data['id'] = cpt;
+                    metadataItem.data['metadataId'] = metadataItem.id;
                     this.metadata.push(metadataItem.data);
-                    cpt++;
                 });
                 this.notify.success(this.translate.instant('SPLITTER.referential_updated'));
             }),
@@ -506,10 +522,14 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     fillData(selectedMetadata: any) {
         this.batchMetadataValues = selectedMetadata;
-        const optionId = this.batchMetadataValues['id'];
+        const optionId = this.batchMetadataValues['metadataId'];
         for (const field of this.fieldsCategories['batch_metadata']) {
             if (field['metadata_key']) {
-                this.batchForm.get(field['metadata_key'])?.setValue(optionId);
+                if(field.type === 'select' && selectedMetadata[field['metadata_key']]){
+                    this.batchForm.get(field['metadata_key'])?.setValue(selectedMetadata[field['metadata_key']]);
+                }
+                else
+                    this.batchForm.get(field['metadata_key'])?.setValue(optionId);
             }
         }
     }
@@ -523,12 +543,15 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                         data.fields[fieldCategory].forEach((field: Field) => {
                             this.fieldsCategories[fieldCategory].push({
                                 'id'            : field.id,
-                                'label_short'   : field.label_short,
-                                'label'         : field.label,
                                 'type'          : field.type,
-                                'metadata_key'  : field.metadata_key,
+                                'label'         : field.label,
                                 'class'         : field.class,
+                                'settings'      : field.settings,
                                 'required'      : field.required,
+                                'label_short'   : field.label_short,
+                                'metadata_key'  : field.metadata_key,
+                                'searchMask'    : field.searchMask,
+                                'resultMask'    : field.resultMask,
                             });
                         });
                     }
@@ -847,6 +870,19 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     validateWithConfirmation() {
+        if(this.inputMode === 'Auto' && !this.batchMetadataValues.metadataId){
+            this.notify.error(this.translate.instant('SPLITTER.error_no_metadata'));
+            return;
+        }
+        for (const document of this.documents) {
+            if (!document.documentTypeKey) {
+                document.class = "text-red-500";
+                this.notify.error(this.translate.instant('SPLITTER.error_no_doc_type'));
+                this.loading = false;
+                return;
+            } else
+                document.class = "";
+        }
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data:{
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
@@ -865,24 +901,20 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         });
     }
 
+    getMetadataItemById(id: number){
+        return  this.metadata.find((item: any) => item.id === id);
+    }
+
     validate() {
         this.loading = true;
-        if (this.inputMode === 'Manual') {
+        if(this.inputMode === 'Manual'){
             for (const field of this.fieldsCategories['batch_metadata']) {
                 if (this.batchForm.get(field.label_short)) {
-                    this.batchMetadataValues[field.label_short] = this.batchForm.get(field.label_short)?.value;
+                    this.batchMetadataValues[field.label_short] = this.inputMode === 'Manual' ?
+                        this.batchForm.get(field.label_short)?.value: '';
                 }
             }
-        }
-
-        for (const document of this.documents) {
-            if (!document.documentTypeKey) {
-                document.class = "text-red-500";
-                this.notify.error(this.translate.instant('SPLITTER.error_no_doc_type'));
-                this.loading = false;
-                return;
-            } else
-                document.class = "";
+            this.batchMetadataValues['metadataId'] = '';
         }
 
         const batchMetadata             = this.batchMetadataValues;

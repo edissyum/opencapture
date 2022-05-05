@@ -15,7 +15,7 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
-
+import json
 from gettext import gettext
 from src.backend.main import create_classes_from_current_config
 
@@ -29,7 +29,7 @@ def add_custom_field(args):
     })
 
     if not customs_exists:
-        args = {
+        _args = {
             'table': 'custom_fields',
             'columns': {
                 'type': args['type'],
@@ -39,7 +39,10 @@ def add_custom_field(args):
                 'metadata_key': args['metadata_key'],
             }
         }
-        res = _db.insert(args)
+        if args['options']:
+            _args['columns']['settings'] = json.dumps({'options': args['options']})
+
+        res = _db.insert(_args)
 
         if not res:
             error = gettext('ADD_CUSTOM_FIELD_ERROR')
@@ -68,8 +71,7 @@ def update(args):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
     error = None
-
-    res = _db.update({
+    _args = {
         'table': ['custom_fields'],
         'set': {
             'label': args['label'],
@@ -81,8 +83,11 @@ def update(args):
         },
         'where': ['id = %s'],
         'data': [args['id']]
-    })
+    }
+    if args['options']:
+        _args['set']['settings'] = json.dumps({'options': args['options']})
 
+    res = _db.update(_args)
     if not res:
         error = gettext('UPDATE_CUSTOM_FIELDS_ERROR')
 
