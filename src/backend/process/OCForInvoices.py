@@ -21,7 +21,7 @@ import uuid
 import mimetypes
 from src.backend.import_classes import _Spreadsheet
 from src.backend.import_process import FindDate, FindFooter, FindInvoiceNumber, FindSupplier, FindCustom, \
-    FindOrderNumber, FindDeliveryNumber, FindFooterRaw
+    FindOrderNumber, FindDeliveryNumber, FindFooterRaw, FindQuotationNumber
 
 
 def insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier, status,
@@ -240,6 +240,27 @@ def process(args, file, log, config, files, ocr, regex, database, typo, docserve
             invoice_found_on_first_or_last_page = True
         j += 1
 
+    j = 0
+    tmp_nb_pages = nb_pages
+    invoice_found_on_first_or_last_page = False
+    while not invoice_number:
+        tmp_nb_pages = tmp_nb_pages - 1
+        if j == 3 or int(tmp_nb_pages) - 1 == 0 or nb_pages == 1:
+            break
+        convert(file, files, ocr, tmp_nb_pages, True)
+
+        _file = files.custom_file_name
+        image = files.open_image_return(_file)
+
+        invoice_number_class.text = ocr.line_box_builder(image)
+        invoice_number_class.nbPages = tmp_nb_pages
+        invoice_number_class.customPage = True
+
+        invoice_number = invoice_number_class.run()
+        if invoice_number:
+            invoice_found_on_first_or_last_page = True
+        j += 1
+
     if invoice_number:
         datas.update({'invoice_number': invoice_number[0]})
         if invoice_number[1]:
@@ -270,6 +291,26 @@ def process(args, file, log, config, files, ocr, regex, database, typo, docserve
             pages.update({'invoice_due_date': date[2]})
             if len(date[3]) > 1:
                 positions.update({'invoice_due_date': files.reformat_positions(date[3][1])})
+
+        # Find quotation number
+    quotation_number_class = FindQuotationNumber(ocr, files, log, regex, config, database, supplier, file, typo,
+                                                 ocr.header_text, 1, False, ocr.footer_text, docservers, configurations)
+    quotation_number = quotation_number_class.run()
+    if not quotation_number:
+        quotation_number_class.text = ocr.header_last_text
+        quotation_number_class.footer_text = ocr.footer_last_text
+        quotation_number_class.nbPages = nb_pages
+        quotation_number_class.customPage = True
+        quotation_number = quotation_number_class.run()
+        if quotation_number:
+            quotation_number.append(nb_pages)
+
+    if quotation_number:
+        datas.update({'quotation_number': quotation_number[0]})
+        if quotation_number[1]:
+            positions.update({'quotation_number': files.reformat_positions(quotation_number[1])})
+        if quotation_number[2]:
+            pages.update({'quotation_number': quotation_number[2]})
 
     # Find footer informations (total amount, no rate amount etc..)
     footer_class = FindFooter(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text, typo, docservers)

@@ -184,6 +184,7 @@
 		"invoice_number": "Numéro de facture",
 		"no_rate_amount": "Montant HT",
 		"order_number": "Numéro de commande",
+		"quotation_number": "Numéro de devis",
 		"register_date_day": "Jour d'enregistrement de la facture",
 		"register_date_month": "Mois d'enregistrement de la facture",
 		"register_date_year": "Année d'enregistrement de la facture",

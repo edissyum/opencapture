@@ -104,6 +104,10 @@ export class UpdateOutputComponent implements OnInit {
             'label': 'FACTURATION.invoice_number'
         },
         {
+            "id": 'quotation_number',
+            'label': 'FACTURATION.quotation_number'
+        },
+        {
             "id": 'invoice_date_year',
             'label': marker('FACTURATION.invoice_date_year')
         },

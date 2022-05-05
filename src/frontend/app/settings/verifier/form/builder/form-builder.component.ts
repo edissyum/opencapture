@@ -282,6 +282,21 @@ export class FormBuilderComponent implements OnInit {
                     display_icon:'fa-solid file-alt'
                 },
                 {
+                    id: 'quotation_number',
+                    label: marker('FACTURATION.quotation_number'),
+                    unit: 'facturation',
+                    type: 'text',
+                    required: false,
+                    required_icon: 'fa-solid fa-star',
+                    class: "w-1/3",
+                    class_label: "1/33",
+                    color: 'orange',
+                    format: 'alphanum_extended',
+                    format_icon: 'fa-solid fa-hashtag',
+                    display: 'simple',
+                    display_icon:'fa-solid fa-print'
+                },
+                {
                     id: 'invoice_date',
                     label: marker('FACTURATION.invoice_date'),
                     unit: 'facturation',
