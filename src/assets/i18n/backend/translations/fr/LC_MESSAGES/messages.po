@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.1\n"
 "Report-Msgid-Bugs-To: nathan.cheval@edissyum.com\n"
-"POT-Creation-Date: 2022-03-18 10:18+0100\n"
+"POT-Creation-Date: 2022-04-22 09:22+0200\n"
 "PO-Revision-Date: 2019-09-02 17:48+0200\n"
 "Last-Translator: Nathan CHEVAL <nathan.cheval@edissyum.com>\n"
 "Language: fr\n"
@@ -62,9 +62,9 @@ msgstr "Erreur lors de la création du compte fournisseur"
 msgid "SUPPLIER_VAT_NUMBER_ALREADY_EXISTS"
 msgstr "Un compte fournisseur existe déjà avec ce numéro de TVA"
 
-#: src/backend/controllers/accounts.py:292 src/backend/controllers/user.py:86
+#: src/backend/controllers/accounts.py:292 src/backend/controllers/user.py:99
 #: src/backend/models/accounts.py:192 src/backend/models/accounts.py:211
-#: src/backend/models/accounts.py:226 src/backend/models/user.py:132
+#: src/backend/models/accounts.py:226 src/backend/models/user.py:133
 msgid "GET_CUSTOMER_BY_ID_ERROR"
 msgstr "Erreur lors de la récupération du compte client"
 
@@ -155,52 +155,52 @@ msgstr "Erreur lors de la mise à jour des champs du formulaire"
 msgid "ADD_HISTORY_ERROR"
 msgstr "Erreur lors de l'ajout dans l'historique"
 
-#: src/backend/controllers/inputs.py:52 src/backend/controllers/inputs.py:58
+#: src/backend/controllers/inputs.py:49 src/backend/controllers/inputs.py:55
 msgid "UPDATE_INPUT_ERROR"
 msgstr "Erreur lors de la mise à jour de la chaîne entrante"
 
-#: src/backend/controllers/inputs.py:85 src/backend/controllers/inputs.py:96
-#: src/backend/controllers/inputs.py:109
+#: src/backend/controllers/inputs.py:82 src/backend/controllers/inputs.py:93
+#: src/backend/controllers/inputs.py:106
 msgid "CREATE_INPUT_ERROR"
 msgstr "Erreur lors de la création de la chaîne entrante"
 
-#: src/backend/controllers/inputs.py:86
+#: src/backend/controllers/inputs.py:83
 msgid "INPUT_ID_ALREADY_EXISTS"
 msgstr "Le libellé technique de la chaîne entrante existe déjà"
 
-#: src/backend/controllers/inputs.py:97
+#: src/backend/controllers/inputs.py:94
 msgid "INPUT_FOLDER_ALREADY_EXISTS"
 msgstr "Le chemin de capture est déjà paramétré dans une autre chaîne entrante"
 
-#: src/backend/controllers/inputs.py:122
+#: src/backend/controllers/inputs.py:119
 msgid "GET_INPUT_BY_ID_ERROR"
 msgstr "Erreur lors de récupération de la chaîne entrante"
 
-#: src/backend/controllers/inputs.py:146 src/backend/controllers/inputs.py:152
+#: src/backend/controllers/inputs.py:143 src/backend/controllers/inputs.py:149
 msgid "DELETE_INPUT_ERROR"
 msgstr "Erreur lors de le suppression de la chaîne entrante"
 
-#: src/backend/controllers/inputs.py:181
+#: src/backend/controllers/inputs.py:178
 msgid "FS_WATCHER_DELETION_ERROR"
 msgstr "Erreur lors de la suppression des paramètres du fs watcher"
 
-#: src/backend/controllers/inputs.py:182 src/backend/controllers/inputs.py:241
+#: src/backend/controllers/inputs.py:179 src/backend/controllers/inputs.py:236
 msgid "FS_WATCHER_CONFIG_DOESNT_EXIST"
 msgstr "La configuration du fs watcher est introuvable"
 
-#: src/backend/controllers/inputs.py:222 src/backend/controllers/inputs.py:240
+#: src/backend/controllers/inputs.py:217 src/backend/controllers/inputs.py:235
 msgid "FS_WATCHER_CREATION_ERROR"
 msgstr "Erreur lors de la création des paramètres du fs watcher"
 
-#: src/backend/controllers/inputs.py:223
+#: src/backend/controllers/inputs.py:218
 msgid "CAN_NOT_CREATE_FOLDER_PERMISSION_ERROR"
 msgstr "Problème de permissions pour créer le dossier"
 
-#: src/backend/controllers/inputs.py:246
+#: src/backend/controllers/inputs.py:241
 msgid "SCRIPT_SAMPLE_DOESNT_EXISTS"
 msgstr "Le script d'exemple n'existe pas"
 
-#: src/backend/controllers/inputs.py:252
+#: src/backend/controllers/inputs.py:247
 msgid "SCRIPT_FOLDER_DOESNT_EXISTS"
 msgstr "Le dossier des scripts n'existe pas"
 
@@ -297,61 +297,69 @@ msgstr "Erreur lors de la désactivation du rôle"
 msgid "ENABLE_ROLE_ERROR"
 msgstr "Erreur lors de l'activation du rôle"
 
-#: src/backend/controllers/splitter.py:68
-#: src/backend/controllers/verifier.py:75
+#: src/backend/controllers/splitter.py:79
+msgid "LOAD_METADATA_ERROR"
+msgstr "Erreur du chargement des métadonnées"
+
+#: src/backend/controllers/splitter.py:107
+#: src/backend/controllers/verifier.py:77
 msgid "AT"
 msgstr "à"
 
-#: src/backend/controllers/splitter.py:178
-#: src/backend/controllers/splitter.py:329
+#: src/backend/controllers/splitter.py:224
 msgid "ADD_DOCUMENT_ERROR"
 msgstr "Erreur lors de l'ajout d'un document"
 
-#: src/backend/controllers/splitter.py:229
-#: src/backend/controllers/splitter.py:235
-#: src/backend/controllers/verifier.py:439
-#: src/backend/controllers/verifier.py:445
-#: src/backend/controllers/verifier.py:451
+#: src/backend/controllers/splitter.py:275
+#: src/backend/controllers/splitter.py:281
+#: src/backend/controllers/verifier.py:441
+#: src/backend/controllers/verifier.py:447
+#: src/backend/controllers/verifier.py:453
 msgid "EXPORT_MAARCH_ERROR"
 msgstr "Erreur lors de l'export vers Maarch"
 
-#: src/backend/controllers/splitter.py:241
-#: src/backend/controllers/verifier.py:463
+#: src/backend/controllers/splitter.py:287
+#: src/backend/controllers/verifier.py:465
 msgid "MAARCH_WS_INFO_EMPTY"
 msgstr "Les informations de connexion à Maarch sont vides"
 
-#: src/backend/controllers/splitter.py:267
+#: src/backend/controllers/splitter.py:313
 msgid "EXPORT_PDF_ERROR"
 msgstr "Erreur lors de l'export PDF"
 
-#: src/backend/controllers/splitter.py:284
-#: src/backend/controllers/splitter.py:493
-#: src/backend/controllers/splitter.py:512
-#: src/backend/controllers/verifier.py:555
+#: src/backend/controllers/splitter.py:330
+#: src/backend/controllers/splitter.py:550
+#: src/backend/controllers/splitter.py:569
+#: src/backend/controllers/verifier.py:557
 msgid "EXPORT_XML_ERROR"
 msgstr "Erreur lors de l'export XML"
 
-#: src/backend/controllers/splitter.py:304
+#: src/backend/controllers/splitter.py:351
 msgid "UPDATE_BATCH_ERROR"
 msgstr "Erreur lors de la mise à jour du lot"
 
-#: src/backend/controllers/splitter.py:345
+#: src/backend/controllers/splitter.py:366
+msgid "UPDATE_DOCUMENTS_ERROR"
+msgstr "Erreur lors de la mise à jour du document"
+
+#: src/backend/controllers/splitter.py:382
 msgid "UPDATE_DOCUMENT_ERROR"
 msgstr "Erreur lors de la mise à jour du document"
 
-#: src/backend/controllers/splitter.py:365
-#: src/backend/controllers/splitter.py:380
-#: src/backend/controllers/splitter.py:394
+#: src/backend/controllers/splitter.py:397
+#: src/backend/controllers/splitter.py:418
+#: src/backend/controllers/splitter.py:433
+#: src/backend/controllers/splitter.py:448
 msgid "UPDATE_PAGES_ERROR"
 msgstr "Erreur lors de la modification des pages"
 
-#: src/backend/controllers/splitter.py:407
+#: src/backend/controllers/splitter.py:462
 msgid "CMIS_CONNECTION_ERROR"
 msgstr "Erreur lors de la connexion CMIS"
 
-#: src/backend/controllers/splitter.py:573
-#: src/backend/controllers/verifier.py:703 src/backend/models/splitter.py:442
-#: src/backend/models/verifier.py:134
+#: src/backend/controllers/splitter.py:640
+#: src/backend/controllers/verifier.py:706 src/backend/models/splitter.py:401
+#: src/backend/models/verifier.py:137
 msgid "GET_TOTALS_ERROR"
 msgstr "Erreur lors de la récupération des totaux"
 
@@ -363,97 +371,105 @@ msgstr "Erreur lors de la récupération des status"
 msgid "CREATE_USER_ERROR"
 msgstr "Erreur lors de la création de l'utilisateur"
 
-#: src/backend/controllers/user.py:69 src/backend/models/user.py:113
+#: src/backend/controllers/user.py:69 src/backend/models/user.py:114
 msgid "GET_USER_BY_ID_ERROR"
 msgstr "Erreur lors de la récupération de l'utilisateur"
 
-#: src/backend/controllers/user.py:100
+#: src/backend/controllers/user.py:113
 msgid "UPDATE_PROFILE"
 msgstr "Mise à jour du profile"
 
-#: src/backend/controllers/user.py:101
+#: src/backend/controllers/user.py:114
 msgid "ERROR_OLD_PASSWORD_NOT_MATCH"
 msgstr "L'ancien mot de passe ne corresponds pas"
 
-#: src/backend/controllers/user.py:124 src/backend/controllers/user.py:130
-#: src/backend/models/user.py:151
+#: src/backend/controllers/user.py:119
+msgid "UPDATE_USER"
+msgstr "Mise à jour de l'utilisateur"
+
+#: src/backend/controllers/user.py:120
+msgid "ERROR_PASSWORD_NOT_MATCH"
+msgstr "Les mots de passes ne correspondent pas"
+
+#: src/backend/controllers/user.py:147 src/backend/controllers/user.py:153
+#: src/backend/models/user.py:152
 msgid "UPDATE_USER_ERROR"
 msgstr "Erreur lors de la mise à jour de l'utilisateur"
 
-#: src/backend/controllers/user.py:147 src/backend/controllers/user.py:153
+#: src/backend/controllers/user.py:170 src/backend/controllers/user.py:176
 msgid "DELETE_USER_ERROR"
 msgstr "Erreur lors de la suppression de l'utilisateur"
 
-#: src/backend/controllers/user.py:170 src/backend/controllers/user.py:176
+#: src/backend/controllers/user.py:193 src/backend/controllers/user.py:199
 msgid "DISABLE_USER_ERROR"
 msgstr "Erreur lors de désactiver de l'utilisateur"
 
-#: src/backend/controllers/user.py:193 src/backend/controllers/user.py:199
+#: src/backend/controllers/user.py:216 src/backend/controllers/user.py:222
 msgid "ENABLE_USER_ERROR"
 msgstr "Erreur lors de l'activation de l'utilisateur"
 
-#: src/backend/controllers/user.py:219 src/backend/controllers/user.py:225
-#: src/backend/models/user.py:169
+#: src/backend/controllers/user.py:242 src/backend/controllers/user.py:248
+#: src/backend/models/user.py:170
 msgid "UPDATE_CUSTOMERS_USER_ERROR"
 msgstr "Erreur lors de la mise à jour des comptes clients de l'utilisateur"
 
-#: src/backend/controllers/verifier.py:56 src/backend/models/verifier.py:34
+#: src/backend/controllers/verifier.py:58 src/backend/models/verifier.py:34
 msgid "GET_INVOICE_BY_ID_ERROR"
 msgstr "Erreur lors de la récupération de la facture"
 
-#: src/backend/controllers/verifier.py:163
-#: src/backend/controllers/verifier.py:253
+#: src/backend/controllers/verifier.py:165
+#: src/backend/controllers/verifier.py:255
 msgid "UPDATE_INVOICE_POSITIONS_ERROR"
 msgstr "Erreur lors de la mise à jour des positions de la facture"
 
-#: src/backend/controllers/verifier.py:188
-#: src/backend/controllers/verifier.py:273
+#: src/backend/controllers/verifier.py:190
+#: src/backend/controllers/verifier.py:275
 msgid "UPDATE_INVOICE_PAGES_ERROR"
 msgstr "Erreur lors de la mise à jour des pages de la facture"
 
-#: src/backend/controllers/verifier.py:212
-#: src/backend/controllers/verifier.py:232
+#: src/backend/controllers/verifier.py:214
+#: src/backend/controllers/verifier.py:234
 msgid "UPDATE_INVOICE_DATA_ERROR"
 msgstr "Erreur lors de la mise à jour des données de la facture"
 
-#: src/backend/controllers/verifier.py:290
-#: src/backend/controllers/verifier.py:296
+#: src/backend/controllers/verifier.py:292
+#: src/backend/controllers/verifier.py:298
 msgid "DELETE_INVOICE_ERROR"
 msgstr "Erreur lors de la suppression de la facture"
 
-#: src/backend/controllers/verifier.py:314
-#: src/backend/controllers/verifier.py:320
+#: src/backend/controllers/verifier.py:316
+#: src/backend/controllers/verifier.py:322
 msgid "UPDATE_INVOICE_ERROR"
 msgstr "Erreur lors de la mise à jour de la facture"
 
-#: src/backend/controllers/verifier.py:340
+#: src/backend/controllers/verifier.py:342
 msgid "REMOVE_LOCK_BY_USER_ID_ERROR"
 msgstr "Erreur lors de la suppression du verrou sur la facture"
 
-#: src/backend/controllers/verifier.py:446
+#: src/backend/controllers/verifier.py:448
 msgid "PDF_FILE_NOT_FOUND"
 msgstr "Le fichier PDF est introuvable"
 
-#: src/backend/controllers/verifier.py:457
+#: src/backend/controllers/verifier.py:459
 msgid "MAARCH_WS_INFO_WRONG"
 msgstr "Les informations de connexion à Maarch sont erronées"
 
-#: src/backend/controllers/verifier.py:549
+#: src/backend/controllers/verifier.py:551
 msgid "XML_DESTINATION_FOLDER_DOESNT_EXISTS"
 msgstr "Le dossier de destination XML n'existe pas"
 
-#: src/backend/controllers/verifier.py:631
-#: src/backend/controllers/verifier.py:634
-#: src/backend/controllers/verifier.py:647
-#: src/backend/controllers/verifier.py:664
+#: src/backend/controllers/verifier.py:633
+#: src/backend/controllers/verifier.py:636
+#: src/backend/controllers/verifier.py:649
+#: src/backend/controllers/verifier.py:666
 msgid "API_INSEE_ERROR_CONNEXION"
 msgstr "Erreur lors de la connexion à l'api de l'INSEE"
 
-#: src/backend/controllers/verifier.py:686
+#: src/backend/controllers/verifier.py:688
 msgid "VAT_NOT_VALID"
 msgstr "Numéro de TVA invalide"
 
-#: src/backend/controllers/verifier.py:690
+#: src/backend/controllers/verifier.py:692
 msgid "VAT_API_ERROR"
 msgstr "Impossible de joindre l'API de vérification du numéro de TVA"
 
@@ -477,11 +493,15 @@ msgstr "Utilisateur supprimé"
 msgid "USER_DISABLED"
 msgstr "Utilisateur desactivé"
 
-#: src/backend/models/config.py:100
+#: src/backend/models/config.py:131
 msgid "UPDATE_CONFIGURATION_ERROR"
 msgstr "Erreur lors de la mise à jour de la configuration"
 
-#: src/backend/models/config.py:122
+#: src/backend/models/config.py:149
+msgid "UPDATE_REGEX_ERROR"
+msgstr "Erreur lors de la mise à jour des REGEX"
+
+#: src/backend/models/config.py:171
 msgid "UPDATE_DOCSERVER_ERROR"
 msgstr "Erreur lors de la mise à jour de la docserver"
 
@@ -529,11 +549,11 @@ msgstr "Erreur lors de la mise à jour du formulaire"
 msgid "UPDATE_FORM_FIELDS_ERROR"
 msgstr "Erreur lors de la mise à jour des champs du formulaire"
 
-#: src/backend/models/forms.py:149
+#: src/backend/models/forms.py:157
 msgid "ADD_FORM_ERROR"
 msgstr "Erreur lors de la création du formulaire"
 
-#: src/backend/models/forms.py:152
+#: src/backend/models/forms.py:160
 msgid "FORM_LABEL_ALREADY_EXIST"
 msgstr "Le libellé de formulaire existe déjà"
 
@@ -601,43 +621,39 @@ msgstr "Erreur lors de la mise à jour des privilèges du rôle"
 msgid "ROLE_PRIVILEGES_CREATE_ERROR"
 msgstr "Erreur lors de la création des privilèges du rôle"
 
-#: src/backend/models/splitter.py:70
+#: src/backend/models/splitter.py:64
 msgid "GET_MAX_SPLIT_INDEX_ERROR"
 msgstr "Erreur lors de l'obtention de l'index du Splitter"
 
-#: src/backend/models/splitter.py:110
-msgid "GET_DEMAND_NUMBER_ERROR"
-msgstr "Erreur lors de l'obtention du numéro de demande du Splitter"
-
-#: src/backend/models/splitter.py:129
+#: src/backend/models/splitter.py:103
 msgid "UPDATE_SETTINGS_ERROR"
 msgstr "Erreur lors de la mise à jour des paramètres du Splitter"
 
-#: src/backend/models/splitter.py:150
-msgid "INSERT_REFERENTIAL_ERROR"
-msgstr "Erreur lors de l'insertion du référentiel de Splitter"
-
-#: src/backend/models/splitter.py:171
+#: src/backend/models/splitter.py:124
 msgid "INSERT_PAGE_ERROR"
 msgstr "Erreur lors de l'insertion des pages du Splitter"
 
-#: src/backend/models/splitter.py:229
+#: src/backend/models/splitter.py:182
 msgid "GET_BATCH_ERROR"
 msgstr "Erreur lors de la récupération des lots du Splitter"
 
-#: src/backend/models/splitter.py:248
+#: src/backend/models/splitter.py:201
 msgid "GET_DOCUMENTS_ERROR"
 msgstr "Erreur lors de la récupération des documents du Splitter"
 
-#: src/backend/models/splitter.py:267
+#: src/backend/models/splitter.py:220
 msgid "GET_PAGES_ERROR"
 msgstr "Erreur lors de l'obtention des pages du Splitter"
 
-#: src/backend/models/splitter.py:285
+#: src/backend/models/splitter.py:238
 msgid "GET_MAX_SOURCE_PAGE_VALUE_ERROR"
 msgstr "Erreur lors de l'obtention de la valeur des pages source du Splitter"
 
-#: src/backend/models/splitter.py:322
+#: src/backend/models/splitter.py:257
+msgid "GET_DOCUMENT_ERROR"
+msgstr "Erreur lors de la récupération du document"
+
+#: src/backend/models/splitter.py:275
 msgid "GET_DOCUMENT_MAX_SPLIT_INDEX_ERROR"
 msgstr "Erreur lors de l'obtention de l'index maximum du Splitter"
 
@@ -673,4 +689,10 @@ msgstr "Erreur inconnue"
 
 #~ msgid "INPUT_FOLDER_DOESNT_EXISTS_OR_NOT_WRITEABLE"
 #~ msgstr "Le dossier spécifié n'existe pas ou n'est pas accessible"
+
+#~ msgid "GET_DEMAND_NUMBER_ERROR"
+#~ msgstr "Erreur lors de l'obtention du numéro de demande du Splitter"
+
+#~ msgid "INSERT_REFERENTIAL_ERROR"
+#~ msgstr "Erreur lors de l'insertion du référentiel de Splitter"
 
