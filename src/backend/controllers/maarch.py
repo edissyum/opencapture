@@ -83,6 +83,19 @@ def get_custom_fields(args):
     return custom_fields
 
 
+def get_contact_custom_fields(args):
+    _vars = create_classes_from_current_config()
+    _ws = _MaarchWebServices(
+        args['host'],
+        args['login'],
+        args['password'],
+        _vars[5],
+        _vars[1]
+    )
+    custom_fields = _ws.retrieve_contact_custom_fields()
+    return custom_fields
+
+
 def get_priorities(args):
     _vars = create_classes_from_current_config()
     _ws = _MaarchWebServices(

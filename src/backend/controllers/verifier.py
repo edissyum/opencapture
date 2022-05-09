@@ -375,23 +375,8 @@ def export_maarch(invoice_id, data):
                     if address:
                         supplier[0].update(address[0])
 
-                contact = {
-                    'company': supplier[0]['name'],
-                    'addressTown': supplier[0]['city'],
-                    'societyShort': supplier[0]['name'],
-                    'addressStreet': supplier[0]['address1'],
-                    'addressPostcode': supplier[0]['postal_code'],
-                    'customFields': {},
-                    'email': 'A_renseigner_' + supplier[0]['name'].replace(' ', '_') + '@' + supplier[0][
-                        'vat_number'] + '.fr'
-                }
-                res = ws.create_contact(contact)
-                if res is not False:
-                    args['contact'] = {'id': res['id'], 'type': 'contact'}
-
                 link_resource = False
-                opencapture_field = None
-                maarch_custom_field = None
+                opencapture_field = maarch_custom_field = maarch_clause = custom_field_contact_id = None
                 if 'links' in data['options']:
                     for _links in data['options']['links']:
                         if _links['id'] == 'enabled' and _links['value']:
@@ -400,6 +385,26 @@ def export_maarch(invoice_id, data):
                             maarch_custom_field = _links['value']
                         if _links['id'] == 'openCaptureField' and _links['value']:
                             opencapture_field = _links['value']
+                        if _links['id'] == 'maarchClause' and _links['value']:
+                            maarch_clause = _links['value']
+                        if _links['id'] == 'vatNumberContactCustom' and _links['value']:
+                            custom_field_contact_id = _links['value']
+
+                contact = {
+                    'company': supplier[0]['name'],
+                    'addressTown': supplier[0]['city'],
+                    'societyShort': supplier[0]['name'],
+                    'addressStreet': supplier[0]['address1'],
+                    'addressPostcode': supplier[0]['postal_code'],
+                    'email': 'A_renseignera_' + supplier[0]['name'].replace(' ', '_') +
+                             '@' + supplier[0]['vat_number'] + '.fr'
+                }
+                if custom_field_contact_id:
+                    contact['customFields'] = {custom_field_contact_id['id']: supplier[0]['vat_number'] + supplier[0]['siret']}
+
+                res = ws.create_contact(contact)
+                if res is not False:
+                    args['contact'] = {'id': res['id'], 'type': 'contact'}
 
                 ws_data = data['options']['parameters']
                 for _data in ws_data:
@@ -407,7 +412,8 @@ def export_maarch(invoice_id, data):
                     if 'webservice' in _data:
                         # Pour le webservices Maarch, ce sont les identifiants qui sont utilisés
                         # et non les valeurs bruts (e.g COU plutôt que Service courrier)
-                        value = _data['value']['id']
+                        if _data['value']:
+                            value = _data['value']['id']
 
                     args.update({
                         _data['id']: value
@@ -452,7 +458,7 @@ def export_maarch(invoice_id, data):
                             if opencapture_field:
                                 opencapture_field = ''.join(construct_with_var(opencapture_field, invoice_info))
                                 if maarch_custom_field:
-                                    docs = ws.retrieve_doc_with_custom(maarch_custom_field['id'], opencapture_field)
+                                    docs = ws.retrieve_doc_with_custom(maarch_custom_field['id'], opencapture_field, maarch_clause)
                                     if docs:
                                         res_id = docs['resources'][0]['res_id']
                                         ws.link_documents(str(res_id), message['resId'])

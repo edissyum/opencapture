@@ -53,12 +53,19 @@ def get_entities():
     return make_response(jsonify(entities)), 200
 
 
-
 @bp.route('maarch/getCustomFields', methods=['POST'])
 @auth.token_required
 def get_custom_fields():
     data = request.json['args']
     entities = maarch.get_custom_fields(data)
+    return make_response(jsonify(entities)), 200
+
+
+@bp.route('maarch/getContactsCustomFields', methods=['POST'])
+@auth.token_required
+def get_contact_custom_fields():
+    data = request.json['args']
+    entities = maarch.get_contact_custom_fields(data)
     return make_response(jsonify(entities)), 200
 
 

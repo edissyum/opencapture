@@ -65,6 +65,13 @@ class MaarchWebServices:
             return False
         return json.loads(res.text)
 
+    def retrieve_contact_custom_fields(self):
+        res = requests.get(self.base_url + '/contactsCustomFields', auth=self.auth)
+        if res.status_code != 200:
+            self.log.error('(' + str(res.status_code) + ') getContactCustomFieldsError : ' + str(res.text))
+            return False
+        return json.loads(res.text)
+
     def retrieve_priorities(self):
         res = requests.get(self.base_url + '/priorities', auth=self.auth)
         if res.status_code != 200:
@@ -79,10 +86,10 @@ class MaarchWebServices:
             return False
         return json.loads(res.text)
 
-    def retrieve_doc_with_custom(self, custom_id, data):
+    def retrieve_doc_with_custom(self, custom_id, data, clause):
         data = {
             'select': 'res_id',
-            'clause': "custom_fields ->> '" + str(custom_id) + "' = '" + str(data) + "'"
+            'clause': clause + " AND custom_fields ->> '" + str(custom_id) + "' = '" + str(data) + "'"
         }
 
         res = requests.post(self.base_url + '/res/list', auth=self.auth, data=json.dumps(data),
@@ -119,10 +126,8 @@ class MaarchWebServices:
         }
         res = requests.post(self.base_url + '/resources/' + res_id_master + '/linkedResources', auth=self.auth,
                             data=json.dumps(data), headers={'Connection': 'close', 'Content-Type': 'application/json'})
-        print(res.status_code)
-        print(res.text)
         if res.status_code != 200:
-            self.log.error('(' + str(res.status_code) + ') getDoctypesError : ' + str(res.text))
+            self.log.error('(' + str(res.status_code) + ') linkDocumentError : ' + str(res.text))
             return False
         return json.loads(res.text)
 

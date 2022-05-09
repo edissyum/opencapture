@@ -126,6 +126,24 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "webservice": "",
                 "placeholder": "quotation_number",
                 "hint": "Identifiant du champ dans Open-Capture"
+            },
+            {
+                "id": "maarchClause",
+                "type": "text",
+                "label": "Clause de selection des documents dans Maarch",
+                "required": "true",
+                "webservice": "",
+                "placeholder": "status <> ''END''",
+                "hint": ""
+            },
+            {
+                "id": "vatNumberContactCustom",
+                "type": "text",
+                "label": "Identifiant du champ personnalisé de contact où stocké le numéro de TVA + SIRET",
+                "required": "true",
+                "webservice": "getContactsCustomFieldsFromMaarch",
+                "placeholder": "Identifiant Open-Capture",
+                "hint": ""
             }
         ],
         "parameters": [
