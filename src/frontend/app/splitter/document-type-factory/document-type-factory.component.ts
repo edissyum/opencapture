@@ -175,11 +175,9 @@ export class ChecklistDatabase {
                     }
                 }
             });
-
         } else {
             filteredTreeData = this.doctypesData;
         }
-
         /** Build the tree nodes from Json object. The result is a list of `DocumentItemNode` with nested
          * file node as children.
          */

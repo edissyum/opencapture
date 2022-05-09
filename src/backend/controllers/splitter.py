@@ -317,14 +317,14 @@ def export_pdf(batch, documents, parameters, metadata, pages, now, compress_type
     return {'paths': paths}, 200
 
 
-def export_xml(documents, parameters, metadata, now):
+def export_xml(fields_param, documents, parameters, metadata, now):
     mask_args = {
         'mask': parameters['filename'],
         'separator': parameters['separator'],
         'extension': parameters['extension']
     }
     file_name = _Splitter.get_mask_result(None, metadata, now, mask_args)
-    res_xml = _Splitter.export_xml(documents, metadata, parameters['folder_out'], file_name, now)
+    res_xml = _Splitter.export_xml(fields_param, documents, metadata, parameters['folder_out'], file_name, now)
     if not res_xml[0]:
         response = {
             "errors": gettext('EXPORT_XML_ERROR'),
@@ -518,7 +518,8 @@ def validate(args):
                     Export XML file if required by output
                 """
                 if output[0]['output_type_id'] in ['export_xml']:
-                    res_export_xml = export_xml(args['documents'], parameters, args['batchMetadata'], now)
+                    form_fields_param = forms.get_form_fields_by_form_id(batch[0]['form_id'])[0]['fields']
+                    res_export_xml = export_xml(form_fields_param, args['documents'], parameters, args['batchMetadata'], now)
                     if res_export_xml[1] != 200:
                         return res_export_xml
                 """
@@ -563,7 +564,8 @@ def validate(args):
                         'extension': 'xml',
                         'folder_out': _docservers['TMP_PATH'],
                     }
-                    res_export_xml = export_xml(args['documents'], xml_export_parameters, args['batchMetadata'], now)
+                    form_fields_param = forms.get_form_fields_by_form_id(batch[0]['form_id'])[0]['fields']
+                    res_export_xml = export_xml(form_fields_param, args['documents'], xml_export_parameters, args['batchMetadata'], now)
                     if res_export_xml[1] != 200:
                         return res_export_xml
                     cmis_res = cmis.create_document(res_export_xml[0]['path'], 'text/xml')

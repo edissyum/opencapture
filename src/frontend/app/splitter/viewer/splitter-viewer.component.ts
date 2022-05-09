@@ -34,6 +34,7 @@ import {DocumentTypeComponent} from "../document-type/document-type.component";
 import {remove} from 'remove-accents';
 import {HistoryService} from "../../../services/history.service";
 import {ConfirmDialogComponent} from "../../../services/confirm-dialog/confirm-dialog.component";
+import * as stream from "stream";
 
 export interface Batch {
     id          : number
@@ -51,6 +52,7 @@ export interface Field {
     class       : string
     settings    : any
     required    : string
+    xmlTag      : string
     resultMask  : string
     searchMask  : string
     label_short : string
@@ -504,6 +506,13 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     metadataItem.data['metadataId'] = metadataItem.id;
                     this.metadata.push(metadataItem.data);
                 });
+                if(this.currentBatch.customFieldsValues.hasOwnProperty('metadataId')){
+                    const savedMetadata = this.metadata.filter(item => item.metadataId === this.currentBatch.customFieldsValues.metadataId);
+                    if(savedMetadata.length > 0){
+                        this.filteredServerSideMetadata.next(savedMetadata);
+                        this.fillData((savedMetadata[0]));
+                    }
+                }
                 this.notify.success(this.translate.instant('SPLITTER.referential_updated'));
             }),
             catchError((err: any) => {
@@ -528,8 +537,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 if(field.type === 'select' && selectedMetadata[field['metadata_key']]){
                     this.batchForm.get(field['metadata_key'])?.setValue(selectedMetadata[field['metadata_key']]);
                 }
-                else
+                else{
                     this.batchForm.get(field['metadata_key'])?.setValue(optionId);
+                }
             }
         }
     }
@@ -546,6 +556,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                                 'type'          : field.type,
                                 'label'         : field.label,
                                 'class'         : field.class,
+                                'xmlTag'        : field.xmlTag,
                                 'settings'      : field.settings,
                                 'required'      : field.required,
                                 'label_short'   : field.label_short,

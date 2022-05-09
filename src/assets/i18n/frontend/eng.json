@@ -101,7 +101,7 @@
 		"checkbox": "Checkbox",
 		"confirm_delete": "Are you sure you want to delete the document type <b>{{ doctypeLabel }}</b> ?",
 		"custom_exists": "Custom field already exist",
-		"delete_choice": "",
+		"delete_choice": "Delete choice",
 		"deleted": "Deleted",
 		"field_added": "Field added successfully",
 		"field_updated": "Field updated successfully",
@@ -117,9 +117,7 @@
 	},
 	"DISABLED": {
 		"disabled": "Disabled",
-		"not_disabled": "Not disabled",
-		"resultMask": "Result mask",
-		"searchMask": "Search mask"
+		"not_disabled": "Not disabled"
 	},
 	"DISPLAY": {
 		"multi": "Multi",
@@ -151,7 +149,7 @@
 	},
 	"ERROR": {
 		"404": "The page you are looking for does not exist",
-		"500": "",
+		"500": "Something has gone wrong on the website's server",
 		"alphanum_extended_pattern": "The value is not well formatted : alphanumeric with special char",
 		"alphanum_pattern": "The value is not well formatted : alphanumeric",
 		"char_pattern": "The value is not well formatted : alphabetic",
@@ -193,6 +191,11 @@
 		"vat_amount": "VAT amount",
 		"vat_rate": "VAT rate"
 	},
+	"FIELD_METADATA": {
+		"resultMask": "",
+		"searchMask": "",
+		"xmlTag": ""
+	},
 	"FORMATS": {
 		"alphanum": "Alphanumeric [0-9aA-zZ]",
 		"alphanum_extended": "Alphanumeric extended [0-9aA-zZ-/#,\\.\\s]",
@@ -206,7 +209,6 @@
 		"textarea": "Textarea"
 	},
 	"FORMS": {
-		"AutocompleteMasks": "Autocomplete mask",
 		"available_fields": "Fields available",
 		"choose_form": "Choose a new form",
 		"confirm_delete": "Are you sure you want to delete the form <b>{{ form }}</b> ?",
@@ -223,6 +225,7 @@
 		"duplicate": "Duplicate form",
 		"enable": "Enable form",
 		"form_deleted": "Form deleted successfully",
+		"input_metadata": "",
 		"input_settings": "Inputs",
 		"inputs_list_already_linked": "The following inputs are linked to this form <br><br> <b><center>{{ inputsList }}</center></b> <br> Please choose a new form for this inputs",
 		"is_default": "Default form",
