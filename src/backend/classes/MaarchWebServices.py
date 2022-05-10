@@ -142,10 +142,10 @@ class MaarchWebServices:
         }
         res = requests.post(self.base_url + '/resources/' + res_id_master + '/linkedResources', auth=self.auth,
                             data=json.dumps(data), headers={'Connection': 'close', 'Content-Type': 'application/json'})
-        if res.status_code != 200:
+        if res.status_code not in (200, 204):
             self.log.error('(' + str(res.status_code) + ') linkDocumentError : ' + str(res.text))
             return False
-        return json.loads(res.text)
+        return True
 
     def insert_with_args(self, args):
         if 'contact' not in args:

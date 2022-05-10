@@ -20,18 +20,17 @@ import json
 import base64
 import logging
 import datetime
-import requests
+from xml.dom import minidom
+import xml.etree.ElementTree as Et
 import pandas as pd
 from PIL import Image
-from xml.dom import minidom
 from flask_babel import gettext
-import xml.etree.ElementTree as Et
+import requests
 from zeep import Client, exceptions
-from src.backend.main import launch
 from flask import current_app, Response
 from src.backend.import_controllers import user
 from src.backend.import_models import verifier, accounts
-from src.backend.main import create_classes_from_current_config
+from src.backend.main import launch, create_classes_from_current_config
 from src.backend.import_classes import _Files, _MaarchWebServices
 
 
@@ -447,11 +446,12 @@ def export_maarch(invoice_id, data):
 
                 file = invoice_info['path'] + '/' + invoice_info['filename']
                 if os.path.isfile(file):
-                    args.update({
-                        'fileContent': open(file, 'rb').read(),
-                        'documentDate': str(pd.to_datetime(invoice_info['datas']['invoice_date'],
-                                                           infer_datetime_format=True).date())
-                    })
+                    with open(file, 'rb') as file:
+                        args.update({
+                            'fileContent': file.read(),
+                            'documentDate': str(pd.to_datetime(invoice_info['datas']['invoice_date'],
+                                                               infer_datetime_format=True).date())
+                        })
                     res, message = _ws.insert_with_args(args)
                     if res:
                         if link_resource:
@@ -557,23 +557,23 @@ def export_xml(invoice_id, data):
 
         # Fill XML with invoice informations
         if os.path.isdir(folder_out):
-            xml_file = open(folder_out + '/' + filename, 'w')
-            root = Et.Element('ROOT')
-            xml_technical = Et.SubElement(root, 'TECHNICAL')
-            xml_datas = Et.SubElement(root, 'DATAS')
+            with open(folder_out + '/' + filename, 'w', encoding='UTF-8') as xml_file:
+                root = Et.Element('ROOT')
+                xml_technical = Et.SubElement(root, 'TECHNICAL')
+                xml_datas = Et.SubElement(root, 'DATAS')
 
-            for technical in invoice_info:
-                if technical in ['path', 'filename', 'register_date', 'nb_pages', 'purchase_or_sale']:
-                    new_field = Et.SubElement(xml_technical, technical)
-                    new_field.text = str(invoice_info[technical])
+                for technical in invoice_info:
+                    if technical in ['path', 'filename', 'register_date', 'nb_pages', 'purchase_or_sale']:
+                        new_field = Et.SubElement(xml_technical, technical)
+                        new_field.text = str(invoice_info[technical])
 
-            for invoice_data in invoice_info['datas']:
-                new_field = Et.SubElement(xml_datas, invoice_data)
-                new_field.text = str(invoice_info['datas'][invoice_data])
+                for invoice_data in invoice_info['datas']:
+                    new_field = Et.SubElement(xml_datas, invoice_data)
+                    new_field.text = str(invoice_info['datas'][invoice_data])
 
-            xml_root = minidom.parseString(Et.tostring(root, encoding="unicode")).toprettyxml()
-            xml_file.write(xml_root)
-            xml_file.close()
+                xml_root = minidom.parseString(Et.tostring(root, encoding="unicode")).toprettyxml()
+                xml_file.write(xml_root)
+                xml_file.close()
             # END Fill XML with invoice informations
             return '', 200
         else:
@@ -636,16 +636,19 @@ def get_file_content(file_type, filename, mime_type, compress=False):
                     image = Image.open(full_path)
                     image.thumbnail((1920, 1080))
                     image.save(thumb_path, optimize=True, quality=50)
-                content = open(thumb_path, 'rb').read()
+                with open(thumb_path, 'rb') as file:
+                    content = file.read()
             else:
-                content = open(full_path, 'rb').read()
+                with open(full_path, 'rb') as file:
+                    content = file.read()
 
     if not content:
         if mime_type == 'image/jpeg':
-            content = open(_docservers['PROJECT_PATH'] + '/dist/assets/not_found/document_not_found.jpg', 'rb').read()
+            with open(_docservers['PROJECT_PATH'] + '/dist/assets/not_found/document_not_found.jpg', 'rb') as file:
+                content = file.read()
         else:
-            content = open(_docservers['PROJECT_PATH'] + '/dist/assets/not_found/document_not_found.pdf', 'rb').read()
-
+            with open(_docservers['PROJECT_PATH'] + '/dist/assets/not_found/document_not_found.pdf', 'rb') as file:
+                content = file.read()
     return Response(content, mimetype=mime_type)
 
 
@@ -658,7 +661,7 @@ def get_token_insee():
     try:
         res = requests.post(_cfg.cfg['API']['siret-url-token'],
                             data={'grant_type': 'client_credentials'},
-                            headers={"Authorization": "Basic %s" % str(credentials)})
+                            headers={"Authorization": f"Basic {credentials}"})
     except requests.exceptions.SSLError:
         return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
 
@@ -674,7 +677,7 @@ def verify_siren(token, siren):
 
     try:
         res = requests.get(_cfg.cfg['API']['siren-url'] + siren,
-                           headers={"Authorization": "Bearer %s" % token, "Accept": "application/json"})
+                           headers={"Authorization": f"Bearer {token}", "Accept": "application/json"})
     except (requests.exceptions.SSLError, requests.exceptions.ConnectionError):
         return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
 
@@ -691,7 +694,7 @@ def verify_siret(token, siret):
 
     try:
         res = requests.get(_cfg.cfg['API']['siret-url'] + siret,
-                           headers={"Authorization": "Bearer %s" % token, "Accept": "application/json"})
+                           headers={"Authorization": f"Bearer {token}", "Accept": "application/json"})
     except (requests.exceptions.SSLError, requests.exceptions.ConnectionError):
         return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
 

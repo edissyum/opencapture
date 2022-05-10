@@ -137,7 +137,7 @@
                                         {{ field.label | translate }}
                                     </mat-label>
                                     <input matInput type="text" [required]="true" [formControl]="field.control"
-                                           [matAutocomplete]="data">
+                                           [matAutocomplete]="data" [readonly]="invoice.status === 'END'">
                                     <mat-autocomplete #data="matAutocomplete">
                                         <mat-option *ngFor="let option of field.autocomplete_values | async" [value]="option.data"
                                                     (onSelectionChange)="setAutocompleteDefaultValue($event)" [id]="option.res_id">
