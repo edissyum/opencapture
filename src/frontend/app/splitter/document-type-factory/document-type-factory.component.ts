@@ -96,6 +96,7 @@ export class ChecklistDatabase {
             }),
             catchError((err: any) => {
                 console.debug(err);
+                this.loading = false;
                 this.notify.handleErrors(err);
                 return of(false);
             })
@@ -195,7 +196,7 @@ export class TreeItemFlatNode {
 })
 export class DocumentTypeFactoryComponent implements OnInit {
     loading: boolean                        = false;
-    searchText: string                      = "";
+    searchText: string                      = this.localeStorageService.get('doctype_last_search_value') || '';
     forms: any[]                            = [];
     @Input() selectedDocTypeInput: any      = {"key": undefined, "id": -1};
     @Output() selectedDoctypeOutput: any    = new EventEmitter < string > ();
@@ -248,7 +249,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
             this.selectedFormOutput.emit({'formId': formId});
         });
         this.data.hasOwnProperty('formId') ? this.treeDataObj.loadTree(this.data.formId): this.loadForms();
-        this.expandNode();
+        this.filterChanged();
     }
 
     loadForms(): void {
@@ -269,12 +270,6 @@ export class DocumentTypeFactoryComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
-    }
-
-    public expandNode(){
-        this.treeControl.expandAll();
-        // for(let node of this.treeControl.dataNodes)
-        // this.treeControl.expand(this.treeControl.dataNodes[/** node you want to expand **/]);
     }
 
     /**
@@ -299,6 +294,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
     };
 
     filterChanged() {
+        this.localeStorageService.save('doctype_last_search_value',this.searchText);
         this.treeDataObj.filter(this.searchText);
         if (this.searchText)
         {
