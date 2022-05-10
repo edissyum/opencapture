@@ -29,29 +29,6 @@ import {AuthService} from "../../../services/auth.service";
 import {UserService} from "../../../services/user.service";
 import {TranslateService} from "@ngx-translate/core";
 import {NotificationService} from "../../../services/notifications/notifications.service";
-import {PrivilegesService} from "../../../services/privileges.service";
-import {LocalStorageService} from "../../../services/local-storage.service";
-
-export class TreeItemNode {
-    key!        : string;
-    label!      : string;
-    children!   : TreeItemNode[];
-    code!       : string;
-    type!       : string;
-    isDefault!  : boolean;
-}
-
-/** Flat item node with expandable and level information */
-export class TreeItemFlatNode {
-    label!      : string;
-    key!        : string;
-    level!      : number;
-    type!       : string;
-    isDefault!  : boolean;
-    expandable! : boolean;
-    code!       : string;
-}
-
 @Injectable()
 export class ChecklistDatabase {
     doctypesData : any[]    = [];
@@ -93,6 +70,7 @@ export class ChecklistDatabase {
                         label       : string
                         type        : string
                         status      : string
+                        expand      : boolean
                         is_default  : boolean
                         form_id     : boolean
                     }) => {
@@ -103,7 +81,8 @@ export class ChecklistDatabase {
                             'label'     : doctype.label,
                             'type'      : doctype.type,
                             'status'    : doctype.status,
-                            'isDefault': doctype.is_default,
+                            'expand'    : doctype.expand,
+                            'isDefault' : doctype.is_default,
                             'formId'    : doctype.form_id,
                         };
                         this.doctypesData.push(newDoctype);
@@ -143,13 +122,14 @@ export class ChecklistDatabase {
             && (o.code.match(/\./g) || []).length === (level.match(/\./g) || []).length + 1
         )
             .map(o => {
-                const node = new TreeItemNode();
-                node.key = o.key;
-                node.label = o.label;
-                node.code = o.code;
-                node.type = o.type;
-                node.isDefault = o.isDefault;
-                const children = obj.filter(so => (so.code as string).startsWith(level + '.'));
+                const node      = new TreeItemNode();
+                node.key        = o.key;
+                node.label      = o.label;
+                node.code       = o.code;
+                node.type       = o.type;
+                node.expand     = o.expand;
+                node.isDefault  = o.isDefault;
+                const children  = obj.filter(so => (so.code as string).startsWith(level + '.'));
                 if (children && children.length > 0) {
                     node.children = this.buildFileTree(children, o.code);
                 }
@@ -157,34 +137,55 @@ export class ChecklistDatabase {
             });
     }
 
+    public _normalizeValue(value: string): string {
+        return value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    }
+
     public filter(filterText: string) {
         let filteredTreeData: any[];
-        if (filterText) {
-            filteredTreeData = this.doctypesData.filter(d => d.label.toLocaleLowerCase().indexOf(filterText.toLocaleLowerCase()) > -1);
+        if (filterText){
+            filteredTreeData = this.doctypesData.filter(d =>
+                this._normalizeValue(d.label).indexOf(this._normalizeValue(filterText))
+                > -1 && d.code.lastIndexOf('.') === 1
+            );
             Object.assign([], filteredTreeData).forEach(ftd => {
                 // @ts-ignore
-                let str = (ftd.code as string);
-                while (str.lastIndexOf('.') > -1) {
-                    const index = str.lastIndexOf('.');
-                    str = str.substring(0, index);
-                    if (filteredTreeData.findIndex(t => t.code === str) === -1) {
-                        const obj = this.doctypesData.find(d => d.code === str);
-                        if (obj) {
-                            filteredTreeData.push(obj);
-                        }
-                    }
-                }
+                const code = (ftd.code as string);
+                filteredTreeData = filteredTreeData.concat(this.doctypesData.filter(d =>
+                    d.code.startsWith(code + ".") && d.code !== code
+                ));
             });
+
         } else {
             filteredTreeData = this.doctypesData;
         }
-        /** Build the tree nodes from Json object. The result is a list of `DocumentItemNode` with nested
-         * file node as children.
-         */
         const data = this.buildFileTree(filteredTreeData, '0');
-        // Notify the change.
         this.dataChange.next(data);
     }
+}
+import {PrivilegesService} from "../../../services/privileges.service";
+
+import {LocalStorageService} from "../../../services/local-storage.service";
+
+export class TreeItemNode {
+    key!        : string;
+    label!      : string;
+    children!   : TreeItemNode[];
+    code!       : string;
+    type!       : string;
+    expand!     : boolean;
+    isDefault!  : boolean;
+}
+
+/** Flat item node with expandable and level information */
+export class TreeItemFlatNode {
+    label!      : string;
+    key!        : string;
+    level!      : number;
+    type!       : string;
+    isDefault!  : boolean;
+    expandable! : boolean;
+    code!       : string;
 }
 
 @Component({
@@ -213,7 +214,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
     dataSource!    : MatTreeFlatDataSource<TreeItemNode, TreeItemFlatNode>;
 
     constructor(
-        public treeDataObj         : ChecklistDatabase,
+        public treeDataObj : ChecklistDatabase,
         public serviceSettings  : SettingsService,
         private http: HttpClient,
         public router: Router,
@@ -241,7 +242,6 @@ export class DocumentTypeFactoryComponent implements OnInit {
 
         this.treeDataObj.dataChange.subscribe(data => {
             this.dataSource.data = data;
-            this.treeControl.expandAll();
         });
         this.selectFormControl.valueChanges.subscribe(formId => {
             this.localeStorageService.save('doctypeFormId', formId);
@@ -249,6 +249,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
             this.selectedFormOutput.emit({'formId': formId});
         });
         this.data.hasOwnProperty('formId') ? this.treeDataObj.loadTree(this.data.formId): this.loadForms();
+        this.expandNode();
     }
 
     loadForms(): void {
@@ -269,6 +270,12 @@ export class DocumentTypeFactoryComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
+    }
+
+    public expandNode(){
+        this.treeControl.expandAll();
+        // for(let node of this.treeControl.dataNodes)
+        // this.treeControl.expand(this.treeControl.dataNodes[/** node you want to expand **/]);
     }
 
     /**
