@@ -29,6 +29,9 @@ import {AuthService} from "../../../services/auth.service";
 import {UserService} from "../../../services/user.service";
 import {TranslateService} from "@ngx-translate/core";
 import {NotificationService} from "../../../services/notifications/notifications.service";
+import {PrivilegesService} from "../../../services/privileges.service";
+import {LocalStorageService} from "../../../services/local-storage.service";
+
 @Injectable()
 export class ChecklistDatabase {
     doctypesData : any[]    = [];
@@ -64,7 +67,7 @@ export class ChecklistDatabase {
             tap((data: any) => {
                 let newDoctype;
                 data.doctypes.forEach((doctype: {
-                        id          : any
+                        id          : number
                         key         : string
                         code        : string
                         label       : string
@@ -121,6 +124,7 @@ export class ChecklistDatabase {
         )
             .map(o => {
                 const node      = new TreeItemNode();
+                node.id         = o.id;
                 node.key        = o.key;
                 node.label      = o.label;
                 node.code       = o.code;
@@ -160,11 +164,9 @@ export class ChecklistDatabase {
         this.dataChange.next(data);
     }
 }
-import {PrivilegesService} from "../../../services/privileges.service";
-
-import {LocalStorageService} from "../../../services/local-storage.service";
 
 export class TreeItemNode {
+    id!         : number;
     key!        : string;
     label!      : string;
     children!   : TreeItemNode[];
@@ -175,6 +177,7 @@ export class TreeItemNode {
 
 /** Flat item node with expandable and level information */
 export class TreeItemFlatNode {
+    id!         : number;
     label!      : string;
     key!        : string;
     level!      : number;
@@ -194,7 +197,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
     loading: boolean                        = false;
     searchText: string                      = "";
     forms: any[]                            = [];
-    @Input() selectedDocTypeInput: any      = {"key": undefined};
+    @Input() selectedDocTypeInput: any      = {"key": undefined, "id": -1};
     @Output() selectedDoctypeOutput: any    = new EventEmitter < string > ();
     @Output() selectedFormOutput: any       = new EventEmitter < string > ();
     selectFormControl: FormControl          =  new FormControl();
@@ -282,6 +285,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
         const flatNode = existingNode && existingNode.label === node.label
             ? existingNode
             : new TreeItemFlatNode();
+        flatNode.id         = node.id;
         flatNode.label      = node.label;
         flatNode.level      = level;
         flatNode.type       = node.type;

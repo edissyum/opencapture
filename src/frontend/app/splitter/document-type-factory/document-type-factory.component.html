@@ -31,7 +31,7 @@
          class="text-gray-400">{{ 'DOCTYPE.no_doctype_to_show' | translate }}</div>
     <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
         <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
-            <button mat-button class="h-8" [ngClass]="selectedDocTypeInput.key === node.key ? 'text-green-400' : ''"
+            <button mat-button class="h-8" [ngClass]="selectedDocTypeInput.id === node.id ? 'text-green-400' : ''"
                     (click)="selectNode(node, false)"
                     (dblclick)="selectNode(node, true)">
                 <i class="fa-solid fa-file fw"></i>
@@ -44,7 +44,7 @@
         </mat-tree-node>
         <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
             <button mat-button matTreeNodeToggle
-                    [ngClass]="selectedDocTypeInput.key === node.key ? 'text-green-400' : ''"
+                    [ngClass]="selectedDocTypeInput.id === node.id ? 'text-green-400' : ''"
                     [attr.aria-label]="'Toggle ' + node.label"
                     (click)="selectFolder(node)">
                 <i [ngClass]="treeControl.isExpanded(node) ? 'fa fa-minus-square' : 'fa fa-plus-square'"></i>
