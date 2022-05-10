@@ -437,7 +437,6 @@ export class UpdateOutputComponent implements OnInit {
             const args = this.getMaarchConnectionInfo();
             this.http.post(API_URL + '/ws/maarch/getContactsCustomFields', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.customFields) {
-                    console.log(_return)
                     const data = _return.customFields;
                     const customFields = [];
                     for (const cpt in data) {

@@ -38,8 +38,8 @@ from src.backend.import_classes import _Files, _MaarchWebServices
 def handle_uploaded_file(files, input_id):
     path = current_app.config['UPLOAD_FOLDER']
     for file in files:
-        f = files[file]
-        filename = _Files.save_uploaded_file(f, path)
+        _f = files[file]
+        filename = _Files.save_uploaded_file(_f, path)
         launch({
             'file': filename,
             'languages': current_app.config['LANGUAGES'],
@@ -154,7 +154,7 @@ def update_position_by_invoice_id(invoice_id, args):
         invoice_positions.update({
             column: position
         })
-        res, error = verifier.update_invoice({
+        _, error = verifier.update_invoice({
             'set': {"positions": json.dumps(invoice_positions)},
             'invoice_id': invoice_id
         })
@@ -182,7 +182,7 @@ def update_page_by_invoice_id(invoice_id, args):
         invoice_pages.update({
             column: page
         })
-        res, error = verifier.update_invoice({'set': {"pages": json.dumps(invoice_pages)}, 'invoice_id': invoice_id})
+        _, error = verifier.update_invoice({'set': {"pages": json.dumps(invoice_pages)}, 'invoice_id': invoice_id})
         if error is None:
             return '', 200
         else:
@@ -206,7 +206,7 @@ def update_invoice_data_by_invoice_id(invoice_id, args):
             invoice_data.update({
                 column: value
             })
-        res, error = verifier.update_invoice({'set': {"datas": json.dumps(invoice_data)}, 'invoice_id': invoice_id})
+        _, error = verifier.update_invoice({'set': {"datas": json.dumps(invoice_data)}, 'invoice_id': invoice_id})
         if error is None:
             return '', 200
         else:
@@ -225,8 +225,8 @@ def delete_invoice_data_by_invoice_id(invoice_id, field_id):
         _set = {}
         invoice_data = invoice_info['datas']
         if field_id in invoice_data:
-            del (invoice_data[field_id])
-        res, error = verifier.update_invoice({'set': {"datas": json.dumps(invoice_data)}, 'invoice_id': invoice_id})
+            del invoice_data[field_id]
+        _, error = verifier.update_invoice({'set': {"datas": json.dumps(invoice_data)}, 'invoice_id': invoice_id})
         if error is None:
             return '', 200
         else:
@@ -245,8 +245,8 @@ def delete_invoice_position_by_invoice_id(invoice_id, field_id):
         _set = {}
         invoice_positions = invoice_info['positions']
         if field_id in invoice_positions:
-            del (invoice_positions[field_id])
-        res, error = verifier.update_invoice(
+            del invoice_positions[field_id]
+        _, error = verifier.update_invoice(
             {'set': {"positions": json.dumps(invoice_positions)}, 'invoice_id': invoice_id})
         if error is None:
             return '', 200
@@ -266,8 +266,8 @@ def delete_invoice_page_by_invoice_id(invoice_id, field_id):
         _set = {}
         invoice_pages = invoice_info['pages']
         if field_id in invoice_pages:
-            del (invoice_pages[field_id])
-        res, error = verifier.update_invoice({'set': {"pages": json.dumps(invoice_pages)}, 'invoice_id': invoice_id})
+            del invoice_pages[field_id]
+        _, error = verifier.update_invoice({'set': {"pages": json.dumps(invoice_pages)}, 'invoice_id': invoice_id})
         if error is None:
             return '', 200
         else:
@@ -282,9 +282,9 @@ def delete_invoice(invoice_id):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
 
-    user_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
+    _, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
     if error is None:
-        res, error = verifier.update_invoice({'set': {'status': 'DEL'}, 'invoice_id': invoice_id})
+        _, error = verifier.update_invoice({'set': {'status': 'DEL'}, 'invoice_id': invoice_id})
         if error is None:
             return '', 200
         else:
@@ -304,10 +304,10 @@ def delete_invoice(invoice_id):
 def update_invoice(invoice_id, data):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
-    invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
+    _, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
 
     if error is None:
-        res, error = verifier.update_invoice({'set': data, 'invoice_id': invoice_id})
+        _, error = verifier.update_invoice({'set': data, 'invoice_id': invoice_id})
 
         if error is None:
             return '', 200
@@ -329,7 +329,7 @@ def remove_lock_by_user_id(user_id):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
 
-    res, error = verifier.update_invoices({
+    _, error = verifier.update_invoices({
         'set': {"locked": False},
         'where': ['locked_by = %s'],
         'data': [user_id]
@@ -358,14 +358,14 @@ def export_maarch(invoice_id, data):
             password = _data['value']
 
     if host and login and password:
-        ws = _MaarchWebServices(
+        _ws = _MaarchWebServices(
             host,
             login,
             password,
             _vars[5],
             _vars[1]
         )
-        if ws.status[0]:
+        if _ws.status[0]:
             invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
             if not error:
                 args = {}
@@ -402,7 +402,7 @@ def export_maarch(invoice_id, data):
                 if custom_field_contact_id:
                     contact['customFields'] = {custom_field_contact_id['id']: supplier[0]['vat_number'] + supplier[0]['siret']}
 
-                res = ws.create_contact(contact)
+                res = _ws.create_contact(contact)
                 if res is not False:
                     args['contact'] = {'id': res['id'], 'type': 'contact'}
 
@@ -420,7 +420,7 @@ def export_maarch(invoice_id, data):
                     })
 
                     if _data['id'] == 'priority':
-                        priority = ws.retrieve_priority(value)
+                        priority = _ws.retrieve_priority(value)
                         if priority:
                             delays = priority['priority']['delays']
                             process_limit_date = datetime.date.today() + datetime.timedelta(days=delays)
@@ -452,16 +452,19 @@ def export_maarch(invoice_id, data):
                         'documentDate': str(pd.to_datetime(invoice_info['datas']['invoice_date'],
                                                            infer_datetime_format=True).date())
                     })
-                    res, message = ws.insert_with_args(args)
+                    res, message = _ws.insert_with_args(args)
                     if res:
                         if link_resource:
                             if opencapture_field:
                                 opencapture_field = ''.join(construct_with_var(opencapture_field, invoice_info))
                                 if maarch_custom_field:
-                                    docs = ws.retrieve_doc_with_custom(maarch_custom_field['id'], opencapture_field, maarch_clause)
-                                    if docs:
-                                        res_id = docs['resources'][0]['res_id']
-                                        ws.link_documents(str(res_id), message['resId'])
+                                    if 'res_id' not in data or not data['res_id']:
+                                        docs = _ws.retrieve_doc_with_custom(maarch_custom_field['id'], opencapture_field, maarch_clause)
+                                        if docs:
+                                            res_id = docs['resources'][0]['res_id']
+                                    else:
+                                        res_id = data['res_id']
+                                    _ws.link_documents(str(res_id), message['resId'])
                         return '', 200
                     else:
                         response = {
@@ -484,7 +487,7 @@ def export_maarch(invoice_id, data):
         else:
             response = {
                 "errors": gettext('MAARCH_WS_INFO_WRONG'),
-                "message": ws.status[1]
+                "message": _ws.status[1]
             }
             return response, 400
     else:
@@ -564,9 +567,9 @@ def export_xml(invoice_id, data):
                     new_field = Et.SubElement(xml_technical, technical)
                     new_field.text = str(invoice_info[technical])
 
-            for data in invoice_info['datas']:
-                new_field = Et.SubElement(xml_datas, data)
-                new_field.text = str(invoice_info['datas'][data])
+            for invoice_data in invoice_info['datas']:
+                new_field = Et.SubElement(xml_datas, invoice_data)
+                new_field.text = str(invoice_info['datas'][invoice_data])
 
             xml_root = minidom.parseString(Et.tostring(root, encoding="unicode")).toprettyxml()
             xml_file.write(xml_root)
@@ -591,7 +594,7 @@ def ocr_on_the_fly(file_name, selection, thumb_size, positions_masks):
     _vars = create_classes_from_current_config()
     _cfg = _vars[1].cfg
     _files = _vars[3]
-    _Ocr = _vars[4]
+    _ocr = _vars[4]
     _docservers = _vars[9]
 
     path = _docservers['VERIFIER_IMAGE_FULL'] + '/' + file_name
@@ -599,12 +602,12 @@ def ocr_on_the_fly(file_name, selection, thumb_size, positions_masks):
     if positions_masks:
         path = _docservers['VERIFIER_POSITIONS_MASKS'] + '/' + file_name
 
-    text = _files.ocr_on_fly(path, selection, _Ocr, thumb_size)
+    text = _files.ocr_on_fly(path, selection, _ocr, thumb_size)
     if text:
         return text
     else:
         _files.improve_image_detection(path)
-        text = _files.ocr_on_fly(path, selection, _Ocr, thumb_size)
+        text = _files.ocr_on_fly(path, selection, _ocr, thumb_size)
         return text
 
 

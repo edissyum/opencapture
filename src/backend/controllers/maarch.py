@@ -122,6 +122,32 @@ def get_statuses(args):
     return statuses
 
 
+def retrieve_contact(args):
+    _vars = create_classes_from_current_config()
+    _ws = _MaarchWebServices(
+        args['host'],
+        args['login'],
+        args['password'],
+        _vars[5],
+        _vars[1]
+    )
+    contact = _ws.retrieve_contact(args)
+    return contact
+
+
+def get_document_with_contact(args):
+    _vars = create_classes_from_current_config()
+    _ws = _MaarchWebServices(
+        args['host'],
+        args['login'],
+        args['password'],
+        _vars[5],
+        _vars[1]
+    )
+    contact = _ws.get_document_with_contact(args)
+    return contact
+
+
 def get_indexing_models(args):
     _vars = create_classes_from_current_config()
     _ws = _MaarchWebServices(

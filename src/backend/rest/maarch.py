@@ -85,6 +85,18 @@ def get_statuses():
     return make_response(jsonify(statuses)), 200
 
 
+@bp.route('maarch/getDocumentsWithContact', methods=['POST'])
+@auth.token_required
+def get_document_with_args():
+    data = request.json
+    contact = maarch.retrieve_contact(data)
+    if contact and contact['contacts'] and contact['count'] > 0:
+        data['contactId'] = str(contact['contacts'][0]['id'])
+        resources = maarch.get_document_with_contact(data)
+        return make_response(resources), 200
+    return make_response(''), 204
+
+
 @bp.route('maarch/getIndexingModels', methods=['POST'])
 @auth.token_required
 def get_indexing_models():

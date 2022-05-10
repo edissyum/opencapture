@@ -131,6 +131,24 @@
                                     </mat-error>
                                 </mat-form-field>
                             </ng-container>
+                            <ng-container *ngIf="field.type === 'autocomplete'">
+                                <mat-form-field class="right-0 w-full form-viewer">
+                                    <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
+                                        {{ field.label | translate }}
+                                    </mat-label>
+                                    <input matInput type="text" [required]="true" [formControl]="field.control"
+                                           [matAutocomplete]="data">
+                                    <mat-autocomplete #data="matAutocomplete">
+                                        <mat-option *ngFor="let option of field.autocomplete_values | async" [value]="option.data"
+                                                    (onSelectionChange)="setAutocompleteDefaultValue($event)" [id]="option.res_id">
+                                            <span [innerHTML]="option.data | highlight: toHighlight"></span>
+                                            <span style="font-size: 12px;" class="text-green-400 ml-3">
+                                                {{ option.alt_identifier }}
+                                            </span>
+                                        </mat-option>
+                                    </mat-autocomplete>
+                                </mat-form-field>
+                            </ng-container>
                             <ng-container *ngIf="field.type === 'select'">
                                 <mat-form-field class="right-0 w-full form-viewer" *ngIf="field.id === 'accounting_plan'" [class.opacity-50]="invoice.status === 'END'">
                                     <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">

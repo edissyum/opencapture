@@ -72,6 +72,22 @@ class MaarchWebServices:
             return False
         return json.loads(res.text)
 
+    def retrieve_contact(self, args):
+        where = "where=custom_fields->>'" + str(args['vatNumberContactCustom']['id']) + "'='" + str(args['supplierCustomId']) + "'"
+        res = requests.get(self.base_url + '/contacts?' + where, auth=self.auth)
+        if res.status_code != 200:
+            self.log.error('(' + str(res.status_code) + ') getContactError : ' + str(res.text))
+            return False
+        return json.loads(res.text)
+
+    def get_document_with_contact(self, args):
+        where = "?custom_fields=" + str(args['maarchCustomField']['id'])
+        res = requests.get(self.base_url + '/resources/getByContact/' + args['contactId'] + where, auth=self.auth)
+        if res.status_code != 200:
+            self.log.error('(' + str(res.status_code) + ') getContactError : ' + str(res.text))
+            return False
+        return json.loads(res.text)
+
     def retrieve_priorities(self):
         res = requests.get(self.base_url + '/priorities', auth=self.auth)
         if res.status_code != 200:

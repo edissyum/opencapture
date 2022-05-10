@@ -176,6 +176,10 @@ mat-ink-bar {
     @apply text-gray-900 #{!important};
 }
 
+.mat-selected .mat-option-text span{
+    @apply text-gray-900 #{!important};
+}
+
 .mat-form-field-appearance-outline .mat-form-field-invalid .mat-form-field-invalid .mat-form-field-outline-thick {
     color: red !important;
 }
