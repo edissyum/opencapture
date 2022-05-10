@@ -117,9 +117,7 @@
 	},
 	"DISABLED": {
 		"disabled": "Désactiver",
-		"not_disabled": "Activer",
-		"resultMask": "Masque de résultat",
-		"searchMask": "Masque de recherche"
+		"not_disabled": "Activer"
 	},
 	"DISPLAY": {
 		"multi": "Multiple",
@@ -145,6 +143,8 @@
 		"folder": "Chemise",
 		"folder_added": "Chemise ajouté",
 		"generating_separator": "Génération du séparateur...",
+		"maximise_tree": "Maximiser l'affichage",
+		"minimise_tree": "Maximiser l'affichage",
 		"no_doctype_to_show": "Aucun type de document à afficher",
 		"no_master": "(Ajouter dans la racine)",
 		"separator_choice ": "Choix de séparateur"
@@ -193,6 +193,11 @@
 		"vat_amount": "Montant TVA",
 		"vat_rate": "Taux de TVA"
 	},
+	"FIELD_METADATA": {
+		"resultMask": "Masque de résultat",
+		"searchMask": "Masque de recherche",
+		"xmlTag": "Balise xml associée"
+	},
 	"FORMATS": {
 		"alphanum": "Caractères alphanumériques [0-9aA-zZ]",
 		"alphanum_extended": "Caractères alphanumériques étendus [0-9aA-zZ-/#,\\.\\s]",
@@ -206,7 +211,6 @@
 		"textarea": "Multi lignes"
 	},
 	"FORMS": {
-		"AutocompleteMasks": "Masque d'autocompletion",
 		"available_fields": "Champs disponibles",
 		"choose_form": "Selection du formulaire",
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer le formulaire <b>{{ form }}</b> ?",
@@ -223,6 +227,7 @@
 		"duplicate": "Dupliquer le formulaire",
 		"enable": "Activer le formulaire",
 		"form_deleted": "Formulaire supprimé",
+		"input_metadata": "Métadonnées de champs",
 		"input_settings": "Chaînes entrantes",
 		"inputs_list_already_linked": "Les chaînes entrante suivantes sont liés à ce formulaire <br><br> <b><center>{{ inputsList }}</center></b> <br> Merci de choisir un nouveau formulaire pour ces chaînes entrantes",
 		"is_default": "Formulaire par défaut",
@@ -323,6 +328,7 @@
 		"update-role": "Mise à jour du rôle&nbsp;<b>{{ role }}</b>",
 		"update-supplier": "Mise à jour du compte fournisseur&nbsp;<b>{{ supplier }}</b>",
 		"update-user": "Mise à jour de l'utilisateur&nbsp;<b>{{ user }}</b>",
+		"validate_splitter": "Validation du lot n°<b>{{ batch_id }}</b>",
 		"viewer": "Visualisation de la facture n°<b>{{ invoice_id }}</b>",
 		"viewer_splitter": "Visualisation du lot n°<b>{{ batch_id }}</b>"
 	},
