@@ -70,7 +70,6 @@ export class ChecklistDatabase {
                         label       : string
                         type        : string
                         status      : string
-                        expand      : boolean
                         is_default  : boolean
                         form_id     : boolean
                     }) => {
@@ -81,7 +80,6 @@ export class ChecklistDatabase {
                             'label'     : doctype.label,
                             'type'      : doctype.type,
                             'status'    : doctype.status,
-                            'expand'    : doctype.expand,
                             'isDefault' : doctype.is_default,
                             'formId'    : doctype.form_id,
                         };
@@ -127,7 +125,6 @@ export class ChecklistDatabase {
                 node.label      = o.label;
                 node.code       = o.code;
                 node.type       = o.type;
-                node.expand     = o.expand;
                 node.isDefault  = o.isDefault;
                 const children  = obj.filter(so => (so.code as string).startsWith(level + '.'));
                 if (children && children.length > 0) {
@@ -173,7 +170,6 @@ export class TreeItemNode {
     children!   : TreeItemNode[];
     code!       : string;
     type!       : string;
-    expand!     : boolean;
     isDefault!  : boolean;
 }
 
