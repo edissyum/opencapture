@@ -328,6 +328,7 @@
 		"update-role": "Mise à jour du rôle&nbsp;<b>{{ role }}</b>",
 		"update-supplier": "Mise à jour du compte fournisseur&nbsp;<b>{{ supplier }}</b>",
 		"update-user": "Mise à jour de l'utilisateur&nbsp;<b>{{ user }}</b>",
+		"validate_splitter": "Validation du lot n°<b>{{ batch_id }}</b>",
 		"viewer": "Visualisation de la facture n°<b>{{ invoice_id }}</b>",
 		"viewer_splitter": "Visualisation du lot n°<b>{{ batch_id }}</b>"
 	},

@@ -143,8 +143,8 @@
 		"folder": "Folder",
 		"folder_added": "Folder added",
 		"generating_separator": "Generating separator",
-		"maximise_tree": "",
-		"minimise_tree": "",
+		"maximise_tree": "Maximise tree",
+		"minimise_tree": "Minimise tree",
 		"no_doctype_to_show": "No document type to show",
 		"no_master": "(No master folder)",
 		"separator_choice ": "Separator choice"
@@ -194,9 +194,9 @@
 		"vat_rate": "VAT rate"
 	},
 	"FIELD_METADATA": {
-		"resultMask": "",
-		"searchMask": "",
-		"xmlTag": ""
+		"resultMask": "Result mask",
+		"searchMask": "Search mask",
+		"xmlTag": "XML Tag"
 	},
 	"FORMATS": {
 		"alphanum": "Alphanumeric [0-9aA-zZ]",
@@ -227,7 +227,7 @@
 		"duplicate": "Duplicate form",
 		"enable": "Enable form",
 		"form_deleted": "Form deleted successfully",
-		"input_metadata": "",
+		"input_metadata": "Input metadata",
 		"input_settings": "Inputs",
 		"inputs_list_already_linked": "The following inputs are linked to this form <br><br> <b><center>{{ inputsList }}</center></b> <br> Please choose a new form for this inputs",
 		"is_default": "Default form",
@@ -328,6 +328,7 @@
 		"update-role": "Role updated&nbsp;<b>{{ role }}</b>",
 		"update-supplier": "Supplier updated&nbsp;<b>{{ supplier }}</b>",
 		"update-user": "User updated&nbsp;<b>{{ user }}</b>",
+		"validate_splitter": "Validation of batch n°&nbsp;<b>{{ batch_id }}</b>",
 		"viewer": "Visualisation of invoice n°&nbsp;<b>{{ invoice_id }}</b>",
 		"viewer_splitter": "Visualisation of batch n°&nbsp;<b>{{ batch_id }}</b>"
 	},

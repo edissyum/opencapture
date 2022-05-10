@@ -34,7 +34,6 @@ import {DocumentTypeComponent} from "../document-type/document-type.component";
 import {remove} from 'remove-accents';
 import {HistoryService} from "../../../services/history.service";
 import {ConfirmDialogComponent} from "../../../services/confirm-dialog/confirm-dialog.component";
-import * as stream from "stream";
 
 export interface Batch {
     id          : number
@@ -958,6 +957,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             tap(() => {
                 this.router.navigate(['splitter/list']).then();
                 this.notify.success(this.translate.instant('SPLITTER.validate_batch_success'));
+                this.translate.get('HISTORY-DESC.validate_splitter', {batch_id: this.currentBatch.id}).subscribe((translated: string) => {
+                    this.historyService.addHistory('splitter', 'viewer', translated);
+                });
                 this.loading = true;
             }),
             catchError((err: any) => {
