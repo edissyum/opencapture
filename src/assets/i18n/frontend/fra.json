@@ -61,6 +61,10 @@
 		"login": "Se connecter",
 		"not_connected": "Merci de vous authentifier avant d'accéder à cette page"
 	},
+	"AUTOCOMPLETE": {
+		"export_maarch": "Maarch Courrier",
+		"none": "Aucune autocomplétion"
+	},
 	"BATCH": {
 		"older": "Lots anciens",
 		"today": "Lots du jour",
@@ -184,6 +188,7 @@
 		"invoice_number": "Numéro de facture",
 		"no_rate_amount": "Montant HT",
 		"order_number": "Numéro de commande",
+		"quotation_number": "Numéro de devis",
 		"register_date_day": "Jour d'enregistrement de la facture",
 		"register_date_month": "Mois d'enregistrement de la facture",
 		"register_date_year": "Année d'enregistrement de la facture",
@@ -397,6 +402,8 @@
 		"create": "Créer la chaîne sortante",
 		"created": "Chaîne sortante créée avec succès",
 		"json_input_erorr": "Le champ <b>{{field}}</b> doit être au format JSON avec des doubles quotes",
+		"links": "Liaisons",
+		"links_hint": "Cet onglet permet de paramétrer la liaison d'un document à un autre en se basant sur une donnée spécifique. <br><i>Exemple : Lier une facture à un devis dans Maarch dont le numéro de devis est dans le champ personnalisé numéro 30</i>",
 		"maarch_connection_ko": "Erreur lors de la connexion à Maarch",
 		"maarch_connection_ok": "Connexion à Maarch réalisée avec succès",
 		"no_auth_necessary": "Pas d'authentification nécessaire",
@@ -670,6 +677,7 @@
 	"VERIFIER": {
 		"accounting_plan_empty": "Il n'y a pas de compte de charge lié à ce compte client",
 		"all_invoices_checked_deleted": "Toutes les factures selectionnées supprimées avec succès",
+		"autocomplete": "Autocomplétion",
 		"calculated_footer": "Contrôle de cohérence du pied de page activé",
 		"change_form": "Changer de formulaire",
 		"change_form_details": "Les données ne sont pas perdus lors du changement de formulaire",

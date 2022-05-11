@@ -34,6 +34,13 @@ elif 'process' in custom_array['FindInvoiceNumber']['path']:
                                            custom_array['FindInvoiceNumber']['module'],
                                            fromlist=[custom_array['FindInvoiceNumber']['module']]), custom_array['FindInvoiceNumber']['module'])
 
+if 'FindQuotationNumber' or 'process' not in custom_array['FindQuotationNumber']['path']:
+    from src.backend.process.FindQuotationNumber import FindQuotationNumber
+elif 'process' in custom_array['FindQuotationNumber']['path']:
+    FindQuotationNumber = getattr(__import__(custom_array['FindQuotationNumber']['path'] + '.' +
+                                           custom_array['FindQuotationNumber']['module'],
+                                           fromlist=[custom_array['FindFindQuotationNumberFindQuotationNumbervoiceNumber']['module']]), custom_array['FindQuotationNumber']['module'])
+
 if 'FindDeliveryNumber' or 'process' not in custom_array['FindDeliveryNumber']['path']:
     from src.backend.process.FindDeliveryNumber import FindDeliveryNumber
 elif 'process' in custom_array['FindDeliveryNumber']['path']:

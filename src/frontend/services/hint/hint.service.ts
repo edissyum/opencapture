@@ -25,4 +25,5 @@ import {Component, Input} from '@angular/core';
 
 export class HintServiceComponent {
     @Input() message!: string;
+    @Input() specificClass: string = 'w-1/2';
 }

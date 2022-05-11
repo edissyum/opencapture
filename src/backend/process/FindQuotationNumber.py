@@ -20,7 +20,7 @@ import json
 from ..functions import search_by_positions, search_custom_positions
 
 
-class FindInvoiceNumber:
+class FindQuotationNumber:
     def __init__(self, ocr, files, log, regex, config, database, supplier, file, text, nb_pages, custom_page, footer_text, docservers, configurations):
         self.vatNumber = ''
         self.Ocr = ocr
@@ -38,37 +38,37 @@ class FindInvoiceNumber:
         self.nbPages = nb_pages
         self.customPage = custom_page
 
-    def sanitize_invoice_number(self, data):
+    def sanitize_quotation_number(self, data):
         invoice_res = data
         # If the regex return a date, remove it
         for _date in re.finditer(r"" + self.regex['dateRegex'] + "", data):
             if _date.group():
                 invoice_res = data.replace(_date.group(), '')
 
-        # Delete the invoice keyword
-        tmp_invoice_number = re.sub(r"" + self.regex['invoiceRegex'][:-2] + "", '', invoice_res)
+        # Delete the quotation keyword
+        tmp_invoice_number = re.sub(r"" + self.regex['quotationRegex'][:-2] + "", '', invoice_res)
         invoice_number = tmp_invoice_number.lstrip().split(' ')[0]
         return invoice_number
 
     def run(self):
         if self.supplier:
-            invoice_number = search_by_positions(self.supplier, 'invoice_number', self.Ocr, self.Files, self.Database)
+            invoice_number = search_by_positions(self.supplier, 'quotation_number', self.Ocr, self.Files, self.Database)
             if invoice_number and invoice_number[0]:
                 return invoice_number
 
         if self.supplier and not self.customPage:
             position = self.Database.select({
                 'select': [
-                    "positions ->> 'invoice_number' as invoice_number_position",
-                    "pages ->> 'invoice_number' as invoice_number_page"
+                    "positions ->> 'quotation_number' as quotation_number_position",
+                    "pages ->> 'quotation_number' as quotation_number_page"
                 ],
                 'table': ['accounts_supplier'],
                 'where': ['vat_number = %s', 'status <> %s'],
                 'data': [self.supplier[0], 'DEL']
             })[0]
 
-            if position and position['invoice_number_position'] not in [False, 'NULL', '', None]:
-                data = {'position': position['invoice_number_position'], 'regex': None, 'target': 'full', 'page': position['invoice_number_page']}
+            if position and position['quotation_number_position'] not in [False, 'NULL', '', None]:
+                data = {'position': position['quotation_number_position'], 'regex': None, 'target': 'full', 'page': position['quotation_number_page']}
                 text, position = search_custom_positions(data, self.Ocr, self.Files, self.regex, self.file, self.docservers)
 
                 try:
@@ -77,20 +77,20 @@ class FindInvoiceNumber:
                     pass
 
                 if text != '':
-                    self.log.info('Invoice number found with position : ' + str(text))
+                    self.log.info('Quotation number found with position : ' + str(text))
                     return [text, position, data['page']]
 
         for line in self.text:
-            for _invoice in re.finditer(r"" + self.regex['invoiceRegex'] + "", line.content.upper()):
-                invoice_number = self.sanitize_invoice_number(_invoice.group())
+            for _invoice in re.finditer(r"" + self.regex['quotationRegex'] + "", line.content.upper()):
+                invoice_number = self.sanitize_quotation_number(_invoice.group())
                 if len(invoice_number) >= int(self.configurations['invoiceSizeMin']):
-                    self.log.info('Invoice number found : ' + invoice_number)
+                    self.log.info('Quotation number found : ' + invoice_number)
                     return [invoice_number, line.position, self.nbPages]
 
         for line in self.footer_text:
-            for _invoice in re.finditer(r"" + self.regex['invoiceRegex'] + "", line.content.upper()):
-                invoice_number = self.sanitize_invoice_number(_invoice.group())
+            for _invoice in re.finditer(r"" + self.regex['quotationRegex'] + "", line.content.upper()):
+                invoice_number = self.sanitize_quotation_number(_invoice.group())
                 if len(invoice_number) >= int(self.configurations['invoiceSizeMin']):
-                    self.log.info('Invoice number found : ' + invoice_number)
+                    self.log.info('Quotation number found : ' + invoice_number)
                     position = self.Files.return_position_with_ratio(line, 'footer')
                     return [invoice_number, position, self.nbPages]

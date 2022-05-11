@@ -22,7 +22,7 @@ from ..functions import search_by_positions, search_custom_positions
 
 
 class FindDate:
-    def __init__(self, text, log, regex, configurations, files, ocr, supplier, typo, nb_pages, database, file, docservers, languages):
+    def __init__(self, text, log, regex, configurations, files, ocr, supplier, nb_pages, database, file, docservers, languages):
         self.date = ''
         self.text = text
         self.log = log
@@ -33,7 +33,6 @@ class FindDate:
         self.files = files
         self.ocr = ocr
         self.supplier = supplier
-        self.typo = typo
         self.nb_pages = nb_pages
         self.database = database
         self.file = file

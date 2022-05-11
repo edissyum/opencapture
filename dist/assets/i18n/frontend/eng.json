@@ -61,6 +61,10 @@
 		"login": "Log in",
 		"not_connected": "Please authenticate yourself before accessing this page"
 	},
+	"AUTOCOMPLETE": {
+		"export_maarch": "Maarch Courrier",
+		"none": "No autocompletion"
+	},
 	"BATCH": {
 		"older": "Older",
 		"today": "Today",
@@ -151,7 +155,7 @@
 	},
 	"ERROR": {
 		"404": "The page you are looking for does not exist",
-		"500": "Something has gone wrong on the website's server",
+		"500": "A technical issue appear on our side. <b>Please try again later</b>",
 		"alphanum_extended_pattern": "The value is not well formatted : alphanumeric with special char",
 		"alphanum_pattern": "The value is not well formatted : alphanumeric",
 		"char_pattern": "The value is not well formatted : alphabetic",
@@ -184,6 +188,7 @@
 		"invoice_number": "Invoice number",
 		"no_rate_amount": "No rate amount",
 		"order_number": "Order number",
+		"quotation_number": "Quotation number",
 		"register_date_day": "Day of the register date",
 		"register_date_month": "Month of the register date",
 		"register_date_year": "Year of the register date",
@@ -397,6 +402,8 @@
 		"create": "Create output",
 		"created": "Output created successfully",
 		"json_input_erorr": "The field <b>{{ field }}</b> have to be JSON with double quotes",
+		"links": "Links",
+		"links_hint": "",
 		"maarch_connection_ko": "Error while connecting to Maarch",
 		"maarch_connection_ok": "Connection to Maarch successfull",
 		"no_auth_necessary": "No authentification necessary",
@@ -670,6 +677,7 @@
 	"VERIFIER": {
 		"accounting_plan_empty": "There is no linked accounting plan for this supplier",
 		"all_invoices_checked_deleted": "All checked invoices was successfully deleted",
+		"autocomplete": "Autocomplete",
 		"calculated_footer": "Get only raw footer is disabled",
 		"change_form": "Change form",
 		"change_form_details": "Data are not loose when you change form",

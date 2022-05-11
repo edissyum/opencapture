@@ -92,6 +92,14 @@ export class UpdatePositionsMaskComponent implements OnInit {
                     regex: ''
                 },
                 {
+                    id: 'quotation_number',
+                    label: marker('FACTURATION.quotation_number'),
+                    unit: 'facturation',
+                    type: 'text',
+                    color: 'orange',
+                    regex: ''
+                },
+                {
                     id: 'invoice_date',
                     label: marker('FACTURATION.invoice_date'),
                     unit: 'facturation',

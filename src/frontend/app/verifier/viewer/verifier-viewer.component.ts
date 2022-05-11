@@ -73,6 +73,7 @@ export class VerifierViewerComponent implements OnInit {
     currentFormFields       : any         = {};
     suppliers               : any         = [];
     outputsLabel            : any         = [];
+    outputs                 : any         = [];
     imgArray                : any         = {};
     imageInvoice            : any;
     invoiceId               : any;
@@ -199,11 +200,75 @@ export class VerifierViewerComponent implements OnInit {
         }, 500);
         const triggerEvent = $('.trigger');
         triggerEvent.hide();
+        this.convertAutocomplete();
         this.filteredOptions = this.supplierNamecontrol.valueChanges
             .pipe(
                 startWith(''),
                 map(option => option ? this._filter(option) : this.suppliers.slice())
             );
+    }
+
+    convertAutocomplete() {
+        this.outputs.forEach((output: any) => {
+            if (output.data.options.links && output.output_type_id === 'export_maarch') {
+                const data = {
+                    "host": output.data.options.auth[0].value,
+                    "login": output.data.options.auth[1].value,
+                    "password": output.data.options.auth[2].value,
+                    "autocompleteField": '',
+                    "maarchCustomField": '',
+                    "maarchClause": '',
+                    "vatNumberContactCustom": '',
+                    "enabled": false,
+                    "supplierCustomId": ''
+                };
+
+                output.data.options.links.forEach((element: any) => {
+                    if (element.id === 'enabled' && element.value) {
+                        data['enabled'] = true;
+                    }
+                    if (element.id === 'openCaptureField' && element.value) {
+                        data['autocompleteField'] = element.value;
+                    } else if (element.id === 'maarchCustomField' && element.value) {
+                        data['maarchCustomField'] = element.value;
+                    } else if (element.id === 'maarchClause' && element.value) {
+                        data['maarchClause'] = element.value;
+                    }else if (element.id === 'vatNumberContactCustom' && element.value) {
+                        data['vatNumberContactCustom'] = element.value;
+                    }
+                });
+                if (data['enabled']) {
+                    this.form.supplier.forEach((supplier_element: any) => {
+                        if (supplier_element.id === 'vat_number' || supplier_element.id === 'siret') {
+                            data['supplierCustomId'] += supplier_element.control.value;
+                        }
+                    });
+
+                    this.form.facturation.forEach((element: any) => {
+                       if (element.id === data['autocompleteField']) {
+                           this.http.post(API_URL + '/ws/maarch/getDocumentsWithContact', data, {headers: this.authService.headers},
+                           ).pipe(
+                               tap((_return: any) => {
+                                   if (_return.count > 0) {
+                                       element.type = 'autocomplete';
+                                       element.autocomplete_values = element.control.valueChanges
+                                           .pipe(
+                                               startWith(''),
+                                               map(option => option ? this._filter_data(option, _return.resources) : _return.resources.slice())
+                                           );
+                                   }
+                               }),
+                               catchError((err: any) => {
+                                   console.debug(err);
+                                   this.notify.handleErrors(err);
+                                   return of(false);
+                               })
+                           ).subscribe();
+                       }
+                    });
+                }
+            }
+        });
     }
 
     async generateOutputs(formId: any) {
@@ -212,6 +277,7 @@ export class VerifierViewerComponent implements OnInit {
         if (this.formSettings.outputs.length !== 0) {
             for (const outputId in this.formSettings.outputs) {
                 const output = await this.getOutputs(this.formSettings.outputs[outputId]);
+                this.outputs.push(output);
                 this.outputsLabel.push(output.output_label);
             }
         }
@@ -268,6 +334,12 @@ export class VerifierViewerComponent implements OnInit {
             });
         }
         return _return;
+    }
+
+    private _filter_data(value: any, data: any): string[] {
+        this.toHighlight = value;
+        const filterValue = value.toLowerCase();
+        return data.filter((element: any) => element.data.toLowerCase().indexOf(filterValue) !== -1);
     }
 
     updateFilteredOption(event: any, control: any) {
@@ -1045,6 +1117,16 @@ export class VerifierViewerComponent implements OnInit {
         return error;
     }
 
+    setAutocompleteDefaultValue(event: any) {
+        if (event.isUserInput) {
+            this.form.facturation.forEach((element: any) => {
+                if (element.autocomplete_values) {
+                    element.autocomplete_id = event.source.id;
+                }
+            });
+        }
+    }
+
     validateForm() {
         let valid = true;
         const arrayData: any = {};
@@ -1077,6 +1159,15 @@ export class VerifierViewerComponent implements OnInit {
             this.formSettings.outputs.forEach((outputId: any, cpt: number) => {
                 this.http.get(API_URL + '/ws/outputs/getById/' + outputId, {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
+                        if (data.data.options.links) {
+                            this.form.facturation.forEach((element: any) => {
+                                if (element.autocomplete_values) {
+                                    if (data.output_type_id === 'export_maarch') {
+                                        data.data['res_id'] = element.autocomplete_id;
+                                    }
+                                }
+                            });
+                        }
                         this.http.post(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/' + data.output_type_id, {'args': data.data},{headers: this.authService.headers}).pipe(
                             tap(() => {
                                 /* Actions à effectuer après le traitement des chaînes sortantes */
