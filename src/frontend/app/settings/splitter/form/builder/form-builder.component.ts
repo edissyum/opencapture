@@ -71,18 +71,18 @@ export class SplitterFormBuilderComponent implements OnInit {
     ];
     fieldCategories         : any []    = [
         {
-            'id': 'batch_metadata',
-            'label': marker('SPLITTER.batch_metadata')
+            'id'    : 'batch_metadata',
+            'label' : marker('SPLITTER.batch_metadata')
         },
         {
-            'id': 'document_metadata',
-            'label': marker('SPLITTER.document_metadata')
+            'id'    : 'document_metadata',
+            'label' : marker('SPLITTER.document_metadata')
         },
     ];
     availableFieldsParent   : any []    = [
         {
-            'id': 'custom_fields',
-            'label': marker('FORMS.custom_fields'),
+            'id'    : 'custom_fields',
+            'label' : marker('FORMS.custom_fields'),
             'values': []
         },
     ];
@@ -92,53 +92,82 @@ export class SplitterFormBuilderComponent implements OnInit {
     };
     classList               : any []    = [
         {
-            'id': 'w-full',
-            'label': '1'
+            'id'    : 'w-full',
+            'label' : '1'
         },
         {
-            'id': 'w-1/2',
-            'label': '1/2'
+            'id'    : 'w-1/2',
+            'label' : '1/2'
         },
         {
-            'id': 'w-30',
-            'label': '1/3'
+            'id'    : 'w-30',
+            'label' : '1/3'
         },
         {
-            'id': 'w-1/3',
-            'label': '1/33'
+            'id'    : 'w-1/3',
+            'label' : '1/33'
         },
         {
-            'id': 'w-1/4',
-            'label': '1/4'
+            'id'    : 'w-1/4',
+            'label' : '1/4'
         },
         {
-            'id': 'w-1/5',
-            'label': '1/5'
+            'id'    : 'w-1/5',
+            'label' : '1/5'
         }
     ];
     displayList             : any []    = [
         {
-            'id': 'simple',
-            'label': marker('DISPLAY.simple'),
-            'icon': 'fa-solid fa-file-alt'
+            'id'    : 'simple',
+            'label' : marker('DISPLAY.simple'),
+            'icon'  : 'fa-solid fa-file-alt'
         },
         {
-            'id': 'multi',
-            'label': marker('DISPLAY.multi'),
-            'icon': 'fa-solid fa-layer-group'
+            'id'    : 'multi',
+            'label' : marker('DISPLAY.multi'),
+            'icon'  : 'fa-solid fa-layer-group'
         },
     ];
     mandatoryList           : any []    = [
         {
-            'id': true,
-            'label': marker('MANDATORY.required'),
-            'icon': 'fa-solid fa-star'
+            'id'    : true,
+            'label' : marker('MANDATORY.required'),
+            'icon'  : 'fa-solid fa-star'
         },
         {
-            'id': false,
-            'label': marker('MANDATORY.not_required'),
-            'icon': 'far fa-star'
+            'id'    : false,
+            'label' : marker('MANDATORY.not_required'),
+            'icon'  : 'far fa-star'
         },
+    ];
+    disabledList           : any []    = [
+        {
+            'id'    : true,
+            'label' : marker('DISABLED.disabled'),
+            'icon'  : 'fa-solid fa-ban'
+        },
+        {
+            'id'    : false,
+            'label' : marker('DISABLED.not_disabled'),
+            'icon'  : ''
+        },
+    ];
+    fieldMetadata           : any [] = [
+        {
+            'id'            : 'searchMask',
+            'placeholder'   : marker('FIELD_METADATA.searchMask'),
+            'control'       : new FormControl(),
+        },
+        {
+            'id'            : 'resultMask',
+            'placeholder'   : marker('FIELD_METADATA.resultMask'),
+            'control'       : new FormControl(),
+        },
+        {
+            'id'            : 'xmlTag',
+            'placeholder'   : marker('FIELD_METADATA.xmlTag'),
+            'control'       : new FormControl(),
+        }
     ];
 
     constructor(
@@ -223,16 +252,17 @@ export class SplitterFormBuilderComponent implements OnInit {
                                     if (this.availableFieldsParent[parent].id === 'custom_fields') {
                                         this.availableFieldsParent[parent].values.push(
                                             {
-                                                id: 'custom_' + data.customFields[field].id,
-                                                label: data.customFields[field].label,
-                                                label_short: data.customFields[field].label_short,
+                                                id          : 'custom_' + data.customFields[field].id,
+                                                label       : data.customFields[field].label,
+                                                label_short : data.customFields[field].label_short,
                                                 metadata_key: data.customFields[field].metadata_key,
-                                                unit: 'custom',
-                                                type: data.customFields[field].type,
-                                                format: data.customFields[field].type,
-                                                required: data.customFields[field].required,
-                                                class: "w-1/3",
-                                                class_label: "1/33",
+                                                settings    : data.customFields[field].settings,
+                                                unit        : 'custom',
+                                                type        : data.customFields[field].type,
+                                                format      : data.customFields[field].type,
+                                                required    : data.customFields[field].required,
+                                                class       : "w-1/3",
+                                                class_label : "1/33",
                                             }
                                         );
                                     }
@@ -456,5 +486,11 @@ export class SplitterFormBuilderComponent implements OnInit {
         }else{
             this.notify.error(this.translate.instant('FORMS.label_mandatory'));
         }
+    }
+
+    fillMaskControlValue(control: FormControl, value: string) {
+        console.log(value);
+        control.setValue(value);
+        return control;
     }
 }

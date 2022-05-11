@@ -104,6 +104,10 @@ export class UpdateOutputComponent implements OnInit {
             'label': 'FACTURATION.invoice_number'
         },
         {
+            "id": 'quotation_number',
+            'label': 'FACTURATION.quotation_number'
+        },
+        {
             "id": 'invoice_date_year',
             'label': marker('FACTURATION.invoice_date_year')
         },
@@ -209,6 +213,7 @@ export class UpdateOutputComponent implements OnInit {
                         for (const _output of this.outputsTypes) {
                             this.outputsTypesForm[_output.output_type_id] = {
                                 'auth' : [],
+                                'links' : [],
                                 'parameters' : [],
                             };
                             for (const category in this.outputsTypesForm[_output.output_type_id]) {
@@ -226,6 +231,10 @@ export class UpdateOutputComponent implements OnInit {
                                             webservice: option.webservice,
                                         });
                                     }
+                                } else {
+                                    if (category === 'links') {
+                                        delete this.outputsTypesForm[_output.output_type_id].links;
+                                    }
                                 }
                             }
                         }
@@ -234,14 +243,16 @@ export class UpdateOutputComponent implements OnInit {
                          **/
                         for (const category in this.outputsTypesForm[this.originalOutputType]) {
                             this.outputsTypesForm[this.originalOutputType][category].forEach((element: any) => {
-                                this.output.data.options[category].forEach((outputElement: any) => {
-                                    if (element.id === outputElement.id) {
-                                        if (outputElement.value) {
-                                            if (outputElement.webservice) element.values = [outputElement.value];
-                                            element.control.setValue(outputElement.value);
+                                if (this.output.data.options[category]){
+                                    this.output.data.options[category].forEach((outputElement: any) => {
+                                        if (element.id === outputElement.id) {
+                                            if (outputElement.value) {
+                                                if (outputElement.webservice) element.values = [outputElement.value];
+                                                element.control.setValue(outputElement.value);
+                                            }
                                         }
-                                    }
-                                });
+                                    });
+                                }
                             });
                             this.testConnection();
                         }
@@ -308,9 +319,9 @@ export class UpdateOutputComponent implements OnInit {
         return value;
     }
 
-    retrieveDataFromWS(fieldId: any) {
-        for (const cpt in this.outputsTypesForm[this.selectedOutputType]['parameters']) {
-            const element = this.outputsTypesForm[this.selectedOutputType]['parameters'][cpt];
+    retrieveDataFromWS(fieldId: any, category: string = 'parameters') {
+        for (const cpt in this.outputsTypesForm[this.selectedOutputType][category]) {
+            const element = this.outputsTypesForm[this.selectedOutputType][category][cpt];
             if (element.id === fieldId) {
                 if (!element.values || element.values.length === 1) {
                     eval("this." + element.webservice + '(' + cpt + ')');
@@ -335,7 +346,7 @@ export class UpdateOutputComponent implements OnInit {
         this.http.post(API_URL + '/ws/maarch/testConnection', {'args': args}, {headers: this.authService.headers},
         ).pipe(
             tap((data: any) => {
-                const status = data.status;
+                const status = data.status[0];
                 if (status === true) {
                     this.notify.success(this.translate.instant('OUTPUT.maarch_connection_ok'));
                     this.connection = true;
@@ -365,8 +376,8 @@ export class UpdateOutputComponent implements OnInit {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
             const args = this.getMaarchConnectionInfo();
             this.http.post(API_URL + '/ws/maarch/getUsers', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
-                if (_return && _return.users) {
-                    const data = _return.users;
+                if (_return && _return[0].users) {
+                    const data = _return[0].users;
                     const users = [];
                     for (const cpt in data) {
                         users.push({
@@ -396,6 +407,46 @@ export class UpdateOutputComponent implements OnInit {
                         });
                     }
                     this.setAutocompleteValues(cpt, entities);
+                }
+            });
+        }
+    }
+
+    getCustomFieldsFromMaarch(cpt: any) {
+        if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
+            const args = this.getMaarchConnectionInfo();
+            this.http.post(API_URL + '/ws/maarch/getCustomFields', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
+                if (_return && _return.customFields) {
+                    const data = _return.customFields;
+                    const customFields = [];
+                    for (const cpt in data) {
+                        customFields.push({
+                            'id': data[cpt].id,
+                            'value': data[cpt].label,
+                            'extra': data[cpt].id
+                        });
+                    }
+                    this.setAutocompleteValues(cpt, customFields, 'links');
+                }
+            });
+        }
+    }
+
+    getContactsCustomFieldsFromMaarch(cpt: any) {
+        if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
+            const args = this.getMaarchConnectionInfo();
+            this.http.post(API_URL + '/ws/maarch/getContactsCustomFields', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
+                if (_return && _return.customFields) {
+                    const data = _return.customFields;
+                    const customFields = [];
+                    for (const cpt in data) {
+                        customFields.push({
+                            'id': data[cpt].id,
+                            'value': data[cpt].label,
+                            'extra': data[cpt].id
+                        });
+                    }
+                    this.setAutocompleteValues(cpt, customFields, 'links');
                 }
             });
         }
@@ -490,32 +541,36 @@ export class UpdateOutputComponent implements OnInit {
             "data": {
                 "options": {
                     "auth": [],
+                    "links": [],
                     "parameters": []
                 }
             }
         };
 
         for (const category in this.outputsTypesForm[this.selectedOutputType]) {
-            for (const cpt in this.outputsTypesForm[this.selectedOutputType][category]) {
-                const field = this.outputsTypesForm[this.selectedOutputType][category][cpt];
-                if (field.isJson) {
-                    try {
-                        JSON.parse(field.control.value);
-                    } catch (error) {
-                        field.control.setErrors({'json_error': true});
-                        this.notify.error(this.translate.instant('OUTPUT.json_input_erorr', {"field": field.label}));
-                        return;
+            if (this.outputsTypesForm[this.selectedOutputType][category]) {
+                for (const cpt in this.outputsTypesForm[this.selectedOutputType][category]) {
+                    const field = this.outputsTypesForm[this.selectedOutputType][category][cpt];
+                    if (field.isJson) {
+                        try {
+                            JSON.parse(field.control.value);
+                        } catch (error) {
+                            field.control.setErrors({'json_error': true});
+                            this.notify.error(this.translate.instant('OUTPUT.json_input_erorr', {"field": field.label}));
+                            return;
+                        }
                     }
-                }
 
-                _array['data']['options'][category].push({
-                    id: field.id,
-                    type: field.type,
-                    webservice: field.webservice,
-                    value: field.value === undefined ? field.control.value : field.value,
-                });
+                    _array.data.options[category].push({
+                        id: field.id,
+                        type: field.type,
+                        webservice: field.webservice,
+                        value: field.value === undefined ? field.control.value : field.value,
+                    });
+                }
             }
         }
+        if (_array.data.options['links'].length === 0) delete _array.data.options.links;
 
         this.outputForm.forEach(element => {
             _array[element.id] = element.control.value;
@@ -535,12 +590,12 @@ export class UpdateOutputComponent implements OnInit {
         ).subscribe();
     }
 
-    setAutocompleteValues(cpt: number, array: any) {
-        this.outputsTypesForm[this.selectedOutputType]['parameters'][cpt].values = this.sortArrayAlphab(array);
+    setAutocompleteValues(cpt: number, array: any, category: string = 'parameters') {
+        this.outputsTypesForm[this.selectedOutputType][category][cpt].values = this.sortArrayAlphab(array);
         /**
          * Ces 6 lignes sont obligatoires afin de filter les résultats des champs au fur et à mesure que l'on écrit
          */
-        const element = this.outputsTypesForm[this.selectedOutputType]['parameters'][cpt];
+        const element = this.outputsTypesForm[this.selectedOutputType][category][cpt];
         element.filteredOptions = element.control.valueChanges
             .pipe(
                 startWith(''),

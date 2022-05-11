@@ -88,7 +88,7 @@
                 <hr class="border-green-400">
             </div>
         </div>
-        <mat-accordion class="setting-custom-fields">
+        <mat-accordion>
             <mat-expansion-panel [expanded]="true">
                 <mat-expansion-panel-header>
                     <mat-panel-title>
@@ -115,7 +115,8 @@
                                 <div *ngSwitchCase="'dropdown'">
                                     <mat-select [id]="input.field_id"
                                                 [formControl]="input.control">
-                                        <mat-option *ngFor="let opt of input.options" [value]="opt.key">
+                                        <mat-option *ngFor="let opt of input.options"
+                                                    [value]="opt.key">
                                             {{ opt.value | translate }}
                                         </mat-option>
                                     </mat-select>
@@ -125,6 +126,35 @@
                         <div class="cursor-pointer flex ml-1 -mt-6 w-1/12" matTooltip="{{ 'CUSTOM-FIELDS.reset' | translate }}"
                              (click)="resetForm()">
                             <i class="self-center fa-solid fa-sync fa-lg hover:text-green-400"></i>
+                        </div>
+                    </div>
+                    <div class="flex justify-center">
+                        <div>
+                            <span class="text-center">{{ 'CUSTOM-FIELDS.select_options' | translate }}</span>
+                            <div class="flex">
+                                <div cdkDropList class="select-options-list w-96"
+                                     (cdkDropListDropped)="dropSelectOption($event)">
+                                    <div *ngIf="selectOptions.length === 0" class="my-14 text-center text-gray-400">{{ 'CUSTOM-FIELDS.no_option_added' | translate }}</div>
+                                    <div class="drop-box-option p-4" *ngFor="let option of selectOptions; let optionIndex = index;" cdkDrag>
+                                        <mat-form-field class="w-40 mr-2">
+                                            <mat-label>{{ 'HEADER.id' | translate }}</mat-label>
+                                            <input matInput [formControl]="option.idControl" type="text">
+                                        </mat-form-field>
+                                        <mat-form-field class="w-40">
+                                            <mat-label>{{ 'HEADER.label' | translate }}</mat-label>
+                                            <input matInput [formControl]="option.labelControl" type="text">
+                                        </mat-form-field>
+                                        <div matTooltip="{{ 'CUSTOM-FIELDS.delete_choice' | translate }}"
+                                             (click)="deleteSelectOption(optionIndex)" class="top-0 mx-2 h-8 cursor-pointer">
+                                            <i class="fa-solid fa-trash fa-lg hover:text-green-400"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div matTooltip="{{ 'CUSTOM-FIELDS.add_choice' | translate }}"
+                                     (click)="addSelectOption()" class="top-0 mx-2 h-8 inline-block">
+                                    <i class="fa-solid fa-plus fa-lg hover:text-green-400"></i>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="flex justify-center m-5">
@@ -146,11 +176,11 @@
                     <div cdkDropListGroup class="w-max mx-auto">
                         <div class="list-container">
                             <h2>{{ 'HEADER.inactive' | translate }}</h2>
-                            <div cdkDropList [cdkDropListData]="inactiveFields" (cdkDropListDropped)="drop($event)"
+                            <div cdkDropList [cdkDropListData]="inactiveFields" (cdkDropListDropped)="dropCustomField($event)"
                                  class="custom-fields-list"
                                  style="max-height:47vh; overflow:auto;">
                                 <span *ngFor="let item of inactiveFields; let i = index;">
-                                    <div cdkDrag class="custom-field-box" *ngIf="item.module === parent['id']">
+                                    <div cdkDrag class="drop-box-custom-field" *ngIf="item.module === parent['id']">
                                         <div class="text-left">
                                             <div>{{ item.label }}</div>
                                             <div class="text-gray-400">
@@ -179,11 +209,11 @@
                         </div>
                         <div class="list-container">
                             <h2>{{ 'HEADER.active' | translate }}</h2>
-                            <div cdkDropList [cdkDropListData]="activeFields" (cdkDropListDropped)="drop($event)"
+                            <div cdkDropList [cdkDropListData]="activeFields" (cdkDropListDropped)="dropCustomField($event)"
                                  class="custom-fields-list"
                                  style="max-height:47vh; overflow:auto;">
                                 <span *ngFor="let item of activeFields; let i = index;">
-                                    <div cdkDrag class="custom-field-box" *ngIf="item.module === parent['id']">
+                                    <div cdkDrag class="drop-box-custom-field" *ngIf="item.module === parent['id']">
                                         <div class="text-left">
                                             <div>{{ item.label }}</div>
                                             <div class="text-gray-400">

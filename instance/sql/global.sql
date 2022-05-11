@@ -5,6 +5,7 @@ INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('VATNumberR
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('invoiceRegex', 'fra', 'Numéro de facture', '(((?P<r1>NUMERO|N(O|°|º|R.))?\s*(DE)?\s*(FACTURE|PI(E|È)CE|DOCUMENT)(\s*:)?\s*(?(r1)()|(NUMERO|N(O|°|º|R.)?))(\s*:)?)|(FACTURE(/)?(DATE)?)\s*(ACQUIT(T)?(E|É)E)?\s*(:|#){1}).*');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('deliveryNumberRegex', 'fra', 'Numéro de livraison', '((NUM(E|É)RO|N(O|°|º|R.)?|R(E|É)F(\.)?((E|É)RENCE)?)?\s*(DE)?\s*(BON)?\s*(DE)?\s*(LIVRAISON)|NOTE\s*D('')?ENVOI|(BON|BULLETIN)\s*DE\s*LIVR(\.))\s*:?.*');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('orderNumberRegex', 'fra', 'Numéro de commande', '(VO(TRE|S)|V\./)?\s*(NUM(E|É)RO|N(O|°|º|R.)?|R(E|É)F(\.)?((E|É)RENCE)?)?\s*(DE)?\s*((COMMANDE|COM(\.)|CDE|DOCUMENT\s*EXTERNE)\s*(INTERNET|WEB)?)\s*(CLIENT)?\s*:?.*');
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('quotationRegex', 'fra', 'Numéro de devis', '(((?P<r1>NUMERO|N(O|°|º|R.))?\s*(DE)?\s*(DEVIS)(\s*:)?\s*(?(r1)()|(NUMERO|N(O|°|º|R.)?))(\s*:)?)\s*(:|#){0,1}).*');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('SIRETRegex', 'fra', 'Numéro de SIRET', '[0-9]{14}');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('SIRENRegex', 'fra', 'Numéro de SIREN', '[0-9]{9}');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('IBANRegex', 'fra', 'Numéro d''IBAN', '(FR\d{25})|(BE\d{14})');
@@ -22,6 +23,7 @@ INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('VATNumberR
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('invoiceRegex', 'eng', 'Invoice number', '');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('deliveryNumberRegex', 'eng', 'Delivery number', '');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('orderNumberRegex', 'eng', 'Order number', '');
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('quotationNumberRegex', 'fra', 'Quotation number', '');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('SIRETRegex', 'eng', 'SIRET number', '[0-9]{14}');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('SIRENRegex', 'eng', 'SIREN number', '[0-9]{9}');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('IBANRegex', 'eng', 'IBAN number', '');

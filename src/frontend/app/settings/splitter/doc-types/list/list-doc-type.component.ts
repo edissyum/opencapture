@@ -166,7 +166,7 @@ export class ListDocTypeComponent implements OnInit {
   getLastFolderIndex(codeSelected: string) {
     let lastIndex = 0;
     if(codeSelected !== this.noMasterFolder) {
-      this.documentTypeFactoryComponent.treeDataObj.doctypesData.forEach((docType:any) => {
+      this.documentTypeFactoryComponent.treeDataObj.doctypeData.forEach((docType:any) => {
         if(docType.code.startsWith(codeSelected)
             && docType.code.split('.').length === codeSelected.split('.').length + 1) {
           const currentIdx = Number(docType.code.split('.').pop());
@@ -175,7 +175,7 @@ export class ListDocTypeComponent implements OnInit {
       });
     }
     else{
-      this.documentTypeFactoryComponent.treeDataObj.doctypesData.forEach((docType:any) => {
+      this.documentTypeFactoryComponent.treeDataObj.doctypeData.forEach((docType:any) => {
         if(docType.code.split('.').length === 2) {
           const currentIdx = Number(docType.code.split('.').pop());
           lastIndex = (currentIdx > lastIndex) ? currentIdx: lastIndex;

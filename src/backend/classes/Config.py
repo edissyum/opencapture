@@ -15,6 +15,7 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
+import unidecode
 from configparser import ConfigParser, ExtendedInterpolation
 
 
@@ -34,17 +35,19 @@ class Config:
                 self.cfg[section][info] = parser[section][info]
 
     @staticmethod
-    def fswatcher_update_watch(file, job, data):
-        config = ConfigParser()
+    def fswatcher_update_watch(file, job, data, input_label):
+        config = ConfigParser(allow_no_value=True)
         config.read(file)
+        config.set(job, '; ' + unidecode.unidecode(input_label))
         config[job]['watch'] = data
         with open(file, 'w', encoding='UTF-8') as configfile:
             config.write(configfile)
 
     @staticmethod
-    def fswatcher_update_command(file, job, data):
-        config = ConfigParser()
+    def fswatcher_update_command(file, job, data, input_label):
+        config = ConfigParser(allow_no_value=True)
         config.read(file)
+        config.set(job, '; ' + unidecode.unidecode(input_label))
         config[job]['command'] = data
         with open(file, 'w', encoding='UTF-8') as configfile:
             config.write(configfile)
@@ -54,7 +57,7 @@ class Config:
         config = ConfigParser(allow_no_value=True)
         config.read(file)
         config.add_section(job)
-        config.set(job, '; ' + input_label)
+        config.set(job, '; ' + unidecode.unidecode(input_label))
         config[job]['watch'] = watch
         config[job]['events'] = 'close,move'
         config[job]['include_extensions'] = 'pdf'

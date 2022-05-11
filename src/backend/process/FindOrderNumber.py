@@ -21,7 +21,7 @@ from ..functions import search_custom_positions, search_by_positions
 
 
 class FindOrderNumber:
-    def __init__(self, ocr, files, log, regex, config, database, supplier, file, typo, text, nb_pages, custom_page, docservers, configurations, target='header'):
+    def __init__(self, ocr, files, log, regex, config, database, supplier, file, text, nb_pages, custom_page, docservers, configurations, target='header'):
         self.vatNumber = ''
         self.Ocr = ocr
         self.text = text
@@ -33,7 +33,6 @@ class FindOrderNumber:
         self.configurations = configurations
         self.supplier = supplier
         self.Database = database
-        self.typo = typo
         self.file = file
         self.nbPages = nb_pages
         self.customPage = custom_page

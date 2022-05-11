@@ -101,7 +101,7 @@
                     <mat-form-field>
                         <mat-label>{{ 'DOCTYPE.folder' | translate }}</mat-label>
                         <mat-select id='folder' [formControlName]="'folder'">
-                            <div *ngFor="let folder of documentTypeFactoryComponent.treeDataObj.doctypesData">
+                            <div *ngFor="let folder of documentTypeFactoryComponent.treeDataObj.doctypeData">
                                 <mat-option *ngIf="folder.type === 'folder' && folder.formId === selectedFormId"
                                             [value]="folder.code">
                                     {{ folder.label }}

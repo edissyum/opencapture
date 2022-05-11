@@ -32,30 +32,10 @@ import {NotificationService} from "../../../services/notifications/notifications
 import {PrivilegesService} from "../../../services/privileges.service";
 import {LocalStorageService} from "../../../services/local-storage.service";
 
-export class TreeItemNode {
-    key!        : string;
-    label!      : string;
-    children!   : TreeItemNode[];
-    code!       : string;
-    type!       : string;
-    isDefault!  : boolean;
-}
-
-/** Flat item node with expandable and level information */
-export class TreeItemFlatNode {
-    label!      : string;
-    key!        : string;
-    level!      : number;
-    type!       : string;
-    isDefault!  : boolean;
-    expandable! : boolean;
-    code!       : string;
-}
-
 @Injectable()
 export class ChecklistDatabase {
-    doctypesData : any[]    = [];
-    loading      : boolean  = true;
+    doctypeData : any[]     = [];
+    loading     : boolean   = true;
     dataChange              = new BehaviorSubject<TreeItemNode[]>([]);
 
     get data(): TreeItemNode[] { return this.dataChange.value; }
@@ -70,7 +50,8 @@ export class ChecklistDatabase {
         public translate: TranslateService,
         private notify: NotificationService,
         public serviceSettings: SettingsService,
-        public privilegesService: PrivilegesService
+        public privilegesService: PrivilegesService,
+        private localeStorageService: LocalStorageService
     ) {}
 
     loadTree(formId: number) {
@@ -82,12 +63,12 @@ export class ChecklistDatabase {
 
     retrieveDocTypes(formId: number) {
         this.loading      = true;
-        this.doctypesData = [];
+        this.doctypeData = [];
         this.http.get(API_URL + '/ws/doctypes/list/' + (formId).toString(), {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 let newDoctype;
                 data.doctypes.forEach((doctype: {
-                        id          : any
+                        id          : number
                         key         : string
                         code        : string
                         label       : string
@@ -103,10 +84,10 @@ export class ChecklistDatabase {
                             'label'     : doctype.label,
                             'type'      : doctype.type,
                             'status'    : doctype.status,
-                            'isDefault': doctype.is_default,
+                            'isDefault' : doctype.is_default,
                             'formId'    : doctype.form_id,
                         };
-                        this.doctypesData.push(newDoctype);
+                        this.doctypeData.push(newDoctype);
                     }
                 );
             }),
@@ -116,6 +97,7 @@ export class ChecklistDatabase {
             }),
             catchError((err: any) => {
                 console.debug(err);
+                this.loading = false;
                 this.notify.handleErrors(err);
                 return of(false);
             })
@@ -127,9 +109,13 @@ export class ChecklistDatabase {
          * file node as children.
          */
         this.loading = true;
-        const data    = this.buildFileTree(this.doctypesData, '0');
+        const data    = this.buildFileTree(this.doctypeData, '0');
         // Notify the change.
         this.dataChange.next(data);
+        const lastSearchValue = this.localeStorageService.get('doctype_last_search_value') || '';
+        if(lastSearchValue){
+            this.filter(lastSearchValue);
+        }
     }
 
     /**
@@ -143,13 +129,14 @@ export class ChecklistDatabase {
             && (o.code.match(/\./g) || []).length === (level.match(/\./g) || []).length + 1
         )
             .map(o => {
-                const node = new TreeItemNode();
-                node.key = o.key;
-                node.label = o.label;
-                node.code = o.code;
-                node.type = o.type;
-                node.isDefault = o.isDefault;
-                const children = obj.filter(so => (so.code as string).startsWith(level + '.'));
+                const node      = new TreeItemNode();
+                node.id         = o.id;
+                node.key        = o.key;
+                node.label      = o.label;
+                node.code       = o.code;
+                node.type       = o.type;
+                node.isDefault  = o.isDefault;
+                const children  = obj.filter(so => (so.code as string).startsWith(level + '.'));
                 if (children && children.length > 0) {
                     node.children = this.buildFileTree(children, o.code);
                 }
@@ -157,36 +144,53 @@ export class ChecklistDatabase {
             });
     }
 
+    public _normalizeValue(value: string): string {
+        return value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    }
+
     public filter(filterText: string) {
         let filteredTreeData: any[];
-        if (filterText) {
-            filteredTreeData = this.doctypesData.filter(d => d.label.toLocaleLowerCase().indexOf(filterText.toLocaleLowerCase()) > -1);
+        if (filterText){
+            filteredTreeData = this.doctypeData.filter(d =>
+                this._normalizeValue(d.label).indexOf(this._normalizeValue(filterText))
+                > -1 && d.code.lastIndexOf('.') === 1
+            );
             Object.assign([], filteredTreeData).forEach(ftd => {
                 // @ts-ignore
-                let str = (ftd.code as string);
-                while (str.lastIndexOf('.') > -1) {
-                    const index = str.lastIndexOf('.');
-                    str = str.substring(0, index);
-                    if (filteredTreeData.findIndex(t => t.code === str) === -1) {
-                        const obj = this.doctypesData.find(d => d.code === str);
-                        if (obj) {
-                            filteredTreeData.push(obj);
-                        }
-                    }
-                }
+                const code = (ftd.code as string);
+                filteredTreeData = filteredTreeData.concat(this.doctypeData.filter(d =>
+                    d.code.startsWith(code + ".") && d.code !== code
+                ));
             });
 
         } else {
-            filteredTreeData = this.doctypesData;
+            filteredTreeData = this.doctypeData;
         }
-
-        /** Build the tree nodes from Json object. The result is a list of `DocumentItemNode` with nested
-         * file node as children.
-         */
         const data = this.buildFileTree(filteredTreeData, '0');
-        // Notify the change.
         this.dataChange.next(data);
     }
+}
+
+export class TreeItemNode {
+    id!         : number;
+    key!        : string;
+    label!      : string;
+    children!   : TreeItemNode[];
+    code!       : string;
+    type!       : string;
+    isDefault!  : boolean;
+}
+
+/** Flat item node with expandable and level information */
+export class TreeItemFlatNode {
+    id!         : number;
+    label!      : string;
+    key!        : string;
+    level!      : number;
+    type!       : string;
+    isDefault!  : boolean;
+    expandable! : boolean;
+    code!       : string;
 }
 
 @Component({
@@ -197,9 +201,9 @@ export class ChecklistDatabase {
 })
 export class DocumentTypeFactoryComponent implements OnInit {
     loading: boolean                        = false;
-    searchText: string                      = "";
+    searchText: string                      = this.localeStorageService.get('doctype_last_search_value') || '';
     forms: any[]                            = [];
-    @Input() selectedDocTypeInput: any      = {"key": undefined};
+    @Input() selectedDocTypeInput: any      = {"key": undefined, "id": -1};
     @Output() selectedDoctypeOutput: any    = new EventEmitter < string > ();
     @Output() selectedFormOutput: any       = new EventEmitter < string > ();
     selectFormControl: FormControl          =  new FormControl();
@@ -215,7 +219,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
     dataSource!    : MatTreeFlatDataSource<TreeItemNode, TreeItemFlatNode>;
 
     constructor(
-        public treeDataObj         : ChecklistDatabase,
+        public treeDataObj : ChecklistDatabase,
         public serviceSettings  : SettingsService,
         private http: HttpClient,
         public router: Router,
@@ -243,7 +247,6 @@ export class DocumentTypeFactoryComponent implements OnInit {
 
         this.treeDataObj.dataChange.subscribe(data => {
             this.dataSource.data = data;
-            this.treeControl.expandAll();
         });
         this.selectFormControl.valueChanges.subscribe(formId => {
             this.localeStorageService.save('doctypeFormId', formId);
@@ -281,6 +284,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
         const flatNode = existingNode && existingNode.label === node.label
             ? existingNode
             : new TreeItemFlatNode();
+        flatNode.id         = node.id;
         flatNode.label      = node.label;
         flatNode.level      = level;
         flatNode.type       = node.type;
@@ -294,6 +298,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
     };
 
     filterChanged() {
+        this.localeStorageService.save('doctype_last_search_value',this.searchText);
         this.treeDataObj.filter(this.searchText);
         if (this.searchText)
         {
@@ -318,7 +323,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
     }
 
     loadDefaultDocType() {
-        this.treeDataObj.doctypesData.forEach((doctype: any) => {
+        this.treeDataObj.doctypeData.forEach((doctype: any) => {
             if(doctype.isDefault) {
                 this.selectedDocTypeInput = doctype;
                 this.selectedDoctypeOutput.emit(doctype);

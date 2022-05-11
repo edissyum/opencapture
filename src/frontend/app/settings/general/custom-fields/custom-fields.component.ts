@@ -38,12 +38,14 @@ import {MatDialog} from "@angular/material/dialog";
     styleUrls: ['./custom-fields.component.scss'],
 })
 export class CustomFieldsComponent implements OnInit {
-    loading         : boolean   = true;
-    inactiveFields  : any[]     = [];
-    activeFields    : any[]     = [];
-    inactiveOrActive: string    = '';
-    update          : boolean   = false;
-    updateCustomId  : any ;
+    update              : boolean   = false;
+    loading             : boolean   = true;
+    showSelectOptions   : boolean   = false;
+    inactiveFields      : any[]     = [];
+    activeFields        : any[]     = [];
+    selectOptions       : any[]     = [];
+    inactiveOrActive    : string    = '';
+    updateCustomId      : any ;
     form!: FormGroup;
     parent: any[] = [
         {
@@ -136,7 +138,7 @@ export class CustomFieldsComponent implements OnInit {
         this.form = this.toFormGroup();
     }
 
-    drop(event: CdkDragDrop<string[]>) {
+    dropCustomField(event: CdkDragDrop<string[]>) {
         if (event.previousContainer === event.container) {
             moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
         } else {
@@ -162,6 +164,9 @@ export class CustomFieldsComponent implements OnInit {
     }
 
     retrieveCustomFields() {
+        this.loading        = true;
+        this.activeFields   = [];
+        this.inactiveFields = [];
         let newField;
         this.http.get(API_URL + '/ws/customFields/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -173,6 +178,7 @@ export class CustomFieldsComponent implements OnInit {
                         'label'         : field.label,
                         'type'          : field.type,
                         'enabled'       : field.enabled,
+                        'settings'      : field.settings,
                         'metadata_key'  : field.metadata_key,
                     };
                     field.enabled ? this.activeFields.push(newField) : this.inactiveFields.push(newField);
@@ -187,16 +193,42 @@ export class CustomFieldsComponent implements OnInit {
         ).subscribe();
     }
 
+    addSelectOption() {
+        this.selectOptions.push({
+            idControl      : new FormControl(),
+            labelControl   : new FormControl(),
+        });
+    }
+
+    dropSelectOption(event: CdkDragDrop<string[]>) {
+        moveItemInArray(this.selectOptions, event.previousIndex, event.currentIndex);
+    }
+
+    deleteSelectOption(optionIndex: number) {
+        this.selectOptions.splice(optionIndex, 1);
+    }
+
+    addSelectOptionsToArgs(args: any){
+        args.options  = [];
+        for(const option of this.selectOptions){
+            args.options.push({
+                id      : option.idControl.value,
+                label   : option.labelControl.value
+            });
+        }
+        return args;
+    }
+
     addCustomField() {
-        const newField: any = {};
+        let newField: any = {};
+        newField = this.addSelectOptionsToArgs(newField);
         this.addFieldInputs.forEach((element: any) => {
             newField[element.field_id] = element.control.value;
         });
-
         this.http.post(API_URL + '/ws/customFields/add', newField, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 newField['id'] = data.id;
-                this.activeFields.push(newField);
+                this.retrieveCustomFields();
                 this.notify.success(this.translate.instant('CUSTOM-FIELDS.field_added'));
                 this.resetForm();
             }),
@@ -301,8 +333,9 @@ export class CustomFieldsComponent implements OnInit {
     }
 
     updateCustomOnSubmit() {
-        const updatedField : any = {};
-        updatedField['id'] = this.updateCustomId;
+        let updatedField : any = {};
+        updatedField           = this.addSelectOptionsToArgs(updatedField);
+        updatedField['id']     = this.updateCustomId;
         if (this.inactiveOrActive === 'active') {
             this.addFieldInputs.forEach((field: any) => {
                 this.activeFields.forEach((element: any) => {
@@ -327,6 +360,7 @@ export class CustomFieldsComponent implements OnInit {
             tap(() => {
                 this.notify.success(this.translate.instant('CUSTOM-FIELDS.field_updated'));
                 this.resetForm();
+                this.retrieveCustomFields();
             }),
             catchError((err: any) => {
                 console.debug(err);
@@ -338,12 +372,21 @@ export class CustomFieldsComponent implements OnInit {
 
     updateCustomField(customField: any, activeOrInactive: string) {
         this.update = true;
+        this.selectOptions = [];
         if (customField) {
             this.updateCustomId = customField.id;
             this.inactiveOrActive = activeOrInactive;
             this.addFieldInputs.forEach((element: any) => {
                 element.control.setValue(customField[element.field_id]);
             });
+            if (customField.settings.hasOwnProperty('options')){
+                for (const option of customField.settings.options){
+                    this.selectOptions.push({
+                        'idControl'     : new FormControl(option.id),
+                        'labelControl'  : new FormControl(option.label)
+                    });
+                }
+            }
         }
     }
 
@@ -351,8 +394,9 @@ export class CustomFieldsComponent implements OnInit {
         this.addFieldInputs.forEach((element: any) => {
             element.control.setValue('');
         });
-        this.update = false;
-        this.inactiveOrActive = '';
-        this.updateCustomId = '';
+        this.selectOptions      = [];
+        this.inactiveOrActive   = '';
+        this.updateCustomId     = '';
+        this.update             = false;
     }
 }

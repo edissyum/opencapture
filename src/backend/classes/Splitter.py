@@ -20,6 +20,8 @@ import random
 import re
 from xml.dom import minidom
 import xml.etree.cElementTree as ET
+from unidecode import unidecode
+
 from src.backend.classes.Files import Files
 
 
@@ -234,12 +236,13 @@ class Splitter:
                 mask_result.append(mask_value.replace(' ', separator))
 
         mask_result = separator.join(str(x) for x in mask_result)
+        mask_result = unidecode(mask_result)
         if 'extension' in mask_args:
             mask_result += '.{}'.format(mask_args['extension'])
         return mask_result
 
     @staticmethod
-    def export_xml(documents, metadata, output_dir, filename, now):
+    def export_xml(fields_param, documents, metadata, output_dir, filename, now):
         year = str(now.year)
         month = str(now.month).zfill(2)
         day = str(now.day).zfill(2)
@@ -263,9 +266,13 @@ class Splitter:
         """
             Add batch metadata ignoring search values
         """
+
         for key in metadata:
             if 'search_' not in key:
-                ET.SubElement(header_tag, key.replace(' ', '')).text = str(metadata[key])
+                field_param = [field for field in fields_param['batch_metadata'] if field['label_short'] == key]
+                xml_tag = field_param[0]['xmlTag'] if (field_param and 'xmlTag' in field_param[0]) \
+                    else key.replace(' ', '')
+                ET.SubElement(header_tag, xml_tag).text = str(metadata[key])
 
         documents_tag = ET.SubElement(root, "Documents")
         for index, document in enumerate(documents):
@@ -277,12 +284,16 @@ class Splitter:
 
             fields_tag = ET.SubElement(document_tag, "FIELDS")
             ET.SubElement(fields_tag, "DOCTYPE").text = document['documentTypeKey']
+
             for key in document['metadata']:
                 """
                     Add document metadata ignoring search values
                 """
                 if 'search_' not in key:
-                    ET.SubElement(fields_tag, key.replace(' ', '')).text = str(document['metadata'][key])
+                    field_param = [field for field in fields_param['document_metadata'] if field['label_short'] == key]
+                    xml_tag = field_param[0]['xmlTag'] if (field_param and 'xmlTag' in field_param[0]) \
+                        else key.replace(' ', '')
+                    ET.SubElement(fields_tag, xml_tag).text = str(document['metadata'][key])
         xml_file_path = output_dir + filename
         try:
             xml_str = minidom.parseString(ET.tostring(root)).toprettyxml(indent="    ")

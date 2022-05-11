@@ -61,6 +61,10 @@
 		"login": "Log in",
 		"not_connected": "Please authenticate yourself before accessing this page"
 	},
+	"AUTOCOMPLETE": {
+		"export_maarch": "Maarch Courrier",
+		"none": "No autocompletion"
+	},
 	"BATCH": {
 		"older": "Older",
 		"today": "Today",
@@ -97,19 +101,27 @@
 	},
 	"CUSTOM-FIELDS": {
 		"add": "Add custom field",
+		"add_choice": "Add a choice",
 		"checkbox": "Checkbox",
 		"confirm_delete": "Are you sure you want to delete the document type <b>{{ doctypeLabel }}</b> ?",
 		"custom_exists": "Custom field already exist",
+		"delete_choice": "Delete choice",
 		"deleted": "Deleted",
 		"field_added": "Field added successfully",
 		"field_updated": "Field updated successfully",
 		"module": "Module",
+		"no_option_added": "No option added",
 		"reset": "Reset",
 		"select": "List of choices",
+		"select_options": "Select options",
 		"text": "String",
 		"textarea": "Textarea",
 		"type": "Type",
 		"update": "Update custom field"
+	},
+	"DISABLED": {
+		"disabled": "Disabled",
+		"not_disabled": "Not disabled"
 	},
 	"DISPLAY": {
 		"multi": "Multi",
@@ -135,13 +147,15 @@
 		"folder": "Folder",
 		"folder_added": "Folder added",
 		"generating_separator": "Generating separator",
+		"maximise_tree": "Maximise tree",
+		"minimise_tree": "Minimise tree",
 		"no_doctype_to_show": "No document type to show",
 		"no_master": "(No master folder)",
 		"separator_choice ": "Separator choice"
 	},
 	"ERROR": {
 		"404": "The page you are looking for does not exist",
-		"500": "",
+		"500": "A technical issue appear on our side. <b>Please try again later</b>",
 		"alphanum_extended_pattern": "The value is not well formatted : alphanumeric with special char",
 		"alphanum_pattern": "The value is not well formatted : alphanumeric",
 		"char_pattern": "The value is not well formatted : alphabetic",
@@ -174,6 +188,7 @@
 		"invoice_number": "Invoice number",
 		"no_rate_amount": "No rate amount",
 		"order_number": "Order number",
+		"quotation_number": "Quotation number",
 		"register_date_day": "Day of the register date",
 		"register_date_month": "Month of the register date",
 		"register_date_year": "Year of the register date",
@@ -182,6 +197,11 @@
 		"total_vat": "Total vat",
 		"vat_amount": "VAT amount",
 		"vat_rate": "VAT rate"
+	},
+	"FIELD_METADATA": {
+		"resultMask": "Result mask",
+		"searchMask": "Search mask",
+		"xmlTag": "XML Tag"
 	},
 	"FORMATS": {
 		"alphanum": "Alphanumeric [0-9aA-zZ]",
@@ -212,6 +232,7 @@
 		"duplicate": "Duplicate form",
 		"enable": "Enable form",
 		"form_deleted": "Form deleted successfully",
+		"input_metadata": "Input metadata",
 		"input_settings": "Inputs",
 		"inputs_list_already_linked": "The following inputs are linked to this form <br><br> <b><center>{{ inputsList }}</center></b> <br> Please choose a new form for this inputs",
 		"is_default": "Default form",
@@ -258,7 +279,7 @@
 	},
 	"HEADER": {
 		"active": "Active",
-		"choose_metadata_method": "",
+		"choose_metadata_method": "Choose metadata method",
 		"choose_output": "Choose output",
 		"description": "Description",
 		"id": "Technical id",
@@ -312,6 +333,7 @@
 		"update-role": "Role updated&nbsp;<b>{{ role }}</b>",
 		"update-supplier": "Supplier updated&nbsp;<b>{{ supplier }}</b>",
 		"update-user": "User updated&nbsp;<b>{{ user }}</b>",
+		"validate_splitter": "Validation of batch n°&nbsp;<b>{{ batch_id }}</b>",
 		"viewer": "Visualisation of invoice n°&nbsp;<b>{{ invoice_id }}</b>",
 		"viewer_splitter": "Visualisation of batch n°&nbsp;<b>{{ batch_id }}</b>"
 	},
@@ -380,6 +402,8 @@
 		"create": "Create output",
 		"created": "Output created successfully",
 		"json_input_erorr": "The field <b>{{ field }}</b> have to be JSON with double quotes",
+		"links": "Links",
+		"links_hint": "",
 		"maarch_connection_ko": "Error while connecting to Maarch",
 		"maarch_connection_ok": "Connection to Maarch successfull",
 		"no_auth_necessary": "No authentification necessary",
@@ -561,9 +585,11 @@
 		"drop_document_in_position": "Drop document in wanted position",
 		"edit": "Edit",
 		"error_no_doc_type": "Please choose document types",
+		"error_no_metadata": "Please fill the batch metadata",
 		"form_label": "Form label",
 		"identifier": "Identifier",
 		"list": "List of batches",
+		"loadReferential": "Refresh autocomplete data",
 		"merge": "Merge",
 		"merge_error_form_not_match": "Error while merge batches. Form do not match",
 		"merge_success": "Batches merged successfully",
@@ -580,7 +606,6 @@
 		"rotatePage": "Rotate page with",
 		"save": "Save",
 		"search": "Search",
-		"search_for": "Search for ",
 		"select": "Select",
 		"select_all": "Select all",
 		"selected_pages": "selected page(s)",
@@ -652,6 +677,7 @@
 	"VERIFIER": {
 		"accounting_plan_empty": "There is no linked accounting plan for this supplier",
 		"all_invoices_checked_deleted": "All checked invoices was successfully deleted",
+		"autocomplete": "Autocomplete",
 		"calculated_footer": "Get only raw footer is disabled",
 		"change_form": "Change form",
 		"change_form_details": "Data are not loose when you change form",

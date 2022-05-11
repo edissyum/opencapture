@@ -172,7 +172,6 @@ export class ConfigurationsComponent implements OnInit {
         }
 
         this.configurations = data.sort((a: any, b: any) => {
-            console.log(a);
             const isAsc = sort.direction === 'asc';
             switch (sort.active) {
                 case 'id': return this.compare(a.id, b.id, isAsc);

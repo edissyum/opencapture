@@ -39,7 +39,7 @@ class MaarchWebServices:
                     return [False, gettext('HOST_NOT_FOUND')]
                 if 'errors' in json.loads(res.text):
                     return [False, json.loads(res.text)['errors']]
-            return True
+            return [True, '']
         except (requests.exceptions.ConnectionError, requests.exceptions.Timeout, requests.exceptions.MissingSchema) as request_error:
             self.log.error('Error connecting to the host. Exiting program..', False)
             self.log.error('More information : ' + str(request_error), False)
@@ -49,13 +49,42 @@ class MaarchWebServices:
         res = requests.get(self.base_url + '/users', auth=self.auth)
         if res.status_code != 200:
             self.log.error('(' + str(res.status_code) + ') getUsersError : ' + str(res.text))
-            return False
-        return json.loads(res.text)
+        return json.loads(res.text), res.status_code
 
     def retrieve_entities(self):
         res = requests.get(self.base_url + '/entities', auth=self.auth)
         if res.status_code != 200:
             self.log.error('(' + str(res.status_code) + ') getEntitiesError : ' + str(res.text))
+            return False
+        return json.loads(res.text)
+
+    def retrieve_custom_fields(self):
+        res = requests.get(self.base_url + '/customFields', auth=self.auth)
+        if res.status_code != 200:
+            self.log.error('(' + str(res.status_code) + ') getCustomFieldsError : ' + str(res.text))
+            return False
+        return json.loads(res.text)
+
+    def retrieve_contact_custom_fields(self):
+        res = requests.get(self.base_url + '/contactsCustomFields', auth=self.auth)
+        if res.status_code != 200:
+            self.log.error('(' + str(res.status_code) + ') getContactCustomFieldsError : ' + str(res.text))
+            return False
+        return json.loads(res.text)
+
+    def retrieve_contact(self, args):
+        where = "where=custom_fields->>'" + str(args['vatNumberContactCustom']['id']) + "'='" + str(args['supplierCustomId']) + "'"
+        res = requests.get(self.base_url + '/contacts?' + where, auth=self.auth)
+        if res.status_code != 200:
+            self.log.error('(' + str(res.status_code) + ') getContactError : ' + str(res.text))
+            return False
+        return json.loads(res.text)
+
+    def get_document_with_contact(self, args):
+        where = "?custom_fields=" + str(args['maarchCustomField']['id'])
+        res = requests.get(self.base_url + '/resources/getByContact/' + args['contactId'] + where, auth=self.auth)
+        if res.status_code != 200:
+            self.log.error('(' + str(res.status_code) + ') getContactError : ' + str(res.text))
             return False
         return json.loads(res.text)
 
@@ -70,6 +99,19 @@ class MaarchWebServices:
         res = requests.get(self.base_url + '/priorities/' + priority, auth=self.auth)
         if res.status_code != 200:
             self.log.error('(' + str(res.status_code) + ') getPriorityByIdError : ' + str(res.text))
+            return False
+        return json.loads(res.text)
+
+    def retrieve_doc_with_custom(self, custom_id, data, clause):
+        data = {
+            'select': 'res_id',
+            'clause': clause + " AND custom_fields ->> '" + str(custom_id) + "' = '" + str(data) + "'"
+        }
+
+        res = requests.post(self.base_url + '/res/list', auth=self.auth, data=json.dumps(data),
+                            headers={'Connection': 'close', 'Content-Type': 'application/json'})
+        if res.status_code != 200:
+            self.log.error('(' + str(res.status_code) + ') getDocumentWithCustomField : ' + str(res.text))
             return False
         return json.loads(res.text)
 
@@ -93,6 +135,17 @@ class MaarchWebServices:
             self.log.error('(' + str(res.status_code) + ') getDoctypesError : ' + str(res.text))
             return False
         return json.loads(res.text)
+
+    def link_documents(self, res_id_master, res_id):
+        data = {
+            'linkedResources': [res_id]
+        }
+        res = requests.post(self.base_url + '/resources/' + res_id_master + '/linkedResources', auth=self.auth,
+                            data=json.dumps(data), headers={'Connection': 'close', 'Content-Type': 'application/json'})
+        if res.status_code not in (200, 204):
+            self.log.error('(' + str(res.status_code) + ') linkDocumentError : ' + str(res.text))
+            return False
+        return True
 
     def insert_with_args(self, args):
         if 'contact' not in args:

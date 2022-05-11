@@ -20,26 +20,25 @@ import json
 import base64
 import logging
 import datetime
-import requests
+from xml.dom import minidom
+import xml.etree.ElementTree as Et
 import pandas as pd
 from PIL import Image
-from xml.dom import minidom
 from flask_babel import gettext
-import xml.etree.ElementTree as Et
+import requests
 from zeep import Client, exceptions
-from src.backend.main import launch
 from flask import current_app, Response
 from src.backend.import_controllers import user
 from src.backend.import_models import verifier, accounts
-from src.backend.main import create_classes_from_current_config
+from src.backend.main import launch, create_classes_from_current_config
 from src.backend.import_classes import _Files, _MaarchWebServices
 
 
 def handle_uploaded_file(files, input_id):
     path = current_app.config['UPLOAD_FOLDER']
     for file in files:
-        f = files[file]
-        filename = _Files.save_uploaded_file(f, path)
+        _f = files[file]
+        filename = _Files.save_uploaded_file(_f, path)
         launch({
             'file': filename,
             'languages': current_app.config['LANGUAGES'],
@@ -154,7 +153,7 @@ def update_position_by_invoice_id(invoice_id, args):
         invoice_positions.update({
             column: position
         })
-        res, error = verifier.update_invoice({
+        _, error = verifier.update_invoice({
             'set': {"positions": json.dumps(invoice_positions)},
             'invoice_id': invoice_id
         })
@@ -182,7 +181,7 @@ def update_page_by_invoice_id(invoice_id, args):
         invoice_pages.update({
             column: page
         })
-        res, error = verifier.update_invoice({'set': {"pages": json.dumps(invoice_pages)}, 'invoice_id': invoice_id})
+        _, error = verifier.update_invoice({'set': {"pages": json.dumps(invoice_pages)}, 'invoice_id': invoice_id})
         if error is None:
             return '', 200
         else:
@@ -206,7 +205,7 @@ def update_invoice_data_by_invoice_id(invoice_id, args):
             invoice_data.update({
                 column: value
             })
-        res, error = verifier.update_invoice({'set': {"datas": json.dumps(invoice_data)}, 'invoice_id': invoice_id})
+        _, error = verifier.update_invoice({'set': {"datas": json.dumps(invoice_data)}, 'invoice_id': invoice_id})
         if error is None:
             return '', 200
         else:
@@ -225,8 +224,8 @@ def delete_invoice_data_by_invoice_id(invoice_id, field_id):
         _set = {}
         invoice_data = invoice_info['datas']
         if field_id in invoice_data:
-            del (invoice_data[field_id])
-        res, error = verifier.update_invoice({'set': {"datas": json.dumps(invoice_data)}, 'invoice_id': invoice_id})
+            del invoice_data[field_id]
+        _, error = verifier.update_invoice({'set': {"datas": json.dumps(invoice_data)}, 'invoice_id': invoice_id})
         if error is None:
             return '', 200
         else:
@@ -245,8 +244,8 @@ def delete_invoice_position_by_invoice_id(invoice_id, field_id):
         _set = {}
         invoice_positions = invoice_info['positions']
         if field_id in invoice_positions:
-            del (invoice_positions[field_id])
-        res, error = verifier.update_invoice(
+            del invoice_positions[field_id]
+        _, error = verifier.update_invoice(
             {'set': {"positions": json.dumps(invoice_positions)}, 'invoice_id': invoice_id})
         if error is None:
             return '', 200
@@ -266,8 +265,8 @@ def delete_invoice_page_by_invoice_id(invoice_id, field_id):
         _set = {}
         invoice_pages = invoice_info['pages']
         if field_id in invoice_pages:
-            del (invoice_pages[field_id])
-        res, error = verifier.update_invoice({'set': {"pages": json.dumps(invoice_pages)}, 'invoice_id': invoice_id})
+            del invoice_pages[field_id]
+        _, error = verifier.update_invoice({'set': {"pages": json.dumps(invoice_pages)}, 'invoice_id': invoice_id})
         if error is None:
             return '', 200
         else:
@@ -282,9 +281,9 @@ def delete_invoice(invoice_id):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
 
-    user_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
+    _, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
     if error is None:
-        res, error = verifier.update_invoice({'set': {'status': 'DEL'}, 'invoice_id': invoice_id})
+        _, error = verifier.update_invoice({'set': {'status': 'DEL'}, 'invoice_id': invoice_id})
         if error is None:
             return '', 200
         else:
@@ -304,10 +303,10 @@ def delete_invoice(invoice_id):
 def update_invoice(invoice_id, data):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
-    invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
+    _, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
 
     if error is None:
-        res, error = verifier.update_invoice({'set': data, 'invoice_id': invoice_id})
+        _, error = verifier.update_invoice({'set': data, 'invoice_id': invoice_id})
 
         if error is None:
             return '', 200
@@ -329,7 +328,7 @@ def remove_lock_by_user_id(user_id):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
 
-    res, error = verifier.update_invoices({
+    _, error = verifier.update_invoices({
         'set': {"locked": False},
         'where': ['locked_by = %s'],
         'data': [user_id]
@@ -358,14 +357,14 @@ def export_maarch(invoice_id, data):
             password = _data['value']
 
     if host and login and password:
-        ws = _MaarchWebServices(
+        _ws = _MaarchWebServices(
             host,
             login,
             password,
             _vars[5],
             _vars[1]
         )
-        if ws.status[0]:
+        if _ws.status[0]:
             invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
             if not error:
                 args = {}
@@ -375,17 +374,34 @@ def export_maarch(invoice_id, data):
                     if address:
                         supplier[0].update(address[0])
 
+                link_resource = False
+                opencapture_field = maarch_custom_field = maarch_clause = custom_field_contact_id = None
+                if 'links' in data['options']:
+                    for _links in data['options']['links']:
+                        if _links['id'] == 'enabled' and _links['value']:
+                            link_resource = True
+                        if _links['id'] == 'maarchCustomField' and _links['value']:
+                            maarch_custom_field = _links['value']
+                        if _links['id'] == 'openCaptureField' and _links['value']:
+                            opencapture_field = _links['value']
+                        if _links['id'] == 'maarchClause' and _links['value']:
+                            maarch_clause = _links['value']
+                        if _links['id'] == 'vatNumberContactCustom' and _links['value']:
+                            custom_field_contact_id = _links['value']
+
                 contact = {
                     'company': supplier[0]['name'],
                     'addressTown': supplier[0]['city'],
                     'societyShort': supplier[0]['name'],
                     'addressStreet': supplier[0]['address1'],
                     'addressPostcode': supplier[0]['postal_code'],
-                    'customFields': {},
-                    'email': 'A_renseigner_' + supplier[0]['name'].replace(' ', '_') + '@' + supplier[0][
-                        'vat_number'] + '.fr'
+                    'email': 'A_renseignera_' + supplier[0]['name'].replace(' ', '_') +
+                             '@' + supplier[0]['vat_number'] + '.fr'
                 }
-                res = ws.create_contact(contact)
+                if custom_field_contact_id:
+                    contact['customFields'] = {custom_field_contact_id['id']: supplier[0]['vat_number'] + supplier[0]['siret']}
+
+                res = _ws.create_contact(contact)
                 if res is not False:
                     args['contact'] = {'id': res['id'], 'type': 'contact'}
 
@@ -395,14 +411,15 @@ def export_maarch(invoice_id, data):
                     if 'webservice' in _data:
                         # Pour le webservices Maarch, ce sont les identifiants qui sont utilisés
                         # et non les valeurs bruts (e.g COU plutôt que Service courrier)
-                        value = _data['value']['id']
+                        if _data['value']:
+                            value = _data['value']['id']
 
                     args.update({
                         _data['id']: value
                     })
 
                     if _data['id'] == 'priority':
-                        priority = ws.retrieve_priority(value)
+                        priority = _ws.retrieve_priority(value)
                         if priority:
                             delays = priority['priority']['delays']
                             process_limit_date = datetime.date.today() + datetime.timedelta(days=delays)
@@ -429,12 +446,25 @@ def export_maarch(invoice_id, data):
 
                 file = invoice_info['path'] + '/' + invoice_info['filename']
                 if os.path.isfile(file):
-                    args.update({
-                        'fileContent': open(file, 'rb').read(),
-                        'documentDate': str(pd.to_datetime(invoice_info['datas']['invoice_date']).date())
-                    })
-                    res, message = ws.insert_with_args(args)
+                    with open(file, 'rb') as file:
+                        args.update({
+                            'fileContent': file.read(),
+                            'documentDate': str(pd.to_datetime(invoice_info['datas']['invoice_date'],
+                                                               infer_datetime_format=True).date())
+                        })
+                    res, message = _ws.insert_with_args(args)
                     if res:
+                        if link_resource:
+                            if opencapture_field:
+                                opencapture_field = ''.join(construct_with_var(opencapture_field, invoice_info))
+                                if maarch_custom_field:
+                                    if 'res_id' not in data or not data['res_id']:
+                                        docs = _ws.retrieve_doc_with_custom(maarch_custom_field['id'], opencapture_field, maarch_clause)
+                                        if docs:
+                                            res_id = docs['resources'][0]['res_id']
+                                    else:
+                                        res_id = data['res_id']
+                                    _ws.link_documents(str(res_id), message['resId'])
                         return '', 200
                     else:
                         response = {
@@ -457,7 +487,7 @@ def export_maarch(invoice_id, data):
         else:
             response = {
                 "errors": gettext('MAARCH_WS_INFO_WRONG'),
-                "message": ws.status[1]
+                "message": _ws.status[1]
             }
             return response, 400
     else:
@@ -527,23 +557,23 @@ def export_xml(invoice_id, data):
 
         # Fill XML with invoice informations
         if os.path.isdir(folder_out):
-            xml_file = open(folder_out + '/' + filename, 'w')
-            root = Et.Element('ROOT')
-            xml_technical = Et.SubElement(root, 'TECHNICAL')
-            xml_datas = Et.SubElement(root, 'DATAS')
+            with open(folder_out + '/' + filename, 'w', encoding='UTF-8') as xml_file:
+                root = Et.Element('ROOT')
+                xml_technical = Et.SubElement(root, 'TECHNICAL')
+                xml_datas = Et.SubElement(root, 'DATAS')
 
-            for technical in invoice_info:
-                if technical in ['path', 'filename', 'register_date', 'nb_pages', 'purchase_or_sale']:
-                    new_field = Et.SubElement(xml_technical, technical)
-                    new_field.text = str(invoice_info[technical])
+                for technical in invoice_info:
+                    if technical in ['path', 'filename', 'register_date', 'nb_pages', 'purchase_or_sale']:
+                        new_field = Et.SubElement(xml_technical, technical)
+                        new_field.text = str(invoice_info[technical])
 
-            for data in invoice_info['datas']:
-                new_field = Et.SubElement(xml_datas, data)
-                new_field.text = str(invoice_info['datas'][data])
+                for invoice_data in invoice_info['datas']:
+                    new_field = Et.SubElement(xml_datas, invoice_data)
+                    new_field.text = str(invoice_info['datas'][invoice_data])
 
-            xml_root = minidom.parseString(Et.tostring(root, encoding="unicode")).toprettyxml()
-            xml_file.write(xml_root)
-            xml_file.close()
+                xml_root = minidom.parseString(Et.tostring(root, encoding="unicode")).toprettyxml()
+                xml_file.write(xml_root)
+                xml_file.close()
             # END Fill XML with invoice informations
             return '', 200
         else:
@@ -564,7 +594,7 @@ def ocr_on_the_fly(file_name, selection, thumb_size, positions_masks):
     _vars = create_classes_from_current_config()
     _cfg = _vars[1].cfg
     _files = _vars[3]
-    _Ocr = _vars[4]
+    _ocr = _vars[4]
     _docservers = _vars[9]
 
     path = _docservers['VERIFIER_IMAGE_FULL'] + '/' + file_name
@@ -572,12 +602,12 @@ def ocr_on_the_fly(file_name, selection, thumb_size, positions_masks):
     if positions_masks:
         path = _docservers['VERIFIER_POSITIONS_MASKS'] + '/' + file_name
 
-    text = _files.ocr_on_fly(path, selection, _Ocr, thumb_size)
+    text = _files.ocr_on_fly(path, selection, _ocr, thumb_size)
     if text:
         return text
     else:
         _files.improve_image_detection(path)
-        text = _files.ocr_on_fly(path, selection, _Ocr, thumb_size)
+        text = _files.ocr_on_fly(path, selection, _ocr, thumb_size)
         return text
 
 
@@ -606,16 +636,19 @@ def get_file_content(file_type, filename, mime_type, compress=False):
                     image = Image.open(full_path)
                     image.thumbnail((1920, 1080))
                     image.save(thumb_path, optimize=True, quality=50)
-                content = open(thumb_path, 'rb').read()
+                with open(thumb_path, 'rb') as file:
+                    content = file.read()
             else:
-                content = open(full_path, 'rb').read()
+                with open(full_path, 'rb') as file:
+                    content = file.read()
 
     if not content:
         if mime_type == 'image/jpeg':
-            content = open(_docservers['PROJECT_PATH'] + '/dist/assets/not_found/document_not_found.jpg', 'rb').read()
+            with open(_docservers['PROJECT_PATH'] + '/dist/assets/not_found/document_not_found.jpg', 'rb') as file:
+                content = file.read()
         else:
-            content = open(_docservers['PROJECT_PATH'] + '/dist/assets/not_found/document_not_found.pdf', 'rb').read()
-
+            with open(_docservers['PROJECT_PATH'] + '/dist/assets/not_found/document_not_found.pdf', 'rb') as file:
+                content = file.read()
     return Response(content, mimetype=mime_type)
 
 
@@ -628,7 +661,7 @@ def get_token_insee():
     try:
         res = requests.post(_cfg.cfg['API']['siret-url-token'],
                             data={'grant_type': 'client_credentials'},
-                            headers={"Authorization": "Basic %s" % str(credentials)})
+                            headers={"Authorization": f"Basic {credentials}"})
     except requests.exceptions.SSLError:
         return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
 
@@ -644,8 +677,8 @@ def verify_siren(token, siren):
 
     try:
         res = requests.get(_cfg.cfg['API']['siren-url'] + siren,
-                           headers={"Authorization": "Bearer %s" % token, "Accept": "application/json"})
-    except requests.exceptions.SSLError:
+                           headers={"Authorization": f"Bearer {token}", "Accept": "application/json"})
+    except (requests.exceptions.SSLError, requests.exceptions.ConnectionError):
         return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
 
     _return = json.loads(res.text)
@@ -661,8 +694,8 @@ def verify_siret(token, siret):
 
     try:
         res = requests.get(_cfg.cfg['API']['siret-url'] + siret,
-                           headers={"Authorization": "Bearer %s" % token, "Accept": "application/json"})
-    except requests.exceptions.SSLError:
+                           headers={"Authorization": f"Bearer {token}", "Accept": "application/json"})
+    except (requests.exceptions.SSLError, requests.exceptions.ConnectionError):
         return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
 
     _return = json.loads(res.text)
@@ -688,14 +721,15 @@ def verify_vat_number(vat_number):
             text = gettext('VAT_NOT_VALID')
             return text, 400
         return text, 200
-    except (exceptions.Fault, requests.exceptions.SSLError):
-        text = gettext('VAT_API_ERROR')
-        return text, 201
+    except (exceptions.Fault, requests.exceptions.SSLError, requests.exceptions.ConnectionError):
+        return gettext('VAT_API_ERROR'), 201
 
 
 def get_totals(status, user_id):
     totals = {}
     allowed_customers, _ = user.get_customers_by_user_id(user_id)
+    allowed_customers.append(0)  # Update allowed customers to add Unspecified customers
+
     totals['today'], error = verifier.get_totals({'time': 'today', 'status': status, 'allowedCustomers': allowed_customers})
     totals['yesterday'], error = verifier.get_totals({'time': 'yesterday', 'status': status, 'allowedCustomers': allowed_customers})
     totals['older'], error = verifier.get_totals({'time': 'older', 'status': status, 'allowedCustomers': allowed_customers})

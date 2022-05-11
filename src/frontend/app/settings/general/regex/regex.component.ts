@@ -110,7 +110,6 @@ export class RegexComponent implements OnInit {
     updateValue(event: any, id: number) {
         this.updateLoading = true;
         const value = event.target.value;
-        console.log(id);
         this.regex.forEach((element: any) => {
             if (element.id === id) {
                 element.content = value;

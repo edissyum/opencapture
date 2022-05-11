@@ -224,8 +224,8 @@ def create_script_and_incron(args):
                 fs_watcher_job = args['module'] + '_' + args['input_id']
                 fs_watcher_command = new_script_filename + ' $filename'
                 if fs_watcher_job in fs_watcher_config.cfg:
-                    _Config.fswatcher_update_command(fs_watcher_config.file, fs_watcher_job, fs_watcher_command)
-                    _Config.fswatcher_update_watch(fs_watcher_config.file, fs_watcher_job, args['input_folder'])
+                    _Config.fswatcher_update_command(fs_watcher_config.file, fs_watcher_job, fs_watcher_command, args['input_label'])
+                    _Config.fswatcher_update_watch(fs_watcher_config.file, fs_watcher_job, args['input_folder'], args['input_label'])
                 else:
                     _Config.fswatcher_add_section(fs_watcher_config.file, fs_watcher_job, fs_watcher_command,
                                                   args['input_folder'], args['input_label'])
