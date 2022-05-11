@@ -243,12 +243,12 @@
 		"other": "Autres",
 		"output_settings": "Chaînes sortantes",
 		"output_type_mandatory": "Le type de chaîne sortante est obligatoire",
-		"refuse": "Refuser la facture",
+		"refuse": "Refuser",
 		"supplier": "Fournisseur",
 		"supplier_verif": "Vérification du fournisseur",
 		"supplier_verif_hint": "Vérification via API des SIRET / SIREN / TVA INTRA",
 		"updated": "Formulaire mis à jour avec succès",
-		"validate": "Valider la facture"
+		"validate": "Valider"
 	},
 	"GLOBAL": {
 		"batches": "Lots",

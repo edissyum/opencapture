@@ -243,12 +243,12 @@
 		"other": "Other",
 		"output_settings": "Outputs",
 		"output_type_mandatory": "Output type is mandatory",
-		"refuse": "Refuse invoice",
+		"refuse": "Refuse",
 		"supplier": "Supplier",
 		"supplier_verif": "Supplication verification",
 		"supplier_verif_hint": "verification via API for SIRET / SIREN / TVA INTRA",
 		"updated": "Form updated successfully",
-		"validate": "Validate invoice"
+		"validate": "Validate"
 	},
 	"GLOBAL": {
 		"batches": "Batches",
