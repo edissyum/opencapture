@@ -37,17 +37,17 @@
         </button>
         <div *ngIf="showZoomPage" class="fixed z-10 w-4/12 h-5/6 grid justify-items-stretch right-0 top-20">
             <img class="justify-self-end border-2 zoom-image"
-                mat-card-image
-                [src]="zoomPage.thumbnail"
-                (clickOutside)="showZoomPage = false"
-                [exclude]="'.btn-page-zoom, .btn-rotate'"
-                [ngClass]="
+                 mat-card-image
+                 [src]="zoomPage.thumbnail"
+                 (clickOutside)="showZoomPage = false"
+                 [exclude]="'.btn-page-zoom, .btn-rotate'"
+                 [ngClass]="
                     (zoomPage['rotation'] === 0)   ? 'rotate-0 h-full w-4/5 mr-6':
                     (zoomPage['rotation'] === 90)  ? 'rotate-90 h-full w-4/5 mr-36':
                     (zoomPage['rotation'] === 180) ? 'rotate-180 h-full w-4/5 mr-6':
                     (zoomPage['rotation'] === -90) ? '-rotate-90 h-full w-4/5 mr-36':
                     ''"
-                alt="Zoom Image"/>
+                 alt="Zoom Image"/>
         </div>
         <div class="w-10/12 absolute top-0 mx-32">
             <mat-accordion class="metadata">
@@ -58,7 +58,7 @@
                             <span>
                                 {{ 'SPLITTER.batch_metadata' | translate }}
                             </span>
-                            <div (click)="batchMetadata.toggle()" class="mx-8">
+                            <div (click)="batchMetadata.toggle()" class="mx-1">
                                 <mat-slide-toggle color="#97BF3D"
                                                   [checked]="inputMode === 'Auto'"
                                                   (change)="changeInputMode($event);"
@@ -99,7 +99,6 @@
                                             </ngx-mat-select-search>
                                         </mat-option>
                                         <mat-option *ngFor="let metadata of filteredServerSideMetadata | async"
-
                                                     [value]="metadata.metadataId"
                                                     (click)="fillData(metadata)">
                                             <span *ngIf="metadata.metadataId !== batchMetadataValues.metadataId"
@@ -139,12 +138,11 @@
                             </div>
                         </div>
                     </form>
-                    <div class="text-right p-4">
-                        <!--                        <button mat-button class="my-2" (click)="loadReferential()"-->
-                        <!--                                title="{{ 'SPLITTER.loadReferential' | translate }}">-->
-                        <!--                            <i class="fa-solid fa-sync fa-3x"></i>-->
-                        <!--                        </button>-->
-                    </div>
+                    <button mat-button (click)="loadReferential(); $event.stopPropagation();"
+                            class="float-right mb-2"
+                            title="{{ 'SPLITTER.loadReferential' | translate }}">
+                        <i class="fa-solid fa-sync fa-2x"></i>
+                    </button>
                 </mat-expansion-panel>
             </mat-accordion>
             <span *ngIf="documents.length === 0" class="block align-text-top text-center text-red-600">{{ 'SPLITTER.no_document_to_show' | translate }}</span>

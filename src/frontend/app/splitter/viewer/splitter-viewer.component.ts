@@ -51,6 +51,7 @@ export interface Field {
     class       : string
     settings    : any
     required    : string
+    xmlTag      : string
     resultMask  : string
     searchMask  : string
     label_short : string
@@ -183,7 +184,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 this.loadDocuments();
                 this.loadDefaultDocType();
                 this.loadOutputsData();
-                this.loadMetadata();
+                this.loadReferential();
             }),
             catchError((err: any) => {
                 this.loading = false;
@@ -483,20 +484,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     loadReferential(): void {
-        this.http.get(API_URL + `/ws/splitter/loadReferential/${this.currentBatch.formId}`,
-            {headers: this.authService.headers}).pipe(
-            tap(() => {
-                this.loadMetadata();
-            }),
-            catchError((err: any) => {
-                this.notify.handleErrors(err);
-                console.debug(err);
-                return of(false);
-            })
-        ).subscribe();
-    }
-
-    loadMetadata(): void {
         this.metadata = [];
         this.http.get(API_URL + `/ws/splitter/loadReferential/${this.currentBatch.formId}`, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -504,6 +491,13 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     metadataItem.data['metadataId'] = metadataItem.id;
                     this.metadata.push(metadataItem.data);
                 });
+                if(this.currentBatch.customFieldsValues.hasOwnProperty('metadataId')){
+                    const savedMetadata = this.metadata.filter(item => item.metadataId === this.currentBatch.customFieldsValues.metadataId);
+                    if(savedMetadata.length > 0){
+                        this.filteredServerSideMetadata.next(savedMetadata);
+                        this.fillData((savedMetadata[0]));
+                    }
+                }
                 this.notify.success(this.translate.instant('SPLITTER.referential_updated'));
             }),
             catchError((err: any) => {
@@ -528,8 +522,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 if(field.type === 'select' && selectedMetadata[field['metadata_key']]){
                     this.batchForm.get(field['metadata_key'])?.setValue(selectedMetadata[field['metadata_key']]);
                 }
-                else
+                else{
                     this.batchForm.get(field['metadata_key'])?.setValue(optionId);
+                }
             }
         }
     }
@@ -546,6 +541,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                                 'type'          : field.type,
                                 'label'         : field.label,
                                 'class'         : field.class,
+                                'xmlTag'        : field.xmlTag,
                                 'settings'      : field.settings,
                                 'required'      : field.required,
                                 'label_short'   : field.label_short,
@@ -773,7 +769,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     undoAll() {
         this.fieldsCategories['batch_metadata'] = [];
         this.loadSelectedBatch();
-        this.loadMetadata();
+        this.loadReferential();
         this.isDataEdited = false;
     }
 
@@ -947,6 +943,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             tap(() => {
                 this.router.navigate(['splitter/list']).then();
                 this.notify.success(this.translate.instant('SPLITTER.validate_batch_success'));
+                this.translate.get('HISTORY-DESC.validate_splitter', {batch_id: this.currentBatch.id}).subscribe((translated: string) => {
+                    this.historyService.addHistory('splitter', 'viewer', translated);
+                });
                 this.loading = true;
             }),
             catchError((err: any) => {

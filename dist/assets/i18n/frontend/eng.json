@@ -121,9 +121,7 @@
 	},
 	"DISABLED": {
 		"disabled": "Disabled",
-		"not_disabled": "Not disabled",
-		"resultMask": "Result mask",
-		"searchMask": "Search mask"
+		"not_disabled": "Not disabled"
 	},
 	"DISPLAY": {
 		"multi": "Multi",
@@ -149,6 +147,8 @@
 		"folder": "Folder",
 		"folder_added": "Folder added",
 		"generating_separator": "Generating separator",
+		"maximise_tree": "Maximise tree",
+		"minimise_tree": "Minimise tree",
 		"no_doctype_to_show": "No document type to show",
 		"no_master": "(No master folder)",
 		"separator_choice ": "Separator choice"
@@ -198,6 +198,11 @@
 		"vat_amount": "VAT amount",
 		"vat_rate": "VAT rate"
 	},
+	"FIELD_METADATA": {
+		"resultMask": "Result mask",
+		"searchMask": "Search mask",
+		"xmlTag": "XML Tag"
+	},
 	"FORMATS": {
 		"alphanum": "Alphanumeric [0-9aA-zZ]",
 		"alphanum_extended": "Alphanumeric extended [0-9aA-zZ-/#,\\.\\s]",
@@ -211,7 +216,6 @@
 		"textarea": "Textarea"
 	},
 	"FORMS": {
-		"AutocompleteMasks": "Autocomplete mask",
 		"available_fields": "Fields available",
 		"choose_form": "Choose a new form",
 		"confirm_delete": "Are you sure you want to delete the form <b>{{ form }}</b> ?",
@@ -228,6 +232,7 @@
 		"duplicate": "Duplicate form",
 		"enable": "Enable form",
 		"form_deleted": "Form deleted successfully",
+		"input_metadata": "Input metadata",
 		"input_settings": "Inputs",
 		"inputs_list_already_linked": "The following inputs are linked to this form <br><br> <b><center>{{ inputsList }}</center></b> <br> Please choose a new form for this inputs",
 		"is_default": "Default form",
@@ -328,6 +333,7 @@
 		"update-role": "Role updated&nbsp;<b>{{ role }}</b>",
 		"update-supplier": "Supplier updated&nbsp;<b>{{ supplier }}</b>",
 		"update-user": "User updated&nbsp;<b>{{ user }}</b>",
+		"validate_splitter": "Validation of batch n°&nbsp;<b>{{ batch_id }}</b>",
 		"viewer": "Visualisation of invoice n°&nbsp;<b>{{ invoice_id }}</b>",
 		"viewer_splitter": "Visualisation of batch n°&nbsp;<b>{{ batch_id }}</b>"
 	},
@@ -583,6 +589,7 @@
 		"form_label": "Form label",
 		"identifier": "Identifier",
 		"list": "List of batches",
+		"loadReferential": "Refresh autocomplete data",
 		"merge": "Merge",
 		"merge_error_form_not_match": "Error while merge batches. Form do not match",
 		"merge_success": "Batches merged successfully",

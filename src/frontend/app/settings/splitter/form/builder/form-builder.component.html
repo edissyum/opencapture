@@ -165,7 +165,7 @@
                                             {{ "FORMS.disable" | translate }} <small class="ml-2"><i class="text-base {{ field.required_icon }}"></i></small>
                                         </button>
                                         <button mat-menu-item [matMenuTriggerFor]="autoCompleteMasksMenu">
-                                            {{ "FORMS.AutocompleteMasks" | translate }}
+                                            {{ "FORMS.input_metadata" | translate }}
                                         </button>
                                     </mat-menu>
                                     <mat-menu #size="matMenu">
@@ -201,10 +201,10 @@
                                         </button>
                                     </mat-menu>
                                     <mat-menu #autoCompleteMasksMenu="matMenu">
-                                        <div *ngFor="let autoCompleteMask of autoCompleteMasks">
+                                        <div *ngFor="let fieldMetadataItem of fieldMetadata">
                                             <mat-form-field class="w-64 mx-2"(click)="$event.stopPropagation()" style="font-size: 12px;">
-                                                <mat-label>{{ autoCompleteMask.placeholder | translate }}</mat-label>
-                                                <input matInput [(ngModel)]="field[autoCompleteMask['id']]" type="text">
+                                                <mat-label>{{ fieldMetadataItem.placeholder | translate }}</mat-label>
+                                                <input matInput [(ngModel)]="field[fieldMetadataItem['id']]" type="text">
                                             </mat-form-field>
                                         </div>
                                     </mat-menu>
