@@ -184,7 +184,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 this.loadDocuments();
                 this.loadDefaultDocType();
                 this.loadOutputsData();
-                this.loadMetadata();
+                this.loadReferential();
             }),
             catchError((err: any) => {
                 this.loading = false;
@@ -484,20 +484,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     loadReferential(): void {
-        this.http.get(API_URL + `/ws/splitter/loadReferential/${this.currentBatch.formId}`,
-            {headers: this.authService.headers}).pipe(
-            tap(() => {
-                this.loadMetadata();
-            }),
-            catchError((err: any) => {
-                this.notify.handleErrors(err);
-                console.debug(err);
-                return of(false);
-            })
-        ).subscribe();
-    }
-
-    loadMetadata(): void {
         this.metadata = [];
         this.http.get(API_URL + `/ws/splitter/loadReferential/${this.currentBatch.formId}`, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -783,7 +769,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     undoAll() {
         this.fieldsCategories['batch_metadata'] = [];
         this.loadSelectedBatch();
-        this.loadMetadata();
+        this.loadReferential();
         this.isDataEdited = false;
     }
 

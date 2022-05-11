@@ -104,7 +104,7 @@
                         <mat-option [value]="noMasterFolder">
                             {{ 'DOCTYPE.no_master' | translate }}
                         </mat-option>
-                        <div *ngFor="let folder of documentTypeFactoryComponent.treeDataObj.doctypesData">
+                        <div *ngFor="let folder of documentTypeFactoryComponent.treeDataObj.doctypeData">
                             <mat-option *ngIf="folder.type === 'folder' && folder.formId === selectedFormId"
                                         [value]="folder.code">
                                 {{ folder.label }}

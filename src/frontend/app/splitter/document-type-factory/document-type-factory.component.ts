@@ -34,8 +34,8 @@ import {LocalStorageService} from "../../../services/local-storage.service";
 
 @Injectable()
 export class ChecklistDatabase {
-    doctypesData : any[]    = [];
-    loading      : boolean  = true;
+    doctypeData : any[]     = [];
+    loading     : boolean   = true;
     dataChange              = new BehaviorSubject<TreeItemNode[]>([]);
 
     get data(): TreeItemNode[] { return this.dataChange.value; }
@@ -50,7 +50,8 @@ export class ChecklistDatabase {
         public translate: TranslateService,
         private notify: NotificationService,
         public serviceSettings: SettingsService,
-        public privilegesService: PrivilegesService
+        public privilegesService: PrivilegesService,
+        private localeStorageService: LocalStorageService
     ) {}
 
     loadTree(formId: number) {
@@ -62,7 +63,7 @@ export class ChecklistDatabase {
 
     retrieveDocTypes(formId: number) {
         this.loading      = true;
-        this.doctypesData = [];
+        this.doctypeData = [];
         this.http.get(API_URL + '/ws/doctypes/list/' + (formId).toString(), {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 let newDoctype;
@@ -86,7 +87,7 @@ export class ChecklistDatabase {
                             'isDefault' : doctype.is_default,
                             'formId'    : doctype.form_id,
                         };
-                        this.doctypesData.push(newDoctype);
+                        this.doctypeData.push(newDoctype);
                     }
                 );
             }),
@@ -108,9 +109,13 @@ export class ChecklistDatabase {
          * file node as children.
          */
         this.loading = true;
-        const data    = this.buildFileTree(this.doctypesData, '0');
+        const data    = this.buildFileTree(this.doctypeData, '0');
         // Notify the change.
         this.dataChange.next(data);
+        const lastSearchValue = this.localeStorageService.get('doctype_last_search_value') || '';
+        if(lastSearchValue){
+            this.filter(lastSearchValue);
+        }
     }
 
     /**
@@ -146,20 +151,20 @@ export class ChecklistDatabase {
     public filter(filterText: string) {
         let filteredTreeData: any[];
         if (filterText){
-            filteredTreeData = this.doctypesData.filter(d =>
+            filteredTreeData = this.doctypeData.filter(d =>
                 this._normalizeValue(d.label).indexOf(this._normalizeValue(filterText))
                 > -1 && d.code.lastIndexOf('.') === 1
             );
             Object.assign([], filteredTreeData).forEach(ftd => {
                 // @ts-ignore
                 const code = (ftd.code as string);
-                filteredTreeData = filteredTreeData.concat(this.doctypesData.filter(d =>
+                filteredTreeData = filteredTreeData.concat(this.doctypeData.filter(d =>
                     d.code.startsWith(code + ".") && d.code !== code
                 ));
             });
 
         } else {
-            filteredTreeData = this.doctypesData;
+            filteredTreeData = this.doctypeData;
         }
         const data = this.buildFileTree(filteredTreeData, '0');
         this.dataChange.next(data);
@@ -249,7 +254,6 @@ export class DocumentTypeFactoryComponent implements OnInit {
             this.selectedFormOutput.emit({'formId': formId});
         });
         this.data.hasOwnProperty('formId') ? this.treeDataObj.loadTree(this.data.formId): this.loadForms();
-        this.filterChanged();
     }
 
     loadForms(): void {
@@ -319,7 +323,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
     }
 
     loadDefaultDocType() {
-        this.treeDataObj.doctypesData.forEach((doctype: any) => {
+        this.treeDataObj.doctypeData.forEach((doctype: any) => {
             if(doctype.isDefault) {
                 this.selectedDocTypeInput = doctype;
                 this.selectedDoctypeOutput.emit(doctype);

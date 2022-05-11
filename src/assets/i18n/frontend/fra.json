@@ -582,6 +582,7 @@
 		"form_label": "Libellé du formulaire",
 		"identifier": "Idenfiant",
 		"list": "Liste des lots",
+		"loadReferential": "Actualiser les données d'auto-complétion",
 		"merge": "Fusionner",
 		"merge_error_form_not_match": "Erreur lors de la fusion, les formulaires associés diffèrent",
 		"merge_success": "Fusion des lots effectué avec succès",
