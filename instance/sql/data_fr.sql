@@ -172,14 +172,6 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "placeholder": "Facture n°#invoice_number"
             },
             {
-                "id": "statusEnd",
-                "type": "text",
-                "label": "Status clos",
-                "required": "true",
-                "webservice": "getStatusesFromMaarch",
-                "placeholder": "Clos / fin du workflow"
-            },
-            {
                 "id": "typeId",
                 "type": "text",
                 "label": "Type de document",
