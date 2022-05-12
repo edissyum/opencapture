@@ -113,7 +113,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "id": "maarchCustomField",
                 "type": "text",
                 "label": "Champ personnalisé à récupérer",
-                "required": "true",
+                "required": "false",
                 "webservice": "getCustomFieldsFromMaarch",
                 "placeholder": "Numéro de devis",
                 "hint": "Champ personnalisé Maarch dans lequel est stocké la donnée nécessaire à la liaison avec un document"
@@ -122,7 +122,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "id": "openCaptureField",
                 "type": "text",
                 "label": "Champ à comparer dans Open-Capture",
-                "required": "true",
+                "required": "false",
                 "webservice": "",
                 "placeholder": "quotation_number",
                 "hint": "Identifiant du champ dans Open-Capture"
@@ -131,7 +131,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "id": "maarchClause",
                 "type": "text",
                 "label": "Clause de selection des documents dans Maarch",
-                "required": "true",
+                "required": "false",
                 "webservice": "",
                 "placeholder": "status <> ''END''",
                 "hint": ""

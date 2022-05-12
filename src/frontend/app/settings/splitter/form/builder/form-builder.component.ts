@@ -152,17 +152,22 @@ export class SplitterFormBuilderComponent implements OnInit {
             'icon'  : ''
         },
     ];
-    autoCompleteMasks           : any [] = [
+    fieldMetadata           : any [] = [
         {
             'id'            : 'searchMask',
-            'placeholder'   : marker('DISABLED.searchMask'),
+            'placeholder'   : marker('FIELD_METADATA.searchMask'),
             'control'       : new FormControl(),
         },
         {
             'id'            : 'resultMask',
-            'placeholder'   : marker('DISABLED.resultMask'),
+            'placeholder'   : marker('FIELD_METADATA.resultMask'),
             'control'       : new FormControl(),
         },
+        {
+            'id'            : 'xmlTag',
+            'placeholder'   : marker('FIELD_METADATA.xmlTag'),
+            'control'       : new FormControl(),
+        }
     ];
 
     constructor(
@@ -407,10 +412,6 @@ export class SplitterFormBuilderComponent implements OnInit {
 
     removeOutput(cpt: any) {
         this.outputForm.splice(cpt, 1);
-    }
-
-    maskChangeValue(newValue: string, fieldKey: string, field: any) {
-        field[fieldKey] = newValue;
     }
 
     updateForm() {
