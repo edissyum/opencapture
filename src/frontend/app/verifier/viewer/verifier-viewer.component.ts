@@ -233,7 +233,7 @@ export class VerifierViewerComponent implements OnInit {
                         data['maarchCustomField'] = element.value;
                     } else if (element.id === 'maarchClause' && element.value) {
                         data['maarchClause'] = element.value;
-                    }else if (element.id === 'vatNumberContactCustom' && element.value) {
+                    } else if (element.id === 'vatNumberContactCustom' && element.value) {
                         data['vatNumberContactCustom'] = element.value;
                     }
                 });
@@ -249,7 +249,7 @@ export class VerifierViewerComponent implements OnInit {
                            this.http.post(API_URL + '/ws/maarch/getDocumentsWithContact', data, {headers: this.authService.headers},
                            ).pipe(
                                tap((_return: any) => {
-                                   if (_return.count > 0) {
+                                   if (_return && _return.count > 0) {
                                        element.type = 'autocomplete';
                                        element.autocomplete_values = element.control.valueChanges
                                            .pipe(
