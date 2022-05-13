@@ -306,15 +306,15 @@ def export_pdf(batch, documents, parameters, metadata, pages, now, compress_type
             'extension': parameters['extension']
         }
         documents[index]['fileName'] = _Splitter.get_mask_result(document, metadata, now, mask_args)
-    paths = _Files.export_pdf(pages, documents, filename, parameters['folder_out'], compress_type, 1)
+    export_pdf_res = _Files.export_pdf(pages, documents, filename, parameters['folder_out'], compress_type, 1)
 
-    if not paths:
+    if not export_pdf_res[0]:
         response = {
             "errors": gettext('EXPORT_PDF_ERROR'),
-            "message": paths[1]
+            "message": export_pdf_res[1]
         }
         return response, 400
-    return {'paths': paths}, 200
+    return {'paths': export_pdf_res}, 200
 
 
 def export_xml(fields_param, documents, parameters, metadata, now):
