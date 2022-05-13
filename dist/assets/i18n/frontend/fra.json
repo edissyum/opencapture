@@ -630,7 +630,7 @@
 		"invoices_validated_per_user": "Factures validées par utilisateur"
 	},
 	"STATUS": {
-		"list": "Liste des status"
+		"list": "Liste des statuts"
 	},
 	"TYPES": {
 		"date": "Date",
