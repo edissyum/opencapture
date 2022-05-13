@@ -98,7 +98,7 @@ export class AppComponent implements OnInit {
                         return of(false);
                     })
                 ).subscribe();
-            }else{
+            }else {
                 this.translate.get(ttl).subscribe((data:any)=> {
                     this.titleService.setTitle(data + ' - ' + this.title);
                 });

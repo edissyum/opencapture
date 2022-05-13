@@ -195,7 +195,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         ).subscribe();
     }
 
-    getStatusLabel(statusId: string){
+    getStatusLabel(statusId: string) {
         const statusFound = this.status.find(status => status.id === statusId);
         return statusFound ? statusFound.label: undefined;
     }
@@ -445,16 +445,16 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         ).subscribe();
     }
 
-    getPlaceholderFromResultMask(mask: string, metadata: any){
+    getPlaceholderFromResultMask(mask: string, metadata: any) {
         const maskVariables = mask ? mask.split('#') : [];
         const result        = [];
-        for(const maskVariable of maskVariables!){
+        for(const maskVariable of maskVariables!) {
             result.push(metadata.hasOwnProperty(maskVariable) ? metadata[maskVariable]: maskVariable);
         }
         return result.join(' ');
     }
 
-    getPlaceholderFromSearchMask(mask: string, label: string){
+    getPlaceholderFromSearchMask(mask: string, label: string) {
         return mask ? mask.replace('#label', label):'';
     }
 
@@ -491,9 +491,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     metadataItem.data['metadataId'] = metadataItem.id;
                     this.metadata.push(metadataItem.data);
                 });
-                if(this.currentBatch.customFieldsValues.hasOwnProperty('metadataId')){
+                if(this.currentBatch.customFieldsValues.hasOwnProperty('metadataId')) {
                     const savedMetadata = this.metadata.filter(item => item.metadataId === this.currentBatch.customFieldsValues.metadataId);
-                    if(savedMetadata.length > 0){
+                    if(savedMetadata.length > 0) {
                         this.filteredServerSideMetadata.next(savedMetadata);
                         this.fillData((savedMetadata[0]));
                     }
@@ -519,10 +519,10 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         const optionId = this.batchMetadataValues['metadataId'];
         for (const field of this.fieldsCategories['batch_metadata']) {
             if (field['metadata_key']) {
-                if(field.type === 'select' && selectedMetadata[field['metadata_key']]){
+                if(field.type === 'select' && selectedMetadata[field['metadata_key']]) {
                     this.batchForm.get(field['metadata_key'])?.setValue(selectedMetadata[field['metadata_key']]);
                 }
-                else{
+                else {
                     this.batchForm.get(field['metadata_key'])?.setValue(optionId);
                 }
             }
@@ -860,13 +860,13 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 }
             });
         }
-        else{
+        else {
             this.router.navigate(["/splitter/list"]).then();
         }
     }
 
     validateWithConfirmation() {
-        if(this.inputMode === 'Auto' && !this.batchMetadataValues.metadataId){
+        if(this.inputMode === 'Auto' && !this.batchMetadataValues.metadataId) {
             this.notify.error(this.translate.instant('SPLITTER.error_no_metadata'));
             return;
         }
@@ -897,13 +897,13 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         });
     }
 
-    getMetadataItemById(id: number){
+    getMetadataItemById(id: number) {
         return  this.metadata.find((item: any) => item.id === id);
     }
 
     validate() {
         this.loading = true;
-        if(this.inputMode === 'Manual'){
+        if(this.inputMode === 'Manual') {
             for (const field of this.fieldsCategories['batch_metadata']) {
                 if (this.batchForm.get(field.label_short)) {
                     this.batchMetadataValues[field.label_short] = this.inputMode === 'Manual' ?

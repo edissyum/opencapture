@@ -700,6 +700,7 @@
 		"list": "Invoices",
 		"loading_customers": "Loading customers accounts",
 		"nb_pages": "Number of pages",
+		"no_autocomplete_data": "No autocompletion data",
 		"no_form_available": "No form available",
 		"no_outputs_for_this_form": "No outputs for this form",
 		"on": "on",

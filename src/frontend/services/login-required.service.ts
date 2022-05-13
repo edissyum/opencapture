@@ -7,7 +7,7 @@ import {TranslateService} from "@ngx-translate/core";
 @Injectable({
     providedIn: 'root'
 })
-export class LoginRequiredService implements CanActivate{
+export class LoginRequiredService implements CanActivate {
 
     constructor(
         private authService: AuthService,

@@ -196,11 +196,11 @@ export class VerifierViewerComponent implements OnInit {
         if (this.invoice.supplier_id) this.getSupplierInfo(this.invoice.supplier_id, false, true);
         setTimeout(() => {
             this.drawPositions();
+            this.convertAutocomplete();
             this.loading = false;
         }, 500);
         const triggerEvent = $('.trigger');
         triggerEvent.hide();
-        this.convertAutocomplete();
         this.filteredOptions = this.supplierNamecontrol.valueChanges
             .pipe(
                 startWith(''),
@@ -249,8 +249,8 @@ export class VerifierViewerComponent implements OnInit {
                            this.http.post(API_URL + '/ws/maarch/getDocumentsWithContact', data, {headers: this.authService.headers},
                            ).pipe(
                                tap((_return: any) => {
+                                   element.type = 'autocomplete';
                                    if (_return && _return.count > 0) {
-                                       element.type = 'autocomplete';
                                        element.autocomplete_values = element.control.valueChanges
                                            .pipe(
                                                startWith(''),

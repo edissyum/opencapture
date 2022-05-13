@@ -243,7 +243,7 @@ export class UpdateOutputComponent implements OnInit {
                          **/
                         for (const category in this.outputsTypesForm[this.originalOutputType]) {
                             this.outputsTypesForm[this.originalOutputType][category].forEach((element: any) => {
-                                if (this.output.data.options[category]){
+                                if (this.output.data.options[category]) {
                                     this.output.data.options[category].forEach((outputElement: any) => {
                                         if (element.id === outputElement.id) {
                                             if (outputElement.value) {
@@ -351,7 +351,7 @@ export class UpdateOutputComponent implements OnInit {
                     this.notify.success(this.translate.instant('OUTPUT.maarch_connection_ok'));
                     this.connection = true;
                 }
-                else{
+                else {
                     this.notify.error(this.translate.instant('OUTPUT.maarch_connection_ko') + ' : ' + status[1]);
                     this.connection = false;
                 }

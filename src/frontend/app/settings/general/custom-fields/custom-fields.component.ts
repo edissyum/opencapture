@@ -208,9 +208,9 @@ export class CustomFieldsComponent implements OnInit {
         this.selectOptions.splice(optionIndex, 1);
     }
 
-    addSelectOptionsToArgs(args: any){
+    addSelectOptionsToArgs(args: any) {
         args.options  = [];
-        for(const option of this.selectOptions){
+        for(const option of this.selectOptions) {
             args.options.push({
                 id      : option.idControl.value,
                 label   : option.labelControl.value
@@ -379,8 +379,8 @@ export class CustomFieldsComponent implements OnInit {
             this.addFieldInputs.forEach((element: any) => {
                 element.control.setValue(customField[element.field_id]);
             });
-            if (customField.settings.hasOwnProperty('options')){
-                for (const option of customField.settings.options){
+            if (customField.settings.hasOwnProperty('options')) {
+                for (const option of customField.settings.options) {
                     this.selectOptions.push({
                         'idControl'     : new FormControl(option.id),
                         'labelControl'  : new FormControl(option.label)

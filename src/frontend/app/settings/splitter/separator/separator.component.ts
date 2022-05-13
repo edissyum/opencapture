@@ -97,7 +97,7 @@ export class SeparatorComponent implements OnInit {
                 'label' : ''
             };
         }
-        else{
+        else {
             args = {
                 'type'  : 'docTypeSeparator',
                 'key'   : this.selectedDocType ? this.selectedDocType.key : '',

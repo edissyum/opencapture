@@ -141,6 +141,7 @@ class MaarchWebServices:
         data = {
             'linkedResources': [res_id]
         }
+
         res = requests.post(self.base_url + '/resources/' + res_id_master + '/linkedResources', auth=self.auth,
                             data=json.dumps(data), headers={'Connection': 'close', 'Content-Type': 'application/json'})
         if res.status_code not in (200, 204):
