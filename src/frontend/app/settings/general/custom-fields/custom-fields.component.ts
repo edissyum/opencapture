@@ -40,14 +40,13 @@ import {MatDialog} from "@angular/material/dialog";
 export class CustomFieldsComponent implements OnInit {
     update              : boolean   = false;
     loading             : boolean   = true;
-    showSelectOptions   : boolean   = false;
     inactiveFields      : any[]     = [];
     activeFields        : any[]     = [];
     selectOptions       : any[]     = [];
     inactiveOrActive    : string    = '';
     updateCustomId      : any ;
-    form!: FormGroup;
-    parent: any[] = [
+    form!               : FormGroup;
+    parent              : any[]     = [
         {
             'id': 'verifier',
             'label': this.translate.instant('HOME.verifier')
@@ -57,7 +56,7 @@ export class CustomFieldsComponent implements OnInit {
             'label': this.translate.instant('HOME.splitter')
         }
     ];
-    addFieldInputs  : any[] = [
+    addFieldInputs      : any[]     = [
         {
             field_id    : 'label_short',
             controlType : 'text',
@@ -105,6 +104,7 @@ export class CustomFieldsComponent implements OnInit {
             controlType : 'text',
             control     : new FormControl(),
             label       : this.translate.instant('SETTINGS.autocomplete'),
+            limit       : 'splitter',
             autoComplete: [
                 {key: '', value: this.translate.instant('SPLITTER.Other')},
                 {key: 'SEPARATOR_MAARCH', value: this.translate.instant('SPLITTER.separator_maarch')},
@@ -163,6 +163,20 @@ export class CustomFieldsComponent implements OnInit {
         this.enableCustomField(this.activeFields, this.inactiveFields, index, this.inactiveFields.length);
     }
 
+    displayInput(input: any) {
+        let _return = false;
+        if (input.limit) {
+            this.addFieldInputs.forEach((element: any) => {
+                if (element.field_id === 'module') {
+                    if (element.control.value === input.limit) {
+                        _return = true;
+                    }
+                }
+            });
+        }
+        return _return;
+    }
+
     retrieveCustomFields() {
         this.loading        = true;
         this.activeFields   = [];
@@ -198,6 +212,18 @@ export class CustomFieldsComponent implements OnInit {
             idControl      : new FormControl(),
             labelControl   : new FormControl(),
         });
+    }
+
+    displayChoicesList() {
+        let _return = false;
+        this.addFieldInputs.forEach((element: any) => {
+            if (element.field_id === 'type') {
+                if (element.control.value && (element.control.value === 'checkbox' || element.control.value === 'select')) {
+                    _return = true;
+                }
+            }
+        });
+        return _return;
     }
 
     dropSelectOption(event: CdkDragDrop<string[]>) {

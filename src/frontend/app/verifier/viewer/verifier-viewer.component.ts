@@ -252,7 +252,7 @@ export class VerifierViewerComponent implements OnInit {
                                    element.type = 'autocomplete';
                                    if (_return && _return.count > 0) {
                                        element.autocomplete_values = element.control.valueChanges
-                                           .pipe(
+                                            .pipe(
                                                startWith(''),
                                                map(option => option ? this._filter_data(option, _return.resources) : _return.resources.slice())
                                            );
