@@ -97,7 +97,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     DropListDocumentsIds        : string[]      = [];
     toolSelectedOption          : string        = "";
     batchMetadataValues         : any           = {};
-    autocompletionValue         : any           = {};
     inputMode                   : string        = "Auto";
     defaultDoctype              : any           = {
         label       : null,
