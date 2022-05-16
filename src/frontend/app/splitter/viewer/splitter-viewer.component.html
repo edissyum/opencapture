@@ -124,7 +124,8 @@
                             <div *ngIf="input.type === 'select'">
                                 <mat-form-field class="w-full">
                                     <mat-label>{{input.label}}</mat-label>
-                                    <mat-select [formControlName]="input.label_short" (selectionChange)="setValueChange(input.label_short, $event.value)">
+                                    <mat-select [formControlName]="input.label_short"
+                                                (selectionChange)="setValueChange(input.label_short, $event.value)">
                                         <mat-option *ngFor="let option of input.settings.options" [value]="option.id">
                                             {{option.label}}
                                         </mat-option>

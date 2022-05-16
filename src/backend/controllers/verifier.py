@@ -455,6 +455,7 @@ def export_maarch(invoice_id, data):
                     res, message = _ws.insert_with_args(args)
                     if res:
                         if link_resource:
+                            res_id = message['resId']
                             if opencapture_field:
                                 opencapture_field = ''.join(construct_with_var(opencapture_field, invoice_info))
                                 if maarch_custom_field:
@@ -464,7 +465,9 @@ def export_maarch(invoice_id, data):
                                             res_id = docs['resources'][0]['res_id']
                                     else:
                                         res_id = data['res_id']
-                                    _ws.link_documents(str(res_id), message['resId'])
+
+                                    if res_id != message['resId']:
+                                        _ws.link_documents(str(res_id), message['resId'])
                         return '', 200
                     else:
                         response = {

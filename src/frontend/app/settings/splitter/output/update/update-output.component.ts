@@ -325,7 +325,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
                     this.notify.success(this.translate.instant('OUTPUT.cmis_connection_ok'));
                     this.connection = true;
                 }
-                else{
+                else {
                     this.notify.error(this.translate.instant('OUTPUT.cmis_connection_ko') + ' : ' + data.message);
                     this.connection = false;
                 }
@@ -358,7 +358,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
                     this.notify.success(this.translate.instant('OUTPUT.maarch_connection_ok'));
                     this.connection = true;
                 }
-                else{
+                else {
                     this.notify.error(this.translate.instant('OUTPUT.maarch_connection_ko') + ' : ' + status[1]);
                     this.connection = false;
                 }

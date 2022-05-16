@@ -1010,7 +1010,7 @@ export class FormBuilderComponent implements OnInit {
                     return of(false);
                 })
             ).subscribe();
-        }else{
+        }else {
             this.notify.error(this.translate.instant('FORMS.label_mandatory'));
         }
     }

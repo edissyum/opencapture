@@ -84,7 +84,8 @@ class MaarchWebServices:
         where = "?custom_fields=" + str(args['maarchCustomField']['id'])
         res = requests.get(self.base_url + '/resources/getByContact/' + args['contactId'] + where, auth=self.auth)
         if res.status_code != 200:
-            self.log.error('(' + str(res.status_code) + ') getContactError : ' + str(res.text))
+            if res.status_code != 204:
+                self.log.error('(' + str(res.status_code) + ') getDocumentWithContactError : ' + str(res.text))
             return False
         return json.loads(res.text)
 
@@ -140,6 +141,7 @@ class MaarchWebServices:
         data = {
             'linkedResources': [res_id]
         }
+
         res = requests.post(self.base_url + '/resources/' + res_id_master + '/linkedResources', auth=self.auth,
                             data=json.dumps(data), headers={'Connection': 'close', 'Content-Type': 'application/json'})
         if res.status_code not in (200, 204):

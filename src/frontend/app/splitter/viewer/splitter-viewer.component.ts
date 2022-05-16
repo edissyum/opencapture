@@ -81,7 +81,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     addDocumentLoading          : boolean       = false;
     batchMetadataOpenState      : boolean       = true;
     documentMetadataOpenState   : boolean       = false;
-
     batchForm                   : FormGroup     = new FormGroup({});
     batches                     : Batch[]       = [];
     status                      : any[]         = [];
@@ -154,6 +153,19 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.translate.get('HISTORY-DESC.viewer_splitter', {batch_id: this.currentBatch.id}).subscribe((translated: string) => {
             this.historyService.addHistory('splitter', 'viewer', translated);
         });
+    }
+
+    setValuesFromSavedMetadata(autocompletionValue: any){
+        for(const field of this.fieldsCategories['batch_metadata']){
+            if(this.currentBatch.customFieldsValues.hasOwnProperty(field['label_short'])){
+                const savedValue = this.currentBatch.customFieldsValues[field['label_short']];
+                if(autocompletionValue.hasOwnProperty(field['label_short'])
+                    && autocompletionValue[field['label_short']] !== savedValue){
+                    this.batchMetadataValues[field['label_short']] = savedValue;
+                    this.batchForm.controls[field['label_short']].setValue(savedValue);
+                }
+            }
+        }
     }
 
     loadSelectedBatch(): void {
@@ -456,16 +468,16 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         ).subscribe();
     }
 
-    getPlaceholderFromResultMask(mask: string, metadata: any){
+    getPlaceholderFromResultMask(mask: string, metadata: any) {
         const maskVariables = mask ? mask.split('#') : [];
         const result        = [];
-        for(const maskVariable of maskVariables!){
+        for(const maskVariable of maskVariables!) {
             result.push(metadata.hasOwnProperty(maskVariable) ? metadata[maskVariable]: maskVariable);
         }
         return result.join(' ');
     }
 
-    getPlaceholderFromSearchMask(mask: string, label: string){
+    getPlaceholderFromSearchMask(mask: string, label: string) {
         return mask ? mask.replace('#label', label):'';
     }
 
@@ -503,7 +515,8 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     metadataItem.data['metadataId'] = metadataItem.id;
                     this.metadata.push(metadataItem.data);
                 });
-                if(this.currentBatch.customFieldsValues.hasOwnProperty('metadataId')){
+              
+                if(this.currentBatch.customFieldsValues.hasOwnProperty('metadataId')) {
                     const autocompletionValue = this.metadata.filter(item => item.metadataId === this.currentBatch.customFieldsValues.metadataId);
                     if(autocompletionValue.length > 0){
                         this.filteredServerSideMetadata.next(autocompletionValue);
@@ -522,6 +535,11 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         ).subscribe();
     }
 
+    setValueChange(key: string, value: string) {
+        this.isDataEdited = true;
+        this.batchMetadataValues[key] = value;
+    }
+
     ngOnDestroy() {
         this._onDestroy.next();
         this._onDestroy.complete();
@@ -532,10 +550,10 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         const optionId = this.batchMetadataValues['metadataId'];
         for (const field of this.fieldsCategories['batch_metadata']) {
             if (field['metadata_key']) {
-                if(field.type === 'select' && selectedMetadata[field['metadata_key']]){
+                if(field.type === 'select' && selectedMetadata[field['metadata_key']]) {
                     this.batchForm.get(field['metadata_key'])?.setValue(selectedMetadata[field['metadata_key']]);
                 }
-                else{
+                else {
                     this.batchForm.get(field['metadata_key'])?.setValue(optionId);
                 }
             }
@@ -871,7 +889,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 }
             });
         }
-        else{
+        else {
             this.router.navigate(["/splitter/list"]).then();
         }
     }

@@ -93,7 +93,8 @@ def get_document_with_args():
     if contact and contact['contacts'] and contact['count'] > 0:
         data['contactId'] = str(contact['contacts'][0]['id'])
         resources = maarch.get_document_with_contact(data)
-        return make_response(resources), 200
+        if resources:
+            return make_response(resources), 200
     return make_response(''), 204
 
 

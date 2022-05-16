@@ -177,7 +177,7 @@ export class UpdateCustomerComponent implements OnInit {
                                             return of(false);
                                         })
                                     ).subscribe();
-                                }else{
+                                }else {
                                     this.http.post(API_URL + '/ws/accounts/addresses/create',
                                         {'args': {
                                                 'address1': '',

@@ -147,7 +147,7 @@ export class UploadComponent implements OnInit {
                     return of(false);
                 })
             ).subscribe();
-        }else{
+        }else {
             this.notify.handleErrors(this.translate.instant('ERROR.unknow_error'));
             return;
         }
