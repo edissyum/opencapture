@@ -565,6 +565,7 @@
 		"batch_deleted": "Batch deleted",
 		"batch_metadata": "Batch metadata",
 		"batch_modification_saved": "Modifications saved",
+		"batch_validate_processing": "Batch validation processing ...",
 		"batches": "batch",
 		"bundle_separator": "Batches separator",
 		"change_document_position": "Change document position",
