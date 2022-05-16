@@ -877,7 +877,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     validateWithConfirmation() {
-        if(this.inputMode === 'Auto' && !this.batchMetadataValues.metadataId){
+        if(this.inputMode === 'Auto' && !this.batchMetadataValues.metadataId && this.fieldsCategories['batch_metadata'].length !== 0){
             this.notify.error(this.translate.instant('SPLITTER.error_no_metadata'));
             return;
         }

@@ -268,10 +268,9 @@ class Splitter:
         """
 
         for key in metadata:
-            if 'search_' not in key:
-                field_param = [field for field in fields_param['batch_metadata'] if field['label_short'] == key]
-                xml_tag = field_param[0]['xmlTag'] if (field_param and 'xmlTag' in field_param[0]) \
-                    else key.replace(' ', '')
+            field_param = [field for field in fields_param['batch_metadata'] if field['label_short'] == key]
+            xml_tag = field_param[0]['xmlTag'] if (field_param and 'xmlTag' in field_param[0]) else None
+            if xml_tag:
                 ET.SubElement(header_tag, xml_tag).text = str(metadata[key])
 
         documents_tag = ET.SubElement(root, "Documents")
@@ -287,12 +286,11 @@ class Splitter:
 
             for key in document['metadata']:
                 """
-                    Add document metadata ignoring search values
+                    Add document metadata files with no xml tag
                 """
-                if 'search_' not in key:
-                    field_param = [field for field in fields_param['document_metadata'] if field['label_short'] == key]
-                    xml_tag = field_param[0]['xmlTag'] if (field_param and 'xmlTag' in field_param[0]) \
-                        else key.replace(' ', '')
+                field_param = [field for field in fields_param['document_metadata'] if field['label_short'] == key]
+                xml_tag = field_param[0]['xmlTag'] if (field_param and 'xmlTag' in field_param[0]) else None
+                if xml_tag:
                     ET.SubElement(fields_tag, xml_tag).text = str(document['metadata'][key])
         xml_file_path = output_dir + filename
         try:
