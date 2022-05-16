@@ -110,7 +110,7 @@ export class UserProfileComponent implements OnInit {
                 data.roles.forEach((element: any) => {
                     if (element.editable) {
                         this.roles.push(element);
-                    }else{
+                    }else {
                         if ((this.userService.getUser().privileges === '*')) {
                             this.roles.push(element);
                         }

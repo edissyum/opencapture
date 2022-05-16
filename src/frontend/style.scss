@@ -38,7 +38,7 @@ mat-expansion-panel-header.settings_expansion {
     @apply bg-gray-900;
     box-shadow: 0 1px 5px 4px gray;
 
-    & .mat-content mat-panel-title{
+    & .mat-content mat-panel-title {
         @apply text-white #{!important};
     }
 

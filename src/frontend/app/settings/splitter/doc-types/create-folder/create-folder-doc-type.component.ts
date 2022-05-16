@@ -90,7 +90,7 @@ export class CreateFolderDocTypeComponent implements OnInit {
                 }
             });
         }
-        else{
+        else {
             this.documentTypeFactoryComponent.treeDataObj.doctypeData.forEach((docType:any) => {
                 if(docType.code.split('.').length === 2) {
                     const currentIdx = Number(docType.code.split('.').pop());

@@ -81,7 +81,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     addDocumentLoading          : boolean       = false;
     batchMetadataOpenState      : boolean       = true;
     documentMetadataOpenState   : boolean       = false;
-
     batchForm                   : FormGroup     = new FormGroup({});
     batches                     : Batch[]       = [];
     status                      : any[]         = [];
@@ -89,9 +88,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     metadata                    : any[]         = [];
     documents                   : any           = [];
     movedPages                  : any[]         = [];
-    rotatedPages                : any[]         = [];
     pagesImageUrls              : any           = [];
-    documentsForms              : any[]         = [];
     deletedPagesIds             : number[]      = [];
     deletedDocumentsIds         : number[]      = [];
     DropListDocumentsIds        : string[]      = [];
@@ -158,6 +155,19 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         });
     }
 
+    setValuesFromSavedMetadata(autocompletionValue: any){
+        for(const field of this.fieldsCategories['batch_metadata']){
+            if(this.currentBatch.customFieldsValues.hasOwnProperty(field['label_short'])){
+                const savedValue = this.currentBatch.customFieldsValues[field['label_short']];
+                if(autocompletionValue.hasOwnProperty(field['label_short'])
+                    && autocompletionValue[field['label_short']] !== savedValue){
+                    this.batchMetadataValues[field['label_short']] = savedValue;
+                    this.batchForm.controls[field['label_short']].setValue(savedValue);
+                }
+            }
+        }
+    }
+
     loadSelectedBatch(): void {
         this.documents      = [];
         this.loadBatchById();
@@ -195,7 +205,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         ).subscribe();
     }
 
-    getStatusLabel(statusId: string){
+    getStatusLabel(statusId: string) {
         const statusFound = this.status.find(status => status.id === statusId);
         return statusFound ? statusFound.label: undefined;
     }
@@ -445,16 +455,16 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         ).subscribe();
     }
 
-    getPlaceholderFromResultMask(mask: string, metadata: any){
+    getPlaceholderFromResultMask(mask: string, metadata: any) {
         const maskVariables = mask ? mask.split('#') : [];
         const result        = [];
-        for(const maskVariable of maskVariables!){
+        for(const maskVariable of maskVariables!) {
             result.push(metadata.hasOwnProperty(maskVariable) ? metadata[maskVariable]: maskVariable);
         }
         return result.join(' ');
     }
 
-    getPlaceholderFromSearchMask(mask: string, label: string){
+    getPlaceholderFromSearchMask(mask: string, label: string) {
         return mask ? mask.replace('#label', label):'';
     }
 
@@ -465,6 +475,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     fillDataValues(data: any): void {
+        this.isDataEdited = true;
         for (const field of this.fieldsCategories['batch_metadata']) {
             const key = field['metadata_key'];
             const newValue = data.hasOwnProperty(key) ? data[key] : '';
@@ -491,11 +502,12 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     metadataItem.data['metadataId'] = metadataItem.id;
                     this.metadata.push(metadataItem.data);
                 });
-                if(this.currentBatch.customFieldsValues.hasOwnProperty('metadataId')){
-                    const savedMetadata = this.metadata.filter(item => item.metadataId === this.currentBatch.customFieldsValues.metadataId);
-                    if(savedMetadata.length > 0){
-                        this.filteredServerSideMetadata.next(savedMetadata);
-                        this.fillData((savedMetadata[0]));
+                if(this.currentBatch.customFieldsValues.hasOwnProperty('metadataId')) {
+                    const autocompletionValue = this.metadata.filter(item => item.metadataId === this.currentBatch.customFieldsValues.metadataId);
+                    if(autocompletionValue.length > 0){
+                        this.filteredServerSideMetadata.next(autocompletionValue);
+                        this.fillData((autocompletionValue[0]));
+                        this.setValuesFromSavedMetadata(autocompletionValue[0]);
                     }
                 }
                 this.notify.success(this.translate.instant('SPLITTER.referential_updated'));
@@ -509,6 +521,11 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         ).subscribe();
     }
 
+    setValueChange(key: string, value: string) {
+        this.isDataEdited = true;
+        this.batchMetadataValues[key] = value;
+    }
+
     ngOnDestroy() {
         this._onDestroy.next();
         this._onDestroy.complete();
@@ -519,10 +536,10 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         const optionId = this.batchMetadataValues['metadataId'];
         for (const field of this.fieldsCategories['batch_metadata']) {
             if (field['metadata_key']) {
-                if(field.type === 'select' && selectedMetadata[field['metadata_key']]){
+                if(field.type === 'select' && selectedMetadata[field['metadata_key']]) {
                     this.batchForm.get(field['metadata_key'])?.setValue(selectedMetadata[field['metadata_key']]);
                 }
-                else{
+                else {
                     this.batchForm.get(field['metadata_key'])?.setValue(optionId);
                 }
             }
@@ -766,13 +783,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.currentBatch.selectedPagesCount = check ? selectPagesCount : 0;
     }
 
-    undoAll() {
-        this.fieldsCategories['batch_metadata'] = [];
-        this.loadSelectedBatch();
-        this.loadReferential();
-        this.isDataEdited = false;
-    }
-
     rotatePage(documentIndex: number, pageIndex: number) {
         const currentDegree = this.documents[documentIndex].pages[pageIndex].rotation;
         this.isDataEdited = true;
@@ -860,13 +870,13 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 }
             });
         }
-        else{
+        else {
             this.router.navigate(["/splitter/list"]).then();
         }
     }
 
     validateWithConfirmation() {
-        if(this.inputMode === 'Auto' && !this.batchMetadataValues.metadataId){
+        if(this.inputMode === 'Auto' && !this.batchMetadataValues.metadataId) {
             this.notify.error(this.translate.instant('SPLITTER.error_no_metadata'));
             return;
         }
@@ -897,20 +907,13 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         });
     }
 
-    getMetadataItemById(id: number){
-        return  this.metadata.find((item: any) => item.id === id);
-    }
-
     validate() {
         this.loading = true;
-        if(this.inputMode === 'Manual'){
-            for (const field of this.fieldsCategories['batch_metadata']) {
-                if (this.batchForm.get(field.label_short)) {
-                    this.batchMetadataValues[field.label_short] = this.inputMode === 'Manual' ?
-                        this.batchForm.get(field.label_short)?.value: '';
-                }
+        for (const field of this.fieldsCategories['batch_metadata']) {
+            if (this.batchForm.get(field.label_short) && !this.batchMetadataValues.hasOwnProperty(field.label_short)) {
+                this.batchMetadataValues[field.label_short] = this.inputMode === 'Manual' ?
+                    this.batchForm.get(field.label_short)?.value: '';
             }
-            this.batchMetadataValues['metadataId'] = '';
         }
 
         const batchMetadata             = this.batchMetadataValues;
@@ -959,11 +962,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     saveInfo() {
         this.saveInfosLoading = true;
-        if (this.inputMode === 'Manual') {
-            for (const field of this.fieldsCategories['batch_metadata']) {
-                if (this.batchForm.get(field.label_short)) {
-                    this.batchMetadataValues[field.label_short] = this.batchForm.get(field.label_short)?.value;
-                }
+        for (const field of this.fieldsCategories['batch_metadata']) {
+            if (this.batchForm.get(field.label_short) && !this.batchMetadataValues.hasOwnProperty(field.label_short)) {
+                this.batchMetadataValues[field.label_short] = this.batchForm.get(field.label_short)?.value;
             }
         }
 

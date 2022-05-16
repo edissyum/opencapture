@@ -142,6 +142,41 @@ export class OutputsListComponent implements OnInit {
         }
     }
 
+    duplicateConfirmDialog(outputId: number, output: string) {
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            data:{
+                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
+                confirmText         : this.translate.instant('OUTPUT.confirm_duplicate', {"output": output}),
+                confirmButton       : this.translate.instant('GLOBAL.duplicate'),
+                confirmButtonColor  : "warn",
+                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+            },
+            width: "600px",
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.duplicateOutput(outputId);
+                this.historyService.addHistory('verifier', 'duplicate_output', this.translate.instant('HISTORY-DESC.duplicate-output', {output: output}));
+            }
+        });
+    }
+
+    duplicateOutput(formId: number) {
+        if (formId !== undefined) {
+            this.http.post(API_URL + '/ws/outputs/duplicate/' + formId, {}, {headers: this.authService.headers}).pipe(
+                tap(() => {
+                    this.loadOutputs();
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        }
+    }
+
     sortData(sort: Sort) {
         const data = this.outputs.slice();
         if (!sort.active || sort.direction === '') {

@@ -113,7 +113,7 @@ export class ChecklistDatabase {
         // Notify the change.
         this.dataChange.next(data);
         const lastSearchValue = this.localeStorageService.get('doctype_last_search_value') || '';
-        if(lastSearchValue){
+        if(lastSearchValue) {
             this.filter(lastSearchValue);
         }
     }
@@ -150,7 +150,7 @@ export class ChecklistDatabase {
 
     public filter(filterText: string) {
         let filteredTreeData: any[];
-        if (filterText){
+        if (filterText) {
             filteredTreeData = this.doctypeData.filter(d =>
                 this._normalizeValue(d.label).indexOf(this._normalizeValue(filterText))
                 > -1 && d.code.lastIndexOf('.') === 1

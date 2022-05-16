@@ -451,10 +451,10 @@ class Files:
     @staticmethod
     def export_pdf(pages_lists, documents, input_file, output_file, compress_type, reduce_index=0):
         pdf_writer = PyPDF2.PdfFileWriter()
-        pdf_reader = PyPDF2.PdfFileReader(input_file, strict=False)
         paths = []
         try:
             for index, pages in enumerate(pages_lists):
+                pdf_reader = PyPDF2.PdfFileReader(input_file, strict=False)
                 if not pages:
                     continue
                 for page in pages:
