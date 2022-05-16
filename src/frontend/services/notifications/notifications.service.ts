@@ -43,8 +43,9 @@ export class NotificationService {
         public snackBar: MatSnackBar)
     { }
 
-    success(message: string) {
-        const duration = this.getMessageDuration(message, 2000);
+    success(message: string, _duration?: number) {
+        const duration = _duration ? this.getMessageDuration(message, _duration):
+            this.getMessageDuration(message, 2000);
         const snackBar = this.snackBar.openFromComponent(CustomSnackbarComponent, {
             duration: duration,
             panelClass: ['success-snackbar', 'mt-20', 'mr-3'],

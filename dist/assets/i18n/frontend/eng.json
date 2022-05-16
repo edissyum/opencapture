@@ -406,7 +406,7 @@
 		"duplicate": "",
 		"json_input_erorr": "The field <b>{{ field }}</b> have to be JSON with double quotes",
 		"links": "Links",
-		"links_hint": "",
+		"links_hint": "This tab is used to configure the link from one document to another based on specific data. <br><i>Example: Linking an invoice to an estimate in Maarch whose estimate number is in the custom field number 30</i>",
 		"maarch_connection_ko": "Error while connecting to Maarch",
 		"maarch_connection_ok": "Connection to Maarch successfull",
 		"no_auth_necessary": "No authentification necessary",
