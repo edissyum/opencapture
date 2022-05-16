@@ -562,6 +562,7 @@
 		"batch_deleted": "Lot supprimé",
 		"batch_metadata": "Métadonnées de lot",
 		"batch_modification_saved": "Modifications enregistrées",
+		"batch_validate_processing": "Validation du lot est en cours de traitement ...",
 		"batches": "lot(s)",
 		"bundle_separator": "Séparateur de lots",
 		"change_document_position": "Changer la position du document",

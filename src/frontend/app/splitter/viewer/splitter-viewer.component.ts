@@ -89,9 +89,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     metadata                    : any[]         = [];
     documents                   : any           = [];
     movedPages                  : any[]         = [];
-    rotatedPages                : any[]         = [];
     pagesImageUrls              : any           = [];
-    documentsForms              : any[]         = [];
     deletedPagesIds             : number[]      = [];
     deletedDocumentsIds         : number[]      = [];
     DropListDocumentsIds        : string[]      = [];
@@ -910,12 +908,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         });
     }
 
-    getMetadataItemById(id: number){
-        return  this.metadata.find((item: any) => item.id === id);
-    }
-
     validate() {
         this.loading = true;
+        this.notify.success(this.translate.instant('SPLITTER.batch_validate_processing'));
         for (const field of this.fieldsCategories['batch_metadata']) {
             if (this.batchForm.get(field.label_short) && !this.batchMetadataValues.hasOwnProperty(field.label_short)) {
                 this.batchMetadataValues[field.label_short] = this.inputMode === 'Manual' ?

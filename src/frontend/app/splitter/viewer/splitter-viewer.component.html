@@ -58,11 +58,8 @@
                             <span>
                                 {{ 'SPLITTER.batch_metadata' | translate }}
                             </span>
-                            <div (click)="batchMetadata.toggle()" class="mx-1">
-                                <mat-slide-toggle color="#97BF3D"
-                                                  [checked]="inputMode === 'Auto'"
-                                                  (change)="changeInputMode($event);"
-                                                  [disabled]="fieldsCategories['batch_metadata'].length === 0">
+                            <div (click)="batchMetadata.toggle()" class="mx-1" *ngIf="fieldsCategories['batch_metadata'].length !== 0">
+                                <mat-slide-toggle [checked]="inputMode === 'Auto'" (change)="changeInputMode($event);">
                                     {{ 'SPLITTER.auto_complete' | translate }}
                                 </mat-slide-toggle>
                             </div>

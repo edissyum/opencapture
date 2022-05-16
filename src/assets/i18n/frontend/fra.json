@@ -562,6 +562,7 @@
 		"batch_deleted": "Lot supprimé",
 		"batch_metadata": "Métadonnées de lot",
 		"batch_modification_saved": "Modifications enregistrées",
+		"batch_validate_processing": "Validation du lot est en cours de traitement ...",
 		"batches": "lot(s)",
 		"bundle_separator": "Séparateur de lots",
 		"change_document_position": "Changer la position du document",
@@ -587,7 +588,7 @@
 		"error_no_doc_type": "Veuillez sélectionner les types de documents",
 		"error_no_metadata": "Veuillez remplir les métadonnées du lot",
 		"form_label": "Libellé du formulaire",
-		"identifier": "Idenfiant",
+		"identifier": "Identifiant",
 		"list": "Liste des lots",
 		"loadReferential": "Actualiser les données d'auto-complétion",
 		"merge": "Fusionner",
@@ -630,7 +631,7 @@
 		"invoices_validated_per_user": "Factures validées par utilisateur"
 	},
 	"STATUS": {
-		"list": "Liste des status"
+		"list": "Liste des statuts"
 	},
 	"TYPES": {
 		"date": "Date",
