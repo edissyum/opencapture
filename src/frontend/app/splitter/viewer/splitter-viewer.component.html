@@ -58,11 +58,8 @@
                             <span>
                                 {{ 'SPLITTER.batch_metadata' | translate }}
                             </span>
-                            <div (click)="batchMetadata.toggle()" class="mx-1">
-                                <mat-slide-toggle color="#97BF3D"
-                                                  [checked]="inputMode === 'Auto'"
-                                                  (change)="changeInputMode($event);"
-                                                  [disabled]="fieldsCategories['batch_metadata'].length === 0">
+                            <div (click)="batchMetadata.toggle()" class="mx-1" *ngIf="fieldsCategories['batch_metadata'].length !== 0">
+                                <mat-slide-toggle [checked]="inputMode === 'Auto'" (change)="changeInputMode($event);">
                                     {{ 'SPLITTER.auto_complete' | translate }}
                                 </mat-slide-toggle>
                             </div>
@@ -115,7 +112,7 @@
                                 <mat-form-field class="w-full">
                                     <mat-label>{{input.label}}</mat-label>
                                     <textarea matInput formControlName="{{input.label_short}}"
-                                              (ngModelChange)="setValueChange(input.label_short, $event)"></textarea>
+                                          (ngModelChange)="setValueChange(input.label_short, $event)"></textarea>
                                 </mat-form-field>
                             </div>
                             <div *ngIf="input.type === 'text' && (!input.metadata_key || inputMode === 'Manual')">
