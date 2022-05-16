@@ -111,7 +111,7 @@
 		"field_updated": "Champ personnalisé modifié avec succès",
 		"module": "Module",
 		"no_option_added": "Aucune option ajoutée",
-		"reset": "réinitialiser",
+		"reset": "Réinitialiser",
 		"select": "Liste à choix",
 		"select_options": "Liste des choix",
 		"text": "Chaîne de caractères",
@@ -315,6 +315,7 @@
 		"delete_invoice": "Suppression de la facture n°&nbsp;<b>{{ invoice_id }}</b>",
 		"disable-user": "Désactivation de l'utilisateur&nbsp;<b>{{ user }}</b>",
 		"duplicate-form": "Duplication du formulaire&nbsp;<b>{{ form }}</b>",
+		"duplicate-output": "Duplication de la chaîne sortante&nbsp;<b>{{ output }}</b>",
 		"duplicate-positions-masks": "Duplication du masque de positionnement&nbsp;<b>{{ positions_masks }}</b>",
 		"enable-user": "Activation de l'utilisateur&nbsp;<b>{{ user }}</b>",
 		"file_uploaded": "Fichier(s) téléversé(s) avec la chaîne entrante&nbsp;<b>{{ input }}</b>",
@@ -399,8 +400,10 @@
 		"compress_screen": "Compression très élevée",
 		"compress_type": "Type de compression",
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer la chaîne sortante <b>{{ output }}</b> ?",
+		"confirm_duplicate": "Êtes vous sûr de vouloir dupliquer la chaîne sortante <b>{{ output }}</b> ?",
 		"create": "Créer la chaîne sortante",
 		"created": "Chaîne sortante créée avec succès",
+		"duplicate": "Dupliquer la chaîne sortante",
 		"json_input_erorr": "Le champ <b>{{field}}</b> doit être au format JSON avec des doubles quotes",
 		"links": "Liaisons",
 		"links_hint": "Cet onglet permet de paramétrer la liaison d'un document à un autre en se basant sur une donnée spécifique. <br><i>Exemple : Lier une facture à un devis dans Maarch dont le numéro de devis est dans le champ personnalisé numéro 30</i>",
@@ -587,7 +590,7 @@
 		"error_no_doc_type": "Veuillez sélectionner les types de documents",
 		"error_no_metadata": "Veuillez remplir les métadonnées du lot",
 		"form_label": "Libellé du formulaire",
-		"identifier": "Idenfiant",
+		"identifier": "Identifiant",
 		"list": "Liste des lots",
 		"loadReferential": "Actualiser les données d'auto-complétion",
 		"merge": "Fusionner",
@@ -630,7 +633,7 @@
 		"invoices_validated_per_user": "Factures validées par utilisateur"
 	},
 	"STATUS": {
-		"list": "Liste des status"
+		"list": "Liste des statuts"
 	},
 	"TYPES": {
 		"date": "Date",
@@ -700,6 +703,7 @@
 		"list": "Factures",
 		"loading_customers": "Chargement des comptes clients...",
 		"nb_pages": "Nombre de page(s)",
+		"no_autocomplete_data": "Aucune données d'autocompletion",
 		"no_form_available": "Aucun formulaire n'est disponible",
 		"no_outputs_for_this_form": "Aucune chaîne sortante n'est configurée pour le formulaire <b>{{ form }}</b>",
 		"on": "sur",

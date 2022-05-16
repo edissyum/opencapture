@@ -81,7 +81,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     addDocumentLoading          : boolean       = false;
     batchMetadataOpenState      : boolean       = true;
     documentMetadataOpenState   : boolean       = false;
-
     batchForm                   : FormGroup     = new FormGroup({});
     batches                     : Batch[]       = [];
     status                      : any[]         = [];
@@ -89,9 +88,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     metadata                    : any[]         = [];
     documents                   : any           = [];
     movedPages                  : any[]         = [];
-    rotatedPages                : any[]         = [];
     pagesImageUrls              : any           = [];
-    documentsForms              : any[]         = [];
     deletedPagesIds             : number[]      = [];
     deletedDocumentsIds         : number[]      = [];
     DropListDocumentsIds        : string[]      = [];
@@ -156,6 +153,19 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.translate.get('HISTORY-DESC.viewer_splitter', {batch_id: this.currentBatch.id}).subscribe((translated: string) => {
             this.historyService.addHistory('splitter', 'viewer', translated);
         });
+    }
+
+    setValuesFromSavedMetadata(autocompletionValue: any){
+        for(const field of this.fieldsCategories['batch_metadata']){
+            if(this.currentBatch.customFieldsValues.hasOwnProperty(field['label_short'])){
+                const savedValue = this.currentBatch.customFieldsValues[field['label_short']];
+                if(autocompletionValue.hasOwnProperty(field['label_short'])
+                    && autocompletionValue[field['label_short']] !== savedValue){
+                    this.batchMetadataValues[field['label_short']] = savedValue;
+                    this.batchForm.controls[field['label_short']].setValue(savedValue);
+                }
+            }
+        }
     }
 
     loadSelectedBatch(): void {
@@ -465,6 +475,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     fillDataValues(data: any): void {
+        this.isDataEdited = true;
         for (const field of this.fieldsCategories['batch_metadata']) {
             const key = field['metadata_key'];
             const newValue = data.hasOwnProperty(key) ? data[key] : '';
@@ -492,10 +503,11 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     this.metadata.push(metadataItem.data);
                 });
                 if(this.currentBatch.customFieldsValues.hasOwnProperty('metadataId')) {
-                    const savedMetadata = this.metadata.filter(item => item.metadataId === this.currentBatch.customFieldsValues.metadataId);
-                    if(savedMetadata.length > 0) {
-                        this.filteredServerSideMetadata.next(savedMetadata);
-                        this.fillData((savedMetadata[0]));
+                    const autocompletionValue = this.metadata.filter(item => item.metadataId === this.currentBatch.customFieldsValues.metadataId);
+                    if(autocompletionValue.length > 0){
+                        this.filteredServerSideMetadata.next(autocompletionValue);
+                        this.fillData((autocompletionValue[0]));
+                        this.setValuesFromSavedMetadata(autocompletionValue[0]);
                     }
                 }
                 this.notify.success(this.translate.instant('SPLITTER.referential_updated'));
@@ -507,6 +519,11 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 return of(false);
             })
         ).subscribe();
+    }
+
+    setValueChange(key: string, value: string) {
+        this.isDataEdited = true;
+        this.batchMetadataValues[key] = value;
     }
 
     ngOnDestroy() {
@@ -766,13 +783,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.currentBatch.selectedPagesCount = check ? selectPagesCount : 0;
     }
 
-    undoAll() {
-        this.fieldsCategories['batch_metadata'] = [];
-        this.loadSelectedBatch();
-        this.loadReferential();
-        this.isDataEdited = false;
-    }
-
     rotatePage(documentIndex: number, pageIndex: number) {
         const currentDegree = this.documents[documentIndex].pages[pageIndex].rotation;
         this.isDataEdited = true;
@@ -897,20 +907,13 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         });
     }
 
-    getMetadataItemById(id: number) {
-        return  this.metadata.find((item: any) => item.id === id);
-    }
-
     validate() {
         this.loading = true;
-        if(this.inputMode === 'Manual') {
-            for (const field of this.fieldsCategories['batch_metadata']) {
-                if (this.batchForm.get(field.label_short)) {
-                    this.batchMetadataValues[field.label_short] = this.inputMode === 'Manual' ?
-                        this.batchForm.get(field.label_short)?.value: '';
-                }
+        for (const field of this.fieldsCategories['batch_metadata']) {
+            if (this.batchForm.get(field.label_short) && !this.batchMetadataValues.hasOwnProperty(field.label_short)) {
+                this.batchMetadataValues[field.label_short] = this.inputMode === 'Manual' ?
+                    this.batchForm.get(field.label_short)?.value: '';
             }
-            this.batchMetadataValues['metadataId'] = '';
         }
 
         const batchMetadata             = this.batchMetadataValues;
@@ -959,11 +962,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     saveInfo() {
         this.saveInfosLoading = true;
-        if (this.inputMode === 'Manual') {
-            for (const field of this.fieldsCategories['batch_metadata']) {
-                if (this.batchForm.get(field.label_short)) {
-                    this.batchMetadataValues[field.label_short] = this.batchForm.get(field.label_short)?.value;
-                }
+        for (const field of this.fieldsCategories['batch_metadata']) {
+            if (this.batchForm.get(field.label_short) && !this.batchMetadataValues.hasOwnProperty(field.label_short)) {
+                this.batchMetadataValues[field.label_short] = this.batchForm.get(field.label_short)?.value;
             }
         }
 
