@@ -268,7 +268,7 @@ export class FormListComponent implements OnInit {
             this.http.post(API_URL + '/ws/forms/duplicate/' + formId, {}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadForms();
-                    this.notify.success(this.translate.instant('HISTORY-DESC.duplicate-form'));
+                    this.notify.success(this.translate.instant('FORMS.form_duplicated'));
                 }),
                 catchError((err: any) => {
                     console.debug(err);
@@ -284,6 +284,7 @@ export class FormListComponent implements OnInit {
             this.http.put(API_URL + '/ws/forms/disable/' + formId, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadForms();
+                    this.notify.success(this.translate.instant('FORMS.form_disabled'));
                 }),
                 catchError((err: any) => {
                     console.debug(err);
@@ -299,6 +300,7 @@ export class FormListComponent implements OnInit {
             this.http.put(API_URL + '/ws/forms/enable/' + formId, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadForms();
+                    this.notify.success(this.translate.instant('FORMS.form_enabled'));
                 }),
                 catchError((err: any) => {
                     console.debug(err);

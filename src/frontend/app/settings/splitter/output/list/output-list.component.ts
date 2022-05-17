@@ -162,7 +162,7 @@ export class SplitterOutputListComponent implements OnInit {
             this.http.post(API_URL + '/ws/outputs/duplicate/' + outputId, {}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadOutputs();
-                    this.notify.success(this.translate.instant('HISTORY-DESC.duplicate-output'));
+                    this.notify.success(this.translate.instant('OUTPUT.output_duplicated'));
                 }),
                 catchError((err: any) => {
                     console.debug(err);

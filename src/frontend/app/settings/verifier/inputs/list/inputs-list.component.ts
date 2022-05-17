@@ -167,7 +167,7 @@ export class InputsListComponent implements OnInit {
             this.http.post(API_URL + '/ws/inputs/duplicate/' + inputId, {}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadInputs();
-                    this.notify.success(this.translate.instant('HISTORY-DESC.duplicate-input'));
+                    this.notify.success(this.translate.instant('INPUT.input_duplicated'));
                 }),
                 catchError((err: any) => {
                     console.debug(err);
