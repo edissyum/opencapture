@@ -106,6 +106,7 @@
 		"checkbox": "Checkbox",
 		"confirm_delete": "Are you sure you want to delete the document type <b>{{ doctypeLabel }}</b> ?",
 		"custom_exists": "Custom field already exist",
+		"date": "Date",
 		"delete_choice": "Delete choice",
 		"deleted": "Deleted",
 		"field_added": "Field added successfully",
