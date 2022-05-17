@@ -92,6 +92,7 @@ export class CustomFieldsComponent implements OnInit {
             label       : this.translate.instant('CUSTOM-FIELDS.type'),
             options     : [
                 {key: 'text', value: this.translate.instant('CUSTOM-FIELDS.text')},
+                {key: 'date', value: this.translate.instant('CUSTOM-FIELDS.date')},
                 {key: 'textarea', value: this.translate.instant('CUSTOM-FIELDS.textarea')},
                 {key: 'select', value: this.translate.instant('CUSTOM-FIELDS.select')},
                 {key: 'checkbox', value: this.translate.instant('CUSTOM-FIELDS.checkbox')},
