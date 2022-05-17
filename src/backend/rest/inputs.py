@@ -57,6 +57,13 @@ def update_input(input_id):
     return make_response(jsonify(res[0])), res[1]
 
 
+@bp.route('inputs/duplicate/<int:input_id>', methods=['POST'])
+@auth.token_required
+def duplicate_input(input_id):
+    res = inputs.duplicate_input(input_id)
+    return make_response(jsonify(res[0])), res[1]
+
+
 @bp.route('inputs/delete/<int:input_id>', methods=['DELETE'])
 @auth.token_required
 def delete_input(input_id):

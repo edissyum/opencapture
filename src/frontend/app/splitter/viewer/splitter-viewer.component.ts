@@ -205,19 +205,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         ).subscribe();
     }
 
-    setValuesFromSavedMetadata(autocompletionValue: any){
-        for(const field of this.fieldsCategories['batch_metadata']){
-            if(this.currentBatch.customFieldsValues.hasOwnProperty(field['label_short'])){
-                const savedValue = this.currentBatch.customFieldsValues[field['label_short']];
-                if(autocompletionValue.hasOwnProperty(field['label_short'])
-                    && autocompletionValue[field['label_short']] !== savedValue){
-                    this.batchMetadataValues[field['label_short']] = savedValue;
-                    this.batchForm.controls[field['label_short']].setValue(savedValue);
-                }
-            }
-        }
-    }
-
     getStatusLabel(statusId: string){
         const statusFound = this.status.find(status => status.id === statusId);
         return statusFound ? statusFound.label: undefined;
@@ -515,7 +502,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     metadataItem.data['metadataId'] = metadataItem.id;
                     this.metadata.push(metadataItem.data);
                 });
-              
+
                 if(this.currentBatch.customFieldsValues.hasOwnProperty('metadataId')) {
                     const autocompletionValue = this.metadata.filter(item => item.metadataId === this.currentBatch.customFieldsValues.metadataId);
                     if(autocompletionValue.length > 0){
@@ -558,11 +545,6 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 }
             }
         }
-    }
-
-    setValueChange(key: string, value: string) {
-        this.isDataEdited = true;
-        this.batchMetadataValues[key] = value;
     }
 
     loadFormFields() {
@@ -928,7 +910,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     validate() {
         this.loading = true;
-        this.notify.success(this.translate.instant('SPLITTER.batch_validate_processing'));
+        this.notify.success(this.translate.instant('SPLITTER.batch_validate_processing'), 10000);
         for (const field of this.fieldsCategories['batch_metadata']) {
             if (this.batchForm.get(field.label_short) && !this.batchMetadataValues.hasOwnProperty(field.label_short)) {
                 this.batchMetadataValues[field.label_short] = this.inputMode === 'Manual' ?

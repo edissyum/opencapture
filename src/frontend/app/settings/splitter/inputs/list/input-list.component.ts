@@ -136,6 +136,42 @@ export class SplitterInputListComponent implements OnInit {
         }
     }
 
+    duplicateConfirmDialog(inputId: number, input: string) {
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            data:{
+                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
+                confirmText         : this.translate.instant('INPUT.confirm_duplicate', {"input": input}),
+                confirmButton       : this.translate.instant('GLOBAL.duplicate'),
+                confirmButtonColor  : "warn",
+                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+            },
+            width: "600px",
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.duplicateInput(inputId);
+                this.historyService.addHistory('splitter', 'duplicate_input', this.translate.instant('HISTORY-DESC.duplicate-input', {input: input}));
+            }
+        });
+    }
+
+    duplicateInput(inputId: number) {
+        if (inputId !== undefined) {
+            this.http.post(API_URL + '/ws/inputs/duplicate/' + inputId, {}, {headers: this.authService.headers}).pipe(
+                tap(() => {
+                    this.loadInputs();
+                    this.notify.success('HISTORY-DESC.duplicate-input');
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        }
+    }
+
     sortData(sort: Sort) {
         const data = this.inputs.slice();
         if (!sort.active || sort.direction === '') {

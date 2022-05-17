@@ -58,6 +58,40 @@ def update_input(input_id, data):
         return response, 401
 
 
+def duplicate_input(input_id):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+
+    input_info, error = inputs.get_input_by_id({'input_id': input_id})
+    if error is None:
+        args = {
+            'module': input_info['module'],
+            'input_id': 'copy_' + input_info['input_id'],
+            'input_label': gettext('COPY_OF') + ' ' + input_info['input_label'],
+            'input_folder': '',
+            'default_form_id': input_info['default_form_id'],
+            'customer_id': input_info['customer_id'] if input_info['module'] == 'verifier' else None,
+            'splitter_method_id': input_info['splitter_method_id'] if 'splitter_method_id' in input_info else False,
+            'remove_blank_pages': input_info['remove_blank_pages'] if 'remove_blank_pages' in input_info else False,
+            'override_supplier_form': input_info['override_supplier_form'] if 'override_supplier_form' in input_info else False,
+        }
+        _, error = inputs.create_input({'columns': args})
+        if error is None:
+            return '', 200
+        else:
+            response = {
+                "errors": gettext('DUPLICATE_INPUT_ERROR'),
+                "message": error
+            }
+            return response, 401
+    else:
+        response = {
+            "errors": gettext('DUPLICATE_INPUT_ERROR'),
+            "message": error
+        }
+        return response, 401
+
+
 def create_input(data):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
