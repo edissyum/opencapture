@@ -208,7 +208,7 @@ export class SplitterFormListComponent implements OnInit {
             this.http.post(API_URL + '/ws/forms/duplicate/' + formId, {}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadForms();
-                    this.notify.success('HISTORY-DESC.duplicate-form');
+                    this.notify.success(this.translate.instant('HISTORY-DESC.duplicate-form'));
                 }),
                 catchError((err: any) => {
                     console.debug(err);

@@ -161,7 +161,7 @@ export class SplitterInputListComponent implements OnInit {
             this.http.post(API_URL + '/ws/inputs/duplicate/' + inputId, {}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadInputs();
-                    this.notify.success('HISTORY-DESC.duplicate-input');
+                    this.notify.success(this.translate.instant('HISTORY-DESC.duplicate-input'));
                 }),
                 catchError((err: any) => {
                     console.debug(err);
