@@ -91,7 +91,7 @@ import { SplitterUpdateInputComponent } from './settings/splitter/inputs/update/
 import { SplitterInputListComponent } from './settings/splitter/inputs/list/input-list.component';
 import { SplitterUpdateOutputComponent } from './settings/splitter/output/update/update-output.component';
 import { SplitterCreateOutputComponent } from './settings/splitter/output/create/create-output.component';
-import { SplitterListOutputComponent } from './settings/splitter/output/list/list-output.component';
+import { SplitterOutputListComponent } from './settings/splitter/output/list/output-list.component';
 import { SplitterFormBuilderComponent } from './settings/splitter/form/builder/form-builder.component';
 import { SplitterFormListComponent } from './settings/splitter/form/list/form-list.component';
 import { StatisticsComponent } from './statistics/statistics.component';
@@ -162,7 +162,7 @@ export function createTranslateLoader(http: HttpClient) {
         SplitterInputListComponent,
         SplitterUpdateOutputComponent,
         SplitterCreateOutputComponent,
-        SplitterListOutputComponent,
+        SplitterOutputListComponent,
         HistoryComponent,
         StatisticsComponent,
         CreateDocTypeComponent,

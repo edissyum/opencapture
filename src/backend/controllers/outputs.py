@@ -49,13 +49,44 @@ def get_outputs_types(module):
     return response, 200
 
 
+def duplicate_output(output_id):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+
+    output_info, error = outputs.get_output_by_id({'output_id': output_id})
+    if error is None:
+        args = {
+            'data': json.dumps(output_info['data']),
+            'status': output_info['status'],
+            'module': output_info['module'],
+            'compress_type': output_info['compress_type'],
+            'output_type_id': output_info['output_type_id'],
+            'output_label': gettext('COPY_OF') + ' ' + output_info['output_label'],
+        }
+        _, error = outputs.create_output({'columns': args})
+        if error is None:
+            return '', 200
+        else:
+            response = {
+                "errors": gettext('DUPLICATE_OUTPUT_ERROR'),
+                "message": error
+            }
+            return response, 401
+    else:
+        response = {
+            "errors": gettext('DUPLICATE_OUTPUT_ERROR'),
+            "message": error
+        }
+        return response, 401
+
+
 def update_output(output_id, args):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
-    output_info, error = outputs.get_output_by_id({'output_id': output_id})
+    _, error = outputs.get_output_by_id({'output_id': output_id})
 
     if error is None:
-        res, error = outputs.update_output({
+        _, error = outputs.update_output({
             'set': {
                 'output_type_id': args['output_type_id'],
                 'compress_type': args['compress_type'] if 'compress_type' in args else None,
