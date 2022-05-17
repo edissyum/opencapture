@@ -614,6 +614,7 @@
 		"no_document_to_show": "No document to show",
 		"no_metadata_required": "No metadata required ",
 		"no_result": "No result",
+		"no_selected_doctype": "(No document type)",
 		"pageRotated": "Page rotated",
 		"quit_without_saving": "Quit without saving",
 		"quit_without_saving_modifications": "Are you sure you want to quit without saving?",

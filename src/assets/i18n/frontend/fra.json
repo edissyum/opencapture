@@ -614,6 +614,7 @@
 		"no_document_to_show": "Aucun document à afficher",
 		"no_metadata_required": "Aucune métadonnée requise",
 		"no_result": "0 Résultat",
+		"no_selected_doctype": "(aucun type de document)",
 		"pageRotated": "Page tournée avec",
 		"quit_without_saving": "Quitter sans enregistrer",
 		"quit_without_saving_modifications": "Voulez-vous quitter sans enregistrer les modifications ?",

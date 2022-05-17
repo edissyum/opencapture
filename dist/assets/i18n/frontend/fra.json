@@ -3,9 +3,9 @@
 		"dependency": "Dépendances",
 		"distributed_under": "Open-Capture est un logiciel libre et open-source distribué sous",
 		"editor": "Éditeur",
-		"gnu_license": "la license GNU General Public License v3.0",
+		"gnu_license": "la licence GNU General Public License v3.0",
 		"lead_dev": "Lead developer",
-		"license": "License",
+		"license": "Licence",
 		"new_version_available": "Une nouvelle version est disponible",
 		"official_website": "Site officiel",
 		"thanks_to_developers": "Merci aux developpeurs de ces solutions"
@@ -53,6 +53,7 @@
 		"address_2": "Complément d'adresse",
 		"city": "Ville",
 		"country": "Pays",
+		"document_lang": "Langue des documents",
 		"postal_code": "Code postal"
 	},
 	"AUTH": {
@@ -613,6 +614,7 @@
 		"no_document_to_show": "Aucun document à afficher",
 		"no_metadata_required": "Aucune métadonnée requise",
 		"no_result": "0 Résultat",
+		"no_selected_doctype": "(aucun type de document)",
 		"pageRotated": "Page tournée avec",
 		"quit_without_saving": "Quitter sans enregistrer",
 		"quit_without_saving_modifications": "Voulez-vous quitter sans enregistrer les modifications ?",
