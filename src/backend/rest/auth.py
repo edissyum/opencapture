@@ -17,9 +17,9 @@
 
 import psycopg2
 from flask_babel import gettext
+from flask import Blueprint, request, make_response, current_app
 from src.backend.import_classes import _Config
 from src.backend.import_controllers import auth
-from flask import Blueprint, request, make_response, current_app
 
 
 bp = Blueprint('auth', __name__, url_prefix='/ws/')
