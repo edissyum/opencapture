@@ -10,5 +10,6 @@
     "addressPostalCode"   : "CP",
     "addressCountry"      : "PAYS",
     "positions_mask_id"   : "MASQUE DE POSITIONNEMENT",
-    "get_only_raw_footer" : "CONTROLE DE COHERENCE"
+    "get_only_raw_footer" : "CONTROLE DE COHERENCE",
+    "doc_lang"            : "LANGUE DES DOCUMENTS"
 }

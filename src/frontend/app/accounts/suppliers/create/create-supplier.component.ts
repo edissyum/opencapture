@@ -96,7 +96,7 @@ export class CreateSupplierComponent implements OnInit {
         },
         {
             id: 'document_lang',
-            label: marker('ADDRESSES.lang'),
+            label: marker('ADDRESSES.document_lang'),
             type: 'select',
             control: new FormControl(),
             required: true,
@@ -187,25 +187,36 @@ export class CreateSupplierComponent implements OnInit {
             })
         ).subscribe();
 
-        this.addressForm.forEach((element: any) => {
-            if (element.id === 'lang') {
-                console.log(this.localeService.langs);
-                this.http.get(API_URL + '/ws/i18n/getAllLang', {headers: this.authService.headers}).pipe(
-                    tap((data: any) => {
-                        data.langs.forEach((lang: any) => {
-                            element.values.push({
-                                'id': lang[0],
-                                'label': lang[1]
+        this.supplierForm.forEach((element: any) => {
+            if (element.id === 'document_lang') {
+                if (this.localeService.langs.length === 0) {
+                    this.http.get(API_URL + '/ws/i18n/getAllLang', {headers: this.authService.headers}).pipe(
+                        tap((data: any) => {
+                            data.langs.forEach((lang: any) => {
+                                element.control.setValue('fra');
+                                element.values.push({
+                                    'id': lang[0],
+                                    'label': lang[1]
+                                });
                             });
+                        }),
+                        finalize(() => this.loading = false),
+                        catchError((err: any) => {
+                            console.debug(err);
+                            this.notify.handleErrors(err);
+                            return of(false);
+                        })
+                    ).subscribe();
+                } else {
+                    this.localeService.langs.forEach((lang: any) => {
+                        element.control.setValue('fra');
+                        element.values.push({
+                            'id': lang[0],
+                            'label': lang[1]
                         });
-                    }),
-                    finalize(() => this.loading = false),
-                    catchError((err: any) => {
-                        console.debug(err);
-                        this.notify.handleErrors(err);
-                        return of(false);
-                    })
-                ).subscribe();
+                    });
+                    this.loading = false;
+                }
             }
         });
     }
