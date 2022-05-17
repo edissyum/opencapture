@@ -50,6 +50,13 @@ def get_output_type_by_id(output_type_id):
     return make_response(jsonify(_outputs[0])), _outputs[1]
 
 
+@bp.route('outputs/duplicate/<int:output_id>', methods=['POST'])
+@auth.token_required
+def duplicate_output(output_id):
+    res = outputs.duplicate_output(output_id)
+    return make_response(jsonify(res[0])), res[1]
+
+
 @bp.route('outputs/getById/<int:output_id>', methods=['GET'])
 @auth.token_required
 def get_output_by_id(output_id):

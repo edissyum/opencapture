@@ -67,10 +67,10 @@ def update_supplier(supplier_id, data):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
     _spreadsheet = _vars[7]
-    supplier_info, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
+    _, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
 
     if error is None:
-        res, error = accounts.update_supplier({'set': data, 'supplier_id': supplier_id})
+        _, error = accounts.update_supplier({'set': data, 'supplier_id': supplier_id})
 
         if error is None:
             _spreadsheet.update_supplier_ods_sheet(_db)
@@ -104,7 +104,7 @@ def update_position_by_supplier_id(supplier_id, data):
         supplier_positions.update({
             column: position
         })
-        res, error = accounts.update_supplier({'set': {"positions": json.dumps(supplier_positions)}, 'supplier_id': supplier_id})
+        _, error = accounts.update_supplier({'set': {"positions": json.dumps(supplier_positions)}, 'supplier_id': supplier_id})
         if error is None:
             return '', 200
         else:
@@ -143,7 +143,7 @@ def update_page_by_supplier_id(supplier_id, data):
 def update_address(address_id, data):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
-    address_info, error = accounts.get_address_by_id({'address_id': address_id})
+    _, error = accounts.get_address_by_id({'address_id': address_id})
 
     if error is None:
         _set = {
@@ -154,7 +154,7 @@ def update_address(address_id, data):
             'country': data['country']
         }
 
-        res, error = accounts.update_address({'set': _set, 'address_id': address_id})
+        _, error = accounts.update_address({'set': _set, 'address_id': address_id})
 
         if error is None:
             return '', 200
@@ -243,6 +243,7 @@ def create_supplier(data):
         'vat_number': data['vat_number'] if 'vat_number' in data else None,
         'form_id': data['form_id'] if 'form_id' in data else None,
         'address_id': data['address_id'],
+        'document_lang': data['document_lang'],
         'get_only_raw_footer': data['get_only_raw_footer'] if 'get_only_raw_footer' in data else False,
     }
 

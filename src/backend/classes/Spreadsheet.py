@@ -43,6 +43,7 @@ class Spreadsheet:
             self.referencialSupplierArray['addressPostalCode'] = fp['addressPostalCode']
             self.referencialSupplierArray['positions_mask_id'] = fp['positions_mask_id']
             self.referencialSupplierArray['get_only_raw_footer'] = fp['get_only_raw_footer']
+            self.referencialSupplierArray['doc_lang'] = fp['doc_lang']
 
     def write_typo_ods_sheet(self, vat_number, typo):
         content_sheet = get_data(self.referencialSuppplierSpreadsheet)
@@ -101,7 +102,8 @@ class Spreadsheet:
                                 address['city'] if address and address['city'] is not None else '',
                                 address['country'] if address and address['country'] is not None else '',
                                 positions_mask_id[0]['id'] if positions_mask_id and positions_mask_id[0]['id'] is not None else '',
-                                str(not supplier['get_only_raw_footer']).lower() if supplier['get_only_raw_footer'] is not None else '']
+                                str(not supplier['get_only_raw_footer']).lower() if supplier['get_only_raw_footer'] is not None else '',
+                                supplier['document_lang'] if supplier['document_lang'] is not None else '']
                         content_sheet[sheet_name].append(line)
             except IndexError as e:
                 self.log.error("IndexError while updating ods reference file : " + str(e), False)

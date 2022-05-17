@@ -36,11 +36,11 @@ import {Sort} from "@angular/material/sort";
 import {HistoryService} from "../../../../../services/history.service";
 
 @Component({
-  selector: 'app-splitter-list-output',
-  templateUrl: './list-output.component.html',
-  styleUrls: ['./list-output.component.scss']
+  selector: 'app-splitter-output-list',
+  templateUrl: './output-list.component.html',
+  styleUrls: ['./output-list.component.scss']
 })
-export class SplitterListOutputComponent implements OnInit {
+export class SplitterOutputListComponent implements OnInit {
     headers         : HttpHeaders   = this.authService.headers;
     columnsToDisplay: string[]      = ['id', 'output_label', 'output_type_id', 'actions'];
     loading         : boolean       = true;
@@ -127,6 +127,42 @@ export class SplitterListOutputComponent implements OnInit {
                 tap(() => {
                     this.loadOutputs();
                     this.notify.success(this.translate.instant('OUTPUT.output_deleted'));
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        }
+    }
+
+    duplicateConfirmDialog(outputId: number, output: string) {
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            data:{
+                confirmTitle        : this.translate.instant('GLOBAL.confirm'),
+                confirmText         : this.translate.instant('OUTPUT.confirm_duplicate', {"output": output}),
+                confirmButton       : this.translate.instant('GLOBAL.duplicate'),
+                confirmButtonColor  : "warn",
+                cancelButton        : this.translate.instant('GLOBAL.cancel'),
+            },
+            width: "600px",
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.duplicateOutput(outputId);
+                this.historyService.addHistory('splitter', 'duplicate_output', this.translate.instant('HISTORY-DESC.duplicate-output', {output: output}));
+            }
+        });
+    }
+
+    duplicateOutput(outputId: number) {
+        if (outputId !== undefined) {
+            this.http.post(API_URL + '/ws/outputs/duplicate/' + outputId, {}, {headers: this.authService.headers}).pipe(
+                tap(() => {
+                    this.loadOutputs();
+                    this.notify.success(this.translate.instant('OUTPUT.output_duplicated'));
                 }),
                 catchError((err: any) => {
                     console.debug(err);

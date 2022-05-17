@@ -90,6 +90,7 @@ if __name__ == '__main__':
                         'iban': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['IBAN']]),
                         'get_only_raw_footer': not spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['get_only_raw_footer']],
                         'address_id': str(address_id),
+                        'document_lang': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['doc_lang']]),
                     }
                 }
                 res = database.insert(args)
@@ -153,7 +154,8 @@ if __name__ == '__main__':
                             'siret': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['SIRET']]),
                             'iban': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['IBAN']]),
                             'get_only_raw_footer': GET_ONLY_RAW_FOOTER,
-                            'address_id': address_id
+                            'address_id': address_id,
+                            'document_lang': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['doc_lang']]),
                         },
                         'where': ['vat_number = %s'],
                         'data': [vat_number]

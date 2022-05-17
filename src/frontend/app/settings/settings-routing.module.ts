@@ -38,7 +38,7 @@ import { SplitterInputListComponent } from "./splitter/inputs/list/input-list.co
 import { CreateInputComponent } from "./verifier/inputs/create/create-input.component";
 import { ListDocTypeComponent } from "./splitter/doc-types/list/list-doc-type.component";
 import { CustomFieldsComponent } from "./general/custom-fields/custom-fields.component";
-import { SplitterListOutputComponent } from "./splitter/output/list/list-output.component";
+import { SplitterOutputListComponent } from "./splitter/output/list/output-list.component";
 import { UpdateOutputComponent } from "./verifier/outputs/update/update-output.component";
 import { ConfigurationsComponent } from "./general/configurations/configurations.component";
 import { DocserversComponent } from "./general/docservers/docservers.component";
@@ -228,7 +228,7 @@ const routes: Routes = [
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
-        path: 'settings/splitter/outputs', component: SplitterListOutputComponent,
+        path: 'settings/splitter/outputs', component: SplitterOutputListComponent,
         data: {title: 'FORMS.output_settings', privileges: ['settings', 'outputs_list_splitter']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },

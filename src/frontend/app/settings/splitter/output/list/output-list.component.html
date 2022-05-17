@@ -106,6 +106,11 @@
                             class="inline-block align-text-top">
                         <i class="fa-solid fa-trash fa-lg"></i>
                     </button>
+                    <button (click)="$event.stopPropagation(); duplicateConfirmDialog(element.id, element.output_label)"
+                            matTooltip="{{ 'OUTPUT.duplicate' | translate }}" mat-icon-button
+                            class="inline-block align-text-top">
+                        <i class="fa-solid fa-clone fa-lg"></i>
+                    </button>
                 </mat-cell>
             </ng-container>
             <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>

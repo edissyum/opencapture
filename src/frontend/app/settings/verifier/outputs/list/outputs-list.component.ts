@@ -162,11 +162,12 @@ export class OutputsListComponent implements OnInit {
         });
     }
 
-    duplicateOutput(formId: number) {
-        if (formId !== undefined) {
-            this.http.post(API_URL + '/ws/outputs/duplicate/' + formId, {}, {headers: this.authService.headers}).pipe(
+    duplicateOutput(outputId: number) {
+        if (outputId !== undefined) {
+            this.http.post(API_URL + '/ws/outputs/duplicate/' + outputId, {}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadOutputs();
+                    this.notify.success(this.translate.instant('OUTPUT.output_duplicated'));
                 }),
                 catchError((err: any) => {
                     console.debug(err);

@@ -119,7 +119,7 @@ def get_default_form():
 
 
 def update_form(form_id, args):
-    form_info, error = forms.get_form_by_id({'form_id': form_id})
+    _, error = forms.get_form_by_id({'form_id': form_id})
     if error is None:
         # Remove previous default form is the updated one is set to default
         if 'default_form' in args and args['default_form'] is True:
@@ -152,9 +152,9 @@ def delete_form(form_id):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
 
-    form_info, error = forms.get_form_by_id({'form_id': form_id})
+    _, error = forms.get_form_by_id({'form_id': form_id})
     if error is None:
-        res, error = forms.update_form({'set': {'status': 'DEL', 'enabled': False}, 'form_id': form_id})
+        _, error = forms.update_form({'set': {'status': 'DEL', 'enabled': False}, 'form_id': form_id})
         if error is None:
             return '', 200
         else:
@@ -177,15 +177,12 @@ def duplicate_form(form_id):
 
     form_info, error = forms.get_form_by_id({'form_id': form_id})
     if error is None:
-        new_outputs = '{'
-        for outputs in form_info['outputs']:
-            new_outputs += outputs + ','
-        new_outputs = new_outputs[:-1] + '}'
         new_label = gettext('COPY_OF') + ' ' + form_info['label']
         args = {
             'label': new_label,
             'default_form': False,
-            'outputs': new_outputs,
+            'outputs': form_info['outputs'],
+            'module': form_info['module'],
             'supplier_verif': form_info['supplier_verif']
         }
         res, error = forms.add_form(args)
@@ -213,9 +210,9 @@ def disable_form(form_id):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
 
-    form_info, error = forms.get_form_by_id({'form_id': form_id})
+    _, error = forms.get_form_by_id({'form_id': form_id})
     if error is None:
-        res, error = forms.update_form({'set': {'enabled': False}, 'form_id': form_id})
+        _, error = forms.update_form({'set': {'enabled': False}, 'form_id': form_id})
         if error is None:
             return '', 200
         else:
@@ -236,9 +233,9 @@ def enable_form(form_id):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
 
-    form_info, error = forms.get_form_by_id({'form_id': form_id})
+    _, error = forms.get_form_by_id({'form_id': form_id})
     if error is None:
-        res, error = forms.update_form({'set': {'enabled': True}, 'form_id': form_id})
+        _, error = forms.update_form({'set': {'enabled': True}, 'form_id': form_id})
         if error is None:
             return '', 200
         else:
@@ -256,7 +253,7 @@ def enable_form(form_id):
 
 
 def get_fields(form_id):
-    form_info, error = forms.get_form_by_id({'form_id': form_id})
+    _, error = forms.get_form_by_id({'form_id': form_id})
     if error is None:
         res, error = forms.get_fields({'form_id': form_id})
         response = {
@@ -275,9 +272,9 @@ def update_fields(args):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
 
-    form_info, error = forms.get_form_by_id({'form_id': args['form_id']})
+    _, error = forms.get_form_by_id({'form_id': args['form_id']})
     if error is None:
-        res, error = forms.update_form_fields({'set': {'fields': json.dumps(args['data'])}, 'form_id': args['form_id']})
+        _, error = forms.update_form_fields({'set': {'fields': json.dumps(args['data'])}, 'form_id': args['form_id']})
         if error is None:
             return '', 200
         else:
