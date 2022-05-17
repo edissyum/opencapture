@@ -177,15 +177,12 @@ def duplicate_form(form_id):
 
     form_info, error = forms.get_form_by_id({'form_id': form_id})
     if error is None:
-        new_outputs = '{'
-        for outputs in form_info['outputs']:
-            new_outputs += outputs + ','
-        new_outputs = new_outputs[:-1] + '}'
         new_label = gettext('COPY_OF') + ' ' + form_info['label']
         args = {
             'label': new_label,
             'default_form': False,
-            'outputs': new_outputs,
+            'outputs': form_info['outputs'],
+            'module': form_info['module'],
             'supplier_verif': form_info['supplier_verif']
         }
         res, error = forms.add_form(args)

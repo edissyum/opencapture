@@ -162,6 +162,7 @@ export class SplitterFormListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.disableForm(formId);
+                this.historyService.addHistory('splitter', 'disable_form', this.translate.instant('HISTORY-DESC.disable-form', {form: form}));
             }
         });
     }
@@ -181,6 +182,7 @@ export class SplitterFormListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.enableForm(formId);
+                this.historyService.addHistory('splitter', 'enable_form', this.translate.instant('HISTORY-DESC.enable-form', {form: form}));
             }
         });
     }
@@ -203,16 +205,17 @@ export class SplitterFormListComponent implements OnInit {
 
     duplicateForm(formId: number) {
         if (formId !== undefined) {
-            // this.http.delete(API_URL + '/ws/forms/duplicate/' + formId, {headers: this.authService.headers}).pipe(
-            //     tap(() => {
-            //         this.loadForms()
-            //     }),
-            //     catchError((err: any) => {
-            //         console.debug(err);
-            //         this.notify.handleErrors(err);
-            //         return of(false);
-            //     })
-            // ).subscribe();
+            this.http.post(API_URL + '/ws/forms/duplicate/' + formId, {}, {headers: this.authService.headers}).pipe(
+                tap(() => {
+                    this.loadForms();
+                    this.notify.success('HISTORY-DESC.duplicate-form');
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
         }
     }
 

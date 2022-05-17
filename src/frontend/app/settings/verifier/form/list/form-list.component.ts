@@ -207,6 +207,7 @@ export class FormListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.disableForm(formId);
+                this.historyService.addHistory('verifier', 'disable_form', this.translate.instant('HISTORY-DESC.disable-form', {form: form}));
             }
         });
     }
@@ -226,6 +227,7 @@ export class FormListComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
                 this.enableForm(formId);
+                this.historyService.addHistory('verifier', 'enable_form', this.translate.instant('HISTORY-DESC.enable-form', {form: form}));
             }
         });
     }
@@ -266,6 +268,7 @@ export class FormListComponent implements OnInit {
             this.http.post(API_URL + '/ws/forms/duplicate/' + formId, {}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadForms();
+                    this.notify.success('HISTORY-DESC.duplicate-form');
                 }),
                 catchError((err: any) => {
                     console.debug(err);

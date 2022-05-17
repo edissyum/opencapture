@@ -167,6 +167,7 @@ export class OutputsListComponent implements OnInit {
             this.http.post(API_URL + '/ws/outputs/duplicate/' + outputId, {}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadOutputs();
+                    this.notify.success('HISTORY-DESC.duplicate-output');
                 }),
                 catchError((err: any) => {
                     console.debug(err);
