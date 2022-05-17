@@ -33,7 +33,7 @@
                     </mat-form-field>
                 </ng-container>
                 <ng-container *ngFor="let field of addressForm">
-                    <mat-form-field [class.col-span-2]="field.id === 'address1'" class="block" *ngIf="field.type !== 'country'">
+                    <mat-form-field [class.col-span-2]="field.id === 'address1'" class="block" *ngIf="field.type !== 'country' && field.type !== 'select'">
                         <mat-label>{{ field.label | translate }}</mat-label>
                         <input matInput [formControl]="field.control" [type]="field.type" placeholder="{{ field.label | translate }}" [required]="field.required">
                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessageAddress(field.id) }}</mat-error>

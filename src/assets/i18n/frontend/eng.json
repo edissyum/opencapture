@@ -53,6 +53,7 @@
 		"address_2": "Address 2",
 		"city": "City",
 		"country": "Country",
+		"document_lang": "Documents language",
 		"postal_code": "Postal code"
 	},
 	"AUTH": {

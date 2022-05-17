@@ -15,7 +15,7 @@ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {Component, OnInit} from '@angular/core';
+import {AfterContentInit, AfterViewInit, Component, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {marker} from "@biesbjerg/ngx-translate-extract-marker";
 import {FormBuilder, FormControl} from "@angular/forms";
@@ -32,6 +32,7 @@ import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {HistoryService} from "../../../../services/history.service";
 import {Country} from '@angular-material-extensions/select-country';
+import {LocaleService} from "../../../../services/locale.service";
 
 @Component({
     selector: 'app-create',
@@ -92,7 +93,15 @@ export class CreateSupplierComponent implements OnInit {
             control: new FormControl(),
             required: false,
             values: []
-        }
+        },
+        {
+            id: 'document_lang',
+            label: marker('ADDRESSES.lang'),
+            type: 'select',
+            control: new FormControl(),
+            required: true,
+            values: []
+        },
     ];
     addressForm: any [] = [
         {
@@ -129,7 +138,7 @@ export class CreateSupplierComponent implements OnInit {
             type: 'country',
             control: new FormControl('France'),
             required: true,
-        },
+        }
     ];
 
     defaultValue: Country = {
@@ -150,6 +159,7 @@ export class CreateSupplierComponent implements OnInit {
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,
+        private localeService: LocaleService,
         private historyService: HistoryService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService,
@@ -170,13 +180,34 @@ export class CreateSupplierComponent implements OnInit {
                     }
                 }
             }),
-            finalize(() => this.loading = false),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
                 return of(false);
             })
         ).subscribe();
+
+        this.addressForm.forEach((element: any) => {
+            if (element.id === 'lang') {
+                console.log(this.localeService.langs);
+                this.http.get(API_URL + '/ws/i18n/getAllLang', {headers: this.authService.headers}).pipe(
+                    tap((data: any) => {
+                        data.langs.forEach((lang: any) => {
+                            element.values.push({
+                                'id': lang[0],
+                                'label': lang[1]
+                            });
+                        });
+                    }),
+                    finalize(() => this.loading = false),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
+            }
+        });
     }
 
     onCountrySelected(country: Country) {

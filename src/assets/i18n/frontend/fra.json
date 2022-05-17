@@ -53,6 +53,7 @@
 		"address_2": "Complément d'adresse",
 		"city": "Ville",
 		"country": "Pays",
+		"document_lang": "Langue des documents",
 		"postal_code": "Code postal"
 	},
 	"AUTH": {
