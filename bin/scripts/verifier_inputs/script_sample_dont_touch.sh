@@ -45,6 +45,9 @@ then
     echo "[$name    ] [Script Open-Capture For Invoices  ] $(date +"%d-%m-%Y %T") ERROR $filename is a not valid PDF file" >> "$logFile"
     mkdir -p "$errFilepath"
     mv "$filepath" "$errFilepath"
+elif ! test -f "$filepath";
+then
+    echo "[$name    ] [Script Open-Capture For Invoices  ] $(date +"%d-%m-%Y %T") ERROR $filename doesn't exists or cannot be read" >> "$logFile"
 else
     echo "[$name    ] [Script Open-Capture For Invoices  ] $(date +"%d-%m-%Y %T") WARNING capture on $filepath already active : PID exists : $PID" >> "$logFile"
 fi
