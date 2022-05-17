@@ -3,9 +3,9 @@
 		"dependency": "Dépendances",
 		"distributed_under": "Open-Capture est un logiciel libre et open-source distribué sous",
 		"editor": "Éditeur",
-		"gnu_license": "la license GNU General Public License v3.0",
+		"gnu_license": "la licence GNU General Public License v3.0",
 		"lead_dev": "Lead developer",
-		"license": "License",
+		"license": "Licence",
 		"new_version_available": "Une nouvelle version est disponible",
 		"official_website": "Site officiel",
 		"thanks_to_developers": "Merci aux developpeurs de ces solutions"
@@ -53,6 +53,7 @@
 		"address_2": "Complément d'adresse",
 		"city": "Ville",
 		"country": "Pays",
+		"document_lang": "Langue des documents",
 		"postal_code": "Code postal"
 	},
 	"AUTH": {
@@ -105,6 +106,7 @@
 		"checkbox": "Case à cocher",
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer l'utilisateur <b>{{ user }}</b> ?",
 		"custom_exists": "Champ personnalisé déjà ajouté",
+		"date": "Date",
 		"delete_choice": "Supprimer l'option",
 		"deleted": "Supprimé",
 		"field_added": "Champ personnalisé créé avec succès",
