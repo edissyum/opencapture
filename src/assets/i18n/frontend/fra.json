@@ -149,7 +149,7 @@
 		"folder_added": "Chemise ajouté",
 		"generating_separator": "Génération du séparateur...",
 		"maximise_tree": "Maximiser l'affichage",
-		"minimise_tree": "Manimiser l'affichage",
+		"minimise_tree": "Minimiser l'affichage",
 		"no_doctype_to_show": "Aucun type de document à afficher",
 		"no_master": "(Ajouter dans la racine)",
 		"separator_choice ": "Choix de séparateur"
@@ -614,7 +614,7 @@
 		"no_document_to_show": "Aucun document à afficher",
 		"no_metadata_required": "Aucune métadonnée requise",
 		"no_result": "0 Résultat",
-		"no_selected_doctype": "(aucun type de document)",
+		"no_selected_doctype": "(Merci de typer le document)",
 		"pageRotated": "Page tournée avec",
 		"quit_without_saving": "Quitter sans enregistrer",
 		"quit_without_saving_modifications": "Voulez-vous quitter sans enregistrer les modifications ?",
