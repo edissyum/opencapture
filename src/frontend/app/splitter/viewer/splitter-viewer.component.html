@@ -168,12 +168,13 @@
                                                  (closed)="documentMetadataOpenState = false" #documentMetadata>
                                 <mat-expansion-panel-header>
                                     <mat-panel-title>
-                                        <button class="text-lg text-left hover:text-green-400"
+                                        <button class="text-lg text-left hover:text-green-400 {{document['class']}}"
                                                 [ngClass]="!document['documentTypeName'] ? 'text-red-500':''"
                                                 (click)="documentMetadata.toggle(); openDocumentTypeDialog(document);"
                                                 matTooltip="{{ 'SPLITTER.edit' | translate }}">
                                             <span class="w-full font-medium">
                                                 <i class="fa-solid fa-edit"></i>
+                                                <span *ngIf="!document['documentTypeName']" class="mx-2">{{ 'SPLITTER.no_selected_doctype' | translate }}</span>
                                                 {{ document['documentTypeName'] }}
                                             </span>
                                         </button>

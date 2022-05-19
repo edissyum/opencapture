@@ -673,23 +673,25 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (30, 'position_mask_li
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (31, 'add_position_mask', 'verifier');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (32, 'update_position_mask', 'verifier');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (33, 'history', 'general');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (34, 'document_type_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (35, 'separator_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (36, 'add_input_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (37, 'update_input_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (38, 'inputs_list_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (39, 'update_output_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (40, 'add_output_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (41, 'outputs_list_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (42, 'update_form_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (43, 'add_form_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (44, 'forms_list_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (45, 'import_suppliers', 'accounts');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (46, 'statistics', 'general');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (47, 'configurations', 'general');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (48, 'docservers', 'general');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (49, 'regex', 'general');
-ALTER SEQUENCE "privileges_id_seq" RESTART WITH 50;
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (34, 'separator_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (35, 'add_input_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (36, 'update_input_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (37, 'inputs_list_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (38, 'update_output_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (39, 'add_output_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (40, 'outputs_list_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (41, 'update_form_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (42, 'add_form_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (43, 'forms_list_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (44, 'add_document_type', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (45, 'update_document_type', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (46, 'import_suppliers', 'accounts');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (47, 'statistics', 'general');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (48, 'configurations', 'general');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (49, 'docservers', 'general');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (50, 'regex', 'general');
+
+ALTER SEQUENCE "privileges_id_seq" RESTART WITH 51;
 
 -- CRÉATION DES ROLES
 INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (1, 'superadmin', 'SuperUtilisateur', 'false');

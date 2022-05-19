@@ -321,21 +321,21 @@ export class SettingsService {
                         "id"        : "splitter_add_doc_type",
                         "label"     : this.translate.instant("SETTINGS.add_doc_type"),
                         "route"     : "/settings/splitter/documentType/new",
-                        "privilege" : "",
+                        "privilege" : "add_document_type",
                         "icon"      : "fa-solid fa-plus"
                     },
                     {
                         "id"        : "splitter_add_folder_doc_type",
                         "label"     : this.translate.instant("SETTINGS.add_doc_type_folder"),
                         "route"     : "/settings/splitter/documentType/createFolder",
-                        "privilege" : "",
+                        "privilege" : "add_document_type",
                         "icon"      : "fa-solid fa-folder-plus",
                     },
                     {
                         "id"                : "splitter_update_doc_type",
                         "label"             : this.translate.instant("SETTINGS.update_doc_type"),
                         "route"             : "/settings/splitter/documentType/update/",
-                        "privilege"         : "update_output_splitter",
+                        "privilege"         : "update_document_type",
                         "icon"              : "fa-solid fa-edit",
                         "showOnlyIfActive"  : true
                     }

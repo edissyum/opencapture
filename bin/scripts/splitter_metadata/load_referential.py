@@ -56,8 +56,8 @@ def load_referential(args):
                 metadata = args['database'].select({
                     'select': ['*'],
                     'table': ['metadata'],
-                    'where': ['external_id = %s'],
-                    'data': [external_id],
+                    'where': ['external_id = %s', 'type = %s'],
+                    'data': [external_id, 'referential'],
                 })
                 if not metadata:
                     args['database'].insert({
@@ -77,10 +77,21 @@ def load_referential(args):
                             'last_edit': datetime.now(),
                             'data': json.dumps(referential),
                         },
-                        'where': ['external_id = %s'],
-                        'data': [external_id]
+                        'where': ['external_id = %s', 'type = %s'],
+                        'data': [external_id, 'referential']
                     })
                     args['log'].info(f"Upated metadata external_id : {external_id}")
+
+                # Archive line with no demand if a new demand is added
+                args['database'].update({
+                    'table': ['metadata'],
+                    'set': {
+                        'last_edit': datetime.now(),
+                        'type': 'referential-archive',
+                    },
+                    'where': ['external_id = %s', 'type = %s'],
+                    'data': [str(referential['numero_dossier']), 'referential']
+                })
         else:
             referential['numero_demande'] = ''
             referential['type_demande'] = ''
@@ -93,6 +104,7 @@ def load_referential(args):
                     'data': json.dumps(referential),
                 }
             })
+
         args['log'].info(f"Inserted metadata external_id : {referential['numero_dossier']}")
 
     args['database'].set_sequence_value('splitter_referential_call_count', next_demand_number + 1)
