@@ -138,6 +138,7 @@ export class SettingsService {
                 "label"     : this.translate.instant("SETTINGS.list_forms"),
                 "icon"      : "fa-brands fa-wpforms",
                 "route"     : "/settings/verifier/forms",
+                "privilege" : "forms_list",
                 "actions"   : [
                     {
                         "id"        : "add_form",
@@ -161,6 +162,7 @@ export class SettingsService {
                 "label"     : this.translate.instant("FORMS.input_settings"),
                 "icon"      : "fa-solid fa-sign-in-alt",
                 "route"     : "/settings/verifier/inputs",
+                "privilege" : "inputs_list",
                 "actions"   : [
                     {
                         "id"        : "add_form",
@@ -184,6 +186,7 @@ export class SettingsService {
                 "label"     : this.translate.instant("FORMS.output_settings"),
                 "icon"      : "fa-solid fa-sign-out-alt",
                 "route"     : "/settings/verifier/outputs",
+                "privilege" : "outputs_list",
                 "actions"   : [
                     {
                         "id"        : "add_form",
@@ -207,6 +210,7 @@ export class SettingsService {
                 "label"     : this.translate.instant("SETTINGS.list_positions_mask"),
                 "icon"      : "fa-solid fa-map-marker-alt",
                 "route"     : "/settings/verifier/positions-mask",
+                "privilege" : "position_mask_list",
                 "actions"   : [
                     {
                         "id"        : "add_position_mask",
@@ -232,6 +236,7 @@ export class SettingsService {
                 "label"     : this.translate.instant("SETTINGS.list_forms"),
                 "icon"      : "fa-brands fa-wpforms",
                 "route"     : "/settings/splitter/forms",
+                "privilege" : "forms_list_splitter",
                 "actions"   : [
                     {
                         "id"        : "splitter_add_form",
@@ -255,6 +260,7 @@ export class SettingsService {
                 "label"     : this.translate.instant("FORMS.input_settings"),
                 "icon"      : "fa-solid fa-sign-in-alt",
                 "route"     : "/settings/splitter/inputs",
+                "privilege" : "inputs_list_splitter",
                 "actions"   : [
                     {
                         "id"        : "splitter_add_input",
@@ -278,55 +284,58 @@ export class SettingsService {
                 "label"     : this.translate.instant("FORMS.output_settings"),
                 "icon"      : "fa-solid fa-sign-out-alt",
                 "route"     : "/settings/splitter/outputs",
+                "privilege" : "outputs_list_splitter",
                 "actions"   : [
                     {
                         "id"        : "splitter_add_output",
                         "label"     : this.translate.instant("SETTINGS.add_output"),
                         "route"     : "/settings/splitter/outputs/new",
-                        "privilege" : "add_output",
+                        "privilege" : "add_output_splitter",
                         "icon"      : "fa-solid fa-plus"
                     },
                     {
                         "id"                : "splitter_update_output",
                         "label"             : this.translate.instant("SETTINGS.update_output"),
                         "route"             : "/settings/splitter/outputs/update/",
-                        "privilege"         : "update_output",
+                        "privilege"         : "update_output_splitter",
                         "icon"              : "fa-solid fa-edit",
                         "showOnlyIfActive"  : true
                     }
                 ]
             },
             {
-                "id"    : "separator",
-                "label" : this.translate.instant("SETTINGS.document_separator"),
-                "icon"  : "fa-solid fa-qrcode",
-                "route" : "/settings/splitter/separator",
+                "id"        : "separator",
+                "label"     : this.translate.instant("SETTINGS.document_separator"),
+                "icon"      : "fa-solid fa-qrcode",
+                "route"     : "/settings/splitter/separator",
+                "privilege" : "separator_splitter"
             },
             {
                 "id"        : "document-type",
                 "label"     : this.translate.instant("SETTINGS.document_type"),
                 "icon"      : "fa-solid fa-file",
                 "route"     : "/settings/splitter/documentType",
+                "privilege" : "document_type_splitter",
                 "actions"   : [
                     {
                         "id"        : "splitter_add_doc_type",
                         "label"     : this.translate.instant("SETTINGS.add_doc_type"),
                         "route"     : "/settings/splitter/documentType/new",
-                        "privilege" : "add_output",
+                        "privilege" : "",
                         "icon"      : "fa-solid fa-plus"
                     },
                     {
                         "id"        : "splitter_add_folder_doc_type",
                         "label"     : this.translate.instant("SETTINGS.add_doc_type_folder"),
                         "route"     : "/settings/splitter/documentType/createFolder",
-                        "privilege" : "update_output",
+                        "privilege" : "",
                         "icon"      : "fa-solid fa-folder-plus",
                     },
                     {
                         "id"                : "splitter_update_doc_type",
                         "label"             : this.translate.instant("SETTINGS.update_doc_type"),
                         "route"             : "/settings/splitter/documentType/update/",
-                        "privilege"         : "update_output",
+                        "privilege"         : "update_output_splitter",
                         "icon"              : "fa-solid fa-edit",
                         "showOnlyIfActive"  : true
                     }
