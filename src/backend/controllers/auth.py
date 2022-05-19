@@ -42,8 +42,8 @@ def encode_auth_token(user_id):
             current_app.config.get('SECRET_KEY'),
             algorithm='HS256'
         ), days_before_exp
-    except Exception as e:
-        return e
+    except Exception as _e:
+        return str(_e)
 
 
 def login(username, password, lang):
@@ -91,10 +91,10 @@ def token_required(view):
             try:
                 token = jwt.decode(str(token), current_app.config['SECRET_KEY'], algorithms=["HS256"])
             except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
-                    jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as e:
-                return jsonify({"errors": gettext("JWT_ERROR"), "message": str(e)}), 500
+                    jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
+                return jsonify({"errors": gettext("JWT_ERROR"), "message": str(_e)}), 500
 
-            user_info, error = user.get_user_by_id({
+            user_info, _ = user.get_user_by_id({
                 'select': ['users.id'],
                 'user_id': token['sub']
             })
