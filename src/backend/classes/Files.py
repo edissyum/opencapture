@@ -31,6 +31,7 @@ import subprocess
 import numpy as np
 from PIL import Image
 from PyPDF4 import utils
+from flask import current_app
 from wand.color import Color
 from wand.api import library
 from wand.image import Image as Img
@@ -326,7 +327,7 @@ class Files:
 
         if not is_number:
             for res in re.finditer(r"" + self.regex['dateRegex'] + "", text):
-                date_class = FindDate('', self.log, self.regex, self.configurations, self, ocr, '', '', '', '', '', self.docservers)
+                date_class = FindDate('', self.log, self.regex, self.configurations, self, ocr, '', '', '', '', docservers=self.docservers, languages=current_app.config['LANGUAGES'])
                 date = date_class.format_date(res.group(), (('', ''), ('', '')), True)
                 if date:
                     text = date[0]

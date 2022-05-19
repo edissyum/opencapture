@@ -3,9 +3,13 @@
         <div *ngIf="loading">
             <app-loader></app-loader>
         </div>
-        <div class="settings_header" *ngIf="this.supplier">
+        <div class="settings_header">
             <div class="settings_title text-center">
-                <h3>{{ this.serviceSettings.getTitle() }} : {{ this.supplier['name'] }}</h3>
+                <h3>{{ this.serviceSettings.getTitle() }} :
+                    <span *ngIf="this.supplier">
+                        {{ this.supplier['name'] }}
+                    </span>
+                </h3>
                 <hr class="border-green-400">
             </div>
         </div>
