@@ -312,7 +312,7 @@ export class SettingsService {
                         "id"        : "splitter_add_doc_type",
                         "label"     : this.translate.instant("SETTINGS.add_doc_type"),
                         "route"     : "/settings/splitter/documentType/new",
-                        "privilege" : "add_output",
+                        "privilege" : "add_document_type",
                         "icon"      : "fa-solid fa-plus"
                     },
                     {
@@ -326,7 +326,7 @@ export class SettingsService {
                         "id"                : "splitter_update_doc_type",
                         "label"             : this.translate.instant("SETTINGS.update_doc_type"),
                         "route"             : "/settings/splitter/documentType/update/",
-                        "privilege"         : "update_output",
+                        "privilege"         : "update_document_type",
                         "icon"              : "fa-solid fa-edit",
                         "showOnlyIfActive"  : true
                     }
