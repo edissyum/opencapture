@@ -84,6 +84,8 @@ def update_supplier(supplier_id):
         _set.update({'form_id': data['form_id']})
     if 'get_only_raw_footer' in data:
         _set.update({'get_only_raw_footer': data['get_only_raw_footer']})
+    if 'document_lang' in data:
+        _set.update({'document_lang': data['document_lang']})
 
     res = accounts.update_supplier(supplier_id, _set)
     return make_response(jsonify(res[0])), res[1]

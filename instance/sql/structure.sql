@@ -1,39 +1,39 @@
 CREATE TABLE "users"
 (
-    "id"            SERIAL UNIQUE PRIMARY KEY,
+    "id"            SERIAL      UNIQUE PRIMARY KEY,
     "username"      VARCHAR(20) UNIQUE NOT NULL,
     "firstname"     VARCHAR(255)       NOT NULL,
     "lastname"      VARCHAR(255)       NOT NULL,
     "password"      VARCHAR(255)       NOT NULL,
-    "enabled"       BOOLEAN    DEFAULT true,
-    "status"        VARCHAR(5) DEFAULT 'OK',
-    "creation_date" TIMESTAMP  DEFAULT (CURRENT_TIMESTAMP),
-    "role"          INTEGER    DEFAULT 3
+    "enabled"       BOOLEAN     DEFAULT true,
+    "status"        VARCHAR(5)  DEFAULT 'OK',
+    "creation_date" TIMESTAMP   DEFAULT (CURRENT_TIMESTAMP),
+    "role"          INTEGER     DEFAULT 3
 );
 
 CREATE TABLE "form_models"
 (
-    "id"              SERIAL UNIQUE PRIMARY KEY,
+    "id"              SERIAL        UNIQUE PRIMARY KEY,
     "label"           VARCHAR(50),
-    "default_form"    BOOLEAN    DEFAULT false,
-    "supplier_verif"  BOOLEAN    DEFAULT true,
-    "enabled"         BOOLEAN    DEFAULT true,
+    "default_form"    BOOLEAN       DEFAULT false,
+    "supplier_verif"  BOOLEAN       DEFAULT true,
+    "enabled"         BOOLEAN       DEFAULT true,
     "outputs"         TEXT[],
-    "status"          VARCHAR(5) DEFAULT 'OK',
+    "status"          VARCHAR(5)    DEFAULT 'OK',
     "module"          VARCHAR(10),
     "metadata_method" VARCHAR(50)
 );
 
 CREATE TABLE "positions_masks"
 (
-    "id"          SERIAL UNIQUE PRIMARY KEY,
+    "id"          SERIAL        UNIQUE PRIMARY KEY,
     "label"       VARCHAR(50),
-    "enabled"     BOOLEAN    DEFAULT true,
+    "enabled"     BOOLEAN       DEFAULT true,
     "supplier_id" INTEGER,
-    "positions"   JSONB      DEFAULT '{}',
-    "pages"       JSONB      DEFAULT '{}',
-    "regex"       JSONB      DEFAULT '{}',
-    "status"      VARCHAR(5) DEFAULT 'OK',
+    "positions"   JSONB         DEFAULT '{}',
+    "pages"       JSONB         DEFAULT '{}',
+    "regex"       JSONB         DEFAULT '{}',
+    "status"      VARCHAR(5)    DEFAULT 'OK',
     "filename"    VARCHAR(255),
     "width"       VARCHAR(10),
     "nb_pages"    INTEGER
@@ -41,20 +41,20 @@ CREATE TABLE "positions_masks"
 
 CREATE TABLE "form_models_field"
 (
-    "id"      SERIAL UNIQUE PRIMARY KEY,
+    "id"      SERIAL    UNIQUE PRIMARY KEY,
     "form_id" INTEGER,
-    "fields"  JSONB DEFAULT '{}'
+    "fields"  JSONB     DEFAULT '{}'
 );
 
 CREATE TABLE "outputs"
 (
-    "id"             SERIAL UNIQUE PRIMARY KEY,
+    "id"             SERIAL         UNIQUE PRIMARY KEY,
     "output_type_id" VARCHAR(255),
     "output_label"   VARCHAR(255),
     "compress_type"  VARCHAR(8),
     "module"         VARCHAR(10),
-    "status"         VARCHAR(3) DEFAULT 'OK',
-    "data"           JSONB      DEFAULT '{
+    "status"         VARCHAR(3)     DEFAULT 'OK',
+    "data"           JSONB          DEFAULT '{
         "options": {
             "auth": [],
             "parameters": []
@@ -64,11 +64,11 @@ CREATE TABLE "outputs"
 
 CREATE TABLE "outputs_types"
 (
-    "id"                SERIAL UNIQUE PRIMARY KEY,
+    "id"                SERIAL          UNIQUE PRIMARY KEY,
     "output_type_id"    VARCHAR(255),
     "output_type_label" VARCHAR(50),
     "module"            VARCHAR(10),
-    "data"              JSONB DEFAULT '{
+    "data"              JSONB           DEFAULT '{
         "options": {
             "auth": [],
             "parameters": []
@@ -78,59 +78,59 @@ CREATE TABLE "outputs_types"
 
 CREATE TABLE "inputs"
 (
-    "id"                     SERIAL UNIQUE PRIMARY KEY,
+    "id"                     SERIAL         UNIQUE PRIMARY KEY,
     "input_id"               VARCHAR(255),
     "input_label"            VARCHAR(255),
     "default_form_id"        INTEGER,
     "customer_id"            INTEGER,
     "module"                 VARCHAR(10),
-    "remove_blank_pages"     BOOLEAN    DEFAULT False,
-    "override_supplier_form" BOOLEAN    DEFAULT False,
-    "purchase_or_sale"       VARCHAR(8) DEFAULT 'purchase',
-    "status"                 VARCHAR(3) DEFAULT 'OK',
+    "remove_blank_pages"     BOOLEAN        DEFAULT False,
+    "override_supplier_form" BOOLEAN        DEFAULT False,
+    "purchase_or_sale"       VARCHAR(8)     DEFAULT 'purchase',
+    "status"                 VARCHAR(3)     DEFAULT 'OK',
     "input_folder"           TEXT,
-    "splitter_method_id"     VARCHAR(20) DEFAULT 'qr_code_OC'
+    "splitter_method_id"     VARCHAR(20)    DEFAULT 'qr_code_OC'
 );
 
 CREATE TABLE "custom_fields"
 (
-    "id"           SERIAL PRIMARY KEY,
+    "id"           SERIAL       PRIMARY KEY,
     "label_short"  VARCHAR(50),
     "metadata_key" VARCHAR(50),
     "label"        VARCHAR(50),
     "type"         VARCHAR(10),
     "module"       VARCHAR(10),
-    "settings"     JSONB      DEFAULT '{}',
-    "enabled"      BOOLEAN    default true,
-    "status"       VARCHAR(5) default 'OK'
+    "settings"     JSONB        DEFAULT '{}',
+    "enabled"      BOOLEAN      DEFAULT true,
+    "status"       VARCHAR(5)   DEFAULT 'OK'
 );
 
 CREATE TABLE "users_customers"
 (
-    "id"           SERIAL UNIQUE PRIMARY KEY,
+    "id"           SERIAL   UNIQUE PRIMARY KEY,
     "user_id"      INTEGER,
-    "customers_id" JSONB DEFAULT '{}'
+    "customers_id" JSONB    DEFAULT '{}'
 );
 
 CREATE TABLE "addresses"
 (
-    "id"            SERIAL UNIQUE PRIMARY KEY,
+    "id"            SERIAL          UNIQUE PRIMARY KEY,
     "address1"      VARCHAR(255),
     "address2"      VARCHAR(255),
     "postal_code"   VARCHAR(10),
     "city"          VARCHAR(50),
     "country"       VARCHAR(50),
-    "creation_date" TIMESTAMP DEFAULT (CURRENT_TIMESTAMP)
+    "creation_date" TIMESTAMP       DEFAULT (CURRENT_TIMESTAMP)
 );
 
 CREATE TABLE "roles"
 (
-    "id"          SERIAL UNIQUE PRIMARY KEY,
+    "id"          SERIAL        UNIQUE PRIMARY KEY,
     "label_short" VARCHAR(10),
     "label"       VARCHAR(20),
-    "status"      VARCHAR(3) DEFAULT 'OK',
-    "editable"    BOOLEAN    DEFAULT true,
-    "enabled"     BOOLEAN    DEFAULT true
+    "status"      VARCHAR(3)    DEFAULT 'OK',
+    "editable"    BOOLEAN       DEFAULT true,
+    "enabled"     BOOLEAN       DEFAULT true
 );
 
 CREATE TABLE "roles_privileges"
@@ -149,33 +149,34 @@ CREATE TABLE "privileges"
 
 CREATE TABLE "accounts_supplier"
 (
-    "id"                  SERIAL UNIQUE PRIMARY KEY,
-    "name"                VARCHAR(255) NOT NULL,
-    "vat_number"          VARCHAR(20) UNIQUE,
+    "id"                  SERIAL        UNIQUE PRIMARY KEY,
+    "name"                VARCHAR(255)  NOT NULL,
+    "vat_number"          VARCHAR(20)   UNIQUE,
     "siret"               VARCHAR(20),
     "siren"               VARCHAR(20),
     "iban"                VARCHAR(50),
     "address_id"          INTEGER,
     "form_id"             INTEGER,
-    "status"              VARCHAR(3) DEFAULT 'OK',
-    "get_only_raw_footer" BOOLEAN    DEFAULT false,
-    "skip_auto_validate"  BOOLEAN    DEFAULT false,
-    "creation_date"       TIMESTAMP  DEFAULT (CURRENT_TIMESTAMP),
-    "positions"           JSONB      DEFAULT '{}',
-    "pages"               JSONB      DEFAULT '{}'
+    "status"              VARCHAR(3)    DEFAULT 'OK',
+    "get_only_raw_footer" BOOLEAN       DEFAULT false,
+    "skip_auto_validate"  BOOLEAN       DEFAULT false,
+    "lang"                VARCHAR(10)   DEFAULT 'fra',
+    "creation_date"       TIMESTAMP     DEFAULT (CURRENT_TIMESTAMP),
+    "positions"           JSONB         DEFAULT '{}',
+    "pages"               JSONB         DEFAULT '{}'
 );
 
 CREATE TABLE "accounts_customer"
 (
-    "id"             SERIAL UNIQUE PRIMARY KEY,
+    "id"             SERIAL         UNIQUE PRIMARY KEY,
     "name"           VARCHAR(255),
-    "vat_number"     VARCHAR(20) UNIQUE,
+    "vat_number"     VARCHAR(20)    UNIQUE,
     "siret"          VARCHAR(20),
     "siren"          VARCHAR(20),
     "company_number" VARCHAR(10),
     "address_id"     INTEGER,
-    "status"         VARCHAR(3) DEFAULT 'OK',
-    "creation_date"  TIMESTAMP  DEFAULT (CURRENT_TIMESTAMP)
+    "status"         VARCHAR(3)     DEFAULT 'OK',
+    "creation_date"  TIMESTAMP      DEFAULT (CURRENT_TIMESTAMP)
 );
 
 CREATE TABLE "accounting_plan"
@@ -203,30 +204,30 @@ CREATE TABLE "journals"
 
 CREATE TABLE "invoices"
 (
-    "id"                SERIAL UNIQUE PRIMARY KEY,
+    "id"                SERIAL              UNIQUE PRIMARY KEY,
     "supplier_id"       INTEGER,
-    "customer_id"       INTEGER              DEFAULT 0,
-    "form_id"           INTEGER              DEFAULT null,
-    "purchase_or_sale"  VARCHAR(8)           DEFAULT 'purchase',
-    "filename"          VARCHAR(255)     NOT NULL,
+    "customer_id"       INTEGER             DEFAULT 0,
+    "form_id"           INTEGER             DEFAULT null,
+    "purchase_or_sale"  VARCHAR(8)          DEFAULT 'purchase',
+    "filename"          VARCHAR(255)        NOT NULL,
     "original_filename" VARCHAR(255),
-    "path"              VARCHAR(255)     NOT NULL,
-    "status"            VARCHAR(20) NOT NULL DEFAULT 'NEW',
+    "path"              VARCHAR(255)        NOT NULL,
+    "status"            VARCHAR(20)         NOT NULL DEFAULT 'NEW',
     "full_jpg_filename" VARCHAR(255),
     "img_width"         INTEGER,
-    "register_date"     TIMESTAMP            DEFAULT (CURRENT_TIMESTAMP),
-    "nb_pages"          INTEGER     NOT NULL DEFAULT 1,
-    "locked"            BOOLEAN              DEFAULT false,
+    "register_date"     TIMESTAMP           DEFAULT (CURRENT_TIMESTAMP),
+    "nb_pages"          INTEGER             NOT NULL DEFAULT 1,
+    "locked"            BOOLEAN             DEFAULT false,
     "locked_by"         VARCHAR(20),
-    "positions"         JSONB                DEFAULT '{}',
-    "pages"             JSONB                DEFAULT '{}',
-    "datas"             JSONB                DEFAULT '{}'
+    "positions"         JSONB               DEFAULT '{}',
+    "pages"             JSONB               DEFAULT '{}',
+    "datas"             JSONB               DEFAULT '{}'
 );
 
 CREATE TABLE "history"
 (
-    "id"                SERIAL UNIQUE PRIMARY KEY,
-    "history_date"      TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
+    "id"                SERIAL      UNIQUE PRIMARY KEY,
+    "history_date"      TIMESTAMP   DEFAULT (CURRENT_TIMESTAMP),
     "history_module"    VARCHAR(50),
     "history_submodule" VARCHAR(50),
     "history_desc"      VARCHAR(255),
@@ -245,23 +246,23 @@ CREATE TABLE "status"
 
 CREATE TABLE "splitter_batches"
 (
-    "id"            SERIAL UNIQUE PRIMARY KEY,
+    "id"            SERIAL          UNIQUE PRIMARY KEY,
     "file_path"     VARCHAR(255),
     "file_name"     VARCHAR(255),
     "thumbnail"     VARCHAR(255),
     "batch_folder"  VARCHAR(255),
-    "creation_date" TIMESTAMP DEFAULT (CURRENT_TIMESTAMP),
-    "status"        VARCHAR(20)   DEFAULT 'NEW',
+    "creation_date" TIMESTAMP       DEFAULT (CURRENT_TIMESTAMP),
+    "status"        VARCHAR(20)     DEFAULT 'NEW',
     "page_number"   INTEGER,
     "form_id"       INTEGER,
-    "data"          JSON DEFAULT '{}'::json
+    "data"          JSON            DEFAULT '{}'::json
 );
 
 CREATE TABLE "splitter_documents"
 (
-    "id"            SERIAL UNIQUE PRIMARY KEY,
-    "batch_id"      INTEGER NOT NULL,
-    "split_index"   INTEGER NOT NULL,
+    "id"            SERIAL      UNIQUE PRIMARY KEY,
+    "batch_id"      INTEGER     NOT NULL,
+    "split_index"   INTEGER     NOT NULL,
     "display_order" INTEGER,
     "status"        VARCHAR(10) DEFAULT 'NEW':: CHARACTER VARYING,
     "doctype_key"   VARCHAR(200),
@@ -271,31 +272,31 @@ CREATE TABLE "splitter_documents"
 
 CREATE TABLE "splitter_pages"
 (
-    "id"            SERIAL UNIQUE PRIMARY KEY,
+    "id"            SERIAL          UNIQUE PRIMARY KEY,
     "document_id"   INTEGER,
     "thumbnail"     VARCHAR(255),
     "source_page"   INTEGER,
-    "rotation"      INTEGER DEFAULT 0,
-    "status"        VARCHAR(255) DEFAULT 'NEW'
+    "rotation"      INTEGER         DEFAULT 0,
+    "status"        VARCHAR(255)    DEFAULT 'NEW'
 );
 
 create table "doctypes"
 (
-    "id"         SERIAL UNIQUE PRIMARY KEY,
-    "key"        VARCHAR(255) NOT NULL,
+    "id"         SERIAL         UNIQUE PRIMARY KEY,
+    "key"        VARCHAR(255)   NOT NULL,
     "label"      VARCHAR(255),
     "code"       VARCHAR(255),
-    "is_default" BOOLEAN    DEFAULT FALSE,
-    "status"     VARCHAR(3) DEFAULT 'OK':: CHARACTER VARYING,
+    "is_default" BOOLEAN        DEFAULT FALSE,
+    "status"     VARCHAR(3)     DEFAULT 'OK':: CHARACTER VARYING,
     "type"       VARCHAR(10),
     "form_id"    INTEGER
 );
 
 CREATE TABLE "metadata"
 (
-    "id"            SERIAL UNIQUE PRIMARY KEY,
+    "id"            SERIAL      UNIQUE PRIMARY KEY,
     "external_id"   VARCHAR(20),
-    "last_edit"     DATE DEFAULT now(),
+    "last_edit"     DATE        DEFAULT now(),
     "type"          VARCHAR(20),
     "form_id"       INTEGER,
     "data"          JSONB
@@ -303,26 +304,26 @@ CREATE TABLE "metadata"
 
 CREATE TABLE "configurations"
 (
-    "id"    SERIAL UNIQUE PRIMARY KEY,
+    "id"    SERIAL      UNIQUE PRIMARY KEY,
     "label" VARCHAR(64) UNIQUE,
-    "data"  JSONB DEFAULT '{}'
+    "data"  JSONB       DEFAULT '{}'
 );
 
 CREATE TABLE "docservers"
 (
-    "id"            SERIAL UNIQUE PRIMARY KEY,
+    "id"            SERIAL          UNIQUE PRIMARY KEY,
     "description"   VARCHAR(255),
-    "docserver_id"  VARCHAR(32) UNIQUE,
-    "path"          VARCHAR(255) UNIQUE
+    "docserver_id"  VARCHAR(32)     UNIQUE,
+    "path"          VARCHAR(255)    UNIQUE
 );
 
 CREATE TABLE "regex"
 (
-    "id"            SERIAL UNIQUE PRIMARY KEY,
+    "id"            SERIAL          UNIQUE PRIMARY KEY,
     "regex_id"      VARCHAR(20),
     "label"         VARCHAR(255),
     "content"       TEXT,
-    "lang"          VARCHAR(10) DEFAULT 'fra'
+    "lang"          VARCHAR(10)     DEFAULT 'fra'
 );
 
 CREATE SEQUENCE splitter_referential_call_count AS INTEGER;

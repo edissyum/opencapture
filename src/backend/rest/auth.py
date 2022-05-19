@@ -17,9 +17,9 @@
 
 import psycopg2
 from flask_babel import gettext
-from src.backend.import_controllers import auth
-from src.backend.import_classes import _Config, _Database, _Log
 from flask import Blueprint, request, make_response, current_app
+from src.backend.import_classes import _Config
+from src.backend.import_controllers import auth
 
 
 bp = Blueprint('auth', __name__, url_prefix='/ws/')
@@ -54,5 +54,5 @@ def check_connection():
             " password  =" + db_pwd +
             " host      =" + db_host +
             " port      =" + db_port)
-    except (psycopg2.OperationalError, psycopg2.ProgrammingError) as e:
-        return str(e).split('\n')[0]
+    except (psycopg2.OperationalError, psycopg2.ProgrammingError) as _e:
+        return str(_e).split('\n', maxsplit=1)[0]

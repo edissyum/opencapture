@@ -756,6 +756,8 @@ export class FormBuilderComponent implements OnInit {
                                             format = 'select';
                                         }else if (data.customFields[field].type === 'textarea') {
                                             format = 'char';
+                                        } else {
+                                            format = data.customFields[field].type;
                                         }
                                         this.availableFieldsParent[parent].values[this.availableFieldsParent[parent].values.length - 1]['format'] = format;
                                     }

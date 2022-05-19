@@ -32,6 +32,7 @@ import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {HistoryService} from "../../../../services/history.service";
 import {Country} from "@angular-material-extensions/select-country";
+import {LocaleService} from "../../../../services/locale.service";
 
 @Component({
     selector: 'app-update',
@@ -94,7 +95,15 @@ export class UpdateSupplierComponent implements OnInit {
             control: new FormControl(),
             required: false,
             values:[]
-        }
+        },
+        {
+            id: 'document_lang',
+            label: marker('ADDRESSES.document_lang'),
+            type: 'select',
+            control: new FormControl(),
+            required: true,
+            values: []
+        },
     ];
     addressForm: any [] = [
         {
@@ -152,6 +161,7 @@ export class UpdateSupplierComponent implements OnInit {
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,
+        private localeService: LocaleService,
         private historyService: HistoryService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService,
@@ -159,6 +169,36 @@ export class UpdateSupplierComponent implements OnInit {
 
     ngOnInit(): void {
         this.supplierId = this.route.snapshot.params['id'];
+        this.supplierForm.forEach((element: any) => {
+            if (element.id === 'document_lang') {
+                if (this.localeService.langs.length === 0) {
+                    this.http.get(API_URL + '/ws/i18n/getAllLang', {headers: this.authService.headers}).pipe(
+                        tap((data: any) => {
+                            data.langs.forEach((lang: any) => {
+                                element.control.setValue('fra');
+                                element.values.push({
+                                    'id': lang[0],
+                                    'label': lang[1]
+                                });
+                            });
+                        }),
+                        catchError((err: any) => {
+                            console.debug(err);
+                            this.notify.handleErrors(err);
+                            return of(false);
+                        })
+                    ).subscribe();
+                } else {
+                    this.localeService.langs.forEach((lang: any) => {
+                        element.control.setValue('fra');
+                        element.values.push({
+                            'id': lang[0],
+                            'label': lang[1]
+                        });
+                    });
+                }
+            }
+        });
         this.http.get(API_URL + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
             tap((forms: any) => {
                 this.http.get(API_URL + '/ws/accounts/suppliers/getById/' + this.supplierId, {headers: this.authService.headers}).pipe(

@@ -18,8 +18,7 @@
 import os
 import json
 import uuid
-import mimetypes
-from src.backend.import_classes import _Spreadsheet
+from src.backend.import_classes import _PyTesseract
 from src.backend.import_process import FindDate, FindFooter, FindInvoiceNumber, FindSupplier, FindCustom, \
     FindOrderNumber, FindDeliveryNumber, FindFooterRaw, FindQuotationNumber
 
@@ -175,6 +174,21 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 supplier[4]: supplier[3]
             })
 
+        if 'document_lang' in supplier[2] and supplier[2]['document_lang'] and \
+                configurations['locale'] != supplier[2]['document_lang']:
+            regex = {}
+            _regex = database.select({
+                'select': ['regex_id', 'content'],
+                'table': ['regex'],
+                'where': ['lang = %s'],
+                'data': [supplier[2]['document_lang']],
+            })
+
+            for _r in _regex:
+                regex[_r['regex_id']] = _r['content']
+            ocr = _PyTesseract(supplier[2]['document_lang'], log, config, docservers)
+            convert(file, files, ocr, nb_pages)
+
     # Find custom informations using mask
     custom_fields = FindCustom(ocr.header_text, log, regex, config, ocr, files, supplier, file, database, docservers).run()
     if custom_fields:
@@ -189,6 +203,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     invoice_number_class = FindInvoiceNumber(ocr, files, log, regex, config, database, supplier, file,
                                              ocr.header_text, 1, False, ocr.footer_text, docservers, configurations)
     invoice_number = invoice_number_class.run()
+    print(invoice_number)
     if not invoice_number:
         invoice_number_class.text = ocr.header_last_text
         invoice_number_class.footer_text = ocr.footer_last_text

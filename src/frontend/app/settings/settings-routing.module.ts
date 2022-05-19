@@ -218,13 +218,13 @@ const routes: Routes = [
     {
         path: 'settings/splitter/documentType/new',
         component: CreateDocTypeComponent,
-        data: {title: 'SETTINGS.document_type', privileges: ['settings', 'document_type_splitter']},
+        data: {title: 'SETTINGS.document_type', privileges: ['settings', 'add_document_type']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
         path: 'settings/splitter/documentType/createFolder',
         component: CreateFolderDocTypeComponent,
-        data: {title: 'SETTINGS.document_type', privileges: ['settings', 'document_type_splitter']},
+        data: {title: 'SETTINGS.document_type', privileges: ['settings', 'add_document_type']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
