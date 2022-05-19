@@ -41,7 +41,7 @@ def encode_auth_token(user_id):
             payload,
             current_app.config.get('SECRET_KEY'),
             algorithm='HS256'
-        ).decode('utf-8'), days_before_exp
+        ), days_before_exp
     except Exception as e:
         return e
 
