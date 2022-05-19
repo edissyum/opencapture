@@ -445,6 +445,7 @@ export class VerifierViewerComponent implements OnInit {
             'other': []
         };
         this.fields = data.fields;
+        console.log(this.fields);
         for (const category in this.fields) {
             for (const cpt in this.fields[category]) {
                 const field = this.fields[category][cpt];
@@ -483,9 +484,9 @@ export class VerifierViewerComponent implements OnInit {
                             map(option => option ? this._filter_accounting(array, option) : array)
                         );
                 }
-
                 if (this.invoice.datas[field.id]) {
                     let value = this.invoice.datas[field.id];
+                    console.log(field.id, field.format);
                     if (field.format === 'date' && field.id !== '' && field.id !== undefined && value) {
                         value = value.replaceAll('.', '/');
                         value = value.replaceAll(',', '/');

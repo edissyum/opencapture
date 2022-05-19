@@ -124,7 +124,7 @@
                                            [readonly]="invoice.status === 'END'"
                                            (focusout)="ocr($event, false); saveData($any($event.target).value, field['id'])"
                                            (dateChange)="saveData($any($event.targetElement).value, field['id'])">
-                                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                    <mat-datepicker-toggle [disabled]="invoice.status === 'END'" matSuffix [for]="picker"></mat-datepicker-toggle>
                                     <mat-datepicker #picker></mat-datepicker>
                                     <mat-error class="mt-1" *ngIf="field.control.errors">
                                         {{ getErrorMessage(field.id, category['id']) }}

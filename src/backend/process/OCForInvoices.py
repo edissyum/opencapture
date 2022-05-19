@@ -174,7 +174,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 supplier[4]: supplier[3]
             })
 
-        if configurations['locale'] != supplier[2]['document_lang']:
+        if 'document_lang' in supplier[2] and supplier[2]['document_lang'] and \
+                configurations['locale'] != supplier[2]['document_lang']:
             regex = {}
             _regex = database.select({
                 'select': ['regex_id', 'content'],

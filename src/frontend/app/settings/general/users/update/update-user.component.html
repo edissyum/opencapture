@@ -79,8 +79,13 @@
                     class="absolute left-2 top-2">
                 <i [class.fa-arrow-right]="!this.serviceSettings.getIsMenuOpen()" class="fa-solid fa-arrow-left text-2xl text-gray-900"></i>
             </button>
-            <div class="settings_title text-center" *ngIf="this.user">
-                <h3>{{ this.serviceSettings.getTitle() }} : {{ this.user['firstname'] }} {{ this.user['lastname'] }} <b>({{ this.user['username'] }})</b></h3>
+            <div class="settings_title text-center">
+                <h3>
+                    {{ this.serviceSettings.getTitle() }} :
+                    <span *ngIf="this.user">
+                        {{ this.user['firstname'] }} {{ this.user['lastname'] }} <b>({{ this.user['username'] }})</b>
+                    </span>
+                </h3>
                 <hr class="border-green-400">
             </div>
             <button mat-icon-button (click)="sidenav2.toggle();"
