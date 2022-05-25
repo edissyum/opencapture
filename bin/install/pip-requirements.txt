@@ -5,7 +5,7 @@ fpdf==1.7.2
 wand==0.6.7
 zeep==4.1.0
 pyocr==0.8.2
-PyJWT==2.3.0
+PyJWT==2.9.1
 flask==2.1.2
 qrcode==7.3.1
 pillow==9.1.0
