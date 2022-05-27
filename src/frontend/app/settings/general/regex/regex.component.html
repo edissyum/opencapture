@@ -84,7 +84,7 @@
                 <div class="absolute right-4 top-0">
                     <mat-form-field appearance="outline">
                         <mat-label>{{ 'REGEX.search_regex' | translate }}</mat-label>
-                        <input matInput type="text" (keyup)="searchRegex($event)">
+                        <input matInput type="text" [disabled]="this.loading" (keyup)="searchRegex($event)">
                     </mat-form-field>
                 </div>
                 <hr class="border-green-400">
