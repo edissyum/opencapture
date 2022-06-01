@@ -293,9 +293,27 @@ class Files:
             for child in parent[parentElement]:
                 for childElement in child:
                     clean_child = childElement.replace(parentElement + '_', '')
+                    if clean_child == 'number_of_tva':
+                        number_of_tva = child[childElement]['field']
+                        facturation_lines = Et.SubElement(element, 'lines')
+
+            previous_cpt = 0
+            for child in parent[parentElement]:
+                for childElement in child:
+                    clean_child = childElement.replace(parentElement + '_', '')
                     if clean_child not in ['noDelivery', 'noCommands']:
                         new_field = Et.SubElement(element, escape(clean_child))
                         new_field.text = child[childElement]['field']
+                        if parentElement == 'facturationInfo':
+                            if 'vat_' in clean_child.lower() or 'vat_amount_' in clean_child.lower() or 'no_taxes_' in clean_child.lower()\
+                                    or 'order_number_' in clean_child.lower() or 'invoice_number_' in clean_child.lower() or 'delivery_number_' in clean_child.lower():
+                                tmp_cpt = re.findall(r'\d', clean_child)[0]
+                                if int(tmp_cpt) > int(previous_cpt):
+                                    previous_cpt = tmp_cpt
+                                    line_lement = Et.SubElement(facturation_lines, 'line')
+                                new_field = Et.SubElement(line_lement, escape(clean_child))
+                                new_field.text = child[childElement]['field']
+
                         if clean_child == 'vat_1':
                             new_field = Et.SubElement(element, escape('vat_1_calculated'))
                             new_field.text = str(vat_1_calculated)
@@ -327,11 +345,12 @@ class Files:
                                         db.conn.commit()
                                     new_field = Et.SubElement(element, escape(clean_child + '_position'))
                                     new_field.text = clean_child_position
-
         xml_root = minidom.parseString(Et.tostring(root, encoding="unicode")).toprettyxml()
         file = open(filename, 'w')
         file.write(xml_root)
         file.close()
+        print(filename)
+        exit()
 
         if db:
             res = db.select({
