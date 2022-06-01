@@ -294,25 +294,29 @@ class Files:
                 for childElement in child:
                     clean_child = childElement.replace(parentElement + '_', '')
                     if clean_child == 'number_of_tva':
-                        number_of_tva = child[childElement]['field']
                         facturation_lines = Et.SubElement(element, 'lines')
+                        line_element = Et.SubElement(facturation_lines, 'line')
 
-            previous_cpt = 0
+            previous_cpt = 1
             for child in parent[parentElement]:
                 for childElement in child:
                     clean_child = childElement.replace(parentElement + '_', '')
                     if clean_child not in ['noDelivery', 'noCommands']:
-                        new_field = Et.SubElement(element, escape(clean_child))
-                        new_field.text = child[childElement]['field']
-                        if parentElement == 'facturationInfo':
-                            if 'vat_' in clean_child.lower() or 'vat_amount_' in clean_child.lower() or 'no_taxes_' in clean_child.lower()\
-                                    or 'order_number_' in clean_child.lower() or 'invoice_number_' in clean_child.lower() or 'delivery_number_' in clean_child.lower():
-                                tmp_cpt = re.findall(r'\d', clean_child)[0]
-                                if int(tmp_cpt) > int(previous_cpt):
-                                    previous_cpt = tmp_cpt
-                                    line_lement = Et.SubElement(facturation_lines, 'line')
-                                new_field = Et.SubElement(line_lement, escape(clean_child))
-                                new_field.text = child[childElement]['field']
+                        field_alreay_write = False
+                        if ('vat_' in clean_child.lower() and clean_child.lower() != 'vat_number') or 'vat_amount_' in clean_child.lower() or 'no_taxes_' in clean_child.lower() \
+                                or 'tva_amount_' in clean_child.lower() \
+                                or 'order_number_' in clean_child.lower() or 'invoice_number_' in clean_child.lower() or 'delivery_number_' in clean_child.lower() or 'ttc_' in clean_child.lower():
+                            tmp_cpt = re.findall(r'\d', clean_child)[0]
+                            if int(tmp_cpt) > int(previous_cpt):
+                                previous_cpt = tmp_cpt
+                                line_element = Et.SubElement(facturation_lines, 'line')
+                            new_field = Et.SubElement(line_element, escape(clean_child))
+                            new_field.text = child[childElement]['field']
+                            field_alreay_write = True
+
+                        if not field_alreay_write:
+                            new_field = Et.SubElement(element, escape(clean_child))
+                            new_field.text = child[childElement]['field']
 
                         if clean_child == 'vat_1':
                             new_field = Et.SubElement(element, escape('vat_1_calculated'))
@@ -349,7 +353,7 @@ class Files:
         file = open(filename, 'w')
         file.write(xml_root)
         file.close()
-        print(filename)
+        print('b', filename)
         exit()
 
         if db:
