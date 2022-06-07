@@ -690,8 +690,8 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (47, 'statistics', 'ge
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (48, 'configurations', 'general');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (49, 'docservers', 'general');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (50, 'regex', 'general');
-
-ALTER SEQUENCE "privileges_id_seq" RESTART WITH 51;
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (51, 'document_type_splitter', 'splitter');
+ALTER SEQUENCE "privileges_id_seq" RESTART WITH 52;
 
 -- CRÉATION DES ROLES
 INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (1, 'superadmin', 'SuperUtilisateur', 'false');
@@ -701,8 +701,8 @@ ALTER SEQUENCE "roles_id_seq" RESTART WITH 4;
 
 -- AJOUT DES PRIVILEGES LIÉS AUX ROLES
 INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (1, '{"data" : "[''*'']"}');
-INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (2, '{"data" : "[1, 2, 3, 4, 5, 6, 7, 8, 9]"}');
-INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (3, '{"data" : "[2, 3, 6, 7, 8, 9]"}');
+INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (2, '{"data" : "[1, 2, 3, 4, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 51]"}');
+INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (3, '{"data" : "[1, 2, 4, 16, 17, 18, 29, 33, 47]"}');
 
 -- CRÉATION DE L'UTILISATEUR superadmin
 INSERT INTO "users" ("username","firstname", "lastname","password", "role") VALUES ('admin', 'Super', 'ADMIN', 'pbkdf2:sha256:150000$7c8waI7f$c0891ac8e18990db0786d4a49aea8bf7c1ad82796dccd8ae35c12ace7d8ee403', 1);

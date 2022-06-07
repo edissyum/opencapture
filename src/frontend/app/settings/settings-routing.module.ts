@@ -212,7 +212,7 @@ const routes: Routes = [
     {
         path: 'settings/splitter/documentType',
         component: ListDocTypeComponent,
-        data: {title: 'SETTINGS.document_type', privileges: ['settings', 'update_document_type']},
+        data: {title: 'SETTINGS.document_type', privileges: ['settings', 'document_type_splitter']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
