@@ -194,7 +194,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 this.loadDocuments();
                 this.loadDefaultDocType();
                 this.loadOutputsData();
-                this.loadReferential();
+                this.loadReferentialOnView();
             }),
             catchError((err: any) => {
                 this.loading = false;
@@ -496,7 +496,23 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         }
     }
 
-    loadReferential(): void {
+    loadReferentialOnView(): void {
+        this.http.get(API_URL + `/ws/splitter/metadataMethods/${this.currentBatch.formId}`, {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                if(data.metadataMethods[0].callOnSplitterView){
+                    this.loadReferential(false);
+                }
+            }),
+            catchError((err: any) => {
+                this.loading = false;
+                this.notify.handleErrors(err);
+                console.debug(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    loadReferential(refreshAfterLoad: boolean): void {
         this.metadata = [];
         this.http.get(API_URL + `/ws/splitter/loadReferential/${this.currentBatch.formId}`, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -512,6 +528,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                         this.fillData((autocompletionValue[0]));
                         this.setValuesFromSavedMetadata(autocompletionValue[0]);
                     }
+                }
+                if(refreshAfterLoad){
+                    this.loadSelectedBatch();
                 }
                 this.notify.success(this.translate.instant('SPLITTER.referential_updated'));
             }),

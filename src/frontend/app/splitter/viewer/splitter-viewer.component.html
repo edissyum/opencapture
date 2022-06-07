@@ -138,7 +138,7 @@
                             </div>
                         </div>
                     </form>
-                    <button mat-button (click)="loadReferential(); $event.stopPropagation();"
+                    <button mat-button (click)="loadReferential(true); $event.stopPropagation();"
                             class="float-right mb-2"
                             title="{{ 'SPLITTER.loadReferential' | translate }}">
                         <i class="fa-solid fa-sync fa-2x"></i>
