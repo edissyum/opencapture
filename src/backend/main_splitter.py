@@ -27,7 +27,7 @@ from src.backend.import_classes import _Files, _Config, _Splitter, _SeparatorQR,
 OCforInvoices = Kuyruk()
 
 
-# @OCforInvoices.task(queue='splitter')
+@OCforInvoices.task(queue='splitter')
 def launch(args):
     start = time.time()
 
