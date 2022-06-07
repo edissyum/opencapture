@@ -80,7 +80,17 @@ class FindSupplier:
 
                 if corrected_line:
                     content = corrected_line
-                corrected_line = re.sub(pattern, item, content)
+                if column != 'email':
+                    corrected_line = re.sub(pattern, item, content)
+                else:
+                    corrected_line = content
+
+            if column == 'email':
+                corrected_line = corrected_line.split(':')[1] if len(corrected_line.split(':')) >= 2 else corrected_line
+                for _data in re.finditer(r"" + regex + "", corrected_line.replace(' ', '').replace(',', '').replace('(', '').replace(')', '')):
+                    supplier = self.search_suplier(column, _data.group().replace(' ', ''))
+                    if supplier:
+                        return supplier, line
 
             for _data in re.finditer(r"" + regex + "", corrected_line.replace('.', '').replace(',', '').replace('(', '').replace(')', '').replace('-', '')):
                 supplier = self.search_suplier(column, _data.group().replace(' ', ''))
@@ -148,6 +158,18 @@ class FindSupplier:
             else:
                 position = self.Files.return_position_with_ratio(line, target)
             data = [supplier[0]['vat_number'], position, supplier[0], self.current_page, 'iban']
+            return data
+
+        supplier = self.process(self.regex['emailRegex'], text_as_string, 'email')
+        if supplier:
+            self.regenerate_ocr()
+            self.log.info('Supplier found : ' + supplier[0]['name'] + ' using EMAIL : ' + supplier[0]['email'])
+            line = supplier[1]
+            if text_as_string:
+                position = (('', ''), ('', ''))
+            else:
+                position = self.Files.return_position_with_ratio(line, target)
+            data = [supplier[0]['vat_number'], position, supplier[0], self.current_page, 'email']
             return data
         else:
             if not retry:

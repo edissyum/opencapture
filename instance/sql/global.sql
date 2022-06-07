@@ -15,6 +15,7 @@ INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('vatRateReg
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('vatAmountRegex', 'fra', 'Montant TVA', '((MONTANT|TOTAL)\s*TVA(\s*[0-9.,]*\s*%)?|TVA\s*[0-9.,]*\s*%|TVA\s*[0-9.,]*\s*%?\s*SUR\s*[0-9.,]*\s*[A-Z\s'']*|%\s*TVA)\s*(€|EUROS|EUR)?.*');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('vatRateList', 'fra', 'Liste des taux de TVA', '[20, 19.6, 10, 5.5, 2.1]');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('formatDate', 'fra', 'Format final de la date', '%d/%m/%Y');
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('emailRegex', 'fra', 'Adresse email', '([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+');
 
 -- CRÉATION DES REGEX
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('dateRegex', 'eng', 'Date', '((1[0-2]|0?[1-9])|\d{1}\w{2})\s?([JFMASONDjfmasond][a-zA-Z_À-ÿ\.,-]{2,9}|[/,-\.](3[01]|[12][0-9]|0?[1-9])[/,-\.])\s?((1|2|3){1}\d{1,3}|(1|2|3))');
@@ -33,3 +34,4 @@ INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('vatRateReg
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('vatAmountRegex', 'eng', 'VAT amount', '');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('vatRateList', 'eng', 'VAT rate list', '');
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('formatDate', 'eng', 'Final date format', '%m-%d-%Y');
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('emailRegex', 'eng', 'Adresse email', '([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+');

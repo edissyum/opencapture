@@ -240,6 +240,7 @@ def create_supplier(data):
         'siret': data['siret'] if 'siret' in data else None,
         'siren': data['siren'] if 'siren' in data else None,
         'iban': data['iban'] if 'iban' in data else None,
+        'email': data['email'] if 'email' in data else None,
         'vat_number': data['vat_number'] if 'vat_number' in data else None,
         'form_id': data['form_id'] if 'form_id' in data else None,
         'address_id': data['address_id'],

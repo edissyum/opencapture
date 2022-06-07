@@ -22,7 +22,7 @@ from ..functions import search_by_positions, search_custom_positions
 
 
 class FindFooterRaw:
-    def __init__(self, ocr, log, regex, config, files, database, supplier, file, text, typo, docservers, target='footer', nb_pages=False):
+    def __init__(self, ocr, log, regex, config, files, database, supplier, file, text, docservers, target='footer', nb_pages=False):
         self.date = ''
         self.Ocr = ocr
         self.text = text
@@ -38,7 +38,6 @@ class FindFooterRaw:
         self.totalTTC = {}
         self.vatRate = {}
         self.vatAmount = {}
-        self.typo = typo
         self.rerun = False
         self.rerun_as_text = False
         self.splitted = False
