@@ -20,14 +20,14 @@ import os
 import re
 import uuid
 import shutil
-import PyPDF4
+import PyPDF2
+import base64
+import qrcode
 import pdf2image
 import subprocess
-import xml.etree.ElementTree as Et
-from fpdf import Template
 from io import BytesIO
-import qrcode
-import base64
+from fpdf import Template
+import xml.etree.ElementTree as Et
 
 
 class SeparatorQR:
@@ -81,8 +81,8 @@ class SeparatorQR:
                     pass
 
         if blank_page_exists:
-            infile = PyPDF4.PdfFileReader(file)
-            output = PyPDF4.PdfFileWriter()
+            infile = PyPDF2.PdfFileReader(file)
+            output = PyPDF2.PdfFileWriter()
             for i in self.sorted_files(pages_to_keep):
                 _page = infile.getPage(int(i) - 1)
                 output.addPage(_page)
@@ -95,14 +95,14 @@ class SeparatorQR:
         path = os.path.dirname(file)
         file_without_extention = os.path.splitext(os.path.basename(file))[0]
 
-        pdf = PyPDF4.PdfFileReader(open(file, 'rb'), strict=False)
+        pdf = PyPDF2.PdfFileReader(open(file, 'rb'), strict=False)
         nb_pages = pdf.getNumPages()
 
         array_of_files = []
         cpt = 1
         for i in range(nb_pages):
             if i % 2 == 0:
-                output = PyPDF4.PdfFileWriter()
+                output = PyPDF2.PdfFileWriter()
                 output.addPage(pdf.getPage(i))
                 if i + 1 < nb_pages:
                     output.addPage(pdf.getPage(i + 1))
@@ -118,7 +118,7 @@ class SeparatorQR:
         self.log.info('Start page separation using QR CODE')
         self.pages = []
         try:
-            pdf = PyPDF4.PdfFileReader(open(file, 'rb'))
+            pdf = PyPDF2.PdfFileReader(open(file, 'rb'))
             self.nb_pages = pdf.getNumPages()
             self.get_xml_qr_code(file)
 
@@ -235,8 +235,8 @@ class SeparatorQR:
 
     @staticmethod
     def split_pdf(input_path, output_path, pages):
-        input_pdf = PyPDF4.PdfFileReader(open(input_path, "rb"))
-        output_pdf = PyPDF4.PdfFileWriter()
+        input_pdf = PyPDF2.PdfFileReader(open(input_path, "rb"))
+        output_pdf = PyPDF2.PdfFileWriter()
 
         for page in pages:
             output_pdf.addPage(input_pdf.getPage(page - 1))

@@ -21,7 +21,7 @@ import os.path
 import shutil
 import datetime
 
-import PyPDF4
+import PyPDF2
 import pandas as pd
 from flask import current_app
 from flask_babel import gettext
@@ -662,8 +662,8 @@ def merge_batches(parent_id, batches):
     parent_max_split_index = splitter.get_documents_max_split_index({'id': parent_id})[0][0]['split_index']
     parent_max_source_page = splitter.get_max_source_page({'id': parent_document_id})[0][0]['source_page']
 
-    parent_pdf = PyPDF4.PdfFileReader(parent_filename)
-    merged_pdf = PyPDF4.PdfFileWriter()
+    parent_pdf = PyPDF2.PdfFileReader(parent_filename)
+    merged_pdf = PyPDF2.PdfFileWriter()
     for page in range(parent_pdf.numPages):
         merged_pdf.addPage(parent_pdf.getPage(page))
 
@@ -672,7 +672,7 @@ def merge_batches(parent_id, batches):
         batch_info = splitter.get_batch_by_id({'id': batch})[0]
         parent_batch_pages += batch_info['page_number']
         batches_info.append(batch_info)
-        pdf = PyPDF4.PdfFileReader(_docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch_info['file_path'])
+        pdf = PyPDF2.PdfFileReader(_docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch_info['file_path'])
         for page in range(pdf.numPages):
             merged_pdf.addPage(pdf.getPage(page))
 
