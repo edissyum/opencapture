@@ -79,9 +79,10 @@
                         <i class="block fa-solid fa-check fa-3x"></i>
                         <span class="block">{{ 'SPLITTER.no_metadata_required' | translate }}</span>
                     </div>
-                    <form [formGroup]="batchForm" class="mx-8 grid grid-cols-3 gap-x-4">
-                        <div *ngFor="let input of fieldsCategories['batch_metadata']">
-                            <div *ngIf="input.type === 'text' && inputMode === 'Auto' && input.metadata_key">
+                    <form [formGroup]="batchForm" class="mx-8">
+                        <div *ngFor="let input of fieldsCategories['batch_metadata']" class="flex align-middle">
+                            <div *ngIf="input.type === 'text' && inputMode === 'Auto' && input.metadata_key"
+                                 [ngClass]="input.class">
                                 <mat-form-field class="w-full">
                                     <mat-label>
                                         <span [innerHTML]="getPlaceholderFromSearchMask(input.searchMask, input.label)"></span>
@@ -108,7 +109,7 @@
                                     </mat-select>
                                 </mat-form-field>
                             </div>
-                            <div *ngIf="input.type === 'textarea'">
+                            <div *ngIf="input.type === 'textarea'" [ngClass]="input.class">
                                 <mat-form-field class="w-full">
                                     <mat-label>{{input.label}}</mat-label>
                                     <textarea matInput formControlName="{{input.label_short}}"
@@ -121,7 +122,7 @@
                                     <input matInput formControlName="{{input.label_short}}">
                                 </mat-form-field>
                             </div>
-                            <div *ngIf="input.type === 'select'">
+                            <div *ngIf="input.type === 'select'" [ngClass]="input.class">
                                 <mat-form-field class="w-full">
                                     <mat-label>{{input.label}}</mat-label>
                                     <mat-select [formControlName]="input.label_short"
@@ -132,12 +133,12 @@
                                     </mat-select>
                                 </mat-form-field>
                             </div>
-                            <div *ngIf="input.type === 'checkbox'" class="flex justify-center inline-block my-4">
+                            <div *ngIf="input.type === 'checkbox'" class="flex justify-center inline-block my-4" [ngClass]="input.class">
                                 <mat-checkbox formControlName="{{input.label_short}}">{{input.label}}</mat-checkbox>
                             </div>
                         </div>
                     </form>
-                    <button mat-button (click)="loadReferential(); $event.stopPropagation();"
+                    <button mat-button (click)="loadReferential(true); $event.stopPropagation();"
                             class="float-right mb-2"
                             title="{{ 'SPLITTER.loadReferential' | translate }}">
                         <i class="fa-solid fa-sync fa-2x"></i>
@@ -194,14 +195,15 @@
                                         </span>
                                     </div>
                                 </div>
-                                <form [formGroup]="document.form" class="mx-6 mt-4 grid grid-cols-5 gap-4">
+                                <form [formGroup]="document.form" class="mx-6 mt-4">
                                     <div *ngFor="let input of fieldsCategories['document_metadata']">
-                                        <div *ngIf="input.type === 'text' && inputMode === 'Auto' && input.metadata_key">
+                                        <div *ngIf="input.type === 'text' && inputMode === 'Auto' && input.metadata_key"
+                                             [ngClass]="input.class">
                                             <mat-form-field class="w-full">
                                                 <mat-label>
-                                                    {{input.label}}
+                                                    <span [innerHTML]="getPlaceholderFromSearchMask(input.searchMask, input.label)"></span>
                                                 </mat-label>
-                                                <mat-select [formControlName]="input.label_short">
+                                                <mat-select [formControlName]="input.label_short" class="mat-search">
                                                     <mat-option *ngIf="input.metadata_key">
                                                         <ngx-mat-select-search
                                                                 [formControlName]="'search_' + input.label_short"
@@ -211,27 +213,46 @@
                                                         </ngx-mat-select-search>
                                                     </mat-option>
                                                     <mat-option *ngFor="let metadata of filteredServerSideMetadata | async"
-                                                                [value]="metadata['id']"
+                                                                [value]="metadata.metadataId"
                                                                 (click)="fillData(metadata)">
-                                                        <span>{{metadata[input.label_short]}}</span>
+                                            <span *ngIf="metadata.metadataId !== batchMetadataValues.metadataId"
+                                                  [innerHTML]="getPlaceholderFromResultMask(input.resultMask, metadata)">
+                                            </span>
+                                                        <span *ngIf="metadata.metadataId === batchMetadataValues.metadataId">
+                                                {{ metadata[input.label_short] }}
+                                            </span>
                                                     </mat-option>
                                                 </mat-select>
                                             </mat-form-field>
                                         </div>
-                                        <div *ngIf="input.type === 'textarea'">
+                                        <div *ngIf="input.type === 'textarea'" [ngClass]="input.class">
                                             <mat-form-field class="w-full">
                                                 <mat-label>{{input.label}}</mat-label>
                                                 <textarea matInput formControlName="{{input.label_short}}"
-                                                          cdkTextareaAutosize
-                                                          cdkAutosizeMinRows="1"
-                                                          cdkAutosizeMaxRows="5"></textarea>
+                                                          (ngModelChange)="setValueChange(input.label_short, $event)"></textarea>
                                             </mat-form-field>
                                         </div>
-                                        <div *ngIf="input.type === 'text' && (!input.metadata_key || inputMode === 'Manual')">
+                                        <div *ngIf="input.type === 'text' && (!input.metadata_key || inputMode === 'Manual')"
+                                             [ngClass]="input.class">
                                             <mat-form-field class="w-full">
                                                 <mat-label>{{input.label}}</mat-label>
                                                 <input matInput formControlName="{{input.label_short}}">
                                             </mat-form-field>
+                                        </div>
+                                        <div *ngIf="input.type === 'select'" [ngClass]="input.class">
+                                            <mat-form-field class="w-full">
+                                                <mat-label>{{input.label}}</mat-label>
+                                                <mat-select [formControlName]="input.label_short"
+                                                            (selectionChange)="setValueChange(input.label_short, $event.value)">
+                                                    <mat-option *ngFor="let option of input.settings.options" [value]="option.id">
+                                                        {{option.label}}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                        <div *ngIf="input.type === 'checkbox'" class="flex justify-center inline-block my-4"
+                                             [ngClass]="input.class">
+                                            <mat-checkbox formControlName="{{input.label_short}}">{{input.label}}</mat-checkbox>
                                         </div>
                                     </div>
                                 </form>
