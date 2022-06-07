@@ -84,7 +84,7 @@
                 <div class="absolute right-4 top-0">
                     <mat-form-field appearance="outline">
                         <mat-label>{{ 'DOCSERVERS.search_docserver' | translate }}</mat-label>
-                        <input matInput type="text" (keyup)="searchDocservers($event)">
+                        <input matInput type="text" [disabled]="this.loading" (keyup)="searchDocservers($event)">
                     </mat-form-field>
                 </div>
                 <hr class="border-green-400">

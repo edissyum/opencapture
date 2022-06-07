@@ -4,8 +4,12 @@
             <app-loader></app-loader>
         </div>
         <div class="settings_header">
-            <div class="settings_title text-center" *ngIf="this.customer">
-                <h3>{{ this.serviceSettings.getTitle() }} : {{ this.customer['name'] }}</h3>
+            <div class="settings_title text-center">
+                <h3>{{ this.serviceSettings.getTitle() }} :
+                    <span *ngIf="this.customer">
+                        {{ this.customer['name'] }}
+                    </span>
+                </h3>
                 <hr class="border-green-400">
             </div>
         </div>

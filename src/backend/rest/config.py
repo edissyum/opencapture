@@ -83,7 +83,7 @@ def get_regex():
 
     if 'search' in request.args and request.args['search']:
         args['where'].append(
-            "LOWER(id) LIKE '%%" + request.args['search'].lower() + "%%' OR "
+            "LOWER(regex_id) LIKE '%%" + request.args['search'].lower() + "%%' OR "
             "LOWER(label) LIKE '%%" + request.args['search'].lower() + "%%' "
         )
     res = config.retrieve_regex(args)
