@@ -5,7 +5,7 @@ fpdf==1.7.2
 wand==0.6.7
 zeep==4.1.0
 pyocr==0.8.2
-PyJWT==2.3.0
+PyJWT==2.4.0
 flask==2.1.2
 qrcode==7.3.1
 pillow==9.1.0
@@ -18,7 +18,7 @@ cmislib3==1.0.8
 requests==2.27.1
 pdf2image==1.16.0
 gitpython==3.1.27
-tensorflow==2.8.0
+tensorflow==2.9.1
 xlsxwriter==3.0.3
 pytesseract==0.3.9
 fs-watcher==1.0.11

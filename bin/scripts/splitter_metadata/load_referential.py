@@ -32,7 +32,7 @@ def load_referential(args):
         'type_referentiel': args['method_data']['referentialMode']
     }
 
-    r = requests.get(url=args['method_data']['ws_url'], params=params, auth=HTTPBasicAuth(args['method_data']['user'],
+    r = requests.get(url=args['method_data']['wsUrl'], params=params, auth=HTTPBasicAuth(args['method_data']['user'],
                                                                                        args['method_data']['password']),
                      verify=False)
     data = r.json()

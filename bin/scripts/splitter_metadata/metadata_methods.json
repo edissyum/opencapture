@@ -1,20 +1,33 @@
 {
   "methods": [
     {
-      "id"    : "metadata_default",
-      "label" : "Métadonnées par défault",
-      "script": "metadata_default.py",
-      "method": "load_referential"
+      "id"                  : "metadata_default",
+      "label"               : "Métadonnées par défault",
+      "script"              : "metadata_default.py",
+      "method"              : "load_referential",
+      "callOnSplitterView"  : true
     },
     {
-      "id"              : "alfresco_referential",
-      "label"           : "Référentiel depuis Alfresco",
-      "script"          : "load_referential.py",
-      "method"          : "load_referential",
-      "ws_url"          : "http://localhost:3000/alfresco/s/org/cd46/pmi/getReferentiel",
-      "user"            : "user",
-      "password"        : "user",
-      "referentialMode" : 1
+      "id"                  : "mem_entities",
+      "label"               : "Entités depuis MEM Courrier",
+      "script"              : "load_entities.py",
+      "method"              : "load_entities",
+      "wsUrl"               : "http://localhost/maarch_courrier/maarch/rest/entities",
+      "user"                : "",
+      "password"            : "",
+      "formId"              : 1,
+      "callOnSplitterView"  : true
+    },
+    {
+      "id"                  : "alfresco_referential",
+      "label"               : "Référentiel depuis Alfresco",
+      "script"              : "load_referential.py",
+      "method"              : "load_referential",
+      "wsUrl"               : "http://localhost/alfresco/s/org/cd46/pmi/getReferentiel",
+      "user"                : "",
+      "password"            : "",
+      "referentialMode"     : 1,
+      "callOnSplitterView"  : true
     }
   ]
 }
