@@ -4,7 +4,7 @@
 
 <div class="search-input w-full pl-4 pt-4">
     <mat-form-field class="w-60">
-        <mat-label>{{ 'SPLITTER.search' | translate }}</mat-label>
+        <mat-label>{{ 'SPLITTER.search_folder' | translate }}</mat-label>
         <input matInput [(ngModel)]="searchText" (input)="filterChanged()">
     </mat-form-field>
     <button class="text-gray-400 ml-4 mx-2 my-4 hover:text-green-400 hover:cursor-pointer" (click)="treeControl.collapseAll()"

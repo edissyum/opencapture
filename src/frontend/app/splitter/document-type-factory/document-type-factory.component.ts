@@ -244,9 +244,9 @@ export class DocumentTypeFactoryComponent implements OnInit {
             this.isExpandable, this.getChildren);
         this.treeControl    = new FlatTreeControl<TreeItemFlatNode>(this.getLevel, this.isExpandable);
         this.dataSource     = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
-
         this.treeDataObj.dataChange.subscribe(data => {
             this.dataSource.data = data;
+            this.treeControl.expandAll();
         });
         this.selectFormControl.valueChanges.subscribe(formId => {
             this.localeStorageService.save('doctypeFormId', formId);
