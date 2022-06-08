@@ -309,10 +309,19 @@ class Splitter:
             return methods['methods']
 
     @staticmethod
-    def get_metadata_methods(docservers):
+    def get_metadata_methods(docservers, method_id):
+        res_methods = []
         with open(docservers['SPLITTER_METADATA_PATH'] + '/metadata_methods.json', encoding="UTF-8") as methods_json:
             methods = json.load(methods_json)
-            return methods['methods']
+            for method in methods['methods']:
+                res_methods.append({
+                    'id': method['id'],
+                    'label': method['label'],
+                    'callOnSplitterView': method['callOnSplitterView'],
+                })
+            if method_id:
+                res_methods = [method for method in res_methods if method['id'] == method_id]
+            return res_methods
 
     @staticmethod
     def import_method_from_script(script_path, script_name, method):

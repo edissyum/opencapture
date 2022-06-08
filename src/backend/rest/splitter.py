@@ -20,7 +20,7 @@ import json
 from flask import Blueprint, make_response, jsonify, request
 from flask_babel import gettext
 from src.backend.import_controllers import auth
-from src.backend.import_controllers import splitter
+from src.backend.import_controllers import splitter, forms
 
 bp = Blueprint('splitter', __name__, url_prefix='/ws/')
 
@@ -130,9 +130,14 @@ def get_split_methods():
 
 
 @bp.route('splitter/metadataMethods', methods=['GET'])
+@bp.route('splitter/metadataMethods/<int:form_id>', methods=['GET'])
 @auth.token_required
-def get_metadata_methods():
-    split_methods, status = splitter.get_metadata_methods()
+def get_metadata_methods(form_id=False):
+    if form_id:
+        form_infos = forms.get_form_by_id(form_id)
+        split_methods, status = splitter.get_metadata_methods(form_infos[0]['metadata_method'])
+    else:
+        split_methods, status = splitter.get_metadata_methods()
     response = {
         'metadataMethods': split_methods
     }

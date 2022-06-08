@@ -56,22 +56,24 @@ def launch_referential_update(form_data):
     _docservers = _vars[9]
 
     available_methods = _docservers['SPLITTER_METADATA_PATH'] + "/metadata_methods.json"
+    call_on_splitter_view = False
     try:
         with open(available_methods, encoding='UTF-8') as json_file:
             available_methods = json.load(json_file)
-            for available_method in available_methods['methods']:
-                if available_method['id'] == form_data['metadata_method']:
+            for method in available_methods['methods']:
+                if method['id'] == form_data['metadata_method']:
+                    call_on_splitter_view = method['callOnSplitterView']
                     args = {
                         'log': _log,
                         'database': _db,
                         'config': _conf,
                         'docservers': _docservers,
                         'form_id': form_data['form_id'],
-                        'method_data': available_method
+                        'method_data': method
                     }
                     metadata_load = _Splitter.import_method_from_script(_docservers['SPLITTER_METADATA_PATH'],
-                                                                        available_method['script'],
-                                                                        available_method['method'])
+                                                                        method['script'],
+                                                                        method['method'])
                     metadata_load(args)
     except Exception as e:
         response = {
@@ -80,7 +82,7 @@ def launch_referential_update(form_data):
             "message": str(e)
         }
         return response, 500
-    return {'OK': True}, 200
+    return {'OK': True, 'callOnSplitterView': call_on_splitter_view}, 200
 
 
 def retrieve_referential(form_id):
@@ -623,10 +625,10 @@ def get_split_methods():
     return split_methods, 401
 
 
-def get_metadata_methods():
+def get_metadata_methods(form_method=False):
     _vars = create_classes_from_current_config()
     _docservers = _vars[9]
-    metadata_methods = _Splitter.get_metadata_methods(_docservers)
+    metadata_methods = _Splitter.get_metadata_methods(_docservers, form_method)
     if len(metadata_methods) > 0:
         return metadata_methods, 200
     return metadata_methods, 401
