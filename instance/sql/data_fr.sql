@@ -139,11 +139,11 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
             {
                 "id": "vatNumberContactCustom",
                 "type": "text",
-                "label": "Identifiant du champ personnalisé de contact où stocké le numéro de TVA + SIRET",
+                "label": "Identifiant du champ personnalisé de contact où stocker le numéro de TVA + SIRET",
                 "required": "true",
                 "webservice": "getContactsCustomFieldsFromMaarch",
                 "placeholder": "Identifiant Open-Capture",
-                "hint": ""
+                "hint": "Identifiant du champ personnalisé de contact où stocker le numéro de TVA + SIRET"
             }
         ],
         "parameters": [
