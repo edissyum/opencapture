@@ -312,7 +312,7 @@ class Files:
             text = text.replace(',', '.')
             splitted_number = text.split('.')
             if len(splitted_number) > 1:
-                last_index = splitted_number[len(splitted_number) - 1]
+                last_index = splitted_number[len(splitted_number) - 1].replace('%', '')
                 if len(last_index) > 2:
                     text = text.replace('.', '')
                     is_number = True
