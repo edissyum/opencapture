@@ -195,13 +195,15 @@ export class SplitterListComponent implements OnInit {
     }
 
     mergeAllBatches(parentId: number) {
-        const checkboxList = document.getElementsByClassName('checkBox_list:checked');
+        const checkboxList = document.getElementsByClassName('checkBox_list');
         const listOfBatchToMerge: any[] = [];
         const listOfBatchFormId: any[] = [];
         Array.from(checkboxList).forEach((element: any) => {
-            const batchId = element.id.split('_')[0];
-            if (batchId !== parentId.toString())
-                listOfBatchToMerge.push(batchId);
+            if(element.checked){
+                const batchId = element.id.split('_')[0];
+                if (batchId !== parentId.toString())
+                    listOfBatchToMerge.push(batchId);
+            }
         });
 
         this.batches.forEach((batch: any) => {
@@ -212,7 +214,6 @@ export class SplitterListComponent implements OnInit {
             });
             if(parentId === batch.id) listOfBatchFormId.push(batch.form_id);
         });
-
         const uniqueFormId = listOfBatchFormId.filter((item, i, ar) => ar.indexOf(item) === i);
 
         if (uniqueFormId.length === 1) {
