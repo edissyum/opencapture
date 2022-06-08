@@ -324,6 +324,16 @@ class Files:
             pass
 
         if not is_number:
+            date_file = self.docservers['LOCALE_PATH'] + '/' + self.configurations['locale'] + '.json'
+            with open(date_file, encoding='UTF-8') as file:
+                _fp = json.load(file)
+                date_convert = _fp['dateConvert'] if 'dateConvert' in _fp else ''
+            for key in date_convert:
+                for month in date_convert[key]:
+                    if month.lower() in text.lower():
+                        text = (text.lower().replace(month.lower(), key))
+                        break
+
             for res in re.finditer(r"" + self.regex['dateRegex'] + "", text):
                 date_class = FindDate('', self.log, self.regex, self.configurations, self, ocr, '', '', '', '', docservers=self.docservers, languages=current_app.config['LANGUAGES'])
                 date = date_class.format_date(res.group(), (('', ''), ('', '')), True)
