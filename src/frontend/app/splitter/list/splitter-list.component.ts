@@ -160,7 +160,6 @@ export class SplitterListComponent implements OnInit {
 
     checkSelectedBatch() {
         this.totalChecked = document.querySelectorAll('.checkBox_list:checked').length;
-        console.log(this.totalChecked);
         this.batchesSelected = this.totalChecked !== 0;
     }
 
