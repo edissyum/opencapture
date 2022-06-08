@@ -199,9 +199,9 @@ export class SplitterListComponent implements OnInit {
         const checkboxList = document.getElementsByClassName('checkBox_list');
         const listOfBatchToMerge: any[] = [];
         const listOfBatchFormId: any[] = [];
-        Array.from(checkboxList).forEach((checkbox: any) => {
-            if(checkbox.checked){
-                const batchId = checkbox.id.split('_')[0];
+        Array.from(checkboxList).forEach((element: any) => {
+            if(element.checked){
+                const batchId = element.id.split('_')[0];
                 if (batchId !== parentId.toString())
                     listOfBatchToMerge.push(batchId);
             }
