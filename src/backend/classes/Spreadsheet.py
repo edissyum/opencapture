@@ -35,6 +35,7 @@ class Spreadsheet:
             self.referencialSupplierArray['SIRET'] = fp['SIRET']
             self.referencialSupplierArray['SIREN'] = fp['SIREN']
             self.referencialSupplierArray['IBAN'] = fp['IBAN']
+            self.referencialSupplierArray['EMAIL'] = fp['EMAIL']
             self.referencialSupplierArray['VATNumber'] = fp['VATNumber']
             self.referencialSupplierArray['address1'] = fp['address1']
             self.referencialSupplierArray['address2'] = fp['address2']
@@ -96,6 +97,7 @@ class Spreadsheet:
                                 supplier['siret'] if supplier['siret'] is not None else '',
                                 supplier['siren'] if supplier['siren'] is not None else '',
                                 supplier['iban'] if supplier['iban'] is not None else '',
+                                supplier['email'] if supplier['email'] is not None else '',
                                 address['address1'] if address and address['address1'] is not None else '',
                                 address['address2'] if address and address['address2'] is not None else '',
                                 address['postal_code'] if address and address['postal_code'] is not None else '',
@@ -146,6 +148,7 @@ class Spreadsheet:
             self.referencialSupplierArray['SIRET'],
             self.referencialSupplierArray['SIREN'],
             self.referencialSupplierArray['IBAN'],
+            self.referencialSupplierArray['EMAIL'],
             self.referencialSupplierArray['address1'],
             self.referencialSupplierArray['address2'],
             self.referencialSupplierArray['addressPostalCode'],
