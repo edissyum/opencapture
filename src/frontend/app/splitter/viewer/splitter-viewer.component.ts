@@ -389,7 +389,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     getFormForDocument(documentIndex: number) {
         const newForm = new FormGroup({});
         for (const field of this.fieldsCategories['document_metadata']) {
-            const control = new FormControl();
+            const control = field.required ? new FormControl('', Validators.required): new FormControl('');
             const labelShort = field.label_short;
             if(this.documents[documentIndex]['customFieldsValues'].hasOwnProperty(labelShort))
                 control.setValue(this.documents[documentIndex]['customFieldsValues'][labelShort]);
@@ -398,9 +398,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             });
             newForm.addControl(labelShort, control);
             if (field.metadata_key) { // used to control autocomplete search fields
-                const controlSearch = field.required ?
-                    new FormControl('', Validators.required):
-                    new FormControl('');
+                const controlSearch = new FormControl('');
                 newForm.addControl("search_" + labelShort, controlSearch);
             }
         }
