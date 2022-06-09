@@ -2,9 +2,15 @@
 ALTER TABLE "accounts_supplier" ADD COLUMN "document_lang" VARCHAR(10) DEFAULT 'fra';
 
 -- Improve supplier detection using email adress
-ALTER TABLE "accounts_supplier" ADD COLUMN "email" VARCHAR UNIQUE;
-INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('emailRegex', 'fra', 'Adresse email', '([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.(fr|com|org|eu))+');
-INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('emailRegex', 'eng', 'Adresse email', '([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.(fr|com|org|eu))+');
+ALTER TABLE "accounts_supplier" ADD COLUMN "email" VARCHAR;
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('emailRegex', 'global', 'Adresse email', '([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.(fr|com|org|eu|law))+');
+
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('IBANRegex', 'global', 'Adresse email', '[A-Z]{2}(?:[ ]?[0-9]){18,25}');
+
+-- Improve REGEX
+UPDATE "regex" SET "content" = '(?P<r1>TOTAL|^\s*AMOUNT)?\s*(:\s*)?(\$|£|€|EUROS|EUR)?\s*(?(r1)()|(T(.)?T(.)?C|\(VAT\s*INCLUDE(D)?\))){1}\s*(:|(\$|£|€|EUROS|EUR))?\s*([0-9]*(\.?\,?\|?\s?)[0-9]+((\.?\,?\s?)[0-9])+|[0-9]+)\s*(\$|£|€|EUROS|EUR)?' WHERE lang = 'eng' AND "regex_id" = 'allRatesRegex';
+DELETE from "regex" WHERE regex_id = 'IBANRegex';
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('IBANRegex', 'global', 'Numéro d''IBAN', '[A-Z]{2}(?:[ ]?[0-9]){18,25}');
 
 -- Improve export_maarch output in verifier
 UPDATE outputs_types SET "data" = '{
