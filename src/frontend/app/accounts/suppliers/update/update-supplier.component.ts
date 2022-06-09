@@ -20,7 +20,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {MatDialog} from "@angular/material/dialog";
 import {UserService} from "../../../../services/user.service";
-import {FormBuilder, FormControl} from "@angular/forms";
+import {FormBuilder, FormControl, Validators} from "@angular/forms";
 import {AuthService} from "../../../../services/auth.service";
 import {TranslateService} from "@ngx-translate/core";
 import {NotificationService} from "../../../../services/notifications/notifications.service";
@@ -86,6 +86,13 @@ export class UpdateSupplierComponent implements OnInit {
             label: marker('ACCOUNTS.iban'),
             type: 'text',
             control: new FormControl(),
+            required: false
+        },
+        {
+            id: 'email',
+            label: marker('ACCOUNTS.email'),
+            type: 'text',
+            control: new FormControl('', Validators.email),
             required: false
         },
         {
@@ -363,6 +370,9 @@ export class UpdateSupplierComponent implements OnInit {
             if (element.id === field) {
                 if (element.required && !(element.value || element.control.value)) {
                     error = this.translate.instant('AUTH.field_required');
+                }
+                if (element.control.errors && element.control.errors.email) {
+                    error = this.translate.instant('ACCOUNTS.email_format_error');
                 }
             }
         });

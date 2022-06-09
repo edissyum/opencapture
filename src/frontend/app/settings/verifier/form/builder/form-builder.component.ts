@@ -175,6 +175,24 @@ export class FormBuilderComponent implements OnInit {
                     autocomplete_data: {}
                 },
                 {
+                    id: 'email',
+                    label: marker('ACCOUNTS.email'),
+                    unit: 'supplier',
+                    type: 'text',
+                    required: false,
+                    required_icon: 'far fa-star',
+                    class: "w-1/3",
+                    class_label: "1/33",
+                    color: 'green',
+                    format: 'email',
+                    format_icon:'fa-solid fa-at',
+                    display: 'simple',
+                    display_icon:'fa-solid file-alt',
+                    autocomplete: 'none',
+                    autocomplete_icon: 'fa-solid fa-ban',
+                    autocomplete_data: {}
+                },
+                {
                     id: 'address1',
                     label: marker('ADDRESSES.address_1'),
                     unit: 'addresses',
@@ -527,6 +545,10 @@ export class FormBuilderComponent implements OnInit {
         {
             'id': 'w-1/5',
             'label': '1/5'
+        },
+        {
+            'id': 'w-1/6',
+            'label': '1/6'
         }
     ];
     colorsList              : any []    = [
@@ -634,6 +656,11 @@ export class FormBuilderComponent implements OnInit {
             'id': 'alphanum_extended_with_accent',
             'label': marker('FORMATS.alphanum_extended_with_accent'),
             'icon': 'fa-solid fa-level-up-alt'
+        },
+        {
+            'id': 'email',
+            'label': marker('FORMATS.email'),
+            'icon': 'fa-solid fa-alt'
         }
     ];
     displayList             : any []    = [

@@ -24,13 +24,11 @@ import uuid
 import string
 import random
 import shutil
-import PyPDF4
 import PyPDF2
 import datetime
 import subprocess
 import numpy as np
 from PIL import Image
-from PyPDF4 import utils
 from flask import current_app
 from wand.color import Color
 from wand.api import library
@@ -175,16 +173,16 @@ class Files:
     def get_pages(self, docservers, file):
         try:
             with open(file, 'rb') as doc:
-                pdf = PyPDF4.PdfFileReader(doc)
+                pdf = PyPDF2.PdfFileReader(doc)
                 try:
                     return pdf.getNumPages()
                 except ValueError as file_error:
                     self.log.error(file_error)
                     shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
                     return 1
-        except PyPDF4.utils.PdfReadError:
-            pdf_read_rewrite = PyPDF4.PdfFileReader(file, strict=False)
-            pdfwrite = PyPDF4.PdfFileWriter()
+        except PyPDF2.utils.PdfReadError:
+            pdf_read_rewrite = PyPDF2.PdfFileReader(file, strict=False)
+            pdfwrite = PyPDF2.PdfFileWriter()
             for page_count in range(pdf_read_rewrite.numPages):
                 pages = pdf_read_rewrite.getPage(page_count)
                 pdfwrite.addPage(pages)
@@ -244,8 +242,8 @@ class Files:
                 if size2 == size:
                     if file.lower().endswith(".pdf"):
                         try:
-                            PyPDF4.PdfFileReader(doc)
-                        except PyPDF4.utils.PdfReadError:
+                            PyPDF2.PdfFileReader(doc)
+                        except PyPDF2.utils.PdfReadError:
                             shutil.move(file, docservers['ERROR_PATH'] + os.path.basename(file))
                             return False
                         else:
@@ -314,7 +312,7 @@ class Files:
             text = text.replace(',', '.')
             splitted_number = text.split('.')
             if len(splitted_number) > 1:
-                last_index = splitted_number[len(splitted_number) - 1]
+                last_index = splitted_number[len(splitted_number) - 1].replace('%', '')
                 if len(last_index) > 2:
                     text = text.replace('.', '')
                     is_number = True
@@ -326,6 +324,16 @@ class Files:
             pass
 
         if not is_number:
+            date_file = self.docservers['LOCALE_PATH'] + '/' + self.configurations['locale'] + '.json'
+            with open(date_file, encoding='UTF-8') as file:
+                _fp = json.load(file)
+                date_convert = _fp['dateConvert'] if 'dateConvert' in _fp else ''
+            for key in date_convert:
+                for month in date_convert[key]:
+                    if month.lower() in text.lower():
+                        text = (text.lower().replace(month.lower(), key))
+                        break
+
             for res in re.finditer(r"" + self.regex['dateRegex'] + "", text):
                 date_class = FindDate('', self.log, self.regex, self.configurations, self, ocr, '', '', '', '', docservers=self.docservers, languages=current_app.config['LANGUAGES'])
                 date = date_class.format_date(res.group(), (('', ''), ('', '')), True)

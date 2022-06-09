@@ -140,7 +140,7 @@ export class SplitterFormBuilderComponent implements OnInit {
             'icon'  : 'far fa-star'
         },
     ];
-    disabledList           : any []    = [
+    disabledList            : any []    = [
         {
             'id'    : true,
             'label' : marker('DISABLED.disabled'),
@@ -152,7 +152,7 @@ export class SplitterFormBuilderComponent implements OnInit {
             'icon'  : ''
         },
     ];
-    fieldMetadata           : any [] = [
+    fieldMetadata           : any []    = [
         {
             'id'            : 'searchMask',
             'placeholder'   : marker('FIELD_METADATA.searchMask'),

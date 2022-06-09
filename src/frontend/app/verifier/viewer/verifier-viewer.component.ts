@@ -44,6 +44,11 @@ declare const $: any;
 })
 
 export class VerifierViewerComponent implements OnInit {
+    imageInvoice            : any;
+    invoiceId               : any;
+    invoice                 : any;
+    fields                  : any;
+    config                  : any;
     isOCRRunning            : boolean     = false;
     settingsOpen            : boolean     = false;
     ocrFromUser             : boolean     = false;
@@ -75,11 +80,6 @@ export class VerifierViewerComponent implements OnInit {
     outputsLabel            : any         = [];
     outputs                 : any         = [];
     imgArray                : any         = {};
-    imageInvoice            : any;
-    invoiceId               : any;
-    invoice                 : any;
-    fields                  : any;
-    config                  : any;
     fieldCategories         : any[]       = [
         {
             id: 'supplier',
@@ -106,9 +106,10 @@ export class VerifierViewerComponent implements OnInit {
         number_int                      : '^[0-9]*$',
         number_float                    : '^[0-9]*([.][0-9]*)*$',
         char                            : '^[A-Za-z\\s]*$',
+        email                           : '^[a-zA-Z0-9_\\.\\+-]+@[a-zA-Z0-9-]+\\.(fr|com|org|eu|law)+$'
     };
-    supplierNamecontrol     : FormControl =  new FormControl();
-    filteredOptions         : Observable<any> | any;
+    supplierNamecontrol                 : FormControl =  new FormControl();
+    filteredOptions                     : Observable<any> | any;
 
     constructor(
         private router: Router,
@@ -720,7 +721,6 @@ export class VerifierViewerComponent implements OnInit {
                     if (input.format === 'number_int' || input.format === 'number_float') {
                         value = value.replace(/[A-Za-z€%$]/g,'');
                     }
-
                     if (input.type === 'date') {
                         const format = moment().localeData().longDateFormat('L');
                         value = moment(value, format);
@@ -1024,11 +1024,13 @@ export class VerifierViewerComponent implements OnInit {
                             'postal_code': address.postal_code,
                             'siret': supplier.siret,
                             'siren': supplier.siren,
+                            'iban': supplier.iban,
+                            'email': supplier.email,
                             'vat_number': supplier.vat_number,
                         };
                         this.getOnlyRawFooter = supplier.get_only_raw_footer;
                         for (const column in supplierData) {
-                            this.updateFormValue(column, supplierData[column]);
+                            if (supplierData[column]) this.updateFormValue(column, supplierData[column]);
                         }
 
                         if (!launchOnInit) {
@@ -1102,6 +1104,8 @@ export class VerifierViewerComponent implements OnInit {
                             error = this.translate.instant('ERROR.number_float_pattern');
                         }else if (pattern.requiredPattern === this.getPattern('char')) {
                             error = this.translate.instant('ERROR.char_pattern');
+                        }else if (pattern.requiredPattern === this.getPattern('email')) {
+                            error = this.translate.instant('ERROR.email_pattern');
                         }
                     }else if (datePickerPattern) {
                         error = this.translate.instant('ERROR.date_pattern');

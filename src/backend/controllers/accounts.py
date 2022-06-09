@@ -129,7 +129,7 @@ def update_page_by_supplier_id(supplier_id, data):
         supplier_pages.update({
             column: page
         })
-        res, error = accounts.update_supplier({'set': {"pages": json.dumps(supplier_pages)}, 'supplier_id': supplier_id})
+        _, error = accounts.update_supplier({'set': {"pages": json.dumps(supplier_pages)}, 'supplier_id': supplier_id})
         if error is None:
             return '', 200
         else:
@@ -186,7 +186,7 @@ def update_address_by_supplier_id(supplier_id, data):
             'country': data['country']
         }
 
-        res, error = accounts.update_address({'set': _set, 'address_id': address_info['address_id']})
+        _, error = accounts.update_address({'set': _set, 'address_id': address_info['address_id']})
 
         if error is None:
             return '', 200
@@ -240,6 +240,7 @@ def create_supplier(data):
         'siret': data['siret'] if 'siret' in data else None,
         'siren': data['siren'] if 'siren' in data else None,
         'iban': data['iban'] if 'iban' in data else None,
+        'email': data['email'] if 'email' in data else None,
         'vat_number': data['vat_number'] if 'vat_number' in data else None,
         'form_id': data['form_id'] if 'form_id' in data else None,
         'address_id': data['address_id'],
@@ -297,19 +298,19 @@ def get_customer_by_id(customer_id):
 
 
 def get_accounting_plan_by_customer_id(customer_id):
-    accounting_plan, error = accounts.get_accounting_plan_by_customer_id({'customer_id': customer_id})
+    accounting_plan, _ = accounts.get_accounting_plan_by_customer_id({'customer_id': customer_id})
     return accounting_plan, 200
 
 
 def get_default_accounting_plan():
-    accounting_plan, error = accounts.get_default_accounting_plan()
+    accounting_plan, _ = accounts.get_default_accounting_plan()
     return accounting_plan, 200
 
 
 def update_customer(customer_id, data):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
-    supplier_info, error = accounts.get_customer_by_id({'customer_id': customer_id})
+    _, error = accounts.get_customer_by_id({'customer_id': customer_id})
 
     if error is None:
         _set = {}
@@ -326,7 +327,7 @@ def update_customer(customer_id, data):
         if 'company_number' in data:
             _set.update({'company_number': data['company_number']})
 
-        res, error = accounts.update_customer({'set': _set, 'customer_id': customer_id})
+        _, error = accounts.update_customer({'set': _set, 'customer_id': customer_id})
 
         if error is None:
             return '', 200
@@ -384,10 +385,10 @@ def create_customer(data):
 def delete_customer(customer_id):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
-    customer_info, error = accounts.get_customer_by_id({'customer_id': customer_id})
+    _, error = accounts.get_customer_by_id({'customer_id': customer_id})
 
     if error is None:
-        res, error = accounts.delete_customer({'customer_id': customer_id})
+        _, error = accounts.delete_customer({'customer_id': customer_id})
         if error is None:
             return '', 200
         else:
@@ -407,10 +408,10 @@ def delete_customer(customer_id):
 def delete_supplier(supplier_id):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
-    supplier_info, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
+    _, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
 
     if error is None:
-        res, error = accounts.delete_supplier({'supplier_id': supplier_id})
+        _, error = accounts.delete_supplier({'supplier_id': supplier_id})
         if error is None:
             return '', 200
         else:
@@ -436,7 +437,7 @@ def import_suppliers(file):
     res = subprocess.Popen('python3 ' + _docservers['PROJECT_PATH'] + "/loadReferencial.py -f " +
                            filename + " -c " + current_app.instance_path + '/config.ini',
                            shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    out, err = res.communicate()
+    _, err = res.communicate()
     if err.decode('utf-8'):
         response = {
             "errors": gettext('LOAD_SUPPLIER_REFERENCIAL_ERROR'),

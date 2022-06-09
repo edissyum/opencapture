@@ -78,6 +78,8 @@ def update_supplier(supplier_id):
         _set.update({'siren': data['siren']})
     if 'iban' in data:
         _set.update({'iban': data['iban']})
+    if 'email' in data:
+        _set.update({'email': data['email']})
     if 'vat_number' in data:
         _set.update({'vat_number': data['vat_number']})
     if 'form_id' in data:

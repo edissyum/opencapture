@@ -10,8 +10,7 @@ flask==2.1.2
 qrcode==7.3.1
 pillow==9.1.1
 kuyruk==9.4.0
-pyPdf4==1.27.0
-pyPdf2==1.28.2
+pyPdf2==2.1.0
 psycopg2==2.9.3
 werkzeug==2.1.2
 cmislib3==1.0.8
