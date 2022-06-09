@@ -44,6 +44,11 @@ declare const $: any;
 })
 
 export class VerifierViewerComponent implements OnInit {
+    imageInvoice            : any;
+    invoiceId               : any;
+    invoice                 : any;
+    fields                  : any;
+    config                  : any;
     isOCRRunning            : boolean     = false;
     settingsOpen            : boolean     = false;
     ocrFromUser             : boolean     = false;
@@ -75,11 +80,6 @@ export class VerifierViewerComponent implements OnInit {
     outputsLabel            : any         = [];
     outputs                 : any         = [];
     imgArray                : any         = {};
-    imageInvoice            : any;
-    invoiceId               : any;
-    invoice                 : any;
-    fields                  : any;
-    config                  : any;
     fieldCategories         : any[]       = [
         {
             id: 'supplier',
@@ -106,10 +106,10 @@ export class VerifierViewerComponent implements OnInit {
         number_int                      : '^[0-9]*$',
         number_float                    : '^[0-9]*([.][0-9]*)*$',
         char                            : '^[A-Za-z\\s]*$',
-        email                           : '^[a-zA-Z0-9_\\.\\+-]+@[a-zA-Z0-9-]+\\.(fr|com|org|eu)+$'
+        email                           : '^[a-zA-Z0-9_\\.\\+-]+@[a-zA-Z0-9-]+\\.(fr|com|org|eu|law)+$'
     };
-    supplierNamecontrol     : FormControl =  new FormControl();
-    filteredOptions         : Observable<any> | any;
+    supplierNamecontrol                 : FormControl =  new FormControl();
+    filteredOptions                     : Observable<any> | any;
 
     constructor(
         private router: Router,

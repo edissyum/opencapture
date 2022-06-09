@@ -75,7 +75,7 @@ def get_regex():
 
     args = {
         'select': ['*', 'count(*) OVER() as total'],
-        'where': ['lang = %s'],
+        'where': ["lang in ('global', %s)"],
         'data': [_configurations['locale']],
         'offset': request.args['offset'] if 'offset' in request.args else '',
         'limit': request.args['limit'] if 'limit' in request.args else ''

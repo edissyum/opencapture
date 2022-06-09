@@ -154,7 +154,7 @@ if __name__ == '__main__':
                             'siren': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['SIREN']]),
                             'siret': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['SIRET']]),
                             'iban': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['IBAN']]),
-                            'email': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['email']]),
+                            'email': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['EMAIL']]),
                             'get_only_raw_footer': GET_ONLY_RAW_FOOTER,
                             'address_id': address_id,
                             'document_lang': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['doc_lang']]),

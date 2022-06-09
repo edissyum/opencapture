@@ -16,20 +16,36 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import re
+import string
 
 
-def validate_luhn(n):
-    r = [int(ch) for ch in str(n)][::-1]
-    return (sum(r[0::2]) + sum(sum(divmod(d * 2, 10)) for d in r[1::2])) % 10 == 0
+def validate_luhn(_n):
+    _r = [int(ch) for ch in str(_n)][::-1]
+    return (sum(_r[0::2]) + sum(sum(divmod(d * 2, 10)) for d in _r[1::2])) % 10 == 0
+
+
+def validate_iban(unchecked_iban):
+    letters = {ord(d): str(i) for i, d in enumerate(string.digits + string.ascii_uppercase)}
+
+    def _number_iban(iban):
+        return (iban[4:] + iban[:4]).translate(letters)
+
+    def generate_iban_check_digits(iban):
+        number_iban = _number_iban(iban[:2] + '00' + iban[4:])
+        return '{:0>2}'.format(98 - (int(number_iban) % 97))
+
+    def valid_iban(iban):
+        return int(_number_iban(iban)) % 97 == 1
+    return generate_iban_check_digits(unchecked_iban) == unchecked_iban[2:4] and valid_iban(unchecked_iban)
 
 
 class FindSupplier:
     def __init__(self, ocr, log, regex, database, files, nb_pages, current_page, custom_page):
-        self.Ocr = ocr
+        self.ocr = ocr
         self.text = ocr.header_text
         self.log = log
-        self.Files = files
-        self.Database = database
+        self.files = files
+        self.database = database
         self.regex = regex
         self.ocr_errors_table = ocr.ocr_errors_table
         self.found_first = True
@@ -41,15 +57,18 @@ class FindSupplier:
         self.found_last_second = True
         self.found_last_three = True
         self.splitted = False
-        self.nbPages = nb_pages
-        self.tmpNbPages = nb_pages
+        self.nb_pages = nb_pages
+        self.tmp_nb_pages = nb_pages
         self.current_page = current_page
-        self.customPage = custom_page
+        self.custom_page = custom_page
 
     def search_suplier(self, column, data):
         if data:
             if column.lower() in ['siret', 'siren']:
                 if not validate_luhn(data):
+                    return False
+            elif column.lower() == 'iban':
+                if not validate_iban(data):
                     return False
 
             args = {
@@ -59,7 +78,7 @@ class FindSupplier:
                 'where': ["TRIM(REPLACE(" + column + ", ' ', '')) = %s", 'accounts_supplier.status NOT IN (%s)'],
                 'data': [data, 'DEL']
             }
-            existing_supplier = self.Database.select(args)
+            existing_supplier = self.database.select(args)
             if existing_supplier:
                 return existing_supplier[0]
         return False
@@ -109,7 +128,7 @@ class FindSupplier:
         return []
 
     def regenerate_ocr(self):
-        self.Files.open_img(self.Files.jpg_name_header)
+        self.files.open_img(self.files.jpg_name_header)
 
     def run(self, retry=False, regenerate_ocr=False, target=None, text_as_string=False):
         supplier = self.process(self.regex['VATNumberRegex'], text_as_string, 'vat_number')
@@ -120,7 +139,7 @@ class FindSupplier:
             if text_as_string:
                 position = (('', ''), ('', ''))
             else:
-                position = self.Files.return_position_with_ratio(line, target)
+                position = self.files.return_position_with_ratio(line, target)
             data = [supplier[0]['vat_number'], position, supplier[0], self.current_page, 'vat_number']
             return data
 
@@ -132,7 +151,7 @@ class FindSupplier:
             if text_as_string:
                 position = (('', ''), ('', ''))
             else:
-                position = self.Files.return_position_with_ratio(line, target)
+                position = self.files.return_position_with_ratio(line, target)
             data = [supplier[0]['vat_number'], position, supplier[0], self.current_page, 'siret']
             return data
 
@@ -144,7 +163,7 @@ class FindSupplier:
             if text_as_string:
                 position = (('', ''), ('', ''))
             else:
-                position = self.Files.return_position_with_ratio(line, target)
+                position = self.files.return_position_with_ratio(line, target)
             data = [supplier[0]['vat_number'], position, supplier[0], self.current_page, 'siren']
             return data
 
@@ -156,7 +175,7 @@ class FindSupplier:
             if text_as_string:
                 position = (('', ''), ('', ''))
             else:
-                position = self.Files.return_position_with_ratio(line, target)
+                position = self.files.return_position_with_ratio(line, target)
             data = [supplier[0]['vat_number'], position, supplier[0], self.current_page, 'iban']
             return data
 
@@ -168,7 +187,7 @@ class FindSupplier:
             if text_as_string:
                 position = (('', ''), ('', ''))
             else:
-                position = self.Files.return_position_with_ratio(line, target)
+                position = self.files.return_position_with_ratio(line, target)
             data = [supplier[0]['vat_number'], position, supplier[0], self.current_page, 'email']
             return data
         else:
@@ -183,7 +202,7 @@ class FindSupplier:
             elif retry and not self.found_fourth and self.found_fifth:
                 self.found_fifth = False
             elif retry and not self.found_fifth and self.found_last_first:
-                if self.tmpNbPages == 1:
+                if self.tmp_nb_pages == 1:
                     return False
                 self.found_last_first = False
             elif retry and not self.found_last_first and self.found_last_second:
@@ -197,74 +216,74 @@ class FindSupplier:
                 self.regenerate_ocr()
                 return False  # Return False because if we reach this, all the possible tests are done. Mandatory to avoid infinite loop
 
-        if self.customPage:
+        if self.custom_page:
             self.log.info('No supplier informations found in the first and last page. Try last page - 1')
-            file = self.Files.custom_file_name
-            image = self.Files.open_image_return(file)
-            self.text = self.Ocr.line_box_builder(image)
+            file = self.files.custom_file_name
+            image = self.files.open_image_return(file)
+            self.text = self.ocr.line_box_builder(image)
             return self.run(retry=True, regenerate_ocr=True, target='footer')
 
         # If NO supplier identification are found in the header (default behavior),
         # First apply image correction
         if not retry and not self.found_first:
             self.log.info('No supplier informations found in the header, improve image and retry...')
-            improved_image = self.Files.improve_image_detection(self.Files.jpg_name_header)
-            self.Files.open_img(improved_image)
-            self.text = self.Ocr.line_box_builder(self.Files.img)
+            improved_image = self.files.improve_image_detection(self.files.jpg_name_header)
+            self.files.open_img(improved_image)
+            self.text = self.ocr.line_box_builder(self.files.img)
             return self.run(retry=True, target=None)
 
         # If, even with improved image, nothing was found, check the footer
         if retry and not self.found_second and self.found_third:
             self.log.info('No supplier informations found with improved image, try with footer...')
-            self.text = self.Ocr.footer_text
+            self.text = self.ocr.footer_text
             return self.run(retry=True, target='footer')
 
         # If NO supplier identification are found in the footer,
         # Apply image improvment
         if retry and not self.found_third and self.found_fourth:
             self.log.info('No supplier informations found in the footer, improve image and retry...')
-            improved_image = self.Files.improve_image_detection(self.Files.jpg_name_footer)
-            self.Files.open_img(improved_image)
-            self.text = self.Ocr.line_box_builder(self.Files.img)
+            improved_image = self.files.improve_image_detection(self.files.jpg_name_footer)
+            self.files.open_img(improved_image)
+            self.text = self.ocr.line_box_builder(self.files.img)
             return self.run(retry=True, target='footer')
 
         # If NO supplier identification are found in the improved footer,
         # Try using another tesseract function to extract text on the header
         if retry and not self.found_fourth and self.found_fifth:
             self.log.info('No supplier informations found in the footer, change Tesseract function to retrieve text and retry on header...')
-            improved_image = self.Files.improve_image_detection(self.Files.jpg_name_header)
-            self.Files.open_img(improved_image)
-            self.text = self.Ocr.text_builder(self.Files.img)
+            improved_image = self.files.improve_image_detection(self.files.jpg_name_header)
+            self.files.open_img(improved_image)
+            self.text = self.ocr.text_builder(self.files.img)
             return self.run(retry=True, target='header', text_as_string=True)
 
         if retry and not self.found_fifth and self.found_last_first:
             self.splitted = False
             self.log.info('No supplier informations found in the header as string, change Tesseract function to retrieve text and retry on footer...')
-            improved_image = self.Files.improve_image_detection(self.Files.jpg_name_footer)
-            self.Files.open_img(improved_image)
-            self.text = self.Ocr.text_builder(self.Files.img)
+            improved_image = self.files.improve_image_detection(self.files.jpg_name_footer)
+            self.files.open_img(improved_image)
+            self.text = self.ocr.text_builder(self.files.img)
             self.current_page = 1
             return self.run(retry=True, target='footer', text_as_string=True)
 
         # Try now with the last page
         if retry and not self.found_last_first and self.found_last_second:
             self.log.info('No supplier informations found in the first page, try with the last page header')
-            self.text = self.Ocr.header_last_text
-            self.current_page = self.nbPages  # Use the last page number because we search on the last page
+            self.text = self.ocr.header_last_text
+            self.current_page = self.nb_pages  # Use the last page number because we search on the last page
             return self.run(retry=True, target='header')
 
         if retry and not self.found_last_second and self.found_last_three:
             self.log.info('No supplier informations found in the header last page, try with the improved last page header')
-            improved_image = self.Files.improve_image_detection(self.Files.jpg_name_last_header)
-            self.Files.open_img(improved_image)
-            self.text = self.Ocr.line_box_builder(self.Files.img)
-            self.current_page = self.nbPages
+            improved_image = self.files.improve_image_detection(self.files.jpg_name_last_header)
+            self.files.open_img(improved_image)
+            self.text = self.ocr.line_box_builder(self.files.img)
+            self.current_page = self.nb_pages
             return self.run(retry=True, target='header')
 
         if retry and not self.found_last_three:
             self.log.info('No supplier informations found in the header last page, try with the footer last page header')
-            self.text = self.Ocr.footer_last_text
-            self.current_page = self.nbPages
+            self.text = self.ocr.footer_last_text
+            self.current_page = self.nb_pages
             return self.run(retry=True, regenerate_ocr=True, target='footer')
 
         self.log.info('No supplier found...')

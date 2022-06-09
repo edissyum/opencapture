@@ -155,7 +155,8 @@ class Spreadsheet:
             self.referencialSupplierArray['addressTown'],
             self.referencialSupplierArray['addressCountry'],
             self.referencialSupplierArray['positions_mask_id'],
-            self.referencialSupplierArray['get_only_raw_footer']
+            self.referencialSupplierArray['get_only_raw_footer'],
+            self.referencialSupplierArray['doc_lang']
         ])
         # Drop row 0 because it contains the indexes columns
         if not content_sheet.empty:

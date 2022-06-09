@@ -303,7 +303,11 @@ class FindFooterRaw:
                 self.Files.open_img(improved_image)
                 self.text = self.Ocr.text_builder(self.Files.img)
                 return self.run(text_as_string=True)
-            return False
+            total_ht = self.return_max(self.totalHT)
+            total_ttc = self.return_max(self.totalTTC)
+            vat_rate = self.return_max(self.vatRate)
+            vat_amount = self.return_max(self.vatAmount)
+            return [total_ht, total_ttc, vat_rate, self.nbPage, vat_amount]
 
     @staticmethod
     def return_max(value):
