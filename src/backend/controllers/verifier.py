@@ -395,7 +395,7 @@ def export_maarch(invoice_id, data):
                     'societyShort': supplier[0]['name'],
                     'addressStreet': supplier[0]['address1'],
                     'addressPostcode': supplier[0]['postal_code'],
-                    'email': supplier[0]['email'] if supplier[0]['postal_code'] else 'A_renseignera_' + supplier[0]['name'].replace(' ', '_') +
+                    'email': supplier[0]['email'] if supplier[0]['email'] else 'A_renseigner_' + supplier[0]['name'].replace(' ', '_') +
                              '@' + supplier[0]['vat_number'] + '.fr'
                 }
 

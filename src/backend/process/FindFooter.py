@@ -278,7 +278,7 @@ class FindFooter:
                 vat_rate = self.process(self.regex['vatRateRegex'], text_as_string)
             if not total_ttc:
                 total_ttc = self.process(self.regex['allRatesRegex'], text_as_string)
-
+        print(total_ttc, total_ht, vat_rate, vat_amount)
         if total_ttc and total_ht:
             ttc = self.return_max(total_ttc)[0]
             ht = self.return_max(total_ht)[0]

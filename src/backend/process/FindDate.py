@@ -46,8 +46,24 @@ class FindDate:
             date = date.replace('-', ' ')  # Replace some possible inconvenient char
             date = date.replace('.', ' ')  # Replace some possible inconvenient char
 
+            regex = self.regex
+            language = self.configurations['locale']
+            if self.supplier and self.supplier[2]['document_lang']:
+                language = self.supplier[2]['document_lang']
+                if self.supplier[2]['document_lang'] != self.configurations['locale']:
+                    _regex = self.database.select({
+                        'select': ['regex_id', 'content'],
+                        'table': ['regex'],
+                        'where': ["lang in ('global', %s)"],
+                        'data': [self.configurations['locale']],
+                    })
+                    if _regex:
+                        regex = {}
+                        for _r in _regex:
+                            regex[_r['regex_id']] = _r['content']
+
             if convert:
-                date_file = self.docservers['LOCALE_PATH'] + '/' + self.configurations['locale'] + '.json'
+                date_file = self.docservers['LOCALE_PATH'] + '/' + language + '.json'
                 with open(date_file, encoding='UTF-8') as file:
                     _fp = json.load(file)
                     date_convert = _fp['dateConvert'] if 'dateConvert' in _fp else ''
@@ -58,19 +74,21 @@ class FindDate:
                             break
             try:
                 # Fix to handle date with 2 digits year
+                date = date.replace('  ', ' ')
                 length_of_year = len(date.split(' ')[2])
                 date_format = "%d %m %Y"
+
                 for _l in self.languages:
-                    if self.configurations['locale'] == self.languages[_l]['lang_code']:
+                    if language == self.languages[_l]['lang_code']:
                         date_format = self.languages[_l]['date_format']
 
                 if length_of_year == 2:
                     date_format = date_format.replace('%Y', '%y')
 
-                date = datetime.strptime(date, date_format).strftime(self.regex['formatDate'])
+                date = datetime.strptime(date, date_format).strftime(regex['formatDate'])
                 # Check if the date of the document isn't too old. 62 (default value) is equivalent of 2 months
                 today = datetime.now()
-                doc_date = datetime.strptime(date, self.regex['formatDate'])
+                doc_date = datetime.strptime(date, regex['formatDate'])
                 timedelta = today - doc_date
 
                 if int(self.max_time_delta) not in [-1, 0]:
@@ -79,7 +97,8 @@ class FindDate:
                                       " days or in the future : " + date)
                         date = False
                 return date, position
-            except (ValueError, IndexError):
+            except (ValueError, IndexError) as _e:
+                print(_e)
                 self.log.info("Date wasn't in a good format : " + date)
                 return False
         else:
