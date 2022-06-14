@@ -68,14 +68,14 @@ class FindFooterRaw:
                 tmp = re.finditer(r'[-+]?\d*[.,]+\d+([.,]+\d+)?|\d+', data)
                 result = ''
                 i = 0
-                for t in tmp:
-                    if ('.' in t.group() or ',' in t.group()) and i > 1:
+                for _t in tmp:
+                    if ('.' in _t.group() or ',' in _t.group()) and i > 1:
                         # If two amounts are found, separate them
                         continue
-                    number_formatted = t.group()
+                    number_formatted = _t.group()
                     if regex != self.regex['vatRateRegex']:
                         try:
-                            text = t.group().replace(' ', '.')
+                            text = _t.group().replace(' ', '.')
                             text = text.replace('\x0c', '')
                             text = text.replace('\n', '')
                             text = text.replace(',', '.')

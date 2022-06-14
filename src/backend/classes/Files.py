@@ -306,13 +306,16 @@ class Files:
             text = ocr.text_builder(improved_cropped_image)
 
         try:
+            text = text.replace('%', '').replace('€', '').replace('$', '').replace('£', '')
+            text = text.strip()
             text = text.replace(' ', '.')
             text = text.replace('\x0c', '')
             text = text.replace('\n', '')
             text = text.replace(',', '.')
+
             splitted_number = text.split('.')
             if len(splitted_number) > 1:
-                last_index = splitted_number[len(splitted_number) - 1].replace('%', '')
+                last_index = splitted_number[len(splitted_number) - 1]
                 if len(last_index) > 2:
                     text = text.replace('.', '')
                     is_number = True

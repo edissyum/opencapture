@@ -2,9 +2,25 @@
 ALTER TABLE "accounts_supplier" ADD COLUMN "document_lang" VARCHAR(10) DEFAULT 'fra';
 
 -- Improve supplier detection using email adress
-ALTER TABLE "accounts_supplier" ADD COLUMN "email" VARCHAR UNIQUE;
-INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('emailRegex', 'fra', 'Adresse email', '([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.(fr|com|org|eu))+');
-INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('emailRegex', 'eng', 'Adresse email', '([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.(fr|com|org|eu))+');
+ALTER TABLE "accounts_supplier" ADD COLUMN "email" VARCHAR;
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('emailRegex', 'global', 'Adresse email', '([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.(fr|com|org|eu|law))+');
+
+-- Improve REGEX
+UPDATE "regex" SET "content" = '([JFMASONDjfmasond][a-zA-Z_À-ÿ\.,-]{2,9})\s*(3[01]|[12][0-9]|0?[1-9][\.,-]?)\s*((1|2|3){1}\d{1,3}|(1|2|3))| (((1[0-2]|0?[1-9])|\d{1}\w{2})\s?([JFMASONDjfmasond][a-zA-Z_À-ÿ\.,-]{2,9}|[\/,-\.](3[01]|[12][0-9]|0?[1-9])[\/,-\.])\s?((1|2|3){1}\d{1,3}|(1|2|3)))' WHERE lang = 'eng' AND "regex_id" = 'dateRegex';
+UPDATE "regex" SET "content" = '(?P<r1>TOTAL|^(TOTAL)?\s*AMOUNT(\s*PAID)?)?\s*(:\s*)?(\$|£|€|EUROS|EUR|USD)?\s*(?(r1)()|(T(.)?T(.)?C|\(VAT\s*INCLUDE(D)?\))){1}\s*(:|(\$|£|€|EUROS|EUR|USD))?\s*([0-9]*(\.?\,?\|?\s?)[0-9]+((\.?\,?\s?)[0-9])+|[0-9]+)\s*(\$|£|€|EUROS|EUR|USD)?' WHERE lang = 'eng' AND "regex_id" = 'allRatesRegex';
+UPDATE "regex" SET "content" = '%m/%d/%Y' WHERE lang = 'eng' AND "regex_id" = 'formatDate';
+UPDATE "regex" SET "content" = '(INVOICE\s*NUMBER\s*(:)?).*' WHERE lang = 'eng' AND "regex_id" = 'invoiceRegex';
+UPDATE "regex" SET "content" = '[20, 5, 0]' WHERE lang = 'eng' AND "regex_id" = 'vatRateList';
+UPDATE "regex" SET "content" = '(VAT\s*(AMOUNT\s*)?)(\$|£|€|EUROS|EUR|USD)?\s*.*' WHERE lang = 'eng' AND "regex_id" = 'vatAmountRegex';
+UPDATE "regex" SET "content" = '(20|5)%\s*(VAT)?' WHERE lang = 'eng' AND "regex_id" = 'vatRateRegex';
+UPDATE "regex" SET "content" = '(QUOT(E|ATION)\s*NUMBER\s*(:)?).*' WHERE lang = 'eng' AND "regex_id" = 'quotationRegex';
+UPDATE "regex" SET "content" = '(ORDER\s*NUMBER\s*(:)?).*?' WHERE lang = 'eng' AND "regex_id" = 'orderNumberRegex';
+UPDATE "regex" SET "content" = '(DELIVERY\s*NUMBER\s*(:)?).*' WHERE lang = 'eng' AND "regex_id" = 'deliveryNumberRegex';
+
+DELETE from "regex" WHERE regex_id = 'IBANRegex';
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('IBANRegex', 'global', 'Numéro d''IBAN', '[A-Z]{2}(?:[ ]?[0-9]){18,25}');
+DELETE from "regex" WHERE regex_id = 'VATNumberRegex';
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('VATNumberRegex', 'global', 'Numéro de TVA', '(EU[0-9]{7,9}|ATU[0-9]{8}|BE[01][0-9]{9}|BG[0-9]{9,10}|HR[0-9]{11}|CY[A-Z0-9]{9}|CZ[0-9]{8,10}|DK[0-9]{8}|EE[0-9]{9}|FI[0-9]{8}|FR[0-9A-Z]{2}[0-9]{9}|DE[0-9]{9}|EL[0-9]{9}|HU[0-9]{8}|IE([0-9]{7}[A-Z]{1,2}|[0-9][A-Z][0-9]{5}[A-Z])|IT[0-9]{11}|LV[0-9]{11}|LT([0-9]{9}|[0-9]{12})|LU[0-9]{8}|MT[0-9]{8}|NL[0-9]{9}B[0-9]{2}|PL[0-9]{10}|PT[0-9]{9}|RO[0-9]{2,10}|SK[0-9]{10}|SI[0-9]{8}|ES[A-Z]([0-9]{8}|[0-9]{7}[A-Z])|SE[0-9]{12}|GB([0-9]{9}|[0-9]{12}|GD[0-4][0-9]{2}|HA[5-9][0-9]{2}))');
 
 -- Improve export_maarch output in verifier
 UPDATE outputs_types SET "data" = '{
