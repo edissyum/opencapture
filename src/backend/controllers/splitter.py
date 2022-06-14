@@ -302,12 +302,13 @@ def export_pdf(batch, documents, parameters, metadata, pages, now, compress_type
         """
             Add PDF file names using masks
         """
+
         mask_args = {
             'mask': parameters['filename'] if 'filename' in parameters else _Files.get_random_string(10),
             'separator': parameters['separator'],
             'extension': parameters['extension']
         }
-        documents[index]['fileName'] = _Splitter.get_mask_result(document, metadata, now, mask_args)
+        documents[index]['fileName'] = _Splitter.get_mask_result(document, document['metadata'], now, mask_args)
     export_pdf_res = _Files.export_pdf(pages, documents, filename, parameters['folder_out'], compress_type, 1)
 
     if not export_pdf_res[0]:
