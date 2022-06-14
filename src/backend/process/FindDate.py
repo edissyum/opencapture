@@ -166,7 +166,7 @@ class FindDate:
                 else:
                     return [res[0], res[1], '']
 
-        if not due_date:
+        if not due_date or due_date[0] is False:
             for line in self.text:
                 due_date = self.process_due_date(re.sub(r'(\d)\s+(\d)', r'\1\2', line.content.upper()), line.position)
                 if due_date:

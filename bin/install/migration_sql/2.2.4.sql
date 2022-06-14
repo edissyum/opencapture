@@ -11,7 +11,11 @@ UPDATE "regex" SET "content" = '(?P<r1>TOTAL|^(TOTAL)?\s*AMOUNT(\s*PAID)?)?\s*(:
 UPDATE "regex" SET "content" = '%m/%d/%Y' WHERE lang = 'eng' AND "regex_id" = 'formatDate';
 UPDATE "regex" SET "content" = '(INVOICE\s*NUMBER\s*(:)?).*' WHERE lang = 'eng' AND "regex_id" = 'invoiceRegex';
 UPDATE "regex" SET "content" = '[20, 5, 0]' WHERE lang = 'eng' AND "regex_id" = 'vatRateList';
-UPDATE "regex" SET "content" = '(VAT\s*(AMOUNT)?)(\$|£|€|EUROS|EUR|USD)?\s.*' WHERE lang = 'eng' AND "regex_id" = 'vatAmountRegex';
+UPDATE "regex" SET "content" = '(VAT\s*(AMOUNT\s*)?)(\$|£|€|EUROS|EUR|USD)?\s*.*' WHERE lang = 'eng' AND "regex_id" = 'vatAmountRegex';
+UPDATE "regex" SET "content" = '(20|5)%\s*(VAT)?' WHERE lang = 'eng' AND "regex_id" = 'vatRateRegex';
+UPDATE "regex" SET "content" = '(QUOT(E|ATION)\s*NUMBER\s*(:)?).*' WHERE lang = 'eng' AND "regex_id" = 'quotationRegex';
+UPDATE "regex" SET "content" = '(ORDER\s*NUMBER\s*(:)?).*?' WHERE lang = 'eng' AND "regex_id" = 'orderNumberRegex';
+UPDATE "regex" SET "content" = '(DELIVERY\s*NUMBER\s*(:)?).*' WHERE lang = 'eng' AND "regex_id" = 'deliveryNumberRegex';
 
 DELETE from "regex" WHERE regex_id = 'IBANRegex';
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('IBANRegex', 'global', 'Numéro d''IBAN', '[A-Z]{2}(?:[ ]?[0-9]){18,25}');
