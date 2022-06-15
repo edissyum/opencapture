@@ -137,7 +137,7 @@
                     </mat-form-field>
                 </div>
                 <div class="ml-6 relative">
-                    <span class="text-gray-600">
+                    <span class="text-gray-600" *ngIf="userService.user">
                         <b>{{ userService.user['lastname'] }}</b> {{ userService.user['firstname'] }} ({{ userService.user['username'] }})
                     </span>
                 </div>
