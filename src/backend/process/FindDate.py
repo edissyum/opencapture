@@ -96,6 +96,9 @@ class FindDate:
                         self.log.info("Date is older than " + str(self.max_time_delta) +
                                       " days or in the future : " + date)
                         date = False
+                if timedelta.days < 0:
+                    self.log.info("Date is in the future " + date)
+                    date = False
                 return date, position
             except (ValueError, IndexError) as _e:
                 print(_e)
