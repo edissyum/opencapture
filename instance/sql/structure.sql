@@ -158,6 +158,7 @@ CREATE TABLE "accounts_supplier"
     "email"               VARCHAR,
     "address_id"          INTEGER,
     "form_id"             INTEGER,
+    "document_lang"       VARCHAR(10)   DEFAULT 'fra',
     "status"              VARCHAR(3)    DEFAULT 'OK',
     "get_only_raw_footer" BOOLEAN       DEFAULT false,
     "skip_auto_validate"  BOOLEAN       DEFAULT false,
