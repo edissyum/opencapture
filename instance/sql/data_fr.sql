@@ -139,11 +139,11 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
             {
                 "id": "vatNumberContactCustom",
                 "type": "text",
-                "label": "Identifiant du champ personnalisé de contact où stocké le numéro de TVA + SIRET",
+                "label": "Identifiant du champ personnalisé de contact où stocker le numéro de TVA + SIRET",
                 "required": "true",
                 "webservice": "getContactsCustomFieldsFromMaarch",
                 "placeholder": "Identifiant Open-Capture",
-                "hint": ""
+                "hint": "Identifiant du champ personnalisé de contact où stocker le numéro de TVA + SIRET"
             }
         ],
         "parameters": [
@@ -266,7 +266,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "required_icon": "fas fa-star",
             "autocomplete": "none",
             "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": {}
+            "autocomplete_data": []
         },
         {
             "id": "address1",
@@ -283,7 +283,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "required_icon": "fas fa-star",
             "autocomplete": "none",
             "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": {}
+            "autocomplete_data": []
         },
         {
             "id": "address2",
@@ -300,7 +300,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "required_icon": "far fa-star",
             "autocomplete": "none",
             "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": {}
+            "autocomplete_data": []
         },
         {
             "id": "postal_code",
@@ -317,7 +317,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "required_icon": "fas fa-star",
             "autocomplete": "none",
             "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": {}
+            "autocomplete_data": []
         },
         {
             "id": "city",
@@ -325,7 +325,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "unit": "addresses",
             "class": "w-1/3",
             "label": "ADDRESSES.city",
-            "format": "char",
+            "format": "alphanum_extended_with_accent",
             "display": "simple",
             "required": true,
             "class_label": "1/33",
@@ -334,7 +334,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "required_icon": "fas fa-star",
             "autocomplete": "none",
             "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": {}
+            "autocomplete_data": []
         },
         {
             "id": "country",
@@ -342,7 +342,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "unit": "addresses",
             "class": "w-1/3",
             "label": "ADDRESSES.country",
-            "format": "char",
+            "format": "alphanum_extended_with_accent",
             "display": "simple",
             "required": true,
             "class_label": "1/33",
@@ -351,7 +351,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "required_icon": "fas fa-star",
             "autocomplete": "none",
             "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": {}
+            "autocomplete_data": []
         },
         {
             "id": "vat_number",
@@ -366,46 +366,55 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "class_label": "1/33",
             "format_icon": "fas fas fa-hashtag",
             "display_icon": "fas fa-file-alt",
-            "required_icon": "fas fa-star",
-            "autocomplete": "none",
-            "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": {}
+            "required_icon": "fas fa-star"
         },
         {
             "id": "siren",
             "type": "text",
             "unit": "supplier",
-            "class": "w-1/3",
+            "class": "w-1/6",
             "color": "lime",
             "label": "ACCOUNTS.siren",
             "format": "number_int",
             "display": "simple",
             "required": false,
-            "class_label": "1/33",
+            "class_label": "1/6",
             "format_icon": "fas fa-calculator",
             "display_icon": "fas fa-file-alt",
-            "required_icon": "far fa-star",
-            "autocomplete": "none",
-            "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": {}
+            "required_icon": "far fa-star"
         },
         {
             "id": "siret",
             "type": "text",
             "unit": "supplier",
-            "class": "w-1/3",
+            "class": "w-1/6",
             "color": "green",
             "label": "ACCOUNTS.siret",
             "format": "number_int",
             "display": "simple",
             "required": false,
-            "class_label": "1/33",
+            "class_label": "1/6",
             "format_icon": "fas fa-calculator",
             "display_icon": "fas fa-file-alt",
-            "required_icon": "far fa-star",
+            "required_icon": "far fa-star"
+        },
+        {
+            "id": "email",
+            "type": "text",
+            "unit": "supplier",
+            "class": "w-1/3",
+            "color": "green",
+            "label": "ACCOUNTS.email",
+            "format": "email",
+            "display": "simple",
+            "required": false,
+            "class_label": "1/33",
+            "format_icon": "fa-solid fa-at",
             "autocomplete": "none",
-            "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": {}
+            "display_icon": "fa-solid file-alt",
+            "required_icon": "far fa-star",
+            "autocomplete_data": [],
+            "autocomplete_icon": "fa-solid fa-ban"
         }
     ],
     "facturation": [
@@ -425,7 +434,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "required_icon": "far fa-star",
             "autocomplete": "none",
             "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": {}
+            "autocomplete_data": []
         },
         {
             "id": "order_number",
@@ -443,7 +452,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "required_icon": "far fa-star",
             "autocomplete": "none",
             "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": {}
+            "autocomplete_data": []
         },
         {
             "id": "invoice_number",
@@ -461,7 +470,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "required_icon": "fas fa-star",
             "autocomplete": "none",
             "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": {}
+            "autocomplete_data": []
         },
         {
             "id": "invoice_date",
@@ -479,7 +488,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "required_icon": "fas fa-star",
             "autocomplete": "none",
             "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": {}
+            "autocomplete_data": []
         },
         {
             "id": "invoice_due_date",
@@ -497,7 +506,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "required_icon": "far fa-star",
             "autocomplete": "none",
             "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": {}
+            "autocomplete_data": []
         },
         {
             "id": "vat_rate",
@@ -515,7 +524,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "required_icon": "fas fa-star",
             "autocomplete": "none",
             "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": {}
+            "autocomplete_data": []
         },
         {
             "id": "no_rate_amount",
@@ -533,7 +542,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "required_icon": "fas fa-star",
             "autocomplete": "none",
             "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": {}
+            "autocomplete_data": []
         },
         {
             "id": "vat_amount",
@@ -551,7 +560,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "required_icon": "fas fa-star",
             "autocomplete": "none",
             "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": {}
+            "autocomplete_data": []
         },
         {
             "id": "accounting_plan",
@@ -564,7 +573,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "required_icon": "far fa-star",
             "autocomplete": "none",
             "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": {}
+            "autocomplete_data": []
         },
         {
             "id": "total_vat",
@@ -582,7 +591,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "required_icon": "fas fa-star",
             "autocomplete": "none",
             "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": {}
+            "autocomplete_data": []
         },
         {
             "id": "total_ttc",
@@ -599,7 +608,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "required_icon": "fas fa-star",
             "autocomplete": "none",
             "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": {}
+            "autocomplete_data": []
         },
         {
             "id": "total_ht",
@@ -616,7 +625,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "required_icon": "fas fa-star",
             "autocomplete": "none",
             "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": {}
+            "autocomplete_data": []
         }
     ]
 }');

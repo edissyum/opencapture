@@ -73,3 +73,13 @@ chown -R "$user":"$user" $OCForInvoicesPath/bin/scripts/splitter_inputs/*.sh
 systemctl restart apache2
 systemctl restart OCForInvoices-worker
 systemctl restart OCForInvoices_Split-worker
+
+# Display a message if a SQL migration file is present for new version
+if test -f "migration_sql/$latest_tag.sql"; then
+    echo "########################################################"
+    echo "                 Version : $latest_tag"
+    echo "    A script containing database changes is present"
+    echo "      If necessary, do not hesitate to execute it"
+    echo " in order to take advantage of the latest modifications"
+    echo "########################################################"
+fi

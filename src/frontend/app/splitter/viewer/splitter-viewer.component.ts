@@ -94,7 +94,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     DropListDocumentsIds        : string[]      = [];
     toolSelectedOption          : string        = "";
     batchMetadataValues         : any           = {};
-    inputMode                   : string        = "Auto";
+    inputMode                   : string        = "Manual";
     defaultDoctype              : any           = {
         label       : null,
         key         : null,
@@ -194,7 +194,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                 this.loadDocuments();
                 this.loadDefaultDocType();
                 this.loadOutputsData();
-                this.loadReferential();
+                this.loadReferentialOnView();
             }),
             catchError((err: any) => {
                 this.loading = false;
@@ -389,7 +389,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     getFormForDocument(documentIndex: number) {
         const newForm = new FormGroup({});
         for (const field of this.fieldsCategories['document_metadata']) {
-            const control = new FormControl();
+            const control = field.required ? new FormControl('', Validators.required): new FormControl('');
             const labelShort = field.label_short;
             if(this.documents[documentIndex]['customFieldsValues'].hasOwnProperty(labelShort))
                 control.setValue(this.documents[documentIndex]['customFieldsValues'][labelShort]);
@@ -398,7 +398,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             });
             newForm.addControl(labelShort, control);
             if (field.metadata_key) { // used to control autocomplete search fields
-                const controlSearch = new FormControl();
+                const controlSearch = new FormControl('');
                 newForm.addControl("search_" + labelShort, controlSearch);
             }
         }
@@ -494,7 +494,23 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         }
     }
 
-    loadReferential(): void {
+    loadReferentialOnView(): void {
+        this.http.get(API_URL + `/ws/splitter/metadataMethods/${this.currentBatch.formId}`, {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                if(data.metadataMethods[0].callOnSplitterView){
+                    this.loadReferential(false);
+                }
+            }),
+            catchError((err: any) => {
+                this.loading = false;
+                this.notify.handleErrors(err);
+                console.debug(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    loadReferential(refreshAfterLoad: boolean): void {
         this.metadata = [];
         this.http.get(API_URL + `/ws/splitter/loadReferential/${this.currentBatch.formId}`, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -510,6 +526,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                         this.fillData((autocompletionValue[0]));
                         this.setValuesFromSavedMetadata(autocompletionValue[0]);
                     }
+                }
+                if(refreshAfterLoad){
+                    this.loadSelectedBatch();
                 }
                 this.notify.success(this.translate.instant('SPLITTER.referential_updated'));
             }),
@@ -567,6 +586,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                                 'searchMask'    : field.searchMask,
                                 'resultMask'    : field.resultMask,
                             });
+                            if(field.metadata_key && fieldCategory === 'batch_metadata'){
+                                this.inputMode = 'Auto';
+                            }
                         });
                     }
                 }
@@ -877,12 +899,22 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     validateWithConfirmation() {
+        if(!this.batchForm.valid && this.inputMode === "Manual"){
+            this.notify.error(this.translate.instant('SPLITTER.error_empty_document_metadata'));
+            this.loading = false;
+            return;
+        }
         if(this.inputMode === 'Auto' && !this.batchMetadataValues.metadataId && this.fieldsCategories['batch_metadata'].length !== 0){
-            this.notify.error(this.translate.instant('SPLITTER.error_no_metadata'));
+            this.notify.error(this.translate.instant('SPLITTER.error_empty_batch_metadata'));
             return;
         }
         for (const document of this.documents) {
-            if (!document.documentTypeKey) {
+            if(!document.form.valid){
+                this.notify.error(this.translate.instant('SPLITTER.error_empty_document_metadata'));
+                this.loading = false;
+                return;
+            }
+            if(!document.documentTypeKey) {
                 document.class = "text-red-500";
                 this.notify.error(this.translate.instant('SPLITTER.error_no_doc_type'));
                 this.loading = false;
@@ -890,6 +922,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             } else
                 document.class = "";
         }
+
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
             data:{
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),

@@ -18,7 +18,7 @@ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/
 import {AfterContentInit, AfterViewInit, Component, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {marker} from "@biesbjerg/ngx-translate-extract-marker";
-import {FormBuilder, FormControl} from "@angular/forms";
+import {FormBuilder, FormControl, Validators} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MatDialog} from "@angular/material/dialog";
 import {UserService} from "../../../../services/user.service";
@@ -84,6 +84,13 @@ export class CreateSupplierComponent implements OnInit {
             label: marker('ACCOUNTS.iban'),
             type: 'text',
             control: new FormControl(),
+            required: false
+        },
+        {
+            id: 'email',
+            label: marker('ACCOUNTS.email'),
+            type: 'text',
+            control: new FormControl('', Validators.email),
             required: false
         },
         {
@@ -296,6 +303,9 @@ export class CreateSupplierComponent implements OnInit {
                 if (element.required && !(element.value || element.control.value)) {
                     error = this.translate.instant('AUTH.field_required');
                 }
+            }
+            if (element.control.errors && element.control.errors.email) {
+                error = this.translate.instant('ACCOUNTS.email_format_error');
             }
         });
         return error;

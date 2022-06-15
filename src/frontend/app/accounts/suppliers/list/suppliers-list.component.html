@@ -7,7 +7,7 @@
             <div class="absolute left-4 top-0">
                 <mat-form-field>
                     <mat-label>{{ 'ACCOUNTS.search_supplier' | translate }}</mat-label>
-                    <input matInput type="text" (keyup)="searchSupplier($event)">
+                    <input matInput type="text" [disabled]="this.loading" (keyup)="searchSupplier($event)">
                 </mat-form-field>
             </div>
             <h3 class="text-center">{{ this.serviceSettings.getTitle() }}</h3>

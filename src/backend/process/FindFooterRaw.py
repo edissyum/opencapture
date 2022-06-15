@@ -22,7 +22,7 @@ from ..functions import search_by_positions, search_custom_positions
 
 
 class FindFooterRaw:
-    def __init__(self, ocr, log, regex, config, files, database, supplier, file, text, typo, docservers, target='footer', nb_pages=False):
+    def __init__(self, ocr, log, regex, config, files, database, supplier, file, text, docservers, target='footer', nb_pages=False):
         self.date = ''
         self.Ocr = ocr
         self.text = text
@@ -38,7 +38,6 @@ class FindFooterRaw:
         self.totalTTC = {}
         self.vatRate = {}
         self.vatAmount = {}
-        self.typo = typo
         self.rerun = False
         self.rerun_as_text = False
         self.splitted = False
@@ -69,14 +68,14 @@ class FindFooterRaw:
                 tmp = re.finditer(r'[-+]?\d*[.,]+\d+([.,]+\d+)?|\d+', data)
                 result = ''
                 i = 0
-                for t in tmp:
-                    if ('.' in t.group() or ',' in t.group()) and i > 1:
+                for _t in tmp:
+                    if ('.' in _t.group() or ',' in _t.group()) and i > 1:
                         # If two amounts are found, separate them
                         continue
-                    number_formatted = t.group()
+                    number_formatted = _t.group()
                     if regex != self.regex['vatRateRegex']:
                         try:
-                            text = t.group().replace(' ', '.')
+                            text = _t.group().replace(' ', '.')
                             text = text.replace('\x0c', '')
                             text = text.replace('\n', '')
                             text = text.replace(',', '.')
@@ -304,7 +303,11 @@ class FindFooterRaw:
                 self.Files.open_img(improved_image)
                 self.text = self.Ocr.text_builder(self.Files.img)
                 return self.run(text_as_string=True)
-            return False
+            total_ht = self.return_max(self.totalHT)
+            total_ttc = self.return_max(self.totalTTC)
+            vat_rate = self.return_max(self.vatRate)
+            vat_amount = self.return_max(self.vatAmount)
+            return [total_ht, total_ttc, vat_rate, self.nbPage, vat_amount]
 
     @staticmethod
     def return_max(value):

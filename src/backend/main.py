@@ -82,7 +82,7 @@ def create_classes_from_current_config():
     _regex = database.select({
         'select': ['regex_id', 'content'],
         'table': ['regex'],
-        'where': ['lang = %s'],
+        'where': ["lang in ('global', %s)"],
         'data': [configurations['locale']],
     })
 
@@ -143,7 +143,7 @@ def create_classes(config_file):
     _regex = database.select({
         'select': ['regex_id', 'content'],
         'table': ['regex'],
-        'where': ['lang = %s'],
+        'where': ["lang in ('global', %s)"],
         'data': [configurations['locale']],
     })
 

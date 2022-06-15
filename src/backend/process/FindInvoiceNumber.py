@@ -17,11 +17,12 @@
 
 import re
 import json
+from datetime import datetime
 from ..functions import search_by_positions, search_custom_positions
 
 
 class FindInvoiceNumber:
-    def __init__(self, ocr, files, log, regex, config, database, supplier, file, text, nb_pages, custom_page, footer_text, docservers, configurations):
+    def __init__(self, ocr, files, log, regex, config, database, supplier, file, text, nb_pages, custom_page, footer_text, docservers, configurations, languages):
         self.vatNumber = ''
         self.Ocr = ocr
         self.text = text
@@ -33,17 +34,81 @@ class FindInvoiceNumber:
         self.docservers = docservers
         self.configurations = configurations
         self.supplier = supplier
-        self.Database = database
+        self.database = database
         self.file = file
         self.nbPages = nb_pages
         self.customPage = custom_page
+        self.languages = languages
+
+    def format_date(self, date, position, convert=False):
+        if date:
+            date = date.replace('1er', '01')  # Replace some possible inconvenient char
+            date = date.replace(',', ' ')  # Replace some possible inconvenient char
+            date = date.replace('/', ' ')  # Replace some possible inconvenient char
+            date = date.replace('-', ' ')  # Replace some possible inconvenient char
+            date = date.replace('.', ' ')  # Replace some possible inconvenient char
+    
+            regex = self.regex
+            language = self.configurations['locale']
+            if self.supplier and self.supplier[2]['document_lang']:
+                language = self.supplier[2]['document_lang']
+                if self.supplier[2]['document_lang'] != self.configurations['locale']:
+                    _regex = self.database.select({
+                        'select': ['regex_id', 'content'],
+                        'table': ['regex'],
+                        'where': ["lang in ('global', %s)"],
+                        'data': [self.configurations['locale']],
+                    })
+                    if _regex:
+                        regex = {}
+                        for _r in _regex:
+                            regex[_r['regex_id']] = _r['content']
+    
+            if convert:
+                date_file = self.docservers['LOCALE_PATH'] + '/' + language + '.json'
+                with open(date_file, encoding='UTF-8') as file:
+                    _fp = json.load(file)
+                    date_convert = _fp['dateConvert'] if 'dateConvert' in _fp else ''
+                for key in date_convert:
+                    for month in date_convert[key]:
+                        if month.lower() in date.lower():
+                            date = (date.lower().replace(month.lower(), key))
+                            break
+            try:
+                # Fix to handle date with 2 digits year
+                date = date.replace('  ', ' ')
+                length_of_year = len(date.split(' ')[2])
+                date_format = "%d %m %Y"
+    
+                for _l in self.languages:
+                    if language == self.languages[_l]['lang_code']:
+                        date_format = self.languages[_l]['date_format']
+    
+                if length_of_year == 2:
+                    date_format = date_format.replace('%Y', '%y')
+    
+                date = datetime.strptime(date, date_format).strftime(regex['formatDate'])
+                # Check if the date of the document isn't too old. 62 (default value) is equivalent of 2 months
+                today = datetime.now()
+                doc_date = datetime.strptime(date, regex['formatDate'])
+                timedelta = today - doc_date
+
+                if timedelta.days < 0:
+                    date = False
+                return date, position
+            except (ValueError, IndexError) as _e:
+                return False
+        else:
+            return False
 
     def sanitize_invoice_number(self, data):
         invoice_res = data
         # If the regex return a date, remove it
         for _date in re.finditer(r"" + self.regex['dateRegex'] + "", data):
             if _date.group():
-                invoice_res = data.replace(_date.group(), '')
+                date = self.format_date(_date.group(), (('', ''), ('', '')), True)
+                if date[0] is not False:
+                    invoice_res = data.replace(_date.group(), '')
 
         # Delete the invoice keyword
         tmp_invoice_number = re.sub(r"" + self.regex['invoiceRegex'][:-2] + "", '', invoice_res)
@@ -52,12 +117,12 @@ class FindInvoiceNumber:
 
     def run(self):
         if self.supplier:
-            invoice_number = search_by_positions(self.supplier, 'invoice_number', self.Ocr, self.Files, self.Database)
+            invoice_number = search_by_positions(self.supplier, 'invoice_number', self.Ocr, self.Files, self.database)
             if invoice_number and invoice_number[0]:
                 return invoice_number
 
         if self.supplier and not self.customPage:
-            position = self.Database.select({
+            position = self.database.select({
                 'select': [
                     "positions ->> 'invoice_number' as invoice_number_position",
                     "pages ->> 'invoice_number' as invoice_number_page"

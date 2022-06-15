@@ -21,7 +21,7 @@ import os.path
 import shutil
 import datetime
 
-import PyPDF4
+import PyPDF2
 import pandas as pd
 from flask import current_app
 from flask_babel import gettext
@@ -56,22 +56,24 @@ def launch_referential_update(form_data):
     _docservers = _vars[9]
 
     available_methods = _docservers['SPLITTER_METADATA_PATH'] + "/metadata_methods.json"
+    call_on_splitter_view = False
     try:
         with open(available_methods, encoding='UTF-8') as json_file:
             available_methods = json.load(json_file)
-            for available_method in available_methods['methods']:
-                if available_method['id'] == form_data['metadata_method']:
+            for method in available_methods['methods']:
+                if method['id'] == form_data['metadata_method']:
+                    call_on_splitter_view = method['callOnSplitterView']
                     args = {
                         'log': _log,
                         'database': _db,
                         'config': _conf,
                         'docservers': _docservers,
                         'form_id': form_data['form_id'],
-                        'method_data': available_method
+                        'method_data': method
                     }
                     metadata_load = _Splitter.import_method_from_script(_docservers['SPLITTER_METADATA_PATH'],
-                                                                        available_method['script'],
-                                                                        available_method['method'])
+                                                                        method['script'],
+                                                                        method['method'])
                     metadata_load(args)
     except Exception as e:
         response = {
@@ -80,7 +82,7 @@ def launch_referential_update(form_data):
             "message": str(e)
         }
         return response, 500
-    return {'OK': True}, 200
+    return {'OK': True, 'callOnSplitterView': call_on_splitter_view}, 200
 
 
 def retrieve_referential(form_id):
@@ -300,12 +302,13 @@ def export_pdf(batch, documents, parameters, metadata, pages, now, compress_type
         """
             Add PDF file names using masks
         """
+
         mask_args = {
             'mask': parameters['filename'] if 'filename' in parameters else _Files.get_random_string(10),
             'separator': parameters['separator'],
             'extension': parameters['extension']
         }
-        documents[index]['fileName'] = _Splitter.get_mask_result(document, metadata, now, mask_args)
+        documents[index]['fileName'] = _Splitter.get_mask_result(document, document['metadata'], now, mask_args)
     export_pdf_res = _Files.export_pdf(pages, documents, filename, parameters['folder_out'], compress_type, 1)
 
     if not export_pdf_res[0]:
@@ -623,10 +626,10 @@ def get_split_methods():
     return split_methods, 401
 
 
-def get_metadata_methods():
+def get_metadata_methods(form_method=False):
     _vars = create_classes_from_current_config()
     _docservers = _vars[9]
-    metadata_methods = _Splitter.get_metadata_methods(_docservers)
+    metadata_methods = _Splitter.get_metadata_methods(_docservers, form_method)
     if len(metadata_methods) > 0:
         return metadata_methods, 200
     return metadata_methods, 401
@@ -662,8 +665,8 @@ def merge_batches(parent_id, batches):
     parent_max_split_index = splitter.get_documents_max_split_index({'id': parent_id})[0][0]['split_index']
     parent_max_source_page = splitter.get_max_source_page({'id': parent_document_id})[0][0]['source_page']
 
-    parent_pdf = PyPDF4.PdfFileReader(parent_filename)
-    merged_pdf = PyPDF4.PdfFileWriter()
+    parent_pdf = PyPDF2.PdfFileReader(parent_filename)
+    merged_pdf = PyPDF2.PdfFileWriter()
     for page in range(parent_pdf.numPages):
         merged_pdf.addPage(parent_pdf.getPage(page))
 
@@ -672,7 +675,7 @@ def merge_batches(parent_id, batches):
         batch_info = splitter.get_batch_by_id({'id': batch})[0]
         parent_batch_pages += batch_info['page_number']
         batches_info.append(batch_info)
-        pdf = PyPDF4.PdfFileReader(_docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch_info['file_path'])
+        pdf = PyPDF2.PdfFileReader(_docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch_info['file_path'])
         for page in range(pdf.numPages):
             merged_pdf.addPage(pdf.getPage(page))
 

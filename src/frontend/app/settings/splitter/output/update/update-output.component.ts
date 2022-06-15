@@ -240,7 +240,6 @@ export class SplitterUpdateOutputComponent implements OnInit {
                     }
                 );
             }),
-            finalize(() => this.loading = false),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);

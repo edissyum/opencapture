@@ -183,8 +183,6 @@ export class VerifierListComponent implements OnInit {
 
     removeLockByUserId(userId: any) {
         this.http.put(API_URL + '/ws/verifier/invoices/removeLockByUserId/' + userId, {}, {headers: this.authService.headers}).pipe(
-            tap(() => {}),
-            finalize(() => this.loading = false),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
