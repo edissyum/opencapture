@@ -17,8 +17,17 @@
 
 import re
 import json
+from flask import current_app
+from src.backend.functions import get_custom_array
 from ..functions import search_by_positions, search_custom_positions
 
+custom_array = get_custom_array()
+
+if 'FindDate' not in custom_array:
+    from src.backend.process.FindDate import FindDate
+else:
+    FindDate = getattr(__import__(custom_array['FindDate']['path'] + '.' + custom_array['FindDate']['module'],
+                                  fromlist=[custom_array['FindDate']['module']]), custom_array['FindDate']['module'])
 
 class FindInvoiceNumber:
     def __init__(self, ocr, files, log, regex, config, database, supplier, file, text, nb_pages, custom_page, footer_text, docservers, configurations):
@@ -43,7 +52,10 @@ class FindInvoiceNumber:
         # If the regex return a date, remove it
         for _date in re.finditer(r"" + self.regex['dateRegex'] + "", data):
             if _date.group():
-                invoice_res = data.replace(_date.group(), '')
+                date_class = FindDate('', self.log, self.regex, self.configurations, self, None, '', '', '', '', docservers=self.docservers, languages=current_app.config['LANGUAGES'])
+                date = date_class.format_date(_date.group(), (('', ''), ('', '')), True)
+                if date[0] is not False:
+                    invoice_res = data.replace(_date.group(), '')
 
         # Delete the invoice keyword
         tmp_invoice_number = re.sub(r"" + self.regex['invoiceRegex'][:-2] + "", '', invoice_res)
