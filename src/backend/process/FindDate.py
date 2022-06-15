@@ -101,7 +101,6 @@ class FindDate:
                     date = False
                 return date, position
             except (ValueError, IndexError) as _e:
-                print(_e)
                 self.log.info("Date wasn't in a good format : " + date)
                 return False
         else:

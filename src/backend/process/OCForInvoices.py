@@ -200,8 +200,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
                 pages.update({field: custom_fields[field][2]})
 
     # Find invoice number
-    invoice_number_class = FindInvoiceNumber(ocr, files, log, regex, config, database, supplier, file,
-                                             ocr.header_text, 1, False, ocr.footer_text, docservers, configurations)
+    invoice_number_class = FindInvoiceNumber(ocr, files, log, regex, config, database, supplier, file,ocr.header_text,
+                                             1, False, ocr.footer_text, docservers, configurations, languages)
     invoice_number = invoice_number_class.run()
     if not invoice_number:
         invoice_number_class.text = ocr.header_last_text
