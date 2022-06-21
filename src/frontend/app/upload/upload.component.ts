@@ -114,14 +114,14 @@ export class UploadComponent implements OnInit {
         this.sending = true;
         const formData: FormData = new FormData();
 
-        if (this.fileControl.value.length === 0) {
+        if (this.fileControl.value!.length === 0) {
             this.notify.handleErrors(this.translate.instant('UPLOAD.no_file'));
             return;
         }
 
-        for (let i = 0; i < this.fileControl.value.length; i++) {
+        for (let i = 0; i < this.fileControl.value!.length; i++) {
             if (this.fileControl.status === 'VALID') {
-                formData.append(this.fileControl.value[i].name, this.fileControl.value[i]);
+                formData.append(this.fileControl.value![i]['name'], this.fileControl.value![i]);
             } else {
                 this.notify.handleErrors(this.translate.instant('UPLOAD.extension_unauthorized'));
                 return;
@@ -137,7 +137,7 @@ export class UploadComponent implements OnInit {
                 },
             ).pipe(
                 tap(() => {
-                    this.fileControl.setValue('');
+                    this.fileControl.setValue([]);
                     this.notify.success(this.translate.instant('UPLOAD.upload_success'));
                     this.sending = false;
                     this.historyService.addHistory(splitterOrVerifier, 'upload_file', this.translate.instant('HISTORY-DESC.file_uploaded', {input: this.selectedInputTechnicalId}));
