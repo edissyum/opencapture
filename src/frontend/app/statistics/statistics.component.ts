@@ -37,13 +37,13 @@ export class StatisticsComponent implements OnInit {
     loading             : boolean = false;
     options             : any = [
         {
-            'id': 'documents_validated_per_user',
+            'id': 'verifier_documents_validated_per_user',
             'label': this.translate.instant('STATISTICS.verifier_documents_validated_per_user'),
             'function': 'this.getUsersProcessDocument',
             'data': []
         },
         {
-            'id': 'documents_validated_per_forms',
+            'id': 'verifier_documents_validated_per_form',
             'label': this.translate.instant('STATISTICS.verifier_documents_validated_per_form'),
             'function': 'this.getFormsProcessDocument',
             'data': []
