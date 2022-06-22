@@ -32,7 +32,7 @@ import {marker} from "@biesbjerg/ngx-translate-extract-marker";
     styleUrls: ['./statistics.component.scss']
 })
 
-export class StatisticsComponent implements OnInit {
+export class StatisticsComponent {
     currentData         : any = [];
     loading             : boolean = false;
     options             : any = [
@@ -77,10 +77,6 @@ export class StatisticsComponent implements OnInit {
         private notify: NotificationService,
         public serviceSettings: SettingsService,
     ) {}
-
-    ngOnInit(): void {
-
-    }
 
     getFormsProcessDocument(cpt: number) {
         this.http.get(API_URL + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
