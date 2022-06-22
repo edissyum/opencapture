@@ -89,6 +89,10 @@ def retrieve_invoices(args):
         args['where'].append('invoices.status = %s')
         args['data'].append(args['status'])
 
+    if 'form_id' in args:
+        args['where'].append('invoices.form_id = %s')
+        args['data'].append(args['form_id'])
+
     if 'search' in args and args['search']:
         args['table'] = ['invoices', 'accounts_supplier']
         args['left_join'] = ['invoices.supplier_id = accounts_supplier.id']

@@ -17,7 +17,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import {API_URL} from "../env";
-import {catchError, tap} from "rxjs/operators";
+import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {AuthService} from "../../services/auth.service";
@@ -33,16 +33,23 @@ import {marker} from "@biesbjerg/ngx-translate-extract-marker";
 })
 
 export class StatisticsComponent implements OnInit {
-    data    : any = [];
-    users   : any = [];
-    loading : boolean = true;
-    options : any = [
+    currentData         : any = [];
+    loading             : boolean = false;
+    options             : any = [
         {
-            'id': 'invoices_validated_per_user',
-            'label': this.translate.instant('STATISTICS.invoices_validated_per_user')
+            'id': 'documents_validated_per_user',
+            'label': this.translate.instant('STATISTICS.verifier_documents_validated_per_user'),
+            'function': 'this.getUsersProcessDocument',
+            'data': []
+        },
+        {
+            'id': 'documents_validated_per_forms',
+            'label': this.translate.instant('STATISTICS.verifier_documents_validated_per_form'),
+            'function': 'this.getFormsProcessDocument',
+            'data': []
         }
     ];
-    diagramTypes : any = [
+    diagramTypes        : any = [
         {
             'id': 'vertical-bar',
             'label': marker('STATISTICS.diagram_vertical_bar'),
@@ -60,8 +67,7 @@ export class StatisticsComponent implements OnInit {
         },
 
     ];
-
-    selectedStatistic : any;
+    selectedStatistic   : any;
     selectedDiagramType : string = 'vertical-bar';
 
     constructor(
@@ -73,45 +79,60 @@ export class StatisticsComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.getUsersProcessDocument();
+
     }
 
-    getUsersProcessDocument() {
+    getFormsProcessDocument(cpt: number) {
+        this.http.get(API_URL + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                data.forms.forEach((form: any) => {
+                    this.http.post(API_URL + '/ws/verifier/invoices/list',
+                        {'status': 'END', 'form_id': form.id}, {headers: this.authService.headers})
+                    .pipe(
+                        tap((data: any) => {
+                            this.options[cpt].data.push({
+                                'name': form.label + '(' + form.module + ')',
+                                'value': data.total
+                            });
+                            this.currentData = this.options[cpt].data;
+                        }),
+                        finalize(() => this.loading = false),
+                        catchError((err: any) => {
+                            console.debug(err);
+                            this.notify.handleErrors(err);
+                            return of(false);
+                        })
+                    ).subscribe();
+                });
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+    }
+
+    getUsersProcessDocument(cpt: number) {
         this.http.get(API_URL + '/ws/users/list_full', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.users = [];
-                this.http.get(API_URL + '/ws/history/users', {headers: this.authService.headers}).pipe(
-                    tap((userHistory: any) => {
-                        userHistory.history.forEach((_user: any) => {
-                            data.users.forEach((user: any) => {
-                                if (_user.user_id === user.id) {
-                                    this.users.push(user);
+                this.http.get(API_URL + '/ws/history/list?submodule=invoice_validated', {headers: this.authService.headers}).pipe(
+                    tap((submodules: any) => {
+                        data.users.forEach((user: any) => {
+                            let historyCpt = 0;
+                            submodules.history.forEach((_submodule: any) => {
+                                if (user.id === _submodule.user_id) {
+                                    historyCpt += 1;
                                 }
                             });
+                            this.options[cpt].data.push({
+                                'name': user.lastname + ' ' + user.firstname,
+                                'value': historyCpt
+                            });
+                            this.currentData = this.options[cpt].data;
                         });
-                        this.http.get(API_URL + '/ws/history/list?submodule=invoice_validated', {headers: this.authService.headers}).pipe(
-                            tap((submodules: any) => {
-                                this.users.forEach((user: any) => {
-                                    let historyCpt = 0;
-                                    submodules.history.forEach((_submodule: any) => {
-                                        if (user.id === _submodule.user_id) {
-                                            historyCpt += 1;
-                                        }
-                                    });
-                                    this.data.push({
-                                        'name': user.lastname + ' ' + user.firstname,
-                                        'value': historyCpt
-                                    });
-                                });
-                                this.loading = false;
-                            }),
-                            catchError((err: any) => {
-                                console.debug(err);
-                                this.notify.handleErrors(err);
-                                return of(false);
-                            })
-                        ).subscribe();
                     }),
+                    finalize(() => this.loading = false),
                     catchError((err: any) => {
                         console.debug(err);
                         this.notify.handleErrors(err);
@@ -129,9 +150,17 @@ export class StatisticsComponent implements OnInit {
 
     changeStatistic(event: any) {
         if (event.value) {
-            this.options.forEach((option: any) => {
+            this.options.forEach((option: any, cpt: number) => {
                 if (option.id === event.value) {
                     this.selectedStatistic = option;
+                    if (option.data.length === 0) {
+                        this.currentData = [];
+                        this.loading = true;
+                        eval(option['function'] + '(' + cpt + ')');
+                    }
+                    else {
+                        this.currentData = option.data;
+                    }
                 }
             });
         }

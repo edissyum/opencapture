@@ -652,7 +652,8 @@
 		"diagram_pie_chart": "Diagramme circulaire",
 		"diagram_pie_grid": "Diagramme circulaire en grille",
 		"diagram_vertical_bar": "Diagramme en bâton",
-		"invoices_validated_per_user": "Factures validées par utilisateur"
+		"verifier_documents_validated_per_form": "Documents validés par formulaire (verifier)",
+		"verifier_documents_validated_per_user": "Documents validés par utilisateur (verifier)"
 	},
 	"STATUS": {
 		"list": "Liste des statuts"
