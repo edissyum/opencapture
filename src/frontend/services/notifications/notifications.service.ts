@@ -73,6 +73,8 @@ export class NotificationService {
                 this.router.navigate(['/500']).then(() => {
                     this.error(message);
                 });
+            } else {
+                this.error(message);
             }
         } else if (err.error !== undefined) {
             if (err.error.errors !== undefined) {
