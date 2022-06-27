@@ -660,7 +660,7 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (8, 'update_user', 'ad
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (9, 'roles_list', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (10, 'add_role', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (11, 'update_role', 'administration');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (12, 'custom_fields', 'general');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (12, 'custom_fields', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (13, 'forms_list', 'verifier');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (14, 'add_form', 'verifier');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (15, 'update_form', 'verifier');
@@ -696,9 +696,9 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (44, 'add_document_typ
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (45, 'update_document_type', 'splitter');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (46, 'import_suppliers', 'accounts');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (47, 'statistics', 'general');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (48, 'configurations', 'general');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (49, 'docservers', 'general');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (50, 'regex', 'general');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (48, 'configurations', 'administration');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (49, 'docservers', 'administration');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (50, 'regex', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (51, 'document_type_splitter', 'splitter');
 ALTER SEQUENCE "privileges_id_seq" RESTART WITH 52;
 
