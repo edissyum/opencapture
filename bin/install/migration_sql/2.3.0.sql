@@ -1,3 +1,6 @@
+-- Improve user table security
+ALTER TABLE users ALTER COLUMN role SET NOT NULL;
+
 -- Update privileges to fix bad parent association
 TRUNCATE TABLE privileges;
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (1, 'access_verifier', 'general');
