@@ -35,6 +35,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {DomSanitizer} from "@angular/platform-browser";
 import {ConfigService} from "../../../services/config.service";
 import {HistoryService} from "../../../services/history.service";
+import {FormControl} from "@angular/forms";
 
 interface accountsNode {
     name: string
@@ -105,7 +106,8 @@ export class VerifierListComponent implements OnInit {
     expanded        : boolean           = false;
     invoiceToDeleteSelected : boolean   = false;
     totalChecked    : number            = 0;
-
+    customerFilter                      = new FormControl('');
+    customerFilterEmpty : boolean       = false;
     private _transformer = (node: accountsNode, level: number) => ({
         expandable: !!node.children && node.children.length > 0,
         name: node.name,
@@ -204,7 +206,7 @@ export class VerifierListComponent implements OnInit {
                     purchase_or_sale: '',
                     display: true,
                     count: 0,
-                    children: []
+                    children: [],
                 });
                 this.allowedCustomers.push(0); // 0 is used if for some reasons no customer was recover by OC process
                 this.http.get(API_URL + '/ws/users/getCustomersByUserId/' + this.userService.user.id, {headers: this.authService.headers}).pipe(
@@ -221,7 +223,7 @@ export class VerifierListComponent implements OnInit {
                                         purchase_or_sale: '',
                                         display: true,
                                         count: 0,
-                                        children: []
+                                        children: [],
                                     });
                                 }
                             });
@@ -341,6 +343,7 @@ export class VerifierListComponent implements OnInit {
                     });
                 });
                 this.dataSource.data = this.TREE_DATA;
+                this.filterCustomers();
             }),
             finalize(() => {
                 this.loading = false;
@@ -374,6 +377,26 @@ export class VerifierListComponent implements OnInit {
                 display: true
             });
         }
+    }
+
+    resetSearchCustomer() {
+        this.customerFilter.setValue('');
+        this.filterCustomers();
+    }
+
+    filterCustomers() {
+        const tmpData = this.dataSource.data;
+        this.customerFilterEmpty = false;
+        tmpData.forEach((element: any) => {
+            if (element.name.toLowerCase().includes(this.customerFilter.value!.toLowerCase())) {
+                element.display = true;
+            } else {
+                element.display = false;
+                this.customerFilterEmpty = true;
+            }
+        });
+        console.log(this.customerFilterEmpty);
+        this.dataSource.data = tmpData;
     }
 
     createChildren(purchaseOrSale: any, id: any, index: any) {
