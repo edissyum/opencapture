@@ -110,6 +110,7 @@ def get_totals(args):
     _db = _vars[0]
     error = None
     select = data = []
+
     if 'status' in args and args['status']:
         where = ["status = %s"]
         data = [args['status']]
@@ -125,6 +126,13 @@ def get_totals(args):
 
     if 'allowedCustomers' in args and args['allowedCustomers']:
         where.append('customer_id IN (' + ','.join(map(str, args['allowedCustomers'])) + ')')
+
+    if 'form_id' in args and args['form_id']:
+        if args['form_id'] == 'no_form':
+            where.append('invoices.form_id is NULL')
+        else:
+            where.append('invoices.form_id = %s')
+            data.append(args['form_id'])
 
     total = _db.select({
         'select': select,

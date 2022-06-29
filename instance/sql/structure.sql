@@ -8,7 +8,7 @@ CREATE TABLE "users"
     "enabled"       BOOLEAN     DEFAULT true,
     "status"        VARCHAR(5)  DEFAULT 'OK',
     "creation_date" TIMESTAMP   DEFAULT (CURRENT_TIMESTAMP),
-    "role"          INTEGER     DEFAULT 3
+    "role"          INTEGER     DEFAULT 3 NOT NULL
 );
 
 CREATE TABLE "form_models"
