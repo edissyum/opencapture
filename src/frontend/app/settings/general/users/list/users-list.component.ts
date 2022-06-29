@@ -198,7 +198,7 @@ export class UsersListComponent implements OnInit {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('USER.confirm_enable', {"user": user}),
                 confirmButton       : this.translate.instant('GLOBAL.enable'),
-                confirmButtonColor  : "warn",
+                confirmButtonColor  : "green",
                 cancelButton        : this.translate.instant('GLOBAL.cancel'),
             },
             width: "600px",

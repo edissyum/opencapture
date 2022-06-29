@@ -148,7 +148,7 @@ export class InputsListComponent implements OnInit {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('INPUT.confirm_duplicate', {"input": input}),
                 confirmButton       : this.translate.instant('GLOBAL.duplicate'),
-                confirmButtonColor  : "warn",
+                confirmButtonColor  : "green",
                 cancelButton        : this.translate.instant('GLOBAL.cancel'),
             },
             width: "600px",
