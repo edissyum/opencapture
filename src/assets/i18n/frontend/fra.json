@@ -716,6 +716,7 @@
 		"delete_all_checked": "Supprimer toutes les factures selectionnées de la page",
 		"delete_invoice": "Supprimer la facture",
 		"display": "Affichage",
+		"documents_settings": "Paramètres du document",
 		"expand_all": "Développer tous les clients",
 		"field_settings": "Paramètres du champ",
 		"form_changed": "Formulaire modifié avec succès",

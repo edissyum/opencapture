@@ -159,6 +159,7 @@ export class VerifierListComponent implements OnInit {
         marker('VERIFIER.collapse_all'); // Needed to get the translation in the JSON file
         marker('VERIFIER.select_all'); // Needed to get the translation in the JSON file
         marker('VERIFIER.unselect_all'); // Needed to get the translation in the JSON file
+        marker('VERIFIER.documents_settings'); // Needed to get the translation in the JSON file
         this.localeStorageService.save('splitter_or_verifier', 'verifier');
         this.removeLockByUserId(this.userService.user.username);
         const lastUrl = this.routerExtService.getPreviousUrl();

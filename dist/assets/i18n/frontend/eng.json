@@ -716,6 +716,7 @@
 		"delete_all_checked": "Delete all checked invoices",
 		"delete_invoice": "Delete invoice",
 		"display": "Display",
+		"documents_settings": "Settings document",
 		"expand_all": "Expand all",
 		"field_settings": "Field settings",
 		"form_changed": "Form changed successfully",
