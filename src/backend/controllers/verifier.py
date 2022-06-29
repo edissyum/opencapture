@@ -23,6 +23,7 @@ import datetime
 from xml.dom import minidom
 import xml.etree.ElementTree as Et
 import pandas as pd
+import zeep
 from PIL import Image
 from flask_babel import gettext
 import requests
@@ -730,7 +731,7 @@ def verify_vat_number(vat_number):
             text = gettext('VAT_NOT_VALID')
             return text, 400
         return text, 200
-    except (exceptions.Fault, requests.exceptions.SSLError, requests.exceptions.ConnectionError):
+    except (exceptions.Fault, requests.exceptions.SSLError, requests.exceptions.ConnectionError, zeep.exceptions.XMLSyntaxError):
         return gettext('VAT_API_ERROR'), 201
 
 
