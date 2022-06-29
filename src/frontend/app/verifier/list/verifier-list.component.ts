@@ -457,7 +457,7 @@ export class VerifierListComponent implements OnInit {
     deleteAllInvoices() {
         this.loading = true;
         this.loadingCustomers = true;
-        const checkboxList = document.getElementsByClassName('checkBox_list:checked');
+        const checkboxList = document.querySelectorAll('.checkBox_list:checked');
         Array.from(checkboxList).forEach((element: any) => {
             const invoiceId = element.id.split('_')[0];
             this.deleteInvoice(invoiceId, true);
