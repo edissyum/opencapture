@@ -74,7 +74,8 @@ export class VerifierListComponent implements OnInit {
     loadingCustomers: boolean           = true;
     status          : any[]             = [];
     forms           : any[]             = [
-        {'id' : '', "label": this.translate.instant('VERIFIER.all_forms')}
+        {'id' : '', "label": this.translate.instant('VERIFIER.all_forms')},
+        {'id' : 'no_form', "label": this.translate.instant('VERIFIER.no_form')}
     ];
     config          : any;
     currentForm     : any               = '';

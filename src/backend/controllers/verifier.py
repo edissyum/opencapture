@@ -94,8 +94,11 @@ def retrieve_invoices(args):
         args['data'].append(args['status'])
 
     if 'form_id' in args and args['form_id']:
-        args['where'].append('invoices.form_id = %s')
-        args['data'].append(args['form_id'])
+        if args['form_id'] == 'no_form':
+            args['where'].append('invoices.form_id is NULL')
+        else:
+            args['where'].append('invoices.form_id = %s')
+            args['data'].append(args['form_id'])
 
     if 'search' in args and args['search']:
         args['table'].append('accounts_supplier')
