@@ -108,8 +108,8 @@ export class VerifierViewerComponent implements OnInit {
         char                            : '^[A-Za-z\\s]*$',
         email                           : '^[a-zA-Z0-9_\\.\\+-]+@[a-zA-Z0-9-]+\\.(fr|com|org|eu|law)+$'
     };
-    supplierNamecontrol                 : FormControl =  new FormControl();
-    filteredOptions                     : Observable<any> | any;
+    supplierNamecontrol     : FormControl =  new FormControl();
+    filteredOptions         : Observable<any> | any;
 
     constructor(
         private router: Router,
@@ -666,6 +666,7 @@ export class VerifierViewerComponent implements OnInit {
             // End write
 
             const inputId = $('#select-area-label_' + cpt).attr('class').replace('input_', '').replace('select-none', '');
+            $('#' + inputId).focus();
 
             // Test to avoid multi selection for same label. If same label exists, remove the selected areas and replace it by the new one
             const label = $('div[id*=select-area-label_]:contains(' + this.lastLabel + ')');
@@ -688,12 +689,22 @@ export class VerifierViewerComponent implements OnInit {
                     }, {headers: this.authService.headers})
                     .pipe(
                         tap((data: any) => {
-                            this.updateFormValue(inputId, data.result);
                             this.isOCRRunning = false;
-                            const res = this.saveData(data.result, this.lastId, true);
-                            if (res) {
-                                this.savePosition(this.getSelectionByCpt(selection, cpt));
-                                this.savePages(this.currentPage).then();
+                            const oldPosition = {
+                                x: this.invoice.positions[inputId.trim()].x / this.ratio - ((this.invoice.positions[inputId.trim()].x / this.ratio) * 0.005),
+                                y: this.invoice.positions[inputId.trim()].y / this.ratio - ((this.invoice.positions[inputId.trim()].y / this.ratio) * 0.003),
+                                width: this.invoice.positions[inputId.trim()].width / this.ratio + ((this.invoice.positions[inputId.trim()].width / this.ratio) * 0.05),
+                                height: this.invoice.positions[inputId.trim()].height / this.ratio + ((this.invoice.positions[inputId.trim()].height / this.ratio) * 0.6)
+                            };
+                            const newPosition = this.getSelectionByCpt(selection, cpt);
+                            if (newPosition.x !== oldPosition.x && newPosition.y !== oldPosition.y &&
+                                newPosition.width !== oldPosition.width && newPosition.height !== oldPosition.height) {
+                                this.updateFormValue(inputId, data.result);
+                                const res = this.saveData(data.result, this.lastId, true);
+                                if (res) {
+                                    this.savePosition(newPosition);
+                                    this.savePages(this.currentPage).then();
+                                }
                             }
                         }),
                         catchError((err: any) => {

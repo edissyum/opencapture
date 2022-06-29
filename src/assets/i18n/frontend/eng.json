@@ -652,7 +652,8 @@
 		"diagram_pie_chart": "Pie chart diagram",
 		"diagram_pie_grid": "Pie grid diagram",
 		"diagram_vertical_bar": "Vertical bar diagram",
-		"invoices_validated_per_user": "Invoices validated per user"
+		"verifier_documents_validated_per_form": "Documents validated per form (verifier)",
+		"verifier_documents_validated_per_user": "Documents validated per user (verifier)"
 	},
 	"STATUS": {
 		"list": "List of status"
@@ -701,6 +702,7 @@
 	},
 	"VERIFIER": {
 		"accounting_plan_empty": "There is no linked accounting plan for this supplier",
+		"all_forms": "All forms",
 		"all_invoices_checked_deleted": "All checked invoices was successfully deleted",
 		"autocomplete": "Autocomplete",
 		"calculated_footer": "Get only raw footer is disabled",
@@ -710,9 +712,11 @@
 		"colors": "Colors",
 		"confirm_delete_all_invoices": "Are you sure you want to delete all checked invoices ?",
 		"confirm_delete_invoice": "Are you sure you want to delete this invoice ?",
+		"customer_changed_successfully": "Customer changed successfully",
 		"delete_all_checked": "Delete all checked invoices",
 		"delete_invoice": "Delete invoice",
 		"display": "Display",
+		"documents_settings": "Settings document",
 		"expand_all": "Expand all",
 		"field_settings": "Field settings",
 		"form_changed": "Form changed successfully",
@@ -726,6 +730,8 @@
 		"loading_customers": "Loading customers accounts",
 		"nb_pages": "Number of pages",
 		"no_autocomplete_data": "No autocompletion data",
+		"no_customers_filter": "No customers found",
+		"no_form": "No form associated",
 		"no_form_available": "No form available",
 		"no_outputs_for_this_form": "No outputs for this form",
 		"on": "on",
@@ -735,8 +741,10 @@
 		"page": "Page",
 		"register_date": "Register date",
 		"required": "Required",
+		"reset_customers_search": "Reset customer search",
 		"reset_invoice_list": "Reset invoice list",
 		"search": "Search invoice",
+		"search_customer": "Search customer",
 		"select_all": "Select all",
 		"size": "Size",
 		"suppliers_by_customer": "Accounts list by customer",

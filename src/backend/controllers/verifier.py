@@ -23,6 +23,7 @@ import datetime
 from xml.dom import minidom
 import xml.etree.ElementTree as Et
 import pandas as pd
+import zeep
 from PIL import Image
 from flask_babel import gettext
 import requests
@@ -72,11 +73,14 @@ def retrieve_invoices(args):
     if 'select' not in args:
         args['select'] = []
 
+    args['table'] = ['invoices', 'form_models']
+    args['left_join'] = ['invoices.form_id = form_models.id']
+    args['group_by'] = ['invoices.id', 'invoices.form_id', 'form_models.id']
+
     args['select'].append("DISTINCT(invoices.id) as invoice_id")
     args['select'].append("to_char(register_date, 'DD-MM-YYY " + gettext('AT') + " HH24:MI:SS') as date")
+    args['select'].append('form_models.label as form_label')
     args['select'].append("*")
-    args['table'] = ['invoices']
-    args['left_join'] = []
 
     if 'time' in args:
         if args['time'] in ['today', 'yesterday']:
@@ -89,10 +93,17 @@ def retrieve_invoices(args):
         args['where'].append('invoices.status = %s')
         args['data'].append(args['status'])
 
+    if 'form_id' in args and args['form_id']:
+        if args['form_id'] == 'no_form':
+            args['where'].append('invoices.form_id is NULL')
+        else:
+            args['where'].append('invoices.form_id = %s')
+            args['data'].append(args['form_id'])
+
     if 'search' in args and args['search']:
-        args['table'] = ['invoices', 'accounts_supplier']
-        args['left_join'] = ['invoices.supplier_id = accounts_supplier.id']
-        args['group_by'] = ['invoices.id', 'accounts_supplier.id']
+        args['table'].append('accounts_supplier')
+        args['left_join'].append('invoices.supplier_id = accounts_supplier.id')
+        args['group_by'].append('accounts_supplier.id')
         args['where'].append(
             "(LOWER(original_filename) LIKE '%%" + args['search'].lower() +
             "%%' OR LOWER((datas -> 'invoice_number')::text) LIKE '%%" + args['search'].lower() +
@@ -558,6 +569,7 @@ def export_xml(invoice_id, data):
         # Create the XML filename
         _data = construct_with_var(filename, invoice_info, separator)
         filename = separator.join(str(x) for x in _data) + '.' + extension
+        filename = filename.replace('/', '-').replace(' ', '_')
         # END create the XML filename
 
         # Fill XML with invoice informations
@@ -696,11 +708,13 @@ def verify_siren(token, siren):
 def verify_siret(token, siret):
     _vars = create_classes_from_current_config()
     _cfg = _vars[1]
+    _log = _vars[5]
 
     try:
         res = requests.get(_cfg.cfg['API']['siret-url'] + siret,
                            headers={"Authorization": f"Bearer {token}", "Accept": "application/json"})
-    except (requests.exceptions.SSLError, requests.exceptions.ConnectionError):
+    except (requests.exceptions.SSLError, requests.exceptions.ConnectionError) as _e:
+        _log.error(gettext('API_INSEE_ERROR_CONNEXION') + ' : ' + str(_e))
         return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
 
     _return = json.loads(res.text)
@@ -713,6 +727,7 @@ def verify_siret(token, siret):
 def verify_vat_number(vat_number):
     _vars = create_classes_from_current_config()
     _cfg = _vars[1]
+    _log = _vars[5]
     url = _cfg.cfg['API']['tva-url']
     country_code = vat_number[:2]
     vat_number = vat_number[2:]
@@ -726,18 +741,19 @@ def verify_vat_number(vat_number):
             text = gettext('VAT_NOT_VALID')
             return text, 400
         return text, 200
-    except (exceptions.Fault, requests.exceptions.SSLError, requests.exceptions.ConnectionError):
+    except (exceptions.Fault, requests.exceptions.SSLError, requests.exceptions.ConnectionError, zeep.exceptions.XMLSyntaxError) as _e:
+        _log.error(gettext('VAT_API_ERROR') + ' : ' + str(_e))
         return gettext('VAT_API_ERROR'), 201
 
 
-def get_totals(status, user_id):
+def get_totals(status, user_id, form_id):
     totals = {}
     allowed_customers, _ = user.get_customers_by_user_id(user_id)
     allowed_customers.append(0)  # Update allowed customers to add Unspecified customers
 
-    totals['today'], error = verifier.get_totals({'time': 'today', 'status': status, 'allowedCustomers': allowed_customers})
-    totals['yesterday'], error = verifier.get_totals({'time': 'yesterday', 'status': status, 'allowedCustomers': allowed_customers})
-    totals['older'], error = verifier.get_totals({'time': 'older', 'status': status, 'allowedCustomers': allowed_customers})
+    totals['today'], error = verifier.get_totals({'time': 'today', 'status': status, 'form_id': form_id, 'allowedCustomers': allowed_customers})
+    totals['yesterday'], error = verifier.get_totals({'time': 'yesterday', 'status': status, 'form_id': form_id, 'allowedCustomers': allowed_customers})
+    totals['older'], error = verifier.get_totals({'time': 'older', 'status': status, 'form_id': form_id, 'allowedCustomers': allowed_customers})
     if error is None:
         return totals, 200
     else:
