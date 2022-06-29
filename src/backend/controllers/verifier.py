@@ -73,11 +73,14 @@ def retrieve_invoices(args):
     if 'select' not in args:
         args['select'] = []
 
+    args['table'] = ['invoices', 'form_models']
+    args['left_join'] = ['invoices.form_id = form_models.id']
+    args['group_by'] = ['invoices.id', 'invoices.form_id', 'form_models.id']
+
     args['select'].append("DISTINCT(invoices.id) as invoice_id")
     args['select'].append("to_char(register_date, 'DD-MM-YYY " + gettext('AT') + " HH24:MI:SS') as date")
+    args['select'].append('form_models.label as form_label')
     args['select'].append("*")
-    args['table'] = ['invoices']
-    args['left_join'] = []
 
     if 'time' in args:
         if args['time'] in ['today', 'yesterday']:
@@ -95,9 +98,9 @@ def retrieve_invoices(args):
         args['data'].append(args['form_id'])
 
     if 'search' in args and args['search']:
-        args['table'] = ['invoices', 'accounts_supplier']
-        args['left_join'] = ['invoices.supplier_id = accounts_supplier.id']
-        args['group_by'] = ['invoices.id', 'accounts_supplier.id']
+        args['table'].append('accounts_supplier')
+        args['left_join'].append('invoices.supplier_id = accounts_supplier.id')
+        args['group_by'].append('accounts_supplier.id')
         args['where'].append(
             "(LOWER(original_filename) LIKE '%%" + args['search'].lower() +
             "%%' OR LOWER((datas -> 'invoice_number')::text) LIKE '%%" + args['search'].lower() +

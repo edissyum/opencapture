@@ -282,6 +282,8 @@ export class VerifierListComponent implements OnInit {
                     this.invoices.forEach((invoice: any) => {
                         if (!invoice.thumb.includes('data:image/jpeg;base64'))
                             invoice.thumb = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + invoice.thumb);
+                        if (invoice.form_label === null || invoice.form_label === '' || invoice.form_label === undefined)
+                            invoice.form_label = this.translate.instant('VERIFIER.no_form');
                     });
                 }
 
