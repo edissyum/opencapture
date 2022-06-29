@@ -701,11 +701,13 @@ def verify_siren(token, siren):
 def verify_siret(token, siret):
     _vars = create_classes_from_current_config()
     _cfg = _vars[1]
+    _log = _vars[5]
 
     try:
         res = requests.get(_cfg.cfg['API']['siret-url'] + siret,
                            headers={"Authorization": f"Bearer {token}", "Accept": "application/json"})
-    except (requests.exceptions.SSLError, requests.exceptions.ConnectionError):
+    except (requests.exceptions.SSLError, requests.exceptions.ConnectionError) as _e:
+        _log.error(gettext('API_INSEE_ERROR_CONNEXION') + ' : ' + str(_e))
         return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
 
     _return = json.loads(res.text)
@@ -718,6 +720,7 @@ def verify_siret(token, siret):
 def verify_vat_number(vat_number):
     _vars = create_classes_from_current_config()
     _cfg = _vars[1]
+    _log = _vars[5]
     url = _cfg.cfg['API']['tva-url']
     country_code = vat_number[:2]
     vat_number = vat_number[2:]
@@ -731,7 +734,8 @@ def verify_vat_number(vat_number):
             text = gettext('VAT_NOT_VALID')
             return text, 400
         return text, 200
-    except (exceptions.Fault, requests.exceptions.SSLError, requests.exceptions.ConnectionError, zeep.exceptions.XMLSyntaxError):
+    except (exceptions.Fault, requests.exceptions.SSLError, requests.exceptions.ConnectionError, zeep.exceptions.XMLSyntaxError) as _e:
+        _log.error(gettext('VAT_API_ERROR') + ' : ' + str(_e))
         return gettext('VAT_API_ERROR'), 201
 
 
