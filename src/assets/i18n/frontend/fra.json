@@ -712,6 +712,7 @@
 		"colors": "Couleurs",
 		"confirm_delete_all_invoices": "Êtes-vous sûr de vouloir supprimer toutes les factures de la page ?",
 		"confirm_delete_invoice": "Êtes-vous sûr de vouloir supprimer cette facture ?",
+		"customer_changed_successfully": "Compte client changé avec succès",
 		"delete_all_checked": "Supprimer toutes les factures selectionnées de la page",
 		"delete_invoice": "Supprimer la facture",
 		"display": "Affichage",

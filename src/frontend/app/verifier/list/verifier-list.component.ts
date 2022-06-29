@@ -406,15 +406,35 @@ export class VerifierListComponent implements OnInit {
     filterCustomers() {
         const tmpData = this.dataSource.data;
         this.customerFilterEmpty = false;
+        let customerMatch = false;
         tmpData.forEach((element: any) => {
             if (element.name.toLowerCase().includes(this.customerFilter.value!.toLowerCase())) {
                 element.display = true;
+                customerMatch = true;
             } else {
                 element.display = false;
-                this.customerFilterEmpty = true;
             }
         });
+        if (!customerMatch) this.customerFilterEmpty = true;
         this.dataSource.data = tmpData;
+    }
+
+    changeCustomer(customerId: number, invoiceId: number) {
+        this.loading = true;
+        this.loadingCustomers = true;
+        this.http.put(API_URL + '/ws/verifier/invoices/' + invoiceId + '/update',
+            {'args': {"customer_id": customerId}},
+            {headers: this.authService.headers}).pipe(
+                finalize(() => {
+                    this.resetInvoices();
+                    this.notify.success(this.translate.instant('VERIFIER.customer_changed_successfully'));
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+        ).subscribe();
     }
 
     createChildren(purchaseOrSale: any, id: any, index: any) {
