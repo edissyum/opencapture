@@ -1,6 +1,6 @@
 <mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem">
     <mat-sidenav #sidenav mode="side" opened class="w-96 flex flex-col h-full border-r border-green-400" style="top:0.1rem">
-        <h3 class="text-center text-gray-900 m-0 h-16" style="padding-top: 1.2rem" [class.pointer-events-none]="this.loading">
+        <h3 class="text-center text-gray-900 m-0 h-16" style="padding-top: 1.2rem" [class.pointer-events-none]="this.this.loading">
             <i class="fa-solid fa-sync-alt mr-4 cursor-pointer" (click)="resetInvoices()"
                [matTooltip]="'VERIFIER.reset_invoice_list' | translate"></i>
             {{ "VERIFIER.suppliers_by_customer" | translate }}
@@ -10,14 +10,14 @@
         <mat-divider></mat-divider>
         <div class="pb-6">
             <mat-form-field class="px-4 pt-4 -mb-6 w-full" appearance="outline"
-                            [class.pointer-events-none]="loadingCustomers || this.dataSource.data.length === 0">
+                            [class.pointer-events-none]="this.loadingCustomers || this.dataSource.data.length === 0">
                 <mat-label>
                     {{ 'VERIFIER.search_customer' | translate }}
                 </mat-label>
                 <input matInput type="text" [formControl]="customerFilter"
                        (keyup)="filterCustomers()"
                        autocomplete="off"
-                       [readonly]="loadingCustomers || this.dataSource.data.length === 0">
+                       [readonly]="this.loadingCustomers || this.dataSource.data.length === 0">
                 <button matSuffix class="text-gray-900 cursor-pointer" (click)="resetSearchCustomer()"
                         *ngIf="customerFilter.value">
                     <i class="fa-solid fa-sync-alt text-xl relative" style="top: -.3rem"
@@ -25,7 +25,7 @@
                 </button>
             </mat-form-field>
         </div>
-        <div *ngIf="loadingCustomers || this.dataSource.data.length === 0" class="flex text-gray-400 object-contain"
+        <div *ngIf="this.loadingCustomers || this.dataSource.data.length === 0" class="flex text-gray-400 object-contain"
              style="height: calc(100% - 10rem)">
             <div class="m-auto text-center">
                 <i class="fa-solid fa-users fa-4x fa-beat-fade w-full mb-2" style="--fa-animation-duration: 1.5s;"></i>
@@ -34,7 +34,7 @@
                 </span>
             </div>
         </div>
-        <div *ngIf="this.customerFilter.value && !loadingCustomers && customerFilterEmpty"
+        <div *ngIf="this.customerFilter.value && !this.loadingCustomers && this.customerFilterEmpty"
              class="flex text-gray-400 object-contain" style="height: calc(100% - 10rem)">
             <div class="m-auto text-center">
                 <i class="fa-solid fa-ban fa-4x fa-beat-fade w-full mb-2" style="--fa-animation-duration: 1.5s;"></i>
@@ -43,7 +43,7 @@
                 </span>
             </div>
         </div>
-        <mat-tree *ngIf="!loadingCustomers && this.dataSource.data.length !== 0" [dataSource]="dataSource" [treeControl]="this.treeControl">
+        <mat-tree *ngIf="!this.loadingCustomers && this.dataSource.data.length !== 0" [dataSource]="this.dataSource" [treeControl]="this.treeControl">
             <mat-tree-node style="min-height: 24px" class="pl-12 cursor-pointer hover:bg-black hover:bg-opacity-20"
                            *matTreeNodeDef="let node; when:isLevelTwo;" (click)="loadInvoicePerCustomer(node)">
                 <button mat-icon-button disabled>
@@ -90,7 +90,7 @@
             <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-xl text-gray-900"></i>
         </button>
         <mat-tab-group [selectedIndex]="selectedTab" (selectedTabChange)="onTabChange($event)" class="batches overflow-auto" animationDuration="0ms">
-            <mat-tab *ngFor="let batch of batchList"  [id]="batch.id" [disabled]="loading">
+            <mat-tab *ngFor="let batch of batchList"  [id]="batch.id" [disabled]="this.loading">
                 <ng-template mat-tab-label>
                     <span matBadge="{{ totals[batch.id] }}" matBadgeSize="small" matBadgeOverlap="false">{{ this.translate.instant(batch.label) }}</span>
                 </ng-template>
@@ -105,7 +105,7 @@
                         <div class="w-3/4 m-auto grid grid-cols-2 gap-2">
                             <mat-form-field appearance="outline">
                                 <mat-label>{{ 'STATUS.list' | translate }}</mat-label>
-                                <mat-select [(value)]="this.currentStatus" (selectionChange)="changeStatus($event)" [disabled]="loading">
+                                <mat-select [(value)]="this.currentStatus" (selectionChange)="changeStatus($event)" [disabled]="this.loading">
                                     <mat-option *ngFor="let option of this.status" [value]="option['id']">
                                         {{ option['label'] }}
                                     </mat-option>
@@ -113,14 +113,14 @@
                             </mat-form-field>
                             <mat-form-field appearance="outline">
                                 <mat-label>{{ 'SETTINGS.list_forms' | translate }}</mat-label>
-                                <mat-select [(value)]="this.currentForm" (selectionChange)="changeForm($event)" [disabled]="loading">
+                                <mat-select [(value)]="this.currentForm" (selectionChange)="changeForm($event)" [disabled]="this.loading">
                                     <mat-option *ngFor="let option of this.forms" [value]="option['id']">
                                         {{ option['label'] | translate }}
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>
                         </div>
-                        <span [class.hidden]="loading || total === 0" class="relative right-0">
+                        <span [class.hidden]="this.loading || total === 0" class="relative right-0">
                             <mat-paginator [length]="this.total" [pageSize]="this.pageSize" [pageIndex]="this.pageIndex"
                                            [pageSizeOptions]="this.pageSizeOptions" (page)="onPageChange($event)"></mat-paginator>
                         </span>
@@ -135,14 +135,16 @@
                         </span>
                     </div>
                     <hr class="w-1/2 m-auto mb-4 border-green-400 relative z-30">
-                    <div *ngIf="loading">
+                    <div *ngIf="this.loading">
                         <app-loader></app-loader>
                     </div>
-                    <div class="content mx-10 mt-3" *ngIf="!loading">
+                    <div class="content mx-10 mt-3" *ngIf="!this.loading">
                         <div class="list grid grid-cols-4 grid-flow-row gap-12">
                             <mat-card *ngFor="let invoice of this.invoices;" class="cursor-pointer p-0 mb-0">
                                 <label class="p-5 absolute z-40 cursor-pointer">
-                                    <input id="{{ invoice.invoice_id }}_checkbox" class="accent-green-400 checkBox_list cursor-pointer" type="checkbox" (click)="checkCheckedInvoices()">
+                                    <input id="{{ invoice.invoice_id }}_checkbox"
+                                           class="accent-green-400 checkBox_list cursor-pointer" type="checkbox"
+                                           (click)="checkCheckedInvoices()">
                                 </label>
                                 <div class="absolute right-0 p-5 z-30">
                                     <div [matMenuTriggerFor]="menu" matTooltipPosition="above"
@@ -162,15 +164,19 @@
                                         </button>
                                     </mat-menu>
                                 </div>
-                                <img [routerLink]="invoice.locked ? '/verifier/list' : '/verifier/viewer/'+ invoice.invoice_id"
-                                     mat-card-image class="m-auto p-4" [src]="invoice.thumb" alt="Open-Capture Verifier image"
+                                <img [routerLink]="invoice.locked ? '/verifier/list' : '/verifier/viewer/' + invoice.invoice_id"
+                                     mat-card-image class="m-auto p-4"
+                                     [src]="invoice.thumb" alt="Open-Capture Verifier image"
                                      (click)="invoice.locked ? displayInvoiceLocked(invoice.locked_by) : ''">
-                                <mat-card-header class="leading-6 relative z-10 bg-white pt-4 pl-4 pr-4"
-                                                 [routerLink]="invoice.locked ? '/verifier/list' : '/verifier/viewer/'+ invoice.invoice_id"
-                                                 (click)="invoice.locked ? displayInvoiceLocked(invoice.locked_by) : ''">
+                                <mat-card-header
+                                        class="leading-6 relative z-10 bg-white pt-4 pl-4 pr-4"
+                                        [routerLink]="invoice.locked ? '/verifier/list' : '/verifier/viewer/'+ invoice.invoice_id"
+                                        (click)="invoice.locked ? displayInvoiceLocked(invoice.locked_by) : ''">
                                     <mat-card-title class="break-all">
                                         <span class="leading-7">
-                                            <i [matTooltip]="'VERIFIER.invoice_locked_by' | translate" class="fa-solid fa-lock text-base mb-2 relative" style="bottom: 0.1rem" *ngIf="invoice.locked"></i>
+                                            <i [matTooltip]="'VERIFIER.invoice_locked_by' | translate"
+                                               class="fa-solid fa-lock text-base mb-2 relative" style="bottom: 0.1rem"
+                                               *ngIf="invoice.locked"></i>
                                             {{ invoice.supplier_name ? invoice.supplier_name : 'ACCOUNTS.supplier_unknow' | translate }}
                                         </span>
                                         <span class="absolute right-6 text-green-400 text-base badge badge-secondary badge-pill"
@@ -187,8 +193,9 @@
                                     </mat-card-subtitle>
                                 </mat-card-header>
                                 <mat-card-actions class="pb-4 pl-4">
-                                    <i class="fa-solid fa-trash cursor-pointer text-red-500" (click)="$event.stopPropagation();deleteConfirmDialog(invoice.invoice_id)">
-                                        <span class="font-medium mat-typography">{{ 'VERIFIER.delete_invoice' | translate }}</span>
+                                    <i class="fa-solid fa-trash cursor-pointer text-red-500"
+                                       (click)="$event.stopPropagation();deleteConfirmDialog(invoice.invoice_id)">
+                                       <span class="font-medium mat-typography">{{ 'VERIFIER.delete_invoice' | translate }}</span>
                                     </i>
                                 </mat-card-actions>
                             </mat-card>
