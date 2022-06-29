@@ -93,7 +93,7 @@ def retrieve_invoices(args):
         args['where'].append('invoices.status = %s')
         args['data'].append(args['status'])
 
-    if 'form_id' in args:
+    if 'form_id' in args and args['form_id']:
         args['where'].append('invoices.form_id = %s')
         args['data'].append(args['form_id'])
 
@@ -743,14 +743,14 @@ def verify_vat_number(vat_number):
         return gettext('VAT_API_ERROR'), 201
 
 
-def get_totals(status, user_id):
+def get_totals(status, user_id, form_id):
     totals = {}
     allowed_customers, _ = user.get_customers_by_user_id(user_id)
     allowed_customers.append(0)  # Update allowed customers to add Unspecified customers
 
-    totals['today'], error = verifier.get_totals({'time': 'today', 'status': status, 'allowedCustomers': allowed_customers})
-    totals['yesterday'], error = verifier.get_totals({'time': 'yesterday', 'status': status, 'allowedCustomers': allowed_customers})
-    totals['older'], error = verifier.get_totals({'time': 'older', 'status': status, 'allowedCustomers': allowed_customers})
+    totals['today'], error = verifier.get_totals({'time': 'today', 'status': status, 'form_id': form_id, 'allowedCustomers': allowed_customers})
+    totals['yesterday'], error = verifier.get_totals({'time': 'yesterday', 'status': status, 'form_id': form_id, 'allowedCustomers': allowed_customers})
+    totals['older'], error = verifier.get_totals({'time': 'older', 'status': status, 'form_id': form_id, 'allowedCustomers': allowed_customers})
     if error is None:
         return totals, 200
     else:

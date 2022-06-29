@@ -1,6 +1,6 @@
 <mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem">
     <mat-sidenav #sidenav mode="side" opened class="w-96 flex flex-col h-full border-r border-green-400" style="top:0.1rem">
-        <h3 class="text-center text-gray-900 m-0 h-16" style="padding-top: 1.2rem">
+        <h3 class="text-center text-gray-900 m-0 h-16" style="padding-top: 1.2rem" [class.pointer-events-none]="this.loading">
             <i class="fa-solid fa-sync-alt mr-4 cursor-pointer" (click)="resetInvoices()"
                [matTooltip]="'VERIFIER.reset_invoice_list' | translate"></i>
             {{ "VERIFIER.suppliers_by_customer" | translate }}
@@ -99,14 +99,24 @@
                                    [disabled]="total === 0"
                                    (keyup)="searchInvoice($event)">
                         </mat-form-field>
-                        <mat-form-field class="w-1/2 m-auto" appearance="outline">
-                            <mat-label>{{ 'STATUS.list' | translate }}</mat-label>
-                            <mat-select [(value)]="currentStatus" (selectionChange)="changeStatus($event)" [disabled]="loading">
-                                <mat-option *ngFor="let option of status" [value]="option['id']">
-                                    {{ option['label'] }}
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
+                        <div class="w-3/4 m-auto grid grid-cols-2 gap-2">
+                            <mat-form-field appearance="outline">
+                                <mat-label>{{ 'STATUS.list' | translate }}</mat-label>
+                                <mat-select [(value)]="this.currentStatus" (selectionChange)="changeStatus($event)" [disabled]="loading">
+                                    <mat-option *ngFor="let option of this.status" [value]="option['id']">
+                                        {{ option['label'] }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-form-field appearance="outline">
+                                <mat-label>{{ 'SETTINGS.list_forms' | translate }}</mat-label>
+                                <mat-select [(value)]="this.currentForm" (selectionChange)="changeForm($event)" [disabled]="loading">
+                                    <mat-option *ngFor="let option of this.forms" [value]="option['id']">
+                                        {{ option['label'] | translate }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
                         <span [class.hidden]="loading || total === 0" class="relative right-0">
                             <mat-paginator [length]="this.total" [pageSize]="this.pageSize" [pageIndex]="this.pageIndex"
                                            [pageSizeOptions]="this.pageSizeOptions" (page)="onPageChange($event)"></mat-paginator>

@@ -73,7 +73,11 @@ export class VerifierListComponent implements OnInit {
     loading         : boolean           = true;
     loadingCustomers: boolean           = true;
     status          : any[]             = [];
+    forms           : any[]             = [
+        {'id' : '', "label": this.translate.instant('VERIFIER.all_forms')}
+    ];
     config          : any;
+    currentForm     : any               = '';
     currentStatus   : string            = 'NEW';
     currentTime     : string            = 'today';
     batchList       : any[]             = [
@@ -180,6 +184,18 @@ export class VerifierListComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
+        this.http.get(API_URL + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                data.forms.forEach((form: any) => {
+                    this.forms.push(form);
+                });
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
         this.loadCustomers();
     }
 
@@ -252,7 +268,7 @@ export class VerifierListComponent implements OnInit {
         this.loading = true;
         this.loadingCustomers = true;
         this.invoices = [];
-        this.http.get(API_URL + '/ws/verifier/invoices/totals/' + this.currentStatus + '/' + this.userService.user.id, {headers: this.authService.headers}).pipe(
+        this.http.get(API_URL + '/ws/verifier/invoices/totals/' + this.currentStatus + '/' + this.userService.user.id + '/' + this.currentForm, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.totals = data.totals;
             }),
@@ -264,9 +280,9 @@ export class VerifierListComponent implements OnInit {
         ).subscribe();
         this.http.post(API_URL + '/ws/verifier/invoices/list',
             {
-                'allowedCustomers': this.allowedCustomers, 'status': this.currentStatus, 'allowedSuppliers': this.allowedSuppliers,
-                'time': this.currentTime, 'limit': this.pageSize, 'offset': this.offset, 'search': this.search,
-                'purchaseOrSale': this.purchaseOrSale
+                'allowedCustomers': this.allowedCustomers, 'status': this.currentStatus, 'limit': this.pageSize,
+                'allowedSuppliers': this.allowedSuppliers, 'form_id': this.currentForm, 'time': this.currentTime,
+                'offset': this.offset, 'search': this.search, 'purchaseOrSale': this.purchaseOrSale
             },
             {headers: this.authService.headers}
         ).pipe(
@@ -397,7 +413,6 @@ export class VerifierListComponent implements OnInit {
                 this.customerFilterEmpty = true;
             }
         });
-        console.log(this.customerFilterEmpty);
         this.dataSource.data = tmpData;
     }
 
@@ -442,6 +457,7 @@ export class VerifierListComponent implements OnInit {
         this.allowedSuppliers = [];
         this.purchaseOrSale = '';
         this.search = '';
+        this.currentForm = '';
         this.resetPaginator();
         this.loadCustomers();
     }
@@ -544,6 +560,12 @@ export class VerifierListComponent implements OnInit {
 
     changeStatus(event: any) {
         this.currentStatus = event.value;
+        this.resetPaginator();
+        this.loadInvoices();
+    }
+
+    changeForm(event: any) {
+        this.currentForm = event.value;
         this.resetPaginator();
         this.loadInvoices();
     }

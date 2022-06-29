@@ -702,6 +702,7 @@
 	},
 	"VERIFIER": {
 		"accounting_plan_empty": "There is no linked accounting plan for this supplier",
+		"all_forms": "All forms",
 		"all_invoices_checked_deleted": "All checked invoices was successfully deleted",
 		"autocomplete": "Autocomplete",
 		"calculated_footer": "Get only raw footer is disabled",

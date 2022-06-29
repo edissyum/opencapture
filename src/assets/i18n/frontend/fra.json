@@ -702,6 +702,7 @@
 	},
 	"VERIFIER": {
 		"accounting_plan_empty": "Il n'y a pas de compte de charge lié à ce compte client",
+		"all_forms": "Tous les formulaires",
 		"all_invoices_checked_deleted": "Toutes les factures selectionnées supprimées avec succès",
 		"autocomplete": "Autocomplétion",
 		"calculated_footer": "Contrôle de cohérence du pied de page activé",
