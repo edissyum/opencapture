@@ -566,6 +566,7 @@ def export_xml(invoice_id, data):
         # Create the XML filename
         _data = construct_with_var(filename, invoice_info, separator)
         filename = separator.join(str(x) for x in _data) + '.' + extension
+        filename = filename.replace('/', '-').replace(' ', '_')
         # END create the XML filename
 
         # Fill XML with invoice informations
