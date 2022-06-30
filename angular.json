@@ -27,6 +27,7 @@
                         "allowedCommonJsDependencies": [
                             "clone-deep"
                         ],
+                        "baseHref": "./",
                         "outputPath": "dist/",
                         "index": "src/frontend/index.html",
                         "polyfills": "src/frontend/polyfills.ts",
