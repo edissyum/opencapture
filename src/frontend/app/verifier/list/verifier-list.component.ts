@@ -270,7 +270,11 @@ export class VerifierListComponent implements OnInit {
         this.loading = true;
         this.loadingCustomers = true;
         this.invoices = [];
-        this.http.get(API_URL + '/ws/verifier/invoices/totals/' + this.currentStatus + '/' + this.userService.user.id + '/' + this.currentForm, {headers: this.authService.headers}).pipe(
+        let url = API_URL + '/ws/verifier/invoices/totals/' + this.currentStatus + '/' + this.userService.user.id;
+        if (this.currentForm !== '') {
+            url = API_URL + '/ws/verifier/invoices/totals/' + this.currentStatus + '/' + this.userService.user.id + '/' + this.currentForm;
+        }
+        this.http.get(url, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.totals = data.totals;
             }),
