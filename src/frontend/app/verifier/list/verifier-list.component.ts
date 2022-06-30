@@ -73,10 +73,7 @@ export class VerifierListComponent implements OnInit {
     loading         : boolean           = true;
     loadingCustomers: boolean           = true;
     status          : any[]             = [];
-    forms           : any[]             = [
-        {'id' : '', "label": this.translate.instant('VERIFIER.all_forms')},
-        {'id' : 'no_form', "label": this.translate.instant('VERIFIER.no_form')}
-    ];
+    forms           : any[]             = [];
     config          : any;
     currentForm     : any               = '';
     currentStatus   : string            = 'NEW';
@@ -186,8 +183,17 @@ export class VerifierListComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
-        this.http.get(API_URL + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
+
+        this.loadCustomers();
+    }
+
+    loadForms() {
+        this.http.get(API_URL + '/ws/forms/list?module=verifier&totals=true&status=' + this.currentStatus + '&user_id=' + this.userService.user.id + '&time=' + this.currentTime, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
+                this.forms = [
+                    {'id' : '', "label": this.translate.instant('VERIFIER.all_forms')},
+                    {'id' : 'no_form', "label": this.translate.instant('VERIFIER.no_form')}
+                ];
                 data.forms.forEach((form: any) => {
                     this.forms.push(form);
                 });
@@ -198,7 +204,6 @@ export class VerifierListComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
-        this.loadCustomers();
     }
 
     removeLockByUserId(userId: any) {
@@ -270,6 +275,7 @@ export class VerifierListComponent implements OnInit {
         this.loading = true;
         this.loadingCustomers = true;
         this.invoices = [];
+        this.loadForms();
         let url = API_URL + '/ws/verifier/invoices/totals/' + this.currentStatus + '/' + this.userService.user.id;
         if (this.currentForm !== '') {
             url = API_URL + '/ws/verifier/invoices/totals/' + this.currentStatus + '/' + this.userService.user.id + '/' + this.currentForm;

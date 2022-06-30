@@ -3,7 +3,13 @@
         <mat-tab-group [selectedIndex]="selectedTab" (selectedTabChange)="onTabChange($event)" class="batches overflow-auto" animationDuration="0ms">
             <mat-tab *ngFor="let batch of batchList" [id]="batch.id" [disabled]="isLoading">
                 <ng-template mat-tab-label>
-                    <span matBadge="{{ totals[batch.id] }}" matBadgeSize="small" matBadgeOverlap="false">{{ this.translate.instant(batch.label) }}</span>
+                    <span>
+                        {{ this.translate.instant(batch.label) }}
+                    </span>
+                    <span style="font-size: 12px;" class="text-green-400 ml-3 relative bottom-1.5 font-bold">
+                        {{ this.totals[batch.id] }}
+                    </span>
+<!--                    <span matBadge="{{ this.totals[batch.id] }}" matBadgeSize="small" matBadgeOverlap="false">{{ this.translate.instant(batch.label) }}</span>-->
                 </ng-template>
                 <div class="splitter-container flex flex-col">
                     <div class="grid grid-cols-3 grid-flow-row gap-0 mt-4 z-30">
