@@ -16,6 +16,9 @@ export class PrivilegesService {
         if (user) {
             const userPrivileges = user['privileges'];
             if (userPrivileges) {
+                if (privilegeId === undefined) {
+                    return true;
+                }
                 if (userPrivileges === '*')
                     return true;
 

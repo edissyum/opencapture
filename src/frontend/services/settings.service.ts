@@ -362,11 +362,18 @@ export class SettingsService {
             this.setSelectedParentSettings(selectedParentSetting);
 
         if (selectedParentSetting == null && selectedSetting == null) {
+            let foundSettings = false;
             this.settingsParent.forEach((parent: any) => {
                 if (this.router.url.includes(parent['id'])) {
+                    foundSettings = true;
                     this.setSelectedParentSettings(parent['id']);
                 }
             });
+
+            if (!foundSettings) {
+                this.setSelectedParentSettings('general');
+                this.setSelectedSettings('about-us');
+            }
         }
 
         this.closeOtherParent('', this.selectedParentSetting);
