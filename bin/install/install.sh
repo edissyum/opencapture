@@ -175,6 +175,9 @@ else
 command=$defaultPath/bin/scripts/service_workerOC.sh
 process_name=%(program_name)s_%(process_num)02d
 numprocs=$nbProcess
+user=$user
+chmod=0777
+chown=$user:$group
 socket_owner=$user
 stopsignal=QUIT
 stopasgroup=true
@@ -185,10 +188,13 @@ stderr_logfile=$defaultPath/bin/data/log/Supervisor/OCForInvoices_worker_%(proce
 EOF"
 
     su -c "cat > /etc/supervisor/conf.d/OCForInvoices_Split-worker.conf << EOF
-[program:OCWorker]
+[program:OCWorker-Split]
 command=$defaultPath/bin/scripts/service_workerOC_splitter.sh
 process_name=%(program_name)s_%(process_num)02d
 numprocs=$nbProcess
+user=$user
+chmod=0777
+chown=$user:$group
 socket_owner=$user
 stopsignal=QUIT
 stopasgroup=true
