@@ -98,8 +98,11 @@
                        class="batches overflow-auto" animationDuration="0ms">
             <mat-tab *ngFor="let batch of batchList"  [id]="batch.id" [disabled]="this.loading">
                 <ng-template mat-tab-label>
-                    <span matBadge="{{ totals[batch.id] }}" matBadgeSize="small" matBadgeOverlap="false">
+                    <span>
                         {{ this.translate.instant(batch.label) }}
+                    </span>
+                    <span style="font-size: 12px;" class="text-green-400 ml-3 relative bottom-1.5 font-bold">
+                        {{ this.totals[batch.id] }}
                     </span>
                 </ng-template>
                 <div class="verifier-container flex flex-col">
@@ -126,6 +129,7 @@
                                             [disabled]="this.loading">
                                     <mat-option *ngFor="let option of this.forms" [value]="option['id']">
                                         {{ option['label'] | translate }}
+                                        <span style="font-size: 12px;" class="text-green-400 ml-3 font-bold">{{ option['total'] }}</span>
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>

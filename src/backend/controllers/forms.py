@@ -18,7 +18,8 @@
 
 import json
 from flask_babel import gettext
-from src.backend.import_models import forms, accounts
+from src.backend.import_controllers import user
+from src.backend.import_models import forms, accounts, verifier
 from src.backend.main import create_classes_from_current_config
 
 
@@ -26,6 +27,12 @@ def get_forms(args):
     _forms, error = forms.get_forms(args)
 
     if error is None:
+        if 'totals' in args and args['totals']:
+            for form in _forms:
+                allowed_customers, _ = user.get_customers_by_user_id(args['user_id'])
+                allowed_customers.append(0)  # Update allowed customers to add Unspecified customers
+                total = verifier.get_totals({'time': args['time'], 'status': args['status'], 'form_id': form['id'],'allowedCustomers': allowed_customers})[0]
+                form['total'] = total
         response = {
             "forms": _forms
         }

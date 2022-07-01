@@ -1,9 +1,11 @@
 {
 	"ABOUT-US": {
+		"are_you_in_future": "Are you in the future ?",
 		"dependency": "Dependency",
 		"distributed_under": "Open-Capture is a free and open source software distributed under ",
 		"editor": "Editor",
 		"gnu_license": "the GNU General Public License v3.0",
+		"last_official_version": "Last official version",
 		"lead_dev": "Lead developer",
 		"license": "License",
 		"new_version_available": "New version available",
