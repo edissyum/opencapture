@@ -168,9 +168,6 @@
                                             <button mat-menu-item [matMenuTriggerFor]="required">
                                                 {{ "VERIFIER.required" | translate }} <small class="ml-2"><i class="text-base text-green-400 {{ field.required_icon }}"></i></small>
                                             </button>
-                                            <button mat-menu-item [matMenuTriggerFor]="autocomplete">
-                                                {{ "VERIFIER.autocomplete" | translate }} <small class="ml-2"><i class="text-base text-green-400 {{ field.autocomplete_icon }}"></i></small>
-                                            </button>
                                         </mat-menu>
                                         <mat-menu #size="matMenu">
                                             <button mat-menu-item [id]="field.id"
@@ -211,29 +208,6 @@
                                                     (click)="changeRequired(field.id, required.id, required.icon, category['id'])"
                                                     [class.bg-green-400]="required.id === field.required">
                                                 {{ required.label | translate }}
-                                            </button>
-                                        </mat-menu>
-                                        <mat-menu #autocomplete="matMenu">
-                                            <button mat-menu-item [id]="field.id"
-                                                    *ngFor="let autocompletion of autocompleteList"
-                                                    (click)="changeAutocompletion(field.id, autocompletion.id, autocompletion.icon, category['id'])"
-                                                    [class.bg-green-400]="autocompletion.id === field.autocomplete">
-                                                <span *ngIf="autocompletion.id !== 'none'">
-                                                    <button mat-menu-item [matMenuTriggerFor]="autocomplete_data">
-                                                        {{ autocompletion.label | translate }}
-                                                    </button>
-                                                    <mat-menu #autocomplete_data="matMenu">
-                                                        <button mat-menu-item [id]="field.id"
-                                                                *ngFor="let required of field.autocomplete_data"
-                                                                (click)="changeRequired(field.id, required.id, required.icon, category['id'])"
-                                                                [class.bg-green-400]="required.id === field.required">
-                                                            {{ required.label | translate }}
-                                                        </button>
-                                                    </mat-menu>
-                                                </span>
-                                                <span *ngIf="autocompletion.id === 'none'">
-                                                    {{ autocompletion.label | translate }}
-                                                </span>
                                             </button>
                                         </mat-menu>
                                     </div>

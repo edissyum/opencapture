@@ -66,10 +66,6 @@
 		"login": "Se connecter",
 		"not_connected": "Merci de vous authentifier avant d'accéder à cette page"
 	},
-	"AUTOCOMPLETE": {
-		"export_maarch": "Maarch Courrier",
-		"none": "Aucune autocomplétion"
-	},
 	"BATCH": {
 		"older": "Lots anciens",
 		"today": "Lots du jour",
@@ -706,7 +702,6 @@
 		"accounting_plan_empty": "Il n'y a pas de compte de charge lié à ce compte client",
 		"all_forms": "Tous les formulaires",
 		"all_invoices_checked_deleted": "Toutes les factures selectionnées supprimées avec succès",
-		"autocomplete": "Autocomplétion",
 		"calculated_footer": "Contrôle de cohérence du pied de page activé",
 		"change_form": "Changer de formulaire",
 		"change_form_details": "Les données ne sont pas perdus lors du changement de formulaire",

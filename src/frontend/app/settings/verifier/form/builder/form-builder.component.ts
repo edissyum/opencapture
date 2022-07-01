@@ -98,9 +98,6 @@ export class FormBuilderComponent implements OnInit {
                     format_icon:'fa-solid fa-hashtag',
                     display: 'simple',
                     display_icon:'fa-solid file-alt',
-                    autocomplete: 'none',
-                    autocomplete_icon: 'fa-solid fa-ban',
-                    autocomplete_data: []
                 },
                 {
                     id: 'siret',
@@ -116,9 +113,6 @@ export class FormBuilderComponent implements OnInit {
                     format_icon:'fa-solid fa-calculator',
                     display: 'simple',
                     display_icon:'fa-solid file-alt',
-                    autocomplete: 'none',
-                    autocomplete_icon: 'fa-solid fa-ban',
-                    autocomplete_data: []
                 },
                 {
                     id: 'siren',
@@ -134,9 +128,6 @@ export class FormBuilderComponent implements OnInit {
                     format_icon:'fa-solid fa-calculator',
                     display: 'simple',
                     display_icon:'fa-solid file-alt',
-                    autocomplete: 'none',
-                    autocomplete_icon: 'fa-solid fa-ban',
-                    autocomplete_data: []
                 },
                 {
                     id: 'vat_number',
@@ -152,9 +143,6 @@ export class FormBuilderComponent implements OnInit {
                     format_icon:'fa-solid fa-hashtag',
                     display: 'simple',
                     display_icon:'fa-solid file-alt',
-                    autocomplete: 'none',
-                    autocomplete_icon: 'fa-solid fa-ban',
-                    autocomplete_data: []
                 },
                 {
                     id: 'iban',
@@ -170,9 +158,6 @@ export class FormBuilderComponent implements OnInit {
                     format_icon:'fa-solid fa-hashtag',
                     display: 'simple',
                     display_icon:'fa-solid file-alt',
-                    autocomplete: 'none',
-                    autocomplete_icon: 'fa-solid fa-ban',
-                    autocomplete_data: []
                 },
                 {
                     id: 'email',
@@ -188,9 +173,6 @@ export class FormBuilderComponent implements OnInit {
                     format_icon:'fa-solid fa-at',
                     display: 'simple',
                     display_icon:'fa-solid file-alt',
-                    autocomplete: 'none',
-                    autocomplete_icon: 'fa-solid fa-ban',
-                    autocomplete_data: []
                 },
                 {
                     id: 'address1',
@@ -205,9 +187,6 @@ export class FormBuilderComponent implements OnInit {
                     format_icon:'fa-solid fa-hashtag',
                     display: 'simple',
                     display_icon:'fa-solid file-alt',
-                    autocomplete: 'none',
-                    autocomplete_icon: 'fa-solid fa-ban',
-                    autocomplete_data: []
                 },
                 {
                     id: 'address2',
@@ -222,9 +201,6 @@ export class FormBuilderComponent implements OnInit {
                     format_icon:'fa-solid fa-hashtag',
                     display: 'simple',
                     display_icon:'fa-solid file-alt',
-                    autocomplete: 'none',
-                    autocomplete_icon: 'fa-solid fa-ban',
-                    autocomplete_data: []
                 },
                 {
                     id: 'postal_code',
@@ -239,9 +215,6 @@ export class FormBuilderComponent implements OnInit {
                     format_icon:'fa-solid fa-calculator',
                     display: 'simple',
                     display_icon:'fa-solid file-alt',
-                    autocomplete: 'none',
-                    autocomplete_icon: 'fa-solid fa-ban',
-                    autocomplete_data: []
                 },
                 {
                     id: 'city',
@@ -256,9 +229,6 @@ export class FormBuilderComponent implements OnInit {
                     format_icon:'fa-solid fa-font',
                     display: 'simple',
                     display_icon:'fa-solid file-alt',
-                    autocomplete: 'none',
-                    autocomplete_icon: 'fa-solid fa-ban',
-                    autocomplete_data: []
                 },
                 {
                     id: 'country',
@@ -273,9 +243,6 @@ export class FormBuilderComponent implements OnInit {
                     format_icon:'fa-solid fa-font',
                     display: 'simple',
                     display_icon:'fa-solid file-alt',
-                    autocomplete: 'none',
-                    autocomplete_icon: 'fa-solid fa-ban',
-                    autocomplete_data: []
                 },
             ]
         },
@@ -297,9 +264,6 @@ export class FormBuilderComponent implements OnInit {
                     format_icon: 'fa-solid fa-hashtag',
                     display: 'multi',
                     display_icon:'fa-solid fa-layer-group',
-                    autocomplete: 'none',
-                    autocomplete_icon: 'fa-solid fa-ban',
-                    autocomplete_data: []
                 },
                 {
                     id: 'delivery_number',
@@ -315,9 +279,6 @@ export class FormBuilderComponent implements OnInit {
                     format_icon: 'fa-solid fa-hashtag',
                     display: 'multi',
                     display_icon:'fa-solid fa-layer-group',
-                    autocomplete: 'none',
-                    autocomplete_icon: 'fa-solid fa-ban',
-                    autocomplete_data: []
                 },
                 {
                     id: 'invoice_number',
@@ -333,9 +294,6 @@ export class FormBuilderComponent implements OnInit {
                     format_icon: 'fa-solid fa-hashtag',
                     display: 'simple',
                     display_icon:'fa-solid file-alt',
-                    autocomplete: 'none',
-                    autocomplete_icon: 'fa-solid fa-ban',
-                    autocomplete_data: []
                 },
                 {
                     id: 'quotation_number',
@@ -351,9 +309,6 @@ export class FormBuilderComponent implements OnInit {
                     format_icon: 'fa-solid fa-hashtag',
                     display: 'simple',
                     display_icon:'fa-solid fa-print',
-                    autocomplete: 'none',
-                    autocomplete_icon: 'fa-solid fa-ban',
-                    autocomplete_data: []
                 },
                 {
                     id: 'invoice_date',
@@ -369,9 +324,6 @@ export class FormBuilderComponent implements OnInit {
                     format_icon: 'fa-solid fa-calendar-day',
                     display: 'simple',
                     display_icon:'fa-solid file-alt',
-                    autocomplete: 'none',
-                    autocomplete_icon: 'fa-solid fa-ban',
-                    autocomplete_data: []
                 },
                 {
                     id: 'invoice_due_date',
@@ -387,9 +339,6 @@ export class FormBuilderComponent implements OnInit {
                     format_icon: 'fa-solid fa-calendar-day',
                     display: 'simple',
                     display_icon:'fa-solid file-alt',
-                    autocomplete: 'none',
-                    autocomplete_icon: 'fa-solid fa-ban',
-                    autocomplete_data: []
                 },
                 {
                     id: 'vat_rate',
@@ -405,9 +354,6 @@ export class FormBuilderComponent implements OnInit {
                     format_icon:'fa-solid fa-calculator',
                     display: 'multi',
                     display_icon:'fa-solid fa-layer-group',
-                    autocomplete: 'none',
-                    autocomplete_icon: 'fa-solid fa-ban',
-                    autocomplete_data: []
                 },
                 {
                     id: 'no_rate_amount',
@@ -423,9 +369,6 @@ export class FormBuilderComponent implements OnInit {
                     format_icon:'fa-solid fa-calculator',
                     display: 'multi',
                     display_icon:'fa-solid fa-layer-group',
-                    autocomplete: 'none',
-                    autocomplete_icon: 'fa-solid fa-ban',
-                    autocomplete_data: []
                 },
                 {
                     id: 'vat_amount',
@@ -441,9 +384,6 @@ export class FormBuilderComponent implements OnInit {
                     format_icon:'fa-solid fa-calculator',
                     display: 'multi',
                     display_icon:'fa-solid fa-layer-group',
-                    autocomplete: 'none',
-                    autocomplete_icon: 'fa-solid fa-ban',
-                    autocomplete_data: []
                 },
                 {
                     id: 'accounting_plan',
@@ -457,9 +397,6 @@ export class FormBuilderComponent implements OnInit {
                     class_label: "1/33",
                     display: 'multi',
                     display_icon:'fa-solid fa-layer-group',
-                    autocomplete: 'none',
-                    autocomplete_icon: 'fa-solid fa-ban',
-                    autocomplete_data: []
                 },
                 {
                     id: 'total_ttc',
@@ -474,9 +411,6 @@ export class FormBuilderComponent implements OnInit {
                     format_icon:'fa-solid fa-calculator',
                     display: 'simple',
                     display_icon:'fa-solid file-alt',
-                    autocomplete: 'none',
-                    autocomplete_icon: 'fa-solid fa-ban',
-                    autocomplete_data: []
                 },
                 {
                     id: 'total_ht',
@@ -491,9 +425,6 @@ export class FormBuilderComponent implements OnInit {
                     format_icon:'fa-solid fa-calculator',
                     display: 'simple',
                     display_icon:'fa-solid file-alt',
-                    autocomplete: 'none',
-                    autocomplete_icon: 'fa-solid fa-ban',
-                    autocomplete_data: []
                 },
                 {
                     id: 'total_vat',
@@ -509,9 +440,6 @@ export class FormBuilderComponent implements OnInit {
                     format_icon:'fa-solid fa-calculator',
                     display: 'simple',
                     display_icon:'fa-solid file-alt',
-                    autocomplete: 'none',
-                    autocomplete_icon: 'fa-solid fa-ban',
-                    autocomplete_data: []
                 },
             ]
         },
@@ -685,20 +613,6 @@ export class FormBuilderComponent implements OnInit {
             'id': false,
             'label': marker('MANDATORY.not_required'),
             'icon': 'far fa-star'
-        },
-    ];
-    autocompleteList        : any []    = [
-        {
-            'id': 'none',
-            'label': marker('AUTOCOMPLETE.none'),
-            'icon': 'fa-solid fa-ban',
-            'output': ''
-        },
-        {
-            'id': 'maarch',
-            'label': marker('AUTOCOMPLETE.export_maarch'),
-            'icon': 'fa-solid fa-enveloppe',
-            'output': 'export_maarch'
         },
     ];
 
