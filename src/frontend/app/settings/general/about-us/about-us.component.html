@@ -70,7 +70,7 @@
             </mat-expansion-panel>
         </mat-nav-list>
     </mat-sidenav>
-    <mat-sidenav-content class="bg-white">
+    <mat-sidenav-content class="bg-white overflow-hidden">
         <div *ngIf="loading">
             <app-loader></app-loader>
         </div>
@@ -98,64 +98,66 @@
                 <hr class="border-green-400">
             </div>
         </div>
-        <div id="license" class="text-center mt-10">
-            <h2>{{ 'ABOUT-US.license' | translate }}</h2>
-            {{ 'ABOUT-US.distributed_under' | translate }}&nbsp;
-            <a class="text-green-400" href="https://www.gnu.org/licenses/gpl-3.0.html">
-                {{ 'ABOUT-US.gnu_license' | translate }}
-            </a>
-        </div>
-        <hr class="m-auto mt-10 w-1/2 border-green-400 border-opacity-60">
-        <div class="edissyum text-center mt-10 text-lg" style="line-height: 35px !important;">
-            <h2>{{ 'ABOUT-US.editor' | translate }}</h2>
-            <div class="grid grid-cols-2 gap-10 w-1/2 m-auto">
-                <div class="text-right">
-                    Edissyum Consulting <br>
-                    98 Avenue Pierre Semard <br>
-                    84200 Carpentras
+        <div class="overflow-x-hidden overflow-y-auto" style="height: calc(100% - 64px)">
+            <div id="license" class="text-center mt-10">
+                <h2>{{ 'ABOUT-US.license' | translate }}</h2>
+                {{ 'ABOUT-US.distributed_under' | translate }}&nbsp;
+                <a class="text-green-400" href="https://www.gnu.org/licenses/gpl-3.0.html">
+                    {{ 'ABOUT-US.gnu_license' | translate }}
+                </a>
+            </div>
+            <hr class="m-auto mt-10 w-1/2 border-green-400 border-opacity-60">
+            <div class="edissyum text-center mt-10 text-lg" style="line-height: 35px !important;">
+                <h2>{{ 'ABOUT-US.editor' | translate }}</h2>
+                <div class="grid grid-cols-2 gap-10 w-1/2 m-auto">
+                    <div class="text-right">
+                        Edissyum Consulting <br>
+                        98 Avenue Pierre Semard <br>
+                        84200 Carpentras
+                    </div>
+                    <div class="text-left" style="width: 200%">
+                        {{ 'ABOUT-US.official_website' | translate }} : <a class="text-green-400" href="https://kutt.it/OpenCaptureWebSite">open-capture.com</a><br>
+                        Documentation : <a class="text-green-400" href="https://kutt.it/DocumentationV2">edissyum.gitbook.io/open-capture-for-invoices-v2</a> <br>
+                        Support : <a class="text-green-400" href="https://kutt.it/OCForInvoices_ISSUES">github.com/edissyum/opencaptureforinvoices</a>
+                    </div>
                 </div>
-                <div class="text-left" style="width: 200%">
-                    {{ 'ABOUT-US.official_website' | translate }} : <a class="text-green-400" href="https://kutt.it/OpenCaptureWebSite">open-capture.com</a><br>
-                    Documentation : <a class="text-green-400" href="https://kutt.it/DocumentationV2">edissyum.gitbook.io/open-capture-for-invoices-v2</a> <br>
-                    Support : <a class="text-green-400" href="https://kutt.it/OCForInvoices_ISSUES">github.com/edissyum/opencaptureforinvoices</a>
+            </div>
+            <hr class="m-auto mt-10 w-1/2 border-green-400 border-opacity-60">
+            <div class="logo flex justify-center items-center gap-48 mt-10">
+                <div id="verifier">
+                    <img src="assets/imgs/logo_verifier.png" alt="Open-Capture Verifier">
+                    <hr class="m-auto mt-10 w-1/2 border-green-400">
+                    <h3 class="mt-6">{{ 'ABOUT-US.lead_dev' | translate }} : CHEVAL Nathan</h3>
+                </div>
+                <div id="splitter">
+                    <img src="assets/imgs/logo_splitter.png" alt="Open-Capture Splitter">
+                    <hr class="m-auto mt-10 w-1/2 border-green-400">
+                    <h3 class="mt-6">{{ 'ABOUT-US.lead_dev' | translate }} : BRICH Oussama</h3>
                 </div>
             </div>
-        </div>
-        <hr class="m-auto mt-10 w-1/2 border-green-400 border-opacity-60">
-        <div class="logo flex justify-center items-center gap-48 mt-10">
-            <div id="verifier">
-                <img src="assets/imgs/logo_verifier.png" alt="Open-Capture Verifier">
-                <hr class="m-auto mt-10 w-1/2 border-green-400">
-                <h3 class="mt-6">{{ 'ABOUT-US.lead_dev' | translate }} : CHEVAL Nathan</h3>
-            </div>
-            <div id="splitter">
-                <img src="assets/imgs/logo_splitter.png" alt="Open-Capture Splitter">
-                <hr class="m-auto mt-10 w-1/2 border-green-400">
-                <h3 class="mt-6">{{ 'ABOUT-US.lead_dev' | translate }} : BRICH Oussama</h3>
-            </div>
-        </div>
-        <hr class="m-auto mt-10 w-1/2 border-green-400 border-opacity-60">
-        <div id="dependency" class="text-center mt-10 mb-10">
-            <h2>{{ 'ABOUT-US.dependency' | translate }}</h2>
-            <h4><i>{{ 'ABOUT-US.thanks_to_developers' | translate }}</i></h4>
-            <div>
-                <ul>
-                    <li><a class="text-green-400" href="https://angular.io/">Angular</a></li>
-                    <li><a class="text-green-400" href="https://material.angular.io/">Angular Material</a></li>
-                    <li><a class="text-green-400" href="https://jquery.com/download/">jQuery</a></li>
-                    <li><a class="text-green-400" href="https://github.com/kreuzerk/ng-sortgrid">NgsgModule</a></li>
-                    <li><a class="text-green-400" href="https://github.com/bleenco/ng2-datepicker">DatePickerModule</a></li>
-                    <li><a class="text-green-400" href="https://github.com/telebroad/ngx-file-drag-drop">NgxFileDragDropModule</a></li>
-                    <li><a class="text-green-400" href="https://github.com/ngx-translate/core">NgxTranslateModule</a></li>
-                    <li><a class="text-green-400" href="https://github.com/swimlane/ngx-charts">NgxCharts</a></li>
-                    <li><a class="text-green-400" href="https://github.com/ngx-translate/">NgxTranslate</a></li>
-                    <li><a class="text-green-400" href="https://github.com/Kr0san89/ng-click-outside">Click Outside 2</a></li>
-                    <li><a class="text-green-400" href="https://github.com/tyxla/remove-accents">Remove-accent</a></li>
-                    <li><a class="text-green-400" href="https://github.com/hjnilsson/country-flags">SVG Country Flags</a></li>
-                    <li><a class="text-green-400" href="https://github.com/angular-material-extensions/select-country">Select Country</a></li>
-                    <li><a class="text-green-400" href="https://tailwindcss.com/">Tailwind CSS</a></li>
-                    <li><a class="text-green-400" href="https://fontawesome.com/">FontAwesome</a></li>
-                </ul>
+            <hr class="m-auto mt-10 w-1/2 border-green-400 border-opacity-60">
+            <div id="dependency" class="text-center mt-10 mb-10">
+                <h2>{{ 'ABOUT-US.dependency' | translate }}</h2>
+                <h4><i>{{ 'ABOUT-US.thanks_to_developers' | translate }}</i></h4>
+                <div>
+                    <ul>
+                        <li><a class="text-green-400" target="_blank" href="https://angular.io/">Angular</a></li>
+                        <li><a class="text-green-400" target="_blank" href="https://material.angular.io/">Angular Material</a></li>
+                        <li><a class="text-green-400" target="_blank" href="https://jquery.com/download/">jQuery</a></li>
+                        <li><a class="text-green-400" target="_blank" href="https://github.com/kreuzerk/ng-sortgrid">NgsgModule</a></li>
+                        <li><a class="text-green-400" target="_blank" href="https://github.com/bleenco/ng2-datepicker">DatePickerModule</a></li>
+                        <li><a class="text-green-400" target="_blank" href="https://github.com/telebroad/ngx-file-drag-drop">NgxFileDragDropModule</a></li>
+                        <li><a class="text-green-400" target="_blank" href="https://github.com/ngx-translate/core">NgxTranslateModule</a></li>
+                        <li><a class="text-green-400" target="_blank" href="https://github.com/swimlane/ngx-charts">NgxCharts</a></li>
+                        <li><a class="text-green-400" target="_blank" href="https://github.com/ngx-translate/">NgxTranslate</a></li>
+                        <li><a class="text-green-400" target="_blank" href="https://github.com/Kr0san89/ng-click-outside">Click Outside 2</a></li>
+                        <li><a class="text-green-400" target="_blank" href="https://github.com/tyxla/remove-accents">Remove-accent</a></li>
+                        <li><a class="text-green-400" target="_blank" href="https://github.com/hjnilsson/country-flags">SVG Country Flags</a></li>
+                        <li><a class="text-green-400" target="_blank" href="https://github.com/angular-material-extensions/select-country">Select Country</a></li>
+                        <li><a class="text-green-400" target="_blank" href="https://tailwindcss.com/">Tailwind CSS</a></li>
+                        <li><a class="text-green-400" target="_blank" href="https://fontawesome.com/">FontAwesome</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
     </mat-sidenav-content>
