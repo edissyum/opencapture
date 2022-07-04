@@ -5,6 +5,11 @@
 }
 
 ::ng-deep .batches {
+    & .mat-paginator-page-size {
+        @apply sm:hidden;
+        @apply xl:flex;
+    }
+
     & .mat-tab-header {
         @apply z-20;
         & .mat-tab-label-container > .mat-tab-list > .mat-tab-labels {

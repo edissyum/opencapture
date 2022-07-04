@@ -32,7 +32,8 @@ import {TranslateService} from "@ngx-translate/core";
 })
 
 export class MenuComponent implements OnInit {
-    @Input() image: any;
+    @Input() image              : any;
+    @Input() imageMobile        : any;
     profileDropdownCurrentState : boolean = false;
     mobileMenuState             : boolean = false;
 

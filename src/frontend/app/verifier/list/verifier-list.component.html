@@ -1,5 +1,5 @@
 <mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem">
-    <mat-sidenav #sidenav mode="side" opened class="w-96 flex flex-col h-full border-r border-green-400" style="top:0.1rem">
+    <mat-sidenav #sidenav mode="side" opened class="2xl:w-96 xl:w-80 md:w-72 sm:w-64 flex flex-col h-full border-r border-green-400" style="top:0.1rem">
         <h3 class="text-center text-gray-900 m-0 h-16" style="padding-top: 1.2rem" [class.pointer-events-none]="this.loading">
             <i class="fa-solid fa-sync-alt mr-4 cursor-pointer" (click)="resetInvoices()"
                [matTooltip]="'VERIFIER.reset_invoice_list' | translate"></i>
@@ -15,12 +15,12 @@
                 <mat-label>
                     {{ 'VERIFIER.search_customer' | translate }}
                 </mat-label>
-                <input matInput type="text" [formControl]="customerFilter"
+                <input matInput type="text" [formControl]="this.customerFilter"
                        (keyup)="filterCustomers()"
                        autocomplete="off"
                        [readonly]="this.loadingCustomers || this.dataSource.data.length === 0">
                 <button matSuffix class="text-gray-900 cursor-pointer" (click)="resetSearchCustomer()"
-                        *ngIf="customerFilter.value">
+                        *ngIf="this.customerFilter.value">
                     <i class="fa-solid fa-sync-alt text-xl relative" style="top: -.3rem"
                        [matTooltip]="'VERIFIER.reset_customers_search' | translate"></i>
                 </button>
@@ -94,7 +94,7 @@
             <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened"
                class="fa-solid fa-stream text-xl text-gray-900"></i>
         </button>
-        <mat-tab-group [selectedIndex]="selectedTab" (selectedTabChange)="onTabChange($event)"
+        <mat-tab-group [selectedIndex]="this.selectedTab" (selectedTabChange)="onTabChange($event)"
                        class="batches overflow-auto" animationDuration="0ms">
             <mat-tab *ngFor="let batch of batchList"  [id]="batch.id" [disabled]="this.loading">
                 <ng-template mat-tab-label>
@@ -110,10 +110,10 @@
                         <mat-form-field class="left-4 w-1/2" appearance="outline">
                             <mat-label>{{ 'VERIFIER.search' | translate }}</mat-label>
                             <input matInput type="text" [(ngModel)]="search"
-                                   [disabled]="total === 0"
+                                   [disabled]="this.total === 0"
                                    (keyup)="searchInvoice($event)">
                         </mat-form-field>
-                        <div class="w-3/4 m-auto grid grid-cols-2 gap-2">
+                        <div class="w-full m-auto grid grid-cols-2 gap-2">
                             <mat-form-field appearance="outline">
                                 <mat-label>{{ 'STATUS.list' | translate }}</mat-label>
                                 <mat-select [(value)]="this.currentStatus" (selectionChange)="changeStatus($event)"
@@ -134,7 +134,7 @@
                                 </mat-select>
                             </mat-form-field>
                         </div>
-                        <span [class.hidden]="this.loading || total === 0" class="relative right-0">
+                        <span [class.hidden]="this.loading || this.total === 0" class="relative right-0">
                             <mat-paginator [length]="this.total" [pageSize]="this.pageSize" [pageIndex]="this.pageIndex"
                                            [pageSizeOptions]="this.pageSizeOptions" (page)="onPageChange($event)">
                             </mat-paginator>
@@ -156,12 +156,11 @@
                         <app-loader></app-loader>
                     </div>
                     <div class="content mx-10 mt-3" *ngIf="!this.loading">
-                        <div class="list grid grid-cols-4 grid-flow-row gap-12">
+                        <div class="list grid 2xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-flow-row gap-12">
                             <mat-card *ngFor="let invoice of this.invoices;" class="cursor-pointer p-0 mb-0">
                                 <label class="p-5 absolute z-40 cursor-pointer">
-                                    <input id="{{ invoice.invoice_id }}_checkbox"
-                                           class="accent-green-400 checkBox_list cursor-pointer" type="checkbox"
-                                           (click)="checkCheckedInvoices()">
+                                    <input id="{{ invoice.invoice_id }}_checkbox" (click)="checkCheckedInvoices()"
+                                           class="accent-green-400 checkBox_list cursor-pointer" type="checkbox">
                                 </label>
                                 <div class="absolute right-0 p-5 z-30">
                                     <div [matMenuTriggerFor]="menu" matTooltipPosition="above"
