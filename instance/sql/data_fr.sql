@@ -700,7 +700,8 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (48, 'configurations',
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (49, 'docservers', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (50, 'regex', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (51, 'document_type_splitter', 'splitter');
-ALTER SEQUENCE "privileges_id_seq" RESTART WITH 52;
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (52, 'login_methods', 'administration');
+ALTER SEQUENCE "privileges_id_seq" RESTART WITH 53;
 
 -- CRÉATION DES ROLES
 INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (1, 'superadmin', 'SuperUtilisateur', 'false');
