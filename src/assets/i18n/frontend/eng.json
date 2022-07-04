@@ -1,9 +1,11 @@
 {
 	"ABOUT-US": {
+		"are_you_in_future": "Are you in the future ?",
 		"dependency": "Dependency",
 		"distributed_under": "Open-Capture is a free and open source software distributed under ",
 		"editor": "Editor",
 		"gnu_license": "the GNU General Public License v3.0",
+		"last_official_version": "Last official version",
 		"lead_dev": "Lead developer",
 		"license": "License",
 		"new_version_available": "New version available",
@@ -63,10 +65,6 @@
 		"field_required": "This field is required",
 		"login": "Log in",
 		"not_connected": "Please authenticate yourself before accessing this page"
-	},
-	"AUTOCOMPLETE": {
-		"export_maarch": "Maarch Courrier",
-		"none": "No autocompletion"
 	},
 	"BATCH": {
 		"older": "Older",
@@ -704,7 +702,6 @@
 		"accounting_plan_empty": "There is no linked accounting plan for this supplier",
 		"all_forms": "All forms",
 		"all_invoices_checked_deleted": "All checked invoices was successfully deleted",
-		"autocomplete": "Autocomplete",
 		"calculated_footer": "Get only raw footer is disabled",
 		"change_form": "Change form",
 		"change_form_details": "Data are not loose when you change form",
