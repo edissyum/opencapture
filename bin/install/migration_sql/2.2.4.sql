@@ -7,6 +7,8 @@ DELETE from "regex" WHERE regex_id = 'emailRegex';
 INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('emailRegex', 'global', 'Adresse email', '([A-Za-z0-9]+[.\-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.(fr|com|org|eu|law))+');
 
 -- Improve REGEX
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('quotationRegex', 'fra', 'Numéro de devis', '(((?P<r1>NUMERO|N(O|°|º|R.))?\s*(DE)?\s*(DEVIS)(\s*:)?\s*(?(r1)()|(NUMERO|N(O|°|º|R.)?))(\s*:)?)\s*(:|#){0,1}).*');
+INSERT INTO "regex" ("regex_id", "lang", "label", "content") VALUES ('quotationRegex', 'eng', 'Quotation number', '(QUOT(E|ATION)\s*NUMBER\s*(:)?).*');
 UPDATE "regex" SET "content" = '([JFMASONDjfmasond][a-zA-Z_À-ÿ\.,-]{2,9})\s*(3[01]|[12][0-9]|0?[1-9][\.,-]?)\s*((1|2|3){1}\d{1,3}|(1|2|3))| (((1[0-2]|0?[1-9])|\d{1}\w{2})\s?([JFMASONDjfmasond][a-zA-Z_À-ÿ\.,-]{2,9}|[\/,-\.](3[01]|[12][0-9]|0?[1-9])[\/,-\.])\s?((1|2|3){1}\d{1,3}|(1|2|3)))' WHERE lang = 'eng' AND "regex_id" = 'dateRegex';
 UPDATE "regex" SET "content" = '(?P<r1>TOTAL|^(TOTAL)?\s*AMOUNT(\s*PAID)?)?\s*(:\s*)?(\$|£|€|EUROS|EUR|USD)?\s*(?(r1)()|(T(.)?T(.)?C|\(VAT\s*INCLUDE(D)?\))){1}\s*(:|(\$|£|€|EUROS|EUR|USD))?\s*([0-9]*(\.?\,?\|?\s?)[0-9]+((\.?\,?\s?)[0-9])+|[0-9]+)\s*(\$|£|€|EUROS|EUR|USD)?' WHERE lang = 'eng' AND "regex_id" = 'allRatesRegex';
 UPDATE "regex" SET "content" = '(?P<r1>MONTANT|^\s*TOTAL)?\s*(:\s*)?(€|EUROS|EUR)?\s*(?(r1)()|(T(.)?T(.)?C|\(TVA COMPRISE\)|TVAC|TVA\s*INCLUSE|NET\s*(À|A)\s*PAYER)){1}(\s*(À|A)\s*PAYER)?\s*(:|(€|EUROS|EUR))?\s*([0-9]*(\.?\,?\|?\s?)[0-9]+((\.?\,?\s?)[0-9])+|[0-9]+)\s*(€|EUROS|EUR)?' WHERE lang = 'fra' AND "regex_id" = 'allRatesRegex';
@@ -15,7 +17,6 @@ UPDATE "regex" SET "content" = '(INVOICE\s*NUMBER\s*(:)?).*' WHERE lang = 'eng' 
 UPDATE "regex" SET "content" = '[20, 5, 0]' WHERE lang = 'eng' AND "regex_id" = 'vatRateList';
 UPDATE "regex" SET "content" = '(VAT\s*(AMOUNT\s*)?)(\$|£|€|EUROS|EUR|USD)?\s*.*' WHERE lang = 'eng' AND "regex_id" = 'vatAmountRegex';
 UPDATE "regex" SET "content" = '(20|5)%\s*(VAT)?' WHERE lang = 'eng' AND "regex_id" = 'vatRateRegex';
-UPDATE "regex" SET "content" = '(QUOT(E|ATION)\s*NUMBER\s*(:)?).*' WHERE lang = 'eng' AND "regex_id" = 'quotationRegex';
 UPDATE "regex" SET "content" = '(ORDER\s*NUMBER\s*(:)?).*?' WHERE lang = 'eng' AND "regex_id" = 'orderNumberRegex';
 UPDATE "regex" SET "content" = '(DELIVERY\s*NUMBER\s*(:)?).*' WHERE lang = 'eng' AND "regex_id" = 'deliveryNumberRegex';
 

@@ -65,6 +65,7 @@ import { UpdateUserComponent } from './settings/general/users/update/update-user
 import { RolesListComponent } from './settings/general/roles/list/roles-list.component';
 import { UpdateRoleComponent } from './settings/general/roles/update/update-role.component';
 import { CreateRoleComponent } from './settings/general/roles/create/create-role.component';
+import { LoginMethodsComponent } from './settings/general/login-methods/login-methods.component';
 import { LoaderComponent } from './loader.component';
 import { CustomFieldsComponent } from './settings/general/custom-fields/custom-fields.component';
 import { FormListComponent } from './settings/verifier/form/list/form-list.component';
@@ -172,7 +173,8 @@ export function createTranslateLoader(http: HttpClient) {
         DocserversComponent,
         RegexComponent,
         HintServiceComponent,
-        Error500Component
+        Error500Component,
+        LoginMethodsComponent
     ],
     imports: [
         BrowserModule,

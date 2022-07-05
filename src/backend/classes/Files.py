@@ -475,18 +475,23 @@ class Files:
                         pdf_page.rotateCounterClockwise(-page['rotation'])
                     pdf_writer.addPage(pdf_page)
                 file_path = output_file + '/' + documents[index]['fileName']
-                with open(file_path, 'wb') as file:
-                    pdf_writer.write(file)
-                    paths.append(file_path)
-                pdf_writer = PyPDF2.PdfFileWriter()
 
                 if compress_type:
-                    compressed_file_path = output_file + '/min_' + documents[index]['fileName']
-                    compress_pdf(file_path, compressed_file_path, compress_type)
+                    tmp_filename = '/tmp/' + documents[index]['fileName']
+                    with open(tmp_filename, 'wb') as file:
+                        pdf_writer.write(file)
+                        paths.append(file_path)
+                    pdf_writer = PyPDF2.PdfFileWriter()
+                    compressed_file_path = '/tmp/min_' + documents[index]['fileName']
+                    compress_pdf(tmp_filename, compressed_file_path, compress_type)
                     shutil.move(compressed_file_path, file_path)
-
-        except Exception as e:
-            return False, str(e)
+                else:
+                    with open(file_path, 'wb') as file:
+                        pdf_writer.write(file)
+                        paths.append(file_path)
+                    pdf_writer = PyPDF2.PdfFileWriter()
+        except Exception as err:
+            return False, str(err)
         return paths
 
     @staticmethod

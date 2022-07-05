@@ -292,17 +292,13 @@ def export_maarch(auth_data, file_path, args, batch):
         return response, 400
 
 
-def export_pdf(batch, documents, parameters, metadata, pages, now, compress_type):
+def export_pdf(batch, documents, parameters, pages, now, compress_type):
     _vars = create_classes_from_current_config()
     _cfg = _vars[1]
     _docservers = _vars[9]
     filename = _docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch[0]['file_path']
 
     for index, document in enumerate(documents):
-        """
-            Add PDF file names using masks
-        """
-
         mask_args = {
             'mask': parameters['filename'] if 'filename' in parameters else _Files.get_random_string(10),
             'separator': parameters['separator'],
@@ -310,7 +306,6 @@ def export_pdf(batch, documents, parameters, metadata, pages, now, compress_type
         }
         documents[index]['fileName'] = _Splitter.get_mask_result(document, document['metadata'], now, mask_args)
     export_pdf_res = _Files.export_pdf(pages, documents, filename, parameters['folder_out'], compress_type, 1)
-
     if not export_pdf_res[0]:
         response = {
             "errors": gettext('EXPORT_PDF_ERROR'),
@@ -342,9 +337,6 @@ def save_infos(args):
     _cfg = _vars[1]
     new_documents = []
 
-    """
-        Save batch metadata
-    """
     res = splitter.update_batch({
         'batch_id': args['batch_id'],
         'batch_metadata': args['batch_metadata'],
@@ -357,9 +349,6 @@ def save_infos(args):
         return response, 401
 
     for document in args['documents']:
-        """
-        moved documents
-        """
         res = splitter.update_document({
             'id': document['id'].split('-')[-1],
             'display_order': document['displayOrder'],
@@ -371,9 +360,6 @@ def save_infos(args):
             }
             return response, 401
 
-        """
-            Save documents metadata
-        """
         document['id'] = document['id'].split('-')[-1]
         res = splitter.update_document({
             'id': document['id'].split('-')[-1],
@@ -476,9 +462,6 @@ def validate(args):
     _log = _vars[5]
     _docservers = _vars[9]
 
-    """
-        Save data before validate
-    """
     save_response = save_infos({
         'documents': args['documents'],
         'batch_id': args['batchMetadata']['id'],
@@ -499,9 +482,7 @@ def validate(args):
         'data': [args['batchMetadata']['id']]
     })[0]
     form = forms.get_form_by_id(batch[0]['form_id'])
-    """
-        Split document
-    """
+
     pages = _Splitter.get_split_pages(args['documents'])
 
     if 'outputs' in form[0]:
@@ -509,25 +490,17 @@ def validate(args):
             output = outputs.get_output_by_id(output_id)
             parameters = get_output_parameters(output[0]['data']['options']['parameters'])
             if output:
-                """
-                    Export PDF files if required by output
-                """
                 if output[0]['output_type_id'] in ['export_pdf']:
-                    res_export_pdf = export_pdf(batch, args['documents'], parameters, args['batchMetadata'], pages, now,
+                    res_export_pdf = export_pdf(batch, args['documents'], parameters, pages, now,
                                                 output[0]['compress_type'])
                     if res_export_pdf[1] != 200:
                         return res_export_pdf
-                """
-                    Export XML file if required by output
-                """
                 if output[0]['output_type_id'] in ['export_xml']:
                     form_fields_param = forms.get_form_fields_by_form_id(batch[0]['form_id'])[0]['fields']
                     res_export_xml = export_xml(form_fields_param, args['documents'], parameters, args['batchMetadata'], now)
                     if res_export_xml[1] != 200:
                         return res_export_xml
-                """
-                    Export to CMIS
-                """
+
                 if output[0]['output_type_id'] in ['export_cmis']:
                     cmis_auth = get_output_parameters(output[0]['data']['options']['auth'])
                     cmis_params = get_output_parameters(output[0]['data']['options']['parameters'])
@@ -535,17 +508,15 @@ def validate(args):
                                  cmis_auth['login'],
                                  cmis_auth['password'],
                                  cmis_auth['folder'])
-                    """
-                        Export pdf for Alfresco
-                    """
+
                     pdf_export_parameters = {
                         'extension': 'pdf',
                         'folder_out': _docservers['TMP_PATH'],
                         'separator': cmis_params['separator'],
                         'filename': cmis_params['pdf_filename'],
                     }
-                    res_export_pdf = export_pdf(batch, args['documents'], pdf_export_parameters, args['batchMetadata'],
-                                                pages, now, output[0]['compress_type'])
+                    res_export_pdf = export_pdf(batch, args['documents'], pdf_export_parameters, pages, now,
+                                                output[0]['compress_type'])
                     if res_export_pdf[1] != 200:
                         return res_export_pdf
                     for file_path in res_export_pdf[0]['paths']:
@@ -558,9 +529,7 @@ def validate(args):
                                 "message": cmis_res[1]
                             }
                             return response, 500
-                    """
-                        Export xml for Alfresco
-                    """
+
                     xml_export_parameters = {
                         'separator': cmis_params['separator'],
                         'filename': cmis_params['xml_filename'],
@@ -578,9 +547,7 @@ def validate(args):
                             "message": cmis_res[1]
                         }
                         return response, 500
-                """
-                    Export to Maarch
-                """
+
                 if output[0]['output_type_id'] in ['export_maarch']:
                     cmis_params = get_output_parameters(output[0]['data']['options']['parameters'])
                     maarch_auth = get_output_parameters(output[0]['data']['options']['auth'])
@@ -590,8 +557,8 @@ def validate(args):
                         'separator': cmis_params['separator'],
                         'file_name': cmis_params['filename'],
                     }
-                    res_export_pdf = export_pdf(batch, args['documents'], pdf_export_parameters, args['batchMetadata'],
-                                                pages, now, output[0]['compress_type'])
+                    res_export_pdf = export_pdf(batch, args['documents'], pdf_export_parameters, pages, now,
+                                                output[0]['compress_type'])
                     if res_export_pdf[1] != 200:
                         return res_export_pdf
                     subject_mask = parameters['subject']
@@ -606,14 +573,11 @@ def validate(args):
                         res_export_maarch = export_maarch(maarch_auth, file_path, parameters, batch)
                         if res_export_maarch[1] != 200:
                             return res_export_maarch
-                """
-                    Change status to END
-                """
+
                 splitter.change_status({
                     'id': args['batchMetadata']['id'],
                     'status': 'END'
                 })
-
     return {"OK": True}, 200
 
 

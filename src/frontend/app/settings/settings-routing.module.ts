@@ -54,6 +54,7 @@ import { PositionsMaskListComponent } from "./verifier/positions-mask/list/posit
 import { CreatePositionsMaskComponent } from "./verifier/positions-mask/create/create-positions-mask.component";
 import { UpdatePositionsMaskComponent } from "./verifier/positions-mask/update/update-positions-mask.component";
 import { CreateFolderDocTypeComponent } from "./splitter/doc-types/create-folder/create-folder-doc-type.component";
+import {LoginMethodsComponent} from "./general/login-methods/login-methods.component";
 
 const routes: Routes = [
     {
@@ -79,7 +80,6 @@ const routes: Routes = [
         data: {title: 'SETTINGS.regex', privileges: ['settings', 'regex']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
-    // Users
     {
         path: 'settings/general/users', component: UsersListComponent,
         data: {title: 'SETTINGS.users_list', privileges: ['settings', 'users_list']},
@@ -95,9 +95,6 @@ const routes: Routes = [
         data: {title: 'USER.update', privileges: ['settings', 'update_user']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
-    // END Users
-
-    // Roles
     {
         path: 'settings/general/roles', component: RolesListComponent,
         data: {title: 'SETTINGS.roles_list', privileges: ['settings', 'roles_list']},
@@ -113,7 +110,11 @@ const routes: Routes = [
         data: {title: 'ROLE.update', privileges: ['settings', 'update_role']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
-    // END Roles
+    {
+        path: 'settings/general/login-methods', component: LoginMethodsComponent,
+        data: {title: 'SETTINGS.login_methods', privileges: ['settings', 'login_methods']},
+        canActivate: [LoginRequiredService, HasPrivilegeService]
+    },
     {
         path: 'settings/general/about-us', component: AboutUsComponent,
         data: {title: 'SETTINGS.abouts_us', privileges: ['settings']},

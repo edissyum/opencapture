@@ -71,7 +71,7 @@
         </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content class="bg-white">
-        <div *ngIf="loading">
+        <div *ngIf="this.loading">
             <app-loader></app-loader>
         </div>
         <div class="settings_header">
@@ -84,7 +84,7 @@
                 <div class="absolute right-4 top-0">
                     <mat-form-field appearance="outline">
                         <mat-label>{{ 'CONFIGURATIONS.search_config' | translate }}</mat-label>
-                        <input matInput type="text" [disabled]="this.loading"s (keyup)="searchConfiguration($event)">
+                        <input matInput type="text" [disabled]="this.loading" (keyup)="searchConfiguration($event)">
                     </mat-form-field>
                 </div>
                 <hr class="border-green-400">

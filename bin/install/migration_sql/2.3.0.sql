@@ -1,5 +1,18 @@
 -- Improve user table security
 ALTER TABLE users ALTER COLUMN role SET NOT NULL;
+ALTER TABLE users ALTER COLUMN role DROP DEFAULT;
+
+-- Add LDAP
+CREATE TABLE "login_methods"
+(
+    "id"            SERIAL      UNIQUE PRIMARY KEY,
+    "method_name"   VARCHAR(64) UNIQUE,
+    "method_label"  VARCHAR(255),
+    "enabled"       BOOLEAN     DEFAULT FALSE,
+    "data"          JSONB       DEFAULT '{}'
+);
+INSERT INTO "login_methods" ("method_name", "method_label", "enabled", "data") VALUES ('default', 'Authentification par defaut', True, '{}');
+INSERT INTO "login_methods" ("method_name", "method_label", "enabled", "data") VALUES ('ldap', 'Authentification par LDAP', False, '{"host": "", "port": "", "baseDN": "", "suffix": "","prefix": "", "typeAD": "", "usersDN": "", "classUser": "", "loginAdmin": "", "classObject": "", "passwordAdmin": "", "attributLastName": "", "attributFirstName": "", "attributSourceUser": "", "attributRoleDefault": ""}');
 
 -- Update privileges to fix bad parent association
 TRUNCATE TABLE privileges;

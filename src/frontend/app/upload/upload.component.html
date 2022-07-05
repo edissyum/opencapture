@@ -14,7 +14,7 @@
                 class="absolute left-2 top-2" style="z-index: 999">
             <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened" class="fa-solid fa-stream text-xl text-gray-900"></i>
         </button>
-        <div *ngIf="loading">
+        <div *ngIf="this.loading">
             <app-loader></app-loader>
         </div>
         <ngx-file-drag-drop

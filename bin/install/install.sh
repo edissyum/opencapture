@@ -219,6 +219,7 @@ chown -R "$user":"$user" /tmp/OpenCaptureForInvoices
 ####################
 # Copy file from default one
 cp $defaultPath/instance/config.ini.default $defaultPath/instance/config.ini
+cp $defaultPath/bin/ldap/config/config.ini.default $defaultPath/bin/ldap/config/config.ini
 cp $defaultPath/instance/config/mail.ini.default $defaultPath/instance/config/mail.ini
 cp $defaultPath/instance/config/config_DEFAULT.ini.default $defaultPath/instance/config/config_DEFAULT.ini
 cp $defaultPath/instance/referencial/default_referencial_supplier.ods.default $defaultPath/instance/referencial/default_referencial_supplier.ods
