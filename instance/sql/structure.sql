@@ -333,7 +333,7 @@ CREATE TABLE "login_methods"
     "id"            SERIAL      UNIQUE PRIMARY KEY,
     "method_name"   VARCHAR(64) UNIQUE,
     "method_label"  VARCHAR(255),
-    "status"        BOOLEAN     DEFAULT FALSE,
+    "enabled"       BOOLEAN     DEFAULT FALSE,
     "data"          JSONB       DEFAULT '{}'
 );
 
