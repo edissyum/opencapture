@@ -193,7 +193,6 @@ def check_user_ldap_account(connection, username, username_attribute, base_dn):
         return False
 
 
-# Recuperer le nom de la methode active
 @bp.route('auth/getEnabledLoginMethod', methods=['POST'])
 def get_enabled_login_method():
     res = auth.get_enabled_login_method()
