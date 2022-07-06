@@ -100,15 +100,52 @@ export class SplitterUpdateOutputComponent implements OnInit {
     availableFields     : any           = [
         {
             "labelShort"    : 'HEADER.id',
-            'label'         : 'HEADER.label'
-        },
-        {
-            "labelShort"    : 'doctype',
-            'label'         : 'SETTINGS.document_type'
+            'label'         : marker('HEADER.label')
         },
         {
             "labelShort"    : 'date',
-            'label'         : 'TYPES.date'
+            'label'         : marker('TYPES.date')
+        },
+        {
+            "labelShort"    : 'batch_identifier',
+            'label'         : marker('SPLITTER.batch_identifier')
+        },
+        {
+            "labelShort"    : 'document_identifier',
+            'label'         : marker('SPLITTER.document_identifier')
+        },
+        {
+            "labelShort"    : 'validate_by_firstname',
+            'label'         : marker('OUTPUT.validate_by_lastname')
+        },
+        {
+            "target"        : "all",
+            "labelShort"    : 'validate_by_firstname',
+            'label'         : marker('OUTPUT.validate_by_firstname')
+        },
+        {
+            "labelShort"    : 'doctype',
+            'label'         : marker('SETTINGS.document_type')
+        },
+        {
+            "labelShort"    : 'random',
+            'label'         : marker('OUTPUT.random')
+        },
+        {
+            "labelShort"    : 'filename',
+            'label'         : marker('OUTPUT.filename')
+        },
+        {
+            "labelShort"    : 'documents_count',
+            'label'         : marker('OUTPUT.documents_count')
+        },
+        {
+            "labelShort"    : 'fileIndex',
+            'label'         : marker('OUTPUT.file_index')
+        },
+        {
+            "labelShort"    : 'format',
+            'label'         : marker('OUTPUT.format')
         },
     ];
     testConnectionMapping : any         = {

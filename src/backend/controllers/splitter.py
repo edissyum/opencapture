@@ -327,7 +327,7 @@ def export_xml(fields_param, documents, parameters, metadata, now):
         'extension': parameters['extension']
     }
     file_name = _Splitter.get_mask_result(None, metadata, now, mask_args)
-    res_xml = _Splitter.export_xml(fields_param, documents, metadata, parameters['folder_out'], file_name, now)
+    res_xml = _Splitter.export_xml(fields_param, documents, metadata, parameters, file_name, now)
     if not res_xml[0]:
         response = {
             "errors": gettext('EXPORT_XML_ERROR'),
@@ -444,7 +444,7 @@ def save_infos(args):
     for deleted_pages_id in args['deleted_pages_ids']:
         res = splitter.update_page({
             'page_id': deleted_pages_id,
-            'status': 'DEL',
+            'status': 'NEW',
         })[0]
         if not res:
             response = {
@@ -611,7 +611,7 @@ def validate(args):
                 """
                 splitter.change_status({
                     'id': args['batchMetadata']['id'],
-                    'status': 'END'
+                    'status': 'NEW'
                 })
 
     return {"OK": True}, 200
