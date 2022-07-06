@@ -25,7 +25,9 @@
                     "builder": "@angular-devkit/build-angular:browser",
                     "options": {
                         "allowedCommonJsDependencies": [
-                            "clone-deep"
+                            "moment",
+                            "clone-deep",
+                            "remove-accents"
                         ],
                         "baseHref": "./",
                         "outputPath": "dist/",

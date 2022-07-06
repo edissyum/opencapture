@@ -147,7 +147,9 @@
                                     <mat-label>{{ field.label | translate }}</mat-label>
                                     <input matInput [value]="field.control.value" [formControl]="field.control"
                                            [type]="field.type" [placeholder]="field.placeholder" [required]="field.required">
-                                    <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputsTypesForm[selectedOutputType]['parameters']) }}</mat-error>
+                                    <mat-error *ngIf="field.control.invalid">
+                                        {{ getErrorMessage(field.id, outputsTypesForm[selectedOutputType]['parameters']) }}
+                                    </mat-error>
                                     <mat-hint *ngIf="field.hint">{{ field.hint }}</mat-hint>
                                 </mat-form-field>
                                 <mat-form-field *ngIf="(field.type === 'textarea') && !field.webservice">
@@ -163,7 +165,9 @@
                                     <input matInput [formControl]="field.control" [type]="field.type"
                                            [readonly]="field.webservice && !this.connection"
                                            [placeholder]="field.placeholder" [required]="field.required" [matAutocomplete]="autocomplete">
-                                    <mat-error *ngIf="field.webservice && !this.connection">{{ 'OUTPUT.check_connection_before' | translate }}</mat-error>
+                                    <mat-error *ngIf="field.webservice && !this.connection">
+                                        {{ 'OUTPUT.check_connection_before' | translate }}
+                                    </mat-error>
                                     <mat-hint *ngIf="field.hint">{{ field.hint }}</mat-hint>
                                     <mat-autocomplete #autocomplete="matAutocomplete" [displayWith]="displayFn">
                                         <mat-option *ngFor="let option of field.filteredOptions | async" [value]="option">
@@ -189,8 +193,11 @@
                                 <mat-form-field *ngIf="(field.type === 'text' || field.type === 'number') && !field.webservice">
                                     <mat-label>{{ field.label | translate }}</mat-label>
                                     <input matInput [value]="field.control.value" [formControl]="field.control"
-                                           [type]="field.type" [placeholder]="field.placeholder" [required]="field.required">
-                                    <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputsTypesForm[selectedOutputType]['links']) }}</mat-error>
+                                           [type]="field.type" [placeholder]="field.placeholder"
+                                           [required]="field.required">
+                                    <mat-error *ngIf="field.control.invalid">
+                                        {{ getErrorMessage(field.id, outputsTypesForm[selectedOutputType]['links']) }}
+                                    </mat-error>
                                     <mat-hint *ngIf="field.hint">{{ field.hint }}</mat-hint>
                                 </mat-form-field>
                                 <mat-form-field (focusin)="retrieveDataFromWS(field.id, 'links')" *ngIf="(field.type === 'text' || field.type === 'number') && field.webservice">
@@ -214,15 +221,29 @@
             </form>
         </div>
     </mat-sidenav-content>
-    <mat-sidenav #sidenav2 mode="side" opened position="end" class="available-fields w-1/4 flex flex-col h-full border-r border-green-400">
-        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">{{ "FORMS.available_fields" | translate }}</h3>
+    <mat-sidenav #sidenav2 mode="side" opened position="end"
+                 class="available-fields w-1/4 flex flex-col h-full border-r border-green-400">
+        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">
+            {{ "FORMS.available_fields" | translate }}
+        </h3>
         <mat-divider class="border-green-400"></mat-divider>
-        <div *ngFor="let field of availableFields; let cpt = index" class="my-8 ml-2 text-base">
+        <div *ngIf="this.loadingCustomFields" class="flex text-gray-400 object-contain"
+             style="height: calc(100% - 8rem)">
+            <div class="m-auto text-center">
+                <i class="fa-solid fa-code fa-4x fa-beat-fade w-full mb-2" style="--fa-animation-duration: 1.5s;"></i>
+                <span class="w-full">
+                    {{ 'OUTPUT.loading_custom_fields' | translate }}
+                </span>
+            </div>
+        </div>
+        <div *ngIf="!this.loadingCustomFields" class="overflow-x-hidden overflow-y-auto" style="height: calc(100% - 64px)">
+            <div *ngFor="let field of this.availableFields; let cpt = index" class="my-8 ml-2 text-base">
             <span>
                 {{ field.label | translate }}
                 <span style="font-size: 12px;" class="text-green-400 ml-3">{{ field.id | translate }}</span>
                 <mat-divider class="border-green-400 mt-4" *ngIf="cpt === 0"></mat-divider>
             </span>
+            </div>
         </div>
     </mat-sidenav>
 

@@ -456,6 +456,7 @@
 		"json_input_erorr": "Le champ <b>{{field}}</b> doit être au format JSON avec des doubles quotes",
 		"links": "Liaisons",
 		"links_hint": "Cet onglet permet de paramétrer la liaison d'un document à un autre en se basant sur une donnée spécifique. <br><i>Exemple : Lier une facture à un devis dans Maarch dont le numéro de devis est dans le champ personnalisé numéro 30</i>",
+		"loading_custom_fields": "Chargement des champs personnalisés",
 		"maarch_connection_ko": "Erreur lors de la connexion à Maarch",
 		"maarch_connection_ok": "Connexion à Maarch réalisée avec succès",
 		"no_auth_necessary": "Pas d'authentification nécessaire",

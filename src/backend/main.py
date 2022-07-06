@@ -181,7 +181,7 @@ def str2bool(value):
 OCforInvoices_worker = Kuyruk()
 
 
-@OCforInvoices_worker.task(queue='invoices')
+# @OCforInvoices_worker.task(queue='invoices')
 def launch(args):
     start = time.time()
 
