@@ -46,16 +46,6 @@ class Spreadsheet:
             self.referencialSupplierArray['get_only_raw_footer'] = fp['get_only_raw_footer']
             self.referencialSupplierArray['doc_lang'] = fp['doc_lang']
 
-    def write_typo_ods_sheet(self, vat_number, typo):
-        content_sheet = get_data(self.referencialSuppplierSpreadsheet)
-        for line in content_sheet['Fournisseur']:
-            if line and line[1] == vat_number:
-                try:
-                    line[8] = typo
-                except IndexError:
-                    line.append(typo)
-        save_data(self.referencialSuppplierSpreadsheet, content_sheet)
-
     def update_supplier_ods_sheet(self, _db):
         if os.path.isfile(self.referencialSuppplierSpreadsheet):
             content_sheet = get_data(self.referencialSuppplierSpreadsheet)
@@ -113,20 +103,6 @@ class Spreadsheet:
             save_data(self.referencialSuppplierSpreadsheet, content_sheet)
         else:
             self.log.error('The referencial file doesn\'t exist : ' + self.referencialSuppplierSpreadsheet, False)
-
-    def write_typo_excel_sheet(self, vat_number, typo):
-        content_sheet = pd.read_excel(self.referencialSuppplierSpreadsheet, engine='openpyxl')
-        sheet_name = pd.ExcelFile(self.referencialSuppplierSpreadsheet).sheet_names
-        content_sheet = content_sheet.to_dict(orient='records')
-
-        for line in content_sheet:
-            if line[self.referencialSupplierArray['VATNumber']] == vat_number:
-                line[self.referencialSupplierArray['typology']] = typo
-
-        content_sheet = pd.DataFrame(content_sheet)
-        writer = pd.ExcelWriter(self.referencialSuppplierSpreadsheet, engine='xlsxwriter')
-        content_sheet.to_excel(writer, sheet_name=sheet_name[0])
-        writer.save()
 
     @staticmethod
     def read_excel_sheet(referencial_spreadsheet):
