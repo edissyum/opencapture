@@ -36,11 +36,12 @@ import {HistoryService} from "../../services/history.service";
     styleUrls: ['./profile.component.scss']
 })
 export class UserProfileComponent implements OnInit {
-    headers     : HttpHeaders = this.authService.headers;
-    userId      : any;
-    profile     : any;
-    roles       : any[] = [];
-    profileForm : any[] = [
+    loading         : boolean       = true;
+    userId          : any;
+    profile         : any;
+    headers         : HttpHeaders   = this.authService.headers;
+    roles           : any[]         = [];
+    profileForm     : any[]         = [
         {
             id: 'firstname',
             label: this.translate.instant('USER.firstname'),
@@ -78,29 +79,27 @@ export class UserProfileComponent implements OnInit {
             required: false
         }
     ];
-    public loading: boolean = true;
 
     constructor(
         private http: HttpClient,
         private router: Router,
         private route: ActivatedRoute,
+        public userService: UserService,
         private formBuilder: FormBuilder,
         private authService: AuthService,
-        public userService: UserService,
         private translate: TranslateService,
         private notify: NotificationService,
         private localeService: LocaleService,
         private historyService: HistoryService,
         private privilegeService: PrivilegesService
-    ) {
-    }
+    ) { }
 
     ngOnInit() {
         this.userId = this.route.snapshot.params['id'];
 
-        if (this.userId !== this.userService.user.id) {
+        if (parseInt(this.userId) !== parseInt(this.userService.user.id)) {
             if (!this.privilegeService.hasPrivilege('update_user')) {
-                this.notify.error('ERROR.unauthorized');
+                this.notify.error(this.translate.instant('ERROR.unauthorized'));
                 this.router.navigateByUrl('/home').then();
             }
         }
@@ -110,7 +109,7 @@ export class UserProfileComponent implements OnInit {
                 data.roles.forEach((element: any) => {
                     if (element.editable) {
                         this.roles.push(element);
-                    }else {
+                    } else {
                         if ((this.userService.getUser().privileges === '*')) {
                             this.roles.push(element);
                         }
@@ -140,7 +139,7 @@ export class UserProfileComponent implements OnInit {
                     }
                 }
             }),
-            finalize(() => this.loading = false ),
+            finalize(() => this.loading = false),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
@@ -168,7 +167,8 @@ export class UserProfileComponent implements OnInit {
             });
 
             this.http.put(
-                API_URL + '/ws/users/update/' + this.userId,{'args': user}, {headers: this.authService.headers},
+                API_URL + '/ws/users/update/' + this.userId,{'args': user},
+                {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {
                     this.historyService.addHistory('general', 'profile_updated', this.translate.instant('HISTORY-DESC.profile-updated', {user: user['lastname'] + ' ' + user['firstname']}));
