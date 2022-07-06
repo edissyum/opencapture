@@ -473,11 +473,10 @@ def export_maarch(invoice_id, data):
                                 if maarch_custom_field:
                                     if 'res_id' not in data or not data['res_id']:
                                         docs = _ws.retrieve_doc_with_custom(maarch_custom_field['id'], opencapture_field, maarch_clause)
-                                        if docs:
+                                        if docs and docs['resources'] and len(docs['resources']) >= 1:
                                             res_id = docs['resources'][0]['res_id']
                                     else:
                                         res_id = data['res_id']
-
                                     if res_id != message['resId']:
                                         _ws.link_documents(str(res_id), message['resId'])
                         return '', 200
