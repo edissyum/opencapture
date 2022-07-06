@@ -167,6 +167,7 @@
 		"email_pattern": "The value is not well formatted : email address",
 		"field_required": "Field required",
 		"form_not_valid": "Form not valid, please check fields",
+		"git_connection": "Github connexion error",
 		"insee_api_not_up": "Error while trying to reach SIRET/SIREN API",
 		"is_server_up": "Is server <b>{{ server }}</b> up ?",
 		"json_pattern": "The field is not JSON formatted",

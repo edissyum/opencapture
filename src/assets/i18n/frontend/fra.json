@@ -167,6 +167,7 @@
 		"email_pattern": "La valeur n'est pas au format attendu : adresse email",
 		"field_required": "Le champ est obligatoire",
 		"form_not_valid": "Formulaire non valide, merci de vérifier les champs",
+		"git_connection": "Erreur lors de la connexion à Github",
 		"insee_api_not_up": "L'API de l'INSEE n'est pas disponible",
 		"is_server_up": "Le serveur <b>{{server}}</b> est-il accessible ?",
 		"json_pattern": "Le champ n'est pas au format JSON",

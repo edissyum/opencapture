@@ -82,6 +82,9 @@
             <div class="settings_title text-center">
                 <h3>
                     Open-Capture for Invoices <span *ngIf="!this.loading"><b>version {{ this.currentVersion }}</b></span>
+                    <span *ngIf="this.lastVersion === undefined">
+                        | <span class="text-red-600">{{ 'ERROR.git_connection' | translate }}</span>
+                    </span>
                     <span *ngIf="!this.loading && this.lastVersion > this.currentVersion && this.isProd">
                         | {{ 'ABOUT-US.new_version_available' | translate }} (<b>
                                 <a [href]="'https://github.com/edissyum/opencaptureforinvoices/releases/tag/' + this.lastVersion"
