@@ -42,8 +42,12 @@ class FindOrderNumber:
         order_res = data
         # If the regex return a date, remove it
         for _date in re.finditer(r"" + self.regex['dateRegex'] + "", data):
-            if _date.group():
-                order_res = data.replace(_date.group(), '')
+            order_res = data.replace(_date.group(), '')
+
+        # Delete if mail
+        for _mail in re.finditer(r"" + self.regex['emailRegex'] + "", order_res.lower()):
+            for _order in re.finditer(r"" + self.regex['emailRegex'] + "", _mail.group().lower()):
+                return ''
 
         # Delete the delivery number keyword
         tmp_order_number = re.sub(r"" + self.regex['orderNumberRegex'][:-2] + "", '', order_res)
