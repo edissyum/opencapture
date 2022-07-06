@@ -210,7 +210,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         return statusFound ? statusFound.label: undefined;
     }
 
-    loadStatus(): void{
+    loadStatus(): void {
         this.http.get(API_URL + '/ws/status/list?module=splitter', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.status = data.status;

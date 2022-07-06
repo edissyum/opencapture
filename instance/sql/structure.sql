@@ -8,7 +8,7 @@ CREATE TABLE "users"
     "enabled"       BOOLEAN     DEFAULT true,
     "status"        VARCHAR(5)  DEFAULT 'OK',
     "creation_date" TIMESTAMP   DEFAULT (CURRENT_TIMESTAMP),
-    "role"          INTEGER     DEFAULT 3 NOT NULL
+    "role"          INTEGER     NOT NULL
 );
 
 CREATE TABLE "form_models"
@@ -326,6 +326,15 @@ CREATE TABLE "regex"
     "label"         VARCHAR(255),
     "content"       TEXT,
     "lang"          VARCHAR(10)     DEFAULT 'fra'
+);
+
+CREATE TABLE "login_methods"
+(
+    "id"            SERIAL      UNIQUE PRIMARY KEY,
+    "method_name"   VARCHAR(64) UNIQUE,
+    "method_label"  VARCHAR(255),
+    "enabled"       BOOLEAN     DEFAULT FALSE,
+    "data"          JSONB       DEFAULT '{}'
 );
 
 CREATE SEQUENCE splitter_referential_call_count AS INTEGER;

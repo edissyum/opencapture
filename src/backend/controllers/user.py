@@ -22,7 +22,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 
 def create_user(args):
-    user_info, error = user.create_user(args)
+    _, error = user.create_user(args)
 
     if error is None:
         return '', 200
@@ -35,7 +35,7 @@ def create_user(args):
 
 
 def get_users(args):
-    users, error = user.get_users(args)
+    users, _ = user.get_users(args)
 
     response = {
         "users": users
@@ -44,7 +44,7 @@ def get_users(args):
 
 
 def get_users_full(args):
-    users, error = user.get_users_full(args)
+    users, _ = user.get_users_full(args)
 
     response = {
         "users": users
@@ -67,6 +67,23 @@ def get_user_by_id(user_id, get_password=False):
     else:
         response = {
             "errors": gettext('GET_USER_BY_ID_ERROR'),
+            "message": error
+        }
+        return response, 401
+
+
+def get_user_by_username(username):
+    _select = ['users.id', 'username', 'firstname', 'lastname', 'role', 'users.status', 'creation_date', 'users.enabled']
+    user_info, error = user.get_user_by_username({
+        'select': _select,
+        'username': username
+    })
+
+    if error is None:
+        return user_info, 200
+    else:
+        response = {
+            "errors": gettext('GET_USER_BY_USERNAME_ERROR'),
             "message": error
         }
         return response, 401
@@ -160,9 +177,9 @@ def delete_user(user_id):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
 
-    user_info, error = user.get_user_by_id({'user_id': user_id})
+    _, error = user.get_user_by_id({'user_id': user_id})
     if error is None:
-        res, error = user.update_user({'set': {'status': 'DEL'}, 'user_id': user_id})
+        _, error = user.update_user({'set': {'status': 'DEL'}, 'user_id': user_id})
         if error is None:
             return '', 200
         else:
@@ -183,9 +200,9 @@ def disable_user(user_id):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
 
-    user_info, error = user.get_user_by_id({'user_id': user_id})
+    _, error = user.get_user_by_id({'user_id': user_id})
     if error is None:
-        res, error = user.update_user({'set': {'enabled': False}, 'user_id': user_id})
+        _, error = user.update_user({'set': {'enabled': False}, 'user_id': user_id})
         if error is None:
             return '', 200
         else:
@@ -206,9 +223,9 @@ def enable_user(user_id):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
 
-    user_info, error = user.get_user_by_id({'user_id': user_id})
+    _, error = user.get_user_by_id({'user_id': user_id})
     if error is None:
-        res, error = user.update_user({'set': {'enabled': True}, 'user_id': user_id})
+        _, error = user.update_user({'set': {'enabled': True}, 'user_id': user_id})
         if error is None:
             return '', 200
         else:
@@ -229,12 +246,12 @@ def update_customers_by_user_id(user_id, customers):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
 
-    user_info, error = user.get_user_by_id({'user_id': user_id})
+    _, error = user.get_user_by_id({'user_id': user_id})
     if error is None:
         _set = {
             'customers_id': '{"data": "' + str(customers) + '"}',
         }
-        res, error = user.update_customers_by_user_id({'set': _set, 'user_id': user_id})
+        _, error = user.update_customers_by_user_id({'set': _set, 'user_id': user_id})
         if error is None:
             return '', 200
         else:

@@ -1,4 +1,4 @@
-<div *ngIf="loading">
+<div *ngIf="this.loading">
     <app-loader></app-loader>
 </div>
 <div class="grid grid-cols-2 overflow-auto mt-2">
@@ -188,7 +188,7 @@
         </ng-container>
         <div class="mb-6 grid grid-cols-2 gap-4 h-12 text-gray-900">
             <button mat-button (click)="validateForm()" type="submit" [disabled]="invoice.status === 'END'"
-                    class="border-solid border-green-400 border-opacity-70 border hover:bg-green-400 hover:bg-opacity-70 hover:text-white transition duration-300">
+                    class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300">
                 {{ 'FORMS.validate' | translate }}
             </button>
             <button mat-button (click)="refuseForm()" type="submit" [disabled]="invoice.status === 'END'"

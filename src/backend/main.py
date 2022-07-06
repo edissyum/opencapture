@@ -169,25 +169,6 @@ def timer(start_time, end_time):
     return "{:0>2}:{:0>2}:{:05.2f}".format(int(hours), int(minutes), seconds)
 
 
-# def get_typo(config, path, log):
-#     invoice_classification.MODEL_PATH = config.cfg['AI-CLASSIFICATION']['modelpath']
-#     invoice_classification.PREDICT_IMAGES_PATH = config.cfg['AI-CLASSIFICATION']['trainimagepath']
-#     invoice_classification.TRAIN_IMAGES_PATH = config.cfg['AI-CLASSIFICATION']['predictimagepath']
-#     typo, confidence = invoice_classification.predict_typo(path)
-#
-#     if typo:
-#         if confidence >= config.cfg['AI-CLASSIFICATION']['confidencemin']:
-#             log.info('Typology n°' + typo + ' found using AI with a confidence of ' + confidence + '%')
-#             return typo
-#         else:
-#             log.info('Typology can\'t be found using AI, the confidence is too low :'
-#                      ' Typo n°' + typo + ', confidence : ' + confidence + '%')
-#             return False
-#     else:
-#         log.info('Typology can\'t be found using AI')
-#         return False
-
-
 def str2bool(value):
     """
     Function to convert string to boolean
@@ -200,7 +181,7 @@ def str2bool(value):
 OCforInvoices_worker = Kuyruk()
 
 
-# @OCforInvoices_worker.task(queue='invoices')
+@OCforInvoices_worker.task(queue='invoices')
 def launch(args):
     start = time.time()
 
@@ -264,9 +245,6 @@ def launch(args):
             path = separator_qr.output_dir_pdfa if str2bool(separator_qr.convert_to_pdfa) is True else separator_qr.output_dir
 
             for file in os.listdir(path):
-                # if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
-                #     typo = get_typo(config, path + file, log)
-
                 if check_file(files, path + file, log, docservers) is not False:
                     res = OCForInvoices_process.process(args, path + file, log, config, files, ocr, regex, database, docservers, configurations, languages)
                     if not res:
@@ -275,9 +253,6 @@ def launch(args):
         elif splitter_method == 'separate_by_document':
             list_of_files = separator_qr.split_document_every_two_pages(path)
             for file in list_of_files:
-                # if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
-                #     typo = get_typo(config, file, log)
-
                 if check_file(files, file, log, docservers) is not False:
                     res = OCForInvoices_process.process(args, file, log, config, files, ocr, regex, database, docservers, configurations, languages)
                     if not res:
@@ -285,9 +260,6 @@ def launch(args):
                         log.error('Error while processing e-mail', False)
             os.remove(path)
         else:
-            # if config.cfg['AI-CLASSIFICATION']['enabled'] == 'True':
-            #     typo = get_typo(config, path, log)
-
             if check_file(files, path, log, docservers) is not False:
                 res = OCForInvoices_process.process(args, path, log, config, files, ocr, regex, database, docservers, configurations, languages)
                 if not res:

@@ -1,7 +1,7 @@
 <mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem">
     <mat-sidenav-content class="bg-white overflow-hidden">
-        <mat-tab-group [selectedIndex]="selectedTab" (selectedTabChange)="onTabChange($event)" class="batches overflow-auto" animationDuration="0ms">
-            <mat-tab *ngFor="let batch of batchList" [id]="batch.id" [disabled]="isLoading">
+        <mat-tab-group [selectedIndex]="this.selectedTab" (selectedTabChange)="onTabChange($event)" class="batches overflow-auto" animationDuration="0ms">
+            <mat-tab *ngFor="let batch of this.batchList" [id]="batch.id" [disabled]="this.isLoading">
                 <ng-template mat-tab-label>
                     <span>
                         {{ this.translate.instant(batch.label) }}
@@ -9,49 +9,48 @@
                     <span style="font-size: 12px;" class="text-green-400 ml-3 relative bottom-1.5 font-bold">
                         {{ this.totals[batch.id] }}
                     </span>
-<!--                    <span matBadge="{{ this.totals[batch.id] }}" matBadgeSize="small" matBadgeOverlap="false">{{ this.translate.instant(batch.label) }}</span>-->
                 </ng-template>
                 <div class="splitter-container flex flex-col">
                     <div class="grid grid-cols-3 grid-flow-row gap-0 mt-4 z-30">
                         <mat-form-field class="left-4 w-1/2" appearance="outline">
                             <mat-label>{{ 'SPLITTER.search' | translate }}</mat-label>
-                            <input matInput type="text" [(ngModel)]="searchText" [disabled]="total === 0">
+                            <input matInput type="text" [(ngModel)]="this.searchText" [disabled]="this.total === 0">
                         </mat-form-field>
                         <mat-form-field class="w-1/2 m-auto" appearance="outline">
                             <mat-label>{{ 'STATUS.list' | translate }}</mat-label>
-                            <mat-select [(value)]="currentStatus" (selectionChange)="changeStatus($event)" [disabled]="isLoading">
-                                <mat-option *ngFor="let option of status" [value]="option['id']">
+                            <mat-select [(value)]="this.currentStatus" (selectionChange)="changeStatus($event)" [disabled]="this.isLoading">
+                                <mat-option *ngFor="let option of this.status" [value]="option['id']">
                                     {{ option['label'] }}
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
-                        <span [class.hidden]="isLoading || total === 0" class="relative right-0">
-                            <mat-paginator [length] = "total"
-                                           [pageSize]="pageSize"
-                                           [pageSizeOptions]="pageSizeOptions"
+                        <span [class.hidden]="this.isLoading || this.total === 0" class="relative right-0">
+                            <mat-paginator [length] = "this.total"
+                                           [pageSize]="this.pageSize"
+                                           [pageSizeOptions]="this.pageSizeOptions"
                                            (page)="onPageChange($event)">
                             </mat-paginator>
                         </span>
                     </div>
-                    <div class="z-40 -mt-2 mb-2 select-none" style="margin-left: 1.2rem" *ngIf="batches.length > 1 && !isLoading">
+                    <div class="z-40 -mt-2 mb-2 select-none" style="margin-left: 1.2rem" *ngIf="this.batches.length > 1 && !this.isLoading">
                         <span class="cursor-pointer" (click)="selectOrUnselectAllBatches($event)"
                               [innerHTML]="batchesSelected ? translate.instant('VERIFIER.unselect_all') : translate.instant('VERIFIER.select_all')">
                         </span>
-                        <span [class.hidden]="totalChecked === 0"> ({{ totalChecked }})</span>
-                        <span [class.hidden]="!batchesSelected">
+                        <span [class.hidden]="this.totalChecked === 0"> ({{ this.totalChecked }})</span>
+                        <span [class.hidden]="!this.batchesSelected">
                             <i class="fa-solid fa-trash ml-5 text-red-500 cursor-pointer"
                                (click)="$event.stopPropagation(); deleteAllConfirmDialog()"
                                matTooltip="{{ 'SPLITTER.delete_all_checked' | translate }}"></i>
                         </span>
                     </div>
                     <hr class="w-1/2 m-auto mb-4 border-green-400 relative z-30">
-                    <div *ngIf="isLoading">
+                    <div *ngIf="this.isLoading">
                         <app-loader></app-loader>
                     </div>
-                    <div class="content mx-10 mt-3" *ngIf="!isLoading">
-                        <div class="list grid grid-cols-4 grid-flow-row gap-12">
-                            <span *ngIf="(batches | filter : 'file_name' : searchText).length === 0 && !isLoading" class="text-gray-800">{{ 'SPLITTER.no_batch_found' | translate }}</span>
-                            <mat-card class="batch-card cursor-pointer p-0 mb-0" *ngFor="let batch of batches | filter : 'file_name' : searchText">
+                    <div class="content mx-10 mt-3" *ngIf="!this.isLoading">
+                        <div class="list grid 2xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-flow-row gap-12">
+                            <span *ngIf="(this.batches | filter : 'file_name' : this.searchText).length === 0 && !this.isLoading" class="text-gray-800">{{ 'SPLITTER.no_batch_found' | translate }}</span>
+                            <mat-card class="batch-card cursor-pointer p-0 mb-0" *ngFor="let batch of this.batches | filter : 'file_name' : this.searchText">
                                 <label class="p-5 absolute z-40 cursor-pointer">
                                     <input id="{{ batch.id }}_checkbox" class="accent-green-400 checkBox_list cursor-pointer" type="checkbox" (click)="checkSelectedBatch()">
                                 </label>
@@ -67,7 +66,7 @@
                                             {{ batch['page_number'] }}<i class="far fa-file-alt ml-1"></i>
                                         </span>
                                     </mat-card-title>
-                                    <mat-card-subtitle class="mt-2 -mb-1">
+                                    <mat-card-subtitle class="mt-2 -mb-1 block overflow-hidden text-ellipsis w-11/12">
                                         <b>{{ 'SPLITTER.identifier' | translate }}</b> : {{ batch['id'] }}<br>
                                         <b>{{ 'VERIFIER.register_date' | translate }}</b> : {{ batch['batch_date'] }}<br>
                                         <b>{{ 'SPLITTER.form_label' | translate }}</b> : {{ batch['form_label'] }}<br>
@@ -78,11 +77,11 @@
                                        (click)="$event.stopPropagation();openConfirmDialog(batch['id'])">
                                         <span class="font-medium mat-typography">{{ 'GLOBAL.delete' | translate }}</span>
                                     </i>
-                                    <i *ngIf="totalChecked >= 2 && isCheckboxChecked(batch['id'])"
+                                    <i *ngIf="this.totalChecked >= 2 && isCheckboxChecked(batch['id'])"
                                        class="fa-solid fa-object-group cursor-pointer text-green-400 relative float-right"
                                        (click)="$event.stopPropagation();mergeAllConfirmDialog(batch['id'])">
                                         <span class="font-medium mat-typography float-left mr-3 relative bottom-1">
-                                            {{ 'SPLITTER.merge' | translate }} {{ totalChecked }} {{ 'SPLITTER.batches' | translate }}
+                                            {{ 'SPLITTER.merge' | translate }} {{ this.totalChecked }} {{ 'SPLITTER.batches' | translate }}
                                         </span>
                                     </i>
                                 </mat-card-actions>

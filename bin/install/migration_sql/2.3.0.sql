@@ -1,5 +1,23 @@
 -- Improve user table security
 ALTER TABLE users ALTER COLUMN role SET NOT NULL;
+ALTER TABLE users ALTER COLUMN role DROP DEFAULT;
+
+-- Add LDAP
+CREATE TABLE "login_methods"
+(
+    "id"            SERIAL      UNIQUE PRIMARY KEY,
+    "method_name"   VARCHAR(64) UNIQUE,
+    "method_label"  VARCHAR(255),
+    "enabled"       BOOLEAN     DEFAULT FALSE,
+    "data"          JSONB       DEFAULT '{}'
+);
+INSERT INTO "login_methods" ("method_name", "method_label", "enabled", "data") VALUES ('default', 'Authentification par defaut', True, '{}');
+INSERT INTO "login_methods" ("method_name", "method_label", "enabled", "data") VALUES ('ldap', 'Authentification par LDAP', False, '{"host": "", "port": "", "baseDN": "", "suffix": "","prefix": "", "typeAD": "", "usersDN": "", "classUser": "", "loginAdmin": "", "classObject": "", "passwordAdmin": "", "attributLastName": "", "attributFirstName": "", "attributSourceUser": "", "attributRoleDefault": ""}');
+
+-- Improve REGEX
+UPDATE regex SET content = '(((?P<r1>NUMERO|N(O|°|º|R.))?\s*(DE)?\s*(DEVIS)(\s*:)?\s*(?(r1)()|(NUMERO|N(O|°|º|R.)?))(\s*:)?|(R(E|É)F(\.)?\s*PROPOSITION\s*COMMERCIALE))\s*(:|#){0,1}).*' WHERE lang = 'fra' AND regex_id = 'quotationRegex';
+UPDATE regex SET content = '(?P<r1>MONTANT\s*(NET)?|(SOUS(-|\s+)?)TOTAL|VAT\s*BASE|VALEUR\s*(BRUTE|POSITIONS|NETTE\s*TOTALE)|IMPOSABLE|TOTALS\s*DES\s*DIVERS\s*(À|A)\s*VENTILER|PRIX\s*NET\s*(TOTAL)?|TOTAL\s*(ORDRE|NET|INTERM(E|É)DIAIRE)|BASE\s*TOTAL)?\s*(:\s*|EN)?(€|EUROS|EUR)?\s*(?(r1)()|(\()?((H(\.)?T(\.)?(V(\.)?A(\.)?)?|HORS TVA|(EXCL|BASE)\s*(\.)?\s*TVA|HORS\s*TAXES|TOTAL\s*INTERM(É|E)DIAIRE))(\))?){1}\s*(:)?(€|EUROS|EUR)?\s*([0-9]*(\.?\,?\s?)[0-9]+((\.?\,?\s?)[0-9])+|[0-9]+)\s*(€|EUROS|EUR)?|([0-9]*(\.?\,?\s?)[0-9]+((\.?\,?\s?)[0-9])+|[0-9]+)\s*(€)?\s*(HT)' WHERE lang = 'fra' AND regex_id = 'noRatesRegex';
+UPDATE regex SET content = '(?P<r1>MONTANT|^\s*TOTAL)?\s*(:\s*)?(€|EUROS|EUR)?\s*(?(r1)()|(T(.)?T(.)?C|\(TVA COMPRISE\)|TVAC|TVA\s*INCLUSE|(MONTANT)?NET\s*(À|A)\s*(PAYER|VERSER))){1}(\s*(À|A)\s*PAYER)?\s*(:|(€|EUROS|EUR))?\s*([0-9]*(\.?\,?\|?\s?)[0-9]+((\.?\,?\s?)[0-9])+|[0-9]+)\s*(€|EUROS|EUR)?' WHERE lang = 'fra' AND regex_id = 'allRatesRegex';
 
 -- Update privileges to fix bad parent association
 TRUNCATE TABLE privileges;
@@ -53,4 +71,5 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (48, 'configurations',
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (49, 'docservers', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (50, 'regex', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (51, 'document_type_splitter', 'splitter');
-ALTER SEQUENCE "privileges_id_seq" RESTART WITH 52;
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (52, 'login_methods', 'administration');
+ALTER SEQUENCE "privileges_id_seq" RESTART WITH 53;

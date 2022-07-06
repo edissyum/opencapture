@@ -128,7 +128,8 @@ export class UpdateRoleComponent implements OnInit {
         marker('PRIVILEGES.docservers'),
         marker('PRIVILEGES.regex'),
         marker('PRIVILEGES.update_document_type'),
-        marker('PRIVILEGES.add_document_type')
+        marker('PRIVILEGES.add_document_type'),
+        marker('PRIVILEGES.login_methods')
     ];
     // End translation
     constructor(
