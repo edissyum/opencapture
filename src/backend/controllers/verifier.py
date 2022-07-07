@@ -445,6 +445,7 @@ def export_maarch(invoice_id, data):
                         })
                         if _data['value']:
                             customs = json.loads(_data['value'])
+                            print(customs)
                             for custom_id in customs:
                                 if custom_id in customs and customs[custom_id] in invoice_info['datas']:
                                     args['customFields'].update({
