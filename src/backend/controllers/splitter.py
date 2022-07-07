@@ -18,6 +18,7 @@
 import base64
 import json
 import os.path
+import re
 import shutil
 import datetime
 
@@ -297,18 +298,38 @@ def export_pdf(batch, documents, parameters, metadata, pages, now, compress_type
     _cfg = _vars[1]
     _docservers = _vars[9]
     filename = _docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch[0]['file_path']
+    pdf_filepaths = []
+    except_from_zip = ''
+    zip_filename = ''
+    """
+    Add PDF file to zip archive if enabled
+    """
+    if parameters['add_to_zip']:
+        except_from_zip = re.search(r'\[Except=(.*?)\]', parameters['add_to_zip']) \
+            if 'Except' in parameters['add_to_zip'] else ''
+        mask_args = {
+            'mask': parameters['add_to_zip'].split('[Except=')[0],
+            'separator': parameters['separator'],
+            'extension': 'zip'
+        }
+        zip_filename = _Splitter.get_mask_result(None, metadata, now, mask_args)
 
     for index, document in enumerate(documents):
         """
             Add PDF file names using masks
         """
-
         mask_args = {
             'mask': parameters['filename'] if 'filename' in parameters else _Files.get_random_string(10),
             'separator': parameters['separator'],
             'extension': parameters['extension']
         }
         documents[index]['fileName'] = _Splitter.get_mask_result(document, document['metadata'], now, mask_args)
+        if not except_from_zip or except_from_zip.group(1) not in documents[index]['documentTypeKey']:
+            pdf_filepaths.append({
+                'input_path': parameters['folder_out'] + '/' + documents[index]['fileName'],
+                'path_in_zip': zip_filename.split('.zip')[0] + '/' + documents[index]['fileName']
+            })
+
     export_pdf_res = _Files.export_pdf(pages, documents, filename, parameters['folder_out'], compress_type, 1)
 
     if not export_pdf_res[0]:
@@ -317,6 +338,11 @@ def export_pdf(batch, documents, parameters, metadata, pages, now, compress_type
             "message": export_pdf_res[1]
         }
         return response, 400
+
+    if parameters['add_to_zip']:
+        zip_file_path = parameters['folder_out'] + '/' + zip_filename
+        _Files.zip_files(pdf_filepaths, zip_file_path, True)
+
     return {'paths': export_pdf_res}, 200
 
 

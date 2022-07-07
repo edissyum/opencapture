@@ -119,7 +119,6 @@ export class SplitterUpdateOutputComponent implements OnInit {
             'label'         : marker('OUTPUT.validate_by_lastname')
         },
         {
-            "target"        : "all",
             "labelShort"    : 'validate_by_firstname',
             'label'         : marker('OUTPUT.validate_by_firstname')
         },
@@ -146,6 +145,10 @@ export class SplitterUpdateOutputComponent implements OnInit {
         {
             "labelShort"    : 'format',
             'label'         : marker('OUTPUT.format')
+        },
+        {
+            "labelShort"    : 'zip_filename',
+            'label'         : marker('OUTPUT.zip_filename')
         },
     ];
     testConnectionMapping : any         = {

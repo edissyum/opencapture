@@ -440,7 +440,8 @@
 		"test_connection": "Test connection",
 		"update": "Update output",
 		"validate_by_firstname": "Validate by - firstname",
-		"validate_by_lastname": "Validate by - lastname"
+		"validate_by_lastname": "Validate by - lastname",
+		"zip_filename": "ZIP file name"
 	},
 	"PAGINATOR": {
 		"first_page": "First page",

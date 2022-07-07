@@ -440,7 +440,8 @@
 		"test_connection": "Tester la connexion",
 		"update": "Modifier la chaîne sortante",
 		"validate_by_firstname": "Prénom du validateur",
-		"validate_by_lastname": "Nom du validateur"
+		"validate_by_lastname": "Nom du validateur",
+		"zip_filename": "Nom du fichier ZIP"
 	},
 	"PAGINATOR": {
 		"first_page": "Première page",

@@ -36,6 +36,7 @@ from wand.image import Image as Img
 from werkzeug.utils import secure_filename
 from src.backend.functions import get_custom_array
 from wand.exceptions import PolicyError, CacheError
+from zipfile import ZipFile
 
 custom_array = get_custom_array()
 
@@ -498,9 +499,18 @@ class Files:
         letters = string.ascii_uppercase
         return ''.join(random.choice(letters) for i in range(length))
 
+    @staticmethod
+    def zip_files(input_paths, output_path, delete_zipped_files=False):
+        with ZipFile(output_path, 'w') as zipObj:
+            for input_path in input_paths:
+                zipObj.write(input_path['input_path'], input_path['path_in_zip'])
+                if delete_zipped_files:
+                    os.remove(input_path['input_path'])
+
 
 def compress_pdf(input_file, output_file, compress_id):
     gs_command = 'gs#-sDEVICE=pdfwrite#-dCompatibilityLevel=1.4#-dPDFSETTINGS=/%s#-dNOPAUSE#-dQUIET#-o#%s#%s' \
                  % (compress_id, output_file, input_file)
     gs_args = gs_command.split('#')
     subprocess.check_call(gs_args)
+

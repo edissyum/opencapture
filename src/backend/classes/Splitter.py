@@ -275,14 +275,14 @@ class Splitter:
         if doc_loop_item_template:
             for index, document in enumerate(documents):
                 doc_loop_item = doc_loop_item_template.group(1)
-                doc_loop_item = doc_loop_item.replace(f'#doctype', str(document['documentTypeKey']))
                 doc_loop_item = doc_loop_item.replace('#date', date)
-                doc_loop_item = doc_loop_item.replace('#document_identifier', str(document['id']))
+                doc_loop_item = doc_loop_item.replace('#filename', document['fileName'] if 'fileName' in document else '')
                 doc_loop_item = doc_loop_item.replace('#documents_count', str(len(documents)))
-                doc_loop_item = doc_loop_item.replace('#user_first_name', str(metadata['userFirstName']))
+                doc_loop_item = doc_loop_item.replace('#document_identifier', str(document['id']))
+                doc_loop_item = doc_loop_item.replace('#doctype', str(document['documentTypeKey']))
                 doc_loop_item = doc_loop_item.replace('#user_last_name', str(metadata['userLastName']))
                 doc_loop_item = doc_loop_item.replace('#random', str(random.randint(0, 99999)).zfill(5))
-
+                doc_loop_item = doc_loop_item.replace('#user_first_name', str(metadata['userFirstName']))
                 for key in document['metadata']:
                     if f'#{key}' in parameters['xml_template']:
                         doc_loop_item = doc_loop_item.replace(f'#{key}', str(document['metadata'][key]))
