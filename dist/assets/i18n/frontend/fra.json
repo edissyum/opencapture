@@ -184,6 +184,7 @@
 		"accounting_plan": "Compte de charge",
 		"delivery_number": "Numéro de livraison",
 		"facturation": "Facturation",
+		"footer": "Pied de page",
 		"invoice_date": "Date de la facture",
 		"invoice_date_day": "Jour de la facture",
 		"invoice_date_month": "Mois de la facture",
@@ -367,7 +368,10 @@
 		"verifier": "Open-Capture Vérificateur"
 	},
 	"INPUT": {
+		"allow_automatic_validation": "Autoriser la validation automatique",
 		"associated_customer": "Compte client associé",
+		"automatic_validation_data": "Données nécessaire à la validation automatique",
+		"automatic_validation_data_hint": "Exemple : supplier, invoice_number, footer",
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer la chaîne entrante <b>{{ input }}</b> ?",
 		"confirm_duplicate": "Êtes vous sûr de vouloir dupliquer la chaîne entrante <b>{{ input }}</b> ?",
 		"create": "Créer la chaîne entrante",

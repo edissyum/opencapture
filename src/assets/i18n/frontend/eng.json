@@ -184,6 +184,7 @@
 		"accounting_plan": "Accounting plan",
 		"delivery_number": "Delivery number",
 		"facturation": "Facturation",
+		"footer": "Footer",
 		"invoice_date": "Invoice date",
 		"invoice_date_day": "Day of the invoice date",
 		"invoice_date_month": "Month of the invoice date",
@@ -367,7 +368,10 @@
 		"verifier": "Open-Capture Verifier"
 	},
 	"INPUT": {
+		"allow_automatic_validation": "Allow automatic validation",
 		"associated_customer": "Associated customer",
+		"automatic_validation_data": "Data needed for automatic validation",
+		"automatic_validation_data_hint": "Example : supplier, invoice_number, footer",
 		"confirm_delete": "Are you sure you want to delete the input <b>{{ input }}</b> ?",
 		"confirm_duplicate": "Are you sure you want to duplicate input <b>{{ input }}</b> ?",
 		"create": "Create input",

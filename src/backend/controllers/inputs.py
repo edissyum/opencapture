@@ -104,6 +104,8 @@ def create_input(data):
         'customer_id': data['customer_id'] if data['module'] == 'verifier' else None,
         'splitter_method_id': data['splitter_method_id'] if 'splitter_method_id' in data else False,
         'remove_blank_pages': data['remove_blank_pages'] if 'remove_blank_pages' in data else False,
+        'allow_automatic_validation': data['allow_automatic_validation'] if 'allow_automatic_validation' in data else False,
+        'automatic_validation_data': data['automatic_validation_data'] if 'automatic_validation_data' in data else '',
         'override_supplier_form': data['override_supplier_form'] if 'override_supplier_form' in data else False,
     }
 
