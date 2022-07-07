@@ -193,7 +193,7 @@ def check_user_ldap_account(connection, username, username_attribute, base_dn):
         return False
 
 
-@bp.route('auth/getEnabledLoginMethod', methods=['POST'])
+@bp.route('auth/getEnabledLoginMethod', methods=['GET'])
 def get_enabled_login_method():
     res = auth.get_enabled_login_method()
     enabled_login_method = res[0]['login_method_name']

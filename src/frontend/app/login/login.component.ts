@@ -65,7 +65,7 @@ export class LoginComponent implements OnInit {
             this.localeService.getCurrentLocale();
         }
 
-        this.http.post(API_URL + '/ws/auth/getEnabledLoginMethod', {headers: this.authService.headers}).pipe(
+        this.http.get(API_URL + '/ws/auth/getEnabledLoginMethod', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 const login_method_name = data['login_method_name'][0];
                 this.enableLoginMethodName = login_method_name['method_name'];
