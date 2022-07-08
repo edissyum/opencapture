@@ -8,14 +8,11 @@ INSERT INTO "status" ("id","label","label_long", "module") VALUES ('END', 'Clot�
 INSERT INTO "status" ("id","label","label_long", "module") VALUES ('DEL', 'Supprimé', 'Supprimé', 'splitter');
 INSERT INTO "status" ("id","label","label_long", "module") VALUES ('MERG', 'Fusionné', 'Fusionné', 'splitter');
 
--- CRÉATION DES MÉTHODES D'AUTHENTIFICATION PAR DÉFAUT
-INSERT INTO "login_methods" ("method_name", "method_label", "enabled", "data") VALUES ('default', 'Authentification par defaut', True, '{}');
-INSERT INTO "login_methods" ("method_name", "method_label", "enabled", "data") VALUES ('ldap', 'Authentification par LDAP', False, '{"host": "", "port": "", "baseDN": "", "suffix": "","prefix": "", "typeAD": "", "usersDN": "", "classUser": "", "loginAdmin": "", "classObject": "", "passwordAdmin": "", "attributLastName": "", "attributFirstName": "", "attributSourceUser": "", "attributRoleDefault": ""}');
-
 -- CRÉATION DES PARAMÈTRES
 INSERT INTO "configurations" ("label", "data") VALUES ('timeDelta', '{"type": "int", "value": "-1", "description": "Delta maximum pour remonter une date de facture, en jours. -1 pour désactiver"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('resolution', '{"type": "int", "value": "300", "description": "Résolution utilisée pour la conversion PDF en JPG. En DPI"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('compressionQuality', '{"type": "int", "value": "100", "description": "Qualité de compression utilisée pour la conversion PDF en JPG. En pourcentage"}');
+INSERT INTO "configurations" ("label", "data") VALUES ('allowAutomaticValidation', '{"type": "bool", "value": "False", "description": "Autoriser la validation automatique si toutes les informations d''une facture sont trouvées"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('locale', '{"type": "string", "value": "fra", "description": "Clé pour la sélection de la langue (fra ou eng par défaut)"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('invoiceSizeMin', '{"type": "int", "value": "6", "description": "Taille minimale pour un numéro de facture"}');
 
@@ -62,7 +59,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
             {
                 "id": "filename",
                 "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
-                "type": "text",
+                "type": "textarea",
                 "label": "Nom du fichier",
                 "required": "true",
                 "placeholder": "invoice_number#order_number#supplier_name"
@@ -142,11 +139,11 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
             {
                 "id": "vatNumberContactCustom",
                 "type": "text",
-                "label": "Identifiant du champ personnalisé de contact où stocker le numéro de TVA + SIRET",
+                "label": "Identifiant du champ personnalisé de contact où stocké le numéro de TVA + SIRET",
                 "required": "true",
                 "webservice": "getContactsCustomFieldsFromMaarch",
                 "placeholder": "Identifiant Open-Capture",
-                "hint": "Identifiant du champ personnalisé de contact où stocker le numéro de TVA + SIRET"
+                "hint": ""
             }
         ],
         "parameters": [
@@ -238,156 +235,9 @@ INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module", "data")
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module") VALUES (2, 'export_maarch', 'Export Maarch par défaut', 'verifier');
 
 -- CRÉATION DES CHAINES SORTANTES DU MODULE SPLITTER
-INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (3, 'export_pdf', 'Export PDF', '{
-  "options": {
-    "auth": [],
-    "parameters": [
-      {
-        "id": "folder_out",
-        "type": "text",
-        "label": "Dossier de sortie",
-        "required": "true",
-        "placeholder": "/var/share/sortant"
-      },
-      {
-        "id": "filename",
-        "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
-        "type": "text",
-        "label": "Nom du fichier",
-        "required": "true",
-        "placeholder": "doctype#nom#prenom#date"
-      },
-      {
-        "id": "separator",
-        "type": "text",
-        "label": "Séparateur",
-        "required": "true",
-        "placeholder": "_"
-      },
-      {
-        "id": "extension",
-        "hint": "Ne pas mettre de point dans l''''extension",
-        "type": "text",
-        "label": "Extension du fichier",
-        "required": "true",
-        "placeholder": "pdf"
-      },
-      {
-        "id": "add_to_zip",
-        "hint": "Ajouter le fichier au ZIP, [Except=doctype1] mentionne les type de document à ne pas ajouter dans le ZIP",
-        "type": "text",
-        "label": "Nom du fichier ZIP à exporter",
-        "required": "false",
-        "placeholder": "splitter-files.zip[Except=doctype1,doctype2]"
-      }
-    ]
-  }
-}', 'splitter');
-INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (4, 'export_xml', 'Export XML', '{
-  "options": {
-    "auth": [],
-    "parameters": [
-      {
-        "id": "folder_out",
-        "type": "text",
-        "label": "Dossier de sortie",
-        "required": "true",
-        "placeholder": "/var/share/sortant"
-      },
-      {
-        "id": "filename",
-        "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
-        "type": "text",
-        "label": "Nom du fichier",
-        "required": "true",
-        "placeholder": "doctype#nom#prenom#date"
-      },
-      {
-        "id": "separator",
-        "type": "text",
-        "label": "Séparateur",
-        "required": "true",
-        "placeholder": "_"
-      },
-      {
-        "id": "extension",
-        "hint": "Ne pas mettre de point dans l''''extension",
-        "type": "text",
-        "label": "Extension du fichier",
-        "required": "true",
-        "placeholder": "xml"
-      },
-      {
-        "id": "xml_template",
-        "hint": "Format XML avec les identifiants techniques des champs, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut, pour boucler entre les documents ajoutez la section  <!-- %END-DOCUMENT-LOOP -->...<!-- %END-DOCUMENT-LOOP -->",
-        "type": "textarea",
-        "label": "Contenu de fichier XML ",
-        "required": "true ",
-        "placeholder": "<?xml version=\"1.0\" encoding=\"UTF-8\" ?> ..."
-      }
-    ]
-  }
-}', 'splitter');
-INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (5, 'export_cmis', 'Export CMIS','{
-  "options": {
-    "auth": [
-      {
-        "id": "cmis_ws",
-        "type": "text",
-        "label": "CMIS Web-Service",
-        "required": "true",
-        "placeholder": "http://localhost//alfresco/api/-default-/public/cmis/versions/1.1/browser"
-      },
-      {
-        "id": "folder",
-        "type": "text",
-        "label": "Répertoire de dépôt",
-        "required": "true",
-        "placeholder": "/OpenCapture/PMI/scans/"
-      },
-      {
-        "id": "login",
-        "type": "text",
-        "label": "Pseudo de l''''utilisateur WS",
-        "required": "true",
-        "placeholder": "edissyumws"
-      },
-      {
-        "id": "password",
-        "type": "password",
-        "label": "Mot de passe de l''''utilisateur WS",
-        "required": "true",
-        "placeholder": "alfresco"
-      }
-    ],
-    "parameters": [
-      {
-        "id": "pdf_filename",
-        "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
-        "type": "textarea",
-        "label": "Nom du fichier PDF",
-        "required": "true",
-        "placeholder": "doctype#random"
-      },
-      {
-        "id": "xml_filename",
-        "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
-        "type": "textarea",
-        "label": "Nom du fichier XML",
-        "required": "true",
-        "placeholder": "#random"
-      },
-      {
-        "id": "separator",
-        "hint": "",
-        "type": "textarea",
-        "label": "Séparateur",
-        "required": "true",
-        "placeholder": "_"
-      }
-    ]
-  }
-}', 'splitter');
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (3, 'export_pdf', 'Export PDF', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "label": "Dossier de sortie", "required": "true", "placeholder": "/var/share/sortant"}, {"id": "filename", "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut", "type": "textarea", "label": "Nom du fichier", "required": "true", "placeholder": "doctype#nom#prenom#date"}, {"id": "separator", "type": "text", "label": "Séparateur", "required": "true", "placeholder": "_"}, {"id": "extension", "hint": "Ne pas mettre de point dans l''''extension", "type": "text", "label": "Extension du fichier", "required": "true", "placeholder": "pdf"}]}}', 'splitter');
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (4, 'export_xml', 'Export XML', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "label": "Dossier de sortie", "required": "true", "placeholder": "/var/share/sortant"}, {"id": "filename", "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut", "type": "textarea", "label": "Nom du fichier", "required": "true", "placeholder": "doctype#nom#prenom#date"}, {"id": "separator", "type": "text", "label": "Séparateur", "required": "true", "placeholder": "_"}, {"id": "extension", "hint": "Ne pas mettre de point dans l''''extension", "type": "text", "label": "Extension du fichier", "required": "true", "placeholder": "xml"}, {"id": "xml_template", "hint": "Format XML avec les identifiants techniques des champs, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut", "type": "textarea", "label": "Contenu de fichier XML ", "required": "true ", "placeholder": "<?xml version=\"1.0\" encoding=\"UTF-8\" ?> ..."}]}}', 'splitter');
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (5, 'export_cmis', 'Export CMIS', '{"options": {"auth": [{"id": "cmis_ws", "type": "text", "label": "CMIS Web-Service", "required": "true", "placeholder": "http://localhost//alfresco/api/-default-/public/cmis/versions/1.1/browser"}, {"id": "folder", "type": "text", "label": "Répertoire de dépôt", "required": "true", "placeholder": "/OpenCapture/PMI/scans/"}, {"id": "login", "type": "text", "label": "Pseudo de l''''utilisateur WS", "required": "true", "placeholder": "edissyumws"}, {"id": "password", "type": "password", "label": "Mot de passe de l''''utilisateur WS", "required": "true", "placeholder": "alfresco"}], "parameters": [{"id": "pdf_filename", "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut", "type": "textarea", "label": "Nom du fichier PDF", "required": "true", "placeholder": "doctype#random"}, {"id": "xml_filename", "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut", "type": "textarea", "label": "Nom du fichier XML", "required": "true", "placeholder": "#random"}, {"id": "separator", "hint": "", "type": "textarea", "label": "Séparateur", "required": "true", "placeholder": "_"}]}}', 'splitter');
 
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (3, 'export_pdf', 'Export vers Vérificateur', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/entrant/verifier/"}, {"id": "filename", "type": "textarea", "value": "PDF#doctype#date#random"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "extension", "type": "text", "value": "pdf"}]}}', 'splitter');
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (4, 'export_xml', 'Export XML par défaut', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/splitter/"}, {"id": "filename", "type": "textarea", "value": "XML#date"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "extension", "type": "text", "value": "xml"}]}}', 'splitter');
@@ -416,7 +266,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "required_icon": "fas fa-star",
             "autocomplete": "none",
             "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": []
+            "autocomplete_data": {}
         },
         {
             "id": "address1",
@@ -433,7 +283,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "required_icon": "fas fa-star",
             "autocomplete": "none",
             "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": []
+            "autocomplete_data": {}
         },
         {
             "id": "address2",
@@ -450,7 +300,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "required_icon": "far fa-star",
             "autocomplete": "none",
             "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": []
+            "autocomplete_data": {}
         },
         {
             "id": "postal_code",
@@ -467,7 +317,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "required_icon": "fas fa-star",
             "autocomplete": "none",
             "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": []
+            "autocomplete_data": {}
         },
         {
             "id": "city",
@@ -475,7 +325,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "unit": "addresses",
             "class": "w-1/3",
             "label": "ADDRESSES.city",
-            "format": "alphanum_extended_with_accent",
+            "format": "char",
             "display": "simple",
             "required": true,
             "class_label": "1/33",
@@ -484,7 +334,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "required_icon": "fas fa-star",
             "autocomplete": "none",
             "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": []
+            "autocomplete_data": {}
         },
         {
             "id": "country",
@@ -492,7 +342,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "unit": "addresses",
             "class": "w-1/3",
             "label": "ADDRESSES.country",
-            "format": "alphanum_extended_with_accent",
+            "format": "char",
             "display": "simple",
             "required": true,
             "class_label": "1/33",
@@ -501,7 +351,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "required_icon": "fas fa-star",
             "autocomplete": "none",
             "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": []
+            "autocomplete_data": {}
         },
         {
             "id": "vat_number",
@@ -516,55 +366,46 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "class_label": "1/33",
             "format_icon": "fas fas fa-hashtag",
             "display_icon": "fas fa-file-alt",
-            "required_icon": "fas fa-star"
+            "required_icon": "fas fa-star",
+            "autocomplete": "none",
+            "autocomplete_icon": "fa-solid fa-ban",
+            "autocomplete_data": {}
         },
         {
             "id": "siren",
             "type": "text",
             "unit": "supplier",
-            "class": "w-1/6",
+            "class": "w-1/3",
             "color": "lime",
             "label": "ACCOUNTS.siren",
             "format": "number_int",
             "display": "simple",
             "required": false,
-            "class_label": "1/6",
+            "class_label": "1/33",
             "format_icon": "fas fa-calculator",
             "display_icon": "fas fa-file-alt",
-            "required_icon": "far fa-star"
+            "required_icon": "far fa-star",
+            "autocomplete": "none",
+            "autocomplete_icon": "fa-solid fa-ban",
+            "autocomplete_data": {}
         },
         {
             "id": "siret",
             "type": "text",
             "unit": "supplier",
-            "class": "w-1/6",
+            "class": "w-1/3",
             "color": "green",
             "label": "ACCOUNTS.siret",
             "format": "number_int",
             "display": "simple",
             "required": false,
-            "class_label": "1/6",
+            "class_label": "1/33",
             "format_icon": "fas fa-calculator",
             "display_icon": "fas fa-file-alt",
-            "required_icon": "far fa-star"
-        },
-        {
-            "id": "email",
-            "type": "text",
-            "unit": "supplier",
-            "class": "w-1/3",
-            "color": "green",
-            "label": "ACCOUNTS.email",
-            "format": "email",
-            "display": "simple",
-            "required": false,
-            "class_label": "1/33",
-            "format_icon": "fa-solid fa-at",
-            "autocomplete": "none",
-            "display_icon": "fa-solid file-alt",
             "required_icon": "far fa-star",
-            "autocomplete_data": [],
-            "autocomplete_icon": "fa-solid fa-ban"
+            "autocomplete": "none",
+            "autocomplete_icon": "fa-solid fa-ban",
+            "autocomplete_data": {}
         }
     ],
     "facturation": [
@@ -584,7 +425,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "required_icon": "far fa-star",
             "autocomplete": "none",
             "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": []
+            "autocomplete_data": {}
         },
         {
             "id": "order_number",
@@ -602,7 +443,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "required_icon": "far fa-star",
             "autocomplete": "none",
             "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": []
+            "autocomplete_data": {}
         },
         {
             "id": "invoice_number",
@@ -620,7 +461,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "required_icon": "fas fa-star",
             "autocomplete": "none",
             "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": []
+            "autocomplete_data": {}
         },
         {
             "id": "invoice_date",
@@ -638,7 +479,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "required_icon": "fas fa-star",
             "autocomplete": "none",
             "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": []
+            "autocomplete_data": {}
         },
         {
             "id": "invoice_due_date",
@@ -656,7 +497,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "required_icon": "far fa-star",
             "autocomplete": "none",
             "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": []
+            "autocomplete_data": {}
         },
         {
             "id": "vat_rate",
@@ -674,7 +515,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "required_icon": "fas fa-star",
             "autocomplete": "none",
             "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": []
+            "autocomplete_data": {}
         },
         {
             "id": "no_rate_amount",
@@ -692,7 +533,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "required_icon": "fas fa-star",
             "autocomplete": "none",
             "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": []
+            "autocomplete_data": {}
         },
         {
             "id": "vat_amount",
@@ -710,7 +551,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "required_icon": "fas fa-star",
             "autocomplete": "none",
             "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": []
+            "autocomplete_data": {}
         },
         {
             "id": "accounting_plan",
@@ -723,7 +564,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "required_icon": "far fa-star",
             "autocomplete": "none",
             "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": []
+            "autocomplete_data": {}
         },
         {
             "id": "total_vat",
@@ -741,7 +582,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "required_icon": "fas fa-star",
             "autocomplete": "none",
             "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": []
+            "autocomplete_data": {}
         },
         {
             "id": "total_ttc",
@@ -758,7 +599,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "required_icon": "fas fa-star",
             "autocomplete": "none",
             "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": []
+            "autocomplete_data": {}
         },
         {
             "id": "total_ht",
@@ -775,7 +616,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "required_icon": "fas fa-star",
             "autocomplete": "none",
             "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": []
+            "autocomplete_data": {}
         }
     ]
 }');
@@ -810,7 +651,7 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (8, 'update_user', 'ad
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (9, 'roles_list', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (10, 'add_role', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (11, 'update_role', 'administration');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (12, 'custom_fields', 'administration');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (12, 'custom_fields', 'general');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (13, 'forms_list', 'verifier');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (14, 'add_form', 'verifier');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (15, 'update_form', 'verifier');
@@ -832,26 +673,23 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (30, 'position_mask_li
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (31, 'add_position_mask', 'verifier');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (32, 'update_position_mask', 'verifier');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (33, 'history', 'general');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (34, 'separator_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (35, 'add_input_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (36, 'update_input_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (37, 'inputs_list_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (38, 'update_output_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (39, 'add_output_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (40, 'outputs_list_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (41, 'update_form_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (42, 'add_form_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (43, 'forms_list_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (44, 'add_document_type', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (45, 'update_document_type', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (46, 'import_suppliers', 'accounts');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (47, 'statistics', 'general');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (48, 'configurations', 'administration');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (49, 'docservers', 'administration');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (50, 'regex', 'administration');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (51, 'document_type_splitter', 'splitter');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (52, 'login_methods', 'administration');
-ALTER SEQUENCE "privileges_id_seq" RESTART WITH 53;
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (34, 'document_type_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (35, 'separator_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (36, 'add_input_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (37, 'update_input_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (38, 'inputs_list_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (39, 'update_output_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (40, 'add_output_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (41, 'outputs_list_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (42, 'update_form_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (43, 'add_form_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (44, 'forms_list_splitter', 'splitter');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (45, 'import_suppliers', 'accounts');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (46, 'statistics', 'general');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (47, 'configurations', 'general');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (48, 'docservers', 'general');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (49, 'regex', 'general');
+ALTER SEQUENCE "privileges_id_seq" RESTART WITH 50;
 
 -- CRÉATION DES ROLES
 INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (1, 'superadmin', 'SuperUtilisateur', 'false');
@@ -861,8 +699,8 @@ ALTER SEQUENCE "roles_id_seq" RESTART WITH 4;
 
 -- AJOUT DES PRIVILEGES LIÉS AUX ROLES
 INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (1, '{"data" : "[''*'']"}');
-INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (2, '{"data" : "[1, 2, 3, 4, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 51]"}');
-INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (3, '{"data" : "[1, 2, 4, 16, 17, 18, 29, 33, 47]"}');
+INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (2, '{"data" : "[1, 2, 3, 4, 5, 6, 7, 8, 9]"}');
+INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (3, '{"data" : "[2, 3, 6, 7, 8, 9]"}');
 
 -- CRÉATION DE L'UTILISATEUR superadmin
 INSERT INTO "users" ("username","firstname", "lastname","password", "role") VALUES ('admin', 'Super', 'ADMIN', 'pbkdf2:sha256:150000$7c8waI7f$c0891ac8e18990db0786d4a49aea8bf7c1ad82796dccd8ae35c12ace7d8ee403', 1);

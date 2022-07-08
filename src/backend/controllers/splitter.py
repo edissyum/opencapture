@@ -18,6 +18,7 @@
 import base64
 import json
 import os.path
+import re
 import shutil
 import datetime
 
@@ -297,14 +298,42 @@ def export_pdf(batch, documents, parameters, pages, now, compress_type):
     _cfg = _vars[1]
     _docservers = _vars[9]
     filename = _docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch[0]['file_path']
+    pdf_filepaths = []
+    doc_except_from_zip = []
+    except_from_zip_doctype = ''
+    zip_file_path = ''
+    zip_filename = ''
+    """
+    Add PDF file to zip archive if enabled
+    """
+    if parameters['add_to_zip']:
+        except_from_zip_doctype = re.search(r'\[Except=(.*?)\]', parameters['add_to_zip']) \
+            if 'Except' in parameters['add_to_zip'] else ''
+        mask_args = {
+            'mask': parameters['add_to_zip'].split('[Except=')[0],
+            'separator': parameters['separator'],
+            'extension': 'zip'
+        }
+        zip_filename = _Splitter.get_mask_result(None, metadata, now, mask_args)
 
     for index, document in enumerate(documents):
+        """
+            Add PDF file names using masks
+        """
+
         mask_args = {
             'mask': parameters['filename'] if 'filename' in parameters else _Files.get_random_string(10),
             'separator': parameters['separator'],
             'extension': parameters['extension']
         }
         documents[index]['fileName'] = _Splitter.get_mask_result(document, document['metadata'], now, mask_args)
+        if not except_from_zip_doctype or except_from_zip_doctype.group(1) not in documents[index]['documentTypeKey']:
+            pdf_filepaths.append({
+                'input_path': parameters['folder_out'] + '/' + documents[index]['fileName'],
+                'path_in_zip': zip_filename.split('.zip')[0] + '/' + documents[index]['fileName']
+            })
+        else:
+            doc_except_from_zip.append(documents[index]['id'])
     export_pdf_res = _Files.export_pdf(pages, documents, filename, parameters['folder_out'], compress_type, 1)
     if not export_pdf_res[0]:
         response = {
@@ -312,7 +341,12 @@ def export_pdf(batch, documents, parameters, pages, now, compress_type):
             "message": export_pdf_res[1]
         }
         return response, 400
-    return {'paths': export_pdf_res}, 200
+
+    if parameters['add_to_zip']:
+        zip_file_path = parameters['folder_out'] + '/' + zip_filename
+        _Files.zip_files(pdf_filepaths, zip_file_path, True)
+
+    return {'paths': export_pdf_res, 'doc_except_from_zip': doc_except_from_zip, 'zip_filename': zip_filename}, 200
 
 
 def export_xml(fields_param, documents, parameters, metadata, now):
@@ -322,7 +356,7 @@ def export_xml(fields_param, documents, parameters, metadata, now):
         'extension': parameters['extension']
     }
     file_name = _Splitter.get_mask_result(None, metadata, now, mask_args)
-    res_xml = _Splitter.export_xml(fields_param, documents, metadata, parameters['folder_out'], file_name, now)
+    res_xml = _Splitter.export_xml(fields_param, documents, metadata, parameters, file_name, now)
     if not res_xml[0]:
         response = {
             "errors": gettext('EXPORT_XML_ERROR'),
@@ -430,7 +464,7 @@ def save_infos(args):
     for deleted_pages_id in args['deleted_pages_ids']:
         res = splitter.update_page({
             'page_id': deleted_pages_id,
-            'status': 'DEL',
+            'status': 'NEW',
         })[0]
         if not res:
             response = {
@@ -495,12 +529,22 @@ def validate(args):
                                                 output[0]['compress_type'])
                     if res_export_pdf[1] != 200:
                         return res_export_pdf
+                    args['batchMetadata']['zip_filename'] = res_export_pdf[0]['zip_filename']
+                    args['batchMetadata']['doc_except_from_zip'] = res_export_pdf[0]['doc_except_from_zip']
+
+                """
+                    Export XML file if required by output
+                """
+
                 if output[0]['output_type_id'] in ['export_xml']:
                     form_fields_param = forms.get_form_fields_by_form_id(batch[0]['form_id'])[0]['fields']
                     res_export_xml = export_xml(form_fields_param, args['documents'], parameters, args['batchMetadata'], now)
                     if res_export_xml[1] != 200:
                         return res_export_xml
 
+                """
+                    Export to CMIS
+                """
                 if output[0]['output_type_id'] in ['export_cmis']:
                     cmis_auth = get_output_parameters(output[0]['data']['options']['auth'])
                     cmis_params = get_output_parameters(output[0]['data']['options']['parameters'])
@@ -509,6 +553,9 @@ def validate(args):
                                  cmis_auth['password'],
                                  cmis_auth['folder'])
 
+                    """
+                        Export pdf for Alfresco
+                    """
                     pdf_export_parameters = {
                         'extension': 'pdf',
                         'folder_out': _docservers['TMP_PATH'],
@@ -530,6 +577,9 @@ def validate(args):
                             }
                             return response, 500
 
+                    """
+                        Export xml for Alfresco
+                    """
                     xml_export_parameters = {
                         'separator': cmis_params['separator'],
                         'filename': cmis_params['xml_filename'],
@@ -548,6 +598,9 @@ def validate(args):
                         }
                         return response, 500
 
+                """
+                    Export to Maarch
+                """
                 if output[0]['output_type_id'] in ['export_maarch']:
                     cmis_params = get_output_parameters(output[0]['data']['options']['parameters'])
                     maarch_auth = get_output_parameters(output[0]['data']['options']['auth'])
@@ -574,6 +627,9 @@ def validate(args):
                         if res_export_maarch[1] != 200:
                             return res_export_maarch
 
+                """
+                    Change status to END
+                """
                 splitter.change_status({
                     'id': args['batchMetadata']['id'],
                     'status': 'END'
