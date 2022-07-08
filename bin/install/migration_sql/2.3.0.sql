@@ -92,7 +92,7 @@ UPDATE outputs_types SET "data" = '{
       },
       {
         "id": "add_to_zip",
-        "hint": "Ajouter le fichier au ZIP, [Except=doctype1] mentionne les type de document à ne pas ajouter dans le ZIP",
+        "hint": "Ajouter le fichier au ZIP, [Except=doctype1] mentionne les types de documents à ne pas ajouter dans le ZIP",
         "type": "text",
         "label": "Nom du fichier ZIP à exporter",
         "required": "false",
