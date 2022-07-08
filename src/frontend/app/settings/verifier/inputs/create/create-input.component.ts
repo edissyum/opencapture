@@ -30,18 +30,21 @@ import {API_URL} from "../../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {HistoryService} from "../../../../../services/history.service";
+import {marker} from "@biesbjerg/ngx-translate-extract-marker";
 
 @Component({
-    selector: 'app-create-input',
+    selector: 'create-input',
     templateUrl: './create-input.component.html',
     styleUrls: ['./create-input.component.scss']
 })
 export class CreateInputComponent implements OnInit {
-    headers         : HttpHeaders   = this.authService.headers;
-    loading         : boolean       = true;
-    inputId         : any;
-    input           : any;
-    inputForm       : any[]         = [
+    loading                 : boolean       = true;
+    loadingCustomFields     : boolean       = true;
+    openAvailableField      : boolean       = false;
+    headers                 : HttpHeaders   = this.authService.headers;
+    inputId                 : any;
+    input                   : any;
+    inputForm               : any[]         = [
         {
             id: 'input_id',
             label: this.translate.instant('HEADER.label_short'),
@@ -129,6 +132,60 @@ export class CreateInputComponent implements OnInit {
             type: 'boolean',
             control: new FormControl()
         },
+        {
+            id: 'allow_automatic_validation',
+            label: this.translate.instant('INPUT.allow_automatic_validation'),
+            type: 'boolean',
+            control: new FormControl()
+        },
+        {
+            id: 'automatic_validation_data',
+            label: this.translate.instant('INPUT.automatic_validation_data'),
+            type: 'char',
+            control: new FormControl()
+        }
+    ];
+    availableFields         : any           = [
+        {
+            "id": 'HEADER.id',
+            'label': 'HEADER.label'
+        },
+        {
+            "id": 'name',
+            'label': 'ACCOUNTS.supplier_name'
+        },
+        {
+            "id": 'invoice_number',
+            'label': 'FACTURATION.invoice_number'
+        },
+        {
+            "id": 'quotation_number',
+            'label': 'FACTURATION.quotation_number'
+        },
+        {
+            "id": 'invoice_date',
+            'label': marker('FACTURATION.invoice_date')
+        },
+        {
+            "id": 'total_ht',
+            'label': marker('FACTURATION.total_ht')
+        },
+        {
+            "id": 'total_ttc',
+            'label': marker('FACTURATION.total_ttc')
+        },
+        {
+            "id": 'total_vat',
+            'label': marker('FACTURATION.total_vat')
+        },
+        {
+            "id": 'order_number',
+            'label': 'FACTURATION.order_number'
+        },
+        {
+            "id": 'delivery_number',
+            'label': 'FACTURATION.delivery_number'
+        },
     ];
 
     constructor(
@@ -146,6 +203,24 @@ export class CreateInputComponent implements OnInit {
 
     ngOnInit(): void {
         this.serviceSettings.init();
+
+        this.http.get(API_URL + '/ws/customFields/list?module=verifier', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                data.customFields.forEach((field: any) => {
+                    this.availableFields.push({
+                        'id': 'custom_' + field.id,
+                        'label': field.label
+                    });
+                });
+            }),
+            finalize(() => this.loadingCustomFields = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
         this.http.get(API_URL + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
             tap((customers: any) => {
                 this.inputForm.forEach((element: any) => {
@@ -184,6 +259,10 @@ export class CreateInputComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
+    }
+
+    openSidenav(checked: boolean, field_id: any) {
+        this.openAvailableField = field_id === 'allow_automatic_validation' && checked;
     }
 
     isValidForm() {

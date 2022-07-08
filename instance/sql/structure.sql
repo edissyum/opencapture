@@ -8,7 +8,7 @@ CREATE TABLE "users"
     "enabled"       BOOLEAN     DEFAULT true,
     "status"        VARCHAR(5)  DEFAULT 'OK',
     "creation_date" TIMESTAMP   DEFAULT (CURRENT_TIMESTAMP),
-    "role"          INTEGER     DEFAULT 3
+    "role"          INTEGER     NOT NULL
 );
 
 CREATE TABLE "form_models"
@@ -78,18 +78,20 @@ CREATE TABLE "outputs_types"
 
 CREATE TABLE "inputs"
 (
-    "id"                     SERIAL         UNIQUE PRIMARY KEY,
-    "input_id"               VARCHAR(255),
-    "input_label"            VARCHAR(255),
-    "default_form_id"        INTEGER,
-    "customer_id"            INTEGER,
-    "module"                 VARCHAR(10),
-    "remove_blank_pages"     BOOLEAN        DEFAULT False,
-    "override_supplier_form" BOOLEAN        DEFAULT False,
-    "purchase_or_sale"       VARCHAR(8)     DEFAULT 'purchase',
-    "status"                 VARCHAR(3)     DEFAULT 'OK',
-    "input_folder"           TEXT,
-    "splitter_method_id"     VARCHAR(20)    DEFAULT 'qr_code_OC'
+    "id"                            SERIAL         UNIQUE PRIMARY KEY,
+    "input_id"                      VARCHAR(255),
+    "input_label"                   VARCHAR(255),
+    "default_form_id"               INTEGER,
+    "customer_id"                   INTEGER,
+    "module"                        VARCHAR(10),
+    "remove_blank_pages"            BOOLEAN        DEFAULT False,
+    "override_supplier_form"        BOOLEAN        DEFAULT False,
+    "allow_automatic_validation"    BOOLEAN        DEFAULT False,
+    "automatic_validation_data"     TEXT           DEFAULT '',
+    "purchase_or_sale"              VARCHAR(8)     DEFAULT 'purchase',
+    "status"                        VARCHAR(3)     DEFAULT 'OK',
+    "input_folder"                  TEXT,
+    "splitter_method_id"            VARCHAR(20)    DEFAULT 'qr_code_OC'
 );
 
 CREATE TABLE "custom_fields"
@@ -160,8 +162,8 @@ CREATE TABLE "accounts_supplier"
     "form_id"             INTEGER,
     "document_lang"       VARCHAR(10)   DEFAULT 'fra',
     "status"              VARCHAR(3)    DEFAULT 'OK',
-    "get_only_raw_footer" BOOLEAN       DEFAULT false,
-    "skip_auto_validate"  BOOLEAN       DEFAULT false,
+    "get_only_raw_footer" BOOLEAN       DEFAULT False,
+    "skip_auto_validate"  BOOLEAN       DEFAULT False,
     "lang"                VARCHAR(10)   DEFAULT 'fra',
     "creation_date"       TIMESTAMP     DEFAULT (CURRENT_TIMESTAMP),
     "positions"           JSONB         DEFAULT '{}',
@@ -326,6 +328,15 @@ CREATE TABLE "regex"
     "label"         VARCHAR(255),
     "content"       TEXT,
     "lang"          VARCHAR(10)     DEFAULT 'fra'
+);
+
+CREATE TABLE "login_methods"
+(
+    "id"            SERIAL      UNIQUE PRIMARY KEY,
+    "method_name"   VARCHAR(64) UNIQUE,
+    "method_label"  VARCHAR(255),
+    "enabled"       BOOLEAN     DEFAULT FALSE,
+    "data"          JSONB       DEFAULT '{}'
 );
 
 CREATE SEQUENCE splitter_referential_call_count AS INTEGER;

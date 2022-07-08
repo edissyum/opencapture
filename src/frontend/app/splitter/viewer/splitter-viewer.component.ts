@@ -155,12 +155,12 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         });
     }
 
-    setValuesFromSavedMetadata(autocompletionValue: any){
-        for(const field of this.fieldsCategories['batch_metadata']){
-            if(this.currentBatch.customFieldsValues.hasOwnProperty(field['label_short'])){
+    setValuesFromSavedMetadata(autocompletionValue: any) {
+        for(const field of this.fieldsCategories['batch_metadata']) {
+            if(this.currentBatch.customFieldsValues.hasOwnProperty(field['label_short'])) {
                 const savedValue = this.currentBatch.customFieldsValues[field['label_short']];
                 if(autocompletionValue.hasOwnProperty(field['label_short'])
-                    && autocompletionValue[field['label_short']] !== savedValue){
+                    && autocompletionValue[field['label_short']] !== savedValue) {
                     this.batchMetadataValues[field['label_short']] = savedValue;
                     this.batchForm.controls[field['label_short']].setValue(savedValue);
                 }
@@ -205,12 +205,12 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         ).subscribe();
     }
 
-    getStatusLabel(statusId: string){
+    getStatusLabel(statusId: string) {
         const statusFound = this.status.find(status => status.id === statusId);
         return statusFound ? statusFound.label: undefined;
     }
 
-    loadStatus(): void{
+    loadStatus(): void {
         this.http.get(API_URL + '/ws/status/list?module=splitter', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.status = data.status;
@@ -497,7 +497,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     loadReferentialOnView(): void {
         this.http.get(API_URL + `/ws/splitter/metadataMethods/${this.currentBatch.formId}`, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                if(data.metadataMethods[0].callOnSplitterView){
+                if(data.metadataMethods[0].callOnSplitterView) {
                     this.loadReferential(false);
                 }
             }),
@@ -521,13 +521,13 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
                 if(this.currentBatch.customFieldsValues.hasOwnProperty('metadataId')) {
                     const autocompletionValue = this.metadata.filter(item => item.metadataId === this.currentBatch.customFieldsValues.metadataId);
-                    if(autocompletionValue.length > 0){
+                    if(autocompletionValue.length > 0) {
                         this.filteredServerSideMetadata.next(autocompletionValue);
                         this.fillData((autocompletionValue[0]));
                         this.setValuesFromSavedMetadata(autocompletionValue[0]);
                     }
                 }
-                if(refreshAfterLoad){
+                if(refreshAfterLoad) {
                     this.loadSelectedBatch();
                 }
                 this.notify.success(this.translate.instant('SPLITTER.referential_updated'));
@@ -586,7 +586,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                                 'searchMask'    : field.searchMask,
                                 'resultMask'    : field.resultMask,
                             });
-                            if(field.metadata_key && fieldCategory === 'batch_metadata'){
+                            if(field.metadata_key && fieldCategory === 'batch_metadata') {
                                 this.inputMode = 'Auto';
                             }
                         });
@@ -899,17 +899,17 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     validateWithConfirmation() {
-        if(!this.batchForm.valid && this.inputMode === "Manual"){
+        if(!this.batchForm.valid && this.inputMode === "Manual") {
             this.notify.error(this.translate.instant('SPLITTER.error_empty_document_metadata'));
             this.loading = false;
             return;
         }
-        if(this.inputMode === 'Auto' && !this.batchMetadataValues.metadataId && this.fieldsCategories['batch_metadata'].length !== 0){
+        if(this.inputMode === 'Auto' && !this.batchMetadataValues.metadataId && this.fieldsCategories['batch_metadata'].length !== 0) {
             this.notify.error(this.translate.instant('SPLITTER.error_empty_batch_metadata'));
             return;
         }
         for (const document of this.documents) {
-            if(!document.form.valid){
+            if(!document.form.valid) {
                 this.notify.error(this.translate.instant('SPLITTER.error_empty_document_metadata'));
                 this.loading = false;
                 return;

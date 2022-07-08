@@ -26,7 +26,11 @@ bp = Blueprint('customFields', __name__, url_prefix='/ws/')
 @bp.route('customFields/list', methods=['GET'])
 @auth.token_required
 def retrieve_fields():
-    res = custom_fields.retrieve_custom_fields({})
+    args = {}
+    if 'module' in request.args:
+        args['where'] = ['module = %s', 'enabled is %s', 'status <> %s']
+        args['data'] = [request.args['module'], True, 'DEL']
+    res = custom_fields.retrieve_custom_fields(args)
     return make_response(jsonify(res[0])), res[1]
 
 

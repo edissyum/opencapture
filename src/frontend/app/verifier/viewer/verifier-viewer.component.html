@@ -1,4 +1,4 @@
-<div *ngIf="loading">
+<div *ngIf="this.loading">
     <app-loader></app-loader>
 </div>
 <div class="grid grid-cols-2 overflow-auto mt-2">
@@ -120,8 +120,8 @@
                                         {{ field.label | translate }}
                                     </mat-label>
                                     <input [id]="field.id" matInput [matDatepicker]="picker" [formControl]="field.control"
-                                           (focusin)="ocr($event, true, field.color)" [required]="field.required"
                                            [readonly]="invoice.status === 'END'"
+                                           (focusin)="ocr($event, true, field.color)" [required]="field.required"
                                            (focusout)="ocr($event, false); saveData($any($event.target).value, field['id'])"
                                            (dateChange)="saveData($any($event.targetElement).value, field['id'])">
                                     <mat-datepicker-toggle [disabled]="invoice.status === 'END'" matSuffix [for]="picker"></mat-datepicker-toggle>
@@ -136,7 +136,9 @@
                                     <mat-label class="overflow-ellipsis overflow-hidden whitespace-nowrap w-8/12">
                                         {{ field.label | translate }}
                                     </mat-label>
-                                    <input matInput type="text" [required]="true" [formControl]="field.control"
+                                    <input matInput type="text" [required]="field.required" [formControl]="field.control"
+                                           (focusin)="ocr($event, true, field.color)"
+                                           (focusout)="ocr($event, false); saveData($any($event.target).value, field['id'])"
                                            [matAutocomplete]="data" [readonly]="invoice.status === 'END'">
                                     <mat-autocomplete #data="matAutocomplete">
                                         <span *ngIf="field.autocomplete_values">
@@ -188,7 +190,7 @@
         </ng-container>
         <div class="mb-6 grid grid-cols-2 gap-4 h-12 text-gray-900">
             <button mat-button (click)="validateForm()" type="submit" [disabled]="invoice.status === 'END'"
-                    class="border-solid border-green-400 border-opacity-70 border hover:bg-green-400 hover:bg-opacity-70 hover:text-white transition duration-300">
+                    class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300">
                 {{ 'FORMS.validate' | translate }}
             </button>
             <button mat-button (click)="refuseForm()" type="submit" [disabled]="invoice.status === 'END'"

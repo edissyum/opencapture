@@ -50,9 +50,10 @@ git config core.fileMode False
 cd bin/install/ || exit 2
 apt update
 xargs -a apt-requirements.txt apt install -y
-pip3 install --upgrade pip
-pip3 install -r pip-requirements.txt
-pip3 install --upgrade -r pip-requirements.txt
+python3 -m pip install --upgrade setuptools
+python3 -m pip install --upgrade pip
+python3 -m pip install -r pip-requirements.txt
+python3 -m pip install --upgrade -r pip-requirements.txt
 
 cd $OCForInvoicesPath || exit 2
 find . -name ".gitkeep" -delete

@@ -44,6 +44,7 @@ export class InputsListComponent implements OnInit {
     columnsToDisplay: string[]      = ['id', 'input_id', 'input_label', 'input_folder', 'actions'];
     loading         : boolean       = true;
     inputs          : any           = [];
+    allInputs       : any           = [];
     pageSize        : number        = 10;
     pageIndex       : number        = 0;
     total           : number        = 0;
@@ -57,7 +58,6 @@ export class InputsListComponent implements OnInit {
         private authService: AuthService,
         public translate: TranslateService,
         private notify: NotificationService,
-
         private historyService: HistoryService,
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
@@ -75,6 +75,17 @@ export class InputsListComponent implements OnInit {
             this.offset = this.pageSize * (this.pageIndex);
         } else
             this.localeStorageService.remove('inputsPageIndex');
+
+        this.http.get(API_URL + '/ws/inputs/list?module=verifier', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.allInputs = data.inputs;
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
         this.loadInputs();
     }
 
@@ -148,7 +159,7 @@ export class InputsListComponent implements OnInit {
                 confirmTitle        : this.translate.instant('GLOBAL.confirm'),
                 confirmText         : this.translate.instant('INPUT.confirm_duplicate', {"input": input}),
                 confirmButton       : this.translate.instant('GLOBAL.duplicate'),
-                confirmButtonColor  : "warn",
+                confirmButtonColor  : "green",
                 cancelButton        : this.translate.instant('GLOBAL.cancel'),
             },
             width: "600px",
@@ -179,9 +190,9 @@ export class InputsListComponent implements OnInit {
     }
 
     sortData(sort: Sort) {
-        const data = this.inputs.slice();
+        const data = this.allInputs.slice();
         if (!sort.active || sort.direction === '') {
-            this.inputs = data;
+            this.inputs = data.splice(0, this.pageSize);
             return;
         }
 
@@ -195,6 +206,7 @@ export class InputsListComponent implements OnInit {
                     return 0;
             }
         });
+        this.inputs = this.inputs.splice(0, this.pageSize);
     }
 
     compare(a: number | string, b: number | string, isAsc: boolean) {

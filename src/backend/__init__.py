@@ -38,8 +38,8 @@ app.config.from_mapping(
     BABEL_TRANSLATION_DIRECTORIES=app.root_path.replace('backend', 'assets') + '/i18n/backend/translations/'
 )
 
-langs = json.loads(open(app.config['LANG_FILE']).read())
-app.config['LANGUAGES'] = langs
+with open(app.config['LANG_FILE'], encoding='UTF-8') as lang_file:
+    app.config['LANGUAGES'] = json.loads(lang_file.read())
 
 app.register_blueprint(auth.bp)
 app.register_blueprint(user.bp)

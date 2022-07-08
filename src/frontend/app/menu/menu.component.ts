@@ -28,27 +28,14 @@ import {TranslateService} from "@ngx-translate/core";
 @Component({
     selector: 'app-menu',
     templateUrl: './menu.component.html',
-    styleUrls: ['./menu.component.scss'],
-    animations: [
-        trigger('toggle', [
-            state('hide', style({
-                display: 'none',
-
-            })),
-            state('show', style({
-                display: "block",
-            })),
-            transition('show => hide', animate('150ms ease-out')),
-            transition('hide => show', animate('100ms ease-in'))
-        ])
-    ]
+    styleUrls: ['./menu.component.scss']
 })
 
 export class MenuComponent implements OnInit {
-    @Input() image: any;
-    profileDropdownCurrentState : string = 'hide';
-    profileSettingsCurrentState : string = 'hide';
-    mobileMenuState             : string = 'hide';
+    @Input() image              : any;
+    @Input() imageMobile        : any;
+    profileDropdownCurrentState : boolean = false;
+    mobileMenuState             : boolean = false;
 
     constructor(
         public router: Router,
@@ -96,15 +83,14 @@ export class MenuComponent implements OnInit {
     }
 
     toggleProfileDropdown() {
-        this.profileDropdownCurrentState = this.profileDropdownCurrentState === 'hide' ? 'show' : 'hide';
-        this.profileSettingsCurrentState = this.profileDropdownCurrentState === 'show' && this.profileSettingsCurrentState === 'show' ? 'hide' : this.profileSettingsCurrentState;
+        this.profileDropdownCurrentState = !this.profileDropdownCurrentState;
     }
 
     closeprofileDropDown() {
-        this.profileDropdownCurrentState = 'hide';
+        this.profileDropdownCurrentState = false;
     }
 
     toggleMobileMenu() {
-        this.mobileMenuState = this.mobileMenuState === 'hide' ? 'show' : 'hide';
+        this.mobileMenuState = !this.mobileMenuState;
     }
 }

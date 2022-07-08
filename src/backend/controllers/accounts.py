@@ -244,7 +244,7 @@ def create_supplier(data):
         'vat_number': data['vat_number'] if 'vat_number' in data else None,
         'form_id': data['form_id'] if 'form_id' in data else None,
         'address_id': data['address_id'],
-        'document_lang': data['document_lang'],
+        'document_lang': data['document_lang'] if 'document_lang' in data else 'fra',
         'get_only_raw_footer': data['get_only_raw_footer'] if 'get_only_raw_footer' in data else False,
     }
 

@@ -199,7 +199,7 @@ export class SplitterListComponent implements OnInit {
         const listOfBatchToMerge: any[] = [];
         const listOfBatchFormId: any[] = [];
         Array.from(checkboxList).forEach((element: any) => {
-            if(element.checked){
+            if(element.checked) {
                 const batchId = element.id.split('_')[0];
                 if (batchId !== parentId.toString())
                     listOfBatchToMerge.push(batchId);

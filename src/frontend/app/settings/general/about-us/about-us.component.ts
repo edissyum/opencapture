@@ -34,9 +34,9 @@ import {NotificationService} from "../../../../services/notifications/notificati
 
 export class AboutUsComponent implements OnInit {
     loading        : boolean   = true;
-    gitVersion     : any       = 'dev';
-    lastVersion    : any       = '';
     isProd         : boolean   = false;
+    currentVersion : any       = 'dev';
+    lastVersion    : any       = '';
 
     constructor(
         public router: Router,
@@ -50,11 +50,14 @@ export class AboutUsComponent implements OnInit {
     ngOnInit(): void {
         this.serviceSettings.init();
         this.isProd = environment.production;
-        this.gitVersion = environment.VERSION;
+        this.currentVersion = environment.VERSION;
         this.http.get(API_URL + '/ws/config/gitInfo', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                if (data.git_latest)
+                if (data.git_latest) {
                     this.lastVersion = data.git_latest;
+                } else {
+                    this.lastVersion = undefined;
+                }
             }),
             finalize(() => this.loading = false),
             catchError((err: any) => {

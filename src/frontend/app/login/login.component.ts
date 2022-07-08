@@ -36,8 +36,11 @@ import {HistoryService} from "../../services/history.service";
     styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-    loginForm   : any;
-    processLogin: boolean = false;
+    loginForm               : any;
+    enableLoginMethodName   : any;
+    processLogin            : boolean = false;
+    showPassword            : boolean = false;
+    isConnectionBtnDisabled : boolean = true;
 
     constructor(
         private router: Router,
@@ -57,9 +60,24 @@ export class LoginComponent implements OnInit {
             username: [null, Validators.required],
             password: [null, Validators.required]
         });
+
         if (this.localeService.currentLang === undefined) {
             this.localeService.getCurrentLocale();
         }
+
+        this.http.get(API_URL + '/ws/auth/getEnabledLoginMethod', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                const login_method_name = data['login_method_name'][0];
+                this.enableLoginMethodName = login_method_name['method_name'];
+                this.isConnectionBtnDisabled = false;
+            }),
+            catchError((err: any) => {
+                this.isConnectionBtnDisabled = true;
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
     }
 
     onSubmit() {

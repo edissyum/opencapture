@@ -126,6 +126,12 @@ export class SettingsService {
                 "privilege" : "custom_fields",
             },
             {
+                "id"        : "login-methods",
+                "label"     : this.translate.instant("SETTINGS.login_methods"),
+                "icon"      : "fa-solid fa-right-to-bracket",
+                "route"     : "/settings/general/login-methods"
+            },
+            {
                 "id"        : "about-us",
                 "label"     : this.translate.instant("SETTINGS.abouts_us"),
                 "icon"      : "fa-solid fa-address-card",
@@ -362,11 +368,18 @@ export class SettingsService {
             this.setSelectedParentSettings(selectedParentSetting);
 
         if (selectedParentSetting == null && selectedSetting == null) {
+            let foundSettings = false;
             this.settingsParent.forEach((parent: any) => {
                 if (this.router.url.includes(parent['id'])) {
+                    foundSettings = true;
                     this.setSelectedParentSettings(parent['id']);
                 }
             });
+
+            if (!foundSettings) {
+                this.setSelectedParentSettings('general');
+                this.setSelectedSettings('about-us');
+            }
         }
 
         this.closeOtherParent('', this.selectedParentSetting);

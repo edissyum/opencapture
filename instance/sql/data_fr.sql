@@ -8,11 +8,14 @@ INSERT INTO "status" ("id","label","label_long", "module") VALUES ('END', 'Clot�
 INSERT INTO "status" ("id","label","label_long", "module") VALUES ('DEL', 'Supprimé', 'Supprimé', 'splitter');
 INSERT INTO "status" ("id","label","label_long", "module") VALUES ('MERG', 'Fusionné', 'Fusionné', 'splitter');
 
+-- CRÉATION DES MÉTHODES D'AUTHENTIFICATION PAR DÉFAUT
+INSERT INTO "login_methods" ("method_name", "method_label", "enabled", "data") VALUES ('default', 'Authentification par defaut', True, '{}');
+INSERT INTO "login_methods" ("method_name", "method_label", "enabled", "data") VALUES ('ldap', 'Authentification par LDAP', False, '{"host": "", "port": "", "baseDN": "", "suffix": "","prefix": "", "typeAD": "", "usersDN": "", "classUser": "", "loginAdmin": "", "classObject": "", "passwordAdmin": "", "attributLastName": "", "attributFirstName": "", "attributSourceUser": "", "attributRoleDefault": ""}');
+
 -- CRÉATION DES PARAMÈTRES
 INSERT INTO "configurations" ("label", "data") VALUES ('timeDelta', '{"type": "int", "value": "-1", "description": "Delta maximum pour remonter une date de facture, en jours. -1 pour désactiver"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('resolution', '{"type": "int", "value": "300", "description": "Résolution utilisée pour la conversion PDF en JPG. En DPI"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('compressionQuality', '{"type": "int", "value": "100", "description": "Qualité de compression utilisée pour la conversion PDF en JPG. En pourcentage"}');
-INSERT INTO "configurations" ("label", "data") VALUES ('allowAutomaticValidation', '{"type": "bool", "value": "False", "description": "Autoriser la validation automatique si toutes les informations d''une facture sont trouvées"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('locale', '{"type": "string", "value": "fra", "description": "Clé pour la sélection de la langue (fra ou eng par défaut)"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('invoiceSizeMin', '{"type": "int", "value": "6", "description": "Taille minimale pour un numéro de facture"}');
 
@@ -59,7 +62,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
             {
                 "id": "filename",
                 "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
-                "type": "textarea",
+                "type": "text",
                 "label": "Nom du fichier",
                 "required": "true",
                 "placeholder": "invoice_number#order_number#supplier_name"
@@ -235,9 +238,156 @@ INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module", "data")
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "module") VALUES (2, 'export_maarch', 'Export Maarch par défaut', 'verifier');
 
 -- CRÉATION DES CHAINES SORTANTES DU MODULE SPLITTER
-INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (3, 'export_pdf', 'Export PDF', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "label": "Dossier de sortie", "required": "true", "placeholder": "/var/share/sortant"}, {"id": "filename", "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut", "type": "textarea", "label": "Nom du fichier", "required": "true", "placeholder": "doctype#nom#prenom#date"}, {"id": "separator", "type": "text", "label": "Séparateur", "required": "true", "placeholder": "_"}, {"id": "extension", "hint": "Ne pas mettre de point dans l''''extension", "type": "text", "label": "Extension du fichier", "required": "true", "placeholder": "pdf"}]}}', 'splitter');
-INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (4, 'export_xml', 'Export XML', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "label": "Dossier de sortie", "required": "true", "placeholder": "/var/share/sortant"}, {"id": "filename", "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut", "type": "textarea", "label": "Nom du fichier", "required": "true", "placeholder": "doctype#nom#prenom#date"}, {"id": "separator", "type": "text", "label": "Séparateur", "required": "true", "placeholder": "_"}, {"id": "extension", "hint": "Ne pas mettre de point dans l''''extension", "type": "text", "label": "Extension du fichier", "required": "true", "placeholder": "xml"}]}}', 'splitter');
-INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (5, 'export_cmis', 'Export CMIS', '{"options": {"auth": [{"id": "cmis_ws", "type": "text", "label": "CMIS Web-Service", "required": "true", "placeholder": "http://localhost//alfresco/api/-default-/public/cmis/versions/1.1/browser"}, {"id": "folder", "type": "text", "label": "Répertoire de dépôt", "required": "true", "placeholder": "/OpenCapture/PMI/scans/"}, {"id": "login", "type": "text", "label": "Pseudo de l''''utilisateur WS", "required": "true", "placeholder": "edissyumws"}, {"id": "password", "type": "password", "label": "Mot de passe de l''''utilisateur WS", "required": "true", "placeholder": "alfresco"}], "parameters": [{"id": "pdf_filename", "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut", "type": "textarea", "label": "Nom du fichier PDF", "required": "true", "placeholder": "doctype#random"}, {"id": "xml_filename", "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut", "type": "textarea", "label": "Nom du fichier XML", "required": "true", "placeholder": "#random"}, {"id": "separator", "hint": "", "type": "textarea", "label": "Séparateur", "required": "true", "placeholder": "_"}]}}', 'splitter');
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (3, 'export_pdf', 'Export PDF', '{
+  "options": {
+    "auth": [],
+    "parameters": [
+      {
+        "id": "folder_out",
+        "type": "text",
+        "label": "Dossier de sortie",
+        "required": "true",
+        "placeholder": "/var/share/sortant"
+      },
+      {
+        "id": "filename",
+        "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
+        "type": "text",
+        "label": "Nom du fichier",
+        "required": "true",
+        "placeholder": "doctype#nom#prenom#date"
+      },
+      {
+        "id": "separator",
+        "type": "text",
+        "label": "Séparateur",
+        "required": "true",
+        "placeholder": "_"
+      },
+      {
+        "id": "extension",
+        "hint": "Ne pas mettre de point dans l''''extension",
+        "type": "text",
+        "label": "Extension du fichier",
+        "required": "true",
+        "placeholder": "pdf"
+      },
+      {
+        "id": "add_to_zip",
+        "hint": "Ajouter le fichier au ZIP, [Except=doctype1] mentionne les type de document à ne pas ajouter dans le ZIP",
+        "type": "text",
+        "label": "Nom du fichier ZIP à exporter",
+        "required": "false",
+        "placeholder": "splitter-files.zip[Except=doctype1,doctype2]"
+      }
+    ]
+  }
+}', 'splitter');
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (4, 'export_xml', 'Export XML', '{
+  "options": {
+    "auth": [],
+    "parameters": [
+      {
+        "id": "folder_out",
+        "type": "text",
+        "label": "Dossier de sortie",
+        "required": "true",
+        "placeholder": "/var/share/sortant"
+      },
+      {
+        "id": "filename",
+        "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
+        "type": "text",
+        "label": "Nom du fichier",
+        "required": "true",
+        "placeholder": "doctype#nom#prenom#date"
+      },
+      {
+        "id": "separator",
+        "type": "text",
+        "label": "Séparateur",
+        "required": "true",
+        "placeholder": "_"
+      },
+      {
+        "id": "extension",
+        "hint": "Ne pas mettre de point dans l''''extension",
+        "type": "text",
+        "label": "Extension du fichier",
+        "required": "true",
+        "placeholder": "xml"
+      },
+      {
+        "id": "xml_template",
+        "hint": "Format XML avec les identifiants techniques des champs, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut, pour boucler entre les documents ajoutez la section  <!-- %END-DOCUMENT-LOOP -->...<!-- %END-DOCUMENT-LOOP -->",
+        "type": "textarea",
+        "label": "Contenu de fichier XML ",
+        "required": "true ",
+        "placeholder": "<?xml version=\"1.0\" encoding=\"UTF-8\" ?> ..."
+      }
+    ]
+  }
+}', 'splitter');
+INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "data", "module") VALUES (5, 'export_cmis', 'Export CMIS','{
+  "options": {
+    "auth": [
+      {
+        "id": "cmis_ws",
+        "type": "text",
+        "label": "CMIS Web-Service",
+        "required": "true",
+        "placeholder": "http://localhost//alfresco/api/-default-/public/cmis/versions/1.1/browser"
+      },
+      {
+        "id": "folder",
+        "type": "text",
+        "label": "Répertoire de dépôt",
+        "required": "true",
+        "placeholder": "/OpenCapture/PMI/scans/"
+      },
+      {
+        "id": "login",
+        "type": "text",
+        "label": "Pseudo de l''''utilisateur WS",
+        "required": "true",
+        "placeholder": "edissyumws"
+      },
+      {
+        "id": "password",
+        "type": "password",
+        "label": "Mot de passe de l''''utilisateur WS",
+        "required": "true",
+        "placeholder": "alfresco"
+      }
+    ],
+    "parameters": [
+      {
+        "id": "pdf_filename",
+        "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
+        "type": "textarea",
+        "label": "Nom du fichier PDF",
+        "required": "true",
+        "placeholder": "doctype#random"
+      },
+      {
+        "id": "xml_filename",
+        "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
+        "type": "textarea",
+        "label": "Nom du fichier XML",
+        "required": "true",
+        "placeholder": "#random"
+      },
+      {
+        "id": "separator",
+        "hint": "",
+        "type": "textarea",
+        "label": "Séparateur",
+        "required": "true",
+        "placeholder": "_"
+      }
+    ]
+  }
+}', 'splitter');
 
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (3, 'export_pdf', 'Export vers Vérificateur', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/entrant/verifier/"}, {"id": "filename", "type": "textarea", "value": "PDF#doctype#date#random"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "extension", "type": "text", "value": "pdf"}]}}', 'splitter');
 INSERT INTO "outputs" ("id", "output_type_id", "output_label", "data", "module") VALUES (4, 'export_xml', 'Export XML par défaut', '{"options": {"auth": [], "parameters": [{"id": "folder_out", "type": "text", "value": "/var/share/export/splitter/"}, {"id": "filename", "type": "textarea", "value": "XML#date"}, {"id": "separator", "type": "text", "value": "_"}, {"id": "extension", "type": "text", "value": "xml"}]}}', 'splitter');
@@ -660,7 +810,7 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (8, 'update_user', 'ad
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (9, 'roles_list', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (10, 'add_role', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (11, 'update_role', 'administration');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (12, 'custom_fields', 'general');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (12, 'custom_fields', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (13, 'forms_list', 'verifier');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (14, 'add_form', 'verifier');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (15, 'update_form', 'verifier');
@@ -696,11 +846,12 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (44, 'add_document_typ
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (45, 'update_document_type', 'splitter');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (46, 'import_suppliers', 'accounts');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (47, 'statistics', 'general');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (48, 'configurations', 'general');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (49, 'docservers', 'general');
-INSERT INTO "privileges" ("id", "label", "parent") VALUES (50, 'regex', 'general');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (48, 'configurations', 'administration');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (49, 'docservers', 'administration');
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (50, 'regex', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (51, 'document_type_splitter', 'splitter');
-ALTER SEQUENCE "privileges_id_seq" RESTART WITH 52;
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (52, 'login_methods', 'administration');
+ALTER SEQUENCE "privileges_id_seq" RESTART WITH 53;
 
 -- CRÉATION DES ROLES
 INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (1, 'superadmin', 'SuperUtilisateur', 'false');

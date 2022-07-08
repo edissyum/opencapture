@@ -36,6 +36,7 @@ from wand.image import Image as Img
 from werkzeug.utils import secure_filename
 from src.backend.functions import get_custom_array
 from wand.exceptions import PolicyError, CacheError
+from zipfile import ZipFile
 
 custom_array = get_custom_array()
 
@@ -475,18 +476,23 @@ class Files:
                         pdf_page.rotateCounterClockwise(-page['rotation'])
                     pdf_writer.addPage(pdf_page)
                 file_path = output_file + '/' + documents[index]['fileName']
-                with open(file_path, 'wb') as file:
-                    pdf_writer.write(file)
-                    paths.append(file_path)
-                pdf_writer = PyPDF2.PdfFileWriter()
 
                 if compress_type:
-                    compressed_file_path = output_file + '/min_' + documents[index]['fileName']
-                    compress_pdf(file_path, compressed_file_path, compress_type)
+                    tmp_filename = '/tmp/' + documents[index]['fileName']
+                    with open(tmp_filename, 'wb') as file:
+                        pdf_writer.write(file)
+                        paths.append(file_path)
+                    pdf_writer = PyPDF2.PdfFileWriter()
+                    compressed_file_path = '/tmp/min_' + documents[index]['fileName']
+                    compress_pdf(tmp_filename, compressed_file_path, compress_type)
                     shutil.move(compressed_file_path, file_path)
-
-        except Exception as e:
-            return False, str(e)
+                else:
+                    with open(file_path, 'wb') as file:
+                        pdf_writer.write(file)
+                        paths.append(file_path)
+                    pdf_writer = PyPDF2.PdfFileWriter()
+        except Exception as err:
+            return False, str(err)
         return paths
 
     @staticmethod
@@ -498,9 +504,18 @@ class Files:
         letters = string.ascii_uppercase
         return ''.join(random.choice(letters) for i in range(length))
 
+    @staticmethod
+    def zip_files(input_paths, output_path, delete_zipped_files=False):
+        with ZipFile(output_path, 'w') as zipObj:
+            for input_path in input_paths:
+                zipObj.write(input_path['input_path'], input_path['path_in_zip'])
+                if delete_zipped_files:
+                    os.remove(input_path['input_path'])
+
 
 def compress_pdf(input_file, output_file, compress_id):
     gs_command = 'gs#-sDEVICE=pdfwrite#-dCompatibilityLevel=1.4#-dPDFSETTINGS=/%s#-dNOPAUSE#-dQUIET#-o#%s#%s' \
                  % (compress_id, output_file, input_file)
     gs_args = gs_command.split('#')
     subprocess.check_call(gs_args)
+

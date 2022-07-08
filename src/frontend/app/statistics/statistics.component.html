@@ -1,6 +1,6 @@
 <mat-sidenav-container class="absolute left-0 right-0 bottom-0" style="top: 4.1rem">
     <mat-sidenav-content class="bg-white">
-        <div *ngIf="loading">
+        <div *ngIf="this.loading">
             <app-loader></app-loader>
         </div>
         <div class="settings_header">
@@ -10,15 +10,17 @@
             </div>
         </div>
         <div class="flex justify-center" style="height: calc(100% - 64px)">
-            <div class="w-full h-1 absolute text-center mt-2">
+            <div class="w-full h-1 absolute text-center mt-2 z-50">
                 <mat-form-field class="w-1/4">
                     <mat-select (selectionChange)="changeStatistic($event)"
+                                [disabled]="this.loading"
                                 [placeholder]="'STATISTICS.choose_statistic_report' | translate">
                         <mat-option *ngFor="let option of options" [value]="option['id']">{{ option['label'] | translate }}</mat-option>
                     </mat-select>
                 </mat-form-field>
                 <mat-form-field class="ml-4 w-1/4">
-                    <mat-select [disabled]="!this.selectedStatistic"
+                    <mat-select [disabled]="!this.selectedStatistic || this.loading"
+                                [ngModel]="this.selectedDiagramType"
                                 (selectionChange)="changeDiagramType($event)"
                                 [placeholder]="'STATISTICS.choose_diagram' | translate">
                         <mat-option *ngFor="let option of diagramTypes" [value]="option['id']">
@@ -30,7 +32,7 @@
             <div class="relative mt-20 w-full" *ngIf="!loading && this.selectedStatistic">
                 <ngx-charts-bar-vertical
                         *ngIf="this.selectedDiagramType === 'vertical-bar'"
-                        [results]="data"
+                        [results]="currentData"
                         [xAxis]="true"
                         [yAxis]="true"
                         [legend]="true"
@@ -40,17 +42,17 @@
                 </ngx-charts-bar-vertical>
                 <ngx-charts-pie-chart
                         *ngIf="this.selectedDiagramType === 'pie-chart'"
-                        [results]="data"
+                        [results]="currentData"
                         [legendTitle]="this.selectedStatistic.label | translate"
                         [labels]="true">
                 </ngx-charts-pie-chart>
                 <ngx-charts-pie-grid
                         *ngIf="this.selectedDiagramType === 'pie-grid'"
-                        [results]="data">
+                        [results]="currentData">
                 </ngx-charts-pie-grid>
                 <ngx-charts-line-chart
                         *ngIf="this.selectedDiagramType === 'line-charts'"
-                        [results]="data"
+                        [results]="currentData"
                         [xAxis]="true"
                         [yAxis]="true"
                         [legend]="false"

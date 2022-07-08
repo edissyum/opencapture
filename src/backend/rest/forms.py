@@ -30,7 +30,11 @@ def get_forms():
         'offset': request.args['offset'] if 'offset' in request.args else '',
         'limit': request.args['limit'] if 'limit' in request.args else '',
         'where': ["status <> 'DEL'", "module like %s"],
-        'data': [request.args['module']] if 'module' in request.args else '%'
+        'data': [request.args['module']] if 'module' in request.args else '%',
+        'totals': 'totals' in request.args and request.args['totals'] == 'true',
+        'status': request.args['status'] if 'status' in request.args and request.args['status'] else 'NEW',
+        'time': request.args['time'] if 'time' in request.args and request.args['status'] else 'today',
+        'user_id': request.args['user_id'] if 'user_id' in request.args and request.args['user_id'] else None
     }
     res = forms.get_forms(args)
     return make_response(jsonify(res[0]), res[1])

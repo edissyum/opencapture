@@ -35,6 +35,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {DomSanitizer} from "@angular/platform-browser";
 import {ConfigService} from "../../../services/config.service";
 import {HistoryService} from "../../../services/history.service";
+import {FormControl} from "@angular/forms";
 
 interface accountsNode {
     name: string
@@ -72,7 +73,12 @@ export class VerifierListComponent implements OnInit {
     loading         : boolean           = true;
     loadingCustomers: boolean           = true;
     status          : any[]             = [];
+    forms           : any[]             = [
+        {'id' : '', "label": this.translate.instant('VERIFIER.all_forms')},
+        {'id' : 'no_form', "label": this.translate.instant('VERIFIER.no_form')}
+    ];
     config          : any;
+    currentForm     : any               = '';
     currentStatus   : string            = 'NEW';
     currentTime     : string            = 'today';
     batchList       : any[]             = [
@@ -105,6 +111,8 @@ export class VerifierListComponent implements OnInit {
     expanded        : boolean           = false;
     invoiceToDeleteSelected : boolean   = false;
     totalChecked    : number            = 0;
+    customerFilter                      = new FormControl('');
+    customerFilterEmpty : boolean       = false;
 
     private _transformer = (node: accountsNode, level: number) => ({
         expandable: !!node.children && node.children.length > 0,
@@ -152,6 +160,7 @@ export class VerifierListComponent implements OnInit {
         marker('VERIFIER.collapse_all'); // Needed to get the translation in the JSON file
         marker('VERIFIER.select_all'); // Needed to get the translation in the JSON file
         marker('VERIFIER.unselect_all'); // Needed to get the translation in the JSON file
+        marker('VERIFIER.documents_settings'); // Needed to get the translation in the JSON file
         this.localeStorageService.save('splitter_or_verifier', 'verifier');
         this.removeLockByUserId(this.userService.user.username);
         const lastUrl = this.routerExtService.getPreviousUrl();
@@ -178,7 +187,27 @@ export class VerifierListComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
+
         this.loadCustomers();
+    }
+
+    loadForms() {
+        this.http.get(API_URL + '/ws/forms/list?module=verifier&totals=true&status=' + this.currentStatus + '&user_id=' + this.userService.user.id + '&time=' + this.currentTime, {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.forms = [
+                    {'id' : '', "label": this.translate.instant('VERIFIER.all_forms')},
+                    {'id' : 'no_form', "label": this.translate.instant('VERIFIER.no_form')}
+                ];
+                data.forms.forEach((form: any) => {
+                    this.forms.push(form);
+                });
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
     }
 
     removeLockByUserId(userId: any) {
@@ -204,7 +233,7 @@ export class VerifierListComponent implements OnInit {
                     purchase_or_sale: '',
                     display: true,
                     count: 0,
-                    children: []
+                    children: [],
                 });
                 this.allowedCustomers.push(0); // 0 is used if for some reasons no customer was recover by OC process
                 this.http.get(API_URL + '/ws/users/getCustomersByUserId/' + this.userService.user.id, {headers: this.authService.headers}).pipe(
@@ -221,7 +250,7 @@ export class VerifierListComponent implements OnInit {
                                         purchase_or_sale: '',
                                         display: true,
                                         count: 0,
-                                        children: []
+                                        children: [],
                                     });
                                 }
                             });
@@ -250,7 +279,12 @@ export class VerifierListComponent implements OnInit {
         this.loading = true;
         this.loadingCustomers = true;
         this.invoices = [];
-        this.http.get(API_URL + '/ws/verifier/invoices/totals/' + this.currentStatus + '/' + this.userService.user.id, {headers: this.authService.headers}).pipe(
+        this.loadForms();
+        let url = API_URL + '/ws/verifier/invoices/totals/' + this.currentStatus + '/' + this.userService.user.id;
+        if (this.currentForm !== '') {
+            url = API_URL + '/ws/verifier/invoices/totals/' + this.currentStatus + '/' + this.userService.user.id + '/' + this.currentForm;
+        }
+        this.http.get(url, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.totals = data.totals;
             }),
@@ -262,9 +296,9 @@ export class VerifierListComponent implements OnInit {
         ).subscribe();
         this.http.post(API_URL + '/ws/verifier/invoices/list',
             {
-                'allowedCustomers': this.allowedCustomers, 'status': this.currentStatus, 'allowedSuppliers': this.allowedSuppliers,
-                'time': this.currentTime, 'limit': this.pageSize, 'offset': this.offset, 'search': this.search,
-                'purchaseOrSale': this.purchaseOrSale
+                'allowedCustomers': this.allowedCustomers, 'status': this.currentStatus, 'limit': this.pageSize,
+                'allowedSuppliers': this.allowedSuppliers, 'form_id': this.currentForm, 'time': this.currentTime,
+                'offset': this.offset, 'search': this.search, 'purchaseOrSale': this.purchaseOrSale
             },
             {headers: this.authService.headers}
         ).pipe(
@@ -280,6 +314,8 @@ export class VerifierListComponent implements OnInit {
                     this.invoices.forEach((invoice: any) => {
                         if (!invoice.thumb.includes('data:image/jpeg;base64'))
                             invoice.thumb = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + invoice.thumb);
+                        if (invoice.form_label === null || invoice.form_label === '' || invoice.form_label === undefined)
+                            invoice.form_label = this.translate.instant('VERIFIER.no_form');
                     });
                 }
 
@@ -341,6 +377,7 @@ export class VerifierListComponent implements OnInit {
                     });
                 });
                 this.dataSource.data = this.TREE_DATA;
+                this.filterCustomers();
             }),
             finalize(() => {
                 this.loading = false;
@@ -374,6 +411,45 @@ export class VerifierListComponent implements OnInit {
                 display: true
             });
         }
+    }
+
+    resetSearchCustomer() {
+        this.customerFilter.setValue('');
+        this.filterCustomers();
+    }
+
+    filterCustomers() {
+        const tmpData = this.dataSource.data;
+        this.customerFilterEmpty = false;
+        let customerMatch = false;
+        tmpData.forEach((element: any) => {
+            if (element.name.toLowerCase().includes(this.customerFilter.value!.toLowerCase())) {
+                element.display = true;
+                customerMatch = true;
+            } else {
+                element.display = false;
+            }
+        });
+        if (!customerMatch) this.customerFilterEmpty = true;
+        this.dataSource.data = tmpData;
+    }
+
+    changeCustomer(customerId: number, invoiceId: number) {
+        this.loading = true;
+        this.loadingCustomers = true;
+        this.http.put(API_URL + '/ws/verifier/invoices/' + invoiceId + '/update',
+            {'args': {"customer_id": customerId}},
+            {headers: this.authService.headers}).pipe(
+                finalize(() => {
+                    this.resetInvoices();
+                    this.notify.success(this.translate.instant('VERIFIER.customer_changed_successfully'));
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+        ).subscribe();
     }
 
     createChildren(purchaseOrSale: any, id: any, index: any) {
@@ -417,6 +493,7 @@ export class VerifierListComponent implements OnInit {
         this.allowedSuppliers = [];
         this.purchaseOrSale = '';
         this.search = '';
+        this.currentForm = '';
         this.resetPaginator();
         this.loadCustomers();
     }
@@ -434,7 +511,7 @@ export class VerifierListComponent implements OnInit {
     deleteAllInvoices() {
         this.loading = true;
         this.loadingCustomers = true;
-        const checkboxList = document.getElementsByClassName('checkBox_list:checked');
+        const checkboxList = document.querySelectorAll('.checkBox_list:checked');
         Array.from(checkboxList).forEach((element: any) => {
             const invoiceId = element.id.split('_')[0];
             this.deleteInvoice(invoiceId, true);
@@ -519,6 +596,12 @@ export class VerifierListComponent implements OnInit {
 
     changeStatus(event: any) {
         this.currentStatus = event.value;
+        this.resetPaginator();
+        this.loadInvoices();
+    }
+
+    changeForm(event: any) {
+        this.currentForm = event.value;
         this.resetPaginator();
         this.loadInvoices();
     }
