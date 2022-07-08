@@ -184,6 +184,7 @@
 		"accounting_plan": "Compte de charge",
 		"delivery_number": "Numéro de livraison",
 		"facturation": "Facturation",
+		"footer": "Pied de page",
 		"invoice_date": "Date de la facture",
 		"invoice_date_day": "Jour de la facture",
 		"invoice_date_month": "Mois de la facture",
@@ -367,7 +368,10 @@
 		"verifier": "Open-Capture Vérificateur"
 	},
 	"INPUT": {
+		"allow_automatic_validation": "Autoriser la validation automatique",
 		"associated_customer": "Compte client associé",
+		"automatic_validation_data": "Données nécessaire à la validation automatique",
+		"automatic_validation_data_hint": "Exemple : supplier, invoice_number, footer",
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer la chaîne entrante <b>{{ input }}</b> ?",
 		"confirm_duplicate": "Êtes vous sûr de vouloir dupliquer la chaîne entrante <b>{{ input }}</b> ?",
 		"create": "Créer la chaîne entrante",
@@ -456,6 +460,7 @@
 		"json_input_erorr": "Le champ <b>{{field}}</b> doit être au format JSON avec des doubles quotes",
 		"links": "Liaisons",
 		"links_hint": "Cet onglet permet de paramétrer la liaison d'un document à un autre en se basant sur une donnée spécifique. <br><i>Exemple : Lier une facture à un devis dans Maarch dont le numéro de devis est dans le champ personnalisé numéro 30</i>",
+		"loading_custom_fields": "Chargement des champs personnalisés",
 		"maarch_connection_ko": "Erreur lors de la connexion à Maarch",
 		"maarch_connection_ok": "Connexion à Maarch réalisée avec succès",
 		"no_auth_necessary": "Pas d'authentification nécessaire",

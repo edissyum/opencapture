@@ -73,7 +73,10 @@ export class VerifierListComponent implements OnInit {
     loading         : boolean           = true;
     loadingCustomers: boolean           = true;
     status          : any[]             = [];
-    forms           : any[]             = [];
+    forms           : any[]             = [
+        {'id' : '', "label": this.translate.instant('VERIFIER.all_forms')},
+        {'id' : 'no_form', "label": this.translate.instant('VERIFIER.no_form')}
+    ];
     config          : any;
     currentForm     : any               = '';
     currentStatus   : string            = 'NEW';
@@ -110,6 +113,7 @@ export class VerifierListComponent implements OnInit {
     totalChecked    : number            = 0;
     customerFilter                      = new FormControl('');
     customerFilterEmpty : boolean       = false;
+
     private _transformer = (node: accountsNode, level: number) => ({
         expandable: !!node.children && node.children.length > 0,
         name: node.name,

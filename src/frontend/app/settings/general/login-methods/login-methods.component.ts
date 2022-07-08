@@ -229,7 +229,6 @@ export class LoginMethodsComponent implements OnInit {
 
                 this.http.post(API_URL + '/ws/auth/retrieveLdapConfigurations', {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
-                        console.log(data);
                         const configs : any = data.ldap_configurations ;
                         this.connectionFormGroup.forEach(element => {
                             for (const config of configs) {

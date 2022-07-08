@@ -821,7 +821,10 @@ export class VerifierViewerComponent implements OnInit {
                 {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.invoice.datas[fieldId] = oldData;
-                    if (showNotif) this.notify.success(this.translate.instant('INVOICES.position_and_data_updated', {"input": this.lastLabel}));
+                    if (showNotif) {
+                        this.notify.success(this.translate.instant('INVOICES.position_and_data_updated',
+                            {"input": this.lastLabel}));
+                    }
                 }),
                 catchError((err: any) => {
                     console.debug(err);

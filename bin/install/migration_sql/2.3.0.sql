@@ -2,6 +2,11 @@
 ALTER TABLE users ALTER COLUMN role SET NOT NULL;
 ALTER TABLE users ALTER COLUMN role DROP DEFAULT;
 
+-- Improve inputs
+ALTER TABLE inputs ADD COLUMN "allow_automatic_validation" BOOLEAN DEFAULT False;
+ALTER TABLE inputs ADD COLUMN "automatic_validation_data" TEXT DEFAULT '';
+DELETE FROM configurations WHERE label = 'allowAutomaticValidation';
+
 -- Add LDAP
 CREATE TABLE "login_methods"
 (

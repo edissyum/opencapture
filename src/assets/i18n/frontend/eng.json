@@ -184,6 +184,7 @@
 		"accounting_plan": "Accounting plan",
 		"delivery_number": "Delivery number",
 		"facturation": "Facturation",
+		"footer": "Footer",
 		"invoice_date": "Invoice date",
 		"invoice_date_day": "Day of the invoice date",
 		"invoice_date_month": "Month of the invoice date",
@@ -367,7 +368,10 @@
 		"verifier": "Open-Capture Verifier"
 	},
 	"INPUT": {
+		"allow_automatic_validation": "Allow automatic validation",
 		"associated_customer": "Associated customer",
+		"automatic_validation_data": "Data needed for automatic validation",
+		"automatic_validation_data_hint": "Example : supplier, invoice_number, footer",
 		"confirm_delete": "Are you sure you want to delete the input <b>{{ input }}</b> ?",
 		"confirm_duplicate": "Are you sure you want to duplicate input <b>{{ input }}</b> ?",
 		"create": "Create input",
@@ -456,6 +460,7 @@
 		"json_input_erorr": "The field <b>{{ field }}</b> have to be JSON with double quotes",
 		"links": "Links",
 		"links_hint": "This tab is used to configure the link from one document to another based on specific data. <br><i>Example: Linking an invoice to an estimate in Maarch whose estimate number is in the custom field number 30</i>",
+		"loading_custom_fields": "Loading custom fields",
 		"maarch_connection_ko": "Error while connecting to Maarch",
 		"maarch_connection_ok": "Connection to Maarch successfull",
 		"no_auth_necessary": "No authentification necessary",
