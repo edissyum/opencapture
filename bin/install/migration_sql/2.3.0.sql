@@ -54,3 +54,96 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (49, 'docservers', 'ad
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (50, 'regex', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (51, 'document_type_splitter', 'splitter');
 ALTER SEQUENCE "privileges_id_seq" RESTART WITH 52;
+
+-- Improve Splitter outputs
+UPDATE outputs_types SET "data" = '{
+  "options": {
+    "auth": [],
+    "parameters": [
+      {
+        "id": "folder_out",
+        "type": "text",
+        "label": "Dossier de sortie",
+        "required": "true",
+        "placeholder": "/var/share/sortant"
+      },
+      {
+        "id": "filename",
+        "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
+        "type": "text",
+        "label": "Nom du fichier",
+        "required": "true",
+        "placeholder": "doctype#nom#prenom#date"
+      },
+      {
+        "id": "separator",
+        "type": "text",
+        "label": "Séparateur",
+        "required": "true",
+        "placeholder": "_"
+      },
+      {
+        "id": "extension",
+        "hint": "Ne pas mettre de point dans l''''extension",
+        "type": "text",
+        "label": "Extension du fichier",
+        "required": "true",
+        "placeholder": "pdf"
+      },
+      {
+        "id": "add_to_zip",
+        "hint": "Ajouter le fichier au ZIP, [Except=doctype1] mentionne les type de document à ne pas ajouter dans le ZIP",
+        "type": "text",
+        "label": "Nom du fichier ZIP à exporter",
+        "required": "false",
+        "placeholder": "splitter-files.zip[Except=doctype1,doctype2]"
+      }
+    ]
+  }
+}' WHERE output_type_id = 'export_pdf' AND module = 'splitter';
+
+UPDATE outputs_types SET "data" = '{
+  "options": {
+    "auth": [],
+    "parameters": [
+      {
+        "id": "folder_out",
+        "type": "text",
+        "label": "Dossier de sortie",
+        "required": "true",
+        "placeholder": "/var/share/sortant"
+      },
+      {
+        "id": "filename",
+        "hint": "Liste des identifiants techniques, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut",
+        "type": "text",
+        "label": "Nom du fichier",
+        "required": "true",
+        "placeholder": "doctype#nom#prenom#date"
+      },
+      {
+        "id": "separator",
+        "type": "text",
+        "label": "Séparateur",
+        "required": "true",
+        "placeholder": "_"
+      },
+      {
+        "id": "extension",
+        "hint": "Ne pas mettre de point dans l''''extension",
+        "type": "text",
+        "label": "Extension du fichier",
+        "required": "true",
+        "placeholder": "xml"
+      },
+      {
+        "id": "xml_template",
+        "hint": "Format XML avec les identifiants techniques des champs, séparés par #. Si l''identifiant technique n''existe pas, la valeur sera utilisée comme chaîne de caractères brut, pour boucler entre les documents ajoutez la section  <!-- %END-DOCUMENT-LOOP -->...<!-- %END-DOCUMENT-LOOP -->",
+        "type": "textarea",
+        "label": "Contenu de fichier XML ",
+        "required": "true ",
+        "placeholder": "<?xml version=\"1.0\" encoding=\"UTF-8\" ?> ..."
+      }
+    ]
+  }
+}' WHERE output_type_id = 'export_xml' AND module = 'splitter';
