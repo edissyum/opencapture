@@ -14,7 +14,7 @@
 # along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
-import ast
+
 import os
 import json
 from .classes.Config import Config as _Config
@@ -41,7 +41,7 @@ def get_custom_id():
 
 def check_python_customized_files(path):
     array_of_import = {}
-    for root, dirs, files in os.walk(path):
+    for root, _, files in os.walk(path):
         for file in files:
             if file.endswith(".py"):
                 module = os.path.splitext(file)[0]
@@ -130,9 +130,9 @@ def recursive_delete(folder, log):
     for file in os.listdir(folder):
         try:
             os.remove(folder + '/' + file)
-        except FileNotFoundError as e:
-            log.error('Unable to delete ' + folder + '/' + file + ' on temp folder: ' + str(e), False)
+        except FileNotFoundError as err:
+            log.error('Unable to delete ' + folder + '/' + file + ' on temp folder : ' + str(err), False)
     try:
         os.rmdir(folder)
-    except FileNotFoundError as e:
-        log.error('Unable to delete ' + folder + ' on temp folder: ' + str(e), False)
+    except FileNotFoundError as err:
+        log.error('Unable to delete ' + folder + ' on temp folder : ' + str(err), False)
