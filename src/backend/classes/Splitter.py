@@ -274,6 +274,8 @@ class Splitter:
         documents_tags = ""
         if doc_loop_item_template:
             for index, document in enumerate(documents):
+                if document['id'] not in metadata['doc_except_from_zip'] and metadata['zip_filename']:
+                    continue
                 doc_loop_item = doc_loop_item_template.group(1)
                 doc_loop_item = doc_loop_item.replace('#date', date)
                 doc_loop_item = doc_loop_item.replace('#filename', document['fileName'] if 'fileName' in document else '')

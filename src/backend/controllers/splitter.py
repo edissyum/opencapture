@@ -299,13 +299,15 @@ def export_pdf(batch, documents, parameters, metadata, pages, now, compress_type
     _docservers = _vars[9]
     filename = _docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch[0]['file_path']
     pdf_filepaths = []
-    except_from_zip = ''
+    doc_except_from_zip = []
+    except_from_zip_doctype = ''
+    zip_file_path = ''
     zip_filename = ''
     """
     Add PDF file to zip archive if enabled
     """
     if parameters['add_to_zip']:
-        except_from_zip = re.search(r'\[Except=(.*?)\]', parameters['add_to_zip']) \
+        except_from_zip_doctype = re.search(r'\[Except=(.*?)\]', parameters['add_to_zip']) \
             if 'Except' in parameters['add_to_zip'] else ''
         mask_args = {
             'mask': parameters['add_to_zip'].split('[Except=')[0],
@@ -324,12 +326,13 @@ def export_pdf(batch, documents, parameters, metadata, pages, now, compress_type
             'extension': parameters['extension']
         }
         documents[index]['fileName'] = _Splitter.get_mask_result(document, document['metadata'], now, mask_args)
-        if not except_from_zip or except_from_zip.group(1) not in documents[index]['documentTypeKey']:
+        if not except_from_zip_doctype or except_from_zip_doctype.group(1) not in documents[index]['documentTypeKey']:
             pdf_filepaths.append({
                 'input_path': parameters['folder_out'] + '/' + documents[index]['fileName'],
                 'path_in_zip': zip_filename.split('.zip')[0] + '/' + documents[index]['fileName']
             })
-
+        else:
+            doc_except_from_zip.append(documents[index]['id'])
     export_pdf_res = _Files.export_pdf(pages, documents, filename, parameters['folder_out'], compress_type, 1)
 
     if not export_pdf_res[0]:
@@ -343,7 +346,7 @@ def export_pdf(batch, documents, parameters, metadata, pages, now, compress_type
         zip_file_path = parameters['folder_out'] + '/' + zip_filename
         _Files.zip_files(pdf_filepaths, zip_file_path, True)
 
-    return {'paths': export_pdf_res}, 200
+    return {'paths': export_pdf_res, 'doc_except_from_zip': doc_except_from_zip, 'zip_filename': zip_filename}, 200
 
 
 def export_xml(fields_param, documents, parameters, metadata, now):
@@ -543,6 +546,9 @@ def validate(args):
                                                 output[0]['compress_type'])
                     if res_export_pdf[1] != 200:
                         return res_export_pdf
+                    args['batchMetadata']['zip_filename'] = res_export_pdf[0]['zip_filename']
+                    args['batchMetadata']['doc_except_from_zip'] = res_export_pdf[0]['doc_except_from_zip']
+
                 """
                     Export XML file if required by output
                 """
@@ -551,6 +557,7 @@ def validate(args):
                     res_export_xml = export_xml(form_fields_param, args['documents'], parameters, args['batchMetadata'], now)
                     if res_export_xml[1] != 200:
                         return res_export_xml
+
                 """
                     Export to CMIS
                 """
@@ -561,6 +568,7 @@ def validate(args):
                                  cmis_auth['login'],
                                  cmis_auth['password'],
                                  cmis_auth['folder'])
+
                     """
                         Export pdf for Alfresco
                     """
@@ -584,6 +592,7 @@ def validate(args):
                                 "message": cmis_res[1]
                             }
                             return response, 500
+
                     """
                         Export xml for Alfresco
                     """
@@ -604,6 +613,7 @@ def validate(args):
                             "message": cmis_res[1]
                         }
                         return response, 500
+
                 """
                     Export to Maarch
                 """
@@ -632,6 +642,7 @@ def validate(args):
                         res_export_maarch = export_maarch(maarch_auth, file_path, parameters, batch)
                         if res_export_maarch[1] != 200:
                             return res_export_maarch
+
                 """
                     Change status to END
                 """
