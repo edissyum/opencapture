@@ -76,7 +76,7 @@ systemctl restart OCForInvoices-worker
 systemctl restart OCForInvoices_Split-worker
 
 # Display a message if a SQL migration file is present for new version
-if test -f "migration_sql/$latest_tag.sql"; then
+if test -f "$OCForInvoicesPath/bin/install/migration_sql/$latest_tag.sql"; then
     echo "########################################################"
     echo "                 Version : $latest_tag"
     echo "    A script containing database changes is present"
