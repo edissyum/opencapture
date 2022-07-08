@@ -126,6 +126,12 @@ export class SettingsService {
                 "privilege" : "custom_fields",
             },
             {
+                "id"        : "login-methods",
+                "label"     : this.translate.instant("SETTINGS.login_methods"),
+                "icon"      : "fa-solid fa-right-to-bracket",
+                "route"     : "/settings/general/login-methods"
+            },
+            {
                 "id"        : "about-us",
                 "label"     : this.translate.instant("SETTINGS.abouts_us"),
                 "icon"      : "fa-solid fa-address-card",

@@ -36,9 +36,10 @@ import {of} from "rxjs";
 })
 
 export class AppComponent implements OnInit {
-    title   : string = 'Open-Capture For Invoices';
-    image   : string = '';
-    loading : boolean = true;
+    title       : string = 'Open-Capture For Invoices';
+    image       : string = '';
+    imageMobile : string = '';
+    loading     : boolean = true;
 
     constructor(
         private router: Router,
@@ -59,6 +60,7 @@ export class AppComponent implements OnInit {
             map(() => {
                 let child = this.activatedRoute.firstChild;
                 let childImage = 'assets/imgs/logo_opencapture.png';
+                let childImageMobile = 'assets/imgs/Open-Capture_Verifier.svg';
                 if (child) {
                     while (child.firstChild) {
                         child = child.firstChild;
@@ -68,6 +70,7 @@ export class AppComponent implements OnInit {
                         if (splitterOrVerifier !== undefined) {
                             if (splitterOrVerifier === 'splitter') {
                                 childImage = 'assets/imgs/logo_splitter.png';
+                                childImageMobile = 'assets/imgs/Open-Capture_Splitter.png';
                             }else {
                                 childImage = 'assets/imgs/logo_verifier.png';
                             }
@@ -75,14 +78,15 @@ export class AppComponent implements OnInit {
                     }
 
                     if (child.snapshot.data['title']) {
-                        return [child.snapshot.data['title'], childImage];
+                        return [child.snapshot.data['title'], childImage, childImageMobile];
                     }
                 }
-                return [appTitle, childImage];
+                return [appTitle, childImage, childImageMobile];
             })
         ).subscribe((data: any) => {
             const ttl = data[0];
             this.image = data[1];
+            this.imageMobile = data[2];
             if (this.localeService.currentLang === undefined) {
                 this.http.get(API_URL + '/ws/i18n/getCurrentLang').pipe(
                     tap((data: any) => {

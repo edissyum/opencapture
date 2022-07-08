@@ -175,6 +175,9 @@ else
 command=$defaultPath/bin/scripts/service_workerOC.sh
 process_name=%(program_name)s_%(process_num)02d
 numprocs=$nbProcess
+user=$user
+chmod=0777
+chown=$user:$group
 socket_owner=$user
 stopsignal=QUIT
 stopasgroup=true
@@ -185,10 +188,13 @@ stderr_logfile=$defaultPath/bin/data/log/Supervisor/OCForInvoices_worker_%(proce
 EOF"
 
     su -c "cat > /etc/supervisor/conf.d/OCForInvoices_Split-worker.conf << EOF
-[program:OCWorker]
+[program:OCWorker-Split]
 command=$defaultPath/bin/scripts/service_workerOC_splitter.sh
 process_name=%(program_name)s_%(process_num)02d
 numprocs=$nbProcess
+user=$user
+chmod=0777
+chown=$user:$group
 socket_owner=$user
 stopsignal=QUIT
 stopasgroup=true
@@ -213,6 +219,7 @@ chown -R "$user":"$user" /tmp/OpenCaptureForInvoices
 ####################
 # Copy file from default one
 cp $defaultPath/instance/config.ini.default $defaultPath/instance/config.ini
+cp $defaultPath/bin/ldap/config/config.ini.default $defaultPath/bin/ldap/config/config.ini
 cp $defaultPath/instance/config/mail.ini.default $defaultPath/instance/config/mail.ini
 cp $defaultPath/instance/config/config_DEFAULT.ini.default $defaultPath/instance/config/config_DEFAULT.ini
 cp $defaultPath/instance/referencial/default_referencial_supplier.ods.default $defaultPath/instance/referencial/default_referencial_supplier.ods

@@ -46,26 +46,31 @@ def encode_auth_token(user_id):
         return str(_e)
 
 
-def login(username, password, lang):
+def login(username, password, lang, method='default'):
     session['lang'] = lang
-    user_info, error = auth.login({
-        'username': username,
-        'password': password
-    })
+    error = None
+    user_info = None
+
+    if method == 'default':
+        user_info, error = auth.login({
+            'username': username,
+            'password': password
+        })
+    elif method == 'ldap':
+        user_info, error = user.get_user_by_username({"select": ['users.id'], "username": username})
 
     if error is None:
         encoded_token = encode_auth_token(user_info['id'])
-
         returned_user = user.get_user_by_id({
             'select': ['users.id', 'username', 'firstname', 'lastname', 'role', 'users.status', 'creation_date', 'users.enabled'],
             'user_id': user_info['id']
         })[0]
 
-        user_privileges = privileges.get_privileges_by_role_id({'role_id': user_info['role']})
+        user_privileges = privileges.get_privileges_by_role_id({'role_id': returned_user['role']})
         if user_privileges:
             returned_user['privileges'] = user_privileges[0]
 
-        user_role = roles.get_role_by_id({'role_id': user_info['role']})
+        user_role = roles.get_role_by_id({'role_id': returned_user['role']})
         if user_role:
             returned_user['role'] = user_role[0]
 
@@ -105,3 +110,103 @@ def token_required(view):
             return jsonify({"errors": gettext("JWT_ERROR"), "message": "Valid token is mandatory"}), 500
         return view(**kwargs)
     return wrapped_view
+
+
+def get_user_role_by_username(username):
+    user_role, error = auth.get_user_role_by_username(username)
+    if error is None:
+        return user_role
+    else:
+        return False
+
+
+def verify_user_by_username(username):
+    is_user_exists, error = auth.verify_user_by_username(username)
+    if error is None and is_user_exists:
+        return is_user_exists, 200
+    else:
+        response = {
+            "error": gettext('LOGIN_ERROR'),
+            "message": error
+        }
+        return response, 401
+
+
+def get_enabled_login_method():
+    login_methods_name, error = auth.get_enabled_login_method()
+    if error is None:
+        response = {
+            "login_method_name": login_methods_name
+        }
+        return response, 200
+    else:
+        response = {
+            "login_method_name": '',
+            "message": error
+        }
+        return response, 401
+
+
+def get_ldap_configurations():
+    data, error = auth.get_ldap_configurations()
+    if error is None:
+        response = {
+            "ldap_configurations": data
+        }
+        return response, 200
+    else:
+        response = {
+            "ldap_configurations": '',
+            "message": error
+        }
+        return response, 401
+
+
+def update_login_method(login_method_name , server_data):
+    _, error = auth.update_login_method(login_method_name, server_data)
+    if error is None:
+        return '', 200
+    else:
+        response = {
+            "message": error
+        }
+        return response, 401
+
+
+def retrieve_login_methods():
+    login_methods_data, error = auth.retrieve_login_methods()
+    if error is None:
+        response = {
+            "login_methods_data": login_methods_data
+        }
+        return response, 200
+
+    response = {
+        "errors": gettext('LOADING_METHODS_AUTH_ERROR'),
+        "message": error
+    }
+    return response, 401
+
+
+def disable_login_method(method_name):
+    _, error = auth.disable_login_method(method_name)
+    if error is None:
+        return '', 200
+    else:
+        response = {
+            "errors": gettext('DISABLE_LOGIN_METHOD_ERROR'),
+            "message": error
+        }
+        return response, 401
+
+
+def enable_login_method(method_name):
+    _, error = auth.enable_login_method(method_name)
+    if error is None:
+        return '', 200
+    else:
+        response = {
+            "errors": gettext('ENABLE_LOGIN_METHOD_ERROR'),
+            "message": error
+        }
+        return response, 401

@@ -18,13 +18,14 @@
 import os
 import json
 import uuid
+from src.backend import verifier_exports
 from src.backend.import_classes import _PyTesseract
 from src.backend.import_process import FindDate, FindFooter, FindInvoiceNumber, FindSupplier, FindCustom, \
     FindOrderNumber, FindDeliveryNumber, FindFooterRaw, FindQuotationNumber
 
 
 def insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier, status,
-           nb_pages, docservers):
+           nb_pages, docservers, input_settings, log, regex, config):
     try:
         filename = os.path.splitext(files.custom_file_name)
         improved_img = filename[0] + '_improved' + filename[1]
@@ -55,15 +56,7 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
 
     if args.get('isMail') is None or args.get('isMail') is False:
         if 'input_id' in args:
-            input_settings = database.select({
-                'select': ['*'],
-                'table': ['inputs'],
-                'where': ['input_id = %s', 'module = %s'],
-                'data': [args['input_id'], 'verifier'],
-            })
-
             if input_settings:
-                input_settings = input_settings[0]
                 if input_settings['purchase_or_sale']:
                     invoice_data.update({
                         'purchase_or_sale': input_settings['purchase_or_sale']
@@ -90,6 +83,27 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
         'table': 'invoices',
         'columns': invoice_data
     })
+
+    if status == 'END' and 'form_id' in invoice_data and invoice_data['form_id']:
+        outputs = database.select({
+            'select': ['outputs'],
+            'table': ['form_models'],
+            'where': ['id = %s'],
+            'data': [invoice_data['form_id']],
+        })
+        if outputs:
+            for output_id in outputs[0]['outputs']:
+                output_info = database.select({
+                    'select': ['output_type_id', 'data'],
+                    'table': ['outputs'],
+                    'where': ['id = %s'],
+                    'data': [output_id],
+                })
+                if output_info:
+                    if output_info[0]['output_type_id'] == 'export_xml':
+                        verifier_exports.export_xml(output_info[0]['data'], log, regex, invoice_data)
+                    elif output_info[0]['output_type_id'] == 'export_maarch':
+                        verifier_exports.export_maarch(output_info[0]['data'], invoice_data, log, config, regex, database)
 
 
 def convert(file, files, ocr, nb_pages, custom_pages=False):
@@ -120,7 +134,6 @@ def convert(file, files, ocr, nb_pages, custom_pages=False):
 
 def process(args, file, log, config, files, ocr, regex, database, docservers, configurations, languages):
     log.info('Processing file : ' + file)
-
     datas = {}
     pages = {}
     positions = {}
@@ -439,15 +452,39 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     # Convert all the pages to JPG (used to full web interface)
     files.save_img_with_wand(file, docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename)
 
-    # If all informations are found, do not send it to GED
-    allow_auto = configurations['allowAutomaticValidation']
-    if supplier and supplier[2]['skip_auto_validate'] == 'False' and date and invoice_number and footer and allow_auto == 'True':
-        log.info('All the usefull informations are found. Export the XML and end process')
+    allow_auto = False
+    input_settings = None
+    if 'input_id' in args:
+        input_settings = database.select({
+            'select': ['*'],
+            'table': ['inputs'],
+            'where': ['input_id = %s', 'module = %s'],
+            'data': [args['input_id'], 'verifier'],
+        })
+        if input_settings:
+            input_settings = input_settings[0]
+            if input_settings['allow_automatic_validation'] and input_settings['automatic_validation_data']:
+                for column in input_settings['automatic_validation_data'].split(','):
+                    column = column.strip()
+                    if column == 'supplier':
+                        column = 'name'
+                    elif column == 'footer':
+                        if footer:
+                            allow_auto = True
+                            continue
+                    if column in datas and datas[column]:
+                        allow_auto = True
+                    else:
+                        allow_auto = False
+                        break
+
+    if supplier and not supplier[2]['skip_auto_validate'] and allow_auto:
+        log.info('All the usefull informations are found. Execute outputs action and end process')
         insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier,
-               'END', nb_pages, docservers)
+               'END', nb_pages, docservers, input_settings, log, regex, config)
     else:
         insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier,
-               'NEW', nb_pages, docservers)
+               'NEW', nb_pages, docservers, input_settings, log, regex, config)
 
         if supplier and supplier[2]['skip_auto_validate'] == 'True':
             log.info('Skip automatic validation for this supplier this time')

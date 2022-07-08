@@ -15,6 +15,7 @@
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
+import requests
 import subprocess
 from flask import current_app, Blueprint
 from src.backend.import_models import config
@@ -170,6 +171,10 @@ def update_docserver(args, docserver_id):
 
 
 def get_last_git_version():
+    try:
+        requests.get('https://github.com/edissyum/opencaptureforinvoices', timeout=5)
+    except requests.exceptions.ConnectionError:
+        return None
     latest_git_version = subprocess.Popen("git ls-remote --tags --sort='v:refname' "
                                           "https://github.com/edissyum/opencaptureforinvoices.git | "
                                           "tail -n1 |  sed 's/.*\///; s/\^{}//' | grep -E '2.+([0-9])$'", shell=True,

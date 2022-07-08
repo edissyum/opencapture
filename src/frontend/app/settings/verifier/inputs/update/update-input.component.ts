@@ -1,19 +1,19 @@
 /** This file is part of Open-Capture for Invoices.
 
- Open-Capture for Invoices is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
+Open-Capture for Invoices is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
- Open-Capture is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- GNU General Public License for more details.
+Open-Capture is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
 
- You should have received a copy of the GNU General Public License
- along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+You should have received a copy of the GNU General Public License
+along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
- @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import { Component, OnInit } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
@@ -30,18 +30,21 @@ import {catchError, finalize, tap} from "rxjs/operators";
 import {FormControl} from "@angular/forms";
 import {of} from "rxjs";
 import {HistoryService} from "../../../../../services/history.service";
+import {marker} from "@biesbjerg/ngx-translate-extract-marker";
 
 @Component({
-    selector: 'app-update',
+    selector: 'input-update',
     templateUrl: './update-input.component.html',
     styleUrls: ['./update-input.component.scss']
 })
 export class UpdateInputComponent implements OnInit {
-    headers         : HttpHeaders   = this.authService.headers;
-    loading         : boolean       = true;
-    inputId         : any;
-    input           : any;
-    inputForm       : any[]         = [
+    headers                 : HttpHeaders   = this.authService.headers;
+    loading                 : boolean       = true;
+    loadingCustomFields     : boolean       = true;
+    openAvailableField      : boolean       = false;
+    inputId                 : any;
+    input                   : any;
+    inputForm               : any[]         = [
         {
             id: 'input_id',
             label: this.translate.instant('HEADER.label_short'),
@@ -129,6 +132,52 @@ export class UpdateInputComponent implements OnInit {
             type: 'boolean',
             control: new FormControl()
         },
+        {
+            id: 'allow_automatic_validation',
+            label: this.translate.instant('INPUT.allow_automatic_validation'),
+            type: 'boolean',
+            control: new FormControl()
+        },
+        {
+            id: 'automatic_validation_data',
+            label: this.translate.instant('INPUT.automatic_validation_data'),
+            type: 'char',
+            control: new FormControl()
+        }
+    ];
+    availableFields         : any           = [
+        {
+            "id": 'HEADER.id',
+            'label': 'HEADER.label'
+        },
+        {
+            "id": 'supplier',
+            'label': 'ACCOUNTS.supplier'
+        },
+        {
+            "id": 'invoice_number',
+            'label': 'FACTURATION.invoice_number'
+        },
+        {
+            "id": 'quotation_number',
+            'label': 'FACTURATION.quotation_number'
+        },
+        {
+            "id": 'invoice_date',
+            'label': marker('FACTURATION.invoice_date')
+        },
+        {
+            "id": 'footer',
+            'label': marker('FACTURATION.footer')
+        },
+        {
+            "id": 'order_number',
+            'label': 'FACTURATION.order_number'
+        },
+        {
+            "id": 'delivery_number',
+            'label': 'FACTURATION.delivery_number'
+        },
     ];
 
     constructor(
@@ -150,6 +199,23 @@ export class UpdateInputComponent implements OnInit {
         this.serviceSettings.init();
         this.inputId = this.route.snapshot.params['id'];
 
+        this.http.get(API_URL + '/ws/customFields/list?module=verifier', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                data.customFields.forEach((field: any) => {
+                    this.availableFields.push({
+                        'id': 'custom_' + field.id,
+                        'label': field.label
+                    });
+                });
+            }),
+            finalize(() => this.loadingCustomFields = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
         this.http.get(API_URL + '/ws/inputs/getById/' + this.inputId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.input = data;
@@ -157,6 +223,9 @@ export class UpdateInputComponent implements OnInit {
                     this.inputForm.forEach(element => {
                         if (element.id === field) {
                             element.control.setValue(data[field]);
+                            if (element.id === 'allow_automatic_validation') {
+                                this.openAvailableField = data[field];
+                            }
                             if (element.id === 'default_form_id') {
                                 this.http.get(API_URL + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
                                     tap((forms: any) => {
@@ -195,6 +264,10 @@ export class UpdateInputComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
+    }
+
+    openSidenav(checked: boolean, field_id: any) {
+        this.openAvailableField = field_id === 'allow_automatic_validation' && checked;
     }
 
     isValidForm() {

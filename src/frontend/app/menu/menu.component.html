@@ -6,19 +6,22 @@
                 <button (click)="toggleMobileMenu()"
                         class="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-white hover:bg-gray-900 focus:ring-2 focus:ring-inset focus:ring-gray-900"
                         aria-expanded="false">
-                    <svg *ngIf="!mobileMenuState" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg"
+                    <svg *ngIf="!this.mobileMenuState" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg"
                          fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                     </svg>
-                    <svg *ngIf="mobileMenuState" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg"
+                    <svg *ngIf="this.mobileMenuState" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg"
                          fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                 </button>
             </div>
             <div class="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
-                <div class="flex-shrink-0 flex items-center">
+                <div class="flex-shrink-0 items-center sm:hidden xl:flex">
                     <img class="hidden lg:block h-10 w-auto" [src]="this.image" alt="Open-Capture logo">
+                </div>
+                <div class="flex-shrink-0 items-center sm:flex xl:hidden">
+                    <img class="hidden lg:block h-10 w-auto" [src]="this.imageMobile" alt="Open-Capture logo">
                 </div>
                 <div class="hidden sm:block sm:ml-3">
                     <div class="flex space-x-4">

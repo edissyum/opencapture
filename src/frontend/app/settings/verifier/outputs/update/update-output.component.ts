@@ -51,17 +51,18 @@ export class HighlightPipe implements PipeTransform {
     styleUrls: ['./update-output.component.scss']
 })
 export class UpdateOutputComponent implements OnInit {
-    headers             : HttpHeaders   = this.authService.headers;
-    loading             : boolean       = true;
-    connection          : boolean       = false;
-    outputId            : any;
-    output              : any;
-    outputsTypes        : any[]         = [];
-    outputsTypesForm    : any[]         = [];
-    selectedOutputType  : any;
-    originalOutputType  : any;
-    toHighlight         : string        = '';
-    outputForm          : any[]         = [
+    headers                 : HttpHeaders   = this.authService.headers;
+    loading                 : boolean       = true;
+    loadingCustomFields     : boolean       = true;
+    connection              : boolean       = false;
+    outputId                : any;
+    output                  : any;
+    selectedOutputType      : any;
+    originalOutputType      : any;
+    outputsTypes            : any[]         = [];
+    outputsTypesForm        : any[]         = [];
+    toHighlight             : string        = '';
+    outputForm              : any[]         = [
         {
             id: 'output_type_id',
             label: this.translate.instant('HEADER.output_type'),
@@ -78,7 +79,7 @@ export class UpdateOutputComponent implements OnInit {
             required: true,
         }
     ];
-    availableFields     : any           = [
+    availableFields         : any           = [
         {
             "id": 'HEADER.id',
             'label': 'HEADER.label'
@@ -152,7 +153,7 @@ export class UpdateOutputComponent implements OnInit {
             'label': 'FACTURATION.delivery_number'
         },
     ];
-    testConnectionMapping : any         = {
+    testConnectionMapping   : any           = {
         'export_maarch' : "testMaarchConnection()"
     };
 
@@ -206,6 +207,22 @@ export class UpdateOutputComponent implements OnInit {
                 }
                 this.http.get(API_URL + '/ws/outputs/getOutputsTypes?module=verifier', {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
+                        this.http.get(API_URL + '/ws/customFields/list?module=verifier', {headers: this.authService.headers}).pipe(
+                            tap((data: any) => {
+                                data.customFields.forEach((field: any) => {
+                                    this.availableFields.push({
+                                        'id': 'custom_' + field.id,
+                                        'label': field.label
+                                    });
+                                });
+                            }),
+                            finalize(() => this.loadingCustomFields = false),
+                            catchError((err: any) => {
+                                console.debug(err);
+                                this.notify.handleErrors(err);
+                                return of(false);
+                            })
+                        ).subscribe();
                         this.outputsTypes = data.outputs_types;
                         /**
                          * Create the form with auth and parameters data
@@ -257,7 +274,7 @@ export class UpdateOutputComponent implements OnInit {
                             this.testConnection();
                         }
                     }),
-                    finalize(() => {this.loading = false;}),
+                    finalize(() => this.loading = false),
                     catchError((err: any) => {
                         console.debug(err);
                         this.notify.handleErrors(err);

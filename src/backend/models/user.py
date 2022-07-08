@@ -47,6 +47,7 @@ def create_user(args):
                 'username': args['username'],
                 'firstname': args['firstname'],
                 'lastname': args['lastname'],
+                'role': args['role'],
                 'password': generate_password_hash(args['password']),
             }
         })
@@ -108,6 +109,26 @@ def get_user_by_id(args):
         'left_join': ['users.role = roles.id'],
         'where': ['users.id = %s'],
         'data': [args['user_id']]
+    })
+
+    if not user:
+        error = gettext('GET_USER_BY_ID_ERROR')
+    else:
+        user = user[0]
+
+    return user, error
+
+
+def get_user_by_username(args):
+    _vars = create_classes_from_current_config()
+    _db = _vars[0]
+    error = None
+    user = _db.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['users', 'roles'],
+        'left_join': ['users.role = roles.id'],
+        'where': ['users.username = %s'],
+        'data': [args['username']]
     })
 
     if not user:

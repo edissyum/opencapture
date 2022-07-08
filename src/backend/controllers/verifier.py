@@ -20,8 +20,6 @@ import json
 import base64
 import logging
 import datetime
-from xml.dom import minidom
-import xml.etree.ElementTree as Et
 import pandas as pd
 import zeep
 from PIL import Image
@@ -29,6 +27,7 @@ from flask_babel import gettext
 import requests
 from zeep import Client, exceptions
 from flask import current_app, Response
+from src.backend import verifier_exports
 from src.backend.import_controllers import user
 from src.backend.import_models import verifier, accounts
 from src.backend.main import launch, create_classes_from_current_config
@@ -357,160 +356,9 @@ def remove_lock_by_user_id(user_id):
 
 def export_maarch(invoice_id, data):
     _vars = create_classes_from_current_config()
-    host = login = password = ''
-    auth_data = data['options']['auth']
-    for _data in auth_data:
-        if _data['id'] == 'host':
-            host = _data['value']
-        if _data['id'] == 'login':
-            login = _data['value']
-        if _data['id'] == 'password':
-            password = _data['value']
-
-    if host and login and password:
-        _ws = _MaarchWebServices(
-            host,
-            login,
-            password,
-            _vars[5],
-            _vars[1]
-        )
-        if _ws.status[0]:
-            invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
-            if not error:
-                args = {}
-                supplier = accounts.get_supplier_by_id({'supplier_id': invoice_info['supplier_id']})
-                if supplier and supplier[0]['address_id']:
-                    address = accounts.get_address_by_id({'address_id': supplier[0]['address_id']})
-                    if address:
-                        supplier[0].update(address[0])
-
-                link_resource = False
-                opencapture_field = maarch_custom_field = maarch_clause = custom_field_contact_id = None
-                if 'links' in data['options']:
-                    for _links in data['options']['links']:
-                        if _links['id'] == 'enabled' and _links['value']:
-                            link_resource = True
-                        if _links['id'] == 'maarchCustomField' and _links['value']:
-                            maarch_custom_field = _links['value']
-                        if _links['id'] == 'openCaptureField' and _links['value']:
-                            opencapture_field = _links['value']
-                        if _links['id'] == 'maarchClause' and _links['value']:
-                            maarch_clause = _links['value']
-                        if _links['id'] == 'vatNumberContactCustom' and _links['value']:
-                            custom_field_contact_id = _links['value']
-
-                contact = {
-                    'company': supplier[0]['name'],
-                    'addressTown': supplier[0]['city'],
-                    'societyShort': supplier[0]['name'],
-                    'addressStreet': supplier[0]['address1'],
-                    'addressPostcode': supplier[0]['postal_code'],
-                    'email': supplier[0]['email'] if supplier[0]['email'] else 'A_renseigner_' + supplier[0]['name'].replace(' ', '_') +
-                             '@' + supplier[0]['vat_number'] + '.fr'
-                }
-
-                if custom_field_contact_id and supplier[0]['vat_number'] and supplier[0]['siret']:
-                    contact['customFields'] = {custom_field_contact_id['id']: supplier[0]['vat_number'] + supplier[0]['siret']}
-
-                res = _ws.create_contact(contact)
-                if res is not False:
-                    args['contact'] = {'id': res['id'], 'type': 'contact'}
-
-                ws_data = data['options']['parameters']
-                for _data in ws_data:
-                    value = _data['value']
-                    if 'webservice' in _data:
-                        # Pour le webservices Maarch, ce sont les identifiants qui sont utilisés
-                        # et non les valeurs bruts (e.g COU plutôt que Service courrier)
-                        if _data['value']:
-                            value = _data['value']['id']
-
-                    args.update({
-                        _data['id']: value
-                    })
-
-                    if _data['id'] == 'priority':
-                        priority = _ws.retrieve_priority(value)
-                        if priority:
-                            delays = priority['priority']['delays']
-                            process_limit_date = datetime.date.today() + datetime.timedelta(days=delays)
-                            args.update({
-                                'processLimitDate': str(process_limit_date)
-                            })
-
-                    if _data['id'] == 'customFields':
-                        args.update({
-                            'customFields': {}
-                        })
-                        if _data['value']:
-                            customs = json.loads(_data['value'])
-                            for custom_id in customs:
-                                if custom_id in customs and customs[custom_id] in invoice_info['datas']:
-                                    args['customFields'].update({
-                                        custom_id: invoice_info['datas'][customs[custom_id]]
-                                    })
-                    elif _data['id'] == 'subject':
-                        subject = construct_with_var(_data['value'], invoice_info)
-                        args.update({
-                            'subject': ''.join(subject)
-                        })
-
-                file = invoice_info['path'] + '/' + invoice_info['filename']
-                if os.path.isfile(file):
-                    with open(file, 'rb') as file:
-                        args.update({
-                            'fileContent': file.read(),
-                            'documentDate': str(pd.to_datetime(invoice_info['datas']['invoice_date'],
-                                                               infer_datetime_format=True).date())
-                        })
-                    res, message = _ws.insert_with_args(args)
-                    if res:
-                        if link_resource:
-                            res_id = message['resId']
-                            if opencapture_field:
-                                opencapture_field = ''.join(construct_with_var(opencapture_field, invoice_info))
-                                if maarch_custom_field:
-                                    if 'res_id' not in data or not data['res_id']:
-                                        docs = _ws.retrieve_doc_with_custom(maarch_custom_field['id'], opencapture_field, maarch_clause)
-                                        if docs:
-                                            res_id = docs['resources'][0]['res_id']
-                                    else:
-                                        res_id = data['res_id']
-
-                                    if res_id != message['resId']:
-                                        _ws.link_documents(str(res_id), message['resId'])
-                        return '', 200
-                    else:
-                        response = {
-                            "errors": gettext('EXPORT_MAARCH_ERROR'),
-                            "message": message['errors']
-                        }
-                        return response, 400
-                else:
-                    response = {
-                        "errors": gettext('EXPORT_MAARCH_ERROR'),
-                        "message": gettext('PDF_FILE_NOT_FOUND')
-                    }
-                    return response, 400
-            else:
-                response = {
-                    "errors": gettext('EXPORT_MAARCH_ERROR'),
-                    "message": error
-                }
-                return response, 400
-        else:
-            response = {
-                "errors": gettext('MAARCH_WS_INFO_WRONG'),
-                "message": _ws.status[1]
-            }
-            return response, 400
-    else:
-        response = {
-            "errors": gettext('MAARCH_WS_INFO_EMPTY'),
-            "message": ''
-        }
-        return response, 400
+    invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
+    if not error:
+        return verifier_exports.export_maarch(data, invoice_info, _vars[5], _vars[1], _vars[2], _vars[0])
 
 
 def construct_with_var(data, invoice_info, separator=False):
@@ -550,61 +398,11 @@ def construct_with_var(data, invoice_info, separator=False):
 
 
 def export_xml(invoice_id, data):
-    folder_out = separator = filename = extension = ''
-    parameters = data['options']['parameters']
-    for setting in parameters:
-        if setting['id'] == 'folder_out':
-            folder_out = setting['value']
-        elif setting['id'] == 'separator':
-            separator = setting['value']
-        elif setting['id'] == 'filename':
-            filename = setting['value']
-        elif setting['id'] == 'extension':
-            extension = setting['value']
-
     invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
-
     if not error:
-        _technical_data = []
-        # Create the XML filename
-        _data = construct_with_var(filename, invoice_info, separator)
-        filename = separator.join(str(x) for x in _data) + '.' + extension
-        filename = filename.replace('/', '-').replace(' ', '_')
-        # END create the XML filename
-
-        # Fill XML with invoice informations
-        if os.path.isdir(folder_out):
-            with open(folder_out + '/' + filename, 'w', encoding='UTF-8') as xml_file:
-                root = Et.Element('ROOT')
-                xml_technical = Et.SubElement(root, 'TECHNICAL')
-                xml_datas = Et.SubElement(root, 'DATAS')
-
-                for technical in invoice_info:
-                    if technical in ['path', 'filename', 'register_date', 'nb_pages', 'purchase_or_sale']:
-                        new_field = Et.SubElement(xml_technical, technical)
-                        new_field.text = str(invoice_info[technical])
-
-                for invoice_data in invoice_info['datas']:
-                    new_field = Et.SubElement(xml_datas, invoice_data)
-                    new_field.text = str(invoice_info['datas'][invoice_data])
-
-                xml_root = minidom.parseString(Et.tostring(root, encoding="unicode")).toprettyxml()
-                xml_file.write(xml_root)
-                xml_file.close()
-            # END Fill XML with invoice informations
-            return '', 200
-        else:
-            response = {
-                "errors": gettext('XML_DESTINATION_FOLDER_DOESNT_EXISTS'),
-                "message": folder_out
-            }
-            return response, 401
-    else:
-        response = {
-            "errors": gettext('EXPORT_XML_ERROR'),
-            "message": error
-        }
-    return response, 401
+        _vars = create_classes_from_current_config()
+        _regex = _vars[2]
+        return verifier_exports.export_xml(data, None, _regex, invoice_info)
 
 
 def ocr_on_the_fly(file_name, selection, thumb_size, positions_masks):
