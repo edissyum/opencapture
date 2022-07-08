@@ -25,7 +25,9 @@ from src.backend.main import timer, check_file, create_classes
 from src.backend.import_classes import _Files, _Config, _Splitter, _SeparatorQR, _Log
 
 
-@Kuyruk().task(queue='splitter')
+OCforInvoices_worker = Kuyruk()
+
+@OCforInvoices_worker.task(queue='splitter')
 def launch(args):
     start = time.time()
 
