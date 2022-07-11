@@ -87,7 +87,7 @@
         </div>
         <app-hint [message]="'LOGIN-METHODS.limit_enabled_methods' | translate"></app-hint>
         <mat-tab-group class="login-methods-tab">
-            <mat-tab *ngFor="let method of login_methods_data"
+            <mat-tab *ngFor="let method of this.login_methods_data"
                      [label]="'LOGIN-METHODS.' + method['method_name'] | translate">
                 <div class="list-container">
                     <div class="text-center text-base mt-8" *ngIf="method['method_name'] === 'default'">
@@ -201,7 +201,12 @@
                                         <button type="submit" mat-button class="border-solid border-green-400 border
                                                 hover:bg-green-400 hover:text-white transition duration-300"
                                                 (click)="ldapSynchronization()">
-                                            {{ "LOGIN-METHODS.launch" | translate }}
+                                            <span *ngIf="!this.isLaunchBtnDisabled">
+                                                {{ "LOGIN-METHODS.launch" | translate }}
+                                            </span>
+                                            <i *ngIf="this.isLaunchBtnDisabled"
+                                               class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"
+                                               style="--fa-animation-duration: 1.5s;margin-top: -0.2rem;"></i>
                                         </button>
                                         <button (click)="saveLoginMethodConfigs()" mat-button
                                                 [disabled]="this.isSaveBtnDisabled"

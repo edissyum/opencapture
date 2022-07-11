@@ -38,6 +38,7 @@ import {marker} from "@biesbjerg/ngx-translate-extract-marker";
 export class LoginMethodsComponent implements OnInit {
     loading                 : boolean   = true;
     isSaveBtnDisabled       : boolean   = true;
+    isLaunchBtnDisabled     : boolean   = false;
     isLinear                : boolean   = false;
     showPassword            : boolean   = false;
     isLdapChecked           : boolean   = false;
@@ -227,7 +228,7 @@ export class LoginMethodsComponent implements OnInit {
                     }
                 });
 
-                this.http.post(API_URL + '/ws/auth/retrieveLdapConfigurations', {headers: this.authService.headers}).pipe(
+                this.http.get(API_URL + '/ws/auth/retrieveLdapConfigurations', {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
                         const configs : any = data.ldap_configurations ;
                         this.connectionFormGroup.forEach(element => {
@@ -356,6 +357,7 @@ export class LoginMethodsComponent implements OnInit {
     }
 
     ldapSynchronization(): void {
+        this.isLaunchBtnDisabled = true;
         if (this.isValidSynchronizationForm() && this.isValidConnexionForm()) {
             const synchronizationData : any = {};
             this.connectionFormGroup.forEach(element => {
@@ -367,11 +369,13 @@ export class LoginMethodsComponent implements OnInit {
             this.http.post(API_URL + '/ws/auth/ldapSynchronization', synchronizationData, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.isSaveBtnDisabled = false;
+                this.isLaunchBtnDisabled = false;
                 this.synchro_users_status = true;
                 this.notify.success(this.translate.instant('LOGIN-METHODS.result_synchronization_operation', {'users_added':data['create_users'],'users_updated':data['update_users'],'users_disabled':data['disabled_users']}));
             }),
             catchError ((err: any) => {
                 this.isSaveBtnDisabled = true;
+                this.isLaunchBtnDisabled = false;
                 this.synchro_users_status = false;
                 console.debug(err);
                 this.notify.handleErrors(err);

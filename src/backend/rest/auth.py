@@ -213,7 +213,7 @@ def get_enabled_login_method():
     return make_response(res[0], res[1])
 
 
-@bp.route('auth/retrieveLdapConfigurations', methods=['POST'])
+@bp.route('auth/retrieveLdapConfigurations', methods=['GET'])
 def retrieve_ldap_configurations():
     res = auth.get_ldap_configurations()
     if not res:
