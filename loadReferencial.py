@@ -19,22 +19,20 @@ import os
 import sys
 import argparse
 import mimetypes
-from src.backend.main import create_classes
-from src.backend.import_classes import _Config
+from src.backend.main import create_classes_from_custom_id
+from src.backend import retrieve_config_from_custom_id
 
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
-    ap.add_argument("-c", "--config", required=True, help="path to config file")
+    ap.add_argument("-c", "--custom_id", required=True, help="Identifier of the custom")
     ap.add_argument("-f", "--file", required=False, help="path to referential file")
     args = vars(ap.parse_args())
 
-    if not os.path.exists(args['config']):
-        sys.exit('Config file couldn\'t be found')
+    if not retrieve_config_from_custom_id(args['custom_id']):
+        sys.exit('Custom config file couldn\'t be found')
 
-    config_name = _Config(args['config'])
-    config_file = config_name.cfg['PROFILE']['cfgpath'] + '/config_' + config_name.cfg['PROFILE']['id'] + '.ini'
-    config, regex, log, ocr, database, spreadsheet, smtp, docservers, _ = create_classes(config_file)
+    database, config, regex, files, ocr, log, _, spreadsheet, smtp, docservers, configurations = create_classes_from_custom_id(args['custom_id'])
 
     file = spreadsheet.referencialSuppplierSpreadsheet
     if args['file']:

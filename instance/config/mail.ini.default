@@ -1,5 +1,5 @@
 [GLOBAL]
-batchPath            = /var/www/html/opencaptureforinvoices/bin/data/MailCollect/
+batchPath            = /var/www/html/opencaptureforinvoices/custom/§§CUSTOM_ID§§/bin/data/MailCollect/
 ; True or False
 smtp_notif_on_error  = False
 smtp_auth            = False

@@ -43,7 +43,7 @@ def handle_uploaded_file(files, input_id):
         launch({
             'file': filename,
             'languages': current_app.config['LANGUAGES'],
-            'config': current_app.config['CONFIG_FILE'],
+            'custom_id': custom_id,
             'input_id': input_id
         })
     return True

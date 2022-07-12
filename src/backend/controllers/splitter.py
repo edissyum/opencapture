@@ -36,15 +36,13 @@ from src.backend.import_classes import _Files, _Splitter, _CMIS, _MaarchWebServi
 
 def handle_uploaded_file(files, input_id):
     custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    _config = _vars[1]
     path = current_app.config['UPLOAD_FOLDER_SPLITTER']
     for file in files:
         f = files[file]
         filename = _Files.save_uploaded_file(f, path)
         worker_splitter_from_python.main({
             'file': filename,
-            'config': current_app.config['CONFIG_FILE'],
+            'custom_id': custom_id,
             'input_id': input_id
         })
 

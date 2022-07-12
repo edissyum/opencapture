@@ -48,15 +48,11 @@ CORS(app, supports_credentials=True)
 
 app.config.from_mapping(
     SECRET_KEY='§§SECRET§§',
-    CONFIG_FILE=os.path.join(app.instance_path, 'config.ini'),
-    CONFIG_FOLDER=os.path.join(app.instance_path, 'config/'),
-    LANG_FILE=os.path.join(app.instance_path, 'lang.json'),
     UPLOAD_FOLDER=os.path.join(app.instance_path, 'upload/verifier/'),
     UPLOAD_FOLDER_SPLITTER=os.path.join(app.instance_path, 'upload/splitter/'),
-    BABEL_TRANSLATION_DIRECTORIES=app.root_path.replace('backend', 'assets') + '/i18n/backend/translations/'
 )
 
-with open(app.config['LANG_FILE'], encoding='UTF-8') as lang_file:
+with open(os.path.join(app.instance_path, 'lang.json'), encoding='UTF-8') as lang_file:
     app.config['LANGUAGES'] = json.loads(lang_file.read())
 
 app.register_blueprint(auth.bp)
@@ -83,7 +79,6 @@ app.register_blueprint(doctypes.bp)
 def get_locale():
     if 'lang' not in session:
         session['lang'] = request.accept_languages.best_match(app.config['LANGUAGES'].keys())
-
     return session['lang']
 
 
