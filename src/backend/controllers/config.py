@@ -17,11 +17,9 @@
 
 import requests
 import subprocess
-from flask import current_app, Blueprint
+from flask import current_app
 from src.backend.import_models import config
 from src.backend.main import create_classes_from_current_config
-
-bp = Blueprint('dashboard', __name__)
 
 
 def change_locale_in_config(lang):

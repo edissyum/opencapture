@@ -331,7 +331,6 @@ export class LoginMethodsComponent implements OnInit {
                 return of (false);
             })
         ).subscribe();
-
     }
 
     checkLdapConnexion(): void {

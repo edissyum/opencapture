@@ -19,12 +19,30 @@ import os
 import json
 from flask_cors import CORS
 from flask_babel import Babel
+from werkzeug.wrappers import Request
 from flask import request, session, Flask
 from src.backend.import_rest import auth, locale, config, user, splitter, verifier, roles, privileges, custom_fields, \
     forms, status, accounts, outputs, maarch, inputs, positions_masks, history, doctypes
 
 
+class Middleware:
+    def __init__(self, middleware_app):
+        self.middleware_app = middleware_app
+
+    def __call__(self, environ, start_response):
+        _request = Request(environ)
+        splitted_request = _request.path.split('ws/')
+        print(splitted_request)
+        if splitted_request[0] != '/':
+            custom_id = splitted_request[0]
+            prefix = custom_id
+            environ['PATH_INFO'] = environ['PATH_INFO'][len(prefix):]
+            environ['SCRIPT_NAME'] = prefix
+        return self.middleware_app(environ, start_response)
+
+
 app = Flask(__name__, instance_relative_config=True)
+app.wsgi_app = Middleware(app.wsgi_app)
 babel = Babel(app)
 CORS(app, supports_credentials=True)
 

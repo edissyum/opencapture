@@ -65,7 +65,9 @@ if [ -L "$defaultPath/$customId" ] && [ -e "$defaultPath/$customId" ]; then
 fi
 
 customIniFile=$defaultPath/custom/custom.ini
-touch $customIniFile
+if [ ! -f "$customIniFile" ]; then
+    touch $customIniFile
+fi
 SECTIONS=$(crudini --get $defaultPath/custom/custom.ini | sed 's/:.*//')
 # shellcheck disable=SC2068
 for custom_name in ${SECTIONS[@]}; do # Do not double quote it
@@ -80,11 +82,11 @@ done
 ####################
 # Create custom symbolic link and folder
 ln -s "$defaultPath" "$customId"
-mkdir "$defaultPath/custom/$customId"
-echo "" >> $customIniFile
+mkdir -p "$defaultPath/custom/$customId/config/"
 echo "[$customId]" >> $customIniFile
 echo "path = custom/$customId" >> $customIniFile
 echo "selected = True" >> $customIniFile
+echo "" >> $customIniFile
 exit 5
 
 ####################

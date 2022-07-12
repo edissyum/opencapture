@@ -18,7 +18,7 @@ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/
 import {Component, OnInit} from '@angular/core';
 import {Validators, FormBuilder} from '@angular/forms';
 import {TranslateService} from "@ngx-translate/core";
-import {API_URL} from "../env";
+import {environment} from "../env";
 import {HttpClient} from "@angular/common/http";
 import {NotificationService} from "../../services/notifications/notifications.service";
 import {catchError, tap} from "rxjs/operators";
@@ -64,8 +64,7 @@ export class LoginComponent implements OnInit {
         if (this.localeService.currentLang === undefined) {
             this.localeService.getCurrentLocale();
         }
-
-        this.http.get(API_URL + '/ws/auth/getEnabledLoginMethod', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/auth/getEnabledLoginMethod', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 const login_method_name = data['login_method_name'][0];
                 this.enableLoginMethodName = login_method_name['method_name'];
@@ -86,7 +85,7 @@ export class LoginComponent implements OnInit {
         if (password && username) {
             this.processLogin = true;
             this.http.post(
-                API_URL + '/ws/auth/login',
+                environment['url'] + '/ws/auth/login',
                 {
                     'username': username,
                     'password': password,

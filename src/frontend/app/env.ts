@@ -19,6 +19,8 @@ declare const require: any;
 
 export const API_URL = 'http://localhost:5000';
 export const environment = {
+    customId: '',
+    url: '../../backend_oc',
     production: false,
     VERSION: require('../../../package.json').version + ' (development mode)'
 };

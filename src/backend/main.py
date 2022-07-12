@@ -181,7 +181,7 @@ def str2bool(value):
 OCforInvoices = Kuyruk()
 
 
-# @OCforInvoices.task(queue='invoices')
+@OCforInvoices.task(queue='invoices')
 def launch(args):
     start = time.time()
 
@@ -196,7 +196,6 @@ def launch(args):
     tmp_folder = tempfile.mkdtemp(dir=docservers['TMP_PATH'])
     with tempfile.NamedTemporaryFile(dir=tmp_folder) as tmp_file:
         filename = tmp_file.name
-    print(filename)
     files = _Files(filename, log, docservers, configurations, regex)
 
     if 'languages' in args:
