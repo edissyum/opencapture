@@ -23,8 +23,6 @@ fi
 
 bold=$(tput bold)
 normal=$(tput sgr0)
-OS=$(lsb_release -si)
-VER=$(lsb_release -r)
 defaultPath=/var/www/html/opencaptureforinvoices/
 imageMagickPolicyFile=/etc/ImageMagick-6/policy.xml
 docserverPath=/var/docservers/
@@ -39,6 +37,55 @@ if [ -z "$user" ]; then
         exit
     fi
 fi
+
+####################
+# Check if custom name is set and doesn't exists already
+
+while getopts c: parameters
+do
+    case "${parameters}" in
+        c) customId=${OPTARG};;
+        *) customId=""
+    esac
+done
+
+if [ -z "$customId" ]; then
+    echo "##########################################################################"
+    echo "              Custom id is needed to run the installation"
+    echo "      Exemple of command line call : sudo ./update.sh -c edissyum"
+    echo "##########################################################################"
+    exit 2
+fi
+
+if [ -L "$defaultPath/$customId" ] && [ -e "$defaultPath/$customId" ]; then
+    echo "######################################################"
+    echo "      Custom id \"$customId\" already exists"
+    echo "######################################################"
+    exit 3
+fi
+
+customIniFile=$defaultPath/custom/custom.ini
+touch $customIniFile
+SECTIONS=$(crudini --get $defaultPath/custom/custom.ini | sed 's/:.*//')
+# shellcheck disable=SC2068
+for custom_name in ${SECTIONS[@]}; do # Do not double quote it
+    if [ "$custom_name" == "$customId" ]; then
+       echo "######################################################"
+       echo "      Custom id \"$customId\" already exists"
+       echo "######################################################"
+       exit 4
+    fi
+done
+
+####################
+# Create custom symbolic link and folder
+ln -s "$defaultPath" "$customId"
+mkdir "$defaultPath/custom/$customId"
+echo "" >> $customIniFile
+echo "[$customId]" >> $customIniFile
+echo "path = custom/$customId" >> $customIniFile
+echo "selected = True" >> $customIniFile
+exit 5
 
 ####################
 # User choice
