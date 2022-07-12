@@ -17,25 +17,26 @@
 
 import os
 import json
+import zeep
 import base64
 import logging
-import datetime
-import pandas as pd
-import zeep
+import requests
 from PIL import Image
 from flask_babel import gettext
-import requests
 from zeep import Client, exceptions
-from flask import current_app, Response
 from src.backend import verifier_exports
+from src.backend.import_classes import _Files
 from src.backend.import_controllers import user
+from flask import current_app, Response, request
 from src.backend.import_models import verifier, accounts
-from src.backend.main import launch, create_classes_from_current_config
-from src.backend.import_classes import _Files, _MaarchWebServices
+from src.backend.functions import retrieve_custom_from_url
+from src.backend.main import launch, create_classes_from_custom_id
 
 
 def handle_uploaded_file(files, input_id):
     path = current_app.config['UPLOAD_FOLDER']
+    custom_id = retrieve_custom_from_url(request)
+
     for file in files:
         _f = files[file]
         filename = _Files.save_uploaded_file(_f, path)
@@ -61,10 +62,6 @@ def get_invoice_by_id(invoice_id):
 
 
 def retrieve_invoices(args):
-    _vars = create_classes_from_current_config()
-    _cfg = _vars[1]
-    _docservers = _vars[9]
-
     if 'where' not in args:
         args['where'] = []
     if 'data' not in args:
@@ -150,8 +147,6 @@ def retrieve_invoices(args):
 
 
 def update_position_by_invoice_id(invoice_id, args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
     invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
     if error is None:
         column = position = ''
@@ -178,8 +173,6 @@ def update_position_by_invoice_id(invoice_id, args):
 
 
 def update_page_by_invoice_id(invoice_id, args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
     invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
     if error is None:
         column = page = ''
@@ -203,8 +196,6 @@ def update_page_by_invoice_id(invoice_id, args):
 
 
 def update_invoice_data_by_invoice_id(invoice_id, args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
     invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
     if error is None:
         _set = {}
@@ -227,8 +218,6 @@ def update_invoice_data_by_invoice_id(invoice_id, args):
 
 
 def delete_invoice_data_by_invoice_id(invoice_id, field_id):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
     invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
     if error is None:
         _set = {}
@@ -247,8 +236,6 @@ def delete_invoice_data_by_invoice_id(invoice_id, field_id):
 
 
 def delete_invoice_position_by_invoice_id(invoice_id, field_id):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
     invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
     if error is None:
         _set = {}
@@ -268,8 +255,6 @@ def delete_invoice_position_by_invoice_id(invoice_id, field_id):
 
 
 def delete_invoice_page_by_invoice_id(invoice_id, field_id):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
     invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
     if error is None:
         _set = {}
@@ -288,9 +273,6 @@ def delete_invoice_page_by_invoice_id(invoice_id, field_id):
 
 
 def delete_invoice(invoice_id):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
-
     _, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
     if error is None:
         _, error = verifier.update_invoice({'set': {'status': 'DEL'}, 'invoice_id': invoice_id})
@@ -311,10 +293,7 @@ def delete_invoice(invoice_id):
 
 
 def update_invoice(invoice_id, data):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
     _, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
-
     if error is None:
         _, error = verifier.update_invoice({'set': data, 'invoice_id': invoice_id})
 
@@ -335,9 +314,6 @@ def update_invoice(invoice_id, data):
 
 
 def remove_lock_by_user_id(user_id):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
-
     _, error = verifier.update_invoices({
         'set': {"locked": False},
         'where': ['locked_by = %s'],
@@ -355,67 +331,33 @@ def remove_lock_by_user_id(user_id):
 
 
 def export_maarch(invoice_id, data):
-    _vars = create_classes_from_current_config()
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
     if not error:
         return verifier_exports.export_maarch(data, invoice_info, _vars[5], _vars[1], _vars[2], _vars[0])
 
 
-def construct_with_var(data, invoice_info, separator=False):
-    _vars = create_classes_from_current_config()
-    _regex = _vars[2]
-    _data = []
-    for column in data.split('#'):
-        if column in invoice_info['datas']:
-            if separator:
-                _data.append(invoice_info['datas'][column].replace(' ', separator))
-            else:
-                _data.append(invoice_info['datas'][column])
-        elif column in invoice_info:
-            if separator:
-                _data.append(invoice_info[column].replace(' ', separator))
-            else:
-                _data.append(invoice_info[column])
-        elif column == 'invoice_date_year':
-            _data.append(datetime.datetime.strptime(invoice_info['datas']['invoice_date'], _regex['formatDate']).year)
-        elif column == 'invoice_date_month':
-            _data.append(datetime.datetime.strptime(invoice_info['datas']['invoice_date'], _regex['formatDate']).month)
-        elif column == 'invoice_date_day':
-            _data.append(datetime.datetime.strptime(invoice_info['datas']['invoice_date'], _regex['formatDate']).day)
-        elif column == 'register_date_year':
-            _data.append(datetime.datetime.strptime(invoice_info['register_date'], _regex['formatDate']).year)
-        elif column == 'register_date_month':
-            _data.append(datetime.datetime.strptime(invoice_info['register_date'], _regex['formatDate']).month)
-        elif column == 'register_date_day':
-            _data.append(datetime.datetime.strptime(invoice_info['register_date'], _regex['formatDate']).day)
-        else:
-            if separator:
-                _data.append(column.replace(' ', separator))
-            else:
-                if column not in ['quotation_number', 'invoice_number', 'order_number', 'delivery_number', 'invoice_date_']:
-                    _data.append(column)
-    return _data
-
-
 def export_xml(invoice_id, data):
     invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
     if not error:
-        _vars = create_classes_from_current_config()
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
         _regex = _vars[2]
         return verifier_exports.export_xml(data, None, _regex, invoice_info)
 
 
 def ocr_on_the_fly(file_name, selection, thumb_size, positions_masks):
-    _vars = create_classes_from_current_config()
-    _cfg = _vars[1].cfg
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     _files = _vars[3]
     _ocr = _vars[4]
-    _docservers = _vars[9]
+    docservers = _vars[9]
 
-    path = _docservers['VERIFIER_IMAGE_FULL'] + '/' + file_name
+    path = docservers['VERIFIER_IMAGE_FULL'] + '/' + file_name
 
     if positions_masks:
-        path = _docservers['VERIFIER_POSITIONS_MASKS'] + '/' + file_name
+        path = docservers['VERIFIER_POSITIONS_MASKS'] + '/' + file_name
 
     text = _files.ocr_on_fly(path, selection, _ocr, thumb_size)
     if text:
@@ -427,26 +369,26 @@ def ocr_on_the_fly(file_name, selection, thumb_size, positions_masks):
 
 
 def get_file_content(file_type, filename, mime_type, compress=False):
-    _vars = create_classes_from_current_config()
-    _cfg = _vars[1].cfg
-    _docservers = _vars[9]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    docservers = _vars[9]
     content = False
     path = ''
 
     if file_type == 'thumb':
-        path = _docservers['VERIFIER_THUMB']
+        path = docservers['VERIFIER_THUMB']
     elif file_type == 'full':
-        path = _docservers['VERIFIER_IMAGE_FULL']
+        path = docservers['VERIFIER_IMAGE_FULL']
     elif file_type == 'positions_masks':
-        path = _docservers['VERIFIER_POSITIONS_MASKS']
+        path = docservers['VERIFIER_POSITIONS_MASKS']
     elif file_type == 'referential_supplier':
-        path = _docservers['REFERENTIALS_PATH']
+        path = docservers['REFERENTIALS_PATH']
 
     if path and filename:
         full_path = path + '/' + filename
         if os.path.isfile(full_path):
             if compress and mime_type == 'image/jpeg':
-                thumb_path = _docservers['VERIFIER_THUMB'] + '/' + filename
+                thumb_path = docservers['VERIFIER_THUMB'] + '/' + filename
                 if not os.path.isfile(thumb_path):
                     image = Image.open(full_path)
                     image.thumbnail((1920, 1080))
@@ -459,16 +401,17 @@ def get_file_content(file_type, filename, mime_type, compress=False):
 
     if not content:
         if mime_type == 'image/jpeg':
-            with open(_docservers['PROJECT_PATH'] + '/dist/assets/not_found/document_not_found.jpg', 'rb') as file:
+            with open(docservers['PROJECT_PATH'] + '/dist/assets/not_found/document_not_found.jpg', 'rb') as file:
                 content = file.read()
         else:
-            with open(_docservers['PROJECT_PATH'] + '/dist/assets/not_found/document_not_found.pdf', 'rb') as file:
+            with open(docservers['PROJECT_PATH'] + '/dist/assets/not_found/document_not_found.pdf', 'rb') as file:
                 content = file.read()
     return Response(content, mimetype=mime_type)
 
 
 def get_token_insee():
-    _vars = create_classes_from_current_config()
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     _cfg = _vars[1]
     credentials = base64.b64encode(
         (_cfg.cfg['API']['siret-consumer'] + ':' + _cfg.cfg['API']['siret-secret']).encode('UTF-8')).decode('UTF-8')
@@ -487,7 +430,8 @@ def get_token_insee():
 
 
 def verify_siren(token, siren):
-    _vars = create_classes_from_current_config()
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     _cfg = _vars[1]
 
     try:
@@ -504,7 +448,8 @@ def verify_siren(token, siren):
 
 
 def verify_siret(token, siret):
-    _vars = create_classes_from_current_config()
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     _cfg = _vars[1]
     _log = _vars[5]
 
@@ -523,7 +468,8 @@ def verify_siret(token, siret):
 
 
 def verify_vat_number(vat_number):
-    _vars = create_classes_from_current_config()
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     _cfg = _vars[1]
     _log = _vars[5]
     url = _cfg.cfg['API']['tva-url']
@@ -539,7 +485,8 @@ def verify_vat_number(vat_number):
             text = gettext('VAT_NOT_VALID')
             return text, 400
         return text, 200
-    except (exceptions.Fault, requests.exceptions.SSLError, requests.exceptions.ConnectionError, zeep.exceptions.XMLSyntaxError) as _e:
+    except (exceptions.Fault, requests.exceptions.SSLError, requests.exceptions.ConnectionError,
+            zeep.exceptions.XMLSyntaxError) as _e:
         _log.error(gettext('VAT_API_ERROR') + ' : ' + str(_e))
         return gettext('VAT_API_ERROR'), 201
 
@@ -549,9 +496,16 @@ def get_totals(status, user_id, form_id):
     allowed_customers, _ = user.get_customers_by_user_id(user_id)
     allowed_customers.append(0)  # Update allowed customers to add Unspecified customers
 
-    totals['today'], error = verifier.get_totals({'time': 'today', 'status': status, 'form_id': form_id, 'allowedCustomers': allowed_customers})
-    totals['yesterday'], error = verifier.get_totals({'time': 'yesterday', 'status': status, 'form_id': form_id, 'allowedCustomers': allowed_customers})
-    totals['older'], error = verifier.get_totals({'time': 'older', 'status': status, 'form_id': form_id, 'allowedCustomers': allowed_customers})
+    totals['today'], error = verifier.get_totals({
+        'time': 'today', 'status': status, 'form_id': form_id, 'allowedCustomers': allowed_customers
+    })
+    totals['yesterday'], error = verifier.get_totals({
+        'time': 'yesterday', 'status': status, 'form_id': form_id, 'allowedCustomers': allowed_customers
+    })
+    totals['older'], error = verifier.get_totals({
+        'time': 'older', 'status': status, 'form_id': form_id, 'allowedCustomers': allowed_customers
+    })
+
     if error is None:
         return totals, 200
     else:

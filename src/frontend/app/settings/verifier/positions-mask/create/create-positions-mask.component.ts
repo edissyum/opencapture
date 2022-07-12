@@ -25,7 +25,7 @@ import {TranslateService} from "@ngx-translate/core";
 import {NotificationService} from "../../../../../services/notifications/notifications.service";
 import {SettingsService} from "../../../../../services/settings.service";
 import {PrivilegesService} from "../../../../../services/privileges.service";
-import {API_URL} from "../../../../env";
+import {environment} from  "../../../../env";
 import {catchError, finalize, map, startWith, tap} from "rxjs/operators";
 import {Observable, of} from "rxjs";
 import {HistoryService} from "../../../../../services/history.service";
@@ -62,7 +62,7 @@ export class CreatePositionsMaskComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.http.get(API_URL + '/ws/accounts/suppliers/list', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/accounts/suppliers/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.suppliers = this.sortArrayAlphab(data.suppliers);
                 this.filteredOptions = this.form['supplier_id'].control.valueChanges
@@ -101,7 +101,7 @@ export class CreatePositionsMaskComponent implements OnInit {
                     supplierId = element.id;
                 }
             });
-            this.http.post(API_URL + '/ws/positions_masks/add',
+            this.http.post(environment['url'] + '/ws/positions_masks/add',
                 {'args': {
                         'label': label,
                         'supplier_id': supplierId,

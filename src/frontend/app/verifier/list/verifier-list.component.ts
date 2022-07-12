@@ -17,7 +17,7 @@
 
 import {Component, OnInit} from '@angular/core';
 import { LocalStorageService } from "../../../services/local-storage.service";
-import { API_URL } from "../../env";
+import {environment} from  "../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { NotificationService } from "../../../services/notifications/notifications.service";
@@ -177,7 +177,7 @@ export class VerifierListComponent implements OnInit {
             this.localeStorageService.remove('invoicesTimeIndex');
         }
 
-        this.http.get(API_URL + '/ws/status/list?module=verifier', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/status/list?module=verifier', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.status = data.status;
             }),
@@ -192,7 +192,7 @@ export class VerifierListComponent implements OnInit {
     }
 
     loadForms() {
-        this.http.get(API_URL + '/ws/forms/list?module=verifier&totals=true&status=' + this.currentStatus + '&user_id=' + this.userService.user.id + '&time=' + this.currentTime, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/forms/list?module=verifier&totals=true&status=' + this.currentStatus + '&user_id=' + this.userService.user.id + '&time=' + this.currentTime, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.forms = [
                     {'id' : '', "label": this.translate.instant('VERIFIER.all_forms')},
@@ -211,7 +211,7 @@ export class VerifierListComponent implements OnInit {
     }
 
     removeLockByUserId(userId: any) {
-        this.http.put(API_URL + '/ws/verifier/invoices/removeLockByUserId/' + userId, {}, {headers: this.authService.headers}).pipe(
+        this.http.put(environment['url'] + '/ws/verifier/invoices/removeLockByUserId/' + userId, {}, {headers: this.authService.headers}).pipe(
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
@@ -222,7 +222,7 @@ export class VerifierListComponent implements OnInit {
 
     loadCustomers() {
         this.TREE_DATA = [];
-        this.http.get(API_URL + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 const customers = data.customers;
                 this.TREE_DATA.push({
@@ -236,7 +236,7 @@ export class VerifierListComponent implements OnInit {
                     children: [],
                 });
                 this.allowedCustomers.push(0); // 0 is used if for some reasons no customer was recover by OC process
-                this.http.get(API_URL + '/ws/users/getCustomersByUserId/' + this.userService.user.id, {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/users/getCustomersByUserId/' + this.userService.user.id, {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
                         customers.forEach((customer: any) => {
                             data.forEach((customer_id: any) => {
@@ -280,9 +280,9 @@ export class VerifierListComponent implements OnInit {
         this.loadingCustomers = true;
         this.invoices = [];
         this.loadForms();
-        let url = API_URL + '/ws/verifier/invoices/totals/' + this.currentStatus + '/' + this.userService.user.id;
+        let url = environment['url'] + '/ws/verifier/invoices/totals/' + this.currentStatus + '/' + this.userService.user.id;
         if (this.currentForm !== '') {
-            url = API_URL + '/ws/verifier/invoices/totals/' + this.currentStatus + '/' + this.userService.user.id + '/' + this.currentForm;
+            url = environment['url'] + '/ws/verifier/invoices/totals/' + this.currentStatus + '/' + this.userService.user.id + '/' + this.currentForm;
         }
         this.http.get(url, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -294,7 +294,7 @@ export class VerifierListComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
-        this.http.post(API_URL + '/ws/verifier/invoices/list',
+        this.http.post(environment['url'] + '/ws/verifier/invoices/list',
             {
                 'allowedCustomers': this.allowedCustomers, 'status': this.currentStatus, 'limit': this.pageSize,
                 'allowedSuppliers': this.allowedSuppliers, 'form_id': this.currentForm, 'time': this.currentTime,
@@ -437,7 +437,7 @@ export class VerifierListComponent implements OnInit {
     changeCustomer(customerId: number, invoiceId: number) {
         this.loading = true;
         this.loadingCustomers = true;
-        this.http.put(API_URL + '/ws/verifier/invoices/' + invoiceId + '/update',
+        this.http.put(environment['url'] + '/ws/verifier/invoices/' + invoiceId + '/update',
             {'args': {"customer_id": customerId}},
             {headers: this.authService.headers}).pipe(
                 finalize(() => {
@@ -521,7 +521,7 @@ export class VerifierListComponent implements OnInit {
     }
 
     deleteInvoice(invoiceId: number, batchDelete = false) {
-        this.http.delete(API_URL + '/ws/verifier/invoices/delete/' + invoiceId, {headers: this.authService.headers}).pipe(
+        this.http.delete(environment['url'] + '/ws/verifier/invoices/delete/' + invoiceId, {headers: this.authService.headers}).pipe(
             tap(() => {
                 if (!batchDelete) {
                     this.loadCustomers();

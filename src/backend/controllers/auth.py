@@ -18,10 +18,9 @@
 import jwt
 import datetime
 import functools
+from . import privileges
 from flask_babel import gettext
 from flask import request, session, jsonify, current_app
-
-from . import privileges
 from src.backend.import_models import auth, user, roles
 
 

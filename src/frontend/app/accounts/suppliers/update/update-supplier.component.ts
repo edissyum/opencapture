@@ -27,7 +27,7 @@ import {NotificationService} from "../../../../services/notifications/notificati
 import {SettingsService} from "../../../../services/settings.service";
 import {PrivilegesService} from "../../../../services/privileges.service";
 import {marker} from "@biesbjerg/ngx-translate-extract-marker";
-import {API_URL} from "../../../env";
+import {environment} from  "../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {HistoryService} from "../../../../services/history.service";
@@ -179,7 +179,7 @@ export class UpdateSupplierComponent implements OnInit {
         this.supplierForm.forEach((element: any) => {
             if (element.id === 'document_lang') {
                 if (this.localeService.langs.length === 0) {
-                    this.http.get(API_URL + '/ws/i18n/getAllLang', {headers: this.authService.headers}).pipe(
+                    this.http.get(environment['url'] + '/ws/i18n/getAllLang', {headers: this.authService.headers}).pipe(
                         tap((data: any) => {
                             data.langs.forEach((lang: any) => {
                                 element.control.setValue('fra');
@@ -206,9 +206,9 @@ export class UpdateSupplierComponent implements OnInit {
                 }
             }
         });
-        this.http.get(API_URL + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
             tap((forms: any) => {
-                this.http.get(API_URL + '/ws/accounts/suppliers/getById/' + this.supplierId, {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/accounts/suppliers/getById/' + this.supplierId, {headers: this.authService.headers}).pipe(
                     tap((supplier: any) => {
                         this.supplier = supplier;
                         for (const field in this.supplier) {
@@ -226,7 +226,7 @@ export class UpdateSupplierComponent implements OnInit {
                                     }else if (field === 'address_id') {
                                         this.addressId = this.supplier[field];
                                         if (this.addressId) {
-                                            this.http.get(API_URL + '/ws/accounts/getAdressById/' + this.addressId, {headers: this.authService.headers}).pipe(
+                                            this.http.get(environment['url'] + '/ws/accounts/getAdressById/' + this.addressId, {headers: this.authService.headers}).pipe(
                                                 tap((address: any) => {
                                                     for (const field in address) {
                                                         if (address.hasOwnProperty(field)) {
@@ -249,7 +249,7 @@ export class UpdateSupplierComponent implements OnInit {
                                                 })
                                             ).subscribe();
                                         }else {
-                                            this.http.post(API_URL + '/ws/accounts/addresses/create',
+                                            this.http.post(environment['url'] + '/ws/accounts/addresses/create',
                                                 {'args': {
                                                         'address1': '',
                                                         'address2': '',
@@ -261,7 +261,7 @@ export class UpdateSupplierComponent implements OnInit {
                                             ).pipe(
                                                 tap((data: any) => {
                                                     this.addressId = data.id;
-                                                    this.http.put(API_URL + '/ws/accounts/suppliers/update/' + this.supplierId, {'args': {'address_id' : this.addressId}}, {headers: this.authService.headers},
+                                                    this.http.put(environment['url'] + '/ws/accounts/suppliers/update/' + this.supplierId, {'args': {'address_id' : this.addressId}}, {headers: this.authService.headers},
                                                     ).pipe(
                                                         finalize(() => this.loading = false),
                                                         catchError((err: any) => {
@@ -339,7 +339,7 @@ export class UpdateSupplierComponent implements OnInit {
                 address[element.id] = element.control.value;
             });
 
-            this.http.put(API_URL + '/ws/accounts/suppliers/update/' + this.supplierId, {'args': supplier}, {headers: this.authService.headers},
+            this.http.put(environment['url'] + '/ws/accounts/suppliers/update/' + this.supplierId, {'args': supplier}, {headers: this.authService.headers},
             ).pipe(
                 catchError((err: any) => {
                     console.debug(err);
@@ -348,7 +348,7 @@ export class UpdateSupplierComponent implements OnInit {
                 })
             ).subscribe();
 
-            this.http.put(API_URL + '/ws/accounts/addresses/update/' + this.addressId, {'args': address}, {headers: this.authService.headers},
+            this.http.put(environment['url'] + '/ws/accounts/addresses/update/' + this.addressId, {'args': address}, {headers: this.authService.headers},
             ).pipe(
                 tap(() => {
                     this.historyService.addHistory('accounts', 'update_supplier', this.translate.instant('HISTORY-DESC.update-supplier', {supplier: supplier['name']}));

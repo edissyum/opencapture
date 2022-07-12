@@ -51,8 +51,8 @@ def retrieve_ldap_synchronization_data():
         global user_id, firstname, lastname, class_user, object_class, default_password, default_role, users_dn
 
         _vars = create_classes(CONFIG_FILEPATH)
-        _db = _vars[4]
-        database_res = _db.select({
+        database = _vars[4]
+        database_res = database.select({
             'select': ['data'],
             'table': ['login_methods'],
             'where': ['method_name = %s'],
@@ -162,7 +162,7 @@ def get_ldap_users_data(ldap_users_dict):
             user_data.append(list_users_ldap[i][lastname][0])
             ldap_users_data.append(user_data)
         print_log("List of users retrieved from the ldap server " + str(ldap_users_data))
-        return(ldap_users_data)
+        return ldap_users_data
 
 
 def check_database_users(ldap_users_data, default_role):
@@ -172,9 +172,9 @@ def check_database_users(ldap_users_data, default_role):
    :return:
     """
     _vars = create_classes(CONFIG_FILEPATH)
-    _db = _vars[4]
+    database = _vars[4]
     try:
-        users = _db.select({
+        users = database.select({
             'select': ['*'],
             'table': ['users'],
         })
@@ -193,14 +193,14 @@ def check_database_users(ldap_users_data, default_role):
                 if ldap_user[0] == oc_user[0]:
                     if ldap_user[1] == oc_user[1] and ldap_user[2] == oc_user[2]:
                         print_log('User ' + str(ldap_user[0]) + ' exists in LDAP with the same data')
-                        user_status = _db.select({
+                        user_status = database.select({
                             'select': ['enabled'],
                             'table': ['users'],
                             'where': ['username = %s'],
                             'data': [oc_user[0]]
                         })
                         if not user_status[0]:
-                            _db.update({
+                            database.update({
                                 'table': ['users'],
                                 'set': {
                                     'enabled': True
@@ -217,7 +217,7 @@ def check_database_users(ldap_users_data, default_role):
                         if (ldap_user[1] != oc_user[1] and ldap_user[2] != oc_user[2]) or (ldap_user[1] != oc_user[1]
                                and ldap_user[2] == oc_user[2]) or (ldap_user[1] == oc_user[1]
                                and ldap_user[2] != oc_user[2]):
-                            _db.update({
+                            database.update({
                                 'table': ['users'],
                                 'set': {
                                     'firstname': ldap_user[1],
@@ -236,14 +236,14 @@ def check_database_users(ldap_users_data, default_role):
 
         for oc_user in oc_users:
             if oc_user[0] != 'Same' and oc_user[0] != 'Updated':
-                user_oc_status = _db.select({
+                user_oc_status = database.select({
                     'select': ['enabled'],
                     'table': ['users'],
                     'where': ['username = %s'],
                     'data': [oc_user[0]]
                 })
                 if user_oc_status and user_oc_status[0]:
-                    user_role = _db.select({
+                    user_role = database.select({
                         'select': ['label_short'],
                         'table': ['users', 'roles'],
                         'left_join': ['users.role = roles.id'],
@@ -254,7 +254,7 @@ def check_database_users(ldap_users_data, default_role):
                     if user_role[0] == 'superadmin':
                         continue
 
-                    _db.update({
+                    database.update({
                         'table': ['users'],
                         'set': {
                             'enabled': False
@@ -270,7 +270,7 @@ def check_database_users(ldap_users_data, default_role):
             if user_to_create[0] != 'Same' and user_to_create[0] != 'Updated':
                 random_password = str(uuid.uuid4())
                 hash_password = generate_password_hash(random_password)
-                new_user = _db.insert({
+                new_user = database.insert({
                     'table': 'users',
                     'columns': {
                         'username': user_to_create[0],

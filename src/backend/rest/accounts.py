@@ -19,7 +19,9 @@ import os
 import base64
 import mimetypes
 from flask import Blueprint, request, make_response, jsonify
-from src.backend.main import create_classes_from_current_config
+
+from src.backend.functions import retrieve_custom_from_url
+from src.backend.main import create_classes_from_custom_id
 from src.backend.import_controllers import auth, accounts, verifier
 
 bp = Blueprint('accounts', __name__, url_prefix='/ws/')
@@ -232,10 +234,11 @@ def get_accouting_plan():
 @bp.route('accounts/supplier/getReferenceFile', methods=['GET'])
 @auth.token_required
 def get_reference_file():
-    _vars = create_classes_from_current_config()
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     _cfg = _vars[1]
-    _docservers = _vars[9]
-    file_path = _docservers['REFERENTIALS_PATH'] + '/' + _cfg.cfg['REFERENCIAL']['referencialsupplierdocument']
+    docservers = _vars[9]
+    file_path = docservers['REFERENTIALS_PATH'] + '/' + _cfg.cfg['REFERENCIAL']['referencialsupplierdocument']
     mime = mimetypes.guess_type(file_path)[0]
     file_content = verifier.get_file_content('referential_supplier', os.path.basename(file_path), mime)
     return make_response({'filename': os.path.basename(file_path), 'mimetype': mime, 'file': str(base64.b64encode(file_content.get_data()).decode('UTF-8'))}), 200

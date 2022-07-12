@@ -15,11 +15,10 @@
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
-from src.backend.import_controllers import auth
-from src.backend.import_controllers import config
-from src.backend.main import create_classes_from_current_config
-from flask import Blueprint, make_response, jsonify, session, current_app
-
+from src.backend.import_controllers import auth, config
+from src.backend.functions import retrieve_custom_from_url
+from src.backend.main import create_classes_from_custom_id
+from flask import Blueprint, make_response, jsonify, session, current_app, request
 
 bp = Blueprint('i18n', __name__, url_prefix='/ws/')
 
@@ -44,7 +43,8 @@ def get_all_lang():
 
 @bp.route('i18n/getCurrentLang', methods=['GET'])
 def get_current_lang():
-    _vars = create_classes_from_current_config()
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     _configurations = _vars[10]
     current_lang = _configurations['locale']
     languages = current_app.config['LANGUAGES']

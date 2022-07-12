@@ -28,7 +28,7 @@ import {SettingsService} from "../../../../../services/settings.service";
 import {LastUrlService} from "../../../../../services/last-url.service";
 import {PrivilegesService} from "../../../../../services/privileges.service";
 import {LocalStorageService} from "../../../../../services/local-storage.service";
-import {API_URL} from "../../../../env";
+import {environment} from  "../../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {ConfirmDialogComponent} from "../../../../../services/confirm-dialog/confirm-dialog.component";
@@ -80,7 +80,7 @@ export class SplitterOutputListComponent implements OnInit {
     }
 
     loadOutputs(): void {
-        this.http.get(API_URL + '/ws/outputs/list?module=splitter&limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/outputs/list?module=splitter&limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.outputs[0]) this.total = data.outputs[0].total;
                 this.outputs = data.outputs;
@@ -123,7 +123,7 @@ export class SplitterOutputListComponent implements OnInit {
 
     deleteOutput(outputId: number) {
         if (outputId !== undefined) {
-            this.http.delete(API_URL + '/ws/outputs/delete/' + outputId, {headers: this.authService.headers}).pipe(
+            this.http.delete(environment['url'] + '/ws/outputs/delete/' + outputId, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadOutputs();
                     this.notify.success(this.translate.instant('OUTPUT.output_deleted'));
@@ -159,7 +159,7 @@ export class SplitterOutputListComponent implements OnInit {
 
     duplicateOutput(outputId: number) {
         if (outputId !== undefined) {
-            this.http.post(API_URL + '/ws/outputs/duplicate/' + outputId, {}, {headers: this.authService.headers}).pipe(
+            this.http.post(environment['url'] + '/ws/outputs/duplicate/' + outputId, {}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadOutputs();
                     this.notify.success(this.translate.instant('OUTPUT.output_duplicated'));

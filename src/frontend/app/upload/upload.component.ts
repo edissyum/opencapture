@@ -19,7 +19,7 @@ import {Component, OnInit} from '@angular/core';
 import {ViewEncapsulation} from '@angular/core';
 import {FormBuilder, FormControl} from "@angular/forms";
 import {FileValidators} from "ngx-file-drag-drop";
-import {API_URL} from "../env";
+import {environment} from  "../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
@@ -71,7 +71,7 @@ export class UploadComponent implements OnInit {
 
     ngOnInit(): void {
         const splitterOrVerifier = this.localeStorageService.get('splitter_or_verifier');
-        this.http.get(API_URL + '/ws/inputs/list?module=' + splitterOrVerifier, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/inputs/list?module=' + splitterOrVerifier, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.inputs = data.inputs;
                 if (this.inputs.length === 1) {
@@ -130,7 +130,7 @@ export class UploadComponent implements OnInit {
         const splitterOrVerifier = this.localeStorageService.get('splitter_or_verifier');
         if (splitterOrVerifier !== undefined || splitterOrVerifier !== '') {
             this.http.post(
-                API_URL + '/ws/' + splitterOrVerifier + '/upload?inputId=' + this.selectedInputTechnicalId,
+                environment['url'] + '/ws/' + splitterOrVerifier + '/upload?inputId=' + this.selectedInputTechnicalId,
                 formData,
                 {
                     headers: this.authService.headers

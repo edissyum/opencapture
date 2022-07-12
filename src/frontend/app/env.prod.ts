@@ -17,10 +17,9 @@
 
 declare const require: any;
 
-export const API_URL = '../../backend_oc';
 export const environment = {
-    customId: '',
     url: '../../backend_oc',
+    customId: '',
     production: true,
-    VERSION: require('../../../package.json').version
+    version: require('../../../package.json').version
 };

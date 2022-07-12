@@ -16,7 +16,7 @@
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
 import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {API_URL} from "../../env";
+import {environment} from  "../../env";
 import {catchError, debounceTime, delay, filter, finalize, map, takeUntil, tap} from "rxjs/operators";
 import {of, ReplaySubject, Subject} from "rxjs";
 import {HttpClient} from "@angular/common/http";
@@ -175,7 +175,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     loadBatchById(): void {
         this.loading = true;
-        this.http.get(API_URL + '/ws/splitter/batches/' + this.currentBatch.id, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/splitter/batches/' + this.currentBatch.id, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.currentBatch = {
                     id                  : data.batches[0]['id'],
@@ -211,7 +211,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     loadStatus(): void {
-        this.http.get(API_URL + '/ws/status/list?module=splitter', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/status/list?module=splitter', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.status = data.status;
             }),
@@ -226,10 +226,10 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     loadOutputsData(): void {
         this.loading = true;
         this.outputs = [];
-        this.http.get(API_URL + '/ws/forms/getById/' + this.currentBatch.formId, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/forms/getById/' + this.currentBatch.formId, {headers: this.authService.headers}).pipe(
             tap((formData: any) => {
                 for(const outputsId of formData['outputs']) {
-                    this.http.get(API_URL + '/ws/outputs/getById/' + outputsId, {headers: this.authService.headers}).pipe(
+                    this.http.get(environment['url'] + '/ws/outputs/getById/' + outputsId, {headers: this.authService.headers}).pipe(
                         tap((outputsData: any) => {
                             this.outputs.push(outputsData['output_label']);
                         }),
@@ -252,7 +252,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     loadBatches(): void {
-        this.http.get(API_URL + '/ws/splitter/batches/0/5/None/NEW', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/splitter/batches/0/5/None/NEW', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 data.batches.forEach((batch: Batch) =>
                     this.batches.push(
@@ -276,7 +276,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     loadDocuments(): void {
         this.documentsLoading = true;
-        this.http.get(API_URL + '/ws/splitter/documents/' + this.currentBatch.id, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/splitter/documents/' + this.currentBatch.id, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 for (let documentIndex = 0; documentIndex < data['documents'].length; documentIndex++) {
                     // -- Add documents metadata --
@@ -350,7 +350,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         this.isDataEdited = true;
         const documentDisplayOrder  = this.updateDocumentDisplayOrder();
         this.addDocumentLoading = true;
-        this.http.post(API_URL + '/ws/splitter/addDocument',
+        this.http.post(environment['url'] + '/ws/splitter/addDocument',
             {
                 'batchId'           : this.currentBatch.id,
                 'splitIndex'        : this.currentBatch.maxSplitIndex + 1,
@@ -424,7 +424,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     /* -- Metadata -- */
     loadDefaultDocType() {
         this.loading      = true;
-        this.http.get(API_URL + '/ws/doctypes/list/' + (this.currentBatch.formId).toString(), {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/doctypes/list/' + (this.currentBatch.formId).toString(), {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 data.doctypes.forEach((doctype: {
                         id          : any
@@ -495,7 +495,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     loadReferentialOnView(): void {
-        this.http.get(API_URL + `/ws/splitter/metadataMethods/${this.currentBatch.formId}`, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + `/ws/splitter/metadataMethods/${this.currentBatch.formId}`, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if(data.metadataMethods[0].callOnSplitterView) {
                     this.loadReferential(false);
@@ -512,7 +512,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     loadReferential(refreshAfterLoad: boolean): void {
         this.metadata = [];
-        this.http.get(API_URL + `/ws/splitter/loadReferential/${this.currentBatch.formId}`, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + `/ws/splitter/loadReferential/${this.currentBatch.formId}`, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 data.metadata.forEach((metadataItem: any) => {
                     metadataItem.data['metadataId'] = metadataItem.id;
@@ -567,7 +567,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     loadFormFields() {
-        this.http.get(API_URL + '/ws/forms/fields/getByFormId/' + this.currentBatch.formId, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/forms/fields/getByFormId/' + this.currentBatch.formId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 for (const fieldCategory in this.fieldsCategories) {
                     this.fieldsCategories[fieldCategory] = [];
@@ -967,7 +967,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             _documents.push(_document);
         }
 
-        this.http.post(API_URL + '/ws/splitter/validate',
+        this.http.post(environment['url'] + '/ws/splitter/validate',
             {
                 'formId'                : this.currentBatch.formId,
                 'batchId'               : this.currentBatch.id,
@@ -1013,7 +1013,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             _documents.push(_document);
         }
 
-        this.http.post(API_URL + '/ws/splitter/saveInfo',
+        this.http.post(environment['url'] + '/ws/splitter/saveInfo',
             {
                 'documents'             : _documents,
                 'batchId'               : this.currentBatch.id,

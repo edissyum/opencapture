@@ -15,15 +15,18 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
+from flask import request
 from flask_babel import gettext
-from src.backend.main import create_classes_from_current_config
+from src.backend.functions import retrieve_custom_from_url
+from src.backend.main import create_classes_from_custom_id
 
 
 def get_invoice_by_id(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
-    user = _db.select({
+    user = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['invoices'],
         'where': ['id = %s'],
@@ -39,10 +42,11 @@ def get_invoice_by_id(args):
 
 
 def get_invoices(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
 
-    invoices = _db.select({
+    invoices = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['invoices'] if 'table' not in args else args['table'],
         'left_join': [] if 'left_join' not in args else args['left_join'],
@@ -57,10 +61,11 @@ def get_invoices(args):
 
 
 def get_total_invoices(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
 
-    total = _db.select({
+    total = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['invoices'] if 'table' not in args else args['table'],
         'left_join': [] if 'left_join' not in args else args['left_join'],
@@ -71,11 +76,12 @@ def get_total_invoices(args):
 
 
 def update_invoice(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
 
-    supplier = _db.update({
+    supplier = database.update({
         'table': ['invoices'],
         'set': args['set'],
         'where': ['id = %s'],
@@ -89,10 +95,11 @@ def update_invoice(args):
 
 
 def update_invoices(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
-    supplier = _db.update({
+    supplier = database.update({
         'table': ['invoices'],
         'set': args['set'],
         'where': args['where'],
@@ -106,8 +113,9 @@ def update_invoices(args):
 
 
 def get_totals(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
     select = data = []
 
@@ -134,7 +142,7 @@ def get_totals(args):
             where.append('invoices.form_id = %s')
             data.append(args['form_id'])
 
-    total = _db.select({
+    total = database.select({
         'select': select,
         'table': ['invoices'],
         'where': where,

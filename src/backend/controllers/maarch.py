@@ -15,12 +15,15 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from src.backend.main import create_classes_from_current_config
+from flask import request
 from src.backend.import_classes import _MaarchWebServices
+from src.backend.main import create_classes_from_custom_id
+from src.backend.functions import retrieve_custom_from_url
 
 
 def test_connection(args):
-    _vars = create_classes_from_current_config()
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     _ws = _MaarchWebServices(
         args['host'],
         args['login'],
@@ -32,7 +35,8 @@ def test_connection(args):
 
 
 def get_users(args):
-    _vars = create_classes_from_current_config()
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     _ws = _MaarchWebServices(
         args['host'],
         args['login'],
@@ -45,7 +49,8 @@ def get_users(args):
 
 
 def get_doctypes(args):
-    _vars = create_classes_from_current_config()
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     _ws = _MaarchWebServices(
         args['host'],
         args['login'],
@@ -58,7 +63,8 @@ def get_doctypes(args):
 
 
 def get_entities(args):
-    _vars = create_classes_from_current_config()
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     _ws = _MaarchWebServices(
         args['host'],
         args['login'],
@@ -71,7 +77,8 @@ def get_entities(args):
 
 
 def get_custom_fields(args):
-    _vars = create_classes_from_current_config()
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     _ws = _MaarchWebServices(
         args['host'],
         args['login'],
@@ -84,7 +91,8 @@ def get_custom_fields(args):
 
 
 def get_contact_custom_fields(args):
-    _vars = create_classes_from_current_config()
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     _ws = _MaarchWebServices(
         args['host'],
         args['login'],
@@ -97,7 +105,8 @@ def get_contact_custom_fields(args):
 
 
 def get_priorities(args):
-    _vars = create_classes_from_current_config()
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     _ws = _MaarchWebServices(
         args['host'],
         args['login'],
@@ -110,7 +119,8 @@ def get_priorities(args):
 
 
 def get_statuses(args):
-    _vars = create_classes_from_current_config()
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     _ws = _MaarchWebServices(
         args['host'],
         args['login'],
@@ -123,7 +133,8 @@ def get_statuses(args):
 
 
 def retrieve_contact(args):
-    _vars = create_classes_from_current_config()
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     _ws = _MaarchWebServices(
         args['host'],
         args['login'],
@@ -136,7 +147,8 @@ def retrieve_contact(args):
 
 
 def get_document_with_contact(args):
-    _vars = create_classes_from_current_config()
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     _ws = _MaarchWebServices(
         args['host'],
         args['login'],
@@ -149,7 +161,8 @@ def get_document_with_contact(args):
 
 
 def get_indexing_models(args):
-    _vars = create_classes_from_current_config()
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     _ws = _MaarchWebServices(
         args['host'],
         args['login'],

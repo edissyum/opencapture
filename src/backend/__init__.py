@@ -21,6 +21,7 @@ from flask_cors import CORS
 from flask_babel import Babel
 from werkzeug.wrappers import Request
 from flask import request, session, Flask
+from .functions import retrieve_config_from_custom_id
 from src.backend.import_rest import auth, locale, config, user, splitter, verifier, roles, privileges, custom_fields, \
     forms, status, accounts, outputs, maarch, inputs, positions_masks, history, doctypes
 
@@ -32,12 +33,11 @@ class Middleware:
     def __call__(self, environ, start_response):
         _request = Request(environ)
         splitted_request = _request.path.split('ws/')
-        print(splitted_request)
         if splitted_request[0] != '/':
             custom_id = splitted_request[0]
-            prefix = custom_id
-            environ['PATH_INFO'] = environ['PATH_INFO'][len(prefix):]
-            environ['SCRIPT_NAME'] = prefix
+            if retrieve_config_from_custom_id(custom_id.replace('/', '')):
+                environ['PATH_INFO'] = environ['PATH_INFO'][len(custom_id):]
+                environ['SCRIPT_NAME'] = custom_id
         return self.middleware_app(environ, start_response)
 
 

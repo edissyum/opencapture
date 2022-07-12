@@ -32,7 +32,7 @@ def add_history(args):
 
 
 def get_history(args):
-    _history, error = history.get_history(args)
+    _history, _ = history.get_history(args)
 
     response = {
         "history": _history

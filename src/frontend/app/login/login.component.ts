@@ -21,7 +21,7 @@ import {TranslateService} from "@ngx-translate/core";
 import {environment} from "../env";
 import {HttpClient} from "@angular/common/http";
 import {NotificationService} from "../../services/notifications/notifications.service";
-import {catchError, tap} from "rxjs/operators";
+import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {AuthService} from "../../services/auth.service";
 import {Router} from "@angular/router";
@@ -38,9 +38,11 @@ import {HistoryService} from "../../services/history.service";
 export class LoginComponent implements OnInit {
     loginForm               : any;
     enableLoginMethodName   : any;
+    loading                 : boolean = true;
     processLogin            : boolean = false;
     showPassword            : boolean = false;
     isConnectionBtnDisabled : boolean = true;
+    subtitle                : string  = '';
 
     constructor(
         private router: Router,
@@ -64,6 +66,21 @@ export class LoginComponent implements OnInit {
         if (this.localeService.currentLang === undefined) {
             this.localeService.getCurrentLocale();
         }
+
+        this.http.get(environment['url'] + '/ws/config/getConfiguration/loginMessage', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                if (data.configuration.length === 1) {
+                    this.subtitle = data.configuration[0].data.value;
+                }
+            }),
+            finalize(() => this.loading = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
         this.http.get(environment['url'] + '/ws/auth/getEnabledLoginMethod', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 const login_method_name = data['login_method_name'][0];

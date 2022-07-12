@@ -15,14 +15,18 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
+
 import json
+from flask import request
 from gettext import gettext
-from src.backend.main import create_classes_from_current_config
+from src.backend.functions import retrieve_custom_from_url
+from src.backend.main import create_classes_from_custom_id
 
 
 def add_custom_field(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     customs_exists, error = retrieve_custom_fields({
         'where': ['label_short = %s', 'module = %s'],
         'data': [args['label_short'], args['module']]
@@ -42,7 +46,7 @@ def add_custom_field(args):
         if args['options']:
             _args['columns']['settings'] = json.dumps({'options': args['options']})
 
-        res = _db.insert(_args)
+        res = database.insert(_args)
 
         if not res:
             error = gettext('ADD_CUSTOM_FIELD_ERROR')
@@ -54,10 +58,11 @@ def add_custom_field(args):
 
 
 def retrieve_custom_fields(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
-    custom_fields = _db.select({
+    custom_fields = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['custom_fields'],
         'where': ['status <> %s'] if 'where' not in args else args['where'],
@@ -68,8 +73,9 @@ def retrieve_custom_fields(args):
 
 
 def update(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
     _args = {
         'table': ['custom_fields'],
@@ -87,7 +93,7 @@ def update(args):
     if args['options']:
         _args['set']['settings'] = json.dumps({'options': args['options']})
 
-    res = _db.update(_args)
+    res = database.update(_args)
     if not res:
         error = gettext('UPDATE_CUSTOM_FIELDS_ERROR')
 
@@ -95,11 +101,12 @@ def update(args):
 
 
 def delete(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
 
-    res = _db.update({
+    res = database.update({
         'table': ['custom_fields'],
         'set': {
             'status': 'DEL'

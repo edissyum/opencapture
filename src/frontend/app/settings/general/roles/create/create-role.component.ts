@@ -25,7 +25,7 @@ import {TranslateService} from "@ngx-translate/core";
 import {NotificationService} from "../../../../../services/notifications/notifications.service";
 import {SettingsService} from "../../../../../services/settings.service";
 import {PrivilegesService} from "../../../../../services/privileges.service";
-import {API_URL} from "../../../../env";
+import {environment} from  "../../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {HistoryService} from "../../../../../services/history.service";
@@ -74,7 +74,7 @@ export class CreateRoleComponent implements OnInit {
     ngOnInit() {
         this.serviceSettings.init();
 
-        this.http.get(API_URL + '/ws/privileges/list', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/privileges/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.privileges = data;
             }),
@@ -114,11 +114,11 @@ export class CreateRoleComponent implements OnInit {
                 });
             });
 
-            this.http.post(API_URL + '/ws/roles/create', {'args': role}, {headers: this.authService.headers},
+            this.http.post(environment['url'] + '/ws/roles/create', {'args': role}, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {
                     const newRoleId = data.id;
-                    this.http.put(API_URL + '/ws/roles/updatePrivilege/' + newRoleId, {'privileges': rolePrivileges}, {headers: this.authService.headers},
+                    this.http.put(environment['url'] + '/ws/roles/updatePrivilege/' + newRoleId, {'privileges': rolePrivileges}, {headers: this.authService.headers},
                     ).pipe(
                         tap(() => {
                             this.historyService.addHistory('general', 'create_role', this.translate.instant('HISTORY-DESC.create-role', {role: role['label']}));

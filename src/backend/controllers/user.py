@@ -17,7 +17,6 @@
 
 from flask_babel import gettext
 from src.backend.import_models import user, accounts
-from src.backend.main import create_classes_from_current_config
 from werkzeug.security import check_password_hash, generate_password_hash
 
 
@@ -120,8 +119,6 @@ def get_customers_by_user_id(user_id):
 
 
 def update_user(user_id, data):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
     user_info, error = user.get_user_by_id({'user_id': user_id})
 
     if error is None:
@@ -174,9 +171,6 @@ def update_user(user_id, data):
 
 
 def delete_user(user_id):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
-
     _, error = user.get_user_by_id({'user_id': user_id})
     if error is None:
         _, error = user.update_user({'set': {'status': 'DEL'}, 'user_id': user_id})
@@ -197,9 +191,6 @@ def delete_user(user_id):
 
 
 def disable_user(user_id):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
-
     _, error = user.get_user_by_id({'user_id': user_id})
     if error is None:
         _, error = user.update_user({'set': {'enabled': False}, 'user_id': user_id})
@@ -220,9 +211,6 @@ def disable_user(user_id):
 
 
 def enable_user(user_id):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
-
     _, error = user.get_user_by_id({'user_id': user_id})
     if error is None:
         _, error = user.update_user({'set': {'enabled': True}, 'user_id': user_id})
@@ -243,9 +231,6 @@ def enable_user(user_id):
 
 
 def update_customers_by_user_id(user_id, customers):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
-
     _, error = user.get_user_by_id({'user_id': user_id})
     if error is None:
         _set = {

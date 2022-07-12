@@ -17,10 +17,10 @@
 
 declare const require: any;
 
-export const API_URL = 'http://localhost:5000';
 export const environment = {
+    url: 'http://localhost:5000',
+    // url: '../../backend_oc',
     customId: '',
-    url: '../../backend_oc',
     production: false,
-    VERSION: require('../../../package.json').version + ' (development mode)'
+    version: require('../../../package.json').version + ' (development mode)'
 };

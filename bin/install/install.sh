@@ -84,8 +84,7 @@ done
 ln -s "$defaultPath" "$customId"
 mkdir -p "$defaultPath/custom/$customId/config/"
 echo "[$customId]" >> $customIniFile
-echo "path = custom/$customId" >> $customIniFile
-echo "selected = True" >> $customIniFile
+echo "path = $defaultPath/$customId" >> $customIniFile
 echo "" >> $customIniFile
 exit 5
 
@@ -133,7 +132,7 @@ touch /etc/apache2/sites-available/opencapture.conf
 su -c "cat > /etc/apache2/sites-available/opencapture.conf << EOF
 <VirtualHost *:80>
     ServerName localhost
-    DocumentRoot $defaultPath/dist/
+    DocumentRoot $defaultPath/
     WSGIDaemonProcess opencapture user=$user group=$group threads=5
     WSGIScriptAlias /backend_oc /var/www/html/opencaptureforinvoices/wsgi.py
 
@@ -268,9 +267,9 @@ chown -R "$user":"$user" /tmp/OpenCaptureForInvoices
 ####################
 # Copy file from default one
 cp $defaultPath/instance/config.ini.default $defaultPath/instance/config.ini
-cp $defaultPath/bin/ldap/config/config.ini.default $defaultPath/bin/ldap/config/config.ini
-cp $defaultPath/instance/config/mail.ini.default $defaultPath/instance/config/mail.ini
-cp $defaultPath/instance/config/config_DEFAULT.ini.default $defaultPath/instance/config/config_DEFAULT.ini
+cp $defaultPath/bin/ldap/config/config.ini.default "$defaultPath/custom/$customId/bin/ldap/config/config.ini"
+cp $defaultPath/instance/config/mail.ini.default "$defaultPath/custom/$customId/config/mail.ini"
+cp $defaultPath/instance/config/config_DEFAULT.ini.default "$defaultPath/custom/$customId/config/config.ini"
 cp $defaultPath/instance/referencial/default_referencial_supplier.ods.default $defaultPath/instance/referencial/default_referencial_supplier.ods
 cp $defaultPath/instance/referencial/default_referencial_supplier_index.json.default $defaultPath/instance/referencial/default_referencial_supplier_index.json
 

@@ -26,7 +26,7 @@ import {NotificationService} from "../../../../../services/notifications/notific
 import {SettingsService} from "../../../../../services/settings.service";
 import {PrivilegesService} from "../../../../../services/privileges.service";
 import {moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
-import {API_URL} from "../../../../env";
+import {environment} from  "../../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {marker} from "@biesbjerg/ngx-translate-extract-marker";
@@ -187,12 +187,12 @@ export class SplitterFormBuilderComponent implements OnInit {
         this.serviceSettings.init();
         this.formId = this.route.snapshot.params['id'];
 
-        this.http.get(API_URL + '/ws/outputs/list?module=splitter', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/outputs/list?module=splitter', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.outputs = data.outputs;
                 if (this.formId) {
                     this.creationMode = false;
-                    this.http.get(API_URL + '/ws/forms/getById/' + this.formId, {headers: this.authService.headers}).pipe(
+                    this.http.get(environment['url'] + '/ws/forms/getById/' + this.formId, {headers: this.authService.headers}).pipe(
                         tap((data: any) => {
                             for (const field in this.form) {
                                 for (const info in data) {
@@ -225,7 +225,7 @@ export class SplitterFormBuilderComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.get(API_URL + '/ws/splitter/metadataMethods', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/splitter/metadataMethods', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 data.metadataMethods.forEach((option: any) => {
                     this.metadataMethods.push({
@@ -241,7 +241,7 @@ export class SplitterFormBuilderComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.get(API_URL + '/ws/customFields/list', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/customFields/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.customFields) {
                     for (const field in data.customFields) {
@@ -279,7 +279,7 @@ export class SplitterFormBuilderComponent implements OnInit {
             })
         ).subscribe();
         if (this.formId) {
-            this.http.get(API_URL + '/ws/forms/getFields/' + this.formId, {headers: this.authService.headers}).pipe(
+            this.http.get(environment['url'] + '/ws/forms/getFields/' + this.formId, {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
                     if (data.form_fields.fields) {
                         if (data.form_fields.fields.batch_metadata)
@@ -423,12 +423,12 @@ export class SplitterFormBuilderComponent implements OnInit {
         });
 
         if (label !== '' && outputs.length >= 1) {
-            this.http.put(API_URL + '/ws/forms/update/' + this.formId, {
+            this.http.put(environment['url'] + '/ws/forms/update/' + this.formId, {
                     'args': {'label' : label, 'default_form' : isDefault, 'outputs': outputs, 'metadata_method': metadataMethod}
                 }, {headers: this.authService.headers},
             ).pipe(
                 tap(()=> {
-                    this.http.post(API_URL + '/ws/forms/updateFields/' + this.formId, this.fields, {headers: this.authService.headers}).pipe(
+                    this.http.post(environment['url'] + '/ws/forms/updateFields/' + this.formId, this.fields, {headers: this.authService.headers}).pipe(
                         tap(() => {
                             this.notify.success(this.translate.instant('FORMS.updated'));
                         }),
@@ -456,7 +456,7 @@ export class SplitterFormBuilderComponent implements OnInit {
         const label = this.form.label.control.value;
         const isDefault = this.form.default_form.control.value;
         if (label) {
-            this.http.post(API_URL + '/ws/forms/add',
+            this.http.post(environment['url'] + '/ws/forms/add',
                 {
                     'args': {
                         'label'         : label,
@@ -466,7 +466,7 @@ export class SplitterFormBuilderComponent implements OnInit {
                 }, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {
-                    this.http.post(API_URL + '/ws/forms/updateFields/' + data.id, this.fields, {headers: this.authService.headers}).pipe(
+                    this.http.post(environment['url'] + '/ws/forms/updateFields/' + data.id, this.fields, {headers: this.authService.headers}).pipe(
                         catchError((err: any) => {
                             console.debug(err);
                             this.notify.handleErrors(err);

@@ -27,7 +27,7 @@ import {TranslateService} from "@ngx-translate/core";
 import {NotificationService} from "../../../../services/notifications/notifications.service";
 import {SettingsService} from "../../../../services/settings.service";
 import {PrivilegesService} from "../../../../services/privileges.service";
-import {API_URL} from "../../../env";
+import {environment} from  "../../../env";
 import {catchError, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {HistoryService} from "../../../../services/history.service";
@@ -176,11 +176,11 @@ export class CreateCustomerComponent implements OnInit {
                 address[element.id] = element.control.value;
             });
 
-            this.http.post(API_URL + '/ws/accounts/addresses/create', {'args': address}, {headers: this.authService.headers},
+            this.http.post(environment['url'] + '/ws/accounts/addresses/create', {'args': address}, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {
                     customer['address_id'] = data.id;
-                    this.http.post(API_URL + '/ws/accounts/customers/create', {'args': customer}, {headers: this.authService.headers},
+                    this.http.post(environment['url'] + '/ws/accounts/customers/create', {'args': customer}, {headers: this.authService.headers},
                     ).pipe(
                         tap(() => {
                             this.historyService.addHistory('accounts', 'create_customer', this.translate.instant('HISTORY-DESC.create-customer', {customer: customer['name']}));

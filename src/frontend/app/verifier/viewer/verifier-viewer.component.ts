@@ -18,7 +18,7 @@
 import {Component, OnInit} from '@angular/core';
 import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import { ActivatedRoute, Router } from "@angular/router";
-import { API_URL } from "../../env";
+import {environment} from  "../../env";
 import { catchError, map, startWith, tap } from "rxjs/operators";
 import { Observable, of } from "rxjs";
 import { HttpClient } from "@angular/common/http";
@@ -247,7 +247,7 @@ export class VerifierViewerComponent implements OnInit {
 
                     this.form.facturation.forEach((element: any) => {
                        if (element.id === data['autocompleteField']) {
-                           this.http.post(API_URL + '/ws/maarch/getDocumentsWithContact', data, {headers: this.authService.headers},
+                           this.http.post(environment['url'] + '/ws/maarch/getDocumentsWithContact', data, {headers: this.authService.headers},
                            ).pipe(
                                tap((_return: any) => {
                                    element.type = 'autocomplete';
@@ -297,7 +297,7 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     async generateTokenInsee() {
-        return await this.http.get(API_URL + '/ws/verifier/getTokenINSEE', {headers: this.authService.headers}).toPromise();
+        return await this.http.get(environment['url'] + '/ws/verifier/getTokenINSEE', {headers: this.authService.headers}).toPromise();
     }
 
     async getThumb(filename:string) {
@@ -305,7 +305,7 @@ export class VerifierViewerComponent implements OnInit {
         if (this.imgArray[cpt]) {
             this.imgSrc = this.imgArray[cpt];
         }else {
-            this.http.post(API_URL + '/ws/verifier/getThumb',{'args': {'type': 'full', 'filename': filename}},
+            this.http.post(environment['url'] + '/ws/verifier/getThumb',{'args': {'type': 'full', 'filename': filename}},
                 {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
                     this.imgSrc = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + data.file);
@@ -411,32 +411,32 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     async retrieveSuppliers(): Promise<any> {
-        return await this.http.get(API_URL + '/ws/accounts/suppliers/list?order=name ASC', {headers: this.authService.headers}).toPromise();
+        return await this.http.get(environment['url'] + '/ws/accounts/suppliers/list?order=name ASC', {headers: this.authService.headers}).toPromise();
     }
 
     async getInvoice(): Promise<any> {
-        return await this.http.get(API_URL + '/ws/verifier/invoices/' + this.invoiceId, {headers: this.authService.headers}).toPromise();
+        return await this.http.get(environment['url'] + '/ws/verifier/invoices/' + this.invoiceId, {headers: this.authService.headers}).toPromise();
     }
 
     async getForm(): Promise<any> {
         if (this.invoice.form_id)
-            return await this.http.get(API_URL + '/ws/forms/fields/getByFormId/' + this.invoice.form_id, {headers: this.authService.headers}).toPromise();
+            return await this.http.get(environment['url'] + '/ws/forms/fields/getByFormId/' + this.invoice.form_id, {headers: this.authService.headers}).toPromise();
         if (this.invoice.supplier_id)
-            return await this.http.get(API_URL + '/ws/forms/fields/getBySupplierId/' + this.invoice.supplier_id, {headers: this.authService.headers}).toPromise();
+            return await this.http.get(environment['url'] + '/ws/forms/fields/getBySupplierId/' + this.invoice.supplier_id, {headers: this.authService.headers}).toPromise();
         else
-            return await this.http.get(API_URL + '/ws/forms/getDefault', {headers: this.authService.headers}).toPromise();
+            return await this.http.get(environment['url'] + '/ws/forms/getDefault', {headers: this.authService.headers}).toPromise();
     }
 
     async getAllForm(): Promise<any> {
-        return await this.http.get(API_URL + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).toPromise();
+        return await this.http.get(environment['url'] + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).toPromise();
     }
 
     async getFormFieldsById(formId: number): Promise<any> {
-        return await this.http.get(API_URL + '/ws/forms/fields/getByFormId/' + formId, {headers: this.authService.headers}).toPromise();
+        return await this.http.get(environment['url'] + '/ws/forms/fields/getByFormId/' + formId, {headers: this.authService.headers}).toPromise();
     }
 
     async getFormById(formId: number): Promise<any> {
-        return await this.http.get(API_URL + '/ws/forms/getById/' + formId, {headers: this.authService.headers}).toPromise();
+        return await this.http.get(environment['url'] + '/ws/forms/getById/' + formId, {headers: this.authService.headers}).toPromise();
     }
 
     async fillForm(data: any): Promise<any> {
@@ -508,7 +508,7 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     async getOutputs(outputId: any): Promise<any> {
-        return await this.http.get(API_URL + '/ws/outputs/getById/' + outputId, {headers: this.authService.headers}).toPromise();
+        return await this.http.get(environment['url'] + '/ws/outputs/getById/' + outputId, {headers: this.authService.headers}).toPromise();
     }
 
     private _filter_accounting(array: any, value: any): string[] {
@@ -525,11 +525,11 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     async retrieveAccountingPlan() {
-        return await this.http.get(API_URL + '/ws/accounts/customers/getAccountingPlan/' + this.invoice.customer_id, {headers: this.authService.headers}).toPromise();
+        return await this.http.get(environment['url'] + '/ws/accounts/customers/getAccountingPlan/' + this.invoice.customer_id, {headers: this.authService.headers}).toPromise();
     }
 
     async retrieveDefaultAccountingPlan() {
-        return await this.http.get(API_URL + '/ws/accounts/customers/getDefaultAccountingPlan', {headers: this.authService.headers}).toPromise();
+        return await this.http.get(environment['url'] + '/ws/accounts/customers/getDefaultAccountingPlan', {headers: this.authService.headers}).toPromise();
     }
 
     findChildren(parentId: any, parent: any, categoryId: any) {
@@ -681,7 +681,7 @@ export class VerifierViewerComponent implements OnInit {
             }
             if (!this.isOCRRunning && !this.loading && this.saveInfo) {
                 this.isOCRRunning = true;
-                this.http.post(API_URL + '/ws/verifier/ocrOnFly',
+                this.http.post(environment['url'] + '/ws/verifier/ocrOnFly',
                     {
                         selection: this.getSelectionByCpt(selection, cpt),
                         fileName: this.currentFilename,
@@ -754,7 +754,7 @@ export class VerifierViewerComponent implements OnInit {
         };
 
         if (this.invoice.supplier_id) {
-            this.http.put(API_URL + '/ws/accounts/supplier/' + this.invoice.supplier_id + '/updatePosition',
+            this.http.put(environment['url'] + '/ws/accounts/supplier/' + this.invoice.supplier_id + '/updatePosition',
                 {'args': {[this.lastId]: position}},
                 {headers: this.authService.headers}).pipe(
                 catchError((err: any) => {
@@ -765,7 +765,7 @@ export class VerifierViewerComponent implements OnInit {
             ).subscribe();
         }
 
-        this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/updatePosition',
+        this.http.put(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/updatePosition',
             {'args': {[this.lastId]: position}},
             {headers: this.authService.headers}).pipe(
             tap(() => {
@@ -781,7 +781,7 @@ export class VerifierViewerComponent implements OnInit {
 
     async savePages(page: any) {
         if (this.invoice.supplier_id) {
-            this.http.put(API_URL + '/ws/accounts/supplier/' + this.invoice.supplier_id + '/updatePage',
+            this.http.put(environment['url'] + '/ws/accounts/supplier/' + this.invoice.supplier_id + '/updatePage',
                 {'args': {[this.lastId]: page}},
                 {headers: this.authService.headers}).pipe(
                 catchError((err: any) => {
@@ -792,7 +792,7 @@ export class VerifierViewerComponent implements OnInit {
             ).subscribe();
         }
 
-        this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/updatePage',
+        this.http.put(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/updatePage',
             {'args': {[this.lastId]: page}},
             {headers: this.authService.headers}).pipe(
             tap(() => {
@@ -816,7 +816,7 @@ export class VerifierViewerComponent implements OnInit {
                 data = {[fieldId]: data};
             }
 
-            this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/updateData',
+            this.http.put(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/updateData',
                 {'args': data},
                 {headers: this.authService.headers}).pipe(
                 tap(() => {
@@ -847,11 +847,11 @@ export class VerifierViewerComponent implements OnInit {
             this.saveData(field.control.value, element.id);
         });
 
-        this.http.post(API_URL + '/ws/accounts/addresses/create', {'args': addressData}, {headers: this.authService.headers},
+        this.http.post(environment['url'] + '/ws/accounts/addresses/create', {'args': addressData}, {headers: this.authService.headers},
         ).pipe(
             tap((data: any) => {
                 supplierData['address_id'] = data.id;
-                this.http.post(API_URL + '/ws/accounts/suppliers/create', {'args': supplierData}, {headers: this.authService.headers},
+                this.http.post(environment['url'] + '/ws/accounts/suppliers/create', {'args': supplierData}, {headers: this.authService.headers},
                 ).pipe(
                     tap(async (data: any) => {
                         this.historyService.addHistory('accounts', 'create_supplier', this.translate.instant('HISTORY-DESC.create-supplier', {supplier: supplierData['name']}));
@@ -886,7 +886,7 @@ export class VerifierViewerComponent implements OnInit {
             this.saveData(field.control.value, element.id);
         });
 
-        this.http.put(API_URL + '/ws/accounts/suppliers/update/' + this.invoice.supplier_id, {'args': supplierData}, {headers: this.authService.headers},
+        this.http.put(environment['url'] + '/ws/accounts/suppliers/update/' + this.invoice.supplier_id, {'args': supplierData}, {headers: this.authService.headers},
         ).pipe(
             catchError((err: any) => {
                 console.debug(err);
@@ -895,7 +895,7 @@ export class VerifierViewerComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.put(API_URL + '/ws/accounts/addresses/updateBySupplierId/' + this.invoice.supplier_id, {'args': addressData}, {headers: this.authService.headers},
+        this.http.put(environment['url'] + '/ws/accounts/addresses/updateBySupplierId/' + this.invoice.supplier_id, {'args': addressData}, {headers: this.authService.headers},
         ).pipe(
             tap(() => {
                 this.historyService.addHistory('accounts', 'update_supplier', this.translate.instant('HISTORY-DESC.update-supplier', {supplier: supplierData['name']}));
@@ -910,7 +910,7 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     updateInvoice(data: any) {
-        this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoiceId + '/update',
+        this.http.put(environment['url'] + '/ws/verifier/invoices/' + this.invoiceId + '/update',
             {'args': data},
             {headers: this.authService.headers}).pipe(
             catchError((err: any) => {
@@ -934,7 +934,7 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     deleteData(fieldId: any) {
-        this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/deleteData',
+        this.http.put(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/deleteData',
             {'args': fieldId.trim()},
             {headers: this.authService.headers}).pipe(
             tap(() => {
@@ -949,7 +949,7 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     deletePosition(fieldId: any) {
-        this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/deletePosition',
+        this.http.put(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/deletePosition',
             {'args': fieldId.trim()},
             {headers: this.authService.headers}).pipe(
             catchError((err: any) => {
@@ -961,7 +961,7 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     deletePage(fieldId: any) {
-        this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/deletePage',
+        this.http.put(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/deletePage',
             {'args': fieldId.trim()},
             {headers: this.authService.headers}).pipe(
             catchError((err: any) => {
@@ -1027,7 +1027,7 @@ export class VerifierViewerComponent implements OnInit {
     getSupplierInfo(supplierId: any, showNotif = false, launchOnInit = false) {
         this.suppliers.forEach((supplier: any) => {
             if (supplier.id === supplierId) {
-                this.http.get(API_URL + '/ws/accounts/getAdressById/' + supplier.address_id, {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/accounts/getAdressById/' + supplier.address_id, {headers: this.authService.headers}).pipe(
                     tap((address: any) => {
                         const supplierData : any = {
                             'name': supplier.name,
@@ -1050,7 +1050,7 @@ export class VerifierViewerComponent implements OnInit {
                         if (!launchOnInit) {
                             this.updateInvoice({'supplier_id': supplierId});
                             this.saveData(supplierData);
-                            this.http.put(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/updateData',
+                            this.http.put(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/updateData',
                                 {'args': supplierData},
                                 {headers: this.authService.headers}).pipe(
                                 tap(() => {
@@ -1182,7 +1182,7 @@ export class VerifierViewerComponent implements OnInit {
          */
         if (this.formSettings.outputs.length !== 0) {
             this.formSettings.outputs.forEach((outputId: any, cpt: number) => {
-                this.http.get(API_URL + '/ws/outputs/getById/' + outputId, {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/outputs/getById/' + outputId, {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
                         if (data.data.options.links) {
                             this.form.facturation.forEach((element: any) => {
@@ -1193,7 +1193,7 @@ export class VerifierViewerComponent implements OnInit {
                                 }
                             });
                         }
-                        this.http.post(API_URL + '/ws/verifier/invoices/' + this.invoice.id + '/' + data.output_type_id, {'args': data.data},{headers: this.authService.headers}).pipe(
+                        this.http.post(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/' + data.output_type_id, {'args': data.data},{headers: this.authService.headers}).pipe(
                             tap(() => {
                                 /* Actions à effectuer après le traitement des chaînes sortantes */
                                 if (cpt + 1 === this.formSettings.outputs.length) {
@@ -1316,7 +1316,7 @@ export class VerifierViewerComponent implements OnInit {
             if (siretOrSiren === 'siren' && this.oldSIREN !== value) {
                 if (this.verify(value, sizeSIREN) && this.token) {
                     this.oldSIREN = value;
-                    this.http.post(API_URL + '/ws/verifier/verifySIREN', {'token': this.token, 'siren': value}, {headers: this.authService.headers}).pipe(
+                    this.http.post(environment['url'] + '/ws/verifier/verifySIREN', {'token': this.token, 'siren': value}, {headers: this.authService.headers}).pipe(
                         catchError((err: any) => {
                             this.form['supplier'].forEach((element: any) => {
                                 if (element.id === 'siren') {
@@ -1347,7 +1347,7 @@ export class VerifierViewerComponent implements OnInit {
             } else if (siretOrSiren === 'siret'  && this.oldSIRET !== value) {
                 if (this.verify(value, sizeSIRET) && this.token) {
                     this.oldSIRET = value;
-                    this.http.post(API_URL + '/ws/verifier/verifySIRET', {'token': this.token, 'siret': value}, {headers: this.authService.headers}).pipe(
+                    this.http.post(environment['url'] + '/ws/verifier/verifySIRET', {'token': this.token, 'siret': value}, {headers: this.authService.headers}).pipe(
                         catchError((err: any) => {
                             this.form['supplier'].forEach((element: any) => {
                                 if (element.id === 'siret') {
@@ -1385,7 +1385,7 @@ export class VerifierViewerComponent implements OnInit {
                 const sizeVAT = 13;
                 if (this.verify(value, sizeVAT, true)) {
                     this.oldVAT = value;
-                    this.http.post(API_URL + '/ws/verifier/verifyVATNumber', {'vat_number': value}, {headers: this.authService.headers}).pipe(
+                    this.http.post(environment['url'] + '/ws/verifier/verifyVATNumber', {'vat_number': value}, {headers: this.authService.headers}).pipe(
                         catchError((err: any) => {
                             this.form['supplier'].forEach((element: any) => {
                                 if (element.id === 'vat_number') {

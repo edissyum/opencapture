@@ -26,7 +26,7 @@ import {NotificationService} from "../../../../../services/notifications/notific
 import {SettingsService} from "../../../../../services/settings.service";
 import {PrivilegesService} from "../../../../../services/privileges.service";
 import {FormControl} from "@angular/forms";
-import {API_URL} from "../../../../env";
+import {environment} from  "../../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {HistoryService} from "../../../../../services/history.service";
@@ -204,7 +204,7 @@ export class CreateInputComponent implements OnInit {
     ngOnInit(): void {
         this.serviceSettings.init();
 
-        this.http.get(API_URL + '/ws/customFields/list?module=verifier', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/customFields/list?module=verifier', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 data.customFields.forEach((field: any) => {
                     this.availableFields.push({
@@ -221,7 +221,7 @@ export class CreateInputComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.get(API_URL + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
             tap((customers: any) => {
                 this.inputForm.forEach((element: any) => {
                     if (element.id === 'customer_id') {
@@ -241,7 +241,7 @@ export class CreateInputComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
-        this.http.get(API_URL + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
             tap((forms: any) => {
                 this.inputForm.forEach((element: any) => {
                     if (element.id === 'default_form_id') {
@@ -301,9 +301,9 @@ export class CreateInputComponent implements OnInit {
 
             input['module'] = 'verifier';
 
-            this.http.post(API_URL + '/ws/inputs/createScriptAndIncron', {'args': input}, {headers: this.authService.headers}).pipe(
+            this.http.post(environment['url'] + '/ws/inputs/createScriptAndIncron', {'args': input}, {headers: this.authService.headers}).pipe(
                 tap(() => {
-                    this.http.post(API_URL + '/ws/inputs/create', {'args': input}, {headers: this.authService.headers}).pipe(
+                    this.http.post(environment['url'] + '/ws/inputs/create', {'args': input}, {headers: this.authService.headers}).pipe(
                         tap(() => {
                             this.historyService.addHistory('verifier', 'create_input', this.translate.instant('HISTORY-DESC.create-input', {input: input['input_label']}));
                             this.router.navigate(['/settings/verifier/inputs']).then();

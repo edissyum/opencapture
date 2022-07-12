@@ -29,7 +29,7 @@ import {PrivilegesService} from "../../../../../services/privileges.service";
 import {LocalStorageService} from "../../../../../services/local-storage.service";
 import {Sort} from "@angular/material/sort";
 import {ConfirmDialogComponent} from "../../../../../services/confirm-dialog/confirm-dialog.component";
-import {API_URL} from "../../../../env";
+import {environment} from  "../../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {HistoryService} from "../../../../../services/history.service";
@@ -80,7 +80,7 @@ export class PositionsMaskListComponent implements OnInit {
     async loadPositionMask() {
         this.loading = true;
         const suppliers = await this.retrieveSuppliers();
-        this.http.get(API_URL + '/ws/positions_masks/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/positions_masks/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.total) this.total = data.total;
                 else if (this.pageIndex !== 0) {
@@ -108,7 +108,7 @@ export class PositionsMaskListComponent implements OnInit {
     }
 
     async retrieveSuppliers(): Promise<any> {
-        return await this.http.get(API_URL + '/ws/accounts/suppliers/list?order=name ASC', {headers: this.authService.headers}).toPromise();
+        return await this.http.get(environment['url'] + '/ws/accounts/suppliers/list?order=name ASC', {headers: this.authService.headers}).toPromise();
     }
 
     onPageChange(event: any) {
@@ -199,7 +199,7 @@ export class PositionsMaskListComponent implements OnInit {
 
     deletePositionMask(positionsMaskId: number) {
         if (positionsMaskId !== undefined) {
-            this.http.delete(API_URL + '/ws/positions_masks/delete/' + positionsMaskId, {headers: this.authService.headers}).pipe(
+            this.http.delete(environment['url'] + '/ws/positions_masks/delete/' + positionsMaskId, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadPositionMask().then();
                     this.notify.success(this.translate.instant('POSITIONS-MASKS.positions_mask_deleted'));
@@ -215,7 +215,7 @@ export class PositionsMaskListComponent implements OnInit {
 
     duplicatePositionMask(positionsMaskId: number) {
         if (positionsMaskId !== undefined) {
-            this.http.post(API_URL + '/ws/positions_masks/duplicate/' + positionsMaskId, {}, {headers: this.authService.headers}).pipe(
+            this.http.post(environment['url'] + '/ws/positions_masks/duplicate/' + positionsMaskId, {}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadPositionMask().then();
                 }),
@@ -230,7 +230,7 @@ export class PositionsMaskListComponent implements OnInit {
 
     disablePositionMask(positionsMaskId: number) {
         if (positionsMaskId !== undefined) {
-            this.http.put(API_URL + '/ws/positions_masks/disable/' + positionsMaskId, null, {headers: this.authService.headers}).pipe(
+            this.http.put(environment['url'] + '/ws/positions_masks/disable/' + positionsMaskId, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadPositionMask().then();
                 }),
@@ -245,7 +245,7 @@ export class PositionsMaskListComponent implements OnInit {
 
     enablePositionMask(positionsMaskId: number) {
         if (positionsMaskId !== undefined) {
-            this.http.put(API_URL + '/ws/positions_masks/enable/' + positionsMaskId, null, {headers: this.authService.headers}).pipe(
+            this.http.put(environment['url'] + '/ws/positions_masks/enable/' + positionsMaskId, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadPositionMask().then();
                 }),

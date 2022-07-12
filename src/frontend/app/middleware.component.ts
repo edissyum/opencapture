@@ -16,18 +16,22 @@
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import {Injectable} from '@angular/core';
-import {API_URL, environment} from "./env";
+import {environment} from "./env";
 import {Observable} from "rxjs";
-import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from "@angular/common/http";
+import {HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest} from "@angular/common/http";
+import {LocalStorageService} from "../services/local-storage.service";
+import {Router} from "@angular/router";
 
 @Injectable()
 export class MiddlewareComponent implements HttpInterceptor {
 
-    constructor() {}
+    constructor(
+        private router: Router,
+        private localStorage: LocalStorageService,
+    ) {}
 
     isValidIP(str: any) {
         const arr = str.split(".").filter((el: any) => !/^0.|\D/g.test(el));
-
         return arr.filter((el: any) => el.length && el >= 0 && el <= 255).length === 4;
     }
 
@@ -36,25 +40,31 @@ export class MiddlewareComponent implements HttpInterceptor {
     }
 
     intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-        if (!environment['customId'] && (request.url.includes('http://') || request.url.includes('https://'))) {
+        if (!environment['customId'] && /http(s)?:\/\/|backend_oc\//.test(request.url)) {
             let currentUrl = window.location.href;
             currentUrl = currentUrl.replace('http://', '').replace('https://', '');
             currentUrl = currentUrl.replace(new RegExp('//'), '/');
             const currentUrlArray = currentUrl.split('/');
-            console.log(currentUrlArray);
             for (let i = 0; i <= currentUrlArray.length; i++) {
                 if (currentUrlArray[i] === 'dist') {
                     let customId = '';
                     const isIp = this.isValidIP(currentUrlArray[i - 1]);
                     const isFQDN = this.isValidFQDN(currentUrlArray[i - 1]);
+                    const currentCustom = this.localStorage.getCookie('OpenCaptureCustom');
                     if (!isFQDN && !isIp && currentUrlArray[i - 1] !== 'localhost') {
                         customId = currentUrlArray[i - 1];
                         const oldUrl = environment['url'];
                         environment['customId'] = customId;
                         environment['url'] += '/' + customId;
-                        console.log(request.url, request.url.replace(oldUrl, environment['url']));
-                        const newRequest = new HttpRequest(request.method as any, request.url.replace(oldUrl, environment['url']));
+                        const token = this.localStorage.getCookie('OpenCaptureForInvoicesToken');
+                        if (currentCustom && customId !== currentCustom) {
+                            this.router.navigate(['/logout']).then();
+                        }
+                        const headers = new HttpHeaders().set('Authorization', 'Bearer ' + token);
+                        const newRequest = new HttpRequest(request.method as any,
+                            request.url.replace(oldUrl, environment['url']), {headers: headers});
                         request = Object.assign(request, newRequest);
+                        this.localStorage.setCookie('OpenCaptureCustom', customId, 1);
                         return next.handle(request);
                     }
                 }

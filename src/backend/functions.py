@@ -17,7 +17,40 @@
 
 import os
 import json
+from pathlib import Path
 from .classes.Config import Config as _Config
+
+
+def retrieve_custom_from_url(request):
+    custom_id = ''
+    url = request.environ['SCRIPT_NAME'] + request.environ['PATH_INFO'] if 'RAW_URI' not in request.environ \
+        else request.environ['RAW_URI']
+    splitted_request = url.split('ws/')
+    if splitted_request[0] != '/':
+        custom_id = splitted_request[0]
+    return custom_id.replace('/', '')
+
+
+def retrieve_config_from_custom_id(custom_id):
+    res = False
+    found_custom = False
+    default_config_file = str(Path(__file__).parents[2]) + '/instance/config/config_DEFAULT.ini'
+    custom_directory = str(Path(__file__).parents[2]) + '/custom/'
+    custom_ini_file = str(Path(__file__).parents[2]) + '/custom/custom.ini'
+    if os.path.isdir(custom_directory) and os.path.isfile(custom_ini_file):
+        customs_config = _Config(custom_ini_file)
+        for custom_name in customs_config.cfg:
+            if custom_id == custom_name:
+                found_custom = True
+                if os.path.isdir(customs_config.cfg[custom_name]['path']):
+                    if os.path.isfile(customs_config.cfg[custom_name]['path'] + '/config/config.ini'):
+                        res = customs_config.cfg[custom_name]['path'] + '/config/config.ini'
+
+    if res is False and os.path.isfile(default_config_file) and found_custom:
+        res = default_config_file
+    elif not found_custom:
+        res = False
+    return res
 
 
 def get_custom_array():
@@ -33,7 +66,7 @@ def get_custom_id():
     if os.path.isfile(custom_file):
         config = _Config(custom_file)
         for custom in config.cfg:
-            if config.cfg[custom]['selected'] == 'True':
+            if config.cfg[custom]['isdefault'] == 'True':
                 path = config.cfg[custom]['path']
                 if os.path.isdir(path):
                     return [custom, path]

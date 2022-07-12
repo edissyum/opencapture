@@ -25,7 +25,7 @@ import {TranslateService} from "@ngx-translate/core";
 import {NotificationService} from "../../../../../services/notifications/notifications.service";
 import {SettingsService} from "../../../../../services/settings.service";
 import {PrivilegesService} from "../../../../../services/privileges.service";
-import {API_URL} from "../../../../env";
+import {environment} from  "../../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {HistoryService} from "../../../../../services/history.service";
@@ -69,7 +69,7 @@ export class CreateOutputComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.http.get(API_URL + '/ws/outputs/getOutputsTypes?module=verifier', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/outputs/getOutputsTypes?module=verifier', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.outputsTypes = data.outputs_types;
             }),
@@ -98,7 +98,7 @@ export class CreateOutputComponent implements OnInit {
         if (this.isValidForm(this.outputForm)) {
             const outputTypeId = this.getValueFromForm(this.outputForm, 'output_type_id');
             const outputLabel = this.getValueFromForm(this.outputForm, 'output_label');
-            this.http.post(API_URL + '/ws/outputs/create',
+            this.http.post(environment['url'] + '/ws/outputs/create',
                 {'args': {
                     'output_type_id': outputTypeId,
                     'output_label': outputLabel,

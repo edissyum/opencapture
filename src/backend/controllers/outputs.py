@@ -18,13 +18,9 @@
 import json
 from flask_babel import gettext
 from src.backend.import_models import outputs
-from src.backend.main import create_classes_from_current_config
 
 
 def get_outputs(args):
-    _vars = create_classes_from_current_config()
-    _config = _vars[1]
-
     _outputs = outputs.get_outputs(args)
 
     response = {
@@ -34,9 +30,6 @@ def get_outputs(args):
 
 
 def get_outputs_types(module):
-    _vars = create_classes_from_current_config()
-    _config = _vars[1]
-
     args = {
         'where': ['module = %s'],
         'data': [module],
@@ -50,9 +43,6 @@ def get_outputs_types(module):
 
 
 def duplicate_output(output_id):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
-
     output_info, error = outputs.get_output_by_id({'output_id': output_id})
     if error is None:
         args = {
@@ -81,8 +71,6 @@ def duplicate_output(output_id):
 
 
 def update_output(output_id, args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
     _, error = outputs.get_output_by_id({'output_id': output_id})
 
     if error is None:
@@ -113,9 +101,6 @@ def update_output(output_id, args):
 
 
 def create_output(data):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
-
     _columns = {
         'output_type_id': data['output_type_id'],
         'output_label': data['output_label'],
@@ -165,9 +150,6 @@ def get_output_type_by_id(output_type_id):
 
 
 def delete_output(output_id):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
-
     output_info, error = outputs.get_output_by_id({'output_id': output_id})
     if error is None:
         res, error = outputs.update_output({'set': {'status': 'DEL'}, 'output_id': output_id})

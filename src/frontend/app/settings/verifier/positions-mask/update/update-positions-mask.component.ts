@@ -25,7 +25,7 @@ import {NotificationService} from "../../../../../services/notifications/notific
 import {SettingsService} from "../../../../../services/settings.service";
 import {PrivilegesService} from "../../../../../services/privileges.service";
 import {FormControl} from "@angular/forms";
-import {API_URL} from "../../../../env";
+import {environment} from  "../../../../env";
 import {catchError, finalize, map, startWith, tap} from "rxjs/operators";
 import {Observable, of} from "rxjs";
 import {marker} from "@biesbjerg/ngx-translate-extract-marker";
@@ -245,7 +245,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                 this.form['supplier_id'].control.setValue(element.name);
             }
         });
-        this.http.get(API_URL + '/ws/customFields/list', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/customFields/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.customFields) {
                     for (const field in data.customFields) {
@@ -298,11 +298,11 @@ export class UpdatePositionsMaskComponent implements OnInit {
     }
 
     async getPositionMask(): Promise<any> {
-        return await this.http.get(API_URL + '/ws/positions_masks/getById/' + this.positionMaskId, {headers: this.authService.headers}).toPromise();
+        return await this.http.get(environment['url'] + '/ws/positions_masks/getById/' + this.positionMaskId, {headers: this.authService.headers}).toPromise();
     }
 
     async retrieveSuppliers(): Promise<any> {
-        return await this.http.get(API_URL + '/ws/accounts/suppliers/list?order=name ASC', {headers: this.authService.headers}).toPromise();
+        return await this.http.get(environment['url'] + '/ws/accounts/suppliers/list?order=name ASC', {headers: this.authService.headers}).toPromise();
     }
 
     drawPositions() {
@@ -382,7 +382,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
         if (_array['regex']) {
             _array['regex'] = JSON.stringify(_array['regex']);
         }
-        this.http.put(API_URL + '/ws/positions_masks/update/' + this.positionMaskId, {'args': _array},{headers: this.authService.headers}).pipe(
+        this.http.put(environment['url'] + '/ws/positions_masks/update/' + this.positionMaskId, {'args': _array},{headers: this.authService.headers}).pipe(
             tap(() => {
                 this.historyService.addHistory('verifier', 'update_positions_masks', this.translate.instant('HISTORY-DESC.update-positions-masks', {positions_masks: _array['label']}));
                 this.notify.success(this.translate.instant('POSITIONS-MASKS.updated'));
@@ -410,7 +410,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                     const formData: FormData = new FormData();
                     if (data) formData.append(data[0].name, data[0]);
 
-                    this.http.post(API_URL + '/ws/positions_masks/getImageFromPdf/' + this.positionMaskId, formData, {headers: this.authService.headers}).pipe(
+                    this.http.post(environment['url'] + '/ws/positions_masks/getImageFromPdf/' + this.positionMaskId, formData, {headers: this.authService.headers}).pipe(
                         tap((data: any) => {
                             this.invoiceImageSrc = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + data.file);
                             this.invoiceImageName = data.filename;
@@ -457,7 +457,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
         const imageContainer = $('.image-container');
         imageContainer.addClass('pointer-events-none');
         imageContainer.addClass('cursor-auto');
-        this.http.put(API_URL + '/ws/positions_masks/update/' + this.positionMaskId,
+        this.http.put(environment['url'] + '/ws/positions_masks/update/' + this.positionMaskId,
             {'args': {'filename': '', 'positions': '{}', 'pages': '{}'}},
             {headers: this.authService.headers}).pipe(
             tap(() => {
@@ -619,7 +619,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
             y: position.y * this.ratio
         };
         if (!this.checkIfObjectIsEqual(position, this.positionsMask.positions[this.lastId])) {
-            this.http.put(API_URL + '/ws/positions_masks/updatePositions/' + this.positionMaskId,
+            this.http.put(environment['url'] + '/ws/positions_masks/updatePositions/' + this.positionMaskId,
                 {'args': {[this.lastId]: position}},
                 {headers: this.authService.headers}).pipe(
                 tap(() => {
@@ -637,7 +637,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
 
     savePage(page: any) {
         if (page !== this.positionsMask.pages[this.lastId]) {
-            this.http.put(API_URL + '/ws/positions_masks/updatePages/' + this.positionMaskId,
+            this.http.put(environment['url'] + '/ws/positions_masks/updatePages/' + this.positionMaskId,
                 {'args': {[this.lastId]: page}},
                 {headers: this.authService.headers}).pipe(
                 tap(() => {
@@ -653,7 +653,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
     }
 
     deletePosition(fieldId: any) {
-        this.http.put(API_URL + '/ws/positions_masks/' + this.positionMaskId + '/deletePosition',
+        this.http.put(environment['url'] + '/ws/positions_masks/' + this.positionMaskId + '/deletePosition',
             {'args': fieldId.trim()},
             {headers: this.authService.headers}).pipe(
             tap(() => {
@@ -669,7 +669,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
     }
 
     deletePage(fieldId: any) {
-        this.http.put(API_URL + '/ws/positions_masks/' + this.positionMaskId + '/deletePage',
+        this.http.put(environment['url'] + '/ws/positions_masks/' + this.positionMaskId + '/deletePage',
             {'args': fieldId.trim()},
             {headers: this.authService.headers}).pipe(
             tap(() => {
@@ -732,7 +732,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
     }
 
     async getThumb(filename:string) {
-        return await this.http.post(API_URL + '/ws/verifier/getThumb',{
+        return await this.http.post(environment['url'] + '/ws/verifier/getThumb',{
             'args': {
                 'type': 'positions_masks',
                 'filename': filename

@@ -15,15 +15,18 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
+from flask import request
 from flask_babel import gettext
-from src.backend.main import create_classes_from_current_config
+from src.backend.functions import retrieve_custom_from_url
+from src.backend.main import create_classes_from_custom_id
 
 
 def retrieve_suppliers(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
 
-    suppliers = _db.select({
+    suppliers = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['accounts_supplier'],
         'where': ['1 = %s'] if 'where' not in args else args['where'],
@@ -37,10 +40,11 @@ def retrieve_suppliers(args):
 
 
 def get_supplier_by_id(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
-    supplier = _db.select({
+    supplier = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['accounts_supplier'],
         'where': ['id = %s'],
@@ -56,10 +60,11 @@ def get_supplier_by_id(args):
 
 
 def get_address_by_id(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
-    address = _db.select({
+    address = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['addresses'],
         'where': ['id = %s'],
@@ -75,11 +80,12 @@ def get_address_by_id(args):
 
 
 def update_supplier(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
 
-    supplier = _db.update({
+    supplier = database.update({
         'table': ['accounts_supplier'],
         'set': args['set'],
         'where': ['id = %s'],
@@ -93,11 +99,12 @@ def update_supplier(args):
 
 
 def update_address(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
 
-    supplier = _db.update({
+    supplier = database.update({
         'table': ['addresses'],
         'set': args['set'],
         'where': ['id = %s'],
@@ -111,11 +118,12 @@ def update_address(args):
 
 
 def create_address(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
 
-    supplier = _db.insert({
+    supplier = database.insert({
         'table': 'addresses',
         'columns': args['columns'],
     })
@@ -127,11 +135,12 @@ def create_address(args):
 
 
 def create_supplier(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
 
-    supplier = _db.insert({
+    supplier = database.insert({
         'table': 'accounts_supplier',
         'columns': args['columns'],
     })
@@ -143,11 +152,12 @@ def create_supplier(args):
 
 
 def delete_supplier(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
 
-    supplier = _db.update({
+    supplier = database.update({
         'table': ['accounts_supplier'],
         'set': {'status': 'DEL'},
         'where': ['id = %s'],
@@ -161,10 +171,11 @@ def delete_supplier(args):
 
 
 def retrieve_customers(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
 
-    customers = _db.select({
+    customers = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['accounts_customer'],
         'where': ['1 = %s'] if 'where' not in args else args['where'],
@@ -178,10 +189,11 @@ def retrieve_customers(args):
 
 
 def get_customer_by_id(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
-    customer = _db.select({
+    customer = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['accounts_customer'],
         'where': ['id = %s'],
@@ -197,10 +209,11 @@ def get_customer_by_id(args):
 
 
 def get_accounting_plan_by_customer_id(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
-    accounting_plan = _db.select({
+    accounting_plan = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['accounting_plan'],
         'where': ['customer_id = %s'],
@@ -214,10 +227,11 @@ def get_accounting_plan_by_customer_id(args):
 
 
 def get_default_accounting_plan():
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
-    accounting_plan = _db.select({
+    accounting_plan = database.select({
         'select': ['*'],
         'table': ['accounting_plan'],
         'where': ['customer_id is NULL'],
@@ -229,11 +243,12 @@ def get_default_accounting_plan():
 
 
 def update_customer(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
 
-    customer = _db.update({
+    customer = database.update({
         'table': ['accounts_customer'],
         'set': args['set'],
         'where': ['id = %s'],
@@ -247,11 +262,12 @@ def update_customer(args):
 
 
 def create_customer(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
 
-    customer = _db.insert({
+    customer = database.insert({
         'table': 'accounts_customer',
         'columns': args['columns'],
     })
@@ -263,11 +279,12 @@ def create_customer(args):
 
 
 def delete_customer(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
 
-    customer = _db.update({
+    customer = database.update({
         'table': ['accounts_customer'],
         'set': {'status': 'DEL'},
         'where': ['id = %s'],
@@ -278,4 +295,3 @@ def delete_customer(args):
         error = gettext('DELETE_CUSTOMER_ERROR')
 
     return customer, error
-

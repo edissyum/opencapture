@@ -15,14 +15,17 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
+from flask import request
 from flask_babel import gettext
-from src.backend.main import create_classes_from_current_config
+from src.backend.functions import retrieve_custom_from_url
+from src.backend.main import create_classes_from_custom_id
 
 
 def get_outputs(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
-    outputs = _db.select({
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
+    outputs = database.select({
         'select': ["*"] if "select" not in args else args["select"],
         'table': ["outputs"],
         'where': args['where'],
@@ -36,9 +39,10 @@ def get_outputs(args):
 
 
 def get_outputs_types(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
-    outputs_types = _db.select({
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
+    outputs_types = database.select({
         'select': ["*"],
         'table': ["outputs_types"],
         'order_by': ["id ASC"],
@@ -50,10 +54,11 @@ def get_outputs_types(args):
 
 
 def get_output_by_id(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
-    output = _db.select({
+    output = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['outputs'],
         'where': ['id = %s'],
@@ -69,10 +74,11 @@ def get_output_by_id(args):
 
 
 def get_output_type_by_id(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
-    output = _db.select({
+    output = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['outputs_types'],
         'where': ['output_type_id = %s'],
@@ -88,11 +94,12 @@ def get_output_type_by_id(args):
 
 
 def update_output(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
 
-    output = _db.update({
+    output = database.update({
         'table': ['outputs'],
         'set': args['set'],
         'where': ['id = %s'],
@@ -106,11 +113,12 @@ def update_output(args):
 
 
 def create_output(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
 
-    output = _db.insert({
+    output = database.insert({
         'table': 'outputs',
         'columns': args['columns'],
     })
