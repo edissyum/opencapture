@@ -15,11 +15,10 @@
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
-from flask import Blueprint, jsonify, make_response, request
-
-from src.backend.functions import retrieve_custom_from_url
 from src.backend.import_controllers import auth, config
+from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
+from flask import Blueprint, jsonify, make_response, request
 
 bp = Blueprint('config', __name__,  url_prefix='/ws/')
 
@@ -105,6 +104,19 @@ def get_regex():
 def update_regex(_id):
     data = request.json['data']
     res = config.update_regex(data, _id)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('config/getLoginImage', methods=['GET'])
+def get_login_image():
+    res = config.get_login_image()
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('config/updateLoginimage', methods=['PUT'])
+def update_login_image():
+    image_content = request.json['args']['image_content']
+    res = config.update_login_image(image_content)
     return make_response(jsonify(res[0])), res[1]
 
 

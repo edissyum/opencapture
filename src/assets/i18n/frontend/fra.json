@@ -91,10 +91,13 @@
 		"yellow": "Jaune"
 	},
 	"CONFIGURATIONS": {
+		"authorized_extensions": "Extension autorisée : PNG",
 		"bool": "Booléen",
+		"change_image": "Changer l'image de l'application",
 		"configuration_updated": "Configuration mise à jour avec succès",
 		"float": "Nombre flottant",
 		"int": "Nombre entier",
+		"login_image_changed": "Image de la page de connexion modifié avec succès",
 		"search_config": "Chercher une configuration",
 		"string": "Chaîne de caractères",
 		"update": "Modifier la configuration",

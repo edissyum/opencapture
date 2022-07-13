@@ -310,7 +310,7 @@ class SeparatorQR:
         f["label"] = doctype_label
         f["qr_code_value"] = qr_code_value
         f["icon_loop"] = docservers['PROJECT_PATH'] + "/src/assets/imgs/Open-Capture_Splitter.png"
-        f["logo"] = docservers['PROJECT_PATH'] + "/src/assets/imgs/logo_opencapture.png"
+        f["logo"] = docservers['PROJECT_PATH'] + "/src/assets/imgs/login_image.png"
         f["company_logo"] = docservers['PROJECT_PATH'] + "/src/assets/imgs/logo_company.png"
 
         img = qrcode.make(qr_code_value)

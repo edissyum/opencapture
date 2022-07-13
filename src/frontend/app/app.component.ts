@@ -59,7 +59,7 @@ export class AppComponent implements OnInit {
             filter(event => event instanceof NavigationEnd),
             map(() => {
                 let child = this.activatedRoute.firstChild;
-                let childImage = 'assets/imgs/logo_opencapture.png';
+                let childImage = 'assets/imgs/login_image.png';
                 let childImageMobile = 'assets/imgs/Open-Capture_Verifier.svg';
                 if (child) {
                     while (child.firstChild) {

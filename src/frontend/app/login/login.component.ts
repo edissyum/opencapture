@@ -29,6 +29,7 @@ import {ConfigService} from "../../services/config.service";
 import {LocaleService} from "../../services/locale.service";
 import {UserService} from "../../services/user.service";
 import {HistoryService} from "../../services/history.service";
+import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
 
 @Component({
     selector: 'app-login',
@@ -38,6 +39,7 @@ import {HistoryService} from "../../services/history.service";
 export class LoginComponent implements OnInit {
     loginForm               : any;
     enableLoginMethodName   : any;
+    loginImage              : SafeUrl = '';
     loading                 : boolean = true;
     processLogin            : boolean = false;
     showPassword            : boolean = false;
@@ -47,6 +49,7 @@ export class LoginComponent implements OnInit {
     constructor(
         private router: Router,
         private http: HttpClient,
+        private sanitizer: DomSanitizer,
         private formBuilder: FormBuilder,
         private authService: AuthService,
         private userService: UserService,
@@ -67,13 +70,23 @@ export class LoginComponent implements OnInit {
             this.localeService.getCurrentLocale();
         }
 
-        this.http.get(environment['url'] + '/ws/config/getConfiguration/loginMessage', {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                if (data.configuration.length === 1) {
-                    this.subtitle = data.configuration[0].data.value;
-                }
+        this.http.get(environment['url'] + '/ws/config/getLoginImage', {headers: this.authService.headers}).pipe(
+            tap((b64Content: any) => {
+                this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + b64Content);
+                this.http.get(environment['url'] + '/ws/config/getConfiguration/loginMessage', {headers: this.authService.headers}).pipe(
+                    tap((data: any) => {
+                        if (data.configuration.length === 1) {
+                            this.subtitle = data.configuration[0].data.value;
+                        }
+                    }),
+                    finalize(() => this.loading = false),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
             }),
-            finalize(() => this.loading = false),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
@@ -99,7 +112,6 @@ export class LoginComponent implements OnInit {
     onSubmit() {
         const password = this.loginForm.get('password').value;
         const username = this.loginForm.get('username').value;
-        console.log(this.localeService);
         if (password && username) {
             this.processLogin = true;
             this.http.post(

@@ -85,7 +85,7 @@ done
 # Create custom symbolic link and folders
 ln -s "$defaultPath" "$defaultPath/$customId"
 
-mkdir -p $defaultPath/custom/$customId/{config,bin}/
+mkdir -p $defaultPath/custom/$customId/{config,bin,assets}/
 mkdir -p $defaultPath/custom/$customId/bin/{data,ldap,scripts}
 mkdir -p "$defaultPath/custom/$customId/bin/ldap/config"
 mkdir -p $defaultPath/custom/$customId/bin/data/{log,MailCollect}

@@ -91,10 +91,13 @@
 		"yellow": "Yellow"
 	},
 	"CONFIGURATIONS": {
+		"authorized_extensions": "Allowed extension : PNG",
 		"bool": "Boolean",
+		"change_image": "Change application image",
 		"configuration_updated": "Configuration updated successfully",
 		"float": "Float",
 		"int": "Integer",
+		"login_image_changed": "Login image changed successfully",
 		"search_config": "Search configuration",
 		"string": "String",
 		"update": "Update configuration",

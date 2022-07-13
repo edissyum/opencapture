@@ -32,6 +32,7 @@ import {of} from "rxjs";
 import {NotificationService} from "../../../../services/notifications/notifications.service";
 import {TranslateService} from "@ngx-translate/core";
 import {marker} from "@biesbjerg/ngx-translate-extract-marker";
+import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
 
 @Component({
     selector: 'app-configurations',
@@ -53,11 +54,13 @@ export class ConfigurationsComponent implements OnInit {
     total               : number        = 0;
     offset              : number        = 0;
     search              : string        = '';
+    loginImage          : SafeUrl       = '';
 
     constructor(
         public router: Router,
         private http: HttpClient,
         private route: ActivatedRoute,
+        private sanitizer: DomSanitizer,
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,
@@ -88,7 +91,50 @@ export class ConfigurationsComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
+
+        this.http.get(environment['url'] + '/ws/config/getLoginImage', {headers: this.authService.headers}).pipe(
+            tap((b64Content: any) => {
+                this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + b64Content);
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
         this.loadConfigurations();
+    }
+
+    onClick(logo: any) {
+        logo.click();
+    }
+
+    upload(fileInput: any) {
+        if (fileInput.target.files && fileInput.target.files[0]) {
+            this.loading = true;
+            const reader = new FileReader();
+            reader.readAsDataURL(fileInput.target.files[0]);
+            reader.onload = (value: any) => {
+                const args = {
+                    'image_content': value.target.result
+                };
+                this.http.put(environment['url'] + '/ws/config/updateLoginimage',{'args': args},
+                    {headers: this.authService.headers},
+                ).pipe(
+                    tap(() => {
+                        this.loginImage = this.sanitizer.bypassSecurityTrustUrl(args['image_content']);
+                        this.notify.success(this.translate.instant('CONFIGURATIONS.login_image_changed'));
+                    }),
+                    finalize(() => this.loading = false),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
+            };
+        }
     }
 
     loadConfigurations() {

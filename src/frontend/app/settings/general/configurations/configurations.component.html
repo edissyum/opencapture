@@ -91,6 +91,19 @@
             </div>
         </div>
         <div *ngIf="!loading" class="w-full">
+            <div class="text-center">
+                <h3>
+                    {{ "CONFIGURATIONS.change_image" | translate }}
+                </h3>
+                <div>
+                    <img class="shadow-md hover:shadow-2xl m-auto p-2 transition-shadow ease-in-out duration-500
+                         cursor-pointer" [src]="this.loginImage" alt="Login image" (click)="onClick(logo)">
+                    <input type="file" name="files[]" #logo (change)="upload($event)"
+                           accept="image/png" style="display: none;">
+                </div>
+                <mat-hint class="relative top-2">{{ "CONFIGURATIONS.authorized_extensions" | translate}}</mat-hint>
+            </div>
+            <mat-divider class="border-green-400 mt-4 mb-4 w-3/4 m-auto"></mat-divider>
             <app-hint [message]="'GLOBAL.dont_touch' | translate"></app-hint>
             <mat-table matSort [dataSource]="configurations" (matSortChange)="sortData($event)">
                 <ng-container matColumnDef="id">
