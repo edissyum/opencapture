@@ -408,6 +408,7 @@
 		"connection": "Connection",
 		"default": "Default authentication",
 		"enable_method": "Enable this login method",
+		"enabled": "enabled",
 		"end_ldap_setup": "You have now completed",
 		"first_name_attribute": "User first name attribute",
 		"host": "Host",
