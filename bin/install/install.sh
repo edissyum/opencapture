@@ -23,8 +23,6 @@ fi
 
 bold=$(tput bold)
 normal=$(tput sgr0)
-OS=$(lsb_release -si)
-VER=$(lsb_release -r)
 defaultPath=/var/www/html/opencaptureforinvoices/
 imageMagickPolicyFile=/etc/ImageMagick-6/policy.xml
 docserverPath=/var/docservers/
@@ -39,6 +37,56 @@ if [ -z "$user" ]; then
         exit
     fi
 fi
+
+####################
+# Check if custom name is set and doesn't exists already
+
+while getopts c: parameters
+do
+    case "${parameters}" in
+        c) customId=${OPTARG};;
+        *) customId=""
+    esac
+done
+
+if [ -z "$customId" ]; then
+    echo "##########################################################################"
+    echo "              Custom id is needed to run the installation"
+    echo "      Exemple of command line call : sudo ./update.sh -c edissyum"
+    echo "##########################################################################"
+    exit 2
+fi
+
+if [ -L "$defaultPath/$customId" ] && [ -e "$defaultPath/$customId" ]; then
+    echo "######################################################"
+    echo "      Custom id \"$customId\" already exists"
+    echo "######################################################"
+    exit 3
+fi
+
+customIniFile=$defaultPath/custom/custom.ini
+if [ ! -f "$customIniFile" ]; then
+    touch $customIniFile
+fi
+SECTIONS=$(crudini --get $defaultPath/custom/custom.ini | sed 's/:.*//')
+# shellcheck disable=SC2068
+for custom_name in ${SECTIONS[@]}; do # Do not double quote it
+    if [ "$custom_name" == "$customId" ]; then
+       echo "######################################################"
+       echo "      Custom id \"$customId\" already exists"
+       echo "######################################################"
+       exit 4
+    fi
+done
+
+####################
+# Create custom symbolic link and folder
+ln -s "$defaultPath" "$customId"
+mkdir -p "$defaultPath/custom/$customId/config/"
+echo "[$customId]" >> $customIniFile
+echo "path = $defaultPath/$customId" >> $customIniFile
+echo "" >> $customIniFile
+exit 5
 
 ####################
 # User choice
@@ -84,7 +132,7 @@ touch /etc/apache2/sites-available/opencapture.conf
 su -c "cat > /etc/apache2/sites-available/opencapture.conf << EOF
 <VirtualHost *:80>
     ServerName localhost
-    DocumentRoot $defaultPath/dist/
+    DocumentRoot $defaultPath/
     WSGIDaemonProcess opencapture user=$user group=$group threads=5
     WSGIScriptAlias /backend_oc /var/www/html/opencaptureforinvoices/wsgi.py
 
@@ -219,11 +267,13 @@ chown -R "$user":"$user" /tmp/OpenCaptureForInvoices
 ####################
 # Copy file from default one
 cp $defaultPath/instance/config.ini.default $defaultPath/instance/config.ini
-cp $defaultPath/bin/ldap/config/config.ini.default $defaultPath/bin/ldap/config/config.ini
-cp $defaultPath/instance/config/mail.ini.default $defaultPath/instance/config/mail.ini
-cp $defaultPath/instance/config/config_DEFAULT.ini.default $defaultPath/instance/config/config_DEFAULT.ini
+cp $defaultPath/bin/ldap/config/config.ini.default "$defaultPath/custom/$customId/bin/ldap/config/config.ini"
+cp $defaultPath/instance/config/mail.ini.default "$defaultPath/custom/$customId/config/mail.ini"
+cp $defaultPath/instance/config/config_DEFAULT.ini.default "$defaultPath/custom/$customId/config/config.ini"
 cp $defaultPath/instance/referencial/default_referencial_supplier.ods.default $defaultPath/instance/referencial/default_referencial_supplier.ods
 cp $defaultPath/instance/referencial/default_referencial_supplier_index.json.default $defaultPath/instance/referencial/default_referencial_supplier_index.json
+
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/config/config.ini"
 
 ####################
 # Setting up fs-watcher service (to replace incron)
@@ -267,51 +317,67 @@ secret=$(python3 -c 'import secrets; print(secrets.token_hex(16))')
 sed -i "s#§§SECRET§§#$secret#g" "$defaultPath"/src/backend/__init__.py
 
 ####################
+# Create default verifier input script (based on default input created in data_fr.sql)
+defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/verifier_inputs/default_input.sh"
+if ! test -f "$defaultScriptFile"; then
+    mkdir -p "$defaultPath/custom/$customId/bin/scripts/verifier_inputs/"
+    cp $defaultPath/bin/scripts/verifier_inputs/script_sample_dont_touch.sh $defaultScriptFile
+    sed -i "s#§§SCRIPT_NAME§§#default_input#g" $defaultScriptFile
+    sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultScriptFile
+    sed -i 's#"§§ARGUMENTS§§"#-input_id default_input#g' $defaultScriptFile
+    sed -i "s#§§CUSTOM_ID§§#$customId#g" $defaultScriptFile
+fi
+
+####################
+# Create default splitter input script (based on default input created in data_fr.sql)
+defaultScriptFile="$defaultPath/custom/$customId/bin/scripts/splitter_inputs/default_input.sh"
+if ! test -f "$defaultScriptFile"; then
+    mkdir -p "$defaultPath/custom/$customId/bin/scripts/splitter_inputs/"
+    cp $defaultPath/bin/scripts/splitter_inputs/script_sample_dont_touch.sh $defaultScriptFile
+    sed -i "s#§§SCRIPT_NAME§§#default_input#g" $defaultScriptFile
+    sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultScriptFile
+    sed -i 's#"§§ARGUMENTS§§"#-input_id default_input#g' $defaultScriptFile
+    sed -i "s#§§CUSTOM_ID§§#$customId#g" $defaultScriptFile
+fi
+
+####################
+# Create default MAIL script and config
+cp "$defaultPath/bin/scripts/launch_MAIL.sh.default" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/config/mail.ini"
+mkdir -p "$defaultPath/custom/$customId/bin/data/MailCollect/"
+
+####################
+# Create default LDAP script and config
+cp $defaultPath/bin/ldap/synchronization_ldap_script.sh.default "$defaultPath/custom/$customId/bin/ldap/synchronization_ldap_script.sh"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/ldap/synchronization_ldap_script.sh"
+
+####################
 # Fix the rights after root launch to avoid permissions issues
 chmod -R 775 $defaultPath
 chmod -R g+s $defaultPath
 chown -R "$user":"$group" $defaultPath
 
 ####################
-# Create default verifier input script (based on default input created in data_fr.sql)
-defaultScriptFile=$defaultPath/bin/scripts/verifier_inputs/default_input.sh
-if ! test -f "$defaultScriptFile"; then
-    cp $defaultPath/bin/scripts/verifier_inputs/script_sample_dont_touch.sh $defaultScriptFile
-    sed -i "s#§§SCRIPT_NAME§§#default_input#g" $defaultScriptFile
-    sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultScriptFile
-    sed -i 's#"§§ARGUMENTS§§"#-input_id default_input#g' $defaultScriptFile
-fi
-
-####################
-# Create default splitter input script (based on default input created in data_fr.sql)
-defaultScriptFile=$defaultPath/bin/scripts/splitter_inputs/default_input.sh
-if ! test -f "$defaultScriptFile"; then
-    cp $defaultPath/bin/scripts/splitter_inputs/script_sample_dont_touch.sh $defaultScriptFile
-    sed -i "s#§§SCRIPT_NAME§§#default_input#g" $defaultScriptFile
-    sed -i "s#§§OC_PATH§§#$defaultPath#g" $defaultScriptFile
-    sed -i 's#"§§ARGUMENTS§§"#-input_id default_input#g' $defaultScriptFile
-fi
-
-####################
 # Makes scripts executable
-chmod u+x $defaultPath/bin/scripts/*.sh
-chown -R "$user":"$user" $defaultPath/bin/scripts/*.sh
-chmod u+x $defaultPath/bin/scripts/verifier_inputs/*.sh
-chown -R "$user":"$user" $defaultPath/bin/scripts/verifier_inputs/*.sh
-chmod u+x $defaultPath/bin/scripts/splitter_inputs/*.sh
-chown -R "$user":"$user" $defaultPath/bin/scripts/splitter_inputs/*.sh
+chmod u+x "$defaultPath/bin/scripts/*.sh"
+chown -R "$user":"$user" "$defaultPath/bin/scripts/*.sh"
+chmod u+x "$defaultPath/custom/$customId/bin/scripts/verifier_inputs/*.sh"
+chown -R "$user":"$user" "$defaultPath/custom/$customId/bin/scripts/verifier_inputs/*.sh"
+chmod u+x "$defaultPath/custom/$customId/bin/scripts/splitter_inputs/*.sh"
+chown -R "$user":"$user" "$defaultPath/custom/$customId/bin/scripts/splitter_inputs/*.sh"
 
 ####################
 # Create docservers
-mkdir -p $docserverPath/OpenCapture/{verifier,splitter}
-mkdir -p $docserverPath/OpenCapture/verifier/images/{original_pdf,full,thumbs,positions_masks}
-mkdir -p $docserverPath/OpenCapture/splitter/{original_pdf,batches,separated_pdf,error}
+mkdir -p "$docserverPath/OpenCapture/$customId/{verifier,splitter}"
+mkdir -p "$docserverPath/OpenCapture/$customId/verifier/images/{original_pdf,full,thumbs,positions_masks}"
+mkdir -p "$docserverPath/OpenCapture/$customId/splitter/{original_pdf,batches,separated_pdf,error}"
 chmod -R 775 $docserverPath/OpenCapture/
 chmod -R g+s $docserverPath/OpenCapture/
 chown -R "$user":"$group" $docserverPath/OpenCapture/
 
 ####################
 # Create default export and input XML and PDF folder
-mkdir -p /var/share/{entrant,export}/{verifier,splitter}/
+mkdir -p "/var/share/$customId/{entrant,export}/{verifier,splitter}/"
 chmod -R 775 /var/share/
 chown -R "$user":"$group" /var/share/

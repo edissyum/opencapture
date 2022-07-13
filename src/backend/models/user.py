@@ -17,16 +17,19 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 import json
+from flask import request
 from gettext import gettext
 from werkzeug.security import generate_password_hash
-from src.backend.main import create_classes_from_current_config
+from src.backend.main import create_classes_from_custom_id
+from src.backend.functions import retrieve_custom_from_url
 
 
 def create_user(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
-    user = _db.select({
+    user = database.select({
         'select': ['id'],
         'table': ['users'],
         'where': ['username = %s'],
@@ -41,7 +44,7 @@ def create_user(args):
         error = gettext('USER') + ' ' + args['username'] + ' ' + gettext('ALREADY_REGISTERED')
 
     if error is None:
-        user_id = _db.insert({
+        user_id = database.insert({
             'table': 'users',
             'columns': {
                 'username': args['username'],
@@ -52,7 +55,7 @@ def create_user(args):
             }
         })
 
-        _db.insert({
+        database.insert({
             'table': 'users_customers',
             'columns': {
                 'user_id': user_id,
@@ -66,10 +69,11 @@ def create_user(args):
 
 
 def get_users(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
-    users = _db.select({
+    users = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['users'],
         'where': ['status NOT IN (%s)', "role <> 1"] if 'where' not in args else args['where'],
@@ -83,10 +87,11 @@ def get_users(args):
 
 
 def get_users_full(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
-    users = _db.select({
+    users = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['users'],
         'where': ['status NOT IN (%s)'],
@@ -100,10 +105,11 @@ def get_users_full(args):
 
 
 def get_user_by_id(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
-    user = _db.select({
+    user = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['users', 'roles'],
         'left_join': ['users.role = roles.id'],
@@ -120,10 +126,11 @@ def get_user_by_id(args):
 
 
 def get_user_by_username(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
-    user = _db.select({
+    user = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['users', 'roles'],
         'left_join': ['users.role = roles.id'],
@@ -140,10 +147,11 @@ def get_user_by_username(args):
 
 
 def get_customers_by_user_id(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
-    customers = _db.select({
+    customers = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['users_customers'],
         'where': ['user_id = %s'],
@@ -158,11 +166,12 @@ def get_customers_by_user_id(args):
 
 
 def update_user(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
 
-    user = _db.update({
+    user = database.update({
         'table': ['users'],
         'set': args['set'],
         'where': ['id = %s'],
@@ -176,11 +185,12 @@ def update_user(args):
 
 
 def update_customers_by_user_id(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
 
-    user = _db.update({
+    user = database.update({
         'table': ['users_customers'],
         'set': args['set'],
         'where': ['user_id = %s'],

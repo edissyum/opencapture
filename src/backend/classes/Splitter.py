@@ -19,7 +19,6 @@ import os
 import random
 import re
 from xml.dom import minidom
-import xml.etree.cElementTree as ET
 from unidecode import unidecode
 
 from src.backend.classes.Files import Files
@@ -220,8 +219,9 @@ class Splitter:
                 """
                 if document:
                     if mask_value in document['metadata']:
-                        mask_result.append((document['metadata'][mask_value] if document['metadata'][mask_value] else '')
-                                           .replace(' ', separator))
+                        mask_result.append(
+                            (document['metadata'][mask_value] if document['metadata'][mask_value] else '')
+                            .replace(' ', separator))
                     elif mask_value == 'doctype':
                         mask_result.append(document['documentTypeKey'].replace(' ', separator))
                 else:
@@ -242,61 +242,65 @@ class Splitter:
         return mask_result
 
     @staticmethod
-    def export_xml(fields_param, documents, metadata, output_dir, filename, now):
+    def export_xml(fields_param, documents, metadata, parameters, filename, now):
         year = str(now.year)
         month = str(now.month).zfill(2)
         day = str(now.day).zfill(2)
         hour = str(now.hour).zfill(2)
         minute = str(now.minute).zfill(2)
         second = str(now.second).zfill(2)
-
-        root = ET.Element("OPENCAPTURESPLITTER")
-        bundle_tag = ET.SubElement(root, "BUNDLE")
-        ET.SubElement(bundle_tag, "BUNDLEINDEX").text = "1"
-        ET.SubElement(bundle_tag, "FILENAME").text = filename
-        ET.SubElement(bundle_tag,
-                      "DATE").text = day + "-" + month + "-" + year + " " + hour + ":" + minute + ":" + second
-        ET.SubElement(bundle_tag, "BUNDLE_NUMBER").text = filename.split('.')[0]
-        ET.SubElement(bundle_tag, "NBDOC").text = str(len(documents))
-        ET.SubElement(bundle_tag, "USER_ID_OC").text = metadata['userName']
-        ET.SubElement(bundle_tag, "USER_NAME_OC").text = metadata['userLastName']
-        ET.SubElement(bundle_tag, "USER_SURNAME_OC").text = metadata['userFirstName']
-
-        header_tag = ET.SubElement(root, "HEADER")
+        date = day + "-" + month + "-" + year + " " + hour + ":" + minute + ":" + second
+        doc_loop_item_template = re.search(r'<!-- %BEGIN-DOCUMENT-LOOP -->(.*?)<!-- %END-DOCUMENT-LOOP -->',
+                                           parameters['xml_template'], re.DOTALL)
+        parameters['xml_template'] = parameters['xml_template'].replace('#date', date)
+        parameters['xml_template'] = parameters['xml_template'].replace('#identifier', str(metadata['id']))
+        parameters['xml_template'] = parameters['xml_template'].replace('#documents_count', str(len(documents)))
+        parameters['xml_template'] = parameters['xml_template'].replace('#user_first_name',
+                                                                        str(metadata['userFirstName']))
+        parameters['xml_template'] = parameters['xml_template'].replace('#user_last_name',
+                                                                        str(metadata['userLastName']))
+        parameters['xml_template'] = parameters['xml_template'].replace('#random',
+                                                                        str(random.randint(0, 99999)).zfill(5))
         """
-            Add batch metadata ignoring search values
+            Add batch metadata
         """
-
         for key in metadata:
-            field_param = [field for field in fields_param['batch_metadata'] if field['label_short'] == key]
-            xml_tag = field_param[0]['xmlTag'] if (field_param and 'xmlTag' in field_param[0]) else None
-            if xml_tag:
-                ET.SubElement(header_tag, xml_tag).text = str(metadata[key])
+            if f'#{key}' in parameters['xml_template']:
+                parameters['xml_template'] = parameters['xml_template'].replace(f'#{key}', str(metadata[key]))
 
-        documents_tag = ET.SubElement(root, "Documents")
-        for index, document in enumerate(documents):
-            document_tag = ET.SubElement(documents_tag, "Document")
-            file_tag = ET.SubElement(document_tag, "File")
-            ET.SubElement(file_tag, "FILEINDEX").text = str(index + 1)
-            ET.SubElement(file_tag, "FILENAME").text = document['fileName'] if 'fileName' in document else ''
-            ET.SubElement(file_tag, "FORMAT").text = "PDF"
+        """
+            Add document metadata
+        """
+        documents_tags = ""
+        if doc_loop_item_template:
+            for index, document in enumerate(documents):
+                if document['id'] not in metadata['doc_except_from_zip'] and metadata['zip_filename']:
+                    continue
+                doc_loop_item = doc_loop_item_template.group(1)
+                doc_loop_item = doc_loop_item.replace('#date', date)
+                doc_loop_item = doc_loop_item.replace('#filename', document['fileName'] if 'fileName' in document else '')
+                doc_loop_item = doc_loop_item.replace('#documents_count', str(len(documents)))
+                doc_loop_item = doc_loop_item.replace('#document_identifier', str(document['id']))
+                doc_loop_item = doc_loop_item.replace('#doctype', str(document['documentTypeKey']))
+                doc_loop_item = doc_loop_item.replace('#user_last_name', str(metadata['userLastName']))
+                doc_loop_item = doc_loop_item.replace('#random', str(random.randint(0, 99999)).zfill(5))
+                doc_loop_item = doc_loop_item.replace('#user_first_name', str(metadata['userFirstName']))
+                for key in document['metadata']:
+                    if f'#{key}' in parameters['xml_template']:
+                        doc_loop_item = doc_loop_item.replace(f'#{key}', str(document['metadata'][key]))
+                documents_tags += doc_loop_item
 
-            fields_tag = ET.SubElement(document_tag, "FIELDS")
-            ET.SubElement(fields_tag, "DOCTYPE").text = document['documentTypeKey']
+            parameters['xml_template'] = parameters['xml_template'].replace(doc_loop_item_template.group(1), documents_tags)
 
-            for key in document['metadata']:
-                """
-                    Add document metadata files with no xml tag
-                """
-                field_param = [field for field in fields_param['document_metadata'] if field['label_short'] == key]
-                xml_tag = field_param[0]['xmlTag'] if (field_param and 'xmlTag' in field_param[0]) else None
-                if xml_tag:
-                    ET.SubElement(fields_tag, xml_tag).text = str(document['metadata'][key])
-        xml_file_path = output_dir + filename
+        xml_file_path = parameters['folder_out'] + filename
+
+        """
+            Check XML Syntax and write file result 
+        """
         try:
-            xml_str = minidom.parseString(ET.tostring(root)).toprettyxml(indent="    ")
             with open(xml_file_path, "w", encoding="utf-8") as f:
-                f.write(xml_str)
+                minidom.parseString(parameters['xml_template'])
+                f.write(parameters['xml_template'])
         except Exception as e:
             return False, str(e)
 

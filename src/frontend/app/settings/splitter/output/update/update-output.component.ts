@@ -26,7 +26,7 @@ import {TranslateService} from "@ngx-translate/core";
 import {NotificationService} from "../../../../../services/notifications/notifications.service";
 import {SettingsService} from "../../../../../services/settings.service";
 import {PrivilegesService} from "../../../../../services/privileges.service";
-import {API_URL} from "../../../../env";
+import {environment} from  "../../../../env";
 import {catchError, finalize, map, startWith, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {marker} from "@biesbjerg/ngx-translate-extract-marker";
@@ -100,15 +100,55 @@ export class SplitterUpdateOutputComponent implements OnInit {
     availableFields     : any           = [
         {
             "labelShort"    : 'HEADER.id',
-            'label'         : 'HEADER.label'
-        },
-        {
-            "labelShort"    : 'doctype',
-            'label'         : 'SETTINGS.document_type'
+            'label'         : marker('HEADER.label')
         },
         {
             "labelShort"    : 'date',
-            'label'         : 'TYPES.date'
+            'label'         : marker('TYPES.date')
+        },
+        {
+            "labelShort"    : 'batch_identifier',
+            'label'         : marker('SPLITTER.batch_identifier')
+        },
+        {
+            "labelShort"    : 'document_identifier',
+            'label'         : marker('SPLITTER.document_identifier')
+        },
+        {
+            "labelShort"    : 'validate_by_firstname',
+            'label'         : marker('OUTPUT.validate_by_lastname')
+        },
+        {
+            "labelShort"    : 'validate_by_firstname',
+            'label'         : marker('OUTPUT.validate_by_firstname')
+        },
+        {
+            "labelShort"    : 'doctype',
+            'label'         : marker('SETTINGS.document_type')
+        },
+        {
+            "labelShort"    : 'random',
+            'label'         : marker('OUTPUT.random')
+        },
+        {
+            "labelShort"    : 'filename',
+            'label'         : marker('OUTPUT.filename')
+        },
+        {
+            "labelShort"    : 'documents_count',
+            'label'         : marker('OUTPUT.documents_count')
+        },
+        {
+            "labelShort"    : 'fileIndex',
+            'label'         : marker('OUTPUT.file_index')
+        },
+        {
+            "labelShort"    : 'format',
+            'label'         : marker('OUTPUT.format')
+        },
+        {
+            "labelShort"    : 'zip_filename',
+            'label'         : marker('OUTPUT.zip_filename')
         },
     ];
     testConnectionMapping : any         = {
@@ -133,7 +173,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
         this.serviceSettings.init();
         this.outputId = this.route.snapshot.params['id'];
 
-        this.http.get(API_URL + '/ws/outputs/getById/' + this.outputId, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/outputs/getById/' + this.outputId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 /**
                  * Set the output type and output label
@@ -152,7 +192,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
                         });
                     }
                 }
-                this.http.get(API_URL + '/ws/outputs/getOutputsTypes?module=splitter', {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/outputs/getOutputsTypes?module=splitter', {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
                         this.outputsTypes = data.outputs_types;
                         /**
@@ -218,7 +258,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
         /**
          * Get custom fields
          **/
-        this.http.get(API_URL + '/ws/customFields/list', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/customFields/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 let newField;
                 data.customFields.forEach((field: {
@@ -316,7 +356,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
     /**** CMIS Webservices call ****/
     testCmisConnection() {
         const args = this.getCmisConnectionInfo();
-        this.http.post(API_URL + '/ws/splitter/cmis/testConnection', {'args': args}, {headers: this.authService.headers},
+        this.http.post(environment['url'] + '/ws/splitter/cmis/testConnection', {'args': args}, {headers: this.authService.headers},
         ).pipe(
             tap((data: any) => {
                 const status = data.status;
@@ -349,7 +389,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
     /**** Maarch Webservices call ****/
     testMaarchConnection() {
         const args = this.getMaarchConnectionInfo();
-        this.http.post(API_URL + '/ws/maarch/testConnection', {'args': args}, {headers: this.authService.headers},
+        this.http.post(environment['url'] + '/ws/maarch/testConnection', {'args': args}, {headers: this.authService.headers},
         ).pipe(
             tap((data: any) => {
                 const status = data.status;
@@ -381,7 +421,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
     getUsersFromMaarch(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
             const args = this.getMaarchConnectionInfo();
-            this.http.post(API_URL + '/ws/maarch/getUsers', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
+            this.http.post(environment['url'] + '/ws/maarch/getUsers', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.users) {
                     const data = _return.users;
                     const users = [];
@@ -401,7 +441,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
     getEntitiesFromMaarch(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
             const args = this.getMaarchConnectionInfo();
-            this.http.post(API_URL + '/ws/maarch/getEntities', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
+            this.http.post(environment['url'] + '/ws/maarch/getEntities', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.entities) {
                     const data = _return.entities;
                     const entities = [];
@@ -421,7 +461,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
     getDoctypesFromMaarch(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
             const args = this.getMaarchConnectionInfo();
-            this.http.post(API_URL + '/ws/maarch/getDoctypes', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
+            this.http.post(environment['url'] + '/ws/maarch/getDoctypes', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.doctypes) {
                     const data = _return.doctypes;
                     const doctypes = [];
@@ -441,7 +481,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
     getPrioritiesFromMaarch(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
             const args = this.getMaarchConnectionInfo();
-            this.http.post(API_URL + '/ws/maarch/getPriorities', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
+            this.http.post(environment['url'] + '/ws/maarch/getPriorities', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.priorities) {
                     const data = _return.priorities;
                     const priorities = [];
@@ -461,7 +501,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
     getStatusesFromMaarch(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
             const args = this.getMaarchConnectionInfo();
-            this.http.post(API_URL + '/ws/maarch/getStatuses', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
+            this.http.post(environment['url'] + '/ws/maarch/getStatuses', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.statuses) {
                     const data = _return.statuses;
                     const statuses = [];
@@ -481,7 +521,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
     getIndexingModelsFromMaarch(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
             const args = this.getMaarchConnectionInfo();
-            this.http.post(API_URL + '/ws/maarch/getIndexingModels', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
+            this.http.post(environment['url'] + '/ws/maarch/getIndexingModels', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.indexingModels) {
                     const data = _return.indexingModels;
                     const indexingModels = [];
@@ -538,7 +578,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
             _array[element.id] = element.control.value;
         });
 
-        this.http.put(API_URL + '/ws/outputs/update/' + this.outputId, {'args': _array},{headers: this.authService.headers}).pipe(
+        this.http.put(environment['url'] + '/ws/outputs/update/' + this.outputId, {'args': _array},{headers: this.authService.headers}).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('OUTPUT.output_updated'));
             }),

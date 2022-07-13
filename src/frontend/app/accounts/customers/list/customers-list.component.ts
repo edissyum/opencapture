@@ -28,7 +28,7 @@ import {SettingsService} from "../../../../services/settings.service";
 import {LastUrlService} from "../../../../services/last-url.service";
 import {PrivilegesService} from "../../../../services/privileges.service";
 import {LocalStorageService} from "../../../../services/local-storage.service";
-import {API_URL} from "../../../env";
+import {environment} from  "../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {ConfirmDialogComponent} from "../../../../services/confirm-dialog/confirm-dialog.component";
@@ -79,7 +79,7 @@ export class CustomersListComponent implements OnInit {
         }else
             this.localeStorageService.remove('customersPageIndex');
 
-        this.http.get(API_URL + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.allCustomers = data.customers;
             }),
@@ -93,7 +93,7 @@ export class CustomersListComponent implements OnInit {
     }
 
     loadCustomers() {
-        this.http.get(API_URL + '/ws/accounts/customers/list?limit=' + this.pageSize + '&offset=' + this.offset + "&search=" + this.search, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/accounts/customers/list?limit=' + this.pageSize + '&offset=' + this.offset + "&search=" + this.search, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.customers = data.customers;
                 if (this.customers.length !== 0) {
@@ -143,7 +143,7 @@ export class CustomersListComponent implements OnInit {
 
     deleteCustomer(customerId: number) {
         if (customerId !== undefined) {
-            this.http.delete(API_URL + '/ws/accounts/customers/delete/' + customerId, {headers: this.authService.headers}).pipe(
+            this.http.delete(environment['url'] + '/ws/accounts/customers/delete/' + customerId, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadCustomers();
                     this.notify.success(this.translate.instant('ACCOUNTS.customer_deleted'));

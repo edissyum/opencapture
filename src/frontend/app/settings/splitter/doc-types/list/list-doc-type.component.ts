@@ -26,7 +26,7 @@ import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {HttpClient} from "@angular/common/http";
 import {AuthService} from "../../../../../services/auth.service";
 import {NotificationService} from "../../../../../services/notifications/notifications.service";
-import {API_URL} from "../../../../env";
+import {environment} from  "../../../../env";
 import {catchError, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {ConfirmDialogComponent} from "../../../../../services/confirm-dialog/confirm-dialog.component";
@@ -186,7 +186,7 @@ export class ListDocTypeComponent implements OnInit {
   }
 
   updateDoctype(newDocType: any) {
-    this.http.post(API_URL + '/ws/doctypes/update', newDocType, {headers: this.authService.headers}).pipe(
+    this.http.post(environment['url'] + '/ws/doctypes/update', newDocType, {headers: this.authService.headers}).pipe(
         tap((data: any) => {
           this.notify.success(this.translate.instant('DOCTYPE.doctype_edited'));
           if (this.selectedFormId)

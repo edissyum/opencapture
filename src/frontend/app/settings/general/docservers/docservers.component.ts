@@ -26,7 +26,7 @@ import {LocalStorageService} from "../../../../services/local-storage.service";
 import {LastUrlService} from "../../../../services/last-url.service";
 import {Sort} from "@angular/material/sort";
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from "@angular/material/form-field";
-import {API_URL} from "../../../env";
+import {environment} from  "../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {NotificationService} from "../../../../services/notifications/notifications.service";
@@ -78,7 +78,7 @@ export class DocserversComponent implements OnInit {
         }else
             this.localeStorageService.remove('docserversPageIndex');
 
-        this.http.get(API_URL + '/ws/config/getDocservers', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/config/getDocservers', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.allDocservers = data.docservers;
             }),
@@ -92,7 +92,7 @@ export class DocserversComponent implements OnInit {
     }
 
     loadDocservers() {
-        this.http.get(API_URL + '/ws/config/getDocservers?limit=' + this.pageSize + '&offset=' + this.offset + "&search=" + this.search, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/config/getDocservers?limit=' + this.pageSize + '&offset=' + this.offset + "&search=" + this.search, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.docservers[0]) this.total = data.docservers[0].total;
                 else if (this.pageIndex !== 0) {
@@ -117,7 +117,7 @@ export class DocserversComponent implements OnInit {
         this.docservers.forEach((element: any) => {
             if (element.id === id) {
                 element.path = value;
-                this.http.put(API_URL + '/ws/config/updateDocserver/' + element.id, {'data': element}, {headers: this.authService.headers}).pipe(
+                this.http.put(environment['url'] + '/ws/config/updateDocserver/' + element.id, {'data': element}, {headers: this.authService.headers}).pipe(
                     tap(() => {
                         this.notify.success(this.translate.instant('DOCSERVERS.docserver_updated'));
                         element.updateMode = false;

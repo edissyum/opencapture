@@ -17,13 +17,9 @@
 
 from flask_babel import gettext
 from src.backend.import_models import roles
-from src.backend.main import create_classes_from_current_config
 
 
 def get_roles(args):
-    _vars = create_classes_from_current_config()
-    _config = _vars[0]
-
     _roles = roles.get_roles(args)
 
     response = {
@@ -33,9 +29,7 @@ def get_roles(args):
 
 
 def update_role(role_id, data):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
-    role_info, error = roles.get_role_by_id({'role_id': role_id})
+    _, error = roles.get_role_by_id({'role_id': role_id})
 
     if error is None:
         _set = {
@@ -44,7 +38,7 @@ def update_role(role_id, data):
             'enabled': data['enabled']
         }
 
-        res, error = roles.update_role({'set': _set, 'role_id': role_id})
+        _, error = roles.update_role({'set': _set, 'role_id': role_id})
 
         if error is None:
             return '', 200
@@ -63,9 +57,6 @@ def update_role(role_id, data):
 
 
 def create_role(data):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
-
     _columns = {
         'label': data['label'],
         'label_short': data['label_short'],
@@ -88,16 +79,14 @@ def create_role(data):
 
 
 def update_role_privilege(role_id, privileges):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
-    role_info, error = roles.get_role_by_id({'role_id': role_id})
+    _, error = roles.get_role_by_id({'role_id': role_id})
 
     if error is None:
         _set = {
             'privileges_id': '{"data": "' + str(privileges) + '"}',
         }
 
-        res, error = roles.update_role_privileges({'set': _set, 'role_id': role_id})
+        _, error = roles.update_role_privileges({'set': _set, 'role_id': role_id})
 
         if error is None:
             return '', 200
@@ -129,12 +118,9 @@ def get_role_by_id(role_id):
 
 
 def delete_role(role_id):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
-
-    role_info, error = roles.get_role_by_id({'role_id': role_id})
+    _, error = roles.get_role_by_id({'role_id': role_id})
     if error is None:
-        res, error = roles.update_role({'set': {'status': 'DEL'}, 'role_id': role_id})
+        _, error = roles.update_role({'set': {'status': 'DEL'}, 'role_id': role_id})
         if error is None:
             return '', 200
         else:
@@ -152,12 +138,9 @@ def delete_role(role_id):
 
 
 def disable_role(role_id):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
-
-    role_info, error = roles.get_role_by_id({'role_id': role_id})
+    _, error = roles.get_role_by_id({'role_id': role_id})
     if error is None:
-        res, error = roles.update_role({'set': {'enabled': False}, 'role_id': role_id})
+        _, error = roles.update_role({'set': {'enabled': False}, 'role_id': role_id})
         if error is None:
             return '', 200
         else:
@@ -175,12 +158,9 @@ def disable_role(role_id):
 
 
 def enable_role(role_id):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
-
-    role_info, error = roles.get_role_by_id({'role_id': role_id})
+    _, error = roles.get_role_by_id({'role_id': role_id})
     if error is None:
-        res, error = roles.update_role({'set': {'enabled': True}, 'role_id': role_id})
+        _, error = roles.update_role({'set': {'enabled': True}, 'role_id': role_id})
         if error is None:
             return '', 200
         else:

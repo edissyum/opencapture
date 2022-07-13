@@ -21,24 +21,25 @@ import time
 import json
 import tempfile
 from kuyruk import Kuyruk
-from src.backend.main import timer, check_file, create_classes
-from src.backend.import_classes import _Files, _Config, _Splitter, _SeparatorQR, _Log
+from src.backend import retrieve_config_from_custom_id
+from src.backend.import_classes import _Files, _Splitter, _SeparatorQR, _Log
+from src.backend.main import timer, check_file, create_classes_from_custom_id
 
 
-@Kuyruk().task(queue='splitter')
+OCforInvoices = Kuyruk()
+
+
+@OCforInvoices.task(queue='splitter')
 def launch(args):
     start = time.time()
 
-    # Init all the necessary classes
-    config_name = _Config(args['config'])
-    config_file = config_name.cfg['PROFILE']['cfgpath'] + '/config_' + config_name.cfg['PROFILE']['id'] + '.ini'
+    if not retrieve_config_from_custom_id(args['custom_id']):
+        sys.exit('Custom config file couldn\'t be found')
 
-    if not os.path.exists(config_file):
-        sys.exit('Config file couldn\'t be found')
-
-    config, regex, log, _, database, _, smtp, docservers, configurations = create_classes(config_file)
+    database, config, regex, files, _, log, _, _, smtp, docservers, configurations = create_classes_from_custom_id(args['custom_id'])
     tmp_folder = tempfile.mkdtemp(dir=docservers['SPLITTER_BATCHES']) + '/'
-    filename = tempfile.NamedTemporaryFile(dir=tmp_folder).name
+    with tempfile.NamedTemporaryFile(dir=tmp_folder) as tmp_file:
+        filename = tmp_file.name
     files = _Files(filename, log, docservers, configurations, regex)
 
     remove_blank_pages = False

@@ -20,10 +20,10 @@ import sys
 import argparse
 import tempfile
 import datetime
-from src.backend import app
+from src.backend import app, retrieve_config_from_custom_id
 from src.backend.import_classes import _Log, _Mail, _Config
 from src.backend.main_splitter import launch as launch_splitter
-from src.backend.main import launch as launch_verifier, create_classes
+from src.backend.main import launch as launch_verifier, create_classes_from_custom_id
 
 
 def str2bool(value):
@@ -56,20 +56,18 @@ def check_folders(folder_crawl, folder_dest=False):
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-c", "--config", required=True, help="path to config.ini")
+ap.add_argument("-c", "--custom_id", required=True, help="Identifier of the custom")
 ap.add_argument("-cm", "--config_mail", required=True, help="path to mail.ini")
 ap.add_argument('-p', "--process", required=True, default='MAIL_1')
 args = vars(ap.parse_args())
 
-if not os.path.exists(args['config']) or not os.path.exists(args['config_mail']):
-    sys.exit('config file couldn\'t be found')
+if not retrieve_config_from_custom_id(args['custom_id']):
+    sys.exit('Custom config file couldn\'t be found')
 
 process = args['process']
 print('Start process : ' + process)
 
-config_name = _Config(args['config'])
-config_file = config_name.cfg['PROFILE']['cfgpath'] + '/config_' + config_name.cfg['PROFILE']['id'] + '.ini'
-config, regex, log, ocr, database, spreadsheet, smtp, _, _ = create_classes(config_file)
+database, config, regex, files, ocr, log, _, spreadsheet, smtp, docservers, configurations = create_classes_from_custom_id(args['custom_id'])
 
 config_mail = _Config(args['config_mail'])
 cfg = config_mail.cfg[process]

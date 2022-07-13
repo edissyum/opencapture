@@ -16,7 +16,7 @@
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
 import { Component, OnInit } from '@angular/core';
-import {API_URL} from "../env";
+import {environment} from  "../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {HttpClient} from "@angular/common/http";
@@ -79,10 +79,10 @@ export class StatisticsComponent {
     ) {}
 
     getFormsProcessDocument(cpt: number) {
-        this.http.get(API_URL + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 data.forms.forEach((form: any) => {
-                    this.http.post(API_URL + '/ws/verifier/invoices/list',
+                    this.http.post(environment['url'] + '/ws/verifier/invoices/list',
                         {'status': 'END', 'form_id': form.id}, {headers: this.authService.headers})
                     .pipe(
                         tap((data: any) => {
@@ -110,9 +110,9 @@ export class StatisticsComponent {
     }
 
     getUsersProcessDocument(cpt: number) {
-        this.http.get(API_URL + '/ws/users/list_full', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/users/list_full', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                this.http.get(API_URL + '/ws/history/list?submodule=invoice_validated', {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/history/list?submodule=invoice_validated', {headers: this.authService.headers}).pipe(
                     tap((submodules: any) => {
                         data.users.forEach((user: any) => {
                             let historyCpt = 0;

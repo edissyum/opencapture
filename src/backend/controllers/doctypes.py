@@ -16,10 +16,13 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
+
+from flask import request
+from flask_babel import gettext
 from src.backend.import_models import doctypes
 from src.backend.import_classes import _SeparatorQR
-from src.backend.main import create_classes_from_current_config
-from flask_babel import gettext
+from src.backend.functions import retrieve_custom_from_url
+from src.backend.main import create_classes_from_custom_id
 
 
 def add_doctype(args):
@@ -111,12 +114,14 @@ def update(args):
 
 
 def generate_separator(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     _cfg = _vars[1]
-    _docservers = _vars[9]
+    docservers = _vars[9]
     _db_config = {}
-    _config = _db.select({
+
+    _config = database.select({
         'select': ['*'],
         'table': ['configurations'],
     })

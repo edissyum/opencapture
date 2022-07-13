@@ -16,8 +16,9 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 from src.backend.import_controllers import auth, history
+from src.backend.functions import retrieve_custom_from_url
+from src.backend.main import create_classes_from_custom_id
 from flask import Blueprint, request, make_response, jsonify
-from src.backend.main import create_classes_from_current_config
 
 bp = Blueprint('history', __name__, url_prefix='/ws/')
 
@@ -33,7 +34,8 @@ def add_history():
 @bp.route('history/list', methods=['GET'])
 @auth.token_required
 def get_history():
-    _vars = create_classes_from_current_config()
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     _configurations = _vars[10]
 
     if _configurations['locale'] == 'fra':

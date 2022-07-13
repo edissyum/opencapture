@@ -22,7 +22,7 @@ import {UserService} from "../../services/user.service";
 import {FormBuilder, FormControl} from "@angular/forms";
 import {TranslateService} from "@ngx-translate/core";
 import {LocaleService} from "../../services/locale.service";
-import {API_URL} from "../env";
+import {environment} from  "../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
@@ -104,7 +104,7 @@ export class UserProfileComponent implements OnInit {
             }
         }
 
-        this.http.get(API_URL + '/ws/roles/list', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/roles/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 data.roles.forEach((element: any) => {
                     if (element.editable) {
@@ -123,7 +123,7 @@ export class UserProfileComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.get(API_URL + '/ws/users/getById/' + this.userId, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/users/getById/' + this.userId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.profile = data;
                 for (const field in this.profile) {
@@ -167,7 +167,7 @@ export class UserProfileComponent implements OnInit {
             });
 
             this.http.put(
-                API_URL + '/ws/users/update/' + this.userId,{'args': user},
+                environment['url'] + '/ws/users/update/' + this.userId,{'args': user},
                 {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {

@@ -25,7 +25,7 @@ import {TranslateService} from "@ngx-translate/core";
 import {NotificationService} from "../../../../../services/notifications/notifications.service";
 import {SettingsService} from "../../../../../services/settings.service";
 import {PrivilegesService} from "../../../../../services/privileges.service";
-import {API_URL} from "../../../../env";
+import {environment} from  "../../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {LastUrlService} from "../../../../../services/last-url.service";
@@ -92,7 +92,7 @@ export class SplitterFormListComponent implements OnInit {
 
     loadForms(): void {
         this.loading = true;
-        this.http.get(API_URL + '/ws/forms/list?module=splitter&limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/forms/list?module=splitter&limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.forms[0]) this.total = data.forms[0].total;
                 this.forms = data.forms;
@@ -189,7 +189,7 @@ export class SplitterFormListComponent implements OnInit {
 
     deleteForm(formId: number) {
         if (formId !== undefined) {
-            this.http.delete(API_URL + '/ws/forms/delete/' + formId, {headers: this.authService.headers}).pipe(
+            this.http.delete(environment['url'] + '/ws/forms/delete/' + formId, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadForms();
                     this.notify.success(this.translate.instant('FORMS.form_deleted'));
@@ -205,7 +205,7 @@ export class SplitterFormListComponent implements OnInit {
 
     duplicateForm(formId: number) {
         if (formId !== undefined) {
-            this.http.post(API_URL + '/ws/forms/duplicate/' + formId, {}, {headers: this.authService.headers}).pipe(
+            this.http.post(environment['url'] + '/ws/forms/duplicate/' + formId, {}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadForms();
                     this.notify.success(this.translate.instant('FORMS.form_duplicated'));
@@ -221,7 +221,7 @@ export class SplitterFormListComponent implements OnInit {
 
     disableForm(formId: number) {
         if (formId !== undefined) {
-            this.http.put(API_URL + '/ws/forms/disable/' + formId, null, {headers: this.authService.headers}).pipe(
+            this.http.put(environment['url'] + '/ws/forms/disable/' + formId, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadForms();
                     this.notify.success(this.translate.instant('FORMS.form_disabled'));
@@ -237,7 +237,7 @@ export class SplitterFormListComponent implements OnInit {
 
     enableForm(formId: number) {
         if (formId !== undefined) {
-            this.http.put(API_URL + '/ws/forms/enable/' + formId, null, {headers: this.authService.headers}).pipe(
+            this.http.put(environment['url'] + '/ws/forms/enable/' + formId, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadForms();
                     this.notify.success(this.translate.instant('FORMS.form_enabled'));

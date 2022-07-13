@@ -26,7 +26,7 @@ import { HttpClient } from "@angular/common/http";
 import { NotificationService } from "../services/notifications/notifications.service";
 import {LocaleService} from "../services/locale.service";
 import {LocalStorageService} from "../services/local-storage.service";
-import {API_URL} from "./env";
+import {environment} from  "./env";
 import {of} from "rxjs";
 
 @Component({
@@ -88,7 +88,7 @@ export class AppComponent implements OnInit {
             this.image = data[1];
             this.imageMobile = data[2];
             if (this.localeService.currentLang === undefined) {
-                this.http.get(API_URL + '/ws/i18n/getCurrentLang').pipe(
+                this.http.get(environment['url'] + '/ws/i18n/getCurrentLang').pipe(
                     tap((data: any) => {
                         this.translate.use(data.lang);
                         this.translate.get(ttl).subscribe((data:any)=> {

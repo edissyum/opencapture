@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {API_URL} from "../app/env";
+import {environment} from  "../app/env";
 import {HttpClient} from "@angular/common/http";
 import {NotificationService} from "./notifications/notifications.service";
 import {AuthService} from "./auth.service";
@@ -19,7 +19,7 @@ export class ConfigService {
 
     readConfig() {
         return new Promise((resolve) => {
-            this.http.get(API_URL + '/ws/config/readConfig', {headers: this.authService.headers}).pipe(
+            this.http.get(environment['url'] + '/ws/config/readConfig', {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
                     this.setConfig(data.config);
                     resolve(true);

@@ -18,7 +18,7 @@
 import {MatPaginatorIntl} from "@angular/material/paginator";
 import {Injectable} from '@angular/core';
 import {TranslateService} from "@ngx-translate/core";
-import {API_URL} from "./env";
+import {environment} from  "./env";
 import {catchError, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {NotificationService} from "../services/notifications/notifications.service";
@@ -39,7 +39,7 @@ export class CustomMatPaginatorIntl extends MatPaginatorIntl {
 
     getAndInitTranslations() {
         if (this.localeService.currentLang === undefined) {
-            this.http.get(API_URL + '/ws/i18n/getCurrentLang').pipe(
+            this.http.get(environment['url'] + '/ws/i18n/getCurrentLang').pipe(
                 tap((data: any) => {
                     this.translate.use(data.lang);
                     this.translate.get('PAGINATOR.items_per_page').subscribe((translated: string) => {

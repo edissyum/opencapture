@@ -26,7 +26,7 @@ import {NotificationService} from "../../../../../services/notifications/notific
 import {MatDialog} from "@angular/material/dialog";
 import {LastUrlService} from "../../../../../services/last-url.service";
 import {LocalStorageService} from "../../../../../services/local-storage.service";
-import {API_URL} from "../../../../env";
+import {environment} from  "../../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {Sort} from "@angular/material/sort";
@@ -87,7 +87,7 @@ export class RolesListComponent implements OnInit {
     }
 
     loadRoles(): void {
-        this.http.get(API_URL + '/ws/roles/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/roles/list?limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.roles[0]) this.total = data.roles[0].total;
                 else if (this.pageIndex !== 0) {
@@ -176,7 +176,7 @@ export class RolesListComponent implements OnInit {
 
     deleteRole(roleId: number) {
         if (roleId !== undefined) {
-            this.http.delete(API_URL + '/ws/roles/delete/' + roleId, {headers: this.authService.headers}).pipe(
+            this.http.delete(environment['url'] + '/ws/roles/delete/' + roleId, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadRoles();
                     this.notify.success(this.translate.instant('ROLE.role_deleted'));
@@ -192,7 +192,7 @@ export class RolesListComponent implements OnInit {
 
     disableRole(roleId: number) {
         if (roleId !== undefined) {
-            this.http.put(API_URL + '/ws/roles/disable/' + roleId, null, {headers: this.authService.headers}).pipe(
+            this.http.put(environment['url'] + '/ws/roles/disable/' + roleId, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadRoles();
                 }),
@@ -207,7 +207,7 @@ export class RolesListComponent implements OnInit {
 
     enableRole(roleId: number) {
         if (roleId !== undefined) {
-            this.http.put(API_URL + '/ws/roles/enable/' + roleId, null, {headers: this.authService.headers}).pipe(
+            this.http.put(environment['url'] + '/ws/roles/enable/' + roleId, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadRoles();
                 }),

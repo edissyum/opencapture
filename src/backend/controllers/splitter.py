@@ -15,33 +15,34 @@
 
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
-import base64
+import re
 import json
-import os.path
-import shutil
-import datetime
-
+import base64
 import PyPDF2
+import shutil
+import os.path
+import datetime
 import pandas as pd
+from flask import request
 from flask import current_app
 from flask_babel import gettext
 import worker_splitter_from_python
 from src.backend.import_models import splitter, doctypes
 from src.backend.import_controllers import forms, outputs
-from src.backend.main import create_classes_from_current_config
+from src.backend.functions import retrieve_custom_from_url
+from src.backend.main import create_classes_from_custom_id
 from src.backend.import_classes import _Files, _Splitter, _CMIS, _MaarchWebServices
 
 
 def handle_uploaded_file(files, input_id):
-    _vars = create_classes_from_current_config()
-    _config = _vars[1]
+    custom_id = retrieve_custom_from_url(request)
     path = current_app.config['UPLOAD_FOLDER_SPLITTER']
     for file in files:
         f = files[file]
         filename = _Files.save_uploaded_file(f, path)
         worker_splitter_from_python.main({
             'file': filename,
-            'config': current_app.config['CONFIG_FILE'],
+            'custom_id': custom_id,
             'input_id': input_id
         })
 
@@ -49,13 +50,14 @@ def handle_uploaded_file(files, input_id):
 
 
 def launch_referential_update(form_data):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
-    _log = _vars[5]
-    _conf = _vars[10]
-    _docservers = _vars[9]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
+    log = _vars[5]
+    conf = _vars[10]
+    docservers = _vars[9]
 
-    available_methods = _docservers['SPLITTER_METADATA_PATH'] + "/metadata_methods.json"
+    available_methods = docservers['SPLITTER_METADATA_PATH'] + "/metadata_methods.json"
     call_on_splitter_view = False
     try:
         with open(available_methods, encoding='UTF-8') as json_file:
@@ -64,14 +66,14 @@ def launch_referential_update(form_data):
                 if method['id'] == form_data['metadata_method']:
                     call_on_splitter_view = method['callOnSplitterView']
                     args = {
-                        'log': _log,
-                        'database': _db,
-                        'config': _conf,
-                        'docservers': _docservers,
+                        'log': log,
+                        'database': database,
+                        'config': conf,
+                        'docservers': docservers,
                         'form_id': form_data['form_id'],
                         'method_data': method
                     }
-                    metadata_load = _Splitter.import_method_from_script(_docservers['SPLITTER_METADATA_PATH'],
+                    metadata_load = _Splitter.import_method_from_script(docservers['SPLITTER_METADATA_PATH'],
                                                                         method['script'],
                                                                         method['method'])
                     metadata_load(args)
@@ -155,14 +157,12 @@ def change_status(args):
 
 
 def retrieve_documents(batch_id):
-    _vars = create_classes_from_current_config()
-    _cfg = _vars[1]
     res_documents = []
 
     args = {
         'id': batch_id
     }
-    documents, error = splitter.get_batch_documents(args)
+    documents, _ = splitter.get_batch_documents(args)
     if documents:
         for document in documents:
             document_pages = []
@@ -172,9 +172,9 @@ def retrieve_documents(batch_id):
             args = {
                 'id': document['id']
             }
-            pages, error = splitter.get_documents_pages(args)
+            pages, _ = splitter.get_documents_pages(args)
             if pages:
-                for page_index, page in enumerate(pages):
+                for page_index, _ in enumerate(pages):
                     with open(pages[page_index]['thumbnail'], 'rb') as image_file:
                         encoded_string = base64.b64encode(image_file.read())
                         pages[page_index]['thumbnail'] = encoded_string.decode("utf-8")
@@ -242,7 +242,8 @@ def get_output_parameters(parameters):
 
 
 def export_maarch(auth_data, file_path, args, batch):
-    _vars = create_classes_from_current_config()
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     host = auth_data['host']
     login = auth_data['login']
     password = auth_data['password']
@@ -293,18 +294,46 @@ def export_maarch(auth_data, file_path, args, batch):
 
 
 def export_pdf(batch, documents, parameters, pages, now, compress_type):
-    _vars = create_classes_from_current_config()
-    _cfg = _vars[1]
-    _docservers = _vars[9]
-    filename = _docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch[0]['file_path']
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    docservers = _vars[9]
+    filename = docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch[0]['file_path']
+    pdf_filepaths = []
+    doc_except_from_zip = []
+    except_from_zip_doctype = ''
+    zip_file_path = ''
+    zip_filename = ''
+    """
+    Add PDF file to zip archive if enabled
+    """
+    if parameters['add_to_zip']:
+        except_from_zip_doctype = re.search(r'\[Except=(.*?)\]', parameters['add_to_zip']) \
+            if 'Except' in parameters['add_to_zip'] else ''
+        mask_args = {
+            'mask': parameters['add_to_zip'].split('[Except=')[0],
+            'separator': parameters['separator'],
+            'extension': 'zip'
+        }
+        zip_filename = _Splitter.get_mask_result(None, metadata, now, mask_args)
 
     for index, document in enumerate(documents):
+        """
+            Add PDF file names using masks
+        """
+
         mask_args = {
             'mask': parameters['filename'] if 'filename' in parameters else _Files.get_random_string(10),
             'separator': parameters['separator'],
             'extension': parameters['extension']
         }
         documents[index]['fileName'] = _Splitter.get_mask_result(document, document['metadata'], now, mask_args)
+        if not except_from_zip_doctype or except_from_zip_doctype.group(1) not in documents[index]['documentTypeKey']:
+            pdf_filepaths.append({
+                'input_path': parameters['folder_out'] + '/' + documents[index]['fileName'],
+                'path_in_zip': zip_filename.split('.zip')[0] + '/' + documents[index]['fileName']
+            })
+        else:
+            doc_except_from_zip.append(documents[index]['id'])
     export_pdf_res = _Files.export_pdf(pages, documents, filename, parameters['folder_out'], compress_type, 1)
     if not export_pdf_res[0]:
         response = {
@@ -312,7 +341,12 @@ def export_pdf(batch, documents, parameters, pages, now, compress_type):
             "message": export_pdf_res[1]
         }
         return response, 400
-    return {'paths': export_pdf_res}, 200
+
+    if parameters['add_to_zip']:
+        zip_file_path = parameters['folder_out'] + '/' + zip_filename
+        _Files.zip_files(pdf_filepaths, zip_file_path, True)
+
+    return {'paths': export_pdf_res, 'doc_except_from_zip': doc_except_from_zip, 'zip_filename': zip_filename}, 200
 
 
 def export_xml(fields_param, documents, parameters, metadata, now):
@@ -322,7 +356,7 @@ def export_xml(fields_param, documents, parameters, metadata, now):
         'extension': parameters['extension']
     }
     file_name = _Splitter.get_mask_result(None, metadata, now, mask_args)
-    res_xml = _Splitter.export_xml(fields_param, documents, metadata, parameters['folder_out'], file_name, now)
+    res_xml = _Splitter.export_xml(fields_param, documents, metadata, parameters, file_name, now)
     if not res_xml[0]:
         response = {
             "errors": gettext('EXPORT_XML_ERROR'),
@@ -333,8 +367,6 @@ def export_xml(fields_param, documents, parameters, metadata, now):
 
 
 def save_infos(args):
-    _vars = create_classes_from_current_config()
-    _cfg = _vars[1]
     new_documents = []
 
     res = splitter.update_batch({
@@ -430,7 +462,7 @@ def save_infos(args):
     for deleted_pages_id in args['deleted_pages_ids']:
         res = splitter.update_page({
             'page_id': deleted_pages_id,
-            'status': 'DEL',
+            'status': 'NEW',
         })[0]
         if not res:
             response = {
@@ -457,10 +489,10 @@ def test_cmis_connection(args):
 
 def validate(args):
     now = _Files.get_now_date()
-    _vars = create_classes_from_current_config()
-    _cfg = _vars[1]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     _log = _vars[5]
-    _docservers = _vars[9]
+    docservers = _vars[9]
 
     save_response = save_infos({
         'documents': args['documents'],
@@ -495,12 +527,22 @@ def validate(args):
                                                 output[0]['compress_type'])
                     if res_export_pdf[1] != 200:
                         return res_export_pdf
+                    args['batchMetadata']['zip_filename'] = res_export_pdf[0]['zip_filename']
+                    args['batchMetadata']['doc_except_from_zip'] = res_export_pdf[0]['doc_except_from_zip']
+
+                """
+                    Export XML file if required by output
+                """
+
                 if output[0]['output_type_id'] in ['export_xml']:
                     form_fields_param = forms.get_form_fields_by_form_id(batch[0]['form_id'])[0]['fields']
                     res_export_xml = export_xml(form_fields_param, args['documents'], parameters, args['batchMetadata'], now)
                     if res_export_xml[1] != 200:
                         return res_export_xml
 
+                """
+                    Export to CMIS
+                """
                 if output[0]['output_type_id'] in ['export_cmis']:
                     cmis_auth = get_output_parameters(output[0]['data']['options']['auth'])
                     cmis_params = get_output_parameters(output[0]['data']['options']['parameters'])
@@ -509,9 +551,12 @@ def validate(args):
                                  cmis_auth['password'],
                                  cmis_auth['folder'])
 
+                    """
+                        Export pdf for Alfresco
+                    """
                     pdf_export_parameters = {
                         'extension': 'pdf',
-                        'folder_out': _docservers['TMP_PATH'],
+                        'folder_out': docservers['TMP_PATH'],
                         'separator': cmis_params['separator'],
                         'filename': cmis_params['pdf_filename'],
                     }
@@ -530,11 +575,14 @@ def validate(args):
                             }
                             return response, 500
 
+                    """
+                        Export xml for Alfresco
+                    """
                     xml_export_parameters = {
                         'separator': cmis_params['separator'],
                         'filename': cmis_params['xml_filename'],
                         'extension': 'xml',
-                        'folder_out': _docservers['TMP_PATH'],
+                        'folder_out': docservers['TMP_PATH'],
                     }
                     form_fields_param = forms.get_form_fields_by_form_id(batch[0]['form_id'])[0]['fields']
                     res_export_xml = export_xml(form_fields_param, args['documents'], xml_export_parameters, args['batchMetadata'], now)
@@ -548,6 +596,9 @@ def validate(args):
                         }
                         return response, 500
 
+                """
+                    Export to Maarch
+                """
                 if output[0]['output_type_id'] in ['export_maarch']:
                     cmis_params = get_output_parameters(output[0]['data']['options']['parameters'])
                     maarch_auth = get_output_parameters(output[0]['data']['options']['auth'])
@@ -574,6 +625,9 @@ def validate(args):
                         if res_export_maarch[1] != 200:
                             return res_export_maarch
 
+                """
+                    Change status to END
+                """
                 splitter.change_status({
                     'id': args['batchMetadata']['id'],
                     'status': 'END'
@@ -582,18 +636,20 @@ def validate(args):
 
 
 def get_split_methods():
-    _vars = create_classes_from_current_config()
-    _docservers = _vars[9]
-    split_methods = _Splitter.get_split_methods(_docservers)
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    docservers = _vars[9]
+    split_methods = _Splitter.get_split_method(docservers)
     if len(split_methods) > 0:
         return split_methods, 200
     return split_methods, 401
 
 
 def get_metadata_methods(form_method=False):
-    _vars = create_classes_from_current_config()
-    _docservers = _vars[9]
-    metadata_methods = _Splitter.get_metadata_methods(_docservers, form_method)
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    docservers = _vars[9]
+    metadata_methods = _Splitter.get_metadata_methods(docservers, form_method)
     if len(metadata_methods) > 0:
         return metadata_methods, 200
     return metadata_methods, 401
@@ -616,15 +672,14 @@ def get_totals(status):
 
 
 def merge_batches(parent_id, batches):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
-    _config = _vars[1]
-    _docservers = _vars[9]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    docservers = _vars[9]
 
     parent_info = splitter.get_batch_by_id({'id': parent_id})[0]
-    parent_filename = _docservers['SPLITTER_ORIGINAL_PDF'] + '/' + parent_info['file_path']
+    parent_filename = docservers['SPLITTER_ORIGINAL_PDF'] + '/' + parent_info['file_path']
     parent_batch_pages = int(parent_info['page_number'])
-    batch_folder = _docservers['SPLITTER_BATCHES'] + '/' +  parent_info['batch_folder']
+    batch_folder = docservers['SPLITTER_BATCHES'] + '/' +  parent_info['batch_folder']
     parent_document_id = splitter.get_documents({'id': parent_id})[0][0]['id']
     parent_max_split_index = splitter.get_documents_max_split_index({'id': parent_id})[0][0]['split_index']
     parent_max_source_page = splitter.get_max_source_page({'id': parent_document_id})[0][0]['source_page']
@@ -639,7 +694,7 @@ def merge_batches(parent_id, batches):
         batch_info = splitter.get_batch_by_id({'id': batch})[0]
         parent_batch_pages += batch_info['page_number']
         batches_info.append(batch_info)
-        pdf = PyPDF2.PdfFileReader(_docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch_info['file_path'])
+        pdf = PyPDF2.PdfFileReader(docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch_info['file_path'])
         for page in range(pdf.numPages):
             merged_pdf.addPage(pdf.getPage(page))
 

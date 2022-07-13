@@ -159,11 +159,11 @@
                                     <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputsTypesForm[selectedOutputType]['parameters']) }}</mat-error>
                                     <mat-hint *ngIf="field.hint">{{ field.hint }}</mat-hint>
                                 </mat-form-field>
-                                <mat-form-field *ngIf="(field.type === 'textarea') && !field.webservice">
+                                <mat-form-field *ngIf="(field.type === 'textarea') && !field.webservice" class="col-span-4">
                                     <mat-label>{{ field.label | translate }}</mat-label>
-                                    <textarea cdkTextareaAutosize cdkAutosizeMinRows="1"  matInput [value]="field.control.value"
+                                    <textarea matInput [value]="field.control.value"
                                               [formControl]="field.control" [type]="field.type" [placeholder]="field.placeholder"
-                                              [required]="field.required"></textarea>
+                                              [required]="field.required"  rows="16" spellcheck="false"></textarea>
                                     <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id, outputsTypesForm[selectedOutputType]['parameters']) }}</mat-error>
                                     <mat-hint *ngIf="field.hint">{{ field.hint }}</mat-hint>
                                 </mat-form-field>

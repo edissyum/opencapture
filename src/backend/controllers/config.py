@@ -17,15 +17,11 @@
 
 import requests
 import subprocess
-from flask import current_app, Blueprint
+from flask import current_app
 from src.backend.import_models import config
-from src.backend.main import create_classes_from_current_config
-
-bp = Blueprint('dashboard', __name__)
 
 
 def change_locale_in_config(lang):
-    _vars = create_classes_from_current_config()
     languages = current_app.config['LANGUAGES']
 
     language = {'label': 'Francais', 'lang_code': 'fra'}
@@ -129,12 +125,12 @@ def update_configuration(args, configuration_id):
     return response, 401
 
 
-def update_regex(args, id):
-    _, error = config.retrieve_regex_by_id({'id': id})
+def update_regex(args, regex_id):
+    _, error = config.retrieve_regex_by_id({'id': regex_id})
 
     if error is None:
         args = {
-            'id': id,
+            'id': regex_id,
             'data': {
                 'label': args['label'],
                 'content': args['content'],

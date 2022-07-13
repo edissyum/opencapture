@@ -15,14 +15,17 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
+from flask import request
 from flask_babel import gettext
-from src.backend.main import create_classes_from_current_config
+from src.backend.functions import retrieve_custom_from_url
+from src.backend.main import create_classes_from_custom_id
 
 
 def get_inputs(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
-    _inputs = _db.select({
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
+    _inputs = database.select({
         'select': ["*"] if "select" not in args else args["select"],
         'table': ["inputs"],
         'where': args['where'],
@@ -36,10 +39,11 @@ def get_inputs(args):
 
 
 def get_input_by_id(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
-    _input = _db.select({
+    _input = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['inputs'],
         'where': ['id = %s'],
@@ -55,10 +59,11 @@ def get_input_by_id(args):
 
 
 def get_input_by_form_id(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
-    _input = _db.select({
+    _input = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['inputs'],
         'where': ['default_form_id = %s', 'status <> %s'],
@@ -69,11 +74,12 @@ def get_input_by_form_id(args):
 
 
 def update_input(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
 
-    _input = _db.update({
+    _input = database.update({
         'table': ['inputs'],
         'set': args['set'],
         'where': ['id = %s'],
@@ -87,11 +93,12 @@ def update_input(args):
 
 
 def create_input(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
 
-    _input = _db.insert({
+    _input = database.insert({
         'table': 'inputs',
         'columns': args['columns'],
     })

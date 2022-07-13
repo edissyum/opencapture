@@ -37,7 +37,7 @@ then
 
     mv "$filepath" "$tmpFilepath"
 
-    python3 "$OCPath"/launch_worker_splitter.py -c "$OCPath"/instance/config.ini -f "$tmpFilepath"/"$filename" "§§ARGUMENTS§§"
+    python3 "$OCPath"/launch_worker_splitter.py --custom_id "§§CUSTOM_ID§§" -f "$tmpFilepath"/"$filename" "§§ARGUMENTS§§"
 
     rm -f $PID
 elif test -f "$filepath" && test "$ext" != 'application/pdf; charset=binary';

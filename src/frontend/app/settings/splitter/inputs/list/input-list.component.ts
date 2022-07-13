@@ -28,7 +28,7 @@ import {SettingsService} from "../../../../../services/settings.service";
 import {LastUrlService} from "../../../../../services/last-url.service";
 import {PrivilegesService} from "../../../../../services/privileges.service";
 import {LocalStorageService} from "../../../../../services/local-storage.service";
-import {API_URL} from "../../../../env";
+import {environment} from  "../../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {ConfirmDialogComponent} from "../../../../../services/confirm-dialog/confirm-dialog.component";
@@ -79,7 +79,7 @@ export class SplitterInputListComponent implements OnInit {
     }
 
     loadInputs() {
-        this.http.get(API_URL + '/ws/inputs/list?module=splitter&limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/inputs/list?module=splitter&limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.inputs[0]) this.total = data.inputs[0].total;
                 this.inputs = data.inputs;
@@ -122,7 +122,7 @@ export class SplitterInputListComponent implements OnInit {
 
     deleteInput(inputId: number) {
         if (inputId !== undefined) {
-            this.http.delete(API_URL + '/ws/inputs/delete/' + inputId, {headers: this.authService.headers}).pipe(
+            this.http.delete(environment['url'] + '/ws/inputs/delete/' + inputId, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadInputs();
                     this.notify.success(this.translate.instant('INPUT.input_deleted'));
@@ -158,7 +158,7 @@ export class SplitterInputListComponent implements OnInit {
 
     duplicateInput(inputId: number) {
         if (inputId !== undefined) {
-            this.http.post(API_URL + '/ws/inputs/duplicate/' + inputId, {}, {headers: this.authService.headers}).pipe(
+            this.http.post(environment['url'] + '/ws/inputs/duplicate/' + inputId, {}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadInputs();
                     this.notify.success(this.translate.instant('INPUT.input_duplicated'));

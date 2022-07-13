@@ -28,8 +28,7 @@ scriptName="launch_$script.sh"
 scriptName=${scriptName:0:31}${spaces:0:$((31-${#scriptName}))}
 
 OCPath="/var/www/html/opencaptureforinvoices/"
-config_file="$OCPath"/instance/config.ini
-config_mail_file="$OCPath"/instance/config/mail.ini
+config_mail_file="$OCPath"/custom/§§CUSTOM_ID§§/config/mail.ini
 logFile="$OCPath"/bin/data/log/OCForInvoices.log
 PID=/tmp/securite-$script-$$.pid
 
@@ -43,7 +42,7 @@ then
     if [ "$process" != '[GLOBAL]' ];
     then
       process_name="${process//[][]/}"
-      python3 "$OCPath"/launch_worker_mail.py -c "$config_file" -cm "$config_mail_file" --process "$process_name"
+      python3 "$OCPath"/launch_worker_mail.py -c "§§CUSTOM_ID§§" -cm "$config_mail_file" --process "$process_name"
     fi
   done < <(grep -o '^\[[^][]*]' "$config_mail_file")
 

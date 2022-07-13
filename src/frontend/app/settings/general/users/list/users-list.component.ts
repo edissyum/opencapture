@@ -24,7 +24,7 @@ import { AuthService } from "../../../../../services/auth.service";
 import { NotificationService } from "../../../../../services/notifications/notifications.service";
 import { TranslateService } from "@ngx-translate/core";
 import { catchError, finalize, tap } from "rxjs/operators";
-import { API_URL } from "../../../../env";
+import {environment} from  "../../../../env";
 import { of } from "rxjs";
 import { ConfirmDialogComponent } from "../../../../../services/confirm-dialog/confirm-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
@@ -87,10 +87,10 @@ export class UsersListComponent implements OnInit {
         }else
             this.localeStorageService.remove('usersPageIndex');
 
-        this.http.get(API_URL + '/ws/users/list', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/users/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.allUsers = data.users;
-                this.http.get(API_URL + '/ws/roles/list', {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/roles/list', {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
                         this.roles = data.roles;
                         this.loadUsers();
@@ -125,7 +125,7 @@ export class UsersListComponent implements OnInit {
     }
 
     loadUsers(): void {
-        this.http.get(API_URL + '/ws/users/list?limit=' + this.pageSize + '&offset=' + this.offset + "&search=" + this.search, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/users/list?limit=' + this.pageSize + '&offset=' + this.offset + "&search=" + this.search, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.users[0]) this.total = data.users[0].total;
                 else if (this.pageIndex !== 0) {
@@ -214,7 +214,7 @@ export class UsersListComponent implements OnInit {
 
     deleteUser(userId: number) {
         if (userId !== undefined) {
-            this.http.delete(API_URL + '/ws/users/delete/' + userId, {headers: this.authService.headers}).pipe(
+            this.http.delete(environment['url'] + '/ws/users/delete/' + userId, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadUsers();
                     this.notify.success(this.translate.instant('USER.user_deleted'));
@@ -230,7 +230,7 @@ export class UsersListComponent implements OnInit {
 
     disableUser(userId: number) {
         if (userId !== undefined) {
-            this.http.put(API_URL + '/ws/users/disable/' + userId, null, {headers: this.authService.headers}).pipe(
+            this.http.put(environment['url'] + '/ws/users/disable/' + userId, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadUsers();
                 }),
@@ -245,7 +245,7 @@ export class UsersListComponent implements OnInit {
 
     enableUser(userId: number) {
         if (userId !== undefined) {
-            this.http.put(API_URL + '/ws/users/enable/' + userId, null, {headers: this.authService.headers}).pipe(
+            this.http.put(environment['url'] + '/ws/users/enable/' + userId, null, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadUsers();
                 }),

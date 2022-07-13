@@ -16,8 +16,10 @@
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
 from flask import Blueprint, jsonify, make_response, request
+
+from src.backend.functions import retrieve_custom_from_url
 from src.backend.import_controllers import auth, config
-from src.backend.main import create_classes_from_current_config
+from src.backend.main import create_classes_from_custom_id
 
 bp = Blueprint('config', __name__,  url_prefix='/ws/')
 
@@ -25,7 +27,8 @@ bp = Blueprint('config', __name__,  url_prefix='/ws/')
 @bp.route('config/readConfig', methods=['GET'])
 @auth.token_required
 def read_config():
-    _vars = create_classes_from_current_config()
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     return make_response(jsonify({'config': _vars[1].cfg})), 200
 
 
@@ -45,6 +48,12 @@ def get_configurations():
             "LOWER(data ->> 'description') LIKE '%%" + request.args['search'].lower() + "%%'"
         )
     res = config.retrieve_configurations(args)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('config/getConfiguration/<string:config_label>', methods=['GET'])
+def get_configuration_by_label(config_label):
+    res = config.retrieve_configuration_by_label(config_label)
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -70,7 +79,8 @@ def get_docservers():
 @bp.route('config/getRegex', methods=['GET'])
 @auth.token_required
 def get_regex():
-    _vars = create_classes_from_current_config()
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     _configurations = _vars[10]
 
     args = {

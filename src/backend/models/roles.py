@@ -15,14 +15,17 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
+from flask import request
 from flask_babel import gettext
-from src.backend.main import create_classes_from_current_config
+from src.backend.functions import retrieve_custom_from_url
+from src.backend.main import create_classes_from_custom_id
 
 
 def get_roles(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
-    roles = _db.select({
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
+    roles = database.select({
         'select': ["*"] if "select" not in args else args["select"],
         'table': ["roles"],
         'where': ["status NOT IN (%s)", "editable <> %s"],
@@ -36,10 +39,11 @@ def get_roles(args):
 
 
 def get_role_by_id(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
-    role = _db.select({
+    role = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['roles'],
         'where': ['id = %s', "editable <> %s", "status NOT IN (%s)"],
@@ -55,11 +59,12 @@ def get_role_by_id(args):
 
 
 def update_role(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
 
-    role = _db.update({
+    role = database.update({
         'table': ['roles'],
         'set': args['set'],
         'where': ['id = %s'],
@@ -73,11 +78,12 @@ def update_role(args):
 
 
 def create_role(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
 
-    role = _db.insert({
+    role = database.insert({
         'table': 'roles',
         'columns': args['columns'],
     })
@@ -89,11 +95,12 @@ def create_role(args):
 
 
 def update_role_privileges(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
 
-    role = _db.update({
+    role = database.update({
         'table': ['roles_privileges'],
         'set': args['set'],
         'where': ['role_id = %s'],
@@ -107,11 +114,12 @@ def update_role_privileges(args):
 
 
 def create_role_privileges(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
 
-    role_privilege = _db.insert({
+    role_privilege = database.insert({
         'table': 'roles_privileges',
         'columns': {
             'role_id': str(args['role_id']),

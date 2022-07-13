@@ -25,7 +25,7 @@ import {SettingsService} from "../../../../services/settings.service";
 import {LastUrlService} from "../../../../services/last-url.service";
 import {PrivilegesService} from "../../../../services/privileges.service";
 import {LocalStorageService} from "../../../../services/local-storage.service";
-import {API_URL} from "../../../env";
+import {environment} from  "../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {Sort} from "@angular/material/sort";
@@ -73,7 +73,7 @@ export class RegexComponent implements OnInit {
         }else
             this.localeStorageService.remove('regexPageIndex');
 
-        this.http.get(API_URL + '/ws/config/getRegex', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/config/getRegex', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.allRegex = data.regex;
             }),
@@ -88,7 +88,7 @@ export class RegexComponent implements OnInit {
     }
 
     loadRegex() {
-        this.http.get(API_URL + '/ws/config/getRegex?limit=' + this.pageSize + '&offset=' + this.offset + "&search=" + this.search, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/config/getRegex?limit=' + this.pageSize + '&offset=' + this.offset + "&search=" + this.search, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.regex[0]) this.total = data.regex[0].total;
                 else if (this.pageIndex !== 0) {
@@ -113,7 +113,7 @@ export class RegexComponent implements OnInit {
         this.regex.forEach((element: any) => {
             if (element.id === id) {
                 element.content = value;
-                this.http.put(API_URL + '/ws/config/updateRegex/' + element.id, {'data': element}, {headers: this.authService.headers}).pipe(
+                this.http.put(environment['url'] + '/ws/config/updateRegex/' + element.id, {'data': element}, {headers: this.authService.headers}).pipe(
                     tap(() => {
                         this.notify.success(this.translate.instant('REGEX.regex_updated'));
                         element.updateMode = false;

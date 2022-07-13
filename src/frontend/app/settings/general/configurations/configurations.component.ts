@@ -26,7 +26,7 @@ import {LocalStorageService} from "../../../../services/local-storage.service";
 import {LastUrlService} from "../../../../services/last-url.service";
 import {Sort} from "@angular/material/sort";
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from "@angular/material/form-field";
-import {API_URL} from "../../../env";
+import {environment} from  "../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {NotificationService} from "../../../../services/notifications/notifications.service";
@@ -78,7 +78,7 @@ export class ConfigurationsComponent implements OnInit {
         }else
             this.localeStorageService.remove('configurationsPageIndex');
 
-        this.http.get(API_URL + '/ws/config/getConfigurations', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/config/getConfigurations', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.allConfigurations = data.configurations;
             }),
@@ -92,7 +92,7 @@ export class ConfigurationsComponent implements OnInit {
     }
 
     loadConfigurations() {
-        this.http.get(API_URL + '/ws/config/getConfigurations?limit=' + this.pageSize + '&offset=' + this.offset + "&search=" + this.search, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/config/getConfigurations?limit=' + this.pageSize + '&offset=' + this.offset + "&search=" + this.search, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.configurations[0]) this.total = data.configurations[0].total;
                 else if (this.pageIndex !== 0) {
@@ -135,7 +135,7 @@ export class ConfigurationsComponent implements OnInit {
         this.configurations.forEach((element: any) => {
             if (element.id === id) {
                 element.data.value = value;
-                this.http.put(API_URL + '/ws/config/updateConfiguration/' + element.id, element, {headers: this.authService.headers}).pipe(
+                this.http.put(environment['url'] + '/ws/config/updateConfiguration/' + element.id, element, {headers: this.authService.headers}).pipe(
                     tap(() => {
                         this.notify.success(this.translate.instant('CONFIGURATIONS.configuration_updated'));
                         element.updateMode = false;

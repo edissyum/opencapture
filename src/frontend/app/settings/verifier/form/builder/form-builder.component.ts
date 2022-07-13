@@ -26,7 +26,7 @@ import {NotificationService} from "../../../../../services/notifications/notific
 import {SettingsService} from "../../../../../services/settings.service";
 import {PrivilegesService} from "../../../../../services/privileges.service";
 import {moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
-import {API_URL} from "../../../../env";
+import {environment} from  "../../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {marker} from "@biesbjerg/ngx-translate-extract-marker";
@@ -634,12 +634,12 @@ export class FormBuilderComponent implements OnInit {
         this.serviceSettings.init();
         this.formId = this.route.snapshot.params['id'];
 
-        this.http.get(API_URL + '/ws/outputs/list?module=verifier', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/outputs/list?module=verifier', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.outputs = data.outputs;
                 if (this.formId) {
                     this.creationMode = false;
-                    this.http.get(API_URL + '/ws/forms/getById/' + this.formId, {headers: this.authService.headers}).pipe(
+                    this.http.get(environment['url'] + '/ws/forms/getById/' + this.formId, {headers: this.authService.headers}).pipe(
                         tap((data: any) => {
                             for (const field in this.form) {
                                 for (const info in data) {
@@ -672,7 +672,7 @@ export class FormBuilderComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.get(API_URL + '/ws/customFields/list', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/customFields/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.customFields) {
                     for (const field in data.customFields) {
@@ -716,7 +716,7 @@ export class FormBuilderComponent implements OnInit {
             })
         ).subscribe();
         if (this.formId) {
-            this.http.get(API_URL + '/ws/forms/getFields/' + this.formId, {headers: this.authService.headers}).pipe(
+            this.http.get(environment['url'] + '/ws/forms/getFields/' + this.formId, {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
                     if (data.form_fields.fields) {
                         if (data.form_fields.fields.facturation !== undefined)
@@ -891,12 +891,12 @@ export class FormBuilderComponent implements OnInit {
         });
 
         if (label !== '' && outputs.length >= 1) {
-            this.http.put(API_URL + '/ws/forms/update/' + this.formId, {
+            this.http.put(environment['url'] + '/ws/forms/update/' + this.formId, {
                     'args': {'label' : label, 'default_form' : isDefault, 'supplier_verif': supplierVerif, 'outputs': outputs}
                 }, {headers: this.authService.headers},
             ).pipe(
                 tap(()=> {
-                    this.http.post(API_URL + '/ws/forms/updateFields/' + this.formId, this.fields, {headers: this.authService.headers}).pipe(
+                    this.http.post(environment['url'] + '/ws/forms/updateFields/' + this.formId, this.fields, {headers: this.authService.headers}).pipe(
                         tap(() => {
                             this.historyService.addHistory('verifier', 'update_form', this.translate.instant('HISTORY-DESC.update-form', {form: label}));
                             this.notify.success(this.translate.instant('FORMS.updated'));
@@ -931,12 +931,12 @@ export class FormBuilderComponent implements OnInit {
             if (element.control.value) outputs.push(element.control.value);
         });
         if (label) {
-            this.http.post(API_URL + '/ws/forms/add', {
+            this.http.post(environment['url'] + '/ws/forms/add', {
                     'args': {'label' : label, 'default_form' : isDefault, 'supplier_verif': supplierVerif, 'outputs': outputs, 'module': 'verifier'}
                 }, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {
-                    this.http.post(API_URL + '/ws/forms/updateFields/' + data.id, this.fields, {headers: this.authService.headers}).pipe(
+                    this.http.post(environment['url'] + '/ws/forms/updateFields/' + data.id, this.fields, {headers: this.authService.headers}).pipe(
                         catchError((err: any) => {
                             console.debug(err);
                             this.notify.handleErrors(err);

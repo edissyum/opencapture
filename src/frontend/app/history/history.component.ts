@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {SettingsService} from "../../services/settings.service";
 import {TranslateService} from "@ngx-translate/core";
 import {FormControl} from "@angular/forms";
-import {API_URL} from "../env";
+import {environment} from  "../env";
 import {catchError, finalize, map, startWith, tap} from "rxjs/operators";
 import {Observable, of} from "rxjs";
 import {HttpClient} from "@angular/common/http";
@@ -93,12 +93,12 @@ export class HistoryComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.http.get(API_URL + '/ws/users/list_full', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/users/list_full', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.users = [];
                 this.form.forEach((element: any) => {
                     if (element.id === 'user_id') {
-                        this.http.get(API_URL + '/ws/history/users', {headers: this.authService.headers}).pipe(
+                        this.http.get(environment['url'] + '/ws/history/users', {headers: this.authService.headers}).pipe(
                             tap((userHistory: any) => {
                                 userHistory.history.forEach((_user: any) => {
                                     data.users.forEach((user: any) => {
@@ -120,7 +120,7 @@ export class HistoryComponent implements OnInit {
                                 map(option => option ? this._filter(option, this.users) : this.users)
                             );
                     } else if (element.id === 'submodule') {
-                        this.http.get(API_URL + '/ws/history/submodules', {headers: this.authService.headers}).pipe(
+                        this.http.get(environment['url'] + '/ws/history/submodules', {headers: this.authService.headers}).pipe(
                             tap((data: any) => {
                                 element.values = data['history'];
                             }),
@@ -144,7 +144,7 @@ export class HistoryComponent implements OnInit {
 
     loadHistory() {
         this.http.get(
-            API_URL + '/ws/history/list?limit=' + this.pageSize + '&offset=' + this.offset + '&user=' + this.userSelected + '&submodule=' + this.subModuleSelected + '&module=' + this.moduleSelected,
+            environment['url'] + '/ws/history/list?limit=' + this.pageSize + '&offset=' + this.offset + '&user=' + this.userSelected + '&submodule=' + this.subModuleSelected + '&module=' + this.moduleSelected,
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.history[0]) this.total = data.history[0].total;
@@ -160,7 +160,7 @@ export class HistoryComponent implements OnInit {
                         });
                     }
                     if (element.id === 'submodule') {
-                        this.http.get(API_URL + '/ws/history/submodules?module=' + this.moduleSelected, {headers: this.authService.headers}).pipe(
+                        this.http.get(environment['url'] + '/ws/history/submodules?module=' + this.moduleSelected, {headers: this.authService.headers}).pipe(
                             tap((data: any) => {
                                 element.values = data['history'];
                             }),

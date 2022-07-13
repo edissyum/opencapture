@@ -1,6 +1,6 @@
 import {of} from "rxjs";
 import * as moment from 'moment';
-import {API_URL} from "../app/env";
+import {environment} from  "../app/env";
 import {Injectable} from '@angular/core';
 import {AuthService} from "./auth.service";
 import {catchError, tap} from "rxjs/operators";
@@ -62,7 +62,7 @@ export class LocaleService {
     }
 
     changeLocale(data: any) {
-        this.http.get(API_URL + '/ws/i18n/changeLanguage/' + data.value, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/i18n/changeLanguage/' + data.value, {headers: this.authService.headers}).pipe(
             tap(() => {
                 const label = data.source._elementRef.nativeElement.textContent;
                 this.historyService.addHistory('general', 'language_changed', this.translate.instant('HISTORY-DESC.language_changed', {lang: label}));
@@ -77,7 +77,7 @@ export class LocaleService {
     }
 
     getCurrentLocale() {
-        this.http.get(API_URL + '/ws/i18n/getCurrentLang').pipe(
+        this.http.get(environment['url'] + '/ws/i18n/getCurrentLang').pipe(
             tap((data: any) => {
                 this.currentLang = data.lang;
                 if (data.moment_lang) {
@@ -96,7 +96,7 @@ export class LocaleService {
     }
 
     getLocales() {
-        this.http.get(API_URL + '/ws/i18n/getAllLang', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/i18n/getAllLang', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.langs = data.langs;
             }),

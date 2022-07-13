@@ -22,7 +22,7 @@ import {AuthService} from "../../../../services/auth.service";
 import {NotificationService} from "../../../../services/notifications/notifications.service";
 import {SettingsService} from "../../../../services/settings.service";
 import {PrivilegesService} from "../../../../services/privileges.service";
-import {API_URL, environment} from "../../../env";
+import {environment} from "../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {FormBuilder, FormControl} from "@angular/forms";
@@ -38,6 +38,7 @@ import {marker} from "@biesbjerg/ngx-translate-extract-marker";
 export class LoginMethodsComponent implements OnInit {
     loading                 : boolean   = true;
     isSaveBtnDisabled       : boolean   = true;
+    isLaunchBtnDisabled     : boolean   = false;
     isLinear                : boolean   = false;
     showPassword            : boolean   = false;
     isLdapChecked           : boolean   = false;
@@ -200,7 +201,7 @@ export class LoginMethodsComponent implements OnInit {
 
     ngOnInit(): void {
         this.serviceSettings.init();
-        this.http.post(API_URL + '/ws/auth/retrieveLoginMethodName', {headers: this.authService.headers}).pipe(
+        this.http.post(environment['url'] + '/ws/auth/retrieveLoginMethodName', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.login_methods_data = data.login_methods_data;
                 for ( const login_method_name of this.login_methods_data ) {
@@ -219,7 +220,7 @@ export class LoginMethodsComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.get(API_URL + '/ws/roles/list', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/roles/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.synchroparamsFormGroup.forEach((element:any) => {
                     if (element.id === 'attributRoleDefault') {
@@ -227,7 +228,7 @@ export class LoginMethodsComponent implements OnInit {
                     }
                 });
 
-                this.http.post(API_URL + '/ws/auth/retrieveLdapConfigurations', {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/auth/retrieveLdapConfigurations', {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
                         const configs : any = data.ldap_configurations ;
                         this.connectionFormGroup.forEach(element => {
@@ -298,7 +299,7 @@ export class LoginMethodsComponent implements OnInit {
     }
 
     disableLoginMethod(loginMethodName: any): void {
-        this.http.post(API_URL + '/ws/auth/disableLoginMethodName', loginMethodName, {headers: this.authService.headers}).pipe(
+        this.http.post(environment['url'] + '/ws/auth/disableLoginMethodName', loginMethodName, {headers: this.authService.headers}).pipe(
             tap(() => {
                 if (loginMethodName['method_name'] === 'default') {
                     this.isDefaultChecked = false ;
@@ -317,7 +318,7 @@ export class LoginMethodsComponent implements OnInit {
     }
 
     enableLoginMethod(loginMethodName: any): void {
-        this.http.post(API_URL + '/ws/auth/enableLoginMethodName',loginMethodName, {headers: this.authService.headers}).pipe(
+        this.http.post(environment['url'] + '/ws/auth/enableLoginMethodName',loginMethodName, {headers: this.authService.headers}).pipe(
             tap(() => {
                 if (loginMethodName['method_name'] === 'default') {
                     this.isDefaultChecked = true;
@@ -330,7 +331,6 @@ export class LoginMethodsComponent implements OnInit {
                 return of (false);
             })
         ).subscribe();
-
     }
 
     checkLdapConnexion(): void {
@@ -339,7 +339,7 @@ export class LoginMethodsComponent implements OnInit {
             this.connectionFormGroup.forEach(element => {
                 server_data[element.id] = element.control.value;
             });
-            this.http.post(API_URL + '/ws/auth/connectionLdap', server_data,{headers: this.authService.headers}).pipe(
+            this.http.post(environment['url'] + '/ws/auth/connectionLdap', server_data,{headers: this.authService.headers}).pipe(
             tap(() => {
                 this.connexion_server_status = true;
                 this.notify.success(this.translate.instant('LOGIN-METHODS.server_ldap_connection'));
@@ -356,6 +356,7 @@ export class LoginMethodsComponent implements OnInit {
     }
 
     ldapSynchronization(): void {
+        this.isLaunchBtnDisabled = true;
         if (this.isValidSynchronizationForm() && this.isValidConnexionForm()) {
             const synchronizationData : any = {};
             this.connectionFormGroup.forEach(element => {
@@ -364,14 +365,16 @@ export class LoginMethodsComponent implements OnInit {
              this.synchroparamsFormGroup.forEach(element => {
                 synchronizationData[element.id] = element.control.value;
             });
-            this.http.post(API_URL + '/ws/auth/ldapSynchronization', synchronizationData, {headers: this.authService.headers}).pipe(
+            this.http.post(environment['url'] + '/ws/auth/ldapSynchronization', synchronizationData, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.isSaveBtnDisabled = false;
+                this.isLaunchBtnDisabled = false;
                 this.synchro_users_status = true;
                 this.notify.success(this.translate.instant('LOGIN-METHODS.result_synchronization_operation', {'users_added':data['create_users'],'users_updated':data['update_users'],'users_disabled':data['disabled_users']}));
             }),
             catchError ((err: any) => {
                 this.isSaveBtnDisabled = true;
+                this.isLaunchBtnDisabled = false;
                 this.synchro_users_status = false;
                 console.debug(err);
                 this.notify.handleErrors(err);
@@ -391,7 +394,7 @@ export class LoginMethodsComponent implements OnInit {
                  this.synchroparamsFormGroup.forEach(element => {
                     methodDataToSave[element.id] = element.control.value;
                 });
-                this.http.post(API_URL + '/ws/auth/saveLoginMethodConfigs', methodDataToSave, {headers: this.authService.headers}).pipe(
+                this.http.post(environment['url'] + '/ws/auth/saveLoginMethodConfigs', methodDataToSave, {headers: this.authService.headers}).pipe(
                     tap(() => {
                         this.isLdapChecked = true;
                         this.notify.success(this.translate.instant('LOGIN-METHODS.save_ldap_infos_success'));

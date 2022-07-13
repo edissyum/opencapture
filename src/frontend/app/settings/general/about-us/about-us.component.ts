@@ -19,7 +19,7 @@ import { Component, OnInit } from '@angular/core';
 import { SettingsService } from "../../../../services/settings.service";
 import { Router } from "@angular/router";
 import { PrivilegesService } from "../../../../services/privileges.service";
-import {API_URL, environment} from "../../../env";
+import {environment} from "../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {HttpClient} from "@angular/common/http";
@@ -50,8 +50,8 @@ export class AboutUsComponent implements OnInit {
     ngOnInit(): void {
         this.serviceSettings.init();
         this.isProd = environment.production;
-        this.currentVersion = environment.VERSION;
-        this.http.get(API_URL + '/ws/config/gitInfo', {headers: this.authService.headers}).pipe(
+        this.currentVersion = environment.version;
+        this.http.get(environment['url'] + '/ws/config/gitInfo', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.git_latest) {
                     this.lastVersion = data.git_latest;

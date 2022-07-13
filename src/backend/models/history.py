@@ -15,12 +15,15 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-from src.backend.main import create_classes_from_current_config
+from flask import request
+from src.backend.functions import retrieve_custom_from_url
+from src.backend.main import create_classes_from_custom_id
 
 
 def add_history(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     args = {
         'table': 'history',
         'columns': {
@@ -32,15 +35,16 @@ def add_history(args):
             'user_ip': args['ip'],
         }
     }
-    _db.insert(args)
+    database.insert(args)
     return True, ''
 
 
 def get_history(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
-    _history = _db.select({
+    _history = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['history'],
         'where': args['where'] if 'where' in args else [],

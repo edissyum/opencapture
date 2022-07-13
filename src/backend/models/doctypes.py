@@ -15,13 +15,16 @@
 
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
+from flask import request
 from gettext import gettext
-from src.backend.main import create_classes_from_current_config
+from src.backend.functions import retrieve_custom_from_url
+from src.backend.main import create_classes_from_custom_id
 
 
 def add_doctype(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     doctypes, error = retrieve_doctypes({
         'where': ['key = %s', 'form_id = %s', 'status <> %s'],
         'data': [args['key'], args['form_id'], 'DEL']
@@ -39,7 +42,7 @@ def add_doctype(args):
                 'is_default': args['is_default'],
             }
         }
-        res = _db.insert(args)
+        res = database.insert(args)
 
         if not res:
             error = gettext('ADD_DOCTYPE_ERROR')
@@ -51,10 +54,11 @@ def add_doctype(args):
 
 
 def retrieve_doctypes(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
-    doctypes = _db.select({
+    doctypes = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['doctypes'],
         'where': ['status<>%s'] if 'where' not in args else args['where'],
@@ -66,10 +70,11 @@ def retrieve_doctypes(args):
 
 
 def update(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
-    res = _db.update({
+    res = database.update({
         'table': ['doctypes'],
         'set': {
             'label': args['label'],
@@ -88,10 +93,11 @@ def update(args):
 
 
 def set_default(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
-    res = _db.update({
+    res = database.update({
         'table': ['doctypes'],
         'set': {
             'is_default': False
@@ -100,7 +106,7 @@ def set_default(args):
         'data': ['DEL', args['form_id']]
     })
     if res:
-        res = _db.update({
+        res = database.update({
             'table': ['doctypes'],
             'set': {
                 'is_default': True

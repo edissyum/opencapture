@@ -20,7 +20,7 @@ import {FlatTreeControl} from '@angular/cdk/tree';
 import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
 import {BehaviorSubject, of} from "rxjs";
 import {SettingsService} from "../../../services/settings.service";
-import {API_URL} from "../../env";
+import {environment} from  "../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {HttpClient} from "@angular/common/http";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -64,7 +64,7 @@ export class ChecklistDatabase {
     retrieveDocTypes(formId: number) {
         this.loading      = true;
         this.doctypeData = [];
-        this.http.get(API_URL + '/ws/doctypes/list/' + (formId).toString(), {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/doctypes/list/' + (formId).toString(), {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 let newDoctype;
                 data.doctypes.forEach((doctype: {
@@ -258,7 +258,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
 
     loadForms(): void {
         this.loading = true;
-        this.http.get(API_URL + '/ws/forms/list?module=splitter', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/forms/list?module=splitter', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.forms = data.forms;
                 if(this.forms.length > 0) {

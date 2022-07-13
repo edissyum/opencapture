@@ -14,16 +14,20 @@
 # along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+
 import os
 import stat
+from flask import request
 from flask_babel import gettext
 from src.backend.import_models import inputs
 from src.backend.import_classes import _Config
-from src.backend.main import create_classes_from_current_config
+from src.backend.functions import retrieve_custom_from_url
+from src.backend.main import create_classes_from_custom_id
 
 
 def get_inputs(args):
-    _vars = create_classes_from_current_config()
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     _config = _vars[1]
 
     _inputs = inputs.get_inputs(args)
@@ -35,8 +39,6 @@ def get_inputs(args):
 
 
 def update_input(input_id, data):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
     _, error = inputs.get_input_by_id({'input_id': input_id})
 
     if error is None:
@@ -59,9 +61,6 @@ def update_input(input_id, data):
 
 
 def duplicate_input(input_id):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
-
     input_info, error = inputs.get_input_by_id({'input_id': input_id})
     if error is None:
         args = {
@@ -93,8 +92,6 @@ def duplicate_input(input_id):
 
 
 def create_input(data):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
     _columns = {
         'module': data['module'],
         'input_id': data['input_id'],
@@ -165,9 +162,6 @@ def get_input_by_form_id(form_id):
 
 
 def delete_input(input_id):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
-
     input_info, error = inputs.get_input_by_id({'input_id': input_id})
     if error is None:
         _, error = inputs.update_input({'set': {'status': 'DEL'}, 'input_id': input_id})
@@ -189,11 +183,12 @@ def delete_input(input_id):
 
 
 def delete_script_and_incron(args):
-    _vars = create_classes_from_current_config()
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     _cfg = _vars[1]
-    _docservers = _vars[9]
+    docservers = _vars[9]
 
-    folder_script = _docservers['SCRIPTS_PATH'] + args['module'] + '_inputs/'
+    folder_script = docservers['SCRIPTS_PATH'] + args['module'] + '_inputs/'
     script_name = args['input_id'] + '.sh'
     old_script_filename = folder_script + '/' + script_name
     if os.path.isdir(folder_script):
@@ -218,10 +213,11 @@ def delete_script_and_incron(args):
 
 
 def create_script_and_incron(args):
-    _vars = create_classes_from_current_config()
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     _cfg = _vars[1]
-    _docservers = _vars[9]
-    folder_script = _docservers['SCRIPTS_PATH'] + '/' + args['module'] + '_inputs/'
+    docservers = _vars[9]
+    folder_script = docservers['SCRIPTS_PATH'] + '/' + args['module'] + '_inputs/'
     arguments = '-input_id ' + str(args['input_id'])
 
     ######
@@ -236,7 +232,7 @@ def create_script_and_incron(args):
             with open(new_script_filename, 'w+', encoding='utf-8') as new_script_file:
                 for line in script_sample_content.split('\n'):
                     corrected_line = line.replace('§§SCRIPT_NAME§§', script_name.replace('.sh', ''))
-                    corrected_line = corrected_line.replace('§§OC_PATH§§', _docservers['PROJECT_PATH'] + '/')
+                    corrected_line = corrected_line.replace('§§OC_PATH§§', docservers['PROJECT_PATH'] + '/')
                     corrected_line = corrected_line.replace('"§§ARGUMENTS§§"', arguments)
                     new_script_file.write(corrected_line + '\n')
             os.chmod(new_script_filename, os.stat(new_script_filename).st_mode | stat.S_IEXEC)

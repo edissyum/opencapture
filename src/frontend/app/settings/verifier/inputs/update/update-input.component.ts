@@ -25,7 +25,7 @@ import {TranslateService} from "@ngx-translate/core";
 import {NotificationService} from "../../../../../services/notifications/notifications.service";
 import {SettingsService} from "../../../../../services/settings.service";
 import {PrivilegesService} from "../../../../../services/privileges.service";
-import {API_URL} from "../../../../env";
+import {environment} from  "../../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {FormControl} from "@angular/forms";
 import {of} from "rxjs";
@@ -199,7 +199,7 @@ export class UpdateInputComponent implements OnInit {
         this.serviceSettings.init();
         this.inputId = this.route.snapshot.params['id'];
 
-        this.http.get(API_URL + '/ws/customFields/list?module=verifier', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/customFields/list?module=verifier', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 data.customFields.forEach((field: any) => {
                     this.availableFields.push({
@@ -216,7 +216,7 @@ export class UpdateInputComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.get(API_URL + '/ws/inputs/getById/' + this.inputId, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/inputs/getById/' + this.inputId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.input = data;
                 for (const field in this.input) {
@@ -227,7 +227,7 @@ export class UpdateInputComponent implements OnInit {
                                 this.openAvailableField = data[field];
                             }
                             if (element.id === 'default_form_id') {
-                                this.http.get(API_URL + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
+                                this.http.get(environment['url'] + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
                                     tap((forms: any) => {
                                         element.values = forms.forms;
                                     }),
@@ -238,7 +238,7 @@ export class UpdateInputComponent implements OnInit {
                                     })
                                 ).subscribe();
                             } else if (element.id === 'customer_id') {
-                                this.http.get(API_URL + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
+                                this.http.get(environment['url'] + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
                                     tap((customers: any) => {
                                         element.values = customers.customers;
                                     }),
@@ -293,7 +293,7 @@ export class UpdateInputComponent implements OnInit {
                 input[element.id] = element.control.value;
             });
 
-            this.http.put(API_URL + '/ws/inputs/update/' + this.inputId, {'args': input}, {headers: this.authService.headers}).pipe(
+            this.http.put(environment['url'] + '/ws/inputs/update/' + this.inputId, {'args': input}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.historyService.addHistory('verifier', 'update_input', this.translate.instant('HISTORY-DESC.update-input', {input: input['input_label']}));
                     this.notify.success(this.translate.instant('INPUT.updated'));
@@ -316,7 +316,7 @@ export class UpdateInputComponent implements OnInit {
             this.inputForm.forEach(element => {
                 input[element.id] = element.control.value;
             });
-            this.http.post(API_URL + '/ws/inputs/createScriptAndIncron', {'args': input}, {headers: this.authService.headers}).pipe(
+            this.http.post(environment['url'] + '/ws/inputs/createScriptAndIncron', {'args': input}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.notify.success(this.translate.instant('INPUT.incron_and_script_updated'));
                     this.onSubmit();

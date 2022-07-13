@@ -29,7 +29,7 @@ import { LastUrlService } from "../../../../services/last-url.service";
 import { PrivilegesService } from "../../../../services/privileges.service";
 import { LocalStorageService } from "../../../../services/local-storage.service";
 import { Sort } from "@angular/material/sort";
-import { API_URL } from "../../../env";
+import {environment} from  "../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { ConfirmDialogComponent } from "../../../../services/confirm-dialog/confirm-dialog.component";
@@ -79,7 +79,7 @@ export class SuppliersListComponent implements OnInit {
         }else
             this.localeStorageService.remove('suppliersPageIndex');
 
-        this.http.get(API_URL + '/ws/accounts/suppliers/list', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/accounts/suppliers/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.allSuppliers = data.suppliers;
             }),
@@ -93,13 +93,13 @@ export class SuppliersListComponent implements OnInit {
     }
 
     loadSuppliers() {
-        this.http.get(API_URL + '/ws/accounts/suppliers/list?order=name&limit=' + this.pageSize + '&offset=' + this.offset + "&search=" + this.search, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/accounts/suppliers/list?order=name&limit=' + this.pageSize + '&offset=' + this.offset + "&search=" + this.search, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.suppliers = data.suppliers;
                 if (this.suppliers.length !== 0) {
                     this.total = data.suppliers[0].total;
                 }
-                this.http.get(API_URL + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
                         for (const cpt in this.suppliers) {
                             for (const form of data.forms) {
@@ -199,7 +199,7 @@ export class SuppliersListComponent implements OnInit {
 
     deleteSupplier(supplierId: number) {
         if (supplierId !== undefined) {
-            this.http.delete(API_URL + '/ws/accounts/suppliers/delete/' + supplierId, {headers: this.authService.headers}).pipe(
+            this.http.delete(environment['url'] + '/ws/accounts/suppliers/delete/' + supplierId, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadSuppliers();
                     this.notify.success(this.translate.instant('ACCOUNTS.supplier_deleted'));
@@ -215,7 +215,7 @@ export class SuppliersListComponent implements OnInit {
 
     skipAutoValidate(supplierId: number) {
         if (supplierId !== undefined) {
-            this.http.delete(API_URL + '/ws/accounts/suppliers/skipAutoValidate/' + supplierId, {headers: this.authService.headers}).pipe(
+            this.http.delete(environment['url'] + '/ws/accounts/suppliers/skipAutoValidate/' + supplierId, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.notify.success(this.translate.instant('ACCOUNTS.skip_validated_success'));
                 }),
@@ -230,7 +230,7 @@ export class SuppliersListComponent implements OnInit {
 
     deleteSupplierPositions(supplierId: number) {
         if (supplierId !== undefined) {
-            this.http.delete(API_URL + '/ws/accounts/suppliers/deletePositions/' + supplierId, {headers: this.authService.headers}).pipe(
+            this.http.delete(environment['url'] + '/ws/accounts/suppliers/deletePositions/' + supplierId, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.notify.success(this.translate.instant('ACCOUNTS.positions_deleted'));
                 }),
@@ -270,7 +270,7 @@ export class SuppliersListComponent implements OnInit {
     }
 
     getReferenceFile() {
-        this.http.get(API_URL + '/ws/accounts/supplier/getReferenceFile', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/accounts/supplier/getReferenceFile', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 const mimeType = data.mimetype;
                 const referenceFile = 'data:' + mimeType + ';base64, ' + data.file;
@@ -293,7 +293,7 @@ export class SuppliersListComponent implements OnInit {
         if (file) {
             const formData: FormData = new FormData();
             formData.append(file.name, file);
-            this.http.post(API_URL + '/ws/accounts/supplier/importSuppliers', formData, {headers: this.authService.headers},
+            this.http.post(environment['url'] + '/ws/accounts/supplier/importSuppliers', formData, {headers: this.authService.headers},
             ).pipe(
                 tap(() => {
                     this.notify.success(this.translate.instant('ACCOUNTS.suppliers_referencial_loaded'));

@@ -29,7 +29,7 @@ import {PrivilegesService} from "../../../../../services/privileges.service";
 import {LocalStorageService} from "../../../../../services/local-storage.service";
 import {Sort} from "@angular/material/sort";
 import {ConfirmDialogComponent} from "../../../../../services/confirm-dialog/confirm-dialog.component";
-import {API_URL} from "../../../../env";
+import {environment} from  "../../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {HistoryService} from "../../../../../services/history.service";
@@ -76,7 +76,7 @@ export class InputsListComponent implements OnInit {
         } else
             this.localeStorageService.remove('inputsPageIndex');
 
-        this.http.get(API_URL + '/ws/inputs/list?module=verifier', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/inputs/list?module=verifier', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.allInputs = data.inputs;
             }),
@@ -90,7 +90,7 @@ export class InputsListComponent implements OnInit {
     }
 
     loadInputs() {
-        this.http.get(API_URL + '/ws/inputs/list?module=verifier&limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/inputs/list?module=verifier&limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.inputs[0]) this.total = data.inputs[0].total;
                 else if (this.pageIndex !== 0) {
@@ -139,7 +139,7 @@ export class InputsListComponent implements OnInit {
 
     deleteInput(inputId: number) {
         if (inputId !== undefined) {
-            this.http.delete(API_URL + '/ws/inputs/delete/' + inputId, {headers: this.authService.headers}).pipe(
+            this.http.delete(environment['url'] + '/ws/inputs/delete/' + inputId, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadInputs();
                     this.notify.success(this.translate.instant('INPUT.input_deleted'));
@@ -175,7 +175,7 @@ export class InputsListComponent implements OnInit {
 
     duplicateInput(inputId: number) {
         if (inputId !== undefined) {
-            this.http.post(API_URL + '/ws/inputs/duplicate/' + inputId, {}, {headers: this.authService.headers}).pipe(
+            this.http.post(environment['url'] + '/ws/inputs/duplicate/' + inputId, {}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadInputs();
                     this.notify.success(this.translate.instant('INPUT.input_duplicated'));

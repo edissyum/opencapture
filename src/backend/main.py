@@ -21,7 +21,7 @@ import time
 import tempfile
 from kuyruk import Kuyruk
 from flask import current_app
-from .functions import recursive_delete, get_custom_array
+from .functions import recursive_delete, get_custom_array, retrieve_config_from_custom_id
 from .import_classes import _Database, _PyTesseract, _Files, _Log, _Config, _SeparatorQR, _Spreadsheet, _SMTP, _Mail
 
 custom_array = get_custom_array()
@@ -34,10 +34,9 @@ else:
                                     custom_array['OCForInvoices']['module'])
 
 
-def create_classes_from_current_config():
-    config_name = _Config(current_app.config['CONFIG_FILE'])
-    config_file = current_app.config['CONFIG_FOLDER'] + '/config_' + config_name.cfg['PROFILE']['id'] + '.ini'
-    config = _Config(current_app.config['CONFIG_FOLDER'] + '/config_' + config_name.cfg['PROFILE']['id'] + '.ini')
+def create_classes_from_custom_id(custom_id):
+    config_file = retrieve_config_from_custom_id(custom_id)
+    config = _Config(config_file)
     config_mail = _Config(config.cfg['GLOBAL']['configmail'])
     smtp = _SMTP(
         config_mail.cfg['GLOBAL']['smtp_notif_on_error'],
@@ -178,20 +177,20 @@ def str2bool(value):
     return value.lower() in "true"
 
 
-@Kuyruk().task(queue='invoices')
+OCforInvoices = Kuyruk()
+
+
+@OCforInvoices.task(queue='invoices')
 def launch(args):
     start = time.time()
 
-    # Init all the necessary classes
-    config_name = _Config(args['config'])
-    config_file = config_name.cfg['PROFILE']['cfgpath'] + '/config_' + config_name.cfg['PROFILE']['id'] + '.ini'
+    if not retrieve_config_from_custom_id(args['custom_id']):
+        sys.exit('Custom config file couldn\'t be found')
 
-    if not os.path.exists(config_file):
-        sys.exit('config file couldn\'t be found')
-
-    config, regex, log, ocr, database, _, smtp, docservers, configurations = create_classes(config_file)
+    database, config, regex, files, ocr, log, _, _, smtp, docservers, configurations = create_classes_from_custom_id(args['custom_id'])
     tmp_folder = tempfile.mkdtemp(dir=docservers['TMP_PATH'])
-    filename = tempfile.NamedTemporaryFile(dir=tmp_folder).name
+    with tempfile.NamedTemporaryFile(dir=tmp_folder) as tmp_file:
+        filename = tmp_file.name
     files = _Files(filename, log, docservers, configurations, regex)
 
     if 'languages' in args:
@@ -243,24 +242,30 @@ def launch(args):
 
             for file in os.listdir(path):
                 if check_file(files, path + file, log, docservers) is not False:
-                    res = OCForInvoices_process.process(args, path + file, log, config, files, ocr, regex, database, docservers, configurations, languages)
+                    res = OCForInvoices_process.process(args, path + file, log, config, files, ocr, regex, database,
+                                                        docservers, configurations, languages)
                     if not res:
-                        mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'], args['msg'], config, docservers)
+                        mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'],
+                                                       args['msg'], config, docservers)
                         log.error('Error while processing e-mail', False)
         elif splitter_method == 'separate_by_document':
             list_of_files = separator_qr.split_document_every_two_pages(path)
             for file in list_of_files:
                 if check_file(files, file, log, docservers) is not False:
-                    res = OCForInvoices_process.process(args, file, log, config, files, ocr, regex, database, docservers, configurations, languages)
+                    res = OCForInvoices_process.process(args, file, log, config, files, ocr, regex, database,
+                                                        docservers, configurations, languages)
                     if not res:
-                        mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'], args['msg'], config, docservers)
+                        mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'],
+                                                       args['msg'], config, docservers)
                         log.error('Error while processing e-mail', False)
             os.remove(path)
         else:
             if check_file(files, path, log, docservers) is not False:
-                res = OCForInvoices_process.process(args, path, log, config, files, ocr, regex, database, docservers, configurations, languages)
+                res = OCForInvoices_process.process(args, path, log, config, files, ocr, regex, database, docservers,
+                                                    configurations, languages)
                 if not res:
-                    mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'], args['msg'], config, docservers)
+                    mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'],
+                                                   args['msg'], config, docservers)
                     log.error('Error while processing e-mail', False)
 
     recursive_delete(tmp_folder, log)

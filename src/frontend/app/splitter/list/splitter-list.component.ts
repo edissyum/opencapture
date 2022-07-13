@@ -17,7 +17,7 @@
 
 import {Component, OnInit} from '@angular/core';
 import {LocalStorageService} from "../../../services/local-storage.service";
-import {API_URL} from "../../env";
+import {environment} from  "../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {AuthService} from "../../../services/auth.service";
@@ -111,7 +111,7 @@ export class SplitterListComponent implements OnInit {
             this.localeStorageService.remove('splitterTimeIndex');
         }
 
-        this.http.get(API_URL + '/ws/status/list?module=splitter', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/status/list?module=splitter', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.status = data.status;
             }),
@@ -126,7 +126,7 @@ export class SplitterListComponent implements OnInit {
 
     loadBatches(): void {
         this.isLoading = true;
-        this.http.get(API_URL + '/ws/splitter/invoices/totals/' + this.currentStatus, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/splitter/invoices/totals/' + this.currentStatus, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.totals = data.totals;
             }),
@@ -136,7 +136,7 @@ export class SplitterListComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
-        this.http.get(API_URL + '/ws/splitter/batches/' +
+        this.http.get(environment['url'] + '/ws/splitter/batches/' +
             (this.pageIndex - 1) + '/' + this.pageSize + '/' + this.currentTime + '/' + this.currentStatus,
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -218,7 +218,7 @@ export class SplitterListComponent implements OnInit {
 
         if (uniqueFormId.length === 1) {
             this.isLoading = true;
-            this.http.post(API_URL + '/ws/splitter/merge/' + parentId, {'batches': listOfBatchToMerge}, {headers: this.authService.headers},
+            this.http.post(environment['url'] + '/ws/splitter/merge/' + parentId, {'batches': listOfBatchToMerge}, {headers: this.authService.headers},
             ).pipe(
                 tap(() => {
                     this.loadBatches();
@@ -306,7 +306,7 @@ export class SplitterListComponent implements OnInit {
     }
 
     deleteBatch(id: number, batchDelete = false, lastBatch = true): void {
-        this.http.put(API_URL + '/ws/splitter/status', {'id': id, 'status': 'DEL', }, {headers: this.authService.headers}).pipe(
+        this.http.put(environment['url'] + '/ws/splitter/status', {'id': id, 'status': 'DEL', }, {headers: this.authService.headers}).pipe(
             tap(() => {
                 if (!batchDelete) {
                     this.notify.success(this.translate.instant('SPLITTER.batch_deleted'));
