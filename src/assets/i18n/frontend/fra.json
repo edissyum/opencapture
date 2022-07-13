@@ -408,6 +408,7 @@
 		"connection": "Connexion",
 		"default": "Authentification par défaut",
 		"enable_method": "Activer cette méthode d'authentification",
+		"enabled": "activé",
 		"end_ldap_setup": "Vous avez maintenant terminé",
 		"first_name_attribute": "Attribut prénom utilisateur",
 		"host": "Hôte",

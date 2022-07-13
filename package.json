@@ -30,7 +30,7 @@
         "@ngx-translate/http-loader": "^7.0.0",
         "@schematics/angular": "^14.0.5",
         "@swimlane/ngx-charts": "^20.1.0",
-        "@syncfusion/ej2": "^20.2.36",
+        "@syncfusion/ej2": "^20.2.38",
         "jquery": "^3.6.0",
         "moment": "^2.29.4",
         "ng-click-outside2": "^11.1.0",

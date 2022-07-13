@@ -19,7 +19,8 @@
                 </mat-form-field>
                 <mat-form-field class="block">
                     <mat-label>{{ 'USER.password' | translate }}</mat-label>
-                    <input matInput formControlName="password" [type]="this.showPassword ? 'text' : 'password'"
+                    <input matInput name="password" autocomplete="off" formControlName="password"
+                           [type]="this.showPassword ? 'text' : 'password'"
                            placeholder="{{ 'USER.password' | translate }}" required>
                     <mat-icon matSuffix (click)="this.showPassword = !this.showPassword"
                               class="text-green-400 relative cursor-pointer -top-1.5 text-base">
@@ -29,7 +30,9 @@
                         {{ getErrorMessage('password') }}
                     </mat-error>
                     <mat-hint align="end" *ngIf="this.enableLoginMethodName === 'ldap'">
-                        <span class="underline decoration-1" >{{enableLoginMethodName | uppercase}} activé</span>
+                        <span class="underline decoration-1" >
+                            {{ this.enableLoginMethodName | uppercase }} {{ 'LOGIN-METHODS.enabled' | translate }}
+                        </span>
                     </mat-hint>
                 </mat-form-field>
                 <button mat-button [disabled]="this.processLogin || this.isConnectionBtnDisabled"
