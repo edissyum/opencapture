@@ -37,17 +37,18 @@ import {marker} from "@biesbjerg/ngx-translate-extract-marker";
     styleUrls: ['./update-output.component.scss']
 })
 export class SplitterUpdateOutputComponent implements OnInit {
-    headers             : HttpHeaders   = this.authService.headers;
-    loading             : boolean       = true;
-    connection          : boolean       = false;
-    outputId            : any;
-    output              : any;
-    outputsTypes        : any[]         = [];
-    outputsTypesForm    : any[]         = [];
-    selectedOutputType  : any;
-    originalOutputType  : any;
-    toHighlight         : string        = '';
-    outputForm          : any[]         = [
+    headers               : HttpHeaders   = this.authService.headers;
+    loading               : boolean       = true;
+    loadingCustomFields   : boolean       = true;
+    connection            : boolean       = false;
+    outputsTypes          : any[]         = [];
+    outputsTypesForm      : any[]         = [];
+    output                : any;
+    outputId              : any;
+    selectedOutputType    : any;
+    originalOutputType    : any;
+    toHighlight           : string        = '';
+    outputForm            : any[]         = [
         {
             id: 'output_type_id',
             label: this.translate.instant('HEADER.output_type'),
@@ -97,7 +98,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
             required: false,
         },
     ];
-    availableFields     : any           = [
+    availableFields       : any           = [
         {
             "labelShort"    : 'HEADER.id',
             'label'         : marker('HEADER.label')
@@ -151,7 +152,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
             'label'         : marker('OUTPUT.zip_filename')
         },
     ];
-    testConnectionMapping : any         = {
+    testConnectionMapping : any           = {
         'export_maarch' : "testMaarchConnection()",
         'export_cmis'   : "testCmisConnection()"
     };
@@ -275,11 +276,13 @@ export class SplitterUpdateOutputComponent implements OnInit {
                             'label': field.label,
                             'enabled': field.enabled,
                         };
-                        if (field.enabled)
+                        if (field.enabled) {
                             this.availableFields.push(newField);
+                        }
                     }
                 );
             }),
+            finalize(() => this.loadingCustomFields = false),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
