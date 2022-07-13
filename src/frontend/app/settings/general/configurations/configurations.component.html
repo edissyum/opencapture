@@ -92,12 +92,11 @@
         </div>
         <div *ngIf="!loading" class="w-full">
             <div class="text-center">
-                <h3>
-                    {{ "CONFIGURATIONS.change_image" | translate }}
-                </h3>
+                <h3>{{ "CONFIGURATIONS.change_image" | translate }}</h3>
                 <div>
-                    <img class="shadow-md hover:shadow-2xl m-auto p-2 transition-shadow ease-in-out duration-500
-                         cursor-pointer" [src]="this.loginImage" alt="Login image" (click)="onClick(logo)">
+                    <img class="shadow-md hover:shadow-2xl m-auto p-2 transition-all ease-in-out duration-500
+                         cursor-pointer shadow-gray-900 hover:shadow-gray-900" [src]="this.loginImage" alt="Login image"
+                         (click)="onClick(logo)">
                     <input type="file" name="files[]" #logo (change)="upload($event)"
                            accept="image/png" style="display: none;">
                 </div>
