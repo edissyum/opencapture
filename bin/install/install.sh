@@ -41,6 +41,8 @@ fi
 ####################
 # Check if custom name is set and doesn't exists already
 
+apt install -y crudini
+
 while getopts c: parameters
 do
     case "${parameters}" in
@@ -80,13 +82,18 @@ for custom_name in ${SECTIONS[@]}; do # Do not double quote it
 done
 
 ####################
-# Create custom symbolic link and folder
-ln -s "$defaultPath" "$customId"
-mkdir -p "$defaultPath/custom/$customId/config/"
+# Create custom symbolic link and folders
+ln -s "$defaultPath" "$defaultPath/$customId"
+
+mkdir -p "$defaultPath/custom/$customId/{config,bin}/"
+mkdir -p "$defaultPath/custom/$customId/bin/{data,ldap,scripts}"
+mkdir -p "$defaultPath/custom/$customId/bin/ldap/config"
+mkdir -p "$defaultPath/custom/$customId/bin/data/{log,MailCollect}"
+mkdir -p "$defaultPath/custom/$customId/bin/scripts/{verifier_inputs,splitter_inputs}"
+
 echo "[$customId]" >> $customIniFile
 echo "path = $defaultPath/$customId" >> $customIniFile
 echo "" >> $customIniFile
-exit 5
 
 ####################
 # User choice
@@ -345,7 +352,6 @@ fi
 cp "$defaultPath/bin/scripts/launch_MAIL.sh.default" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/config/mail.ini"
-mkdir -p "$defaultPath/custom/$customId/bin/data/MailCollect/"
 
 ####################
 # Create default LDAP script and config
@@ -360,12 +366,12 @@ chown -R "$user":"$group" $defaultPath
 
 ####################
 # Makes scripts executable
-chmod u+x "$defaultPath/bin/scripts/*.sh"
-chown -R "$user":"$user" "$defaultPath/bin/scripts/*.sh"
-chmod u+x "$defaultPath/custom/$customId/bin/scripts/verifier_inputs/*.sh"
-chown -R "$user":"$user" "$defaultPath/custom/$customId/bin/scripts/verifier_inputs/*.sh"
-chmod u+x "$defaultPath/custom/$customId/bin/scripts/splitter_inputs/*.sh"
-chown -R "$user":"$user" "$defaultPath/custom/$customId/bin/scripts/splitter_inputs/*.sh"
+chmod u+x $defaultPath/bin/scripts/*.sh
+chown -R "$user":"$user" $defaultPath/bin/scripts/*.sh
+chmod u+x $defaultPath/custom/$customId/bin/scripts/verifier_inputs/*.sh
+chown -R "$user":"$user" $defaultPath/custom/$customId/bin/scripts/verifier_inputs/*.sh
+chmod u+x $defaultPath/custom/$customId/bin/scripts/splitter_inputs/*.sh
+chown -R "$user":"$user" $defaultPath/custom/$customId/bin/scripts/splitter_inputs/*.sh
 
 ####################
 # Create docservers
