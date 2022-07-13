@@ -306,7 +306,7 @@ def export_pdf(batch, documents, parameters, pages, now, compress_type):
     """
     Add PDF file to zip archive if enabled
     """
-    if parameters['add_to_zip']:
+    if 'add_to_zip' in parameters and parameters['add_to_zip']:
         except_from_zip_doctype = re.search(r'\[Except=(.*?)\]', parameters['add_to_zip']) \
             if 'Except' in parameters['add_to_zip'] else ''
         mask_args = {
@@ -342,7 +342,7 @@ def export_pdf(batch, documents, parameters, pages, now, compress_type):
         }
         return response, 400
 
-    if parameters['add_to_zip']:
+    if 'add_to_zip' in parameters and parameters['add_to_zip']:
         zip_file_path = parameters['folder_out'] + '/' + zip_filename
         _Files.zip_files(pdf_filepaths, zip_file_path, True)
 
