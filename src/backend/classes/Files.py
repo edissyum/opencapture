@@ -392,7 +392,7 @@ class Files:
         return improved_img
 
     @staticmethod
-    def move_to_docservers(cfg, docservers, file, module='verifier'):
+    def move_to_docservers(docservers, file, module='verifier'):
         now = datetime.datetime.now()
         year = str(now.year)
         day = str('%02d' % now.day)

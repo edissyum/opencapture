@@ -56,7 +56,7 @@ def check_folders(folder_crawl, folder_dest=False):
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-c", "--custom_id", required=True, help="Identifier of the custom")
+ap.add_argument("-c", "--custom-id", required=True, help="Identifier of the custom")
 ap.add_argument("-cm", "--config_mail", required=True, help="path to mail.ini")
 ap.add_argument('-p', "--process", required=True, default='MAIL_1')
 args = vars(ap.parse_args())

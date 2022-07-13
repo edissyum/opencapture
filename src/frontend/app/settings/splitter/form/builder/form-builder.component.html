@@ -202,7 +202,8 @@
                                     </mat-menu>
                                     <mat-menu #autoCompleteMasksMenu="matMenu">
                                         <div *ngFor="let fieldMetadataItem of fieldMetadata">
-                                            <mat-form-field class="w-64 mx-2"(click)="$event.stopPropagation()" style="font-size: 12px;">
+                                            <mat-form-field class="w-64 mx-2" (click)="$event.stopPropagation()"
+                                                            style="font-size: 12px;">
                                                 <mat-label>{{ fieldMetadataItem.placeholder | translate }}</mat-label>
                                                 <input matInput [(ngModel)]="field[fieldMetadataItem['id']]" type="text">
                                             </mat-form-field>
@@ -215,7 +216,8 @@
                 </div>
             </ng-container>
             <div class="flex justify-center items-center">
-                <button mat-button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300">
+                <button mat-button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white
+                transition duration-300">
                     <span class="block" (click)="createForm()" *ngIf="creationMode">{{ "FORMS.create" | translate }}</span>
                     <span class="block" (click)="updateForm()" *ngIf="!creationMode">{{ "FORMS.modify" | translate }}</span>
                 </button>

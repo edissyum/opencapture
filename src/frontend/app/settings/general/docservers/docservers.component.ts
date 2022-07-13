@@ -31,7 +31,6 @@ import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {NotificationService} from "../../../../services/notifications/notifications.service";
 import {TranslateService} from "@ngx-translate/core";
-import {marker} from "@biesbjerg/ngx-translate-extract-marker";
 
 @Component({
     selector: 'app-docservers',

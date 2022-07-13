@@ -46,7 +46,7 @@ def process(args, file, log, splitter, files, tmp_folder, config, docservers):
     split(splitter, list_files)
     splitter.get_result_documents(blank_pages)
     original_file = file
-    file = files.move_to_docservers(config.cfg, docservers, file, 'splitter')
+    file = files.move_to_docservers(docservers, file, 'splitter')
     splitter.save_documents(tmp_folder, file, args['input_id'], original_file)
 
 

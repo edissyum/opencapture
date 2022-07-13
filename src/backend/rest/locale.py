@@ -49,7 +49,9 @@ def get_current_lang():
     current_lang = _configurations['locale']
     languages = current_app.config['LANGUAGES']
     angular_moment_lang = ''
+    babel_lang = ''
     for _l in languages:
         if current_lang == languages[_l]['lang_code']:
+            babel_lang = _l
             angular_moment_lang = languages[_l]['moment_lang_code']
-    return make_response({'lang': current_lang, 'moment_lang': angular_moment_lang}, 200)
+    return make_response({'lang': current_lang, 'moment_lang': angular_moment_lang, 'babel_lang': babel_lang}, 200)

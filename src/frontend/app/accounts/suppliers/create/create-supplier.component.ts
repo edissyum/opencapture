@@ -15,7 +15,7 @@ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {AfterContentInit, AfterViewInit, Component, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {marker} from "@biesbjerg/ngx-translate-extract-marker";
 import {FormBuilder, FormControl, Validators} from "@angular/forms";

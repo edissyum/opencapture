@@ -118,7 +118,7 @@ export class CreateFolderDocTypeComponent implements OnInit {
         };
         this.loading = true;
         this.http.post(environment['url'] + '/ws/doctypes/add', newFolder, {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
+            tap(() => {
                 this.notify.success(this.translate.instant('DOCTYPE.folder_added'));
                 this.form.reset();
                 this.form.controls['folder'].setValue(this.noMasterFolder);

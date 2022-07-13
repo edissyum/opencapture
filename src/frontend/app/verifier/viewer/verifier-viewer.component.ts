@@ -25,7 +25,6 @@ import { HttpClient } from "@angular/common/http";
 import { AuthService } from "../../../services/auth.service";
 import { NotificationService } from "../../../services/notifications/notifications.service";
 import { TranslateService } from "@ngx-translate/core";
-import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 import { FormControl} from "@angular/forms";
 import { DatePipe } from '@angular/common';
 import { LocalStorageService } from "../../../services/local-storage.service";

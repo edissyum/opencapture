@@ -71,7 +71,8 @@ export class UploadComponent implements OnInit {
 
     ngOnInit(): void {
         const splitterOrVerifier = this.localeStorageService.get('splitter_or_verifier');
-        this.http.get(environment['url'] + '/ws/inputs/list?module=' + splitterOrVerifier, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/inputs/list?module=' + splitterOrVerifier,
+            {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.inputs = data.inputs;
                 if (this.inputs.length === 1) {
@@ -94,7 +95,8 @@ export class UploadComponent implements OnInit {
                 const fileName = data[i].name;
                 const fileExtension = fileName.split('.').pop();
                 if (fileExtension.toLowerCase() !== 'pdf') {
-                    this.notify.handleErrors(this.translate.instant('UPLOAD.extension_unauthorized', {count: data.length}));
+                    this.notify.handleErrors(this.translate.instant('UPLOAD.extension_unauthorized',
+                        {count: data.length}));
                     return;
                 }
             }

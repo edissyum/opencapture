@@ -96,65 +96,6 @@ def create_classes_from_custom_id(custom_id):
     return database, config, regex, files, ocr, log, config_file, spreadsheet, smtp, docservers, configurations
 
 
-def create_classes(config_file):
-    config = _Config(config_file)
-    config_mail = _Config(config.cfg['GLOBAL']['configmail'])
-    smtp = _SMTP(
-        config_mail.cfg['GLOBAL']['smtp_notif_on_error'],
-        config_mail.cfg['GLOBAL']['smtp_host'],
-        config_mail.cfg['GLOBAL']['smtp_port'],
-        config_mail.cfg['GLOBAL']['smtp_login'],
-        config_mail.cfg['GLOBAL']['smtp_pwd'],
-        config_mail.cfg['GLOBAL']['smtp_ssl'],
-        config_mail.cfg['GLOBAL']['smtp_starttls'],
-        config_mail.cfg['GLOBAL']['smtp_dest_admin_mail'],
-        config_mail.cfg['GLOBAL']['smtp_delay'],
-        config_mail.cfg['GLOBAL']['smtp_auth'],
-        config_mail.cfg['GLOBAL']['smtp_from_mail'],
-    )
-    log = _Log(config.cfg['GLOBAL']['logfile'], smtp)
-    db_user = config.cfg['DATABASE']['postgresuser']
-    db_pwd = config.cfg['DATABASE']['postgrespassword']
-    db_name = config.cfg['DATABASE']['postgresdatabase']
-    db_host = config.cfg['DATABASE']['postgreshost']
-    db_port = config.cfg['DATABASE']['postgresport']
-    database = _Database(log, db_name, db_user, db_pwd, db_host, db_port)
-
-    regex = {}
-    docservers = {}
-    configurations = {}
-
-    _ds = database.select({
-        'select': ['*'],
-        'table': ['docservers'],
-    })
-    for _d in _ds:
-        docservers[_d['docserver_id']] = _d['path']
-
-    _config = database.select({
-        'select': ['*'],
-        'table': ['configurations'],
-    })
-
-    for _c in _config:
-        configurations[_c['label']] = _c['data']['value']
-
-    _regex = database.select({
-        'select': ['regex_id', 'content'],
-        'table': ['regex'],
-        'where': ["lang in ('global', %s)"],
-        'data': [configurations['locale']],
-    })
-
-    for _r in _regex:
-        regex[_r['regex_id']] = _r['content']
-
-    spreadsheet = _Spreadsheet(log, docservers, config)
-    ocr = _PyTesseract(configurations['locale'], log, config, docservers)
-
-    return config, regex, log, ocr, database, spreadsheet, smtp, docservers, configurations
-
-
 def check_file(files, path, log, docservers):
     if not files.check_file_integrity(path, docservers):
         log.error('The integrity of file could\'nt be verified : ' + str(path))
@@ -246,7 +187,7 @@ def launch(args):
                                                         docservers, configurations, languages)
                     if not res:
                         mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'],
-                                                       args['msg'], config, docservers)
+                                                       args['msg'], docservers)
                         log.error('Error while processing e-mail', False)
         elif splitter_method == 'separate_by_document':
             list_of_files = separator_qr.split_document_every_two_pages(path)
@@ -256,7 +197,7 @@ def launch(args):
                                                         docservers, configurations, languages)
                     if not res:
                         mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'],
-                                                       args['msg'], config, docservers)
+                                                       args['msg'], docservers)
                         log.error('Error while processing e-mail', False)
             os.remove(path)
         else:
@@ -265,7 +206,7 @@ def launch(args):
                                                     configurations, languages)
                 if not res:
                     mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'],
-                                                   args['msg'], config, docservers)
+                                                   args['msg'], docservers)
                     log.error('Error while processing e-mail', False)
 
     recursive_delete(tmp_folder, log)

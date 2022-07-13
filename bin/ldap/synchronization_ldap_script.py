@@ -28,7 +28,7 @@ from ldap3.core.exceptions import LDAPException
 from werkzeug.security import generate_password_hash
 
 sys.path.insert(0, '/var/www/html/opencaptureforinvoices/')
-from src.backend.main import create_classes
+from src.backend.main import create_classes_from_custom_id
 
 
 def print_log(message):
@@ -50,7 +50,7 @@ def retrieve_ldap_synchronization_data():
         # Informations Ldap synchronization users
         global user_id, firstname, lastname, class_user, object_class, default_password, default_role, users_dn
 
-        _vars = create_classes(CONFIG_FILEPATH)
+        _vars = create_classes_from_custom_id(CUSTOM_ID)
         database = _vars[4]
         database_res = database.select({
             'select': ['data'],
@@ -171,7 +171,7 @@ def check_database_users(ldap_users_data, default_role):
    :param default_role:
    :return:
     """
-    _vars = create_classes(CONFIG_FILEPATH)
+    _vars = create_classes_from_custom_id(CUSTOM_ID)
     database = _vars[4]
     try:
         users = database.select({
@@ -305,6 +305,7 @@ if __name__ == "__main__":
     # Recuperer les deux chemins vers le fichier de config_default.ini  et le fichier de log
     CONFIG_FILEPATH = config.get("file_path", 'config_file')
     LOG_FILEPATH = config.get("file_path", 'log_file')
+    CUSTOM_ID = config.get('file_path', 'custom_id')
 
     if not CONFIG_FILEPATH or not LOG_FILEPATH:
         print_log('Path to config file and/or log file does not exist in the config file')

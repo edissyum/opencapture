@@ -345,7 +345,7 @@
                         </button>
                         <mat-form-field class="-top-2">
                             <mat-label>{{ 'SPLITTER.send_to' | translate }}</mat-label>
-                            <mat-select [(ngModel)]="toolSelectedOption" matNativeControl>
+                            <mat-select [(ngModel)]="toolSelectedOption">
                                 <mat-option *ngFor="let document of documents;" [value]="document['id']">
                                     {{document['documentTypeName']}}
                                 </mat-option>

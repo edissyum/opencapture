@@ -121,7 +121,7 @@ export class CreateDocTypeComponent implements OnInit {
             'form_id'       : this.selectedFormId,
         };
         this.http.post(environment['url'] + '/ws/doctypes/add', newDocType, {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
+            tap(() => {
                 this.notify.success(this.translate.instant('DOCTYPE.doctype_added'));
                 if (this.selectedFormId)
                     this.documentTypeFactoryComponent.treeDataObj.loadTree(this.selectedFormId);

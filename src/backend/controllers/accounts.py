@@ -412,10 +412,13 @@ def import_suppliers(file):
     docservers = _vars[9]
 
     filename = _Files.save_uploaded_file(file, current_app.config['UPLOAD_FOLDER'])
-    res = subprocess.Popen('python3 ' + docservers['PROJECT_PATH'] + "/loadReferencial.py -f " +
-                           filename + " -c " + custom_id,
-                           shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    _, err = res.communicate()
+    cmd = 'python3 ' + docservers['PROJECT_PATH'] + "/loadReferencial.py -f " + filename
+    if custom_id:
+        cmd += " -c " + custom_id
+
+    with subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as res:
+        _, err = res.communicate()
+
     if err.decode('utf-8'):
         response = {
             "errors": gettext('LOAD_SUPPLIER_REFERENCIAL_ERROR'),

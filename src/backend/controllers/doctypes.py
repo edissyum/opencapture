@@ -141,7 +141,7 @@ def generate_separator(args):
         qr_code_value = "BUNDLESTART"
         separator_type_label = gettext('BUNDLESEPARATOR')
 
-    res_separators = _SeparatorQR.generate_separator(_db_config, _docservers, qr_code_value, args['label'], separator_type_label)
+    res_separators = _SeparatorQR.generate_separator(_db_config, docservers, qr_code_value, args['label'], separator_type_label)
     if not res_separators[0]:
         response = {
             "errors": "DOCTYPE_ERROR",

@@ -82,7 +82,7 @@ export class SeparatorComponent implements OnInit {
     }
 
     onChangeType() {
-        let args = {};
+        let args;
         if (this.selectedSeparator === "bundleSeparator") {
             args = {
                 'type'  : 'bundleSeparator',

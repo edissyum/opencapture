@@ -29,7 +29,6 @@ import {environment} from  "../../../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";
 import {Sort} from "@angular/material/sort";
-import {LocaleService} from "../../../../services/locale.service";
 
 @Component({
     selector: 'app-regex',

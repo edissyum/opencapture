@@ -25,7 +25,7 @@ from src.backend import retrieve_config_from_custom_id
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
-    ap.add_argument("-c", "--custom_id", required=True, help="Identifier of the custom")
+    ap.add_argument("-c", "--custom-id", required=False, help="Identifier of the custom")
     ap.add_argument("-f", "--file", required=False, help="path to referential file")
     args = vars(ap.parse_args())
 

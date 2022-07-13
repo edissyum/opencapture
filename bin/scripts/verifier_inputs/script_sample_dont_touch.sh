@@ -37,7 +37,7 @@ then
 
     mv "$filepath" "$tmpFilepath"
 
-    python3 "$OCPath"/launch_worker.py --custom_id "§§CUSTOM_ID§§" -f "$tmpFilepath"/"$filename" "§§ARGUMENTS§§"
+    python3 "$OCPath"/launch_worker.py --custom-id "§§CUSTOM_ID§§" -f "$tmpFilepath"/"$filename" "§§ARGUMENTS§§"
 
     rm -f $PID
 elif test -f "$filepath" && test "$ext" != 'application/pdf; charset=binary';

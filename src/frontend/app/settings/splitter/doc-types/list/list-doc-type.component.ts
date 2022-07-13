@@ -187,7 +187,7 @@ export class ListDocTypeComponent implements OnInit {
 
   updateDoctype(newDocType: any) {
     this.http.post(environment['url'] + '/ws/doctypes/update', newDocType, {headers: this.authService.headers}).pipe(
-        tap((data: any) => {
+        tap(() => {
           this.notify.success(this.translate.instant('DOCTYPE.doctype_edited'));
           if (this.selectedFormId)
             this.documentTypeFactoryComponent.treeDataObj.loadTree(this.selectedFormId);

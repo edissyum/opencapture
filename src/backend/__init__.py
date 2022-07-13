@@ -50,6 +50,7 @@ app.config.from_mapping(
     SECRET_KEY='§§SECRET§§',
     UPLOAD_FOLDER=os.path.join(app.instance_path, 'upload/verifier/'),
     UPLOAD_FOLDER_SPLITTER=os.path.join(app.instance_path, 'upload/splitter/'),
+    BABEL_TRANSLATION_DIRECTORIES=app.root_path.replace('backend', 'assets') + '/i18n/backend/translations/'
 )
 
 with open(os.path.join(app.instance_path, 'lang.json'), encoding='UTF-8') as lang_file:

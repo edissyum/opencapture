@@ -15,15 +15,14 @@ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import { Component, Input, OnInit } from '@angular/core';
 import { Location } from "@angular/common";
-import { animate, state, style, transition, trigger } from "@angular/animations";
-import { UserService } from "../../services/user.service";
-import { LocaleService } from "../../services/locale.service";
-import { LocalStorageService } from "../../services/local-storage.service";
-import { PrivilegesService } from "../../services/privileges.service";
 import { Router } from "@angular/router";
 import {TranslateService} from "@ngx-translate/core";
+import { Component, Input, OnInit } from '@angular/core';
+import { UserService } from "../../services/user.service";
+import { LocaleService } from "../../services/locale.service";
+import { PrivilegesService } from "../../services/privileges.service";
+import { LocalStorageService } from "../../services/local-storage.service";
 
 @Component({
     selector: 'app-menu',

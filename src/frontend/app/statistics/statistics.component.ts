@@ -15,7 +15,7 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import {environment} from  "../env";
 import {catchError, finalize, tap} from "rxjs/operators";
 import {of} from "rxjs";

@@ -23,7 +23,7 @@ from src.backend.functions import retrieve_config_from_custom_id
 
 ap = argparse.ArgumentParser()
 ap.add_argument("-f", "--file", required=True, help="Path to file")
-ap.add_argument("-c", "--custom_id", required=True, help="Identifier of the custom")
+ap.add_argument("-c", "--custom-id", required=True, help="Identifier of the custom")
 ap.add_argument("-input_id", "--input_id", required=True, help="Identifier of the input chain")
 args = vars(ap.parse_args())
 
