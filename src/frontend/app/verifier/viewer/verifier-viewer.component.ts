@@ -690,12 +690,21 @@ export class VerifierViewerComponent implements OnInit {
                     .pipe(
                         tap((data: any) => {
                             this.isOCRRunning = false;
-                            const oldPosition = {
-                                x: this.invoice.positions[inputId.trim()].x / this.ratio - ((this.invoice.positions[inputId.trim()].x / this.ratio) * 0.005),
-                                y: this.invoice.positions[inputId.trim()].y / this.ratio - ((this.invoice.positions[inputId.trim()].y / this.ratio) * 0.003),
-                                width: this.invoice.positions[inputId.trim()].width / this.ratio + ((this.invoice.positions[inputId.trim()].width / this.ratio) * 0.05),
-                                height: this.invoice.positions[inputId.trim()].height / this.ratio + ((this.invoice.positions[inputId.trim()].height / this.ratio) * 0.6)
+                            let oldPosition = {
+                                x: 0,
+                                y: 0,
+                                width: 0,
+                                height: 0,
                             };
+                            if (this.invoice.positions[inputId.trim()]) {
+                                oldPosition = {
+                                    x: this.invoice.positions[inputId.trim()].x / this.ratio - ((this.invoice.positions[inputId.trim()].x / this.ratio) * 0.005),
+                                    y: this.invoice.positions[inputId.trim()].y / this.ratio - ((this.invoice.positions[inputId.trim()].y / this.ratio) * 0.003),
+                                    width: this.invoice.positions[inputId.trim()].width / this.ratio + ((this.invoice.positions[inputId.trim()].width / this.ratio) * 0.05),
+                                    height: this.invoice.positions[inputId.trim()].height / this.ratio + ((this.invoice.positions[inputId.trim()].height / this.ratio) * 0.6)
+                                };
+                            }
+
                             const newPosition = this.getSelectionByCpt(selection, cpt);
                             if (newPosition.x !== oldPosition.x && newPosition.y !== oldPosition.y &&
                                 newPosition.width !== oldPosition.width && newPosition.height !== oldPosition.height) {

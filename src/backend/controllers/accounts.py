@@ -409,12 +409,11 @@ def delete_supplier(supplier_id):
 def import_suppliers(file):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
-    _cfg = _vars[1]
     docservers = _vars[9]
 
     filename = _Files.save_uploaded_file(file, current_app.config['UPLOAD_FOLDER'])
     res = subprocess.Popen('python3 ' + docservers['PROJECT_PATH'] + "/loadReferencial.py -f " +
-                           filename + " -c " + current_app.instance_path + '/config.ini',
+                           filename + " -c " + custom_id,
                            shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     _, err = res.communicate()
     if err.decode('utf-8'):

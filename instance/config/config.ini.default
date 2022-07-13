@@ -1,7 +1,7 @@
 [GLOBAL]
 configMail       = /var/www/html/opencaptureforinvoices/custom/§§CUSTOM_ID§§/config/mail.ini
-watcherConfig    = /var/www/html/opencaptureforinvoices/custom/§§CUSTOM_ID§§/config/watcher.ini
-logFile          = /var/www/html/opencaptureforinvoices/custom/§§CUSTOM_ID§§/bin/log/OCforInvoices.log
+watcherConfig    = /var/www/html/opencaptureforinvoices/instance/config/watcher.ini
+logFile          = /var/www/html/opencaptureforinvoices/custom/§§CUSTOM_ID§§/bin/data/log/OCforInvoices.log
 
 [AI-CLASSIFICATION]
 ; True or False, python way

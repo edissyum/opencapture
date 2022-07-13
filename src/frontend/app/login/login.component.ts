@@ -99,6 +99,7 @@ export class LoginComponent implements OnInit {
     onSubmit() {
         const password = this.loginForm.get('password').value;
         const username = this.loginForm.get('username').value;
+        console.log(this.localeService);
         if (password && username) {
             this.processLogin = true;
             this.http.post(
@@ -106,7 +107,7 @@ export class LoginComponent implements OnInit {
                 {
                     'username': username,
                     'password': password,
-                    'lang': this.localeService.currentLang
+                    'lang': this.localeService.currentBabelLang
                 },
                 {
                     observe: 'response'

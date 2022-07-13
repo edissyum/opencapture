@@ -118,8 +118,8 @@ def create_input(data):
         return response, 401
 
     input_info, error = get_inputs({
-        'where': ['input_folder = %s', 'module = %s'],
-        'data': [data['input_folder'], data['module']]
+        'where': ['input_folder = %s', 'module = %s', 'status <> %s'],
+        'data': [data['input_folder'], data['module'], 'DEL']
     })
     if input_info['inputs']:
         response = {
@@ -201,6 +201,8 @@ def delete_script_and_incron(args):
     if os.path.isfile(_cfg.cfg['GLOBAL']['watcherconfig']):
         fs_watcher_config = _Config(_cfg.cfg['GLOBAL']['watcherconfig'], interpolation=False).cfg
         fs_watcher_job = args['module'] + '_' + args['input_id']
+        if custom_id:
+            fs_watcher_job += '_' + custom_id
         if fs_watcher_job in fs_watcher_config:
             _Config.fswatcher_remove_section(_cfg.cfg['GLOBAL']['watcherconfig'], fs_watcher_job)
         return '', 200
@@ -234,6 +236,8 @@ def create_script_and_incron(args):
                     corrected_line = line.replace('§§SCRIPT_NAME§§', script_name.replace('.sh', ''))
                     corrected_line = corrected_line.replace('§§OC_PATH§§', docservers['PROJECT_PATH'] + '/')
                     corrected_line = corrected_line.replace('"§§ARGUMENTS§§"', arguments)
+                    corrected_line = corrected_line.replace('§§CUSTOM_ID§§', custom_id)
+                    corrected_line = corrected_line.replace('§§LOG_PATH§§', _cfg.cfg['GLOBAL']['logfile'])
                     new_script_file.write(corrected_line + '\n')
             os.chmod(new_script_filename, os.stat(new_script_filename).st_mode | stat.S_IEXEC)
 
@@ -254,6 +258,8 @@ def create_script_and_incron(args):
             if os.path.isfile(_cfg.cfg['GLOBAL']['watcherconfig']):
                 fs_watcher_config = _Config(_cfg.cfg['GLOBAL']['watcherconfig'], interpolation=False)
                 fs_watcher_job = args['module'] + '_' + args['input_id']
+                if custom_id:
+                    fs_watcher_job += '_' + custom_id
                 fs_watcher_command = new_script_filename + ' $filename'
                 if fs_watcher_job in fs_watcher_config.cfg:
                     _Config.fswatcher_update_command(fs_watcher_config.file, fs_watcher_job, fs_watcher_command, args['input_label'])

@@ -92,7 +92,7 @@ mkdir -p $defaultPath/custom/$customId/bin/data/{log,MailCollect}
 mkdir -p $defaultPath/custom/$customId/bin/scripts/{verifier_inputs,splitter_inputs}
 
 echo "[$customId]" >> $customIniFile
-echo "path = $defaultPath/$customId" >> $customIniFile
+echo "path = $defaultPath/custom/$customId" >> $customIniFile
 echo "" >> $customIniFile
 
 ####################
@@ -273,10 +273,9 @@ chown -R "$user":"$user" /tmp/OpenCaptureForInvoices
 
 ####################
 # Copy file from default one
-cp $defaultPath/instance/config.ini.default $defaultPath/instance/config.ini
 cp $defaultPath/bin/ldap/config/config.ini.default "$defaultPath/custom/$customId/bin/ldap/config/config.ini"
 cp $defaultPath/instance/config/mail.ini.default "$defaultPath/custom/$customId/config/mail.ini"
-cp $defaultPath/instance/config/config_DEFAULT.ini.default "$defaultPath/custom/$customId/config/config.ini"
+cp $defaultPath/instance/config/config.ini.default "$defaultPath/custom/$customId/config/config.ini"
 cp $defaultPath/instance/referencial/default_referencial_supplier.ods.default $defaultPath/instance/referencial/default_referencial_supplier.ods
 cp $defaultPath/instance/referencial/default_referencial_supplier_index.json.default $defaultPath/instance/referencial/default_referencial_supplier_index.json
 
@@ -375,15 +374,15 @@ chown -R "$user":"$user" $defaultPath/custom/$customId/bin/scripts/splitter_inpu
 
 ####################
 # Create docservers
-mkdir -p "$docserverPath/OpenCapture/$customId/{verifier,splitter}"
-mkdir -p "$docserverPath/OpenCapture/$customId/verifier/images/{original_pdf,full,thumbs,positions_masks}"
-mkdir -p "$docserverPath/OpenCapture/$customId/splitter/{original_pdf,batches,separated_pdf,error}"
+mkdir -p $docserverPath/OpenCapture/{verifier,splitter}
+mkdir -p $docserverPath/OpenCapture/verifier/images/{original_pdf,full,thumbs,positions_masks}
+mkdir -p $docserverPath/OpenCapture/splitter/{original_pdf,batches,separated_pdf,error}
 chmod -R 775 $docserverPath/OpenCapture/
 chmod -R g+s $docserverPath/OpenCapture/
 chown -R "$user":"$group" $docserverPath/OpenCapture/
 
 ####################
 # Create default export and input XML and PDF folder
-mkdir -p "/var/share/$customId/{entrant,export}/{verifier,splitter}/"
+mkdir -p /var/share/{entrant,export}/{verifier,splitter}/
 chmod -R 775 /var/share/
 chown -R "$user":"$group" /var/share/

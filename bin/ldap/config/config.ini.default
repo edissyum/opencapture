@@ -1,3 +1,3 @@
 [file_path]
 log_file = /var/www/html/opencaptureforinvoices/bin/ldap/log/technique.log
-config_file = /var/www/html/opencaptureforinvoices/instance/config/config_DEFAULT.ini
+config_file = /var/www/html/opencaptureforinvoices/instance/config/config.ini

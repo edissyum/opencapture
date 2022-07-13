@@ -18,7 +18,7 @@
 
 name="§§SCRIPT_NAME§§"
 OCPath="§§OC_PATH§§"
-logFile="$OCPath"bin/data/log/OCforInvoices.log
+logFile="§§LOG_PATH§§"
 errFilepath="$OCPath/bin/data/error/$name/"
 tmpFilepath="$OCPath/bin/data/pdf/"
 PID=/tmp/securite-$name-$$.pid

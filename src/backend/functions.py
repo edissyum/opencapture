@@ -34,7 +34,7 @@ def retrieve_custom_from_url(request):
 def retrieve_config_from_custom_id(custom_id):
     res = False
     found_custom = False
-    default_config_file = str(Path(__file__).parents[2]) + '/instance/config/config_DEFAULT.ini'
+    default_config_file = str(Path(__file__).parents[2]) + '/instance/config/config.ini'
     custom_directory = str(Path(__file__).parents[2]) + '/custom/'
     custom_ini_file = str(Path(__file__).parents[2]) + '/custom/custom.ini'
     if os.path.isdir(custom_directory) and os.path.isfile(custom_ini_file):
@@ -45,10 +45,9 @@ def retrieve_config_from_custom_id(custom_id):
                 if os.path.isdir(customs_config.cfg[custom_name]['path']):
                     if os.path.isfile(customs_config.cfg[custom_name]['path'] + '/config/config.ini'):
                         res = customs_config.cfg[custom_name]['path'] + '/config/config.ini'
-
-    if res is False and os.path.isfile(default_config_file) and found_custom:
+    if res is False and os.path.isfile(default_config_file) and (found_custom or not custom_id):
         res = default_config_file
-    elif not found_custom:
+    elif not found_custom and custom_id:
         res = False
     return res
 

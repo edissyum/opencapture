@@ -15,6 +15,7 @@ import {NotificationService} from "./notifications/notifications.service";
 })
 export class LocaleService {
     currentLang         : string = 'fra';
+    currentBabelLang    : string = 'fr';
     dateAdaptaterLocale : string = 'fr-FR';
     langs               : [] = [];
 
@@ -79,6 +80,7 @@ export class LocaleService {
     getCurrentLocale() {
         this.http.get(environment['url'] + '/ws/i18n/getCurrentLang').pipe(
             tap((data: any) => {
+                console.log(data);
                 this.currentLang = data.lang;
                 if (data.moment_lang) {
                     this.dateAdaptaterLocale = data.moment_lang;
