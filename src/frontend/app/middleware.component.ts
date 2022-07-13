@@ -42,9 +42,11 @@ export class MiddlewareComponent implements HttpInterceptor {
     intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
         if (!environment['customId'] && /http(s)?:\/\/|backend_oc\//.test(request.url)) {
             let currentUrl = window.location.href;
+            console.log(currentUrl);
             currentUrl = currentUrl.replace('http://', '').replace('https://', '');
             currentUrl = currentUrl.replace(new RegExp('//'), '/');
             const currentUrlArray = currentUrl.split('/');
+            console.log(currentUrlArray);
             for (let i = 0; i <= currentUrlArray.length; i++) {
                 if (currentUrlArray[i] === 'dist') {
                     let customId = '';
@@ -53,10 +55,12 @@ export class MiddlewareComponent implements HttpInterceptor {
                     const currentCustom = this.localStorage.getCookie('OpenCaptureCustom');
                     if (!isFQDN && !isIp && currentUrlArray[i - 1] !== 'localhost') {
                         customId = currentUrlArray[i - 1];
+                        console.log(customId);
                         const oldUrl = environment['url'];
                         environment['customId'] = customId;
                         environment['url'] += '/' + customId;
                         const token = this.localStorage.getCookie('OpenCaptureForInvoicesToken');
+                        console.log(currentCustom);
                         if (currentCustom && customId !== currentCustom) {
                             this.router.navigate(['/logout']).then();
                         }
