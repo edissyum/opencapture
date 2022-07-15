@@ -448,7 +448,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
     file_name = str(uuid.uuid4())
     full_jpg_filename = 'full_' + file_name + '-%03d.jpg'
-    file = files.move_to_docservers(config.cfg, docservers, file)
+    file = files.move_to_docservers(docservers, file)
     # Convert all the pages to JPG (used to full web interface)
     files.save_img_with_wand(file, docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename)
 

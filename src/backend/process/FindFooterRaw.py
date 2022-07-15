@@ -63,7 +63,7 @@ class FindFooterRaw:
                 # In case of multiple no rates amount found, take the higher
                 data = res.group()
                 if regex == self.regex['vatAmountRegex']:
-                    data = re.sub(r"" + self.regex['vatAmountRegex'][:-2] + "", '', res.group())  # Delete the delivery number keyword
+                    data = re.sub(r"" + self.regex['vatAmountRegex'][:-2] + "", '', res.group())  # Delete the vat amount  number keyword
 
                 tmp = re.finditer(r'[-+]?\d*[.,]+\d+([.,]+\d+)?|\d+', data)
                 result = ''
