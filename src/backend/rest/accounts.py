@@ -38,6 +38,7 @@ def suppliers_list():
     }
 
     if 'search' in request.args and request.args['search']:
+        args['offset'] = ''
         args['where'].append(
             "LOWER(name) LIKE '%%" + request.args['search'].lower() + "%%' OR "
             "LOWER(siret) LIKE '%%" + request.args['search'].lower() + "%%' OR "
@@ -173,6 +174,7 @@ def customers_list():
         'limit': request.args['limit'] if 'limit' in request.args else ''
     }
     if 'search' in request.args and request.args['search']:
+        args['offset'] = ''
         args['where'].append(
             "LOWER(name) LIKE '%%" + request.args['search'].lower() + "%%' OR "
             "LOWER(siret) LIKE '%%" + request.args['search'].lower() + "%%' OR "

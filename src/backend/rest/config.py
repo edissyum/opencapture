@@ -40,6 +40,7 @@ def get_configurations():
     }
 
     if 'search' in request.args and request.args['search']:
+        args['offset'] = ''
         args['where'].append(
             "LOWER(label) LIKE '%%" + request.args['search'].lower() + "%%' OR "
             "LOWER(data ->> 'description') LIKE '%%" + request.args['search'].lower() + "%%'"
@@ -59,6 +60,7 @@ def get_docservers():
     }
 
     if 'search' in request.args and request.args['search']:
+        args['offset'] = ''
         args['where'].append(
             "LOWER(label) LIKE '%%" + request.args['search'].lower() + "%%' OR "
             "LOWER(data ->> 'description') LIKE '%%" + request.args['search'].lower() + "%%'"
@@ -82,6 +84,7 @@ def get_regex():
     }
 
     if 'search' in request.args and request.args['search']:
+        args['offset'] = ''
         args['where'].append(
             "LOWER(regex_id) LIKE '%%" + request.args['search'].lower() + "%%' OR "
             "LOWER(label) LIKE '%%" + request.args['search'].lower() + "%%' "
