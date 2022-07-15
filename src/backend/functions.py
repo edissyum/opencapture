@@ -89,7 +89,6 @@ def check_python_customized_files(path):
 
 def search_custom_positions(data, ocr, files, regex, file, docservers):
     target = data['target'].lower()
-    print(data)
     try:
         position = json.loads(data['position'])
     except TypeError:
