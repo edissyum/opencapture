@@ -40,6 +40,7 @@ def get_users():
     }
 
     if 'search' in request.args and request.args['search']:
+        args['offset'] = ''
         args['where'].append(
             "LOWER(username) LIKE '%%" + request.args['search'].lower() + "%%' OR "
             "LOWER(firstname) LIKE '%%" + request.args['search'].lower() + "%%' OR "
