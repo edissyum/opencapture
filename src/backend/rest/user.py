@@ -42,9 +42,9 @@ def get_users():
     if 'search' in request.args and request.args['search']:
         args['offset'] = ''
         args['where'].append(
-            "LOWER(username) LIKE '%%" + request.args['search'].lower() + "%%' OR "
+            "(LOWER(username) LIKE '%%" + request.args['search'].lower() + "%%' OR "
             "LOWER(firstname) LIKE '%%" + request.args['search'].lower() + "%%' OR "
-            "LOWER(lastname) LIKE '%%" + request.args['search'].lower() + "%%'"
+            "LOWER(lastname) LIKE '%%" + request.args['search'].lower() + "%%')"
         )
     _users = user.get_users(args)
     return make_response(jsonify(_users[0])), _users[1]

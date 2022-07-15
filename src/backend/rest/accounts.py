@@ -40,10 +40,10 @@ def suppliers_list():
     if 'search' in request.args and request.args['search']:
         args['offset'] = ''
         args['where'].append(
-            "LOWER(name) LIKE '%%" + request.args['search'].lower() + "%%' OR "
+            "(LOWER(name) LIKE '%%" + request.args['search'].lower() + "%%' OR "
             "LOWER(siret) LIKE '%%" + request.args['search'].lower() + "%%' OR "
             "LOWER(siren) LIKE '%%" + request.args['search'].lower() + "%%' OR "
-            "LOWER(vat_number) LIKE '%%" + request.args['search'].lower() + "%%'"
+            "LOWER(vat_number) LIKE '%%" + request.args['search'].lower() + "%%')"
         )
 
     res = accounts.retrieve_suppliers(args)
@@ -176,11 +176,11 @@ def customers_list():
     if 'search' in request.args and request.args['search']:
         args['offset'] = ''
         args['where'].append(
-            "LOWER(name) LIKE '%%" + request.args['search'].lower() + "%%' OR "
+            "(LOWER(name) LIKE '%%" + request.args['search'].lower() + "%%' OR "
             "LOWER(siret) LIKE '%%" + request.args['search'].lower() + "%%' OR "
             "LOWER(company_number) LIKE '%%" + request.args['search'].lower() + "%%' OR "
             "LOWER(siren) LIKE '%%" + request.args['search'].lower() + "%%' OR "
-            "LOWER(vat_number) LIKE '%%" + request.args['search'].lower() + "%%'"
+            "LOWER(vat_number) LIKE '%%" + request.args['search'].lower() + "%%')"
         )
 
     res = accounts.retrieve_customers(args)
