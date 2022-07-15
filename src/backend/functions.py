@@ -57,18 +57,21 @@ def check_python_customized_files(path):
 
 def search_custom_positions(data, ocr, files, regex, file, docservers):
     target = data['target'].lower()
-    position = json.loads(data['position'])
+    try:
+        position = json.loads(data['position'])
+    except TypeError:
+        position = data['position']
 
     target_file = ''
     if position:
-        if 'page' not in data or ('page' in data and data['page'] in ['1', '', None]):
+        if 'page' not in data or ('page' in data and str(data['page']) in ['1', '', None]):
             if target == 'footer':
                 target_file = files.jpg_name_footer
             elif target == 'header':
                 target_file = files.jpg_name_header
             else:
                 target_file = files.jpg_name
-        elif data['page'] != '1':
+        elif str(data['page']) != '1':
             position.update({"page": data['page']})
             nb_pages = files.get_pages(docservers, file)
             if str(nb_pages) == str(data['page']):
@@ -77,6 +80,7 @@ def search_custom_positions(data, ocr, files, regex, file, docservers):
                 elif target == 'header':
                     target_file = files.jpg_name_last_header
                 else:
+                    print('heeeere')
                     target_file = files.jpg_name_last
             else:
                 files.pdf_to_jpg(file + '[' + str(int(data['page']) - 1) + ']', False, False, False, False, True)
