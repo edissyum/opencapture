@@ -65,7 +65,7 @@ if __name__ == '__main__':
         list_existing_supplier = database.select(args)
         # Insert into database all the supplier not existing into the database
         for vat_number in spreadsheet.referencialSupplierData:
-            if not any(str(vat_number) in value['vat_number'] for value in list_existing_supplier):
+            if not any(str(vat_number) == value['vat_number'] for value in list_existing_supplier):
                 args = {
                     'table': 'addresses',
                     'columns': {

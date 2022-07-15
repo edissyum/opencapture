@@ -92,7 +92,7 @@ class Database:
 
             query = "SELECT " + select + " FROM " + args['table'] + where + group_by + order_by + limit + offset
             cursor = self.conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-
+            print(query, args['data'])
             try:
                 cursor.execute(query, args['data'])
                 return cursor.fetchall()

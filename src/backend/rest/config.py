@@ -42,9 +42,10 @@ def get_configurations():
     }
 
     if 'search' in request.args and request.args['search']:
+        args['offset'] = ''
         args['where'].append(
-            "LOWER(label) LIKE '%%" + request.args['search'].lower() + "%%' OR "
-            "LOWER(data ->> 'description') LIKE '%%" + request.args['search'].lower() + "%%'"
+            "(LOWER(label) LIKE '%%" + request.args['search'].lower() + "%%' OR "
+            "LOWER(data ->> 'description') LIKE '%%" + request.args['search'].lower() + "%%')"
         )
     res = config.retrieve_configurations(args)
     return make_response(jsonify(res[0])), res[1]
@@ -67,9 +68,10 @@ def get_docservers():
     }
 
     if 'search' in request.args and request.args['search']:
+        args['offset'] = ''
         args['where'].append(
-            "LOWER(label) LIKE '%%" + request.args['search'].lower() + "%%' OR "
-            "LOWER(data ->> 'description') LIKE '%%" + request.args['search'].lower() + "%%'"
+            "(LOWER(label) LIKE '%%" + request.args['search'].lower() + "%%' OR "
+            "LOWER(data ->> 'description') LIKE '%%" + request.args['search'].lower() + "%%')"
         )
     res = config.retrieve_docservers(args)
     return make_response(jsonify(res[0])), res[1]
@@ -91,9 +93,10 @@ def get_regex():
     }
 
     if 'search' in request.args and request.args['search']:
+        args['offset'] = ''
         args['where'].append(
-            "LOWER(regex_id) LIKE '%%" + request.args['search'].lower() + "%%' OR "
-            "LOWER(label) LIKE '%%" + request.args['search'].lower() + "%%' "
+            "(LOWER(regex_id) LIKE '%%" + request.args['search'].lower() + "%%' OR "
+            "LOWER(label) LIKE '%%" + request.args['search'].lower() + "%%') "
         )
     res = config.retrieve_regex(args)
     return make_response(jsonify(res[0])), res[1]
