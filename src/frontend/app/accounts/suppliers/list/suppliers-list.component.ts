@@ -291,13 +291,13 @@ export class SuppliersListComponent implements OnInit {
     importSuppliers(event: any) {
         const file:File = event.target.files[0];
         if (file) {
+            this.loading = true;
             const formData: FormData = new FormData();
             formData.append(file.name, file);
             this.http.post(environment['url'] + '/ws/accounts/supplier/importSuppliers', formData, {headers: this.authService.headers},
             ).pipe(
                 tap(() => {
                     this.notify.success(this.translate.instant('ACCOUNTS.suppliers_referencial_loaded'));
-                    this.loading = true;
                     this.loadSuppliers();
                 }),
                 catchError((err: any) => {

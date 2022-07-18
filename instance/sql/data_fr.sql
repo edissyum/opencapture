@@ -18,7 +18,7 @@ INSERT INTO "configurations" ("label", "data") VALUES ('resolution', '{"type": "
 INSERT INTO "configurations" ("label", "data") VALUES ('compressionQuality', '{"type": "int", "value": "100", "description": "Qualité de compression utilisée pour la conversion PDF en JPG. En pourcentage"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('locale', '{"type": "string", "value": "fra", "description": "Clé pour la sélection de la langue (fra ou eng par défaut)"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('invoiceSizeMin', '{"type": "int", "value": "6", "description": "Taille minimale pour un numéro de facture"}');
-INSERT INTO "configurations" ("label", "data") VALUES ('loginMessage', '{"type": "string", "value": "Open-Capture For Invoices - Gestion des factures", "description": "Court message affiché sur l''écran d''accueil"}');
+INSERT INTO "configurations" ("label", "data") VALUES ('loginMessage', '{"type": "string", "value": "Open-Capture For Invoices - LAD / RAD", "description": "Court message affiché sur l''écran d''accueil"}');
 
 -- CRÉATION DES DOCSERVERS
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('PROJECT_PATH', 'Chemin vers l''instance d''Open-Capture For Invoices', '/var/www/html/opencaptureforinvoices/');

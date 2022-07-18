@@ -85,12 +85,12 @@ done
 # Create custom symbolic link and folders
 ln -s "$defaultPath" "$defaultPath/$customId"
 
-mkdir -p $defaultPath/custom/$customId/{config,bin,assets}/
-mkdir -p $defaultPath/custom/$customId/bin/{data,ldap,scripts}
+mkdir -p $defaultPath/custom/"$customId"/{config,bin,assets}/
+mkdir -p $defaultPath/custom/"$customId"/bin/{data,ldap,scripts}/
 mkdir -p "$defaultPath/custom/$customId/assets/imgs/"
-mkdir -p "$defaultPath/custom/$customId/bin/ldap/config"
-mkdir -p $defaultPath/custom/$customId/bin/data/{log,MailCollect}
-mkdir -p $defaultPath/custom/$customId/bin/scripts/{verifier_inputs,splitter_inputs}
+mkdir -p "$defaultPath/custom/$customId/bin/ldap/config/"
+mkdir -p $defaultPath/custom/"$customId"/bin/data/{log,MailCollect}/
+mkdir -p $defaultPath/custom/"$customId"/bin/scripts/{verifier_inputs,splitter_inputs}/
 
 echo "[$customId]" >> $customIniFile
 echo "path = $defaultPath/custom/$customId" >> $customIniFile
@@ -368,10 +368,10 @@ chown -R "$user":"$group" $defaultPath
 # Makes scripts executable
 chmod u+x $defaultPath/bin/scripts/*.sh
 chown -R "$user":"$user" $defaultPath/bin/scripts/*.sh
-chmod u+x $defaultPath/custom/$customId/bin/scripts/verifier_inputs/*.sh
-chown -R "$user":"$user" $defaultPath/custom/$customId/bin/scripts/verifier_inputs/*.sh
-chmod u+x $defaultPath/custom/$customId/bin/scripts/splitter_inputs/*.sh
-chown -R "$user":"$user" $defaultPath/custom/$customId/bin/scripts/splitter_inputs/*.sh
+chmod u+x $defaultPath/custom/"$customId"/bin/scripts/verifier_inputs/*.sh
+chown -R "$user":"$user" $defaultPath/custom/"$customId"/bin/scripts/verifier_inputs/*.sh
+chmod u+x $defaultPath/custom/"$customId"/bin/scripts/splitter_inputs/*.sh
+chown -R "$user":"$user" $defaultPath/custom/"$customId"/bin/scripts/splitter_inputs/*.sh
 
 ####################
 # Create docservers
