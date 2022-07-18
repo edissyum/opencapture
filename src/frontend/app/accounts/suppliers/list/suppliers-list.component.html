@@ -38,6 +38,10 @@
                 <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ACCOUNTS.supplier_name' | translate }} </mat-header-cell>
                 <mat-cell *matCellDef="let element"> {{ element.name }} </mat-cell>
             </ng-container>
+            <ng-container matColumnDef="email">
+                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ACCOUNTS.email' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{ element.email }} </mat-cell>
+            </ng-container>
             <ng-container matColumnDef="vat_number">
                 <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ACCOUNTS.vat_number' | translate }} </mat-header-cell>
                 <mat-cell *matCellDef="let element"> {{ element.vat_number }} </mat-cell>

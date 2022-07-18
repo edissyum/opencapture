@@ -42,10 +42,10 @@ def suppliers_list():
         args['where'].append(
             "(LOWER(name) LIKE '%%" + request.args['search'].lower() + "%%' OR "
             "LOWER(siret) LIKE '%%" + request.args['search'].lower() + "%%' OR "
+            "LOWER(email) LIKE '%%" + request.args['search'].lower() + "%%' OR "
             "LOWER(siren) LIKE '%%" + request.args['search'].lower() + "%%' OR "
             "LOWER(vat_number) LIKE '%%" + request.args['search'].lower() + "%%')"
         )
-
     res = accounts.retrieve_suppliers(args)
     return make_response(res[0], res[1])
 

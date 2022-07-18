@@ -356,9 +356,9 @@ class FindFooter:
                 total_ht = [float("%.2f" % (float(total_ttc[0]) / (1 + float(vat_rate[0] / 100)))), (('', ''), ('', '')), True]
             if total_ht is False and total_ttc and vat_amount:
                 total_ht = [float("%.2f" % (float(total_ttc[0]) - float(vat_amount[0]))), (('', ''), ('', '')), True]
-            elif total_ttc is False and total_ht and vat_rate:
+            elif (total_ttc is False or not total_ttc[0]) and total_ht and vat_rate:
                 total_ttc = [float("%.2f" % (float(total_ht[0]) + (float(total_ht[0]) * float(float(vat_rate[0]) / 100)))), (('', ''), ('', '')), True]
-            elif total_ttc is False and total_ht and vat_amount:
+            elif (total_ttc is False or not total_ttc[0]) and total_ht and vat_amount:
                 total_ttc = [float("%.2f" % (float(total_ht[0]) + float(vat_amount[0]))), (('', ''), ('', '')), True]
             elif vat_rate is False and total_ht and total_ttc:
                 if vat_amount is False:
@@ -371,10 +371,11 @@ class FindFooter:
                 total = "%.2f" % (float(total_ht[0]) + (float(total_ht[0]) * float(vat_rate[0]) / 100))
             except (TypeError, ValueError):
                 return False
-            if float(total) == float(total_ttc[0]):
+
+            if (total and total_ttc and total_ttc[0]) and (float(total) == float(total_ttc[0])):
                 self.log.info('Footer informations found : [TOTAL : ' + str(total) + '] - [HT : ' + str(total_ht[0]) + '] - [VATRATE : ' + str(vat_rate[0]) + ']')
                 return [total_ht, total_ttc, vat_rate, self.nbPage, ["%.2f" % float(float(total_ht[0]) * (float(vat_rate[0]) / 100))]]
-            elif float(total_ttc[0]) == float("%.2f" % float(float(vat_amount[0]) + float(total_ht[0]))):
+            elif (total_ttc and total_ttc[0]) and float(total_ttc[0]) == float("%.2f" % float(float(vat_amount[0]) + float(total_ht[0]))):
                 self.log.info('Footer informations found : [TOTAL : ' + str(total) + '] - [HT : ' + str(total_ht[0]) + '] - [VATRATE : ' + str(vat_rate[0]) + ']')
                 return [total_ht, total_ttc, vat_rate, self.nbPage, ["%.2f" % float(float(total_ht[0]) * (float(vat_rate[0]) / 100))]]
             else:
