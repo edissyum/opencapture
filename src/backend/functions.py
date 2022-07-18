@@ -93,7 +93,6 @@ def search_custom_positions(data, ocr, files, regex, file, docservers):
         position = json.loads(data['position'])
     except TypeError:
         position = data['position']
-        pass
 
     target_file = ''
     if position:
