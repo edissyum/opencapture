@@ -83,14 +83,14 @@ class FindQuotationNumber:
         for line in self.text:
             for _invoice in re.finditer(r"" + self.regex['quotationRegex'] + "", line.content.upper()):
                 quotation_number = self.sanitize_quotation_number(_invoice.group())
-                if len(quotation_number) >= int(self.configurations['invoiceSizeMin']):
+                if len(quotation_number) >= int(self.configurations['devisSizeMin']):
                     self.log.info('Quotation number found : ' + quotation_number)
                     return [quotation_number, line.position, self.nbPages]
 
         for line in self.footer_text:
             for _invoice in re.finditer(r"" + self.regex['quotationRegex'] + "", line.content.upper()):
                 quotation_number = self.sanitize_quotation_number(_invoice.group())
-                if len(quotation_number) >= int(self.configurations['invoiceSizeMin']):
+                if len(quotation_number) >= int(self.configurations['devisSizeMin']):
                     self.log.info('Quotation number found : ' + quotation_number)
                     position = self.Files.return_position_with_ratio(line, 'footer')
                     return [quotation_number, position, self.nbPages]
