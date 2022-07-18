@@ -2,7 +2,7 @@
     <mat-sidenav #sidenav mode="side" opened class="w-1/6 flex flex-col h-full border-r border-green-400" style="top:0.1rem">
         <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">{{ "SETTINGS.administration" | translate }}</h3>
         <mat-divider class="border-green-400"></mat-divider>
-        <mat-nav-list class="pt-0">
+        <mat-nav-list class="pt-0 overflow-x-hidden overflow-y-auto" style="height: calc(100% - 60px)">
             <mat-expansion-panel *ngFor="let parent of this.serviceSettings.getSettingsParent()"
                                  [expanded]="parent.opened" (opened)="this.serviceSettings.closeOtherParent(this.router.url, parent['id'])">
                 <mat-expansion-panel-header class="settings_expansion">
@@ -93,14 +93,14 @@
                     <div class="text-center text-base mt-8" *ngIf="method['method_name'] === 'default'">
                         <mat-slide-toggle [checked]="this.isDefaultChecked" (change)="changedDefaultMethod(method)">
                             <span class="justify-center">
-                                {{'LOGIN-METHODS.enable_method' | translate}}
+                                {{ 'LOGIN-METHODS.enable_method' | translate }}
                             </span>
                         </mat-slide-toggle>
                     </div>
                     <div class="text-center text-base mt-8" *ngIf="method['method_name'] === 'ldap'">
                         <mat-slide-toggle [checked]="this.isLdapChecked" (change)="changedLdapMethod(method)">
                             <span class="justify-center">
-                                {{'LOGIN-METHODS.enable_method' | translate}}
+                                {{ 'LOGIN-METHODS.enable_method' | translate }}
                             </span>
                         </mat-slide-toggle>
                         <div [class.pointer-events-none]="!this.isLdapChecked"
@@ -120,7 +120,7 @@
                                                 </mat-select>
                                             </mat-form-field>
                                             <mat-form-field appearance="outline" *ngIf="field.type === 'password'">
-                                                <mat-label>{{field.label | translate}}</mat-label>
+                                                <mat-label>{{ field.label | translate }}</mat-label>
                                                 <input matInput [formControl]="field.control"
                                                        placeholder="{{ field.label | translate }}"
                                                        [required]="field.required"
@@ -130,14 +130,14 @@
                                                     <i class="fa fa-1x"  [class.fa-eye-slash]="!showPassword"
                                                        [class.fa-eye]="showPassword"></i>
                                                 </mat-icon>
-                                                <mat-hint>{{ field.hint}}</mat-hint>
+                                                <mat-hint>{{ field.hint }}</mat-hint>
                                             </mat-form-field>
                                             <mat-form-field appearance="outline" *ngIf="field.type === 'text'">
-                                                <mat-label>{{field.label | translate}}</mat-label>
+                                                <mat-label>{{ field.label | translate }}</mat-label>
                                                 <input matInput [formControl]="field.control"
                                                        [type]="field.type" [required]="field.required"
                                                        placeholder="{{ field.label | translate }}">
-                                                <mat-hint>{{ field.hint}}</mat-hint>
+                                                <mat-hint>{{ field.hint }}</mat-hint>
                                             </mat-form-field>
                                         </ng-container>
                                     </form>
@@ -165,14 +165,14 @@
                                                     <mat-option *ngFor="let option of field.values"
                                                             [value]="option['id']">{{ option['label'] }}</mat-option>
                                                 </mat-select>
-                                                <mat-hint>{{ field.hint}}</mat-hint>
+                                                <mat-hint>{{ field.hint }}</mat-hint>
                                             </mat-form-field>
                                             <mat-form-field appearance="outline" *ngIf="field.type === 'text'">
-                                                <mat-label>{{field.label | translate}}</mat-label>
+                                                <mat-label>{{ field.label | translate }}</mat-label>
                                                 <input matInput [formControl]="field.control"
                                                        [required]="field.required"
                                                        [type]="field.type" placeholder="{{ field.label | translate }}">
-                                                <mat-hint>{{ field.hint}}</mat-hint>
+                                                <mat-hint>{{ field.hint }}</mat-hint>
                                             </mat-form-field>
                                         </ng-container>
                                     </div>

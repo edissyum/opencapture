@@ -41,7 +41,7 @@ import {HistoryService} from "../../../../services/history.service";
     styleUrls: ['./suppliers-list.component.scss']
 })
 export class SuppliersListComponent implements OnInit {
-    columnsToDisplay : string[]    = ['id', 'name', 'vat_number', 'siret', 'siren', 'iban', 'form_label', 'actions'];
+    columnsToDisplay : string[]    = ['id', 'name', 'email', 'vat_number', 'siret', 'siren', 'iban', 'form_label', 'actions'];
     headers          : HttpHeaders = this.authService.headers;
     loading          : boolean     = true;
     allSuppliers     : any         = [];

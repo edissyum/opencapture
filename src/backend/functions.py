@@ -112,7 +112,6 @@ def search_custom_positions(data, ocr, files, regex, file, docservers):
                 elif target == 'header':
                     target_file = files.jpg_name_last_header
                 else:
-                    print('heeeere')
                     target_file = files.jpg_name_last
             else:
                 files.pdf_to_jpg(file + '[' + str(int(data['page']) - 1) + ']', False, False, False, False, True)

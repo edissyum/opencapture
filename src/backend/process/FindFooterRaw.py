@@ -187,7 +187,7 @@ class FindFooterRaw:
                 if total_ht in [False, None, {}]:
                     total_ht = self.process_footer_with_position('total_ht',
                                                                        ["positions ->> 'total_ht' as total_ht_position",
-                                                                        "pages ->> 'footer' as total_ht_page"])
+                                                                        "pages ->> 'total_ht' as total_ht_page"])
                     if total_ht:
                         self.totalHT = total_ht
                         self.log.info('totalHT found with position : ' + str(total_ht))
@@ -195,7 +195,7 @@ class FindFooterRaw:
                 if vat_rate in [False, None, {}]:
                     vat_rate = self.process_footer_with_position('vat_rate',
                                                                         ["positions ->> 'vat_rate' as vat_rate_position",
-                                                                         "pages ->> 'footer' as vat_rate_page"])
+                                                                         "pages ->> 'vat_rate' as vat_rate_page"])
                     if vat_rate:
                         self.vatRate = vat_rate
                         self.log.info('vatRate found with position : ' + str(vat_rate))

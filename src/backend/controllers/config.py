@@ -211,3 +211,8 @@ def update_login_image(image_content):
         image_handler.write(image_data)
         image_handler.close()
         return '', 200
+    else:
+        return {
+           "errors": gettext("ERROR_UPDATING_IMAGE"),
+           "message": gettext("CUSTOM_NOT_PRESENT")
+        }, 401

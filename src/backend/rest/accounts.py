@@ -44,6 +44,7 @@ def suppliers_list():
         args['where'].append(
             "(LOWER(name) LIKE '%%" + request.args['search'].lower() + "%%' OR "
             "LOWER(siret) LIKE '%%" + request.args['search'].lower() + "%%' OR "
+            "LOWER(email) LIKE '%%" + request.args['search'].lower() + "%%' OR "
             "LOWER(siren) LIKE '%%" + request.args['search'].lower() + "%%' OR "
             "LOWER(vat_number) LIKE '%%" + request.args['search'].lower() + "%%')"
         )
