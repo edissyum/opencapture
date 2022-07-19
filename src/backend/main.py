@@ -20,7 +20,6 @@ import sys
 import time
 import tempfile
 from kuyruk import Kuyruk
-from flask import current_app
 from .functions import recursive_delete, get_custom_array, retrieve_config_from_custom_id
 from .import_classes import _Database, _PyTesseract, _Files, _Log, _Config, _SeparatorQR, _Spreadsheet, _SMTP, _Mail
 
@@ -88,12 +87,26 @@ def create_classes_from_custom_id(custom_id):
     for _r in _regex:
         regex[_r['regex_id']] = _r['content']
 
+    _lang = database.select({
+        'select': ['*'],
+        'table': ['languages'],
+    })
+    languages = {}
+    for _l in _lang:
+        languages[_l['language_id']] = {}
+        languages[_l['language_id']].update({
+            'label': _l['label'],
+            'lang_code': _l['lang_code'],
+            'moment_lang_code': _l['moment_lang_code'],
+            'date_format': _l['date_format']
+        })
+
     spreadsheet = _Spreadsheet(log, docservers, config)
     filename = docservers['TMP_PATH'] + '/tmp/'
-    files = _Files(filename, log, docservers, configurations, regex)
+    files = _Files(filename, log, docservers, configurations, regex, languages)
     ocr = _PyTesseract(configurations['locale'], log, config, docservers)
 
-    return database, config, regex, files, ocr, log, config_file, spreadsheet, smtp, docservers, configurations
+    return database, config, regex, files, ocr, log, config_file, spreadsheet, smtp, docservers, configurations, languages
 
 
 def check_file(files, path, log, docservers):
@@ -121,23 +134,18 @@ def str2bool(value):
 OCforInvoices = Kuyruk()
 
 
-@OCforInvoices.task(queue='invoices')
+# @OCforInvoices.task(queue='invoices')
 def launch(args):
     start = time.time()
 
     if not retrieve_config_from_custom_id(args['custom_id']):
         sys.exit('Custom config file couldn\'t be found')
 
-    database, config, regex, files, ocr, log, _, _, smtp, docservers, configurations = create_classes_from_custom_id(args['custom_id'])
+    database, config, regex, _, ocr, log, _, _, smtp, docservers, configurations, languages = create_classes_from_custom_id(args['custom_id'])
     tmp_folder = tempfile.mkdtemp(dir=docservers['TMP_PATH'])
     with tempfile.NamedTemporaryFile(dir=tmp_folder) as tmp_file:
         filename = tmp_file.name
-    files = _Files(filename, log, docservers, configurations, regex)
-
-    if 'languages' in args:
-        languages = args['languages']
-    else:
-        languages = current_app.config['LANGUAGES']
+    files = _Files(filename, log, docservers, configurations, regex, languages)
 
     remove_blank_pages = False
     splitter_method = False
@@ -146,7 +154,7 @@ def launch(args):
             'select': ['*'],
             'table': ['inputs'],
             'where': ['input_id = %s', 'module = %s'],
-            'data': [args['input_id'], 'verifier'],
+            'data': [args['input_id'], 'verifier']
         })
         if input_settings:
             splitter_method = input_settings[0]['splitter_method_id']

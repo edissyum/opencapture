@@ -15,15 +15,15 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {MatPaginatorIntl} from "@angular/material/paginator";
-import {Injectable} from '@angular/core';
-import {TranslateService} from "@ngx-translate/core";
-import {environment} from  "./env";
-import {catchError, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {NotificationService} from "../services/notifications/notifications.service";
-import {HttpClient} from "@angular/common/http";
-import {LocaleService} from "../services/locale.service";
+import { MatPaginatorIntl } from "@angular/material/paginator";
+import { Injectable } from '@angular/core';
+import { TranslateService } from "@ngx-translate/core";
+import { environment } from  "./env";
+import { catchError, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { NotificationService } from "../services/notifications/notifications.service";
+import { HttpClient } from "@angular/common/http";
+import { LocaleService } from "../services/locale.service";
 
 @Injectable()
 export class CustomMatPaginatorIntl extends MatPaginatorIntl {

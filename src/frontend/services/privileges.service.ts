@@ -15,8 +15,8 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {Injectable} from '@angular/core';
-import {UserService} from "./user.service";
+import { Injectable } from '@angular/core';
+import { UserService } from "./user.service";
 
 @Injectable({
     providedIn: 'root'

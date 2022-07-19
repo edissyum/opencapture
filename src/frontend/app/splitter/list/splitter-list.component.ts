@@ -15,26 +15,26 @@
 
  @dev : Oussama BRICH <oussama.brich@edissyum.com> */
 
-import {Component, OnInit} from '@angular/core';
-import {LocalStorageService} from "../../../services/local-storage.service";
-import {environment} from  "../../env";
-import {catchError, finalize, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {AuthService} from "../../../services/auth.service";
-import {HttpClient} from "@angular/common/http";
-import {ActivatedRoute, Router} from "@angular/router";
-import {FormBuilder} from "@angular/forms";
-import {UserService} from "../../../services/user.service";
-import {TranslateService} from "@ngx-translate/core";
-import {NotificationService} from "../../../services/notifications/notifications.service";
-import {DomSanitizer} from '@angular/platform-browser';
-import {PageEvent} from "@angular/material/paginator";
-import {ConfirmDialogComponent} from "../../../services/confirm-dialog/confirm-dialog.component";
-import {MatDialog} from '@angular/material/dialog';
-import {HistoryService} from "../../../services/history.service";
-import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from "@angular/material/form-field";
-import {marker} from "@biesbjerg/ngx-translate-extract-marker";
-import {LastUrlService} from "../../../services/last-url.service";
+import { Component, OnInit } from '@angular/core';
+import { LocalStorageService } from "../../../services/local-storage.service";
+import { environment } from  "../../env";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { AuthService } from "../../../services/auth.service";
+import { HttpClient } from "@angular/common/http";
+import { ActivatedRoute, Router } from "@angular/router";
+import { FormBuilder } from "@angular/forms";
+import { UserService } from "../../../services/user.service";
+import { TranslateService } from "@ngx-translate/core";
+import { NotificationService } from "../../../services/notifications/notifications.service";
+import { DomSanitizer } from '@angular/platform-browser';
+import { PageEvent } from "@angular/material/paginator";
+import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm-dialog.component";
+import { MatDialog } from '@angular/material/dialog';
+import { HistoryService } from "../../../services/history.service";
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
+import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import { LastUrlService } from "../../../services/last-url.service";
 
 @Component({
     selector: 'app-list',

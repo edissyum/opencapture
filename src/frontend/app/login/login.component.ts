@@ -15,21 +15,21 @@ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {Component, OnInit} from '@angular/core';
-import {Validators, FormBuilder} from '@angular/forms';
-import {TranslateService} from "@ngx-translate/core";
-import {environment} from "../env";
-import {HttpClient} from "@angular/common/http";
-import {NotificationService} from "../../services/notifications/notifications.service";
-import {catchError, finalize, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {AuthService} from "../../services/auth.service";
-import {Router} from "@angular/router";
-import {ConfigService} from "../../services/config.service";
-import {LocaleService} from "../../services/locale.service";
-import {UserService} from "../../services/user.service";
-import {HistoryService} from "../../services/history.service";
-import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
+import { Component, OnInit } from '@angular/core';
+import { Validators, FormBuilder } from '@angular/forms';
+import { TranslateService } from "@ngx-translate/core";
+import { environment } from "../env";
+import { HttpClient } from "@angular/common/http";
+import { NotificationService } from "../../services/notifications/notifications.service";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { AuthService } from "../../services/auth.service";
+import { Router } from "@angular/router";
+import { ConfigService } from "../../services/config.service";
+import { LocaleService } from "../../services/locale.service";
+import { UserService } from "../../services/user.service";
+import { HistoryService } from "../../services/history.service";
+import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 
 @Component({
     selector: 'app-login',

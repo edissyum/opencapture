@@ -6,3 +6,15 @@ INSERT INTO "configurations" ("label", "data") VALUES ('devisSizeMin', '{"type":
 
 -- Improve REGEX
 UPDATE regex SET content = '(((?P<r1>NUMERO|N(O|°|º|R.))?\s*(DE)?\s*(DEVIS)(\s*:)?\s*(?(r1)()|(NUMERO|N(O|°|º|R.)?))(\s*:)?|(R(E|É)F(\.)?\s*PROPOSITION\s*COMMERCIALE)|CONTRAT\s*(N(O|°|º|R.)))\s*(:|#){0,1}).*' WHERE lang = 'fra' AND regex_id = 'quotationRegex';
+
+-- Move languages to database instead of lang.json file
+CREATE TABLE "languages"
+(
+    "language_id"       VARCHAR(5) UNIQUE PRIMARY KEY,
+    "label"             VARCHAR(20),
+    "lang_code"         VARCHAR(5),
+    "moment_lang_code"  VARCHAR(10),
+    "date_format"       VARCHAR(20)
+);
+INSERT INTO "languages" ("language_id", "label", "lang_code", "moment_lang_code", "date_format") VALUES ('fr','Francais', 'fra', 'fr-FR', '%d %m %Y');
+INSERT INTO "languages" ("language_id", "label", "lang_code", "moment_lang_code", "date_format") VALUES ('en', 'English', 'eng', 'en-GB', '%m %d %Y');

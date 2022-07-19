@@ -95,13 +95,20 @@ def update_position_by_supplier_id(supplier_id, data):
         column = ''
         position = ''
         for _position in data:
-            column = _position
-            position = data[_position]
+            if _position != 'form_id':
+                column = _position
+                position = data[_position]
 
+        form_id = str(data['form_id'])
         supplier_positions = supplier_info['positions']
-        supplier_positions.update({
+
+        if form_id not in supplier_positions:
+            supplier_positions[form_id] = {}
+
+        supplier_positions[form_id].update({
             column: position
         })
+
         _, error = accounts.update_supplier({'set': {"positions": json.dumps(supplier_positions)}, 'supplier_id': supplier_id})
         if error is None:
             return '', 200
@@ -119,12 +126,20 @@ def update_page_by_supplier_id(supplier_id, data):
         column = ''
         page = ''
         for _page in data:
-            column = _page
-            page = data[_page]
+            if _page != 'form_id':
+                column = _page
+                page = data[_page]
+
+        form_id = str(data['form_id'])
         supplier_pages = supplier_info['pages']
-        supplier_pages.update({
+
+        if form_id not in supplier_pages:
+            supplier_pages[form_id] = {}
+
+        supplier_pages[form_id].update({
             column: page
         })
+
         _, error = accounts.update_supplier({'set': {"pages": json.dumps(supplier_pages)}, 'supplier_id': supplier_id})
         if error is None:
             return '', 200

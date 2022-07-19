@@ -15,21 +15,21 @@ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {Component, OnInit} from '@angular/core';
-import {ViewEncapsulation} from '@angular/core';
-import {FormBuilder, FormControl} from "@angular/forms";
-import {FileValidators} from "ngx-file-drag-drop";
-import {environment} from  "../env";
-import {catchError, finalize, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {ActivatedRoute, Router} from "@angular/router";
-import {AuthService} from "../../services/auth.service";
-import {UserService} from "../../services/user.service";
-import {TranslateService} from "@ngx-translate/core";
-import {NotificationService} from "../../services/notifications/notifications.service";
-import {LocalStorageService} from "../../services/local-storage.service";
-import {HistoryService} from "../../services/history.service";
+import { Component, OnInit } from '@angular/core';
+import { ViewEncapsulation } from '@angular/core';
+import { FormBuilder, FormControl } from "@angular/forms";
+import { FileValidators } from "ngx-file-drag-drop";
+import { environment } from  "../env";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { ActivatedRoute, Router } from "@angular/router";
+import { AuthService } from "../../services/auth.service";
+import { UserService } from "../../services/user.service";
+import { TranslateService } from "@ngx-translate/core";
+import { NotificationService } from "../../services/notifications/notifications.service";
+import { LocalStorageService } from "../../services/local-storage.service";
+import { HistoryService } from "../../services/history.service";
 
 
 @Component({

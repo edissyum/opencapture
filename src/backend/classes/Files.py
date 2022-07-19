@@ -29,14 +29,13 @@ import datetime
 import subprocess
 import numpy as np
 from PIL import Image
-from flask import current_app
+from zipfile import ZipFile
 from wand.color import Color
 from wand.api import library
 from wand.image import Image as Img
 from werkzeug.utils import secure_filename
 from src.backend.functions import get_custom_array
 from wand.exceptions import PolicyError, CacheError
-from zipfile import ZipFile
 
 custom_array = get_custom_array()
 
@@ -48,13 +47,16 @@ else:
 
 
 class Files:
-    def __init__(self, img_name, log, docservers, configurations, regex):
+    def __init__(self, img_name, log, docservers, configurations, regex, languages):
         self.log = log
         self.img = None
-        self.docservers = docservers
         self.regex = regex
-        self.configurations = configurations
         self.height_ratio = ''
+        self.resolution = 300
+        self.languages = languages
+        self.docservers = docservers
+        self.compression_quality = 100
+        self.configurations = configurations
         self.jpg_name = img_name + '.jpg'
         self.jpg_name_last = img_name + '_last.jpg'
         self.jpg_name_header = img_name + '_header.jpg'
@@ -62,8 +64,6 @@ class Files:
         self.custom_file_name = img_name + '_custom.jpg'
         self.jpg_name_last_header = img_name + '_last_header.jpg'
         self.jpg_name_last_footer = img_name + '_last_footer.jpg'
-        self.resolution = 300
-        self.compression_quality = 100
 
     # Convert the first page of PDF to JPG and open the image
     def pdf_to_jpg(self, pdf_name, open_img=True, crop=False, zone_to_crop=False, last_image=False, is_custom=False):
@@ -339,7 +339,8 @@ class Files:
                         break
 
             for res in re.finditer(r"" + self.regex['dateRegex'] + "", text):
-                date_class = FindDate('', self.log, self.regex, self.configurations, self, ocr, '', '', '', '', docservers=self.docservers, languages=current_app.config['LANGUAGES'])
+
+                date_class = FindDate('', self.log, self.regex, self.configurations, self, ocr, '', '', '', '', self.docservers, self.languages, None)
                 date = date_class.format_date(res.group(), (('', ''), ('', '')), True)
                 if date:
                     text = date[0]
@@ -518,4 +519,3 @@ def compress_pdf(input_file, output_file, compress_id):
                  % (compress_id, output_file, input_file)
     gs_args = gs_command.split('#')
     subprocess.check_call(gs_args)
-

@@ -82,12 +82,12 @@ def get_docservers():
 def get_regex():
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
-    _configurations = _vars[10]
+    configurations = _vars[10]
 
     args = {
         'select': ['*', 'count(*) OVER() as total'],
         'where': ["lang in ('global', %s)"],
-        'data': [_configurations['locale']],
+        'data': [configurations['locale']],
         'offset': request.args['offset'] if 'offset' in request.args else '',
         'limit': request.args['limit'] if 'limit' in request.args else ''
     }

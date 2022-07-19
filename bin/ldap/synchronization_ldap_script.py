@@ -51,7 +51,7 @@ def retrieve_ldap_synchronization_data():
         global user_id, firstname, lastname, class_user, object_class, default_password, default_role, users_dn
 
         _vars = create_classes_from_custom_id(CUSTOM_ID)
-        database = _vars[4]
+        database = _vars[0]
         database_res = database.select({
             'select': ['data'],
             'table': ['login_methods'],
@@ -172,7 +172,7 @@ def check_database_users(ldap_users_data, default_role):
    :return:
     """
     _vars = create_classes_from_custom_id(CUSTOM_ID)
-    database = _vars[4]
+    database = _vars[0]
     try:
         users = database.select({
             'select': ['*'],

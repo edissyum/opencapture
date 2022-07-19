@@ -2,9 +2,9 @@
     <mat-sidenav #sidenav mode="side" opened class="w-1/6 flex flex-col h-full border-r border-green-400" style="top:0.1rem">
         <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">{{ "SETTINGS.administration" | translate }}</h3>
         <mat-divider class="border-green-400"></mat-divider>
-        <mat-nav-list class="pt-0 overflow-x-hidden overflow-y-auto" style="height: calc(100% - 60px)">
+        <mat-nav-list class="pt-0">
             <mat-expansion-panel *ngFor="let parent of this.serviceSettings.getSettingsParent()"
-                     [expanded]="parent.opened" (opened)="this.serviceSettings.closeOtherParent(this.router.url, parent['id'])">
+                                 [expanded]="parent.opened" (opened)="this.serviceSettings.closeOtherParent(this.router.url, parent['id'])">
                 <mat-expansion-panel-header class="settings_expansion">
                     <mat-panel-title>
                         {{ parent['label'] | translate }}
@@ -92,6 +92,10 @@
             <ng-container matColumnDef="label">
                 <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.label' | translate }} </mat-header-cell>
                 <mat-cell *matCellDef="let element"> {{ element.label }} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="form_label">
+                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ACCOUNTS.form' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{ element.form_label }} </mat-cell>
             </ng-container>
             <ng-container matColumnDef="supplier_name">
                 <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ACCOUNTS.supplier_name' | translate }} </mat-header-cell>

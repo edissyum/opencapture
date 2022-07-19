@@ -15,12 +15,12 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {Injectable} from '@angular/core';
-import {LocalStorageService} from "./local-storage.service";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {Router} from "@angular/router";
-import {UserService} from "./user.service";
-import {SettingsService} from "./settings.service";
+import { Injectable } from '@angular/core';
+import { LocalStorageService } from "./local-storage.service";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Router } from "@angular/router";
+import { UserService } from "./user.service";
+import { SettingsService } from "./settings.service";
 
 @Injectable({
     providedIn: 'root'
@@ -86,6 +86,7 @@ export class AuthService {
         this.userService.setUser({});
         this.localStorage.remove('selectedSettings');
         this.localStorage.remove('selectedParentSettings');
+        this.localStorage.deleteCookie('OpenCaptureCustom');
         this.router.navigateByUrl("/login").then();
     }
 }

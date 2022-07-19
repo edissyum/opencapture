@@ -22,29 +22,30 @@ from ..functions import search_by_positions, search_custom_positions
 
 
 class FindFooter:
-    def __init__(self, ocr, log, regex, config, files, database, supplier, file, text, docservers, target='footer', nb_pages=False):
-        self.date = ''
-        self.Ocr = ocr
-        self.text = text
-        self.tmp_text = text
+    def __init__(self, ocr, log, regex, config, files, database, supplier, file, text, docservers, form_id,
+                 target='footer', nb_pages=False):
+        self.ocr = ocr
         self.log = log
-        self.regex = regex
-        self.config = config
-        self.docservers = docservers
-        self.Files = files
-        self.Database = database
-        self.supplier = supplier
+        self.text = text
         self.file = file
+        self.files = files
         self.total_ht = {}
-        self.total_ttc = {}
         self.vat_rate = {}
-        self.vat_amount = {}
         self.rerun = False
-        self.rerun_as_text = False
-        self.splitted = False
-        self.nbPage = 1 if nb_pages is False else nb_pages
+        self.regex = regex
+        self.total_ttc = {}
+        self.tmp_text = text
+        self.config = config
         self.target = target
-        self.isLastPage = False
+        self.vat_amount = {}
+        self.splitted = False
+        self.form_id = form_id
+        self.is_last_page = False
+        self.database = database
+        self.supplier = supplier
+        self.rerun_as_text = False
+        self.docservers = docservers
+        self.nb_pages = 1 if nb_pages is False else nb_pages
 
     def process(self, regex, text_as_string):
         array_of_data = {}
@@ -102,7 +103,7 @@ class FindFooter:
                     if text_as_string:
                         array_of_data.update({float(result.replace(',', '.')): (('', ''), ('', ''))})
                     else:
-                        array_of_data.update({float(result.replace(',', '.')): self.Files.return_position_with_ratio(line, self.target)})
+                        array_of_data.update({float(result.replace(',', '.')): self.files.return_position_with_ratio(line, self.target)})
 
         # Check list of no rates amount and select the higher
         if len(array_of_data) > 0:
@@ -111,7 +112,7 @@ class FindFooter:
             return False
 
     def process_footer_with_position(self, column, select):
-        position = self.Database.select({
+        position = self.database.select({
             'select': select,
             'table': ['accounts_supplier'],
             'where': ['vat_number = %s', 'status <> %s'],
@@ -121,10 +122,10 @@ class FindFooter:
         if position and position[column + '_position'] not in ['((,),(,))', 'NULL', None, '', False]:
             page = position[column + '_page']
             if self.target == 'full':
-                page = self.nbPage
+                page = self.nb_pages
 
             data = {'position': position[column + '_position'], 'regex': None, 'target': 'full', 'page': page}
-            text, position = search_custom_positions(data, self.Ocr, self.Files, self.regex, self.file, self.docservers)
+            text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
             if text:
                 try:
                     # Try if the return string could be convert to float
@@ -167,7 +168,7 @@ class FindFooter:
 
                 if result != '':
                     result = re.sub('\s*', '', result).replace(',', '.')
-                    self.nbPage = data['page']
+                    self.nb_pages = data['page']
                     try:
                         position = json.loads(position)
                     except (TypeError, json.decoder.JSONDecodeError):
@@ -185,24 +186,24 @@ class FindFooter:
             if self.supplier is not False:
                 if total_ht in [False, None]:
                     total_ht = self.process_footer_with_position('total_ht',
-                                                                 ["positions ->> 'total_ht' as total_ht_position",
-                                                                  "pages ->> 'total_ht' as total_ht_page"])
+                                         ["positions -> '" + str(self.form_id) + "' -> 'total_ht' as total_ht_position",
+                                          "pages -> '" + str(self.form_id) + "' ->'total_ht' as total_ht_page"])
                     if total_ht:
                         self.total_ht = total_ht
                         self.log.info('noRateAmount found with position : ' + str(total_ht))
 
                 if vat_rate in [False, None]:
                     vat_rate = self.process_footer_with_position('vat_rate',
-                                                                 ["positions ->> 'vat_rate' as vat_rate_position",
-                                                                  "pages ->> 'vat_rate' as vat_rate_page"])
+                                         ["positions -> '" + str(self.form_id) + "' -> 'vat_rate' as vat_rate_position",
+                                          "pages -> '" + str(self.form_id) + "' ->'vat_rate' as vat_rate_page"])
                     if vat_rate:
                         self.vat_rate = vat_rate
                         self.log.info('ratePercentage found with position : ' + str(vat_rate))
 
                 if vat_amount in [False, None, 0, {}]:
                     vat_amount = self.process_footer_with_position('vat_amount',
-                                                                   ["positions ->> 'vat_amount' as vat_amount_position",
-                                                                    "pages ->> 'vat_amount' as vat_amount_page"])
+                                   ["positions -> '" + str(self.form_id) + "' -> 'vat_amount' as vat_amount_position",
+                                    "pages -> '" + str(self.form_id) + "' ->'vat_amount' as vat_amount_page"])
                     if vat_amount:
                         self.vat_amount = vat_amount
                         self.log.info('vatAmount found with position : ' + str(vat_amount))
@@ -229,10 +230,10 @@ class FindFooter:
         return True
 
     def get_data_with_positions(self, name):
-        position = self.Database.select({
+        position = self.database.select({
             'select': [
-                "positions ->> '" + name + "' as " + name + "_position",
-                "pages ->> '" + name + "' as " + name + "_page"
+                "positions -> '" + str(self.form_id) + "' -> '" + name + "' as " + name + "_position",
+                "pages -> '" + str(self.form_id) + "' -> '" + name + "' as " + name + "_page"
             ],
             'table': ['accounts_supplier'],
             'where': ['vat_number = %s', 'status <> %s'],
@@ -240,9 +241,9 @@ class FindFooter:
         })[0]
 
         if position and position[name + '_position'] not in [False, 'NULL', '', None]:
-            self.nbPage = position[name + '_page']
+            self.nb_page = position[name + '_page']
             data = {'position': position[name + '_position'], 'regex': None, 'target': 'full', 'page': position[name + '_page']}
-            res = search_custom_positions(data, self.Ocr, self.Files, self.regex, self.file, self.docservers)
+            res = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
             if res[0]:
                 _return = {
                     0: re.sub(r"[^0-9\.]|\.(?!\d)", "", res[0].replace(',', '.')),
@@ -255,7 +256,7 @@ class FindFooter:
     def run(self, text_as_string=False):
         total_ttc, total_ht, vat_rate, vat_amount = {}, {}, {}, {}
         if self.supplier:
-            all_rate = search_by_positions(self.supplier, 'total_ttc', self.Ocr, self.Files, self.Database)
+            all_rate = search_by_positions(self.supplier, 'total_ttc', self.ocr, self.files, self.database, self.form_id)
             if all_rate and all_rate[0]:
                 total_ttc = {
                     0: re.sub(r"[^0-9\.]|\.(?!\d)", "", all_rate[0].replace(',', '.')),
@@ -265,7 +266,7 @@ class FindFooter:
                 res = self.get_data_with_positions('total_ttc')
                 total_ttc = res if res else False
 
-            no_rate = search_by_positions(self.supplier, 'total_ht', self.Ocr, self.Files, self.Database)
+            no_rate = search_by_positions(self.supplier, 'total_ht', self.ocr, self.files, self.database, self.form_id)
             if no_rate and no_rate[0]:
                 total_ht = {
                     0: re.sub(r"[^0-9\.]|\.(?!\d)", "", no_rate[0].replace(',', '.')),
@@ -275,7 +276,7 @@ class FindFooter:
                 res = self.get_data_with_positions('total_ht')
                 total_ht = res if res else False
 
-            percentage = search_by_positions(self.supplier, 'vat_rate', self.Ocr, self.Files, self.Database)
+            percentage = search_by_positions(self.supplier, 'vat_rate', self.ocr, self.files, self.database, self.form_id)
             if percentage and percentage[0]:
                 vat_rate = {
                     0: re.sub(r"[^0-9\.]|\.(?!\d)", "", percentage[0].replace(',', '.')),
@@ -285,7 +286,7 @@ class FindFooter:
                 res = self.get_data_with_positions('vat_rate')
                 vat_rate = res if res else False
 
-            _vat_amount = search_by_positions(self.supplier, 'vat_amount', self.Ocr, self.Files, self.Database)
+            _vat_amount = search_by_positions(self.supplier, 'vat_amount', self.ocr, self.files, self.database, self.form_id)
             if _vat_amount and _vat_amount[0]:
                 vat_amount = {
                     0: re.sub(r"[^0-9\.]|\.(?!\d)", "", _vat_amount[0].replace(',', '.')),
@@ -362,8 +363,8 @@ class FindFooter:
                 total_ttc = [float("%.2f" % (float(total_ht[0]) + float(vat_amount[0]))), (('', ''), ('', '')), True]
             elif vat_rate is False and total_ht and total_ttc:
                 if vat_amount is False:
-                    vat_amount = float("%.2f" % (float(total_ttc[0]) - float(total_ht[0])))
-                vat_rate = [float("%.2f" % (float(vat_amount) / float(total_ht[0]) * 100)), (('', ''), ('', '')), True]
+                    vat_amount = [float("%.2f" % (float(total_ttc[0]) - float(total_ht[0]))), (('', ''), ('', '')), True]
+                vat_rate = [float("%.2f" % (float(vat_amount[0]) / float(total_ht[0]) * 100)), (('', ''), ('', '')), True]
 
             # Test if the three var's are good by simple math operation
             # Round up value with 2 decimals
@@ -374,31 +375,31 @@ class FindFooter:
 
             if (total and total_ttc and total_ttc[0]) and (float(total) == float(total_ttc[0])):
                 self.log.info('Footer informations found : [TOTAL : ' + str(total) + '] - [HT : ' + str(total_ht[0]) + '] - [VATRATE : ' + str(vat_rate[0]) + ']')
-                return [total_ht, total_ttc, vat_rate, self.nbPage, ["%.2f" % float(float(total_ht[0]) * (float(vat_rate[0]) / 100))]]
+                return [total_ht, total_ttc, vat_rate, self.nb_pages, ["%.2f" % float(float(total_ht[0]) * (float(vat_rate[0]) / 100))]]
             elif (total_ttc and total_ttc[0]) and float(total_ttc[0]) == float("%.2f" % float(float(vat_amount[0]) + float(total_ht[0]))):
                 self.log.info('Footer informations found : [TOTAL : ' + str(total) + '] - [HT : ' + str(total_ht[0]) + '] - [VATRATE : ' + str(vat_rate[0]) + ']')
-                return [total_ht, total_ttc, vat_rate, self.nbPage, ["%.2f" % float(float(total_ht[0]) * (float(vat_rate[0]) / 100))]]
+                return [total_ht, total_ttc, vat_rate, self.nb_pages, ["%.2f" % float(float(total_ht[0]) * (float(vat_rate[0]) / 100))]]
             else:
                 return False
         else:
             if not self.rerun:
                 self.rerun = True
-                if self.isLastPage:
-                    improved_image = self.Files.improve_image_detection(self.Files.jpg_name_last_footer)
+                if self.is_last_page:
+                    improved_image = self.files.improve_image_detection(self.files.jpg_name_last_footer)
                 else:
-                    improved_image = self.Files.improve_image_detection(self.Files.jpg_name_footer)
-                self.Files.open_img(improved_image)
-                self.text = self.Ocr.line_box_builder(self.Files.img)
+                    improved_image = self.files.improve_image_detection(self.files.jpg_name_footer)
+                self.files.open_img(improved_image)
+                self.text = self.ocr.line_box_builder(self.files.img)
                 return self.run()
 
             if self.rerun and not self.rerun_as_text:
                 self.rerun_as_text = True
-                if self.isLastPage:
-                    improved_image = self.Files.improve_image_detection(self.Files.jpg_name_last_footer)
+                if self.is_last_page:
+                    improved_image = self.files.improve_image_detection(self.files.jpg_name_last_footer)
                 else:
-                    improved_image = self.Files.improve_image_detection(self.Files.jpg_name_footer)
-                self.Files.open_img(improved_image)
-                self.text = self.Ocr.text_builder(self.Files.img)
+                    improved_image = self.files.improve_image_detection(self.files.jpg_name_footer)
+                self.files.open_img(improved_image)
+                self.text = self.ocr.text_builder(self.files.img)
                 return self.run(text_as_string=True)
         return False
 
@@ -414,5 +415,4 @@ class FindFooter:
             result = value
         else:
             result = False
-
         return result

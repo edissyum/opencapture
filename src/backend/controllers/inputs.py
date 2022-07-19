@@ -248,7 +248,7 @@ def create_script_and_incron(args):
             if not os.path.exists(args['input_folder']):
                 try:
                     os.mkdir(args['input_folder'], mode=0o777)
-                except PermissionError:
+                except (PermissionError, FileNotFoundError):
                     response = {
                         "errors": gettext('FS_WATCHER_CREATION_ERROR'),
                         "message": gettext('CAN_NOT_CREATE_FOLDER_PERMISSION_ERROR')

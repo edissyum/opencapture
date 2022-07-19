@@ -15,13 +15,13 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {Injectable} from '@angular/core';
-import {environment} from  "../app/env";
-import {HttpClient} from "@angular/common/http";
-import {NotificationService} from "./notifications/notifications.service";
-import {AuthService} from "./auth.service";
-import {catchError, tap} from "rxjs/operators";
-import {of} from "rxjs";
+import { Injectable } from '@angular/core';
+import { environment } from  "../app/env";
+import { HttpClient } from "@angular/common/http";
+import { NotificationService } from "./notifications/notifications.service";
+import { AuthService } from "./auth.service";
+import { catchError, tap } from "rxjs/operators";
+import { of } from "rxjs";
 
 @Injectable({
     providedIn: 'root'

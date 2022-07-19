@@ -21,22 +21,23 @@ from ..functions import search_by_positions, search_custom_positions
 
 
 class FindQuotationNumber:
-    def __init__(self, ocr, files, log, regex, config, database, supplier, file, text, nb_pages, custom_page, footer_text, docservers, configurations):
-        self.vatNumber = ''
-        self.Ocr = ocr
-        self.text = text
-        self.footer_text = footer_text
+    def __init__(self, ocr, files, log, regex, config, database, supplier, file, text, nb_pages, custom_page,
+                 footer_text, docservers, configurations, form_id):
+        self.ocr = ocr
         self.log = log
-        self.Files = files
+        self.text = text
+        self.file = file
+        self.files = files
         self.regex = regex
         self.config = config
-        self.docservers = docservers
-        self.configurations = configurations
+        self.form_id = form_id
         self.supplier = supplier
-        self.Database = database
-        self.file = file
-        self.nbPages = nb_pages
-        self.customPage = custom_page
+        self.database = database
+        self.nb_pages = nb_pages
+        self.docservers = docservers
+        self.footer_text = footer_text
+        self.custom_page = custom_page
+        self.configurations = configurations
 
     def sanitize_quotation_number(self, data):
         quotation_res = data
@@ -52,15 +53,15 @@ class FindQuotationNumber:
 
     def run(self):
         if self.supplier:
-            invoice_number = search_by_positions(self.supplier, 'quotation_number', self.Ocr, self.Files, self.Database)
+            invoice_number = search_by_positions(self.supplier, 'quotation_number', self.ocr, self.files, self.database, self.form_id)
             if invoice_number and invoice_number[0]:
                 return invoice_number
 
-        if self.supplier and not self.customPage:
-            position = self.Database.select({
+        if self.supplier and not self.custom_page:
+            position = self.database.select({
                 'select': [
-                    "positions ->> 'quotation_number' as quotation_number_position",
-                    "pages ->> 'quotation_number' as quotation_number_page"
+                    "positions -> '" + str(self.form_id) + "' -> 'quotation_number' as quotation_number_position",
+                    "pages -> '" + str(self.form_id) + "' ->'quotation_number' as quotation_number_page"
                 ],
                 'table': ['accounts_supplier'],
                 'where': ['vat_number = %s', 'status <> %s'],
@@ -69,7 +70,7 @@ class FindQuotationNumber:
 
             if position and position['quotation_number_position'] not in [False, 'NULL', '', None]:
                 data = {'position': position['quotation_number_position'], 'regex': None, 'target': 'full', 'page': position['quotation_number_page']}
-                text, position = search_custom_positions(data, self.Ocr, self.Files, self.regex, self.file, self.docservers)
+                text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
 
                 try:
                     position = json.loads(position)
@@ -85,12 +86,12 @@ class FindQuotationNumber:
                 quotation_number = self.sanitize_quotation_number(_invoice.group())
                 if len(quotation_number) >= int(self.configurations['devisSizeMin']):
                     self.log.info('Quotation number found : ' + quotation_number)
-                    return [quotation_number, line.position, self.nbPages]
+                    return [quotation_number, line.position, self.nb_pages]
 
         for line in self.footer_text:
             for _invoice in re.finditer(r"" + self.regex['quotationRegex'] + "", line.content.upper()):
                 quotation_number = self.sanitize_quotation_number(_invoice.group())
                 if len(quotation_number) >= int(self.configurations['devisSizeMin']):
                     self.log.info('Quotation number found : ' + quotation_number)
-                    position = self.Files.return_position_with_ratio(line, 'footer')
-                    return [quotation_number, position, self.nbPages]
+                    position = self.files.return_position_with_ratio(line, 'footer')
+                    return [quotation_number, position, self.nb_pages]

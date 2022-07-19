@@ -20,16 +20,18 @@ import os.path
 
 import requests
 import subprocess
-from flask import current_app, request
+from flask import request
 from flask_babel import gettext
 
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.import_models import config
+from src.backend.main import create_classes_from_custom_id
 
 
 def change_locale_in_config(lang):
-    languages = current_app.config['LANGUAGES']
-
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    languages = _vars[11]
     language = {'label': 'Francais', 'lang_code': 'fra'}
     for _l in languages:
         if lang == languages[_l]['lang_code']:

@@ -15,11 +15,11 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {Component, OnInit} from '@angular/core';
-import {Router} from "@angular/router";
-import {UserService} from "../../services/user.service";
-import {SettingsService} from "../../services/settings.service";
-import {PrivilegesService} from "../../services/privileges.service";
+import { Component, OnInit } from '@angular/core';
+import { Router } from "@angular/router";
+import { UserService } from "../../services/user.service";
+import { SettingsService } from "../../services/settings.service";
+import { PrivilegesService } from "../../services/privileges.service";
 
 @Component({
     selector: 'app-panel',

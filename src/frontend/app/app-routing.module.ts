@@ -17,8 +17,8 @@ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/
 @dev : Oussama BRICH <oussama.brich@edissyum.com> */
 
 
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { LogoutComponent } from './logout/logout.component';
@@ -41,7 +41,7 @@ import { UpdateSupplierComponent } from "./accounts/suppliers/update/update-supp
 import { CreateSupplierComponent } from "./accounts/suppliers/create/create-supplier.component";
 import { UpdateCustomerComponent } from "./accounts/customers/update/update-customer.component";
 import { CreateCustomerComponent } from "./accounts/customers/create/create-customer.component";
-import {Error500Component} from "./errors/error-500/error-500.component";
+import { Error500Component } from "./errors/error-500/error-500.component";
 
 const routes: Routes = [
     { path: '500', component: Error500Component },

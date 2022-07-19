@@ -17,22 +17,22 @@
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
 import { Component, OnInit } from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {SettingsService} from "../../../../services/settings.service";
-import {AuthService} from "../../../../services/auth.service";
-import {ActivatedRoute, Router} from "@angular/router";
-import {PrivilegesService} from "../../../../services/privileges.service";
-import {LocalStorageService} from "../../../../services/local-storage.service";
-import {LastUrlService} from "../../../../services/last-url.service";
-import {Sort} from "@angular/material/sort";
-import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from "@angular/material/form-field";
-import {environment} from  "../../../env";
-import {catchError, finalize, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {NotificationService} from "../../../../services/notifications/notifications.service";
-import {TranslateService} from "@ngx-translate/core";
-import {marker} from "@biesbjerg/ngx-translate-extract-marker";
-import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { SettingsService } from "../../../../services/settings.service";
+import { AuthService } from "../../../../services/auth.service";
+import { ActivatedRoute, Router } from "@angular/router";
+import { PrivilegesService } from "../../../../services/privileges.service";
+import { LocalStorageService } from "../../../../services/local-storage.service";
+import { LastUrlService } from "../../../../services/last-url.service";
+import { Sort } from "@angular/material/sort";
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
+import { environment } from  "../../../env";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { NotificationService } from "../../../../services/notifications/notifications.service";
+import { TranslateService } from "@ngx-translate/core";
+import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 
 @Component({
     selector: 'app-configurations',

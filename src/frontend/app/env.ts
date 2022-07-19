@@ -19,7 +19,6 @@ declare const require: any;
 
 export const environment = {
     url: 'http://localhost:5000',
-    // url: '../../backend_oc',
     customId: '',
     production: false,
     version: require('../../../package.json').version + ' (development mode)'

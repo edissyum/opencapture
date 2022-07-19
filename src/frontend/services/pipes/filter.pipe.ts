@@ -15,7 +15,7 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {PipeTransform, Pipe, Injectable} from '@angular/core';
+import { PipeTransform, Pipe, Injectable } from '@angular/core';
 
 @Pipe({
     name: 'filter'

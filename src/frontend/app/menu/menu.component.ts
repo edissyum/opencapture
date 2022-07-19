@@ -17,7 +17,7 @@ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/
 
 import { Location } from "@angular/common";
 import { Router } from "@angular/router";
-import {TranslateService} from "@ngx-translate/core";
+import { TranslateService } from "@ngx-translate/core";
 import { Component, Input, OnInit } from '@angular/core';
 import { UserService } from "../../services/user.service";
 import { LocaleService } from "../../services/locale.service";

@@ -15,17 +15,17 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {Component, OnInit} from '@angular/core';
-import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
+import { Component, OnInit } from '@angular/core';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from "@angular/router";
-import {environment} from  "../../env";
+import { environment } from  "../../env";
 import { catchError, map, startWith, tap } from "rxjs/operators";
 import { Observable, of } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { AuthService } from "../../../services/auth.service";
 import { NotificationService } from "../../../services/notifications/notifications.service";
 import { TranslateService } from "@ngx-translate/core";
-import { FormControl} from "@angular/forms";
+import { FormControl } from "@angular/forms";
 import { DatePipe } from '@angular/common';
 import { LocalStorageService } from "../../../services/local-storage.service";
 import { ConfigService } from "../../../services/config.service";
@@ -55,6 +55,7 @@ export class VerifierViewerComponent implements OnInit {
     getOnlyRawFooter        : boolean     = false;
     disableOCR              : boolean     = false;
     tokenError              : boolean     = false;
+    visualIsHide            : boolean     = false;
     saveInfo                : boolean     = true;
     loading                 : boolean     = true;
     supplierExists          : boolean     = true;
@@ -531,6 +532,23 @@ export class VerifierViewerComponent implements OnInit {
         return await this.http.get(environment['url'] + '/ws/accounts/customers/getDefaultAccountingPlan', {headers: this.authService.headers}).toPromise();
     }
 
+    hideVisuals() {
+        this.visualIsHide = !this.visualIsHide;
+        const visuals = document.getElementsByClassName('select-areas-background-area');
+        Array.from(visuals).forEach((element: any) => {
+            const cpt = element.id.match(/(\d+)/)[0];
+            if (this.visualIsHide) {
+                document.getElementById("select-areas-background-area_" + cpt)!.style.opacity = '0';
+                document.getElementById("select-areas-outline_" + cpt)!.style.opacity = '0';
+                document.getElementById("select-areas-label-container_" + cpt)!.style.opacity = '0';
+            } else {
+                document.getElementById("select-areas-background-area_" + cpt)!.style.opacity = '0.25';
+                document.getElementById("select-areas-outline_" + cpt)!.style.opacity = '0.5';
+                document.getElementById("select-areas-label-container_" + cpt)!.style.opacity = '1';
+            }
+        });
+    }
+
     findChildren(parentId: any, parent: any, categoryId: any) {
         for (const field in this.invoice.datas) {
             if (field.includes(parentId + '_')) {
@@ -763,7 +781,7 @@ export class VerifierViewerComponent implements OnInit {
 
         if (this.invoice.supplier_id) {
             this.http.put(environment['url'] + '/ws/accounts/supplier/' + this.invoice.supplier_id + '/updatePosition',
-                {'args': {[this.lastId]: position}},
+                {'args': {'form_id': this.currentFormFields.form_id, [this.lastId]: position}},
                 {headers: this.authService.headers}).pipe(
                 catchError((err: any) => {
                     console.debug(err);
@@ -789,8 +807,9 @@ export class VerifierViewerComponent implements OnInit {
 
     async savePages(page: any) {
         if (this.invoice.supplier_id) {
+            console.log({[this.lastId]: page});
             this.http.put(environment['url'] + '/ws/accounts/supplier/' + this.invoice.supplier_id + '/updatePage',
-                {'args': {[this.lastId]: page}},
+                {'args': {'form_id': this.currentFormFields.form_id, [this.lastId]: page}},
                 {headers: this.authService.headers}).pipe(
                 catchError((err: any) => {
                     console.debug(err);
@@ -819,28 +838,29 @@ export class VerifierViewerComponent implements OnInit {
             const oldData = data;
             if (fieldId) {
                 const field = this.getField(fieldId);
-                if (field.unit === 'addresses' || field.unit === 'supplier') showNotif = false;
-                if (field.control.errors || this.invoice.datas[fieldId] === data) return false;
-                data = {[fieldId]: data};
+                if (Object.keys(field).length !== 0) {
+                    if (field.unit === 'addresses' || field.unit === 'supplier') showNotif = false;
+                    if (field.control.errors || this.invoice.datas[fieldId] === data) return false;
+                    data = {[fieldId]: data};
+                    this.http.put(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/updateData',
+                        {'args': data},
+                        {headers: this.authService.headers}).pipe(
+                        tap(() => {
+                            this.invoice.datas[fieldId] = oldData;
+                            if (showNotif) {
+                                this.notify.success(this.translate.instant('INVOICES.position_and_data_updated',
+                                    {"input": this.lastLabel}));
+                            }
+                        }),
+                        catchError((err: any) => {
+                            console.debug(err);
+                            this.notify.handleErrors(err);
+                            return of(false);
+                        })
+                    ).subscribe();
+                    return true;
+                }
             }
-
-            this.http.put(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/updateData',
-                {'args': data},
-                {headers: this.authService.headers}).pipe(
-                tap(() => {
-                    this.invoice.datas[fieldId] = oldData;
-                    if (showNotif) {
-                        this.notify.success(this.translate.instant('INVOICES.position_and_data_updated',
-                            {"input": this.lastLabel}));
-                    }
-                }),
-                catchError((err: any) => {
-                    console.debug(err);
-                    this.notify.handleErrors(err);
-                    return of(false);
-                })
-            ).subscribe();
-            return true;
         }
         return false;
     }

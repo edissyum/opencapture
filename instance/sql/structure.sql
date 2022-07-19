@@ -30,6 +30,7 @@ CREATE TABLE "positions_masks"
     "label"       VARCHAR(50),
     "enabled"     BOOLEAN       DEFAULT true,
     "supplier_id" INTEGER,
+    "form_id"     INTEGER,
     "positions"   JSONB         DEFAULT '{}',
     "pages"       JSONB         DEFAULT '{}',
     "regex"       JSONB         DEFAULT '{}',
@@ -337,6 +338,15 @@ CREATE TABLE "login_methods"
     "method_label"  VARCHAR(255),
     "enabled"       BOOLEAN     DEFAULT FALSE,
     "data"          JSONB       DEFAULT '{}'
+);
+
+CREATE TABLE "languages"
+(
+    "language_id"       VARCHAR(5) UNIQUE PRIMARY KEY,
+    "label"             VARCHAR(20),
+    "lang_code"         VARCHAR(5),
+    "moment_lang_code"  VARCHAR(10),
+    "date_format"       VARCHAR(20)
 );
 
 CREATE SEQUENCE splitter_referential_call_count AS INTEGER;

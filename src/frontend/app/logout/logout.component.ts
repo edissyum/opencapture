@@ -15,12 +15,12 @@ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {Component, OnInit} from '@angular/core';
-import {TranslateService} from "@ngx-translate/core";
-import {NotificationService} from "../../services/notifications/notifications.service";
-import {AuthService} from "../../services/auth.service";
-import {Router} from "@angular/router";
-import {HistoryService} from "../../services/history.service";
+import { Component, OnInit } from '@angular/core';
+import { TranslateService } from "@ngx-translate/core";
+import { NotificationService } from "../../services/notifications/notifications.service";
+import { AuthService } from "../../services/auth.service";
+import { Router } from "@angular/router";
+import { HistoryService } from "../../services/history.service";
 
 @Component({
     selector: 'app-logout',

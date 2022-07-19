@@ -15,17 +15,17 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {of} from "rxjs";
+import { of } from "rxjs";
 import * as moment from 'moment';
-import {environment} from  "../app/env";
-import {Injectable} from '@angular/core';
-import {AuthService} from "./auth.service";
-import {catchError, tap} from "rxjs/operators";
-import {HttpClient} from "@angular/common/http";
-import {HistoryService} from "./history.service";
-import {DateAdapter} from "@angular/material/core";
-import {TranslateService} from "@ngx-translate/core";
-import {NotificationService} from "./notifications/notifications.service";
+import { environment } from  "../app/env";
+import { Injectable } from '@angular/core';
+import { AuthService } from "./auth.service";
+import { catchError, tap } from "rxjs/operators";
+import { HttpClient } from "@angular/common/http";
+import { HistoryService } from "./history.service";
+import { DateAdapter } from "@angular/material/core";
+import { TranslateService } from "@ngx-translate/core";
+import { NotificationService } from "./notifications/notifications.service";
 
 @Injectable({
     providedIn: 'root'

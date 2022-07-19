@@ -15,9 +15,9 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { LocalStorageService } from "../../../services/local-storage.service";
-import {environment} from  "../../env";
+import { environment } from  "../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { NotificationService } from "../../../services/notifications/notifications.service";
@@ -30,12 +30,12 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import { FlatTreeControl } from "@angular/cdk/tree";
 import { MatTreeFlatDataSource, MatTreeFlattener } from "@angular/material/tree";
 import { UserService } from "../../../services/user.service";
-import {ConfirmDialogComponent} from "../../../services/confirm-dialog/confirm-dialog.component";
-import {MatDialog} from "@angular/material/dialog";
-import {DomSanitizer} from "@angular/platform-browser";
-import {ConfigService} from "../../../services/config.service";
-import {HistoryService} from "../../../services/history.service";
-import {FormControl} from "@angular/forms";
+import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm-dialog.component";
+import { MatDialog } from "@angular/material/dialog";
+import { DomSanitizer } from "@angular/platform-browser";
+import { ConfigService } from "../../../services/config.service";
+import { HistoryService } from "../../../services/history.service";
+import { FormControl } from "@angular/forms";
 
 interface accountsNode {
     name: string

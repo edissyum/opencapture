@@ -22,7 +22,6 @@ from src.backend.main import create_classes_from_custom_id
 from flask import Blueprint, request, make_response, jsonify, current_app
 from src.backend.import_controllers import auth, positions_masks, verifier
 
-
 bp = Blueprint('positions_masks', __name__, url_prefix='/ws/')
 
 
@@ -30,11 +29,11 @@ bp = Blueprint('positions_masks', __name__, url_prefix='/ws/')
 @auth.token_required
 def get_positions_masks():
     args = {
-        'select': ['*', 'count(*) OVER() as total'],
+        'select': ['positions_masks.*', 'form_models.label as form_label', 'count(*) OVER() as total'],
         'offset': request.args['offset'] if 'offset' in request.args else '',
         'limit': request.args['limit'] if 'limit' in request.args else '',
-        'where': ["status <> 'DEL'"],
-        'order_by': ['id ASC']
+        'where': ["positions_masks.status <> 'DEL'"],
+        'order_by': ['positions_masks.id ASC']
     }
     res = positions_masks.get_positions_masks(args)
     return make_response(jsonify(res[0]), res[1])
@@ -135,11 +134,12 @@ def delete_page_by_positions_mask_id(position_mask_id):
 def get_image_from_pdf(positions_mask_id):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
+    _config = _vars[1]
     _Files = _vars[3]
-    docservers = _vars[9]
+    _docservers = _vars[9]
     file = request.files
     path = current_app.config['UPLOAD_FOLDER']
-    docserver_path = docservers['VERIFIER_POSITIONS_MASKS'] + '/'
+    docserver_path = _docservers['VERIFIER_POSITIONS_MASKS'] + '/'
     file_content = tmp_filename = img_wdith = nb_pages = None
 
     for filename in file:
@@ -149,7 +149,7 @@ def get_image_from_pdf(positions_mask_id):
         _Files.save_img_with_wand(filename_after_upload, docserver_path + filename.replace('.pdf', '-%03d.jpg'))
         img_wdith = str(_Files.get_width(docserver_path + tmp_filename))
         file_content = verifier.get_file_content('positions_masks', tmp_filename, 'image/jpeg')
-        nb_pages = _Files.get_pages(docservers['ERROR_PATH'], filename_after_upload)
+        nb_pages = _Files.get_pages(_docservers['ERROR_PATH'], filename_after_upload)
 
         positions_masks.update_positions_mask(positions_mask_id, {
             'filename': filename.replace('.pdf', '-001.jpg'),

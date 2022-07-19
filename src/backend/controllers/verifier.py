@@ -42,7 +42,6 @@ def handle_uploaded_file(files, input_id):
         filename = _Files.save_uploaded_file(_f, path)
         launch({
             'file': filename,
-            'languages': current_app.config['LANGUAGES'],
             'custom_id': custom_id,
             'input_id': input_id
         })

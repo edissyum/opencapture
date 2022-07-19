@@ -6,6 +6,7 @@ ALTER TABLE users ALTER COLUMN role DROP DEFAULT;
 ALTER TABLE inputs ADD COLUMN "allow_automatic_validation" BOOLEAN DEFAULT False;
 ALTER TABLE inputs ADD COLUMN "automatic_validation_data" TEXT DEFAULT '';
 DELETE FROM configurations WHERE label = 'allowAutomaticValidation';
+INSERT INTO "configurations" ("label", "data") VALUES ('devisSizeMin', '{"type": "int", "value": "3", "description": "Taille minimale pour un numéro de devis"}');
 
 -- Add LDAP
 CREATE TABLE "login_methods"

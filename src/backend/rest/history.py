@@ -36,9 +36,9 @@ def add_history():
 def get_history():
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
-    _configurations = _vars[10]
+    configurations = _vars[10]
 
-    if _configurations['locale'] == 'fra':
+    if configurations['locale'] == 'fra':
         _format = 'DD/MM/YYYY HH24:MI:SS'
     else:
         _format = 'MM/DD/YYYY HH24:MI:SS'

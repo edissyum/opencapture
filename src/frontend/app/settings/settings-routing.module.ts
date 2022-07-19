@@ -54,7 +54,7 @@ import { PositionsMaskListComponent } from "./verifier/positions-mask/list/posit
 import { CreatePositionsMaskComponent } from "./verifier/positions-mask/create/create-positions-mask.component";
 import { UpdatePositionsMaskComponent } from "./verifier/positions-mask/update/update-positions-mask.component";
 import { CreateFolderDocTypeComponent } from "./splitter/doc-types/create-folder/create-folder-doc-type.component";
-import {LoginMethodsComponent} from "./general/login-methods/login-methods.component";
+import { LoginMethodsComponent } from "./general/login-methods/login-methods.component";
 
 const routes: Routes = [
     {

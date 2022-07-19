@@ -21,7 +21,8 @@ from flask_cors import CORS
 from flask_babel import Babel
 from werkzeug.wrappers import Request
 from flask import request, session, Flask
-from .functions import retrieve_config_from_custom_id
+from .functions import retrieve_config_from_custom_id, retrieve_custom_from_url
+from src.backend.main import create_classes_from_custom_id
 from src.backend.import_rest import auth, locale, config, user, splitter, verifier, roles, privileges, custom_fields, \
     forms, status, accounts, outputs, maarch, inputs, positions_masks, history, doctypes
 
@@ -53,9 +54,6 @@ app.config.from_mapping(
     BABEL_TRANSLATION_DIRECTORIES=app.root_path.replace('backend', 'assets') + '/i18n/backend/translations/'
 )
 
-with open(os.path.join(app.instance_path, 'lang.json'), encoding='UTF-8') as lang_file:
-    app.config['LANGUAGES'] = json.loads(lang_file.read())
-
 app.register_blueprint(auth.bp)
 app.register_blueprint(user.bp)
 app.register_blueprint(roles.bp)
@@ -79,7 +77,10 @@ app.register_blueprint(doctypes.bp)
 @babel.localeselector
 def get_locale():
     if 'lang' not in session:
-        session['lang'] = request.accept_languages.best_match(app.config['LANGUAGES'].keys())
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        languages = _vars[11]
+    session['lang'] = request.accept_languages.best_match(languages.keys())
     return session['lang']
 
 

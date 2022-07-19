@@ -15,11 +15,11 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {Injectable} from '@angular/core';
-import {PrivilegesService} from "./privileges.service";
-import {ActivatedRouteSnapshot, Router} from "@angular/router";
-import {TranslateService} from "@ngx-translate/core";
-import {NotificationService} from "./notifications/notifications.service";
+import { Injectable } from '@angular/core';
+import { PrivilegesService } from "./privileges.service";
+import { ActivatedRouteSnapshot, Router } from "@angular/router";
+import { TranslateService } from "@ngx-translate/core";
+import { NotificationService } from "./notifications/notifications.service";
 
 @Injectable({
     providedIn: 'root'

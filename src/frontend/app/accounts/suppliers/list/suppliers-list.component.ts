@@ -29,11 +29,11 @@ import { LastUrlService } from "../../../../services/last-url.service";
 import { PrivilegesService } from "../../../../services/privileges.service";
 import { LocalStorageService } from "../../../../services/local-storage.service";
 import { Sort } from "@angular/material/sort";
-import {environment} from  "../../../env";
+import { environment } from  "../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { ConfirmDialogComponent } from "../../../../services/confirm-dialog/confirm-dialog.component";
-import {HistoryService} from "../../../../services/history.service";
+import { HistoryService } from "../../../../services/history.service";
 
 @Component({
     selector: 'suppliers-list',

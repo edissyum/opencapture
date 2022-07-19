@@ -15,22 +15,22 @@
 
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
-import {Component, EventEmitter, Injectable, Input, OnInit, Output} from '@angular/core';
-import {FlatTreeControl} from '@angular/cdk/tree';
-import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
-import {BehaviorSubject, of} from "rxjs";
-import {SettingsService} from "../../../services/settings.service";
-import {environment} from  "../../env";
-import {catchError, finalize, tap} from "rxjs/operators";
-import {HttpClient} from "@angular/common/http";
-import {ActivatedRoute, Router} from "@angular/router";
-import {FormBuilder, FormControl} from "@angular/forms";
-import {AuthService} from "../../../services/auth.service";
-import {UserService} from "../../../services/user.service";
-import {TranslateService} from "@ngx-translate/core";
-import {NotificationService} from "../../../services/notifications/notifications.service";
-import {PrivilegesService} from "../../../services/privileges.service";
-import {LocalStorageService} from "../../../services/local-storage.service";
+import { Component, EventEmitter, Injectable, Input, OnInit, Output } from '@angular/core';
+import { FlatTreeControl } from '@angular/cdk/tree';
+import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
+import { BehaviorSubject, of } from "rxjs";
+import { SettingsService } from "../../../services/settings.service";
+import { environment } from  "../../env";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { HttpClient } from "@angular/common/http";
+import { ActivatedRoute, Router } from "@angular/router";
+import { FormBuilder, FormControl } from "@angular/forms";
+import { AuthService } from "../../../services/auth.service";
+import { UserService } from "../../../services/user.service";
+import { TranslateService } from "@ngx-translate/core";
+import { NotificationService } from "../../../services/notifications/notifications.service";
+import { PrivilegesService } from "../../../services/privileges.service";
+import { LocalStorageService } from "../../../services/local-storage.service";
 
 @Injectable()
 export class ChecklistDatabase {

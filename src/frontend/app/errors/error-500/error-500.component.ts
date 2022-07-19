@@ -16,9 +16,9 @@
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import { Component, OnInit } from '@angular/core';
-import {UserService} from "../../../services/user.service";
-import {SettingsService} from "../../../services/settings.service";
-import {PrivilegesService} from "../../../services/privileges.service";
+import { UserService } from "../../../services/user.service";
+import { SettingsService } from "../../../services/settings.service";
+import { PrivilegesService } from "../../../services/privileges.service";
 
 @Component({
   selector: 'app-error',

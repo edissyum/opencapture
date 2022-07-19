@@ -24,7 +24,7 @@ import { AuthService } from "../../../../../services/auth.service";
 import { NotificationService } from "../../../../../services/notifications/notifications.service";
 import { TranslateService } from "@ngx-translate/core";
 import { catchError, finalize, tap } from "rxjs/operators";
-import {environment} from  "../../../../env";
+import { environment } from  "../../../../env";
 import { of } from "rxjs";
 import { ConfirmDialogComponent } from "../../../../../services/confirm-dialog/confirm-dialog.component";
 import { MatDialog } from "@angular/material/dialog";

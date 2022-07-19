@@ -15,11 +15,11 @@ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {Component, OnInit} from '@angular/core';
-import {AuthService} from "../../services/auth.service";
-import {UserService} from "../../services/user.service";
-import {LocalStorageService} from "../../services/local-storage.service";
-import {PrivilegesService} from "../../services/privileges.service";
+import { Component, OnInit } from '@angular/core';
+import { AuthService } from "../../services/auth.service";
+import { UserService } from "../../services/user.service";
+import { LocalStorageService } from "../../services/local-storage.service";
+import { PrivilegesService } from "../../services/privileges.service";
 
 @Component({
     selector: 'app-home',

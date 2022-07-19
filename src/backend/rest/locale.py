@@ -18,7 +18,7 @@
 from src.backend.import_controllers import auth, config
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
-from flask import Blueprint, make_response, jsonify, session, current_app, request
+from flask import Blueprint, make_response, jsonify, session, request
 
 bp = Blueprint('i18n', __name__, url_prefix='/ws/')
 
@@ -34,10 +34,12 @@ def change_language(lang):
 @bp.route('i18n/getAllLang', methods=['GET'])
 @auth.token_required
 def get_all_lang():
-    language = current_app.config['LANGUAGES']
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    languages = _vars[11]
     langs = []
-    for lang in language:
-        langs.append([language[lang]['lang_code'], language[lang]['label']])
+    for lang in languages:
+        langs.append([languages[lang]['lang_code'], languages[lang]['label']])
     return make_response({'langs': langs}, 200)
 
 
@@ -45,9 +47,9 @@ def get_all_lang():
 def get_current_lang():
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
-    _configurations = _vars[10]
-    current_lang = _configurations['locale']
-    languages = current_app.config['LANGUAGES']
+    configurations = _vars[10]
+    current_lang = configurations['locale']
+    languages = _vars[11]
     angular_moment_lang = ''
     babel_lang = ''
     for _l in languages:

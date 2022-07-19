@@ -2,9 +2,9 @@
     <mat-sidenav #sidenav mode="side" opened class="w-1/6 flex flex-col h-full border-r border-green-400" style="top:0.1rem">
         <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">{{ "SETTINGS.administration" | translate }}</h3>
         <mat-divider class="border-green-400"></mat-divider>
-        <mat-nav-list class="pt-0 overflow-x-hidden overflow-y-auto" style="height: calc(100% - 60px)">
+        <mat-nav-list class="pt-0">
             <mat-expansion-panel *ngFor="let parent of this.serviceSettings.getSettingsParent()"
-                     [expanded]="parent.opened" (opened)="this.serviceSettings.closeOtherParent(this.router.url, parent['id'])">
+                                 [expanded]="parent.opened" (opened)="this.serviceSettings.closeOtherParent(this.router.url, parent['id'])">
                 <mat-expansion-panel-header class="settings_expansion">
                     <mat-panel-title>
                         {{ parent['label'] | translate }}
@@ -94,7 +94,7 @@
                     <span class="block" (click)="updatePositionsMask()">{{ "POSITIONS-MASKS.modify" | translate }}</span>
                 </button>
             </div>
-            <div class="grid grid-cols-2 gap-8 mt-6 ml-6 mr-6">
+            <div class="grid grid-cols-3 gap-8 mt-6 ml-6 mr-6">
                 <mat-form-field>
                     <mat-label>{{ "POSITIONS-MASKS.label" | translate }}</mat-label>
                     <input matInput [formControl]="this.form['label'].control" required>
@@ -111,7 +111,15 @@
                         </mat-option>
                     </mat-autocomplete>
                 </mat-form-field>
-                <span class="cursor-pointer text-sm col-span-2 flex justify-center m-auto w-1/6 -mt-8"
+                <mat-form-field class="block">
+                    <mat-label>
+                        {{ "POSITIONS-MASKS.form_associated" | translate }}
+                    </mat-label>
+                    <mat-select [formControl]="this.form['form_id'].control" [required]="true">
+                        <mat-option *ngFor="let option of this.forms" [value]="option['id']">{{ option['label'] }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <span class="cursor-pointer text-sm col-span-3 flex justify-center m-auto w-1/6 -mt-8"
                       *ngIf="invoiceImageSrc" (click)="deleteImage()">
                     {{ 'POSITIONS-MASKS.reset_image' | translate }}
                 </span>
