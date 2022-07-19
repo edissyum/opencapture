@@ -14,23 +14,24 @@
 # along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
-
+import json
 import re
 from ..functions import search_custom_positions
 
 
 class FindCustom:
-    def __init__(self, text, log, regex, config, ocr, files, supplier, file, database, docservers):
-        self.Ocr = ocr
+    def __init__(self, text, log, regex, config, ocr, files, supplier, file, database, docservers, form_id):
+        self.ocr = ocr
         self.log = log
         self.text = text
         self.file = file
-        self.Files = files
+        self.files = files
         self.regex = regex
         self.config = config
-        self.docservers = docservers
+        self.form_id = form_id
         self.supplier = supplier
         self.database = database
+        self.docservers = docservers
         self.ocr_errors_table = ocr.ocr_errors_table
 
     def process(self, data):
@@ -52,8 +53,8 @@ class FindCustom:
             list_of_fields = self.database.select({
                 'select': ['positions', 'regex', 'pages'],
                 'table': ['positions_masks'],
-                'where': ['supplier_id = %s'],
-                'data': [self.supplier[2]['supplier_id']]
+                'where': ['supplier_id = %s', 'form_id = %s'],
+                'data': [self.supplier[2]['supplier_id'], self.form_id]
             })
             if list_of_fields:
                 list_of_fields = list_of_fields[0]
@@ -66,11 +67,46 @@ class FindCustom:
                             'page': list_of_fields['pages'][index] if index in list_of_fields['pages'] else ''
                         }
 
-                        data, position = search_custom_positions(_data, self.Ocr, self.Files, self.regex, self.file, self.docservers)
+                        data, position = search_custom_positions(_data, self.ocr, self.files, self.regex, self.file, self.docservers)
                         if not data and index in list_of_fields['regex'] and list_of_fields[index]['regex'] is not False:
                             data_to_return[index] = [self.process(list_of_fields[index]), position, list_of_fields['pages'][index]]
                             if index in data_to_return and data_to_return[index][0]:
                                 data_to_return[index] = [data, position, list_of_fields['pages'][index]]
                         else:
                             data_to_return[index] = [data, position, list_of_fields['pages'][index]]
+
+        if self.supplier:
+            custom_with_position = self.database.select({
+                'select': [
+                    "positions -> '" + str(self.form_id) + "' as positions"
+                ],
+                'table': ['accounts_supplier'],
+                'where': ['vat_number = %s', 'status <> %s'],
+                'data': [self.supplier[0], 'DEL']
+            })[0]
+            if custom_with_position:
+                for field in custom_with_position['positions']:
+                    if 'custom_' in field:
+                        position = self.database.select({
+                            'select': [
+                                "positions -> '" + str(self.form_id) + "' -> '" + field + "' as custom_position",
+                                "pages -> '" + str(self.form_id) + "' -> '" + field + "' as custom_page"
+                            ],
+                            'table': ['accounts_supplier'],
+                            'where': ['vat_number = %s', 'status <> %s'],
+                            'data': [self.supplier[0], 'DEL']
+                        })[0]
+
+                        if position and position['custom_position'] not in [False, 'NULL', '', None]:
+                            data = {'position': position['custom_position'], 'regex': None, 'target': 'full', 'page': position['custom_page']}
+                            text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
+                            try:
+                                position = json.loads(position)
+                            except TypeError:
+                                pass
+
+                            if text is not False:
+                                if text != "":
+                                    self.log.info(field + ' found with position : ' + str(text))
+                                    data_to_return[field] = [text, position, data['page']]
         return data_to_return
