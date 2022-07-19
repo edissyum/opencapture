@@ -363,8 +363,8 @@ class FindFooter:
                 total_ttc = [float("%.2f" % (float(total_ht[0]) + float(vat_amount[0]))), (('', ''), ('', '')), True]
             elif vat_rate is False and total_ht and total_ttc:
                 if vat_amount is False:
-                    vat_amount = float("%.2f" % (float(total_ttc[0]) - float(total_ht[0])))
-                vat_rate = [float("%.2f" % (float(vat_amount) / float(total_ht[0]) * 100)), (('', ''), ('', '')), True]
+                    vat_amount = [float("%.2f" % (float(total_ttc[0]) - float(total_ht[0]))), (('', ''), ('', '')), True]
+                vat_rate = [float("%.2f" % (float(vat_amount[0]) / float(total_ht[0]) * 100)), (('', ''), ('', '')), True]
 
             # Test if the three var's are good by simple math operation
             # Round up value with 2 decimals
