@@ -30,6 +30,7 @@ CREATE TABLE "positions_masks"
     "label"       VARCHAR(50),
     "enabled"     BOOLEAN       DEFAULT true,
     "supplier_id" INTEGER,
+    "form_id"     INTEGER,
     "positions"   JSONB         DEFAULT '{}',
     "pages"       JSONB         DEFAULT '{}',
     "regex"       JSONB         DEFAULT '{}',
