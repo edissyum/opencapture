@@ -27,7 +27,7 @@ def get_positions_masks(args):
     _positions_masks, error = positions_masks.get_positions_masks(args)
     total_positions_mask = positions_masks.get_positions_masks({
         'select': ['COUNT(*) as total'],
-        'where': ['status = %s'],
+        'where': ['positions_masks.status = %s'],
         'data': ['OK']
     })
     if error is None:
@@ -99,7 +99,7 @@ def update_positions_mask(position_mask_id, args):
     _vars = create_classes_from_current_config()
     _db = _vars[0]
     _spreadsheet = _vars[7]
-    positions_masks_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
+    _, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
     if error is None:
         res, error = positions_masks.update_positions_mask({'set': args, 'position_mask_id': position_mask_id})
 

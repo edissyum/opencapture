@@ -18,6 +18,7 @@ INSERT INTO "configurations" ("label", "data") VALUES ('resolution', '{"type": "
 INSERT INTO "configurations" ("label", "data") VALUES ('compressionQuality', '{"type": "int", "value": "100", "description": "Qualité de compression utilisée pour la conversion PDF en JPG. En pourcentage"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('locale', '{"type": "string", "value": "fra", "description": "Clé pour la sélection de la langue (fra ou eng par défaut)"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('invoiceSizeMin', '{"type": "int", "value": "6", "description": "Taille minimale pour un numéro de facture"}');
+INSERT INTO "configurations" ("label", "data") VALUES ('devisSizeMin', '{"type": "int", "value": "3", "description": "Taille minimale pour un numéro de devis"}');
 
 -- CRÉATION DES DOCSERVERS
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('PROJECT_PATH', 'Chemin vers l''instance d''Open-Capture For Invoices', '/var/www/html/opencaptureforinvoices/');
@@ -868,7 +869,7 @@ INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (3, '{"data" 
 INSERT INTO "users" ("username","firstname", "lastname","password", "role") VALUES ('admin', 'Super', 'ADMIN', 'pbkdf2:sha256:150000$7c8waI7f$c0891ac8e18990db0786d4a49aea8bf7c1ad82796dccd8ae35c12ace7d8ee403', 1);
 
 -- CRÉATION D'UN MASQUE DE POSITIONNEMENT D'EXEMPLE
-INSERT INTO "positions_masks" ("id", "label", "regex") VALUES (1, 'Masque par défaut', '{"invoice_date": "dateRegex", "invoice_due_date": "dateRegex"}');
+INSERT INTO "positions_masks" ("id", "label", "form_id", "regex") VALUES (1, 'Masque par défaut', 1, '{"invoice_date": "dateRegex", "invoice_due_date": "dateRegex"}');
 ALTER SEQUENCE "positions_masks_id_seq" RESTART WITH 2;
 
 -- CRÉATION DES COMPTES DE CHARGE PAR DÉFAUT

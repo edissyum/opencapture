@@ -29,11 +29,11 @@ bp = Blueprint('positions_masks', __name__, url_prefix='/ws/')
 @auth.token_required
 def get_positions_masks():
     args = {
-        'select': ['*', 'count(*) OVER() as total'],
+        'select': ['positions_masks.*', 'form_models.label as form_label', 'count(*) OVER() as total'],
         'offset': request.args['offset'] if 'offset' in request.args else '',
         'limit': request.args['limit'] if 'limit' in request.args else '',
-        'where': ["status <> 'DEL'"],
-        'order_by': ['id ASC']
+        'where': ["positions_masks.status <> 'DEL'"],
+        'order_by': ['positions_masks.id ASC']
     }
     res = positions_masks.get_positions_masks(args)
     return make_response(jsonify(res[0]), res[1])

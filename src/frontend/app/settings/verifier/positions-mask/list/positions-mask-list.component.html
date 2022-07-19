@@ -93,6 +93,10 @@
                 <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'HEADER.label' | translate }} </mat-header-cell>
                 <mat-cell *matCellDef="let element"> {{ element.label }} </mat-cell>
             </ng-container>
+            <ng-container matColumnDef="form_label">
+                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ACCOUNTS.form' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{ element.form_label }} </mat-cell>
+            </ng-container>
             <ng-container matColumnDef="supplier_name">
                 <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ACCOUNTS.supplier_name' | translate }} </mat-header-cell>
                 <mat-cell *matCellDef="let element"> {{ element.supplier_name }}</mat-cell>

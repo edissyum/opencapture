@@ -18,27 +18,36 @@
         </div>
     </div>
     <div *ngIf="this.fields" class="px-4 overflow-auto" style="height: calc(100vh - 56px) !important">
-        <mat-accordion>
-            <mat-expansion-panel class="top-2 mb-4" [(expanded)]="settingsOpen">
-                <mat-expansion-panel-header>
-                    <mat-panel-title class="justify-center">{{ 'GLOBAL.settings' | translate }}</mat-panel-title>
-                </mat-expansion-panel-header>
-                <mat-tab-group class="mx-5">
-                    <mat-tab [label]="'VERIFIER.change_form' | translate">
-                        <p class="mt-3 text-center text-gray-400">{{ 'VERIFIER.change_form_details' | translate }}</p>
-                        <mat-form-field class="w-full" [class.opacity-50]="invoice.status === 'END'">
-                            <mat-select [(value)]="this.currentFormFields.form_id" (selectionChange)="changeForm($event)"
-                                        [disabled]="invoice.status === 'END'">
-                                <mat-option *ngFor="let form of this.formList" [value]="form['id']">
-                                    {{ form['label'] }}
-                                </mat-option>
-                            </mat-select>
-                            <mat-hint>{{ 'VERIFIER.outputs_list' | translate }} : {{ this.outputsLabel.join(', ') }}</mat-hint>
-                        </mat-form-field>
-                    </mat-tab>
-                </mat-tab-group>
-            </mat-expansion-panel>
-        </mat-accordion>
+        <div>
+            <div class="relative float-left top-5">
+                <i class="fa-solid fa-eye cursor-pointer text-green-400 text-lg" (click)="hideVisuals()"
+                   [class.fa-eye-slash]="this.visualIsHide"
+                   [matTooltip]="'VERIFIER.hide_visuals' | translate"></i>
+            </div>
+            <div class="relative z-20 float-right" style="width: 96%">
+                <mat-accordion>
+                    <mat-expansion-panel class="top-2 mb-4" [(expanded)]="this.settingsOpen">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title class="justify-center">{{ 'GLOBAL.settings' | translate }}</mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <mat-tab-group class="mx-5">
+                            <mat-tab [label]="'VERIFIER.change_form' | translate">
+                                <p class="mt-3 text-center text-gray-400">{{ 'VERIFIER.change_form_details' | translate }}</p>
+                                <mat-form-field class="w-full" [class.opacity-50]="invoice.status === 'END'">
+                                    <mat-select [(value)]="this.currentFormFields.form_id" (selectionChange)="changeForm($event)"
+                                                [disabled]="invoice.status === 'END'">
+                                        <mat-option *ngFor="let form of this.formList" [value]="form['id']">
+                                            {{ form['label'] }}
+                                        </mat-option>
+                                    </mat-select>
+                                    <mat-hint>{{ 'VERIFIER.outputs_list' | translate }} : {{ this.outputsLabel.join(', ') }}</mat-hint>
+                                </mat-form-field>
+                            </mat-tab>
+                        </mat-tab-group>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </div>
+        </div>
         <ng-container *ngFor="let category of this.fieldCategories">
             <ng-container *ngIf="this.form[category['id']].length !== 0">
                 <div class="relative text-xl tracking-wider pl-1.5 pr-1.5 bg-white left-6 z-10"

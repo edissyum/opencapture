@@ -202,8 +202,23 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             ocr = _PyTesseract(supplier[2]['document_lang'], log, config, docservers)
             convert(file, files, ocr, nb_pages)
 
+    input_settings = None
+    form_id = None
+    if 'input_id' in args:
+        input_settings = database.select({
+            'select': ['*'],
+            'table': ['inputs'],
+            'where': ['input_id = %s', 'module = %s'],
+            'data': [args['input_id'], 'verifier'],
+        })
+        if input_settings:
+            input_settings = input_settings[0]
+            if input_settings['override_supplier_form'] or not supplier or supplier[2]['form_id'] in ['', [], None]:
+                form_id = input_settings['default_form_id']
+
     # Find custom informations using mask
-    custom_fields = FindCustom(ocr.header_text, log, regex, config, ocr, files, supplier, file, database, docservers).run()
+    custom_fields = FindCustom(ocr.header_text, log, regex, config, ocr, files, supplier, file, database, docservers,
+                               form_id).run()
     if custom_fields:
         for field in custom_fields:
             datas.update({field: custom_fields[field][0]})
@@ -214,7 +229,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
     # Find invoice number
     invoice_number_class = FindInvoiceNumber(ocr, files, log, regex, config, database, supplier, file,ocr.header_text,
-                                             1, False, ocr.footer_text, docservers, configurations, languages)
+                                             1, False, ocr.footer_text, docservers, configurations, languages, form_id)
     invoice_number = invoice_number_class.run()
     if not invoice_number:
         invoice_number_class.text = ocr.header_last_text
@@ -283,7 +298,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         text_custom = ocr.text
         page_for_date = 1
 
-    date_class = FindDate(text_custom, log, regex, configurations, files, ocr, supplier, page_for_date, database, file, docservers, languages)
+    date_class = FindDate(text_custom, log, regex, configurations, files, ocr, supplier, page_for_date, database, file, docservers, languages, form_id)
     date = date_class.run()
 
     if date:
@@ -300,7 +315,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
         # Find quotation number
     quotation_number_class = FindQuotationNumber(ocr, files, log, regex, config, database, supplier, file,
-                                                 ocr.header_text, 1, False, ocr.footer_text, docservers, configurations)
+                                                 ocr.header_text, 1, False, ocr.footer_text, docservers, configurations, form_id)
     quotation_number = quotation_number_class.run()
     if not quotation_number:
         quotation_number_class.text = ocr.header_last_text
@@ -319,9 +334,9 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             pages.update({'quotation_number': quotation_number[2]})
 
     # Find footer informations (total amount, no rate amount etc..)
-    footer_class = FindFooter(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text, docservers)
+    footer_class = FindFooter(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text, docservers, form_id)
     if supplier and supplier[2]['get_only_raw_footer'] in [True, 'True']:
-        footer_class = FindFooterRaw(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text, docservers)
+        footer_class = FindFooterRaw(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text, docservers, form_id)
 
     footer = footer_class.run()
     if not footer and nb_pages > 1:
@@ -416,7 +431,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
     # Find delivery number
     delivery_number_class = FindDeliveryNumber(ocr, files, log, regex, config, database, supplier, file,
-                                               ocr.header_text, 1, False, docservers, configurations)
+                                               ocr.header_text, 1, False, docservers, configurations, form_id)
     delivery_number = delivery_number_class.run()
     if not delivery_number:
         delivery_number_class.text = ocr.footer_text
@@ -432,7 +447,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
     # Find order number
     order_number_class = FindOrderNumber(ocr, files, log, regex, config, database, supplier, file,
-                                         ocr.header_text, 1, False, docservers, configurations)
+                                         ocr.header_text, 1, False, docservers, configurations, form_id)
     order_number = order_number_class.run()
     if not order_number:
         order_number_class.text = ocr.footer_text
@@ -453,30 +468,21 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     files.save_img_with_wand(file, docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename)
 
     allow_auto = False
-    input_settings = None
-    if 'input_id' in args:
-        input_settings = database.select({
-            'select': ['*'],
-            'table': ['inputs'],
-            'where': ['input_id = %s', 'module = %s'],
-            'data': [args['input_id'], 'verifier'],
-        })
-        if input_settings:
-            input_settings = input_settings[0]
-            if input_settings['allow_automatic_validation'] and input_settings['automatic_validation_data']:
-                for column in input_settings['automatic_validation_data'].split(','):
-                    column = column.strip()
-                    if column == 'supplier':
-                        column = 'name'
-                    elif column == 'footer':
-                        if footer:
-                            allow_auto = True
-                            continue
-                    if column in datas and datas[column]:
+    if input_settings:
+        if input_settings['allow_automatic_validation'] and input_settings['automatic_validation_data']:
+            for column in input_settings['automatic_validation_data'].split(','):
+                column = column.strip()
+                if column == 'supplier':
+                    column = 'name'
+                elif column == 'footer':
+                    if footer:
                         allow_auto = True
-                    else:
-                        allow_auto = False
-                        break
+                        continue
+                if column in datas and datas[column]:
+                    allow_auto = True
+                else:
+                    allow_auto = False
+                    break
 
     if supplier and not supplier[2]['skip_auto_validate'] and allow_auto:
         log.info('All the usefull informations are found. Execute outputs action and end process')

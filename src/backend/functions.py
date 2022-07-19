@@ -90,13 +90,14 @@ def search_custom_positions(data, ocr, files, regex, file, docservers):
         return search(position, data['regex'], files, ocr, target_file)
 
 
-def search_by_positions(supplier, index, ocr, files, database):
+def search_by_positions(supplier, index, ocr, files, database, form_id):
     positions_mask = database.select({
         'select': ['*'],
         'table': ['positions_masks'],
-        'where': ['supplier_id = %s'],
-        'data': [supplier[2]['supplier_id']]
+        'where': ['supplier_id = %s', 'form_id = %s'],
+        'data': [supplier[2]['supplier_id'], form_id]
     })
+
     if not positions_mask:
         return False, (('', ''), ('', ''))
 

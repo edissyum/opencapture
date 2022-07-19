@@ -339,7 +339,7 @@ class Files:
                         break
 
             for res in re.finditer(r"" + self.regex['dateRegex'] + "", text):
-                date_class = FindDate('', self.log, self.regex, self.configurations, self, ocr, '', '', '', '', docservers=self.docservers, languages=current_app.config['LANGUAGES'])
+                date_class = FindDate('', self.log, self.regex, self.configurations, self, ocr, '', '', '', '', self.docservers, current_app.config['LANGUAGES'], None)
                 date = date_class.format_date(res.group(), (('', ''), ('', '')), True)
                 if date:
                     text = date[0]
