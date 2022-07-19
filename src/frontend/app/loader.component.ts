@@ -21,7 +21,7 @@ import {Component, OnInit} from '@angular/core';
     selector: 'app-loader',
     template:
         '<div class="w-full h-full">' +
-        '    <div id="preloader" class="absolute inset-0 bg-white z-20">' +
+        '    <div id="preloader" class="absolute inset-0 bg-white z-30">' +
         '            <div id="status" class="flex absolute items-center justify-center w-full h-0 top-1/2">' +
         '                <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 74.4 81.9" width="300"' +
         '                     height="300">' +

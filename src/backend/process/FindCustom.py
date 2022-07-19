@@ -20,17 +20,18 @@ from ..functions import search_custom_positions
 
 
 class FindCustom:
-    def __init__(self, text, log, regex, config, ocr, files, supplier, file, database, docservers):
-        self.Ocr = ocr
+    def __init__(self, text, log, regex, config, ocr, files, supplier, file, database, docservers, form_id):
+        self.ocr = ocr
         self.log = log
         self.text = text
         self.file = file
-        self.Files = files
+        self.files = files
         self.regex = regex
         self.config = config
-        self.docservers = docservers
+        self.form_id = form_id
         self.supplier = supplier
         self.database = database
+        self.docservers = docservers
         self.ocr_errors_table = ocr.ocr_errors_table
 
     def process(self, data):
@@ -66,7 +67,7 @@ class FindCustom:
                             'page': list_of_fields['pages'][index] if index in list_of_fields['pages'] else ''
                         }
 
-                        data, position = search_custom_positions(_data, self.Ocr, self.Files, self.regex, self.file, self.docservers)
+                        data, position = search_custom_positions(_data, self.ocr, self.files, self.regex, self.file, self.docservers)
                         if not data and index in list_of_fields['regex'] and list_of_fields[index]['regex'] is not False:
                             data_to_return[index] = [self.process(list_of_fields[index]), position, list_of_fields['pages'][index]]
                             if index in data_to_return and data_to_return[index][0]:

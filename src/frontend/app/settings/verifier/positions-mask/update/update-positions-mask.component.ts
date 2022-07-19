@@ -53,11 +53,15 @@ export class UpdatePositionsMaskComponent implements OnInit {
     currentPage             : number    = 1;
     suppliers               : any       = [];
     filteredOptions         : Observable<any> | undefined;
+    forms                   : any       = [];
     form                    : any       = {
         'label': {
             'control': new FormControl(),
         },
         'supplier_id': {
+            'control': new FormControl(),
+        },
+        'form_id': {
             'control': new FormControl(),
         }
     };
@@ -202,6 +206,16 @@ export class UpdatePositionsMaskComponent implements OnInit {
     ) { }
 
     async ngOnInit(): Promise<void> {
+        this.http.get(API_URL + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.forms = data.forms;
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
         this.serviceSettings.init();
         this.launchOnInit = true;
         this.positionMaskId = this.route.snapshot.params['id'];
@@ -235,6 +249,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
             }, true, '', false);
         }
         this.form['label'].control.setValue(this.positionsMask.label);
+        this.form['form_id'].control.setValue(this.positionsMask.form_id);
         this.filteredOptions = this.form['supplier_id'].control.valueChanges
             .pipe(
                 startWith(''),
@@ -362,6 +377,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
     updatePositionsMask() {
         const _array = {
             'label': this.form['label'].control.value,
+            'form_id': this.form['form_id'].control.value,
             'regex': {},
         };
         const supplierName = this.form['supplier_id'].control.value;

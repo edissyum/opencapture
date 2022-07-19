@@ -1,6 +1,6 @@
 {
     "name": "open-capture-for-invoices",
-    "version": "2.3.1",
+    "version": "2.3.2",
     "scripts": {
         "build-watch": "ng build --configuration development --watch",
         "build-prod": "ng build --configuration production",

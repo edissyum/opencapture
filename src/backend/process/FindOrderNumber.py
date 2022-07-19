@@ -21,22 +21,23 @@ from ..functions import search_custom_positions, search_by_positions
 
 
 class FindOrderNumber:
-    def __init__(self, ocr, files, log, regex, config, database, supplier, file, text, nb_pages, custom_page, docservers, configurations, target='header'):
-        self.vatNumber = ''
-        self.Ocr = ocr
-        self.text = text
+    def __init__(self, ocr, files, log, regex, config, database, supplier, file, text, nb_pages, custom_page,
+                 docservers, configurations, form_id, target='header'):
+        self.ocr = ocr
         self.log = log
-        self.Files = files
+        self.file = file
+        self.text = text
+        self.files = files
         self.regex = regex
         self.config = config
-        self.docservers = docservers
-        self.configurations = configurations
-        self.supplier = supplier
-        self.Database = database
-        self.file = file
-        self.nbPages = nb_pages
-        self.customPage = custom_page
         self.target = target
+        self.form_id = form_id
+        self.supplier = supplier
+        self.database = database
+        self.nb_pages = nb_pages
+        self.docservers = docservers
+        self.custom_page = custom_page
+        self.configurations = configurations
 
     def sanitize_order_number(self, data):
         order_res = data
@@ -56,15 +57,15 @@ class FindOrderNumber:
 
     def run(self):
         if self.supplier:
-            order_number = search_by_positions(self.supplier, 'order_number', self.Ocr, self.Files, self.Database)
+            order_number = search_by_positions(self.supplier, 'order_number', self.ocr, self.files, self.database, self.form_id)
             if order_number and order_number[0]:
                 return order_number
 
-        if self.supplier and not self.customPage:
-            position = self.Database.select({
+        if self.supplier and not self.custom_page:
+            position = self.database.select({
                 'select': [
-                    "positions ->> 'order_number' as order_number_position",
-                    "pages ->> 'order_number' as order_number_page"
+                    "positions -> '" + str(self.form_id) + "' -> 'order_number' as order_number_position",
+                    "pages -> '" + str(self.form_id) + "' ->'order_number' as order_number_page"
                 ],
                 'table': ['accounts_supplier'],
                 'where': ['vat_number = %s', 'status <> %s'],
@@ -73,7 +74,7 @@ class FindOrderNumber:
 
             if position and position['order_number_position'] not in [False, 'NULL', '', None]:
                 data = {'position': position['order_number_position'], 'regex': None, 'target': 'full', 'page': position['order_number_page']}
-                text, position = search_custom_positions(data, self.Ocr, self.Files, self.regex, self.file, self.docservers)
+                text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
 
                 try:
                     position = json.loads(position)
@@ -97,6 +98,6 @@ class FindOrderNumber:
                     self.log.info('Order number found : ' + order_number)
                     position = line.position
                     if self.target != 'header':
-                        position = self.Files.return_position_with_ratio(line, self.target)
-                    return [order_number, position, self.nbPages]
+                        position = self.files.return_position_with_ratio(line, self.target)
+                    return [order_number, position, self.nb_pages]
         return False

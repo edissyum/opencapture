@@ -18,6 +18,7 @@
 import os
 import sys
 import time
+import json
 import tempfile
 from kuyruk import Kuyruk
 from flask import current_app
@@ -181,7 +182,7 @@ def str2bool(value):
 OCforInvoices = Kuyruk()
 
 
-@OCforInvoices.task(queue='invoices')
+# @OCforInvoices.task(queue='invoices')
 def launch(args):
     start = time.time()
 
@@ -200,7 +201,8 @@ def launch(args):
     if 'languages' in args:
         languages = args['languages']
     else:
-        languages = current_app.config['LANGUAGES']
+        with open('instance/lang.json', encoding='UTF-8') as lang_file:
+            languages = json.loads(lang_file.read())
 
     remove_blank_pages = False
     splitter_method = False

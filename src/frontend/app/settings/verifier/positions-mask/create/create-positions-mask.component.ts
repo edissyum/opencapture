@@ -39,11 +39,15 @@ export class CreatePositionsMaskComponent implements OnInit {
     loading             : boolean   = true;
     suppliers           : any       = [];
     filteredOptions     : Observable<any> | undefined;
+    forms               : any       = [];
     form                : any       = {
         'label': {
             'control': new FormControl(),
         },
         'supplier_id': {
+            'control': new FormControl(),
+        },
+        'form_id': {
             'control': new FormControl(),
         }
     };
@@ -70,6 +74,16 @@ export class CreatePositionsMaskComponent implements OnInit {
                         startWith(''),
                         map(option => option ? this._filter(option) : this.suppliers.slice())
                     );
+                this.http.get(API_URL + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
+                    tap((data: any) => {
+                        this.forms = data.forms;
+                    }),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
             }),
             finalize(() => this.loading = false),
             catchError((err: any) => {
@@ -95,6 +109,7 @@ export class CreatePositionsMaskComponent implements OnInit {
         if (this.isValidForm(this.form)) {
             const label = this.form['label'].control.value;
             const supplierName = this.form['supplier_id'].control.value;
+            const formId = this.form['form_id'].control.value;
             let supplierId = '';
             this.suppliers.forEach((element: any) => {
                 if (element.name === supplierName) {
@@ -105,6 +120,7 @@ export class CreatePositionsMaskComponent implements OnInit {
                 {'args': {
                         'label': label,
                         'supplier_id': supplierId,
+                        'form_id': formId
                     }}, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {

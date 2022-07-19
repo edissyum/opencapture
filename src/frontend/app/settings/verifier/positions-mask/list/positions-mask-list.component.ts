@@ -40,13 +40,13 @@ import {HistoryService} from "../../../../../services/history.service";
     styleUrls: ['./positions-mask-list.component.scss']
 })
 export class PositionsMaskListComponent implements OnInit {
+    columnsToDisplay: string[]      = ['id', 'label', 'supplier_name', 'form_label', 'enabled', 'actions'];
     loading         : boolean       = true;
-    columnsToDisplay: string[]      = ['id', 'label', 'supplier_name', 'enabled', 'actions'];
     pageSize        : number        = 10;
     pageIndex       : number        = 0;
     total           : number        = 0;
     offset          : number        = 0;
-    positionsMasks : any           = [];
+    positionsMasks  : any           = [];
 
     constructor(
         public router: Router,
