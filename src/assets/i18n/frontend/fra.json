@@ -225,6 +225,9 @@
 		"textarea": "Multi lignes"
 	},
 	"FORMS": {
+		"allow_automatic_validation": "Autoriser la validation automatique",
+		"automatic_validation_data": "Données nécessaire à la validation automatique",
+		"automatic_validation_data_hint": "Cliquez pour voir la liste des champs disponibles",
 		"available_fields": "Champs disponibles",
 		"choose_form": "Selection du formulaire",
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer le formulaire <b>{{ form }}</b> ?",
@@ -238,6 +241,8 @@
 		"delete": "Supprimer le formulaire",
 		"delete_field": "Supprimer le champ",
 		"disable": "Désactiver le formulaire",
+		"display_hint": "Modifier l'affichage des documents (par formulaire) dans la liste du Verifier",
+		"display_updated_success": "Affichage des documents du formulaire modifié avec succès",
 		"duplicate": "Dupliquer le formulaire",
 		"enable": "Activer le formulaire",
 		"form_deleted": "Formulaire supprimé avec succès",
@@ -371,10 +376,7 @@
 		"verifier": "Open-Capture Vérificateur"
 	},
 	"INPUT": {
-		"allow_automatic_validation": "Autoriser la validation automatique",
 		"associated_customer": "Compte client associé",
-		"automatic_validation_data": "Données nécessaire à la validation automatique",
-		"automatic_validation_data_hint": "Exemple : supplier, invoice_number, footer",
 		"confirm_delete": "Êtes vous sûr de vouloir supprimer la chaîne entrante <b>{{ input }}</b> ?",
 		"confirm_duplicate": "Êtes vous sûr de vouloir dupliquer la chaîne entrante <b>{{ input }}</b> ?",
 		"create": "Créer la chaîne entrante",
@@ -509,6 +511,7 @@
 		"disable": "Désactiver le masque de positionnement",
 		"duplicate": "Dupliquer le masque de positionnement",
 		"enable": "Activer le masque de positionnement",
+		"form_associated": "Formulaire associé",
 		"label": "Libellé du masque de positionnement",
 		"modify": "Mettre à jour le masque de positionnement",
 		"placeholder": "Selectionnez une facture du fournisseur choisi",
@@ -626,7 +629,8 @@
 		"update_input": "Modifier une chaîne entrante",
 		"update_output": "Modifier une chaîne sortante",
 		"users_list": "Liste des utilisateurs",
-		"verifier": "Paramètres du Vérificateur"
+		"verifier": "Paramètres du Vérificateur",
+		"verifier_display": "Affichage"
 	},
 	"SPLITTER": {
 		"Other": "(Autre)",
@@ -776,6 +780,7 @@
 		"form_changed": "Formulaire modifié avec succès",
 		"form_validated_and_output_done": "Formulaire validé et chaîne(s) sortante(s) suivante(s) effectuée(s) : <br><br> <center>{{ outputs }}</center>",
 		"format": "Format des données",
+		"hide_visuals": "Cacher les indications visuelles",
 		"invoice_locked": "Facture verrouillée",
 		"invoice_locked_by": "Facture verrouillée par l'utilisateur suivant : <b>{{ locked_by }}</b>",
 		"invoice_refused": "Facture refusée",

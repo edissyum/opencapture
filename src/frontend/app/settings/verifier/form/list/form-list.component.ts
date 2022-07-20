@@ -45,8 +45,8 @@ import { HistoryService } from "../../../../../services/history.service";
     ]
 })
 export class FormListComponent implements OnInit {
-    loading: boolean            = true;
     columnsToDisplay: string[]  = ['id', 'label', 'default_form', 'enabled', 'actions'];
+    loading: boolean            = true;
     pageSize : number           = 10;
     pageIndex: number           = 0;
     total: number               = 0;
@@ -78,7 +78,7 @@ export class FormListComponent implements OnInit {
             if (this.localeStorageService.get('formsPageIndex'))
                 this.pageIndex = parseInt(this.localeStorageService.get('formsPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
-        }else
+        } else
             this.localeStorageService.remove('formsPageIndex');
         this.loadForms();
     }
@@ -264,6 +264,7 @@ export class FormListComponent implements OnInit {
     }
 
     duplicateForm(formId: number) {
+        this.loading = true;
         if (formId !== undefined) {
             this.http.post(environment['url'] + '/ws/forms/duplicate/' + formId, {}, {headers: this.authService.headers}).pipe(
                 tap(() => {

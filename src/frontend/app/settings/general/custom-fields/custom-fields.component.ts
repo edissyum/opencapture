@@ -247,6 +247,7 @@ export class CustomFieldsComponent implements OnInit {
     }
 
     addCustomField() {
+        this.loading = true;
         let newField: any = {};
         newField = this.addSelectOptionsToArgs(newField);
         this.addFieldInputs.forEach((element: any) => {

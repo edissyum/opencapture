@@ -17,7 +17,7 @@
 
 import re
 import json
-from ..functions import search_by_positions, search_custom_positions
+from src.backend.functions import search_by_positions, search_custom_positions
 
 
 class FindQuotationNumber:

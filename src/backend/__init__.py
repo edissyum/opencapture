@@ -80,7 +80,7 @@ def get_locale():
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
         languages = _vars[11]
-    session['lang'] = request.accept_languages.best_match(languages.keys())
+        session['lang'] = request.accept_languages.best_match(languages.keys())
     return session['lang']
 
 

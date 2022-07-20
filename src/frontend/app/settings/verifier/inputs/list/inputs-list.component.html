@@ -104,16 +104,16 @@
         <ng-container matColumnDef="actions">
             <mat-header-cell *matHeaderCellDef> </mat-header-cell>
             <mat-cell *matCellDef="let element">
+                <button (click)="$event.stopPropagation(); duplicateConfirmDialog(element.id, element.input_label)"
+                        matTooltip="{{ 'INPUT.duplicate' | translate }}" mat-icon-button
+                        class="inline-block align-text-top">
+                    <i class="fa-solid fa-clone fa-lg"></i>
+                </button>
                 <button mat-icon-button
                         (click)="$event.stopPropagation();deleteConfirmDialog(element.id, element.input_label)"
                         matTooltip="{{ 'GLOBAL.delete' | translate }}"
                         class="inline-block align-text-top">
                     <i class="fa-solid fa-trash fa-lg"></i>
-                </button>
-                <button (click)="$event.stopPropagation(); duplicateConfirmDialog(element.id, element.input_label)"
-                        matTooltip="{{ 'INPUT.duplicate' | translate }}" mat-icon-button
-                        class="inline-block align-text-top">
-                    <i class="fa-solid fa-clone fa-lg"></i>
                 </button>
             </mat-cell>
         </ng-container>

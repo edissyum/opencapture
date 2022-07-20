@@ -41,7 +41,6 @@ export class UpdateInputComponent implements OnInit {
     headers                 : HttpHeaders   = this.authService.headers;
     loading                 : boolean       = true;
     loadingCustomFields     : boolean       = true;
-    openAvailableField      : boolean       = false;
     inputId                 : any;
     input                   : any;
     inputForm               : any[]         = [
@@ -131,53 +130,7 @@ export class UpdateInputComponent implements OnInit {
             label: this.translate.instant('INPUT.remove_blank_pages'),
             type: 'boolean',
             control: new FormControl()
-        },
-        {
-            id: 'allow_automatic_validation',
-            label: this.translate.instant('INPUT.allow_automatic_validation'),
-            type: 'boolean',
-            control: new FormControl()
-        },
-        {
-            id: 'automatic_validation_data',
-            label: this.translate.instant('INPUT.automatic_validation_data'),
-            type: 'char',
-            control: new FormControl()
         }
-    ];
-    availableFields         : any           = [
-        {
-            "id": 'HEADER.id',
-            'label': 'HEADER.label'
-        },
-        {
-            "id": 'supplier',
-            'label': 'ACCOUNTS.supplier'
-        },
-        {
-            "id": 'invoice_number',
-            'label': 'FACTURATION.invoice_number'
-        },
-        {
-            "id": 'quotation_number',
-            'label': 'FACTURATION.quotation_number'
-        },
-        {
-            "id": 'invoice_date',
-            'label': marker('FACTURATION.invoice_date')
-        },
-        {
-            "id": 'footer',
-            'label': marker('FACTURATION.footer')
-        },
-        {
-            "id": 'order_number',
-            'label': 'FACTURATION.order_number'
-        },
-        {
-            "id": 'delivery_number',
-            'label': 'FACTURATION.delivery_number'
-        },
     ];
 
     constructor(
@@ -199,23 +152,6 @@ export class UpdateInputComponent implements OnInit {
         this.serviceSettings.init();
         this.inputId = this.route.snapshot.params['id'];
 
-        this.http.get(environment['url'] + '/ws/customFields/list?module=verifier', {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
-                data.customFields.forEach((field: any) => {
-                    this.availableFields.push({
-                        'id': 'custom_' + field.id,
-                        'label': field.label
-                    });
-                });
-            }),
-            finalize(() => this.loadingCustomFields = false),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
-
         this.http.get(environment['url'] + '/ws/inputs/getById/' + this.inputId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.input = data;
@@ -223,9 +159,6 @@ export class UpdateInputComponent implements OnInit {
                     this.inputForm.forEach(element => {
                         if (element.id === field) {
                             element.control.setValue(data[field]);
-                            if (element.id === 'allow_automatic_validation') {
-                                this.openAvailableField = data[field];
-                            }
                             if (element.id === 'default_form_id') {
                                 this.http.get(environment['url'] + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
                                     tap((forms: any) => {
@@ -264,10 +197,6 @@ export class UpdateInputComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
-    }
-
-    openSidenav(checked: boolean, field_id: any) {
-        this.openAvailableField = field_id === 'allow_automatic_validation' && checked;
     }
 
     isValidForm() {

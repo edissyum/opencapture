@@ -185,7 +185,7 @@ export class CreateRoleComponent implements OnInit {
                     this.rolePrivileges.splice(index, 1);
                 }
             });
-        }else {
+        } else {
             this.rolePrivileges.push(privilege);
         }
     }

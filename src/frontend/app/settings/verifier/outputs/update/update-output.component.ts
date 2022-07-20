@@ -352,7 +352,7 @@ export class UpdateOutputComponent implements OnInit {
             this.toHighlight = value;
             const filterValue = value.toLowerCase();
             return array.filter((option: any) => option.value.toLowerCase().indexOf(filterValue) !== -1);
-        }else {
+        } else {
             return array;
         }
     }

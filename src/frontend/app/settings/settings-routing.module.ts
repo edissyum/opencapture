@@ -55,6 +55,7 @@ import { CreatePositionsMaskComponent } from "./verifier/positions-mask/create/c
 import { UpdatePositionsMaskComponent } from "./verifier/positions-mask/update/update-positions-mask.component";
 import { CreateFolderDocTypeComponent } from "./splitter/doc-types/create-folder/create-folder-doc-type.component";
 import { LoginMethodsComponent } from "./general/login-methods/login-methods.component";
+import { VerifierDisplayComponent } from "./verifier/display/display.component";
 
 const routes: Routes = [
     {
@@ -127,6 +128,11 @@ const routes: Routes = [
     },
 // --- END General
 // --- Verifier
+    {
+        path: 'settings/verifier/display', component: VerifierDisplayComponent,
+        data: {title: 'SETTINGS.verifier_display', privileges: ['settings', 'verifier_display']},
+        canActivate: [LoginRequiredService, HasPrivilegeService]
+    },
     {
         path: 'settings/verifier/forms', component: FormListComponent,
         data: {title: 'SETTINGS.list_forms', privileges: ['settings', 'forms_list']},

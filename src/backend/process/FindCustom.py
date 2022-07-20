@@ -16,7 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 import json
 import re
-from ..functions import search_custom_positions
+from src.backend.functions import search_custom_positions
 
 
 class FindCustom:

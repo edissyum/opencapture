@@ -469,21 +469,29 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     files.save_img_with_wand(file, docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename)
 
     allow_auto = False
-    if input_settings:
-        if input_settings['allow_automatic_validation'] and input_settings['automatic_validation_data']:
-            for column in input_settings['automatic_validation_data'].split(','):
-                column = column.strip()
-                if column == 'supplier':
-                    column = 'name'
-                elif column == 'footer':
-                    if footer:
+    if form_id:
+        form_data = database.select({
+            'select': ['allow_automatic_validation', 'automatic_validation_data'],
+            'table': ['form_models'],
+            'where': ['id = %s'],
+            'data': [form_id]
+        })
+        if form_data:
+            form_data = form_data[0]
+            if form_data['allow_automatic_validation'] and form_data['automatic_validation_data']:
+                for column in form_data['automatic_validation_data'].split(','):
+                    column = column.strip()
+                    if column == 'supplier':
+                        column = 'name'
+                    elif column == 'footer':
+                        if footer:
+                            allow_auto = True
+                            continue
+                    if column in datas and datas[column]:
                         allow_auto = True
-                        continue
-                if column in datas and datas[column]:
-                    allow_auto = True
-                else:
-                    allow_auto = False
-                    break
+                    else:
+                        allow_auto = False
+                        break
 
     if supplier and not supplier[2]['skip_auto_validate'] and allow_auto:
         log.info('All the usefull informations are found. Execute outputs action and end process')

@@ -13,15 +13,26 @@ CREATE TABLE "users"
 
 CREATE TABLE "form_models"
 (
-    "id"              SERIAL        UNIQUE PRIMARY KEY,
-    "label"           VARCHAR(50),
-    "default_form"    BOOLEAN       DEFAULT false,
-    "supplier_verif"  BOOLEAN       DEFAULT true,
-    "enabled"         BOOLEAN       DEFAULT true,
-    "outputs"         TEXT[],
-    "status"          VARCHAR(5)    DEFAULT 'OK',
-    "module"          VARCHAR(10),
-    "metadata_method" VARCHAR(50)
+    "id"                            SERIAL        UNIQUE PRIMARY KEY,
+    "label"                         VARCHAR(50),
+    "default_form"                  BOOLEAN       DEFAULT false,
+    "supplier_verif"                BOOLEAN       DEFAULT true,
+    "allow_automatic_validation"    BOOLEAN       DEFAULT False,
+    "automatic_validation_data"     TEXT          DEFAULT '',
+    "enabled"                       BOOLEAN       DEFAULT true,
+    "outputs"                       TEXT[],
+    "status"                        VARCHAR(5)    DEFAULT 'OK',
+    "module"                        VARCHAR(10),
+    "metadata_method"               VARCHAR(50),
+    "display"                       JSONB         DEFAULT '{
+            "subtitles": [
+                {"id": "invoice_number", "label": "FACTURATION.invoice_number"},
+                {"id": "invoice_date", "label": "FACTURATION.invoice_date"},
+                {"id": "date", "label": "VERIFIER.register_date"},
+                {"id": "original_file", "label": "VERIFIER.original_file"},
+                {"id": "form_label", "label": "ACCOUNTS.form"}
+            ]
+    }'
 );
 
 CREATE TABLE "positions_masks"
@@ -87,8 +98,6 @@ CREATE TABLE "inputs"
     "module"                        VARCHAR(10),
     "remove_blank_pages"            BOOLEAN        DEFAULT False,
     "override_supplier_form"        BOOLEAN        DEFAULT False,
-    "allow_automatic_validation"    BOOLEAN        DEFAULT False,
-    "automatic_validation_data"     TEXT           DEFAULT '',
     "purchase_or_sale"              VARCHAR(8)     DEFAULT 'purchase',
     "status"                        VARCHAR(3)     DEFAULT 'OK',
     "input_folder"                  TEXT,

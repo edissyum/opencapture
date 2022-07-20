@@ -160,7 +160,7 @@ export class CreateUserComponent implements OnInit {
         }
         if (!found) {
             this.usersCustomers.push(customerId);
-        }else {
+        } else {
             this.usersCustomers.splice(cpt, 1);
         }
     }

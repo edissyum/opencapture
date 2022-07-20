@@ -84,7 +84,7 @@ export class UsersListComponent implements OnInit {
             if (this.localeStorageService.get('usersPageIndex'))
                 this.pageIndex = parseInt(this.localeStorageService.get('usersPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
-        }else
+        } else
             this.localeStorageService.remove('usersPageIndex');
 
         this.http.get(environment['url'] + '/ws/users/list', {headers: this.authService.headers}).pipe(

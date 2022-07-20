@@ -41,6 +41,9 @@ export class FormBuilderComponent implements OnInit {
     loading                 : boolean   = true;
     loadingCustomFields     : boolean   = true;
     creationMode            : boolean   = true;
+    openAvailableField      : boolean   = false;
+    modalOpen               : boolean   = false;
+    formId                  : any;
     outputs                 : any[]     = [];
     form                    : any       = {
         'label': {
@@ -49,8 +52,14 @@ export class FormBuilderComponent implements OnInit {
         'default_form': {
             'control': new FormControl(),
         },
+        'allow_automatic_validation': {
+            'control': new FormControl(),
+        },
         'supplier_verif': {
             'control': new FormControl(),
+        },
+        'automatic_validation_data': {
+            'control': new FormControl()
         }
     };
     outputForm              : any       = [
@@ -64,7 +73,6 @@ export class FormBuilderComponent implements OnInit {
         'facturation': [],
         'other': []
     };
-    formId                  : any;
     fieldCategories         : any []    = [
         {
             'id': 'supplier',
@@ -615,6 +623,40 @@ export class FormBuilderComponent implements OnInit {
             'icon': 'far fa-star'
         },
     ];
+    availableFields         : any       = [
+        {
+            "id": 'HEADER.id',
+            'label': 'HEADER.label'
+        },
+        {
+            "id": 'supplier',
+            'label': 'ACCOUNTS.supplier'
+        },
+        {
+            "id": 'invoice_number',
+            'label': 'FACTURATION.invoice_number'
+        },
+        {
+            "id": 'quotation_number',
+            'label': 'FACTURATION.quotation_number'
+        },
+        {
+            "id": 'invoice_date',
+            'label': marker('FACTURATION.invoice_date')
+        },
+        {
+            "id": 'footer',
+            'label': marker('FACTURATION.footer')
+        },
+        {
+            "id": 'order_number',
+            'label': 'FACTURATION.order_number'
+        },
+        {
+            "id": 'delivery_number',
+            'label': 'FACTURATION.delivery_number'
+        }
+    ];
 
     constructor(
         public router: Router,
@@ -643,6 +685,7 @@ export class FormBuilderComponent implements OnInit {
                         tap((data: any) => {
                             for (const field in this.form) {
                                 for (const info in data) {
+                                    if (field === 'allow_automatic_validation') this.openAvailableField = data[field];
                                     if (info === field) this.form[field].control.setValue(data[field]);
                                 }
                             }
@@ -672,36 +715,38 @@ export class FormBuilderComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.get(environment['url'] + '/ws/customFields/list', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/customFields/list?module=verifier', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.customFields) {
                     for (const field in data.customFields) {
                         if (data.customFields.hasOwnProperty(field)) {
-                            if (data.customFields[field].module === 'verifier') {
-                                for (const parent in this.availableFieldsParent) {
-                                    if (this.availableFieldsParent[parent].id === 'custom_fields') {
-                                        this.availableFieldsParent[parent].values.push({
-                                            id: 'custom_' + data.customFields[field].id,
-                                            label: data.customFields[field].label,
-                                            unit: 'custom',
-                                            type: data.customFields[field].type,
-                                            required: data.customFields[field].required,
-                                            autocomplete: data.customFields[field].autocomplete,
-                                            class: "w-1/3",
-                                            class_label: "1/33",
-                                        });
-                                        let format = '';
-                                        if (data.customFields[field].type === 'text') {
-                                            format = 'char';
-                                        }else if (data.customFields[field].type === 'select') {
-                                            format = 'select';
-                                        }else if (data.customFields[field].type === 'textarea') {
-                                            format = 'char';
-                                        } else {
-                                            format = data.customFields[field].type;
-                                        }
-                                        this.availableFieldsParent[parent].values[this.availableFieldsParent[parent].values.length - 1]['format'] = format;
+                            this.availableFields.push({
+                                'id': 'custom_' + data.customFields[field].id,
+                                'label': data.customFields[field].label
+                            });
+                            for (const parent in this.availableFieldsParent) {
+                                if (this.availableFieldsParent[parent].id === 'custom_fields') {
+                                    this.availableFieldsParent[parent].values.push({
+                                        id: 'custom_' + data.customFields[field].id,
+                                        label: data.customFields[field].label,
+                                        unit: 'custom',
+                                        type: data.customFields[field].type,
+                                        required: data.customFields[field].required,
+                                        autocomplete: data.customFields[field].autocomplete,
+                                        class: "w-1/3",
+                                        class_label: "1/33",
+                                    });
+                                    let format = '';
+                                    if (data.customFields[field].type === 'text') {
+                                        format = 'char';
+                                    } else if (data.customFields[field].type === 'select') {
+                                        format = 'select';
+                                    } else if (data.customFields[field].type === 'textarea') {
+                                        format = 'char';
+                                    } else {
+                                        format = data.customFields[field].type;
                                     }
+                                    this.availableFieldsParent[parent].values[this.availableFieldsParent[parent].values.length - 1]['format'] = format;
                                 }
                             }
                         }
@@ -752,7 +797,7 @@ export class FormBuilderComponent implements OnInit {
                     return of(false);
                 })
             ).subscribe();
-        }else {
+        } else {
             this.loading = false;
         }
     }
@@ -884,6 +929,8 @@ export class FormBuilderComponent implements OnInit {
     updateForm() {
         const label = this.form.label.control.value;
         const isDefault = this.form.default_form.control.value;
+        const allowAutomaticValidation = this.form.allow_automatic_validation.control.value;
+        const automaticValidationData = this.form.automatic_validation_data.control.value;
         const supplierVerif = this.form.supplier_verif.control.value;
         const outputs: any[] = [];
         this.outputForm.forEach((element: any) => {
@@ -892,7 +939,11 @@ export class FormBuilderComponent implements OnInit {
 
         if (label !== '' && outputs.length >= 1) {
             this.http.put(environment['url'] + '/ws/forms/update/' + this.formId, {
-                    'args': {'label' : label, 'default_form' : isDefault, 'supplier_verif': supplierVerif, 'outputs': outputs}
+                    'args': {
+                        'label' : label, 'default_form' : isDefault, 'supplier_verif': supplierVerif,
+                        'outputs': outputs, 'allow_automatic_validation': allowAutomaticValidation,
+                        'automatic_validation_data': automaticValidationData
+                    }
                 }, {headers: this.authService.headers},
             ).pipe(
                 tap(()=> {
@@ -914,7 +965,7 @@ export class FormBuilderComponent implements OnInit {
                     return of(false);
                 })
             ).subscribe();
-        }else {
+        } else {
             if (!label && outputs.length === 0) this.notify.error(this.translate.instant('FORMS.label_and_output_mandatory'));
             else if (!label) this.notify.error(this.translate.instant('FORMS.label_mandatory'));
             else if (outputs.length === 0) this.notify.error(this.translate.instant('FORMS.output_type_mandatory'));
@@ -953,7 +1004,7 @@ export class FormBuilderComponent implements OnInit {
                     return of(false);
                 })
             ).subscribe();
-        }else {
+        } else {
             this.notify.error(this.translate.instant('FORMS.label_mandatory'));
         }
     }

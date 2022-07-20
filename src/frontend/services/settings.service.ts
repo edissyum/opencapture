@@ -140,6 +140,13 @@ export class SettingsService {
         ],
         "verifier": [
             {
+                "id"        : "verifier_display",
+                "label"     : this.translate.instant("SETTINGS.verifier_display"),
+                "icon"      : "fa-solid fa-display",
+                "route"     : "/settings/verifier/display",
+                "privilege" : "verifier_display",
+            },
+            {
                 "id"        : "form_builder",
                 "label"     : this.translate.instant("SETTINGS.list_forms"),
                 "icon"      : "fa-brands fa-wpforms",

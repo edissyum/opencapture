@@ -72,7 +72,7 @@ export class PositionsMaskListComponent implements OnInit {
             if (this.localeStorageService.get('positionMaskPageIndex'))
                 this.pageIndex = parseInt(this.localeStorageService.get('positionMaskPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
-        }else
+        } else
             this.localeStorageService.remove('positionMaskPageIndex');
         this.loadPositionMask().then();
     }

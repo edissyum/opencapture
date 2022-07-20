@@ -106,6 +106,7 @@ import { HintServiceComponent } from "../services/hint/hint.service";
 import { Error500Component } from './errors/error-500/error-500.component';
 import { MatSelectCountryModule } from "@angular-material-extensions/select-country";
 import { MiddlewareComponent } from "./middleware.component";
+import { VerifierDisplayComponent } from './settings/verifier/display/display.component';
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -175,7 +176,8 @@ export function createTranslateLoader(http: HttpClient) {
         RegexComponent,
         HintServiceComponent,
         Error500Component,
-        LoginMethodsComponent
+        LoginMethodsComponent,
+        VerifierDisplayComponent
     ],
     imports: [
         BrowserModule,

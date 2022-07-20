@@ -18,3 +18,22 @@ CREATE TABLE "languages"
 );
 INSERT INTO "languages" ("language_id", "label", "lang_code", "moment_lang_code", "date_format") VALUES ('fr','Francais', 'fra', 'fr-FR', '%d %m %Y');
 INSERT INTO "languages" ("language_id", "label", "lang_code", "moment_lang_code", "date_format") VALUES ('en', 'English', 'eng', 'en-GB', '%m %d %Y');
+
+-- Move allow automatic validation from inputs to form settings
+ALTER TABLE inputs DROP COLUMN "allow_automatic_validation";
+ALTER TABLE inputs DROP COLUMN "automatic_validation_data";
+
+ALTER TABLE form_models ADD COLUMN "allow_automatic_validation" BOOLEAN DEFAULT False;
+ALTER TABLE form_models ADD COLUMN "automatic_validation_data" TEXT DEFAULT '';
+
+-- Improve verifier list display
+INSERT INTO "privileges" ("label", "parent") VALUES ('verifier_display', 'verifier');
+ALTER TABLE form_models ADD COLUMN "display" JSONB DEFAULT '{
+    "subtitles": [
+        {"id": "invoice_number", "label": "FACTURATION.invoice_number"},
+        {"id": "invoice_date", "label": "FACTURATION.invoice_date"},
+        {"id": "date", "label": "VERIFIER.register_date"},
+        {"id": "original_file", "label": "VERIFIER.original_file"},
+        {"id": "form_label", "label": "ACCOUNTS.form"}
+    ]
+}';

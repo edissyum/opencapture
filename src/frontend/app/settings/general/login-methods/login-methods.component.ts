@@ -263,7 +263,7 @@ export class LoginMethodsComponent implements OnInit {
     changedDefaultMethod(loginMethodName: any): void {
         if (!this.isDefaultChecked) {
             this.enableLoginMethod(loginMethodName);
-        }else if (this.isDefaultChecked) {
+        } else if (this.isDefaultChecked) {
             this.disableLoginMethod(loginMethodName);
         }
     }
@@ -271,7 +271,7 @@ export class LoginMethodsComponent implements OnInit {
     changedLdapMethod(loginMethodName: any): void {
         if (!this.isLdapChecked) {
             this.isLdapChecked = true ;
-        }else if (this.isLdapChecked) {
+        } else if (this.isLdapChecked) {
             this.disableLoginMethod(loginMethodName);
         }
     }

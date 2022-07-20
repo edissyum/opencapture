@@ -152,7 +152,7 @@ export class UpdateCustomerComponent implements OnInit {
                         this.customerForm.forEach(element => {
                             if (element.id === field) {
                                 element.control.setValue(this.customer[field]);
-                            }else if (field === 'address_id') {
+                            } else if (field === 'address_id') {
                                 this.addressId = this.customer[field];
                                 if (this.addressId) {
                                     this.http.get(environment['url'] + '/ws/accounts/getAdressById/' + this.addressId, {headers: this.authService.headers}).pipe(
@@ -177,7 +177,7 @@ export class UpdateCustomerComponent implements OnInit {
                                             return of(false);
                                         })
                                     ).subscribe();
-                                }else {
+                                } else {
                                     this.http.post(environment['url'] + '/ws/accounts/addresses/create',
                                         {'args': {
                                                 'address1': '',

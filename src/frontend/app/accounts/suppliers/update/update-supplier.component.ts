@@ -217,13 +217,13 @@ export class UpdateSupplierComponent implements OnInit {
                                     if (element.id === field) {
                                         if (element.id === 'get_only_raw_footer') {
                                             element.control.setValue(!this.supplier[field]);
-                                        }else {
+                                        } else {
                                             element.control.setValue(this.supplier[field]);
                                         }
                                         if (element.id === 'form_id') {
                                             element.values = forms.forms;
                                         }
-                                    }else if (field === 'address_id') {
+                                    } else if (field === 'address_id') {
                                         this.addressId = this.supplier[field];
                                         if (this.addressId) {
                                             this.http.get(environment['url'] + '/ws/accounts/getAdressById/' + this.addressId, {headers: this.authService.headers}).pipe(
@@ -248,7 +248,7 @@ export class UpdateSupplierComponent implements OnInit {
                                                     return of(false);
                                                 })
                                             ).subscribe();
-                                        }else {
+                                        } else {
                                             this.http.post(environment['url'] + '/ws/accounts/addresses/create',
                                                 {'args': {
                                                         'address1': '',

@@ -66,6 +66,7 @@ export class CreatePositionsMaskComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
+        this.serviceSettings.init();
         this.http.get(environment['url'] + '/ws/accounts/suppliers/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.suppliers = this.sortArrayAlphab(data.suppliers);
@@ -162,7 +163,7 @@ export class CreatePositionsMaskComponent implements OnInit {
             this.toHighlight = value;
             const filterValue = value.toLowerCase();
             return this.suppliers.filter((option: any) => option.name.toLowerCase().indexOf(filterValue) !== -1);
-        }else {
+        } else {
             return this.suppliers;
         }
     }

@@ -225,6 +225,9 @@
 		"textarea": "Textarea"
 	},
 	"FORMS": {
+		"allow_automatic_validation": "Allow automatic validation",
+		"automatic_validation_data": "Data needed for automatic validation",
+		"automatic_validation_data_hint": "Click to show available fields",
 		"available_fields": "Fields available",
 		"choose_form": "Choose a new form",
 		"confirm_delete": "Are you sure you want to delete the form <b>{{ form }}</b> ?",
@@ -238,6 +241,8 @@
 		"delete": "Delete form",
 		"delete_field": "Delete the field",
 		"disable": "Disable form",
+		"display_hint": "Change display of documents (per form) in Verifier list",
+		"display_updated_success": "Display of documents per form updated successfully",
 		"duplicate": "Duplicate form",
 		"enable": "Enable form",
 		"form_deleted": "Form deleted successfully",
@@ -371,10 +376,7 @@
 		"verifier": "Open-Capture Verifier"
 	},
 	"INPUT": {
-		"allow_automatic_validation": "Allow automatic validation",
 		"associated_customer": "Associated customer",
-		"automatic_validation_data": "Data needed for automatic validation",
-		"automatic_validation_data_hint": "Example : supplier, invoice_number, footer",
 		"confirm_delete": "Are you sure you want to delete the input <b>{{ input }}</b> ?",
 		"confirm_duplicate": "Are you sure you want to duplicate input <b>{{ input }}</b> ?",
 		"create": "Create input",
@@ -509,6 +511,7 @@
 		"disable": "Disable positions mask",
 		"duplicate": "Duplicate positions mask",
 		"enable": "Enable positions mask",
+		"form_associated": "Form associated",
 		"label": "Label of positions mask",
 		"modify": "Update positions mask",
 		"placeholder": "Choose a selected supplier invoice",
@@ -626,7 +629,8 @@
 		"update_input": "Update input",
 		"update_output": "Update output",
 		"users_list": "Users list",
-		"verifier": "Verifier"
+		"verifier": "Verifier",
+		"verifier_display": "Display"
 	},
 	"SPLITTER": {
 		"Other": "(Autre)",
@@ -776,6 +780,7 @@
 		"form_changed": "Form changed successfully",
 		"form_validated_and_output_done": "Form validated and following output(s) done : <br><br> <center>{{ outputs }}</center>",
 		"format": "Data format",
+		"hide_visuals": "Hide visual indicators",
 		"invoice_locked": "Invoice locked",
 		"invoice_locked_by": "Invoice locked by the following user : <b>{{ locked_by }}</b>",
 		"invoice_refused": "Invoice refused",

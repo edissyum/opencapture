@@ -398,7 +398,7 @@ ALTER SEQUENCE "outputs_types_id_seq" RESTART WITH 6;
 ALTER SEQUENCE "outputs_id_seq" RESTART WITH 6;
 
 -- CRÉATION DU FORMULAIRE VERIFIER PAR DÉFAUT
-INSERT INTO "form_models" ("id", "label", "default_form", "outputs", "module") VALUES (1, 'Formulaire par défaut', true, '{1}', 'verifier');
+INSERT INTO "form_models" ("id", "label", "default_form", "outputs", "module", "display") VALUES (1, 'Formulaire par défaut', true, '{1}', 'verifier', '{"subtitles": [{"id": "invoice_date", "label": "Date de la facture"}, {"id": "invoice_number", "label": "Numéro de facture"}, {"id": "date", "label": "Enregistré le"}, {"id": "original_file", "label": "Nom du fichier"}, {"id": "form_label", "label": "Formulaire"}]}');
 INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
     "other": [],
     "supplier": [
@@ -853,7 +853,8 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (49, 'docservers', 'ad
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (50, 'regex', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (51, 'document_type_splitter', 'splitter');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (52, 'login_methods', 'administration');
-ALTER SEQUENCE "privileges_id_seq" RESTART WITH 53;
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (54, 'verifier_display', 'verifier');
+ALTER SEQUENCE "privileges_id_seq" RESTART WITH 54;
 
 -- CRÉATION DES ROLES
 INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (1, 'superadmin', 'SuperUtilisateur', 'false');

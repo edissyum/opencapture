@@ -78,7 +78,7 @@ export class ConfigurationsComponent implements OnInit {
             if (this.localeStorageService.get('configurationsPageIndex'))
                 this.pageIndex = parseInt(this.localeStorageService.get('configurationsPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
-        }else
+        } else
             this.localeStorageService.remove('configurationsPageIndex');
 
         this.http.get(environment['url'] + '/ws/config/getConfigurations', {headers: this.authService.headers}).pipe(

@@ -308,7 +308,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
             this.toHighlight = value;
             const filterValue = value.toLowerCase();
             return this.suppliers.filter((option: any) => option.name.toLowerCase().indexOf(filterValue) !== -1);
-        }else {
+        } else {
             return this.suppliers;
         }
     }
@@ -426,7 +426,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                     this.notify.handleErrors(this.translate.instant('UPLOAD.extension_unauthorized', {count: data.length}));
                     this.loading = false;
                     return;
-                }else {
+                } else {
                     const formData: FormData = new FormData();
                     if (data) formData.append(data[0].name, data[0]);
 
@@ -529,7 +529,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                     _this.deletePage(inputId);
                 }
             });
-        }else {
+        } else {
             let deleteClicked = false;
             $(".select-areas-delete-area").click(() => {
                 deleteClicked = true;
@@ -580,7 +580,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                 this.savePosition(_selection);
                 this.savePage(this.currentPage);
             }
-        }else {
+        } else {
             const input = $('.input_' + this.lastId);
             const background = $('.background_' + this.lastId);
             const outline = $('.outline_' + this.lastId);
@@ -707,7 +707,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
         if (this.currentPage < this.invoiceImageNbPages) {
             this.currentPage = this.currentPage + 1;
             await this.changeImage(this.currentPage, this.currentPage - 1);
-        }else {
+        } else {
             await this.changeImage(1, this.invoiceImageNbPages);
         }
     }
@@ -716,7 +716,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
         if (this.currentPage > 1) {
             this.currentPage = this.currentPage - 1;
             await this.changeImage(this.currentPage, this.currentPage + 1);
-        }else {
+        } else {
             await this.changeImage(this.invoiceImageNbPages, this.currentPage);
         }
     }

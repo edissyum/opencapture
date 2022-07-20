@@ -65,7 +65,7 @@ export class CustomMatPaginatorIntl extends MatPaginatorIntl {
                     return of(false);
                 })
             ).subscribe();
-        }else {
+        } else {
             this.translate.get('PAGINATOR.items_per_page').subscribe((translated: string) => {
                 this.itemsPerPageLabel = translated;
             });

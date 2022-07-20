@@ -78,7 +78,7 @@ export class SplitterFormListComponent implements OnInit {
             if (this.localeStorageService.get('formsPageIndex'))
                 this.pageIndex = parseInt(this.localeStorageService.get('formsPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
-        }else
+        } else
             this.localeStorageService.remove('formsPageIndex');
         this.loadForms();
     }

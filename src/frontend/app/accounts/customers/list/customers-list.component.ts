@@ -76,7 +76,7 @@ export class CustomersListComponent implements OnInit {
             if (this.localeStorageService.get('customersPageIndex'))
                 this.pageIndex = parseInt(this.localeStorageService.get('customersPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
-        }else
+        } else
             this.localeStorageService.remove('customersPageIndex');
 
         this.http.get(environment['url'] + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(

@@ -18,7 +18,7 @@
 import re
 import json
 import operator
-from ..functions import search_by_positions, search_custom_positions
+from src.backend.functions import search_by_positions, search_custom_positions
 
 
 class FindFooter:

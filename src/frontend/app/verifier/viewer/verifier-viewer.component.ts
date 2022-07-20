@@ -163,7 +163,7 @@ export class VerifierViewerComponent implements OnInit {
             }
             if (supplierFormFound) {
                 await this.generateOutputs(supplierFormFound);
-            }else {
+            } else {
                 for (const element of this.formList) {
                     if (element.default_form) {
                         defaultFormFound = element.id;
@@ -288,7 +288,7 @@ export class VerifierViewerComponent implements OnInit {
                 if (token['token'].includes('ERROR')) {
                     this.tokenError = true;
                     this.token = token['token'].replace('ERROR : ', '');
-                }else {
+                } else {
                     this.tokenError = false;
                     this.token = token['token'];
                 }
@@ -304,7 +304,7 @@ export class VerifierViewerComponent implements OnInit {
         const cpt = filename.split('-')[filename.split('-').length -1].split('.')[0];
         if (this.imgArray[cpt]) {
             this.imgSrc = this.imgArray[cpt];
-        }else {
+        } else {
             this.http.post(environment['url'] + '/ws/verifier/getThumb',{'args': {'type': 'full', 'filename': filename}},
                 {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
@@ -639,7 +639,7 @@ export class VerifierViewerComponent implements OnInit {
                     }
                 }
             });
-        }else {
+        } else {
             let deleteClicked = false;
             $(".select-areas-delete-area").click(() => {
                 deleteClicked = true;
@@ -741,7 +741,7 @@ export class VerifierViewerComponent implements OnInit {
                     ).subscribe();
             }
             this.saveInfo = true;
-        }else {
+        } else {
             const input = $('.input_' + this.lastId);
             const background = $('.background_' + this.lastId);
             const outline = $('.outline_' + this.lastId);
@@ -807,7 +807,6 @@ export class VerifierViewerComponent implements OnInit {
 
     async savePages(page: any) {
         if (this.invoice.supplier_id) {
-            console.log({[this.lastId]: page});
             this.http.put(environment['url'] + '/ws/accounts/supplier/' + this.invoice.supplier_id + '/updatePage',
                 {'args': {'form_id': this.currentFormFields.form_id, [this.lastId]: page}},
                 {headers: this.authService.headers}).pipe(
@@ -1039,7 +1038,7 @@ export class VerifierViewerComponent implements OnInit {
                         this.deleteData(field.id);
                         this.deletePosition(field.id);
                         this.form[category].splice(cpt, 1);
-                    }else if (field.id.trim() === parentId.trim()) {
+                    } else if (field.id.trim() === parentId.trim()) {
                         field.cpt = field.cpt - 1;
                     }
                 });
@@ -1138,30 +1137,30 @@ export class VerifierViewerComponent implements OnInit {
                     if (pattern) {
                         if (pattern.requiredPattern === this.getPattern('alphanum')) {
                             error = this.translate.instant('ERROR.alphanum_pattern');
-                        }else if (pattern.requiredPattern === this.getPattern('alphanum_extended')) {
+                        } else if (pattern.requiredPattern === this.getPattern('alphanum_extended')) {
                             error = this.translate.instant('ERROR.alphanum_extended_pattern');
-                        }else if (pattern.requiredPattern === this.getPattern('number_int')) {
+                        } else if (pattern.requiredPattern === this.getPattern('number_int')) {
                             error = this.translate.instant('ERROR.number_int_pattern');
-                        }else if (pattern.requiredPattern === this.getPattern('number_float')) {
+                        } else if (pattern.requiredPattern === this.getPattern('number_float')) {
                             error = this.translate.instant('ERROR.number_float_pattern');
-                        }else if (pattern.requiredPattern === this.getPattern('char')) {
+                        } else if (pattern.requiredPattern === this.getPattern('char')) {
                             error = this.translate.instant('ERROR.char_pattern');
-                        }else if (pattern.requiredPattern === this.getPattern('email')) {
+                        } else if (pattern.requiredPattern === this.getPattern('email')) {
                             error = this.translate.instant('ERROR.email_pattern');
                         }
-                    }else if (datePickerPattern) {
+                    } else if (datePickerPattern) {
                         error = this.translate.instant('ERROR.date_pattern');
-                    }else if (required) {
+                    } else if (required) {
                         error = this.translate.instant('ERROR.field_required');
-                    }else if (siret_error) {
+                    } else if (siret_error) {
                         error = siret_error;
-                    }else if (siren_error) {
+                    } else if (siren_error) {
                         error = siren_error;
-                    }else if (vat_error) {
+                    } else if (vat_error) {
                         error = vat_error;
-                    }else if (this.tokenError) {
+                    } else if (this.tokenError) {
                         error = this.token;
-                    }else {
+                    } else {
                         error = this.translate.instant('ERROR.unknow_error');
                     }
                 }
@@ -1245,7 +1244,7 @@ export class VerifierViewerComponent implements OnInit {
                     })
                 ).subscribe();
             });
-        }else {
+        } else {
             this.notify.error(this.translate.instant('VERIFIER.no_outputs_for_this_form', {'form': this.formSettings.label}));
         }
     }
@@ -1278,7 +1277,7 @@ export class VerifierViewerComponent implements OnInit {
         if (this.currentPage < this.invoice.nb_pages) {
             this.currentPage = this.currentPage + 1;
             this.changeImage(this.currentPage, this.currentPage - 1);
-        }else {
+        } else {
             this.changeImage(1, this.invoice.nb_pages);
         }
     }
@@ -1287,7 +1286,7 @@ export class VerifierViewerComponent implements OnInit {
         if (this.currentPage > 1) {
             this.currentPage = this.currentPage - 1;
             this.changeImage(this.currentPage, this.currentPage + 1);
-        }else {
+        } else {
             this.changeImage(this.invoice.nb_pages, this.currentPage);
         }
     }
@@ -1364,7 +1363,7 @@ export class VerifierViewerComponent implements OnInit {
                             setTimeout(() => {
                                 if (!this.token) {
                                     element.control.setErrors({'siren_error': this.translate.instant('ERROR.insee_api_not_up')});
-                                }else {
+                                } else {
                                     element.control.setErrors({'siren_error': this.translate.instant('ERROR.wrong_siren_format')});
                                 }
                                 element.control.markAsTouched();
@@ -1395,7 +1394,7 @@ export class VerifierViewerComponent implements OnInit {
                             setTimeout(() => {
                                 if (!this.token) {
                                     element.control.setErrors({'siret_error': this.translate.instant('ERROR.insee_api_not_up')});
-                                }else {
+                                } else {
                                     element.control.setErrors({'siret_error': this.translate.instant('ERROR.wrong_siret_format')});
                                 }
                                 element.control.markAsTouched();

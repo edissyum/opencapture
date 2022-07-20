@@ -74,7 +74,7 @@ export class DocserversComponent implements OnInit {
             if (this.localeStorageService.get('docserversPageIndex'))
                 this.pageIndex = parseInt(this.localeStorageService.get('docserversPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
-        }else
+        } else
             this.localeStorageService.remove('docserversPageIndex');
 
         this.http.get(environment['url'] + '/ws/config/getDocservers', {headers: this.authService.headers}).pipe(

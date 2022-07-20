@@ -71,7 +71,7 @@ export class AppComponent implements OnInit {
                             if (splitterOrVerifier === 'splitter') {
                                 childImage = 'assets/imgs/logo_splitter.png';
                                 childImageMobile = 'assets/imgs/Open-Capture_Splitter.png';
-                            }else {
+                            } else {
                                 childImage = 'assets/imgs/logo_verifier.png';
                             }
                         }
@@ -102,7 +102,7 @@ export class AppComponent implements OnInit {
                         return of(false);
                     })
                 ).subscribe();
-            }else {
+            } else {
                 this.translate.get(ttl).subscribe((data:any)=> {
                     this.titleService.setTitle(data + ' - ' + this.title);
                 });

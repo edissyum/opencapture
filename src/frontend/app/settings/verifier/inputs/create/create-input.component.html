@@ -108,22 +108,13 @@
                         </mat-select>
                         <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
                     </mat-form-field>
-                    <mat-form-field class="block" *ngIf="field.type === 'char' && this.openAvailableField">
-                        <mat-label>{{ field.label | translate }}</mat-label>
-                        <input matInput [formControl]="field.control" [readonly]="field.disabled"
-                               [type]="field.type" placeholder="{{ field.placeholder | translate }}"
-                               [required]="field.required">
-                        <mat-error *ngIf="field.control.invalid">{{ getErrorMessage(field.id) }}</mat-error>
-                        <mat-hint>{{ 'INPUT.automatic_validation_data_hint' | translate }}</mat-hint>
-                    </mat-form-field>
                 </ng-container>
             </div>
             <div class="grid grid-cols-3 gap-4 w-auto m-5 text-center">
                 <ng-container *ngFor="let field of this.inputForm">
                     <div *ngIf="field.type === 'boolean'">
                         <mat-slide-toggle [formControl]="field.control"
-                                          class="relative top-4 mb-10 col-span-2"
-                                          (change)="openSidenav($event.checked, field.id)">
+                                          class="relative top-4 mb-10 col-span-2">
                             <span class="justify-center">{{ field.label | translate }}</span>
                         </mat-slide-toggle>
                     </div>
@@ -139,29 +130,4 @@
             <span class="w-1/3" [innerHTML]="'INPUT.create_hint' | translate"></span>
         </div>
     </mat-sidenav-content>
-    <mat-sidenav #sidenav2 mode="side" position="end" [(opened)]="this.openAvailableField"
-                 class="available-fields w-1/4 flex flex-col h-full border-r border-green-400">
-        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">
-            {{ "FORMS.available_fields" | translate }}
-        </h3>
-        <mat-divider class="border-green-400"></mat-divider>
-        <div *ngIf="this.loadingCustomFields" class="flex text-gray-400 object-contain"
-             style="height: calc(100% - 8rem)">
-            <div class="m-auto text-center">
-                <i class="fa-solid fa-code fa-4x fa-beat-fade w-full mb-2" style="--fa-animation-duration: 1.5s;"></i>
-                <span class="w-full">
-                    {{ 'OUTPUT.loading_custom_fields' | translate }}
-                </span>
-            </div>
-        </div>
-        <div *ngIf="!this.loadingCustomFields" class="overflow-x-hidden overflow-y-auto" style="height: calc(100% - 64px)">
-            <div *ngFor="let field of this.availableFields; let cpt = index" class="my-8 ml-2 text-base">
-            <span>
-                {{ field.label | translate }}
-                <span style="font-size: 12px;" class="text-green-400 ml-3">{{ field.id | translate }}</span>
-                <mat-divider class="border-green-400 mt-4" *ngIf="cpt === 0"></mat-divider>
-            </span>
-            </div>
-        </div>
-    </mat-sidenav>
 </mat-sidenav-container>

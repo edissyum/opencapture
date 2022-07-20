@@ -14,6 +14,7 @@
 # along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
+import json
 
 from flask import Blueprint, request, make_response, jsonify
 from src.backend.import_controllers import auth
@@ -81,6 +82,14 @@ def get_default_form():
 def update_form(form_id):
     data = request.json['args']
     res = forms.update_form(form_id, data)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('forms/updateDisplay/<int:form_id>', methods=['PUT'])
+@auth.token_required
+def update_form_display(form_id):
+    display = request.json
+    res = forms.update_form(form_id, {"display": json.dumps(display)})
     return make_response(jsonify(res[0])), res[1]
 
 

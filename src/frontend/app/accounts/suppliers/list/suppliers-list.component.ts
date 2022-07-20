@@ -76,7 +76,7 @@ export class SuppliersListComponent implements OnInit {
             if (this.localeStorageService.get('suppliersPageIndex'))
                 this.pageIndex = parseInt(this.localeStorageService.get('suppliersPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
-        }else
+        } else
             this.localeStorageService.remove('suppliersPageIndex');
 
         this.http.get(environment['url'] + '/ws/accounts/suppliers/list', {headers: this.authService.headers}).pipe(

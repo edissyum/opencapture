@@ -69,7 +69,7 @@ export class RegexComponent implements OnInit {
             if (this.localeStorageService.get('regexPageIndex'))
                 this.pageIndex = parseInt(this.localeStorageService.get('regexPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
-        }else
+        } else
             this.localeStorageService.remove('regexPageIndex');
 
         this.http.get(environment['url'] + '/ws/config/getRegex', {headers: this.authService.headers}).pipe(
