@@ -70,7 +70,7 @@
             </mat-expansion-panel>
         </mat-nav-list>
     </mat-sidenav>
-    <mat-sidenav-content class="bg-white overflow-hidden">
+    <mat-sidenav-content class="bg-white overflow-hidden" >
         <div *ngIf="this.loading">
             <app-loader></app-loader>
         </div>
@@ -88,49 +88,69 @@
                 <i [class.transform]="sidenav2.opened" [class.rotate-180]="sidenav2.opened" class="fa-solid fa-stream text-xl text-gray-900"></i>
             </button>
         </div>
-        <app-hint [message]="'FORMS.display_hint' | translate"></app-hint>
-        <div class="w-1/3 m-auto mt-4">
-            <mat-form-field class="block">
-                <mat-label>{{ 'FORMS.choose_form' | translate }}</mat-label>
-                <mat-select [formControl]="this.formInput.control" (selectionChange)="loadDisplay($event)">
-                    <mat-option *ngFor="let option of this.formInput.values" [value]="option['id']">{{ option['label'] }}</mat-option>
-                </mat-select>
-            </mat-form-field>
-        </div>
-        <div *ngIf="this.formLoaded" class="m-auto mt-8" [class.w-14]="sidenav2.opened" [class.w-16]="!sidenav2.opened">
-            <mat-card class="p-0 mb-0">
-                <label class="p-5 absolute">
-                    <input [disabled]="true" class="accent-green-400 checkBox_list" type="checkbox">
-                </label>
-                <div class="absolute right-0 p-5">
-                    <mat-icon class="field_settings text-md">more_vert</mat-icon>
-                </div>
-                <div class="h-64 bg-gradient-to-br from-green-400 to-gray-600"></div>
-                <mat-card-header class="leading-6 relative z-10 bg-white pt-4 pl-4 pr-4">
-                    <mat-card-title class="break-all">
+        <div class="overflow-x-hidden overflow-y-auto" style="height: calc(100% - 64px)">
+            <app-hint [message]="'FORMS.display_hint' | translate"></app-hint>
+            <div class="w-1/3 m-auto mt-4">
+                <mat-form-field class="block">
+                    <mat-label>{{ 'FORMS.choose_form' | translate }}</mat-label>
+                    <mat-select [formControl]="this.formInput.control" (selectionChange)="loadDisplay($event)">
+                        <mat-option *ngFor="let option of this.formInput.values" [value]="option['id']">{{ option['label'] }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div *ngIf="this.formLoaded" class="m-auto mt-8 w-1/2 xl:w-1/3">
+                <mat-card class="p-0 mb-0">
+                    <label class="p-5 absolute">
+                        <input [disabled]="true" class="accent-green-400 checkBox_list" type="checkbox">
+                    </label>
+                    <div class="absolute right-0 p-5">
+                        <mat-icon class="field_settings text-md">more_vert</mat-icon>
+                    </div>
+                    <div class="h-64 bg-gradient-to-br from-green-400 to-gray-600"></div>
+                    <mat-card-header class="leading-6 relative z-10 bg-white pt-4 pl-4 pr-4">
+                        <mat-card-title class="break-all">
                         <span class="leading-5 text-lg">
                             {{ 'ACCOUNTS.supplier_name' | translate }}
                         </span>
-                        <span class="absolute right-6 text-green-400 text-base badge badge-secondary badge-pill"
-                              [matTooltip]="this.translate.instant('VERIFIER.nb_pages') + ' : '">
+                            <span class="absolute right-6 text-green-400 text-base badge badge-secondary badge-pill"
+                                  [matTooltip]="this.translate.instant('VERIFIER.nb_pages') + ' : '">
                             0
                             <i class="far fa-file-alt ml-1"></i>
                         </span>
-                    </mat-card-title>
-                    <mat-card-subtitle class="mt-2 mb-2">
-                        <div cdkDropList (cdkDropListDropped)="drop_card($event)"
-                             [cdkDropListData]="this.currentForm.display['subtitles']">
-                            <div cdkDrag class="cursor-move mt-1 flex align-center items-center"
-                                 *ngFor="let subtitles of this.currentForm.display['subtitles']; let cpt = index">
-                                <b>{{ subtitles['label'] | translate }}</b>&nbsp;:
-                                <span class="ml-2 w-4/12 h-3 bg-gradient-to-br from-green-400 to-gray-600"></span>
-                                <i class="fa-solid fa-trash text-red-500 cursor-pointer absolute right-4 mt-1"
-                                   (click)="removeLine(subtitles['id'], cpt)"></i>
+                        </mat-card-title>
+                        <mat-card-subtitle class="subtitles mt-2 mb-2">
+                            <div cdkDropList (cdkDropListDropped)="drop_card($event)"
+                                 [cdkDropListData]="this.currentForm.display['subtitles']">
+                                <div cdkDrag class="cursor-move mt-1 flex align-center items-center"
+                                     *ngFor="let subtitle of this.currentForm.display['subtitles']; let cpt = index">
+                                    <b *ngIf="!subtitle['updateMode']">{{ subtitle['label'] | translate }}</b>
+                                    <mat-form-field appearance="outline" *ngIf="subtitle['updateMode']">
+                                        <input matInput [value]="subtitle['label'] | translate" class="relative -top-2.5"
+                                               (focusout)="updateLabel($event, subtitle)">
+                                    </mat-form-field>
+                                    &nbsp;:
+                                    <span class="ml-2 w-4/12 h-3 bg-gradient-to-br from-green-400 to-gray-600"></span>
+
+                                    <i class="fa-solid fa-edit cursor-pointer absolute right-6 mt-0.5"
+                                       (click)="subtitle['updateMode'] = true" *ngIf="!subtitle['updateMode']"></i>
+
+                                    <i class="fa-solid fa-check cursor-pointer absolute right-6 mt-0.5"
+                                       *ngIf="subtitle['updateMode']"></i>
+
+                                    <i class="fa-solid fa-trash text-red-500 cursor-pointer absolute right-2 mt-1"
+                                       (click)="removeLine(subtitle['id'], cpt)"></i>
+                                </div>
                             </div>
-                        </div>
-                    </mat-card-subtitle>
-                </mat-card-header>
-            </mat-card>
+                        </mat-card-subtitle>
+                    </mat-card-header>
+                </mat-card>
+            </div>
+            <div class="flex justify-center items-center mt-8">
+                <button mat-button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white
+                transition duration-300" [disabled]="!this.formLoaded">
+                    <span class="block" (click)="this.updateDisplay()">{{ "FORMS.modify_display" | translate }}</span>
+                </button>
+            </div>
         </div>
     </mat-sidenav-content>
     <mat-sidenav #sidenav2 mode="side" opened position="end"
@@ -154,8 +174,6 @@
                  class="my-8 ml-2 text-base" cdkDrag>
                 <span class="cursor-move">
                     {{ field.label | translate }}
-                    <span style="font-size: 12px;" class="text-green-400 ml-3">{{ field.id | translate }}</span>
-                    <mat-divider class="border-green-400 mt-4" *ngIf="cpt === 0"></mat-divider>
                 </span>
             </div>
         </div>

@@ -1,7 +1,7 @@
 <div *ngIf="this.loading">
     <app-loader></app-loader>
 </div>
-<div class="grid grid-cols-2 overflow-auto mt-2">
+<div class="grid grid-cols-2 overflow-auto" style="height: calc(100vh - 64px) !important">
     <div class="fixed z-50 text-xl left-6 top-4">
         <ng-container *ngIf="!this.loading && this.invoice && this.invoice.nb_pages> 1">
             <i class="fa fa-arrow-left cursor-pointer" (click)="previousPage()"></i>
@@ -17,7 +17,7 @@
             <img id="invoice_image" alt="Open-Capture For Invoices" [src]="this.imgSrc">
         </div>
     </div>
-    <div *ngIf="this.fields" class="px-4 overflow-auto" style="height: calc(100vh - 56px) !important">
+    <div *ngIf="this.fields" class="px-4 overflow-auto pt-2">
         <div>
             <div class="relative float-left top-5">
                 <i class="fa-solid fa-eye cursor-pointer text-green-400 text-lg" (click)="hideVisuals()"

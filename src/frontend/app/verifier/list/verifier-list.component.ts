@@ -36,6 +36,7 @@ import { DomSanitizer } from "@angular/platform-browser";
 import { ConfigService } from "../../../services/config.service";
 import { HistoryService } from "../../../services/history.service";
 import { FormControl } from "@angular/forms";
+import {writeErrorToLogFile} from "@angular/cli/src/utilities/log-file";
 
 interface accountsNode {
     name: string
@@ -70,18 +71,19 @@ interface flatNode {
     ]
 })
 export class VerifierListComponent implements OnInit {
-    loading         : boolean           = true;
-    loadingCustomers: boolean           = true;
-    status          : any[]             = [];
-    forms           : any[]             = [
+    loading                 : boolean           = true;
+    loadingCustomers        : boolean           = true;
+    status                  : any[]             = [];
+    forms                   : any[]             = [
         {'id' : '', "label": this.translate.instant('VERIFIER.all_forms')},
         {'id' : 'no_form', "label": this.translate.instant('VERIFIER.no_form')}
     ];
-    config          : any;
-    currentForm     : any               = '';
-    currentStatus   : string            = 'NEW';
-    currentTime     : string            = 'today';
-    batchList       : any[]             = [
+    filteredForms           : any[]             = [];
+    config                  : any;
+    currentForm             : any               = '';
+    currentStatus           : string            = 'NEW';
+    currentTime             : string            = 'today';
+    batchList               : any[]             = [
         {
             'id': 'today',
             'label': marker('BATCH.today'),
@@ -95,24 +97,24 @@ export class VerifierListComponent implements OnInit {
             'label': marker('BATCH.older'),
         }
     ];
-    pageSize        : number            = 16;
-    pageIndex       : number            = 0;
-    pageSizeOptions : any []            = [4, 8, 12, 16, 24, 48];
-    total           : number            = 0;
-    totals          : any               = {};
-    offset          : number            = 0;
-    selectedTab     : number            = 0;
-    invoices        : any []            = [];
-    allowedCustomers: any []            = [];
-    allowedSuppliers: any []            = [];
-    purchaseOrSale  : string            = '';
-    search          : string            = '';
-    TREE_DATA       : accountsNode[]    = [];
-    expanded        : boolean           = false;
-    invoiceToDeleteSelected : boolean   = false;
-    totalChecked    : number            = 0;
-    customerFilter                      = new FormControl('');
-    customerFilterEmpty : boolean       = false;
+    pageSize                : number            = 16;
+    pageIndex               : number            = 0;
+    pageSizeOptions         : any []            = [4, 8, 12, 16, 24, 48];
+    total                   : number            = 0;
+    totals                  : any               = {};
+    offset                  : number            = 0;
+    selectedTab             : number            = 0;
+    invoices                : any []            = [];
+    allowedCustomers        : any []            = [];
+    allowedSuppliers        : any []            = [];
+    purchaseOrSale          : string            = '';
+    search                  : string            = '';
+    TREE_DATA               : accountsNode[]    = [];
+    expanded                : boolean           = false;
+    invoiceToDeleteSelected : boolean           = false;
+    totalChecked            : number            = 0;
+    customerFilterEmpty     : boolean           = false;
+    customerFilter                              = new FormControl('');
 
     private _transformer = (node: accountsNode, level: number) => ({
         expandable: !!node.children && node.children.length > 0,
@@ -188,18 +190,21 @@ export class VerifierListComponent implements OnInit {
             })
         ).subscribe();
 
-        this.loadCustomers();
+        this.loadForms();
+        await this.loadCustomers();
     }
 
     loadForms() {
         this.http.get(environment['url'] + '/ws/forms/list?module=verifier&totals=true&status=' + this.currentStatus + '&user_id=' + this.userService.user.id + '&time=' + this.currentTime, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
+                this.filteredForms = [];
                 this.forms = [
                     {'id' : '', "label": this.translate.instant('VERIFIER.all_forms')},
                     {'id' : 'no_form', "label": this.translate.instant('VERIFIER.no_form')}
                 ];
                 data.forms.forEach((form: any) => {
                     this.forms.push(form);
+                    this.filteredForms.push(form);
                 });
             }),
             catchError((err: any) => {
@@ -273,13 +278,13 @@ export class VerifierListComponent implements OnInit {
         ).subscribe();
     }
 
-    loadInvoices() {
+    async loadInvoices() {
         this.invoiceToDeleteSelected = false;
         this.totalChecked = 0;
         this.loading = true;
         this.loadingCustomers = true;
         this.invoices = [];
-        this.loadForms();
+        await this.loadForms();
         let url = environment['url'] + '/ws/verifier/invoices/totals/' + this.currentStatus + '/' + this.userService.user.id;
         if (this.currentForm !== '') {
             url = environment['url'] + '/ws/verifier/invoices/totals/' + this.currentStatus + '/' + this.userService.user.id + '/' + this.currentForm;
@@ -312,10 +317,42 @@ export class VerifierListComponent implements OnInit {
                     }
                     this.invoices = data.invoices;
                     this.invoices.forEach((invoice: any) => {
-                        if (!invoice.thumb.includes('data:image/jpeg;base64'))
+                        if (!invoice.thumb.includes('data:image/jpeg;base64')) {
                             invoice.thumb = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + invoice.thumb);
-                        if (invoice.form_label === null || invoice.form_label === '' || invoice.form_label === undefined)
+                        }
+                        if (invoice.form_label === null || invoice.form_label === '' || invoice.form_label === undefined) {
                             invoice.form_label = this.translate.instant('VERIFIER.no_form');
+                        }
+                        if (invoice.form_id) {
+                            const form_data = this.getFormInfo(invoice.form_id);
+                            if (form_data) {
+                                invoice.display = {'subtitles': []};
+                                form_data.display.subtitles.forEach((subtitle: any) => {
+                                    let subtitle_data = '';
+                                    if (invoice.datas.hasOwnProperty(subtitle.id)) {
+                                        subtitle_data= invoice.datas[subtitle.id];
+                                    } else if (invoice.hasOwnProperty(subtitle.id)) {
+                                        subtitle_data = invoice[subtitle.id];
+                                    }
+
+                                    invoice.display.subtitles.push({
+                                        'id': subtitle.id,
+                                        'label': subtitle.label,
+                                        'data': subtitle_data
+                                    });
+                                });
+                            } else {
+                                invoice.display = {
+                                    "subtitles": [
+                                        {"id": "invoice_number", "label": "FACTURATION.invoice_number"},
+                                        {"id": "invoice_date", "label": "FACTURATION.invoice_date"},
+                                        {"id": "date", "label": "VERIFIER.register_date"},
+                                        {"id": "original_filename", "label": "VERIFIER.original_file"},
+                                        {"id": "form_label", "label": "VERIFIER.form"}
+                                    ]
+                                };
+                            }
+                        }
                     });
                 }
 
@@ -391,6 +428,16 @@ export class VerifierListComponent implements OnInit {
         ).subscribe();
     }
 
+    getFormInfo(form_id: number) {
+        let form: any;
+        this.forms.forEach((element: any) => {
+            if (element.id === form_id) {
+                form = element;
+            }
+        });
+        return form;
+    }
+
     fillChildren(parentId: any , parent: any, childName: any, supplierName: any, supplierId: any, id: any, purchaseOrSale: any) {
         let childNameExists = false;
         parent.forEach((child: any) => {
@@ -443,6 +490,24 @@ export class VerifierListComponent implements OnInit {
                 finalize(() => {
                     this.resetInvoices();
                     this.notify.success(this.translate.instant('VERIFIER.customer_changed_successfully'));
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+        ).subscribe();
+    }
+
+    changeInvoiceForm(formId: number, invoiceId: number) {
+        this.loading = true;
+        this.loadingCustomers = true;
+        this.http.put(environment['url'] + '/ws/verifier/invoices/' + invoiceId + '/update',
+            {'args': {"form_id": formId}},
+            {headers: this.authService.headers}).pipe(
+                finalize(() => {
+                    this.resetInvoices();
+                    this.notify.success(this.translate.instant('VERIFIER.form_changed'));
                 }),
                 catchError((err: any) => {
                     console.debug(err);

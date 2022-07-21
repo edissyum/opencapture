@@ -33,7 +33,7 @@ ALTER TABLE form_models ADD COLUMN "display" JSONB DEFAULT '{
         {"id": "invoice_number", "label": "FACTURATION.invoice_number"},
         {"id": "invoice_date", "label": "FACTURATION.invoice_date"},
         {"id": "date", "label": "VERIFIER.register_date"},
-        {"id": "original_file", "label": "VERIFIER.original_file"},
-        {"id": "form_label", "label": "ACCOUNTS.form"}
+        {"id": "original_filename", "label": "VERIFIER.original_file"},
+        {"id": "form_label", "label": "VERIFIER.form"}
     ]
 }';

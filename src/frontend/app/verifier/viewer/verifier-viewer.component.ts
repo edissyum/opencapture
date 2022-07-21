@@ -538,13 +538,13 @@ export class VerifierViewerComponent implements OnInit {
         Array.from(visuals).forEach((element: any) => {
             const cpt = element.id.match(/(\d+)/)[0];
             if (this.visualIsHide) {
-                document.getElementById("select-areas-background-area_" + cpt)!.style.opacity = '0';
-                document.getElementById("select-areas-outline_" + cpt)!.style.opacity = '0';
-                document.getElementById("select-areas-label-container_" + cpt)!.style.opacity = '0';
+                document.getElementById("select-areas-background-area_" + cpt)!.style.display = 'none';
+                document.getElementById("select-areas-outline_" + cpt)!.style.display = 'none';
+                document.getElementById("select-areas-label-container_" + cpt)!.style.display = 'none';
             } else {
-                document.getElementById("select-areas-background-area_" + cpt)!.style.opacity = '0.25';
-                document.getElementById("select-areas-outline_" + cpt)!.style.opacity = '0.5';
-                document.getElementById("select-areas-label-container_" + cpt)!.style.opacity = '1';
+                document.getElementById("select-areas-background-area_" + cpt)!.style.display = 'block';
+                document.getElementById("select-areas-outline_" + cpt)!.style.display = 'block';
+                document.getElementById("select-areas-label-container_" + cpt)!.style.display = 'block';
             }
         });
     }

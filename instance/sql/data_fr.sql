@@ -398,7 +398,15 @@ ALTER SEQUENCE "outputs_types_id_seq" RESTART WITH 6;
 ALTER SEQUENCE "outputs_id_seq" RESTART WITH 6;
 
 -- CRÉATION DU FORMULAIRE VERIFIER PAR DÉFAUT
-INSERT INTO "form_models" ("id", "label", "default_form", "outputs", "module", "display") VALUES (1, 'Formulaire par défaut', true, '{1}', 'verifier', '{"subtitles": [{"id": "invoice_date", "label": "Date de la facture"}, {"id": "invoice_number", "label": "Numéro de facture"}, {"id": "date", "label": "Enregistré le"}, {"id": "original_file", "label": "Nom du fichier"}, {"id": "form_label", "label": "Formulaire"}]}');
+INSERT INTO "form_models" ("id", "label", "default_form", "outputs", "module", "display") VALUES (1, 'Formulaire par défaut', true, '{1}', 'verifier', '{
+    "subtitles": [
+        {"id": "invoice_number", "label": "FACTURATION.invoice_number"},
+        {"id": "invoice_date", "label": "FACTURATION.invoice_date"},
+        {"id": "date", "label": "VERIFIER.register_date"},
+        {"id": "original_filename", "label": "VERIFIER.original_file"},
+        {"id": "form_label", "label": "VERIFIER.form"}
+    ]
+}');
 INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
     "other": [],
     "supplier": [

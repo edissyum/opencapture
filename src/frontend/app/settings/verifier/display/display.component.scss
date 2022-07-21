@@ -18,13 +18,20 @@
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-.w-16 {
-    @apply w-1/6 #{!important};
-}
-.w-14 {
-    @apply w-1/4 #{!important};
-}
-
 ::ng-deep .mat-card-header-text {
     @apply w-full;
+}
+
+::ng-deep .subtitles .mat-form-field-wrapper {
+    @apply pt-2;
+    @apply pb-2;
+
+    & .mat-form-field-infix {
+        max-height: 1vh !important;
+
+        & .mat-select-value {
+            @apply relative;
+            @apply -top-0.5;
+        }
+    }
 }

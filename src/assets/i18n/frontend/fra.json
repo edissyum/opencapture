@@ -257,6 +257,7 @@
 		"label_and_output_mandatory": "Le libellé du formulaire et le type de chaîne sortante sont obligatoires",
 		"label_mandatory": "Le libellé du formulaire est obligatoire",
 		"modify": "Modifier le formulaire",
+		"modify_display": "Modifier l'affichage lié au formulaire",
 		"other": "Autres",
 		"output_settings": "Chaînes sortantes",
 		"output_type_mandatory": "Le type de chaîne sortante est obligatoire",
@@ -581,6 +582,7 @@
 		"upload": "Téléverser des fichiers",
 		"users_list": "Visualiser la liste des utilisateurs",
 		"verifier": "Open-Capture Vérificateur",
+		"verifier_display": "Paramétrage des l'affichage des documents",
 		"version_update": "Version et mise à jour"
 	},
 	"REGEX": {
@@ -630,7 +632,7 @@
 		"update_output": "Modifier une chaîne sortante",
 		"users_list": "Liste des utilisateurs",
 		"verifier": "Paramètres du Vérificateur",
-		"verifier_display": "Affichage"
+		"verifier_display": "Affichage des lots"
 	},
 	"SPLITTER": {
 		"Other": "(Autre)",
@@ -774,9 +776,11 @@
 		"delete_all_checked": "Supprimer toutes les factures selectionnées de la page",
 		"delete_invoice": "Supprimer la facture",
 		"display": "Affichage",
+		"document_id": "Identifiant du document",
 		"documents_settings": "Paramètres du document",
 		"expand_all": "Développer tous les clients",
 		"field_settings": "Paramètres du champ",
+		"form": "Formulaire",
 		"form_changed": "Formulaire modifié avec succès",
 		"form_validated_and_output_done": "Formulaire validé et chaîne(s) sortante(s) suivante(s) effectuée(s) : <br><br> <center>{{ outputs }}</center>",
 		"format": "Format des données",
@@ -795,7 +799,7 @@
 		"no_outputs_for_this_form": "Aucune chaîne sortante n'est configurée pour le formulaire <b>{{ form }}</b>",
 		"on": "sur",
 		"only_raw_footer": "Contrôle de cohérence du pied de page désactivé",
-		"original_file": "Fichier d'origine",
+		"original_file": "Fichier",
 		"outputs_list": "Liste des chaînes sortantes",
 		"page": "Page",
 		"register_date": "Enregistré le",

@@ -257,6 +257,7 @@
 		"label_and_output_mandatory": "The label and the output type are mandatory",
 		"label_mandatory": "Label is mandatory",
 		"modify": "Modify",
+		"modify_display": "Modify display linked to form",
 		"other": "Other",
 		"output_settings": "Outputs",
 		"output_type_mandatory": "Output type is mandatory",
@@ -581,6 +582,7 @@
 		"upload": "Upload files",
 		"users_list": "Users list",
 		"verifier": "Open-Capture Verifier",
+		"verifier_display": "Setting up the verifier document display",
 		"version_update": "Version and update"
 	},
 	"REGEX": {
@@ -630,7 +632,7 @@
 		"update_output": "Update output",
 		"users_list": "Users list",
 		"verifier": "Verifier",
-		"verifier_display": "Display"
+		"verifier_display": "Batch display"
 	},
 	"SPLITTER": {
 		"Other": "(Autre)",
@@ -774,9 +776,11 @@
 		"delete_all_checked": "Delete all checked invoices",
 		"delete_invoice": "Delete invoice",
 		"display": "Display",
+		"document_id": "",
 		"documents_settings": "Settings document",
 		"expand_all": "Expand all",
 		"field_settings": "Field settings",
+		"form": "Form",
 		"form_changed": "Form changed successfully",
 		"form_validated_and_output_done": "Form validated and following output(s) done : <br><br> <center>{{ outputs }}</center>",
 		"format": "Data format",
@@ -795,7 +799,7 @@
 		"no_outputs_for_this_form": "No outputs for this form",
 		"on": "on",
 		"only_raw_footer": "Get only raw footer is enabled",
-		"original_file": "Original file",
+		"original_file": "File",
 		"outputs_list": "Outputs list",
 		"page": "Page",
 		"register_date": "Register date",

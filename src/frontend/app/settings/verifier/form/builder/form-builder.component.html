@@ -100,6 +100,14 @@
                         {{ "FORMS.allow_automatic_validation" | translate }}
                     </mat-slide-toggle>
                 </div>
+                <mat-form-field *ngIf="this.openAvailableField" [class.z-50]="this.modalOpen">
+                    <mat-label>{{ "FORMS.automatic_validation_data" | translate }}</mat-label>
+                    <input matInput [formControl]="this.form['automatic_validation_data'].control" required
+                           placeholder="supplier,footer,invoice_number,invoice_date">
+                    <mat-hint (click)="this.modalOpen = true" class="cursor-pointer">
+                        {{ 'FORMS.automatic_validation_data_hint' | translate }}
+                    </mat-hint>
+                </mat-form-field>
                 <div class="flex justify-center mt-4">
                     <mat-slide-toggle [formControl]="this.form['default_form'].control">
                         {{ "FORMS.is_default" | translate }}
@@ -111,13 +119,6 @@
                     </mat-slide-toggle>
                     <mat-hint class="mt-4">{{ "FORMS.supplier_verif_hint" | translate }}</mat-hint>
                 </div>
-                <mat-form-field *ngIf="this.openAvailableField" [class.z-50]="this.modalOpen">
-                    <mat-label>{{ "FORMS.automatic_validation_data" | translate }}</mat-label>
-                    <input matInput [formControl]="this.form['automatic_validation_data'].control" required>
-                    <mat-hint (click)="this.modalOpen = true" class="cursor-pointer">
-                        {{ 'FORMS.automatic_validation_data_hint' | translate }}
-                    </mat-hint>
-                </mat-form-field>
                 <mat-form-field *ngFor="let field of this.outputForm; let cpt = index">
                     <mat-label>{{ "HEADER.choose_output" | translate }}</mat-label>
                     <mat-select [(ngModel)]="field.control.value">
@@ -127,7 +128,7 @@
                     </mat-select>
                     <span *ngIf="!field.canRemove" (click)="$event.stopPropagation(); addOutput()"
                           matTooltip="{{ 'OUTPUT.add' | translate }}"
-                          class="absolute top-1 right-4 cursor-pointer text-gray-900 z-50" style="right: -2.2rem">
+                          class="absolute top-1 right-4 cursor-pointer text-gray-900 z-40" style="right: -2.2rem">
                         <mat-icon class="text-lg">add_circle</mat-icon>
                     </span>
                     <span *ngIf="field.canRemove" (click)="$event.stopPropagation(); removeOutput(cpt)"

@@ -38,7 +38,7 @@ import {
 @Component({
     selector: 'app-display-list',
     templateUrl: './display.component.html',
-    styleUrls: ['./display.component.scss']
+    styleUrls: ['./display.component.scss'],
 })
 export class VerifierDisplayComponent implements OnInit {
     loading             : boolean   = true;
@@ -53,8 +53,8 @@ export class VerifierDisplayComponent implements OnInit {
     };
     availableFields     : any       = [
         {
-            "id": 'HEADER.id',
-            'label': 'HEADER.label'
+            "id": 'invoice_id',
+            'label': marker('VERIFIER.document_id')
         },
         {
             "id": 'invoice_number',
@@ -82,10 +82,10 @@ export class VerifierDisplayComponent implements OnInit {
         },
         {
             "id": 'form_label',
-            'label': 'ACCOUNTS.form'
+            'label': marker('VERIFIER.form')
         },
         {
-            "id": 'original_file',
+            "id": 'original_filename',
             'label': marker('VERIFIER.original_file')
         },
     ];
@@ -116,7 +116,7 @@ export class VerifierDisplayComponent implements OnInit {
                 });
                 this.availableFields.forEach((element: any) => {
                     this.availableFieldsTmp.push(element);
-                })
+                });
             }),
             finalize(() => this.loadingCustomFields = false),
             catchError((err: any) => {
@@ -141,6 +141,7 @@ export class VerifierDisplayComponent implements OnInit {
     }
 
     loadDisplay(event: any) {
+        this.loading = true;
         this.availableFieldsTmp = [];
         this.availableFields.forEach((element: any) => {
             this.availableFieldsTmp.push(element);
@@ -158,15 +159,20 @@ export class VerifierDisplayComponent implements OnInit {
                             }
                         });
                     });
-
                 }
             }
         });
+        this.loading = false;
+    }
+
+    updateLabel(event: any, subtitle: any) {
+        subtitle['label'] = event.target.value;
+        subtitle['updateMode'] = false;
     }
 
     updateDisplay() {
         this.currentForm.display.subtitles.forEach((element: any) => {
-            element.label = this.translate.instant(element.label);
+            delete element['updateMode'];
         });
         this.http.put(environment['url'] + '/ws/forms/updateDisplay/' + this.currentForm.id, this.currentForm.display,
             {headers: this.authService.headers}).pipe(
@@ -186,7 +192,6 @@ export class VerifierDisplayComponent implements OnInit {
             if (id === element.id) {
                 this.currentForm.display.subtitles.splice(cpt, 1);
                 this.loadDisplay({value: this.currentForm.id});
-                this.updateDisplay();
             }
         });
     }
@@ -202,7 +207,6 @@ export class VerifierDisplayComponent implements OnInit {
                 event.currentIndex,
             );
         }
-        this.updateDisplay();
     }
 
     drop(event: CdkDragDrop<string[]>) {
@@ -215,7 +219,6 @@ export class VerifierDisplayComponent implements OnInit {
                 event.previousIndex,
                 event.currentIndex,
             );
-            this.updateDisplay();
         }
     }
 }
