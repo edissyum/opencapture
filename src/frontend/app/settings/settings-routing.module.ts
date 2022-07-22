@@ -217,19 +217,19 @@ const routes: Routes = [
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
-        path: 'settings/splitter/documentType',
+        path: 'settings/splitter/document-type',
         component: ListDocTypeComponent,
         data: {title: 'SETTINGS.document_type', privileges: ['settings', 'document_type_splitter']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
-        path: 'settings/splitter/documentType/new',
+        path: 'settings/splitter/document-type/new',
         component: CreateDocTypeComponent,
         data: {title: 'SETTINGS.document_type', privileges: ['settings', 'add_document_type']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
-        path: 'settings/splitter/documentType/createFolder',
+        path: 'settings/splitter/document-type/create-folder',
         component: CreateFolderDocTypeComponent,
         data: {title: 'SETTINGS.document_type', privileges: ['settings', 'add_document_type']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
