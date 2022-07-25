@@ -21,6 +21,7 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+####################
 # Put the default paths.
 # Modify them if needed
 currentDate=$(date +%m%d%Y-%H%M%S)
@@ -29,12 +30,15 @@ backupPath="/var/www/html/opencaptureforinvoices.$currentDate"
 
 user=$(who am i | awk '{print $1}')
 
+####################
 # Backup all the Open-Capture path
 cp -r "$OCForInvoicesPath" "$backupPath"
 
+####################
 # Retrieve the secret key
 SECRET_KEY=$(grep "SECRET_KEY=" $OCForInvoicesPath/src/backend/__init__.py | awk -F"=" '{ print $2 }' | cut -d \' -f2)
 
+####################
 # Retrieve the last tags from gitlab
 cd "$OCForInvoicesPath" || exit 1
 git config --global user.email "update@ocforinvoices"
@@ -45,6 +49,7 @@ latest_tag=$(git describe --tags "$(git rev-list --tags=2.* --max-count=1)")
 git checkout "$latest_tag"
 git config core.fileMode False
 
+####################
 # Force launch of apt and pip requirements
 # in case of older version without somes packages/libs
 cd bin/install/ || exit 2
@@ -58,9 +63,11 @@ python3 -m pip install --upgrade -r pip-requirements.txt
 cd $OCForInvoicesPath || exit 2
 find . -name ".gitkeep" -delete
 
+####################
 # Put secret key
 sed -i "s/§§SECRET§§/$SECRET_KEY/g" "/var/www/html/opencaptureforinvoices/src/backend/__init__.py"
 
+####################
 # Fix rights on folder and files
 chmod -R 775 $OCForInvoicesPath
 chmod u+x $OCForInvoicesPath/bin/scripts/*.sh
@@ -70,21 +77,24 @@ chown -R "$user":"$user" $OCForInvoicesPath/bin/scripts/verifier_inputs/*.sh
 chmod u+x $OCForInvoicesPath/bin/scripts/splitter_inputs/*.sh
 chown -R "$user":"$user" $OCForInvoicesPath/bin/scripts/splitter_inputs/*.sh
 
+####################
 # Restart worker
 systemctl restart apache2
 systemctl restart OCForInvoices-worker
 systemctl restart OCForInvoices_Split-worker
 
+####################
 # Display a message if a SQL migration file is present for new version
 if test -f "$OCForInvoicesPath/bin/install/migration_sql/$latest_tag.sql"; then
-    echo "########################################################"
-    echo "                 Version : $latest_tag"
-    echo "    A script containing database changes is present"
-    echo "      If necessary, do not hesitate to execute it"
-    echo " in order to take advantage of the latest modifications"
-    echo "########################################################"
+    echo "####################################################################"
+    echo "                     Version : $latest_tag                          "
+    echo "      A script to update database in the application is present     "
+    echo "           If necessary, do not hesitate to execute it              "
+    echo "     in order to take advantage of the latest modifications         "
+    echo "####################################################################"
 fi
 
+####################
 # Display a message if a BASH migration file is present for new version
 if test -f "$OCForInvoicesPath/bin/install/$latest_tag.sh"; then
     echo "####################################################################"
