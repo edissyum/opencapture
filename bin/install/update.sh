@@ -84,3 +84,13 @@ if test -f "$OCForInvoicesPath/bin/install/migration_sql/$latest_tag.sql"; then
     echo " in order to take advantage of the latest modifications"
     echo "########################################################"
 fi
+
+# Display a message if a BASH migration file is present for new version
+if test -f "$OCForInvoicesPath/bin/install/$latest_tag.sh"; then
+    echo "####################################################################"
+    echo "                     Version : $latest_tag                          "
+    echo "    A script to update some things in the application is present    "
+    echo "           If necessary, do not hesitate to execute it              "
+    echo "     in order to take advantage of the latest modifications         "
+    echo "####################################################################"
+fi
