@@ -12,7 +12,7 @@
             <i class="fa fa-arrow-right cursor-pointer" (click)="nextPage()"></i>
         </ng-container>
     </div>
-    <div class="overflow-auto" style="height: calc(100vh - 64px) !important; direction: rtl">
+    <div id="image" class="overflow-auto" style="height: calc(100vh - 64px) !important; direction: rtl">
         <div class="image-container px-4" *ngIf="this.invoice">
             <img id="invoice_image" alt="Open-Capture For Invoices" [src]="this.imgSrc">
         </div>
@@ -200,7 +200,9 @@
         <div class="mb-6 grid grid-cols-2 gap-4 h-12 text-gray-900">
             <button mat-button (click)="validateForm()" type="submit" [disabled]="invoice.status === 'END'"
                     class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300">
-                {{ 'FORMS.validate' | translate }}
+                <span *ngIf="!this.loadingSubmit">{{ 'FORMS.validate' | translate }}</span>
+                <i *ngIf="this.loadingSubmit" class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"
+                   style="--fa-animation-duration: 1.5s;margin-top: -0.2rem;"></i>
             </button>
             <button mat-button (click)="refuseForm()" type="submit" [disabled]="invoice.status === 'END'"
                     class="border-solid border-red-400 border hover:bg-red-400 hover:text-white transition duration-300">

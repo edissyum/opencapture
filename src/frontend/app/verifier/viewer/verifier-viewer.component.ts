@@ -19,7 +19,7 @@ import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from "@angular/router";
 import { environment } from  "../../env";
-import { catchError, map, startWith, tap } from "rxjs/operators";
+import {catchError, finalize, map, startWith, tap} from "rxjs/operators";
 import { Observable, of } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { AuthService } from "../../../services/auth.service";
@@ -58,6 +58,7 @@ export class VerifierViewerComponent implements OnInit {
     visualIsHide            : boolean     = false;
     saveInfo                : boolean     = true;
     loading                 : boolean     = true;
+    loadingSubmit           : boolean     = false;
     supplierExists          : boolean     = true;
     deleteDataOnChangeForm  : boolean     = true;
     oldVAT                  : string      = '';
@@ -198,6 +199,10 @@ export class VerifierViewerComponent implements OnInit {
         setTimeout(() => {
             this.drawPositions();
             this.convertAutocomplete();
+            document.getElementById('image')!.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
             this.loading = false;
         }, 500);
         const triggerEvent = $('.trigger');
@@ -376,6 +381,7 @@ export class VerifierViewerComponent implements OnInit {
 
                 if (field) {
                     this.drawPositionByField(field, position);
+                    $('#' + field.id).blur();
                 }
             }
         }
@@ -605,6 +611,16 @@ export class VerifierViewerComponent implements OnInit {
         imageContainer.addClass('cursor-auto');
         if (enable) {
             $('.outline_' + _this.lastId).toggleClass('animate');
+            if (this.invoice.positions[_this.lastId]) {
+                const currentHeight = window.innerHeight;
+                const position = this.invoice.positions[_this.lastId].x;
+                if (position >= currentHeight || position <= currentHeight) {
+                    document.getElementById('image')!.scrollTo({
+                        top: position - 200,
+                        behavior: 'smooth'
+                    });
+                }
+            }
             if (this.invoice.status !== 'END') {
                 imageContainer.removeClass('pointer-events-none');
                 imageContainer.removeClass('cursor-auto');
@@ -1180,6 +1196,7 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     validateForm() {
+        this.loadingSubmit = true;
         let valid = true;
         const arrayData: any = {};
         for (const category in this.form) {
@@ -1201,6 +1218,7 @@ export class VerifierViewerComponent implements OnInit {
             });
         }
         if (!valid) {
+            this.loadingSubmit = false;
             return;
         }
         this.saveData(arrayData);
@@ -1227,10 +1245,21 @@ export class VerifierViewerComponent implements OnInit {
                                     this.historyService.addHistory('verifier', 'invoice_validated', this.translate.instant('HISTORY-DESC.invoice_validated', {invoice_id: this.invoiceId, outputs: this.outputsLabel.join(', ')}));
                                     this.updateInvoice({'status': 'END', 'locked': false, 'locked_by': null});
                                     this.router.navigate(['/verifier']).then();
+                                    this.loadingSubmit = false;
+                                    if (this.formSettings.delete_documents_after_outputs) {
+                                        this.http.get(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/delete_documents', {headers: this.authService.headers}).pipe(
+                                            catchError((err: any) => {
+                                                console.debug(err);
+                                                this.notify.handleErrors(err);
+                                                return of(false);
+                                            })
+                                        ).subscribe();
+                                    }
                                     this.notify.success(this.translate.instant('VERIFIER.form_validated_and_output_done', {outputs: this.outputsLabel.join('<br>')}));
                                 }
                             }),
                             catchError((err: any) => {
+                                this.loadingSubmit = false;
                                 console.debug(err);
                                 this.notify.handleErrors(err);
                                 return of(false);
@@ -1246,6 +1275,7 @@ export class VerifierViewerComponent implements OnInit {
             });
         } else {
             this.notify.error(this.translate.instant('VERIFIER.no_outputs_for_this_form', {'form': this.formSettings.label}));
+            this.loadingSubmit = false;
         }
     }
 
