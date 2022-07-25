@@ -154,10 +154,13 @@ def add_form(args):
         args = {
             'table': 'form_models',
             'columns': {
+                'outputs': outputs,
                 'label': args['label'],
                 'module': args['module'],
                 'default_form': args['default_form'],
-                'outputs': outputs,
+                'automatic_validation_data': args['automatic_validation_data'],
+                'allow_automatic_validation': args['allow_automatic_validation'],
+                'delete_documents_after_outputs': args['delete_documents_after_outputs'],
                 'supplier_verif': args['supplier_verif'] if 'supplier_verif' in args else False
             }
         }

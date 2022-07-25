@@ -239,6 +239,8 @@
 		"custom_fields": "Champs personnalisés",
 		"default": "Formulaire par défaut",
 		"delete": "Supprimer le formulaire",
+		"delete_documents_after_outputs": "Supprimer le document",
+		"delete_documents_after_outputs_hint": "Toutes les données liées au document (BDD et docservers) seront supprimées après execution des chaînes sortantes",
 		"delete_field": "Supprimer le champ",
 		"disable": "Désactiver le formulaire",
 		"display_hint": "Modifier l'affichage des documents (par formulaire) dans la liste du Verifier",

@@ -34,7 +34,6 @@ INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SEPARA
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SEPARATOR_OUTPUT_PDF', '[SÉPARATION PAR QR CODE] Chemin vers le dossier de sortie des PDF', '/var/www/html/opencaptureforinvoices//bin/data/exported_pdf/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SEPARATOR_OUTPUT_PDFA', '[SÉPARATION PAR QR CODE] Chemin vers le dossier de sortie des PDF/A', '/var/www/html/opencaptureforinvoices//bin/data/exported_pdfa/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_IMAGE_FULL', '[VERIFIER] Chemin pour le stockage des images', '/var/docservers/OpenCapture/verifier/images/full/');
-INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_THUMB', '[VERIFIER] Chemin pour le stockage des miniatures', '/var/docservers/OpenCapture/verifier/images/thumbs/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_POSITIONS_MASKS', '[VERIFIER] Chemin pour le stockage des images nécessaire aux masques de positionnement', '/var/docservers/OpenCapture/verifier/images/positions_masks/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_BATCHES', '[SPLITTER] Chemin vers le dossier de stockage des dossiers de batch après traitement', '/var/docservers/OpenCapture/splitter/batches/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_OUTPUT', '[SPLITTER] Chemin vers le dossier de sortie des PDF après traitement', '/var/docservers/OpenCapture/splitter/separated_pdf/');
@@ -791,7 +790,7 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
 }');
 
 -- CRÉATION DU FORMULAIRE SPLITTER PAR DÉFAUT
-INSERT INTO "form_models" ("id", "label", "default_form", "outputs", "module") VALUES (2, 'Formulaire par défaut', true, '{3, 4}', 'splitter');
+INSERT INTO "form_models" ("id", "label", "default_form", "outputs", "module") VALUES (2, 'Formulaire par défaut', true, '{3}', 'splitter');
 INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (2, 2, '{"metadata": []}');
 ALTER SEQUENCE "form_models_id_seq" RESTART WITH 3;
 ALTER SEQUENCE "form_models_field_id_seq" RESTART WITH 3;

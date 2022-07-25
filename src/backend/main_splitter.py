@@ -36,11 +36,11 @@ def launch(args):
     if not retrieve_config_from_custom_id(args['custom_id']):
         sys.exit('Custom config file couldn\'t be found')
 
-    database, config, regex, files, _, log, _, _, smtp, docservers, configurations = create_classes_from_custom_id(args['custom_id'])
+    database, config, regex, files, _, log, _, _, smtp, docservers, configurations, languages = create_classes_from_custom_id(args['custom_id'])
     tmp_folder = tempfile.mkdtemp(dir=docservers['SPLITTER_BATCHES']) + '/'
     with tempfile.NamedTemporaryFile(dir=tmp_folder) as tmp_file:
         filename = tmp_file.name
-    files = _Files(filename, log, docservers, configurations, regex)
+    files = _Files(filename, log, docservers, configurations, regex, languages)
 
     remove_blank_pages = False
     if 'input_id' in args:

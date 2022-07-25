@@ -84,7 +84,7 @@ class FindCustom:
                 'where': ['vat_number = %s', 'status <> %s'],
                 'data': [self.supplier[0], 'DEL']
             })[0]
-            if custom_with_position:
+            if custom_with_position and custom_with_position['positions']:
                 for field in custom_with_position['positions']:
                     if 'custom_' in field:
                         position = self.database.select({

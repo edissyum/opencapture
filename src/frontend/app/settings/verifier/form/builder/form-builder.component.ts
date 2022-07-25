@@ -60,6 +60,9 @@ export class FormBuilderComponent implements OnInit {
         },
         'automatic_validation_data': {
             'control': new FormControl()
+        },
+        'delete_documents_after_outputs': {
+            'control': new FormControl()
         }
     };
     outputForm              : any       = [
@@ -760,6 +763,7 @@ export class FormBuilderComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
+
         if (this.formId) {
             this.http.get(environment['url'] + '/ws/forms/getFields/' + this.formId, {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
@@ -931,6 +935,7 @@ export class FormBuilderComponent implements OnInit {
         const isDefault = this.form.default_form.control.value;
         const allowAutomaticValidation = this.form.allow_automatic_validation.control.value;
         const automaticValidationData = this.form.automatic_validation_data.control.value;
+        const deleteDocumentsAfterOutputs = this.form.delete_documents_after_outputs.control.value;
         const supplierVerif = this.form.supplier_verif.control.value;
         const outputs: any[] = [];
         this.outputForm.forEach((element: any) => {
@@ -942,7 +947,7 @@ export class FormBuilderComponent implements OnInit {
                     'args': {
                         'label' : label, 'default_form' : isDefault, 'supplier_verif': supplierVerif,
                         'outputs': outputs, 'allow_automatic_validation': allowAutomaticValidation,
-                        'automatic_validation_data': automaticValidationData
+                        'automatic_validation_data': automaticValidationData, 'delete_documents_after_outputs': deleteDocumentsAfterOutputs
                     }
                 }, {headers: this.authService.headers},
             ).pipe(
@@ -976,6 +981,9 @@ export class FormBuilderComponent implements OnInit {
         const label = this.form.label.control.value;
         const isDefault = this.form.default_form.control.value;
         let supplierVerif = this.form.supplier_verif.control.value;
+        const automaticValidationData = this.form.automatic_validation_data.control.value;
+        const allowAutomaticValidation = this.form.allow_automatic_validation.control.value;
+        const deleteDocumentsAfterOutputs = this.form.delete_documents_after_outputs.control.value;
         if (!supplierVerif) supplierVerif = false;
         const outputs: any[] = [];
         this.outputForm.forEach((element: any) => {
@@ -983,7 +991,11 @@ export class FormBuilderComponent implements OnInit {
         });
         if (label) {
             this.http.post(environment['url'] + '/ws/forms/add', {
-                    'args': {'label' : label, 'default_form' : isDefault, 'supplier_verif': supplierVerif, 'outputs': outputs, 'module': 'verifier'}
+                    'args': {
+                        'module': 'verifier', 'label' : label, 'default_form' : isDefault, 'supplier_verif': supplierVerif,
+                        'outputs': outputs, 'allow_automatic_validation': allowAutomaticValidation,
+                        'automatic_validation_data': automaticValidationData, 'delete_documents_after_outputs': deleteDocumentsAfterOutputs
+                    }
                 }, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {

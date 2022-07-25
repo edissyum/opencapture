@@ -29,8 +29,8 @@ from src.backend.import_classes import _Files
 from src.backend.import_controllers import user
 from flask import current_app, Response, request
 from src.backend.import_models import verifier, accounts
-from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import launch, create_classes_from_custom_id
+from src.backend.functions import retrieve_custom_from_url, delete_documents
 
 
 def handle_uploaded_file(files, input_id):
@@ -234,6 +234,22 @@ def delete_invoice_data_by_invoice_id(invoice_id, field_id):
             return response, 401
 
 
+def delete_documents_by_invoice_id(invoice_id):
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    docservers = _vars[9]
+
+    invoice, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
+    if not error:
+        delete_documents(docservers, invoice['path'], invoice['filename'], invoice['full_jpg_filename'])
+
+    _, error = verifier.update_invoice({
+        'set': {"status": 'DEL'},
+        'invoice_id': invoice_id
+    })
+    return '', 200
+
+
 def delete_invoice_position_by_invoice_id(invoice_id, field_id):
     invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
     if error is None:
@@ -374,9 +390,7 @@ def get_file_content(file_type, filename, mime_type, compress=False):
     content = False
     path = ''
 
-    if file_type == 'thumb':
-        path = docservers['VERIFIER_THUMB']
-    elif file_type == 'full':
+    if file_type == 'full':
         path = docservers['VERIFIER_IMAGE_FULL']
     elif file_type == 'positions_masks':
         path = docservers['VERIFIER_POSITIONS_MASKS']

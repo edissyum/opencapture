@@ -6,7 +6,7 @@
         <div class="mt-1">
             <div class="card" *ngFor="let batch of this.batches | slice: 0 : 10">
                 <mat-card class="mat-elevation-z4 my-2"
-                          [ngClass]="{'border-4 border-green-400': currentBatch.id === batch.id}">
+                          [ngClass]="{'border-4 border-green-400': this.currentBatch.id === batch.id}">
                     <a class="image-link" (click)="changeBatch(batch['id'])">
                         <mat-card-header>
                             <img mat-card-image [src]="batch['thumbnail']" alt="Open-Capture Splitter image">

@@ -25,6 +25,10 @@ ALTER TABLE inputs DROP COLUMN "automatic_validation_data";
 
 ALTER TABLE form_models ADD COLUMN "allow_automatic_validation" BOOLEAN DEFAULT False;
 ALTER TABLE form_models ADD COLUMN "automatic_validation_data" TEXT DEFAULT '';
+ALTER TABLE form_models ADD COLUMN delete_documents_after_outputs BOOLEAN DEFAULT False;
+
+-- Remove useless docservers
+DELETE FROM docservers WHERE "docserver_id" = 'VERIFIER_THUMB';
 
 -- Improve verifier list display
 INSERT INTO "privileges" ("label", "parent") VALUES ('verifier_display', 'verifier');

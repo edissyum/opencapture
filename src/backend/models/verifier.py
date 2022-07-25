@@ -81,17 +81,17 @@ def update_invoice(args):
     database = _vars[0]
     error = None
 
-    supplier = database.update({
+    invoice = database.update({
         'table': ['invoices'],
         'set': args['set'],
         'where': ['id = %s'],
         'data': [args['invoice_id']]
     })
 
-    if supplier[0] is False:
+    if invoice[0] is False:
         error = gettext('INVOICE_UPDATE_ERROR')
 
-    return supplier, error
+    return invoice, error
 
 
 def update_invoices(args):

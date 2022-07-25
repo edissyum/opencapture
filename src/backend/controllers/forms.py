@@ -45,12 +45,16 @@ def get_forms(args):
 
 
 def add_form(args):
-    res, error = forms.add_form(args)
-    if res:
+    form_id, error = forms.add_form(args)
+    if form_id:
+        if 'default_form' in args and args['default_form'] is True:
+            default_form, error = forms.get_default_form({})
+            if not error and default_form['id'] != form_id:
+                forms.update_form({'set': {'default_form': False}, 'form_id': default_form['id']})
         response = {
-            "id": res
+            "id": form_id
         }
-        forms.add_form_fields(res)
+        forms.add_form_fields(form_id)
         return response, 200
     else:
         response = {
