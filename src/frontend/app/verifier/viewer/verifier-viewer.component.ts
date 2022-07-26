@@ -611,16 +611,7 @@ export class VerifierViewerComponent implements OnInit {
         imageContainer.addClass('cursor-auto');
         if (enable) {
             $('.outline_' + _this.lastId).toggleClass('animate');
-            if (this.invoice.positions[_this.lastId]) {
-                const currentHeight = window.innerHeight;
-                const position = this.invoice.positions[_this.lastId].x;
-                if (position >= currentHeight || position <= currentHeight) {
-                    document.getElementById('image')!.scrollTo({
-                        top: position - 200,
-                        behavior: 'smooth'
-                    });
-                }
-            }
+            this.scrollToElement();
             if (this.invoice.status !== 'END') {
                 imageContainer.removeClass('pointer-events-none');
                 imageContainer.removeClass('cursor-auto');
@@ -647,6 +638,7 @@ export class VerifierViewerComponent implements OnInit {
                     const inputId = $('#select-area-label_' + cpt).attr('class').replace('input_', '').replace('select-none', '');
                     if (inputId) {
                         _this.updateFormValue(inputId, '');
+                        delete _this.invoice.positions[inputId.trim()]
                         if (_this.deleteDataOnChangeForm) {
                             _this.deleteData(inputId);
                             _this.deletePosition(inputId);
@@ -667,6 +659,20 @@ export class VerifierViewerComponent implements OnInit {
                 }
             }, 200);
             $('.outline_' + _this.lastId).removeClass('animate');
+        }
+    }
+
+    scrollToElement() {
+        console.log(this.lastId)
+        if (this.invoice.positions[this.lastId]) {
+            const currentHeight = window.innerHeight;
+            const position = document.getElementsByClassName('input_' + this.lastId)[0]!.getBoundingClientRect().top;
+            if (position >= currentHeight || position <= currentHeight) {
+                document.getElementById('image')!.scrollTo({
+                    top: position - 200,
+                    behavior: 'smooth'
+                });
+            }
         }
     }
 
@@ -994,6 +1000,16 @@ export class VerifierViewerComponent implements OnInit {
     deletePosition(fieldId: any) {
         this.http.put(environment['url'] + '/ws/verifier/invoices/' + this.invoice.id + '/deletePosition',
             {'args': fieldId.trim()},
+            {headers: this.authService.headers}).pipe(
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
+        this.http.put(environment['url'] + '/ws/accounts/suppliers/' + this.invoice.supplier_id + '/deletePosition',
+            {'args': {'field_id': fieldId.trim(), 'form_id' : this.invoice.form_id}},
             {headers: this.authService.headers}).pipe(
             catchError((err: any) => {
                 console.debug(err);

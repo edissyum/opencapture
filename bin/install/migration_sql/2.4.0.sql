@@ -47,6 +47,7 @@ UPDATE "regex" SET "regex_id" = 'email'             WHERE "regex_id" = 'emailReg
 UPDATE "regex" SET "regex_id" = 'siret'             WHERE "regex_id" = 'SIRETRegex';
 UPDATE "regex" SET "regex_id" = 'siren'             WHERE "regex_id" = 'SIRENRegex';
 UPDATE "regex" SET "regex_id" = 'iban'              WHERE "regex_id" = 'IBANRegex';
+UPDATE "regex" SET "regex_id" = 'vat_number'        WHERE "regex_id" = 'VATNumberRegex';
 UPDATE "regex" SET "regex_id" = 'date'              WHERE "regex_id" = 'dateRegex';
 UPDATE "regex" SET "regex_id" = 'due_date'          WHERE "regex_id" = 'dueDateRegex';
 UPDATE "regex" SET "regex_id" = 'invoice_number'    WHERE "regex_id" = 'invoiceRegex';

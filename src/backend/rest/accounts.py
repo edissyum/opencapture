@@ -158,6 +158,15 @@ def delete_supplier_positions(supplier_id):
     return make_response(jsonify(res[0])), res[1]
 
 
+@bp.route('accounts/suppliers/<int:supplier_id>/deletePosition', methods=['PUT'])
+@auth.token_required
+def delete_supplier_position(supplier_id):
+    field_id = request.json['args']['field_id']
+    form_id = request.json['args']['form_id']
+    res = accounts.delete_invoice_position_by_supplier_id(supplier_id, field_id, form_id)
+    return make_response(jsonify(res[0])), res[1]
+
+
 @bp.route('accounts/suppliers/skipAutoValidate/<int:supplier_id>', methods=['DELETE'])
 @auth.token_required
 def skip_auto_validate(supplier_id):
