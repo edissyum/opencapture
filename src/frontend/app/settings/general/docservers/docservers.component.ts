@@ -63,7 +63,7 @@ export class DocserversComponent implements OnInit {
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localeStorageService: LocalStorageService,
+        private localStorageService: LocalStorageService,
     ) { }
 
     ngOnInit(): void {
@@ -71,11 +71,11 @@ export class DocserversComponent implements OnInit {
 
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('settings/general/docservers') || lastUrl === '/') {
-            if (this.localeStorageService.get('docserversPageIndex'))
-                this.pageIndex = parseInt(this.localeStorageService.get('docserversPageIndex') as string);
+            if (this.localStorageService.get('docserversPageIndex'))
+                this.pageIndex = parseInt(this.localStorageService.get('docserversPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
         } else
-            this.localeStorageService.remove('docserversPageIndex');
+            this.localStorageService.remove('docserversPageIndex');
 
         this.http.get(environment['url'] + '/ws/config/getDocservers', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -141,7 +141,7 @@ export class DocserversComponent implements OnInit {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
         this.pageIndex = event.pageIndex;
-        this.localeStorageService.save('docserversPageIndex', event.pageIndex);
+        this.localStorageService.save('docserversPageIndex', event.pageIndex);
         this.loadDocservers();
     }
 

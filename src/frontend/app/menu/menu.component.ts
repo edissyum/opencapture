@@ -43,7 +43,7 @@ export class MenuComponent implements OnInit {
         public translate: TranslateService,
         public localeService: LocaleService,
         public privilegesService: PrivilegesService,
-        public localeStorageService: LocalStorageService
+        public localStorageService: LocalStorageService
     ) { }
 
     ngOnInit(): void {
@@ -78,7 +78,7 @@ export class MenuComponent implements OnInit {
     }
 
     getSplitterOrVerifier() {
-        return this.localeStorageService.get('splitter_or_verifier');
+        return this.localStorageService.get('splitter_or_verifier');
     }
 
     toggleProfileDropdown() {

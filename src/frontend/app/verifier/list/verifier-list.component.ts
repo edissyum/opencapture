@@ -148,7 +148,7 @@ export class VerifierListComponent implements OnInit {
         private configService: ConfigService,
         private historyService: HistoryService,
         private routerExtService: LastUrlService,
-        private localeStorageService: LocalStorageService
+        private localStorageService: LocalStorageService
     ) {}
 
     hasChild = (_: number, node: flatNode) => node.expandable;
@@ -163,20 +163,20 @@ export class VerifierListComponent implements OnInit {
         marker('VERIFIER.select_all'); // Needed to get the translation in the JSON file
         marker('VERIFIER.unselect_all'); // Needed to get the translation in the JSON file
         marker('VERIFIER.documents_settings'); // Needed to get the translation in the JSON file
-        this.localeStorageService.save('splitter_or_verifier', 'verifier');
+        this.localStorageService.save('splitter_or_verifier', 'verifier');
         this.removeLockByUserId(this.userService.user.username);
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('verifier/') && !lastUrl.includes('settings') || lastUrl === '/' || lastUrl === '/upload') {
-            if (this.localeStorageService.get('invoicesPageIndex'))
-                this.pageIndex = parseInt(this.localeStorageService.get('invoicesPageIndex') as string);
-            if (this.localeStorageService.get('invoicesTimeIndex')) {
-                this.selectedTab = parseInt(this.localeStorageService.get('invoicesTimeIndex') as string);
+            if (this.localStorageService.get('invoicesPageIndex'))
+                this.pageIndex = parseInt(this.localStorageService.get('invoicesPageIndex') as string);
+            if (this.localStorageService.get('invoicesTimeIndex')) {
+                this.selectedTab = parseInt(this.localStorageService.get('invoicesTimeIndex') as string);
                 this.currentTime = this.batchList[this.selectedTab].id;
             }
             this.offset = this.pageSize * (this.pageIndex);
         } else {
-            this.localeStorageService.remove('invoicesPageIndex');
-            this.localeStorageService.remove('invoicesTimeIndex');
+            this.localStorageService.remove('invoicesPageIndex');
+            this.localStorageService.remove('invoicesTimeIndex');
         }
 
         this.http.get(environment['url'] + '/ws/status/list?module=verifier', {headers: this.authService.headers}).pipe(
@@ -674,7 +674,7 @@ export class VerifierListComponent implements OnInit {
     onTabChange(event: any) {
         this.search = '';
         this.selectedTab = event.index;
-        this.localeStorageService.save('invoicesTimeIndex', this.selectedTab);
+        this.localStorageService.save('invoicesTimeIndex', this.selectedTab);
         this.currentTime = this.batchList[this.selectedTab].id;
         this.resetPaginator();
         this.loadInvoices();
@@ -684,7 +684,7 @@ export class VerifierListComponent implements OnInit {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
         this.pageIndex = event.pageIndex;
-        this.localeStorageService.save('invoicesPageIndex', event.pageIndex);
+        this.localStorageService.save('invoicesPageIndex', event.pageIndex);
         this.loadInvoices();
     }
 
@@ -697,7 +697,7 @@ export class VerifierListComponent implements OnInit {
         this.total = 0;
         this.offset = 0;
         this.pageIndex = 0;
-        this.localeStorageService.save('invoicesPageIndex', this.pageIndex);
+        this.localStorageService.save('invoicesPageIndex', this.pageIndex);
     }
 
     expandAll() {

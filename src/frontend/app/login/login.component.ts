@@ -30,6 +30,7 @@ import { LocaleService } from "../../services/locale.service";
 import { UserService } from "../../services/user.service";
 import { HistoryService } from "../../services/history.service";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
+import {LocalStorageService} from "../../services/local-storage.service";
 
 @Component({
     selector: 'app-login',
@@ -58,6 +59,7 @@ export class LoginComponent implements OnInit {
         private configService: ConfigService,
         private localeService: LocaleService,
         private historyService: HistoryService,
+        private localStorageService: LocalStorageService
     ) {}
 
     ngOnInit(): void {
@@ -70,23 +72,29 @@ export class LoginComponent implements OnInit {
             this.localeService.getCurrentLocale();
         }
 
-        this.http.get(environment['url'] + '/ws/config/getLoginImage', {headers: this.authService.headers}).pipe(
-            tap((b64Content: any) => {
-                this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + b64Content);
-                this.http.get(environment['url'] + '/ws/config/getConfiguration/loginMessage', {headers: this.authService.headers}).pipe(
-                    tap((data: any) => {
-                        if (data.configuration.length === 1) {
-                            this.subtitle = data.configuration[0].data.value;
-                        }
-                    }),
-                    finalize(() => this.loading = false),
-                    catchError((err: any) => {
-                        console.debug(err);
-                        this.notify.handleErrors(err);
-                        return of(false);
-                    })
-                ).subscribe();
+        if (!this.localStorageService.get('login_image_b64')) {
+            this.http.get(environment['url'] + '/ws/config/getLoginImage').pipe(
+                tap((b64Content: any) => {
+                    this.localStorageService.save('login_image_b64', b64Content);
+                    this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + b64Content);
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        } else {
+            this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + this.localStorageService.get('login_image_b64')!);
+        }
+
+        this.http.get(environment['url'] + '/ws/config/getConfiguration/loginMessage', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                if (data.configuration.length === 1) {
+                    this.subtitle = data.configuration[0].data.value;
+                }
             }),
+            finalize(() => this.loading = false),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);

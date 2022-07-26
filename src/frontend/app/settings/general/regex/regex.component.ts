@@ -58,7 +58,7 @@ export class RegexComponent implements OnInit {
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localeStorageService: LocalStorageService,
+        private localStorageService: LocalStorageService,
     ) { }
 
     ngOnInit(): void {
@@ -66,11 +66,11 @@ export class RegexComponent implements OnInit {
 
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('settings/general/regex') || lastUrl === '/') {
-            if (this.localeStorageService.get('regexPageIndex'))
-                this.pageIndex = parseInt(this.localeStorageService.get('regexPageIndex') as string);
+            if (this.localStorageService.get('regexPageIndex'))
+                this.pageIndex = parseInt(this.localStorageService.get('regexPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
         } else
-            this.localeStorageService.remove('regexPageIndex');
+            this.localStorageService.remove('regexPageIndex');
 
         this.http.get(environment['url'] + '/ws/config/getRegex', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -137,7 +137,7 @@ export class RegexComponent implements OnInit {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
         this.pageIndex = event.pageIndex;
-        this.localeStorageService.save('regexPageIndex', event.pageIndex);
+        this.localStorageService.save('regexPageIndex', event.pageIndex);
         this.loadRegex();
     }
 

@@ -72,7 +72,7 @@ export class UsersListComponent implements OnInit {
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localeStorageService: LocalStorageService,
+        private localStorageService: LocalStorageService,
     ) {}
 
 
@@ -81,11 +81,11 @@ export class UsersListComponent implements OnInit {
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('settings/general/users') || lastUrl === '/') {
-            if (this.localeStorageService.get('usersPageIndex'))
-                this.pageIndex = parseInt(this.localeStorageService.get('usersPageIndex') as string);
+            if (this.localStorageService.get('usersPageIndex'))
+                this.pageIndex = parseInt(this.localStorageService.get('usersPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
         } else
-            this.localeStorageService.remove('usersPageIndex');
+            this.localStorageService.remove('usersPageIndex');
 
         this.http.get(environment['url'] + '/ws/users/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -120,7 +120,7 @@ export class UsersListComponent implements OnInit {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
         this.pageIndex = event.pageIndex;
-        this.localeStorageService.save('usersPageIndex', event.pageIndex);
+        this.localStorageService.save('usersPageIndex', event.pageIndex);
         this.loadUsers();
     }
 

@@ -141,11 +141,11 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         private translate: TranslateService,
         private notify: NotificationService,
         private historyService: HistoryService,
-        private localeStorageService: LocalStorageService,
+        private localStorageService: LocalStorageService,
     ) {}
 
     ngOnInit(): void {
-        this.localeStorageService.save('splitter_or_verifier', 'splitter');
+        this.localStorageService.save('splitter_or_verifier', 'splitter');
         this.userService.user   = this.userService.getUserFromLocal();
         this.currentBatch.id    = this.route.snapshot.params['id'];
         this.loadBatches();

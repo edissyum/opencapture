@@ -66,18 +66,18 @@ export class SuppliersListComponent implements OnInit {
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localeStorageService: LocalStorageService,
+        private localStorageService: LocalStorageService,
     ) { }
 
     ngOnInit(): void {
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('accounts/suppliers') || lastUrl === '/') {
-            if (this.localeStorageService.get('suppliersPageIndex'))
-                this.pageIndex = parseInt(this.localeStorageService.get('suppliersPageIndex') as string);
+            if (this.localStorageService.get('suppliersPageIndex'))
+                this.pageIndex = parseInt(this.localStorageService.get('suppliersPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
         } else
-            this.localeStorageService.remove('suppliersPageIndex');
+            this.localStorageService.remove('suppliersPageIndex');
 
         this.http.get(environment['url'] + '/ws/accounts/suppliers/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -133,7 +133,7 @@ export class SuppliersListComponent implements OnInit {
     onPageChange(event: any) {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
-        this.localeStorageService.save('suppliersPageIndex', event.pageIndex);
+        this.localStorageService.save('suppliersPageIndex', event.pageIndex);
         this.loadSuppliers();
     }
 

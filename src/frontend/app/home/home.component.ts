@@ -31,7 +31,7 @@ export class HomeComponent implements OnInit {
         private authService: AuthService,
         private userService: UserService,
         public privilegesService: PrivilegesService,
-        private localeStorageService: LocalStorageService
+        private localStorageService: LocalStorageService
     ) {
     }
 
@@ -40,6 +40,6 @@ export class HomeComponent implements OnInit {
     }
 
     setValue(value: string) {
-        this.localeStorageService.save('splitter_or_verifier', value);
+        this.localStorageService.save('splitter_or_verifier', value);
     }
 }

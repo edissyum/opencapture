@@ -85,6 +85,7 @@ export class AuthService {
         this.clearTokens();
         this.userService.setUser({});
         this.localStorage.remove('selectedSettings');
+        this.localStorage.remove('login_image_b64');
         this.localStorage.remove('selectedParentSettings');
         this.localStorage.deleteCookie('OpenCaptureCustom');
         this.router.navigateByUrl("/login").then();

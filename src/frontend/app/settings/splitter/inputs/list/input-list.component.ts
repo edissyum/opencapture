@@ -62,7 +62,7 @@ export class SplitterInputListComponent implements OnInit {
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localeStorageService: LocalStorageService,
+        private localStorageService: LocalStorageService,
     ) {}
 
     ngOnInit(): void {
@@ -70,11 +70,11 @@ export class SplitterInputListComponent implements OnInit {
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('inputs/') || lastUrl === '/') {
-            if (this.localeStorageService.get('inputsPageIndex'))
-                this.pageIndex = parseInt(this.localeStorageService.get('inputsPageIndex') as string);
+            if (this.localStorageService.get('inputsPageIndex'))
+                this.pageIndex = parseInt(this.localStorageService.get('inputsPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
         } else
-            this.localeStorageService.remove('inputsPageIndex');
+            this.localStorageService.remove('inputsPageIndex');
         this.loadInputs();
     }
 
@@ -96,7 +96,7 @@ export class SplitterInputListComponent implements OnInit {
     onPageChange(event: any) {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
-        this.localeStorageService.save('inputsPageIndex', event.pageIndex);
+        this.localStorageService.save('inputsPageIndex', event.pageIndex);
         this.loadInputs();
     }
 

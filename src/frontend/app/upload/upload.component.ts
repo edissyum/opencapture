@@ -57,7 +57,7 @@ export class UploadComponent implements OnInit {
         public translate: TranslateService,
         private notify: NotificationService,
         private historyService: HistoryService,
-        public localeStorageService: LocalStorageService
+        public localStorageService: LocalStorageService
     ) {
     }
 
@@ -70,7 +70,7 @@ export class UploadComponent implements OnInit {
     );
 
     ngOnInit(): void {
-        const splitterOrVerifier = this.localeStorageService.get('splitter_or_verifier');
+        const splitterOrVerifier = this.localStorageService.get('splitter_or_verifier');
         this.http.get(environment['url'] + '/ws/inputs/list?module=' + splitterOrVerifier,
             {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -129,7 +129,7 @@ export class UploadComponent implements OnInit {
                 return;
             }
         }
-        const splitterOrVerifier = this.localeStorageService.get('splitter_or_verifier');
+        const splitterOrVerifier = this.localStorageService.get('splitter_or_verifier');
         if (splitterOrVerifier !== undefined || splitterOrVerifier !== '') {
             this.http.post(
                 environment['url'] + '/ws/' + splitterOrVerifier + '/upload?inputId=' + this.selectedInputTechnicalId,

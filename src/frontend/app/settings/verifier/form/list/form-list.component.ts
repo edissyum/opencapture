@@ -67,7 +67,7 @@ export class FormListComponent implements OnInit {
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localeStorageService: LocalStorageService,
+        private localStorageService: LocalStorageService,
     ) {
     }
 
@@ -75,11 +75,11 @@ export class FormListComponent implements OnInit {
         this.serviceSettings.init();
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('settings/verifier/forms') || lastUrl === '/') {
-            if (this.localeStorageService.get('formsPageIndex'))
-                this.pageIndex = parseInt(this.localeStorageService.get('formsPageIndex') as string);
+            if (this.localStorageService.get('formsPageIndex'))
+                this.pageIndex = parseInt(this.localStorageService.get('formsPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
         } else
-            this.localeStorageService.remove('formsPageIndex');
+            this.localStorageService.remove('formsPageIndex');
         this.loadForms();
     }
 
@@ -87,7 +87,7 @@ export class FormListComponent implements OnInit {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
         this.pageIndex = event.pageIndex;
-        this.localeStorageService.save('formsPageIndex', event.pageIndex);
+        this.localStorageService.save('formsPageIndex', event.pageIndex);
         this.loadForms();
     }
 

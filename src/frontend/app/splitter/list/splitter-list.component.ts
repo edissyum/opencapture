@@ -91,24 +91,24 @@ export class SplitterListComponent implements OnInit {
         private notify: NotificationService,
         private historyService: HistoryService,
         private routerExtService: LastUrlService,
-        private localeStorageService: LocalStorageService,
+        private localStorageService: LocalStorageService,
     ) {}
 
     ngOnInit(): void {
-        this.localeStorageService.save('splitter_or_verifier', 'splitter');
+        this.localStorageService.save('splitter_or_verifier', 'splitter');
 
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('splitter/') && !lastUrl.includes('settings') || lastUrl === '/' || lastUrl === '/upload') {
-            if (this.localeStorageService.get('splitterPageIndex'))
-                this.pageIndex = parseInt(this.localeStorageService.get('splitterPageIndex') as string);
-            if (this.localeStorageService.get('splitterTimeIndex')) {
-                this.selectedTab = parseInt(this.localeStorageService.get('splitterTimeIndex') as string);
+            if (this.localStorageService.get('splitterPageIndex'))
+                this.pageIndex = parseInt(this.localStorageService.get('splitterPageIndex') as string);
+            if (this.localStorageService.get('splitterTimeIndex')) {
+                this.selectedTab = parseInt(this.localStorageService.get('splitterTimeIndex') as string);
                 this.currentTime = this.batchList[this.selectedTab].id;
             }
             this.offset = this.pageSize * (this.pageIndex);
         } else {
-            this.localeStorageService.remove('splitterPageIndex');
-            this.localeStorageService.remove('splitterTimeIndex');
+            this.localStorageService.remove('splitterPageIndex');
+            this.localStorageService.remove('splitterTimeIndex');
         }
 
         this.http.get(environment['url'] + '/ws/status/list?module=splitter', {headers: this.authService.headers}).pipe(
@@ -258,7 +258,7 @@ export class SplitterListComponent implements OnInit {
         this.batches = [];
         this.pageIndex = $event.pageIndex + 1;
         this.pageSize = $event.pageSize;
-        this.localeStorageService.save('splitterPageIndex', $event.pageIndex);
+        this.localStorageService.save('splitterPageIndex', $event.pageIndex);
         this.loadBatches();
     }
 
@@ -326,13 +326,13 @@ export class SplitterListComponent implements OnInit {
         this.total = 0;
         this.offset = 0;
         this.pageIndex = 1;
-        this.localeStorageService.save('splitterPageIndex', this.pageIndex);
+        this.localStorageService.save('splitterPageIndex', this.pageIndex);
     }
 
     onTabChange(event: any) {
         // this.search = '';
         this.selectedTab = event.index;
-        this.localeStorageService.save('splitterTimeIndex', this.selectedTab);
+        this.localStorageService.save('splitterTimeIndex', this.selectedTab);
         this.currentTime = this.batchList[this.selectedTab].id;
         this.resetPaginator();
         this.loadBatches();

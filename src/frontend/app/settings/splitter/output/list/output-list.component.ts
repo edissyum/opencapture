@@ -62,7 +62,7 @@ export class SplitterOutputListComponent implements OnInit {
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localeStorageService: LocalStorageService,
+        private localStorageService: LocalStorageService,
     ) {}
 
 
@@ -71,11 +71,11 @@ export class SplitterOutputListComponent implements OnInit {
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('outputs/') || lastUrl === '/') {
-            if (this.localeStorageService.get('outputsPageIndex'))
-                this.pageIndex = parseInt(this.localeStorageService.get('outputsPageIndex') as string);
+            if (this.localStorageService.get('outputsPageIndex'))
+                this.pageIndex = parseInt(this.localStorageService.get('outputsPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
         } else
-            this.localeStorageService.remove('outputsPageIndex');
+            this.localStorageService.remove('outputsPageIndex');
         this.loadOutputs();
     }
 
@@ -97,7 +97,7 @@ export class SplitterOutputListComponent implements OnInit {
     onPageChange(event: any) {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
-        this.localeStorageService.save('outputsPageIndex', event.pageIndex);
+        this.localStorageService.save('outputsPageIndex', event.pageIndex);
         this.loadOutputs();
     }
 

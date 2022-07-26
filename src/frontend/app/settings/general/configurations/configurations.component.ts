@@ -67,7 +67,7 @@ export class ConfigurationsComponent implements OnInit {
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localeStorageService: LocalStorageService,
+        private localStorageService: LocalStorageService,
     ) { }
 
     ngOnInit(): void {
@@ -75,11 +75,11 @@ export class ConfigurationsComponent implements OnInit {
 
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('settings/general/configurations') || lastUrl === '/') {
-            if (this.localeStorageService.get('configurationsPageIndex'))
-                this.pageIndex = parseInt(this.localeStorageService.get('configurationsPageIndex') as string);
+            if (this.localStorageService.get('configurationsPageIndex'))
+                this.pageIndex = parseInt(this.localStorageService.get('configurationsPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
         } else
-            this.localeStorageService.remove('configurationsPageIndex');
+            this.localStorageService.remove('configurationsPageIndex');
 
         this.http.get(environment['url'] + '/ws/config/getConfigurations', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -92,16 +92,20 @@ export class ConfigurationsComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.get(environment['url'] + '/ws/config/getLoginImage', {headers: this.authService.headers}).pipe(
-            tap((b64Content: any) => {
-                this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + b64Content);
-            }),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                return of(false);
-            })
-        ).subscribe();
+        if (!this.localStorageService.get('login_image_b64')) {
+            this.http.get(environment['url'] + '/ws/config/getLoginImage').pipe(
+                tap((b64Content: any) => {
+                    this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + b64Content);
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        } else {
+            this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + this.localStorageService.get('login_image_b64')!);
+        }
 
         this.loadConfigurations();
     }
@@ -206,7 +210,7 @@ export class ConfigurationsComponent implements OnInit {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
         this.pageIndex = event.pageIndex;
-        this.localeStorageService.save('configurationsPageIndex', event.pageIndex);
+        this.localStorageService.save('configurationsPageIndex', event.pageIndex);
         this.loadConfigurations();
     }
 

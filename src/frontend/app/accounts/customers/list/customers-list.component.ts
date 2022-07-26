@@ -66,18 +66,18 @@ export class CustomersListComponent implements OnInit {
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localeStorageService: LocalStorageService,
+        private localStorageService: LocalStorageService,
     ) { }
 
     ngOnInit(): void {
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('accounts/customers') || lastUrl === '/') {
-            if (this.localeStorageService.get('customersPageIndex'))
-                this.pageIndex = parseInt(this.localeStorageService.get('customersPageIndex') as string);
+            if (this.localStorageService.get('customersPageIndex'))
+                this.pageIndex = parseInt(this.localStorageService.get('customersPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
         } else
-            this.localeStorageService.remove('customersPageIndex');
+            this.localStorageService.remove('customersPageIndex');
 
         this.http.get(environment['url'] + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -117,7 +117,7 @@ export class CustomersListComponent implements OnInit {
     onPageChange(event: any) {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
-        this.localeStorageService.save('customersPageIndex', event.pageIndex);
+        this.localStorageService.save('customersPageIndex', event.pageIndex);
         this.loadCustomers();
     }
 

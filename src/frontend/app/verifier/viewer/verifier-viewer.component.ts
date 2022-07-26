@@ -123,11 +123,11 @@ export class VerifierViewerComponent implements OnInit {
         private notify: NotificationService,
         private configService: ConfigService,
         private historyService: HistoryService,
-        private localeStorageService: LocalStorageService
+        private localStorageService: LocalStorageService
     ) {}
 
     async ngOnInit(): Promise<void> {
-        this.localeStorageService.save('splitter_or_verifier', 'verifier');
+        this.localStorageService.save('splitter_or_verifier', 'verifier');
         this.ocrFromUser = false;
         this.saveInfo = true;
         this.config = this.configService.getConfig();
