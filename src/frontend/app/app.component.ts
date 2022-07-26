@@ -91,11 +91,12 @@ export class AppComponent implements OnInit {
             this.imageMobile = data[2];
             const splitterOrVerifier = data[3];
             if (!splitterOrVerifier) {
-                if (!this.localStorageService.get('login_image_b64')) {
+                const b64Content = this.localStorageService.get('login_image_b64');
+                if (!b64Content) {
                     this.http.get(environment['url'] + '/ws/config/getLoginImage').pipe(
-                        tap((b64Content: any) => {
-                            this.localStorageService.save('login_image_b64', b64Content);
-                            this.image = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + b64Content);
+                        tap((data: any) => {
+                            this.localStorageService.save('login_image_b64', data);
+                            this.image = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + data);
                         }),
                         catchError((err: any) => {
                             console.debug(err);
@@ -104,7 +105,7 @@ export class AppComponent implements OnInit {
                         })
                     ).subscribe();
                 } else {
-                    this.image = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + this.localStorageService.get('login_image_b64')!);
+                    this.image = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + b64Content);
                 }
             }
             if (this.localeService.currentLang === undefined) {

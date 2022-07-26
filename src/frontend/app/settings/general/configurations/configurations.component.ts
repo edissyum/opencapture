@@ -92,10 +92,11 @@ export class ConfigurationsComponent implements OnInit {
             })
         ).subscribe();
 
-        if (!this.localStorageService.get('login_image_b64')) {
+        const b64Content = this.localStorageService.get('login_image_b64');
+        if (!b64Content) {
             this.http.get(environment['url'] + '/ws/config/getLoginImage').pipe(
-                tap((b64Content: any) => {
-                    this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + b64Content);
+                tap((data: any) => {
+                    this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + data);
                 }),
                 catchError((err: any) => {
                     console.debug(err);
@@ -104,7 +105,7 @@ export class ConfigurationsComponent implements OnInit {
                 })
             ).subscribe();
         } else {
-            this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + this.localStorageService.get('login_image_b64')!);
+            this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + b64Content);
         }
 
         this.loadConfigurations();
