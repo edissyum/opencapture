@@ -87,10 +87,10 @@ class FindInvoiceNumber:
                 if length_of_year == 2:
                     date_format = date_format.replace('%Y', '%y')
     
-                date = datetime.strptime(date, date_format).strftime(regex['formatDate'])
+                date = datetime.strptime(date, date_format).strftime(regex['format_date'])
                 # Check if the date of the document isn't too old. 62 (default value) is equivalent of 2 months
                 today = datetime.now()
-                doc_date = datetime.strptime(date, regex['formatDate'])
+                doc_date = datetime.strptime(date, regex['format_date'])
                 timedelta = today - doc_date
 
                 if timedelta.days < 0:
@@ -104,14 +104,14 @@ class FindInvoiceNumber:
     def sanitize_invoice_number(self, data):
         invoice_res = data
         # If the regex return a date, remove it
-        for _date in re.finditer(r"" + self.regex['dateRegex'] + "", data):
+        for _date in re.finditer(r"" + self.regex['date'] + "", data):
             if _date.group():
                 date = self.format_date(_date.group(), (('', ''), ('', '')), True)
                 if date[0] is not False:
                     invoice_res = data.replace(_date.group(), '')
 
         # Delete the invoice keyword
-        tmp_invoice_number = re.sub(r"" + self.regex['invoiceRegex'][:-2] + "", '', invoice_res)
+        tmp_invoice_number = re.sub(r"" + self.regex['invoice_number'][:-2] + "", '', invoice_res)
         invoice_number = tmp_invoice_number.lstrip().split(' ')[0]
         return invoice_number
 
@@ -146,14 +146,14 @@ class FindInvoiceNumber:
                     return [text, position, data['page']]
 
         for line in self.text:
-            for _invoice in re.finditer(r"" + self.regex['invoiceRegex'] + "", line.content.upper()):
+            for _invoice in re.finditer(r"" + self.regex['invoice_number'] + "", line.content.upper()):
                 invoice_number = self.sanitize_invoice_number(_invoice.group())
                 if len(invoice_number) >= int(self.configurations['invoiceSizeMin']):
                     self.log.info('Invoice number found : ' + invoice_number)
                     return [invoice_number, line.position, self.nb_pages]
 
         for line in self.footer_text:
-            for _invoice in re.finditer(r"" + self.regex['invoiceRegex'] + "", line.content.upper()):
+            for _invoice in re.finditer(r"" + self.regex['invoice_number'] + "", line.content.upper()):
                 invoice_number = self.sanitize_invoice_number(_invoice.group())
                 if len(invoice_number) >= int(self.configurations['invoiceSizeMin']):
                     self.log.info('Invoice number found : ' + invoice_number)

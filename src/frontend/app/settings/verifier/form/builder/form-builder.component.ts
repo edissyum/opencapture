@@ -262,21 +262,6 @@ export class FormBuilderComponent implements OnInit {
             'label': this.translate.instant('FACTURATION.facturation'),
             'values': [
                 {
-                    id: 'order_number',
-                    label: marker('FACTURATION.order_number'),
-                    unit: 'facturation',
-                    type: 'text',
-                    required: false,
-                    required_icon: 'far fa-star',
-                    class: "w-1/3",
-                    class_label: "1/33",
-                    color: 'yellow',
-                    format: 'alphanum_extended',
-                    format_icon: 'fa-solid fa-hashtag',
-                    display: 'multi',
-                    display_icon:'fa-solid fa-layer-group',
-                },
-                {
                     id: 'delivery_number',
                     label: marker('FACTURATION.delivery_number'),
                     unit: 'facturation',
@@ -650,10 +635,6 @@ export class FormBuilderComponent implements OnInit {
         {
             "id": 'footer',
             'label': marker('FACTURATION.footer')
-        },
-        {
-            "id": 'order_number',
-            'label': 'FACTURATION.order_number'
         },
         {
             "id": 'delivery_number',

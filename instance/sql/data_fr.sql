@@ -66,7 +66,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "type": "text",
                 "label": "Nom du fichier",
                 "required": "true",
-                "placeholder": "invoice_number#order_number#supplier_name"
+                "placeholder": "invoice_number#quotation_number#supplier_name"
             },
             {
                 "id": "extension",
@@ -229,7 +229,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "label": "Champs personnalisés",
                 "isJson": "true",
                 "required": "false",
-                "placeholder": "{\"1\": \"invoice_number\", \"2\": \"order_number\"}"
+                "placeholder": "{\"1\": \"invoice_number\", \"2\": \"quotation_number\"}"
             }
         ]
     }
@@ -584,24 +584,6 @@ INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
             "class": "w-1/2",
             "color": "orange",
             "label": "FACTURATION.delivery_number",
-            "format": "alphanum_extended",
-            "display": "multi",
-            "required": false,
-            "class_label": "1/2",
-            "format_icon": "fas fa-hashtag fa-level-up-alt",
-            "display_icon": "fas fa-layer-group",
-            "required_icon": "far fa-star",
-            "autocomplete": "none",
-            "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": []
-        },
-        {
-            "id": "order_number",
-            "type": "text",
-            "unit": "facturation",
-            "class": "w-1/2",
-            "color": "yellow",
-            "label": "FACTURATION.order_number",
             "format": "alphanum_extended",
             "display": "multi",
             "required": false,

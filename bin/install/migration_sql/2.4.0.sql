@@ -41,3 +41,25 @@ ALTER TABLE form_models ADD COLUMN "display" JSONB DEFAULT '{
         {"id": "form_label", "label": "VERIFIER.form"}
     ]
 }';
+
+-- Update REGEX
+UPDATE "regex" SET "regex_id" = 'email'             WHERE "regex_id" = 'emailRegex';
+UPDATE "regex" SET "regex_id" = 'siret'             WHERE "regex_id" = 'SIRETRegex';
+UPDATE "regex" SET "regex_id" = 'siren'             WHERE "regex_id" = 'SIRENRegex';
+UPDATE "regex" SET "regex_id" = 'iban'              WHERE "regex_id" = 'IBANRegex';
+UPDATE "regex" SET "regex_id" = 'date'              WHERE "regex_id" = 'dateRegex';
+UPDATE "regex" SET "regex_id" = 'due_date'          WHERE "regex_id" = 'dueDateRegex';
+UPDATE "regex" SET "regex_id" = 'invoice_number'    WHERE "regex_id" = 'invoiceRegex';
+UPDATE "regex" SET "regex_id" = 'delivery_number'   WHERE "regex_id" = 'deliveryNumberRegex';
+UPDATE "regex" SET "regex_id" = 'quotation_number'  WHERE "regex_id" = 'quotationRegex';
+UPDATE "regex" SET "regex_id" = 'no_rates'          WHERE "regex_id" = 'noRatesRegex';
+UPDATE "regex" SET "regex_id" = 'all_rates'         WHERE "regex_id" = 'allRatesRegex';
+UPDATE "regex" SET "regex_id" = 'vat_rate'          WHERE "regex_id" = 'vatRateRegex';
+UPDATE "regex" SET "regex_id" = 'vat_amount'        WHERE "regex_id" = 'vatAmountRegex';
+UPDATE "regex" SET "regex_id" = 'vat_rate_list'     WHERE "regex_id" = 'vatRateList';
+UPDATE "regex" SET "regex_id" = 'format_date'       WHERE "regex_id" = 'formatDate';
+
+-- Remove ORDER number
+DELETE FROM "regex" WHERE "regex_id" = 'orderNumberRegex';
+UPDATE "regex" SET "content" = '(((?P<r1>(NUM(E|É)RO|N(O|°|º|R.)?|R(E|É)F(\.)?((E|É)RENCE)?))?\s*(DE)?\s*(DEVIS|COMMANDE|C(M)?DE|DOCUMENT)\s*(INTERNET|EXTERNE|WEB)?(\s*:)?\s*(?(r1)()|(NUMERO|N(O|°|º|R.)?))(\s*:)?|(R(E|É)F(\.)?\s*PROPOSITION\s*COMMERCIALE)|(CONTRAT|COMMANDE|C(M)?DE)\s*(NUMERO|N(O|°|º|R.)))\s*(:|#){0,1}).*' WHERE regex_id = 'quotation_number' AND lang = 'fra';
+UPDATE "regex" SET "content" = '((QUOT(E|ATION)|ORDER)\s*NUMBER\s*(:)?).*' WHERE regex_id = 'quotation_number' AND lang = 'fra';

@@ -42,11 +42,11 @@ class FindDeliveryNumber:
     def sanitize_delivery_number(self, data):
         delivery_res = data
         # If the regex return a date, remove it
-        for _date in re.finditer(r"" + self.regex['dateRegex'] + "", data):
+        for _date in re.finditer(r"" + self.regex['date'] + "", data):
             if _date.group():
                 delivery_res = data.replace(_date.group(), '')
         # Delete the delivery number keyword
-        tmp_delivery_number = re.sub(r"" + self.regex['deliveryNumberRegex'][:-2] + "", '', delivery_res)
+        tmp_delivery_number = re.sub(r"" + self.regex['delivery_number'][:-2] + "", '', delivery_res)
         delivery_number = tmp_delivery_number.lstrip().split(' ')[0]
         return delivery_number
 
@@ -77,7 +77,7 @@ class FindDeliveryNumber:
                     pass
 
                 if text is not False:
-                    for _delivery in re.finditer(r"" + self.regex['deliveryNumberRegex'] + "", str(text.upper())):
+                    for _delivery in re.finditer(r"" + self.regex['delivery_number'] + "", str(text.upper())):
                         delivery_number = self.sanitize_delivery_number(_delivery.group())
                         if delivery_number != '':
                             self.log.info('Delivery number found with position : ' + str(delivery_number))
@@ -87,7 +87,7 @@ class FindDeliveryNumber:
                         return [text, position, data['page']]
 
         for line in self.text:
-            for _delivery in re.finditer(r"" + self.regex['deliveryNumberRegex'] + "", line.content.upper()):
+            for _delivery in re.finditer(r"" + self.regex['delivery_number'] + "", line.content.upper()):
                 delivery_number = self.sanitize_delivery_number(_delivery.group())
                 if len(delivery_number) >= int(self.configurations['invoiceSizeMin']):
                     self.log.info('Delivery number found : ' + delivery_number)

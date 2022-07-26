@@ -63,8 +63,8 @@ class FindFooter:
                 # Retrieve only the number and add it in array
                 # In case of multiple no rates amount found, take the higher
                 data = res.group()
-                if regex == self.regex['vatAmountRegex']:
-                    data = re.sub(r"" + self.regex['vatAmountRegex'][:-2] + "", '', res.group())  # Delete the delivery number keyword
+                if regex == self.regex['vat_amount']:
+                    data = re.sub(r"" + self.regex['vat_amount'][:-2] + "", '', res.group())  # Delete the delivery number keyword
 
                 tmp = re.finditer(r'[-+]?\d*[.,]+\d+([.,]+\d+)?|\d+', data)
                 result = ''
@@ -74,7 +74,7 @@ class FindFooter:
                         # If two amounts are found, separate them
                         continue
                     number_formatted = t.group()
-                    if regex != self.regex['vatRateRegex']:
+                    if regex != self.regex['vat_rate']:
                         try:
                             text = t.group().replace(' ', '.')
                             text = text.replace('\x0c', '')
@@ -132,7 +132,7 @@ class FindFooter:
                     float(text)
                     result = text
                     if column == 'vat_rate':  # Fix if we retrieve 2000.0, or 200.0 instead of 20.0 for example
-                        tva_amounts = eval(self.regex['vatRateList'])
+                        tva_amounts = eval(self.regex['vat_rate_list'])
                         _split = result.split('.')
                         if _split[1] == '0':
                             result = _split[0]
@@ -295,13 +295,13 @@ class FindFooter:
 
         if not self.test_amount(total_ht, total_ttc, vat_rate, vat_amount) or not total_ht or not total_ttc or not vat_rate:
             if not total_ht:
-                total_ht = self.process(self.regex['noRatesRegex'], text_as_string)
+                total_ht = self.process(self.regex['no_rates'], text_as_string)
             if not vat_rate:
-                vat_rate = self.process(self.regex['vatRateRegex'], text_as_string)
+                vat_rate = self.process(self.regex['vat_rate'], text_as_string)
             if not total_ttc:
-                total_ttc = self.process(self.regex['allRatesRegex'], text_as_string)
+                total_ttc = self.process(self.regex['all_rates'], text_as_string)
             if not vat_amount:
-                vat_amount = self.process(self.regex['vatAmountRegex'], text_as_string)
+                vat_amount = self.process(self.regex['vat_amount'], text_as_string)
 
         if total_ttc and total_ht:
             ttc = self.return_max(total_ttc)[0]

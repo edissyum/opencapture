@@ -73,14 +73,6 @@ export class UpdatePositionsMaskComponent implements OnInit {
             'label': this.translate.instant('FACTURATION.facturation'),
             'values': [
                 {
-                    id: 'order_number',
-                    label: marker('FACTURATION.order_number'),
-                    unit: 'facturation',
-                    type: 'text',
-                    color: 'yellow',
-                    regex: ''
-                },
-                {
                     id: 'delivery_number',
                     label: marker('FACTURATION.delivery_number'),
                     unit: 'facturation',

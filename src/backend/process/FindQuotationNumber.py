@@ -42,12 +42,18 @@ class FindQuotationNumber:
     def sanitize_quotation_number(self, data):
         quotation_res = data
         # If the regex return a date, remove it
-        for _date in re.finditer(r"" + self.regex['dateRegex'] + "", data):
+        for _date in re.finditer(r"" + self.regex['date'] + "", data):
             if _date.group():
                 quotation_res = data.replace(_date.group(), '')
 
+        # Delete if mail
+        for _mail in re.finditer(r"" + self.regex['email'] + "", quotation_res.lower()):
+            for _order in re.finditer(r"" + self.regex['email'] + "", _mail.group().lower()):
+                return ''
+
+
         # Delete the quotation keyword
-        tmp_invoice_number = re.sub(r"" + self.regex['quotationRegex'][:-2] + "", '', quotation_res)
+        tmp_invoice_number = re.sub(r"" + self.regex['quotation_number'][:-2] + "", '', quotation_res)
         invoice_number = tmp_invoice_number.lstrip().split(' ')[0]
         return invoice_number
 
@@ -82,14 +88,14 @@ class FindQuotationNumber:
                     return [text, position, data['page']]
 
         for line in self.text:
-            for _invoice in re.finditer(r"" + self.regex['quotationRegex'] + "", line.content.upper()):
+            for _invoice in re.finditer(r"" + self.regex['quotation_number'] + "", line.content.upper()):
                 quotation_number = self.sanitize_quotation_number(_invoice.group())
                 if len(quotation_number) >= int(self.configurations['devisSizeMin']):
                     self.log.info('Quotation number found : ' + quotation_number)
                     return [quotation_number, line.position, self.nb_pages]
 
         for line in self.footer_text:
-            for _invoice in re.finditer(r"" + self.regex['quotationRegex'] + "", line.content.upper()):
+            for _invoice in re.finditer(r"" + self.regex['quotation_number'] + "", line.content.upper()):
                 quotation_number = self.sanitize_quotation_number(_invoice.group())
                 if len(quotation_number) >= int(self.configurations['devisSizeMin']):
                     self.log.info('Quotation number found : ' + quotation_number)

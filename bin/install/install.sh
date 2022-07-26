@@ -140,8 +140,8 @@ touch /etc/apache2/sites-available/opencapture.conf
 su -c "cat > /etc/apache2/sites-available/opencapture.conf << EOF
 <VirtualHost *:80>
     ServerName localhost
-    DocumentRoot $defaultPath/
-    WSGIDaemonProcess opencapture user=$user group=$group threads=5
+    DocumentRoot $defaultPath
+    WSGIDaemonProcess opencapture user=$user group=$group home=$defaultPath threads=5
     WSGIScriptAlias /backend_oc /var/www/html/opencaptureforinvoices/wsgi.py
 
     <Directory $defaultPath>

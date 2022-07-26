@@ -338,7 +338,7 @@ class Files:
                         text = (text.lower().replace(month.lower(), key))
                         break
 
-            for res in re.finditer(r"" + self.regex['dateRegex'] + "", text):
+            for res in re.finditer(r"" + self.regex['date'] + "", text):
 
                 date_class = FindDate('', self.log, self.regex, self.configurations, self, ocr, '', '', '', '', self.docservers, self.languages, None)
                 date = date_class.format_date(res.group(), (('', ''), ('', '')), True)

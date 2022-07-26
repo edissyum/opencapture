@@ -145,10 +145,6 @@ export class UpdateOutputComponent implements OnInit {
             'label': marker('FACTURATION.register_date_day')
         },
         {
-            "id": 'order_number',
-            'label': 'FACTURATION.order_number'
-        },
-        {
             "id": 'delivery_number',
             'label': 'FACTURATION.delivery_number'
         },

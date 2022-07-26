@@ -73,10 +73,6 @@ export class VerifierDisplayComponent implements OnInit {
             'label': marker('VERIFIER.register_date')
         },
         {
-            "id": 'order_number',
-            'label': 'FACTURATION.order_number'
-        },
-        {
             "id": 'delivery_number',
             'label': 'FACTURATION.delivery_number'
         },

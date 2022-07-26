@@ -22,7 +22,7 @@ from src.backend import verifier_exports
 from src.backend.functions import delete_documents
 from src.backend.import_classes import _PyTesseract
 from src.backend.import_process import FindDate, FindFooter, FindInvoiceNumber, FindSupplier, FindCustom, \
-    FindOrderNumber, FindDeliveryNumber, FindFooterRaw, FindQuotationNumber
+    FindDeliveryNumber, FindFooterRaw, FindQuotationNumber
 
 
 def insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier, status,
@@ -453,22 +453,6 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             positions.update({'delivery_number': files.reformat_positions(delivery_number[1])})
         if delivery_number[2]:
             pages.update({'delivery_number': delivery_number[2]})
-
-    # Find order number
-    order_number_class = FindOrderNumber(ocr, files, log, regex, config, database, supplier, file,
-                                         ocr.header_text, 1, False, docservers, configurations, form_id)
-    order_number = order_number_class.run()
-    if not order_number:
-        order_number_class.text = ocr.footer_text
-        order_number_class.target = 'footer'
-        order_number = order_number_class.run()
-
-    if order_number:
-        datas.update({'order_number': order_number[0]})
-        if order_number[1]:
-            positions.update({'order_number': files.reformat_positions(order_number[1])})
-        if order_number[2]:
-            pages.update({'order_number': order_number[2]})
 
     file_name = str(uuid.uuid4())
     full_jpg_filename = 'full_' + file_name + '-%03d.jpg'

@@ -30,19 +30,24 @@ group=www-data
 
 apt install -y crudini
 
-while getopts c: parameters
+while getopts ac: parameters
 do
     case "${parameters}" in
+        a) updateApache=${OPTARG};;
         c) customId=${OPTARG};;
-        *) customId=""
+        *)
+            customId=""
+            updateApache="false"
     esac
 done
 
-if [ -z "$customId" ]; then
-    echo "##########################################################################"
-    echo "              Custom id is needed to run the installation"
-    echo "      Exemple of command line call : sudo ./2.4.0.sh -c edissyum"
-    echo "##########################################################################"
+if [ -z "$customId" ] || [ -z "$updateApache" ]; then
+    echo "################################################################################"
+    echo "                Custom id is needed to run the installation"
+    echo "            updateApache is needed to run the application"
+    echo " If you have the basic installation with the default Apache config, add -a true"
+    echo "         Exemple of command line call : sudo ./2.4.0.sh -c edissyum -a true"
+    echo "################################################################################"
     exit 2
 fi
 
@@ -85,8 +90,16 @@ echo "" >> $customIniFile
 
 ####################
 # Copy file from default one
-rm $defaultPath/instance/config.ini
-cp $defaultPath/bin/ldap/config/config.ini "$defaultPath/custom/$customId/bin/ldap/config/config.ini"
+if test -f "$defaultPath/instance/config.ini"; then
+    rm $defaultPath/instance/config.ini
+fi
+
+if test -f "$defaultPath/bin/ldap/config/config.ini"; then
+    cp $defaultPath/bin/ldap/config/config.ini "$defaultPath/custom/$customId/bin/ldap/config/config.ini"
+else
+    cp $defaultPath/bin/ldap/config/config.ini.default "$defaultPath/custom/$customId/bin/ldap/config/config.ini"
+fi
+
 cp $defaultPath/instance/config/mail.ini "$defaultPath/custom/$customId/config/mail.ini"
 cp $defaultPath/instance/config/config_DEFAULT.ini "$defaultPath/custom/$customId/config/config.ini"
 
@@ -109,8 +122,42 @@ chmod -R g+s $defaultPath
 chown -R "$user":"$group" $defaultPath
 
 ####################
+# Update Apache configuration
+if [ $updateApache == 'true' ]; then
+    if test /etc/apache2/sites-available/opencapture.conf; then
+        echo '' > /etc/apache2/sites-available/opencapture.conf
+        su -c "cat > /etc/apache2/sites-available/opencapture.conf << EOF
+            <VirtualHost *:80>
+                ServerName localhost
+                DocumentRoot $defaultPath
+                WSGIDaemonProcess opencapture user=$user group=$group home=$defaultPath threads=5
+                WSGIScriptAlias /backend_oc /var/www/html/opencaptureforinvoices/wsgi.py
+
+                <Directory $defaultPath>
+                    AllowOverride All
+                    WSGIProcessGroup opencapture
+                    WSGIApplicationGroup %{GLOBAL}
+                    WSGIPassAuthorization On
+                    Order deny,allow
+                    Allow from all
+                    Require all granted
+                </Directory>
+            </VirtualHost>
+        EOF"
+        systemctl daemon-reload
+        systemctl restart apache2
+    fi
+fi
+
+####################
 # Makes scripts executable
-chmod u+x $defaultPath/custom/"$customId"/bin/scripts/verifier_inputs/*.sh
-chown -R "$user":"$user" $defaultPath/custom/"$customId"/bin/scripts/verifier_inputs/*.sh
-chmod u+x $defaultPath/custom/"$customId"/bin/scripts/splitter_inputs/*.sh
-chown -R "$user":"$user" $defaultPath/custom/"$customId"/bin/scripts/splitter_inputs/*.sh
+chmod u+x $defaultPath/custom/"$customId"/bin/scripts/verifier_inputs/*
+chown -R "$user":"$user" $defaultPath/custom/"$customId"/bin/scripts/verifier_inputs/*
+chmod u+x $defaultPath/custom/"$customId"/bin/scripts/splitter_inputs/*
+chown -R "$user":"$user" $defaultPath/custom/"$customId"/bin/scripts/splitter_inputs/*
+
+####################
+# Display some informations
+echo "#####################################################################"
+echo "      Please remove all order_number associations in your forms"
+echo "#####################################################################"

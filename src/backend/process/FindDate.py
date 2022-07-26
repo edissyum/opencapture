@@ -86,10 +86,10 @@ class FindDate:
                 if length_of_year == 2:
                     date_format = date_format.replace('%Y', '%y')
 
-                date = datetime.strptime(date, date_format).strftime(regex['formatDate'])
+                date = datetime.strptime(date, date_format).strftime(regex['format_date'])
                 # Check if the date of the document isn't too old. 62 (default value) is equivalent of 2 months
                 today = datetime.now()
-                doc_date = datetime.strptime(date, regex['formatDate'])
+                doc_date = datetime.strptime(date, regex['format_date'])
                 timedelta = today - doc_date
 
                 if int(self.max_time_delta) not in [-1, 0]:
@@ -108,7 +108,7 @@ class FindDate:
             return False
 
     def process(self, line, position):
-        for _date in re.finditer(r"" + self.regex['dateRegex'] + "", line):
+        for _date in re.finditer(r"" + self.regex['date'] + "", line):
             date = self.format_date(_date.group(), position, True)
             if date and date[0]:
                 self.date = date[0]
@@ -116,9 +116,9 @@ class FindDate:
             return False
 
     def process_due_date(self, line, position):
-        regex = self.regex['dueDateRegex'] + self.regex['dateRegex']
+        regex = self.regex['due_date'] + self.regex['date']
         for _date in re.finditer(r"" + regex + "", line):
-            for res in re.finditer(r"" + self.regex['dateRegex'] + "", line):
+            for res in re.finditer(r"" + self.regex['date'] + "", line):
                 date = self.format_date(res.group(), position, True)
                 if date and date[0]:
                     self.log.info('Due date found : ' + str(date[0]))
