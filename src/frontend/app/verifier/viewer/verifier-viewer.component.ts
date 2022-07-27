@@ -638,7 +638,7 @@ export class VerifierViewerComponent implements OnInit {
                     const inputId = $('#select-area-label_' + cpt).attr('class').replace('input_', '').replace('select-none', '');
                     if (inputId) {
                         _this.updateFormValue(inputId, '');
-                        delete _this.invoice.positions[inputId.trim()]
+                        delete _this.invoice.positions[inputId.trim()];
                         if (_this.deleteDataOnChangeForm) {
                             _this.deleteData(inputId);
                             _this.deletePosition(inputId);
@@ -663,7 +663,6 @@ export class VerifierViewerComponent implements OnInit {
     }
 
     scrollToElement() {
-        console.log(this.lastId)
         if (this.invoice.positions[this.lastId]) {
             const currentHeight = window.innerHeight;
             const position = document.getElementsByClassName('input_' + this.lastId)[0]!.getBoundingClientRect().top;

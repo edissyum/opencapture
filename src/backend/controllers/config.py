@@ -17,14 +17,12 @@
 
 import base64
 import os.path
-
 import requests
 import subprocess
 from flask import request
 from flask_babel import gettext
-
-from src.backend.functions import retrieve_custom_from_url
 from src.backend.import_models import config
+from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 
 

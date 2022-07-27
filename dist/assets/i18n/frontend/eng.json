@@ -195,7 +195,6 @@
 		"invoice_due_date": "Invoice due date",
 		"invoice_number": "Invoice number",
 		"no_rate_amount": "No rate amount",
-		"order_number": "Order number",
 		"quotation_number": "Quotation number",
 		"register_date_day": "Day of the register date",
 		"register_date_month": "Month of the register date",
@@ -212,9 +211,9 @@
 		"xmlTag": "XML Tag"
 	},
 	"FORMATS": {
-		"alphanum": "Alphanumeric [0-9aA-zZ]",
-		"alphanum_extended": "Alphanumeric extended [0-9aA-zZ-/#,\\.\\s]",
-		"alphanum_extended_with_accent": "Alphanumeric extended with accent [0-9aA-zZ-À-ſ/#,\\.\\s]",
+		"alphanum": "Alphanumeric [0-9aA-zZ']",
+		"alphanum_extended": "Alphanumeric extended [0-9aA-zZ-/'#,\\.\\s]",
+		"alphanum_extended_with_accent": "Alphanumeric extended with accent [0-9aA-zZ-À-ſ/'#,\\.\\s]",
 		"char": "Alphabetic [aA-zZ]",
 		"date": "Date",
 		"email": "Email address",
@@ -225,6 +224,9 @@
 		"textarea": "Textarea"
 	},
 	"FORMS": {
+		"allow_automatic_validation": "Allow automatic validation",
+		"automatic_validation_data": "Data needed for automatic validation",
+		"automatic_validation_data_hint": "Click to show available fields",
 		"available_fields": "Fields available",
 		"choose_form": "Choose a new form",
 		"confirm_delete": "Are you sure you want to delete the form <b>{{ form }}</b> ?",
@@ -236,8 +238,12 @@
 		"custom_fields": "Customs fields",
 		"default": "Default form",
 		"delete": "Delete form",
+		"delete_documents_after_outputs": "Delete document",
+		"delete_documents_after_outputs_hint": "Delete all data (database and docservers) linked to this documents after outputs process",
 		"delete_field": "Delete the field",
 		"disable": "Disable form",
+		"display_hint": "Change display of documents (per form) in Verifier list",
+		"display_updated_success": "Display of documents per form updated successfully",
 		"duplicate": "Duplicate form",
 		"enable": "Enable form",
 		"form_deleted": "Form deleted successfully",
@@ -252,6 +258,7 @@
 		"label_and_output_mandatory": "The label and the output type are mandatory",
 		"label_mandatory": "Label is mandatory",
 		"modify": "Modify",
+		"modify_display": "Modify display linked to form",
 		"other": "Other",
 		"output_settings": "Outputs",
 		"output_type_mandatory": "Output type is mandatory",
@@ -371,10 +378,7 @@
 		"verifier": "Open-Capture Verifier"
 	},
 	"INPUT": {
-		"allow_automatic_validation": "Allow automatic validation",
 		"associated_customer": "Associated customer",
-		"automatic_validation_data": "Data needed for automatic validation",
-		"automatic_validation_data_hint": "Example : supplier, invoice_number, footer",
 		"confirm_delete": "Are you sure you want to delete the input <b>{{ input }}</b> ?",
 		"confirm_duplicate": "Are you sure you want to duplicate input <b>{{ input }}</b> ?",
 		"create": "Create input",
@@ -509,6 +513,7 @@
 		"disable": "Disable positions mask",
 		"duplicate": "Duplicate positions mask",
 		"enable": "Enable positions mask",
+		"form_associated": "Form associated",
 		"label": "Label of positions mask",
 		"modify": "Update positions mask",
 		"placeholder": "Choose a selected supplier invoice",
@@ -578,6 +583,7 @@
 		"upload": "Upload files",
 		"users_list": "Users list",
 		"verifier": "Open-Capture Verifier",
+		"verifier_display": "Setting up the verifier document display",
 		"version_update": "Version and update"
 	},
 	"REGEX": {
@@ -626,7 +632,8 @@
 		"update_input": "Update input",
 		"update_output": "Update output",
 		"users_list": "Users list",
-		"verifier": "Verifier"
+		"verifier": "Verifier",
+		"verifier_display": "Batch display"
 	},
 	"SPLITTER": {
 		"Other": "(Autre)",
@@ -770,12 +777,15 @@
 		"delete_all_checked": "Delete all checked invoices",
 		"delete_invoice": "Delete invoice",
 		"display": "Display",
+		"document_id": "Document identifier",
 		"documents_settings": "Settings document",
 		"expand_all": "Expand all",
 		"field_settings": "Field settings",
+		"form": "Form",
 		"form_changed": "Form changed successfully",
 		"form_validated_and_output_done": "Form validated and following output(s) done : <br><br> <center>{{ outputs }}</center>",
 		"format": "Data format",
+		"hide_visuals": "Hide visual indicators",
 		"invoice_locked": "Invoice locked",
 		"invoice_locked_by": "Invoice locked by the following user : <b>{{ locked_by }}</b>",
 		"invoice_refused": "Invoice refused",
@@ -790,7 +800,7 @@
 		"no_outputs_for_this_form": "No outputs for this form",
 		"on": "on",
 		"only_raw_footer": "Get only raw footer is enabled",
-		"original_file": "Original file",
+		"original_file": "File",
 		"outputs_list": "Outputs list",
 		"page": "Page",
 		"register_date": "Register date",

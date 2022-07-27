@@ -16,7 +16,6 @@
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
 import os
-import json
 from flask_cors import CORS
 from flask_babel import Babel
 from werkzeug.wrappers import Request
