@@ -72,22 +72,17 @@ export class LoginComponent implements OnInit {
             this.localeService.getCurrentLocale();
         }
 
-        const b64Content = this.localStorageService.get('login_image_b64');
-        if (!b64Content) {
-            this.http.get(environment['url'] + '/ws/config/getLoginImage').pipe(
-                tap((data: any) => {
-                    this.localStorageService.save('login_image_b64', data);
-                    this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + data);
-                }),
-                catchError((err: any) => {
-                    console.debug(err);
-                    this.notify.handleErrors(err);
-                    return of(false);
-                })
-            ).subscribe();
-        } else {
-            this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + b64Content);
-        }
+        this.http.get(environment['url'] + '/ws/config/getLoginImage').pipe(
+            tap((data: any) => {
+                this.localStorageService.save('login_image_b64', data);
+                this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + data);
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
 
         this.http.get(environment['url'] + '/ws/config/getConfiguration/loginMessage', {headers: this.authService.headers}).pipe(
             tap((data: any) => {

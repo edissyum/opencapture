@@ -51,7 +51,7 @@ do
     esac
 done
 
-if [ -z "$customId" ]; then
+if [ -z "$customId" ] || [ "$customId" == 'CUSTOM_ID' ] ; then
     echo "##########################################################################"
     echo "              Custom id is needed to run the installation"
     echo "      Exemple of command line call : sudo ./update.sh -c edissyum"

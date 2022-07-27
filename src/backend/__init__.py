@@ -33,6 +33,8 @@ class Middleware:
     def __call__(self, environ, start_response):
         _request = Request(environ)
         splitted_request = _request.path.split('ws/')
+        domain_name = environ['HTTP_ORIGIN'].replace('http://', '').replace('https://', '')
+        print(domain_name)
         if splitted_request[0] != '/':
             custom_id = splitted_request[0]
             if retrieve_config_from_custom_id(custom_id.replace('/', '')):
