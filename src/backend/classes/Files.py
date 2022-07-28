@@ -427,7 +427,8 @@ class Files:
     @staticmethod
     def save_uploaded_file(file, path):
         filename, file_ext = os.path.splitext(file.filename)
-        filename = filename.replace(' ', '_') + file_ext.lower()
+        rand = ''.join(random.choice(string.ascii_lowercase) for i in range(4))
+        filename = filename.replace(' ', '_') + '_' + rand + file_ext.lower()
         new_path = os.path.join(path, secure_filename(filename))
         file.save(new_path)
         return new_path
