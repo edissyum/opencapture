@@ -68,7 +68,6 @@ export class MiddlewareComponent implements HttpInterceptor {
                         const newRequest = new HttpRequest(request.method as any,
                             request.url.replace(oldUrl, environment['url']), {headers: headers});
                         request = Object.assign(request, newRequest);
-                        console.log(request.url);
                         this.localStorage.setCookie('OpenCaptureCustom', customId, 1);
                         return next.handle(request);
                     }

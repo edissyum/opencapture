@@ -16,6 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
 import os
+import re
 import urllib.parse
 from flask_cors import CORS
 from flask_babel import Babel
@@ -35,7 +36,8 @@ class Middleware:
         _request = Request(environ)
         splitted_request = _request.path.split('ws/')
         domain_name = urllib.parse.urlparse(environ['HTTP_REFERER']).netloc
-        if domain_name not in ['localhost', '127.0.0.1'] and is_custom_exists(domain_name):
+        local_regex = re.compile('^(127.0.(0|1).1|10(\.(25[0-5]|2[0-4][0-9]|1[0-9]{1,2}|[0-9]{1,2})){3}|((172\.(1[6-9]|2[0-9]|3[01]))|192\.168)(\.(25[0-5]|2[0-4][0-9]|1[0-9]{1,2}|[0-9]{1,2})){2})$')
+        if domain_name != 'localhost' and not local_regex.match(domain_name) and is_custom_exists(domain_name):
             environ['mod_wsgi.path_info'] = environ['mod_wsgi.path_info'].replace('/backend_oc/', '/' + domain_name + '/backend_oc/')
             environ['SCRIPT_NAME'] = domain_name
             return self.middleware_app(environ, start_response)
