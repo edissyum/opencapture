@@ -16,11 +16,12 @@
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
 import os
+import urllib.parse
 from flask_cors import CORS
 from flask_babel import Babel
 from werkzeug.wrappers import Request
 from flask import request, session, Flask
-from .functions import retrieve_config_from_custom_id, retrieve_custom_from_url
+from .functions import is_custom_exists, retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 from src.backend.import_rest import auth, locale, config, user, splitter, verifier, roles, privileges, custom_fields, \
     forms, status, accounts, outputs, maarch, inputs, positions_masks, history, doctypes
@@ -33,11 +34,15 @@ class Middleware:
     def __call__(self, environ, start_response):
         _request = Request(environ)
         splitted_request = _request.path.split('ws/')
-        domain_name = environ['HTTP_ORIGIN'].replace('http://', '').replace('https://', '')
-        print(domain_name)
+        domain_name = urllib.parse.urlparse(environ['HTTP_REFERER']).netloc
+        if domain_name not in ['localhost', '127.0.0.1'] and is_custom_exists(domain_name):
+            environ['mod_wsgi.path_info'] = environ['mod_wsgi.path_info'].replace('/backend_oc/', '/' + domain_name + '/backend_oc/')
+            environ['SCRIPT_NAME'] = domain_name
+            return self.middleware_app(environ, start_response)
+
         if splitted_request[0] != '/':
             custom_id = splitted_request[0]
-            if retrieve_config_from_custom_id(custom_id.replace('/', '')):
+            if is_custom_exists(custom_id.replace('/', '')):
                 environ['PATH_INFO'] = environ['PATH_INFO'][len(custom_id):]
                 environ['SCRIPT_NAME'] = custom_id
         return self.middleware_app(environ, start_response)

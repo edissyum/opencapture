@@ -33,11 +33,23 @@ def delete_documents(docservers, path, filename, full_jpg_filename):
         os.remove(pdf_file)
 
 
+def is_custom_exists(custom_id):
+    found_custom = False
+    custom_directory = str(Path(__file__).parents[2]) + '/custom/'
+    custom_ini_file = str(Path(__file__).parents[2]) + '/custom/custom.ini'
+    if os.path.isdir(custom_directory) and os.path.isfile(custom_ini_file):
+        customs_config = _Config(custom_ini_file)
+        for custom_name in customs_config.cfg:
+            if custom_id == custom_name:
+                found_custom = True
+    return found_custom
+
+
 def retrieve_custom_from_url(request):
     custom_id = ''
     url = request.environ['SCRIPT_NAME'] + request.environ['PATH_INFO'] if 'RAW_URI' not in request.environ \
         else request.environ['RAW_URI']
-    splitted_request = url.split('ws/')
+    splitted_request = url.replace('/backend_oc', '').split('ws/')
     if splitted_request[0] != '/':
         custom_id = splitted_request[0]
     return custom_id.replace('/', '')
