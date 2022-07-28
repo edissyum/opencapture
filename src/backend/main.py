@@ -102,7 +102,7 @@ def create_classes_from_custom_id(custom_id):
         })
 
     spreadsheet = _Spreadsheet(log, docservers, config)
-    filename = docservers['TMP_PATH'] + '/tmp/'
+    filename = docservers['TMP_PATH']
     files = _Files(filename, log, docservers, configurations, regex, languages)
     ocr = _PyTesseract(configurations['locale'], log, config, docservers)
 
@@ -134,7 +134,7 @@ def str2bool(value):
 OCforInvoices = Kuyruk()
 
 
-@OCforInvoices.task(queue='invoices')
+# @OCforInvoices.task(queue='invoices')
 def launch(args):
     start = time.time()
 

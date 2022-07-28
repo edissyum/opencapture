@@ -402,16 +402,11 @@ def get_file_content(file_type, filename, mime_type, compress=False):
         if os.path.isfile(full_path):
             if compress and mime_type == 'image/jpeg':
                 thumb_path = docservers['VERIFIER_THUMB'] + '/' + filename
-                if not os.path.isfile(thumb_path):
-                    image = Image.open(full_path)
-                    image.thumbnail((1920, 1080))
-                    image.save(thumb_path, optimize=True, quality=50)
                 with open(thumb_path, 'rb') as file:
                     content = file.read()
             else:
                 with open(full_path, 'rb') as file:
                     content = file.read()
-
     if not content:
         if mime_type == 'image/jpeg':
             with open(docservers['PROJECT_PATH'] + '/dist/assets/not_found/document_not_found.jpg', 'rb') as file:

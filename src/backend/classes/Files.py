@@ -116,6 +116,19 @@ class Files:
         except (PolicyError, CacheError) as file_error:
             self.log.error('Error during WAND conversion : ' + str(file_error))
 
+    def save_img_with_wand_min(self, pdf_name, output):
+        try:
+            with Img(filename=pdf_name + '[0]', resolution=200) as pic:
+                library.MagickResetIterator(pic.wand)
+                pic.scene = 1
+                pic.transform(resize='x1080')
+                pic.compression_quality = 60
+                pic.background_color = Color("white")
+                pic.alpha_channel = 'remove'
+                pic.save(filename=output)
+        except (PolicyError, CacheError) as file_error:
+            self.log.error('Error during WAND conversion : ' + str(file_error))
+
     # Crop the file to get the header
     # 1/3 + 10% is the ratio we used
     def crop_image_header(self, pdf_name, last_image, output_name=None):

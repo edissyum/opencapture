@@ -108,6 +108,7 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
                         insert_invoice = False
 
     if insert_invoice:
+        invoice_data['datas'] = json.dumps(invoice_data['datas'])
         database.insert({
             'table': 'invoices',
             'columns': invoice_data
@@ -459,6 +460,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     file = files.move_to_docservers(docservers, file)
     # Convert all the pages to JPG (used to full web interface)
     files.save_img_with_wand(file, docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename)
+    files.save_img_with_wand_min(file, docservers['VERIFIER_THUMB'] + '/' + full_jpg_filename)
 
     allow_auto = False
     form_data = None

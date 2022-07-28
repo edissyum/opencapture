@@ -86,6 +86,7 @@ mkdir -p $defaultPath/custom/"$customId"/bin/scripts/{verifier_inputs,splitter_i
 
 echo "[$customId]" >> $customIniFile
 echo "path = $defaultPath/custom/$customId" >> $customIniFile
+echo "isdefault = False" >> $customIniFile
 echo "" >> $customIniFile
 
 ####################

@@ -94,6 +94,7 @@ mkdir -p $defaultPath/custom/"$customId"/bin/scripts/{verifier_inputs,splitter_i
 
 echo "[$customId]" >> $customIniFile
 echo "path = $defaultPath/custom/$customId" >> $customIniFile
+echo "isdefault = False" >> $customIniFile
 echo "" >> $customIniFile
 
 ####################
@@ -376,7 +377,7 @@ chown -R "$user":"$user" $defaultPath/custom/"$customId"/bin/scripts/splitter_in
 ####################
 # Create docservers
 mkdir -p $docserverPath/OpenCapture/{verifier,splitter}
-mkdir -p $docserverPath/OpenCapture/verifier/images/{original_pdf,full,positions_masks}
+mkdir -p $docserverPath/OpenCapture/verifier/images/{original_pdf,full,thumbs,positions_masks}
 mkdir -p $docserverPath/OpenCapture/splitter/{original_pdf,batches,separated_pdf,error}
 chmod -R 775 $docserverPath/OpenCapture/
 chmod -R g+s $docserverPath/OpenCapture/
