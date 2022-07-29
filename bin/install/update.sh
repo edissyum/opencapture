@@ -72,8 +72,8 @@ chown -R "$user":"$user" $OCForInvoicesPath/bin/scripts/splitter_inputs/*.sh
 
 # Restart worker
 systemctl restart apache2
-systemctl restart OCForInvoices-worker
-systemctl restart OCForInvoices_Split-worker
+systemctl restart OCForInvoices-worker || supervisorctl restart OCWorker:*
+systemctl restart OCForInvoices_Split-worker || supervisorctl restart OCWorker-Split:*
 
 # Display a message if a SQL migration file is present for new version
 if test -f "$OCForInvoicesPath/bin/install/migration_sql/$latest_tag.sql"; then
