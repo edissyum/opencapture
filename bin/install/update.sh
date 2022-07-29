@@ -80,11 +80,12 @@ chown -R "$user":"$user" $OCForInvoicesPath/bin/scripts/splitter_inputs/*.sh
 ####################
 # Restart worker
 systemctl restart apache2
-systemctl restart OCForInvoices-worker
-systemctl restart OCForInvoices_Split-worker
 
 if test -f "/etc/supervisor/supervisord.conf"; then
     systemctl restart supervisor
+else
+    systemctl restart OCForInvoices-worker
+    systemctl restart OCForInvoices_Split-worker
 fi
 
 ####################
