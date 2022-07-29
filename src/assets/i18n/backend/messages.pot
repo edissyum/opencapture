@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-07-18 10:06+0200\n"
+"POT-Creation-Date: 2022-07-29 16:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.1\n"
+"Generated-By: Babel 2.9.1\n"
 
 #: src/backend/verifier_exports.py:71 src/backend/verifier_exports.py:74
 msgid "XML_DESTINATION_FOLDER_DOESNT_EXISTS"
@@ -52,69 +52,70 @@ msgid "GET_ADDRESS_BY_ID_ERROR"
 msgstr ""
 
 #: src/backend/controllers/accounts.py:80
-#: src/backend/controllers/accounts.py:86
-msgid "UPDATE_SUPPLIER_ERROR"
-msgstr ""
-
-#: src/backend/controllers/accounts.py:110
+#: src/backend/controllers/accounts.py:138
 msgid "UPDATE_SUPPLIER_POSITIONS_ERROR"
 msgstr ""
 
-#: src/backend/controllers/accounts.py:133
+#: src/backend/controllers/accounts.py:101
+#: src/backend/controllers/accounts.py:107
+msgid "UPDATE_SUPPLIER_ERROR"
+msgstr ""
+
+#: src/backend/controllers/accounts.py:169
 msgid "UPDATE_SUPPLIER_PAGES_ERROR"
 msgstr ""
 
-#: src/backend/controllers/accounts.py:157
-#: src/backend/controllers/accounts.py:163
-#: src/backend/controllers/accounts.py:187
-#: src/backend/controllers/accounts.py:193 src/backend/models/accounts.py:115
+#: src/backend/controllers/accounts.py:193
+#: src/backend/controllers/accounts.py:199
+#: src/backend/controllers/accounts.py:223
+#: src/backend/controllers/accounts.py:229 src/backend/models/accounts.py:115
 msgid "UPDATE_ADDRESS_ERROR"
 msgstr ""
 
-#: src/backend/controllers/accounts.py:217 src/backend/models/accounts.py:132
+#: src/backend/controllers/accounts.py:253 src/backend/models/accounts.py:132
 msgid "CREATE_ADDRESS_ERROR"
 msgstr ""
 
-#: src/backend/controllers/accounts.py:254
-#: src/backend/controllers/accounts.py:260 src/backend/models/accounts.py:149
+#: src/backend/controllers/accounts.py:290
+#: src/backend/controllers/accounts.py:296 src/backend/models/accounts.py:149
 msgid "CREATE_SUPPLIER_ERROR"
 msgstr ""
 
-#: src/backend/controllers/accounts.py:261
+#: src/backend/controllers/accounts.py:297
 msgid "SUPPLIER_VAT_NUMBER_ALREADY_EXISTS"
 msgstr ""
 
-#: src/backend/controllers/accounts.py:281 src/backend/controllers/user.py:115
+#: src/backend/controllers/accounts.py:317 src/backend/controllers/user.py:115
 #: src/backend/models/accounts.py:204 src/backend/models/accounts.py:224
 #: src/backend/models/accounts.py:240 src/backend/models/user.py:162
 msgid "GET_CUSTOMER_BY_ID_ERROR"
 msgstr ""
 
-#: src/backend/controllers/accounts.py:321
-#: src/backend/controllers/accounts.py:327 src/backend/models/accounts.py:259
+#: src/backend/controllers/accounts.py:357
+#: src/backend/controllers/accounts.py:363 src/backend/models/accounts.py:259
 msgid "UPDATE_CUSTOMER_ERROR"
 msgstr ""
 
-#: src/backend/controllers/accounts.py:355
-#: src/backend/controllers/accounts.py:361 src/backend/models/accounts.py:276
+#: src/backend/controllers/accounts.py:391
+#: src/backend/controllers/accounts.py:397 src/backend/models/accounts.py:276
 msgid "CREATE_CUSTOMER_ERROR"
 msgstr ""
 
-#: src/backend/controllers/accounts.py:362
+#: src/backend/controllers/accounts.py:398
 msgid "CUSTOMER_VAT_NUMBER_ALREADY_EXISTS"
 msgstr ""
 
-#: src/backend/controllers/accounts.py:376
-#: src/backend/controllers/accounts.py:382 src/backend/models/accounts.py:295
+#: src/backend/controllers/accounts.py:412
+#: src/backend/controllers/accounts.py:418 src/backend/models/accounts.py:295
 msgid "DELETE_CUSTOMER_ERROR"
 msgstr ""
 
-#: src/backend/controllers/accounts.py:397
-#: src/backend/controllers/accounts.py:403 src/backend/models/accounts.py:168
+#: src/backend/controllers/accounts.py:433
+#: src/backend/controllers/accounts.py:439 src/backend/models/accounts.py:168
 msgid "DELETE_SUPPLIER_ERROR"
 msgstr ""
 
-#: src/backend/controllers/accounts.py:424
+#: src/backend/controllers/accounts.py:460
 msgid "LOAD_SUPPLIER_REFERENCIAL_ERROR"
 msgstr ""
 
@@ -169,38 +170,38 @@ msgstr ""
 msgid "BUNDLESEPARATOR"
 msgstr ""
 
-#: src/backend/controllers/forms.py:72 src/backend/controllers/forms.py:121
+#: src/backend/controllers/forms.py:76 src/backend/controllers/forms.py:125
 #: src/backend/models/forms.py:57
 msgid "GET_FORM_BY_ID_ERROR"
 msgstr ""
 
-#: src/backend/controllers/forms.py:104
+#: src/backend/controllers/forms.py:108
 msgid "GET_FORM_FIELDS_BY_FORM_ID_ERROR"
 msgstr ""
 
-#: src/backend/controllers/forms.py:165 src/backend/controllers/forms.py:171
+#: src/backend/controllers/forms.py:169 src/backend/controllers/forms.py:175
 msgid "DELETE_FORM_ERROR"
 msgstr ""
 
-#: src/backend/controllers/forms.py:180 src/backend/controllers/inputs.py:69
+#: src/backend/controllers/forms.py:184 src/backend/controllers/inputs.py:69
 #: src/backend/controllers/outputs.py:54
-#: src/backend/controllers/positions_masks.py:152
+#: src/backend/controllers/positions_masks.py:159
 msgid "COPY_OF"
 msgstr ""
 
-#: src/backend/controllers/forms.py:197 src/backend/controllers/forms.py:203
+#: src/backend/controllers/forms.py:201 src/backend/controllers/forms.py:207
 msgid "DUPLICATE_FORM_ERROR"
 msgstr ""
 
-#: src/backend/controllers/forms.py:217 src/backend/controllers/forms.py:223
+#: src/backend/controllers/forms.py:221 src/backend/controllers/forms.py:227
 msgid "DISABLE_FORM_ERROR"
 msgstr ""
 
-#: src/backend/controllers/forms.py:237 src/backend/controllers/forms.py:243
+#: src/backend/controllers/forms.py:241 src/backend/controllers/forms.py:247
 msgid "ENABLE_FORM_ERROR"
 msgstr ""
 
-#: src/backend/controllers/forms.py:273 src/backend/controllers/forms.py:279
+#: src/backend/controllers/forms.py:277 src/backend/controllers/forms.py:283
 msgid "UPDATE_FORMS_FIELDS_ERROR"
 msgstr ""
 
@@ -216,48 +217,48 @@ msgstr ""
 msgid "DUPLICATE_INPUT_ERROR"
 msgstr ""
 
-#: src/backend/controllers/inputs.py:115 src/backend/controllers/inputs.py:126
-#: src/backend/controllers/inputs.py:139
+#: src/backend/controllers/inputs.py:113 src/backend/controllers/inputs.py:124
+#: src/backend/controllers/inputs.py:137
 msgid "CREATE_INPUT_ERROR"
 msgstr ""
 
-#: src/backend/controllers/inputs.py:116
+#: src/backend/controllers/inputs.py:114
 msgid "INPUT_ID_ALREADY_EXISTS"
 msgstr ""
 
-#: src/backend/controllers/inputs.py:127
+#: src/backend/controllers/inputs.py:125
 msgid "INPUT_FOLDER_ALREADY_EXISTS"
 msgstr ""
 
-#: src/backend/controllers/inputs.py:152
+#: src/backend/controllers/inputs.py:150
 msgid "GET_INPUT_BY_ID_ERROR"
 msgstr ""
 
-#: src/backend/controllers/inputs.py:173 src/backend/controllers/inputs.py:179
+#: src/backend/controllers/inputs.py:171 src/backend/controllers/inputs.py:177
 msgid "DELETE_INPUT_ERROR"
 msgstr ""
 
-#: src/backend/controllers/inputs.py:211
+#: src/backend/controllers/inputs.py:209
 msgid "FS_WATCHER_DELETION_ERROR"
 msgstr ""
 
-#: src/backend/controllers/inputs.py:212 src/backend/controllers/inputs.py:274
+#: src/backend/controllers/inputs.py:210 src/backend/controllers/inputs.py:272
 msgid "FS_WATCHER_CONFIG_DOESNT_EXIST"
 msgstr ""
 
-#: src/backend/controllers/inputs.py:253 src/backend/controllers/inputs.py:273
+#: src/backend/controllers/inputs.py:251 src/backend/controllers/inputs.py:271
 msgid "FS_WATCHER_CREATION_ERROR"
 msgstr ""
 
-#: src/backend/controllers/inputs.py:254
+#: src/backend/controllers/inputs.py:252
 msgid "CAN_NOT_CREATE_FOLDER_PERMISSION_ERROR"
 msgstr ""
 
-#: src/backend/controllers/inputs.py:279
+#: src/backend/controllers/inputs.py:277
 msgid "SCRIPT_SAMPLE_DOESNT_EXISTS"
 msgstr ""
 
-#: src/backend/controllers/inputs.py:285
+#: src/backend/controllers/inputs.py:283
 msgid "SCRIPT_FOLDER_DOESNT_EXISTS"
 msgstr ""
 
@@ -291,39 +292,39 @@ msgstr ""
 msgid "GET_POSITION_MASK_BY_ID_ERROR"
 msgstr ""
 
-#: src/backend/controllers/positions_masks.py:137
-#: src/backend/controllers/positions_masks.py:143
+#: src/backend/controllers/positions_masks.py:141
+#: src/backend/controllers/positions_masks.py:147
 msgid "DELETE_POSITION_MASK_ERROR"
 msgstr ""
 
-#: src/backend/controllers/positions_masks.py:168
-#: src/backend/controllers/positions_masks.py:174
+#: src/backend/controllers/positions_masks.py:175
+#: src/backend/controllers/positions_masks.py:181
 msgid "DUPLICATE_POSITIONS_MASKS_ERROR"
 msgstr ""
 
-#: src/backend/controllers/positions_masks.py:188
-#: src/backend/controllers/positions_masks.py:194
+#: src/backend/controllers/positions_masks.py:199
+#: src/backend/controllers/positions_masks.py:205
 msgid "DISABLE_POSITION_MASK_ERROR"
 msgstr ""
 
-#: src/backend/controllers/positions_masks.py:208
-#: src/backend/controllers/positions_masks.py:214
+#: src/backend/controllers/positions_masks.py:223
+#: src/backend/controllers/positions_masks.py:229
 msgid "ENABLE_POSITION_MASK_ERROR"
 msgstr ""
 
-#: src/backend/controllers/positions_masks.py:237
+#: src/backend/controllers/positions_masks.py:255
 msgid "UPDATE_POSITIONS_BY_POSITIONS_MASK_ID_ERROR"
 msgstr ""
 
-#: src/backend/controllers/positions_masks.py:260
+#: src/backend/controllers/positions_masks.py:281
 msgid "UPDATE_PAGES_BY_POSITIONS_MASK_ID_ERROR"
 msgstr ""
 
-#: src/backend/controllers/positions_masks.py:278
+#: src/backend/controllers/positions_masks.py:302
 msgid "DELETE_POSITIONS_BY_POSITION_MASK_ID_ERROR"
 msgstr ""
 
-#: src/backend/controllers/positions_masks.py:296
+#: src/backend/controllers/positions_masks.py:323
 msgid "DELETE_PAGES_BY_POSITION_MASK_ID_ERROR"
 msgstr ""
 
@@ -363,7 +364,7 @@ msgid "LOAD_METADATA_ERROR"
 msgstr ""
 
 #: src/backend/controllers/splitter.py:111
-#: src/backend/controllers/verifier.py:77
+#: src/backend/controllers/verifier.py:76
 msgid "AT"
 msgstr ""
 
@@ -405,7 +406,7 @@ msgid "CMIS_CONNECTION_ERROR"
 msgstr ""
 
 #: src/backend/controllers/splitter.py:668
-#: src/backend/controllers/verifier.py:513 src/backend/models/splitter.py:423
+#: src/backend/controllers/verifier.py:521 src/backend/models/splitter.py:423
 #: src/backend/models/verifier.py:153
 msgid "GET_TOTALS_ERROR"
 msgstr ""
@@ -465,53 +466,53 @@ msgstr ""
 msgid "UPDATE_CUSTOMERS_USER_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:58 src/backend/models/verifier.py:37
+#: src/backend/controllers/verifier.py:57 src/backend/models/verifier.py:37
 msgid "GET_INVOICE_BY_ID_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:169
-#: src/backend/controllers/verifier.py:251
+#: src/backend/controllers/verifier.py:168
+#: src/backend/controllers/verifier.py:266
 msgid "UPDATE_INVOICE_POSITIONS_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:192
-#: src/backend/controllers/verifier.py:269
+#: src/backend/controllers/verifier.py:191
+#: src/backend/controllers/verifier.py:284
 msgid "UPDATE_INVOICE_PAGES_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:214
-#: src/backend/controllers/verifier.py:232
+#: src/backend/controllers/verifier.py:213
+#: src/backend/controllers/verifier.py:231
 msgid "UPDATE_INVOICE_DATA_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:283
-#: src/backend/controllers/verifier.py:289
+#: src/backend/controllers/verifier.py:298
+#: src/backend/controllers/verifier.py:304
 msgid "DELETE_INVOICE_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:304
-#: src/backend/controllers/verifier.py:310
+#: src/backend/controllers/verifier.py:319
+#: src/backend/controllers/verifier.py:325
 msgid "UPDATE_INVOICE_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:327
+#: src/backend/controllers/verifier.py:342
 msgid "REMOVE_LOCK_BY_USER_ID_ERROR"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:424
-#: src/backend/controllers/verifier.py:427
-#: src/backend/controllers/verifier.py:441
-#: src/backend/controllers/verifier.py:460
-#: src/backend/controllers/verifier.py:461
+#: src/backend/controllers/verifier.py:432
+#: src/backend/controllers/verifier.py:435
+#: src/backend/controllers/verifier.py:449
+#: src/backend/controllers/verifier.py:468
+#: src/backend/controllers/verifier.py:469
 msgid "API_INSEE_ERROR_CONNEXION"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:485
+#: src/backend/controllers/verifier.py:493
 msgid "VAT_NOT_VALID"
 msgstr ""
 
-#: src/backend/controllers/verifier.py:490
-#: src/backend/controllers/verifier.py:491
+#: src/backend/controllers/verifier.py:498
+#: src/backend/controllers/verifier.py:499
 msgid "VAT_API_ERROR"
 msgstr ""
 
@@ -609,11 +610,11 @@ msgstr ""
 msgid "UPDATE_FORM_FIELDS_ERROR"
 msgstr ""
 
-#: src/backend/models/forms.py:167
+#: src/backend/models/forms.py:170
 msgid "ADD_FORM_ERROR"
 msgstr ""
 
-#: src/backend/models/forms.py:170
+#: src/backend/models/forms.py:173
 msgid "FORM_LABEL_ALREADY_EXIST"
 msgstr ""
 
@@ -645,23 +646,23 @@ msgstr ""
 msgid "OUTPUT_CREATE_ERROR"
 msgstr ""
 
-#: src/backend/models/positions_masks.py:56
+#: src/backend/models/positions_masks.py:57
 msgid "GET_POSITIONS_MASKS_BY_ID_ERROR"
 msgstr ""
 
-#: src/backend/models/positions_masks.py:77
+#: src/backend/models/positions_masks.py:78
 msgid "UPDATE_POSITIONS_MASKS_ERROR"
 msgstr ""
 
-#: src/backend/models/positions_masks.py:96
+#: src/backend/models/positions_masks.py:97
 msgid "UPDATE_POSITIONS_MASKS_FIELDS_ERROR"
 msgstr ""
 
-#: src/backend/models/positions_masks.py:127
+#: src/backend/models/positions_masks.py:129
 msgid "ADD_POSITIONS_MASKS_ERROR"
 msgstr ""
 
-#: src/backend/models/positions_masks.py:130
+#: src/backend/models/positions_masks.py:132
 msgid "POSITIONS_MASK_LABEL_ALREADY_EXIST"
 msgstr ""
 
