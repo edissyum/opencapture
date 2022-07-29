@@ -80,13 +80,8 @@ chown -R "$user":"$user" $OCForInvoicesPath/bin/scripts/splitter_inputs/*.sh
 ####################
 # Restart worker
 systemctl restart apache2
-
-if test -f "/etc/supervisor/supervisord.conf"; then
-    systemctl restart supervisor
-else
-    systemctl restart OCForInvoices-worker
-    systemctl restart OCForInvoices_Split-worker
-fi
+systemctl restart OCForInvoices-worker || supervisorctl restart OCWorker:*
+systemctl restart OCForInvoices_Split-worker || supervisorctl restart OCWorker-Split:*
 
 ####################
 # Display a message if a SQL migration file is present for new version
