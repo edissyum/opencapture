@@ -24,13 +24,18 @@ from .classes.Config import Config as _Config
 
 def delete_documents(docservers, path, filename, full_jpg_filename):
     pdf_file = path + '/' + filename
+    thumb_filename = docservers['VERIFIER_THUMB'] + '/' + full_jpg_filename.replace('%03d.jpg', '001.jpg')
     full_jpg_filename = docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename.replace('%03d.jpg', '*')
     jpg_filelist = glob.glob(full_jpg_filename)
     for jpg in jpg_filelist:
         if os.path.isfile(jpg):
             os.remove(jpg)
+
     if os.path.isfile(pdf_file):
         os.remove(pdf_file)
+
+    if os.path.isfile(thumb_filename):
+        os.remove(thumb_filename)
 
 
 def is_custom_exists(custom_id):

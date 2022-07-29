@@ -108,7 +108,7 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
                         insert_invoice = False
 
     if insert_invoice:
-        invoice_data['datas'] = json.dumps(invoice_data['datas'])
+        invoice_data['datas'] = json.dumps(datas)
         database.insert({
             'table': 'invoices',
             'columns': invoice_data
