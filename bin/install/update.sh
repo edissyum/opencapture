@@ -83,6 +83,10 @@ systemctl restart apache2
 systemctl restart OCForInvoices-worker
 systemctl restart OCForInvoices_Split-worker
 
+if test -f "/etc/supervisor/supervisord.conf"; then
+    systemctl restart supervisor
+fi
+
 ####################
 # Display a message if a SQL migration file is present for new version
 if test -f "$OCForInvoicesPath/bin/install/migration_sql/$latest_tag.sql"; then
