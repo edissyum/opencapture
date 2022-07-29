@@ -43,11 +43,13 @@ fi
 
 apt install -y crudini
 
-while getopts c: parameters
+while getopts cmi: parameters
 do
     case "${parameters}" in
         c) customId=${OPTARG};;
+        mi) multiInstance=${OPTARG};;
         *) customId=""
+           multiInstance='false'
     esac
 done
 
@@ -87,9 +89,11 @@ ln -s "$defaultPath" "$defaultPath/$customId"
 
 mkdir -p $defaultPath/custom/"$customId"/{config,bin,assets}/
 mkdir -p $defaultPath/custom/"$customId"/bin/{data,ldap,scripts}/
+mkdir -p $defaultPath/custom/"$customId"/bin/data/tmp/
 mkdir -p "$defaultPath/custom/$customId/assets/imgs/"
 mkdir -p "$defaultPath/custom/$customId/bin/ldap/config/"
 mkdir -p $defaultPath/custom/"$customId"/bin/data/{log,MailCollect}/
+mkdir -p $defaultPath/custom/"$customId"/bin/data/log/Supervisor/
 mkdir -p $defaultPath/custom/"$customId"/bin/scripts/{verifier_inputs,splitter_inputs}/
 
 echo "[$customId]" >> $customIniFile
@@ -116,14 +120,43 @@ if [ "$finalChoice" == 1 ]; then
     printf "Enter your choice [%s] : " "${bold}3${normal}"
     read -r choice
     if [ "$choice" == "" ]; then
-        nbProcess=3
+        nbProcessSupervisor=3
     elif ! [[ "$choice" =~ ^[0-9]+$ ]]; then
         echo 'The input is not an integer, default value selected (3)'
-        nbProcess=3
+        nbProcessSupervisor=3
     else
-        nbProcess="$choice"
+        nbProcessSupervisor="$choice"
     fi
 fi
+
+echo "The two following question are for advanced users. If you don't know what you're doing, skip it and keep default values"
+echo "Higher values can overload your server if it doesn't have enough performances"
+echo "Example for a 16 vCPU / 8Go RAM server : 5 threads and 2 processes"
+echo "-----------------------------------------"
+echo 'How many WSGI threads ? (default : 5)'
+printf "Enter your choice [%s] : " "${bold}5${normal}"
+read -r choice
+if [ "$choice" == "" ]; then
+    nbThreads=5
+elif ! [[ "$choice" =~ ^[0-9]+$ ]]; then
+    echo 'The input is not an integer, default value selected (5)'
+    nbThreads=5
+else
+    nbThreads="$choice"
+fi
+
+echo 'How many WSGI processes ? (default : 1)'
+printf "Enter your choice [%s] : " "${bold}1${normal}"
+read -r choice
+if [ "$choice" == "" ]; then
+    nbProcesses=1
+elif ! [[ "$choice" =~ ^[0-9]+$ ]]; then
+    echo 'The input is not an integer, default value selected (1)'
+    nbProcesses=1
+else
+    nbProcesses="$choice"
+fi
+echo "-----------------------------------------"
 
 ####################
 # Install packages
@@ -142,7 +175,7 @@ su -c "cat > /etc/apache2/sites-available/opencapture.conf << EOF
 <VirtualHost *:80>
     ServerName localhost
     DocumentRoot $defaultPath
-    WSGIDaemonProcess opencapture user=$user group=$group home=$defaultPath threads=5
+    WSGIDaemonProcess opencapture user=$user group=$group home=$defaultPath threads=$nbThreads processes=$nbProcesses
     WSGIScriptAlias /backend_oc /var/www/html/opencaptureforinvoices/wsgi.py
 
     <Directory $defaultPath>
@@ -167,10 +200,6 @@ a2ensite opencapture.conf
 a2dissite 000-default.conf
 a2enmod rewrite
 systemctl restart apache2
-
-####################
-# Setting up the WSGI path
-sed -i "s#§§PATH§§#$defaultPath#g" "$defaultPath"/wsgi.py
 
 ####################
 # Create the service systemd or supervisor
@@ -231,7 +260,7 @@ else
 [program:OCWorker]
 command=$defaultPath/bin/scripts/service_workerOC.sh
 process_name=%(program_name)s_%(process_num)02d
-numprocs=$nbProcess
+numprocs=$nbProcessSupervisor
 user=$user
 chmod=0777
 chown=$user:$group
@@ -248,7 +277,7 @@ EOF"
 [program:OCWorker-Split]
 command=$defaultPath/bin/scripts/service_workerOC_splitter.sh
 process_name=%(program_name)s_%(process_num)02d
-numprocs=$nbProcess
+numprocs=$nbProcessSupervisor
 user=$user
 chmod=0777
 chown=$user:$group
