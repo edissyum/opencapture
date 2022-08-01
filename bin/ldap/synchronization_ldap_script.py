@@ -28,7 +28,7 @@ from ldap3.core.exceptions import LDAPException
 from werkzeug.security import generate_password_hash
 
 sys.path.insert(0, '/var/www/html/opencaptureforinvoices/')
-from src.backend.main import create_classes
+from src.backend.main import create_classes_from_custom_id
 
 
 def print_log(message):
@@ -50,9 +50,9 @@ def retrieve_ldap_synchronization_data():
         # Informations Ldap synchronization users
         global user_id, firstname, lastname, class_user, object_class, default_password, default_role, users_dn
 
-        _vars = create_classes(CONFIG_FILEPATH)
-        _db = _vars[4]
-        database_res = _db.select({
+        _vars = create_classes_from_custom_id(CUSTOM_ID)
+        database = _vars[0]
+        database_res = database.select({
             'select': ['data'],
             'table': ['login_methods'],
             'where': ['method_name = %s'],
@@ -162,7 +162,7 @@ def get_ldap_users_data(ldap_users_dict):
             user_data.append(list_users_ldap[i][lastname][0])
             ldap_users_data.append(user_data)
         print_log("List of users retrieved from the ldap server " + str(ldap_users_data))
-        return(ldap_users_data)
+        return ldap_users_data
 
 
 def check_database_users(ldap_users_data, default_role):
@@ -171,10 +171,10 @@ def check_database_users(ldap_users_data, default_role):
    :param default_role:
    :return:
     """
-    _vars = create_classes(CONFIG_FILEPATH)
-    _db = _vars[4]
+    _vars = create_classes_from_custom_id(CUSTOM_ID)
+    database = _vars[0]
     try:
-        users = _db.select({
+        users = database.select({
             'select': ['*'],
             'table': ['users'],
         })
@@ -193,14 +193,14 @@ def check_database_users(ldap_users_data, default_role):
                 if ldap_user[0] == oc_user[0]:
                     if ldap_user[1] == oc_user[1] and ldap_user[2] == oc_user[2]:
                         print_log('User ' + str(ldap_user[0]) + ' exists in LDAP with the same data')
-                        user_status = _db.select({
+                        user_status = database.select({
                             'select': ['enabled'],
                             'table': ['users'],
                             'where': ['username = %s'],
                             'data': [oc_user[0]]
                         })
                         if not user_status[0]:
-                            _db.update({
+                            database.update({
                                 'table': ['users'],
                                 'set': {
                                     'enabled': True
@@ -217,7 +217,7 @@ def check_database_users(ldap_users_data, default_role):
                         if (ldap_user[1] != oc_user[1] and ldap_user[2] != oc_user[2]) or (ldap_user[1] != oc_user[1]
                                and ldap_user[2] == oc_user[2]) or (ldap_user[1] == oc_user[1]
                                and ldap_user[2] != oc_user[2]):
-                            _db.update({
+                            database.update({
                                 'table': ['users'],
                                 'set': {
                                     'firstname': ldap_user[1],
@@ -236,14 +236,14 @@ def check_database_users(ldap_users_data, default_role):
 
         for oc_user in oc_users:
             if oc_user[0] != 'Same' and oc_user[0] != 'Updated':
-                user_oc_status = _db.select({
+                user_oc_status = database.select({
                     'select': ['enabled'],
                     'table': ['users'],
                     'where': ['username = %s'],
                     'data': [oc_user[0]]
                 })
                 if user_oc_status and user_oc_status[0]:
-                    user_role = _db.select({
+                    user_role = database.select({
                         'select': ['label_short'],
                         'table': ['users', 'roles'],
                         'left_join': ['users.role = roles.id'],
@@ -254,7 +254,7 @@ def check_database_users(ldap_users_data, default_role):
                     if user_role[0] == 'superadmin':
                         continue
 
-                    _db.update({
+                    database.update({
                         'table': ['users'],
                         'set': {
                             'enabled': False
@@ -270,7 +270,7 @@ def check_database_users(ldap_users_data, default_role):
             if user_to_create[0] != 'Same' and user_to_create[0] != 'Updated':
                 random_password = str(uuid.uuid4())
                 hash_password = generate_password_hash(random_password)
-                new_user = _db.insert({
+                new_user = database.insert({
                     'table': 'users',
                     'columns': {
                         'username': user_to_create[0],
@@ -305,6 +305,7 @@ if __name__ == "__main__":
     # Recuperer les deux chemins vers le fichier de config_default.ini  et le fichier de log
     CONFIG_FILEPATH = config.get("file_path", 'config_file')
     LOG_FILEPATH = config.get("file_path", 'log_file')
+    CUSTOM_ID = config.get('file_path', 'custom_id')
 
     if not CONFIG_FILEPATH or not LOG_FILEPATH:
         print_log('Path to config file and/or log file does not exist in the config file')

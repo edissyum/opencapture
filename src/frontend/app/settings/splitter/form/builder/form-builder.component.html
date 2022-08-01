@@ -2,7 +2,7 @@
     <mat-sidenav #sidenav mode="side" opened class="w-1/6 flex flex-col h-full border-r border-green-400" style="top:0.1rem">
         <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">{{ "SETTINGS.administration" | translate }}</h3>
         <mat-divider class="border-green-400"></mat-divider>
-        <mat-nav-list class="pt-0">
+        <mat-nav-list class="pt-0 overflow-x-hidden overflow-y-auto" style="height: calc(100% - 60px)">
             <mat-expansion-panel *ngFor="let parent of this.serviceSettings.getSettingsParent()"
                                  [expanded]="parent.opened" (opened)="this.serviceSettings.closeOtherParent(this.router.url, parent['id'])">
                 <mat-expansion-panel-header class="settings_expansion">
@@ -202,7 +202,8 @@
                                     </mat-menu>
                                     <mat-menu #autoCompleteMasksMenu="matMenu">
                                         <div *ngFor="let fieldMetadataItem of fieldMetadata">
-                                            <mat-form-field class="w-64 mx-2"(click)="$event.stopPropagation()" style="font-size: 12px;">
+                                            <mat-form-field class="w-64 mx-2" (click)="$event.stopPropagation()"
+                                                            style="font-size: 12px;">
                                                 <mat-label>{{ fieldMetadataItem.placeholder | translate }}</mat-label>
                                                 <input matInput [(ngModel)]="field[fieldMetadataItem['id']]" type="text">
                                             </mat-form-field>
@@ -215,22 +216,27 @@
                 </div>
             </ng-container>
             <div class="flex justify-center items-center">
-                <button mat-button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300">
+                <button mat-button class="border-solid border-green-400 border hover:bg-green-400 hover:text-white
+                transition duration-300">
                     <span class="block" (click)="createForm()" *ngIf="creationMode">{{ "FORMS.create" | translate }}</span>
                     <span class="block" (click)="updateForm()" *ngIf="!creationMode">{{ "FORMS.modify" | translate }}</span>
                 </button>
             </div>
         </div>
     </mat-sidenav-content>
-    <mat-sidenav #sidenav2 mode="side" opened position="end" class="available-fields w-1/4 flex flex-col h-full border-r border-green-400">
-        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">{{ "FORMS.available_fields" | translate }}</h3>
+    <mat-sidenav #sidenav2 mode="side" opened position="end"
+                 class="available-fields w-1/4 flex flex-col h-full border-r border-green-400">
+        <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">
+            {{ "FORMS.available_fields" | translate }}
+        </h3>
         <mat-divider class="border-green-400"></mat-divider>
-        <div *ngIf="loadingCustomFields" class="relative" style="top: 40%">
+        <div *ngIf="this.loadingCustomFields" class="relative" style="top: 40%">
             <span class="text-center overflow-hidden">
-                <i class="fa-solid fa-circle-notch fa-spin fa-4x w-full text-gray-900" style="--fa-animation-duration: 1.5s;"></i>
+                <i class="fa-solid fa-circle-notch fa-spin fa-4x w-full text-gray-900"
+                   style="--fa-animation-duration: 1.5s;"></i>
             </span>
         </div>
-        <mat-tab-group style="height: calc(100% - 64px)" *ngIf="!loadingCustomFields">
+        <mat-tab-group style="height: calc(100% - 64px)" *ngIf="!this.loadingCustomFields">
             <mat-tab *ngFor="let availableFields of this.availableFieldsParent" label="{{ availableFields['label'] | translate }}">
                 <div id="{{ availableFields['id'] }}" cdkDropList [cdkDropListData]="availableFields['values']"
                      (cdkDropListDropped)="dropFromAvailableFields($event)" class="min-w-full" style="min-height: 500px">

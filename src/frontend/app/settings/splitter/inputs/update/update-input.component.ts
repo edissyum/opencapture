@@ -17,19 +17,19 @@
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
 import { Component, OnInit } from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {FormControl} from "@angular/forms";
-import {ActivatedRoute, Router} from "@angular/router";
-import {MatDialog} from "@angular/material/dialog";
-import {UserService} from "../../../../../services/user.service";
-import {AuthService} from "../../../../../services/auth.service";
-import {TranslateService} from "@ngx-translate/core";
-import {NotificationService} from "../../../../../services/notifications/notifications.service";
-import {SettingsService} from "../../../../../services/settings.service";
-import {PrivilegesService} from "../../../../../services/privileges.service";
-import {API_URL} from "../../../../env";
-import {catchError, finalize, tap} from "rxjs/operators";
-import {of} from "rxjs";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { FormControl } from "@angular/forms";
+import { ActivatedRoute, Router } from "@angular/router";
+import { MatDialog } from "@angular/material/dialog";
+import { UserService } from "../../../../../services/user.service";
+import { AuthService } from "../../../../../services/auth.service";
+import { TranslateService } from "@ngx-translate/core";
+import { NotificationService } from "../../../../../services/notifications/notifications.service";
+import { SettingsService } from "../../../../../services/settings.service";
+import { PrivilegesService } from "../../../../../services/privileges.service";
+import { environment } from  "../../../../env";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { of } from "rxjs";
 
 @Component({
     selector: 'app-splitter-update-input',
@@ -106,7 +106,7 @@ export class SplitterUpdateInputComponent implements OnInit {
         this.serviceSettings.init();
         this.inputId = this.route.snapshot.params['id'];
 
-        this.http.get(API_URL + '/ws/inputs/getById/' + this.inputId, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/inputs/getById/' + this.inputId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.input = data;
                 for (const field in this.input) {
@@ -114,7 +114,7 @@ export class SplitterUpdateInputComponent implements OnInit {
                         if (element.id === field) {
                             element.control.setValue(data[field]);
                             if (element.id === 'default_form_id') {
-                                this.http.get(API_URL + '/ws/forms/list?module=splitter', {headers: this.authService.headers}).pipe(
+                                this.http.get(environment['url'] + '/ws/forms/list?module=splitter', {headers: this.authService.headers}).pipe(
                                     tap((forms: any) => {
                                         element.values = forms.forms;
                                     }),
@@ -139,7 +139,7 @@ export class SplitterUpdateInputComponent implements OnInit {
         ).subscribe();
         this.inputForm.forEach(element => {
             if (element.id === 'splitter_method_id') {
-                this.http.get(API_URL + '/ws/splitter/splitMethods', {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/splitter/splitMethods', {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
                         data.splitMethods.forEach((option: any) => {
                             element.values.push({
@@ -182,7 +182,7 @@ export class SplitterUpdateInputComponent implements OnInit {
                 input[element.id] = element.control.value;
             });
 
-            this.http.put(API_URL + '/ws/inputs/update/' + this.inputId, {'args': input}, {headers: this.authService.headers}).pipe(
+            this.http.put(environment['url'] + '/ws/inputs/update/' + this.inputId, {'args': input}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.notify.success(this.translate.instant('INPUT.updated'));
                 }),
@@ -205,7 +205,7 @@ export class SplitterUpdateInputComponent implements OnInit {
                 input[element.id] = element.control.value;
             });
 
-            this.http.post(API_URL + '/ws/inputs/createScriptAndIncron', {'args': input}, {headers: this.authService.headers}).pipe(
+            this.http.post(environment['url'] + '/ws/inputs/createScriptAndIncron', {'args': input}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.notify.success(this.translate.instant('INPUT.incron_and_script_updated'));
                     this.onSubmit();

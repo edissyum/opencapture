@@ -18,32 +18,34 @@
 import json
 import re
 import operator
-from ..functions import search_by_positions, search_custom_positions
+from src.backend.functions import search_by_positions, search_custom_positions
 
 
 class FindFooterRaw:
-    def __init__(self, ocr, log, regex, config, files, database, supplier, file, text, docservers, target='footer', nb_pages=False):
+    def __init__(self, ocr, log, regex, config, files, database, supplier, file, text, docservers, form_id,
+                 target='footer', nb_pages=False):
         self.date = ''
-        self.Ocr = ocr
+        self.ocr = ocr
         self.text = text
         self.log = log
-        self.regex = regex
-        self.config = config
-        self.docservers = docservers
-        self.Files = files
-        self.Database = database
-        self.supplier = supplier
         self.file = file
-        self.totalHT = {}
-        self.totalTTC = {}
-        self.vatRate = {}
-        self.vatAmount = {}
+        self.total_ht = {}
+        self.vat_rate = {}
+        self.regex = regex
+        self.files = files
+        self.total_ttc = {}
         self.rerun = False
-        self.rerun_as_text = False
-        self.splitted = False
-        self.nbPage = 1 if nb_pages is False else nb_pages
+        self.vat_amount = {}
         self.target = target
-        self.isLastPage = False
+        self.config = config
+        self.splitted = False
+        self.form_id = form_id
+        self.is_last_page = False
+        self.database = database
+        self.supplier = supplier
+        self.rerun_as_text = False
+        self.docservers = docservers
+        self.nb_pages = 1 if nb_pages is False else nb_pages
 
     def process(self, regex, text_as_string):
         array_of_data = {}
@@ -62,8 +64,8 @@ class FindFooterRaw:
                 # Retrieve only the number and add it in array
                 # In case of multiple no rates amount found, take the higher
                 data = res.group()
-                if regex == self.regex['vatAmountRegex']:
-                    data = re.sub(r"" + self.regex['vatAmountRegex'][:-2] + "", '', res.group())  # Delete the delivery number keyword
+                if regex == self.regex['vat_amount']:
+                    data = re.sub(r"" + self.regex['vat_amount'][:-2] + "", '', res.group())  # Delete the vat amount number keyword
 
                 tmp = re.finditer(r'[-+]?\d*[.,]+\d+([.,]+\d+)?|\d+', data)
                 result = ''
@@ -73,7 +75,7 @@ class FindFooterRaw:
                         # If two amounts are found, separate them
                         continue
                     number_formatted = _t.group()
-                    if regex != self.regex['vatRateRegex']:
+                    if regex != self.regex['vat_rate']:
                         try:
                             text = _t.group().replace(' ', '.')
                             text = text.replace('\x0c', '')
@@ -102,7 +104,7 @@ class FindFooterRaw:
                     if text_as_string:
                         array_of_data.update({float(result.replace(',', '.')): (('', ''), ('', ''))})
                     else:
-                        array_of_data.update({float(result.replace(',', '.')): self.Files.return_position_with_ratio(line, self.target)})
+                        array_of_data.update({float(result.replace(',', '.')): self.files.return_position_with_ratio(line, self.target)})
 
         # Check list of no rates amount and select the higher
         if len(array_of_data) > 0:
@@ -111,7 +113,7 @@ class FindFooterRaw:
             return False
 
     def process_footer_with_position(self, column, select):
-        position = self.Database.select({
+        position = self.database.select({
             'select': select,
             'table': ['accounts_supplier'],
             'where': ['vat_number = %s', 'status <> %s'],
@@ -121,17 +123,17 @@ class FindFooterRaw:
         if position and position[column + '_position'] not in ['((,),(,))', 'NULL', None, '', False]:
             page = position[column + '_page']
             if self.target == 'full':
-                page = self.nbPage
+                page = self.nb_pages
 
             data = {'position': position[column + '_position'], 'regex': None, 'target': 'full', 'page': page}
-            text, position = search_custom_positions(data, self.Ocr, self.Files, self.regex, self.file, self.docservers)
+            text, position = search_custom_positions(data, self.ocr, self.files, self.regex, self.file, self.docservers)
             if text:
                 try:
                     # Try if the return string could be convert to float
                     float(text)
                     result = text
                     if select[0] == 'vat_1_position':  # Fix if we retrieve 2000.0, or 200.0 instead of 20.0 for example
-                        tva_amounts = eval(self.regex['vatRateList'])
+                        tva_amounts = eval(self.regex['vat_rate_list'])
                         _split = result.split('.')
                         if len(_split) > 1:
                             if _split[1] == '0':
@@ -186,83 +188,83 @@ class FindFooterRaw:
             if self.supplier is not False:
                 if total_ht in [False, None, {}]:
                     total_ht = self.process_footer_with_position('total_ht',
-                                                                       ["positions ->> 'total_ht' as total_ht_position",
-                                                                        "pages ->> 'footer' as total_ht_page"])
+                                         ["positions -> '" + str(self.form_id) + "' -> 'total_ht' as total_ht_position",
+                                          "pages -> '" + str(self.form_id) + "' ->'total_ht' as total_ht_page"])
                     if total_ht:
-                        self.totalHT = total_ht
+                        self.total_ht = total_ht
                         self.log.info('totalHT found with position : ' + str(total_ht))
 
                 if vat_rate in [False, None, {}]:
                     vat_rate = self.process_footer_with_position('vat_rate',
-                                                                        ["positions ->> 'vat_rate' as vat_rate_position",
-                                                                         "pages ->> 'footer' as vat_rate_page"])
+                                         ["positions -> '" + str(self.form_id) + "' -> 'vat_rate' as vat_rate_position",
+                                          "pages -> '" + str(self.form_id) + "' ->'vat_rate' as vat_rate_page"])
                     if vat_rate:
-                        self.vatRate = vat_rate
+                        self.vat_rate = vat_rate
                         self.log.info('vatRate found with position : ' + str(vat_rate))
 
                 if vat_amount in [False, None, 0, {}]:
                     vat_amount = self.process_footer_with_position('vat_amount',
-                                                                        ["positions ->> 'vat_amount' as vat_amount_position",
-                                                                         "pages ->> 'vat_amount' as vat_amount_page"])
+                                   ["positions -> '" + str(self.form_id) + "' -> 'vat_amount' as vat_amount_position",
+                                    "pages -> '" + str(self.form_id) + "' ->'vat_amount' as vat_amount_page"])
                     if vat_amount:
-                        self.vatAmount = vat_amount
+                        self.vat_amount = vat_amount
                         self.log.info('vatAmount found with position : ' + str(vat_amount))
 
                 if total_ttc in [False, None, 0, {}]:
                     total_ttc = self.process_footer_with_position('total_ttc',
-                                                                   ["positions ->> 'total_ttc' as total_ttc_position",
-                                                                    "pages ->> 'total_ttc' as total_ttc_page"])
+                                      ["positions -> '" + str(self.form_id) + "' -> 'total_ttc' as total_ttc_position",
+                                       "pages -> '" + str(self.form_id) + "' ->'total_ttc' as total_ttc_page"])
                     if total_ttc:
-                        self.totalTTC = total_ttc
+                        self.total_ttc = total_ttc
                         self.log.info('totalTTC found with position : ' + str(total_ttc))
 
             if vat_amount:
-                self.vatAmount = vat_amount
+                self.vat_amount = vat_amount
             if total_ttc:
-                self.totalTTC = total_ttc
+                self.total_ttc = total_ttc
             if vat_rate:
-                self.vatRate = vat_rate
+                self.vat_rate = vat_rate
             if total_ht:
-                self.totalHT = total_ht
+                self.total_ht = total_ht
 
             if total_ht and vat_rate:
-                self.totalHT = total_ht
-                self.vatRate = vat_rate
+                self.total_ht = total_ht
+                self.vat_rate = vat_rate
                 return True
             elif total_ht and total_ttc:
-                self.totalHT = total_ht
-                self.totalTTC = total_ttc
+                self.total_ht = total_ht
+                self.total_ttc = total_ttc
                 return True
             else:
                 return False
 
-        self.totalHT = total_ht
-        self.totalTTC = total_ttc
-        self.vatRate = vat_rate
-        self.vatAmount = vat_amount
+        self.total_ht = total_ht
+        self.total_ttc = total_ttc
+        self.vat_rate = vat_rate
+        self.vat_amount = vat_amount
 
     def run(self, text_as_string=False):
         total_ttc, total_ht, vat_rate, vat_amount = {}, {}, {}, {}
         if self.supplier:
-            all_rate = search_by_positions(self.supplier, 'total_ttc', self.Ocr, self.Files, self.Database)
+            all_rate = search_by_positions(self.supplier, 'total_ttc', self.ocr, self.files, self.database, self.form_id)
             if all_rate and all_rate[0]:
                 total_ttc = {
                     0: re.sub(r"[^0-9\.]|\.(?!\d)", "", all_rate[0].replace(',', '.')),
                     1: all_rate[1]
                 }
-            no_rate = search_by_positions(self.supplier, 'total_ht', self.Ocr, self.Files, self.Database)
+            no_rate = search_by_positions(self.supplier, 'total_ht', self.ocr, self.files, self.database, self.form_id)
             if no_rate and no_rate[0]:
                 total_ht = {
                     0: re.sub(r"[^0-9\.]|\.(?!\d)", "", no_rate[0].replace(',', '.')),
                     1: no_rate[1]
                 }
-            percentage = search_by_positions(self.supplier, 'vat_rate', self.Ocr, self.Files, self.Database)
+            percentage = search_by_positions(self.supplier, 'vat_rate', self.ocr, self.files, self.database, self.form_id)
             if percentage and percentage[0]:
                 vat_rate = {
                     0: re.sub(r"[^0-9\.]|\.(?!\d)", "", percentage[0].replace(',', '.')),
                     1: percentage[1]
                 }
-            _vat_amount = search_by_positions(self.supplier, 'vat_amount', self.Ocr, self.Files, self.Database)
+            _vat_amount = search_by_positions(self.supplier, 'vat_amount', self.ocr, self.files, self.database, self.form_id)
             if _vat_amount and _vat_amount[0]:
                 vat_amount = {
                     0: re.sub(r"[^0-9\.]|\.(?!\d)", "", _vat_amount[0].replace(',', '.')),
@@ -270,44 +272,44 @@ class FindFooterRaw:
                 }
 
         if not self.test_amount(total_ht, total_ttc, vat_rate, vat_amount):
-            total_ht = self.process(self.regex['noRatesRegex'], text_as_string)
-            vat_rate = self.process(self.regex['vatRateRegex'], text_as_string)
-            total_ttc = self.process(self.regex['allRatesRegex'], text_as_string)
-            vat_amount = self.process(self.regex['vatAmountRegex'], text_as_string)
+            total_ht = self.process(self.regex['no_rates'], text_as_string)
+            vat_rate = self.process(self.regex['vat_rate'], text_as_string)
+            total_ttc = self.process(self.regex['all_rates'], text_as_string)
+            vat_amount = self.process(self.regex['vat_amount'], text_as_string)
 
         # Test all amounts. If some are false, try to search them with position. If not, pass
         if self.test_amount(total_ht, total_ttc, vat_rate, vat_amount) is not False:
-            total_ht = self.return_max(self.totalHT)
-            total_ttc = self.return_max(self.totalTTC)
-            vat_rate = self.return_max(self.vatRate)
-            vat_amount = self.return_max(self.vatAmount)
+            total_ht = self.return_max(self.total_ht)
+            total_ttc = self.return_max(self.total_ttc)
+            vat_rate = self.return_max(self.vat_rate)
+            vat_amount = self.return_max(self.vat_amount)
             self.log.info('Raw footer informations found : [TOTAL : ' + str(total_ttc[0]) + '] - [HT : ' + str(total_ht[0]) + '] - [VATRATE : ' + str(vat_rate[0]) + '] - [VAT AMOUNT : ' + str(vat_amount[0]) + ']')
-            return [total_ht, total_ttc, vat_rate, self.nbPage, vat_amount]
+            return [total_ht, total_ttc, vat_rate, self.nb_pages, vat_amount]
         else:
             if not self.rerun:
                 self.rerun = True
-                if self.isLastPage:
-                    improved_image = self.Files.improve_image_detection(self.Files.jpg_name_last_footer)
+                if self.is_last_page:
+                    improved_image = self.files.improve_image_detection(self.files.jpg_name_last_footer)
                 else:
-                    improved_image = self.Files.improve_image_detection(self.Files.jpg_name_footer)
-                self.Files.open_img(improved_image)
-                self.text = self.Ocr.line_box_builder(self.Files.img)
+                    improved_image = self.files.improve_image_detection(self.files.jpg_name_footer)
+                self.files.open_img(improved_image)
+                self.text = self.ocr.line_box_builder(self.files.img)
                 return self.run()
 
             if self.rerun and not self.rerun_as_text:
                 self.rerun_as_text = True
-                if self.isLastPage:
-                    improved_image = self.Files.improve_image_detection(self.Files.jpg_name_last_footer)
+                if self.is_last_page:
+                    improved_image = self.files.improve_image_detection(self.files.jpg_name_last_footer)
                 else:
-                    improved_image = self.Files.improve_image_detection(self.Files.jpg_name_footer)
-                self.Files.open_img(improved_image)
-                self.text = self.Ocr.text_builder(self.Files.img)
+                    improved_image = self.files.improve_image_detection(self.files.jpg_name_footer)
+                self.files.open_img(improved_image)
+                self.text = self.ocr.text_builder(self.files.img)
                 return self.run(text_as_string=True)
-            total_ht = self.return_max(self.totalHT)
-            total_ttc = self.return_max(self.totalTTC)
-            vat_rate = self.return_max(self.vatRate)
-            vat_amount = self.return_max(self.vatAmount)
-            return [total_ht, total_ttc, vat_rate, self.nbPage, vat_amount]
+            total_ht = self.return_max(self.total_ht)
+            total_ttc = self.return_max(self.total_ttc)
+            vat_rate = self.return_max(self.vat_rate)
+            vat_amount = self.return_max(self.vat_amount)
+            return [total_ht, total_ttc, vat_rate, self.nb_pages, vat_amount]
 
     @staticmethod
     def return_max(value):

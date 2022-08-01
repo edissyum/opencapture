@@ -17,16 +17,19 @@
 # @dev : Essaid MEGHELLET <essaid.meghellet@edissyum.com>
 
 import json
+from flask import request
 from flask_babel import gettext
-from src.backend.main import create_classes_from_current_config
 from werkzeug.security import check_password_hash
+from src.backend.functions import retrieve_custom_from_url
+from src.backend.main import create_classes_from_custom_id
 
 
 def login(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
-    user = _db.select({
+    user = database.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['users'],
         'where': ['username = %s'],
@@ -47,10 +50,11 @@ def login(args):
 
 
 def get_user_role_by_username(username):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
-    user_role_id = _db.select({
+    user_role_id = database.select({
         'select': ['role'],
         'table': ['users'],
         'where': ['username = %s'],
@@ -60,7 +64,7 @@ def get_user_role_by_username(username):
         error = gettext('ROLE_DOESNT_EXISTS')
         return user_role_id, error
     else:
-        user_role_label = _db.select({
+        user_role_label = database.select({
             'select': ['label_short'],
             'table': ['roles'],
             'where': ['id = %s'],
@@ -73,11 +77,12 @@ def get_user_role_by_username(username):
 
 
 def verify_user_by_username(username):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
 
-    user_id = _db.select({
+    user_id = database.select({
         'select': ['id'],
         'table': ['users'],
         'where': ['username = %s'],
@@ -91,23 +96,24 @@ def verify_user_by_username(username):
 
 
 def get_enabled_login_method():
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
-    enabled_method_name = _db.select({
+    enabled_method_name = database.select({
         'select': ['method_name'],
         'table': ['login_methods'],
         'where': ['enabled = true'],
     })
-
     return enabled_method_name, error
 
 
 def get_ldap_configurations():
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
-    ldap_configurations = _db.select({
+    ldap_configurations = database.select({
         'select': ['data'],
         'table': ['login_methods'],
         'where': ['method_name = %s'],
@@ -120,11 +126,12 @@ def get_ldap_configurations():
 
 
 def update_login_method(login_method_name, server_data):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
 
-    login_method_data = _db.update({
+    login_method_data = database.update({
         'table': ['login_methods'],
         'set': {
             'data': json.dumps(server_data),
@@ -137,7 +144,7 @@ def update_login_method(login_method_name, server_data):
     if login_method_data[0] is False:
         error = gettext('UPDATE_LOGIN_METHOD_ERROR')
     if login_method_name[0]:
-        _db.update({
+        database.update({
             'table': ['login_methods'],
             'set': {
                 'enabled': False,
@@ -149,10 +156,11 @@ def update_login_method(login_method_name, server_data):
 
 
 def retrieve_login_methods():
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
-    login_methods_name = _db.select({
+    login_methods_name = database.select({
         'select': ['method_name', 'enabled'],
         'table': ['login_methods'],
     })
@@ -160,11 +168,12 @@ def retrieve_login_methods():
 
 
 def disable_login_method(method_name):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
 
-    login_method_data = _db.update({
+    login_method_data = database.update({
         'table': ['login_methods'],
         'set': {
             'enabled': False,
@@ -178,11 +187,12 @@ def disable_login_method(method_name):
 
 
 def enable_login_method(method_name):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
 
-    login_method_data = _db.update({
+    login_method_data = database.update({
         'table': ['login_methods'],
         'set': {
             'enabled': True,

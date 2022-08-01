@@ -54,7 +54,8 @@ import { PositionsMaskListComponent } from "./verifier/positions-mask/list/posit
 import { CreatePositionsMaskComponent } from "./verifier/positions-mask/create/create-positions-mask.component";
 import { UpdatePositionsMaskComponent } from "./verifier/positions-mask/update/update-positions-mask.component";
 import { CreateFolderDocTypeComponent } from "./splitter/doc-types/create-folder/create-folder-doc-type.component";
-import {LoginMethodsComponent} from "./general/login-methods/login-methods.component";
+import { LoginMethodsComponent } from "./general/login-methods/login-methods.component";
+import { VerifierDisplayComponent } from "./verifier/display/display.component";
 
 const routes: Routes = [
     {
@@ -127,6 +128,11 @@ const routes: Routes = [
     },
 // --- END General
 // --- Verifier
+    {
+        path: 'settings/verifier/display', component: VerifierDisplayComponent,
+        data: {title: 'SETTINGS.verifier_display', privileges: ['settings', 'verifier_display']},
+        canActivate: [LoginRequiredService, HasPrivilegeService]
+    },
     {
         path: 'settings/verifier/forms', component: FormListComponent,
         data: {title: 'SETTINGS.list_forms', privileges: ['settings', 'forms_list']},
@@ -211,19 +217,19 @@ const routes: Routes = [
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
-        path: 'settings/splitter/documentType',
+        path: 'settings/splitter/document-type',
         component: ListDocTypeComponent,
         data: {title: 'SETTINGS.document_type', privileges: ['settings', 'document_type_splitter']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
-        path: 'settings/splitter/documentType/new',
+        path: 'settings/splitter/document-type/new',
         component: CreateDocTypeComponent,
         data: {title: 'SETTINGS.document_type', privileges: ['settings', 'add_document_type']},
         canActivate: [LoginRequiredService, HasPrivilegeService]
     },
     {
-        path: 'settings/splitter/documentType/createFolder',
+        path: 'settings/splitter/document-type/create-folder',
         component: CreateFolderDocTypeComponent,
         data: {title: 'SETTINGS.document_type', privileges: ['settings', 'add_document_type']},
         canActivate: [LoginRequiredService, HasPrivilegeService]

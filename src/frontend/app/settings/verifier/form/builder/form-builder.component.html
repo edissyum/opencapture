@@ -2,7 +2,7 @@
     <mat-sidenav #sidenav mode="side" opened class="w-1/6 flex flex-col h-full border-r border-green-400" style="top:0.1rem">
         <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">{{ "SETTINGS.administration" | translate }}</h3>
         <mat-divider class="border-green-400"></mat-divider>
-        <mat-nav-list class="pt-0">
+        <mat-nav-list class="pt-0 overflow-x-hidden overflow-y-auto" style="height: calc(100% - 60px)">
             <mat-expansion-panel *ngFor="let parent of this.serviceSettings.getSettingsParent()"
                                  [expanded]="parent.opened" (opened)="this.serviceSettings.closeOtherParent(this.router.url, parent['id'])">
                 <mat-expansion-panel-header class="settings_expansion">
@@ -89,7 +89,7 @@
             </button>
         </div>
         <div *ngIf="!loading" class="overflow-x-hidden overflow-y-auto" style="height: calc(100% - 64px)">
-            <div class="grid grid-cols-3 gap-4 mt-6 ml-6 mr-6">
+            <div class="grid grid-cols-4 gap-4 mt-6 ml-6 mr-6">
                 <mat-form-field>
                     <mat-label>{{ "FORMS.label" | translate }}</mat-label>
                     <input matInput [formControl]="this.form['label'].control" required>
@@ -99,6 +99,26 @@
                         {{ "FORMS.is_default" | translate }}
                     </mat-slide-toggle>
                 </div>
+                <div class="flex justify-center flex-col mt-4">
+                    <mat-slide-toggle [formControl]="this.form['delete_documents_after_outputs'].control">
+                        {{ "FORMS.delete_documents_after_outputs" | translate }}
+                    </mat-slide-toggle>
+                    <mat-hint class="mt-4">{{ "FORMS.delete_documents_after_outputs_hint" | translate }}</mat-hint>
+                </div>
+                <div class="flex justify-center mt-4">
+                    <mat-slide-toggle [formControl]="this.form['allow_automatic_validation'].control"
+                                      (change)="this.openAvailableField = !this.openAvailableField">
+                        {{ "FORMS.allow_automatic_validation" | translate }}
+                    </mat-slide-toggle>
+                </div>
+                <mat-form-field *ngIf="this.openAvailableField" [class.z-50]="this.modalOpen">
+                    <mat-label>{{ "FORMS.automatic_validation_data" | translate }}</mat-label>
+                    <input matInput [formControl]="this.form['automatic_validation_data'].control" required
+                           placeholder="supplier,footer,invoice_number,invoice_date">
+                    <mat-hint (click)="this.modalOpen = true" class="cursor-pointer">
+                        {{ 'FORMS.automatic_validation_data_hint' | translate }}
+                    </mat-hint>
+                </mat-form-field>
                 <div class="flex justify-center flex-col mt-4">
                     <mat-slide-toggle [formControl]="this.form['supplier_verif'].control">
                         {{ "FORMS.supplier_verif" | translate }}
@@ -114,7 +134,7 @@
                     </mat-select>
                     <span *ngIf="!field.canRemove" (click)="$event.stopPropagation(); addOutput()"
                           matTooltip="{{ 'OUTPUT.add' | translate }}"
-                          class="absolute top-1 right-4 cursor-pointer text-gray-900 z-50" style="right: -2.2rem">
+                          class="absolute top-1 right-4 cursor-pointer text-gray-900 z-40" style="right: -2.2rem">
                         <mat-icon class="text-lg">add_circle</mat-icon>
                     </span>
                     <span *ngIf="field.canRemove" (click)="$event.stopPropagation(); removeOutput(cpt)"
@@ -226,6 +246,34 @@
                         {{ "FORMS.modify" | translate }}
                     </span>
                 </button>
+            </div>
+
+            <div class="absolute overflow-y-auto overflow-x-hidden z-40 w-full md:inset-0 grid
+                 place-items-center h-screen" *ngIf="this.modalOpen">
+                <div class="relative w-full max-w-2xl h-full md:h-auto border border-green-400">
+                    <div class="relative bg-white shadow">
+                        <div class="flex justify-between items-start p-4 border-b bg-green-400">
+                            <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">
+                                {{ "FORMS.available_fields" | translate }}
+                            </h3>
+                            <button type="button" class="text-gray-900 bg-transparent ml-auto inline-flex items-center"
+                                    style="padding-top: 0.9rem" (click)="this.modalOpen = false">
+                                <i class="fa-solid fa-xmark fa-2x"></i>
+                            </button>
+                        </div>
+                        <div class="p-6 space-y-6">
+                            <div class="overflow-x-hidden overflow-y-auto h-96">
+                                <div *ngFor="let field of this.availableFields; let cpt = index" class="my-8 ml-2 text-base">
+                                    <span>
+                                        {{ field.label | translate }}
+                                        <span style="font-size: 12px;" class="text-green-400 ml-3">{{ field.id | translate }}</span>
+                                        <mat-divider class="border-green-400 mt-4" *ngIf="cpt === 0"></mat-divider>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </mat-sidenav-content>

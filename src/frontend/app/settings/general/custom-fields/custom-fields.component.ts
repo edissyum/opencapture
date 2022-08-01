@@ -15,22 +15,22 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
-import {API_URL} from "../../../env";
-import {catchError, finalize, map, startWith, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {HttpClient} from "@angular/common/http";
-import {ActivatedRoute, Router} from "@angular/router";
-import {AuthService} from "../../../../services/auth.service";
-import {UserService} from "../../../../services/user.service";
-import {TranslateService} from "@ngx-translate/core";
-import {NotificationService} from "../../../../services/notifications/notifications.service";
-import {SettingsService} from "../../../../services/settings.service";
-import {PrivilegesService} from "../../../../services/privileges.service";
-import {ConfirmDialogComponent} from "../../../../services/confirm-dialog/confirm-dialog.component";
-import {MatDialog} from "@angular/material/dialog";
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { environment } from  "../../../env";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { HttpClient } from "@angular/common/http";
+import { ActivatedRoute, Router } from "@angular/router";
+import { AuthService } from "../../../../services/auth.service";
+import { UserService } from "../../../../services/user.service";
+import { TranslateService } from "@ngx-translate/core";
+import { NotificationService } from "../../../../services/notifications/notifications.service";
+import { SettingsService } from "../../../../services/settings.service";
+import { PrivilegesService } from "../../../../services/privileges.service";
+import { ConfirmDialogComponent } from "../../../../services/confirm-dialog/confirm-dialog.component";
+import { MatDialog } from "@angular/material/dialog";
 
 @Component({
     selector: 'app-custom-fields',
@@ -183,7 +183,7 @@ export class CustomFieldsComponent implements OnInit {
         this.activeFields   = [];
         this.inactiveFields = [];
         let newField;
-        this.http.get(API_URL + '/ws/customFields/list', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/customFields/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 data.customFields.forEach((field: any) => {
                     newField = {
@@ -247,12 +247,13 @@ export class CustomFieldsComponent implements OnInit {
     }
 
     addCustomField() {
+        this.loading = true;
         let newField: any = {};
         newField = this.addSelectOptionsToArgs(newField);
         this.addFieldInputs.forEach((element: any) => {
             newField[element.field_id] = element.control.value;
         });
-        this.http.post(API_URL + '/ws/customFields/add', newField, {headers: this.authService.headers}).pipe(
+        this.http.post(environment['url'] + '/ws/customFields/add', newField, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 newField['id'] = data.id;
                 this.retrieveCustomFields();
@@ -268,7 +269,7 @@ export class CustomFieldsComponent implements OnInit {
     }
 
     deleteCustom(customFieldId: number, activeOrInactive: string) {
-        this.http.delete(API_URL + '/ws/customFields/delete/' + customFieldId, {headers: this.authService.headers}).pipe(
+        this.http.delete(environment['url'] + '/ws/customFields/delete/' + customFieldId, {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('CUSTOM-FIELDS.deleted'));
 
@@ -296,7 +297,7 @@ export class CustomFieldsComponent implements OnInit {
 
     deleteCustomField(customFieldId: number, activeOrInactive: string) {
         if (customFieldId) {
-            this.http.get(API_URL + '/ws/customFields/customPresentsInForm/' + customFieldId, {headers: this.authService.headers}).pipe(
+            this.http.get(environment['url'] + '/ws/customFields/customPresentsInForm/' + customFieldId, {headers: this.authService.headers}).pipe(
                 tap((data: any) => {
                     if (data) {
                         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
@@ -341,7 +342,7 @@ export class CustomFieldsComponent implements OnInit {
             'metadata_key': updatedField['metadata_key']
         };
 
-        this.http.post(API_URL + '/ws/customFields/update', updatedField, {headers: this.authService.headers}).pipe(
+        this.http.post(environment['url'] + '/ws/customFields/update', updatedField, {headers: this.authService.headers}).pipe(
             tap(() => {
                 transferArrayItem(
                     oldList,
@@ -383,7 +384,7 @@ export class CustomFieldsComponent implements OnInit {
             updatedField['enabled'] = false;
         }
 
-        this.http.post(API_URL + '/ws/customFields/update', updatedField, {headers: this.authService.headers}).pipe(
+        this.http.post(environment['url'] + '/ws/customFields/update', updatedField, {headers: this.authService.headers}).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('CUSTOM-FIELDS.field_updated'));
                 this.resetForm();

@@ -16,23 +16,23 @@ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {MatDialog} from "@angular/material/dialog";
-import {UserService} from "../../../../services/user.service";
-import {FormBuilder, FormControl, Validators} from "@angular/forms";
-import {AuthService} from "../../../../services/auth.service";
-import {TranslateService} from "@ngx-translate/core";
-import {NotificationService} from "../../../../services/notifications/notifications.service";
-import {SettingsService} from "../../../../services/settings.service";
-import {PrivilegesService} from "../../../../services/privileges.service";
-import {marker} from "@biesbjerg/ngx-translate-extract-marker";
-import {API_URL} from "../../../env";
-import {catchError, finalize, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {HistoryService} from "../../../../services/history.service";
-import {Country} from "@angular-material-extensions/select-country";
-import {LocaleService} from "../../../../services/locale.service";
+import { ActivatedRoute, Router } from "@angular/router";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { MatDialog } from "@angular/material/dialog";
+import { UserService } from "../../../../services/user.service";
+import { FormBuilder, FormControl, Validators } from "@angular/forms";
+import { AuthService } from "../../../../services/auth.service";
+import { TranslateService } from "@ngx-translate/core";
+import { NotificationService } from "../../../../services/notifications/notifications.service";
+import { SettingsService } from "../../../../services/settings.service";
+import { PrivilegesService } from "../../../../services/privileges.service";
+import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import { environment } from  "../../../env";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { HistoryService } from "../../../../services/history.service";
+import { Country } from "@angular-material-extensions/select-country";
+import { LocaleService } from "../../../../services/locale.service";
 
 @Component({
     selector: 'app-update',
@@ -179,7 +179,7 @@ export class UpdateSupplierComponent implements OnInit {
         this.supplierForm.forEach((element: any) => {
             if (element.id === 'document_lang') {
                 if (this.localeService.langs.length === 0) {
-                    this.http.get(API_URL + '/ws/i18n/getAllLang', {headers: this.authService.headers}).pipe(
+                    this.http.get(environment['url'] + '/ws/i18n/getAllLang', {headers: this.authService.headers}).pipe(
                         tap((data: any) => {
                             data.langs.forEach((lang: any) => {
                                 element.control.setValue('fra');
@@ -206,9 +206,9 @@ export class UpdateSupplierComponent implements OnInit {
                 }
             }
         });
-        this.http.get(API_URL + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
             tap((forms: any) => {
-                this.http.get(API_URL + '/ws/accounts/suppliers/getById/' + this.supplierId, {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/accounts/suppliers/getById/' + this.supplierId, {headers: this.authService.headers}).pipe(
                     tap((supplier: any) => {
                         this.supplier = supplier;
                         for (const field in this.supplier) {
@@ -217,16 +217,16 @@ export class UpdateSupplierComponent implements OnInit {
                                     if (element.id === field) {
                                         if (element.id === 'get_only_raw_footer') {
                                             element.control.setValue(!this.supplier[field]);
-                                        }else {
+                                        } else {
                                             element.control.setValue(this.supplier[field]);
                                         }
                                         if (element.id === 'form_id') {
                                             element.values = forms.forms;
                                         }
-                                    }else if (field === 'address_id') {
+                                    } else if (field === 'address_id') {
                                         this.addressId = this.supplier[field];
                                         if (this.addressId) {
-                                            this.http.get(API_URL + '/ws/accounts/getAdressById/' + this.addressId, {headers: this.authService.headers}).pipe(
+                                            this.http.get(environment['url'] + '/ws/accounts/getAdressById/' + this.addressId, {headers: this.authService.headers}).pipe(
                                                 tap((address: any) => {
                                                     for (const field in address) {
                                                         if (address.hasOwnProperty(field)) {
@@ -248,8 +248,8 @@ export class UpdateSupplierComponent implements OnInit {
                                                     return of(false);
                                                 })
                                             ).subscribe();
-                                        }else {
-                                            this.http.post(API_URL + '/ws/accounts/addresses/create',
+                                        } else {
+                                            this.http.post(environment['url'] + '/ws/accounts/addresses/create',
                                                 {'args': {
                                                         'address1': '',
                                                         'address2': '',
@@ -261,7 +261,7 @@ export class UpdateSupplierComponent implements OnInit {
                                             ).pipe(
                                                 tap((data: any) => {
                                                     this.addressId = data.id;
-                                                    this.http.put(API_URL + '/ws/accounts/suppliers/update/' + this.supplierId, {'args': {'address_id' : this.addressId}}, {headers: this.authService.headers},
+                                                    this.http.put(environment['url'] + '/ws/accounts/suppliers/update/' + this.supplierId, {'args': {'address_id' : this.addressId}}, {headers: this.authService.headers},
                                                     ).pipe(
                                                         finalize(() => this.loading = false),
                                                         catchError((err: any) => {
@@ -339,7 +339,7 @@ export class UpdateSupplierComponent implements OnInit {
                 address[element.id] = element.control.value;
             });
 
-            this.http.put(API_URL + '/ws/accounts/suppliers/update/' + this.supplierId, {'args': supplier}, {headers: this.authService.headers},
+            this.http.put(environment['url'] + '/ws/accounts/suppliers/update/' + this.supplierId, {'args': supplier}, {headers: this.authService.headers},
             ).pipe(
                 catchError((err: any) => {
                     console.debug(err);
@@ -348,7 +348,7 @@ export class UpdateSupplierComponent implements OnInit {
                 })
             ).subscribe();
 
-            this.http.put(API_URL + '/ws/accounts/addresses/update/' + this.addressId, {'args': address}, {headers: this.authService.headers},
+            this.http.put(environment['url'] + '/ws/accounts/addresses/update/' + this.addressId, {'args': address}, {headers: this.authService.headers},
             ).pipe(
                 tap(() => {
                     this.historyService.addHistory('accounts', 'update_supplier', this.translate.instant('HISTORY-DESC.update-supplier', {supplier: supplier['name']}));

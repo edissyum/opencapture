@@ -29,14 +29,13 @@ import datetime
 import subprocess
 import numpy as np
 from PIL import Image
-from flask import current_app
+from zipfile import ZipFile
 from wand.color import Color
 from wand.api import library
 from wand.image import Image as Img
 from werkzeug.utils import secure_filename
 from src.backend.functions import get_custom_array
 from wand.exceptions import PolicyError, CacheError
-from zipfile import ZipFile
 
 custom_array = get_custom_array()
 
@@ -48,13 +47,16 @@ else:
 
 
 class Files:
-    def __init__(self, img_name, log, docservers, configurations, regex):
+    def __init__(self, img_name, log, docservers, configurations, regex, languages):
         self.log = log
         self.img = None
-        self.docservers = docservers
         self.regex = regex
-        self.configurations = configurations
         self.height_ratio = ''
+        self.resolution = 300
+        self.languages = languages
+        self.docservers = docservers
+        self.compression_quality = 100
+        self.configurations = configurations
         self.jpg_name = img_name + '.jpg'
         self.jpg_name_last = img_name + '_last.jpg'
         self.jpg_name_header = img_name + '_header.jpg'
@@ -62,8 +64,6 @@ class Files:
         self.custom_file_name = img_name + '_custom.jpg'
         self.jpg_name_last_header = img_name + '_last_header.jpg'
         self.jpg_name_last_footer = img_name + '_last_footer.jpg'
-        self.resolution = 300
-        self.compression_quality = 100
 
     # Convert the first page of PDF to JPG and open the image
     def pdf_to_jpg(self, pdf_name, open_img=True, crop=False, zone_to_crop=False, last_image=False, is_custom=False):
@@ -110,6 +110,19 @@ class Files:
                 library.MagickResetIterator(pic.wand)
                 pic.scene = 1  # Start cpt of filename at 1 instead of 0
                 pic.compression_quality = self.compression_quality
+                pic.background_color = Color("white")
+                pic.alpha_channel = 'remove'
+                pic.save(filename=output)
+        except (PolicyError, CacheError) as file_error:
+            self.log.error('Error during WAND conversion : ' + str(file_error))
+
+    def save_img_with_wand_min(self, pdf_name, output):
+        try:
+            with Img(filename=pdf_name + '[0]', resolution=200) as pic:
+                library.MagickResetIterator(pic.wand)
+                pic.scene = 1
+                pic.transform(resize='x1080')
+                pic.compression_quality = 60
                 pic.background_color = Color("white")
                 pic.alpha_channel = 'remove'
                 pic.save(filename=output)
@@ -338,8 +351,9 @@ class Files:
                         text = (text.lower().replace(month.lower(), key))
                         break
 
-            for res in re.finditer(r"" + self.regex['dateRegex'] + "", text):
-                date_class = FindDate('', self.log, self.regex, self.configurations, self, ocr, '', '', '', '', docservers=self.docservers, languages=current_app.config['LANGUAGES'])
+            for res in re.finditer(r"" + self.regex['date'] + "", text):
+
+                date_class = FindDate('', self.log, self.regex, self.configurations, self, ocr, '', '', '', '', self.docservers, self.languages, None)
                 date = date_class.format_date(res.group(), (('', ''), ('', '')), True)
                 if date:
                     text = date[0]
@@ -392,7 +406,7 @@ class Files:
         return improved_img
 
     @staticmethod
-    def move_to_docservers(cfg, docservers, file, module='verifier'):
+    def move_to_docservers(docservers, file, module='verifier'):
         now = datetime.datetime.now()
         year = str(now.year)
         day = str('%02d' % now.day)
@@ -426,7 +440,8 @@ class Files:
     @staticmethod
     def save_uploaded_file(file, path):
         filename, file_ext = os.path.splitext(file.filename)
-        filename = filename.replace(' ', '_') + file_ext.lower()
+        rand = ''.join(random.choice(string.ascii_lowercase) for i in range(4))
+        filename = filename.replace(' ', '_') + '_' + rand + file_ext.lower()
         new_path = os.path.join(path, secure_filename(filename))
         file.save(new_path)
         return new_path
@@ -518,4 +533,3 @@ def compress_pdf(input_file, output_file, compress_id):
                  % (compress_id, output_file, input_file)
     gs_args = gs_command.split('#')
     subprocess.check_call(gs_args)
-

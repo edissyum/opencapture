@@ -19,13 +19,14 @@ import os
 import json
 import uuid
 from src.backend import verifier_exports
+from src.backend.functions import delete_documents
 from src.backend.import_classes import _PyTesseract
 from src.backend.import_process import FindDate, FindFooter, FindInvoiceNumber, FindSupplier, FindCustom, \
-    FindOrderNumber, FindDeliveryNumber, FindFooterRaw, FindQuotationNumber
+    FindDeliveryNumber, FindFooterRaw, FindQuotationNumber
 
 
 def insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier, status,
-           nb_pages, docservers, input_settings, log, regex, config):
+           nb_pages, docservers, input_settings, log, regex, config, form_data):
     try:
         filename = os.path.splitext(files.custom_file_name)
         improved_img = filename[0] + '_improved' + filename[1]
@@ -79,11 +80,7 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
                 'form_id': args['form_id']
             })
 
-    database.insert({
-        'table': 'invoices',
-        'columns': invoice_data
-    })
-
+    insert_invoice = True
     if status == 'END' and 'form_id' in invoice_data and invoice_data['form_id']:
         outputs = database.select({
             'select': ['outputs'],
@@ -91,19 +88,31 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
             'where': ['id = %s'],
             'data': [invoice_data['form_id']],
         })
+
         if outputs:
             for output_id in outputs[0]['outputs']:
                 output_info = database.select({
                     'select': ['output_type_id', 'data'],
                     'table': ['outputs'],
                     'where': ['id = %s'],
-                    'data': [output_id],
+                    'data': [output_id]
                 })
                 if output_info:
                     if output_info[0]['output_type_id'] == 'export_xml':
                         verifier_exports.export_xml(output_info[0]['data'], log, regex, invoice_data)
                     elif output_info[0]['output_type_id'] == 'export_maarch':
                         verifier_exports.export_maarch(output_info[0]['data'], invoice_data, log, config, regex, database)
+
+                    if 'delete_documents_after_outputs' in form_data and form_data['delete_documents_after_outputs']:
+                        delete_documents(docservers, invoice_data['path'], invoice_data['filename'], full_jpg_filename)
+                        insert_invoice = False
+
+    if insert_invoice:
+        invoice_data['datas'] = json.dumps(datas)
+        database.insert({
+            'table': 'invoices',
+            'columns': invoice_data
+        })
 
 
 def convert(file, files, ocr, nb_pages, custom_pages=False):
@@ -202,8 +211,23 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             ocr = _PyTesseract(supplier[2]['document_lang'], log, config, docservers)
             convert(file, files, ocr, nb_pages)
 
+    input_settings = None
+    form_id = None
+    if 'input_id' in args:
+        input_settings = database.select({
+            'select': ['*'],
+            'table': ['inputs'],
+            'where': ['input_id = %s', 'module = %s'],
+            'data': [args['input_id'], 'verifier'],
+        })
+        if input_settings:
+            input_settings = input_settings[0]
+            if input_settings['override_supplier_form'] or not supplier or supplier[2]['form_id'] in ['', [], None]:
+                form_id = input_settings['default_form_id']
+
     # Find custom informations using mask
-    custom_fields = FindCustom(ocr.header_text, log, regex, config, ocr, files, supplier, file, database, docservers).run()
+    custom_fields = FindCustom(ocr.header_text, log, regex, config, ocr, files, supplier, file, database,
+                               docservers, form_id).run()
     if custom_fields:
         for field in custom_fields:
             datas.update({field: custom_fields[field][0]})
@@ -214,7 +238,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
     # Find invoice number
     invoice_number_class = FindInvoiceNumber(ocr, files, log, regex, config, database, supplier, file,ocr.header_text,
-                                             1, False, ocr.footer_text, docservers, configurations, languages)
+                                             1, False, ocr.footer_text, docservers, configurations, languages, form_id)
     invoice_number = invoice_number_class.run()
     if not invoice_number:
         invoice_number_class.text = ocr.header_last_text
@@ -283,7 +307,8 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         text_custom = ocr.text
         page_for_date = 1
 
-    date_class = FindDate(text_custom, log, regex, configurations, files, ocr, supplier, page_for_date, database, file, docservers, languages)
+    date_class = FindDate(text_custom, log, regex, configurations, files, ocr, supplier, page_for_date, database, file,
+                          docservers, languages, form_id)
     date = date_class.run()
 
     if date:
@@ -300,7 +325,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
         # Find quotation number
     quotation_number_class = FindQuotationNumber(ocr, files, log, regex, config, database, supplier, file,
-                                                 ocr.header_text, 1, False, ocr.footer_text, docservers, configurations)
+                                                 ocr.header_text, 1, False, ocr.footer_text, docservers, configurations, form_id)
     quotation_number = quotation_number_class.run()
     if not quotation_number:
         quotation_number_class.text = ocr.header_last_text
@@ -319,9 +344,9 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
             pages.update({'quotation_number': quotation_number[2]})
 
     # Find footer informations (total amount, no rate amount etc..)
-    footer_class = FindFooter(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text, docservers)
+    footer_class = FindFooter(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text, docservers, form_id)
     if supplier and supplier[2]['get_only_raw_footer'] in [True, 'True']:
-        footer_class = FindFooterRaw(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text, docservers)
+        footer_class = FindFooterRaw(ocr, log, regex, config, files, database, supplier, file, ocr.footer_text, docservers, form_id)
 
     footer = footer_class.run()
     if not footer and nb_pages > 1:
@@ -416,7 +441,7 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
 
     # Find delivery number
     delivery_number_class = FindDeliveryNumber(ocr, files, log, regex, config, database, supplier, file,
-                                               ocr.header_text, 1, False, docservers, configurations)
+                                               ocr.header_text, 1, False, docservers, configurations, form_id)
     delivery_number = delivery_number_class.run()
     if not delivery_number:
         delivery_number_class.text = ocr.footer_text
@@ -430,41 +455,26 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
         if delivery_number[2]:
             pages.update({'delivery_number': delivery_number[2]})
 
-    # Find order number
-    order_number_class = FindOrderNumber(ocr, files, log, regex, config, database, supplier, file,
-                                         ocr.header_text, 1, False, docservers, configurations)
-    order_number = order_number_class.run()
-    if not order_number:
-        order_number_class.text = ocr.footer_text
-        order_number_class.target = 'footer'
-        order_number = order_number_class.run()
-
-    if order_number:
-        datas.update({'order_number': order_number[0]})
-        if order_number[1]:
-            positions.update({'order_number': files.reformat_positions(order_number[1])})
-        if order_number[2]:
-            pages.update({'order_number': order_number[2]})
-
     file_name = str(uuid.uuid4())
     full_jpg_filename = 'full_' + file_name + '-%03d.jpg'
-    file = files.move_to_docservers(config.cfg, docservers, file)
+    file = files.move_to_docservers(docservers, file)
     # Convert all the pages to JPG (used to full web interface)
     files.save_img_with_wand(file, docservers['VERIFIER_IMAGE_FULL'] + '/' + full_jpg_filename)
+    files.save_img_with_wand_min(file, docservers['VERIFIER_THUMB'] + '/' + full_jpg_filename)
 
     allow_auto = False
-    input_settings = None
-    if 'input_id' in args:
-        input_settings = database.select({
-            'select': ['*'],
-            'table': ['inputs'],
-            'where': ['input_id = %s', 'module = %s'],
-            'data': [args['input_id'], 'verifier'],
+    form_data = None
+    if form_id:
+        form_data = database.select({
+            'select': ['allow_automatic_validation', 'automatic_validation_data', 'delete_documents_after_outputs'],
+            'table': ['form_models'],
+            'where': ['id = %s'],
+            'data': [form_id]
         })
-        if input_settings:
-            input_settings = input_settings[0]
-            if input_settings['allow_automatic_validation'] and input_settings['automatic_validation_data']:
-                for column in input_settings['automatic_validation_data'].split(','):
+        if form_data:
+            form_data = form_data[0]
+            if form_data['allow_automatic_validation'] and form_data['automatic_validation_data']:
+                for column in form_data['automatic_validation_data'].split(','):
                     column = column.strip()
                     if column == 'supplier':
                         column = 'name'
@@ -481,10 +491,10 @@ def process(args, file, log, config, files, ocr, regex, database, docservers, co
     if supplier and not supplier[2]['skip_auto_validate'] and allow_auto:
         log.info('All the usefull informations are found. Execute outputs action and end process')
         insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier,
-               'END', nb_pages, docservers, input_settings, log, regex, config)
+               'END', nb_pages, docservers, input_settings, log, regex, config, form_data)
     else:
         insert(args, files, database, datas, positions, pages, full_jpg_filename, file, original_file, supplier,
-               'NEW', nb_pages, docservers, input_settings, log, regex, config)
+               'NEW', nb_pages, docservers, input_settings, log, regex, config, form_data)
 
         if supplier and supplier[2]['skip_auto_validate'] == 'True':
             log.info('Skip automatic validation for this supplier this time')

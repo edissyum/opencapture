@@ -15,19 +15,19 @@
 
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
-import {OnInit, Component} from '@angular/core';
-import {TranslateService} from "@ngx-translate/core";
-import {SettingsService} from "../../../../services/settings.service";
+import { OnInit, Component } from '@angular/core';
+import { TranslateService } from "@ngx-translate/core";
+import { SettingsService } from "../../../../services/settings.service";
 
-import {Router} from "@angular/router";
-import {UserService} from "../../../../services/user.service";
-import {PrivilegesService} from "../../../../services/privileges.service";
-import {API_URL} from "../../../env";
-import {catchError, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {HttpClient} from "@angular/common/http";
-import {AuthService} from "../../../../services/auth.service";
-import {NotificationService} from "../../../../services/notifications/notifications.service";
+import { Router } from "@angular/router";
+import { UserService } from "../../../../services/user.service";
+import { PrivilegesService } from "../../../../services/privileges.service";
+import { environment } from  "../../../env";
+import { catchError, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { HttpClient } from "@angular/common/http";
+import { AuthService } from "../../../../services/auth.service";
+import { NotificationService } from "../../../../services/notifications/notifications.service";
 
 @Component({
     selector: 'app-separator',
@@ -82,7 +82,7 @@ export class SeparatorComponent implements OnInit {
     }
 
     onChangeType() {
-        let args = {};
+        let args;
         if (this.selectedSeparator === "bundleSeparator") {
             args = {
                 'type'  : 'bundleSeparator',
@@ -120,7 +120,7 @@ export class SeparatorComponent implements OnInit {
 
     generateSeparator(args: any) {
         this.loadingSeparator = true;
-        this.http.post(API_URL + '/ws/doctypes/generateSeparator',  args,{headers: this.authService.headers}).pipe(
+        this.http.post(environment['url'] + '/ws/doctypes/generateSeparator',  args,{headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.separator.fileUrl = "data:application/pdf;base64," + data.encoded_file;
                 this.separator.thumbnailUrl = "data:image/jpeg;base64," + data.encoded_thumbnail;

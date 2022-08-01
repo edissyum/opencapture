@@ -16,24 +16,24 @@ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import { Component, OnInit } from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {ActivatedRoute, Router} from "@angular/router";
-import {MatDialog} from "@angular/material/dialog";
-import {UserService} from "../../../../services/user.service";
-import {FormBuilder} from "@angular/forms";
-import {AuthService} from "../../../../services/auth.service";
-import {TranslateService} from "@ngx-translate/core";
-import {NotificationService} from "../../../../services/notifications/notifications.service";
-import {SettingsService} from "../../../../services/settings.service";
-import {LastUrlService} from "../../../../services/last-url.service";
-import {PrivilegesService} from "../../../../services/privileges.service";
-import {LocalStorageService} from "../../../../services/local-storage.service";
-import {API_URL} from "../../../env";
-import {catchError, finalize, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {ConfirmDialogComponent} from "../../../../services/confirm-dialog/confirm-dialog.component";
-import {Sort} from "@angular/material/sort";
-import {HistoryService} from "../../../../services/history.service";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { ActivatedRoute, Router } from "@angular/router";
+import { MatDialog } from "@angular/material/dialog";
+import { UserService } from "../../../../services/user.service";
+import { FormBuilder } from "@angular/forms";
+import { AuthService } from "../../../../services/auth.service";
+import { TranslateService } from "@ngx-translate/core";
+import { NotificationService } from "../../../../services/notifications/notifications.service";
+import { SettingsService } from "../../../../services/settings.service";
+import { LastUrlService } from "../../../../services/last-url.service";
+import { PrivilegesService } from "../../../../services/privileges.service";
+import { LocalStorageService } from "../../../../services/local-storage.service";
+import { environment } from  "../../../env";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { ConfirmDialogComponent } from "../../../../services/confirm-dialog/confirm-dialog.component";
+import { Sort } from "@angular/material/sort";
+import { HistoryService } from "../../../../services/history.service";
 
 @Component({
     selector: 'app-list',
@@ -66,20 +66,20 @@ export class CustomersListComponent implements OnInit {
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localeStorageService: LocalStorageService,
+        private localStorageService: LocalStorageService,
     ) { }
 
     ngOnInit(): void {
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('accounts/customers') || lastUrl === '/') {
-            if (this.localeStorageService.get('customersPageIndex'))
-                this.pageIndex = parseInt(this.localeStorageService.get('customersPageIndex') as string);
+            if (this.localStorageService.get('customersPageIndex'))
+                this.pageIndex = parseInt(this.localStorageService.get('customersPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
-        }else
-            this.localeStorageService.remove('customersPageIndex');
+        } else
+            this.localStorageService.remove('customersPageIndex');
 
-        this.http.get(API_URL + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.allCustomers = data.customers;
             }),
@@ -93,7 +93,7 @@ export class CustomersListComponent implements OnInit {
     }
 
     loadCustomers() {
-        this.http.get(API_URL + '/ws/accounts/customers/list?limit=' + this.pageSize + '&offset=' + this.offset + "&search=" + this.search, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/accounts/customers/list?limit=' + this.pageSize + '&offset=' + this.offset + "&search=" + this.search, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.customers = data.customers;
                 if (this.customers.length !== 0) {
@@ -117,7 +117,7 @@ export class CustomersListComponent implements OnInit {
     onPageChange(event: any) {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
-        this.localeStorageService.save('customersPageIndex', event.pageIndex);
+        this.localStorageService.save('customersPageIndex', event.pageIndex);
         this.loadCustomers();
     }
 
@@ -143,7 +143,7 @@ export class CustomersListComponent implements OnInit {
 
     deleteCustomer(customerId: number) {
         if (customerId !== undefined) {
-            this.http.delete(API_URL + '/ws/accounts/customers/delete/' + customerId, {headers: this.authService.headers}).pipe(
+            this.http.delete(environment['url'] + '/ws/accounts/customers/delete/' + customerId, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadCustomers();
                     this.notify.success(this.translate.instant('ACCOUNTS.customer_deleted'));

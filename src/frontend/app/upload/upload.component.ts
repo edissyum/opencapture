@@ -15,21 +15,21 @@ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {Component, OnInit} from '@angular/core';
-import {ViewEncapsulation} from '@angular/core';
-import {FormBuilder, FormControl} from "@angular/forms";
-import {FileValidators} from "ngx-file-drag-drop";
-import {API_URL} from "../env";
-import {catchError, finalize, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {ActivatedRoute, Router} from "@angular/router";
-import {AuthService} from "../../services/auth.service";
-import {UserService} from "../../services/user.service";
-import {TranslateService} from "@ngx-translate/core";
-import {NotificationService} from "../../services/notifications/notifications.service";
-import {LocalStorageService} from "../../services/local-storage.service";
-import {HistoryService} from "../../services/history.service";
+import { Component, OnInit } from '@angular/core';
+import { ViewEncapsulation } from '@angular/core';
+import { FormBuilder, FormControl } from "@angular/forms";
+import { FileValidators } from "ngx-file-drag-drop";
+import { environment } from  "../env";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { ActivatedRoute, Router } from "@angular/router";
+import { AuthService } from "../../services/auth.service";
+import { UserService } from "../../services/user.service";
+import { TranslateService } from "@ngx-translate/core";
+import { NotificationService } from "../../services/notifications/notifications.service";
+import { LocalStorageService } from "../../services/local-storage.service";
+import { HistoryService } from "../../services/history.service";
 
 
 @Component({
@@ -57,7 +57,7 @@ export class UploadComponent implements OnInit {
         public translate: TranslateService,
         private notify: NotificationService,
         private historyService: HistoryService,
-        public localeStorageService: LocalStorageService
+        public localStorageService: LocalStorageService
     ) {
     }
 
@@ -70,8 +70,9 @@ export class UploadComponent implements OnInit {
     );
 
     ngOnInit(): void {
-        const splitterOrVerifier = this.localeStorageService.get('splitter_or_verifier');
-        this.http.get(API_URL + '/ws/inputs/list?module=' + splitterOrVerifier, {headers: this.authService.headers}).pipe(
+        const splitterOrVerifier = this.localStorageService.get('splitter_or_verifier');
+        this.http.get(environment['url'] + '/ws/inputs/list?module=' + splitterOrVerifier,
+            {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.inputs = data.inputs;
                 if (this.inputs.length === 1) {
@@ -94,7 +95,8 @@ export class UploadComponent implements OnInit {
                 const fileName = data[i].name;
                 const fileExtension = fileName.split('.').pop();
                 if (fileExtension.toLowerCase() !== 'pdf') {
-                    this.notify.handleErrors(this.translate.instant('UPLOAD.extension_unauthorized', {count: data.length}));
+                    this.notify.handleErrors(this.translate.instant('UPLOAD.extension_unauthorized',
+                        {count: data.length}));
                     return;
                 }
             }
@@ -127,10 +129,10 @@ export class UploadComponent implements OnInit {
                 return;
             }
         }
-        const splitterOrVerifier = this.localeStorageService.get('splitter_or_verifier');
+        const splitterOrVerifier = this.localStorageService.get('splitter_or_verifier');
         if (splitterOrVerifier !== undefined || splitterOrVerifier !== '') {
             this.http.post(
-                API_URL + '/ws/' + splitterOrVerifier + '/upload?inputId=' + this.selectedInputTechnicalId,
+                environment['url'] + '/ws/' + splitterOrVerifier + '/upload?inputId=' + this.selectedInputTechnicalId,
                 formData,
                 {
                     headers: this.authService.headers
@@ -147,7 +149,7 @@ export class UploadComponent implements OnInit {
                     return of(false);
                 })
             ).subscribe();
-        }else {
+        } else {
             this.notify.handleErrors(this.translate.instant('ERROR.unknow_error'));
             return;
         }

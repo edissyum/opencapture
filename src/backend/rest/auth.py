@@ -22,10 +22,11 @@ import ldap3
 import psycopg2
 from ldap3 import Server
 from flask_babel import gettext
-from src.backend.import_classes import _Config
 from ldap3.core.exceptions import LDAPException
+from flask import Blueprint, request, make_response
 from werkzeug.security import generate_password_hash
-from flask import Blueprint, request, make_response, current_app
+from src.backend.functions import retrieve_custom_from_url
+from src.backend.main import create_classes_from_custom_id
 from src.backend.import_controllers import auth, user as user_controller
 
 bp = Blueprint('auth', __name__, url_prefix='/ws/')
@@ -97,8 +98,9 @@ def login():
 
 
 def check_connection():
-    config_name = _Config(current_app.config['CONFIG_FILE'])
-    config = _Config(current_app.config['CONFIG_FOLDER'] + '/config_' + config_name.cfg['PROFILE']['id'] + '.ini')
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    config = _vars[1]
     db_user = config.cfg['DATABASE']['postgresuser']
     db_host = config.cfg['DATABASE']['postgreshost']
     db_port = config.cfg['DATABASE']['postgresport']
@@ -213,7 +215,7 @@ def get_enabled_login_method():
     return make_response(res[0], res[1])
 
 
-@bp.route('auth/retrieveLdapConfigurations', methods=['POST'])
+@bp.route('auth/retrieveLdapConfigurations', methods=['GET'])
 def retrieve_ldap_configurations():
     res = auth.get_ldap_configurations()
     if not res:

@@ -15,24 +15,24 @@ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {AfterContentInit, AfterViewInit, Component, OnInit} from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {marker} from "@biesbjerg/ngx-translate-extract-marker";
-import {FormBuilder, FormControl, Validators} from "@angular/forms";
-import {ActivatedRoute, Router} from "@angular/router";
-import {MatDialog} from "@angular/material/dialog";
-import {UserService} from "../../../../services/user.service";
-import {AuthService} from "../../../../services/auth.service";
-import {TranslateService} from "@ngx-translate/core";
-import {NotificationService} from "../../../../services/notifications/notifications.service";
-import {SettingsService} from "../../../../services/settings.service";
-import {PrivilegesService} from "../../../../services/privileges.service";
-import {API_URL} from "../../../env";
-import {catchError, finalize, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {HistoryService} from "../../../../services/history.service";
-import {Country} from '@angular-material-extensions/select-country';
-import {LocaleService} from "../../../../services/locale.service";
+import { Component, OnInit } from '@angular/core';
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import { FormBuilder, FormControl, Validators } from "@angular/forms";
+import { ActivatedRoute, Router } from "@angular/router";
+import { MatDialog } from "@angular/material/dialog";
+import { UserService } from "../../../../services/user.service";
+import { AuthService } from "../../../../services/auth.service";
+import { TranslateService } from "@ngx-translate/core";
+import { NotificationService } from "../../../../services/notifications/notifications.service";
+import { SettingsService } from "../../../../services/settings.service";
+import { PrivilegesService } from "../../../../services/privileges.service";
+import { environment } from  "../../../env";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { HistoryService } from "../../../../services/history.service";
+import { Country } from '@angular-material-extensions/select-country';
+import { LocaleService } from "../../../../services/locale.service";
 
 @Component({
     selector: 'app-create',
@@ -174,7 +174,7 @@ export class CreateSupplierComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.http.get(API_URL + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 const forms = data.forms;
                 for (const cpt in forms) {
@@ -197,7 +197,7 @@ export class CreateSupplierComponent implements OnInit {
         this.supplierForm.forEach((element: any) => {
             if (element.id === 'document_lang') {
                 if (this.localeService.langs.length === 0) {
-                    this.http.get(API_URL + '/ws/i18n/getAllLang', {headers: this.authService.headers}).pipe(
+                    this.http.get(environment['url'] + '/ws/i18n/getAllLang', {headers: this.authService.headers}).pipe(
                         tap((data: any) => {
                             data.langs.forEach((lang: any) => {
                                 element.control.setValue('fra');
@@ -269,11 +269,11 @@ export class CreateSupplierComponent implements OnInit {
                 address[element.id] = element.control.value;
             });
 
-            this.http.post(API_URL + '/ws/accounts/addresses/create', {'args': address}, {headers: this.authService.headers},
+            this.http.post(environment['url'] + '/ws/accounts/addresses/create', {'args': address}, {headers: this.authService.headers},
             ).pipe(
                 tap((data: any) => {
                     supplier['address_id'] = data.id;
-                    this.http.post(API_URL + '/ws/accounts/suppliers/create', {'args': supplier}, {headers: this.authService.headers},
+                    this.http.post(environment['url'] + '/ws/accounts/suppliers/create', {'args': supplier}, {headers: this.authService.headers},
                     ).pipe(
                         tap(() => {
                             this.historyService.addHistory('accounts', 'create_supplier', this.translate.instant('HISTORY-DESC.create-supplier', {supplier: supplier['name']}));

@@ -17,21 +17,20 @@
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
 import { Component, OnInit } from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {SettingsService} from "../../../../services/settings.service";
-import {AuthService} from "../../../../services/auth.service";
-import {ActivatedRoute, Router} from "@angular/router";
-import {PrivilegesService} from "../../../../services/privileges.service";
-import {LocalStorageService} from "../../../../services/local-storage.service";
-import {LastUrlService} from "../../../../services/last-url.service";
-import {Sort} from "@angular/material/sort";
-import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from "@angular/material/form-field";
-import {API_URL} from "../../../env";
-import {catchError, finalize, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {NotificationService} from "../../../../services/notifications/notifications.service";
-import {TranslateService} from "@ngx-translate/core";
-import {marker} from "@biesbjerg/ngx-translate-extract-marker";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { SettingsService } from "../../../../services/settings.service";
+import { AuthService } from "../../../../services/auth.service";
+import { ActivatedRoute, Router } from "@angular/router";
+import { PrivilegesService } from "../../../../services/privileges.service";
+import { LocalStorageService } from "../../../../services/local-storage.service";
+import { LastUrlService } from "../../../../services/last-url.service";
+import { Sort } from "@angular/material/sort";
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
+import { environment } from  "../../../env";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { NotificationService } from "../../../../services/notifications/notifications.service";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
     selector: 'app-docservers',
@@ -64,7 +63,7 @@ export class DocserversComponent implements OnInit {
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localeStorageService: LocalStorageService,
+        private localStorageService: LocalStorageService,
     ) { }
 
     ngOnInit(): void {
@@ -72,13 +71,13 @@ export class DocserversComponent implements OnInit {
 
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('settings/general/docservers') || lastUrl === '/') {
-            if (this.localeStorageService.get('docserversPageIndex'))
-                this.pageIndex = parseInt(this.localeStorageService.get('docserversPageIndex') as string);
+            if (this.localStorageService.get('docserversPageIndex'))
+                this.pageIndex = parseInt(this.localStorageService.get('docserversPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
-        }else
-            this.localeStorageService.remove('docserversPageIndex');
+        } else
+            this.localStorageService.remove('docserversPageIndex');
 
-        this.http.get(API_URL + '/ws/config/getDocservers', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/config/getDocservers', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.allDocservers = data.docservers;
             }),
@@ -92,7 +91,7 @@ export class DocserversComponent implements OnInit {
     }
 
     loadDocservers() {
-        this.http.get(API_URL + '/ws/config/getDocservers?limit=' + this.pageSize + '&offset=' + this.offset + "&search=" + this.search, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/config/getDocservers?limit=' + this.pageSize + '&offset=' + this.offset + "&search=" + this.search, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.docservers[0]) this.total = data.docservers[0].total;
                 else if (this.pageIndex !== 0) {
@@ -117,7 +116,7 @@ export class DocserversComponent implements OnInit {
         this.docservers.forEach((element: any) => {
             if (element.id === id) {
                 element.path = value;
-                this.http.put(API_URL + '/ws/config/updateDocserver/' + element.id, {'data': element}, {headers: this.authService.headers}).pipe(
+                this.http.put(environment['url'] + '/ws/config/updateDocserver/' + element.id, {'data': element}, {headers: this.authService.headers}).pipe(
                     tap(() => {
                         this.notify.success(this.translate.instant('DOCSERVERS.docserver_updated'));
                         element.updateMode = false;
@@ -142,7 +141,7 @@ export class DocserversComponent implements OnInit {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
         this.pageIndex = event.pageIndex;
-        this.localeStorageService.save('docserversPageIndex', event.pageIndex);
+        this.localStorageService.save('docserversPageIndex', event.pageIndex);
         this.loadDocservers();
     }
 

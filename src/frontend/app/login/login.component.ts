@@ -15,20 +15,22 @@ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {Component, OnInit} from '@angular/core';
-import {Validators, FormBuilder} from '@angular/forms';
-import {TranslateService} from "@ngx-translate/core";
-import {API_URL} from "../env";
-import {HttpClient} from "@angular/common/http";
-import {NotificationService} from "../../services/notifications/notifications.service";
-import {catchError, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {AuthService} from "../../services/auth.service";
-import {Router} from "@angular/router";
-import {ConfigService} from "../../services/config.service";
-import {LocaleService} from "../../services/locale.service";
-import {UserService} from "../../services/user.service";
-import {HistoryService} from "../../services/history.service";
+import { Component, OnInit } from '@angular/core';
+import { Validators, FormBuilder } from '@angular/forms';
+import { TranslateService } from "@ngx-translate/core";
+import { environment } from "../env";
+import { HttpClient } from "@angular/common/http";
+import { NotificationService } from "../../services/notifications/notifications.service";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { AuthService } from "../../services/auth.service";
+import { Router } from "@angular/router";
+import { ConfigService } from "../../services/config.service";
+import { LocaleService } from "../../services/locale.service";
+import { UserService } from "../../services/user.service";
+import { HistoryService } from "../../services/history.service";
+import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
+import {LocalStorageService} from "../../services/local-storage.service";
 
 @Component({
     selector: 'app-login',
@@ -38,13 +40,17 @@ import {HistoryService} from "../../services/history.service";
 export class LoginComponent implements OnInit {
     loginForm               : any;
     enableLoginMethodName   : any;
+    loginImage              : SafeUrl = '';
+    loading                 : boolean = true;
     processLogin            : boolean = false;
     showPassword            : boolean = false;
     isConnectionBtnDisabled : boolean = true;
+    subtitle                : string  = '';
 
     constructor(
         private router: Router,
         private http: HttpClient,
+        private sanitizer: DomSanitizer,
         private formBuilder: FormBuilder,
         private authService: AuthService,
         private userService: UserService,
@@ -53,6 +59,7 @@ export class LoginComponent implements OnInit {
         private configService: ConfigService,
         private localeService: LocaleService,
         private historyService: HistoryService,
+        private localStorageService: LocalStorageService
     ) {}
 
     ngOnInit(): void {
@@ -65,7 +72,33 @@ export class LoginComponent implements OnInit {
             this.localeService.getCurrentLocale();
         }
 
-        this.http.get(API_URL + '/ws/auth/getEnabledLoginMethod', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/config/getLoginImage').pipe(
+            tap((data: any) => {
+                this.localStorageService.save('login_image_b64', data);
+                this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + data);
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
+        this.http.get(environment['url'] + '/ws/config/getConfiguration/loginMessage', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                if (data.configuration.length === 1) {
+                    this.subtitle = data.configuration[0].data.value;
+                }
+            }),
+            finalize(() => this.loading = false),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
+
+        this.http.get(environment['url'] + '/ws/auth/getEnabledLoginMethod', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 const login_method_name = data['login_method_name'][0];
                 this.enableLoginMethodName = login_method_name['method_name'];
@@ -86,11 +119,11 @@ export class LoginComponent implements OnInit {
         if (password && username) {
             this.processLogin = true;
             this.http.post(
-                API_URL + '/ws/auth/login',
+                environment['url'] + '/ws/auth/login',
                 {
                     'username': username,
                     'password': password,
-                    'lang': this.localeService.currentLang
+                    'lang': this.localeService.currentBabelLang
                 },
                 {
                     observe: 'response'

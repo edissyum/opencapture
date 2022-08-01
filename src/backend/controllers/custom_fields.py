@@ -65,7 +65,7 @@ def update(args):
 
 
 def delete(args):
-    res, error = custom_fields.delete(args)
+    _, error = custom_fields.delete(args)
     if not error:
         forms.delete_custom_field_from_forms(args)
         return '', 200

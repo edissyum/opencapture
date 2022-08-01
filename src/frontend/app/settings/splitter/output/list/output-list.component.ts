@@ -17,23 +17,23 @@ along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses
 @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
 import { Component, OnInit } from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {Router} from "@angular/router";
-import {MatDialog} from "@angular/material/dialog";
-import {UserService} from "../../../../../services/user.service";
-import {AuthService} from "../../../../../services/auth.service";
-import {TranslateService} from "@ngx-translate/core";
-import {NotificationService} from "../../../../../services/notifications/notifications.service";
-import {SettingsService} from "../../../../../services/settings.service";
-import {LastUrlService} from "../../../../../services/last-url.service";
-import {PrivilegesService} from "../../../../../services/privileges.service";
-import {LocalStorageService} from "../../../../../services/local-storage.service";
-import {API_URL} from "../../../../env";
-import {catchError, finalize, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {ConfirmDialogComponent} from "../../../../../services/confirm-dialog/confirm-dialog.component";
-import {Sort} from "@angular/material/sort";
-import {HistoryService} from "../../../../../services/history.service";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Router } from "@angular/router";
+import { MatDialog } from "@angular/material/dialog";
+import { UserService } from "../../../../../services/user.service";
+import { AuthService } from "../../../../../services/auth.service";
+import { TranslateService } from "@ngx-translate/core";
+import { NotificationService } from "../../../../../services/notifications/notifications.service";
+import { SettingsService } from "../../../../../services/settings.service";
+import { LastUrlService } from "../../../../../services/last-url.service";
+import { PrivilegesService } from "../../../../../services/privileges.service";
+import { LocalStorageService } from "../../../../../services/local-storage.service";
+import { environment } from  "../../../../env";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { ConfirmDialogComponent } from "../../../../../services/confirm-dialog/confirm-dialog.component";
+import { Sort } from "@angular/material/sort";
+import { HistoryService } from "../../../../../services/history.service";
 
 @Component({
   selector: 'app-splitter-output-list',
@@ -62,7 +62,7 @@ export class SplitterOutputListComponent implements OnInit {
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localeStorageService: LocalStorageService,
+        private localStorageService: LocalStorageService,
     ) {}
 
 
@@ -71,16 +71,16 @@ export class SplitterOutputListComponent implements OnInit {
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('outputs/') || lastUrl === '/') {
-            if (this.localeStorageService.get('outputsPageIndex'))
-                this.pageIndex = parseInt(this.localeStorageService.get('outputsPageIndex') as string);
+            if (this.localStorageService.get('outputsPageIndex'))
+                this.pageIndex = parseInt(this.localStorageService.get('outputsPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
         } else
-            this.localeStorageService.remove('outputsPageIndex');
+            this.localStorageService.remove('outputsPageIndex');
         this.loadOutputs();
     }
 
     loadOutputs(): void {
-        this.http.get(API_URL + '/ws/outputs/list?module=splitter&limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/outputs/list?module=splitter&limit=' + this.pageSize + '&offset=' + this.offset, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.outputs[0]) this.total = data.outputs[0].total;
                 this.outputs = data.outputs;
@@ -97,7 +97,7 @@ export class SplitterOutputListComponent implements OnInit {
     onPageChange(event: any) {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
-        this.localeStorageService.save('outputsPageIndex', event.pageIndex);
+        this.localStorageService.save('outputsPageIndex', event.pageIndex);
         this.loadOutputs();
     }
 
@@ -123,7 +123,7 @@ export class SplitterOutputListComponent implements OnInit {
 
     deleteOutput(outputId: number) {
         if (outputId !== undefined) {
-            this.http.delete(API_URL + '/ws/outputs/delete/' + outputId, {headers: this.authService.headers}).pipe(
+            this.http.delete(environment['url'] + '/ws/outputs/delete/' + outputId, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadOutputs();
                     this.notify.success(this.translate.instant('OUTPUT.output_deleted'));
@@ -159,7 +159,7 @@ export class SplitterOutputListComponent implements OnInit {
 
     duplicateOutput(outputId: number) {
         if (outputId !== undefined) {
-            this.http.post(API_URL + '/ws/outputs/duplicate/' + outputId, {}, {headers: this.authService.headers}).pipe(
+            this.http.post(environment['url'] + '/ws/outputs/duplicate/' + outputId, {}, {headers: this.authService.headers}).pipe(
                 tap(() => {
                     this.loadOutputs();
                     this.notify.success(this.translate.instant('OUTPUT.output_duplicated'));

@@ -17,13 +17,9 @@
 
 from flask_babel import gettext
 from src.backend.import_models import status
-from src.backend.main import create_classes_from_current_config
 
 
 def get_status(module):
-    _vars = create_classes_from_current_config()
-    _config = _vars[1]
-
     _status, error = status.get_status(module)
     if _status:
         response = {

@@ -15,12 +15,12 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {Injectable} from '@angular/core';
-import {TranslateService} from "@ngx-translate/core";
-import {LocalStorageService} from "./local-storage.service";
-import {LastUrlService} from "./last-url.service";
-import {Title} from "@angular/platform-browser";
-import {Router} from "@angular/router";
+import { Injectable } from '@angular/core';
+import { TranslateService } from "@ngx-translate/core";
+import { LocalStorageService } from "./local-storage.service";
+import { LastUrlService } from "./last-url.service";
+import { Title } from "@angular/platform-browser";
+import { Router } from "@angular/router";
 
 @Injectable({
     providedIn: 'root'
@@ -139,6 +139,13 @@ export class SettingsService {
             }
         ],
         "verifier": [
+            {
+                "id"        : "verifier_display",
+                "label"     : this.translate.instant("SETTINGS.verifier_display"),
+                "icon"      : "fa-solid fa-display",
+                "route"     : "/settings/verifier/display",
+                "privilege" : "verifier_display",
+            },
             {
                 "id"        : "form_builder",
                 "label"     : this.translate.instant("SETTINGS.list_forms"),
@@ -320,27 +327,27 @@ export class SettingsService {
                 "id"        : "document-type",
                 "label"     : this.translate.instant("SETTINGS.document_type"),
                 "icon"      : "fa-solid fa-file",
-                "route"     : "/settings/splitter/documentType",
+                "route"     : "/settings/splitter/document-type",
                 "privilege" : "document_type_splitter",
                 "actions"   : [
                     {
                         "id"        : "splitter_add_doc_type",
                         "label"     : this.translate.instant("SETTINGS.add_doc_type"),
-                        "route"     : "/settings/splitter/documentType/new",
+                        "route"     : "/settings/splitter/document-type/new",
                         "privilege" : "add_document_type",
                         "icon"      : "fa-solid fa-plus"
                     },
                     {
                         "id"        : "splitter_add_folder_doc_type",
                         "label"     : this.translate.instant("SETTINGS.add_doc_type_folder"),
-                        "route"     : "/settings/splitter/documentType/createFolder",
+                        "route"     : "/settings/splitter/document-type/create-folder",
                         "privilege" : "add_document_type",
                         "icon"      : "fa-solid fa-folder-plus",
                     },
                     {
                         "id"                : "splitter_update_doc_type",
                         "label"             : this.translate.instant("SETTINGS.update_doc_type"),
-                        "route"             : "/settings/splitter/documentType/update/",
+                        "route"             : "/settings/splitter/document-type/update/",
                         "privilege"         : "update_document_type",
                         "icon"              : "fa-solid fa-edit",
                         "showOnlyIfActive"  : true

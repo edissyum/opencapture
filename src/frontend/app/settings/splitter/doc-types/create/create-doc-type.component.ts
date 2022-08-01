@@ -15,20 +15,20 @@
 
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
-import {UserService} from "../../../../../services/user.service";
-import {TranslateService} from "@ngx-translate/core";
-import {SettingsService} from "../../../../../services/settings.service";
-import {PrivilegesService} from "../../../../../services/privileges.service";
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {API_URL} from "../../../../env";
-import {catchError, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {HttpClient} from "@angular/common/http";
-import {AuthService} from "../../../../../services/auth.service";
-import {NotificationService} from "../../../../../services/notifications/notifications.service";
-import {DocumentTypeFactoryComponent} from "../../../../splitter/document-type-factory/document-type-factory.component";
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from "@angular/router";
+import { UserService } from "../../../../../services/user.service";
+import { TranslateService } from "@ngx-translate/core";
+import { SettingsService } from "../../../../../services/settings.service";
+import { PrivilegesService } from "../../../../../services/privileges.service";
+import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { environment } from  "../../../../env";
+import { catchError, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { HttpClient } from "@angular/common/http";
+import { AuthService } from "../../../../../services/auth.service";
+import { NotificationService } from "../../../../../services/notifications/notifications.service";
+import { DocumentTypeFactoryComponent } from "../../../../splitter/document-type-factory/document-type-factory.component";
 
 @Component({
   selector: 'app-create-doc-type',
@@ -120,8 +120,8 @@ export class CreateDocTypeComponent implements OnInit {
             'type'          : 'document',
             'form_id'       : this.selectedFormId,
         };
-        this.http.post(API_URL + '/ws/doctypes/add', newDocType, {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
+        this.http.post(environment['url'] + '/ws/doctypes/add', newDocType, {headers: this.authService.headers}).pipe(
+            tap(() => {
                 this.notify.success(this.translate.instant('DOCTYPE.doctype_added'));
                 if (this.selectedFormId)
                     this.documentTypeFactoryComponent.treeDataObj.loadTree(this.selectedFormId);

@@ -16,22 +16,22 @@ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import { Component, OnInit } from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {marker} from "@biesbjerg/ngx-translate-extract-marker";
-import {FormBuilder, FormControl} from "@angular/forms";
-import {ActivatedRoute, Router} from "@angular/router";
-import {MatDialog} from "@angular/material/dialog";
-import {UserService} from "../../../../services/user.service";
-import {AuthService} from "../../../../services/auth.service";
-import {TranslateService} from "@ngx-translate/core";
-import {NotificationService} from "../../../../services/notifications/notifications.service";
-import {SettingsService} from "../../../../services/settings.service";
-import {PrivilegesService} from "../../../../services/privileges.service";
-import {API_URL} from "../../../env";
-import {catchError, finalize, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {HistoryService} from "../../../../services/history.service";
-import {Country} from "@angular-material-extensions/select-country";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import { FormBuilder, FormControl } from "@angular/forms";
+import { ActivatedRoute, Router } from "@angular/router";
+import { MatDialog } from "@angular/material/dialog";
+import { UserService } from "../../../../services/user.service";
+import { AuthService } from "../../../../services/auth.service";
+import { TranslateService } from "@ngx-translate/core";
+import { NotificationService } from "../../../../services/notifications/notifications.service";
+import { SettingsService } from "../../../../services/settings.service";
+import { PrivilegesService } from "../../../../services/privileges.service";
+import { environment } from  "../../../env";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { HistoryService } from "../../../../services/history.service";
+import { Country } from "@angular-material-extensions/select-country";
 
 @Component({
     selector: 'app-update',
@@ -144,7 +144,7 @@ export class UpdateCustomerComponent implements OnInit {
 
     ngOnInit(): void {
         this.customerId = this.route.snapshot.params['id'];
-        this.http.get(API_URL + '/ws/accounts/customers/getById/' + this.customerId, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/accounts/customers/getById/' + this.customerId, {headers: this.authService.headers}).pipe(
             tap((customer: any) => {
                 this.customer = customer;
                 for (const field in this.customer) {
@@ -152,10 +152,10 @@ export class UpdateCustomerComponent implements OnInit {
                         this.customerForm.forEach(element => {
                             if (element.id === field) {
                                 element.control.setValue(this.customer[field]);
-                            }else if (field === 'address_id') {
+                            } else if (field === 'address_id') {
                                 this.addressId = this.customer[field];
                                 if (this.addressId) {
-                                    this.http.get(API_URL + '/ws/accounts/getAdressById/' + this.addressId, {headers: this.authService.headers}).pipe(
+                                    this.http.get(environment['url'] + '/ws/accounts/getAdressById/' + this.addressId, {headers: this.authService.headers}).pipe(
                                         tap((address: any) => {
                                             for (const field in address) {
                                                 if (address.hasOwnProperty(field)) {
@@ -177,8 +177,8 @@ export class UpdateCustomerComponent implements OnInit {
                                             return of(false);
                                         })
                                     ).subscribe();
-                                }else {
-                                    this.http.post(API_URL + '/ws/accounts/addresses/create',
+                                } else {
+                                    this.http.post(environment['url'] + '/ws/accounts/addresses/create',
                                         {'args': {
                                                 'address1': '',
                                                 'address2': '',
@@ -190,7 +190,7 @@ export class UpdateCustomerComponent implements OnInit {
                                     ).pipe(
                                         tap((data: any) => {
                                             this.addressId = data.id;
-                                            this.http.put(API_URL + '/ws/accounts/customers/update/' + this.customerId, {'args': {'address_id' : this.addressId}}, {headers: this.authService.headers},
+                                            this.http.put(environment['url'] + '/ws/accounts/customers/update/' + this.customerId, {'args': {'address_id' : this.addressId}}, {headers: this.authService.headers},
                                             ).pipe(
                                                 finalize(() => this.loading = false),
                                                 catchError((err: any) => {
@@ -252,7 +252,7 @@ export class UpdateCustomerComponent implements OnInit {
                 address[element.id] = element.control.value;
             });
 
-            this.http.put(API_URL + '/ws/accounts/customers/update/' + this.customerId, {'args': customer}, {headers: this.authService.headers},
+            this.http.put(environment['url'] + '/ws/accounts/customers/update/' + this.customerId, {'args': customer}, {headers: this.authService.headers},
             ).pipe(
                 catchError((err: any) => {
                     console.debug(err);
@@ -261,7 +261,7 @@ export class UpdateCustomerComponent implements OnInit {
                 })
             ).subscribe();
 
-            this.http.put(API_URL + '/ws/accounts/addresses/update/' + this.addressId, {'args': address}, {headers: this.authService.headers},
+            this.http.put(environment['url'] + '/ws/accounts/addresses/update/' + this.addressId, {'args': address}, {headers: this.authService.headers},
             ).pipe(
                 tap(() => {
                     this.historyService.addHistory('accounts', 'update_customer', this.translate.instant('HISTORY-DESC.update-customer', {customer: customer['name']}));

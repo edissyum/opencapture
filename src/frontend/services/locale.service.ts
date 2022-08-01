@@ -1,20 +1,38 @@
-import {of} from "rxjs";
+/** This file is part of Open-Capture for Invoices.
+
+ Open-Capture for Invoices is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ Open-Capture is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with Open-Capture for Invoices.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+
+ @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+
+import { of } from "rxjs";
 import * as moment from 'moment';
-import {API_URL} from "../app/env";
-import {Injectable} from '@angular/core';
-import {AuthService} from "./auth.service";
-import {catchError, tap} from "rxjs/operators";
-import {HttpClient} from "@angular/common/http";
-import {HistoryService} from "./history.service";
-import {DateAdapter} from "@angular/material/core";
-import {TranslateService} from "@ngx-translate/core";
-import {NotificationService} from "./notifications/notifications.service";
+import { environment } from  "../app/env";
+import { Injectable } from '@angular/core';
+import { AuthService } from "./auth.service";
+import { catchError, tap } from "rxjs/operators";
+import { HttpClient } from "@angular/common/http";
+import { HistoryService } from "./history.service";
+import { DateAdapter } from "@angular/material/core";
+import { TranslateService } from "@ngx-translate/core";
+import { NotificationService } from "./notifications/notifications.service";
 
 @Injectable({
     providedIn: 'root'
 })
 export class LocaleService {
     currentLang         : string = 'fra';
+    currentBabelLang    : string = 'fr';
     dateAdaptaterLocale : string = 'fr-FR';
     langs               : [] = [];
 
@@ -62,7 +80,7 @@ export class LocaleService {
     }
 
     changeLocale(data: any) {
-        this.http.get(API_URL + '/ws/i18n/changeLanguage/' + data.value, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/i18n/changeLanguage/' + data.value, {headers: this.authService.headers}).pipe(
             tap(() => {
                 const label = data.source._elementRef.nativeElement.textContent;
                 this.historyService.addHistory('general', 'language_changed', this.translate.instant('HISTORY-DESC.language_changed', {lang: label}));
@@ -77,9 +95,10 @@ export class LocaleService {
     }
 
     getCurrentLocale() {
-        this.http.get(API_URL + '/ws/i18n/getCurrentLang').pipe(
+        this.http.get(environment['url'] + '/ws/i18n/getCurrentLang').pipe(
             tap((data: any) => {
                 this.currentLang = data.lang;
+                this.currentBabelLang = data.babel_lang;
                 if (data.moment_lang) {
                     this.dateAdaptaterLocale = data.moment_lang;
                 }
@@ -96,7 +115,7 @@ export class LocaleService {
     }
 
     getLocales() {
-        this.http.get(API_URL + '/ws/i18n/getAllLang', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/i18n/getAllLang', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.langs = data.langs;
             }),

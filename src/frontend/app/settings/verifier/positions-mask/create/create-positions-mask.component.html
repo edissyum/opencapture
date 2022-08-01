@@ -4,7 +4,7 @@
         <mat-divider class="border-green-400"></mat-divider>
         <mat-nav-list class="pt-0">
             <mat-expansion-panel *ngFor="let parent of this.serviceSettings.getSettingsParent()"
-                     [expanded]="parent.opened" (opened)="this.serviceSettings.closeOtherParent(this.router.url, parent['id'])">
+                                 [expanded]="parent.opened" (opened)="this.serviceSettings.closeOtherParent(this.router.url, parent['id'])">
                 <mat-expansion-panel-header class="settings_expansion">
                     <mat-panel-title>
                         {{ parent['label'] | translate }}
@@ -85,7 +85,7 @@
             </div>
         </div>
         <div *ngIf="!loading" class="overflow-auto">
-            <div class="grid grid-cols-2 gap-8 mt-6 ml-6 mr-6">
+            <div class="grid grid-cols-3 gap-8 mt-6 ml-6 mr-6">
                 <mat-form-field>
                     <mat-label>{{ "POSITIONS-MASKS.label" | translate }}</mat-label>
                     <input matInput [formControl]="this.form['label'].control" required>
@@ -97,10 +97,18 @@
                     <input matInput type="text" [required]="true"
                            [formControl]="this.form['supplier_id'].control" [matAutocomplete]="auto">
                     <mat-autocomplete #auto="matAutocomplete">
-                        <mat-option *ngFor="let option of filteredOptions | async" [value]="option.name" [id]="option.id">
+                        <mat-option *ngFor="let option of this.filteredOptions | async" [value]="option.name" [id]="option.id">
                             <span [innerHTML]="option.name | highlight: toHighlight"></span>
                         </mat-option>
                     </mat-autocomplete>
+                </mat-form-field>
+                <mat-form-field class="block">
+                    <mat-label>
+                        {{ "POSITIONS-MASKS.form_associated" | translate }}
+                    </mat-label>
+                    <mat-select [formControl]="this.form['form_id'].control" [required]="true">
+                        <mat-option *ngFor="let option of this.forms" [value]="option['id']">{{ option['label'] }}</mat-option>
+                    </mat-select>
                 </mat-form-field>
             </div>
         </div>

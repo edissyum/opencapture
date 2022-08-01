@@ -17,19 +17,19 @@
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
 import { Component, OnInit } from '@angular/core';
-import {FormControl} from "@angular/forms";
-import {Router} from "@angular/router";
-import {HttpClient} from "@angular/common/http";
-import {UserService} from "../../../../../services/user.service";
-import {AuthService} from "../../../../../services/auth.service";
-import {TranslateService} from "@ngx-translate/core";
-import {NotificationService} from "../../../../../services/notifications/notifications.service";
-import {SettingsService} from "../../../../../services/settings.service";
-import {PrivilegesService} from "../../../../../services/privileges.service";
-import {API_URL} from "../../../../env";
-import {catchError, finalize, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {marker} from "@biesbjerg/ngx-translate-extract-marker";
+import { FormControl } from "@angular/forms";
+import { Router } from "@angular/router";
+import { HttpClient } from "@angular/common/http";
+import { UserService } from "../../../../../services/user.service";
+import { AuthService } from "../../../../../services/auth.service";
+import { TranslateService } from "@ngx-translate/core";
+import { NotificationService } from "../../../../../services/notifications/notifications.service";
+import { SettingsService } from "../../../../../services/settings.service";
+import { PrivilegesService } from "../../../../../services/privileges.service";
+import { environment } from  "../../../../env";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 
 @Component({
     selector: 'app-splitter-create-output',
@@ -111,7 +111,7 @@ export class SplitterCreateOutputComponent implements OnInit {
             }
         });
 
-        this.http.get(API_URL + '/ws/outputs/getOutputsTypes?module=splitter', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/outputs/getOutputsTypes?module=splitter', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.outputsTypes = data.outputs_types;
             }),
@@ -141,7 +141,7 @@ export class SplitterCreateOutputComponent implements OnInit {
             const outputTypeId = this.getValueFromForm(this.outputForm, 'output_type_id');
             const outputLabel = this.getValueFromForm(this.outputForm, 'output_label');
             const compressType = this.getValueFromForm(this.outputForm, 'compress_type');
-            this.http.post(API_URL + '/ws/outputs/create',
+            this.http.post(environment['url'] + '/ws/outputs/create',
                 {
                     'args': {
                         'output_type_id': outputTypeId,

@@ -15,20 +15,20 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {Component, OnInit} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {ActivatedRoute, Router} from "@angular/router";
-import {FormBuilder, FormControl} from "@angular/forms";
-import {AuthService} from "../../../../../services/auth.service";
-import {UserService} from "../../../../../services/user.service";
-import {TranslateService} from "@ngx-translate/core";
-import {NotificationService} from "../../../../../services/notifications/notifications.service";
-import {SettingsService} from "../../../../../services/settings.service";
-import {API_URL} from "../../../../env";
-import {catchError, finalize, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {PrivilegesService} from "../../../../../services/privileges.service";
-import {HistoryService} from "../../../../../services/history.service";
+import { Component, OnInit } from '@angular/core';
+import { HttpClient } from "@angular/common/http";
+import { ActivatedRoute, Router } from "@angular/router";
+import { FormBuilder, FormControl } from "@angular/forms";
+import { AuthService } from "../../../../../services/auth.service";
+import { UserService } from "../../../../../services/user.service";
+import { TranslateService } from "@ngx-translate/core";
+import { NotificationService } from "../../../../../services/notifications/notifications.service";
+import { SettingsService } from "../../../../../services/settings.service";
+import { environment } from  "../../../../env";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { PrivilegesService } from "../../../../../services/privileges.service";
+import { HistoryService } from "../../../../../services/history.service";
 
 @Component({
     selector: 'app-create-user',
@@ -105,7 +105,7 @@ export class CreateUserComponent implements OnInit {
     ngOnInit(): void {
         this.serviceSettings.init();
 
-        this.http.get(API_URL + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.customers = data.customers;
                 this.loadingCustomers = false;
@@ -117,7 +117,7 @@ export class CreateUserComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.get(API_URL + '/ws/roles/list', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/roles/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 data.roles.forEach((element: any) => {
                     if (element.editable) {
@@ -160,7 +160,7 @@ export class CreateUserComponent implements OnInit {
         }
         if (!found) {
             this.usersCustomers.push(customerId);
-        }else {
+        } else {
             this.usersCustomers.splice(cpt, 1);
         }
     }
@@ -191,7 +191,7 @@ export class CreateUserComponent implements OnInit {
                 return of(false);
             }
             user['customers'] = this.usersCustomers;
-            this.http.post(API_URL + '/ws/users/new', user, {headers: this.authService.headers},
+            this.http.post(environment['url'] + '/ws/users/new', user, {headers: this.authService.headers},
             ).pipe(
                 tap(() => {
                     const _user = user['lastname'] + ' ' + user['firstname'];

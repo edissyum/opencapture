@@ -46,11 +46,11 @@ class Spreadsheet:
             self.referencialSupplierArray['get_only_raw_footer'] = fp['get_only_raw_footer']
             self.referencialSupplierArray['doc_lang'] = fp['doc_lang']
 
-    def update_supplier_ods_sheet(self, _db):
+    def update_supplier_ods_sheet(self, database):
         if os.path.isfile(self.referencialSuppplierSpreadsheet):
             content_sheet = get_data(self.referencialSuppplierSpreadsheet)
 
-            res = _db.select({
+            res = database.select({
                 'select': ['*'],
                 'table': ['accounts_supplier'],
                 'where': ['status = %s'],
@@ -68,14 +68,14 @@ class Spreadsheet:
                         address_id = supplier['address_id']
                         address = False
                         if address_id:
-                            address = _db.select({
+                            address = database.select({
                                 'select': ['*'],
                                 'table': ['addresses'],
                                 'where': ['id = %s'],
                                 'data': [address_id],
                             })[0]
 
-                        positions_mask_id = _db.select({
+                        positions_mask_id = database.select({
                             'select': ['id'],
                             'table': ['positions_masks'],
                             'where': ['supplier_id = %s'],

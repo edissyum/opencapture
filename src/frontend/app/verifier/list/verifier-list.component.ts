@@ -15,9 +15,9 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { LocalStorageService } from "../../../services/local-storage.service";
-import { API_URL } from "../../env";
+import { environment } from  "../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { NotificationService } from "../../../services/notifications/notifications.service";
@@ -30,12 +30,13 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import { FlatTreeControl } from "@angular/cdk/tree";
 import { MatTreeFlatDataSource, MatTreeFlattener } from "@angular/material/tree";
 import { UserService } from "../../../services/user.service";
-import {ConfirmDialogComponent} from "../../../services/confirm-dialog/confirm-dialog.component";
-import {MatDialog} from "@angular/material/dialog";
-import {DomSanitizer} from "@angular/platform-browser";
-import {ConfigService} from "../../../services/config.service";
-import {HistoryService} from "../../../services/history.service";
-import {FormControl} from "@angular/forms";
+import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm-dialog.component";
+import { MatDialog } from "@angular/material/dialog";
+import { DomSanitizer } from "@angular/platform-browser";
+import { ConfigService } from "../../../services/config.service";
+import { HistoryService } from "../../../services/history.service";
+import { FormControl } from "@angular/forms";
+import {writeErrorToLogFile} from "@angular/cli/src/utilities/log-file";
 
 interface accountsNode {
     name: string
@@ -70,18 +71,19 @@ interface flatNode {
     ]
 })
 export class VerifierListComponent implements OnInit {
-    loading         : boolean           = true;
-    loadingCustomers: boolean           = true;
-    status          : any[]             = [];
-    forms           : any[]             = [
+    loading                 : boolean           = true;
+    loadingCustomers        : boolean           = true;
+    status                  : any[]             = [];
+    forms                   : any[]             = [
         {'id' : '', "label": this.translate.instant('VERIFIER.all_forms')},
         {'id' : 'no_form', "label": this.translate.instant('VERIFIER.no_form')}
     ];
-    config          : any;
-    currentForm     : any               = '';
-    currentStatus   : string            = 'NEW';
-    currentTime     : string            = 'today';
-    batchList       : any[]             = [
+    filteredForms           : any[]             = [];
+    config                  : any;
+    currentForm             : any               = '';
+    currentStatus           : string            = 'NEW';
+    currentTime             : string            = 'today';
+    batchList               : any[]             = [
         {
             'id': 'today',
             'label': marker('BATCH.today'),
@@ -95,24 +97,24 @@ export class VerifierListComponent implements OnInit {
             'label': marker('BATCH.older'),
         }
     ];
-    pageSize        : number            = 16;
-    pageIndex       : number            = 0;
-    pageSizeOptions : any []            = [4, 8, 12, 16, 24, 48];
-    total           : number            = 0;
-    totals          : any               = {};
-    offset          : number            = 0;
-    selectedTab     : number            = 0;
-    invoices        : any []            = [];
-    allowedCustomers: any []            = [];
-    allowedSuppliers: any []            = [];
-    purchaseOrSale  : string            = '';
-    search          : string            = '';
-    TREE_DATA       : accountsNode[]    = [];
-    expanded        : boolean           = false;
-    invoiceToDeleteSelected : boolean   = false;
-    totalChecked    : number            = 0;
-    customerFilter                      = new FormControl('');
-    customerFilterEmpty : boolean       = false;
+    pageSize                : number            = 16;
+    pageIndex               : number            = 0;
+    pageSizeOptions         : any []            = [4, 8, 12, 16, 24, 48];
+    total                   : number            = 0;
+    totals                  : any               = {};
+    offset                  : number            = 0;
+    selectedTab             : number            = 0;
+    invoices                : any []            = [];
+    allowedCustomers        : any []            = [];
+    allowedSuppliers        : any []            = [];
+    purchaseOrSale          : string            = '';
+    search                  : string            = '';
+    TREE_DATA               : accountsNode[]    = [];
+    expanded                : boolean           = false;
+    invoiceToDeleteSelected : boolean           = false;
+    totalChecked            : number            = 0;
+    customerFilterEmpty     : boolean           = false;
+    customerFilter                              = new FormControl('');
 
     private _transformer = (node: accountsNode, level: number) => ({
         expandable: !!node.children && node.children.length > 0,
@@ -146,7 +148,7 @@ export class VerifierListComponent implements OnInit {
         private configService: ConfigService,
         private historyService: HistoryService,
         private routerExtService: LastUrlService,
-        private localeStorageService: LocalStorageService
+        private localStorageService: LocalStorageService
     ) {}
 
     hasChild = (_: number, node: flatNode) => node.expandable;
@@ -161,23 +163,23 @@ export class VerifierListComponent implements OnInit {
         marker('VERIFIER.select_all'); // Needed to get the translation in the JSON file
         marker('VERIFIER.unselect_all'); // Needed to get the translation in the JSON file
         marker('VERIFIER.documents_settings'); // Needed to get the translation in the JSON file
-        this.localeStorageService.save('splitter_or_verifier', 'verifier');
+        this.localStorageService.save('splitter_or_verifier', 'verifier');
         this.removeLockByUserId(this.userService.user.username);
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('verifier/') && !lastUrl.includes('settings') || lastUrl === '/' || lastUrl === '/upload') {
-            if (this.localeStorageService.get('invoicesPageIndex'))
-                this.pageIndex = parseInt(this.localeStorageService.get('invoicesPageIndex') as string);
-            if (this.localeStorageService.get('invoicesTimeIndex')) {
-                this.selectedTab = parseInt(this.localeStorageService.get('invoicesTimeIndex') as string);
+            if (this.localStorageService.get('invoicesPageIndex'))
+                this.pageIndex = parseInt(this.localStorageService.get('invoicesPageIndex') as string);
+            if (this.localStorageService.get('invoicesTimeIndex')) {
+                this.selectedTab = parseInt(this.localStorageService.get('invoicesTimeIndex') as string);
                 this.currentTime = this.batchList[this.selectedTab].id;
             }
             this.offset = this.pageSize * (this.pageIndex);
         } else {
-            this.localeStorageService.remove('invoicesPageIndex');
-            this.localeStorageService.remove('invoicesTimeIndex');
+            this.localStorageService.remove('invoicesPageIndex');
+            this.localStorageService.remove('invoicesTimeIndex');
         }
 
-        this.http.get(API_URL + '/ws/status/list?module=verifier', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/status/list?module=verifier', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.status = data.status;
             }),
@@ -188,18 +190,21 @@ export class VerifierListComponent implements OnInit {
             })
         ).subscribe();
 
-        this.loadCustomers();
+        this.loadForms();
+        await this.loadCustomers();
     }
 
     loadForms() {
-        this.http.get(API_URL + '/ws/forms/list?module=verifier&totals=true&status=' + this.currentStatus + '&user_id=' + this.userService.user.id + '&time=' + this.currentTime, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/forms/list?module=verifier&totals=true&status=' + this.currentStatus + '&user_id=' + this.userService.user.id + '&time=' + this.currentTime, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
+                this.filteredForms = [];
                 this.forms = [
                     {'id' : '', "label": this.translate.instant('VERIFIER.all_forms')},
                     {'id' : 'no_form', "label": this.translate.instant('VERIFIER.no_form')}
                 ];
                 data.forms.forEach((form: any) => {
                     this.forms.push(form);
+                    this.filteredForms.push(form);
                 });
             }),
             catchError((err: any) => {
@@ -211,7 +216,7 @@ export class VerifierListComponent implements OnInit {
     }
 
     removeLockByUserId(userId: any) {
-        this.http.put(API_URL + '/ws/verifier/invoices/removeLockByUserId/' + userId, {}, {headers: this.authService.headers}).pipe(
+        this.http.put(environment['url'] + '/ws/verifier/invoices/removeLockByUserId/' + userId, {}, {headers: this.authService.headers}).pipe(
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
@@ -222,7 +227,7 @@ export class VerifierListComponent implements OnInit {
 
     loadCustomers() {
         this.TREE_DATA = [];
-        this.http.get(API_URL + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 const customers = data.customers;
                 this.TREE_DATA.push({
@@ -236,7 +241,7 @@ export class VerifierListComponent implements OnInit {
                     children: [],
                 });
                 this.allowedCustomers.push(0); // 0 is used if for some reasons no customer was recover by OC process
-                this.http.get(API_URL + '/ws/users/getCustomersByUserId/' + this.userService.user.id, {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/users/getCustomersByUserId/' + this.userService.user.id, {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
                         customers.forEach((customer: any) => {
                             data.forEach((customer_id: any) => {
@@ -273,16 +278,16 @@ export class VerifierListComponent implements OnInit {
         ).subscribe();
     }
 
-    loadInvoices() {
+    async loadInvoices() {
         this.invoiceToDeleteSelected = false;
         this.totalChecked = 0;
         this.loading = true;
         this.loadingCustomers = true;
         this.invoices = [];
-        this.loadForms();
-        let url = API_URL + '/ws/verifier/invoices/totals/' + this.currentStatus + '/' + this.userService.user.id;
+        await this.loadForms();
+        let url = environment['url'] + '/ws/verifier/invoices/totals/' + this.currentStatus + '/' + this.userService.user.id;
         if (this.currentForm !== '') {
-            url = API_URL + '/ws/verifier/invoices/totals/' + this.currentStatus + '/' + this.userService.user.id + '/' + this.currentForm;
+            url = environment['url'] + '/ws/verifier/invoices/totals/' + this.currentStatus + '/' + this.userService.user.id + '/' + this.currentForm;
         }
         this.http.get(url, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -294,7 +299,7 @@ export class VerifierListComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
-        this.http.post(API_URL + '/ws/verifier/invoices/list',
+        this.http.post(environment['url'] + '/ws/verifier/invoices/list',
             {
                 'allowedCustomers': this.allowedCustomers, 'status': this.currentStatus, 'limit': this.pageSize,
                 'allowedSuppliers': this.allowedSuppliers, 'form_id': this.currentForm, 'time': this.currentTime,
@@ -312,10 +317,42 @@ export class VerifierListComponent implements OnInit {
                     }
                     this.invoices = data.invoices;
                     this.invoices.forEach((invoice: any) => {
-                        if (!invoice.thumb.includes('data:image/jpeg;base64'))
+                        if (!invoice.thumb.includes('data:image/jpeg;base64')) {
                             invoice.thumb = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + invoice.thumb);
-                        if (invoice.form_label === null || invoice.form_label === '' || invoice.form_label === undefined)
+                        }
+                        if (invoice.form_label === null || invoice.form_label === '' || invoice.form_label === undefined) {
                             invoice.form_label = this.translate.instant('VERIFIER.no_form');
+                        }
+                        if (invoice.form_id) {
+                            const form_data = this.getFormInfo(invoice.form_id);
+                            if (form_data) {
+                                invoice.display = {'subtitles': []};
+                                form_data.display.subtitles.forEach((subtitle: any) => {
+                                    let subtitle_data = '';
+                                    if (invoice.datas.hasOwnProperty(subtitle.id)) {
+                                        subtitle_data= invoice.datas[subtitle.id];
+                                    } else if (invoice.hasOwnProperty(subtitle.id)) {
+                                        subtitle_data = invoice[subtitle.id];
+                                    }
+
+                                    invoice.display.subtitles.push({
+                                        'id': subtitle.id,
+                                        'label': subtitle.label,
+                                        'data': subtitle_data
+                                    });
+                                });
+                            } else {
+                                invoice.display = {
+                                    "subtitles": [
+                                        {"id": "invoice_number", "label": "FACTURATION.invoice_number"},
+                                        {"id": "invoice_date", "label": "FACTURATION.invoice_date"},
+                                        {"id": "date", "label": "VERIFIER.register_date"},
+                                        {"id": "original_filename", "label": "VERIFIER.original_file"},
+                                        {"id": "form_label", "label": "VERIFIER.form"}
+                                    ]
+                                };
+                            }
+                        }
                     });
                 }
 
@@ -391,6 +428,16 @@ export class VerifierListComponent implements OnInit {
         ).subscribe();
     }
 
+    getFormInfo(form_id: number) {
+        let form: any;
+        this.forms.forEach((element: any) => {
+            if (element.id === form_id) {
+                form = element;
+            }
+        });
+        return form;
+    }
+
     fillChildren(parentId: any , parent: any, childName: any, supplierName: any, supplierId: any, id: any, purchaseOrSale: any) {
         let childNameExists = false;
         parent.forEach((child: any) => {
@@ -437,12 +484,30 @@ export class VerifierListComponent implements OnInit {
     changeCustomer(customerId: number, invoiceId: number) {
         this.loading = true;
         this.loadingCustomers = true;
-        this.http.put(API_URL + '/ws/verifier/invoices/' + invoiceId + '/update',
+        this.http.put(environment['url'] + '/ws/verifier/invoices/' + invoiceId + '/update',
             {'args': {"customer_id": customerId}},
             {headers: this.authService.headers}).pipe(
                 finalize(() => {
                     this.resetInvoices();
                     this.notify.success(this.translate.instant('VERIFIER.customer_changed_successfully'));
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+        ).subscribe();
+    }
+
+    changeInvoiceForm(formId: number, invoiceId: number) {
+        this.loading = true;
+        this.loadingCustomers = true;
+        this.http.put(environment['url'] + '/ws/verifier/invoices/' + invoiceId + '/update',
+            {'args': {"form_id": formId}},
+            {headers: this.authService.headers}).pipe(
+                finalize(() => {
+                    this.resetInvoices();
+                    this.notify.success(this.translate.instant('VERIFIER.form_changed'));
                 }),
                 catchError((err: any) => {
                     console.debug(err);
@@ -459,7 +524,7 @@ export class VerifierListComponent implements OnInit {
                     if (this.TREE_DATA[index].id === invoice.customer_id && invoice.purchase_or_sale === purchaseOrSale) {
                         if (invoice.supplier_id) {
                             this.fillChildren(this.TREE_DATA[index].id, child.children, invoice.supplier_name, invoice.supplier_name, invoice.supplier_id, invoice.invoice_id, purchaseOrSale);
-                        }else {
+                        } else {
                             this.fillChildren(this.TREE_DATA[index].id, child.children, invoice.supplier_name, this.translate.instant('ACCOUNTS.supplier_unknow'), invoice.supplier_id, invoice.invoice_id, purchaseOrSale);
                         }
                         child.count = child.count + 1;
@@ -521,7 +586,7 @@ export class VerifierListComponent implements OnInit {
     }
 
     deleteInvoice(invoiceId: number, batchDelete = false) {
-        this.http.delete(API_URL + '/ws/verifier/invoices/delete/' + invoiceId, {headers: this.authService.headers}).pipe(
+        this.http.delete(environment['url'] + '/ws/verifier/invoices/delete/' + invoiceId, {headers: this.authService.headers}).pipe(
             tap(() => {
                 if (!batchDelete) {
                     this.loadCustomers();
@@ -609,7 +674,7 @@ export class VerifierListComponent implements OnInit {
     onTabChange(event: any) {
         this.search = '';
         this.selectedTab = event.index;
-        this.localeStorageService.save('invoicesTimeIndex', this.selectedTab);
+        this.localStorageService.save('invoicesTimeIndex', this.selectedTab);
         this.currentTime = this.batchList[this.selectedTab].id;
         this.resetPaginator();
         this.loadInvoices();
@@ -619,7 +684,7 @@ export class VerifierListComponent implements OnInit {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
         this.pageIndex = event.pageIndex;
-        this.localeStorageService.save('invoicesPageIndex', event.pageIndex);
+        this.localStorageService.save('invoicesPageIndex', event.pageIndex);
         this.loadInvoices();
     }
 
@@ -632,7 +697,7 @@ export class VerifierListComponent implements OnInit {
         this.total = 0;
         this.offset = 0;
         this.pageIndex = 0;
-        this.localeStorageService.save('invoicesPageIndex', this.pageIndex);
+        this.localStorageService.save('invoicesPageIndex', this.pageIndex);
     }
 
     expandAll() {

@@ -15,21 +15,21 @@ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {Component, OnInit} from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {FormBuilder, FormControl} from "@angular/forms";
-import {ActivatedRoute, Router} from "@angular/router";
-import {AuthService} from "../../../../../services/auth.service";
-import {UserService} from "../../../../../services/user.service";
-import {TranslateService} from "@ngx-translate/core";
-import {NotificationService} from "../../../../../services/notifications/notifications.service";
-import {SettingsService} from "../../../../../services/settings.service";
-import {API_URL} from "../../../../env";
-import {catchError, finalize, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {PrivilegesService} from "../../../../../services/privileges.service";
-import {marker} from "@biesbjerg/ngx-translate-extract-marker";
-import {HistoryService} from "../../../../../services/history.service";
+import { Component, OnInit } from '@angular/core';
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { FormBuilder, FormControl } from "@angular/forms";
+import { ActivatedRoute, Router } from "@angular/router";
+import { AuthService } from "../../../../../services/auth.service";
+import { UserService } from "../../../../../services/user.service";
+import { TranslateService } from "@ngx-translate/core";
+import { NotificationService } from "../../../../../services/notifications/notifications.service";
+import { SettingsService } from "../../../../../services/settings.service";
+import { environment } from  "../../../../env";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { PrivilegesService } from "../../../../../services/privileges.service";
+import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import { HistoryService } from "../../../../../services/history.service";
 
 @Component({
     selector: 'app-update',
@@ -129,7 +129,8 @@ export class UpdateRoleComponent implements OnInit {
         marker('PRIVILEGES.regex'),
         marker('PRIVILEGES.update_document_type'),
         marker('PRIVILEGES.add_document_type'),
-        marker('PRIVILEGES.login_methods')
+        marker('PRIVILEGES.login_methods'),
+        marker('PRIVILEGES.verifier_display')
     ];
     // End translation
     constructor(
@@ -151,7 +152,7 @@ export class UpdateRoleComponent implements OnInit {
         this.serviceSettings.init();
         this.roleId = this.route.snapshot.params['id'];
 
-        this.http.get(API_URL + '/ws/roles/getById/' + this.roleId, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/roles/getById/' + this.roleId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.role = data;
                 for (const field in data) {
@@ -172,7 +173,7 @@ export class UpdateRoleComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.get(API_URL + '/ws/privileges/getbyRoleId/' + this.roleId, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/privileges/getbyRoleId/' + this.roleId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.rolePrivileges = data;
             }),
@@ -183,7 +184,7 @@ export class UpdateRoleComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.get(API_URL + '/ws/privileges/list', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/privileges/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.privileges = data;
             }),
@@ -223,7 +224,7 @@ export class UpdateRoleComponent implements OnInit {
                 });
             });
 
-            this.http.put(API_URL + '/ws/roles/update/' + this.roleId, {'args': role}, {headers: this.authService.headers},
+            this.http.put(environment['url'] + '/ws/roles/update/' + this.roleId, {'args': role}, {headers: this.authService.headers},
             ).pipe(
                 catchError((err: any) => {
                     console.debug(err);
@@ -232,7 +233,7 @@ export class UpdateRoleComponent implements OnInit {
                 })
             ).subscribe();
 
-            this.http.put(API_URL + '/ws/roles/updatePrivilege/' + this.roleId, {'privileges': rolePrivileges}, {headers: this.authService.headers},
+            this.http.put(environment['url'] + '/ws/roles/updatePrivilege/' + this.roleId, {'privileges': rolePrivileges}, {headers: this.authService.headers},
             ).pipe(
                 tap(() => {
                     this.historyService.addHistory('general', 'update_role', this.translate.instant('HISTORY-DESC.update-role', {role: role['label']}));
@@ -290,7 +291,7 @@ export class UpdateRoleComponent implements OnInit {
                     this.rolePrivileges.splice(index, 1);
                 }
             });
-        }else {
+        } else {
             this.rolePrivileges.push(privilege);
         }
     }

@@ -17,17 +17,18 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 import json
-
+from flask import request
 from flask_babel import gettext
+from src.backend.main import create_classes_from_custom_id
+from src.backend.functions import retrieve_custom_from_url
 from src.backend.import_models import positions_masks, accounts
-from src.backend.main import create_classes_from_current_config
 
 
 def get_positions_masks(args):
     _positions_masks, error = positions_masks.get_positions_masks(args)
     total_positions_mask = positions_masks.get_positions_masks({
         'select': ['COUNT(*) as total'],
-        'where': ['status = %s'],
+        'where': ['positions_masks.status = %s'],
         'data': ['OK']
     })
     if error is None:
@@ -45,7 +46,8 @@ def get_positions_masks(args):
 
 
 def add_positions_mask(args):
-    _vars = create_classes_from_current_config()
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     _db = _vars[0]
     _spreadsheet = _vars[7]
     res, error = positions_masks.add_positions_mask(args)
@@ -96,10 +98,11 @@ def get_positions_mask_fields_by_supplier_id(supplier_id):
 
 
 def update_positions_mask(position_mask_id, args):
-    _vars = create_classes_from_current_config()
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     _db = _vars[0]
     _spreadsheet = _vars[7]
-    positions_masks_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
+    _, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
     if error is None:
         res, error = positions_masks.update_positions_mask({'set': args, 'position_mask_id': position_mask_id})
 
@@ -124,7 +127,8 @@ def update_positions_mask(position_mask_id, args):
 
 
 def delete_positions_mask(position_mask_id):
-    _vars = create_classes_from_current_config()
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     _db = _vars[0]
 
     positions_masks_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
@@ -147,7 +151,8 @@ def delete_positions_mask(position_mask_id):
 
 
 def duplicate_positions_mask(position_mask_id):
-    _vars = create_classes_from_current_config()
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     _db = _vars[0]
     positions_masks_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
     if error is None:
@@ -180,7 +185,8 @@ def duplicate_positions_mask(position_mask_id):
 
 
 def disable_positions_mask(position_mask_id):
-    _vars = create_classes_from_current_config()
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     _db = _vars[0]
 
     positions_masks_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
@@ -203,7 +209,8 @@ def disable_positions_mask(position_mask_id):
 
 
 def enable_positions_mask(position_mask_id):
-    _vars = create_classes_from_current_config()
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     _db = _vars[0]
 
     positions_masks_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
@@ -226,7 +233,8 @@ def enable_positions_mask(position_mask_id):
 
 
 def update_positions_by_positions_mask_id(position_mask_id, args):
-    _vars = create_classes_from_current_config()
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     _db = _vars[0]
     positions_mask_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
     if error is None:
@@ -251,7 +259,8 @@ def update_positions_by_positions_mask_id(position_mask_id, args):
 
 
 def update_pages_by_positions_mask_id(position_mask_id, args):
-    _vars = create_classes_from_current_config()
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     _db = _vars[0]
     positions_mask_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
     if error is None:
@@ -276,7 +285,8 @@ def update_pages_by_positions_mask_id(position_mask_id, args):
 
 
 def delete_position_by_positions_mask_id(position_mask_id, field_id):
-    _vars = create_classes_from_current_config()
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     _db = _vars[0]
     positions_mask_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
     if error is None:
@@ -296,7 +306,8 @@ def delete_position_by_positions_mask_id(position_mask_id, field_id):
 
 
 def delete_page_by_positions_mask_id(position_mask_id, field_id):
-    _vars = create_classes_from_current_config()
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     _db = _vars[0]
     positions_mask_info, error = positions_masks.get_positions_mask_by_id({'position_mask_id': position_mask_id})
     if error is None:

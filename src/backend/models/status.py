@@ -15,15 +15,18 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
+from flask import request
 from flask_babel import gettext
-from src.backend.main import create_classes_from_current_config
+from src.backend.functions import retrieve_custom_from_url
+from src.backend.main import create_classes_from_custom_id
 
 
 def get_status(module):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     error = None
-    forms = _db.select({
+    forms = database.select({
         'select': ['*'],
         'table': ['status'],
         'where': ['module = %s'],

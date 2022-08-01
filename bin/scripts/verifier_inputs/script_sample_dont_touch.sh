@@ -18,7 +18,7 @@
 
 name="§§SCRIPT_NAME§§"
 OCPath="§§OC_PATH§§"
-logFile="$OCPath"bin/data/log/OCforInvoices.log
+logFile="§§LOG_PATH§§"
 errFilepath="$OCPath/bin/data/error/$name/"
 tmpFilepath="$OCPath/bin/data/pdf/"
 PID=/tmp/securite-$name-$$.pid
@@ -37,7 +37,7 @@ then
 
     mv "$filepath" "$tmpFilepath"
 
-    python3 "$OCPath"/launch_worker.py -c "$OCPath"/instance/config.ini -f "$tmpFilepath"/"$filename" "§§ARGUMENTS§§"
+    python3 "$OCPath"/launch_worker.py --custom-id "§§CUSTOM_ID§§" -f "$tmpFilepath"/"$filename" "§§ARGUMENTS§§"
 
     rm -f $PID
 elif test -f "$filepath" && test "$ext" != 'application/pdf; charset=binary';

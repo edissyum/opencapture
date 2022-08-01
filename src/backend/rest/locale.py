@@ -15,11 +15,10 @@
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
-from src.backend.import_controllers import auth
-from src.backend.import_controllers import config
-from src.backend.main import create_classes_from_current_config
-from flask import Blueprint, make_response, jsonify, session, current_app
-
+from src.backend.import_controllers import auth, config
+from src.backend.functions import retrieve_custom_from_url
+from src.backend.main import create_classes_from_custom_id
+from flask import Blueprint, make_response, jsonify, session, request
 
 bp = Blueprint('i18n', __name__, url_prefix='/ws/')
 
@@ -35,21 +34,26 @@ def change_language(lang):
 @bp.route('i18n/getAllLang', methods=['GET'])
 @auth.token_required
 def get_all_lang():
-    language = current_app.config['LANGUAGES']
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    languages = _vars[11]
     langs = []
-    for lang in language:
-        langs.append([language[lang]['lang_code'], language[lang]['label']])
+    for lang in languages:
+        langs.append([languages[lang]['lang_code'], languages[lang]['label']])
     return make_response({'langs': langs}, 200)
 
 
 @bp.route('i18n/getCurrentLang', methods=['GET'])
 def get_current_lang():
-    _vars = create_classes_from_current_config()
-    _configurations = _vars[10]
-    current_lang = _configurations['locale']
-    languages = current_app.config['LANGUAGES']
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    configurations = _vars[10]
+    current_lang = configurations['locale']
+    languages = _vars[11]
     angular_moment_lang = ''
+    babel_lang = ''
     for _l in languages:
         if current_lang == languages[_l]['lang_code']:
+            babel_lang = _l
             angular_moment_lang = languages[_l]['moment_lang_code']
-    return make_response({'lang': current_lang, 'moment_lang': angular_moment_lang}, 200)
+    return make_response({'lang': current_lang, 'moment_lang': angular_moment_lang, 'babel_lang': babel_lang}, 200)

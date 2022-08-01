@@ -17,8 +17,8 @@
 
 import base64
 from flask_babel import gettext
-from src.backend.import_controllers import auth, verifier
 from flask import Blueprint, make_response, request
+from src.backend.import_controllers import auth, verifier
 
 bp = Blueprint('verifier', __name__, url_prefix='/ws/')
 
@@ -88,6 +88,13 @@ def update_invoice_data(invoice_id):
 def export_xml(invoice_id):
     data = request.json['args']
     res = verifier.export_xml(invoice_id, data)
+    return make_response(res[0], res[1])
+
+
+@bp.route('verifier/invoices/<int:invoice_id>/delete_documents', methods=['GET'])
+@auth.token_required
+def delete_documents_by_invoice_id(invoice_id):
+    res = verifier.delete_documents_by_invoice_id(invoice_id)
     return make_response(res[0], res[1])
 
 

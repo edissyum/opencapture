@@ -15,9 +15,10 @@
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
-from flask import Blueprint, jsonify, make_response, request
 from src.backend.import_controllers import auth, config
-from src.backend.main import create_classes_from_current_config
+from src.backend.functions import retrieve_custom_from_url
+from src.backend.main import create_classes_from_custom_id
+from flask import Blueprint, jsonify, make_response, request
 
 bp = Blueprint('config', __name__,  url_prefix='/ws/')
 
@@ -25,7 +26,8 @@ bp = Blueprint('config', __name__,  url_prefix='/ws/')
 @bp.route('config/readConfig', methods=['GET'])
 @auth.token_required
 def read_config():
-    _vars = create_classes_from_current_config()
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     return make_response(jsonify({'config': _vars[1].cfg})), 200
 
 
@@ -40,11 +42,18 @@ def get_configurations():
     }
 
     if 'search' in request.args and request.args['search']:
+        args['offset'] = ''
         args['where'].append(
-            "LOWER(label) LIKE '%%" + request.args['search'].lower() + "%%' OR "
-            "LOWER(data ->> 'description') LIKE '%%" + request.args['search'].lower() + "%%'"
+            "(LOWER(label) LIKE '%%" + request.args['search'].lower() + "%%' OR "
+            "LOWER(data ->> 'description') LIKE '%%" + request.args['search'].lower() + "%%')"
         )
     res = config.retrieve_configurations(args)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('config/getConfiguration/<string:config_label>', methods=['GET'])
+def get_configuration_by_label(config_label):
+    res = config.retrieve_configuration_by_label(config_label)
     return make_response(jsonify(res[0])), res[1]
 
 
@@ -59,9 +68,10 @@ def get_docservers():
     }
 
     if 'search' in request.args and request.args['search']:
+        args['offset'] = ''
         args['where'].append(
-            "LOWER(label) LIKE '%%" + request.args['search'].lower() + "%%' OR "
-            "LOWER(data ->> 'description') LIKE '%%" + request.args['search'].lower() + "%%'"
+            "(LOWER(label) LIKE '%%" + request.args['search'].lower() + "%%' OR "
+            "LOWER(data ->> 'description') LIKE '%%" + request.args['search'].lower() + "%%')"
         )
     res = config.retrieve_docservers(args)
     return make_response(jsonify(res[0])), res[1]
@@ -70,21 +80,23 @@ def get_docservers():
 @bp.route('config/getRegex', methods=['GET'])
 @auth.token_required
 def get_regex():
-    _vars = create_classes_from_current_config()
-    _configurations = _vars[10]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    configurations = _vars[10]
 
     args = {
         'select': ['*', 'count(*) OVER() as total'],
         'where': ["lang in ('global', %s)"],
-        'data': [_configurations['locale']],
+        'data': [configurations['locale']],
         'offset': request.args['offset'] if 'offset' in request.args else '',
         'limit': request.args['limit'] if 'limit' in request.args else ''
     }
 
     if 'search' in request.args and request.args['search']:
+        args['offset'] = ''
         args['where'].append(
-            "LOWER(regex_id) LIKE '%%" + request.args['search'].lower() + "%%' OR "
-            "LOWER(label) LIKE '%%" + request.args['search'].lower() + "%%' "
+            "(LOWER(regex_id) LIKE '%%" + request.args['search'].lower() + "%%' OR "
+            "LOWER(label) LIKE '%%" + request.args['search'].lower() + "%%') "
         )
     res = config.retrieve_regex(args)
     return make_response(jsonify(res[0])), res[1]
@@ -95,6 +107,19 @@ def get_regex():
 def update_regex(_id):
     data = request.json['data']
     res = config.update_regex(data, _id)
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('config/getLoginImage', methods=['GET'])
+def get_login_image():
+    res = config.get_login_image()
+    return make_response(jsonify(res[0])), res[1]
+
+
+@bp.route('config/updateLoginimage', methods=['PUT'])
+def update_login_image():
+    image_content = request.json['args']['image_content']
+    res = config.update_login_image(image_content)
     return make_response(jsonify(res[0])), res[1]
 
 

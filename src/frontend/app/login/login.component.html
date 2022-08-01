@@ -1,34 +1,49 @@
-<div class="relative top-16 2xl:top-32 flex justify-center h-20">
-    <img src="assets/imgs/logo_opencapture.png" alt="Open-Capture For Invoices logo">
+<div class="relative top-16 2xl:top-32 flex justify-center h-20" *ngIf="this.loginImage">
+    <img [src]="this.loginImage" alt="Open-Capture For Invoices logo">
 </div>
 <div class="flex justify-center items-center" style="height: 85vh">
+    <app-loader *ngIf="this.loading"></app-loader>
     <mat-card class="text-center w-full 2xl:w-1/4 sm:w-1/2">
-        <mat-card-title class="mb-10">
+        <mat-card-title class="mb-5">
             {{ 'GLOBAL.login' | translate }}
         </mat-card-title>
+        <mat-card-subtitle class="mt-5 mb-5">
+            {{ this.subtitle }}
+        </mat-card-subtitle>
         <mat-card-content>
-            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <form [formGroup]="this.loginForm" (ngSubmit)="onSubmit()">
                 <mat-form-field class="block">
                     <mat-label>{{ 'USER.username' | translate }}</mat-label>
                     <input matInput formControlName="username" type="text" placeholder="{{ 'USER.username' | translate }}" required>
-                    <mat-error *ngIf="loginForm.controls.username.invalid">{{ getErrorMessage('username') }}</mat-error>
+                    <mat-error *ngIf="this.loginForm.controls.username.invalid">{{ getErrorMessage('username') }}</mat-error>
                 </mat-form-field>
                 <mat-form-field class="block">
                     <mat-label>{{ 'USER.password' | translate }}</mat-label>
-                    <input matInput formControlName="password" [type]="this.showPassword ? 'text' : 'password'"
+                    <input matInput name="password" autocomplete="off" formControlName="password"
+                           [type]="this.showPassword ? 'text' : 'password'"
                            placeholder="{{ 'USER.password' | translate }}" required>
                     <mat-icon matSuffix (click)="this.showPassword = !this.showPassword"
                               class="text-green-400 relative cursor-pointer -top-1.5 text-base">
-                        <i class="fa fa-1x" [class.fa-eye-slash]="!showPassword" [class.fa-eye]="showPassword"></i>
+                        <i class="fa fa-1x" [class.fa-eye-slash]="!showPassword" [class.fa-eye]="this.showPassword"></i>
                     </mat-icon>
-                    <mat-error *ngIf="this.loginForm.controls.password.invalid">{{ getErrorMessage('password') }}</mat-error>
+                    <mat-error *ngIf="this.loginForm.controls.password.invalid">
+                        {{ getErrorMessage('password') }}
+                    </mat-error>
                     <mat-hint align="end" *ngIf="this.enableLoginMethodName === 'ldap'">
-                        <span class="underline decoration-1" >{{enableLoginMethodName | uppercase}} activé</span>
+                        <span class="underline decoration-1" >
+                            {{ this.enableLoginMethodName | uppercase }} {{ 'LOGIN-METHODS.enabled' | translate }}
+                        </span>
                     </mat-hint>
                 </mat-form-field>
                 <button mat-button [disabled]="this.processLogin || this.isConnectionBtnDisabled"
-                        class="border-solid border-green-400 border hover:bg-green-400 hover:text-white transition duration-300" type="submit">
-                    {{ 'AUTH.login' | translate }}
+                        class="w-1/3 border-solid border-green-400 border hover:bg-green-400 hover:text-white
+                               transition duration-300" type="submit">
+                    <span *ngIf="!this.processLogin && !this.isConnectionBtnDisabled">
+                        {{ 'AUTH.login' | translate }}
+                    </span>
+                    <i *ngIf="this.processLogin || this.isConnectionBtnDisabled"
+                       class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"
+                       style="--fa-animation-duration: 1.5s;margin-top: -0.2rem;"></i>
                 </button>
             </form>
         </mat-card-content>

@@ -15,22 +15,22 @@ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
-import {UserService} from "../../../../../services/user.service";
-import {TranslateService} from "@ngx-translate/core";
-import {NotificationService} from "../../../../../services/notifications/notifications.service";
-import {SettingsService} from "../../../../../services/settings.service";
-import {PrivilegesService} from "../../../../../services/privileges.service";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {FormBuilder, FormControl} from "@angular/forms";
-import {AuthService} from "../../../../../services/auth.service";
-import {API_URL} from "../../../../env";
-import {catchError, finalize, map, startWith, tap} from "rxjs/operators";
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from "@angular/router";
+import { UserService } from "../../../../../services/user.service";
+import { TranslateService } from "@ngx-translate/core";
+import { NotificationService } from "../../../../../services/notifications/notifications.service";
+import { SettingsService } from "../../../../../services/settings.service";
+import { PrivilegesService } from "../../../../../services/privileges.service";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { FormBuilder, FormControl } from "@angular/forms";
+import { AuthService } from "../../../../../services/auth.service";
+import { environment } from  "../../../../env";
+import { catchError, finalize, map, startWith, tap } from "rxjs/operators";
 import { PipeTransform, Pipe } from '@angular/core';
-import {of} from "rxjs";
-import {marker} from "@biesbjerg/ngx-translate-extract-marker";
-import {HistoryService} from "../../../../../services/history.service";
+import { of } from "rxjs";
+import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import { HistoryService } from "../../../../../services/history.service";
 
 @Pipe({ name: 'highlight' })
 export class HighlightPipe implements PipeTransform {
@@ -145,10 +145,6 @@ export class UpdateOutputComponent implements OnInit {
             'label': marker('FACTURATION.register_date_day')
         },
         {
-            "id": 'order_number',
-            'label': 'FACTURATION.order_number'
-        },
-        {
             "id": 'delivery_number',
             'label': 'FACTURATION.delivery_number'
         },
@@ -189,7 +185,7 @@ export class UpdateOutputComponent implements OnInit {
         this.serviceSettings.init();
         this.outputId = this.route.snapshot.params['id'];
 
-        this.http.get(API_URL + '/ws/outputs/getById/' + this.outputId, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/outputs/getById/' + this.outputId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 /**
                  * Set the output type and output label
@@ -205,9 +201,9 @@ export class UpdateOutputComponent implements OnInit {
                         });
                     }
                 }
-                this.http.get(API_URL + '/ws/outputs/getOutputsTypes?module=verifier', {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/outputs/getOutputsTypes?module=verifier', {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
-                        this.http.get(API_URL + '/ws/customFields/list?module=verifier', {headers: this.authService.headers}).pipe(
+                        this.http.get(environment['url'] + '/ws/customFields/list?module=verifier', {headers: this.authService.headers}).pipe(
                             tap((data: any) => {
                                 data.customFields.forEach((field: any) => {
                                     this.availableFields.push({
@@ -352,7 +348,7 @@ export class UpdateOutputComponent implements OnInit {
             this.toHighlight = value;
             const filterValue = value.toLowerCase();
             return array.filter((option: any) => option.value.toLowerCase().indexOf(filterValue) !== -1);
-        }else {
+        } else {
             return array;
         }
     }
@@ -360,7 +356,7 @@ export class UpdateOutputComponent implements OnInit {
     /**** Maarch Webservices call ****/
     testMaarchConnection() {
         const args = this.getMaarchConnectionInfo();
-        this.http.post(API_URL + '/ws/maarch/testConnection', {'args': args}, {headers: this.authService.headers},
+        this.http.post(environment['url'] + '/ws/maarch/testConnection', {'args': args}, {headers: this.authService.headers},
         ).pipe(
             tap((data: any) => {
                 const status = data.status[0];
@@ -392,7 +388,7 @@ export class UpdateOutputComponent implements OnInit {
     getUsersFromMaarch(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
             const args = this.getMaarchConnectionInfo();
-            this.http.post(API_URL + '/ws/maarch/getUsers', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
+            this.http.post(environment['url'] + '/ws/maarch/getUsers', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return[0].users) {
                     const data = _return[0].users;
                     const users = [];
@@ -412,7 +408,7 @@ export class UpdateOutputComponent implements OnInit {
     getEntitiesFromMaarch(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
             const args = this.getMaarchConnectionInfo();
-            this.http.post(API_URL + '/ws/maarch/getEntities', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
+            this.http.post(environment['url'] + '/ws/maarch/getEntities', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.entities) {
                     const data = _return.entities;
                     const entities = [];
@@ -432,7 +428,7 @@ export class UpdateOutputComponent implements OnInit {
     getCustomFieldsFromMaarch(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
             const args = this.getMaarchConnectionInfo();
-            this.http.post(API_URL + '/ws/maarch/getCustomFields', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
+            this.http.post(environment['url'] + '/ws/maarch/getCustomFields', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.customFields) {
                     const data = _return.customFields;
                     const customFields = [];
@@ -452,7 +448,7 @@ export class UpdateOutputComponent implements OnInit {
     getContactsCustomFieldsFromMaarch(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
             const args = this.getMaarchConnectionInfo();
-            this.http.post(API_URL + '/ws/maarch/getContactsCustomFields', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
+            this.http.post(environment['url'] + '/ws/maarch/getContactsCustomFields', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.customFields) {
                     const data = _return.customFields;
                     const customFields = [];
@@ -472,7 +468,7 @@ export class UpdateOutputComponent implements OnInit {
     getDoctypesFromMaarch(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
             const args = this.getMaarchConnectionInfo();
-            this.http.post(API_URL + '/ws/maarch/getDoctypes', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
+            this.http.post(environment['url'] + '/ws/maarch/getDoctypes', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.doctypes) {
                     const data = _return.doctypes;
                     const doctypes = [];
@@ -492,7 +488,7 @@ export class UpdateOutputComponent implements OnInit {
     getPrioritiesFromMaarch(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
             const args = this.getMaarchConnectionInfo();
-            this.http.post(API_URL + '/ws/maarch/getPriorities', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
+            this.http.post(environment['url'] + '/ws/maarch/getPriorities', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.priorities) {
                     const data = _return.priorities;
                     const priorities = [];
@@ -512,7 +508,7 @@ export class UpdateOutputComponent implements OnInit {
     getStatusesFromMaarch(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
             const args = this.getMaarchConnectionInfo();
-            this.http.post(API_URL + '/ws/maarch/getStatuses', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
+            this.http.post(environment['url'] + '/ws/maarch/getStatuses', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.statuses) {
                     const data = _return.statuses;
                     const statuses = [];
@@ -532,7 +528,7 @@ export class UpdateOutputComponent implements OnInit {
     getIndexingModelsFromMaarch(cpt: any) {
         if (this.isValidForm(this.outputsTypesForm[this.selectedOutputType].auth) && this.connection) {
             const args = this.getMaarchConnectionInfo();
-            this.http.post(API_URL + '/ws/maarch/getIndexingModels', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
+            this.http.post(environment['url'] + '/ws/maarch/getIndexingModels', {'args': args}, {headers: this.authService.headers}).toPromise().then((_return: any) => {
                 if (_return && _return.indexingModels) {
                     const data = _return.indexingModels;
                     const indexingModels = [];
@@ -593,7 +589,7 @@ export class UpdateOutputComponent implements OnInit {
             _array[element.id] = element.control.value;
         });
 
-        this.http.put(API_URL + '/ws/outputs/update/' + this.outputId, {'args': _array},{headers: this.authService.headers}).pipe(
+        this.http.put(environment['url'] + '/ws/outputs/update/' + this.outputId, {'args': _array},{headers: this.authService.headers}).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('OUTPUT.output_updated'));
                 this.historyService.addHistory('verifier', 'update_output', this.translate.instant('HISTORY-DESC.update-output', {output: _array['output_label']}));

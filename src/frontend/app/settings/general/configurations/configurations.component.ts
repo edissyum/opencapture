@@ -17,21 +17,22 @@
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
 import { Component, OnInit } from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {SettingsService} from "../../../../services/settings.service";
-import {AuthService} from "../../../../services/auth.service";
-import {ActivatedRoute, Router} from "@angular/router";
-import {PrivilegesService} from "../../../../services/privileges.service";
-import {LocalStorageService} from "../../../../services/local-storage.service";
-import {LastUrlService} from "../../../../services/last-url.service";
-import {Sort} from "@angular/material/sort";
-import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from "@angular/material/form-field";
-import {API_URL} from "../../../env";
-import {catchError, finalize, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {NotificationService} from "../../../../services/notifications/notifications.service";
-import {TranslateService} from "@ngx-translate/core";
-import {marker} from "@biesbjerg/ngx-translate-extract-marker";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { SettingsService } from "../../../../services/settings.service";
+import { AuthService } from "../../../../services/auth.service";
+import { ActivatedRoute, Router } from "@angular/router";
+import { PrivilegesService } from "../../../../services/privileges.service";
+import { LocalStorageService } from "../../../../services/local-storage.service";
+import { LastUrlService } from "../../../../services/last-url.service";
+import { Sort } from "@angular/material/sort";
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
+import { environment } from  "../../../env";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { NotificationService } from "../../../../services/notifications/notifications.service";
+import { TranslateService } from "@ngx-translate/core";
+import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 
 @Component({
     selector: 'app-configurations',
@@ -53,18 +54,20 @@ export class ConfigurationsComponent implements OnInit {
     total               : number        = 0;
     offset              : number        = 0;
     search              : string        = '';
+    loginImage          : SafeUrl       = '';
 
     constructor(
         public router: Router,
         private http: HttpClient,
         private route: ActivatedRoute,
+        private sanitizer: DomSanitizer,
         private authService: AuthService,
         private translate: TranslateService,
         private notify: NotificationService,
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localeStorageService: LocalStorageService,
+        private localStorageService: LocalStorageService,
     ) { }
 
     ngOnInit(): void {
@@ -72,13 +75,13 @@ export class ConfigurationsComponent implements OnInit {
 
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('settings/general/configurations') || lastUrl === '/') {
-            if (this.localeStorageService.get('configurationsPageIndex'))
-                this.pageIndex = parseInt(this.localeStorageService.get('configurationsPageIndex') as string);
+            if (this.localStorageService.get('configurationsPageIndex'))
+                this.pageIndex = parseInt(this.localStorageService.get('configurationsPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
-        }else
-            this.localeStorageService.remove('configurationsPageIndex');
+        } else
+            this.localStorageService.remove('configurationsPageIndex');
 
-        this.http.get(API_URL + '/ws/config/getConfigurations', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/config/getConfigurations', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.allConfigurations = data.configurations;
             }),
@@ -88,11 +91,59 @@ export class ConfigurationsComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
+
+        const b64Content = this.localStorageService.get('login_image_b64');
+        if (!b64Content) {
+            this.http.get(environment['url'] + '/ws/config/getLoginImage').pipe(
+                tap((data: any) => {
+                    this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + data);
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    return of(false);
+                })
+            ).subscribe();
+        } else {
+            this.loginImage = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + b64Content);
+        }
+
         this.loadConfigurations();
     }
 
+    onClick(logo: any) {
+        logo.click();
+    }
+
+    upload(fileInput: any) {
+        if (fileInput.target.files && fileInput.target.files[0]) {
+            this.loading = true;
+            const reader = new FileReader();
+            reader.readAsDataURL(fileInput.target.files[0]);
+            reader.onload = (value: any) => {
+                const args = {
+                    'image_content': value.target.result
+                };
+                this.http.put(environment['url'] + '/ws/config/updateLoginimage',{'args': args},
+                    {headers: this.authService.headers},
+                ).pipe(
+                    tap(() => {
+                        this.loginImage = this.sanitizer.bypassSecurityTrustUrl(args['image_content']);
+                        this.notify.success(this.translate.instant('CONFIGURATIONS.login_image_changed'));
+                    }),
+                    finalize(() => this.loading = false),
+                    catchError((err: any) => {
+                        console.debug(err);
+                        this.notify.handleErrors(err);
+                        return of(false);
+                    })
+                ).subscribe();
+            };
+        }
+    }
+
     loadConfigurations() {
-        this.http.get(API_URL + '/ws/config/getConfigurations?limit=' + this.pageSize + '&offset=' + this.offset + "&search=" + this.search, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/config/getConfigurations?limit=' + this.pageSize + '&offset=' + this.offset + "&search=" + this.search, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 if (data.configurations[0]) this.total = data.configurations[0].total;
                 else if (this.pageIndex !== 0) {
@@ -135,7 +186,7 @@ export class ConfigurationsComponent implements OnInit {
         this.configurations.forEach((element: any) => {
             if (element.id === id) {
                 element.data.value = value;
-                this.http.put(API_URL + '/ws/config/updateConfiguration/' + element.id, element, {headers: this.authService.headers}).pipe(
+                this.http.put(environment['url'] + '/ws/config/updateConfiguration/' + element.id, element, {headers: this.authService.headers}).pipe(
                     tap(() => {
                         this.notify.success(this.translate.instant('CONFIGURATIONS.configuration_updated'));
                         element.updateMode = false;
@@ -160,7 +211,7 @@ export class ConfigurationsComponent implements OnInit {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
         this.pageIndex = event.pageIndex;
-        this.localeStorageService.save('configurationsPageIndex', event.pageIndex);
+        this.localStorageService.save('configurationsPageIndex', event.pageIndex);
         this.loadConfigurations();
     }
 

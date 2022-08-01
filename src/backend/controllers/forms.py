@@ -20,7 +20,6 @@ import json
 from flask_babel import gettext
 from src.backend.import_controllers import user
 from src.backend.import_models import forms, accounts, verifier
-from src.backend.main import create_classes_from_current_config
 
 
 def get_forms(args):
@@ -46,12 +45,16 @@ def get_forms(args):
 
 
 def add_form(args):
-    res, error = forms.add_form(args)
-    if res:
+    form_id, error = forms.add_form(args)
+    if form_id:
+        if 'default_form' in args and args['default_form'] is True:
+            default_form, error = forms.get_default_form({})
+            if not error and default_form['id'] != form_id:
+                forms.update_form({'set': {'default_form': False}, 'form_id': default_form['id']})
         response = {
-            "id": res
+            "id": form_id
         }
-        forms.add_form_fields(res)
+        forms.add_form_fields(form_id)
         return response, 200
     else:
         response = {
@@ -156,9 +159,6 @@ def update_form(form_id, args):
 
 
 def delete_form(form_id):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
-
     _, error = forms.get_form_by_id({'form_id': form_id})
     if error is None:
         _, error = forms.update_form({'set': {'status': 'DEL', 'enabled': False}, 'form_id': form_id})
@@ -179,9 +179,6 @@ def delete_form(form_id):
 
 
 def duplicate_form(form_id):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
-
     form_info, error = forms.get_form_by_id({'form_id': form_id})
     if error is None:
         new_label = gettext('COPY_OF') + ' ' + form_info['label']
@@ -214,9 +211,6 @@ def duplicate_form(form_id):
 
 
 def disable_form(form_id):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
-
     _, error = forms.get_form_by_id({'form_id': form_id})
     if error is None:
         _, error = forms.update_form({'set': {'enabled': False}, 'form_id': form_id})
@@ -237,9 +231,6 @@ def disable_form(form_id):
 
 
 def enable_form(form_id):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
-
     _, error = forms.get_form_by_id({'form_id': form_id})
     if error is None:
         _, error = forms.update_form({'set': {'enabled': True}, 'form_id': form_id})
@@ -276,9 +267,6 @@ def get_fields(form_id):
 
 
 def update_fields(args):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
-
     _, error = forms.get_form_by_id({'form_id': args['form_id']})
     if error is None:
         _, error = forms.update_form_fields({'set': {'fields': json.dumps(args['data'])}, 'form_id': args['form_id']})

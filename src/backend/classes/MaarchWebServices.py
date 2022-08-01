@@ -82,6 +82,8 @@ class MaarchWebServices:
 
     def get_document_with_contact(self, args):
         where = "?custom_fields=" + str(args['maarchCustomField']['id'])
+        if args['maarchClause']:
+            where += '&clause=' + args['maarchClause'].replace(' ', '')
         res = requests.get(self.base_url + '/resources/getByContact/' + args['contactId'] + where, auth=self.auth)
         if res.status_code != 200:
             if res.status_code != 204:

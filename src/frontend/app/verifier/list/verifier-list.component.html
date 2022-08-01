@@ -140,7 +140,7 @@
                             </mat-paginator>
                         </span>
                     </div>
-                    <div class="z-40 -mt-2 mb-2 select-none" style="margin-left: 1.2rem" *ngIf="this.invoices.length> 1">
+                    <div class="z-30 -mt-2 mb-2 select-none" style="margin-left: 1.2rem" *ngIf="this.invoices.length> 1">
                         <span class="cursor-pointer" (click)="selectOrUnselectAllInvoices($event)"
                               [innerHTML]="this.invoiceToDeleteSelected ? this.translate.instant('VERIFIER.unselect_all') : this.translate.instant('VERIFIER.select_all')">
                         </span>
@@ -171,6 +171,9 @@
                                         <button mat-menu-item [matMenuTriggerFor]="customers">
                                             {{ "INPUT.associated_customer" | translate }}
                                         </button>
+                                        <button mat-menu-item [matMenuTriggerFor]="formMenu">
+                                            {{ "POSITIONS-MASKS.form_associated" | translate }}
+                                        </button>
                                     </mat-menu>
                                     <mat-menu #customers="matMenu">
                                         <button mat-menu-item *ngFor="let customer of this.dataSource.data"
@@ -179,13 +182,19 @@
                                             {{ customer.name | translate }}
                                         </button>
                                     </mat-menu>
+                                    <mat-menu #formMenu="matMenu">
+                                        <button mat-menu-item *ngFor="let form of this.filteredForms"
+                                                [class.bg-green-400]="form.id === invoice.form_id"
+                                                (click)="changeInvoiceForm(form.id, invoice.invoice_id)">
+                                            {{ form.label | translate }}
+                                        </button>
+                                    </mat-menu>
                                 </div>
                                 <img [routerLink]="invoice.locked ? '/verifier/list' : '/verifier/viewer/' + invoice.invoice_id"
                                      mat-card-image class="m-auto p-4"
                                      [src]="invoice.thumb" alt="Open-Capture Verifier image"
                                      (click)="invoice.locked ? displayInvoiceLocked(invoice.locked_by) : ''">
-                                <mat-card-header
-                                        class="leading-6 relative z-10 bg-white pt-4 pl-4 pr-4"
+                                <mat-card-header class="leading-6 relative z-10 bg-white pt-4 pl-4 pr-4"
                                         [routerLink]="invoice.locked ? '/verifier/list' : '/verifier/viewer/'+ invoice.invoice_id"
                                         (click)="invoice.locked ? displayInvoiceLocked(invoice.locked_by) : ''">
                                     <mat-card-title class="break-all">
@@ -200,12 +209,11 @@
                                             {{ invoice.nb_pages }}<i class="far fa-file-alt ml-1"></i>
                                         </span>
                                     </mat-card-title>
-                                    <mat-card-subtitle class="mt-2 -mb-1 block overflow-hidden text-ellipsis w-11/12">
-                                        <b>{{ 'FACTURATION.invoice_number' | translate }}</b> : {{ invoice.datas.invoice_number }}<br>
-                                        <b>{{ 'FACTURATION.invoice_date' | translate }}</b> : {{ invoice.datas.invoice_date }}<br>
-                                        <b>{{ 'VERIFIER.register_date' | translate }}</b> : {{ invoice.date }}<br>
-                                        <b>{{ 'VERIFIER.original_file' | translate }}</b> : {{ invoice.original_filename }}<br>
-                                        <b>{{ 'ACCOUNTS.form' | translate }}</b> : {{ invoice.form_label }}
+                                    <mat-card-subtitle class="mt-2 -mb-1">
+                                        <div class="-mb-1 text-ellipsis overflow-hidden w-10/12 inline-block"
+                                             *ngFor="let subtitles of invoice.display['subtitles'];">
+                                            <b>{{ subtitles['label'] | translate }}</b>&nbsp;:&nbsp;{{ subtitles['data'] }}
+                                        </div>
                                     </mat-card-subtitle>
                                 </mat-card-header>
                                 <mat-card-actions class="pb-4 pl-4">

@@ -19,17 +19,16 @@
 import os
 import json
 import subprocess
-from flask import current_app
+from flask import current_app, request
 from flask_babel import gettext
+
+from src.backend.functions import retrieve_custom_from_url
 from src.backend.import_classes import _Files
 from src.backend.import_models import accounts
-from src.backend.main import create_classes_from_current_config
+from src.backend.main import create_classes_from_custom_id
 
 
 def retrieve_suppliers(args):
-    _vars = create_classes_from_current_config()
-    _config = _vars[1]
-
     suppliers = accounts.retrieve_suppliers(args)
     response = {
         "suppliers": suppliers
@@ -63,9 +62,31 @@ def get_address_by_id(address_id):
         return response, 401
 
 
+def delete_invoice_position_by_supplier_id(supplier_id, field_id, form_id):
+    supplier_info, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
+    if error is None:
+        _set = {}
+        supplier_positions = supplier_info['positions']
+        form_id = str(form_id)
+        if form_id in supplier_positions:
+            if field_id in supplier_positions[form_id]:
+                del supplier_positions[form_id][field_id]
+        _, error = accounts.update_supplier(
+            {'set': {"positions": json.dumps(supplier_positions)}, 'supplier_id': supplier_id})
+        if error is None:
+            return '', 200
+        else:
+            response = {
+                "errors": gettext('UPDATE_SUPPLIER_POSITIONS_ERROR'),
+                "message": error
+            }
+            return response, 401
+
+
 def update_supplier(supplier_id, data):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     _spreadsheet = _vars[7]
     _, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
 
@@ -73,7 +94,7 @@ def update_supplier(supplier_id, data):
         _, error = accounts.update_supplier({'set': data, 'supplier_id': supplier_id})
 
         if error is None:
-            _spreadsheet.update_supplier_ods_sheet(_db)
+            _spreadsheet.update_supplier_ods_sheet(database)
             return '', 200
         else:
             response = {
@@ -90,20 +111,25 @@ def update_supplier(supplier_id, data):
 
 
 def update_position_by_supplier_id(supplier_id, data):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
     supplier_info, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
     if error is None:
         column = ''
         position = ''
         for _position in data:
-            column = _position
-            position = data[_position]
+            if _position != 'form_id':
+                column = _position
+                position = data[_position]
 
+        form_id = str(data['form_id'])
         supplier_positions = supplier_info['positions']
-        supplier_positions.update({
+
+        if form_id not in supplier_positions:
+            supplier_positions[form_id] = {}
+
+        supplier_positions[form_id].update({
             column: position
         })
+
         _, error = accounts.update_supplier({'set': {"positions": json.dumps(supplier_positions)}, 'supplier_id': supplier_id})
         if error is None:
             return '', 200
@@ -116,19 +142,25 @@ def update_position_by_supplier_id(supplier_id, data):
 
 
 def update_page_by_supplier_id(supplier_id, data):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
     supplier_info, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
     if error is None:
         column = ''
         page = ''
         for _page in data:
-            column = _page
-            page = data[_page]
+            if _page != 'form_id':
+                column = _page
+                page = data[_page]
+
+        form_id = str(data['form_id'])
         supplier_pages = supplier_info['pages']
-        supplier_pages.update({
+
+        if form_id not in supplier_pages:
+            supplier_pages[form_id] = {}
+
+        supplier_pages[form_id].update({
             column: page
         })
+
         _, error = accounts.update_supplier({'set': {"pages": json.dumps(supplier_pages)}, 'supplier_id': supplier_id})
         if error is None:
             return '', 200
@@ -141,8 +173,6 @@ def update_page_by_supplier_id(supplier_id, data):
 
 
 def update_address(address_id, data):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
     _, error = accounts.get_address_by_id({'address_id': address_id})
 
     if error is None:
@@ -173,8 +203,6 @@ def update_address(address_id, data):
 
 
 def update_address_by_supplier_id(supplier_id, data):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
     address_info, error = accounts.get_supplier_by_id({'select': ['address_id'], 'supplier_id': supplier_id})
 
     if error is None:
@@ -205,9 +233,6 @@ def update_address_by_supplier_id(supplier_id, data):
 
 
 def create_address(data):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
-
     _columns = {
         'address1': data['address1'],
         'address2': data['address2'],
@@ -232,8 +257,9 @@ def create_address(data):
 
 
 def create_supplier(data):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
     _spreadsheet = _vars[7]
     _columns = {
         'name': data['name'],
@@ -254,7 +280,7 @@ def create_supplier(data):
         res, error = accounts.create_supplier({'columns': _columns})
 
         if error is None:
-            _spreadsheet.update_supplier_ods_sheet(_db)
+            _spreadsheet.update_supplier_ods_sheet(database)
             response = {
                 "id": res
             }
@@ -274,9 +300,6 @@ def create_supplier(data):
 
 
 def retrieve_customers(args):
-    _vars = create_classes_from_current_config()
-    _config = _vars[1]
-
     customers = accounts.retrieve_customers(args)
     response = {
         "customers": customers
@@ -308,8 +331,6 @@ def get_default_accounting_plan():
 
 
 def update_customer(customer_id, data):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
     _, error = accounts.get_customer_by_id({'customer_id': customer_id})
 
     if error is None:
@@ -346,9 +367,6 @@ def update_customer(customer_id, data):
 
 
 def create_customer(data):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
-
     _columns = {
         'name': data['name'],
         'siret': data['siret'],
@@ -383,8 +401,6 @@ def create_customer(data):
 
 
 def delete_customer(customer_id):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
     _, error = accounts.get_customer_by_id({'customer_id': customer_id})
 
     if error is None:
@@ -406,8 +422,6 @@ def delete_customer(customer_id):
 
 
 def delete_supplier(supplier_id):
-    _vars = create_classes_from_current_config()
-    _db = _vars[0]
     _, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
 
     if error is None:
@@ -429,19 +443,22 @@ def delete_supplier(supplier_id):
 
 
 def import_suppliers(file):
-    _vars = create_classes_from_current_config()
-    _cfg = _vars[1]
-    _docservers = _vars[9]
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    docservers = _vars[9]
 
     filename = _Files.save_uploaded_file(file, current_app.config['UPLOAD_FOLDER'])
-    res = subprocess.Popen('python3 ' + _docservers['PROJECT_PATH'] + "/loadReferencial.py -f " +
-                           filename + " -c " + current_app.instance_path + '/config.ini',
-                           shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    _, err = res.communicate()
+    cmd = 'python3 ' + docservers['PROJECT_PATH'] + "/loadReferencial.py -f " + filename
+    if custom_id:
+        cmd += " -c " + custom_id
+
+    with subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as res:
+        _, err = res.communicate()
+
     if err.decode('utf-8'):
         response = {
             "errors": gettext('LOAD_SUPPLIER_REFERENCIAL_ERROR'),
-            "message": ''
+            "message": err
         }
         return response, 401
 

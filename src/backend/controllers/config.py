@@ -15,19 +15,21 @@
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
+import base64
+import os.path
 import requests
 import subprocess
-from flask import current_app, Blueprint
+from flask import request
+from flask_babel import gettext
 from src.backend.import_models import config
-from src.backend.main import create_classes_from_current_config
-
-bp = Blueprint('dashboard', __name__)
+from src.backend.functions import retrieve_custom_from_url
+from src.backend.main import create_classes_from_custom_id
 
 
 def change_locale_in_config(lang):
-    _vars = create_classes_from_current_config()
-    languages = current_app.config['LANGUAGES']
-
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    languages = _vars[11]
     language = {'label': 'Francais', 'lang_code': 'fra'}
     for _l in languages:
         if lang == languages[_l]['lang_code']:
@@ -129,12 +131,12 @@ def update_configuration(args, configuration_id):
     return response, 401
 
 
-def update_regex(args, id):
-    _, error = config.retrieve_regex_by_id({'id': id})
+def update_regex(args, regex_id):
+    _, error = config.retrieve_regex_by_id({'id': regex_id})
 
     if error is None:
         args = {
-            'id': id,
+            'id': regex_id,
             'data': {
                 'label': args['label'],
                 'content': args['content'],
@@ -164,7 +166,7 @@ def update_docserver(args, docserver_id):
         return '', 200
 
     response = {
-        "errors": "UPDATE_DOCSERVER_ERROR",
+        "errors": gettext("UPDATE_DOCSERVER_ERROR"),
         "message": error
     }
     return response, 401
@@ -180,3 +182,37 @@ def get_last_git_version():
                                           "tail -n1 |  sed 's/.*\///; s/\^{}//' | grep -E '2.+([0-9])$'", shell=True,
                                           stdout=subprocess.PIPE).stdout.read()
     return str(latest_git_version.decode('utf-8').strip())
+
+
+def get_login_image():
+    custom_id = retrieve_custom_from_url(request)
+    login_image = 'src/assets/imgs/login_image.png'
+    if custom_id:
+        if os.path.isfile('custom/' + custom_id + '/assets/imgs/login_image.png'):
+            login_image = 'custom/' + custom_id + '/assets/imgs/login_image.png'
+
+    with open(login_image, 'rb') as image_file:
+        b64_content = str(base64.b64encode(image_file.read()).decode('UTF-8'))
+    return b64_content, 200
+
+
+def update_login_image(image_content):
+    custom_id = retrieve_custom_from_url(request)
+    if custom_id:
+        image_data = base64.b64decode(str(image_content).replace('data:image/png;base64,', ''))
+        image_path = 'custom/' + custom_id + '/assets/imgs/'
+        if not os.path.isdir(image_path):
+            return {
+                "errors": gettext("ERROR_UPDATING_IMAGE"),
+                "message": gettext("CUSTOM_IMAGE_PATH_NOT_WRITEABLE")
+            }, 401
+        image_filename = 'login_image.png'
+        image_handler = open(image_path + '/' + image_filename, 'wb')
+        image_handler.write(image_data)
+        image_handler.close()
+        return '', 200
+    else:
+        return {
+           "errors": gettext("ERROR_UPDATING_IMAGE"),
+           "message": gettext("CUSTOM_NOT_PRESENT")
+        }, 401

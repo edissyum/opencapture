@@ -15,20 +15,20 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {Component, OnInit} from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {ActivatedRoute, Router} from "@angular/router";
-import {FormBuilder, FormControl} from "@angular/forms";
-import {AuthService} from "../../../../../services/auth.service";
-import {UserService} from "../../../../../services/user.service";
-import {TranslateService} from "@ngx-translate/core";
-import {NotificationService} from "../../../../../services/notifications/notifications.service";
-import {SettingsService} from "../../../../../services/settings.service";
-import {API_URL} from "../../../../env";
-import {catchError, finalize, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {PrivilegesService} from "../../../../../services/privileges.service";
-import {HistoryService} from "../../../../../services/history.service";
+import { Component, OnInit } from '@angular/core';
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { ActivatedRoute, Router } from "@angular/router";
+import { FormBuilder, FormControl } from "@angular/forms";
+import { AuthService } from "../../../../../services/auth.service";
+import { UserService } from "../../../../../services/user.service";
+import { TranslateService } from "@ngx-translate/core";
+import { NotificationService } from "../../../../../services/notifications/notifications.service";
+import { SettingsService } from "../../../../../services/settings.service";
+import { environment } from  "../../../../env";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { PrivilegesService } from "../../../../../services/privileges.service";
+import { HistoryService } from "../../../../../services/history.service";
 
 @Component({
     selector: 'app-update',
@@ -110,10 +110,10 @@ export class UpdateUserComponent implements OnInit {
         this.serviceSettings.init();
         this.userId = this.route.snapshot.params['id'];
 
-        this.http.get(API_URL + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.customers = data.customers;
-                this.http.get(API_URL + '/ws/users/getCustomersByUserId/' + this.userId, {headers: this.authService.headers}).pipe(
+                this.http.get(environment['url'] + '/ws/users/getCustomersByUserId/' + this.userId, {headers: this.authService.headers}).pipe(
                     tap((data: any) => {
                         this.usersCustomers = data;
                         this.loadingCustomers = false;
@@ -132,7 +132,7 @@ export class UpdateUserComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.get(API_URL + '/ws/roles/list', {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/roles/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 data.roles.forEach((element: any) => {
                     if (element.editable) {
@@ -151,7 +151,7 @@ export class UpdateUserComponent implements OnInit {
             })
         ).subscribe();
 
-        this.http.get(API_URL + '/ws/users/getById/' + this.userId, {headers: this.authService.headers}).pipe(
+        this.http.get(environment['url'] + '/ws/users/getById/' + this.userId, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.user = data;
                 for (const field in data) {
@@ -196,7 +196,7 @@ export class UpdateUserComponent implements OnInit {
                 user[element.id] = element.control.value;
             });
 
-            this.http.put(API_URL + '/ws/users/update/' + this.userId, {'args': user}, {headers: this.authService.headers},
+            this.http.put(environment['url'] + '/ws/users/update/' + this.userId, {'args': user}, {headers: this.authService.headers},
             ).pipe(
                 tap(() => {
                     this.notify.success(this.translate.instant('USER.updated'));
@@ -250,7 +250,7 @@ export class UpdateUserComponent implements OnInit {
         else
             this.usersCustomers.splice(cpt, 1);
 
-        this.http.put(API_URL + '/ws/users/customers/update/' + this.userId, {'customers': this.usersCustomers}, {headers: this.authService.headers},
+        this.http.put(environment['url'] + '/ws/users/customers/update/' + this.userId, {'customers': this.usersCustomers}, {headers: this.authService.headers},
         ).pipe(
             tap(() => {
                 this.notify.success(this.translate.instant('USER.customers_updated'));

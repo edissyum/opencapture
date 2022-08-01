@@ -18,6 +18,8 @@ INSERT INTO "configurations" ("label", "data") VALUES ('resolution', '{"type": "
 INSERT INTO "configurations" ("label", "data") VALUES ('compressionQuality', '{"type": "int", "value": "100", "description": "Qualité de compression utilisée pour la conversion PDF en JPG. En pourcentage"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('locale', '{"type": "string", "value": "fra", "description": "Clé pour la sélection de la langue (fra ou eng par défaut)"}');
 INSERT INTO "configurations" ("label", "data") VALUES ('invoiceSizeMin', '{"type": "int", "value": "6", "description": "Taille minimale pour un numéro de facture"}');
+INSERT INTO "configurations" ("label", "data") VALUES ('devisSizeMin', '{"type": "int", "value": "3", "description": "Taille minimale pour un numéro de devis"}');
+INSERT INTO "configurations" ("label", "data") VALUES ('loginMessage', '{"type": "string", "value": "Open-Capture For Invoices - LAD / RAD", "description": "Court message affiché sur l''écran d''accueil"}');
 
 -- CRÉATION DES DOCSERVERS
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('PROJECT_PATH', 'Chemin vers l''instance d''Open-Capture For Invoices', '/var/www/html/opencaptureforinvoices/');
@@ -31,9 +33,9 @@ INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('REFERE
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SEPARATOR_QR_TMP', '[SÉPARATION PAR QR CODE] Chemin vers le dossier temporaire pour la séparation par QR Code', '/tmp/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SEPARATOR_OUTPUT_PDF', '[SÉPARATION PAR QR CODE] Chemin vers le dossier de sortie des PDF', '/var/www/html/opencaptureforinvoices//bin/data/exported_pdf/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SEPARATOR_OUTPUT_PDFA', '[SÉPARATION PAR QR CODE] Chemin vers le dossier de sortie des PDF/A', '/var/www/html/opencaptureforinvoices//bin/data/exported_pdfa/');
-INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_IMAGE_FULL', '[VERIFIER] Chemin pour le stockage des images', '/var/docservers/OpenCapture/verifier/images/full/');
-INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_THUMB', '[VERIFIER] Chemin pour le stockage des miniatures', '/var/docservers/OpenCapture/verifier/images/thumbs/');
-INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_POSITIONS_MASKS', '[VERIFIER] Chemin pour le stockage des images nécessaire aux masques de positionnement', '/var/docservers/OpenCapture/verifier/images/positions_masks/');
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_THUMB', '[VERIFIER] Chemin pour le stockage des miniatures', '/var/docservers/OpenCapture/verifier/thumbs/');
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_IMAGE_FULL', '[VERIFIER] Chemin pour le stockage des images', '/var/docservers/OpenCapture/verifier/full/');
+INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('VERIFIER_POSITIONS_MASKS', '[VERIFIER] Chemin pour le stockage des images nécessaire aux masques de positionnement', '/var/docservers/OpenCapture/verifier/positions_masks/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_BATCHES', '[SPLITTER] Chemin vers le dossier de stockage des dossiers de batch après traitement', '/var/docservers/OpenCapture/splitter/batches/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_OUTPUT', '[SPLITTER] Chemin vers le dossier de sortie des PDF après traitement', '/var/docservers/OpenCapture/splitter/separated_pdf/');
 INSERT INTO "docservers" ("docserver_id", "description", "path") VALUES ('SPLITTER_ORIGINAL_PDF', '[SPLITTER] Chemin vers le dossier contenant les PDF originaux', '/var/docservers/OpenCapture/splitter/original_pdf/');
@@ -65,7 +67,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "type": "text",
                 "label": "Nom du fichier",
                 "required": "true",
-                "placeholder": "invoice_number#order_number#supplier_name"
+                "placeholder": "invoice_number#quotation_number#supplier_name"
             },
             {
                 "id": "extension",
@@ -228,7 +230,7 @@ INSERT INTO "outputs_types" ("id", "output_type_id", "output_type_label", "modul
                 "label": "Champs personnalisés",
                 "isJson": "true",
                 "required": "false",
-                "placeholder": "{\"1\": \"invoice_number\", \"2\": \"order_number\"}"
+                "placeholder": "{\"1\": \"invoice_number\", \"2\": \"quotation_number\"}"
             }
         ]
     }
@@ -396,392 +398,19 @@ ALTER SEQUENCE "outputs_types_id_seq" RESTART WITH 6;
 ALTER SEQUENCE "outputs_id_seq" RESTART WITH 6;
 
 -- CRÉATION DU FORMULAIRE VERIFIER PAR DÉFAUT
-INSERT INTO "form_models" ("id", "label", "default_form", "outputs", "module") VALUES (1, 'Formulaire par défaut', true, '{1}', 'verifier');
-INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{
-    "other": [],
-    "supplier": [
-        {
-            "id": "name",
-            "type": "text",
-            "unit": "supplier",
-            "class": "w-full",
-            "color": "white",
-            "label": "ACCOUNTS.supplier_name",
-            "format": "alphanum",
-            "display": "simple",
-            "required": true,
-            "class_label": "1",
-            "format_icon": "fas fa-hashtag",
-            "display_icon": "fas fa-file-alt",
-            "required_icon": "fas fa-star",
-            "autocomplete": "none",
-            "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": []
-        },
-        {
-            "id": "address1",
-            "type": "text",
-            "unit": "addresses",
-            "class": "w-1/2",
-            "label": "ADDRESSES.address_1",
-            "format": "alphanum_extended_with_accent",
-            "display": "simple",
-            "required": true,
-            "class_label": "1/2",
-            "format_icon": "fas fas fa-hashtag",
-            "display_icon": "fas fa-file-alt",
-            "required_icon": "fas fa-star",
-            "autocomplete": "none",
-            "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": []
-        },
-        {
-            "id": "address2",
-            "type": "text",
-            "unit": "addresses",
-            "class": "w-1/2",
-            "label": "ADDRESSES.address_2",
-            "format": "alphanum_extended_with_accent",
-            "display": "simple",
-            "required": false,
-            "class_label": "1/2",
-            "format_icon": "fas fas fa-hashtag",
-            "display_icon": "fas fa-file-alt",
-            "required_icon": "far fa-star",
-            "autocomplete": "none",
-            "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": []
-        },
-        {
-            "id": "postal_code",
-            "type": "text",
-            "unit": "addresses",
-            "class": "w-1/3",
-            "label": "ADDRESSES.postal_code",
-            "format": "number_int",
-            "display": "simple",
-            "required": true,
-            "class_label": "1/33",
-            "format_icon": "fas fa-calculator",
-            "display_icon": "fas fa-file-alt",
-            "required_icon": "fas fa-star",
-            "autocomplete": "none",
-            "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": []
-        },
-        {
-            "id": "city",
-            "type": "text",
-            "unit": "addresses",
-            "class": "w-1/3",
-            "label": "ADDRESSES.city",
-            "format": "alphanum_extended_with_accent",
-            "display": "simple",
-            "required": true,
-            "class_label": "1/33",
-            "format_icon": "fas fa-font",
-            "display_icon": "fas fa-file-alt",
-            "required_icon": "fas fa-star",
-            "autocomplete": "none",
-            "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": []
-        },
-        {
-            "id": "country",
-            "type": "text",
-            "unit": "addresses",
-            "class": "w-1/3",
-            "label": "ADDRESSES.country",
-            "format": "alphanum_extended_with_accent",
-            "display": "simple",
-            "required": true,
-            "class_label": "1/33",
-            "format_icon": "fas fa-font",
-            "display_icon": "fas fa-file-alt",
-            "required_icon": "fas fa-star",
-            "autocomplete": "none",
-            "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": []
-        },
-        {
-            "id": "vat_number",
-            "type": "text",
-            "unit": "supplier",
-            "class": "w-1/3",
-            "color": "olive",
-            "label": "ACCOUNTS.vat_number",
-            "format": "alphanum",
-            "display": "simple",
-            "required": true,
-            "class_label": "1/33",
-            "format_icon": "fas fas fa-hashtag",
-            "display_icon": "fas fa-file-alt",
-            "required_icon": "fas fa-star"
-        },
-        {
-            "id": "siren",
-            "type": "text",
-            "unit": "supplier",
-            "class": "w-1/6",
-            "color": "lime",
-            "label": "ACCOUNTS.siren",
-            "format": "number_int",
-            "display": "simple",
-            "required": false,
-            "class_label": "1/6",
-            "format_icon": "fas fa-calculator",
-            "display_icon": "fas fa-file-alt",
-            "required_icon": "far fa-star"
-        },
-        {
-            "id": "siret",
-            "type": "text",
-            "unit": "supplier",
-            "class": "w-1/6",
-            "color": "green",
-            "label": "ACCOUNTS.siret",
-            "format": "number_int",
-            "display": "simple",
-            "required": false,
-            "class_label": "1/6",
-            "format_icon": "fas fa-calculator",
-            "display_icon": "fas fa-file-alt",
-            "required_icon": "far fa-star"
-        },
-        {
-            "id": "email",
-            "type": "text",
-            "unit": "supplier",
-            "class": "w-1/3",
-            "color": "green",
-            "label": "ACCOUNTS.email",
-            "format": "email",
-            "display": "simple",
-            "required": false,
-            "class_label": "1/33",
-            "format_icon": "fa-solid fa-at",
-            "autocomplete": "none",
-            "display_icon": "fa-solid file-alt",
-            "required_icon": "far fa-star",
-            "autocomplete_data": [],
-            "autocomplete_icon": "fa-solid fa-ban"
-        }
-    ],
-    "facturation": [
-        {
-            "id": "delivery_number",
-            "type": "text",
-            "unit": "facturation",
-            "class": "w-1/2",
-            "color": "orange",
-            "label": "FACTURATION.delivery_number",
-            "format": "alphanum_extended",
-            "display": "multi",
-            "required": false,
-            "class_label": "1/2",
-            "format_icon": "fas fa-hashtag fa-level-up-alt",
-            "display_icon": "fas fa-layer-group",
-            "required_icon": "far fa-star",
-            "autocomplete": "none",
-            "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": []
-        },
-        {
-            "id": "order_number",
-            "type": "text",
-            "unit": "facturation",
-            "class": "w-1/2",
-            "color": "yellow",
-            "label": "FACTURATION.order_number",
-            "format": "alphanum_extended",
-            "display": "multi",
-            "required": false,
-            "class_label": "1/2",
-            "format_icon": "fas fa-hashtag fa-level-up-alt",
-            "display_icon": "fas fa-layer-group",
-            "required_icon": "far fa-star",
-            "autocomplete": "none",
-            "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": []
-        },
-        {
-            "id": "invoice_number",
-            "type": "text",
-            "unit": "facturation",
-            "class": "w-1/3",
-            "color": "red",
-            "label": "FACTURATION.invoice_number",
-            "format": "alphanum_extended",
-            "display": "simple",
-            "required": true,
-            "class_label": "1/33",
-            "format_icon": "fas fa-level-up-alt",
-            "display_icon": "fas fa-file-alt",
-            "required_icon": "fas fa-star",
-            "autocomplete": "none",
-            "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": []
-        },
-        {
-            "id": "invoice_date",
-            "type": "date",
-            "unit": "facturation",
-            "class": "w-1/3",
-            "color": "aqua",
-            "label": "FACTURATION.invoice_date",
-            "format": "date",
-            "display": "simple",
-            "required": true,
-            "class_label": "1/33",
-            "format_icon": "fas fa-calendar-day",
-            "display_icon": "fas fa-file-alt",
-            "required_icon": "fas fa-star",
-            "autocomplete": "none",
-            "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": []
-        },
-        {
-            "id": "invoice_due_date",
-            "type": "date",
-            "unit": "facturation",
-            "class": "w-1/3",
-            "color": "blue",
-            "label": "FACTURATION.invoice_due_date",
-            "format": "date",
-            "display": "simple",
-            "required": false,
-            "class_label": "1/33",
-            "format_icon": "fas fa-calendar-day",
-            "display_icon": "fas fa-file-alt",
-            "required_icon": "far fa-star",
-            "autocomplete": "none",
-            "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": []
-        },
-        {
-            "id": "vat_rate",
-            "type": "text",
-            "unit": "facturation",
-            "class": "w-1/4",
-            "color": "pink",
-            "label": "FACTURATION.vat_rate",
-            "format": "number_float",
-            "display": "multi",
-            "required": true,
-            "class_label": "1/4",
-            "format_icon": "fas fa-calculator",
-            "display_icon": "fas fa-layer-group",
-            "required_icon": "fas fa-star",
-            "autocomplete": "none",
-            "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": []
-        },
-        {
-            "id": "no_rate_amount",
-            "type": "text",
-            "unit": "facturation",
-            "class": "w-1/4",
-            "color": "fuchsia",
-            "label": "FACTURATION.no_rate_amount",
-            "format": "number_float",
-            "display": "multi",
-            "required": true,
-            "class_label": "1/4",
-            "format_icon": "fas fa-calculator",
-            "display_icon": "fas fa-layer-group",
-            "required_icon": "fas fa-star",
-            "autocomplete": "none",
-            "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": []
-        },
-        {
-            "id": "vat_amount",
-            "type": "text",
-            "unit": "facturation",
-            "class": "w-1/4",
-            "color": "purple",
-            "label": "FACTURATION.vat_amount",
-            "format": "number_float",
-            "display": "multi",
-            "required": true,
-            "class_label": "1/4",
-            "format_icon": "fas fa-calculator",
-            "display_icon": "fas fa-layer-group",
-            "required_icon": "fas fa-star",
-            "autocomplete": "none",
-            "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": []
-        },
-        {
-            "id": "accounting_plan",
-            "type": "select",
-            "unit": "facturation",
-            "class": "w-1/4",
-            "label": "FACTURATION.accounting_plan",
-            "required": false,
-            "class_label": "1/4",
-            "required_icon": "far fa-star",
-            "autocomplete": "none",
-            "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": []
-        },
-        {
-            "id": "total_vat",
-            "type": "text",
-            "unit": "facturation",
-            "class": "w-1/3",
-            "color": "",
-            "label": "FACTURATION.total_vat",
-            "format": "number_float",
-            "display": "simple",
-            "required": true,
-            "class_label": "1/33",
-            "format_icon": "fas fa-calculator",
-            "display_icon": "fas fa-file-alt",
-            "required_icon": "fas fa-star",
-            "autocomplete": "none",
-            "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": []
-        },
-        {
-            "id": "total_ttc",
-            "type": "text",
-            "unit": "facturation",
-            "class": "w-1/3",
-            "label": "FACTURATION.total_ttc",
-            "format": "number_float",
-            "display": "simple",
-            "required": true,
-            "class_label": "1/33",
-            "format_icon": "fas fa-calculator",
-            "display_icon": "fas fa-file-alt",
-            "required_icon": "fas fa-star",
-            "autocomplete": "none",
-            "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": []
-        },
-        {
-            "id": "total_ht",
-            "type": "text",
-            "unit": "facturation",
-            "class": "w-1/3",
-            "label": "FACTURATION.total_ht",
-            "format": "number_float",
-            "display": "simple",
-            "required": true,
-            "class_label": "1/33",
-            "format_icon": "fas fa-calculator",
-            "display_icon": "fas fa-file-alt",
-            "required_icon": "fas fa-star",
-            "autocomplete": "none",
-            "autocomplete_icon": "fa-solid fa-ban",
-            "autocomplete_data": []
-        }
+INSERT INTO "form_models" ("id", "label", "default_form", "outputs", "module", "display") VALUES (1, 'Formulaire par défaut', true, '{1}', 'verifier', '{
+    "subtitles": [
+        {"id": "invoice_number", "label": "FACTURATION.invoice_number"},
+        {"id": "invoice_date", "label": "FACTURATION.invoice_date"},
+        {"id": "date", "label": "VERIFIER.register_date"},
+        {"id": "original_filename", "label": "VERIFIER.original_file"},
+        {"id": "form_label", "label": "VERIFIER.form"}
     ]
 }');
+INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (1, 1, '{"other": [], "supplier": [{"id": "name", "type": "text", "unit": "supplier", "class": "w-full", "color": "white", "label": "ACCOUNTS.supplier_name", "format": "alphanum", "display": "simple", "required": true, "class_label": "1", "format_icon": "fas fa-hashtag", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "address1", "type": "text", "unit": "addresses", "class": "w-1/2", "label": "ADDRESSES.address_1", "format": "alphanum_extended_with_accent", "display": "simple", "required": true, "class_label": "1/2", "format_icon": "fas fas fa-hashtag", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "address2", "type": "text", "unit": "addresses", "class": "w-1/2", "label": "ADDRESSES.address_2", "format": "alphanum_extended_with_accent", "display": "simple", "required": false, "class_label": "1/2", "format_icon": "fas fas fa-hashtag", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "far fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "postal_code", "type": "text", "unit": "addresses", "class": "w-1/3", "label": "ADDRESSES.postal_code", "format": "number_int", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "city", "type": "text", "unit": "addresses", "class": "w-1/3", "label": "ADDRESSES.city", "format": "alphanum_extended_with_accent", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-font", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "country", "type": "text", "unit": "addresses", "class": "w-1/3", "label": "ADDRESSES.country", "format": "alphanum_extended_with_accent", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-font", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "vat_number", "type": "text", "unit": "supplier", "class": "w-1/3", "color": "olive", "label": "ACCOUNTS.vat_number", "format": "alphanum", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fas fa-hashtag", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star"}, {"id": "siren", "type": "text", "unit": "supplier", "class": "w-1/6", "color": "lime", "label": "ACCOUNTS.siren", "format": "number_int", "display": "simple", "required": false, "class_label": "1/6", "format_icon": "fas fa-calculator", "display_icon": "fas fa-file-alt", "required_icon": "far fa-star"}, {"id": "siret", "type": "text", "unit": "supplier", "class": "w-1/6", "color": "green", "label": "ACCOUNTS.siret", "format": "number_int", "display": "simple", "required": false, "class_label": "1/6", "format_icon": "fas fa-calculator", "display_icon": "fas fa-file-alt", "required_icon": "far fa-star"}, {"id": "email", "type": "text", "unit": "supplier", "class": "w-1/3", "color": "green", "label": "ACCOUNTS.email", "format": "email", "display": "simple", "required": false, "class_label": "1/33", "format_icon": "fa-solid fa-at", "autocomplete": "none", "display_icon": "fa-solid file-alt", "required_icon": "far fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}], "facturation": [{"id": "delivery_number", "type": "text", "unit": "facturation", "class": "w-1/2", "color": "orange", "label": "FACTURATION.delivery_number", "format": "alphanum_extended", "display": "multi", "required": false, "class_label": "1/2", "format_icon": "fas fa-hashtag fa-level-up-alt", "autocomplete": "none", "display_icon": "fas fa-layer-group", "required_icon": "far fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "invoice_number", "type": "text", "unit": "facturation", "class": "w-1/3", "color": "red", "label": "FACTURATION.invoice_number", "format": "alphanum_extended", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-level-up-alt", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "invoice_date", "type": "date", "unit": "facturation", "class": "w-1/3", "color": "aqua", "label": "FACTURATION.invoice_date", "format": "date", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-calendar-day", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "invoice_due_date", "type": "date", "unit": "facturation", "class": "w-1/3", "color": "blue", "label": "FACTURATION.invoice_due_date", "format": "date", "display": "simple", "required": false, "class_label": "1/33", "format_icon": "fas fa-calendar-day", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "far fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "vat_rate", "type": "text", "unit": "facturation", "class": "w-1/4", "color": "pink", "label": "FACTURATION.vat_rate", "format": "number_float", "display": "multi", "required": true, "class_label": "1/4", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-layer-group", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "no_rate_amount", "type": "text", "unit": "facturation", "class": "w-1/4", "color": "fuchsia", "label": "FACTURATION.no_rate_amount", "format": "number_float", "display": "multi", "required": true, "class_label": "1/4", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-layer-group", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "vat_amount", "type": "text", "unit": "facturation", "class": "w-1/4", "color": "purple", "label": "FACTURATION.vat_amount", "format": "number_float", "display": "multi", "required": true, "class_label": "1/4", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-layer-group", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "accounting_plan", "type": "select", "unit": "facturation", "class": "w-1/4", "label": "FACTURATION.accounting_plan", "required": false, "class_label": "1/4", "autocomplete": "none", "required_icon": "far fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "total_vat", "type": "text", "unit": "facturation", "class": "w-1/3", "color": "", "label": "FACTURATION.total_vat", "format": "number_float", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "total_ttc", "type": "text", "unit": "facturation", "class": "w-1/3", "label": "FACTURATION.total_ttc", "format": "number_float", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}, {"id": "total_ht", "type": "text", "unit": "facturation", "class": "w-1/3", "label": "FACTURATION.total_ht", "format": "number_float", "display": "simple", "required": true, "class_label": "1/33", "format_icon": "fas fa-calculator", "autocomplete": "none", "display_icon": "fas fa-file-alt", "required_icon": "fas fa-star", "autocomplete_data": [], "autocomplete_icon": "fa-solid fa-ban"}]}');
 
 -- CRÉATION DU FORMULAIRE SPLITTER PAR DÉFAUT
-INSERT INTO "form_models" ("id", "label", "default_form", "outputs", "module") VALUES (2, 'Formulaire par défaut', true, '{3, 4}', 'splitter');
+INSERT INTO "form_models" ("id", "label", "default_form", "outputs", "module") VALUES (2, 'Formulaire par défaut', true, '{3}', 'splitter');
 INSERT INTO "form_models_field" ("id", "form_id", "fields") VALUES (2, 2, '{"metadata": []}');
 ALTER SEQUENCE "form_models_id_seq" RESTART WITH 3;
 ALTER SEQUENCE "form_models_field_id_seq" RESTART WITH 3;
@@ -851,7 +480,8 @@ INSERT INTO "privileges" ("id", "label", "parent") VALUES (49, 'docservers', 'ad
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (50, 'regex', 'administration');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (51, 'document_type_splitter', 'splitter');
 INSERT INTO "privileges" ("id", "label", "parent") VALUES (52, 'login_methods', 'administration');
-ALTER SEQUENCE "privileges_id_seq" RESTART WITH 53;
+INSERT INTO "privileges" ("id", "label", "parent") VALUES (54, 'verifier_display', 'verifier');
+ALTER SEQUENCE "privileges_id_seq" RESTART WITH 54;
 
 -- CRÉATION DES ROLES
 INSERT INTO "roles" ("id", "label_short", "label", "editable") VALUES (1, 'superadmin', 'SuperUtilisateur', 'false');
@@ -868,7 +498,7 @@ INSERT INTO "roles_privileges" ("role_id", "privileges_id") VALUES (3, '{"data" 
 INSERT INTO "users" ("username","firstname", "lastname","password", "role") VALUES ('admin', 'Super', 'ADMIN', 'pbkdf2:sha256:150000$7c8waI7f$c0891ac8e18990db0786d4a49aea8bf7c1ad82796dccd8ae35c12ace7d8ee403', 1);
 
 -- CRÉATION D'UN MASQUE DE POSITIONNEMENT D'EXEMPLE
-INSERT INTO "positions_masks" ("id", "label", "regex") VALUES (1, 'Masque par défaut', '{"invoice_date": "dateRegex", "invoice_due_date": "dateRegex"}');
+INSERT INTO "positions_masks" ("id", "label", "form_id", "regex") VALUES (1, 'Masque par défaut', 1, '{"invoice_date": "dateRegex", "invoice_due_date": "dateRegex"}');
 ALTER SEQUENCE "positions_masks_id_seq" RESTART WITH 2;
 
 -- CRÉATION DES COMPTES DE CHARGE PAR DÉFAUT

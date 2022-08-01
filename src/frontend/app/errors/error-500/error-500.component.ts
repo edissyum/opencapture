@@ -16,19 +16,9 @@
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
-import {HttpClient} from "@angular/common/http";
-import {MatDialog} from "@angular/material/dialog";
-import {UserService} from "../../../services/user.service";
-import {FormBuilder} from "@angular/forms";
-import {AuthService} from "../../../services/auth.service";
-import {TranslateService} from "@ngx-translate/core";
-import {NotificationService} from "../../../services/notifications/notifications.service";
-import {HistoryService} from "../../../services/history.service";
-import {SettingsService} from "../../../services/settings.service";
-import {LastUrlService} from "../../../services/last-url.service";
-import {PrivilegesService} from "../../../services/privileges.service";
-import {LocalStorageService} from "../../../services/local-storage.service";
+import { UserService } from "../../../services/user.service";
+import { SettingsService } from "../../../services/settings.service";
+import { PrivilegesService } from "../../../services/privileges.service";
 
 @Component({
   selector: 'app-error',
@@ -38,7 +28,6 @@ import {LocalStorageService} from "../../../services/local-storage.service";
 export class Error500Component implements OnInit {
 
   constructor(
-      public router: Router,
       public userService: UserService,
       public serviceSettings: SettingsService,
       public privilegesService: PrivilegesService,

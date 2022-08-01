@@ -17,10 +17,10 @@
 
 import os
 import base64
-from src.backend.main import create_classes_from_current_config
+from src.backend.functions import retrieve_custom_from_url
+from src.backend.main import create_classes_from_custom_id
 from flask import Blueprint, request, make_response, jsonify, current_app
 from src.backend.import_controllers import auth, positions_masks, verifier
-
 
 bp = Blueprint('positions_masks', __name__, url_prefix='/ws/')
 
@@ -29,11 +29,11 @@ bp = Blueprint('positions_masks', __name__, url_prefix='/ws/')
 @auth.token_required
 def get_positions_masks():
     args = {
-        'select': ['*', 'count(*) OVER() as total'],
+        'select': ['positions_masks.*', 'form_models.label as form_label', 'count(*) OVER() as total'],
         'offset': request.args['offset'] if 'offset' in request.args else '',
         'limit': request.args['limit'] if 'limit' in request.args else '',
-        'where': ["status <> 'DEL'"],
-        'order_by': ['id ASC']
+        'where': ["positions_masks.status <> 'DEL'"],
+        'order_by': ['positions_masks.id ASC']
     }
     res = positions_masks.get_positions_masks(args)
     return make_response(jsonify(res[0]), res[1])
@@ -132,7 +132,8 @@ def delete_page_by_positions_mask_id(position_mask_id):
 @bp.route('positions_masks/getImageFromPdf/<int:positions_mask_id>', methods=['POST'])
 @auth.token_required
 def get_image_from_pdf(positions_mask_id):
-    _vars = create_classes_from_current_config()
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
     _config = _vars[1]
     _Files = _vars[3]
     _docservers = _vars[9]

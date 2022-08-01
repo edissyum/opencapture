@@ -5,7 +5,7 @@ CREATE TABLE "users"
     "firstname"     VARCHAR(255)       NOT NULL,
     "lastname"      VARCHAR(255)       NOT NULL,
     "password"      VARCHAR(255)       NOT NULL,
-    "enabled"       BOOLEAN     DEFAULT true,
+    "enabled"       BOOLEAN     DEFAULT True,
     "status"        VARCHAR(5)  DEFAULT 'OK',
     "creation_date" TIMESTAMP   DEFAULT (CURRENT_TIMESTAMP),
     "role"          INTEGER     NOT NULL
@@ -13,23 +13,36 @@ CREATE TABLE "users"
 
 CREATE TABLE "form_models"
 (
-    "id"              SERIAL        UNIQUE PRIMARY KEY,
-    "label"           VARCHAR(50),
-    "default_form"    BOOLEAN       DEFAULT false,
-    "supplier_verif"  BOOLEAN       DEFAULT true,
-    "enabled"         BOOLEAN       DEFAULT true,
-    "outputs"         TEXT[],
-    "status"          VARCHAR(5)    DEFAULT 'OK',
-    "module"          VARCHAR(10),
-    "metadata_method" VARCHAR(50)
+    "id"                             SERIAL        UNIQUE PRIMARY KEY,
+    "label"                          VARCHAR(50),
+    "default_form"                   BOOLEAN       DEFAULT False,
+    "supplier_verif"                 BOOLEAN       DEFAULT True,
+    "allow_automatic_validation"     BOOLEAN       DEFAULT False,
+    "delete_documents_after_outputs" BOOLEAN       DEFAULT False,
+    "automatic_validation_data"      TEXT          DEFAULT '',
+    "enabled"                        BOOLEAN       DEFAULT True,
+    "outputs"                        TEXT[],
+    "status"                         VARCHAR(5)    DEFAULT 'OK',
+    "module"                         VARCHAR(10),
+    "metadata_method"                VARCHAR(50),
+    "display"                        JSONB         DEFAULT '{
+            "subtitles": [
+                {"id": "invoice_number", "label": "FACTURATION.invoice_number"},
+                {"id": "invoice_date", "label": "FACTURATION.invoice_date"},
+                {"id": "date", "label": "VERIFIER.register_date"},
+                {"id": "original_file", "label": "VERIFIER.original_file"},
+                {"id": "form_label", "label": "ACCOUNTS.form"}
+            ]
+    }'
 );
 
 CREATE TABLE "positions_masks"
 (
     "id"          SERIAL        UNIQUE PRIMARY KEY,
     "label"       VARCHAR(50),
-    "enabled"     BOOLEAN       DEFAULT true,
+    "enabled"     BOOLEAN       DEFAULT True,
     "supplier_id" INTEGER,
+    "form_id"     INTEGER,
     "positions"   JSONB         DEFAULT '{}',
     "pages"       JSONB         DEFAULT '{}',
     "regex"       JSONB         DEFAULT '{}',
@@ -86,8 +99,6 @@ CREATE TABLE "inputs"
     "module"                        VARCHAR(10),
     "remove_blank_pages"            BOOLEAN        DEFAULT False,
     "override_supplier_form"        BOOLEAN        DEFAULT False,
-    "allow_automatic_validation"    BOOLEAN        DEFAULT False,
-    "automatic_validation_data"     TEXT           DEFAULT '',
     "purchase_or_sale"              VARCHAR(8)     DEFAULT 'purchase',
     "status"                        VARCHAR(3)     DEFAULT 'OK',
     "input_folder"                  TEXT,
@@ -103,7 +114,7 @@ CREATE TABLE "custom_fields"
     "type"         VARCHAR(10),
     "module"       VARCHAR(10),
     "settings"     JSONB        DEFAULT '{}',
-    "enabled"      BOOLEAN      DEFAULT true,
+    "enabled"      BOOLEAN      DEFAULT True,
     "status"       VARCHAR(5)   DEFAULT 'OK'
 );
 
@@ -131,8 +142,8 @@ CREATE TABLE "roles"
     "label_short" VARCHAR(10),
     "label"       VARCHAR(20),
     "status"      VARCHAR(3)    DEFAULT 'OK',
-    "editable"    BOOLEAN       DEFAULT true,
-    "enabled"     BOOLEAN       DEFAULT true
+    "editable"    BOOLEAN       DEFAULT True,
+    "enabled"     BOOLEAN       DEFAULT True
 );
 
 CREATE TABLE "roles_privileges"
@@ -221,7 +232,7 @@ CREATE TABLE "invoices"
     "img_width"         INTEGER,
     "register_date"     TIMESTAMP           DEFAULT (CURRENT_TIMESTAMP),
     "nb_pages"          INTEGER             NOT NULL DEFAULT 1,
-    "locked"            BOOLEAN             DEFAULT false,
+    "locked"            BOOLEAN             DEFAULT False,
     "locked_by"         VARCHAR(20),
     "positions"         JSONB               DEFAULT '{}',
     "pages"             JSONB               DEFAULT '{}',
@@ -290,7 +301,7 @@ create table "doctypes"
     "key"        VARCHAR(255)   NOT NULL,
     "label"      VARCHAR(255),
     "code"       VARCHAR(255),
-    "is_default" BOOLEAN        DEFAULT FALSE,
+    "is_default" BOOLEAN        DEFAULT False,
     "status"     VARCHAR(3)     DEFAULT 'OK':: CHARACTER VARYING,
     "type"       VARCHAR(10),
     "form_id"    INTEGER
@@ -335,8 +346,17 @@ CREATE TABLE "login_methods"
     "id"            SERIAL      UNIQUE PRIMARY KEY,
     "method_name"   VARCHAR(64) UNIQUE,
     "method_label"  VARCHAR(255),
-    "enabled"       BOOLEAN     DEFAULT FALSE,
+    "enabled"       BOOLEAN     DEFAULT False,
     "data"          JSONB       DEFAULT '{}'
+);
+
+CREATE TABLE "languages"
+(
+    "language_id"       VARCHAR(5) UNIQUE PRIMARY KEY,
+    "label"             VARCHAR(20),
+    "lang_code"         VARCHAR(5),
+    "moment_lang_code"  VARCHAR(10),
+    "date_format"       VARCHAR(20)
 );
 
 CREATE SEQUENCE splitter_referential_call_count AS INTEGER;

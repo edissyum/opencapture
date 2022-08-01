@@ -2,7 +2,7 @@
     <mat-sidenav #sidenav mode="side" opened class="w-1/6 flex flex-col h-full border-r border-green-400" style="top:0.1rem">
         <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4" style="padding-top: 0.9rem">{{ "SETTINGS.administration" | translate }}</h3>
         <mat-divider class="border-green-400"></mat-divider>
-        <mat-nav-list class="pt-0">
+        <mat-nav-list class="pt-0 overflow-x-hidden overflow-y-auto" style="height: calc(100% - 60px)">
             <mat-expansion-panel *ngFor="let parent of this.serviceSettings.getSettingsParent()"
                                  [expanded]="parent.opened" (opened)="this.serviceSettings.closeOtherParent(this.router.url, parent['id'])">
                 <mat-expansion-panel-header class="settings_expansion">
@@ -90,7 +90,18 @@
                 <hr class="border-green-400">
             </div>
         </div>
-        <div *ngIf="!loading" class="w-full">
+        <div *ngIf="!loading" class="w-full overflow-x-hidden overflow-y-auto" style="height: calc(100% - 64px)">
+            <div class="text-center">
+                <h3>{{ "CONFIGURATIONS.change_image" | translate }}</h3>
+                <div>
+                    <img class="shadow-md hover:shadow-2xl m-auto p-2 transition-all ease-in-out duration-500
+                         cursor-pointer shadow-gray-900 hover:shadow-gray-900" [src]="this.loginImage" alt="Login image"
+                         (click)="onClick(logo)">
+                    <input type="file" name="files[]" #logo (change)="upload($event)" accept="image/png" class="hidden">
+                </div>
+                <mat-hint class="relative top-2">{{ "CONFIGURATIONS.authorized_extensions" | translate }}</mat-hint>
+            </div>
+            <mat-divider class="border-green-400 mt-4 mb-4 w-3/4 m-auto"></mat-divider>
             <app-hint [message]="'GLOBAL.dont_touch' | translate"></app-hint>
             <mat-table matSort [dataSource]="configurations" (matSortChange)="sortData($event)">
                 <ng-container matColumnDef="id">

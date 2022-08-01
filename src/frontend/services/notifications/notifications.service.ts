@@ -20,7 +20,7 @@ import { Injectable, Component, Inject } from '@angular/core';
 import { MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { API_URL } from "../../app/env";
+import { environment } from  "../../app/env";
 
 @Component({
     selector: 'custom-snackbar',
@@ -68,7 +68,8 @@ export class NotificationService {
 
     handleErrors(err: any, route='') {
         if (err.status === 0 && err.statusText === 'Unknown Error') {
-            const message = '<b>' + this.translate.instant('ERROR.connection_failed') + '</b> : ' + this.translate.instant('ERROR.is_server_up', {server: API_URL});
+            const message = '<b>' + this.translate.instant('ERROR.connection_failed') + '</b> : ' +
+                this.translate.instant('ERROR.is_server_up', {server: environment['url']});
             if (this.router.url !== '/login') {
                 this.router.navigate(['/500']).then(() => {
                     this.error(message);

@@ -15,24 +15,23 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-import os
 import sys
 import argparse
 from src.backend import app
 from src.backend.main import launch
+from src.backend.functions import retrieve_config_from_custom_id
 
-# construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-f", "--file", required=False, help="Path to file")
-ap.add_argument("-c", "--config", required=True, help="Path to config.xml")
+ap.add_argument("-f", "--file", required=True, help="Path to file")
+ap.add_argument("-c", "--custom-id", required=True, help="Identifier of the custom")
 ap.add_argument("-input_id", "--input_id", required=True, help="Identifier of the input chain")
 args = vars(ap.parse_args())
 
 if args['file'] is None:
     sys.exit('The file parameter is mandatory')
 
-if not os.path.exists(args['config']):
-    sys.exit('Config file couldn\'t be found')
+if not retrieve_config_from_custom_id(args['custom_id']):
+    sys.exit('Custom config file couldn\'t be found')
 
 with app.app_context():
     launch(args)
