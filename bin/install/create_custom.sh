@@ -122,15 +122,15 @@ fi
 
 export PGPASSWORD=$postgresPassword && su postgres -c "psql -Upostgres -h$hostname -p$port -c 'CREATE ROLE $databaseUsername'"
 export PGPASSWORD=$postgresPassword && su postgres -c "psql -Upostgres -h$hostname -p$port -c 'ALTER ROLE $databaseUsername WITH LOGIN'"
+export PGPASSWORD=$postgresPassword && su postgres -c "psql -Upostgres -h$hostname -p$port -c 'ALTER ROLE $databaseUsername WITH CREATEDB'"
 export PGPASSWORD=$postgresPassword && su postgres -c "psql -Upostgres -h$hostname -p$port -c \"ALTER ROLE $databaseUsername WITH ENCRYPTED PASSWORD '$databasePassword'\""
 
 ####################
 # Create database using custom_id
-export PGPASSWORD=$postgresPassword && su postgres -c "psql -Upostgres -h$hostname -p$port -c 'CREATE DATABASE $customId'"
-export PGPASSWORD=$postgresPassword && su postgres -c "psql -Upostgres -h$hostname -p$port -c 'GRANT ALL PRIVILEGES ON DATABASE $customId TO $databaseUsername;'"
-export PGPASSWORD=$postgresPassword && su postgres -c "psql -Upostgres -h$hostname -p$port -c '\i $defaultPath/instance/sql/structure.sql' $customId"
-export PGPASSWORD=$postgresPassword && su postgres -c "psql -Upostgres -h$hostname -p$port -c '\i $defaultPath/instance/sql/global.sql' $customId"
-export PGPASSWORD=$postgresPassword && su postgres -c "psql -Upostgres -h$hostname -p$port -c '\i $defaultPath/instance/sql/data_fr.sql' $customId"
+export PGPASSWORD=$postgresPassword && su postgres -c "psql -U$databaseUsername -h$hostname -p$port -c 'CREATE DATABASE $customId'"
+export PGPASSWORD=$postgresPassword && su postgres -c "psql -U$databaseUsername -h$hostname -p$port -c '\i $defaultPath/instance/sql/structure.sql' $customId"
+export PGPASSWORD=$postgresPassword && su postgres -c "psql -U$databaseUsername -h$hostname -p$port -c '\i $defaultPath/instance/sql/global.sql' $customId"
+export PGPASSWORD=$postgresPassword && su postgres -c "psql -U$databaseUsername -h$hostname -p$port -c '\i $defaultPath/instance/sql/data_fr.sql' $customId"
 
 ####################
 # Create docservers
