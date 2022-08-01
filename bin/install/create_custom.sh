@@ -191,6 +191,9 @@ cp $defaultPath/instance/config/mail.ini.default "$defaultPath/custom/$customId/
 cp $defaultPath/instance/config/config.ini.default "$defaultPath/custom/$customId/config/config.ini"
 cp $defaultPath/bin/ldap/config/config.ini.default "$defaultPath/custom/$customId/bin/ldap/config/config.ini"
 
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/config/config.ini"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/config/mail.ini"
+
 ####################
 # Move defaults scripts to new custom location
 cp $defaultPath/bin/scripts/verifier_inputs/*.sh "$defaultPath/custom/$customId/bin/scripts/verifier_inputs/"
