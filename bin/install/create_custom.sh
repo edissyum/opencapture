@@ -40,10 +40,10 @@ do
     esac
 done
 
-if [ -z "$customId" ] ; then
+if [ -z "$customId" ]; then
     echo "##########################################################################"
     echo "              Custom id is needed to run the installation"
-    echo "   Exemple of command line call : sudo ./create_custom.sh -c edissyum"
+    echo "   Exemple of command line call : sudo ./create_custom.sh -c edissyum_bis"
     echo "##########################################################################"
     exit 2
 fi
