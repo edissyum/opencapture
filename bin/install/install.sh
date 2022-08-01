@@ -128,10 +128,16 @@ if [ "$finalChoice" == 1 ]; then
     fi
 fi
 
-echo "The two following question are for advanced users. If you don't know what you're doing, skip it and keep default values"
-echo "Higher values can overload your server if it doesn't have enough performances"
-echo "Example for a 16 vCPU / 8Go RAM server : 5 threads and 2 processes"
-echo "-----------------------------------------"
+echo ""
+echo "######################################################################################################################"
+echo "      _______                                                                                             _______ "
+echo "     / /| |\ \                   The two following questions are for advanced users                      / /| |\ \ "
+echo "    / / | | \ \          If you don't know what you're doing, skip it and keep default values           / / | | \ \ "
+echo "   / /  | |  \ \     Higher values can overload your server if it doesn't have enough performances     / /  | |  \ \ "
+echo "  / /   |_|   \ \          Example for a 16 vCPU / 8Go RAM server : 5 threads and 2 processes         / /   |_|   \ \ "
+echo " /_/    (_)    \_\                                                                                   /_/    (_)    \_\ "
+echo "######################################################################################################################"
+echo ""
 echo 'How many WSGI threads ? (default : 5)'
 printf "Enter your choice [%s] : " "${bold}5${normal}"
 read -r choice
@@ -155,7 +161,7 @@ elif ! [[ "$choice" =~ ^[0-9]+$ ]]; then
 else
     nbProcesses="$choice"
 fi
-echo "-----------------------------------------"
+echo "######################################################################################################################"
 
 ####################
 # Install packages
