@@ -42,14 +42,13 @@ fi
 # Check if custom name is set and doesn't exists already
 
 apt install -y crudini
-
-while getopts cmi: parameters
+multiInstance='false'
+while getopts "c:m:" parameters
 do
     case "${parameters}" in
         c) customId=${OPTARG};;
-        mi) multiInstance=${OPTARG};;
+        m) multiInstance=${OPTARG};;
         *) customId=""
-           multiInstance='false'
     esac
 done
 
@@ -405,15 +404,15 @@ chown -R "$user":"$user" $defaultPath/custom/"$customId"/bin/scripts/splitter_in
 
 ####################
 # Create docservers
-mkdir -p $docserverPath/OpenCapture/{verifier,splitter}
-mkdir -p $docserverPath/OpenCapture/verifier/{original_pdf,full,thumbs,positions_masks}
-mkdir -p $docserverPath/OpenCapture/splitter/{original_pdf,batches,separated_pdf,error}
+mkdir -p $docserverPath/OpenCapture/"$customId"/{verifier,splitter}
+mkdir -p $docserverPath/OpenCapture/"$customId"/verifier/{original_pdf,full,thumbs,positions_masks}
+mkdir -p $docserverPath/OpenCapture/"$customId"/splitter/{original_pdf,batches,separated_pdf,error}
 chmod -R 775 $docserverPath/OpenCapture/
 chmod -R g+s $docserverPath/OpenCapture/
 chown -R "$user":"$group" $docserverPath/OpenCapture/
 
 ####################
 # Create default export and input XML and PDF folder
-mkdir -p /var/share/{entrant,export}/{verifier,splitter}/
-chmod -R 775 /var/share/
-chown -R "$user":"$group" /var/share/
+mkdir -p /var/share/"$customId"/{entrant,export}/{verifier,splitter}/
+chmod -R 775 /var/share/"$customId"/
+chown -R "$user":"$group" /var/share/"$customId"/
