@@ -20,7 +20,7 @@ bundlestart      = BUNDLESTART
 [DATABASE]
 postgresHost     = localhost
 postgresPort     = 5432
-postgresDatabase = opencapture
+postgresDatabase = opencapture_edissyum
 postgresUser     =
 postgresPassword =
 

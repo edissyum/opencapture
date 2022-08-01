@@ -42,12 +42,10 @@ fi
 # Check if custom name is set and doesn't exists already
 
 apt install -y crudini
-multiInstance='false'
-while getopts "c:m:" parameters
+while getopts "c:" parameters
 do
     case "${parameters}" in
         c) customId=${OPTARG};;
-        m) multiInstance=${OPTARG};;
         *) customId=""
     esac
 done
@@ -88,11 +86,10 @@ ln -s "$defaultPath" "$defaultPath/$customId"
 
 mkdir -p $defaultPath/custom/"$customId"/{config,bin,assets,instance}/
 mkdir -p $defaultPath/custom/"$customId"/bin/{data,ldap,scripts}/
-mkdir -p $defaultPath/custom/"$customId"/bin/data/tmp/
 mkdir -p "$defaultPath/custom/$customId/assets/imgs/"
 mkdir -p "$defaultPath/custom/$customId/bin/ldap/config/"
 mkdir -p "$defaultPath/custom/$customId/instance/referencial/"
-mkdir -p $defaultPath/custom/"$customId"/bin/data/{log,MailCollect}/
+mkdir -p $defaultPath/custom/"$customId"/bin/data/{log,MailCollect,tmp,exported_pdf,exported_pdfa}/
 mkdir -p $defaultPath/custom/"$customId"/bin/data/log/Supervisor/
 mkdir -p $defaultPath/custom/"$customId"/bin/scripts/{verifier_inputs,splitter_inputs}/
 
@@ -103,6 +100,9 @@ echo "" >> $customIniFile
 
 ####################
 # User choice
+echo ""
+echo "#################################################################################################"
+echo ""
 echo "Do you want to use supervisor (1) or systemd (2) ? (default : 2) "
 echo "If you plan to handle a lot of files and need a reduced time of process, use supervisor"
 echo "WARNING : A lot of Tesseract processes will run in parallel and it can be very resource intensive"
@@ -130,14 +130,14 @@ if [ "$finalChoice" == 1 ]; then
 fi
 
 echo ""
-echo "######################################################################################################################"
+echo "#######################################################################################################################"
 echo "      _______                                                                                             _______ "
 echo "     / /| |\ \                   The two following questions are for advanced users                      / /| |\ \ "
 echo "    / / | | \ \          If you don't know what you're doing, skip it and keep default values           / / | | \ \ "
 echo "   / /  | |  \ \     Higher values can overload your server if it doesn't have enough performances     / /  | |  \ \ "
 echo "  / /   |_|   \ \          Example for a 16 vCPU / 8Go RAM server : 5 threads and 2 processes         / /   |_|   \ \ "
 echo " /_/    (_)    \_\                                                                                   /_/    (_)    \_\ "
-echo "######################################################################################################################"
+echo "#######################################################################################################################"
 echo ""
 echo 'How many WSGI threads ? (default : 5)'
 printf "Enter your choice [%s] : " "${bold}5${normal}"
@@ -313,8 +313,8 @@ chown -R "$user":"$user" /tmp/OpenCaptureForInvoices
 cp $defaultPath/bin/ldap/config/config.ini.default "$defaultPath/custom/$customId/bin/ldap/config/config.ini"
 cp $defaultPath/instance/config/mail.ini.default "$defaultPath/custom/$customId/config/mail.ini"
 cp $defaultPath/instance/config/config.ini.default "$defaultPath/custom/$customId/config/config.ini"
-cp $defaultPath/instance/referencial/default_referencial_supplier.ods.default $defaultPath/instance/referencial/default_referencial_supplier.ods
-cp $defaultPath/instance/referencial/default_referencial_supplier_index.json.default $defaultPath/instance/referencial/default_referencial_supplier_index.json
+cp $defaultPath/instance/referencial/default_referencial_supplier.ods.default "$defaultPath/custom/$customId/instance/referencial/default_referencial_supplier.ods"
+cp $defaultPath/instance/referencial/default_referencial_supplier_index.json.default "$defaultPath/custom/$customId/instance/referencial/default_referencial_supplier_index.json"
 
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/config/config.ini"
 
