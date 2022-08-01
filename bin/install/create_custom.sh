@@ -79,7 +79,7 @@ printf "Hostname [%s] : " "${bold}localhost${normal}"
 read -r choice
 
 if [[ "$choice" == "" ]]; then
-    hostname=localhost
+    hostname="localhost"
 else
     hostname="$choice"
 fi
@@ -97,7 +97,7 @@ printf "Username [%s] : " "${bold}edissyum${normal}"
 read -r choice
 
 if [[ "$choice" == "" ]]; then
-    databaseUsername=edissyum
+    databaseUsername="edissyum"
 else
     databaseUsername="$choice"
 fi
@@ -106,31 +106,37 @@ printf "Password [%s] : " "${bold}edissyum${normal}"
 read -r choice
 
 if [[ "$choice" == "" ]]; then
-    databasePassword=edissyum
+    databasePassword="edissyum"
 else
     databasePassword="$choice"
 fi
 
-printf "Postgres user Password [%s] : " "${bold}postgres${normal}"
-read -r choice
+if [ "$hostname" != "localhost" ] || [ "$port" != "5432" ]; then
+    printf "Postgres user Password [%s] : " "${bold}postgres${normal}"
+    read -r choice
 
-if [[ "$choice" == "" ]]; then
-    postgresPassword=postgres
+    if [[ "$choice" == "" ]]; then
+        postgresPassword="postgres"
+    else
+        postgresPassword="$choice"
+    fi
+    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'CREATE ROLE $databaseUsername'"
+    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'ALTER ROLE $databaseUsername WITH LOGIN'"
+    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'ALTER ROLE $databaseUsername WITH CREATEDB'"
+    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c \"ALTER ROLE $databaseUsername WITH ENCRYPTED PASSWORD '$databasePassword'\""
 else
-    postgresPassword="$choice"
+  su postgres -c "psql -c 'CREATE ROLE $databaseUsername'"
+  su postgres -c "psql -c 'ALTER ROLE $databaseUsername WITH LOGIN'"
+  su postgres -c "psql -c 'ALTER ROLE $databaseUsername WITH CREATEDB'"
+  su postgres -c "psql -c \"ALTER ROLE $databaseUsername WITH ENCRYPTED PASSWORD '$databasePassword'\""
 fi
-
-export PGPASSWORD=$postgresPassword && su postgres -c "psql -Upostgres -h$hostname -p$port -c 'CREATE ROLE $databaseUsername'"
-export PGPASSWORD=$postgresPassword && su postgres -c "psql -Upostgres -h$hostname -p$port -c 'ALTER ROLE $databaseUsername WITH LOGIN'"
-export PGPASSWORD=$postgresPassword && su postgres -c "psql -Upostgres -h$hostname -p$port -c 'ALTER ROLE $databaseUsername WITH CREATEDB'"
-export PGPASSWORD=$postgresPassword && su postgres -c "psql -Upostgres -h$hostname -p$port -c \"ALTER ROLE $databaseUsername WITH ENCRYPTED PASSWORD '$databasePassword'\""
 
 ####################
 # Create database using custom_id
-export PGPASSWORD=$postgresPassword && su postgres -c "psql -U$databaseUsername -h$hostname -p$port -c 'CREATE DATABASE $customId'"
-export PGPASSWORD=$postgresPassword && su postgres -c "psql -U$databaseUsername -h$hostname -p$port -c '\i $defaultPath/instance/sql/structure.sql' $customId"
-export PGPASSWORD=$postgresPassword && su postgres -c "psql -U$databaseUsername -h$hostname -p$port -c '\i $defaultPath/instance/sql/global.sql' $customId"
-export PGPASSWORD=$postgresPassword && su postgres -c "psql -U$databaseUsername -h$hostname -p$port -c '\i $defaultPath/instance/sql/data_fr.sql' $customId"
+export PGPASSWORD=$databasePassword && su postgres -c "psql -U$databaseUsername -h$hostname -p$port -c 'CREATE DATABASE $customId'"
+export PGPASSWORD=$databasePassword && su postgres -c "psql -U$databaseUsername -h$hostname -p$port -c '\i $defaultPath/instance/sql/structure.sql' $customId"
+export PGPASSWORD=$databasePassword && su postgres -c "psql -U$databaseUsername -h$hostname -p$port -c '\i $defaultPath/instance/sql/global.sql' $customId"
+export PGPASSWORD=$databasePassword && su postgres -c "psql -U$databaseUsername -h$hostname -p$port -c '\i $defaultPath/instance/sql/data_fr.sql' $customId"
 
 ####################
 # Create docservers
