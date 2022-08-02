@@ -96,7 +96,6 @@ def update(args):
     res = database.update(_args)
     if not res:
         error = gettext('UPDATE_CUSTOM_FIELDS_ERROR')
-
     return res, error
 
 
