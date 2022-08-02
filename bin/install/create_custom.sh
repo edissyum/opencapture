@@ -40,10 +40,10 @@ do
     esac
 done
 
-if [ -z "$customId" ] ; then
+if [ -z "$customId" ]; then
     echo "##########################################################################"
     echo "              Custom id is needed to run the installation"
-    echo "   Exemple of command line call : sudo ./create_custom.sh -c edissyum"
+    echo "   Exemple of command line call : sudo ./create_custom.sh -c edissyum_bis"
     echo "##########################################################################"
     exit 2
 fi
@@ -70,6 +70,8 @@ for custom_name in ${SECTIONS[@]}; do # Do not double quote it
     fi
 done
 
+databaseName="opencapture_$customId"
+
 ####################
 # Retrieve database informations
 echo "Type database informations (hostname, port, username and password and postgres user password)."
@@ -79,7 +81,7 @@ printf "Hostname [%s] : " "${bold}localhost${normal}"
 read -r choice
 
 if [[ "$choice" == "" ]]; then
-    hostname=localhost
+    hostname="localhost"
 else
     hostname="$choice"
 fi
@@ -97,7 +99,7 @@ printf "Username [%s] : " "${bold}edissyum${normal}"
 read -r choice
 
 if [[ "$choice" == "" ]]; then
-    databaseUsername=edissyum
+    databaseUsername="edissyum"
 else
     databaseUsername="$choice"
 fi
@@ -106,31 +108,37 @@ printf "Password [%s] : " "${bold}edissyum${normal}"
 read -r choice
 
 if [[ "$choice" == "" ]]; then
-    databasePassword=edissyum
+    databasePassword="edissyum"
 else
     databasePassword="$choice"
 fi
 
-printf "Postgres user Password [%s] : " "${bold}postgres${normal}"
-read -r choice
+if [ "$hostname" != "localhost" ] || [ "$port" != "5432" ]; then
+    printf "Postgres user Password [%s] : " "${bold}postgres${normal}"
+    read -r choice
 
-if [[ "$choice" == "" ]]; then
-    postgresPassword=postgres
+    if [[ "$choice" == "" ]]; then
+        postgresPassword="postgres"
+    else
+        postgresPassword="$choice"
+    fi
+    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'CREATE ROLE $databaseUsername'"
+    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'ALTER ROLE $databaseUsername WITH LOGIN'"
+    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'ALTER ROLE $databaseUsername WITH CREATEDB'"
+    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c \"ALTER ROLE $databaseUsername WITH ENCRYPTED PASSWORD '$databasePassword'\""
 else
-    postgresPassword="$choice"
+  su postgres -c "psql -c 'CREATE ROLE $databaseUsername'"
+  su postgres -c "psql -c 'ALTER ROLE $databaseUsername WITH LOGIN'"
+  su postgres -c "psql -c 'ALTER ROLE $databaseUsername WITH CREATEDB'"
+  su postgres -c "psql -c \"ALTER ROLE $databaseUsername WITH ENCRYPTED PASSWORD '$databasePassword'\""
 fi
-
-export PGPASSWORD=$postgresPassword && su postgres -c "psql -Upostgres -h$hostname -p$port -c 'CREATE ROLE $databaseUsername'"
-export PGPASSWORD=$postgresPassword && su postgres -c "psql -Upostgres -h$hostname -p$port -c 'ALTER ROLE $databaseUsername WITH LOGIN'"
-export PGPASSWORD=$postgresPassword && su postgres -c "psql -Upostgres -h$hostname -p$port -c \"ALTER ROLE $databaseUsername WITH ENCRYPTED PASSWORD '$databasePassword'\""
 
 ####################
 # Create database using custom_id
-export PGPASSWORD=$postgresPassword && su postgres -c "psql -Upostgres -h$hostname -p$port -c 'CREATE DATABASE $customId'"
-export PGPASSWORD=$postgresPassword && su postgres -c "psql -Upostgres -h$hostname -p$port -c 'GRANT ALL PRIVILEGES ON DATABASE $customId TO $databaseUsername;'"
-export PGPASSWORD=$postgresPassword && su postgres -c "psql -Upostgres -h$hostname -p$port -c '\i $defaultPath/instance/sql/structure.sql' $customId"
-export PGPASSWORD=$postgresPassword && su postgres -c "psql -Upostgres -h$hostname -p$port -c '\i $defaultPath/instance/sql/global.sql' $customId"
-export PGPASSWORD=$postgresPassword && su postgres -c "psql -Upostgres -h$hostname -p$port -c '\i $defaultPath/instance/sql/data_fr.sql' $customId"
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "CREATE DATABASE $databaseName" postgres
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/structure.sql" "$databaseName"
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/global.sql" "$databaseName"
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/data_fr.sql" "$databaseName"
 
 ####################
 # Create docservers
@@ -144,7 +152,6 @@ else
     docserverDefaultPath="$choice"
 fi
 
-
 mkdir -p /"$docserverDefaultPath"/"$customId"/{verifier,splitter}
 mkdir -p /"$docserverDefaultPath"/"$customId"/verifier/{original_pdf,full,thumbs,positions_masks}
 mkdir -p /"$docserverDefaultPath"/"$customId"/splitter/{original_pdf,batches,separated_pdf,error}
@@ -153,21 +160,22 @@ sudo chown -R "$user":www-data /"$docserverDefaultPath"/"$customId"/
 
 customPath=$defaultPath/custom/"$customId"
 
-export PGPASSWORD=$databasePassword && su postgres -c "psql -U$databaseUsername -h$hostname -p$port -c 'UPDATE docservers SET path=REPLACE(path, '$docserverDefaultPath' , '/$docserverDefaultPath/$customId/')' $customId"
-export PGPASSWORD=$databasePassword && su postgres -c "psql -U$databaseUsername -h$hostname -p$port -c 'UPDATE docservers SET path='$customPath/bin/scripts/' WHERE docserver_id = 'SCRIPTS_PATH''"
-export PGPASSWORD=$databasePassword && su postgres -c "psql -U$databaseUsername -h$hostname -p$port -c 'UPDATE docservers SET path='$customPath/bin/data/tmp/opencapture/' WHERE docserver_id = 'TMP_PATH''"
-export PGPASSWORD=$databasePassword && su postgres -c "psql -U$databaseUsername -h$hostname -p$port -c 'UPDATE docservers SET path='$customPath/bin/data/tmp/exported_pdf/' WHERE docserver_id = 'SEPARATOR_OUTPUT_PDFA''"
-export PGPASSWORD=$databasePassword && su postgres -c "psql -U$databaseUsername -h$hostname -p$port -c 'UPDATE docservers SET path='$customPath/bin/data/tmp/' WHERE docserver_id = 'SEPARATOR_OUTPUT_PDF''"
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path=REPLACE(path, '$docserverDefaultPath' , '/$docserverDefaultPath/$customId/')" "$databaseName"
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/scripts/' WHERE docserver_id = 'SCRIPTS_PATH'" "$databaseName"
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/tmp/' WHERE docserver_id = 'TMP_PATH'" "$databaseName"
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/exported_pdfa/' WHERE docserver_id = 'SEPARATOR_OUTPUT_PDFA'" "$databaseName"
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/exported_pdf/' WHERE docserver_id = 'SEPARATOR_OUTPUT_PDF'" "$databaseName"
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/instance/referencial/' WHERE docserver_id = 'REFERENTIALS_PATH'" "$databaseName"
 
 ####################
 # Create custom symbolic link and folders
 ln -s "$defaultPath" "$defaultPath/$customId"
-mkdir -p $customPath/{config,bin,assets}/
+mkdir -p $customPath/{config,bin,assets,instance}/
 mkdir -p $customPath/bin/{data,ldap,scripts}/
-mkdir -p $customPath/bin/data/tmp/
 mkdir -p $customPath/assets/imgs/
 mkdir -p $customPath/bin/ldap/config/
-mkdir -p $customPath/bin/data/{log,MailCollect}/
+mkdir -p $customPath/instance/referencial/
+mkdir -p $customPath/bin/data/{log,MailCollect,tmp,exported_pdf,exported_pdfa}/
 mkdir -p $customPath/bin/data/log/Supervisor/
 mkdir -p $customPath/bin/scripts/{verifier_inputs,splitter_inputs}/
 
@@ -182,14 +190,19 @@ mkdir -p /var/share/"$customId"/{entrant,export}/{verifier,splitter}/
 chmod -R 775 /var/share/"$customId"/
 chown -R "$user":"$group" /var/share/"$customId"/
 
-export PGPASSWORD=$databasePassword && su postgres -c "psql -U$databaseUsername -h$hostname -p$port -c 'UPDATE inputs SET input_folder=REPLACE(input_folder, '/var/share/' , '/var/share/$customId/')'"
-export PGPASSWORD=$databasePassword && su postgres -c "psql -U$databaseUsername -h$hostname -p$port -c 'UPDATE outputs SET data = jsonb_set(data, '{options,parameters, 0, value}', '"/var/share/$customId/export/"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out';'"
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE inputs SET input_folder=REPLACE(input_folder, '/var/share/' , '/var/share/$customId/')" "$databaseName"
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options,parameters, 0, value}', '\"/var/share/$customId/export/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out';" "$databaseName"
 
 ####################
 # Copy file from default one
+cp $defaultPath/instance/referencial/default_referencial_supplier.ods.default "$defaultPath/custom/$customId/instance/referencial/default_referencial_supplier.ods"
+cp $defaultPath/instance/referencial/default_referencial_supplier_index.json.default "$defaultPath/custom/$customId/instance/referencial/default_referencial_supplier_index.json"
 cp $defaultPath/instance/config/mail.ini.default "$defaultPath/custom/$customId/config/mail.ini"
 cp $defaultPath/instance/config/config.ini.default "$defaultPath/custom/$customId/config/config.ini"
 cp $defaultPath/bin/ldap/config/config.ini.default "$defaultPath/custom/$customId/bin/ldap/config/config.ini"
+
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/config/config.ini"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/config/mail.ini"
 
 ####################
 # Move defaults scripts to new custom location
@@ -207,4 +220,3 @@ chown -R "$user":"$group" $defaultPath
 chmod u+x $customPath/bin/scripts/verifier_inputs/*.sh
 chmod u+x $customPath/bin/scripts/splitter_inputs/*.sh
 chown -R "$user":"$user" $customPath/bin/scripts/
-############################################################"
