@@ -84,14 +84,17 @@ done
 # Create custom symbolic link and folders
 ln -s "$defaultPath" "$defaultPath/$customId"
 
-mkdir -p $defaultPath/custom/"$customId"/{config,bin,assets,instance}/
-mkdir -p $defaultPath/custom/"$customId"/bin/{data,ldap,scripts}/
-mkdir -p "$defaultPath/custom/$customId/assets/imgs/"
-mkdir -p "$defaultPath/custom/$customId/bin/ldap/config/"
-mkdir -p "$defaultPath/custom/$customId/instance/referencial/"
-mkdir -p $defaultPath/custom/"$customId"/bin/data/{log,MailCollect,tmp,exported_pdf,exported_pdfa}/
-mkdir -p $defaultPath/custom/"$customId"/bin/data/log/Supervisor/
-mkdir -p $defaultPath/custom/"$customId"/bin/scripts/{verifier_inputs,splitter_inputs}/
+customPath=$defaultPath/custom/"$customId"
+
+mkdir -p $customPath/{config,bin,assets,instance,src}/
+mkdir -p $customPath/bin/{data,ldap,scripts}/
+mkdir -p $customPath/assets/imgs/
+mkdir -p $customPath/bin/ldap/config/
+mkdir -p $customPath/instance/referencial/
+mkdir -p $customPath/bin/data/{log,MailCollect,tmp,exported_pdf,exported_pdfa}/
+mkdir -p $customPath/bin/data/log/Supervisor/
+mkdir -p $customPath/bin/scripts/{verifier_inputs,splitter_inputs}/
+mkdir -p $customPath/src/backend/
 
 echo "[$customId]" >> $customIniFile
 echo "path = $defaultPath/custom/$customId" >> $customIniFile
@@ -210,8 +213,8 @@ systemctl restart apache2
 ####################
 # Create the service systemd or supervisor
 if [ "$finalChoice" == 2 ]; then
-    touch /etc/systemd/system/OCForInvoices-worker.service
-    su -c "cat > /etc/systemd/system/OCForInvoices-worker.service << EOF
+    touch "/etc/systemd/system/OCForInvoices-worker_$customId.service"
+    su -c "cat > /etc/systemd/system/OCForInvoices-worker_$customId.service << EOF
 [Unit]
 Description=Daemon for Open-Capture for Invoices
 
@@ -222,7 +225,7 @@ User=$user
 Group=$user
 UMask=0022
 
-ExecStart=$defaultPath/bin/scripts/service_workerOC.sh
+ExecStart=$defaultPath/custom/$customId/bin/scripts/service_workerOC.sh
 KillSignal=SIGQUIT
 
 Restart=on-failure
@@ -231,8 +234,8 @@ Restart=on-failure
 WantedBy=multi-user.target
 EOF"
 
-    touch /etc/systemd/system/OCForInvoices_Split-worker.service
-    su -c "cat > /etc/systemd/system/OCForInvoices_Split-worker.service << EOF
+    touch "/etc/systemd/system/OCForInvoices_Split-worker_$customId.service"
+    su -c "cat > /etc/systemd/system/OCForInvoices_Split-worker_$customId.service << EOF
 [Unit]
 Description=Splitter Daemon for Open-Capture for Invoices
 
@@ -243,7 +246,7 @@ User=$user
 Group=$user
 UMask=0022
 
-ExecStart=$defaultPath/bin/scripts/service_workerOC_splitter.sh
+ExecStart=$defaultPath/custom/$customId/bin/scripts/service_workerOC_splitter.sh
 KillSignal=SIGQUIT
 Restart=on-failure
 
@@ -252,19 +255,18 @@ WantedBy=multi-user.target
 EOF"
 
     systemctl daemon-reload
-    systemctl start OCForInvoices-worker.service
-    systemctl start OCForInvoices_Split-worker.service
-    sudo systemctl enable OCForInvoices-worker.service
-    sudo systemctl enable OCForInvoices_Split-worker.service
+    systemctl start "OCForInvoices-worker_$customId".service
+    systemctl start "OCForInvoices_Split-worker_$customId".service
+    sudo systemctl enable "OCForInvoices-worker_$customId".service
+    sudo systemctl enable "OCForInvoices_Split-worker_$customId".service
 else
     apt install -y supervisor
-    mkdir "$defaultPath"/bin/data/log/Supervisor/
-    touch /etc/supervisor/conf.d/OCForInvoices-worker.conf
-    touch /etc/supervisor/conf.d/OCForInvoices_Split-worker.conf
+    touch "/etc/supervisor/conf.d/OCForInvoices-worker_$customId.conf"
+    touch "/etc/supervisor/conf.d/OCForInvoices_Split-worker_$customId.conf"
 
-    su -c "cat > /etc/supervisor/conf.d/OCForInvoices-worker.conf << EOF
+    su -c "cat > /etc/supervisor/conf.d/OCForInvoices-worker_$customId.conf << EOF
 [program:OCWorker]
-command=$defaultPath/bin/scripts/service_workerOC.sh
+command=$defaultPath/custom/$customId/bin/scripts/service_workerOC.sh
 process_name=%(program_name)s_%(process_num)02d
 numprocs=$nbProcessSupervisor
 user=$user
@@ -276,12 +278,12 @@ stopasgroup=true
 killasgroup=true
 stopwaitsecs=10
 
-stderr_logfile=$defaultPath/bin/data/log/Supervisor/OCForInvoices_worker_%(process_num)02d_error.log
+stderr_logfile=$defaultPath/custom/$customId/bin/data/log/Supervisor/OCForInvoices_worker_%(process_num)02d_error.log
 EOF"
 
-    su -c "cat > /etc/supervisor/conf.d/OCForInvoices_Split-worker.conf << EOF
+    su -c "cat > /etc/supervisor/conf.d/OCForInvoices_Split-worker_$customId.conf << EOF
 [program:OCWorker-Split]
-command=$defaultPath/bin/scripts/service_workerOC_splitter.sh
+command=$defaultPath/custom/$customId/bin/scripts/service_workerOC_splitter.sh
 process_name=%(program_name)s_%(process_num)02d
 numprocs=$nbProcessSupervisor
 user=$user
@@ -293,11 +295,11 @@ stopasgroup=true
 killasgroup=true
 stopwaitsecs=10
 
-stderr_logfile=$defaultPath/bin/data/log/Supervisor/OCForInvoices_SPLIT_worker_%(process_num)02d_error.log
+stderr_logfile=$defaultPath/custom/$customId/bin/data/log/Supervisor/OCForInvoices_SPLIT_worker_%(process_num)02d_error.log
 EOF"
 
-    chmod 755 /etc/supervisor/conf.d/OCForInvoices-worker.conf
-    chmod 755 /etc/supervisor/conf.d/OCForInvoices_Split-worker.conf
+    chmod 755 "/etc/supervisor/conf.d/OCForInvoices-worker_$customId.conf"
+    chmod 755 "/etc/supervisor/conf.d/OCForInvoices_Split-worker_$customId.conf"
 
     systemctl restart supervisor
     systemctl enable supervisor
@@ -315,8 +317,13 @@ cp $defaultPath/instance/config/mail.ini.default "$defaultPath/custom/$customId/
 cp $defaultPath/instance/config/config.ini.default "$defaultPath/custom/$customId/config/config.ini"
 cp $defaultPath/instance/referencial/default_referencial_supplier.ods.default "$defaultPath/custom/$customId/instance/referencial/default_referencial_supplier.ods"
 cp $defaultPath/instance/referencial/default_referencial_supplier_index.json.default "$defaultPath/custom/$customId/instance/referencial/default_referencial_supplier_index.json"
+cp $defaultPath/src/backend/process_queue.py.default "$defaultPath/custom/$customId/src/backend/process_queue.py"
+cp $defaultPath/bin/scripts/service_workerOC.sh.default "$defaultPath/custom/$customId/bin/scripts/service_workerOC.sh"
 
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/config/config.ini"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/config/mail.ini"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/src/backend/process_queue.py"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/service_workerOC.sh"
 
 ####################
 # Setting up fs-watcher service (to replace incron)

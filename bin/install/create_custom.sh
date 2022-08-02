@@ -32,11 +32,13 @@ group=www-data
 
 apt install -y crudini
 
-while getopts c: parameters
+while getopts "c:t:" parameters
 do
     case "${parameters}" in
         c) customId=${OPTARG};;
+        t) installationType=${OPTARG};;
         *) customId=""
+            installationType="systemd"
     esac
 done
 
@@ -46,6 +48,30 @@ if [ -z "$customId" ]; then
     echo "   Exemple of command line call : sudo ./create_custom.sh -c edissyum_bis"
     echo "##########################################################################"
     exit 2
+fi
+
+if [ "$installationType" != 'systemd' ] && [ "$installationType" != 'supervisor' ]; then
+    echo "#################################################################################################"
+    echo "                           Bad value for installationType variable"
+    echo "   Exemple of command line call : sudo ./create_custom.sh -c edissyum_bis (systemd by default)"
+    echo "       Exemple of command line call : sudo ./create_custom.sh -c edissyum_bis -t systemd"
+    echo "      Exemple of command line call : sudo ./create_custom.sh -c edissyum_bis -t supervisor"
+    echo "#################################################################################################"
+    exit 2
+fi
+
+if [ "$installationType" == 'supervisor' ]; then
+    echo 'You choose supervisor, how many processes you want to be run simultaneously ? (default : 3)'
+    printf "Enter your choice [%s] : " "${bold}3${normal}"
+    read -r choice
+    if [ "$choice" == "" ]; then
+        nbProcessSupervisor=3
+    elif ! [[ "$choice" =~ ^[0-9]+$ ]]; then
+        echo 'The input is not an integer, default value selected (3)'
+        nbProcessSupervisor=3
+    else
+        nbProcessSupervisor="$choice"
+    fi
 fi
 
 if [ -L "$defaultPath/$customId" ] && [ -e "$defaultPath/$customId" ]; then
@@ -170,7 +196,7 @@ export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" 
 ####################
 # Create custom symbolic link and folders
 ln -s "$defaultPath" "$defaultPath/$customId"
-mkdir -p $customPath/{config,bin,assets,instance}/
+mkdir -p $customPath/{config,bin,assets,instance,src}/
 mkdir -p $customPath/bin/{data,ldap,scripts}/
 mkdir -p $customPath/assets/imgs/
 mkdir -p $customPath/bin/ldap/config/
@@ -178,6 +204,7 @@ mkdir -p $customPath/instance/referencial/
 mkdir -p $customPath/bin/data/{log,MailCollect,tmp,exported_pdf,exported_pdfa}/
 mkdir -p $customPath/bin/data/log/Supervisor/
 mkdir -p $customPath/bin/scripts/{verifier_inputs,splitter_inputs}/
+mkdir -p $customPath/src/backend/
 
 echo "[$customId]" >> $customIniFile
 echo "path = $defaultPath/custom/$customId" >> $customIniFile
@@ -200,13 +227,18 @@ cp $defaultPath/instance/referencial/default_referencial_supplier_index.json.def
 cp $defaultPath/instance/config/mail.ini.default "$defaultPath/custom/$customId/config/mail.ini"
 cp $defaultPath/instance/config/config.ini.default "$defaultPath/custom/$customId/config/config.ini"
 cp $defaultPath/bin/ldap/config/config.ini.default "$defaultPath/custom/$customId/bin/ldap/config/config.ini"
+cp $defaultPath/src/backend/process_queue.py.default "$defaultPath/custom/$customId/src/backend/process_queue.py"
+cp $defaultPath/bin/scripts/service_workerOC.sh.default "$defaultPath/custom/$customId/bin/scripts/service_workerOC.sh"
 
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/config/config.ini"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/config/mail.ini"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/src/backend/process_queue.py"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/service_workerOC.sh"
 
 ####################
 # Move defaults scripts to new custom location
 cp $defaultPath/bin/scripts/verifier_inputs/*.sh "$defaultPath/custom/$customId/bin/scripts/verifier_inputs/"
+cp $defaultPath/bin/scripts/splitter_inputs/*.sh "$defaultPath/custom/$customId/bin/scripts/splitter_inputs/"
 cp $defaultPath/bin/scripts/splitter_inputs/*.sh "$defaultPath/custom/$customId/bin/scripts/splitter_inputs/"
 
 ####################
@@ -214,6 +246,100 @@ cp $defaultPath/bin/scripts/splitter_inputs/*.sh "$defaultPath/custom/$customId/
 chmod -R 775 $defaultPath
 chmod -R g+s $defaultPath
 chown -R "$user":"$group" $defaultPath
+
+####################
+# Create new supervisor or systemd files
+
+if [ $installationType == 'systemd' ]; then
+    touch "/etc/systemd/system/OCForInvoices-worker_$customId.service"
+    su -c "cat > /etc/systemd/system/OCForInvoices-worker_$customId.service << EOF
+[Unit]
+Description=Daemon for Open-Capture for Invoices
+
+[Service]
+Type=simple
+
+User=$user
+Group=$user
+UMask=0022
+
+ExecStart=$defaultPath/custom/$customId/bin/scripts/service_workerOC.sh
+KillSignal=SIGQUIT
+
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+EOF"
+
+    touch "/etc/systemd/system/OCForInvoices_Split-worker_$customId.service"
+    su -c "cat > /etc/systemd/system/OCForInvoices_Split-worker_$customId.service << EOF
+[Unit]
+Description=Splitter Daemon for Open-Capture for Invoices
+
+[Service]
+Type=simple
+
+User=$user
+Group=$user
+UMask=0022
+
+ExecStart=$defaultPath/custom/$customId/bin/scripts/service_workerOC_splitter.sh
+KillSignal=SIGQUIT
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+EOF"
+
+    systemctl daemon-reload
+    systemctl start "OCForInvoices-worker_$customId".service
+    systemctl start "OCForInvoices_Split-worker_$customId".service
+    sudo systemctl enable "OCForInvoices-worker_$customId".service
+    sudo systemctl enable "OCForInvoices_Split-worker_$customId".service
+elif [ $installationType == 'supervisor' ]; then
+    touch "/etc/supervisor/conf.d/OCForInvoices-worker_$customId.conf"
+    touch "/etc/supervisor/conf.d/OCForInvoices_Split-worker_$customId.conf"
+    su -c "cat > /etc/supervisor/conf.d/OCForInvoices-worker_$customId.conf << EOF
+[program:OCWorker]
+command=$defaultPath/custom/$customId/bin/scripts/service_workerOC.sh
+process_name=%(program_name)s_%(process_num)02d
+numprocs=$nbProcessSupervisor
+user=$user
+chmod=0777
+chown=$user:$group
+socket_owner=$user
+stopsignal=QUIT
+stopasgroup=true
+killasgroup=true
+stopwaitsecs=10
+
+stderr_logfile=$defaultPath/custom/$customId/bin/data/log/Supervisor/OCForInvoices_worker_%(process_num)02d_error.log
+EOF"
+
+    su -c "cat > /etc/supervisor/conf.d/OCForInvoices_Split-worker_$customId.conf << EOF
+[program:OCWorker-Split]
+command=$defaultPath/custom/$customId/bin/scripts/service_workerOC_splitter.sh
+process_name=%(program_name)s_%(process_num)02d
+numprocs=$nbProcessSupervisor
+user=$user
+chmod=0777
+chown=$user:$group
+socket_owner=$user
+stopsignal=QUIT
+stopasgroup=true
+killasgroup=true
+stopwaitsecs=10
+
+stderr_logfile=$defaultPath/custom/$customId/bin/data/log/Supervisor/OCForInvoices_SPLIT_worker_%(process_num)02d_error.log
+EOF"
+
+    chmod 755 "/etc/supervisor/conf.d/OCForInvoices-worker_$customId.conf"
+    chmod 755 "/etc/supervisor/conf.d/OCForInvoices_Split-worker_$customId.conf"
+
+    systemctl restart supervisor
+    systemctl enable supervisor
+fi
 
 ####################
 # Makes scripts executable
