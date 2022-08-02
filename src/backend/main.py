@@ -126,11 +126,11 @@ def launch(args):
 
     path = retrieve_config_from_custom_id(args['custom_id']).replace('/config/config.ini', '')
     custom_array = get_custom_array([args['custom_id'], path])
-    if 'process_queue' not in custom_array or not custom_array['process_queue'] and not custom_array['process_queue']['path']:
-        import src.backend.process_queue as process_queue
+    if 'process_queue_verifier' not in custom_array or not custom_array['process_queue_verifier'] and not custom_array['process_queue_verifier']['path']:
+        import src.backend.process_queue_verifier as process_queue_verifier
     else:
-        custom_array['process_queue']['path'] = 'custom' + custom_array['process_queue']['path'].split('custom')[1]
-        process_queue = getattr(__import__(custom_array['process_queue']['path'],
-                                           fromlist=[custom_array['process_queue']['module']]),
-                                custom_array['process_queue']['module'])
-    process_queue.launch(args)
+        custom_array['process_queue_verifier']['path'] = 'custom' + custom_array['process_queue_verifier']['path'].split('custom')[1]
+        process_queue_verifier = getattr(__import__(custom_array['process_queue_verifier']['path'],
+                                           fromlist=[custom_array['process_queue_verifier']['module']]),
+                                custom_array['process_queue_verifier']['module'])
+    process_queue_verifier.launch(args)

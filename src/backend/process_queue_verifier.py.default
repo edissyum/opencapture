@@ -36,7 +36,7 @@ else:
 OCforInvoices = Kuyruk()
 
 
-@OCforInvoices.task(queue='task_§§CUSTOM_ID§§')
+@OCforInvoices.task(queue='verifier_§§CUSTOM_ID§§')
 def launch(args):
     start = time.time()
 
