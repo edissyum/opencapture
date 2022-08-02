@@ -639,7 +639,7 @@ def get_split_methods():
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
     docservers = _vars[9]
-    split_methods = _Splitter.get_split_method(docservers)
+    split_methods = _Splitter.get_split_methods(docservers)
     if len(split_methods) > 0:
         return split_methods, 200
     return split_methods, 401

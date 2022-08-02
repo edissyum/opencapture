@@ -21,7 +21,7 @@ import time
 import json
 import tempfile
 from kuyruk import Kuyruk
-from src.backend import retrieve_config_from_custom_id
+from .functions import retrieve_config_from_custom_id
 from src.backend.import_classes import _Files, _Splitter, _SeparatorQR, _Log
 from src.backend.main import timer, check_file, create_classes_from_custom_id
 
