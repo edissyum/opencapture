@@ -71,7 +71,7 @@ def retrieve_configurations(args):
         return response, 200
 
     response = {
-        "errors": "RETRIEVE_CONFIGURATIONS_ERRORS",
+        "errors": gettext("RETRIEVE_CONFIGURATIONS_ERRORS"),
         "message": error
     }
     return response, 401
@@ -87,7 +87,7 @@ def retrieve_docservers(args):
         return response, 200
 
     response = {
-        "errors": "RETRIEVE_DOCSERVERS_ERRORS",
+        "errors": gettext("RETRIEVE_DOCSERVERS_ERRORS"),
         "message": error
     }
     return response, 401
@@ -103,7 +103,7 @@ def retrieve_regex(args):
         return response, 200
 
     response = {
-        "errors": "RETRIEVE_REGEX_ERRORS",
+        "errors": gettext("RETRIEVE_REGEX_ERRORS"),
         "message": error
     }
     return response, 401
@@ -125,7 +125,7 @@ def update_configuration(args, configuration_id):
         return '', 200
 
     response = {
-        "errors": "UPDATE_CONFIGURATION_ERROR",
+        "errors": gettext("UPDATE_CONFIGURATION_ERROR"),
         "message": error
     }
     return response, 401
@@ -146,7 +146,7 @@ def update_regex(args, regex_id):
         return '', 200
 
     response = {
-        "errors": "UPDATE_REGEX_ERROR",
+        "errors": gettext("UPDATE_REGEX_ERROR"),
         "message": error
     }
     return response, 401

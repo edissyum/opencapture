@@ -87,6 +87,8 @@ def get_locale():
     if 'lang' not in session:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)
+        if not _vars:
+            return 'fr'
         languages = _vars[11]
         session['lang'] = request.accept_languages.best_match(languages.keys())
     return session['lang']

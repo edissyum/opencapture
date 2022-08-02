@@ -79,7 +79,11 @@ export class NotificationService {
             }
         } else if (err.error !== undefined) {
             if (err.error.errors !== undefined) {
-                this.error('<b>' + err.error.errors + '</b> : ' + err.error.message, err.url);
+                if (err.error.message === 'missing_custom_or_file_doesnt_exists') {
+                    this.error('<b>' + this.translate.instant('ERROR.configuration_error') + '</b> : ' + this.translate.instant('ERROR.is_custom_present_and_file_exists'));
+                } else {
+                    this.error('<b>' + err.error.errors + '</b> : ' + err.error.message, err.url);
+                }
                 if (err.status === 403 || err.status === 404)
                     this.router.navigate(['/login']).then();
                 else if (err.error.errors === this.translate.instant('ERROR.jwt_error'))

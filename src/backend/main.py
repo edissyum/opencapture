@@ -35,6 +35,8 @@ else:
 
 def create_classes_from_custom_id(custom_id):
     config_file = retrieve_config_from_custom_id(custom_id)
+    if config_file is False:
+        return False
     config = _Config(config_file)
     config_mail = _Config(config.cfg['GLOBAL']['configmail'])
     smtp = _SMTP(

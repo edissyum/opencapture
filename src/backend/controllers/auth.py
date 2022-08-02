@@ -140,7 +140,7 @@ def get_enabled_login_method():
         return response, 200
     else:
         response = {
-            "login_method_name": '',
+            "errors": gettext('LOGIN_ERROR'),
             "message": error
         }
         return response, 401
@@ -155,7 +155,7 @@ def get_ldap_configurations():
         return response, 200
     else:
         response = {
-            "ldap_configurations": '',
+            "errors": gettext('LOGIN_ERROR'),
             "message": error
         }
         return response, 401
@@ -167,6 +167,7 @@ def update_login_method(login_method_name , server_data):
         return '', 200
     else:
         response = {
+            "errors": gettext('LOGIN_ERROR'),
             "message": error
         }
         return response, 401
