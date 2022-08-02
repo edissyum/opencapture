@@ -81,8 +81,9 @@ def retrieve_config_from_custom_id(custom_id):
     return res
 
 
-def get_custom_array():
-    custom_id = get_custom_id()
+def get_custom_array(custom_id=False):
+    if not custom_id:
+        custom_id = get_custom_id()
     custom_array = {}
     if custom_id:
         custom_array = check_python_customized_files(custom_id[1])
