@@ -347,6 +347,7 @@ fi
 
 ####################
 # Makes scripts executable
-chmod u+x $customPath/bin/scripts/verifier_inputs/*.sh
+chmod u+x $customPath/bin/scripts/*.sh
+chmod u+x $customPath/bin/scripts/splitter_inputs/*.sh
 chmod u+x $customPath/bin/scripts/splitter_inputs/*.sh
 chown -R "$user":"$user" $customPath/bin/scripts/

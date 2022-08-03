@@ -413,8 +413,7 @@ chown -R "$user":"$group" $defaultPath
 
 ####################
 # Makes scripts executable
-chmod u+x $defaultPath/bin/scripts/*.sh
-chown -R "$user":"$user" $defaultPath/bin/scripts/*.sh
+chmod u+x $defaultPath/custom/"$customId"/bin/scripts/*.sh
 chmod u+x $defaultPath/custom/"$customId"/bin/scripts/verifier_inputs/*.sh
 chown -R "$user":"$user" $defaultPath/custom/"$customId"/bin/scripts/verifier_inputs/*.sh
 chmod u+x $defaultPath/custom/"$customId"/bin/scripts/splitter_inputs/*.sh
