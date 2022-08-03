@@ -50,10 +50,9 @@ if [ -z "$customId" ]; then
     exit 2
 fi
 
-if [ "$installationType" != 'systemd' ] && [ "$installationType" != 'supervisor' ]; then
+if [ "$installationType" == '' ] || [[ "$installationType" != 'systemd' ] && [ "$installationType" != 'supervisor' ]]; then
     echo "#################################################################################################"
-    echo "                           Bad value for installationType variable"
-    echo "   Exemple of command line call : sudo ./create_custom.sh -c edissyum_bis (systemd by default)"
+    echo "                         Bad value for installationType variable"
     echo "       Exemple of command line call : sudo ./create_custom.sh -c edissyum_bis -t systemd"
     echo "      Exemple of command line call : sudo ./create_custom.sh -c edissyum_bis -t supervisor"
     echo "#################################################################################################"
@@ -97,6 +96,10 @@ for custom_name in ${SECTIONS[@]}; do # Do not double quote it
 done
 
 databaseName="opencapture_$customId"
+
+echo ""
+echo "#################################################################################################"
+echo ""
 
 ####################
 # Retrieve database informations
@@ -165,6 +168,10 @@ export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" 
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/structure.sql" "$databaseName"
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/global.sql" "$databaseName"
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/data_fr.sql" "$databaseName"
+
+echo ""
+echo "#################################################################################################"
+echo ""
 
 ####################
 # Create docservers

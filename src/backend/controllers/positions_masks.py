@@ -39,7 +39,7 @@ def get_positions_masks(args):
         return response, 200
 
     response = {
-        "errors": "POSITION_MASKS_ERROR",
+        "errors": gettext("POSITION_MASKS_ERROR"),
         "message": error
     }
     return response, 401
@@ -59,7 +59,7 @@ def add_positions_mask(args):
         return response, 200
     else:
         response = {
-            "errors": "POSITION_MASKS_ERROR",
+            "errors": gettext("POSITION_MASKS_ERROR"),
             "message": error
         }
         return response, 401
@@ -114,13 +114,13 @@ def update_positions_mask(position_mask_id, args):
             return response, 200
         else:
             response = {
-                "errors": "POSITION_MASKS_ERROR",
+                "errors": gettext("POSITION_MASKS_ERROR"),
                 "message": error
             }
             return response, 401
     else:
         response = {
-            "errors": "POSITION_MASKS_ERROR",
+            "errors": gettext("POSITION_MASKS_ERROR"),
             "message": error
         }
     return response, 401

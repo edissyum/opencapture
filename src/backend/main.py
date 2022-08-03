@@ -23,7 +23,7 @@ from .import_classes import _Database, _PyTesseract, _Files, _Log, _Config, _Spr
 def create_classes_from_custom_id(custom_id):
     config_file = retrieve_config_from_custom_id(custom_id)
     if config_file is False:
-        return False
+        return False, 'missing_custom_or_file_doesnt_exists'
     config = _Config(config_file)
     config_mail = _Config(config.cfg['GLOBAL']['configmail'])
     smtp = _SMTP(
@@ -46,7 +46,8 @@ def create_classes_from_custom_id(custom_id):
     db_host = config.cfg['DATABASE']['postgreshost']
     db_port = config.cfg['DATABASE']['postgresport']
     database = _Database(log, db_name, db_user, db_pwd, db_host, db_port)
-
+    if not database.conn:
+        return False, 'bad_or_missing_database_informations'
     regex = {}
     docservers = {}
     configurations = {}

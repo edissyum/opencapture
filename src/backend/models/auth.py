@@ -98,8 +98,8 @@ def verify_user_by_username(username):
 def get_enabled_login_method():
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
-    if not _vars:
-        return {}, 'missing_custom_or_file_doesnt_exists'
+    if not _vars[0]:
+        return {}, _vars[1]
     database = _vars[0]
     error = None
     enabled_method_name = database.select({
