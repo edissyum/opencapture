@@ -47,7 +47,6 @@ def change_locale_in_config(lang):
 
 def retrieve_configuration_by_label(label):
     configuration, error = config.retrieve_configurations({"where": ['label = %s'], 'data': [label]})
-    print(configuration, error)
     if error is None:
         response = {
             "configuration": configuration
