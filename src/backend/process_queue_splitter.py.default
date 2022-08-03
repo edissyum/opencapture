@@ -25,15 +25,6 @@ from src.backend.functions import retrieve_config_from_custom_id
 from src.backend.import_classes import _Files, _Splitter, _SeparatorQR, _Log
 from src.backend.main import timer, check_file, create_classes_from_custom_id
 
-custom_array = get_custom_array()
-
-if 'OCForInvoices' not in custom_array:
-    from src.backend.process import OCForInvoices as OCForInvoices_process
-else:
-    OCForInvoices_process = getattr(__import__(custom_array['OCForInvoices']['path'],
-                                               fromlist=[custom_array['OCForInvoices']['module']]),
-                                    custom_array['OCForInvoices']['module'])
-
 kuyruk = Kuyruk()
 
 
