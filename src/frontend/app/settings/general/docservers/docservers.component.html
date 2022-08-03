@@ -107,7 +107,7 @@
                 </ng-container>
                 <ng-container matColumnDef="path">
                     <mat-header-cell *matHeaderCellDef> {{ 'HEADER.path' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element">
+                    <mat-cell *matCellDef="let element" (click)="element.updateMode = true">
                         <ng-container *ngIf="!element.updateMode else update">
                             {{ element.path }}
                         </ng-container>
