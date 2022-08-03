@@ -34,10 +34,10 @@ else:
                                                fromlist=[custom_array['OCForInvoices']['module']]),
                                     custom_array['OCForInvoices']['module'])
 
-OCforInvoices = Kuyruk()
+kuyruk = Kuyruk()
 
 
-@OCforInvoices.task(queue='splitter_§§CUSTOM_ID§§')
+@kuyruk.task(queue='splitter_§§CUSTOM_ID§§')
 def launch(args):
     start = time.time()
 

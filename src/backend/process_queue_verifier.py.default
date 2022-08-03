@@ -33,10 +33,10 @@ else:
                                                fromlist=[custom_array['OCForInvoices']['module']]),
                                     custom_array['OCForInvoices']['module'])
 
-OCforInvoices = Kuyruk()
+kuyruk = Kuyruk()
 
 
-@OCforInvoices.task(queue='verifier_§§CUSTOM_ID§§')
+@kuyruk.task(queue='verifier_§§CUSTOM_ID§§')
 def launch(args):
     start = time.time()
 
