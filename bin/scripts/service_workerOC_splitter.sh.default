@@ -22,5 +22,5 @@ export MAGICK_TMPDIR=/tmp/opencaptureforinvoices/
 export TESSDATA_PREFIX=/usr/share/tesseract-ocr/4.00/tessdata/
 
 cd /var/www/html/opencaptureforinvoices/ || exit
-/usr/local/bin/kuyruk --app custom.§§CUSTOM_ID§§.src.backend.process_queue_splitter worker --queue splitter_§§CUSTOM_ID§§
+/usr/local/bin/kuyruk --app custom.§§CUSTOM_ID§§.src.backend.process_queue_splitter.OCForInvoices worker --queue splitter_§§CUSTOM_ID§§
 

@@ -32,9 +32,9 @@ group=www-data
 
 apt install -y crudini
 
-while getopts "c:t:" parameters
+while getopts "c:t:" arguments
 do
-    case "${parameters}" in
+    case "${arguments}" in
         c) customId=${OPTARG};;
         t) installationType=${OPTARG};;
         *) customId=""
