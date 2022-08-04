@@ -65,7 +65,9 @@ if [ "$installationType" == '' ] || { [ "$installationType" != 'systemd' ] && [ 
 fi
 
 if [ "$installationType" == 'supervisor' ]; then
-    echo "##############################################################################################"
+    echo ""
+    echo "#################################################################################################"
+    echo ""
     echo 'You choose supervisor, how many processes you want to be run simultaneously ? (default : 3)'
     printf "Enter your choice [%s] : " "${bold}3${normal}"
     read -r choice
@@ -102,7 +104,9 @@ for custom_name in ${SECTIONS[@]}; do # Do not double quote it
 done
 
 databaseName="opencapture_$customId"
-
+if [[ "$customId" = *"opencapture_"* ]]; then
+    databaseName="$customId"
+fi
 echo ""
 echo "#################################################################################################"
 echo ""
@@ -252,6 +256,18 @@ sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/src/back
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/src/backend/process_queue_splitter.py"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/service_workerOC.sh"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/service_workerOC_splitter.sh"
+
+confFile="$defaultPath/custom/$customId/config/config.ini"
+crudini --set "$confFile" DATABASE postgresHost "$hostname"
+crudini --set "$confFile" DATABASE postgresPort "$port"
+crudini --set "$confFile" DATABASE postgresDatabase "$databaseName"
+crudini --set "$confFile" DATABASE postgresUser "$databaseUsername"
+crudini --set "$confFile" DATABASE postgresPassword "$databasePassword"
+
+####################
+# Create default MAIL script and config
+cp "$defaultPath/bin/scripts/launch_MAIL.sh.default" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
 
 ####################
 # Move defaults scripts to new custom location

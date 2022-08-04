@@ -247,6 +247,9 @@ fi
 ####################
 # Create database using custom_id
 databaseName="opencapture_$customId"
+if [[ "$customId" = *"opencapture_"* ]]; then
+    databaseName="$customId"
+fi
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "CREATE DATABASE $databaseName" postgres
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/structure.sql" "$databaseName"
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/global.sql" "$databaseName"
@@ -419,6 +422,13 @@ sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/src/back
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/service_workerOC.sh"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/service_workerOC_splitter.sh"
 
+confFile="$defaultPath/custom/$customId/config/config.ini"
+crudini --set "$confFile" DATABASE postgresHost "$hostname"
+crudini --set "$confFile" DATABASE postgresPort "$port"
+crudini --set "$confFile" DATABASE postgresDatabase "$databaseName"
+crudini --set "$confFile" DATABASE postgresUser "$databaseUsername"
+crudini --set "$confFile" DATABASE postgresPassword "$databasePassword"
+
 ####################
 # Setting up fs-watcher service (to replace incron)
 mkdir -p /var/log/watcher/
@@ -488,7 +498,6 @@ fi
 # Create default MAIL script and config
 cp "$defaultPath/bin/scripts/launch_MAIL.sh.default" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
-sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/config/mail.ini"
 
 ####################
 # Create default LDAP script and config
