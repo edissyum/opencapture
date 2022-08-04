@@ -38,14 +38,14 @@ do
         c) customId=${OPTARG};;
         t) installationType=${OPTARG};;
         *) customId=""
-            installationType="systemd"
+            installationType=""
     esac
 done
 
 ####################
-# Replace dot with _ in custom_id to avoir python error
-oldCustomId=customId
-customId=${customId//[.]/_}
+# Replace dot and - with _ in custom_id to avoid python error
+oldCustomId=$customId
+customId=${customId//[\.\-]/_}
 
 if [ -z "$customId" ]; then
     echo "##########################################################################"
@@ -55,7 +55,7 @@ if [ -z "$customId" ]; then
     exit 2
 fi
 
-if [ "$installationType" == '' ] || [[ "$installationType" != 'systemd' ] && [ "$installationType" != 'supervisor' ]]; then
+if [ "$installationType" == '' ] || { [ "$installationType" != 'systemd' ] && [ "$installationType" != 'supervisor' ]; }; then
     echo "#################################################################################################"
     echo "                         Bad value for installationType variable"
     echo "       Exemple of command line call : sudo ./create_custom.sh -c edissyum_bis -t systemd"
@@ -65,6 +65,7 @@ if [ "$installationType" == '' ] || [[ "$installationType" != 'systemd' ] && [ "
 fi
 
 if [ "$installationType" == 'supervisor' ]; then
+    echo "##############################################################################################"
     echo 'You choose supervisor, how many processes you want to be run simultaneously ? (default : 3)'
     printf "Enter your choice [%s] : " "${bold}3${normal}"
     read -r choice
@@ -215,6 +216,7 @@ mkdir -p $customPath/bin/ldap/config/
 mkdir -p $customPath/instance/referencial/
 mkdir -p $customPath/bin/data/{log,MailCollect,tmp,exported_pdf,exported_pdfa}/
 mkdir -p $customPath/bin/data/log/Supervisor/
+touch $customPath/bin/data/log/OCforInvoices.log
 mkdir -p $customPath/bin/scripts/{verifier_inputs,splitter_inputs}/
 mkdir -p $customPath/src/backend/
 

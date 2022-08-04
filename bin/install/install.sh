@@ -52,8 +52,8 @@ done
 
 ####################
 # Replace dot with _ in custom_id to avoir python error
-oldCustomId=customId
-customId=${customId//[.]/_}
+oldCustomId=$customId
+customId=${customId//[\.\-]/_}
 
 if [ -z "$customId" ] || [ "$customId" == 'CUSTOM_ID' ] ; then
     echo "##########################################################################"
