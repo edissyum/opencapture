@@ -349,14 +349,14 @@ def export_pdf(batch, documents, parameters, pages, now, compress_type):
     return {'paths': export_pdf_res, 'doc_except_from_zip': doc_except_from_zip, 'zip_filename': zip_filename}, 200
 
 
-def export_xml(fields_param, documents, parameters, metadata, now):
+def export_xml(documents, parameters, metadata, now):
     mask_args = {
         'mask': parameters['filename'],
         'separator': parameters['separator'],
         'extension': parameters['extension']
     }
     file_name = _Splitter.get_mask_result(None, metadata, now, mask_args)
-    res_xml = _Splitter.export_xml(fields_param, documents, metadata, parameters, file_name, now)
+    res_xml = _Splitter.export_xml(documents, metadata, parameters, file_name, now)
     if not res_xml[0]:
         response = {
             "errors": gettext('EXPORT_XML_ERROR'),
@@ -516,8 +516,6 @@ def validate(args):
     form = forms.get_form_by_id(batch['form_id'])
 
     pages = _Splitter.get_split_pages(args['documents'])
-    print("batch : ")
-    print(batch)
     batch['metadata'] = args['batchMetadata']
     if 'outputs' in form[0]:
         for output_id in form[0]['outputs']:
@@ -537,8 +535,7 @@ def validate(args):
                 """
 
                 if output[0]['output_type_id'] in ['export_xml']:
-                    form_fields_param = forms.get_form_fields_by_form_id(batch['form_id'])[0]['fields']
-                    res_export_xml = export_xml(form_fields_param, args['documents'], parameters, args['batchMetadata'], now)
+                    res_export_xml = export_xml(args['documents'], parameters, args['batchMetadata'], now)
                     if res_export_xml[1] != 200:
                         return res_export_xml
 
@@ -586,8 +583,7 @@ def validate(args):
                         'extension': 'xml',
                         'folder_out': docservers['TMP_PATH'],
                     }
-                    form_fields_param = forms.get_form_fields_by_form_id(batch['form_id'])[0]['fields']
-                    res_export_xml = export_xml(form_fields_param, args['documents'], xml_export_parameters, args['batchMetadata'], now)
+                    res_export_xml = export_xml(args['documents'], xml_export_parameters, args['batchMetadata'], now)
                     if res_export_xml[1] != 200:
                         return res_export_xml
                     cmis_res = cmis.create_document(res_export_xml[0]['path'], 'text/xml')
