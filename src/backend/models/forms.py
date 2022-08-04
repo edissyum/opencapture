@@ -158,9 +158,9 @@ def add_form(args):
                 'label': args['label'],
                 'module': args['module'],
                 'default_form': args['default_form'],
-                'automatic_validation_data': args['automatic_validation_data'],
-                'allow_automatic_validation': args['allow_automatic_validation'],
-                'delete_documents_after_outputs': args['delete_documents_after_outputs'],
+                'automatic_validation_data': args['automatic_validation_data'] if 'automatic_validation_data' in args else '',
+                'allow_automatic_validation': args['allow_automatic_validation'] if 'allow_automatic_validation' in args else False,
+                'delete_documents_after_outputs': args['delete_documents_after_outputs'] if 'delete_documents_after_outputs' in args else False,
                 'supplier_verif': args['supplier_verif'] if 'supplier_verif' in args else False
             }
         }

@@ -262,7 +262,7 @@ def export_maarch(auth_data, file_path, args, batch):
         if os.path.isfile(file_path):
             args.update({
                 'fileContent': open(file_path, 'rb').read(),
-                'documentDate': str(pd.to_datetime(batch[0]['creation_date']).date())
+                'documentDate': str(pd.to_datetime(batch['creation_date']).date())
             })
             priority = ws.retrieve_priority(args['priority'])
             if priority:
@@ -301,7 +301,7 @@ def export_pdf(batch, documents, parameters, pages, now, compress_type):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
     docservers = _vars[9]
-    filename = docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch[0]['file_path']
+    filename = docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch['file_path']
     pdf_filepaths = []
     doc_except_from_zip = []
     except_from_zip_doctype = ''
@@ -318,7 +318,7 @@ def export_pdf(batch, documents, parameters, pages, now, compress_type):
             'separator': parameters['separator'],
             'extension': 'zip'
         }
-        zip_filename = _Splitter.get_mask_result(None, metadata, now, mask_args)
+        zip_filename = _Splitter.get_mask_result(None, batch['metadata'], now, mask_args)
 
     for index, document in enumerate(documents):
         """
@@ -353,14 +353,14 @@ def export_pdf(batch, documents, parameters, pages, now, compress_type):
     return {'paths': export_pdf_res, 'doc_except_from_zip': doc_except_from_zip, 'zip_filename': zip_filename}, 200
 
 
-def export_xml(fields_param, documents, parameters, metadata, now):
+def export_xml(documents, parameters, metadata, now):
     mask_args = {
         'mask': parameters['filename'],
         'separator': parameters['separator'],
         'extension': parameters['extension']
     }
     file_name = _Splitter.get_mask_result(None, metadata, now, mask_args)
-    res_xml = _Splitter.export_xml(fields_param, documents, metadata, parameters, file_name, now)
+    res_xml = _Splitter.export_xml(documents, metadata, parameters, file_name, now)
     if not res_xml[0]:
         response = {
             "errors": gettext('EXPORT_XML_ERROR'),
@@ -516,11 +516,11 @@ def validate(args):
         'size': None,
         'where': ['id = %s'],
         'data': [args['batchMetadata']['id']]
-    })[0]
-    form = forms.get_form_by_id(batch[0]['form_id'])
+    })[0][0]
+    form = forms.get_form_by_id(batch['form_id'])
 
     pages = _Splitter.get_split_pages(args['documents'])
-
+    batch['metadata'] = args['batchMetadata']
     if 'outputs' in form[0]:
         for output_id in form[0]['outputs']:
             output = outputs.get_output_by_id(output_id)
@@ -539,8 +539,7 @@ def validate(args):
                 """
 
                 if output[0]['output_type_id'] in ['export_xml']:
-                    form_fields_param = forms.get_form_fields_by_form_id(batch[0]['form_id'])[0]['fields']
-                    res_export_xml = export_xml(form_fields_param, args['documents'], parameters, args['batchMetadata'], now)
+                    res_export_xml = export_xml(args['documents'], parameters, args['batchMetadata'], now)
                     if res_export_xml[1] != 200:
                         return res_export_xml
 
@@ -588,8 +587,7 @@ def validate(args):
                         'extension': 'xml',
                         'folder_out': docservers['TMP_PATH'],
                     }
-                    form_fields_param = forms.get_form_fields_by_form_id(batch[0]['form_id'])[0]['fields']
-                    res_export_xml = export_xml(form_fields_param, args['documents'], xml_export_parameters, args['batchMetadata'], now)
+                    res_export_xml = export_xml(args['documents'], xml_export_parameters, args['batchMetadata'], now)
                     if res_export_xml[1] != 200:
                         return res_export_xml
                     cmis_res = cmis.create_document(res_export_xml[0]['path'], 'text/xml')
