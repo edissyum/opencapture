@@ -126,7 +126,11 @@ def retrieve_batches(args):
     count, error_count = splitter.count_batches(args)
     if not error_batches and not error_count:
         for index, batch in enumerate(batches):
-            batches[index]['form_label'] = forms.get_form_by_id(batch['form_id'])[0]['label']
+            form = forms.get_form_by_id(batch['form_id'])
+            if 'label' in form[0]:
+                batches[index]['form_label'] = forms.get_form_by_id(batch['form_id'])[0]['label']
+            else:
+                batches[index]['form_label'] = gettext('FORM_UNDEFINED')
             try:
                 with open(batches[index]['thumbnail'], 'rb') as image_file:
                     encoded_string = base64.b64encode(image_file.read())
