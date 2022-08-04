@@ -15,7 +15,7 @@
 
 # @dev : Oussama BRICH <oussama.brich@edissyum.com>
 
-def process(args, file, log, splitter, files, tmp_folder, config, docservers):
+def process(args, file, log, splitter, files, tmp_folder, config, docservers, ocr):
     """
     :param args:
     :param file: File path to split
@@ -24,6 +24,7 @@ def process(args, file, log, splitter, files, tmp_folder, config, docservers):
     :param files: Files object
     :param tmp_folder: tmp folder path
     :param config: Config object
+    :param ocr: PyTesseract object
     :return: N/A
     """
     log.info('Processing file for separation : ' + file)
