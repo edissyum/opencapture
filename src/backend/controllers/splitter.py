@@ -128,7 +128,7 @@ def retrieve_batches(args):
         for index, batch in enumerate(batches):
             form = forms.get_form_by_id(batch['form_id'])
             if 'label' in form[0]:
-                batches[index]['form_label'] = forms.get_form_by_id(batch['form_id'])[0]['label']
+                batches[index]['form_label'] = form[0]['label']
             else:
                 batches[index]['form_label'] = gettext('FORM_UNDEFINED')
             try:
