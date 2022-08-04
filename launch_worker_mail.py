@@ -20,7 +20,8 @@ import sys
 import argparse
 import tempfile
 import datetime
-from src.backend import app, retrieve_config_from_custom_id
+from src.backend import app
+from src.backend.functions import retrieve_config_from_custom_id
 from src.backend.import_classes import _Log, _Mail, _Config
 from src.backend.main_splitter import launch as launch_splitter
 from src.backend.main import launch as launch_verifier, create_classes_from_custom_id
@@ -67,7 +68,7 @@ if not retrieve_config_from_custom_id(args['custom_id']):
 process = args['process']
 print('Start process : ' + process)
 
-database, config, regex, files, ocr, log, _, spreadsheet, smtp, docservers, configurations = create_classes_from_custom_id(args['custom_id'])
+database, config, regex, files, ocr, log, _, spreadsheet, smtp, docservers, configurations, languages = create_classes_from_custom_id(args['custom_id'])
 
 config_mail = _Config(args['config_mail'])
 cfg = config_mail.cfg[process]
@@ -124,8 +125,8 @@ if check:
         date_batch = year + month + day + '_' + hour + minute + second + microsecond
         batch_path = tempfile.mkdtemp(dir=path, prefix='BATCH_' + date_batch + '_')
 
-        print('Batch name : bin/data/MailCollect' + batch_path.split('/MailCollect')[1].replace('//', '/'))
-        print('Batch error name : bin/data/MailCollect/_ERROR/' + batch_path.split('/MailCollect')[1].replace('//', '/'))
+        print('Batch name : custom/' + args['custom_id'] + '/bin/data/MailCollect' + batch_path.split('/MailCollect')[1].replace('//', '/'))
+        print('Batch error name : custom/' + args['custom_id'] + '/bin/data/MailCollect/_ERROR/' + batch_path.split('/MailCollect')[1].replace('//', '/'))
 
         Log = _Log(batch_path + '/' + date_batch + '.log', smtp)
         Log.info('Start following batch : ' + os.path.basename(os.path.normpath(batch_path)))
@@ -150,7 +151,7 @@ if check:
                                     'cpt': str(cpt),
                                     'isMail': True,
                                     'process': process,
-                                    'config': args['config'],
+                                    'custom_id': args['custom_id'],
                                     'batch_path': batch_path,
                                     'form_id': verifierFormId,
                                     'file': attachment['file'],
@@ -171,7 +172,7 @@ if check:
                                 'cpt': str(cpt),
                                 'process': process,
                                 'batch_path': batch_path,
-                                'config': args['config'],
+                                'custom_id': args['custom_id'],
                                 'file': attachment['file'],
                                 'input_id': splitterInputId,
                                 'config_mail': args['config_mail'],

@@ -42,7 +42,7 @@ class Database:
                 self.conn.autocommit = True
             except (psycopg2.OperationalError, psycopg2.ProgrammingError) as pgsql_error:
                 self.log.error('PGSQL connection error : ' + str(pgsql_error), False)
-                exit()
+                self.conn = False
 
     def select(self, args):
         if 'table' not in args or 'select' not in args:

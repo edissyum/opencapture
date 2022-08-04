@@ -103,7 +103,7 @@
                 </ng-container>
                 <ng-container matColumnDef="content">
                     <mat-header-cell *matHeaderCellDef> {{ 'HEADER.value' | translate }} </mat-header-cell>
-                    <mat-cell *matCellDef="let element">
+                    <mat-cell *matCellDef="let element" (click)="element.updateMode = true">
                         <ng-container *ngIf="!element.updateMode else update">
                             {{ element.content }}
                         </ng-container>

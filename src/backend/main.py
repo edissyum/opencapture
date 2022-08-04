@@ -15,26 +15,15 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-import os
 import sys
-import time
-import tempfile
-from kuyruk import Kuyruk
-from .functions import recursive_delete, get_custom_array, retrieve_config_from_custom_id
-from .import_classes import _Database, _PyTesseract, _Files, _Log, _Config, _SeparatorQR, _Spreadsheet, _SMTP, _Mail
-
-custom_array = get_custom_array()
-
-if 'OCForInvoices' not in custom_array:
-    from src.backend.process import OCForInvoices as OCForInvoices_process
-else:
-    OCForInvoices_process = getattr(__import__(custom_array['OCForInvoices']['path'],
-                                               fromlist=[custom_array['OCForInvoices']['module']]),
-                                    custom_array['OCForInvoices']['module'])
+from .functions import get_custom_array, retrieve_config_from_custom_id
+from .import_classes import _Database, _PyTesseract, _Files, _Log, _Config, _Spreadsheet, _SMTP
 
 
 def create_classes_from_custom_id(custom_id):
     config_file = retrieve_config_from_custom_id(custom_id)
+    if config_file is False:
+        return False, 'missing_custom_or_file_doesnt_exists'
     config = _Config(config_file)
     config_mail = _Config(config.cfg['GLOBAL']['configmail'])
     smtp = _SMTP(
@@ -57,7 +46,8 @@ def create_classes_from_custom_id(custom_id):
     db_host = config.cfg['DATABASE']['postgreshost']
     db_port = config.cfg['DATABASE']['postgresport']
     database = _Database(log, db_name, db_user, db_pwd, db_host, db_port)
-
+    if not database.conn:
+        return False, 'bad_or_missing_database_informations'
     regex = {}
     docservers = {}
     configurations = {}
@@ -131,93 +121,17 @@ def str2bool(value):
     return value.lower() in "true"
 
 
-OCforInvoices = Kuyruk()
-
-
-@OCforInvoices.task(queue='invoices')
 def launch(args):
-    start = time.time()
-
     if not retrieve_config_from_custom_id(args['custom_id']):
         sys.exit('Custom config file couldn\'t be found')
 
-    database, config, regex, _, ocr, log, _, _, smtp, docservers, configurations, languages = create_classes_from_custom_id(args['custom_id'])
-    tmp_folder = tempfile.mkdtemp(dir=docservers['TMP_PATH'])
-    with tempfile.NamedTemporaryFile(dir=tmp_folder) as tmp_file:
-        filename = tmp_file.name
-    files = _Files(filename, log, docservers, configurations, regex, languages)
-
-    remove_blank_pages = False
-    splitter_method = False
-    if 'input_id' in args:
-        input_settings = database.select({
-            'select': ['*'],
-            'table': ['inputs'],
-            'where': ['input_id = %s', 'module = %s'],
-            'data': [args['input_id'], 'verifier']
-        })
-        if input_settings:
-            splitter_method = input_settings[0]['splitter_method_id']
-            remove_blank_pages = input_settings[0]['remove_blank_pages']
-
-    separator_qr = _SeparatorQR(log, config, tmp_folder, 'verifier', files, remove_blank_pages, docservers)
-    mail_class = None
-
-    if args.get('isMail') is not None and args['isMail'] is True:
-        config_mail = _Config(args['config_mail'])
-        mail_class = _Mail(
-            config_mail.cfg[args['process']]['host'],
-            config_mail.cfg[args['process']]['port'],
-            config_mail.cfg[args['process']]['login'],
-            config_mail.cfg[args['process']]['password']
-        )
-        log = _Log((args['log']), smtp)
-        log.info('Process attachment n°' + args['cpt'] + '/' + args['nb_of_attachments'])
-
-    if args.get('isMail') is None or args.get('isMail') is False:
-        if splitter_method and splitter_method == 'qr_code_OC':
-            separator_qr.enabled = True
-
-    database.connect()
-
-    # Start process
-    if 'file' in args and args['file'] is not None:
-        path = args['file']
-        log.filename = os.path.basename(path)
-        if separator_qr.enabled:
-            if check_file(files, path, log, docservers) is not False:
-                separator_qr.run(path)
-            path = separator_qr.output_dir_pdfa if str2bool(separator_qr.convert_to_pdfa) is True else separator_qr.output_dir
-
-            for file in os.listdir(path):
-                if check_file(files, path + file, log, docservers) is not False:
-                    res = OCForInvoices_process.process(args, path + file, log, config, files, ocr, regex, database,
-                                                        docservers, configurations, languages)
-                    if not res:
-                        mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'],
-                                                       args['msg'], docservers)
-                        log.error('Error while processing e-mail', False)
-        elif splitter_method == 'separate_by_document':
-            list_of_files = separator_qr.split_document_every_two_pages(path)
-            for file in list_of_files:
-                if check_file(files, file, log, docservers) is not False:
-                    res = OCForInvoices_process.process(args, file, log, config, files, ocr, regex, database,
-                                                        docservers, configurations, languages)
-                    if not res:
-                        mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'],
-                                                       args['msg'], docservers)
-                        log.error('Error while processing e-mail', False)
-            os.remove(path)
-        else:
-            if check_file(files, path, log, docservers) is not False:
-                res = OCForInvoices_process.process(args, path, log, config, files, ocr, regex, database, docservers,
-                                                    configurations, languages)
-                if not res:
-                    mail_class.move_batch_to_error(args['batch_path'], args['error_path'], smtp, args['process'],
-                                                   args['msg'], docservers)
-                    log.error('Error while processing e-mail', False)
-
-    recursive_delete(tmp_folder, log)
-    database.conn.close()
-    end = time.time()
-    log.info('Process end after ' + timer(start, end) + '')
+    path = retrieve_config_from_custom_id(args['custom_id']).replace('/config/config.ini', '')
+    custom_array = get_custom_array([args['custom_id'], path])
+    if 'process_queue_verifier' not in custom_array or not custom_array['process_queue_verifier'] and not custom_array['process_queue_verifier']['path']:
+        import src.backend.process_queue_verifier as process_queue_verifier
+    else:
+        custom_array['process_queue_verifier']['path'] = 'custom' + custom_array['process_queue_verifier']['path'].split('custom')[1]
+        process_queue_verifier = getattr(__import__(custom_array['process_queue_verifier']['path'],
+                                           fromlist=[custom_array['process_queue_verifier']['module']]),
+                                custom_array['process_queue_verifier']['module'])
+    process_queue_verifier.launch(args)

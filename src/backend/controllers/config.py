@@ -47,7 +47,6 @@ def change_locale_in_config(lang):
 
 def retrieve_configuration_by_label(label):
     configuration, error = config.retrieve_configurations({"where": ['label = %s'], 'data': [label]})
-
     if error is None:
         response = {
             "configuration": configuration
@@ -55,7 +54,7 @@ def retrieve_configuration_by_label(label):
         return response, 200
 
     response = {
-        "errors": "RETRIEVE_CONFIGURATION_ERRORS",
+        "errors": gettext("RETRIEVE_CONFIGURATION_ERRORS"),
         "message": error
     }
     return response, 401
@@ -71,7 +70,7 @@ def retrieve_configurations(args):
         return response, 200
 
     response = {
-        "errors": "RETRIEVE_CONFIGURATIONS_ERRORS",
+        "errors": gettext("RETRIEVE_CONFIGURATIONS_ERRORS"),
         "message": error
     }
     return response, 401
@@ -87,7 +86,7 @@ def retrieve_docservers(args):
         return response, 200
 
     response = {
-        "errors": "RETRIEVE_DOCSERVERS_ERRORS",
+        "errors": gettext("RETRIEVE_DOCSERVERS_ERRORS"),
         "message": error
     }
     return response, 401
@@ -103,7 +102,7 @@ def retrieve_regex(args):
         return response, 200
 
     response = {
-        "errors": "RETRIEVE_REGEX_ERRORS",
+        "errors": gettext("RETRIEVE_REGEX_ERRORS"),
         "message": error
     }
     return response, 401
@@ -125,7 +124,7 @@ def update_configuration(args, configuration_id):
         return '', 200
 
     response = {
-        "errors": "UPDATE_CONFIGURATION_ERROR",
+        "errors": gettext("UPDATE_CONFIGURATION_ERROR"),
         "message": error
     }
     return response, 401
@@ -146,7 +145,7 @@ def update_regex(args, regex_id):
         return '', 200
 
     response = {
-        "errors": "UPDATE_REGEX_ERROR",
+        "errors": gettext("UPDATE_REGEX_ERROR"),
         "message": error
     }
     return response, 401

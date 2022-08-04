@@ -38,7 +38,7 @@ def get_forms(args):
         return response, 200
 
     response = {
-        "errors": "FORMS_ERROR",
+        "errors": gettext("FORMS_ERROR"),
         "message": error
     }
     return response, 401
@@ -58,7 +58,7 @@ def add_form(args):
         return response, 200
     else:
         response = {
-            "errors": "FORMS_ERROR",
+            "errors": gettext("FORMS_ERROR"),
             "message": error
         }
         return response, 401
@@ -146,13 +146,13 @@ def update_form(form_id, args):
             return response, 200
         else:
             response = {
-                "errors": "FORMS_ERROR",
+                "errors": gettext("FORMS_ERROR"),
                 "message": error
             }
             return response, 401
     else:
         response = {
-            "errors": "FORMS_ERROR",
+            "errors": gettext("FORMS_ERROR"),
             "message": error
         }
     return response, 401
@@ -260,7 +260,7 @@ def get_fields(form_id):
         return response, 200
     else:
         response = {
-            "errors": "GET_FORMS_FIELDS_ERROR",
+            "errors": gettext("GET_FORMS_FIELDS_ERROR"),
             "message": error
         }
     return response, 401

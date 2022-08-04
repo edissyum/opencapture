@@ -20,8 +20,8 @@ import datetime
 import functools
 from . import privileges
 from flask_babel import gettext
-from flask import request, session, jsonify, current_app
 from src.backend.import_models import auth, user, roles
+from flask import request, session, jsonify, current_app
 
 
 def encode_auth_token(user_id):
@@ -134,13 +134,19 @@ def verify_user_by_username(username):
 def get_enabled_login_method():
     login_methods_name, error = auth.get_enabled_login_method()
     if error is None:
+        if len(login_methods_name) > 1:
+            return {
+                "errors": gettext('LOGIN_ERROR'),
+                "message": gettext('SEVERAL_AUTH_METHODS_ENABLED')
+            }, 401
+
         response = {
             "login_method_name": login_methods_name
         }
         return response, 200
     else:
         response = {
-            "login_method_name": '',
+            "errors": gettext('LOGIN_ERROR'),
             "message": error
         }
         return response, 401
@@ -155,8 +161,8 @@ def get_ldap_configurations():
         return response, 200
     else:
         response = {
-            "ldap_configurations": '',
-            "message": error
+            "errors": gettext('LDAP_ERROR'),
+            "message": gettext('NO_LDAP_CONFIGURATIONS_FOUND')
         }
         return response, 401
 
@@ -167,6 +173,7 @@ def update_login_method(login_method_name , server_data):
         return '', 200
     else:
         response = {
+            "errors": gettext('LOGIN_ERROR'),
             "message": error
         }
         return response, 401

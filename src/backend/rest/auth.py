@@ -190,7 +190,6 @@ def check_user_ldap_account(connection, username, username_attribute, base_dn):
             return {'status_search': True, 'username_ldap': connection.entries[0][username_attribute]}
         else:
             return {'status_search': False, 'username_ldap': ""}
-
     except LDAPException:
         return False
 
@@ -198,33 +197,12 @@ def check_user_ldap_account(connection, username, username_attribute, base_dn):
 @bp.route('auth/getEnabledLoginMethod', methods=['GET'])
 def get_enabled_login_method():
     res = auth.get_enabled_login_method()
-    enabled_login_method = res[0]['login_method_name']
-    if not res or not enabled_login_method:
-        res = [{
-            "errors": gettext('LOGIN_ERROR'),
-            "message": gettext('AUTH_METHOD_ERROR')
-        }, 401]
-    elif len(enabled_login_method) > 1:
-        res = [{
-            "errors": gettext('LOGIN_ERROR'),
-            "message": gettext('SEVERAL_AUTH_METHODS_ENABLED')
-        }, 401]
-
-    else:
-        res = [res[0], 200]
     return make_response(res[0], res[1])
 
 
 @bp.route('auth/retrieveLdapConfigurations', methods=['GET'])
 def retrieve_ldap_configurations():
     res = auth.get_ldap_configurations()
-    if not res:
-        res = [{
-            "errors": gettext('LDAP_ERROR'),
-            "message": gettext('NO_LDAP_CONFIGURATIONS_FOUND')
-        }, 401]
-    else:
-        res = [res[0], 200]
     return make_response(res[0], res[1])
 
 

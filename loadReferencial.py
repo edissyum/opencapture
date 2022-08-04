@@ -20,7 +20,7 @@ import sys
 import argparse
 import mimetypes
 from src.backend.main import create_classes_from_custom_id
-from src.backend import retrieve_config_from_custom_id
+from src.backend.functions import retrieve_config_from_custom_id
 
 
 if __name__ == '__main__':

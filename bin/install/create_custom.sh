@@ -32,13 +32,20 @@ group=www-data
 
 apt install -y crudini
 
-while getopts c: parameters
+while getopts "c:t:" arguments
 do
-    case "${parameters}" in
+    case "${arguments}" in
         c) customId=${OPTARG};;
+        t) installationType=${OPTARG};;
         *) customId=""
+            installationType=""
     esac
 done
+
+####################
+# Replace dot and - with _ in custom_id to avoid python error
+oldCustomId=$customId
+customId=${customId//[\.\-]/_}
 
 if [ -z "$customId" ]; then
     echo "##########################################################################"
@@ -46,6 +53,32 @@ if [ -z "$customId" ]; then
     echo "   Exemple of command line call : sudo ./create_custom.sh -c edissyum_bis"
     echo "##########################################################################"
     exit 2
+fi
+
+if [ "$installationType" == '' ] || { [ "$installationType" != 'systemd' ] && [ "$installationType" != 'supervisor' ]; }; then
+    echo "#################################################################################################"
+    echo "                         Bad value for installationType variable"
+    echo "       Exemple of command line call : sudo ./create_custom.sh -c edissyum_bis -t systemd"
+    echo "      Exemple of command line call : sudo ./create_custom.sh -c edissyum_bis -t supervisor"
+    echo "#################################################################################################"
+    exit 2
+fi
+
+if [ "$installationType" == 'supervisor' ]; then
+    echo ""
+    echo "#################################################################################################"
+    echo ""
+    echo 'You choose supervisor, how many processes you want to be run simultaneously ? (default : 3)'
+    printf "Enter your choice [%s] : " "${bold}3${normal}"
+    read -r choice
+    if [ "$choice" == "" ]; then
+        nbProcessSupervisor=3
+    elif ! [[ "$choice" =~ ^[0-9]+$ ]]; then
+        echo 'The input is not an integer, default value selected (3)'
+        nbProcessSupervisor=3
+    else
+        nbProcessSupervisor="$choice"
+    fi
 fi
 
 if [ -L "$defaultPath/$customId" ] && [ -e "$defaultPath/$customId" ]; then
@@ -71,6 +104,12 @@ for custom_name in ${SECTIONS[@]}; do # Do not double quote it
 done
 
 databaseName="opencapture_$customId"
+if [[ "$customId" = *"opencapture_"* ]]; then
+    databaseName="$customId"
+fi
+echo ""
+echo "#################################################################################################"
+echo ""
 
 ####################
 # Retrieve database informations
@@ -140,6 +179,10 @@ export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" 
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/global.sql" "$databaseName"
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/data_fr.sql" "$databaseName"
 
+echo ""
+echo "#################################################################################################"
+echo ""
+
 ####################
 # Create docservers
 echo "Type docserver default path informations. By default it's /var/docservers/OpenCapture/"
@@ -170,16 +213,18 @@ export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" 
 ####################
 # Create custom symbolic link and folders
 ln -s "$defaultPath" "$defaultPath/$customId"
-mkdir -p $customPath/{config,bin,assets,instance}/
+mkdir -p $customPath/{config,bin,assets,instance,src}/
 mkdir -p $customPath/bin/{data,ldap,scripts}/
 mkdir -p $customPath/assets/imgs/
 mkdir -p $customPath/bin/ldap/config/
 mkdir -p $customPath/instance/referencial/
 mkdir -p $customPath/bin/data/{log,MailCollect,tmp,exported_pdf,exported_pdfa}/
 mkdir -p $customPath/bin/data/log/Supervisor/
+touch $customPath/bin/data/log/OCforInvoices.log
 mkdir -p $customPath/bin/scripts/{verifier_inputs,splitter_inputs}/
+mkdir -p $customPath/src/backend/
 
-echo "[$customId]" >> $customIniFile
+echo "[$oldCustomId]" >> $customIniFile
 echo "path = $defaultPath/custom/$customId" >> $customIniFile
 echo "isdefault = False" >> $customIniFile
 echo "" >> $customIniFile
@@ -200,13 +245,34 @@ cp $defaultPath/instance/referencial/default_referencial_supplier_index.json.def
 cp $defaultPath/instance/config/mail.ini.default "$defaultPath/custom/$customId/config/mail.ini"
 cp $defaultPath/instance/config/config.ini.default "$defaultPath/custom/$customId/config/config.ini"
 cp $defaultPath/bin/ldap/config/config.ini.default "$defaultPath/custom/$customId/bin/ldap/config/config.ini"
+cp $defaultPath/src/backend/process_queue_verifier.py.default "$defaultPath/custom/$customId/src/backend/process_queue_verifier.py"
+cp $defaultPath/src/backend/process_queue_splitter.py.default "$defaultPath/custom/$customId/src/backend/process_queue_splitter.py"
+cp $defaultPath/bin/scripts/service_workerOC.sh.default "$defaultPath/custom/$customId/bin/scripts/service_workerOC.sh"
+cp $defaultPath/bin/scripts/service_workerOC_splitter.sh.default "$defaultPath/custom/$customId/bin/scripts/service_workerOC_splitter.sh"
 
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/config/config.ini"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/config/mail.ini"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/src/backend/process_queue_verifier.py"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/src/backend/process_queue_splitter.py"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/service_workerOC.sh"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/service_workerOC_splitter.sh"
+
+confFile="$defaultPath/custom/$customId/config/config.ini"
+crudini --set "$confFile" DATABASE postgresHost "$hostname"
+crudini --set "$confFile" DATABASE postgresPort "$port"
+crudini --set "$confFile" DATABASE postgresDatabase "$databaseName"
+crudini --set "$confFile" DATABASE postgresUser "$databaseUsername"
+crudini --set "$confFile" DATABASE postgresPassword "$databasePassword"
+
+####################
+# Create default MAIL script and config
+cp "$defaultPath/bin/scripts/launch_MAIL.sh.default" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
 
 ####################
 # Move defaults scripts to new custom location
 cp $defaultPath/bin/scripts/verifier_inputs/*.sh "$defaultPath/custom/$customId/bin/scripts/verifier_inputs/"
+cp $defaultPath/bin/scripts/splitter_inputs/*.sh "$defaultPath/custom/$customId/bin/scripts/splitter_inputs/"
 cp $defaultPath/bin/scripts/splitter_inputs/*.sh "$defaultPath/custom/$customId/bin/scripts/splitter_inputs/"
 
 ####################
@@ -216,7 +282,102 @@ chmod -R g+s $defaultPath
 chown -R "$user":"$group" $defaultPath
 
 ####################
+# Create new supervisor or systemd files
+
+if [ $installationType == 'systemd' ]; then
+    touch "/etc/systemd/system/OCForInvoices-worker_$customId.service"
+    su -c "cat > /etc/systemd/system/OCForInvoices-worker_$customId.service << EOF
+[Unit]
+Description=Daemon for Open-Capture for Invoices
+
+[Service]
+Type=simple
+
+User=$user
+Group=$user
+UMask=0022
+
+ExecStart=$defaultPath/custom/$customId/bin/scripts/service_workerOC.sh
+KillSignal=SIGQUIT
+
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+EOF"
+
+    touch "/etc/systemd/system/OCForInvoices_Split-worker_$customId.service"
+    su -c "cat > /etc/systemd/system/OCForInvoices_Split-worker_$customId.service << EOF
+[Unit]
+Description=Splitter Daemon for Open-Capture for Invoices
+
+[Service]
+Type=simple
+
+User=$user
+Group=$user
+UMask=0022
+
+ExecStart=$defaultPath/custom/$customId/bin/scripts/service_workerOC_splitter.sh
+KillSignal=SIGQUIT
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+EOF"
+
+    systemctl daemon-reload
+    systemctl start "OCForInvoices-worker_$customId".service
+    systemctl start "OCForInvoices_Split-worker_$customId".service
+    sudo systemctl enable "OCForInvoices-worker_$customId".service
+    sudo systemctl enable "OCForInvoices_Split-worker_$customId".service
+elif [ $installationType == 'supervisor' ]; then
+    touch "/etc/supervisor/conf.d/OCForInvoices-worker_$customId.conf"
+    touch "/etc/supervisor/conf.d/OCForInvoices_Split-worker_$customId.conf"
+    su -c "cat > /etc/supervisor/conf.d/OCForInvoices-worker_$customId.conf << EOF
+[program:OCWorker]
+command=$defaultPath/custom/$customId/bin/scripts/service_workerOC.sh
+process_name=%(program_name)s_%(process_num)02d
+numprocs=$nbProcessSupervisor
+user=$user
+chmod=0777
+chown=$user:$group
+socket_owner=$user
+stopsignal=QUIT
+stopasgroup=true
+killasgroup=true
+stopwaitsecs=10
+
+stderr_logfile=$defaultPath/custom/$customId/bin/data/log/Supervisor/OCForInvoices_worker_%(process_num)02d_error.log
+EOF"
+
+    su -c "cat > /etc/supervisor/conf.d/OCForInvoices_Split-worker_$customId.conf << EOF
+[program:OCWorker-Split]
+command=$defaultPath/custom/$customId/bin/scripts/service_workerOC_splitter.sh
+process_name=%(program_name)s_%(process_num)02d
+numprocs=$nbProcessSupervisor
+user=$user
+chmod=0777
+chown=$user:$group
+socket_owner=$user
+stopsignal=QUIT
+stopasgroup=true
+killasgroup=true
+stopwaitsecs=10
+
+stderr_logfile=$defaultPath/custom/$customId/bin/data/log/Supervisor/OCForInvoices_SPLIT_worker_%(process_num)02d_error.log
+EOF"
+
+    chmod 755 "/etc/supervisor/conf.d/OCForInvoices-worker_$customId.conf"
+    chmod 755 "/etc/supervisor/conf.d/OCForInvoices_Split-worker_$customId.conf"
+
+    systemctl restart supervisor
+    systemctl enable supervisor
+fi
+
+####################
 # Makes scripts executable
-chmod u+x $customPath/bin/scripts/verifier_inputs/*.sh
+chmod u+x $customPath/bin/scripts/*.sh
+chmod u+x $customPath/bin/scripts/splitter_inputs/*.sh
 chmod u+x $customPath/bin/scripts/splitter_inputs/*.sh
 chown -R "$user":"$user" $customPath/bin/scripts/

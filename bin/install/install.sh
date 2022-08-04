@@ -50,6 +50,11 @@ do
     esac
 done
 
+####################
+# Replace dot with _ in custom_id to avoir python error
+oldCustomId=$customId
+customId=${customId//[\.\-]/_}
+
 if [ -z "$customId" ] || [ "$customId" == 'CUSTOM_ID' ] ; then
     echo "##########################################################################"
     echo "              Custom id is needed to run the installation"
@@ -84,16 +89,19 @@ done
 # Create custom symbolic link and folders
 ln -s "$defaultPath" "$defaultPath/$customId"
 
-mkdir -p $defaultPath/custom/"$customId"/{config,bin,assets,instance}/
-mkdir -p $defaultPath/custom/"$customId"/bin/{data,ldap,scripts}/
-mkdir -p "$defaultPath/custom/$customId/assets/imgs/"
-mkdir -p "$defaultPath/custom/$customId/bin/ldap/config/"
-mkdir -p "$defaultPath/custom/$customId/instance/referencial/"
-mkdir -p $defaultPath/custom/"$customId"/bin/data/{log,MailCollect,tmp,exported_pdf,exported_pdfa}/
-mkdir -p $defaultPath/custom/"$customId"/bin/data/log/Supervisor/
-mkdir -p $defaultPath/custom/"$customId"/bin/scripts/{verifier_inputs,splitter_inputs}/
+customPath=$defaultPath/custom/"$customId"
 
-echo "[$customId]" >> $customIniFile
+mkdir -p $customPath/{config,bin,assets,instance,src}/
+mkdir -p $customPath/bin/{data,ldap,scripts}/
+mkdir -p $customPath/assets/imgs/
+mkdir -p $customPath/bin/ldap/config/
+mkdir -p $customPath/instance/referencial/
+mkdir -p $customPath/bin/data/{log,MailCollect,tmp,exported_pdf,exported_pdfa}/
+mkdir -p $customPath/bin/data/log/Supervisor/
+mkdir -p $customPath/bin/scripts/{verifier_inputs,splitter_inputs}/
+mkdir -p $customPath/src/backend/
+
+echo "[$oldCustomId]" >> $customIniFile
 echo "path = $defaultPath/custom/$customId" >> $customIniFile
 echo "isdefault = False" >> $customIniFile
 echo "" >> $customIniFile
@@ -163,6 +171,7 @@ else
     nbProcesses="$choice"
 fi
 echo "######################################################################################################################"
+echo ""
 
 ####################
 # Install packages
@@ -173,6 +182,93 @@ python3 -m pip install -r pip-requirements.txt
 
 cd $defaultPath || exit 1
 find . -name ".gitkeep" -delete
+
+####################
+# Retrieve database informations
+echo "Type database informations (hostname, port, username and password and postgres user password)."
+echo "It will be used to update path to use the custom's one"
+echo "Please specify a user that don't already exists"
+printf "Hostname [%s] : " "${bold}localhost${normal}"
+read -r choice
+
+if [[ "$choice" == "" ]]; then
+    hostname="localhost"
+else
+    hostname="$choice"
+fi
+
+printf "Port [%s] : " "${bold}5432${normal}"
+read -r choice
+
+if [[ "$choice" == "" ]]; then
+    port=5432
+else
+    port="$choice"
+fi
+
+printf "Username [%s] : " "${bold}edissyum${normal}"
+read -r choice
+
+if [[ "$choice" == "" ]]; then
+    databaseUsername="edissyum"
+else
+    databaseUsername="$choice"
+fi
+
+printf "Password [%s] : " "${bold}edissyum${normal}"
+read -r choice
+
+if [[ "$choice" == "" ]]; then
+    databasePassword="edissyum"
+else
+    databasePassword="$choice"
+fi
+
+if [ "$hostname" != "localhost" ] || [ "$port" != "5432" ]; then
+    printf "Postgres user Password [%s] : " "${bold}postgres${normal}"
+    read -r choice
+
+    if [[ "$choice" == "" ]]; then
+        postgresPassword="postgres"
+    else
+        postgresPassword="$choice"
+    fi
+    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'CREATE ROLE $databaseUsername'"
+    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'ALTER ROLE $databaseUsername WITH LOGIN'"
+    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'ALTER ROLE $databaseUsername WITH CREATEDB'"
+    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c \"ALTER ROLE $databaseUsername WITH ENCRYPTED PASSWORD '$databasePassword'\""
+else
+  su postgres -c "psql -c 'CREATE ROLE $databaseUsername'"
+  su postgres -c "psql -c 'ALTER ROLE $databaseUsername WITH LOGIN'"
+  su postgres -c "psql -c 'ALTER ROLE $databaseUsername WITH CREATEDB'"
+  su postgres -c "psql -c \"ALTER ROLE $databaseUsername WITH ENCRYPTED PASSWORD '$databasePassword'\""
+fi
+
+####################
+# Create database using custom_id
+databaseName="opencapture_$customId"
+if [[ "$customId" = *"opencapture_"* ]]; then
+    databaseName="$customId"
+fi
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "CREATE DATABASE $databaseName" postgres
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/structure.sql" "$databaseName"
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/global.sql" "$databaseName"
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/data_fr.sql" "$databaseName"
+
+echo ""
+echo "#################################################################################################"
+echo ""
+
+docserverDefaultPath="/var/docservers/OpenCapture/"
+
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path=REPLACE(path, '$docserverDefaultPath' , '/$docserverDefaultPath/$customId/')" "$databaseName"
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/scripts/' WHERE docserver_id = 'SCRIPTS_PATH'" "$databaseName"
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/tmp/' WHERE docserver_id = 'TMP_PATH'" "$databaseName"
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/exported_pdfa/' WHERE docserver_id = 'SEPARATOR_OUTPUT_PDFA'" "$databaseName"
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/exported_pdf/' WHERE docserver_id = 'SEPARATOR_OUTPUT_PDF'" "$databaseName"
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/instance/referencial/' WHERE docserver_id = 'REFERENTIALS_PATH'" "$databaseName"
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE inputs SET input_folder=REPLACE(input_folder, '/var/share/' , '/var/share/$customId/')" "$databaseName"
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options,parameters, 0, value}', '\"/var/share/$customId/export/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out';" "$databaseName"
 
 ####################
 # Create the Apache service for backend
@@ -210,8 +306,8 @@ systemctl restart apache2
 ####################
 # Create the service systemd or supervisor
 if [ "$finalChoice" == 2 ]; then
-    touch /etc/systemd/system/OCForInvoices-worker.service
-    su -c "cat > /etc/systemd/system/OCForInvoices-worker.service << EOF
+    touch "/etc/systemd/system/OCForInvoices-worker_$customId.service"
+    su -c "cat > /etc/systemd/system/OCForInvoices-worker_$customId.service << EOF
 [Unit]
 Description=Daemon for Open-Capture for Invoices
 
@@ -222,7 +318,7 @@ User=$user
 Group=$user
 UMask=0022
 
-ExecStart=$defaultPath/bin/scripts/service_workerOC.sh
+ExecStart=$defaultPath/custom/$customId/bin/scripts/service_workerOC.sh
 KillSignal=SIGQUIT
 
 Restart=on-failure
@@ -231,8 +327,8 @@ Restart=on-failure
 WantedBy=multi-user.target
 EOF"
 
-    touch /etc/systemd/system/OCForInvoices_Split-worker.service
-    su -c "cat > /etc/systemd/system/OCForInvoices_Split-worker.service << EOF
+    touch "/etc/systemd/system/OCForInvoices_Split-worker_$customId.service"
+    su -c "cat > /etc/systemd/system/OCForInvoices_Split-worker_$customId.service << EOF
 [Unit]
 Description=Splitter Daemon for Open-Capture for Invoices
 
@@ -243,7 +339,7 @@ User=$user
 Group=$user
 UMask=0022
 
-ExecStart=$defaultPath/bin/scripts/service_workerOC_splitter.sh
+ExecStart=$defaultPath/custom/$customId/bin/scripts/service_workerOC_splitter.sh
 KillSignal=SIGQUIT
 Restart=on-failure
 
@@ -252,19 +348,18 @@ WantedBy=multi-user.target
 EOF"
 
     systemctl daemon-reload
-    systemctl start OCForInvoices-worker.service
-    systemctl start OCForInvoices_Split-worker.service
-    sudo systemctl enable OCForInvoices-worker.service
-    sudo systemctl enable OCForInvoices_Split-worker.service
+    systemctl start "OCForInvoices-worker_$customId".service
+    systemctl start "OCForInvoices_Split-worker_$customId".service
+    sudo systemctl enable "OCForInvoices-worker_$customId".service
+    sudo systemctl enable "OCForInvoices_Split-worker_$customId".service
 else
     apt install -y supervisor
-    mkdir "$defaultPath"/bin/data/log/Supervisor/
-    touch /etc/supervisor/conf.d/OCForInvoices-worker.conf
-    touch /etc/supervisor/conf.d/OCForInvoices_Split-worker.conf
+    touch "/etc/supervisor/conf.d/OCForInvoices-worker_$customId.conf"
+    touch "/etc/supervisor/conf.d/OCForInvoices_Split-worker_$customId.conf"
 
-    su -c "cat > /etc/supervisor/conf.d/OCForInvoices-worker.conf << EOF
+    su -c "cat > /etc/supervisor/conf.d/OCForInvoices-worker_$customId.conf << EOF
 [program:OCWorker]
-command=$defaultPath/bin/scripts/service_workerOC.sh
+command=$defaultPath/custom/$customId/bin/scripts/service_workerOC.sh
 process_name=%(program_name)s_%(process_num)02d
 numprocs=$nbProcessSupervisor
 user=$user
@@ -276,12 +371,12 @@ stopasgroup=true
 killasgroup=true
 stopwaitsecs=10
 
-stderr_logfile=$defaultPath/bin/data/log/Supervisor/OCForInvoices_worker_%(process_num)02d_error.log
+stderr_logfile=$defaultPath/custom/$customId/bin/data/log/Supervisor/OCForInvoices_worker_%(process_num)02d_error.log
 EOF"
 
-    su -c "cat > /etc/supervisor/conf.d/OCForInvoices_Split-worker.conf << EOF
+    su -c "cat > /etc/supervisor/conf.d/OCForInvoices_Split-worker_$customId.conf << EOF
 [program:OCWorker-Split]
-command=$defaultPath/bin/scripts/service_workerOC_splitter.sh
+command=$defaultPath/custom/$customId/bin/scripts/service_workerOC_splitter.sh
 process_name=%(program_name)s_%(process_num)02d
 numprocs=$nbProcessSupervisor
 user=$user
@@ -293,11 +388,11 @@ stopasgroup=true
 killasgroup=true
 stopwaitsecs=10
 
-stderr_logfile=$defaultPath/bin/data/log/Supervisor/OCForInvoices_SPLIT_worker_%(process_num)02d_error.log
+stderr_logfile=$defaultPath/custom/$customId/bin/data/log/Supervisor/OCForInvoices_SPLIT_worker_%(process_num)02d_error.log
 EOF"
 
-    chmod 755 /etc/supervisor/conf.d/OCForInvoices-worker.conf
-    chmod 755 /etc/supervisor/conf.d/OCForInvoices_Split-worker.conf
+    chmod 755 "/etc/supervisor/conf.d/OCForInvoices-worker_$customId.conf"
+    chmod 755 "/etc/supervisor/conf.d/OCForInvoices_Split-worker_$customId.conf"
 
     systemctl restart supervisor
     systemctl enable supervisor
@@ -315,8 +410,24 @@ cp $defaultPath/instance/config/mail.ini.default "$defaultPath/custom/$customId/
 cp $defaultPath/instance/config/config.ini.default "$defaultPath/custom/$customId/config/config.ini"
 cp $defaultPath/instance/referencial/default_referencial_supplier.ods.default "$defaultPath/custom/$customId/instance/referencial/default_referencial_supplier.ods"
 cp $defaultPath/instance/referencial/default_referencial_supplier_index.json.default "$defaultPath/custom/$customId/instance/referencial/default_referencial_supplier_index.json"
+cp $defaultPath/src/backend/process_queue_verifier.py.default "$defaultPath/custom/$customId/src/backend/process_queue_verifier.py"
+cp $defaultPath/src/backend/process_queue_splitter.py.default "$defaultPath/custom/$customId/src/backend/process_queue_splitter.py"
+cp $defaultPath/bin/scripts/service_workerOC.sh.default "$defaultPath/custom/$customId/bin/scripts/service_workerOC.sh"
+cp $defaultPath/bin/scripts/service_workerOC_splitter.sh.default "$defaultPath/custom/$customId/bin/scripts/service_workerOC_splitter.sh"
 
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/config/config.ini"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/config/mail.ini"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/src/backend/process_queue_verifier.py"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/src/backend/process_queue_splitter.py"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/service_workerOC.sh"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/service_workerOC_splitter.sh"
+
+confFile="$defaultPath/custom/$customId/config/config.ini"
+crudini --set "$confFile" DATABASE postgresHost "$hostname"
+crudini --set "$confFile" DATABASE postgresPort "$port"
+crudini --set "$confFile" DATABASE postgresDatabase "$databaseName"
+crudini --set "$confFile" DATABASE postgresUser "$databaseUsername"
+crudini --set "$confFile" DATABASE postgresPassword "$databasePassword"
 
 ####################
 # Setting up fs-watcher service (to replace incron)
@@ -387,7 +498,6 @@ fi
 # Create default MAIL script and config
 cp "$defaultPath/bin/scripts/launch_MAIL.sh.default" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
-sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/config/mail.ini"
 
 ####################
 # Create default LDAP script and config
@@ -402,8 +512,7 @@ chown -R "$user":"$group" $defaultPath
 
 ####################
 # Makes scripts executable
-chmod u+x $defaultPath/bin/scripts/*.sh
-chown -R "$user":"$user" $defaultPath/bin/scripts/*.sh
+chmod u+x $defaultPath/custom/"$customId"/bin/scripts/*.sh
 chmod u+x $defaultPath/custom/"$customId"/bin/scripts/verifier_inputs/*.sh
 chown -R "$user":"$user" $defaultPath/custom/"$customId"/bin/scripts/verifier_inputs/*.sh
 chmod u+x $defaultPath/custom/"$customId"/bin/scripts/splitter_inputs/*.sh

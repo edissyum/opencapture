@@ -21,7 +21,6 @@ import zeep
 import base64
 import logging
 import requests
-from PIL import Image
 from flask_babel import gettext
 from zeep import Client, exceptions
 from src.backend import verifier_exports

@@ -26,6 +26,8 @@ from src.backend.main import create_classes_from_custom_id
 def retrieve_configurations(args):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
+    if not _vars[0]:
+        return {}, _vars[1]
     database = _vars[0]
     error = None
     configurations = database.select({
