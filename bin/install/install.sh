@@ -50,6 +50,11 @@ do
     esac
 done
 
+####################
+# Replace dot with _ in custom_id to avoir python error
+oldCustomId=customId
+customId=${customId//[.]/_}
+
 if [ -z "$customId" ] || [ "$customId" == 'CUSTOM_ID' ] ; then
     echo "##########################################################################"
     echo "              Custom id is needed to run the installation"
@@ -96,7 +101,7 @@ mkdir -p $customPath/bin/data/log/Supervisor/
 mkdir -p $customPath/bin/scripts/{verifier_inputs,splitter_inputs}/
 mkdir -p $customPath/src/backend/
 
-echo "[$customId]" >> $customIniFile
+echo "[$oldCustomId]" >> $customIniFile
 echo "path = $defaultPath/custom/$customId" >> $customIniFile
 echo "isdefault = False" >> $customIniFile
 echo "" >> $customIniFile
@@ -166,6 +171,7 @@ else
     nbProcesses="$choice"
 fi
 echo "######################################################################################################################"
+echo ""
 
 ####################
 # Install packages
@@ -176,6 +182,90 @@ python3 -m pip install -r pip-requirements.txt
 
 cd $defaultPath || exit 1
 find . -name ".gitkeep" -delete
+
+####################
+# Retrieve database informations
+echo "Type database informations (hostname, port, username and password and postgres user password)."
+echo "It will be used to update path to use the custom's one"
+echo "Please specify a user that don't already exists"
+printf "Hostname [%s] : " "${bold}localhost${normal}"
+read -r choice
+
+if [[ "$choice" == "" ]]; then
+    hostname="localhost"
+else
+    hostname="$choice"
+fi
+
+printf "Port [%s] : " "${bold}5432${normal}"
+read -r choice
+
+if [[ "$choice" == "" ]]; then
+    port=5432
+else
+    port="$choice"
+fi
+
+printf "Username [%s] : " "${bold}edissyum${normal}"
+read -r choice
+
+if [[ "$choice" == "" ]]; then
+    databaseUsername="edissyum"
+else
+    databaseUsername="$choice"
+fi
+
+printf "Password [%s] : " "${bold}edissyum${normal}"
+read -r choice
+
+if [[ "$choice" == "" ]]; then
+    databasePassword="edissyum"
+else
+    databasePassword="$choice"
+fi
+
+if [ "$hostname" != "localhost" ] || [ "$port" != "5432" ]; then
+    printf "Postgres user Password [%s] : " "${bold}postgres${normal}"
+    read -r choice
+
+    if [[ "$choice" == "" ]]; then
+        postgresPassword="postgres"
+    else
+        postgresPassword="$choice"
+    fi
+    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'CREATE ROLE $databaseUsername'"
+    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'ALTER ROLE $databaseUsername WITH LOGIN'"
+    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'ALTER ROLE $databaseUsername WITH CREATEDB'"
+    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c \"ALTER ROLE $databaseUsername WITH ENCRYPTED PASSWORD '$databasePassword'\""
+else
+  su postgres -c "psql -c 'CREATE ROLE $databaseUsername'"
+  su postgres -c "psql -c 'ALTER ROLE $databaseUsername WITH LOGIN'"
+  su postgres -c "psql -c 'ALTER ROLE $databaseUsername WITH CREATEDB'"
+  su postgres -c "psql -c \"ALTER ROLE $databaseUsername WITH ENCRYPTED PASSWORD '$databasePassword'\""
+fi
+
+####################
+# Create database using custom_id
+databaseName="opencapture_$customId"
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "CREATE DATABASE $databaseName" postgres
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/structure.sql" "$databaseName"
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/global.sql" "$databaseName"
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/data_fr.sql" "$databaseName"
+
+echo ""
+echo "#################################################################################################"
+echo ""
+
+docserverDefaultPath="/var/docservers/OpenCapture/"
+
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path=REPLACE(path, '$docserverDefaultPath' , '/$docserverDefaultPath/$customId/')" "$databaseName"
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/scripts/' WHERE docserver_id = 'SCRIPTS_PATH'" "$databaseName"
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/tmp/' WHERE docserver_id = 'TMP_PATH'" "$databaseName"
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/exported_pdfa/' WHERE docserver_id = 'SEPARATOR_OUTPUT_PDFA'" "$databaseName"
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/exported_pdf/' WHERE docserver_id = 'SEPARATOR_OUTPUT_PDF'" "$databaseName"
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/instance/referencial/' WHERE docserver_id = 'REFERENTIALS_PATH'" "$databaseName"
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE inputs SET input_folder=REPLACE(input_folder, '/var/share/' , '/var/share/$customId/')" "$databaseName"
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options,parameters, 0, value}', '\"/var/share/$customId/export/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out';" "$databaseName"
 
 ####################
 # Create the Apache service for backend

@@ -42,6 +42,11 @@ do
     esac
 done
 
+####################
+# Replace dot with _ in custom_id to avoir python error
+oldCustomId=customId
+customId=${customId//[.]/_}
+
 if [ -z "$customId" ]; then
     echo "##########################################################################"
     echo "              Custom id is needed to run the installation"
@@ -213,7 +218,7 @@ mkdir -p $customPath/bin/data/log/Supervisor/
 mkdir -p $customPath/bin/scripts/{verifier_inputs,splitter_inputs}/
 mkdir -p $customPath/src/backend/
 
-echo "[$customId]" >> $customIniFile
+echo "[$oldCustomId]" >> $customIniFile
 echo "path = $defaultPath/custom/$customId" >> $customIniFile
 echo "isdefault = False" >> $customIniFile
 echo "" >> $customIniFile
