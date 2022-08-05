@@ -185,6 +185,9 @@ find . -name ".gitkeep" -delete
 
 ####################
 # Retrieve database informations
+echo ""
+echo "#################################################################################################"
+echo ""
 echo "Type database informations (hostname, port, username and password and postgres user password)."
 echo "It will be used to update path to use the custom's one"
 echo "Please specify a user that don't already exists"
