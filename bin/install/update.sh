@@ -54,6 +54,7 @@ git config core.fileMode False
 # in case of older version without somes packages/libs
 cd bin/install/ || exit 2
 apt update
+apt install php
 xargs -a apt-requirements.txt apt install -y
 python3 -m pip install --upgrade setuptools
 python3 -m pip install --upgrade pip

@@ -270,8 +270,12 @@ confFile="$defaultPath/custom/$customId/config/config.ini"
 crudini --set "$confFile" DATABASE postgresHost "$hostname"
 crudini --set "$confFile" DATABASE postgresPort "$port"
 crudini --set "$confFile" DATABASE postgresDatabase "$databaseName"
-crudini --set "$confFile" DATABASE postgresUser "$databaseUsername"
-crudini --set "$confFile" DATABASE postgresPassword "$databasePassword"
+crudini --set "$confFile" DATABASE postgresUser " $databaseUsername"
+crudini --set "$confFile" DATABASE postgresPassword " $databasePassword"
+
+echo ""
+echo "#################################################################################################"
+echo ""
 
 ####################
 # Create default MAIL script and config

@@ -440,11 +440,11 @@ confFile="$defaultPath/custom/$customId/config/config.ini"
 crudini --set "$confFile" DATABASE postgresHost "$hostname"
 crudini --set "$confFile" DATABASE postgresPort "$port"
 crudini --set "$confFile" DATABASE postgresDatabase "$databaseName"
-crudini --set "$confFile" DATABASE postgresUser "$databaseUsername"
-crudini --set "$confFile" DATABASE postgresPassword "$databasePassword"
+crudini --set "$confFile" DATABASE postgresUser " $databaseUsername"
+crudini --set "$confFile" DATABASE postgresPassword " $databasePassword"
 
 ####################
-# Setting up fs-watcher service (to replace incron)
+# Setting up fs-watcher service
 mkdir -p /var/log/watcher/
 touch /var/log/watcher/daemon.log
 chmod -R 775 /var/log/watcher/
