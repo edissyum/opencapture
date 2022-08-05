@@ -55,9 +55,17 @@ done
 oldCustomId=$customId
 customId=${customId//[\.\-]/_}
 
-if [ -z "$customId" ] || [ "$customId" == 'CUSTOM_ID' ] ; then
+if [ -z "$customId" ]; then
     echo "##########################################################################"
     echo "              Custom id is needed to run the installation"
+    echo "      Exemple of command line call : sudo ./update.sh -c edissyum"
+    echo "##########################################################################"
+    exit 2
+fi
+
+if [ "$customId" == 'custom' ] ; then
+    echo "##########################################################################"
+    echo "              Please do not create a custom called 'custom'"
     echo "      Exemple of command line call : sudo ./update.sh -c edissyum"
     echo "##########################################################################"
     exit 2
@@ -170,24 +178,13 @@ elif ! [[ "$choice" =~ ^[0-9]+$ ]]; then
 else
     nbProcesses="$choice"
 fi
+
+echo ""
 echo "######################################################################################################################"
 echo ""
 
 ####################
-# Install packages
-xargs -a apt-requirements.txt apt install -y
-python3 -m pip install --upgrade setuptools
-python3 -m pip install --upgrade pip
-python3 -m pip install -r pip-requirements.txt
-
-cd $defaultPath || exit 1
-find . -name ".gitkeep" -delete
-
-####################
 # Retrieve database informations
-echo ""
-echo "#################################################################################################"
-echo ""
 echo "Type database informations (hostname, port, username and password and postgres user password)."
 echo "It will be used to update path to use the custom's one"
 echo "Please specify a user that don't already exists"
@@ -248,6 +245,16 @@ else
 fi
 
 ####################
+# Install packages
+xargs -a apt-requirements.txt apt install -y
+python3 -m pip install --upgrade setuptools
+python3 -m pip install --upgrade pip
+python3 -m pip install -r pip-requirements.txt
+
+cd $defaultPath || exit 1
+find . -name ".gitkeep" -delete
+
+####################
 # Create database using custom_id
 databaseName="opencapture_$customId"
 if [[ "$customId" = *"opencapture_"* ]]; then
@@ -272,6 +279,10 @@ export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" 
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/instance/referencial/' WHERE docserver_id = 'REFERENTIALS_PATH'" "$databaseName"
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE inputs SET input_folder=REPLACE(input_folder, '/var/share/' , '/var/share/$customId/')" "$databaseName"
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options,parameters, 0, value}', '\"/var/share/$customId/export/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out';" "$databaseName"
+
+echo ""
+echo "#################################################################################################"
+echo ""
 
 ####################
 # Create the Apache service for backend

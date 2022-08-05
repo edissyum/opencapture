@@ -55,6 +55,15 @@ if [ -z "$customId" ]; then
     exit 2
 fi
 
+if [ "$customId" == 'custom' ] ; then
+    echo "##########################################################################"
+    echo "              Please do not create a custom called 'custom'"
+    echo "      Exemple of command line call : sudo ./update.sh -c edissyum_bis"
+    echo "##########################################################################"
+    exit 2
+fi
+
+
 if [ "$installationType" == '' ] || { [ "$installationType" != 'systemd' ] && [ "$installationType" != 'supervisor' ]; }; then
     echo "#################################################################################################"
     echo "                         Bad value for installationType variable"

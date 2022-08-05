@@ -130,7 +130,7 @@ def launch(args):
     if 'process_queue_verifier' not in custom_array or not custom_array['process_queue_verifier'] and not custom_array['process_queue_verifier']['path']:
         import src.backend.process_queue_verifier as process_queue_verifier
     else:
-        custom_array['process_queue_verifier']['path'] = 'custom' + custom_array['process_queue_verifier']['path'].split('custom')[1]
+        custom_array['process_queue_verifier']['path'] = 'custom.' + custom_array['process_queue_verifier']['path'].split('.custom.')[1]
         process_queue_verifier = getattr(__import__(custom_array['process_queue_verifier']['path'],
                                            fromlist=[custom_array['process_queue_verifier']['module']]),
                                 custom_array['process_queue_verifier']['module'])
