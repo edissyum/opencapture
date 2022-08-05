@@ -56,8 +56,8 @@ cd bin/install/ || exit 2
 apt update
 apt install php
 xargs -a apt-requirements.txt apt install -y
-python3 -m pip install --upgrade setuptools
 python3 -m pip install --upgrade pip
+python3 -m pip install --upgrade setuptools
 python3 -m pip install -r pip-requirements.txt
 python3 -m pip install --upgrade -r pip-requirements.txt
 
