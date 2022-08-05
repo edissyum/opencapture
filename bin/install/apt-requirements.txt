@@ -1,3 +1,4 @@
+php
 apache2
 python3
 libpq-dev
