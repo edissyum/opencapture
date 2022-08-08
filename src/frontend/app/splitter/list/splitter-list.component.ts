@@ -199,7 +199,7 @@ export class SplitterListComponent implements OnInit {
         const listOfBatchToMerge: any[] = [];
         const listOfBatchFormId: any[] = [];
         Array.from(checkboxList).forEach((element: any) => {
-            if(element.checked) {
+            if (element.checked) {
                 const batchId = element.id.split('_')[0];
                 if (batchId !== parentId.toString())
                     listOfBatchToMerge.push(batchId);
@@ -212,7 +212,7 @@ export class SplitterListComponent implements OnInit {
                     listOfBatchFormId.push(batch.form_id);
                 }
             });
-            if(parentId === batch.id) listOfBatchFormId.push(batch.form_id);
+            if (parentId === batch.id) listOfBatchFormId.push(batch.form_id);
         });
         const uniqueFormId = listOfBatchFormId.filter((item, i, ar) => ar.indexOf(item) === i);
 
