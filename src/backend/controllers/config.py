@@ -15,21 +15,26 @@
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
+import json
 import base64
 import os.path
 import requests
 import subprocess
-from flask import request
 from flask_babel import gettext
+from flask import request, session
 from src.backend.import_models import config
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
 
 
 def change_locale_in_config(lang):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    languages = _vars[11]
+    if 'languages' in session:
+        languages = json.loads(session['languages'])
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        languages = _vars[11]
+
     language = {'label': 'Francais', 'lang_code': 'fra'}
     for _l in languages:
         if lang == languages[_l]['lang_code']:

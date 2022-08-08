@@ -24,11 +24,10 @@ from requests.auth import HTTPBasicAuth
 
 
 class MaarchWebServices:
-    def __init__(self, host, user, pwd, log, config):
+    def __init__(self, host, user, pwd, log):
         self.base_url = host + '/'
         self.auth = HTTPBasicAuth(user, pwd)
         self.log = log
-        self.config = config
         self.status = self.check_connection()
 
     def check_connection(self):

@@ -43,8 +43,8 @@ class SeparatorQR:
         self.enabled = False
         self.remove_blank_pages = remove_blank_pages
         self.splitter_or_verifier = splitter_or_verifier
-        self.divider = config.cfg['SEPARATORQR']['divider']
-        self.convert_to_pdfa = config.cfg['SEPARATORQR']['exportpdfa']
+        self.divider = config['SEPARATORQR']['divider']
+        self.convert_to_pdfa = config['SEPARATORQR']['exportpdfa']
         tmp_folder_name = os.path.basename(os.path.normpath(tmp_folder))
         self.tmp_dir = docservers['SEPARATOR_QR_TMP'] + '/' + tmp_folder_name + '/'
         self.output_dir = docservers['SEPARATOR_OUTPUT_PDF'] + '/' + tmp_folder_name + '/'

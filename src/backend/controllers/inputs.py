@@ -17,8 +17,9 @@
 
 import os
 import stat
-from flask import request
+import json
 from flask_babel import gettext
+from flask import request, session
 from src.backend.import_models import inputs
 from src.backend.import_classes import _Config
 from src.backend.functions import retrieve_custom_from_url
@@ -26,10 +27,6 @@ from src.backend.main import create_classes_from_custom_id
 
 
 def get_inputs(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    _config = _vars[1]
-
     _inputs = inputs.get_inputs(args)
 
     response = {
@@ -182,9 +179,13 @@ def delete_input(input_id):
 
 def delete_script_and_incron(args):
     custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    _cfg = _vars[1]
-    docservers = _vars[9]
+    if 'docservers' in session and 'config' in session:
+        docservers = json.loads(session['docservers'])
+        config = json.loads(session['config'])
+    else:
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
+        config = _vars[1]
 
     folder_script = docservers['SCRIPTS_PATH'] + args['module'] + '_inputs/'
     script_name = args['input_id'] + '.sh'
@@ -196,13 +197,13 @@ def delete_script_and_incron(args):
     ######
     # REMOVE FS WATCHER CONFIG
     ######
-    if os.path.isfile(_cfg.cfg['GLOBAL']['watcherconfig']):
-        fs_watcher_config = _Config(_cfg.cfg['GLOBAL']['watcherconfig'], interpolation=False).cfg
+    if os.path.isfile(config['GLOBAL']['watcherconfig']):
+        fs_watcher_config = _Config(config['GLOBAL']['watcherconfig'], interpolation=False).cfg
         fs_watcher_job = args['module'] + '_' + args['input_id']
         if custom_id:
             fs_watcher_job += '_' + custom_id
         if fs_watcher_job in fs_watcher_config:
-            _Config.fswatcher_remove_section(_cfg.cfg['GLOBAL']['watcherconfig'], fs_watcher_job)
+            _Config.fswatcher_remove_section(config['GLOBAL']['watcherconfig'], fs_watcher_job)
         return '', 200
     else:
         response = {
@@ -214,9 +215,14 @@ def delete_script_and_incron(args):
 
 def create_script_and_incron(args):
     custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    _cfg = _vars[1]
-    docservers = _vars[9]
+    if 'docservers' in session and 'config' in session:
+        docservers = json.loads(session['docservers'])
+        config = json.loads(session['config'])
+    else:
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
+        config = _vars[1]
+
     folder_script = docservers['SCRIPTS_PATH'] + '/' + args['module'] + '_inputs/'
     arguments = '-input_id ' + str(args['input_id'])
 
@@ -235,7 +241,7 @@ def create_script_and_incron(args):
                     corrected_line = corrected_line.replace('§§OC_PATH§§', docservers['PROJECT_PATH'] + '/')
                     corrected_line = corrected_line.replace('"§§ARGUMENTS§§"', arguments)
                     corrected_line = corrected_line.replace('§§CUSTOM_ID§§', custom_id)
-                    corrected_line = corrected_line.replace('§§LOG_PATH§§', _cfg.cfg['GLOBAL']['logfile'])
+                    corrected_line = corrected_line.replace('§§LOG_PATH§§', config['GLOBAL']['logfile'])
                     new_script_file.write(corrected_line + '\n')
             os.chmod(new_script_filename, os.stat(new_script_filename).st_mode | stat.S_IEXEC)
 
@@ -253,8 +259,8 @@ def create_script_and_incron(args):
                     }
                     return response, 501
 
-            if os.path.isfile(_cfg.cfg['GLOBAL']['watcherconfig']):
-                fs_watcher_config = _Config(_cfg.cfg['GLOBAL']['watcherconfig'], interpolation=False)
+            if os.path.isfile(config['GLOBAL']['watcherconfig']):
+                fs_watcher_config = _Config(config['GLOBAL']['watcherconfig'], interpolation=False)
                 fs_watcher_job = args['module'] + '_' + args['input_id']
                 if custom_id:
                     fs_watcher_job += '_' + custom_id

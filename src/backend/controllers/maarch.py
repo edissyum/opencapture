@@ -28,8 +28,7 @@ def test_connection(args):
         args['host'],
         args['login'],
         args['password'],
-        _vars[5],
-        _vars[1]
+        _vars[5]
     )
     return _ws.status
 
@@ -41,8 +40,7 @@ def get_users(args):
         args['host'],
         args['login'],
         args['password'],
-        _vars[5],
-        _vars[1]
+        _vars[5]
     )
     users = _ws.retrieve_users()
     return users
@@ -55,8 +53,7 @@ def get_doctypes(args):
         args['host'],
         args['login'],
         args['password'],
-        _vars[5],
-        _vars[1]
+        _vars[5]
     )
     doctypes = _ws.retrieve_doctypes()
     return doctypes
@@ -69,8 +66,7 @@ def get_entities(args):
         args['host'],
         args['login'],
         args['password'],
-        _vars[5],
-        _vars[1]
+        _vars[5]
     )
     entities = _ws.retrieve_entities()
     return entities
@@ -83,8 +79,7 @@ def get_custom_fields(args):
         args['host'],
         args['login'],
         args['password'],
-        _vars[5],
-        _vars[1]
+        _vars[5]
     )
     custom_fields = _ws.retrieve_custom_fields()
     return custom_fields
@@ -97,8 +92,7 @@ def get_contact_custom_fields(args):
         args['host'],
         args['login'],
         args['password'],
-        _vars[5],
-        _vars[1]
+        _vars[5]
     )
     custom_fields = _ws.retrieve_contact_custom_fields()
     return custom_fields
@@ -111,8 +105,7 @@ def get_priorities(args):
         args['host'],
         args['login'],
         args['password'],
-        _vars[5],
-        _vars[1]
+        _vars[5]
     )
     entities = _ws.retrieve_priorities()
     return entities
@@ -125,8 +118,7 @@ def get_statuses(args):
         args['host'],
         args['login'],
         args['password'],
-        _vars[5],
-        _vars[1]
+        _vars[5]
     )
     statuses = _ws.retrieve_statuses()
     return statuses
@@ -139,8 +131,7 @@ def retrieve_contact(args):
         args['host'],
         args['login'],
         args['password'],
-        _vars[5],
-        _vars[1]
+        _vars[5]
     )
     contact = _ws.retrieve_contact(args)
     return contact
@@ -153,8 +144,7 @@ def get_document_with_contact(args):
         args['host'],
         args['login'],
         args['password'],
-        _vars[5],
-        _vars[1]
+        _vars[5]
     )
     contact = _ws.get_document_with_contact(args)
     return contact
@@ -167,8 +157,7 @@ def get_indexing_models(args):
         args['host'],
         args['login'],
         args['password'],
-        _vars[5],
-        _vars[1]
+        _vars[5]
     )
     indexing_models = _ws.retrieve_indexing_models()
     return indexing_models

@@ -17,7 +17,7 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 import json
-from flask import request
+from flask import request, session
 from flask_babel import gettext
 from src.backend.main import create_classes_from_custom_id
 from src.backend.functions import retrieve_custom_from_url

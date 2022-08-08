@@ -17,7 +17,7 @@
 # @dev : Essaid MEGHELLET <essaid.meghellet@edissyum.com>
 
 import json
-from flask import request
+from flask import request, session
 from flask_babel import gettext
 from werkzeug.security import check_password_hash
 from src.backend.functions import retrieve_custom_from_url

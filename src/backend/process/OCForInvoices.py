@@ -101,7 +101,7 @@ def insert(args, files, database, datas, positions, pages, full_jpg_filename, fi
                     if output_info[0]['output_type_id'] == 'export_xml':
                         verifier_exports.export_xml(output_info[0]['data'], log, regex, invoice_data)
                     elif output_info[0]['output_type_id'] == 'export_maarch':
-                        verifier_exports.export_maarch(output_info[0]['data'], invoice_data, log, config, regex, database)
+                        verifier_exports.export_maarch(output_info[0]['data'], invoice_data, log, regex, database)
 
                     if 'delete_documents_after_outputs' in form_data and form_data['delete_documents_after_outputs']:
                         delete_documents(docservers, invoice_data['path'], invoice_data['filename'], full_jpg_filename)

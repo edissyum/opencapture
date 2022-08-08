@@ -17,7 +17,7 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 import json
-from flask import request
+from flask import request, session
 from gettext import gettext
 from werkzeug.security import generate_password_hash
 from src.backend.main import create_classes_from_custom_id

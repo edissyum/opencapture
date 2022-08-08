@@ -21,7 +21,7 @@ import functools
 from . import privileges
 from flask_babel import gettext
 from src.backend.import_models import auth, user, roles
-from flask import request, session, jsonify, current_app
+from flask import request, session, session, jsonify, current_app
 
 
 def encode_auth_token(user_id):
@@ -43,6 +43,11 @@ def encode_auth_token(user_id):
         ), days_before_exp
     except Exception as _e:
         return str(_e)
+
+
+def logout():
+    for key in list(session.keys()):
+        session.pop(key)
 
 
 def login(username, password, lang, method='default'):

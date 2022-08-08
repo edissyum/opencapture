@@ -15,6 +15,7 @@
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
+import json
 from src.backend.import_controllers import auth, config
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
@@ -34,9 +35,13 @@ def change_language(lang):
 @bp.route('i18n/getAllLang', methods=['GET'])
 @auth.token_required
 def get_all_lang():
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    languages = _vars[11]
+    if 'languages' in session:
+        languages = json.loads(session['languages'])
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        languages = _vars[11]
+
     langs = []
     for lang in languages:
         langs.append([languages[lang]['lang_code'], languages[lang]['label']])
@@ -45,11 +50,16 @@ def get_all_lang():
 
 @bp.route('i18n/getCurrentLang', methods=['GET'])
 def get_current_lang():
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    configurations = _vars[10]
+    if 'configurations' in session and 'languages' in session:
+        configurations = json.loads(session['configurations'])
+        languages = json.loads(session['languages'])
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        configurations = _vars[10]
+        languages = _vars[11]
+
     current_lang = configurations['locale']
-    languages = _vars[11]
     angular_moment_lang = ''
     babel_lang = ''
     for _l in languages:

@@ -23,10 +23,10 @@ import psycopg2
 from ldap3 import Server
 from flask_babel import gettext
 from ldap3.core.exceptions import LDAPException
-from flask import Blueprint, request, make_response
 from werkzeug.security import generate_password_hash
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
+from flask import Blueprint, request, make_response, session
 from src.backend.import_controllers import auth, user as user_controller
 
 bp = Blueprint('auth', __name__, url_prefix='/ws/')
@@ -97,15 +97,24 @@ def login():
     return make_response(res[0], res[1])
 
 
+@bp.route('auth/logout', methods=['GET'])
+def logout():
+    auth.logout()
+    return {}, 200
+
+
 def check_connection():
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    config = _vars[1]
-    db_user = config.cfg['DATABASE']['postgresuser']
-    db_host = config.cfg['DATABASE']['postgreshost']
-    db_port = config.cfg['DATABASE']['postgresport']
-    db_pwd = config.cfg['DATABASE']['postgrespassword']
-    db_name = config.cfg['DATABASE']['postgresdatabase']
+    if 'config' in session:
+        config = json.loads(session['config'])
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        config = _vars[1]
+    db_user = config['DATABASE']['postgresuser']
+    db_host = config['DATABASE']['postgreshost']
+    db_port = config['DATABASE']['postgresport']
+    db_pwd = config['DATABASE']['postgrespassword']
+    db_name = config['DATABASE']['postgresdatabase']
     try:
         psycopg2.connect(
             "dbname     =" + db_name +
