@@ -76,8 +76,9 @@
         </div>
         <div class="settings_header">
             <button mat-icon-button
-                    (click)="sidenav.toggle(); this.serviceSettings.toggleMenu()" class="absolute left-2 top-2">
-                <i [class.fa-arrow-right]="!this.serviceSettings.getIsMenuOpen()" class="fa-solid fa-arrow-left text-2xl text-gray-900"></i>
+                    (click)="sidenav.toggle();" class="absolute left-2 top-2">
+                <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened"
+                   class="fa-solid fa-stream text-2xl text-gray-900"></i>
             </button>
             <h3 class="text-center">{{ this.serviceSettings.getTitle() }}</h3>
             <div class="absolute right-4 top-0">

@@ -27,7 +27,6 @@ import { Router } from "@angular/router";
 })
 
 export class SettingsService {
-    isMenuOpen: boolean = true;
     selectedSetting: any = "configurations";
     selectedParentSetting: any = "general";
     settingsParent: any[] = [
@@ -403,10 +402,6 @@ export class SettingsService {
         this.setSelectedParentSettings(settingParentId);
     }
 
-    getIsMenuOpen() {
-        return this.isMenuOpen;
-    }
-
     getSelectedSetting() {
         return this.selectedSetting;
     }
@@ -447,9 +442,5 @@ export class SettingsService {
     setSelectedParentSettings(value: string) {
         this.selectedParentSetting = value;
         this.localStorage.save('selectedParentSettings', value);
-    }
-
-    toggleMenu() {
-        this.isMenuOpen = !this.isMenuOpen;
     }
 }

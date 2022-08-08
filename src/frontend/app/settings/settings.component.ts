@@ -27,7 +27,6 @@ import { PrivilegesService } from "../../services/privileges.service";
 })
 
 export class SettingsComponent implements OnInit {
-    isMenuOpen              : boolean   = this.serviceSettings.getIsMenuOpen();
     selectedSetting         : string    = this.serviceSettings.getSelectedSetting();
     selectedParentSetting   : string    = this.serviceSettings.getSelectedParentSetting();
     settings                : any       = this.serviceSettings.getSettings();
@@ -56,9 +55,5 @@ export class SettingsComponent implements OnInit {
 
         if (!settingsFound)
             this.router.navigateByUrl('/settings/general/configurations').then();
-    }
-
-    toggleMenu() {
-        this.isMenuOpen = !this.isMenuOpen;
     }
 }
