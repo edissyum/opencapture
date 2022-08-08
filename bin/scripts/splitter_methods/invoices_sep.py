@@ -48,10 +48,9 @@ def process(args, file, log, splitter, files, tmp_folder, config, docservers, oc
             cpt = cpt + 1
 
     split(splitter, list_files, ocr)
-    # splitter.get_result_documents(blank_pages)
-    # original_file = file
-    # file = files.move_to_docservers(docservers, file, 'splitter')
-    # splitter.save_documents(tmp_folder, file, args['input_id'], original_file)
+    original_file = file
+    file = files.move_to_docservers(docservers, file, 'splitter')
+    splitter.save_documents(tmp_folder, file, args['input_id'], original_file)
 
 
 def split(splitter, pages, ocr):
@@ -61,24 +60,43 @@ def split(splitter, pages, ocr):
     :param pages: pages list
     :return: N/A
     """
+    splitter.result_batches = []
+    split_document = 1
     text_array = []
     for index, path in pages:
         img = Image.open(path)
         text = ocr.text_builder(img)
         text_array.append(text)
 
-    is_same_reference(text_array, 0, '(FR|BE(0)?)[0-9A-Z]{2}[0-9]{7,9}')
+    if pages:
+        splitter.result_batches.append([])
+
+    for index, path in pages:
+        current_page = int(index) - 1
+        is_same_reference = is_next_page_has_same_reference(text_array, current_page, '')
+        if not is_same_reference:
+            split_document += 1
+        splitter.result_batches[-1].append({
+            'path': path,
+            'source_page': index,
+            'split_document': split_document,
+            'doctype_value': None,
+            'metadata_1': None,
+            'metadata_2': None,
+            'metadata_3': None,
+            'maarch_value': None,
+        })
 
 
-def is_same_reference(text_array, current_page, regex):
+def is_next_page_has_same_reference(text_array, current_page, regex):
     """
-
+    check if the next page has the same reference
     :param text_array: array of text returned by ocr
     :param current_page: index of the currect page to verify if next page has the same reference
     :param regex: reference regex (vatn, invoice number, siret, siren, ...)
     :return bool: is the next page has a same reference
     """
-    is_same_refrence = True
+    is_same_reference = True
     next_page = current_page + 1
     is_found = False
     # delete \n (if we keep it regex won't work well)
@@ -92,9 +110,9 @@ def is_same_reference(text_array, current_page, regex):
                 for match_siren_next_page in re.finditer(regex, text_array[next_page].replace(' ', '')):
                     if match_siren_next_page:
                         if match_siren_current_page.group() != match_siren_next_page.group():
-                            is_same_refrence = False
+                            is_same_reference = False
                         else:
-                            is_same_refrence = True
+                            is_same_reference = True
                             is_found = True
                             break
-    return is_same_refrence
+    return is_same_reference
