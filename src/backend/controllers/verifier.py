@@ -429,7 +429,6 @@ def get_file_content(file_type, filename, mime_type, compress=False):
 def get_token_insee():
     if 'config' in session:
         config = json.loads(session['config'])
-        print(config)
     else:
         custom_id = retrieve_custom_from_url(request)
         _vars = create_classes_from_custom_id(custom_id)

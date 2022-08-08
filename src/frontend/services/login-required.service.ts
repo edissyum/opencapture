@@ -20,15 +20,14 @@ import { AuthService } from "./auth.service";
 import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from "@angular/router";
 import { NotificationService } from "./notifications/notifications.service";
 import { TranslateService } from "@ngx-translate/core";
-import {UserService} from "./user.service";
-import {environment} from "../app/env";
-import {catchError, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {HttpClient} from "@angular/common/http";
-import {LocaleService} from "./locale.service";
-import {ConfigService} from "./config.service";
-import {HistoryService} from "./history.service";
-import {LocalStorageService} from "./local-storage.service";
+import { UserService } from "./user.service";
+import { environment } from "../app/env";
+import { catchError, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { HttpClient } from "@angular/common/http";
+import { LocaleService } from "./locale.service";
+import { ConfigService } from "./config.service";
+import { HistoryService } from "./history.service";
 
 @Injectable({
     providedIn: 'root'
@@ -44,13 +43,11 @@ export class LoginRequiredService implements CanActivate {
         private configService: ConfigService,
         private localeService: LocaleService,
         private historyService: HistoryService,
-        private localStorageService: LocalStorageService
     ) {}
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
         const token = this.authService.getToken();
-        const local_token = this.localStorageService.get('OpenCaptureForInvoicesToken');
-        if (!token && !local_token) {
+        if (!token) {
             this.translate.get('AUTH.not_connected').subscribe((translated: string) => {
                 this.authService.setCachedUrl(state.url.replace(/^\//g, ''));
                 this.notify.error(translated);
@@ -58,12 +55,11 @@ export class LoginRequiredService implements CanActivate {
             });
             return false;
         }
-        if (this.userService.getUser() === undefined && local_token) {
-            console.log(local_token);
+        if (this.userService.getUser() === undefined) {
             this.http.post(
                 environment['url'] + '/ws/auth/login',
                 {
-                    'token': local_token,
+                    'token': token,
                     'lang': this.localeService.currentBabelLang
                 },
                 {

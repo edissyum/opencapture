@@ -78,21 +78,15 @@ export class AuthService {
         return this.localStorage.getCookie('OpenCaptureForInvoicesToken');
     }
 
-    clearTokens() {
-        this.localStorage.remove('splitter_or_verifier');
-        this.localStorage.remove('OpenCaptureForInvoicesToken');
-        this.localStorage.remove('OpenCaptureForInvoicesToken_2');
-        this.localStorage.deleteCookie('OpenCaptureForInvoicesToken');
-        this.localStorage.deleteCookie('OpenCaptureForInvoicesToken_2');
-    }
-
     logout() {
-        this.clearTokens();
         this.userService.setUser({});
-        this.localStorage.remove('selectedSettings');
         this.localStorage.remove('login_image_b64');
+        this.localStorage.remove('selectedSettings');
+        this.localStorage.remove('splitter_or_verifier');
         this.localStorage.remove('selectedParentSettings');
         this.localStorage.deleteCookie('OpenCaptureCustom');
+        this.localStorage.deleteCookie('OpenCaptureForInvoicesToken');
+        this.localStorage.deleteCookie('OpenCaptureForInvoicesToken_2');
         this.http.get(environment['url'] + '/ws/auth/logout').pipe(
             catchError((err: any) => {
                 console.debug(err);
