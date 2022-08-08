@@ -105,7 +105,8 @@ def split(splitter, pages, ocr, regex_content):
         if not is_next_page_has_same_invoice_number or \
                 not is_next_page_has_same_vat_number or \
                 not is_next_page_has_same_siret or \
-                not is_next_page_has_same_siren:
+                not is_next_page_has_same_siren or \
+                not is_next_page_has_same_iban:
             is_next_page_has_same_references = False
         else:
             is_next_page_has_same_references = True
