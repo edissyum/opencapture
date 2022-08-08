@@ -53,47 +53,50 @@ def login():
             }, 401]
     elif enabled_login_method_name and enabled_login_method_name[0]['method_name'] == 'ldap':
         if res is None:
-            is_user_exists = auth.verify_user_by_username(data['username'])
-            if is_user_exists and is_user_exists[1] == 200:
-                role_id = auth.get_user_role_by_username(data['username'])
-                if role_id and role_id == 'superadmin':
-                    res = auth.login(data['username'], data['password'], data['lang'])
-                else:
-                    configs = auth.get_ldap_configurations()
-                    if configs and configs[0]['ldap_configurations']:
-                        ldap_configurations = configs[0]['ldap_configurations']
-                        data_ldap_configs = ldap_configurations[0]['data']
-                        type_ad = data_ldap_configs['typeAD']
-                        domain_ldap = data_ldap_configs['host']
-                        port_ldap = data_ldap_configs['port']
-                        username_ldap_admin = data_ldap_configs['loginAdmin']
-                        password_ldap_admin = data_ldap_configs['passwordAdmin']
-                        base_dn = data_ldap_configs['baseDN']
-                        suffix = data_ldap_configs['suffix'] if 'suffix' in data_ldap_configs else ''
-                        prefix = data_ldap_configs['prefix'] if 'prefix' in data_ldap_configs else ''
-                        username_attribute = data_ldap_configs['attributSourceUser']
-
-                        user_connection_status = ldap_connection_bind(type_ad, domain_ldap, port_ldap,
-                                                                      username_ldap_admin, password_ldap_admin, base_dn,
-                                                                      suffix, prefix, username_attribute,
-                                                                      data['username'], data['password'])
-                        if user_connection_status:
-                            res = auth.login(data['username'], None, data['lang'], 'ldap')
-                        else:
-                            res = [{
-                                "errors": gettext('LDAP_CONNECTION_ERROR'),
-                                "message": gettext('LOGIN_LDAP_ERROR')
-                            }, 401]
-                    else:
-                        error = configs[0]['message']
-                        res = [{
-                            "errors": error,
-                        }, 401]
+            if 'token' in data:
+                res = auth.login_with_token(data['token'], data['lang'])
             else:
-                res = [{
-                    "errors": gettext('LOGIN_ERROR'),
-                    "message": gettext('BAD_USERNAME')
-                }, 401]
+                is_user_exists = auth.verify_user_by_username(data['username'])
+                if is_user_exists and is_user_exists[1] == 200:
+                    role_id = auth.get_user_role_by_username(data['username'])
+                    if role_id and role_id == 'superadmin':
+                        res = auth.login(data['username'], data['password'], data['lang'])
+                    else:
+                        configs = auth.get_ldap_configurations()
+                        if configs and configs[0]['ldap_configurations']:
+                            ldap_configurations = configs[0]['ldap_configurations']
+                            data_ldap_configs = ldap_configurations[0]['data']
+                            type_ad = data_ldap_configs['typeAD']
+                            domain_ldap = data_ldap_configs['host']
+                            port_ldap = data_ldap_configs['port']
+                            username_ldap_admin = data_ldap_configs['loginAdmin']
+                            password_ldap_admin = data_ldap_configs['passwordAdmin']
+                            base_dn = data_ldap_configs['baseDN']
+                            suffix = data_ldap_configs['suffix'] if 'suffix' in data_ldap_configs else ''
+                            prefix = data_ldap_configs['prefix'] if 'prefix' in data_ldap_configs else ''
+                            username_attribute = data_ldap_configs['attributSourceUser']
+
+                            user_connection_status = ldap_connection_bind(type_ad, domain_ldap, port_ldap,
+                                                                          username_ldap_admin, password_ldap_admin, base_dn,
+                                                                          suffix, prefix, username_attribute,
+                                                                          data['username'], data['password'])
+                            if user_connection_status:
+                                res = auth.login(data['username'], None, data['lang'], 'ldap')
+                            else:
+                                res = [{
+                                    "errors": gettext('LDAP_CONNECTION_ERROR'),
+                                    "message": gettext('LOGIN_LDAP_ERROR')
+                                }, 401]
+                        else:
+                            error = configs[0]['message']
+                            res = [{
+                                "errors": error,
+                            }, 401]
+                else:
+                    res = [{
+                        "errors": gettext('LOGIN_ERROR'),
+                        "message": gettext('BAD_USERNAME')
+                    }, 401]
         else:
             res = [{
                 "errors": gettext('PGSQL_ERROR'),
