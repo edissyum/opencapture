@@ -40,7 +40,12 @@ def login():
     data = request.json
     if enabled_login_method_name and enabled_login_method_name[0]['method_name'] == 'default':
         if res is None:
-            res = auth.login(data['username'], data['password'], data['lang'])
+            if 'username' in data and 'password' in data:
+                res = auth.login(data['username'], data['password'], data['lang'])
+            elif 'token' in data:
+                res = auth.login_with_token(data['token'], data['lang'])
+            else:
+                res = ('', 402)
         else:
             res = [{
                 "errors": gettext('PGSQL_ERROR'),
