@@ -103,7 +103,6 @@ def login_with_token(token, lang):
         return jsonify({"errors": gettext("JWT_ERROR"), "message": str(_e)}), 500
 
     if error is None:
-        encoded_token = token
         returned_user = user.get_user_by_username({
             'select': ['users.id', 'username', 'firstname', 'lsastname', 'role', 'users.status', 'creation_date', 'users.enabled'],
             'username': decoded_token['sub']
@@ -118,7 +117,7 @@ def login_with_token(token, lang):
             returned_user['role'] = user_role[0]
 
         response = {
-            'auth_token': str(encoded_token),
+            'auth_token': str(token),
             'days_before_exp': 1,
             'user': returned_user
         }
