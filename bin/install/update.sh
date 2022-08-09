@@ -27,16 +27,11 @@ fi
 currentDate=$(date +%m%d%Y-%H%M%S)
 OCForInvoicesPath="/var/www/html/opencaptureforinvoices/"
 backupPath="/var/www/html/opencaptureforinvoices.$currentDate"
-
 user=$(who am i | awk '{print $1}')
 
 ####################
 # Backup all the Open-Capture path
 cp -r "$OCForInvoicesPath" "$backupPath"
-
-####################
-# Retrieve the secret key
-SECRET_KEY=$(grep "SECRET_KEY=" $OCForInvoicesPath/src/backend/__init__.py | awk -F"=" '{ print $2 }' | cut -d \' -f2)
 
 ####################
 # Retrieve the last tags from gitlab
@@ -57,33 +52,24 @@ cd bin/install/ || exit 2
 apt-get update > /dev/null
 apt-get install php > /dev/null
 xargs -a apt-requirements.txt apt-get install -y > /dev/null
-python3 -m pip install --upgrade pip
-python3 -m pip install --upgrade setuptools
-python3 -m pip install -r pip-requirements.txt
-python3 -m pip install --upgrade -r pip-requirements.txt
+python3 -m pip install --upgrade pip > /dev/null
+python3 -m pip install --upgrade setuptools > /dev/null
+python3 -m pip install -r pip-requirements.txt > /dev/null
+python3 -m pip install --upgrade -r pip-requirements.txt > /dev/null
 
 cd $OCForInvoicesPath || exit 2
 find . -name ".gitkeep" -delete
 
 ####################
-# Put secret key
-sed -i "s/§§SECRET§§/$SECRET_KEY/g" "/var/www/html/opencaptureforinvoices/src/backend/__init__.py"
+# Restart worker by custom
+systemctl restart apache2
+systemctl restart OCForInvoices-worker_* || supervisorctl restart all
+systemctl restart OCForInvoices_Split-worker_*
 
 ####################
 # Fix rights on folder and files
 chmod -R 775 $OCForInvoicesPath
-chmod u+x $OCForInvoicesPath/bin/scripts/*.sh
-chown -R "$user":"$user" $OCForInvoicesPath/bin/scripts/*.sh
-chmod u+x $OCForInvoicesPath/bin/scripts/verifier_inputs/*.sh
-chown -R "$user":"$user" $OCForInvoicesPath/bin/scripts/verifier_inputs/*.sh
-chmod u+x $OCForInvoicesPath/bin/scripts/splitter_inputs/*.sh
-chown -R "$user":"$user" $OCForInvoicesPath/bin/scripts/splitter_inputs/*.sh
-
-####################
-# Restart worker
-systemctl restart apache2
-systemctl restart OCForInvoices-worker || supervisorctl restart OCWorker:*
-systemctl restart OCForInvoices_Split-worker || supervisorctl restart OCWorker-Split:*
+chown -R "$user":"$user" $OCForInvoicesPath
 
 ####################
 # Display a message if a SQL migration file is present for new version

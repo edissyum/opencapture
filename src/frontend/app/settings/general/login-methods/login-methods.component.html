@@ -114,7 +114,7 @@
                                         <ng-container *ngFor="let field of connectionFormGroup">
                                             <mat-form-field class="block" *ngIf="field.type === 'select'">
                                                 <mat-label>{{ field.label | translate }}</mat-label>
-                                                <mat-select [required]="field.required">
+                                                <mat-select [(value)]="field.control.value" [required]="field.required">
                                                     <mat-option *ngFor="let option of field.values"
                                                                 (onSelectionChange)="updateTypeAd($event, field.id)"
                                                             [value]="option">{{ option }}</mat-option>

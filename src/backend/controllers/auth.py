@@ -51,6 +51,11 @@ def logout():
 
 
 def login(username, password, lang, method='default'):
+    if 'SECRET_KEY' not in current_app.config or not current_app.config['SECRET_KEY']:
+        return {
+            "errors": gettext('LOGIN_ERROR'),
+            "message": 'missing_secret_key'
+        }, 401
     session['lang'] = lang
     error = None
     user_info = None

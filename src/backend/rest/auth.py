@@ -373,7 +373,7 @@ def check_database_users(ldap_users_data, default_role):
                 if user_info[0] and user_info[0]['enabled']:
                     user_role = auth.get_user_role_by_username(oc_user[0])
                     if user_role != 'superadmin':
-                        user_controller.disable_user(oc_user[0])
+                        user_controller.disable_user(oc_user[3])
                         disabled_users += 1
                     else:
                         continue

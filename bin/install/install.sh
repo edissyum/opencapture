@@ -107,6 +107,7 @@ mkdir -p $customPath/bin/data/{log,MailCollect,tmp,exported_pdf,exported_pdfa}/
 mkdir -p $customPath/bin/data/log/Supervisor/
 mkdir -p $customPath/bin/scripts/{verifier_inputs,splitter_inputs}/
 mkdir -p $customPath/src/backend/
+touch $customPath/config/secret_key
 
 echo "[$oldCustomId]" >> $customIniFile
 echo "path = $defaultPath/custom/$customId" >> $customIniFile
@@ -390,7 +391,7 @@ else
     touch "/etc/supervisor/conf.d/OCForInvoices_Split-worker_$customId.conf"
 
     su -c "cat > /etc/supervisor/conf.d/OCForInvoices-worker_$customId.conf << EOF
-[program:OCWorker]
+[program:OCWorker_$customId]
 command=$defaultPath/custom/$customId/bin/scripts/service_workerOC.sh
 process_name=%(program_name)s_%(process_num)02d
 numprocs=$nbProcessSupervisor
@@ -407,7 +408,7 @@ stderr_logfile=$defaultPath/custom/$customId/bin/data/log/Supervisor/OCForInvoic
 EOF"
 
     su -c "cat > /etc/supervisor/conf.d/OCForInvoices_Split-worker_$customId.conf << EOF
-[program:OCWorker-Split]
+[program:OCWorker-Split_$customId]
 command=$defaultPath/custom/$customId/bin/scripts/service_workerOC_splitter.sh
 process_name=%(program_name)s_%(process_num)02d
 numprocs=$nbProcessSupervisor
@@ -498,9 +499,9 @@ else
 fi
 
 ####################
-# Generate secret key for Flask and replace it in src/backend/__init.py file
-secret=$(python3 -c 'import secrets; print(secrets.token_hex(16))')
-sed -i "s#§§SECRET§§#$secret#g" "$defaultPath"/src/backend/__init__.py
+# Generate secret key for Flask and write it to custom secret_key file
+secret=$(python3 -c 'import secrets; print(secrets.token_hex(32))')
+echo "$secret" > $customPath/config/secret_key
 
 ####################
 # Create default verifier input script (based on default input created in data_fr.sql)

@@ -232,11 +232,17 @@ mkdir -p $customPath/bin/data/log/Supervisor/
 touch $customPath/bin/data/log/OCforInvoices.log
 mkdir -p $customPath/bin/scripts/{verifier_inputs,splitter_inputs}/
 mkdir -p $customPath/src/backend/
+touch $customPath/config/secret_key
 
 echo "[$oldCustomId]" >> $customIniFile
 echo "path = $defaultPath/custom/$customId" >> $customIniFile
 echo "isdefault = False" >> $customIniFile
 echo "" >> $customIniFile
+
+####################
+# Generate secret key for Flask and write it to custom secret_key file
+secret=$(python3 -c 'import secrets; print(secrets.token_hex(32))')
+echo "$secret" > $customPath/config/secret_key
 
 ####################
 # Create custom input and outputs folder
@@ -348,7 +354,7 @@ elif [ $installationType == 'supervisor' ]; then
     touch "/etc/supervisor/conf.d/OCForInvoices-worker_$customId.conf"
     touch "/etc/supervisor/conf.d/OCForInvoices_Split-worker_$customId.conf"
     su -c "cat > /etc/supervisor/conf.d/OCForInvoices-worker_$customId.conf << EOF
-[program:OCWorker]
+[program:OCWorker_$customId]
 command=$defaultPath/custom/$customId/bin/scripts/service_workerOC.sh
 process_name=%(program_name)s_%(process_num)02d
 numprocs=$nbProcessSupervisor
@@ -365,7 +371,7 @@ stderr_logfile=$defaultPath/custom/$customId/bin/data/log/Supervisor/OCForInvoic
 EOF"
 
     su -c "cat > /etc/supervisor/conf.d/OCForInvoices_Split-worker_$customId.conf << EOF
-[program:OCWorker-Split]
+[program:OCWorker-Split_$customId]
 command=$defaultPath/custom/$customId/bin/scripts/service_workerOC_splitter.sh
 process_name=%(program_name)s_%(process_num)02d
 numprocs=$nbProcessSupervisor

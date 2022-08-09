@@ -22,9 +22,9 @@ import urllib.parse
 from flask_cors import CORS
 from flask_babel import Babel
 from werkzeug.wrappers import Request
-from flask import request, session, session, Flask
-from .functions import is_custom_exists, retrieve_custom_from_url
+from flask import request, session, Flask
 from src.backend.main import create_classes_from_custom_id
+from .functions import is_custom_exists, retrieve_custom_from_url, retrieve_config_from_custom_id
 from src.backend.import_rest import auth, locale, config, user, splitter, verifier, roles, privileges, custom_fields, \
     forms, status, accounts, outputs, maarch, inputs, positions_masks, history, doctypes
 
@@ -48,6 +48,10 @@ class Middleware:
             if is_custom_exists(custom_id.replace('/', '')):
                 environ['PATH_INFO'] = environ['PATH_INFO'][len(custom_id):]
                 environ['SCRIPT_NAME'] = custom_id
+                path = retrieve_config_from_custom_id(custom_id.replace('/', '')).replace('config.ini', '')
+                if os.path.isfile(path + '/secret_key'):
+                    with open(path + '/secret_key', 'r') as secret_file:
+                        app.config['SECRET_KEY'] = secret_file.read()
         return self.middleware_app(environ, start_response)
 
 
@@ -57,7 +61,6 @@ babel = Babel(app)
 CORS(app, supports_credentials=True)
 
 app.config.from_mapping(
-    SECRET_KEY='§§SECRET§§',
     UPLOAD_FOLDER=os.path.join(app.instance_path, 'upload/verifier/'),
     UPLOAD_FOLDER_SPLITTER=os.path.join(app.instance_path, 'upload/splitter/'),
     BABEL_TRANSLATION_DIRECTORIES=app.root_path.replace('backend', 'assets') + '/i18n/backend/translations/'
@@ -85,6 +88,8 @@ app.register_blueprint(doctypes.bp)
 
 @babel.localeselector
 def get_locale():
+    if 'SECRET_KEY' not in app.config or not app.config['SECRET_KEY']:
+        return 'fr'
     if 'lang' not in session:
         if 'languages' in session:
             languages = json.loads(session['languages'])
