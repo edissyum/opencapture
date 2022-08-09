@@ -153,6 +153,7 @@ echo "    / / | | \ \          If you don't know what you're doing, skip it and 
 echo "   / /  | |  \ \     Higher values can overload your server if it doesn't have enough performances     / /  | |  \ \ "
 echo "  / /   |_|   \ \          Example for a 16 vCPU / 8Go RAM server : 5 threads and 2 processes         / /   |_|   \ \ "
 echo " /_/    (_)    \_\                                                                                   /_/    (_)    \_\ "
+echo ""
 echo "#######################################################################################################################"
 echo ""
 echo 'How many WSGI threads ? (default : 5)'
@@ -223,6 +224,8 @@ if [[ "$choice" == "" ]]; then
 else
     databasePassword="$choice"
 fi
+
+apt install postgresql
 
 if [ "$hostname" != "localhost" ] || [ "$port" != "5432" ]; then
     printf "Postgres user Password [%s] : " "${bold}postgres${normal}"
