@@ -61,10 +61,10 @@ def login(username, password, lang, method='default'):
             'password': password
         })
     elif method == 'ldap':
-        user_info, error = user.get_user_by_username({"select": ['users.id'], "username": username})
+        user_info, error = user.get_user_by_username({"select": ['users.id', 'users.username'], "username": username})
 
     if error is None:
-        encoded_token = encode_auth_token(user_info['id'])
+        encoded_token = encode_auth_token(user_info['username'])
         returned_user = user.get_user_by_id({
             'select': ['users.id', 'username', 'firstname', 'lastname', 'role', 'users.status', 'creation_date', 'users.enabled'],
             'user_id': user_info['id']
@@ -104,9 +104,9 @@ def login_with_token(token, lang):
 
     if error is None:
         encoded_token = token
-        returned_user = user.get_user_by_id({
-            'select': ['users.id', 'username', 'firstname', 'lastname', 'role', 'users.status', 'creation_date', 'users.enabled'],
-            'user_id': decoded_token['sub']
+        returned_user = user.get_user_by_username({
+            'select': ['users.id', 'username', 'firstname', 'lsastname', 'role', 'users.status', 'creation_date', 'users.enabled'],
+            'username': decoded_token['sub']
         })[0]
 
         user_privileges = privileges.get_privileges_by_role_id({'role_id': returned_user['role']})
@@ -142,9 +142,9 @@ def token_required(view):
                     jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
                 return jsonify({"errors": gettext("JWT_ERROR"), "message": str(_e)}), 500
 
-            user_info, _ = user.get_user_by_id({
+            user_info, _ = user.get_user_by_username({
                 'select': ['users.id'],
-                'user_id': token['sub']
+                'username': token['sub']
             })
 
             if not user_info:
