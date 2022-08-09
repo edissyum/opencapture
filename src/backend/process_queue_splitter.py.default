@@ -35,7 +35,7 @@ def launch(args):
     if not retrieve_config_from_custom_id(args['custom_id']):
         sys.exit('Custom config file couldn\'t be found')
 
-    database, config, regex, files, _, log, _, _, smtp, docservers, configurations, languages = create_classes_from_custom_id(args['custom_id'])
+    database, config, regex, files, ocr, log, _, _, smtp, docservers, configurations, languages = create_classes_from_custom_id(args['custom_id'])
     tmp_folder = tempfile.mkdtemp(dir=docservers['SPLITTER_BATCHES']) + '/'
     with tempfile.NamedTemporaryFile(dir=tmp_folder) as tmp_file:
         filename = tmp_file.name
@@ -80,7 +80,7 @@ def launch(args):
                                                                                    available_split_method['script'],
                                                                                    available_split_method['method'])
                                 log.info('Split using method : {}'.format(available_split_method['id']))
-                                split_method(args, path, log, splitter, files, tmp_folder, config, docservers)
+                                split_method(args, path, log, splitter, files, tmp_folder, config, docservers, ocr)
             else:
                 log.error("The input_id doesn't exists in database")
     database.conn.close()
