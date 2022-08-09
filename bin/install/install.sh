@@ -41,7 +41,6 @@ fi
 ####################
 # Check if custom name is set and doesn't exists already
 
-apt-get install -y crudini > /dev/null
 while getopts "c:" parameters
 do
     case "${parameters}" in
@@ -260,9 +259,9 @@ echo ""
 # Install packages
 echo "APT & PIP packages installation....."
 xargs -a apt-requirements.txt apt-get install -y > /dev/null
-python3 -m pip install --upgrade pip > /dev/null
-python3 -m pip install --upgrade setuptools > /dev/null
-python3 -m pip install -r pip-requirements.txt > /dev/null
+python3 -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade pip > /dev/null
+python3 -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade setuptools > /dev/null
+python3 -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org -r pip-requirements.txt > /dev/null
 
 cd $defaultPath || exit 1
 find . -name ".gitkeep" -delete
