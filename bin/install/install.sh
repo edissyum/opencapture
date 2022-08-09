@@ -115,6 +115,7 @@ echo "" >> $customIniFile
 
 ####################
 # User choice
+echo ""
 echo "Do you want to use supervisor (1) or systemd (2) ? (default : 2) "
 echo "If you plan to handle a lot of files and need a reduced time of process, use supervisor"
 echo "WARNING : A lot of Tesseract processes will run in parallel and it can be very resource intensive"
@@ -259,9 +260,9 @@ echo ""
 # Install packages
 echo "APT & PIP packages installation....."
 xargs -a apt-requirements.txt apt-get install -y > /dev/null
-python3 -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade pip > /dev/null
-python3 -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade setuptools > /dev/null
-python3 -m pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org -r pip-requirements.txt > /dev/null
+python3 -m pip install --upgrade pip > /dev/null
+python3 -m pip install --upgrade setuptools > /dev/null
+python3 -m pip install -r pip-requirements.txt > /dev/null
 
 cd $defaultPath || exit 1
 find . -name ".gitkeep" -delete

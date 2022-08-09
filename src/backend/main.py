@@ -28,8 +28,12 @@ def create_classes_from_custom_id(custom_id):
         return False, 'missing_custom_or_file_doesnt_exists'
 
     config = _Config(config_file)
-    if 'config' not in session:
-        session['config'] = json.dumps(config.cfg)
+
+    try:
+        if 'config' not in session:
+            session['config'] = json.dumps(config.cfg)
+    except RuntimeError:
+        pass
 
     config_mail = _Config(config.cfg['GLOBAL']['configmail'])
     smtp = _SMTP(
@@ -99,14 +103,17 @@ def create_classes_from_custom_id(custom_id):
             'date_format': _l['date_format']
         })
 
-    if 'languages' not in session:
-        session['languages'] = json.dumps(languages)
-    if 'configurations' not in session:
-        session['configurations'] = json.dumps(configurations)
-    if 'regex' not in session:
-        session['regex'] = json.dumps(regex)
-    if 'docservers' not in session:
-        session['docservers'] = json.dumps(docservers)
+    try:
+        if 'languages' not in session:
+            session['languages'] = json.dumps(languages)
+        if 'configurations' not in session:
+            session['configurations'] = json.dumps(configurations)
+        if 'regex' not in session:
+            session['regex'] = json.dumps(regex)
+        if 'docservers' not in session:
+            session['docservers'] = json.dumps(docservers)
+    except RuntimeError:
+        pass
 
     spreadsheet = _Spreadsheet(log, docservers, config)
     filename = docservers['TMP_PATH']
