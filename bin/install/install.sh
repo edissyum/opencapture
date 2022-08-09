@@ -222,6 +222,7 @@ else
     databasePassword="$choice"
 fi
 
+echo ""
 echo "Postgres installation....."
 apt-get install -y postgresql > /dev/null
 
