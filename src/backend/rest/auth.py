@@ -314,11 +314,13 @@ def get_ldap_users_data(ldap_users_dict, user_id_attribut, firstname_attribut, l
             ldap_users_data = []
             for i in range(len(list_users_ldap)):
                 user_data = []
-                if list_users_ldap[i][user_id_attribut][0] and list_users_ldap[i][firstname_attribut][0] and \
-                        list_users_ldap[i][lastname_attribut][0]:
-                    user_data.append(list_users_ldap[i][user_id_attribut][0])
-                    user_data.append(list_users_ldap[i][firstname_attribut][0])
-                    user_data.append(list_users_ldap[i][lastname_attribut][0])
+                user_id = list_users_ldap[i][user_id_attribut][0] if user_id_attribut in list_users_ldap[i] else ''
+                givenname = list_users_ldap[i][firstname_attribut][0] if firstname_attribut in list_users_ldap[i] else ''
+                lastname = list_users_ldap[i][lastname_attribut][0] if lastname_attribut in list_users_ldap[i] else ''
+                if user_id and givenname and lastname :
+                    user_data.append(user_id)
+                    user_data.append(givenname)
+                    user_data.append(lastname)
                     ldap_users_data.append(user_data)
             return {'status_search': True, 'ldap_users_data': ldap_users_data}
         else:

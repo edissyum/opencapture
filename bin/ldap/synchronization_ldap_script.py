@@ -152,17 +152,22 @@ def get_ldap_users(connection, class_user, object_class, users_dn):
 
 
 def get_ldap_users_data(ldap_users_dict):
+    ldap_users_data = []
     if ldap_users_dict and ldap_users_dict['status_search']:
         list_users_ldap = ldap_users_dict['ldap_users']
-        ldap_users_data = []
         for i in range(len(list_users_ldap)):
             user_data = []
-            user_data.append(list_users_ldap[i][user_id][0])
-            user_data.append(list_users_ldap[i][firstname][0])
-            user_data.append(list_users_ldap[i][lastname][0])
-            ldap_users_data.append(user_data)
-        print_log("List of users retrieved from the ldap server " + str(ldap_users_data))
-        return ldap_users_data
+            user_ldap_id = list_users_ldap[i][user_id][0] if user_id in list_users_ldap[i] else ''
+            givenname_user_ldap = list_users_ldap[i][firstname][0] if firstname in list_users_ldap[i] else ''
+            lastname_user_ldap = list_users_ldap[i][lastname][0] if lastname in list_users_ldap[i] else ''
+            if user_ldap_id and givenname_user_ldap and lastname_user_ldap :
+                user_data.append(user_ldap_id)
+                user_data.append(givenname_user_ldap)
+                user_data.append(lastname_user_ldap)
+                ldap_users_data.append(user_data)
+            else:
+                print_log('User has not been added because of missing information ==> user_id : ' + user_ldap_id)
+    return ldap_users_data
 
 
 def check_database_users(ldap_users_data, default_role):
@@ -230,7 +235,7 @@ def check_database_users(ldap_users_data, default_role):
                             ldap_user[0] = 'Updated'
                             oc_user[0] = 'Updated'
                             update_users += 1
-                            print_log('update data for the user  '+ str(ldap_user[1]))
+                            print_log('update data for the user ' + str(ldap_user[1]))
                 else:
                     continue
 
@@ -251,7 +256,7 @@ def check_database_users(ldap_users_data, default_role):
                         'data': [oc_user[0]]
                     })
 
-                    if user_role[0] != 'superadmin':
+                    if user_role[0]['label_short'] != 'superadmin':
                         database.update({
                             'table': ['users'],
                             'set': {
@@ -262,6 +267,8 @@ def check_database_users(ldap_users_data, default_role):
                         })
                         disabled_users += 1
                         print_log("user status is disabled :" + str(oc_user[0]))
+                    else:
+                        continue
                 else:
                     pass
         for user_to_create in ldap_users_data:
