@@ -125,15 +125,15 @@ def is_next_page_has_same_reference(text_array, current_page, regex):
     is_found = False
     # delete \n (if we keep it regex won't work well)
     text_array[current_page] = text_array[current_page].replace('\n', ' ').replace('\r', '')
-    for match_siren_current_page in re.finditer(regex, text_array[current_page].replace(' ', '')):
-        if match_siren_current_page:
+    for matched_content_current_page in re.finditer(regex, text_array[current_page].replace(' ', '')):
+        if matched_content_current_page:
             if is_found:
                 break
             # verify if next page exit
             if current_page + 1 < len(text_array):
-                for match_siren_next_page in re.finditer(regex, text_array[next_page].replace(' ', '')):
-                    if match_siren_next_page:
-                        if match_siren_current_page.group() != match_siren_next_page.group():
+                for matched_content_next_page in re.finditer(regex, text_array[next_page].replace(' ', '')):
+                    if matched_content_next_page:
+                        if matched_content_current_page.group() != matched_content_next_page.group():
                             is_same_reference = False
                         else:
                             is_same_reference = True

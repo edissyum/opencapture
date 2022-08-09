@@ -181,3 +181,6 @@ UPDATE outputs_types SET "data" = '{
         ]
     }
 }' WHERE output_type_id = 'export_maarch' AND module = 'verifier';
+
+-- Splitter add zip export
+ALTER TABLE "form_models" ADD COLUMN "export_zip_file" VARCHAR(255);

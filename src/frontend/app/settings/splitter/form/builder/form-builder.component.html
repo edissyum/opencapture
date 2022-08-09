@@ -125,6 +125,11 @@
                         <mat-icon class="text-xl">delete_forever</mat-icon>
                     </span>
                 </mat-form-field>
+                <mat-form-field>
+                    <mat-label>{{ "FORMS.export_zip_file" | translate }}</mat-label>
+                    <input matInput [formControl]="this.form['export_zip_file'].control">
+                    <mat-hint>{{ "FORMS.export_zip_file_hint" | translate }}</mat-hint>
+                </mat-form-field>
             </div>
             <ng-container *ngFor="let category of fieldCategories; let i = index">
                 <div class="relative text-xl tracking-wider pl-1.5 pr-1.5 bg-white" style="top: 2.5rem; left:2.5rem;" [style]="'width:calc(3% + ' + this.translate.instant(category['label']).length + '%)'">
