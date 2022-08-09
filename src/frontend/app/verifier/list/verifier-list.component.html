@@ -195,7 +195,7 @@
                                      [src]="invoice.thumb" alt="Open-Capture Verifier image"
                                      (click)="invoice.locked ? displayInvoiceLocked(invoice.locked_by) : ''">
                                 <mat-card-header class="leading-6 relative z-10 bg-white pt-4 pl-4 pr-4"
-                                        [routerLink]="invoice.locked ? '/verifier/list' : '/verifier/viewer/'+ invoice.invoice_id"
+                                        [routerLink]="invoice.locked ? '/verifier/list' : '/verifier/viewer/' + invoice.invoice_id"
                                         (click)="invoice.locked ? displayInvoiceLocked(invoice.locked_by) : ''">
                                     <mat-card-title class="break-all">
                                         <span class="leading-7">
