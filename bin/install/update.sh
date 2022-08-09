@@ -52,10 +52,11 @@ git config core.fileMode False
 ####################
 # Force launch of apt and pip requirements
 # in case of older version without somes packages/libs
+echo "APT & PIP packages installation & upgrade......."
 cd bin/install/ || exit 2
-apt update
-apt install php
-xargs -a apt-requirements.txt apt install -y
+apt-get update > /dev/null
+apt-get install php > /dev/null
+xargs -a apt-requirements.txt apt-get install -y > /dev/null
 python3 -m pip install --upgrade pip
 python3 -m pip install --upgrade setuptools
 python3 -m pip install -r pip-requirements.txt

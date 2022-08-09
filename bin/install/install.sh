@@ -41,7 +41,7 @@ fi
 ####################
 # Check if custom name is set and doesn't exists already
 
-apt install -y crudini
+apt-get install -y crudini > /dev/null
 while getopts "c:" parameters
 do
     case "${parameters}" in
@@ -225,7 +225,7 @@ else
     databasePassword="$choice"
 fi
 
-apt install -y postgresql
+apt-get install -y postgresql > /dev/null
 
 if [ "$hostname" != "localhost" ] || [ "$port" != "5432" ]; then
     printf "Postgres user Password [%s] : " "${bold}postgres${normal}"
@@ -385,7 +385,7 @@ EOF"
     sudo systemctl enable "OCForInvoices-worker_$customId".service
     sudo systemctl enable "OCForInvoices_Split-worker_$customId".service
 else
-    apt install -y supervisor
+    apt-get install -y supervisor > /dev/null
     touch "/etc/supervisor/conf.d/OCForInvoices-worker_$customId.conf"
     touch "/etc/supervisor/conf.d/OCForInvoices_Split-worker_$customId.conf"
 

@@ -30,7 +30,7 @@ group=www-data
 ####################
 # Check if custom name is set and doesn't exists already
 
-apt install -y crudini
+apt-get install -y crudini > /dev/null
 
 while getopts "c:t:" arguments
 do
