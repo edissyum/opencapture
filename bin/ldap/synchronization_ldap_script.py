@@ -251,19 +251,17 @@ def check_database_users(ldap_users_data, default_role):
                         'data': [oc_user[0]]
                     })
 
-                    if user_role[0] == 'superadmin':
-                        continue
-
-                    database.update({
-                        'table': ['users'],
-                        'set': {
-                            'enabled': False
-                        },
-                        'where': ['username = %s'],
-                        'data': [oc_user[0]]
-                    })
-                    disabled_users += 1
-                    print_log("user status is disabled :" + str(oc_user[0]))
+                    if user_role[0] != 'superadmin':
+                        database.update({
+                            'table': ['users'],
+                            'set': {
+                                'enabled': False
+                            },
+                            'where': ['username = %s'],
+                            'data': [oc_user[0]]
+                        })
+                        disabled_users += 1
+                        print_log("user status is disabled :" + str(oc_user[0]))
                 else:
                     pass
         for user_to_create in ldap_users_data:
