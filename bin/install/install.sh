@@ -116,9 +116,6 @@ echo "" >> $customIniFile
 
 ####################
 # User choice
-echo ""
-echo "#################################################################################################"
-echo ""
 echo "Do you want to use supervisor (1) or systemd (2) ? (default : 2) "
 echo "If you plan to handle a lot of files and need a reduced time of process, use supervisor"
 echo "WARNING : A lot of Tesseract processes will run in parallel and it can be very resource intensive"
@@ -225,6 +222,7 @@ else
     databasePassword="$choice"
 fi
 
+echo "Postgres installation...."
 apt-get install -y postgresql > /dev/null
 
 if [ "$hostname" != "localhost" ] || [ "$port" != "5432" ]; then
