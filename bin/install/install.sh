@@ -225,7 +225,7 @@ else
     databasePassword="$choice"
 fi
 
-apt install postgresql
+apt install -y postgresql
 
 if [ "$hostname" != "localhost" ] || [ "$port" != "5432" ]; then
     printf "Postgres user Password [%s] : " "${bold}postgres${normal}"
@@ -236,26 +236,41 @@ if [ "$hostname" != "localhost" ] || [ "$port" != "5432" ]; then
     else
         postgresPassword="$choice"
     fi
+    echo ""
+    echo "######################################################################################################################"
+    echo ""
     export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'CREATE ROLE $databaseUsername'"
     export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'ALTER ROLE $databaseUsername WITH LOGIN'"
     export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'ALTER ROLE $databaseUsername WITH CREATEDB'"
     export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c \"ALTER ROLE $databaseUsername WITH ENCRYPTED PASSWORD '$databasePassword'\""
 else
-  su postgres -c "psql -c 'CREATE ROLE $databaseUsername'"
-  su postgres -c "psql -c 'ALTER ROLE $databaseUsername WITH LOGIN'"
-  su postgres -c "psql -c 'ALTER ROLE $databaseUsername WITH CREATEDB'"
-  su postgres -c "psql -c \"ALTER ROLE $databaseUsername WITH ENCRYPTED PASSWORD '$databasePassword'\""
+    echo ""
+    echo "######################################################################################################################"
+    echo ""
+    su postgres -c "psql -c 'CREATE ROLE $databaseUsername'"
+    su postgres -c "psql -c 'ALTER ROLE $databaseUsername WITH LOGIN'"
+    su postgres -c "psql -c 'ALTER ROLE $databaseUsername WITH CREATEDB'"
+    su postgres -c "psql -c \"ALTER ROLE $databaseUsername WITH ENCRYPTED PASSWORD '$databasePassword'\""
 fi
+
+echo ""
+echo "######################################################################################################################"
+echo ""
 
 ####################
 # Install packages
-xargs -a apt-requirements.txt apt install -y
-python3 -m pip install --upgrade pip
-python3 -m pip install --upgrade setuptools
-python3 -m pip install -r pip-requirements.txt
+echo "APT & PIP packages installation......."
+xargs -a apt-requirements.txt apt-get install -y > /dev/null
+python3 -m pip install --upgrade pip > /dev/null
+python3 -m pip install --upgrade setuptools > /dev/null
+python3 -m pip install -r pip-requirements.txt > /dev/null
 
 cd $defaultPath || exit 1
 find . -name ".gitkeep" -delete
+
+echo ""
+echo "######################################################################################################################"
+echo ""
 
 ####################
 # Create database using custom_id
