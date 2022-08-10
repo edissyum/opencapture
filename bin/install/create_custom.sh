@@ -30,7 +30,7 @@ group=www-data
 ####################
 # Check if custom name is set and doesn't exists already
 
-apt install -y crudini
+apt-get install -y crudini > /dev/null
 
 while getopts "c:t:" arguments
 do
@@ -54,6 +54,15 @@ if [ -z "$customId" ]; then
     echo "##########################################################################"
     exit 2
 fi
+
+if [ "$customId" == 'custom' ] ; then
+    echo "##########################################################################"
+    echo "              Please do not create a custom called 'custom'"
+    echo "      Exemple of command line call : sudo ./update.sh -c edissyum_bis"
+    echo "##########################################################################"
+    exit 2
+fi
+
 
 if [ "$installationType" == '' ] || { [ "$installationType" != 'systemd' ] && [ "$installationType" != 'supervisor' ]; }; then
     echo "#################################################################################################"
@@ -223,11 +232,17 @@ mkdir -p $customPath/bin/data/log/Supervisor/
 touch $customPath/bin/data/log/OCforInvoices.log
 mkdir -p $customPath/bin/scripts/{verifier_inputs,splitter_inputs}/
 mkdir -p $customPath/src/backend/
+touch $customPath/config/secret_key
 
 echo "[$oldCustomId]" >> $customIniFile
 echo "path = $defaultPath/custom/$customId" >> $customIniFile
 echo "isdefault = False" >> $customIniFile
 echo "" >> $customIniFile
+
+####################
+# Generate secret key for Flask and write it to custom secret_key file
+secret=$(python3 -c 'import secrets; print(secrets.token_hex(32))')
+echo "$secret" > $customPath/config/secret_key
 
 ####################
 # Create custom input and outputs folder
@@ -236,7 +251,7 @@ chmod -R 775 /var/share/"$customId"/
 chown -R "$user":"$group" /var/share/"$customId"/
 
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE inputs SET input_folder=REPLACE(input_folder, '/var/share/' , '/var/share/$customId/')" "$databaseName"
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options,parameters, 0, value}', '\"/var/share/$customId/export/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out';" "$databaseName"
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options,parameters, 0, value}', '\"/var/share/$customId/export/verifier/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out';" "$databaseName"
 
 ####################
 # Copy file from default one
@@ -261,8 +276,12 @@ confFile="$defaultPath/custom/$customId/config/config.ini"
 crudini --set "$confFile" DATABASE postgresHost "$hostname"
 crudini --set "$confFile" DATABASE postgresPort "$port"
 crudini --set "$confFile" DATABASE postgresDatabase "$databaseName"
-crudini --set "$confFile" DATABASE postgresUser "$databaseUsername"
-crudini --set "$confFile" DATABASE postgresPassword "$databasePassword"
+crudini --set "$confFile" DATABASE postgresUser " $databaseUsername"
+crudini --set "$confFile" DATABASE postgresPassword " $databasePassword"
+
+echo ""
+echo "#################################################################################################"
+echo ""
 
 ####################
 # Create default MAIL script and config
@@ -335,7 +354,7 @@ elif [ $installationType == 'supervisor' ]; then
     touch "/etc/supervisor/conf.d/OCForInvoices-worker_$customId.conf"
     touch "/etc/supervisor/conf.d/OCForInvoices_Split-worker_$customId.conf"
     su -c "cat > /etc/supervisor/conf.d/OCForInvoices-worker_$customId.conf << EOF
-[program:OCWorker]
+[program:OCWorker_$customId]
 command=$defaultPath/custom/$customId/bin/scripts/service_workerOC.sh
 process_name=%(program_name)s_%(process_num)02d
 numprocs=$nbProcessSupervisor
@@ -352,7 +371,7 @@ stderr_logfile=$defaultPath/custom/$customId/bin/data/log/Supervisor/OCForInvoic
 EOF"
 
     su -c "cat > /etc/supervisor/conf.d/OCForInvoices_Split-worker_$customId.conf << EOF
-[program:OCWorker-Split]
+[program:OCWorker-Split_$customId]
 command=$defaultPath/custom/$customId/bin/scripts/service_workerOC_splitter.sh
 process_name=%(program_name)s_%(process_num)02d
 numprocs=$nbProcessSupervisor

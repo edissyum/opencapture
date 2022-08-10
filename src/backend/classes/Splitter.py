@@ -34,8 +34,8 @@ class Splitter:
         self.docservers = docservers
         self.result_batches = []
         self.separator_qr = separator_qr
-        self.doc_start = self.config.cfg['SPLITTER']['docstart']
-        self.bundle_start = self.config.cfg['SPLITTER']['bundlestart']
+        self.doc_start = self.config['SPLITTER']['docstart']
+        self.bundle_start = self.config['SPLITTER']['bundlestart']
 
     def get_result_documents(self, blank_pages):
         split_document = 1

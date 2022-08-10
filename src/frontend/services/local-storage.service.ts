@@ -36,13 +36,6 @@ export class LocalStorageService {
         localStorage.removeItem(id);
     }
 
-    resetLocal() {
-        const arr: string | any[] = [];
-        for (let i = 0; i < arr.length; i++) {
-            localStorage.removeItem(arr[i]);
-        }
-    }
-
     getCookie(cname: string) {
         const name = cname + "=";
         const decodedCookie = decodeURIComponent(document.cookie);

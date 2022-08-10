@@ -19,8 +19,8 @@
 import os
 import json
 import subprocess
-from flask import current_app, request
 from flask_babel import gettext
+from flask import current_app, request, session
 
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.import_classes import _Files
@@ -444,8 +444,11 @@ def delete_supplier(supplier_id):
 
 def import_suppliers(file):
     custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    docservers = _vars[9]
+    if 'docservers' in session:
+        docservers = json.loads(session['docservers'])
+    else:
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
 
     filename = _Files.save_uploaded_file(file, current_app.config['UPLOAD_FOLDER'])
     cmd = 'python3 ' + docservers['PROJECT_PATH'] + "/loadReferencial.py -f " + filename

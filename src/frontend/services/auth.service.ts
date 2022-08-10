@@ -21,6 +21,9 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Router } from "@angular/router";
 import { UserService } from "./user.service";
 import { SettingsService } from "./settings.service";
+import {environment} from "../app/env";
+import {catchError} from "rxjs/operators";
+import {of} from "rxjs";
 
 @Injectable({
     providedIn: 'root'
@@ -75,19 +78,21 @@ export class AuthService {
         return this.localStorage.getCookie('OpenCaptureForInvoicesToken');
     }
 
-    clearTokens() {
-        this.localStorage.deleteCookie('OpenCaptureForInvoicesToken');
-        this.localStorage.deleteCookie('OpenCaptureForInvoicesToken_2');
-        this.localStorage.remove('splitter_or_verifier');
-    }
-
     logout() {
-        this.clearTokens();
         this.userService.setUser({});
-        this.localStorage.remove('selectedSettings');
         this.localStorage.remove('login_image_b64');
+        this.localStorage.remove('selectedSettings');
+        this.localStorage.remove('splitter_or_verifier');
         this.localStorage.remove('selectedParentSettings');
         this.localStorage.deleteCookie('OpenCaptureCustom');
+        this.localStorage.deleteCookie('OpenCaptureForInvoicesToken');
+        this.localStorage.deleteCookie('OpenCaptureForInvoicesToken_2');
+        this.http.get(environment['url'] + '/ws/auth/logout').pipe(
+            catchError((err: any) => {
+                console.debug(err);
+                return of(false);
+            })
+        ).subscribe();
         this.router.navigateByUrl("/login").then();
     }
 }

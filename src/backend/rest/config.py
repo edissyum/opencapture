@@ -15,10 +15,11 @@
 
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
+import json
 from src.backend.import_controllers import auth, config
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
-from flask import Blueprint, jsonify, make_response, request
+from flask import Blueprint, jsonify, make_response, request, session
 
 bp = Blueprint('config', __name__,  url_prefix='/ws/')
 
@@ -28,7 +29,7 @@ bp = Blueprint('config', __name__,  url_prefix='/ws/')
 def read_config():
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
-    return make_response(jsonify({'config': _vars[1].cfg})), 200
+    return make_response(jsonify({'config': _vars[1]})), 200
 
 
 @bp.route('config/getConfigurations', methods=['GET'])
@@ -80,9 +81,12 @@ def get_docservers():
 @bp.route('config/getRegex', methods=['GET'])
 @auth.token_required
 def get_regex():
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    configurations = _vars[10]
+    if 'configurations' in session:
+        configurations = json.loads(session['configurations'])
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        configurations = _vars[10]
 
     args = {
         'select': ['*', 'count(*) OVER() as total'],

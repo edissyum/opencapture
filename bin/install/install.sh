@@ -41,7 +41,6 @@ fi
 ####################
 # Check if custom name is set and doesn't exists already
 
-apt install -y crudini
 while getopts "c:" parameters
 do
     case "${parameters}" in
@@ -55,9 +54,17 @@ done
 oldCustomId=$customId
 customId=${customId//[\.\-]/_}
 
-if [ -z "$customId" ] || [ "$customId" == 'CUSTOM_ID' ] ; then
+if [ -z "$customId" ]; then
     echo "##########################################################################"
     echo "              Custom id is needed to run the installation"
+    echo "      Exemple of command line call : sudo ./update.sh -c edissyum"
+    echo "##########################################################################"
+    exit 2
+fi
+
+if [ "$customId" == 'custom' ] ; then
+    echo "##########################################################################"
+    echo "              Please do not create a custom called 'custom'"
     echo "      Exemple of command line call : sudo ./update.sh -c edissyum"
     echo "##########################################################################"
     exit 2
@@ -100,6 +107,7 @@ mkdir -p $customPath/bin/data/{log,MailCollect,tmp,exported_pdf,exported_pdfa}/
 mkdir -p $customPath/bin/data/log/Supervisor/
 mkdir -p $customPath/bin/scripts/{verifier_inputs,splitter_inputs}/
 mkdir -p $customPath/src/backend/
+touch $customPath/config/secret_key
 
 echo "[$oldCustomId]" >> $customIniFile
 echo "path = $defaultPath/custom/$customId" >> $customIniFile
@@ -108,8 +116,6 @@ echo "" >> $customIniFile
 
 ####################
 # User choice
-echo ""
-echo "#################################################################################################"
 echo ""
 echo "Do you want to use supervisor (1) or systemd (2) ? (default : 2) "
 echo "If you plan to handle a lot of files and need a reduced time of process, use supervisor"
@@ -145,6 +151,7 @@ echo "    / / | | \ \          If you don't know what you're doing, skip it and 
 echo "   / /  | |  \ \     Higher values can overload your server if it doesn't have enough performances     / /  | |  \ \ "
 echo "  / /   |_|   \ \          Example for a 16 vCPU / 8Go RAM server : 5 threads and 2 processes         / /   |_|   \ \ "
 echo " /_/    (_)    \_\                                                                                   /_/    (_)    \_\ "
+echo ""
 echo "#######################################################################################################################"
 echo ""
 echo 'How many WSGI threads ? (default : 5)'
@@ -170,18 +177,10 @@ elif ! [[ "$choice" =~ ^[0-9]+$ ]]; then
 else
     nbProcesses="$choice"
 fi
+
+echo ""
 echo "######################################################################################################################"
 echo ""
-
-####################
-# Install packages
-xargs -a apt-requirements.txt apt install -y
-python3 -m pip install --upgrade setuptools
-python3 -m pip install --upgrade pip
-python3 -m pip install -r pip-requirements.txt
-
-cd $defaultPath || exit 1
-find . -name ".gitkeep" -delete
 
 ####################
 # Retrieve database informations
@@ -224,6 +223,10 @@ else
     databasePassword="$choice"
 fi
 
+echo ""
+echo "Postgres installation....."
+apt-get install -y postgresql > /dev/null
+
 if [ "$hostname" != "localhost" ] || [ "$port" != "5432" ]; then
     printf "Postgres user Password [%s] : " "${bold}postgres${normal}"
     read -r choice
@@ -233,42 +236,68 @@ if [ "$hostname" != "localhost" ] || [ "$port" != "5432" ]; then
     else
         postgresPassword="$choice"
     fi
+    echo ""
+    echo "######################################################################################################################"
+    echo ""
     export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'CREATE ROLE $databaseUsername'"
     export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'ALTER ROLE $databaseUsername WITH LOGIN'"
     export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'ALTER ROLE $databaseUsername WITH CREATEDB'"
     export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c \"ALTER ROLE $databaseUsername WITH ENCRYPTED PASSWORD '$databasePassword'\""
 else
-  su postgres -c "psql -c 'CREATE ROLE $databaseUsername'"
-  su postgres -c "psql -c 'ALTER ROLE $databaseUsername WITH LOGIN'"
-  su postgres -c "psql -c 'ALTER ROLE $databaseUsername WITH CREATEDB'"
-  su postgres -c "psql -c \"ALTER ROLE $databaseUsername WITH ENCRYPTED PASSWORD '$databasePassword'\""
+    echo ""
+    echo "######################################################################################################################"
+    echo ""
+    su postgres -c "psql -c 'CREATE ROLE $databaseUsername'"
+    su postgres -c "psql -c 'ALTER ROLE $databaseUsername WITH LOGIN'"
+    su postgres -c "psql -c 'ALTER ROLE $databaseUsername WITH CREATEDB'"
+    su postgres -c "psql -c \"ALTER ROLE $databaseUsername WITH ENCRYPTED PASSWORD '$databasePassword'\""
 fi
+
+echo ""
+echo "######################################################################################################################"
+echo ""
+
+####################
+# Install packages
+echo "APT & PIP packages installation....."
+xargs -a apt-requirements.txt apt-get install -y > /dev/null
+python3 -m pip install --upgrade pip > /dev/null
+python3 -m pip install --upgrade setuptools > /dev/null
+python3 -m pip install -r pip-requirements.txt > /dev/null
+
+cd $defaultPath || exit 1
+find . -name ".gitkeep" -delete
+
+echo ""
+echo "######################################################################################################################"
+echo ""
 
 ####################
 # Create database using custom_id
+echo "Create database and fill it with default data....."
 databaseName="opencapture_$customId"
 if [[ "$customId" = *"opencapture_"* ]]; then
     databaseName="$customId"
 fi
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "CREATE DATABASE $databaseName" postgres
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/structure.sql" "$databaseName"
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/global.sql" "$databaseName"
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/data_fr.sql" "$databaseName"
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "CREATE DATABASE $databaseName" postgres > /dev/null
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/structure.sql" "$databaseName" > /dev/null
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/global.sql" "$databaseName" > /dev/null
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/data_fr.sql" "$databaseName" > /dev/null
 
 echo ""
-echo "#################################################################################################"
+echo "######################################################################################################################"
 echo ""
 
 docserverDefaultPath="/var/docservers/OpenCapture/"
 
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path=REPLACE(path, '$docserverDefaultPath' , '/$docserverDefaultPath/$customId/')" "$databaseName"
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/scripts/' WHERE docserver_id = 'SCRIPTS_PATH'" "$databaseName"
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/tmp/' WHERE docserver_id = 'TMP_PATH'" "$databaseName"
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/exported_pdfa/' WHERE docserver_id = 'SEPARATOR_OUTPUT_PDFA'" "$databaseName"
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/exported_pdf/' WHERE docserver_id = 'SEPARATOR_OUTPUT_PDF'" "$databaseName"
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/instance/referencial/' WHERE docserver_id = 'REFERENTIALS_PATH'" "$databaseName"
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE inputs SET input_folder=REPLACE(input_folder, '/var/share/' , '/var/share/$customId/')" "$databaseName"
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options,parameters, 0, value}', '\"/var/share/$customId/export/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out';" "$databaseName"
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path=REPLACE(path, '$docserverDefaultPath' , '/$docserverDefaultPath/$customId/')" "$databaseName" > /dev/null
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/scripts/' WHERE docserver_id = 'SCRIPTS_PATH'" "$databaseName" > /dev/null
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/tmp/' WHERE docserver_id = 'TMP_PATH'" "$databaseName" > /dev/null
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/exported_pdfa/' WHERE docserver_id = 'SEPARATOR_OUTPUT_PDFA'" "$databaseName" > /dev/null
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/exported_pdf/' WHERE docserver_id = 'SEPARATOR_OUTPUT_PDF'" "$databaseName" > /dev/null
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/instance/referencial/' WHERE docserver_id = 'REFERENTIALS_PATH'" "$databaseName" > /dev/null
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE inputs SET input_folder=REPLACE(input_folder, '/var/share/' , '/var/share/$customId/')" "$databaseName" > /dev/null
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options,parameters, 0, value}', '\"/var/share/$customId/export/verifier/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out';" "$databaseName" > /dev/null
 
 ####################
 # Create the Apache service for backend
@@ -353,12 +382,12 @@ EOF"
     sudo systemctl enable "OCForInvoices-worker_$customId".service
     sudo systemctl enable "OCForInvoices_Split-worker_$customId".service
 else
-    apt install -y supervisor
+    apt-get install -y supervisor > /dev/null
     touch "/etc/supervisor/conf.d/OCForInvoices-worker_$customId.conf"
     touch "/etc/supervisor/conf.d/OCForInvoices_Split-worker_$customId.conf"
 
     su -c "cat > /etc/supervisor/conf.d/OCForInvoices-worker_$customId.conf << EOF
-[program:OCWorker]
+[program:OCWorker_$customId]
 command=$defaultPath/custom/$customId/bin/scripts/service_workerOC.sh
 process_name=%(program_name)s_%(process_num)02d
 numprocs=$nbProcessSupervisor
@@ -375,7 +404,7 @@ stderr_logfile=$defaultPath/custom/$customId/bin/data/log/Supervisor/OCForInvoic
 EOF"
 
     su -c "cat > /etc/supervisor/conf.d/OCForInvoices_Split-worker_$customId.conf << EOF
-[program:OCWorker-Split]
+[program:OCWorker-Split_$customId]
 command=$defaultPath/custom/$customId/bin/scripts/service_workerOC_splitter.sh
 process_name=%(program_name)s_%(process_num)02d
 numprocs=$nbProcessSupervisor
@@ -426,11 +455,11 @@ confFile="$defaultPath/custom/$customId/config/config.ini"
 crudini --set "$confFile" DATABASE postgresHost "$hostname"
 crudini --set "$confFile" DATABASE postgresPort "$port"
 crudini --set "$confFile" DATABASE postgresDatabase "$databaseName"
-crudini --set "$confFile" DATABASE postgresUser "$databaseUsername"
-crudini --set "$confFile" DATABASE postgresPassword "$databasePassword"
+crudini --set "$confFile" DATABASE postgresUser " $databaseUsername"
+crudini --set "$confFile" DATABASE postgresPassword " $databasePassword"
 
 ####################
-# Setting up fs-watcher service (to replace incron)
+# Setting up fs-watcher service
 mkdir -p /var/log/watcher/
 touch /var/log/watcher/daemon.log
 chmod -R 775 /var/log/watcher/
@@ -466,9 +495,9 @@ else
 fi
 
 ####################
-# Generate secret key for Flask and replace it in src/backend/__init.py file
-secret=$(python3 -c 'import secrets; print(secrets.token_hex(16))')
-sed -i "s#§§SECRET§§#$secret#g" "$defaultPath"/src/backend/__init__.py
+# Generate secret key for Flask and write it to custom secret_key file
+secret=$(python3 -c 'import secrets; print(secrets.token_hex(32))')
+echo "$secret" > $customPath/config/secret_key
 
 ####################
 # Create default verifier input script (based on default input created in data_fr.sql)

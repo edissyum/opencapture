@@ -23,7 +23,7 @@ import shutil
 import os.path
 import datetime
 import pandas as pd
-from flask import request
+from flask import request, session
 from flask import current_app
 from flask_babel import gettext
 import worker_splitter_from_python
@@ -54,7 +54,7 @@ def launch_referential_update(form_data):
     _vars = create_classes_from_custom_id(custom_id)
     database = _vars[0]
     log = _vars[5]
-    conf = _vars[10]
+    conf = _vars[9]
     docservers = _vars[9]
 
     available_methods = docservers['SPLITTER_METADATA_PATH'] + "/metadata_methods.json"
@@ -256,8 +256,7 @@ def export_maarch(auth_data, file_path, args, batch):
             host,
             login,
             password,
-            _vars[5],
-            _vars[1]
+            _vars[5]
         )
         if os.path.isfile(file_path):
             args.update({
@@ -298,9 +297,13 @@ def export_maarch(auth_data, file_path, args, batch):
 
 
 def export_pdf(batch, documents, parameters, pages, now, compress_type):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    docservers = _vars[9]
+    if 'docservers' in session:
+        docservers = json.loads(session['docservers'])
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
+
     filename = docservers['SPLITTER_ORIGINAL_PDF'] + '/' + batch['file_path']
     pdf_filepaths = []
     doc_except_from_zip = []
@@ -664,9 +667,12 @@ def validate(args):
 
 
 def get_split_methods():
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    docservers = _vars[9]
+    if 'docservers' in session:
+        docservers = json.loads(session['docservers'])
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
     split_methods = _Splitter.get_split_methods(docservers)
     if len(split_methods) > 0:
         return split_methods, 200
@@ -674,9 +680,12 @@ def get_split_methods():
 
 
 def get_metadata_methods(form_method=False):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    docservers = _vars[9]
+    if 'docservers' in session:
+        docservers = json.loads(session['docservers'])
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
     metadata_methods = _Splitter.get_metadata_methods(docservers, form_method)
     if len(metadata_methods) > 0:
         return metadata_methods, 200
@@ -700,9 +709,12 @@ def get_totals(status):
 
 
 def merge_batches(parent_id, batches):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    docservers = _vars[9]
+    if 'docservers' in session:
+        docservers = json.loads(session['docservers'])
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
 
     parent_info = splitter.get_batch_by_id({'id': parent_id})[0]
     parent_filename = docservers['SPLITTER_ORIGINAL_PDF'] + '/' + parent_info['file_path']

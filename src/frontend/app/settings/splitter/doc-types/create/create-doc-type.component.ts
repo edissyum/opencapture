@@ -100,7 +100,7 @@ export class CreateDocTypeComponent implements OnInit {
     getLastFolderIndex(codeSelected: string) {
         let lastIndex = 0;
         this.documentTypeFactoryComponent.treeDataObj.doctypeData.forEach((docType:any) => {
-            if(docType.code.startsWith(codeSelected)
+            if (docType.code.startsWith(codeSelected)
                 && docType.code.split('.').length === codeSelected.split('.').length + 1) {
                 const currentIdx = Number(docType.code.split('.').pop());
                 lastIndex = (currentIdx > lastIndex) ? currentIdx: lastIndex;

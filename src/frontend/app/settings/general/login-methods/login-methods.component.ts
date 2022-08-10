@@ -45,6 +45,7 @@ export class LoginMethodsComponent implements OnInit {
     isDefaultChecked        : boolean   = false;
     connexion_server_status : boolean   = false;
     synchro_users_status    : boolean   = false;
+    typeAd                  : string    = '';
     label                   : any[]     = [
         marker ('LOGIN-METHODS.ldap'),
         marker ('LOGIN-METHODS.default'),
@@ -258,6 +259,20 @@ export class LoginMethodsComponent implements OnInit {
                 return of (false);
             })
         ).subscribe();
+    }
+
+    updateTypeAd(event: any, id: any) {
+        if  (event.isUserInput) {
+            let required = true;
+            if (id === 'typeAD' && event.source.value === 'adLDAP') {
+                required = false;
+            }
+            this.connectionFormGroup.forEach((element: any) => {
+                if (element.id === 'baseDN') {
+                    element.required = required;
+                }
+            });
+        }
     }
 
     changedDefaultMethod(loginMethodName: any): void {

@@ -16,6 +16,8 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import sys
+import json
+from flask import session
 from .functions import get_custom_array, retrieve_config_from_custom_id
 from .import_classes import _Database, _PyTesseract, _Files, _Log, _Config, _Spreadsheet, _SMTP
 
@@ -24,7 +26,15 @@ def create_classes_from_custom_id(custom_id):
     config_file = retrieve_config_from_custom_id(custom_id)
     if config_file is False:
         return False, 'missing_custom_or_file_doesnt_exists'
+
     config = _Config(config_file)
+
+    try:
+        if 'config' not in session:
+            session['config'] = json.dumps(config.cfg)
+    except RuntimeError:
+        pass
+
     config_mail = _Config(config.cfg['GLOBAL']['configmail'])
     smtp = _SMTP(
         config_mail.cfg['GLOBAL']['smtp_notif_on_error'],
@@ -39,6 +49,7 @@ def create_classes_from_custom_id(custom_id):
         config_mail.cfg['GLOBAL']['smtp_auth'],
         config_mail.cfg['GLOBAL']['smtp_from_mail'],
     )
+
     log = _Log(config.cfg['GLOBAL']['logfile'], smtp)
     db_user = config.cfg['DATABASE']['postgresuser']
     db_pwd = config.cfg['DATABASE']['postgrespassword']
@@ -48,7 +59,9 @@ def create_classes_from_custom_id(custom_id):
     database = _Database(log, db_name, db_user, db_pwd, db_host, db_port)
     if not database.conn:
         return False, 'bad_or_missing_database_informations'
+
     regex = {}
+    languages = {}
     docservers = {}
     configurations = {}
 
@@ -81,7 +94,6 @@ def create_classes_from_custom_id(custom_id):
         'select': ['*'],
         'table': ['languages'],
     })
-    languages = {}
     for _l in _lang:
         languages[_l['language_id']] = {}
         languages[_l['language_id']].update({
@@ -91,12 +103,24 @@ def create_classes_from_custom_id(custom_id):
             'date_format': _l['date_format']
         })
 
+    try:
+        if 'languages' not in session:
+            session['languages'] = json.dumps(languages)
+        if 'configurations' not in session:
+            session['configurations'] = json.dumps(configurations)
+        if 'regex' not in session:
+            session['regex'] = json.dumps(regex)
+        if 'docservers' not in session:
+            session['docservers'] = json.dumps(docservers)
+    except RuntimeError:
+        pass
+
     spreadsheet = _Spreadsheet(log, docservers, config)
     filename = docservers['TMP_PATH']
     files = _Files(filename, log, docservers, configurations, regex, languages)
     ocr = _PyTesseract(configurations['locale'], log, config, docservers)
 
-    return database, config, regex, files, ocr, log, config_file, spreadsheet, smtp, docservers, configurations, languages
+    return database, config.cfg, regex, files, ocr, log, config_file, spreadsheet, smtp, docservers, configurations, languages
 
 
 def check_file(files, path, log, docservers):
@@ -130,7 +154,7 @@ def launch(args):
     if 'process_queue_verifier' not in custom_array or not custom_array['process_queue_verifier'] and not custom_array['process_queue_verifier']['path']:
         import src.backend.process_queue_verifier as process_queue_verifier
     else:
-        custom_array['process_queue_verifier']['path'] = 'custom' + custom_array['process_queue_verifier']['path'].split('custom')[1]
+        custom_array['process_queue_verifier']['path'] = 'custom.' + custom_array['process_queue_verifier']['path'].split('.custom.')[1]
         process_queue_verifier = getattr(__import__(custom_array['process_queue_verifier']['path'],
                                            fromlist=[custom_array['process_queue_verifier']['module']]),
                                 custom_array['process_queue_verifier']['module'])

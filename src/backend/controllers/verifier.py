@@ -26,8 +26,8 @@ from zeep import Client, exceptions
 from src.backend import verifier_exports
 from src.backend.import_classes import _Files
 from src.backend.import_controllers import user
-from flask import current_app, Response, request
 from src.backend.import_models import verifier, accounts
+from flask import current_app, Response, request, session
 from src.backend.main import launch, create_classes_from_custom_id
 from src.backend.functions import retrieve_custom_from_url, delete_documents
 
@@ -234,9 +234,12 @@ def delete_invoice_data_by_invoice_id(invoice_id, field_id):
 
 
 def delete_documents_by_invoice_id(invoice_id):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    docservers = _vars[9]
+    if 'docservers' in session:
+        docservers = json.loads(session['docservers'])
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
 
     invoice, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
     if not error:
@@ -349,16 +352,19 @@ def export_maarch(invoice_id, data):
     _vars = create_classes_from_custom_id(custom_id)
     invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
     if not error:
-        return verifier_exports.export_maarch(data, invoice_info, _vars[5], _vars[1], _vars[2], _vars[0])
+        return verifier_exports.export_maarch(data, invoice_info, _vars[5], _vars[2], _vars[0])
 
 
 def export_xml(invoice_id, data):
     invoice_info, error = verifier.get_invoice_by_id({'invoice_id': invoice_id})
     if not error:
-        custom_id = retrieve_custom_from_url(request)
-        _vars = create_classes_from_custom_id(custom_id)
-        _regex = _vars[2]
-        return verifier_exports.export_xml(data, None, _regex, invoice_info)
+        if 'regex' in session:
+            regex = json.loads(session['regex'])
+        else:
+            custom_id = retrieve_custom_from_url(request)
+            _vars = create_classes_from_custom_id(custom_id)
+            regex = _vars[2]
+        return verifier_exports.export_xml(data, None, regex, invoice_info)
 
 
 def ocr_on_the_fly(file_name, selection, thumb_size, positions_masks):
@@ -383,9 +389,13 @@ def ocr_on_the_fly(file_name, selection, thumb_size, positions_masks):
 
 
 def get_file_content(file_type, filename, mime_type, compress=False):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    docservers = _vars[9]
+    if 'docservers' in session:
+        docservers = json.loads(session['docservers'])
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
+
     content = False
     path = ''
 
@@ -417,14 +427,18 @@ def get_file_content(file_type, filename, mime_type, compress=False):
 
 
 def get_token_insee():
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    _cfg = _vars[1]
+    if 'config' in session:
+        config = json.loads(session['config'])
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        config = _vars[1]
+
     credentials = base64.b64encode(
-        (_cfg.cfg['API']['siret-consumer'] + ':' + _cfg.cfg['API']['siret-secret']).encode('UTF-8')).decode('UTF-8')
+        (config['API']['siret-consumer'] + ':' + config['API']['siret-secret']).encode('UTF-8')).decode('UTF-8')
 
     try:
-        res = requests.post(_cfg.cfg['API']['siret-url-token'],
+        res = requests.post(config['API']['siret-url-token'],
                             data={'grant_type': 'client_credentials'},
                             headers={"Authorization": f"Basic {credentials}"})
     except requests.exceptions.SSLError:
@@ -437,12 +451,15 @@ def get_token_insee():
 
 
 def verify_siren(token, siren):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    _cfg = _vars[1]
+    if 'config' in session:
+        config = json.loads(session['config'])
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        config = _vars[1]
 
     try:
-        res = requests.get(_cfg.cfg['API']['siren-url'] + siren,
+        res = requests.get(config['API']['siren-url'] + siren,
                            headers={"Authorization": f"Bearer {token}", "Accept": "application/json"})
     except (requests.exceptions.SSLError, requests.exceptions.ConnectionError):
         return 'ERROR : ' + gettext('API_INSEE_ERROR_CONNEXION'), 201
@@ -457,11 +474,11 @@ def verify_siren(token, siren):
 def verify_siret(token, siret):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
-    _cfg = _vars[1]
+    config = _vars[1]
     _log = _vars[5]
 
     try:
-        res = requests.get(_cfg.cfg['API']['siret-url'] + siret,
+        res = requests.get(config['API']['siret-url'] + siret,
                            headers={"Authorization": f"Bearer {token}", "Accept": "application/json"})
     except (requests.exceptions.SSLError, requests.exceptions.ConnectionError) as _e:
         _log.error(gettext('API_INSEE_ERROR_CONNEXION') + ' : ' + str(_e))
@@ -477,9 +494,9 @@ def verify_siret(token, siret):
 def verify_vat_number(vat_number):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
-    _cfg = _vars[1]
+    config = _vars[1]
     _log = _vars[5]
-    url = _cfg.cfg['API']['tva-url']
+    url = config['API']['tva-url']
     country_code = vat_number[:2]
     vat_number = vat_number[2:]
 

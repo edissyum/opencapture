@@ -104,7 +104,7 @@ export class ListDocTypeComponent implements OnInit {
   update() {
     let newDocType = this.form.getRawValue();
     const lastIndexInFolder = this.getLastFolderIndex(newDocType.folder);
-    if(newDocType.folder === '_NO_MASTER')
+    if (newDocType.folder === '_NO_MASTER')
       newDocType.folder = "0";
     newDocType = {
       'key'       : newDocType.key,
@@ -165,9 +165,9 @@ export class ListDocTypeComponent implements OnInit {
 
   getLastFolderIndex(codeSelected: string) {
     let lastIndex = 0;
-    if(codeSelected !== this.noMasterFolder) {
+    if (codeSelected !== this.noMasterFolder) {
       this.documentTypeFactoryComponent.treeDataObj.doctypeData.forEach((docType:any) => {
-        if(docType.code.startsWith(codeSelected)
+        if (docType.code.startsWith(codeSelected)
             && docType.code.split('.').length === codeSelected.split('.').length + 1) {
           const currentIdx = Number(docType.code.split('.').pop());
           lastIndex = (currentIdx > lastIndex) ? currentIdx: lastIndex;
@@ -176,7 +176,7 @@ export class ListDocTypeComponent implements OnInit {
     }
     else {
       this.documentTypeFactoryComponent.treeDataObj.doctypeData.forEach((docType:any) => {
-        if(docType.code.split('.').length === 2) {
+        if (docType.code.split('.').length === 2) {
           const currentIdx = Number(docType.code.split('.').pop());
           lastIndex = (currentIdx > lastIndex) ? currentIdx: lastIndex;
         }

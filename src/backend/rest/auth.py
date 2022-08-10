@@ -23,10 +23,10 @@ import psycopg2
 from ldap3 import Server
 from flask_babel import gettext
 from ldap3.core.exceptions import LDAPException
-from flask import Blueprint, request, make_response
 from werkzeug.security import generate_password_hash
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
+from flask import Blueprint, request, make_response, session
 from src.backend.import_controllers import auth, user as user_controller
 
 bp = Blueprint('auth', __name__, url_prefix='/ws/')
@@ -40,7 +40,12 @@ def login():
     data = request.json
     if enabled_login_method_name and enabled_login_method_name[0]['method_name'] == 'default':
         if res is None:
-            res = auth.login(data['username'], data['password'], data['lang'])
+            if 'username' in data and 'password' in data:
+                res = auth.login(data['username'], data['password'], data['lang'])
+            elif 'token' in data:
+                res = auth.login_with_token(data['token'], data['lang'])
+            else:
+                res = ('', 402)
         else:
             res = [{
                 "errors": gettext('PGSQL_ERROR'),
@@ -48,47 +53,50 @@ def login():
             }, 401]
     elif enabled_login_method_name and enabled_login_method_name[0]['method_name'] == 'ldap':
         if res is None:
-            is_user_exists = auth.verify_user_by_username(data['username'])
-            if is_user_exists and is_user_exists[1] == 200:
-                role_id = auth.get_user_role_by_username(data['username'])
-                if role_id and role_id == 'superadmin':
-                    res = auth.login(data['username'], data['password'], data['lang'])
-                else:
-                    configs = auth.get_ldap_configurations()
-                    if configs and configs[0]['ldap_configurations']:
-                        ldap_configurations = configs[0]['ldap_configurations']
-                        data_ldap_configs = ldap_configurations[0]['data']
-                        type_ad = data_ldap_configs['typeAD']
-                        domain_ldap = data_ldap_configs['host']
-                        port_ldap = data_ldap_configs['port']
-                        username_ldap_admin = data_ldap_configs['loginAdmin']
-                        password_ldap_admin = data_ldap_configs['passwordAdmin']
-                        base_dn = data_ldap_configs['baseDN']
-                        suffix = data_ldap_configs['suffix'] if 'suffix' in data_ldap_configs else ''
-                        prefix = data_ldap_configs['prefix'] if 'prefix' in data_ldap_configs else ''
-                        username_attribute = data_ldap_configs['attributSourceUser']
-
-                        user_connection_status = ldap_connection_bind(type_ad, domain_ldap, port_ldap,
-                                                                      username_ldap_admin, password_ldap_admin, base_dn,
-                                                                      suffix, prefix, username_attribute,
-                                                                      data['username'], data['password'])
-                        if user_connection_status:
-                            res = auth.login(data['username'], None, data['lang'], 'ldap')
-                        else:
-                            res = [{
-                                "errors": gettext('LDAP_CONNECTION_ERROR'),
-                                "message": gettext('LOGIN_LDAP_ERROR')
-                            }, 401]
-                    else:
-                        error = configs[0]['message']
-                        res = [{
-                            "errors": error,
-                        }, 401]
+            if 'token' in data:
+                res = auth.login_with_token(data['token'], data['lang'])
             else:
-                res = [{
-                    "errors": gettext('LOGIN_ERROR'),
-                    "message": gettext('BAD_USERNAME')
-                }, 401]
+                is_user_exists = auth.verify_user_by_username(data['username'])
+                if is_user_exists and is_user_exists[1] == 200:
+                    role_id = auth.get_user_role_by_username(data['username'])
+                    if role_id and role_id == 'superadmin':
+                        res = auth.login(data['username'], data['password'], data['lang'])
+                    else:
+                        configs = auth.get_ldap_configurations()
+                        if configs and configs[0]['ldap_configurations']:
+                            ldap_configurations = configs[0]['ldap_configurations']
+                            data_ldap_configs = ldap_configurations[0]['data']
+                            type_ad = data_ldap_configs['typeAD']
+                            domain_ldap = data_ldap_configs['host']
+                            port_ldap = data_ldap_configs['port']
+                            username_ldap_admin = data_ldap_configs['loginAdmin']
+                            password_ldap_admin = data_ldap_configs['passwordAdmin']
+                            base_dn = data_ldap_configs['baseDN']
+                            suffix = data_ldap_configs['suffix'] if 'suffix' in data_ldap_configs else ''
+                            prefix = data_ldap_configs['prefix'] if 'prefix' in data_ldap_configs else ''
+                            username_attribute = data_ldap_configs['attributSourceUser']
+
+                            user_connection_status = ldap_connection_bind(type_ad, domain_ldap, port_ldap,
+                                                                          username_ldap_admin, password_ldap_admin, base_dn,
+                                                                          suffix, prefix, username_attribute,
+                                                                          data['username'], data['password'])
+                            if user_connection_status:
+                                res = auth.login(data['username'], None, data['lang'], 'ldap')
+                            else:
+                                res = [{
+                                    "errors": gettext('LDAP_CONNECTION_ERROR'),
+                                    "message": gettext('LOGIN_LDAP_ERROR')
+                                }, 401]
+                        else:
+                            error = configs[0]['message']
+                            res = [{
+                                "errors": error,
+                            }, 401]
+                else:
+                    res = [{
+                        "errors": gettext('LOGIN_ERROR'),
+                        "message": gettext('BAD_USERNAME')
+                    }, 401]
         else:
             res = [{
                 "errors": gettext('PGSQL_ERROR'),
@@ -97,15 +105,24 @@ def login():
     return make_response(res[0], res[1])
 
 
+@bp.route('auth/logout', methods=['GET'])
+def logout():
+    auth.logout()
+    return {}, 200
+
+
 def check_connection():
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    config = _vars[1]
-    db_user = config.cfg['DATABASE']['postgresuser']
-    db_host = config.cfg['DATABASE']['postgreshost']
-    db_port = config.cfg['DATABASE']['postgresport']
-    db_pwd = config.cfg['DATABASE']['postgrespassword']
-    db_name = config.cfg['DATABASE']['postgresdatabase']
+    if 'config' in session:
+        config = json.loads(session['config'])
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        config = _vars[1]
+    db_user = config['DATABASE']['postgresuser']
+    db_host = config['DATABASE']['postgreshost']
+    db_port = config['DATABASE']['postgresport']
+    db_pwd = config['DATABASE']['postgrespassword']
+    db_name = config['DATABASE']['postgresdatabase']
     try:
         psycopg2.connect(
             "dbname     =" + db_name +
@@ -297,11 +314,13 @@ def get_ldap_users_data(ldap_users_dict, user_id_attribut, firstname_attribut, l
             ldap_users_data = []
             for i in range(len(list_users_ldap)):
                 user_data = []
-                if list_users_ldap[i][user_id_attribut][0] and list_users_ldap[i][firstname_attribut][0] and \
-                        list_users_ldap[i][lastname_attribut][0]:
-                    user_data.append(list_users_ldap[i][user_id_attribut][0])
-                    user_data.append(list_users_ldap[i][firstname_attribut][0])
-                    user_data.append(list_users_ldap[i][lastname_attribut][0])
+                user_id = list_users_ldap[i][user_id_attribut][0] if user_id_attribut in list_users_ldap[i] else ''
+                givenname = list_users_ldap[i][firstname_attribut][0] if firstname_attribut in list_users_ldap[i] else ''
+                lastname = list_users_ldap[i][lastname_attribut][0] if lastname_attribut in list_users_ldap[i] else ''
+                if user_id and givenname and lastname :
+                    user_data.append(user_id)
+                    user_data.append(givenname)
+                    user_data.append(lastname)
                     ldap_users_data.append(user_data)
             return {'status_search': True, 'ldap_users_data': ldap_users_data}
         else:
@@ -354,7 +373,7 @@ def check_database_users(ldap_users_data, default_role):
                 if user_info[0] and user_info[0]['enabled']:
                     user_role = auth.get_user_role_by_username(oc_user[0])
                     if user_role != 'superadmin':
-                        user_controller.disable_user(oc_user[0])
+                        user_controller.disable_user(oc_user[3])
                         disabled_users += 1
                     else:
                         continue

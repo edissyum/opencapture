@@ -83,6 +83,8 @@ export class NotificationService {
                     this.error('<b>' + this.translate.instant('ERROR.configuration_error') + '</b> : ' + this.translate.instant('ERROR.is_custom_present_and_file_exists'));
                 } else if (err.error.message === 'bad_or_missing_database_informations') {
                     this.error('<b>' + this.translate.instant('ERROR.database_error') + '</b> : ' + this.translate.instant('ERROR.bad_or_missing_database_informations'));
+                } else if (err.error.message === 'missing_secret_key') {
+                    this.error('<b>' + this.translate.instant('ERROR.configuration_error') + '</b> : ' + this.translate.instant('ERROR.missing_secret_key'));
                 } else {
                     this.error('<b>' + err.error.errors + '</b> : ' + err.error.message, err.url);
                 }

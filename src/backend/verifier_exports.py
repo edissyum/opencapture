@@ -77,7 +77,7 @@ def export_xml(data, log, regex, invoice_info):
         return response, 401
 
 
-def export_maarch(data, invoice_info, log, config, regex, database):
+def export_maarch(data, invoice_info, log, regex, database):
     host = login = password = ''
     auth_data = data['options']['auth']
     for _data in auth_data:
@@ -93,8 +93,7 @@ def export_maarch(data, invoice_info, log, config, regex, database):
             host,
             login,
             password,
-            log,
-            config
+            log
         )
         if _ws.status[0]:
             if invoice_info:

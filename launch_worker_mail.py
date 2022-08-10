@@ -76,7 +76,7 @@ cfg = config_mail.cfg[process]
 if config_mail.cfg.get(process) is None:
     sys.exit('Process ' + process + ' is not set into ' + args['config_mail'] + ' file')
 
-global_log = _Log(config.cfg['GLOBAL']['logfile'], smtp)
+global_log = _Log(config['GLOBAL']['logfile'], smtp)
 
 now = datetime.datetime.now()
 path = config_mail.cfg['GLOBAL']['batchpath'] + '/' + process + '/' + str('%02d' % now.year) + str('%02d' % now.month) + str('%02d' % now.day) + '/'

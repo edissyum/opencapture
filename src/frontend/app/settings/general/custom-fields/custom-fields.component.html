@@ -78,10 +78,10 @@
             <app-loader></app-loader>
         </div>
         <div class="settings_header">
-            <button mat-icon-button (click)="sidenav.toggle(); this.serviceSettings.toggleMenu();"
+            <button mat-icon-button (click)="sidenav.toggle();"
                     class="absolute left-2 top-2">
-                <i [class.fa-arrow-right]="!this.serviceSettings.getIsMenuOpen()"
-                   class="fa-solid fa-arrow-left text-2xl text-gray-900"></i>
+                <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened"
+                   class="fa-solid fa-stream text-2xl text-gray-900"></i>
             </button>
             <div class="settings_title text-center">
                 <h3>{{ this.serviceSettings.getTitle() }}</h3>

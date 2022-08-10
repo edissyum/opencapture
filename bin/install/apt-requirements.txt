@@ -1,7 +1,7 @@
+php
 apache2
 python3
 libpq-dev
-postgresql
 zbar-tools
 pkg-config
 imagemagick
