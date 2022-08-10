@@ -251,6 +251,8 @@
 		"display_updated_success": "Affichage des documents du formulaire modifié avec succès",
 		"duplicate": "Dupliquer le formulaire",
 		"enable": "Activer le formulaire",
+		"export_zip_file": "Chemin de compression les fichiers exportés",
+		"export_zip_file_hint": "Chemin absolut incluant un mask de nommage avec l'extension 'zip' (vide pour désactiver)",
 		"form_deleted": "Formulaire supprimé avec succès",
 		"form_disabled": "Formulaire désactivé avec succès",
 		"form_duplicated": "Formulaire dupliqué avec succès",
