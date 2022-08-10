@@ -41,6 +41,10 @@ class Middleware:
         if domain_name != 'localhost' and not local_regex.match(domain_name) and is_custom_exists(domain_name):
             environ['mod_wsgi.path_info'] = environ['mod_wsgi.path_info'].replace('/backend_oc/', '/' + domain_name + '/backend_oc/')
             environ['SCRIPT_NAME'] = domain_name
+            path = retrieve_config_from_custom_id(domain_name.replace('/', '')).replace('config.ini', '')
+            if os.path.isfile(path + '/secret_key'):
+                with open(path + '/secret_key', 'r') as secret_file:
+                    app.config['SECRET_KEY'] = secret_file.read()
             return self.middleware_app(environ, start_response)
 
         if splitted_request[0] != '/':
