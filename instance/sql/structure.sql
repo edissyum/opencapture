@@ -25,6 +25,7 @@ CREATE TABLE "form_models"
     "status"                         VARCHAR(5)    DEFAULT 'OK',
     "module"                         VARCHAR(10),
     "metadata_method"                VARCHAR(50),
+    "export_zip_file"                VARCHAR(255),
     "display"                        JSONB         DEFAULT '{
             "subtitles": [
                 {"id": "invoice_number", "label": "FACTURATION.invoice_number"},

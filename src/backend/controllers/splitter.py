@@ -353,7 +353,7 @@ def export_pdf(batch, documents, parameters, pages, now, compress_type):
         zip_file_path = parameters['folder_out'] + '/' + zip_filename
         _Files.zip_files(pdf_filepaths, zip_file_path, True)
 
-    return {'paths': export_pdf_res, 'doc_except_from_zip': doc_except_from_zip, 'zip_filename': zip_filename}, 200
+    return {'paths': export_pdf_res, 'doc_except_from_zip': doc_except_from_zip, 'zip_file_path': zip_file_path}, 200
 
 
 def export_xml(documents, parameters, metadata, now):
@@ -500,6 +500,7 @@ def validate(args):
     _vars = create_classes_from_custom_id(custom_id)
     _log = _vars[5]
     docservers = _vars[9]
+    exported_files = []
 
     save_response = save_infos({
         'documents': args['documents'],
@@ -521,7 +522,6 @@ def validate(args):
         'data': [args['batchMetadata']['id']]
     })[0][0]
     form = forms.get_form_by_id(batch['form_id'])
-
     pages = _Splitter.get_split_pages(args['documents'])
     batch['metadata'] = args['batchMetadata']
     if 'outputs' in form[0]:
@@ -529,23 +529,30 @@ def validate(args):
             output = outputs.get_output_by_id(output_id)
             parameters = get_output_parameters(output[0]['data']['options']['parameters'])
             if output:
+                """
+                    Export PDF files
+                """
                 if output[0]['output_type_id'] in ['export_pdf']:
                     res_export_pdf = export_pdf(batch, args['documents'], parameters, pages, now,
                                                 output[0]['compress_type'])
                     if res_export_pdf[1] != 200:
                         return res_export_pdf
-                    args['batchMetadata']['zip_filename'] = res_export_pdf[0]['zip_filename']
+
+                    exported_files.extend(res_export_pdf[0]['paths'])
+                    exported_files.extend(res_export_pdf[0]['doc_except_from_zip'])
+                    if res_export_pdf[0]['zip_file_path']:
+                        exported_files.append(res_export_pdf[0]['zip_file_path'])
+                    args['batchMetadata']['zip_filename'] = os.path.basename(res_export_pdf[0]['zip_file_path'])
                     args['batchMetadata']['doc_except_from_zip'] = res_export_pdf[0]['doc_except_from_zip']
 
                 """
-                    Export XML file if required by output
+                    Export XML file
                 """
-
                 if output[0]['output_type_id'] in ['export_xml']:
                     res_export_xml = export_xml(args['documents'], parameters, args['batchMetadata'], now)
                     if res_export_xml[1] != 200:
                         return res_export_xml
-
+                    exported_files.append(res_export_xml[0]['path'])
                 """
                     Export to CMIS
                 """
@@ -630,13 +637,32 @@ def validate(args):
                         if res_export_maarch[1] != 200:
                             return res_export_maarch
 
-                """
-                    Change status to END
-                """
-                splitter.change_status({
-                    'id': args['batchMetadata']['id'],
-                    'status': 'END'
+        """
+            Zip all exported files if enabled
+        """
+        if form[0]['export_zip_file']:
+            files_to_zip = []
+            for file in exported_files:
+                files_to_zip.append({
+                    'input_path': file,
+                    'path_in_zip': os.path.basename(file)
                 })
+            mask_args = {
+                'mask': form[0]['export_zip_file'],
+                'separator': '',
+            }
+            export_zip_file = _Splitter.get_mask_result(None, args['batchMetadata'], now, mask_args)
+            _Files.zip_files(files_to_zip, export_zip_file, True)
+
+        """
+            Change status to END
+        """
+
+        splitter.change_status({
+            'id': args['batchMetadata']['id'],
+            'status': 'NEW'
+        })
+
     return {"OK": True}, 200
 
 
