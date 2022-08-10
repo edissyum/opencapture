@@ -177,7 +177,7 @@ export class VerifierViewerComponent implements OnInit {
             if (defaultFormFound || supplierFormFound) {
                 this.currentFormFields = await this.getForm();
             } else {
-                this.notify.error(this.translate.instant('VERIFIER.no_form_available'));
+                this.notify.error(this.translate.instant('FORMS.no_form_available'));
                 await this.router.navigate(['/verifier/list']);
             }
         }
