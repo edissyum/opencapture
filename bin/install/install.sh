@@ -285,7 +285,7 @@ export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" 
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/data_fr.sql" "$databaseName" > /dev/null
 
 echo ""
-echo "#################################################################################################"
+echo "######################################################################################################################"
 echo ""
 
 docserverDefaultPath="/var/docservers/OpenCapture/"
