@@ -251,6 +251,8 @@
 		"display_updated_success": "Display of documents per form updated successfully",
 		"duplicate": "Duplicate form",
 		"enable": "Enable form",
+		"export_zip_file": "Compression absolute path",
+		"export_zip_file_hint": "Absolute path with mask of file name and the extension 'zip' (empty to deactivate)",
 		"form_deleted": "Form deleted successfully",
 		"form_disabled": "Form disabled successfully",
 		"form_duplicated": "Form duplicated successfully",
