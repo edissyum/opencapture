@@ -22,7 +22,7 @@ import json
 import tempfile
 from kuyruk import Kuyruk
 from src.backend.functions import retrieve_config_from_custom_id
-from src.backend.import_classes import _Files, _Splitter, _SeparatorQR, _Log, _PyTesseract
+from src.backend.import_classes import _Files, _Splitter, _SeparatorQR, _Log
 from src.backend.main import timer, check_file, create_classes_from_custom_id
 
 kuyruk = Kuyruk()
@@ -36,7 +36,6 @@ def launch(args):
         sys.exit('Custom config file couldn\'t be found')
 
     database, config, regex, files, ocr, log, _, _, smtp, docservers, configurations, languages = create_classes_from_custom_id(args['custom_id'])
-
     tmp_folder = tempfile.mkdtemp(dir=docservers['SPLITTER_BATCHES']) + '/'
     with tempfile.NamedTemporaryFile(dir=tmp_folder) as tmp_file:
         filename = tmp_file.name
