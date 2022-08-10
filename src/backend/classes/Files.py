@@ -443,8 +443,6 @@ class Files:
         rand = ''.join(random.choice(string.ascii_lowercase) for i in range(4))
         filename = filename.replace(' ', '_') + '_' + rand + file_ext.lower()
         new_path = os.path.join(path, secure_filename(filename))
-        print('new_path : ')
-        print(new_path)
         file.save(new_path)
         return new_path
 
