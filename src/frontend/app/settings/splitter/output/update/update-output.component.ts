@@ -16,20 +16,20 @@
  @dev : Nathan Cheval <nathan.cheval@outlook.fr>
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
-import {Component, OnInit} from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {FormBuilder, FormControl} from "@angular/forms";
-import {ActivatedRoute, Router} from "@angular/router";
-import {AuthService} from "../../../../../services/auth.service";
-import {UserService} from "../../../../../services/user.service";
-import {TranslateService} from "@ngx-translate/core";
-import {NotificationService} from "../../../../../services/notifications/notifications.service";
-import {SettingsService} from "../../../../../services/settings.service";
-import {PrivilegesService} from "../../../../../services/privileges.service";
-import {environment} from  "../../../../env";
-import {catchError, finalize, map, startWith, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {marker} from "@biesbjerg/ngx-translate-extract-marker";
+import { Component, OnInit } from '@angular/core';
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { FormBuilder, FormControl } from "@angular/forms";
+import { ActivatedRoute, Router } from "@angular/router";
+import { AuthService } from "../../../../../services/auth.service";
+import { UserService } from "../../../../../services/user.service";
+import { TranslateService } from "@ngx-translate/core";
+import { NotificationService } from "../../../../../services/notifications/notifications.service";
+import { SettingsService } from "../../../../../services/settings.service";
+import { PrivilegesService } from "../../../../../services/privileges.service";
+import { environment } from  "../../../../env";
+import { catchError, finalize, map, startWith, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 
 @Component({
     selector: 'app-splitter-update-output',
@@ -37,17 +37,18 @@ import {marker} from "@biesbjerg/ngx-translate-extract-marker";
     styleUrls: ['./update-output.component.scss']
 })
 export class SplitterUpdateOutputComponent implements OnInit {
-    headers             : HttpHeaders   = this.authService.headers;
-    loading             : boolean       = true;
-    connection          : boolean       = false;
-    outputId            : any;
-    output              : any;
-    outputsTypes        : any[]         = [];
-    outputsTypesForm    : any[]         = [];
-    selectedOutputType  : any;
-    originalOutputType  : any;
-    toHighlight         : string        = '';
-    outputForm          : any[]         = [
+    headers               : HttpHeaders   = this.authService.headers;
+    loading               : boolean       = true;
+    loadingCustomFields   : boolean       = true;
+    connection            : boolean       = false;
+    outputsTypes          : any[]         = [];
+    outputsTypesForm      : any[]         = [];
+    output                : any;
+    outputId              : any;
+    selectedOutputType    : any;
+    originalOutputType    : any;
+    toHighlight           : string        = '';
+    outputForm            : any[]         = [
         {
             id: 'output_type_id',
             label: this.translate.instant('HEADER.output_type'),
@@ -97,7 +98,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
             required: false,
         },
     ];
-    availableFields     : any           = [
+    availableFields       : any           = [
         {
             "labelShort"    : 'HEADER.id',
             'label'         : marker('HEADER.label')
@@ -151,7 +152,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
             'label'         : marker('OUTPUT.zip_filename')
         },
     ];
-    testConnectionMapping : any         = {
+    testConnectionMapping : any           = {
         'export_maarch' : "testMaarchConnection()",
         'export_cmis'   : "testCmisConnection()"
     };
@@ -275,11 +276,13 @@ export class SplitterUpdateOutputComponent implements OnInit {
                             'label': field.label,
                             'enabled': field.enabled,
                         };
-                        if (field.enabled)
+                        if (field.enabled) {
                             this.availableFields.push(newField);
+                        }
                     }
                 );
             }),
+            finalize(() => this.loadingCustomFields = false),
             catchError((err: any) => {
                 console.debug(err);
                 this.notify.handleErrors(err);
@@ -348,7 +351,7 @@ export class SplitterUpdateOutputComponent implements OnInit {
             this.toHighlight = value;
             const filterValue = value.toLowerCase();
             return array.filter((option: any) => option.value.toLowerCase().indexOf(filterValue) !== -1);
-        }else {
+        } else {
             return array;
         }
     }

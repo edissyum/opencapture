@@ -15,20 +15,20 @@
 
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
-import {UserService} from "../../../../../services/user.service";
-import {TranslateService} from "@ngx-translate/core";
-import {SettingsService} from "../../../../../services/settings.service";
-import {PrivilegesService} from "../../../../../services/privileges.service";
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {environment} from  "../../../../env";
-import {catchError, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {HttpClient} from "@angular/common/http";
-import {AuthService} from "../../../../../services/auth.service";
-import {NotificationService} from "../../../../../services/notifications/notifications.service";
-import {DocumentTypeFactoryComponent} from "../../../../splitter/document-type-factory/document-type-factory.component";
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from "@angular/router";
+import { UserService } from "../../../../../services/user.service";
+import { TranslateService } from "@ngx-translate/core";
+import { SettingsService } from "../../../../../services/settings.service";
+import { PrivilegesService } from "../../../../../services/privileges.service";
+import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { environment } from  "../../../../env";
+import { catchError, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { HttpClient } from "@angular/common/http";
+import { AuthService } from "../../../../../services/auth.service";
+import { NotificationService } from "../../../../../services/notifications/notifications.service";
+import { DocumentTypeFactoryComponent } from "../../../../splitter/document-type-factory/document-type-factory.component";
 
 @Component({
   selector: 'app-create-doc-type',
@@ -100,7 +100,7 @@ export class CreateDocTypeComponent implements OnInit {
     getLastFolderIndex(codeSelected: string) {
         let lastIndex = 0;
         this.documentTypeFactoryComponent.treeDataObj.doctypeData.forEach((docType:any) => {
-            if(docType.code.startsWith(codeSelected)
+            if (docType.code.startsWith(codeSelected)
                 && docType.code.split('.').length === codeSelected.split('.').length + 1) {
                 const currentIdx = Number(docType.code.split('.').pop());
                 lastIndex = (currentIdx > lastIndex) ? currentIdx: lastIndex;
@@ -121,7 +121,7 @@ export class CreateDocTypeComponent implements OnInit {
             'form_id'       : this.selectedFormId,
         };
         this.http.post(environment['url'] + '/ws/doctypes/add', newDocType, {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
+            tap(() => {
                 this.notify.success(this.translate.instant('DOCTYPE.doctype_added'));
                 if (this.selectedFormId)
                     this.documentTypeFactoryComponent.treeDataObj.loadTree(this.selectedFormId);

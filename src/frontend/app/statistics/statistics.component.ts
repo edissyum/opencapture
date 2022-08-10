@@ -15,16 +15,16 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import { Component, OnInit } from '@angular/core';
-import {environment} from  "../env";
-import {catchError, finalize, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {HttpClient} from "@angular/common/http";
-import {AuthService} from "../../services/auth.service";
-import {NotificationService} from "../../services/notifications/notifications.service";
-import {SettingsService} from "../../services/settings.service";
-import {TranslateService} from "@ngx-translate/core";
-import {marker} from "@biesbjerg/ngx-translate-extract-marker";
+import { Component } from '@angular/core';
+import { environment } from  "../env";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { HttpClient } from "@angular/common/http";
+import { AuthService } from "../../services/auth.service";
+import { NotificationService } from "../../services/notifications/notifications.service";
+import { SettingsService } from "../../services/settings.service";
+import { TranslateService } from "@ngx-translate/core";
+import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 
 @Component({
     selector: 'app-statistics',

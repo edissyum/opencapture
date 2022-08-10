@@ -4,7 +4,7 @@
         <h3 class="bg-green-400 bg-opacity-60 text-center text-gray-900 m-0 pb-4"
             style="padding-top: 0.9rem">{{ "SETTINGS.administration" | translate }}</h3>
         <mat-divider class="border-green-400"></mat-divider>
-        <mat-nav-list class="pt-0">
+        <mat-nav-list class="pt-0 overflow-x-hidden overflow-y-auto" style="height: calc(100% - 60px)">
             <mat-expansion-panel *ngFor="let parent of this.serviceSettings.getSettingsParent()"
                                  [expanded]="parent.opened" (opened)="this.serviceSettings.closeOtherParent(this.router.url, parent['id'])">
                 <mat-expansion-panel-header class="settings_expansion">
@@ -78,10 +78,10 @@
             <app-loader></app-loader>
         </div>
         <div class="settings_header">
-            <button mat-icon-button (click)="sidenav.toggle(); this.serviceSettings.toggleMenu();"
+            <button mat-icon-button (click)="sidenav.toggle();"
                     class="absolute left-2 top-2">
-                <i [class.fa-arrow-right]="!this.serviceSettings.getIsMenuOpen()"
-                   class="fa-solid fa-arrow-left text-2xl text-gray-900"></i>
+                <i [class.transform]="!sidenav.opened" [class.rotate-180]="!sidenav.opened"
+                   class="fa-solid fa-stream text-2xl text-gray-900"></i>
             </button>
             <div class="settings_title text-center">
                 <h3>{{ this.serviceSettings.getTitle() }}</h3>

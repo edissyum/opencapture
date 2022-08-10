@@ -17,6 +17,12 @@
             "label" : "Séparation par code QR Maarch",
             "script": "qr_code_Maarch.py",
             "method": "process"
+        },
+        {
+            "id"    : "invoices_sep",
+            "label" : "Séparation intelligente de facture",
+            "script": "invoices_sep.py",
+            "method": "process"
         }
     ]
 }

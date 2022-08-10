@@ -15,75 +15,21 @@
 
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
-import os
 import sys
-import time
-import json
-import tempfile
-from kuyruk import Kuyruk
-from src.backend import retrieve_config_from_custom_id
-from src.backend.import_classes import _Files, _Splitter, _SeparatorQR, _Log
-from src.backend.main import timer, check_file, create_classes_from_custom_id
+from .functions import get_custom_array, retrieve_config_from_custom_id
 
 
-OCforInvoices = Kuyruk()
-
-
-@OCforInvoices.task(queue='splitter')
 def launch(args):
-    start = time.time()
-
     if not retrieve_config_from_custom_id(args['custom_id']):
         sys.exit('Custom config file couldn\'t be found')
 
-    database, config, regex, files, _, log, _, _, smtp, docservers, configurations = create_classes_from_custom_id(args['custom_id'])
-    tmp_folder = tempfile.mkdtemp(dir=docservers['SPLITTER_BATCHES']) + '/'
-    with tempfile.NamedTemporaryFile(dir=tmp_folder) as tmp_file:
-        filename = tmp_file.name
-    files = _Files(filename, log, docservers, configurations, regex)
-
-    remove_blank_pages = False
-    if 'input_id' in args:
-        input_settings = database.select({
-            'select': ['*'],
-            'table': ['inputs'],
-            'where': ['input_id = %s', 'module = %s'],
-            'data': [args['input_id'], 'splitter'],
-        })
-        if input_settings:
-            remove_blank_pages = input_settings[0]['remove_blank_pages']
-
-    separator_qr = _SeparatorQR(log, config, tmp_folder, 'splitter', files, remove_blank_pages, docservers)
-    splitter = _Splitter(config, database, separator_qr, log, docservers)
-
-    if args.get('isMail') is not None and args['isMail'] is True:
-        log = _Log((args['log']), smtp)
-        log.info('Process attachment n°' + args['cpt'] + '/' + args['nb_of_attachments'])
-
-    database.connect()
-    if args['file'] is not None:
-        path = args['file']
-        if check_file(files, path, log, docservers) is not False:
-            if 'input_id' in args and args['input_id']:
-                splitter_method = database.select({
-                    'select': ['splitter_method_id'],
-                    'table': ['inputs'],
-                    'where': ['status <> %s', 'input_id = %s', 'module = %s'],
-                    'data': ['DEL', args['input_id'], 'splitter']
-                })[0]
-                available_split_methods_path = docservers['SPLITTER_METHODS_PATH'] + "/splitter_methods.json"
-                if len(splitter_method) > 0 and os.path.isfile(available_split_methods_path):
-                    with open(available_split_methods_path, encoding='UTF-8') as json_file:
-                        available_split_methods = json.load(json_file)
-                        for available_split_method in available_split_methods['methods']:
-                            if available_split_method['id'] == splitter_method['splitter_method_id']:
-                                split_method = _Splitter.import_method_from_script(docservers['SPLITTER_METHODS_PATH'],
-                                                                                   available_split_method['script'],
-                                                                                   available_split_method['method'])
-                                log.info('Split using method : {}'.format(available_split_method['id']))
-                                split_method(args, path, log, splitter, files, tmp_folder, config, docservers)
-            else:
-                log.error("The input_id doesn't exists in database")
-    database.conn.close()
-    end = time.time()
-    log.info('Process end after ' + timer(start, end) + '')
+    path = retrieve_config_from_custom_id(args['custom_id']).replace('/config/config.ini', '')
+    custom_array = get_custom_array([args['custom_id'], path])
+    if 'process_queue_splitter' not in custom_array or not custom_array['process_queue_splitter'] and not custom_array['process_queue_splitter']['path']:
+        import src.backend.process_queue_splitter as process_queue_splitter
+    else:
+        custom_array['process_queue_splitter']['path'] = 'custom.' + custom_array['process_queue_splitter']['path'].split('.custom.')[1]
+        process_queue_splitter = getattr(__import__(custom_array['process_queue_splitter']['path'],
+                                                    fromlist=[custom_array['process_queue_splitter']['module']]),
+                                         custom_array['process_queue_splitter']['module'])
+    process_queue_splitter.launch(args)

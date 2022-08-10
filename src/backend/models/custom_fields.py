@@ -17,7 +17,7 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 import json
-from flask import request
+from flask import request, session
 from gettext import gettext
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
@@ -96,7 +96,6 @@ def update(args):
     res = database.update(_args)
     if not res:
         error = gettext('UPDATE_CUSTOM_FIELDS_ERROR')
-
     return res, error
 
 

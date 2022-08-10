@@ -28,7 +28,7 @@ from ldap3.core.exceptions import LDAPException
 from werkzeug.security import generate_password_hash
 
 sys.path.insert(0, '/var/www/html/opencaptureforinvoices/')
-from src.backend.main import create_classes
+from src.backend.main import create_classes_from_custom_id
 
 
 def print_log(message):
@@ -50,8 +50,8 @@ def retrieve_ldap_synchronization_data():
         # Informations Ldap synchronization users
         global user_id, firstname, lastname, class_user, object_class, default_password, default_role, users_dn
 
-        _vars = create_classes(CONFIG_FILEPATH)
-        database = _vars[4]
+        _vars = create_classes_from_custom_id(CUSTOM_ID)
+        database = _vars[0]
         database_res = database.select({
             'select': ['data'],
             'table': ['login_methods'],
@@ -100,12 +100,11 @@ def check_connection_ldap_server():
             server = Server(ldap_server, get_info=ALL, use_ssl=True)
             with ldap3.Connection(server, user=username_admin_adldap, password=password_ldap_admin, auto_bind=True) as connection:
                 if not connection.bind():
-                    print_log('Connection to the ldap server status: '+str(connection.result["description"]))
-                    return {'status_server_ldap': True, 'connection_object': connection}
+                    print_log('Connection to the ldap server status: ' + str(connection.result["description"]))
+                    return {'status_server_ldap': False, 'connection_object': None}
                 else:
-                    print_log('Connection to the ldap server status: ' + str(
-                        connection.result["description"]))
-                    return {'status_server_ldap': True, 'connection_object': None}
+                    print_log('Connection to the ldap server status: ' + str(connection.result["description"]))
+                    return {'status_server_ldap': True, 'connection_object': connection}
         elif type_AD == 'adLDAP':
             server = Server(ldap_server, get_info=ALL)
             if prefix or suffix:
@@ -122,12 +121,6 @@ def check_connection_ldap_server():
 
 
 def get_ldap_users(connection, class_user, object_class, users_dn):
-    """
-   :param connection:
-   :param username:
-   :param passwordAttribute:
-   :return:
-    """
     try:
         if not connection:
             print_log('The connection to the ldap server failed')
@@ -152,17 +145,22 @@ def get_ldap_users(connection, class_user, object_class, users_dn):
 
 
 def get_ldap_users_data(ldap_users_dict):
+    ldap_users_data = []
     if ldap_users_dict and ldap_users_dict['status_search']:
         list_users_ldap = ldap_users_dict['ldap_users']
-        ldap_users_data = []
         for i in range(len(list_users_ldap)):
             user_data = []
-            user_data.append(list_users_ldap[i][user_id][0])
-            user_data.append(list_users_ldap[i][firstname][0])
-            user_data.append(list_users_ldap[i][lastname][0])
-            ldap_users_data.append(user_data)
-        print_log("List of users retrieved from the ldap server " + str(ldap_users_data))
-        return ldap_users_data
+            user_ldap_id = list_users_ldap[i][user_id][0] if user_id in list_users_ldap[i] else ''
+            givenname_user_ldap = list_users_ldap[i][firstname][0] if firstname in list_users_ldap[i] else ''
+            lastname_user_ldap = list_users_ldap[i][lastname][0] if lastname in list_users_ldap[i] else ''
+            if user_ldap_id and givenname_user_ldap and lastname_user_ldap :
+                user_data.append(user_ldap_id)
+                user_data.append(givenname_user_ldap)
+                user_data.append(lastname_user_ldap)
+                ldap_users_data.append(user_data)
+            else:
+                print_log('User has not been added because of missing information ==> user_id : ' + user_ldap_id)
+    return ldap_users_data
 
 
 def check_database_users(ldap_users_data, default_role):
@@ -171,8 +169,8 @@ def check_database_users(ldap_users_data, default_role):
    :param default_role:
    :return:
     """
-    _vars = create_classes(CONFIG_FILEPATH)
-    database = _vars[4]
+    _vars = create_classes_from_custom_id(CUSTOM_ID)
+    database = _vars[0]
     try:
         users = database.select({
             'select': ['*'],
@@ -230,7 +228,7 @@ def check_database_users(ldap_users_data, default_role):
                             ldap_user[0] = 'Updated'
                             oc_user[0] = 'Updated'
                             update_users += 1
-                            print_log('update data for the user  '+ str(ldap_user[1]))
+                            print_log('update data for the user ' + str(ldap_user[1]))
                 else:
                     continue
 
@@ -251,19 +249,19 @@ def check_database_users(ldap_users_data, default_role):
                         'data': [oc_user[0]]
                     })
 
-                    if user_role[0] == 'superadmin':
+                    if user_role[0]['label_short'] != 'superadmin':
+                        database.update({
+                            'table': ['users'],
+                            'set': {
+                                'enabled': False
+                            },
+                            'where': ['username = %s'],
+                            'data': [oc_user[0]]
+                        })
+                        disabled_users += 1
+                        print_log("user status is disabled :" + str(oc_user[0]))
+                    else:
                         continue
-
-                    database.update({
-                        'table': ['users'],
-                        'set': {
-                            'enabled': False
-                        },
-                        'where': ['username = %s'],
-                        'data': [oc_user[0]]
-                    })
-                    disabled_users += 1
-                    print_log("user status is disabled :" + str(oc_user[0]))
                 else:
                     pass
         for user_to_create in ldap_users_data:
@@ -305,6 +303,7 @@ if __name__ == "__main__":
     # Recuperer les deux chemins vers le fichier de config_default.ini  et le fichier de log
     CONFIG_FILEPATH = config.get("file_path", 'config_file')
     LOG_FILEPATH = config.get("file_path", 'log_file')
+    CUSTOM_ID = config.get('file_path', 'custom_id')
 
     if not CONFIG_FILEPATH or not LOG_FILEPATH:
         print_log('Path to config file and/or log file does not exist in the config file')

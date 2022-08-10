@@ -15,26 +15,26 @@
 
  @dev : Oussama BRICH <oussama.brich@edissyum.com> */
 
-import {Component, OnInit} from '@angular/core';
-import {LocalStorageService} from "../../../services/local-storage.service";
-import {environment} from  "../../env";
-import {catchError, finalize, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {AuthService} from "../../../services/auth.service";
-import {HttpClient} from "@angular/common/http";
-import {ActivatedRoute, Router} from "@angular/router";
-import {FormBuilder} from "@angular/forms";
-import {UserService} from "../../../services/user.service";
-import {TranslateService} from "@ngx-translate/core";
-import {NotificationService} from "../../../services/notifications/notifications.service";
-import {DomSanitizer} from '@angular/platform-browser';
-import {PageEvent} from "@angular/material/paginator";
-import {ConfirmDialogComponent} from "../../../services/confirm-dialog/confirm-dialog.component";
-import {MatDialog} from '@angular/material/dialog';
-import {HistoryService} from "../../../services/history.service";
-import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from "@angular/material/form-field";
-import {marker} from "@biesbjerg/ngx-translate-extract-marker";
-import {LastUrlService} from "../../../services/last-url.service";
+import { Component, OnInit } from '@angular/core';
+import { LocalStorageService } from "../../../services/local-storage.service";
+import { environment } from  "../../env";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { AuthService } from "../../../services/auth.service";
+import { HttpClient } from "@angular/common/http";
+import { ActivatedRoute, Router } from "@angular/router";
+import { FormBuilder } from "@angular/forms";
+import { UserService } from "../../../services/user.service";
+import { TranslateService } from "@ngx-translate/core";
+import { NotificationService } from "../../../services/notifications/notifications.service";
+import { DomSanitizer } from '@angular/platform-browser';
+import { PageEvent } from "@angular/material/paginator";
+import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm-dialog.component";
+import { MatDialog } from '@angular/material/dialog';
+import { HistoryService } from "../../../services/history.service";
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
+import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import { LastUrlService } from "../../../services/last-url.service";
 
 @Component({
     selector: 'app-list',
@@ -91,24 +91,24 @@ export class SplitterListComponent implements OnInit {
         private notify: NotificationService,
         private historyService: HistoryService,
         private routerExtService: LastUrlService,
-        private localeStorageService: LocalStorageService,
+        private localStorageService: LocalStorageService,
     ) {}
 
     ngOnInit(): void {
-        this.localeStorageService.save('splitter_or_verifier', 'splitter');
+        this.localStorageService.save('splitter_or_verifier', 'splitter');
 
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('splitter/') && !lastUrl.includes('settings') || lastUrl === '/' || lastUrl === '/upload') {
-            if (this.localeStorageService.get('splitterPageIndex'))
-                this.pageIndex = parseInt(this.localeStorageService.get('splitterPageIndex') as string);
-            if (this.localeStorageService.get('splitterTimeIndex')) {
-                this.selectedTab = parseInt(this.localeStorageService.get('splitterTimeIndex') as string);
+            if (this.localStorageService.get('splitterPageIndex'))
+                this.pageIndex = parseInt(this.localStorageService.get('splitterPageIndex') as string);
+            if (this.localStorageService.get('splitterTimeIndex')) {
+                this.selectedTab = parseInt(this.localStorageService.get('splitterTimeIndex') as string);
                 this.currentTime = this.batchList[this.selectedTab].id;
             }
             this.offset = this.pageSize * (this.pageIndex);
         } else {
-            this.localeStorageService.remove('splitterPageIndex');
-            this.localeStorageService.remove('splitterTimeIndex');
+            this.localStorageService.remove('splitterPageIndex');
+            this.localStorageService.remove('splitterTimeIndex');
         }
 
         this.http.get(environment['url'] + '/ws/status/list?module=splitter', {headers: this.authService.headers}).pipe(
@@ -199,7 +199,7 @@ export class SplitterListComponent implements OnInit {
         const listOfBatchToMerge: any[] = [];
         const listOfBatchFormId: any[] = [];
         Array.from(checkboxList).forEach((element: any) => {
-            if(element.checked) {
+            if (element.checked) {
                 const batchId = element.id.split('_')[0];
                 if (batchId !== parentId.toString())
                     listOfBatchToMerge.push(batchId);
@@ -212,7 +212,7 @@ export class SplitterListComponent implements OnInit {
                     listOfBatchFormId.push(batch.form_id);
                 }
             });
-            if(parentId === batch.id) listOfBatchFormId.push(batch.form_id);
+            if (parentId === batch.id) listOfBatchFormId.push(batch.form_id);
         });
         const uniqueFormId = listOfBatchFormId.filter((item, i, ar) => ar.indexOf(item) === i);
 
@@ -258,7 +258,7 @@ export class SplitterListComponent implements OnInit {
         this.batches = [];
         this.pageIndex = $event.pageIndex + 1;
         this.pageSize = $event.pageSize;
-        this.localeStorageService.save('splitterPageIndex', $event.pageIndex);
+        this.localStorageService.save('splitterPageIndex', $event.pageIndex);
         this.loadBatches();
     }
 
@@ -326,13 +326,13 @@ export class SplitterListComponent implements OnInit {
         this.total = 0;
         this.offset = 0;
         this.pageIndex = 1;
-        this.localeStorageService.save('splitterPageIndex', this.pageIndex);
+        this.localStorageService.save('splitterPageIndex', this.pageIndex);
     }
 
     onTabChange(event: any) {
         // this.search = '';
         this.selectedTab = event.index;
-        this.localeStorageService.save('splitterTimeIndex', this.selectedTab);
+        this.localStorageService.save('splitterTimeIndex', this.selectedTab);
         this.currentTime = this.batchList[this.selectedTab].id;
         this.resetPaginator();
         this.loadBatches();

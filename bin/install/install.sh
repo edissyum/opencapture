@@ -41,7 +41,7 @@ fi
 ####################
 # Check if custom name is set and doesn't exists already
 
-while getopts c: parameters
+while getopts "c:" parameters
 do
     case "${parameters}" in
         c) customId=${OPTARG};;
@@ -49,9 +49,22 @@ do
     esac
 done
 
+####################
+# Replace dot with _ in custom_id to avoir python error
+oldCustomId=$customId
+customId=${customId//[\.\-]/_}
+
 if [ -z "$customId" ]; then
     echo "##########################################################################"
     echo "              Custom id is needed to run the installation"
+    echo "      Exemple of command line call : sudo ./update.sh -c edissyum"
+    echo "##########################################################################"
+    exit 2
+fi
+
+if [ "$customId" == 'custom' ] ; then
+    echo "##########################################################################"
+    echo "              Please do not create a custom called 'custom'"
     echo "      Exemple of command line call : sudo ./update.sh -c edissyum"
     echo "##########################################################################"
     exit 2
@@ -80,16 +93,30 @@ for custom_name in ${SECTIONS[@]}; do # Do not double quote it
 done
 
 ####################
-# Create custom symbolic link and folder
-ln -s "$defaultPath" "$customId"
-mkdir -p "$defaultPath/custom/$customId/config/"
-echo "[$customId]" >> $customIniFile
-echo "path = $defaultPath/$customId" >> $customIniFile
+# Create custom symbolic link and folders
+ln -s "$defaultPath" "$defaultPath/$customId"
+
+customPath=$defaultPath/custom/"$customId"
+
+mkdir -p $customPath/{config,bin,assets,instance,src}/
+mkdir -p $customPath/bin/{data,ldap,scripts}/
+mkdir -p $customPath/assets/imgs/
+mkdir -p $customPath/bin/ldap/config/
+mkdir -p $customPath/instance/referencial/
+mkdir -p $customPath/bin/data/{log,MailCollect,tmp,exported_pdf,exported_pdfa}/
+mkdir -p $customPath/bin/data/log/Supervisor/
+mkdir -p $customPath/bin/scripts/{verifier_inputs,splitter_inputs}/
+mkdir -p $customPath/src/backend/
+touch $customPath/config/secret_key
+
+echo "[$oldCustomId]" >> $customIniFile
+echo "path = $defaultPath/custom/$customId" >> $customIniFile
+echo "isdefault = False" >> $customIniFile
 echo "" >> $customIniFile
-exit 5
 
 ####################
 # User choice
+echo ""
 echo "Do you want to use supervisor (1) or systemd (2) ? (default : 2) "
 echo "If you plan to handle a lot of files and need a reduced time of process, use supervisor"
 echo "WARNING : A lot of Tesseract processes will run in parallel and it can be very resource intensive"
@@ -107,24 +134,174 @@ if [ "$finalChoice" == 1 ]; then
     printf "Enter your choice [%s] : " "${bold}3${normal}"
     read -r choice
     if [ "$choice" == "" ]; then
-        nbProcess=3
+        nbProcessSupervisor=3
     elif ! [[ "$choice" =~ ^[0-9]+$ ]]; then
         echo 'The input is not an integer, default value selected (3)'
-        nbProcess=3
+        nbProcessSupervisor=3
     else
-        nbProcess="$choice"
+        nbProcessSupervisor="$choice"
     fi
 fi
 
+echo ""
+echo "#######################################################################################################################"
+echo "      _______                                                                                             _______ "
+echo "     / /| |\ \                   The two following questions are for advanced users                      / /| |\ \ "
+echo "    / / | | \ \          If you don't know what you're doing, skip it and keep default values           / / | | \ \ "
+echo "   / /  | |  \ \     Higher values can overload your server if it doesn't have enough performances     / /  | |  \ \ "
+echo "  / /   |_|   \ \          Example for a 16 vCPU / 8Go RAM server : 5 threads and 2 processes         / /   |_|   \ \ "
+echo " /_/    (_)    \_\                                                                                   /_/    (_)    \_\ "
+echo ""
+echo "#######################################################################################################################"
+echo ""
+echo 'How many WSGI threads ? (default : 5)'
+printf "Enter your choice [%s] : " "${bold}5${normal}"
+read -r choice
+if [ "$choice" == "" ]; then
+    nbThreads=5
+elif ! [[ "$choice" =~ ^[0-9]+$ ]]; then
+    echo 'The input is not an integer, default value selected (5)'
+    nbThreads=5
+else
+    nbThreads="$choice"
+fi
+
+echo 'How many WSGI processes ? (default : 1)'
+printf "Enter your choice [%s] : " "${bold}1${normal}"
+read -r choice
+if [ "$choice" == "" ]; then
+    nbProcesses=1
+elif ! [[ "$choice" =~ ^[0-9]+$ ]]; then
+    echo 'The input is not an integer, default value selected (1)'
+    nbProcesses=1
+else
+    nbProcesses="$choice"
+fi
+
+echo ""
+echo "######################################################################################################################"
+echo ""
+
+####################
+# Retrieve database informations
+echo "Type database informations (hostname, port, username and password and postgres user password)."
+echo "It will be used to update path to use the custom's one"
+echo "Please specify a user that don't already exists"
+printf "Hostname [%s] : " "${bold}localhost${normal}"
+read -r choice
+
+if [[ "$choice" == "" ]]; then
+    hostname="localhost"
+else
+    hostname="$choice"
+fi
+
+printf "Port [%s] : " "${bold}5432${normal}"
+read -r choice
+
+if [[ "$choice" == "" ]]; then
+    port=5432
+else
+    port="$choice"
+fi
+
+printf "Username [%s] : " "${bold}edissyum${normal}"
+read -r choice
+
+if [[ "$choice" == "" ]]; then
+    databaseUsername="edissyum"
+else
+    databaseUsername="$choice"
+fi
+
+printf "Password [%s] : " "${bold}edissyum${normal}"
+read -r choice
+
+if [[ "$choice" == "" ]]; then
+    databasePassword="edissyum"
+else
+    databasePassword="$choice"
+fi
+
+echo ""
+echo "Postgres installation....."
+apt-get install -y postgresql > /dev/null
+
+if [ "$hostname" != "localhost" ] || [ "$port" != "5432" ]; then
+    printf "Postgres user Password [%s] : " "${bold}postgres${normal}"
+    read -r choice
+
+    if [[ "$choice" == "" ]]; then
+        postgresPassword="postgres"
+    else
+        postgresPassword="$choice"
+    fi
+    echo ""
+    echo "######################################################################################################################"
+    echo ""
+    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'CREATE ROLE $databaseUsername'"
+    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'ALTER ROLE $databaseUsername WITH LOGIN'"
+    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c 'ALTER ROLE $databaseUsername WITH CREATEDB'"
+    export PGPASSWORD=$postgresPassword && su postgres -c "psql -h$hostname -p$port -c \"ALTER ROLE $databaseUsername WITH ENCRYPTED PASSWORD '$databasePassword'\""
+else
+    echo ""
+    echo "######################################################################################################################"
+    echo ""
+    su postgres -c "psql -c 'CREATE ROLE $databaseUsername'"
+    su postgres -c "psql -c 'ALTER ROLE $databaseUsername WITH LOGIN'"
+    su postgres -c "psql -c 'ALTER ROLE $databaseUsername WITH CREATEDB'"
+    su postgres -c "psql -c \"ALTER ROLE $databaseUsername WITH ENCRYPTED PASSWORD '$databasePassword'\""
+fi
+
+echo ""
+echo "######################################################################################################################"
+echo ""
+
 ####################
 # Install packages
-xargs -a apt-requirements.txt apt install -y
-python3 -m pip install --upgrade setuptools
-python3 -m pip install --upgrade pip
-python3 -m pip install -r pip-requirements.txt
+echo "APT & PIP packages installation....."
+xargs -a apt-requirements.txt apt-get install -y > /dev/null
+python3 -m pip install --upgrade pip > /dev/null
+python3 -m pip install --upgrade setuptools > /dev/null
+python3 -m pip install -r pip-requirements.txt > /dev/null
 
 cd $defaultPath || exit 1
 find . -name ".gitkeep" -delete
+
+echo ""
+echo "######################################################################################################################"
+echo ""
+
+####################
+# Create database using custom_id
+echo "Create database and fill it with default data....."
+databaseName="opencapture_$customId"
+if [[ "$customId" = *"opencapture_"* ]]; then
+    databaseName="$customId"
+fi
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "CREATE DATABASE $databaseName" postgres > /dev/null
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/structure.sql" "$databaseName" > /dev/null
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/global.sql" "$databaseName" > /dev/null
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "\i $defaultPath/instance/sql/data_fr.sql" "$databaseName" > /dev/null
+
+echo ""
+echo "#################################################################################################"
+echo ""
+
+docserverDefaultPath="/var/docservers/OpenCapture/"
+
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path=REPLACE(path, '$docserverDefaultPath' , '/$docserverDefaultPath/$customId/')" "$databaseName" > /dev/null
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/scripts/' WHERE docserver_id = 'SCRIPTS_PATH'" "$databaseName" > /dev/null
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/tmp/' WHERE docserver_id = 'TMP_PATH'" "$databaseName" > /dev/null
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/exported_pdfa/' WHERE docserver_id = 'SEPARATOR_OUTPUT_PDFA'" "$databaseName" > /dev/null
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/bin/data/exported_pdf/' WHERE docserver_id = 'SEPARATOR_OUTPUT_PDF'" "$databaseName" > /dev/null
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE docservers SET path='$customPath/instance/referencial/' WHERE docserver_id = 'REFERENTIALS_PATH'" "$databaseName" > /dev/null
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE inputs SET input_folder=REPLACE(input_folder, '/var/share/' , '/var/share/$customId/')" "$databaseName" > /dev/null
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options,parameters, 0, value}', '\"/var/share/$customId/export/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out';" "$databaseName" > /dev/null
+
+echo ""
+echo "#################################################################################################"
+echo ""
 
 ####################
 # Create the Apache service for backend
@@ -132,8 +309,8 @@ touch /etc/apache2/sites-available/opencapture.conf
 su -c "cat > /etc/apache2/sites-available/opencapture.conf << EOF
 <VirtualHost *:80>
     ServerName localhost
-    DocumentRoot $defaultPath/
-    WSGIDaemonProcess opencapture user=$user group=$group threads=5
+    DocumentRoot $defaultPath
+    WSGIDaemonProcess opencapture user=$user group=$group home=$defaultPath threads=$nbThreads processes=$nbProcesses
     WSGIScriptAlias /backend_oc /var/www/html/opencaptureforinvoices/wsgi.py
 
     <Directory $defaultPath>
@@ -160,14 +337,10 @@ a2enmod rewrite
 systemctl restart apache2
 
 ####################
-# Setting up the WSGI path
-sed -i "s#§§PATH§§#$defaultPath#g" "$defaultPath"/wsgi.py
-
-####################
 # Create the service systemd or supervisor
 if [ "$finalChoice" == 2 ]; then
-    touch /etc/systemd/system/OCForInvoices-worker.service
-    su -c "cat > /etc/systemd/system/OCForInvoices-worker.service << EOF
+    touch "/etc/systemd/system/OCForInvoices-worker_$customId.service"
+    su -c "cat > /etc/systemd/system/OCForInvoices-worker_$customId.service << EOF
 [Unit]
 Description=Daemon for Open-Capture for Invoices
 
@@ -178,7 +351,7 @@ User=$user
 Group=$user
 UMask=0022
 
-ExecStart=$defaultPath/bin/scripts/service_workerOC.sh
+ExecStart=$defaultPath/custom/$customId/bin/scripts/service_workerOC.sh
 KillSignal=SIGQUIT
 
 Restart=on-failure
@@ -187,8 +360,8 @@ Restart=on-failure
 WantedBy=multi-user.target
 EOF"
 
-    touch /etc/systemd/system/OCForInvoices_Split-worker.service
-    su -c "cat > /etc/systemd/system/OCForInvoices_Split-worker.service << EOF
+    touch "/etc/systemd/system/OCForInvoices_Split-worker_$customId.service"
+    su -c "cat > /etc/systemd/system/OCForInvoices_Split-worker_$customId.service << EOF
 [Unit]
 Description=Splitter Daemon for Open-Capture for Invoices
 
@@ -199,7 +372,7 @@ User=$user
 Group=$user
 UMask=0022
 
-ExecStart=$defaultPath/bin/scripts/service_workerOC_splitter.sh
+ExecStart=$defaultPath/custom/$customId/bin/scripts/service_workerOC_splitter.sh
 KillSignal=SIGQUIT
 Restart=on-failure
 
@@ -208,21 +381,20 @@ WantedBy=multi-user.target
 EOF"
 
     systemctl daemon-reload
-    systemctl start OCForInvoices-worker.service
-    systemctl start OCForInvoices_Split-worker.service
-    sudo systemctl enable OCForInvoices-worker.service
-    sudo systemctl enable OCForInvoices_Split-worker.service
+    systemctl start "OCForInvoices-worker_$customId".service
+    systemctl start "OCForInvoices_Split-worker_$customId".service
+    sudo systemctl enable "OCForInvoices-worker_$customId".service
+    sudo systemctl enable "OCForInvoices_Split-worker_$customId".service
 else
-    apt install -y supervisor
-    mkdir "$defaultPath"/bin/data/log/Supervisor/
-    touch /etc/supervisor/conf.d/OCForInvoices-worker.conf
-    touch /etc/supervisor/conf.d/OCForInvoices_Split-worker.conf
+    apt-get install -y supervisor > /dev/null
+    touch "/etc/supervisor/conf.d/OCForInvoices-worker_$customId.conf"
+    touch "/etc/supervisor/conf.d/OCForInvoices_Split-worker_$customId.conf"
 
-    su -c "cat > /etc/supervisor/conf.d/OCForInvoices-worker.conf << EOF
-[program:OCWorker]
-command=$defaultPath/bin/scripts/service_workerOC.sh
+    su -c "cat > /etc/supervisor/conf.d/OCForInvoices-worker_$customId.conf << EOF
+[program:OCWorker_$customId]
+command=$defaultPath/custom/$customId/bin/scripts/service_workerOC.sh
 process_name=%(program_name)s_%(process_num)02d
-numprocs=$nbProcess
+numprocs=$nbProcessSupervisor
 user=$user
 chmod=0777
 chown=$user:$group
@@ -232,14 +404,14 @@ stopasgroup=true
 killasgroup=true
 stopwaitsecs=10
 
-stderr_logfile=$defaultPath/bin/data/log/Supervisor/OCForInvoices_worker_%(process_num)02d_error.log
+stderr_logfile=$defaultPath/custom/$customId/bin/data/log/Supervisor/OCForInvoices_worker_%(process_num)02d_error.log
 EOF"
 
-    su -c "cat > /etc/supervisor/conf.d/OCForInvoices_Split-worker.conf << EOF
-[program:OCWorker-Split]
-command=$defaultPath/bin/scripts/service_workerOC_splitter.sh
+    su -c "cat > /etc/supervisor/conf.d/OCForInvoices_Split-worker_$customId.conf << EOF
+[program:OCWorker-Split_$customId]
+command=$defaultPath/custom/$customId/bin/scripts/service_workerOC_splitter.sh
 process_name=%(program_name)s_%(process_num)02d
-numprocs=$nbProcess
+numprocs=$nbProcessSupervisor
 user=$user
 chmod=0777
 chown=$user:$group
@@ -249,11 +421,11 @@ stopasgroup=true
 killasgroup=true
 stopwaitsecs=10
 
-stderr_logfile=$defaultPath/bin/data/log/Supervisor/OCForInvoices_SPLIT_worker_%(process_num)02d_error.log
+stderr_logfile=$defaultPath/custom/$customId/bin/data/log/Supervisor/OCForInvoices_SPLIT_worker_%(process_num)02d_error.log
 EOF"
 
-    chmod 755 /etc/supervisor/conf.d/OCForInvoices-worker.conf
-    chmod 755 /etc/supervisor/conf.d/OCForInvoices_Split-worker.conf
+    chmod 755 "/etc/supervisor/conf.d/OCForInvoices-worker_$customId.conf"
+    chmod 755 "/etc/supervisor/conf.d/OCForInvoices_Split-worker_$customId.conf"
 
     systemctl restart supervisor
     systemctl enable supervisor
@@ -266,17 +438,32 @@ chown -R "$user":"$user" /tmp/OpenCaptureForInvoices
 
 ####################
 # Copy file from default one
-cp $defaultPath/instance/config.ini.default $defaultPath/instance/config.ini
 cp $defaultPath/bin/ldap/config/config.ini.default "$defaultPath/custom/$customId/bin/ldap/config/config.ini"
 cp $defaultPath/instance/config/mail.ini.default "$defaultPath/custom/$customId/config/mail.ini"
-cp $defaultPath/instance/config/config_DEFAULT.ini.default "$defaultPath/custom/$customId/config/config.ini"
-cp $defaultPath/instance/referencial/default_referencial_supplier.ods.default $defaultPath/instance/referencial/default_referencial_supplier.ods
-cp $defaultPath/instance/referencial/default_referencial_supplier_index.json.default $defaultPath/instance/referencial/default_referencial_supplier_index.json
+cp $defaultPath/instance/config/config.ini.default "$defaultPath/custom/$customId/config/config.ini"
+cp $defaultPath/instance/referencial/default_referencial_supplier.ods.default "$defaultPath/custom/$customId/instance/referencial/default_referencial_supplier.ods"
+cp $defaultPath/instance/referencial/default_referencial_supplier_index.json.default "$defaultPath/custom/$customId/instance/referencial/default_referencial_supplier_index.json"
+cp $defaultPath/src/backend/process_queue_verifier.py.default "$defaultPath/custom/$customId/src/backend/process_queue_verifier.py"
+cp $defaultPath/src/backend/process_queue_splitter.py.default "$defaultPath/custom/$customId/src/backend/process_queue_splitter.py"
+cp $defaultPath/bin/scripts/service_workerOC.sh.default "$defaultPath/custom/$customId/bin/scripts/service_workerOC.sh"
+cp $defaultPath/bin/scripts/service_workerOC_splitter.sh.default "$defaultPath/custom/$customId/bin/scripts/service_workerOC_splitter.sh"
 
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/config/config.ini"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/config/mail.ini"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/src/backend/process_queue_verifier.py"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/src/backend/process_queue_splitter.py"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/service_workerOC.sh"
+sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/service_workerOC_splitter.sh"
+
+confFile="$defaultPath/custom/$customId/config/config.ini"
+crudini --set "$confFile" DATABASE postgresHost "$hostname"
+crudini --set "$confFile" DATABASE postgresPort "$port"
+crudini --set "$confFile" DATABASE postgresDatabase "$databaseName"
+crudini --set "$confFile" DATABASE postgresUser " $databaseUsername"
+crudini --set "$confFile" DATABASE postgresPassword " $databasePassword"
 
 ####################
-# Setting up fs-watcher service (to replace incron)
+# Setting up fs-watcher service
 mkdir -p /var/log/watcher/
 touch /var/log/watcher/daemon.log
 chmod -R 775 /var/log/watcher/
@@ -312,9 +499,9 @@ else
 fi
 
 ####################
-# Generate secret key for Flask and replace it in src/backend/__init.py file
-secret=$(python3 -c 'import secrets; print(secrets.token_hex(16))')
-sed -i "s#§§SECRET§§#$secret#g" "$defaultPath"/src/backend/__init__.py
+# Generate secret key for Flask and write it to custom secret_key file
+secret=$(python3 -c 'import secrets; print(secrets.token_hex(32))')
+echo "$secret" > $customPath/config/secret_key
 
 ####################
 # Create default verifier input script (based on default input created in data_fr.sql)
@@ -344,8 +531,6 @@ fi
 # Create default MAIL script and config
 cp "$defaultPath/bin/scripts/launch_MAIL.sh.default" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
 sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/bin/scripts/launch_MAIL.sh"
-sed -i "s#§§CUSTOM_ID§§#$customId#g" "$defaultPath/custom/$customId/config/mail.ini"
-mkdir -p "$defaultPath/custom/$customId/bin/data/MailCollect/"
 
 ####################
 # Create default LDAP script and config
@@ -360,24 +545,23 @@ chown -R "$user":"$group" $defaultPath
 
 ####################
 # Makes scripts executable
-chmod u+x "$defaultPath/bin/scripts/*.sh"
-chown -R "$user":"$user" "$defaultPath/bin/scripts/*.sh"
-chmod u+x "$defaultPath/custom/$customId/bin/scripts/verifier_inputs/*.sh"
-chown -R "$user":"$user" "$defaultPath/custom/$customId/bin/scripts/verifier_inputs/*.sh"
-chmod u+x "$defaultPath/custom/$customId/bin/scripts/splitter_inputs/*.sh"
-chown -R "$user":"$user" "$defaultPath/custom/$customId/bin/scripts/splitter_inputs/*.sh"
+chmod u+x $defaultPath/custom/"$customId"/bin/scripts/*.sh
+chmod u+x $defaultPath/custom/"$customId"/bin/scripts/verifier_inputs/*.sh
+chown -R "$user":"$user" $defaultPath/custom/"$customId"/bin/scripts/verifier_inputs/*.sh
+chmod u+x $defaultPath/custom/"$customId"/bin/scripts/splitter_inputs/*.sh
+chown -R "$user":"$user" $defaultPath/custom/"$customId"/bin/scripts/splitter_inputs/*.sh
 
 ####################
 # Create docservers
-mkdir -p "$docserverPath/OpenCapture/$customId/{verifier,splitter}"
-mkdir -p "$docserverPath/OpenCapture/$customId/verifier/images/{original_pdf,full,thumbs,positions_masks}"
-mkdir -p "$docserverPath/OpenCapture/$customId/splitter/{original_pdf,batches,separated_pdf,error}"
+mkdir -p $docserverPath/OpenCapture/"$customId"/{verifier,splitter}
+mkdir -p $docserverPath/OpenCapture/"$customId"/verifier/{original_pdf,full,thumbs,positions_masks}
+mkdir -p $docserverPath/OpenCapture/"$customId"/splitter/{original_pdf,batches,separated_pdf,error}
 chmod -R 775 $docserverPath/OpenCapture/
 chmod -R g+s $docserverPath/OpenCapture/
 chown -R "$user":"$group" $docserverPath/OpenCapture/
 
 ####################
 # Create default export and input XML and PDF folder
-mkdir -p "/var/share/$customId/{entrant,export}/{verifier,splitter}/"
-chmod -R 775 /var/share/
-chown -R "$user":"$group" /var/share/
+mkdir -p /var/share/"$customId"/{entrant,export}/{verifier,splitter}/
+chmod -R 775 /var/share/"$customId"/
+chown -R "$user":"$group" /var/share/"$customId"/

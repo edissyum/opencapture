@@ -19,8 +19,8 @@
 import os
 import json
 import subprocess
-from flask import current_app, request
 from flask_babel import gettext
+from flask import current_app, request, session
 
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.import_classes import _Files
@@ -62,6 +62,27 @@ def get_address_by_id(address_id):
         return response, 401
 
 
+def delete_invoice_position_by_supplier_id(supplier_id, field_id, form_id):
+    supplier_info, error = accounts.get_supplier_by_id({'supplier_id': supplier_id})
+    if error is None:
+        _set = {}
+        supplier_positions = supplier_info['positions']
+        form_id = str(form_id)
+        if form_id in supplier_positions:
+            if field_id in supplier_positions[form_id]:
+                del supplier_positions[form_id][field_id]
+        _, error = accounts.update_supplier(
+            {'set': {"positions": json.dumps(supplier_positions)}, 'supplier_id': supplier_id})
+        if error is None:
+            return '', 200
+        else:
+            response = {
+                "errors": gettext('UPDATE_SUPPLIER_POSITIONS_ERROR'),
+                "message": error
+            }
+            return response, 401
+
+
 def update_supplier(supplier_id, data):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
@@ -95,13 +116,20 @@ def update_position_by_supplier_id(supplier_id, data):
         column = ''
         position = ''
         for _position in data:
-            column = _position
-            position = data[_position]
+            if _position != 'form_id':
+                column = _position
+                position = data[_position]
 
+        form_id = str(data['form_id'])
         supplier_positions = supplier_info['positions']
-        supplier_positions.update({
+
+        if form_id not in supplier_positions:
+            supplier_positions[form_id] = {}
+
+        supplier_positions[form_id].update({
             column: position
         })
+
         _, error = accounts.update_supplier({'set': {"positions": json.dumps(supplier_positions)}, 'supplier_id': supplier_id})
         if error is None:
             return '', 200
@@ -119,12 +147,20 @@ def update_page_by_supplier_id(supplier_id, data):
         column = ''
         page = ''
         for _page in data:
-            column = _page
-            page = data[_page]
+            if _page != 'form_id':
+                column = _page
+                page = data[_page]
+
+        form_id = str(data['form_id'])
         supplier_pages = supplier_info['pages']
-        supplier_pages.update({
+
+        if form_id not in supplier_pages:
+            supplier_pages[form_id] = {}
+
+        supplier_pages[form_id].update({
             column: page
         })
+
         _, error = accounts.update_supplier({'set': {"pages": json.dumps(supplier_pages)}, 'supplier_id': supplier_id})
         if error is None:
             return '', 200
@@ -408,19 +444,24 @@ def delete_supplier(supplier_id):
 
 def import_suppliers(file):
     custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    _cfg = _vars[1]
-    docservers = _vars[9]
+    if 'docservers' in session:
+        docservers = json.loads(session['docservers'])
+    else:
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
 
     filename = _Files.save_uploaded_file(file, current_app.config['UPLOAD_FOLDER'])
-    res = subprocess.Popen('python3 ' + docservers['PROJECT_PATH'] + "/loadReferencial.py -f " +
-                           filename + " -c " + current_app.instance_path + '/config.ini',
-                           shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    _, err = res.communicate()
+    cmd = 'python3 ' + docservers['PROJECT_PATH'] + "/loadReferencial.py -f " + filename
+    if custom_id:
+        cmd += " -c " + custom_id
+
+    with subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as res:
+        _, err = res.communicate()
+
     if err.decode('utf-8'):
         response = {
             "errors": gettext('LOAD_SUPPLIER_REFERENCIAL_ERROR'),
-            "message": ''
+            "message": err
         }
         return response, 401
 

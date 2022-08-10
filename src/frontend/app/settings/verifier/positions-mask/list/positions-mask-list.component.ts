@@ -1,38 +1,38 @@
 /** This file is part of Open-Capture for Invoices.
 
-Open-Capture for Invoices is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+ Open-Capture for Invoices is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-Open-Capture is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
+ Open-Capture is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+ You should have received a copy of the GNU General Public License
+ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
 
-@dev : Nathan Cheval <nathan.cheval@outlook.fr> */
+ @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
-import {HttpClient} from "@angular/common/http";
-import {MatDialog} from "@angular/material/dialog";
-import {UserService} from "../../../../../services/user.service";
-import {AuthService} from "../../../../../services/auth.service";
-import {TranslateService} from "@ngx-translate/core";
-import {NotificationService} from "../../../../../services/notifications/notifications.service";
-import {SettingsService} from "../../../../../services/settings.service";
-import {LastUrlService} from "../../../../../services/last-url.service";
-import {PrivilegesService} from "../../../../../services/privileges.service";
-import {LocalStorageService} from "../../../../../services/local-storage.service";
-import {Sort} from "@angular/material/sort";
-import {ConfirmDialogComponent} from "../../../../../services/confirm-dialog/confirm-dialog.component";
-import {environment} from  "../../../../env";
-import {catchError, finalize, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {HistoryService} from "../../../../../services/history.service";
+import { ActivatedRoute, Router } from "@angular/router";
+import { HttpClient } from "@angular/common/http";
+import { MatDialog } from "@angular/material/dialog";
+import { UserService } from "../../../../../services/user.service";
+import { AuthService } from "../../../../../services/auth.service";
+import { TranslateService } from "@ngx-translate/core";
+import { NotificationService } from "../../../../../services/notifications/notifications.service";
+import { SettingsService } from "../../../../../services/settings.service";
+import { LastUrlService } from "../../../../../services/last-url.service";
+import { PrivilegesService } from "../../../../../services/privileges.service";
+import { LocalStorageService } from "../../../../../services/local-storage.service";
+import { Sort } from "@angular/material/sort";
+import { ConfirmDialogComponent } from "../../../../../services/confirm-dialog/confirm-dialog.component";
+import { environment } from  "../../../../env";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { HistoryService } from "../../../../../services/history.service";
 
 @Component({
     selector: 'positions-mask-list',
@@ -40,13 +40,13 @@ import {HistoryService} from "../../../../../services/history.service";
     styleUrls: ['./positions-mask-list.component.scss']
 })
 export class PositionsMaskListComponent implements OnInit {
+    columnsToDisplay: string[]      = ['id', 'label', 'supplier_name', 'form_label', 'enabled', 'actions'];
     loading         : boolean       = true;
-    columnsToDisplay: string[]      = ['id', 'label', 'supplier_name', 'enabled', 'actions'];
     pageSize        : number        = 10;
     pageIndex       : number        = 0;
     total           : number        = 0;
     offset          : number        = 0;
-    positionsMasks : any           = [];
+    positionsMasks  : any           = [];
 
     constructor(
         public router: Router,
@@ -61,7 +61,7 @@ export class PositionsMaskListComponent implements OnInit {
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localeStorageService: LocalStorageService,
+        private localStorageService: LocalStorageService,
     ) {
     }
 
@@ -69,11 +69,11 @@ export class PositionsMaskListComponent implements OnInit {
         this.serviceSettings.init();
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('settings/verifier/positions-mask') || lastUrl === '/') {
-            if (this.localeStorageService.get('positionMaskPageIndex'))
-                this.pageIndex = parseInt(this.localeStorageService.get('positionMaskPageIndex') as string);
+            if (this.localStorageService.get('positionMaskPageIndex'))
+                this.pageIndex = parseInt(this.localStorageService.get('positionMaskPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
-        }else
-            this.localeStorageService.remove('positionMaskPageIndex');
+        } else
+            this.localStorageService.remove('positionMaskPageIndex');
         this.loadPositionMask().then();
     }
 
@@ -115,7 +115,7 @@ export class PositionsMaskListComponent implements OnInit {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
         this.pageIndex = event.pageIndex;
-        this.localeStorageService.save('positionMaskPageIndex', event.pageIndex);
+        this.localStorageService.save('positionMaskPageIndex', event.pageIndex);
         this.loadPositionMask().then();
     }
 

@@ -15,12 +15,12 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {Injectable} from '@angular/core';
-import {environment} from "./env";
-import {Observable} from "rxjs";
-import {HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest} from "@angular/common/http";
-import {LocalStorageService} from "../services/local-storage.service";
-import {Router} from "@angular/router";
+import { Injectable } from '@angular/core';
+import { environment } from "./env";
+import { Observable } from "rxjs";
+import { HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest } from "@angular/common/http";
+import { LocalStorageService } from "../services/local-storage.service";
+import { Router } from "@angular/router";
 
 @Injectable()
 export class MiddlewareComponent implements HttpInterceptor {
@@ -51,11 +51,15 @@ export class MiddlewareComponent implements HttpInterceptor {
                     const isIp = this.isValidIP(currentUrlArray[i - 1]);
                     const isFQDN = this.isValidFQDN(currentUrlArray[i - 1]);
                     const currentCustom = this.localStorage.getCookie('OpenCaptureCustom');
-                    if (!isFQDN && !isIp && currentUrlArray[i - 1] !== 'localhost') {
+                    customId = currentUrlArray[i - 1];
+                    if (!isFQDN && !isIp && currentUrlArray[i - 1] !== 'localhost' && !currentUrlArray[i - 1].includes('opencaptureforinvoices') && !currentUrlArray[i - 1].includes('backend_oc')) {
                         customId = currentUrlArray[i - 1];
                         const oldUrl = environment['url'];
                         environment['customId'] = customId;
                         environment['url'] += '/' + customId;
+                        if (environment.production) {
+                            environment['url'] = '../' + environment['url'];
+                        }
                         const token = this.localStorage.getCookie('OpenCaptureForInvoicesToken');
                         if (currentCustom && customId !== currentCustom) {
                             this.router.navigate(['/logout']).then();

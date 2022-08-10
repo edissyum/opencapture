@@ -16,25 +16,25 @@ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import { Component, OnInit } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {ActivatedRoute, Router} from "@angular/router";
-import {FormBuilder} from "@angular/forms";
-import {AuthService} from "../../../../../services/auth.service";
-import {UserService} from "../../../../../services/user.service";
-import {TranslateService} from "@ngx-translate/core";
-import {NotificationService} from "../../../../../services/notifications/notifications.service";
-import {SettingsService} from "../../../../../services/settings.service";
-import {PrivilegesService} from "../../../../../services/privileges.service";
-import {environment} from  "../../../../env";
-import {catchError, finalize, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {LastUrlService} from "../../../../../services/last-url.service";
-import {LocalStorageService} from "../../../../../services/local-storage.service";
-import {Sort} from "@angular/material/sort";
-import {ConfirmDialogComponent} from "../../../../../services/confirm-dialog/confirm-dialog.component";
-import {MatDialog} from "@angular/material/dialog";
-import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from "@angular/material/form-field";
-import {HistoryService} from "../../../../../services/history.service";
+import { HttpClient } from "@angular/common/http";
+import { ActivatedRoute, Router } from "@angular/router";
+import { FormBuilder } from "@angular/forms";
+import { AuthService } from "../../../../../services/auth.service";
+import { UserService } from "../../../../../services/user.service";
+import { TranslateService } from "@ngx-translate/core";
+import { NotificationService } from "../../../../../services/notifications/notifications.service";
+import { SettingsService } from "../../../../../services/settings.service";
+import { PrivilegesService } from "../../../../../services/privileges.service";
+import { environment } from  "../../../../env";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { LastUrlService } from "../../../../../services/last-url.service";
+import { LocalStorageService } from "../../../../../services/local-storage.service";
+import { Sort } from "@angular/material/sort";
+import { ConfirmDialogComponent } from "../../../../../services/confirm-dialog/confirm-dialog.component";
+import { MatDialog } from "@angular/material/dialog";
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
+import { HistoryService } from "../../../../../services/history.service";
 
 @Component({
     selector: 'app-list',
@@ -45,8 +45,8 @@ import {HistoryService} from "../../../../../services/history.service";
     ]
 })
 export class FormListComponent implements OnInit {
-    loading: boolean            = true;
     columnsToDisplay: string[]  = ['id', 'label', 'default_form', 'enabled', 'actions'];
+    loading: boolean            = true;
     pageSize : number           = 10;
     pageIndex: number           = 0;
     total: number               = 0;
@@ -67,7 +67,7 @@ export class FormListComponent implements OnInit {
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localeStorageService: LocalStorageService,
+        private localStorageService: LocalStorageService,
     ) {
     }
 
@@ -75,11 +75,11 @@ export class FormListComponent implements OnInit {
         this.serviceSettings.init();
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('settings/verifier/forms') || lastUrl === '/') {
-            if (this.localeStorageService.get('formsPageIndex'))
-                this.pageIndex = parseInt(this.localeStorageService.get('formsPageIndex') as string);
+            if (this.localStorageService.get('formsPageIndex'))
+                this.pageIndex = parseInt(this.localStorageService.get('formsPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
-        }else
-            this.localeStorageService.remove('formsPageIndex');
+        } else
+            this.localStorageService.remove('formsPageIndex');
         this.loadForms();
     }
 
@@ -87,7 +87,7 @@ export class FormListComponent implements OnInit {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
         this.pageIndex = event.pageIndex;
-        this.localeStorageService.save('formsPageIndex', event.pageIndex);
+        this.localStorageService.save('formsPageIndex', event.pageIndex);
         this.loadForms();
     }
 
@@ -264,6 +264,7 @@ export class FormListComponent implements OnInit {
     }
 
     duplicateForm(formId: number) {
+        this.loading = true;
         if (formId !== undefined) {
             this.http.post(environment['url'] + '/ws/forms/duplicate/' + formId, {}, {headers: this.authService.headers}).pipe(
                 tap(() => {

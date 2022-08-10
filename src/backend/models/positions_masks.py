@@ -16,7 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
-from flask import request
+from flask import request, session
 from gettext import gettext
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
@@ -25,11 +25,12 @@ from src.backend.main import create_classes_from_custom_id
 def get_positions_masks(args):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    _db = _vars[0]
     error = None
-    positions_masks = database.select({
+    positions_masks = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
-        'table': ['positions_masks'],
+        'table': ['positions_masks', 'form_models'],
+        'left_join': ['positions_masks.form_id = form_models.id'],
         'where': ['1=%s'] if 'where' not in args else args['where'],
         'data': ['1'] if 'data' not in args else args['data'],
         'limit': str(args['limit']) if 'limit' in args else [],
@@ -43,9 +44,9 @@ def get_positions_masks(args):
 def get_positions_mask_by_id(args):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    _db = _vars[0]
     error = None
-    position_mask = database.select({
+    position_mask = _db.select({
         'select': ['*'] if 'select' not in args else args['select'],
         'table': ['positions_masks'],
         'where': ['id = %s', 'status <> %s'],
@@ -63,10 +64,10 @@ def get_positions_mask_by_id(args):
 def update_positions_mask(args):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    _db = _vars[0]
     error = None
 
-    res = database.update({
+    res = _db.update({
         'table': ['positions_masks'],
         'set': args['set'],
         'where': ['id = %s'],
@@ -82,10 +83,10 @@ def update_positions_mask(args):
 def update_poitions_mask_fields(args):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    _db = _vars[0]
     error = None
 
-    res = database.update({
+    res = _db.update({
         'table': ['positions_masks_field'],
         'set': args['set'],
         'where': ['positions_mask_id = %s'],
@@ -101,7 +102,7 @@ def update_poitions_mask_fields(args):
 def add_positions_mask(args):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
+    _db = _vars[0]
     positions_masks_exists, error = get_positions_masks({
         'where': ['label = %s', 'status <> %s'],
         'data': [args['label'], 'DEL']
@@ -112,6 +113,7 @@ def add_positions_mask(args):
             'table': 'positions_masks',
             'columns': {
                 'label': args['label'],
+                'form_id': args['form_id'],
                 'supplier_id': args['supplier_id'],
                 'pages': args['pages'] if 'pages' in args else {},
                 'regex': args['regex'] if 'regex' in args else {},
@@ -121,11 +123,12 @@ def add_positions_mask(args):
                 'positions': args['positions'] if 'positions' in args else {},
             }
         }
-        res = database.insert(args)
+        res = _db.insert(args)
 
         if not res:
             error = gettext('ADD_POSITIONS_MASKS_ERROR')
         return res, error
     else:
         error = gettext('POSITIONS_MASK_LABEL_ALREADY_EXIST')
+
     return '', error

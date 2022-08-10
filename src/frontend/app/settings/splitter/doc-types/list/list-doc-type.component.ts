@@ -15,22 +15,22 @@
 
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
-import {UserService} from "../../../../../services/user.service";
-import {TranslateService} from "@ngx-translate/core";
-import {SettingsService} from "../../../../../services/settings.service";
-import {PrivilegesService} from "../../../../../services/privileges.service";
-import {DocumentTypeFactoryComponent} from "../../../../splitter/document-type-factory/document-type-factory.component";
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {HttpClient} from "@angular/common/http";
-import {AuthService} from "../../../../../services/auth.service";
-import {NotificationService} from "../../../../../services/notifications/notifications.service";
-import {environment} from  "../../../../env";
-import {catchError, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {ConfirmDialogComponent} from "../../../../../services/confirm-dialog/confirm-dialog.component";
-import {MatDialog} from "@angular/material/dialog";
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from "@angular/router";
+import { UserService } from "../../../../../services/user.service";
+import { TranslateService } from "@ngx-translate/core";
+import { SettingsService } from "../../../../../services/settings.service";
+import { PrivilegesService } from "../../../../../services/privileges.service";
+import { DocumentTypeFactoryComponent } from "../../../../splitter/document-type-factory/document-type-factory.component";
+import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { HttpClient } from "@angular/common/http";
+import { AuthService } from "../../../../../services/auth.service";
+import { NotificationService } from "../../../../../services/notifications/notifications.service";
+import { environment } from  "../../../../env";
+import { catchError, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { ConfirmDialogComponent } from "../../../../../services/confirm-dialog/confirm-dialog.component";
+import { MatDialog } from "@angular/material/dialog";
 
 @Component({
   selector: 'app-list-doc-type',
@@ -104,7 +104,7 @@ export class ListDocTypeComponent implements OnInit {
   update() {
     let newDocType = this.form.getRawValue();
     const lastIndexInFolder = this.getLastFolderIndex(newDocType.folder);
-    if(newDocType.folder === '_NO_MASTER')
+    if (newDocType.folder === '_NO_MASTER')
       newDocType.folder = "0";
     newDocType = {
       'key'       : newDocType.key,
@@ -165,9 +165,9 @@ export class ListDocTypeComponent implements OnInit {
 
   getLastFolderIndex(codeSelected: string) {
     let lastIndex = 0;
-    if(codeSelected !== this.noMasterFolder) {
+    if (codeSelected !== this.noMasterFolder) {
       this.documentTypeFactoryComponent.treeDataObj.doctypeData.forEach((docType:any) => {
-        if(docType.code.startsWith(codeSelected)
+        if (docType.code.startsWith(codeSelected)
             && docType.code.split('.').length === codeSelected.split('.').length + 1) {
           const currentIdx = Number(docType.code.split('.').pop());
           lastIndex = (currentIdx > lastIndex) ? currentIdx: lastIndex;
@@ -176,7 +176,7 @@ export class ListDocTypeComponent implements OnInit {
     }
     else {
       this.documentTypeFactoryComponent.treeDataObj.doctypeData.forEach((docType:any) => {
-        if(docType.code.split('.').length === 2) {
+        if (docType.code.split('.').length === 2) {
           const currentIdx = Number(docType.code.split('.').pop());
           lastIndex = (currentIdx > lastIndex) ? currentIdx: lastIndex;
         }
@@ -187,7 +187,7 @@ export class ListDocTypeComponent implements OnInit {
 
   updateDoctype(newDocType: any) {
     this.http.post(environment['url'] + '/ws/doctypes/update', newDocType, {headers: this.authService.headers}).pipe(
-        tap((data: any) => {
+        tap(() => {
           this.notify.success(this.translate.instant('DOCTYPE.doctype_edited'));
           if (this.selectedFormId)
             this.documentTypeFactoryComponent.treeDataObj.loadTree(this.selectedFormId);

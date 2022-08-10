@@ -16,9 +16,9 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
-
-from flask import request
+import json
 from flask_babel import gettext
+from flask import request, session
 from src.backend.import_models import doctypes
 from src.backend.import_classes import _SeparatorQR
 from src.backend.functions import retrieve_custom_from_url
@@ -32,13 +32,13 @@ def add_doctype(args):
             res, error = doctypes.set_default(args)
             if not res:
                 response = {
-                    "errors": "SET_DEFAULT_DOCTYPE_ERROR",
+                    "errors": gettext("SET_DEFAULT_DOCTYPE_ERROR"),
                     "message": error
                 }
                 return response, 401
     else:
         response = {
-            "errors": "ADD_DOCTYPE_ERROR",
+            "errors": gettext("ADD_DOCTYPE_ERROR"),
             "message": error
         }
         return response, 401
@@ -58,7 +58,7 @@ def retrieve_doctypes(args):
         return response, 200
 
     response = {
-        "errors": "DOCTYPE_ERROR",
+        "errors": gettext("DOCTYPE_ERROR"),
         "message": error
     }
     return response, 401
@@ -74,8 +74,8 @@ def update(args):
             res, error = doctypes.set_default(args)
             if not res:
                 response = {
-                    "errors": error,
-                    "message": "SET_DEFAULT_DOCTYPE_ERROR"
+                    "message": gettext("SET_DEFAULT_DOCTYPE_ERROR"),
+                    "errors": error
                 }
                 return response, 401
         doctype_childs, _ = doctypes.retrieve_doctypes({
@@ -94,8 +94,8 @@ def update(args):
             })
             if not res:
                 response = {
-                    "errors": error,
-                    "message": "DOCTYPE_ERROR"
+                    "message": gettext("DOCTYPE_ERROR"),
+                    "errors": error
                 }
                 return response, 401
 
@@ -107,27 +107,21 @@ def update(args):
         return response, 200
     else:
         response = {
-            "errors": "DOCTYPE_ERROR",
+            "errors": gettext("DOCTYPE_ERROR"),
             "message": error
         }
         return response, 401
 
 
 def generate_separator(args):
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    database = _vars[0]
-    _cfg = _vars[1]
-    docservers = _vars[9]
-    _db_config = {}
-
-    _config = database.select({
-        'select': ['*'],
-        'table': ['configurations'],
-    })
-
-    for _c in _config:
-        _db_config[_c['label']] = _c['data']['value']
+    if 'docservers' in session and 'configurations' in session:
+        docservers = json.loads(session['docservers'])
+        configurations = json.loads(session['configurations'])
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
+        configurations = _vars[10]
 
     qr_code_value = ""
     separator_type_label = ""
@@ -141,10 +135,10 @@ def generate_separator(args):
         qr_code_value = "BUNDLESTART"
         separator_type_label = gettext('BUNDLESEPARATOR')
 
-    res_separators = _SeparatorQR.generate_separator(_db_config, _docservers, qr_code_value, args['label'], separator_type_label)
+    res_separators = _SeparatorQR.generate_separator(configurations, docservers, qr_code_value, args['label'], separator_type_label)
     if not res_separators[0]:
         response = {
-            "errors": "DOCTYPE_ERROR",
+            "errors": gettext("DOCTYPE_ERROR"),
             "message": res_separators[1]
         }
         return response, 401

@@ -15,22 +15,22 @@
 
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
-import {Component, EventEmitter, Injectable, Input, OnInit, Output} from '@angular/core';
-import {FlatTreeControl} from '@angular/cdk/tree';
-import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
-import {BehaviorSubject, of} from "rxjs";
-import {SettingsService} from "../../../services/settings.service";
-import {environment} from  "../../env";
-import {catchError, finalize, tap} from "rxjs/operators";
-import {HttpClient} from "@angular/common/http";
-import {ActivatedRoute, Router} from "@angular/router";
-import {FormBuilder, FormControl} from "@angular/forms";
-import {AuthService} from "../../../services/auth.service";
-import {UserService} from "../../../services/user.service";
-import {TranslateService} from "@ngx-translate/core";
-import {NotificationService} from "../../../services/notifications/notifications.service";
-import {PrivilegesService} from "../../../services/privileges.service";
-import {LocalStorageService} from "../../../services/local-storage.service";
+import { Component, EventEmitter, Injectable, Input, OnInit, Output } from '@angular/core';
+import { FlatTreeControl } from '@angular/cdk/tree';
+import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
+import { BehaviorSubject, of } from "rxjs";
+import { SettingsService } from "../../../services/settings.service";
+import { environment } from  "../../env";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { HttpClient } from "@angular/common/http";
+import { ActivatedRoute, Router } from "@angular/router";
+import { FormBuilder, FormControl } from "@angular/forms";
+import { AuthService } from "../../../services/auth.service";
+import { UserService } from "../../../services/user.service";
+import { TranslateService } from "@ngx-translate/core";
+import { NotificationService } from "../../../services/notifications/notifications.service";
+import { PrivilegesService } from "../../../services/privileges.service";
+import { LocalStorageService } from "../../../services/local-storage.service";
 
 @Injectable()
 export class ChecklistDatabase {
@@ -51,11 +51,11 @@ export class ChecklistDatabase {
         private notify: NotificationService,
         public serviceSettings: SettingsService,
         public privilegesService: PrivilegesService,
-        private localeStorageService: LocalStorageService
+        private localStorageService: LocalStorageService
     ) {}
 
     loadTree(formId: number) {
-        if(formId) {
+        if (formId) {
             this.retrieveDocTypes(formId);
             this.initialize();
         }
@@ -112,8 +112,8 @@ export class ChecklistDatabase {
         const data    = this.buildFileTree(this.doctypeData, '0');
         // Notify the change.
         this.dataChange.next(data);
-        const lastSearchValue = this.localeStorageService.get('doctype_last_search_value') || '';
-        if(lastSearchValue) {
+        const lastSearchValue = this.localStorageService.get('doctype_last_search_value') || '';
+        if (lastSearchValue) {
             this.filter(lastSearchValue);
         }
     }
@@ -201,7 +201,7 @@ export class TreeItemFlatNode {
 })
 export class DocumentTypeFactoryComponent implements OnInit {
     loading: boolean                        = false;
-    searchText: string                      = this.localeStorageService.get('doctype_last_search_value') || '';
+    searchText: string                      = this.localStorageService.get('doctype_last_search_value') || '';
     forms: any[]                            = [];
     @Input() selectedDocTypeInput: any      = {"key": undefined, "id": -1};
     @Output() selectedDoctypeOutput: any    = new EventEmitter < string > ();
@@ -230,7 +230,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
         public translate: TranslateService,
         private notify: NotificationService,
         public privilegesService: PrivilegesService,
-        private localeStorageService: LocalStorageService
+        private localStorageService: LocalStorageService
     ) {
     }
 
@@ -249,7 +249,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
             this.treeControl.expandAll();
         });
         this.selectFormControl.valueChanges.subscribe(formId => {
-            this.localeStorageService.save('doctypeFormId', formId);
+            this.localStorageService.save('doctypeFormId', formId);
             this.treeDataObj.loadTree(formId);
             this.selectedFormOutput.emit({'formId': formId});
         });
@@ -261,9 +261,9 @@ export class DocumentTypeFactoryComponent implements OnInit {
         this.http.get(environment['url'] + '/ws/forms/list?module=splitter', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.forms = data.forms;
-                if(this.forms.length > 0) {
-                    const defaultFormId = this.localeStorageService.get('doctypeFormId') ?
-                        this.localeStorageService.get('doctypeFormId') : this.forms[0].id;
+                if (this.forms.length > 0) {
+                    const defaultFormId = this.localStorageService.get('doctypeFormId') ?
+                        this.localStorageService.get('doctypeFormId') : this.forms[0].id;
                     this.selectFormControl.setValue(Number(defaultFormId));
                 }
             }),
@@ -298,7 +298,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
     };
 
     filterChanged() {
-        this.localeStorageService.save('doctype_last_search_value',this.searchText);
+        this.localStorageService.save('doctype_last_search_value',this.searchText);
         this.treeDataObj.filter(this.searchText);
         if (this.searchText)
         {
@@ -316,7 +316,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
     }
 
     selectFolder(node: any) {
-        if(this.data.canFolderBeSelected) {
+        if (this.data.canFolderBeSelected) {
             this.selectedDocTypeInput = node;
             this.selectedDoctypeOutput.emit(this.selectedDocTypeInput);
         }
@@ -324,7 +324,7 @@ export class DocumentTypeFactoryComponent implements OnInit {
 
     loadDefaultDocType() {
         this.treeDataObj.doctypeData.forEach((doctype: any) => {
-            if(doctype.isDefault) {
+            if (doctype.isDefault) {
                 this.selectedDocTypeInput = doctype;
                 this.selectedDoctypeOutput.emit(doctype);
             }

@@ -15,25 +15,25 @@
 
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
-import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {environment} from  "../../env";
-import {catchError, debounceTime, delay, filter, finalize, map, takeUntil, tap} from "rxjs/operators";
-import {of, ReplaySubject, Subject} from "rxjs";
-import {HttpClient} from "@angular/common/http";
-import {LocalStorageService} from "../../../services/local-storage.service";
-import {ActivatedRoute, Router} from "@angular/router";
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {AuthService} from "../../../services/auth.service";
-import {UserService} from "../../../services/user.service";
-import {TranslateService} from "@ngx-translate/core";
-import {NotificationService} from "../../../services/notifications/notifications.service";
-import {DomSanitizer} from "@angular/platform-browser";
-import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
-import {MatDialog} from "@angular/material/dialog";
-import {DocumentTypeComponent} from "../document-type/document-type.component";
-import {remove} from 'remove-accents';
-import {HistoryService} from "../../../services/history.service";
-import {ConfirmDialogComponent} from "../../../services/confirm-dialog/confirm-dialog.component";
+import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { environment } from  "../../env";
+import { catchError, debounceTime, delay, filter, finalize, map, takeUntil, tap } from "rxjs/operators";
+import { of, ReplaySubject, Subject } from "rxjs";
+import { HttpClient } from "@angular/common/http";
+import { LocalStorageService } from "../../../services/local-storage.service";
+import { ActivatedRoute, Router } from "@angular/router";
+import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { AuthService } from "../../../services/auth.service";
+import { UserService } from "../../../services/user.service";
+import { TranslateService } from "@ngx-translate/core";
+import { NotificationService } from "../../../services/notifications/notifications.service";
+import { DomSanitizer } from "@angular/platform-browser";
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
+import { MatDialog } from "@angular/material/dialog";
+import { DocumentTypeComponent } from "../document-type/document-type.component";
+import {remove } from 'remove-accents';
+import { HistoryService } from "../../../services/history.service";
+import { ConfirmDialogComponent } from "../../../services/confirm-dialog/confirm-dialog.component";
 
 export interface Batch {
     id          : number
@@ -66,7 +66,7 @@ export interface Field {
 export class SplitterViewerComponent implements OnInit, OnDestroy {
     @HostListener('window:beforeunload', ['$event'])
     beforeunloadHandler($event: any) {
-        if(this.isDataEdited) {
+        if (this.isDataEdited) {
             $event.returnValue =true;
         }
     }
@@ -141,11 +141,11 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         private translate: TranslateService,
         private notify: NotificationService,
         private historyService: HistoryService,
-        private localeStorageService: LocalStorageService,
+        private localStorageService: LocalStorageService,
     ) {}
 
     ngOnInit(): void {
-        this.localeStorageService.save('splitter_or_verifier', 'splitter');
+        this.localStorageService.save('splitter_or_verifier', 'splitter');
         this.userService.user   = this.userService.getUserFromLocal();
         this.currentBatch.id    = this.route.snapshot.params['id'];
         this.loadBatches();
@@ -157,9 +157,9 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
     setValuesFromSavedMetadata(autocompletionValue: any) {
         for(const field of this.fieldsCategories['batch_metadata']) {
-            if(this.currentBatch.customFieldsValues.hasOwnProperty(field['label_short'])) {
+            if (this.currentBatch.customFieldsValues.hasOwnProperty(field['label_short'])) {
                 const savedValue = this.currentBatch.customFieldsValues[field['label_short']];
-                if(autocompletionValue.hasOwnProperty(field['label_short'])
+                if (autocompletionValue.hasOwnProperty(field['label_short'])
                     && autocompletionValue[field['label_short']] !== savedValue) {
                     this.batchMetadataValues[field['label_short']] = savedValue;
                     this.batchForm.controls[field['label_short']].setValue(savedValue);
@@ -330,7 +330,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         for (const document of this.documents) {
             const currentDisplayOrder   = document.displayOrder;
             const newDisplayOrder       = currentDisplayOrder + 1;
-            if(currentDisplayOrder > this.currentBatch.selectedDocument.displayOrder) {
+            if (currentDisplayOrder > this.currentBatch.selectedDocument.displayOrder) {
                 document.displayOrder = newDisplayOrder;
                 updatedDocuments.push({
                     'id': Number(document.id.split('-').pop()),
@@ -346,7 +346,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     createDocument() {
-        if(this.addDocumentLoading) { return; }
+        if (this.addDocumentLoading) { return; }
         this.isDataEdited = true;
         const documentDisplayOrder  = this.updateDocumentDisplayOrder();
         this.addDocumentLoading = true;
@@ -391,7 +391,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         for (const field of this.fieldsCategories['document_metadata']) {
             const control = field.required ? new FormControl('', Validators.required): new FormControl('');
             const labelShort = field.label_short;
-            if(this.documents[documentIndex]['customFieldsValues'].hasOwnProperty(labelShort))
+            if (this.documents[documentIndex]['customFieldsValues'].hasOwnProperty(labelShort))
                 control.setValue(this.documents[documentIndex]['customFieldsValues'][labelShort]);
             control.valueChanges.subscribe(value => {
                 this.documents[documentIndex]['customFieldsValues'][labelShort] = value;
@@ -433,7 +433,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                         type        : string
                         is_default  : boolean
                     }) => {
-                        if(doctype.is_default && doctype.type === 'document') {
+                        if (doctype.is_default && doctype.type === 'document') {
                             this.defaultDoctype = {
                                 'id'        : doctype.id,
                                 'key'       : doctype.key,
@@ -497,7 +497,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     loadReferentialOnView(): void {
         this.http.get(environment['url'] + `/ws/splitter/metadataMethods/${this.currentBatch.formId}`, {headers: this.authService.headers}).pipe(
             tap((data: any) => {
-                if(data.metadataMethods[0].callOnSplitterView) {
+                if (data.metadataMethods[0].callOnSplitterView) {
                     this.loadReferential(false);
                 }
             }),
@@ -519,15 +519,15 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                     this.metadata.push(metadataItem.data);
                 });
 
-                if(this.currentBatch.customFieldsValues.hasOwnProperty('metadataId')) {
+                if (this.currentBatch.customFieldsValues.hasOwnProperty('metadataId')) {
                     const autocompletionValue = this.metadata.filter(item => item.metadataId === this.currentBatch.customFieldsValues.metadataId);
-                    if(autocompletionValue.length > 0) {
+                    if (autocompletionValue.length > 0) {
                         this.filteredServerSideMetadata.next(autocompletionValue);
                         this.fillData((autocompletionValue[0]));
                         this.setValuesFromSavedMetadata(autocompletionValue[0]);
                     }
                 }
-                if(refreshAfterLoad) {
+                if (refreshAfterLoad) {
                     this.loadSelectedBatch();
                 }
                 this.notify.success(this.translate.instant('SPLITTER.referential_updated'));
@@ -556,7 +556,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
         const optionId = this.batchMetadataValues['metadataId'];
         for (const field of this.fieldsCategories['batch_metadata']) {
             if (field['metadata_key']) {
-                if(field.type === 'select' && selectedMetadata[field['metadata_key']]) {
+                if (field.type === 'select' && selectedMetadata[field['metadata_key']]) {
                     this.batchForm.get(field['metadata_key'])?.setValue(selectedMetadata[field['metadata_key']]);
                 }
                 else {
@@ -571,7 +571,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             tap((data: any) => {
                 for (const fieldCategory in this.fieldsCategories) {
                     this.fieldsCategories[fieldCategory] = [];
-                    if(data.fields.hasOwnProperty(fieldCategory)) {
+                    if (data.fields.hasOwnProperty(fieldCategory)) {
                         data.fields[fieldCategory].forEach((field: Field) => {
                             this.fieldsCategories[fieldCategory].push({
                                 'id'            : field.id,
@@ -586,7 +586,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
                                 'searchMask'    : field.searchMask,
                                 'resultMask'    : field.resultMask,
                             });
-                            if(field.metadata_key && fieldCategory === 'batch_metadata') {
+                            if (field.metadata_key && fieldCategory === 'batch_metadata') {
                                 this.inputMode = 'Auto';
                             }
                         });
@@ -596,7 +596,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
 
                 // listen for search field value changes
                 for (const fieldCategory in this.fieldsCategories) {
-                    if(data.fields.hasOwnProperty(fieldCategory)) {
+                    if (data.fields.hasOwnProperty(fieldCategory)) {
                         data.fields[fieldCategory].forEach((field: Field) => {
                             if (field.metadata_key && this.batchForm.get('search_' + field.label_short)) {
                                 this.batchForm.get('search_' + field.label_short)?.valueChanges
@@ -644,7 +644,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             group[input.label_short] = input.required ?
                 new FormControl('', Validators.required) :
                 new FormControl('');
-            if(this.currentBatch.customFieldsValues.hasOwnProperty(input.label_short)) {
+            if (this.currentBatch.customFieldsValues.hasOwnProperty(input.label_short)) {
                 group[input.label_short].setValue(this.currentBatch.customFieldsValues[input.label_short]);
             }
             if (input.metadata_key)
@@ -765,7 +765,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     deleteSelectedPages() {
-        if(this.currentBatch.selectedPagesCount === 0)
+        if (this.currentBatch.selectedPagesCount === 0)
             return;
 
         const dialogRef = this.dialog.open(ConfirmDialogComponent, {
@@ -824,7 +824,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
             }
         }
 
-        if(this.zoomPage.pageId === this.documents[documentIndex].pages[pageIndex].id) {
+        if (this.zoomPage.pageId === this.documents[documentIndex].pages[pageIndex].id) {
             this.zoomPage.rotation = this.documents[documentIndex].pages[pageIndex].rotation;
         }
     }
@@ -875,7 +875,7 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     cancel() {
-        if(this.isDataEdited) {
+        if (this.isDataEdited) {
             const dialogRef = this.dialog.open(ConfirmDialogComponent, {
                 data:{
                     confirmTitle        : this.translate.instant('GLOBAL.confirm'),
@@ -899,22 +899,22 @@ export class SplitterViewerComponent implements OnInit, OnDestroy {
     }
 
     validateWithConfirmation() {
-        if(!this.batchForm.valid && this.inputMode === "Manual") {
+        if (!this.batchForm.valid && this.inputMode === "Manual") {
             this.notify.error(this.translate.instant('SPLITTER.error_empty_document_metadata'));
             this.loading = false;
             return;
         }
-        if(this.inputMode === 'Auto' && !this.batchMetadataValues.metadataId && this.fieldsCategories['batch_metadata'].length !== 0) {
+        if (this.inputMode === 'Auto' && !this.batchMetadataValues.metadataId && this.fieldsCategories['batch_metadata'].length !== 0) {
             this.notify.error(this.translate.instant('SPLITTER.error_empty_batch_metadata'));
             return;
         }
         for (const document of this.documents) {
-            if(!document.form.valid) {
+            if (!document.form.valid) {
                 this.notify.error(this.translate.instant('SPLITTER.error_empty_document_metadata'));
                 this.loading = false;
                 return;
             }
-            if(!document.documentTypeKey) {
+            if (!document.documentTypeKey) {
                 document.class = "text-red-500";
                 this.notify.error(this.translate.instant('SPLITTER.error_no_doc_type'));
                 this.loading = false;

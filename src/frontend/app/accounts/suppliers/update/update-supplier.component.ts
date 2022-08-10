@@ -16,23 +16,23 @@ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {MatDialog} from "@angular/material/dialog";
-import {UserService} from "../../../../services/user.service";
-import {FormBuilder, FormControl, Validators} from "@angular/forms";
-import {AuthService} from "../../../../services/auth.service";
-import {TranslateService} from "@ngx-translate/core";
-import {NotificationService} from "../../../../services/notifications/notifications.service";
-import {SettingsService} from "../../../../services/settings.service";
-import {PrivilegesService} from "../../../../services/privileges.service";
-import {marker} from "@biesbjerg/ngx-translate-extract-marker";
-import {environment} from  "../../../env";
-import {catchError, finalize, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {HistoryService} from "../../../../services/history.service";
-import {Country} from "@angular-material-extensions/select-country";
-import {LocaleService} from "../../../../services/locale.service";
+import { ActivatedRoute, Router } from "@angular/router";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { MatDialog } from "@angular/material/dialog";
+import { UserService } from "../../../../services/user.service";
+import { FormBuilder, FormControl, Validators } from "@angular/forms";
+import { AuthService } from "../../../../services/auth.service";
+import { TranslateService } from "@ngx-translate/core";
+import { NotificationService } from "../../../../services/notifications/notifications.service";
+import { SettingsService } from "../../../../services/settings.service";
+import { PrivilegesService } from "../../../../services/privileges.service";
+import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import { environment } from  "../../../env";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { HistoryService } from "../../../../services/history.service";
+import { Country } from "@angular-material-extensions/select-country";
+import { LocaleService } from "../../../../services/locale.service";
 
 @Component({
     selector: 'app-update',
@@ -217,13 +217,13 @@ export class UpdateSupplierComponent implements OnInit {
                                     if (element.id === field) {
                                         if (element.id === 'get_only_raw_footer') {
                                             element.control.setValue(!this.supplier[field]);
-                                        }else {
+                                        } else {
                                             element.control.setValue(this.supplier[field]);
                                         }
                                         if (element.id === 'form_id') {
                                             element.values = forms.forms;
                                         }
-                                    }else if (field === 'address_id') {
+                                    } else if (field === 'address_id') {
                                         this.addressId = this.supplier[field];
                                         if (this.addressId) {
                                             this.http.get(environment['url'] + '/ws/accounts/getAdressById/' + this.addressId, {headers: this.authService.headers}).pipe(
@@ -248,7 +248,7 @@ export class UpdateSupplierComponent implements OnInit {
                                                     return of(false);
                                                 })
                                             ).subscribe();
-                                        }else {
+                                        } else {
                                             this.http.post(environment['url'] + '/ws/accounts/addresses/create',
                                                 {'args': {
                                                         'address1': '',

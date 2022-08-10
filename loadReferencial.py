@@ -20,12 +20,12 @@ import sys
 import argparse
 import mimetypes
 from src.backend.main import create_classes_from_custom_id
-from src.backend import retrieve_config_from_custom_id
+from src.backend.functions import retrieve_config_from_custom_id
 
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
-    ap.add_argument("-c", "--custom_id", required=True, help="Identifier of the custom")
+    ap.add_argument("-c", "--custom-id", required=False, help="Identifier of the custom")
     ap.add_argument("-f", "--file", required=False, help="path to referential file")
     args = vars(ap.parse_args())
 
@@ -65,7 +65,7 @@ if __name__ == '__main__':
         list_existing_supplier = database.select(args)
         # Insert into database all the supplier not existing into the database
         for vat_number in spreadsheet.referencialSupplierData:
-            if not any(str(vat_number) in value['vat_number'] for value in list_existing_supplier):
+            if not any(str(vat_number[:20]) == value['vat_number'] for value in list_existing_supplier):
                 args = {
                     'table': 'addresses',
                     'columns': {
@@ -78,16 +78,21 @@ if __name__ == '__main__':
                 }
 
                 address_id = database.insert(args)
+
+                GET_ONLY_RAW_FOOTER = True
+                if spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['get_only_raw_footer']].lower() == 'true':
+                    GET_ONLY_RAW_FOOTER = False
+
                 args = {
                     'table': 'accounts_supplier',
                     'columns': {
-                        'vat_number': str(vat_number),
+                        'vat_number': str(vat_number[:20]),
                         'name': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['name']]),
                         'siren': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['SIREN']]),
                         'siret': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['SIRET']]),
                         'iban': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['IBAN']]),
                         'email': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['EMAIL']]),
-                        'get_only_raw_footer': not spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['get_only_raw_footer']],
+                        'get_only_raw_footer': GET_ONLY_RAW_FOOTER,
                         'address_id': str(address_id),
                         'document_lang': str(spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['doc_lang']]),
                     }
@@ -115,11 +120,11 @@ if __name__ == '__main__':
                         'select': ['id', 'address_id'],
                         'table': ['accounts_supplier'],
                         'where': ['vat_number = %s'],
-                        'data': [vat_number]
+                        'data': [str(vat_number[:20])]
                     })[0]
 
                     GET_ONLY_RAW_FOOTER = True
-                    if spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['get_only_raw_footer']] == 'True':
+                    if spreadsheet.referencialSupplierData[vat_number][0][spreadsheet.referencialSupplierArray['get_only_raw_footer']].lower() == 'true':
                         GET_ONLY_RAW_FOOTER = False
 
                     args = {

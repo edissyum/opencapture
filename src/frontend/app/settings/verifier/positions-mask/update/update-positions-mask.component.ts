@@ -16,23 +16,24 @@
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
-import {HttpClient} from "@angular/common/http";
-import {UserService} from "../../../../../services/user.service";
-import {AuthService} from "../../../../../services/auth.service";
-import {TranslateService} from "@ngx-translate/core";
-import {NotificationService} from "../../../../../services/notifications/notifications.service";
-import {SettingsService} from "../../../../../services/settings.service";
-import {PrivilegesService} from "../../../../../services/privileges.service";
-import {FormControl} from "@angular/forms";
-import {environment} from  "../../../../env";
-import {catchError, finalize, map, startWith, tap} from "rxjs/operators";
-import {Observable, of} from "rxjs";
-import {marker} from "@biesbjerg/ngx-translate-extract-marker";
-import {FileValidators} from "ngx-file-drag-drop";
-import {DomSanitizer} from "@angular/platform-browser";
-import {ConfigService} from "../../../../../services/config.service";
-import {HistoryService} from "../../../../../services/history.service";
+import { ActivatedRoute, Router } from "@angular/router";
+import { HttpClient } from "@angular/common/http";
+import { UserService } from "../../../../../services/user.service";
+import { AuthService } from "../../../../../services/auth.service";
+import { TranslateService } from "@ngx-translate/core";
+import { NotificationService } from "../../../../../services/notifications/notifications.service";
+import { SettingsService } from "../../../../../services/settings.service";
+import { PrivilegesService } from "../../../../../services/privileges.service";
+import { FormControl } from "@angular/forms";
+import { catchError, finalize, map, startWith, tap } from "rxjs/operators";
+import { Observable, of } from "rxjs";
+import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import { FileValidators } from "ngx-file-drag-drop";
+import { DomSanitizer } from "@angular/platform-browser";
+import { ConfigService } from "../../../../../services/config.service";
+import { HistoryService } from "../../../../../services/history.service";
+import { environment } from  "../../../../env";
+
 declare const $: any;
 
 @Component({
@@ -53,11 +54,15 @@ export class UpdatePositionsMaskComponent implements OnInit {
     currentPage             : number    = 1;
     suppliers               : any       = [];
     filteredOptions         : Observable<any> | undefined;
+    forms                   : any       = [];
     form                    : any       = {
         'label': {
             'control': new FormControl(),
         },
         'supplier_id': {
+            'control': new FormControl(),
+        },
+        'form_id': {
             'control': new FormControl(),
         }
     };
@@ -67,14 +72,6 @@ export class UpdatePositionsMaskComponent implements OnInit {
             'id': 'facturation_fields',
             'label': this.translate.instant('FACTURATION.facturation'),
             'values': [
-                {
-                    id: 'order_number',
-                    label: marker('FACTURATION.order_number'),
-                    unit: 'facturation',
-                    type: 'text',
-                    color: 'yellow',
-                    regex: ''
-                },
                 {
                     id: 'delivery_number',
                     label: marker('FACTURATION.delivery_number'),
@@ -202,6 +199,16 @@ export class UpdatePositionsMaskComponent implements OnInit {
     ) { }
 
     async ngOnInit(): Promise<void> {
+        this.http.get(environment['url'] + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
+            tap((data: any) => {
+                this.forms = data.forms;
+            }),
+            catchError((err: any) => {
+                console.debug(err);
+                this.notify.handleErrors(err);
+                return of(false);
+            })
+        ).subscribe();
         this.serviceSettings.init();
         this.launchOnInit = true;
         this.positionMaskId = this.route.snapshot.params['id'];
@@ -235,6 +242,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
             }, true, '', false);
         }
         this.form['label'].control.setValue(this.positionsMask.label);
+        this.form['form_id'].control.setValue(this.positionsMask.form_id);
         this.filteredOptions = this.form['supplier_id'].control.valueChanges
             .pipe(
                 startWith(''),
@@ -292,7 +300,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
             this.toHighlight = value;
             const filterValue = value.toLowerCase();
             return this.suppliers.filter((option: any) => option.name.toLowerCase().indexOf(filterValue) !== -1);
-        }else {
+        } else {
             return this.suppliers;
         }
     }
@@ -362,38 +370,42 @@ export class UpdatePositionsMaskComponent implements OnInit {
     updatePositionsMask() {
         const _array = {
             'label': this.form['label'].control.value,
+            'form_id': this.form['form_id'].control.value,
             'regex': {},
         };
-        const supplierName = this.form['supplier_id'].control.value;
-        this.suppliers.forEach((element: any) => {
-            if (element.name === supplierName) {
-                Object.assign(_array, {'supplier_id': element.id});
-            }
-        });
-
-        for (const cpt in this.availableFieldsParent) {
-            this.availableFieldsParent[cpt]['values'].forEach((element: any) => {
-                if (element.regex) {
-                    Object.assign(_array['regex'], {[element.id]: element.regex});
+        if (_array['label'] && _array['form_id']) {
+            const supplierName = this.form['supplier_id'].control.value;
+            this.suppliers.forEach((element: any) => {
+                if (element.name === supplierName) {
+                    Object.assign(_array, {'supplier_id': element.id});
                 }
             });
-        }
 
-        if (_array['regex']) {
-            _array['regex'] = JSON.stringify(_array['regex']);
+            for (const cpt in this.availableFieldsParent) {
+                this.availableFieldsParent[cpt]['values'].forEach((element: any) => {
+                    if (element.regex) {
+                        Object.assign(_array['regex'], {[element.id]: element.regex});
+                    }
+                });
+            }
+
+            if (_array['regex']) {
+                _array['regex'] = JSON.stringify(_array['regex']);
+            }
+
+            this.http.put(environment['url'] + '/ws/positions_masks/update/' + this.positionMaskId, {'args': _array},{headers: this.authService.headers}).pipe(
+                tap(() => {
+                    this.historyService.addHistory('verifier', 'update_positions_masks', this.translate.instant('HISTORY-DESC.update-positions-masks', {positions_masks: _array['label']}));
+                    this.notify.success(this.translate.instant('POSITIONS-MASKS.updated'));
+                }),
+                catchError((err: any) => {
+                    console.debug(err);
+                    this.notify.handleErrors(err);
+                    this.router.navigate(['/settings/verifier/positions-mask']).then();
+                    return of(false);
+                })
+            ).subscribe();
         }
-        this.http.put(environment['url'] + '/ws/positions_masks/update/' + this.positionMaskId, {'args': _array},{headers: this.authService.headers}).pipe(
-            tap(() => {
-                this.historyService.addHistory('verifier', 'update_positions_masks', this.translate.instant('HISTORY-DESC.update-positions-masks', {positions_masks: _array['label']}));
-                this.notify.success(this.translate.instant('POSITIONS-MASKS.updated'));
-            }),
-            catchError((err: any) => {
-                console.debug(err);
-                this.notify.handleErrors(err);
-                this.router.navigate(['/settings/verifier/positions-mask']).then();
-                return of(false);
-            })
-        ).subscribe();
     }
 
     checkFile(data: any): void {
@@ -406,7 +418,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                     this.notify.handleErrors(this.translate.instant('UPLOAD.extension_unauthorized', {count: data.length}));
                     this.loading = false;
                     return;
-                }else {
+                } else {
                     const formData: FormData = new FormData();
                     if (data) formData.append(data[0].name, data[0]);
 
@@ -509,7 +521,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                     _this.deletePage(inputId);
                 }
             });
-        }else {
+        } else {
             let deleteClicked = false;
             $(".select-areas-delete-area").click(() => {
                 deleteClicked = true;
@@ -560,7 +572,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
                 this.savePosition(_selection);
                 this.savePage(this.currentPage);
             }
-        }else {
+        } else {
             const input = $('.input_' + this.lastId);
             const background = $('.background_' + this.lastId);
             const outline = $('.outline_' + this.lastId);
@@ -687,7 +699,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
         if (this.currentPage < this.invoiceImageNbPages) {
             this.currentPage = this.currentPage + 1;
             await this.changeImage(this.currentPage, this.currentPage - 1);
-        }else {
+        } else {
             await this.changeImage(1, this.invoiceImageNbPages);
         }
     }
@@ -696,7 +708,7 @@ export class UpdatePositionsMaskComponent implements OnInit {
         if (this.currentPage > 1) {
             this.currentPage = this.currentPage - 1;
             await this.changeImage(this.currentPage, this.currentPage + 1);
-        }else {
+        } else {
             await this.changeImage(this.invoiceImageNbPages, this.currentPage);
         }
     }

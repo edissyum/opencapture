@@ -16,18 +16,18 @@
  @dev : Essaid MEGHELLET <essaid.meghellet@edissyum.com>*/
 
 import { Component, OnInit } from '@angular/core';
-import {Router} from "@angular/router";
-import {HttpClient} from "@angular/common/http";
-import {AuthService} from "../../../../services/auth.service";
-import {NotificationService} from "../../../../services/notifications/notifications.service";
-import {SettingsService} from "../../../../services/settings.service";
-import {PrivilegesService} from "../../../../services/privileges.service";
-import {environment} from "../../../env";
-import {catchError, finalize, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {FormBuilder, FormControl} from "@angular/forms";
-import {TranslateService} from "@ngx-translate/core";
-import {marker} from "@biesbjerg/ngx-translate-extract-marker";
+import { Router } from "@angular/router";
+import { HttpClient } from "@angular/common/http";
+import { AuthService } from "../../../../services/auth.service";
+import { NotificationService } from "../../../../services/notifications/notifications.service";
+import { SettingsService } from "../../../../services/settings.service";
+import { PrivilegesService } from "../../../../services/privileges.service";
+import { environment } from "../../../env";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { FormBuilder, FormControl } from "@angular/forms";
+import { TranslateService } from "@ngx-translate/core";
+import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 
 
 @Component({
@@ -45,6 +45,7 @@ export class LoginMethodsComponent implements OnInit {
     isDefaultChecked        : boolean   = false;
     connexion_server_status : boolean   = false;
     synchro_users_status    : boolean   = false;
+    typeAd                  : string    = '';
     label                   : any[]     = [
         marker ('LOGIN-METHODS.ldap'),
         marker ('LOGIN-METHODS.default'),
@@ -260,10 +261,24 @@ export class LoginMethodsComponent implements OnInit {
         ).subscribe();
     }
 
+    updateTypeAd(event: any, id: any) {
+        if  (event.isUserInput) {
+            let required = true;
+            if (id === 'typeAD' && event.source.value === 'adLDAP') {
+                required = false;
+            }
+            this.connectionFormGroup.forEach((element: any) => {
+                if (element.id === 'baseDN') {
+                    element.required = required;
+                }
+            });
+        }
+    }
+
     changedDefaultMethod(loginMethodName: any): void {
         if (!this.isDefaultChecked) {
             this.enableLoginMethod(loginMethodName);
-        }else if (this.isDefaultChecked) {
+        } else if (this.isDefaultChecked) {
             this.disableLoginMethod(loginMethodName);
         }
     }
@@ -271,7 +286,7 @@ export class LoginMethodsComponent implements OnInit {
     changedLdapMethod(loginMethodName: any): void {
         if (!this.isLdapChecked) {
             this.isLdapChecked = true ;
-        }else if (this.isLdapChecked) {
+        } else if (this.isLdapChecked) {
             this.disableLoginMethod(loginMethodName);
         }
     }

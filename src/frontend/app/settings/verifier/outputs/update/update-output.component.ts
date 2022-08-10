@@ -15,22 +15,22 @@ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
-import {UserService} from "../../../../../services/user.service";
-import {TranslateService} from "@ngx-translate/core";
-import {NotificationService} from "../../../../../services/notifications/notifications.service";
-import {SettingsService} from "../../../../../services/settings.service";
-import {PrivilegesService} from "../../../../../services/privileges.service";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {FormBuilder, FormControl} from "@angular/forms";
-import {AuthService} from "../../../../../services/auth.service";
-import {environment} from  "../../../../env";
-import {catchError, finalize, map, startWith, tap} from "rxjs/operators";
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from "@angular/router";
+import { UserService } from "../../../../../services/user.service";
+import { TranslateService } from "@ngx-translate/core";
+import { NotificationService } from "../../../../../services/notifications/notifications.service";
+import { SettingsService } from "../../../../../services/settings.service";
+import { PrivilegesService } from "../../../../../services/privileges.service";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { FormBuilder, FormControl } from "@angular/forms";
+import { AuthService } from "../../../../../services/auth.service";
+import { environment } from  "../../../../env";
+import { catchError, finalize, map, startWith, tap } from "rxjs/operators";
 import { PipeTransform, Pipe } from '@angular/core';
-import {of} from "rxjs";
-import {marker} from "@biesbjerg/ngx-translate-extract-marker";
-import {HistoryService} from "../../../../../services/history.service";
+import { of } from "rxjs";
+import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import { HistoryService } from "../../../../../services/history.service";
 
 @Pipe({ name: 'highlight' })
 export class HighlightPipe implements PipeTransform {
@@ -143,10 +143,6 @@ export class UpdateOutputComponent implements OnInit {
         {
             "id": 'register_date_day',
             'label': marker('FACTURATION.register_date_day')
-        },
-        {
-            "id": 'order_number',
-            'label': 'FACTURATION.order_number'
         },
         {
             "id": 'delivery_number',
@@ -352,7 +348,7 @@ export class UpdateOutputComponent implements OnInit {
             this.toHighlight = value;
             const filterValue = value.toLowerCase();
             return array.filter((option: any) => option.value.toLowerCase().indexOf(filterValue) !== -1);
-        }else {
+        } else {
             return array;
         }
     }

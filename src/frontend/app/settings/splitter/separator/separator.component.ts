@@ -15,19 +15,19 @@
 
  @dev : Oussama Brich <oussama.brich@edissyum.com> */
 
-import {OnInit, Component} from '@angular/core';
-import {TranslateService} from "@ngx-translate/core";
-import {SettingsService} from "../../../../services/settings.service";
+import { OnInit, Component } from '@angular/core';
+import { TranslateService } from "@ngx-translate/core";
+import { SettingsService } from "../../../../services/settings.service";
 
-import {Router} from "@angular/router";
-import {UserService} from "../../../../services/user.service";
-import {PrivilegesService} from "../../../../services/privileges.service";
-import {environment} from  "../../../env";
-import {catchError, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {HttpClient} from "@angular/common/http";
-import {AuthService} from "../../../../services/auth.service";
-import {NotificationService} from "../../../../services/notifications/notifications.service";
+import { Router } from "@angular/router";
+import { UserService } from "../../../../services/user.service";
+import { PrivilegesService } from "../../../../services/privileges.service";
+import { environment } from  "../../../env";
+import { catchError, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { HttpClient } from "@angular/common/http";
+import { AuthService } from "../../../../services/auth.service";
+import { NotificationService } from "../../../../services/notifications/notifications.service";
 
 @Component({
     selector: 'app-separator',
@@ -82,7 +82,7 @@ export class SeparatorComponent implements OnInit {
     }
 
     onChangeType() {
-        let args = {};
+        let args;
         if (this.selectedSeparator === "bundleSeparator") {
             args = {
                 'type'  : 'bundleSeparator',

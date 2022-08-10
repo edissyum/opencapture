@@ -16,12 +16,15 @@
 # @dev : Nathan Cheval <nathan.cheval@edissyum.com>
 
 import os
+import re
 import json
+import urllib.parse
 from flask_cors import CORS
 from flask_babel import Babel
 from werkzeug.wrappers import Request
 from flask import request, session, Flask
-from .functions import retrieve_config_from_custom_id
+from src.backend.main import create_classes_from_custom_id
+from .functions import is_custom_exists, retrieve_custom_from_url, retrieve_config_from_custom_id
 from src.backend.import_rest import auth, locale, config, user, splitter, verifier, roles, privileges, custom_fields, \
     forms, status, accounts, outputs, maarch, inputs, positions_masks, history, doctypes
 
@@ -33,11 +36,22 @@ class Middleware:
     def __call__(self, environ, start_response):
         _request = Request(environ)
         splitted_request = _request.path.split('ws/')
+        domain_name = urllib.parse.urlparse(environ['HTTP_REFERER']).netloc
+        local_regex = re.compile('^(127.0.(0|1).1|10(\.(25[0-5]|2[0-4][0-9]|1[0-9]{1,2}|[0-9]{1,2})){3}|((172\.(1[6-9]|2[0-9]|3[01]))|192\.168)(\.(25[0-5]|2[0-4][0-9]|1[0-9]{1,2}|[0-9]{1,2})){2})$')
+        if domain_name != 'localhost' and not local_regex.match(domain_name) and is_custom_exists(domain_name):
+            environ['mod_wsgi.path_info'] = environ['mod_wsgi.path_info'].replace('/backend_oc/', '/' + domain_name + '/backend_oc/')
+            environ['SCRIPT_NAME'] = domain_name
+            return self.middleware_app(environ, start_response)
+
         if splitted_request[0] != '/':
             custom_id = splitted_request[0]
-            if retrieve_config_from_custom_id(custom_id.replace('/', '')):
+            if is_custom_exists(custom_id.replace('/', '')):
                 environ['PATH_INFO'] = environ['PATH_INFO'][len(custom_id):]
                 environ['SCRIPT_NAME'] = custom_id
+                path = retrieve_config_from_custom_id(custom_id.replace('/', '')).replace('config.ini', '')
+                if os.path.isfile(path + '/secret_key'):
+                    with open(path + '/secret_key', 'r') as secret_file:
+                        app.config['SECRET_KEY'] = secret_file.read()
         return self.middleware_app(environ, start_response)
 
 
@@ -47,13 +61,10 @@ babel = Babel(app)
 CORS(app, supports_credentials=True)
 
 app.config.from_mapping(
-    SECRET_KEY='§§SECRET§§',
     UPLOAD_FOLDER=os.path.join(app.instance_path, 'upload/verifier/'),
     UPLOAD_FOLDER_SPLITTER=os.path.join(app.instance_path, 'upload/splitter/'),
+    BABEL_TRANSLATION_DIRECTORIES=app.root_path.replace('backend', 'assets') + '/i18n/backend/translations/'
 )
-
-with open(os.path.join(app.instance_path, 'lang.json'), encoding='UTF-8') as lang_file:
-    app.config['LANGUAGES'] = json.loads(lang_file.read())
 
 app.register_blueprint(auth.bp)
 app.register_blueprint(user.bp)
@@ -77,8 +88,18 @@ app.register_blueprint(doctypes.bp)
 
 @babel.localeselector
 def get_locale():
+    if 'SECRET_KEY' not in app.config or not app.config['SECRET_KEY']:
+        return 'fr'
     if 'lang' not in session:
-        session['lang'] = request.accept_languages.best_match(app.config['LANGUAGES'].keys())
+        if 'languages' in session:
+            languages = json.loads(session['languages'])
+        else:
+            custom_id = retrieve_custom_from_url(request)
+            _vars = create_classes_from_custom_id(custom_id)
+            if not _vars[0]:
+                return 'fr'
+            languages = _vars[11]
+        session['lang'] = request.accept_languages.best_match(languages.keys())
     return session['lang']
 
 

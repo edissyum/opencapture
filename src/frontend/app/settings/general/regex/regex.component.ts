@@ -16,20 +16,19 @@
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {AuthService} from "../../../../services/auth.service";
-import {TranslateService} from "@ngx-translate/core";
-import {NotificationService} from "../../../../services/notifications/notifications.service";
-import {SettingsService} from "../../../../services/settings.service";
-import {LastUrlService} from "../../../../services/last-url.service";
-import {PrivilegesService} from "../../../../services/privileges.service";
-import {LocalStorageService} from "../../../../services/local-storage.service";
-import {environment} from  "../../../env";
-import {catchError, finalize, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {Sort} from "@angular/material/sort";
-import {LocaleService} from "../../../../services/locale.service";
+import { ActivatedRoute, Router } from "@angular/router";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { AuthService } from "../../../../services/auth.service";
+import { TranslateService } from "@ngx-translate/core";
+import { NotificationService } from "../../../../services/notifications/notifications.service";
+import { SettingsService } from "../../../../services/settings.service";
+import { LastUrlService } from "../../../../services/last-url.service";
+import { PrivilegesService } from "../../../../services/privileges.service";
+import { LocalStorageService } from "../../../../services/local-storage.service";
+import { environment } from  "../../../env";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { Sort } from "@angular/material/sort";
 
 @Component({
     selector: 'app-regex',
@@ -59,7 +58,7 @@ export class RegexComponent implements OnInit {
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localeStorageService: LocalStorageService,
+        private localStorageService: LocalStorageService,
     ) { }
 
     ngOnInit(): void {
@@ -67,11 +66,11 @@ export class RegexComponent implements OnInit {
 
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('settings/general/regex') || lastUrl === '/') {
-            if (this.localeStorageService.get('regexPageIndex'))
-                this.pageIndex = parseInt(this.localeStorageService.get('regexPageIndex') as string);
+            if (this.localStorageService.get('regexPageIndex'))
+                this.pageIndex = parseInt(this.localStorageService.get('regexPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
-        }else
-            this.localeStorageService.remove('regexPageIndex');
+        } else
+            this.localStorageService.remove('regexPageIndex');
 
         this.http.get(environment['url'] + '/ws/config/getRegex', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -138,7 +137,7 @@ export class RegexComponent implements OnInit {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
         this.pageIndex = event.pageIndex;
-        this.localeStorageService.save('regexPageIndex', event.pageIndex);
+        this.localStorageService.save('regexPageIndex', event.pageIndex);
         this.loadRegex();
     }
 

@@ -20,8 +20,8 @@ import datetime
 import functools
 from . import privileges
 from flask_babel import gettext
-from flask import request, session, jsonify, current_app
 from src.backend.import_models import auth, user, roles
+from flask import request, session, jsonify, current_app
 
 
 def encode_auth_token(user_id):
@@ -39,13 +39,23 @@ def encode_auth_token(user_id):
         return jwt.encode(
             payload,
             current_app.config.get('SECRET_KEY'),
-            algorithm='HS256'
+            algorithm='HS512'
         ), days_before_exp
     except Exception as _e:
         return str(_e)
 
 
+def logout():
+    for key in list(session.keys()):
+        session.pop(key)
+
+
 def login(username, password, lang, method='default'):
+    if 'SECRET_KEY' not in current_app.config or not current_app.config['SECRET_KEY']:
+        return {
+            "errors": gettext('LOGIN_ERROR'),
+            "message": 'missing_secret_key'
+        }, 401
     session['lang'] = lang
     error = None
     user_info = None
@@ -56,10 +66,10 @@ def login(username, password, lang, method='default'):
             'password': password
         })
     elif method == 'ldap':
-        user_info, error = user.get_user_by_username({"select": ['users.id'], "username": username})
+        user_info, error = user.get_user_by_username({"select": ['users.id', 'users.username'], "username": username})
 
     if error is None:
-        encoded_token = encode_auth_token(user_info['id'])
+        encoded_token = encode_auth_token(user_info['username'])
         returned_user = user.get_user_by_id({
             'select': ['users.id', 'username', 'firstname', 'lastname', 'role', 'users.status', 'creation_date', 'users.enabled'],
             'user_id': user_info['id']
@@ -87,20 +97,58 @@ def login(username, password, lang, method='default'):
         return response, 401
 
 
+def login_with_token(token, lang):
+    session['lang'] = lang
+    error = None
+
+    try:
+        decoded_token = jwt.decode(str(token), current_app.config['SECRET_KEY'], algorithms="HS512")
+    except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
+            jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
+        return jsonify({"errors": gettext("JWT_ERROR"), "message": str(_e)}), 500
+
+    if error is None:
+        returned_user = user.get_user_by_username({
+            'select': ['users.id', 'username', 'firstname', 'lsastname', 'role', 'users.status', 'creation_date', 'users.enabled'],
+            'username': decoded_token['sub']
+        })[0]
+
+        user_privileges = privileges.get_privileges_by_role_id({'role_id': returned_user['role']})
+        if user_privileges:
+            returned_user['privileges'] = user_privileges[0]
+
+        user_role = roles.get_role_by_id({'role_id': returned_user['role']})
+        if user_role:
+            returned_user['role'] = user_role[0]
+
+        response = {
+            'auth_token': str(token),
+            'days_before_exp': 1,
+            'user': returned_user
+        }
+        return response, 200
+    else:
+        response = {
+            "errors": gettext('LOGIN_ERROR'),
+            "message": error
+        }
+        return response, 401
+
+
 def token_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if 'Authorization' in request.headers:
             token = request.headers['Authorization'].split('Bearer')[1].lstrip()
             try:
-                token = jwt.decode(str(token), current_app.config['SECRET_KEY'], algorithms=["HS256"])
+                token = jwt.decode(str(token), current_app.config['SECRET_KEY'], algorithms="HS512")
             except (jwt.InvalidTokenError, jwt.InvalidAlgorithmError, jwt.InvalidSignatureError,
                     jwt.ExpiredSignatureError, jwt.exceptions.DecodeError) as _e:
                 return jsonify({"errors": gettext("JWT_ERROR"), "message": str(_e)}), 500
 
-            user_info, _ = user.get_user_by_id({
+            user_info, _ = user.get_user_by_username({
                 'select': ['users.id'],
-                'user_id': token['sub']
+                'username': token['sub']
             })
 
             if not user_info:
@@ -134,13 +182,19 @@ def verify_user_by_username(username):
 def get_enabled_login_method():
     login_methods_name, error = auth.get_enabled_login_method()
     if error is None:
+        if len(login_methods_name) > 1:
+            return {
+                "errors": gettext('LOGIN_ERROR'),
+                "message": gettext('SEVERAL_AUTH_METHODS_ENABLED')
+            }, 401
+
         response = {
             "login_method_name": login_methods_name
         }
         return response, 200
     else:
         response = {
-            "login_method_name": '',
+            "errors": gettext('LOGIN_ERROR'),
             "message": error
         }
         return response, 401
@@ -155,8 +209,8 @@ def get_ldap_configurations():
         return response, 200
     else:
         response = {
-            "ldap_configurations": '',
-            "message": error
+            "errors": gettext('LDAP_ERROR'),
+            "message": gettext('NO_LDAP_CONFIGURATIONS_FOUND')
         }
         return response, 401
 
@@ -167,6 +221,7 @@ def update_login_method(login_method_name , server_data):
         return '', 200
     else:
         response = {
+            "errors": gettext('LOGIN_ERROR'),
             "message": error
         }
         return response, 401

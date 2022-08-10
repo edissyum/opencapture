@@ -1,5 +1,5 @@
-<div class="relative top-16 2xl:top-32 flex justify-center h-20">
-    <img src="assets/imgs/logo_opencapture.png" alt="Open-Capture For Invoices logo">
+<div class="relative top-16 2xl:top-32 flex justify-center h-20" *ngIf="this.loginImage">
+    <img [src]="this.loginImage" alt="Open-Capture For Invoices logo">
 </div>
 <div class="flex justify-center items-center" style="height: 85vh">
     <app-loader *ngIf="this.loading"></app-loader>
@@ -38,7 +38,9 @@
                 <button mat-button [disabled]="this.processLogin || this.isConnectionBtnDisabled"
                         class="w-1/3 border-solid border-green-400 border hover:bg-green-400 hover:text-white
                                transition duration-300" type="submit">
-                    <span *ngIf="!this.processLogin && !this.isConnectionBtnDisabled">{{ 'AUTH.login' | translate }}</span>
+                    <span *ngIf="!this.processLogin && !this.isConnectionBtnDisabled">
+                        {{ 'AUTH.login' | translate }}
+                    </span>
                     <i *ngIf="this.processLogin || this.isConnectionBtnDisabled"
                        class="fa-solid text-2xl fa-circle-notch fa-spin text-gray-900"
                        style="--fa-animation-duration: 1.5s;margin-top: -0.2rem;"></i>

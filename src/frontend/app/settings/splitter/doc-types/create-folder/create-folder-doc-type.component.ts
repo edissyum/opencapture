@@ -1,17 +1,17 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {ActivatedRoute, Router} from "@angular/router";
-import {UserService} from "../../../../../services/user.service";
-import {TranslateService} from "@ngx-translate/core";
-import {SettingsService} from "../../../../../services/settings.service";
-import {PrivilegesService} from "../../../../../services/privileges.service";
-import {HttpClient} from "@angular/common/http";
-import {AuthService} from "../../../../../services/auth.service";
-import {NotificationService} from "../../../../../services/notifications/notifications.service";
-import {environment} from  "../../../../env";
-import {catchError, finalize, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {DocumentTypeFactoryComponent} from "../../../../splitter/document-type-factory/document-type-factory.component";
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { ActivatedRoute, Router } from "@angular/router";
+import { UserService } from "../../../../../services/user.service";
+import { TranslateService } from "@ngx-translate/core";
+import { SettingsService } from "../../../../../services/settings.service";
+import { PrivilegesService } from "../../../../../services/privileges.service";
+import { HttpClient } from "@angular/common/http";
+import { AuthService } from "../../../../../services/auth.service";
+import { NotificationService } from "../../../../../services/notifications/notifications.service";
+import { environment } from  "../../../../env";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { DocumentTypeFactoryComponent } from "../../../../splitter/document-type-factory/document-type-factory.component";
 
 @Component({
   selector: 'app-create-folder-doc-type',
@@ -81,9 +81,9 @@ export class CreateFolderDocTypeComponent implements OnInit {
 
     getLastFolderIndex(codeSelected: string) {
         let lastIndex = 0;
-        if(codeSelected !== this.noMasterFolder) {
+        if (codeSelected !== this.noMasterFolder) {
             this.documentTypeFactoryComponent.treeDataObj.doctypeData.forEach((docType:any) => {
-                if(docType.code.startsWith(codeSelected)
+                if (docType.code.startsWith(codeSelected)
                     && docType.code.split('.').length === codeSelected.split('.').length + 1) {
                     const currentIdx = Number(docType.code.split('.').pop());
                     lastIndex = (currentIdx > lastIndex) ? currentIdx: lastIndex;
@@ -92,7 +92,7 @@ export class CreateFolderDocTypeComponent implements OnInit {
         }
         else {
             this.documentTypeFactoryComponent.treeDataObj.doctypeData.forEach((docType:any) => {
-                if(docType.code.split('.').length === 2) {
+                if (docType.code.split('.').length === 2) {
                     const currentIdx = Number(docType.code.split('.').pop());
                     lastIndex = (currentIdx > lastIndex) ? currentIdx: lastIndex;
                 }
@@ -118,7 +118,7 @@ export class CreateFolderDocTypeComponent implements OnInit {
         };
         this.loading = true;
         this.http.post(environment['url'] + '/ws/doctypes/add', newFolder, {headers: this.authService.headers}).pipe(
-            tap((data: any) => {
+            tap(() => {
                 this.notify.success(this.translate.instant('DOCTYPE.folder_added'));
                 this.form.reset();
                 this.form.controls['folder'].setValue(this.noMasterFolder);

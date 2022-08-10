@@ -19,12 +19,12 @@ import { Component, OnInit } from '@angular/core';
 import { SettingsService } from "../../../../services/settings.service";
 import { Router } from "@angular/router";
 import { PrivilegesService } from "../../../../services/privileges.service";
-import {environment} from "../../../env";
-import {catchError, finalize, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {HttpClient} from "@angular/common/http";
-import {AuthService} from "../../../../services/auth.service";
-import {NotificationService} from "../../../../services/notifications/notifications.service";
+import { environment } from "../../../env";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { HttpClient } from "@angular/common/http";
+import { AuthService } from "../../../../services/auth.service";
+import { NotificationService } from "../../../../services/notifications/notifications.service";
 
 @Component({
     selector: 'app-about-us',

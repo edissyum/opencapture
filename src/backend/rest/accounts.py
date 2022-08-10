@@ -16,9 +16,10 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 
 import os
+import json
 import base64
 import mimetypes
-from flask import Blueprint, request, make_response, jsonify
+from flask import Blueprint, request, make_response, jsonify, session
 
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
@@ -40,13 +41,14 @@ def suppliers_list():
     }
 
     if 'search' in request.args and request.args['search']:
+        args['offset'] = ''
         args['where'].append(
-            "LOWER(name) LIKE '%%" + request.args['search'].lower() + "%%' OR "
+            "(LOWER(name) LIKE '%%" + request.args['search'].lower() + "%%' OR "
             "LOWER(siret) LIKE '%%" + request.args['search'].lower() + "%%' OR "
+            "LOWER(email) LIKE '%%" + request.args['search'].lower() + "%%' OR "
             "LOWER(siren) LIKE '%%" + request.args['search'].lower() + "%%' OR "
-            "LOWER(vat_number) LIKE '%%" + request.args['search'].lower() + "%%'"
+            "LOWER(vat_number) LIKE '%%" + request.args['search'].lower() + "%%')"
         )
-
     res = accounts.retrieve_suppliers(args)
     return make_response(res[0], res[1])
 
@@ -157,6 +159,15 @@ def delete_supplier_positions(supplier_id):
     return make_response(jsonify(res[0])), res[1]
 
 
+@bp.route('accounts/suppliers/<int:supplier_id>/deletePosition', methods=['PUT'])
+@auth.token_required
+def delete_supplier_position(supplier_id):
+    field_id = request.json['args']['field_id']
+    form_id = request.json['args']['form_id']
+    res = accounts.delete_invoice_position_by_supplier_id(supplier_id, field_id, form_id)
+    return make_response(jsonify(res[0])), res[1]
+
+
 @bp.route('accounts/suppliers/skipAutoValidate/<int:supplier_id>', methods=['DELETE'])
 @auth.token_required
 def skip_auto_validate(supplier_id):
@@ -175,12 +186,13 @@ def customers_list():
         'limit': request.args['limit'] if 'limit' in request.args else ''
     }
     if 'search' in request.args and request.args['search']:
+        args['offset'] = ''
         args['where'].append(
-            "LOWER(name) LIKE '%%" + request.args['search'].lower() + "%%' OR "
+            "(LOWER(name) LIKE '%%" + request.args['search'].lower() + "%%' OR "
             "LOWER(siret) LIKE '%%" + request.args['search'].lower() + "%%' OR "
             "LOWER(company_number) LIKE '%%" + request.args['search'].lower() + "%%' OR "
             "LOWER(siren) LIKE '%%" + request.args['search'].lower() + "%%' OR "
-            "LOWER(vat_number) LIKE '%%" + request.args['search'].lower() + "%%'"
+            "LOWER(vat_number) LIKE '%%" + request.args['search'].lower() + "%%')"
         )
 
     res = accounts.retrieve_customers(args)
@@ -234,11 +246,16 @@ def get_accouting_plan():
 @bp.route('accounts/supplier/getReferenceFile', methods=['GET'])
 @auth.token_required
 def get_reference_file():
-    custom_id = retrieve_custom_from_url(request)
-    _vars = create_classes_from_custom_id(custom_id)
-    _cfg = _vars[1]
-    docservers = _vars[9]
-    file_path = docservers['REFERENTIALS_PATH'] + '/' + _cfg.cfg['REFERENCIAL']['referencialsupplierdocument']
+    if 'docservers' in session and 'config' in session:
+        docservers = json.loads(session['docservers'])
+        config = json.loads(session['config'])
+    else:
+        custom_id = retrieve_custom_from_url(request)
+        _vars = create_classes_from_custom_id(custom_id)
+        docservers = _vars[9]
+        config = _vars[1]
+
+    file_path = docservers['REFERENTIALS_PATH'] + '/' + config['REFERENCIAL']['referencialsupplierdocument']
     mime = mimetypes.guess_type(file_path)[0]
     file_content = verifier.get_file_content('referential_supplier', os.path.basename(file_path), mime)
     return make_response({'filename': os.path.basename(file_path), 'mimetype': mime, 'file': str(base64.b64encode(file_content.get_data()).decode('UTF-8'))}), 200

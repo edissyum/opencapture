@@ -17,7 +17,7 @@
 # @dev : Oussama Brich <oussama.brich@edissyum.com>
 
 import json
-from flask import request
+from flask import request, session
 from gettext import gettext
 from src.backend.functions import retrieve_custom_from_url
 from src.backend.main import create_classes_from_custom_id
@@ -26,6 +26,8 @@ from src.backend.main import create_classes_from_custom_id
 def retrieve_configurations(args):
     custom_id = retrieve_custom_from_url(request)
     _vars = create_classes_from_custom_id(custom_id)
+    if not _vars[0]:
+        return {}, _vars[1]
     database = _vars[0]
     error = None
     configurations = database.select({
@@ -101,6 +103,21 @@ def retrieve_regex_by_id(args):
         'table': ['regex'],
         'where': ['id = %s'],
         'data': [args['id']]
+    })
+
+    return regex, error
+
+
+def retrieve_regex_by_regex_id(args):
+    custom_id = retrieve_custom_from_url(request)
+    _vars = create_classes_from_custom_id(custom_id)
+    database = _vars[0]
+    error = None
+    regex = database.select({
+        'select': ['*'] if 'select' not in args else args['select'],
+        'table': ['regex'],
+        'where': ['regex_id = %s'],
+        'data': [args['regex_id']]
     })
 
     return regex, error

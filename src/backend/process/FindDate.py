@@ -18,24 +18,25 @@
 import re
 import json
 from datetime import datetime
-from ..functions import search_by_positions, search_custom_positions
+from src.backend.functions import search_by_positions, search_custom_positions
 
 
 class FindDate:
-    def __init__(self, text, log, regex, configurations, files, ocr, supplier, nb_pages, database, file, docservers, languages):
+    def __init__(self, text, log, regex, configurations, files, ocr, supplier, nb_pages, database, file, docservers, languages, form_id):
         self.date = ''
-        self.text = text
         self.log = log
-        self.languages = languages
-        self.configurations = configurations
-        self.docservers = docservers
-        self.regex = regex
-        self.files = files
         self.ocr = ocr
+        self.text = text
+        self.file = file
+        self.files = files
+        self.regex = regex
+        self.form_id = form_id
         self.supplier = supplier
         self.nb_pages = nb_pages
         self.database = database
-        self.file = file
+        self.languages = languages
+        self.docservers = docservers
+        self.configurations = configurations
         self.max_time_delta = configurations['timeDelta']
 
     def format_date(self, date, position, convert=False):
@@ -85,10 +86,10 @@ class FindDate:
                 if length_of_year == 2:
                     date_format = date_format.replace('%Y', '%y')
 
-                date = datetime.strptime(date, date_format).strftime(regex['formatDate'])
+                date = datetime.strptime(date, date_format).strftime(regex['format_date'])
                 # Check if the date of the document isn't too old. 62 (default value) is equivalent of 2 months
                 today = datetime.now()
-                doc_date = datetime.strptime(date, regex['formatDate'])
+                doc_date = datetime.strptime(date, regex['format_date'])
                 timedelta = today - doc_date
 
                 if int(self.max_time_delta) not in [-1, 0]:
@@ -107,7 +108,7 @@ class FindDate:
             return False
 
     def process(self, line, position):
-        for _date in re.finditer(r"" + self.regex['dateRegex'] + "", line):
+        for _date in re.finditer(r"" + self.regex['date'] + "", line):
             date = self.format_date(_date.group(), position, True)
             if date and date[0]:
                 self.date = date[0]
@@ -115,9 +116,9 @@ class FindDate:
             return False
 
     def process_due_date(self, line, position):
-        regex = self.regex['dueDateRegex'] + self.regex['dateRegex']
+        regex = self.regex['due_date'] + self.regex['date']
         for _date in re.finditer(r"" + regex + "", line):
-            for res in re.finditer(r"" + self.regex['dateRegex'] + "", line):
+            for res in re.finditer(r"" + self.regex['date'] + "", line):
                 date = self.format_date(res.group(), position, True)
                 if date and date[0]:
                     self.log.info('Due date found : ' + str(date[0]))
@@ -127,16 +128,16 @@ class FindDate:
     def run(self):
         date, due_date = None, None
         if self.supplier:
-            date = search_by_positions(self.supplier, 'invoice_date', self.ocr, self.files, self.database)
-            due_date = search_by_positions(self.supplier, 'invoice_due_date', self.ocr, self.files, self.database)
+            date = search_by_positions(self.supplier, 'invoice_date', self.ocr, self.files, self.database, self.form_id)
+            due_date = search_by_positions(self.supplier, 'invoice_due_date', self.ocr, self.files, self.database, self.form_id)
 
         if self.supplier:
             position = self.database.select({
                 'select': [
-                    "positions ->> 'invoice_date' as invoice_date_position",
-                    "positions ->> 'invoice_due_date' as invoice_due_date_position",
-                    "pages ->> 'invoice_date' as invoice_date_page",
-                    "pages ->> 'invoice_due_date' as invoice_due_date_page",
+                    "positions -> '" + str(self.form_id) + "' -> 'invoice_date' as invoice_date_position",
+                    "positions -> '" + str(self.form_id) + "' -> 'invoice_due_date' as invoice_due_date_position",
+                    "pages -> '" + str(self.form_id) + "' -> 'invoice_date' as invoice_date_page",
+                    "pages -> '" + str(self.form_id) + "' -> 'invoice_due_date' as invoice_due_date_page"
                 ],
                 'table': ['accounts_supplier'],
                 'where': ['vat_number = %s', 'status <> %s'],

@@ -4,9 +4,9 @@
 <mat-drawer-container *ngIf="!loading" class="viewer-container" hasBackdrop="false">
     <mat-drawer #drawer mode="side" opened>
         <div class="mt-1">
-            <div class="card" *ngFor="let batch of batches| slice: 0 : 10">
+            <div class="card" *ngFor="let batch of this.batches | slice: 0 : 10">
                 <mat-card class="mat-elevation-z4 my-2"
-                          [ngClass]="{'border-4 border-green-400': currentBatch.id === batch.id}">
+                          [ngClass]="{'border-4 border-green-400': this.currentBatch.id === batch.id}">
                     <a class="image-link" (click)="changeBatch(batch['id'])">
                         <mat-card-header>
                             <img mat-card-image [src]="batch['thumbnail']" alt="Open-Capture Splitter image">
@@ -14,7 +14,7 @@
                     </a>
                     <mat-card-content>
                         <mat-card-title class="card-title text-lg break-words">
-                            <a>{{batch['file_name']}}</a>
+                            <a>{{ batch['file_name'] }}</a>
                         </mat-card-title>
                         <span matTooltip="{{ 'SPLITTER.document_number' | translate }} : {{ batch['page_number'] }}"
                               class="file-count absolute right-4 text-green-400">
@@ -110,30 +110,30 @@
                             </div>
                             <div *ngIf="input.type === 'textarea'">
                                 <mat-form-field class="w-full">
-                                    <mat-label>{{input.label}}</mat-label>
-                                    <textarea matInput formControlName="{{input.label_short}}"
+                                    <mat-label>{{ input.label }}</mat-label>
+                                    <textarea matInput formControlName="{{ input.label_short }}"
                                           (ngModelChange)="setValueChange(input.label_short, $event)"></textarea>
                                 </mat-form-field>
                             </div>
                             <div *ngIf="input.type === 'text' && (!input.metadata_key || inputMode === 'Manual')">
                                 <mat-form-field class="w-full">
-                                    <mat-label>{{input.label}}</mat-label>
-                                    <input matInput formControlName="{{input.label_short}}">
+                                    <mat-label>{{ input.label }}</mat-label>
+                                    <input matInput formControlName="{{ input.label_short }}">
                                 </mat-form-field>
                             </div>
                             <div *ngIf="input.type === 'select'">
                                 <mat-form-field class="w-full">
-                                    <mat-label>{{input.label}}</mat-label>
+                                    <mat-label>{{ input.label }}</mat-label>
                                     <mat-select [formControlName]="input.label_short"
                                                 (selectionChange)="setValueChange(input.label_short, $event.value)">
                                         <mat-option *ngFor="let option of input.settings.options" [value]="option.id">
-                                            {{option.label}}
+                                            {{ option.label }}
                                         </mat-option>
                                     </mat-select>
                                 </mat-form-field>
                             </div>
                             <div *ngIf="input.type === 'checkbox'" class="flex justify-center inline-block my-4">
-                                <mat-checkbox formControlName="{{input.label_short}}">{{input.label}}</mat-checkbox>
+                                <mat-checkbox formControlName="{{ input.label_short }}">{{ input.label }}</mat-checkbox>
                             </div>
                         </div>
                     </form>
@@ -168,7 +168,7 @@
                                                  (closed)="documentMetadataOpenState = false" #documentMetadata>
                                 <mat-expansion-panel-header>
                                     <mat-panel-title>
-                                        <button class="text-lg text-left hover:text-green-400 {{document['class']}}"
+                                        <button class="text-lg text-left hover:text-green-400 {{ document['class'] }}"
                                                 [ngClass]="!document['documentTypeName'] ? 'text-red-500':''"
                                                 (click)="documentMetadata.toggle(); openDocumentTypeDialog(document);"
                                                 matTooltip="{{ 'SPLITTER.edit' | translate }}">
@@ -226,32 +226,32 @@
                                         </div>
                                         <div *ngIf="input.type === 'textarea'" [ngClass]="input.class">
                                             <mat-form-field class="w-full">
-                                                <mat-label>{{input.label}}</mat-label>
-                                                <textarea matInput formControlName="{{input.label_short}}"
+                                                <mat-label>{{ input.label }}</mat-label>
+                                                <textarea matInput formControlName="{{ input.label_short }}"
                                                           (ngModelChange)="setValueChange(input.label_short, $event)"></textarea>
                                             </mat-form-field>
                                         </div>
                                         <div *ngIf="input.type === 'text' && (!input.metadata_key || inputMode === 'Manual')"
                                              [ngClass]="input.class">
                                             <mat-form-field class="w-full">
-                                                <mat-label>{{input.label}}</mat-label>
-                                                <input matInput formControlName="{{input.label_short}}">
+                                                <mat-label>{{ input.label }}</mat-label>
+                                                <input matInput formControlName="{{ input.label_short }}">
                                             </mat-form-field>
                                         </div>
                                         <div *ngIf="input.type === 'select'" [ngClass]="input.class">
                                             <mat-form-field class="w-full">
-                                                <mat-label>{{input.label}}</mat-label>
+                                                <mat-label>{{ input.label }}</mat-label>
                                                 <mat-select [formControlName]="input.label_short"
                                                             (selectionChange)="setValueChange(input.label_short, $event.value)">
                                                     <mat-option *ngFor="let option of input.settings.options" [value]="option.id">
-                                                        {{option.label}}
+                                                        {{ option.label }}
                                                     </mat-option>
                                                 </mat-select>
                                             </mat-form-field>
                                         </div>
                                         <div *ngIf="input.type === 'checkbox'" class="flex justify-center inline-block my-4"
                                              [ngClass]="input.class">
-                                            <mat-checkbox formControlName="{{input.label_short}}">{{input.label}}</mat-checkbox>
+                                            <mat-checkbox formControlName="{{ input.label_short }}">{{ input.label }}</mat-checkbox>
                                         </div>
                                     </div>
                                 </form>
@@ -280,13 +280,13 @@
                                                   (click)="$event.stopPropagation();"
                                                   (change)="countSelectedPages();"
                                                   matTooltip="{{ 'SPLITTER.select' | translate }}"
-                                                  class="page-check-box float-left mt-4" id="page-check-box-{{page['id']}}">
+                                                  class="page-check-box float-left mt-4" id="page-check-box-{{ page['id'] }}">
                                     </mat-checkbox>
                                     <button mat-button class="page-header-btn text-gray-400 m-1"
                                             (click)="rotatePage(documentIndex, pageIndex); $event.stopPropagation()"
                                             matTooltip="{{ 'SPLITTER.pageRotated' | translate }} {{ ' ' + page['rotation'] + ' ' + ('SPLITTER.degrees' | translate)}}">
                                         <span *ngIf="page['rotation'] !== 0">
-                                            {{ page['rotation']}}
+                                            {{ page['rotation'] }}
                                         </span>
                                         <i class="fa-solid fa-rotate-right"></i>
                                     </button>
@@ -345,9 +345,9 @@
                         </button>
                         <mat-form-field class="-top-2">
                             <mat-label>{{ 'SPLITTER.send_to' | translate }}</mat-label>
-                            <mat-select [(ngModel)]="toolSelectedOption" matNativeControl>
-                                <mat-option *ngFor="let document of documents;" [value]="document['id']">
-                                    {{document['documentTypeName']}}
+                            <mat-select [(ngModel)]="toolSelectedOption">
+                                <mat-option *ngFor="let document of this.documents;" [value]="document['id']">
+                                    {{ document['documentTypeName'] }}
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
@@ -377,8 +377,8 @@
                             </button>
                         </div>
                         <div class="text-right text-gray-400">
-                            <span>{{outputs.join(', ')}}</span>
-                            <span class="text-red-500" *ngIf="outputs.length === 0">{{ 'OUTPUT.no_output_configured' | translate }}</span>
+                            <span>{{ outputs.join(', ') }}</span>
+                            <span class="text-red-500" *ngIf="this.outputs.length === 0">{{ 'OUTPUT.no_output_configured' | translate }}</span>
                         </div>
                     </div>
                 </mat-card-content>

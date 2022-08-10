@@ -15,19 +15,19 @@ along with Open-Capture for Invoices. If not, see <https://www.gnu.org/licenses/
 
 @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
-import { Title } from '@angular/platform-browser';
-import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
-import {catchError, filter, map, tap} from 'rxjs/operators';
+import {DomSanitizer, SafeUrl, Title} from '@angular/platform-browser';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { catchError, filter, map, tap } from 'rxjs/operators';
 import { TranslateService } from "@ngx-translate/core";
 import { HttpClient } from "@angular/common/http";
 
 import { NotificationService } from "../services/notifications/notifications.service";
-import {LocaleService} from "../services/locale.service";
-import {LocalStorageService} from "../services/local-storage.service";
-import {environment} from  "./env";
-import {of} from "rxjs";
+import { LocaleService } from "../services/locale.service";
+import { LocalStorageService } from "../services/local-storage.service";
+import { environment } from  "./env";
+import { of } from "rxjs";
 
 @Component({
     selector: 'app-root',
@@ -37,7 +37,7 @@ import {of} from "rxjs";
 
 export class AppComponent implements OnInit {
     title       : string = 'Open-Capture For Invoices';
-    image       : string = '';
+    image       : SafeUrl = '';
     imageMobile : string = '';
     loading     : boolean = true;
 
@@ -46,11 +46,12 @@ export class AppComponent implements OnInit {
         private http: HttpClient,
         public location: Location,
         private titleService: Title,
+        private sanitizer: DomSanitizer,
         private notify:NotificationService,
         private translate: TranslateService,
         private localeService: LocaleService,
         private activatedRoute: ActivatedRoute,
-        private localeStorageService: LocalStorageService
+        private localStorageService: LocalStorageService
     ) {}
 
     ngOnInit() {
@@ -59,34 +60,54 @@ export class AppComponent implements OnInit {
             filter(event => event instanceof NavigationEnd),
             map(() => {
                 let child = this.activatedRoute.firstChild;
-                let childImage = 'assets/imgs/logo_opencapture.png';
+                let childImage = 'assets/imgs/login_image.png';
                 let childImageMobile = 'assets/imgs/Open-Capture_Verifier.svg';
+                let splitterOrVerifier;
                 if (child) {
                     while (child.firstChild) {
                         child = child.firstChild;
                     }
                     if (this.router.url !== '/home' && !this.router.url.includes('settings')) {
-                        const splitterOrVerifier = this.localeStorageService.get('splitter_or_verifier');
+                        splitterOrVerifier = this.localStorageService.get('splitter_or_verifier');
                         if (splitterOrVerifier !== undefined) {
                             if (splitterOrVerifier === 'splitter') {
                                 childImage = 'assets/imgs/logo_splitter.png';
                                 childImageMobile = 'assets/imgs/Open-Capture_Splitter.png';
-                            }else {
+                            } else {
                                 childImage = 'assets/imgs/logo_verifier.png';
                             }
                         }
                     }
 
                     if (child.snapshot.data['title']) {
-                        return [child.snapshot.data['title'], childImage, childImageMobile];
+                        return [child.snapshot.data['title'], childImage, childImageMobile, splitterOrVerifier];
                     }
                 }
-                return [appTitle, childImage, childImageMobile];
+                return [appTitle, childImage, childImageMobile, splitterOrVerifier];
             })
         ).subscribe((data: any) => {
             const ttl = data[0];
             this.image = data[1];
             this.imageMobile = data[2];
+            const splitterOrVerifier = data[3];
+            if (!splitterOrVerifier) {
+                const b64Content = this.localStorageService.get('login_image_b64');
+                if (!b64Content) {
+                    this.http.get(environment['url'] + '/ws/config/getLoginImage').pipe(
+                        tap((data: any) => {
+                            this.localStorageService.save('login_image_b64', data);
+                            this.image = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + data);
+                        }),
+                        catchError((err: any) => {
+                            console.debug(err);
+                            this.notify.handleErrors(err);
+                            return of(false);
+                        })
+                    ).subscribe();
+                } else {
+                    this.image = this.sanitizer.bypassSecurityTrustUrl('data:image/jpeg;base64, ' + b64Content);
+                }
+            }
             if (this.localeService.currentLang === undefined) {
                 this.http.get(environment['url'] + '/ws/i18n/getCurrentLang').pipe(
                     tap((data: any) => {
@@ -102,7 +123,7 @@ export class AppComponent implements OnInit {
                         return of(false);
                     })
                 ).subscribe();
-            }else {
+            } else {
                 this.translate.get(ttl).subscribe((data:any)=> {
                     this.titleService.setTitle(data + ' - ' + this.title);
                 });

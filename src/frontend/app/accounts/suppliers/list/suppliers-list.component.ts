@@ -29,11 +29,11 @@ import { LastUrlService } from "../../../../services/last-url.service";
 import { PrivilegesService } from "../../../../services/privileges.service";
 import { LocalStorageService } from "../../../../services/local-storage.service";
 import { Sort } from "@angular/material/sort";
-import {environment} from  "../../../env";
+import { environment } from  "../../../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import { ConfirmDialogComponent } from "../../../../services/confirm-dialog/confirm-dialog.component";
-import {HistoryService} from "../../../../services/history.service";
+import { HistoryService } from "../../../../services/history.service";
 
 @Component({
     selector: 'suppliers-list',
@@ -41,7 +41,7 @@ import {HistoryService} from "../../../../services/history.service";
     styleUrls: ['./suppliers-list.component.scss']
 })
 export class SuppliersListComponent implements OnInit {
-    columnsToDisplay : string[]    = ['id', 'name', 'vat_number', 'siret', 'siren', 'iban', 'form_label', 'actions'];
+    columnsToDisplay : string[]    = ['id', 'name', 'email', 'vat_number', 'siret', 'siren', 'iban', 'form_label', 'actions'];
     headers          : HttpHeaders = this.authService.headers;
     loading          : boolean     = true;
     allSuppliers     : any         = [];
@@ -66,18 +66,18 @@ export class SuppliersListComponent implements OnInit {
         public serviceSettings: SettingsService,
         private routerExtService: LastUrlService,
         public privilegesService: PrivilegesService,
-        private localeStorageService: LocalStorageService,
+        private localStorageService: LocalStorageService,
     ) { }
 
     ngOnInit(): void {
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('accounts/suppliers') || lastUrl === '/') {
-            if (this.localeStorageService.get('suppliersPageIndex'))
-                this.pageIndex = parseInt(this.localeStorageService.get('suppliersPageIndex') as string);
+            if (this.localStorageService.get('suppliersPageIndex'))
+                this.pageIndex = parseInt(this.localStorageService.get('suppliersPageIndex') as string);
             this.offset = this.pageSize * (this.pageIndex);
-        }else
-            this.localeStorageService.remove('suppliersPageIndex');
+        } else
+            this.localStorageService.remove('suppliersPageIndex');
 
         this.http.get(environment['url'] + '/ws/accounts/suppliers/list', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
@@ -133,7 +133,7 @@ export class SuppliersListComponent implements OnInit {
     onPageChange(event: any) {
         this.pageSize = event.pageSize;
         this.offset = this.pageSize * (event.pageIndex);
-        this.localeStorageService.save('suppliersPageIndex', event.pageIndex);
+        this.localStorageService.save('suppliersPageIndex', event.pageIndex);
         this.loadSuppliers();
     }
 
@@ -291,13 +291,13 @@ export class SuppliersListComponent implements OnInit {
     importSuppliers(event: any) {
         const file:File = event.target.files[0];
         if (file) {
+            this.loading = true;
             const formData: FormData = new FormData();
             formData.append(file.name, file);
             this.http.post(environment['url'] + '/ws/accounts/supplier/importSuppliers', formData, {headers: this.authService.headers},
             ).pipe(
                 tap(() => {
                     this.notify.success(this.translate.instant('ACCOUNTS.suppliers_referencial_loaded'));
-                    this.loading = true;
                     this.loadSuppliers();
                 }),
                 catchError((err: any) => {

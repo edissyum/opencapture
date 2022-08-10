@@ -15,11 +15,11 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {Component, OnInit} from '@angular/core';
-import {Router} from "@angular/router";
-import {UserService} from "../../services/user.service";
-import {SettingsService} from "../../services/settings.service";
-import {PrivilegesService} from "../../services/privileges.service";
+import { Component, OnInit } from '@angular/core';
+import { Router } from "@angular/router";
+import { UserService } from "../../services/user.service";
+import { SettingsService } from "../../services/settings.service";
+import { PrivilegesService } from "../../services/privileges.service";
 
 @Component({
     selector: 'app-panel',
@@ -27,7 +27,6 @@ import {PrivilegesService} from "../../services/privileges.service";
 })
 
 export class SettingsComponent implements OnInit {
-    isMenuOpen              : boolean   = this.serviceSettings.getIsMenuOpen();
     selectedSetting         : string    = this.serviceSettings.getSelectedSetting();
     selectedParentSetting   : string    = this.serviceSettings.getSelectedParentSetting();
     settings                : any       = this.serviceSettings.getSettings();
@@ -56,9 +55,5 @@ export class SettingsComponent implements OnInit {
 
         if (!settingsFound)
             this.router.navigateByUrl('/settings/general/configurations').then();
-    }
-
-    toggleMenu() {
-        this.isMenuOpen = !this.isMenuOpen;
     }
 }

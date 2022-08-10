@@ -15,21 +15,21 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {Component, OnInit} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {ActivatedRoute, Router} from "@angular/router";
-import {FormBuilder, FormControl} from "@angular/forms";
-import {AuthService} from "../../../../../services/auth.service";
-import {UserService} from "../../../../../services/user.service";
-import {TranslateService} from "@ngx-translate/core";
-import {NotificationService} from "../../../../../services/notifications/notifications.service";
-import {SettingsService} from "../../../../../services/settings.service";
-import {PrivilegesService} from "../../../../../services/privileges.service";
-import {moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
-import {environment} from  "../../../../env";
-import {catchError, finalize, tap} from "rxjs/operators";
-import {of} from "rxjs";
-import {marker} from "@biesbjerg/ngx-translate-extract-marker";
+import { Component, OnInit } from '@angular/core';
+import { HttpClient } from "@angular/common/http";
+import { ActivatedRoute, Router } from "@angular/router";
+import { FormBuilder, FormControl } from "@angular/forms";
+import { AuthService } from "../../../../../services/auth.service";
+import { UserService } from "../../../../../services/user.service";
+import { TranslateService } from "@ngx-translate/core";
+import { NotificationService } from "../../../../../services/notifications/notifications.service";
+import { SettingsService } from "../../../../../services/settings.service";
+import { PrivilegesService } from "../../../../../services/privileges.service";
+import { moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
+import { environment } from  "../../../../env";
+import { catchError, finalize, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { marker } from "@biesbjerg/ngx-translate-extract-marker";
 
 @Component({
     selector: 'form-builder',
@@ -49,6 +49,9 @@ export class SplitterFormBuilderComponent implements OnInit {
             'control': new FormControl(),
         },
         'metadata_method': {
+            'control': new FormControl(),
+        },
+        'export_zip_file': {
             'control': new FormControl(),
         },
     };
@@ -313,7 +316,7 @@ export class SplitterFormBuilderComponent implements OnInit {
                     return of(false);
                 })
             ).subscribe();
-        }else {
+        } else {
             this.loading = false;
         }
     }
@@ -417,6 +420,7 @@ export class SplitterFormBuilderComponent implements OnInit {
         const label             = this.form.label.control.value;
         const isDefault         = this.form.default_form.control.value;
         const metadataMethod    = this.form.metadata_method.control.value;
+        const exportZipFile     = this.form.export_zip_file.control.value;
         const outputs: any[]    = [];
         this.outputForm.forEach((element: any) => {
             if (element.control.value) outputs.push(element.control.value);
@@ -424,7 +428,13 @@ export class SplitterFormBuilderComponent implements OnInit {
 
         if (label !== '' && outputs.length >= 1) {
             this.http.put(environment['url'] + '/ws/forms/update/' + this.formId, {
-                    'args': {'label' : label, 'default_form' : isDefault, 'outputs': outputs, 'metadata_method': metadataMethod}
+                    'args': {
+                        'label'             : label,
+                        'default_form'      : isDefault,
+                        'outputs'           : outputs,
+                        'metadata_method'   : metadataMethod,
+                        'export_zip_file'   : exportZipFile
+                    }
                 }, {headers: this.authService.headers},
             ).pipe(
                 tap(()=> {
@@ -445,7 +455,7 @@ export class SplitterFormBuilderComponent implements OnInit {
                     return of(false);
                 })
             ).subscribe();
-        }else {
+        } else {
             if (!label && outputs.length === 0) this.notify.error(this.translate.instant('FORMS.label_and_output_mandatory'));
             else if (!label) this.notify.error(this.translate.instant('FORMS.label_mandatory'));
             else if (outputs.length === 0) this.notify.error(this.translate.instant('FORMS.output_type_mandatory'));
@@ -482,7 +492,7 @@ export class SplitterFormBuilderComponent implements OnInit {
                     return of(false);
                 })
             ).subscribe();
-        }else {
+        } else {
             this.notify.error(this.translate.instant('FORMS.label_mandatory'));
         }
     }

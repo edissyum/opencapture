@@ -16,6 +16,7 @@
 # @dev : Nathan Cheval <nathan.cheval@outlook.fr>
 import json
 import os
+import sys
 import random
 import re
 from xml.dom import minidom
@@ -33,8 +34,8 @@ class Splitter:
         self.docservers = docservers
         self.result_batches = []
         self.separator_qr = separator_qr
-        self.doc_start = self.config.cfg['SPLITTER']['docstart']
-        self.bundle_start = self.config.cfg['SPLITTER']['bundlestart']
+        self.doc_start = self.config['SPLITTER']['docstart']
+        self.bundle_start = self.config['SPLITTER']['bundlestart']
 
     def get_result_documents(self, blank_pages):
         split_document = 1
@@ -200,6 +201,8 @@ class Splitter:
         _date = year + month + day + hour + minute + seconds
         random_num = str(random.randint(0, 99999)).zfill(5)
         mask_values = mask_args['mask'].split('#')
+        print("mask_values : ")
+        print(mask_values)
         separator = mask_args['separator'] if mask_args['separator'] else ''
         for mask_value in mask_values:
             if not mask_value:
@@ -217,13 +220,14 @@ class Splitter:
                 """
                     PDF masks value
                 """
-                if document:
-                    if mask_value in document['metadata']:
-                        mask_result.append(
-                            (document['metadata'][mask_value] if document['metadata'][mask_value] else '')
-                            .replace(' ', separator))
-                    elif mask_value == 'doctype':
-                        mask_result.append(document['documentTypeKey'].replace(' ', separator))
+                if mask_value in document['metadata']:
+                    mask_result.append(
+                        (document['metadata'][mask_value] if document['metadata'][mask_value] else '')
+                        .replace(' ', separator))
+                elif mask_value == 'doctype':
+                    mask_result.append(document['documentTypeKey'].replace(' ', separator))
+                elif mask_value == 'document_identifier':
+                    mask_result.append(document['id'])
                 else:
                     """
                         PDF value when mask value not found in metadata
@@ -242,7 +246,7 @@ class Splitter:
         return mask_result
 
     @staticmethod
-    def export_xml(fields_param, documents, metadata, parameters, filename, now):
+    def export_xml(documents, metadata, parameters, filename, now):
         year = str(now.year)
         month = str(now.month).zfill(2)
         day = str(now.day).zfill(2)
@@ -335,7 +339,6 @@ class Splitter:
         :param script_name: script name to launch
         :param method: method name to call
         """
-        import sys
         sys.path.append(script_path)
         script = script_name.replace('.py', '')
         module = __import__(script, fromlist=method)

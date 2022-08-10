@@ -18,14 +18,13 @@
             </button>
             <button [class.hidden]="!this.privilegesService.hasPrivilege('export_suppliers')"
                     (click)="getReferenceFile()" class="relative float-right -top-12 right-4 ml-4"
-                    [matTooltip]="'ACCOUNTS.export_suppliers' | translate">
+                    [matTooltip]="'ACCOUNTS.export_suppliers' | translate" [disabled]="this.loading">
                 <i class="fa-solid fa-file-export text-2xl ml-2"></i>
             </button>
             <input type="file" class="hidden" accept=".csv, .ods, .xlsx" (change)="importSuppliers($event)" #suppliersUpload>
             <button [class.hidden]="!this.privilegesService.hasPrivilege('import_suppliers')"
-                    [matTooltip]="'ACCOUNTS.import_suppliers' | translate"
-                    class="relative float-right -top-12 right-4 ml-4"
-                    (click)="suppliersUpload.click()">
+                    [matTooltip]="'ACCOUNTS.import_suppliers' | translate" (click)="suppliersUpload.click()"
+                    [disabled]="this.loading" class="relative float-right -top-12 right-4 ml-4">
                 <i class="fa-solid fa-file-import text-2xl ml-2"></i>
             </button>
         </div>
@@ -37,6 +36,10 @@
             <ng-container matColumnDef="name">
                 <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ACCOUNTS.supplier_name' | translate }} </mat-header-cell>
                 <mat-cell *matCellDef="let element"> {{ element.name }} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="email">
+                <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ACCOUNTS.email' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{ element.email }} </mat-cell>
             </ng-container>
             <ng-container matColumnDef="vat_number">
                 <mat-header-cell mat-sort-header *matHeaderCellDef> {{ 'ACCOUNTS.vat_number' | translate }} </mat-header-cell>

@@ -91,6 +91,13 @@ def export_xml(invoice_id):
     return make_response(res[0], res[1])
 
 
+@bp.route('verifier/invoices/<int:invoice_id>/delete_documents', methods=['GET'])
+@auth.token_required
+def delete_documents_by_invoice_id(invoice_id):
+    res = verifier.delete_documents_by_invoice_id(invoice_id)
+    return make_response(res[0], res[1])
+
+
 @bp.route('verifier/invoices/<int:invoice_id>/export_maarch', methods=['POST'])
 @auth.token_required
 def export_maarch(invoice_id):

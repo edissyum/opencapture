@@ -25,7 +25,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
-import {HTTP_INTERCEPTORS, HttpClient} from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -105,7 +105,8 @@ import { RegexComponent } from './settings/general/regex/regex.component';
 import { HintServiceComponent } from "../services/hint/hint.service";
 import { Error500Component } from './errors/error-500/error-500.component';
 import { MatSelectCountryModule } from "@angular-material-extensions/select-country";
-import {MiddlewareComponent} from "./middleware.component";
+import { MiddlewareComponent } from "./middleware.component";
+import { VerifierDisplayComponent } from './settings/verifier/display/display.component';
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, 'assets/i18n/frontend/', '.json');
@@ -175,7 +176,8 @@ export function createTranslateLoader(http: HttpClient) {
         RegexComponent,
         HintServiceComponent,
         Error500Component,
-        LoginMethodsComponent
+        LoginMethodsComponent,
+        VerifierDisplayComponent
     ],
     imports: [
         BrowserModule,

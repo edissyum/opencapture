@@ -47,11 +47,6 @@ elif 'process' in custom_array['FindDeliveryNumber']['path']:
     FindDeliveryNumber = getattr(__import__(custom_array['FindDeliveryNumber']['path'] + '.' + custom_array['FindDeliveryNumber']['module'], fromlist=[custom_array['FindDeliveryNumber']['module']]),
                                  custom_array['FindDeliveryNumber']['module'])
 
-if 'FindOrderNumber' or 'process' not in custom_array['FindOrderNumber']['path']:
-    from src.backend.process.FindOrderNumber import FindOrderNumber
-elif 'process' in custom_array['FindOrderNumber']['path']:
-    FindOrderNumber = getattr(__import__(custom_array['FindOrderNumber']['path'] + '.' + custom_array['FindOrderNumber']['module'], fromlist=[custom_array['FindOrderNumber']['module']]),
-                              custom_array['FindOrderNumber']['module'])
 
 if 'FindFooterRaw' or 'process' not in custom_array['FindFooterRaw']['path']:
     from src.backend.process.FindFooterRaw import FindFooterRaw
