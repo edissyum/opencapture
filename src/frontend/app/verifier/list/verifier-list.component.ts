@@ -160,6 +160,10 @@ export class VerifierListComponent implements OnInit {
         if (!this.authService.headersExists) {
             this.authService.generateHeaders();
         }
+
+        if (!this.userService.user) {
+            this.userService.user = this.userService.getUserFromLocal();
+        }
         marker('VERIFIER.nb_pages'); // Needed to get the translation in the JSON file
         marker('VERIFIER.expand_all'); // Needed to get the translation in the JSON file
         marker('VERIFIER.collapse_all'); // Needed to get the translation in the JSON file
@@ -195,7 +199,7 @@ export class VerifierListComponent implements OnInit {
         setTimeout(() => {
             this.loadForms();
             this.loadCustomers();
-        });
+        }, 100);
     }
 
     loadForms() {
