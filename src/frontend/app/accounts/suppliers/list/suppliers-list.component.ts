@@ -70,7 +70,9 @@ export class SuppliersListComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        this.authService.generateHeaders();
+        if (!this.authService.headersExists) {
+            this.authService.generateHeaders();
+        }
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('accounts/suppliers') || lastUrl === '/') {

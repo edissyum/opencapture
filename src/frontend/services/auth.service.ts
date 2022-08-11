@@ -75,6 +75,9 @@ export class AuthService {
         if (environment['customId']) {
             token_name += '_' + environment['customId'];
             user_token_name += '_' + environment['customId'];
+        } else if (environment['fqdn']) {
+            token_name += '_' + environment['fqdn'];
+            user_token_name += '_' + environment['fqdn'];
         }
         return {
             'token_jwt': token_name,

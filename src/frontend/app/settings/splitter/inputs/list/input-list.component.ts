@@ -66,7 +66,6 @@ export class SplitterInputListComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.authService.generateHeaders();
         this.serviceSettings.init();
         // If we came from anoter route than profile or settings panel, reset saved settings before launch loadUsers function
         const lastUrl = this.routerExtService.getPreviousUrl();

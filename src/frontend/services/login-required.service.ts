@@ -72,7 +72,9 @@ export class LoginRequiredService implements CanActivate {
                 tap((data: any) => {
                     this.userService.setUser(data.body.user);
                     this.authService.setTokens(data.body.auth_token, btoa(JSON.stringify(this.userService.getUser())), data.body.days_before_exp);
-                    this.authService.generateHeaders();
+                    if (!this.authService.headersExists) {
+                        this.authService.generateHeaders();
+                    }
                     this.notify.success(this.translate.instant('AUTH.authenticated'));
                     this.configService.readConfig().then(() => {
                         this.historyService.addHistory('general', 'login', this.translate.instant('HISTORY-DESC.login_with_token'));

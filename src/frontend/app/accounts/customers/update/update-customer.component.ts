@@ -143,7 +143,9 @@ export class UpdateCustomerComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        this.authService.generateHeaders();
+        if (!this.authService.headersExists) {
+            this.authService.generateHeaders();
+        }
         this.customerId = this.route.snapshot.params['id'];
         this.http.get(environment['url'] + '/ws/accounts/customers/getById/' + this.customerId, {headers: this.authService.headers}).pipe(
             tap((customer: any) => {

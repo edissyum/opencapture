@@ -48,7 +48,6 @@ export class AboutUsComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.authService.generateHeaders();
         this.serviceSettings.init();
         this.isProd = environment.production;
         this.currentVersion = environment.version;

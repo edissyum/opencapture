@@ -174,7 +174,9 @@ export class CreateSupplierComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.authService.generateHeaders();
+        if (!this.authService.headersExists) {
+            this.authService.generateHeaders();
+        }
         this.http.get(environment['url'] + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 const forms = data.forms;

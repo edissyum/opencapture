@@ -149,7 +149,6 @@ export class UpdateRoleComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.authService.generateHeaders();
         this.serviceSettings.init();
         this.roleId = this.route.snapshot.params['id'];
 

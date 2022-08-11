@@ -45,6 +45,9 @@ export class MiddlewareComponent implements HttpInterceptor {
             currentUrl = currentUrl.replace('http://', '').replace('https://', '');
             currentUrl = currentUrl.replace(new RegExp('//'), '/');
             const currentUrlArray = currentUrl.split('/');
+            if (this.isValidFQDN(currentUrlArray[0])) {
+                environment['fqdn'] = currentUrlArray[0];
+            }
             for (let i = 0; i <= currentUrlArray.length; i++) {
                 if (currentUrlArray[i] === 'dist') {
                     let customId = '';

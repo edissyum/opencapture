@@ -51,6 +51,8 @@ export class UserService {
         let user_token_name = 'OpenCaptureForInvoicesToken_user';
         if (environment['customId']) {
             user_token_name += '_' + environment['customId'];
+        } else if (environment['fqdn']) {
+            user_token_name += '_' + environment['fqdn'];
         }
         return this.localStorage.getCookie(user_token_name);
     }

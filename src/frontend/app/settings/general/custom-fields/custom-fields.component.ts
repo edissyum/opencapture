@@ -134,7 +134,6 @@ export class CustomFieldsComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.authService.generateHeaders();
         this.serviceSettings.init();
         this.retrieveCustomFields();
         this.form = this.toFormGroup();

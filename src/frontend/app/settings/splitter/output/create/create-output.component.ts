@@ -103,7 +103,6 @@ export class SplitterCreateOutputComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.authService.generateHeaders();
         this.serviceSettings.init();
 
         this.outputForm.forEach((element: any) => {

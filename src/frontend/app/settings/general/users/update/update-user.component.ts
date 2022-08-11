@@ -107,7 +107,6 @@ export class UpdateUserComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.authService.generateHeaders();
         this.serviceSettings.init();
         this.userId = this.route.snapshot.params['id'];
 

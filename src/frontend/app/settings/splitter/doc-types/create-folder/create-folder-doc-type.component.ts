@@ -65,7 +65,6 @@ export class CreateFolderDocTypeComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        this.authService.generateHeaders();
         this.serviceSettings.init();
         this.form = this.toFormGroup();
     }

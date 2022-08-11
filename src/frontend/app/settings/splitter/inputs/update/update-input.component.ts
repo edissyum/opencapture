@@ -103,7 +103,6 @@ export class SplitterUpdateInputComponent implements OnInit {
 
 
     ngOnInit(): void {
-        this.authService.generateHeaders();
         this.serviceSettings.init();
         this.inputId = this.route.snapshot.params['id'];
 
