@@ -67,6 +67,7 @@ export class DocserversComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
+        this.authService.generateHeaders();
         this.serviceSettings.init();
 
         const lastUrl = this.routerExtService.getPreviousUrl();

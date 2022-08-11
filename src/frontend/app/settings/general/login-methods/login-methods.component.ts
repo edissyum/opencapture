@@ -201,6 +201,7 @@ export class LoginMethodsComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
+        this.authService.generateHeaders();
         this.serviceSettings.init();
         this.http.post(environment['url'] + '/ws/auth/retrieveLoginMethodName', {headers: this.authService.headers}).pipe(
             tap((data: any) => {

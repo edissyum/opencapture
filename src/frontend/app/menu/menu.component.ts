@@ -23,6 +23,7 @@ import { UserService } from "../../services/user.service";
 import { LocaleService } from "../../services/locale.service";
 import { PrivilegesService } from "../../services/privileges.service";
 import { LocalStorageService } from "../../services/local-storage.service";
+import {AuthService} from "../../services/auth.service";
 
 @Component({
     selector: 'app-menu',
@@ -39,6 +40,7 @@ export class MenuComponent implements OnInit {
     constructor(
         public router: Router,
         public location: Location,
+        public authService: AuthService,
         public userService: UserService,
         public translate: TranslateService,
         public localeService: LocaleService,

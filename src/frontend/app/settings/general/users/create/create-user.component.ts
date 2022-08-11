@@ -103,6 +103,7 @@ export class CreateUserComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.authService.generateHeaders();
         this.serviceSettings.init();
 
         this.http.get(environment['url'] + '/ws/accounts/customers/list', {headers: this.authService.headers}).pipe(

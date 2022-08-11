@@ -157,6 +157,8 @@ export class VerifierListComponent implements OnInit {
     isNotLevelOne = (_: number, node: flatNode) => node.level !== 1;
 
     async ngOnInit() {
+        this.authService.generateHeaders();
+        console.log(this.authService.headers);
         marker('VERIFIER.nb_pages'); // Needed to get the translation in the JSON file
         marker('VERIFIER.expand_all'); // Needed to get the translation in the JSON file
         marker('VERIFIER.collapse_all'); // Needed to get the translation in the JSON file
@@ -189,9 +191,10 @@ export class VerifierListComponent implements OnInit {
                 return of(false);
             })
         ).subscribe();
-
-        this.loadForms();
-        await this.loadCustomers();
+        setTimeout(() => {
+            this.loadForms();
+            this.loadCustomers();
+        });
     }
 
     loadForms() {

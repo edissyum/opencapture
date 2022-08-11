@@ -141,6 +141,7 @@ export class CreateCustomerComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
+        this.authService.generateHeaders();
         this.loading = false;
     }
 

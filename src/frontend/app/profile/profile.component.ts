@@ -95,6 +95,7 @@ export class UserProfileComponent implements OnInit {
     ) { }
 
     ngOnInit() {
+        this.authService.generateHeaders();
         this.userId = this.route.snapshot.params['id'];
 
         if (parseInt(this.userId) !== parseInt(this.userService.user.id)) {

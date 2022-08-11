@@ -38,6 +38,7 @@ export class LogoutComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.authService.generateHeaders();
         this.historyService.addHistory('general', 'logout', this.translate.instant('HISTORY-DESC.logout'));
         this.authService.logout();
     }

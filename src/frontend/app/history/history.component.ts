@@ -93,6 +93,7 @@ export class HistoryComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.authService.generateHeaders();
         this.http.get(environment['url'] + '/ws/users/list_full', {headers: this.authService.headers}).pipe(
             tap((data: any) => {
                 this.users = [];

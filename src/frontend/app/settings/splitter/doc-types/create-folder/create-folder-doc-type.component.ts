@@ -20,11 +20,9 @@ import { DocumentTypeFactoryComponent } from "../../../../splitter/document-type
 })
 export class CreateFolderDocTypeComponent implements OnInit {
     @ViewChild(DocumentTypeFactoryComponent, {static : true}) documentTypeFactoryComponent! : DocumentTypeFactoryComponent;
-    selectedFormId: number | undefined;
-    loading: boolean        = false;
-    noMasterFolder: string  = '_NO_MASTER';
-    form!: FormGroup;
-    fields: any = [
+    loading             : boolean   = false;
+    noMasterFolder      : string    = '_NO_MASTER';
+    fields              : any       = [
         {
             id      : 'key',
             type    : 'text',
@@ -50,6 +48,8 @@ export class CreateFolderDocTypeComponent implements OnInit {
             disabled: true,
         },
     ];
+    selectedFormId      : number | undefined;
+    form!: FormGroup;
 
     constructor(
       private http: HttpClient,
@@ -65,6 +65,7 @@ export class CreateFolderDocTypeComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
+        this.authService.generateHeaders();
         this.serviceSettings.init();
         this.form = this.toFormGroup();
     }

@@ -21,19 +21,19 @@ import { SettingsService } from "../../../services/settings.service";
 import { PrivilegesService } from "../../../services/privileges.service";
 
 @Component({
-  selector: 'app-error',
-  templateUrl: './error-500.component.html',
-  styleUrls: ['./error-500.component.scss']
+    selector: 'app-error',
+    templateUrl: './error-500.component.html',
+    styleUrls: ['./error-500.component.scss']
 })
 export class Error500Component implements OnInit {
 
-  constructor(
-      public userService: UserService,
-      public serviceSettings: SettingsService,
-      public privilegesService: PrivilegesService,
-  ) { }
+    constructor(
+        public userService: UserService,
+        public serviceSettings: SettingsService,
+        public privilegesService: PrivilegesService,
+    ) { }
 
-  ngOnInit(): void {
-  }
+    ngOnInit(): void {
+    }
 
 }

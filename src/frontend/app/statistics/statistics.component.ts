@@ -15,7 +15,7 @@
 
  @dev : Nathan CHEVAL <nathan.cheval@edissyum.com> */
 
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { environment } from  "../env";
 import { catchError, finalize, tap } from "rxjs/operators";
 import { of } from "rxjs";
@@ -32,7 +32,7 @@ import { marker } from "@biesbjerg/ngx-translate-extract-marker";
     styleUrls: ['./statistics.component.scss']
 })
 
-export class StatisticsComponent {
+export class StatisticsComponent implements OnInit {
     currentData         : any = [];
     loading             : boolean = false;
     options             : any = [
@@ -77,6 +77,12 @@ export class StatisticsComponent {
         private notify: NotificationService,
         public serviceSettings: SettingsService,
     ) {}
+
+    ngOnInit(): void {
+        if (!this.authService.headersExists) {
+            this.authService.generateHeaders();
+        }
+    }
 
     getFormsProcessDocument(cpt: number) {
         this.http.get(environment['url'] + '/ws/forms/list?module=verifier', {headers: this.authService.headers}).pipe(

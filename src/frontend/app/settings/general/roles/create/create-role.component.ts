@@ -72,6 +72,7 @@ export class CreateRoleComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.authService.generateHeaders();
         this.serviceSettings.init();
 
         this.http.get(environment['url'] + '/ws/privileges/list', {headers: this.authService.headers}).pipe(
