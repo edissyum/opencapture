@@ -88,10 +88,12 @@ export class NotificationService {
                 } else {
                     this.error('<b>' + err.error.errors + '</b> : ' + err.error.message, err.url);
                 }
-                if (err.status === 403 || err.status === 404)
+                if (err.status === 403 || err.status === 404) {
                     this.router.navigate(['/login']).then();
-                else if (err.error.errors === this.translate.instant('ERROR.jwt_error'))
-                    this.router.navigate(['/logout']).then();
+                }
+                else if (err.error.errors === this.translate.instant('ERROR.jwt_error')) {
+                    // this.router.navigate(['/logout']).then();
+                }
             } else if (err.error.exception !== undefined)
                 this.error(err.error.exception[0].message, err.url);
             else if (err.error.error !== undefined) {

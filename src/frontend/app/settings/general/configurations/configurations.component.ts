@@ -72,7 +72,6 @@ export class ConfigurationsComponent implements OnInit {
 
     ngOnInit(): void {
         this.serviceSettings.init();
-
         const lastUrl = this.routerExtService.getPreviousUrl();
         if (lastUrl.includes('settings/general/configurations') || lastUrl === '/') {
             if (this.localStorageService.get('configurationsPageIndex'))

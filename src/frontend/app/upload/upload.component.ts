@@ -70,6 +70,9 @@ export class UploadComponent implements OnInit {
     );
 
     ngOnInit(): void {
+        if (!this.authService.headersExists) {
+            this.authService.generateHeaders();
+        }
         const splitterOrVerifier = this.localStorageService.get('splitter_or_verifier');
         this.http.get(environment['url'] + '/ws/inputs/list?module=' + splitterOrVerifier,
             {headers: this.authService.headers}).pipe(

@@ -15,33 +15,37 @@
 
  @dev : Nathan Cheval <nathan.cheval@outlook.fr> */
 
-import {Injectable, OnInit} from '@angular/core';
+import {Injectable } from '@angular/core';
 import { LocalStorageService } from "./local-storage.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Router } from "@angular/router";
 import { UserService } from "./user.service";
-import { SettingsService } from "./settings.service";
-import {environment} from "../app/env";
-import {catchError} from "rxjs/operators";
-import {of} from "rxjs";
+import { environment } from "../app/env";
+import { catchError } from "rxjs/operators";
+import { of } from "rxjs";
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
     public headers : HttpHeaders;
-
+    public headersExists : boolean = false;
     constructor(
         private router: Router,
         private http: HttpClient,
         private userService: UserService,
-        public serviceSettings: SettingsService,
         private localStorage: LocalStorageService,
     ) {
+        if (!this.getToken()) {
+            this.headersExists = false;
+        }
         this.headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.getToken());
     }
 
     generateHeaders() {
+        if (this.getToken()) {
+            this.headersExists = true;
+        }
         this.headers = new HttpHeaders().set('Authorization', 'Bearer ' + this.getToken());
     }
 
@@ -71,6 +75,9 @@ export class AuthService {
         if (environment['customId']) {
             token_name += '_' + environment['customId'];
             user_token_name += '_' + environment['customId'];
+        } else if (environment['fqdn']) {
+            token_name += '_' + environment['fqdn'];
+            user_token_name += '_' + environment['fqdn'];
         }
         return {
             'token_jwt': token_name,

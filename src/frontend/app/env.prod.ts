@@ -20,6 +20,7 @@ declare const require: any;
 export const environment = {
     url: '../../backend_oc',
     customId: '',
+    fqdn: '',
     production: true,
     version: require('../../../package.json').version
 };

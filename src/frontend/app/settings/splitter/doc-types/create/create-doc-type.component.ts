@@ -37,11 +37,9 @@ import { DocumentTypeFactoryComponent } from "../../../../splitter/document-type
 })
 export class CreateDocTypeComponent implements OnInit {
     @ViewChild(DocumentTypeFactoryComponent, {static : true}) documentTypeFactoryComponent! : DocumentTypeFactoryComponent;
-    selectedFormId: number | undefined;
-    loading: boolean        = false;
-    forms: any[]            = [];
-    form!: FormGroup;
-    fields: any = [
+    loading         : boolean = false;
+    forms           : any[]   = [];
+    fields          : any     = [
         {
             id      : 'key',
             type    : 'text',
@@ -64,6 +62,8 @@ export class CreateDocTypeComponent implements OnInit {
             required: false,
         },
     ];
+    selectedFormId  : number | undefined;
+    form!           : FormGroup;
 
     constructor(
       private http: HttpClient,
