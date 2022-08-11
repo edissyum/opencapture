@@ -15,6 +15,7 @@
 
 # @dev : Oussama BRICH <oussama.brich@edissyum.com>
 
+
 def process(args, file, log, splitter, files, tmp_folder, config, docservers, ocr):
     """
     :param args:

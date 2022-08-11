@@ -266,6 +266,9 @@ export class DocumentTypeFactoryComponent implements OnInit {
                         this.localStorageService.get('doctypeFormId') : this.forms[0].id;
                     this.selectFormControl.setValue(Number(defaultFormId));
                 }
+                else {
+                    this.notify.handleErrors(this.translate.instant('FORMS.no_form_available'));
+                }
             }),
             finalize(() => this.loading = false),
             catchError((err: any) => {

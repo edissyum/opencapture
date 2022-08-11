@@ -55,7 +55,7 @@ if [ -z "$customId" ]; then
     exit 2
 fi
 
-if [ "$customId" == 'custom' ] ; then
+if [ "$customId" == 'custom' ]; then
     echo "##########################################################################"
     echo "              Please do not create a custom called 'custom'"
     echo "      Exemple of command line call : sudo ./update.sh -c edissyum_bis"
@@ -251,7 +251,7 @@ chmod -R 775 /var/share/"$customId"/
 chown -R "$user":"$group" /var/share/"$customId"/
 
 export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE inputs SET input_folder=REPLACE(input_folder, '/var/share/' , '/var/share/$customId/')" "$databaseName"
-export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options,parameters, 0, value}', '\"/var/share/$customId/export/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out';" "$databaseName"
+export PGPASSWORD=$databasePassword && psql -U"$databaseUsername" -h"$hostname" -p"$port" -c "UPDATE outputs SET data = jsonb_set(data, '{options,parameters, 0, value}', '\"/var/share/$customId/export/verifier/\"') WHERE data #>>'{options,parameters, 0, id}' = 'folder_out';" "$databaseName"
 
 ####################
 # Copy file from default one

@@ -523,9 +523,11 @@ class Files:
     def zip_files(input_paths, output_path, delete_zipped_files=False):
         with ZipFile(output_path, 'w') as zipObj:
             for input_path in input_paths:
-                zipObj.write(input_path['input_path'], input_path['path_in_zip'])
-                if delete_zipped_files:
-                    os.remove(input_path['input_path'])
+                if os.path.exists(input_path['input_path']):
+                    zipObj.write(input_path['input_path'],
+                                 input_path['path_in_zip'] if input_path['path_in_zip'] else None)
+                    if delete_zipped_files:
+                        os.remove(input_path['input_path'])
 
 
 def compress_pdf(input_file, output_file, compress_id):

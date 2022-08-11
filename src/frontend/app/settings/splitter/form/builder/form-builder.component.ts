@@ -51,6 +51,9 @@ export class SplitterFormBuilderComponent implements OnInit {
         'metadata_method': {
             'control': new FormControl(),
         },
+        'export_zip_file': {
+            'control': new FormControl(),
+        },
     };
     outputForm              : any       = [
         {
@@ -417,6 +420,7 @@ export class SplitterFormBuilderComponent implements OnInit {
         const label             = this.form.label.control.value;
         const isDefault         = this.form.default_form.control.value;
         const metadataMethod    = this.form.metadata_method.control.value;
+        const exportZipFile     = this.form.export_zip_file.control.value;
         const outputs: any[]    = [];
         this.outputForm.forEach((element: any) => {
             if (element.control.value) outputs.push(element.control.value);
@@ -424,7 +428,13 @@ export class SplitterFormBuilderComponent implements OnInit {
 
         if (label !== '' && outputs.length >= 1) {
             this.http.put(environment['url'] + '/ws/forms/update/' + this.formId, {
-                    'args': {'label' : label, 'default_form' : isDefault, 'outputs': outputs, 'metadata_method': metadataMethod}
+                    'args': {
+                        'label'             : label,
+                        'default_form'      : isDefault,
+                        'outputs'           : outputs,
+                        'metadata_method'   : metadataMethod,
+                        'export_zip_file'   : exportZipFile
+                    }
                 }, {headers: this.authService.headers},
             ).pipe(
                 tap(()=> {

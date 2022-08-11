@@ -61,3 +61,6 @@ UPDATE "regex" SET "regex_id" = 'format_date'       WHERE "regex_id" = 'formatDa
 DELETE FROM "regex" WHERE "regex_id" = 'orderNumberRegex';
 UPDATE "regex" SET "content" = '(((?P<r1>(NUM(E|É)RO|N(O|°|º|R.)?|R(E|É)F(\.)?((E|É)RENCE)?))?\s*(DE)?\s*(DEVIS|COMMANDE|C(M)?DE|DOCUMENT)\s*(INTERNET|EXTERNE|WEB)?(\s*:)?\s*(?(r1)()|(NUMERO|N(O|°|º|R.)?))(\s*:)?|(R(E|É)F(\.)?\s*PROPOSITION\s*COMMERCIALE)|(CONTRAT|COMMANDE|C(M)?DE)\s*(NUMERO|N(O|°|º|R.)))\s*(:|#){0,1}).*' WHERE regex_id = 'quotation_number' AND lang = 'fra';
 UPDATE "regex" SET "content" = '((QUOT(E|ATION)|ORDER)\s*NUMBER\s*(:)?).*' WHERE regex_id = 'quotation_number' AND lang = 'fra';
+
+-- Splitter add zip export
+ALTER TABLE "form_models" ADD COLUMN "export_zip_file" VARCHAR(255);
