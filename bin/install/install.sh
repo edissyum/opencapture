@@ -259,8 +259,13 @@ echo ""
 
 ####################
 # Install packages
-echo "APT & PIP packages installation....."
+echo "System packages installation....."
 xargs -a apt-requirements.txt apt-get install -y > /dev/null
+echo ""
+echo "######################################################################################################################"
+echo ""
+
+echo "Python packages installation....."
 python3 -m pip install --upgrade pip > /dev/null
 python3 -m pip install --upgrade setuptools > /dev/null
 python3 -m pip install -r pip-requirements.txt > /dev/null
