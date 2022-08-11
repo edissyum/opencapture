@@ -18,6 +18,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { LocalStorageService } from "./local-storage.service";
+import {environment} from "../app/env";
 
 @Injectable({
     providedIn: 'root'
@@ -40,13 +41,17 @@ export class UserService {
     }
 
     getUserFromLocal() {
-        const token = this.getTokenAuth();
+        const token = this.getTokenUser();
         if (token) {
             return JSON.parse(atob(token as string));
         }
     }
 
-    getTokenAuth() {
-        return this.localStorage.getCookie('OpenCaptureForInvoicesToken_2');
+    getTokenUser() {
+        let user_token_name = 'OpenCaptureForInvoicesToken_user';
+        if (environment['customId']) {
+            user_token_name += '_' + environment['customId'];
+        }
+        return this.localStorage.getCookie(user_token_name);
     }
 }

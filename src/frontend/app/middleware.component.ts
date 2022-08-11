@@ -50,7 +50,7 @@ export class MiddlewareComponent implements HttpInterceptor {
                     let customId = '';
                     const isIp = this.isValidIP(currentUrlArray[i - 1]);
                     const isFQDN = this.isValidFQDN(currentUrlArray[i - 1]);
-                    const currentCustom = this.localStorage.getCookie('OpenCaptureCustom');
+                    const currentCustom = environment['customId'];
                     customId = currentUrlArray[i - 1];
                     if (!isFQDN && !isIp && currentUrlArray[i - 1] !== 'localhost' && !currentUrlArray[i - 1].includes('opencaptureforinvoices') && !currentUrlArray[i - 1].includes('backend_oc')) {
                         customId = currentUrlArray[i - 1];
@@ -60,15 +60,15 @@ export class MiddlewareComponent implements HttpInterceptor {
                         if (environment.production) {
                             environment['url'] = '../' + environment['url'];
                         }
-                        const token = this.localStorage.getCookie('OpenCaptureForInvoicesToken');
+
                         if (currentCustom && customId !== currentCustom) {
                             this.router.navigate(['/logout']).then();
                         }
+                        const token = this.localStorage.getCookie('OpenCaptureForInvoicesToken_' + customId);
                         const headers = new HttpHeaders().set('Authorization', 'Bearer ' + token);
                         const newRequest = new HttpRequest(request.method as any,
                             request.url.replace(oldUrl, environment['url']), {headers: headers});
                         request = Object.assign(request, newRequest);
-                        this.localStorage.setCookie('OpenCaptureCustom', customId, 1);
                         return next.handle(request);
                     }
                 }

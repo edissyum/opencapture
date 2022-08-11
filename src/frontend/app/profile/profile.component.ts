@@ -175,7 +175,7 @@ export class UserProfileComponent implements OnInit {
                     this.notify.success(this.translate.instant('USER.profile_updated'));
                     if (this.userId === this.userService.user.id) {
                         this.userService.setUser(data.user);
-                        this.authService.setTokenAuth(btoa(JSON.stringify(this.userService.getUser())), data.days_before_exp);
+                        this.authService.setTokenUser(btoa(JSON.stringify(this.userService.getUser())), data.days_before_exp);
                     }
                 }),
                 catchError((err: any) => {
